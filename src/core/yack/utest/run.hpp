@@ -7,7 +7,7 @@
 
 #define YACK_UTEST(NAME) \
 /**/ extern "C" int YACK_Test_##NAME(int argc, const char **argv) throw() {\
-/**/ const char *program = argv[0]; (void) argc;
+/**/ const char *program = argv[0]; (void) argc; (void) program;
 
 
 #define YACK_LEAVE() \

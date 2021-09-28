@@ -130,6 +130,7 @@ namespace Yack
 /**/ extern Yack::UTest::Proc YACK_Test_##NAME;\
 /**/ static const char name[] = #NAME;\
 /**/ const  int        ret    = utests(name,YACK_Test_##NAME);\
+/**/ if(ret!=0) return ret;\
 /**/ } while(false)
 
 #define YACK_UTEST_EXEC()         \
