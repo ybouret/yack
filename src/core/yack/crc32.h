@@ -12,7 +12,7 @@ extern "C" {
                                const void *addr,
                                size_t      size);
 
-    uint32_t YACK_CRC32(const void *addr, const size_t size);
+    uint32_t YACK_CRC32(const void *addr, size_t size);
 
 #if defined(__cplusplus)
 }

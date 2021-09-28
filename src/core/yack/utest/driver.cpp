@@ -16,7 +16,7 @@ namespace Yack
         return 1;
     }
 
-    int UTest:: Compare(const void *lhs, const void *rhs) throw()
+    int UTestCompare(const void *lhs, const void *rhs) throw()
     {
         assert(NULL!=lhs);
         assert(NULL!=rhs);
@@ -24,8 +24,25 @@ namespace Yack
                       static_cast<const UTest *>(rhs)->name);
 
     }
-
-
+    
+    void UTest:: SortByNames(UTest *utest,const size_t count) throw()
+    {
+        assert(NULL!=utest);
+        qsort(utest,count,sizeof(UTest),UTestCompare);
+    }
+    
+    UTest *UTest:: Search(const char *name, UTest *utest, const size_t count) throw()
+    {
+        assert(NULL!=name);
+        assert(NULL!=utest);
+        for(size_t i=0;i<count;++i)
+        {
+            UTest *t = &utest[i];
+            if( 0 == strcmp(t->name,name) ) return t;
+        }
+        return NULL;
+    }
+    
     void UTest:: display(std::ostream &os, const size_t width) const
     {
         const size_t w = strlen(name);assert(w<=width);

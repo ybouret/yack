@@ -12,19 +12,36 @@ namespace Yack
 {
     struct UTest
     {
-        typedef int (*Proc)(int argc, const char **argv);
-        static  int ReturnTooManyTests(const size_t maxCount);
-        static  int ReturnAlreadyTests(const char  *name);
-        static  int Compare(const void *, const void *) throw();
-        void        display(std::ostream &, const size_t width) const;
-        bool        isAlike(const char *other) const throw();
-
+        typedef int  (*Proc)(int argc, const char **argv);
+        static  int    ReturnTooManyTests(const size_t maxCount);
+        static  int    ReturnAlreadyTests(const char  *name);
+        static  void   SortByNames(UTest *utest,const size_t count) throw();
+        static  UTest *Search(const char *name, UTest *utest, const size_t count) throw();
+        void           display(std::ostream &, const size_t width) const;
+        bool           isAlike(const char *other) const throw();
+    
         const char *  name;
         Proc          proc;
-
-
     };
 
+    class UTests
+    {
+    public:
+        virtual ~UTests() throw();
+        
+       
+    protected:
+        explicit UTests(UTest *arr, const size_t num) throw();
+        size_t       count;
+        UTest       *utest;
+        const size_t maxCount;
+        
+    private:
+        YACK_DISABLE_COPY_AND_ASSIGN(UTests);
+        void clear() throw();
+    };
+    
+#if 0
     template <size_t N>
     class UTests
     {
@@ -48,10 +65,10 @@ namespace Yack
             assert(NULL!=proc);
             if(count>=N)     UTest::ReturnTooManyTests(N);
             if(search(name)) UTest::ReturnAlreadyTests(name);
-            UTest &t = utest[count++];
+            UTest       &t = utest[count++];
+            const size_t w = strlen(name);
             t.name = name;
             t.proc = proc;
-            const size_t w     = strlen(name);
             if(w>width)  width = w;
             return 0;
         }
@@ -59,18 +76,12 @@ namespace Yack
         inline UTest *search(const char *name) throw()
         {
             assert(NULL!=name);
-            for(size_t i=0;i<count;++i)
-            {
-                UTest *t = &utest[i];
-                if( 0 == strcmp(t->name,name) ) return t;
-            }
-            return 0;
+            return UTest::Search(name,utest,count);
         }
 
         int operator()(int            argc,
                        const char **  argv)
         {
-            qsort(utest,count,sizeof(UTest),UTest::Compare);
             if(argc<=1)
             {
                 std::cout << "#" << argv[0] << " = " << count << std::endl;
@@ -116,9 +127,9 @@ namespace Yack
         size_t width;
         UTest  utest[N];
         YACK_DISABLE_COPY_AND_ASSIGN(UTests);
-        void clear() throw() { memset(utest,0,sizeof(utest)); }
+        inline void clear() throw() { memset(utest,0,sizeof(utest)); }
     };
-
+#endif
 
 }
 
