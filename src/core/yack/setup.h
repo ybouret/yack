@@ -1,3 +1,4 @@
+//! \file
 
 #ifndef YACK_SETUP_INCLUDED
 #define YACK_SETUP_INCLUDED 1

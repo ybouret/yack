@@ -8,9 +8,11 @@
 extern "C" {
 #endif
 
-    uint32_t YACK_CRC32(uint32_t    crc,
-                        const void *addr,
-                        size_t      size);
+    uint32_t YACK_CRC32_Update(uint32_t    crc,
+                               const void *addr,
+                               size_t      size);
+
+    uint32_t YACK_CRC32(const void *addr, const size_t size);
 
 #if defined(__cplusplus)
 }
