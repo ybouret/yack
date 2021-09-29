@@ -4,7 +4,7 @@
 #ifndef YACK_SETUPXX_INCLUDED
 #define YACK_SETUPXX_INCLUDED 1
 
-#include "yack/setup.h"
+#include "yack/system/setup.h"
 
 #define YACK_DISABLE_COPY(CLASS)   private: CLASS(const CLASS&)
 #define YACK_DISABLE_ASSIGN(CLASS) private: CLASS & operator=(const CLASS &)

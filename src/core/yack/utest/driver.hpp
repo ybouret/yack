@@ -4,7 +4,7 @@
 #define YACK_UTEST_DRIVER_INCLUDED 1
 
 #include "yack/setup.hpp"
-#include "yack/static-check.hpp"
+#include "yack/check/static.hpp"
 
 #include <cstring>
 #include <iostream>

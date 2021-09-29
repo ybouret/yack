@@ -1,5 +1,5 @@
 #include "yack/utest/driver.hpp"
-#include "yack/out-of-reach.h"
+#include "yack/type/out-of-reach.h"
 
 namespace yack
 {

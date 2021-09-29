@@ -3,7 +3,7 @@
 #ifndef YACK_UTEST_RUN_INCLUDED
 #define YACK_UTEST_RUN_INCLUDED 1
 
-#include "yack/setup.h"
+#include "yack/system/setup.h"
 #include <iostream>
 
 #define YACK_UTEST(NAME) \

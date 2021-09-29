@@ -107,5 +107,20 @@
 #include <inttypes.h>
 #endif
 
+
+
+#if defined(__cplusplus)
+extern "C" {
+#endif
+
+    extern const char yack_unknown[];
+    extern const char yack_success[];
+    extern const char yack_failure[];
+
+
+#if defined(__cplusplus)
+}
+#endif
+
 #endif
 

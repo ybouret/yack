@@ -5,5 +5,6 @@ target_link_libraries(test-yack yack)
 
 enable_testing()
 add_test(crc32 test-yack crc32)
+add_test(error test-yacl error)
 
 yack_testing(yack)

@@ -1,10 +1,9 @@
-
 //! \file
 
 #ifndef YACK_OUT_OF_REACH_INCLUDED
 #define YACK_OUT_OF_REACH_INCLUDED 1
 
-#include "yack/setup.h"
+#include "yack/system/setup.h"
 
 #if defined(__cplusplus)
 extern "C" {

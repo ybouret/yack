@@ -3,7 +3,7 @@
 #ifndef YACK_CRC32_INCLUDED
 #define YACK_CRC32_INCLUDED 1
 
-#include "yack/setup.h"
+#include "yack/system/setup.h"
 
 #if defined(__cplusplus)
 extern "C" {

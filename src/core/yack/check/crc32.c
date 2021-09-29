@@ -1,4 +1,4 @@
-#include "yack/crc32.h"
+#include "yack/check/crc32.h"
 
 static const uint32_t table[256] =
 {
