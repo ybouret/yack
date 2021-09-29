@@ -1,20 +1,17 @@
 #define _CRT_SECURE_NO_WARNINGS
 
 #include "yack/system/error.h"
+#include "yack/type/cstring.h"
+
 #include <string.h>
+
+static const char bad[4] = { ' ', '\t', '\r', '\n' };
 
 void yack_bsd_format_error(char *buffer, const size_t buflen, const int err)
 {
     const char *msg = strerror(err);
-    assert(!(0==buffer&&buflen>0));
-    memset(buffer,0,buflen);
-    if(msg&&buflen>0)
-    {
-        const size_t len    = strlen(msg);
-        const size_t maxlen = buflen-1;
-        const size_t length = len<=maxlen ? len : maxlen;
-        memcpy(buffer,msg,length);
-    }
+    yack_cstring_copy(buffer,buflen,msg,strlen(msg));
+    yack_cstring_trim(buffer,bad,sizeof(bad));
 }
 
 #if defined(YACK_WIN)
@@ -39,11 +36,12 @@ void yack_win_format_error(char *buffer, const size_t buflen, const uint32_t err
                                        NULL);
         if(dw<=0)
         {
-			const size_t len   = strlen(yack_failure);
-			const size_t maxlen = buflen - 1;
-			const size_t length = len <= maxlen ? len : maxlen;
-			memcpy(buffer,yack_failure, length);
+            yack_cstring_copy(buffer,buflen,yack_failure,strlen(yack_failure));
 		}
+        else
+        {
+            yack_cstring_trim(buffer,bad,sizeof(bad));
+        }
     }
 }
 
