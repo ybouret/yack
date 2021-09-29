@@ -1,6 +1,6 @@
 #include "yack/crc32.h"
 #include "yack/utest/run.hpp"
-#include <string>
+#include <cstring>
 
 YACK_UTEST(crc32)
 {
