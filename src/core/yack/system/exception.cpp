@@ -67,6 +67,36 @@ namespace yack
         
     }
 
+}
+
+namespace yack
+{
+	namespace win32
+	{
+		exception:: ~exception() throw()
+		{
+		}
+
+		exception::exception(const exception &other) throw() :
+			excp_type(other)
+		{
+		}
+
+
+		exception::exception(const uint32_t err, const char *fmt, ...) throw() :
+			excp_type(err)
+		{
+			{
+				va_list ap;
+				va_start(ap, fmt);
+				failsafe_format(info, sizeof(info), fmt, &ap);
+				va_end(ap);
+			}
+
+			yack_win_format_error(text, sizeof(text), code);
+		}
+
+	}
 
 }
 

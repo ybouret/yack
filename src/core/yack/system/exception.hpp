@@ -62,7 +62,21 @@ namespace yack
         };
     }
 
+#if defined(YACK_WIN)
+	namespace win32
+	{
+		class exception : public sys_exception<uint32_t>
+		{
+		public:
+			explicit exception(const uint32_t err, const char *fmt, ...) throw() YACK_PRINTF_CHECK(3, 4);
+			virtual ~exception() throw();
+			exception(const exception&) throw();
 
+		private:
+			YACK_DISABLE_ASSIGN(exception);
+		};
+	}
+#endif
 
 }
 
