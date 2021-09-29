@@ -15,7 +15,7 @@ YACK_UTEST(error)
         std::cerr << "err=" << err << " bsd: " << buffer;
 
 #if defined(Y_WIN)
-        yack_winformat_error(buffer,length,err);
+        yack_win_format_error(buffer,length,err);
         std::cerr << " win: " << buffer;
 #endif
 
