@@ -1,6 +1,6 @@
 
 
-#include "yack/exception.hpp"
+#include "yack/system/exception.hpp"
 #include "yack/utest/run.hpp"
 #include <cstring>
 
@@ -24,6 +24,9 @@ YACK_UTEST(excp)
 
     a.pre("From %g%%: ",42.0);
     a.show(std::cerr);
+
+    libc::exception d(1,"bad in %s",__FILE__);
+    d.show(std::cerr);
 
 }
 YACK_LEAVE()

@@ -34,12 +34,14 @@ namespace yack
         void                show(std::ostream &os) const;
 
 
-        
+        static void failsafe_format(char *buffer, const size_t buflen, const char *fmt, void *args) throw();
 
+    protected:
+        char info[when_size];
+        
     private:
         YACK_DISABLE_ASSIGN(exception);
         void clear() throw();
-        char info[when_size];
     };
 
 }

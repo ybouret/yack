@@ -28,12 +28,18 @@ namespace yack
     }
 
 
-    static inline
-    void exception_failsafe_format(char *buffer, size_t buflen, const char *fmt, va_list &ap) throw()
+    
+    void exception:: failsafe_format(char *buffer, size_t buflen, const char *fmt, void *args) throw()
     {
+        assert(NULL!=buffer);
+        assert(0<buflen);
+        assert(NULL!=fmt);
+        assert(NULL!=args);
+        
+        va_list &ap = *static_cast<va_list *>(args);
         if(!yack_cstring_format(buffer,buflen,fmt,&ap))
         {
-            yack_cstring_msgcpy(buffer,buflen,"yack_cstring_format failure...");
+            yack_cstring_msgcpy(buffer,buflen,"exception: format failure...");
         }
     }
 
@@ -44,7 +50,7 @@ namespace yack
         clear();
         va_list ap;
         va_start(ap,fmt);
-        exception_failsafe_format(info,sizeof(info),fmt,ap);
+        failsafe_format(info,sizeof(info),fmt,&ap);
         va_end(ap);
     }
 
@@ -83,7 +89,7 @@ namespace yack
         {
             va_list ap;
             va_start(ap,fmt);
-            exception_failsafe_format(data,sizeof(data),fmt,ap);
+            failsafe_format(data,sizeof(data),fmt,&ap);
             va_end(ap);
         }
 
@@ -100,7 +106,7 @@ namespace yack
         {
             va_list ap;
             va_start(ap,fmt);
-            exception_failsafe_format(data,sizeof(data),fmt,ap);
+            failsafe_format(data,sizeof(data),fmt,&ap);
             va_end(ap);
         }
 
