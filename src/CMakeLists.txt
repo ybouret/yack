@@ -11,6 +11,7 @@ macro(yack_utest target)
 	set(UNIT_TESTS "${UNIT_TESTS} utest-${target}" PARENT_SCOPE)
 endmacro()
 
+#define a local target for unit tests
 macro(yack_testing target)
 	add_custom_target(utest-${target}
 	COMMAND ${CMAKE_CTEST_COMMAND}
@@ -22,3 +23,15 @@ add_subdirectory(core)
 
 string( STRIP "${UNIT_TESTS}" UNIT_TESTS) 
 message( STATUS "Unit Tests: '${UNIT_TESTS}'" )
+
+find_program(doxygen doxygen)
+if("${doxygen}" STREQUAL "doxygen-NOTFOUND")
+	message( STATUS "no possible documentation" )
+else()
+	message( STATUS "creating documentation target" )
+add_custom_target(dox
+	COMMAND ${doxygen}
+	WORKING_DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}/.."
+	COMMENT "Documentation with Doxygen")
+endif()
+
