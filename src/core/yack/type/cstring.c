@@ -114,6 +114,7 @@ void   yack_cstring_msgcat(char *buffer, const size_t buflen, const char *msg)
 }
 
 #include <stdio.h>
+#include <stdarg.h>
 
 int yack_cstring_format(char *buffer, const size_t buflen, const char *fmt, void *args)
 {

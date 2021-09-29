@@ -28,6 +28,10 @@ YACK_UTEST(excp)
     libc::exception d(1,"bad in %s",__FILE__);
     d.show(std::cerr);
 
+#if defined(YACK_WIN)
+	win32::exception e(1, "bad in %s", __FILE__);
+	e.show(std::cerr);
+#endif
 }
 YACK_LEAVE()
 
