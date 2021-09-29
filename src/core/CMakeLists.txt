@@ -15,6 +15,14 @@ set(type ${type_impl} ${type_decl})
 SOURCE_GROUP(type FILES ${type})
 install( FILES ${type_decl} DESTINATION include/yack/type )
 
+# arith operation
+file(GLOB arith_impl yack/arith/*.cpp yack/arith/*.c)
+file(GLOB arith_decl yack/arith/*.hpp yack/arith/*.h)
+set(arith ${arith_impl} ${arith_decl})
+SOURCE_GROUP(arith FILES ${arith})
+install( FILES ${arith_decl} DESTINATION include/yack/arith )
+
+
 # checking operations
 file(GLOB check_impl yack/check/*.cpp yack/check/*.c)
 file(GLOB check_decl yack/check/*.hpp yack/check/*.h)
@@ -49,6 +57,7 @@ install( FILES ${memory_decl} DESTINATION include/yack/memory )
 add_library(yack
 ${src}
 ${type}
+${arith}
 ${check}
 ${system}
 ${memory}

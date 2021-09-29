@@ -1,12 +1,12 @@
 #include "yack/check/crc32.h"
 #include <string.h>
 
-void *yack_out_of_reach_addr(void *addr)
+void *yack_out_of_reach_flexible(void *addr)
 {
     return addr;
 }
 
-const void *yack_out_of_reach_const(const void *addr)
+const void *yack_out_of_reach_constant(const void *addr)
 {
     return addr;
 }

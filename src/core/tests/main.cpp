@@ -9,5 +9,6 @@ YACK_UTEST_DECL(16)
     YACK_UTEST(excp);
 
     YACK_UTEST(ram);
+    YACK_UTEST(align);
 }
 YACK_UTEST_EXEC()

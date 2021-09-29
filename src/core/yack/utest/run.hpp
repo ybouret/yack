@@ -17,7 +17,7 @@ namespace yack
     uint32_t ucrc(const T *addr, const size_t size) throw()
     {
         assert( !(NULL==addr&&0<size) );
-        return yack_crc32( yack_out_of_reach_const(addr), size*sizeof(T) );
+        return yack_crc32( yack_out_of_reach_constant(addr), size*sizeof(T) );
     }
 
     class uprng

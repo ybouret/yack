@@ -45,6 +45,10 @@ namespace yack
         exception & operator<<(const char  ) throw();                 //!< append a character
         exception & operator<<(const char *) throw();                 //!< append a text
 
+        //______________________________________________________________________
+        //
+        // output methods
+        //______________________________________________________________________
         virtual const char *what() const throw();          //!< what_text is the default
         const char         *when() const throw();          //!< internal buffer
         void                show(std::ostream &os) const;  //!< cosmetics
