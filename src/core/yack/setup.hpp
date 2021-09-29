@@ -13,10 +13,10 @@
 YACK_DISABLE_COPY(CLASS);                   \
 YACK_DISABLE_ASSIGN(CLASS)
 
-namespace Yack
+namespace yack
 {
     template <typename T> inline
-    void Swap(T &lhs, T &rhs) throw()
+    void cswap(T &lhs, T &rhs) throw()
     {
         const T tmp = lhs;
         lhs = rhs;

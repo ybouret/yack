@@ -21,7 +21,7 @@ static const uint32_t table[256] =
 };
 
 
-uint32_t YACK_CRC32_Update(uint32_t crc, const void *addr, size_t size)
+uint32_t yack_crc32_run(uint32_t crc, const void *addr, size_t size)
 {
     const uint8_t *p = (const uint8_t *)addr;
     assert(!(NULL==addr&&size>0));
@@ -34,7 +34,7 @@ uint32_t YACK_CRC32_Update(uint32_t crc, const void *addr, size_t size)
     return ~crc;
 }
 
-uint32_t YACK_CRC32(const void *addr, size_t size)
+uint32_t yack_crc32(const void *addr, size_t size)
 {
-    return YACK_CRC32_Update(0,addr,size);
+    return yack_crc32_run(0,addr,size);
 }

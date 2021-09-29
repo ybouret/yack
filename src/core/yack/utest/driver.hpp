@@ -4,144 +4,86 @@
 #define YACK_UTEST_DRIVER_INCLUDED 1
 
 #include "yack/setup.hpp"
+#include "yack/static-check.hpp"
+
 #include <cstring>
 #include <iostream>
 #include <iomanip>
 
-namespace Yack
+namespace yack
 {
-    struct UTest
-    {
-        typedef int  (*Proc)(int argc, const char **argv);
-        static  int    ReturnTooManyTests(const size_t maxCount);
-        static  int    ReturnAlreadyTests(const char  *name);
-        static  void   SortByNames(UTest *utest,const size_t count) throw();
-        static  UTest *Search(const char *name, UTest *utest, const size_t count) throw();
-        void           display(std::ostream &, const size_t width) const;
-        bool           isAlike(const char *other) const throw();
-    
-        const char *  name;
-        Proc          proc;
-    };
 
-    class UTests
+    class unit_test
     {
     public:
-        virtual ~UTests() throw();
-        
-       
-    protected:
-        explicit UTests(UTest *arr, const size_t num) throw();
-        size_t       count;
-        UTest       *utest;
-        const size_t maxCount;
-        
+        typedef int (*proc)(int,const char **);
+
+        unit_test(const char *name, proc func) throw();
+        ~unit_test() throw();
+
+        void display(std::ostream &, const size_t width) const;
+        bool is_near(const char *other) const throw();
+
+        const char *  const name;
+        proc                func;
+
     private:
-        YACK_DISABLE_COPY_AND_ASSIGN(UTests);
-        void clear() throw();
+        YACK_DISABLE_COPY_AND_ASSIGN(unit_test);
     };
-    
-#if 0
-    template <size_t N>
-    class UTests
+
+    class unit_tests
     {
     public:
-        inline UTests() throw() : count(0), width(0), utest()
-        {
-            clear();
-        }
+        virtual ~unit_tests() throw();
 
-        inline ~UTests() throw()
-        {
-            clear();
-            count=0;
-            width=0;
-        }
-
-        int operator()(const char * const name,
-                        UTest::Proc        proc) throw()
-        {
-            assert(NULL!=name);
-            assert(NULL!=proc);
-            if(count>=N)     UTest::ReturnTooManyTests(N);
-            if(search(name)) UTest::ReturnAlreadyTests(name);
-            UTest       &t = utest[count++];
-            const size_t w = strlen(name);
-            t.name = name;
-            t.proc = proc;
-            if(w>width)  width = w;
-            return 0;
-        }
-
-        inline UTest *search(const char *name) throw()
-        {
-            assert(NULL!=name);
-            return UTest::Search(name,utest,count);
-        }
+        int  operator()(const char     *name,
+                        unit_test::proc func) throw();
 
         int operator()(int            argc,
-                       const char **  argv)
-        {
-            if(argc<=1)
-            {
-                std::cout << "#" << argv[0] << " = " << count << std::endl;
-                for(size_t i=0;i<count;++i)
-                {
-                    utest[i].display(std::cout << '\t',width);
-                }
-                return 0;
-            }
-            else
-            {
-                const char *name = argv[1]; assert(name);
-                UTest      *test = search(name);
-                if(test)
-                {
-                    return test->proc(--argc,++argv);
-                }
-                else
-                {
-                    std::cerr << "No [" << name << "] in " << argv[0] << std::endl;
-                    bool first = true;
-                    for(size_t i=0;i<count;++i)
-                    {
-                        const UTest &test = utest[i];
-                        if(test.isAlike(name))
-                        {
-                            if(first)
-                            {
-                                std::cerr << "Alike:" << std::endl;
-                                first = false;
-                            }
-                            test.display(std::cerr << '\t',width);
-                        }
-                    }
-                    return 1;
-                }
-            }
-        }
+                       const char **  argv) throw();
 
+    protected:
+        explicit unit_tests(void *addr, const size_t size) throw();
 
     private:
-        size_t count;
-        size_t width;
-        UTest  utest[N];
-        YACK_DISABLE_COPY_AND_ASSIGN(UTests);
-        inline void clear() throw() { memset(utest,0,sizeof(utest)); }
+        YACK_DISABLE_COPY_AND_ASSIGN(unit_tests);
+        void       clear() throw();
+        unit_test *query(const char *name) throw();
+
+        unit_test   *utest;     //!< repository
+        size_t       count;     //!< declared
+        size_t       width;     //!< max name length
+        const size_t capacity;  //!< initial capacity
     };
-#endif
+
+
+    template <size_t N>
+    class unit_tests_provider : public unit_tests
+    {
+    public:
+        inline virtual ~unit_tests_provider() throw() {}
+        inline explicit unit_tests_provider() throw() :
+        unit_tests(mock,N), mock() {
+            YACK_STATIC_CHECK(sizeof(mock_t)==sizeof(unit_test),MismatchSizeofTest);
+        }
+
+    private:
+        YACK_DISABLE_COPY_AND_ASSIGN(unit_tests_provider);
+        struct mock_t { void *head; void *tail; };
+        mock_t mock[N];
+    };
 
 }
 
-#define YACK_UTEST_DECL(COUNT)         \
+#define YACK_UTEST_DECL(COUNT)                \
 /**/  int main(int argc, const char **argv) { \
-/**/   Yack::UTests<COUNT> utests;
+/**/  static yack::unit_tests_provider<COUNT> utests;
 
-#define YACK_UTEST(NAME) do { \
-/**/ extern Yack::UTest::Proc YACK_Test_##NAME;\
-/**/ static const char name[] = #NAME;\
-/**/ const  int        ret    = utests(name,YACK_Test_##NAME);\
-/**/ if(ret!=0) return ret;\
+#define YACK_UTEST(NAME) do {                                       \
+/**/ int yack_test_##NAME(int,const char**);                        \
+/**/ static const char       name[] = #NAME;                        \
+/**/ const        int        ret    = utests(name,yack_test_##NAME);\
+/**/ if(0!=ret) return ret;                                         \
 /**/ } while(false)
 
 #define YACK_UTEST_EXEC()         \

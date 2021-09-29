@@ -40,6 +40,12 @@
 #define YACK_PLATFORM "OpenBSD"
 #endif
 
+#if defined(__sun__)
+#define YACK_SUNOS   1
+#define YACK_BSD     1
+#define YACK_PLATFORM "SunOSD"
+#endif
+
 #if defined(_WIN32)
 #define YACK_WIN     1
 #define YACK_PLATFORM "Windows"
