@@ -12,11 +12,11 @@ YACK_UTEST(error)
     {
         const int err = atoi(argv[i]);
         yack_bsd_format_error(buffer,length,err);
-        std::cerr << "err=" << err << " bsd: " << buffer;
+        std::cerr << "err=" << err << " | bsd: " << buffer;
 
-#if defined(Y_WIN)
+#if defined(YACK_WIN)
         yack_win_format_error(buffer,length,err);
-        std::cerr << " win: " << buffer;
+        std::cerr << " | win: " << buffer;
 #endif
 
         std::cerr << std::endl;
