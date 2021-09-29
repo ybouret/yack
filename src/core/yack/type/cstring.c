@@ -13,7 +13,7 @@ void yack_cstring_copy(char        *buffer,
                        const size_t len)
 {
     assert(!(NULL==buffer&&buflen>0));
-    assert(!(NULL==msg&len>0));
+    assert(!(NULL==msg&&len>0));
 
     if(buflen>0)
     {
