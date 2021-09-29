@@ -116,7 +116,7 @@ namespace yack
                                 const char **  argv) throw()
     {
 
-        qsort(utest,count,sizeof(unit_tests),compare_unit_tests);
+        qsort(utest,count,sizeof(unit_test),compare_unit_tests);
         const char *program = argv[0];
         if(argc<=1)
         {
