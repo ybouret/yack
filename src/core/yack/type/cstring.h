@@ -1,4 +1,3 @@
-
 //! \file
 
 #ifndef YACK_CSTRING_INCLUDED
@@ -20,6 +19,10 @@ extern "C" {
 
     void   yack_cstring_msgcpy(char *buffer, const size_t buflen, const char *msg);
     void   yack_cstring_msgcat(char *buffer, const size_t buflen, const char *msg);
+
+    int    yack_cstring_format(char *buffer, const size_t buflen, const char *fmt, void *args);
+    
+
 
 #if defined(__cplusplus)
 }

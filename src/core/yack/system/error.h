@@ -1,7 +1,7 @@
 //! \file
 
-#ifndef YACK_OUT_OF_REACH_INCLUDED
-#define YACK_OUT_OF_REACH_INCLUDED 1
+#ifndef YACK_SYSTEM_ERROR_INCLUDED
+#define YACK_SYSTEM_ERROR_INCLUDED 1
 
 #include "yack/system/setup.h"
 

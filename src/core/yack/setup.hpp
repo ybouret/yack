@@ -1,4 +1,3 @@
-
 //! \file
 
 #ifndef YACK_SETUPXX_INCLUDED

@@ -83,7 +83,7 @@ void   yack_cstring_strcat(char *buffer, const size_t buflen, const char *msg, c
         assert(0==buffer[curlen]);
         if(space>0)
         {
-            const size_t bytes  = space<len ? space:len;
+            const size_t bytes  = (space<len) ? space:len;
             char *       target = buffer+curlen;
             assert(curlen+bytes<buflen);
             memcpy(target,msg,bytes);
@@ -111,4 +111,16 @@ void   yack_cstring_msgcpy(char *buffer, const size_t buflen, const char *msg)
 void   yack_cstring_msgcat(char *buffer, const size_t buflen, const char *msg)
 {
     yack_cstring_strcat(buffer,buflen,msg,yack_cstring_size(msg));
+}
+
+#include <stdio.h>
+
+int yack_cstring_format(char *buffer, const size_t buflen, const char *fmt, void *args)
+{
+    va_list  *ap  = (va_list *)args;
+    assert(NULL!=args);
+    assert(NULL!=fmt);
+    assert(NULL!=buffer);
+    assert(0<buflen);
+    return (vsnprintf(buffer,buflen,fmt,*ap)>=0);
 }
