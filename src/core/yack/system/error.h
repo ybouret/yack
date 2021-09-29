@@ -17,6 +17,8 @@ extern "C" {
     void yack_win_format_error(char *buffer, const size_t length, const uint32_t err);
 #endif
 
+    void yack_bsd_critical_error(const int res, const char *ctx);
+    
 
 #if defined(__cplusplus)
 }

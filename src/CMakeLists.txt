@@ -19,6 +19,7 @@ macro(yack_testing target)
 	COMMENT "Testing ${target}" )	
 endmacro()
 
+add_subdirectory(cli)
 add_subdirectory(core)
 
 string( STRIP "${UNIT_TESTS}" UNIT_TESTS) 

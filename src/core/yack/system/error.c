@@ -13,13 +13,31 @@ void yack_bsd_format_error(char *buffer, const size_t buflen, const int err)
     yack_cstring_trim(buffer,bad,sizeof(bad));
 }
 
+#include <stdio.h>
+void yack_bsd_critical_error(const int res, const char *ctx)
+{
+    char buffer[256];
+    memset(buffer,0,sizeof(buffer));
+    yack_bsd_format_error(buffer,sizeof(buffer),res);
+    {
+        const size_t clen = yack_cstring_size(ctx);
+        const size_t blen = yack_cstring_size(buffer);
+        const size_t full = blen > clen ? blen : clen;
+        const size_t fill = 2+full;
+
+        fputc('/',stderr); for(size_t i=fill;i>0;--i) fputc('*',stderr); fputc('\\',stderr); fputc('\n',stderr);
+        fprintf(stderr,"* %s",ctx);    for(size_t i=clen;i<=full;++i) fputc(' ',stderr); fprintf(stderr," *\n");
+        fprintf(stderr,"* %s",buffer); for(size_t i=blen;i<=full;++i) fputc(' ',stderr); fprintf(stderr," *\n");
+        fputc('\\',stderr); for(size_t i=fill;i>0;--i) fputc('*',stderr); fputc('/',stderr);fputc('\n',stderr);
+    }
+
+    exit(-1);
+}
+
 #if defined(YACK_WIN)
 #define WIN32_MEAN_AND_LEAN
 #include <windows.h>
-#endif
 
-
-#if defined(YACK_WIN)
 void yack_win_format_error(char *buffer, const size_t buflen, const uint32_t err)
 {
     assert(!(0==buffer&&buflen>0));

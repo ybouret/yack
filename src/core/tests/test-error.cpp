@@ -21,6 +21,9 @@ YACK_UTEST(error)
 
         std::cerr << std::endl;
     }
+    std::cerr.flush();
+    
+    //yack_bsd_critical_error(3, "example of critical error");
 
 }
 YACK_UDONE()
