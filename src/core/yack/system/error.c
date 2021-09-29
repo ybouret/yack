@@ -9,8 +9,7 @@ static const char bad[4] = { ' ', '\t', '\r', '\n' };
 
 void yack_bsd_format_error(char *buffer, const size_t buflen, const int err)
 {
-    const char *msg = strerror(err);
-    yack_cstring_copy(buffer,buflen,msg,strlen(msg));
+    yack_cstring_msgcpy(buffer,buflen,strerror(err));
     yack_cstring_trim(buffer,bad,sizeof(bad));
 }
 
@@ -36,7 +35,7 @@ void yack_win_format_error(char *buffer, const size_t buflen, const uint32_t err
                                        NULL);
         if(dw<=0)
         {
-            yack_cstring_copy(buffer,buflen,yack_failure,strlen(yack_failure));
+            yack_cstring_msgcpy(buffer,buflen,yack_failure);
 		}
         else
         {
