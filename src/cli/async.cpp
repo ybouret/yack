@@ -9,9 +9,19 @@ void findParameters()
 }
 #endif
 
+#if defined(YACK_WIN)
+#define WIN32_LEAN_AND_MEAN
+#include <windows.h>
+void findParameters()
+{
+	std::cerr << "sizeof(CriticalSection) = " << sizeof(CRITICAL_SECTION) << std::endl;
+}
+#endif
+
 int main(int argc, const char *argv[])
 {
-    findParameters();
+
+	findParameters();
 
     return 0;
 }
