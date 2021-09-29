@@ -9,5 +9,5 @@ YACK_UTEST(crc32)
     std::cerr << std::hex << "crc32(" << data << ")=" << code << " / " <<  0x414FA339 << std::endl;
 
 }
-YACK_LEAVE()
+YACK_UDONE()
 

@@ -113,10 +113,10 @@
 extern "C" {
 #endif
 
-    extern const char yack_unknown[];
-    extern const char yack_success[];
-    extern const char yack_failure[];
-    int               yack_die(const char *msg); //!< return 1
+    extern const char yack_unknown[];         //!< "unknown"
+    extern const char yack_success[];         //!< "success"
+    extern const char yack_failure[];         //!< "failure"
+    int               yack_die(const char *); //!< return 1
     
 #if defined(__cplusplus)
 }

@@ -9,10 +9,12 @@
 extern "C" {
 #endif
 
+    //! update crc
     uint32_t yack_crc32_run(uint32_t    crc,
                             const void *addr,
                             size_t      size);
 
+    //! yack_crc32_run(0,addr,size)
     uint32_t yack_crc32(const void *addr, size_t size);
 
 #if defined(__cplusplus)

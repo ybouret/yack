@@ -33,5 +33,5 @@ YACK_UTEST(excp)
 	e.show(std::cerr);
 #endif
 }
-YACK_LEAVE()
+YACK_UDONE()
 

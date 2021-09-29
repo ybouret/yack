@@ -13,3 +13,10 @@ void yack_out_of_reach_copy(void *target, const void *source, const size_t size)
     assert(!(NULL==source && size>0));
     memcpy(target,source,size);
 }
+
+void yack_out_of_reach_move(void *target, const void *source, const size_t size)
+{
+    assert(!(NULL==target && size>0));
+    assert(!(NULL==source && size>0));
+    memmove(target,source,size);
+}

@@ -6,12 +6,14 @@
 #include "yack/system/setup.h"
 #include <iostream>
 
+//! start a new test
 #define YACK_UTEST(NAME) \
 /**/  int yack_test_##NAME(int argc, const char **argv) throw() {\
 /**/  const char *program = argv[0]; (void) argc; (void) program;
 
 
-#define YACK_LEAVE() \
+//! leave the test
+#define YACK_UDONE() \
 /**/    return 0;    \
 /**/  }
 #endif
