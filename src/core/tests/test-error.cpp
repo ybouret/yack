@@ -2,6 +2,7 @@
 #include "yack/system/error.h"
 #include "yack/utest/run.hpp"
 #include <cstring>
+#include <cerrno>
 
 YACK_UTEST(error)
 {
@@ -22,9 +23,19 @@ YACK_UTEST(error)
         std::cerr << std::endl;
     }
     std::cerr.flush();
-    
-    //yack_bsd_critical_error(3, "example of critical error");
 
+#define YACK_SHOW_ERRNO(VALUE) do {\
+yack_bsd_format_error(buffer,length,VALUE); std:: cerr << #VALUE << " => " << buffer << std::endl;\
+} while(false)
+
+    YACK_SHOW_ERRNO(EDOM);
+    YACK_SHOW_ERRNO(ERANGE);
+    YACK_SHOW_ERRNO(ENOMEM);
+    YACK_SHOW_ERRNO(EACCES);
+
+
+    //yack_bsd_critical_error(3, "example of critical error");
+    
 }
 YACK_UDONE()
 

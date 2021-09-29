@@ -36,12 +36,22 @@ set(utest ${utest_impl} ${utest_decl})
 SOURCE_GROUP(utest FILES ${utest})
 install( FILES ${utest_decl} DESTINATION include/yack/utest )
 
+
+# memory operations
+file(GLOB memory_impl yack/memory/*.cpp yack/memory/*.c)
+file(GLOB memory_decl yack/memory/*.hpp yack/memory/*.h)
+set(memory ${memory_impl} ${memory_decl})
+SOURCE_GROUP(memory FILES ${memory})
+install( FILES ${memory_decl} DESTINATION include/yack/memory )
+ 
+
 # create the library
 add_library(yack
 ${src}
 ${type}
 ${check}
 ${system}
+${memory}
 ${utest}
 )
 

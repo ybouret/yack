@@ -1,6 +1,17 @@
 #include "yack/check/crc32.h"
 #include <string.h>
 
+void *yack_out_of_reach_addr(void *addr)
+{
+    return addr;
+}
+
+const void *yack_out_of_reach_const(const void *addr)
+{
+    return addr;
+}
+
+
 void yack_out_of_reach_zset(void *addr, const size_t size)  
 {
     assert(!(NULL==addr && size>0));

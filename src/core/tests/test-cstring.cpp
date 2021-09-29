@@ -21,7 +21,7 @@ YACK_UTEST(cstring)
         yack_cstring_msgcat(buffer,buflen,argv[i]);
         std::cerr << buffer << std::endl;
     }
-
+    
 
 
 
