@@ -140,6 +140,9 @@ namespace yack
         static inline type   positive(const type x) throw() { return (x<0)?0:x; }
     };
 
+    template <bool FLAG> struct Echo {
+        static const bool flag = FLAG;
+    };
 
     //! matching signed type
     template <typename T>
@@ -153,7 +156,7 @@ namespace yack
     //! compute if an integral type is signed
     template <typename T>
     struct is_signed {
-        enum { value = ( (T)-1 < 0 ? 1 : 0) };
+        static const bool value = Echo< (T)-1 < 0 >::flag;
         //static const bool value = (T)-1 < 0; //!< compile time detection
     };
 
