@@ -7,10 +7,13 @@ struct yack_memory_chunk_
     struct yack_memory_chunk_ *prev;            //!< for list
     uint8_t                   *data;            //!< first item
     const uint8_t             *last;            //!< first invalid item
+
     uint8_t                    first_available; //!< bookeeping
     uint8_t                    still_available; //!< bookeeping
     uint8_t                    provided_number; //!< initial count
+    size_t                     bytes_in_memory; //!< if dyamic
 };
+
 
 size_t yack_memory_chunk_still_available(const yack_memory_chunk *chunk)
 {
@@ -61,6 +64,7 @@ void yack_memory_chunk_initialize(yack_memory_chunk *chunk,
     chunk->still_available = chunk->provided_number;
     chunk->data            = (uint8_t*)chunk_data;
     chunk->last            = chunk->data + (block_size * chunk->provided_number);
+    chunk->bytes_in_memory = 0;
 }
 
 
@@ -134,7 +138,64 @@ void yack_memory_chunk_release(yack_memory_chunk *chunk,
     }
 }
 
-size_t  yack_memory_chunk_sizeof()
+
+#include "yack/arith/align.h"
+#include "yack/arith/base2.h"
+#include "yack/memory/ram.h"
+
+static const size_t yack_memory_chunk_header = YACK_MEMALIGN(sizeof(yack_memory_chunk));
+
+static size_t yack_memory_chunk_truncate(const size_t bytes)
 {
-    return sizeof(struct yack_memory_chunk_);
+    if(bytes>YACK_CHUNK_SIZE)
+    {
+        return YACK_CHUNK_SIZE;
+    }
+    else
+    {
+        return bytes;
+    }
 }
+
+size_t  yack_memory_chunk_optimized_bytes(const size_t block_size)
+{
+    assert(yack_memory_chunk_header<YACK_CHUNK_SIZE);
+    return yack_memory_chunk_truncate( yack_prev_power_of_two(yack_memory_chunk_header + block_size * 255) );
+}
+
+#include "yack/type/out-of-reach.h"
+
+yack_memory_chunk *yack_memory_chunk_create(const size_t block_size, size_t required_bytes)
+{
+    assert(required_bytes>=yack_memory_chunk_header+block_size);
+    {
+        size_t             count = 1;
+        uint8_t           *entry = (uint8_t *) yack_ram_acquire(&count,required_bytes);
+        if(!entry)
+        {
+            return NULL;
+        }
+        else
+        {
+            uint8_t           *space = entry + yack_memory_chunk_header;
+            yack_memory_chunk *chunk = (yack_memory_chunk *) yack_out_of_reach_address(entry);
+            yack_memory_chunk_initialize(chunk,block_size,space,count-yack_memory_chunk_header);
+            chunk->bytes_in_memory = count;
+            return chunk;
+        }
+    }
+}
+
+
+void yack_memory_chunk_delete(yack_memory_chunk *chunk)
+{
+    assert(chunk);
+    assert(NULL==chunk->next);
+    assert(NULL==chunk->prev);
+    {
+        size_t  count = chunk->bytes_in_memory;  assert(count>yack_memory_chunk_header);
+        yack_ram_release((void**)&chunk,&count);
+    }
+
+}
+

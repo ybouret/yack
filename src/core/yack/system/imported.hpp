@@ -42,7 +42,7 @@ namespace yack
 
             //______________________________________________________________________
             //
-            // helper
+            //! helper to format text
             //______________________________________________________________________
             void describe(const char *fmt,...) throw() YACK_PRINTF_API;
 

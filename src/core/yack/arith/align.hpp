@@ -10,11 +10,13 @@
 
 namespace yack
 {
-    
+    //! TODO
     struct alignment
     {
+        //! TODO
         static size_t with_ln2(const size_t ln2, const size_t value) throw();
-        
+
+        //! TODO
         template <size_t POT> static inline
         size_t on(const size_t n)
         {

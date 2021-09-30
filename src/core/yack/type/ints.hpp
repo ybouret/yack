@@ -73,7 +73,7 @@ namespace yack
     template <typename T>
     struct unsigned_for
     {
-        typedef typename unsigned_int<sizeof(T)>::type type;
+        typedef typename unsigned_int<sizeof(T)>::type type; //!< matching type
     };
 
 
@@ -144,7 +144,7 @@ namespace yack
     template <typename T>
     struct signed_for
     {
-        typedef typename signed_int<sizeof(T)>::type type;
+        typedef typename signed_int<sizeof(T)>::type type; //!< resulting type
     };
     
 
@@ -154,18 +154,19 @@ namespace yack
         static const bool value = (T)-1 < 0; //!< compile time detection
     };
 
+    //! deduce matching integral type
     template <typename T>
     struct integral_for
     {
-        static const size_t _sizeof = sizeof(T);
-        static const bool   _signed = is_signed<T>::value;
-        typedef signed_int<_sizeof>                                  _s_int_t;
-        typedef unsigned_int<_sizeof>                                _u_int_t;
-        typedef typename pick_from<_signed,_s_int_t,_u_int_t>::type  parent;
-        typedef typename parent::type                                type;
+        static const size_t _sizeof = sizeof(T);                               //!< sizeof(T)
+        static const bool   _signed = is_signed<T>::value;                     //!< signedness
+        typedef signed_int<_sizeof>                                  _s_int_t; //!< signed parent
+        typedef unsigned_int<_sizeof>                                _u_int_t; //!< unsigned parent
+        typedef typename pick_from<_signed,_s_int_t,_u_int_t>::type  parent;   //!< chose parent
+        typedef typename parent::type                                type;     //!< matching type
 
-        static const type minimum = parent::minimum;
-        static const type maximum = parent::maximum;
+        static const type minimum = parent::minimum; //!< alias
+        static const type maximum = parent::maximum; //!< alias
     };
 
 }

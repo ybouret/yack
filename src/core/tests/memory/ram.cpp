@@ -1,6 +1,3 @@
-
-
-
 #include "yack/memory/ram.h"
 #include "yack/utest/run.hpp"
 #include <cstring>

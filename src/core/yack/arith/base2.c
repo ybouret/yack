@@ -27,3 +27,14 @@ size_t yack_next_power_of_two(size_t v)
         return 1;
     }
 }
+
+size_t yack_prev_power_of_two(const size_t v)
+{
+    size_t mask = yack_maxi_power_of_two;
+    while(mask)
+    {
+        if(0!=(v&mask)) return mask;
+        mask >>= 1;
+    }
+    return 0;
+}

@@ -44,6 +44,12 @@ set(utest ${utest_impl} ${utest_decl})
 SOURCE_GROUP(utest FILES ${utest})
 install( FILES ${utest_decl} DESTINATION include/yack/utest )
 
+# data structure operations
+file(GLOB data_impl yack/data/*.cpp yack/data/*.c)
+file(GLOB data_decl yack/data/*.hpp yack/data/*.h)
+set(data ${data_impl} ${data_decl})
+SOURCE_GROUP(data FILES ${data})
+install( FILES ${data_decl} DESTINATION include/yack/data )
 
 # memory operations
 file(GLOB memory_impl yack/memory/*.cpp yack/memory/*.c)
@@ -60,6 +66,7 @@ ${type}
 ${arith}
 ${check}
 ${system}
+${data}
 ${memory}
 ${utest}
 )

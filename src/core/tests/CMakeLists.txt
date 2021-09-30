@@ -1,14 +1,19 @@
 
-file(GLOB base base/test-*.cpp)
+file(GLOB base base/*.cpp)
 source_group(base FILES ${base} )
 
 
-file(GLOB memory memory/test-*.cpp)
+file(GLOB memory memory/*.cpp)
 source_group(memory FILES ${memory} )
+
+
+file(GLOB data data/*.cpp)
+source_group(data FILES ${data} )
 
 add_executable(test-yack main.cpp
 ${base}
 ${memory}
+${data}
 )
 target_link_libraries(test-yack yack)
 
@@ -21,8 +26,9 @@ add_test(align   test-yack align)
 add_test(ints    test-yack ints)
 add_test(base2   test-yack base2)
 
-add_test(memory:ram     test-yack ram)
+add_test(memory:ram    test-yack ram)
 add_test(memory:chunk  test-yack memory_chunk)
 
+add_test(data:list      test-yack data_list)
 
 yack_testing(yack)

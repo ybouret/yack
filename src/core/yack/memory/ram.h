@@ -11,6 +11,8 @@ extern "C" {
 #endif
 
 
+#define YACK_CHUNK_SIZE 4096 //!< default block size
+
     //! allocate *count * block_size bytes, then set *count = bytes
     void *          yack_ram_acquire(size_t *count,  const size_t block_size);
 
