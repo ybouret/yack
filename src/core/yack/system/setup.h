@@ -67,7 +67,7 @@
 #error "YACK_COMPILER shouldn't be defined here!!"
 #endif
 
-#if defined(__GNUC__) && !defined(__clang__)
+#if defined(__GNUC__) && !defined(__clang__) && !defined(__ICC)
 #define YACK_GNU 1
 #define YACK_COMPILER "gnu"
 #endif
