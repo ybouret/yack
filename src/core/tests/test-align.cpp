@@ -3,6 +3,8 @@
 #include "yack/utest/run.hpp"
 #include <cstring>
 
+using namespace yack;
+
 YACK_UTEST(align)
 {
     for(size_t i=0;i<=100;++i)
@@ -10,10 +12,14 @@ YACK_UTEST(align)
         std::cerr << i << std::endl;
         for(size_t j=0;j<=4;++j)
         {
-            std::cerr << ' ' << YACK_ALIGN_LN2(j,i) << std::endl;
+            const size_t I  = YACK_ALIGN_LN2(j,i);
+            const size_t II = alignment::with_ln2(j,I);
+            std::cerr << ' ' << I << "/" << II << std::endl;
         }
-
     }
+
+
+
 }
 YACK_UDONE()
 

@@ -3,8 +3,12 @@
 #include "yack/system/error.h"
 #include <errno.h>
 
-uint64_t yack_ram = 0;
+static uint64_t yack_ram = 0;
 
+uint64_t yack_ram_get()
+{
+    return yack_ram;
+}
 
 static
 void yack_ram_check_more_than(const size_t count)

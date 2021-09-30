@@ -10,11 +10,15 @@
 extern "C" {
 #endif
 
-    extern uint64_t yack_ram; //!< total bytes in memory
 
-    //! allocate *count * block_size bytes, then *count = bytes...
+    //! allocate *count * block_size bytes, then set *count = bytes
     void *          yack_ram_acquire(size_t *count,  const size_t block_size);
+
+    //! deallocate a previously acquired memory block
     void            yack_ram_release(void ** handle, size_t *count);
+
+    //! get the total, bookkept allocated ram byte
+    uint64_t        yack_ram_get();
 
 
 #if defined(__cplusplus)

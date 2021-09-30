@@ -36,13 +36,13 @@ YACK_UTEST(ram)
     ran.shuffle(blocks,nblock);
     std::cerr << "crc: " << ucrc(blocks,nblock) << std::endl;
 
-    std::cerr << "ram: " << yack_ram << std::endl;
+    std::cerr << "ram: " << yack_ram_get()<< std::endl;
     for(size_t i=0;i<nblock;++i)
     {
         block       &blk = blocks[i];
         yack_ram_release(&blk.addr,&blk.size);
     }
-    std::cerr << "ram: " << yack_ram << std::endl;
+    std::cerr << "ram: " << yack_ram_get() << std::endl;
 }
 YACK_UDONE()
 

@@ -1,7 +1,7 @@
 #include "yack/check/crc32.h"
 #include <string.h>
 
-void *yack_out_of_reach_flexible(void *addr)
+void *yack_out_of_reach_address(void *addr)
 {
     return addr;
 }

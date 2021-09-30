@@ -4,47 +4,10 @@
 #ifndef YACK_SYSTEM_EXCEPTION_INCLUDED
 #define YACK_SYSTEM_EXCEPTION_INCLUDED 1
 
-#include "yack/exception.hpp"
+#include "yack/system/imported.hpp"
 
 namespace yack
 {
-
-    //__________________________________________________________________________
-    //
-    //
-    //! base class to fetch an internal textual error message
-    //
-    //__________________________________________________________________________
-    class system_exception : public exception
-    {
-    public:
-        //______________________________________________________________________
-        //
-        // types and definitions
-        //______________________________________________________________________
-        static const size_t what_size = 128; //!< internal buffer size
-
-        //______________________________________________________________________
-        //
-        // C++
-        //______________________________________________________________________
-        virtual ~system_exception()                throw(); //!< cleanup
-        system_exception(const system_exception &) throw(); //!< nothrow copy
-
-        //______________________________________________________________________
-        //
-        // interface
-        //______________________________________________________________________
-        virtual const char *what() const throw(); //!< return system error text
-
-    protected:
-        explicit system_exception() throw(); //!< setup
-        char text[what_size];                //!< textual error
-
-    private:
-        YACK_DISABLE_ASSIGN(system_exception);
-        void erase() throw();
-    };
 
     //__________________________________________________________________________
     //
@@ -53,14 +16,14 @@ namespace yack
     //
     //__________________________________________________________________________
     template <typename CODE>
-    class sys_exception : public system_exception
+    class system_exception : public imported::exception
     {
     public:
         //______________________________________________________________________
         //
         // types and definitions
         //______________________________________________________________________
-        typedef sys_exception<CODE> excp_type; //!< the base class
+        typedef system_exception<CODE> excp_type; //!< the base class
 
         //______________________________________________________________________
         //
@@ -73,19 +36,27 @@ namespace yack
         // C++
         //______________________________________________________________________
 
+        //! no-throw copy
+        inline system_exception(const system_exception &other) throw() :
+        imported::exception(other),
+        code(other.code)
+        {
+        }
+
+
         //! cleanup
-        inline virtual ~sys_exception() throw() { (CODE&)code=0; }
+        inline virtual ~system_exception() throw() { (CODE&)code=0; }
 
     protected:
         //! setup code/empty what() and when()
-        inline explicit sys_exception(const CODE err) throw() :
-        system_exception(),
+        inline explicit system_exception(const CODE err) throw() :
+        imported::exception(),
         code(err)
         {
         }
 
     private:
-        YACK_DISABLE_ASSIGN(sys_exception);
+        YACK_DISABLE_ASSIGN(system_exception);
 
     };
 
@@ -97,7 +68,7 @@ namespace yack
         //! exception to use errno
         //
         //______________________________________________________________________
-        class exception : public sys_exception<int>
+        class exception : public system_exception<int>
         {
         public:
             //! setup code/strerror/when
@@ -119,7 +90,7 @@ namespace yack
         //! exception to use GetLastError
         //
         //______________________________________________________________________
-		class exception : public sys_exception<uint32_t>
+		class exception : public system_exception<uint32_t>
 		{
 		public:
             //! setup code/FormatMessage/when
