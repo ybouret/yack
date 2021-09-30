@@ -149,13 +149,11 @@ namespace yack
     };
 
 
+
     //! compute if an integral type is signed
     template <typename T>
     struct is_signed {
-        static const T    _mone=-1;
-        static const T    _zero= 0;
-        static const bool value = (T(-1) < T(0)); //!< compile time detection
-
+        static const bool value = (T)-1 < 0; //!< compile time detection
     };
 
 }

@@ -17,6 +17,8 @@ YACK_UTEST(ints)
     YACK_CHECK(sizeof(signed_int<4>::type)==4);
     YACK_CHECK(sizeof(signed_int<8>::type)==8);
 
+    
+
     YACK_CHECK(is_signed<int>::value);
     YACK_CHECK(!is_signed<unsigned>::value);
 }
