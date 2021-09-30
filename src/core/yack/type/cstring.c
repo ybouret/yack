@@ -37,7 +37,8 @@ void yack_cstring_trim(char *buffer, const char *bad, const size_t num)
             char      *p     = &buffer[buflen];
             const char c     = *p;
             int        found = 0;
-            for(size_t i=0;i<num;++i)
+            size_t     i;
+            for(i=0;i<num;++i)
             {
                 if(c==bad[i]) { found=1; break; }
             }
@@ -58,9 +59,10 @@ void yack_cstring_trim(char *buffer, const char *bad, const size_t num)
 static size_t yack_cstring_safelength(char *buffer, const size_t buflen)
 {
     const size_t maxlen = buflen-1;
+    size_t       i;
     assert(NULL!=buffer);
     assert(buflen>0);
-    for(size_t i=0;i<buflen;++i)
+    for(i=0;i<buflen;++i)
     {
         if(0==buffer[i]) return i;
     }
