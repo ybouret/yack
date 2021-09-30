@@ -3,7 +3,7 @@
 #ifndef YACK_TYPE_INTS_INCLUDED
 #define YACK_TYPE_INTS_INCLUDED 1
 
-#include "yack/type/select.hpp"
+#include "yack/type/pick.hpp"
 
 namespace yack
 {
@@ -155,13 +155,17 @@ namespace yack
     };
 
     template <typename T>
-    struct integral
+    struct integral_for
     {
         static const size_t _sizeof = sizeof(T);
         static const bool   _signed = is_signed<T>::value;
-        typedef typename signed_int<_sizeof>::type   _s_int_t;
-        typedef typename unsigned_int<_sizeof>::type _u_int_t;
-        
+        typedef signed_int<_sizeof>                                  _s_int_t;
+        typedef unsigned_int<_sizeof>                                _u_int_t;
+        typedef typename pick_from<_signed,_s_int_t,_u_int_t>::type  parent;
+        typedef typename parent::type                                type;
+
+        static const type minimum = parent::minimum;
+        static const type maximum = parent::maximum;
     };
 
 }

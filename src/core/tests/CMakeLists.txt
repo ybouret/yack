@@ -10,6 +10,7 @@ add_test(excp    test-yack excp)
 add_test(cstring test-yack cstring)
 add_test(align   test-yack align)
 add_test(ints    test-yack ints)
+add_test(base2   test-yack base2)
 
 add_test(memory:ram     test-yack ram)
 
