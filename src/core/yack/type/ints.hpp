@@ -36,6 +36,7 @@ namespace yack
         typedef uint16_t      type;              //!< mapping
         static const uint16_t minimum = 0;       //!< min
         static const uint16_t maximum = 0xffff;  //!< max
+
         //! check
         static inline type    positive(const type x) throw() { return x; }
     };
@@ -49,6 +50,7 @@ namespace yack
         typedef uint32_t      type;                 //!< mapping
         static const uint32_t minimum = 0;          //!< min
         static const uint32_t maximum = 0xffffffff; //!< max
+
         //! check
         static inline type    positive(const type x) throw() { return x; }
     };
@@ -62,9 +64,18 @@ namespace yack
         typedef uint64_t type;                                     //!< mapping
         static const uint64_t minimum = 0;                         //!< min
         static const uint64_t maximum = YACK_U64(0xffffffffffffffff); //!< max
+
         //! check
         static inline type    positive(const type x) throw() { return x; }
     };
+
+    //! matching unsigned type
+    template <typename T>
+    struct unsigned_for
+    {
+        typedef typename unsigned_int<sizeof(T)>::type type;
+    };
+
 
     //__________________________________________________________________________
     //
@@ -82,6 +93,7 @@ namespace yack
         typedef int8_t      type;                    //!< mapping
         static const int8_t maximum =  127;          //!< min
         static const int8_t minimum = (-maximum-1);  //!< max
+
         //! check
         static inline type  positive(const type x) throw() { return (x<0)?0:x; }
     };
@@ -95,6 +107,7 @@ namespace yack
         typedef int16_t      type;                     //!< mapping
         static const int16_t maximum =  32767;         //!< max
         static const int16_t minimum = (-maximum-1);   //!< min
+
         //! check
         static inline type   positive(const type x) throw() { return (x<0)?0:x; }
     };
@@ -108,6 +121,7 @@ namespace yack
         typedef int32_t      type;                   //!< mapping
         static const int32_t maximum =  2147483647;  //!< max
         static const int32_t minimum = (-maximum-1); //!< min
+
         //! check
         static inline type   positive(const type x) throw() { return (x<0)?0:x; }
     };
@@ -121,8 +135,27 @@ namespace yack
         typedef int64_t      type;                                    //!< mapping
         static const int64_t maximum =  YACK_I64(0x7fffffffffffffff); //!< max
         static const int64_t minimum =  (-maximum-1);                 //!< min
+
         //! check
         static inline type   positive(const type x) throw() { return (x<0)?0:x; }
+    };
+
+
+    //! matching signed type
+    template <typename T>
+    struct signed_for
+    {
+        typedef typename signed_int<sizeof(T)>::type type;
+    };
+
+
+    //! compute if an integral type is signed
+    template <typename T>
+    struct is_signed {
+        static const T    _mone=-1;
+        static const T    _zero= 0;
+        static const bool value = (T(-1) < T(0)); //!< compile time detection
+
     };
 
 }
