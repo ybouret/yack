@@ -1,6 +1,7 @@
 
 #include "yack/system/imported.hpp"
 #include <cstring>
+#include <cstdarg>
 
 namespace yack
 {
