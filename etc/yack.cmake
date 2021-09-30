@@ -46,11 +46,19 @@ macro(YACK_FIND_COMPILER_VERSION)
 	set(YACK_COMPILER_PATCH   ${YC_PATCH}    )
 endmacro(YACK_FIND_COMPILER_VERSION)
 
-
+# macro to modify flags
 macro(YACK_ADD_FLAGS flag)
 	set(CMAKE_C_FLAGS   "${CMAKE_C_FLAGS} ${flag}")
     set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${flag}")
 endmacro()
+
+########################################################################
+##
+##
+##  GNU
+##
+##
+########################################################################
 
 if(${YACK_CC} MATCHES "gcc.*" )
 
@@ -66,6 +74,13 @@ if(${YACK_CC} MATCHES "gcc.*" )
 	endif()
 endif()
 
+########################################################################
+##
+##
+##  Clang
+##
+##
+########################################################################
 if(${YACK_CC} MATCHES "clang.*" )
 
 	set(YACK_KNOWN_COMPILER ON)
@@ -77,6 +92,13 @@ if(${YACK_CC} MATCHES "clang.*" )
 	
 endif()
 
+########################################################################
+##
+##
+##  Intel
+##
+##
+########################################################################
 if(${YACK_CC} MATCHES "icc.*" )
 
 	set(YACK_KNOWN_COMPILER ON)
@@ -88,6 +110,13 @@ if(${YACK_CC} MATCHES "icc.*" )
 	
 endif()
 
+########################################################################
+##
+##
+##  Microsoft
+##
+##
+########################################################################
 if(${YACK_CC} STREQUAL "cl" )
 
 	set(YACK_KNOWN_COMPILER ON)
