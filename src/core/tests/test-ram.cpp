@@ -23,8 +23,7 @@ YACK_UTEST(ram)
     block        blocks[256];
     const size_t nblock = sizeof(blocks)/sizeof(blocks[0]);
 
-    srand( time(NULL) );
-
+    
     for(size_t i=0;i<nblock;++i)
     {
         const size_t block_size = 1+ (rand() % 32);
