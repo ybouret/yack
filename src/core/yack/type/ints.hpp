@@ -154,6 +154,16 @@ namespace yack
         static const bool value = (T)-1 < 0; //!< compile time detection
     };
 
+    template <typename T>
+    struct integral
+    {
+        static const size_t _sizeof = sizeof(T);
+        static const bool   _signed = is_signed<T>::value;
+        typedef typename signed_int<_sizeof>::type   _s_int_t;
+        typedef typename unsigned_int<_sizeof>::type _u_int_t;
+        
+    };
+
 }
 
 #endif
