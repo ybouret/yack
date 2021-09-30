@@ -16,21 +16,32 @@ void yack_ram_check_more_than(const size_t count)
     if(count>yack_ram) yack_bsd_critical_error(EACCES,"yack_ram_release(more than allocated)");
 }
 
+#include <stdio.h>
+
 void * yack_ram_acquire(size_t *count,  const size_t block_size)
 {
     assert(NULL!=count);
     assert(0<block_size);
-    void *addr = calloc(*count,block_size);
-    if(addr)
+    if(*count<=0)
     {
-        yack_ram  += ( *count *= block_size );
-        return addr;
+        return NULL;
     }
     else
     {
-        *count = 0;
-        return NULL;
+        void *addr = calloc(*count,block_size);
+
+        if(addr)
+        {
+            yack_ram  += ( *count *= block_size );
+            return addr;
+        }
+        else
+        {
+            *count = 0;
+            return NULL;
+        }
     }
+
 }
 
 

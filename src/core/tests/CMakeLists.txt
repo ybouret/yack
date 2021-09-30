@@ -1,6 +1,15 @@
-file(GLOB src *.cpp)
 
-add_executable(test-yack main.cpp ${src})
+file(GLOB base base/test-*.cpp)
+source_group(base FILES ${base} )
+
+
+file(GLOB memory memory/test-*.cpp)
+source_group(memory FILES ${memory} )
+
+add_executable(test-yack main.cpp
+${base}
+${memory}
+)
 target_link_libraries(test-yack yack)
 
 enable_testing()
@@ -14,4 +23,6 @@ add_test(base2   test-yack base2)
 
 add_test(memory:ram     test-yack ram)
 add_test(memory:chunk  test-yack memory_chunk)
+
+
 yack_testing(yack)
