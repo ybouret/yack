@@ -6,7 +6,7 @@
 #include "yack/setup.hpp"
 #include "yack/check/crc32.h"
 #include "yack/type/mswap.hpp"
-#include "yack/exception.hpp"
+#include "yack/check/expression.hpp"
 
 #include <iostream>
 #include <cmath>

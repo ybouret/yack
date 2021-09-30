@@ -38,11 +38,7 @@ namespace yack
 
         //! no-throw copy
         inline system_exception(const system_exception &other) throw() :
-        imported::exception(other),
-        code(other.code)
-        {
-        }
-
+        imported::exception(other), code(other.code)  {}
 
         //! cleanup
         inline virtual ~system_exception() throw() { (CODE&)code=0; }
@@ -50,11 +46,8 @@ namespace yack
     protected:
         //! setup code/empty what() and when()
         inline explicit system_exception(const CODE err) throw() :
-        imported::exception(),
-        code(err)
-        {
-        }
-
+        imported::exception(), code(err) {}
+        
     private:
         YACK_DISABLE_ASSIGN(system_exception);
 
