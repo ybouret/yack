@@ -12,7 +12,7 @@ extern "C" {
 
     extern const size_t yack_maxi_power_of_two;
     int                 yack_is_a_power_of_two(const size_t n);
-    size_t              yack_next_power_of_two(const size_t n);
+    size_t              yack_next_power_of_two(size_t       v);
 
 #if defined(__cplusplus)
 }

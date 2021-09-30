@@ -59,8 +59,8 @@ void yack_memory_chunk_initialize(yack_memory_chunk *chunk,
     chunk->first_available = 0;
     chunk->provided_number = yack_memory_chunk_num_blocks(block_size,chunk_size);
     chunk->still_available = chunk->provided_number;
-    chunk->data            = chunk_data;
-    chunk->last            = chunk_data + block_size * chunk->provided_number;
+    chunk->data            = (uint8_t*)chunk_data;
+    chunk->last            = chunk->data + (block_size * chunk->provided_number);
 }
 
 
