@@ -15,7 +15,6 @@ YACK_UTEST(align)
             const size_t I  = YACK_ALIGN_LN2(j,i);
             const size_t II = alignment::with_ln2(j,I);
             YACK_ASSERT(I==II);
-            YACK_CHECK(I==II);
             std::cerr << ' ' << I << "/" << II << std::endl;
         }
     }

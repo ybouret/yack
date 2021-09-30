@@ -6,7 +6,7 @@
 namespace yack
 {
 
-    size_t check_expression::width = 20;
+    size_t check_expression::width = 64;
 
     void   check_expression::xraise(const char *expr)
     {

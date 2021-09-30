@@ -7,6 +7,7 @@ YACK_UTEST_DECL(16)
     YACK_UTEST(error);
     YACK_UTEST(cstring);
     YACK_UTEST(excp);
+    YACK_UTEST(ints);
 
     YACK_UTEST(ram);
     YACK_UTEST(align);

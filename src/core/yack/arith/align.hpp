@@ -18,8 +18,8 @@ namespace yack
         template <size_t POT> static inline
         size_t on(const size_t n)
         {
-            static const size_t ln2  = ilog2<POT>::value;
-            static const size_t byte = POT;
+            //static const size_t ln2  = ilog2<POT>::value;
+            //static const size_t byte = POT;
             static const size_t mask = POT-1;
             static const size_t not2 =  ~mask;
             return (n+mask) & not2;

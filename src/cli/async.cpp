@@ -18,7 +18,7 @@ void findParameters()
 }
 #endif
 
-int main(int argc, const char *argv[])
+int main()
 {
 
 	findParameters();
