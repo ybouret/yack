@@ -6,6 +6,7 @@ get_filename_component(YACK_CC ${CMAKE_C_COMPILER} NAME_WE)
 message( STATUS "found C compiler : '${YACK_CC}'" )
 
 if(${YACK_CC} MATCHES "gcc.*" )
+
 	set(YACK_KNOWN_COMPILER ON)
 	set(YACK_COMPILERS      "gnu")
 	
@@ -15,6 +16,7 @@ if(${YACK_CC} MATCHES "gcc.*" )
 endif()
 
 if(${YACK_CC} MATCHES "clang.*" )
+
 	set(YACK_KNOWN_COMPILER ON)
 	set(YACK_COMPILERS      "clang")
 		
@@ -24,11 +26,22 @@ if(${YACK_CC} MATCHES "clang.*" )
 endif()
 
 if(${YACK_CC} MATCHES "icc.*" )
+
 	set(YACK_KNOWN_COMPILER ON)
 	set(YACK_COMPILERS      "intel")
 		
 	set(CMAKE_C_FLAGS   "-Wall -pipe -wd981 -fPIC -xHost")
 	set(CMAKE_CXX_FLAGS "-Wall -pipe -wd981 -fPIC -xHost -fexceptions" )
+	
+endif()
+
+if(${YACK_CC} STREQUAL "cl" )
+
+	set(YACK_KNOWN_COMPILER ON)
+	set(YACK_COMPILERS      "microsoft")
+		
+	set(CMAKE_C_FLAGS   "-nologo")
+	set(CMAKE_CXX_FLAGS "-nologo -EHsc" )
 	
 endif()
 
