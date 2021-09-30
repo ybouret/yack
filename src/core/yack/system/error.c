@@ -24,11 +24,12 @@ void yack_bsd_critical_error(const int res, const char *ctx)
         const size_t blen = yack_cstring_size(buffer);
         const size_t full = blen > clen ? blen : clen;
         const size_t fill = 2+full;
+        size_t       i;
 
-        fputc('/',stderr); for(size_t i=fill;i>0;--i) fputc('*',stderr); fputc('\\',stderr); fputc('\n',stderr);
-        fprintf(stderr,"* %s",ctx);    for(size_t i=clen;i<=full;++i) fputc(' ',stderr); fprintf(stderr," *\n");
-        fprintf(stderr,"* %s",buffer); for(size_t i=blen;i<=full;++i) fputc(' ',stderr); fprintf(stderr," *\n");
-        fputc('\\',stderr); for(size_t i=fill;i>0;--i) fputc('*',stderr); fputc('/',stderr);fputc('\n',stderr);
+        fputc('/',stderr); for(i=fill;i>0;--i) fputc('*',stderr); fputc('\\',stderr); fputc('\n',stderr);
+        fprintf(stderr,"* %s",ctx);    for(i=clen;i<=full;++i) fputc(' ',stderr); fprintf(stderr," *\n");
+        fprintf(stderr,"* %s",buffer); for( i=blen;i<=full;++i) fputc(' ',stderr); fprintf(stderr," *\n");
+        fputc('\\',stderr); for(i=fill;i>0;--i) fputc('*',stderr); fputc('/',stderr);fputc('\n',stderr);
     }
 
     exit(-1);
