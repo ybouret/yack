@@ -1,5 +1,5 @@
 
-#include "yack/arith/align.hpp"
+#include "yack/arith/align.h"
 #include "yack/utest/run.hpp"
 #include <cstring>
 
@@ -13,9 +13,7 @@ YACK_UTEST(align)
         for(size_t j=0;j<=4;++j)
         {
             const size_t I  = YACK_ALIGN_LN2(j,i);
-            const size_t II = alignment::with_ln2(j,I);
-            YACK_ASSERT(I==II);
-            std::cerr << ' ' << I << "/" << II << std::endl;
+            std::cerr << ' ' << I <<  std::endl;
         }
     }
 
