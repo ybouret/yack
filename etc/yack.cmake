@@ -9,8 +9,9 @@ set(YACK_KNOWN_COMPILER OFF)
 set(YACK_COMPILERS      "")
 get_filename_component(YACK_CC ${CMAKE_C_COMPILER} NAME_WE)
 
-message( STATUS "found C compiler : '${YACK_CC}'" )
-message( STATUS "on '${CMAKE_HOST_SYSTEM_PROCESSOR}'" )
+message( STATUS "[YACK] found C compiler : '${YACK_CC}'" )
+message( STATUS "[YACK] system processor : '${CMAKE_HOST_SYSTEM_PROCESSOR}'" )
+message( STATUS "[YACK] sizeof(void*)    : '${CMAKE_SIZEOF_VOID_P}'" )
 
 ########################################################################
 ##
@@ -33,14 +34,14 @@ macro(YACK_FIND_COMPILER_VERSION)
 					ERROR_QUIET
 					)
 	if( NOT ("0" STREQUAL "${YACK_FIND_COMPILER_VERSION_SUCCESS}") )
-		message( FATAL_ERROR "Couldn't find compiler version")
+		message( FATAL_ERROR "[YACK] Couldn't find compiler version")
 	endif()
 	# get version pattern
 	string( REGEX MATCH    "[0-9]+\\.[0-9]+\\.[0-9]+"         YC_VERSION "${YACK_RAW_COMPILER_VERSION}" )
 	string( REGEX REPLACE  "([0-9]+)\\.[0-9]+\\.[0-9]+" "\\1" YC_MAJOR   "${YC_VERSION}" )
 	string( REGEX REPLACE  "[0-9]+\\.([0-9]+)\\.[0-9]+" "\\1" YC_MINOR   "${YC_VERSION}" )
 	string( REGEX REPLACE  "[0-9]+\\.[0-9]+\\.([0-9]+)" "\\1" YC_PATCH   "${YC_VERSION}" )
-	message( STATUS "[${YACK_CC}] is <${YC_VERSION}>: major=${YC_MAJOR}, minor=${YC_MINOR}, patchlevel=${YC_PATCH}" )
+	message( STATUS "[YACK] '${YACK_CC}' is <${YC_VERSION}>: major=${YC_MAJOR}, minor=${YC_MINOR}, patchlevel=${YC_PATCH}" )
 	set(YACK_COMPILER_VERSION ${YC_VERSION}  )
 	set(YACK_COMPILER_MAJOR   ${YC_MAJOR}    )
 	set(YACK_COMPILER_MINOR   ${YC_MINOR}    )
@@ -49,7 +50,7 @@ endmacro(YACK_FIND_COMPILER_VERSION)
 
 # macro to modify flags
 macro(YACK_ADD_FLAGS flag)
-	message( STATUS "adding '${flag}'" )
+	message( STATUS "[YACK] adding C/C++ FLAGS : '${flag}'" )
 	set(CMAKE_C_FLAGS   "${CMAKE_C_FLAGS} ${flag}")
     set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${flag}")
 endmacro()
@@ -130,6 +131,6 @@ if(${YACK_CC} STREQUAL "cl" )
 endif()
 
 if(NOT YACK_KNOWN_COMPILER)
-	message( FATAL_ERROR "unknown compilers '${YACK_CC}'" )
+	message( FATAL_ERROR "[YACK] unknown compilers '${YACK_CC}'" )
 endif()
 
