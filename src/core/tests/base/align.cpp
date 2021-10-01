@@ -17,11 +17,7 @@ YACK_UTEST(align)
         std::cerr << ' ' << YACK_ALIGN_ON(16,i);
         std::cerr << std::endl;
     }
-
     
-
-
-
 }
 YACK_UDONE()
 

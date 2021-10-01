@@ -1,6 +1,5 @@
 
 
-#include "yack/arith/base2.h"
 #include "yack/arith/base2.hpp"
 #include "yack/utest/run.hpp"
 #include <cstring>
@@ -28,17 +27,6 @@ namespace
 
 YACK_UTEST(base2)
 {
-    {
-        std::cerr << "yack_maxi_po2=" << yack_maxi_power_of_two << std::endl;
-        size_t p = 0;
-        while(p<yack_maxi_power_of_two)
-        {
-            p = yack_next_power_of_two(++p);
-            std::cerr << p << std::endl;
-            YACK_ASSERT(yack_is_a_power_of_two(p));
-        }
-    }
-
     test_base2<int8_t>();
     test_base2<uint8_t>();
 
