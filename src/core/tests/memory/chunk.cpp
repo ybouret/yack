@@ -1,4 +1,4 @@
-#include "yack/memory/ram.h"
+#include "yack/memory/ram.hpp"
 #include "yack/memory/chunk.h"
 #include "yack/system/exception.hpp"
 #include "yack/utest/run.hpp"
