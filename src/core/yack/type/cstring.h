@@ -9,7 +9,6 @@
 extern "C" {
 #endif
 
-
     size_t yack_cstring_size(const char *buffer);                                 //!< safe strlen
     void   yack_cstring_trim(char *buffer, const char *bad, const size_t num);    //!< trim last bad chars
 

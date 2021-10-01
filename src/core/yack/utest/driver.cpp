@@ -1,5 +1,5 @@
 #include "yack/utest/driver.hpp"
-#include "yack/type/out-of-reach.h"
+#include "yack/type/out-of-reach.hpp"
 
 namespace yack
 {
@@ -48,7 +48,7 @@ namespace yack
 
     void unit_tests:: clear() throw()
     {
-        yack_out_of_reach_zset(utest,sizeof(unit_test)*capacity);
+        out_of_reach::zset(utest,sizeof(unit_test)*capacity);
     }
 
     unit_tests:: ~unit_tests() throw()
