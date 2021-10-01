@@ -6,62 +6,65 @@
 
 namespace yack
 {
-    static uint64_t ram_ = 0;
-
-    uint64_t ram:: get() throw()
+    namespace memory
     {
-        return ram_;
-    }
+        static uint64_t ram_ = 0;
 
-
-
-
-    void * ram:: acquire(size_t &count,  const size_t block_size)
-    {
-        assert(0<block_size);
-        if(count<=0)
+        uint64_t ram:: get() throw()
         {
-            return NULL;
+            return ram_;
         }
-        else
+
+
+
+
+        void * ram:: acquire(size_t &count,  const size_t block_size)
         {
-            void *addr = calloc(count,block_size);
-            if(!addr)
+            assert(0<block_size);
+            if(count<=0)
             {
-                const size_t n = count*block_size;
-                count = 0;
-                throw libc::exception(ENOMEM,"ram::acquire(%lu)",(unsigned long)n);
+                return NULL;
+            }
+            else
+            {
+                void *addr = calloc(count,block_size);
+                if(!addr)
+                {
+                    const size_t n = count*block_size;
+                    count = 0;
+                    throw libc::exception(ENOMEM,"ram::acquire(%lu)",(unsigned long)n);
+                }
+
+                ram_  += ( count *= block_size );
+                return addr;
+
             }
 
-            ram_  += ( count *= block_size );
-            return addr;
-
         }
 
-    }
-
-    static inline
-    void  check_more_ram_than(const size_t size)
-    {
-        if(size>ram_) system_error::critical_bsd(EACCES,"ram::release(more than allocated)");
-    }
-
-    void  ram::release(void * &addr, size_t &size) throw()
-    {
-        if(addr)
+        static inline
+        void  check_more_ram_than(const size_t size)
         {
-            assert(size>0);
-            check_more_ram_than(size);
-            free(addr);
-            ram_ -= size;
-            addr = NULL;
-            size = 0;
+            if(size>ram_) system_error::critical_bsd(EACCES,"ram::release(more than allocated)");
         }
-        else
+
+        void  ram::release(void * &addr, size_t &size) throw()
         {
-            assert(size<=0);
+            if(addr)
+            {
+                assert(size>0);
+                check_more_ram_than(size);
+                free(addr);
+                ram_ -= size;
+                addr = NULL;
+                size = 0;
+            }
+            else
+            {
+                assert(size<=0);
+            }
+
         }
-        
     }
 
 }

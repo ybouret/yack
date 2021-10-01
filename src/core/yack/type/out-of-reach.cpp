@@ -33,5 +33,12 @@ namespace yack
         assert(!(NULL==source && size>0));
         memmove(target,source,size);
     }
-    
+
+    unit_t out_of_reach:: diff(const void *a, const void *b) throw()
+    {
+        const char *B = static_cast<const char *>(b);
+        const char *A = static_cast<const char *>(a);
+        return static_cast<unit_t>(B-A);;
+    }
+
 }

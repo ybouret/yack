@@ -1,5 +1,5 @@
 #include "yack/memory/ram.hpp"
-#include "yack/memory/chunk.h"
+#include "yack/memory/chunk.hpp"
 #include "yack/system/exception.hpp"
 #include "yack/utest/run.hpp"
 #include <cstring>
@@ -19,11 +19,8 @@ namespace
 YACK_UTEST(memory_chunk)
 {
     uprng ran;
-#if 0
     block blocks[256];
     {
-        size_t             data[16];
-        yack_memory_chunk *ch = static_cast<yack_memory_chunk *>(yack_out_of_reach_address(data));
 
         std::cerr << "Local Chunks..." << std::endl;
 
@@ -32,37 +29,40 @@ YACK_UTEST(memory_chunk)
             std::cerr << "block_size=" << block_size << std::endl;
             for(size_t num_blocks=0;num_blocks<=300;++num_blocks)
             {
-                size_t chunk_size = num_blocks;
-                void  *chunk_data = yack_ram_acquire(&chunk_size,block_size);
-                yack_memory_chunk_initialize(ch,block_size,chunk_data,chunk_size);
-
-                const size_t count = yack_memory_chunk_provided_number(ch);
+                size_t        chunk_size = num_blocks;
+                void         *chunk_data = memory::ram::acquire(chunk_size,block_size);
+                memory::chunk ch(block_size,chunk_data,chunk_size);
+                const size_t  count = ch.provided_number;
                 for(size_t i=0;i<count;++i)
                 {
-                    blocks[i].addr = yack_memory_chunk_acquire(ch,block_size);
+                    blocks[i].addr = ch.acquire(block_size);
                     blocks[i].size = block_size;
                 }
                 ran.shuffle(blocks,count);
                 for(size_t i=0;i<count/2;++i)
                 {
-                    yack_memory_chunk_release(ch,blocks[i].addr,block_size);
+                    ch.release(blocks[i].addr,block_size);
                 }
                 for(size_t i=0;i<count/2;++i)
                 {
-                    blocks[i].addr = yack_memory_chunk_acquire(ch,block_size);
+                    blocks[i].addr = ch.acquire(block_size);
                 }
                 ran.shuffle(blocks,count);
                 for(size_t i=0;i<count;++i)
                 {
-                    yack_memory_chunk_release(ch,blocks[i].addr,block_size);
+                    ch.release(blocks[i].addr,block_size);;
                 }
-                YACK_ASSERT(yack_memory_chunk_is_free(ch));
+                YACK_ASSERT(ch.is_empty());
 
-                yack_ram_release(&chunk_data,&chunk_size);
+                memory::ram::release(chunk_data,chunk_size);
             }
         }
-        YACK_CHECK(yack_ram_get()==0);
+        YACK_CHECK(memory::ram::get()==0);
     }
+
+    std::cerr << "chunk header=" << memory::chunk::header << std::endl;
+
+#if 0
 
 
     {

@@ -18,6 +18,9 @@ YACK_DISABLE_ASSIGN(CLASS)
 
 namespace yack
 {
+
+    typedef ptrdiff_t unit_t;
+
     //! inline cswap of integral objects
     template <typename T> inline
     void cswap(T &lhs, T &rhs) throw()

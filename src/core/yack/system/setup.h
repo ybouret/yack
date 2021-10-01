@@ -100,6 +100,7 @@
 //______________________________________________________________________________
 
 #include <stdlib.h>
+#include <stddef.h>
 #if defined(YACK_STDINT)
 # undef YACK_STDINT
 #endif

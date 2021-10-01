@@ -24,19 +24,19 @@ YACK_UTEST(ram)
         const size_t block_size = 1+ (rand() % 32);
         block       &blk = blocks[i];
         blk.size = 1 + (rand()%1024);
-        blk.addr = ram::acquire(blk.size,block_size);
+        blk.addr = memory::ram::acquire(blk.size,block_size);
     }
     std::cerr << "crc: " << ucrc(blocks,nblock) << std::endl;
     ran.shuffle(blocks,nblock);
     std::cerr << "crc: " << ucrc(blocks,nblock) << std::endl;
 
-    std::cerr << "ram: " << ram::get()<< std::endl;
+    std::cerr << "ram: " << memory::ram::get()<< std::endl;
     for(size_t i=0;i<nblock;++i)
     {
         block       &blk = blocks[i];
-        ram::release(blk.addr,blk.size);
+        memory::ram::release(blk.addr,blk.size);
     }
-    std::cerr << "ram: " << ram::get() << std::endl;
+    std::cerr << "ram: " << memory::ram::get() << std::endl;
 }
 YACK_UDONE()
 
