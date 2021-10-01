@@ -17,9 +17,9 @@
 #endif
 
 #if defined(__APPLE__)
-#define YACK_APPLE 1
+#define YACK_DARWIN 1
 #define YACK_BSD   1
-#define YACK_PLATFORM "Apple"
+#define YACK_PLATFORM "Darwin"
 #endif
 
 #if defined(__FreeBSD__)
@@ -78,8 +78,8 @@
 #endif
 
 #if defined(_MSC_VER)
-#define YACK_MSC 1
-#define YACK_COMPILER "msc"
+#define YACK_MICROSOFT 1
+#define YACK_COMPILER "microsoft"
 #endif
 
 #if defined(__ICC)
@@ -95,6 +95,52 @@
 //______________________________________________________________________________
 //
 //
+// finding out YACK_ARCHITECTURE
+// ix386
+// amd64
+//______________________________________________________________________________
+
+#if defined(YACK_ARCHITECTURE)
+#error "YACK_PLATFORM shouldn't be defined here!!"
+#endif
+
+#if defined(YACK_GNU) || defined(YACK_CLANG) || defined(YACK_INTEL)
+
+#if defined(__i386__)
+#define YACK_ARCHITECTURE "i386"
+#endif
+
+#if defined(__x86_64__)
+#define YACK_ARCHITECTURE "amd64"
+#endif
+
+#endif
+
+#if defined(YACK_MICROSOFT)
+
+#idef defined(_M_IX86)
+#define YACK_ARCHITECTURE "i386"
+#endif
+
+#if defined(_M_AMD64)
+#define YACK_ARCHITECTURE "amd64"
+#endif
+
+
+
+#endif
+
+
+
+#if !defined(YACK_ARCHITECTURE)
+#error "YACK_ARCHITECTURE was not found"
+#endif
+
+#define YACK_SETUP YACK_PLATFORM "-" YACK_ARCHITECTURE
+ 
+//______________________________________________________________________________
+//
+//
 //  <STDINT>
 //
 //______________________________________________________________________________
@@ -104,6 +150,8 @@
 #if defined(YACK_STDINT)
 # undef YACK_STDINT
 #endif
+
+
 
 //______________________________________________________________________________
 //
@@ -156,6 +204,14 @@ typedef __int64 int64_t;
 #if !defined(YACK_STDINT)
 #    error "no STDINT"
 #endif
+
+//______________________________________________________________________________
+//
+//
+//  <STDINT/>
+//
+//______________________________________________________________________________
+
 
 
 #if defined(__cplusplus)

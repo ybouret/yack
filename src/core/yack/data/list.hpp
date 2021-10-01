@@ -22,9 +22,7 @@ assert(NULL!=NODE); assert(NULL==(NODE)->next); assert(NULL==(NODE)->prev)
         {
             YACK_LIST_CHECK(node);
             if(size<=0)
-            {
                 return first(node);
-            }
             else
             {
                 assert(head); assert(tail);
@@ -36,6 +34,22 @@ assert(NULL!=NODE); assert(NULL==(NODE)->next); assert(NULL==(NODE)->prev)
             }
         }
 
+        inline NODE *push_front(NODE *node) throw()
+        {
+            YACK_LIST_CHECK(node);
+            if(size<=0)
+                return first(node);
+            else
+            {
+                assert(head); assert(tail);
+                head->prev = node;
+                node->next = head;
+                head       = node;
+                increase();
+                return node;
+            }
+        }
+        
 
         NODE *head;
         NODE *tail;
