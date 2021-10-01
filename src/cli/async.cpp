@@ -1,4 +1,6 @@
 #include "yack/setup.hpp"
+#include "yack/system/arch.h"
+
 #include <iostream>
 
 #if defined(YACK_BSD)

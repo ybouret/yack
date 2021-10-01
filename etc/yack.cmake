@@ -10,6 +10,7 @@ set(YACK_COMPILERS      "")
 get_filename_component(YACK_CC ${CMAKE_C_COMPILER} NAME_WE)
 
 message( STATUS "found C compiler : '${YACK_CC}'" )
+message( STATUS "on '${CMAKE_HOST_SYSTEM_PROCESSOR}'" )
 
 ########################################################################
 ##
