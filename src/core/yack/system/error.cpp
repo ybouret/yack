@@ -39,7 +39,7 @@ namespace yack
 #define WIN32_MEAN_AND_LEAN
 #include <windows.h>
 
-    void system_error:: format_win(char *buffer, const size_t buflen, const uint32_t err)
+    void system_error:: format_win(char *buffer, const size_t buflen, const uint32_t err) throw()
     {
         assert(!(0==buffer&&buflen>0));
         memset(buffer,0,buflen);

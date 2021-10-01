@@ -59,7 +59,7 @@ namespace yack
                 va_end(ap);
             }
 
-            yack_win_format_error(text, sizeof(text), code);
+            system_error::format_win(text, sizeof(text), code);
         }
 
     }
