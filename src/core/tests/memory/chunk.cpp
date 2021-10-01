@@ -14,76 +14,70 @@ namespace
         void  *addr;
         size_t size;
     };
+
+
 }
 
 YACK_UTEST(memory_chunk)
 {
+
     uprng ran;
     block blocks[256];
+
+    std::cerr << "Local Chunks..." << std::endl;
+
+    for(size_t block_size=1;block_size<=32;++block_size)
     {
-
-        std::cerr << "Local Chunks..." << std::endl;
-
-        for(size_t block_size=1;block_size<=32;++block_size)
+        std::cerr << "block_size=" << block_size << std::endl;
+        for(size_t num_blocks=0;num_blocks<=300;++num_blocks)
         {
-            std::cerr << "block_size=" << block_size << std::endl;
-            for(size_t num_blocks=0;num_blocks<=300;++num_blocks)
+            size_t        chunk_size = num_blocks;
+            void         *chunk_data = memory::ram::acquire(chunk_size,block_size);
+            memory::chunk ch(block_size,chunk_data,chunk_size);
+            const size_t  count = ch.provided_number;
+            for(size_t i=0;i<count;++i)
             {
-                size_t        chunk_size = num_blocks;
-                void         *chunk_data = memory::ram::acquire(chunk_size,block_size);
-                memory::chunk ch(block_size,chunk_data,chunk_size);
-                const size_t  count = ch.provided_number;
-                for(size_t i=0;i<count;++i)
-                {
-                    blocks[i].addr = ch.acquire(block_size);
-                    blocks[i].size = block_size;
-                }
-                ran.shuffle(blocks,count);
-                for(size_t i=0;i<count/2;++i)
-                {
-                    ch.release(blocks[i].addr,block_size);
-                }
-                for(size_t i=0;i<count/2;++i)
-                {
-                    blocks[i].addr = ch.acquire(block_size);
-                }
-                ran.shuffle(blocks,count);
-                for(size_t i=0;i<count;++i)
-                {
-                    ch.release(blocks[i].addr,block_size);;
-                }
-                YACK_ASSERT(ch.is_empty());
-
-                memory::ram::release(chunk_data,chunk_size);
+                blocks[i].addr = ch.acquire(block_size);
+                blocks[i].size = block_size;
             }
+            ran.shuffle(blocks,count);
+            for(size_t i=0;i<count/2;++i)
+            {
+                ch.release(blocks[i].addr,block_size);
+            }
+            for(size_t i=0;i<count/2;++i)
+            {
+                blocks[i].addr = ch.acquire(block_size);
+            }
+            ran.shuffle(blocks,count);
+            for(size_t i=0;i<count;++i)
+            {
+                ch.release(blocks[i].addr,block_size);;
+            }
+            YACK_ASSERT(ch.is_empty());
+
+            memory::ram::release(chunk_data,chunk_size);
         }
-        YACK_CHECK(memory::ram::get()==0);
     }
+    YACK_CHECK(memory::ram::get()==0);
 
-    std::cerr << "chunk header=" << memory::chunk::header << std::endl;
+    std::cerr << std::endl;
+    std::cerr << "Global Chunks..." << std::endl;
 
-#if 0
-
-
+    for(size_t block_size=1;block_size<=256;++block_size)
     {
-        std::cerr << std::endl;
-        std::cerr << "Global Chunks..." << std::endl;
+        size_t         blocks = 0;
+        const size_t   optims = memory::chunk::optimized_bytes_for(block_size,blocks);
+        memory::chunk *ch     = memory::chunk::ram_create(block_size,optims);
 
-        for(size_t block_size=1;block_size<=256;++block_size)
-        {
-            const size_t       bytes = yack_memory_chunk_optimized_bytes(block_size);
-            yack_memory_chunk *chunk = yack_memory_chunk_create(block_size,bytes);
-            if(!chunk) throw libc::exception(ENOMEM,"yack_memory_chunk_create(%u)", unsigned(bytes) );
+        YACK_CHECK(ch->provided_number==blocks);
 
-            std::cerr << "block_size=" << block_size << " => bytes=" << bytes << " => #blocks=" << yack_memory_chunk_provided_number(chunk) << std::endl;
 
-            yack_memory_chunk_delete(chunk);
-        }
-
-        YACK_CHECK(yack_ram_get()==0);
+        memory::chunk::ram_delete(ch,optims);
     }
 
-#endif
+    YACK_CHECK(memory::ram::get()==0);
+
 
 }
 YACK_UDONE()

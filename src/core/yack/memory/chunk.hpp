@@ -32,7 +32,8 @@ namespace yack
             void  release(void *addr, const size_t block_size) throw();
 
             static size_t optimized_bytes_for(const size_t block_size, size_t &blocks_per_chunk) throw();
-            static chunk *create(const size_t block_size);
+            static chunk *ram_create(const size_t block_size, const size_t full_bytes);
+            static void   ram_delete(chunk *,size_t full_bytes) throw();
 
             uint8_t                    first_available; //!< bookeeping
             uint8_t                    still_available; //!< bookeeping

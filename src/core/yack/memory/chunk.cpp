@@ -3,7 +3,11 @@
 #include "yack/memory/ram.hpp"
 #include "yack/arith/align.hpp"
 #include "yack/type/out-of-reach.hpp"
+#include "yack/arith/base2.hpp"
+#include "yack/type/destruct.hpp"
+
 #include <cstring>
+#include <iostream>
 
 namespace yack
 {
@@ -98,24 +102,46 @@ namespace yack
         const size_t chunk:: header = YACK_MEMALIGN(sizeof(chunk));
 
 
-        size_t chunk:: optimized_bytes_for(const size_t block_size, size_t &blocks_per_chunk) throw()
+        size_t chunk:: optimized_bytes_for(const size_t block_size, size_t &blocks) throw()
         {
-            const        size_t maximum_size =  header + block_size * 255;
-            return 0;
-        }
-
-        chunk * chunk:: create(const size_t block_size)
-        {
-            static const size_t chunk_header = YACK_MEMALIGN(sizeof(chunk));
             assert(block_size>0);
+            size_t count  = next_power_of_two( header+1 ); assert(count>header);
+            while( (blocks=(count-header)/block_size) <= 0 ) count <<= 1;
 
-            size_t count = chunk_header;
+            while(blocks<255)
+            {
+                const size_t next_count = count << 1;
+                const size_t next_blocks= (next_count-header)/block_size;
+                if(next_blocks>255)
+                {
+                    break;
+                }
+                blocks = next_blocks;
+                count  = next_count;
+            }
+            assert(header+blocks*block_size<=count);
 
-
-            return NULL;
+            return count;
         }
 
+        chunk *chunk:: ram_create(const size_t block_size, const size_t full_bytes)
+        {
+            assert(full_bytes>header);
+            size_t   bytes = 1;
+            uint8_t *entry = static_cast<uint8_t *>( memory::ram::acquire(bytes,full_bytes) );
+            uint8_t *cdata = entry+header;
 
+            return new( out_of_reach::address(entry) ) chunk(block_size, out_of_reach::address(cdata), full_bytes-header);
+        }
+
+        void chunk:: ram_delete(chunk *ch,size_t full_bytes) throw()
+        {
+            assert(ch!=NULL);
+            destruct(ch);
+            memory::ram::release(*(void **)&ch,full_bytes);
+        }
+
+ 
 
     }
 }
