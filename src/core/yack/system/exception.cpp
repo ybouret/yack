@@ -1,7 +1,7 @@
 #include "yack/system/exception.hpp"
 #include <cstring>
 #include <cstdarg>
-#include "yack/system/error.h"
+#include "yack/system/error.hpp"
 
 namespace yack
 {
@@ -27,7 +27,7 @@ namespace yack
                 va_end(ap);
             }
 
-            yack_bsd_format_error(text,sizeof(text),code);
+           system_error::format_bsd(text,sizeof(text),code);
         }
         
     }

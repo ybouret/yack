@@ -1,6 +1,6 @@
 
 #include "yack/memory/ram.hpp"
-#include "yack/system/error.h"
+#include "yack/system/error.hpp"
 #include "yack/system/exception.hpp"
 #include <cerrno>
 
@@ -43,7 +43,7 @@ namespace yack
     static inline
     void  check_more_ram_than(const size_t size)
     {
-        if(size>ram_) yack_bsd_critical_error(EACCES," ram::release(more than allocated)");
+        if(size>ram_) system_error::critical_bsd(EACCES,"ram::release(more than allocated)");
     }
 
     void  ram::release(void * &addr, size_t &size) throw()
