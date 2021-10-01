@@ -6,7 +6,6 @@ using namespace yack;
 
 namespace
 {
-
     struct block
     {
         void  *addr;
@@ -19,7 +18,6 @@ YACK_UTEST(ram)
     uprng        ran;
     block        blocks[256];
     const size_t nblock = sizeof(blocks)/sizeof(blocks[0]);
-
     
     for(size_t i=0;i<nblock;++i)
     {

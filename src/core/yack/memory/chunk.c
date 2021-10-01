@@ -1,6 +1,7 @@
 
 #include "yack/memory/chunk.h"
 
+#if 0
 struct yack_memory_chunk_
 {
     struct yack_memory_chunk_ *next;            //!< for list
@@ -199,3 +200,4 @@ void yack_memory_chunk_delete(yack_memory_chunk *chunk)
 
 }
 
+#endif

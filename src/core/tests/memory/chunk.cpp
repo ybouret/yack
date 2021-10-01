@@ -19,6 +19,7 @@ namespace
 YACK_UTEST(memory_chunk)
 {
     uprng ran;
+#if 0
     block blocks[256];
     {
         size_t             data[16];
@@ -82,7 +83,7 @@ YACK_UTEST(memory_chunk)
         YACK_CHECK(yack_ram_get()==0);
     }
 
-
+#endif
 
 }
 YACK_UDONE()

@@ -4,7 +4,7 @@
 #ifndef YACK_ALIGN_INCLUDED
 #define YACK_ALIGN_INCLUDED 1
 
-#include "yack/system/setup.h"
+#include "yack/arith/ilog2.hpp"
 
 
 #define YACK_SIZE_T(X) ( (size_t)(X) ) //!< in-place size_t
@@ -27,6 +27,12 @@
 #define YACK_ALIGN4(N)   YACK_ALIGN_LN2(2,N) //!< align on 4 bytes  | 32 bits
 #define YACK_ALIGN8(N)   YACK_ALIGN_LN2(3,N) //!< align on 8 bytes  | 64 bits
 #define YACK_ALIGN16(N)  YACK_ALIGN_LN2(4,N) //!< align on 16 bytes | 128 bits
+
 #define YACK_MEMALIGN(N) YACK_ALIGN16(N)    //!< default memory alignment
+
+#define YACK_ALIGN_ON(SIZE,N) YACK_ALIGN_LN2(yack::ilog2<SIZE>::value,N)
+#define YACK_ALIGN_TO(TYPE,N) YACK_ALIGN_ON(sizeof(TYPE),N)
+
+
 
 #endif
