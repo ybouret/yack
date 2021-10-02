@@ -13,6 +13,7 @@ YACK_UTEST_DECL(16)
 
     YACK_UTEST(ram);
     YACK_UTEST(memory_chunk);
+    YACK_UTEST(memory_arena);
 
     YACK_UTEST(data_list);
 }

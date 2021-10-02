@@ -76,7 +76,13 @@ namespace yack
 
     };
 
-
+    struct utest_sizeof
+    {
+        static size_t width;
+        static void   print(const char *name, const unsigned size);
+    };
+    
+#define YACK_SIZEOF(CLASS) utest_sizeof::print( #CLASS, sizeof(CLASS) )
 
 
 //! start a new test
@@ -96,6 +102,7 @@ namespace yack
 /**/      std::cerr << " *** Unhandled Exception" << std::endl; }  \
 /**/    return 0;                                                  \
 /**/  }
+
 
 }
 #endif

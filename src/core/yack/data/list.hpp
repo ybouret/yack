@@ -160,6 +160,7 @@ assert(NULL!=NODE); assert(NULL==(NODE)->next); assert(NULL==(NODE)->prev)
                                   NODE *node) throw()
         {
             assert(owns(mine));
+            YACK_LIST_CHECK(node);
             if(mine==tail)
             {
                 return push_back(node);
@@ -167,8 +168,39 @@ assert(NULL!=NODE); assert(NULL==(NODE)->next); assert(NULL==(NODE)->prev)
             else
             {
                 NODE *next = mine->next;
+                mine->next = node; node->next = next;
+                next->prev = node; node->prev = mine;
+                increase();
+                return node;
             }
-            return node;
+        }
+        
+        
+        inline NODE *insert_before(NODE *mine,
+                                   NODE *node) throw()
+        {
+            assert(owns(mine));
+            YACK_LIST_CHECK(node);
+            if(mine==head)
+            {
+                return push_front(node);
+            }
+            else
+            {
+                NODE *prev = mine->prev;
+                prev->next = node; node->next = mine;
+                mine->prev = node; node->prev = prev;
+                increase();
+                return node;
+            }
+        }
+        
+        inline NODE *towards_front(NODE *node) throw()
+        {
+            assert(owns(node));
+            assert(NULL!=node->prev);
+            NODE *mine = node->prev;
+            return insert_before(mine,pop(node));
         }
         
         

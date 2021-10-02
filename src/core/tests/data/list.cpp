@@ -89,21 +89,48 @@ YACK_UTEST(data_list)
     {
         std::cerr << "cxx_list/ops" << std::endl;
         cxx_list_of<XNode> xl;
+        std::cerr << "  push" << std::endl;
         for(size_t i=1+ran.leq(1000);i>0;--i)
         {
             if(ran.choice()) xl.push_back(  new XNode() );
             else             xl.push_front( new XNode() );
         }
         
+        std::cerr << "  copy" << std::endl;
         {
             cxx_list_of<XNode> xlc(xl);
         }
         
+        std::cerr << "  mtf" << std::endl;
         for(size_t i=xl.size*2;i>0;--i)
         {
             xl.move_to_front( xl.get(1 + ran.leq(xl.size-1) ) );
         }
         
+        std::cerr << "  insert_after" << std::endl;
+        for(size_t i=100;i>0;--i)
+        {
+            XNode *mine = xl.get(1 + ran.leq(xl.size-1) );
+            XNode *node = new XNode();
+            xl.insert_after(mine,node);
+        }
+        
+        std::cerr << "  insert_before" << std::endl;
+        for(size_t i=100;i>0;--i)
+        {
+            XNode *mine = xl.get(1 + ran.leq(xl.size-1) );
+            XNode *node = new XNode();
+            xl.insert_before(mine,node);
+        }
+        
+        std::cerr << "  upstream" << std::endl;
+        for(size_t i=xl.size;i>1;--i)
+        {
+            XNode *node = xl.get(i);
+            xl.towards_front(node);
+        }
+
+        std::cerr << "  pop" << std::endl;
         while(xl.size)
         {
             const size_t j = 1 + ran.leq(xl.size-1);
@@ -112,6 +139,9 @@ YACK_UTEST(data_list)
         
     }
     
+    YACK_SIZEOF(list_of<DNode>);
+    YACK_SIZEOF(cxx_list_of<XNode>);
+
     
 }
 YACK_UDONE()
