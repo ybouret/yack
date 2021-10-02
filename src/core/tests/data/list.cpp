@@ -12,6 +12,8 @@ namespace
     {
         DNode *next;
         DNode *prev;
+        size_t indx;
+        
     };
     
     class XNode
@@ -32,6 +34,28 @@ YACK_UTEST(data_list)
 {
     uprng ran;
     {
+        std::cerr << "setup/get" << std::endl;
+        DNode nodes[800];
+        const size_t num = sizeof(nodes)/sizeof(nodes[0]);
+        memset(nodes,0, sizeof(nodes));
+        
+        raw_list_of<DNode> rl;
+        
+        for(size_t i=0;i<num;++i)
+        {
+            rl.push_back(nodes+i)->indx = i+1;
+        }
+        
+        for(size_t i=num;i>0;--i)
+        {
+            YACK_ASSERT(i==rl.get(i)->indx);
+        }
+        
+        rl.restart();
+    }
+    
+    {
+        std::cerr << "setup/pop" << std::endl;
         DNode nodes[256];
         memset(nodes,0, sizeof(nodes));
         
@@ -49,10 +73,10 @@ YACK_UTEST(data_list)
             else             rl.pop_front();
         }
         
-        rl.restart();
     }
     
     {
+        std::cerr << "cxx_list/init" << std::endl;
         cxx_list_of<XNode> xl;
         for(size_t i=1+ran.leq(1000);i>0;--i)
         {
@@ -60,6 +84,24 @@ YACK_UTEST(data_list)
             else             xl.push_front( new XNode() );
         }
     }
+    
+    {
+        std::cerr << "cxx_list/init/pop" << std::endl;
+        cxx_list_of<XNode> xl;
+        for(size_t i=1+ran.leq(1000);i>0;--i)
+        {
+            if(ran.choice()) xl.push_back(  new XNode() );
+            else             xl.push_front( new XNode() );
+        }
+        
+        while(xl.size)
+        {
+            const size_t j = 1 + ran.leq(xl.size-1);
+            delete xl.pop( xl.get(j) );
+        }
+        
+    }
+    
     
 }
 YACK_UDONE()

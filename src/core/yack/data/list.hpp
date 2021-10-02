@@ -84,6 +84,48 @@ assert(NULL!=NODE); assert(NULL==(NODE)->next); assert(NULL==(NODE)->prev)
         }
         
         
+        inline bool owns(const NODE *node) const throw()
+        {
+            assert(NULL!=node);
+            for(const NODE *mine=head;mine;mine=mine->next)
+            {
+                if(mine==node) return true;
+            }
+            return false;
+        }
+        
+        inline const NODE *get(const size_t indx) const throw() { return get_(indx);          }
+        inline NODE       *get(const size_t indx)       throw() { return (NODE *) get_(indx); }
+        
+        inline NODE       *pop(NODE *node) throw()
+        {
+            assert(owns(node));
+            if(head==node)
+            {
+                return pop_front();
+            }
+            else
+            {
+                if(tail==node)
+                {
+                    return pop_back();
+                }
+                else
+                {
+                    assert(size>2);
+                    node->next->prev = node->prev;
+                    node->prev->next = node->next;
+                    node->next = NULL;
+                    node->prev = NULL;
+                    decrease();
+                    return node;
+                }
+            }
+        }
+        
+        
+        
+        
         
 
         NODE *head;
@@ -116,18 +158,28 @@ assert(NULL!=NODE); assert(NULL==(NODE)->next); assert(NULL==(NODE)->prev)
             return node;
         }
         
+        inline const NODE *get_(size_t indx) const throw()
+        {
+            assert(1<=indx);
+            assert(indx<=size);
+            const size_t half = size>>1;
+            if(indx<=half)
+            {
+                NODE *node = head;                 assert(node);
+                while(--indx>0) { node=node->next; assert(node); }
+                return node;
+            }
+            else
+            {
+                indx = size-indx;
+                NODE *node = tail;                   assert(node);
+                while(indx-- > 0) { node=node->prev; assert(node); }
+                return node;
+            }
+        }
+        
     };
-
-#if 0
-    template <typename NODE>
-    class raw_list_of : public list_of<NODE>
-    {
-    public:
-
-    private:
-
-    };
-#endif
+    
 
 }
 
