@@ -21,9 +21,6 @@ string(COMPARE EQUAL "SunOS"   ${CMAKE_SYSTEM_NAME} Y_SUNOS)
 string(COMPARE EQUAL "OpenBSD" ${CMAKE_SYSTEM_NAME} Y_OPENBSD)
 string(COMPARE EQUAL "Windows" ${CMAKE_SYSTEM_NAME} Y_WINDOWS)
 
-set(YACK_SYSTEM_PARAMS "${CMAKE_SYSTEM_NAME}-${CMAKE_HOST_SYSTEM_PROCESSOR}-${CMAKE_SIZEOF_VOID_P}.h")
-message(STATUS "[YACK] YACK_SYSTEM_PARAMS = '${YACK_SYSTEM_PARAMS}'" )
-
 
 ########################################################################
 ##

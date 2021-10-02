@@ -50,6 +50,11 @@ namespace yack
             return T( floor( double(M) * self() + 0.5 ) );
         }
 
+        inline bool choice() throw()
+        {
+            return (*this)() <= 0.5 ? true : false;
+        }
+        
         //! Knuth shuffle
         template <typename T> inline
         void shuffle(T *addr, const size_t size) throw()

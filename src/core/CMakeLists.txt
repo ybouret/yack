@@ -51,6 +51,13 @@ set(data ${data_impl} ${data_decl})
 SOURCE_GROUP(data FILES ${data})
 install( FILES ${data_decl} DESTINATION include/yack/data )
 
+# container  operations
+file(GLOB container_impl yack/container/*.cpp yack/container/*.c)
+file(GLOB container_decl yack/container/*.hpp yack/container/*.h)
+set(container ${container_impl} ${container_decl})
+SOURCE_GROUP(container FILES ${container})
+install( FILES ${container_decl} DESTINATION include/yack/container )
+
 # memory operations
 file(GLOB memory_impl yack/memory/*.cpp yack/memory/*.c)
 file(GLOB memory_decl yack/memory/*.hpp yack/memory/*.h)
@@ -67,6 +74,7 @@ ${arith}
 ${check}
 ${system}
 ${data}
+${container}
 ${memory}
 ${utest}
 )
