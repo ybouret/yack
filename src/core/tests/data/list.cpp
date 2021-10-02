@@ -87,7 +87,7 @@ YACK_UTEST(data_list)
     }
     
     {
-        std::cerr << "cxx_list/init/pop" << std::endl;
+        std::cerr << "cxx_list/ops" << std::endl;
         cxx_list_of<XNode> xl;
         for(size_t i=1+ran.leq(1000);i>0;--i)
         {
@@ -97,6 +97,11 @@ YACK_UTEST(data_list)
         
         {
             cxx_list_of<XNode> xlc(xl);
+        }
+        
+        for(size_t i=xl.size*2;i>0;--i)
+        {
+            xl.move_to_front( xl.get(1 + ran.leq(xl.size-1) ) );
         }
         
         while(xl.size)

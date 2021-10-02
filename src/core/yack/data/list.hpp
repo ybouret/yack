@@ -137,15 +137,43 @@ assert(NULL!=NODE); assert(NULL==(NODE)->next); assert(NULL==(NODE)->prev)
                 else
                 {
                     assert(size>2);
-                    node->next->prev = node->prev;
-                    node->prev->next = node->next;
-                    node->next = NULL;
-                    node->prev = NULL;
-                    decrease();
-                    return node;
+                    return pull(node);
                 }
             }
         }
+        
+        inline NODE *move_to_front(NODE *node) throw()
+        {
+            assert(owns(node));
+            if(head==node)
+            {
+                return node;
+            }
+            else
+            {
+                if(tail==node) return push_front( pop_back() );
+                else           return push_front( pull(node) );
+            }
+        }
+        
+        inline NODE *insert_after(NODE *mine,
+                                  NODE *node) throw()
+        {
+            assert(owns(mine));
+            if(mine==tail)
+            {
+                return push_back(node);
+            }
+            else
+            {
+                NODE *next = mine->next;
+            }
+            return node;
+        }
+        
+        
+        
+        
         
         //______________________________________________________________________
         //
@@ -182,6 +210,17 @@ assert(NULL!=NODE); assert(NULL==(NODE)->next); assert(NULL==(NODE)->prev)
             YACK_LIST_CHECK(node);
             return node;
         }
+        
+        inline NODE *pull(NODE *node) throw()
+        {
+            node->next->prev = node->prev;
+            node->prev->next = node->next;
+            node->next = NULL;
+            node->prev = NULL;
+            decrease();
+            return node;
+        }
+        
         
         inline const NODE *get_(size_t indx) const throw()
         {
