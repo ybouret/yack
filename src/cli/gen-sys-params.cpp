@@ -20,10 +20,15 @@ void findParameters()
 }
 #endif
 
+#if !defined(YACK_SYSTEM_PARAMS)
+#error "Need YACK_SYSTEM_PARAMS"
+#endif
+
 int main()
 {
 
-	findParameters();
+    std::cerr << YACK_SYSTEM_PARAMS << std::endl;
+    findParameters();
 
     return 0;
 }
