@@ -49,6 +49,42 @@ assert(NULL!=NODE); assert(NULL==(NODE)->next); assert(NULL==(NODE)->prev)
             }
         }
         
+        inline NODE *pop_back() throw()
+        {
+            switch(size)
+            {
+                case 1: return last();
+                default: break;
+            }
+            assert(size>1);
+            NODE *node = tail;
+            tail = tail->prev;
+            tail->next = NULL;
+            node->prev = NULL;
+            decrease();
+            YACK_LIST_CHECK(node);
+            return node;
+        }
+        
+        inline NODE *pop_front() throw()
+        {
+            switch(size)
+            {
+                case 1: return last();
+                default: break;
+            }
+            assert(size>1);
+            NODE *node = head;
+            head = head->next;
+            head->prev = NULL;
+            node->next = NULL;
+            decrease();
+            YACK_LIST_CHECK(node);
+            return node;
+        }
+        
+        
+        
 
         NODE *head;
         NODE *tail;
@@ -67,6 +103,19 @@ assert(NULL!=NODE); assert(NULL==(NODE)->next); assert(NULL==(NODE)->prev)
             increase();
             return node;
         }
+        
+        inline NODE *last() throw()
+        {
+            assert(1==size);
+            assert(head!=NULL);
+            assert(head==tail);
+            NODE *node  = head;
+            head = tail = NULL;
+            decrease();
+            YACK_LIST_CHECK(node);
+            return node;
+        }
+        
     };
 
 #if 0

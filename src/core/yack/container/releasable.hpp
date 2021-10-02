@@ -12,9 +12,9 @@ namespace yack
     class releasable
     {
     public:
-        virtual ~releasable() throw();
-        virtual void release() throw() = 0;
-        
+        virtual     ~releasable() throw();
+        virtual void release()    throw() = 0;
+
     protected:
         explicit releasable() throw();
         

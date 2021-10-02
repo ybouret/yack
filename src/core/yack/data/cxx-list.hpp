@@ -18,9 +18,13 @@ assert(NULL!=NODE); assert(NULL==(NODE)->next); assert(NULL==(NODE)->prev)
     class cxx_list_of : public list_of<NODE>
     {
     public:
-        inline virtual ~cxx_list_of() throw() {}
+        inline virtual ~cxx_list_of() throw() { release(); }
         inline explicit cxx_list_of() throw() : list_of<NODE> () {}
+        
         inline virtual void release() throw()
+        {
+            while(this->size) delete this->pop_back();
+        }
         
     private:
         YACK_DISABLE_ASSIGN(cxx_list_of);
