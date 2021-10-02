@@ -16,6 +16,7 @@ namespace yack
         
         arena:: arena(const size_t block_size) throw() :
         available_chunks(0),
+        chunks(),
         chunk_block_size(block_size),
         blocks_per_chunk(0),
         memory_per_chunk( chunk::optimized_bytes_for(block_size, coerce(blocks_per_chunk) ) ),
@@ -27,6 +28,9 @@ namespace yack
             std::cerr << "  memory_per_chunk: " << memory_per_chunk << std::endl;
             std::cerr << "  memory_signature: " << memory_signature << std::endl;
             std::cerr << "<arena/>" << std::endl;
+            
+            memset(chunks,0,sizeof(chunks));
+            
         }
         
     }

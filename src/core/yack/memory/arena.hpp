@@ -15,10 +15,16 @@ namespace yack
         class arena
         {
         public:
+            static const size_t list_words = 4;
+            
             explicit arena(const size_t block_size) throw();
             virtual ~arena() throw();
             
             size_t       available_chunks;
+        private:
+            void  *chunks[list_words];
+            
+        public:
             const size_t chunk_block_size;
             const size_t blocks_per_chunk;
             const size_t memory_per_chunk;
