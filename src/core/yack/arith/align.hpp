@@ -30,7 +30,10 @@
 
 #define YACK_MEMALIGN(N) YACK_ALIGN16(N)    //!< default memory alignment
 
+//! align on power of two SIZE
 #define YACK_ALIGN_ON(SIZE,N) YACK_ALIGN_LN2(yack::ilog2<SIZE>::value,N)
+
+//! align on sizeof(TYPE) = power of two
 #define YACK_ALIGN_TO(TYPE,N) YACK_ALIGN_ON(sizeof(TYPE),N)
 
 

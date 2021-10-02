@@ -50,6 +50,7 @@ namespace yack
             return T( floor( double(M) * self() + 0.5 ) );
         }
 
+        //! true/false at 50/50
         inline bool choice() throw()
         {
             return (*this)() <= 0.5 ? true : false;

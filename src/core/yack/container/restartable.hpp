@@ -8,20 +8,25 @@
 
 namespace yack
 {
-    
+    //__________________________________________________________________________
+    //
+    //
+    //! restartable base class
+    //
+    //__________________________________________________________________________
     class restartable
     {
     public:
-        virtual ~restartable() throw();
-        virtual void restart() throw() = 0;
-
+        virtual ~restartable() throw();     //!< cleanup
+        virtual void restart() throw() = 0; //!< hard reset
+        
     protected:
-        explicit restartable() throw();
+        explicit restartable() throw();    //!< setup
         
     private:
         YACK_DISABLE_COPY_AND_ASSIGN(restartable);
     };
-
+    
 }
 
 #endif

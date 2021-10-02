@@ -10,24 +10,51 @@
 
 namespace yack
 {
-    
-#define YACK_LIST_CHECK(NODE) \
-assert(NULL!=NODE); assert(NULL==(NODE)->next); assert(NULL==(NODE)->prev)
-    
+    //__________________________________________________________________________
+    //
+    //
+    //! list of C++ objects
+    //
+    //__________________________________________________________________________
     template <typename NODE>
     class cxx_list_of : public list_of<NODE>
     {
     public:
-        inline virtual ~cxx_list_of() throw() { release(); }
-        inline explicit cxx_list_of() throw() : list_of<NODE> () {}
+        //______________________________________________________________________
+        //
+        // C++
+        //______________________________________________________________________
         
+      
+        inline virtual ~cxx_list_of() throw() { release_(); }          //!< cleanup by release
+        inline explicit cxx_list_of() throw() : list_of<NODE> () {}   //!< setup empty
+     
+        //! copy using NODE copy constructor
+        inline          cxx_list_of(const cxx_list_of &other) : list_of<NODE>()
+        {
+            try {
+                for(const NODE *node=other.head;node;node=node->next)
+                    this->push_back( new NODE( *node ) );
+            }
+            catch(...) { release_(); throw; }
+        }
+        
+        //______________________________________________________________________
+        //
+        // methods
+        //______________________________________________________________________
+        //! delete all from tail
         inline virtual void release() throw()
         {
-            while(this->size) delete this->pop_back();
+            release_();
         }
         
     private:
         YACK_DISABLE_ASSIGN(cxx_list_of);
+        inline void release_() throw()
+        {
+            while(this->size) delete this->pop_back();
+        }
     };
     
 }

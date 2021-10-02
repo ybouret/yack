@@ -8,18 +8,36 @@
 namespace yack
 {
     
-
+    //__________________________________________________________________________
+    //
+    //
+    //! base class for linked classes
+    //
+    //__________________________________________________________________________
     class linked
     {
     public:
-        virtual ~linked() throw();
-
-        const size_t size;
+        //______________________________________________________________________
+        //
+        // members
+        //______________________________________________________________________
+        const size_t size;          //!< number of nodes
+                    
+        //______________________________________________________________________
+        //
+        // C++
+        //______________________________________________________________________
+        virtual ~linked() throw();   //!< cleanup
         
     protected:
-        explicit linked()   throw();
-        void     increase() throw();
-        void     decrease() throw();
+        explicit linked()   throw(); //!< setup
+        
+        //______________________________________________________________________
+        //
+        // methods
+        //______________________________________________________________________
+        void     increase() throw(); //!< ++size
+        void     decrease() throw(); //!< --size
 
     private:
         YACK_DISABLE_COPY_AND_ASSIGN(linked);

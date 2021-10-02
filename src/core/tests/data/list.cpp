@@ -23,9 +23,10 @@ namespace
         XNode *prev;
         inline  XNode() throw() : next(0), prev(0) {}
         inline ~XNode() throw() { assert(0==next); assert(0==prev); }
+        inline  XNode(const XNode &) throw() : next(0), prev(0) {}
         
     private:
-        YACK_DISABLE_COPY_AND_ASSIGN(XNode);
+        YACK_DISABLE_ASSIGN(XNode);
     };
     
 }
@@ -92,6 +93,10 @@ YACK_UTEST(data_list)
         {
             if(ran.choice()) xl.push_back(  new XNode() );
             else             xl.push_front( new XNode() );
+        }
+        
+        {
+            cxx_list_of<XNode> xlc(xl);
         }
         
         while(xl.size)

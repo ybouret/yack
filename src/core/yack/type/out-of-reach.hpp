@@ -7,7 +7,12 @@
 
 namespace yack
 {
-
+    //__________________________________________________________________________
+    //
+    //
+    //! functions to avoid aliasing on POD types
+    //
+    //__________________________________________________________________________
     struct out_of_reach
     {
         static void       *address(void       *addr)                                 throw(); //!< same address

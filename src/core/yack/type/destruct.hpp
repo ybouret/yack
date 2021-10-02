@@ -8,7 +8,12 @@
 
 namespace yack
 {
-
+    //__________________________________________________________________________
+    //
+    //
+    //! call destructor
+    //
+    //__________________________________________________________________________
     template <typename T> inline
     void destruct(T *item) throw()
     {
@@ -16,6 +21,12 @@ namespace yack
         item->~T();
     }
 
+    //__________________________________________________________________________
+    //
+    //
+    //! call destructor and return memory address
+    //
+    //__________________________________________________________________________
     template <typename T> inline
     T *destructed(T *item) throw()
     {

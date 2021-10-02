@@ -8,15 +8,20 @@
 
 namespace yack
 {
-    
+    //__________________________________________________________________________
+    //
+    //
+    //! releasable base class
+    //
+    //__________________________________________________________________________
     class releasable
     {
     public:
-        virtual     ~releasable() throw();
-        virtual void release()    throw() = 0;
+        virtual     ~releasable() throw();     //!< cleanup
+        virtual void release()    throw() = 0; //!< release resources
 
     protected:
-        explicit releasable() throw();
+        explicit releasable() throw();         //!< setup
         
     private:
         YACK_DISABLE_COPY_AND_ASSIGN(releasable);

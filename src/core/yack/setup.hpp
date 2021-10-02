@@ -19,6 +19,7 @@ YACK_DISABLE_ASSIGN(CLASS)
 namespace yack
 {
 
+    //! matching size_t
     typedef ptrdiff_t unit_t;
 
     //! inline cswap of integral objects

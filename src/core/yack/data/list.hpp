@@ -7,16 +7,33 @@
 
 namespace yack
 {
-
+    
+    //! check a node for a doubly linked list
 #define YACK_LIST_CHECK(NODE) \
 assert(NULL!=NODE); assert(NULL==(NODE)->next); assert(NULL==(NODE)->prev)
 
+    //__________________________________________________________________________
+    //
+    //
+    //! base class for linked list
+    //
+    //__________________________________________________________________________
     template <typename NODE>
     class list_of : public linked
     {
     public:
+        //______________________________________________________________________
+        //
+        // C++
+        //______________________________________________________________________
         virtual ~list_of() throw() {}
 
+        //______________________________________________________________________
+        //
+        // methods
+        //______________________________________________________________________
+        
+        //! push_back a new node
         inline NODE *push_back(NODE *node) throw()
         {
             YACK_LIST_CHECK(node);
@@ -33,6 +50,7 @@ assert(NULL!=NODE); assert(NULL==(NODE)->next); assert(NULL==(NODE)->prev)
             }
         }
 
+        //! push_front a new node
         inline NODE *push_front(NODE *node) throw()
         {
             YACK_LIST_CHECK(node);
@@ -49,6 +67,7 @@ assert(NULL!=NODE); assert(NULL==(NODE)->next); assert(NULL==(NODE)->prev)
             }
         }
         
+        //! pop  back node
         inline NODE *pop_back() throw()
         {
             switch(size)
@@ -66,6 +85,7 @@ assert(NULL!=NODE); assert(NULL==(NODE)->next); assert(NULL==(NODE)->prev)
             return node;
         }
         
+        //! pop front node
         inline NODE *pop_front() throw()
         {
             switch(size)
@@ -83,7 +103,7 @@ assert(NULL!=NODE); assert(NULL==(NODE)->next); assert(NULL==(NODE)->prev)
             return node;
         }
         
-        
+        //! check ownership
         inline bool owns(const NODE *node) const throw()
         {
             assert(NULL!=node);
@@ -94,9 +114,13 @@ assert(NULL!=NODE); assert(NULL==(NODE)->next); assert(NULL==(NODE)->prev)
             return false;
         }
         
+        //! access  in [1..size] (slow)
         inline const NODE *get(const size_t indx) const throw() { return get_(indx);          }
+        
+        //! access in [1..size] (slow)
         inline NODE       *get(const size_t indx)       throw() { return (NODE *) get_(indx); }
         
+        //! unlink current node
         inline NODE       *pop(NODE *node) throw()
         {
             assert(owns(node));
@@ -123,15 +147,16 @@ assert(NULL!=NODE); assert(NULL==(NODE)->next); assert(NULL==(NODE)->prev)
             }
         }
         
+        //______________________________________________________________________
+        //
+        // members
+        //______________________________________________________________________
         
-        
-        
-        
-
-        NODE *head;
-        NODE *tail;
+        NODE *head; //!< head NODE
+        NODE *tail; //!< tail NODE
 
     protected:
+        //! setup empty
         explicit list_of() throw() : linked(), head(0), tail(0) {}
 
     private:
