@@ -9,9 +9,21 @@ set(YACK_KNOWN_COMPILER OFF)
 set(YACK_COMPILERS      "")
 get_filename_component(YACK_CC ${CMAKE_C_COMPILER} NAME_WE)
 
+message( STATUS "[YACK] system name      : '${CMAKE_SYSTEM_NAME}'" )
 message( STATUS "[YACK] found C compiler : '${YACK_CC}'" )
 message( STATUS "[YACK] system processor : '${CMAKE_HOST_SYSTEM_PROCESSOR}'" )
 message( STATUS "[YACK] sizeof(void*)    : '${CMAKE_SIZEOF_VOID_P}'" )
+
+string(COMPARE EQUAL "Darwin"  ${CMAKE_SYSTEM_NAME} Y_DARWIN)
+string(COMPARE EQUAL "FreeBSD" ${CMAKE_SYSTEM_NAME} Y_FREEBSD)
+string(COMPARE EQUAL "Linux"   ${CMAKE_SYSTEM_NAME} Y_LINUX)
+string(COMPARE EQUAL "SunOS"   ${CMAKE_SYSTEM_NAME} Y_SUNOS)
+string(COMPARE EQUAL "OpenBSD" ${CMAKE_SYSTEM_NAME} Y_OPENBSD)
+string(COMPARE EQUAL "Windows" ${CMAKE_SYSTEM_NAME} Y_WINDOWS)
+
+set(YACK_SYSTEM_PARAM "${CMAKE_SYSTEM_NAME}-${CMAKE_HOST_SYSTEM_PROCESSOR}-${CMAKE_SIZEOF_VOID_P}.h")
+message(STATUS "[YACK] YACK_SYSTEM_PARAM = '${YACK_SYSTEM_PARAM}'" )
+add_definitions(
 
 ########################################################################
 ##

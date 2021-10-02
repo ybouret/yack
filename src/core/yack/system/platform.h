@@ -42,7 +42,7 @@
 #if defined(__sun__)
 #define YACK_SUNOS   1
 #define YACK_BSD     1
-#define YACK_PLATFORM "SunOSD"
+#define YACK_PLATFORM "SunOS"
 #endif
 
 #if defined(_WIN32)
