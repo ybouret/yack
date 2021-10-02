@@ -1,4 +1,5 @@
 #include "yack/setup.hpp"
+#include "yack/system/platform.h"
 #include "yack/system/arch.h"
 
 #include <iostream>
@@ -28,6 +29,8 @@ int main()
 {
 
     std::cerr << YACK_SYSTEM_PARAMS << std::endl;
+    std::cerr << "Platform : " << YACK_PLATFORM << std::endl;
+    std::cerr << "Arch     : " << YACK_ARCHITECTURE << std::endl;
     findParameters();
 
     return 0;
