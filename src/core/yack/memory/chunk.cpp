@@ -58,11 +58,17 @@ namespace yack
             return still_available >= provided_number;
         }
 
+        size_t chunk:: allocated() const throw()
+        {
+            assert(still_available<=provided_number);
+            return provided_number-still_available;
+        }
+        
         bool chunk:: owns(const void *addr, const size_t block_size) const throw()
         {
             assert(block_size>0);
             const uint8_t *p = static_cast<const uint8_t *>(addr);
-            if(p>=data&&p<=last)
+            if(p>=data&&p<last)
             {
                 return 0 == (out_of_reach::diff(p,data)%block_size);
             }
@@ -72,6 +78,35 @@ namespace yack
             }
             
         }
+        
+        
+        bool chunk:: contains(const void *addr) const throw()
+        {
+            const uint8_t *p = static_cast<const uint8_t *>(addr);
+            return (p>=data&&p<last);
+        }
+        
+        ownership chunk:: whose(const void *addr) const throw()
+        {
+            assert(addr!=NULL);
+            const uint8_t *p = static_cast<const uint8_t *>(addr);
+            if(p<data)
+            {
+                return owned_by_prev;
+            }
+            else
+            {
+                if(p>=last)
+                {
+                    return owned_by_next;
+                }
+                else
+                {
+                    return owned_by_self;
+                }
+            }
+        }
+
 
         void * chunk:: acquire(const size_t block_size) throw()
         {

@@ -22,7 +22,15 @@ namespace yack
         static void        move(void *target, const void *source, const size_t size) throw(); //!< memmove(target,source,size)
         static unit_t      diff(const void *a, const void *b) throw();                        //!< b-a
     };
+    
+#define Y_STATIC_ZSET(FIELD) yack::out_of_reach::zset(FIELD,sizeof(FIELD))
 
+    template <typename T, typename U> inline
+    T *coerce_to(U *field) throw() { return static_cast<T*>(out_of_reach::address(field) ); }
+    
+    template <typename T, typename U> inline
+    const T *coerce_to(const U *field) throw() { return static_cast<const T*>(out_of_reach::address(field) ); }
+    
 }
 
 #endif

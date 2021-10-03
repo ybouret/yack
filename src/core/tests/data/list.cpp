@@ -141,6 +141,7 @@ YACK_UTEST(data_list)
     
     YACK_SIZEOF(list_of<DNode>);
     YACK_SIZEOF(cxx_list_of<XNode>);
+    YACK_SIZEOF(raw_list_of<DNode>);
 
     
 }

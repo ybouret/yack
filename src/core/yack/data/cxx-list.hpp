@@ -17,7 +17,7 @@ namespace yack
     //
     //__________________________________________________________________________
     template <typename NODE>
-    class cxx_list_of : public list_of<NODE>
+    class cxx_list_of : public list_of<NODE>, public releasable
     {
     public:
         //______________________________________________________________________

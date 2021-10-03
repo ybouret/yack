@@ -11,18 +11,24 @@ namespace yack
     
     namespace memory
     {
+        class chunk;
         
         class arena
         {
         public:
-            static const size_t list_words = 4;
+            static const size_t list_words = 5;
             
-            explicit arena(const size_t block_size) throw();
-            virtual ~arena() throw();
+            arena(const size_t block_size);
+            ~arena() throw();
             
-            size_t       available_chunks;
+            void *acquire();
+            void  release(void *addr) throw();
+            
         private:
-            void  *chunks[list_words];
+            size_t       available_blocks;
+            chunk       *acquiring;
+            chunk       *releasing;
+            void        *impl[list_words];
             
         public:
             const size_t chunk_block_size;
@@ -32,6 +38,11 @@ namespace yack
             
         private:
             YACK_DISABLE_COPY_AND_ASSIGN(arena);
+            void  grow();
+            void  kill(chunk *) throw();
+            void *give()        throw(); //!< by acquiring
+            void  take(void *)  throw(); //!< by releasing
+            
         };
         
     }

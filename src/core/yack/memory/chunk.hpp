@@ -3,7 +3,7 @@
 #ifndef YACK_MEMORY_CHUNK_INCLUDED
 #define YACK_MEMORY_CHUNK_INCLUDED 1
 
-#include "yack/setup.hpp"
+#include "yack/memory/ownership.hpp"
 
 namespace yack
 {
@@ -38,10 +38,12 @@ namespace yack
             //
             // methods
             //__________________________________________________________________
-            bool is_empty()                                      const throw(); //!< still_available >= provided_number
-            bool owns(const void *addr, const size_t block_size) const throw(); //!< in range and aligned
-
-           
+            bool      is_empty()                                      const throw(); //!< still_available >= provided_number
+            bool      contains(const void *addr)                      const throw(); //!< in range
+            bool      owns(const void *addr, const size_t block_size) const throw(); //!< in range and aligned
+            size_t    allocated() const throw(); //! provided_number - still_available
+            ownership whose(const void *addr) const throw();
+            
             void *acquire(const size_t block_size) throw();             //!< needs still_available>0
             void  release(void *addr, const size_t block_size) throw(); //!< previuosly acquired block
             
