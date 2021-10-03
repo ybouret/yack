@@ -24,6 +24,7 @@ namespace yack
         static void format_win(char *buffer, const size_t length, const uint32_t err) throw();
 #endif
         
+        //! emit error and exit
         static void critical_bsd(const int res, const char *ctx) throw();
     };
 

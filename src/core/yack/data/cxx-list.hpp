@@ -26,11 +26,11 @@ namespace yack
         //______________________________________________________________________
         
       
-        inline virtual ~cxx_list_of() throw() { release_(); }          //!< cleanup by release
-        inline explicit cxx_list_of() throw() : list_of<NODE> () {}   //!< setup empty
+        inline virtual ~cxx_list_of() throw() { release_(); }                      //!< cleanup by release
+        inline explicit cxx_list_of() throw() : list_of<NODE>(), releasable() {}   //!< setup empty
      
         //! copy using NODE copy constructor
-        inline          cxx_list_of(const cxx_list_of &other) : list_of<NODE>()
+        inline          cxx_list_of(const cxx_list_of &other) : list_of<NODE>(), releasable()
         {
             try {
                 for(const NODE *node=other.head;node;node=node->next)

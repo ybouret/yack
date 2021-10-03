@@ -1,5 +1,6 @@
 #include "yack/utest/run.hpp"
 #include <time.h>
+#include <cstring>
 
 namespace yack
 {

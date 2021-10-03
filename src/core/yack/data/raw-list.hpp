@@ -1,4 +1,3 @@
-
 //! \file
 
 #ifndef YACK_DATA_RAW_LIST_INCLUDED
@@ -25,7 +24,7 @@ namespace yack
         // C++
         //______________________________________________________________________
         inline virtual ~raw_list_of() throw() {}
-        inline explicit raw_list_of() throw() : list_of<NODE> () {}
+        inline explicit raw_list_of() throw() : list_of<NODE>(), restartable() {}
         
         //______________________________________________________________________
         //

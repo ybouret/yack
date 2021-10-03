@@ -19,6 +19,10 @@ namespace yack
         class chunk
         {
         public:
+            //__________________________________________________________________
+            //
+            // types and definition
+            //__________________________________________________________________
             static const size_t header; //!< aligned size of chunk
             
             //__________________________________________________________________
@@ -40,9 +44,9 @@ namespace yack
             //__________________________________________________________________
             bool      is_empty()                                      const throw(); //!< still_available >= provided_number
             bool      contains(const void *addr)                      const throw(); //!< in range
-            bool      owns(const void *addr, const size_t block_size) const throw(); //!< in range and aligned
-            size_t    allocated() const throw(); //! provided_number - still_available
-            ownership whose(const void *addr) const throw();
+            bool      owns(const void *addr, const size_t block_size) const throw(); //!< in range AND aligned
+            size_t    allocated()                                     const throw(); //!< provided_number - still_available
+            ownership whose(const void *addr)                         const throw(); //!< query ownsership
             
             void *acquire(const size_t block_size) throw();             //!< needs still_available>0
             void  release(void *addr, const size_t block_size) throw(); //!< previuosly acquired block

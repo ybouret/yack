@@ -64,8 +64,8 @@ namespace yack
             std::cerr << "  memory_per_chunk: " << memory_per_chunk << std::endl;
             std::cerr << "  memory_signature: " << memory_signature << std::endl;
             std::cerr << "<arena/>" << std::endl;
-            std::cerr << "sizeof(chunks)=" << sizeof(chunks_list) << std::endl;
-            std::cerr << "sizeof(impl)="   << sizeof(impl) << std::endl;
+            std::cerr << "sizeof(chunks) = " << sizeof(chunks_list) << std::endl;
+            std::cerr << "sizeof(impl)   = " << sizeof(impl) << std::endl;
             
             Y_STATIC_ZSET(impl);
             chunks_list *chunks = coerce_to<chunks_list>(impl);
@@ -92,8 +92,6 @@ namespace yack
             {
                (void)chunks->towards_front(acquiring);
             }
-            std::cerr << "@arena." << chunk_block_size << " => available_blocks=" << available_blocks << std::endl;
-
         }
         
     }

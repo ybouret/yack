@@ -11,11 +11,15 @@ namespace yack
     
     namespace memory
     {
+        //______________________________________________________________________
+        //
+        //! helper to locate memory
+        //______________________________________________________________________
         enum ownership
         {
-            owned_by_prev,
-            owned_by_self,
-            owned_by_next
+            owned_by_prev, //!< before
+            owned_by_self, //!< there!
+            owned_by_next  //!< after
         };
     }
 }

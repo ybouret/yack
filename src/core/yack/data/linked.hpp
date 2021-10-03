@@ -38,7 +38,7 @@ namespace yack
         //______________________________________________________________________
         void     increase() throw(); //!< ++size
         void     decrease() throw(); //!< --size
-
+        void     xch_size(linked &other) throw(); //!< exchange size values
     private:
         YACK_DISABLE_COPY_AND_ASSIGN(linked);
     };

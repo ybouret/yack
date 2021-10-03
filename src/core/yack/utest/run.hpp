@@ -71,17 +71,37 @@ namespace yack
             }
         }
 
+        //! card-desk shuffle for lists
+        template <typename LIST> inline
+        void shuffle(LIST &l) throw()
+        {
+            LIST tmp;
+            while(l.size)
+            {
+                typename LIST::node_type *node=l.pop_back();
+                if(choice()) tmp.push_back(node); else tmp.push_front(node);
+            }
+            tmp.swap_with(l);
+        }
+        
     private:
         YACK_DISABLE_COPY_AND_ASSIGN(uprng);
 
     };
 
+    //__________________________________________________________________________
+    //
+    //
+    //! utility to display sizeof
+    //
+    //__________________________________________________________________________
     struct utest_sizeof
     {
-        static size_t width;
-        static void   print(const char *name, const unsigned size);
+        static size_t width; //!< for alignment
+        static void   print(const char *name, const unsigned size); //!< print
     };
     
+    //! to display aligned sizeof
 #define YACK_SIZEOF(CLASS) utest_sizeof::print( #CLASS, sizeof(CLASS) )
 
 

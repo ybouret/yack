@@ -26,12 +26,26 @@ assert(NULL!=NODE); assert(NULL==(NODE)->next); assert(NULL==(NODE)->prev)
         //
         // C++
         //______________________________________________________________________
+        typedef NODE node_type; //!< alias
+        
+        //______________________________________________________________________
+        //
+        // C++
+        //______________________________________________________________________
         virtual ~list_of() throw() {}
 
         //______________________________________________________________________
         //
         // methods
         //______________________________________________________________________
+        
+        //! no-throw exchange with another list
+        inline void swap_with(list_of &other) throw()
+        {
+            xch_size(other);
+            cswap(head,other.head);
+            cswap(tail,other.tail);
+        }
         
         //! push_back a new node
         inline NODE *push_back(NODE *node) throw()
@@ -142,6 +156,7 @@ assert(NULL!=NODE); assert(NULL==(NODE)->next); assert(NULL==(NODE)->prev)
             }
         }
         
+        //! move owned node to head node
         inline NODE *move_to_front(NODE *node) throw()
         {
             assert(owns(node));
@@ -156,6 +171,7 @@ assert(NULL!=NODE); assert(NULL==(NODE)->next); assert(NULL==(NODE)->prev)
             }
         }
         
+        //! insert a new node after an owned node
         inline NODE *insert_after(NODE *mine,
                                   NODE *node) throw()
         {
@@ -175,7 +191,7 @@ assert(NULL!=NODE); assert(NULL==(NODE)->next); assert(NULL==(NODE)->prev)
             }
         }
         
-        
+        //! insert a new node before an owned node
         inline NODE *insert_before(NODE *mine,
                                    NODE *node) throw()
         {
@@ -195,6 +211,7 @@ assert(NULL!=NODE); assert(NULL==(NODE)->next); assert(NULL==(NODE)->prev)
             }
         }
         
+        //! move current node!=head towards head
         inline NODE *towards_front(NODE *node) throw()
         {
             assert(owns(node));
