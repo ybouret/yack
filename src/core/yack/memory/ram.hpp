@@ -9,7 +9,6 @@
 namespace yack
 {
     
-#define YACK_CHUNK_SIZE 4096 //!< default block size
     
     namespace memory
     {
