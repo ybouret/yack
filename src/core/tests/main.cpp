@@ -10,6 +10,7 @@ YACK_UTEST_DECL(16)
     YACK_UTEST(ints);
     YACK_UTEST(base2);
     YACK_UTEST(align);
+    YACK_UTEST(at_exit);
 
     YACK_UTEST(ram);
     YACK_UTEST(memory_chunk);

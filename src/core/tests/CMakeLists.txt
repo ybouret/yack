@@ -25,6 +25,7 @@ add_test(cstring test-yack cstring)
 add_test(align   test-yack align)
 add_test(ints    test-yack ints)
 add_test(base2   test-yack base2)
+add_test(at_exit test-yack at_exit)
 
 add_test(memory:ram    test-yack ram)
 add_test(memory:chunk  test-yack memory_chunk)
