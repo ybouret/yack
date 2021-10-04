@@ -171,12 +171,12 @@ namespace yack
             assert(is_a_power_of_two(count));
             if(count>YACK_CHUNK_SIZE)
             {
-                const size_t new_count = YACK_CHUNK_SIZE;
+                const size_t new_count  = YACK_CHUNK_SIZE;
                 const size_t new_blocks = (new_count-header)/block_size;
                 std::cerr << "new_blocks@" << new_count << "  = " << new_blocks << std::endl;
             }
 
-
+            
 
             return count;
         }
