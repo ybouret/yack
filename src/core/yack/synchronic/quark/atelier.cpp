@@ -43,7 +43,6 @@ namespace yack
             //__________________________________________________________________
             struct mutex {
                 yack_mutex impl;
-
                 inline yack_mutex * operator*() throw() { return &impl; }
             };
 
@@ -71,10 +70,6 @@ namespace yack
                 , attr()
 #endif
                 {
-                    std::cerr << "+atelier" << std::endl;
-                    std::cerr << "sizeof(mutex)=" << sizeof(yack_mutex) << std::endl;
-
-
 #if defined(YACK_BSD)
                     //__________________________________________________________
                     //
@@ -106,7 +101,6 @@ namespace yack
                 //______________________________________________________________
                 inline ~atelier() throw()
                 {
-                    std::cerr << "-mutex_factory" << std::endl;
 #if defined(YACK_BSD)
                     //__________________________________________________________
                     //
@@ -250,7 +244,6 @@ namespace yack
                     try { at_exit::perform(atelier_quit,NULL,at_exit::uttermost); }
                     catch(...) { atelier_quit(NULL); throw; }
                     atelier_initialize=false;
-                    std::cerr << "atelier_size=" << sizeof(atelier_data) << std::endl;
                 }
 
                 //--------------------------------------------------------------

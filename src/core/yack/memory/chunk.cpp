@@ -115,6 +115,7 @@ namespace yack
             assert(still_available<=provided_number);
             assert(block_size>0);
 
+            // cleanup
             uint8_t *p = &data[first_available*block_size]; // get address
             first_available = *p;                           // read next available address
             --still_available;                              // bookkeeping
@@ -140,9 +141,11 @@ namespace yack
         size_t chunk:: optimized_bytes_for(const size_t block_size, size_t &blocks) throw()
         {
             assert(block_size>0);
+            // initialize search
             size_t count  = next_power_of_two( header+1 ); assert(count>header);
             while( (blocks=(count-header)/block_size) <= 0 ) count <<= 1;
 
+            // find maximal optimized size
             while(blocks<255)
             {
                 const size_t next_count = count << 1;
@@ -155,6 +158,9 @@ namespace yack
                 count  = next_count;
             }
             assert(header+blocks*block_size<=count);
+
+
+
 
             return count;
         }
