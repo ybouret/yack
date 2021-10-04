@@ -17,15 +17,17 @@ namespace yack
     {
         //! error from strerror
         static void format_bsd(char *buffer, const size_t length, const int err) throw();
-
+      
+        //! emit error and exit
+        static void critical_bsd(const int res, const char *ctx) throw();
 
 #if defined(YACK_WIN)
         //! error form FormatMessage
         static void format_win(char *buffer, const size_t length, const uint32_t err) throw();
+        static void critical_win(const uint32_t err, const char *ctx) throw();
 #endif
         
-        //! emit error and exit
-        static void critical_bsd(const int res, const char *ctx) throw();
+      
     };
 
 }

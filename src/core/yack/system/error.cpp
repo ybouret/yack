@@ -16,23 +16,28 @@ namespace yack
         yack_cstring_trim(buffer,bad,sizeof(bad));
     }
 
+    static inline void display_and_exit(const char *ctx, const char *buffer) throw()
+    {
+        const size_t clen = yack_cstring_size(ctx);
+        const size_t blen = yack_cstring_size(buffer);
+        const size_t full = blen > clen ? blen : clen;
+        const size_t fill = 2+full;
+        
+        std::cerr << '/'; for(size_t i=fill;i>0;--i) std::cerr << '*'; std::cerr << '\\' << std::endl;
+        std::cerr << "* " << ctx;    for(size_t i=clen;i<=full;++i) std::cerr << ' '; std::cerr << " *\n";
+        std::cerr << "* " << buffer; for(size_t i=blen;i<=full;++i) std::cerr << ' '; std::cerr << " *\n";
+        std::cerr << '\\'; for(size_t i=fill;i>0;--i) std::cerr << '*'; std::cerr << '/' << std::endl;
+        
+        
+        exit(-1);
+    }
+    
     void system_error:: critical_bsd(const int res, const char *ctx) throw()
     {
         char buffer[512];
         memset(buffer,0,sizeof(buffer));
         format_bsd(buffer,sizeof(buffer),res);
-        const size_t clen = yack_cstring_size(ctx);
-        const size_t blen = yack_cstring_size(buffer);
-        const size_t full = blen > clen ? blen : clen;
-        const size_t fill = 2+full;
-
-        std::cerr << '/'; for(size_t i=fill;i>0;--i) std::cerr << '*'; std::cerr << '\\' << std::endl;
-        std::cerr << "* " << ctx;    for(size_t i=clen;i<=full;++i) std::cerr << ' '; std::cerr << " *\n";
-        std::cerr << "* " << buffer; for(size_t i=blen;i<=full;++i) std::cerr << ' '; std::cerr << " *\n";
-        std::cerr << '\\'; for(size_t i=fill;i>0;--i) std::cerr << '*'; std::cerr << '/' << std::endl;
-
-
-        exit(-1);
+        display_and_exit(ctx,buffer);
     }
 
 #if defined(YACK_WIN)
@@ -62,6 +67,15 @@ namespace yack
             }
         }
     }
+    
+    void system_error:: critical_win(const uint32_t err, const char *ctx) throw()
+    {
+        char buffer[512];
+        memset(buffer,0,sizeof(buffer));
+        format_win(buffer,sizeof(buffer),res);
+        display_and_exit(ctx,buffer);
+    }
+
 
 #endif
 

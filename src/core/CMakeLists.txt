@@ -80,6 +80,14 @@ set(synchronic_quark ${synchronic_quark_impl} ${synchronic_quark_decl})
 SOURCE_GROUP(synchronic/quark FILES ${synchronic_quark})
 install( FILES ${synchronic_quark_decl} DESTINATION include/yack/synchronic/quark )
 
+# synchronic/sync operations
+file(GLOB synchronic_sync_impl yack/synchronic/sync/*.cpp)
+file(GLOB synchronic_sync_decl yack/synchronic/sync/*.hpp)
+set(synchronic_sync ${synchronic_sync_impl} ${synchronic_sync_decl})
+SOURCE_GROUP(synchronic/sync FILES ${synchronic_sync})
+install( FILES ${synchronic_sync_decl} DESTINATION include/yack/synchronic/sync )
+
+
 # create the library
 add_library(yack
 ${src}
@@ -90,7 +98,7 @@ ${system}
 ${data}
 ${container}
 ${memory}
-${synchronic} ${synchronic_quark}
+${synchronic} ${synchronic_quark} ${synchronic_sync}
 ${utest}
 )
 
