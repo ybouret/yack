@@ -213,8 +213,9 @@ namespace yack
                     cv_lock.unlock();
                     
                     /* Unlock the mutex, as is required by condition variable semantics */
-                    m.unlock();
-                    
+                    //m.unlock();
+					mutex_unlock(m);
+
                     
                     /* Wait for a signal */
                     cv_wait_sem.wait();
@@ -238,7 +239,8 @@ namespace yack
                     cv_lock.unlock();
                     
                     /* Lock the mutex, as is required by condition variable semantics */
-                    m.lock();
+                    //m.lock();
+					mutex_lock(m);
                 }
                 
                 void signal() throw()
