@@ -1,11 +1,12 @@
 
 #include "yack/memory/chunk.hpp"
 #include "yack/memory/ram.hpp"
+#include "yack/memory/chunk-size.hpp"
+
 #include "yack/arith/align.hpp"
 #include "yack/type/out-of-reach.hpp"
 #include "yack/arith/base2.hpp"
 #include "yack/type/destruct.hpp"
-
 #include <cstring>
 #include <iostream>
 
@@ -166,7 +167,14 @@ namespace yack
                 count  = next_count;
             }
             assert(header+blocks*block_size<=count);
-
+            
+            assert(is_a_power_of_two(count));
+            if(count>YACK_CHUNK_SIZE)
+            {
+                const size_t new_count = YACK_CHUNK_SIZE;
+                const size_t new_blocks = (new_count-header)/block_size;
+                std::cerr << "new_blocks@" << new_count << "  = " << new_blocks << std::endl;
+            }
 
 
 
