@@ -16,8 +16,8 @@ namespace yack
             struct mutex;
             class  condition;
             
-            condition *condition_create();
-            void       condition_delete(condition *) throw();
+            condition *condition_create();                    //!< create a condition
+            void       condition_delete(condition *) throw(); //!< delete a condition
         }
     }
 }

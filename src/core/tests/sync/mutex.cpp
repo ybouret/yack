@@ -13,6 +13,9 @@ YACK_UTEST(sync_mutex)
     {
         synchronic::mutex m1;
     }
+    {
+        YACK_GIANT_LOCK();
+    }
     std::cerr << "    ==== leave " << program << std::endl;
 
 }

@@ -53,7 +53,7 @@ namespace yack
         YACK_DISABLE_COPY_AND_ASSIGN(lockable);
         
     public:
-        static lockable & giant();
+        static lockable & giant(); //!< from synchronic::quark internal
     };
 
     //! create the guard name
@@ -65,6 +65,8 @@ namespace yack
     //! use a local scoped_lock to lock HOST
 #define YACK_LOCK(HOST) YACK_LOCK_(HOST,__LINE__)
 
+    //! shared giant top level lock
+#define YACK_GIANT_LOCK() YACK_LOCK(lockable::giant())
 
 
 }

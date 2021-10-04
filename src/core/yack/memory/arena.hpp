@@ -36,6 +36,7 @@ namespace yack
             void  release(void *addr) throw(); //!< release one block
             void  expunge(void *addr) throw(); //!< zero and release block
          
+            //! create a zombie object
             template <typename T> inline
             T *zombie()
             {
