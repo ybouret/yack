@@ -11,6 +11,19 @@ namespace
         void  *addr;
         size_t size;
     };
+
+    template <typename T> static inline
+    void test_for(memory::allocator &mem, size_t items)
+    {
+
+        size_t bytes = 0;
+        T     *entry = mem.invoke<T>(items,bytes);
+        std::cerr << "\t=> #items=" << items << ", #bytes=" << bytes << "  @" << entry << std::endl;
+        mem.revoke(entry,bytes);
+        YACK_ASSERT(NULL==entry);
+        YACK_ASSERT(0==bytes);
+    }
+
 }
 
 YACK_UTEST(ram)
@@ -38,6 +51,18 @@ YACK_UTEST(ram)
         mem.release(blk.addr,blk.size);
     }
     std::cerr << "ram: " << mem.get() << std::endl;
+    YACK_CHECK(mem.get()==0);
+
+    for(size_t n=0;n<=10000;n+=100+ran.leq(100))
+    {
+        std::cerr << "Query #items=" << n << std::endl;
+        test_for<uint32_t>(mem,n);
+        test_for<block>(mem,n);
+    }
+    YACK_CHECK(mem.get()==0);
+
+
+
 }
 YACK_UDONE()
 
