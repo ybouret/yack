@@ -202,20 +202,44 @@ namespace yack
             static bool             atelier_initialize = true;
             static void *           atelier_data[ YACK_WORDS_FOR(atelier) ];
             static inline void      atelier_zero() throw() { memset(atelier_data,0,sizeof(atelier_data)); }
-            static inline atelier * atelier_get()  throw()
+           
+            
+            static inline atelier & atelier_location() throw()
             {
-                YACK_STATIC_CHECK(sizeof(atelier_data)>=sizeof(atelier),invalid_atelier_data);
-                return static_cast<atelier *>( out_of_reach::address(atelier_data) );
+                assert(!atelier_initialize);
+                return *static_cast<atelier *>( out_of_reach::address(atelier_data) );
             }
-
+            
             static inline void atelier_quit(void *) throw()
             {
                 assert(!atelier_initialize);
-                destruct( atelier_get() );
+                destruct( &atelier_location() );
                 atelier_zero();
                 atelier_initialize = true;
             }
+            
+            static inline atelier & atelier_instance()
+            {
+                YACK_STATIC_CHECK(sizeof(atelier_data)>=sizeof(atelier),invalid_atelier_data);
+                atelier *mgr = static_cast<atelier *>( out_of_reach::address(atelier_data) );
+                if(atelier_initialize)
+                {
+                    atelier_zero();
+                    new (mgr) atelier();
+                    try { at_exit::perform(atelier_quit,NULL,at_exit::uttermost); }
+                    catch(...) { atelier_quit(NULL); throw; }
+                    atelier_initialize=false;
+                }
+                return *mgr;
+            }
+            
+         
+            
+          
 
+           
+          
+            
         }
 
     }
@@ -237,27 +261,21 @@ namespace yack
                 // handling global memory
                 //
                 //--------------------------------------------------------------
-                static atelier *mgr = atelier_get();
-                if(atelier_initialize)
-                {
-                    new (mgr) atelier();
-                    try { at_exit::perform(atelier_quit,NULL,at_exit::uttermost); }
-                    catch(...) { atelier_quit(NULL); throw; }
-                    atelier_initialize=false;
-                }
+                static atelier &mgr =  atelier_instance();
 
                 //--------------------------------------------------------------
                 //
                 // getting mutex and specific setup
                 //
                 //--------------------------------------------------------------
-                return mgr->create_mutex();
+                return mgr.create_mutex();
             }
 
             void   mutex_delete(mutex *m) throw()
             {
-                static atelier *mgr = atelier_get(); assert(!atelier_initialize);
-                mgr->delete_mutex(m);
+                assert(!atelier_initialize);
+                static atelier &mgr = atelier_location();
+                mgr.delete_mutex(m);
             }
 
 
