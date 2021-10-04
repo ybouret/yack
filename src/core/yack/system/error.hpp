@@ -18,8 +18,8 @@ namespace yack
         //! error from strerror
         static void format_bsd(char *buffer, const size_t length, const int err) throw();
 
+
 #if defined(YACK_WIN)
-        
         //! error form FormatMessage
         static void format_win(char *buffer, const size_t length, const uint32_t err) throw();
 #endif

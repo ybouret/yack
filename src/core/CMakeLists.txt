@@ -59,12 +59,26 @@ SOURCE_GROUP(container FILES ${container})
 install( FILES ${container_decl} DESTINATION include/yack/container )
 
 # memory operations
-file(GLOB memory_impl yack/memory/*.cpp yack/memory/*.c)
-file(GLOB memory_decl yack/memory/*.hpp yack/memory/*.h)
+file(GLOB memory_impl yack/memory/*.cpp)
+file(GLOB memory_decl yack/memory/*.hpp)
 set(memory ${memory_impl} ${memory_decl})
 SOURCE_GROUP(memory FILES ${memory})
 install( FILES ${memory_decl} DESTINATION include/yack/memory )
  
+ 
+# synchronic operations
+file(GLOB synchronic_impl yack/synchronic/*.cpp)
+file(GLOB synchronic_decl yack/synchronic/*.hpp)
+set(synchronic ${synchronic_impl} ${synchronic_decl})
+SOURCE_GROUP(synchronic FILES ${synchronic})
+install( FILES ${synchronic_decl} DESTINATION include/yack/synchronic )
+ 
+# synchronic/quark operations
+file(GLOB synchronic_quark_impl yack/synchronic/quark/*.cpp)
+file(GLOB synchronic_quark_decl yack/synchronic/quark/*.hpp)
+set(synchronic_quark ${synchronic_quark_impl} ${synchronic_quark_decl})
+SOURCE_GROUP(synchronic/quark FILES ${synchronic_quark})
+install( FILES ${synchronic_quark_decl} DESTINATION include/yack/synchronic/quark )
 
 # create the library
 add_library(yack
@@ -76,6 +90,7 @@ ${system}
 ${data}
 ${container}
 ${memory}
+${synchronic} ${synchronic_quark}
 ${utest}
 )
 
