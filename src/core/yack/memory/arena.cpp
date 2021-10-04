@@ -26,7 +26,7 @@ namespace yack
             assert(NULL==ch->prev);
             
             out_of_reach::zset(ch,chunk::header);
-            chunk::ram_delete(ch,memory_per_chunk);
+            chunk::delete_frame(ch,memory_per_chunk,memory_io);
         }
         
         arena:: ~arena() throw()
@@ -47,11 +47,12 @@ namespace yack
             }
         }
         
-        arena:: arena(const size_t block_size):
+        arena:: arena(const size_t block_size, allocator &user_allocator):
         available_blocks(0),
         acquiring(NULL),
         releasing(NULL),
         impl(),
+        memory_io(user_allocator),
         chunk_block_size(block_size),
         blocks_per_chunk(0),
         memory_per_chunk( chunk::optimized_bytes_for(block_size, coerce(blocks_per_chunk) ) ),
@@ -85,7 +86,7 @@ namespace yack
         void arena::grow()
         {
             chunks_list *chunks = coerce_to<chunks_list>(impl);
-            acquiring           = chunks->push_back( chunk::ram_create(chunk_block_size,memory_per_chunk) );
+            acquiring           = chunks->push_back( chunk::create_frame(chunk_block_size,memory_per_chunk,memory_io) );
             assert(acquiring->provided_number==blocks_per_chunk);
             available_blocks += blocks_per_chunk;
             while( acquiring->prev && acquiring<acquiring->prev)

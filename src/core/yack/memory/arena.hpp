@@ -12,7 +12,8 @@ namespace yack
     namespace memory
     {
         class chunk;
-        
+        class allocator;
+
         //______________________________________________________________________
         //
         //
@@ -28,7 +29,7 @@ namespace yack
             //__________________________________________________________________
             static const size_t list_words = 5; //!< for internal memory
            
-            arena(const size_t block_size); //!< setup with a first chunk
+            arena(const size_t block_size, allocator &); //!< setup with a first chunk
             ~arena() throw();               //!< cleanup
             
             void *acquire();                   //!< acquire one block
@@ -39,6 +40,7 @@ namespace yack
             chunk       *acquiring;
             chunk       *releasing;
             void        *impl[list_words];
+            allocator   &memory_io;
             
         public:
             const size_t chunk_block_size; //!< the same block size

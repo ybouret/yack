@@ -38,10 +38,11 @@ YACK_UTEST(memory_arena)
     uprng        ran;
     
     cxx_list_of<block> blocks;
-    
+    memory::ram        mem;
+
     for(size_t block_size=1;block_size<=16;++block_size)
     {
-        memory::arena a(block_size);
+        memory::arena a(block_size,mem);
         for(size_t i=300+ran.leq(1000);i>0;--i)
         {
             blocks.push_back( new block( a.acquire() ) );

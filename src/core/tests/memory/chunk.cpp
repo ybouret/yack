@@ -21,8 +21,9 @@ namespace
 YACK_UTEST(memory_chunk)
 {
 
-    uprng ran;
-    block blocks[256];
+    uprng       ran;
+    block       blocks[256];
+    memory::ram mem;
 
     std::cerr << "Local Chunks..." << std::endl;
 
@@ -32,7 +33,7 @@ YACK_UTEST(memory_chunk)
         for(size_t num_blocks=0;num_blocks<=300;++num_blocks)
         {
             size_t        chunk_size = num_blocks;
-            void         *chunk_data = memory::ram::acquire(chunk_size,block_size);
+            void         *chunk_data = mem.acquire(chunk_size,block_size);
             memory::chunk ch(block_size,chunk_data,chunk_size);
             const size_t  count = ch.provided_number;
             for(size_t i=0;i<count;++i)
@@ -56,10 +57,10 @@ YACK_UTEST(memory_chunk)
             }
             YACK_ASSERT(ch.is_empty());
 
-            memory::ram::release(chunk_data,chunk_size);
+           mem.release(chunk_data,chunk_size);
         }
     }
-    YACK_CHECK(memory::ram::get()==0);
+    YACK_CHECK(mem.get()==0);
 
     std::cerr << std::endl;
     std::cerr << "Global Chunks..." << std::endl;
@@ -68,15 +69,15 @@ YACK_UTEST(memory_chunk)
     {
         size_t         blocks = 0;
         const size_t   optims = memory::chunk::optimized_bytes_for(block_size,blocks);
-        memory::chunk *ch     = memory::chunk::ram_create(block_size,optims);
+        memory::chunk *ch     = memory::chunk::create_frame(block_size,optims,mem);
 
         YACK_CHECK(ch->provided_number==blocks);
 
 
-        memory::chunk::ram_delete(ch,optims);
+        memory::chunk::delete_frame(ch,optims,mem);
     }
 
-    YACK_CHECK(memory::ram::get()==0);
+    YACK_CHECK(mem.get()==0);
 
 
 }

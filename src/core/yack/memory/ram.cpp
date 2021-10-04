@@ -8,15 +8,24 @@ namespace yack
 {
     namespace memory
     {
-        static uint64_t ram_ = 0;
+        
+        uint64_t ram_ = 0;
 
-        uint64_t ram:: get() throw()
+        uint64_t ram:: get() const throw()
         {
             return ram_;
         }
 
+        ram:: ram() throw()
+        {
+        }
 
+        ram:: ~ram() throw()
+        {
+        }
+        
 
+        const char * ram:: variety() const throw() { return "RAM"; }
 
         void * ram:: acquire(size_t &count,  const size_t block_size)
         {

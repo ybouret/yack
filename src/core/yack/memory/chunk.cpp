@@ -159,21 +159,21 @@ namespace yack
             return count;
         }
 
-        chunk *chunk:: ram_create(const size_t block_size, const size_t full_bytes)
+        chunk *chunk:: create_frame(const size_t block_size, const size_t full_bytes, allocator &dispatcher)
         {
             assert(full_bytes>header);
             size_t   bytes = 1;
-            uint8_t *entry = static_cast<uint8_t *>( memory::ram::acquire(bytes,full_bytes) );
+            uint8_t *entry = static_cast<uint8_t *>( dispatcher.acquire(bytes,full_bytes) );
             uint8_t *cdata = entry+header;
 
             return new( out_of_reach::address(entry) ) chunk(block_size, out_of_reach::address(cdata), full_bytes-header);
         }
 
-        void chunk:: ram_delete(chunk *ch,size_t full_bytes) throw()
+        void chunk:: delete_frame(chunk *ch,size_t full_bytes, allocator &dispatcher) throw()
         {
             assert(ch!=NULL);
             destruct(ch);
-            memory::ram::release(*(void **)&ch,full_bytes);
+            dispatcher.release(*(void **)&ch,full_bytes);
         }
 
  

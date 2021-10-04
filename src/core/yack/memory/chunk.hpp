@@ -10,6 +10,9 @@ namespace yack
 
     namespace memory
     {
+
+        class allocator;
+
         //______________________________________________________________________
         //
         //
@@ -53,9 +56,16 @@ namespace yack
             
             //! compute an optimized, power of two memory area to hold chunk+data
             static size_t optimized_bytes_for(const size_t block_size, size_t &blocks_per_chunk) throw();
-            
-            static chunk *ram_create(const size_t block_size, const size_t full_bytes); //!< full_bytes should be optimied
-            static void   ram_delete(chunk *,size_t full_bytes) throw();                //!< previously ram_created chunk
+
+            //! create a single frame with chunk+data
+            static chunk *create_frame(const size_t block_size,
+                                       const size_t full_bytes,
+                                       allocator   &dispatcher);
+
+            //! delete a previously created frame chunk
+            static void   delete_frame(chunk     *,
+                                       size_t     full_bytes,
+                                       allocator &dispatcher) throw();
 
             uint8_t                    first_available; //!< bookeeping
             uint8_t                    still_available; //!< bookeeping

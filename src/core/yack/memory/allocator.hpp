@@ -15,9 +15,9 @@ namespace yack
         public:
             virtual ~allocator() throw();
             
-            virtual void       *acquire(size_t &count, const size_t block_size) throw() = 0;
-            virtual void        release(void * &addr, size_t &size) throw() = 0;
-            virtual const char *group() const throw() = 0;
+            virtual void       *acquire(size_t &count, const size_t block_size) = 0;
+            virtual void        release(void * &addr, size_t &size)     throw() = 0;
+            virtual const char *variety()                         const throw() = 0;
             
         protected:
             explicit allocator() throw();
