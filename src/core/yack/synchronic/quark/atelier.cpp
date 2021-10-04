@@ -25,7 +25,7 @@ typedef pthread_mutex_t yack_mutex;
 #if defined(YACK_WIN)
 #    define WIN32_LEAN_AND_MEAN
 #    include <windows.h>
-tyepdef CRITICAL_SECTION yack_mutex;
+typedef CRITICAL_SECTION yack_mutex;
 #endif
 
 namespace yack
