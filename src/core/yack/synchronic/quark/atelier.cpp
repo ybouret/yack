@@ -30,6 +30,55 @@ typedef CRITICAL_SECTION yack_mutex;
 
 namespace yack
 {
+#if defined(YACK_WIN)
+	namespace win32
+	{
+
+		class semaphore
+		{
+		public:
+			inline semaphore() : sem_(0)
+			{
+				static const long lMinCount = 0;
+				static const long lMaxCount = 65535;
+				sem_ = ::CreateSemaphore(NULL, lMinCount, lMaxCount, NULL);
+				if (!sem_)
+				{
+					throw win32::exception(::GetLastError(), "::CreateSemaphore()");
+				}
+
+			}
+
+			inline ~semaphore() throw()
+			{
+				assert(sem_);
+				::CloseHandle(sem_);
+				sem_ = NULL;
+			}
+
+			inline void wait() throw()
+			{
+				assert(sem_ != NULL);
+				const DWORD res = WaitForSingleObject(sem_,           /* handle to semaphore  */
+					INFINITE);      /* let's wait          */
+				if (res != WAIT_OBJECT_0)
+					system_error::critical_win(::GetLastError(), "WaitForSingleObject( SEMAPHORE )");
+			}
+
+			inline void post() throw()
+			{
+				assert(sem_ != NULL);
+				if (!::ReleaseSemaphore(sem_, 1, NULL))
+					system_error::critical_win(::GetLastError(), "::ReleaseSemaphore");
+			}
+
+		private:
+			HANDLE sem_;
+			YACK_DISABLE_COPY_AND_ASSIGN(semaphore);
+		};
+	}
+#endif
+
     namespace synchronic
     {
         namespace quark
@@ -75,60 +124,8 @@ namespace yack
                 YACK_DISABLE_COPY_AND_ASSIGN(condition);
             };
 #endif
-            
-#if defined(YACK_WIN)
-            
-            namespace win32
-            {
-                class semaphore
-                {
-                public:
-                    inline semaphore() : sem_(0)
-                    {
-                        static const long lMinCount = 0;
-                        static const long lMaxCount = 65535;
-                        sem_ = ::CreateSemaphore( NULL, lMinCount, lMaxCount, NULL );
-                        if (!sem_)
-                        {
-                            throw win32::exception(::GetLastError(), "::CreateSemaphore()");
-                        }
-                        
-                    }
-                    
-                    inline ~semaphore() throw()
-                    {
-                        assert( sem_ );
-                        ::CloseHandle( sem_ );
-                        sem_ = NULL;
-                    }
-                    
-                    void semaphore:: wait() throw()
-                    {
-                        assert( sem_ != NULL );
-                        const DWORD res = WaitForSingleObject(sem_,           /* handle to semaphore  */
-                                                              INFINITE);      /* let's wait          */
-                        if( res != WAIT_OBJECT_0 )
-                            win32::critical_error( ::GetLastError(), "WaitForSingleObject( SEMAPHORE )");
-                    }
-                    
-                    void semaphore:: post() throw()
-                    {
-                        assert( sem_ != NULL );
-                        if( ! ::ReleaseSemaphore( sem_, 1, NULL ) )
-                            win32::critical_error( ::GetLastError(), "::ReleaseSemaphore" );
-                    }
-                    
-                private:
-                    HANDLE sem_;
-                    YACK_DISABLE_COPY_AND_ASSIGN(semaphore);
-                };
-            }
-            
-            
-#endif
-            
-            
-            
+   
+                       
             //__________________________________________________________________
             //
             //
@@ -289,13 +286,13 @@ namespace yack
             static inline atelier & atelier_location() throw()
             {
                 assert(!atelier_initialize);
-                return *static_cast<atelier *>( out_of_reach::address(atelier_data) );
+                return *static_cast<atelier *>( yack::out_of_reach::address(atelier_data) );
             }
             
             static inline void atelier_quit(void *) throw()
             {
                 assert(!atelier_initialize);
-                destruct( &atelier_location() );
+				yack::destruct( &atelier_location() );
                 atelier_zero();
                 atelier_initialize = true;
             }
@@ -303,7 +300,7 @@ namespace yack
             static inline atelier & atelier_instance()
             {
                 YACK_STATIC_CHECK(sizeof(atelier_data)>=sizeof(atelier),invalid_atelier_data);
-                atelier *mgr = static_cast<atelier *>( out_of_reach::address(atelier_data) );
+                atelier *mgr = static_cast<atelier *>( yack::out_of_reach::address(atelier_data) );
                 if(atelier_initialize)
                 {
                     atelier_zero();
@@ -314,13 +311,7 @@ namespace yack
                 }
                 return *mgr;
             }
-            
-            
-            
-            
-            
-            
-            
+             
             
         }
         

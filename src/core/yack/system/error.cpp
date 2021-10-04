@@ -72,7 +72,7 @@ namespace yack
     {
         char buffer[512];
         memset(buffer,0,sizeof(buffer));
-        format_win(buffer,sizeof(buffer),res);
+        format_win(buffer,sizeof(buffer),err);
         display_and_exit(ctx,buffer);
     }
 
