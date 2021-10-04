@@ -14,6 +14,7 @@
 #include <cstring>
 #include <new>
 #include <iostream>
+#include <iomanip>
 
 #if defined(YACK_BSD)
 #    if !defined(__USE_UNIX98)
@@ -128,7 +129,7 @@ namespace yack
             
             
             
-           
+            
 #if defined(YACK_BSD)
             //__________________________________________________________________
             //
@@ -186,10 +187,8 @@ namespace yack
                 int              cv_signals;   /*!< signals count                */
                 win32::semaphore cv_wait_sem;  /*!< Win32 semaphore when waiting */
                 win32::semaphore cv_done_sem;  /*!< Win32 semaphore when done    */
-
+                
             };
-            
-            
 #endif
             
 #if defined(YACK_BSD)
@@ -372,6 +371,7 @@ namespace yack
                 memory::arena       conditions;
                 mutex              *giant;
                 
+                
             private:
                 YACK_DISABLE_COPY_AND_ASSIGN(atelier);
             };
@@ -410,10 +410,12 @@ namespace yack
                 }
                 return *mgr;
             }
- 
-          
+            
+            
             
         }
+        
+        
         
     }
     
@@ -511,9 +513,31 @@ namespace yack
                 static atelier &mgr = atelier_location();
                 return mgr.conditions.revoke(cond);
             }
-        
+            
         }
         
+    }
+    
+}
+
+#include "yack/synchronic/primitive.hpp"
+
+namespace yack
+{
+    namespace synchronic
+    {
+        void primitive:: display()
+        {
+            std::cerr << "<synchronic::primitive>" << std::endl;
+            std::cerr << "  sizeof(quark::mutex)     = " << sizeof(quark::mutex)     << std::endl;
+#if defined(YACK_WIN)
+            std::cerr << "  sizeof(win32::semaphore) = " << sizeof(win32::semaphore) << std::endl;
+#endif
+            std::cerr << "  sizeof(quark::condition) = " << sizeof(quark::condition) << std::endl;
+            std::cerr << "  sizeof(quark::atelier)   = " << sizeof(quark::atelier)   << std::endl;
+            std::cerr << "  quark::atelier_data_size = " << sizeof(quark::atelier_data) << std::endl;
+            std::cerr << "<synchronic::primitive/>" << std::endl;
+        }
     }
     
 }

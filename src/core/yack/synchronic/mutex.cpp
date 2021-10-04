@@ -6,7 +6,9 @@ namespace yack
 {
     namespace synchronic
     {
-        mutex:: mutex() : impl( quark::mutex_create() )
+        mutex:: mutex() :
+        primitive(), lockable(),
+        impl( quark::mutex_create() )
         {
 
         }

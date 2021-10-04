@@ -3,7 +3,7 @@
 #ifndef YACK_SYNC_CONDITION_INCLUDED
 #define YACK_SYNC_CONDITION_INCLUDED 1
 
-#include "yack/setup.hpp"
+#include "yack/synchronic/primitive.hpp"
 
 namespace yack
 {
@@ -20,7 +20,7 @@ namespace yack
         //! condition object
         //
         //______________________________________________________________________
-        class condition
+        class condition : public primitive
         {
         public:
             explicit condition();          //!< create internal condition

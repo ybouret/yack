@@ -6,6 +6,7 @@ namespace yack
     namespace synchronic
     {
         condition:: condition() :
+        primitive(),
         impl( quark::condition_create() )
         {
             assert(impl);

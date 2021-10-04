@@ -5,6 +5,7 @@
 #define YACK_SYNC_MUTEX_INCLUDED 1
 
 #include "yack/lockable.hpp"
+#include "yack/synchronic/primitive.hpp"
 
 namespace yack
 {
@@ -21,7 +22,7 @@ namespace yack
         //! recursive mutex
         //
         //______________________________________________________________________
-        class mutex : public lockable
+        class mutex : public primitive, public lockable
         {
         public:
             explicit mutex();          //!< create internal mutex
