@@ -5,7 +5,7 @@
 #ifndef YACK_FAKE_LOCK_INCLUDED
 #define YACK_FAKE_LOCK_INCLUDED 1
 
-#include "yack/synchronic/lockable.hpp"
+#include "yack/lockable.hpp"
 
 namespace yack
 {
@@ -21,10 +21,10 @@ namespace yack
         explicit fake_lock() throw(); //!< setup
         virtual ~fake_lock() throw(); //!< cleanup
 
-        void lock()   throw(); //!< increase depth
-        void unlock() throw(); //!< decrease depth, error if negative
-
-        const int depth;       //!< locking depth
+        void lock()   throw();   //!< increase depth
+        void unlock() throw();   //!< decrease depth, error if negative
+        bool try_lock() throw(); //!< lock, true
+        const int depth;         //!< locking depth
     private:
         YACK_DISABLE_COPY_AND_ASSIGN(fake_lock);
     };

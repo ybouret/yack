@@ -1,5 +1,5 @@
 
-#include "yack/synchronic/lockable.hpp"
+#include "yack/lockable.hpp"
 
 namespace yack
 {

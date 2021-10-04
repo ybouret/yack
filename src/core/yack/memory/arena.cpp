@@ -6,7 +6,7 @@
 #include "yack/check/static.hpp"
 #include "yack/data/raw-list.hpp"
 #include "yack/type/destruct.hpp"
-
+#include <cstring>
 
 #include <iostream>
 #include <iomanip>
@@ -241,8 +241,8 @@ namespace yack
             }
             search_error();
         }
-        
-        void  arena:: release(void *addr) throw()
+
+        void arena::find(void *addr)  throw()
         {
             assert(addr);
             assert(releasing);
@@ -252,6 +252,19 @@ namespace yack
                 case owned_by_self: break;
                 case owned_by_next: search_next(releasing,addr); break;
             }
+        }
+
+
+        void  arena:: release(void *addr) throw()
+        {
+            find(addr);
+            take(addr);
+        }
+
+        void  arena:: zremove(void *addr) throw()
+        {
+            find(addr);
+            memset(addr,0,chunk_block_size);
             take(addr);
         }
 

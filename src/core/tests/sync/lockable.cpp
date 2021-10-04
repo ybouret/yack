@@ -14,7 +14,11 @@ YACK_UTEST(sync_lockable)
 
     
     YACK_LOCK(access);
-
+    YACK_LOCK(access);
+    if( access.try_lock() )
+    {
+        access.unlock();
+    }
 }
 YACK_UDONE()
 

@@ -32,9 +32,26 @@ namespace yack
             arena(const size_t block_size, allocator &); //!< setup with a first chunk
             ~arena() throw();               //!< cleanup
             
-            void *acquire();                   //!< acquire one block
+            void *acquire();                   //!< acquire one block, zeroed
             void  release(void *addr) throw(); //!< release one block
-            
+            void  zremove(void *addr) throw(); //!< zero and release block
+
+            //! acquire with aliasing
+            template <typename T> inline
+            T *invoke() {
+                assert(sizeof(T)==chunk_block_size);
+                return static_cast<T*>(acquire());
+            }
+
+            //! zremove with aliasing
+            template <typename T> inline
+            void revoke(T *args) throw()
+            {
+                assert(sizeof(T)==chunk_block_size);
+                assert(NULL!=args);
+                zremove(args);
+            }
+
         private:
             size_t       available_blocks;
             chunk       *acquiring;
@@ -54,7 +71,7 @@ namespace yack
             void  kill(chunk *) throw(); //!< return memory
             void *give()        throw(); //!< by acquiring
             void  take(void *)  throw(); //!< by releasing
-            
+            void  find(void *)  throw(); //!< find releasing
         };
         
     }

@@ -21,9 +21,10 @@ namespace yack
         //
         // virtual interface
         //__________________________________________________________________________
-        virtual void lock()   throw() = 0; //!< lock
-        virtual void unlock() throw() = 0; //!< unlock
-
+        virtual void lock()     throw() = 0; //!< lock
+        virtual void unlock()   throw() = 0; //!< unlock
+        virtual bool try_lock() throw() = 0; //!< try lock
+        //!
         //______________________________________________________________________
         //
         //! user defined scope locking
