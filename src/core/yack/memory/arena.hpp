@@ -34,24 +34,34 @@ namespace yack
             
             void *acquire();                   //!< acquire one block, zeroed
             void  release(void *addr) throw(); //!< release one block
-            void  zremove(void *addr) throw(); //!< zero and release block
-
-            //! acquire with aliasing
+            void  expunge(void *addr) throw(); //!< zero and release block
+         
+            template <typename T> inline
+            T *zombie()
+            {
+                assert(sizeof(T)==chunk_block_size);
+                return static_cast<T*>( acquire() );
+            }
+            
+            //! acquire and default construct
             template <typename T> inline
             T *invoke() {
                 assert(sizeof(T)==chunk_block_size);
-                return static_cast<T*>(acquire());
+                void *block = acquire();
+                try        { return new(block) T(); }
+                catch(...) { expunge(block); throw; }
             }
 
-            //! zremove with aliasing
+            //! destruct and expunge
             template <typename T> inline
             void revoke(T *args) throw()
             {
                 assert(sizeof(T)==chunk_block_size);
                 assert(NULL!=args);
-                zremove(args);
+                args->~T();
+                expunge(args);
             }
-
+            
         private:
             size_t       available_blocks;
             chunk       *acquiring;

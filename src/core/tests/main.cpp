@@ -20,6 +20,7 @@ YACK_UTEST_DECL(16)
 
     YACK_UTEST(sync_lockable);
     YACK_UTEST(sync_mutex);
+    YACK_UTEST(sync_condition);
     
 }
 YACK_UTEST_EXEC()

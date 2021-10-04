@@ -51,6 +51,12 @@ namespace yack
         next(0),
         prev(0)
         {
+            for(uint8_t q=0,*p=data; q!=provided_number; p += block_size)
+            {
+                assert(owns(p,block_size));
+                *p = ++q;
+            }
+
         }
 
         bool chunk:: is_empty() const throw()
@@ -70,7 +76,9 @@ namespace yack
             const uint8_t *p = static_cast<const uint8_t *>(addr);
             if(p>=data&&p<last)
             {
-                return 0 == (out_of_reach::diff(p,data)%block_size);
+                const ptrdiff_t shift = out_of_reach::diff(data,p);
+                const bool      match = (0 == (shift%block_size) );
+                return match;
             }
             else
             {
@@ -115,8 +123,8 @@ namespace yack
             assert(still_available<=provided_number);
             assert(block_size>0);
 
-            // cleanup
-            uint8_t *p = &data[first_available*block_size]; // get address
+            // find block
+            uint8_t *       p = &data[first_available*block_size]; // get address
             first_available = *p;                           // read next available address
             --still_available;                              // bookkeeping
             memset(p,0,block_size);                         // zero memory

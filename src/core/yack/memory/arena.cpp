@@ -261,7 +261,7 @@ namespace yack
             take(addr);
         }
 
-        void  arena:: zremove(void *addr) throw()
+        void  arena:: expunge(void *addr) throw()
         {
             find(addr);
             memset(addr,0,chunk_block_size);

@@ -15,6 +15,22 @@ namespace
         size_t size;
     };
 
+    static inline void check_all_different(const block *blocks, const size_t count)
+    {
+        for(size_t i=0;i<count;++i)
+        {
+            const void *lhs = blocks[i].addr;
+            for(size_t j=i+1;j<count;++j)
+            {
+                const void *rhs = blocks[j].addr;
+                if(lhs==rhs)
+                {
+                    throw exception("same blocks[%u] and [%u]", unsigned(i), unsigned(j) );
+                }
+                YACK_ASSERT(lhs!=rhs);
+            }
+        }
+    }
 
 }
 
@@ -41,7 +57,9 @@ YACK_UTEST(memory_chunk)
                 blocks[i].addr = ch.acquire(block_size);
                 blocks[i].size = block_size;
             }
+            check_all_different(blocks,count);
             ran.shuffle(blocks,count);
+            check_all_different(blocks,count);
             for(size_t i=0;i<count/2;++i)
             {
                 ch.release(blocks[i].addr,block_size);
@@ -51,6 +69,7 @@ YACK_UTEST(memory_chunk)
                 blocks[i].addr = ch.acquire(block_size);
             }
             ran.shuffle(blocks,count);
+            check_all_different(blocks,count);
             for(size_t i=0;i<count;++i)
             {
                 ch.release(blocks[i].addr,block_size);;
@@ -71,7 +90,7 @@ YACK_UTEST(memory_chunk)
         const size_t   optims = memory::chunk::optimized_bytes_for(block_size,blocks);
         memory::chunk *ch     = memory::chunk::create_frame(block_size,optims,mem);
 
-        YACK_CHECK(ch->provided_number==blocks);
+        YACK_ASSERT(ch->provided_number==blocks);
 
 
         memory::chunk::delete_frame(ch,optims,mem);

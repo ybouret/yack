@@ -30,7 +30,8 @@ namespace yack
             virtual void lock()     throw(); //!< lock
             virtual void unlock()   throw(); //!< unlock
             virtual bool try_lock() throw(); //!< try lock
-
+            
+            
         private:
             YACK_DISABLE_COPY_AND_ASSIGN(mutex);
             quark::mutex *impl;

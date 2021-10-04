@@ -9,7 +9,11 @@ using namespace yack;
 
 YACK_UTEST(sync_mutex)
 {
-    synchronic::mutex m1;
+    std::cerr << "    ==== enter " << program << std::endl;
+    {
+        synchronic::mutex m1;
+    }
+    std::cerr << "    ==== leave " << program << std::endl;
 
 }
 YACK_UDONE()

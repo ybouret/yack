@@ -9,6 +9,7 @@
 #include "yack/memory/ram.hpp"
 #include "yack/type/out-of-reach.hpp"
 #include "yack/type/destruct.hpp"
+#include "yack/lockable.hpp"
 
 #include <cstring>
 #include <new>
@@ -31,54 +32,54 @@ typedef CRITICAL_SECTION yack_mutex;
 namespace yack
 {
 #if defined(YACK_WIN)
-	namespace win32
-	{
-
-		class semaphore
-		{
-		public:
-			inline semaphore() : sem_(0)
-			{
-				static const long lMinCount = 0;
-				static const long lMaxCount = 65535;
-				sem_ = ::CreateSemaphore(NULL, lMinCount, lMaxCount, NULL);
-				if (!sem_)
-				{
-					throw win32::exception(::GetLastError(), "::CreateSemaphore()");
-				}
-
-			}
-
-			inline ~semaphore() throw()
-			{
-				assert(sem_);
-				::CloseHandle(sem_);
-				sem_ = NULL;
-			}
-
-			inline void wait() throw()
-			{
-				assert(sem_ != NULL);
-				const DWORD res = WaitForSingleObject(sem_,           /* handle to semaphore  */
-					INFINITE);      /* let's wait          */
-				if (res != WAIT_OBJECT_0)
-					system_error::critical_win(::GetLastError(), "WaitForSingleObject( SEMAPHORE )");
-			}
-
-			inline void post() throw()
-			{
-				assert(sem_ != NULL);
-				if (!::ReleaseSemaphore(sem_, 1, NULL))
-					system_error::critical_win(::GetLastError(), "::ReleaseSemaphore");
-			}
-
-		private:
-			HANDLE sem_;
-			YACK_DISABLE_COPY_AND_ASSIGN(semaphore);
-		};
-	}
+    namespace win32
+    {
+        
+        class semaphore
+        {
+        public:
+            inline semaphore() : sem_(0)
+            {
+                static const long lMinCount = 0;
+                static const long lMaxCount = 65535;
+                sem_ = ::CreateSemaphore(NULL, lMinCount, lMaxCount, NULL);
+                if (!sem_)
+                {
+                    throw win32::exception(::GetLastError(), "::CreateSemaphore()");
+                }
+                
+            }
+            
+            inline ~semaphore() throw()
+            {
+                assert(sem_);
+                ::CloseHandle(sem_);
+                sem_ = NULL;
+            }
+            
+            inline void wait() throw()
+            {
+                assert(sem_ != NULL);
+                const DWORD res = WaitForSingleObject(sem_,           /* handle to semaphore  */
+                                                      INFINITE);      /* let's wait          */
+                if (res != WAIT_OBJECT_0)
+                    system_error::critical_win(::GetLastError(), "WaitForSingleObject( SEMAPHORE )");
+            }
+            
+            inline void post() throw()
+            {
+                assert(sem_ != NULL);
+                if (!::ReleaseSemaphore(sem_, 1, NULL))
+                    system_error::critical_win(::GetLastError(), "::ReleaseSemaphore");
+            }
+            
+        private:
+            HANDLE sem_;
+            YACK_DISABLE_COPY_AND_ASSIGN(semaphore);
+        };
+    }
 #endif
-
+    
     namespace synchronic
     {
         namespace quark
@@ -93,17 +94,48 @@ namespace yack
             struct mutex {
                 yack_mutex impl;
                 inline yack_mutex * operator*() throw() { return &impl; }
+                
+                
+                
+                
+                class handle
+                {
+                public:
+                    inline handle() : pointee( mutex_create() ) {}
+                    inline ~handle() throw() { mutex_delete(pointee); pointee=0; }
+                    inline mutex & operator*() throw() { assert(pointee); return *pointee; }
+                    
+                    inline void lock() throw()
+                    {
+                        assert(pointee);
+                        mutex_lock(pointee);
+                    }
+                    
+                    inline void unlock() throw()
+                    {
+                        assert(pointee);
+                        mutex_unlock(pointee);
+                    }
+                    
+                    
+                private:
+                    mutex *pointee;
+                    YACK_DISABLE_COPY_AND_ASSIGN(handle);
+                };
             };
             
             
-            //__________________________________________________________________
-            //
-            //
-            //! system condition
-            //
-            //__________________________________________________________________
             
+            
+            
+           
 #if defined(YACK_BSD)
+            //__________________________________________________________________
+            //
+            //
+            //! pthread condition
+            //
+            //__________________________________________________________________
             class condition
             {
             public:
@@ -124,36 +156,48 @@ namespace yack
                 YACK_DISABLE_COPY_AND_ASSIGN(condition);
             };
 #endif
-   
-                       
+            
+            
+#if defined(YACK_WIN)
             //__________________________________________________________________
             //
             //
-            // atelier
+            //! legacy win32 condition implementation
             //
             //__________________________________________________________________
-            class atelier : public memory::ram
+            class condition
             {
             public:
-                //______________________________________________________________
-                //
-                //
-                //! initialize
-                //
-                //______________________________________________________________
-                
-                inline  atelier() :
-                memory::ram(),
-                a_mutex(sizeof(yack_mutex),*this)
-#if defined(YACK_BSD)
-                , attr()
-#endif
+                inline explicit condition() :
+                cv_lock(),
+                cv_waiting(0),
+                cv_signals(0),
+                cv_wait_sem(),
+                cv_done_sem()
                 {
+                }
+                
+                inline ~condition() throw()
+                {}
+                
+            private:
+                mutex::handle    cv_lock;      /*!< condition lock               */
+                int              cv_waiting;   /*!< waiting count                */
+                int              cv_signals;   /*!< signals count                */
+                win32::semaphore cv_wait_sem;  /*!< Win32 semaphore when waiting */
+                win32::semaphore cv_done_sem;  /*!< Win32 semaphore when done    */
+
+            };
+            
+            
+#endif
+            
 #if defined(YACK_BSD)
-                    //__________________________________________________________
-                    //
-                    // specific PHTREAD CODE
-                    //__________________________________________________________
+            class mutex_attribute
+            {
+            public:
+                inline explicit mutex_attribute() : attr()
+                {
                     {
                         const int  res = pthread_mutexattr_init(&attr);
                         if (res != 0) throw libc::exception(res, "pthread_mutexattr_init");
@@ -167,9 +211,51 @@ namespace yack
                             throw libc::exception(res, "pthread_mutexattr_settype(RECURSIVE)");
                         }
                     }
+                }
+                
+                inline virtual ~mutex_attribute() throw()
+                {
+                    (void) pthread_mutexattr_destroy(&attr);
+                }
+                
+                pthread_mutexattr_t attr;
+                
+            private:
+                YACK_DISABLE_COPY_AND_ASSIGN(mutex_attribute);
+            };
 #endif
-                    
-                    
+            
+            
+            //__________________________________________________________________
+            //
+            //
+            // atelier
+            //
+            //__________________________________________________________________
+            class atelier : public memory::ram,
+#if defined(YACK_BSD)
+            public mutex_attribute,
+#endif
+            public lockable
+            {
+            public:
+                //______________________________________________________________
+                //
+                //
+                //! initialize
+                //
+                //______________________________________________________________
+                
+                inline  atelier() :
+                memory::ram(),
+#if defined(YACK_BSD)
+                mutex_attribute(),
+#endif
+                mutexes(sizeof(yack_mutex),*this),
+                conditions(sizeof(condition),*this),
+                giant( create_mutex() )
+                {
+                    assert(NULL!=giant);
                 }
                 
                 //______________________________________________________________
@@ -180,16 +266,31 @@ namespace yack
                 //______________________________________________________________
                 inline ~atelier() throw()
                 {
-#if defined(YACK_BSD)
-                    //__________________________________________________________
-                    //
-                    // specific PHTREAD code
-                    //__________________________________________________________
-                    (void) pthread_mutexattr_destroy( &attr );
-#endif
+                    assert(NULL!=giant);
+                    delete_mutex(giant);
+                    giant = NULL;
                 }
                 
+                //______________________________________________________________
+                //
+                //
+                // lockable interface
+                //
+                //______________________________________________________________
+                void lock() throw()
+                {
+                    mutex_lock(giant);
+                }
                 
+                void unlock() throw()
+                {
+                    mutex_unlock(giant);
+                }
+                
+                bool try_lock() throw()
+                {
+                    return mutex_try_lock(giant);
+                }
                 
                 //______________________________________________________________
                 //
@@ -199,7 +300,7 @@ namespace yack
                 //______________________________________________________________
                 inline mutex *create_mutex()
                 {
-                    mutex *m = a_mutex.invoke<mutex>();
+                    mutex *m =  mutexes.zombie<mutex>();
                     try
                     {
 #if defined(YACK_BSD)
@@ -222,7 +323,7 @@ namespace yack
                     }
                     catch(...)
                     {
-                        a_mutex.release(m);
+                        mutexes.release(m);
                         throw;
                     }
                     
@@ -238,7 +339,6 @@ namespace yack
                 inline void delete_mutex(mutex *m) throw()
                 {
                     assert(m);
-                    
 #if defined(YACK_BSD)
                     //______________________________________________________
                     //
@@ -257,9 +357,8 @@ namespace yack
                     ::DeleteCriticalSection(**m);
 #endif
                     
-                    a_mutex.revoke(m);
+                    mutexes.expunge(m);
                 }
-                
                 
                 
                 
@@ -269,10 +368,9 @@ namespace yack
                 // members
                 //
                 //______________________________________________________________
-                memory::arena       a_mutex;
-#if defined(YACK_BSD)
-                pthread_mutexattr_t attr;
-#endif
+                memory::arena       mutexes;
+                memory::arena       conditions;
+                mutex              *giant;
                 
             private:
                 YACK_DISABLE_COPY_AND_ASSIGN(atelier);
@@ -292,7 +390,8 @@ namespace yack
             static inline void atelier_quit(void *) throw()
             {
                 assert(!atelier_initialize);
-				yack::destruct( &atelier_location() );
+                assert( atelier_location().giant );
+                yack::destruct( &atelier_location() );
                 atelier_zero();
                 atelier_initialize = true;
             }
@@ -311,12 +410,18 @@ namespace yack
                 }
                 return *mgr;
             }
-             
+ 
+          
             
         }
         
     }
     
+    lockable & lockable:: giant()
+    {
+        static synchronic::quark::atelier &mgr =  synchronic::quark::atelier_instance();
+        return mgr;
+    }
 }
 
 
@@ -335,13 +440,7 @@ namespace yack
                 //
                 //--------------------------------------------------------------
                 static atelier &mgr =  atelier_instance();
-                
-                //--------------------------------------------------------------
-                //
-                // getting mutex and specific setup
-                //
-                //--------------------------------------------------------------
-                return mgr.create_mutex();
+                return          mgr.create_mutex();
             }
             
             void   mutex_delete(mutex *m) throw()
@@ -392,5 +491,30 @@ namespace yack
             
         }
     }
+}
+
+namespace yack
+{
+    namespace synchronic
+    {
+        namespace quark
+        {
+            condition *condition_create()
+            {
+                static atelier &mgr = atelier_instance();
+                return mgr.conditions.invoke<condition>();
+            }
+            
+            void condition_delete(condition *cond) throw()
+            {
+                assert(NULL!=cond);
+                static atelier &mgr = atelier_location();
+                return mgr.conditions.revoke(cond);
+            }
+        
+        }
+        
+    }
+    
 }
 

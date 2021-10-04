@@ -37,5 +37,7 @@ add_test(memory:arena  test-yack memory_arena)
 add_test(data:list      test-yack data_list)
 
 add_test(sync:lockable  test-yack sync_lockable)
+add_test(sync:mutex     test-yack sync_mutex)
+add_test(sync:condition test-yack sync_condition)
 
 yack_testing(yack)
