@@ -1,5 +1,5 @@
 
-#include "yack/synchronic/sync/mutex.hpp"
+#include "yack/synchronic/mutex.hpp"
 #include "yack/synchronic/quark/mutex.hpp"
 
 namespace yack
