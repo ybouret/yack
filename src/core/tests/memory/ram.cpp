@@ -32,7 +32,8 @@ YACK_UTEST(ram)
     block        blocks[256];
     const size_t nblock = sizeof(blocks)/sizeof(blocks[0]);
     memory::ram  mem;
-
+    const uint64_t ini = mem.get();
+    
     for(size_t i=0;i<nblock;++i)
     {
         const size_t block_size = 1+ (rand() % 32);
@@ -51,7 +52,7 @@ YACK_UTEST(ram)
         mem.release(blk.addr,blk.size);
     }
     std::cerr << "ram: " << mem.get() << std::endl;
-    YACK_CHECK(mem.get()==0);
+    YACK_CHECK(mem.get()==ini);
 
     for(size_t n=0;n<=10000;n+=100+ran.leq(100))
     {
@@ -59,7 +60,7 @@ YACK_UTEST(ram)
         test_for<uint32_t>(mem,n);
         test_for<block>(mem,n);
     }
-    YACK_CHECK(mem.get()==0);
+    YACK_CHECK(mem.get()==ini);
 
 
 

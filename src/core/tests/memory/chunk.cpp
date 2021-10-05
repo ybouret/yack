@@ -37,9 +37,10 @@ namespace
 YACK_UTEST(memory_chunk)
 {
 
-    uprng       ran;
-    block       blocks[256];
-    memory::ram mem;
+    uprng          ran;
+    block          blocks[256];
+    memory::ram    mem;
+    const uint64_t ini = mem.get();
 
     std::cerr << "Local Chunks..." << std::endl;
 
@@ -77,7 +78,7 @@ YACK_UTEST(memory_chunk)
            mem.release(chunk_data,chunk_size);
         }
     }
-    YACK_CHECK(mem.get()==0);
+    YACK_CHECK(mem.get()==ini);
 
     std::cerr << std::endl;
     std::cerr << "Global Chunks..." << std::endl;
@@ -94,7 +95,7 @@ YACK_UTEST(memory_chunk)
         memory::chunk::delete_frame(ch,frame_size,mem);
     }
 
-    YACK_CHECK(mem.get()==0);
+    YACK_CHECK(mem.get()==ini);
 
     YACK_SIZEOF(memory::chunk);
     std::cerr << "chunk::header=" << memory::chunk::header << std::endl;

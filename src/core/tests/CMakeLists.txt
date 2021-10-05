@@ -42,6 +42,7 @@ add_test(sync:primitive test-yack sync_primitive)
 add_test(sync:mutex     test-yack sync_mutex)
 add_test(sync:condition test-yack sync_condition)
 add_test(sync:thread    test-yack sync_condition)
+add_test(singleton      test-yack singleton)
 
 
 yack_testing(yack)
