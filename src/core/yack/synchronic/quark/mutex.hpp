@@ -15,11 +15,16 @@ namespace yack
         namespace quark
         {
             struct    mutex;
-            mutex *   mutex_create();                  //!< create a new recursive mutex
-            void      mutex_delete(mutex *)   throw(); //!< delete an old recursive mutex
-            void      mutex_lock(mutex*)      throw(); //!< lock
-            void      mutex_unlock(mutex *)   throw(); //!< unlock
-            bool      mutex_try_lock(mutex *) throw(); //!< try lock
+            struct    mutex_api
+            {
+                static mutex *create();
+                static void   destruct(mutex *) throw();
+                static void   lock(mutex *)     throw();
+                static void   unlock(mutex *)   throw();
+                static bool   try_lock(mutex *) throw();
+            };
+
+            
         }
     }
 }

@@ -1,4 +1,5 @@
 #include "yack/synchronic/quark/mutex.hpp"
+#include "yack/synchronic/quark/thread.hpp"
 
 #include "yack/system/error.hpp"
 #include "yack/system/exception.hpp"
@@ -102,20 +103,20 @@ namespace yack
                 class handle
                 {
                 public:
-                    inline handle() : pointee( mutex_create() ) {}
-                    inline ~handle() throw() { mutex_delete(pointee); pointee=0; }
+                    inline handle() : pointee( mutex_api::create() ) {}
+                    inline ~handle() throw() { mutex_api::destruct(pointee); pointee=0; }
                     inline mutex & operator*() throw() { assert(pointee); return *pointee; }
                     
                     inline void lock() throw()
                     {
                         assert(pointee);
-                        mutex_lock(pointee);
+                        mutex_api::lock(pointee);
                     }
                     
                     inline void unlock() throw()
                     {
                         assert(pointee);
-                        mutex_unlock(pointee);
+                        mutex_api::unlock(pointee);
                     }
                     
                     
@@ -229,7 +230,7 @@ namespace yack
                     
                     /* Unlock the mutex, as is required by condition variable semantics */
                     //m.unlock();
-					mutex_unlock(m);
+                    mutex_unlock(m);
 
                     
                     /* Wait for a signal */
@@ -255,7 +256,7 @@ namespace yack
                     
                     /* Lock the mutex, as is required by condition variable semantics */
                     //m.lock();
-					mutex_lock(m);
+                    mutex_lock(m);
                 }
                 
                 void signal() throw()
@@ -365,8 +366,81 @@ namespace yack
             //
             //==================================================================
 #endif
-            
-            
+
+
+            //==================================================================
+            //
+            //
+            // <thread>
+            //
+            //
+            //==================================================================
+            class thread
+            {
+            public:
+#if             defined(YACK_BSD)
+                typedef pthread_t handle;                 //!< system thread handle
+                typedef pthread_t ID;                     //!< system thread identifier
+                typedef void *  (*system_routine)(void*); //!< system threadable interface
+#define         Y_THREAD_LAUNCHER_RETURN void *
+#define         Y_THREAD_LAUNCHER_PARAMS void *
+#endif
+
+#if             defined(YACK_WIN)
+                typedef HANDLE handle;                         //!< system thread handle
+                typedef DWORD  ID;                             //!< system thread identifier
+                typedef LPTHREAD_START_ROUTINE system_routine; //!< system threadable interface
+#define         Y_THREAD_LAUNCHER_RETURN DWORD WINAPI
+#define         Y_THREAD_LAUNCHER_PARAMS LPVOID
+#endif
+                typedef thread_call call;
+
+                static inline handle launch(system_routine code, void *data, ID &tid)
+                {
+                    assert(code); assert(data);
+                    out_of_reach::zset(&tid,sizeof(ID));
+
+#if                 defined(YACK_BSD)
+                    const int res = pthread_create(&tid, NULL, code, data);
+                    if (res != 0)
+                    {
+                        throw libc::exception(res, "pthread_create");
+                    }
+                    return tid;
+#endif
+
+#if                 defined(YACK_WIN)
+                    handle h = ::CreateThread(0,
+                                              0,
+                                              code,
+                                              data,
+                                              0,
+                                              &tid);
+                    if (NULL == h)
+                    {
+                        const DWORD res = ::GetLastError();
+                        throw win32::exception(res, "::CreateThread");
+                    }
+                    return h;
+#endif
+
+
+                }
+
+            private:
+                YACK_DISABLE_COPY_AND_ASSIGN(thread);
+            };
+
+
+            //==================================================================
+            //
+            //
+            // <thread/>
+            //
+            //
+            //==================================================================
+
+
             //==================================================================
             //
             //
@@ -421,17 +495,17 @@ namespace yack
                 //______________________________________________________________
                 void lock() throw()
                 {
-                    mutex_lock(giant);
+                    mutex_api::lock(giant);
                 }
                 
                 void unlock() throw()
                 {
-                    mutex_unlock(giant);
+                    mutex_api::unlock(giant);
                 }
                 
                 bool try_lock() throw()
                 {
-                    return mutex_try_lock(giant);
+                    return mutex_api::try_lock(giant);
                 }
                 
                 //______________________________________________________________
@@ -604,13 +678,14 @@ namespace yack
     }
 }
 
-
 namespace yack
 {
     namespace synchronic
     {
         namespace quark
         {
+
+
             //==================================================================
             //
             //
@@ -618,7 +693,7 @@ namespace yack
             //
             //
             //==================================================================
-            mutex *mutex_create()
+            mutex *mutex_api::create()
             {
                 //--------------------------------------------------------------
                 //
@@ -629,52 +704,52 @@ namespace yack
                 return          mgr.create_mutex();
             }
             
-            void   mutex_delete(mutex *m) throw()
+            void   mutex_api::destruct(mutex *m) throw()
             {
                 assert(!atelier_initialize);
                 static atelier &mgr = atelier_location();
                 mgr.delete_mutex(m);
             }
-            
-            
-            void mutex_lock(mutex *m) throw()
+
+
+
+            void mutex_api:: lock(mutex *m) throw()
             {
+                assert(m);
 #if defined(YACK_BSD)
                 const int res = pthread_mutex_lock(**m);
                 if( res != 0 ) system_error::critical_bsd(res,"pthread_mutex_lock");
 #endif
-                
+
 #if defined(YACK_WIN)
-                ::EnterCriticalSection(**m);
+                ::EnterCriticalSection(***m);
 #endif
-                
+
             }
-            
-            void mutex_unlock(mutex *m) throw()
+
+            void mutex_api:: unlock(mutex *m) throw()
             {
                 assert(m);
 #if defined(YACK_BSD)
                 const int res = pthread_mutex_unlock(**m);
                 if( res != 0 ) system_error::critical_bsd(res,"pthread_mutex_unlock");
 #endif
-                
+
 #if defined(YACK_WIN)
                 ::LeaveCriticalSection(**m);
 #endif
             }
-            
-            bool   mutex_try_lock(mutex *m) throw()
+
+            bool   mutex_api:: try_lock(mutex *m) throw()
             {
-                assert(m);
 #if defined(YACK_WIN)
                 return ::TryEnterCriticalSection(**m) == TRUE;
 #endif
-                
+
 #if defined(YACK_BSD)
                 return pthread_mutex_trylock(**m) == 0;
 #endif
             }
-
             //==================================================================
             //
             //
@@ -685,6 +760,9 @@ namespace yack
         }
     }
 }
+
+
+#include "yack/synchronic/quark/condition.hpp"
 
 namespace yack
 {
@@ -699,33 +777,33 @@ namespace yack
             //
             //
             //==================================================================
-            condition *condition_create()
+            condition *condition_api::create()
             {
                 static atelier &mgr = atelier_instance();
                 return mgr.conditions.invoke<condition>();
             }
-            
-            void condition_delete(condition *cond) throw()
+
+            void condition_api:: destruct(condition *cond) throw()
             {
                 assert(NULL!=cond);
                 static atelier &mgr = atelier_location();
                 return mgr.conditions.revoke(cond);
             }
-            
-            void condition_wait(condition *cond,mutex *m) throw()
+
+            void condition_api:: wait(condition *cond,mutex *m) throw()
             {
                 assert(cond);
                 assert(m);
                 cond->wait(m);
             }
 
-            void       condition_signal(condition *cond)   throw()
+            void condition_api:: signal(condition *cond)   throw()
             {
                 assert(cond);
                 cond->signal();
             }
 
-            void       condition_broadcast(condition *cond) throw()
+            void condition_api:: broadcast(condition *cond) throw()
             {
                 assert(cond);
                 cond->broadcast();
@@ -740,9 +818,9 @@ namespace yack
             //
             //==================================================================
         }
-        
+
     }
-    
+
 }
 
 #include "yack/synchronic/primitive.hpp"
@@ -764,6 +842,6 @@ namespace yack
             std::cerr << "<synchronic::primitive/>" << std::endl;
         }
     }
-    
+
 }
 

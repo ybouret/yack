@@ -8,7 +8,7 @@ namespace yack
     {
         condition:: condition() :
         primitive(),
-        impl( quark::condition_create() )
+        impl( quark::condition_api::create() )
         {
             assert(impl);
         }
@@ -17,26 +17,26 @@ namespace yack
         condition:: ~condition() throw()
         {
             assert(NULL!=impl);
-            quark::condition_delete(impl);
+            quark::condition_api:: destruct(impl);
             impl=NULL;
         }
 
         void condition:: wait(mutex &m) throw()
         {
             assert(NULL!=impl);
-            quark::condition_wait(impl,m.impl);
+            quark::condition_api::wait(impl,m.impl);
         }
 
         void condition:: signal() throw()
         {
             assert(NULL!=impl);
-            quark::condition_signal(impl);
+            quark::condition_api::signal(impl);
         }
 
         void condition:: broadcast() throw()
         {
             assert(NULL!=impl);
-            quark::condition_broadcast(impl);
+            quark::condition_api::broadcast(impl);
         }
         
     }

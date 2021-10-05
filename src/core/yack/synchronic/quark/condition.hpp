@@ -15,12 +15,15 @@ namespace yack
             
             struct mutex;
             class  condition;
-            
-            condition *condition_create();                    //!< create a condition
-            void       condition_delete(condition *) throw(); //!< delete a condition
-            void       condition_wait(condition *,mutex *) throw(); //!< wait on a LOCKED mutex, wakeup on a LOCKED mutex
-            void       condition_signal(condition *)       throw(); //!< signal one waiting thread
-            void       condition_broadcast(condition *)    throw(); //!< broadcast all waiting threads
+
+            struct condition_api
+            {
+                static condition *create();                          //!< create a condition
+                static void       destruct(condition *)     throw(); //!< delete a condition
+                static void       wait(condition *,mutex *) throw(); //!< wait on a LOCKED mutex, wakeup on a LOCKED mutex
+                static void       signal(condition *)       throw(); //!< signal one waiting thread
+                static void       broadcast(condition *)    throw(); //!< broadcast all waiting threads
+            };
         }
     }
 }
