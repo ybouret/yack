@@ -59,7 +59,6 @@ YACK_UTEST(memory_chunk)
             }
             check_all_different(blocks,count);
             ran.shuffle(blocks,count);
-            check_all_different(blocks,count);
             for(size_t i=0;i<count/2;++i)
             {
                 ch.release(blocks[i].addr,block_size);
@@ -87,7 +86,7 @@ YACK_UTEST(memory_chunk)
     for(size_t block_size=1;block_size<=256;++block_size)
     {
         size_t         blocks = 0;
-        const size_t   optims = memory::chunk::optimized_bytes_for(block_size,blocks);
+        const size_t   optims = memory::chunk::optimized_bytes_for(block_size,blocks,false);
         memory::chunk *ch     = memory::chunk::create_frame(block_size,optims,mem);
 
         YACK_ASSERT(ch->provided_number==blocks);

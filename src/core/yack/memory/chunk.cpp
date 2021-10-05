@@ -9,6 +9,7 @@
 #include "yack/type/destruct.hpp"
 #include <cstring>
 #include <iostream>
+#include <iomanip>
 
 namespace yack
 {
@@ -147,38 +148,50 @@ namespace yack
         const size_t chunk:: header = YACK_MEMALIGN(sizeof(chunk));
 
 
-        size_t chunk:: optimized_bytes_for(const size_t block_size, size_t &blocks) throw()
+        static inline size_t blocks_for(const size_t chunk_size, const size_t block_size) throw()
+        {
+            assert(chunk_size>=chunk::header);
+            return (chunk_size-chunk::header)/block_size;
+        }
+
+        size_t chunk:: optimized_bytes_for(const size_t block_size,
+                                           size_t      &blocks,
+                                           const bool   compact) throw()
         {
             assert(block_size>0);
-            // initialize search
-            size_t count  = next_power_of_two( header+1 ); assert(count>header);
-            while( (blocks=(count-header)/block_size) <= 0 ) count <<= 1;
 
+            // initialize search
+            size_t min_chunk_size = next_power_of_two( header+1 ); assert(min_chunk_size>header);
+            size_t min_num_blocks = blocks_for(min_chunk_size,block_size);
+            while( min_num_blocks <= 0 ) min_num_blocks = blocks_for( min_chunk_size <<= 1, block_size);
+
+
+            size_t max_chunk_size = min_chunk_size;
+            size_t max_num_blocks = min_num_blocks;
             // find maximal optimized size
-            while(blocks<255)
+            while(max_num_blocks<255)
             {
-                const size_t next_count = count << 1;
-                const size_t next_blocks= (next_count-header)/block_size;
-                if(next_blocks>255)
+                const size_t next_chunk_size = max_chunk_size << 1;
+                const size_t next_num_blocks = blocks_for(next_chunk_size,block_size);
+                if(next_num_blocks>255)
                 {
                     break;
                 }
-                blocks = next_blocks;
-                count  = next_count;
+                max_chunk_size = next_chunk_size;
+                max_num_blocks = next_num_blocks;
             }
-            assert(header+blocks*block_size<=count);
-            
-            assert(is_a_power_of_two(count));
-            if(count>YACK_CHUNK_SIZE)
+            assert(header+max_num_blocks*block_size<=max_chunk_size);
+            std::cerr << "block_size     = " << block_size << std::endl;
+            std::cerr << "  min_chunk_size = " << std::setw(6) << min_chunk_size << " => #blocks=" << min_num_blocks << std::endl;
+            std::cerr << "  max_chunk_size = " << std::setw(6) << max_chunk_size << " => #blocks=" << max_num_blocks << std::endl;
+
+            if(compact)
             {
-                const size_t new_count  = YACK_CHUNK_SIZE;
-                const size_t new_blocks = (new_count-header)/block_size;
-                std::cerr << "new_blocks@" << new_count << "  = " << new_blocks << std::endl;
             }
 
-            
 
-            return count;
+            blocks = max_num_blocks;
+            return max_chunk_size;
         }
 
         chunk *chunk:: create_frame(const size_t block_size, const size_t full_bytes, allocator &dispatcher)

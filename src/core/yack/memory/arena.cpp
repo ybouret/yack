@@ -47,15 +47,17 @@ namespace yack
             }
         }
         
-        arena:: arena(const size_t block_size, allocator &user_allocator):
+        arena:: arena(const size_t block_size,
+                      allocator   &dispatcher,
+                      const bool   compact):
         available_blocks(0),
         acquiring(NULL),
         releasing(NULL),
         impl(),
-        memory_io(user_allocator),
+        memory_io(dispatcher),
         chunk_block_size(block_size),
         blocks_per_chunk(0),
-        memory_per_chunk( chunk::optimized_bytes_for(block_size, coerce(blocks_per_chunk) ) ),
+        memory_per_chunk( chunk::optimized_bytes_for(block_size,coerce(blocks_per_chunk),compact) ),
         memory_signature( base2<size_t>::log2_of(memory_per_chunk) )
         {
             YACK_STATIC_CHECK(sizeof(impl)>=sizeof(chunks_list),impl_too_small);

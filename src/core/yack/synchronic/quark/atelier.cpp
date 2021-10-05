@@ -356,8 +356,8 @@ namespace yack
 #if defined(YACK_BSD)
                 mutex_attribute(),
 #endif
-                mutexes(sizeof(yack_mutex),*this),
-                conditions(sizeof(condition),*this),
+                mutexes(sizeof(yack_mutex),*this,true),
+                conditions(sizeof(condition),*this,true),
                 giant( create_mutex() )
                 {
                     assert(NULL!=giant);

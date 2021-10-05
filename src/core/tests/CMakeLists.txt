@@ -18,7 +18,8 @@ ${memory}
 ${data}
 ${sync}
 )
-target_link_libraries(test-yack yack)
+
+yack_link_libraries(test-yack)
 
 enable_testing()
 add_test(crc32   test-yack crc32)

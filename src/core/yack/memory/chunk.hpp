@@ -27,13 +27,18 @@ namespace yack
             // types and definition
             //__________________________________________________________________
             static const size_t header; //!< aligned size of chunk
-            
+
             //__________________________________________________________________
             //
             // C++
             //__________________________________________________________________
           
-            //! setup
+            //! setup and format blocks
+            /**
+             \param block_size > 0
+             \param chunk_data user's memory entry
+             \param chunk_size user's memory size
+             */
             chunk(const size_t block_size,
                   void        *chunk_data,
                   const size_t chunk_size) throw();
@@ -43,19 +48,34 @@ namespace yack
 
             //__________________________________________________________________
             //
-            // methods
+            // query methods
             //__________________________________________________________________
             bool      is_empty()                                      const throw(); //!< still_available >= provided_number
             bool      contains(const void *addr)                      const throw(); //!< in range
             bool      owns(const void *addr, const size_t block_size) const throw(); //!< in range AND aligned
             size_t    allocated()                                     const throw(); //!< provided_number - still_available
             ownership whose(const void *addr)                         const throw(); //!< query ownsership
-            
-            void *acquire(const size_t block_size) throw();             //!< needs still_available>0
-            void  release(void *addr, const size_t block_size) throw(); //!< previuosly acquired block
+
+            //__________________________________________________________________
+            //
+            // memory methods
+            //__________________________________________________________________
+
+            //! need still_available>0: get the first available block, zeroed
+            void *acquire(const size_t block_size) throw();
+
+            //! release a previously acquired block, untouched
+            void  release(void *addr, const size_t block_size) throw();
             
             //! compute an optimized, power of two memory area to hold chunk+data
-            static size_t optimized_bytes_for(const size_t block_size, size_t &blocks_per_chunk) throw();
+            /**
+             \param block_size     is for the chunk
+             \param blocks         are available per chunk
+             \param compact        false=>any memory, true=>close to YACK_CHUNK_SIZE
+             */
+            static size_t optimized_bytes_for(const size_t block_size,
+                                              size_t      &blocks,
+                                              const bool   compact) throw();
 
             //! create a single frame with chunk+data
             static chunk *create_frame(const size_t block_size,
@@ -66,7 +86,10 @@ namespace yack
             static void   delete_frame(chunk     *,
                                        size_t     full_bytes,
                                        allocator &dispatcher) throw();
-
+            //__________________________________________________________________
+            //
+            // members
+            //__________________________________________________________________
             uint8_t                    first_available; //!< bookeeping
             uint8_t                    still_available; //!< bookeeping
             const uint8_t              provided_number; //!< initial count

@@ -148,3 +148,28 @@ if(NOT YACK_KNOWN_COMPILER)
 	message( FATAL_ERROR "[YACK] unknown compilers '${YACK_CC}'" )
 endif()
 
+
+########################################################################
+##
+##
+##  linking
+##
+##
+########################################################################
+
+function(yack_link_libraries program)
+	set(yack_libs "yack")
+	
+	########################################################################
+	##
+	## threads support
+	##
+	########################################################################
+	if(YACK_LINUX)
+		list(APPEND yack_libs "pthread")
+	endif()
+ 	
+	message( STATUS "[YACK] link libraries @${program} : ${yack_libs}" )
+	target_link_libraries(${program} ${yack_libs})
+endfunction()
+

@@ -29,7 +29,7 @@ namespace yack
             //__________________________________________________________________
             static const size_t list_words = 5; //!< for internal memory
            
-            arena(const size_t block_size, allocator &); //!< setup with a first chunk
+            arena(const size_t block_size, allocator &, const bool compact); //!< setup with a first chunk
             ~arena() throw();               //!< cleanup
             
             void *acquire();                   //!< acquire one block, zeroed
