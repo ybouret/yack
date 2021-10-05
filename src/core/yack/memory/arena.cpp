@@ -5,6 +5,7 @@
 #include "yack/type/out-of-reach.hpp"
 #include "yack/check/static.hpp"
 #include "yack/data/list.hpp"
+#include "yack/data/pool.hpp"
 #include "yack/type/destruct.hpp"
 #include <cstring>
 
@@ -17,7 +18,8 @@ namespace yack
     {
         
         typedef list_of<chunk> chunks_list;
-        
+        typedef pool_of<chunk> chunks_pool;
+
         // kill a normally empty chunk
         void arena:: kill(chunk *ch) throw()
         {
@@ -53,6 +55,7 @@ namespace yack
         available_blocks(0),
         acquiring(NULL),
         releasing(NULL),
+        empty(NULL),
         impl(),
         repo(),
         memory_io(dispatcher),
@@ -62,6 +65,7 @@ namespace yack
         memory_signature( base2<size_t>::log2_of(memory_per_chunk) )
         {
             YACK_STATIC_CHECK(sizeof(impl)>=sizeof(chunks_list),impl_too_small);
+            YACK_STATIC_CHECK(sizeof(repo)>=sizeof(chunks_pool),repo_too_small);
 
             std::cerr << "<arena>" << std::endl;
             std::cerr << "  chunk_block_size: " << chunk_block_size << std::endl;
@@ -84,19 +88,34 @@ namespace yack
                 destruct(chunks);
                 throw;
             }
-            new ( out_of_reach::address(repo) ) chunks_list();
+            new ( out_of_reach::address(repo) ) chunks_pool();
             releasing = acquiring;
         }
-        
+
+        chunk * arena:: build()
+        {
+            return chunk::create_frame(chunk_block_size,memory_per_chunk,memory_io);
+        }
+
+        chunk * arena:: query()
+        {
+            chunks_pool *ccache =  coerce_to<chunks_pool>(repo);
+            return (ccache->size>0) ? ccache->query() : build();
+        }
+
         void arena::grow()
         {
+            // append a new chunk
             chunks_list *chunks = coerce_to<chunks_list>(impl);
-            acquiring           = chunks->push_back( chunk::create_frame(chunk_block_size,memory_per_chunk,memory_io) );
-            assert(acquiring->provided_number==blocks_per_chunk);
+            acquiring           = chunks->push_back( query() ); assert(acquiring->provided_number==blocks_per_chunk);
+
+            // bookkeeping
             available_blocks += blocks_per_chunk;
+
+            // sort memory
             while( acquiring->prev && acquiring<acquiring->prev)
             {
-               (void)chunks->towards_front(acquiring);
+                (void)chunks->towards_front(acquiring);
             }
         }
         
@@ -221,6 +240,10 @@ namespace yack
             if(releasing->is_empty())
             {
                 std::cerr << "empty chunk." << chunk_block_size << std::endl;
+                if(NULL==empty)
+                {
+                    empty = releasing;
+                }
             }
         }
         
