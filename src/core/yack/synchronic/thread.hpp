@@ -15,11 +15,21 @@ namespace yack
             class thread;
         }
 
+        //______________________________________________________________________
+        //
+        //
+        //! low level thread creation
+        //
+        //______________________________________________________________________
         class thread
         {
         public:
-            explicit thread(threadable proc, void *args);
-            virtual ~thread() throw();
+            //__________________________________________________________________
+            //
+            // C++
+            //__________________________________________________________________
+            explicit thread(threadable proc, void *args); //!< initialize
+            virtual ~thread() throw();                    //!< wait and destruct
             
         private:
             quark::thread *impl;

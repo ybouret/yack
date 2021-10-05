@@ -12,6 +12,12 @@ namespace yack
         namespace quark
         {
             class    thread;
+            //__________________________________________________________________
+            //
+            //
+            //! thread API
+            //
+            //__________________________________________________________________
             struct   thread_api
             {
                 static  thread *  init(threadable, void *); //!< create a new  thread

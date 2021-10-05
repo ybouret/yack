@@ -14,6 +14,13 @@ namespace yack
         {
             
             class  condition;
+
+            //__________________________________________________________________
+            //
+            //
+            //! condition API
+            //
+            //__________________________________________________________________
             struct condition_api
             {
                 static condition *init();                      //!< create a condition
