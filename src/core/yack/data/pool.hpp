@@ -99,9 +99,9 @@ assert(NULL!=NODE); assert(NULL==(NODE)->next)
         //
         // C++
         //______________________________________________________________________
-        virtual ~pool_of() throw() {} //!< cleanup
+        virtual ~pool_of() throw() {} //!< need cleanup before this!
 
-    protected:
+        //! setup empty
         explicit pool_of() throw() : interlinked<NODE>(), head(0) {}
 
     private:

@@ -4,7 +4,7 @@
 #include "yack/arith/base2.hpp"
 #include "yack/type/out-of-reach.hpp"
 #include "yack/check/static.hpp"
-#include "yack/data/raw-list.hpp"
+#include "yack/data/list.hpp"
 #include "yack/type/destruct.hpp"
 #include <cstring>
 
@@ -16,7 +16,7 @@ namespace yack
     namespace memory
     {
         
-        typedef raw_list_of<chunk> chunks_list;
+        typedef list_of<chunk> chunks_list;
         
         // kill a normally empty chunk
         void arena:: kill(chunk *ch) throw()
@@ -54,6 +54,7 @@ namespace yack
         acquiring(NULL),
         releasing(NULL),
         impl(),
+        repo(),
         memory_io(dispatcher),
         chunk_block_size(block_size),
         blocks_per_chunk(0),
@@ -61,17 +62,17 @@ namespace yack
         memory_signature( base2<size_t>::log2_of(memory_per_chunk) )
         {
             YACK_STATIC_CHECK(sizeof(impl)>=sizeof(chunks_list),impl_too_small);
+
             std::cerr << "<arena>" << std::endl;
             std::cerr << "  chunk_block_size: " << chunk_block_size << std::endl;
             std::cerr << "  blocks_per_chunk: " << blocks_per_chunk << std::endl;
             std::cerr << "  memory_per_chunk: " << memory_per_chunk << std::endl;
             std::cerr << "  memory_signature: " << memory_signature << std::endl;
             std::cerr << "<arena/>" << std::endl;
-            std::cerr << "sizeof(chunks) = " << sizeof(chunks_list) << std::endl;
-            std::cerr << "sizeof(impl)   = " << sizeof(impl) << std::endl;
 
 
             Y_STATIC_ZSET(impl);
+            Y_STATIC_ZSET(repo);
             chunks_list *chunks = coerce_to<chunks_list>(impl);
             new (chunks) chunks_list();
             try
@@ -83,6 +84,7 @@ namespace yack
                 destruct(chunks);
                 throw;
             }
+            new ( out_of_reach::address(repo) ) chunks_list();
             releasing = acquiring;
         }
         

@@ -27,15 +27,28 @@ namespace yack
             //
             // types and definition
             //__________________________________________________________________
-            static const size_t list_words = 5; //!< for internal memory
-           
+            static const size_t list_words = 4; //!< for internal memory
+            
+            //__________________________________________________________________
+            //
+            // C++
+            //__________________________________________________________________
             arena(const size_t block_size, allocator &, const bool compact); //!< setup with a first chunk
             ~arena() throw();               //!< cleanup
-            
+
+            //__________________________________________________________________
+            //
+            // memory methods
+            //__________________________________________________________________
             void *acquire();                   //!< acquire one block, zeroed
             void  release(void *addr) throw(); //!< release one block
             void  expunge(void *addr) throw(); //!< zero and release block
-         
+
+            //__________________________________________________________________
+            //
+            // memory helpers
+            //__________________________________________________________________
+
             //! create a zombie object
             template <typename T> inline
             T *zombie()
@@ -68,6 +81,7 @@ namespace yack
             chunk       *acquiring;
             chunk       *releasing;
             void        *impl[list_words];
+            void        *repo[list_words];
             allocator   &memory_io;
             
         public:

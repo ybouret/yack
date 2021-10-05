@@ -32,8 +32,13 @@ assert(NULL!=NODE); assert(NULL==(NODE)->next); assert(NULL==(NODE)->prev)
         //
         // C++
         //______________________________________________________________________
-        virtual ~list_of() throw() {}
 
+        //! setup empty
+        explicit list_of() throw() : interlinked<NODE>(), head(0), tail(0) {}
+
+        //! need cleanup before!
+        virtual ~list_of() throw() {}
+        
         //______________________________________________________________________
         //
         // interlinked interface
@@ -244,9 +249,7 @@ assert(NULL!=NODE); assert(NULL==(NODE)->next); assert(NULL==(NODE)->prev)
         NODE *head; //!< head NODE
         NODE *tail; //!< tail NODE
 
-    protected:
-        //! setup empty
-        explicit list_of() throw() : interlinked<NODE>(), head(0), tail(0) {}
+
 
     private:
         YACK_DISABLE_COPY_AND_ASSIGN(list_of);
