@@ -45,13 +45,7 @@ namespace yack
         namespace quark
         {
 
-            //==================================================================
-            //
-            //
-            // <atelier>
-            //
-            //
-            //==================================================================
+
             class atelier : public memory::ram,
 #if defined(YACK_BSD)
             public mutex_attribute,
@@ -68,8 +62,7 @@ namespace yack
                 //
                 //______________________________________________________________
                 
-                inline  atelier() :
-                memory::ram(),
+                inline  atelier() : memory::ram(),
 #if defined(YACK_BSD)
                 mutex_attribute(),
 #endif
@@ -157,22 +150,15 @@ namespace yack
                 // members
                 //
                 //______________________________________________________________
-                memory::arena       mutexes;
-                memory::arena       conditions;
-                memory::arena       threads;
-                mutex              *giant;
+                memory::arena       mutexes;     //!< compact arena of mutexes
+                memory::arena       conditions;  //!< compact arena of conditions
+                memory::arena       threads;     //!< compact arena of threads
+                mutex              *giant;       //!< giant mutex location
                 
                 
             private:
                 YACK_DISABLE_COPY_AND_ASSIGN(atelier);
             };
-            //==================================================================
-            //
-            //
-            // <atelier/>
-            //
-            //
-            //==================================================================
 
 
             //==================================================================

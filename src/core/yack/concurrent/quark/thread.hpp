@@ -11,11 +11,22 @@ namespace yack
     {
         namespace quark
         {
+            //__________________________________________________________________
+            //
+            //
+            // thread declaration
+            //
+            //__________________________________________________________________
             class    thread;
+            
             //__________________________________________________________________
             //
             //
             //! thread API
+            /**
+             Each thread is created from  a compact memory::arena within
+             the internal atelier.
+            */
             //
             //__________________________________________________________________
             struct   thread_api

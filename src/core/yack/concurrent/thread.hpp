@@ -10,6 +10,12 @@ namespace yack
 {
     namespace concurrent
     {
+        //______________________________________________________________________
+        //
+        //
+        // forward declaration
+        //
+        //______________________________________________________________________
         namespace quark
         {
             class thread;
@@ -18,7 +24,10 @@ namespace yack
         //______________________________________________________________________
         //
         //
-        //! low level thread creation
+        //! thread creation and startup
+        /**
+         The methods are directly implemented in thread-api.hxx
+         */
         //
         //______________________________________________________________________
         class thread

@@ -12,13 +12,22 @@ namespace yack
     {
         namespace quark
         {
-            
+            //______________________________________________________________________
+            //
+            //
+            // forward declaration
+            //
+            //______________________________________________________________________
             class  condition;
 
             //__________________________________________________________________
             //
             //
             //! condition API
+            /**
+             the memory of the condition is within a compact memory::arena
+             of the internal atelier.
+             */
             //
             //__________________________________________________________________
             struct condition_api

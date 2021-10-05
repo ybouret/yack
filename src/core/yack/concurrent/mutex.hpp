@@ -11,6 +11,12 @@ namespace yack
 {
     namespace concurrent
     {
+        //______________________________________________________________________
+        //
+        //
+        // forward declarations
+        //
+        //______________________________________________________________________
         class condition;
         namespace quark { struct mutex;}
         
@@ -18,6 +24,10 @@ namespace yack
         //
         //
         //! recursive mutex
+        /**
+         The system's mutex is hold within the quark::mutex.
+         The methods are directly managed from within the internal atelier.
+         */
         //
         //______________________________________________________________________
         class mutex : public primitive, public lockable

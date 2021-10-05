@@ -9,8 +9,13 @@ namespace yack
 {
     namespace concurrent
     {
+        //______________________________________________________________________
+        //
+        //
+        // forward declarations
+        //
+        //______________________________________________________________________
         class mutex;
-
         namespace quark
         {
             class condition;
@@ -19,7 +24,11 @@ namespace yack
         //______________________________________________________________________
         //
         //
-        //! condition object
+        //! condition variable
+        /**
+         The system's condition is hold within the quark::condition.
+         the methods are then directly implemented withing condition-api.hxx
+         */
         //
         //______________________________________________________________________
         class condition : public primitive

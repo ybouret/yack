@@ -14,11 +14,20 @@ namespace yack
         
         namespace quark
         {
+            //__________________________________________________________________
+            //
+            // structure declaration
+            //__________________________________________________________________
             struct    mutex;
+
             //__________________________________________________________________
             //
             //
             //! mutex API
+            /**
+             the memory of each mutex is within a compact memory::arena
+             managed by the internal atelier.
+             */
             //
             //__________________________________________________________________
             struct    mutex_api
