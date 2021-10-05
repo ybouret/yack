@@ -49,7 +49,7 @@ namespace yack
             static const long lMinCount = 0;
             static const long lMaxCount = 65535;
 
-            inline  semaphore() : sem_(0) { if( !(sem_::CreateSemaphore(NULL, lMinCount, lMaxCount, NULL) ) ) throw win32::exception(::GetLastError(), "::CreateSemaphore()"); }
+            inline  semaphore() : sem_(0) { if( !(sem_ = ::CreateSemaphore(NULL,lMinCount,lMaxCount,NULL) ) ) throw win32::exception(::GetLastError(), "::CreateSemaphore()"); }
             inline ~semaphore() throw() { assert(sem_); ::CloseHandle(sem_); sem_ = NULL; }
 
             inline void wait() throw()
