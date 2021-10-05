@@ -16,14 +16,14 @@ namespace
         synchronic::condition cv;
         size_t                ready;
 
-        inline workspace() : access(), cv()
+        inline workspace() : access(), cv(), ready()
         {
         }
 
         inline ~workspace() throw()
         {
         }
-        
+
 
     private:
         YACK_DISABLE_COPY_AND_ASSIGN(workspace);
