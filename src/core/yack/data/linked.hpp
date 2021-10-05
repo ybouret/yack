@@ -43,6 +43,28 @@ namespace yack
         YACK_DISABLE_COPY_AND_ASSIGN(linked);
     };
 
+    //__________________________________________________________________________
+    //
+    //
+    //! base class for interlinked nodes
+    //
+    //__________________________________________________________________________
+    template <typename NODE>
+    class interlinked  : public linked
+    {
+    public:
+        inline virtual ~interlinked() throw() {}
+
+        virtual bool owns(const NODE*) const throw() = 0; //!< check ownership
+        virtual void reverse()               throw() = 0; //!< reverse order
+
+    protected:
+        inline explicit interlinked() throw() : linked() {}
+
+    private:
+        YACK_DISABLE_COPY_AND_ASSIGN(interlinked);
+    };
+
 }
 
 #endif

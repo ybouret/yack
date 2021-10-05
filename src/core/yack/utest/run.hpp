@@ -73,7 +73,7 @@ namespace yack
 
         //! card-desk shuffle for lists
         template <typename LIST> inline
-        void shuffle(LIST &l) throw()
+        void shuffle_list(LIST &l) throw()
         {
             LIST tmp;
             while(l.size)
@@ -83,7 +83,22 @@ namespace yack
             }
             tmp.swap_with(l);
         }
-        
+
+        //! card-desk shuffle for pools
+        template <typename POOL> inline
+        void shuffle_pool(POOL &p) throw()
+        {
+            POOL p1;
+            POOL p2;
+            while(p.size)
+            {
+                if(choice()) p1.store( p.query() ); else p2.store( p.query() );
+            }
+            p.merge(p1);
+            p.merge(p2);
+        }
+
+
     private:
         YACK_DISABLE_COPY_AND_ASSIGN(uprng);
 

@@ -20,7 +20,7 @@ assert(NULL!=NODE); assert(NULL==(NODE)->next)
     //
     //__________________________________________________________________________
     template <typename NODE>
-    class pool_of : public linked
+    class pool_of : public interlinked<NODE>
     {
     public:
         //______________________________________________________________________
@@ -31,10 +31,9 @@ assert(NULL!=NODE); assert(NULL==(NODE)->next)
 
         //______________________________________________________________________
         //
-        // methods
+        // interlinked interface
         //______________________________________________________________________
 
-        //! check ownership
         bool owns(const NODE *node) const throw()
         {
             assert(node);
@@ -45,32 +44,49 @@ assert(NULL!=NODE); assert(NULL==(NODE)->next)
             return false;
         }
 
+        inline virtual void reverse() throw()
+        {
+            pool_of tmp;
+            while(this->size) tmp.store( query() );
+            swap_with(tmp);
+        }
+
+        //______________________________________________________________________
+        //
+        // methods
+        //______________________________________________________________________
         //! store a new node
         NODE *store(NODE *node) throw()
         {
             YACK_POOL_CHECK(node);
             node->next = head;
             head       = node;
-            increase();
+            this->increase();
+            return node;
         }
 
         //! query head
         NODE *query() throw()
         {
-            assert(0<size);
-            assert(NULL!=head);
+            assert(0<this->size); assert(NULL!=head);
             NODE *node = head;
             head = head->next;
             node->next = NULL;
-            decrease();
+            this->decrease();
             return node;
         }
 
         //! no throw swap
         inline void swap_with(pool_of &other) throw()
         {
-            xch_size(other);
+            this->xch_size(other);
             cswap(head,other.head);
+        }
+
+        //! merge content of other
+        inline void merge(pool_of &other) throw()
+        {
+            while(other.size) store(other.query());
         }
 
         //______________________________________________________________________
@@ -86,7 +102,7 @@ assert(NULL!=NODE); assert(NULL==(NODE)->next)
         virtual ~pool_of() throw() {} //!< cleanup
 
     protected:
-        explicit pool_of() throw() : linked(), head(0) {}
+        explicit pool_of() throw() : interlinked<NODE>(), head(0) {}
 
     private:
         YACK_DISABLE_COPY_AND_ASSIGN(pool_of);
