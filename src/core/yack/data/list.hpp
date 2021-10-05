@@ -24,7 +24,7 @@ assert(NULL!=NODE); assert(NULL==(NODE)->next); assert(NULL==(NODE)->prev)
     public:
         //______________________________________________________________________
         //
-        // C++
+        // types and definition
         //______________________________________________________________________
         typedef NODE node_type; //!< alias
         

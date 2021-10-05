@@ -17,6 +17,7 @@ YACK_UTEST_DECL(16)
     YACK_UTEST(memory_arena);
 
     YACK_UTEST(data_list);
+    YACK_UTEST(data_pool);
 
     YACK_UTEST(sync_lockable);
     YACK_UTEST(sync_primitive);
