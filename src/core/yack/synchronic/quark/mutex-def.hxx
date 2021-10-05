@@ -15,8 +15,8 @@ namespace yack
                 class handle
                 {
                 public:
-                    inline  handle() : pointee( mutex_api::create() ) {}
-                    inline ~handle() throw() { mutex_api::destruct(pointee); pointee=0; }
+                    inline  handle() : pointee( mutex_api::init() ) {}
+                    inline ~handle() throw()  { mutex_api::quit(pointee); }
 
                     inline mutex & operator*() throw() { assert(pointee); return *pointee;            }
                     inline void lock()         throw() { assert(pointee); mutex_api::lock(pointee);   }

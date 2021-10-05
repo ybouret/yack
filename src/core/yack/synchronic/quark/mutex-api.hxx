@@ -12,7 +12,7 @@ namespace yack
             //
             //
             //==================================================================
-            mutex *mutex_api::create()
+            mutex *mutex_api::init()
             {
                 //--------------------------------------------------------------
                 //
@@ -23,11 +23,12 @@ namespace yack
                 return          mgr.create_mutex();
             }
 
-            void   mutex_api::destruct(mutex *m) throw()
+            void   mutex_api:: quit(mutex * &m) throw()
             {
                 assert(!atelier_initialize);
                 static atelier &mgr = atelier_location();
                 mgr.delete_mutex(m);
+                m = NULL;
             }
 
 

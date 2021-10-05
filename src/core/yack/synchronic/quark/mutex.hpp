@@ -17,8 +17,8 @@ namespace yack
             struct    mutex;
             struct    mutex_api
             {
-                static mutex *create();
-                static void   destruct(mutex *) throw();
+                static mutex *init();
+                static void   quit(mutex * &) throw();
                 static void   lock(mutex *)     throw();
                 static void   unlock(mutex *)   throw();
                 static bool   try_lock(mutex *) throw();

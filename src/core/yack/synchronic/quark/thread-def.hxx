@@ -34,7 +34,7 @@ namespace yack
                 const ID     uuid;
                 const handle self;
 
-                inline thread(thread_call proc, void *args) :
+                inline thread(thread_api::call proc, void *args) :
                 uuid(0),
                 self( create(proc,args,coerce(uuid)) )
                 {
@@ -49,11 +49,11 @@ namespace yack
             private:
                 struct stub
                 {
-                    thread_call  proc;
-                    void        *args;
+                    thread_api::call  proc;
+                    void             *args;
                 };
 
-                static inline handle create(thread_call proc, void *args, ID &tid)
+                static inline handle create(thread_api::call proc, void *args, ID &tid)
                 {
                     stub _ = { proc, args }; assert(NULL!=proc);
                     return launch(entry,&_,tid);

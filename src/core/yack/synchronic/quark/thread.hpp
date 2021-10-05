@@ -8,17 +8,17 @@
 
 namespace yack
 {
-
     namespace synchronic
     {
-
         namespace quark
         {
             class    thread;
-            typedef void (*thread_call)(void *);
-
-            thread *  thread_create(thread_call,void *); //!< create a new  thread
-            void      thread_delete(thread *)      throw(); //!< delete an old recursive mutex
+            struct   thread_api
+            {
+                typedef void    (*call)(void *);            //!< threadable function
+                static  thread *  init(call,void *);        //!< create a new  thread
+                static  void      quit(thread * &) throw(); //!< finish and delete an old thread
+            };
 
         }
     }

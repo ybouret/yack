@@ -16,8 +16,8 @@ namespace yack
             class  condition;
             struct condition_api
             {
-                static condition *create();                          //!< create a condition
-                static void       destruct(condition *)     throw(); //!< delete a condition
+                static condition *init();                      //!< create a condition
+                static void       quit(condition * &) throw(); //!< delete a condition
             };
         }
     }

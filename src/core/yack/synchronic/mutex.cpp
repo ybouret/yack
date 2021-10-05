@@ -8,7 +8,7 @@ namespace yack
     {
         mutex:: mutex() :
         primitive(), lockable(),
-        impl( quark::mutex_api::create() )
+        impl( quark::mutex_api::init() )
         {
 
         }
@@ -16,8 +16,8 @@ namespace yack
         mutex:: ~mutex() throw()
         {
             assert(impl);
-            quark::mutex_api::destruct(impl);
-            impl = NULL;
+            quark::mutex_api::quit(impl);
+            assert(!impl);
         }
 
         void mutex:: lock() throw()

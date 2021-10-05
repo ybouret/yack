@@ -10,7 +10,7 @@ namespace yack
     {
         condition:: condition() :
         primitive(),
-        impl( quark::condition_api::create() )
+        impl( quark::condition_api::init() )
         {
             assert(impl);
         }
@@ -19,8 +19,8 @@ namespace yack
         condition:: ~condition() throw()
         {
             assert(NULL!=impl);
-            quark::condition_api:: destruct(impl);
-            impl=NULL;
+            quark::condition_api::quit(impl);
+            assert(NULL==impl);
         }
 
 
@@ -45,17 +45,18 @@ namespace yack
         namespace quark
         {
 
-            condition *condition_api::create()
+            condition *condition_api:: init()
             {
                 static atelier &mgr = atelier_instance();
                 return mgr.conditions.invoke<condition>();
             }
 
-            void condition_api:: destruct(condition *cond) throw()
+            void condition_api:: quit(condition * &cond) throw()
             {
                 assert(NULL!=cond);
                 static atelier &mgr = atelier_location();
-                return mgr.conditions.revoke(cond);
+                mgr.conditions.revoke(cond);
+                cond = NULL;
             }
 
             
