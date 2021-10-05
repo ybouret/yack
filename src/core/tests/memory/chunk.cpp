@@ -85,14 +85,14 @@ YACK_UTEST(memory_chunk)
 
     for(size_t block_size=1;block_size<=256;++block_size)
     {
-        size_t         blocks = 0;
-        const size_t   optims = memory::chunk::optimized_bytes_for(block_size,blocks,false);
-        memory::chunk *ch     = memory::chunk::create_frame(block_size,optims,mem);
+        size_t         blocks     = 0;
+        const size_t   frame_size = memory::chunk::optimized_frame_size(block_size,blocks,false);
+        memory::chunk *ch        = memory::chunk::create_frame(block_size,frame_size,mem);
 
         YACK_ASSERT(ch->provided_number==blocks);
 
 
-        memory::chunk::delete_frame(ch,optims,mem);
+        memory::chunk::delete_frame(ch,frame_size,mem);
     }
 
     YACK_CHECK(mem.get()==0);

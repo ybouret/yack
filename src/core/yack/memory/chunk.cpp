@@ -154,14 +154,14 @@ namespace yack
             return (chunk_size-chunk::header)/block_size;
         }
 
-        size_t chunk:: optimized_bytes_for(const size_t block_size,
-                                           size_t      &blocks,
-                                           const bool   compact) throw()
+        size_t chunk:: optimized_frame_size(const size_t block_size,
+                                            size_t      &blocks,
+                                            const bool   compact) throw()
         {
             assert(block_size>0);
-
+            assert(minimum_frame_blocks>0);
             // initialize search
-            size_t min_chunk_size = next_power_of_two( header+1 ); assert(min_chunk_size>header);
+            size_t min_chunk_size = next_power_of_two( header+minimum_frame_blocks*block_size ); assert(min_chunk_size>header);
             size_t min_num_blocks = blocks_for(min_chunk_size,block_size);
             while( min_num_blocks <= 0 ) min_num_blocks = blocks_for( min_chunk_size <<= 1, block_size);
 
@@ -181,27 +181,36 @@ namespace yack
                 max_num_blocks = next_num_blocks;
             }
             assert(header+max_num_blocks*block_size<=max_chunk_size);
-            std::cerr << "block_size     = " << block_size << std::endl;
+            std::cerr << "block_size       = " << block_size << std::endl;
             std::cerr << "  min_chunk_size = " << std::setw(6) << min_chunk_size << " => #blocks=" << min_num_blocks << std::endl;
             std::cerr << "  max_chunk_size = " << std::setw(6) << max_chunk_size << " => #blocks=" << max_num_blocks << std::endl;
 
             if(compact)
             {
+                
+            }
+            else
+            {
+
+                blocks = max_num_blocks;
+                return   max_chunk_size;
             }
 
 
             blocks = max_num_blocks;
-            return max_chunk_size;
+            return   max_chunk_size;
         }
 
-        chunk *chunk:: create_frame(const size_t block_size, const size_t full_bytes, allocator &dispatcher)
+        chunk *chunk:: create_frame(const size_t block_size,
+                                    const size_t frame_size,
+                                    allocator   &dispatcher)
         {
-            assert(full_bytes>header);
+            assert(frame_size>header);
             size_t   bytes = 1;
-            uint8_t *entry = static_cast<uint8_t *>( dispatcher.acquire(bytes,full_bytes) );
+            uint8_t *entry = static_cast<uint8_t *>( dispatcher.acquire(bytes,frame_size) );
             uint8_t *cdata = entry+header;
 
-            return new( out_of_reach::address(entry) ) chunk(block_size, out_of_reach::address(cdata), full_bytes-header);
+            return new( out_of_reach::address(entry) ) chunk(block_size, out_of_reach::address(cdata), frame_size-header);
         }
 
         void chunk:: delete_frame(chunk *ch,size_t full_bytes, allocator &dispatcher) throw()

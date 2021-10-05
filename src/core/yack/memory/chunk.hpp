@@ -26,7 +26,8 @@ namespace yack
             //
             // types and definition
             //__________________________________________________________________
-            static const size_t header; //!< aligned size of chunk
+            static const size_t header;                   //!< aligned size of chunk
+            static const size_t minimum_frame_blocks = 8; //!< when a frame is allocated
 
             //__________________________________________________________________
             //
@@ -73,18 +74,18 @@ namespace yack
              \param blocks         are available per chunk
              \param compact        false=>any memory, true=>close to YACK_CHUNK_SIZE
              */
-            static size_t optimized_bytes_for(const size_t block_size,
-                                              size_t      &blocks,
-                                              const bool   compact) throw();
+            static size_t optimized_frame_size(const size_t block_size,
+                                               size_t      &blocks,
+                                               const bool   compact) throw();
 
             //! create a single frame with chunk+data
             static chunk *create_frame(const size_t block_size,
-                                       const size_t full_bytes,
+                                       const size_t frame_size,
                                        allocator   &dispatcher);
 
             //! delete a previously created frame chunk
-            static void   delete_frame(chunk     *,
-                                       size_t     full_bytes,
+            static void   delete_frame(chunk     *used_chunk,
+                                       size_t     frame_size,
                                        allocator &dispatcher) throw();
             //__________________________________________________________________
             //
