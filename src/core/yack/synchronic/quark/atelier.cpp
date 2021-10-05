@@ -35,6 +35,7 @@ typedef CRITICAL_SECTION yack_mutex;
 
 #include "mutex-def.hxx"
 #include "condition-def.hxx"
+#include "thread-def.hxx"
 
 
 namespace yack
@@ -43,146 +44,6 @@ namespace yack
     {
         namespace quark
         {
-#if defined(YACK_BSD)
-            //==================================================================
-            //
-            //
-            //! <pthread::mutex::attribute>
-            //
-            //
-            //==================================================================
-            class mutex_attribute
-            {
-            public:
-                inline explicit mutex_attribute() : attr()
-                {
-                    {
-                        const int  res = pthread_mutexattr_init(&attr);
-                        if (res != 0) throw libc::exception(res, "pthread_mutexattr_init");
-                    }
-                    
-                    {
-                        const int res = pthread_mutexattr_settype(&attr,PTHREAD_MUTEX_RECURSIVE);
-                        if (res != 0)
-                        {
-                            pthread_mutexattr_destroy(&attr);
-                            throw libc::exception(res, "pthread_mutexattr_settype(RECURSIVE)");
-                        }
-                    }
-                }
-                
-                inline virtual ~mutex_attribute() throw()
-                {
-                    (void) pthread_mutexattr_destroy(&attr);
-                }
-                
-                pthread_mutexattr_t attr;
-                
-            private:
-                YACK_DISABLE_COPY_AND_ASSIGN(mutex_attribute);
-            };
-            //==================================================================
-            //
-            //
-            // <pthread::mutex::attribute/>
-            //
-            //
-            //==================================================================
-#endif
-
-
-            //==================================================================
-            //
-            //
-            // <thread>
-            //
-            //
-            //==================================================================
-            class thread
-            {
-            public:
-#if             defined(YACK_BSD)
-                typedef pthread_t handle;                 //!< system thread handle
-                typedef pthread_t ID;                     //!< system thread identifier
-                typedef void *  (*system_routine)(void*); //!< system threadable interface
-#define         Y_THREAD_LAUNCHER_RETURN void *
-#define         Y_THREAD_LAUNCHER_PARAMS void *
-#endif
-
-#if             defined(YACK_WIN)
-                typedef HANDLE handle;                         //!< system thread handle
-                typedef DWORD  ID;                             //!< system thread identifier
-                typedef LPTHREAD_START_ROUTINE system_routine; //!< system threadable interface
-#define         Y_THREAD_LAUNCHER_RETURN DWORD WINAPI
-#define         Y_THREAD_LAUNCHER_PARAMS LPVOID
-#endif
-
-                static inline void   finish(handle &h, ID &tid) throw()
-                {
-#if defined(YACK_BSD)
-                    const int res = pthread_join( h, 0 );
-                    if( res != 0 )
-                    {
-                        system_error::critical_bsd(res,"pthread_join");
-                    }
-
-#endif
-
-#if defined(YACK_WIN)
-                    if( ::WaitForSingleObject( h , INFINITE ) != WAIT_OBJECT_0 )
-                    {
-                        system_error::critical_win( ::GetLastError(), "WaitForSingleObject" );
-                    }
-                    ::CloseHandle( h );
-#endif
-                    out_of_reach::zset(&h,sizeof(handle));
-                    out_of_reach::zset(&tid,sizeof(ID));
-                }
-
-                static inline handle launch(system_routine code, void *data, ID &tid)
-                {
-                    assert(code); assert(data);
-                    out_of_reach::zset(&tid,sizeof(ID));
-
-#if                 defined(YACK_BSD)
-                    const int res = pthread_create(&tid, NULL, code, data);
-                    if (res != 0)
-                    {
-                        throw libc::exception(res, "pthread_create");
-                    }
-                    return tid;
-#endif
-
-#if                 defined(YACK_WIN)
-                    handle h = ::CreateThread(0,
-                                              0,
-                                              code,
-                                              data,
-                                              0,
-                                              &tid);
-                    if (NULL == h)
-                    {
-                        const DWORD res = ::GetLastError();
-                        throw win32::exception(res, "::CreateThread");
-                    }
-                    return h;
-#endif
-
-                }
-
-            private:
-                YACK_DISABLE_COPY_AND_ASSIGN(thread);
-            };
-
-
-            //==================================================================
-            //
-            //
-            // <thread/>
-            //
-            //
-            //==================================================================
-
 
             //==================================================================
             //
@@ -198,6 +59,8 @@ namespace yack
             public lockable
             {
             public:
+                static const bool compact = true;
+
                 //______________________________________________________________
                 //
                 //
@@ -210,8 +73,9 @@ namespace yack
 #if defined(YACK_BSD)
                 mutex_attribute(),
 #endif
-                mutexes(sizeof(yack_mutex),*this,true),
-                conditions(sizeof(condition),*this,true),
+                mutexes(   sizeof(yack_mutex),*this,compact),
+                conditions(sizeof(condition), *this,compact),
+                threads(   sizeof(thread),    *this,compact),
                 giant( create_mutex() )
                 {
                     assert(NULL!=giant);
@@ -236,20 +100,9 @@ namespace yack
                 // lockable interface
                 //
                 //______________________________________________________________
-                void lock() throw()
-                {
-                    mutex_api::lock(giant);
-                }
-                
-                void unlock() throw()
-                {
-                    mutex_api::unlock(giant);
-                }
-                
-                bool try_lock() throw()
-                {
-                    return mutex_api::try_lock(giant);
-                }
+                virtual void lock()     throw() { mutex_api::lock(giant);            }
+                virtual void unlock()   throw() { mutex_api::unlock(giant);          }
+                virtual bool try_lock() throw() { return mutex_api::try_lock(giant); }
                 
                 //______________________________________________________________
                 //
@@ -262,30 +115,16 @@ namespace yack
                     mutex *m =  mutexes.zombie<mutex>();
                     try
                     {
-#if defined(YACK_BSD)
-                        //______________________________________________________
-                        //
-                        // specific PHTREAD code
-                        //______________________________________________________
+#if                     defined(YACK_BSD)
                         const int res = pthread_mutex_init(**m,&attr);
                         if( res != 0 ) throw libc::exception(res,"pthread_mutex_init");
 #endif
                         
-#if defined(YACK_WIN)
-                        //______________________________________________________
-                        //
-                        // specific WINDOWS code
-                        //______________________________________________________
+#if                     defined(YACK_WIN)
                         ::InitializeCriticalSection(**m);
 #endif
-                        
                     }
-                    catch(...)
-                    {
-                        mutexes.release(m);
-                        throw;
-                    }
-                    
+                    catch(...) { mutexes.release(m); throw; }
                     return m;
                 }
                 
@@ -298,24 +137,15 @@ namespace yack
                 inline void delete_mutex(mutex *m) throw()
                 {
                     assert(m);
-#if defined(YACK_BSD)
-                    //______________________________________________________
-                    //
-                    // specific PHTREAD code
-                    //______________________________________________________
+#if                 defined(YACK_BSD)
                     const int res = pthread_mutex_destroy(**m);
                     if(res!=0) system_error::critical_bsd(res,"pthread_mutex_destroy");
                     
 #endif
                     
-#if defined(YACK_WIN)
-                    //______________________________________________________
-                    //
-                    // specific WINDOWS code
-                    //______________________________________________________
+#if                 defined(YACK_WIN)
                     ::DeleteCriticalSection(**m);
 #endif
-                    
                     mutexes.expunge(m);
                 }
                 
@@ -329,6 +159,7 @@ namespace yack
                 //______________________________________________________________
                 memory::arena       mutexes;
                 memory::arena       conditions;
+                memory::arena       threads;
                 mutex              *giant;
                 
                 
@@ -423,37 +254,8 @@ namespace yack
 
 #include "mutex-api.hxx"
 #include "condition-api.hxx"
+#include "thread-api.hxx"
 
-namespace yack
-{
-    namespace synchronic
-    {
-        namespace quark
-        {
-            //==================================================================
-            //
-            //
-            // <thread API>
-            //
-            //
-            //==================================================================
-
-
-
-            //==================================================================
-            //
-            //
-            // <thread API/>
-            //
-            //
-            //==================================================================
-
-
-        }
-
-    }
-
-}
 
 
 

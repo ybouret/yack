@@ -20,13 +20,13 @@ namespace yack
             public:
                 inline condition() : cond()
                 {
-                    const int res = pthread_cond_init( & cond, NULL );
+                    const int res = pthread_cond_init(&cond,NULL);
                     if( res != 0 ) throw libc::exception(res,"pthread_cond_init");
                 }
 
                 inline ~condition() throw()
                 {
-                    const int res = pthread_cond_destroy( & cond );
+                    const int res = pthread_cond_destroy(&cond);
                     if( res != 0 )  system_error::critical_bsd( res,"pthread_cond_destroy");
                 }
 
@@ -39,13 +39,13 @@ namespace yack
 
                 void signal() throw()
                 {
-                    const int res = pthread_cond_signal( & cond );
+                    const int res = pthread_cond_signal(&cond);
                     if( res != 0 ) system_error::critical_bsd(res, "pthread_cond_signal");
                 }
 
                 void broadcast() throw()
                 {
-                    const int res = pthread_cond_broadcast( & cond );
+                    const int res = pthread_cond_broadcast(&cond);
                     if( res != 0 ) system_error::critical_bsd(res, "pthread_cond_broadcast");
                 }
 

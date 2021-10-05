@@ -28,6 +28,53 @@ namespace yack
                 };
             };
 
+#if defined(YACK_BSD)
+            //==================================================================
+            //
+            //
+            //! <pthread::mutex::attribute>
+            //
+            //
+            //==================================================================
+            class mutex_attribute
+            {
+            public:
+                inline explicit mutex_attribute() : attr()
+                {
+                    {
+                        const int  res = pthread_mutexattr_init(&attr);
+                        if (res != 0) throw libc::exception(res, "pthread_mutexattr_init");
+                    }
+
+                    {
+                        const int res = pthread_mutexattr_settype(&attr,PTHREAD_MUTEX_RECURSIVE);
+                        if (res != 0)
+                        {
+                            pthread_mutexattr_destroy(&attr);
+                            throw libc::exception(res, "pthread_mutexattr_settype(RECURSIVE)");
+                        }
+                    }
+                }
+
+                inline virtual ~mutex_attribute() throw()
+                {
+                    (void) pthread_mutexattr_destroy(&attr);
+                }
+
+                pthread_mutexattr_t attr;
+
+            private:
+                YACK_DISABLE_COPY_AND_ASSIGN(mutex_attribute);
+            };
+            //==================================================================
+            //
+            //
+            // <pthread::mutex::attribute/>
+            //
+            //
+            //==================================================================
+#endif
+
         }
     }
 }

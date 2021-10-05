@@ -1,9 +1,47 @@
 
+
 #include "yack/synchronic/quark/condition.hpp"
+#include "yack/synchronic/condition.hpp"
+#include "yack/synchronic/mutex.hpp"
+
 namespace yack
 {
     namespace synchronic
     {
+        condition:: condition() :
+        primitive(),
+        impl( quark::condition_api::create() )
+        {
+            assert(impl);
+        }
+
+
+        condition:: ~condition() throw()
+        {
+            assert(NULL!=impl);
+            quark::condition_api:: destruct(impl);
+            impl=NULL;
+        }
+
+
+        void condition:: signal() throw()
+        {
+            assert(impl);
+            impl->signal();
+        }
+
+        void condition:: broadcast() throw()
+        {
+            assert(impl);
+            impl->broadcast();
+        }
+
+        void condition:: wait(mutex &m) throw()
+        {
+            assert(impl);
+            impl->wait(m.impl);
+        }
+
         namespace quark
         {
 
@@ -18,25 +56,6 @@ namespace yack
                 assert(NULL!=cond);
                 static atelier &mgr = atelier_location();
                 return mgr.conditions.revoke(cond);
-            }
-
-            void condition_api:: wait(condition *cond,mutex *m) throw()
-            {
-                assert(cond);
-                assert(m);
-                cond->wait(m);
-            }
-
-            void condition_api:: signal(condition *cond)   throw()
-            {
-                assert(cond);
-                cond->signal();
-            }
-
-            void condition_api:: broadcast(condition *cond) throw()
-            {
-                assert(cond);
-                cond->broadcast();
             }
 
             
