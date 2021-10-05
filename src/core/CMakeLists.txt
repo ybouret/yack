@@ -74,7 +74,7 @@ SOURCE_GROUP(synchronic FILES ${synchronic})
 install( FILES ${synchronic_decl} DESTINATION include/yack/synchronic )
  
 # synchronic/quark operations
-file(GLOB synchronic_quark_impl yack/synchronic/quark/*.cpp)
+file(GLOB synchronic_quark_impl yack/synchronic/quark/*.cpp yack/synchronic/quark/*.hxx)
 file(GLOB synchronic_quark_decl yack/synchronic/quark/*.hpp)
 set(synchronic_quark ${synchronic_quark_impl} ${synchronic_quark_decl})
 SOURCE_GROUP(synchronic/quark FILES ${synchronic_quark})
