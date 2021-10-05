@@ -78,8 +78,10 @@ namespace yack
     //
     //==========================================================================
 #endif
+}
 
-
+namespace yack
+{
     
     namespace synchronic
     {
@@ -393,7 +395,28 @@ namespace yack
 #define         Y_THREAD_LAUNCHER_RETURN DWORD WINAPI
 #define         Y_THREAD_LAUNCHER_PARAMS LPVOID
 #endif
-                typedef thread_call call;
+
+                static inline void   finish(handle &h, ID &tid) throw()
+                {
+#if defined(YACK_BSD)
+                    const int res = pthread_join( h, 0 );
+                    if( res != 0 )
+                    {
+                        system_error::critical_bsd(res,"pthread_join");
+                    }
+
+#endif
+
+#if defined(YACK_WIN)
+                    if( ::WaitForSingleObject( h , INFINITE ) != WAIT_OBJECT_0 )
+                    {
+                        system_error::critical_win( ::GetLastError(), "WaitForSingleObject" );
+                    }
+                    ::CloseHandle( h );
+#endif
+                    out_of_reach::zset(&h,sizeof(handle));
+                    out_of_reach::zset(&tid,sizeof(ID));
+                }
 
                 static inline handle launch(system_routine code, void *data, ID &tid)
                 {
@@ -423,7 +446,6 @@ namespace yack
                     }
                     return h;
 #endif
-
 
                 }
 
@@ -684,8 +706,6 @@ namespace yack
     {
         namespace quark
         {
-
-
             //==================================================================
             //
             //
@@ -763,7 +783,6 @@ namespace yack
 
 
 #include "yack/synchronic/quark/condition.hpp"
-
 namespace yack
 {
     namespace synchronic
@@ -822,6 +841,39 @@ namespace yack
     }
 
 }
+
+namespace yack
+{
+    namespace synchronic
+    {
+        namespace quark
+        {
+            //==================================================================
+            //
+            //
+            // <thread API>
+            //
+            //
+            //==================================================================
+
+            
+
+            //==================================================================
+            //
+            //
+            // <thread API/>
+            //
+            //
+            //==================================================================
+
+
+        }
+
+    }
+
+}
+
+
 
 #include "yack/synchronic/primitive.hpp"
 
