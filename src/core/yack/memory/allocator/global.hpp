@@ -12,10 +12,16 @@ namespace yack
 {
     namespace memory
     {
-        
+        //______________________________________________________________________
+        //
+        //
+        //! thread safe global memory allocator
+        //
+        //______________________________________________________________________
         class global : public allocator, public singleton<global>
         {
         public:
+            //! the maximum available longevity
             static const at_exit::longevity life_time = YACK_MEMORY_GLOBAL_ALLOCATOR_LONGEVITY;
             
             virtual void *       acquire(size_t &count, const size_t block_size);
@@ -27,7 +33,6 @@ namespace yack
             explicit global() throw();
             virtual ~global() throw();
             friend class singleton<global>;
-            
         };
         
     }
