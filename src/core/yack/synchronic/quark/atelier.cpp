@@ -219,7 +219,7 @@ namespace yack
             static inline atelier & atelier_instance()
             {
                 YACK_STATIC_CHECK(sizeof(atelier_data)>=sizeof(atelier),invalid_atelier_data);
-                atelier *mgr = coerce_to<atelier>(atelier_data);
+                atelier *mgr = coerce_cast<atelier>(atelier_data);
                 if(atelier_initialize)
                 {
                     atelier_zero();

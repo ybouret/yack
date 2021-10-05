@@ -66,7 +66,12 @@ namespace yack
             void *acquire(const size_t block_size) throw();
 
             //! release a previously acquired block, untouched
-            void  release(void *addr, const size_t block_size) throw();
+            bool  release(void *addr, const size_t block_size) throw();
+
+            //__________________________________________________________________
+            //
+            // using chunks as frames
+            //__________________________________________________________________
             
             //! compute an optimized, power of two memory area to hold chunk+data
             /**

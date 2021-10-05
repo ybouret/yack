@@ -233,10 +233,30 @@ assert(NULL!=NODE); assert(NULL==(NODE)->next); assert(NULL==(NODE)->prev)
         {
             assert(owns(node));
             assert(NULL!=node->prev);
+            assert(head!=node);
             NODE *mine = node->prev;
             return insert_before(mine,pop(node));
         }
-        
+
+        //! merge back
+        void merge_back(list_of &other) throw()
+        {
+            if(this->size<=0)
+            {
+                swap_with(other);
+            }
+            else
+            {
+                if(other.size>0)
+                {
+                    tail->next = other.head;
+                    other.head->prev = tail;
+                    tail = other->tail;
+                    this->size += other.size;
+                    other.hard_reset_();
+                }
+            }
+        }
         
         
         
@@ -305,7 +325,16 @@ assert(NULL!=NODE); assert(NULL==(NODE)->next); assert(NULL==(NODE)->prev)
                 return node;
             }
         }
-        
+
+    protected:
+        //! hard reset for internal operations
+        inline void hard_reset_() throw()
+        {
+            coerce(this->size) = 0;
+            head = 0;
+            tail = 0;
+        }
+
     };
     
 

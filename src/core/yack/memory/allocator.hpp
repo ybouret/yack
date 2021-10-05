@@ -41,10 +41,11 @@ namespace yack
             // non-virtual interface
             //__________________________________________________________________
 
+            
             //! helper to acquire memory for a field of objects
             template <typename T> inline
-            T *invoke(size_t &items,
-                      size_t &bytes)
+            T *allocate(size_t &items,
+                        size_t &bytes)
             {
                 try
                 {
@@ -58,8 +59,8 @@ namespace yack
 
             //! helper to release memory from a field of objects
             template <typename T> inline
-            void revoke(T    * &entry,
-                        size_t &bytes) throw()
+            void withdraw(T    * &entry,
+                          size_t &bytes) throw()
             {
                 void * &addr = *(void **) &entry;
                 release(addr,bytes);

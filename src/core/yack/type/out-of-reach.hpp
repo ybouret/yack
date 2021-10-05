@@ -28,11 +28,11 @@ namespace yack
 
     //! out of reach type coercion
     template <typename T, typename U> inline
-    T *coerce_to(U *field) throw() { return static_cast<T*>(out_of_reach::address(field) ); }
+    T *coerce_cast(U *field) throw() { return static_cast<T*>(out_of_reach::address(field) ); }
     
     //! out of reach type coercion
     template <typename T, typename U> inline
-    const T *coerce_to(const U *field) throw() { return static_cast<const T*>(out_of_reach::address(field) ); }
+    const T *coerce_cast(const U *field) throw() { return static_cast<const T*>(out_of_reach::address(field) ); }
     
 }
 

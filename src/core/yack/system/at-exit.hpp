@@ -11,7 +11,7 @@ namespace yack
     //__________________________________________________________________________
     //
     //
-    //! handling at_exit procedure with longevity
+    //! handling at_exit procedure with UNIQUE longevity
     //
     //__________________________________________________________________________
     struct at_exit

@@ -30,7 +30,7 @@ namespace yack
         //
         // methods
         //______________________________________________________________________
-        inline virtual void restart() throw() { this->head=NULL; this->tail=NULL; coerce(this->size) = 0; }
+        inline virtual void restart() throw() { this->hard_reset_(); }
         
     private:
         YACK_DISABLE_COPY_AND_ASSIGN(raw_list_of);

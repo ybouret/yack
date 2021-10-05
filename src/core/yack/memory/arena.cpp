@@ -35,7 +35,7 @@ namespace yack
         {
             size_t       missing = 0;
             {
-                chunks_list *chunks  = coerce_to<chunks_list>(impl);
+                chunks_list *chunks  = coerce_cast<chunks_list>(impl);
                 while(chunks->size)
                 {
                     chunk *ch = chunks->pop_back();
@@ -47,7 +47,7 @@ namespace yack
             }
 
             {
-                chunks_pool *ccache = coerce_to<chunks_pool>(repo);
+                chunks_pool *ccache = coerce_cast<chunks_pool>(repo);
                 while(ccache->size)
                 {
                     kill( ccache->query() );
@@ -90,7 +90,7 @@ namespace yack
 
             Y_STATIC_ZSET(impl);
             Y_STATIC_ZSET(repo);
-            chunks_list *chunks = coerce_to<chunks_list>(impl);
+            chunks_list *chunks = coerce_cast<chunks_list>(impl);
             new (chunks) chunks_list();
             try
             {
@@ -112,14 +112,14 @@ namespace yack
 
         chunk * arena:: query()
         {
-            chunks_pool *ccache =  coerce_to<chunks_pool>(repo);
+            chunks_pool *ccache =  coerce_cast<chunks_pool>(repo);
             return (ccache->size>0) ? ccache->query() : build();
         }
 
         void arena::grow()
         {
             // append a new chunk
-            chunks_list *chunks = coerce_to<chunks_list>(impl);
+            chunks_list *chunks = coerce_cast<chunks_list>(impl);
             acquiring           = chunks->push_back( query() ); assert(acquiring->provided_number==blocks_per_chunk);
 
             // bookkeeping
@@ -248,14 +248,19 @@ namespace yack
             assert(addr);
             assert(releasing);
             assert(releasing->owns(addr,chunk_block_size));
-            releasing->release(addr,chunk_block_size);
+            const bool is_empty = (releasing->release(addr,chunk_block_size));
             ++available_blocks;
-            if(releasing->is_empty())
+            if(is_empty)
             {
-                std::cerr << "empty chunk." << chunk_block_size << std::endl;
-                if(NULL==empty)
+                assert(releasing->is_empty());
+                if(!empty)
                 {
+                    // first empty block
                     empty = releasing;
+                }
+                else
+                {
+                    // another block is empty
                 }
             }
         }

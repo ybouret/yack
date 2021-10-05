@@ -8,8 +8,12 @@
 
 namespace yack
 {
-
+    //__________________________________________________________________________
+    //
+    //
     //! base2 operations
+    //
+    //__________________________________________________________________________
     template <typename type>
     struct base2
     {
@@ -19,7 +23,11 @@ namespace yack
         static const type     one              = 1;                                      //!< alias
         static const type     max_power_of_two = (one << max_shift);                     //!< alias
 
-        //! v <= (1<<r)
+
+        //______________________________________________________________________
+        //
+        //! compute r such that v <= (1<<r)
+        //__________________________________________________________________________
         static inline unsigned log2_of(type v) throw()
         {
             assert(v>0);

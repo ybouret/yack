@@ -11,7 +11,7 @@ namespace yack
     //__________________________________________________________________________
     //
     //
-    //! base class for linked classes
+    //! base class for classes of linked nodes
     //
     //__________________________________________________________________________
     class linked

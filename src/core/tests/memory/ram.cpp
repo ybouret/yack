@@ -17,9 +17,9 @@ namespace
     {
 
         size_t bytes = 0;
-        T     *entry = mem.invoke<T>(items,bytes);
+        T     *entry = mem.allocate<T>(items,bytes);
         std::cerr << "\t=> #items=" << items << ", #bytes=" << bytes << "  @" << entry << std::endl;
-        mem.revoke(entry,bytes);
+        mem.withdraw(entry,bytes);
         YACK_ASSERT(NULL==entry);
         YACK_ASSERT(0==bytes);
     }

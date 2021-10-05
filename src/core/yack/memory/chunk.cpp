@@ -138,7 +138,7 @@ namespace yack
             return p;                                       // done
         }
 
-        void chunk:: release(void *block_addr, const size_t block_size) throw()
+        bool chunk:: release(void *block_addr, const size_t block_size) throw()
         {
             assert(block_size>0);
             assert(owns(block_addr,block_size));
@@ -147,7 +147,7 @@ namespace yack
             const size_t indx       = static_cast<size_t>(to_release-data)/block_size;
             *to_release             =  first_available;
             first_available  = (uint8_t)indx;
-            ++still_available;
+            return (++still_available>=provided_number);
         }
 
         const size_t chunk:: header = YACK_MEMALIGN(sizeof(chunk));
@@ -196,12 +196,7 @@ namespace yack
                 max_num_blocks = next_num_blocks;
             }
             assert(header+max_num_blocks*block_size<=max_chunk_size);
-#if 0
-            std::cerr << "block_size       = " << block_size << std::endl;
-            std::cerr << "   min_chunk_size = " << std::setw(6) << min_chunk_size  << " => #blocks=" << min_num_blocks << std::endl;
-            std::cerr << "   max_chunk_size = " << std::setw(6) << max_chunk_size  << " => #blocks=" << max_num_blocks << std::endl;
-            std::cerr << "  YACK_CHUNK_SIZE = " << std::setw(6) << YACK_CHUNK_SIZE << " => #blocks=" << blocks_for(YACK_CHUNK_SIZE,block_size) << std::endl;
-#endif
+
             if(compact)
             {
                 //--------------------------------------------------------------

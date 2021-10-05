@@ -140,7 +140,10 @@ namespace yack
         static inline type   positive(const type x) throw() { return (x<0)?0:x; }
     };
 
+    //__________________________________________________________________________
+    //
     //! matching signed type
+    //__________________________________________________________________________
     template <typename T>
     struct signed_for
     {
@@ -148,13 +151,19 @@ namespace yack
     };
     
 
+    //__________________________________________________________________________
+    //
     //! compute if an integral type is signed
+    //__________________________________________________________________________
     template <typename T>
     struct is_signed {
         static const bool value = (T)-1 < 0; //!< compile time detection
     };
 
+    //__________________________________________________________________________
+    //
     //! deduce matching integral type
+    //__________________________________________________________________________
     template <typename T>
     struct integral_for
     {

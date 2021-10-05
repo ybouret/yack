@@ -57,7 +57,6 @@ YACK_UTEST(memory_chunk)
                 blocks[i].addr = ch.acquire(block_size);
                 blocks[i].size = block_size;
             }
-            check_all_different(blocks,count);
             ran.shuffle(blocks,count);
             for(size_t i=0;i<count/2;++i)
             {
@@ -97,7 +96,8 @@ YACK_UTEST(memory_chunk)
 
     YACK_CHECK(mem.get()==0);
 
-
+    YACK_SIZEOF(memory::chunk);
+    std::cerr << "chunk::header=" << memory::chunk::header << std::endl;
 }
 YACK_UDONE()
 

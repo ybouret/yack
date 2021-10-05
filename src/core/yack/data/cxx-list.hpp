@@ -43,12 +43,18 @@ namespace yack
         //
         // methods
         //______________________________________________________________________
-        //! delete all from tail
         inline virtual void release() throw()
         {
             release_();
         }
-        
+
+        //! merge of copy of another list
+        inline void merge_back_copy(const cxx_list_of &other)
+        {
+            cxx_list_of temp(other);
+            this->merge_back(other);
+        }
+
     private:
         YACK_DISABLE_ASSIGN(cxx_list_of);
         inline void release_() throw()
