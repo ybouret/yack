@@ -5,11 +5,11 @@
 #define YACK_SYNC_MUTEX_INCLUDED 1
 
 #include "yack/lockable.hpp"
-#include "yack/synchronic/primitive.hpp"
+#include "yack/concurrent/primitive.hpp"
 
 namespace yack
 {
-    namespace synchronic
+    namespace concurrent
     {
         class condition;
         namespace quark { struct mutex;}

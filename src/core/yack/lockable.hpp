@@ -53,7 +53,7 @@ namespace yack
         YACK_DISABLE_COPY_AND_ASSIGN(lockable);
         
     public:
-        static lockable & giant(); //!< from synchronic::quark internal
+        static lockable & giant(); //!< from concurrent::quark internal
     };
 
     //! create the guard name

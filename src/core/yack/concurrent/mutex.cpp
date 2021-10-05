@@ -1,10 +1,10 @@
 
-#include "yack/synchronic/mutex.hpp"
-#include "yack/synchronic/quark/mutex.hpp"
+#include "yack/concurrent/mutex.hpp"
+#include "yack/concurrent/quark/mutex.hpp"
 
 namespace yack
 {
-    namespace synchronic
+    namespace concurrent
     {
         mutex:: mutex() :
         primitive(), lockable(),

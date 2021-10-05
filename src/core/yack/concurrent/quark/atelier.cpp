@@ -1,5 +1,5 @@
-#include "yack/synchronic/quark/mutex.hpp"
-#include "yack/synchronic/quark/thread.hpp"
+#include "yack/concurrent/quark/mutex.hpp"
+#include "yack/concurrent/quark/thread.hpp"
 
 #include "yack/system/error.hpp"
 #include "yack/system/exception.hpp"
@@ -40,7 +40,7 @@ typedef CRITICAL_SECTION yack_mutex;
 
 namespace yack
 {
-    namespace synchronic
+    namespace concurrent
     {
         namespace quark
         {
@@ -247,7 +247,7 @@ namespace yack
     
     lockable & lockable:: giant()
     {
-        static synchronic::quark::atelier &mgr =  synchronic::quark::atelier_instance();
+        static concurrent::quark::atelier &mgr =  concurrent::quark::atelier_instance();
         return mgr;
     }
 }
@@ -259,15 +259,15 @@ namespace yack
 
 
 
-#include "yack/synchronic/primitive.hpp"
+#include "yack/concurrent/primitive.hpp"
 
 namespace yack
 {
-    namespace synchronic
+    namespace concurrent
     {
         void primitive:: display()
         {
-            std::cerr << "<synchronic::primitive>" << std::endl;
+            std::cerr << "<concurrent::primitive>" << std::endl;
 #if defined(YACK_WIN)
             std::cerr << "  sizeof(win32::semaphore) = " << sizeof(win32::semaphore)    << std::endl;
 #endif
@@ -280,7 +280,7 @@ namespace yack
             std::cerr << "  sizeof(condition)        = " << sizeof(condition)           << std::endl;
             std::cerr << "  sizeof(quark::thread)    = " << sizeof(quark::thread)       << std::endl;
             std::cerr << "  sizeof(thread)           = " << sizeof(thread)              << std::endl;
-            std::cerr << "<synchronic::primitive/>" << std::endl;
+            std::cerr << "<concurrent::primitive/>" << std::endl;
         }
     }
 

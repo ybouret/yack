@@ -1,6 +1,6 @@
 
 
-#include "yack/synchronic/fake-lock.hpp"
+#include "yack/concurrent/fake-lock.hpp"
 #include "yack/utest/run.hpp"
 #include <cstring>
 

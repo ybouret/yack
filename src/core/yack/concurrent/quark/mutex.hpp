@@ -9,7 +9,7 @@ namespace yack
 {
     class lockable;
 
-    namespace synchronic
+    namespace concurrent
     {
         
         namespace quark

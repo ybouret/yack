@@ -1,9 +1,9 @@
 
-#include "yack/synchronic/primitive.hpp"
+#include "yack/concurrent/primitive.hpp"
 
 namespace yack
 {
-    namespace synchronic
+    namespace concurrent
     {
         primitive:: ~primitive() throw() {}
         

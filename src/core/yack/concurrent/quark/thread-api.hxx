@@ -1,7 +1,7 @@
 
 namespace yack
 {
-    namespace synchronic
+    namespace concurrent
     {
         namespace quark
         {
@@ -32,11 +32,11 @@ namespace yack
 
 }
 
-#include "yack/synchronic/thread.hpp"
+#include "yack/concurrent/thread.hpp"
 
 namespace yack
 {
-    namespace synchronic
+    namespace concurrent
     {
         thread:: thread(threadable proc, void *args) : impl( quark::thread_api::init(proc,args) )
         {

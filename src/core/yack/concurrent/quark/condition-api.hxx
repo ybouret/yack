@@ -1,12 +1,12 @@
 
 
-#include "yack/synchronic/quark/condition.hpp"
-#include "yack/synchronic/condition.hpp"
-#include "yack/synchronic/mutex.hpp"
+#include "yack/concurrent/quark/condition.hpp"
+#include "yack/concurrent/condition.hpp"
+#include "yack/concurrent/mutex.hpp"
 
 namespace yack
 {
-    namespace synchronic
+    namespace concurrent
     {
         condition:: condition() :
         primitive(),

@@ -1,7 +1,7 @@
 
-#include "yack/synchronic/thread.hpp"
-#include "yack/synchronic/mutex.hpp"
-#include "yack/synchronic/condition.hpp"
+#include "yack/concurrent/thread.hpp"
+#include "yack/concurrent/mutex.hpp"
+#include "yack/concurrent/condition.hpp"
 
 #include "yack/utest/run.hpp"
 #include <cstring>
@@ -12,8 +12,8 @@ namespace
     class workspace
     {
     public:
-        synchronic::mutex     access;
-        synchronic::condition cv;
+        concurrent::mutex     access;
+        concurrent::condition cv;
         size_t                ready;
 
         inline workspace() : access(), cv(), ready()
@@ -54,9 +54,9 @@ YACK_UTEST(sync_thread)
 
     workspace          wksp;
     {
-        synchronic::thread t1(proc1,&wksp);
-        synchronic::thread t2(proc1,&wksp);
-        synchronic::thread t3(proc1,&wksp);
+        concurrent::thread t1(proc1,&wksp);
+        concurrent::thread t2(proc1,&wksp);
+        concurrent::thread t3(proc1,&wksp);
         bool sync = false;
         while(!sync)
         {

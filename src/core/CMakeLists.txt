@@ -66,26 +66,26 @@ SOURCE_GROUP(memory FILES ${memory})
 install( FILES ${memory_decl} DESTINATION include/yack/memory )
  
  
-# synchronic operations
-file(GLOB synchronic_impl yack/synchronic/*.cpp)
-file(GLOB synchronic_decl yack/synchronic/*.hpp)
-set(synchronic ${synchronic_impl} ${synchronic_decl})
-SOURCE_GROUP(synchronic FILES ${synchronic})
-install( FILES ${synchronic_decl} DESTINATION include/yack/synchronic )
+# concurrent operations
+file(GLOB concurrent_impl yack/concurrent/*.cpp)
+file(GLOB concurrent_decl yack/concurrent/*.hpp)
+set(concurrent ${concurrent_impl} ${concurrent_decl})
+SOURCE_GROUP(concurrent FILES ${concurrent})
+install( FILES ${concurrent_decl} DESTINATION include/yack/concurrent )
  
-# synchronic/quark operations
-file(GLOB synchronic_quark_impl yack/synchronic/quark/*.cpp yack/synchronic/quark/*.hxx)
-file(GLOB synchronic_quark_decl yack/synchronic/quark/*.hpp)
-set(synchronic_quark ${synchronic_quark_impl} ${synchronic_quark_decl})
-SOURCE_GROUP(synchronic/quark FILES ${synchronic_quark})
-install( FILES ${synchronic_quark_decl} DESTINATION include/yack/synchronic/quark )
+# concurrent/quark operations
+file(GLOB concurrent_quark_impl yack/concurrent/quark/*.cpp yack/concurrent/quark/*.hxx)
+file(GLOB concurrent_quark_decl yack/concurrent/quark/*.hpp)
+set(concurrent_quark ${concurrent_quark_impl} ${concurrent_quark_decl})
+SOURCE_GROUP(concurrent/quark FILES ${concurrent_quark})
+install( FILES ${concurrent_quark_decl} DESTINATION include/yack/concurrent/quark )
 
-# synchronic/sync operations
-file(GLOB synchronic_sync_impl yack/synchronic/sync/*.cpp)
-file(GLOB synchronic_sync_decl yack/synchronic/sync/*.hpp)
-set(synchronic_sync ${synchronic_sync_impl} ${synchronic_sync_decl})
-SOURCE_GROUP(synchronic/sync FILES ${synchronic_sync})
-install( FILES ${synchronic_sync_decl} DESTINATION include/yack/synchronic/sync )
+# concurrent/sync operations
+file(GLOB concurrent_sync_impl yack/concurrent/sync/*.cpp)
+file(GLOB concurrent_sync_decl yack/concurrent/sync/*.hpp)
+set(concurrent_sync ${concurrent_sync_impl} ${concurrent_sync_decl})
+SOURCE_GROUP(concurrent/sync FILES ${concurrent_sync})
+install( FILES ${concurrent_sync_decl} DESTINATION include/yack/concurrent/sync )
 
 
 # create the library
@@ -98,7 +98,7 @@ ${system}
 ${data}
 ${container}
 ${memory}
-${synchronic} ${synchronic_quark} ${synchronic_sync}
+${concurrent} ${concurrent_quark} ${concurrent_sync}
 ${utest}
 )
 

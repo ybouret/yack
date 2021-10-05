@@ -3,12 +3,12 @@
 #ifndef YACK_SYNC_THREAD_INCLUDED
 #define YACK_SYNC_THREAD_INCLUDED 1
 
-#include "yack/synchronic/quark/threadable.hpp"
+#include "yack/concurrent/quark/threadable.hpp"
 #include "yack/setup.hpp"
 
 namespace yack
 {
-    namespace synchronic
+    namespace concurrent
     {
         namespace quark
         {

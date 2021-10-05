@@ -7,7 +7,7 @@
 
 namespace yack
 {
-    namespace synchronic
+    namespace concurrent
     {
 
         //______________________________________________________________________

@@ -2,7 +2,7 @@
 
 
 
-#include "yack/synchronic/condition.hpp"
+#include "yack/concurrent/condition.hpp"
 #include "yack/utest/run.hpp"
 #include <cstring>
 
@@ -12,7 +12,7 @@ YACK_UTEST(sync_condition)
 {
     std::cerr << "    ==== enter " << program << std::endl;
     {
-        synchronic::condition cond;
+        concurrent::condition cond;
     }
     std::cerr << "    ==== leave " << program << std::endl;
     

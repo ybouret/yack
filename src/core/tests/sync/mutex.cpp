@@ -1,7 +1,7 @@
 
 
 
-#include "yack/synchronic/mutex.hpp"
+#include "yack/concurrent/mutex.hpp"
 #include "yack/utest/run.hpp"
 #include <cstring>
 
@@ -10,11 +10,11 @@ using namespace yack;
 YACK_UTEST(sync_mutex)
 {
     
-    synchronic::primitive::display();
+    concurrent::primitive::display();
     
     std::cerr << "    ==== enter " << program << std::endl;
     {
-        synchronic::mutex m1;
+        concurrent::mutex m1;
     }
     {
         YACK_GIANT_LOCK();

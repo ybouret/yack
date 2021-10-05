@@ -2,7 +2,7 @@
 
 
 
-#include "yack/synchronic/primitive.hpp"
+#include "yack/concurrent/primitive.hpp"
 #include "yack/utest/run.hpp"
 #include <cstring>
 
@@ -10,7 +10,7 @@ using namespace yack;
 
 YACK_UTEST(sync_primitive)
 {
-    synchronic::primitive::display();
+    concurrent::primitive::display();
 }
 YACK_UDONE()
 

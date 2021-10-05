@@ -8,7 +8,7 @@
 
 namespace yack
 {
-    namespace synchronic
+    namespace concurrent
     {
         namespace quark
         {

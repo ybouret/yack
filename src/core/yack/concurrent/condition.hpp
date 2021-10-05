@@ -3,11 +3,11 @@
 #ifndef YACK_SYNC_CONDITION_INCLUDED
 #define YACK_SYNC_CONDITION_INCLUDED 1
 
-#include "yack/synchronic/primitive.hpp"
+#include "yack/concurrent/primitive.hpp"
 
 namespace yack
 {
-    namespace synchronic
+    namespace concurrent
     {
         class mutex;
 
