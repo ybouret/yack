@@ -33,16 +33,29 @@ namespace yack
         
         arena:: ~arena() throw()
         {
-            chunks_list *chunks  = coerce_to<chunks_list>(impl);
             size_t       missing = 0;
-            while(chunks->size)
             {
-                chunk *ch = chunks->pop_back();
-                missing += ch->allocated();
-                kill(ch);
+                chunks_list *chunks  = coerce_to<chunks_list>(impl);
+                while(chunks->size)
+                {
+                    chunk *ch = chunks->pop_back();
+                    missing += ch->allocated();
+                    kill(ch);
+                }
+                destruct(chunks);
+                Y_STATIC_ZSET(impl);
             }
-            destruct(chunks);
-            Y_STATIC_ZSET(impl);
+
+            {
+                chunks_pool *ccache = coerce_to<chunks_pool>(repo);
+                while(ccache->size)
+                {
+                    kill( ccache->query() );
+                }
+                destruct(ccache);
+                Y_STATIC_ZSET(repo);
+            }
+
             if(missing)
             {
                 std::cerr << "arena[" << chunk_block_size << "] missing #blocks=" << missing << std::endl;
