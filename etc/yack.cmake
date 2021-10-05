@@ -89,6 +89,11 @@ if(${YACK_CC} MATCHES "gcc.*" )
 	if(${YACK_COMPILER_MAJOR} GREATER 4)
  		YACK_ADD_FLAGS("-Wextra")
 	endif()
+	
+	set(YACK_FLAGS_DEBUG   "-O0 -g")
+	set(YACK_FLAGS_RELEASE "-O2 -DNDEBUG=1 -D_FORTIFY_SOURCE=2")
+	 
+	
 endif()
 
 ########################################################################
@@ -107,6 +112,9 @@ if(${YACK_CC} MATCHES "clang.*" )
 	set(CMAKE_C_FLAGS   "-Wall -Wextra -pipe -fPIC")
 	set(CMAKE_CXX_FLAGS "-Wall -Wextra -pipe -fPIC -fexceptions -Weffc++" )
 	
+	set(YACK_FLAGS_DEBUG   "-O0 -g")
+	set(YACK_FLAGS_RELEASE "-O2 -DNDEBUG=1 -D_FORTIFY_SOURCE=2")
+	 
 endif()
 
 ########################################################################
@@ -125,6 +133,9 @@ if(${YACK_CC} MATCHES "icc.*" )
 	set(CMAKE_C_FLAGS   "-Wall -pipe -wd981 -fPIC -xHost")
 	set(CMAKE_CXX_FLAGS "-Wall -pipe -wd981 -fPIC -xHost -fexceptions" )
 	
+	set(YACK_FLAGS_DEBUG   "-O0 -g")
+	set(YACK_FLAGS_RELEASE "-O2 -DNDEBUG=1 -D_FORTIFY_SOURCE=2")
+	
 endif()
 
 ########################################################################
@@ -141,12 +152,19 @@ if(${YACK_CC} STREQUAL "cl" )
 		
 	set(CMAKE_C_FLAGS   "-nologo")
 	set(CMAKE_CXX_FLAGS "-nologo -EHsc" )
-	
+	set(YACK_FLAGS_DEBUG   "")
+	set(YACK_FLAGS_RELEASE "-Ox -DNDEBUG=1")
+	 
 endif()
 
 if(NOT YACK_KNOWN_COMPILER)
 	message( FATAL_ERROR "[YACK] unknown compilers '${YACK_CC}'" )
 endif()
+
+set(CMAKE_C_FLAGS_RELEASE   ${YACK_FLAGS_RELEASE})
+set(CMAKE_CXX_FLAGS_RELEASE ${YACK_FLAGS_RELEASE})
+set(CMAKE_C_FLAGS_DEBUG     ${YACK_FLAGS_DEBUG})
+set(CMAKE_CXX_FLAGS_DEBUG   ${YACK_FLAGS_DEBUG})
 
 
 ########################################################################
