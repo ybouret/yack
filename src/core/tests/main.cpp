@@ -23,6 +23,7 @@ YACK_UTEST_DECL(32)
     YACK_UTEST(sync_primitive);
     YACK_UTEST(sync_mutex);
     YACK_UTEST(sync_condition);
+    YACK_UTEST(sync_thread);
     
 }
 YACK_UTEST_EXEC()

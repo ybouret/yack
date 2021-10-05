@@ -268,13 +268,18 @@ namespace yack
         void primitive:: display()
         {
             std::cerr << "<synchronic::primitive>" << std::endl;
-            std::cerr << "  sizeof(quark::mutex)     = " << sizeof(quark::mutex)     << std::endl;
 #if defined(YACK_WIN)
-            std::cerr << "  sizeof(win32::semaphore) = " << sizeof(win32::semaphore) << std::endl;
+            std::cerr << "  sizeof(win32::semaphore) = " << sizeof(win32::semaphore)    << std::endl;
 #endif
-            std::cerr << "  sizeof(quark::condition) = " << sizeof(quark::condition) << std::endl;
-            std::cerr << "  sizeof(quark::atelier)   = " << sizeof(quark::atelier)   << std::endl;
+            std::cerr << "  sizeof(quark::atelier)   = " << sizeof(quark::atelier)      << std::endl;
             std::cerr << "  quark::atelier_data_size = " << sizeof(quark::atelier_data) << std::endl;
+
+            std::cerr << "  sizeof(quark::mutex)     = " << sizeof(quark::mutex)        << std::endl;
+            std::cerr << "  sizeof(mutex)            = " << sizeof(mutex)               << std::endl;
+            std::cerr << "  sizeof(quark::condition) = " << sizeof(quark::condition)    << std::endl;
+            std::cerr << "  sizeof(condition)        = " << sizeof(condition)           << std::endl;
+            std::cerr << "  sizeof(quark::thread)    = " << sizeof(quark::thread)       << std::endl;
+            std::cerr << "  sizeof(thread)           = " << sizeof(thread)              << std::endl;
             std::cerr << "<synchronic::primitive/>" << std::endl;
         }
     }

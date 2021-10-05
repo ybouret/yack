@@ -1,10 +1,9 @@
-
 //! \file
 
 #ifndef YACK_SYNC_QUARK_THREAD_INCLUDED
 #define YACK_SYNC_QUARK_THREAD_INCLUDED 1
 
-#include "yack/system/setup.h"
+#include "yack/synchronic/quark/threadable.hpp"
 
 namespace yack
 {
@@ -15,8 +14,7 @@ namespace yack
             class    thread;
             struct   thread_api
             {
-                typedef void    (*call)(void *);            //!< threadable function
-                static  thread *  init(call,void *);        //!< create a new  thread
+                static  thread *  init(threadable, void *); //!< create a new  thread
                 static  void      quit(thread * &) throw(); //!< finish and delete an old thread
             };
 

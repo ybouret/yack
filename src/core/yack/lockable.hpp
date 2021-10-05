@@ -60,7 +60,7 @@ namespace yack
 #define YACK_LOCK__(X,Y) X##Y
 
     //! instantiace the guard name
-#define YACK_LOCK_(HOST,ID) const yack::lockable::scope  YACK_LOCK__(__guard,ID)(HOST)
+#define YACK_LOCK_(HOST,ID) volatile yack::lockable::scope  YACK_LOCK__(__guard,ID)(HOST)
 
     //! use a local scoped_lock to lock HOST
 #define YACK_LOCK(HOST) YACK_LOCK_(HOST,__LINE__)

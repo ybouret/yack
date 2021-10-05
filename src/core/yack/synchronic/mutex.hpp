@@ -12,10 +12,7 @@ namespace yack
     namespace synchronic
     {
         class condition;
-        namespace quark
-        {
-            struct mutex;
-        }
+        namespace quark { struct mutex;}
         
         //______________________________________________________________________
         //
@@ -26,13 +23,20 @@ namespace yack
         class mutex : public primitive, public lockable
         {
         public:
-            explicit mutex();          //!< create internal mutex
-            virtual ~mutex() throw();  //!< cleanup
-
+            //__________________________________________________________________
+            //
+            // C++
+            //__________________________________________________________________
+            explicit     mutex();          //!< create internal mutex
+            virtual     ~mutex() throw();  //!< cleanup
+            //!
+            //__________________________________________________________________
+            //
+            // lockable interface
+            //__________________________________________________________________
             virtual void lock()     throw(); //!< lock
             virtual void unlock()   throw(); //!< unlock
             virtual bool try_lock() throw(); //!< try lock
-            
             
         private:
             YACK_DISABLE_COPY_AND_ASSIGN(mutex);

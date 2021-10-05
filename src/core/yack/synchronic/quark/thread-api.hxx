@@ -5,7 +5,7 @@ namespace yack
     {
         namespace quark
         {
-            thread *thread_api::init(call proc, void *args)
+            thread *thread_api::init(threadable proc, void *args)
             {
                 static atelier &mgr = atelier_instance();
                 thread         *thr = mgr.threads.zombie<thread>();
@@ -28,6 +28,27 @@ namespace yack
             }
         }
 
+    }
+
+}
+
+#include "yack/synchronic/thread.hpp"
+
+namespace yack
+{
+    namespace synchronic
+    {
+        thread:: thread(threadable proc, void *args) : impl( quark::thread_api::init(proc,args) )
+        {
+
+        }
+
+        thread:: ~thread() throw()
+        {
+            assert(impl);
+            quark::thread_api::quit(impl);
+            assert(NULL==impl);
+        }
     }
 
 }
