@@ -102,7 +102,7 @@ namespace yack
 
         private:
             YACK_DISABLE_COPY_AND_ASSIGN(chunk);
-
+            void format(const size_t block_size) throw();
 
         };
         

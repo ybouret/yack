@@ -69,7 +69,8 @@ namespace yack
             std::cerr << "<arena/>" << std::endl;
             std::cerr << "sizeof(chunks) = " << sizeof(chunks_list) << std::endl;
             std::cerr << "sizeof(impl)   = " << sizeof(impl) << std::endl;
-            
+
+
             Y_STATIC_ZSET(impl);
             chunks_list *chunks = coerce_to<chunks_list>(impl);
             new (chunks) chunks_list();
@@ -215,6 +216,10 @@ namespace yack
             assert(releasing->owns(addr,chunk_block_size));
             releasing->release(addr,chunk_block_size);
             ++available_blocks;
+            if(releasing->is_empty())
+            {
+                std::cerr << "empty chunk." << chunk_block_size << std::endl;
+            }
         }
         
         static inline

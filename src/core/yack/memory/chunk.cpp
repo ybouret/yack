@@ -41,6 +41,16 @@ namespace yack
             }
         }
 
+        void chunk:: format(const size_t block_size) throw()
+        {
+            assert(0==first_available);
+            for(uint8_t q=0,*p=data; q!=provided_number; p += block_size)
+            {
+                assert(owns(p,block_size));
+                *p = ++q;
+            }
+        }
+
         chunk:: chunk(const size_t block_size,
                       void        *chunk_data,
                       const size_t chunk_size) throw() :
@@ -53,12 +63,7 @@ namespace yack
         next(0),
         prev(0)
         {
-            for(uint8_t q=0,*p=data; q!=provided_number; p += block_size)
-            {
-                assert(owns(p,block_size));
-                *p = ++q;
-            }
-
+            format(block_size);
         }
 
         bool chunk:: is_empty() const throw()
