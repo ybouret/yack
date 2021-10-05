@@ -1,0 +1,39 @@
+
+#include "yack/memory/allocator/global.hpp"
+#include "yack/memory/ram.hpp"
+#include <new>
+
+namespace yack
+{
+    namespace memory
+    {
+        
+        static void *ram__[ YACK_WORDS_FOR(ram) ];
+        
+        global:: global() throw() : allocator(), singleton<global>()
+        {
+            new (out_of_reach::zset(ram__,sizeof(ram__))) ram();
+        }
+        
+        global:: ~global() throw()
+        {
+            out_of_reach::zset( destructed( coerce_cast<ram>(ram__) ), sizeof(ram__) );
+        }
+        
+        void *global:: acquire(size_t &count, const size_t block_size)
+        {
+            YACK_LOCK(access);
+            return coerce_cast<ram>(ram__)->acquire(count,block_size);
+        }
+        
+        void global:: release(void *&addr, size_t &size) throw()
+        {
+            YACK_LOCK(access);
+            coerce_cast<ram>(ram__)->release(addr,size);
+        }
+        
+        const char * global:: variety() const throw() { return "memory::global"; }
+        
+    }
+    
+}

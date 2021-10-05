@@ -34,8 +34,10 @@ add_test(at_exit test-yack at_exit)
 add_test(memory:ram    test-yack ram)
 add_test(memory:chunk  test-yack memory_chunk)
 add_test(memory:arena  test-yack memory_arena)
+add_test(memory:alloc  test-yack memory_alloc)
 
 add_test(data:list      test-yack data_list)
+add_test(data:pool      test-yack data_pool)
 
 add_test(sync:lockable  test-yack sync_lockable)
 add_test(sync:primitive test-yack sync_primitive)

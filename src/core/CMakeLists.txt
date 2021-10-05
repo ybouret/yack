@@ -65,6 +65,14 @@ set(memory ${memory_impl} ${memory_decl})
 SOURCE_GROUP(memory FILES ${memory})
 install( FILES ${memory_decl} DESTINATION include/yack/memory )
  
+ # memory allocators 
+file(GLOB memory_allocator_impl yack/memory/allocator/*.cpp)
+file(GLOB memory_allocator_decl yack/memory/allocator/*.hpp)
+set(memory_allocator ${memory_allocator_impl} ${memory_allocator_decl})
+SOURCE_GROUP(memory/allocator FILES ${memory_allocator})
+install( FILES ${memory_allocator_decl} DESTINATION include/yack/memory/allocator )
+ 
+ 
  
 # concurrent operations
 file(GLOB concurrent_impl yack/concurrent/*.cpp)
@@ -97,7 +105,7 @@ ${check}
 ${system}
 ${data}
 ${container}
-${memory}
+${memory} ${memory_allocator}
 ${concurrent} ${concurrent_quark} ${concurrent_sync}
 ${utest}
 )

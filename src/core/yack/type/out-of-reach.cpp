@@ -14,10 +14,11 @@ namespace yack
         return addr;
     }
     
-    void out_of_reach::zset(void *addr, const size_t size) throw()
+    void *out_of_reach::zset(void *addr, const size_t size) throw()
     {
         assert(!(NULL==addr && size>0));
         memset(addr,0,size);
+        return addr;
     }
 
     void out_of_reach::copy(void *target, const void *source, const size_t size) throw()
