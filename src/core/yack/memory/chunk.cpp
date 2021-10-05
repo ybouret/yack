@@ -160,15 +160,25 @@ namespace yack
         {
             assert(block_size>0);
             assert(minimum_frame_blocks>0);
+            assert(is_a_power_of_two<size_t>(YACK_CHUNK_SIZE));
+
+            //------------------------------------------------------------------
+            //
             // initialize search
+            //
+            //------------------------------------------------------------------
             size_t min_chunk_size = next_power_of_two( header+minimum_frame_blocks*block_size ); assert(min_chunk_size>header);
             size_t min_num_blocks = blocks_for(min_chunk_size,block_size);
-            while( min_num_blocks <= 0 ) min_num_blocks = blocks_for( min_chunk_size <<= 1, block_size);
+            while( min_num_blocks <= 0 ) min_num_blocks = blocks_for(min_chunk_size<<=1,block_size);
 
 
+            //------------------------------------------------------------------
+            //
+            // find maximal optimized size
+            //
+            //------------------------------------------------------------------
             size_t max_chunk_size = min_chunk_size;
             size_t max_num_blocks = min_num_blocks;
-            // find maximal optimized size
             while(max_num_blocks<255)
             {
                 const size_t next_chunk_size = max_chunk_size << 1;
@@ -181,17 +191,46 @@ namespace yack
                 max_num_blocks = next_num_blocks;
             }
             assert(header+max_num_blocks*block_size<=max_chunk_size);
+#if 0
             std::cerr << "block_size       = " << block_size << std::endl;
-            std::cerr << "  min_chunk_size = " << std::setw(6) << min_chunk_size << " => #blocks=" << min_num_blocks << std::endl;
-            std::cerr << "  max_chunk_size = " << std::setw(6) << max_chunk_size << " => #blocks=" << max_num_blocks << std::endl;
-
+            std::cerr << "   min_chunk_size = " << std::setw(6) << min_chunk_size  << " => #blocks=" << min_num_blocks << std::endl;
+            std::cerr << "   max_chunk_size = " << std::setw(6) << max_chunk_size  << " => #blocks=" << max_num_blocks << std::endl;
+            std::cerr << "  YACK_CHUNK_SIZE = " << std::setw(6) << YACK_CHUNK_SIZE << " => #blocks=" << blocks_for(YACK_CHUNK_SIZE,block_size) << std::endl;
+#endif
             if(compact)
             {
-                
+                //--------------------------------------------------------------
+                // try to compact to YACK_CHUNK_SIZE
+                //--------------------------------------------------------------
+                if(YACK_CHUNK_SIZE<=min_chunk_size)
+                {
+                    // keep min_num_blocks for a pertinent work
+                    blocks = min_num_blocks;
+                    return   min_chunk_size;
+                }
+                else
+                {
+                    if(YACK_CHUNK_SIZE>=max_chunk_size)
+                    {
+                        // keep max_num_blocks
+                        blocks = max_num_blocks;
+                        return   max_chunk_size;
+                    }
+                    else
+                    {
+                        // clamp
+                        assert(max_chunk_size>YACK_CHUNK_SIZE);
+                        assert(YACK_CHUNK_SIZE>min_chunk_size);
+                        blocks = blocks_for(YACK_CHUNK_SIZE,block_size);
+                        return YACK_CHUNK_SIZE;
+                    }
+                }
             }
             else
             {
-
+                //--------------------------------------------------------------
+                // full size
+                //--------------------------------------------------------------
                 blocks = max_num_blocks;
                 return   max_chunk_size;
             }
