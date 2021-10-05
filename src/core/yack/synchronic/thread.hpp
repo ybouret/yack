@@ -32,6 +32,7 @@ namespace yack
             virtual ~thread() throw();                    //!< wait and destruct
             
         private:
+            YACK_DISABLE_COPY_AND_ASSIGN(thread);
             quark::thread *impl;
         };
     }
