@@ -18,8 +18,9 @@ namespace yack
             
             condition *condition_create();                    //!< create a condition
             void       condition_delete(condition *) throw(); //!< delete a condition
-            void       condition_wait(condition *,mutex *) throw();       //!< wait on a LOCKED mutex, wakeup on a LOCKED mutex
-                                                        
+            void       condition_wait(condition *,mutex *) throw(); //!< wait on a LOCKED mutex, wakeup on a LOCKED mutex
+            void       condition_signal(condition *)       throw(); //!< signal one waiting thread
+            void       condition_broadcast(condition *)    throw(); //!< broadcast all waiting threads
         }
     }
 }

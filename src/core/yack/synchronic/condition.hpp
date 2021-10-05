@@ -9,6 +9,8 @@ namespace yack
 {
     namespace synchronic
     {
+        class mutex;
+
         namespace quark
         {
             class condition;
@@ -23,9 +25,21 @@ namespace yack
         class condition : public primitive
         {
         public:
-            explicit condition();          //!< create internal condition
-            virtual ~condition() throw();  //!< cleanup
-            
+            //__________________________________________________________________
+            //
+            // C++
+            //__________________________________________________________________
+            explicit condition();           //!< create internal condition
+            virtual ~condition()   throw(); //!< cleanup
+
+            //__________________________________________________________________
+            //
+            // methods
+            //__________________________________________________________________
+            void     wait(mutex &) throw(); //!< wait on a LOCKED mutex
+            void     signal()      throw(); //!< signal one waiting thread
+            void     broadcast()   throw(); //!< broadcast all waiting threads
+
         private:
             YACK_DISABLE_COPY_AND_ASSIGN(condition);
             quark::condition *impl;

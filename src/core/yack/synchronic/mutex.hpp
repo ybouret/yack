@@ -11,6 +11,7 @@ namespace yack
 {
     namespace synchronic
     {
+        class condition;
         namespace quark
         {
             struct mutex;
@@ -36,6 +37,7 @@ namespace yack
         private:
             YACK_DISABLE_COPY_AND_ASSIGN(mutex);
             quark::mutex *impl;
+            friend class condition;
         };
     }
 }

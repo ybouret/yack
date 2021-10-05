@@ -9,15 +9,21 @@ namespace yack
 {
     namespace synchronic
     {
+
+        //______________________________________________________________________
+        //
+        //
+        //! a primtive synchronisation object
+        //
+        //______________________________________________________________________
         class primitive
         {
         public:
-            virtual ~primitive() throw();
-            
-            static void display();
-            
+            static void display();           //!< display internal info
+            virtual    ~primitive() throw(); //!< cleanup
+
         protected:
-            explicit primitive() throw();
+            explicit    primitive() throw(); //!< setup
             
         private:
             YACK_DISABLE_COPY_AND_ASSIGN(primitive);

@@ -33,45 +33,35 @@ typedef CRITICAL_SECTION yack_mutex;
 namespace yack
 {
 #if defined(YACK_WIN)
+    //==========================================================================
+    //
+    //
+    // <win32::semaphore>, for legacy win32 conditions
+    //
+    //
+    //==========================================================================
     namespace win32
     {
         
         class semaphore
         {
         public:
-            inline semaphore() : sem_(0)
-            {
-                static const long lMinCount = 0;
-                static const long lMaxCount = 65535;
-                sem_ = ::CreateSemaphore(NULL, lMinCount, lMaxCount, NULL);
-                if (!sem_)
-                {
-                    throw win32::exception(::GetLastError(), "::CreateSemaphore()");
-                }
-                
-            }
-            
-            inline ~semaphore() throw()
-            {
-                assert(sem_);
-                ::CloseHandle(sem_);
-                sem_ = NULL;
-            }
-            
+            static const long lMinCount = 0;
+            static const long lMaxCount = 65535;
+
+            inline  semaphore() : sem_(0) { if( !(sem_::CreateSemaphore(NULL, lMinCount, lMaxCount, NULL) ) ) throw win32::exception(::GetLastError(), "::CreateSemaphore()"); }
+            inline ~semaphore() throw() { assert(sem_); ::CloseHandle(sem_); sem_ = NULL; }
+
             inline void wait() throw()
             {
                 assert(sem_ != NULL);
-                const DWORD res = WaitForSingleObject(sem_,           /* handle to semaphore  */
-                                                      INFINITE);      /* let's wait          */
-                if (res != WAIT_OBJECT_0)
-                    system_error::critical_win(::GetLastError(), "WaitForSingleObject( SEMAPHORE )");
+                const DWORD res = ::WaitForSingleObject(sem_, INFINITE);
+                if (res != WAIT_OBJECT_0) system_error::critical_win(::GetLastError(), "WaitForSingleObject( SEMAPHORE )");
             }
             
             inline void post() throw()
             {
-                assert(sem_ != NULL);
-                if (!::ReleaseSemaphore(sem_, 1, NULL))
-                    system_error::critical_win(::GetLastError(), "::ReleaseSemaphore");
+                assert(sem_ != NULL); if (!::ReleaseSemaphore(sem_, 1, NULL)) system_error::critical_win(::GetLastError(), "::ReleaseSemaphore");
             }
             
         private:
@@ -79,26 +69,36 @@ namespace yack
             YACK_DISABLE_COPY_AND_ASSIGN(semaphore);
         };
     }
+    //==========================================================================
+    //
+    //
+    // <win32::semaphore/>, for legacy win32 conditions
+    //
+    //
+    //==========================================================================
 #endif
+
+
     
     namespace synchronic
     {
         namespace quark
         {
-            
-            //__________________________________________________________________
+
+            //==================================================================
             //
             //
-            //! system mutex
+            //! <system low level mutex>
             //
-            //__________________________________________________________________
+            //
+            //==================================================================
             struct mutex {
                 yack_mutex impl;
+
+                //! syntax helper
                 inline yack_mutex * operator*() throw() { return &impl; }
-                
-                
-                
-                
+
+                //! smart pointer
                 class handle
                 {
                 public:
@@ -125,18 +125,25 @@ namespace yack
                 };
             };
             
-            
+            //==================================================================
+            //
+            //
+            // <system low level mutex/>
+            //
+            //
+            //==================================================================
             
             
             
             
 #if defined(YACK_BSD)
-            //__________________________________________________________________
+            //==================================================================
             //
             //
-            //! pthread condition
+            //! <pthread::condition>
             //
-            //__________________________________________________________________
+            //
+            //==================================================================
             class condition
             {
             public:
@@ -177,16 +184,24 @@ namespace yack
             private:
                 YACK_DISABLE_COPY_AND_ASSIGN(condition);
             };
+            //==================================================================
+            //
+            //
+            //  <pthread::condition/>
+            //
+            //
+            //==================================================================
 #endif
             
             
 #if defined(YACK_WIN)
-            //__________________________________________________________________
+            //==================================================================
             //
             //
-            //! legacy win32 condition implementation
+            //! <legacy::win32::condition>
             //
-            //__________________________________________________________________
+            //
+            //==================================================================
             class condition
             {
             public:
@@ -295,9 +310,23 @@ namespace yack
                 win32::semaphore cv_done_sem;  /*!< Win32 semaphore when done    */
                 
             };
+            //==================================================================
+            //
+            //
+            // <legacy::win32::condition/>
+            //
+            //
+            //==================================================================
 #endif
             
 #if defined(YACK_BSD)
+            //==================================================================
+            //
+            //
+            //! <pthread::mutex::attribute>
+            //
+            //
+            //==================================================================
             class mutex_attribute
             {
             public:
@@ -328,15 +357,23 @@ namespace yack
             private:
                 YACK_DISABLE_COPY_AND_ASSIGN(mutex_attribute);
             };
+            //==================================================================
+            //
+            //
+            // <pthread::mutex::attribute/>
+            //
+            //
+            //==================================================================
 #endif
             
             
-            //__________________________________________________________________
+            //==================================================================
             //
             //
-            // atelier
+            // <atelier>
             //
-            //__________________________________________________________________
+            //
+            //==================================================================
             class atelier : public memory::ram,
 #if defined(YACK_BSD)
             public mutex_attribute,
@@ -481,31 +518,60 @@ namespace yack
             private:
                 YACK_DISABLE_COPY_AND_ASSIGN(atelier);
             };
-            
-            static bool             atelier_initialize = true;
-            static void *           atelier_data[ YACK_WORDS_FOR(atelier) ];
+            //==================================================================
+            //
+            //
+            // <atelier/>
+            //
+            //
+            //==================================================================
+
+
+            //==================================================================
+            //
+            //
+            // <atelier::internal>
+            //
+            //
+            //==================================================================
+
+            //__________________________________________________________________
+            //
+            // singleton data
+            //__________________________________________________________________
+            static bool             atelier_initialize = true;               //!< if initialize is requested
+            static void *           atelier_data[ YACK_WORDS_FOR(atelier) ]; //!<
+
+            //__________________________________________________________________
+            //
+            // singleton functions
+            //__________________________________________________________________
+
+            //! clean memory
             static inline void      atelier_zero() throw() { memset(atelier_data,0,sizeof(atelier_data)); }
             
-            
+
+            //! location of initialized atelier
             static inline atelier & atelier_location() throw()
             {
                 assert(!atelier_initialize);
                 return *static_cast<atelier *>( yack::out_of_reach::address(atelier_data) );
             }
-            
+
+            //! cleanup at exit
             static inline void atelier_quit(void *) throw()
             {
                 assert(!atelier_initialize);
-                assert( atelier_location().giant );
                 yack::destruct( &atelier_location() );
                 atelier_zero();
                 atelier_initialize = true;
             }
-            
+
+            //! atelier instance, with once initialization
             static inline atelier & atelier_instance()
             {
                 YACK_STATIC_CHECK(sizeof(atelier_data)>=sizeof(atelier),invalid_atelier_data);
-                atelier *mgr = static_cast<atelier *>( yack::out_of_reach::address(atelier_data) );
+                atelier *mgr = coerce_to<atelier>(atelier_data);
                 if(atelier_initialize)
                 {
                     atelier_zero();
@@ -517,7 +583,13 @@ namespace yack
                 return *mgr;
             }
             
-            
+            //==================================================================
+            //
+            //
+            // <atelier::internal/>
+            //
+            //
+            //==================================================================
             
         }
         
@@ -539,7 +611,13 @@ namespace yack
     {
         namespace quark
         {
-            
+            //==================================================================
+            //
+            //
+            // <mutex API>
+            //
+            //
+            //==================================================================
             mutex *mutex_create()
             {
                 //--------------------------------------------------------------
@@ -596,7 +674,14 @@ namespace yack
                 return pthread_mutex_trylock(**m) == 0;
 #endif
             }
-            
+
+            //==================================================================
+            //
+            //
+            // <mutex API/>
+            //
+            //
+            //==================================================================
         }
     }
 }
@@ -607,6 +692,13 @@ namespace yack
     {
         namespace quark
         {
+            //==================================================================
+            //
+            //
+            // <condition API>
+            //
+            //
+            //==================================================================
             condition *condition_create()
             {
                 static atelier &mgr = atelier_instance();
@@ -626,7 +718,27 @@ namespace yack
                 assert(m);
                 cond->wait(m);
             }
-            
+
+            void       condition_signal(condition *cond)   throw()
+            {
+                assert(cond);
+                cond->signal();
+            }
+
+            void       condition_broadcast(condition *cond) throw()
+            {
+                assert(cond);
+                cond->broadcast();
+            }
+
+
+            //==================================================================
+            //
+            //
+            // <condition API/>
+            //
+            //
+            //==================================================================
         }
         
     }
