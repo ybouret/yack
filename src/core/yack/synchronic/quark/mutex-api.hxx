@@ -41,7 +41,7 @@ namespace yack
 #endif
 
 #if defined(YACK_WIN)
-                ::EnterCriticalSection(***m);
+                ::EnterCriticalSection(**m);
 #endif
 
             }

@@ -100,7 +100,7 @@ namespace yack
 
                     /* Unlock the mutex, as is required by condition variable semantics */
                     //m.unlock();
-                    mutex_unlock(m);
+					mutex_api::unlock(m);
 
 
                     /* Wait for a signal */
@@ -126,7 +126,7 @@ namespace yack
 
                     /* Lock the mutex, as is required by condition variable semantics */
                     //m.lock();
-                    mutex_lock(m);
+					mutex_api::lock(m);
                 }
 
                 void signal() throw()
