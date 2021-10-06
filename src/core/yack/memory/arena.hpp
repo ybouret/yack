@@ -24,6 +24,10 @@ namespace yack
         //
         //
         //! arena of chunks with same block size
+        /**
+         - use power of two aligned chunk frames
+         - chunk can be interchanged with pages
+         */
         //
         //______________________________________________________________________
         class arena
@@ -93,10 +97,10 @@ namespace yack
             }
             
         private:
-            size_t       available_blocks; //!< bookkeeping
+            size_t       available; //!< bookkeeping
             chunk       *acquiring;        //!< last acquiring
             chunk       *releasing;        //!< last releasing
-            chunk       *empty;            //!< last empty chunk
+            chunk       *abandoned;        //!< last empty chunk
             void        *impl[list_words]; //!< chunks list
             void        *repo[pool_words]; //!< chunks pool
             allocator   &memory_io;        //!< allocator for frames
@@ -111,7 +115,7 @@ namespace yack
             YACK_DISABLE_COPY_AND_ASSIGN(arena);
             chunk *build();               //!< a new chunk
             chunk *query();               //!< cached or new
-            void   grow();                //!< with a new/cached chunk
+            void   grow();                //!< with query()
             void   kill(chunk *) throw(); //!< return memory
             void  *give()        throw(); //!< by acquiring
             void   take(void *)  throw(); //!< by releasing

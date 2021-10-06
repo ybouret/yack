@@ -65,10 +65,10 @@ namespace yack
         arena:: arena(const size_t block_size,
                       allocator   &dispatcher,
                       const bool   compact):
-        available_blocks(0),
+        available(0),
         acquiring(NULL),
         releasing(NULL),
-        empty(NULL),
+        abandoned(NULL),
         impl(),
         repo(),
         memory_io(dispatcher),
@@ -124,7 +124,7 @@ namespace yack
             acquiring           = chunks->push_back( query() ); assert(acquiring->provided_number==blocks_per_chunk);
 
             // bookkeeping
-            available_blocks += blocks_per_chunk;
+            available += blocks_per_chunk;
 
             // sort memory
             while( acquiring->prev && acquiring<acquiring->prev)
@@ -149,8 +149,12 @@ namespace yack
         {
             assert(acquiring);
             assert(acquiring->still_available>0);
-            assert(available_blocks>0);
-            --available_blocks;
+            assert(available>0);
+            --available;
+            if(abandoned==acquiring)
+            {
+                abandoned=NULL;
+            }
             return acquiring->acquire(chunk_block_size);
         }
         
@@ -159,7 +163,7 @@ namespace yack
             assert(acquiring);
             assert(releasing);
             
-            if(available_blocks)
+            if(available>0)
             {
                 //______________________________________________________________
                 //
@@ -250,14 +254,14 @@ namespace yack
             assert(releasing);
             assert(releasing->owns(addr,chunk_block_size));
             const bool is_empty = (releasing->release(addr,chunk_block_size));
-            ++available_blocks;
+            ++available;
             if(is_empty)
             {
                 assert(releasing->is_empty());
-                if(!empty)
+                if(!abandoned)
                 {
                     // first empty block
-                    empty = releasing;
+                    abandoned = releasing;
                 }
                 else
                 {
