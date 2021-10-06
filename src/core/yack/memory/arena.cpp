@@ -269,7 +269,7 @@ namespace yack
         static inline
         void search_error()
         {
-            system_error::critical_bsd(EACCES,"memory::arena(corrupted release)");
+            system_error::critical_bsd(EACCES,"memory::arena::release(corrupted block address)");
 
         }
         

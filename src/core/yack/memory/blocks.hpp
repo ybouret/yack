@@ -11,19 +11,31 @@ namespace yack
 
     namespace memory
     {
+        //______________________________________________________________________
+        //
+        //
+        // forward declarations
+        //
+        //______________________________________________________________________
         class arena;
 
+        //______________________________________________________________________
+        //
+        //
+        //! handling blocks
+        //
+        //______________________________________________________________________
         class blocks
         {
         public:
-            static const size_t minimal_capacity = 8;
-            static const char   designation[];
+            static const size_t minimal_capacity = 8; //!< memory for arenas
+            static const char   designation[];        //!< memory blocks
 
-            explicit blocks();
-            virtual ~blocks() throw();
+            explicit blocks();          //!< setup with capacity but not arena
+            virtual ~blocks() throw();  //!< cleanup
 
-            void *acquire(const size_t block_size);
-
+            void *acquire(const size_t block_size);                           //!< acquire block
+            void  release(void *block_addr, const size_t block_size) throw(); //!< release block
 
         private:
             YACK_DISABLE_COPY_AND_ASSIGN(blocks);

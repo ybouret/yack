@@ -1,4 +1,5 @@
 #include "yack/memory/blocks.hpp"
+#include "yack/memory/allocator/pages.hpp"
 #include "yack/data/cxx-list.hpp"
 #include "yack/utest/run.hpp"
 
@@ -38,9 +39,19 @@ YACK_UTEST(memory_blocks)
     {
         const size_t n = 1 + ran.leq(255);
         void        *p = b.acquire(n);
+        YACK_ASSERT( out_of_reach::is0(p,n) );
         l.push_back( new block(p,n) );
     }
 
+    ran.shuffle_list(l);
+    while(l.size)
+    {
+        block *blk = l.pop_back();
+        b.release(blk->addr,blk->size);
+        delete blk;
+    }
+
+    
 
 
 }

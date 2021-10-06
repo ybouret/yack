@@ -49,8 +49,8 @@ namespace yack
             //__________________________________________________________________
             void *query(const size_t page_exp2);                     //!< from internal book
             void  store(void *addr, const size_t page_exp2) throw(); //!< from internal book
-            void  display() const;
-            
+            void  display() const;                                   //!< display current info
+
         private:
             YACK_DISABLE_COPY_AND_ASSIGN(pages);
             explicit pages() throw();

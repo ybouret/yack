@@ -4,9 +4,9 @@
 #include "yack/memory/allocator/pages.hpp"
 #include "yack/memory/allocator/global.hpp"
 #include "yack/arith/base2.hpp"
+#include "yack/system/error.hpp"
 #include <cerrno>
 
-#include <iostream>
 
 namespace yack
 {
@@ -169,7 +169,6 @@ namespace yack
             }
 #endif
 
-            std::cerr << "created arena[" << block_size << "]" << std::endl;
         }
 
 
@@ -212,7 +211,6 @@ namespace yack
             page_size = new_page_size;
             page_exp2 = new_page_exp2;
             capacity  = new_capacity;
-            std::cerr << "updated to " << capacity << " arenas" << std::endl;
 
             //------------------------------------------------------------------
             // sanity check
@@ -279,6 +277,19 @@ namespace yack
             assert(acquiring->chunk_block_size==block_size);
             return acquiring->acquire();
         }
+
+        void  blocks:: release(void        *block_addr,
+                               const size_t block_size) throw()
+        {
+            assert(block_addr!=NULL);
+            assert(block_size>0);
+            assert(releasing);
+            arena *probe = find_arena(block_size,data,releasing,last);
+            if(!probe) system_error::critical_bsd(EINVAL,"memory::blocks::release(invalid block_size)");
+            assert(block_size==probe->chunk_block_size);
+            (releasing = probe)->release(block_addr);
+        }
+
 
     }
 
