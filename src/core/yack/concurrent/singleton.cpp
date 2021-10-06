@@ -1,5 +1,5 @@
 
-#include "yack/singleton.hpp"
+#include "yack/concurrent/singleton.hpp"
 #include "yack/type/cstring.h"
 
 #include <cstring>

@@ -43,6 +43,8 @@ assert(NULL!=NODE); assert(NULL==(NODE)->next); assert(NULL==(NODE)->prev)
         //
         // interlinked interface
         //______________________________________________________________________
+
+        //! sequential ownership test
         inline virtual bool owns(const NODE *node) const throw()
         {
             assert(NULL!=node);
@@ -53,6 +55,7 @@ assert(NULL!=NODE); assert(NULL==(NODE)->next); assert(NULL==(NODE)->prev)
             return false;
         }
 
+        //! reverse by auxiliary list
         inline virtual void reverse() throw()
         {
             list_of tmp;

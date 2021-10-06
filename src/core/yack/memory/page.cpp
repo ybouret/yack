@@ -28,6 +28,8 @@ namespace yack
             assert(entry);
             assert(size>=sizeof(page));
             assert(is_a_power_of_two(size));
+            assert(NULL==entry->next);
+            assert(NULL==entry->prev);
 
             mgr.release(*(void **)&entry,size);
         }

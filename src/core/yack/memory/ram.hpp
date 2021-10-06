@@ -39,7 +39,7 @@ namespace yack
             //
             // methods
             //__________________________________________________________________
-            static uint64_t allocated() throw();
+            static uint64_t allocated() throw(); //!< monitoring
             
         private:
             YACK_DISABLE_COPY_AND_ASSIGN(ram);

@@ -33,7 +33,7 @@ namespace yack
         class mutex : public primitive, public lockable
         {
         public:
-            static bool verbose;
+            static bool verbose; //!< flag to trace calls
 
             //__________________________________________________________________
             //
@@ -50,14 +50,18 @@ namespace yack
             virtual void unlock()   throw(); //!< unlock
             virtual bool try_lock() throw(); //!< try lock
 
-            void tag(const char *id) throw();
+            //__________________________________________________________________
+            //
+            // methods
+            //__________________________________________________________________
+            void tag(const char *id) throw(); //!< create a name
 
         private:
             YACK_DISABLE_COPY_AND_ASSIGN(mutex);
             quark::mutex *impl;
             friend class condition;
         public:
-            const char    name[64-3*sizeof(void*)];
+            const char    name[64-3*sizeof(void*)]; //!< identifier to trace
         };
     }
 }

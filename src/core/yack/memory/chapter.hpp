@@ -15,16 +15,34 @@ namespace yack
     namespace memory
     {
 
+        //______________________________________________________________________
+        //
+        //
+        //! chapters of pages
+        //
+        //______________________________________________________________________
         class chapter : public list_of<page>
         {
         public:
-            explicit chapter(const size_t sz) throw();
-            virtual ~chapter() throw();
-            
-            void  *query();
-            void   store(void *) throw();
+            //__________________________________________________________________
+            //
+            // C++
+            //__________________________________________________________________
+            explicit chapter(const size_t sz) throw(); //!< initialize with page_size
+            virtual ~chapter() throw();                //!< cleanup
 
-            const size_t page_size;
+            //__________________________________________________________________
+            //
+            // methods
+            //__________________________________________________________________
+            void  *query();               //!< recall/create a page
+            void   store(void *) throw(); //!< store a former page
+
+            //__________________________________________________________________
+            //
+            // members
+            //__________________________________________________________________
+            const size_t page_size;  //!< page size, a power of two
 
         private:
             YACK_DISABLE_COPY_AND_ASSIGN(chapter);

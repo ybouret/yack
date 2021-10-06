@@ -23,9 +23,14 @@ namespace yack
         class pages : public allocator, public singleton<pages>
         {
         public:
+            //__________________________________________________________________
+            //
+            // types and definitions
+            //__________________________________________________________________
+
             //! the maximum available longevity
             static const at_exit::longevity life_time = YACK_MEMORY_PAGES_ALLOCATOR_LONGEVITY;
-            static const char               call_sign[];
+            static const char               call_sign[]; //!< "memory::pages"
 
             //__________________________________________________________________
             //
@@ -38,8 +43,8 @@ namespace yack
             //
             // specific interface
             //__________________________________________________________________
-            void *query(const size_t page_exp2);
-            void  store(void *addr, const size_t page_exp2) throw();
+            void *query(const size_t page_exp2);                     //!< from internal book
+            void  store(void *addr, const size_t page_exp2) throw(); //!< from internal book
 
         private:
             YACK_DISABLE_COPY_AND_ASSIGN(pages);

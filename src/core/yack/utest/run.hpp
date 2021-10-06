@@ -99,6 +99,7 @@ namespace yack
             p.merge(p2);
         }
 
+        //! fill with non zero values
         inline void fillnz(void *addr, const size_t size) throw()
         {
             uint8_t *p = static_cast<uint8_t*>(out_of_reach::address(addr));
