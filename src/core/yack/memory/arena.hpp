@@ -97,14 +97,14 @@ namespace yack
             }
             
         private:
-            size_t       available; //!< bookkeeping
-            chunk       *acquiring;        //!< last acquiring
-            chunk       *releasing;        //!< last releasing
-            chunk       *abandoned;        //!< last empty chunk
-            void        *chunks__[list_words]; //!< chunks list
-            void        *ccache__[pool_words]; //!< chunks pool
-            allocator   &memory_io;        //!< allocator for frames
-            
+            size_t       available;             //!< bookkeeping
+            chunk       *acquiring;             //!< last acquiring
+            chunk       *releasing;             //!< last releasing
+            chunk       *abandoned;             //!< last empty chunk
+            void        *chunks_io[list_words]; //!< chunks list
+            void        *ccache_io[pool_words]; //!< chunks pool
+            allocator   &providing;             //!< allocator for frames
+        
         public:
             const size_t chunk_block_size; //!< the same block size
             const size_t blocks_per_chunk; //!< for each chunk

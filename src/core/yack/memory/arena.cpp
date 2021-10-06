@@ -28,14 +28,14 @@ namespace yack
             assert(NULL==ch->prev);
             
             out_of_reach::zset(ch,chunk::header);
-            chunk::delete_frame(ch,memory_per_chunk,memory_io);
+            chunk::delete_frame(ch,memory_per_chunk,providing);
         }
         
         arena:: ~arena() throw()
         {
             size_t       missing = 0;
             {
-                chunks_list *chunks  = coerce_cast<chunks_list>(chunks__);
+                chunks_list *chunks  = coerce_cast<chunks_list>(chunks_io);
                 while(chunks->size)
                 {
                     chunk *ch = chunks->pop_back();
@@ -43,17 +43,17 @@ namespace yack
                     kill(ch);
                 }
                 destruct(chunks);
-                Y_STATIC_ZSET(chunks__);
+                Y_STATIC_ZSET(chunks_io);
             }
 
             {
-                chunks_pool *ccache = coerce_cast<chunks_pool>(ccache__);
+                chunks_pool *ccache = coerce_cast<chunks_pool>(ccache_io);
                 while(ccache->size)
                 {
                     kill( ccache->query() );
                 }
                 destruct(ccache);
-                Y_STATIC_ZSET(ccache__);
+                Y_STATIC_ZSET(ccache_io);
             }
 
             if(missing)
@@ -69,16 +69,17 @@ namespace yack
         acquiring(NULL),
         releasing(NULL),
         abandoned(NULL),
-        chunks__(),
-        ccache__(),
-        memory_io(dispatcher),
+        chunks_io(),
+        ccache_io(),
+        providing(dispatcher),
+        
         chunk_block_size(block_size),
         blocks_per_chunk(0),
         memory_per_chunk( chunk::optimized_frame_size(block_size,coerce(blocks_per_chunk),compact) ),
         memory_signature( base2<size_t>::log2_of(memory_per_chunk) )
         {
-            YACK_STATIC_CHECK(sizeof(chunks__)>=sizeof(chunks_list),impl_too_small);
-            YACK_STATIC_CHECK(sizeof(ccache__)>=sizeof(chunks_pool),repo_too_small);
+            YACK_STATIC_CHECK(sizeof(chunks_io)>=sizeof(chunks_list),impl_too_small);
+            YACK_STATIC_CHECK(sizeof(ccache_io)>=sizeof(chunks_pool),repo_too_small);
 
 #if 0
             std::cerr << "<arena>" << std::endl;
@@ -89,9 +90,9 @@ namespace yack
             std::cerr << "<arena/>" << std::endl;
 #endif
 
-            Y_STATIC_ZSET(chunks__);
-            Y_STATIC_ZSET(ccache__);
-            chunks_list *chunks = coerce_cast<chunks_list>(chunks__);
+            Y_STATIC_ZSET(chunks_io);
+            Y_STATIC_ZSET(ccache_io);
+            chunks_list *chunks = coerce_cast<chunks_list>(chunks_io);
             new (chunks) chunks_list();
             try
             {
@@ -102,25 +103,25 @@ namespace yack
                 destruct(chunks);
                 throw;
             }
-            new ( out_of_reach::address(ccache__) ) chunks_pool();
+            new ( out_of_reach::address(ccache_io) ) chunks_pool();
             releasing = acquiring;
         }
 
         chunk * arena:: build()
         {
-            return chunk::create_frame(chunk_block_size,memory_per_chunk,memory_io);
+            return chunk::create_frame(chunk_block_size,memory_per_chunk,providing);
         }
 
         chunk * arena:: query()
         {
-            chunks_pool *ccache =  coerce_cast<chunks_pool>(ccache__);
+            chunks_pool *ccache =  coerce_cast<chunks_pool>(ccache_io);
             return (ccache->size>0) ? ccache->query() : build();
         }
 
         void arena::grow()
         {
             // append a new chunk
-            chunks_list *chunks = coerce_cast<chunks_list>(chunks__);
+            chunks_list *chunks = coerce_cast<chunks_list>(chunks_io);
             acquiring           = chunks->push_back( query() ); assert(acquiring->provided_number==blocks_per_chunk);
 
             // bookkeeping
