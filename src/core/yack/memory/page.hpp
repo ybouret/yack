@@ -23,8 +23,10 @@ namespace yack
              \param size is a power of two >= sizeof(page)
              */
             static page *acquire(const size_t size);
-            
+            static void  release(page *, size_t size) throw();
         };
+
+
     }
 
 }

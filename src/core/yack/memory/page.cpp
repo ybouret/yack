@@ -19,6 +19,15 @@ namespace yack
             return entry;
         }
 
+        void page:: release(page *entry, size_t size) throw()
+        {
+            static allocator &mgr = global::location();
+            assert(entry);
+            assert(size>=sizeof(page));
+            assert(is_a_power_of_two(size));
+            mgr.release(*(void **)&entry,size);
+        }
+
     }
 
 }

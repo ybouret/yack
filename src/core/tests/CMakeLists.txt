@@ -35,6 +35,7 @@ add_test(memory:ram    test-yack ram)
 add_test(memory:chunk  test-yack memory_chunk)
 add_test(memory:arena  test-yack memory_arena)
 add_test(memory:alloc  test-yack memory_alloc)
+add_test(memory:book   test-yack memory_book)
 
 add_test(data:list      test-yack data_list)
 add_test(data:pool      test-yack data_pool)

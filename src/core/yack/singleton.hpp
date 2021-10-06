@@ -7,6 +7,7 @@
 #include "yack/type/out-of-reach.hpp"
 #include "yack/type/destruct.hpp"
 #include "yack/system/at-exit.hpp"
+#include <new>
 
 namespace yack
 {
