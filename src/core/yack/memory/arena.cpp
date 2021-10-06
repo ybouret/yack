@@ -35,7 +35,7 @@ namespace yack
         {
             size_t       missing = 0;
             {
-                chunks_list *chunks  = coerce_cast<chunks_list>(impl);
+                chunks_list *chunks  = coerce_cast<chunks_list>(chunks__);
                 while(chunks->size)
                 {
                     chunk *ch = chunks->pop_back();
@@ -43,7 +43,7 @@ namespace yack
                     kill(ch);
                 }
                 destruct(chunks);
-                Y_STATIC_ZSET(impl);
+                Y_STATIC_ZSET(chunks__);
             }
 
             {
@@ -69,7 +69,7 @@ namespace yack
         acquiring(NULL),
         releasing(NULL),
         abandoned(NULL),
-        impl(),
+        chunks__(),
         repo(),
         memory_io(dispatcher),
         chunk_block_size(block_size),
@@ -77,7 +77,7 @@ namespace yack
         memory_per_chunk( chunk::optimized_frame_size(block_size,coerce(blocks_per_chunk),compact) ),
         memory_signature( base2<size_t>::log2_of(memory_per_chunk) )
         {
-            YACK_STATIC_CHECK(sizeof(impl)>=sizeof(chunks_list),impl_too_small);
+            YACK_STATIC_CHECK(sizeof(chunks__)>=sizeof(chunks_list),impl_too_small);
             YACK_STATIC_CHECK(sizeof(repo)>=sizeof(chunks_pool),repo_too_small);
 
 #if 0
@@ -89,9 +89,9 @@ namespace yack
             std::cerr << "<arena/>" << std::endl;
 #endif
 
-            Y_STATIC_ZSET(impl);
+            Y_STATIC_ZSET(chunks__);
             Y_STATIC_ZSET(repo);
-            chunks_list *chunks = coerce_cast<chunks_list>(impl);
+            chunks_list *chunks = coerce_cast<chunks_list>(chunks__);
             new (chunks) chunks_list();
             try
             {
@@ -120,7 +120,7 @@ namespace yack
         void arena::grow()
         {
             // append a new chunk
-            chunks_list *chunks = coerce_cast<chunks_list>(impl);
+            chunks_list *chunks = coerce_cast<chunks_list>(chunks__);
             acquiring           = chunks->push_back( query() ); assert(acquiring->provided_number==blocks_per_chunk);
 
             // bookkeeping
@@ -262,10 +262,12 @@ namespace yack
                 {
                     // first empty block
                     abandoned = releasing;
+                    std::cerr << "found first abandonned" << std::endl;
                 }
                 else
                 {
                     // another block is empty
+                    std::cerr << "found second abandonned" << std::endl;
                 }
             }
         }

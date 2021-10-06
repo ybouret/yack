@@ -101,7 +101,7 @@ namespace yack
             chunk       *acquiring;        //!< last acquiring
             chunk       *releasing;        //!< last releasing
             chunk       *abandoned;        //!< last empty chunk
-            void        *impl[list_words]; //!< chunks list
+            void        *chunks__[list_words]; //!< chunks list
             void        *repo[pool_words]; //!< chunks pool
             allocator   &memory_io;        //!< allocator for frames
             
