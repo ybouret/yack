@@ -12,6 +12,10 @@ namespace yack
     namespace memory
     {
 
+        const size_t pages::max_page_size = book::max_page_size;
+        const size_t pages::min_page_size = book::min_page_size;
+
+
         static void *book__[ YACK_WORDS_FOR(book) ] = { 0 };
 
         pages:: pages() throw() : allocator(), singleton<pages>(),
@@ -85,6 +89,29 @@ namespace yack
             return tome->query(page_exp2);
         }
 
+        void  pages:: store(void *addr, const size_t page_exp2) throw()
+        {
+            YACK_LOCK(access);
+            tome->store(addr,page_exp2);
+        }
+
+        
     }
 
+}
+
+#include <iostream>
+namespace yack
+{
+    namespace memory
+    {
+        void  pages:: display() const
+        {
+            YACK_LOCK(access);
+            std::cerr << "<" << call_sign << ">" << std::endl;
+            tome->display();
+            std::cerr << "<" << call_sign << "/>" << std::endl;
+
+        }
+    }
 }

@@ -37,6 +37,8 @@ namespace yack
             //__________________________________________________________________
             void  *query();               //!< recall/create a page
             void   store(void *) throw(); //!< store a former page
+            void   display() const;       //!< display status
+
 
             //__________________________________________________________________
             //

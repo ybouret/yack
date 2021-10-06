@@ -65,6 +65,7 @@ YACK_UTEST(memory_alloc)
     concurrent::singleton::verbose = true;
     test_alloc(memory::pages::instance());
     test_alloc(memory::global::instance());
+    memory::pages::instance().display();
     std::cerr << "== END ==" << std::endl;
 }
 YACK_UDONE()

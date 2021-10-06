@@ -31,6 +31,9 @@ namespace yack
             //! the maximum available longevity
             static const at_exit::longevity life_time = YACK_MEMORY_PAGES_ALLOCATOR_LONGEVITY;
             static const char               call_sign[]; //!< "memory::pages"
+            static const size_t             max_page_size; //!< book::max_page_size
+            static const size_t             min_page_size; //!< book::min_page_size
+
 
             //__________________________________________________________________
             //
@@ -39,13 +42,15 @@ namespace yack
             virtual void *       acquire(size_t &count, const size_t block_size);
             virtual void         release(void * &addr, size_t &size)     throw();
             virtual const char * variety()                         const throw();
+
             //__________________________________________________________________
             //
             // specific interface
             //__________________________________________________________________
             void *query(const size_t page_exp2);                     //!< from internal book
             void  store(void *addr, const size_t page_exp2) throw(); //!< from internal book
-
+            void  display() const;
+            
         private:
             YACK_DISABLE_COPY_AND_ASSIGN(pages);
             explicit pages() throw();

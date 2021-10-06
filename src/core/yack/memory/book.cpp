@@ -51,3 +51,22 @@ namespace yack
     }
 
 }
+
+#include <iostream>
+namespace yack
+{
+    namespace memory
+    {
+        void  book:: display() throw()
+        {
+            std::cerr << "  <book parts=\"" << parts << "\">" << std::endl;
+            for(size_t i=min_page_exp2;i<=max_page_exp2;++i)
+            {
+                const chapter &ch = chapters[i];
+                if(ch.size) ch.display();
+            }
+            std::cerr << "  <book/>" << std::endl;
+        }
+    }
+
+}

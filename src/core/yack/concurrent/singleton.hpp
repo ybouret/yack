@@ -34,7 +34,7 @@ namespace yack
             const char * const       uuid;   //!< call_sign
             const at_exit::longevity span;   //!< life_time
             const size_t             _len;   //!< strlen(uuid)
-            mutex                    access; //!< to protect access
+            mutable mutex            access; //!< to protect access
 
             //__________________________________________________________________
             //

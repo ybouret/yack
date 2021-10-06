@@ -16,9 +16,25 @@ namespace yack
         class blocks
         {
         public:
+            static const size_t minimal_capacity = 8;
+            static const char   designation[];
+
+            explicit blocks();
+            virtual ~blocks() throw();
+
+            void *acquire(const size_t block_size);
+
 
         private:
-            
+            YACK_DISABLE_COPY_AND_ASSIGN(blocks);
+            arena *arenas;    //!< workspace
+            arena *acquiring; //!< cache
+            arena *releasing; //!< cache
+            size_t size;      //!< 0<=size<=capacity
+            size_t capacity;  //!< page_size/sizeof(arena)
+            size_t page_size; //!< page size
+            size_t page_exp2; //!< for page size
+
         };
 
     }

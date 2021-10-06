@@ -47,3 +47,25 @@ namespace yack
     }
 
 }
+
+#include <iostream>
+#include <iomanip>
+#include "yack/arith/base2.hpp"
+namespace yack
+{
+
+    namespace memory
+    {
+
+        void   chapter:: display() const
+        {
+            std::cerr << "    <chapter";
+            const size_t page_exp2 = integer_log2(page_size);
+            std::cerr << " page_size=\"2^" << std::setw(2) << page_exp2 << "\"";
+            std::cerr << " available=\""   << std::setw(3) << size      << "\"";
+            std::cerr << "/>" << std::endl;
+        }
+
+    }
+
+}

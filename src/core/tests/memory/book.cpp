@@ -48,6 +48,8 @@ YACK_UTEST(memory_book)
         B.store(b.addr,b.iln2);
     }
 
+    B.display();
+
 }
 YACK_UDONE()
 
