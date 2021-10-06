@@ -58,12 +58,21 @@ namespace yack
             assert((size_t(1) << page_exp2) == page_size);
 
             arenas = static_cast<arena *>( mgr.query(page_exp2) );
-            
         }
 
-        void &blocks:: acquire(const size_t block_size)
-        {
 
+
+        void *blocks:: acquire(const size_t block_size)
+        {
+            if(acquiring)
+            {
+
+            }
+            else
+            {
+
+            }
+            return NULL;
         }
 
     }
