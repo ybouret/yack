@@ -80,13 +80,14 @@ namespace yack
             YACK_STATIC_CHECK(sizeof(impl)>=sizeof(chunks_list),impl_too_small);
             YACK_STATIC_CHECK(sizeof(repo)>=sizeof(chunks_pool),repo_too_small);
 
+#if 0
             std::cerr << "<arena>" << std::endl;
             std::cerr << "  chunk_block_size: " << chunk_block_size << std::endl;
             std::cerr << "  blocks_per_chunk: " << blocks_per_chunk << std::endl;
             std::cerr << "  memory_per_chunk: " << memory_per_chunk << std::endl;
             std::cerr << "  memory_signature: " << memory_signature << std::endl;
             std::cerr << "<arena/>" << std::endl;
-
+#endif
 
             Y_STATIC_ZSET(impl);
             Y_STATIC_ZSET(repo);

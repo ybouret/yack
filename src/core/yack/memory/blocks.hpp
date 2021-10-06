@@ -27,7 +27,8 @@ namespace yack
 
         private:
             YACK_DISABLE_COPY_AND_ASSIGN(blocks);
-            arena *arenas;    //!< workspace
+            arena *data;      //!< first arena
+            arena *last;      //!< first invalid arena
             arena *acquiring; //!< cache
             arena *releasing; //!< cache
             size_t size;      //!< 0<=size<=capacity
@@ -35,6 +36,8 @@ namespace yack
             size_t page_size; //!< page size
             size_t page_exp2; //!< for page size
 
+            void   create(const size_t block_size);
+            void   update();
         };
 
     }

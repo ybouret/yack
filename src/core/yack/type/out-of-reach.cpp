@@ -39,7 +39,7 @@ namespace yack
     {
         const char *B = static_cast<const char *>(b);
         const char *A = static_cast<const char *>(a);
-        return static_cast<unit_t>(B-A);;
+        return static_cast<unit_t>(B-A);
     }
 
     bool out_of_reach::is0(const void *addr, const size_t size) throw()
@@ -51,5 +51,17 @@ namespace yack
             if(0 != *p) return false;
         }
         return true;
+    }
+
+    void out_of_reach::swap(void *target, void *source, size_t size) throw()
+    {
+        assert(!(NULL==target && size>0));
+        assert(!(NULL==source && size>0));
+        uint8_t *p = static_cast<uint8_t *>(source);
+        uint8_t *q = static_cast<uint8_t *>(target);
+        while(size-- > 0)
+        {
+            cswap(*(p++),*(q++));
+        }
     }
 }
