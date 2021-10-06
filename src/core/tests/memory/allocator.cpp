@@ -30,7 +30,7 @@ namespace
 
     static inline void test_alloc( memory::allocator &mem)
     {
-        std::cerr << mem.variety() << std::endl;
+        std::cerr << "Testing " << mem.variety() << std::endl;
         uprng        ran;
         block        blocks[256];
         const size_t nblock = sizeof(blocks)/sizeof(blocks[0]);
@@ -64,7 +64,7 @@ YACK_UTEST(memory_alloc)
     concurrent::mutex::verbose     = true;
     concurrent::singleton::verbose = true;
     test_alloc(memory::pages::instance());
-    //test_alloc(memory::global::instance());
+    test_alloc(memory::global::instance());
     std::cerr << "== END ==" << std::endl;
 }
 YACK_UDONE()

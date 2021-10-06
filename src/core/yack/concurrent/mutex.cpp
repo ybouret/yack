@@ -20,7 +20,6 @@ namespace yack
         {
             if(!id) id=yack_unknown;
             tag(id);
-
         }
 
         void mutex::tag(const char *id) throw()
@@ -34,7 +33,7 @@ namespace yack
 
             if(verbose)
             {
-                std::cerr << "+mutex@" << impl << ":'" << name << "'" << std::endl;
+                std::cerr << "\t+mutex@" << impl << ":'" << name << "'" << std::endl;
             }
         }
 
@@ -42,14 +41,13 @@ namespace yack
         mutex:: ~mutex() throw()
         {
             assert(impl);
-            if(verbose) { std::cerr << "-mutex@" << impl << ": '" << name << "'" << std::endl; }
+            if(verbose) { std::cerr << "\t-mutex@" << impl << ": '" << name << "'" << std::endl; }
             quark::mutex_api::quit(impl);
             assert(!impl);
         }
 
         void mutex:: lock() throw()
         {
-            if(!impl) std::cerr << "deleted mutex '" << name << "'" << std::endl;
             assert(impl);
             quark::mutex_api::lock(impl);
         }

@@ -27,7 +27,6 @@ namespace
         explicit dummy() throw() : value(guess)
         {
             std::cerr << "+" << call_sign << "@" << value << std::endl;
-            access.tag("DUMMY");
         }
 
     };
@@ -37,6 +36,10 @@ namespace
 
 YACK_UTEST(singleton)
 {
+
+    concurrent::mutex::verbose     = true;
+    concurrent::singleton::verbose = true;
+
     size_t guess = dummy::instance().value;
     YACK_CHECK(dummy::guess==guess);
     YACK_CHECK(dummy::exists());
