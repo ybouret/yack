@@ -1,6 +1,38 @@
+########################################################################
+##
+##
+##  Global Setup
+##
+##
+########################################################################
 set(CMAKE_SKIP_PREPROCESSED_SOURCE_RULES ON)
 set(CMAKE_SKIP_ASSEMBLY_SOURCE_RULES     ON)
 set(CMAKE_ALLOW_LOOSE_LOOP_CONSTRUCTS    ON)
+
+########################################################################
+##
+##
+##  Find Configuration
+##
+##
+########################################################################
+string(COMPARE EQUAL "Debug"    "${CMAKE_BUILD_TYPE}" YACK_DEBUG)
+string(COMPARE EQUAL "Release"  "${CMAKE_BUILD_TYPE}" YACK_RELEASE)
+
+set(YACK_HAVE_CONFIG OFF)
+if(YACK_DEBUG)
+	set(YACK_CONFIG "Debug")
+	set(YACK_HAVE_CONFIG ON)
+endif()
+
+if(YACK_RELEASE)
+	set(YACK_CONFIG "Release")
+	set(YACK_HAVE_CONFIG   ON)
+endif()
+
+if(NOT YACK_HAVE_CONFIG)
+	message( FATAL_ERROR "[YACK] unknow config: use [Debug|Release]" )
+endif()
 
 
 ########################################################################
@@ -14,6 +46,7 @@ set(YACK_KNOWN_COMPILER OFF)
 set(YACK_COMPILERS      "")
 get_filename_component(YACK_CC ${CMAKE_C_COMPILER} NAME_WE)
 
+message( STATUS "[YACK] cmake config     : '${CMAKE_BUILD_TYPE}'" )
 message( STATUS "[YACK] system name      : '${CMAKE_SYSTEM_NAME}'" )
 message( STATUS "[YACK] found C compiler : '${YACK_CC}'" )
 message( STATUS "[YACK] system processor : '${CMAKE_HOST_SYSTEM_PROCESSOR}'" )
@@ -25,6 +58,7 @@ string(COMPARE EQUAL "Linux"   ${CMAKE_SYSTEM_NAME} YACK_LINUX)
 string(COMPARE EQUAL "SunOS"   ${CMAKE_SYSTEM_NAME} YACK_SUNOS)
 string(COMPARE EQUAL "OpenBSD" ${CMAKE_SYSTEM_NAME} YACK_OPENBSD)
 string(COMPARE EQUAL "Windows" ${CMAKE_SYSTEM_NAME} YACK_WINDOWS)
+
 
 
 ########################################################################
