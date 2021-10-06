@@ -62,8 +62,8 @@ namespace
 YACK_UTEST(memory_alloc)
 {
     kernel::singleton::verbose = true;
-    memory::pages::instance();
-    test_alloc(memory::global::instance());
+    test_alloc(memory::pages::instance());
+    //test_alloc(memory::global::instance());
     
 }
 YACK_UDONE()

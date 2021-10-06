@@ -2,6 +2,7 @@
 #include "yack/memory/allocator/global.hpp"
 #include "yack/arith/base2.hpp"
 
+#include <iostream>
 namespace yack
 {
 
@@ -25,6 +26,8 @@ namespace yack
             assert(entry);
             assert(size>=sizeof(page));
             assert(is_a_power_of_two(size));
+
+            std::cerr << "global releasing " << std::endl;
             mgr.release(*(void **)&entry,size);
         }
 

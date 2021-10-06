@@ -22,6 +22,7 @@ namespace yack
 
         pages:: ~pages() throw()
         {
+            std::cerr << "cleaning book..." << std::endl;
             out_of_reach::zset( destructed(tome), sizeof(book__) );
             tome = NULL;
         }
