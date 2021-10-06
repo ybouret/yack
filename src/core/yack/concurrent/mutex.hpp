@@ -52,6 +52,8 @@ namespace yack
             YACK_DISABLE_COPY_AND_ASSIGN(mutex);
             quark::mutex *impl;
             friend class condition;
+        public:
+            
         };
     }
 }
