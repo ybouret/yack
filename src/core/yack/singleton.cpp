@@ -1,48 +1,61 @@
 
 #include "yack/singleton.hpp"
+#include "yack/type/cstring.h"
+
 #include <cstring>
 #include <iostream>
 
 namespace yack
 {
-    namespace kernel
+    namespace concurrent
     {
         bool singleton:: verbose = false;
         
+
         singleton:: ~singleton() throw()
         {
         }
 
-        singleton:: singleton() throw()
+        singleton:: singleton(const char *call_sign, const at_exit::longevity life_time) throw() :
+        uuid(call_sign),
+        span(life_time),
+        _len( yack_cstring_size(uuid) ),
+        access(uuid)
         {
             
         }
 
-        static inline void show(const char              *call_sign,
-                                const at_exit::longevity life_time)
+        void singleton:: show() const
         {
-            const size_t len = strlen(call_sign);
-            std::cerr << '[' << call_sign << ']';
-            for(size_t i=len;i<32;++i) std::cerr << ' ';
-            std::cerr << ' ' << life_time << std::endl;
+            std::cerr << '[' << uuid << ']';
+            for(size_t i=_len;i<32;++i) std::cerr << ' ';
+            std::cerr << ' ' << span << std::endl;
         }
 
-        void singleton:: enter(const char              *call_sign,
-                               const at_exit::longevity life_time) throw()
+        void singleton:: enter() const throw()
         {
-            assert(call_sign);
-            std::cerr << " (+) ";
-            show(call_sign,life_time);
+            try
+            {
+                std::cerr << " (+) "; show();
+            }
+            catch(...)
+            {
+            }
         }
 
-        void singleton:: leave(const char              *call_sign,
-                               const at_exit::longevity life_time) throw()
+        void singleton:: leave() const throw()
         {
-            assert(call_sign);
-            std::cerr << " (-) ";
-            show(call_sign,life_time);
+            try
+            {
+                std::cerr << " (-) "; show();
+            }
+            catch(...)
+            {
+            }
         }
 
+
+        
 
     }
 }

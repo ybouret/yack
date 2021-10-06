@@ -27,6 +27,7 @@ namespace
         explicit dummy() throw() : value(guess)
         {
             std::cerr << "+" << call_sign << "@" << value << std::endl;
+            access.tag("DUMMY");
         }
 
     };

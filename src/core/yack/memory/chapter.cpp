@@ -1,7 +1,6 @@
 
 #include "yack/memory/chapter.hpp"
 #include "yack/type/out-of-reach.hpp"
-#include <iostream>
 
 namespace yack
 {
@@ -16,8 +15,6 @@ namespace yack
 
         chapter:: ~chapter() throw()
         {
-            if(size)
-                std::cerr << "releasing " << size << " pages$" << page_size << std::endl;
             while(size) page::release(pop_back(),page_size);
         }
 

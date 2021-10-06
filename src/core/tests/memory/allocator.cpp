@@ -50,7 +50,7 @@ namespace
             mem.release(blk.addr,blk.size);
         }
 
-        for(size_t n=0;n<=10000;n+=100+ran.leq(100))
+        for(size_t n=0;n<=10000;n+=100+ran.leq(1000))
         {
             test_for<uint32_t>(mem,n);
             test_for<block>(mem,n);
@@ -61,9 +61,10 @@ namespace
 
 YACK_UTEST(memory_alloc)
 {
-    kernel::singleton::verbose = true;
+    concurrent::mutex::verbose     = true;
+    concurrent::singleton::verbose = true;
     test_alloc(memory::pages::instance());
     //test_alloc(memory::global::instance());
-    
+    std::cerr << "== END ==" << std::endl;
 }
 YACK_UDONE()

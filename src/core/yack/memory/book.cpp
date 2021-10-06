@@ -4,7 +4,6 @@
 #include "yack/type/destruct.hpp"
 
 #include <new>
-#include <iostream>
 
 namespace yack
 {
@@ -14,7 +13,6 @@ namespace yack
 
         book:: ~book() throw()
         {
-            std::cerr << "destructing chapters..." << std::endl;
             for(size_t p=max_page_exp2;p>=min_page_exp2;--p)
             {
                 destruct( &chapters[p] );

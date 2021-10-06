@@ -12,25 +12,52 @@
 namespace yack
 {
 
-    namespace kernel
+    namespace concurrent
     {
+        //______________________________________________________________________
+        //
+        //
+        //! singleton base class with information an access
+        //
+        //______________________________________________________________________
         class singleton
         {
         public:
-            static bool verbose;
+            //__________________________________________________________________
+            //
+            // types and definition
+            //__________________________________________________________________
+            static bool   verbose; //!< verbosity to trace management
 
-            virtual ~singleton() throw();
+            //__________________________________________________________________
+            //
+            // members
+            //__________________________________________________________________
+            const char * const       uuid;   //!< call_sign
+            const at_exit::longevity span;   //!< life_time
+            const size_t             _len;   //!< strlen(uuid)
+            mutex                    access; //!< to protect access
 
-
+            //__________________________________________________________________
+            //
+            // C++
+            //__________________________________________________________________
+            virtual ~singleton() throw(); //!< cleanup
         protected:
-            explicit singleton() throw();
-            static void enter(const char *call_sign, const at_exit::longevity life_time) throw();
-            static void leave(const char *call_sign, const at_exit::longevity life_time) throw();
+            //! setup from call_sign and life_time
+            explicit singleton(const char *             call_sign,
+                               const at_exit::longevity life_time) throw();
 
-
+            //__________________________________________________________________
+            //
+            // methods
+            //__________________________________________________________________
+            void     enter() const throw(); //!< show creation
+            void     leave() const throw(); //!< show destruction
 
         private:
             YACK_DISABLE_COPY_AND_ASSIGN(singleton);
+            void     show() const;
         };
     }
 
@@ -41,15 +68,9 @@ namespace yack
     //
     //__________________________________________________________________________
     template <class CLASS>
-    class singleton : public kernel::singleton
+    class singleton : public concurrent::singleton
     {
     public:
-        //______________________________________________________________________
-        //
-        //! unique access
-        //______________________________________________________________________
-        static concurrent::mutex access;
-        
         //______________________________________________________________________
         //
         //! query existence
@@ -67,11 +88,10 @@ namespace yack
             static volatile bool  init = true;
 
             // check/create
-            YACK_LOCK(access);
+            YACK_GIANT_LOCK();
             if(!instance_)
             {
-                YACK_LOCK(access);
-                if(verbose) enter(CLASS::call_sign,CLASS::life_time);
+                YACK_GIANT_LOCK();
                 if(init)
                 {
                     // called only once
@@ -96,10 +116,16 @@ namespace yack
         
     protected:
         //! setup
-        inline explicit singleton() throw() {}
+        inline explicit singleton() throw() : concurrent::singleton(CLASS::call_sign,CLASS::life_time)
+        {
+            if(verbose) enter();
+        }
         
         //! cleanup
-        inline virtual ~singleton() throw() {}
+        inline virtual ~singleton() throw()
+        {
+            if(verbose) leave();
+        }
         
         //______________________________________________________________________
         //
@@ -107,9 +133,9 @@ namespace yack
         //______________________________________________________________________
         static inline void suppress_() throw()
         {
-            YACK_LOCK(access);
+            YACK_GIANT_LOCK();
             if(instance_) {
-                YACK_LOCK(access);
+                YACK_GIANT_LOCK();
                 destroy(NULL);
             }
         }
@@ -119,7 +145,6 @@ namespace yack
         static inline void destroy(void*) throw()
         {
             if(instance_) {
-                if(verbose) leave(CLASS::call_sign,CLASS::life_time);
                 instance_->~CLASS();
                 out_of_reach::zset(instance_,sizeof(CLASS));
                 instance_ = NULL;
@@ -131,7 +156,6 @@ namespace yack
     };
     
     template <class CLASS> CLASS *            singleton<CLASS>::instance_ = NULL;
-    template <class CLASS> concurrent::mutex  singleton<CLASS>::access;
 
 }
 

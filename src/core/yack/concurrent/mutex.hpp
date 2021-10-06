@@ -33,13 +33,15 @@ namespace yack
         class mutex : public primitive, public lockable
         {
         public:
+            static bool verbose;
+
             //__________________________________________________________________
             //
             // C++
             //__________________________________________________________________
-            explicit     mutex();          //!< create internal mutex
-            virtual     ~mutex() throw();  //!< cleanup
-            //!
+            explicit     mutex(const char *id=0); //!< create internal mutex
+            virtual     ~mutex() throw();         //!< cleanup
+
             //__________________________________________________________________
             //
             // lockable interface
@@ -47,13 +49,15 @@ namespace yack
             virtual void lock()     throw(); //!< lock
             virtual void unlock()   throw(); //!< unlock
             virtual bool try_lock() throw(); //!< try lock
-            
+
+            void tag(const char *id) throw();
+
         private:
             YACK_DISABLE_COPY_AND_ASSIGN(mutex);
             quark::mutex *impl;
             friend class condition;
         public:
-            
+            const char    name[64-3*sizeof(void*)];
         };
     }
 }

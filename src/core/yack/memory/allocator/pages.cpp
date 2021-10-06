@@ -5,7 +5,7 @@
 #include "yack/system/exception.hpp"
 #include "yack/type/utils.hpp"
 #include <new>
-#include <iostream>
+#include <cerrno>
 
 namespace yack
 {
@@ -22,7 +22,6 @@ namespace yack
 
         pages:: ~pages() throw()
         {
-            std::cerr << "cleaning book..." << std::endl;
             out_of_reach::zset( destructed(tome), sizeof(book__) );
             tome = NULL;
         }
@@ -36,7 +35,7 @@ namespace yack
             {
                 // check page_size
                 size_t page_size = max_of(count * block_size,book::min_page_size);
-                if(page_size>book::max_page_size) throw libc::exception(ENOMEM,"%s capacity exceeded", variety() );
+                if(page_size>book::max_page_size) throw libc::exception(ENOMEM,"%s max_page_size exceeded", variety() );
 
                 // find and query page
                 try
