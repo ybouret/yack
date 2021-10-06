@@ -8,13 +8,15 @@ namespace
     class dummy : public singleton<dummy>
     {
     public:
-        static const at_exit::longevity life_time = 10;
-        static const size_t guess=1;
+        static const at_exit::longevity life_time   = 10;
+        static const char               call_sign[];
+        static const size_t             guess=13
+        ;
         const size_t value;
         
         virtual ~dummy() throw()
         {
-            std::cerr << "-Dummy@" << value << std::endl;
+            std::cerr << "-" << call_sign << "@" << value << std::endl;
         }
         
         inline static void suppress() throw() { suppress_(); };
@@ -24,11 +26,12 @@ namespace
         
         explicit dummy() throw() : value(guess)
         {
-            std::cerr << "+Dummy@" << value << std::endl;
+            std::cerr << "+" << call_sign << "@" << value << std::endl;
         }
-        
-       
+
     };
+    const char dummy::call_sign[] = "dummy";
+
 }
 
 YACK_UTEST(singleton)

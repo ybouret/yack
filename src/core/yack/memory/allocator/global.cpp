@@ -38,8 +38,10 @@ namespace yack
             YACK_LOCK(access);
             coerce_cast<ram>(ram__)->release(addr,size);
         }
-        
-        const char * global:: variety() const throw() { return "memory::global"; }
+
+        const char   global:: call_sign[] = "memory::global";
+        const char * global:: variety() const throw() { return call_sign; }
+
         
     }
     

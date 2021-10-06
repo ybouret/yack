@@ -9,6 +9,7 @@
 #include "yack/check/expression.hpp"
 
 #include <iostream>
+#include <iomanip>
 #include <cmath>
 
 namespace yack

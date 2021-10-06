@@ -11,6 +11,29 @@
 
 namespace yack
 {
+
+    namespace kernel
+    {
+        class singleton
+        {
+        public:
+            static bool verbose;
+
+            virtual ~singleton() throw();
+
+
+        protected:
+            explicit singleton() throw();
+            static void enter(const char *call_sign, const at_exit::longevity life_time) throw();
+            static void leave(const char *call_sign, const at_exit::longevity life_time) throw();
+
+
+
+        private:
+            YACK_DISABLE_COPY_AND_ASSIGN(singleton);
+        };
+    }
+
     //__________________________________________________________________________
     //
     //
@@ -18,7 +41,7 @@ namespace yack
     //
     //__________________________________________________________________________
     template <class CLASS>
-    class singleton
+    class singleton : public kernel::singleton
     {
     public:
         //______________________________________________________________________
@@ -39,14 +62,16 @@ namespace yack
         //______________________________________________________________________
         static inline CLASS & instance()
         {
-            // local variables
+            // local satic variables
             static volatile void *impl[ YACK_WORDS_FOR(CLASS) ] = { 0 };
             static volatile bool  init = true;
-            
+
+            // check/create
             YACK_LOCK(access);
             if(!instance_)
             {
                 YACK_LOCK(access);
+                if(verbose) enter(CLASS::call_sign,CLASS::life_time);
                 if(init)
                 {
                     // called only once
@@ -94,6 +119,7 @@ namespace yack
         static inline void destroy(void*) throw()
         {
             if(instance_) {
+                if(verbose) leave(CLASS::call_sign,CLASS::life_time);
                 instance_->~CLASS();
                 out_of_reach::zset(instance_,sizeof(CLASS));
                 instance_ = NULL;
