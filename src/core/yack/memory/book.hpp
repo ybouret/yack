@@ -28,7 +28,8 @@ namespace yack
 
             book() throw();
             ~book() throw();
-            
+            page  *query(const size_t page_exp2);
+
 
         private:
             YACK_DISABLE_COPY_AND_ASSIGN(book);

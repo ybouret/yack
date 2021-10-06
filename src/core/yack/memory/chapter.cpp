@@ -1,5 +1,6 @@
 
 #include "yack/memory/chapter.hpp"
+#include "yack/type/out-of-reach.hpp"
 
 namespace yack
 {
@@ -17,7 +18,20 @@ namespace yack
             while(size) page::release(pop_back(),page_size);
         }
 
-        
+        page  * chapter:: query()
+        {
+            if(size)
+            {
+                page *p = pop_front();
+                out_of_reach::zset(p,page_size);
+                return p;
+            }
+            else
+            {
+                return page::acquire(page_size);
+            }
+        }
+
     }
 
 }

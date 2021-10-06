@@ -2,6 +2,7 @@
 #include "yack/memory/allocator/global.hpp"
 #include "yack/memory/ram.hpp"
 #include <new>
+#include <iostream>
 
 namespace yack
 {
@@ -10,13 +11,19 @@ namespace yack
         
         static void *ram__[ YACK_WORDS_FOR(ram) ];
         
-        global:: global() throw() : allocator(), singleton<global>()
+        global:: global() throw() : allocator(), singleton<global>(),
+        initial( memory::ram::allocated() )
         {
             new (out_of_reach::zset(ram__,sizeof(ram__))) ram();
         }
         
         global:: ~global() throw()
         {
+            const uint64_t left = memory::ram::allocated();
+            if(left>initial)
+            {
+                std::cerr << "[memory::global] allocated=" << left-initial << std::endl;
+            }
             out_of_reach::zset( destructed( coerce_cast<ram>(ram__) ), sizeof(ram__) );
         }
         

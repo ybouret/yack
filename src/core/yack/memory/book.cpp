@@ -29,6 +29,17 @@ namespace yack
             }
 
         }
+
+
+        page  * book:: query(const size_t page_exp2)
+        {
+            assert(page_exp2>=min_page_exp2);
+            assert(page_exp2<=max_page_exp2);
+            chapter *ch = &chapters[page_exp2];
+            
+        }
+
+
       
     }
 

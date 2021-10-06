@@ -33,6 +33,7 @@ namespace yack
             explicit global() throw();
             virtual ~global() throw();
             friend class singleton<global>;
+            const uint64_t initial;
         };
         
     }
