@@ -24,6 +24,8 @@ YACK_UTEST(memory_book)
     YACK_SIZEOF(memory::chapter);
     YACK_SIZEOF(memory::book);
 
+    memory::book B;
+
 }
 YACK_UDONE()
 

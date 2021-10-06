@@ -32,7 +32,8 @@ namespace yack
 
         private:
             YACK_DISABLE_COPY_AND_ASSIGN(book);
-            //void *impl[ YACK_WORDS_FOR(ch_bytes) ];
+            chapter *chapters;
+            void    *impl[ YACK_WORDS_GEQ(bytes) ];
         };
 
     }

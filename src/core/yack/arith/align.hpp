@@ -36,8 +36,10 @@
 //! align on sizeof(TYPE) = power of two
 #define YACK_ALIGN_TO(TYPE,N) YACK_ALIGN_ON(sizeof(TYPE),N)
 
+
+//! number of word to hold BYTES
+#define YACK_WORDS_GEQ(BYTES) (YACK_ALIGN_TO(void*,(BYTES))/sizeof(void*))
+
 //! number of words to hold TYPE
-#define YACK_WORDS_FOR(TYPE)  (YACK_ALIGN_TO(void*,sizeof(TYPE))/sizeof(void*))
-
-
+#define YACK_WORDS_FOR(TYPE) YACK_WORDS_GEQ(sizeof(TYPE))
 #endif
