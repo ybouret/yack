@@ -18,17 +18,29 @@ namespace yack
             while(size) page::release(pop_back(),page_size);
         }
 
-        page  * chapter:: query()
+        void  * chapter:: query()
         {
             if(size)
             {
                 page *p = pop_front();
-                out_of_reach::zset(p,page_size);
-                return p;
+                return out_of_reach::zset(p,page_size);
             }
             else
             {
-                return page::acquire(page_size);
+                return  page::acquire(page_size);
+            }
+        }
+
+        void chapter:: store(void *addr) throw()
+        {
+            // get page with clean header
+            assert(addr);
+            page *p =  push_back(static_cast<page*>(out_of_reach::zset(addr,sizeof(page))));
+
+            // order by increasing address
+            while(p->prev&&(p->prev>p))
+            {
+                p = towards_front(p);
             }
         }
 

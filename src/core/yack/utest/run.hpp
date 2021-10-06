@@ -98,6 +98,16 @@ namespace yack
             p.merge(p2);
         }
 
+        inline void fillnz(void *addr, const size_t size) throw()
+        {
+            uint8_t *p = static_cast<uint8_t*>(out_of_reach::address(addr));
+            for(size_t i=0;i<size;++i)
+            {
+                const size_t b = 1+leq(254); assert(b>0); assert(b<256);
+                p[i] = uint8_t(b&0xff);
+            }
+        }
+
 
     private:
         YACK_DISABLE_COPY_AND_ASSIGN(uprng);

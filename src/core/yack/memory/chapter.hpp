@@ -20,8 +20,11 @@ namespace yack
         public:
             explicit chapter(const size_t sz) throw();
             virtual ~chapter() throw();
+            
+            void  *query();
+            void   store(void *) throw();
+
             const size_t page_size;
-            page  *query();
 
         private:
             YACK_DISABLE_COPY_AND_ASSIGN(chapter);

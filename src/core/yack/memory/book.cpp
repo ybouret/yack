@@ -31,13 +31,21 @@ namespace yack
         }
 
 
-        page  * book:: query(const size_t page_exp2)
+        void *book:: query(const size_t page_exp2)
         {
             assert(page_exp2>=min_page_exp2);
             assert(page_exp2<=max_page_exp2);
-            chapter *ch = &chapters[page_exp2];
-            
+            return chapters[page_exp2].query();
         }
+
+        void  book:: store(void *addr, const size_t page_exp2) throw()
+        {
+            assert(NULL!=addr);
+            assert(page_exp2>=min_page_exp2);
+            assert(page_exp2<=max_page_exp2);
+            chapters[page_exp2].store(addr);
+        }
+
 
 
       
