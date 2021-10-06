@@ -42,4 +42,14 @@ namespace yack
         return static_cast<unit_t>(B-A);;
     }
 
+    bool out_of_reach::is0(const void *addr, const size_t size) throw()
+    {
+        assert(!(NULL==addr && size>0));
+        const uint8_t *p = static_cast<const uint8_t *>(addr);
+        for(size_t i=size;i>0;--i,++p)
+        {
+            if(0 != *p) return false;
+        }
+        return true;
+    }
 }

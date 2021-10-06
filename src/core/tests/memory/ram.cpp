@@ -28,11 +28,11 @@ namespace
 
 YACK_UTEST(ram)
 {
-    uprng        ran;
-    block        blocks[256];
-    const size_t nblock = sizeof(blocks)/sizeof(blocks[0]);
-    memory::ram  mem;
-    const uint64_t ini = mem.get();
+    uprng          ran;
+    block          blocks[256];
+    const size_t   nblock = sizeof(blocks)/sizeof(blocks[0]);
+    memory::ram    mem;
+    const uint64_t ini = memory::ram::allocated();
     
     for(size_t i=0;i<nblock;++i)
     {
@@ -45,14 +45,14 @@ YACK_UTEST(ram)
     ran.shuffle(blocks,nblock);
     std::cerr << "crc: " << ucrc(blocks,nblock) << std::endl;
 
-    std::cerr << "ram: " << mem.get()<< std::endl;
+    std::cerr << "ram: " << memory::ram::allocated() << std::endl;
     for(size_t i=0;i<nblock;++i)
     {
         block       &blk = blocks[i];
         mem.release(blk.addr,blk.size);
     }
-    std::cerr << "ram: " << mem.get() << std::endl;
-    YACK_CHECK(mem.get()==ini);
+    std::cerr << "ram: " << memory::ram::allocated() << std::endl;
+    YACK_CHECK(memory::ram::allocated()==ini);
 
     for(size_t n=0;n<=10000;n+=100+ran.leq(100))
     {
@@ -60,7 +60,7 @@ YACK_UTEST(ram)
         test_for<uint32_t>(mem,n);
         test_for<block>(mem,n);
     }
-    YACK_CHECK(mem.get()==ini);
+    YACK_CHECK(memory::ram::allocated()==ini);
 
 
 

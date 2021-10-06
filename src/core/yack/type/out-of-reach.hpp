@@ -20,7 +20,8 @@ namespace yack
         static void       *zset(void *addr, const size_t size)                       throw(); //!< memset(addr,0,size)
         static void        copy(void *target, const void *source, const size_t size) throw(); //!< memcpy(target,source,size)
         static void        move(void *target, const void *source, const size_t size) throw(); //!< memmove(target,source,size)
-        static unit_t      diff(const void *a, const void *b) throw();                        //!< b-a
+        static unit_t      diff(const void *a, const void *b)                        throw(); //!< b-a
+        static bool        is0(const void *addr, const size_t size)                  throw(); //!< check only zero
     };
 
     //! static field zset

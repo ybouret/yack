@@ -11,7 +11,7 @@ namespace yack
         
         uint64_t ram_ = 0;
 
-        uint64_t ram:: get() const throw()
+        uint64_t ram:: allocated() throw()
         {
             return ram_;
         }

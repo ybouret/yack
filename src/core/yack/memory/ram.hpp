@@ -39,7 +39,7 @@ namespace yack
             //
             // methods
             //__________________________________________________________________
-            uint64_t get() const throw(); //!< get the global allocated RAM
+            static uint64_t allocated() throw();
             
         private:
             YACK_DISABLE_COPY_AND_ASSIGN(ram);
