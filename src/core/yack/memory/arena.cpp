@@ -47,13 +47,13 @@ namespace yack
             }
 
             {
-                chunks_pool *ccache = coerce_cast<chunks_pool>(repo);
+                chunks_pool *ccache = coerce_cast<chunks_pool>(ccache__);
                 while(ccache->size)
                 {
                     kill( ccache->query() );
                 }
                 destruct(ccache);
-                Y_STATIC_ZSET(repo);
+                Y_STATIC_ZSET(ccache__);
             }
 
             if(missing)
@@ -70,7 +70,7 @@ namespace yack
         releasing(NULL),
         abandoned(NULL),
         chunks__(),
-        repo(),
+        ccache__(),
         memory_io(dispatcher),
         chunk_block_size(block_size),
         blocks_per_chunk(0),
@@ -78,7 +78,7 @@ namespace yack
         memory_signature( base2<size_t>::log2_of(memory_per_chunk) )
         {
             YACK_STATIC_CHECK(sizeof(chunks__)>=sizeof(chunks_list),impl_too_small);
-            YACK_STATIC_CHECK(sizeof(repo)>=sizeof(chunks_pool),repo_too_small);
+            YACK_STATIC_CHECK(sizeof(ccache__)>=sizeof(chunks_pool),repo_too_small);
 
 #if 0
             std::cerr << "<arena>" << std::endl;
@@ -90,7 +90,7 @@ namespace yack
 #endif
 
             Y_STATIC_ZSET(chunks__);
-            Y_STATIC_ZSET(repo);
+            Y_STATIC_ZSET(ccache__);
             chunks_list *chunks = coerce_cast<chunks_list>(chunks__);
             new (chunks) chunks_list();
             try
@@ -102,7 +102,7 @@ namespace yack
                 destruct(chunks);
                 throw;
             }
-            new ( out_of_reach::address(repo) ) chunks_pool();
+            new ( out_of_reach::address(ccache__) ) chunks_pool();
             releasing = acquiring;
         }
 
@@ -113,7 +113,7 @@ namespace yack
 
         chunk * arena:: query()
         {
-            chunks_pool *ccache =  coerce_cast<chunks_pool>(repo);
+            chunks_pool *ccache =  coerce_cast<chunks_pool>(ccache__);
             return (ccache->size>0) ? ccache->query() : build();
         }
 

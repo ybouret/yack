@@ -102,7 +102,7 @@ namespace yack
             chunk       *releasing;        //!< last releasing
             chunk       *abandoned;        //!< last empty chunk
             void        *chunks__[list_words]; //!< chunks list
-            void        *repo[pool_words]; //!< chunks pool
+            void        *ccache__[pool_words]; //!< chunks pool
             allocator   &memory_io;        //!< allocator for frames
             
         public:
