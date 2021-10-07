@@ -24,7 +24,7 @@ namespace yack
 
         book:: book() throw()  : chapters(0), impl()
         {
-
+            
             chapter *ch = (chapters = static_cast<chapter *>( out_of_reach::zset(impl,sizeof(impl) ) )-min_page_exp2);
 #if 0
             arena   *ar = (arenas   = static_cast<arena *>(   out_of_reach::zset(small_impl,sizeof(small_impl) ) ) );
@@ -90,6 +90,7 @@ namespace yack
         void  book:: display() throw()
         {
             std::cerr << "  <book>" << std::endl;
+            std::cerr << "    sizeof(impl)=" << sizeof(impl) << std::endl;
             for(size_t i=min_page_exp2;i<=max_page_exp2;++i)
             {
                 const chapter &ch = chapters[i];
