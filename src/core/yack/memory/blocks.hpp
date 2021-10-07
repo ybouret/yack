@@ -30,7 +30,7 @@ namespace yack
         public:
             static const size_t    arena_words = 16;   //!<
             static const char      designation[];      //!< memory blocks
-            typedef list_of<arena> slot_type;          //!< slot for table
+            typedef list_of<arena> niche_type;         //!< niche for table
 
             explicit blocks();          //!< setup with capacity but not arena
             virtual ~blocks() throw();  //!< cleanup
@@ -40,22 +40,25 @@ namespace yack
 
         private:
             YACK_DISABLE_COPY_AND_ASSIGN(blocks);
-            arena           *acquiring_arena; //!< last acquiring
-            arena           *releasing_arena; //!< last releasing
-            slot_type       *acquiring_slot;
-            slot_type       *releasing_slot;
+            arena           *acquiring_arena; //!< last acquiring arena
+            arena           *releasing_arena; //!< last releasing arena
+            niche_type      *acquiring_niche; //!< last acquiring niche
+            niche_type      *releasing_niche; //!< last releasing niche
+
             size_t           count; //!< number or recorded arenas
             const size_t     tsize; //!< table size, power of two
             const size_t     tmask; //!< table size - 1, for table access
             const size_t     bytes; //!< table bytes
-            slot_type       *table; //!< table address
+            niche_type      *table; //!< table address
             void            *impl_[arena_words]; //!< arena creator
 
             void   release_table() throw();
-            void   grow(const size_t block_size, slot_type *slot);
-            arena *find(slot_type *slot, const size_t block_size) throw();
+            void   grow(const size_t block_size, niche_type *slot);
+            arena *find(niche_type *slot, const size_t block_size) throw();
 
-            bool   check(const slot_type *slot) const throw();
+            bool   check(const niche_type *slot) const throw();
+
+
         };
 
     }

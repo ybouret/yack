@@ -35,10 +35,10 @@ YACK_UTEST(memory_blocks)
     memory::blocks     b;
     cxx_list_of<block> l;
 
-    for(size_t i=0;i<=10000;++i)
+    for(size_t i=0;i<10000;++i)
     {
         const size_t n = 1 + ran.leq(511);
-        for(size_t j=0;j<2;++j)
+        for(size_t j=0;j<4;++j)
         {
             void        *p = b.acquire(n);
             YACK_ASSERT( out_of_reach::is0(p,n) );
@@ -47,15 +47,15 @@ YACK_UTEST(memory_blocks)
     }
 
     ran.shuffle_list(l);
-#if 0
+    std::cerr << "Created " << l.size << " blocks" << std::endl;
+
     while(l.size)
     {
         block *blk = l.pop_back();
         b.release(blk->addr,blk->size);
         delete blk;
     }
-#endif
-    
+
 
 
 }

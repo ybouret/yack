@@ -1,7 +1,6 @@
 #include "yack/memory/blocks.hpp"
 #include "yack/memory/arena.hpp"
 #include "yack/system/exception.hpp"
-//#include "yack/memory/allocator/pages.hpp"
 #include "yack/memory/allocator/global.hpp"
 #include "yack/arith/base2.hpp"
 #include "yack/system/error.hpp"
@@ -32,10 +31,10 @@ namespace yack
             //------------------------------------------------------------------
             arena     *self = coerce_cast<arena>(impl_);
             {
-                slot_type *slot = table+tsize;
+                niche_type *niche = table+tsize;
                 for(size_t i=tsize;i>0;--i)
                 {
-                    slot_type &s = *(--slot);
+                    niche_type &s = *(--niche);
                     while(s.size)
                     {
                         assert(count>0);
@@ -64,32 +63,43 @@ namespace yack
 
         const char blocks:: designation[] = "memory::blocks";
 
-        static inline size_t blocks_max_table_slots(const size_t max_table_bytes) throw()
+        static inline size_t blocks_max_table_niches(const size_t max_table_bytes) throw()
         {
-            const size_t res =YACK_ALIGN_TO(blocks::slot_type,max_table_bytes)/sizeof(blocks::slot_type);
+            const size_t res =YACK_ALIGN_TO(blocks::niche_type,max_table_bytes)/sizeof(blocks::niche_type);
             if(res<=0) system_error::critical_bsd(EINVAL,"YACK_CHUNK_SIZE is too small for memory::blocks");
             return res;
         }
 
         static inline size_t blocks_table_size() throw()
         {
-            static const size_t max_table_bytes = YACK_CHUNK_SIZE;
-            static const size_t max_table_slots = blocks_max_table_slots(max_table_bytes);
-            static const size_t num_table_slots = prev_power_of_two(max_table_slots);
+            static const size_t max_table_bytes  = YACK_CHUNK_SIZE;
+            static const size_t max_table_niches = blocks_max_table_niches(max_table_bytes);
+            static const size_t num_table_niches = prev_power_of_two(max_table_niches);
 
-            return num_table_slots;
+            return num_table_niches;
         }
 
-        static inline blocks::slot_type *blocks_table_make(size_t &tsize)
+        static inline blocks::niche_type *blocks_table_make(size_t &tsize)
         {
+            //------------------------------------------------------------------
+            //
+            // allocate a table with a power of two niches
+            //
+            //------------------------------------------------------------------
             static allocator &alloc = global::instance();
             assert( is_a_power_of_two(tsize) );
             size_t             count = tsize;
-            blocks::slot_type *table = static_cast<blocks::slot_type *>( alloc.acquire(tsize,sizeof(blocks::slot_type)));
-            assert(tsize>=count*sizeof(blocks::slot_type));
+            blocks::niche_type *table = static_cast<blocks::niche_type *>( alloc.acquire(tsize,sizeof(blocks::niche_type)));
+            assert(tsize>=count*sizeof(blocks::niche_type));
+
+            //------------------------------------------------------------------
+            //
+            // construct each niche
+            //
+            //------------------------------------------------------------------
             while(count>0)
             {
-                new (&table[--count]) blocks::slot_type();
+                new (&table[--count]) blocks::niche_type();
             }
             return table;
         }
@@ -97,8 +107,8 @@ namespace yack
         blocks:: blocks() :
         acquiring_arena(0),
         releasing_arena(0),
-        acquiring_slot(0),
-        releasing_slot(0),
+        acquiring_niche(0),
+        releasing_niche(0),
         count(0),
         tsize( blocks_table_size() ),
         tmask(tsize-1),
@@ -106,10 +116,14 @@ namespace yack
         table( blocks_table_make(coerce(bytes)) ),
         impl_()
         {
+            //------------------------------------------------------------------
+            //
+            // parameters, table is allocater
+            //
+            //------------------------------------------------------------------
             YACK_STATIC_CHECK(sizeof(impl_)>=sizeof(arena),impl_too_small);
             static const bool compact = true;
 
-            std::cerr << designation  << " : allocated " << tsize << " slots in  " << bytes << " bytes" << ", tmask=0x" << std::hex << tmask << std::dec << std::endl;
             try
             {
                 new (coerce_cast<arena>(impl_)) arena(sizeof(arena),memory::global::instance(),compact);
@@ -124,52 +138,79 @@ namespace yack
 
         void *blocks:: acquire(const size_t block_size)
         {
+            //------------------------------------------------------------------
+            //
+            // acquire a new block : check acquiring satus
+            //
+            //------------------------------------------------------------------
             assert(block_size>0);
             switch(count)
             {
                 case 0:
+                    //----------------------------------------------------------
+                    // first case
+                    //----------------------------------------------------------
                     grow(block_size, &table[block_size&tmask]);
                     releasing_arena = acquiring_arena;
-                    releasing_slot  = acquiring_slot;
+                    releasing_niche = acquiring_niche;
                     break;
 
                 default: {
-                    assert(acquiring_arena); assert(acquiring_slot);
-                    assert(releasing_arena); assert(releasing_slot);
+                    //----------------------------------------------------------
+                    // generic case
+                    //----------------------------------------------------------
+                    assert(acquiring_arena); assert(acquiring_niche);
+                    assert(releasing_arena); assert(releasing_niche);
                     if(block_size!=acquiring_arena->chunk_block_size)
                     {
-                        slot_type  *slot = &table[block_size&tmask];
-                        arena      *node = find(slot,block_size);
-                        if(node)
+                        niche_type  *niche = &table[block_size&tmask];
+                        arena       *probe = find(niche,block_size);
+                        if(probe)
                         {
-                            acquiring_arena = node;
-                            acquiring_slot  = slot;
+                            acquiring_arena = probe;
+                            acquiring_niche = niche;
                         }
                         else
                         {
-                            grow(block_size,slot);
+                            grow(block_size,niche);
                         }
                     }
                     else
                     {
-                        assert( &table[block_size&tmask] == acquiring_slot );
+                        assert( &table[block_size&tmask] == acquiring_niche );
                     }
 
                 } break;
             }
-            assert(acquiring_arena); assert(acquiring_slot);
+
+            //------------------------------------------------------------------
+            //
+            // call for memory
+            //
+            //------------------------------------------------------------------
+            assert(acquiring_arena);
+            assert(acquiring_niche);
             assert(block_size==acquiring_arena->chunk_block_size);
+
             return acquiring_arena->acquire();
         }
 
-        void blocks:: grow(const size_t block_size, slot_type *slot)
+        void blocks:: grow(const size_t block_size, niche_type *niche)
         {
+            //------------------------------------------------------------------
+            //
             // sanity check
+            //
+            //------------------------------------------------------------------
             //std::cerr << "creating [" << block_size << "]" << std::endl;
-            assert(slot!=NULL);
-            assert(static_cast<size_t>(slot-table)==(block_size&tmask));
+            assert(niche!=NULL);
+            assert(static_cast<size_t>(niche-table)==(block_size&tmask));
 
+            //------------------------------------------------------------------
+            //
             // new arena
+            //
+            //------------------------------------------------------------------
             arena *self = coerce_cast<arena>(impl_); assert(self);
             arena *node = self->zombie<arena>();     assert(node);
             try
@@ -185,54 +226,73 @@ namespace yack
             assert(node);
             //node->display();
 
-            // update slot
-            slot->push_back(node);
+            //------------------------------------------------------------------
+            //
+            // update niche
+            //
+            //------------------------------------------------------------------
+            niche->push_back(node);
             while(node->prev && node->prev->chunk_block_size>block_size)
             {
-                (void) slot->towards_front(node);
+                (void) niche->towards_front(node);
                 assert(block_size==node->chunk_block_size);
             }
-            assert(check(slot));
+            assert(check(niche));
 
+            //------------------------------------------------------------------
+            //
             // update state
+            //
+            //------------------------------------------------------------------
             ++count;
             acquiring_arena = node;
-            acquiring_slot  = slot;
+            acquiring_niche  = niche;
         }
 
-        bool blocks:: check(const slot_type *slot) const throw()
+        bool blocks:: check(const niche_type *niche) const throw()
         {
-            assert(slot);
-            switch(slot->size)
+            assert(niche);
+            switch(niche->size)
             {
                 case 0:
                 case 1: return true;
                 default:
                     break;
             }
-            assert(slot->size>=2);
-            assert(slot->head!=NULL);
-            for(const arena *node=slot->head;node->next;node=node->next)
+            assert(niche->size>=2);
+            assert(niche->head!=NULL);
+            for(const arena *node=niche->head;node->next;node=node->next)
             {
                 if(node->chunk_block_size>=node->next->chunk_block_size) return false;
             }
             return true;
         }
 
-        arena * blocks:: find(slot_type *slot, const size_t block_size) throw()
+        arena * blocks:: find(niche_type *niche, const size_t block_size) throw()
         {
-            assert(slot);
-            assert(static_cast<size_t>(slot-table) == (block_size&tmask) );
-            assert(check(slot));
-            arena *node = slot->head;
-            switch(slot->size)
+            //------------------------------------------------------------------
+            //
+            // sanity check
+            //
+            //------------------------------------------------------------------
+            assert(niche);
+            assert(static_cast<size_t>(niche-table) == (block_size&tmask) );
+            assert(check(niche));
+
+            //------------------------------------------------------------------
+            //
+            // look up with special cases
+            //
+            //------------------------------------------------------------------
+            arena *node = niche->head;
+            switch(niche->size)
             {
                 case 0:  return NULL;
                 case 1:  return (block_size==node->chunk_block_size) ? node : NULL;
                 default: break;
             }
 
-            //TODO: better search since slot is ordered...
+            //TODO: better search since niche is ordered...
             for(;node;node=node->next)
             {
                 if(block_size==node->chunk_block_size) return node;
@@ -245,10 +305,53 @@ namespace yack
 
         void  blocks:: release(void *block_addr, const size_t block_size) throw()
         {
+            //------------------------------------------------------------------
+            //
+            // sanity check
+            //
+            //------------------------------------------------------------------
             assert(block_addr!=NULL);
             assert(block_size>0);
-            assert(releasing_arena!=NULL);
-            assert(releasing_slot!=NULL);
+            assert(count>0);
+            assert(acquiring_arena); assert(acquiring_niche);
+            assert(releasing_arena); assert(releasing_niche);
+
+
+            //------------------------------------------------------------------
+            //
+            // find/update releasing
+            //
+            //------------------------------------------------------------------
+            if(block_size!=releasing_arena->chunk_block_size)
+            {
+                niche_type  *niche = &table[block_size&tmask];
+                arena       *probe = find(niche,block_size);
+                if(probe)
+                {
+                    releasing_arena = probe;
+                    releasing_niche = niche;
+                }
+                else
+                {
+                    system_error::critical_bsd(EINVAL,"unregistered memory block_size");
+                }
+            }
+            else
+            {
+                // simple check
+                assert( &table[block_size&tmask] == releasing_niche );
+            }
+
+            //------------------------------------------------------------------
+            //
+            // sanity check and release
+            //
+            //------------------------------------------------------------------
+            assert(releasing_arena); assert(block_size==releasing_arena->chunk_block_size);
+            assert(releasing_niche); assert( &table[block_size&tmask] == releasing_niche );
+
+            releasing_arena->release(block_addr);
+
         }
 
 
