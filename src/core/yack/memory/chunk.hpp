@@ -17,6 +17,10 @@ namespace yack
         //
         //
         //! basic memory chunk
+        /**
+         - no implicit allocator, all is set manually
+         - an allocator must be provided to create/delete a frame
+         */
         //
         //______________________________________________________________________
         class chunk

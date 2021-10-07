@@ -23,7 +23,12 @@ namespace yack
         //______________________________________________________________________
         //
         //
-        //! handling blocks
+        //! on demand acquire/release blocks of memory
+        /**
+         - for each block_size, a dedicated arena is allocated
+         - the arenas are stored in a hash_table
+         - internal dependencies
+         */
         //
         //______________________________________________________________________
         class blocks

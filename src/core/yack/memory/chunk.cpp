@@ -7,17 +7,14 @@
 #include "yack/type/out-of-reach.hpp"
 #include "yack/arith/base2.hpp"
 #include "yack/type/destruct.hpp"
+
 #include <cstring>
-#include <iostream>
-#include <iomanip>
+#include <new>
 
 namespace yack
 {
     namespace memory
     {
-
-
-
         chunk:: ~chunk() throw()
         {
             assert(NULL==next);
@@ -58,7 +55,7 @@ namespace yack
         still_available( chunk_blocks(chunk_size,block_size) ),
         provided_number(still_available),
         priv(0),
-        data( static_cast<uint8_t*>(chunk_data) ),
+        data( static_cast<uint8_t*>(chunk_data)  ),
         last( data + block_size * provided_number),
         next(0),
         prev(0)
@@ -125,30 +122,59 @@ namespace yack
 
         void * chunk:: acquire(const size_t block_size) throw()
         {
+            //------------------------------------------------------------------
+            //
             // sanity check
+            //
+            //------------------------------------------------------------------
             assert(still_available>0);
             assert(still_available<=provided_number);
             assert(block_size>0);
 
-            // find block
+            //------------------------------------------------------------------
+            //
+            // find block and update status
+            //
+            //------------------------------------------------------------------
             uint8_t *       p = &data[first_available*block_size]; // get address
-            first_available = *p;                           // read next available address
-            --still_available;                              // bookkeeping
-            memset(p,0,block_size);                         // zero memory
-            return p;                                       // done
+            first_available = *p;                                  // read next available address
+            --still_available;                                     // bookkeeping
+            memset(p,0,block_size);                                // zero memory
+            return p;                                              // done
         }
 
         bool chunk:: release(void *block_addr, const size_t block_size) throw()
         {
+            //------------------------------------------------------------------
+            //
+            // sanity check
+            //
+            //------------------------------------------------------------------
             assert(block_size>0);
             assert(owns(block_addr,block_size));
 
+            //------------------------------------------------------------------
+            //
+            // find block and update status
+            //
+            //------------------------------------------------------------------
             uint8_t     *to_release = static_cast<uint8_t *>(block_addr);
             const size_t indx       = static_cast<size_t>(to_release-data)/block_size;
             *to_release             =  first_available;
             first_available  = (uint8_t)indx;
             return (++still_available>=provided_number);
         }
+
+    }
+
+}
+
+
+namespace yack
+{
+
+    namespace memory
+    {
 
         const size_t chunk:: header = YACK_MEMALIGN(sizeof(chunk));
 
@@ -163,6 +189,11 @@ namespace yack
                                             size_t      &blocks,
                                             const bool   compact) throw()
         {
+            //------------------------------------------------------------------
+            //
+            // snity check
+            //
+            //------------------------------------------------------------------
             assert(block_size>0);
             assert(minimum_frame_blocks>0);
             assert(is_a_power_of_two<size_t>(YACK_CHUNK_SIZE));
@@ -259,7 +290,7 @@ namespace yack
             dispatcher.release(*(void **)&ch,full_bytes);
         }
 
- 
+
 
     }
 }

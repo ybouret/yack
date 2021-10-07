@@ -315,12 +315,11 @@ namespace yack
 
         void  arena:: display() const
         {
-            std::cerr << "  <arena>" << std::endl;
-            std::cerr << "    chunk_block_size: " << chunk_block_size << std::endl;
-            std::cerr << "    blocks_per_chunk: " << blocks_per_chunk << std::endl;
-            std::cerr << "    memory_per_chunk: " << memory_per_chunk << std::endl;
-            std::cerr << "    memory_signature: " << memory_signature << std::endl;
-            std::cerr << "  <arena/>" << std::endl;
+            std::cerr << "    <arena";
+            std::cerr << " block_size=\"" << chunk_block_size << "\"";
+            std::cerr << " max_chunks=\"" << blocks_per_chunk << "\"";
+            std::cerr << " per_frame=\"" << memory_per_chunk << "=2^" << memory_signature << "\"";
+            std::cerr << "/>" << std::endl;
         }
     }
 

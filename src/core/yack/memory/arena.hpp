@@ -27,8 +27,9 @@ namespace yack
         //
         //! arena of chunks with same block size
         /**
-         - use power of two aligned chunk frames
-         - chunk can be interchanged with pages
+         - acquire/release on demand of chunks
+         - use power of two aligned chunk frames (to exchange with pages with memory_signature)
+         - an allocator must be provided for internal allocation
          */
         //
         //______________________________________________________________________
