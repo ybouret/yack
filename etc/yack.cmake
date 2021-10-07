@@ -30,10 +30,11 @@ if(YACK_RELEASE)
 	set(YACK_HAVE_CONFIG   ON)
 endif()
 
+if(FALSE)
 if(NOT YACK_HAVE_CONFIG)
 	message( FATAL_ERROR "[YACK] unknow config: use [Debug|Release]" )
 endif()
-
+endif()
 
 ########################################################################
 ##
@@ -217,7 +218,7 @@ function(yack_link_libraries program)
 	## threads support
 	##
 	########################################################################
-	if(YACK_LINUX)
+	if(YACK_LINUX OR YACK_FREEBSD)
 		list(APPEND yack_libs "pthread")
 	endif()
  	
