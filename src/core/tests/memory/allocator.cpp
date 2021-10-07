@@ -32,7 +32,7 @@ namespace
     {
         std::cerr << "Testing " << mem.variety() << std::endl;
         uprng        ran;
-        block        blocks[256];
+        block        blocks[1024];
         const size_t nblock = sizeof(blocks)/sizeof(blocks[0]);
 
         for(size_t i=0;i<nblock;++i)

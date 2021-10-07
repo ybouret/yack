@@ -23,7 +23,7 @@ YACK_UTEST(memory_book)
     std::cerr << std::endl;
     std::cerr << "book.min_page_exp2 = " << memory::book::min_page_exp2 << std::endl;
     std::cerr << "book.max_page_exp2 = " << memory::book::max_page_exp2 << std::endl;
-    std::cerr << "book.large_parts   = " << memory::book::large_parts   << std::endl;
+    std::cerr << "book.parts         = " << memory::book::parts         << std::endl;
     
     YACK_SIZEOF(memory::page);
     YACK_SIZEOF(memory::chapter);
@@ -36,7 +36,7 @@ YACK_UTEST(memory_book)
     for(size_t i=0;i<nblock;++i)
     {
         block &b = blocks[i];
-        b.iln2   = ran.leq(16);
+        b.iln2   = memory::book::min_page_exp2 + ran.leq(10);
         b.addr   = B.query(b.iln2);
         ran.fillnz(b.addr,size_t(1)<<b.iln2);
     }

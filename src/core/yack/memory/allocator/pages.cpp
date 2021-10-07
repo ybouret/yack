@@ -19,15 +19,15 @@ namespace yack
         static void *book__[ YACK_WORDS_FOR(book) ] = { 0 };
 
         pages:: pages() throw() : allocator(), singleton<pages>(),
-        tome( new ( out_of_reach::zset(book__,sizeof(book__)) ) book() )
+        book_( new ( out_of_reach::zset(book__,sizeof(book__)) ) book() )
         {
 
         }
 
         pages:: ~pages() throw()
         {
-            out_of_reach::zset( destructed(tome), sizeof(book__) );
-            tome = NULL;
+            out_of_reach::zset( destructed(book_), sizeof(book__) );
+            book_ = NULL;
         }
 
         void *pages:: acquire(size_t &count, const size_t block_size)
@@ -44,7 +44,7 @@ namespace yack
                 // find and query page
                 try
                 {
-                    void *addr = tome->query( integer_log2( page_size = next_power_of_two(page_size) ) );
+                    void *addr = book_->query( integer_log2( page_size = next_power_of_two(page_size) ) );
                     count = page_size; assert( is_a_power_of_two(count) );
                     return addr;
                 }
@@ -69,7 +69,7 @@ namespace yack
                 assert(is_a_power_of_two(size));
                 assert(size>=book::min_page_size);
                 assert(size<=book::max_page_size);
-                tome->store(addr,integer_log2(size));
+                book_->store(addr,integer_log2(size));
                 addr = 0;
                 size = 0;
             }
@@ -86,13 +86,13 @@ namespace yack
         void * pages::query(const size_t page_exp2)
         {
             YACK_LOCK(access);
-            return tome->query(page_exp2);
+            return book_->query(page_exp2);
         }
 
         void  pages:: store(void *addr, const size_t page_exp2) throw()
         {
             YACK_LOCK(access);
-            tome->store(addr,page_exp2);
+            book_->store(addr,page_exp2);
         }
 
         
@@ -109,7 +109,7 @@ namespace yack
         {
             YACK_LOCK(access);
             std::cerr << "<" << call_sign << ">" << std::endl;
-            tome->display();
+            book_->display();
             std::cerr << "<" << call_sign << "/>" << std::endl;
 
         }

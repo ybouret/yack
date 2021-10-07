@@ -9,7 +9,6 @@
 #include "yack/memory/chapter.hpp"
 #include "yack/arith/ilog2.hpp"
 #include "yack/arith/align.hpp"
-#include "yack/memory/arena-words.hpp"
 
 namespace yack
 {
@@ -22,11 +21,9 @@ namespace yack
         //______________________________________________________________________
         //
         //
-        //! book of power_of_two parts
+        //! book of (large) power_of_two parts
         /**
-         - large parts are chapter
-         - small parts are arena
-         - underlying global allocator
+         - use precomputed chapters ang global allocator
          */
         //
         //______________________________________________________________________
@@ -41,17 +38,18 @@ namespace yack
             static const size_t min_page_exp2 = ilog2<min_page_size>::value;           //!< minimal page exp2
             static const size_t max_page_exp2 = (sizeof(size_t)<<3)-1;                 //!< maximal page exp2
             static const size_t max_page_size = size_t(1) << max_page_exp2;            //!< maximal page size
-            static const size_t large_parts   = 1+max_page_exp2-min_page_exp2;         //!< active large parts
-            static const size_t large_bytes   = large_parts*sizeof(chapter);           //!< active large bytes
-            static const size_t large_words   = YACK_WORDS_GEQ(large_bytes);           //!< words for large parts
+            static const size_t parts   = 1+max_page_exp2-min_page_exp2;         //!< active large parts
+            static const size_t bytes   = parts*sizeof(chapter);           //!< active large bytes
+            static const size_t words   = YACK_WORDS_GEQ(bytes);           //!< words for large parts
+#if 0
             static const size_t small_parts   = min_page_exp2;                         //!< active small parts
             static const size_t small_words   = YACK_MEMORY_ARENA_WORDS * small_parts; //!< words for small parts
-
+#endif
             //__________________________________________________________________
             //
             // C++
             //__________________________________________________________________
-            book();          //!< setup chapters and arena
+            book()  throw(); //!< setup chapters
             ~book() throw(); //!< clean all
 
             //__________________________________________________________________
@@ -65,9 +63,7 @@ namespace yack
         private:
             YACK_DISABLE_COPY_AND_ASSIGN(book);
             chapter *chapters; //!< [min_page_exp2:max_page_exp2]
-            arena   *arenas;   //!< [0:min_page_exp2-1]
-            void    *large_impl[large_words];
-            void    *small_impl[small_words];
+            void    *impl[words];
         };
 
     }

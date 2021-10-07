@@ -318,7 +318,8 @@ namespace yack
             std::cerr << "    <arena";
             std::cerr << " block_size=\"" << chunk_block_size << "\"";
             std::cerr << " max_chunks=\"" << blocks_per_chunk << "\"";
-            std::cerr << " per_frame=\"" << memory_per_chunk << "=2^" << memory_signature << "\"";
+            std::cerr << " frame=\"" << memory_per_chunk << "=2^" << memory_signature << "\"";
+            std::cerr << " avail=\"" << available << "\"";
             std::cerr << "/>" << std::endl;
         }
     }
