@@ -90,6 +90,7 @@ YACK_UTEST(data_pool)
     YACK_SIZEOF(pool_of<xNode>);
     YACK_SIZEOF(raw_pool_of<xNode>);
     YACK_SIZEOF(cxx_pool_of<xNode>);
+    YACK_SIZEOF(core_pool_of<xNode>);
 
 
 

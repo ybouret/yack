@@ -1,7 +1,7 @@
 //! \file
 
 #ifndef YACK_DATA_CORE_POOL_INCLUDED
-#define YACK_DATA_CORE_LIST_INCLUDED 1
+#define YACK_DATA_CORE_POOL_INCLUDED 1
 
 
 namespace yack
@@ -12,6 +12,8 @@ namespace yack
         NODE  *head;
         size_t size;
     };
+
+#define YACK_CORE_POOL_INIT 0,0
 
 }
 

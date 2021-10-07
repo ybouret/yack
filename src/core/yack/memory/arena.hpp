@@ -6,6 +6,7 @@
 
 #include "yack/setup.hpp"
 #include "yack/data/core-list.hpp"
+#include "yack/data/core-pool.hpp"
 
 namespace yack
 {
@@ -38,9 +39,8 @@ namespace yack
             //
             // types and definition
             //__________________________________________________________________
-            static const size_t list_words = 4; //!< for internal memory
-            static const size_t pool_words = 3; //!< for internal memory
             typedef core_list_of<chunk> chunks_t;
+            typedef core_pool_of<chunk> ccache_t;
 
             //__________________________________________________________________
             //
@@ -101,12 +101,13 @@ namespace yack
 
 
         private:
-            size_t       available;             //!< bookkeeping
-            chunk       *acquiring;             //!< last acquiring
-            chunk       *releasing;             //!< last releasing
-            chunk       *abandoned;             //!< last empty chunk
-            chunks_t     io_chunks;
-            allocator   &providing;             //!< allocator for frames
+            size_t       available;   //!< bookkeeping
+            chunk       *acquiring;   //!< last acquiring
+            chunk       *releasing;   //!< last releasing
+            chunk       *abandoned;   //!< last empty chunk
+            chunks_t     io_chunks;   //!< state for list of chunks
+            ccache_t     io_ccache;   //!< state for pool of chunks
+            allocator   &providing;   //!< allocator for frames
         
         public:
             arena       *next;

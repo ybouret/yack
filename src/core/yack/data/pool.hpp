@@ -5,6 +5,7 @@
 #define YACK_DATA_POOL_INCLUDED 1
 
 #include "yack/data/linked.hpp"
+#include "yack/data/core-pool.hpp"
 
 namespace yack
 {
@@ -34,7 +35,7 @@ assert(NULL!=NODE); assert(NULL==(NODE)->next)
         // interlinked interface
         //______________________________________________________________________
 
-        bool owns(const NODE *node) const throw()
+        inline virtual bool owns(const NODE *node) const throw()
         {
             assert(node);
             for(const NODE *mine=head;mine;mine=mine->next)
@@ -91,6 +92,17 @@ assert(NULL!=NODE); assert(NULL==(NODE)->next)
 
         //______________________________________________________________________
         //
+        //! save state
+        //______________________________________________________________________
+        inline void save(core_pool_of<NODE> &io) throw()
+        {
+            io.head = head; head=NULL;
+            io.size = this->size; coerce(this->size)=0;
+        }
+
+
+        //______________________________________________________________________
+        //
         // members
         //______________________________________________________________________
         NODE *head; //!< the head (top) node
@@ -99,10 +111,17 @@ assert(NULL!=NODE); assert(NULL==(NODE)->next)
         //
         // C++
         //______________________________________________________________________
-        virtual ~pool_of() throw() {} //!< need cleanup before this!
+        inline virtual ~pool_of() throw() {} //!< need cleanup before this!
 
         //! setup empty
-        explicit pool_of() throw() : interlinked<NODE>(), head(0) {}
+        inline explicit pool_of() throw() : interlinked<NODE>(), head(0) {}
+
+        //! setup from state
+        inline explicit pool_of(const core_pool_of<NODE> &io) throw() :
+        interlinked<NODE>(), head(io.head)
+        {
+            coerce(this->size) = io.size;
+        }
 
     private:
         YACK_DISABLE_COPY_AND_ASSIGN(pool_of);

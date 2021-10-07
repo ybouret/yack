@@ -14,6 +14,8 @@ namespace yack
         size_t size;
     };
 
+#define YACK_CORE_LIST_INIT 0,0,0
+
 }
 
 #endif

@@ -51,7 +51,8 @@ namespace yack
             }
         }
 
-        static const arena::chunks_t YACK_ARENA_IO_CHUNKS_INIT = {0,0,0};
+        static const arena::chunks_t io_list_init = { YACK_CORE_LIST_INIT };
+        static const arena::ccache_t io_pool_init = { YACK_CORE_POOL_INIT };
 
         arena:: arena(const size_t block_size,
                       allocator   &dispatcher,
@@ -60,8 +61,11 @@ namespace yack
         acquiring(NULL),
         releasing(NULL),
         abandoned(NULL),
-        io_chunks(YACK_ARENA_IO_CHUNKS_INIT),
+        io_chunks(io_list_init),
+        io_ccache(io_pool_init),
         providing(dispatcher),
+        next(0),
+        prev(0),
         chunk_block_size(block_size),
         blocks_per_chunk(0),
         memory_per_chunk( chunk::optimized_frame_size(block_size,coerce(blocks_per_chunk),compact) ),
