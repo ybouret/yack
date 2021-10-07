@@ -34,17 +34,14 @@ namespace yack
             //
             // types and definitions
             //__________________________________________________________________
-            static const size_t min_page_size = sizeof(page);                          //!< mininal page size
-            static const size_t min_page_exp2 = ilog2<min_page_size>::value;           //!< minimal page exp2
-            static const size_t max_page_exp2 = (sizeof(size_t)<<3)-1;                 //!< maximal page exp2
-            static const size_t max_page_size = size_t(1) << max_page_exp2;            //!< maximal page size
-            static const size_t parts   = 1+max_page_exp2-min_page_exp2;         //!< active large parts
-            static const size_t bytes   = parts*sizeof(chapter);           //!< active large bytes
-            static const size_t words   = YACK_WORDS_GEQ(bytes);           //!< words for large parts
-#if 0
-            static const size_t small_parts   = min_page_exp2;                         //!< active small parts
-            static const size_t small_words   = YACK_MEMORY_ARENA_WORDS * small_parts; //!< words for small parts
-#endif
+            static const size_t min_page_size = sizeof(page);                 //!< mininal page size
+            static const size_t min_page_exp2 = ilog2<min_page_size>::value;  //!< minimal page exp2
+            static const size_t max_page_exp2 = (sizeof(size_t)<<3)-1;        //!< maximal page exp2
+            static const size_t max_page_size = size_t(1) << max_page_exp2;   //!< maximal page size
+            static const size_t parts   = 1+max_page_exp2-min_page_exp2;      //!< active chapters
+            static const size_t bytes   = parts*sizeof(chapter);              //!< active bytes
+            static const size_t words   = YACK_WORDS_GEQ(bytes);              //!< words for large parts
+                                                                           
             //__________________________________________________________________
             //
             // C++
