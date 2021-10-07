@@ -26,7 +26,7 @@ namespace yack
     };
 
     //! static field zset
-#define Y_STATIC_ZSET(FIELD) yack::out_of_reach::zset(FIELD,sizeof(FIELD))
+#define YACK_STATIC_ZSET(FIELD) yack::out_of_reach::zset(FIELD,sizeof(FIELD))
 
     //! out of reach type coercion
     template <typename T, typename U> inline

@@ -37,20 +37,24 @@ YACK_UTEST(memory_blocks)
 
     for(size_t i=0;i<=10000;++i)
     {
-        const size_t n = 1 + ran.leq(255);
-        void        *p = b.acquire(n);
-        YACK_ASSERT( out_of_reach::is0(p,n) );
-        l.push_back( new block(p,n) );
+        const size_t n = 1 + ran.leq(511);
+        for(size_t j=0;j<2;++j)
+        {
+            void        *p = b.acquire(n);
+            YACK_ASSERT( out_of_reach::is0(p,n) );
+            l.push_back( new block(p,n) );
+        }
     }
 
     ran.shuffle_list(l);
+#if 0
     while(l.size)
     {
         block *blk = l.pop_back();
         b.release(blk->addr,blk->size);
         delete blk;
     }
-
+#endif
     
 
 

@@ -1,12 +1,14 @@
 #include "yack/memory/blocks.hpp"
 #include "yack/memory/arena.hpp"
 #include "yack/system/exception.hpp"
-#include "yack/memory/allocator/pages.hpp"
+//#include "yack/memory/allocator/pages.hpp"
 #include "yack/memory/allocator/global.hpp"
 #include "yack/arith/base2.hpp"
 #include "yack/system/error.hpp"
+#include "yack/memory/chunk-size.hpp"
+#include "yack/check/static.hpp"
 #include <cerrno>
-
+#include <iostream>
 
 namespace yack
 {
@@ -14,280 +16,239 @@ namespace yack
     namespace memory
     {
 
+        void blocks:: release_table() throw()
+        {
+            global::location().withdraw(table, coerce(bytes) );
+            coerce(tsize) = 0;
+            coerce(tmask) = 0;
+        }
+
         blocks:: ~blocks() throw()
         {
-            static pages &mgr = pages::location();
-            while(size>0)
+            //------------------------------------------------------------------
+            //
+            // empty table
+            //
+            //------------------------------------------------------------------
+            arena     *self = coerce_cast<arena>(impl_);
             {
-                destruct( &data[--size] );
+                slot_type *slot = table+tsize;
+                for(size_t i=tsize;i>0;--i)
+                {
+                    slot_type &s = *(--slot);
+                    while(s.size)
+                    {
+                        assert(count>0);
+                        self->release( destructed(s.pop_back()) );
+                        --count;
+                    }
+                    destruct(&s);
+                }
             }
-            mgr.store(data,page_exp2);
-            data      = 0;
-            last      = 0;
-            capacity  = 0;
-            page_size = 0;
-            page_exp2 = 0;
+
+            //------------------------------------------------------------------
+            //
+            // release table
+            //
+            //------------------------------------------------------------------
+            release_table();
+
+            //------------------------------------------------------------------
+            //
+            // release self
+            //
+            //------------------------------------------------------------------
+            destruct(self);
+            YACK_STATIC_ZSET(impl_);
         }
 
         const char blocks:: designation[] = "memory::blocks";
 
-        static inline
-        size_t page_size_for(const size_t bytes)
+        static inline size_t blocks_max_table_slots(const size_t max_table_bytes) throw()
         {
-            if(bytes<=pages::min_page_size)
+            const size_t res =YACK_ALIGN_TO(blocks::slot_type,max_table_bytes)/sizeof(blocks::slot_type);
+            if(res<=0) system_error::critical_bsd(EINVAL,"YACK_CHUNK_SIZE is too small for memory::blocks");
+            return res;
+        }
+
+        static inline size_t blocks_table_size() throw()
+        {
+            static const size_t max_table_bytes = YACK_CHUNK_SIZE;
+            static const size_t max_table_slots = blocks_max_table_slots(max_table_bytes);
+            static const size_t num_table_slots = prev_power_of_two(max_table_slots);
+
+            return num_table_slots;
+        }
+
+        static inline blocks::slot_type *blocks_table_make(size_t &tsize)
+        {
+            static allocator &alloc = global::instance();
+            assert( is_a_power_of_two(tsize) );
+            size_t             count = tsize;
+            blocks::slot_type *table = static_cast<blocks::slot_type *>( alloc.acquire(tsize,sizeof(blocks::slot_type)));
+            assert(tsize>=count*sizeof(blocks::slot_type));
+            while(count>0)
             {
-                return pages::min_page_size;
+                new (&table[--count]) blocks::slot_type();
             }
-            else
-            {
-                if(bytes>pages::max_page_size)
-                {
-                    throw libc::exception(ENOMEM,"%s exceeds maximal capacity", blocks::designation);
-                }
-                return next_power_of_two(bytes);
-            }
+            return table;
         }
 
         blocks:: blocks() :
-        data(0),
-        last(0),
-        acquiring(0),
-        releasing(0),
-        size(0),
-        capacity(minimal_capacity),
-        page_size( page_size_for(capacity*sizeof(arena)) ),
-        page_exp2( base2<size_t>::log2_of(page_size)     )
+        acquiring_arena(0),
+        releasing_arena(0),
+        acquiring_slot(0),
+        releasing_slot(0),
+        count(0),
+        tsize( blocks_table_size() ),
+        tmask(tsize-1),
+        bytes(tsize),
+        table( blocks_table_make(coerce(bytes)) ),
+        impl_()
         {
-            static pages &pmem = pages::instance();
-            assert(is_a_power_of_two(page_size));
-            assert((size_t(1) << page_exp2) == page_size);
+            YACK_STATIC_CHECK(sizeof(impl_)>=sizeof(arena),impl_too_small);
+            static const bool compact = true;
 
-            data     = static_cast<arena *>( pmem.query(page_exp2) );
-            last     = data;
-            capacity = page_size / sizeof(arena);
-        }
-
-
-
-        static inline arena *search_arena(const size_t block_size,
-                                          arena       *lower,
-                                          arena       *upper) throw()
-        {
-            assert(lower);
-            assert(upper);
-            assert(lower<=upper);
-
-            while(lower<upper)
+            std::cerr << designation  << " : allocated " << tsize << " slots in  " << bytes << " bytes" << ", tmask=0x" << std::hex << tmask << std::dec << std::endl;
+            try
             {
-                if(block_size==lower->chunk_block_size) return lower;
-                ++lower;
+                new (coerce_cast<arena>(impl_)) arena(sizeof(arena),memory::global::instance(),compact);
+                coerce_cast<arena>(impl_)->display();
             }
-
-            return NULL;
-        }
-
-
-        static inline
-        arena *find_arena(const size_t block_size,
-                          arena       *lower,
-                          arena       *start,
-                          arena       *upper)
-        {
-            assert(block_size);
-            assert(lower);
-            assert(upper);
-            assert(start);
-            assert(lower<=start);
-            assert(start<upper);
-
-            const size_t bs = start->chunk_block_size;
-            if(block_size<bs)
+            catch(...)
             {
-                // search below start
-                return search_arena(block_size,lower,start);
+                release_table();
+                throw;
             }
-            else
-            {
-                if(bs<block_size)
-                {
-                    // search above start
-                    return search_arena(block_size,++start,upper);
-                }
-                else
-                {
-                    // cached!
-                    assert(bs==block_size);
-                    return start;
-                }
-            }
-        }
-
-
-        void blocks:: create(const size_t block_size)
-        {
-            static allocator &gmem = global::instance();
-            //------------------------------------------------------------------
-            // sanity check
-            //------------------------------------------------------------------
-            assert(data!=NULL);
-            assert(size<capacity);
-            assert(data+size==last);
-
-            //------------------------------------------------------------------
-            // new arena
-            //------------------------------------------------------------------
-            new (last) arena(block_size,gmem,false);
-            ++size;
-            acquiring = last++;
-
-            //------------------------------------------------------
-            // move it into place
-            //------------------------------------------------------
-            assert(block_size==acquiring->chunk_block_size);
-            while(acquiring>data)
-            {
-                arena *precedent = acquiring-1;
-                assert(acquiring->chunk_block_size==block_size);
-                assert(precedent->chunk_block_size!=block_size);
-                if(precedent->chunk_block_size>block_size)
-                {
-                    out_of_reach::swap(precedent,acquiring,sizeof(arena));
-                    --acquiring;
-                    continue;
-                }
-                break;
-            }
-
-            //------------------------------------------------------------------
-            // sanity check
-            //------------------------------------------------------------------
-            assert(block_size==acquiring->chunk_block_size);
-#if !defined(NDEBUG)
-            for(size_t i=1;i<size;++i)
-            {
-                assert(data[i-1].chunk_block_size<data[i].chunk_block_size);
-            }
-#endif
-
-        }
-
-
-        void blocks:: update()
-        {
-            //------------------------------------------------------------------
-            // sanity check
-            //------------------------------------------------------------------
-            assert(size>=capacity);
-            assert(releasing);
-            assert(acquiring);
-
-            //------------------------------------------------------------------
-            // need to grow workspace
-            //------------------------------------------------------------------
-            static pages &pmem = pages::instance();
-            if(page_size>=book::max_page_size) throw libc::exception(ENOMEM,"%s cannot grow", designation);
-
-            //--------------------------------------------------
-            // new resources
-            //--------------------------------------------------
-            const size_t new_page_size = page_size << 1;
-            const size_t new_page_exp2 = page_exp2 +  1;
-            arena       *new_data      = static_cast<arena *>( pmem.query(new_page_exp2) );
-            const size_t new_capacity  = new_page_size / sizeof(arena); assert(new_capacity>capacity);
-
-            //--------------------------------------------------
-            // migration
-            //--------------------------------------------------
-            out_of_reach::copy(new_data,data,size*sizeof(arena));
-
-            //--------------------------------------------------
-            // update
-            //--------------------------------------------------
-            acquiring = new_data + (acquiring-data);
-            releasing = new_data + (releasing-data);
-            pmem.store(data,page_exp2);
-            data      = new_data;
-            last      = data+size;
-            page_size = new_page_size;
-            page_exp2 = new_page_exp2;
-            capacity  = new_capacity;
-
-            //------------------------------------------------------------------
-            // sanity check
-            //------------------------------------------------------------------
-            assert(size<capacity);
-            assert(acquiring); assert(acquiring>=data); assert(acquiring<last);
-            assert(releasing); assert(releasing>=data); assert(releasing<last);
-
         }
 
         void *blocks:: acquire(const size_t block_size)
         {
-            switch(size)
+            assert(block_size>0);
+            switch(count)
             {
-                case  0:
-                    //----------------------------------------------------------
-                    //
-                    //
-                    // first arena
-                    //
-                    //
-                    //----------------------------------------------------------
-                    assert(data!=NULL);
-                    assert(last==data);
-                    create(block_size);
-                    releasing = acquiring;
+                case 0:
+                    grow(block_size, &table[block_size&tmask]);
+                    releasing_arena = acquiring_arena;
+                    releasing_slot  = acquiring_slot;
                     break;
 
                 default: {
-                    //----------------------------------------------------------
-                    //
-                    //
-                    // normal behaviour: probe acquiring
-                    //
-                    //
-                    //----------------------------------------------------------
-                    assert(acquiring);
-                    assert(releasing);
-                    arena *probe = find_arena(block_size,data,acquiring,last);
-                    if(NULL!=probe)
+                    assert(acquiring_arena); assert(acquiring_slot);
+                    assert(releasing_arena); assert(releasing_slot);
+                    if(block_size!=acquiring_arena->chunk_block_size)
                     {
-                        //------------------------------------------------------
-                        //
-                        // found!
-                        //
-                        //------------------------------------------------------
-                        acquiring = probe;
+                        slot_type  *slot = &table[block_size&tmask];
+                        arena      *node = find(slot,block_size);
+                        if(node)
+                        {
+                            acquiring_arena = node;
+                            acquiring_slot  = slot;
+                        }
+                        else
+                        {
+                            grow(block_size,slot);
+                        }
                     }
                     else
                     {
-                        //------------------------------------------------------
-                        //
-                        // not found, need a new arena
-                        //
-                        //------------------------------------------------------
-                        if(size>=capacity) update();
-                        create(block_size);
+                        assert( &table[block_size&tmask] == acquiring_slot );
                     }
-                }
 
+                } break;
             }
-
-            assert(acquiring);
-            assert(acquiring->chunk_block_size==block_size);
-            return acquiring->acquire();
+            assert(acquiring_arena); assert(acquiring_slot);
+            assert(block_size==acquiring_arena->chunk_block_size);
+            return acquiring_arena->acquire();
         }
 
-        void  blocks:: release(void        *block_addr,
-                               const size_t block_size) throw()
+        void blocks:: grow(const size_t block_size, slot_type *slot)
+        {
+            // sanity check
+            //std::cerr << "creating [" << block_size << "]" << std::endl;
+            assert(slot!=NULL);
+            assert(static_cast<size_t>(slot-table)==(block_size&tmask));
+
+            // new arena
+            arena *self = coerce_cast<arena>(impl_); assert(self);
+            arena *node = self->zombie<arena>();     assert(node);
+            try
+            {
+                static allocator &mgr = global::instance();
+                new (node) arena(block_size,mgr,false);
+            }
+            catch(...)
+            {
+                self->release(node);
+                throw;
+            }
+            assert(node);
+            //node->display();
+
+            // update slot
+            slot->push_back(node);
+            while(node->prev && node->prev->chunk_block_size>block_size)
+            {
+                (void) slot->towards_front(node);
+                assert(block_size==node->chunk_block_size);
+            }
+            assert(check(slot));
+
+            // update state
+            ++count;
+            acquiring_arena = node;
+            acquiring_slot  = slot;
+        }
+
+        bool blocks:: check(const slot_type *slot) const throw()
+        {
+            assert(slot);
+            switch(slot->size)
+            {
+                case 0:
+                case 1: return true;
+                default:
+                    break;
+            }
+            assert(slot->size>=2);
+            assert(slot->head!=NULL);
+            for(const arena *node=slot->head;node->next;node=node->next)
+            {
+                if(node->chunk_block_size>=node->next->chunk_block_size) return false;
+            }
+            return true;
+        }
+
+        arena * blocks:: find(slot_type *slot, const size_t block_size) throw()
+        {
+            assert(slot);
+            assert(static_cast<size_t>(slot-table) == (block_size&tmask) );
+            assert(check(slot));
+            arena *node = slot->head;
+            switch(slot->size)
+            {
+                case 0:  return NULL;
+                case 1:  return (block_size==node->chunk_block_size) ? node : NULL;
+                default: break;
+            }
+
+            //TODO: better search since slot is ordered...
+            for(;node;node=node->next)
+            {
+                if(block_size==node->chunk_block_size) return node;
+            }
+
+            return NULL;
+
+        }
+
+
+        void  blocks:: release(void *block_addr, const size_t block_size) throw()
         {
             assert(block_addr!=NULL);
             assert(block_size>0);
-            assert(releasing);
-            arena *probe = find_arena(block_size,data,releasing,last);
-            if(!probe) system_error::critical_bsd(EINVAL,"memory::blocks::release(invalid block_size)");
-            assert(block_size==probe->chunk_block_size);
-            (releasing = probe)->release(block_addr);
+            assert(releasing_arena!=NULL);
+            assert(releasing_slot!=NULL);
         }
 
 

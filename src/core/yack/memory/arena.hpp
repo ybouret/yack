@@ -106,7 +106,7 @@ namespace yack
             chunk       *releasing;   //!< last releasing
             chunk       *abandoned;   //!< last empty chunk
             chunks_t     io_chunks;   //!< state for list of chunks
-            ccache_t     io_ccache;   //!< state for pool of chunks
+            ccache_t     reservoir;   //!< low-level reservoir of chunks
             allocator   &providing;   //!< allocator for frames
         
         public:
@@ -120,8 +120,7 @@ namespace yack
         private:
             YACK_DISABLE_COPY_AND_ASSIGN(arena);
             chunk *build();               //!< a new chunk
-            chunk *query();               //!< cached or new
-            void   grow();                //!< with query(), args is chunks
+            void   grow();                //!< using reservoir or build()
             void   kill(chunk *) throw(); //!< return memory
             void  *give()        throw(); //!< by acquiring
             void   take(void *)  throw(); //!< by releasing

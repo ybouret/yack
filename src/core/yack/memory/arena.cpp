@@ -5,7 +5,6 @@
 #include "yack/type/out-of-reach.hpp"
 #include "yack/check/static.hpp"
 #include "yack/data/list.hpp"
-#include "yack/data/pool.hpp"
 #include "yack/type/destruct.hpp"
 #include <cstring>
 #include <iostream>
@@ -18,7 +17,6 @@ namespace yack
     {
         
         typedef list_of<chunk> chunks_list;
-        typedef pool_of<chunk> chunks_pool;
 
         // kill a normally empty chunk
         void arena:: kill(chunk *ch) throw()
@@ -45,6 +43,12 @@ namespace yack
                 out_of_reach::zset(&io_chunks,sizeof(chunks_t));
             }
 
+            while(reservoir.size)
+            {
+                kill(reservoir.pop());
+            }
+            assert(out_of_reach::is0(&reservoir,sizeof(reservoir)));
+
             if(missing)
             {
                 std::cerr << "arena[" << chunk_block_size << "] missing #blocks=" << missing << std::endl;
@@ -57,13 +61,15 @@ namespace yack
         arena:: arena(const size_t block_size,
                       allocator   &dispatcher,
                       const bool   compact):
+        // PRIVATE
         available(0),
         acquiring(NULL),
         releasing(NULL),
         abandoned(NULL),
         io_chunks(io_list_init),
-        io_ccache(io_pool_init),
+        reservoir(io_pool_init),
         providing(dispatcher),
+        // PUBLIC
         next(0),
         prev(0),
         chunk_block_size(block_size),
@@ -80,18 +86,15 @@ namespace yack
             return chunk::create_frame(chunk_block_size,memory_per_chunk,providing);
         }
 
-        chunk * arena:: query()
-        {
-            //chunks_pool *ccache =  coerce_cast<chunks_pool>(ccache_io);
-            //return (ccache->size>0) ? ccache->query() : build();
-            return build();
-        }
+
 
         void arena::grow()
         {
-
             // create a new chunk
-            chunk       *chnode = query(); assert(chnode->provided_number==blocks_per_chunk);
+            chunk       *chnode = (reservoir.size>0) ? reservoir.pop() : build();
+            assert(chnode->provided_number==blocks_per_chunk);
+
+            // update
             chunks_list  chunks(io_chunks);        // use chunks_list operation
             acquiring  = chunks.push_back(chnode); // append
             available += blocks_per_chunk;         // bookkeeping

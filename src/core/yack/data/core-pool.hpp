@@ -3,6 +3,7 @@
 #ifndef YACK_DATA_CORE_POOL_INCLUDED
 #define YACK_DATA_CORE_POOL_INCLUDED 1
 
+#include <cassert>
 
 namespace yack
 {
@@ -16,6 +17,25 @@ namespace yack
     {
         NODE  *head; //!< top/head elememt
         size_t size; //!< number of elements
+
+        //! inline pop
+        inline NODE *pop() throw() {
+            assert(head); assert(size>0);
+            NODE *node=head;
+            head=head->next;
+            node->next=NULL;
+            --size;
+            return node;
+        }
+
+        //! inline push
+        inline NODE *push(NODE *node) throw() {
+            assert(node); assert(NULL==node->next);
+            node->next = head;
+            head       = node;
+            ++size;
+            return node;
+        }
     };
 
     //__________________________________________________________________________
