@@ -35,7 +35,7 @@ namespace yack
             static const size_t max_page_size = size_t(1) << max_page_exp2;    //!< maximal page size
             static const size_t parts         = 1+max_page_exp2-min_page_exp2; //!< active parts
             static const size_t bytes         = parts*sizeof(chapter);         //!< internal bytes
-
+            
             //__________________________________________________________________
             //
             // C++

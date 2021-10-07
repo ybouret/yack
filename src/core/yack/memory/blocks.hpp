@@ -5,6 +5,7 @@
 #define YACK_MEMORY_BLOCKS_INCLUDED 1
 
 #include "yack/data/list.hpp"
+#include "yack/memory/arena-words.hpp"
 
 namespace yack
 {
@@ -28,7 +29,7 @@ namespace yack
         class blocks
         {
         public:
-            static const size_t    arena_words = 16;   //!< internal memory
+            static const size_t    arena_words = YACK_MEMORY_ARENA_WORDS;   //!< internal memory
             static const char      designation[];      //!< memory blocks
             typedef list_of<arena> niche_type;         //!< niche for table
 
