@@ -49,11 +49,10 @@ YACK_UTEST(memory_arena)
 {
     
     uprng              ran;
-    
     cxx_list_of<block> blocks;
     memory::ram        mem;
 
-    for(size_t block_size=1;block_size<=16;++block_size)
+    for(size_t block_size=1;block_size<=128;++block_size)
     {
         memory::arena a(block_size,mem,false);
 
@@ -84,7 +83,8 @@ YACK_UTEST(memory_arena)
             a.release(blk->addr);
             delete blk;
         }
-        
+
+        a.display();
     }
    
     YACK_SIZEOF(memory::arena);

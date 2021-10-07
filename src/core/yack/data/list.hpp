@@ -4,10 +4,12 @@
 #define YACK_DATA_LIST_INCLUDED 1
 
 #include "yack/data/linked.hpp"
+#include "yack/data/core-list.hpp"
 
 namespace yack
 {
-    
+
+
     //! check a node for a doubly linked list
 #define YACK_LIST_CHECK(NODE) \
 assert(NULL!=NODE); assert(NULL==(NODE)->next); assert(NULL==(NODE)->prev)
@@ -34,11 +36,26 @@ assert(NULL!=NODE); assert(NULL==(NODE)->next); assert(NULL==(NODE)->prev)
         //______________________________________________________________________
 
         //! setup empty
-        explicit list_of() throw() : interlinked<NODE>(), head(0), tail(0) {}
+        inline explicit list_of() throw() : interlinked<NODE>(), head(0), tail(0) {}
+
+        //! setup from compact state
+        inline explicit list_of(const core_list_of<NODE> &io) throw() :
+        interlinked<NODE>(), head(io.head), tail(io.tail)
+        { coerce(this->size)=io.size; }
 
         //! need cleanup before!
-        virtual ~list_of() throw() {}
-        
+        inline virtual ~list_of() throw() {}
+
+        //______________________________________________________________________
+        //
+        //! saving compact state
+        //______________________________________________________________________
+        inline void save(core_list_of<NODE> &io) throw()
+        {
+            io.head=head; head = NULL;
+            io.tail=tail; tail = NULL;
+            io.size=this->size; coerce(this->size)=0; }
+
         //______________________________________________________________________
         //
         // interlinked interface

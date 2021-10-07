@@ -8,9 +8,9 @@
 #include "yack/data/pool.hpp"
 #include "yack/type/destruct.hpp"
 #include <cstring>
-
 #include <iostream>
 #include <iomanip>
+
 namespace yack
 {
     
@@ -35,25 +35,14 @@ namespace yack
         {
             size_t       missing = 0;
             {
-                chunks_list *chunks  = coerce_cast<chunks_list>(chunks_io);
-                while(chunks->size)
+                chunks_list chunks(io_chunks);
+                while(chunks.size)
                 {
-                    chunk *ch = chunks->pop_back();
+                    chunk *ch = chunks.pop_back();
                     missing += ch->allocated();
                     kill(ch);
                 }
-                destruct(chunks);
-                Y_STATIC_ZSET(chunks_io);
-            }
-
-            {
-                chunks_pool *ccache = coerce_cast<chunks_pool>(ccache_io);
-                while(ccache->size)
-                {
-                    kill( ccache->query() );
-                }
-                destruct(ccache);
-                Y_STATIC_ZSET(ccache_io);
+                out_of_reach::zset(&io_chunks,sizeof(chunks_t));
             }
 
             if(missing)
@@ -61,7 +50,9 @@ namespace yack
                 std::cerr << "arena[" << chunk_block_size << "] missing #blocks=" << missing << std::endl;
             }
         }
-        
+
+        static const arena::chunks_t YACK_ARENA_IO_CHUNKS_INIT = {0,0,0};
+
         arena:: arena(const size_t block_size,
                       allocator   &dispatcher,
                       const bool   compact):
@@ -69,41 +60,14 @@ namespace yack
         acquiring(NULL),
         releasing(NULL),
         abandoned(NULL),
-        chunks_io(),
-        ccache_io(),
+        io_chunks(YACK_ARENA_IO_CHUNKS_INIT),
         providing(dispatcher),
-        
         chunk_block_size(block_size),
         blocks_per_chunk(0),
         memory_per_chunk( chunk::optimized_frame_size(block_size,coerce(blocks_per_chunk),compact) ),
         memory_signature( base2<size_t>::log2_of(memory_per_chunk) )
         {
-            YACK_STATIC_CHECK(sizeof(chunks_io)>=sizeof(chunks_list),impl_too_small);
-            YACK_STATIC_CHECK(sizeof(ccache_io)>=sizeof(chunks_pool),repo_too_small);
-
-#if 0
-            std::cerr << "<arena>" << std::endl;
-            std::cerr << "  chunk_block_size: " << chunk_block_size << std::endl;
-            std::cerr << "  blocks_per_chunk: " << blocks_per_chunk << std::endl;
-            std::cerr << "  memory_per_chunk: " << memory_per_chunk << std::endl;
-            std::cerr << "  memory_signature: " << memory_signature << std::endl;
-            std::cerr << "<arena/>" << std::endl;
-#endif
-
-            Y_STATIC_ZSET(chunks_io);
-            Y_STATIC_ZSET(ccache_io);
-            chunks_list *chunks = coerce_cast<chunks_list>(chunks_io);
-            new (chunks) chunks_list();
-            try
-            {
-                grow();
-            }
-            catch(...)
-            {
-                destruct(chunks);
-                throw;
-            }
-            new ( out_of_reach::address(ccache_io) ) chunks_pool();
+            grow();
             releasing = acquiring;
         }
 
@@ -114,24 +78,26 @@ namespace yack
 
         chunk * arena:: query()
         {
-            chunks_pool *ccache =  coerce_cast<chunks_pool>(ccache_io);
-            return (ccache->size>0) ? ccache->query() : build();
+            //chunks_pool *ccache =  coerce_cast<chunks_pool>(ccache_io);
+            //return (ccache->size>0) ? ccache->query() : build();
+            return build();
         }
 
         void arena::grow()
         {
-            // append a new chunk
-            chunks_list *chunks = coerce_cast<chunks_list>(chunks_io);
-            acquiring           = chunks->push_back( query() ); assert(acquiring->provided_number==blocks_per_chunk);
 
-            // bookkeeping
-            available += blocks_per_chunk;
+            // create a new chunk
+            chunk       *chnode = query(); assert(chnode->provided_number==blocks_per_chunk);
+            chunks_list  chunks(io_chunks);        // use chunks_list operation
+            acquiring  = chunks.push_back(chnode); // append
+            available += blocks_per_chunk;         // bookkeeping
 
             // sort memory
-            while( acquiring->prev && acquiring<acquiring->prev)
+            while((NULL!=chnode->prev) && (chnode<chnode->prev))
             {
-                (void)chunks->towards_front(acquiring);
+                (void)chunks.towards_front(chnode);
             }
+            chunks.save(io_chunks);
         }
         
     }
@@ -139,6 +105,7 @@ namespace yack
 }
 
 #include "yack/system/error.hpp"
+
 #include <cerrno>
 
 namespace yack
@@ -263,12 +230,12 @@ namespace yack
                 {
                     // first empty block
                     abandoned = releasing;
-                    std::cerr << "found first abandonned" << std::endl;
+                    //std::cerr << "found first abandonned" << std::endl;
                 }
                 else
                 {
                     // another block is empty
-                    std::cerr << "found second abandonned" << std::endl;
+                    //std::cerr << "found second abandonned" << std::endl;
                 }
             }
         }
@@ -333,3 +300,21 @@ namespace yack
 
 
 
+namespace yack
+{
+
+    namespace memory
+    {
+
+        void  arena:: display() const
+        {
+            std::cerr << "  <arena>" << std::endl;
+            std::cerr << "    chunk_block_size: " << chunk_block_size << std::endl;
+            std::cerr << "    blocks_per_chunk: " << blocks_per_chunk << std::endl;
+            std::cerr << "    memory_per_chunk: " << memory_per_chunk << std::endl;
+            std::cerr << "    memory_signature: " << memory_signature << std::endl;
+            std::cerr << "  <arena/>" << std::endl;
+        }
+    }
+
+}

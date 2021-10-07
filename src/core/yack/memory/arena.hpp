@@ -5,6 +5,7 @@
 #define YACK_MEMORY_ARENA_INCLUDED 1
 
 #include "yack/setup.hpp"
+#include "yack/data/core-list.hpp"
 
 namespace yack
 {
@@ -39,6 +40,7 @@ namespace yack
             //__________________________________________________________________
             static const size_t list_words = 4; //!< for internal memory
             static const size_t pool_words = 3; //!< for internal memory
+            typedef core_list_of<chunk> chunks_t;
 
             //__________________________________________________________________
             //
@@ -63,6 +65,7 @@ namespace yack
             void *acquire();                   //!< acquire one block, zeroed
             void  release(void *addr) throw(); //!< release one block
             void  expunge(void *addr) throw(); //!< zero and release block
+            void  display() const;
 
             //__________________________________________________________________
             //
@@ -95,17 +98,19 @@ namespace yack
                 args->~T();
                 expunge(args);
             }
-            
+
+
         private:
             size_t       available;             //!< bookkeeping
             chunk       *acquiring;             //!< last acquiring
             chunk       *releasing;             //!< last releasing
             chunk       *abandoned;             //!< last empty chunk
-            void        *chunks_io[list_words]; //!< chunks list
-            void        *ccache_io[pool_words]; //!< chunks pool
+            chunks_t     io_chunks;
             allocator   &providing;             //!< allocator for frames
         
         public:
+            arena       *next;
+            arena       *prev;
             const size_t chunk_block_size; //!< the same block size
             const size_t blocks_per_chunk; //!< for each chunk
             const size_t memory_per_chunk; //!< a power of two
@@ -115,7 +120,7 @@ namespace yack
             YACK_DISABLE_COPY_AND_ASSIGN(arena);
             chunk *build();               //!< a new chunk
             chunk *query();               //!< cached or new
-            void   grow();                //!< with query()
+            void   grow();                //!< with query(), args is chunks
             void   kill(chunk *) throw(); //!< return memory
             void  *give()        throw(); //!< by acquiring
             void   take(void *)  throw(); //!< by releasing

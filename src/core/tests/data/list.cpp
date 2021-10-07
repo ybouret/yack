@@ -2,6 +2,7 @@
 #include "yack/data/raw-list.hpp"
 #include "yack/data/cxx-list.hpp"
 #include "yack/utest/run.hpp"
+#include "yack/system/offset.hpp"
 #include <cstring>
 
 using namespace yack;
@@ -143,6 +144,11 @@ YACK_UTEST(data_list)
     YACK_SIZEOF(list_of<DNode>);
     YACK_SIZEOF(cxx_list_of<XNode>);
     YACK_SIZEOF(raw_list_of<DNode>);
+    YACK_SIZEOF(core_list_of<DNode>);
+
+    std::cerr << YACK_OFFSET_OF(core_list_of<DNode>,head) << std::endl;
+    std::cerr << YACK_OFFSET_OF(core_list_of<DNode>,tail) << std::endl;
+    std::cerr << YACK_OFFSET_OF(core_list_of<DNode>,size) << std::endl;
 
     
 }
