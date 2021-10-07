@@ -86,8 +86,21 @@ YACK_UTEST(memory_arena)
 
         a.display();
     }
-   
+    
     YACK_SIZEOF(memory::arena);
+    std::cerr << std::endl;
+    for(size_t i=0;i<=8;++i)
+    {
+        const size_t  block_size = 1<<i;
+        memory::arena a(block_size,mem,true);
+        memory::arena b(block_size,mem,false);
+
+        a.display();
+        b.display();
+        std::cerr << std::endl;
+
+    }
+    
 }
 YACK_UDONE()
 
