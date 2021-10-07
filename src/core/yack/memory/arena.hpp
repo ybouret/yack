@@ -39,8 +39,8 @@ namespace yack
             //
             // types and definition
             //__________________________________________________________________
-            typedef core_list_of<chunk> chunks_t;
-            typedef core_pool_of<chunk> ccache_t;
+            typedef core_list_of<chunk> chunks_t; //!< legacy list for state
+            typedef core_pool_of<chunk> ccache_t; //!< legacy pool for state
 
             //__________________________________________________________________
             //
@@ -65,7 +65,7 @@ namespace yack
             void *acquire();                   //!< acquire one block, zeroed
             void  release(void *addr) throw(); //!< release one block
             void  expunge(void *addr) throw(); //!< zero and release block
-            void  display() const;
+            void  display() const;             //!< current information
 
             //__________________________________________________________________
             //
@@ -110,8 +110,8 @@ namespace yack
             allocator   &providing;   //!< allocator for frames
         
         public:
-            arena       *next;
-            arena       *prev;
+            arena       *next;             //!< for list
+            arena       *prev;             //!< for list
             const size_t chunk_block_size; //!< the same block size
             const size_t blocks_per_chunk; //!< for each chunk
             const size_t memory_per_chunk; //!< a power of two

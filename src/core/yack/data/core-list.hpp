@@ -6,14 +6,25 @@
 
 namespace yack
 {
-    
+    //__________________________________________________________________________
+    //
+    //
+    //! legacy list for compact handling
+    //
+    //__________________________________________________________________________
     template <typename NODE> struct core_list_of
     {
-        NODE  *head;
-        NODE  *tail;
-        size_t size;
+        NODE  *head; //!< head node
+        NODE  *tail; //!< tail node
+        size_t size; //!< number of nodes
     };
 
+    //__________________________________________________________________________
+    //
+    //
+    //! core list initializer
+    //
+    //__________________________________________________________________________
 #define YACK_CORE_LIST_INIT 0,0,0
 
 }
