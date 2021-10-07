@@ -56,7 +56,7 @@ YACK_UTEST(memory_blocks)
         delete blk;
     }
 
-
+    YACK_SIZEOF(memory::blocks);
 
 }
 YACK_UDONE()

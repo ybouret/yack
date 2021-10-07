@@ -28,7 +28,7 @@ namespace yack
         class blocks
         {
         public:
-            static const size_t    arena_words = 16;   //!<
+            static const size_t    arena_words = 16;   //!< internal memory
             static const char      designation[];      //!< memory blocks
             typedef list_of<arena> niche_type;         //!< niche for table
 
@@ -53,12 +53,10 @@ namespace yack
             void            *impl_[arena_words]; //!< arena creator
 
             void   release_table() throw();
-            void   grow(const size_t block_size, niche_type *slot);
-            arena *find(niche_type *slot, const size_t block_size) throw();
-
+            void   grow(const size_t block_size, niche_type *);
+            arena *find(niche_type *, const size_t block_size) throw();
             bool   check(const niche_type *slot) const throw();
-
-
+            
         };
 
     }
