@@ -22,7 +22,7 @@ namespace yack
             }
         }
 
-        book:: book()   : chapters(0), large_impl(), small_impl()
+        book:: book()   : chapters(0), arenas(0), large_impl(), small_impl()
         {
 
             chapter *ch = (chapters = static_cast<chapter *>( out_of_reach::zset(large_impl,sizeof(large_impl) ) )-min_page_exp2);
