@@ -45,21 +45,16 @@ namespace yack
             YACK_LOCK(access);
             if(count>0)
             {
-                // check page_size
-                size_t page_size = max_of(count * block_size,book::min_page_size);
-                if(page_size>book::max_page_size) throw libc::exception(ENOMEM,"%s max_page_size exceeded", variety() );
-
-                // find and query page
-                try
-                {
-                    void *addr = book_->query( integer_log2( page_size = next_power_of_two(page_size) ) );
-                    count = page_size; assert( is_a_power_of_two(count) );
+                size_t       page_size = count * block_size; if(page_size>book::max_page_size) throw libc::exception(ENOMEM,"%s max_page_size exceeded", variety() );
+                const size_t page_exp2 = integer_log2( page_size = next_power_of_two(page_size) );
+                try {
+                    void *addr = query(page_exp2);
+                    count      = page_size;
                     return addr;
                 }
                 catch(...)
                 {
-                    count=0;
-                    throw;
+                    count=0; throw;
                 }
             }
             else
@@ -75,9 +70,8 @@ namespace yack
             {
                 assert(size>0);
                 assert(is_a_power_of_two(size));
-                assert(size>=book::min_page_size);
                 assert(size<=book::max_page_size);
-                book_->store(addr,integer_log2(size));
+                store(addr,integer_log2(size));
                 addr = 0;
                 size = 0;
             }
@@ -94,13 +88,18 @@ namespace yack
         void * pages::query(const size_t page_exp2)
         {
             YACK_LOCK(access);
-            return book_->query(page_exp2);
+            assert(page_exp2<=book::max_page_exp2);
+            return (page_exp2<book::min_page_exp2) ? note_->query(page_exp2) : book_->query(page_exp2);
         }
 
         void  pages:: store(void *addr, const size_t page_exp2) throw()
         {
             YACK_LOCK(access);
-            book_->store(addr,page_exp2);
+            assert(page_exp2<=book::max_page_exp2);
+            if(page_exp2<book::min_page_exp2)
+                note_->store(addr,page_exp2);
+            else
+                book_->store(addr,page_exp2);
         }
 
         
