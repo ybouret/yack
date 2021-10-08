@@ -99,6 +99,7 @@ namespace yack
 #if                 defined(YACK_BSD)
                     const int res = pthread_create(&tid, NULL, code, data);
                     if (res != 0) throw libc::exception(res, "pthread_create");
+                    std::cerr << "Success!" << std::endl;
                     return tid;
 #endif
 
