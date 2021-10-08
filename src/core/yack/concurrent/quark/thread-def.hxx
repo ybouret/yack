@@ -91,7 +91,9 @@ namespace yack
                 //! create threadable code
                 static inline handle launch(system_routine code, void *data, ID &tid)
                 {
-                    assert(code); assert(data);
+                    assert(NULL!=code);
+                    assert(NULL!=data);
+                    std::cerr << "launching thread in system routine" << std::endl;
                     out_of_reach::zset(&tid,sizeof(ID));
 
 #if                 defined(YACK_BSD)
