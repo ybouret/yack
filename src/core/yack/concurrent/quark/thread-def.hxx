@@ -50,8 +50,7 @@ namespace yack
                 YACK_THREAD_LAUNCHER_RETURN entry(YACK_THREAD_LAUNCHER_PARAMS info)
                 {
                     assert(info!=NULL);
-                    threadable &exe = *static_cast<threadable *>(info);
-                    exe();
+                    static_cast<threadable *>(info)->run();
                     return 0;
                 }
 

@@ -21,9 +21,9 @@ namespace yack
         public:
             typedef void (*procedure)(void *);
 
-            inline  threadable(procedure stub_proc, void *stub_args) throw() : proc(stub_proc), args(stub_args) { assert(NULL!=proc); }
-            inline ~threadable() throw() { proc=0; args=0; }
-            inline  void operator()(void) { assert(NULL!=proc); proc(args); }
+            explicit threadable(procedure stub_proc, void *stub_args) throw();
+            virtual ~threadable() throw();
+            void     run(void);
 
         protected:
             procedure  proc;
