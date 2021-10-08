@@ -128,7 +128,6 @@ namespace yack
 }
 
 #include "yack/system/error.hpp"
-
 #include <cerrno>
 
 namespace yack
@@ -246,10 +245,18 @@ namespace yack
                 return give();
             }
             
-            
-            
         }
         
+        
+    }
+}
+
+
+namespace yack
+{
+    
+    namespace memory
+    {
         void  arena:: take(void *addr)  throw()
         {
             //------------------------------------------------------------------
@@ -277,22 +284,62 @@ namespace yack
                     // first abandonned block
                     //----------------------------------------------------------
                     abandoned = releasing;
-                    std::cerr << "found first abandonned" << std::endl;
+                    //std::cerr << "found  first abandonned" << std::endl;
+                    assert(available>=new_blocks);
                 }
                 else
                 {
                     //----------------------------------------------------------
                     // another block is empty
                     //----------------------------------------------------------
-                    std::cerr << "found second abandonned" << std::endl;
+                    //std::cerr << "found second abandonned" << std::endl;
                     assert(releasing!=abandoned);
                     assert(abandoned->is_empty());
+                    assert(available>=2*new_blocks);
+                    if(abandoned<releasing)
+                    {
+                        cswap(abandoned,releasing);
+                    }
+                    assert(abandoned>releasing);
                     
+                    //----------------------------------------------------------
+                    // update acquiring position
+                    //----------------------------------------------------------
+                    assert(acquiring);
+                    assert(io_chunks.size>1);
+                    assert( (NULL!=acquiring->prev) || (NULL!=acquiring->next) );
+                    if(abandoned==acquiring)
+                    {
+                        //std::cerr << "moving acquiring..." << std::endl;
+                        if(acquiring->prev)
+                        {
+                            acquiring=acquiring->prev;
+                        }
+                        else
+                        {
+                            acquiring=acquiring->next;
+                        }
+                    }
                     
-                    exit(1);
+                    //----------------------------------------------------------
+                    // moving
+                    //----------------------------------------------------------
+                    {
+                        chunks_list chunks(io_chunks);
+                        reservoir.push( chunks.pop(abandoned) );
+                        chunks.save(io_chunks);
+                    }
+                    
+                    // update status
+                    abandoned  = releasing;
+                    available -= new_blocks;
+                    
+                    //exit(1);
                 }
             }
         }
+        
+        
         
         static inline
         void search_error()
@@ -359,14 +406,14 @@ namespace yack
 
     namespace memory
     {
-
         void  arena:: display() const
         {
             std::cerr << "    <arena";
-            std::cerr << " block_size=\"" << block_size << "\"";
-            std::cerr << " new_blocks=\"" << new_blocks << "\"";
-            std::cerr << " frame=\"" << frame_size << "=2^" << frame_exp2 << "\"";
-            std::cerr << " avail=\"" << available << "\"";
+            std::cerr << " bs=\""    << std::setw(3) << block_size << "\"";
+            std::cerr << " in=\""  << std::setw(3) << available << "\"";
+            std::cerr << " out=\"" << reservoir.size * new_blocks << "\"";
+            std::cerr << " bpc=\"" << std::setw(3) << new_blocks << "\"";
+            std::cerr << " pgs=\"" << frame_size << "=2^" << frame_exp2 << "\"";
             std::cerr << "/>" << std::endl;
         }
     }
