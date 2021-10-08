@@ -7,8 +7,10 @@ namespace yack
         {
             thread *thread_api::init(threadable proc, void *args)
             {
+                assert(NULL!=proc);
                 static atelier &mgr = atelier_instance();
                 thread         *thr = mgr.threads.zombie<thread>();
+                std::cerr << "thread_api::init" << std::endl;
                 try {
                     return new(thr) thread(proc,args);
                 }
@@ -40,12 +42,12 @@ namespace yack
     {
         thread:: thread(threadable proc, void *args) : impl( quark::thread_api::init(proc,args) )
         {
-
+            assert(NULL!=impl);
         }
 
         thread:: ~thread() throw()
         {
-            assert(impl);
+            assert(NULL!=impl);
             quark::thread_api::quit(impl);
             assert(NULL==impl);
         }
