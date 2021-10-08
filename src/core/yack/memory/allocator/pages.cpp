@@ -19,6 +19,7 @@ namespace yack
         static void *book__[ YACK_WORDS_FOR(book) ] = { 0 };
 
         pages:: pages() throw() : allocator(), singleton<pages>(),
+        note_( 0 ),
         book_( new ( out_of_reach::zset(book__,sizeof(book__)) ) book() )
         {
 
