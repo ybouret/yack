@@ -2,6 +2,7 @@
 #include "yack/concurrent/thread.hpp"
 #include "yack/concurrent/mutex.hpp"
 #include "yack/concurrent/condition.hpp"
+#include "yack/concurrent/singleton.hpp"
 
 #include "yack/utest/run.hpp"
 #include <cstring>
@@ -31,13 +32,13 @@ namespace
         YACK_DISABLE_COPY_AND_ASSIGN(workspace);
     };
 
-    static inline void proc1(void *args) throw()
+    static inline void run(void *args) throw()
     {
         assert(args);
         workspace &wksp = *static_cast<workspace *>(args);
         wksp.access.lock();
         const size_t label = ++wksp.ready;
-        std::cerr << "in proc1 with ready=" << wksp.ready << std::endl;
+        std::cerr << "Run with ready=" << wksp.ready << std::endl;
         std::cerr.flush();
 
         // wait on a locked mutex
@@ -53,13 +54,13 @@ namespace
 
 YACK_UTEST(sync_thread)
 {
-    //concurrent::singleton::verbose = true;
+    concurrent::singleton::verbose = true;
     concurrent::mutex::verbose     = true;
     workspace          wksp;
     {
-        concurrent::thread t1(proc1,&wksp);
-        concurrent::thread t2(proc1,&wksp);
-        concurrent::thread t3(proc1,&wksp);
+        concurrent::thread t1(run,&wksp);
+        concurrent::thread t2(run,&wksp);
+        concurrent::thread t3(run,&wksp);
         bool sync = false;
         while(!sync)
         {
