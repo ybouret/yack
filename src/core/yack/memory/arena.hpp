@@ -21,7 +21,8 @@ namespace yack
         //______________________________________________________________________
         class chunk;
         class allocator;
-
+        class pages;
+        
         //______________________________________________________________________
         //
         //
@@ -100,7 +101,12 @@ namespace yack
                 expunge(args);
             }
 
-
+            //__________________________________________________________________
+            //
+            // advanced management
+            //__________________________________________________________________
+            void gc(pages &) throw();
+            
         private:
             size_t       available;   //!< bookkeeping
             chunk       *acquiring;   //!< last acquiring

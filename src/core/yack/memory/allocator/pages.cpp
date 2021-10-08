@@ -102,7 +102,13 @@ namespace yack
                 book_->store(addr,page_exp2);
         }
 
-        
+        void  pages:: store_large_unlocked(void *addr, const size_t page_exp2) throw()
+        {
+            assert(page_exp2<=book::max_page_exp2);
+            assert(page_exp2>=book::min_page_exp2);
+            book_->store(addr,page_exp2);
+        }
+
     }
 
 }

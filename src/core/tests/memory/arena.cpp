@@ -98,7 +98,6 @@ YACK_UTEST(memory_arena)
         a.display();
         b.display();
         std::cerr << std::endl;
-
     }
     
 }

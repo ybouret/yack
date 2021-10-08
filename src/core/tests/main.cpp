@@ -15,6 +15,7 @@ YACK_UTEST_DECL(32)
     YACK_UTEST(ram);
     YACK_UTEST(memory_chunk);
     YACK_UTEST(memory_arena);
+    YACK_UTEST(memory_arena_io);
     YACK_UTEST(memory_alloc);
     YACK_UTEST(memory_book);
     YACK_UTEST(memory_blocks);
