@@ -1,20 +1,17 @@
-
 namespace yack
 {
     namespace concurrent
     {
         namespace quark
         {
-            //==================================================================
-            //
-            //
-            // <thread>
-            //
-            //
-            //==================================================================
+
+
+
             class thread
             {
             public:
+              
+
 #if             defined(YACK_BSD)
                 typedef pthread_t handle;                 //!< system thread handle
                 typedef pthread_t ID;                     //!< system thread identifier
@@ -34,9 +31,9 @@ namespace yack
                 const ID     uuid;
                 const handle self;
 
-                inline thread(threadable proc, void *args) :
+                inline thread(threadable &exe) :
                 uuid(0),
-                self( create(proc,args,coerce(uuid)) )
+                self( launch(entry,&exe,coerce(uuid)) )
                 {
                 }
 
@@ -47,31 +44,21 @@ namespace yack
 
 
             private:
-                struct stub
-                {
-                    threadable  proc;
-                    void       *args;
-                };
-
-                static inline handle create(threadable proc, void *args, ID &tid)
-                {
-                    stub _ = { proc, args }; assert(NULL!=proc);
-                    return launch(entry,&_,tid);
-                }
 
                 //! system threadable routine
-                static inline YACK_THREAD_LAUNCHER_RETURN entry(YACK_THREAD_LAUNCHER_PARAMS info)
+                static inline
+                YACK_THREAD_LAUNCHER_RETURN entry(YACK_THREAD_LAUNCHER_PARAMS info)
                 {
                     assert(info!=NULL);
-                    stub &_ = *static_cast<stub *>(info);
-                    assert(_.proc);
-                    _.proc(_.args);
+                    threadable &exe = *static_cast<threadable *>(info);
+                    exe();
                     return 0;
                 }
 
                 //! join/wait handle
                 static inline void finish(handle &h, ID &tid) throw()
                 {
+                    std::cerr << "finishing..." << std::endl;
 #if                 defined(YACK_BSD)
                     const int res = pthread_join( h, 0 );
                     if(res!=0) system_error::critical_bsd(res,"pthread_join");
@@ -99,7 +86,7 @@ namespace yack
 #if                 defined(YACK_BSD)
                     const int res = pthread_create(&tid, NULL, code, data);
                     if (res != 0) throw libc::exception(res, "pthread_create");
-                    std::cerr << "Success!" << std::endl;
+                    std::cerr << "pthread success!" << std::endl;
                     return tid;
 #endif
 

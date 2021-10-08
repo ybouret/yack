@@ -22,6 +22,19 @@ namespace yack
             tag(id);
         }
 
+        std::ostream & operator<<(std::ostream & os, const mutex &m) throw()
+        {
+            try
+            {
+                os << "[mutex@" << (const void*)(m.impl) << " <" << m.name << ">]";
+            }
+            catch(...)
+            {
+                throw;
+            }
+            return os;
+        }
+
         void mutex::tag(const char *id) throw()
         {
             static const size_t max_len = sizeof(name)-1;
@@ -31,17 +44,15 @@ namespace yack
             for(size_t i=0;i<cpy_len;++i)       coerce(name[i]) = id[i];
             for(size_t i=cpy_len;i<max_len;++i) coerce(name[i]) = 0;
 
-            if(verbose)
-            {
-                std::cerr << "\t+mutex@" << impl << ":'" << name << "'" << std::endl;
-            }
+            if(verbose) std::cerr << "+" << *this << std::endl;
+
         }
 
 
         mutex:: ~mutex() throw()
         {
             assert(impl);
-            if(verbose) { std::cerr << "\t-mutex@" << impl << ": '" << name << "'" << std::endl; }
+            if(verbose) std::cerr << "-" << *this << std::endl;
             quark::mutex_api::quit(impl);
             assert(!impl);
         }
@@ -50,12 +61,14 @@ namespace yack
         {
             assert(impl);
             quark::mutex_api::lock(impl);
+            if(verbose) std::cerr << ">" << *this << " [LOCKED]" << std::endl;
         }
 
 
         void mutex:: unlock() throw()
         {
             assert(impl);
+            if(verbose) std::cerr << "<" << *this << " [UNLOCKING]" << std::endl;
             quark::mutex_api::unlock(impl);
         }
 

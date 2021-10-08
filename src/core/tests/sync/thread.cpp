@@ -34,8 +34,13 @@ namespace
 
     static inline void run(void *args) throw()
     {
-        assert(args);
+        assert(NULL!=args);
         workspace &wksp = *static_cast<workspace *>(args);
+        {
+            YACK_LOCK(wksp.access);
+            std::cerr << "in run, args@" << args << std::endl;
+        }
+#if 0
         wksp.access.lock();
         const size_t label = ++wksp.ready;
         std::cerr << "Run with ready=" << wksp.ready << std::endl;
@@ -48,6 +53,7 @@ namespace
         std::cerr << "just woke at label=" << label << std::endl;
         std::cerr.flush();
         wksp.access.unlock();
+#endif
     }
 
 }
@@ -59,6 +65,7 @@ YACK_UTEST(sync_thread)
     workspace          wksp;
     {
         concurrent::thread t1(run,&wksp);
+
         return 0;
         concurrent::thread t2(run,&wksp);
         concurrent::thread t3(run,&wksp);
@@ -75,12 +82,10 @@ YACK_UTEST(sync_thread)
             }
             wksp.access.unlock();
         }
-        std::cerr << "in main..." << std::endl;
         wksp.cv.signal();
         wksp.cv.broadcast();
     }
     
-
 }
 YACK_UDONE()
 

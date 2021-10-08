@@ -30,15 +30,15 @@ namespace yack
          */
         //
         //______________________________________________________________________
-        class thread
+        class thread : public threadable
         {
         public:
             //__________________________________________________________________
             //
             // C++
             //__________________________________________________________________
-            explicit thread(threadable proc, void *args); //!< initialize
-            virtual ~thread() throw();                    //!< wait and destruct
+            explicit thread(procedure proc, void *args); //!< initialize
+            virtual ~thread() throw();                   //!< wait and destruct
             
         private:
             YACK_DISABLE_COPY_AND_ASSIGN(thread);

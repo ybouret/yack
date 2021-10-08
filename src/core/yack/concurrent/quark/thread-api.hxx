@@ -5,14 +5,12 @@ namespace yack
     {
         namespace quark
         {
-            thread *thread_api::init(threadable proc, void *args)
+            thread *thread_api::init(threadable &exe)
             {
-                assert(NULL!=proc);
                 static atelier &mgr = atelier_instance();
                 thread         *thr = mgr.threads.zombie<thread>();
-                std::cerr << "thread_api::init" << std::endl;
                 try {
-                    return new(thr) thread(proc,args);
+                    return new(thr) thread(exe);
                 }
                 catch(...)
                 {
@@ -40,7 +38,9 @@ namespace yack
 {
     namespace concurrent
     {
-        thread:: thread(threadable proc, void *args) : impl( quark::thread_api::init(proc,args) )
+        thread:: thread(threadable::procedure proc, void *args) :
+        threadable(proc,args),
+        impl( quark::thread_api::init(*this) )
         {
             assert(NULL!=impl);
         }

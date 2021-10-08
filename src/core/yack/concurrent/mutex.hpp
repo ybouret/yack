@@ -6,7 +6,7 @@
 
 #include "yack/lockable.hpp"
 #include "yack/concurrent/primitive.hpp"
-
+#include <iosfwd>
 namespace yack
 {
     namespace concurrent
@@ -55,6 +55,8 @@ namespace yack
             // methods
             //__________________________________________________________________
             void tag(const char *id) throw(); //!< create a name
+
+            friend std::ostream & operator<<(std::ostream &, const mutex &) throw();
 
         private:
             YACK_DISABLE_COPY_AND_ASSIGN(mutex);
