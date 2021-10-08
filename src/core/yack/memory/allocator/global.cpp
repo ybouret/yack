@@ -11,7 +11,7 @@ namespace yack
         
         static void *ram__[ YACK_WORDS_FOR(ram) ];
         
-        global:: global() throw() : allocator(), singleton<global>(),
+        global:: global() throw() : allocator(), yack::singleton<global>(),
         initial( memory::ram::allocated() )
         {
             new (out_of_reach::zset(ram__,sizeof(ram__))) ram();
