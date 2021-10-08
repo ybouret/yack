@@ -12,6 +12,7 @@ namespace yack
 {
     namespace memory
     {
+
         //______________________________________________________________________
         //
         //
@@ -41,7 +42,7 @@ namespace yack
             YACK_DISABLE_COPY_AND_ASSIGN(global);
             explicit global() throw();
             virtual ~global() throw();
-            friend class singleton<global>;
+            friend class yack::singleton<global>;
             const uint64_t initial;
         };
         
