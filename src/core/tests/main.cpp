@@ -23,6 +23,7 @@ YACK_UTEST_DECL(32)
     YACK_UTEST(memory_pages);
 
     YACK_UTEST(data_list);
+    YACK_UTEST(data_list_sort);
     YACK_UTEST(data_pool);
 
     YACK_UTEST(sync_lockable);
