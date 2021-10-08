@@ -30,7 +30,6 @@ namespace yack
             }
             catch(...)
             {
-                throw;
             }
             return os;
         }

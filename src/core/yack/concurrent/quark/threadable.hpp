@@ -12,27 +12,32 @@ namespace yack
     namespace concurrent
     {
 
-        //______________________________________________________________________
-        //
-        //! threadable procedure
-        //______________________________________________________________________
-        class threadable
+        namespace quark
         {
-        public:
-            typedef void (*procedure)(void *);
+            //__________________________________________________________________
+            //
+            //
+            //! threadable interface
+            //
+            //__________________________________________________________________
+            class threadable
+            {
+            public:
 
-            explicit threadable(procedure stub_proc, void *stub_args) throw();
-            virtual ~threadable() throw();
-            void     run(void);
+                typedef void (*procedure)(void *);                    //!< legacy C wrapper
+                explicit       threadable(procedure, void *) throw(); //!< setup
+                virtual       ~threadable() throw();                  //!< cleanup
+                void           run(void);                             //!< call
 
-        protected:
-            procedure  proc;
-            void       *args;
-            
-        private:
-            YACK_DISABLE_COPY_AND_ASSIGN(threadable);
+            protected:
+                procedure   proc; //!< code address
+                void       *args; //!< arguments
 
-        };
+            private:
+                YACK_DISABLE_COPY_AND_ASSIGN(threadable);
+
+            };
+        }
     }
 
 }

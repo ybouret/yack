@@ -57,7 +57,6 @@ namespace yack
                 //! join/wait handle
                 static inline void finish(handle &h, ID &tid) throw()
                 {
-                    std::cerr << "finishing..." << std::endl;
 #if                 defined(YACK_BSD)
                     const int res = pthread_join( h, 0 );
                     if(res!=0) system_error::critical_bsd(res,"pthread_join");
@@ -79,13 +78,11 @@ namespace yack
                 {
                     assert(NULL!=code);
                     assert(NULL!=data);
-                    std::cerr << "launching thread in system routine" << std::endl;
                     out_of_reach::zset(&tid,sizeof(ID));
 
 #if                 defined(YACK_BSD)
                     const int res = pthread_create(&tid, NULL, code, data);
                     if (res != 0) throw libc::exception(res, "pthread_create");
-                    std::cerr << "pthread success!" << std::endl;
                     return tid;
 #endif
 

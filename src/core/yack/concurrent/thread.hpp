@@ -30,7 +30,7 @@ namespace yack
          */
         //
         //______________________________________________________________________
-        class thread : public threadable
+        class thread : public quark::threadable
         {
         public:
             //__________________________________________________________________

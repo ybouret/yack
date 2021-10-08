@@ -56,6 +56,7 @@ namespace yack
             //__________________________________________________________________
             void tag(const char *id) throw(); //!< create a name
 
+            //! output for verbosity
             friend std::ostream & operator<<(std::ostream &, const mutex &) throw();
 
         private:
