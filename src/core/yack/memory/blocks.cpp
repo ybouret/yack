@@ -161,7 +161,7 @@ namespace yack
                     //----------------------------------------------------------
                     assert(acquiring_arena); assert(acquiring_niche);
                     assert(releasing_arena); assert(releasing_niche);
-                    if(block_size!=acquiring_arena->chunk_block_size)
+                    if(block_size!=acquiring_arena->block_size)
                     {
                         niche_type  *niche = &table[block_size&tmask];
                         arena       *probe = find(niche,block_size);
@@ -190,7 +190,7 @@ namespace yack
             //------------------------------------------------------------------
             assert(acquiring_arena);
             assert(acquiring_niche);
-            assert(block_size==acquiring_arena->chunk_block_size);
+            assert(block_size==acquiring_arena->block_size);
 
             return acquiring_arena->acquire();
         }
@@ -232,10 +232,10 @@ namespace yack
             //
             //------------------------------------------------------------------
             niche->push_back(node);
-            while(node->prev && node->prev->chunk_block_size>block_size)
+            while(node->prev && node->prev->block_size>block_size)
             {
                 (void) niche->towards_front(node);
-                assert(block_size==node->chunk_block_size);
+                assert(block_size==node->block_size);
             }
             assert(check(niche));
 
@@ -263,7 +263,7 @@ namespace yack
             assert(niche->head!=NULL);
             for(const arena *node=niche->head;node->next;node=node->next)
             {
-                if(node->chunk_block_size>=node->next->chunk_block_size) return false;
+                if(node->block_size>=node->next->block_size) return false;
             }
             return true;
         }
@@ -288,14 +288,14 @@ namespace yack
             switch(niche->size)
             {
                 case 0:  return NULL;
-                case 1:  return (block_size==node->chunk_block_size) ? node : NULL;
+                case 1:  return (block_size==node->block_size) ? node : NULL;
                 default: break;
             }
 
             //TODO: better search since niche is ordered...
             for(;node;node=node->next)
             {
-                if(block_size==node->chunk_block_size) return node;
+                if(block_size==node->block_size) return node;
             }
 
             return NULL;
@@ -322,7 +322,7 @@ namespace yack
             // find/update releasing
             //
             //------------------------------------------------------------------
-            if(block_size!=releasing_arena->chunk_block_size)
+            if(block_size!=releasing_arena->block_size)
             {
                 niche_type  *niche = &table[block_size&tmask];
                 arena       *probe = find(niche,block_size);
@@ -347,7 +347,7 @@ namespace yack
             // sanity check and release
             //
             //------------------------------------------------------------------
-            assert(releasing_arena); assert(block_size==releasing_arena->chunk_block_size);
+            assert(releasing_arena); assert(block_size==releasing_arena->block_size);
             assert(releasing_niche); assert( &table[block_size&tmask] == releasing_niche );
 
             releasing_arena->release(block_addr);

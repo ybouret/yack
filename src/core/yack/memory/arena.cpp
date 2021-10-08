@@ -25,7 +25,7 @@ namespace yack
             assert(NULL==ch->prev);
             
             out_of_reach::zset(ch,chunk::header);
-            chunk::delete_frame(ch,memory_per_chunk,providing);
+            chunk::delete_frame(ch,frame_size,providing);
         }
         
         arena:: ~arena() throw()
@@ -43,21 +43,19 @@ namespace yack
             }
 
             while(reservoir.size)
-            {
                 kill(reservoir.pop());
-            }
             assert(out_of_reach::is0(&reservoir,sizeof(reservoir)));
 
             if(missing)
             {
-                std::cerr << "arena[" << chunk_block_size << "] missing #blocks=" << missing << std::endl;
+                std::cerr << "arena[" << block_size << "] missing #blocks=" << missing << std::endl;
             }
         }
 
         static const arena::chunks_t io_list_init = { YACK_CORE_LIST_INIT };
         static const arena::ccache_t io_pool_init = { YACK_CORE_POOL_INIT };
 
-        arena:: arena(const size_t block_size,
+        arena:: arena(const size_t bs,
                       allocator   &dispatcher,
                       const bool   compact):
         // PRIVATE
@@ -72,10 +70,10 @@ namespace yack
         // PUBLIC
         next(0),
         prev(0),
-        chunk_block_size(block_size),
-        blocks_per_chunk(0),
-        memory_per_chunk( chunk::optimized_frame_size(block_size,coerce(blocks_per_chunk),compact) ),
-        memory_signature( base2<size_t>::log2_of(memory_per_chunk) )
+        block_size(bs),
+        new_blocks(0),
+        frame_size( chunk::optimized_frame_size(block_size,coerce(new_blocks),compact) ),
+        frame_exp2( base2<size_t>::log2_of(frame_size) )
         {
             //------------------------------------------------------------------
             //
@@ -95,8 +93,8 @@ namespace yack
             // get/create a chunk
             //
             //------------------------------------------------------------------
-            chunk       *chnode = (reservoir.size>0) ? reservoir.pop() : chunk::create_frame(chunk_block_size,memory_per_chunk,providing);
-            assert(chnode->provided_number==blocks_per_chunk);
+            chunk       *chnode = (reservoir.size>0) ? reservoir.pop() : chunk::create_frame(block_size,frame_size,providing);
+            assert(chnode->provided_number==new_blocks);
 
             //------------------------------------------------------------------
             //
@@ -105,7 +103,7 @@ namespace yack
             //------------------------------------------------------------------
             chunks_list  chunks(io_chunks);        // use chunks_list operation
             acquiring  = chunks.push_back(chnode); // append
-            available += blocks_per_chunk;         // bookkeeping
+            available += new_blocks;               // bookkeeping
 
             //------------------------------------------------------------------
             //
@@ -159,13 +157,13 @@ namespace yack
             {
                 abandoned=NULL;
             }
-            return acquiring->acquire(chunk_block_size);
+            return acquiring->acquire(block_size);
         }
         
         void * arena:: acquire()
         {
-            assert(acquiring);
-            assert(releasing);
+            assert(NULL!=acquiring);
+            assert(NULL!=releasing);
             
             if(available>0)
             {
@@ -261,14 +259,14 @@ namespace yack
             //------------------------------------------------------------------
             assert(addr);
             assert(releasing);
-            assert(releasing->owns(addr,chunk_block_size));
+            assert(releasing->owns(addr,block_size));
 
             //------------------------------------------------------------------
             //
             // release block and get chunk status
             //
             //------------------------------------------------------------------
-            const bool chunk_is_empty = (releasing->release(addr,chunk_block_size));
+            const bool chunk_is_empty = (releasing->release(addr,block_size));
             ++available;
             if(chunk_is_empty)
             {
@@ -279,13 +277,19 @@ namespace yack
                     // first abandonned block
                     //----------------------------------------------------------
                     abandoned = releasing;
-                    //std::cerr << "found first abandonned" << std::endl;
+                    std::cerr << "found first abandonned" << std::endl;
                 }
                 else
                 {
                     //----------------------------------------------------------
                     // another block is empty
                     //----------------------------------------------------------
+                    std::cerr << "found second abandonned" << std::endl;
+                    assert(releasing!=abandoned);
+                    assert(abandoned->is_empty());
+                    
+                    
+                    exit(1);
                 }
             }
         }
@@ -339,7 +343,7 @@ namespace yack
         void  arena:: expunge(void *addr) throw()
         {
             find(addr);
-            memset(addr,0,chunk_block_size);
+            memset(addr,0,block_size);
             take(addr);
         }
 
@@ -359,9 +363,9 @@ namespace yack
         void  arena:: display() const
         {
             std::cerr << "    <arena";
-            std::cerr << " block_size=\"" << chunk_block_size << "\"";
-            std::cerr << " max_chunks=\"" << blocks_per_chunk << "\"";
-            std::cerr << " frame=\"" << memory_per_chunk << "=2^" << memory_signature << "\"";
+            std::cerr << " block_size=\"" << block_size << "\"";
+            std::cerr << " new_blocks=\"" << new_blocks << "\"";
+            std::cerr << " frame=\"" << frame_size << "=2^" << frame_exp2 << "\"";
             std::cerr << " avail=\"" << available << "\"";
             std::cerr << "/>" << std::endl;
         }

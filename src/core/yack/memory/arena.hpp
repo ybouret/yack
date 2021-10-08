@@ -28,8 +28,8 @@ namespace yack
         //! arena of chunks with same block size
         /**
          - acquire/release on demand of chunks
-         - use power of two aligned chunk frames (to exchange with pages with memory_signature)
-         - an allocator must be provided for internal allocation
+         - use power of two aligned chunk frames (to exchange with pages with frame_exp2)
+         - an allocator must be provided for internal allocation of chunks
          */
         //
         //______________________________________________________________________
@@ -50,11 +50,11 @@ namespace yack
 
             //! setup with a first chunk
             /**
-             \param block_size for all the chunks
+             \param bs         block_size for all the chunks
              \param dispatcher for frames
              \param compact    for space saving if only a few items shall be in use
              */
-            arena(const size_t block_size,
+            arena(const size_t bs,
                   allocator   &dispatcher,
                   const bool   compact);
             ~arena() throw();               //!< cleanup
@@ -77,14 +77,14 @@ namespace yack
             template <typename T> inline
             T *zombie()
             {
-                assert(sizeof(T)==chunk_block_size);
+                assert(sizeof(T)==block_size);
                 return static_cast<T*>( acquire() );
             }
             
             //! acquire and default construct
             template <typename T> inline
             T *invoke() {
-                assert(sizeof(T)==chunk_block_size);
+                assert(sizeof(T)==block_size);
                 void *block = acquire();
                 try        { return new(block) T(); }
                 catch(...) { expunge(block); throw; }
@@ -94,7 +94,7 @@ namespace yack
             template <typename T> inline
             void revoke(T *args) throw()
             {
-                assert(sizeof(T)==chunk_block_size);
+                assert(sizeof(T)==block_size);
                 assert(NULL!=args);
                 args->~T();
                 expunge(args);
@@ -111,12 +111,12 @@ namespace yack
             allocator   &providing;   //!< allocator for frames
         
         public:
-            arena       *next;             //!< for list
-            arena       *prev;             //!< for list
-            const size_t chunk_block_size; //!< the same block size
-            const size_t blocks_per_chunk; //!< for each chunk
-            const size_t memory_per_chunk; //!< a power of two
-            const size_t memory_signature; //!< integer log 2
+            arena       *next;         //!< for list
+            arena       *prev;         //!< for list
+            const size_t block_size;   //!< the same block size for all chunks
+            const size_t new_blocks;   //!< for each chunk
+            const size_t frame_size;   //!< a power of two
+            const size_t frame_exp2;   //!< integer log 2
             
         private:
             YACK_DISABLE_COPY_AND_ASSIGN(arena);
