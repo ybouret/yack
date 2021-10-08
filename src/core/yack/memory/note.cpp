@@ -13,7 +13,13 @@ namespace yack
 
         note:: ~note() throw()
         {
-
+            size_t i = parts;
+            while(i>0)
+            {
+                destruct( &self[--i] );
+            }
+            out_of_reach::zset(impl,sizeof(impl));
+            self = NULL;
         }
 
         note:: note() : self(NULL), impl()

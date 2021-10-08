@@ -38,6 +38,7 @@ add_test(memory:alloc  test-yack memory_alloc)
 add_test(memory:book   test-yack memory_book)
 add_test(memory:blocks test-yack memory_blocks)
 add_test(memory:note   test-yack memory_note)
+add_test(memory:pages  test-yack memory_pages)
 
 add_test(data:list      test-yack data_list)
 add_test(data:pool      test-yack data_pool)
