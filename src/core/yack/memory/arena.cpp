@@ -18,7 +18,6 @@ namespace yack
         
         typedef list_of<chunk> chunks_list;
 
-        // kill a normally empty chunk
         void arena:: kill(chunk *ch) throw()
         {
             assert(ch);
@@ -69,6 +68,7 @@ namespace yack
         io_chunks(io_list_init),
         reservoir(io_pool_init),
         providing(dispatcher),
+
         // PUBLIC
         next(0),
         prev(0),
@@ -77,33 +77,51 @@ namespace yack
         memory_per_chunk( chunk::optimized_frame_size(block_size,coerce(blocks_per_chunk),compact) ),
         memory_signature( base2<size_t>::log2_of(memory_per_chunk) )
         {
+            //------------------------------------------------------------------
+            //
+            // first initialize
+            //
+            //------------------------------------------------------------------
             grow();
             releasing = acquiring;
-        }
-
-        chunk * arena:: build()
-        {
-            return chunk::create_frame(chunk_block_size,memory_per_chunk,providing);
         }
 
 
 
         void arena::grow()
         {
-            // create a new chunk
-            chunk       *chnode = (reservoir.size>0) ? reservoir.pop() : build();
+            //------------------------------------------------------------------
+            //
+            // get/create a chunk
+            //
+            //------------------------------------------------------------------
+            chunk       *chnode = (reservoir.size>0) ? reservoir.pop() : chunk::create_frame(chunk_block_size,memory_per_chunk,providing);
             assert(chnode->provided_number==blocks_per_chunk);
 
+            //------------------------------------------------------------------
+            //
             // update
+            //
+            //------------------------------------------------------------------
             chunks_list  chunks(io_chunks);        // use chunks_list operation
             acquiring  = chunks.push_back(chnode); // append
             available += blocks_per_chunk;         // bookkeeping
 
+            //------------------------------------------------------------------
+            //
             // sort memory
+            //
+            //------------------------------------------------------------------
             while((NULL!=chnode->prev) && (chnode<chnode->prev))
             {
                 (void)chunks.towards_front(chnode);
             }
+
+            //------------------------------------------------------------------
+            //
+            // done
+            //
+            //------------------------------------------------------------------
             chunks.save(io_chunks);
         }
         
@@ -122,9 +140,20 @@ namespace yack
     {
         void *arena:: give() throw()
         {
+            //------------------------------------------------------------------
+            //
+            // sanity check
+            //
+            //------------------------------------------------------------------
             assert(acquiring);
             assert(acquiring->still_available>0);
             assert(available>0);
+
+            //------------------------------------------------------------------
+            //
+            // update status
+            //
+            //------------------------------------------------------------------
             --available;
             if(abandoned==acquiring)
             {
@@ -225,24 +254,38 @@ namespace yack
         
         void  arena:: take(void *addr)  throw()
         {
+            //------------------------------------------------------------------
+            //
+            // sanity check
+            //
+            //------------------------------------------------------------------
             assert(addr);
             assert(releasing);
             assert(releasing->owns(addr,chunk_block_size));
-            const bool is_empty = (releasing->release(addr,chunk_block_size));
+
+            //------------------------------------------------------------------
+            //
+            // release block and get chunk status
+            //
+            //------------------------------------------------------------------
+            const bool chunk_is_empty = (releasing->release(addr,chunk_block_size));
             ++available;
-            if(is_empty)
+            if(chunk_is_empty)
             {
                 assert(releasing->is_empty());
                 if(!abandoned)
                 {
-                    // first empty block
+                    //----------------------------------------------------------
+                    // first abandonned block
+                    //----------------------------------------------------------
                     abandoned = releasing;
                     //std::cerr << "found first abandonned" << std::endl;
                 }
                 else
                 {
+                    //----------------------------------------------------------
                     // another block is empty
-                    //std::cerr << "found second abandonned" << std::endl;
+                    //----------------------------------------------------------
                 }
             }
         }

@@ -120,8 +120,7 @@ namespace yack
             
         private:
             YACK_DISABLE_COPY_AND_ASSIGN(arena);
-            chunk *build();               //!< a new chunk
-            void   grow();                //!< using reservoir or build()
+            void   grow();                //!< using reservoir or create new chunk
             void   kill(chunk *) throw(); //!< return memory
             void  *give()        throw(); //!< by acquiring
             void   take(void *)  throw(); //!< by releasing

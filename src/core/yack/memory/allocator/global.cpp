@@ -22,7 +22,7 @@ namespace yack
             const uint64_t left = memory::ram::allocated();
             if(left>initial)
             {
-                std::cerr << "[" << call_sign <<"] allocated=" << left-initial << std::endl;
+                std::cerr << "[" << call_sign <<"] still allocated=" << left-initial << std::endl;
             }
             out_of_reach::zset( destructed( coerce_cast<ram>(ram__) ), sizeof(ram__) );
         }
