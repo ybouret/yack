@@ -87,7 +87,7 @@ namespace yack
 {
     namespace memory
     {
-        void  book:: display() throw()
+        void  book:: display() const
         {
             std::cerr << "  <book>" << std::endl;
             std::cerr << "    sizeof(impl)=" << sizeof(impl) << std::endl;

@@ -1,9 +1,14 @@
 
 
+
 #include "yack/memory/allocator/pages.hpp"
+#include "yack/memory/note.hpp"
+#include "yack/memory/book.hpp"
+
 #include "yack/arith/base2.hpp"
 #include "yack/system/exception.hpp"
 #include "yack/type/utils.hpp"
+
 #include <new>
 #include <cerrno>
 
@@ -15,11 +20,11 @@ namespace yack
         const size_t pages::max_page_size = book::max_page_size;
         const size_t pages::min_page_size = book::min_page_size;
 
-
+        static void *note__[ YACK_WORDS_FOR(note) ] = { 0 };
         static void *book__[ YACK_WORDS_FOR(book) ] = { 0 };
 
-        pages:: pages() throw() : allocator(), singleton<pages>(),
-        note_( 0 ),
+        pages:: pages()   : allocator(), singleton<pages>(),
+        note_( new ( out_of_reach::zset(note__,sizeof(note__)) ) note() ),
         book_( new ( out_of_reach::zset(book__,sizeof(book__)) ) book() )
         {
 
@@ -28,6 +33,8 @@ namespace yack
         pages:: ~pages() throw()
         {
             out_of_reach::zset( destructed(book_), sizeof(book__) );
+            out_of_reach::zset( destructed(note_), sizeof(note__) );
+            note_ = NULL;
             book_ = NULL;
         }
 
@@ -110,6 +117,7 @@ namespace yack
         {
             YACK_LOCK(access);
             std::cerr << "<" << call_sign << ">" << std::endl;
+            note_->display();
             book_->display();
             std::cerr << "<" << call_sign << "/>" << std::endl;
 

@@ -7,13 +7,17 @@
 
 #include "yack/memory/allocator.hpp"
 #include "yack/memory/allocator/pages-longevity.hpp"
-#include "yack/memory/book.hpp"
 #include "yack/singleton.hpp"
 
 namespace yack
 {
     namespace memory
     {
+
+        class note;
+        class book;
+
+
         //______________________________________________________________________
         //
         //
@@ -53,9 +57,9 @@ namespace yack
 
         private:
             YACK_DISABLE_COPY_AND_ASSIGN(pages);
-            explicit pages() throw();
+            explicit pages();
             virtual ~pages() throw();
-            arena   *note_; //!< [1..book::min_page_exp2-1]
+            note    *note_; //!< [1..book::min_page_exp2-1]
             book    *book_; //!< [min_page_exp2:max_page_exp2]
             friend class singleton<pages>;
         };

@@ -1,12 +1,10 @@
-
-
-
 //! \file
 
 #ifndef YACK_MEMORY_BOOK_INCLUDED
 #define YACK_MEMORY_BOOK_INCLUDED 1
 
 #include "yack/memory/chapter.hpp"
+#include "yack/memory/min-page-size.hpp"
 #include "yack/arith/ilog2.hpp"
 #include "yack/arith/align.hpp"
 
@@ -34,7 +32,7 @@ namespace yack
             //
             // types and definitions
             //__________________________________________________________________
-            static const size_t min_page_size = sizeof(page);                 //!< mininal page size
+            static const size_t min_page_size = YACK_MIN_PAGE_SIZE;           //!< mininal page size = minimal compact arena bytes!!
             static const size_t min_page_exp2 = ilog2<min_page_size>::value;  //!< minimal page exp2
             static const size_t max_page_exp2 = (sizeof(size_t)<<3)-1;        //!< maximal page exp2
             static const size_t max_page_size = size_t(1) << max_page_exp2;   //!< maximal page size
@@ -55,7 +53,7 @@ namespace yack
             //__________________________________________________________________
             void *query(const size_t page_exp2);                      //!< min_page_exp2 <= page_exp2 <= max_page_exp2
             void  store(void *addr, const size_t page_exp2) throw();  //!< store a previously queried page
-            void  display() throw();                                  //!< display current info
+            void  display() const;                                    //!< display current info
             
         private:
             YACK_DISABLE_COPY_AND_ASSIGN(book);
