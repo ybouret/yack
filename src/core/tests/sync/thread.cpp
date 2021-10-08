@@ -16,12 +16,14 @@ namespace
         concurrent::condition cv;
         size_t                ready;
 
-        inline workspace() : access(), cv(), ready()
+        inline workspace() : access("workspace"), cv(), ready()
         {
+            std::cerr << "+workspace" << std::endl;
         }
 
         inline ~workspace() throw()
         {
+            std::cerr << "-workspace" << std::endl;
         }
 
 
@@ -51,7 +53,8 @@ namespace
 
 YACK_UTEST(sync_thread)
 {
-
+    //concurrent::singleton::verbose = true;
+    concurrent::mutex::verbose     = true;
     workspace          wksp;
     {
         concurrent::thread t1(proc1,&wksp);
