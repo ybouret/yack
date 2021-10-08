@@ -8,12 +8,19 @@
 
 namespace yack
 {
- 
+    //__________________________________________________________________________
+    //
+    //
+    //! merge sort for lists
+    //
+    //__________________________________________________________________________
     template <typename NODE>
     struct merge_list_of
     {
-        typedef list_of<NODE> sub_list;
-        
+        //______________________________________________________________________
+        //
+        //! for list_of and derived classes
+        //__________________________________________________________________________
         template <typename LIST, typename COMPARE_NODES> static inline
         void sort(LIST &source, COMPARE_NODES &compare_nodes)
         {
@@ -38,14 +45,24 @@ namespace yack
             }
         }
         
+        //! helper to sort by increasing node address
         template <typename LIST> static inline
         void sort_by_increasing_address(LIST &source)
         {
-            sort(source,by_increasing_address);
+            sort(source,comparison::increasing<const NODE*>);
+        }
+        
+        //! helper to sort by decreasing node address
+        template <typename LIST> static inline
+        void sort_by_decreasing_address(LIST &source)
+        {
+            sort(source,comparison::decreasing<const NODE*>);
         }
         
         
     private:
+        typedef list_of<NODE> sub_list; //!< internal ty
+
         //! merge two sorted list
         template <typename LIST, typename COMPARE_NODES>
         static inline
@@ -71,10 +88,6 @@ namespace yack
             while( R.size > 0 ) target.push_back( R.pop_front() );
         }
         
-        static inline int by_increasing_address(const NODE *lhs, const NODE *rhs) throw()
-        {
-            return comparison::increasing(lhs,rhs);
-        }
         
         
     };

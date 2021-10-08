@@ -55,6 +55,7 @@ namespace yack
             void  store(void *addr, const size_t page_exp2) throw(); //!< from internal note+book
             void  display() const;                                   //!< display current info
             
+            //! TODO: merge sort with list...
             void  store_large_unlocked(void *addr, const size_t page_exp2) throw();
             
         private:

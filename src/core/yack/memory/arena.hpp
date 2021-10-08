@@ -105,7 +105,8 @@ namespace yack
             //
             // advanced management
             //__________________________________________________________________
-            void gc(pages &) throw();
+       
+            void gc(pages &) throw(); //!< garbage collector
             
         private:
             size_t       available;   //!< bookkeeping

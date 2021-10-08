@@ -1,6 +1,7 @@
 
-#include "yack/data/list-sort.hpp"
-#include "yack/data/cxx-list.hpp"
+
+#include "yack/data/pool-sort.hpp"
+#include "yack/data/cxx-pool.hpp"
 #include "yack/utest/run.hpp"
 #include <cstring>
 
@@ -11,10 +12,10 @@ namespace
     class Node
     {
     public:
-        Node *next, *prev;
+        Node *next;
         const size_t value;
         
-        inline Node(const size_t i) throw() : next(0), prev(0), value(i)
+        inline Node(const size_t i) throw() : next(0),  value(i)
         {
         }
         
@@ -32,41 +33,42 @@ namespace
     };
 }
 
-YACK_UTEST(data_list_sort)
+YACK_UTEST(data_pool_sort)
 {
     uprng             ran;
-    cxx_list_of<Node> l;
+    cxx_pool_of<Node> l;
     
     for(size_t i=0;i<100;++i)
     {
-        l.push_back( new Node(i) ) ;
+        l.store( new Node(i) ) ;
     }
-    ran.shuffle_list(l);
+    ran.shuffle_pool(l);
     for(const Node *node=l.head;node;node=node->next)
     {
         std::cerr << node->value << '/';
     }
     std::cerr << std::endl;
     
-    merge_list_of<Node>::sort(l,Node::Compare);
+    merge_pool_of<Node>::sort(l,Node::Compare);
     for(const Node *node=l.head;node;node=node->next)
     {
         std::cerr << node->value << '/';
     }
     std::cerr << std::endl;
     
-    merge_list_of<Node>::sort_by_increasing_address(l);
+    merge_pool_of<Node>::sort_by_increasing_address(l);
     for(const Node *node=l.head;node;node=node->next)
     {
         std::cerr << node->value << '/';
     }
     std::cerr << std::endl;
-    merge_list_of<Node>::sort_by_decreasing_address(l);
+    merge_pool_of<Node>::sort_by_decreasing_address(l);
     for(const Node *node=l.head;node;node=node->next)
     {
         std::cerr << node->value << '/';
     }
     std::cerr << std::endl;
+    
     
 }
 YACK_UDONE()
