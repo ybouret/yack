@@ -10,36 +10,37 @@ namespace yack
     {
         condition:: condition() :
         primitive(),
-        impl( quark::condition_api::init() )
+        cond( quark::condition_api::init() )
         {
-            assert(impl);
+            assert(NULL!=cond);
         }
 
 
         condition:: ~condition() throw()
         {
-            assert(NULL!=impl);
-            quark::condition_api::quit(impl);
-            assert(NULL==impl);
+            assert(NULL!=cond);
+            quark::condition_api::quit(cond);
+            assert(NULL==cond);
         }
 
 
         void condition:: signal() throw()
         {
-            assert(impl);
-            impl->signal();
+            assert(cond);
+            cond->signal();
         }
 
         void condition:: broadcast() throw()
         {
-            assert(impl);
-            impl->broadcast();
+            assert(cond);
+            cond->broadcast();
         }
 
         void condition:: wait(mutex &m) throw()
         {
-            assert(impl);
-            impl->wait(m.impl);
+            assert(NULL!=cond);
+            std::cerr << "Waiting on <" << m.name << ">" << std::endl;
+            cond->wait(m.impl);
         }
 
         namespace quark

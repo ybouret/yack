@@ -51,7 +51,7 @@ namespace yack
 
         private:
             YACK_DISABLE_COPY_AND_ASSIGN(condition);
-            quark::condition *impl;
+            quark::condition *cond;
         };
     }
 }

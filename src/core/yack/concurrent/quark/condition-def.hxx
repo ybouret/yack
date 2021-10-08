@@ -20,6 +20,7 @@ namespace yack
             public:
                 inline condition() : cond()
                 {
+                    out_of_reach::zset(&cond,sizeof(cond));
                     const int res = pthread_cond_init(&cond,NULL);
                     if( res != 0 ) throw libc::exception(res,"pthread_cond_init");
                 }
