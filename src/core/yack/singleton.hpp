@@ -2,7 +2,7 @@
 #ifndef YACK_SINGLETON_INCLUDED
 #define YACK_SINGLETON_INCLUDED 1
 
-#include "yack/concurrent/singleton.hpp"
+#include "yack/concurrent/single.hpp"
 #include "yack/arith/align.hpp"
 #include "yack/type/out-of-reach.hpp"
 #include "yack/type/destruct.hpp"
@@ -18,7 +18,7 @@ namespace yack
     //
     //__________________________________________________________________________
     template <class CLASS>
-    class singleton : public concurrent::singleton
+    class singleton : public concurrent::single
     {
     public:
         //______________________________________________________________________
@@ -66,7 +66,7 @@ namespace yack
         
     protected:
         //! setup
-        inline explicit singleton() throw() : concurrent::singleton(CLASS::call_sign,CLASS::life_time)
+        inline explicit singleton() throw() : concurrent::single(CLASS::call_sign,CLASS::life_time)
         {
             if(verbose) enter();
         }

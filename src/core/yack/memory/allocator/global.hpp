@@ -42,7 +42,7 @@ namespace yack
             YACK_DISABLE_COPY_AND_ASSIGN(global);
             explicit global() throw();
             virtual ~global() throw();
-            friend class yack::singleton<global>;
+            friend class singleton<global>;
             const uint64_t initial;
         };
         

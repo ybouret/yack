@@ -62,7 +62,7 @@ namespace
 YACK_UTEST(memory_alloc)
 {
     //concurrent::mutex::verbose     = true;
-    concurrent::singleton::verbose = true;
+    concurrent::single::verbose = true;
     test_alloc(memory::pages::instance());
     test_alloc(memory::global::instance());
 

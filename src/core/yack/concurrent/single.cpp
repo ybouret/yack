@@ -1,5 +1,5 @@
 
-#include "yack/concurrent/singleton.hpp"
+#include "yack/concurrent/single.hpp"
 #include "yack/type/cstring.h"
 
 #include <cstring>
@@ -9,14 +9,14 @@ namespace yack
 {
     namespace concurrent
     {
-        bool singleton:: verbose = false;
+        bool single:: verbose = false;
         
 
-        singleton:: ~singleton() throw()
+        single:: ~single() throw()
         {
         }
 
-        singleton:: singleton(const char *call_sign, const at_exit::longevity life_time) throw() :
+        single:: single(const char *call_sign, const at_exit::longevity life_time) throw() :
         uuid(call_sign),
         span(life_time),
         _len( yack_cstring_size(uuid) ),
@@ -25,14 +25,14 @@ namespace yack
             
         }
 
-        void singleton:: show() const
+        void single:: show() const
         {
             std::cerr << '[' << uuid << ']';
             for(size_t i=_len;i<32;++i) std::cerr << ' ';
             std::cerr << ' ' << span << std::endl;
         }
 
-        void singleton:: enter() const throw()
+        void single:: enter() const throw()
         {
             try
             {
@@ -43,7 +43,7 @@ namespace yack
             }
         }
 
-        void singleton:: leave() const throw()
+        void single:: leave() const throw()
         {
             try
             {

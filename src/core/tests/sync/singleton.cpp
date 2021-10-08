@@ -37,8 +37,8 @@ namespace
 YACK_UTEST(singleton)
 {
 
-    concurrent::mutex::verbose     = true;
-    concurrent::singleton::verbose = true;
+    concurrent::mutex::verbose  = true;
+    concurrent::single::verbose = true;
 
     size_t guess = dummy::instance().value;
     YACK_CHECK(dummy::guess==guess);

@@ -2,7 +2,7 @@
 #include "yack/concurrent/thread.hpp"
 #include "yack/concurrent/mutex.hpp"
 #include "yack/concurrent/condition.hpp"
-#include "yack/concurrent/singleton.hpp"
+#include "yack/concurrent/single.hpp"
 
 #include "yack/utest/run.hpp"
 #include <cstring>
@@ -60,7 +60,7 @@ namespace
 
 YACK_UTEST(sync_thread)
 {
-    concurrent::singleton::verbose = true;
+    concurrent::single::verbose = true;
     concurrent::mutex::verbose     = true;
     workspace          wksp;
     {

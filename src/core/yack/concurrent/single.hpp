@@ -1,7 +1,7 @@
 
 //! \file
-#ifndef YACK_CONCURRENT_SINGLETON_INCLUDED
-#define YACK_CONCURRENT_SINGLETON_INCLUDED 1
+#ifndef YACK_CONCURRENT_SINGLE_INCLUDED
+#define YACK_CONCURRENT_SINGLE_INCLUDED 1
 
 #include "yack/concurrent/mutex.hpp"
 #include "yack/system/at-exit.hpp"
@@ -15,10 +15,10 @@ namespace yack
         //______________________________________________________________________
         //
         //
-        //! singleton base class with information an access
+        //! single  base class with information an access
         //
         //______________________________________________________________________
-        class singleton
+        class single
         {
         public:
             //__________________________________________________________________
@@ -40,11 +40,11 @@ namespace yack
             //
             // C++
             //__________________________________________________________________
-            virtual ~singleton() throw(); //!< cleanup
+            virtual ~single() throw(); //!< cleanup
         protected:
             //! setup from call_sign and life_time
-            explicit singleton(const char *             call_sign,
-                               const at_exit::longevity life_time) throw();
+            explicit single(const char *             call_sign,
+                            const at_exit::longevity life_time) throw();
 
             //__________________________________________________________________
             //
@@ -54,7 +54,7 @@ namespace yack
             void     leave() const throw(); //!< show destruction
 
         private:
-            YACK_DISABLE_COPY_AND_ASSIGN(singleton);
+            YACK_DISABLE_COPY_AND_ASSIGN(single);
             void     show() const;
         };
     }
