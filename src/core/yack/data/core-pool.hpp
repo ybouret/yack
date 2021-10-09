@@ -36,6 +36,9 @@ namespace yack
             ++size;
             return node;
         }
+        
+        inline void zero() throw() { head=0;  size=0; }
+
     };
 
     //__________________________________________________________________________

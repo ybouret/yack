@@ -119,6 +119,12 @@ namespace yack
         {
             assert(page_exp2<=book::max_page_exp2);
             assert(page_exp2>=book::min_page_exp2);
+            chapter        &lhs = (*book_)[page_exp2];
+            pool_of<chunk>  rhs(reservoir);
+            merge_pool_of<chunk>::sort_by_increasing_address(rhs);
+            assert(lhs.memory_is_increasing());
+            assert(rhs.memory_is_increasing());
+            
             
         }
     }

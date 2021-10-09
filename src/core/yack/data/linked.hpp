@@ -60,7 +60,7 @@ namespace yack
         
     
         
-        inline bool  increasing_memory() const throw()
+        inline bool  memory_is_increasing() const throw()
         {
             const NODE *node = head;
             for(size_t i=size;i>1;--i,node=node->next)
@@ -74,7 +74,8 @@ namespace yack
         }
         
         
-        inline bool  decreasing_memory() const throw()
+        
+        inline bool  memory_is_decreasing() const throw()
         {
             const NODE *node = head;
             for(size_t i=size;i>1;--i,node=node->next)

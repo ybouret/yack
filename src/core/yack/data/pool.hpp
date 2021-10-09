@@ -113,11 +113,12 @@ assert(NULL!=NODE); assert(NULL==(NODE)->next)
         inline explicit pool_of() throw() : interlinked<NODE>() {}
 
         //! setup from state
-        inline explicit pool_of(const core_pool_of<NODE> &io) throw() :
+        inline explicit pool_of(core_pool_of<NODE> &io) throw() :
         interlinked<NODE>()
         {
             head         = io.head;
             coerce(size) = io.size;
+            io.zero();
         }
 
     private:

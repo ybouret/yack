@@ -55,6 +55,8 @@ namespace yack
             void  store(void *addr, const size_t page_exp2) throw();  //!< store a previously queried page
             void  display() const;                                    //!< display current info
             
+            chapter & operator[](const size_t page_exp2) throw();
+            
         private:
             YACK_DISABLE_COPY_AND_ASSIGN(book);
             chapter *chapters; //!< [min_page_exp2:max_page_exp2]

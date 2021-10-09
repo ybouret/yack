@@ -41,12 +41,12 @@ assert(NULL!=NODE); assert(NULL==(NODE)->next); assert(NULL==(NODE)->prev)
         inline explicit list_of() throw() : interlinked<NODE>(), tail(0) {}
 
         //! setup from compact state
-        inline explicit list_of(const core_list_of<NODE> &io) throw() :
+        inline explicit list_of(core_list_of<NODE> &io) throw() :
         interlinked<NODE>(), tail(io.tail)
         {
             head         = io.head;
             coerce(size) = io.size;
-            
+            io.zero();
         }
 
         //! need cleanup before!

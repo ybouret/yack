@@ -61,7 +61,7 @@ YACK_UTEST(data_list_sort)
         std::cerr << node->value << '/';
     }
     std::cerr << std::endl;
-    YACK_CHECK(l.increasing_memory());
+    YACK_CHECK(l.memory_is_increasing());
     
     merge_list_of<Node>::sort_by_decreasing_address(l);
     for(const Node *node=l.head;node;node=node->next)
@@ -69,7 +69,7 @@ YACK_UTEST(data_list_sort)
         std::cerr << node->value << '/';
     }
     std::cerr << std::endl;
-    YACK_CHECK(l.decreasing_memory());
+    YACK_CHECK(l.memory_is_decreasing());
 
 }
 YACK_UDONE()

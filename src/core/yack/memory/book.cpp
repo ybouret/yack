@@ -76,6 +76,12 @@ namespace yack
         }
 
 
+        chapter & book:: operator[](const size_t page_exp2) throw()
+        {
+            assert(page_exp2<=max_page_exp2);
+            assert(page_exp2>=min_page_exp2);
+            return chapters[page_exp2];
+        }
 
 
     }
