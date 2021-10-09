@@ -57,10 +57,38 @@ namespace yack
 
         virtual bool owns(const NODE*) const throw() = 0; //!< check ownership
         virtual void reverse()               throw() = 0; //!< reverse order
-
+        
+        inline bool  increasing_memory() const throw()
+        {
+            const NODE *node = head;
+            for(size_t i=size;i>1;--i,node=node->next)
+            {
+                assert(NULL!=node);
+                assert(NULL!=node->next);
+                assert(node!=node->next);
+                if(node>=node->next) return false;
+            }
+            return true;
+        }
+        
+        inline bool  decreasing_memory() const throw()
+        {
+            const NODE *node = head;
+            for(size_t i=size;i>1;--i,node=node->next)
+            {
+                assert(NULL!=node);
+                assert(NULL!=node->next);
+                assert(node!=node->next);
+                if(node<=node->next) return false;
+            }
+            return true;
+        }
+        
+        NODE *head;
+        
     protected:
-        inline explicit interlinked() throw() : linked() {}
-
+        inline explicit interlinked() throw() : linked(), head(0) {}
+        
     private:
         YACK_DISABLE_COPY_AND_ASSIGN(interlinked);
     };

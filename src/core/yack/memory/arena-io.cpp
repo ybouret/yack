@@ -10,11 +10,7 @@ namespace yack
         
         void arena:: gc(pages &target) throw()
         {
-            YACK_LOCK(target.access);
-            while(reservoir.size)
-            {
-                target.store_large_unlocked(reservoir.pop(),frame_exp2);
-            }
+            target.book_store_pool(reservoir,frame_exp2);
         }
     
     }

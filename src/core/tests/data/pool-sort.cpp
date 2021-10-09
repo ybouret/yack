@@ -62,13 +62,16 @@ YACK_UTEST(data_pool_sort)
         std::cerr << node->value << '/';
     }
     std::cerr << std::endl;
+    YACK_CHECK(l.increasing_memory());
+
     merge_pool_of<Node>::sort_by_decreasing_address(l);
     for(const Node *node=l.head;node;node=node->next)
     {
         std::cerr << node->value << '/';
     }
     std::cerr << std::endl;
-    
+    YACK_CHECK(l.decreasing_memory());
+
     
 }
 YACK_UDONE()

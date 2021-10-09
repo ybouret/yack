@@ -29,19 +29,24 @@ assert(NULL!=NODE); assert(NULL==(NODE)->next); assert(NULL==(NODE)->prev)
         // types and definition
         //______________________________________________________________________
         typedef NODE node_type; //!< alias
-        
+        using interlinked<NODE>::head;
+
         //______________________________________________________________________
         //
         // C++
         //______________________________________________________________________
 
         //! setup empty
-        inline explicit list_of() throw() : interlinked<NODE>(), head(0), tail(0) {}
+        inline explicit list_of() throw() : interlinked<NODE>(), tail(0) {}
 
         //! setup from compact state
         inline explicit list_of(const core_list_of<NODE> &io) throw() :
-        interlinked<NODE>(), head(io.head), tail(io.tail)
-        { coerce(this->size)=io.size; }
+        interlinked<NODE>(), tail(io.tail)
+        {
+            head               = io.head;
+            coerce(this->size) = io.size;
+            
+        }
 
         //! need cleanup before!
         inline virtual ~list_of() throw() {}
@@ -285,8 +290,6 @@ assert(NULL!=NODE); assert(NULL==(NODE)->next); assert(NULL==(NODE)->prev)
         //
         // members
         //______________________________________________________________________
-        
-        NODE *head; //!< head NODE
         NODE *tail; //!< tail NODE
 
 
@@ -345,6 +348,8 @@ assert(NULL!=NODE); assert(NULL==(NODE)->next); assert(NULL==(NODE)->prev)
                 return node;
             }
         }
+        
+        
 
     protected:
         //! hard reset for internal operations

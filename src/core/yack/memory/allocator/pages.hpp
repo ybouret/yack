@@ -8,16 +8,18 @@
 #include "yack/memory/allocator.hpp"
 #include "yack/memory/allocator/pages-longevity.hpp"
 #include "yack/singleton.hpp"
+#include "yack/data/core-pool.hpp"
 
 namespace yack
 {
+    
     namespace memory
     {
 
-        class note;
-        class book;
-
-
+        class  note;
+        class  book;
+        class  chunk;
+ 
         //______________________________________________________________________
         //
         //
@@ -55,8 +57,9 @@ namespace yack
             void  store(void *addr, const size_t page_exp2) throw(); //!< from internal note+book
             void  display() const;                                   //!< display current info
             
-            //! TODO: merge sort with list...
-            void  store_large_unlocked(void *addr, const size_t page_exp2) throw();
+            
+            void  book_store_pool(core_pool_of<chunk> &reservoir,
+                                  const size_t         page_exp2) throw();
             
         private:
             YACK_DISABLE_COPY_AND_ASSIGN(pages);

@@ -42,6 +42,7 @@ namespace yack
             {
                 p = towards_front(p);
             }
+            assert(increasing_memory());
         }
 
     }

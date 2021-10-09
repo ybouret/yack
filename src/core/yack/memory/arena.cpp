@@ -114,7 +114,8 @@ namespace yack
             {
                 (void)chunks.towards_front(chnode);
             }
-
+            assert(chunks.increasing_memory());
+            
             //------------------------------------------------------------------
             //
             // done

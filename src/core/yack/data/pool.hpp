@@ -29,7 +29,8 @@ assert(NULL!=NODE); assert(NULL==(NODE)->next)
         // types and definition
         //______________________________________________________________________
         typedef NODE node_type; //!< alias
-
+        using interlinked<NODE>::head;
+        
         //______________________________________________________________________
         //
         // interlinked interface
@@ -70,8 +71,8 @@ assert(NULL!=NODE); assert(NULL==(NODE)->next)
         NODE *query() throw()
         {
             assert(0<this->size); assert(NULL!=head);
-            NODE *node = head;
-            head = head->next;
+            NODE *node =  head;
+            head       =  head->next;
             node->next = NULL;
             this->decrease();
             return node;
@@ -100,13 +101,7 @@ assert(NULL!=NODE); assert(NULL==(NODE)->next)
             io.size = this->size; coerce(this->size)=0;
         }
 
-
-        //______________________________________________________________________
-        //
-        // members
-        //______________________________________________________________________
-        NODE *head; //!< the head (top) node
-
+        
         //______________________________________________________________________
         //
         // C++
@@ -114,17 +109,19 @@ assert(NULL!=NODE); assert(NULL==(NODE)->next)
         inline virtual ~pool_of() throw() {} //!< need cleanup before this!
 
         //! setup empty
-        inline explicit pool_of() throw() : interlinked<NODE>(), head(0) {}
+        inline explicit pool_of() throw() : interlinked<NODE>() {}
 
         //! setup from state
         inline explicit pool_of(const core_pool_of<NODE> &io) throw() :
-        interlinked<NODE>(), head(io.head)
+        interlinked<NODE>()
         {
+            head               = io.head;
             coerce(this->size) = io.size;
         }
 
     private:
         YACK_DISABLE_COPY_AND_ASSIGN(pool_of);
+        
     };
     
 }

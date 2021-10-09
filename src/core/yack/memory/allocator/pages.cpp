@@ -102,13 +102,24 @@ namespace yack
                 book_->store(addr,page_exp2);
         }
 
-        void  pages:: store_large_unlocked(void *addr, const size_t page_exp2) throw()
+    }
+    
+}
+
+#include "yack/data/pool-sort.hpp"
+#include "yack/memory/chunk.hpp"
+
+namespace yack
+{
+    namespace memory
+    {
+        
+        void   pages:: book_store_pool(core_pool_of<chunk> &reservoir,
+                                       const size_t         page_exp2) throw()
         {
             assert(page_exp2<=book::max_page_exp2);
             assert(page_exp2>=book::min_page_exp2);
-            book_->store(addr,page_exp2);
         }
-
     }
 
 }
