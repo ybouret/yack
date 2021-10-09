@@ -30,7 +30,8 @@ assert(NULL!=NODE); assert(NULL==(NODE)->next); assert(NULL==(NODE)->prev)
         //______________________________________________________________________
         typedef NODE node_type; //!< alias
         using interlinked<NODE>::head;
-
+        using linked::size;
+        
         //______________________________________________________________________
         //
         // C++
@@ -43,8 +44,8 @@ assert(NULL!=NODE); assert(NULL==(NODE)->next); assert(NULL==(NODE)->prev)
         inline explicit list_of(const core_list_of<NODE> &io) throw() :
         interlinked<NODE>(), tail(io.tail)
         {
-            head               = io.head;
-            coerce(this->size) = io.size;
+            head         = io.head;
+            coerce(size) = io.size;
             
         }
 
@@ -57,9 +58,9 @@ assert(NULL!=NODE); assert(NULL==(NODE)->next); assert(NULL==(NODE)->prev)
         //______________________________________________________________________
         inline void save(core_list_of<NODE> &io) throw()
         {
-            io.head=head; head = NULL;
-            io.tail=tail; tail = NULL;
-            io.size=this->size; coerce(this->size)=0; }
+            io.head=head; head         = NULL;
+            io.tail=tail; tail         = NULL;
+            io.size=size; coerce(size) = 0; }
 
         //______________________________________________________________________
         //
@@ -81,7 +82,7 @@ assert(NULL!=NODE); assert(NULL==(NODE)->next); assert(NULL==(NODE)->prev)
         inline virtual void reverse() throw()
         {
             list_of tmp;
-            while(this->size) tmp.push_front( pop_front() );
+            while(size) tmp.push_front( pop_front() );
             swap_with(tmp);
         }
 
@@ -102,7 +103,7 @@ assert(NULL!=NODE); assert(NULL==(NODE)->next); assert(NULL==(NODE)->prev)
         inline NODE *push_back(NODE *node) throw()
         {
             YACK_LIST_CHECK(node);
-            if(this->size<=0)
+            if(size<=0)
                 return first(node);
             else
             {
@@ -119,7 +120,7 @@ assert(NULL!=NODE); assert(NULL==(NODE)->next); assert(NULL==(NODE)->prev)
         inline NODE *push_front(NODE *node) throw()
         {
             YACK_LIST_CHECK(node);
-            if(this->size<=0)
+            if(size<=0)
                 return first(node);
             else
             {
@@ -135,7 +136,7 @@ assert(NULL!=NODE); assert(NULL==(NODE)->next); assert(NULL==(NODE)->prev)
         //! pop  back node
         inline NODE *pop_back() throw()
         {
-            switch(this->size)
+            switch(size)
             {
                 case 1: return last();
                 default: break;
@@ -153,7 +154,7 @@ assert(NULL!=NODE); assert(NULL==(NODE)->next); assert(NULL==(NODE)->prev)
         //! pop front node
         inline NODE *pop_front() throw()
         {
-            switch(this->size)
+            switch(size)
             {
                 case 1: return last();
                 default: break;
@@ -192,7 +193,7 @@ assert(NULL!=NODE); assert(NULL==(NODE)->next); assert(NULL==(NODE)->prev)
                 }
                 else
                 {
-                    assert(this->size>2);
+                    assert(size>2);
                     return pull(node);
                 }
             }
@@ -266,7 +267,7 @@ assert(NULL!=NODE); assert(NULL==(NODE)->next); assert(NULL==(NODE)->prev)
         //! merge back
         void merge_back(list_of &other) throw()
         {
-            if(this->size<=0)
+            if(size<=0)
             {
                 swap_with(other);
             }
@@ -277,7 +278,7 @@ assert(NULL!=NODE); assert(NULL==(NODE)->next); assert(NULL==(NODE)->prev)
                     tail->next = other.head;
                     other.head->prev = tail;
                     tail = other->tail;
-                    this->size += other.size;
+                    size += other.size;
                     other.hard_reset_();
                 }
             }
@@ -308,7 +309,7 @@ assert(NULL!=NODE); assert(NULL==(NODE)->next); assert(NULL==(NODE)->prev)
         
         inline NODE *last() throw()
         {
-            assert(1==this->size);
+            assert(1==size);
             assert(head!=NULL);
             assert(head==tail);
             NODE *node  = head;
@@ -332,8 +333,8 @@ assert(NULL!=NODE); assert(NULL==(NODE)->next); assert(NULL==(NODE)->prev)
         inline const NODE *get_(size_t indx) const throw()
         {
             assert(1<=indx);
-            assert(indx<=this->size);
-            const size_t half = this->size>>1;
+            assert(indx<=size);
+            const size_t half = size>>1;
             if(indx<=half)
             {
                 NODE *node = head;                 assert(node);
@@ -342,7 +343,7 @@ assert(NULL!=NODE); assert(NULL==(NODE)->next); assert(NULL==(NODE)->prev)
             }
             else
             {
-                indx       = this->size-indx;
+                indx       = size-indx;
                 NODE *node = tail;                   assert(node);
                 while(indx-- > 0) { node=node->prev; assert(node); }
                 return node;
@@ -355,7 +356,7 @@ assert(NULL!=NODE); assert(NULL==(NODE)->next); assert(NULL==(NODE)->prev)
         //! hard reset for internal operations
         inline void hard_reset_() throw()
         {
-            coerce(this->size) = 0;
+            coerce(size) = 0;
             head = 0;
             tail = 0;
         }

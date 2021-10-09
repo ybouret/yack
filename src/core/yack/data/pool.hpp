@@ -30,7 +30,8 @@ assert(NULL!=NODE); assert(NULL==(NODE)->next)
         //______________________________________________________________________
         typedef NODE node_type; //!< alias
         using interlinked<NODE>::head;
-        
+        using linked::size;
+
         //______________________________________________________________________
         //
         // interlinked interface
@@ -49,7 +50,7 @@ assert(NULL!=NODE); assert(NULL==(NODE)->next)
         inline virtual void reverse() throw()
         {
             pool_of tmp;
-            while(this->size) tmp.store( query() );
+            while(size) tmp.store( query() );
             swap_with(tmp);
         }
 
@@ -98,7 +99,7 @@ assert(NULL!=NODE); assert(NULL==(NODE)->next)
         inline void save(core_pool_of<NODE> &io) throw()
         {
             io.head = head; head=NULL;
-            io.size = this->size; coerce(this->size)=0;
+            io.size = size; coerce(size)=0;
         }
 
         
@@ -115,8 +116,8 @@ assert(NULL!=NODE); assert(NULL==(NODE)->next)
         inline explicit pool_of(const core_pool_of<NODE> &io) throw() :
         interlinked<NODE>()
         {
-            head               = io.head;
-            coerce(this->size) = io.size;
+            head         = io.head;
+            coerce(size) = io.size;
         }
 
     private:

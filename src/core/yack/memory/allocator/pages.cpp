@@ -119,6 +119,7 @@ namespace yack
         {
             assert(page_exp2<=book::max_page_exp2);
             assert(page_exp2>=book::min_page_exp2);
+            
         }
     }
 

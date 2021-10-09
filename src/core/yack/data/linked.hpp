@@ -58,6 +58,8 @@ namespace yack
         virtual bool owns(const NODE*) const throw() = 0; //!< check ownership
         virtual void reverse()               throw() = 0; //!< reverse order
         
+    
+        
         inline bool  increasing_memory() const throw()
         {
             const NODE *node = head;
@@ -66,10 +68,11 @@ namespace yack
                 assert(NULL!=node);
                 assert(NULL!=node->next);
                 assert(node!=node->next);
-                if(node>=node->next) return false;
+                if(node->next<=node) return false;
             }
             return true;
         }
+        
         
         inline bool  decreasing_memory() const throw()
         {
