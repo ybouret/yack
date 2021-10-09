@@ -27,7 +27,6 @@ namespace yack
         template <typename POOL, typename COMPARE_NODES> static inline
         void sort(POOL &source, COMPARE_NODES &proc)
         {
-            assert(proc);
             switch(source.size)
             {
                 case 0: return;
