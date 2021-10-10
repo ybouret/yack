@@ -40,6 +40,7 @@ add_test(memory:book   test-yack memory_book)
 add_test(memory:blocks test-yack memory_blocks)
 add_test(memory:note   test-yack memory_note)
 add_test(memory:pages  test-yack memory_pages)
+add_test(memory:objects test-yack memory_objects)
 
 add_test(data:list      test-yack data_list)
 add_test(data:list:sort test-yack data_list_sort)

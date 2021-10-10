@@ -23,7 +23,7 @@ namespace yack
 
         ram:: ~ram() throw()
         {
-            std::cerr << "allocated ram=" << ram_ << std::endl;
+            
         }
         
 
