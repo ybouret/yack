@@ -140,6 +140,24 @@ YACK_UTEST(data_list)
         
     }
     
+    {
+        std::cerr << "cxx_list/merge_back" << std::endl;
+        for(size_t p=0;p<=10;++p)
+        {
+            for(size_t q=0;q<=10;++q)
+            {
+                cxx_list_of<XNode> lhs; while(lhs.size<p) lhs.push_back( new XNode() );
+                YACK_ASSERT(lhs.size==p);
+                cxx_list_of<XNode> rhs; while(rhs.size<q) rhs.push_back( new XNode() );
+                YACK_ASSERT(rhs.size==q);
+
+                lhs.merge_back(rhs);
+                YACK_ASSERT(lhs.size==p+q);
+            }
+        }
+        
+    }
+    
     
     YACK_SIZEOF(list_of<DNode>);
     YACK_SIZEOF(cxx_list_of<XNode>);

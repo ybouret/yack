@@ -108,24 +108,52 @@ namespace yack
 
 #include "yack/data/pool-sort.hpp"
 #include "yack/memory/chunk.hpp"
+#include <iostream>
 
 namespace yack
 {
     namespace memory
     {
+        static inline page *zpage(page *p) throw()
+        {
+            std::cerr << "zpage@" << (void*)p << std::endl;
+            p->next=0; p->prev=0;
+            return p;
+        }
         
         void   pages:: book_store_pool(core_pool_of<chunk> &reservoir,
                                        const size_t         page_exp2) throw()
         {
             assert(page_exp2<=book::max_page_exp2);
             assert(page_exp2>=book::min_page_exp2);
-            chapter        &lhs = (*book_)[page_exp2];
-            pool_of<chunk>  rhs(reservoir);
-            merge_pool_of<chunk>::sort_by_increasing_address(rhs);
+            return ;
+            chapter           &lhs = (*book_)[page_exp2]; // get the right chapter
+            pool_of<page>      rhs( coerce_to<core_pool_of<page> >(reservoir) );
+            assert(0==reservoir.size);
+            assert(0==reservoir.head);
+            
+            merge_pool_of<page>::sort_by_increasing_address(rhs);
             assert(lhs.memory_is_increasing());
             assert(rhs.memory_is_increasing());
             
+            // specificic fusion algorithm
+            chapter target(lhs.page_size); assert(target.page_size==lhs.page_size);
+            while( (lhs.size>0) && (rhs.size>0) )
+            {
+                assert(lhs.head!=rhs.head);
+                if(lhs.head<rhs.head)
+                {
+                    target.push_back(lhs.pop_front());
+                }
+                else
+                {
+                    target.push_back( zpage(rhs.query()) );
+                }
+            }
             
+            target.merge_back(lhs);
+            while(rhs.size) target.push_back( zpage(rhs.query()) );
+            lhs.swap_with(target);
         }
     }
 

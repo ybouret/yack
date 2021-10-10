@@ -275,10 +275,10 @@ assert(NULL!=NODE); assert(NULL==(NODE)->next); assert(NULL==(NODE)->prev)
             {
                 if(other.size>0)
                 {
-                    tail->next = other.head;
+                    tail->next       = other.head;
                     other.head->prev = tail;
-                    tail = other->tail;
-                    size += other.size;
+                    tail             = other.tail;
+                    coerce(size)    += other.size;
                     other.hard_reset_();
                 }
             }
