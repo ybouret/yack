@@ -45,9 +45,8 @@ assert(NULL!=NODE); assert(NULL==(NODE)->next)
         inline explicit pool_of(core_pool_of<NODE> &io) throw() :
         interlinked<NODE>()
         {
-            head         = io.head;
-            coerce(size) = io.size;
-            io.zero();
+            head         = io.head; io.head = 0;
+            coerce(size) = io.size; io.size = 0;
         }
         
         

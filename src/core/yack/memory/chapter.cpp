@@ -33,16 +33,8 @@ namespace yack
 
         void chapter:: store(void *addr) throw()
         {
-            // get page with clean header
             assert(addr);
-            page *p =  push_back(static_cast<page*>(out_of_reach::zset(addr,sizeof(page))));
-
-            // order by increasing address
-            while(p->prev&&(p->prev>p))
-            {
-                p = towards_front(p);
-            }
-            assert(memory_is_increasing());
+            store_increasing_memory(static_cast<page*>(out_of_reach::zset(addr,sizeof(page))));
         }
 
     }

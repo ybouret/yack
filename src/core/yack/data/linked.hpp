@@ -22,7 +22,7 @@ namespace yack
         // members
         //______________________________________________________________________
         const size_t size;          //!< number of nodes
-                    
+        
         //______________________________________________________________________
         //
         // C++
@@ -42,7 +42,7 @@ namespace yack
     private:
         YACK_DISABLE_COPY_AND_ASSIGN(linked);
     };
-
+    
     //__________________________________________________________________________
     //
     //
@@ -53,13 +53,19 @@ namespace yack
     class interlinked  : public linked
     {
     public:
-        inline virtual ~interlinked() throw() {}
-
+        //______________________________________________________________________
+        //
+        // virtual interface
+        //______________________________________________________________________
         virtual bool owns(const NODE*) const throw() = 0; //!< check ownership
         virtual void reverse()               throw() = 0; //!< reverse order
         
-    
+        //______________________________________________________________________
+        //
+        // methods
+        //______________________________________________________________________
         
+        //! check memory is increasing
         inline bool  memory_is_increasing() const throw()
         {
             const NODE *node = head;
@@ -74,7 +80,7 @@ namespace yack
         }
         
         
-        
+        //! check memory is decreasing
         inline bool  memory_is_decreasing() const throw()
         {
             const NODE *node = head;
@@ -88,7 +94,14 @@ namespace yack
             return true;
         }
         
-        NODE *head;
+        
+        NODE *head; //!< head node for all interlinked
+        
+        //______________________________________________________________________
+        //
+        // C++
+        //______________________________________________________________________
+        inline virtual ~interlinked() throw() {}
         
     protected:
         inline explicit interlinked() throw() : linked(), head(0) {}
@@ -96,7 +109,7 @@ namespace yack
     private:
         YACK_DISABLE_COPY_AND_ASSIGN(interlinked);
     };
-
+    
 }
 
 #endif

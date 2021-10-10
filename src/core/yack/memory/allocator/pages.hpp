@@ -57,7 +57,7 @@ namespace yack
             void  store(void *addr, const size_t page_exp2) throw(); //!< from internal note+book
             void  display() const;                                   //!< display current info
             
-            
+            //! store chunks with same page_exp2
             void  book_store_pool(core_pool_of<chunk> &reservoir,
                                   const size_t         page_exp2) throw();
             

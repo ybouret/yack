@@ -44,9 +44,10 @@ assert(NULL!=NODE); assert(NULL==(NODE)->next); assert(NULL==(NODE)->prev)
         inline explicit list_of(core_list_of<NODE> &io) throw() :
         interlinked<NODE>(), tail(io.tail)
         {
-            head         = io.head;
-            coerce(size) = io.size;
-            io.zero();
+            /** update */           io.tail = 0;
+            head         = io.head; io.head = 0;
+            coerce(size) = io.size; io.size = 0;
+             
         }
 
         //! need cleanup before!
@@ -284,7 +285,7 @@ assert(NULL!=NODE); assert(NULL==(NODE)->next); assert(NULL==(NODE)->prev)
             }
         }
         
-        
+        //! store by increasing memory
         NODE *store_increasing_memory(NODE *node) throw()
         {
             YACK_LIST_CHECK(node);
