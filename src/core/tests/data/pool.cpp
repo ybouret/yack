@@ -43,16 +43,18 @@ YACK_UTEST(data_pool)
         const size_t num = sizeof(nodes)/sizeof(nodes[0]);
         memset(nodes,0,sizeof(nodes));
         raw_pool_of<cNode> pool;
+        std::cerr << "store..." << std::endl;
         for(size_t i=0;i<num;++i)
         {
             cNode *node = nodes+i;
             YACK_ASSERT(pool.owns( pool.store(node) ));
             pool.head->data = i;
         }
-
+        
         pool.restart();
         memset(nodes,0,sizeof(nodes));
 
+        std::cerr << "shuffle..." << std::endl;
         for(size_t i=0;i<num;++i) pool.store(nodes+i)->data = i;
         ran.shuffle_pool(pool);
         while(pool.size)
@@ -61,7 +63,14 @@ YACK_UTEST(data_pool)
             //std::cerr << node->data << '/';
             YACK_ASSERT(node->data==static_cast<size_t>(node-nodes));
         }
-        std::cerr << std::endl;
+        
+        std::cerr << "store by memory..." << std::endl;
+        cNode *meta[num] = { 0 };
+        for(size_t i=0;i<num;++i) meta[i] = &nodes[i];
+        ran.shuffle(meta,num);
+        for(size_t i=0;i<num;++i) pool.store_increasing_memory(meta[i]);
+        YACK_CHECK(pool.memory_is_increasing());
+        pool.restart();
     }
 
     {
@@ -86,6 +95,8 @@ YACK_UTEST(data_pool)
             YACK_CHECK(sameData);
         }
     }
+    
+    
 
     YACK_SIZEOF(pool_of<xNode>);
     YACK_SIZEOF(raw_pool_of<xNode>);

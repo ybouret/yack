@@ -85,7 +85,7 @@ namespace yack
         }
 
 
-
+        
         void arena::grow()
         {
             //------------------------------------------------------------------
@@ -95,6 +95,8 @@ namespace yack
             //------------------------------------------------------------------
             chunk       *chnode = (reservoir.size>0) ? reservoir.pop() : chunk::create_frame(block_size,frame_size,providing);
             assert(chnode->provided_number==new_blocks);
+            assert(NULL==chnode->next);
+            assert(NULL==chnode->prev);
 
             //------------------------------------------------------------------
             //
@@ -252,12 +254,26 @@ namespace yack
     }
 }
 
+#include "yack/data/pool.hpp"
 
 namespace yack
 {
     
     namespace memory
     {
+        
+        static inline
+        void  set_aside(chunk *ch, arena::ccache_t &reservoir) throw()
+        {
+            assert(NULL!=ch);
+            assert(ch->is_empty());
+            assert(NULL==ch->next);
+            assert(NULL==ch->prev);
+            pool_of<chunk> repo(reservoir);
+            repo.store_increasing_memory(ch);
+            repo.save(reservoir);
+        }
+        
         void  arena:: take(void *addr)  throw()
         {
             //------------------------------------------------------------------
@@ -327,15 +343,16 @@ namespace yack
                     //----------------------------------------------------------
                     {
                         chunks_list chunks(io_chunks);
-                        reservoir.push( chunks.pop(abandoned) );
+                        set_aside( chunks.pop(abandoned),reservoir);
                         chunks.save(io_chunks);
                     }
                     
+                    //----------------------------------------------------------
                     // update status
+                    //----------------------------------------------------------
                     abandoned  = releasing;
                     available -= new_blocks;
                     
-                    //exit(1);
                 }
             }
         }

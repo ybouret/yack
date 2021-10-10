@@ -3,6 +3,7 @@
 #include "yack/system/error.hpp"
 #include "yack/system/exception.hpp"
 #include <cerrno>
+#include <iostream>
 
 namespace yack
 {
@@ -22,6 +23,7 @@ namespace yack
 
         ram:: ~ram() throw()
         {
+            std::cerr << "allocated ram=" << ram_ << std::endl;
         }
         
 
