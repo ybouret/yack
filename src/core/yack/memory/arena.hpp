@@ -112,7 +112,7 @@ namespace yack
             chunk       *acquiring;   //!< last acquiring
             chunk       *releasing;   //!< last releasing
             chunk       *abandoned;   //!< last empty chunk
-            chunks_t     io_chunks;   //!< state for list of chunks
+            chunks_t     my_chunks;   //!< state for list of chunks
             ccache_t     reservoir;   //!< low-level reservoir of chunks
             allocator   &providing;   //!< allocator for frames
         

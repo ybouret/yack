@@ -32,14 +32,14 @@ namespace yack
         {
             size_t       missing = 0;
             {
-                chunks_list chunks(io_chunks);
+                chunks_list chunks(my_chunks);
                 while(chunks.size)
                 {
                     chunk *ch = chunks.pop_back();
                     missing += ch->allocated();
                     kill(ch);
                 }
-                out_of_reach::zset(&io_chunks,sizeof(chunks_t));
+                out_of_reach::zset(&my_chunks,sizeof(chunks_t));
             }
 
             while(reservoir.size)
@@ -63,7 +63,7 @@ namespace yack
         acquiring(NULL),
         releasing(NULL),
         abandoned(NULL),
-        io_chunks(io_list_init),
+        my_chunks(io_list_init),
         reservoir(io_pool_init),
         providing(dispatcher),
 
@@ -103,7 +103,7 @@ namespace yack
             // update
             //
             //------------------------------------------------------------------
-            chunks_list  chunks(io_chunks);                  // use chunks_list operation
+            chunks_list  chunks(my_chunks);                  // use chunks_list operation
             acquiring  = chunks.store_increasing_memory(ch); // append
             available += new_blocks;                         // bookkeeping
             assert(chunks.memory_is_increasing());
@@ -113,7 +113,7 @@ namespace yack
             // done
             //
             //------------------------------------------------------------------
-            chunks.save(io_chunks);
+            chunks.save(my_chunks);
         }
         
     }
@@ -301,7 +301,7 @@ namespace yack
                     // update acquiring position
                     //----------------------------------------------------------
                     assert(acquiring);
-                    assert(io_chunks.size>1);
+                    assert(my_chunks.size>1);
                     assert( (NULL!=acquiring->prev) || (NULL!=acquiring->next) );
                     if(abandoned==acquiring)
                     {
@@ -320,10 +320,10 @@ namespace yack
                     // moving
                     //----------------------------------------------------------
                     {
-                        chunks_list    data(io_chunks);
+                        chunks_list    data(my_chunks);
                         pool_of<chunk> repo(reservoir);
                         repo.store_increasing_memory(data.pop(abandoned));
-                        data.save(io_chunks);
+                        data.save(my_chunks);
                         repo.save(reservoir);
                     }
                     
