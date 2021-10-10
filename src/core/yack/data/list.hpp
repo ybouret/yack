@@ -285,7 +285,54 @@ assert(NULL!=NODE); assert(NULL==(NODE)->next); assert(NULL==(NODE)->prev)
         }
         
         
-        
+        NODE *store_increasing_memory(NODE *node) throw()
+        {
+            YACK_LIST_CHECK(node);
+            assert(false==owns(node));
+            assert(this->memory_is_increasing());
+            if(size<=0)
+            {
+                return first(node);
+            }
+            else
+            {
+                if(node<head)
+                {
+                    return push_front(node);
+                }
+                else
+                {
+                    if(tail<node)
+                    {
+                        return push_back(node);
+                    }
+                    else
+                    {
+                        assert(size>=2);
+                        NODE *gt = tail;
+                        NODE *lt = gt->prev; assert(lt<gt);
+                        while(true)
+                        {
+                            assert(lt);
+                            assert(gt);
+                            assert(lt<gt);
+                            assert(node<gt);
+                            
+                            if(node>lt)
+                            {
+                                lt->next = node; node->prev = lt;
+                                gt->prev = node; node->next = gt;
+                                this->increase();
+                                assert(this->memory_is_increasing());
+                                return node;
+                            }
+                            gt=lt;
+                            lt=lt->prev;
+                        }
+                    }
+                }
+            }
+        }
         
         //______________________________________________________________________
         //
@@ -350,7 +397,7 @@ assert(NULL!=NODE); assert(NULL==(NODE)->next); assert(NULL==(NODE)->prev)
             }
         }
         
-        
+      
 
     protected:
         //! hard reset for internal operations

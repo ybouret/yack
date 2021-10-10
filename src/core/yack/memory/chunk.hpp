@@ -108,7 +108,7 @@ namespace yack
             const uint8_t * const      last;            //!< first invalid item
             chunk                     *next;            //!< for arena
             chunk                     *prev;            //!< for arena
-
+                                                        //!
         private:
             YACK_DISABLE_COPY_AND_ASSIGN(chunk);
             void format(const size_t block_size) throw();

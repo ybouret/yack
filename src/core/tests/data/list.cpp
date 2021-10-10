@@ -158,6 +158,28 @@ YACK_UTEST(data_list)
         
     }
     
+    {
+        std::cerr << "store_increasing" << std::endl;
+        DNode        nodes[1000];
+        const size_t num = sizeof(nodes)/sizeof(nodes[0]);
+        size_t       index[num];
+        memset(nodes,0, sizeof(nodes));
+        for(size_t i=0;i<num;++i)
+        {
+            index[i] = i;
+            nodes[i].indx = i;
+        }
+        ran.shuffle(index,num);
+        raw_list_of<DNode> l;
+        for(size_t i=0;i<num;++i)
+        {
+            DNode *node = nodes+index[i];
+            l.store_increasing_memory( node );
+            YACK_ASSERT(l.memory_is_increasing());
+        }
+        l.restart();
+    }
+    
     
     YACK_SIZEOF(list_of<DNode>);
     YACK_SIZEOF(cxx_list_of<XNode>);

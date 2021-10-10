@@ -93,29 +93,19 @@ namespace yack
             // get/create a chunk
             //
             //------------------------------------------------------------------
-            chunk       *chnode = (reservoir.size>0) ? reservoir.pop() : chunk::create_frame(block_size,frame_size,providing);
-            assert(chnode->provided_number==new_blocks);
-            assert(NULL==chnode->next);
-            assert(NULL==chnode->prev);
+            chunk       *ch = (reservoir.size>0) ? reservoir.pop() : chunk::create_frame(block_size,frame_size,providing);
+            assert(ch->provided_number==new_blocks);
+            assert(NULL==ch->next);
+            assert(NULL==ch->prev);
 
             //------------------------------------------------------------------
             //
             // update
             //
             //------------------------------------------------------------------
-            chunks_list  chunks(io_chunks);        // use chunks_list operation
-            acquiring  = chunks.push_back(chnode); // append
-            available += new_blocks;               // bookkeeping
-
-            //------------------------------------------------------------------
-            //
-            // sort memory
-            //
-            //------------------------------------------------------------------
-            while((NULL!=chnode->prev) && (chnode<chnode->prev))
-            {
-                (void)chunks.towards_front(chnode);
-            }
+            chunks_list  chunks(io_chunks);                  // use chunks_list operation
+            acquiring  = chunks.store_increasing_memory(ch); // append
+            available += new_blocks;                         // bookkeeping
             assert(chunks.memory_is_increasing());
             
             //------------------------------------------------------------------
@@ -262,18 +252,6 @@ namespace yack
     namespace memory
     {
         
-        static inline
-        void  set_aside(chunk *ch, arena::ccache_t &reservoir) throw()
-        {
-            assert(NULL!=ch);
-            assert(ch->is_empty());
-            assert(NULL==ch->next);
-            assert(NULL==ch->prev);
-            pool_of<chunk> repo(reservoir);
-            repo.store_increasing_memory(ch);
-            repo.save(reservoir);
-        }
-        
         void  arena:: take(void *addr)  throw()
         {
             //------------------------------------------------------------------
@@ -342,9 +320,11 @@ namespace yack
                     // moving
                     //----------------------------------------------------------
                     {
-                        chunks_list chunks(io_chunks);
-                        set_aside( chunks.pop(abandoned),reservoir);
-                        chunks.save(io_chunks);
+                        chunks_list    data(io_chunks);
+                        pool_of<chunk> repo(reservoir);
+                        repo.store_increasing_memory(data.pop(abandoned));
+                        data.save(io_chunks);
+                        repo.save(reservoir);
                     }
                     
                     //----------------------------------------------------------

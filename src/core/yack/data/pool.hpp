@@ -125,7 +125,7 @@ assert(NULL!=NODE); assert(NULL==(NODE)->next)
         //
         //! store with increasing memory
         //______________________________________________________________________
-        void store_increasing_memory(NODE *node) throw()
+        NODE *store_increasing_memory(NODE *node) throw()
         {
             YACK_POOL_CHECK(node);
             assert(this->memory_is_increasing());
@@ -166,6 +166,7 @@ assert(NULL!=NODE); assert(NULL==(NODE)->next)
             
         RETURN:
             this->increase();
+            return node;
         }
         
     private:
