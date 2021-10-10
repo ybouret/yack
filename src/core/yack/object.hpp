@@ -4,7 +4,7 @@
 #define YACK_OBJECT_INCLUDED 1
 
 #include "yack/singleton.hpp"
-#include "yack/memory/small-objects.hpp"
+#include "yack/memory/small-object.hpp"
 
 namespace yack
 {

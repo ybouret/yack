@@ -1,5 +1,5 @@
 
-#include "yack/memory/small-objects.hpp"
+#include "yack/memory/small-object.hpp"
 #include "yack/utest/run.hpp"
 #include "yack/data/cxx-list.hpp"
 #include <cstring>
@@ -37,7 +37,7 @@ YACK_UTEST(memory_objects)
 {
     
     uprng                 ran;
-    memory::small_objects objs(32);
+    memory::small_object  objs(32);
     cxx_list_of<block>    blocks;
     
     for(size_t i=1000+ran.leq(1000);i>0;--i)
@@ -54,7 +54,7 @@ YACK_UTEST(memory_objects)
     }
     YACK_CHECK(objs.put_in_ram==0);
 
-    YACK_SIZEOF(memory::small_objects);
+    YACK_SIZEOF(memory::small_object);
     
 }
 YACK_UDONE()
