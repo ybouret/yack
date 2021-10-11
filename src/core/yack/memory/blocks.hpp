@@ -44,8 +44,7 @@ namespace yack
 
             void *acquire(const size_t block_size);                           //!< acquire block
             void  release(void *block_addr, const size_t block_size) throw(); //!< release block
-
-            void  gc(pages &) throw();
+            void  gc(pages &) throw();                                        //!< garbage collection for each arena
 
         private:
             YACK_DISABLE_COPY_AND_ASSIGN(blocks);

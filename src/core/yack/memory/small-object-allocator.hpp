@@ -9,9 +9,10 @@
 #include "yack/memory/allocator/pages-longevity.hpp"
 
 #if !defined(YACK_LIMIT_SIZE)
-#define YACK_LIMIT_SIZE 256
+#define YACK_LIMIT_SIZE 256 //!< default limit size for small objects
 #endif
 
+//! built-in small objects longevity
 #define YACK_MEMORY_SMALL_OBJECTS_LONGEVITY (YACK_MEMORY_PAGES_ALLOCATOR_LONGEVITY-1)
 
 namespace yack
@@ -19,23 +20,40 @@ namespace yack
     namespace memory
     {
 
+        //______________________________________________________________________
+        //
+        //
+        //! single class for small objects with a given limit size
+        //
+        //______________________________________________________________________
         template <size_t LIMIT_SIZE>
         class small_object_allocator : public singleton< small_object_allocator<LIMIT_SIZE> >,
         public small_objects
         {
         public:
-            typedef small_object_allocator<LIMIT_SIZE> self_type;
-            static  const at_exit::longevity           life_time = YACK_MEMORY_SMALL_OBJECTS_LONGEVITY;
-            static  const char  * const                call_sign;
-
+            //__________________________________________________________________
+            //
+            // types and definitions
+            //__________________________________________________________________
+            typedef small_object_allocator<LIMIT_SIZE> self_type;                                       //!< alias
+            static  const at_exit::longevity           life_time = YACK_MEMORY_SMALL_OBJECTS_LONGEVITY; //!< alias
+            static  const char  * const                call_sign;                                       //!< for singleton
             using concurrent::single::access;
 
+
+            //__________________________________________________________________
+            //
+            //thread safe methods
+            //__________________________________________________________________
+
+            //! acquire a blank block
             inline void *acquire(const size_t block_size)
             {
                 YACK_LOCK(access);
                 return acquire_unlocked(block_size);
             }
 
+            //! release a previously acquired block
             inline void release(void *block_addr, const size_t block_size) throw()
             {
                 YACK_LOCK(access);

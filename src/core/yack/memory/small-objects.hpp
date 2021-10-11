@@ -13,19 +13,38 @@ namespace yack
         class blocks;
         class pages;
 
+        //______________________________________________________________________
+        //
+        //
+        //! internal handling of small blocks
+        /**
+         block_size <= limit_size -> arenas
+         block_size  > limit_size -> put in ram
+         the internal global memory is thread safe
+         */
+        //
+        //______________________________________________________________________
         class small_objects
         {
         public:
-            static const char designation[];
-            virtual ~small_objects() throw();
-            explicit small_objects(const size_t the_limit_size);
-            
-            const size_t   limit_size;
-            const uint64_t put_in_ram;
-            
-            void *acquire_unlocked(size_t block_size);
-            void  release_unlocked(void *block_addr, size_t block_size) throw();
-            void  gc_unlocked(pages &) throw();
+            //__________________________________________________________________
+            //
+            // C++
+            //__________________________________________________________________
+            virtual ~small_objects() throw();                     //!< cleanup
+            explicit small_objects(const size_t the_limit_size);  //!< setup
+
+            //__________________________________________________________________
+            //
+            // thread unsafe metjods
+            //__________________________________________________________________
+            void *acquire_unlocked(size_t block_size);                           //!< acquire a new block
+            void  release_unlocked(void *block_addr, size_t block_size) throw(); //!< release an old block
+            void  gc_unlocked(pages &) throw();                                  //!< garbage collection
+
+            const size_t      limit_size;    //!< to choose allocation methods
+            const uint64_t    put_in_ram;    //!< bookkeeping or large alloc
+            static const char designation[]; //!< "memory::small_objects"
 
         private:
             YACK_DISABLE_COPY_AND_ASSIGN(small_objects);
