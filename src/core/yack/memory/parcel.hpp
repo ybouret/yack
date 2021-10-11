@@ -64,9 +64,10 @@ namespace yack
             //__________________________________________________________________
             void          *try_acquire(size_t &size)                 throw(); //!< try acquire a piece of memory
             static parcel *get_release(void * &entry, size_t &count) throw(); //!< release ole memory, return owner
-            bool           is_vacant() const throw();                         //!< check vacancy condition
+            bool           is_empty()  const throw();                         //!< check vacancy condition
             size_t         capacity()  const throw();                         //!< max available space
             void           display()   const;                                 //!< info
+            static const parcel  *owner_of(const void *entry) throw();         //!< to check ownership
 
             //__________________________________________________________________
             //

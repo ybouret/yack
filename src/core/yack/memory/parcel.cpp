@@ -11,7 +11,7 @@ namespace yack
 
 
 
-        bool parcel:: is_vacant() const throw()
+        bool parcel:: is_empty() const throw()
         {
             return (NULL==head->user) && (head->next == tail);
         }
@@ -19,7 +19,7 @@ namespace yack
 
         parcel:: ~parcel() throw()
         {
-            if(!is_vacant())
+            if(!is_empty())
             {
                 const size_t size = size_t(1) << tail->size;
                 std::cerr << "[parcel#" << size << "] missing";
@@ -169,7 +169,13 @@ namespace yack
     namespace memory
     {
 
-
+        const parcel  * parcel:: owner_of(const void *entry) throw()
+        {
+            assert(entry);
+            const stamp_t *s = static_cast<const stamp_t *>(entry)-1;
+            assert(s->user);
+            return s->user;
+        }
 
         parcel * parcel:: get_release(void * &entry, size_t &count) throw()
         {

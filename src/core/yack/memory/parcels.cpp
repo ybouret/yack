@@ -20,6 +20,7 @@ namespace yack
 
         parcels:: parcels() :
         cache(NULL),
+        empty(NULL),
         plist(),
         zpool(0),
         impl()
@@ -38,7 +39,6 @@ namespace yack
 
             zpool->expunge( destructed(p) );
             mgr.store(page_addr,page_exp2);
-
         }
 
 
@@ -80,6 +80,15 @@ namespace yack
 
         }
 
+
+        void * parcels:: checked(void *p) throw()
+        {
+            assert(p);
+            assert(parcel::owner_of(p) == cache);
+            if(empty==cache) empty=NULL;
+            return p;
+        }
+
         void *parcels:: acquire_unlocked(size_t &size)
         {
             assert(cache);
@@ -87,7 +96,7 @@ namespace yack
             void *p = cache->try_acquire(size);
             if(p)
             {
-                return p;
+                return checked(p);
             }
             else
             {
@@ -103,14 +112,14 @@ namespace yack
                     if(NULL!=(p=prev->try_acquire(size)) )
                     {
                         cache=prev;
-                        return p;
+                        return checked(p);
                     }
                     prev=prev->prev;
 
                     if(NULL!=(p=next->try_acquire(size)) )
                     {
                         cache=next;
-                        return p;
+                        return checked(p);
                     }
                     next=next->next;
                 }
@@ -125,7 +134,7 @@ namespace yack
                     if(NULL!=(p=prev->try_acquire(size)) )
                     {
                         cache=prev;
-                        return p;
+                        return checked(p);
                     }
                     prev=prev->prev;
                 }
@@ -140,7 +149,7 @@ namespace yack
                     if(NULL!=(p=next->try_acquire(size)) )
                     {
                         cache=next;
-                        return p;
+                        return checked(p);
                     }
                     next=next->next;
                 }
@@ -153,6 +162,7 @@ namespace yack
                 //--------------------------------------------------------------
                 try {
                     grow_for(size);
+                    assert(empty!=cache);
                     p = cache->try_acquire(size);
                     if(!p) throw libc::exception(EINVAL,"%s(corrupted parcel)",designation);
                     return p;
@@ -165,14 +175,38 @@ namespace yack
             }
         }
 
+    }
+
+}
+
+#include <iostream>
+
+namespace yack
+{
+
+    namespace memory
+    {
         void  parcels:: release_unlocked(void * &block_addr, size_t &block_size) throw()
         {
+
             assert(block_addr);
             assert(block_size>0);
             assert(0==(block_size%parcel::stamp_size));
 
             parcel *p = parcel::get_release(block_addr,block_size);
-            (void)p;
+            if(p->is_empty())
+            {
+                if(empty)
+                {
+                    assert(p!=empty);
+                    //std::cerr << "found second empty" << std::endl;
+                }
+                else
+                {
+                   // std::cerr << "found first empty..." << std::endl;
+                    empty = p;
+                }
+            }
 
         }
 
