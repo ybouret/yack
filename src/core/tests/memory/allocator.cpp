@@ -67,6 +67,6 @@ YACK_UTEST(memory_alloc)
     test_alloc(memory::global::instance());
     test_alloc(memory::dyadic::instance());
     test_alloc(memory::pooled::instance());
-
+    
 }
 YACK_UDONE()
