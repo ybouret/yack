@@ -64,10 +64,27 @@ namespace yack
             //
             // memory methods
             //__________________________________________________________________
-            void *acquire();                   //!< acquire one block, zeroed
-            void  release(void *addr) throw(); //!< release one block
-            void  expunge(void *addr) throw(); //!< zero and release block
-            void  display() const;             //!< current information
+            
+            //! acquire one zeroed block
+            /**
+             - try cache
+             - look up around cache if available
+             - create a new chunk if now more room
+             - check tha abandoned!=acquiring
+             */
+            void *acquire();
+            
+            //! release an old block
+            /**
+             - use cache/look up
+             - check up is abandonend
+             - in case of two empty chunks, return the highest memory
+             into reservoir
+             */
+            void  release(void *addr) throw();
+            
+            //! zero the block before releasing
+            void  expunge(void *addr) throw();
 
             //__________________________________________________________________
             //
@@ -103,9 +120,10 @@ namespace yack
 
             //__________________________________________________________________
             //
-            // advanced management
+            // methods
             //__________________________________________________________________
             void gc(pages &) throw(); //!< garbage collector
+            void display() const;             //!< current information
             
         private:
             size_t       available;   //!< bookkeeping

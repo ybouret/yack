@@ -193,7 +193,7 @@ namespace yack
                             prev=prev->prev;
                             if(next->still_available>0)
                             {
-                                acquiring = next;;
+                                acquiring = next;
                                 return give();
                             }
                             else
