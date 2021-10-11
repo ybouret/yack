@@ -1,0 +1,58 @@
+
+//! \file
+
+#ifndef YACK_SMALL_OBJECT_ALLOCATOR_INCLUDED
+#define YACK_SMALL_OBJECT_ALLOCATOR_INCLUDED
+
+#include "yack/memory/small-objects.hpp"
+#include "yack/singleton.hpp"
+#include "yack/memory/allocator/pages-longevity.hpp"
+
+#if !defined(YACK_LIMIT_SIZE)
+#define YACK_LIMIT_SIZE 256
+#endif
+
+#define YACK_MEMORY_SMALL_OBJECTS_LONGEVITY (YACK_MEMORY_PAGES_ALLOCATOR_LONGEVITY-1)
+
+namespace yack
+{
+    namespace memory
+    {
+
+        template <size_t LIMIT_SIZE>
+        class small_object_allocator : public singleton< small_object_allocator<LIMIT_SIZE> >,
+        public small_objects
+        {
+        public:
+            typedef small_object_allocator<LIMIT_SIZE> self_type;
+            static  const at_exit::longevity           life_time = YACK_MEMORY_SMALL_OBJECTS_LONGEVITY;
+            static  const char  * const                call_sign;
+
+            using concurrent::single::access;
+
+            inline void *acquire(const size_t block_size)
+            {
+                YACK_LOCK(access);
+                return acquire_unlocked(block_size);
+            }
+
+            inline void release(void *block_addr, const size_t block_size) throw()
+            {
+                YACK_LOCK(access);
+                release_unlocked(block_addr,block_size);
+            }
+
+        private:
+            inline explicit small_object_allocator() : singleton<self_type>(), small_objects(LIMIT_SIZE) {}
+            inline virtual ~small_object_allocator() throw() {}
+
+            YACK_DISABLE_COPY_AND_ASSIGN(small_object_allocator);
+            friend class singleton<self_type>;
+        };
+
+        template <size_t LIFE_TIME> const char * const small_object_allocator<LIFE_TIME>::call_sign = small_objects::designation;
+    }
+
+}
+
+#endif

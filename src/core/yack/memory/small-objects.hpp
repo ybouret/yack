@@ -1,7 +1,7 @@
 //! \file
 
-#ifndef YACK_SMALL_OBJECT_INCLUDED
-#define YACK_SMALL_OBJECT_INCLUDED
+#ifndef YACK_SMALL_OBJECTS_INCLUDED
+#define YACK_SMALL_OBJECTS_INCLUDED
 
 #include "yack/setup.hpp"
 #include "yack/memory/blocks-words.hpp"
@@ -12,11 +12,12 @@ namespace yack
     {
         class blocks;
         
-        class small_object
+        class small_objects
         {
         public:
-            virtual ~small_object() throw();
-            explicit small_object(const size_t the_limit_size);
+            static const char designation[];
+            virtual ~small_objects() throw();
+            explicit small_objects(const size_t the_limit_size);
             
             const size_t   limit_size;
             const uint64_t put_in_ram;
@@ -25,7 +26,7 @@ namespace yack
             void  release_unlocked(void *block_addr, size_t block_size) throw();
             
         private:
-            YACK_DISABLE_COPY_AND_ASSIGN(small_object);
+            YACK_DISABLE_COPY_AND_ASSIGN(small_objects);
             blocks *blk;
             void   *impl[YACK_MEMORY_BLOCKS_WORDS];
             

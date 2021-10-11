@@ -355,6 +355,18 @@ namespace yack
         }
 
 
+        void  blocks:: gc(pages &target) throw()
+        {
+            for(size_t i=0;i<tsize;++i)
+            {
+                for(arena *node=table[i].head;node;node=node->next)
+                {
+                    node->gc(target);
+                }
+            }
+        }
+
+
     }
 
 }

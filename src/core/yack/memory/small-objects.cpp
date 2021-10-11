@@ -1,4 +1,4 @@
-#include "yack/memory/small-object.hpp"
+#include "yack/memory/small-objects.hpp"
 #include "yack/memory/blocks.hpp"
 #include "yack/memory/allocator/global.hpp"
 #include "yack/type/out-of-reach.hpp"
@@ -9,15 +9,17 @@ namespace yack
 {
     namespace memory
     {
-      
-        small_object :: ~small_object() throw()
+
+        const char small_objects::designation[] = "memory::small_objects";
+        
+        small_objects :: ~small_objects() throw()
         {
             if(0!=put_in_ram) std::cerr << "*** [memory::objects::put_int_ram=" << put_in_ram << "]" << std::endl;
             out_of_reach::zset(destructed(blk),sizeof(impl));
             blk = 0;
         }
         
-        small_object:: small_object(const size_t the_limit_size) :
+        small_objects:: small_objects(const size_t the_limit_size) :
         limit_size(the_limit_size),
         put_in_ram(0),
         blk(NULL),
@@ -26,7 +28,7 @@ namespace yack
             blk = new ( out_of_reach::zset(impl,sizeof(impl)) ) blocks();
         }
         
-        void * small_object:: acquire_unlocked(size_t block_size)
+        void * small_objects:: acquire_unlocked(size_t block_size)
         {
             assert(block_size>0);
             if(block_size<=limit_size)
@@ -44,7 +46,7 @@ namespace yack
             }
         }
         
-        void  small_object:: release_unlocked(void *block_addr, size_t block_size) throw()
+        void  small_objects:: release_unlocked(void *block_addr, size_t block_size) throw()
         {
             assert(block_addr);
             assert(block_size>0);
