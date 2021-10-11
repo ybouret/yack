@@ -62,7 +62,7 @@ namespace yack
             }
         }
 
-        void  small_objects:: gc_unlocked(pages &target) throw()
+        void  small_objects:: gc_unlocked(dyadic &target) throw()
         {
             blk->gc(target);
         }

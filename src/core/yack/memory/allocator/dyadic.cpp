@@ -1,7 +1,7 @@
 
 
 
-#include "yack/memory/allocator/pages.hpp"
+#include "yack/memory/allocator/dyadic.hpp"
 #include "yack/memory/note.hpp"
 #include "yack/memory/book.hpp"
 
@@ -16,32 +16,32 @@ namespace yack
 {
     namespace memory
     {
-
-        const size_t pages::max_page_size = book::max_page_size;
-        const size_t pages::min_page_size = book::min_page_size;
-
+        
+        const size_t dyadic::max_page_size = book::max_page_size;
+        const size_t dyadic::min_page_size = book::min_page_size;
+        
         static void *note__[ YACK_WORDS_FOR(note) ] = { 0 };
         static void *book__[ YACK_WORDS_FOR(book) ] = { 0 };
-
-        pages:: pages()   : allocator(), singleton<pages>(),
+        
+        dyadic:: dyadic()   : allocator(), singleton<dyadic>(),
         note_( new ( out_of_reach::zset(note__,sizeof(note__)) ) note() ),
         book_( new ( out_of_reach::zset(book__,sizeof(book__)) ) book() )
         {
-
+            
         }
-
-        pages:: ~pages() throw()
+        
+        dyadic:: ~dyadic() throw()
         {
             out_of_reach::zset( destructed(book_), sizeof(book__) );
             out_of_reach::zset( destructed(note_), sizeof(note__) );
             note_ = NULL;
             book_ = NULL;
         }
-
-        void *pages:: acquire(size_t &count, const size_t block_size)
+        
+        void *dyadic:: acquire(size_t &count, const size_t block_size)
         {
             assert(block_size>0);
-
+            
             YACK_LOCK(access);
             if(count>0)
             {
@@ -62,8 +62,8 @@ namespace yack
                 return NULL;
             }
         }
-
-        void pages:: release(void *&addr, size_t &size) throw()
+        
+        void dyadic:: release(void *&addr, size_t &size) throw()
         {
             YACK_LOCK(access);
             if(addr)
@@ -80,19 +80,19 @@ namespace yack
                 assert(size<=0);
             }
         }
-
-        const char   pages:: call_sign[] = "memory::pages";
-
-        const char * pages:: variety() const throw() { return call_sign; }
-
-        void * pages::query(const size_t page_exp2)
+        
+        const char   dyadic:: call_sign[] = "memory::pages";
+        
+        const char * dyadic:: variety() const throw() { return call_sign; }
+        
+        void * dyadic::query(const size_t page_exp2)
         {
             YACK_LOCK(access);
             assert(page_exp2<=book::max_page_exp2);
             return (page_exp2<book::min_page_exp2) ? note_->query(page_exp2) : book_->query(page_exp2);
         }
-
-        void  pages:: store(void *addr, const size_t page_exp2) throw()
+        
+        void  dyadic:: store(void *addr, const size_t page_exp2) throw()
         {
             YACK_LOCK(access);
             assert(page_exp2<=book::max_page_exp2);
@@ -101,7 +101,7 @@ namespace yack
             else
                 book_->store(addr,page_exp2);
         }
-
+        
     }
     
 }
@@ -121,8 +121,8 @@ namespace yack
             return static_cast<page *>( out_of_reach::zset(ch,sizeof(page)));
         }
         
-        void   pages:: book_store_pool(core_pool_of<chunk> &reservoir,
-                                       const size_t         page_exp2) throw()
+        void   dyadic:: book_store_pool(core_pool_of<chunk> &reservoir,
+                                        const size_t         page_exp2) throw()
         {
             //__________________________________________________________________
             //
@@ -169,7 +169,7 @@ namespace yack
             lhs.swap_with(fusion);
         }
     }
-
+    
 }
 
 #include <iostream>
@@ -177,14 +177,14 @@ namespace yack
 {
     namespace memory
     {
-        void  pages:: display() const
+        void  dyadic:: display() const
         {
             YACK_LOCK(access);
             std::cerr << "<" << call_sign << ">" << std::endl;
             note_->display();
             book_->display();
             std::cerr << "<" << call_sign << "/>" << std::endl;
-
+            
         }
     }
 }

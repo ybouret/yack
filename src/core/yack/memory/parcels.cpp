@@ -3,7 +3,7 @@
 #include "yack/memory/parcel.hpp"
 #include "yack/memory/arena.hpp"
 #include "yack/memory/allocator/global.hpp"
-#include "yack/memory/allocator/pages.hpp"
+#include "yack/memory/allocator/dyadic.hpp"
 #include "yack/type/out-of-reach.hpp"
 #include "yack/system/exception.hpp"
 #include "yack/arith/base2.hpp"
@@ -33,7 +33,7 @@ namespace yack
         {
             assert(NULL!=p);
             assert(NULL!=zpool);
-            static pages &mgr       = pages::location();
+            static dyadic &mgr      = dyadic::location();
             void         *page_addr = static_cast<void *>(p->head);
             const size_t  page_exp2 = p->tail->size;
             
@@ -51,9 +51,9 @@ namespace yack
         
         static inline size_t page_size_for(const size_t block_size)
         {
-            assert(YACK_CHUNK_SIZE<=pages::max_page_size);
+            assert(YACK_CHUNK_SIZE<=dyadic::max_page_size);
             const size_t page_size = max_of(block_size + parcel::stamp_lost,parcel::min_data_size);
-            if(page_size>pages::max_page_size) throw libc::exception(EINVAL,"%s(block_size overflow)",parcels::designation);
+            if(page_size>dyadic::max_page_size) throw libc::exception(EINVAL,"%s(block_size overflow)",parcels::designation);
             return next_power_of_two( max_of<size_t>(YACK_CHUNK_SIZE,page_size) );
         }
         
@@ -65,8 +65,8 @@ namespace yack
             parcel *p = zpool->zombie<parcel>();
             try
             {
-                static pages &provider   = pages::instance();
-                void         *page_addr = provider.query(page_exp2);
+                static dyadic &provider  = dyadic::instance();
+                void          *page_addr = provider.query(page_exp2);
                 new (p) parcel(page_addr,page_size,page_exp2);
             }
             catch(...)
@@ -191,7 +191,7 @@ namespace yack
             assert(block_addr);
             assert(block_size>0);
             assert(0==(block_size%parcel::stamp_size));
-            static pages &target = pages::location();
+            static dyadic &target = dyadic::location();
             
             
             parcel *p = parcel::get_release(block_addr,block_size);

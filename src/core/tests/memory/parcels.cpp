@@ -1,6 +1,6 @@
 
 #include "yack/memory/parcels.hpp"
-#include "yack/memory/allocator/pages.hpp"
+#include "yack/memory/allocator/dyadic.hpp"
 #include "yack/data/cxx-list.hpp"
 #include "yack/utest/run.hpp"
 #include "yack/type/utils.hpp"
@@ -55,7 +55,7 @@ YACK_UTEST(memory_parcels)
         
     }
     std::cerr << "status" << std::endl;
-    memory::pages::instance().display();
+    memory::dyadic::instance().display();
     
     
     

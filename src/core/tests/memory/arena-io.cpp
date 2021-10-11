@@ -1,6 +1,6 @@
 
 #include "yack/memory/allocator/global.hpp"
-#include "yack/memory/allocator/pages.hpp"
+#include "yack/memory/allocator/dyadic.hpp"
 
 #include "yack/memory/arena.hpp"
 #include "yack/system/exception.hpp"
@@ -42,7 +42,7 @@ YACK_UTEST(memory_arena_io)
     uprng              ran;
     cxx_list_of<block> blocks;
     memory::allocator  &gmem = memory::global::instance();
-    memory::pages      &pmem = memory::pages::instance();
+    memory::dyadic     &pmem = memory::dyadic::instance();
 
     for(size_t block_size=1;block_size<=256;++block_size)
     {

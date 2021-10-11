@@ -1,6 +1,6 @@
 
 #include "yack/memory/parcel.hpp"
-#include "yack/memory/allocator/pages.hpp"
+#include "yack/memory/allocator/dyadic.hpp"
 #include "yack/data/cxx-list.hpp"
 #include "yack/utest/run.hpp"
 #include "yack/type/utils.hpp"
@@ -29,8 +29,8 @@ namespace
 
 YACK_UTEST(memory_parcel)
 {
-    uprng          ran;
-    memory::pages &mgr = memory::pages::instance();
+    uprng           ran;
+    memory::dyadic &mgr = memory::dyadic::instance();
     YACK_SIZEOF(memory::parcel);
     YACK_SIZEOF(memory::parcel::stamp_t);
 

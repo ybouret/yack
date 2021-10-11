@@ -21,7 +21,7 @@ namespace yack
         //______________________________________________________________________
         class chunk;
         class allocator;
-        class pages;
+        class dyadic;
         
         //______________________________________________________________________
         //
@@ -122,8 +122,8 @@ namespace yack
             //
             // methods
             //__________________________________________________________________
-            void gc(pages &) throw(); //!< garbage collector
-            void display() const;             //!< current information
+            void gc(dyadic &) throw(); //!< garbage collector
+            void display() const;      //!< current information
             
         private:
             size_t       available;   //!< bookkeeping

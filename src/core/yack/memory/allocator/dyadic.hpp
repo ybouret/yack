@@ -1,12 +1,10 @@
-
-
 //! \file
 
-#ifndef YACK_MEMORY_ALLOCATOR_PAGES_INCLUDED
-#define YACK_MEMORY_ALLOCATOR_PAGES_INCLUDED 1
+#ifndef YACK_MEMORY_DYADIC_ALLOCATOR_INCLUDED
+#define YACK_MEMORY_DYADIC_ALLOCATOR_INCLUDED 1
 
 #include "yack/memory/allocator.hpp"
-#include "yack/memory/allocator/pages-longevity.hpp"
+#include "yack/memory/allocator/dyadic-longevity.hpp"
 #include "yack/singleton.hpp"
 #include "yack/data/core-pool.hpp"
 
@@ -26,7 +24,7 @@ namespace yack
         //! thread safe global memory allocator
         //
         //______________________________________________________________________
-        class pages : public allocator, public singleton<pages>
+        class dyadic : public allocator, public singleton<dyadic>
         {
         public:
             //__________________________________________________________________
@@ -35,7 +33,7 @@ namespace yack
             //__________________________________________________________________
 
             //! the maximum available longevity
-            static const at_exit::longevity life_time = YACK_MEMORY_PAGES_ALLOCATOR_LONGEVITY;
+            static const at_exit::longevity life_time = YACK_MEMORY_DYADIC_ALLOCATOR_LONGEVITY;
             static const char               call_sign[]; //!< "memory::pages"
             static const size_t             max_page_size; //!< book::max_page_size
             static const size_t             min_page_size; //!< book::min_page_size
@@ -62,12 +60,12 @@ namespace yack
                                   const size_t         page_exp2) throw();
             
         private:
-            YACK_DISABLE_COPY_AND_ASSIGN(pages);
-            explicit pages();
-            virtual ~pages() throw();
+            YACK_DISABLE_COPY_AND_ASSIGN(dyadic);
+            explicit dyadic();
+            virtual ~dyadic() throw();
             note    *note_; //!< [1..book::min_page_exp2-1]
             book    *book_; //!< [min_page_exp2:max_page_exp2]
-            friend class singleton<pages>;
+            friend class singleton<dyadic>;
         };
 
     }

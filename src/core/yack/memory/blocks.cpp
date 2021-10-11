@@ -355,7 +355,7 @@ namespace yack
         }
 
 
-        void  blocks:: gc(pages &target) throw()
+        void  blocks:: gc(dyadic &target) throw()
         {
             for(size_t i=0;i<tsize;++i)
             {

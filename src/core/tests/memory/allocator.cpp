@@ -1,6 +1,6 @@
 
 #include "yack/memory/allocator/global.hpp"
-#include "yack/memory/allocator/pages.hpp"
+#include "yack/memory/allocator/dyadic.hpp"
 #include "yack/memory/allocator/pooled.hpp"
 
 #include "yack/utest/run.hpp"
@@ -66,10 +66,10 @@ YACK_UTEST(memory_alloc)
     concurrent::single::verbose = true;
     memory::pooled::instance();
     return 0;
-    test_alloc(memory::pages::instance());
+    test_alloc(memory::dyadic::instance());
     test_alloc(memory::global::instance());
 
-    memory::pages::instance().display();
+    memory::dyadic::instance().display();
     std::cerr << "== END ==" << std::endl;
 }
 YACK_UDONE()

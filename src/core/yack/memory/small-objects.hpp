@@ -11,7 +11,7 @@ namespace yack
     namespace memory
     {
         class blocks;
-        class pages;
+        class dyadic;
 
         //______________________________________________________________________
         //
@@ -40,7 +40,7 @@ namespace yack
             //__________________________________________________________________
             void *acquire_unlocked(size_t block_size);                           //!< acquire a new block
             void  release_unlocked(void *block_addr, size_t block_size) throw(); //!< release an old block
-            void  gc_unlocked(pages &) throw();                                  //!< garbage collection
+            void  gc_unlocked(dyadic &) throw();                                 //!< garbage collection
 
             const size_t      limit_size;    //!< to choose allocation methods
             const uint64_t    put_in_ram;    //!< bookkeeping or large alloc
