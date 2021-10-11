@@ -63,7 +63,6 @@ namespace
 YACK_UTEST(memory_alloc)
 {
     concurrent::single::verbose = true;
-    
     test_alloc(memory::global::instance());
     test_alloc(memory::dyadic::instance());
     test_alloc(memory::pooled::instance());
