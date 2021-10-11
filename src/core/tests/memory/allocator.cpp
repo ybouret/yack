@@ -2,6 +2,7 @@
 #include "yack/memory/allocator/global.hpp"
 #include "yack/memory/allocator/dyadic.hpp"
 #include "yack/memory/allocator/pooled.hpp"
+#include "yack/memory/allocator/scarce.hpp"
 
 #include "yack/utest/run.hpp"
 #include <cstring>
@@ -67,5 +68,7 @@ YACK_UTEST(memory_alloc)
     test_alloc(memory::dyadic::instance());
     test_alloc(memory::pooled::instance());
     
+    
+    std::cerr << "memory::scarce::max_block_exp2=" << memory::scarce::max_block_exp2 << std::endl;
 }
 YACK_UDONE()
