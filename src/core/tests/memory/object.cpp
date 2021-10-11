@@ -78,7 +78,6 @@ namespace {
 YACK_UTEST(object)
 {
     uprng ran;
-    do_test_obj<0>(ran);
     do_test_obj<1>(ran);
     do_test_obj<2>(ran);
     do_test_obj<3>(ran);
