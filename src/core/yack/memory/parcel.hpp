@@ -39,6 +39,7 @@ namespace yack
             //__________________________________________________________________
             static const size_t stamp_size    = sizeof(stamp_t);             //!< alias
             static const size_t stamp_exp2    = ilog2<stamp_size>::value;    //!< alias
+            static const size_t stamp_lost    = 2*stamp_size;                //!< room for head+tail
             static const size_t min_stamps    = 4;                           //!< alias
             static const size_t min_data_size = min_stamps * stamp_size;     //!< alias
             static const size_t min_data_exp2 = ilog2<min_data_size>::value; //!< alias

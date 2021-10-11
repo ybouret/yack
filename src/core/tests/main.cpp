@@ -24,6 +24,7 @@ YACK_UTEST_DECL(32)
     YACK_UTEST(memory_objects);
     YACK_UTEST(object);
     YACK_UTEST(memory_parcel);
+    YACK_UTEST(memory_parcels);
 
     YACK_UTEST(data_list);
     YACK_UTEST(data_list_sort);

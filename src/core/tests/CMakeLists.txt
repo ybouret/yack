@@ -42,6 +42,8 @@ add_test(memory:note     test-yack memory_note)
 add_test(memory:pages    test-yack memory_pages)
 add_test(memory:objects  test-yack memory_objects)
 add_test(memory:parcel   test-yack memory_parcel)
+add_test(memory:parcels   test-yack memory_parcels)
+
 add_test(object          test-yack object)
 
 add_test(data:list      test-yack data_list)
