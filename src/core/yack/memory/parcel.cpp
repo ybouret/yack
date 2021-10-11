@@ -1,6 +1,7 @@
 
 #include "yack/memory/parcel.hpp"
 #include "yack/type/utils.hpp"
+#include "yack/comparison.hpp"
 #include <iostream>
 
 namespace yack
@@ -9,6 +10,29 @@ namespace yack
     namespace memory
     {
 
+        int parcel:: compare(const parcel *lhs, const parcel *rhs) throw()
+        {
+            assert(NULL!=lhs);
+            assert(NULL!=rhs);
+            const size_t L = lhs->tail->size;
+            const size_t R = rhs->tail->size;
+            if(L<R)
+            {
+                return -1;
+            }
+            else
+            {
+                if(R<L)
+                {
+                    return 1;
+                }
+                else
+                {
+                    return comparison::increasing(lhs->head,rhs->head);
+                }
+            }
+            
+        }
 
 
         bool parcel:: is_empty() const throw()
@@ -169,7 +193,7 @@ namespace yack
     namespace memory
     {
 
-        const parcel  * parcel:: owner_of(const void *entry) throw()
+        const parcel  * parcel:: whose(const void *entry) throw()
         {
             assert(entry);
             const stamp_t *s = static_cast<const stamp_t *>(entry)-1;
@@ -177,6 +201,7 @@ namespace yack
             return s->user;
         }
 
+        
         parcel * parcel:: get_release(void * &entry, size_t &count) throw()
         {
             assert(entry);
@@ -256,7 +281,7 @@ namespace yack
         void parcel:: display() const
         {
 #if 1
-            std::cerr << '{';
+            std::cerr << "  " << '{';
             for(const stamp_t *stamp=head;stamp!=tail;stamp=stamp->next)
             {
                 if(stamp->user)

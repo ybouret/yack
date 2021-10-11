@@ -40,12 +40,27 @@ namespace yack
             explicit parcels();          //!< setup and one default parcel
             virtual ~parcels() throw();  //!< cleanup
 
+            
+            //__________________________________________________________________
+            //
+            // memory
+            //__________________________________________________________________
+            
             //! get/create memory >= block_size
             void *acquire_unlocked(size_t &block_size);
 
             //! release previously acquired block
+            /**
+             
+             */
             void  release_unlocked(void * &block_addr, size_t &block_size) throw();
 
+            //__________________________________________________________________
+            //
+            // methods
+            //__________________________________________________________________
+            void display() const; //!< info
+            
         private:
             YACK_DISABLE_COPY_AND_ASSIGN(parcels);
             parcel         *cache;

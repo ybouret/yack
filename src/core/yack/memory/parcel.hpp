@@ -62,13 +62,14 @@ namespace yack
             //
             // methods
             //__________________________________________________________________
-            void          *try_acquire(size_t &size)                 throw(); //!< try acquire a piece of memory
-            static parcel *get_release(void * &entry, size_t &count) throw(); //!< release ole memory, return owner
-            bool           is_empty()  const throw();                         //!< check vacancy condition
-            size_t         capacity()  const throw();                         //!< max available space
-            void           display()   const;                                 //!< info
-            static const parcel  *owner_of(const void *entry) throw();         //!< to check ownership
-
+            void                 *try_acquire(size_t &size)                 throw(); //!< try acquire a piece of memory
+            static parcel        *get_release(void * &entry, size_t &count) throw(); //!< release ole memory, return owner
+            bool                  is_empty()                          const throw(); //!< check vacancy condition
+            size_t                capacity()                          const throw(); //!< max available space
+            void                  display()                                   const; //!< info
+            static const parcel  *whose(const void *entry)                  throw(); //!< to check ownership
+            static int            compare(const parcel *lhs, const parcel *rhs) throw(); //!< comparison by size then address
+         
             //__________________________________________________________________
             //
             // members
@@ -77,7 +78,7 @@ namespace yack
             stamp_t       *tail; //!< sentinel block at end of block_addr
             parcel        *next; //!< for linked list
             parcel        *prev; //!< for linked list
-
+            
         private:
             YACK_DISABLE_COPY_AND_ASSIGN(parcel);
 

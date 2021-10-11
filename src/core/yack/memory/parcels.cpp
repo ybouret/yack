@@ -12,12 +12,12 @@
 
 namespace yack
 {
-
+    
     namespace memory
     {
-
+        
         const char parcels::designation[] = "memory::parcels";
-
+        
         parcels:: parcels() :
         cache(NULL),
         empty(NULL),
@@ -28,7 +28,7 @@ namespace yack
             zpool = new ( out_of_reach::zset(impl,sizeof(impl) ) ) arena(sizeof(parcel),global::instance(),true);
             grow_for(0);
         }
-
+        
         void parcels:: kill(parcel *p) throw()
         {
             assert(NULL!=p);
@@ -36,19 +36,19 @@ namespace yack
             static pages &mgr       = pages::location();
             void         *page_addr = static_cast<void *>(p->head);
             const size_t  page_exp2 = p->tail->size;
-
+            
             zpool->expunge( destructed(p) );
             mgr.store(page_addr,page_exp2);
         }
-
-
+        
+        
         parcels:: ~parcels() throw()
         {
             while(plist.size) kill( plist.pop_back() );
             out_of_reach::zset( destructed(zpool), sizeof(impl ) );
             zpool = 0;
         }
-
+        
         static inline size_t page_size_for(const size_t block_size)
         {
             assert(YACK_CHUNK_SIZE<=pages::max_page_size);
@@ -56,12 +56,12 @@ namespace yack
             if(page_size>pages::max_page_size) throw libc::exception(EINVAL,"%s(block_size overflow)",parcels::designation);
             return next_power_of_two( max_of<size_t>(YACK_CHUNK_SIZE,page_size) );
         }
-
+        
         void parcels:: grow_for(const size_t block_size)
         {
             const size_t page_size = page_size_for(block_size);
             const size_t page_exp2 = base2<size_t>::log2_of(page_size);
-
+            
             parcel *p = zpool->zombie<parcel>();
             try
             {
@@ -74,21 +74,21 @@ namespace yack
                 zpool->release(p);
                 throw;
             }
-
+            
             assert(p->capacity()>=block_size);
             cache = plist.store_increasing_memory(p);
-
+            
         }
-
-
+        
+        
         void * parcels:: checked(void *p) throw()
         {
             assert(p);
-            assert(parcel::owner_of(p) == cache);
+            assert(parcel::whose(p) == cache);
             if(empty==cache) empty=NULL;
             return p;
         }
-
+        
         void *parcels:: acquire_unlocked(size_t &size)
         {
             assert(cache);
@@ -115,7 +115,7 @@ namespace yack
                         return checked(p);
                     }
                     prev=prev->prev;
-
+                    
                     if(NULL!=(p=next->try_acquire(size)) )
                     {
                         cache=next;
@@ -123,7 +123,7 @@ namespace yack
                     }
                     next=next->next;
                 }
-
+                
                 //--------------------------------------------------------------
                 //
                 // down search
@@ -138,7 +138,7 @@ namespace yack
                     }
                     prev=prev->prev;
                 }
-
+                
                 //--------------------------------------------------------------
                 //
                 // up search
@@ -153,8 +153,8 @@ namespace yack
                     }
                     next=next->next;
                 }
-
-
+                
+                
                 //--------------------------------------------------------------
                 //
                 // need to grow
@@ -174,43 +174,109 @@ namespace yack
                 }
             }
         }
-
+        
     }
+    
+}
 
+
+namespace yack
+{
+    
+    namespace memory
+    {
+        void  parcels:: release_unlocked(void * &block_addr, size_t &block_size) throw()
+        {
+            // sanity check
+            assert(block_addr);
+            assert(block_size>0);
+            assert(0==(block_size%parcel::stamp_size));
+            static pages &target = pages::location();
+            
+            
+            parcel *p = parcel::get_release(block_addr,block_size);
+            if(p->is_empty())
+            {
+                assert(empty!=p);
+                if(empty)
+                {
+                    //----------------------------------------------------------
+                    // std::cerr << "found second empty" << std::endl;
+                    //----------------------------------------------------------
+                    assert(empty->is_empty());
+                    
+                    //----------------------------------------------------------
+                    // set p as the lowest size/memory
+                    //----------------------------------------------------------
+                    if( parcel::compare(p,empty) > 0 )
+                    {
+                        cswap(p,empty);
+                    }
+                    assert( parcel::compare(p,empty) < 0);
+                    
+                    //----------------------------------------------------------
+                    // take care of cache
+                    //----------------------------------------------------------
+                    assert(plist.size>=2);
+                    if(cache==p)
+                    {
+                        assert(cache->next||cache->prev);
+                        if(cache->prev)
+                        {
+                            cache=cache->prev;
+                        }
+                        else
+                        {
+                            cache=cache->next;
+                        }
+                    }
+                    
+                    //----------------------------------------------------------
+                    // surrender parcel
+                    //----------------------------------------------------------
+                    void        *page_addr = static_cast<void *>(p->head);
+                    const size_t page_exp2 = p->tail->size;
+                    zpool->revoke( plist.pop(p) );
+                    
+                    //----------------------------------------------------------
+                    // surrender page
+                    //----------------------------------------------------------
+                    target.store(page_addr,page_exp2);
+                    
+                }
+                else
+                {
+                    //----------------------------------------------------------
+                    // std::cerr << "found first empty..." << std::endl;
+                    //----------------------------------------------------------
+                    empty = p;
+                }
+            }
+            
+        }
+        
+    }
+    
 }
 
 #include <iostream>
 
 namespace yack
 {
-
+    
     namespace memory
     {
-        void  parcels:: release_unlocked(void * &block_addr, size_t &block_size) throw()
+        
+        void parcels:: display() const
         {
-
-            assert(block_addr);
-            assert(block_size>0);
-            assert(0==(block_size%parcel::stamp_size));
-
-            parcel *p = parcel::get_release(block_addr,block_size);
-            if(p->is_empty())
+            std::cerr << "<parcels>" << std::endl;
+            for(const parcel *p=plist.head;p;p=p->next)
             {
-                if(empty)
-                {
-                    assert(p!=empty);
-                    //std::cerr << "found second empty" << std::endl;
-                }
-                else
-                {
-                   // std::cerr << "found first empty..." << std::endl;
-                    empty = p;
-                }
+                p->display();
             }
-
+            std::cerr << "<parcels/>" << std::endl;
         }
-
+        
     }
-
 }
 
