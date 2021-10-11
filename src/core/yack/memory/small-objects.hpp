@@ -11,7 +11,8 @@ namespace yack
     namespace memory
     {
         class blocks;
-        
+        class pages;
+
         class small_objects
         {
         public:
@@ -24,7 +25,8 @@ namespace yack
             
             void *acquire_unlocked(size_t block_size);
             void  release_unlocked(void *block_addr, size_t block_size) throw();
-            
+            void  gc_unlocked(pages &) throw();
+
         private:
             YACK_DISABLE_COPY_AND_ASSIGN(small_objects);
             blocks *blk;

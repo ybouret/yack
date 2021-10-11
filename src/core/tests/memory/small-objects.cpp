@@ -36,9 +36,11 @@ namespace
 YACK_UTEST(memory_objects)
 {
     concurrent::single::verbose = true;
+    //concurrent::mutex::verbose  = true;
+
     uprng                 ran;
 
-    
+
     {
         memory::small_objects objs(32);
         cxx_list_of<block>    blocks;
@@ -61,7 +63,6 @@ YACK_UTEST(memory_objects)
     }
 
     {
-
         memory::small_object_allocator<32> &mgr =  memory::small_object_allocator<32>::instance();
         std::cerr << "call_sign=" << mgr.call_sign << std::endl;
     }

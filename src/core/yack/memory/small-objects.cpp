@@ -62,6 +62,11 @@ namespace yack
             }
         }
 
+        void  small_objects:: gc_unlocked(pages &target) throw()
+        {
+            blk->gc(target);
+        }
+
         
     }
     
