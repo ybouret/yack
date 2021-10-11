@@ -25,7 +25,8 @@ namespace yack
 
             static const size_t stamp_size    = sizeof(stamp_t);
             static const size_t stamp_exp2    = ilog2<stamp_size>::value;
-            static const size_t min_data_size = 4 * stamp_size;
+            static const size_t min_stamps    = 4;
+            static const size_t min_data_size = min_stamps * stamp_size;
             static const size_t min_data_exp2 = ilog2<min_data_size>::value;
 
             ~parcel() throw();
@@ -33,17 +34,13 @@ namespace yack
                    const size_t block_size,
                    const size_t block_exp2 ) throw();
 
-            stamp_t       *biggest_stamp;
-            size_t         usable_stamps;
             stamp_t       *head;
             stamp_t       *tail;
             parcel        *next;
             parcel        *prev;
-            const size_t   data_size;
-            const size_t   data_exp2;
-
-            void *acquire(size_t &size) throw();
-
+            
+            void   *try_acquire(size_t &size) throw();
+            size_t  capacity() const throw(); //!< max available
             void display() const;
 
         private:
