@@ -26,12 +26,32 @@ namespace yack
         
         void *pooled:: acquire(size_t &count, const size_t block_size)
         {
-            
+            YACK_LOCK(access);
+            if(count<=0)
+            {
+                return NULL;
+            }
+            else
+            {
+                static parcels &mgr = *coerce_cast<parcels>(parcels__);
+                count *= block_size;
+                return mgr.acquire_unlocked(count);
+            }
         }
         
         void pooled:: release(void *&addr, size_t &size) throw()
         {
-            
+            YACK_LOCK(access);
+            if(addr)
+            {
+                assert(size>0);
+                static parcels &mgr = *coerce_cast<parcels>(parcels__);
+                mgr.release_unlocked(addr,size);
+            }
+            else
+            {
+                assert(size<=0);
+            }
         }
         
     }

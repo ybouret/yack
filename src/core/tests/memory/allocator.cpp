@@ -62,14 +62,11 @@ namespace
 
 YACK_UTEST(memory_alloc)
 {
-    //concurrent::mutex::verbose     = true;
     concurrent::single::verbose = true;
-    memory::pooled::instance();
-    return 0;
-    test_alloc(memory::dyadic::instance());
+    
     test_alloc(memory::global::instance());
+    test_alloc(memory::dyadic::instance());
+    test_alloc(memory::pooled::instance());
 
-    memory::dyadic::instance().display();
-    std::cerr << "== END ==" << std::endl;
 }
 YACK_UDONE()
