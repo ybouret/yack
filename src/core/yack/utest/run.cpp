@@ -20,7 +20,7 @@ namespace yack
         return (0.5+double(rand()))/den;
     }
     
-    size_t utest_sizeof::width = 20;
+    size_t utest_sizeof::width = 32;
     
     void utest_sizeof:: print(const char *name, const unsigned size)
     {
