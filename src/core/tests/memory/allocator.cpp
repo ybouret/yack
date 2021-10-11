@@ -1,6 +1,7 @@
 
 #include "yack/memory/allocator/global.hpp"
 #include "yack/memory/allocator/pages.hpp"
+#include "yack/memory/allocator/pooled.hpp"
 
 #include "yack/utest/run.hpp"
 #include <cstring>
@@ -63,6 +64,8 @@ YACK_UTEST(memory_alloc)
 {
     //concurrent::mutex::verbose     = true;
     concurrent::single::verbose = true;
+    memory::pooled::instance();
+    return 0;
     test_alloc(memory::pages::instance());
     test_alloc(memory::global::instance());
 
