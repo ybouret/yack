@@ -1,4 +1,3 @@
-
 //! \file
 
 #ifndef YACK_MEMORY_RAM_INCLUDED
