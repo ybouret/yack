@@ -14,7 +14,7 @@ namespace yack
         typedef uint64_t unsigned_type; //!< integral unigned type
         typedef int64_t  signed_type;   //!< integral signed type
 
-        #define YACK_APEX_TYPE uint16_t
+        //#define YACK_APEX_TYPE uint16_t
         //#define YACK_APEX_TYPE uint32_t
 
 #if !defined(YACK_APEX_TYPE)

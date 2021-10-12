@@ -53,6 +53,8 @@ namespace yack
             void          xch(natural &other) throw(); //!< no throw exchange all fields
             unsigned_type lsu() const throw();         //!< least significant unsigned
 
+            const uint8_t & operator[](const size_t indx) const throw();
+
 
         private:
             size_t       bytes;

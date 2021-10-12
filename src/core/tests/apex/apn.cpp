@@ -2,7 +2,7 @@
 #include "yack/apex/natural.hpp"
 #include "yack/arith/base2.hpp"
 #include "yack/utest/run.hpp"
-
+#include "yack/system/endian.hpp"
 
 using namespace yack;
 
@@ -30,10 +30,19 @@ YACK_UTEST(apex_apn)
             YACK_ASSERT(n.lsu()==u);
             YACK_ASSERT(bytes_for(u)==n.size());
             YACK_ASSERT(n.bits()==bits);
+
+            apex::unsigned_type v = 0;
+            for(size_t i=n.size();i>0;--i)
+            {
+                v <<= 8;
+                v |= n[i];
+            }
+            YACK_ASSERT(u==v);
+            
         }
     }
 
     YACK_SIZEOF(apn);
-
+    std::cerr << "BE=" << endianness::BE() << std::endl;
 }
 YACK_UDONE()
