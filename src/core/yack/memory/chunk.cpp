@@ -178,7 +178,8 @@ namespace yack
         const size_t chunk:: header = YACK_MEMALIGN(sizeof(chunk));
 
 
-        static inline size_t blocks_for(const size_t chunk_size, const size_t block_size) throw()
+        static inline size_t blocks_for(const size_t chunk_size,
+                                        const size_t block_size) throw()
         {
             assert(chunk_size>=chunk::header);
             return (chunk_size-chunk::header)/block_size;
@@ -203,7 +204,7 @@ namespace yack
             //
             //------------------------------------------------------------------
             size_t min_chunk_size = next_power_of_two( header+minimum_frame_blocks*block_size ); assert(min_chunk_size>header);
-            size_t min_num_blocks = blocks_for(min_chunk_size,block_size);
+            size_t min_num_blocks = blocks_for(min_chunk_size,block_size); assert(min_num_blocks>=minimum_frame_blocks);
             while( min_num_blocks <= 0 ) min_num_blocks = blocks_for(min_chunk_size<<=1,block_size);
 
 

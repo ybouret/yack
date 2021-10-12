@@ -30,7 +30,7 @@ namespace yack
             //
             // types and definition
             //__________________________________________________________________
-            static const size_t header;                   //!< aligned size of chunk
+            static const size_t header;                   //!< sizeof(chunk)
             static const size_t minimum_frame_blocks = 8; //!< when a frame is allocated
 
             //__________________________________________________________________
