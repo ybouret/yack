@@ -54,7 +54,6 @@ namespace yack
         first_available(0),
         still_available( chunk_blocks(chunk_size,block_size) ),
         provided_number(still_available),
-        priv(0),
         data( static_cast<uint8_t*>(chunk_data)  ),
         last( data + block_size * provided_number),
         next(0),
@@ -191,7 +190,7 @@ namespace yack
         {
             //------------------------------------------------------------------
             //
-            // snity check
+            // sanity check
             //
             //------------------------------------------------------------------
             assert(block_size>0);

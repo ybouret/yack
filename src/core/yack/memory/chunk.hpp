@@ -103,7 +103,6 @@ namespace yack
             uint8_t                    first_available; //!< bookeeping
             uint8_t                    still_available; //!< bookeeping
             const uint8_t              provided_number; //!< initial count
-            uint8_t                    priv;            //!< unused
             uint8_t                   *data;            //!< first item
             const uint8_t * const      last;            //!< first invalid item
             chunk                     *next;            //!< for arena
