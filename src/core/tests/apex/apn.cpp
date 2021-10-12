@@ -38,10 +38,12 @@ YACK_UTEST(apex_apn)
                 v |= n[i];
             }
             YACK_ASSERT(u==v);
+            std::cerr << "n=" << n << std::endl;
             
         }
     }
 
+    std::cerr << std::dec;
     YACK_SIZEOF(apn);
     std::cerr << "BE=" << endianness::BE() << std::endl;
 }

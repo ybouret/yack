@@ -4,7 +4,6 @@
 #include "yack/arith/base2.hpp"
 #include "yack/type/out-of-reach.hpp"
 
-#include <iostream>
 
 namespace yack
 {
@@ -187,3 +186,33 @@ namespace yack
     }
 
 }
+
+#include <iostream>
+
+namespace yack
+{
+    namespace apex
+    {
+
+        std::ostream & operator<<(std::ostream &os, const natural n)
+        {
+            if(n.bytes<=0)
+            {
+                os << "0x00";
+            }
+            else
+            {
+                for(size_t i=n.bytes;i>0;--i)
+                {
+                    const uint8_t B = n[i];
+                    std::cerr << std::hex << uint64_t(B);
+                }
+            }
+            return os;
+        }
+
+
+    }
+
+}
+

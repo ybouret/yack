@@ -7,6 +7,7 @@
 #include "yack/apex/number.hpp"
 #include "yack/apex/types.hpp"
 #include "yack/arith/ilog2.hpp"
+#include <iosfwd>
 
 namespace yack
 {
@@ -54,6 +55,9 @@ namespace yack
             unsigned_type lsu() const throw();         //!< least significant unsigned
 
             const uint8_t & operator[](const size_t indx) const throw();
+
+            friend std::ostream & operator<<(std::ostream &os, const natural n);
+
 
 
         private:
