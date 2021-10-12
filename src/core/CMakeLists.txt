@@ -72,13 +72,19 @@ set(memory_small ${memory_small_impl} ${memory_small_decl})
 SOURCE_GROUP(memory/small FILES ${memory_small})
 install( FILES ${memory_small_decl} DESTINATION include/yack/memory/small )
  
- # memory large 
+# memory large 
 file(GLOB memory_large_impl yack/memory/large/*.cpp)
 file(GLOB memory_large_decl yack/memory/large/*.hpp)
 set(memory_large ${memory_large_impl} ${memory_large_decl})
 SOURCE_GROUP(memory/large FILES ${memory_large})
 install( FILES ${memory_large_decl} DESTINATION include/yack/memory/large )
  
+# memory joint 
+file(GLOB memory_joint_impl yack/memory/joint/*.cpp)
+file(GLOB memory_joint_decl yack/memory/joint/*.hpp)
+set(memory_joint ${memory_joint_impl} ${memory_joint_decl})
+SOURCE_GROUP(memory/joint FILES ${memory_joint})
+install( FILES ${memory_joint_decl} DESTINATION include/yack/memory/joint )
  
  # memory allocators 
 file(GLOB memory_allocator_impl yack/memory/allocator/*.cpp)
@@ -119,7 +125,7 @@ ${check}
 ${system}
 ${data}
 ${container}
-${memory} ${memory_allocator} ${memory_small} ${memory_large}
+${memory} ${memory_allocator} ${memory_small} ${memory_large} ${memory_joint}
 ${concurrent} ${concurrent_quark} ${concurrent_sync}
 ${utest}
 )

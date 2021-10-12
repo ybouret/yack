@@ -1,6 +1,6 @@
 
 #include "yack/memory/allocator/pooled.hpp"
-#include "yack/memory/parcels.hpp"
+#include "yack/memory/joint/parcels.hpp"
 #include "yack/type/destruct.hpp"
 
 namespace yack

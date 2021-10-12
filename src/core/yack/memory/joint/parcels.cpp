@@ -1,6 +1,6 @@
 
-#include "yack/memory/parcels.hpp"
-#include "yack/memory/parcel.hpp"
+#include "yack/memory/joint/parcels.hpp"
+#include "yack/memory/joint/parcel.hpp"
 #include "yack/memory/small/arena.hpp"
 #include "yack/memory/allocator/global.hpp"
 #include "yack/memory/allocator/dyadic.hpp"
