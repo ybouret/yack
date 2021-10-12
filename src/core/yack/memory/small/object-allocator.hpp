@@ -4,7 +4,7 @@
 #ifndef YACK_SMALL_OBJECT_ALLOCATOR_INCLUDED
 #define YACK_SMALL_OBJECT_ALLOCATOR_INCLUDED
 
-#include "yack/memory/small-objects.hpp"
+#include "yack/memory/small/objects.hpp"
 #include "yack/singleton.hpp"
 #include "yack/memory/allocator/pooled-longevity.hpp"
 

@@ -1,6 +1,6 @@
 
-#include "yack/memory/arena.hpp"
-#include "yack/memory/chunk.hpp"
+#include "yack/memory/small/arena.hpp"
+#include "yack/memory/small/chunk.hpp"
 #include "yack/arith/base2.hpp"
 #include "yack/type/out-of-reach.hpp"
 #include "yack/check/static.hpp"

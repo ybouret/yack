@@ -5,7 +5,7 @@
 
 #include "yack/data/list.hpp"
 #include "yack/memory/chunk-size.hpp"
-#include "yack/memory/arena-words.hpp"
+#include "yack/memory/small/arena-words.hpp"
 
 #if defined(_MSC_VER)
 #include "yack/memory/parcel.hpp"

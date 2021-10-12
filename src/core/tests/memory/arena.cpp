@@ -1,6 +1,6 @@
 
 #include "yack/memory/ram.hpp"
-#include "yack/memory/arena.hpp"
+#include "yack/memory/small/arena.hpp"
 #include "yack/system/exception.hpp"
 #include "yack/utest/run.hpp"
 #include "yack/data/cxx-list.hpp"

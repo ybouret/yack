@@ -1,5 +1,5 @@
-#include "yack/memory/small-objects.hpp"
-#include "yack/memory/blocks.hpp"
+#include "yack/memory/small/objects.hpp"
+#include "yack/memory/small/blocks.hpp"
 #include "yack/memory/allocator/global.hpp"
 #include "yack/type/out-of-reach.hpp"
 #include <new>

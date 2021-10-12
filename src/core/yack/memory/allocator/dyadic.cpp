@@ -111,7 +111,7 @@ namespace yack
 }
 
 #include "yack/data/pool-sort.hpp"
-#include "yack/memory/chunk.hpp"
+#include "yack/memory/small/chunk.hpp"
 #include <iostream>
 
 namespace yack

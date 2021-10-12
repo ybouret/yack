@@ -5,7 +5,7 @@
 #define YACK_MEMORY_BLOCKS_INCLUDED 1
 
 #include "yack/data/list.hpp"
-#include "yack/memory/arena-words.hpp"
+#include "yack/memory/small/arena-words.hpp"
 
 namespace yack
 {

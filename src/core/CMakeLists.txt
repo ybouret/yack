@@ -65,6 +65,14 @@ set(memory ${memory_impl} ${memory_decl})
 SOURCE_GROUP(memory FILES ${memory})
 install( FILES ${memory_decl} DESTINATION include/yack/memory )
  
+# memory small 
+file(GLOB memory_small_impl yack/memory/small/*.cpp)
+file(GLOB memory_small_decl yack/memory/small/*.hpp)
+set(memory_small ${memory_small_impl} ${memory_small_decl})
+SOURCE_GROUP(memory/small FILES ${memory_small})
+install( FILES ${memory_small_decl} DESTINATION include/yack/memory/small )
+ 
+ 
  # memory allocators 
 file(GLOB memory_allocator_impl yack/memory/allocator/*.cpp)
 file(GLOB memory_allocator_decl yack/memory/allocator/*.hpp)
@@ -105,7 +113,7 @@ ${check}
 ${system}
 ${data}
 ${container}
-${memory} ${memory_allocator}
+${memory} ${memory_allocator} ${memory_small}
 ${concurrent} ${concurrent_quark} ${concurrent_sync}
 ${utest}
 )

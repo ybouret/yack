@@ -1,5 +1,5 @@
-#include "yack/memory/blocks.hpp"
-#include "yack/memory/arena.hpp"
+#include "yack/memory/small/blocks.hpp"
+#include "yack/memory/small/arena.hpp"
 #include "yack/system/exception.hpp"
 #include "yack/memory/allocator/global.hpp"
 #include "yack/arith/base2.hpp"

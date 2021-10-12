@@ -1,5 +1,5 @@
 #include "yack/memory/ram.hpp"
-#include "yack/memory/chunk.hpp"
+#include "yack/memory/small/chunk.hpp"
 #include "yack/system/exception.hpp"
 #include "yack/utest/run.hpp"
 #include <cstring>

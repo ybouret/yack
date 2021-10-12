@@ -1,6 +1,6 @@
 
-#include "yack/memory/arena.hpp"
-#include "yack/memory/chunk.hpp"
+#include "yack/memory/small/arena.hpp"
+//#include "yack/memory/chunk.hpp"
 #include "yack/memory/allocator/dyadic.hpp"
 
 namespace yack

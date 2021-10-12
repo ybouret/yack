@@ -1,6 +1,6 @@
 
 #include "yack/object.hpp"
-#include "yack/memory/small-object-allocator.hpp"
+#include "yack/memory/small/object-allocator.hpp"
 #include <cstring>
 
 namespace yack

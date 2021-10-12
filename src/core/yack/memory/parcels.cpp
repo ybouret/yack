@@ -1,7 +1,7 @@
 
 #include "yack/memory/parcels.hpp"
 #include "yack/memory/parcel.hpp"
-#include "yack/memory/arena.hpp"
+#include "yack/memory/small/arena.hpp"
 #include "yack/memory/allocator/global.hpp"
 #include "yack/memory/allocator/dyadic.hpp"
 #include "yack/type/out-of-reach.hpp"

@@ -5,7 +5,7 @@
 #define YACK_MEMORY_NOTE_INCLUDED 1
 
 #include "yack/memory/min-page-size.hpp"
-#include "yack/memory/arena-words.hpp"
+#include "yack/memory/small/arena-words.hpp"
 #include "yack/arith/ilog2.hpp"
 #include "yack/arith/align.hpp"
 
