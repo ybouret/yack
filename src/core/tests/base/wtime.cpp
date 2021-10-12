@@ -7,6 +7,10 @@ using namespace yack;
 
 YACK_UTEST(wtime)
 {
+
+    wtime rtc;
+    std::cerr << "rtc.freq=" << rtc.freq << std::endl;
+    
     for(size_t i=0;i<10;++i)
     {
         std::cerr << wtime::ticks() << std::endl;

@@ -18,8 +18,6 @@ namespace yack
         static uint64_t  ticks();     //!< system ticks
 
 
-    private:
-        YACK_DISABLE_COPY_AND_ASSIGN(wtime);
         //! frequency to convert ticks to seconds
         const
 #if defined(YACK_DARWIN) || defined(YACK_WIN)
@@ -28,6 +26,8 @@ namespace yack
         uint64_t
 #endif
         freq;
+    private:
+        YACK_DISABLE_COPY_AND_ASSIGN(wtime);
     };
 
 }

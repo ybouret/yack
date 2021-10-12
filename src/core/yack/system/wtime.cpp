@@ -67,6 +67,33 @@ namespace yack
 
 #endif
 
+#if defined(YACK_WIN)
+    static inline double wtime_calibrate()
+    {
+        static const long double l_one = 1;
+        YACK_GIANT_LOCK();
+        LARGE_INTEGER F;
+        if( ! :: QueryPerformanceFrequency( &F ) )
+        {
+            throw win32::exception( ::GetLastError(), "::QueryPerformanceFrequency" );
+        }
+        return static_cast<double>(l_one / static_cast<long double>( F.QuadPart ));
+    }
+
+    uint64_t real_time_clock:: ticks()
+    {
+        YACK_GIANT_LOCK();
+        int64_t Q = 0;
+        if( ! ::QueryPerformanceCounter( (LARGE_INTEGER *)&Q)  )
+        {
+            throw win32::exception( ::GetLastError(), " ::QueryPerformanceCounter" );
+        }
+        return uint64_t(Q);
+    }
+    
+#endif
+
+
     wtime:: wtime() : freq( wtime_calibrate() )
     {
     }
