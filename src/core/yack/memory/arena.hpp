@@ -124,7 +124,8 @@ namespace yack
             //__________________________________________________________________
             void gc(dyadic &) throw(); //!< garbage collector
             void display() const;      //!< current information
-            
+            size_t wasted() const throw(); //!< wasted bytes per chunk
+
         private:
             size_t       available;   //!< bookkeeping
             chunk       *acquiring;   //!< last acquiring

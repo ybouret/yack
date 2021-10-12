@@ -392,6 +392,10 @@ namespace yack
             take(addr);
         }
 
+        size_t arena:: wasted() const throw()
+        {
+            return frame_size - block_size * new_blocks - sizeof(chunk);
+        }
         
     }
     
@@ -407,11 +411,12 @@ namespace yack
         void  arena:: display() const
         {
             std::cerr << "    <arena";
-            std::cerr << " bs=\""    << std::setw(3) << block_size << "\"";
-            std::cerr << " in=\""  << std::setw(3) << available << "\"";
-            std::cerr << " out=\"" << reservoir.size * new_blocks << "\"";
-            std::cerr << " bpc=\"" << std::setw(3) << new_blocks << "\"";
-            std::cerr << " pgs=\"" << frame_size << "=2^" << frame_exp2 << "\"";
+            std::cerr << " bs="  << std::setw(3) << block_size;
+            std::cerr << " in="  << std::setw(3) << available;
+            std::cerr << " out=" << reservoir.size * new_blocks;
+            std::cerr << " bpc=" << std::setw(3) << new_blocks;
+            std::cerr << " pgs=" << frame_size << "=2^" << frame_exp2;
+            std::cerr << " bad=" << wasted();
             std::cerr << "/>" << std::endl;
         }
     }
