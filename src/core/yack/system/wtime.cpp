@@ -37,7 +37,7 @@ namespace yack
         const kern_return_t err = mach_timebase_info(&timebase);
         if(KERN_SUCCESS !=err)
         {
-            throw imported::exception("mach_timebase_info","%s",mach_error_string(err));
+            throw mach::exception(err,"mach_timebase_info");
         }
         double conversion_factor = double(timebase.numer) / timebase.denom;
         return 1e-9 * conversion_factor;

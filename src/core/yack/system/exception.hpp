@@ -74,27 +74,50 @@ namespace yack
         };
     }
 
+#if defined(YACK_DARWIN)
+    namespace mach
+    {
+        //______________________________________________________________________
+        //
+        //
+        //! exception to use mach error
+        //
+        //______________________________________________________________________
+        class exception : public system_exception<int>
+        {
+        public:
+            //! setup code/mach error/when
+            explicit exception(const int err, const char *fmt,...) throw() YACK_PRINTF_CHECK(3,4);
+            virtual ~exception() throw();        //!< cleanup
+            exception(const exception&) throw(); //!< nothrow copy
+
+        private:
+            YACK_DISABLE_ASSIGN(exception);
+        };
+    }
+#endif
+
 #if defined(YACK_WIN)
-	namespace win32
-	{
+    namespace win32
+    {
         //______________________________________________________________________
         //
         //
         //! exception to use GetLastError
         //
         //______________________________________________________________________
-		class exception : public system_exception<uint32_t>
-		{
-		public:
+        class exception : public system_exception<uint32_t>
+        {
+        public:
             //! setup code/FormatMessage/when
-			explicit exception(const uint32_t err, const char *fmt, ...) throw() YACK_PRINTF_CHECK(3, 4);
-			virtual ~exception() throw();        //!< cleanup
-			exception(const exception&) throw(); //!< nothrow copy
+            explicit exception(const uint32_t err, const char *fmt, ...) throw() YACK_PRINTF_CHECK(3, 4);
+            virtual ~exception() throw();        //!< cleanup
+            exception(const exception&) throw(); //!< nothrow copy
 
-		private:
-			YACK_DISABLE_ASSIGN(exception);
-		};
-	}
+        private:
+            YACK_DISABLE_ASSIGN(exception);
+        };
+    }
 #endif
 
 }

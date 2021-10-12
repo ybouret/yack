@@ -21,8 +21,8 @@ namespace yack
         //
         // C++
         //______________________________________________________________________
-        explicit wtime();
-        virtual ~wtime() throw();
+        explicit wtime();          //!< setup frequency
+        virtual ~wtime() throw();  //!< cleanup
 
         //______________________________________________________________________
         //
@@ -30,8 +30,7 @@ namespace yack
         //______________________________________________________________________
         static uint64_t  ticks();                //!< system ticks
         double operator()(const uint64_t) const; //!< ticks->seconds
-
-        void   wait(const double secs) const;
+        void   wait(const double secs) const;    //!< empty loop over secs seconds
 
         //______________________________________________________________________
         //

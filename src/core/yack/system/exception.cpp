@@ -34,6 +34,44 @@ namespace yack
 
 }
 
+
+#if defined(YACK_DARWIN)
+#include <mach/mach.h>
+#include "yack/type/cstring.h"
+
+namespace yack
+{
+    namespace mach
+    {
+        exception:: ~exception() throw()
+        {
+        }
+
+        exception:: exception(const exception &other) throw() :
+        excp_type(other)
+        {
+        }
+
+
+        exception:: exception(const int err, const char *fmt,...) throw() :
+        excp_type(err)
+        {
+            {
+                va_list ap;
+                va_start(ap,fmt);
+                failsafe_format(info,sizeof(info),fmt,&ap);
+                va_end(ap);
+            }
+
+            yack_cstring_msgcpy(text,sizeof(text),mach_error_string(err));
+        }
+
+    }
+
+}
+#endif
+
+
 #if defined(YACK_WIN)
 namespace yack
 {
