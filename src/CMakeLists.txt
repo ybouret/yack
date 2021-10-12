@@ -16,7 +16,7 @@ endmacro()
 #define a local target for unit tests
 macro(yack_testing target)
 	add_custom_target(utest-${target}
-	COMMAND ${CMAKE_CTEST_COMMAND} -C ${CMAKE_BUILD_TYPE}
+	COMMAND ${CMAKE_CTEST_COMMAND} --progress -C ${CMAKE_BUILD_TYPE}
 	DEPENDS test-${target}
 	COMMENT "[YACK] Running Unit Tests for ${CMAKE_BUILD_TYPE} <${target}>" )	
 endmacro()
