@@ -2,7 +2,6 @@
 #include "yack/memory/allocator/global.hpp"
 #include "yack/memory/allocator/dyadic.hpp"
 #include "yack/memory/allocator/pooled.hpp"
-#include "yack/memory/allocator/scarce.hpp"
 
 #include "yack/utest/run.hpp"
 #include <cstring>
@@ -43,6 +42,7 @@ namespace
             block       &blk = blocks[i];
             blk.size = 1 + (rand()%1024);
             blk.addr = mem.acquire(blk.size,block_size);
+            YACK_ASSERT( out_of_reach::is0(blk.addr,blk.size) );
         }
         ran.shuffle(blocks,nblock);
 

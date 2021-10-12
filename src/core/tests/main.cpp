@@ -21,7 +21,6 @@ YACK_UTEST_DECL(32)
     YACK_UTEST(memory_blocks);
     YACK_UTEST(memory_note);
     YACK_UTEST(memory_dyadic);
-    YACK_UTEST(memory_scarce);
     YACK_UTEST(memory_objects);
     YACK_UTEST(object);
     YACK_UTEST(memory_parcel);
