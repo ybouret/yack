@@ -6,7 +6,7 @@
 #ifndef YACK_MEMORY_CHAPTER_INCLUDED
 #define YACK_MEMORY_CHAPTER_INCLUDED 1
 
-#include "yack/memory/page.hpp"
+#include "yack/memory/large/page.hpp"
 #include "yack/data/list.hpp"
 
 namespace yack

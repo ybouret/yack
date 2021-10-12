@@ -4,7 +4,7 @@
 #define YACK_SMALL_OBJECTS_INCLUDED
 
 #include "yack/setup.hpp"
-#include "yack/memory/blocks-words.hpp"
+#include "yack/memory/small/blocks-words.hpp"
 
 namespace yack
 {

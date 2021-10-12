@@ -3,8 +3,8 @@
 #ifndef YACK_MEMORY_BOOK_INCLUDED
 #define YACK_MEMORY_BOOK_INCLUDED 1
 
-#include "yack/memory/chapter.hpp"
-#include "yack/memory/min-page-size.hpp"
+#include "yack/memory/large/chapter.hpp"
+#include "yack/memory/large/min-page-size.hpp"
 #include "yack/arith/ilog2.hpp"
 #include "yack/arith/align.hpp"
 

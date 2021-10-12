@@ -2,8 +2,8 @@
 
 
 #include "yack/memory/allocator/dyadic.hpp"
-#include "yack/memory/note.hpp"
-#include "yack/memory/book.hpp"
+#include "yack/memory/large/note.hpp"
+#include "yack/memory/large/book.hpp"
 
 #include "yack/arith/base2.hpp"
 #include "yack/system/exception.hpp"
