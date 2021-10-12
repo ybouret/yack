@@ -21,7 +21,26 @@ namespace
             const unsigned l = integer_log2(p);
             YACK_ASSERT( (T(1) << l) == p );
         }
+
     }
+
+    template <typename T> static inline
+    void test_bytes_for(uprng &ran)
+    {
+        std::cerr << std::hex;
+        T p = 0;
+        YACK_ASSERT(0==bytes_for(p));
+        for(size_t i=sizeof(T)*8;i>0;--i)
+        {
+            p <<= 1;
+            p |= ran() > 0.5 ? 1 : 0;
+            const size_t B = bytes_for(p);
+            std::cerr << uint64_t(p) << " => byte=" << B << std::endl;
+        }
+
+    }
+
+
 }
 
 
@@ -38,6 +57,13 @@ YACK_UTEST(base2)
 
     test_base2<int64_t>();
     test_base2<uint64_t>();
+
+    uprng ran;
+    test_bytes_for<uint8_t>(ran);
+    test_bytes_for<uint16_t>(ran);
+    test_bytes_for<uint32_t>(ran);
+    test_bytes_for<uint64_t>(ran);
+
 
 }
 YACK_UDONE()

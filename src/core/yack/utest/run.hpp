@@ -51,6 +51,26 @@ namespace yack
             return T( floor( double(M) * self() + 0.5 ) );
         }
 
+        template <typename T> inline
+        T gen(const size_t bits) throw()
+        {
+            assert(bits<=sizeof(T)*8);
+            if(bits<=0)
+            {
+                return 0;
+            }
+            else
+            {
+                T ans = 1;
+                for(size_t i=bits;i>1;--i)
+                {
+                    ans <<= 1;
+                    if( choice() ) ans |= 1;
+                }
+                return ans;
+            }
+        }
+
         //! true/false at 50/50
         inline bool choice() throw()
         {

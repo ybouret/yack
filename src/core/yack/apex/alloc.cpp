@@ -1,4 +1,4 @@
-#include "yack/apex/types.hpp"
+#include "yack/apex/alloc.hpp"
 #include "yack/memory/allocator/dyadic.hpp"
 
 namespace yack
@@ -7,7 +7,7 @@ namespace yack
     namespace apex
     {
 
-        void * cull:: block_acquire(int &block_exp2)
+        void * alloc:: block_acquire(int &block_exp2)
         {
             static memory::dyadic &mgr = memory::dyadic::instance();
             assert(block_exp2>=0);
@@ -21,7 +21,7 @@ namespace yack
             }
         }
 
-        void  cull:: block_release(void * &block_addr, int &block_exp2) throw()
+        void  alloc:: block_release(void * &block_addr, int &block_exp2) throw()
         {
             static memory::dyadic &mgr = memory::dyadic::location();
             assert(NULL!=block_addr);

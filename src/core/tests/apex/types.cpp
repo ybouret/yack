@@ -1,4 +1,5 @@
 #include "yack/apex/types.hpp"
+#include "yack/apex/alloc.hpp"
 #include "yack/utest/run.hpp"
 #include "yack/memory/allocator/dyadic.hpp"
 
@@ -13,13 +14,13 @@ namespace
     {
         int         arr_exp2 =  5;
         int         blk_exp2 = -1;
-        T          *arr      = apex::cull::field_acquire<T>(arr_exp2,blk_exp2);
+        T          *arr      = apex::alloc::field_acquire<T>(arr_exp2,blk_exp2);
         size_t      arr_size = 1 << arr_exp2;
 
         std::cerr << "arr_exp2=" << arr_exp2 << " => bkl_exp2=" << blk_exp2 << " size=" << arr_size << ", bytes=" << (1<<blk_exp2) << std::endl;
         ran.fillnz(arr,arr_size*sizeof(T));
 
-        apex::cull::field_release(arr,arr_exp2,blk_exp2);
+        apex::alloc::field_release(arr,arr_exp2,blk_exp2);
 
     }
 }
@@ -28,9 +29,11 @@ YACK_UTEST(apex_types)
 {
     uprng ran;
     std::cerr << "core_bits=" << apex::cull::core_bits << std::endl;
-    std::cerr << "work_bits=" << apex::cull::work_bits << std::endl;
+    std::cerr << "word_bits=" << apex::cull::word_bits << std::endl;
 
     YACK_CHECK(sizeof(apex::cull::core_type)==apex::cull::core_size);
+    YACK_CHECK(sizeof(apex::cull::word_type)==apex::cull::word_size);
+
     do_test_mem<uint8_t>(ran);
     do_test_mem<uint16_t>(ran);
     do_test_mem<uint32_t>(ran);

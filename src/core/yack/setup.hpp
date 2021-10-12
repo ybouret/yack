@@ -34,7 +34,13 @@ namespace yack
     //! inline type mutable coercion
     template <typename T> inline
     T & coerce(const T &source) throw() { return (T&)source;  }
-    
+
+    //! force cswap of integral objects
+    template <typename T> inline
+    void coerce_cswap(const T &lhs, const T &rhs) throw()
+    {
+        cswap( coerce(lhs), coerce(rhs) );
+    }
 }
 
 #endif

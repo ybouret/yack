@@ -26,7 +26,7 @@ namespace yack
     
     void linked:: xch_size(linked &other) throw()
     {
-        cswap( coerce(size), coerce(other.size) );
+        coerce_cswap(size,other.size);
     }
     
 }

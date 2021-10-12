@@ -41,5 +41,6 @@ YACK_UTEST_DECL(64)
     YACK_UTEST(singleton);
 
     YACK_UTEST(apex_types);
+    YACK_UTEST(apex_apn);
 }
 YACK_UTEST_EXEC()

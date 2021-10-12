@@ -64,6 +64,6 @@ add_test(sync:thread    test-yack sync_condition)
 add_test(singleton      test-yack singleton)
 
 add_test(apex:types     test-yack  apex_types)
-
+add_test(apex:apn       test-yack  apex_apn)
 
 yack_testing(yack)
