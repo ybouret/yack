@@ -1,4 +1,3 @@
-
 //! \file
 
 #ifndef YACK_MEMORY_PARCELS_INCLUDED
@@ -8,13 +7,17 @@
 #include "yack/memory/chunk-size.hpp"
 #include "yack/memory/arena-words.hpp"
 
+#if defined(_MSC_VER)
+#include "yack/memory/parcel.hpp"
+#else
+namespace yack { namespace memory { class parcel;  } }
+#endif
+
 namespace yack
 {
-
     namespace memory
     {
 
-        class parcel;
         class arena;
 
         //______________________________________________________________________

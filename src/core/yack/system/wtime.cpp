@@ -80,7 +80,7 @@ namespace yack
         return static_cast<double>(l_one / static_cast<long double>( F.QuadPart ));
     }
 
-    uint64_t real_time_clock:: ticks()
+    uint64_t wtime:: ticks()
     {
         YACK_GIANT_LOCK();
         int64_t Q = 0;
