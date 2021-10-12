@@ -402,7 +402,6 @@ namespace yack
 }
 
 
-
 namespace yack
 {
 
