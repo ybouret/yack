@@ -42,6 +42,11 @@ namespace yack
         double conversion_factor = double(timebase.numer) / timebase.denom;
         return 1e-9 * conversion_factor;
     }
+
+    double wtime:: operator()(const uint64_t num_ticks) const
+    {
+        return freq * double(num_ticks);
+    }
 #endif
 
 #if defined(YACK_USE_CLOCK_GETTIME)
@@ -65,6 +70,10 @@ namespace yack
         return __giga64*uint64_t(tp.tv_sec) + uint64_t(tp.tv_nsec);
     }
 
+    double wtime:: operator()(const uint64_t num_ticks) const
+    {
+        return 1.0e-9 * double(num_ticks);
+    }
 #endif
 
 #if defined(YACK_WIN)
@@ -91,6 +100,10 @@ namespace yack
         return uint64_t(Q);
     }
     
+    double wtime:: operator()(const uint64_t num_ticks) const
+    {
+        return freq * double(num_ticks);
+    }
 #endif
 
 
@@ -101,6 +114,13 @@ namespace yack
     wtime:: ~wtime() throw()
     {
         coerce(freq) = 0;
+    }
+
+    void  wtime:: wait(const double secs) const
+    {
+        const uint64_t mark = ticks();
+        while( (*this)(ticks()-mark) < secs)
+            ;
     }
 
     
