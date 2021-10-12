@@ -51,6 +51,7 @@ namespace yack
             return T( floor( double(M) * self() + 0.5 ) );
         }
 
+        //! generate an integral type with given bits
         template <typename T> inline
         T gen(const size_t bits) throw()
         {

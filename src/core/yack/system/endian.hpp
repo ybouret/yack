@@ -8,10 +8,17 @@
 
 namespace yack
 {
+
+    //__________________________________________________________________________
+    //
+    //
+    //! testing endianness
+    //
+    //__________________________________________________________________________
     struct endianness
     {
-        static bool BE() throw();
-        static bool LE() throw();
+        static bool BE() throw(); //!< if Big    Endian
+        static bool LE() throw(); //!< of Little Endian
     };
 }
 

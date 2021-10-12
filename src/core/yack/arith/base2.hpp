@@ -102,14 +102,16 @@ namespace yack
         return base2<T>::log2_of(v);
     }
 
-    template <typename T>   size_t bytes_for(const T b) throw();
+    //! counting byte for value
+    template <typename T>   size_t bytes_for(const T) throw();
 
-    template <> size_t bytes_for<uint8_t>(const  uint8_t  b) throw();
-    template <> size_t bytes_for<uint16_t>(const uint16_t b) throw();
-    template <> size_t bytes_for<uint32_t>(const uint32_t b) throw();
-    template <> size_t bytes_for<uint64_t>(const uint64_t b) throw();
+    template <> size_t bytes_for<uint8_t>(const  uint8_t  b) throw(); //!< for 8bits
+    template <> size_t bytes_for<uint16_t>(const uint16_t b) throw(); //!< for 16bits
+    template <> size_t bytes_for<uint32_t>(const uint32_t b) throw(); //!< for 32bits
+    template <> size_t bytes_for<uint64_t>(const uint64_t b) throw(); //!< for 64bits
 
 
+    //! counting number of bits for value
     template <typename T> size_t bits_for(const T b) throw()
     {
         size_t ibit = base2<T>::max_power_of_two;
