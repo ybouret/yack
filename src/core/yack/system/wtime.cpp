@@ -9,6 +9,7 @@
 
 #if defined(YACK_LINUX) || defined(YACK_FREEBSD) || defined(YACK_SUNOS) || defined(YACK_OPENBSD)
 #define YACK_USE_CLOCK_GETTIME 1
+#include <time.h>
 #include <sys/time.h>
 #include <cerrno>
 #endif
