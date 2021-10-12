@@ -16,25 +16,19 @@ set(CMAKE_ALLOW_LOOSE_LOOP_CONSTRUCTS    ON)
 ##
 ##
 ########################################################################
+
 string(COMPARE EQUAL "Debug"    "${CMAKE_BUILD_TYPE}" YACK_DEBUG)
 string(COMPARE EQUAL "Release"  "${CMAKE_BUILD_TYPE}" YACK_RELEASE)
 
-set(YACK_HAVE_CONFIG OFF)
-if(YACK_DEBUG)
-	set(YACK_CONFIG "Debug")
-	set(YACK_HAVE_CONFIG ON)
+if(YACK_DEBUG OR YACK_RELEASE)
+	message( STATUS "[YACK] CMAKE_BUILD_TYPE is valid and defined") 
+else()
+	message( STATUS "[YACK] CMAKE_BUILD_TYPE is set to 'Debug'" )
+	set(CMAKE_BUILD_TYPE "Debug")
+	set(YACK_DEBUG ON)
 endif()
 
-if(YACK_RELEASE)
-	set(YACK_CONFIG "Release")
-	set(YACK_HAVE_CONFIG   ON)
-endif()
-
-if(FALSE)
-if(NOT YACK_HAVE_CONFIG)
-	message( FATAL_ERROR "[YACK] unknow config: use [Debug|Release]" )
-endif()
-endif()
+	
 
 ########################################################################
 ##
@@ -196,6 +190,13 @@ if(NOT YACK_KNOWN_COMPILER)
 	message( FATAL_ERROR "[YACK] unknown compilers '${YACK_CC}'" )
 endif()
 
+########################################################################
+##
+##
+##  updating flags
+##
+##
+########################################################################
 set(CMAKE_C_FLAGS_RELEASE   ${YACK_FLAGS_RELEASE})
 set(CMAKE_CXX_FLAGS_RELEASE ${YACK_FLAGS_RELEASE})
 set(CMAKE_C_FLAGS_DEBUG     ${YACK_FLAGS_DEBUG})
