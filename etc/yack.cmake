@@ -222,6 +222,10 @@ function(yack_link_libraries program)
 	if(YACK_LINUX OR YACK_FREEBSD)
 		list(APPEND yack_libs "pthread")
 	endif()
+	
+	if(YACK_LINUX)
+		list(APPEND yack_libs "rt")
+	endif()
  	
 	message( STATUS "[YACK] link libraries @${program} : ${yack_libs}" )
 	target_link_libraries(${program} ${yack_libs})
