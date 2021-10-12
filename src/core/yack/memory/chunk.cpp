@@ -53,6 +53,7 @@ namespace yack
                       const size_t chunk_size) throw() :
         first_available(0),
         still_available( chunk_blocks(chunk_size,block_size) ),
+        operated_number(0),
         provided_number(still_available),
         data( static_cast<uint8_t*>(chunk_data)  ),
         last( data + block_size * provided_number),
@@ -62,9 +63,11 @@ namespace yack
             format(block_size);
         }
 
+#if 0
         bool chunk:: is_empty() const throw()
         {
-            return still_available >= provided_number;
+            assert(operated_number+still_available==provided_number);
+            return operated_number;
         }
 
         size_t chunk:: allocated() const throw()
@@ -72,7 +75,8 @@ namespace yack
             assert(still_available<=provided_number);
             return provided_number-still_available;
         }
-        
+#endif
+
         bool chunk:: owns(const void *addr, const size_t block_size) const throw()
         {
             assert(block_size>0);
@@ -128,6 +132,7 @@ namespace yack
             //------------------------------------------------------------------
             assert(still_available>0);
             assert(still_available<=provided_number);
+            assert(operated_number+still_available==provided_number);
             assert(block_size>0);
 
             //------------------------------------------------------------------
@@ -135,9 +140,10 @@ namespace yack
             // find block and update status
             //
             //------------------------------------------------------------------
-            uint8_t *       p = &data[first_available*block_size]; // get address
+            uint8_t *     p = &data[first_available*block_size];   // get address
             first_available = *p;                                  // read next available address
             --still_available;                                     // bookkeeping
+            ++operated_number;                                     // bookkeeping
             memset(p,0,block_size);                                // zero memory
             return p;                                              // done
         }
@@ -151,6 +157,9 @@ namespace yack
             //------------------------------------------------------------------
             assert(block_size>0);
             assert(owns(block_addr,block_size));
+            assert(operated_number>0);
+            assert(operated_number+still_available==provided_number);
+
 
             //------------------------------------------------------------------
             //
@@ -161,7 +170,8 @@ namespace yack
             const size_t indx       = static_cast<size_t>(to_release-data)/block_size;
             *to_release             =  first_available;
             first_available  = (uint8_t)indx;
-            return (++still_available>=provided_number);
+            ++still_available;
+            return (--operated_number) <= 0;
         }
 
     }

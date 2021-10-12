@@ -73,7 +73,7 @@ YACK_UTEST(memory_chunk)
             {
                 ch.release(blocks[i].addr,block_size);;
             }
-            YACK_ASSERT(ch.is_empty());
+            YACK_ASSERT(ch.operated_number<=0);
 
            mem.release(chunk_data,chunk_size);
         }

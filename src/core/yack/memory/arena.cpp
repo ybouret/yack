@@ -36,7 +36,7 @@ namespace yack
                 while(chunks.size)
                 {
                     chunk *ch = chunks.pop_back();
-                    missing += ch->allocated();
+                    missing += ch->operated_number;
                     kill(ch);
                 }
                 out_of_reach::zset(&my_chunks,sizeof(chunks_t));
@@ -272,7 +272,7 @@ namespace yack
             ++available;
             if(chunk_is_empty)
             {
-                assert(releasing->is_empty());
+                assert(releasing->operated_number<=0);
                 if(!abandoned)
                 {
                     //----------------------------------------------------------
@@ -289,7 +289,7 @@ namespace yack
                     //----------------------------------------------------------
                     //std::cerr << "found second abandonned" << std::endl;
                     assert(releasing!=abandoned);
-                    assert(abandoned->is_empty());
+                    assert(abandoned->operated_number<=0);
                     assert(available>=2*new_blocks);
                     if(abandoned<releasing)
                     {

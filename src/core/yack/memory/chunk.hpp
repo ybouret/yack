@@ -55,10 +55,8 @@ namespace yack
             //
             // query methods
             //__________________________________________________________________
-            bool      is_empty()                                      const throw(); //!< still_available >= provided_number
             bool      contains(const void *addr)                      const throw(); //!< in range
             bool      owns(const void *addr, const size_t block_size) const throw(); //!< in range AND aligned
-            size_t    allocated()                                     const throw(); //!< provided_number - still_available
             ownership whose(const void *addr)                         const throw(); //!< query ownsership
 
             //__________________________________________________________________
@@ -100,14 +98,15 @@ namespace yack
             //
             // members
             //__________________________________________________________________
-            uint8_t                    first_available; //!< bookeeping
-            uint8_t                    still_available; //!< bookeeping
-            const uint8_t              provided_number; //!< initial count
+            uint8_t                    first_available; //!< bookkeeping
+            uint8_t                    still_available; //!< bookkeeping
+            uint8_t                    operated_number; //!< bookkeeping
+            const uint8_t              provided_number; //!< initial count : still_available + operated_number
             uint8_t                   *data;            //!< first item
             const uint8_t * const      last;            //!< first invalid item
             chunk                     *next;            //!< for arena
             chunk                     *prev;            //!< for arena
-                                                        //!
+
         private:
             YACK_DISABLE_COPY_AND_ASSIGN(chunk);
             void format(const size_t block_size) throw();
