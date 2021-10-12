@@ -34,10 +34,11 @@ namespace yack
 
             //! the maximum available longevity
             static const at_exit::longevity life_time = YACK_MEMORY_DYADIC_ALLOCATOR_LONGEVITY;
-            static const char               call_sign[]; //!< "memory::pages"
+            static const char               call_sign[];   //!< "memory::pages"
             static const size_t             max_page_size; //!< book::max_page_size
             static const size_t             min_page_size; //!< book::min_page_size
-
+            static const size_t             max_page_exp2; //!< book::max_page_exp2
+            static const size_t             min_page_exp2; //!< book::min_page_exp2
 
             //__________________________________________________________________
             //

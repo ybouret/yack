@@ -19,6 +19,10 @@ namespace yack
         
         const size_t dyadic::max_page_size = book::max_page_size;
         const size_t dyadic::min_page_size = book::min_page_size;
+
+        const size_t dyadic::max_page_exp2 = book::max_page_exp2;
+        const size_t dyadic::min_page_exp2 = book::min_page_exp2;
+
         
         static void *note__[ YACK_WORDS_FOR(note) ] = { 0 };
         static void *book__[ YACK_WORDS_FOR(book) ] = { 0 };
