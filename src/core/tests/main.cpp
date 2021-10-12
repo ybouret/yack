@@ -1,7 +1,7 @@
 #include "yack/utest/driver.hpp"
 #include <cstdio>
 
-YACK_UTEST_DECL(32)
+YACK_UTEST_DECL(64)
 {
     YACK_UTEST(crc32);
     YACK_UTEST(error);
@@ -40,5 +40,6 @@ YACK_UTEST_DECL(32)
     YACK_UTEST(sync_thread);
     YACK_UTEST(singleton);
 
+    YACK_UTEST(apex_types);
 }
 YACK_UTEST_EXEC()

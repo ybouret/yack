@@ -37,3 +37,5 @@ add_custom_target(dox
 	COMMENT "[YACK] Creating Documentation with Doxygen")
 endif()
 
+add_subdirectory(cli)
+

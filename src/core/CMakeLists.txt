@@ -86,12 +86,19 @@ set(memory_joint ${memory_joint_impl} ${memory_joint_decl})
 SOURCE_GROUP(memory/joint FILES ${memory_joint})
 install( FILES ${memory_joint_decl} DESTINATION include/yack/memory/joint )
  
- # memory allocators 
+# memory allocators 
 file(GLOB memory_allocator_impl yack/memory/allocator/*.cpp)
 file(GLOB memory_allocator_decl yack/memory/allocator/*.hpp)
 set(memory_allocator ${memory_allocator_impl} ${memory_allocator_decl})
 SOURCE_GROUP(memory/allocator FILES ${memory_allocator})
 install( FILES ${memory_allocator_decl} DESTINATION include/yack/memory/allocator )
+ 
+# apex operations
+file(GLOB apex_impl yack/apex/*.cpp yack/apex/*.c)
+file(GLOB apex_decl yack/apex/*.hpp yack/apex/*.h)
+set(apex ${apex_impl} ${apex_decl})
+SOURCE_GROUP(apex FILES ${apex})
+install( FILES ${apex_decl} DESTINATION include/yack/apex ) 
  
  
 # concurrent operations
@@ -126,6 +133,7 @@ ${system}
 ${data}
 ${container}
 ${memory} ${memory_allocator} ${memory_small} ${memory_large} ${memory_joint}
+${apex}
 ${concurrent} ${concurrent_quark} ${concurrent_sync}
 ${utest}
 )

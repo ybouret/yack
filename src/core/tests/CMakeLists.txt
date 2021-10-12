@@ -11,12 +11,16 @@ source_group(data FILES ${data} )
 file(GLOB sync sync/*.cpp)
 source_group(sync FILES ${sync} )
 
+file(GLOB apex apex/*.cpp)
+source_group(apex FILES ${apex} )
+
 
 add_executable(test-yack main.cpp
 ${base}
 ${memory}
 ${data}
 ${sync}
+${apex}
 )
 
 yack_link_libraries(test-yack)
@@ -58,6 +62,8 @@ add_test(sync:mutex     test-yack sync_mutex)
 add_test(sync:condition test-yack sync_condition)
 add_test(sync:thread    test-yack sync_condition)
 add_test(singleton      test-yack singleton)
+
+add_test(apex:types     test-yack  apex_types)
 
 
 yack_testing(yack)
