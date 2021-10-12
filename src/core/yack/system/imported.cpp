@@ -2,6 +2,7 @@
 #include "yack/system/imported.hpp"
 #include <cstring>
 #include <cstdarg>
+#include "yack/type/cstring.h"
 
 namespace yack
 {
@@ -42,6 +43,19 @@ namespace yack
             va_list ap;
             va_start(ap,fmt);
             failsafe_format(text,sizeof(text),fmt,&ap);
+            va_end(ap);
+        }
+
+        exception:: exception(const char *where, const char *fmt,...) throw() :
+        yack::exception(),
+        text()
+        {
+            erase();
+            yack_cstring_msgcpy(text,sizeof(text),where);
+            
+            va_list ap;
+            va_start(ap,fmt);
+            failsafe_format(info,sizeof(info),fmt,&ap);
             va_end(ap);
         }
     }

@@ -33,6 +33,7 @@ namespace yack
             explicit exception()         throw(); //!< empty
             virtual ~exception()         throw(); //!< cleanup
             exception(const exception &) throw(); //!< nothrow copy
+            explicit exception(const char *where, const char *fmt,...) throw() YACK_PRINTF_CHECK(3,4);
 
             //______________________________________________________________________
             //
