@@ -41,6 +41,22 @@ namespace yack
     {
         cswap( coerce(lhs), coerce(rhs) );
     }
+    
+    //! make a class from a type
+    template <typename T>
+    struct type2type
+    {
+        typedef T type;
+    };
+    
+    //! make a class from an integer value
+    template <int N>
+    struct int2type
+    {
+        static const int value = N;
+    };
+    
+    
 }
 
 #endif

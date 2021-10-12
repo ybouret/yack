@@ -71,7 +71,7 @@ namespace yack
             word_type   *word;
             const size_t words_size; //!< 1 << words_exp2
             const size_t block_size; //!< 1 << block_exp2
-
+            
             void update() throw();
         };
 
