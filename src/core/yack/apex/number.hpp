@@ -12,6 +12,8 @@ namespace yack
     namespace apex
     {
 
+#define YACK_APEX_TRACKING 1
+
         //______________________________________________________________________
         //
         //
@@ -21,6 +23,10 @@ namespace yack
         class number : public object
         {
         public:
+            static uint64_t add_ticks;
+            static uint64_t sub_ticks;
+            static void     reset_tracking() throw();
+
             virtual ~number() throw(); //!< cleanup
 
         protected:
