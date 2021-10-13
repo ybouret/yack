@@ -1,8 +1,7 @@
 #include "yack/apex/types.hpp"
-#include "yack/apex/alloc.hpp"
+#include "yack/apex/n/alloc.hpp"
 #include "yack/utest/run.hpp"
 #include "yack/memory/allocator/dyadic.hpp"
-#include "yack/type/hexa.hpp"
 
 
 using namespace yack;

@@ -2,63 +2,98 @@ project(core C CXX)
 
 include_directories(.)
 
-# top-level files
+########################################################################
+##
+## top-level files
+##
+########################################################################
 file(GLOB src_impl yack/*.c yack/*.cpp)
 file(GLOB src_decl yack/*.h yack/*.hpp)
 set(src ${src_impl} ${src_decl})
 install( FILES ${src_decl} DESTINATION include/yack )
 
-# type operation
+########################################################################
+##
+## type operation
+##
+########################################################################
 file(GLOB type_impl yack/type/*.cpp yack/type/*.c)
 file(GLOB type_decl yack/type/*.hpp yack/type/*.h)
 set(type ${type_impl} ${type_decl})
 SOURCE_GROUP(type FILES ${type})
 install( FILES ${type_decl} DESTINATION include/yack/type )
 
-# arith operation
+########################################################################
+##
+## arith operation
+##
+########################################################################
 file(GLOB arith_impl yack/arith/*.cpp yack/arith/*.c)
 file(GLOB arith_decl yack/arith/*.hpp yack/arith/*.h)
 set(arith ${arith_impl} ${arith_decl})
 SOURCE_GROUP(arith FILES ${arith})
 install( FILES ${arith_decl} DESTINATION include/yack/arith )
 
-
-# checking operations
+########################################################################
+##
+## checking operations
+##
+########################################################################
 file(GLOB check_impl yack/check/*.cpp yack/check/*.c)
 file(GLOB check_decl yack/check/*.hpp yack/check/*.h)
 set(check ${check_impl} ${check_decl})
 SOURCE_GROUP(check FILES ${check})
 install( FILES ${check_decl} DESTINATION include/yack/check )
 
-# system operations
+########################################################################
+##
+## system operations
+##
+########################################################################
 file(GLOB system_impl yack/system/*.cpp yack/system/*.c)
 file(GLOB system_decl yack/system/*.hpp yack/system/*.h)
 set(system ${system_impl} ${system_decl})
 SOURCE_GROUP(system FILES ${system})
 install( FILES ${system_decl} DESTINATION include/yack/system )
 
-# unit tests structure
+########################################################################
+##
+## unit tests structure
+##
+########################################################################
 file(GLOB utest_impl yack/utest/*.cpp)
 file(GLOB utest_decl yack/utest/*.hpp)
 set(utest ${utest_impl} ${utest_decl})
 SOURCE_GROUP(utest FILES ${utest})
 install( FILES ${utest_decl} DESTINATION include/yack/utest )
 
-# data structure operations
+########################################################################
+##
+## data structure operations
+##
+########################################################################
 file(GLOB data_impl yack/data/*.cpp yack/data/*.c)
 file(GLOB data_decl yack/data/*.hpp yack/data/*.h)
 set(data ${data_impl} ${data_decl})
 SOURCE_GROUP(data FILES ${data})
 install( FILES ${data_decl} DESTINATION include/yack/data )
 
-# container  operations
+########################################################################
+##
+## container  operations
+##
+########################################################################
 file(GLOB container_impl yack/container/*.cpp yack/container/*.c)
 file(GLOB container_decl yack/container/*.hpp yack/container/*.h)
 set(container ${container_impl} ${container_decl})
 SOURCE_GROUP(container FILES ${container})
 install( FILES ${container_decl} DESTINATION include/yack/container )
 
-# memory operations
+#########################################################################
+##
+## memory operations
+##
+########################################################################
 file(GLOB memory_impl yack/memory/*.cpp)
 file(GLOB memory_decl yack/memory/*.hpp)
 set(memory ${memory_impl} ${memory_decl})
@@ -93,15 +128,28 @@ set(memory_allocator ${memory_allocator_impl} ${memory_allocator_decl})
 SOURCE_GROUP(memory/allocator FILES ${memory_allocator})
 install( FILES ${memory_allocator_decl} DESTINATION include/yack/memory/allocator )
  
-# apex operations
-file(GLOB apex_impl yack/apex/*.cpp yack/apex/*.c)
-file(GLOB apex_decl yack/apex/*.hpp yack/apex/*.h)
+########################################################################
+##
+## apex operations
+##
+########################################################################
+file(GLOB apex_impl yack/apex/*.cpp)
+file(GLOB apex_decl yack/apex/*.hpp)
 set(apex ${apex_impl} ${apex_decl})
 SOURCE_GROUP(apex FILES ${apex})
 install( FILES ${apex_decl} DESTINATION include/yack/apex ) 
  
+file(GLOB apex_n_impl yack/apex/n/*.cpp)
+file(GLOB apex_n_decl yack/apex/n/*.hpp)
+set(apex_n ${apex_n_impl} ${apex_n_decl})
+SOURCE_GROUP(apex/n FILES ${apex_n})
+install( FILES ${apex_n_decl} DESTINATION include/yack/apex/n ) 
  
-# concurrent operations
+########################################################################
+##
+## concurrent operations
+##
+########################################################################
 file(GLOB concurrent_impl yack/concurrent/*.cpp)
 file(GLOB concurrent_decl yack/concurrent/*.hpp)
 set(concurrent ${concurrent_impl} ${concurrent_decl})
@@ -133,7 +181,7 @@ ${system}
 ${data}
 ${container}
 ${memory} ${memory_allocator} ${memory_small} ${memory_large} ${memory_joint}
-${apex}
+${apex} ${apex_n}
 ${concurrent} ${concurrent_quark} ${concurrent_sync}
 ${utest}
 )

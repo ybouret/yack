@@ -39,6 +39,11 @@ YACK_UTEST(apex_apn)
             }
             YACK_ASSERT(u==v);
             std::cerr << "n=" << n << std::endl;
+
+            apn m = 0;
+            m = u;
+            YACK_ASSERT(m.lsu()==u);
+
             
         }
     }

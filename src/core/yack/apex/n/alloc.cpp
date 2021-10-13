@@ -1,4 +1,4 @@
-#include "yack/apex/alloc.hpp"
+#include "yack/apex/n/alloc.hpp"
 #include "yack/memory/allocator/dyadic.hpp"
 
 namespace yack

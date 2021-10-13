@@ -74,7 +74,7 @@ namespace yack
             word_type   *word;
             const size_t max_words; //!< 1 << wexp2
             const size_t max_bytes; //!< 1 << block_exp2
-            
+
             void update() throw();
             void zpad()   throw();
         };

@@ -1,5 +1,5 @@
 #include "yack/apex/natural.hpp"
-#include "yack/apex/alloc.hpp"
+#include "yack/apex/n/alloc.hpp"
 #include "yack/arith/align.hpp"
 #include "yack/arith/base2.hpp"
 #include "yack/type/out-of-reach.hpp"
@@ -174,90 +174,5 @@ max_bytes(size_t(1)<<max_bytes_exp2 )
 
 }
 
-#include "yack/system/endian.hpp"
 
-namespace yack
-{
-    namespace apex
-    {
-        namespace
-        {
-            typedef const uint8_t & (*apn_get_proc)(const natural::word_type &, const size_t);
-
-            static inline const uint8_t & getBE(const natural::word_type &w, const size_t at) throw()
-            {
-                assert(at<sizeof(w));
-                const uint8_t *p= (const uint8_t *)&w;
-                return p[(sizeof(w)-1)-at];
-            }
-
-            static inline const uint8_t & getLE(const natural::word_type &w, const size_t at) throw()
-            {
-                assert(at<sizeof(w));
-                const uint8_t *p= (const uint8_t *)&w;
-                return p[at];
-            }
-        }
-
-
-        const uint8_t & natural:: operator[](const size_t indx) const throw()
-        {
-            static const apn_get_proc proc =  endianness::BE() ? getBE : getLE;
-
-            assert(indx>0);
-            assert(indx<=bytes);
-
-            const size_t ib = indx-1;
-            const size_t iw = ib>>word_exp2;
-            const size_t at = ib-(iw<<word_exp2);
-            return proc(word[iw],at);
-        }
-
-    }
-
-}
-
-#include "yack/type/hexa.hpp"
-#include <iostream>
-
-namespace yack
-{
-    namespace apex
-    {
-
-        std::ostream & natural:: output_hex(std::ostream &os) const
-        {
-            if(bytes<=0)
-                os << "0";
-            else
-            {
-                // first byte
-                {
-                    const uint8_t b = (*this)[bytes]; assert(b>0);
-                    {
-                        const uint8_t up16 = hexa::up16(b);
-                        if(up16>0) os << hexa::lowercase_char[up16];
-                        /*      */ os << hexa::lowercase_char[hexa::lo16(b)];
-                    }
-                }
-
-                // other bytes
-                for(size_t i=bytes-1;i>0;--i)
-                {
-                    os << hexa::lowercase_text[ (*this)[i] ];
-                }
-
-            }
-            return os;
-        }
-
-        std::ostream & operator<<(std::ostream &os, const natural n)
-        {
-            return n.output_hex(os);
-        }
-
-
-    }
-
-}
 
