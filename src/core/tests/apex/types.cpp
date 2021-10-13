@@ -28,11 +28,7 @@ namespace
 YACK_UTEST(apex_types)
 {
     uprng ran;
-    std::cerr << "core_bits=" << apex::cull::core_bits << std::endl;
-    std::cerr << "word_bits=" << apex::cull::word_bits << std::endl;
-
-    YACK_CHECK(sizeof(apex::cull::core_type)==apex::cull::core_size);
-    YACK_CHECK(sizeof(apex::cull::word_type)==apex::cull::word_size);
+    
 
     do_test_mem<uint8_t>(ran);
     do_test_mem<uint16_t>(ran);

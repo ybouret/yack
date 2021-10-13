@@ -17,6 +17,14 @@ namespace yack
     namespace apex
     {
 
+
+        //#define YACK_APEX_TYPE uint16_t
+        //#define YACK_APEX_TYPE uint32_t
+
+#if !defined(YACK_APEX_TYPE)
+#     define YACK_APEX_TYPE void * //!< default matching type
+#endif
+
         //______________________________________________________________________
         //
         //
@@ -30,12 +38,19 @@ namespace yack
             //
             // types and definitions
             //__________________________________________________________________
-            typedef cull::core_type core_type; //!< alias
 
-            typedef cull::word_type word_type;                            //!< alias
-            static  const size_t    word_size = cull::word_size;          //!< alias
-            static  const size_t    word_exp2 = ilog2<word_size>::value;  //!< word_size = 2^word_exp2
-            static  const size_t    word_bits = cull::word_bits;          //!< word_size*8
+            // native computation
+            typedef unsigned_for<YACK_APEX_TYPE>::type core_type; //!< native type
+            static const size_t core_size = sizeof(core_type);    //!< native type size
+            static const size_t core_bits = core_size << 3;       //!< native type bits
+
+            // internal storage
+            static const size_t     word_size = core_size >> 1;            //!< internal type size
+            static const size_t     word_bits = core_bits >> 1;            //!< internal type bits
+            static const size_t     word_exp2 = ilog2<word_size>::value;   //!< word_size = 2^word_exp2
+            static const core_type  word_base = core_type(1) << word_bits; //!< 2^[8|16|32] on larger type
+
+            typedef unsigned_int<word_size>::type word_type;      //!< internal type
 
             static  const size_t    min_words_bytes = 2 * sizeof(uint_type);          //!< minimal memory, in bytes
             static  const size_t    min_words_size  = min_words_bytes >> word_exp2;   //!< minimal memory, in words
@@ -84,17 +99,21 @@ namespace yack
             //
             // comparisons
             //__________________________________________________________________
+
+            //! make local handles and call PROTO
 #define     YACK_APN_BINARY_IMPL(PROTO) const natural::handle l(lhs), r(rhs); return PROTO(l,r)
 
-#define     YACK_APN_BINARY_REP(PROLOG,EPILOG)         \
-PROLOG (const natural &lhs, const natural &rhs) EPILOG \
-PROLOG (const natural &lhs, uint_type      rhs) EPILOG \
-PROLOG (uint_type      lhs, const natural &rhs) EPILOG
+            //! repeat binary pattern
+#define     YACK_APN_BINARY_REP(PROLOG,EPILOG)                       \
+/**/          PROLOG (const natural &lhs, const natural &rhs) EPILOG \
+/**/          PROLOG (const natural &lhs, uint_type      rhs) EPILOG \
+/**/          PROLOG (uint_type      lhs, const natural &rhs) EPILOG
+
 
             YACK_APN_BINARY_REP(int compare,const throw();)
 
-#define YACK_APN_COMPARE(OP) \
-YACK_APN_BINARY_REP(inline friend bool operator OP, throw() { YACK_APN_BINARY_IMPL(cmp) OP 0;})
+            //! declare and inline implement a comparison operator
+#define     YACK_APN_COMPARE(OP) YACK_APN_BINARY_REP(inline friend bool operator OP, throw() { YACK_APN_BINARY_IMPL(cmp) OP 0;})
 
 
             YACK_APN_COMPARE(<)
@@ -109,18 +128,27 @@ YACK_APN_BINARY_REP(inline friend bool operator OP, throw() { YACK_APN_BINARY_IM
             //
             // addition
             //__________________________________________________________________
-#define YACK_APN_UNARY_IMPL(OP)    natural res = (*this) OP rhs; xch(res); return *this
-#define YACK_APN_UNARY_REP(PROLOG,EPILOG) \
-PROLOG (const natural &rhs) EPILOG        \
-PROLOG (uint_type      rhs) EPILOG
 
-#define YACK_APN_BINARY_DECL(OP) YACK_APN_BINARY_REP(friend natural operator OP,;)
-#define YACK_APN_UNARY_DECL(OP)  YACK_APN_UNARY_REP(natural & operator OP##=,;)
-#define YACK_APN_DECL(OP) YACK_APN_BINARY_DECL(OP) YACK_APN_UNARY_DECL(OP)
+            //! implement a binary to unary transform
+#define     YACK_APN_UNARY_IMPL(OP)    natural res = (*this) OP rhs; xch(res); return *this
+
+            //! repeat unary pattern
+#define     YACK_APN_UNARY_REP(PROLOG,EPILOG)           \
+/**/          PROLOG (const natural &rhs) EPILOG        \
+/**/          PROLOG (uint_type      rhs) EPILOG
+
+#define       YACK_APN_BINARY_DECL(OP) YACK_APN_BINARY_REP(friend natural operator OP,;) //!< declare from a binary operator
+#define       YACK_APN_UNARY_DECL(OP)  YACK_APN_UNARY_REP(natural & operator OP##=,;)    //!< declare from a unary operator
+#define       YACK_APN_DECL(OP) YACK_APN_BINARY_DECL(OP) YACK_APN_UNARY_DECL(OP)         //!< declare all
 
             YACK_APN_DECL(+)
             natural &operator++();    //!< pre  increase operator
             natural  operator++(int); //!< post increase operator
+
+            YACK_APN_DECL(-)
+            natural &operator--();    //!< pre  decrease operator
+            natural  operator--(int); //!< post decrease operator
+
 
 
         private:
@@ -161,6 +189,9 @@ PROLOG (uint_type      rhs) EPILOG
             static natural add(const handle &l,
                                const handle &r);
 
+            static natural sub(const handle &l,
+                               const handle &r);
+            
         };
 
     }

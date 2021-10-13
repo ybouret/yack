@@ -148,8 +148,47 @@ YACK_ASSERT( (u OP v) == (U OP v) )
     }
     std::cerr << std::endl;
 
+    std::cerr << "[SUB]" << std::endl;
+    for(size_t ibits=0;ibits<=32;++ibits)
+    {
+        for(size_t jbits=0;jbits<=32;++jbits)
+        {
+            for(size_t iter=0;iter<64;++iter)
+            {
+                apex::uint_type u = ran.gen<apex::uint_type>(ibits);
+                apex::uint_type v = ran.gen<apex::uint_type>(jbits);
+                if(v>u) cswap(u,v); assert(v<=u);
+                const apex::uint_type d = u-v;
+                const apn             U = u;
+                const apn             V = v;
+                {
+                    const apn D=U-V; YACK_ASSERT(D.lsu()==d);
+                }
+                {
+                    const apn D=U-v; YACK_ASSERT(D.lsu()==D);
+                }
+                {
+                    const apn D=u-V; YACK_ASSERT(D.lsu()==D);
+                }
+                {
+                    apn D=u; D -= V;YACK_ASSERT(D.lsu()==D);
+                }
+                {
+                    apn D=u; D -= v;YACK_ASSERT(D.lsu()==D);
+                }
+            }
+        }
+    }
 
-
+    std::cerr << "[DEC]" << std::endl;
+    for(apn i=32;i>0;--i)
+    {
+        std::cerr << i  << "/";
+        apn       j = i;
+        const apn k = j--;
+        YACK_ASSERT(k>j);
+    }
+    std::cerr << std::endl;
 
     
 }
