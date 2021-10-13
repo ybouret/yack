@@ -1,7 +1,9 @@
 #include "yack/apex/natural.hpp"
 #include "yack/system/exception.hpp"
 #include <cerrno>
-
+#if defined(YACK_APEX_TRACKING)
+#include "yack/system/wtime.hpp"
+#endif
 namespace yack
 {
     namespace apex
@@ -26,6 +28,9 @@ namespace yack
             }
 
             assert(lnw>=rnw);
+#if defined(YACK_APEX_TRACKING)
+            const uint64_t mark = wtime::ticks();
+#endif
             natural          ans(lnw,as_capacity);
             word_type       *s   = ans.word;
             const word_type *lhs = l.w;
@@ -85,6 +90,10 @@ namespace yack
 
             ans.words=lnw;
             ans.update();
+#if defined(YACK_APEX_TRACKING)
+            sub_ticks += wtime::ticks() - mark;
+            ++sub_count;
+#endif
             return ans;
         }
 

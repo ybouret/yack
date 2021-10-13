@@ -3,6 +3,7 @@
 #include "yack/arith/base2.hpp"
 #include "yack/utest/run.hpp"
 #include "yack/system/endian.hpp"
+#include "yack/system/wtime.hpp"
 
 using namespace yack;
 
@@ -112,7 +113,7 @@ YACK_ASSERT( (u OP v) == (U OP v) )
     {
         for(size_t jbits=0;jbits<=32;++jbits)
         {
-            for(size_t iter=0;iter<64;++iter)
+            for(size_t iter=0;iter<128;++iter)
             {
                 const apex::uint_type u = ran.gen<apex::uint_type>(ibits);
                 const apn             U = u;
@@ -136,6 +137,7 @@ YACK_ASSERT( (u OP v) == (U OP v) )
                 }
             }
         }
+
     }
 
     std::cerr << "[INC]" << std::endl;
@@ -153,11 +155,12 @@ YACK_ASSERT( (u OP v) == (U OP v) )
     {
         for(size_t jbits=0;jbits<=32;++jbits)
         {
-            for(size_t iter=0;iter<64;++iter)
+            for(size_t iter=0;iter<128;++iter)
             {
                 apex::uint_type u = ran.gen<apex::uint_type>(ibits);
                 apex::uint_type v = ran.gen<apex::uint_type>(jbits);
-                if(v>u) cswap(u,v); assert(v<=u);
+                if(v>u) cswap(u,v);
+                assert(v<=u);
                 const apex::uint_type d = u-v;
                 const apn             U = u;
                 const apn             V = v;
@@ -189,6 +192,11 @@ YACK_ASSERT( (u OP v) == (U OP v) )
         YACK_ASSERT(k>j);
     }
     std::cerr << std::endl;
+
+    wtime sw;
+    std::cerr << "add_rate: " << apex::number::add_count/sw(apex::number::add_ticks)<< std::endl;
+    std::cerr << "sub_rate: " << apex::number::sub_count/sw(apex::number::sub_ticks)<< std::endl;
+
 
     
 }

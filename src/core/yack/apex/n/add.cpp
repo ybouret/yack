@@ -1,5 +1,7 @@
 #include "yack/apex/natural.hpp"
-
+#if defined(YACK_APEX_TRACKING)
+#include "yack/system/wtime.hpp"
+#endif
 namespace yack
 {
     namespace apex
@@ -32,6 +34,9 @@ namespace yack
                 // big is not 0
                 if(nl>0)
                 {
+#if defined(YACK_APEX_TRACKING)
+                    const uint64_t mark = wtime::ticks();
+#endif
                     // initialize
                     const size_t ns=nr+1;
                     natural      ans(ns,as_capacity);
@@ -39,29 +44,32 @@ namespace yack
 
                     // dual sum
                     core_type carry = 0;
-                    for(size_t i=0;i<nl;++i)
+                    for(size_t i=nl;i>0;--i)
                     {
-                        carry += lhs[i];
-                        carry += rhs[i];
-                        sum[i] = word_type(carry);
+                        carry += *(lhs++);
+                        carry += *(rhs++);
+                        *(sum++) = word_type(carry);
                         carry >>= word_bits;
                     }
 
                     // propagate carry
-                    for(size_t i=nl;i<nr;++i)
+                    for(size_t i=nr-nl;i>0;--i)
                     {
-                        carry += rhs[i];
-                        sum[i] = word_type(carry);
+                        carry += *(rhs++);
+                        *(sum++) = word_type(carry);
                         carry >>= word_bits;
                     }
-                    sum[nr] = word_type(carry);
+                    *sum = word_type(carry);
 
 
                     // update
                     ans.words = ns;
                     ans.bytes = ns << word_exp2;
                     ans.update();
-
+#if defined(YACK_APEX_TRACKING)
+                    add_ticks += wtime::ticks() - mark;
+                    ++add_count;
+#endif
                     return ans;
                 }
                 else

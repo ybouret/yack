@@ -19,8 +19,9 @@ namespace yack
                     const uint8_t b = (*this)[bytes]; assert(b>0);
                     {
                         const uint8_t up16 = hexa::up16(b);
-                        if(up16>0) os << hexa::lowercase_char[up16];
-                        /*      */ os << hexa::lowercase_char[hexa::lo16(b)];
+                        if(up16>0)
+                            os << hexa::lowercase_char[up16];
+                        os << hexa::lowercase_char[hexa::lo16(b)];
                     }
                 }
 

@@ -1,5 +1,3 @@
-
-
 //! \file
 
 #ifndef YACK_READABLE_INCLUDED

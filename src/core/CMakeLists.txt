@@ -130,6 +130,17 @@ install( FILES ${memory_allocator_decl} DESTINATION include/yack/memory/allocato
  
 ########################################################################
 ##
+## fft operations
+##
+########################################################################
+file(GLOB fft_impl yack/fft/*.cpp)
+file(GLOB fft_decl yack/fft/*.hpp)
+set(fft ${fft_impl} ${fft_decl})
+SOURCE_GROUP(fft FILES ${fft})
+install( FILES ${fft_decl} DESTINATION include/yack/fft )  
+ 
+########################################################################
+##
 ## apex operations
 ##
 ########################################################################
@@ -181,6 +192,7 @@ ${system}
 ${data}
 ${container}
 ${memory} ${memory_allocator} ${memory_small} ${memory_large} ${memory_joint}
+${fft}
 ${apex} ${apex_n}
 ${concurrent} ${concurrent_quark} ${concurrent_sync}
 ${utest}

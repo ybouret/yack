@@ -24,7 +24,9 @@ namespace yack
         {
         public:
             static uint64_t add_ticks;
+            static size_t   add_count;
             static uint64_t sub_ticks;
+            static size_t   sub_count;
             static void     reset_tracking() throw();
 
             virtual ~number() throw(); //!< cleanup
