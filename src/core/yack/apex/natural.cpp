@@ -11,6 +11,18 @@ namespace yack
     namespace apex
     {
 
+        int natural:: words_exp2_for(const size_t nw)
+        {
+            int    wexp2 = min_words_exp2;
+            size_t wsize = min_words_size;
+            while(wsize<nw)
+            {
+                wsize <<= 1;
+                ++wexp2;
+            }
+            return wexp2;
+        }
+
         size_t natural:: size() const throw()
         {
             return bytes;
@@ -33,11 +45,31 @@ max_words(size_t(1)<<max_words_exp2),                                           
 max_bytes(size_t(1)<<max_bytes_exp2 )
 
 
-        natural:: natural(unsigned_type u) : number(), words(0), bytes(0), YACK_APEX_NATURAL(min_words_exp2)
+        natural:: natural(uint_type u) :
+        number(),
+        readable<uint8_t>(),
+        words(0), bytes(0), YACK_APEX_NATURAL(min_words_exp2)
         {
             ldu(u);
         }
 
+
+        natural:: natural(const size_t num_words, const as_capacity_t &) :
+        number(), readable<uint8_t>(),
+        words(0), bytes(0),YACK_APEX_NATURAL(words_exp2_for(num_words))
+        {
+            assert(max_words>=num_words);
+
+        }
+
+        natural:: natural(const word_type *w, const size_t num_words) :
+        number(), readable<uint8_t>(),
+        words(0), bytes(0),YACK_APEX_NATURAL(words_exp2_for(num_words))
+        {
+            assert(max_words>=num_words);
+            memcpy(word,w,( bytes = (words=num_words) << word_exp2) );
+            update();
+        }
 
         void natural:: ldz() throw()
         {
@@ -45,21 +77,40 @@ max_bytes(size_t(1)<<max_bytes_exp2 )
             memset(word,0,max_bytes);
         }
 
-        void natural:: ldu(unsigned_type u) throw()
+        size_t natural:: ldw(word_type *w, uint_type u) throw()
         {
-            static const size_t nw = sizeof(unsigned_type)/sizeof(word_type);
-
-            assert(max_bytes>=sizeof(u));
-            assert(max_words>=nw);
-
-            word[0] = word_type(u);
-            for(size_t i=1;i<nw;++i)
+            // store words
+            w[0] = word_type(u);
+            for(size_t i=1;i<words_per_uint;++i)
             {
                 u >>= word_bits;
-                word[i] = word_type(u);
+                w[i] = word_type(u);
             }
 
-            words = nw;
+            // return number of significant words
+            size_t num = words_per_uint;
+            size_t msi = words_per_uint-1;
+            while(num>0&&w[msi]<=0)
+            {
+                --num;
+                --msi;
+            }
+            return num;
+        }
+
+        const natural::word_type * natural:: u2w(uint_type &value, size_t &num_words) throw()
+        {
+            word_type temp[words_per_uint]; assert(sizeof(temp)==sizeof(uint_type));
+            num_words = ldw(temp,value);
+            return static_cast<word_type *>( out_of_reach::copy(&value,temp,sizeof(temp)) );
+        }
+
+        void natural:: ldu(uint_type u) throw()
+        {
+            assert(max_bytes>=sizeof(uint_type));
+            assert(max_words>=words_per_uint);
+
+            words = ldw(word,u);
             bytes = words << word_exp2;
             update();
         }
@@ -67,6 +118,7 @@ max_bytes(size_t(1)<<max_bytes_exp2 )
 
         natural:: natural(const natural &other) :
         number(),
+        readable<uint8_t>(),
         words(other.words),
         bytes(other.bytes),
         YACK_APEX_NATURAL(other.max_words_exp2)
@@ -107,7 +159,7 @@ max_bytes(size_t(1)<<max_bytes_exp2 )
             return *this;
         }
 
-        natural & natural:: operator= (const unsigned_type u) throw()
+        natural & natural:: operator= (const uint_type u) throw()
         {
             ldu(u);
             return *this;
@@ -158,9 +210,9 @@ max_bytes(size_t(1)<<max_bytes_exp2 )
             }
         }
 
-        unsigned_type natural:: lsu() const throw()
+        uint_type natural:: lsu() const throw()
         {
-            unsigned_type u = 0;
+            uint_type u = 0;
             for(size_t i=words;i>0;)
             {
                 u <<= word_bits;
@@ -168,6 +220,8 @@ max_bytes(size_t(1)<<max_bytes_exp2 )
             }
             return u;
         }
+
+
 
 
     }

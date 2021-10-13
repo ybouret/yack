@@ -6,8 +6,9 @@
 
 namespace yack
 {
+    //! helper for constructors
     struct       as_capacity_t {};
-    extern const as_capacity_t as_capacity;
+    extern const as_capacity_t as_capacity; //!< helper for constructors
     
 }
 

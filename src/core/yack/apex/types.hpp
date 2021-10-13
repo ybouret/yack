@@ -11,8 +11,8 @@ namespace yack
     namespace apex
     {
 
-        typedef uint64_t unsigned_type; //!< integral unigned type
-        typedef int64_t  signed_type;   //!< integral signed type
+        typedef uint64_t uint_type; //!< integral unigned type
+        typedef int64_t  int_type;  //!< integral signed type
 
         //#define YACK_APEX_TYPE uint16_t
         //#define YACK_APEX_TYPE uint32_t

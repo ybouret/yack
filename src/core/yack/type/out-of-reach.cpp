@@ -21,11 +21,12 @@ namespace yack
         return addr;
     }
 
-    void out_of_reach::copy(void *target, const void *source, const size_t size) throw()
+    void *out_of_reach::copy(void *target, const void *source, const size_t size) throw()
     {
         assert(!(NULL==target && size>0));
         assert(!(NULL==source && size>0));
         memcpy(target,source,size);
+        return target;
     }
 
     void out_of_reach::move(void *target, const void *source, const size_t size) throw()

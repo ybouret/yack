@@ -46,14 +46,14 @@ namespace yack
     template <typename T>
     struct type2type
     {
-        typedef T type;
+        typedef T type; //!< original type
     };
     
     //! make a class from an integer value
     template <int N>
     struct int2type
     {
-        static const int value = N;
+        static const int value = N; //!< original value
     };
     
     
