@@ -41,38 +41,42 @@ namespace yack
             //
             // C++
             //__________________________________________________________________
-            natural(unsigned_type u);               //!< setup with an integral type
-            virtual ~natural() throw();             //!< cleanup
-            natural(const natural &);               //!< copy
-            natural & operator= (const natural &);  //!< assign
+            natural(unsigned_type u);                          //!< setup with an integral type
+            virtual ~natural() throw();                        //!< cleanup
+            natural(const natural &);                          //!< copy
+            natural & operator= (const natural &);             //!< assign
+            natural & operator= (const unsigned_type) throw(); //!< assign
 
             //__________________________________________________________________
             //
             // methods
             //__________________________________________________________________
-            size_t        size() const throw();        //!< bytes which are not zero
-            size_t        bits() const throw();        //!< exact bits
+            size_t        size()        const throw(); //!< bytes which are not zero
+            size_t        bits()        const throw(); //!< exact bits
             void          xch(natural &other) throw(); //!< no throw exchange all fields
-            unsigned_type lsu() const throw();         //!< least significant unsigned
+            unsigned_type lsu()         const throw(); //!< least significant unsigned
+            void          ldu(unsigned_type)  throw(); //!< load unsigned type
+            void          ldz()               throw(); //!< load zero
 
             //! access operator
             const uint8_t & operator[](const size_t indx) const throw();
 
             //! output
             friend std::ostream & operator<<(std::ostream &os, const natural n);
-
+            std::ostream & output_hex(std::ostream &) const;
 
 
         private:
-            size_t       bytes;
             size_t       words;
-            const int    words_exp2;
-            const int    block_exp2;
+            size_t       bytes;
+            const int    max_words_exp2;
+            const int    max_bytes_exp2;
             word_type   *word;
-            const size_t words_size; //!< 1 << words_exp2
-            const size_t block_size; //!< 1 << block_exp2
+            const size_t max_words; //!< 1 << wexp2
+            const size_t max_bytes; //!< 1 << block_exp2
             
             void update() throw();
+            void zpad()   throw();
         };
 
     }

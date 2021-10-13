@@ -2,6 +2,7 @@
 #include "yack/apex/alloc.hpp"
 #include "yack/utest/run.hpp"
 #include "yack/memory/allocator/dyadic.hpp"
+#include "yack/type/hexa.hpp"
 
 
 using namespace yack;
@@ -41,5 +42,30 @@ YACK_UTEST(apex_types)
 
     memory::dyadic::instance().display();
 
+    if(false)
+    {
+        std::cerr.flush();
+        unsigned h=0;
+        for(size_t i=0;i<16;++i)
+        {
+            for(size_t j=0;j<16;++j,++h)
+            {
+                fprintf(stdout," \"%02x\",",h);
+            }
+            fprintf(stdout,"\n");
+        }
+        fprintf(stdout,"\n");
+
+        h=0;
+        for(size_t i=0;i<16;++i)
+        {
+            for(size_t j=0;j<16;++j,++h)
+            {
+                fprintf(stdout," \"%02X\",",h);
+            }
+            fprintf(stdout,"\n");
+        }
+        fprintf(stdout,"\n");
+    }
 }
 YACK_UDONE()

@@ -3,7 +3,7 @@
 #include "yack/arith/align.hpp"
 #include "yack/arith/base2.hpp"
 #include "yack/type/out-of-reach.hpp"
-
+#include <cstring>
 
 namespace yack
 {
@@ -21,24 +21,37 @@ namespace yack
         {
             bytes=0;
             words=0;
-            alloc::field_release(word,coerce(words_exp2), coerce(block_exp2));
-            coerce(words_size) = 0;
+            alloc::field_release(word,coerce(max_words_exp2), coerce(max_bytes_exp2));
+            coerce(max_words) = 0;
         }
 
-#define YACK_APEX_NATURAL(WORDS_EXP2)                                              \
-words_exp2(WORDS_EXP2),                                                            \
-block_exp2(-1),                                                                    \
-word( alloc::field_acquire<word_type>( coerce(words_exp2), coerce(block_exp2) ) ), \
-words_size(size_t(1)<<words_exp2), block_size( size_t(1) << block_exp2 )
+#define YACK_APEX_NATURAL(WORDS_EXP2)                                                      \
+max_words_exp2(WORDS_EXP2),                                                                \
+max_bytes_exp2(-1),                                                                        \
+word( alloc::field_acquire<word_type>( coerce(max_words_exp2), coerce(max_bytes_exp2) ) ), \
+max_words(size_t(1)<<max_words_exp2),                                                      \
+max_bytes(size_t(1)<<max_bytes_exp2 )
 
 
-        natural:: natural(unsigned_type u) : number(), bytes(0), words(0), YACK_APEX_NATURAL(min_words_exp2)
+        natural:: natural(unsigned_type u) : number(), words(0), bytes(0), YACK_APEX_NATURAL(min_words_exp2)
+        {
+            ldu(u);
+        }
+
+
+        void natural:: ldz() throw()
+        {
+            words = bytes = 0;
+            memset(word,0,max_bytes);
+        }
+
+        void natural:: ldu(unsigned_type u) throw()
         {
             static const size_t nw = sizeof(unsigned_type)/sizeof(word_type);
 
-            assert(block_size>=sizeof(u));
-            assert(words_size>=nw);
-            
+            assert(max_bytes>=sizeof(u));
+            assert(max_words>=nw);
+
             word[0] = word_type(u);
             for(size_t i=1;i<nw;++i)
             {
@@ -51,11 +64,12 @@ words_size(size_t(1)<<words_exp2), block_size( size_t(1) << block_exp2 )
             update();
         }
 
+
         natural:: natural(const natural &other) :
         number(),
-        bytes(other.bytes),
         words(other.words),
-        YACK_APEX_NATURAL(other.words_exp2)
+        bytes(other.bytes),
+        YACK_APEX_NATURAL(other.max_words_exp2)
         {
             for(size_t i=0;i<words;++i) word[i] = other.word[i];
         }
@@ -66,23 +80,23 @@ words_size(size_t(1)<<words_exp2), block_size( size_t(1) << block_exp2 )
         {
             YACK_NATURAL_XCH(bytes);
             YACK_NATURAL_XCH(words);
-            YACK_NATURAL_XCH(words_exp2);
-            YACK_NATURAL_XCH(block_exp2);
+            YACK_NATURAL_XCH(max_words_exp2);
+            YACK_NATURAL_XCH(max_bytes_exp2);
             YACK_NATURAL_XCH(word);
-            YACK_NATURAL_XCH(words_size);
-            YACK_NATURAL_XCH(block_size);
+            YACK_NATURAL_XCH(max_words);
+            YACK_NATURAL_XCH(max_bytes);
         }
 
         natural & natural:: operator=(const natural &other)
         {
             if(this!=&other)
             {
-                if(other.words<=words_size)
+                if(other.words<=max_words)
                 {
                     words=other.words;
                     bytes=other.bytes;
-                    for(size_t i=0;i<words;++i)          word[i] = other.word[i];
-                    for(size_t i=words;i<words_size;++i) word[i] = 0;
+                    for(size_t i=0;i<words;++i)         word[i] = other.word[i];
+                    zpad();
                 }
                 else
                 {
@@ -93,9 +107,21 @@ words_size(size_t(1)<<words_exp2), block_size( size_t(1) << block_exp2 )
             return *this;
         }
 
+        natural & natural:: operator= (const unsigned_type u) throw()
+        {
+            ldu(u);
+            return *this;
+        }
+
+
+        void natural:: zpad() throw()
+        {
+            for(size_t i=words;i<max_words;++i) word[i] = 0;
+        }
 
         void natural:: update() throw()
         {
+            // check most significant index from words
             size_t msi = words-1;
             while(words>0&&word[msi]<=0)
             {
@@ -103,7 +129,7 @@ words_size(size_t(1)<<words_exp2), block_size( size_t(1) << block_exp2 )
                 --msi;
             }
 
-
+            // updated bytes
             if(words>0)
             {
                 const  word_type msw = word[msi]; assert(msw>0);
@@ -113,6 +139,9 @@ words_size(size_t(1)<<words_exp2), block_size( size_t(1) << block_exp2 )
             {
                 bytes = 0;
             }
+
+            // clean remaining
+            zpad();
         }
 
         size_t natural:: bits() const throw()
@@ -139,6 +168,7 @@ words_size(size_t(1)<<words_exp2), block_size( size_t(1) << block_exp2 )
             }
             return u;
         }
+
 
     }
 
@@ -187,6 +217,7 @@ namespace yack
 
 }
 
+#include "yack/type/hexa.hpp"
 #include <iostream>
 
 namespace yack
@@ -194,21 +225,35 @@ namespace yack
     namespace apex
     {
 
-        std::ostream & operator<<(std::ostream &os, const natural n)
+        std::ostream & natural:: output_hex(std::ostream &os) const
         {
-            if(n.bytes<=0)
-            {
-                os << "0x00";
-            }
+            if(bytes<=0)
+                os << "0";
             else
             {
-                for(size_t i=n.bytes;i>0;--i)
+                // first byte
                 {
-                    const uint8_t B = n[i];
-                    std::cerr << std::hex << uint64_t(B);
+                    const uint8_t b = (*this)[bytes]; assert(b>0);
+                    {
+                        const uint8_t up16 = hexa::up16(b);
+                        if(up16>0) os << hexa::lowercase_char[up16];
+                        /*      */ os << hexa::lowercase_char[hexa::lo16(b)];
+                    }
                 }
+
+                // other bytes
+                for(size_t i=bytes-1;i>0;--i)
+                {
+                    os << hexa::lowercase_text[ (*this)[i] ];
+                }
+
             }
             return os;
+        }
+
+        std::ostream & operator<<(std::ostream &os, const natural n)
+        {
+            return n.output_hex(os);
         }
 
 

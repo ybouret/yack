@@ -26,7 +26,7 @@ YACK_UTEST(apex_apn)
             const apex::unsigned_type u = ran.gen<apex::unsigned_type>(bits);
             YACK_ASSERT(bits==bits_for(u));
             apn n = u;
-            std::cerr << "u=" << u << std::endl;
+            std::cerr << std::hex << "u=" << u << std::dec << std::endl;
             YACK_ASSERT(n.lsu()==u);
             YACK_ASSERT(bytes_for(u)==n.size());
             YACK_ASSERT(n.bits()==bits);
