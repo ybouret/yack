@@ -88,19 +88,21 @@ namespace yack
             return count;
         }
 
+        
         template <typename T,const size_t exp2>
-        inline void forward(T data[])
+        inline void apply(T data[], const int isign)
         {
             bitrev<exp2>::run(data);
             
             static const size_t size = size_t(1) << exp2;
             size_t n    = size << 1;
             size_t mmax = 2;
+            size_t smax = 1; assert(1<<smax==mmax);
             while (n>mmax)
             {
-                std::cerr << "mmax@" <<  size << ": " << mmax << std::endl;
+                //std::cerr << "mmax@" <<  size << ": " << mmax << std::endl;
                 const size_t istep = mmax << 1;
-                const double theta = (6.28318530717959/mmax);
+                const double theta = isign*(6.28318530717959/mmax);
                 double wtemp = sin(0.5*theta);
                 double wpr   = -2.0*wtemp*wtemp;
                 double wpi   = sin(theta);
@@ -124,6 +126,7 @@ namespace yack
                     wi=wi*wpr+wtemp*wpi+wi;
                 }
                 mmax=istep;
+                ++smax;assert(1<<smax==mmax);
             }
         }
 

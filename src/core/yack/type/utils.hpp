@@ -19,6 +19,14 @@ namespace yack
     {
         return (lhs < rhs) ? rhs : lhs;
     }
+    
+    template <typename T> static inline
+    T square_of(const T x) throw()
+    {
+        return x*x;
+    }
+    
+    
 
 }
 
