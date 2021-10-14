@@ -7,15 +7,14 @@ namespace yack
     {
 
         YACK_APN_BINARY_REP(int natural::compare,
-        const throw() { YACK_APN_BINARY_IMPL(cmp); })
+                            const throw() { YACK_APN_BINARY_IMPL(cmp); })
         
         int natural:: cmp(const handle &l,
                           const handle &r) throw()
         {
             // sanity check
-            const size_t     nl  = l.n;
-            const size_t     nr  = r.n;
-
+            const size_t     nl  = l.count;
+            const size_t     nr  = r.count;
 
             if(nl<nr)
             {
@@ -30,8 +29,8 @@ namespace yack
                 else
                 {
                     assert(nl==nr);
-                    const word_type *lhs = l.w+nl;
-                    const word_type *rhs = r.w+nr;
+                    const word_type *lhs = l.entry+nl;
+                    const word_type *rhs = r.entry+nr;
                     for(size_t i=nl;i>0;--i)
                     {
                         const word_type L = *(--lhs);
@@ -55,8 +54,53 @@ namespace yack
                     return 0;
                 }
             }
+        }
 
+        number::sign_type natural:: scmp(const handle &l,
+                                         const handle &r) throw()
+        {
+            // sanity check
+            const size_t     nl  = l.count;
+            const size_t     nr  = r.count;
 
+            if(nl<nr)
+            {
+                return negative;
+            }
+            else
+            {
+                if(nr<nl)
+                {
+                    return positive;
+                }
+                else
+                {
+                    assert(nl==nr);
+                    const word_type *lhs = l.entry+nl;
+                    const word_type *rhs = r.entry+nr;
+                    for(size_t i=nl;i>0;--i)
+                    {
+                        const word_type L = *(--lhs);
+                        const word_type R = *(--rhs);
+                        if(L<R)
+                        {
+                            return negative;
+                        }
+                        else
+                        {
+                            if(R<L)
+                            {
+                                return positive;
+                            }
+                            else
+                            {
+                                continue;
+                            }
+                        }
+                    }
+                    return naught;
+                }
+            }
         }
 
     }

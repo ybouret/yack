@@ -3,6 +3,7 @@
 #if defined(YACK_APEX_TRACKING)
 #include "yack/system/wtime.hpp"
 #endif
+
 namespace yack
 {
     namespace apex
@@ -12,20 +13,20 @@ namespace yack
         natural natural:: lmul(const handle &l,
                                const handle &r)
         {
-            assert(l.w);
-            assert(r.w);
+            assert(l.entry);
+            assert(r.entry);
 
-            const size_t     lnw = l.n;
+            const size_t     lnw = l.count;
             if(lnw>0)
             {
-                const size_t rnw = r.n;
+                const size_t rnw = r.count;
                 if(rnw>0)
                 {
 #if defined(YACK_APEX_TRACKING)
                     const uint64_t mark = wtime::ticks();
 #endif
-                    const word_type *lhs = l.w;
-                    const word_type *rhs = r.w;
+                    const word_type *lhs = l.entry;
+                    const word_type *rhs = r.entry;
                     const size_t     pnw = lnw+rnw;          // product nuw words
                     natural          res(pnw,as_capacity);   // product 
 

@@ -15,10 +15,10 @@ namespace yack
                               const handle &r)  
         {
             // sanity check
-            const word_type *lhs = l.w; assert(lhs);
-            const word_type *rhs = r.w; assert(rhs);
-            size_t           nl  = l.n;
-            size_t           nr  = r.n;
+            const word_type *lhs = l.entry; assert(lhs);
+            const word_type *rhs = r.entry; assert(rhs);
+            size_t           nl  = l.count;
+            size_t           nr  = r.count;
             
             // order to have left=small one
             if(nl>nr)

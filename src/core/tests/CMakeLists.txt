@@ -70,6 +70,6 @@ add_test(singleton      test-yack singleton)
 add_test(fft:1d        test-yack  fft1d)
 
 add_test(apex:types     test-yack  apex_types)
-add_test(apex:apn       test-yack  apex_apn)
+add_test(apex:n         test-yack  apn)
 
 yack_testing(yack)

@@ -11,7 +11,7 @@ namespace
     
 }
 
-YACK_UTEST(apex_apn)
+YACK_UTEST(apn)
 {
 
     uprng ran;
@@ -239,8 +239,8 @@ YACK_ASSERT( (u OP v) == (U OP v) )
     for(size_t i=0;i<=70;++i)
     {
         apn I = apn::exp2(i);
-        std::cerr << "2^" << i << " = ";// I.output_bin(std::cerr) << " | ";
-        I.output_hex(std::cerr << "0x") << std::endl;
+        //std::cerr << "2^" << i << " = ";// I.output_bin(std::cerr) << " | ";
+        //I.output_hex(std::cerr << "0x") << std::endl;
         YACK_ASSERT(I.bits()==i+1);
         size_t j=i+1;
         while(I>0)
@@ -268,12 +268,7 @@ YACK_ASSERT( (u OP v) == (U OP v) )
             {
                 const apn             V = U.shr(shift);
                 const apex::uint_type v = u>>shift;
-                if(v!=V)
-                {
-                    std::cerr << U << ">>" << shift  << " != " << v << std::endl;
-                    throw exception("failure");
-                }
-
+                YACK_ASSERT(v==V);
             }
         }
     }
@@ -294,14 +289,42 @@ YACK_ASSERT( (u OP v) == (U OP v) )
         }
     }
 
-
-
-
-
+    std::cerr << "[DIV]" << std::endl;
+    for(size_t nbit=0;nbit<=64;++nbit)
+    {
+        for(size_t dbit=1;dbit<=nbit;++dbit)
+        {
+            for(size_t iter=0;iter<8;++iter)
+            {
+                const apex::uint_type u = ran.gen<apex::uint_type>(nbit);
+                const apex::uint_type v = ran.gen<apex::uint_type>(dbit);
+                const apex::uint_type q = u/v;
+                const apn U=u;
+                const apn V=v;
+                //std::cerr << u << "/" << v << "=>" << q << std::endl;
+                {
+                    const apn Q=U/V; YACK_ASSERT(Q.lsu()==q);
+                }
+                {
+                    const apn Q=U/v; YACK_ASSERT(Q.lsu()==q);
+                }
+                {
+                    const apn Q=u/V; YACK_ASSERT(Q.lsu()==q);
+                }
+                {
+                    apn Q=u; Q /= V;YACK_ASSERT(Q.lsu()==q);
+                }
+                {
+                    apn Q=u; Q /= v;YACK_ASSERT(Q.lsu()==q);
+                }
+            }
+        }
+    }
 
     std::cerr << "add_rate : " << apex::number::add_rate() << std::endl;
     std::cerr << "sub_rate : " << apex::number::sub_rate() << std::endl;
     std::cerr << "lmul_rate: " << apex::number::lmul_rate() << std::endl;
+    std::cerr << "div_rate:  " << apex::number::div_rate() << std::endl;
 
 
 

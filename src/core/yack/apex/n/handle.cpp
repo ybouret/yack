@@ -9,35 +9,42 @@ namespace yack
     {
 
         natural:: handle:: handle(const natural &n) throw() :
-        n(n.words),
-        w(n.word)
+        count(n.words),
+        entry(n.word)
         {
         }
 
         natural:: handle:: handle(uint_type &u) throw() :
-        n(0),
-        w( natural::u2w(u,coerce(n)) )
+        count(0),
+        entry( natural::u2w(u,coerce(count)) )
         {
         }
 
         natural:: handle:: handle(word_type &W) throw() :
-        n(1),
-        w(&W)
+        count(1),
+        entry(&W)
         {
             assert(W>0);
         }
 
         void natural::handle:: display(std::ostream &os) const
         {
-            os << "#" << n << "{";
-            const word_type *p = w+n;
-            for(size_t i=n;i>0;--i)
+            os << "#" << count << "{";
+            const word_type *p = entry+count;
+            for(size_t i=count;i>0;--i)
             {
                 os << ' ' << std::hex << uint64_t( *(--p) );
             }
             os << " }";
         }
 
+
+        bool natural::handle::is0() const throw() { return count<=0; }
+
+        bool natural::handle::is1() const throw()
+        {
+            return (1==count) && (1==entry[0]);
+        }
 
 
     }

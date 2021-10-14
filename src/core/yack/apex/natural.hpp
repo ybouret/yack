@@ -179,6 +179,13 @@ namespace yack
             natural &       operator<<=(const size_t shift); //!< shift left
             natural &       operator>>=(const size_t shift); //!< shift right
 
+            //__________________________________________________________________
+            //
+            // division
+            //__________________________________________________________________
+            YACK_APN_DECL(/)
+
+
         private:
             size_t       words;
             size_t       bytes;
@@ -190,14 +197,16 @@ namespace yack
 
             class handle {
             public:
-                const size_t            n;
-                const word_type * const w;
+                const size_t            count;
+                const word_type * const entry;
 
                 handle(const natural &) throw();
                 handle(uint_type     &) throw();
                 handle(word_type     &) throw();
 
                 void display(std::ostream &) const;
+                bool is0() const throw();
+                bool is1() const throw();
 
             private:
                 YACK_DISABLE_COPY_AND_ASSIGN(handle);
@@ -208,15 +217,17 @@ namespace yack
             void     zpad()   throw(); //!< after words to max_words
             explicit natural(const size_t num_words, const as_capacity_t &);  //!< capacity for num_words
             explicit natural(const word_type *w, const size_t n);             //!< from words
+            void      set_bit(const size_t ibit) throw();
 
             static size_t  ldw(word_type *,uint_type) throw(); //!< load uint into word[words_per_uint], return num words
 
-            static int     cmp(const handle &l, const handle &r) throw();
-            static natural add(const handle &l, const handle &r);
-            static natural sub(const handle &l, const handle &r);
-            static natural mul(const handle &l, const handle &r);
-            static natural lmul(const handle &l, const handle &r);
-            void   set_bit(const size_t ibit) throw();
+            static int       cmp(const handle &l, const handle &r) throw();
+            static sign_type scmp(const handle &l, const handle &r) throw();
+            static natural   add(const handle &l, const handle &r);
+            static natural   sub(const handle &l, const handle &r);
+            static natural   mul(const handle &l, const handle &r);
+            static natural   lmul(const handle &l, const handle &r);
+            static natural   div(const handle &denominator, const handle &numerator);
 
         };
 

@@ -43,6 +43,6 @@ YACK_UTEST_DECL(64)
     YACK_UTEST(fft1d);
 
     YACK_UTEST(apex_types);
-    YACK_UTEST(apex_apn);
+    YACK_UTEST(apn);
 }
 YACK_UTEST_EXEC()

@@ -8,14 +8,15 @@ namespace yack
     namespace apex
     {
 
-        uint64_t number:: add_ticks = 0;
-        uint64_t number:: sub_ticks = 0;
+        uint64_t number:: add_ticks  = 0;
+        uint64_t number:: sub_ticks  = 0;
         uint64_t number:: lmul_ticks = 0;
-
+        uint64_t number:: div_ticks  = 0;
 
         size_t number:: add_count  = 0;
         size_t number:: sub_count  = 0;
         size_t number:: lmul_count = 0;
+        size_t number:: div_count  = 0;
 
 
 
@@ -54,6 +55,11 @@ namespace yack
         double number:: lmul_rate()
         {
             return rate(lmul_ticks,lmul_count);
+        }
+
+        double number:: div_rate()
+        {
+            return rate(div_ticks,div_count);
         }
 
 

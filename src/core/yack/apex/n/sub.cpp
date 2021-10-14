@@ -20,8 +20,8 @@ namespace yack
             typedef signed_int<core_size>::type carry_t;
             static  const  carry_t              radix(word_base);
 
-            const size_t lnw = l.n;
-            const size_t rnw = l.n;
+            const size_t lnw = l.count;
+            const size_t rnw = l.count;
             if(lnw<rnw)
             {
                 throw libc::exception(EDOM,"%slhs<rhs [level-1]",fn);
@@ -33,8 +33,8 @@ namespace yack
 #endif
             natural          ans(lnw,as_capacity);
             word_type       *s   = ans.word;
-            const word_type *lhs = l.w;
-            const word_type *rhs = r.w;
+            const word_type *lhs = l.entry;
+            const word_type *rhs = r.entry;
 
             //__________________________________________________________________
             //
