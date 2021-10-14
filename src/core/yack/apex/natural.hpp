@@ -170,7 +170,11 @@ namespace yack
             //
             // power of two and bits shifting
             //__________________________________________________________________
-            static natural shl1(const size_t shift);
+            static natural exp2(const size_t shift);
+            natural        &shr() throw(); //!< optimized one bit right shift
+            natural         shr(const size_t shift) const;
+            natural         shl(const size_t shift) const;
+
 
         private:
             size_t       words;
@@ -197,10 +201,10 @@ namespace yack
             };
 
 
-            void update() throw(); //!< from words and bytes
-            void zpad()   throw(); //!< after words to max_words
-            natural(const size_t num_words, const as_capacity_t &);  //!< capacity for num_words
-            natural(const word_type *w, const size_t n);
+            void     update() throw(); //!< from words and bytes
+            void     zpad()   throw(); //!< after words to max_words
+            explicit natural(const size_t num_words, const as_capacity_t &);  //!< capacity for num_words
+            explicit natural(const word_type *w, const size_t n);             //!< from words
 
             static size_t  ldw(word_type *,uint_type) throw(); //!< load uint into word[words_per_uint], return num words
 
@@ -209,6 +213,7 @@ namespace yack
             static natural sub(const handle &l, const handle &r);
             static natural mul(const handle &l, const handle &r);
             static natural lmul(const handle &l, const handle &r);
+            void   set_bit(const size_t ibit) throw();
 
         };
 

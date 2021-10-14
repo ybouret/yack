@@ -226,7 +226,7 @@ YACK_ASSERT( (u OP v) == (U OP v) )
 
     }
 
-    std::cerr << "[BIN]" << std::endl;
+    std::cerr << "[BIN_OUT]" << std::endl;
     for(size_t i=0;i<=256;++i)
     {
         const apn I = i;
@@ -235,13 +235,69 @@ YACK_ASSERT( (u OP v) == (U OP v) )
     }
     std::cerr << std::endl;
 
+    std::cerr << "[BIN_EXP2]" << std::endl;
     for(size_t i=0;i<=70;++i)
     {
-        const apn I = apn::shl1(i);
-        std::cerr << "2^" << i << " = "; I.output_bin(std::cerr) << " | ";
+        apn I = apn::exp2(i);
+        std::cerr << "2^" << i << " = ";// I.output_bin(std::cerr) << " | ";
         I.output_hex(std::cerr << "0x") << std::endl;
         YACK_ASSERT(I.bits()==i+1);
+        size_t j=i+1;
+        while(I>0)
+        {
+            //std::cerr << I.shr().bits() << std::endl;
+            YACK_ASSERT(I.shr().bits() == --j);
+        }
     }
+
+    std::cerr << "[BIN_SHR]" << std::endl;
+    for(size_t ibits=0;ibits<=63;++ibits)
+    {
+        for(size_t iter=0;iter<128;++iter)
+        {
+            apex::uint_type u = ran.gen<apex::uint_type>(ibits);
+            apn             U = u;
+            YACK_ASSERT( U.shr().lsu() == (u>>1) );
+        }
+
+        for(size_t iter=0;iter<128;++iter)
+        {
+            const apex::uint_type u = ran.gen<apex::uint_type>(ibits);
+            const apn             U = u;
+            for(size_t shift=0;shift<=ibits;++shift)
+            {
+                const apn             V = U.shr(shift);
+                const apex::uint_type v = u>>shift;
+                if(v!=V)
+                {
+                    std::cerr << U << ">>" << shift  << " != " << v << std::endl;
+                    throw exception("failure");
+                }
+
+            }
+        }
+    }
+
+    std::cerr << "[BIN_SHL]" << std::endl;
+    for(size_t ibits=0;ibits<=64;++ibits)
+    {
+        for(size_t iter=0;iter<16;++iter)
+        {
+            const apex::uint_type u = ran.gen<apex::uint_type>(ibits);
+            apn                   U = u;
+            for(size_t shift=0;shift<=100;++shift)
+            {
+                apn V = U.shl(shift);
+                V     = V.shr(shift);
+                YACK_ASSERT(V==U);
+            }
+        }
+    }
+
+
+
+
+
 
     std::cerr << "add_rate : " << apex::number::add_rate() << std::endl;
     std::cerr << "sub_rate : " << apex::number::sub_rate() << std::endl;

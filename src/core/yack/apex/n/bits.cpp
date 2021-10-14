@@ -3,6 +3,8 @@
 #include "yack/system/endian.hpp"
 #include "yack/arith/align.hpp"
 
+#include <iostream>
+
 namespace yack
 {
     namespace apex
@@ -24,11 +26,13 @@ namespace yack
         {
 
             assert(ibit<bits());
-            size_t        iB  = ibit>>3;       assert(iB<bytes);
+            size_t        iB = ibit>>3;        assert(iB<bytes);
             const size_t  ib = ibit - (iB<<3); assert(ib<8);
             const uint8_t B  = (*this)[++iB];
             return 0 != (B & _bit[ib]);
         }
+
+
 
 
         namespace
@@ -52,7 +56,7 @@ namespace yack
 
 
 
-        natural natural:: shl1(const size_t shift)
+        natural natural:: exp2(const size_t shift)
         {
             static const apn_get_proc proc =  endianness::BE() ? getBE : getLE;
 
@@ -74,8 +78,99 @@ namespace yack
 
             return res;
 
-
         }
+
+
+        natural & natural:: shr() throw()
+        {
+            if(words)
+            {
+                const size_t msi=words-1;
+                for(size_t i=0,j=1;i<msi;++i,++j)
+                {
+                    word_type &w = word[i];
+                    w >>= 1;
+                    w |= ((word[j]&0x1) << (word_bits-1));
+                }
+                word[msi] >>= 1;
+                update();
+            }
+            return *this;
+        }
+
+        void natural:: set_bit(const size_t ibit) throw()
+        {
+            size_t        iB = ibit>>3;
+            const size_t  ib = ibit - (iB<<3); assert(ib<8);
+            coerce((*this)[++iB]) |= _bit[ib];
+        }
+
+
+
+        natural natural:: shr(const size_t shift) const
+        {
+
+            if(shift<=0)
+            {
+                return *this;
+            }
+            else
+            {
+                const size_t my_bits = bits();
+                if(shift>=my_bits)
+                {
+                    return natural(0);
+                }
+                else
+                {
+                    assert(shift<my_bits);
+                    const size_t to_bits  = my_bits-shift;
+                    const size_t to_words = YACK_ALIGN_ON(word_bits,to_bits)>>ilog2<word_bits>::value;
+                    const size_t to_bytes = YACK_ALIGN_ON(8,to_bits)>>3;
+
+                    natural to(to_words,as_capacity);
+                    to.words = to_words;
+                    to.bytes = to_bytes;
+                    for(size_t i=0,j=shift;i<to_bits;++i,++j)
+                    {
+                        if( bit(j) ) to.set_bit(i);
+                    }
+
+
+                    to.update();
+                    return to;
+                }
+            }
+        }
+
+        natural natural:: shl(const size_t shift) const
+        {
+            if(shift<=0||words<=0)
+            {
+                return *this;
+            }
+            else
+            {
+                assert(words>0);
+                const size_t my_bits  = bits(); assert(my_bits>0);
+                const size_t to_bits  = my_bits+shift;
+                const size_t to_words = YACK_ALIGN_ON(word_bits,to_bits)>>ilog2<word_bits>::value;
+                const size_t to_bytes = YACK_ALIGN_ON(8,to_bits)>>3;
+
+                natural to(to_words,as_capacity);
+                to.words = to_words;
+                to.bytes = to_bytes;
+
+                for(size_t i=0,j=shift;i<my_bits;++i,++j)
+                {
+                    if( bit(i) ) to.set_bit(j);
+                }
+
+                to.update();
+                return to;
+            }
+        }
+
 
 
     }
