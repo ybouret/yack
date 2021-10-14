@@ -67,8 +67,7 @@ add_test(sync:condition test-yack sync_condition)
 add_test(sync:thread    test-yack sync_condition)
 add_test(singleton      test-yack singleton)
 
-add_test(fft:xbitrev    test-yack  fft_xbitrev)
-add_test(fft:run        test-yack  fft_run)
+add_test(fft:1d        test-yack  fft1d)
 
 add_test(apex:types     test-yack  apex_types)
 add_test(apex:apn       test-yack  apex_apn)
