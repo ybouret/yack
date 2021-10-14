@@ -41,6 +41,24 @@ namespace yack
         }
 
 
+        std::ostream & natural:: output_bin(std::ostream &os) const
+        {
+            size_t ibit = bits();
+            if(ibit<=0)
+            {
+                os << '0';
+            }
+            else
+            {
+                while(ibit-- > 0)
+                {
+                    os << ( bit(ibit) ? '1' : '0' );
+                }
+            }
+
+            return os;
+        }
+
     }
 
 }

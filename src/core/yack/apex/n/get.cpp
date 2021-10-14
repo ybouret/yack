@@ -32,9 +32,9 @@ namespace yack
             assert(indx>0);
             assert(indx<=bytes);
 
-            const size_t ib = indx-1;
-            const size_t iw = ib>>word_exp2;
-            const size_t at = ib-(iw<<word_exp2);
+            const size_t iB = indx-1;
+            const size_t iw = iB>>word_exp2;
+            const size_t at = iB-(iw<<word_exp2);
             return proc(word[iw],at);
         }
 

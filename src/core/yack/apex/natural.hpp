@@ -81,18 +81,21 @@ namespace yack
             //
             // read/write methods
             //__________________________________________________________________
-            size_t        bits()        const throw(); //!< exact bits
-            void          xch(natural &other) throw(); //!< no throw exchange all fields
-            uint_type     lsu()         const throw(); //!< least significant unsigned
-            void          ldu(uint_type)      throw(); //!< load unsigned type
-            void          ldz()               throw(); //!< load zero
-
+            size_t        bits()           const throw(); //!< exact bits
+            void          xch(natural &other)    throw(); //!< no throw exchange all fields
+            uint_type     lsu()            const throw(); //!< least significant unsigned
+            void          ldu(uint_type)         throw(); //!< load unsigned type
+            void          ldz()                  throw(); //!< load zero
+            bool          bit(size_t ibit) const throw();
 
             //! output
             friend std::ostream & operator<<(std::ostream &os, const natural n);
 
             //! output hexadecimal, compact form
             std::ostream & output_hex(std::ostream &) const;
+
+            //! output binary, compact form
+            std::ostream & output_bin(std::ostream &) const;
 
             //! convert value to array of words, uses value as memory
             static const word_type *u2w(uint_type &value, size_t &num_words) throw();
@@ -147,12 +150,27 @@ namespace yack
             natural &operator++();    //!< pre  increase operator
             natural  operator++(int); //!< post increase operator
 
+            //__________________________________________________________________
+            //
+            // subtraction
+            //__________________________________________________________________
             YACK_APN_DECL(-)
             natural &operator--();    //!< pre  decrease operator
             natural  operator--(int); //!< post decrease operator
 
 
+            //__________________________________________________________________
+            //
+            // multiplication
+            //__________________________________________________________________
             YACK_APN_DECL(*)
+
+
+            //__________________________________________________________________
+            //
+            // power of two and bits shifting
+            //__________________________________________________________________
+            static natural shl1(const size_t shift);
 
         private:
             size_t       words;

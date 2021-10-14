@@ -14,9 +14,8 @@ namespace
 YACK_UTEST(apex_apn)
 {
 
-
-
     uprng ran;
+
     for(size_t bits=0;bits<=64;++bits)
     {
         for(size_t iter=0;iter<16;++iter)
@@ -74,6 +73,8 @@ YACK_UTEST(apex_apn)
         const size_t wsize = size_t(1) << wexp2;
         YACK_ASSERT(wsize>=i);
     }
+
+
 
     std::cerr << "[CMP]" << std::endl;
     for(size_t ibits=0;ibits<=60;++ibits)
@@ -224,9 +225,28 @@ YACK_ASSERT( (u OP v) == (U OP v) )
         }
 
     }
+
+    std::cerr << "[BIN]" << std::endl;
+    for(size_t i=0;i<=256;++i)
+    {
+        const apn I = i;
+        I.output_bin(std::cerr << " " << i << "=>");
+        if( 0 == ((1+i)%8)) std::cerr << std::endl;
+    }
+    std::cerr << std::endl;
+
+    for(size_t i=0;i<=70;++i)
+    {
+        const apn I = apn::shl1(i);
+        std::cerr << "2^" << i << " = "; I.output_bin(std::cerr) << " | ";
+        I.output_hex(std::cerr << "0x") << std::endl;
+        YACK_ASSERT(I.bits()==i+1);
+    }
+
     std::cerr << "add_rate : " << apex::number::add_rate() << std::endl;
     std::cerr << "sub_rate : " << apex::number::sub_rate() << std::endl;
     std::cerr << "lmul_rate: " << apex::number::lmul_rate() << std::endl;
+
 
 
     
