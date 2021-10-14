@@ -152,6 +152,7 @@ namespace yack
             natural  operator--(int); //!< post decrease operator
 
 
+            YACK_APN_DECL(*)
 
         private:
             size_t       words;

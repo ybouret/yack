@@ -3,7 +3,6 @@
 #include "yack/arith/base2.hpp"
 #include "yack/utest/run.hpp"
 #include "yack/system/endian.hpp"
-#include "yack/system/wtime.hpp"
 
 using namespace yack;
 
@@ -77,11 +76,11 @@ YACK_UTEST(apex_apn)
     }
 
     std::cerr << "[CMP]" << std::endl;
-    for(size_t ibits=0;ibits<=32;++ibits)
+    for(size_t ibits=0;ibits<=60;++ibits)
     {
-        for(size_t jbits=0;jbits<=32;++jbits)
+        for(size_t jbits=0;jbits<=60;++jbits)
         {
-            for(size_t iter=0;iter<64;++iter)
+            for(size_t iter=0;iter<32;++iter)
             {
                 const apex::uint_type u = ran.gen<apex::uint_type>(ibits);
                 const apn             U = u;
@@ -109,11 +108,11 @@ YACK_ASSERT( (u OP v) == (U OP v) )
     }
 
     std::cerr << "[ADD]" << std::endl;
-    for(size_t ibits=0;ibits<=32;++ibits)
+    for(size_t ibits=0;ibits<=60;++ibits)
     {
-        for(size_t jbits=0;jbits<=32;++jbits)
+        for(size_t jbits=0;jbits<=60;++jbits)
         {
-            for(size_t iter=0;iter<128;++iter)
+            for(size_t iter=0;iter<32;++iter)
             {
                 const apex::uint_type u = ran.gen<apex::uint_type>(ibits);
                 const apn             U = u;
@@ -151,11 +150,11 @@ YACK_ASSERT( (u OP v) == (U OP v) )
     std::cerr << std::endl;
 
     std::cerr << "[SUB]" << std::endl;
-    for(size_t ibits=0;ibits<=32;++ibits)
+    for(size_t ibits=0;ibits<=60;++ibits)
     {
-        for(size_t jbits=0;jbits<=32;++jbits)
+        for(size_t jbits=0;jbits<=60;++jbits)
         {
-            for(size_t iter=0;iter<128;++iter)
+            for(size_t iter=0;iter<32;++iter)
             {
                 apex::uint_type u = ran.gen<apex::uint_type>(ibits);
                 apex::uint_type v = ran.gen<apex::uint_type>(jbits);
@@ -193,9 +192,41 @@ YACK_ASSERT( (u OP v) == (U OP v) )
     }
     std::cerr << std::endl;
 
-    wtime sw;
-    std::cerr << "add_rate: " << apex::number::add_count/sw(apex::number::add_ticks)<< std::endl;
-    std::cerr << "sub_rate: " << apex::number::sub_count/sw(apex::number::sub_ticks)<< std::endl;
+    std::cerr << "[MUL]" << std::endl;
+    for(size_t ibits=0;ibits<=31;++ibits)
+    {
+        for(size_t jbits=0;jbits<=31;++jbits)
+        {
+            for(size_t iter=0;iter<128;++iter)
+            {
+                const apex::uint_type u = ran.gen<apex::uint_type>(ibits);
+                const apex::uint_type v = ran.gen<apex::uint_type>(jbits);
+                const apex::uint_type p = u*v;
+                const apn U=u;
+                const apn V=v;
+                {
+                    const apn P=U*V; YACK_ASSERT(P.lsu()==p);
+                }
+                {
+                    const apn P=U*v; YACK_ASSERT(P.lsu()==p);
+                }
+                {
+                    const apn P=u*V; YACK_ASSERT(P.lsu()==p);
+                }
+                {
+                    apn P=u; P *= V;YACK_ASSERT(P.lsu()==p);
+                }
+                {
+                    apn P=u; P *= v;YACK_ASSERT(P.lsu()==p);
+                }
+            }
+
+        }
+
+    }
+    std::cerr << "add_rate : " << apex::number::add_rate() << std::endl;
+    std::cerr << "sub_rate : " << apex::number::sub_rate() << std::endl;
+    std::cerr << "lmul_rate: " << apex::number::lmul_rate() << std::endl;
 
 
     

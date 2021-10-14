@@ -27,7 +27,15 @@ namespace yack
             static size_t   add_count;
             static uint64_t sub_ticks;
             static size_t   sub_count;
+            static uint64_t lmul_ticks;
+            static size_t   lmul_count;
+
             static void     reset_tracking() throw();
+            static double   rate(const uint64_t ell, const size_t num);
+            static double   add_rate();
+            static double   sub_rate();
+            static double   lmul_rate();
+
 
             virtual ~number() throw(); //!< cleanup
 
