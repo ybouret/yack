@@ -86,7 +86,7 @@ namespace yack
             uint_type     lsu()            const throw(); //!< least significant unsigned
             void          ldu(uint_type)         throw(); //!< load unsigned type
             void          ldz()                  throw(); //!< load zero
-            bool          bit(size_t ibit) const throw();
+            bool          bit(size_t ibit) const throw(); //!< access 0<=ibit<bits()
 
             //! output
             friend std::ostream & operator<<(std::ostream &os, const natural n);
@@ -170,11 +170,14 @@ namespace yack
             //
             // power of two and bits shifting
             //__________________________________________________________________
-            static natural exp2(const size_t shift);
-            natural        &shr() throw(); //!< optimized one bit right shift
-            natural         shr(const size_t shift) const;
-            natural         shl(const size_t shift) const;
-
+            static natural exp2(const size_t shift);       //!< 2^shift
+            natural        &shr() throw();                 //!< optimized one bit right shift, aka /=2
+            natural         shr(const size_t shift) const; //!<  shift right
+            natural         shl(const size_t shift) const; //!< shift left
+            friend natural  operator<<(const natural &lhs, const size_t shift); //!< shift left
+            friend natural  operator>>(const natural &lhs, const size_t shift); //!< shift right
+            natural &       operator<<=(const size_t shift); //!< shift left
+            natural &       operator>>=(const size_t shift); //!< shift right
 
         private:
             size_t       words;

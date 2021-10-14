@@ -171,8 +171,29 @@ namespace yack
             }
         }
 
+        natural operator<<(const natural &lhs, const size_t shift)
+        {
+            return lhs.shl(shift);
+        }
 
+        natural operator>>(const natural &lhs, const size_t shift)
+        {
+            return lhs.shr(shift);
+        }
 
+        natural & natural:: operator<<=(const size_t shift)
+        {
+            natural res = shl(shift);
+            xch(res);
+            return *this;
+        }
+
+        natural & natural:: operator>>=(const size_t shift)
+        {
+            natural res = shr(shift);
+            xch(res);
+            return *this;
+        }
     }
 
 }

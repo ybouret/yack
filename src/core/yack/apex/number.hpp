@@ -12,7 +12,7 @@ namespace yack
     namespace apex
     {
 
-#define YACK_APEX_TRACKING 1
+#define YACK_APEX_TRACKING 1 //!< activate tracking
 
         //______________________________________________________________________
         //
@@ -23,18 +23,18 @@ namespace yack
         class number : public object
         {
         public:
-            static uint64_t add_ticks;
-            static size_t   add_count;
-            static uint64_t sub_ticks;
-            static size_t   sub_count;
-            static uint64_t lmul_ticks;
-            static size_t   lmul_count;
+            static uint64_t add_ticks;  //!< cumulative ticks
+            static size_t   add_count;  //!< cumulative count
+            static uint64_t sub_ticks;  //!< cumulative ticks
+            static size_t   sub_count;  //!< cumulative count
+            static uint64_t lmul_ticks; //!< cumulative ticks
+            static size_t   lmul_count; //!< cumulative count
 
-            static void     reset_tracking() throw();
-            static double   rate(const uint64_t ell, const size_t num);
-            static double   add_rate();
-            static double   sub_rate();
-            static double   lmul_rate();
+            static void     reset_tracking() throw();                   //!< all ticks/count
+            static double   rate(const uint64_t ell, const size_t num); //!< in Mops
+            static double   add_rate();                                 //!< in Mops
+            static double   sub_rate();                                 //!< in Mops
+            static double   lmul_rate();                                //!< in Mops
 
 
             virtual ~number() throw(); //!< cleanup
