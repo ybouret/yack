@@ -8,7 +8,7 @@
 #include "yack/memory/small/arena-words.hpp"
 
 #if defined(_MSC_VER)
-#include "yack/memory/parcel.hpp"
+#include "yack/memory/joint//parcel.hpp"
 #else
 namespace yack { namespace memory { class parcel;  } }
 #endif
