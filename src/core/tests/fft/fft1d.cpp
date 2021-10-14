@@ -48,6 +48,16 @@ namespace
         do_xtest<double,exp2>(ran);
     }
 
+    template <typename T>
+    static inline
+    void displayPI()
+    {
+        YACK_SIZEOF(T);
+        std::cerr.precision(200);
+        const T PI=acos(T(-1));
+        std::cerr << PI << std::endl;
+    }
+
 }
 
 YACK_UTEST(fft1d)
@@ -68,7 +78,8 @@ YACK_UTEST(fft1d)
     do_xtests<11>(ran);
     do_xtests<12>(ran);
     do_xtests<13>(ran);
-    return 0;
+    if(false)
+    {
     do_xtests<14>(ran);
     do_xtests<15>(ran);
     do_xtests<16>(ran);
@@ -78,6 +89,11 @@ YACK_UTEST(fft1d)
     do_xtests<20>(ran);
     do_xtests<21>(ran);
     do_xtests<22>(ran);
+    }
+
+    displayPI<float>();
+    displayPI<double>();
+    displayPI<long double>();
 
 }
 YACK_UDONE()

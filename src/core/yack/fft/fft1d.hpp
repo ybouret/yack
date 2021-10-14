@@ -56,8 +56,8 @@ namespace yack
                     double wtemp = sin(0.5*theta);
                     double wpr   = -2.0*wtemp*wtemp;
                     double wpi   = sin(theta);
-                    double wr = 1.0;
-                    double wi = 0.0;
+                    double wr    = 1.0;
+                    double wi    = 0.0;
                     for(size_t m=1;m<mmax;m+=2)
                     {
                         for(size_t i=m;i<=n;i+=istep)
