@@ -40,17 +40,19 @@ namespace yack
             //__________________________________________________________________
 
             // native computation
-            typedef unsigned_for<YACK_APEX_TYPE>::type core_type; //!< native type
-            static const size_t core_size = sizeof(core_type);    //!< native type size
-            static const size_t core_bits = core_size << 3;       //!< native type bits
+            typedef unsigned_for<YACK_APEX_TYPE>::type       core_type; //!< native type
+            typedef unsigned_int< sizeof(core_type)/2>::type word_type;      //!< internal type
+
+            static const size_t core_size = sizeof(core_type);      //!< native type size
+            static const size_t core_bits = sizeof(core_type) << 3; //!< native type bits
 
             // internal storage
-            static const size_t     word_size = core_size >> 1;            //!< internal type size
-            static const size_t     word_bits = core_bits >> 1;            //!< internal type bits
-            static const size_t     word_exp2 = ilog2<word_size>::value;   //!< word_size = 2^word_exp2
-            static const core_type  word_base = core_type(1) << word_bits; //!< 2^[8|16|32] on larger type
-
-            typedef unsigned_int<word_size>::type word_type;      //!< internal type
+            static const size_t     word_size = sizeof(word_type);                   //!< internal type size
+            static const size_t     word_bits = sizeof(word_type) << 3;                   //!< internal type bits
+            static const size_t     word_exp2 = ilog2<word_size>::value;          //!< word_size = 2^word_exp2
+            static const core_type  word_base = core_type(1) << word_bits;        //!< 2^[8|16|32] on larger type
+            static const core_type  word_maxi = integral_for<word_type>::maximum; //!< maximum  for core_type
+            
 
             static  const size_t    min_words_bytes = 2 * sizeof(uint_type);          //!< minimal memory, in bytes
             static  const size_t    min_words_size  = min_words_bytes >> word_exp2;   //!< minimal memory, in words
@@ -183,15 +185,12 @@ namespace yack
 
             static size_t  ldw(word_type *,uint_type) throw(); //!< load uint into word[words_per_uint], return num words
 
-            static int     cmp(const handle &l,
-                               const handle &r) throw();
+            static int     cmp(const handle &l, const handle &r) throw();
+            static natural add(const handle &l, const handle &r);
+            static natural sub(const handle &l, const handle &r);
+            static natural mul(const handle &l, const handle &r);
+            static natural lmul(const handle &l, const handle &r);
 
-            static natural add(const handle &l,
-                               const handle &r);
-
-            static natural sub(const handle &l,
-                               const handle &r);
-            
         };
 
     }
