@@ -21,11 +21,16 @@ namespace yack
     }
     
     template <typename T> static inline
-    T square_of(const T x) throw()
+    T squared(const T x) throw()
     {
         return x*x;
     }
     
+    template <typename T> static inline
+    T twice(const T x) throw()
+    {
+        return x+x;
+    }
     
 
 }

@@ -6,6 +6,11 @@
 
 #include "yack/setup.hpp"
 
+#define  YACK_FFT_TRACK
+#if defined(YACK_FFT_TRACK)
+#include "yack/system/wtime.hpp"
+#endif
+
 #include <iostream>
 #include <cmath>
 
@@ -19,6 +24,12 @@ namespace yack
     //__________________________________________________________________________
     struct fft1d
     {
+        static uint64_t     algo_ticks;
+        static const size_t one      = 1;
+        static const size_t max_exp2 = (sizeof(size_t)<<3) - 1;
+        static const size_t max_size = one << max_exp2;
+        
+
         template <typename T,const size_t exp2> static
         inline void apply(T data[], const int isign)
         {
@@ -43,14 +54,18 @@ namespace yack
                     j += m;
                 }
             }
-
+#if defined(YACK_FFT_TRACK)
+            const uint64_t mark = wtime::ticks();
+#endif
             {
                 size_t n    = size << 1;
                 size_t mmax = 2;
-                size_t smax = 1; assert(1<<smax==mmax);
+                size_t smax = 1; assert((1<<smax)==mmax);
                 while (n>mmax)
                 {
-                    std::cerr << "mmax@" <<  size << ": " << mmax << " 2^" << smax << std::endl;
+                    // theta=(2*pi)/mmax = 2*pi/(2^smax) = pi/(2^(smax-1))
+                    // 0.5*theta=pi/mmax =   pi/(2^smax)
+                    //std::cerr << "mmax@" <<  size << ": " << mmax << " 2^" << smax << std::endl;
                     const size_t istep = mmax << 1;
                     const double theta = isign*(6.28318530717959/mmax);
                     double wtemp = sin(0.5*theta);
@@ -62,15 +77,17 @@ namespace yack
                     {
                         for(size_t i=m;i<=n;i+=istep)
                         {
-                            const size_t i1=i+1;
+                            T *          data_i = data+i;
                             const size_t j=i+mmax;
-                            const size_t j1=j+1;
-                            const T tempr = T(wr*data[j]-wi*data[j1]);
-                            const T tempi = T(wr*data[j1]+wi*data[j]);
-                            data[j]   = data[i]-tempr;
-                            data[j1]  = data[i1]-tempi;
-                            data[i]  += tempr;
-                            data[i1] += tempi;
+                            T *          data_j = data+j;
+                            const double djr    = double(data_j[0]);
+                            const double dji    = double(data_j[1]);
+                            const T      tempr  = T(wr*djr-wi*dji);
+                            const T      tempi  = T(wr*dji+wi*djr);
+                            data_j[0]  = data_i[0]-tempr;
+                            data_j[1]  = data_i[1]-tempi;
+                            data_i[0]  += tempr;
+                            data_i[1]  += tempi;
                         }
                         wr=(wtemp=wr)*wpr-wi*wpi+wr;
                         wi=wi*wpr+wtemp*wpi+wi;
@@ -79,6 +96,9 @@ namespace yack
                     ++smax;assert(1<<smax==mmax);
                 }
             }
+#if defined(YACK_FFT_TRACK)
+            algo_ticks += wtime::ticks() - mark;
+#endif
         }
     };
 
