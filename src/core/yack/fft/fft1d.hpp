@@ -65,6 +65,8 @@ namespace yack
                 {
                     // theta=(2*pi)/mmax = 2*pi/(2^smax) = pi/(2^(smax-1))
                     // 0.5*theta=pi/mmax =   pi/(2^smax)
+                    //
+                    
                     //std::cerr << "mmax@" <<  size << ": " << mmax << " 2^" << smax << std::endl;
                     const size_t istep = mmax << 1;
                     const double theta = isign*(6.28318530717959/mmax);
