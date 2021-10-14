@@ -39,6 +39,8 @@ namespace yack
             static size_t   lmul_count; //!< cumulative count
             static uint64_t div_ticks;  //!< cumulative ticks
             static size_t   div_count;  //!< cumulative count
+            static uint64_t mod_ticks;  //!< cumulative ticks
+            static size_t   mod_count;  //!< cumulative count
 
             static void     reset_tracking() throw();                   //!< all ticks/count
             static double   rate(const uint64_t ell, const size_t num); //!< in Mops
@@ -46,6 +48,7 @@ namespace yack
             static double   sub_rate();                                 //!< in Mops
             static double   lmul_rate();                                //!< in Mops
             static double   div_rate();                                 //!< in Mops
+            static double   mod_rate();                                 //!< in Mops
 
 
             virtual ~number() throw(); //!< cleanup

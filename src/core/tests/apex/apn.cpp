@@ -289,7 +289,7 @@ YACK_ASSERT( (u OP v) == (U OP v) )
         }
     }
 
-    std::cerr << "[DIV]" << std::endl;
+    std::cerr << "[DIV/MOD]" << std::endl;
     for(size_t nbit=0;nbit<=64;++nbit)
     {
         for(size_t dbit=1;dbit<=nbit;++dbit)
@@ -299,23 +299,29 @@ YACK_ASSERT( (u OP v) == (U OP v) )
                 const apex::uint_type u = ran.gen<apex::uint_type>(nbit);
                 const apex::uint_type v = ran.gen<apex::uint_type>(dbit);
                 const apex::uint_type q = u/v;
+                const apex::uint_type m = u%v;
                 const apn U=u;
                 const apn V=v;
                 //std::cerr << u << "/" << v << "=>" << q << std::endl;
                 {
                     const apn Q=U/V; YACK_ASSERT(Q.lsu()==q);
+                    const apn M=U%V; YACK_ASSERT(M.lsu()==m);
                 }
                 {
                     const apn Q=U/v; YACK_ASSERT(Q.lsu()==q);
+                    const apn M=U%v; YACK_ASSERT(M.lsu()==m);
                 }
                 {
                     const apn Q=u/V; YACK_ASSERT(Q.lsu()==q);
+                    const apn M=u%V; YACK_ASSERT(M.lsu()==m);
                 }
                 {
-                    apn Q=u; Q /= V;YACK_ASSERT(Q.lsu()==q);
+                    apn Q=u; Q /= V; YACK_ASSERT(Q.lsu()==q);
+                    apn M=u; M %= V; YACK_ASSERT(M.lsu()==m);
                 }
                 {
-                    apn Q=u; Q /= v;YACK_ASSERT(Q.lsu()==q);
+                    apn Q=u; Q /= v; YACK_ASSERT(Q.lsu()==q);
+                    apn M=u; M %= v; YACK_ASSERT(M.lsu()==m);
                 }
             }
         }
@@ -325,9 +331,8 @@ YACK_ASSERT( (u OP v) == (U OP v) )
     std::cerr << "sub_rate : " << apex::number::sub_rate() << std::endl;
     std::cerr << "lmul_rate: " << apex::number::lmul_rate() << std::endl;
     std::cerr << "div_rate:  " << apex::number::div_rate() << std::endl;
-
-
-
+    std::cerr << "mod_rate:  " << apex::number::mod_rate() << std::endl;
+    
     
 }
 YACK_UDONE()

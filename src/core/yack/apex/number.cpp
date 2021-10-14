@@ -12,11 +12,13 @@ namespace yack
         uint64_t number:: sub_ticks  = 0;
         uint64_t number:: lmul_ticks = 0;
         uint64_t number:: div_ticks  = 0;
+        uint64_t number:: mod_ticks  = 0;
 
         size_t number:: add_count  = 0;
         size_t number:: sub_count  = 0;
         size_t number:: lmul_count = 0;
         size_t number:: div_count  = 0;
+        size_t number:: mod_count  = 0;
 
 
 
@@ -60,6 +62,11 @@ namespace yack
         double number:: div_rate()
         {
             return rate(div_ticks,div_count);
+        }
+
+        double number:: mod_rate()
+        {
+            return rate(mod_ticks,mod_count);
         }
 
 

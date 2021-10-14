@@ -186,6 +186,12 @@ namespace yack
             YACK_APN_DECL(/)
 
 
+            //__________________________________________________________________
+            //
+            // modulo
+            //__________________________________________________________________
+            YACK_APN_DECL(%)
+
         private:
             size_t       words;
             size_t       bytes;
@@ -228,6 +234,7 @@ namespace yack
             static natural   mul(const handle &l, const handle &r);
             static natural   lmul(const handle &l, const handle &r);
             static natural   div(const handle &denominator, const handle &numerator);
+            static natural   mod(const handle &denominator, const handle &numerator);
 
         };
 
