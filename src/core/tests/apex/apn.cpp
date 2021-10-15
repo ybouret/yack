@@ -6,11 +6,6 @@
 
 using namespace yack;
 
-namespace
-{
-    
-}
-
 YACK_UTEST(apn)
 {
 

@@ -28,8 +28,8 @@ namespace
         }
         
         
-        fft1d::apply<T,exp2>(data-1,1);
-        fft1d::apply<T,exp2>(data-1,-1);
+        fft1d::apply<T>(data-1,size,1);
+        fft1d::apply<T>(data-1,size,-1);
         
         T sum2 = 0;
         for(size_t i=0;i<2*size;++i)
@@ -42,8 +42,8 @@ namespace
         const size_t iter_max = 128;
         for(size_t iter=0;iter<iter_max;++iter)
         {
-            fft1d::apply<T,exp2>(data-1,1);
-            fft1d::apply<T,exp2>(data-1,-1);
+            fft1d::apply<T>(data-1,size,1);
+            fft1d::apply<T>(data-1,size,-1);
         }
         
         if(fft1d::algo_ticks)

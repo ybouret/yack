@@ -86,6 +86,12 @@ namespace yack
             }
         }
 
+
+        natural natural:: operator+() const
+        {
+            return natural(*this);
+        }
+
         natural & natural:: operator++()
         {
             const handle lhs(*this);

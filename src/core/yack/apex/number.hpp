@@ -37,6 +37,8 @@ namespace yack
             static size_t   sub_count;  //!< cumulative count
             static uint64_t lmul_ticks; //!< cumulative ticks
             static size_t   lmul_count; //!< cumulative count
+            static uint64_t fmul_ticks; //!< cumulative ticks
+            static size_t   fmul_count; //!< cumulative count
             static uint64_t div_ticks;  //!< cumulative ticks
             static size_t   div_count;  //!< cumulative count
             static uint64_t mod_ticks;  //!< cumulative ticks
@@ -47,6 +49,7 @@ namespace yack
             static double   add_rate();                                 //!< in Mops
             static double   sub_rate();                                 //!< in Mops
             static double   lmul_rate();                                //!< in Mops
+            static double   fmul_rate();                                //!< in Mops
             static double   div_rate();                                 //!< in Mops
             static double   mod_rate();                                 //!< in Mops
 

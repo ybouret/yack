@@ -53,7 +53,43 @@ namespace yack
                 items_exp2=-1;
             }
 
+        };
 
+        template <typename T>
+        class tableau
+        {
+        public:
+            inline tableau(const int required_exp2):
+            items_exp2(required_exp2),
+            block_exp2(-1),
+            addr( alloc::field_acquire<T>( coerce(items_exp2), coerce(block_exp2) ) ),
+            size( size_t(1) << items_exp2 )
+            {
+            }
+
+            inline ~tableau() throw()
+            {
+                alloc::field_release<T>(addr,coerce(items_exp2), coerce(block_exp2) );
+                coerce(size) = 0;
+            }
+
+
+            inline T       & operator[](const size_t indx) throw()       { assert(indx<size); return addr[indx]; }
+            inline const T & operator[](const size_t indx) const throw() { assert(indx<size); return addr[indx]; }
+
+            template <typename U> inline U       *as() { return ((U*) &addr[0])-1;       }
+            template <typename U> inline const U *as() { return ((const U*) &addr[0])-1; }
+
+            const int    items_exp2;
+            const int    block_exp2;
+
+        private:
+            T           *addr;
+        public:
+            const size_t size;
+
+        private:
+            YACK_DISABLE_COPY_AND_ASSIGN(tableau);
         };
 
     }

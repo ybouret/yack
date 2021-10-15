@@ -5,6 +5,7 @@
 #define YACK_FFT_XBITREV_INCLUDED 1
 
 #include "yack/setup.hpp"
+#include "yack/type/constants.hpp"
 
 #define  YACK_FFT_TRACK
 #if defined(YACK_FFT_TRACK)
@@ -30,35 +31,33 @@ namespace yack
         static const size_t max_size = one << max_exp2;
         
 
-        template <typename T,const size_t exp2> static
-        inline void apply(T data[], const int isign)
+        template <typename T> static
+        inline void apply(T data[], const size_t size, const int isign)
         {
-            static const size_t size = size_t(1) << exp2;
+            const size_t n = (size << 1);
+            for(size_t i=1,j=1;i<n;i+=2)
             {
-                static const size_t n = size << 1;
-                for(size_t i=1,j=1;i<n;i+=2)
+                if(j>i)
                 {
-                    if(j>i)
-                    {
-                        T *lhs = &data[j];
-                        T *rhs = &data[i];
-                        cswap(lhs[0],rhs[0]);
-                        cswap(lhs[1],rhs[1]);
-                    }
-                    size_t m=size;
-                    while( (m>=2) && (j>m) )
-                    {
-                        j -= m;
-                        m >>= 1;
-                    }
-                    j += m;
+                    T *lhs = &data[j];
+                    T *rhs = &data[i];
+                    cswap(lhs[0],rhs[0]);
+                    cswap(lhs[1],rhs[1]);
                 }
+                size_t m=size;
+                while( (m>=2) && (j>m) )
+                {
+                    j -= m;
+                    m >>= 1;
+                }
+                j += m;
             }
+
 #if defined(YACK_FFT_TRACK)
             const uint64_t mark = wtime::ticks();
 #endif
             {
-                size_t n    = size << 1;
+                assert( (size<<1) ==n);
                 size_t mmax = 2;
                 size_t smax = 1; assert((1<<smax)==mmax);
                 while (n>mmax)

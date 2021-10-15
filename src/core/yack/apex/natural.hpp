@@ -149,6 +149,7 @@ namespace yack
             YACK_APN_DECL(+)
             natural &operator++();    //!< pre  increase operator
             natural  operator++(int); //!< post increase operator
+            natural  operator+() const;
 
             //__________________________________________________________________
             //
@@ -164,7 +165,8 @@ namespace yack
             // multiplication
             //__________________________________________________________________
             YACK_APN_DECL(*)
-
+            static inline natural _fmul(const natural &u, const natural &v) { const handle U(u); const handle V(v); return fmul(U,V); }
+            static inline natural _lmul(const natural &u, const natural &v) { const handle U(u); const handle V(v); return lmul(U,V); }
 
             //__________________________________________________________________
             //
@@ -223,9 +225,9 @@ namespace yack
             void     zpad()   throw(); //!< after words to max_words
             explicit natural(const size_t num_words, const as_capacity_t &);  //!< capacity for num_words
             explicit natural(const word_type *w, const size_t n);             //!< from words
-            void      set_bit(const size_t ibit) throw();
+            void     set_bit(const size_t ibit) throw();
 
-            static size_t  ldw(word_type *,uint_type) throw(); //!< load uint into word[words_per_uint], return num words
+            static size_t    ldw(word_type *,uint_type) throw(); //!< load uint into word[words_per_uint], return num words
 
             static int       cmp(const handle &l, const handle &r) throw();
             static sign_type scmp(const handle &l, const handle &r) throw();
@@ -233,6 +235,7 @@ namespace yack
             static natural   sub(const handle &l, const handle &r);
             static natural   mul(const handle &l, const handle &r);
             static natural   lmul(const handle &l, const handle &r);
+            static natural   fmul(const handle &l, const handle &r);
             static natural   div(const handle &denominator, const handle &numerator);
             static natural   mod(const handle &denominator, const handle &numerator);
 
