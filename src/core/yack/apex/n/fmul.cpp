@@ -6,7 +6,7 @@
 #include "yack/fft/fft1d.hpp"
 #include "yack/system/exception.hpp"
 
-//#include <iostream>
+#include <cmath>
 
 #if defined(YACK_APEX_TRACKING)
 #include "yack/system/wtime.hpp"

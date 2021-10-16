@@ -1,12 +1,13 @@
 #include "yack/fft/fft1d.hpp"
 #include "yack/type/constants.hpp"
 #include "yack/type/utils.hpp"
+#include <cmath>
 
 
 namespace yack
 {
     
-    uint64_t fft1d::algo_ticks = 0;
+    volatile uint64_t fft1d::algo_ticks = 0;
     
     
     static const uint64_t one64 = 1;
@@ -33,6 +34,14 @@ YFFT(56), YFFT(57), YFFT(58), YFFT(59), YFFT(60), YFFT(61), YFFT(62), YFFT(63)
 #define YFFT(i) -sin(YACK_PI_D/(one64<<(i)))
     
     const double fft1d::neg_sine[64] =
+    {
+        YREP()
+    };
+    
+#undef  YFFT
+#define YFFT(i) -twice(squared(sin(YACK_PI_D/(one64<<(i)))))
+    
+    const double fft1d::twpr[64] =
     {
         YREP()
     };

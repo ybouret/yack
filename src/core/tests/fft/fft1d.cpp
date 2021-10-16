@@ -11,7 +11,7 @@ namespace
 {
     template <typename T,const size_t exp2>
     static inline
-    void do_xtest(uprng &ran)
+    double do_xtest(uprng &ran)
     {
         memory::allocator  &mgr = memory::global::instance();
         static const size_t size =  size_t(1) << exp2;
@@ -38,33 +38,45 @@ namespace
         }
         sum2 = sqrt(sum2/size);
         std::cerr << " rms=" << std::setw(14) << sum2 << " :";
-        fft1d::algo_ticks = 0;
-        const size_t iter_max = 32;
+      
+        fft1d::algo_ticks     = 0;
+        const size_t iter_max = 256;
         for(size_t iter=0;iter<iter_max;++iter)
         {
             fft1d::forward(data-1,size);
             fft1d::reverse(data-1,size);
         }
         
+        double rate = 0;
         if(fft1d::algo_ticks)
         {
             wtime        chrono;
             const double tm   = chrono(fft1d::algo_ticks);
-            const double rate = 1e-3 * (iter_max/tm);
+            rate = 1e-3 * (iter_max/tm);
             std::cerr << "  rate=" << std::setw(14) << rate << " kOps";
         }
         std::cerr << std::endl;
         
         mgr.withdraw(data,bytes);
-        
+        return rate;
     }
     
+    
+    static const char filename[] = "fft.dat";
     template <const size_t exp2>
     static inline
     void do_xtests(uprng &ran)
     {
-        do_xtest<float,exp2>(ran);
-        do_xtest<double,exp2>(ran);
+        const double frate = do_xtest<float,exp2>(ran);
+        const double drate = do_xtest<double,exp2>(ran);
+        
+        FILE *fp = fopen(filename,"ab");
+        if(fp)
+        {
+            fprintf(fp,"%u %g %g\n",unsigned(exp2),log10(frate),log10(drate));
+            fclose(fp);
+        }
+        
     }
     
     template <typename T>
@@ -82,7 +94,7 @@ namespace
 YACK_UTEST(fft1d)
 {
     uprng ran;
-    
+    FILE *fp = fopen(filename,"wb"); if(fp) fclose(fp);
     do_xtests<0>(ran);
     do_xtests<1>(ran);
     do_xtests<2>(ran);
