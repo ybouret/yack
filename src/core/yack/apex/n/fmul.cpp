@@ -114,16 +114,16 @@ namespace yack
 
                     double *data = &(L->re) - 1;
                     apn2cpx(L,l.entry,lnw);
-                    fft1d::apply( data, size,1);
+                    fft1d::forward( data, size);
                     apn2cpx(R,r.entry,rnw);
-                    fft1d::apply( &(R->re) - 1, size, 1);
+                    fft1d::forward( &(R->re)-1, size);
 
 
                     for(size_t i=0;i<size;++i)
                     {
                         L[i] *= R[i];
                     }
-                    fft1d::apply( data, size, -1);
+                    fft1d::reverse(data,size);
                     finalize((uint8_t *)res.word,pnw*sizeof(word_type),L,size);
                     
                     res.words = pnw;

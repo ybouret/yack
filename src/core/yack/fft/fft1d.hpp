@@ -29,11 +29,30 @@ namespace yack
         static const size_t one      = 1;
         static const size_t max_exp2 = (sizeof(size_t)<<3) - 1;
         static const size_t max_size = one << max_exp2;
+        static const double pos_sine[64]; //!< sin(pi/(2^indx))
+        static const double neg_sine[64]; //!< -sin(pi/(2^indx))
         
-
         template <typename T> static
-        inline void apply(T data[], const size_t size, const int isign)
+        inline void forward(T data[], const size_t size) throw()
         {
+            apply(data,size,pos_sine);
+        }
+        
+        
+        template <typename T> static
+        inline void reverse(T data[], const size_t size) throw()
+        {
+            apply(data,size,neg_sine);
+        }
+        
+    private:
+        
+        template <typename T> static
+        inline void apply(T            data[],
+                          const size_t size,
+                          const double *sine) throw()
+        {
+            //const int isign = (sine==pos_sine) ? 1 : -1;
             const size_t n = (size << 1);
             for(size_t i=1,j=1;i<n;i+=2)
             {
@@ -62,16 +81,18 @@ namespace yack
                 size_t smax = 1; assert((1<<smax)==mmax);
                 while (n>mmax)
                 {
+                    //__________________________________________________________
+                    //
                     // theta=(2*pi)/mmax = 2*pi/(2^smax) = pi/(2^(smax-1))
                     // 0.5*theta=pi/mmax =   pi/(2^smax)
-                    //
+                    //__________________________________________________________
                     
                     //std::cerr << "mmax@" <<  size << ": " << mmax << " 2^" << smax << std::endl;
                     const size_t istep = mmax << 1;
-                    const double theta = isign*(6.28318530717959/mmax);
-                    double wtemp = sin(0.5*theta);
-                    double wpr   = -2.0*wtemp*wtemp;
-                    double wpi   = sin(theta);
+                   // const double theta = isign*(6.28318530717959/mmax);
+                    double wtemp = sine[smax]; //sin(0.5*theta);
+                    double wpr   =  -2.0*wtemp*wtemp;
+                    double wpi   = sine[smax-1];
                     double wr    = 1.0;
                     double wi    = 0.0;
                     for(size_t m=1;m<mmax;m+=2)
@@ -101,6 +122,8 @@ namespace yack
             algo_ticks += wtime::ticks() - mark;
 #endif
         }
+        
+    
     };
 
 }

@@ -28,30 +28,30 @@ namespace
         }
         
         
-        fft1d::apply<T>(data-1,size,1);
-        fft1d::apply<T>(data-1,size,-1);
+        fft1d::forward(data-1,size);
+        fft1d::reverse(data-1,size);
         
         T sum2 = 0;
         for(size_t i=0;i<2*size;++i)
         {
             sum2 += squared(wksp[i]-data[i]/size);
         }
-        sum2 = sqrt(sum2);
+        sum2 = sqrt(sum2/size);
         std::cerr << " rms=" << std::setw(14) << sum2 << " :";
         fft1d::algo_ticks = 0;
-        const size_t iter_max = 128;
+        const size_t iter_max = 256;
         for(size_t iter=0;iter<iter_max;++iter)
         {
-            fft1d::apply<T>(data-1,size,1);
-            fft1d::apply<T>(data-1,size,-1);
+            fft1d::forward(data-1,size);
+            fft1d::reverse(data-1,size);
         }
         
         if(fft1d::algo_ticks)
         {
             wtime        chrono;
             const double tm   = chrono(fft1d::algo_ticks);
-            const double rate = iter_max/tm;
-            std::cerr << "rate=" << rate ;
+            const double rate = 1e-3 * (iter_max/tm);
+            std::cerr << "  rate=" << std::setw(14) << rate << " kOps";
         }
         std::cerr << std::endl;
         
