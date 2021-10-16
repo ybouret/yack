@@ -45,10 +45,30 @@ namespace yack
             apply(data,size,neg_sine);
         }
         
+        //! default routine
         template <typename T> static
         inline void bitrev(T data[],const size_t size) throw()
         {
-            
+            assert(data);
+            assert(size);
+            const size_t n = (size << 1);
+            for(size_t i=1,j=1;i<n;i+=2)
+            {
+                if(j>i)
+                {
+                    T *lhs = &data[j];
+                    T *rhs = &data[i];
+                    cswap(lhs[0],rhs[0]);
+                    cswap(lhs[1],rhs[1]);
+                }
+                size_t m=size;
+                while( (m>=2) && (j>m) )
+                {
+                    j -= m;
+                    m >>= 1;
+                }
+                j += m;
+            }
         }
         
     private:

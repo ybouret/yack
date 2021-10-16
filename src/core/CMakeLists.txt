@@ -133,6 +133,7 @@ install( FILES ${memory_allocator_decl} DESTINATION include/yack/memory/allocato
 ## fft operations
 ##
 ########################################################################
+add_executable(xbitrev yack/fft/xbitrev.cxx)
 file(GLOB fft_impl yack/fft/*.cpp)
 file(GLOB fft_decl yack/fft/*.hpp)
 set(fft ${fft_impl} ${fft_decl})

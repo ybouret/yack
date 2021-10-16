@@ -41,6 +41,7 @@ YACK_UTEST_DECL(64)
     YACK_UTEST(singleton);
 
     YACK_UTEST(fft1d);
+    YACK_UTEST(xbitrev);
 
     YACK_UTEST(apex_types);
     YACK_UTEST(apn);
