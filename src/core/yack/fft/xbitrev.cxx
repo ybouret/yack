@@ -2,6 +2,8 @@
 
 #include <cstdio>
 #include <iostream>
+#include <cstring>
+#include <cassert>
 
 static const char code[] =
 "    const size_t n = (size << 1);\n"
