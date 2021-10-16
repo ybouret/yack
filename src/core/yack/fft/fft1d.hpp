@@ -14,6 +14,9 @@
 
 #include <iostream>
 
+#include "xbr-decl.hxx"
+
+
 namespace yack
 {
     //__________________________________________________________________________
@@ -44,6 +47,7 @@ namespace yack
         {
             apply(data,size,neg_sine);
         }
+        
         
         //! default routine
         template <typename T> static

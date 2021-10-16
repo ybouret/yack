@@ -1,4 +1,4 @@
-#include "yack/fft/xbitrev-params.hpp"
+#include "yack/fft/xbr-defs.hpp"
 
 #include <cstdio>
 #include <iostream>
@@ -43,9 +43,9 @@ static inline void build(FILE *hdr, FILE *src)
     assert(hdr);
     assert(src);
     
-    fprintf(hdr,"#include \"yack/setup.hpp\"\n");
+    //fprintf(hdr,"#include \"yack/setup.hpp\"\n");
     
-    //fprintf(src,"#include \"yack/system/setup.h\"\n");
+    fprintf(src,"#include \"yack/system/setup.h\"\n");
     
     fprintf(hdr,"template <typename T> static inline\n");
     fprintf(hdr,"void xbitrev(T data[], const size_t size) throw()\n");
@@ -182,7 +182,7 @@ int main(int argc, const char **argv)
         return -1;
     }
     const char *header = argv[1];
-    const char *source = argv[1];
+    const char *source = argv[2];
     FILE *hdr = fopen(header,"wb");
     if(!hdr)
     {

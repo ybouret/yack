@@ -133,9 +133,18 @@ install( FILES ${memory_allocator_decl} DESTINATION include/yack/memory/allocato
 ## fft operations
 ##
 ########################################################################
-add_executable(xbitrev yack/fft/xbitrev.cxx)
-file(GLOB fft_impl yack/fft/*.cpp)
-file(GLOB fft_decl yack/fft/*.hpp)
+set(YACK_CORE ${CMAKE_CURRENT_SOURCE_DIR})
+add_executable(xbitrev yack/fft/xbitrev.cxx yack/fft/xbr-defs.hpp)
+
+set(fft_decl
+${YACK_CORE}/yack/fft/fft1d.hpp
+${YACK_CORE}/yack/fft/xbr-decl.hxx
+${YACK_CORE}/yack/fft/xbr-defs.hpp
+)
+set(fft_impl
+${YACK_CORE}/yack/fft/fft1d.cpp
+${YACK_CORE}/yack/fft/xbr-impl.c
+)
 set(fft ${fft_impl} ${fft_decl})
 SOURCE_GROUP(fft FILES ${fft})
 install( FILES ${fft_decl} DESTINATION include/yack/fft )  
@@ -156,6 +165,7 @@ file(GLOB apex_n_decl yack/apex/n/*.hpp)
 set(apex_n ${apex_n_impl} ${apex_n_decl})
 SOURCE_GROUP(apex/n FILES ${apex_n})
 install( FILES ${apex_n_decl} DESTINATION include/yack/apex/n ) 
+
  
 ########################################################################
 ##
