@@ -39,7 +39,7 @@ namespace
         sum2 = sqrt(sum2/size);
         std::cerr << " rms=" << std::setw(14) << sum2 << " :";
         fft1d::algo_ticks = 0;
-        const size_t iter_max = 256;
+        const size_t iter_max = 32;
         for(size_t iter=0;iter<iter_max;++iter)
         {
             fft1d::forward(data-1,size);
