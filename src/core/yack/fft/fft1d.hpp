@@ -45,6 +45,12 @@ namespace yack
             apply(data,size,neg_sine);
         }
         
+        template <typename T> static
+        inline void bitrev(T data[],const size_t size) throw()
+        {
+            
+        }
+        
     private:
         
         template <typename T> static
@@ -52,7 +58,6 @@ namespace yack
                           const size_t size,
                           const double *sine) throw()
         {
-            //const int isign = (sine==pos_sine) ? 1 : -1;
             const size_t n = (size << 1);
             for(size_t i=1,j=1;i<n;i+=2)
             {
@@ -72,10 +77,10 @@ namespace yack
                 j += m;
             }
 
-#if defined(YACK_FFT_TRACK)
-            const uint64_t mark = wtime::ticks();
-#endif
             {
+#if             defined(YACK_FFT_TRACK)
+                const uint64_t mark = wtime::ticks();
+#endif
                 assert( (size<<1) ==n);
                 size_t mmax = 2;
                 size_t smax = 1; assert((1<<smax)==mmax);
@@ -117,10 +122,11 @@ namespace yack
                     mmax=istep;
                     ++smax;assert(1<<smax==mmax);
                 }
-            }
-#if defined(YACK_FFT_TRACK)
-            algo_ticks += wtime::ticks() - mark;
+#if             defined(YACK_FFT_TRACK)
+                algo_ticks += wtime::ticks() - mark;
 #endif
+            }
+
         }
         
     
