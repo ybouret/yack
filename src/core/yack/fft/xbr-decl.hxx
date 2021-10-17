@@ -1,4 +1,5 @@
 namespace yack {
+
   struct xbr {
     static const uint8_t I4[1];
     static const uint8_t J4[1];

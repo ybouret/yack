@@ -42,7 +42,7 @@ static inline void output(FILE *src, const unsigned *K, const unsigned n)
 {
     fprintf(src,"={\n");
     unsigned k=0;
-    fprintf(src,"%u",K[k]);
+    fprintf(src,"    %u",K[k]);
     for(++k;k<n;++k)
     {
         fprintf(src,", %u",K[k]);
@@ -68,7 +68,7 @@ static inline void build(FILE *hdr, FILE *src)
     //
     //--------------------------------------------------------------------------
     fprintf(src,"#include \"yack/fft/fft1d.hpp\"\n");
-    fprintf(src,"namespace yack {\n");
+    fprintf(src,"namespace yack {\n\n");
     
     //--------------------------------------------------------------------------
     //
@@ -76,7 +76,7 @@ static inline void build(FILE *hdr, FILE *src)
     //
     //--------------------------------------------------------------------------
     
-    fprintf(hdr,"namespace yack {\n");
+    fprintf(hdr,"namespace yack {\n\n");
     
     //--------------------------------------------------------------------------
     //
