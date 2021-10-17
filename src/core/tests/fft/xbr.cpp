@@ -46,7 +46,7 @@ namespace
                     yack::xbitrev(work-1,size);
                     opt_ticks += wtime::ticks() - mark;
                 }
-            } while( chrono(std_ticks)<=0.25 );
+            } while( chrono(std_ticks)<=0.2 );
             
             const double std_rate =1e-6 * iter/chrono(std_ticks);
             const double opt_rate =1e-6 * iter/chrono(opt_ticks);
@@ -63,7 +63,7 @@ namespace
     }
 }
 
-YACK_UTEST(fft_xbr)
+YACK_UTEST(fft_xbr8)
 {
     uprng ran;
     std::cerr.precision(4);
@@ -71,3 +71,11 @@ YACK_UTEST(fft_xbr)
 }
 YACK_UDONE()
 
+YACK_UTEST(fft_xbr64)
+{
+    uprng ran;
+    std::cerr.precision(4);
+    test_xbr<uint64_t>(ran);
+    
+}
+YACK_UDONE()

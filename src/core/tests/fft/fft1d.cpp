@@ -50,7 +50,7 @@ namespace
             ++iter;
             fft1d::forward(data-1,size);
             fft1d::reverse(data-1,size);
-        } while( (ellapsed = chrono(fft1d::algo_ticks)) <= 0.5 );
+        } while( (ellapsed = chrono(fft1d::algo_ticks)) <= 0.2 );
         rate = 1e-3 * iter / ellapsed;
         std::cerr << " rate = "  << std::setw(14) << rate;
 #endif

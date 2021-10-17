@@ -41,7 +41,8 @@ YACK_UTEST_DECL(64)
     YACK_UTEST(singleton);
 
     YACK_UTEST(fft1d);
-    YACK_UTEST(fft_xbr);
+    YACK_UTEST(fft_xbr8);
+    YACK_UTEST(fft_xbr64);
     YACK_UTEST(fft_xbr_info);
 
     YACK_UTEST(apex_types);
