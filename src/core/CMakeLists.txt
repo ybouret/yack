@@ -134,16 +134,25 @@ install( FILES ${memory_allocator_decl} DESTINATION include/yack/memory/allocato
 ##
 ########################################################################
 set(YACK_CORE ${CMAKE_CURRENT_SOURCE_DIR})
+set(YACK_FFT  ${YACK_CORE}/yack/fft)
 add_executable(xbitrev yack/fft/xbitrev.cxx yack/fft/xbr-defs.hpp)
 
+add_custom_command(
+OUTPUT  ${YACK_FFT}/xbr-decl.hxx ${YACK_FFT}/xbr-impl.c
+COMMAND xbitrev ${YACK_FFT}/xbr-decl.hxx ${YACK_FFT}/xbr-decl.c
+COMMENT "[YACK] Creating xbitrev code"
+DEPENDS xbitrev
+VERBATIM
+)
+
 set(fft_decl
-${YACK_CORE}/yack/fft/fft1d.hpp
-${YACK_CORE}/yack/fft/xbr-decl.hxx
-${YACK_CORE}/yack/fft/xbr-defs.hpp
+${YACK_FFT}/fft1d.hpp
+${YACK_FFT}/xbr-decl.hxx
+${YACK_FFT}/xbr-defs.hpp
 )
 set(fft_impl
-${YACK_CORE}/yack/fft/fft1d.cpp
-${YACK_CORE}/yack/fft/xbr-impl.c
+${YACK_FFT}/fft1d.cpp
+${YACK_FFT}/xbr-impl.c
 )
 set(fft ${fft_impl} ${fft_decl})
 SOURCE_GROUP(fft FILES ${fft})
