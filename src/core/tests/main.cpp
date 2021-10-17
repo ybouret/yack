@@ -12,6 +12,7 @@ YACK_UTEST_DECL(64)
     YACK_UTEST(align);
     YACK_UTEST(at_exit);
     YACK_UTEST(wtime);
+    YACK_UTEST(complex);
 
     YACK_UTEST(ram);
     YACK_UTEST(memory_chunk);

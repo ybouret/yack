@@ -147,9 +147,9 @@ namespace yack
 #define       YACK_APN_DECL(OP) YACK_APN_BINARY_DECL(OP) YACK_APN_UNARY_DECL(OP)         //!< declare all
 
             YACK_APN_DECL(+)
-            natural &operator++();    //!< pre  increase operator
-            natural  operator++(int); //!< post increase operator
-            natural  operator+() const;
+            natural &operator++();      //!< pre  increase operator
+            natural  operator++(int);   //!< post increase operator
+            natural  operator+() const; //!< unary+
 
             //__________________________________________________________________
             //
@@ -165,8 +165,10 @@ namespace yack
             // multiplication
             //__________________________________________________________________
             YACK_APN_DECL(*)
-            static inline natural _fmul(const natural &u, const natural &v) { const handle U(u); const handle V(v); return fmul(U,V); }
-            static inline natural _lmul(const natural &u, const natural &v) { const handle U(u); const handle V(v); return lmul(U,V); }
+            
+        
+            static inline natural _fmul(const natural &u, const natural &v) { const handle U(u); const handle V(v); return fmul(U,V); } //!< call fmul
+            static inline natural _lmul(const natural &u, const natural &v) { const handle U(u); const handle V(v); return lmul(U,V); } //!< call lmul
 
             //__________________________________________________________________
             //
