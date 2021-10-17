@@ -20,7 +20,7 @@ namespace
             std::cerr << "size=" << std::setw(6) << size;
             const size_t n = size*2;
             T *data = new T[2*n];
-            ran.fillnz(data,n*sizeof(T));
+            ran.fillnz(data,2*n*sizeof(T));
             T *work = data+n;
             for(size_t i=0;i<n;++i) work[i] = data[i];
             YACK_ASSERT(0==memcmp(work,data,n*sizeof(T)));
