@@ -156,8 +156,8 @@ static inline void build(FILE *hdr, FILE *src)
         {
             if(j>i)
             {
-                I[k] = i;
-                J[k] = j;
+                I[k] = i; if(i<=0||i>=n) { std::cerr << "Invalid I=" << i << std::endl; }
+                J[k] = j; if(j<=0||j>=n) { std::cerr << "Invalid J=" << j << std::endl; }
                 ++k;
             }
             unsigned m=size;

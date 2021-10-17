@@ -20,7 +20,7 @@ namespace
             std::cerr << "size=" << std::setw(6) << size;
             const size_t n = size*2;
             T *data = new T[2*n];
-            ran.fillnz(data,n*sizeof(data));
+            ran.fillnz(data,n*sizeof(T));
             T *work = data+n;
             for(size_t i=0;i<n;++i) work[i] = data[i];
             YACK_ASSERT(0==memcmp(work,data,n*sizeof(T)));
@@ -46,7 +46,7 @@ namespace
                     yack_xbitrev(work-1,size);
                     opt_ticks += wtime::ticks() - mark;
                 }
-            } while( chrono(opt_ticks)<=0.25 );
+            } while( chrono(std_ticks)<=0.25 );
             
             const double std_rate =1e-6 * iter/chrono(std_ticks);
             const double opt_rate =1e-6 * iter/chrono(opt_ticks);
