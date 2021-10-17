@@ -20,12 +20,13 @@ namespace yack {
     static const uint16_t I1024[496];
     static const uint16_t J1024[496];
   };
+
   template <typename T> static inline
   void xbitrev(T data[], const size_t size) throw()
   {
     assert(NULL!=data); assert(size>0);
-  switch(size)
-  {
+    switch(size)
+    {
     case 0:
     case 2: return;
 
@@ -33,12 +34,7 @@ namespace yack {
       {
          const uint8_t *I=xbr::I4;
          const uint8_t *J=xbr::J4;
-         for(size_t k=1;k>0;--k)
-         {
-            T *lhs=&data[*(I++)], *rhs=&data[*(J++)];
-            yack::cswap(lhs[0],rhs[0]);
-            yack::cswap(lhs[1],rhs[1]);
-         }
+         for(size_t k=1;k>0;--k) cswap2(&data[*(I++)],&data[*(J++)]);
       }
       return;
 
@@ -46,12 +42,7 @@ namespace yack {
       {
          const uint8_t *I=xbr::I8;
          const uint8_t *J=xbr::J8;
-         for(size_t k=2;k>0;--k)
-         {
-            T *lhs=&data[*(I++)], *rhs=&data[*(J++)];
-            yack::cswap(lhs[0],rhs[0]);
-            yack::cswap(lhs[1],rhs[1]);
-         }
+         for(size_t k=2;k>0;--k) cswap2(&data[*(I++)],&data[*(J++)]);
       }
       return;
 
@@ -59,12 +50,7 @@ namespace yack {
       {
          const uint8_t *I=xbr::I16;
          const uint8_t *J=xbr::J16;
-         for(size_t k=6;k>0;--k)
-         {
-            T *lhs=&data[*(I++)], *rhs=&data[*(J++)];
-            yack::cswap(lhs[0],rhs[0]);
-            yack::cswap(lhs[1],rhs[1]);
-         }
+         for(size_t k=6;k>0;--k) cswap2(&data[*(I++)],&data[*(J++)]);
       }
       return;
 
@@ -72,12 +58,7 @@ namespace yack {
       {
          const uint8_t *I=xbr::I32;
          const uint8_t *J=xbr::J32;
-         for(size_t k=12;k>0;--k)
-         {
-            T *lhs=&data[*(I++)], *rhs=&data[*(J++)];
-            yack::cswap(lhs[0],rhs[0]);
-            yack::cswap(lhs[1],rhs[1]);
-         }
+         for(size_t k=12;k>0;--k) cswap2(&data[*(I++)],&data[*(J++)]);
       }
       return;
 
@@ -85,12 +66,7 @@ namespace yack {
       {
          const uint8_t *I=xbr::I64;
          const uint8_t *J=xbr::J64;
-         for(size_t k=28;k>0;--k)
-         {
-            T *lhs=&data[*(I++)], *rhs=&data[*(J++)];
-            yack::cswap(lhs[0],rhs[0]);
-            yack::cswap(lhs[1],rhs[1]);
-         }
+         for(size_t k=28;k>0;--k) cswap2(&data[*(I++)],&data[*(J++)]);
       }
       return;
 
@@ -98,12 +74,7 @@ namespace yack {
       {
          const uint8_t *I=xbr::I128;
          const uint8_t *J=xbr::J128;
-         for(size_t k=56;k>0;--k)
-         {
-            T *lhs=&data[*(I++)], *rhs=&data[*(J++)];
-            yack::cswap(lhs[0],rhs[0]);
-            yack::cswap(lhs[1],rhs[1]);
-         }
+         for(size_t k=56;k>0;--k) cswap2(&data[*(I++)],&data[*(J++)]);
       }
       return;
 
@@ -111,12 +82,7 @@ namespace yack {
       {
          const uint16_t *I=xbr::I256;
          const uint16_t *J=xbr::J256;
-         for(size_t k=120;k>0;--k)
-         {
-            T *lhs=&data[*(I++)], *rhs=&data[*(J++)];
-            yack::cswap(lhs[0],rhs[0]);
-            yack::cswap(lhs[1],rhs[1]);
-         }
+         for(size_t k=120;k>0;--k) cswap2(&data[*(I++)],&data[*(J++)]);
       }
       return;
 
@@ -124,12 +90,7 @@ namespace yack {
       {
          const uint16_t *I=xbr::I512;
          const uint16_t *J=xbr::J512;
-         for(size_t k=240;k>0;--k)
-         {
-            T *lhs=&data[*(I++)], *rhs=&data[*(J++)];
-            yack::cswap(lhs[0],rhs[0]);
-            yack::cswap(lhs[1],rhs[1]);
-         }
+         for(size_t k=240;k>0;--k) cswap2(&data[*(I++)],&data[*(J++)]);
       }
       return;
 
@@ -137,35 +98,30 @@ namespace yack {
       {
          const uint16_t *I=xbr::I1024;
          const uint16_t *J=xbr::J1024;
-         for(size_t k=496;k>0;--k)
-         {
-            T *lhs=&data[*(I++)], *rhs=&data[*(J++)];
-            yack::cswap(lhs[0],rhs[0]);
-            yack::cswap(lhs[1],rhs[1]);
-         }
+         for(size_t k=496;k>0;--k) cswap2(&data[*(I++)],&data[*(J++)]);
       }
       return;
 
     default: // generic code
-    const size_t n = (size << 1);
-    for(size_t i=1,j=1;i<n;i+=2)
-    {
-        if(j>i)
-        {
-            T *lhs = &data[j];
-            T *rhs = &data[i];
-            yack::cswap(lhs[0],rhs[0]);
-            yack::cswap(lhs[1],rhs[1]);
-        }
-        size_t m=size;
-        while( (m>=2) && (j>m) )
-        {
-            j -= m;
-            m >>= 1;
-        }
-        j += m;
+      const size_t n = (size << 1);
+      for(size_t i=1,j=1;i<n;i+=2)
+      {
+          if(j>i)
+          {
+              T *lhs = &data[j];
+              T *rhs = &data[i];
+              yack::cswap(lhs[0],rhs[0]);
+              yack::cswap(lhs[1],rhs[1]);
+          }
+          size_t m=size;
+          while( (m>=2) && (j>m) )
+          {
+              j -= m;
+              m >>= 1;
+          }
+          j += m;
+      }
     }
-  }
   }
 }
 #if defined(YACK_XBITREV_TEST)
@@ -175,7 +131,7 @@ int main()
   for(size_t size=1;size<=4096;size<<=1) {
     std::cerr << "size=" << size << std::endl;
     float *f = new float[2*size];
-    xbitrev(f-1,size);
+    yack::xbitrev(f-1,size);
     delete []f;
   }
 }

@@ -30,7 +30,7 @@ namespace yack
     }
 }
 
-#include "xbr-decl.hxx"
+#include "yack/fft/xbr-decl.hxx"
 
 
 namespace yack

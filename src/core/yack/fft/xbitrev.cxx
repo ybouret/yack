@@ -13,24 +13,24 @@
 //------------------------------------------------------------------------------
 
 static const char code[] =
-"    const size_t n = (size << 1);\n"
-"    for(size_t i=1,j=1;i<n;i+=2)\n"
-"    {\n"
-"        if(j>i)\n"
-"        {\n"
-"            T *lhs = &data[j];\n"
-"            T *rhs = &data[i];\n"
-"            yack::cswap(lhs[0],rhs[0]);\n"
-"            yack::cswap(lhs[1],rhs[1]);\n"
-"        }\n"
-"        size_t m=size;\n"
-"        while( (m>=2) && (j>m) )\n"
-"        {\n"
-"            j -= m;\n"
-"            m >>= 1;\n"
-"        }\n"
-"        j += m;\n"
-"    }\n";
+"      const size_t n = (size << 1);\n"
+"      for(size_t i=1,j=1;i<n;i+=2)\n"
+"      {\n"
+"          if(j>i)\n"
+"          {\n"
+"              T *lhs = &data[j];\n"
+"              T *rhs = &data[i];\n"
+"              yack::cswap(lhs[0],rhs[0]);\n"
+"              yack::cswap(lhs[1],rhs[1]);\n"
+"          }\n"
+"          size_t m=size;\n"
+"          while( (m>=2) && (j>m) )\n"
+"          {\n"
+"              j -= m;\n"
+"              m >>= 1;\n"
+"          }\n"
+"          j += m;\n"
+"      }\n";
 
 
 //------------------------------------------------------------------------------
@@ -131,7 +131,7 @@ static inline void build(FILE *hdr, FILE *src)
         fprintf(hdr,"    static const %s I%u[%u];\n",type,size,count);
         fprintf(hdr,"    static const %s J%u[%u];\n",type,size,count);
     }
-    fprintf(hdr,"  };\n");
+    fprintf(hdr,"  };\n\n");
     
     
     
@@ -150,8 +150,8 @@ static inline void build(FILE *hdr, FILE *src)
     // cases
     //
     //--------------------------------------------------------------------------
-    fprintf(hdr,"  switch(size)\n");
-    fprintf(hdr,"  {\n");
+    fprintf(hdr,"    switch(size)\n");
+    fprintf(hdr,"    {\n");
     fprintf(hdr,"    case 0:\n");
     fprintf(hdr,"    case 2: return;\n\n");
     
@@ -233,12 +233,16 @@ static inline void build(FILE *hdr, FILE *src)
         fprintf(hdr,"      {\n");
         fprintf(hdr,"         const %s *I=xbr::I%u;\n",type,size);
         fprintf(hdr,"         const %s *J=xbr::J%u;\n",type,size);
+        fprintf(hdr,"         for(size_t k=%u;k>0;--k) cswap2(&data[*(I++)],&data[*(J++)]);\n",count);
+
+#if 0
         fprintf(hdr,"         for(size_t k=%u;k>0;--k)\n",count);
         fprintf(hdr,"         {\n");
         fprintf(hdr,"            T *lhs=&data[*(I++)], *rhs=&data[*(J++)];\n");
         fprintf(hdr,"            yack::cswap(lhs[0],rhs[0]);\n");
         fprintf(hdr,"            yack::cswap(lhs[1],rhs[1]);\n");
         fprintf(hdr,"         }\n");
+#endif
         fprintf(hdr,"      }\n");
         
         
@@ -258,7 +262,7 @@ static inline void build(FILE *hdr, FILE *src)
     // end of cases
     //
     //--------------------------------------------------------------------------
-    fprintf(hdr,"  }\n");
+    fprintf(hdr,"    }\n");
     
     //--------------------------------------------------------------------------
     //
@@ -282,7 +286,7 @@ static inline void build(FILE *hdr, FILE *src)
     fprintf(hdr,"  for(size_t size=1;size<=%u;size<<=1) {\n", 4*YACK_FFT_XBITREV_MAX);
     fprintf(hdr,"    std::cerr << \"size=\" << size << std::endl;\n");
     fprintf(hdr,"    float *f = new float[2*size];\n");
-    fprintf(hdr,"    xbitrev(f-1,size);\n");
+    fprintf(hdr,"    yack::xbitrev(f-1,size);\n");
     fprintf(hdr,"    delete []f;\n");
     fprintf(hdr,"  }\n");
     
@@ -318,6 +322,10 @@ int main(int argc, const char **argv)
     }
     const char *header = argv[1];
     const char *source = argv[2];
+    
+    std::cerr << "Header File: '" << header << "'" << std::endl;
+    std::cerr << "Source File: '" << source << "'" << std::endl;
+
     FILE *hdr = fopen(header,"wb");
     if(!hdr)
     {
