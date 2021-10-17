@@ -136,9 +136,9 @@ install( FILES ${memory_allocator_decl} DESTINATION include/yack/memory/allocato
 set(YACK_CORE ${CMAKE_CURRENT_SOURCE_DIR})
 set(YACK_FFT  ${YACK_CORE}/yack/fft)
 
+
 if(FALSE)
 add_executable(xbitrev yack/fft/xbitrev.cxx yack/fft/xbr-defs.hpp)
-
 add_custom_command(
 OUTPUT  ${YACK_FFT}/xbr-decl.hxx ${YACK_FFT}/xbr-impl.cxx
 COMMAND xbitrev ${YACK_FFT}/xbr-decl.hxx ${YACK_FFT}/xbr-impl.cxx
@@ -150,6 +150,7 @@ endif()
 
 set(fft_decl
 ${YACK_FFT}/fft1d.hpp
+${YACK_FFT}/xbitrev.hpp
 ${YACK_FFT}/xbr-decl.hxx
 ${YACK_FFT}/xbr-defs.hpp
 )

@@ -1,36 +1,15 @@
 
 //! \file
 
-#ifndef YACK_FFT_XBITREV_INCLUDED
-#define YACK_FFT_XBITREV_INCLUDED 1
+#ifndef YACK_FFT1D_INCLUDED
+#define YACK_FFT1D_INCLUDED 1
 
-#include "yack/setup.hpp"
-#include "yack/type/constants.hpp"
+#include "yack/fft/xbitrev.hpp"
 
 #define  YACK_FFT_TRACK
 #if defined(YACK_FFT_TRACK)
 #include "yack/system/wtime.hpp"
 #endif
-
-#include <iostream>
-
-namespace yack
-{
-    //! inline cswap of integral objects
-    template <typename T> inline
-    void cswap2(T *lhs, T *rhs) throw()
-    {
-        assert(lhs); assert(rhs);
-        const T tmp0 = lhs[0];
-        const T tmp1 = lhs[1];
-        lhs[0] = rhs[0];
-        lhs[1] = rhs[1];
-        rhs[0] = tmp0;
-        rhs[1] = tmp1;
-    }
-}
-
-#include "yack/fft/xbr-decl.hxx"
 
 
 namespace yack
@@ -85,31 +64,7 @@ namespace yack
             apply(data,size,neg_sine);
         }
         
-        //______________________________________________________________________
-        //
-        //! default bit reversal routine
-        //______________________________________________________________________
-        template <typename T> static
-        inline void bitrev(T data[],const size_t size) throw()
-        {
-            assert(data);
-            assert(size);
-            const size_t n = (size << 1);
-            for(size_t i=1,j=1;i<n;i+=2)
-            {
-                if(j>i)
-                {
-                    cswap2(data+i,data+j);
-                }
-                size_t m=size;
-                while( (m>=2) && (j>m) )
-                {
-                    j -= m;
-                    m >>= 1;
-                }
-                j += m;
-            }
-        }
+      
         
     private:
         template <typename T> static
@@ -162,7 +117,7 @@ namespace yack
                         wi=wi*wpr+wtemp*wpi+wi;
                     }
                     mmax=istep;
-                    ++smax;assert(1<<smax==mmax);
+                    ++smax;
                 }
 #if             defined(YACK_FFT_TRACK)
                 algo_ticks += wtime::ticks() - mark;

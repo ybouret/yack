@@ -67,7 +67,7 @@ static inline void build(FILE *hdr, FILE *src)
     // source prolog
     //
     //--------------------------------------------------------------------------
-    fprintf(src,"#include \"yack/fft/fft1d.hpp\"\n");
+    fprintf(src,"#include \"yack/fft/xbitrev.hpp\"\n");
     fprintf(src,"namespace yack {\n\n");
     
     //--------------------------------------------------------------------------

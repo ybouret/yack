@@ -1,4 +1,4 @@
-#include "yack/fft/fft1d.hpp"
+#include "yack/fft/xbitrev.hpp"
 namespace yack {
 
   const uint8_t xbr::I4[1]={

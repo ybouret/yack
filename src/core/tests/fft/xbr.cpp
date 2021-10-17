@@ -1,11 +1,40 @@
 
-#include "yack/fft/fft1d.hpp"
+#include "yack/fft/xbitrev.hpp"
 #include "yack/utest/run.hpp"
 #include "yack/type/utils.hpp"
 #include "yack/system/wtime.hpp"
 #include <cstring>
 
 using namespace yack;
+
+namespace yack
+{
+    //__________________________________________________________________________
+    //
+    //! default bit reversal routine
+    //__________________________________________________________________________
+    template <typename T> static
+    inline void bitrev(T data[],const size_t size) throw()
+    {
+        assert(data);
+        assert(size);
+        const size_t n = (size << 1);
+        for(size_t i=1,j=1;i<n;i+=2)
+        {
+            if(j>i)
+            {
+                cswap2(data+i,data+j);
+            }
+            size_t m=size;
+            while( (m>=2) && (j>m) )
+            {
+                j -= m;
+                m >>= 1;
+            }
+            j += m;
+        }
+    }
+}
 
 namespace
 {
@@ -25,7 +54,7 @@ namespace
             for(size_t i=0;i<n;++i) work[i] = data[i];
             YACK_ASSERT(0==memcmp(work,data,n*sizeof(T)));
             yack::xbitrev(data-1,size);
-            fft1d::bitrev(work-1,size);
+            yack::bitrev(work-1,size);
             YACK_ASSERT(0==memcmp(work,data,n*sizeof(T)));
             
             uint64_t std_ticks = 0;
@@ -37,7 +66,7 @@ namespace
                 ++iter;
                 {
                     const uint64_t mark = wtime::ticks();
-                    fft1d::bitrev(work-1,size);
+                    yack::bitrev(work-1,size);
                     std_ticks += wtime::ticks() - mark;
                 }
                 
