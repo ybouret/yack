@@ -19,6 +19,16 @@ namespace yack {
     static const uint16_t J512[240];
     static const uint16_t I1024[496];
     static const uint16_t J1024[496];
+    static const uint16_t I2048[992];
+    static const uint16_t J2048[992];
+    static const uint16_t I4096[2016];
+    static const uint16_t J4096[2016];
+    static const uint16_t I8192[4032];
+    static const uint16_t J8192[4032];
+    static const uint16_t I16384[8128];
+    static const uint16_t J16384[8128];
+    static const uint16_t I32768[16256];
+    static const uint16_t J32768[16256];
   };
 
   template <typename T> static inline
@@ -102,6 +112,46 @@ namespace yack {
       }
       return;
 
+    case 2048:
+      {
+         const uint16_t *I=xbr::I2048;
+         const uint16_t *J=xbr::J2048;
+         for(size_t k=992;k>0;--k) cswap2(&data[*(I++)],&data[*(J++)]);
+      }
+      return;
+
+    case 4096:
+      {
+         const uint16_t *I=xbr::I4096;
+         const uint16_t *J=xbr::J4096;
+         for(size_t k=2016;k>0;--k) cswap2(&data[*(I++)],&data[*(J++)]);
+      }
+      return;
+
+    case 8192:
+      {
+         const uint16_t *I=xbr::I8192;
+         const uint16_t *J=xbr::J8192;
+         for(size_t k=4032;k>0;--k) cswap2(&data[*(I++)],&data[*(J++)]);
+      }
+      return;
+
+    case 16384:
+      {
+         const uint16_t *I=xbr::I16384;
+         const uint16_t *J=xbr::J16384;
+         for(size_t k=8128;k>0;--k) cswap2(&data[*(I++)],&data[*(J++)]);
+      }
+      return;
+
+    case 32768:
+      {
+         const uint16_t *I=xbr::I32768;
+         const uint16_t *J=xbr::J32768;
+         for(size_t k=16256;k>0;--k) cswap2(&data[*(I++)],&data[*(J++)]);
+      }
+      return;
+
     default: // generic code
       const size_t n = (size << 1);
       for(size_t i=1,j=1;i<n;i+=2)
@@ -128,7 +178,7 @@ namespace yack {
 #include <iostream>
 int main()
 {
-  for(size_t size=1;size<=4096;size<<=1) {
+  for(size_t size=1;size<=131072;size<<=1) {
     std::cerr << "size=" << size << std::endl;
     float *f = new float[2*size];
     yack::xbitrev(f-1,size);

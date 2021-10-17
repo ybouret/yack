@@ -39,22 +39,22 @@ namespace
         sum2 = sqrt(sum2/size);
         std::cerr << " rms=" << std::setw(14) << sum2 << " :";
       
+        double  rate = 0;
+#if defined(YACK_FFT_TRACK)
+        wtime  chrono;
         fft1d::algo_ticks     = 0;
-        const size_t iter_max = 256;
-        for(size_t iter=0;iter<iter_max;++iter)
+        size_t iter           = 0;
+        double ellapsed       = 0;
+        do
         {
+            ++iter;
             fft1d::forward(data-1,size);
             fft1d::reverse(data-1,size);
-        }
+        } while( (ellapsed = chrono(fft1d::algo_ticks)) <= 0.5 );
+        rate = 1e-3 * iter / ellapsed;
+        std::cerr << " rate = "  << std::setw(14) << rate;
+#endif
         
-        double rate = 0;
-        if(fft1d::algo_ticks)
-        {
-            wtime        chrono;
-            const double tm   = chrono(fft1d::algo_ticks);
-            rate = 1e-3 * (iter_max/tm);
-            std::cerr << "  rate=" << std::setw(14) << rate << " kOps";
-        }
         std::cerr << std::endl;
         
         mgr.withdraw(data,bytes);

@@ -63,7 +63,7 @@ namespace
     
 }
 
-YACK_UTEST(xbitrev)
+YACK_UTEST(fft_xbr_info)
 {
     for(size_t size=1;size<=(1<<16);size<<=1)
     {

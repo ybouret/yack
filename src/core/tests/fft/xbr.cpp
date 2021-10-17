@@ -15,7 +15,7 @@ namespace
     {
         wtime chrono;
         
-        for(size_t size=1;size<=2048;size<<=1)
+        for(size_t size=1;size<=65536;size<<=1)
         {
             std::cerr << "size=" << std::setw(6) << size;
             const size_t n = size*2;

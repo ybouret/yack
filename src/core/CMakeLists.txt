@@ -137,6 +137,7 @@ set(YACK_CORE ${CMAKE_CURRENT_SOURCE_DIR})
 set(YACK_FFT  ${YACK_CORE}/yack/fft)
 add_executable(xbitrev yack/fft/xbitrev.cxx yack/fft/xbr-defs.hpp)
 
+if(FALSE)
 add_custom_command(
 OUTPUT  ${YACK_FFT}/xbr-decl.hxx ${YACK_FFT}/xbr-impl.cxx
 COMMAND xbitrev ${YACK_FFT}/xbr-decl.hxx ${YACK_FFT}/xbr-impl.cxx
@@ -144,6 +145,7 @@ COMMENT "[YACK] Creating xbitrev code"
 DEPENDS xbitrev
 VERBATIM
 )
+endif()
 
 set(fft_decl
 ${YACK_FFT}/fft1d.hpp
