@@ -139,7 +139,7 @@ add_executable(xbitrev yack/fft/xbitrev.cxx yack/fft/xbr-defs.hpp)
 
 add_custom_command(
 OUTPUT  ${YACK_FFT}/xbr-decl.hxx ${YACK_FFT}/xbr-impl.c
-COMMAND xbitrev ${YACK_FFT}/xbr-decl.hxx ${YACK_FFT}/xbr-impl.c
+COMMAND xbitrev ${YACK_FFT}/xbr-decl.hxx ${YACK_FFT}/xbr-impl.cxx
 COMMENT "[YACK] Creating xbitrev code"
 DEPENDS xbitrev
 VERBATIM
@@ -152,7 +152,7 @@ ${YACK_FFT}/xbr-defs.hpp
 )
 set(fft_impl
 ${YACK_FFT}/fft1d.cpp
-${YACK_FFT}/xbr-impl.c
+${YACK_FFT}/xbr-impl.cxx
 )
 set(fft ${fft_impl} ${fft_decl})
 SOURCE_GROUP(fft FILES ${fft})

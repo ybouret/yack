@@ -24,7 +24,7 @@ namespace
             T *work = data+n;
             for(size_t i=0;i<n;++i) work[i] = data[i];
             YACK_ASSERT(0==memcmp(work,data,n*sizeof(T)));
-            yack_xbitrev(data-1,size);
+            yack::xbitrev(data-1,size);
             fft1d::bitrev(work-1,size);
             YACK_ASSERT(0==memcmp(work,data,n*sizeof(T)));
             
@@ -43,15 +43,18 @@ namespace
                 
                 {
                     const uint64_t mark = wtime::ticks();
-                    yack_xbitrev(work-1,size);
+                    yack::xbitrev(work-1,size);
                     opt_ticks += wtime::ticks() - mark;
                 }
             } while( chrono(std_ticks)<=0.25 );
             
             const double std_rate =1e-6 * iter/chrono(std_ticks);
             const double opt_rate =1e-6 * iter/chrono(opt_ticks);
-            std::cerr << " | std_rate: " << std_rate;
-            std::cerr << " | opt_rate: " << opt_rate;
+            const double speed_up = opt_rate/std_rate;
+            std::cerr << " | std_rate: " << std::setw(8) << std_rate;
+            std::cerr << " | opt_rate: " << std::setw(8) << opt_rate;
+            std::cerr << " | speed_up: " << std::setw(8) << speed_up;
+
             std::cerr << std::endl;
             
             delete []data;
