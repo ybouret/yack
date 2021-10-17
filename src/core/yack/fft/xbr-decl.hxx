@@ -1,4 +1,4 @@
-template <typename T>   inline
+template <typename T> static inline
 void yack_xbitrev(T data[], const size_t size) throw()
 {
   assert(NULL!=data); assert(size>0);
@@ -112,6 +112,51 @@ void yack_xbitrev(T data[], const size_t size) throw()
       }
       return;
 
+    case 512:
+      extern uint16_t yack_xbitrev_I512[240];
+      extern uint16_t yack_xbitrev_J512[240];
+      {
+         const uint16_t *I=yack_xbitrev_I512;
+         const uint16_t *J=yack_xbitrev_J512;
+         for(size_t k=240;k>0;--k)
+         {
+            T *lhs=&data[*(I++)], *rhs=&data[*(J++)];
+            yack::cswap(lhs[0],rhs[0]);
+            yack::cswap(lhs[1],rhs[1]);
+         }
+      }
+      return;
+
+    case 1024:
+      extern uint16_t yack_xbitrev_I1024[496];
+      extern uint16_t yack_xbitrev_J1024[496];
+      {
+         const uint16_t *I=yack_xbitrev_I1024;
+         const uint16_t *J=yack_xbitrev_J1024;
+         for(size_t k=496;k>0;--k)
+         {
+            T *lhs=&data[*(I++)], *rhs=&data[*(J++)];
+            yack::cswap(lhs[0],rhs[0]);
+            yack::cswap(lhs[1],rhs[1]);
+         }
+      }
+      return;
+
+    case 2048:
+      extern uint16_t yack_xbitrev_I2048[992];
+      extern uint16_t yack_xbitrev_J2048[992];
+      {
+         const uint16_t *I=yack_xbitrev_I2048;
+         const uint16_t *J=yack_xbitrev_J2048;
+         for(size_t k=992;k>0;--k)
+         {
+            T *lhs=&data[*(I++)], *rhs=&data[*(J++)];
+            yack::cswap(lhs[0],rhs[0]);
+            yack::cswap(lhs[1],rhs[1]);
+         }
+      }
+      return;
+
     default: // generic code
     const size_t n = (size << 1);
     for(size_t i=1,j=1;i<n;i+=2)
@@ -137,7 +182,7 @@ void yack_xbitrev(T data[], const size_t size) throw()
 #include <iostream>
 int main()
 {
-  for(size_t size=1;size<=1024;size<<=1) {
+  for(size_t size=1;size<=8192;size<<=1) {
     std::cerr << "size=" << size << std::endl;
     float *f = new float[2*size];
     xbitrev(f-1,size);

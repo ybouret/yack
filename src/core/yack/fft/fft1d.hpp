@@ -14,6 +14,22 @@
 
 #include <iostream>
 
+namespace yack
+{
+    //! inline cswap of integral objects
+    template <typename T> inline
+    void cswap2(T *lhs, T *rhs) throw()
+    {
+        assert(lhs); assert(rhs);
+        const T tmp0 = lhs[0];
+        const T tmp1 = lhs[1];
+        lhs[0] = rhs[0];
+        lhs[1] = rhs[1];
+        rhs[0] = tmp0;
+        rhs[1] = tmp1;
+    }
+}
+
 #include "xbr-decl.hxx"
 
 
@@ -60,10 +76,7 @@ namespace yack
             {
                 if(j>i)
                 {
-                    T *lhs = &data[j];
-                    T *rhs = &data[i];
-                    cswap(lhs[0],rhs[0]);
-                    cswap(lhs[1],rhs[1]);
+                    cswap2(data+i,data+j);
                 }
                 size_t m=size;
                 while( (m>=2) && (j>m) )

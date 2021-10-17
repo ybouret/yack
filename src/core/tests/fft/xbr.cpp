@@ -17,14 +17,13 @@ namespace
         
         for(size_t size=1;size<=2048;size<<=1)
         {
-            std::cerr << "size=" << size << std::endl;
+            std::cerr << "size=" << std::setw(6) << size;
             const size_t n = size*2;
             T *data = new T[2*n];
             ran.fillnz(data,n*sizeof(data));
             T *work = data+n;
-            for(size_t i=0;i<n;++i) work[i] =data[i];
+            for(size_t i=0;i<n;++i) work[i] = data[i];
             YACK_ASSERT(0==memcmp(work,data,n*sizeof(T)));
-          
             yack_xbitrev(data-1,size);
             fft1d::bitrev(work-1,size);
             YACK_ASSERT(0==memcmp(work,data,n*sizeof(T)));
@@ -49,9 +48,11 @@ namespace
                 }
             } while( chrono(opt_ticks)<=0.25 );
             
-            std::cerr << "\tstd: " << 1e-6 * iter/chrono(std_ticks) << std::endl;
-            std::cerr << "\topt: " << 1e-6 * iter/chrono(opt_ticks) << std::endl;
-
+            const double std_rate =1e-6 * iter/chrono(std_ticks);
+            const double opt_rate =1e-6 * iter/chrono(opt_ticks);
+            std::cerr << " | std_rate: " << std_rate;
+            std::cerr << " | opt_rate: " << opt_rate;
+            std::cerr << std::endl;
             
             delete []data;
         }
@@ -62,6 +63,7 @@ namespace
 YACK_UTEST(fft_xbr)
 {
     uprng ran;
+    std::cerr.precision(4);
     test_xbr<uint8_t>(ran);
 }
 YACK_UDONE()

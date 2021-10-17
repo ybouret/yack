@@ -31,6 +31,8 @@ namespace yack
         rhs = tmp;
     }
 
+    
+    
     //! inline type mutable coercion
     template <typename T> inline
     T & coerce(const T &source) throw() { return (T&)source;  }

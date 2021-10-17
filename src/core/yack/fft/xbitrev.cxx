@@ -2,8 +2,15 @@
 
 #include <cstdio>
 #include <iostream>
+#include <iomanip>
 #include <cstring>
 #include <cassert>
+
+//------------------------------------------------------------------------------
+//
+// generic code
+//
+//------------------------------------------------------------------------------
 
 static const char code[] =
 "    const size_t n = (size << 1);\n"
@@ -26,6 +33,11 @@ static const char code[] =
 "    }\n";
 
 
+//------------------------------------------------------------------------------
+//
+// write table
+//
+//------------------------------------------------------------------------------
 static inline void output(FILE *src, const unsigned *K, const unsigned n)
 {
     fprintf(src,"={\n");
@@ -40,32 +52,56 @@ static inline void output(FILE *src, const unsigned *K, const unsigned n)
     
 }
 
+//------------------------------------------------------------------------------
+//
+// build files
+//
+//------------------------------------------------------------------------------
 static inline void build(FILE *hdr, FILE *src)
 {
     assert(hdr);
     assert(src);
     
-    //fprintf(hdr,"#include \"yack/setup.hpp\"\n");
-    
+    //--------------------------------------------------------------------------
+    //
+    // source prolog
+    //
+    //--------------------------------------------------------------------------
     fprintf(src,"#include \"yack/system/setup.h\"\n");
     
+    //--------------------------------------------------------------------------
+    //
+    // header prolog
+    //
+    //--------------------------------------------------------------------------
+    
     fprintf(hdr,"template <typename T> static inline\n");
-    fprintf(hdr,"void xbitrev(T data[], const size_t size) throw()\n");
+    fprintf(hdr,"void yack_xbitrev(T data[], const size_t size) throw()\n");
     fprintf(hdr,"{\n");
     fprintf(hdr,"  assert(NULL!=data); assert(size>0);\n");
     
+    //--------------------------------------------------------------------------
+    //
     // cases
+    //
+    //--------------------------------------------------------------------------
     fprintf(hdr,"  switch(size)\n");
     fprintf(hdr,"  {\n");
     fprintf(hdr,"    case 0:\n");
     fprintf(hdr,"    case 2: return;\n\n");
     
+    //--------------------------------------------------------------------------
     //
+    // loop
+    //
+    //--------------------------------------------------------------------------
     for(unsigned size=4;size<=YACK_FFT_XBITREV_MAX;size<<=1)
     {
         fprintf(hdr,"    case %u:\n",size);
         
+        //----------------------------------------------------------------------
         // count
+        //----------------------------------------------------------------------
         unsigned       count = 0;
         unsigned       jmax  = 0;
         const unsigned n = (size << 1);
@@ -85,18 +121,34 @@ static inline void build(FILE *hdr, FILE *src)
             j += m;
         }
         
-        // prepare
-        const char     *type = "uint8_t";
-        if(jmax>=256)   type = "uint16_t";
-        if(jmax>=65536) type = "uint32_t";
+        //----------------------------------------------------------------------
+        // prepare type
+        //----------------------------------------------------------------------
+        const char       *type = "uint8_t";
+        size_t            bpi  = 1;
+        if(jmax>=256)   { type = "uint16_t"; bpi=2; }
+        if(jmax>=65536) { type = "uint32_t"; bpi=4; }
         
-        std::cerr << "size=" << size << ", count=" << count << ", jmax=" << jmax << " => " << type << std::endl;
-        
-        // write in source
+        {
+            std::cerr << "size=" << std::setw(6) << size;
+            std::cerr << " | swap=" << std::setw(6) << count;
+            std::cerr << " | type=" << std::setw(8) << type;
+            std::cerr << " | I/J =" << std::setw(6) << count*bpi;
+            std::cerr << " | I+J =" << std::setw(6) << 2*count*bpi;
+
+           //<< ", count=" << count << ", jmax=" << jmax << " => " << type << std::endl;
+            
+            std::cerr << std::endl;
+        }
+        //----------------------------------------------------------------------
+        // declare tables in header
+        //----------------------------------------------------------------------
         fprintf(hdr,"      extern %s yack_xbitrev_I%u[%u];\n",type,size,count);
         fprintf(hdr,"      extern %s yack_xbitrev_J%u[%u];\n",type,size,count);
 
-        // generate
+        //----------------------------------------------------------------------
+        // generate tables data
+        //----------------------------------------------------------------------
         unsigned *I = new unsigned[2*count];
         unsigned *J = I+count;
         size_t    k = 0;
@@ -118,14 +170,18 @@ static inline void build(FILE *hdr, FILE *src)
         }
         assert(count==k);
         
+        //----------------------------------------------------------------------
         // write in source
+        //----------------------------------------------------------------------
         fprintf(src,"const %s yack_xbitrev_I%u[%u]",type,size,count);
         output(src,I,count);
         fprintf(src,"const %s yack_xbitrev_J%u[%u]",type,size,count);
         output(src,J,count);
-        
         delete []I;
         
+        //----------------------------------------------------------------------
+        // use in table
+        //----------------------------------------------------------------------
         fprintf(hdr,"      {\n");
         fprintf(hdr,"         const %s *I=yack_xbitrev_I%u;\n",type,size);
         fprintf(hdr,"         const %s *J=yack_xbitrev_J%u;\n",type,size);
@@ -141,19 +197,33 @@ static inline void build(FILE *hdr, FILE *src)
         fprintf(hdr,"      return;\n\n");
     }
     
+    //--------------------------------------------------------------------------
+    //
     // default
+    //
+    //--------------------------------------------------------------------------
     fprintf(hdr,"    default: // generic code\n");
     fputs(code,hdr);
     
+    //--------------------------------------------------------------------------
+    //
     // end of cases
+    //
+    //--------------------------------------------------------------------------
     fprintf(hdr,"  }\n");
     
-    
+    //--------------------------------------------------------------------------
+    //
     // end of routine
+    //
+    //--------------------------------------------------------------------------
     fprintf(hdr,"}\n");
     
-    
+    //--------------------------------------------------------------------------
+    //
     // tests...
+    //
+    //--------------------------------------------------------------------------
     fprintf(hdr,"#if defined(YACK_XBITREV_TEST)\n");
     fprintf(hdr,"#include <iostream>\n");
     fprintf(hdr,"int main()\n");
@@ -168,6 +238,12 @@ static inline void build(FILE *hdr, FILE *src)
     fprintf(hdr,"  }\n");
     
     fprintf(hdr,"}\n");
+    
+    //--------------------------------------------------------------------------
+    //
+    // header epilog
+    //
+    //--------------------------------------------------------------------------
     fprintf(hdr,"#endif\n");
 
 }
