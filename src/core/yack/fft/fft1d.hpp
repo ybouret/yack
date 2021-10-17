@@ -38,34 +38,57 @@ namespace yack
     //__________________________________________________________________________
     //
     //
-    //
+    //! FFT in 1D
     //
     //__________________________________________________________________________
     struct fft1d
     {
-        static volatile uint64_t     algo_ticks;
-        static const size_t one      = 1;
-        static const size_t max_exp2 = (sizeof(size_t)<<3) - 1;
-        static const size_t max_size = one << max_exp2;
+        //______________________________________________________________________
+        //
+        // tracking
+        //______________________________________________________________________
+        static volatile uint64_t algo_ticks; //!< for time tracking
+        
+        //______________________________________________________________________
+        //
+        // parameters
+        //______________________________________________________________________
+        static const size_t one      = 1;    //!< size_t(1)
+        static const size_t max_exp2 = (sizeof(size_t)<<3) - 1; //!< highest bit
+        static const size_t max_size = one << max_exp2;         //!< highest size
+       
+        //______________________________________________________________________
+        //
+        // precomputed tables
+        //______________________________________________________________________
         static const double pos_sine[64]; //!< sin(pi/(2^indx))
         static const double neg_sine[64]; //!< -sin(pi/(2^indx))
         static const double twpr[64];     //!< -2*(sin(pi/(2^indx)))^2
         
+        //______________________________________________________________________
+        //
+        //! forward algorithm data[2*size], mapping complexes
+        //______________________________________________________________________
         template <typename T> static
         inline void forward(T data[], const size_t size) throw()
         {
             apply(data,size,pos_sine);
         }
         
-        
+        //______________________________________________________________________
+        //
+        //! reverse algorithm data[2*size], mapping complexes
+        //______________________________________________________________________
         template <typename T> static
         inline void reverse(T data[], const size_t size) throw()
         {
             apply(data,size,neg_sine);
         }
         
-        
-        //! default routine
+        //______________________________________________________________________
+        //
+        //! default bit reversal routine
+        //______________________________________________________________________
         template <typename T> static
         inline void bitrev(T data[],const size_t size) throw()
         {
@@ -89,10 +112,9 @@ namespace yack
         }
         
     private:
-        
         template <typename T> static
-        inline void apply(T            data[],
-                          const size_t size,
+        inline void apply(T            *data,
+                          const size_t  size,
                           const double *sine) throw()
         {
             
@@ -105,7 +127,7 @@ namespace yack
 #endif
                 assert( (size<<1) ==n);
                 size_t mmax = 2;
-                size_t smax = 1; assert((1<<smax)==mmax);
+                size_t smax = 1; //assert((1<<smax)==mmax);
                 while (n>mmax)
                 {
                     //__________________________________________________________
@@ -114,9 +136,7 @@ namespace yack
                     // 0.5*theta= pi/mmax =   pi/(2^smax)
                     //__________________________________________________________
                     
-                    //std::cerr << "mmax@" <<  size << ": " << mmax << " 2^" << smax << std::endl;
                     const size_t istep = mmax << 1;
-                   // const double theta = isign*(6.28318530717959/mmax);
                     double wtemp = sine[smax];   //sin(0.5*theta);
                     double wpr   = twpr[smax];   //-2.0*wtemp*wtemp;
                     double wpi   = sine[smax-1]; // sin(theta)

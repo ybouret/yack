@@ -55,10 +55,22 @@ namespace yack
 
         };
 
+        //______________________________________________________________________
+        //
+        //
+        //! smart array
+        //
+        //______________________________________________________________________
         template <typename T>
         class tableau
         {
         public:
+            //__________________________________________________________________
+            //
+            // C++
+            //__________________________________________________________________
+            
+            //! allocate for a required exp2
             inline tableau(const int required_exp2):
             items_exp2(required_exp2),
             block_exp2(-1),
@@ -67,26 +79,28 @@ namespace yack
             {
             }
 
+            //! cleanup
             inline ~tableau() throw()
             {
                 alloc::field_release<T>(addr,coerce(items_exp2), coerce(block_exp2) );
                 coerce(size) = 0;
             }
-
-
-            inline T       & operator[](const size_t indx) throw()       { assert(indx<size); return addr[indx]; }
-            inline const T & operator[](const size_t indx) const throw() { assert(indx<size); return addr[indx]; }
-
-            template <typename U> inline U       *as() { return ((U*) &addr[0])-1;       }
-            template <typename U> inline const U *as() { return ((const U*) &addr[0])-1; }
-
-            const int    items_exp2;
-            const int    block_exp2;
+            
+            //__________________________________________________________________
+            //
+            // access
+            //__________________________________________________________________
+            inline T       & operator[](const size_t indx) throw()       { assert(indx<size); return addr[indx]; } //!< 0<=indx<size
+            inline const T & operator[](const size_t indx) const throw() { assert(indx<size); return addr[indx]; } //!< 0<=indx<size
+            
+            
+            const int    items_exp2; //!< items = 1 << items_exp2
+            const int    block_exp2; //!< bytes = 1 << block_exp2
 
         private:
-            T           *addr;
+            T           *addr;       //!< entry
         public:
-            const size_t size;
+            const size_t size;       //!< 1<<items_exp2
 
         private:
             YACK_DISABLE_COPY_AND_ASSIGN(tableau);

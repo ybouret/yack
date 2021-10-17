@@ -24,7 +24,7 @@ namespace
         
         for(size_t i=0;i<2*size;++i)
         {
-            wksp[i] = data[i] = T( ran() );
+            wksp[i] = data[i] = T( 100.0 * (ran()-0.5) );
         }
         
         
