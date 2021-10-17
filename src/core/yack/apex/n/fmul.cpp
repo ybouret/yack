@@ -20,8 +20,9 @@ namespace yack
         typedef complex<double> cplx_t;
 
 
-        template <typename WORD>   cplx_t *transfer(cplx_t *target, const WORD word) throw();
-
+        template <typename WORD>
+        cplx_t *transfer(cplx_t *target, const WORD word) throw();
+        
         template <>   inline
         cplx_t *transfer<uint8_t>(cplx_t *target, const uint8_t word) throw()
         {

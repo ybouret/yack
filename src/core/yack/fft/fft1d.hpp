@@ -35,7 +35,7 @@ namespace yack
         static const size_t one      = 1;    //!< size_t(1)
         static const size_t max_exp2 = (sizeof(size_t)<<3) - 1; //!< highest bit
         static const size_t max_size = one << max_exp2;         //!< highest size
-       
+        
         //______________________________________________________________________
         //
         // precomputed tables
@@ -64,7 +64,7 @@ namespace yack
             apply(data,size,neg_sine);
         }
         
-      
+        
         
     private:
         template <typename T> static
@@ -74,61 +74,59 @@ namespace yack
         {
             
             xbitrev(data,size);
-
+            
+            const size_t   n    = (size << 1);
+#if             defined(YACK_FFT_TRACK)
+            const uint64_t mark = wtime::ticks();
+#endif
+            assert( (size<<1) ==n);
+            size_t mmax = 2;
+            size_t smax = 1; //assert((1<<smax)==mmax);
+            while (n>mmax)
             {
-                const size_t n = (size << 1);
-#if             defined(YACK_FFT_TRACK)
-                const uint64_t mark = wtime::ticks();
-#endif
-                assert( (size<<1) ==n);
-                size_t mmax = 2;
-                size_t smax = 1; //assert((1<<smax)==mmax);
-                while (n>mmax)
+                //__________________________________________________________
+                //
+                // theta    = (2*pi)/mmax = 2*pi/(2^smax) = pi/(2^(smax-1))
+                // 0.5*theta= pi/mmax =   pi/(2^smax)
+                //__________________________________________________________
+                
+                const size_t istep = mmax << 1;
+                double wtemp = sine[smax];   //sin(0.5*theta);
+                double wpr   = twpr[smax];   //-2.0*wtemp*wtemp;
+                double wpi   = sine[smax-1]; // sin(theta)
+                double wr    = 1.0;
+                double wi    = 0.0;
+                for(size_t m=1;m<mmax;m+=2)
                 {
-                    //__________________________________________________________
-                    //
-                    // theta    = (2*pi)/mmax = 2*pi/(2^smax) = pi/(2^(smax-1))
-                    // 0.5*theta= pi/mmax =   pi/(2^smax)
-                    //__________________________________________________________
-                    
-                    const size_t istep = mmax << 1;
-                    double wtemp = sine[smax];   //sin(0.5*theta);
-                    double wpr   = twpr[smax];   //-2.0*wtemp*wtemp;
-                    double wpi   = sine[smax-1]; // sin(theta)
-                    double wr    = 1.0;
-                    double wi    = 0.0;
-                    for(size_t m=1;m<mmax;m+=2)
+                    for(size_t i=m;i<=n;i+=istep)
                     {
-                        for(size_t i=m;i<=n;i+=istep)
-                        {
-                            T *          data_i = data+i;
-                            const size_t j=i+mmax;
-                            T *          data_j = data+j;
-                            const double djr    = double(data_j[0]);
-                            const double dji    = double(data_j[1]);
-                            const T      tempr  = T(wr*djr-wi*dji);
-                            const T      tempi  = T(wr*dji+wi*djr);
-                            data_j[0]  = data_i[0]-tempr;
-                            data_j[1]  = data_i[1]-tempi;
-                            data_i[0]  += tempr;
-                            data_i[1]  += tempi;
-                        }
-                        wr=(wtemp=wr)*wpr-wi*wpi+wr;
-                        wi=wi*wpr+wtemp*wpi+wi;
+                        T *          data_i = data+i;
+                        T *          data_j = data_i + mmax;
+                        const double djr    = double(data_j[0]);
+                        const double dji    = double(data_j[1]);
+                        // TODO: speed up complex mul
+                        const T      tempr  = T(wr*djr-wi*dji);
+                        const T      tempi  = T(wr*dji+wi*djr);
+                        data_j[0]  = data_i[0]-tempr;
+                        data_j[1]  = data_i[1]-tempi;
+                        data_i[0]  += tempr;
+                        data_i[1]  += tempi;
                     }
-                    mmax=istep;
-                    ++smax;
+                    wr=(wtemp=wr)*wpr-wi*wpi+wr;
+                    wi=wi*wpr+wtemp*wpi+wi;
                 }
-#if             defined(YACK_FFT_TRACK)
-                algo_ticks += wtime::ticks() - mark;
-#endif
+                mmax=istep;
+                ++smax;
             }
-
+#if             defined(YACK_FFT_TRACK)
+            algo_ticks += wtime::ticks() - mark;
+#endif
+            
         }
         
-    
+        
     };
-
+    
 }
 
 #endif
