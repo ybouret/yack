@@ -45,6 +45,8 @@ add_test(wtime   test-yack wtime)
 
 add_test(type:ints   test-yack type_ints)
 add_test(type:traits test-yack type_traits)
+add_test(type:temp   test-yack type_temp)
+add_test(type:conv   test-yack type_conv)
 
 
 add_test(memory:ram      test-yack ram)
