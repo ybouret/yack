@@ -12,6 +12,10 @@ namespace yack
     namespace concurrent
     {
 
+        typedef void (*kernel)(const context &,
+                               void          *,
+                               lockable      &);
+
         //______________________________________________________________________
         //
         //
@@ -25,8 +29,9 @@ namespace yack
             //
             // interface
             //__________________________________________________________________
-            virtual lockable   &access()       throw() = 0; //!< to sync
-            virtual const char *family() const throw() = 0; //!< for info
+            virtual lockable   &access()          throw() = 0; //!< to sync
+            virtual const char *family()    const throw() = 0; //!< for info
+            virtual void operator()(kernel,void*) throw() = 0;
 
             //__________________________________________________________________
             //

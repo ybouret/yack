@@ -42,20 +42,21 @@ namespace yack
             //
             // loop interface
             //__________________________________________________________________
-            virtual lockable   & access()       throw();
-            virtual const char * family() const throw();
+            virtual lockable   & access()         throw();
+            virtual const char * family()   const throw();
+            virtual void operator()(kernel,void*) throw();
 
         private:
             YACK_DISABLE_COPY_AND_ASSIGN(simd);
             class worker;
-            void        *kexec;
+            kernel       kcode;
             void        *kargs;
             mutex        sync;
             condition    cond;
-            size_t       ready;
             const size_t threads;
-            size_t       zbytes;  //!< bytes for workers
+            size_t       zbytes_;  //!< bytes for workers
             worker      *team;    //!< memory for team
+            size_t       ready;
             condition    gate;
 
             void         cycle() throw();

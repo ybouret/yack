@@ -3,7 +3,6 @@
 #include "yack/memory/allocator/dyadic.hpp"
 #include "yack/concurrent/thread.hpp"
 #include <iostream>
-#include "yack/system/wtime.hpp"
 
 namespace yack
 {
@@ -40,6 +39,14 @@ namespace yack
             YACK_DISABLE_COPY_AND_ASSIGN(worker);
         };
 
+    }
+
+}
+
+namespace yack
+{
+    namespace concurrent
+    {
         void simd:: entry(void *args) throw()
         {
             assert(args);
@@ -51,19 +58,16 @@ namespace yack
         const char simd:: clid[] = "simd";
 
 
-
-
-
         simd:: simd(const size_t n) :
         loop(),
-        kexec(NULL),
+        kcode(NULL),
         kargs(NULL),
         sync(clid),
         cond(),
-        ready(0),
         threads( max_of<size_t>(n,1) ),
-        zbytes(threads),
-        team( worker::zalloc(zbytes) ),
+        zbytes_(threads),
+        team( worker::zalloc(zbytes_) ),
+        ready(0),
         gate()
         {
             //__________________________________________________________________
@@ -75,7 +79,7 @@ namespace yack
             if(thread::verbose)
             {
                 YACK_LOCK(sync);
-                std::cerr << "[simd] create #thread=" << threads << std::endl;
+                std::cerr << "[simd]  <create_threads count=" << threads << ">" << std::endl;
             }
 
             {
@@ -109,14 +113,14 @@ namespace yack
                 sync.lock();
                 if(ready<threads)
                 {
-                    YACK_THREAD_PRINTLN("[simd] still initializing...");
+                    YACK_THREAD_PRINTLN("[simd]    <still initializing>");
                     gate.wait(sync);
-                    YACK_THREAD_PRINTLN("[simd] ...initialized!");
+                    YACK_THREAD_PRINTLN("[simd]    <done initializing/>");
                     sync.unlock();
                 }
                 else
                 {
-                    YACK_THREAD_PRINTLN("[simd] already initialized");
+                    YACK_THREAD_PRINTLN("[simd]    <already initialized/>");
                     sync.unlock();
                 }
             }
@@ -130,22 +134,28 @@ namespace yack
 
             assert(threads==ready);
             --team;
+            if(thread::verbose)
+            {
+                YACK_LOCK(sync);
+                std::cerr << "[simd]  <create_threads/>" << std::endl;
+            }
         }
 
         void simd:: zkill() throw()
         {
             static memory::allocator &mgr = memory::dyadic::location();
-            mgr.withdraw(team,zbytes);
+            mgr.withdraw(team,zbytes_);
         }
 
         simd:: ~simd() throw()
         {
+            assert(NULL==kcode);
+            assert(NULL==kargs);
+
             if(thread::verbose)
             {
                 YACK_LOCK(sync);
-                std::cerr << "[simd] terminating..." << std::endl;
-                assert(NULL==kexec);
-                assert(NULL==kargs);
+                std::cerr << "[simd]  <terminating count=" << threads << ">" << std::endl;
             }
 
             // wake up everyone to nothing to do
@@ -160,7 +170,7 @@ namespace yack
             if(thread::verbose)
             {
                 YACK_LOCK(sync);
-                std::cerr << "[simd] all done" << std::endl;
+                std::cerr << "[simd]  <terminating/>" << std::endl;
             }
 
             // remove resources
@@ -204,7 +214,7 @@ namespace yack
             //__________________________________________________________________
             sync.lock(); assert(ready<threads);
             const context &here = team[ready].ctx;
-            YACK_THREAD_PRINTLN("[simd] started " << here);
+            YACK_THREAD_PRINTLN("[simd]    <started " << here << "/>");
 
 
             ++ready;
@@ -229,11 +239,17 @@ namespace yack
             // wake-up on a LOCKED mutex
             //
             //__________________________________________________________________
-            YACK_THREAD_PRINTLN("[simd] awaken  " << here);
 
-             //check what todo...
+            if(kcode)
+            {
+                //______________________________________________________________
+                //
+                // wake up to WORK
+                //______________________________________________________________
+                sync.unlock();
 
-
+                sync.lock();
+            }
 
             //__________________________________________________________________
             //
@@ -243,9 +259,34 @@ namespace yack
             //__________________________________________________________________
             assert(ready>0);
             --ready;
-            YACK_THREAD_PRINTLN("[simd] return  " << here);
-
+            YACK_THREAD_PRINTLN("[simd]    <return " << here << "/>" );
             sync.unlock();
+
+        }
+
+
+    }
+
+}
+
+#include "yack/type/temporary.hpp"
+
+namespace yack
+{
+    namespace concurrent
+    {
+        void simd:: operator()(kernel kcode_, void *kargs_) throw()
+        {
+            assert(NULL==kcode);
+            assert(NULL!=kcode_);
+            assert(NULL==kargs);
+            assert(ready==threads);
+            const temporary<kernel> tempCode(kcode,kcode_);
+            const temporary<void*>  tempArgs(kargs,kargs_);
+            
+
+
+
 
         }
 

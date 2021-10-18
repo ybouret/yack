@@ -27,6 +27,13 @@ namespace yack
 
         const char * mono:: family() const throw() { return clid; }
 
+        void mono:: operator()(kernel kcode, void *kargs) throw()
+        {
+            assert(kcode);
+            kcode(ctx,kargs,acc);
+        }
+
+
     }
 
 }

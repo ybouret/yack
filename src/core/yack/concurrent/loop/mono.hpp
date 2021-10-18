@@ -40,8 +40,10 @@ namespace yack
             //
             // loop interface
             //__________________________________________________________________
-            virtual lockable   & access()       throw();
-            virtual const char * family() const throw();
+            virtual lockable   & access()         throw();
+            virtual const char * family()   const throw();
+            virtual void operator()(kernel,void*) throw();
+            
 
         private:
             YACK_DISABLE_COPY_AND_ASSIGN(mono);
