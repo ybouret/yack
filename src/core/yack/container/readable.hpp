@@ -17,13 +17,24 @@ namespace yack
     class readable
     {
     public:
-        YACK_DECL_ARGS(T,type);
-        
-        inline virtual ~readable() throw() {}
+        //______________________________________________________________________
+        //
+        // types and definitions
+        //______________________________________________________________________
+        YACK_DECL_ARGS(T,type); //!< aliases
 
+        //______________________________________________________________________
+        //
+        // interface
+        //______________________________________________________________________
         virtual size_t      size()                   const throw() = 0; //!< handled items
         virtual const_type &operator[](const size_t) const throw() = 0; //!< in [1..size]
 
+        //______________________________________________________________________
+        //
+        // C++
+        //______________________________________________________________________
+        inline virtual ~readable() throw() {}
     protected:
         inline explicit readable() throw() {}
 

@@ -13,17 +13,35 @@ namespace yack
     namespace concurrent
     {
 
+        //______________________________________________________________________
+        //
+        //
+        //! parallel loop
+        //
+        //______________________________________________________________________
         class simd : public loop
         {
         public:
-            static const char clid[];
-            
-            virtual ~simd() throw();
-            explicit simd(const size_t n);
+            static const char clid[]; //!< simd
 
+            //__________________________________________________________________
+            //
+            // C++
+            //__________________________________________________________________
+            virtual ~simd() throw();       //!< cleanup
+            explicit simd(const size_t n); //!< setup
+
+            //__________________________________________________________________
+            //
+            // readable interface
+            //__________________________________________________________________
             virtual size_t       size()                   const throw();
             virtual const_type & operator[](const size_t) const throw();
 
+            //__________________________________________________________________
+            //
+            // loop interface
+            //__________________________________________________________________
             virtual lockable   & access()       throw();
             virtual const char * family() const throw();
 

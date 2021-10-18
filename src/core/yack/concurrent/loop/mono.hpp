@@ -11,16 +11,35 @@ namespace yack
     namespace concurrent
     {
 
+        //______________________________________________________________________
+        //
+        //
+        //! sequential loop
+        //
+        //______________________________________________________________________
         class mono : public loop
         {
         public:
-            static const char clid[];
-            explicit mono() throw();
-            virtual ~mono() throw();
+            static const char clid[]; //!< "mono"
 
+            //__________________________________________________________________
+            //
+            // C++
+            //__________________________________________________________________
+            explicit mono() throw(); //!< setup sequential
+            virtual ~mono() throw(); //!< cleanup
+
+            //__________________________________________________________________
+            //
+            // readable interface
+            //__________________________________________________________________
             virtual size_t       size()                   const throw();
             virtual const_type & operator[](const size_t) const throw();
 
+            //__________________________________________________________________
+            //
+            // loop interface
+            //__________________________________________________________________
             virtual lockable   & access()       throw();
             virtual const char * family() const throw();
 

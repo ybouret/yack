@@ -11,9 +11,16 @@ namespace yack
     namespace concurrent
     {
 
+        //______________________________________________________________________
+        //
+        //
+        //! generic splitting algorithm
+        //
+        //______________________________________________________________________
         struct split
         {
-            
+
+            //! from total length and offset, return parameters for size.rank
             template <typename T, typename U> static inline
             void with(const T size, const T rank, U &length, U &offset) throw()
             {
@@ -30,8 +37,7 @@ namespace yack
                     todo = length/left;
                 }
                 length = todo;
-
-
+                
             }
 
         };
