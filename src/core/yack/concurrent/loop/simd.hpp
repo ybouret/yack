@@ -48,7 +48,8 @@ namespace yack
         private:
             YACK_DISABLE_COPY_AND_ASSIGN(simd);
             class worker;
-            
+            void        *kexec;
+            void        *kargs;
             mutex        sync;
             condition    cond;
             size_t       ready;

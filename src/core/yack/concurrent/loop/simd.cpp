@@ -52,6 +52,8 @@ namespace yack
 
         simd:: simd(const size_t n) :
         loop(),
+        kexec(NULL),
+        kargs(NULL),
         sync(clid),
         cond(),
         ready(0),
@@ -184,10 +186,8 @@ namespace yack
             //__________________________________________________________________
             sync.lock(); assert(ready<threads);
             const context &here = team[ready].ctx;
-            if(thread::verbose)
-            {
-                std::cerr << "[simd] in thread " << here.size << "." << here.indx << std::endl;
-            }
+            YACK_THREAD_PRINTLN("[simd] in thread " << here);
+
 
             ++ready;
             if(ready>=threads)
@@ -199,11 +199,21 @@ namespace yack
             //__________________________________________________________________
             //
             //
-            // fist wait on a LOCKED mutex
+            // (first) wait on a LOCKED mutex
             //
             //__________________________________________________________________
             cond.wait(sync);
-            
+
+
+            //__________________________________________________________________
+            //
+            //
+            // wake-up on a LOCKED mutex
+            //
+            //__________________________________________________________________
+
+
+
 
 
 

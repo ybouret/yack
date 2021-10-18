@@ -1,6 +1,5 @@
-
-
 //! \file
+
 #ifndef Y_ARITH_BASE2XX_INCLUDED
 #define Y_ARITH_BASE2XX_INCLUDED 1
 

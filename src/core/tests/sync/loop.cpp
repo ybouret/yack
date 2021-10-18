@@ -9,6 +9,7 @@ using namespace yack;
 
 YACK_UTEST(sync_loop)
 {
+    uprng ran;
 
     concurrent::thread::verbose = true;
     int        threads = 1;
@@ -34,6 +35,8 @@ YACK_UTEST(sync_loop)
             YACK_ASSERT(total==load);
         }
     }
+
+    
 
 
     concurrent::mono seq;
