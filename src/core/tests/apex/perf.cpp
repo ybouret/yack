@@ -52,10 +52,10 @@ YACK_UTEST(apex_perf)
             const apn fprod = apn::_fmul(lhs,rhs);
             YACK_ASSERT(lprod==fprod);
             t64 += wtime::ticks() - mark;
-        } while( chrono(t64)<0.5 );
+        } while( chrono(t64) < 0.5 );
 
-        std::cerr << " lmul_rate: " << std::setw(15) << apex::number::lmul_rate();
-        std::cerr << " fmul_rate: " << std::setw(15) << apex::number::fmul_rate();
+        std::cerr << " | lmul_rate: " << std::setw(15) << apex::number::lmul_rate();
+        std::cerr << " | fmul_rate: " << std::setw(15) << apex::number::fmul_rate();
         std::cerr << std::endl;
     }
 

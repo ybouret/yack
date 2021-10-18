@@ -16,7 +16,7 @@ namespace
 }
 
 
-YACK_UTEST(ints)
+YACK_UTEST(type_ints)
 {
     YACK_CHECK(sizeof(unsigned_int<1>::type)==1);
     YACK_CHECK(sizeof(unsigned_int<2>::type)==2);
