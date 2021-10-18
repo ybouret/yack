@@ -21,16 +21,16 @@ namespace yack
 
 
         template <typename WORD>
-        cplx_t *transfer(cplx_t *target, const WORD word) throw();
+        cplx_t *load_re(cplx_t *target, const WORD word) throw();
         
         template <>   inline
-        cplx_t *transfer<uint8_t>(cplx_t *target, const uint8_t word) throw()
+        cplx_t *load_re<uint8_t>(cplx_t *target, const uint8_t word) throw()
         {
             target[0].re = word; return target;
         }
 
         template <>   inline
-        cplx_t *transfer<uint16_t>(cplx_t *target, const uint16_t word) throw()
+        cplx_t *load_re<uint16_t>(cplx_t *target, const uint16_t word) throw()
         {
             target[0].re = (  word     & 0xff);
             target[1].re = ( (word>>8) & 0xff);
@@ -38,7 +38,7 @@ namespace yack
         }
 
         template <>   inline
-        cplx_t *transfer<uint32_t>(cplx_t *target, const uint32_t word) throw()
+        cplx_t *load_re<uint32_t>(cplx_t *target, const uint32_t word) throw()
         {
             target[0].re = (  word      & 0xff);
             target[1].re = ( (word>>8)  & 0xff);
@@ -47,19 +47,73 @@ namespace yack
             return target+4;
         }
 
+        template <typename WORD>
+        cplx_t *load_im(cplx_t *target, const WORD word) throw();
+
+        template <>   inline
+        cplx_t *load_im<uint8_t>(cplx_t *target, const uint8_t word) throw()
+        {
+            target[0].im = word; return target;
+        }
+
+        template <>   inline
+        cplx_t *load_im<uint16_t>(cplx_t *target, const uint16_t word) throw()
+        {
+            target[0].im = (  word     & 0xff);
+            target[1].im = ( (word>>8) & 0xff);
+            return target+2;
+        }
+
+        template <>   inline
+        cplx_t *load_im<uint32_t>(cplx_t *target, const uint32_t word) throw()
+        {
+            target[0].im = (  word      & 0xff);
+            target[1].im = ( (word>>8)  & 0xff);
+            target[2].im = ( (word>>16) & 0xff);
+            target[3].im = ( (word>>24) & 0xff);
+            return target+4;
+        }
 
 
 
-        static inline
-        void apn2cpx(cplx_t                   *target,
+        struct apn_to
+        {
+
+            static inline
+            void cpx(cplx_t                   *target,
                      const natural::word_type *source,
                      const size_t              words)
-        {
-            for(size_t i=words;i>0;--i)
             {
-                target = transfer(target,*(source++));
+                for(size_t i=words;i>0;--i)
+                {
+                    target = load_re(target,*(source++));
+                }
             }
-        }
+
+            static inline
+            void re(cplx_t                   *target,
+                    const natural::word_type *source,
+                    const size_t              words)
+            {
+                for(size_t i=words;i>0;--i)
+                {
+                    target = load_re(target,*(source++));
+                }
+            }
+
+            static inline
+            void im(cplx_t                   *target,
+                    const natural::word_type *source,
+                    const size_t              words)
+            {
+                for(size_t i=words;i>0;--i)
+                {
+                    target = load_im(target,*(source++));
+                }
+            }
+
+        };
+
 
         static inline
         void finalize(uint8_t      *prod,
@@ -102,7 +156,7 @@ namespace yack
                 const size_t rnw = r.count;
                 if(rnw>0)
                 {
-#if defined(YACK_APEX_TRACKING)
+#if                 defined(YACK_APEX_TRACKING)
                     const uint64_t mark = wtime::ticks();
 #endif
                     const size_t     pnw = lnw+rnw;              // product nuw words
@@ -114,9 +168,9 @@ namespace yack
                     cplx_t          *R = &com[size];
 
                     double *data = &(L->re) - 1;
-                    apn2cpx(L,l.entry,lnw);
+                    apn_to::cpx(L,l.entry,lnw);
                     fft1d::forward( data, size);
-                    apn2cpx(R,r.entry,rnw);
+                    apn_to::cpx(R,r.entry,rnw);
                     fft1d::forward( &(R->re)-1, size);
 
 
@@ -129,7 +183,7 @@ namespace yack
                     
                     res.words = pnw;
                     res.update();
-#if defined(YACK_APEX_TRACKING)
+#if                 defined(YACK_APEX_TRACKING)
                     fmul_ticks += wtime::ticks() - mark;
                     ++fmul_count;
 #endif
