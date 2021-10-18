@@ -13,7 +13,9 @@ namespace yack
         class simd::worker
         {
         public:
-            ~worker() throw();
+            inline ~worker() throw() {}
+
+
             worker(void        *args,
                    const size_t size,
                    const size_t rank) :
@@ -21,6 +23,8 @@ namespace yack
             thr(simd::entry,args)
             {
             }
+
+
 
             const context ctx;
             thread        thr;
@@ -140,12 +144,26 @@ namespace yack
             {
                 YACK_LOCK(sync);
                 std::cerr << "[simd] terminating..." << std::endl;
+                assert(NULL==kexec);
+                assert(NULL==kargs);
             }
 
-            while(ready>0)
+            // wake up everyone to nothing to do
+            cond.broadcast();
+
+            // wait for each thread
+            for(size_t t=threads;t>0;--t)
             {
-
+                destruct(&team[t]);
             }
+
+            if(thread::verbose)
+            {
+                YACK_LOCK(sync);
+                std::cerr << "[simd] all done" << std::endl;
+            }
+
+            // remove resources
             ++team;
             zkill();
         }
@@ -186,7 +204,7 @@ namespace yack
             //__________________________________________________________________
             sync.lock(); assert(ready<threads);
             const context &here = team[ready].ctx;
-            YACK_THREAD_PRINTLN("[simd] in thread " << here);
+            YACK_THREAD_PRINTLN("[simd] started " << here);
 
 
             ++ready;
@@ -211,11 +229,23 @@ namespace yack
             // wake-up on a LOCKED mutex
             //
             //__________________________________________________________________
+            YACK_THREAD_PRINTLN("[simd] awaken  " << here);
+
+             //check what todo...
 
 
 
+            //__________________________________________________________________
+            //
+            //
+            // done
+            //
+            //__________________________________________________________________
+            assert(ready>0);
+            --ready;
+            YACK_THREAD_PRINTLN("[simd] return  " << here);
 
-
+            sync.unlock();
 
         }
 
