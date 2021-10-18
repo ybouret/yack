@@ -207,8 +207,8 @@ namespace yack
 
             class handle {
             public:
-                const size_t            count;
-                const word_type * const entry;
+                const size_t            count; //!< words count
+                const word_type * const entry; //!< words entry
 
                 handle(const natural &) throw();
                 handle(uint_type     &) throw();

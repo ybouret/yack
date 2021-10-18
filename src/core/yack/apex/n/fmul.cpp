@@ -114,6 +114,7 @@ namespace yack
 
         };
 
+        
 
         static inline
         void finalize(uint8_t      *prod,
@@ -169,21 +170,21 @@ namespace yack
 
                     double *data = &(L->re) - 1;
                     
-#if 1
+#if 0
+                    // using dual fft
                     apn_to::cpx(L,l.entry,lnw);
                     fft1d::forward(data, size);
                     apn_to::cpx(R,r.entry,rnw);
                     fft1d::forward(&(R->re)-1, size);
 #else
-                    // compact data
-                    apn_to::re(L,l.entry,lnw);
-                    apn_to::im(L,r.entry,rnw);
-                    fft1d::forward(data, size);
                     
-                    // recompose
+                    // using compact/expand
+                    apn_to::re(L,l.entry,lnw);           // compact data
+                    apn_to::im(L,r.entry,rnw);           // compact data
+                    fft1d::forward(data,size);          // fft
+                    fft1d::expand(data,&(R->re)-1,size); //recompose
 #endif
                     
-
                     for(size_t i=0;i<size;++i)
                     {
                         L[i] *= R[i];

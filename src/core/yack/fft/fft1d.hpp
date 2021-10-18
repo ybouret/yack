@@ -64,6 +64,37 @@ namespace yack
             apply(data,size,neg_sine);
         }
         
+        template <typename T> static
+        inline void expand(T fft1[], T fft2[], const size_t n) throw()
+        {
+            static const T half(0.5);
+            const size_t nn2 = 2+n+n;
+            const size_t nn3 = 1+nn2;
+            fft2[1]=fft1[2];
+            fft1[2]=fft2[2]=0;
+            for(size_t j=n+1;j>=3;j-=2)
+            {
+                const size_t j1 = j+1;
+                const size_t j2 = nn2-j;
+                const size_t j3 = nn3-j;
+                const T      A  = fft1[j];
+                const T      B  = fft1[j2];
+                const T      C  = fft1[j1];
+                const T      D  = fft1[j3];
+                const T rep=half*(A+B);
+                const T rem=half*(A-B);
+                const T aip=half*(C+D);
+                const T aim=half*(C-D);
+                fft1[j]  =  rep;
+                fft1[j1] =  aim;
+                fft1[j2] =  rep;
+                fft1[j3] = -aim;
+                fft2[j]  =  aip;
+                fft2[j1] = -rem;
+                fft2[j2] = aip;
+                fft2[j3] = rem;
+            }
+        }
         
         
     private:
