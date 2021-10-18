@@ -33,7 +33,8 @@ namespace yack
         class thread : public quark::threadable
         {
         public:
-            static bool verbose;
+            static bool verbose; //!< system wide verbosity for threads ops
+            
             //__________________________________________________________________
             //
             // C++
@@ -46,6 +47,7 @@ namespace yack
             quark::thread *impl;
         };
 
+        //! verbose info
 #define YACK_THREAD_PRINTLN(MSG) do { \
 /**/  if(yack::concurrent::thread::verbose) std::cerr << MSG << std::endl;\
 /**/  } while(false)
