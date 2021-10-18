@@ -20,8 +20,8 @@ namespace yack
             typedef signed_int<core_size>::type carry_t;
             static  const  carry_t              radix(word_base);
 
-            const size_t lnw = l.count;
-            const size_t rnw = l.count;
+            const size_t lnw = l.words;
+            const size_t rnw = l.words;
             if(lnw<rnw)
             {
                 throw libc::exception(EDOM,"%slhs<rhs [level-1]",fn);

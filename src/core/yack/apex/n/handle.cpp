@@ -1,6 +1,7 @@
 
 #include "yack/apex/natural.hpp"
 #include "yack/system/endian.hpp"
+#include "yack/arith/base2.hpp"
 #include <iostream>
 
 namespace yack
@@ -9,19 +10,22 @@ namespace yack
     {
 
         natural:: handle:: handle(const natural &n) throw() :
-        count(n.words),
+        words(n.words),
+        bytes(n.bytes),
         entry(n.word)
         {
         }
 
         natural:: handle:: handle(uint_type &u) throw() :
-        count(0),
-        entry( natural::u2w(u,coerce(count)) )
+        words(0),
+        bytes(0),
+        entry( natural::u2w(u,coerce(words),coerce(bytes)) )
         {
         }
 
         natural:: handle:: handle(word_type &W) throw() :
-        count(1),
+        words(1),
+        bytes(bytes_for(W)),
         entry(&W)
         {
             assert(W>0);
@@ -29,9 +33,9 @@ namespace yack
 
         void natural::handle:: display(std::ostream &os) const
         {
-            os << "#" << count << "{";
-            const word_type *p = entry+count;
-            for(size_t i=count;i>0;--i)
+            os << "#" << words << "{";
+            const word_type *p = entry+words;
+            for(size_t i=words;i>0;--i)
             {
                 os << ' ' << std::hex << uint64_t( *(--p) );
             }
@@ -39,11 +43,11 @@ namespace yack
         }
 
 
-        bool natural::handle::is0() const throw() { return count<=0; }
+        bool natural::handle::is0() const throw() { return words<=0; }
 
         bool natural::handle::is1() const throw()
         {
-            return (1==count) && (1==entry[0]);
+            return (1==words) && (1==entry[0]);
         }
 
 

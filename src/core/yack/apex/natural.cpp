@@ -77,7 +77,9 @@ max_bytes(size_t(1)<<max_bytes_exp2 )
             memset(word,0,max_bytes);
         }
 
-        size_t natural:: ldw(word_type *w, uint_type u) throw()
+        size_t natural:: ldw(word_type *w,
+                             uint_type  u,
+                             size_t    &n) throw()
         {
             // store words
             w[0] = word_type(u);
@@ -87,7 +89,7 @@ max_bytes(size_t(1)<<max_bytes_exp2 )
                 w[i] = word_type(u);
             }
 
-            // return number of significant words
+            // compute number of significant words
             size_t num = words_per_uint;
             size_t msi = words_per_uint-1;
             while(num>0&&w[msi]<=0)
@@ -95,13 +97,27 @@ max_bytes(size_t(1)<<max_bytes_exp2 )
                 --num;
                 --msi;
             }
+            
+            // compute bytes
+            if(num>0)
+            {
+                assert(w[msi]>0);
+                n = (msi << word_exp2) + bytes_for( w[msi] );
+            }
+            else
+            {
+                n=0;
+            }
+            
             return num;
         }
 
-        const natural::word_type * natural:: u2w(uint_type &value, size_t &num_words) throw()
+        const natural::word_type * natural:: u2w(uint_type &value,
+                                                 size_t    &num_words,
+                                                 size_t    &num_bytes) throw()
         {
             word_type temp[words_per_uint]; assert(sizeof(temp)==sizeof(uint_type));
-            num_words = ldw(temp,value);
+            num_words = ldw(temp,value,num_bytes);
             return static_cast<word_type *>( out_of_reach::copy(&value,temp,sizeof(temp)) );
         }
 
@@ -110,9 +126,10 @@ max_bytes(size_t(1)<<max_bytes_exp2 )
             assert(max_bytes>=sizeof(uint_type));
             assert(max_words>=words_per_uint);
 
-            words = ldw(word,u);
-            bytes = words << word_exp2;
-            update();
+            words = ldw(word,u,bytes);
+            //bytes = words << word_exp2;
+            //update();
+            zpad();
         }
 
 

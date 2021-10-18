@@ -13,8 +13,8 @@ namespace yack
                           const handle &r) throw()
         {
             // sanity check
-            const size_t     nl  = l.count;
-            const size_t     nr  = r.count;
+            const size_t     nl  = l.words;
+            const size_t     nr  = r.words;
 
             if(nl<nr)
             {
@@ -60,8 +60,8 @@ namespace yack
                                          const handle &r) throw()
         {
             // sanity check
-            const size_t     nl  = l.count;
-            const size_t     nr  = r.count;
+            const size_t     nl  = l.words;
+            const size_t     nr  = r.words;
 
             if(nl<nr)
             {

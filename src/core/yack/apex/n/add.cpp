@@ -17,8 +17,8 @@ namespace yack
             // sanity check
             const word_type *lhs = l.entry; assert(lhs);
             const word_type *rhs = r.entry; assert(rhs);
-            size_t           nl  = l.count;
-            size_t           nr  = r.count;
+            size_t           nl  = l.words;
+            size_t           nr  = r.words;
             
             // order to have left=small one
             if(nl>nr)

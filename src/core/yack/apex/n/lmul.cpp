@@ -16,10 +16,10 @@ namespace yack
             assert(l.entry);
             assert(r.entry);
 
-            const size_t     lnw = l.count;
+            const size_t     lnw = l.words;
             if(lnw>0)
             {
-                const size_t rnw = r.count;
+                const size_t rnw = r.words;
                 if(rnw>0)
                 {
 #if defined(YACK_APEX_TRACKING)

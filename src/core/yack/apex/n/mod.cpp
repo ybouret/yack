@@ -36,7 +36,7 @@ namespace yack
             //__________________________________________________________________
             switch( scmp(numerator,denominator) )
             {
-                case number::negative: return natural(numerator.entry,numerator.count);
+                case number::negative: return natural(numerator.entry,numerator.words);
                 case number::naught:   return natural(0);
                 default:
                     break;
@@ -46,7 +46,7 @@ namespace yack
             //
             // numerator>denominator
             // find (2^(p-1))*denominator <= numerator < (2^p)*denominator
-            assert(numerator.count>=denominator.count);
+            assert(numerator.words>=denominator.words);
             // TODO: use delta count to start from a better p
             //__________________________________________________________________
 

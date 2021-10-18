@@ -18,7 +18,7 @@ YACK_UTEST(apn)
             const apex::uint_type u = ran.gen<apex::uint_type>(bits);
             YACK_ASSERT(bits==bits_for(u));
             apn n = u;
-            std::cerr << std::hex << "u=" << u << std::dec << std::endl;
+            //std::cerr << std::hex << "u=" << u << std::dec << std::endl;
             YACK_ASSERT(n.lsu()==u);
             YACK_ASSERT(bytes_for(u)==n.size());
             YACK_ASSERT(n.bits()==bits);
@@ -30,28 +30,27 @@ YACK_UTEST(apn)
                 v |= n[i];
             }
             YACK_ASSERT(u==v);
-            std::cerr << "n=" << n << std::endl;
+            //std::cerr << "n=" << n << std::endl;
 
             apn m = 0;
             m = u;
             YACK_ASSERT(m.lsu()==u);
-
-            
         }
     }
     std::cerr << std::dec;
 
     {
         apex::uint_type u = ran.gen<apex::uint_type>(40);
-        size_t              n = 0;
+        size_t           n = 0;
+        size_t           b = 0;
         std::cerr << std::hex << "u=" << u << std::endl;
-        const apn::word_type *w = apn::u2w(u,n);
+        const apn::word_type *w = apn::u2w(u,n,b);
         std::cerr << "w[" << n << "]={";
         for(size_t i=n;i>0;--i)
         {
             std::cerr << ' ' << w[i-1];
         }
-        std::cerr << "}\n";
+        std::cerr << "} #=" << b << "\n";
     }
 
     std::cerr << std::dec;

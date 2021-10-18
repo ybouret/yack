@@ -98,7 +98,9 @@ namespace yack
             std::ostream & output_bin(std::ostream &) const;
 
             //! convert value to array of words, uses value as memory
-            static const word_type *u2w(uint_type &value, size_t &num_words) throw();
+            static const word_type *u2w(uint_type &value,
+                                        size_t    &num_words,
+                                        size_t    &num_bytes) throw();
 
             //__________________________________________________________________
             //
@@ -207,7 +209,8 @@ namespace yack
 
             class handle {
             public:
-                const size_t            count; //!< words count
+                const size_t            words; //!< words count
+                const size_t            bytes; //!< bytes count
                 const word_type * const entry; //!< words entry
 
                 handle(const natural &) throw();
@@ -229,7 +232,9 @@ namespace yack
             explicit natural(const word_type *w, const size_t n);             //!< from words
             void     set_bit(const size_t ibit) throw();
 
-            static size_t    ldw(word_type *,uint_type) throw(); //!< load uint into word[words_per_uint], return num words
+            static size_t    ldw(word_type *,
+                                 uint_type,
+                                 size_t  &) throw(); //!< load uint into word[words_per_uint], return num words
 
             static int       cmp(const handle &l, const handle &r) throw();
             static sign_type scmp(const handle &l, const handle &r) throw();
