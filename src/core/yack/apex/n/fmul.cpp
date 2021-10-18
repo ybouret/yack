@@ -168,11 +168,21 @@ namespace yack
                     cplx_t          *R = &com[size];
 
                     double *data = &(L->re) - 1;
+                    
+#if 1
                     apn_to::cpx(L,l.entry,lnw);
-                    fft1d::forward( data, size);
+                    fft1d::forward(data, size);
                     apn_to::cpx(R,r.entry,rnw);
-                    fft1d::forward( &(R->re)-1, size);
-
+                    fft1d::forward(&(R->re)-1, size);
+#else
+                    // compact data
+                    apn_to::re(L,l.entry,lnw);
+                    apn_to::im(L,r.entry,rnw);
+                    fft1d::forward(data, size);
+                    
+                    // recompose
+#endif
+                    
 
                     for(size_t i=0;i<size;++i)
                     {
