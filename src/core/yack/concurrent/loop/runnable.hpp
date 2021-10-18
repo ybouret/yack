@@ -11,18 +11,34 @@ namespace yack
 {
     namespace concurrent
     {
-
         class loop;
+
+        //______________________________________________________________________
+        //
+        //
+        //! parallel kernel
+        //
+        //______________________________________________________________________
         typedef void (*kernel)(const context &,
                                void          *,
                                lockable      &);
 
 
+        //______________________________________________________________________
+        //
+        //
+        //! runnable interface
+        //
+        //______________________________________________________________________
         class runnable
         {
         public:
-            virtual ~runnable() throw();
 
+            //__________________________________________________________________
+            //
+            // C++
+            //__________________________________________________________________
+            virtual ~runnable() throw();
 
         protected:
             explicit runnable() throw();
@@ -32,7 +48,7 @@ namespace yack
             friend class loop;
             static  void call(const context &, void *,lockable &) throw();
             virtual void run(const context &, lockable &) throw() = 0;
-
+            
         };
     }
 

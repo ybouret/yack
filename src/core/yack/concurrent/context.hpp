@@ -33,8 +33,11 @@ namespace yack
             //
             // methods
             //__________________________________________________________________
+
+            //! display C++ style
             friend std::ostream & operator<<(std::ostream &,const context&);
 
+            //! crop part from a larger task
             template <typename U> inline
             void crop(U &length, U &offset) const throw()
             {

@@ -9,13 +9,22 @@
 namespace yack
 {
 
+    //__________________________________________________________________________
+    //
+    //
+    //! set/reset temporary value
+    //
+    //__________________________________________________________________________
     template <typename T>
     class temporary
     {
     public:
+
+        //! backup host value, then host=temp
         inline   temporary(T &host, T  temp) : who(host), old(host)
         { host = temp; }
 
+        //! restore original host value
         inline ~temporary() throw() { who = old; }
 
 

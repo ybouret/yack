@@ -17,9 +17,10 @@ namespace yack
     template <typename T>
     struct base10
     {
-        static const T ten = 10;
+        static const T ten = 10; //!< alias
     };
 
+    //! count digits to display value
     template <typename T>
     inline size_t digits_for(T value) throw()
     {

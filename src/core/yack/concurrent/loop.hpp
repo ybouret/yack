@@ -28,14 +28,15 @@ namespace yack
             //__________________________________________________________________
             virtual lockable   &access()          throw() = 0; //!< to sync
             virtual const char *family()    const throw() = 0; //!< for info
-            virtual void operator()(kernel,void*) throw() = 0;
+            virtual void operator()(kernel,void*) throw() = 0; //!< call kernel once
 
             //__________________________________________________________________
             //
             // non-virtual interface
             //__________________________________________________________________
-            void run(runnable &) throw();
+            void run(runnable &obj) throw(); //!< obj.run(...)
 
+            //! compute efficiency
             double efficiency(const double seq_rate, const double par_rate) const throw();
 
 

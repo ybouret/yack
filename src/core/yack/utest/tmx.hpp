@@ -7,12 +7,14 @@
 #include "yack/system/wtime.hpp"
 #include <iostream>
 
+//! append ticks to run code
 #define YACK_TMX_ADD(TICKS,CODE) do {\
 /**/    const uint64_t __yack_tmx_mark = wtime::ticks();\
 /**/    do { CODE; } while(false);\
 /**/    (TICKS) += wtime::ticks() - __yack_tmx_mark;\
 /**/  } while(false)
 
+//! compute rate of code during duration
 #define YACK_TMX_RATE(RATE,CODE,DURATION) do {  \
 /**/    uint64_t    __yack_ticks = 0;           \
 /**/    uint64_t    __yack_count = 0;           \
