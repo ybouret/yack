@@ -57,7 +57,8 @@ namespace yack
         ready(0),
         threads( max_of<size_t>(n,1) ),
         zbytes(threads),
-        team( worker::zalloc(zbytes) )
+        team( worker::zalloc(zbytes) ),
+        gate()
         {
             //__________________________________________________________________
             //
