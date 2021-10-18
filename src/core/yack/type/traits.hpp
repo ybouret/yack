@@ -225,8 +225,8 @@ namespace yack
         // T is a primitive U or const U: returns T
         T,
         // T is a non primitive U or const U: returns const T &
-        const_reference_type>::result
-        >::result parameter_type;
+        const_reference_type>::type
+        >::type parameter_type;
 
 
     };
