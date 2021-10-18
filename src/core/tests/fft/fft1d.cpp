@@ -4,6 +4,7 @@
 #include "yack/memory/allocator/global.hpp"
 #include "yack/type/utils.hpp"
 #include "yack/system/wtime.hpp"
+#include <cstdio>
 
 using namespace yack;
 
