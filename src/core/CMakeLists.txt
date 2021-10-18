@@ -198,12 +198,12 @@ set(concurrent_quark ${concurrent_quark_impl} ${concurrent_quark_decl})
 SOURCE_GROUP(concurrent/quark FILES ${concurrent_quark})
 install( FILES ${concurrent_quark_decl} DESTINATION include/yack/concurrent/quark )
 
-# concurrent/sync operations
-file(GLOB concurrent_sync_impl yack/concurrent/sync/*.cpp)
-file(GLOB concurrent_sync_decl yack/concurrent/sync/*.hpp)
-set(concurrent_sync ${concurrent_sync_impl} ${concurrent_sync_decl})
-SOURCE_GROUP(concurrent/sync FILES ${concurrent_sync})
-install( FILES ${concurrent_sync_decl} DESTINATION include/yack/concurrent/sync )
+# concurrent/loop operations
+file(GLOB concurrent_loop_impl yack/concurrent/loop/*.cpp)
+file(GLOB concurrent_loop_decl yack/concurrent/loop/*.hpp)
+set(concurrent_loop ${concurrent_loop_impl} ${concurrent_loop_decl})
+SOURCE_GROUP(concurrent/loop FILES ${concurrent_loop})
+install( FILES ${concurrent_loop_decl} DESTINATION include/yack/concurrent/loop )
 
 
 # create the library
@@ -218,7 +218,7 @@ ${container}
 ${memory} ${memory_allocator} ${memory_small} ${memory_large} ${memory_joint}
 ${fft}
 ${apex} ${apex_n}
-${concurrent} ${concurrent_quark} ${concurrent_sync}
+${concurrent} ${concurrent_quark} ${concurrent_loop}
 ${utest}
 )
 
