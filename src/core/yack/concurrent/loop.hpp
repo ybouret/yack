@@ -36,6 +36,9 @@ namespace yack
             //__________________________________________________________________
             void run(runnable &) throw();
 
+            double efficiency(const double seq_rate, const double par_rate) const throw();
+
+
             //__________________________________________________________________
             //
             // C++

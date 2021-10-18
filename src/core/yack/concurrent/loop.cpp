@@ -1,5 +1,6 @@
 
 #include "yack/concurrent/loop.hpp"
+#include <cmath>
 
 namespace yack
 {
@@ -18,6 +19,16 @@ namespace yack
         void loop:: run(runnable &obj) throw()
         {
             (*this)(runnable::call,&obj);
+        }
+
+        double loop:: efficiency(const double seq, const double par) const throw()
+        {
+            assert(seq>0);
+            assert(par>0);
+            const double the_speed_up = par/seq;
+            const double max_speed_up = size();
+            const double percent = floor(10000.0*the_speed_up/max_speed_up+0.5)/100.0;
+            return percent;
         }
 
     }

@@ -151,6 +151,7 @@ YACK_UTEST(sync_loop)
 
     std::cerr << "speed up=" << parRate/seqRate << std::endl;
 
+    std::cerr << "efficiency: " << par.efficiency(seqRate,parRate) << "%" << std::endl;
 
 
 
