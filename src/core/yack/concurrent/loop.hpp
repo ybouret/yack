@@ -3,19 +3,16 @@
 #ifndef YACK_SYNC_LOOP_INCLUDED
 #define YACK_SYNC_LOOP_INCLUDED 1
 
-#include "yack/lockable.hpp"
+#include "yack/concurrent/loop/runnable.hpp"
 #include "yack/container/readable.hpp"
-#include "yack/concurrent/context.hpp"
 
 namespace yack
 {
     namespace concurrent
     {
 
-        typedef void (*kernel)(const context &,
-                               void          *,
-                               lockable      &);
 
+        
         //______________________________________________________________________
         //
         //
@@ -32,6 +29,12 @@ namespace yack
             virtual lockable   &access()          throw() = 0; //!< to sync
             virtual const char *family()    const throw() = 0; //!< for info
             virtual void operator()(kernel,void*) throw() = 0;
+
+            //__________________________________________________________________
+            //
+            // non-virtual interface
+            //__________________________________________________________________
+            void run(runnable &) throw();
 
             //__________________________________________________________________
             //

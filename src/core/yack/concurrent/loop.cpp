@@ -12,7 +12,14 @@ namespace yack
         loop::loop() throw()
         {
         }
+
+
         
+        void loop:: run(runnable &obj) throw()
+        {
+            (*this)(runnable::call,&obj);
+        }
+
     }
 
 }

@@ -29,7 +29,18 @@ namespace yack
             context(const size_t sz,
                     const size_t rk) throw(); //!< parallel
 
+            //__________________________________________________________________
+            //
+            // methods
+            //__________________________________________________________________
             friend std::ostream & operator<<(std::ostream &,const context&);
+
+            template <typename U> inline
+            void crop(U &length, U &offset) const throw()
+            {
+                split::with(size,rank,length,offset);
+            }
+
 
             //__________________________________________________________________
             //
