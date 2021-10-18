@@ -43,6 +43,8 @@ YACK_UTEST_DECL(64)
     YACK_UTEST(sync_condition);
     YACK_UTEST(sync_thread);
     YACK_UTEST(singleton);
+    YACK_UTEST(sync_loop);
+
 
     YACK_UTEST(fft1d);
     YACK_UTEST(fft_xbr8);

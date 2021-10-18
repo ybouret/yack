@@ -4,34 +4,23 @@
 #define YACK_SYNC_LOOP_INCLUDED 1
 
 #include "yack/lockable.hpp"
+#include "yack/container/readable.hpp"
+#include "yack/concurrent/context.hpp"
 
 namespace yack
 {
     namespace concurrent
     {
 
-        class context
-        {
-        public:
-            const size_t size;
-            const size_t rank;
-            const size_t indx;
 
-            context()  throw(); //!< sequential
-            ~context() throw(); //!< cleanup
-            context(const size_t sz, const size_t rk) throw();
-            
-        private:
-            YACK_DISABLE_COPY_AND_ASSIGN(context);
-        };
-
-        class loop
+        class loop : public readable<context>
         {
         public:
             virtual ~loop() throw();
-            
-        protected:
+            virtual lockable   &access()       throw() = 0;
+            virtual const char *family() const throw() = 0;
 
+        protected:
             explicit loop() throw();
 
         private:

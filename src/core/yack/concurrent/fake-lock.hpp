@@ -21,10 +21,11 @@ namespace yack
         explicit fake_lock() throw(); //!< setup
         virtual ~fake_lock() throw(); //!< cleanup
 
-        void lock()   throw();   //!< increase depth
-        void unlock() throw();   //!< decrease depth, error if negative
+        void lock()     throw(); //!< increase depth
+        void unlock()   throw(); //!< decrease depth, error if negative
         bool try_lock() throw(); //!< lock, true
         const int depth;         //!< locking depth
+        //!
     private:
         YACK_DISABLE_COPY_AND_ASSIGN(fake_lock);
     };
