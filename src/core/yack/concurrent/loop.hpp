@@ -11,8 +11,6 @@ namespace yack
     namespace concurrent
     {
 
-
-        
         //______________________________________________________________________
         //
         //
@@ -38,8 +36,7 @@ namespace yack
 
             //! compute efficiency
             double efficiency(const double seq_rate, const double par_rate) const throw();
-
-
+            
             //__________________________________________________________________
             //
             // C++
