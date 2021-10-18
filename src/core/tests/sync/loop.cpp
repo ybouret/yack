@@ -77,7 +77,7 @@ namespace
             double sum = 0;
             while(size-- > 0)
             {
-                sum += 1.0/squared(curr++);
+                sum += 1.0/squared(double(curr++));
             }
             partial[here.rank] = sum;
         }
