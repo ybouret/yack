@@ -33,8 +33,8 @@ namespace yack
     class conversion<T,T> {
     public:
         enum {
-            exists   = true, //!< obvious
-            same_type = true //!< obvious
+            exists    = true, //!< obvious
+            same_type = true  //!< obvious
         };
     };
 
@@ -44,7 +44,7 @@ namespace yack
 
     //! true is U is derived from T, and not T
 #define YACK_IS_SUPERSUBCLASS_STRICT(T,U) \
-( YACK_IS_SUPERSUBCLASS(T,U) && (!conversion<const T,const U>::same_type) )
+( YACK_IS_SUPERSUBCLASS(T,U) && (!conversion<const T *,const U *>::same_type) )
 
 }
 
