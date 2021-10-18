@@ -2,7 +2,7 @@
 #include "yack/apex/n/alloc.hpp"
 #include "yack/utest/run.hpp"
 #include "yack/memory/allocator/dyadic.hpp"
-
+#include <cstdio>
 
 using namespace yack;
 
