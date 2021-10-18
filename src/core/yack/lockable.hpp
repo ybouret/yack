@@ -68,6 +68,9 @@ namespace yack
     //! shared giant top level lock
 #define YACK_GIANT_LOCK() YACK_LOCK(lockable::giant())
 
+#define YACK_LOCK_PROBE(NAME,EXPR) do { \
+/**/  if((NAME).try_lock()) { if(EXPR) { (NAME).unlock(); break; } } \
+} while(true)
 
 }
 

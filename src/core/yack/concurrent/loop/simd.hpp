@@ -48,11 +48,18 @@ namespace yack
         private:
             YACK_DISABLE_COPY_AND_ASSIGN(simd);
             class worker;
+            
             mutex        sync;
             condition    cond;
-            const size_t nthr;
-            size_t       capa;
-            worker      *team;
+            size_t       ready;
+            const size_t threads;
+            size_t       zbytes;  //!< bytes for workers
+            worker      *team;    //!< memory for team
+            condition    gate;
+
+            void         cycle() throw();
+            static void  entry(void *) throw();
+            void         zkill() throw(); //!< return memory
 
         };
 

@@ -38,6 +38,9 @@ namespace yack
 {
     namespace concurrent
     {
+
+        bool thread::verbose = false;
+
         thread:: thread(threadable::procedure proc, void *args) :
         threadable(proc,args),
         impl( quark::thread_api::init(*this) )

@@ -39,7 +39,10 @@ namespace yack
         void condition:: wait(mutex &m) throw()
         {
             assert(NULL!=cond);
-            std::cerr << "Waiting on <" << m.name << ">" << std::endl;
+            if(mutex::verbose)
+            {
+                std::cerr << "waiting on <" << m.name << ">" << std::endl;
+            }
             cond->wait(m.impl);
         }
 

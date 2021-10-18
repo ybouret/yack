@@ -33,6 +33,7 @@ namespace yack
         class thread : public quark::threadable
         {
         public:
+            static bool verbose;
             //__________________________________________________________________
             //
             // C++
@@ -44,6 +45,11 @@ namespace yack
             YACK_DISABLE_COPY_AND_ASSIGN(thread);
             quark::thread *impl;
         };
+
+#define YACK_THREAD_PRINTLN(MSG) do { \
+/**/  if(yack::concurrent::thread::verbose) std::cerr << MSG << std::endl;\
+/**/  } while(false)
+
     }
 }
 
