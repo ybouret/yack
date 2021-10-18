@@ -7,6 +7,24 @@
 
 using namespace yack;
 
+namespace
+{
+
+    static inline
+    void compute(const concurrent::context &here,
+                 void                      *args,
+                 lockable                  &sync)
+    {
+        {
+            YACK_LOCK(sync);
+            std::cerr << "  (*) Computing with " << here << std::endl;
+        }
+
+    }
+
+
+}
+
 YACK_UTEST(sync_loop)
 {
     uprng ran;
@@ -41,6 +59,14 @@ YACK_UTEST(sync_loop)
 
     concurrent::mono seq;
     concurrent::simd par(threads);
+
+    seq(compute,NULL);
+
+    for(size_t i=0;i<16;++i)
+    {
+        par(compute,NULL);
+    }
+
 
 }
 YACK_UDONE()

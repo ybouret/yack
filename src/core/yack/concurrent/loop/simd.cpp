@@ -62,13 +62,14 @@ namespace yack
         loop(),
         kcode(NULL),
         kargs(NULL),
+        live(0),
         sync(clid),
         cond(),
+        gate(),
         threads( max_of<size_t>(n,1) ),
         zbytes_(threads),
-        team( worker::zalloc(zbytes_) ),
-        ready(0),
-        gate()
+        squad( worker::zalloc(zbytes_) ),
+        ready(0)
         {
             //__________________________________________________________________
             //
@@ -79,7 +80,7 @@ namespace yack
             if(thread::verbose)
             {
                 YACK_LOCK(sync);
-                std::cerr << "[simd]  <create_threads count=" << threads << ">" << std::endl;
+                std::cerr << clid << "  <create_threads count=" << threads << ">" << std::endl;
             }
 
             {
@@ -89,7 +90,7 @@ namespace yack
                 {
                     try
                     {
-                        new (&team[current]) worker(&self,threads,current);
+                        new (&squad[current]) worker(&self,threads,current);
                         ++current;
                     }
                     catch(...)
@@ -113,14 +114,14 @@ namespace yack
                 sync.lock();
                 if(ready<threads)
                 {
-                    YACK_THREAD_PRINTLN("[simd]    <still initializing>");
+                    YACK_THREAD_PRINTLN(clid << "    <still initializing>");
                     gate.wait(sync);
-                    YACK_THREAD_PRINTLN("[simd]    <done initializing/>");
+                    YACK_THREAD_PRINTLN(clid << "    <done initializing/>");
                     sync.unlock();
                 }
                 else
                 {
-                    YACK_THREAD_PRINTLN("[simd]    <already initialized/>");
+                    YACK_THREAD_PRINTLN(clid << "    <already initialized/>");
                     sync.unlock();
                 }
             }
@@ -133,18 +134,18 @@ namespace yack
             //__________________________________________________________________
 
             assert(threads==ready);
-            --team;
+            --squad;
             if(thread::verbose)
             {
                 YACK_LOCK(sync);
-                std::cerr << "[simd]  <create_threads/>" << std::endl;
+                std::cerr << clid << "  <create_threads/>" << std::endl;
             }
         }
 
         void simd:: zkill() throw()
         {
             static memory::allocator &mgr = memory::dyadic::location();
-            mgr.withdraw(team,zbytes_);
+            mgr.withdraw(squad,zbytes_);
         }
 
         simd:: ~simd() throw()
@@ -155,7 +156,7 @@ namespace yack
             if(thread::verbose)
             {
                 YACK_LOCK(sync);
-                std::cerr << "[simd]  <terminating count=" << threads << ">" << std::endl;
+                std::cerr << clid << "  <terminating count=" << threads << ">" << std::endl;
             }
 
             // wake up everyone to nothing to do
@@ -164,17 +165,17 @@ namespace yack
             // wait for each thread
             for(size_t t=threads;t>0;--t)
             {
-                destruct(&team[t]);
+                destruct(&squad[t]);
             }
 
             if(thread::verbose)
             {
                 YACK_LOCK(sync);
-                std::cerr << "[simd]  <terminating/>" << std::endl;
+                std::cerr << clid << "  <terminating/>" << std::endl;
             }
 
             // remove resources
-            ++team;
+            ++squad;
             zkill();
         }
 
@@ -186,11 +187,11 @@ namespace yack
 
         loop::const_type & simd:: operator[](const size_t indx) const throw()
         {
-            assert(NULL!=team);
+            assert(NULL!=squad);
             assert(indx>0);
             assert(indx<=threads);
-            assert(team[indx].ctx.indx==indx);
-            return team[indx].ctx;
+            assert(squad[indx].ctx.indx==indx);
+            return squad[indx].ctx;
         }
 
         lockable & simd::access() throw()
@@ -213,14 +214,14 @@ namespace yack
             //
             //__________________________________________________________________
             sync.lock(); assert(ready<threads);
-            const context &here = team[ready].ctx;
-            YACK_THREAD_PRINTLN("[simd]    <started " << here << "/>");
+            const context &here = squad[ready].ctx;
+            YACK_THREAD_PRINTLN(clid << "    <started " << here << "/>");
 
 
             ++ready;
             if(ready>=threads)
             {
-                // synchronize
+                // synchronized
                 gate.broadcast();
             }
 
@@ -230,6 +231,7 @@ namespace yack
             // (first) wait on a LOCKED mutex
             //
             //__________________________________________________________________
+        CYCLE:
             cond.wait(sync);
 
 
@@ -244,11 +246,18 @@ namespace yack
             {
                 //______________________________________________________________
                 //
-                // wake up to WORK
+                // wake up to WORK with live>0
                 //______________________________________________________________
+                assert(live>0);
                 sync.unlock();
-
+                kcode(here,kargs,sync);
                 sync.lock();
+                assert(live>0);
+                if(--live<=0)
+                {
+                    gate.broadcast();
+                }
+                goto CYCLE;
             }
 
             //__________________________________________________________________
@@ -259,7 +268,7 @@ namespace yack
             //__________________________________________________________________
             assert(ready>0);
             --ready;
-            YACK_THREAD_PRINTLN("[simd]    <return " << here << "/>" );
+            YACK_THREAD_PRINTLN(clid << "    <return " << here << "/>" );
             sync.unlock();
 
         }
@@ -281,12 +290,27 @@ namespace yack
             assert(NULL!=kcode_);
             assert(NULL==kargs);
             assert(ready==threads);
+
+            // threads are waiting for code on a LOCKED mutex
             const temporary<kernel> tempCode(kcode,kcode_);
             const temporary<void*>  tempArgs(kargs,kargs_);
-            
+
+            YACK_THREAD_PRINTLN(clid << "  <call>");
 
 
+            // launch!
+            live = threads;
+            cond.broadcast();
 
+            // wait
+            sync.lock();
+            if(live>0)
+            {
+                YACK_THREAD_PRINTLN(clid << "    <still live=" << live << "/>");
+                gate.wait(sync);
+            }
+            YACK_THREAD_PRINTLN(clid << "  <call/>");
+            sync.unlock();
 
         }
 

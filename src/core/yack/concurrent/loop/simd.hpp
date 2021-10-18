@@ -49,16 +49,17 @@ namespace yack
         private:
             YACK_DISABLE_COPY_AND_ASSIGN(simd);
             class worker;
-            kernel       kcode;
-            void        *kargs;
-            mutex        sync;
-            condition    cond;
-            const size_t threads;
-            size_t       zbytes_;  //!< bytes for workers
-            worker      *team;    //!< memory for team
-            size_t       ready;
-            condition    gate;
-
+            kernel       kcode;   //!< kernel code
+            void        *kargs;   //!< kernel args
+            size_t       live;    //!< working threads
+            mutex        sync;    //!< synchro mutex
+            condition    cond;    //!< synchro cond
+            condition    gate;    //!< gate to synchronize with main thread
+            const size_t threads; //!< number of threads
+            size_t       zbytes_; //!< bytes for workers = context+thread
+            worker      *squad;   //!< memory for squad of workers
+            size_t       ready;   //!< use to create/delete threads
+            
             void         cycle() throw();
             static void  entry(void *) throw();
             void         zkill() throw(); //!< return memory
