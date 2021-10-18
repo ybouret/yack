@@ -4,6 +4,7 @@
 #include "yack/utest/run.hpp"
 #include "yack/system/endian.hpp"
 #include "yack/type/complex.hpp"
+#include "yack/system/wtime.hpp"
 
 using namespace yack;
 
@@ -31,7 +32,7 @@ YACK_UTEST(apex_perf)
 
     uprng ran;
     const size_t max_bits = 2048;
-    const size_t max_iter = 128;
+    wtime        chrono;
 
     std::cerr << "[MUL]" << std::endl;
     for(size_t bits=1;bits<=max_bits;bits<<=1)
@@ -41,14 +42,18 @@ YACK_UTEST(apex_perf)
         assert(apex::number::fmul_ticks<=0);
         assert(apex::number::lmul_ticks<=0);
 
-        for(size_t i=max_iter;i>0;--i)
+        uint64_t t64 = 0;
+        do
         {
+            const uint64_t mark = wtime::ticks();
             const apn lhs   = gen_apn(ran,bits); YACK_ASSERT(lhs.bits()==bits);
             const apn rhs   = gen_apn(ran,bits); YACK_ASSERT(rhs.bits()==bits);
             const apn lprod = apn::_lmul(lhs,rhs);
             const apn fprod = apn::_fmul(lhs,rhs);
             YACK_ASSERT(lprod==fprod);
-        }
+            t64 += wtime::ticks() - mark;
+        } while( chrono(t64)<0.5 );
+
         std::cerr << " lmul_rate: " << std::setw(15) << apex::number::lmul_rate();
         std::cerr << " fmul_rate: " << std::setw(15) << apex::number::fmul_rate();
         std::cerr << std::endl;
