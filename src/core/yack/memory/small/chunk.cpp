@@ -63,20 +63,7 @@ namespace yack
             format(block_size);
         }
 
-#if 0
-        bool chunk:: is_empty() const throw()
-        {
-            assert(operated_number+still_available==provided_number);
-            return operated_number;
-        }
-
-        size_t chunk:: allocated() const throw()
-        {
-            assert(still_available<=provided_number);
-            return provided_number-still_available;
-        }
-#endif
-
+        
         bool chunk:: owns(const void *addr, const size_t block_size) const throw()
         {
             assert(block_size>0);
