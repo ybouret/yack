@@ -5,6 +5,7 @@
 #include "yack/type/complex.hpp"
 #include "yack/fft/fft1d.hpp"
 #include "yack/system/exception.hpp"
+#include "yack/arith/align.hpp"
 
 #include <cmath>
 
@@ -160,7 +161,8 @@ namespace yack
 #if                 defined(YACK_APEX_TRACKING)
                     const uint64_t mark = wtime::ticks();
 #endif
-                    const size_t     pnw = lnw+rnw;              // product nuw words
+                    const size_t     pnb = l.bytes+r.bytes; assert(pnb>0);              // product num bytes
+                    const size_t     pnw = (YACK_ALIGN_TO(word_type,pnb)) >> word_exp2; // product nuw words
                     natural          res(pnw,as_capacity);       // product
                     const size_t     exp2 = res.max_bytes_exp2;  // shared max bytes exp2
                     const size_t     size = res.max_bytes;       // working bytes
@@ -190,7 +192,7 @@ namespace yack
                         L[i] *= R[i];
                     }
                     fft1d::reverse(data,size);
-                    finalize((uint8_t *)res.word,pnw*sizeof(word_type),L,size);
+                    finalize((uint8_t *)res.word,pnb,L,size);
                     
                     res.words = pnw;
                     res.update();

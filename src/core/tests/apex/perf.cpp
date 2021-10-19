@@ -27,9 +27,17 @@ static inline apn gen_apn( uprng &ran, size_t ibits)
 
 }
 
+#include "yack/arith/align.hpp"
+
 YACK_UTEST(apex_perf)
 {
-
+    for(size_t b=1;b<=13;++b)
+    {
+        const size_t a = YACK_ALIGN_TO(apex::natural::word_type,b);
+        const size_t w = a >>apex::natural::word_exp2;
+        std::cerr << "b=" << b << " -> a=" << a << " -> w=" << w << std::endl;
+    }
+    
     uprng ran;
     const size_t max_bytes = 2048;
     wtime        chrono;

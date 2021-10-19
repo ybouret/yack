@@ -59,7 +59,7 @@ namespace yack
             static  const int       min_words_exp2  = ilog2<min_words_size>::value;   //!< shift for allocating
             static  const size_t    words_per_uint  = sizeof(uint_type)>>word_exp2;   //!< words per unit
             static  int             words_exp2_for(const size_t nw);                  //!< compute exponent such that nw <= 2^exponent
-
+                                                                                      
             //__________________________________________________________________
             //
             // C++

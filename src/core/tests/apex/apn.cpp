@@ -327,6 +327,6 @@ YACK_ASSERT( (u OP v) == (U OP v) )
     std::cerr << "div_rate:  " << apex::number::div_rate() << std::endl;
     std::cerr << "mod_rate:  " << apex::number::mod_rate() << std::endl;
     
-    
+   
 }
 YACK_UDONE()
