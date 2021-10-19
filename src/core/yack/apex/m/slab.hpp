@@ -15,12 +15,12 @@ namespace yack
         {
         public:
             typedef uint16_t item_t;
-            item_t                    first_available; //!< bookkeeping
-            item_t                    still_available; //!< bookkeeping
-            item_t                    operated_number; //!< bookkeeping
-            const item_t              provided_number; //!< initial count : still_available + operated_number
-            item_t                   *data;            //!< first item
-            const item_t * const      last;            //!< first invalid item
+            item_t                     first_available; //!< bookkeeping
+            item_t                     still_available; //!< bookkeeping
+            item_t                     operated_number; //!< bookkeeping
+            const item_t               provided_number; //!< initial count : still_available + operated_number
+            item_t                    *data;            //!< first item
+            const item_t * const       last;            //!< first invalid item
             slab                      *next;            //!< for list
             slab                      *prev;            //!< for list
             
