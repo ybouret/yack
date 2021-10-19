@@ -127,8 +127,6 @@ max_bytes(size_t(1)<<max_bytes_exp2 )
             assert(max_words>=words_per_uint);
 
             words = ldw(word,u,bytes);
-            //bytes = words << word_exp2;
-            //update();
             zpad();
         }
 
@@ -218,7 +216,7 @@ max_bytes(size_t(1)<<max_bytes_exp2 )
             if(words>0)
             {
                 const size_t    msi = words-1;
-                const word_type msw = word[msi];
+                const word_type msw = word[msi]; assert(msw>0);
                 return (msi * word_bits) + bits_for(msw);
             }
             else

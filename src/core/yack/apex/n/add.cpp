@@ -64,7 +64,7 @@ namespace yack
 
                     // update
                     ans.words = ns;
-                    ans.bytes = ns << word_exp2;
+                    ans.bytes = 0;
                     ans.update();
 #if defined(YACK_APEX_TRACKING)
                     add_ticks += wtime::ticks() - mark;
