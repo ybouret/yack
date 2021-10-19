@@ -13,17 +13,17 @@ namespace yack
         class ingot
         {
         public:
-            static const size_t max_blocks = 128;
+            static const size_t        max_blocks = 128; //!< max power of two
             
-            uint8_t                    first_available; //!< bookkeeping in [0..127]
-            uint8_t                    still_available; //!< bookkeeping in [0..128]
-            uint8_t                    operated_number; //!< bookkeeping in [0..128]
-            const uint8_t              provided_number; //!< initial count : still_available + operated_number in [0..128]
+            uint8_t                    first_available;  //!< bookkeeping in [0..127]
+            uint8_t                    still_available;  //!< bookkeeping in [0..128]
+            uint8_t                    operated_number;  //!< bookkeeping in [0..128]
+            const uint8_t              provided_number;  //!< initial count : still_available + operated_number in [0..128]
             
-            uint8_t                   *data;            //!< first item
-            const uint8_t * const      last;            //!< first invalid item
-            ingot                     *next;            //!< for list
-            ingot                     *prev;            //!< for list
+            uint8_t                   *data;             //!< first item
+            const uint8_t * const      last;             //!< first invalid item
+            ingot                     *next;             //!< for list
+            ingot                     *prev;             //!< for list
             
             ingot(const size_t block_size,
                   const size_t block_exp2,
@@ -32,7 +32,7 @@ namespace yack
             
             ~ingot() throw();
             
-            bool             owns(void *block_addr, const size_t block_size) throw();
+            bool              owns(void *block_addr, const size_t block_size) throw(); //!< ownership/alignement
             memory::ownership whose(const void *addr)                   const throw(); //!< query ownsership
             
             void *acquire(const size_t block_size, const size_t block_exp2) throw();
