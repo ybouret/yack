@@ -179,7 +179,12 @@ set(apex_n ${apex_n_impl} ${apex_n_decl})
 SOURCE_GROUP(apex/n FILES ${apex_n})
 install( FILES ${apex_n_decl} DESTINATION include/yack/apex/n ) 
 
- 
+file(GLOB apex_m_impl yack/apex/m/*.cpp)
+file(GLOB apex_m_decl yack/apex/m/*.hpp)
+set(apex_m ${apex_m_impl} ${apex_m_decl})
+SOURCE_GROUP(apex/m FILES ${apex_m})
+install( FILES ${apex_m_decl} DESTINATION include/yack/apex/m ) 
+
 ########################################################################
 ##
 ## concurrent operations
@@ -217,7 +222,7 @@ ${data}
 ${container}
 ${memory} ${memory_allocator} ${memory_small} ${memory_large} ${memory_joint}
 ${fft}
-${apex} ${apex_n}
+${apex} ${apex_n} ${apex_m}
 ${concurrent} ${concurrent_quark} ${concurrent_loop}
 ${utest}
 )
