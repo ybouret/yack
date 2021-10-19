@@ -14,13 +14,15 @@ namespace yack
         class slab
         {
         public:
-            typedef uint16_t item_t;
-            item_t                     first_available; //!< bookkeeping
-            item_t                     still_available; //!< bookkeeping
-            item_t                     operated_number; //!< bookkeeping
-            const item_t               provided_number; //!< initial count : still_available + operated_number
-            item_t                    *data;            //!< first item
-            const item_t * const       last;            //!< first invalid item
+               
+            uint8_t                    first_available; //!< bookkeeping in [0..127]
+            uint8_t                    still_available; //!< bookkeeping in [0..128]
+            uint8_t                    operated_number; //!< bookkeeping in [0..128]
+            const uint8_t              provided_number; //!< initial count : still_available + operated_number in [0..128]
+          
+            const size_t               block_size;
+            uint8_t                   *data;            //!< first item
+            const uint8_t * const      last;            //!< first invalid item
             slab                      *next;            //!< for list
             slab                      *prev;            //!< for list
             
