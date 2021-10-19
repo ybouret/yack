@@ -5,6 +5,7 @@
 
 #include "yack/memory/small/chunk.hpp"
 #include "yack/memory/chunk-size.hpp"
+#include "yack/memory/small/arena-words.hpp"
 #include "yack/arith/ilog2.hpp"
 #include "yack/arith/base2.hpp"
 #include "yack/data/list.hpp"
@@ -41,6 +42,7 @@ namespace yack
             YACK_DISABLE_COPY_AND_ASSIGN(vein);
             size_t                 available;
             list_of<memory::chunk> chunks;
+            void                  *ccache[YACK_MEMORY_ARENA_WORDS];
             void grow();
         };
 

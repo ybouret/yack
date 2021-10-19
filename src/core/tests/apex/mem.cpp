@@ -15,7 +15,7 @@ namespace
 YACK_UTEST(apex_mem)
 {
     uprng ran;
-    
+    YACK_SIZEOF(apex::vein);
     YACK_OUTPUT(apex::vein::min_blocks);
     YACK_OUTPUT(apex::vein::max_blocks);
     YACK_SIZEOF(memory::arena);
