@@ -147,10 +147,14 @@ namespace yack
     {
         static size_t width; //!< for alignment
         static void   print(const char *name, const unsigned size); //!< print
+        static void   field(const char *name, const unsigned size); //!< output field
     };
     
     //! to display aligned sizeof
 #define YACK_SIZEOF(CLASS) utest_sizeof::print( #CLASS, sizeof(CLASS) )
+
+    //! to display aligned field
+#define YACK_OUTPUT(FIELD) utest_sizeof::field( #FIELD, FIELD )
 
 
 //! start a new test

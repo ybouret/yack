@@ -32,5 +32,16 @@ namespace yack
         }
         std::cerr << " = " << size << std::endl;
     }
+
+    void utest_sizeof:: field(const char *name, const unsigned size)
+    {
+        assert(name);
+        std::cerr << "       " << name << " ";
+        for(size_t i=strlen(name);i<width;++i)
+        {
+            std::cerr << ' ';
+        }
+        std::cerr << " = " << size << std::endl;
+    }
     
 }
