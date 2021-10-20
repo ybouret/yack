@@ -125,6 +125,8 @@ namespace yack
                 double wi          = 0.0;
                 for(size_t m=1;m<mmax;m+=2)
                 {
+                    // data modification
+                    const double sw     = wr+wi;
                     for(size_t i=m;i<=n;i+=istep)
                     {
                         T *          data_i = data+i;
@@ -133,7 +135,6 @@ namespace yack
                         const double di     = double(data_j[1]);
                         const double rere   = wr*dr;
                         const double imim   = wi*di;
-                        const double sw     = wr+wi;
                         const double sd     = dr+di;
                         const T      tempr  = T(rere-imim);
                         const T      tempi  = T(sw*sd-rere-imim);
@@ -142,8 +143,13 @@ namespace yack
                         data_i[0]  += tempr;
                         data_i[1]  += tempi;
                     }
-                    wr=(wtemp=wr)*wpr-wi*wpi+wr;
-                    wi=wi*wpr+wtemp*wpi+wi;
+
+                    // update factors
+                    {
+
+                        wr=(wtemp=wr)*wpr-wi*wpi+wr;
+                        wi=wi*wpr+wtemp*wpi+wi;
+                    }
                 }
                 mmax=istep;
             }

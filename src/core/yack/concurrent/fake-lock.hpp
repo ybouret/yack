@@ -25,7 +25,8 @@ namespace yack
         void unlock()   throw(); //!< decrease depth, error if negative
         bool try_lock() throw(); //!< lock, true
         const int depth;         //!< locking depth
-        //!
+
+        
     private:
         YACK_DISABLE_COPY_AND_ASSIGN(fake_lock);
     };
