@@ -86,19 +86,20 @@ namespace yack
                 const T      rem=half*(A-B);
                 const T      aip=half*(C+D);
                 const T      aim=half*(C-D);
+
                 fft1[j]  =  rep;
                 fft1[j1] =  aim;
                 fft1[j2] =  rep;
                 fft1[j3] = -aim;
+
                 fft2[j]  =  aip;
                 fft2[j1] = -rem;
-                fft2[j2] = aip;
-                fft2[j3] = rem;
+                fft2[j2] =  aip;
+                fft2[j3] =  rem;
             }
         }
         
         
-    private:
         template <typename T> static
         inline void apply(T            *data,
                           const size_t  size,
@@ -108,39 +109,36 @@ namespace yack
             xbitrev(data,size);
             
             const size_t   n    = (size << 1);
-#if             defined(YACK_FFT_TRACK)
+#if         defined(YACK_FFT_TRACK)
             const uint64_t mark = wtime::ticks();
 #endif
-            assert( (size<<1) ==n);
-            size_t mmax = 2;
-            size_t smax = 1; //assert((1<<smax)==mmax);
-            while (n>mmax)
+            const double *temp = twpr;
+            size_t        mmax = 2;
+            while(n>mmax)
             {
-                //__________________________________________________________
-                //
-                // theta    = (2*pi)/mmax = 2*pi/(2^smax) = pi/(2^(smax-1))
-                // 0.5*theta= pi/mmax =   pi/(2^smax)
-                //__________________________________________________________
-                
+
                 const size_t istep = mmax << 1;
-                double wtemp = sine[smax];   //sin(0.5*theta);
-                double wpr   = twpr[smax];   //-2.0*wtemp*wtemp;
-                double wpi   = sine[smax-1]; // sin(theta)
-                double wr    = 1.0;
-                double wi    = 0.0;
+                double wpi         = *(sine++);   // sin(theta)
+                double wpr         = *(++temp);   //-2.0*wtemp*wtemp;
+                double wtemp       = *(sine);     //sin(0.5*theta);
+                double wr          = 1.0;
+                double wi          = 0.0;
                 for(size_t m=1;m<mmax;m+=2)
                 {
                     for(size_t i=m;i<=n;i+=istep)
                     {
                         T *          data_i = data+i;
                         T *          data_j = data_i + mmax;
-                        const double djr    = double(data_j[0]);
-                        const double dji    = double(data_j[1]);
-                        // TODO: speed up complex mul
-                        const T      tempr  = T(wr*djr-wi*dji);
-                        const T      tempi  = T(wr*dji+wi*djr);
-                        data_j[0]  = data_i[0]-tempr;
-                        data_j[1]  = data_i[1]-tempi;
+                        const double dr     = double(data_j[0]);
+                        const double di     = double(data_j[1]);
+                        const double rere   = wr*dr;
+                        const double imim   = wi*di;
+                        const double sw     = wr+wi;
+                        const double sd     = dr+di;
+                        const T      tempr  = T(rere-imim);
+                        const T      tempi  = T(sw*sd-rere-imim);
+                        data_j[0]  =  data_i[0]-tempr;
+                        data_j[1]  =  data_i[1]-tempi;
                         data_i[0]  += tempr;
                         data_i[1]  += tempi;
                     }
@@ -148,9 +146,8 @@ namespace yack
                     wi=wi*wpr+wtemp*wpi+wi;
                 }
                 mmax=istep;
-                ++smax;
             }
-#if             defined(YACK_FFT_TRACK)
+#if         defined(YACK_FFT_TRACK)
             algo_ticks += wtime::ticks() - mark;
 #endif
             

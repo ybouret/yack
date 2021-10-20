@@ -176,9 +176,9 @@ namespace yack
                     
 #if 0
                     // using dual fft
-                    apn_to::cpx(L,l.entry,lnw); std::cerr << "L="; display(L,size);
+                    apn_to::cpx(L,l.entry,lnw); //std::cerr << "L="; display(L,size);
                     fft1d::forward(data, size);
-                    apn_to::cpx(R,r.entry,rnw); std::cerr << "R="; display(R,size);
+                    apn_to::cpx(R,r.entry,rnw); //std::cerr << "R="; display(R,size);
                     fft1d::forward(&(R->re)-1, size);
 #else
                     
@@ -186,13 +186,16 @@ namespace yack
                     apn_to::re(L,l.entry,lnw);           // compact data
                     apn_to::im(L,r.entry,rnw);           // compact data
                     fft1d::forward(data,size);           // fft
-                    fft1d::expand(data,&(R->re)-1,size); //recompose
+                    fft1d::expand(data,&(R->re)-1,size); // recompose
 #endif
-                    
-                    for(size_t i=0;i<size;++i)
+                    //std::cerr << "L[0]=" << L[0] << std::endl;
+                    //std::cerr << "R[0]=" << R[0] << std::endl;
+                    L[0].re *= R[0].re;
+                    for(size_t i=1;i<size;++i)
                     {
                         L[i] *= R[i];
                     }
+
                     fft1d::reverse(data,size);
                     finalize((uint8_t *)res.word,pnb,L,size);
                     
