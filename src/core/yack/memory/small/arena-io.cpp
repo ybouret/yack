@@ -1,6 +1,5 @@
 
 #include "yack/memory/small/arena.hpp"
-//#include "yack/memory/chunk.hpp"
 #include "yack/memory/allocator/dyadic.hpp"
 
 namespace yack
@@ -10,7 +9,7 @@ namespace yack
         
         void arena:: gc(dyadic &target) throw()
         {
-            target.book_store_pool(reservoir,frame_exp2);
+            target.retrieve(reservoir,frame_exp2);
         }
     
     }

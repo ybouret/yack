@@ -125,8 +125,8 @@ namespace yack
             return static_cast<page *>( out_of_reach::zset(ch,sizeof(page)));
         }
         
-        void   dyadic:: book_store_pool(core_pool_of<chunk> &reservoir,
-                                        const size_t         page_exp2) throw()
+        void   dyadic:: retrieve(core_pool_of<chunk> &reservoir,
+                                 const size_t         page_exp2) throw()
         {
             //__________________________________________________________________
             //

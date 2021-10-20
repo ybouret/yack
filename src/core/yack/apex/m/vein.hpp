@@ -13,6 +13,11 @@
 namespace yack
 {
 
+    namespace memory
+    {
+        class arena;
+    }
+
     namespace apex
     {
 
@@ -31,8 +36,16 @@ namespace yack
 
             static size_t chunk_size_for_bs(const size_t block_size) throw();
 
-            explicit vein(const size_t usr_block_exp2) throw();
+            //! block_exp2 and arena for sizeof(chunk)
+            explicit vein(const size_t   usr_block_exp2,
+                          memory::arena  &usr_ccache) throw();
 
+        private:
+            size_t                 available;
+            list_of<memory::chunk> chunks;
+            memory::arena         &ccache;
+
+        public:
             const size_t block_exp2;
             const size_t block_size;
             const size_t chunk_size;
@@ -40,9 +53,7 @@ namespace yack
 
         private:
             YACK_DISABLE_COPY_AND_ASSIGN(vein);
-            size_t                 available;
-            list_of<memory::chunk> chunks;
-            void                  *ccache[YACK_MEMORY_ARENA_WORDS];
+
             void grow();
         };
 
