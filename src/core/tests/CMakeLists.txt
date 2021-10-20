@@ -23,6 +23,10 @@ source_group(fft FILES ${fft})
 file(GLOB ios ios/*.cpp)
 source_group(ios FILES ${ios})
 
+
+file(GLOB rand rand/*.cpp)
+source_group(rand FILES ${rand})
+
 add_executable(test-yack main.cpp
 ${base}
 ${type}
@@ -32,6 +36,7 @@ ${sync}
 ${apex}
 ${fft}
 ${ios}
+${rand}
 )
 
 yack_link_libraries(test-yack)
@@ -91,6 +96,8 @@ add_test(apex:n         test-yack  apn)
 
 add_test(ios::c-file    test-yack ios_c_file)
 add_test(ios:streams    test-yack ios_streams)
+
+add_test(rand:bits      test-yack rand_bits)
 
 
 yack_testing(yack)

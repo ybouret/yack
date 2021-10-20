@@ -201,6 +201,18 @@ install( FILES ${ios_decl} DESTINATION include/yack/ios )
 
 ########################################################################
 ##
+## randomized
+##
+########################################################################
+file(GLOB randomized_impl yack/randomized/*.cpp yack/randomized/*.c)
+file(GLOB randomized_decl yack/randomized/*.hpp yack/randomized/*.h)
+set(randomized ${randomized_impl} ${randomized_decl})
+SOURCE_GROUP(randomized FILES ${randomized})
+install( FILES ${randomized_decl} DESTINATION include/yack/randomized )
+
+
+########################################################################
+##
 ## concurrent operations
 ##
 ########################################################################
@@ -239,6 +251,7 @@ ${fft}
 ${apex} ${apex_n} ${apex_m}
 ${concurrent} ${concurrent_quark} ${concurrent_loop}
 ${ios}
+${randomized}
 ${utest}
 )
 
