@@ -63,7 +63,8 @@ namespace yack
         {
             apply(data,size,neg_sine);
         }
-        
+
+        //! expand fft1 and fft2 from a dual-real-function ops
         template <typename T> static
         inline void expand(T fft1[], T fft2[], const size_t n) throw()
         {
@@ -81,10 +82,10 @@ namespace yack
                 const T      B  = fft1[j2];
                 const T      C  = fft1[j1];
                 const T      D  = fft1[j3];
-                const T rep=half*(A+B);
-                const T rem=half*(A-B);
-                const T aip=half*(C+D);
-                const T aim=half*(C-D);
+                const T      rep=half*(A+B);
+                const T      rem=half*(A-B);
+                const T      aip=half*(C+D);
+                const T      aim=half*(C-D);
                 fft1[j]  =  rep;
                 fft1[j1] =  aim;
                 fft1[j2] =  rep;

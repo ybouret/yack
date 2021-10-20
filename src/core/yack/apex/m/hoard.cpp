@@ -75,7 +75,14 @@ namespace yack
             else
             {
                 static memory::dyadic &mgr = memory::dyadic::instance();
-                return mgr.query(block_exp2);
+                try {
+                    return mgr.query(block_exp2);
+                }
+                catch(...)
+                {
+                    block_exp2=0;
+                    throw;
+                }
             }
             
         }

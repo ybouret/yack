@@ -20,7 +20,7 @@ namespace
 YACK_UTEST(apex_mem)
 {
     uprng ran;
-    YACK_SIZEOF(apex::piece);
+    YACK_SIZEOF(apex::hoard::piece);
     YACK_SIZEOF(apex::hoard);
     YACK_SIZEOF(apex::hoard::repository);
 

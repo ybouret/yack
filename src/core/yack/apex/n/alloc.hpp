@@ -30,6 +30,7 @@ namespace yack
             {
                 assert(items_exp2>=0);
                 assert(block_exp2<0);
+
                 block_exp2 = items_exp2 + ilog2_of<T>::value;
                 try {
                     return static_cast<T*>(block_acquire(block_exp2));
