@@ -185,6 +185,20 @@ set(apex_m ${apex_m_impl} ${apex_m_decl})
 SOURCE_GROUP(apex/m FILES ${apex_m})
 install( FILES ${apex_m_decl} DESTINATION include/yack/apex/m ) 
 
+
+
+########################################################################
+##
+## ios
+##
+########################################################################
+file(GLOB ios_impl yack/ios/*.cpp yack/ios/*.c)
+file(GLOB ios_decl yack/ios/*.hpp yack/ios/*.h)
+set(ios ${ios_impl} ${ios_decl})
+SOURCE_GROUP(ios FILES ${ios})
+install( FILES ${ios_decl} DESTINATION include/yack/ios )
+
+
 ########################################################################
 ##
 ## concurrent operations
@@ -224,6 +238,7 @@ ${memory} ${memory_allocator} ${memory_small} ${memory_large} ${memory_joint}
 ${fft}
 ${apex} ${apex_n} ${apex_m}
 ${concurrent} ${concurrent_quark} ${concurrent_loop}
+${ios}
 ${utest}
 )
 

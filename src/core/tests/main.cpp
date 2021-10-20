@@ -56,5 +56,9 @@ YACK_UTEST_DECL(64)
     YACK_UTEST(apex_mem);
     YACK_UTEST(apn);
     YACK_UTEST(apex_perf);
+
+    YACK_UTEST(ios_c_file);
+    YACK_UTEST(ios_streams);
+
 }
 YACK_UTEST_EXEC()

@@ -20,6 +20,8 @@ source_group(apex FILES ${apex} )
 file(GLOB fft fft/*.cpp)
 source_group(fft FILES ${fft})
 
+file(GLOB ios ios/*.cpp)
+source_group(ios FILES ${ios})
 
 add_executable(test-yack main.cpp
 ${base}
@@ -29,6 +31,7 @@ ${data}
 ${sync}
 ${apex}
 ${fft}
+${ios}
 )
 
 yack_link_libraries(test-yack)
@@ -85,5 +88,9 @@ add_test(fft:xbr64     test-yack  fft_xbr64)
 add_test(apex:types     test-yack  apex_types)
 add_test(apex:mem       test-yack  apex_mem)
 add_test(apex:n         test-yack  apn)
+
+add_test(ios::c-file    test-yack ios_c_file)
+add_test(ios:streams    test-yack ios_streams)
+
 
 yack_testing(yack)
