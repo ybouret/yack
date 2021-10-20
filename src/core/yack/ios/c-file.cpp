@@ -2,6 +2,7 @@
 #include "yack/system/exception.hpp"
 #include "yack/lockable.hpp"
 
+#include <cstdio>
 #include <cerrno>
 
 namespace yack
