@@ -22,7 +22,7 @@ namespace yack
     
     size_t utest_sizeof::width = 32;
     
-    void utest_sizeof:: print(const char *name, const unsigned size)
+    void utest_sizeof:: print(const char *name, const uint64_t size)
     {
         assert(name);
         std::cerr << "sizeof(" << name << ")";
@@ -33,7 +33,7 @@ namespace yack
         std::cerr << " = " << size << std::endl;
     }
 
-    void utest_sizeof:: field(const char *name, const unsigned size)
+    void utest_sizeof:: field(const char *name, const uint64_t size)
     {
         assert(name);
         std::cerr << "       " << name << " ";

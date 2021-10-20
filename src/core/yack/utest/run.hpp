@@ -146,8 +146,8 @@ namespace yack
     struct utest_sizeof
     {
         static size_t width; //!< for alignment
-        static void   print(const char *name, const unsigned size); //!< print
-        static void   field(const char *name, const unsigned size); //!< output field
+        static void   print(const char *name, const uint64_t size); //!< print
+        static void   field(const char *name, const uint64_t size); //!< output field
     };
     
     //! to display aligned sizeof
