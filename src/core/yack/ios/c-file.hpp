@@ -70,10 +70,17 @@ namespace yack
             void put(const char *fmt,void *);
             void putf(const char *fmt,...) YACK_PRINTF_API;
 
-
-
         private:
             YACK_DISABLE_COPY_AND_ASSIGN(writable_file);
+        };
+        
+        class readable_file : public c_file
+        {
+            virtual ~readable_file() throw();
+            explicit readable_file(const cstdin_t &);
+            
+        private:
+            YACK_DISABLE_COPY_AND_ASSIGN(readable_file);
         };
         
 
