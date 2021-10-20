@@ -5,6 +5,8 @@
 #include "yack/system/endian.hpp"
 #include "yack/type/complex.hpp"
 #include "yack/system/wtime.hpp"
+#include "yack/ios/ocstream.hpp"
+#include <cmath>
 
 using namespace yack;
 
@@ -38,9 +40,11 @@ YACK_UTEST(apex_perf)
     wtime        chrono;
 
     std::cerr << "[MUL]" << std::endl;
+    ios::ocstream::overwrite("mul.dat");
     for(size_t bytes=1;bytes<=max_bytes;bytes<<=1)
     {
         std::cerr << "bytes=" << std::setw(6) << bytes;
+        const size_t exp2 = integer_log2(bytes);
         apex::number::reset_tracking();
         assert(apex::number::fmul_ticks<=0);
         assert(apex::number::lmul_ticks<=0);
@@ -67,6 +71,7 @@ YACK_UTEST(apex_perf)
 
         std::cerr << " | lmul_rate: " << std::setw(15) << apex::number::lmul_rate();
         std::cerr << " | fmul_rate: " << std::setw(15) << apex::number::fmul_rate();
+        ios::ocstream::echo("mul.dat","%u %g %g\n",unsigned(exp2),log10(apex::number::lmul_rate()), log10(apex::number::fmul_rate()));
         std::cerr << std::endl;
     }
 
