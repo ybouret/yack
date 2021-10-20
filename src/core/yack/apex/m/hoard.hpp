@@ -36,7 +36,14 @@ namespace yack
                 piece   *next; //!< for repository
                 piece   *prev; //!< optional for list ops
             };
-            typedef core_pool_of<piece> repository; //!< alias
+            typedef core_pool_of<piece> pool_t;
+            struct repository
+            {
+                pool_t pool;
+                size_t bs;
+            };
+            
+            //typedef core_pool_of<piece> repository; //!< alias
 
             static const size_t min_block_size = sizeof(piece);                    //!< minimal block size
             static const size_t min_block_exp2 = ilog2<min_block_size>::value;     //!< min_block_size = 2^min_block_exp2
@@ -50,13 +57,11 @@ namespace yack
             hoard()  throw(); //!< setup
             ~hoard() throw(); //!< cleanup
 
-            //! acquire, adjust block_exp2
-            /**
-             warning, memory may be dirty!!!
-             */
-            void *acquire_unlocked(size_t &block_exp2);
+
+
+            void *acquire_unlocked(size_t &block_exp2);                                 //!< acquire zeroed block, adjust block_exp2
             void  release_unlocked(void *block_addr, const size_t  block_exp2) throw(); //!< release a previously acquire block
-            void  gc()      throw(); //!< garbage collection in memory dyadic
+            void  gc()      throw(); //!< garbage collection in memory::dyadic allocator
             void  display() const;   //!< info
 
         private:

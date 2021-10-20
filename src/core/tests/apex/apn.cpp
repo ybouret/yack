@@ -11,6 +11,8 @@ YACK_UTEST(apn)
 
     uprng ran;
 
+
+
     for(size_t bits=0;bits<=64;++bits)
     {
         for(size_t iter=0;iter<16;++iter)
@@ -38,7 +40,7 @@ YACK_UTEST(apn)
         }
     }
     std::cerr << std::dec;
-
+    
     {
         apex::uint_type u = ran.gen<apex::uint_type>(40);
         size_t           n = 0;

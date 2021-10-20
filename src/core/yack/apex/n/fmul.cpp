@@ -166,7 +166,9 @@ namespace yack
                     natural          res(pnw,as_capacity);       // product
                     const size_t     exp2 = res.max_bytes_exp2;  // shared max bytes exp2
                     const size_t     size = res.max_bytes;       // working bytes
-                    archon::tableau<cplx_t>  com(exp2+1); assert(com.size==2*size);
+                    archon::tableau<cplx_t>  com(exp2+1);
+                    assert(com.size>=2*size);
+                    assert(com.bytes()>=2*size*sizeof(cplx_t));
                     cplx_t          *L = &com[0];
                     cplx_t          *R = &com[size];
 
@@ -174,16 +176,16 @@ namespace yack
                     
 #if 0
                     // using dual fft
-                    apn_to::cpx(L,l.entry,lnw);
+                    apn_to::cpx(L,l.entry,lnw); std::cerr << "L="; display(L,size);
                     fft1d::forward(data, size);
-                    apn_to::cpx(R,r.entry,rnw);
+                    apn_to::cpx(R,r.entry,rnw); std::cerr << "R="; display(R,size);
                     fft1d::forward(&(R->re)-1, size);
 #else
                     
                     // using compact/expand
                     apn_to::re(L,l.entry,lnw);           // compact data
                     apn_to::im(L,r.entry,rnw);           // compact data
-                    fft1d::forward(data,size);          // fft
+                    fft1d::forward(data,size);           // fft
                     fft1d::expand(data,&(R->re)-1,size); //recompose
 #endif
                     

@@ -10,6 +10,11 @@ using namespace yack;
 
 namespace
 {
+
+    static double rates[64];
+    static size_t nrate=0;
+
+
     template <typename T,const size_t exp2>
     static inline
     double do_xtest(uprng &ran)
@@ -39,7 +44,7 @@ namespace
         }
         sum2 = sqrt(sum2/size);
         std::cerr << " rms=" << std::setw(14) << sum2 << " :";
-      
+
         double  rate = 0;
 #if defined(YACK_FFT_TRACK)
         wtime  chrono;
@@ -51,9 +56,13 @@ namespace
             ++iter;
             fft1d::forward(data-1,size);
             fft1d::reverse(data-1,size);
-        } while( (ellapsed = chrono(fft1d::algo_ticks)) <= 0.2 );
+        } while( (ellapsed = chrono(fft1d::algo_ticks)) <= 0.5 );
         rate = 1e-3 * iter / ellapsed;
         std::cerr << " rate = "  << std::setw(14) << rate;
+        if(exp2>=4 && sizeof(T)==sizeof(double))
+        {
+            rates[nrate++] = rate;
+        }
 #endif
         
         std::cerr << std::endl;
@@ -110,9 +119,10 @@ YACK_UTEST(fft1d)
     do_xtests<11>(ran);
     do_xtests<12>(ran);
     do_xtests<13>(ran);
+    do_xtests<14>(ran);
+
     if(false)
     {
-        do_xtests<14>(ran);
         do_xtests<15>(ran);
         do_xtests<16>(ran);
         
@@ -123,10 +133,21 @@ YACK_UTEST(fft1d)
         do_xtests<21>(ran);
         do_xtests<22>(ran);
     }
-    
-    displayPI<float>();
-    displayPI<double>();
-    displayPI<long double>();
+
+
+    {
+        if(nrate)
+        {
+            
+        }
+    }
+
+    if(false)
+    {
+        displayPI<float>();
+        displayPI<double>();
+        displayPI<long double>();
+    }
     
     if(false)
     {

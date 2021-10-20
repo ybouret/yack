@@ -58,9 +58,10 @@ namespace yack
             template <typename T> static inline
             void release_field(T * &entry, size_t &items_exp2, size_t &block_exp2) throw()
             {
-                static archon &self = location();
                 assert(entry);
                 assert(items_exp2+ilog2_of<T>::value==block_exp2);
+
+                static archon &self = location();
                 self.release(entry,block_exp2);
                 entry = NULL; items_exp2=0; block_exp2=0;
             }
@@ -73,30 +74,35 @@ namespace yack
                 size(1),
                 items_exp2(usr_items_exp2),
                 block_exp2(0),
-                block_addr( acquire_field<T>(items_exp2,block_exp2) )
+                block_addr( acquire_field<T>(coerce(items_exp2),coerce(block_exp2)) )
                 {
                     coerce(size) <<= items_exp2;
                 }
 
                 inline ~tableau() throw()
                 {
-                    release_field(block_addr,items_exp2,block_exp2);
+                    release_field(block_addr,coerce(items_exp2),coerce(block_exp2));
                     coerce(size)=0;
                 }
 
                 inline T       & operator[](const size_t indx) throw()       { assert(indx<size); return block_addr[indx]; }
                 inline const T & operator[](const size_t indx) const throw() { assert(indx<size); return block_addr[indx]; }
-
+                size_t bytes() const throw()
+                {
+                    return size_t(1) << block_exp2;
+                }
 
                 const size_t size;
+
             private:
-                size_t items_exp2;
-                size_t block_exp2;
+                const size_t items_exp2;
+                const size_t block_exp2;
                 T     *block_addr;
                 YACK_DISABLE_COPY_AND_ASSIGN(tableau);
             };
 
         private:
+            YACK_DISABLE_COPY_AND_ASSIGN(archon);
             explicit archon() throw();
             virtual ~archon() throw();
             friend class singleton<archon>;

@@ -15,6 +15,8 @@ namespace yack
 
         archon:: ~archon() throw()
         {
+            out_of_reach::zset( destructed(cache), sizeof(hoard__) );
+            cache = 0;
         }
 
         archon:: archon() throw() :

@@ -21,11 +21,11 @@ namespace yack
             for(size_t i=min_block_exp2;i<=max_block_exp2;++i)
             {
                 const repository &r = repo[i];
-                if(r.size)
+                if(r.pool.size)
                 {
                     ++active;
-                    blocks += r.size;
-                    std::cerr << "  <repo '2^" << std::setw(2) << i << "' #=" << std::setw(6) << r.size << " />" << std::endl;
+                    blocks += r.pool.size;
+                    std::cerr << "  <repo '2^" << std::setw(2) << i << "' #=" << std::setw(6) << r.pool.size << " />" << std::endl;
                 }
             }
             std::cerr << "  #block=" << blocks << " in #active=" << active << std::endl;
@@ -37,14 +37,16 @@ namespace yack
             for(size_t i=min_block_exp2;i<=max_block_exp2;++i)
             {
                 repository &r = repo[i];
-                if(r.size>0)
+                pool_t     &p = r.pool;
+                if(p.size>0)
                 {
                     static memory::dyadic &mgr = memory::dyadic::instance();
-                    while(r.size)
+                    while(p.size>0)
                     {
-                        mgr.store(r.pop(),i);
+                        mgr.store(p.pop(),i);
                     }
                 }
+                r.bs = 0;
                 assert( out_of_reach::is0(&r,sizeof(repository)) );
             }
         }
@@ -59,23 +61,31 @@ namespace yack
         hoard:: hoard() throw() : repo(0), impl()
         {
             repo = static_cast<repository*>( out_of_reach::zset(impl,sizeof(impl)) )-min_block_exp2;
+            for(size_t i=min_block_exp2,bs=min_block_size;i<=max_block_exp2;++i,bs <<= 1)
+            {
+                repo[i].bs = bs;
+            }
         }
 
 
         void * hoard:: acquire_unlocked(size_t &block_exp2)
         {
-            if(block_exp2>max_block_exp2) throw libc::exception(ENOMEM,"memory limit exceede in apex");
+            if(block_exp2>max_block_exp2) throw libc::exception(ENOMEM,"memory limit exceeded in apex");
             if(block_exp2<min_block_exp2) block_exp2 = min_block_exp2;
 
             repository &r = repo[block_exp2];
-            if(r.size)
+            pool_t     &p = r.pool;
+            if(p.size)
             {
-                return r.pop();
+                void *block_addr = p.pop();
+                memset(block_addr,0,r.bs);
+                return block_addr;
             }
             else
             {
                 static memory::dyadic &mgr = memory::dyadic::instance();
-                try {
+                try
+                {
                     return mgr.query(block_exp2);
                 }
                 catch(...)
@@ -93,7 +103,7 @@ namespace yack
             assert(block_exp2>=min_block_exp2);
             assert(block_exp2<=max_block_exp2);
             memset(block_addr,0,sizeof(piece));
-            repo[block_exp2].push( static_cast<piece *>(block_addr) );
+            repo[block_exp2].pool.push( static_cast<piece *>(block_addr) );
         }
 
         
