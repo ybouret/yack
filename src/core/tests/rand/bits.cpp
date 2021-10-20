@@ -1,7 +1,9 @@
 #include "yack/randomized/rand.hpp"
+#include "yack/randomized/ran0.hpp"
 #include "yack/randomized/shuffle.hpp"
 #include "yack/data/raw-list.hpp"
 #include "yack/utest/run.hpp"
+#include "yack/kr/qw-hash.hpp"
 
 using namespace yack;
 
@@ -53,18 +55,34 @@ namespace
         {
             l.push_back(nodes+i)->indx=i;
         }
-
-
+        randomized::shuffle::list(l,ran);
+        
+        l.restart();
+        
+        double sum = 0;
+        size_t num = 100000;
+        for(size_t i=num;i>0;--i)
+        {
+            sum += ran();
+        }
+        sum /= num;
+        std::cerr << "ave=" << sum << std::endl;
+        
+        
     }
 
 }
 
 YACK_UTEST(rand_bits)
 {
-    randomized::system_rand ran( time(NULL) );
+    randomized::system_rand rans( time(NULL) );
+    randomized::ran0        ran0( time(NULL) );
+    
+    test_bits(rans);
+    test_bits(ran0);
 
-    test_bits(ran);
-
+    const bool des_ok = crypto::hash64::des_test();
+    YACK_CHECK(des_ok);
 }
 YACK_UDONE()
 

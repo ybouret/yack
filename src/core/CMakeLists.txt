@@ -198,6 +198,17 @@ set(ios ${ios_impl} ${ios_decl})
 SOURCE_GROUP(ios FILES ${ios})
 install( FILES ${ios_decl} DESTINATION include/yack/ios )
 
+########################################################################
+##
+## kr
+##
+########################################################################
+file(GLOB kr_impl yack/kr/*.cpp yack/kr/*.c)
+file(GLOB kr_decl yack/kr/*.hpp yack/kr/*.h)
+set(kr ${kr_impl} ${kr_decl})
+SOURCE_GROUP(kr FILES ${kr})
+install( FILES ${kr_decl} DESTINATION include/yack/kr )
+
 
 ########################################################################
 ##
@@ -252,6 +263,7 @@ ${apex} ${apex_n} ${apex_m}
 ${concurrent} ${concurrent_quark} ${concurrent_loop}
 ${ios}
 ${randomized}
+${kr}
 ${utest}
 )
 

@@ -32,7 +32,7 @@ namespace yack
             }
 
             //! card-desk shuffle for lists
-            template <typename LIST> inline
+            template <typename LIST> static inline
             void list(LIST &l, bits &ran) throw()
             {
                 LIST tmp;

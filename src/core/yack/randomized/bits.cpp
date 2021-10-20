@@ -77,10 +77,7 @@ namespace yack
             uint8_t *p = static_cast<uint8_t*>(addr);
             while(size>0)
             {
-            NZ:
-                uint8_t b = to<uint8_t>();
-                if(b<=0) goto NZ;
-                *(p++) = b;
+                *(p++) = uint8_t(1+leq(254));
             }
         }
 
