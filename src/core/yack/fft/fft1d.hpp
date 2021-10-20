@@ -99,7 +99,7 @@ namespace yack
             }
         }
         
-        
+    private:
         template <typename T> static
         inline void apply(T            *data,
                           const size_t  size,

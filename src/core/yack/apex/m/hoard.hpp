@@ -30,20 +30,24 @@ namespace yack
             // types and definitions
             //__________________________________________________________________
 
-            //! alias for memory blocks
+            //! marker for memory blocks
             struct piece
             {
                 piece   *next; //!< for repository
                 piece   *prev; //!< optional for list ops
             };
+
+            //! alias for core pool of pieces
             typedef core_pool_of<piece> pool_t;
+
+
+            //! repository of pieces with same block_size=1<<block_exp2
             struct repository
             {
-                pool_t pool;
-                size_t bs;
+                pool_t block_pool; //!< pieces, LRU
+                size_t block_size; //!< common block size
             };
             
-            //typedef core_pool_of<piece> repository; //!< alias
 
             static const size_t min_block_size = sizeof(piece);                    //!< minimal block size
             static const size_t min_block_exp2 = ilog2<min_block_size>::value;     //!< min_block_size = 2^min_block_exp2
@@ -54,13 +58,25 @@ namespace yack
             static const size_t repo_bytes = YACK_ALIGN_TO(void *,repo_raw_bytes); //!< alias
             static const size_t repo_words = repo_bytes/sizeof(void*);             //!< alias
 
+            //__________________________________________________________________
+            //
+            // C++
+            //__________________________________________________________________
             hoard()  throw(); //!< setup
-            ~hoard() throw(); //!< cleanup
+            ~hoard() throw(); //!< cleanup, garbage collection
 
 
-
+            //__________________________________________________________________
+            //
+            // memory methods
+            //__________________________________________________________________
             void *acquire_unlocked(size_t &block_exp2);                                 //!< acquire zeroed block, adjust block_exp2
             void  release_unlocked(void *block_addr, const size_t  block_exp2) throw(); //!< release a previously acquire block
+
+            //__________________________________________________________________
+            //
+            // other methods
+            //__________________________________________________________________
             void  gc()      throw(); //!< garbage collection in memory::dyadic allocator
             void  display() const;   //!< info
 

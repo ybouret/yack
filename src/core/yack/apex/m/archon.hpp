@@ -28,11 +28,24 @@ namespace yack
         class archon : public singleton<archon>
         {
         public:
+            //__________________________________________________________________
+            //
+            // types and definitions
+            //__________________________________________________________________
             static const at_exit::longevity life_time = YACK_APEX_ARCHON_LONGEVITY; //!< longevity
             static const char               call_sign[];                            //!< "apex::archon"
 
+            //__________________________________________________________________
+            //
+            // methods
+            //__________________________________________________________________
             void *acquire(size_t &block_exp2);                            //!< locked acquire
             void  release(void   *block_addr, size_t block_exp2) throw(); //!< locked release
+
+            //__________________________________________________________________
+            //
+            // helpers
+            //__________________________________________________________________
 
             //! acquire a field of 1<<items_exp2 items
             template <typename T> static inline
@@ -66,10 +79,20 @@ namespace yack
                 entry = NULL; items_exp2=0; block_exp2=0;
             }
 
+            //__________________________________________________________________
+            //
+            //! smart pointer for array of T
+            //__________________________________________________________________
             template <typename T>
             class tableau
             {
             public:
+                //______________________________________________________________
+                //
+                // C++
+                //______________________________________________________________
+
+                //! acquire items_exp2 >= usr_items_exp2
                 inline tableau(const size_t usr_items_exp2) :
                 size(1),
                 items_exp2(usr_items_exp2),
@@ -79,25 +102,40 @@ namespace yack
                     coerce(size) <<= items_exp2;
                 }
 
+                //! cleanup
                 inline ~tableau() throw()
                 {
                     release_field(block_addr,coerce(items_exp2),coerce(block_exp2));
                     coerce(size)=0;
                 }
 
+                //______________________________________________________________
+                //
+                // methods
+                //______________________________________________________________
+
+                //! access [0..size-1]
                 inline T       & operator[](const size_t indx) throw()       { assert(indx<size); return block_addr[indx]; }
+
+                //! const access[0..size-1]
                 inline const T & operator[](const size_t indx) const throw() { assert(indx<size); return block_addr[indx]; }
+
+                //! internal bytes
                 size_t bytes() const throw()
                 {
                     return size_t(1) << block_exp2;
                 }
 
-                const size_t size;
+                //______________________________________________________________
+                //
+                // members
+                //______________________________________________________________
+                const size_t size; //!< in items
 
             private:
-                const size_t items_exp2;
-                const size_t block_exp2;
-                T     *block_addr;
+                const size_t items_exp2; //!< size = 1 << items_exp2
+                const size_t block_exp2; //!< items_exp2 + log2(sizeof(T))
+                T           *block_addr; //!< memory
                 YACK_DISABLE_COPY_AND_ASSIGN(tableau);
             };
 
@@ -106,7 +144,7 @@ namespace yack
             explicit archon() throw();
             virtual ~archon() throw();
             friend class singleton<archon>;
-            hoard *cache;
+            hoard *cache; //!< internal cache
 
         };
 

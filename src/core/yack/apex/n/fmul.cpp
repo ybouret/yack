@@ -188,8 +188,6 @@ namespace yack
                     fft1d::forward(data,size);           // fft
                     fft1d::expand(data,&(R->re)-1,size); // recompose
 #endif
-                    //std::cerr << "L[0]=" << L[0] << std::endl;
-                    //std::cerr << "R[0]=" << R[0] << std::endl;
                     L[0].re *= R[0].re;
                     for(size_t i=1;i<size;++i)
                     {
