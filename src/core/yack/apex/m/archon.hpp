@@ -7,6 +7,7 @@
 
 #include "yack/singleton.hpp"
 #include "yack/apex/m/archon-longevity.hpp"
+#include <iostream>
 
 namespace yack
 {
@@ -42,7 +43,7 @@ namespace yack
                 assert(0==block_exp2);
                 block_exp2 = items_exp2 + shift;
                 try {
-                    T *field   = static_cast<void *>( self.acquire(block_exp2) );
+                    T *field   = static_cast<T *>( self.acquire(block_exp2) );
                     items_exp2 = block_exp2 - shift;
                     return field;
                 }
@@ -59,12 +60,41 @@ namespace yack
             {
                 static archon &self = location();
                 assert(entry);
-                assert(items_exp2==block_exp2+ilog2_of<size_t>::value);
+                assert(items_exp2+ilog2_of<T>::value==block_exp2);
                 self.release(entry,block_exp2);
                 entry = NULL; items_exp2=0; block_exp2=0;
             }
 
+            template <typename T>
+            class tableau
+            {
+            public:
+                inline tableau(const size_t usr_items_exp2) :
+                size(1),
+                items_exp2(usr_items_exp2),
+                block_exp2(0),
+                block_addr( acquire_field<T>(items_exp2,block_exp2) )
+                {
+                    coerce(size) <<= items_exp2;
+                }
 
+                inline ~tableau() throw()
+                {
+                    release_field(block_addr,items_exp2,block_exp2);
+                    coerce(size)=0;
+                }
+
+                inline T       & operator[](const size_t indx) throw()       { assert(indx<size); return block_addr[indx]; }
+                inline const T & operator[](const size_t indx) const throw() { assert(indx<size); return block_addr[indx]; }
+
+
+                const size_t size;
+            private:
+                size_t items_exp2;
+                size_t block_exp2;
+                T     *block_addr;
+                YACK_DISABLE_COPY_AND_ASSIGN(tableau);
+            };
 
         private:
             explicit archon() throw();
@@ -73,6 +103,9 @@ namespace yack
             hoard *cache;
 
         };
+
+
+
     }
 
 }

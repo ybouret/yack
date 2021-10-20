@@ -201,8 +201,8 @@ namespace yack
         private:
             size_t       words;
             size_t       bytes;
-            const int    max_words_exp2;
-            const int    max_bytes_exp2;
+            const size_t max_words_exp2;
+            const size_t max_bytes_exp2;
             word_type   *word;
             const size_t max_words; //!< 1 << wexp2
             const size_t max_bytes; //!< 1 << block_exp2

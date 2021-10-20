@@ -1,7 +1,7 @@
 
 
 #include "yack/apex/natural.hpp"
-#include "yack/apex/n/alloc.hpp"
+#include "yack/apex/m/archon.hpp"
 #include "yack/type/complex.hpp"
 #include "yack/fft/fft1d.hpp"
 #include "yack/system/exception.hpp"
@@ -166,7 +166,7 @@ namespace yack
                     natural          res(pnw,as_capacity);       // product
                     const size_t     exp2 = res.max_bytes_exp2;  // shared max bytes exp2
                     const size_t     size = res.max_bytes;       // working bytes
-                    tableau<cplx_t>  com(exp2+1); assert(com.size==2*size);
+                    archon::tableau<cplx_t>  com(exp2+1); assert(com.size==2*size);
                     cplx_t          *L = &com[0];
                     cplx_t          *R = &com[size];
 

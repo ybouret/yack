@@ -1,5 +1,5 @@
 #include "yack/apex/natural.hpp"
-#include "yack/apex/n/alloc.hpp"
+#include "yack/apex/m/archon.hpp"
 #include "yack/arith/align.hpp"
 #include "yack/arith/base2.hpp"
 #include "yack/type/out-of-reach.hpp"
@@ -33,14 +33,14 @@ namespace yack
         {
             bytes=0;
             words=0;
-            alloc::field_release(word,coerce(max_words_exp2), coerce(max_bytes_exp2));
+            archon::release_field(word,coerce(max_words_exp2), coerce(max_bytes_exp2));
             coerce(max_words) = 0;
         }
 
 #define YACK_APEX_NATURAL(WORDS_EXP2)                                                      \
 max_words_exp2(WORDS_EXP2),                                                                \
-max_bytes_exp2(-1),                                                                        \
-word( alloc::field_acquire<word_type>( coerce(max_words_exp2), coerce(max_bytes_exp2) ) ), \
+max_bytes_exp2(0),                                                                        \
+word( archon::acquire_field<word_type>( coerce(max_words_exp2), coerce(max_bytes_exp2) ) ), \
 max_words(size_t(1)<<max_words_exp2),                                                      \
 max_bytes(size_t(1)<<max_bytes_exp2 )
 
