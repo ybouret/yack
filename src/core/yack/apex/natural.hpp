@@ -14,6 +14,11 @@
 namespace yack
 {
 
+    namespace randomized
+    {
+        class bits;
+    }
+
     namespace apex
     {
 
@@ -56,9 +61,9 @@ namespace yack
 
             static  const size_t    min_words_bytes = 2 * sizeof(uint_type);          //!< minimal memory, in bytes
             static  const size_t    min_words_size  = min_words_bytes >> word_exp2;   //!< minimal memory, in words
-            static  const int       min_words_exp2  = ilog2<min_words_size>::value;   //!< shift for allocating
+            static  const size_t    min_words_exp2  = ilog2<min_words_size>::value;   //!< shift for allocating
             static  const size_t    words_per_uint  = sizeof(uint_type)>>word_exp2;   //!< words per unit
-            static  int             words_exp2_for(const size_t nw);                  //!< compute exponent such that nw <= 2^exponent
+            static  size_t          words_exp2_for(const size_t nw);                  //!< compute exponent such that nw <= 2^exponent
                                                                                       
             //__________________________________________________________________
             //
@@ -69,6 +74,7 @@ namespace yack
             natural(const natural &);                          //!< copy
             natural & operator= (const natural &);             //!< assign
             natural & operator= (const uint_type) throw();     //!< assign
+            natural(randomized::bits &ran, const size_t nbits);
 
             //__________________________________________________________________
             //
@@ -199,8 +205,8 @@ namespace yack
             YACK_APN_DECL(%)
 
         private:
-            size_t       words;
             size_t       bytes;
+            size_t       words;
             const size_t max_words_exp2;
             const size_t max_bytes_exp2;
             word_type   *word;

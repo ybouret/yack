@@ -3,6 +3,8 @@
 #include "yack/arith/base2.hpp"
 #include "yack/utest/run.hpp"
 #include "yack/system/endian.hpp"
+#include "yack/randomized/rand.hpp"
+#include <ctime>
 
 using namespace yack;
 
@@ -10,7 +12,7 @@ YACK_UTEST(apn)
 {
 
     uprng ran;
-
+    randomized::rand_ rr( time(NULL) );
 
 
     for(size_t bits=0;bits<=64;++bits)
@@ -56,6 +58,7 @@ YACK_UTEST(apn)
     }
 
     std::cerr << std::dec;
+
     YACK_SIZEOF(apn);
     std::cerr << "BE=" << endianness::BE() << std::endl;
     std::cerr << "apn::min_words_bytes = " << apn::min_words_bytes << std::endl;
@@ -70,7 +73,14 @@ YACK_UTEST(apn)
         YACK_ASSERT(wsize>=i);
     }
 
+    std::cerr << "[RAN]" << std::endl;
+    for(size_t nbit=0;nbit<=41;++nbit)
+    {
+        apn n(rr,nbit);
+        n.output_bin(std::cerr) << std::endl;
+    }
 
+    return 0;
 
     std::cerr << "[CMP]" << std::endl;
     for(size_t ibits=0;ibits<=60;++ibits)

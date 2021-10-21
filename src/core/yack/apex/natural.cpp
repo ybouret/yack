@@ -11,9 +11,9 @@ namespace yack
     namespace apex
     {
 
-        int natural:: words_exp2_for(const size_t nw)
+        size_t natural:: words_exp2_for(const size_t nw)
         {
-            int    wexp2 = min_words_exp2;
+            size_t wexp2 = min_words_exp2;
             size_t wsize = min_words_size;
             while(wsize<nw)
             {
@@ -48,7 +48,9 @@ max_bytes(size_t(1)<<max_bytes_exp2 )
         natural:: natural(uint_type u) :
         number(),
         readable<uint8_t>(),
-        words(0), bytes(0), YACK_APEX_NATURAL(min_words_exp2)
+        bytes(0),
+        words(0),
+        YACK_APEX_NATURAL(min_words_exp2)
         {
             ldu(u);
         }
@@ -56,7 +58,9 @@ max_bytes(size_t(1)<<max_bytes_exp2 )
 
         natural:: natural(const size_t num_words, const as_capacity_t &) :
         number(), readable<uint8_t>(),
-        words(0), bytes(0),YACK_APEX_NATURAL(words_exp2_for(num_words))
+        bytes(0),
+        words(0),
+        YACK_APEX_NATURAL(words_exp2_for(num_words))
         {
             assert(max_words>=num_words);
 
@@ -64,7 +68,9 @@ max_bytes(size_t(1)<<max_bytes_exp2 )
 
         natural:: natural(const word_type *w, const size_t num_words) :
         number(), readable<uint8_t>(),
-        words(0), bytes(0),YACK_APEX_NATURAL(words_exp2_for(num_words))
+        bytes(0),
+        words(0),
+        YACK_APEX_NATURAL(words_exp2_for(num_words))
         {
             assert(max_words>=num_words);
             memcpy(word,w,( bytes = (words=num_words) << word_exp2) );
@@ -134,8 +140,8 @@ max_bytes(size_t(1)<<max_bytes_exp2 )
         natural:: natural(const natural &other) :
         number(),
         readable<uint8_t>(),
-        words(other.words),
         bytes(other.bytes),
+        words(other.words),
         YACK_APEX_NATURAL(other.max_words_exp2)
         {
             for(size_t i=0;i<words;++i) word[i] = other.word[i];
@@ -238,10 +244,50 @@ max_bytes(size_t(1)<<max_bytes_exp2 )
 
 
 
-
     }
 
 }
 
 
+#include "yack/randomized/bits.hpp"
 
+
+namespace yack
+{
+
+    namespace apex
+    {
+
+
+
+        natural:: natural(randomized::bits &ran, const size_t nbit) :
+        number(),
+        readable<uint8_t>(),
+        bytes(YACK_ALIGN_ON(8,nbit) >> 3),
+        words(YACK_ALIGN_TO(word_type,bytes)>>word_exp2),
+        YACK_APEX_NATURAL(words_exp2_for(words))
+        {
+            if(bytes>0)
+            {
+                natural     &self = *this;
+                const size_t top  = bytes-1;
+                for(size_t i=top;i>0;--i)
+                {
+                    coerce(self[i]) = ran.to<uint8_t>();
+                }
+                const size_t xbit = nbit-(top<<3); assert(xbit>=1); assert(xbit<=8);
+                uint8_t     &b    = coerce(self[bytes]);
+                b = 1;
+                for(size_t i=xbit;i>1;--i)
+                {
+                    b <<= 1;
+                    if(ran.choice()) b |= 1;
+                }
+            }
+            assert(nbit==bits());
+        }
+
+
+    }
+
+}
