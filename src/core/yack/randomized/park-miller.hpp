@@ -2,10 +2,10 @@
 
 //! \file
 
-#ifndef YACK_RANDOMIZED_RAN0_INCLUDED
-#define YACK_RANDOMIZED_RAN0_INCLUDED 1
+#ifndef YACK_RANDOMIZED_PARK_MILLER_INCLUDED
+#define YACK_RANDOMIZED_PARK_MILLER_INCLUDED 1
 
-#include "yack/randomized/ubits.hpp"
+#include "yack/randomized/bits-on.hpp"
 
 namespace yack
 {

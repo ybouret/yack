@@ -1,4 +1,4 @@
-#include "yack/randomized/ran0.hpp"
+#include "yack/randomized/park-miller.hpp"
 #include "yack/hashing/des64.hpp"
 
 namespace yack

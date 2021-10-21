@@ -1,10 +1,10 @@
 
 //! \file
 
-#ifndef YACK_RANDOMIZED_RAND_INCLUDED
-#define YACK_RANDOMIZED_RAND_INCLUDED 1
+#ifndef YACK_RANDOMIZED_BITS_ON_INCLUDED
+#define YACK_RANDOMIZED_BITS_ON_INCLUDED 1
 
-#include "yack/randomized/ubits.hpp"
+#include "yack/randomized/bits-on.hpp"
 
 namespace yack
 {

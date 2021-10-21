@@ -1,9 +1,8 @@
 #include "yack/randomized/rand.hpp"
-#include "yack/randomized/ran0.hpp"
+#include "yack/randomized/park-miller.hpp"
 #include "yack/randomized/shuffle.hpp"
 #include "yack/data/raw-list.hpp"
 #include "yack/utest/run.hpp"
-#include "yack/kr/qw-hash.hpp"
 
 using namespace yack;
 
@@ -75,14 +74,13 @@ namespace
 
 YACK_UTEST(rand_bits)
 {
-    randomized::system_rand rans( time(NULL) );
-    randomized::ran0        ran0( time(NULL) );
+    randomized::rand_       rans( time(NULL) );
+    randomized::ParkMiller  ranPM( time(NULL) );
     
     test_bits(rans);
-    test_bits(ran0);
+    test_bits(ranPM);
 
-    const bool des_ok = crypto::hash64::des_test();
-    YACK_CHECK(des_ok);
+
 }
 YACK_UDONE()
 
