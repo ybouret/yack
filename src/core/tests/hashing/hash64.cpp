@@ -37,7 +37,7 @@ YACK_UTEST(hash64)
 
     test_h64(des);
     test_h64(ibj);
-
+    
 
 }
 YACK_UDONE()

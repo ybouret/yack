@@ -28,11 +28,11 @@ namespace
 
 YACK_UTEST(ram)
 {
-    randomized::rand_  ran( time(NULL) );
-    block          blocks[256];
-    const size_t   nblock = sizeof(blocks)/sizeof(blocks[0]);
-    memory::ram    mem;
-    const uint64_t ini = memory::ram::allocated();
+    randomized::rand_  ran;
+    block              blocks[256];
+    const size_t       nblock = sizeof(blocks)/sizeof(blocks[0]);
+    memory::ram        mem;
+    const uint64_t     ini = memory::ram::allocated();
     
     for(size_t i=0;i<nblock;++i)
     {

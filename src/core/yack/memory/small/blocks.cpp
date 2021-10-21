@@ -17,7 +17,7 @@ namespace yack
 
         void blocks:: release_table() throw()
         {
-            global::location().withdraw(table, coerce(bytes) );
+            global::location().withdraw(table,coerce(bytes));
             coerce(tsize) = 0;
             coerce(tmask) = 0;
         }

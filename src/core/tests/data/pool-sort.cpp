@@ -35,7 +35,7 @@ namespace
 
 YACK_UTEST(data_pool_sort)
 {
-    randomized::rand_  ran( time(NULL) );
+    randomized::rand_  ran;
     cxx_pool_of<Node> l;
     
     for(size_t i=0;i<100;++i)

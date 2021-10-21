@@ -30,7 +30,7 @@ namespace
 
 YACK_UTEST(memory_blocks)
 {
-    randomized::rand_  ran( time(NULL) );
+    randomized::rand_  ran;
     memory::blocks     b;
     cxx_list_of<block> l;
 

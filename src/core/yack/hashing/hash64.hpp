@@ -51,6 +51,20 @@ namespace yack
                 return alias.xx;
             }
 
+            //! partial value content
+            template <typename T,typename U> inline
+            U cut(const T value) const throw()
+            {
+                union {
+                    uint32_t dw[2];
+                    T        xx;
+                    U        yy;
+                } alias = { {0,0} };
+                alias.xx = value;
+                (*this)(alias.dw[0],alias.dw[1]);
+                return alias.yy;
+            }
+
 
 
         private:

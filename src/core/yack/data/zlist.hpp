@@ -1,4 +1,3 @@
-
 //! \file
 
 #ifndef YACK_DATA_ZLIST_INCLUDED
@@ -27,6 +26,10 @@ namespace yack
         inline explicit zlist_of() throw() : list_of<NODE>()  {}
         inline virtual ~zlist_of() throw() { clear(); }
 
+        //______________________________________________________________________
+        //
+        // zlinked interface
+        //______________________________________________________________________
         inline virtual NODE *zquery()                   { return this->size ? this->pop_back() : this->zcreate(); }
         inline virtual void  zstore(NODE *node) throw() { assert(node); this->push_back(node); }
 

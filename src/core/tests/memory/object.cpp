@@ -77,7 +77,7 @@ namespace {
 
 YACK_UTEST(object)
 {
-    randomized::rand_ ran( time(NULL) );
+    randomized::rand_  ran;
     do_test_obj<1>(ran);
     do_test_obj<2>(ran);
     do_test_obj<3>(ran);

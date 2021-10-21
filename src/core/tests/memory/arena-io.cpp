@@ -39,7 +39,7 @@ namespace
 YACK_UTEST(memory_arena_io)
 {
     
-    randomized::rand_  ran( time(NULL) );
+    randomized::rand_  ran;
     cxx_list_of<block> blocks;
     memory::allocator  &gmem = memory::global::instance();
     memory::dyadic     &pmem = memory::dyadic::instance();

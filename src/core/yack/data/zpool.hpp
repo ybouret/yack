@@ -24,7 +24,7 @@ namespace yack
         //
         // C++
         //______________________________________________________________________
-        inline explicit zpool_of() throw() : list_of<NODE>()  {}
+        inline explicit zpool_of() throw() : pool_of<NODE>(), releasable()  {}
         inline virtual ~zpool_of() throw() { clear(); }
 
         //______________________________________________________________________

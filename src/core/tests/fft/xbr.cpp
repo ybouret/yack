@@ -98,7 +98,7 @@ namespace
 YACK_UTEST(fft_xbr8)
 {
     if(argc>1) tsample = atof(argv[1]);
-    randomized::rand_ ran( time(NULL) );
+    randomized::rand_  ran;
     std::cerr.precision(4);
     test_xbr<uint8_t>(ran);
 }
@@ -107,7 +107,7 @@ YACK_UDONE()
 YACK_UTEST(fft_xbr64)
 {
     if(argc>1) tsample = atof(argv[1]);
-    randomized::rand_ ran( time(NULL) );
+    randomized::rand_  ran;
     std::cerr.precision(4);
     test_xbr<uint64_t>(ran);
     

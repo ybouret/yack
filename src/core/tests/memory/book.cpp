@@ -16,7 +16,7 @@ namespace
 
 YACK_UTEST(memory_book)
 {
-    randomized::rand_ ran( time(NULL) );
+    randomized::rand_  ran;
 
     std::cerr << "book.min_page_size=" << memory::book::min_page_size << std::endl;
     std::cerr << "book.max_page_size=" << memory::book::max_page_size << std::endl;

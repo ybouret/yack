@@ -19,7 +19,7 @@ namespace
 
 YACK_UTEST(apex_mem)
 {
-    randomized::rand_ ran( time(NULL) );
+    randomized::rand_  ran;
     YACK_SIZEOF(apex::hoard::piece);
     YACK_SIZEOF(apex::hoard);
     YACK_SIZEOF(apex::hoard::repository);

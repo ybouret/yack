@@ -28,7 +28,7 @@ namespace
 
 YACK_UTEST(memory_parcels)
 {
-    randomized::rand_  ran( time(NULL) );
+    randomized::rand_  ran;
     {
         memory::parcels    mgr;
         cxx_list_of<block> blocks;

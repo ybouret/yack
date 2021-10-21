@@ -48,7 +48,7 @@ namespace
 YACK_UTEST(memory_arena)
 {
     
-    randomized::rand_  ran( time(NULL) );
+    randomized::rand_  ran;
     cxx_list_of<block> blocks;
     memory::ram        mem;
 

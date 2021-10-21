@@ -14,7 +14,10 @@ namespace yack
         
         small_objects :: ~small_objects() throw()
         {
-            if(0!=put_in_ram) std::cerr << "*** [memory::objects::put_int_ram=" << put_in_ram << "]" << std::endl;
+            if(0!=put_in_ram)
+            {
+                std::cerr << "*** [memory::objects::put_int_ram=" << put_in_ram << "]" << std::endl;
+            }
             out_of_reach::zset(destructed(blk),sizeof(impl));
             blk = 0;
         }

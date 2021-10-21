@@ -32,7 +32,7 @@ namespace
     static inline void test_alloc( memory::allocator &mem)
     {
         std::cerr << "Testing " << mem.variety() << std::endl;
-        randomized::rand_   ran( time(NULL) );
+        randomized::rand_   ran;
         block               blocks[1024];
         const size_t        nblock = sizeof(blocks)/sizeof(blocks[0]);
 

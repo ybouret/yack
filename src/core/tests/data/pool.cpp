@@ -36,8 +36,8 @@ namespace
 
 YACK_UTEST(data_pool)
 {
-    randomized::rand_  ran( time(NULL) );
-    
+    randomized::rand_  ran;
+
     {
         cNode nodes[1024];
         const size_t num = sizeof(nodes)/sizeof(nodes[0]);

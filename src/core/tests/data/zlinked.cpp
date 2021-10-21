@@ -20,9 +20,14 @@ namespace {
 
 YACK_UTEST(data_zlinked)
 {
-    
+
+    dummy *d = object::zacquire<dummy>();
+    object::zrelease(d);
+
     zlist_of<dummy> dzl;
 
+
+    zpool_of<dummy> dzp;
     list_of<dummy>  dl;
 
 

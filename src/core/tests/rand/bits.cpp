@@ -3,6 +3,7 @@
 #include "yack/randomized/shuffle.hpp"
 #include "yack/data/raw-list.hpp"
 #include "yack/utest/run.hpp"
+#include "yack/system/seed.hpp"
 
 #include <cstring>
 
@@ -76,10 +77,10 @@ namespace
 
 YACK_UTEST(rand_bits)
 {
-    randomized::rand_       rans( time(NULL) );
-    randomized::ParkMiller  ranPM( time(NULL) );
+    randomized::rand_       ran;
+    randomized::ParkMiller  ranPM( system_seed::get<randomized::ParkMiller::word_type>() );
     
-    test_bits(rans);
+    test_bits(ran);
     test_bits(ranPM);
 
 

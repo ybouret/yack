@@ -100,7 +100,7 @@ YACK_UTEST(fft1d)
 {
 
     if(argc>1) tsample = atof(argv[1]);
-    randomized::rand_ ran( time(NULL) );
+    randomized::rand_  ran;
     ios::ocstream::overwrite(filename);
 
     do_xtests<0>(ran);

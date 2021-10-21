@@ -20,8 +20,8 @@ namespace yack
         class rand_ : public bits_on<unsigned>
         {
         public:
-            virtual ~rand_() throw();                    //!< cleanup
-            explicit rand_(const unsigned seed) throw(); //!< setup
+            virtual ~rand_() throw(); //!< cleanup
+            explicit rand_() throw(); //!< setup
 
         private:
             YACK_DISABLE_COPY_AND_ASSIGN(rand_);

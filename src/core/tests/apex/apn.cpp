@@ -11,7 +11,7 @@ using namespace yack;
 YACK_UTEST(apn)
 {
 
-    randomized::rand_ ran( time(NULL) );
+    randomized::rand_  ran;
 
 
     for(size_t bits=0;bits<=64;++bits)

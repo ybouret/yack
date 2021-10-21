@@ -34,7 +34,7 @@ namespace
 
 YACK_UTEST(data_list)
 {
-    randomized::rand_  ran( time(NULL) );
+    randomized::rand_  ran;
     {
         std::cerr << "setup/get" << std::endl;
         DNode nodes[800];

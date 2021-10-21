@@ -1,5 +1,6 @@
 
 #include "yack/randomized/rand.hpp"
+#include "yack/system/seed.hpp"
 
 namespace yack
 {
@@ -12,10 +13,10 @@ namespace yack
         {
         }
 
-        rand_:: rand_(const unsigned seed) throw() :
+        rand_:: rand_() throw() :
         self_type( unsigned(RAND_MAX) )
         {
-            srand(seed);
+            srand( system_seed::get<long>() );
         }
 
         unsigned rand_::next() throw()

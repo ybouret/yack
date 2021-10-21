@@ -37,7 +37,7 @@ namespace
 YACK_UTEST(memory_chunk)
 {
 
-    randomized::rand_ ran( time(NULL) );
+    randomized::rand_ ran;
     block             blocks[256];
     memory::ram       mem;
     const uint64_t ini = memory::ram::allocated();

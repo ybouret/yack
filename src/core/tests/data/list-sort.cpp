@@ -34,7 +34,7 @@ namespace
 
 YACK_UTEST(data_list_sort)
 {
-    randomized::rand_  ran( time(NULL) );
+    randomized::rand_  ran;
     cxx_list_of<Node>  l;
     
     for(size_t i=0;i<100;++i)

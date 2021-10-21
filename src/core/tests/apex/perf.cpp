@@ -18,9 +18,9 @@ YACK_UTEST(apex_perf)
 
     double     tsample = 0.5;
     if(argc>1) tsample = atof(argv[1]);
-    randomized::rand_ ran( time(NULL) );
-    const size_t      max_bytes = 8192;
-    wtime             chrono;
+    randomized::rand_  ran;
+    const size_t       max_bytes = 8192;
+    wtime              chrono;
 
     std::cerr << "[MUL]" << std::endl;
     ios::ocstream::overwrite("mul.dat");

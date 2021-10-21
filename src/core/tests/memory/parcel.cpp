@@ -29,8 +29,8 @@ namespace
 
 YACK_UTEST(memory_parcel)
 {
-    randomized::rand_  ran( time(NULL) );
-    memory::dyadic &mgr = memory::dyadic::instance();
+    randomized::rand_  ran;
+    memory::dyadic    &mgr = memory::dyadic::instance();
     YACK_SIZEOF(memory::parcel);
     YACK_SIZEOF(memory::parcel::stamp_t);
 

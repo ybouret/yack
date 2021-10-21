@@ -38,7 +38,7 @@ YACK_UTEST(memory_objects)
     concurrent::single::verbose = true;
     //concurrent::mutex::verbose  = true;
 
-    randomized::rand_  ran( time(NULL) );
+    randomized::rand_  ran;
     {
         memory::small_objects objs(32);
         cxx_list_of<block>    blocks;

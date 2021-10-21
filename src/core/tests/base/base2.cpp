@@ -58,7 +58,7 @@ YACK_UTEST(base2)
     test_base2<int64_t>();
     test_base2<uint64_t>();
 
-    randomized::rand_ ran( time(NULL) );
+    randomized::rand_  ran;
     test_bytes_for<uint8_t>(ran);
     test_bytes_for<uint16_t>(ran);
     test_bytes_for<uint32_t>(ran);
