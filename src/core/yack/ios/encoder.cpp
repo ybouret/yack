@@ -1,5 +1,9 @@
 
 #include "yack/ios/encoder.hpp"
+#include "yack/arith/ilog2.hpp"
+#include "yack/arith/base2.hpp"
+#include "yack/arith/align.hpp"
+#include <iostream>
 
 namespace yack
 {
@@ -47,6 +51,33 @@ namespace yack
                 uint8_t(x&mask)
             };
             os.frame(arr,8);
+        }
+
+
+        size_t encoder:: upack64(ostream &os, uint64_t x)
+        {
+            const size_t qword_size = sizeof(uint64_t);
+            const size_t qword_info = ilog2<qword_size>::value;
+            const size_t xbits = bits_for(x);
+
+            if(xbits<=0)
+            {
+                os.write(0);
+                return 1;
+            }
+            else
+            {
+                const size_t total_bits = qword_info + xbits;
+                const size_t total_size = YACK_ALIGN_ON(8,total_bits) >> 3;
+                assert(total_size>=1);
+                assert(total_size<=9);
+                const uint8_t header = uint8_t(total_size-1); //<< (8-qword_info);
+
+                std::cerr << "size:   " << total_size << std::endl;
+                std::cerr << "header: " << unsigned(header) << std::endl;
+                return 0;
+            }
+
         }
     }
 }

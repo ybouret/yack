@@ -35,8 +35,15 @@ YACK_UTEST(ios_streams)
             nw += ios::encoder::emit(fp,x2);
             nw += ios::encoder::emit(fp,x4);
             nw += ios::encoder::emit(fp,x8);
+            YACK_CHECK(nw==15);
+
+            ios::encoder::upack64(fp,0);
+
+            ios::encoder::upack64(fp,10);
+
+            ios::encoder::upack64(fp,integral_for<uint64_t>::maximum);
+
         }
-        YACK_CHECK(nw==15);
 
         {
             ios::icstream input("test3.dat");
