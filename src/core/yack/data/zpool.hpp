@@ -4,8 +4,7 @@
 #define YACK_DATA_ZPOOL_INCLUDED 1
 
 #include "yack/data/pool.hpp"
-#include "yack/object.hpp"
-#include "yack/container/releasable.hpp"
+#include "yack/data/zlinked.hpp"
 
 namespace yack
 {
@@ -17,28 +16,38 @@ namespace yack
     //
     //__________________________________________________________________________
     template <typename NODE>
-    class zpool_of : public pool_of<NODE>, public releasable
+    class zpool_of :   public zlinked<NODE>
     {
     public:
         //______________________________________________________________________
         //
         // C++
         //______________________________________________________________________
-        inline explicit zpool_of() throw() : pool_of<NODE>(), releasable()  {}
+        inline explicit zpool_of() throw() : zlinked<NODE>(), impl()  {}
         inline virtual ~zpool_of() throw() { clear(); }
 
         //______________________________________________________________________
         //
-        // methods
+        // zlinked interface
+        //______________________________________________________________________
+        inline virtual NODE  *zquery() { return impl.size ? impl.query() : this->zcreate(); }
+        inline virtual size_t size() const throw() { return impl.size; }
+
+        //______________________________________________________________________
+        //
+        // release interface
         //______________________________________________________________________
         virtual void release() throw() { clear(); }
 
 
     private:
         YACK_DISABLE_COPY_AND_ASSIGN(zpool_of);
+        pool_of<NODE> impl;
+        inline virtual void  _zstore(NODE *node) throw() { assert(node); impl.store(node); }
+
         inline void clear() throw()
         {
-            while(this->size) object::zrelease(this->query());
+            while(impl.size) this->zdelete(impl.query());
         }
     };
 

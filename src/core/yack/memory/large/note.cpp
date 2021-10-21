@@ -79,7 +79,7 @@ namespace yack
             std::cerr << "  <note range=\"2^0->2^" << max_page_exp2 << "\">" << std::endl;
             for(size_t i=0;i<parts;++i)
             {
-                self[i].display();
+                self[i].display_arena();
             }
             std::cerr << "  <note/>" << std::endl;
         }

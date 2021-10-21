@@ -84,7 +84,7 @@ YACK_UTEST(memory_arena)
             delete blk;
         }
 
-        a.display();
+        a.display_arena();
     }
     
     YACK_SIZEOF(memory::arena);
@@ -95,8 +95,8 @@ YACK_UTEST(memory_arena)
         memory::arena a(block_size,mem,true);
         memory::arena b(block_size,mem,false);
 
-        a.display();
-        b.display();
+        a.display_arena();
+        b.display_arena();
         std::cerr << std::endl;
     }
     

@@ -407,7 +407,7 @@ namespace yack
 
     namespace memory
     {
-        void  arena:: display() const
+        void  arena:: display_arena() const
         {
             std::cerr << "    <arena";
             std::cerr << " bs="  << std::setw(3) << block_size;

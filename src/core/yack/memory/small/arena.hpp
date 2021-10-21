@@ -123,7 +123,7 @@ namespace yack
             // methods
             //__________________________________________________________________
             void   gc(dyadic &)   throw(); //!< garbage collector
-            void   display()        const; //!< current information
+            void   display_arena()  const; //!< current information
             size_t wasted() const throw(); //!< wasted bytes per chunk
 
         private:

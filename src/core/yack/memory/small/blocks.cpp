@@ -127,7 +127,7 @@ namespace yack
             try
             {
                 new (coerce_cast<arena>(impl_)) arena(sizeof(arena),memory::global::instance(),compact);
-                coerce_cast<arena>(impl_)->display();
+                //coerce_cast<arena>(impl_)->display_arena();
             }
             catch(...)
             {

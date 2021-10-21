@@ -53,24 +53,24 @@ YACK_UTEST(memory_arena_io)
             blocks.push_back( new block(p) );
         }
         randomized::shuffle::list(blocks,ran);
-        a.display();
+        a.display_arena();
         const size_t low = blocks.size/4;
         while(blocks.size>low)
         {
             a.release(blocks.tail->addr);
             delete blocks.pop_back();
         }
-        a.display();
+        a.display_arena();
         a.gc(pmem);
-        a.display();
+        a.display_arena();
         while(blocks.size)
         {
             a.release(blocks.tail->addr);
             delete blocks.pop_back();
         }
-        a.display();
+        a.display_arena();
         a.gc(pmem);
-        a.display();
+        a.display_arena();
         pmem.display();
         std::cerr << std::endl;
     }
