@@ -36,6 +36,7 @@ YACK_UTEST_DECL(64)
     YACK_UTEST(data_list_sort);
     YACK_UTEST(data_pool);
     YACK_UTEST(data_pool_sort);
+    YACK_UTEST(data_zlinked);
 
 
     YACK_UTEST(sync_lockable);
