@@ -11,12 +11,17 @@ namespace yack
 
     namespace randomized
     {
-
+        //______________________________________________________________________
+        //
+        //
+        //! bits based on system RAND
+        //
+        //______________________________________________________________________
         class rand_ : public bits_on<unsigned>
         {
         public:
-            virtual ~rand_() throw();
-            explicit rand_(const unsigned seed) throw();
+            virtual ~rand_() throw();                    //!< cleanup
+            explicit rand_(const unsigned seed) throw(); //!< setup
 
         private:
             YACK_DISABLE_COPY_AND_ASSIGN(rand_);

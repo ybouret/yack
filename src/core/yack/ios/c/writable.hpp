@@ -11,18 +11,32 @@ namespace yack
 {
     namespace ios
     {
+        //______________________________________________________________________
+        //
+        //
+        //! write-only FILE
+        //
+        //______________________________________________________________________
         class writable_file : public c_file
         {
         public:
-            virtual  ~writable_file() throw();
-            explicit  writable_file(const cstderr_t &);
-            explicit  writable_file(const cstdout_t &);
-            explicit  writable_file(const char *filename, const bool append);
+            //__________________________________________________________________
+            //
+            // C++
+            //__________________________________________________________________
+            virtual  ~writable_file() throw();                                //!< cleanup
+            explicit  writable_file(const cstderr_t &);                       //!< link to stderr
+            explicit  writable_file(const cstdout_t &);                       //!< link to stdout
+            explicit  writable_file(const char *filename, const bool append); //!< open file
 
-            void   put(const char C);
-            void   put(const char *fmt,void *);
-            void   putf(const char *fmt,...) YACK_PRINTF_API;
-            void   put(const void *addr,const size_t size);
+            //__________________________________________________________________
+            //
+            // methods
+            //__________________________________________________________________
+            void   put(const char C);                          //!< put one char
+            void   put(const char *fmt,void *);                //!< helper to format
+            void   putf(const char *fmt,...) YACK_PRINTF_API;  //!< formatted output
+            void   put(const void *addr,const size_t size);    //!< put one block
 
         private:
             YACK_DISABLE_COPY_AND_ASSIGN(writable_file);

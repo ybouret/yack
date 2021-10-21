@@ -12,18 +12,40 @@ namespace yack
     namespace hashing
     {
 
+        //______________________________________________________________________
+        //
+        //
+        //! using DES to hash 64 bits
+        //
+        //______________________________________________________________________
         class des64 : public hash64
         {
         public:
-            static const char clid[];
+            //__________________________________________________________________
+            //
+            // definitions
+            //__________________________________________________________________
+            static const char clid[]; //!< "DES"
 
-            explicit des64() throw();
-            virtual ~des64() throw();
+            //__________________________________________________________________
+            //
+            // C++
+            //__________________________________________________________________
+            explicit des64() throw(); //!< setup
+            virtual ~des64() throw(); //!< cleanup
 
-            virtual const char *protocol()                                   const throw();
-            virtual void        operator()(uint32_t &lword, uint32_t &rword) const throw();
+            //__________________________________________________________________
+            //
+            // hash64 interface
+            //__________________________________________________________________
+            virtual const char *protocol()                                   const throw(); //!< clid
+            virtual void        operator()(uint32_t &lword, uint32_t &rword) const throw(); //!< algo
 
-            bool test() const throw();
+            //__________________________________________________________________
+            //
+            // methods
+            //__________________________________________________________________
+            bool test() const throw(); //!< test consistency
 
             
         private:

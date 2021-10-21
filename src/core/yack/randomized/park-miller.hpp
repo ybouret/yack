@@ -17,8 +17,8 @@ namespace yack
         class ParkMiller : public bits_on<long>
         {
         public:
-            virtual ~ParkMiller() throw();
-            explicit ParkMiller(const long seed) throw();
+            virtual ~ParkMiller() throw(); //!< cleanup
+            explicit ParkMiller(const long seed) throw(); //!< setup
             
         private:
             YACK_DISABLE_COPY_AND_ASSIGN(ParkMiller);

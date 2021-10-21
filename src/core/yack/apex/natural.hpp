@@ -69,12 +69,12 @@ namespace yack
             //
             // C++
             //__________________________________________________________________
-            natural(uint_type u);                              //!< setup with an integral type
-            virtual ~natural() throw();                        //!< cleanup
-            natural(const natural &);                          //!< copy
-            natural & operator= (const natural &);             //!< assign
-            natural & operator= (const uint_type) throw();     //!< assign
-            natural(randomized::bits &ran, const size_t nbits);
+            natural(uint_type u);                               //!< setup with an integral type
+            virtual ~natural() throw();                         //!< cleanup
+            natural(const natural &);                           //!< copy
+            natural & operator= (const natural &);              //!< assign
+            natural & operator= (const uint_type) throw();      //!< assign
+            natural(randomized::bits &ran, const size_t nbits); //!< make exactly nbits, and random
 
             //__________________________________________________________________
             //

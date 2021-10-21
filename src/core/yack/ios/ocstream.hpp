@@ -10,20 +10,38 @@ namespace yack
 {
     namespace ios
     {
+        //______________________________________________________________________
+        //
+        //
+        //! output C stream
+        //
+        //______________________________________________________________________
         class ocstream : public ostream
         {
         public:
-            virtual ~ocstream() throw();
-            explicit ocstream(const ios::cstderr_t &);
-            explicit ocstream(const ios::cstdout_t &);
-            explicit ocstream(const char *filename, const bool append=false);
+            //__________________________________________________________________
+            //
+            // C++
+            //__________________________________________________________________
+            virtual ~ocstream() throw();                                      //!< cleanup
+            explicit ocstream(const ios::cstderr_t &);                        //!< link to stderr
+            explicit ocstream(const ios::cstdout_t &);                        //!< link to stdout
+            explicit ocstream(const char *filename, const bool append=false); //!< open file
 
+            //__________________________________________________________________
+            //
+            // ostrean interface
+            //__________________________________________________________________
             virtual void write(const char C);
             virtual void frame(const void *,const size_t);
             virtual void operator()(const char *fmt,...);
-            
-            static void overwrite(const char *filename);
-            static void echo(const char *filename, const char *fmt, ...);
+
+            //__________________________________________________________________
+            //
+            // methods
+            //__________________________________________________________________
+            static void overwrite(const char *filename);                  //!< overwrite file name
+            static void echo(const char *filename, const char *fmt, ...); //!< append to filename
 
 
         private:

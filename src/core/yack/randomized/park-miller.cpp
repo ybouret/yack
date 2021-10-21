@@ -17,6 +17,11 @@ namespace yack
 
         static long reseed( long seed ) throw()
         {
+            hashing::des64 h;
+            while(seed==MASK)
+            {
+                seed = h.mix(seed);
+            }
             return seed;
         }
 

@@ -10,14 +10,27 @@ namespace yack
 {
     namespace ios
     {
-
+        //______________________________________________________________________
+        //
+        //
+        //! read-only FILE
+        //
+        //______________________________________________________________________
         class readable_file : public c_file
         {
         public:
-            virtual ~readable_file() throw();
-            explicit readable_file(const cstdin_t &);
+            //__________________________________________________________________
+            //
+            // C++
+            //__________________________________________________________________
+            virtual ~readable_file() throw();         //!< cleanup
+            explicit readable_file(const cstdin_t &); //!< link to stdin
 
-            bool get(char &C);
+            //__________________________________________________________________
+            //
+            // methods
+            //__________________________________________________________________
+            bool get(char &C); //!< return if feof, throw if ferror
 
         private:
             YACK_DISABLE_COPY_AND_ASSIGN(readable_file);

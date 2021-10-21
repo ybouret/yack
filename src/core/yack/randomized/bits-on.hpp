@@ -12,14 +12,26 @@ namespace yack
     namespace randomized
     {
 
+        //______________________________________________________________________
+        //
+        //
+        //! bits with a given working word
+        //
+        //______________________________________________________________________
         template <typename T>
         class bits_on : public bits
         {
         public:
-            typedef bits_on<T> self_type;
+            //__________________________________________________________________
+            //
+            // definitions
+            //__________________________________________________________________
+            typedef bits_on<T> self_type; //!< alias
 
-            virtual ~bits_on() throw() {}
-
+            //__________________________________________________________________
+            //
+            //! generation from metrics
+            //__________________________________________________________________
             virtual double operator()(void) throw()
             {
                 const T nxt = next();
@@ -27,8 +39,14 @@ namespace yack
                 return (0.5+double(nxt))/denominator;
             }
 
+            //__________________________________________________________________
+            //
+            // C++
+            //__________________________________________________________________
+            virtual ~bits_on() throw() {} //!< cleanup
 
         protected:
+            //! setup metrics
             explicit bits_on(const T umax) throw() :
             bits( bits_for(umax) ),
             numerator(umax),

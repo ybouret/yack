@@ -9,15 +9,36 @@ namespace yack
 {
     namespace hashing
     {
-
+        //______________________________________________________________________
+        //
+        //
+        //! hashing 64 bits
+        //
+        //______________________________________________________________________
         class hash64
         {
+            //__________________________________________________________________
+            //
+            // C++
+            //__________________________________________________________________
+        protected:
+            explicit hash64() throw(); //!< setu[
         public:
-            virtual ~hash64() throw();
+            virtual ~hash64() throw(); //!< cleanup
 
-            virtual const char *protocol()                                   const throw() = 0;
-            virtual void        operator()(uint32_t &lword, uint32_t &rword) const throw() = 0;
+            //__________________________________________________________________
+            //
+            // virtual interface
+            //__________________________________________________________________
+            virtual const char *protocol()                                   const throw() = 0; //!< name
+            virtual void        operator()(uint32_t &lword, uint32_t &rword) const throw() = 0; //!< alog
 
+            //__________________________________________________________________
+            //
+            // non virtual interface
+            //__________________________________________________________________
+
+            //! mix value content
             template <typename T> inline
             T mix(const T value) const throw()
             {
@@ -30,8 +51,7 @@ namespace yack
                 return alias.xx;
             }
 
-        protected:
-            explicit hash64() throw();
+
 
         private:
             YACK_DISABLE_COPY_AND_ASSIGN(hash64);

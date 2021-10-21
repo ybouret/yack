@@ -9,13 +9,19 @@ namespace yack
 {
     namespace ios
     {
+        //______________________________________________________________________
+        //
+        //
+        //! base class for streams
+        //
+        //______________________________________________________________________
         class stream
         {
         public:
-            virtual ~stream() throw();
+            virtual ~stream() throw(); //!< cleanup
 
         protected:
-            explicit stream() throw();
+            explicit stream() throw(); //!< setup
 
         private:
             YACK_DISABLE_COPY_AND_ASSIGN(stream);
