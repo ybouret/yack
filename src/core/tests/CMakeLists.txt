@@ -80,7 +80,7 @@ add_test(data:list      test-yack data_list)
 add_test(data:list:sort test-yack data_list_sort)
 add_test(data:pool      test-yack data_pool)
 add_test(data:pool:sort test-yack data_pool_sort)
-add_test(data:zlinked   test-yack data_zlinked)
+add_test(data:small     test-yack data_small)
 
 add_test(sync:lockable  test-yack sync_lockable)
 add_test(sync:primitive test-yack sync_primitive)
