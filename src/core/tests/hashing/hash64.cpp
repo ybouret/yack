@@ -1,6 +1,6 @@
-#include "yack/hashing/hash64-des.hpp"
-#include "yack/hashing/hash64-ibj.hpp"
-
+#include "yack/hashing/des64.hpp"
+#include "yack/hashing/ibj64.hpp"
+#include "yack/type/hexa.hpp"
 #include "yack/utest/run.hpp"
 
 using namespace yack;
@@ -14,6 +14,15 @@ namespace
         uint32_t l=0, r=0;
         H(l,r);
         std::cerr << "0 => " << l << "," << r << std::endl;
+        uint8_t k=0;
+        for(size_t i=0;i<16;++i)
+        {
+            for(size_t j=0;j<16;++j,++k)
+            {
+                std::cerr << ' ' << hexa::uppercase_text[H.mix(k)];
+            }
+            std::cerr << std::endl;
+        }
     }
     
 }

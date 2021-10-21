@@ -1,7 +1,7 @@
 
 
 
-#include "yack/hashing/hash64-ibj.hpp"
+#include "yack/hashing/ibj64.hpp"
 
 namespace yack
 {

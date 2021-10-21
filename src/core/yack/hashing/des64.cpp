@@ -1,6 +1,6 @@
 
 
-#include "yack/hashing/hash64-des.hpp"
+#include "yack/hashing/des64.hpp"
 
 namespace yack
 {
