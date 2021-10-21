@@ -24,8 +24,6 @@ namespace yack
         //
         // C++
         //______________________________________________________________________
-        
-      
         inline virtual ~cxx_list_of() throw() { release_(); }                      //!< cleanup by release
         inline explicit cxx_list_of() throw() : list_of<NODE>(), releasable() {}   //!< setup empty
      
@@ -43,6 +41,7 @@ namespace yack
         //
         // methods
         //______________________________________________________________________
+        //! delete all node
         inline virtual void release() throw()
         {
             release_();

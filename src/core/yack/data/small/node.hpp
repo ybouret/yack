@@ -8,22 +8,44 @@
 
 namespace yack
 {
+    //__________________________________________________________________________
+    //
+    //
+    //! node based on object::memory to hold a single (integral) type
+    //
+    //__________________________________________________________________________
     template <typename T>
     class small_node : public object
     {
     public:
-        YACK_DECL_ARGS(T,type);
+        //______________________________________________________________________
+        //
+        // types and definitions
+        //______________________________________________________________________
+        YACK_DECL_ARGS(T,type); //!< aliases
+        
 
-        small_node *next;
-        small_node *prev;
+        //______________________________________________________________________
+        //
+        // C++
+        //______________________________________________________________________
+        inline  small_node(param_type args) : next(0), prev(0), data(args) {}             //!< setup
+        inline ~small_node() throw() { assert(NULL==next); assert(NULL==prev); }          //!< cleanup
+        inline  small_node(const small_node &node) : next(0), prev(0), data(node.data) {} //!< hard copy
 
+        //______________________________________________________________________
+        //
+        // methods
+        //______________________________________________________________________
+        inline type       & operator*() throw()       { return data; } //!< access
+        inline const_type & operator*() const throw() { return data; } //!< access, const
 
-        inline  small_node(param_type args) : next(0), prev(0), data(args) {}
-        inline ~small_node() throw() { assert(NULL==next); assert(NULL==prev); }
-        inline  small_node(const small_node &node) : next(0), prev(0), data(node.data) {}
-
-        inline type       & operator*() throw()       { return data; }
-        inline const_type & operator*() const throw() { return data; }
+        //______________________________________________________________________
+        //
+        // members
+        //______________________________________________________________________
+        small_node *next; //!< for list/pool
+        small_node *prev; //!< for list
 
     private:
         YACK_DISABLE_ASSIGN(small_node);

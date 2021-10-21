@@ -12,14 +12,21 @@ namespace yack
     namespace ios
     {
 
+        //______________________________________________________________________
+        //
+        //
+        //! encoding operation
+        //
+        //______________________________________________________________________
         struct encoder
         {
 
-            static void put(ostream &, const uint8_t  &);
-            static void put(ostream &, const uint16_t &);
-            static void put(ostream &, const uint32_t &);
-            static void put(ostream &, const uint64_t &);
-            
+            static void put(ostream &, const uint8_t  &); //!< put one byte
+            static void put(ostream &, const uint16_t &); //!< put 2 bytes
+            static void put(ostream &, const uint32_t &); //!< put 4 bytes
+            static void put(ostream &, const uint64_t &); //!< put 8 bytes
+
+            //! write the matching number of bytes
             template <typename T> static inline
             size_t emit(ostream &os,const T x)
             {

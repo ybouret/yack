@@ -20,11 +20,10 @@ namespace yack
         class istream
         {
         public:
-            virtual ~istream() throw(); //!< cleanup
-
-            bool    query(char &C);
-            void    store(char  C);
-            size_t  fetch(void *addr, const size_t size);
+            virtual ~istream() throw();                     //!< cleanup
+            bool     query(char &C);                       //!< query one (cached) char
+            void     store(char  C);                       //!< store char in cache
+            size_t   fetch(void *addr, const size_t size); //!< fetch (cached) block
 
         protected:
             explicit istream() throw(); //!< setup
