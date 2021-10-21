@@ -189,9 +189,12 @@ namespace yack
                     fft1d::expand(data,&(R->re)-1,size); // recompose
 #endif
                     L[0].re *= R[0].re;
-                    for(size_t i=1;i<size;++i)
                     {
-                        L[i] *= R[i];
+                        size_t i=size;
+                        while(--i>0)
+                        {
+                            L[i] *= R[i];
+                        }
                     }
 
                     fft1d::reverse(data,size);
