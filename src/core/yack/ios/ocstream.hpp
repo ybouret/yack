@@ -1,7 +1,5 @@
-
-
-
 //! \file
+
 #ifndef YACK_IOS_OCSTREAM_INCLUDED
 #define YACK_IOS_OCSTREAM_INCLUDED 1
 

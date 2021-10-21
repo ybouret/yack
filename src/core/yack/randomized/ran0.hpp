@@ -12,15 +12,16 @@ namespace yack
     
     namespace randomized
     {
-        
-        class ran0 : public bits_on<long>
+
+        //! Park and Miller's
+        class ParkMiller : public bits_on<long>
         {
         public:
-            virtual ~ran0() throw();
-            explicit ran0(const long seed) throw();
+            virtual ~ParkMiller() throw();
+            explicit ParkMiller(const long seed) throw();
             
         private:
-            YACK_DISABLE_COPY_AND_ASSIGN(ran0);
+            YACK_DISABLE_COPY_AND_ASSIGN(ParkMiller);
             virtual long next() throw();
             long word;
         };

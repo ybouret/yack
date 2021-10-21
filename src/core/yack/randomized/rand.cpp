@@ -8,17 +8,17 @@ namespace yack
     {
 
 
-        system_rand:: ~system_rand() throw()
+        rand_:: ~rand_() throw()
         {
         }
 
-        system_rand:: system_rand(const unsigned seed) throw() :
+        rand_:: rand_(const unsigned seed) throw() :
         self_type( unsigned(RAND_MAX) )
         {
             srand(seed);
         }
 
-        unsigned system_rand::next() throw()
+        unsigned rand_::next() throw()
         {
             return rand();
         }

@@ -12,14 +12,14 @@ namespace yack
     namespace randomized
     {
 
-        class system_rand : public bits_on<unsigned>
+        class rand_ : public bits_on<unsigned>
         {
         public:
-            virtual ~system_rand() throw();
-            explicit system_rand(const unsigned seed) throw();
+            virtual ~rand_() throw();
+            explicit rand_(const unsigned seed) throw();
 
         private:
-            YACK_DISABLE_COPY_AND_ASSIGN(system_rand);
+            YACK_DISABLE_COPY_AND_ASSIGN(rand_);
             virtual unsigned next() throw();
 
         };

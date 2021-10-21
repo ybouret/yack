@@ -1,6 +1,5 @@
-
-
 #include "yack/randomized/ran0.hpp"
+#include "yack/hashing/des64.hpp"
 
 namespace yack
 {
@@ -9,24 +8,30 @@ namespace yack
     {
         
         
-        ran0:: ~ran0() throw()
+        ParkMiller:: ~ParkMiller() throw()
         {
         }
         
-#define IM 2147483647
-        ran0:: ran0(const long seed) throw() :
+        static const long IM   = 2147483647;
+        static const long MASK = 123459876;
+
+        static long reseed( long seed ) throw()
+        {
+            return seed;
+        }
+
+        ParkMiller:: ParkMiller(const long seed) throw() :
         self_type( IM-1 ),
-        word(seed)
+        word(reseed(seed))
         {
         }
         
-        long ran0::next() throw()
+        long ParkMiller::next() throw()
         {
             static const long IA   = 16807;
             static const long IQ   = 127773;
             static const long IR   = 2836;
-            static const long MASK = 123459876;
-            
+
             word ^= MASK;
             const long k=word/IQ;
             word=IA*(word-k*IQ)-IR*k;
