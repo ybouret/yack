@@ -30,7 +30,7 @@ namespace yack
 
             //__________________________________________________________________
             //
-            // ostrean interface
+            // ostream interface
             //__________________________________________________________________
             virtual void write(const char C);
             virtual void frame(const void *,const size_t);

@@ -64,7 +64,10 @@ namespace yack
             apply(data,size,neg_sine);
         }
 
-        //! expand fft1 and fft2 from a dual-real-function ops
+        //______________________________________________________________________
+        //
+        //! expand fft1 and fft2 from a dual-real-functions transform
+        //______________________________________________________________________
         template <typename T> static
         inline void expand(T fft1[], T fft2[], const size_t n) throw()
         {
@@ -105,13 +108,21 @@ namespace yack
                           const size_t  size,
                           const double *sine) throw()
         {
-            
+
+            //__________________________________________________________________
+            //
+            // bit reversal
+            //__________________________________________________________________
             xbitrev(data,size);
-            
-            const size_t   n    = (size << 1);
+
 #if         defined(YACK_FFT_TRACK)
             const uint64_t mark = wtime::ticks();
 #endif
+            //__________________________________________________________________
+            //
+            // algorithm
+            //__________________________________________________________________
+            const size_t   n    = (size << 1);
             const double *temp = twpr;
             size_t        mmax = 2;
             while(n>mmax)
@@ -120,12 +131,14 @@ namespace yack
                 const size_t istep = mmax << 1;
                 double wpi         = *(sine++);   // sin(theta)
                 double wpr         = *(++temp);   //-2.0*wtemp*wtemp;
-                double wtemp       = *(sine);     //sin(0.5*theta);
                 double wr          = 1.0;
                 double wi          = 0.0;
                 for(size_t m=1;m<mmax;m+=2)
                 {
+                    //__________________________________________________________
+                    //
                     // data modification
+                    //__________________________________________________________
                     const double sw     = wr+wi;
                     for(size_t i=m;i<=n;i+=istep)
                     {
@@ -144,12 +157,18 @@ namespace yack
                         data_i[1]  += tempi;
                     }
 
+                    //__________________________________________________________
+                    //
                     // update factors
+                    //__________________________________________________________
                     {
-
-                        wr=(wtemp=wr)*wpr-wi*wpi+wr;
-                        wi=wi*wpr+wtemp*wpi+wi;
+                        const double rere   = wr*wpr;
+                        const double imim   = wi*wpi;
+                        const double sp     = wpr+wpi;
+                        wr += (rere-imim);
+                        wi += (sw*sp-rere-imim);
                     }
+
                 }
                 mmax=istep;
             }

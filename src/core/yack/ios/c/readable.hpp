@@ -30,7 +30,9 @@ namespace yack
             //
             // methods
             //__________________________________________________________________
-            bool get(char &C); //!< return if feof, throw if ferror
+            bool   get(char &C); //!< return if feof, throw if ferror
+            size_t get(void *addr, const size_t size); //!< throw on error
+
 
         private:
             YACK_DISABLE_COPY_AND_ASSIGN(readable_file);
