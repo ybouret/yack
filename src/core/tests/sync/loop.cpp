@@ -88,8 +88,6 @@ namespace
 
 YACK_UTEST(sync_loop)
 {
-    uprng ran;
-
     concurrent::thread::verbose = true;
     int        threads = 1;
     if(argc>1) threads = atoi(argv[1]);

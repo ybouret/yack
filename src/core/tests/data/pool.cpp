@@ -36,8 +36,8 @@ namespace
 
 YACK_UTEST(data_pool)
 {
-    uprng ran;
-
+    randomized::rand_  ran( time(NULL) );
+    
     {
         cNode nodes[1024];
         const size_t num = sizeof(nodes)/sizeof(nodes[0]);
@@ -56,7 +56,7 @@ YACK_UTEST(data_pool)
 
         std::cerr << "shuffle..." << std::endl;
         for(size_t i=0;i<num;++i) pool.store(nodes+i)->data = i;
-        ran.shuffle_pool(pool);
+        //ran.shuffle_pool(pool);
         while(pool.size)
         {
             cNode *node = pool.query();
@@ -67,7 +67,7 @@ YACK_UTEST(data_pool)
         std::cerr << "store by memory..." << std::endl;
         cNode *meta[num] = { 0 };
         for(size_t i=0;i<num;++i) meta[i] = &nodes[i];
-        ran.shuffle(meta,num);
+        randomized::shuffle::data(meta,num,ran);
         for(size_t i=0;i<num;++i) pool.store_increasing_memory(meta[i]);
         YACK_CHECK(pool.memory_is_increasing());
         pool.restart();

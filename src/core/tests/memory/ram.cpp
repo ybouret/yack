@@ -28,7 +28,7 @@ namespace
 
 YACK_UTEST(ram)
 {
-    uprng          ran;
+    randomized::rand_  ran( time(NULL) );
     block          blocks[256];
     const size_t   nblock = sizeof(blocks)/sizeof(blocks[0]);
     memory::ram    mem;
@@ -42,7 +42,7 @@ YACK_UTEST(ram)
         blk.addr = mem.acquire(blk.size,block_size);
     }
     std::cerr << "crc: " << ucrc(blocks,nblock) << std::endl;
-    ran.shuffle(blocks,nblock);
+    randomized::shuffle::data(blocks,nblock,ran);
     std::cerr << "crc: " << ucrc(blocks,nblock) << std::endl;
 
     std::cerr << "ram: " << memory::ram::allocated() << std::endl;

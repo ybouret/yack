@@ -48,7 +48,7 @@ namespace
 YACK_UTEST(memory_arena)
 {
     
-    uprng              ran;
+    randomized::rand_  ran( time(NULL) );
     cxx_list_of<block> blocks;
     memory::ram        mem;
 
@@ -61,7 +61,7 @@ YACK_UTEST(memory_arena)
             blocks.push_back( new block( a.acquire() ) );
         }
         check_all_different(blocks);
-        ran.shuffle_list(blocks);
+        randomized::shuffle::list(blocks,ran);
         {
             const size_t half = blocks.size/2;
             while(blocks.size>half)
@@ -76,7 +76,7 @@ YACK_UTEST(memory_arena)
             blocks.push_back( new block( a.acquire() ) );
         }
         check_all_different(blocks);
-        ran.shuffle_list(blocks);
+        randomized::shuffle::list(blocks,ran);
         while(blocks.size)
         {
             block *blk = blocks.pop_back();

@@ -35,14 +35,14 @@ namespace
 
 YACK_UTEST(data_pool_sort)
 {
-    uprng             ran;
+    randomized::rand_  ran( time(NULL) );
     cxx_pool_of<Node> l;
     
     for(size_t i=0;i<100;++i)
     {
         l.store( new Node(i) ) ;
     }
-    ran.shuffle_pool(l);
+    //ran.shuffle_pool(l);
     for(const Node *node=l.head;node;node=node->next)
     {
         std::cerr << node->value << '/';

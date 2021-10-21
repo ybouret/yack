@@ -19,7 +19,7 @@ namespace
 
 YACK_UTEST(apex_mem)
 {
-    uprng ran;
+    randomized::rand_ ran( time(NULL) );
     YACK_SIZEOF(apex::hoard::piece);
     YACK_SIZEOF(apex::hoard);
     YACK_SIZEOF(apex::hoard::repository);
@@ -50,7 +50,7 @@ YACK_UTEST(apex_mem)
                 blk.addr  = H.acquire_unlocked( (blk.exp2=org) );
                 YACK_ASSERT(blk.exp2>=apex::hoard::min_block_exp2);
             }
-            ran.shuffle(blocks,nblock);
+            randomized::shuffle::data(blocks,nblock,ran);
             for(size_t i=0;i<nblock;++i)
             {
                 block       &blk = blocks[i];

@@ -32,9 +32,9 @@ namespace
     static inline void test_alloc( memory::allocator &mem)
     {
         std::cerr << "Testing " << mem.variety() << std::endl;
-        uprng        ran;
-        block        blocks[1024];
-        const size_t nblock = sizeof(blocks)/sizeof(blocks[0]);
+        randomized::rand_   ran( time(NULL) );
+        block               blocks[1024];
+        const size_t        nblock = sizeof(blocks)/sizeof(blocks[0]);
 
         for(size_t i=0;i<nblock;++i)
         {
@@ -44,7 +44,7 @@ namespace
             blk.addr = mem.acquire(blk.size,block_size);
             YACK_ASSERT( out_of_reach::is0(blk.addr,blk.size) );
         }
-        ran.shuffle(blocks,nblock);
+        randomized::shuffle::data(blocks,nblock,ran);
 
         for(size_t i=0;i<nblock;++i)
         {

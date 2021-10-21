@@ -25,7 +25,7 @@ namespace
     }
 
     template <typename T> static inline
-    void test_bytes_for(uprng &ran)
+    void test_bytes_for(randomized::bits &ran)
     {
         std::cerr << std::hex;
         T p = 0;
@@ -58,7 +58,7 @@ YACK_UTEST(base2)
     test_base2<int64_t>();
     test_base2<uint64_t>();
 
-    uprng ran;
+    randomized::rand_ ran( time(NULL) );
     test_bytes_for<uint8_t>(ran);
     test_bytes_for<uint16_t>(ran);
     test_bytes_for<uint32_t>(ran);

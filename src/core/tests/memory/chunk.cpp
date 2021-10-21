@@ -37,9 +37,9 @@ namespace
 YACK_UTEST(memory_chunk)
 {
 
-    uprng          ran;
-    block          blocks[256];
-    memory::ram    mem;
+    randomized::rand_ ran( time(NULL) );
+    block             blocks[256];
+    memory::ram       mem;
     const uint64_t ini = memory::ram::allocated();
 
     std::cerr << "Local Chunks..." << std::endl;
@@ -58,7 +58,7 @@ YACK_UTEST(memory_chunk)
                 blocks[i].addr = ch.acquire(block_size);
                 blocks[i].size = block_size;
             }
-            ran.shuffle(blocks,count);
+            randomized::shuffle::data(blocks,count,ran);
             for(size_t i=0;i<count/2;++i)
             {
                 ch.release(blocks[i].addr,block_size);
@@ -67,7 +67,7 @@ YACK_UTEST(memory_chunk)
             {
                 blocks[i].addr = ch.acquire(block_size);
             }
-            ran.shuffle(blocks,count);
+            randomized::shuffle::data(blocks,count,ran);
             check_all_different(blocks,count);
             for(size_t i=0;i<count;++i)
             {

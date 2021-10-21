@@ -34,7 +34,7 @@ namespace
 
 YACK_UTEST(data_list)
 {
-    uprng ran;
+    randomized::rand_  ran( time(NULL) );
     {
         std::cerr << "setup/get" << std::endl;
         DNode nodes[800];
@@ -169,7 +169,7 @@ YACK_UTEST(data_list)
             index[i] = i;
             nodes[i].indx = i;
         }
-        ran.shuffle(index,num);
+        randomized::shuffle::data(index,num,ran);
         raw_list_of<DNode> l;
         for(size_t i=0;i<num;++i)
         {

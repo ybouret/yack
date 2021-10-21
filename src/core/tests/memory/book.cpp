@@ -16,7 +16,7 @@ namespace
 
 YACK_UTEST(memory_book)
 {
-    uprng ran;
+    randomized::rand_ ran( time(NULL) );
 
     std::cerr << "book.min_page_size=" << memory::book::min_page_size << std::endl;
     std::cerr << "book.max_page_size=" << memory::book::max_page_size << std::endl;
@@ -37,9 +37,9 @@ YACK_UTEST(memory_book)
         block &b = blocks[i];
         b.iln2   = memory::book::min_page_exp2 + ran.leq(6);
         b.addr   = B.query(b.iln2);
-        ran.fillnz(b.addr,size_t(1)<<b.iln2);
+        ran.fill(b.addr,size_t(1)<<b.iln2);
     }
-    ran.shuffle(blocks,nblock);
+    randomized::shuffle::data(blocks,nblock,ran);
     for(size_t i=0;i<nblock;++i)
     {
         block &b = blocks[i];

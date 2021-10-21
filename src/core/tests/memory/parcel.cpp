@@ -29,7 +29,7 @@ namespace
 
 YACK_UTEST(memory_parcel)
 {
-    uprng           ran;
+    randomized::rand_  ran( time(NULL) );
     memory::dyadic &mgr = memory::dyadic::instance();
     YACK_SIZEOF(memory::parcel);
     YACK_SIZEOF(memory::parcel::stamp_t);
@@ -57,7 +57,7 @@ YACK_UTEST(memory_parcel)
                 std::cerr << "acquired " << st.size << " blocks" << std::endl;
                 std::cerr << "releasing..." << std::endl;
                 io.display();
-                ran.shuffle_list(st);
+                randomized::shuffle::list(st,ran);
                 while(st.size)
                 {
                     block *b = st.pop_back();

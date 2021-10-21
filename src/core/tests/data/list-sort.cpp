@@ -34,14 +34,14 @@ namespace
 
 YACK_UTEST(data_list_sort)
 {
-    uprng             ran;
-    cxx_list_of<Node> l;
+    randomized::rand_  ran( time(NULL) );
+    cxx_list_of<Node>  l;
     
     for(size_t i=0;i<100;++i)
     {
         l.push_back( new Node(i) ) ;
     }
-    ran.shuffle_list(l);
+    randomized::shuffle::list(l,ran);
     for(const Node *node=l.head;node;node=node->next)
     {
         std::cerr << node->value << '/';

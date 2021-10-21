@@ -38,9 +38,7 @@ YACK_UTEST(memory_objects)
     concurrent::single::verbose = true;
     //concurrent::mutex::verbose  = true;
 
-    uprng                 ran;
-
-
+    randomized::rand_  ran( time(NULL) );
     {
         memory::small_objects objs(32);
         cxx_list_of<block>    blocks;
@@ -51,7 +49,7 @@ YACK_UTEST(memory_objects)
             b->addr = objs.acquire_unlocked( b->size = 1 + ran.leq(63) );
         }
         std::cerr << "objs.put_int_ram=" << objs.put_in_ram << std::endl;
-        ran.shuffle_list(blocks);
+        randomized::shuffle::list(blocks,ran);
         while(blocks.size)
         {
             block *b = blocks.pop_back();

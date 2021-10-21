@@ -30,7 +30,7 @@ namespace
 
 YACK_UTEST(memory_blocks)
 {
-    uprng              ran;
+    randomized::rand_  ran( time(NULL) );
     memory::blocks     b;
     cxx_list_of<block> l;
 
@@ -45,7 +45,7 @@ YACK_UTEST(memory_blocks)
         }
     }
 
-    ran.shuffle_list(l);
+    randomized::shuffle::list(l,ran);
     std::cerr << "Created " << l.size << " blocks" << std::endl;
 
     while(l.size)

@@ -39,7 +39,7 @@ namespace
 YACK_UTEST(memory_arena_io)
 {
     
-    uprng              ran;
+    randomized::rand_  ran( time(NULL) );
     cxx_list_of<block> blocks;
     memory::allocator  &gmem = memory::global::instance();
     memory::dyadic     &pmem = memory::dyadic::instance();
@@ -52,7 +52,7 @@ YACK_UTEST(memory_arena_io)
             void *p = a.acquire();
             blocks.push_back( new block(p) );
         }
-        ran.shuffle_list(blocks);
+        randomized::shuffle::list(blocks,ran);
         a.display();
         const size_t low = blocks.size/4;
         while(blocks.size>low)

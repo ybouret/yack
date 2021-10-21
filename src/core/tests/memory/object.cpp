@@ -42,7 +42,7 @@ namespace {
 
 
     template <size_t N> static inline
-    void do_test_obj(uprng &ran)
+    void do_test_obj(randomized::bits &ran)
     {
         typedef block<N> Block;
         std::cerr << "N=" << N << ": ";YACK_SIZEOF(block<N>);
@@ -53,7 +53,7 @@ namespace {
                 l.push_back(new Block());
             }
 
-            ran.shuffle_list(l);
+            randomized::shuffle::list(l,ran);
         }
         YACK_CHECK("new/delete" && all_blocks<=0);
         for(size_t i=0;i<=1000;++i)
@@ -64,7 +64,7 @@ namespace {
         YACK_CHECK("new[]/delete[]" && all_blocks<=0);
 
         void *impl[ YACK_WORDS_FOR(Block) ];
-        ran.fillnz(impl,sizeof(impl));
+        ran.fill(impl,sizeof(impl));
         Block *b = new (impl) Block();
         b->~Block();
         YACK_CHECK("placement" && all_blocks<=0);
@@ -77,7 +77,7 @@ namespace {
 
 YACK_UTEST(object)
 {
-    uprng ran;
+    randomized::rand_ ran( time(NULL) );
     do_test_obj<1>(ran);
     do_test_obj<2>(ran);
     do_test_obj<3>(ran);

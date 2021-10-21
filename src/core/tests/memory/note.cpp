@@ -17,8 +17,7 @@ namespace
 
 YACK_UTEST(memory_note)
 {
-    uprng ran;
-
+    
     std::cerr << "note::max_page_size=" << memory::note::max_page_size << std::endl;
     std::cerr << "note::max_page_exp2=" << memory::note::max_page_exp2 << std::endl;
     std::cerr << "sizeof(note)       =" << sizeof(memory::note)        << std::endl;

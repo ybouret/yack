@@ -13,7 +13,6 @@ namespace
 
 YACK_UTEST(apex_types)
 {
-    uprng ran;
     
     
   

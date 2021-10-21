@@ -28,7 +28,7 @@ namespace
 
 YACK_UTEST(memory_parcels)
 {
-    uprng              ran;
+    randomized::rand_  ran( time(NULL) );
     {
         memory::parcels    mgr;
         cxx_list_of<block> blocks;
@@ -44,7 +44,7 @@ YACK_UTEST(memory_parcels)
         mgr.display();
         
         std::cerr << "deleting parcels..." << std::endl;
-        ran.shuffle_list(blocks);
+        randomized::shuffle::list(blocks,ran);
         while(blocks.size)
         {
             block *blk = blocks.pop_back();
