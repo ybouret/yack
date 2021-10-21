@@ -87,7 +87,7 @@ add_test(sync:mutex     test-yack sync_mutex)
 add_test(sync:condition test-yack sync_condition)
 add_test(sync:thread    test-yack sync_condition)
 add_test(singleton      test-yack singleton)
-add_test(sync:loop      test-yack loop)
+add_test(sync:loop      test-yack sync_loop)
 
 add_test(fft:1d        test-yack  fft1d 0.1)
 add_test(fft:xbr-info  test-yack  fft_xbr_info)
@@ -101,7 +101,7 @@ add_test(apex:n         test-yack  apn)
 add_test(ios::c-file    test-yack ios_c_file)
 add_test(ios:streams    test-yack ios_streams)
 
-add_test(hashing::64     test-yack hash64)
+add_test(hashing::64    test-yack hash64)
 
 add_test(rand:bits      test-yack rand_bits)
 

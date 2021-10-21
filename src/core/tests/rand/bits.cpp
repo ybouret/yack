@@ -4,6 +4,8 @@
 #include "yack/data/raw-list.hpp"
 #include "yack/utest/run.hpp"
 
+#include <cstring>
+
 using namespace yack;
 
 namespace
