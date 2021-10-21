@@ -6,7 +6,7 @@
 #define YACK_IOS_OCSTREAM_INCLUDED 1
 
 #include "yack/ios/ostream.hpp"
-#include "yack/ios/c-file.hpp"
+#include "yack/ios/c/file.hpp"
 
 namespace yack
 {

@@ -198,13 +198,19 @@ set(ios ${ios_impl} ${ios_decl})
 SOURCE_GROUP(ios FILES ${ios})
 install( FILES ${ios_decl} DESTINATION include/yack/ios )
 
+file(GLOB ios_c_impl yack/ios/c/*.cpp)
+file(GLOB ios_c_decl yack/ios/c/*.hpp)
+set(ios_c ${ios_c_impl} ${ios_c_decl})
+SOURCE_GROUP(ios/c FILES ${ios_c})
+install( FILES ${ios_c_decl} DESTINATION include/yack/ios/c)
+
 ########################################################################
 ##
 ## kr
 ##
 ########################################################################
-file(GLOB kr_impl yack/kr/*.cpp yack/kr/*.c)
-file(GLOB kr_decl yack/kr/*.hpp yack/kr/*.h)
+file(GLOB kr_impl yack/kr/*.cpp)
+file(GLOB kr_decl yack/kr/*.hpp)
 set(kr ${kr_impl} ${kr_decl})
 SOURCE_GROUP(kr FILES ${kr})
 install( FILES ${kr_decl} DESTINATION include/yack/kr )
@@ -272,7 +278,7 @@ ${memory} ${memory_allocator} ${memory_small} ${memory_large} ${memory_joint}
 ${fft}
 ${apex} ${apex_n} ${apex_m}
 ${concurrent} ${concurrent_quark} ${concurrent_loop}
-${ios}
+${ios} ${ios_c}
 ${randomized}
 ${kr}
 ${hashing}
