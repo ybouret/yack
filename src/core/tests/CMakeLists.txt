@@ -24,6 +24,9 @@ file(GLOB ios ios/*.cpp)
 source_group(ios FILES ${ios})
 
 
+file(GLOB hashing hashing/*.cpp)
+source_group(hashing FILES ${hashing})
+
 file(GLOB rand rand/*.cpp)
 source_group(rand FILES ${rand})
 
@@ -36,6 +39,7 @@ ${sync}
 ${apex}
 ${fft}
 ${ios}
+${hashing}
 ${rand}
 )
 
@@ -96,6 +100,8 @@ add_test(apex:n         test-yack  apn)
 
 add_test(ios::c-file    test-yack ios_c_file)
 add_test(ios:streams    test-yack ios_streams)
+
+add_test(hashing::64     test-yack hash64)
 
 add_test(rand:bits      test-yack rand_bits)
 

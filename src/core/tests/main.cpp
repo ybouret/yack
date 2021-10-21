@@ -60,6 +60,8 @@ YACK_UTEST_DECL(64)
     YACK_UTEST(ios_c_file);
     YACK_UTEST(ios_streams);
 
+    YACK_UTEST(hash64);
+
     YACK_UTEST(rand_bits);
 
 }

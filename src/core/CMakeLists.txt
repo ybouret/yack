@@ -209,6 +209,17 @@ set(kr ${kr_impl} ${kr_decl})
 SOURCE_GROUP(kr FILES ${kr})
 install( FILES ${kr_decl} DESTINATION include/yack/kr )
 
+########################################################################
+##
+## hashing
+##
+########################################################################
+file(GLOB hashing_impl yack/hashing/*.cpp yack/hashing/*.c)
+file(GLOB hashing_decl yack/hashing/*.hpp yack/hashing/*.h)
+set(hashing ${hashing_impl} ${hashing_decl})
+SOURCE_GROUP(hashing FILES ${hashing})
+install( FILES ${hashing_decl} DESTINATION include/yack/hashing )
+
 
 ########################################################################
 ##
@@ -264,6 +275,7 @@ ${concurrent} ${concurrent_quark} ${concurrent_loop}
 ${ios}
 ${randomized}
 ${kr}
+${hashing}
 ${utest}
 )
 
