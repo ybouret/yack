@@ -54,6 +54,7 @@ add_test(align   test-yack align)
 add_test(base2   test-yack base2)
 add_test(at_exit test-yack at_exit)
 add_test(wtime   test-yack wtime)
+add_test(complex  test-yack complex)
 
 add_test(type:ints   test-yack type_ints)
 add_test(type:traits test-yack type_traits)

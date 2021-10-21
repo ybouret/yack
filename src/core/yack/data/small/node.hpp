@@ -20,6 +20,7 @@ namespace yack
 
         inline  small_node(param_type args) : next(0), prev(0), data(args) {}
         inline ~small_node() throw() { assert(NULL==next); assert(NULL==prev); }
+        inline  small_node(const small_node &node) : next(0), prev(0), data(node.data) {}
 
         inline type       & operator*() throw()       { return data; }
         inline const_type & operator*() const throw() { return data; }
