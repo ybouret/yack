@@ -52,27 +52,11 @@ namespace yack
 }
 
 
-#include "yack/check/printf.hpp"
 
 namespace yack
 {
     namespace ios
     {
-        class writable_file : public c_file
-        {
-        public:
-            virtual  ~writable_file() throw();
-            explicit  writable_file(const cstderr_t &);
-            explicit  writable_file(const cstdout_t &);
-            explicit  writable_file(const char *filename, const bool append);
-
-            void put(const char C);
-            void put(const char *fmt,void *);
-            void putf(const char *fmt,...) YACK_PRINTF_API;
-
-        private:
-            YACK_DISABLE_COPY_AND_ASSIGN(writable_file);
-        };
         
         class readable_file : public c_file
         {
