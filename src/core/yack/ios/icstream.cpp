@@ -18,6 +18,22 @@ namespace yack
         {
         }
 
+
+        icstream:: icstream(const char *filename) :
+        file(filename)
+        {
+        }
+
+        bool icstream:: query_(char &C)
+        {
+            return file.get(C);
+        }
+
+        size_t icstream:: fetch_(void *addr, const size_t size)
+        {
+            return file.get(addr,size);
+        }
+
     }
 
 }

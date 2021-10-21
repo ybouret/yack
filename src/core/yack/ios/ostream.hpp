@@ -4,7 +4,6 @@
 #define YACK_IOS_OSTREAM_INCLUDED 1
 
 #include "yack/ios/stream.hpp"
-#include "yack/type/ints.hpp"
 
 namespace yack
 {

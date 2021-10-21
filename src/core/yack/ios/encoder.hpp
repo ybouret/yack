@@ -5,6 +5,7 @@
 #define YACK_IOS_ENCODER_INCLUDED 1
 
 #include "yack/ios/ostream.hpp"
+#include "yack/type/ints.hpp"
 
 namespace yack
 {

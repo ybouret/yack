@@ -5,6 +5,7 @@
 #define YACK_IOS_ISTREAM_INCLUDED 1
 
 #include "yack/ios/stream.hpp"
+#include "yack/data/small/list.hpp"
 
 namespace yack
 {
@@ -21,12 +22,18 @@ namespace yack
         public:
             virtual ~istream() throw(); //!< cleanup
 
-            
+            bool    query(char &C);
+            void    store(char  C);
+            size_t  fetch(void *addr, const size_t size);
+
         protected:
             explicit istream() throw(); //!< setup
 
         private:
             YACK_DISABLE_COPY_AND_ASSIGN(istream);
+            small_list<char> cache;
+            virtual bool   query_(char &C) = 0;
+            virtual size_t fetch_(void *addr, const size_t size) = 0;
         };
     }
 }

@@ -23,15 +23,16 @@ namespace yack
             //
             // C++
             //__________________________________________________________________
-            virtual ~readable_file() throw();         //!< cleanup
-            explicit readable_file(const cstdin_t &); //!< link to stdin
+            virtual ~readable_file() throw();             //!< cleanup
+            explicit readable_file(const cstdin_t &);     //!< link to stdin
+            explicit readable_file(const char *filename); //!< open readable file
 
             //__________________________________________________________________
             //
             // methods
             //__________________________________________________________________
-            bool   get(char &C); //!< return if feof, throw if ferror
-            size_t get(void *addr, const size_t size); //!< throw on error
+            bool   get(char &C);                       //!< return false if feof, throw if ferror
+            size_t get(void *addr, const size_t size); //!< size>0, throw on error
 
 
         private:

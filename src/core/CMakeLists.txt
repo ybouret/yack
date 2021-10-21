@@ -78,6 +78,12 @@ set(data ${data_impl} ${data_decl})
 SOURCE_GROUP(data FILES ${data})
 install( FILES ${data_decl} DESTINATION include/yack/data )
 
+file(GLOB data_small_impl yack/data/small/*.cpp)
+file(GLOB data_small_decl yack/data/small/*.hpp)
+set(data_small ${data_small_impl} ${data_small_decl})
+SOURCE_GROUP(data/small FILES ${data_small})
+install( FILES ${data_small_decl} DESTINATION include/yack/data/small )
+
 ########################################################################
 ##
 ## container  operations
@@ -272,7 +278,7 @@ ${type}
 ${arith}
 ${check}
 ${system}
-${data}
+${data} ${data_small}
 ${container}
 ${memory} ${memory_allocator} ${memory_small} ${memory_large} ${memory_joint}
 ${fft}
