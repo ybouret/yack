@@ -1,6 +1,5 @@
-
-
 //! \file
+
 #ifndef YACK_IOS_OSTREAM_INCLUDED
 #define YACK_IOS_OSTREAM_INCLUDED 1
 
@@ -35,18 +34,7 @@ namespace yack
             ostream & operator<<(const char C);     //!< uses write
             ostream & operator<<(const char *msg);  //!< uses frame
 
-            void put(const uint8_t  &);
-            void put(const uint16_t &);
-            void put(const uint32_t &);
-            void put(const uint64_t &);
-
-            template <typename T>
-            inline void emit(const T x)
-            {
-                const typename unsigned_for<T>::type y(x);
-                put(y);
-            }
-
+          
             
             //__________________________________________________________________
             //
