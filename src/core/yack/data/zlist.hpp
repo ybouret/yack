@@ -23,7 +23,7 @@ namespace yack
         //
         // C++
         //______________________________________________________________________
-        inline explicit zlist_of() throw() : zlinked<NODE>()  {}
+        inline explicit zlist_of() throw() : zlinked<NODE>(), impl() {}
         inline virtual ~zlist_of() throw() { clear(); }
 
         //______________________________________________________________________
