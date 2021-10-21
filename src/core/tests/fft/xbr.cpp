@@ -3,6 +3,7 @@
 #include "yack/utest/run.hpp"
 #include "yack/type/utils.hpp"
 #include "yack/system/wtime.hpp"
+#include "yack/randomized/rand.hpp"
 #include <cstring>
 
 using namespace yack;
@@ -38,9 +39,11 @@ namespace yack
 
 namespace
 {
+    static double tsample=0.2;
+
     template <typename T>
     static inline
-    void test_xbr(uprng &ran)
+    void test_xbr(randomized::bits &ran)
     {
         wtime chrono;
         
@@ -49,7 +52,7 @@ namespace
             std::cerr << "size=" << std::setw(6) << size;
             const size_t n = size*2;
             T *data = new T[2*n];
-            ran.fillnz(data,2*n*sizeof(T));
+            ran.fill(data,2*n*sizeof(T));
             T *work = data+n;
             for(size_t i=0;i<n;++i) work[i] = data[i];
             YACK_ASSERT(0==memcmp(work,data,n*sizeof(T)));
@@ -75,7 +78,7 @@ namespace
                     yack::xbitrev(work-1,size);
                     opt_ticks += wtime::ticks() - mark;
                 }
-            } while( chrono(std_ticks)<=0.2 );
+            } while( chrono(std_ticks)<=tsample );
             
             const double std_rate =1e-6 * iter/chrono(std_ticks);
             const double opt_rate =1e-6 * iter/chrono(opt_ticks);
@@ -94,7 +97,8 @@ namespace
 
 YACK_UTEST(fft_xbr8)
 {
-    uprng ran;
+    if(argc>1) tsample = atof(argv[1]);
+    randomized::rand_ ran( time(NULL) );
     std::cerr.precision(4);
     test_xbr<uint8_t>(ran);
 }
@@ -102,7 +106,8 @@ YACK_UDONE()
 
 YACK_UTEST(fft_xbr64)
 {
-    uprng ran;
+    if(argc>1) tsample = atof(argv[1]);
+    randomized::rand_ ran( time(NULL) );
     std::cerr.precision(4);
     test_xbr<uint64_t>(ran);
     

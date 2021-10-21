@@ -4,7 +4,8 @@
 #include "yack/memory/allocator/global.hpp"
 #include "yack/type/utils.hpp"
 #include "yack/system/wtime.hpp"
-#include <cstdio>
+#include "yack/ios/ocstream.hpp"
+#include "yack/randomized/rand.hpp"
 
 using namespace yack;
 
@@ -13,11 +14,11 @@ namespace
 
     static double rates[64];
     static size_t nrate=0;
-
+    static double tsample = 0.5;
 
     template <typename T,const size_t exp2>
     static inline
-    double do_xtest(uprng &ran)
+    double do_xtest(randomized::bits &ran)
     {
         memory::allocator  &mgr = memory::global::instance();
         static const size_t size =  size_t(1) << exp2;
@@ -56,7 +57,7 @@ namespace
             ++iter;
             fft1d::forward(data-1,size);
             fft1d::reverse(data-1,size);
-        } while( (ellapsed = chrono(fft1d::algo_ticks)) <= 0.5 );
+        } while( (ellapsed = chrono(fft1d::algo_ticks)) <= tsample );
         rate = 1e-3 * iter / ellapsed;
         std::cerr << " rate = "  << std::setw(14) << rate;
         if(exp2>=4 && sizeof(T)==sizeof(double))
@@ -75,18 +76,12 @@ namespace
     static const char filename[] = "fft.dat";
     template <const size_t exp2>
     static inline
-    void do_xtests(uprng &ran)
+    void do_xtests(randomized::bits &ran)
     {
         const double frate = do_xtest<float,exp2>(ran);
         const double drate = do_xtest<double,exp2>(ran);
-        
-        FILE *fp = fopen(filename,"ab");
-        if(fp)
-        {
-            fprintf(fp,"%u %g %g\n",unsigned(exp2),log10(frate),log10(drate));
-            fclose(fp);
-        }
-        
+
+        ios::ocstream::echo(filename,"%u %g %g\n",unsigned(exp2),log10(frate),log10(drate));
     }
     
     template <typename T>
@@ -103,8 +98,11 @@ namespace
 
 YACK_UTEST(fft1d)
 {
-    uprng ran;
-    FILE *fp = fopen(filename,"wb"); if(fp) fclose(fp);
+
+    if(argc>1) tsample = atof(argv[1]);
+    randomized::rand_ ran( time(NULL) );
+    ios::ocstream::overwrite(filename);
+
     do_xtests<0>(ran);
     do_xtests<1>(ran);
     do_xtests<2>(ran);

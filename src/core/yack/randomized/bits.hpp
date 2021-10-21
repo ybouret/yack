@@ -48,17 +48,18 @@ namespace yack
             }
 
             template <typename T> inline
-            T partial(const size_t nbit) throw()
+            T gen(const size_t nbit) throw()
             {
                 assert(nbit<=sizeof(T)*8);
                 if(nbit>0)
                 {
                     T ans = 1;
-                    for(size_t i=nbit;i>0;--i)
+                    for(size_t i=nbit;i>1;--i)
                     {
                         ans <<= 1;
                         if(choice()) ans |= 1;
                     }
+                    return ans;
                 }
                 else
                 {
@@ -68,7 +69,7 @@ namespace yack
 
 
             //! fill with non zero bytes
-            void fill(void *addr, const size_t size) throw();
+            void fill(void *addr, size_t size) throw();
 
 
         private:

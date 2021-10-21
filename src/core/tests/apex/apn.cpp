@@ -11,8 +11,7 @@ using namespace yack;
 YACK_UTEST(apn)
 {
 
-    uprng ran;
-    randomized::rand_ rr( time(NULL) );
+    randomized::rand_ ran( time(NULL) );
 
 
     for(size_t bits=0;bits<=64;++bits)
@@ -74,13 +73,12 @@ YACK_UTEST(apn)
     }
 
     std::cerr << "[RAN]" << std::endl;
-    for(size_t nbit=0;nbit<=41;++nbit)
+    for(size_t nbit=0;nbit<=20000;++nbit)
     {
-        apn n(rr,nbit);
-        n.output_bin(std::cerr) << std::endl;
+        const apn n(ran,nbit);
+        YACK_ASSERT(n.bits()==nbit);
     }
 
-    return 0;
 
     std::cerr << "[CMP]" << std::endl;
     for(size_t ibits=0;ibits<=60;++ibits)

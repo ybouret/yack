@@ -72,10 +72,10 @@ namespace yack
         }
 
 
-        void bits:: fill(void *addr, const size_t size) throw()
+        void bits:: fill(void *addr, size_t size) throw()
         {
             uint8_t *p = static_cast<uint8_t*>(addr);
-            while(size>0)
+            while(size-- >0)
             {
                 *(p++) = uint8_t(1+leq(254));
             }
