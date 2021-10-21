@@ -19,9 +19,10 @@ namespace yack
             explicit  writable_file(const cstdout_t &);
             explicit  writable_file(const char *filename, const bool append);
 
-            void put(const char C);
-            void put(const char *fmt,void *);
-            void putf(const char *fmt,...) YACK_PRINTF_API;
+            void   put(const char C);
+            void   put(const char *fmt,void *);
+            void   putf(const char *fmt,...) YACK_PRINTF_API;
+            void   put(const void *addr,const size_t size);
 
         private:
             YACK_DISABLE_COPY_AND_ASSIGN(writable_file);

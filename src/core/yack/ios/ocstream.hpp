@@ -19,6 +19,7 @@ namespace yack
             explicit ocstream(const char *filename, const bool append=false);
 
             virtual void write(const char C);
+            virtual void frame(const void *,const size_t);
             virtual void operator()(const char *fmt,...);
             
             static void overwrite(const char *filename);

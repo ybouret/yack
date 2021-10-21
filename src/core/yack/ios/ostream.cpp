@@ -2,6 +2,7 @@
 
 #include "yack/ios/ostream.hpp"
 #include "yack/exception.hpp"
+#include "yack/type/cstring.h"
 namespace yack
 {
     namespace ios
@@ -16,11 +17,12 @@ namespace yack
         {
         }
 
-        void ostream:: frame(const char *msg)
+        void ostream:: frame(const void *addr, const size_t size)
         {
-            if(msg)
+            const char *ptr = static_cast<const char *>(addr);
+            for(size_t i=size;i>0;--i)
             {
-                while(*msg) write( *(msg++) );
+                write(*(ptr++));
             }
         }
 
@@ -32,7 +34,7 @@ namespace yack
 
         ostream & ostream:: operator<<(const char *msg)
         {
-            frame(msg);
+            frame(msg,yack_cstring_size(msg));
             return *this;
         }
 

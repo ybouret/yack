@@ -40,6 +40,13 @@ namespace yack
             file.put(C);
         }
 
+        void ocstream:: frame(const void *addr, const size_t size)
+        {
+            file.put(addr,size);
+        }
+
+
+
         void ocstream:: operator()(const char *fmt,...)
         {
             assert(NULL!=fmt);

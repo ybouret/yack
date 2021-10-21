@@ -51,24 +51,4 @@ namespace yack
 
 }
 
-
-
-namespace yack
-{
-    namespace ios
-    {
-        
-        class readable_file : public c_file
-        {
-            virtual ~readable_file() throw();
-            explicit readable_file(const cstdin_t &);
-            
-        private:
-            YACK_DISABLE_COPY_AND_ASSIGN(readable_file);
-        };
-        
-
-    }
-}
-
 #endif

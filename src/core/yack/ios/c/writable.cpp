@@ -47,6 +47,7 @@ namespace yack
             va_list &ap = *static_cast<va_list *>(args);
             try
             {
+                YACK_GIANT_LOCK();
                 if(vfprintf(static_cast<FILE *>(handle),fmt,ap)<0)
                 {
                     throw libc::exception(errno,"vfprintf(...)");
@@ -67,6 +68,16 @@ namespace yack
             va_start(ap,fmt);
             put(fmt,&ap);
             va_end(ap);
+        }
+
+        void writable_file::put(const void *addr,const size_t size)
+        {
+            assert(!(NULL==addr&&size>0));
+            YACK_GIANT_LOCK();
+            if(fwrite(addr,1,size,static_cast<FILE*>(handle))<size)
+            {
+                throw libc::exception(errno,"writable_file::put(%lu)", (unsigned long)size );
+            }
         }
 
     }

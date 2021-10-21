@@ -16,9 +16,9 @@ namespace yack
             virtual ~ostream() throw();
 
             // interface
-            virtual void write(const char C) = 0;
-            virtual void frame(const char *msg);          //!< default: write all message
-            virtual void operator()(const char *fmt,...); //!< default it not implemented yet
+            virtual void write(const char) = 0;
+            virtual void frame(const void *, const size_t); //!< default: write all message
+            virtual void operator()(const char *fmt,...);   //!< default it not implemented yet
 
             ostream & operator<<(const char C);
             ostream & operator<<(const char *msg);
