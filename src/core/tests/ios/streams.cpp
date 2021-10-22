@@ -16,15 +16,13 @@ namespace
         size_t nw = 0;
         {
             ios::ocstream fp("test-pack.dat");
-            nw = ios::encoder::serialize(fp,x);
-            //std::cerr << "sent " << x << std::endl;
+            nw = ios::encoder::serialize64(fp,x);
         }
 
         {
             ios::icstream fp("test-pack.dat");
             uint64_t      y = 0;
             const size_t  nr = ios::decoder::construct64(fp,y,"y");
-            //std::cerr << "recv " << y << std::endl;
             YACK_ASSERT(nr==nw);
             YACK_ASSERT(x==y);
         }
@@ -55,6 +53,36 @@ namespace
             const size_t nr = ios::decoder::construct(fp,b,"b");
             YACK_ASSERT(nr==nw);
             YACK_ASSERT(x==b);
+        }
+
+    }
+
+    template <typename T>
+    static inline void test_ser()
+    {
+        static const T arr[] = {
+            integral_for<T>::minimum,
+            integral_for<T>::minimum/2,
+            0,
+            integral_for<T>::maximum/2,
+            integral_for<T>::maximum };
+        static const size_t num = sizeof(arr)/sizeof(arr[0]);
+
+        for(size_t i=0;i<num;++i)
+        {
+            size_t nw = 0;
+            {
+                ios::ocstream fp("test-pack.dat");
+                nw = ios::encoder::serialize(fp,arr[i]);
+            }
+
+            {
+                ios::icstream fp("test-pack.dat");
+                T      y = 0;
+                const size_t  nr = ios::decoder::construct(fp,y,"y");
+                YACK_ASSERT(nr==nw);
+                YACK_ASSERT(arr[i]==y);
+            }
         }
 
     }
@@ -129,7 +157,7 @@ YACK_UTEST(ios_streams)
         }
     }
 
-    std::cerr << "[pack/unpack]" << std::endl;
+    std::cerr << "[serialize64/construct64]" << std::endl;
     test_userialize(0);
     for(size_t bits=0;bits<=64;++bits)
     {
@@ -142,6 +170,17 @@ YACK_UTEST(ios_streams)
     }
     test_userialize(integral_for<uint64_t>::maximum);
 
+    std::cerr << "[serialize/construct]" << std::endl;
+    test_ser<int8_t>();
+    test_ser<uint8_t>();
+    test_ser<int16_t>();
+    test_ser<uint16_t>();
+
+    test_ser<int32_t>();
+    test_ser<uint32_t>();
+
+    test_ser<int64_t>();
+    test_ser<uint64_t>();
 
     if(false)
     {

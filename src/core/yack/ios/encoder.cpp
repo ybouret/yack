@@ -78,15 +78,20 @@ namespace yack
 
 
 
-
+                //______________________________________________________________
+                //
                 // prepare all quartets
+                //______________________________________________________________
                 for(size_t i=1;i<=semibytes;++i)
                 {
                     q[i] = uint8_t(qw&0xf);
                     qw >>= 4;
                 }
 
+                //______________________________________________________________
+                //
                 // merge all quartets
+                //______________________________________________________________
                 b[0] = (q[0]  << 4) | q[1];
                 b[1] = (q[2]  << 4) | q[3];
                 b[2] = (q[4]  << 4) | q[5];
@@ -103,7 +108,7 @@ namespace yack
         }
 
 
-        size_t encoder:: serialize(ostream &os, const uint64_t qw)
+        size_t encoder:: serialize64(ostream &os, const uint64_t qw)
         {
             if(qw<=0)
             {
