@@ -175,10 +175,8 @@ YACK_UTEST(ios_streams)
     test_ser<uint8_t>();
     test_ser<int16_t>();
     test_ser<uint16_t>();
-
     test_ser<int32_t>();
     test_ser<uint32_t>();
-
     test_ser<int64_t>();
     test_ser<uint64_t>();
 

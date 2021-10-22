@@ -134,6 +134,14 @@ set(memory_allocator ${memory_allocator_impl} ${memory_allocator_decl})
 SOURCE_GROUP(memory/allocator FILES ${memory_allocator})
 install( FILES ${memory_allocator_decl} DESTINATION include/yack/memory/allocator )
  
+# memory buffers 
+file(GLOB memory_buffer_impl yack/memory/buffer/*.cpp)
+file(GLOB memory_buffer_decl yack/memory/buffer/*.hpp)
+set(memory_buffer ${memory_buffer_impl} ${memory_buffer_decl})
+SOURCE_GROUP(memory/buffer FILES ${memory_buffer})
+install( FILES ${memory_buffer_decl} DESTINATION include/yack/memory/buffer )
+ 
+ 
 ########################################################################
 ##
 ## fft operations
@@ -280,7 +288,7 @@ ${check}
 ${system}
 ${data} ${data_small}
 ${container}
-${memory} ${memory_allocator} ${memory_small} ${memory_large} ${memory_joint}
+${memory} ${memory_allocator} ${memory_small} ${memory_large} ${memory_joint} ${memory_buffer}
 ${fft}
 ${apex} ${apex_n} ${apex_m}
 ${concurrent} ${concurrent_quark} ${concurrent_loop}

@@ -53,9 +53,6 @@ namespace yack
             void *acquire_unlocked(size_t &block_size);
 
             //! release previously acquired block
-            /**
-             
-             */
             void  release_unlocked(void * &block_addr, size_t &block_size) throw();
 
             //__________________________________________________________________

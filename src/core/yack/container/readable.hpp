@@ -3,6 +3,7 @@
 #ifndef YACK_READABLE_INCLUDED
 #define YACK_READABLE_INCLUDED 1
 
+#include "yack/container/collection.hpp"
 #include "yack/type/args.hpp"
 
 namespace yack
@@ -14,7 +15,7 @@ namespace yack
     //
     //__________________________________________________________________________
     template <typename T>
-    class readable
+    class readable : public collection
     {
     public:
         //______________________________________________________________________
@@ -27,8 +28,7 @@ namespace yack
         //
         // interface
         //______________________________________________________________________
-        virtual size_t      size()                   const throw() = 0; //!< handled items
-        virtual const_type &operator[](const size_t) const throw() = 0; //!< in [1..size]
+        virtual const_type &operator[](const size_t) const throw() = 0; //!< in [1..size()]
 
         //______________________________________________________________________
         //

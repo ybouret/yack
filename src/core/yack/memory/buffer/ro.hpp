@@ -1,0 +1,47 @@
+
+//! \file
+
+#ifndef YACK_MEMORY_BUFFER_RO_INCLUDED
+#define YACK_MEMORY_BUFFER_RO_INCLUDED 1
+
+#include "yack/setup.hpp"
+
+namespace yack
+{
+
+    namespace memory
+    {
+
+        //______________________________________________________________________
+        //
+        //
+        //! read-only buffer interface
+        //
+        //______________________________________________________________________
+        class ro_buffer
+        {
+        public:
+            //__________________________________________________________________
+            //
+            // interface
+            //__________________________________________________________________
+            virtual size_t      measure() const throw() = 0; //!< usable bytes
+            virtual const void *ro_addr() const throw() = 0; //!< first byte address
+
+            //__________________________________________________________________
+            //
+            // C++
+            //__________________________________________________________________
+            virtual ~ro_buffer() throw(); //!< cleanup
+        protected:
+            explicit ro_buffer() throw(); //!< setup
+
+        private:
+            YACK_DISABLE_COPY_AND_ASSIGN(ro_buffer);
+        };
+
+    }
+
+}
+
+#endif
