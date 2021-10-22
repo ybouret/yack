@@ -104,17 +104,14 @@ namespace yack
                     const unsigned extra = bytes-1;
                     if(extra!=fp.fetch(b+1,extra)) throw libc::exception(EIO,"missing bytes for '%s'",info?info:yack_unknown);
                 }
-
-
-
-
+                
                 //______________________________________________________________
                 //
                 // expand bytes into quartets
                 //______________________________________________________________
-#define YEXPAND(I) (b[I] >> 0x4), (b[I] &  0xf)
+#define YEXPAND(I) uint8_t(b[I] >> 0x4), uint8_t(b[I] &  0xf)
                 const uint8_t q[32] = {
-                    (b[0]&0xf),
+                    uint8_t(b[0]&0xf),
                     YEXPAND(1), YEXPAND(2),YEXPAND(3),YEXPAND(4),
                     YEXPAND(5), YEXPAND(6),YEXPAND(7),YEXPAND(8),
                     0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
