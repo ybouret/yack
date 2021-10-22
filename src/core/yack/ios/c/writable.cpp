@@ -40,7 +40,7 @@ namespace yack
 
         }
 
-        void writable_file:: put(const char *fmt,void *args)
+        size_t writable_file:: put(const char *fmt,void *args)
         {
             assert(NULL!=fmt);
             assert(NULL!=args);
@@ -48,10 +48,12 @@ namespace yack
             try
             {
                 YACK_GIANT_LOCK();
-                if(vfprintf(static_cast<FILE *>(handle),fmt,ap)<0)
+                const int res = vfprintf(static_cast<FILE *>(handle),fmt,ap);
+                if(res<0)
                 {
                     throw libc::exception(errno,"vfprintf(...)");
                 }
+                return res;
             }
             catch(...)
             {
@@ -61,13 +63,14 @@ namespace yack
 
         }
 
-        void writable_file:: putf(const char *fmt,...)
+        size_t writable_file:: putf(const char *fmt,...)
         {
             assert(NULL!=fmt);
             va_list ap;
             va_start(ap,fmt);
-            put(fmt,&ap);
+            const size_t nw = put(fmt,&ap);
             va_end(ap);
+            return nw;
         }
 
         void writable_file::put(const void *addr,const size_t size)

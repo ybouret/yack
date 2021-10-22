@@ -20,12 +20,18 @@ namespace yack
         public:
             //__________________________________________________________________
             //
-            // virtual interface
+            //   interface
             //__________________________________________________________________
-            virtual void write(const char) = 0;             //!< write one char
-            virtual void frame(const void *, const size_t); //!< default: write all block as chars
-            virtual void operator()(const char *fmt,...);   //!< default it not implemented yet
+            virtual void   write(const char) = 0;             //!< write one char
+            virtual void   flush()           = 0;             //!< flush if necessary
 
+            //__________________________________________________________________
+            //
+            // default virtual functions
+            //__________________________________________________________________
+            virtual void   frame(const void *, const size_t); //!< default: write all block as chars
+            virtual size_t operator()(const char *fmt,...);   //!< default it not implemented yet
+            
             //__________________________________________________________________
             //
             // non virtual interface

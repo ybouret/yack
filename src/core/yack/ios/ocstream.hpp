@@ -32,9 +32,10 @@ namespace yack
             //
             // ostream interface
             //__________________________________________________________________
-            virtual void write(const char C);
-            virtual void frame(const void *,const size_t);
-            virtual void operator()(const char *fmt,...);
+            virtual void   write(const char C);
+            virtual void   flush();
+            virtual void   frame(const void *,const size_t);
+            virtual size_t operator()(const char *fmt,...);
 
             //__________________________________________________________________
             //

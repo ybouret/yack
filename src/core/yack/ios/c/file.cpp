@@ -84,6 +84,11 @@ namespace yack
             return fp;
         }
 
+        void c_file:: flush()
+        {
+            fflush( (FILE*)handle );
+        }
+
 
     }
 

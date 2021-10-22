@@ -11,6 +11,13 @@ namespace yack
 
         ocstream:: ~ocstream() throw()
         {
+            try {
+                flush();
+            }
+            catch(...)
+            {
+
+            }
         }
 
 
@@ -45,15 +52,20 @@ namespace yack
             file.put(addr,size);
         }
 
+        void ocstream:: flush()
+        {
+            file.flush();
+        }
 
 
-        void ocstream:: operator()(const char *fmt,...)
+        size_t ocstream:: operator()(const char *fmt,...)
         {
             assert(NULL!=fmt);
             va_list ap;
             va_start(ap,fmt);
-            file.put(fmt,&ap);
+            const size_t nw = file.put(fmt,&ap);
             va_end(ap);
+            return nw;
         }
 
         void ocstream:: echo(const char *filename, const char *fmt, ...)

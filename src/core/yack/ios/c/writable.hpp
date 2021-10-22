@@ -34,8 +34,8 @@ namespace yack
             // methods
             //__________________________________________________________________
             void   put(const char C);                          //!< put one char
-            void   put(const char *fmt,void *);                //!< helper to format
-            void   putf(const char *fmt,...) YACK_PRINTF_API;  //!< formatted output
+            size_t put(const char *fmt,void *);                //!< helper to format
+            size_t putf(const char *fmt,...) YACK_PRINTF_API;  //!< formatted output
             void   put(const void *addr,const size_t size);    //!< put one block
 
         private:

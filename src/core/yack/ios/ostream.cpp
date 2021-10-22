@@ -38,7 +38,7 @@ namespace yack
             return *this;
         }
 
-        void ostream:: operator()(const char * , ...)
+        size_t ostream:: operator()(const char *fmt,...)
         {
             throw exception("not implemented");
         }
