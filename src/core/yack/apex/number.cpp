@@ -12,6 +12,7 @@ namespace yack
         uint64_t number:: sub_ticks  = 0;
         uint64_t number:: lmul_ticks = 0;
         uint64_t number:: fmul_ticks = 0;
+        uint64_t number:: fsqr_ticks = 0;
         uint64_t number:: div_ticks  = 0;
         uint64_t number:: mod_ticks  = 0;
 
@@ -19,6 +20,7 @@ namespace yack
         size_t number:: sub_count  = 0;
         size_t number:: lmul_count = 0;
         size_t number:: fmul_count = 0;
+        size_t number:: fsqr_count = 0;
         size_t number:: div_count  = 0;
         size_t number:: mod_count  = 0;
 
@@ -32,6 +34,8 @@ namespace yack
             mod_ticks  = 0; mod_count = 0;
             lmul_ticks = 0; lmul_count = 0;
             fmul_ticks = 0; fmul_count = 0;
+            fsqr_ticks = 0; fsqr_count = 0;
+
         }
 
 
@@ -68,6 +72,11 @@ namespace yack
         double number:: fmul_rate()
         {
             return rate(fmul_ticks,fmul_count);
+        }
+
+        double number:: fsqr_rate()
+        {
+            return rate(fsqr_ticks,fsqr_count);
         }
 
         double number:: div_rate()

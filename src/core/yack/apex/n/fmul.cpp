@@ -212,5 +212,55 @@ namespace yack
 
         }
 
+        natural  natural:: fsqr(const handle &l)
+        {
+
+            if(l.words)
+            {
+#if             defined(YACK_APEX_TRACKING)
+                const uint64_t mark = wtime::ticks();
+#endif
+                const size_t             pnb = 2*l.bytes; assert(pnb>0);                    // product num bytes
+                const size_t             pnw = (YACK_ALIGN_TO(word_type,pnb)) >> word_exp2; // product nuw words
+                natural                  res(pnw,as_capacity);       // product
+                const size_t             exp2 = res.max_bytes_exp2;  // shared max bytes exp2
+                const size_t             size = res.max_bytes;       // working bytes
+                archon::tableau<cplx_t>  com(exp2);
+                assert(com.size>=size);
+                cplx_t          *L = &com[0];
+
+                double *data = &(L->re) - 1;
+
+                // using compact/expand
+                apn_to::re(L,l.entry,l.words);       // compact data
+                fft1d::forward(data,size);           // fft
+
+                L[0].re *= L[0].re;
+                {
+                    size_t i=size;
+                    while(--i>0)
+                    {
+                        L[i] *= L[i];
+                    }
+                }
+
+                fft1d::reverse(data,size);
+                finalize((uint8_t *)res.word,pnb,L,size);
+
+                res.words = pnw;
+                res.update();
+#if                 defined(YACK_APEX_TRACKING)
+                fsqr_ticks += wtime::ticks() - mark;
+                ++fsqr_count;
+#endif
+                return res;
+            }
+            else
+            {
+                return 0;
+            }
+        }
+
+
     }
 }

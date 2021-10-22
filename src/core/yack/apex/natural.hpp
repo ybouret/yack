@@ -190,6 +190,9 @@ namespace yack
             static inline natural _fmul(const natural &u, const natural &v) { const handle U(u); const handle V(v); return fmul(U,V); } //!< call fmul
             static inline natural _lmul(const natural &u, const natural &v) { const handle U(u); const handle V(v); return lmul(U,V); } //!< call lmul
 
+            static inline natural _fsqr(const natural &u) { const handle U(u); return fsqr(U);   } //!< call fsqr
+            static inline natural _lsqr(const natural &u) { const handle U(u); return lmul(U,U); } //!< call lmul
+
             //__________________________________________________________________
             //
             // power of two and bits shifting
@@ -275,6 +278,7 @@ namespace yack
             static natural   mul(const  handle &l, const handle &r);         //!< multiplication => lmul/fmul
             static natural   lmul(const handle &l, const handle &r);         //!< long multiplication
             static natural   fmul(const handle &l, const handle &r);         //!< fourier multiplication
+            static natural   fsqr(const handle &l);                          //!< fourier squared
             static natural   div(const  handle &numerator, const handle &denominator); //!< division
             static natural   mod(const  handle &numerator, const handle &denominator); //!< modulo
             static size_t    exp2_look_up(const handle &numerator, const handle &denominator);       //!< helper for div/mod/quot
