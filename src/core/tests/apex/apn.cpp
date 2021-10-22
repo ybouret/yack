@@ -4,7 +4,6 @@
 #include "yack/utest/run.hpp"
 #include "yack/system/endian.hpp"
 #include "yack/randomized/rand.hpp"
-#include <ctime>
 
 using namespace yack;
 
@@ -33,7 +32,6 @@ YACK_UTEST(apn)
                 v |= n[i];
             }
             YACK_ASSERT(u==v);
-            //std::cerr << "n=" << n << std::endl;
 
             apn m = 0;
             m = u;
@@ -292,6 +290,9 @@ YACK_ASSERT( (u OP v) == (U OP v) )
             }
         }
     }
+
+    //ios::ocstream::overwrite("divp.dat");
+
 
     std::cerr << "[DIV/MOD]" << std::endl;
     for(size_t nbit=0;nbit<=64;++nbit)

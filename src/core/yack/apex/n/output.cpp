@@ -38,6 +38,14 @@ namespace yack
         std::ostream & operator<<(std::ostream &os, const natural n)
         {
             return n.output_hex(os);
+            if( os.flags() & std::ios_base::hex )
+            {
+                return n.output_hex(os);
+            }
+            else
+            {
+                return n.output_dec(os);
+            }
         }
 
 
@@ -56,6 +64,28 @@ namespace yack
                 }
             }
 
+            return os;
+        }
+
+    }
+
+}
+namespace yack
+{
+    namespace apex
+    {
+        std::ostream & natural:: output_dec(std::ostream &os) const
+        {
+            if(words<=0)
+            {
+                os << '0';
+            }
+            else
+            {
+                uint_type    _10 = 10;
+                const handle ten(_10);
+                natural      tmp(*this);
+            }
             return os;
         }
 

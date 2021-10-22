@@ -242,6 +242,16 @@ max_bytes(size_t(1)<<max_bytes_exp2 )
             return u;
         }
 
+        natural natural:: factorial(uint_type n)
+        {
+            natural f = 1;
+            while(n>1)
+            {
+                f *= n;
+                --n;
+            }
+            return f;
+        }
 
 
     }

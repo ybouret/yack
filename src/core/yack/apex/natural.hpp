@@ -103,6 +103,10 @@ namespace yack
             //! output binary, compact form
             std::ostream & output_bin(std::ostream &) const;
 
+            //! output decimal
+            std::ostream & output_dec(std::ostream &) const;
+
+
             //! convert value to array of words, uses value as memory
             static const word_type *u2w(uint_type &value,
                                         size_t    &num_words,
@@ -173,7 +177,7 @@ namespace yack
             // multiplication
             //__________________________________________________________________
             YACK_APN_DECL(*)
-            
+            static natural factorial(uint_type n); //!< n!
         
             static inline natural _fmul(const natural &u, const natural &v) { const handle U(u); const handle V(v); return fmul(U,V); } //!< call fmul
             static inline natural _lmul(const natural &u, const natural &v) { const handle U(u); const handle V(v); return lmul(U,V); } //!< call lmul
@@ -249,8 +253,10 @@ namespace yack
             static natural   mul(const handle &l, const handle &r);
             static natural   lmul(const handle &l, const handle &r);
             static natural   fmul(const handle &l, const handle &r);
-            static natural   div(const handle &denominator, const handle &numerator);
-            static natural   mod(const handle &denominator, const handle &numerator);
+            static natural   div(const handle &numerator, const handle &denominator);
+            static natural   mod(const handle &numerator, const handle &denominator);
+
+            static size_t    exp2_look_up(const handle &numerator, const handle &denominator);
 
         };
 

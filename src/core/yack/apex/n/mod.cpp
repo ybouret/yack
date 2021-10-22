@@ -46,15 +46,14 @@ namespace yack
             //
             // numerator>denominator
             // find (2^(p-1))*denominator <= numerator < (2^p)*denominator
-            assert(numerator.words>=denominator.words);
-            // TODO: use delta count to start from a better p
             //__________________________________________________________________
+            assert(numerator.words>=denominator.words);
 
 #if defined(YACK_APEX_TRACKING)
             const uint64_t mark = wtime::ticks();
 #endif
 
-            size_t  p   = 1;
+            size_t  p   = exp2_look_up(numerator,denominator);
             natural qhi = exp2(p); // start fom 2
             while(true)
             {

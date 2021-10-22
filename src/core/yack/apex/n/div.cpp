@@ -8,6 +8,8 @@
 
 #include <iostream>
 
+#include "yack/ios/ocstream.hpp"
+
 namespace yack
 {
     namespace apex
@@ -15,6 +17,23 @@ namespace yack
 
         YACK_APN_BINARY_REP(natural operator/,{ YACK_APN_BINARY_IMPL(natural::div); })
         YACK_APN_UNARY_REP(natural & natural:: operator/=,{YACK_APN_UNARY_IMPL(/); } )
+
+
+        size_t    natural::exp2_look_up(const handle &numerator, const handle &denominator)
+        {
+            assert(numerator.bytes>=denominator.bytes);
+            size_t delta = numerator.bytes - denominator.bytes;
+            if(delta<=0)
+            {
+                return 1;
+            }
+            else
+            {
+                --delta;
+                delta <<= 3;
+                return ++delta;
+            }
+        }
 
         natural  natural:: div(const handle &numerator, const handle &denominator)
         {
@@ -49,16 +68,15 @@ namespace yack
             //
             // numerator>denominator
             // find (2^(p-1))*denominator <= numerator < (2^p)*denominator
-            assert(numerator.words>=denominator.words);
-            // TODO: use delta count to start from a better p
             //__________________________________________________________________
+            assert(numerator.bytes>=denominator.bytes);
 
 #if defined(YACK_APEX_TRACKING)
             const uint64_t mark = wtime::ticks();
 #endif
 
-            size_t  p   = 1;
-            natural qhi = exp2(p); // start fom 2
+            size_t  p   = exp2_look_up(numerator,denominator);
+            natural qhi = exp2(p);
             while(true)
             {
                 const handle  Qhi(qhi);
@@ -74,7 +92,10 @@ namespace yack
                 qhi = exp2(p);
             }
 
+
         BISECTION:
+            //ios::ocstream::echo("divp.dat","%u %u\n", unsigned(delta), unsigned(p));
+
             //__________________________________________________________________
             //
             //
