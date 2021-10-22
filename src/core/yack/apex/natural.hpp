@@ -212,6 +212,8 @@ namespace yack
             //
             // arithmetic
             //__________________________________________________________________
+
+            //! numerator = quot * denominator + rem
             static natural quot(const natural &numerator, const natural &denominator, natural &rem);
 
         private:
