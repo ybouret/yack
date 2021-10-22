@@ -198,3 +198,41 @@ namespace yack
 
 }
 
+namespace yack
+{
+    namespace apex
+    {
+        natural natural::bitwise(const handle &l,
+                                 const handle &r,
+                                 wproc         on_w,
+                                 bproc         on_b)
+        {
+            assert(on_w);
+            assert(on_b);
+            const word_type *lit  = l.entry;
+            size_t           litw = l.words;
+            size_t           litb = l.bytes;
+            
+            const word_type *big  = r.entry;
+            size_t           bigw = r.words;
+            size_t           bigb = r.bytes;
+            
+            if(litb>bigb)
+            {
+                cswap(lit,big);
+                cswap(litb,bigb);
+                cswap(litw,bigw);
+            }
+            assert(litw<=bigw);
+            assert(litb<=bigw);
+            
+            natural res(bigw,as_capacity);
+            
+            
+            res.update();
+            return res;
+        }
+    }
+    
+}
+

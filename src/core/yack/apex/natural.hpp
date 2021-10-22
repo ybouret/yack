@@ -283,7 +283,11 @@ namespace yack
             static natural   mod(const  handle &numerator, const handle &denominator); //!< modulo
             static size_t    exp2_look_up(const handle &numerator, const handle &denominator);       //!< helper for div/mod/quot
             static natural   quot(const handle &numerator, const handle &denominator, natural &rem); //!< simultaneous quot/rem
-
+            
+            typedef word_type (*wproc)(word_type, word_type);
+            typedef uint8_t   (*bproc)(uint8_t, uint8_t);
+            static natural      bitwise(const  handle &l, const handle &r, wproc on_w, bproc on_b);
+            
         };
 
     }
