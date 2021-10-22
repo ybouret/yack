@@ -127,7 +127,7 @@ namespace yack
 /**/          PROLOG (uint_type      lhs, const natural &rhs) EPILOG
 
 
-            YACK_APN_BINARY_REP(int compare,const throw();)
+            YACK_APN_BINARY_REP(static int compare, throw();)
 
             //! declare and inline implement a comparison operator
 #define     YACK_APN_COMPARE(OP) YACK_APN_BINARY_REP(inline friend bool operator OP, throw() { YACK_APN_BINARY_IMPL(cmp) OP 0;})
@@ -215,6 +215,12 @@ namespace yack
 
             //! numerator = quot * denominator + rem
             static natural quot(const natural &numerator, const natural &denominator, natural &rem);
+
+            //! gcd
+            static natural gcd(const natural &a, const natural &b);
+
+            //! simplification
+            static void simplify(natural &num, natural &den);
 
         private:
             size_t       bytes;

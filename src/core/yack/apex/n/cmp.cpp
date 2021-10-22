@@ -7,7 +7,7 @@ namespace yack
     {
 
         YACK_APN_BINARY_REP(int natural::compare,
-                            const throw() { YACK_APN_BINARY_IMPL(cmp); })
+                            throw() { YACK_APN_BINARY_IMPL(cmp); })
         
         int natural:: cmp(const handle &l,
                           const handle &r) throw()
