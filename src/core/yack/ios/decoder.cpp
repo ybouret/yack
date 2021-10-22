@@ -1,6 +1,7 @@
 
 #include "yack/ios/decoder.hpp"
 #include "yack/system/exception.hpp"
+#include "yack/arith/base2.hpp"
 #include <cerrno>
 
 
@@ -67,7 +68,7 @@ namespace yack
         }
 
 
-        size_t decoder:: construct(istream &fp, uint64_t &value, const char *info)
+        size_t decoder:: construct64(istream &fp, uint64_t &value, const char *info)
         {
 
             uint8_t b[16] = { 0,0,0,0, 0,0,0,0, 0,0,0,0, 0,0,0,0 };
@@ -134,6 +135,14 @@ namespace yack
 
         }
 
+        void decoder:: check_bits(const uint64_t x, const size_t max_bits, const char *info)
+        {
+            const size_t bits = bits_for(x);
+            if(bits>max_bits)
+            {
+                throw libc::exception(EINVAL,"too many read bits for '%s'",info?info:yack_unknown);
+            }
+        }
 
     }
 

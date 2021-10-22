@@ -29,10 +29,10 @@ namespace yack
 
             //! read corresponding bytes
             template <typename T> static inline
-            size_t read(istream &is,T &x)
+            size_t read(istream &input,T &x)
             {
                 typedef typename unsigned_for<T>::type utype;
-                if( get(is, (utype&)x ) )
+                if( get(input, (utype&)x ) )
                 {
                     return sizeof(T);
                 }
@@ -43,9 +43,27 @@ namespace yack
             }
 
             //! construct a previously serialized value
-            static size_t construct(istream &os, uint64_t &value, const char *info=0);
+            static size_t construct64(istream &fp, uint64_t &value, const char *info);
+
+            template <typename T> static inline
+            size_t construct(istream    &fp,
+                             T          &value,
+                             const char *info=0)
+            {
+                static const size_t max_bits = sizeof(T) * 8 ;
+                uint64_t     x  = 0;
+                const size_t nr = construct64(fp,x,info);
+                check_bits(x,max_bits,info);
+                const typename unsigned_for<T>::type y(x);
+                value = T(y);
+                return nr;
+            }
 
 
+        private:
+            static void check_bits(const uint64_t x,
+                                   const size_t   max_bits,
+                                   const char *info);
 
         };
 

@@ -22,12 +22,41 @@ namespace
 
         {
             ios::icstream fp("test-pack.dat");
-            uint64_t y = 0;
-            const size_t  nr = ios::decoder::construct(fp,y,"y");
+            uint64_t      y = 0;
+            const size_t  nr = ios::decoder::construct64(fp,y,"y");
             //std::cerr << "recv " << y << std::endl;
             YACK_ASSERT(nr==nw);
             YACK_ASSERT(x==y);
         }
+
+        const size_t bits = bits_for(x);
+        if(bits<=32)
+        {
+            ios::icstream fp("test-pack.dat");
+            uint32_t     dw=0;
+            const size_t nr = ios::decoder::construct(fp,dw,"dw");
+            YACK_ASSERT(nr==nw);
+            YACK_ASSERT(x==dw);
+        }
+
+        if(bits<=16)
+        {
+            ios::icstream fp("test-pack.dat");
+            uint16_t     w=0;
+            const size_t nr = ios::decoder::construct(fp,w,"w");
+            YACK_ASSERT(nr==nw);
+            YACK_ASSERT(x==w);
+        }
+
+        if(bits<=8)
+        {
+            ios::icstream fp("test-pack.dat");
+            uint8_t      b=0;
+            const size_t nr = ios::decoder::construct(fp,b,"b");
+            YACK_ASSERT(nr==nw);
+            YACK_ASSERT(x==b);
+        }
+
     }
 }
 
