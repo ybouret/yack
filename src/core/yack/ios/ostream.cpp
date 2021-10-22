@@ -1,8 +1,14 @@
 
 
 #include "yack/ios/ostream.hpp"
-#include "yack/exception.hpp"
+#include "yack/system/exception.hpp"
 #include "yack/type/cstring.h"
+#include "yack/memory/buffers.hpp"
+#include "yack/memory/allocator/pooled.hpp"
+
+#include <iostream>
+#include <cerrno>
+
 namespace yack
 {
     namespace ios
@@ -40,10 +46,31 @@ namespace yack
 
         size_t ostream:: operator()(const char *fmt,...)
         {
-            throw exception("not implemented");
+            assert(NULL!=fmt);
+
+            int res = 0;
+            {
+                va_list ap;
+                va_start(ap,fmt);
+                res = vsnprintf(NULL,0,fmt,ap);
+                va_end(ap);
+            }
+            if(res>0)
+            {
+                memory::buffer_of<char,memory::pooled> buff(res+1);
+                {
+                    va_list ap;
+                    va_start(ap,fmt);
+                    const int res2 = vsnprintf(*buff,buff.size(),fmt,ap);
+                    va_end(ap);
+                    if(res2!=res) throw libc::exception(EINVAL,"ostream:: vsnprintf failure");
+                }
+            }
+
+            return size_t(res);
         }
 
-      
+
 
     }
 

@@ -5,6 +5,8 @@
 #include "yack/arith/align.hpp"
 #include "yack/type/hexa.hpp"
 
+#include "yack/ios/ostream.hpp"
+
 namespace yack
 {
     namespace ios

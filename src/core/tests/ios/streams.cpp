@@ -1,5 +1,7 @@
 
 #include "yack/ios/ocstream.hpp"
+#include "yack/ios/null-ostream.hpp"
+
 #include "yack/ios/encoder.hpp"
 
 #include "yack/ios/icstream.hpp"
@@ -190,6 +192,12 @@ YACK_UTEST(ios_streams)
             YACK_ASSERT(fp.query(C));
             std::cerr << C;
         }
+    }
+
+    {
+        ios::null_ostream fp;
+        const size_t nw = fp("Hello");
+        std::cerr << "nw.null=" << nw << std::endl;
     }
 
 

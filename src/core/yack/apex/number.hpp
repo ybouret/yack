@@ -5,6 +5,7 @@
 #define YACK_APEX_NUMBER_INCLUDED 1
 
 #include "yack/object.hpp"
+#include "yack/ios/serializable.hpp"
 
 namespace yack
 {
@@ -20,7 +21,7 @@ namespace yack
         //! base class for apex
         //
         //______________________________________________________________________
-        class number : public object
+        class number : public object, public ios::serializable
         {
         public:
             //! named signed type

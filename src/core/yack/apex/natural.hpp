@@ -9,6 +9,7 @@
 #include "yack/arith/ilog2.hpp"
 #include "yack/container/readable.hpp"
 #include "yack/container/as-capacity.hpp"
+#include "yack/ios/fwd.hpp"
 #include <iosfwd>
 
 namespace yack
@@ -82,6 +83,13 @@ namespace yack
             //__________________________________________________________________
             virtual size_t          size()                   const throw(); //!< significant bytes
             virtual const uint8_t & operator[](const size_t) const throw(); //!< access operator
+
+            //__________________________________________________________________
+            //
+            // serializable interface
+            //__________________________________________________________________
+            virtual size_t  serialize(ios::ostream &) const;
+            static  natural construct(ios::istream &, size_t &cumul);
 
             //__________________________________________________________________
             //

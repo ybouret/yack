@@ -4,13 +4,14 @@
 #ifndef YACK_IOS_ENCODER_INCLUDED
 #define YACK_IOS_ENCODER_INCLUDED 1
 
-#include "yack/ios/ostream.hpp"
 #include "yack/type/ints.hpp"
+#include "yack/container/readable.hpp"
 
 namespace yack
 {
     namespace ios
     {
+        class ostream;
 
         //______________________________________________________________________
         //
@@ -48,6 +49,18 @@ namespace yack
             {
                 const typename unsigned_for<T>::type y(x);
                 return serialize64(os,y);
+            }
+
+            template <typename T> static inline
+            size_t serialize(ostream &os, const readable<T> &arr)
+            {
+                const size_t sz = arr.size();
+                size_t       nw = serialize<size_t>(os,sz);
+                for(size_t i=1;i<=sz;++i)
+                {
+                    nw += emit<T>(os,arr[i]);
+                }
+                return nw;
             }
 
 

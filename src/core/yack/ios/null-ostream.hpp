@@ -25,14 +25,13 @@ namespace yack
             //__________________________________________________________________
             virtual ~null_ostream() throw(); //!< cleanup
             explicit null_ostream() throw(); //!< setup
-            //!
+
             //__________________________________________________________________
             //
             // virtual interface
             //__________________________________________________________________
-            virtual void write(const char) throw();             //!< write one char
-            virtual void flush()           throw();
-            
+            virtual void write(const char) throw();   //!< do nothing
+            virtual void flush()           throw();   //!< do nothing
 
 
         private:

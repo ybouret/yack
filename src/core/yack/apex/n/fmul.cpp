@@ -135,16 +135,7 @@ namespace yack
             }
             prod[top] = uint8_t(carry);
         }
-
-#if 0
-        static inline
-        void display(const cplx_t *z, const size_t n)
-        {
-            std::cerr << "[";
-            for(size_t i=0;i<n;++i) std::cerr << ' ' << z[i];
-            std::cerr << " ]" <<std::endl;
-        }
-#endif
+        
 
         natural natural:: fmul(const handle &l,
                                const handle &r)

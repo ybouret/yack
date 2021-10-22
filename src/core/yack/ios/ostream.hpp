@@ -39,8 +39,6 @@ namespace yack
             ostream & operator<<(const char C);     //!< uses write
             ostream & operator<<(const char *msg);  //!< uses frame
 
-          
-            
             //__________________________________________________________________
             //
             // C++
