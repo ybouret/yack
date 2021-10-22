@@ -1,6 +1,11 @@
 #include "yack/system/pid.hpp"
 #include "yack/check/crc32.h"
 
+#if defined(YACK_WIN)
+#define WIN32_LEAN_AND_MEAN
+#include <windows.h>
+#endif
+
 namespace yack
 {
     process_id::type process_id::get() throw()
