@@ -60,6 +60,9 @@ namespace yack
                 }
                 else
                 {
+                    assert(num!=den);
+                    assert(num>0);
+                    assert(den>0);
                     const natural g  = gcd(num,den);
                     const handle  G(g);
                     const handle  N(num);
