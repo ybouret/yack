@@ -96,7 +96,6 @@ add_test(fft:xbr-info  test-yack  fft_xbr_info)
 add_test(fft:xbr8      test-yack  fft_xbr8  0.05)
 add_test(fft:xbr64     test-yack  fft_xbr64 0.05)
 
-add_test(apex:types     test-yack  apex_types)
 add_test(apex:mem       test-yack  apex_mem)
 add_test(apex:n         test-yack  apn)
 

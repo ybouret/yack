@@ -40,8 +40,12 @@ namespace yack
                 {
                     return 0;
                 }
-
             }
+
+            //! construct a previously serialized value
+            static size_t construct(istream &os, uint64_t &value, const char *info=0);
+
+
 
         };
 

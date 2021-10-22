@@ -53,7 +53,6 @@ YACK_UTEST_DECL(64)
     YACK_UTEST(fft_xbr64);
     YACK_UTEST(fft_xbr_info);
 
-    YACK_UTEST(apex_types);
     YACK_UTEST(apex_mem);
     YACK_UTEST(apn);
     YACK_UTEST(apex_perf);

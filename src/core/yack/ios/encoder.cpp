@@ -4,7 +4,6 @@
 #include "yack/arith/base2.hpp"
 #include "yack/arith/align.hpp"
 #include "yack/type/hexa.hpp"
-#include <iostream>
 
 namespace yack
 {
@@ -54,8 +53,9 @@ namespace yack
             os.frame(arr,8);
         }
 
-        size_t encoder:: upack(uint8_t b[], uint64_t qw) throw()
+        size_t encoder:: upack(uint8_t *b, uint64_t qw) throw()
         {
+            assert(b!=NULL);
             if(qw<=0)
             {
                 return 0;
@@ -77,19 +77,16 @@ namespace yack
                 };
 
 
-                std::cerr << "bytes  : " << num_bytes << std::endl;
-                std::cerr << "semi   : " << semibytes << std::endl;
+
 
                 // prepare all quartets
-                std::cerr << "[ " << hexa::uppercase_char[ q[0] ];
                 for(size_t i=1;i<=semibytes;++i)
                 {
                     q[i] = uint8_t(qw&0xf);
                     qw >>= 4;
-                    std::cerr << ' ' << hexa::uppercase_char[q[i]];
                 }
-                std::cerr << " ]" << std::endl;
 
+                // merge all quartets
                 b[0] = (q[0]  << 4) | q[1];
                 b[1] = (q[2]  << 4) | q[3];
                 b[2] = (q[4]  << 4) | q[5];
@@ -100,12 +97,25 @@ namespace yack
                 b[7] = (q[14] << 4) | q[15];
                 b[8] = (q[16] << 4) | q[17];
 
-                std::cerr << "(";
-                for(size_t i=0;i<num_bytes;++i) std::cerr << ' ' << hexa::uppercase_text[b[i]];
-                std::cerr << " )" << std::endl;
-
-
+                
                 return num_bytes;
+            }
+        }
+
+
+        size_t encoder:: serialize(ostream &os, const uint64_t qw)
+        {
+            if(qw<=0)
+            {
+                os.write(0);
+                return 1;
+            }
+            else
+            {
+                uint8_t       b[16] = {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0};
+                const size_t  size  = upack(b,qw);
+                os.frame(b,size);
+                return size;
             }
         }
 

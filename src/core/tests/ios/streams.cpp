@@ -9,8 +9,32 @@
 
 using namespace yack;
 
+namespace
+{
+    static inline void test_userialize(const uint64_t x)
+    {
+        size_t nw = 0;
+        {
+            ios::ocstream fp("test-pack.dat");
+            nw = ios::encoder::serialize(fp,x);
+            //std::cerr << "sent " << x << std::endl;
+        }
+
+        {
+            ios::icstream fp("test-pack.dat");
+            uint64_t y = 0;
+            const size_t  nr = ios::decoder::construct(fp,y,"y");
+            //std::cerr << "recv " << y << std::endl;
+            YACK_ASSERT(nr==nw);
+            YACK_ASSERT(x==y);
+        }
+    }
+}
+
 YACK_UTEST(ios_streams)
 {
+
+    randomized::rand_ ran;
 
     ios::ocstream::overwrite("test.dat");
     ios::ocstream::echo("test.dat", "Hello from line %d\n", __LINE__);
@@ -37,11 +61,6 @@ YACK_UTEST(ios_streams)
             nw += ios::encoder::emit(fp,x8);
             YACK_CHECK(nw==15);
 
-            uint8_t b[16];
-            ios::encoder::upack(b,0);
-            ios::encoder::upack(b,10);
-            ios::encoder::upack(b,integral_for<uint64_t>::maximum);
-            
 
         }
 
@@ -81,6 +100,18 @@ YACK_UTEST(ios_streams)
         }
     }
 
+    std::cerr << "[pack/unpack]" << std::endl;
+    test_userialize(0);
+    for(size_t bits=0;bits<=64;++bits)
+    {
+        for(size_t iter=0;iter<16;++iter)
+        {
+            const uint64_t x = ran.gen<uint64_t>(bits);
+            YACK_ASSERT(bits_for(x)==bits);
+            test_userialize(x);
+        }
+    }
+    test_userialize(integral_for<uint64_t>::maximum);
 
 
     if(false)
