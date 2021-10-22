@@ -311,6 +311,11 @@ YACK_ASSERT( (u OP v) == (U OP v) )
                 {
                     const apn Q=U/V; YACK_ASSERT(Q.lsu()==q);
                     const apn M=U%V; YACK_ASSERT(M.lsu()==m);
+
+                    apn rem = 0;
+                    apn quot = apn::quot(U,V,rem);
+                    YACK_ASSERT(Q==quot);
+                    YACK_ASSERT(M==rem);
                 }
                 {
                     const apn Q=U/v; YACK_ASSERT(Q.lsu()==q);
@@ -337,7 +342,8 @@ YACK_ASSERT( (u OP v) == (U OP v) )
     std::cerr << "lmul_rate: " << apex::number::lmul_rate() << std::endl;
     std::cerr << "div_rate:  " << apex::number::div_rate() << std::endl;
     std::cerr << "mod_rate:  " << apex::number::mod_rate() << std::endl;
-    
+
+   
    
 }
 YACK_UDONE()

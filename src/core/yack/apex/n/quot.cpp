@@ -1,11 +1,6 @@
-
 #include "yack/apex/natural.hpp"
-#if defined(YACK_APEX_TRACKING)
-#include "yack/system/wtime.hpp"
-#endif
 #include "yack/system/exception.hpp"
 #include <cerrno>
-
 
 
 namespace yack
@@ -13,27 +8,8 @@ namespace yack
     namespace apex
     {
 
-        YACK_APN_BINARY_REP(natural operator/,{ YACK_APN_BINARY_IMPL(natural::div); })
-        YACK_APN_UNARY_REP(natural & natural:: operator/=,{YACK_APN_UNARY_IMPL(/); } )
 
-
-        size_t    natural::exp2_look_up(const handle &numerator, const handle &denominator)
-        {
-            assert(numerator.bytes>=denominator.bytes);
-            size_t delta = numerator.bytes - denominator.bytes;
-            if(delta<=0)
-            {
-                return 1;
-            }
-            else
-            {
-                --delta;
-                delta <<= 3;
-                return ++delta;
-            }
-        }
-
-        natural  natural:: div(const handle &numerator, const handle &denominator)
+        natural  natural:: quot(const handle &numerator, const handle &denominator, natural &rem)
         {
 
             //__________________________________________________________________
@@ -42,7 +18,8 @@ namespace yack
             // sanity check
             //
             //__________________________________________________________________
-            if(denominator.is0()) throw libc::exception(EDOM,"apn division by 0");
+            rem = 0; // default
+            if(denominator.is0()) throw libc::exception(EDOM,"apn quotient by 0");
 
 
             //__________________________________________________________________
@@ -53,13 +30,24 @@ namespace yack
             //__________________________________________________________________
             switch( scmp(numerator,denominator) )
             {
-                case number::negative: return natural(0);
-                case number::naught:   return natural(1);
+                case number::negative: // numerator<denominator
+                    rem = natural(numerator.entry,numerator.words);
+                    return natural(0);
+
+                case number::naught: // numerator==denominator
+                    assert(0==rem);
+                    return natural(1);
+
                 default:
                     if(denominator.is1())
+                    {
+                        assert(0==rem);
                         return natural(numerator.entry,numerator.words);
+                    }
                     else
+                    {
                         break;
+                    }
             }
 
             //__________________________________________________________________
@@ -69,9 +57,6 @@ namespace yack
             //__________________________________________________________________
             assert(numerator.bytes>=denominator.bytes);
 
-#if defined(YACK_APEX_TRACKING)
-            const uint64_t mark = wtime::ticks();
-#endif
 
             size_t  p   = exp2_look_up(numerator,denominator);
             natural qhi = exp2(p);
@@ -83,7 +68,7 @@ namespace yack
                 switch( scmp(Num,numerator) )
                 {
                     case negative: break;            // too small
-                    case naught:   return qhi;       // early   return
+                    case naught:   return qhi;       // early   return, multiple => rem=0
                     case positive: goto BISECTION;   // generic case
                 }
                 ++p;
@@ -110,10 +95,10 @@ namespace yack
 
                 if(cmp(Q,Qlo)<=0)
                 {
-#if defined(YACK_APEX_TRACKING)
-                    div_ticks += wtime::ticks() - mark;
-                    ++div_count;
-#endif
+                    const natural qd = mul(Q,denominator);
+                    const handle  QD(qd);
+                    assert(cmp(numerator,QD)>=0);
+                    rem = sub(numerator,QD);
                     return q;
                 }
                 else
@@ -123,7 +108,7 @@ namespace yack
                     switch( scmp(Num,numerator) )
                     {
                         case negative:  qlo.xch(q); break;  // move qlo up
-                        case naught:     return q;          // early return
+                        case naught:     return q;          // early return, multiple => rem=0
                         case positive:  qhi.xch(q); break;  // move qhi down
                     }
                 }
@@ -131,7 +116,13 @@ namespace yack
             }
 
 
+        }
 
+        natural natural:: quot(const natural &numerator, const natural &denominator, natural &rem)
+        {
+            const handle N(numerator);
+            const handle D(denominator);
+            return quot(N,D,rem);
         }
 
     }

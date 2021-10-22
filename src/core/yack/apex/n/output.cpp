@@ -37,7 +37,6 @@ namespace yack
 
         std::ostream & operator<<(std::ostream &os, const natural n)
         {
-            return n.output_hex(os);
             if( os.flags() & std::ios_base::hex )
             {
                 return n.output_hex(os);
@@ -70,6 +69,9 @@ namespace yack
     }
 
 }
+
+#include "yack/data/small/pool.hpp"
+
 namespace yack
 {
     namespace apex
@@ -82,9 +84,21 @@ namespace yack
             }
             else
             {
+                small_pool<char> code;
                 uint_type    _10 = 10;
                 const handle ten(_10);
                 natural      tmp(*this);
+                natural      r = 0;
+                while(tmp>0)
+                {
+                    const handle t(tmp);
+                    natural         q = quot(t,ten,r); assert(r<10);
+                    const uint_type u = r.lsu(); assert(u<10);
+                    code.append('0'+u);
+                    tmp.xch(q);
+                }
+                while(code.size)
+                    os << code.remove();
             }
             return os;
         }

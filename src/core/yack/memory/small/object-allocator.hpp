@@ -6,14 +6,14 @@
 
 #include "yack/memory/small/objects.hpp"
 #include "yack/singleton.hpp"
-#include "yack/memory/allocator/pooled-longevity.hpp"
+#include "yack/apex/m/archon-longevity.hpp"
 
 #if !defined(YACK_LIMIT_SIZE)
 #define YACK_LIMIT_SIZE 256 //!< default limit size for small objects
 #endif
 
 //! built-in small objects longevity
-#define YACK_MEMORY_SMALL_OBJECTS_LONGEVITY (YACK_MEMORY_POOLED_ALLOCATOR_LONGEVITY-1)
+#define YACK_MEMORY_SMALL_OBJECTS_LONGEVITY (YACK_APEX_ARCHON_LONGEVITY-1)
 
 namespace yack
 {

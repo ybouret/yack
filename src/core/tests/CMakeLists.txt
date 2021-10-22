@@ -99,6 +99,8 @@ add_test(fft:xbr64     test-yack  fft_xbr64 0.05)
 
 add_test(apex:mem       test-yack  apex_mem)
 add_test(apex:n         test-yack  apn)
+add_test(apex:ari       test-yack  apex_ari)
+add_test(apex:io        test-yack  apex_io)
 
 add_test(ios::c-file    test-yack ios_c_file)
 add_test(ios:streams    test-yack ios_streams)

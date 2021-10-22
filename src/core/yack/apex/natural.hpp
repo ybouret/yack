@@ -208,6 +208,12 @@ namespace yack
             //__________________________________________________________________
             YACK_APN_DECL(%)
 
+            //__________________________________________________________________
+            //
+            // arithmetic
+            //__________________________________________________________________
+            static natural quot(const natural &numerator, const natural &denominator, natural &rem);
+
         private:
             size_t       bytes;
             size_t       words;
@@ -246,17 +252,17 @@ namespace yack
                                  uint_type,
                                  size_t  &) throw(); //!< load uint into word[words_per_uint], return num words
 
-            static int       cmp(const handle &l, const handle &r) throw();
-            static sign_type scmp(const handle &l, const handle &r) throw();
-            static natural   add(const handle &l, const handle &r);
-            static natural   sub(const handle &l, const handle &r);
-            static natural   mul(const handle &l, const handle &r);
-            static natural   lmul(const handle &l, const handle &r);
-            static natural   fmul(const handle &l, const handle &r);
-            static natural   div(const handle &numerator, const handle &denominator);
-            static natural   mod(const handle &numerator, const handle &denominator);
-
-            static size_t    exp2_look_up(const handle &numerator, const handle &denominator);
+            static int       cmp(const  handle &l, const handle &r) throw(); //!< comparison
+            static sign_type scmp(const handle &l, const handle &r) throw(); //!< comparions to sign_type
+            static natural   add(const  handle &l, const handle &r);         //!< addition
+            static natural   sub(const  handle &l, const handle &r);         //!< subtraction
+            static natural   mul(const  handle &l, const handle &r);         //!< multiplication => lmul/fmul
+            static natural   lmul(const handle &l, const handle &r);         //!< long multiplication
+            static natural   fmul(const handle &l, const handle &r);         //!< fourier multiplication
+            static natural   div(const  handle &numerator, const handle &denominator); //!< division
+            static natural   mod(const  handle &numerator, const handle &denominator); //!< modulo
+            static size_t    exp2_look_up(const handle &numerator, const handle &denominator);       //!< helper for div/mod/quot
+            static natural   quot(const handle &numerator, const handle &denominator, natural &rem); //!< simultaneous quot/rem
 
         };
 
