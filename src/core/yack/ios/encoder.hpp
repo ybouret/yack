@@ -35,8 +35,8 @@ namespace yack
                 return sizeof(T);
             }
 
-            static size_t upack64(ostream &, uint64_t);
-
+            static size_t upack(uint8_t b[], uint64_t qw) throw();
+            
 
         };
 

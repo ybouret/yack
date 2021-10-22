@@ -37,11 +37,11 @@ YACK_UTEST(ios_streams)
             nw += ios::encoder::emit(fp,x8);
             YACK_CHECK(nw==15);
 
-            ios::encoder::upack64(fp,0);
-
-            ios::encoder::upack64(fp,10);
-
-            ios::encoder::upack64(fp,integral_for<uint64_t>::maximum);
+            uint8_t b[16];
+            ios::encoder::upack(b,0);
+            ios::encoder::upack(b,10);
+            ios::encoder::upack(b,integral_for<uint64_t>::maximum);
+            
 
         }
 

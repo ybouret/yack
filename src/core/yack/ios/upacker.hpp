@@ -13,12 +13,8 @@ namespace yack
         
         struct upacker
         {
-            static const unsigned prolog_bits = 4; //!< 0..9 bytes
-            static const unsigned prolog_shft = 8 - prolog_bits;
-            static size_t write64(ostream &, const uint64_t);
-            
+            static size_t encode(uint8_t b[], uint64_t qw) throw();
         };
-        
     }
     
 }
