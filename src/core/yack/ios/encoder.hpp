@@ -51,6 +51,7 @@ namespace yack
                 return serialize64(os,y);
             }
 
+            //! serialize a readable array of integral types
             template <typename T> static inline
             size_t serialize(ostream &os, const readable<T> &arr)
             {

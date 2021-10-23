@@ -44,7 +44,17 @@ word( archon::acquire_field<word_type>( coerce(max_words_exp2), coerce(max_bytes
 max_words(size_t(1)<<max_words_exp2),                                                      \
 max_bytes(size_t(1)<<max_bytes_exp2 )
 
-
+ 
+        natural:: natural() :
+        number(),
+        readable<uint8_t>(),
+        bytes(0),
+        words(0),
+        YACK_APEX_NATURAL(min_words_exp2)
+        {
+            
+        }
+        
         natural:: natural(uint_type u) :
         number(),
         readable<uint8_t>(),
