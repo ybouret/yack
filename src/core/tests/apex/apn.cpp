@@ -343,7 +343,13 @@ YACK_ASSERT( (u OP v) == (U OP v) )
     std::cerr << "div_rate:  " << apex::number::div_rate() << std::endl;
     std::cerr << "mod_rate:  " << apex::number::mod_rate() << std::endl;
 
-   
-   
+    std::cerr << "[BITWISE]" << std::endl;
+    for(size_t nbit=0;nbit<=64;++nbit)
+    {
+        apn n(ran,nbit);
+        n.output_hex(std::cerr) << " => ";
+        n &= 0xff;
+        n.output_hex(std::cerr) << std::endl;
+    }
 }
 YACK_UDONE()
