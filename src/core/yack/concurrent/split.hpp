@@ -37,7 +37,6 @@ namespace yack
                     todo = length/left;
                 }
                 length = todo;
-                
             }
 
         };

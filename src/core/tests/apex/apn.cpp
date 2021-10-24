@@ -337,11 +337,7 @@ YACK_ASSERT( (u OP v) == (U OP v) )
         }
     }
 
-    std::cerr << "add_rate : " << apex::number::add_rate() << std::endl;
-    std::cerr << "sub_rate : " << apex::number::sub_rate() << std::endl;
-    std::cerr << "lmul_rate: " << apex::number::lmul_rate() << std::endl;
-    std::cerr << "div_rate:  " << apex::number::div_rate() << std::endl;
-    std::cerr << "mod_rate:  " << apex::number::mod_rate() << std::endl;
+   
 
     std::cerr << "[BITWISE]" << std::endl;
     for(size_t nbit=0;nbit<=64;++nbit)
@@ -351,5 +347,11 @@ YACK_ASSERT( (u OP v) == (U OP v) )
         n &= 0xff;
         n.output_hex(std::cerr) << std::endl;
     }
+    
+    std::cerr << "add_rate : " << apex::number::add_rate() << std::endl;
+    std::cerr << "sub_rate : " << apex::number::sub_rate() << std::endl;
+    std::cerr << "lmul_rate: " << apex::number::lmul_rate() << std::endl;
+    std::cerr << "div_rate:  " << apex::number::div_rate() << std::endl;
+    std::cerr << "mod_rate:  " << apex::number::mod_rate() << std::endl;
 }
 YACK_UDONE()
