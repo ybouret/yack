@@ -75,6 +75,7 @@ add_test(memory:objects  test-yack memory_objects)
 add_test(memory:parcel   test-yack memory_parcel)
 add_test(memory:parcels  test-yack memory_parcels)
 add_test(memory:buffers  test-yack memory_buffers)
+add_test(memory:embed    test-yack memory_embed)
 
 add_test(object          test-yack object)
 
@@ -83,6 +84,7 @@ add_test(data:list:sort test-yack data_list_sort)
 add_test(data:pool      test-yack data_pool)
 add_test(data:pool:sort test-yack data_pool_sort)
 add_test(data:small     test-yack data_small)
+add_test(data:matrix    test-yack data_matrix)
 
 add_test(sync:lockable  test-yack sync_lockable)
 add_test(sync:primitive test-yack sync_primitive)

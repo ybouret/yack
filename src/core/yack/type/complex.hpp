@@ -153,7 +153,18 @@ namespace yack
         {
             return os << '(' << z.re << ',' << z.im << ')';
         }
-
+        
+        size_t size() const throw() { return 2; }
+        T &operator[](size_t indx) throw()
+        {
+            assert(indx>=1);assert(indx<=2);
+            return *(&re + --indx);
+        }
+        const T &operator[](size_t indx) const throw()
+        {
+            assert(indx>=1);assert(indx<=2);
+            return *(&re + --indx);
+        }
     };
 }
 

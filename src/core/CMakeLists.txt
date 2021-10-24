@@ -95,6 +95,12 @@ set(container ${container_impl} ${container_decl})
 SOURCE_GROUP(container FILES ${container})
 install( FILES ${container_decl} DESTINATION include/yack/container )
 
+file(GLOB container_matrix_impl yack/container/matrix/*.cpp)
+file(GLOB container_matrix_decl yack/container/matrix/*.hpp)
+set(container_matrix ${container_matrix_impl} ${container_matrix_decl})
+SOURCE_GROUP(container/matrix FILES ${container_matrix})
+install( FILES ${container_matrix_decl} DESTINATION include/yack/container/matrix )
+
 #########################################################################
 ##
 ## memory operations
@@ -287,7 +293,7 @@ ${arith}
 ${check}
 ${system}
 ${data} ${data_small}
-${container}
+${container} ${container_matrix}
 ${memory} ${memory_allocator} ${memory_small} ${memory_large} ${memory_joint} ${memory_buffer}
 ${fft}
 ${apex} ${apex_n} ${apex_m}
