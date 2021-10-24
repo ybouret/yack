@@ -55,7 +55,8 @@ namespace yack
                 // link
                 for(size_t i=0;i<num;++i)
                 {
-                    *(emb[i].handle) = &wksp[emb[i].offset];
+                    embed &e = emb[i];
+                    *(e.handle) = &wksp[e.offset];
                 }
                 
                 return wksp;

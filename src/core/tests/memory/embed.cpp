@@ -23,7 +23,7 @@ YACK_UTEST(memory_embed)
         std::cerr << emb[i] << std::endl;
     }
     size_t bs   = 0;
-    void  *wksp = memory::embed::zalloc(emb,num,memory::global::instance(), bs);
+    void  *wksp = YACK_MEMORY_EMBED(emb,memory::global::instance(),bs);
     
     for(size_t i=0;i<num;++i)
     {
