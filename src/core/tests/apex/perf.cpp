@@ -7,6 +7,7 @@
 #include "yack/system/wtime.hpp"
 #include "yack/ios/ocstream.hpp"
 #include "yack/randomized/rand.hpp"
+#include "yack/concurrent/thread.hpp"
 #include <cmath>
 
 using namespace yack;
@@ -17,7 +18,12 @@ YACK_UTEST(apex_perf)
 {
 
     double     tsample = 0.5;
+    size_t     cpu     = 0;
     if(argc>1) tsample = atof(argv[1]);
+    if(argc>2) cpu     = atol(argv[2]);
+
+    concurrent::thread::assign_current(cpu);
+    
     randomized::rand_  ran;
     const size_t       max_bytes = 8192*2;
     wtime              chrono;
