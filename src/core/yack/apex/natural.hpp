@@ -239,24 +239,28 @@ namespace yack
             //
             // bitwise ops
             //__________________________________________________________________
-            //! declare some bitise ops
+            //! declare some bitwise ops
 #define YACK_APN_BITWISE_DECL(OP)                                      \
 friend natural operator OP (const natural  &lhs, const natural  &rhs); \
 friend natural operator OP (const natural  &lhs, const uint_type rhs); \
 friend natural operator OP (const uint_type lhs, const natural  &rhs); \
 natural      & operator OP##=(const natural  &rhs);                    \
 natural      & operator OP##=(const uint_type lhs)
-            
 
-            YACK_APN_BITWISE_DECL(|);  //!< logical |
-            YACK_APN_BITWISE_DECL(&);  //!< logical &
-            YACK_APN_BITWISE_DECL(^);  //!< logical ^
-            natural operator~() const; //!< logical ~
+            //! declare bitwise ops
+#define YACK_APN_BITWISE_OPS() \
+YACK_APN_BITWISE_DECL(|);      \
+YACK_APN_BITWISE_DECL(&);      \
+YACK_APN_BITWISE_DECL(^)
+
+            YACK_APN_BITWISE_OPS();    //!< logical operators
+            natural operator~() const; //!< logical
 
             //__________________________________________________________________
             //
             // conversion
             //__________________________________________________________________
+            //! try to cast to a system integer
             template <typename T>
             bool try_cast_to(T &res) const throw()
             {
@@ -273,6 +277,7 @@ natural      & operator OP##=(const uint_type lhs)
                 }
             }
 
+            //! cast with overflow check
             template <typename T>
             T cast_to(const char *who) const
             {
