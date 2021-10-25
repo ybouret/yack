@@ -1,4 +1,6 @@
 
+include_directories(..)
+
 add_executable(zlib_example example.c)
 target_link_libraries(zlib_example yack-z)
 
