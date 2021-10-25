@@ -74,7 +74,6 @@ namespace yack
                     const DWORD err = ::GetLastError();
                     throw win32::exception( err, "::SetThreadAffinityMask" );
                 }
-                if(who) display(who,j);
             }
 
         }
