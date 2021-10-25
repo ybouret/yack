@@ -30,7 +30,7 @@ namespace yack
 
 #if defined(YACK_LINUX)|| defined(YACK_FREEBSD)
 #   define YACK_THREAD_AFFINITY 1
-#   if defined(Y_FREEBSD)
+#   if defined(YACK_FREEBSD)
 #      include <pthread_np.h>
 #      define YACK_CPU_SET cpuset_t
 #   else
