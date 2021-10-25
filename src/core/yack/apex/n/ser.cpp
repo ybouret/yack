@@ -13,6 +13,13 @@ namespace yack
     namespace apex
     {
 
+        const char natural:: clid[] = "apn";
+        
+        const char * natural:: class_uid() const throw()
+        {
+            return clid;
+        }
+        
         size_t natural:: serialize(ios::ostream &fp) const
         {
             const readable<uint8_t> &self = *this;

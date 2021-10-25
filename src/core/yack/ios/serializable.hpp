@@ -20,9 +20,10 @@ namespace yack
         class serializable
         {
         public:
-            virtual ~serializable() throw();               //!< cleanup
-            virtual size_t serialize(ostream &) const = 0; //!< as portable format, return written bytes
-
+            virtual ~serializable() throw();                            //!< cleanup
+            virtual size_t      serialize(ostream &) const         = 0; //!< as portable format, return written bytes
+            virtual const char *class_uid()          const throw() = 0; //!< class Unique IDentifier
+            
         protected:
             explicit serializable() throw(); //!< setup
 

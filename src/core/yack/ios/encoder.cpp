@@ -126,6 +126,23 @@ namespace yack
             }
         }
 
+        
+        size_t encoder::serialize(ostream &os, const void *block_addr, const size_t block_size)
+        {
+            if(block_size)
+            {
+                assert(block_addr);
+                size_t nw = serialize(os,block_size);
+                os.frame(block_addr,block_size);
+                return nw + block_size;
+            }
+            else
+            {
+                os.write(0);
+                return 1;
+            }
+        }
+
 
     }
 }

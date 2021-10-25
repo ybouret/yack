@@ -29,7 +29,7 @@ namespace yack
 
         //______________________________________________________________________
         //
-        // types and definitions
+        // writable interface
         //______________________________________________________________________
         inline virtual size_t size() const throw() { return cols; }
         inline virtual type       &operator[](const size_t c) throw()       { assert(c>=1); assert(c<=cols); return item[c]; }

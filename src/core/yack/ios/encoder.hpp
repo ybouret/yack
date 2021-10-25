@@ -63,6 +63,10 @@ namespace yack
                 }
                 return nw;
             }
+            
+            //! encode size, write binary block
+            size_t serialize(ostream &, const void *block_addr, const size_t block_size);
+            
 
 
         };

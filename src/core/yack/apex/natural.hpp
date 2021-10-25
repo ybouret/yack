@@ -44,6 +44,7 @@ namespace yack
             //
             // types and definitions
             //__________________________________________________________________
+            static const char clid[]; //!< "apn"
             
             // native computation
             typedef unsigned_for<YACK_APEX_TYPE>::type       core_type; //!< native type
@@ -89,7 +90,8 @@ namespace yack
             //
             // serializable interface
             //__________________________________________________________________
-            virtual size_t  serialize(ios::ostream &) const;          //!< serialize content as readable
+            virtual size_t      serialize(ios::ostream &) const;          //!< serialize content as readable
+            virtual const char *class_uid()       const throw();          //!< clid
             static  natural construct(ios::istream &, size_t &cumul); //!< reload a serialized natural
             
             //__________________________________________________________________
