@@ -17,6 +17,7 @@ YACK_UTEST_DECL(64)
     YACK_UTEST(type_traits);
     YACK_UTEST(type_conv);    
     YACK_UTEST(type_temp);
+    YACK_UTEST(type_scalar);
 
     YACK_UTEST(ram);
     YACK_UTEST(memory_chunk);

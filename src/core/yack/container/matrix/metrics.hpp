@@ -3,13 +3,13 @@
 #ifndef YACK_CONTAINER_MATRIX_METRICS_INCLUDED
 #define YACK_CONTAINER_MATRIX_METRICS_INCLUDED 1
 
-#include "yack/container/writable.hpp"
+#include "yack/container/sequence/contiguous.hpp"
 
 namespace yack
 {
     
     template <typename T>
-    class matrix_row : public writable<T>
+    class matrix_row : public contiguous<T>
     {
     public:
         typedef typename  writable<T>::type         type;

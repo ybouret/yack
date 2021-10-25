@@ -60,6 +60,7 @@ add_test(type:ints   test-yack type_ints)
 add_test(type:traits test-yack type_traits)
 add_test(type:temp   test-yack type_temp)
 add_test(type:conv   test-yack type_conv)
+add_test(type:scalar test-yack type_scalar)
 
 
 add_test(memory:ram      test-yack ram)

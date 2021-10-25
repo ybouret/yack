@@ -3,7 +3,7 @@
 #ifndef YACK_COMPLEX_INCLUDED
 #define YACK_COMPLEX_INCLUDED 1
 
-#include "yack/setup.hpp"
+#include "yack/type/scalar.hpp"
 #include <iostream>
 
 namespace yack
@@ -166,6 +166,13 @@ namespace yack
             return *(&re + --indx);
         }
     };
+
+    template <typename T>
+    struct scalar_for< complex<T> >
+    {
+        typedef typename complex<T>::real_t type;
+    };
+
 }
 
 #endif
