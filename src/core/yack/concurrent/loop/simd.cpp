@@ -43,6 +43,8 @@ namespace yack
 
 }
 
+#include "yack/system/hw.hpp"
+
 namespace yack
 {
     namespace concurrent
@@ -96,13 +98,13 @@ namespace yack
                     catch(...)
                     {
                         // something bad happened
-                        zkill();
+                        --squad;
+                        finish(current);
                         throw;
                     }
                 }
             }
 
-            //wtime chrono; chrono.wait(0.1);
 
             //__________________________________________________________________
             //
@@ -125,16 +127,51 @@ namespace yack
                     sync.unlock();
                 }
             }
-
-            //__________________________________________________________________
-            //
-            //
-            // finalize
-            //
-            //__________________________________________________________________
-
             assert(threads==ready);
+
+            //__________________________________________________________________
+            //
+            //
+            // placement
+            //
+            //__________________________________________________________________
+            try
+            {
+                const size_t np = hardware::nprocs();
+                for(size_t i=0;i<threads;++i)
+                {
+                    worker      &w   = squad[i];
+                    const size_t j   = i%np;
+                    if(thread::verbose)
+                    {
+                        char who[32];
+                        w.ctx.format(who,sizeof(who));
+                        std::cerr << clid << "      ";
+                        w.thr.assign(j,who);
+                    }
+                    else
+                    {
+                        w.thr.assign(j);
+                    }
+                }
+
+            }
+            catch(...)
+            {
+                // something bad happened
+                --squad;
+                finish(threads);
+                throw;
+            }
+
             --squad;
+
+            //__________________________________________________________________
+            //
+            //
+            // done
+            //
+            //__________________________________________________________________
             if(thread::verbose)
             {
                 YACK_LOCK(sync);
@@ -148,22 +185,23 @@ namespace yack
             mgr.withdraw(squad,zbytes_);
         }
 
-        simd:: ~simd() throw()
+        void simd:: finish(size_t count) throw()
         {
+            assert(count<=threads);
             assert(NULL==kcode);
             assert(NULL==kargs);
 
             if(thread::verbose)
             {
                 YACK_LOCK(sync);
-                std::cerr << clid << "  <terminating count=" << threads << ">" << std::endl;
+                std::cerr << clid << "  <terminating count=" << count << ">" << std::endl;
             }
 
             // wake up everyone to nothing to do
             cond.broadcast();
 
             // wait for each thread
-            for(size_t t=threads;t>0;--t)
+            for(size_t t=count;t>0;--t)
             {
                 destruct(&squad[t]);
             }
@@ -177,6 +215,12 @@ namespace yack
             // remove resources
             ++squad;
             zkill();
+        }
+
+
+        simd:: ~simd() throw()
+        {
+            finish(threads);
         }
 
 

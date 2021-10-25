@@ -44,6 +44,7 @@ namespace yack
                 split::with(size,rank,length,offset);
             }
 
+            void format(char buf[], const size_t len) const throw();
 
             //__________________________________________________________________
             //

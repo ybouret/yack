@@ -63,7 +63,7 @@ namespace yack
             void         cycle() throw();
             static void  entry(void *) throw();
             void         zkill() throw(); //!< return memory
-
+            void         finish(size_t count) throw();
         };
 
     }
