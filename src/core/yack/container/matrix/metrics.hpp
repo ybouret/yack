@@ -55,10 +55,11 @@ namespace yack
         
         explicit matrix_metrics() throw();
         void     deallocate() throw();
-        
+
     private:
-        YACK_DISABLE_ASSIGN(matrix_metrics);
+        YACK_DISABLE_COPY_AND_ASSIGN(matrix_metrics);
         
+
     public:
         const size_t rows;
         const size_t cols;

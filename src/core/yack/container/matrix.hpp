@@ -8,13 +8,29 @@
 
 namespace yack
 {
-    
     template <typename T>
-    class matrix : public matrix_metrics
+    class matrix_
+    {
+    public:
+        typedef matrix_row<T> row;
+
+        inline virtual ~matrix_() throw() {}
+
+    protected:
+        inline explicit matrix_() throw() : row_(0) {}
+        row *row_;
+
+    private:
+        YACK_DISABLE_COPY_AND_ASSIGN(matrix_);
+    };
+
+    template <typename T>
+    class matrix : public matrix_<T>, public matrix_metrics
     {
     public:
         YACK_DECL_ARGS(T,type);
-        typedef matrix_row<T> row;
+        typedef typename matrix_<T>::row row;
+        using matrix_<T>::row_;
         
         
         inline virtual ~matrix() throw() {}
@@ -32,13 +48,8 @@ namespace yack
         
     private:
         YACK_DISABLE_COPY_AND_ASSIGN(matrix);
-        row *row_;
-        static inline void build_row_at(void       *row_addr,
-                                        void       *data_ptr,
-                                        const size_t num_cols) throw()
-        {
-            new (row_addr) row(static_cast<mutable_type *>(data_ptr),num_cols);
-        }
+        static inline void build_row_at(void *row_addr, void *data_ptr, const size_t num_cols) throw()
+        { new (row_addr) row(static_cast<mutable_type *>(data_ptr),num_cols); }
         
     };
     
