@@ -42,6 +42,29 @@ namespace yack
                     finish( coerce(self), coerce(uuid) );
                 }
 
+                static inline handle get_current_handle() throw()
+                {
+#if defined(YACK_BSD)
+                    return pthread_self();
+#endif
+
+#if defined(YACK_WIN)
+                    return ::GetCurrentThread();
+#endif
+                }
+
+                static inline ID get_current_id()      throw()
+                {
+#if defined(YACK_BSD)
+                    return pthread_self();
+#endif
+
+#if defined(YACK_WIN)
+                    return ::GetCurrentThreadId();
+#endif
+                }
+
+                static void assign(handle h, const size_t j);
 
             private:
 

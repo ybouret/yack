@@ -241,6 +241,7 @@ namespace yack
 #include "mutex-api.hxx"
 #include "condition-api.hxx"
 #include "thread-api.hxx"
+#include "thread-aff.hxx"
 
 
 

@@ -41,7 +41,10 @@ namespace yack
             //__________________________________________________________________
             explicit thread(procedure proc, void *args); //!< initialize
             virtual ~thread() throw();                   //!< wait and destruct
-            
+
+            void        assign(const size_t cpu);
+            static void assign_current(const size_t cpu);
+
         private:
             YACK_DISABLE_COPY_AND_ASSIGN(thread);
             quark::thread *impl;

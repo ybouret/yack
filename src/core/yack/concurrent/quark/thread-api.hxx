@@ -26,11 +26,17 @@ namespace yack
                 mgr.threads.expunge( destructed(thr) );
                 thr = NULL;
             }
+
+            
         }
 
     }
 
 }
+
+
+
+
 
 #include "yack/concurrent/thread.hpp"
 
@@ -54,6 +60,18 @@ namespace yack
             quark::thread_api::quit(impl);
             assert(NULL==impl);
         }
+
+        void thread:: assign(const size_t cpu)
+        {
+            assert(NULL!=impl);
+            quark::thread::assign(impl->self,cpu);
+        }
+
+        void thread:: assign_current(const size_t cpu)
+        {
+            quark::thread::assign( quark::thread::get_current_handle(), cpu );
+        }
+
     }
 
 }

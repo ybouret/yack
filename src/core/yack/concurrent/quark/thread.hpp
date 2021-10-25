@@ -31,8 +31,8 @@ namespace yack
             //__________________________________________________________________
             struct   thread_api
             {
-                static  thread *  init(threadable &);         //!< create a new  thread
-                static  void      quit(thread *   &) throw(); //!< finish and delete an old thread
+                static  thread *  init(threadable &);               //!< create a new  thread
+                static  void      quit(thread *   &) throw();       //!< finish and delete an old thread
             };
 
         }
