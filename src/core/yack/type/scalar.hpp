@@ -9,11 +9,16 @@
 namespace yack
 {
 
+    //__________________________________________________________________________
+    //
+    //
     //! scalar type for
+    //
+    //__________________________________________________________________________
     template <typename T>
     struct scalar_for
     {
-        typedef T type; //!< default
+        typedef T type; //!< default is same type
     };
 
 }

@@ -3,12 +3,15 @@
 #include <cerrno>
 #include "yack/memory/embed.hpp"
 #include "yack/memory/allocator/global.hpp"
+#include "yack/memory/allocator/pooled.hpp"
 
 #include <iostream>
 
 namespace yack
 {
-    
+
+    typedef memory::pooled matrix_allocator;
+
     matrix_metrics:: ~matrix_metrics() throw()
     {
         deallocate();
@@ -18,12 +21,11 @@ namespace yack
     {
         if(rows)
         {
-            static memory::allocator   &mem = memory::global::location();
+            static memory::allocator   &mem = matrix_allocator::location();
             mem.release(workspace,coerce(allocated));
             coerce(items) = 0;
             coerce(cols)  = 0;
             coerce(rows)  = 0;
-
         }
     }
     
@@ -36,7 +38,17 @@ namespace yack
     workspace(0)
     {
     }
-    
+
+    void matrix_metrics:: swap_with(matrix_metrics &other) throw()
+    {
+        coerce_cswap(rows,other.rows);
+        coerce_cswap(cols,other.cols);
+        coerce_cswap(items,other.items);
+        coerce_cswap(allocated,other.allocated);
+        coerce_cswap(workspace,other.workspace);
+
+    }
+
     
     matrix_metrics:: matrix_metrics(void **       row_hook,
                                     const size_t  num_rows,
@@ -66,7 +78,7 @@ namespace yack
         if(rows>0)
         {
             typedef matrix_row<uint8_t> row_t;
-            static  memory::allocator   &mem    = memory::global::instance();
+            static  memory::allocator   &mem    = matrix_allocator::instance();
             const   size_t               stride = cols*size_of_item;
 
             //__________________________________________________________________
@@ -94,9 +106,13 @@ namespace yack
                     build_row_at(temp++,item,cols);
                 }
             }
-            
+
         }
     }
     
-    
+    bool matrix_metrics:: have_same_sizes(const matrix_metrics &lhs, const matrix_metrics &rhs) throw()
+    {
+        return (lhs.rows==rhs.rows) && (lhs.cols==rhs.cols);
+    }
+
 }

@@ -86,7 +86,7 @@ install( FILES ${data_small_decl} DESTINATION include/yack/data/small )
 
 ########################################################################
 ##
-## container  operations
+## container   
 ##
 ########################################################################
 file(GLOB container_impl yack/container/*.cpp yack/container/*.c)
@@ -101,11 +101,17 @@ set(container_matrix ${container_matrix_impl} ${container_matrix_decl})
 SOURCE_GROUP(container/matrix FILES ${container_matrix})
 install( FILES ${container_matrix_decl} DESTINATION include/yack/container/matrix )
 
-file(GLOB container_sequence_impl yack/container/sequence/*.cpp)
-file(GLOB container_sequence_decl yack/container/sequence/*.hpp)
-set(container_sequence ${container_sequence_impl} ${container_sequence_decl})
-SOURCE_GROUP(container/sequence FILES ${container_sequence})
-install( FILES ${container_sequence_decl} DESTINATION include/yack/container/sequence )
+
+########################################################################
+##
+## sequence(s)   
+##
+########################################################################
+file(GLOB sequence_impl yack/sequence/*.cpp)
+file(GLOB sequence_decl yack/sequence/*.hpp)
+set(sequence ${sequence_impl} ${sequence_decl})
+SOURCE_GROUP(sequence FILES ${sequence})
+install( FILES ${sequence_decl} DESTINATION include/yack/sequence )
 
 #########################################################################
 ##
@@ -299,7 +305,8 @@ ${arith}
 ${check}
 ${system}
 ${data} ${data_small}
-${container} ${container_matrix} ${container_sequence}
+${container} ${container_matrix}
+${sequence}
 ${memory} ${memory_allocator} ${memory_small} ${memory_large} ${memory_joint} ${memory_buffer}
 ${fft}
 ${apex} ${apex_n} ${apex_m}

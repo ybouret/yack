@@ -153,13 +153,19 @@ namespace yack
         {
             return os << '(' << z.re << ',' << z.im << ')';
         }
-        
+
+
+        //! pseudo-collection
         size_t size() const throw() { return 2; }
+
+        //! pseudo writable
         T &operator[](size_t indx) throw()
         {
             assert(indx>=1);assert(indx<=2);
             return *(&re + --indx);
         }
+
+        //! pseudo readable
         const T &operator[](size_t indx) const throw()
         {
             assert(indx>=1);assert(indx<=2);
@@ -167,10 +173,11 @@ namespace yack
         }
     };
 
+    //! specific scalar type
     template <typename T>
     struct scalar_for< complex<T> >
     {
-        typedef typename complex<T>::real_t type;
+        typedef typename complex<T>::real_t type; //!< effective type
     };
 
 }

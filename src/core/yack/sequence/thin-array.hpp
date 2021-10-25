@@ -10,6 +10,12 @@
 namespace yack
 {
 
+    //__________________________________________________________________________
+    //
+    //
+    //! thin array for partial data/C-style data
+    //
+    //__________________________________________________________________________
     template <typename T>
     class thin_array : public contiguous<T>
     {
