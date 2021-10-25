@@ -27,7 +27,10 @@ namespace yack
         typedef typename  writable<T>::mutable_type mutable_type;   //!< alias
 
 
-
+        //______________________________________________________________________
+        //
+        // types and definitions
+        //______________________________________________________________________
         inline virtual size_t size() const throw() { return cols; }
         inline virtual type       &operator[](const size_t c) throw()       { assert(c>=1); assert(c<=cols); return item[c]; }
         inline virtual const_type &operator[](const size_t c) const throw() { assert(c>=1); assert(c<=cols); return item[c]; }
@@ -71,6 +74,7 @@ namespace yack
         //
         // types and definitions
         //______________________________________________________________________
+        typedef int2type<0> transposed_t; //!< helper for transposition
 
         //! how to create a raw
         typedef void (*row_callback)(void        *row_addr,
@@ -82,7 +86,11 @@ namespace yack
         //
         // methods
         //______________________________________________________________________
+        //! test metrics
         static bool have_same_sizes(const matrix_metrics &lhs, const matrix_metrics &rhs) throw();
+
+        //! test tranposed metrics
+        static bool are_transposed(const matrix_metrics &lhs, const matrix_metrics &rhs) throw();
 
         //______________________________________________________________________
         //
@@ -120,7 +128,9 @@ namespace yack
     private:
         void        *workspace; //!< allocated workspace
     };
-    
+
+    extern const matrix_metrics::transposed_t transposed;
+
 }
 
 #endif

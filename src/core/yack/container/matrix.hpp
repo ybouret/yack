@@ -26,6 +26,7 @@ namespace yack
         inline explicit matrix_data() throw() : row_(0) {} //!< setup
         row *row_;                                         //!< in [1..rows]
 
+        //! no-throw swap
         void swap_with(matrix_data &other) throw()
         {
             cswap(row_,other.row_);
@@ -80,6 +81,22 @@ namespace yack
             setup_from(M);
         }
 
+        //! copy with transposition
+        inline matrix(const matrix &M, const transposed_t &) :
+        matrix_data<T>(),
+        matrix_metrics((void**)&row_,M.cols,M.rows,sizeof(T),build_row_at)
+        {
+            setup_from_transposed(M);
+        }
+
+        //! assign by copy/swap
+        inline matrix & operator=( const matrix &other )
+        {
+            matrix tmp(other);
+            xch(tmp);
+            return *this;
+        }
+        
         //______________________________________________________________________
         //
         // methods
@@ -92,6 +109,7 @@ namespace yack
         inline const row &operator[](const size_t r) const throw()
         { assert(r>=1); assert(r<=rows); return row_[r]; }
 
+        //! no throw exchange
         inline void xch(matrix &other) throw()
         {
             matrix_data<T>::swap_with(other);
@@ -99,7 +117,6 @@ namespace yack
         }
 
     private:
-        YACK_DISABLE_ASSIGN(matrix);
 
         //! creation of a row
         static inline void build_row_at(void *row_addr, void *data_ptr, const size_t num_cols) throw()
@@ -141,7 +158,7 @@ namespace yack
         //! setup items
         inline void setup_from(const matrix &M)
         {
-            assert( have_same_sizes(*this,M));
+            assert(have_same_sizes(*this,M));
             if(items)
             {
                 size_t built = 0;
@@ -152,6 +169,32 @@ namespace yack
                     {
                         new (data+built) mutable_type(from[built]);
                         ++built;
+                    }
+                }
+                catch(...)
+                {
+                    clear(built);
+                    throw;
+                }
+            }
+        }
+
+        //! setup items
+        inline void setup_from_transposed(const matrix &M)
+        {
+            assert(are_transposed(*this,M));
+            if(items)
+            {
+                size_t built = 0;
+                try {
+                    mutable_type *data = & ((*this)[1][1]);
+                    for(size_t j=1;j<=M.cols;++j)
+                    {
+                        for(size_t i=1;i<=M.rows;++i)
+                        {
+                            new (data+built) mutable_type(M[i][j]);
+                            ++built;
+                        }
                     }
                 }
                 catch(...)

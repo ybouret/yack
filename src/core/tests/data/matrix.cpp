@@ -48,6 +48,24 @@ YACK_UTEST(data_matrix)
                 YACK_ASSERT( M[r][c] == P[r][c] );
             }
         }
+
+        {
+            matrix<apn> Q;
+            Q.xch(P);
+        }
+
+        matrix<apn> Q(M,transposed);
+        YACK_CHECK(Q.cols==M.rows);
+        YACK_CHECK(Q.rows==M.cols);
+        for(size_t r=1;r<=M.rows;++r)
+        {
+            for(size_t c=1;c<=M.cols;++c)
+            {
+                YACK_ASSERT( M[r][c] == Q[c][r] );
+            }
+        }
+
+
     }
     
     

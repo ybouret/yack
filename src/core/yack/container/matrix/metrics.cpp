@@ -10,6 +10,8 @@
 namespace yack
 {
 
+    const matrix_metrics::transposed_t transposed = {};
+
     typedef memory::pooled matrix_allocator;
 
     matrix_metrics:: ~matrix_metrics() throw()
@@ -113,6 +115,11 @@ namespace yack
     bool matrix_metrics:: have_same_sizes(const matrix_metrics &lhs, const matrix_metrics &rhs) throw()
     {
         return (lhs.rows==rhs.rows) && (lhs.cols==rhs.cols);
+    }
+
+    bool matrix_metrics:: are_transposed(const matrix_metrics &lhs, const matrix_metrics &rhs) throw()
+    {
+        return (lhs.rows==rhs.cols) && (lhs.cols==rhs.rows);
     }
 
 }
