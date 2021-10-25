@@ -94,7 +94,7 @@ namespace yack
     {
         namespace quark
         {
-            void thread::assign(handle h, const size_t j, const char *who)
+            void thread::assign(handle h, const size_t j)
             {
                 const int res = processor_bind(P_LWPID,idtype_t(h),j,NULL);
                 if(0!=res) throw exception("processor_bind failure");
