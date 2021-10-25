@@ -38,4 +38,5 @@ add_custom_target(dox
 endif()
 
 add_subdirectory(cli)
+add_subdirectory(zlib)
 

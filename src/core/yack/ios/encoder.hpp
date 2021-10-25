@@ -58,14 +58,12 @@ namespace yack
                 const size_t sz = arr.size();
                 size_t       nw = serialize<size_t>(os,sz);
                 for(size_t i=1;i<=sz;++i)
-                {
                     nw += emit<T>(os,arr[i]);
-                }
                 return nw;
             }
             
             //! encode size, write binary block
-            size_t serialize(ostream &, const void *block_addr, const size_t block_size);
+           static size_t serialize(ostream &, const void *block_addr, const size_t block_size);
             
 
 
