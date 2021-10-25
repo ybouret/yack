@@ -22,7 +22,7 @@ YACK_UTEST(apex_perf)
     if(argc>1) tsample = atof(argv[1]);
     if(argc>2) cpu     = atol(argv[2]);
 
-    concurrent::thread::assign_current(cpu);
+    concurrent::thread::assign_current(cpu,program);
     
     randomized::rand_  ran;
     const size_t       max_bytes = 8192*2;

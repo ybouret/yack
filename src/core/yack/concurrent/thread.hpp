@@ -42,8 +42,8 @@ namespace yack
             explicit thread(procedure proc, void *args); //!< initialize
             virtual ~thread() throw();                   //!< wait and destruct
 
-            void        assign(const size_t cpu);
-            static void assign_current(const size_t cpu);
+            void        assign(const size_t cpu, const char *who=NULL);
+            static void assign_current(const size_t cpu, const char *who=NULL);
 
         private:
             YACK_DISABLE_COPY_AND_ASSIGN(thread);

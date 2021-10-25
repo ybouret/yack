@@ -61,15 +61,23 @@ namespace yack
             assert(NULL==impl);
         }
 
-        void thread:: assign(const size_t cpu)
+        static inline void display_who(const size_t cpu, const char *who)
+        {
+            assert(who);
+            std::cerr << "[thread " << who << "]@cpu " << cpu << std::endl;
+        }
+
+        void thread:: assign(const size_t cpu, const char *who)
         {
             assert(NULL!=impl);
             quark::thread::assign(impl->self,cpu);
+            if(who) display_who(cpu,who);
         }
 
-        void thread:: assign_current(const size_t cpu)
+        void thread:: assign_current(const size_t cpu, const char *who)
         {
             quark::thread::assign( quark::thread::get_current_handle(), cpu );
+            if(who) display_who(cpu,who);
         }
 
     }
