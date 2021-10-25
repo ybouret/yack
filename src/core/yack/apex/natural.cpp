@@ -11,6 +11,8 @@ namespace yack
     namespace apex
     {
 
+
+
         size_t natural:: words_exp2_for(const size_t nw)
         {
             size_t wexp2 = min_words_exp2;
@@ -263,10 +265,10 @@ max_bytes(size_t(1)<<max_bytes_exp2 )
             return f;
         }
 
-
     }
 
 }
+
 
 
 #include "yack/randomized/bits.hpp"
@@ -277,8 +279,6 @@ namespace yack
 
     namespace apex
     {
-
-
 
         natural:: natural(randomized::bits &ran, const size_t nbit) :
         number(),
@@ -308,6 +308,22 @@ namespace yack
         }
 
 
+    }
+
+}
+
+#include "yack/system/exception.hpp"
+#include <cerrno>
+
+namespace yack
+{
+
+    namespace apex
+    {
+        void natural:: cast_overflow(const char *who) const
+        {
+            throw libc::exception(ERANGE,"apn::cast_to('%s')", (who?who:yack_unknown) );
+        }
     }
 
 }

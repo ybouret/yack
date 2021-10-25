@@ -252,7 +252,36 @@ natural      & operator OP##=(const uint_type lhs)
             YACK_APN_BITWISE_DECL(&);  //!< logical &
             YACK_APN_BITWISE_DECL(^);  //!< logical ^
             natural operator~() const; //!< logical ~
-            
+
+            //__________________________________________________________________
+            //
+            // conversion
+            //__________________________________________________________________
+            template <typename T>
+            bool try_cast_to(T &res) const throw()
+            {
+                static const uint_type umax = uint_type( integral_for<T>::maximum );
+                const        uint_type vmax = lsu();
+                if(vmax>umax)
+                {
+                    return false;
+                }
+                else
+                {
+                    res = T(vmax);
+                    return true;
+                }
+            }
+
+            template <typename T>
+            T cast_to(const char *who) const
+            {
+                T res=0;
+                if(!try_cast_to(res)) cast_overflow(who);
+                return res;
+            }
+
+
         private:
             size_t       bytes;
             size_t       words;
@@ -306,6 +335,7 @@ natural      & operator OP##=(const uint_type lhs)
             
             typedef uint8_t   (*bitproc)(uint8_t, uint8_t);
             static natural      bitwise(bitproc proc, const natural &lhs, const natural &rhs);
+            void    cast_overflow(const char *who) const;
         };
         
     }
