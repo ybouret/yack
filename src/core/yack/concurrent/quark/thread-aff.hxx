@@ -47,7 +47,7 @@ namespace yack
                 YACK_CPU_SET the_cpu_set;
                 CPU_ZERO(  &the_cpu_set );
                 CPU_SET(j, &the_cpu_set );
-                const int err = pthread_setaffinity_np( h, sizeof(Y_CPU_SET), &the_cpu_set );
+                const int err = pthread_setaffinity_np( h, sizeof(YACK_CPU_SET), &the_cpu_set );
                 if( err != 0 )
                     throw libc::exception( err, "pthread_setaffinity_np" );
             }
