@@ -36,14 +36,19 @@ namespace yack
             bs = 0;
             if(num>0)
             {
-                // compute offset/length
+                //______________________________________________________________
+                //
+                //
+                // PASS 1/2: compute offset+length
+                //
+                //______________________________________________________________
                 {
                     embed *prev  = emb;
                     prev->offset = 0;
                     prev->length = YACK_MEMALIGN(emb[0].length);
                     for(size_t i=1;i<num;++i)
                     {
-                        embed *curr = &emb[i];
+                        embed  *curr = &emb[i];
                         curr->offset = prev->offset + prev->length;
                         curr->length = YACK_MEMALIGN(curr->length);
                         prev = curr;
@@ -51,11 +56,16 @@ namespace yack
                     bs = prev->offset+prev->length;
                 }
                 uint8_t *wksp = static_cast<uint8_t*>( mem.acquire(bs,1) );
-                
-                // link
+
+                //______________________________________________________________
+                //
+                //
+                // PASS 2/2: link
+                //
+                //______________________________________________________________
                 for(size_t i=0;i<num;++i)
                 {
-                    embed &e = emb[i];
+                    embed &e = emb[i]; assert(e.handle);
                     *(e.handle) = &wksp[e.offset];
                 }
                 

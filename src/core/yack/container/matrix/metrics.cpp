@@ -4,6 +4,8 @@
 #include "yack/memory/embed.hpp"
 #include "yack/memory/allocator/global.hpp"
 
+#include <iostream>
+
 namespace yack
 {
     
@@ -26,11 +28,10 @@ namespace yack
     }
     
     
-    matrix_metrics:: matrix_metrics( const size_t size_of_item) throw():
+    matrix_metrics:: matrix_metrics(  ) throw():
     rows(0),
     cols(0),
     items(0),
-    item_size(size_of_item),
     allocated(0),
     workspace(0)
     {
@@ -40,16 +41,18 @@ namespace yack
     matrix_metrics:: matrix_metrics(void **       row_hook,
                                     const size_t  num_rows,
                                     const size_t  num_cols,
-                                    const size_t  size_of_item) :
+                                    const size_t  size_of_item,
+                                    row_callback  build_row_at) :
     rows(num_rows),
     cols(num_cols),
     items(rows*cols),
-    item_size(size_of_item),
     allocated(0),
     workspace(0)
     {
-        // sanity check
+        assert(build_row_at);
         
+        // sanity check
+        assert(size_of_item>0);
         if(rows<=0)
         {
             if(cols>0)  throw libc::exception(EDOM,"matrix(rows=0,cols=%u)",unsigned(cols));
@@ -62,25 +65,34 @@ namespace yack
         
         if(rows>0)
         {
-            static memory::allocator   &mem = memory::global::instance();
             typedef matrix_row<uint8_t> row_t;
-            const size_t stride = cols*item_size;
-            
+            static  memory::allocator   &mem    = memory::global::instance();
+            const   size_t               stride = cols*size_of_item;
+
+            //__________________________________________________________________
+            //
             // allocate
+            //__________________________________________________________________
             row_t               *temp = 0;
             uint8_t             *data = 0;
             memory::embed        emb[] =
             {
                 memory::embed(temp,rows),
-                memory::embed(data,items*item_size)
+                memory::embed(data,items*size_of_item)
             };
             workspace = YACK_MEMORY_EMBED(emb,mem,coerce(allocated));
-            
+
+            //__________________________________________________________________
+            //
             // link
-            *row_hook =  out_of_reach::address(temp-1);
-            for(size_t i=1;i<=rows;++i,data+=stride)
+            //__________________________________________________________________
+            *row_hook = out_of_reach::address(temp-1);
             {
-                new (temp++) row_t(data,cols);
+                uint8_t *item = data - size_of_item;
+                for(size_t i=rows;i>0;--i,item+=stride)
+                {
+                    build_row_at(temp++,item,cols);
+                }
             }
             
         }
