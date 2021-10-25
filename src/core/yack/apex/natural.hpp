@@ -228,12 +228,12 @@ namespace yack
             //! numerator = quot * denominator + rem
             static natural quot(const natural &numerator, const natural &denominator, natural &rem);
             
-            //! gcd
-            static natural gcd(const natural &a, const natural &b);
-            
-            //! simplification
-            static void simplify(natural &num, natural &den);
-            
+
+            static natural gcd(const natural &a, const natural &b);                         //!< gcd
+            static void    simplify(natural &num, natural &den);                            //! simplification protocol
+            static natural mod_inv(const natural &b, const natural &n);                     //!< modular inverse        (b^(-1))[n]
+            static natural mod_exp(const natural &b, const natural &e, const natural &n);   //!< modular exponentiation (b^e)[n]
+
             //__________________________________________________________________
             //
             // bitwise ops

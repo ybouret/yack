@@ -32,6 +32,23 @@ YACK_UTEST(apex_ari)
             YACK_ASSERT(0==J%g);
         }
     }
+
+    std::cerr << "[MOD_INV]" << std::endl;
+    {
+#if !defined(NDEBUG)
+        const apn n = 7919;
+#else
+        const apn n = 104729;
+#endif
+        for(apn b=1;b<n;++b)
+        {
+            const apn I = apn::mod_inv(b,n);
+            const apn p = (I*b)%n;
+            YACK_ASSERT(1==p);
+        }
+    }
+
+
 }
 YACK_UDONE()
 
