@@ -193,7 +193,7 @@ namespace yack
             
             static inline natural _fsqr(const natural &u) { const handle U(u); return fsqr(U);   } //!< call fsqr
             static inline natural _lsqr(const natural &u) { const handle U(u); return lmul(U,U); } //!< call lmul
-            static natural        squared(const natural &);
+            static natural        squared(const natural &); //!< squared value
 
             //__________________________________________________________________
             //
@@ -231,7 +231,7 @@ namespace yack
             
 
             static natural gcd(const natural &a, const natural &b);                         //!< gcd
-            static void    simplify(natural &num, natural &den);                            //! simplification protocol
+            static void    simplify(natural &num, natural &den);                            //!< simplification protocol
             static natural mod_inv(const natural &b, const natural &n);                     //!< modular inverse        (b^(-1))[n]
             static natural mod_exp(const natural &b, const natural &e, const natural &n);   //!< modular exponentiation (b^e)[n]
 
