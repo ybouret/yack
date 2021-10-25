@@ -193,7 +193,8 @@ namespace yack
             
             static inline natural _fsqr(const natural &u) { const handle U(u); return fsqr(U);   } //!< call fsqr
             static inline natural _lsqr(const natural &u) { const handle U(u); return lmul(U,U); } //!< call lmul
-            
+            static natural        squared(const natural &);
+
             //__________________________________________________________________
             //
             // power of two and bits shifting

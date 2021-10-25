@@ -19,14 +19,16 @@ YACK_UTEST(apex_perf)
     double     tsample = 0.5;
     if(argc>1) tsample = atof(argv[1]);
     randomized::rand_  ran;
-    const size_t       max_bytes = 8192;
+    const size_t       max_bytes = 8192*2;
     wtime              chrono;
 
     std::cerr << "[MUL]" << std::endl;
     ios::ocstream::overwrite("mul.dat");
     for(size_t bytes=1;bytes<=max_bytes;bytes<<=1)
     {
-        std::cerr << "bytes=" << std::setw(6) << bytes;
+        std::cerr << std::setw(6) << bytes << 'b';
+        const size_t words = YACK_ALIGN_ON(apn::word_size,bytes)/apn::word_size;
+        std::cerr << " | " << std::setw(6) << words << 'w';
         const size_t exp2 = integer_log2(bytes);
         apex::number::reset_tracking();
         assert(apex::number::fmul_ticks<=0);
@@ -52,9 +54,12 @@ YACK_UTEST(apex_perf)
             t64 += wtime::ticks() - mark;
         } while( chrono(t64) < tsample );
 
-        std::cerr << " | lmul_rate: " << std::setw(15) << apex::number::lmul_rate();
-        std::cerr << " | fmul_rate: " << std::setw(15) << apex::number::fmul_rate();
-        ios::ocstream::echo("mul.dat","%u %g %g\n",unsigned(exp2),log10(apex::number::lmul_rate()), log10(apex::number::fmul_rate()));
+        const double lrate = apex::number::lmul_rate();
+        const double frate = apex::number::fmul_rate();
+        std::cerr << " | lmul@ " << std::setw(15) << lrate;
+        std::cerr << " | fmul@ " << std::setw(15) << frate;
+        if(frate>=lrate) std::cerr << " <*>";
+        ios::ocstream::echo("mul.dat","%u %g %g\n",unsigned(exp2),log10(lrate), log10(frate));
         std::cerr << std::endl;
     }
 
@@ -62,7 +67,9 @@ YACK_UTEST(apex_perf)
     ios::ocstream::overwrite("sqr.dat");
     for(size_t bytes=1;bytes<=max_bytes;bytes<<=1)
     {
-        std::cerr << "bytes=" << std::setw(6) << bytes;
+        std::cerr << std::setw(6) << bytes << 'b';
+        const size_t words = YACK_ALIGN_ON(apn::word_size,bytes)/apn::word_size;
+        std::cerr << " | " << std::setw(6) << words << 'w';
         const size_t exp2 = integer_log2(bytes);
         apex::number::reset_tracking();
         assert(apex::number::fsqr_ticks<=0);
@@ -86,9 +93,12 @@ YACK_UTEST(apex_perf)
             t64 += wtime::ticks() - mark;
         } while( chrono(t64) < tsample );
 
-        std::cerr << " | lsqr_rate: " << std::setw(15) << apex::number::lmul_rate();
-        std::cerr << " | fsqr_rate: " << std::setw(15) << apex::number::fsqr_rate();
-        ios::ocstream::echo("sqr.dat","%u %g %g\n",unsigned(exp2),log10(apex::number::lmul_rate()), log10(apex::number::fsqr_rate()));
+        const double lrate = apex::number::lmul_rate();
+        const double frate = apex::number::fsqr_rate();
+        std::cerr << " | lmul@ " << std::setw(15) << lrate;
+        std::cerr << " | fmul@ " << std::setw(15) << frate;
+        if(frate>=lrate) std::cerr << " <*>";
+        ios::ocstream::echo("sqr.dat","%u %g %g\n",unsigned(exp2),log10(lrate), log10(frate));
         std::cerr << std::endl;
     }
 

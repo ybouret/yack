@@ -5,6 +5,7 @@
 #include "yack/utest/run.hpp"
 #include "yack/system/endian.hpp"
 #include "yack/randomized/rand.hpp"
+#include "yack/arith/ipower.hpp"
 
 using namespace yack;
 
@@ -33,6 +34,7 @@ YACK_UTEST(apex_ari)
         }
     }
 
+
     std::cerr << "[MOD_INV]" << std::endl;
     {
 #if !defined(NDEBUG)
@@ -47,6 +49,22 @@ YACK_UTEST(apex_ari)
             YACK_ASSERT(1==p);
         }
     }
+
+    std::cerr << "[MOD_EXP]" << std::endl;
+    {
+        const apn n = 104729;
+        for(size_t iter=0;iter<10;++iter)
+        {
+            const apn b(ran,n.bits()-1);
+            const apn e(ran,2+ran.leq(6));
+            std::cerr << '(' << b << '^' << e << ')' << '[' << n << ']' << std::endl;
+            const apn p = apn::mod_exp(b,e,n);
+            const apn q = ipower(b,e)%n;
+            YACK_ASSERT(p==q);
+        }
+    }
+
+
 
 
 }

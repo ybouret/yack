@@ -14,6 +14,11 @@ namespace yack
             return lmul(l,r);
         }
 
+        natural natural:: squared(const natural &n)
+        {
+            return _lsqr(n);
+        }
+
     }
 
 }
