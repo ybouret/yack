@@ -1,13 +1,13 @@
 
 include_directories(..)
 
-add_executable(zlib_example example.c)
-target_link_libraries(zlib_example yack-z)
+add_executable(z-example example.c)
+target_link_libraries(z-example yack-z)
 
-add_custom_command( TARGET zlib_example
+add_custom_command( TARGET z-example
 POST_BUILD
-COMMAND zlib_example
-COMMENT "[YACK.ZLIB] example...")
+COMMAND z-example
+COMMENT "[YACK]  <zlib example/>")
 
-add_executable(minigzip minigzip.c)
-target_link_libraries(minigzip yack-z)
+#add_executable(minigzip minigzip.c)
+#target_link_libraries(minigzip yack-z)
