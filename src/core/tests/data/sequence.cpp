@@ -1,4 +1,6 @@
+#include "yack/sequence/vector.hpp"
 #include "yack/sequence/list.hpp"
+
 #include "yack/utest/run.hpp"
 
 using namespace yack;
