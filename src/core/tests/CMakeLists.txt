@@ -30,6 +30,9 @@ source_group(hashing FILES ${hashing})
 file(GLOB rand rand/*.cpp)
 source_group(rand FILES ${rand})
 
+file(GLOB sort sort/*.cpp)
+source_group(sort FILES ${sort})
+
 add_executable(test-yack main.cpp
 ${base}
 ${type}
@@ -41,6 +44,7 @@ ${fft}
 ${ios}
 ${hashing}
 ${rand}
+${sort}
 )
 
 yack_link_libraries(test-yack)
@@ -112,6 +116,8 @@ add_test(ios:streams    test-yack ios_streams)
 add_test(hashing::64    test-yack hash64)
 
 add_test(rand:bits      test-yack rand_bits)
+
+add_test(sort:heap      test-yack sort_heap)
 
 
 yack_testing(yack)

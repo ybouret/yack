@@ -264,11 +264,22 @@ install( FILES ${hashing_decl} DESTINATION include/yack/hashing )
 ## randomized
 ##
 ########################################################################
-file(GLOB randomized_impl yack/randomized/*.cpp yack/randomized/*.c)
-file(GLOB randomized_decl yack/randomized/*.hpp yack/randomized/*.h)
+file(GLOB randomized_impl yack/randomized/*.cpp)
+file(GLOB randomized_decl yack/randomized/*.hpp)
 set(randomized ${randomized_impl} ${randomized_decl})
 SOURCE_GROUP(randomized FILES ${randomized})
 install( FILES ${randomized_decl} DESTINATION include/yack/randomized )
+
+########################################################################
+##
+## sort
+##
+########################################################################
+file(GLOB sort_impl yack/sort/*.cpp)
+file(GLOB sort_decl yack/sort/*.hpp)
+set(sort ${sort_impl} ${sort_decl})
+SOURCE_GROUP(sort FILES ${sort})
+install( FILES ${sort_decl} DESTINATION include/yack/sort )
 
 
 ########################################################################
@@ -313,6 +324,7 @@ ${apex} ${apex_n} ${apex_m}
 ${concurrent} ${concurrent_quark} ${concurrent_loop}
 ${ios} ${ios_c}
 ${randomized}
+${sort}
 ${kr}
 ${hashing}
 ${utest}

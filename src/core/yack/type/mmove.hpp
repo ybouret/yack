@@ -10,7 +10,7 @@ namespace yack
 {
     //__________________________________________________________________________
     //
-    //! inline mswap of POD type
+    //! inline mmove of POD type
     //__________________________________________________________________________
     template <typename T> inline
     void mmove(T &lhs, const T &rhs) throw()
