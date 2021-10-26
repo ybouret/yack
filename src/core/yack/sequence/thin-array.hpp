@@ -32,7 +32,7 @@ namespace yack
         //______________________________________________________________________
         
         //! cleanup
-        inline virtual ~thin_array() throw() { entry=0; count=0; }
+        inline virtual ~thin_array() throw() { entry=0; coerce(count)=0; }
         
         //! setup
         inline explicit thin_array(type *arr, const size_t num) throw() :
@@ -53,7 +53,7 @@ namespace yack
         // interface
         //______________________________________________________________________
         inline virtual size_t       size() const throw() { return count; }
-        inline virtual type       & operator[](const size_t indx) throw() { assert(indx>=1); assert(indx<=size()); return entry[indx]; }
+        inline virtual type       & operator[](const size_t indx)       throw() { assert(indx>=1); assert(indx<=size()); return entry[indx]; }
         inline virtual const_type & operator[](const size_t indx) const throw() { assert(indx>=1); assert(indx<=size()); return entry[indx]; }
         
         

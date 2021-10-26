@@ -17,11 +17,11 @@ namespace yack
     //
     //______________________________________________________________________
     template <typename T,typename FUNC>
-    inline void heap_sort_(writable<T> &ra,
-                           FUNC        &compare)
+    inline void hsort(writable<T> &ra,
+                       FUNC        &compare)
     {
         const size_t n = ra.size();
-        assert(n>=2);
+        if(n<2) return;
         
         //----------------------------------------------------------------------
         // local memory
@@ -74,28 +74,9 @@ namespace yack
     }
     
     
-    //__________________________________________________________________________
-    //
-    //
-    //! heap sort
-    //
-    //__________________________________________________________________________
-    template <typename T,typename FUNC>
-    inline void hsort(writable<T> &ra,
-                      FUNC        &compare)
-    {
-        switch( ra.size() )
-        {
-            case 0:
-            case 1:
-                return;
-                
-            default:
-                heap_sort_(ra,compare); return;
-        }
-    }
     
-
+    
+    
     
     
     //__________________________________________________________________________
