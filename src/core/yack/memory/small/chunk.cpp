@@ -280,7 +280,9 @@ namespace yack
             return new( out_of_reach::address(entry) ) chunk(block_size, out_of_reach::address(cdata), frame_size-header);
         }
 
-        void chunk:: delete_frame(chunk *ch,size_t full_bytes, allocator &dispatcher) throw()
+        void chunk:: delete_frame(chunk     *ch,
+                                  size_t     full_bytes,
+                                  allocator &dispatcher) throw()
         {
             assert(ch!=NULL);
             destruct(ch);
