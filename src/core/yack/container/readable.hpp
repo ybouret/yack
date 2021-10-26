@@ -35,6 +35,8 @@ namespace yack
         //
         // methods
         //______________________________________________________________________
+
+        //! default Julia,vector-style output
         inline friend std::ostream & operator<<(std::ostream &os, const readable<T> &self)
         {
             os << '[';
