@@ -72,5 +72,6 @@ YACK_UTEST_DECL(64)
     YACK_UTEST(rand_bits);
 
     YACK_UTEST(sort_heap);
+    YACK_UTEST(sort_indexing);
 }
 YACK_UTEST_EXEC()

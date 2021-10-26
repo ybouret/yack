@@ -62,11 +62,24 @@ namespace yack
         inline virtual ~list() throw() { release(); }
 
         //! setup empty, with capacity
-        inline explicit list(size_t n, const as_capacity_t &) throw() :
+        inline explicit list(const size_t n, const as_capacity_t &) throw() :
         sequence<T>(), writable<T>(), alive(), cache()
         {
             reserve(n);
         }
+
+        //! setup with size and default value
+        inline explicit list(size_t n, param_type args) :
+        sequence<T>(), writable<T>(), alive(), cache()
+        {
+            try
+            {
+                while(n-- > 0) alive.push_back( build(args) );
+            }
+            catch(...) { kill_(); throw; }
+
+        }
+
 
         //! hard copy of other list
         inline list(const list &other) :
