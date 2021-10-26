@@ -150,6 +150,7 @@ max_bytes(size_t(1)<<max_bytes_exp2 )
 
 
         natural:: natural(const natural &other) :
+        collection(),
         number(),
         readable<uint8_t>(),
         bytes(other.bytes),

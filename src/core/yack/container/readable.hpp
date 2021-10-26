@@ -15,7 +15,7 @@ namespace yack
     //
     //__________________________________________________________________________
     template <typename T>
-    class readable : public collection
+    class readable : public virtual collection
     {
     public:
         //______________________________________________________________________
