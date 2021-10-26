@@ -286,7 +286,8 @@ namespace yack
         {
             assert(ch!=NULL);
             destruct(ch);
-            dispatcher.release(*(void **)&ch,full_bytes);
+            void *block_addr = ch;
+            dispatcher.release(block_addr,full_bytes);
         }
 
 
