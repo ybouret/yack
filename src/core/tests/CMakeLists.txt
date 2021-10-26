@@ -86,7 +86,7 @@ add_test(data:pool      test-yack data_pool)
 add_test(data:pool:sort test-yack data_pool_sort)
 add_test(data:small     test-yack data_small)
 add_test(data:matrix    test-yack data_matrix)
-add_test(data:sequence  test-yacl data_sequence)
+add_test(data:sequence  test-yack data_sequence)
 
 add_test(sync:lockable  test-yack sync_lockable)
 add_test(sync:primitive test-yack sync_primitive)
