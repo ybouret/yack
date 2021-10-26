@@ -30,8 +30,8 @@ namespace yack
             assert(is_a_power_of_two(size));
             assert(NULL==entry->next);
             assert(NULL==entry->prev);
-
-            mgr.release(*(void **)&entry,size);
+            void *block_addr = entry;
+            mgr.release(block_addr,size);
         }
 
     }
