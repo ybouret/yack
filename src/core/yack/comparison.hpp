@@ -35,6 +35,26 @@ namespace yack
             return (lhs<rhs) ? 1 : (rhs<lhs ? -1 : 0);
         }
         
+        template <typename ITERATOR, typename FUNC> static inline
+        bool ordered(ITERATOR iter, size_t n, FUNC &compare)
+        {
+            switch(n)
+            {
+                case 0:
+                case 1:
+                    return true;
+                default:
+                    break;
+            }
+            assert(n>=2);
+            while(--n>0)
+            {
+                const ITERATOR curr = iter++;
+                if( compare(*curr,*iter) >0 ) return false;
+            }
+            return true;
+        }
+        
         
     };
     
