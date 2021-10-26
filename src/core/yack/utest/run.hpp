@@ -6,6 +6,7 @@
 #include "yack/setup.hpp"
 #include "yack/check/crc32.h"
 #include "yack/type/mswap.hpp"
+#include "yack/type/mmove.hpp"
 #include "yack/check/expression.hpp"
 #include "yack/randomized/rand.hpp"
 #include "yack/randomized/shuffle.hpp"
