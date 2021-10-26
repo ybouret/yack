@@ -14,11 +14,17 @@
 namespace yack
 {
 
+    //__________________________________________________________________________
+    //
+    //
+    //! vector of contiguous objects
+    //
+    //__________________________________________________________________________
     template <typename T>
     class vector : public sequence<T>, public contiguous<T>
     {
     public:
-        YACK_DECL_ARGS(T,type);
+        YACK_DECL_ARGS(T,type); //!< alias
 
         inline explicit vector() throw() {}
         inline virtual ~vector() throw() {}

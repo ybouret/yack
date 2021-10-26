@@ -35,6 +35,10 @@ namespace yack
             return (lhs<rhs) ? 1 : (rhs<lhs ? -1 : 0);
         }
         
+        //______________________________________________________________________
+        //
+        //! test ordered range
+        //______________________________________________________________________
         template <typename ITERATOR, typename FUNC> static inline
         bool ordered(ITERATOR iter, size_t n, FUNC &compare)
         {

@@ -20,28 +20,48 @@ namespace yack
     class thin_array : public contiguous<T>
     {
     public:
-        YACK_DECL_ARGS(T,type);
+        //______________________________________________________________________
+        //
+        // types
+        //______________________________________________________________________
+        YACK_DECL_ARGS(T,type); //!< aliases
         
-        inline virtual ~thin_array() throw() {}
+        //______________________________________________________________________
+        //
+        // C++
+        //______________________________________________________________________
+        
+        //! cleanup
+        inline virtual ~thin_array() throw() { entry=0; count=0; }
+        
+        //! setup
         inline explicit thin_array(type *arr, const size_t num) throw() :
         entry( coerce_cast<mutable_type>(arr)-1 ),
         count(num)
         {
         }
         
-        inline virtual size_t size() const throw() { return count; }
-        inline type &operator[](const size_t indx) throw()
-        { assert(indx>=1); assert(indx<=size()); return entry[indx]; }
+        //! copy
+        inline   thin_array(const thin_array &other ) throw() :
+        entry(other.entry),
+        count(other.count)
+        {
+        }
         
-        inline const_type &operator[](const size_t indx) const throw()
-        { assert(indx>=1); assert(indx<=size()); return entry[indx]; }
+        //______________________________________________________________________
+        //
+        // interface
+        //______________________________________________________________________
+        inline virtual size_t       size() const throw() { return count; }
+        inline virtual type       & operator[](const size_t indx) throw() { assert(indx>=1); assert(indx<=size()); return entry[indx]; }
+        inline virtual const_type & operator[](const size_t indx) const throw() { assert(indx>=1); assert(indx<=size()); return entry[indx]; }
         
         
     private:
         mutable_type *entry;
         const size_t  count;
         
-        YACK_DISABLE_COPY_AND_ASSIGN(thin_array);
+        YACK_DISABLE_ASSIGN(thin_array);
     };
 
 }

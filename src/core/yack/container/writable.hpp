@@ -22,7 +22,7 @@ namespace yack
         //
         // types
         //______________________________________________________________________
-        typedef typename readable<T>::type       type; //!< alias
+        typedef typename readable<T>::type       type;       //!< alias
         typedef typename readable<T>::const_type const_type; //!< alias
 
         //______________________________________________________________________
