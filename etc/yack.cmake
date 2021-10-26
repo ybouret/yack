@@ -110,6 +110,7 @@ if(${YACK_CC} MATCHES "gcc.*" )
 
 	set(YACK_KNOWN_COMPILER ON)
 	set(YACK_COMPILERS      "gnu")
+	SET(YACK_GNU            ON)
 	YACK_FIND_COMPILER_VERSION()
 	
  	set(CMAKE_C_FLAGS   "-Wall -pipe -fPIC")
@@ -136,6 +137,7 @@ if(${YACK_CC} MATCHES "clang.*" )
 
 	set(YACK_KNOWN_COMPILER ON)
 	set(YACK_COMPILERS      "clang")
+	set(YACK_CLANG          ON)
 	YACK_FIND_COMPILER_VERSION()
 
 	set(CMAKE_C_FLAGS   "-Wall -Wextra -pipe -fPIC")
@@ -157,6 +159,7 @@ if(${YACK_CC} MATCHES "icc.*" )
 
 	set(YACK_KNOWN_COMPILER ON)
 	set(YACK_COMPILERS      "intel")
+	set(YACK_INTEL          ON)
 	YACK_FIND_COMPILER_VERSION()
 
 	set(CMAKE_C_FLAGS   "-Wall -pipe -wd981 -fPIC -xHost")
@@ -178,7 +181,8 @@ if(${YACK_CC} STREQUAL "cl" )
 
 	set(YACK_KNOWN_COMPILER ON)
 	set(YACK_COMPILERS      "microsoft")
-		
+	set(YACK_MICROSOFT      ON)
+	
 	set(CMAKE_C_FLAGS   "-nologo")
 	set(CMAKE_CXX_FLAGS "-nologo -EHsc" )
 	set(YACK_FLAGS_DEBUG   "")
