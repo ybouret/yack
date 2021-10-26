@@ -17,59 +17,109 @@
 
 namespace yack
 {
-    
+
+    //__________________________________________________________________________
+    //
+    //
+    //! list of objects
+    //
+    //__________________________________________________________________________
     template <typename T>
     class list : public sequence<T>, public writable<T>
     {
     public:
-        YACK_DECL_ARGS(T,type);
+        //______________________________________________________________________
+        //
+        // types and definitions
+        //______________________________________________________________________
+        YACK_DECL_ARGS(T,type); //!< aliases
 
+        //! doubly linked node+data
         class node_type
         {
         public:
-            node_type *next;
-            node_type *prev;
-            inline  node_type(const_type &args) : next(0), prev(0), data(args) {}
-            inline ~node_type() throw() { assert(0==next); assert(0==prev); }
-            inline type       &operator*() throw()       { return data; }
-            inline const_type &operator*() const throw() { return data; }
+            inline  node_type(const_type &args) : next(0), prev(0), data(args) {} //!< setup
+            inline ~node_type() throw() { assert(0==next); assert(0==prev); }     //!< cleanup
+            inline type       &operator*() throw()       { return data; }         //!< access
+            inline const_type &operator*() const throw() { return data; }         //!< access, const
+
+            node_type *next; //!< for list
+            node_type *prev; //!< for list
         private:
             YACK_DISABLE_COPY_AND_ASSIGN(node_type);
             type data;
         };
 
-        inline explicit         list() throw() : sequence<T>(), writable<T>(), alive(), cache() {}
-        inline virtual         ~list() throw() { release(); }
-        inline explicit         list(size_t n, const as_capacity_t &) throw() :
+        //______________________________________________________________________
+        //
+        // C++
+        //______________________________________________________________________
+
+        //! default setup empty
+        inline explicit list() throw() : sequence<T>(), writable<T>(), alive(), cache() {}
+
+        //! cleanup is release
+        inline virtual ~list() throw() { release(); }
+
+        //! setup empty, with capacity
+        inline explicit list(size_t n, const as_capacity_t &) throw() :
         sequence<T>(), writable<T>(), alive(), cache()
         {
             reserve(n);
         }
 
+        //! hard copy of other list
+        inline list(const list &other) :
+        sequence<T>(), writable<T>(), alive(), cache()
+        {
+            try
+            {
+                for(const node_type *node=other.alive.head;node;node=node->next)
+                    alive.push_back( build(**node) );
+            }
+            catch(...) { kill_(); throw; }
+        }
+
+
+        //______________________________________________________________________
+        //
         // collection interface
+        //______________________________________________________________________
         inline virtual size_t   size()      const throw() { return alive.size; }
 
-        //! releasable interfacee
+        //______________________________________________________________________
+        //
+        // releasable interface
+        //______________________________________________________________________
         inline virtual void     release()         throw() { trim_(); kill_(); }
 
-        //! container interface
+        //______________________________________________________________________
+        //
+        // container interface
+        //______________________________________________________________________
         inline virtual size_t   capacity()  const throw() { return alive.size+cache.size; }
         inline virtual size_t   available() const throw() { return cache.size; }
         inline virtual void     free()            throw() { }
         inline virtual void     reserve(size_t n) { while(n-- > 0) cache.store( object::zacquire<node_type>()); }
 
-        //! writable interface
+        //______________________________________________________________________
+        //
+        // writable interface
+        //______________________________________________________________________
         inline type       & operator[](const size_t indx) throw()       { return **alive.get(indx); }
         inline const_type & operator[](const size_t indx) const throw() { return **alive.get(indx); }
 
+        //______________________________________________________________________
+        //
         //! sequence interface
+        //______________________________________________________________________
         inline virtual void push_back(param_type args)  { alive.push_back( build(args) ); }
         inline virtual void push_front(param_type args) { alive.push_front( build(args)); }
         inline virtual void pop_back()  throw() { free_(alive.pop_back());  }
         inline virtual void pop_front() throw() { free_(alive.pop_front()); }
 
     private:
-        YACK_DISABLE_COPY_AND_ASSIGN(list);
+        YACK_DISABLE_ASSIGN(list);
         list_of<node_type> alive;
         pool_of<node_type> cache;
 

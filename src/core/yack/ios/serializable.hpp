@@ -20,12 +20,24 @@ namespace yack
         class serializable
         {
         public:
-            virtual ~serializable() throw();                            //!< cleanup
+            //__________________________________________________________________
+            //
+            // virtual interface
+            //__________________________________________________________________
             virtual size_t      serialize(ostream &) const         = 0; //!< as portable format, return written bytes
             virtual const char *class_uid()          const throw() = 0; //!< class Unique IDentifier
-            
-            size_t  save_class_ui(ostream &) const;
-            
+
+            //__________________________________________________________________
+            //
+            // non-virtual interface
+            //__________________________________________________________________
+            size_t  save_class_ui(ostream &) const; //!< emit strlen(class_uid) and class_uid
+
+            //__________________________________________________________________
+            //
+            // C++
+            //__________________________________________________________________
+            virtual ~serializable() throw(); //!< cleanup
         protected:
             explicit serializable() throw(); //!< setup
 
