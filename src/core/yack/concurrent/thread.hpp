@@ -42,7 +42,7 @@ namespace yack
             explicit thread(procedure proc, void *args); //!< initialize
             virtual ~thread() throw();                   //!< wait and destruct
 
-            void        assign(const size_t cpu, const char *who=NULL); //!< assign to cpu, with optional verbosity
+            void        assign(const size_t cpu, const char *who=NULL);         //!< assign to cpu, with optional verbosity
             static void assign_current(const size_t cpu, const char *who=NULL); //!< assign current thread to cpu, with optional verbosity
 
         private:

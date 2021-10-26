@@ -106,3 +106,28 @@ namespace yack
 }
 
 #endif
+
+
+#if !defined(YACK_THREAD_AFFINITY)
+
+namespace yack
+{
+    namespace concurrent
+    {
+        namespace quark
+        {
+            void thread::assign(handle, const size_t)
+            {
+                if(yack::concurrent::thread::verbose)
+                {
+                    std::cerr << "[N/A]";
+                }
+            }
+        }
+
+    }
+
+}
+
+
+#endif
