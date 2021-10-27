@@ -36,6 +36,7 @@ namespace yack
     rows(0),
     cols(0),
     items(0),
+    stride(0),
     allocated(0),
     workspace(0)
     {
@@ -53,6 +54,7 @@ namespace yack
 
     
     matrix_metrics:: matrix_metrics(void **       row_hook,
+                                    void **       ptr_hook,
                                     const size_t  num_rows,
                                     const size_t  num_cols,
                                     const size_t  size_of_item,
@@ -60,11 +62,14 @@ namespace yack
     rows(num_rows),
     cols(num_cols),
     items(rows*cols),
+    stride(cols*size_of_item),
     allocated(0),
     workspace(0)
     {
         assert(build_row_at);
-        
+        assert(row_hook);
+        assert(ptr_hook);
+
         // sanity check
         assert(size_of_item>0);
         if(rows<=0)
@@ -80,9 +85,8 @@ namespace yack
         if(rows>0)
         {
             typedef matrix_row<uint8_t> row_t;
-            static  memory::allocator   &mem    = matrix_allocator::instance();
-            const   size_t               stride = cols*size_of_item;
-
+            static  memory::allocator   &mem = matrix_allocator::instance();
+            
             //__________________________________________________________________
             //
             // allocate
@@ -101,6 +105,7 @@ namespace yack
             // link
             //__________________________________________________________________
             *row_hook = out_of_reach::address(temp-1);
+            *ptr_hook = out_of_reach::address(data);
             {
                 uint8_t *item = data - size_of_item;
                 for(size_t i=rows;i>0;--i,item+=stride)

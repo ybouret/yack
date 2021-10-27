@@ -3,38 +3,18 @@
 #ifndef YACK_CONTAINER_MATRIX_INCLUDED
 #define YACK_CONTAINER_MATRIX_INCLUDED 1
 
-#include "yack/container/matrix/metrics.hpp"
+#include "yack/container/matrix/data.hpp"
 #include "yack/type/destruct.hpp"
+#include "yack/type/out-of-reach.hpp"
 #include <iostream>
 
 namespace yack
 {
-    //__________________________________________________________________________
-    //
-    //
-    //! data for matrix
-    //
-    //__________________________________________________________________________
-    template <typename T>
-    class matrix_data
-    {
-    public:
-        typedef matrix_row<T> row;                         //!< alias
-        inline virtual ~matrix_data() throw() { row_=0; }  //!< cleanup
-
-    protected:
-        inline explicit matrix_data() throw() : row_(0) {} //!< setup
-        row *row_;                                         //!< in [1..rows]
-
-        //! no-throw swap
-        void swap_with(matrix_data &other) throw()
-        {
-            cswap(row_,other.row_);
-        }
-
-    private:
-        YACK_DISABLE_COPY_AND_ASSIGN(matrix_data);
-    };
+    
+    //! constructor for matrix
+#define YACK_MATRIX_CTOR(ROWS,COLS) \
+/**/      matrix_data<T>(),         \
+/**/      matrix_metrics((void**)&line,(void**)&head,ROWS,COLS,sizeof(T),build_row_at)
 
     //__________________________________________________________________________
     //
@@ -52,8 +32,9 @@ namespace yack
         //______________________________________________________________________
         YACK_DECL_ARGS(T,type);                    //!< aliases
         typedef typename matrix_data<T>::row row;  //!< alias
-        using matrix_data<T>::row_;
-        
+        using matrix_data<T>::line;
+        using matrix_data<T>::head;
+
         //______________________________________________________________________
         //
         // C++
@@ -67,24 +48,21 @@ namespace yack
 
         //! setup empty or not
         inline matrix(const size_t r, const size_t c) :
-        matrix_data<T>(),
-        matrix_metrics((void**)&row_,r,c,sizeof(T),build_row_at)
+        YACK_MATRIX_CTOR(r,c)
         {
             setup();
         }
 
         //! copy relying on copy constructor for type
         inline matrix(const matrix &M) :
-        matrix_data<T>(),
-        matrix_metrics((void**)&row_,M.rows,M.cols,sizeof(T),build_row_at)
+        YACK_MATRIX_CTOR(M.rows,M.cols)
         {
             setup_from(M);
         }
 
         //! copy with transposition
         inline matrix(const matrix &M, const transposed_t &) :
-        matrix_data<T>(),
-        matrix_metrics((void**)&row_,M.cols,M.rows,sizeof(T),build_row_at)
+        YACK_MATRIX_CTOR(M.cols,M.rows)
         {
             setup_from_transposed(M);
         }
@@ -101,13 +79,14 @@ namespace yack
         //
         // methods
         //______________________________________________________________________
+
         //! row[1..rows]
         inline row &operator[](const size_t r) throw()
-        { assert(r>=1); assert(r<=rows); return row_[r]; }
+        { assert(r>=1); assert(r<=rows); return line[r]; }
 
         //! row[1..rows] const
         inline const row &operator[](const size_t r) const throw()
-        { assert(r>=1); assert(r<=rows); return row_[r]; }
+        { assert(r>=1); assert(r<=rows); return line[r]; }
 
         //! no throw exchange
         inline void xch(matrix &other) throw()
@@ -115,6 +94,40 @@ namespace yack
             matrix_data<T>::swap_with(other);
             matrix_metrics::swap_with(other);
         }
+
+        //! load same value
+        inline void ld(param_type args)
+        {
+            type *p = head;
+            for(size_t i=items;i>0;--i) *(p++) = args;
+        }
+
+        //! swap rows content
+        inline void swap_rows(const size_t r1, const size_t r2) throw()
+        {
+            assert(r1>=1); assert(r1<=rows);
+            assert(r2>=1); assert(r2<=rows);
+            out_of_reach::swap(&line[r1][1],&line[r2][1],stride);
+        }
+
+        //______________________________________________________________________
+        //
+        // output
+        //______________________________________________________________________
+
+        //! display as Julia matrix
+        friend inline std::ostream & operator<<(std::ostream &os,const matrix &M)
+        {
+            os << '[';
+            if(M.rows>0)
+            {
+                M.line[1].display(os);
+                for(size_t r=1;r<=M.rows;++r) M.line[r].display(os<<';');
+            }
+            os << ']';
+            return os;
+        }
+
 
     private:
 
