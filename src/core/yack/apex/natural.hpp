@@ -189,6 +189,7 @@ namespace yack
             //__________________________________________________________________
             YACK_APN_DECL(*)
             static natural factorial(uint_type n); //!< n!
+            static natural comb(const uint_type n, const uint_type k); //!< n!/k!/(n-k)!
             
             static inline natural _fmul(const natural &u, const natural &v) { const handle U(u); const handle V(v); return fmul(U,V); } //!< call fmul
             static inline natural _lmul(const natural &u, const natural &v) { const handle U(u); const handle V(v); return lmul(U,V); } //!< call lmul

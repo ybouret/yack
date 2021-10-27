@@ -226,6 +226,12 @@ namespace yack
             zrelease(base,utter,owned);
             item = 0;
         }
+        
+        inline virtual const_type *_front() const throw()
+        { assert(count>0); return &base[0]; }
+
+        inline virtual const_type *_back() const throw()
+        { assert(count>0); return &item[count]; }
 
 
     };

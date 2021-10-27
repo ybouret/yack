@@ -19,11 +19,12 @@ int  yack_comb_init(struct yack_comb *param, const size_t n, const size_t k)
 
     uint64_t num = 1;
     {
-        uint64_t den = 1;
+        const size_t np1 = n+1;
+        uint64_t     den = 1;
 
         for(i=1;i<=k;++i)
         {
-            num *= (n+1-i);
+            num *= (np1-i);
             den *= i;
             yack_simplify64(&num,&den);
         }

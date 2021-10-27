@@ -76,6 +76,26 @@ namespace yack
             }
         }
 
+        natural natural:: comb(const uint_type n, const uint_type k)
+        {
+            assert(n>0);
+            
+            natural num = 1;
+            {
+                const uint_type np1 = n+1;
+                natural         den = 1;
+                
+                for(uint_type i=1;i<=k;++i)
+                {
+                    num *= (np1-i);
+                    den *= i;
+                    simplify(num,den);
+                }
+                assert(1==den);
+            }
+            return num;
+        }
+        
     }
 
 }

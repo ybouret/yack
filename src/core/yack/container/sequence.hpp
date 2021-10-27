@@ -27,13 +27,23 @@ namespace yack
 
         //______________________________________________________________________
         //
-        // interface
+        // virtual interface
         //______________________________________________________________________
         virtual void push_back(param_type args)  = 0; //!< push back existing object
         virtual void push_front(param_type args) = 0; //!< push front existing object
         virtual void pop_back()  throw() = 0;         //!< pop back object
         virtual void pop_front() throw() = 0;         //!< pop front object
 
+        //______________________________________________________________________
+        //
+        // non-virtual interface
+        //______________________________________________________________________
+        inline type       &front()       throw() { return *(type *) _front(); }
+        inline const_type &front() const throw() { return *         _front(); }
+     
+        inline type       &back()       throw() { return *(type *) _back(); }
+        inline const_type &back() const throw() { return *         _back(); }
+        
         //______________________________________________________________________
         //
         // C++
@@ -44,6 +54,9 @@ namespace yack
         
     private:
         YACK_DISABLE_COPY_AND_ASSIGN(sequence);
+        virtual const_type *_front() const throw() = 0;
+        virtual const_type *_back()  const throw() = 0;
+
     };
     
 }

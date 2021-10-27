@@ -173,6 +173,12 @@ namespace yack
             }
         }
 
+        inline virtual const_type *_front() const throw()
+        { assert(alive.head); return & (**alive.head); }
+        
+        inline virtual const_type *_back() const throw()
+        { assert(alive.tail); return & (**alive.tail); }
+
 
     };
     
