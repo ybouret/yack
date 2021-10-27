@@ -50,6 +50,23 @@ namespace yack
             return os;
         }
 
+        inline friend bool operator != (const readable &lhs, const readable &rhs) throw()
+        {
+            if(lhs.size() != rhs.size())
+            {
+                return true;
+            }
+            else
+            {
+                for(size_t n=lhs.size();n>0;--n)
+                {
+                    if(lhs[n]!=rhs[n]) return true;
+                }
+                return false;
+            }
+        }
+
+
         //______________________________________________________________________
         //
         // C++

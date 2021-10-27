@@ -38,6 +38,31 @@ namespace yack
         count(0), utter(n), owned(0), base(zacquire(utter,owned)), item(base-1)
         {}
 
+        inline explicit vector(const size_t n, param_type args) :
+        count(0), utter(n), owned(0), base(zacquire(utter,owned)), item(base-1)
+        {
+            try {
+                while(count<n) {
+                    new (base+count) mutable_type(args);
+                    ++count;
+                }
+            }
+            catch(...) { release_(); throw; }
+        }
+
+
+        inline   vector(const vector &other) :
+        count(0), utter(other.count), owned(0), base(zacquire(utter,owned)), item(base-1)
+        {
+            try {
+                while(count<other.count) {
+                    new (base+count) mutable_type(other.base[count]);
+                    ++count;
+                }
+            }
+            catch(...) { release_(); throw; }
+        }
+
 
         //______________________________________________________________________
         //
@@ -80,6 +105,14 @@ namespace yack
         //______________________________________________________________________
         inline type       & operator[](const size_t indx) throw()       { assert(indx>=1); assert(indx<=size()); return item[indx]; }
         inline const_type & operator[](const size_t indx) const throw() { assert(indx>=1); assert(indx<=size()); return item[indx]; }
+
+        //______________________________________________________________________
+        //
+        // contiguous interface
+        //______________________________________________________________________
+        inline virtual type       * operator*()       throw() { return item; }
+        inline virtual const_type * operator*() const throw() { return item; }
+
 
         //______________________________________________________________________
         //
@@ -149,8 +182,10 @@ namespace yack
             cswap(item, other.item);
         }
 
+     
+
     private:
-        YACK_DISABLE_COPY_AND_ASSIGN(vector);
+        YACK_DISABLE_ASSIGN(vector);
         size_t        count; //!< size
         size_t        utter; //!< capacity
         size_t        owned; //!< memory

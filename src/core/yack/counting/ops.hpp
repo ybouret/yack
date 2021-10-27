@@ -11,7 +11,7 @@ namespace yack
     {
         struct counting
         {
-            static void initialize(writable<size_t> &state) throw()
+            static void initialize(writable<size_t> &state) throw();
         };
     }
 

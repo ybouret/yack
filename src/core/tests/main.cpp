@@ -12,6 +12,7 @@ YACK_UTEST_DECL(64)
     YACK_UTEST(at_exit);
     YACK_UTEST(wtime);
     YACK_UTEST(complex);
+    YACK_UTEST(gcd64);
 
     YACK_UTEST(type_ints);
     YACK_UTEST(type_traits);
@@ -74,5 +75,7 @@ YACK_UTEST_DECL(64)
 
     YACK_UTEST(sort_heap);
     YACK_UTEST(sort_indexing);
+
+    YACK_UTEST(counting_comb);
 }
 YACK_UTEST_EXEC()

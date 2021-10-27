@@ -33,6 +33,9 @@ source_group(rand FILES ${rand})
 file(GLOB sort sort/*.cpp)
 source_group(sort FILES ${sort})
 
+file(GLOB counting counting/*.cpp)
+source_group(counting FILES ${counting})
+
 add_executable(test-yack main.cpp
 ${base}
 ${type}
@@ -45,6 +48,7 @@ ${ios}
 ${hashing}
 ${rand}
 ${sort}
+${counting}
 )
 
 yack_link_libraries(test-yack)
@@ -59,6 +63,7 @@ add_test(base2   test-yack base2)
 add_test(at_exit test-yack at_exit)
 add_test(wtime   test-yack wtime)
 add_test(complex  test-yack complex)
+add_test(gcd64    test-yack gcd64)
 
 add_test(type:ints   test-yack type_ints)
 add_test(type:traits test-yack type_traits)
@@ -121,5 +126,6 @@ add_test(rand:bits      test-yack rand_bits)
 add_test(sort:heap      test-yack sort_heap)
 add_test(sort:indexing  test-yack sort_indexing)
 
+add_test(couting:comb   test-yack counting_comb)
 
 yack_testing(yack)

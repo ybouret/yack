@@ -286,8 +286,8 @@ install( FILES ${sort_decl} DESTINATION include/yack/sort )
 ## counting
 ##
 ########################################################################
-file(GLOB counting_impl yack/counting/*.cpp)
-file(GLOB counting_decl yack/counting/*.hpp)
+file(GLOB counting_impl yack/counting/*.cpp yack/counting/*.c)
+file(GLOB counting_decl yack/counting/*.hpp yack/counting/*.h)
 set(counting ${counting_impl} ${counting_decl})
 SOURCE_GROUP(counting FILES ${counting})
 install( FILES ${counting_decl} DESTINATION include/yack/counting )

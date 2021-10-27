@@ -51,6 +51,12 @@ namespace yack
         {
         }
 
+        //______________________________________________________________________
+        //
+        // contiguous interface
+        //______________________________________________________________________
+        inline virtual type       * operator*()       throw() { return item; }
+        inline virtual const_type * operator*() const throw() { return item; }
 
         //______________________________________________________________________
         //
