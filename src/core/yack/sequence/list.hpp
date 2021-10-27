@@ -18,6 +18,8 @@
 namespace yack
 {
 
+    extern const char list_category[];
+    
     //__________________________________________________________________________
     //
     //
@@ -98,7 +100,8 @@ namespace yack
         //
         // collection interface
         //______________________________________________________________________
-        inline virtual size_t   size()      const throw() { return alive.size; }
+        inline virtual size_t      size()     const throw() { return alive.size; }
+        inline virtual const char *category() const throw() { return list_category; }
 
         //______________________________________________________________________
         //

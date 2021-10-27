@@ -85,7 +85,7 @@ namespace yack
             }
         }
         
-        const char   dyadic:: call_sign[] = "memory::pages";
+        const char   dyadic:: call_sign[] = "memory.dyadic";
         
         const char * dyadic:: variety() const throw() { return call_sign; }
         

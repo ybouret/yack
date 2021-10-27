@@ -8,7 +8,7 @@ namespace yack
     namespace memory
     {
         
-        const char pooled:: call_sign[] = "memory::pooled";
+        const char pooled:: call_sign[] = "memory.pooled";
         
         static void *parcels__[ YACK_WORDS_FOR(parcels) ];
         

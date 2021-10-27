@@ -20,8 +20,8 @@ namespace yack
         //
         // methods
         //______________________________________________________________________
-        virtual size_t size()  const throw() = 0; //!< items
-        unit_t         ssize() const;             //!< signed size
+        virtual size_t      size()     const throw() = 0; //!< items
+        unit_t              ssize()    const;              //!< signed size
 
         //______________________________________________________________________
         //

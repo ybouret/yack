@@ -16,6 +16,8 @@
 namespace yack
 {
 
+    const char *vector_category_build(char *buffer, size_t length, const char *call_sign) throw();
+
     //__________________________________________________________________________
     //
     //
@@ -41,7 +43,13 @@ namespace yack
         //
         // collection interface
         //______________________________________________________________________
-        inline virtual size_t   size()      const throw() { return count; }
+        inline virtual size_t      size()     const throw() { return count; }
+        inline virtual const char *category() const throw()
+        {
+            static char        buff[32];
+            static const char *id = vector_category_build(buff,sizeof(buff),ALLOCATOR::call_sign);
+            return id;
+        }
 
         //______________________________________________________________________
         //
@@ -113,6 +121,7 @@ namespace yack
                 new (temp) mutable_type(args);
                 out_of_reach::move(base+1,base,count*sizeof(T));
                 out_of_reach::move(base,temp,sizeof(T));
+                ++count;
             }
 
         }
