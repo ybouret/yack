@@ -26,7 +26,9 @@ YACK_UTEST(data_sequence)
     }
     il.reserve(10);
     il.free();
-    
+
+
+    vector<int> iv;
 
 }
 YACK_UDONE()

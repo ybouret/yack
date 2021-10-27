@@ -3,7 +3,7 @@
 #ifndef YACK_CONTAINER_MATRIX_DATA_INCLUDED
 #define YACK_CONTAINER_MATRIX_DATA_INCLUDED 1
 
-#include "yack/container/matrix/metrics.hpp"
+#include "yack/container/matrix/row.hpp"
 
 namespace yack
 {

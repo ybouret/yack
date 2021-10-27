@@ -4,6 +4,7 @@
 #define YACK_CONTAINER_MATRIX_INCLUDED 1
 
 #include "yack/container/matrix/data.hpp"
+#include "yack/container/matrix/metrics.hpp"
 #include "yack/type/destruct.hpp"
 #include "yack/type/out-of-reach.hpp"
 #include <iostream>
@@ -74,7 +75,8 @@ namespace yack
             xch(tmp);
             return *this;
         }
-        
+
+
         //______________________________________________________________________
         //
         // methods
@@ -116,16 +118,8 @@ namespace yack
         //______________________________________________________________________
 
         //! display as Julia matrix
-        friend inline std::ostream & operator<<(std::ostream &os,const matrix &M)
-        {
-            os << '[';
-            if(M.rows>0)
-            {
-                M.line[1].display(os);
-                for(size_t r=1;r<=M.rows;++r) M.line[r].display(os<<';');
-            }
-            os << ']';
-            return os;
+        friend inline std::ostream & operator<<(std::ostream &os,const matrix &M) {
+            M.display(os); return os;
         }
 
 
@@ -136,86 +130,67 @@ namespace yack
         { new (row_addr) row(static_cast<mutable_type *>(data_ptr),num_cols); }
 
         //! clear built objects
-        inline void clear(size_t built) throw()
-        {
-            if(items>0)
-            {
-                mutable_type *data = & ((*this)[1][1]);
-                while(built-- > 0)
-                    destruct(data+built);
-            }
+        inline void clear(size_t built) throw() {
+            while(built-- > 0)
+                destruct(head+built);
         }
 
+#define YACK_MATRIX_SETUP_ENTER() try
+#define YACK_MATRIX_SETUP_LEAVE() catch(...) { clear(built); throw; }
         //! setup items
         inline void setup()
         {
-            if(items)
-            {
-                size_t built = 0;
-                try {
-                    mutable_type *data = & ((*this)[1][1]);
-                    while(built<items)
-                    {
-                        new (data+built) mutable_type();
-                        ++built;
-                    }
+            size_t        built = 0;
+            YACK_MATRIX_SETUP_ENTER() {
+                mutable_type *target = head;
+                while(built<items) {
+                    new (target++) mutable_type();
+                    ++built;
                 }
-                catch(...)
-                {
-                    clear(built);
-                    throw;
-                }
-            }
+            } YACK_MATRIX_SETUP_LEAVE()
         }
 
         //! setup items
         inline void setup_from(const matrix &M)
         {
             assert(have_same_sizes(*this,M));
-            if(items)
-            {
-                size_t built = 0;
-                try {
-                    const_type   *from = & (M[1][1]);
-                    mutable_type *data = & ((*this)[1][1]);
-                    while(built<items)
-                    {
-                        new (data+built) mutable_type(from[built]);
-                        ++built;
-                    }
+
+            size_t built = 0;
+            YACK_MATRIX_SETUP_ENTER() {
+                const_type   *source = M.head;
+                mutable_type *target =   head;
+                while(built<items) {
+                    new (target++) mutable_type(*(source++));
+                    ++built;
                 }
-                catch(...)
-                {
-                    clear(built);
-                    throw;
-                }
-            }
+            } YACK_MATRIX_SETUP_LEAVE()
         }
 
         //! setup items
         inline void setup_from_transposed(const matrix &M)
         {
             assert(are_transposed(*this,M));
-            if(items)
-            {
-                size_t built = 0;
-                try {
-                    mutable_type *data = & ((*this)[1][1]);
-                    for(size_t j=1;j<=M.cols;++j)
+            size_t built = 0;
+            YACK_MATRIX_SETUP_ENTER() {
+                mutable_type *data = head;
+                for(size_t j=1;j<=M.cols;++j)
+                    for(size_t i=1;i<=M.rows;++i)
                     {
-                        for(size_t i=1;i<=M.rows;++i)
-                        {
-                            new (data+built) mutable_type(M[i][j]);
-                            ++built;
-                        }
+                        new (data++) mutable_type(M[i][j]);
+                        ++built;
                     }
-                }
-                catch(...)
-                {
-                    clear(built);
-                    throw;
-                }
+            } YACK_MATRIX_SETUP_LEAVE()
+        }
+
+        inline void display(std::ostream &os) const
+        {
+            os << '[';
+            if(rows>0)
+            {
+                line[1].display(os);
+                for(size_t r=1;r<=rows;++r) line[r].display(os<<';');
             }
+            os << ']';
         }
 
     };
