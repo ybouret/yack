@@ -12,10 +12,10 @@ namespace
     template <typename SEQUENCE>
     static inline void show(const SEQUENCE &seq)
     {
-        std::cerr << "category: " << seq.category() << std::endl;
-        std::cerr << " |_size : " << seq.size() << std::endl;
-        std::cerr << " |_capa : " << seq.capacity() << std::endl;
-
+        std::cerr << "category : " << seq.category() << std::endl;
+        std::cerr << " |_size  : " << seq.size() << std::endl;
+        std::cerr << " |_capa  : " << seq.capacity() << std::endl;
+        std::cerr << " |_avail : " << seq.available() << std::endl;
     }
 
     template <typename T>
@@ -37,7 +37,7 @@ namespace
                 dv.push_back(value);
             }
 
-            
+
             {
                 const uint8_t value = ran.to<uint8_t>();
                 l.push_front(value);
