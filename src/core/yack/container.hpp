@@ -24,6 +24,9 @@ namespace yack
         virtual void   free()            throw() = 0; //!< set size()=0, keep resources
         virtual void   reserve(size_t)           = 0; //!< reserve room for extra items
 
+        static size_t  next_capacity(const size_t capa);
+        static size_t  next_increase(const size_t capa);
+
     protected:
         explicit       container()        throw();    //!< setup
         

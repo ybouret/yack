@@ -24,7 +24,7 @@ namespace yack
         if(rows)
         {
             static memory::allocator   &mem = matrix_allocator::location();
-            mem.release(workspace,coerce(allocated));
+            mem.release(workspace,allocated);
             coerce(items) = 0;
             coerce(cols)  = 0;
             coerce(rows)  = 0;
@@ -98,7 +98,7 @@ namespace yack
                 memory::embed(temp,rows),
                 memory::embed(data,items*size_of_item)
             };
-            workspace = YACK_MEMORY_EMBED(emb,mem,coerce(allocated));
+            workspace = YACK_MEMORY_EMBED(emb,mem,allocated);
 
             //__________________________________________________________________
             //
@@ -116,7 +116,13 @@ namespace yack
 
         }
     }
-    
+
+    size_t matrix_metrics::granted() const throw()
+    {
+        return allocated;
+    }
+
+
     bool matrix_metrics:: have_same_sizes(const matrix_metrics &lhs, const matrix_metrics &rhs) throw()
     {
         return (lhs.rows==rhs.rows) && (lhs.cols==rhs.cols);

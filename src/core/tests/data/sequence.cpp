@@ -9,6 +9,8 @@ YACK_UTEST(data_sequence)
 {
     randomized::rand_ ran;
 
+    std::cerr << "Testing List" << std::endl;
+
     list<int> il;
     il.reserve(20);
 
@@ -27,8 +29,21 @@ YACK_UTEST(data_sequence)
     il.reserve(10);
     il.free();
 
+    std::cerr << "Testing Vector" << std::endl;
+    {vector<int> iv;}
+    {
+        vector<int> iv(10,as_capacity);
+        std::cerr << "iv.capa=" << iv.capacity() << std::endl;
+    }
 
-    vector<int> iv;
+    size_t capa = 0;
+    for(size_t i=0;i<10;++i)
+    {
+        std::cerr << capa << " => ";
+        capa = container::next_capacity(capa);
+        std::cerr << capa << std::endl;
+    }
+
 
 }
 YACK_UDONE()

@@ -4,6 +4,7 @@
 #define YACK_CONTAINER_MATRIX_METRICS_INCLUDED 1
 
 #include "yack/container/matrix/row.hpp"
+#include "yack/container/dynamic.hpp"
 
 namespace yack
 {
@@ -14,7 +15,7 @@ namespace yack
     //! metrics and raw memory allocation
     //
     //__________________________________________________________________________
-    class matrix_metrics
+    class matrix_metrics : public dynamic
     {
     public:
         //______________________________________________________________________
@@ -38,6 +39,13 @@ namespace yack
 
         //! test tranposed metrics
         static bool are_transposed(const matrix_metrics &lhs, const matrix_metrics &rhs) throw();
+
+
+        //______________________________________________________________________
+        //
+        // dynamic interface
+        //______________________________________________________________________
+        virtual size_t granted() const throw(); //!< allocated
 
         //______________________________________________________________________
         //
@@ -72,10 +80,10 @@ namespace yack
         const size_t cols;        //!< number of cols
         const size_t items;       //!< number of items
         const size_t stride;      //!< cols * size_of_item
-        const size_t allocated;   //!< allocated bytes
-
+        
     private:
-        void        *workspace; //!< allocated workspace
+        size_t allocated; //!< allocated bytes
+        void  *workspace; //!< allocated workspace
     };
 
     extern const matrix_metrics::transposed_t transposed;

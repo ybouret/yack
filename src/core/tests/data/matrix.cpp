@@ -29,7 +29,7 @@ namespace
         std::cerr << std::endl;
         std::cerr << "matrix<" << typeid(T).name() << ">" << std::endl;
         std::cerr << "  |_(" << M.rows << "x" << M.cols << ")" << std::endl;
-        std::cerr << "  |_allocated: " << M.allocated << std::endl;
+        std::cerr << "  |_granted  : " << M.granted() << std::endl;
         std::cerr << "  |_stride   : " << M.stride    << std::endl;
     }
 
