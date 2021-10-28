@@ -135,8 +135,10 @@ namespace yack
                 destruct(head+built);
         }
 
-#define YACK_MATRIX_SETUP_ENTER() try
-#define YACK_MATRIX_SETUP_LEAVE() catch(...) { clear(built); throw; }
+        
+#define YACK_MATRIX_SETUP_ENTER() try                                  //!< enter setup
+#define YACK_MATRIX_SETUP_LEAVE() catch(...) { clear(built); throw; }  //!< leave setup
+        //!
         //! setup items
         inline void setup()
         {

@@ -10,12 +10,19 @@
 extern "C" {
 #endif
 
+    /**! context for permuations */
     struct yack_perm
     {
-        size_t   n;
+        size_t   n; //!< among n, count will be n!
     };
 
+    /**! set n */
+    void    yack_perm_init(struct       yack_perm *param, size_t n);
+
+    /**! perm[1..n] = [1..n] */
     void    yack_perm_boot(const struct yack_perm *param, size_t *perm);
+
+    /**! next permutation */
     void    yack_perm_next(const struct yack_perm *param, size_t *perm);
 
 #if defined(__cplusplus)

@@ -16,7 +16,6 @@
 namespace yack
 {
 
-    const char *vector_category_build(char *buffer, size_t length, const char *call_sign) throw();
 
     //__________________________________________________________________________
     //
@@ -28,16 +27,29 @@ namespace yack
     class vector : public sequence<T>, public contiguous<T>, public dynamic
     {
     public:
+        //______________________________________________________________________
+        //
+        // types and definitions
+        //______________________________________________________________________
         YACK_DECL_ARGS(T,type); //!< alias
 
+        //______________________________________________________________________
+        //
+        //C++
+        //______________________________________________________________________
+
+        //! setup empty
         inline explicit vector() : count(0), utter(0), owned(0), base(0), item(0) {}
 
+        //! cleanup
         inline virtual ~vector() throw() { release_(); }
 
+        //! setup with capacity
         inline explicit vector(const size_t n, const as_capacity_t &) :
         count(0), utter(n), owned(0), base(zacquire(utter,owned)), item(base-1)
         {}
 
+        //! setup with the same data
         inline explicit vector(const size_t n, param_type args) :
         count(0), utter(n), owned(0), base(zacquire(utter,owned)), item(base-1)
         {
@@ -50,7 +62,7 @@ namespace yack
             catch(...) { release_(); throw; }
         }
 
-
+        //! hard copy
         inline   vector(const vector &other) :
         count(0), utter(other.count), owned(0), base(zacquire(utter,owned)), item(base-1)
         {
@@ -71,6 +83,7 @@ namespace yack
         inline virtual size_t      size()     const throw() { return count; }
         inline virtual const char *category() const throw()
         {
+            const char *vector_category_build(char *,const size_t,const char *) throw();
             static char        buff[32];
             static const char *id = vector_category_build(buff,sizeof(buff),ALLOCATOR::call_sign);
             return id;

@@ -38,11 +38,11 @@ namespace yack
         //
         // non-virtual interface
         //______________________________________________________________________
-        inline type       &front()       throw() { return *(type *) _front(); }
-        inline const_type &front() const throw() { return *         _front(); }
+        inline type       &front()       throw() { return *(type *) _front(); } //!< front item
+        inline const_type &front() const throw() { return *         _front(); } //!< front item, const
      
-        inline type       &back()       throw() { return *(type *) _back(); }
-        inline const_type &back() const throw() { return *         _back(); }
+        inline type       &back()       throw() { return *(type *) _back(); }   //!< back item
+        inline const_type &back() const throw() { return *         _back(); }   //!< back item, const
         
         //______________________________________________________________________
         //

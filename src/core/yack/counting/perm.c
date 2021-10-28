@@ -2,6 +2,12 @@
 #include <string.h>
 
 
+void    yack_perm_init(struct yack_perm *param, size_t n)
+{
+    assert(param);
+    param->n = n;
+}
+
 
 static   size_t find_largest(const size_t *p, const size_t n)
 {

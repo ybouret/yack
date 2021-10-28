@@ -65,20 +65,23 @@ YACK_UTEST(counting_comb)
         
         yack_comb       param;
         yack_comb_init(&param,n,k);
-        std::cerr << "comb(" << n << "," << k << ")=" << param.count << std::endl;
         const apn nc = apn::comb(n,k);
-        std::cerr << "=>" << nc << std::endl;
-        
-        YACK_CHECK(nc==param.count);
-        
-        
-        if(param.count)
+        const size_t count = nc.cast_to<size_t>("comb.count");
+        std::cerr << "comb(" << n << "," << k << ")=" << nc << std::endl;
+        if(nc>0)
         {
             std::cerr << "generating..." << std::endl;
             {
-                
                 vector<size_t> comb(k,0);
                 yack_comb_boot(&param,*comb);
+                size_t index = 1;
+                while(true)
+                {
+                    std::cerr << comb << std::endl;
+                    if(index>=count) break;
+                    yack_comb_next(&param,*comb);
+                    ++index;
+                }
             }
         }
         

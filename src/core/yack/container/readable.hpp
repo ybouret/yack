@@ -50,6 +50,7 @@ namespace yack
             return os;
         }
 
+        //! helper to test that two containers are different
         inline friend bool operator != (const readable &lhs, const readable &rhs) throw()
         {
             if(lhs.size() != rhs.size())

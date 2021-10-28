@@ -18,7 +18,7 @@
 namespace yack
 {
 
-    extern const char list_category[];
+    extern const char list_category[]; //!< shared category name
     
     //__________________________________________________________________________
     //

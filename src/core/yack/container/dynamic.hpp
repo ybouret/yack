@@ -7,16 +7,20 @@
 
 namespace yack
 {
-
+    //__________________________________________________________________________
+    //
+    //
+    //! base class for class with granted memory
+    //
+    //__________________________________________________________________________
     class dynamic
     {
     public:
-        virtual ~dynamic() throw();
-
         virtual size_t granted() const throw() = 0; //!< linear space
+        virtual       ~dynamic() throw();           //!< cleanup
 
     protected:
-        explicit dynamic() throw();
+        explicit       dynamic() throw();           //!< setup
 
     private:
         YACK_DISABLE_COPY_AND_ASSIGN(dynamic);
