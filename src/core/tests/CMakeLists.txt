@@ -57,6 +57,9 @@ ${counting}
 
 yack_link_libraries(test-yack)
 
+add_library(dso MODULE dso.cpp)
+
+
 enable_testing()
 add_test(crc32   test-yack crc32)
 add_test(error   test-yack error 0 1 2 3)
@@ -134,6 +137,6 @@ add_test(sort:indexing  test-yack sort_indexing)
 add_test(counting:comb  test-yack counting_comb)
 add_test(counting:perm  test-yack counting_perm)
 
-add_test(rtld:dll test-yack rtld_dll)
+add_test(rtld:dso test-yack rtld_dso)
 
 yack_testing(yack)

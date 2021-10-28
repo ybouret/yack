@@ -1,4 +1,4 @@
-#include "yack/rtld/dll.hpp"
+#include "yack/rtld/dso.hpp"
 #include "yack/system/exception.hpp"
 
 #if defined(YACK_BSD)
@@ -12,9 +12,10 @@
 
 namespace yack
 {
-    dll:: ~dll() throw()
+    dso:: ~dso() throw()
     {
         assert(handle);
+
 #if     defined(YACK_BSD)
         (void) dlclose(handle);
 #endif
@@ -56,13 +57,13 @@ namespace yack
 #endif
 
 
-    dll:: dll(const char *soname) :
+    dso:: dso(const char *soname) :
     handle(dso_open(soname))
     {
 
     }
 
-    void    * dll:: load(const char *symbol) const throw()
+    void    * dso:: load(const char *symbol) const throw()
     {
         assert(symbol);
 #if     defined(YACK_BSD)
