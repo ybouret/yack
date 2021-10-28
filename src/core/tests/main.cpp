@@ -1,7 +1,7 @@
 #include "yack/utest/driver.hpp"
 #include <cstdio>
 
-YACK_UTEST_DECL(64)
+YACK_UTEST_DECL(80)
 {
     YACK_UTEST(crc32);
     YACK_UTEST(error);
@@ -37,6 +37,7 @@ YACK_UTEST_DECL(64)
     YACK_UTEST(memory_parcels);
     YACK_UTEST(memory_buffers);
     YACK_UTEST(memory_embed);
+    YACK_UTEST(memory_zcache);
 
     YACK_UTEST(data_list);
     YACK_UTEST(data_list_sort);
@@ -80,7 +81,7 @@ YACK_UTEST_DECL(64)
     YACK_UTEST(counting_comb);
     YACK_UTEST(counting_perm);
 
-    YACK_UTEST(rtld_dll);
+    YACK_UTEST(rtld_dso);
 
 }
 YACK_UTEST_EXEC()

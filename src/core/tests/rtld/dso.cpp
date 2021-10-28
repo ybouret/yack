@@ -8,7 +8,7 @@ namespace
     typedef double  (*cfunc)(double);
 }
 
-YACK_UTEST(rtld_dll)
+YACK_UTEST(rtld_dso)
 {
     if(argc>1)
     {

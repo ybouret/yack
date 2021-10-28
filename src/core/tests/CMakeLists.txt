@@ -95,6 +95,7 @@ add_test(memory:parcel   test-yack memory_parcel)
 add_test(memory:parcels  test-yack memory_parcels)
 add_test(memory:buffers  test-yack memory_buffers)
 add_test(memory:embed    test-yack memory_embed)
+add_test(memory:zcache   test-yack memory_zcache)
 
 add_test(object          test-yack object)
 
