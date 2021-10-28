@@ -36,6 +36,9 @@ source_group(sort FILES ${sort})
 file(GLOB counting counting/*.cpp)
 source_group(counting FILES ${counting})
 
+file(GLOB rtld rtld/*.cpp)
+source_group(rtld FILES ${rtld})
+
 add_executable(test-yack main.cpp
 ${base}
 ${type}
@@ -48,6 +51,7 @@ ${ios}
 ${hashing}
 ${rand}
 ${sort}
+${rtld}
 ${counting}
 )
 
@@ -129,5 +133,7 @@ add_test(sort:indexing  test-yack sort_indexing)
 
 add_test(counting:comb  test-yack counting_comb)
 add_test(counting:perm  test-yack counting_perm)
+
+add_test(rtld:dll test-yack rtld_dll)
 
 yack_testing(yack)

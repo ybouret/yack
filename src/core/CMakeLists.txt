@@ -319,6 +319,18 @@ set(concurrent_loop ${concurrent_loop_impl} ${concurrent_loop_decl})
 SOURCE_GROUP(concurrent/loop FILES ${concurrent_loop})
 install( FILES ${concurrent_loop_decl} DESTINATION include/yack/concurrent/loop )
 
+########################################################################
+##
+## rtld
+##
+########################################################################
+file(GLOB rtld_impl yack/rtld/*.cpp)
+file(GLOB rtld_decl yack/rtld/*.hpp)
+set(rtld ${rtld_impl} ${rtld_decl})
+SOURCE_GROUP(rtld FILES ${rtld})
+install( FILES ${rtld_decl} DESTINATION include/yack/rtld )
+
+
 
 # create the library
 add_library(yack
@@ -338,6 +350,7 @@ ${ios} ${ios_c}
 ${randomized}
 ${sort}
 ${counting}
+${rtld}
 ${kr}
 ${hashing}
 ${utest}
