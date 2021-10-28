@@ -5,6 +5,7 @@
 #include "yack/container/matrix.hpp"
 #include "yack/apex/natural.hpp"
 #include "yack/sequence/list.hpp"
+#include "yack/ios/ocstream.hpp"
 
 using namespace yack;
 
@@ -64,7 +65,7 @@ YACK_UTEST(counting_comb)
         
     }
     
-    
+    ios::ocstream::overwrite("comb32.dat");
     for(size_t n=1;;++n)
     {
         list<size_t> gt32;
@@ -80,6 +81,7 @@ YACK_UTEST(counting_comb)
         if(gt32.size())
         {
             std::cerr << "n=" << n << ": " << gt32.front() << " -> " << gt32.back() << std::endl;
+            ios::ocstream::echo("comb32.dat","%u %u %u\n",unsigned(n),unsigned(gt32.front()),unsigned(gt32.back()));
         }
         
         if(n>=64)
