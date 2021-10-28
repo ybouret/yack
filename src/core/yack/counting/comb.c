@@ -2,7 +2,6 @@
 #include "yack/arith/gcd.h"
 
 #include <string.h>
-#include <stdio.h>
 
 int  yack_comb_init(struct yack_comb *param, const size_t n, const size_t k)
 {

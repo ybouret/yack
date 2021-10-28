@@ -77,5 +77,6 @@ YACK_UTEST_DECL(64)
     YACK_UTEST(sort_indexing);
 
     YACK_UTEST(counting_comb);
+    YACK_UTEST(counting_perm);
 }
 YACK_UTEST_EXEC()

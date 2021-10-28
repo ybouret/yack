@@ -126,6 +126,7 @@ add_test(rand:bits      test-yack rand_bits)
 add_test(sort:heap      test-yack sort_heap)
 add_test(sort:indexing  test-yack sort_indexing)
 
-add_test(couting:comb   test-yack counting_comb)
+add_test(counting:comb  test-yack counting_comb)
+add_test(counting:perm  test-yack counting_perm)
 
 yack_testing(yack)
