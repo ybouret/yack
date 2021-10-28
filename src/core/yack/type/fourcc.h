@@ -22,6 +22,8 @@ extern "C" {
 
     //! shr for index
 #define YACK_FOURCC_SHR(INDX) ((unsigned)((3-(INDX)) << 3))
+
+    //! cast u32
 #define YACK_FOURCC_U32(VALUE) ( (uint32_t)(VALUE) )
 
     //! extracting byte from a four chars code

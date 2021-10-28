@@ -19,7 +19,7 @@ namespace yack
         (void) dlclose(handle);
 #endif
 
-#if defined(YACK_WIN)
+#if     defined(YACK_WIN)
         (void) ::FreeLibrary(handle);
 #endif
 
@@ -27,7 +27,7 @@ namespace yack
     }
 
 #if defined(YACK_BSD)
-    static inline void *load_so(const char *soname)
+    static inline void *dso_open(const char *soname)
     {
         assert(soname);
         void *h = dlopen(soname,RTLD_NOW|RTLD_LOCAL);
@@ -43,7 +43,7 @@ namespace yack
 #endif
 
 #if defined(YACK_WIN)
-    static inline void *load_so(const char *soname)
+    static inline void *dso_open(const char *soname)
     {
         assert(soname);
         HMODULE *h = ::LoadLibrary( soname );
@@ -57,11 +57,23 @@ namespace yack
 
 
     dll:: dll(const char *soname) :
-    handle(load_so(soname))
+    handle(dso_open(soname))
     {
 
     }
 
+    void    * dll:: load(const char *symbol) const throw()
+    {
+        assert(symbol);
+#if     defined(YACK_BSD)
+        return dlsym((void*)handle,symbol);
+#endif
+#if     defined(YACK_WIN)
+        return ::GetProcAddress((HMODULE)handle,symbol);
+#endif
+
+        return NULL;
+    }
 
 
 }
