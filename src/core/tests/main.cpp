@@ -20,6 +20,7 @@ YACK_UTEST_DECL(64)
     YACK_UTEST(type_temp);
     YACK_UTEST(type_scalar);
     YACK_UTEST(type_human);
+    YACK_UTEST(type_fourcc);
 
     YACK_UTEST(ram);
     YACK_UTEST(memory_chunk);
