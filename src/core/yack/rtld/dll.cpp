@@ -7,7 +7,7 @@
 
 #if defined(YACK_WIN)
 #define WIN32_LEAN_AND_MEAN
-#include <windows.h?
+#include <windows.h>
 #endif
 
 namespace yack
@@ -20,7 +20,7 @@ namespace yack
 #endif
 
 #if     defined(YACK_WIN)
-        (void) ::FreeLibrary(handle);
+        (void) ::FreeLibrary( (HMODULE)handle);
 #endif
 
         handle = 0;
@@ -46,12 +46,12 @@ namespace yack
     static inline void *dso_open(const char *soname)
     {
         assert(soname);
-        HMODULE *h = ::LoadLibrary( soname );
+        HMODULE h = ::LoadLibrary( soname );
         if(!h)
         {
-            throw win32::exception(::GetLastError,"LoadLibrary(%s)",soname);
+            throw win32::exception(::GetLastError(),"LoadLibrary(%s)",soname);
         }
-        return h;
+        return (void*)h;
     }
 #endif
 
@@ -69,7 +69,7 @@ namespace yack
         return dlsym((void*)handle,symbol);
 #endif
 #if     defined(YACK_WIN)
-        return ::GetProcAddress((HMODULE)handle,symbol);
+        return (void*) ::GetProcAddress((HMODULE)handle,symbol);
 #endif
 
         return NULL;
