@@ -20,7 +20,7 @@ namespace yack
 #endif
 
 #if     defined(YACK_WIN)
-        (void) ::FreeLibrary( (HMODULE)handle);
+        (void) ::FreeLibrary((HMODULE)handle);
 #endif
 
         handle = 0;
