@@ -23,6 +23,10 @@ namespace
 
         std::cerr << "a=" << a << ", b=" << b << std::endl;
 
+        {
+            VTX s1 = a+b;
+            VTX s2 = a; s2 += b;
+        }
 
     }
 }

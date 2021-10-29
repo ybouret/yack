@@ -93,6 +93,21 @@ namespace yack
             x += rhs.x; y += rhs.y; return *this;
         }
 
+        //______________________________________________________________________
+        //
+        // subtraction
+        //______________________________________________________________________
+
+        //! sub
+        inline friend v2d operator- ( const v2d &lhs, const v2d &rhs ) throw() {
+            return v2d(lhs.x-rhs.x,lhs.y-rhs.y);
+        }
+
+        //! sub
+        inline v2d & operator-=(const v2d &rhs) throw() {
+            x -= rhs.x; y -= rhs.y; return *this;
+        }
+
 
     };
 }

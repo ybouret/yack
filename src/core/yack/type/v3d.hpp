@@ -92,6 +92,22 @@ namespace yack
             x += rhs.x; y += rhs.y; z += rhs.z; return *this;
         }
 
+        //______________________________________________________________________
+        //
+        // subtraction
+        //______________________________________________________________________
+
+        //! sub
+        inline friend v3d operator- ( const v3d &lhs, const v3d &rhs ) throw() {
+            return v3d(lhs.x-rhs.x,lhs.y-rhs.y,lhs.z-rhs.z);
+        }
+
+        //! sub
+        inline v3d & operator-=(const v3d &rhs) throw() {
+            x -= rhs.x; y -= rhs.y; z -= rhs.z; return *this;
+        }
+
+
     };
 }
 
