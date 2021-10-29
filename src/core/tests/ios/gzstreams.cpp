@@ -1,5 +1,5 @@
 
-#include "yack/ios/z/igzstream.hpp"
+#include "yack/ios/gz/istream.hpp"
 #include "yack/utest/run.hpp"
 
 using namespace yack;

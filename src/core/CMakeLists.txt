@@ -236,11 +236,11 @@ set(ios_c ${ios_c_impl} ${ios_c_decl})
 SOURCE_GROUP(ios/c FILES ${ios_c})
 install( FILES ${ios_c_decl} DESTINATION include/yack/ios/c)
 
-file(GLOB ios_z_impl yack/ios/z/*.cpp)
-file(GLOB ios_z_decl yack/ios/z/*.hpp)
-set(ios_z ${ios_z_impl} ${ios_z_decl})
-SOURCE_GROUP(ios/z FILES ${ios_z})
-install( FILES ${ios_z_decl} DESTINATION include/yack/ios/z)
+file(GLOB ios_gz_impl yack/ios/gz/*.cpp)
+file(GLOB ios_gz_decl yack/ios/gz/*.hpp)
+set(ios_gz ${ios_gz_impl} ${ios_gz_decl})
+SOURCE_GROUP(ios/gz FILES ${ios_gz})
+install( FILES ${ios_gz_decl} DESTINATION include/yack/ios/gz)
 
 
 ########################################################################
@@ -353,7 +353,7 @@ ${memory} ${memory_allocator} ${memory_small} ${memory_large} ${memory_joint} ${
 ${fft}
 ${apex} ${apex_n} ${apex_m}
 ${concurrent} ${concurrent_quark} ${concurrent_loop}
-${ios} ${ios_c} ${ios_z}
+${ios} ${ios_c} ${ios_gz}
 ${randomized}
 ${sort}
 ${counting}

@@ -1,5 +1,5 @@
 
-#include "yack/ios/z/gzstream.hpp"
+#include "yack/ios/gz/stream.hpp"
 #include "../../../../zlib/zlib.h"
 #include "yack/system/exception.hpp"
 #include "yack/lockable.hpp"

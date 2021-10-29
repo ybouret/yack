@@ -1,6 +1,6 @@
 
 
-#include "yack/ios/z/igzstream.hpp"
+#include "yack/ios/gz/istream.hpp"
 #include "../../../../zlib/zlib.h"
 #include "yack/system/exception.hpp"
 #include <cerrno>

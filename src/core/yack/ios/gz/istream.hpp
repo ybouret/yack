@@ -6,7 +6,7 @@
 #define YACK_IOS_IGZSTREAM_INCLUDED 1
 
 #include "yack/ios/istream.hpp"
-#include "yack/ios/z/gzstream.hpp"
+#include "yack/ios/gz/stream.hpp"
 
 namespace yack
 {
