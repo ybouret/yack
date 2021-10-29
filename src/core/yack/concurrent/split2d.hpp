@@ -11,7 +11,19 @@ namespace yack
 {
     namespace concurrent
     {
-
+        
+        template <typename T>
+        class tile
+        {
+        public:
+            const T row;
+            const T column;
+            const T length;
+            
+        private:
+            YACK_DISABLE_ASSIGN(tile);
+        };
+        
         //______________________________________________________________________
         //
         //
@@ -24,22 +36,10 @@ namespace yack
             //! from ...
             template <typename T, typename U> static inline
             void with(const T size,
-                      const T rank,
-                      U     &  lower_row,
-                      U     &  upper_row,
-                      U     &  lower_col,
-                      U     &  upper_col) throw()
+                      const T rank)
             {
-                assert(size>0);
-                assert(rank<size);
-                assert(lower_row<=upper_row);
-                assert(lower_col<=upper_col);
-                const uint64_t rows = 1+(upper_row-lower_row);
-                const uint64_t cols = 1+(upper_col-lower_col);
-                uint64_t       length = rows*cols;
-                uint64_t       offset = 0;
-                split1D::with(size,rank,length,offset);
             }
+                      
 
         };
 
