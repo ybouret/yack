@@ -105,7 +105,7 @@ YACK_UTEST(sync_loop)
             {
                 int todo = load;
                 int from = init;
-                concurrent::split::with(size,rank,todo,from);
+                concurrent::split1D::with(size,rank,todo,from);
                 std::cerr << "\t" << size << "." << rank << " @" << from << "+" << todo << std::endl;
                 total += todo;
             }

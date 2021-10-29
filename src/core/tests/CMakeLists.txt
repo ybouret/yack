@@ -118,6 +118,7 @@ add_test(sync:condition test-yack sync_condition)
 add_test(sync:thread    test-yack sync_condition)
 add_test(singleton      test-yack singleton)
 add_test(sync:loop      test-yack sync_loop 4)
+add_test(sync:split     test-yack sync_split)
 
 add_test(fft:1d        test-yack  fft1d 0.1)
 add_test(fft:xbr-info  test-yack  fft_xbr_info)

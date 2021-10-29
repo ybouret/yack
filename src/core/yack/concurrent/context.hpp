@@ -3,7 +3,7 @@
 #ifndef YACK_SYNC_CONTEXT_INCLUDED
 #define YACK_SYNC_CONTEXT_INCLUDED 1
 
-#include "yack/concurrent/split.hpp"
+#include "yack/concurrent/split1d.hpp"
 #include <iosfwd>
 
 namespace yack
@@ -41,7 +41,7 @@ namespace yack
             template <typename U> inline
             void crop(U &length, U &offset) const throw()
             {
-                split::with(size,rank,length,offset);
+                split1D::with(size,rank,length,offset);
             }
 
             //! format size.indx

@@ -1,8 +1,8 @@
 
 //! \file
 
-#ifndef YACK_SYNC_SPLIT_INCLUDED
-#define YACK_SYNC_SPLIT_INCLUDED 1
+#ifndef YACK_SYNC_SPLIT1D_INCLUDED
+#define YACK_SYNC_SPLIT1D_INCLUDED 1
 
 #include "yack/setup.hpp"
 
@@ -14,10 +14,10 @@ namespace yack
         //______________________________________________________________________
         //
         //
-        //! generic splitting algorithm
+        //! generic splitting 1D algorithm
         //
         //______________________________________________________________________
-        struct split
+        struct split1D
         {
 
             //! from total length and offset, return parameters for size.rank

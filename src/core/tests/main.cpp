@@ -55,6 +55,7 @@ YACK_UTEST_DECL(80)
     YACK_UTEST(sync_thread);
     YACK_UTEST(singleton);
     YACK_UTEST(sync_loop);
+    YACK_UTEST(sync_split);
 
 
     YACK_UTEST(fft1d);
