@@ -23,7 +23,7 @@ YACK_UTEST(rtld_dso)
             std::cerr << std::setw(32) << symbol << " @" << addr << std::endl;
         }
 
-        cfunc Sin = dll.query<cfunc>("Sin");
+        cfunc Sin = dll.proc<cfunc>("Sin");
         if(Sin)
         {
             std::cerr << "Found Sin" << std::endl;

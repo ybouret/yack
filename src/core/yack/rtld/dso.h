@@ -8,8 +8,8 @@
 #define YACK_DLL_EXTERN() extern "C" {
 #define YACK_DLL_FINISH() }
 #else
-#define YACK_DLL_EXTERN()
-#define YACK_DLL_FINISH()
+#define YACK_DLL_EXTERN() //!< init exporting zone
+#define YACK_DLL_FINISH() //!< quit exporting zone
 #endif
 
 

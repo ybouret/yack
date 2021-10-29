@@ -14,19 +14,28 @@ namespace yack
     class dso
     {
     public:
+        //______________________________________________________________________
+        //
+        // C++
+        //______________________________________________________________________
         explicit dso(const char *soname); //!< load library
         virtual ~dso() throw();           //!< free library
+
+        //______________________________________________________________________
+        //
+        // methods
+        //______________________________________________________________________
 
         //! load symbol address
         void    *load(const char *symbol) const throw();
 
-
-        template <typename PROC>
-        PROC query(const char *symbol) const throw()
+        //! helper to load proc
+        template <typename CFUNCTION>
+        CFUNCTION proc(const char *symbol) const throw()
         {
             union {
-                void *addr;
-                PROC  proc;
+                void      *addr;
+                CFUNCTION  proc;
             } alias = { load(symbol) };
             return alias.proc;
         }
