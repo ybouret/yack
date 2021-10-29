@@ -22,7 +22,7 @@ namespace yack
             virtual ~gzstream() throw(); //!< cleanup
             
         protected:
-            explicit gzstream(const char *filename);
+            explicit gzstream(const char *filename, const char *mode);
             void *GZ;
 
         private:
