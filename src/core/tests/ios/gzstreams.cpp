@@ -1,5 +1,6 @@
 
 #include "yack/ios/gz/istream.hpp"
+#include "yack/ios/gz/ostream.hpp"
 #include "yack/utest/run.hpp"
 
 using namespace yack;
@@ -9,7 +10,7 @@ namespace
 
 }
 
-YACK_UTEST(ios_gzstreams)
+YACK_UTEST(ios_gz)
 {
     if(argc>1)
     {
@@ -35,10 +36,14 @@ YACK_UTEST(ios_gzstreams)
                     std::cerr << block_addr[i];
             }
             
-            
-            
         }
         
+    }
+    
+    {
+        ios::ogzstream fp("data.gz");
+        
+        fp << "Hello, World!";
     }
 }
 YACK_UDONE()
