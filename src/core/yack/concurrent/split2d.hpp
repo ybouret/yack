@@ -12,13 +12,12 @@ namespace yack
     namespace concurrent
     {
         
+        //! todo
         template <typename T>
         class tile
         {
         public:
-            const T row;
-            const T column;
-            const T length;
+            
             
         private:
             YACK_DISABLE_ASSIGN(tile);

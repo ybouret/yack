@@ -116,6 +116,8 @@ namespace yack
         //
         // norms
         //______________________________________________________________________
+      
+        //! norm2
         inline mutable_type norm2() const throw()
         {
             return squared(x) + squared(y) + squared(z);

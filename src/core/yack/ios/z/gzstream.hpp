@@ -22,8 +22,9 @@ namespace yack
             virtual ~gzstream() throw(); //!< cleanup
             
         protected:
+            //! open any gzFile
             explicit gzstream(const char *filename, const char *mode);
-            void *GZ;
+            void *GZ; //!< handle got gzFile
 
         private:
             YACK_DISABLE_COPY_AND_ASSIGN(gzstream);

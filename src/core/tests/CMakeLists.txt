@@ -56,6 +56,7 @@ ${counting}
 )
 
 yack_link_libraries(test-yack)
+target_link_libraries(test-yack yack-z)
 
 add_library(dso MODULE dso.cpp)
 add_custom_command( TARGET dso

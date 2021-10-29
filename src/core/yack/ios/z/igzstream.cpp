@@ -19,6 +19,30 @@ namespace yack
         {
         }
         
+        bool igzstream:: query_(char &C)
+        {
+            const int ch = gzgetc( static_cast<gzFile>(GZ) );
+            if(ch<0)
+            {
+                return false;
+            }
+            else
+            {
+                C = char(ch);
+                return true;
+            }
+        }
+        
+        size_t igzstream:: fetch_(void *addr, const size_t size)
+        {
+            
+            const int res = gzread(static_cast<gzFile>(GZ),addr,size);
+            if(res<0)
+            {
+                throw libc::exception(EIO,"gzread");
+            }
+            return size_t(res);
+        }
         
     }
     

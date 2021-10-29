@@ -26,6 +26,8 @@ namespace yack
             
         private:
             YACK_DISABLE_COPY_AND_ASSIGN(igzstream);
+            virtual bool   query_(char &C);
+            virtual size_t fetch_(void *addr, const size_t size);
         };
     }
 }
