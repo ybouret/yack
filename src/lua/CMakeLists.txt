@@ -42,10 +42,10 @@ lvm.c
 lzio.c
 )
 
-message( STATUS "[YACK]  <lib/>" )
+message( STATUS "[YACK]    <defining library/>" )
 add_library(yack-lua STATIC ${lualib_srcs} ${lualib_public_decl})
 
-message( STATUS "[YACK]  <exe/>" )
+message( STATUS "[YACK]    <defining executable/>" )
 add_executable(yack_lua lua.c)
 target_link_libraries(yack_lua yack-lua)
 if(NOT YACK_MICROSOFT)
@@ -57,11 +57,18 @@ set( THERE ${HERE}/tests )
 
 add_custom_command( TARGET yack_lua
 POST_BUILD
+COMMAND ${CMAKE_COMMAND} -E cmake_echo_color --black --bold "[YACK]  <lua::tests>"
+COMMAND ${CMAKE_COMMAND} -E cmake_echo_color --black --bold "[YACK]    testing hello.lua.."
 COMMAND yack_lua ${THERE}/hello.lua
+COMMAND ${CMAKE_COMMAND} -E cmake_echo_color --black --bold "[YACK]    testing bisect.lua.."
 COMMAND yack_lua ${THERE}/bisect.lua
+COMMAND ${CMAKE_COMMAND} -E cmake_echo_color --black --bold "[YACK]    testing sieve.lua.."
 COMMAND yack_lua ${THERE}/sieve.lua
+COMMAND ${CMAKE_COMMAND} -E cmake_echo_color --black --bold "[YACK]    testing sort.lua.."
 COMMAND yack_lua ${THERE}/sort.lua
-COMMENT "[YACK]  <lua tests/>")
+COMMAND ${CMAKE_COMMAND} -E cmake_echo_color --black --bold "[YACK]  <lua::tests/>"
+COMMENT "[YACK]  performing lua tests..."
+VERBATIM)
 
 
 message( STATUS "[YACK] <lua/>" )
