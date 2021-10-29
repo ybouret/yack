@@ -33,11 +33,14 @@ static  void   compute_from(size_t i, size_t *p,const size_t n)
     //------------------------------------------------------------------
     // swap the last n - i elements
     //------------------------------------------------------------------
-    const size_t jmax=(n+i)>>1;
-    for(size_t k=0,j= ++i; j <= jmax; ++j, ++k)
     {
-        const size_t nmk=n-k;
-        cswap(p[j],p[nmk]);
+        const size_t jmax=(n+i)>>1;
+        size_t k,j;
+        for(k=0,j=++i; j<=jmax;++j,++k)
+        {
+            const size_t nmk=n-k;
+            cswap(p[j],p[nmk]);
+        }
     }
 }
 
