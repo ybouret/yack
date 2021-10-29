@@ -16,6 +16,11 @@
 namespace yack
 {
 
+    //__________________________________________________________________________
+    //
+    //! formatting category
+    //__________________________________________________________________________
+    const char *vector_category_build(char *,const size_t,const char *) throw();
 
     //__________________________________________________________________________
     //
@@ -83,7 +88,6 @@ namespace yack
         inline virtual size_t      size()     const throw() { return count; }
         inline virtual const char *category() const throw()
         {
-            const char *vector_category_build(char *,const size_t,const char *) throw();
             static char        buff[32];
             static const char *id = vector_category_build(buff,sizeof(buff),ALLOCATOR::call_sign);
             return id;
