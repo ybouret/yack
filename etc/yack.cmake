@@ -229,6 +229,7 @@ function(yack_link_libraries program)
 	
 	if(YACK_LINUX)
 		list(APPEND yack_libs "rt")
+		list(APPEND yack_libs "dl")
 	endif()
  	
 	message( STATUS "[YACK] link libraries @${program} : ${yack_libs}" )
