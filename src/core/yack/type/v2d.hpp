@@ -37,9 +37,10 @@ namespace yack
         //
         // C++
         //______________________________________________________________________
-        inline  v2d() throw() : x(0), y(0) {}                 //!< setup
-        inline ~v2d() throw() {}                              //!< cleanup
-        inline  v2d(const v2d &v) throw() : x(v.x), y(v.y) {} //!< copy
+        inline  v2d() throw() : x(0), y(0) {}                           //!< setup
+        inline ~v2d() throw() {}                                        //!< cleanup
+        inline  v2d(const v2d &v) throw() : x(v.x), y(v.y) {}           //!< copy
+        inline  v2d(const_type X, const_type Y) throw() : x(X), y(Y) {} //!< setup
 
         //!assign
         inline  v2d & operator=( const v2d &v ) throw()

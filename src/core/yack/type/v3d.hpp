@@ -38,6 +38,11 @@ namespace yack
         inline  v3d() throw() : x(0), y(0), z(0) {}                     //!< setup
         inline ~v3d() throw() {}                                        //!< cleanup
         inline  v3d(const v3d &v) throw() : x(v.x), y(v.y), z(v.z) {}   //!< copy
+        //!
+        //! setup
+        inline  v3d(const_type X,
+                    const_type Y,
+                    const_type Z) throw() : x(X), y(Y), z(Z) {}
 
         //! assign
         inline  v3d & operator=( const v3d &v ) throw()
