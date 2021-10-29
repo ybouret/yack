@@ -83,6 +83,7 @@ add_test(type:conv   test-yack type_conv)
 add_test(type:scalar test-yack type_scalar)
 add_test(type:human  test-yack type_human)
 add_test(type:fourcc test-yack type_fourcc)
+add_test(type:vtx    test-yack type_vtx)
 
 
 add_test(memory:ram      test-yack ram)
