@@ -26,7 +26,8 @@ namespace yack
             void with(const T size,
                       const T rank)
             {
-                
+                (void)size;
+                (void)rank;
 
             }
 
