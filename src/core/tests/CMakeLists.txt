@@ -60,7 +60,7 @@ yack_link_libraries(test-yack)
 add_library(dso MODULE dso.cpp)
 add_custom_command( TARGET dso
 POST_BUILD
-COMMAND test-yack rtld_dso $<TARGET_FILE:dso>
+COMMAND $<TARGET_FILE:test-yack> rtld_dso $<TARGET_FILE:dso>
 DEPENDS test-yack
 COMMENT "[YACK]  <testing DSO/>")
 
