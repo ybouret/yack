@@ -28,6 +28,8 @@ namespace
             VTX s2 = a; s2 += b;
         }
 
+        std::cerr << "|a|^2=" << a.norm2() << std::endl;
+        
     }
 }
 

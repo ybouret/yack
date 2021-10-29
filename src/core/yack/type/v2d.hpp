@@ -5,6 +5,7 @@
 #define YACK_TYPE_V2D_INCLUDED 1
 
 #include "yack/type/args.hpp"
+#include "yack/type/utils.hpp"
 #include <iostream>
 
 namespace yack
@@ -109,7 +110,15 @@ namespace yack
             x -= rhs.x; y -= rhs.y; return *this;
         }
 
-
+        //______________________________________________________________________
+        //
+        // norms
+        //______________________________________________________________________
+        inline mutable_type norm2() const throw()
+        {
+            return squared(x) + squared(y);
+        }
+        
     };
 }
 

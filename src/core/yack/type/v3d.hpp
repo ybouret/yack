@@ -112,6 +112,14 @@ namespace yack
             x -= rhs.x; y -= rhs.y; z -= rhs.z; return *this;
         }
 
+        //______________________________________________________________________
+        //
+        // norms
+        //______________________________________________________________________
+        inline mutable_type norm2() const throw()
+        {
+            return squared(x) + squared(y) + squared(z);
+        }
 
     };
 }
