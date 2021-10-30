@@ -7,14 +7,10 @@
 using namespace yack;
 
 
-namespace
-{
-
-}
 
 YACK_UTEST(counting_perm)
 {
-    size_t       n     = 4;
+    size_t       n     = 7;
 
     if(argc>1)
     {

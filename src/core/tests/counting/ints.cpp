@@ -1,0 +1,48 @@
+
+#include "yack/utest/run.hpp"
+#include "yack/counting/ints.h"
+#include "yack/sequence/vector.hpp"
+#include "yack/apex/natural.hpp"
+
+using namespace yack;
+
+
+namespace
+{
+    static inline void show(const readable<size_t> &ints, const size_t k)
+    {
+        std::cerr << '[';
+        std::cerr << ints[1];
+        for(size_t i=2;i<=k;++i)
+        {
+            std::cerr << ';' << ints[i];
+        }
+        std::cerr << ']' << std::endl;
+    }
+}
+
+YACK_UTEST(counting_ints)
+{
+    size_t       n     = 4;
+    
+    if(argc>1)
+    {
+        n = atol(argv[1]);
+    }
+    
+    yack_ints        param;
+    vector<size_t > ints(n,0);
+    yack_ints_init(&param,n);
+    size_t count = 0;
+    yack_ints_boot(&param,*ints);
+    do
+    {
+        ++count;
+        show(ints,param.k);
+    } while( yack_ints_next(&param,*ints) );
+    std::cerr << "#count=" << count << std::endl;
+    
+    
+}
+YACK_UDONE()
+

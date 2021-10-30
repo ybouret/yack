@@ -23,7 +23,7 @@ extern "C" {
     void    yack_ints_boot(struct yack_ints *param, size_t *ints);
     
     /**! next partition */
-    void    yack_ints_next(struct yack_ints *param, size_t *ints);
+    int     yack_ints_next(struct yack_ints *param, size_t *ints);
     
 #if defined(__cplusplus)
 }

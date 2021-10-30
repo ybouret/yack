@@ -145,6 +145,7 @@ add_test(sort:indexing  test-yack sort_indexing)
 
 add_test(counting:comb  test-yack counting_comb)
 add_test(counting:perm  test-yack counting_perm)
+add_test(counting:ints  test-yack counting_ints)
 
 add_test(rtld:dso test-yack rtld_dso)
 
