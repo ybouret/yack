@@ -29,7 +29,7 @@ namespace yack
 
                 T left = size;
                 U todo = length/left;
-                for(size_t r=0;r<rank;++r)
+                for(T r=0;r<rank;++r)
                 {
                     --left;
                     length -= todo;

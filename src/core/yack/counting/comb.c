@@ -54,7 +54,9 @@ void yack_comb_boot(const struct yack_comb *param, size_t comb[])
     for(i=param->k;i>0;--i) comb[i] = i;
 }
 
-void yack_comb_next(const struct yack_comb *param, size_t *comb)
+#include <stdio.h>
+
+int yack_comb_next(const struct yack_comb *param, size_t *comb)
 {
     assert(NULL!=param);
     assert(NULL!=comb);
@@ -69,7 +71,9 @@ void yack_comb_next(const struct yack_comb *param, size_t *comb)
             if(--i<=0) break;
             ++comb[i];
         }
-
+        
+        if(i<=0) return 0;
+        
         {
             size_t j=i;
             for(++i;i<=k;++i,++j)
@@ -77,5 +81,7 @@ void yack_comb_next(const struct yack_comb *param, size_t *comb)
                 comb[i] = comb[j]+1;
             }
         }
+        
+        return 1;
     }
 }

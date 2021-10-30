@@ -24,7 +24,7 @@ extern "C" {
     void    yack_comb_boot(const struct yack_comb *param, size_t *comb);
 
     /**! next combination */
-    void    yack_comb_next(const struct yack_comb *param, size_t *comb);
+    int    yack_comb_next(const struct yack_comb *param, size_t *comb);
 
 #if defined(__cplusplus)
 }

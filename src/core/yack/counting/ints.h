@@ -17,8 +17,13 @@ extern "C" {
         size_t   k; //!< current number of  parts
     };
 
-    void    yack_ints_init(struct       yack_perm *param, size_t n);
-
+    void    yack_ints_init(struct yack_ints *param, size_t n);
+   
+    /**! ints[1] = [n], k=1 */
+    void    yack_ints_boot(struct yack_ints *param, size_t *ints);
+    
+    /**! next partition */
+    void    yack_ints_next(struct yack_ints *param, size_t *ints);
     
 #if defined(__cplusplus)
 }

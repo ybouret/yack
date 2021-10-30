@@ -21,23 +21,22 @@ YACK_UTEST(counting_perm)
         n = atol(argv[1]);
     }
 
-    const apn    nf    = apn::factorial(n);
-    const size_t count = nf.cast_to<size_t>("perm.count");
+    const apn    nf = apn::factorial(n);
+    const size_t np = nf.cast_to<size_t>("perm.count");
 
-    std::cerr << "#perm(" << n << ")=" << count << std::endl;
+    std::cerr << "#perm(" << n << ")=" << np << std::endl;
 
     vector<size_t> perm(n,0);
-    yack_perm      param = { n };
-
+    yack_perm      param;
+    yack_perm_init(&param,n);
     yack_perm_boot(&param,*perm);
-    size_t index=0;
-    while(true) {
-        ++index;
+    size_t count=0;
+    do {
+        ++count;
         std::cerr << perm << std::endl;
-        if(index>=count) break;
-        yack_perm_next(&param,*perm);
-    };
-
+    } while(yack_perm_next(&param,*perm));
+    std::cerr << "#perm=" << count << std::endl;
+    YACK_CHECK(np==count);
 
 
 }

@@ -59,15 +59,17 @@ void    yack_perm_boot(const struct yack_perm *param, size_t *perm)
     }
 }
 
-void    yack_perm_next(const struct yack_perm *param, size_t *perm)
+int    yack_perm_next(const struct yack_perm *param, size_t *perm)
 {
     assert(param!=NULL);
     assert(param->n>0);
     assert(perm!=NULL);
     {
         const size_t n = param->n;
-        const size_t i = find_largest(perm,n); assert(i>0);
+        const size_t i = find_largest(perm,n);
+        if(i<=0) return 0;
         compute_from(i,perm,n);
+        return 1;
     }
 
 }
