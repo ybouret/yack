@@ -6,8 +6,8 @@ using namespace yack;
 
 YACK_UTEST(sync_split)
 {
-    v2d<int> lower(-5,-6);
-    v2d<int> upper(10,13);
+    v2d<int> lower(-5,0);
+    v2d<int> upper(10,0);
     
     for(size_t size=1;size<=6;++size)
     {
@@ -16,6 +16,13 @@ YACK_UTEST(sync_split)
         {
             concurrent::tiling<int> tiling;
             concurrent::split2D::build(tiling,size,rank,lower,upper);
+            std::cerr << "\t." << rank << ":";
+            std::cerr << " #=" << tiling.size;
+            for(const concurrent::tile<int> *t=tiling.head;t;t=t->next)
+            {
+                std::cerr << " " << t->start << "+" << t->width;
+            }
+            std::cerr << std::endl;
         }
     }
 }

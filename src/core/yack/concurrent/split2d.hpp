@@ -27,7 +27,6 @@ namespace yack
             {
             }
             
-            
             tile         *next;
             const v2d<T>  start;
             const T       width;
@@ -85,20 +84,22 @@ namespace yack
                 U            offset = 0;
                 split1D::with(size,rank,length,offset);
              
+                std::cerr << "@" << size << "." << rank << ": length=" << length << std::endl;
                 if(length>0)
                 {
                     --length;
                     const v2d<U> ini = lower + offset_to_vertex(offset,width);
                     const v2d<U> end = lower + offset_to_vertex(offset+length,width);
+                    std::cerr << "\tini@" << ini << ", end@" << end << std::endl;
                     if(ini.y<end.y)
                     {
                         // multiple tiles
-                        //tiles.store(
                     }
                     else
                     {
                         // single tile
-                        tiles.store( new tile<U>(ini,1+end.y-ini.y) );
+                        tiles.store( new tile<U>(ini,1+end.x-ini.x) );
+                        assert(tiles.head->width==length+1);
                     }
                 }
                 else

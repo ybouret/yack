@@ -1,5 +1,6 @@
 
 #include "yack/utest/run.hpp"
+#include "yack/counting/part.hpp"
 #include "yack/counting/c/part.h"
 #include "yack/sequence/vector.hpp"
 #include "yack/apex/natural.hpp"
@@ -30,18 +31,29 @@ YACK_UTEST(counting_part)
         n = atol(argv[1]);
     }
     
-    yack_part        param;
-    vector<size_t > ints(n,0);
-    yack_part_init(&param,n);
-    size_t count = 0;
-    yack_part_boot(&param,*ints);
+    {
+        yack_part        param;
+        vector<size_t > ints(n,0);
+        yack_part_init(&param,n);
+        size_t count = 0;
+        yack_part_boot(&param,*ints);
+        do
+        {
+            ++count;
+            show(ints,param.k);
+        } while( yack_part_next(&param,*ints) );
+        std::cerr << "#count=" << count << std::endl;
+    }
+    
+    partition part(n);
+    std::cerr << "part.size()    = " << part.size() << std::endl;
+    std::cerr << "part.granted() = " << part.granted() << std::endl;
+    
+    part.boot();
     do
     {
-        ++count;
-        show(ints,param.k);
-    } while( yack_part_next(&param,*ints) );
-    std::cerr << "#count=" << count << std::endl;
-    
+        std::cerr << part << std::endl;
+    } while( part.next() );
     
 }
 YACK_UDONE()

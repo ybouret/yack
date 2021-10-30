@@ -9,16 +9,29 @@
 
 namespace yack
 {
-    
+    //__________________________________________________________________________
+    //
+    //
+    //! handling combinations
+    //
+    //__________________________________________________________________________
     class combination : public schedule
     {
     public:
-        explicit combination(const size_t n, const size_t k);
-        virtual ~combination() throw();
+        //______________________________________________________________________
+        //
+        // C++
+        //______________________________________________________________________
+        explicit combination(const size_t n, const size_t k); //!< setup
+        virtual ~combination() throw();                       //!< setup
         
-        virtual size_t size() const throw();
-        virtual void   boot() throw();
-        virtual bool   next() throw();
+        //______________________________________________________________________
+        //
+        // interface
+        //______________________________________________________________________
+        virtual size_t size() const throw(); //!< k
+        virtual void   boot() throw();       //!< [1..k]
+        virtual bool   next() throw();       //!< find next combination
         
     private:
         YACK_DISABLE_COPY_AND_ASSIGN(combination);
