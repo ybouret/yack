@@ -1,4 +1,3 @@
-
 //! \file
 
 #ifndef YACK_COUNTING_INTS_INCLUDED
@@ -17,6 +16,7 @@ extern "C" {
         size_t   k; //!< current number of  parts
     };
 
+    /**! intialize */
     void    yack_part_init(struct yack_part *param, size_t n);
    
     /**! ints[1] = [n], k=1 */
