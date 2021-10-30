@@ -1,6 +1,6 @@
 
 #include "yack/utest/run.hpp"
-#include "yack/counting/ints.h"
+#include "yack/counting/part.h"
 #include "yack/sequence/vector.hpp"
 #include "yack/apex/natural.hpp"
 
@@ -21,7 +21,7 @@ namespace
     }
 }
 
-YACK_UTEST(counting_ints)
+YACK_UTEST(counting_part)
 {
     size_t       n     = 4;
     
@@ -30,16 +30,16 @@ YACK_UTEST(counting_ints)
         n = atol(argv[1]);
     }
     
-    yack_ints        param;
+    yack_part        param;
     vector<size_t > ints(n,0);
-    yack_ints_init(&param,n);
+    yack_part_init(&param,n);
     size_t count = 0;
-    yack_ints_boot(&param,*ints);
+    yack_part_boot(&param,*ints);
     do
     {
         ++count;
         show(ints,param.k);
-    } while( yack_ints_next(&param,*ints) );
+    } while( yack_part_next(&param,*ints) );
     std::cerr << "#count=" << count << std::endl;
     
     

@@ -66,7 +66,6 @@ YACK_UTEST(counting_comb)
         yack_comb       param;
         yack_comb_init(&param,n,k);
         const apn nc = apn::comb(n,k);
-        const size_t count = nc.cast_to<size_t>("comb.count");
         std::cerr << "comb(" << n << "," << k << ")=" << nc << std::endl;
         
         if(nc>0)

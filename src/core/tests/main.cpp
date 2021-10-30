@@ -83,7 +83,7 @@ YACK_UTEST_DECL(80)
 
     YACK_UTEST(counting_comb);
     YACK_UTEST(counting_perm);
-    YACK_UTEST(counting_ints);
+    YACK_UTEST(counting_part);
 
     YACK_UTEST(rtld_dso);
 

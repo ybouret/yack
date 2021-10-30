@@ -1,16 +1,16 @@
 
-#include "yack/counting/ints.h"
+#include "yack/counting/part.h"
 #include <string.h>
 
 
-void    yack_ints_init(struct yack_ints *param, size_t n)
+void    yack_part_init(struct yack_part *param, size_t n)
 {
     assert(param);
     param->n = n;
     param->k = 0; /** invalid */
 }
 
-void    yack_ints_boot(struct yack_ints *param, size_t *ints)
+void    yack_part_boot(struct yack_part *param, size_t *ints)
 {
     assert(param);
     assert(ints);
@@ -19,7 +19,7 @@ void    yack_ints_boot(struct yack_ints *param, size_t *ints)
 }
 
 /**! next partition */
-int  yack_ints_next(struct yack_ints *param, size_t *ints)
+int  yack_part_next(struct yack_part *param, size_t *ints)
 {
     size_t rem_val = 0;
     size_t k;
