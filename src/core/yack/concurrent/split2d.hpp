@@ -1,5 +1,3 @@
-
-
 //! \file
 
 #ifndef YACK_SYNC_SPLIT2D_INCLUDED
@@ -15,36 +13,84 @@ namespace yack
     namespace concurrent
     {
         
+        //______________________________________________________________________
+        //
+        //
+        //! single tile: (x,y) + delta x
+        //
+        //______________________________________________________________________
         template <typename T>
-        class tile  : public object
+        class tile2D  : public object
         {
         public:
-            inline virtual ~tile() throw() {}
-            inline explicit tile(const v2d<T> &org, const T len) throw() :
-            next(0),
-            start(org),
-            width(len)
-            {
-            }
+            //__________________________________________________________________
+            //
+            // C++
+            //__________________________________________________________________
             
-            tile         *next;
-            const v2d<T>  start;
-            const T       width;
+            //! cleanup
+            inline virtual ~tile2D() throw()  {}
+            
+            //! setup
+            inline explicit tile2D(const v2d<T> &org, const T len) throw() :
+            next(0), start(org), width(len) {}
+            
+            //__________________________________________________________________
+            //
+            // members
+            //__________________________________________________________________
+            tile2D       *next;  //!< for tiles
+            const v2d<T>  start; //!< (x,y)
+            const T       width; //!< delta x
             
         private:
-            YACK_DISABLE_COPY_AND_ASSIGN(tile);
+            YACK_DISABLE_COPY_AND_ASSIGN(tile2D);
         };
         
+        
+        //______________________________________________________________________
+        //
+        //
+        //! list of tiles
+        //
+        //______________________________________________________________________
         template <typename T>
-        class tiling : public cxx_pool_of< tile<T> >
+        class tiles2D
         {
         public:
-            explicit tiling() throw() {}
-            virtual ~tiling() throw() {}
+            //__________________________________________________________________
+            //
+            // C++
+            //__________________________________________________________________
+            inline  tiles2D() throw() : items(0), tiles() {} //!< setup
+            inline ~tiles2D() throw() {}                     //!< cleanup
             
+            //__________________________________________________________________
+            //
+            // methods
+            //__________________________________________________________________
+           
+            //! add a new tile, update items
+            inline void add(const v2d<T> &org, const T len)
+            {
+                coerce(items) += tiles.store( new tile2D<T>(org,len) )->width;
+            }
+            
+            inline size_t           size() const throw() { return tiles.size; } //!< number of tiles
+            inline const tile2D<T> *head() const throw() { return tiles.head; } //!< first tile
+            inline void             finish()     throw() { tiles.reverse();   } //!< reverse order
+            
+            //__________________________________________________________________
+            //
+            // members
+            //__________________________________________________________________
+            const size_t   items; //!< total items
+                                  //!
         private:
-            YACK_DISABLE_COPY_AND_ASSIGN(tiling);
+            YACK_DISABLE_COPY_AND_ASSIGN(tiles2D);
+            cxx_pool_of< tile2D<T> > tiles;
         };
+        
         
         
         //______________________________________________________________________
@@ -55,8 +101,10 @@ namespace yack
         //______________________________________________________________________
         struct split2D
         {
-            
-            // x + y*width.x = offset
+            //__________________________________________________________________
+            //
+            //! x + y*width.x = offset
+            //__________________________________________________________________
             template <typename U> static inline
             v2d<U> offset_to_vertex(const U offset, const v2d<U> &width) throw()
             {
@@ -64,47 +112,90 @@ namespace yack
                 return v2d<U>(offset-y*width.x,y);
             }
             
-            
-            //! from ...
+            //__________________________________________________________________
+            //
+            //! build tiles
+            //__________________________________________________________________
             template <typename T, typename U> static inline
-            void build(tiling<U>    &tiles,
-                       const T       size,
-                       const T       rank,
-                       const v2d<U> &lower,
-                       const v2d<U> &upper) throw()
+            void build(tiles2D<U>     &tiles,
+                       const T         size,
+                       const T         rank,
+                       const v2d<U>   &lower,
+                       const v2d<U>   &upper) throw()
             {
                 assert(size>0);
                 assert(rank<size);
                 assert(lower.x<=upper.x);
                 assert(lower.y<=upper.y);
-                assert(0==tiles.size);
+                assert(0==tiles.size() );
                 
+                //______________________________________________________________
+                //
+                // split all space
+                //______________________________________________________________
                 const v2d<U> width(1+upper.x-lower.x,1+upper.y-lower.y);
                 U            length = width.x*width.y;
                 U            offset = 0;
                 split1D::with(size,rank,length,offset);
-             
-                std::cerr << "@" << size << "." << rank << ": length=" << length << std::endl;
+                
+                
                 if(length>0)
                 {
+                    //__________________________________________________________
+                    //
+                    // extract tiles
+                    //__________________________________________________________
                     --length;
                     const v2d<U> ini = lower + offset_to_vertex(offset,width);
                     const v2d<U> end = lower + offset_to_vertex(offset+length,width);
-                    std::cerr << "\tini@" << ini << ", end@" << end << std::endl;
                     if(ini.y<end.y)
                     {
-                        // multiple tiles
+                        //______________________________________________________
+                        //
+                        // first
+                        //______________________________________________________
+                        tiles.add( ini, 1+upper.x-ini.x );
+                        
+                        //______________________________________________________
+                        //
+                        // middle
+                        //______________________________________________________
+                        v2d<U> pos(lower.x,ini.y+1);
+                        while(pos.y<end.y)
+                        {
+                            tiles.add(pos,width.x);
+                            ++pos.y;
+                        }
+                        
+                        //______________________________________________________
+                        //
+                        // last
+                        //______________________________________________________
+                        tiles.add( v2d<U>(lower.x,end.y), 1+end.x-lower.x );
+                        
+                        //______________________________________________________
+                        //
+                        // set in increasing order
+                        //______________________________________________________
+                        tiles.finish();
+                        assert(size_t(length+1)==tiles.items);
                     }
                     else
                     {
+                        //______________________________________________________
+                        //
                         // single tile
-                        tiles.store( new tile<U>(ini,1+end.x-ini.x) );
-                        assert(tiles.head->width==length+1);
+                        //______________________________________________________
+                        tiles.add(ini,1+end.x-ini.x);
+                        assert(tiles.head()->width==length+1);
                     }
                 }
                 else
                 {
+                    //__________________________________________________________
+                    //
                     // no tiles
+                    //__________________________________________________________
                 }
             }
                       

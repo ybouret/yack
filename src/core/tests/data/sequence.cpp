@@ -1,5 +1,6 @@
 #include "yack/sequence/vector.hpp"
 #include "yack/sequence/list.hpp"
+#include "yack/sequence/cxx-array.hpp"
 #include "yack/memory/allocator/global.hpp"
 #include "yack/memory/allocator/dyadic.hpp"
 
@@ -72,7 +73,9 @@ YACK_UTEST(data_sequence)
     }
 
     test_seq<int>(ran);
-
+    
+    cxx_array<int> ir(10);
+    
 
 }
 YACK_UDONE()
