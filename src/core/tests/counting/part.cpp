@@ -1,6 +1,6 @@
 
 #include "yack/utest/run.hpp"
-#include "yack/counting/part.h"
+#include "yack/counting/c/part.h"
 #include "yack/sequence/vector.hpp"
 #include "yack/apex/natural.hpp"
 

@@ -1,4 +1,4 @@
-#include "yack/counting/perm.h"
+#include "yack/counting/c/perm.h"
 #include <string.h>
 
 

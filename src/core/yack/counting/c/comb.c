@@ -1,4 +1,4 @@
-#include "yack/counting/comb.h"
+#include "yack/counting/c/comb.h"
 #include "yack/arith/gcd.h"
 
 #include <string.h>

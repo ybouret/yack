@@ -1,6 +1,7 @@
 #include "yack/counting/perm.hpp"
-#include "yack/counting/perm.h"
+#include "yack/counting/c/perm.h"
 #include "yack/system/exception.hpp"
+#include <cerrno>
 
 namespace yack
 {
@@ -11,6 +12,7 @@ namespace yack
     static inline
     size_t check_perm(const size_t n)
     {
+        if(n<=0) throw libc::exception(EDOM,"permutation(0)");
         return n;
     }
     

@@ -1,6 +1,6 @@
 
 #include "yack/utest/run.hpp"
-#include "yack/counting/perm.h"
+#include "yack/counting/c/perm.h"
 #include "yack/counting/perm.hpp"
 
 #include "yack/sequence/vector.hpp"

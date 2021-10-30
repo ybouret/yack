@@ -293,13 +293,17 @@ install( FILES ${sort_decl} DESTINATION include/yack/sort )
 ## counting
 ##
 ########################################################################
-file(GLOB counting_impl yack/counting/*.cpp yack/counting/*.c)
-file(GLOB counting_decl yack/counting/*.hpp yack/counting/*.h)
+file(GLOB counting_impl yack/counting/*.cpp)
+file(GLOB counting_decl yack/counting/*.hpp)
 set(counting ${counting_impl} ${counting_decl})
 SOURCE_GROUP(counting FILES ${counting})
 install( FILES ${counting_decl} DESTINATION include/yack/counting )
 
-
+file(GLOB counting_c_impl yack/counting/c/*.c)
+file(GLOB counting_c_decl yack/counting/c/*.h)
+set(counting_c ${counting_c_impl} ${counting_c_decl})
+SOURCE_GROUP(counting/c FILES ${counting_c})
+install( FILES ${counting_c_decl} DESTINATION include/yack/counting/c )
 
 ########################################################################
 ##
@@ -356,7 +360,7 @@ ${concurrent} ${concurrent_quark} ${concurrent_loop}
 ${ios} ${ios_c} ${ios_gz}
 ${randomized}
 ${sort}
-${counting}
+${counting} ${counting_c}
 ${rtld}
 ${kr}
 ${hashing}
