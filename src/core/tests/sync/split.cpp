@@ -6,6 +6,19 @@
 
 using namespace yack;
 
+namespace
+{
+    static inline void do_nothing(const v2d<int> &) throw()
+    {
+        
+    }
+    
+    static inline void do_count(const v2d<int> &, size_t &count) throw()
+    {
+        ++count;
+    }
+}
+
 YACK_UTEST(sync_split)
 {
     {
@@ -59,7 +72,7 @@ YACK_UTEST(sync_split)
                 }
             }
             vector< v2d<int> > generated(w*h,as_capacity);
-
+            
             for(size_t size=1;size<=9;++size)
             {
                 concurrent::tess2D<int> tess(lower,upper,size);
@@ -67,16 +80,22 @@ YACK_UTEST(sync_split)
                 for(size_t rank=1;rank<=size;++rank)
                 {
                     const concurrent::tiles2D<int> &tiles = tess[rank];
-                    for(const concurrent::tile2D<int> *t=tiles.head();t;t=t->next)
                     {
-                        int      length = t->width;
-                        v2d<int> curr   = t->start;
-                        while(length-- > 0)
+                        for(const concurrent::tile2D<int> *t=tiles.head();t;t=t->next)
                         {
-                            generated.push_back(curr);
-                            curr.x++;
+                            int      length = t->width;
+                            v2d<int> curr   = t->start;
+                            while(length-- > 0)
+                            {
+                                generated.push_back(curr);
+                                curr.x++;
+                            }
                         }
                     }
+                    size_t count = 0;
+                    tiles.apply(do_nothing);
+                    tiles.apply(do_count,count);
+                    YACK_ASSERT(tiles.items==count);
                 }
                 YACK_ASSERT(generated.size() == vertices.size() );
                 hsort(generated,v2d<int>::compare);

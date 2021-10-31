@@ -134,6 +134,7 @@ namespace yack
             return lhs.x!=rhs.x || lhs.y!=rhs.y;
         }
         
+        //! lexicographic comparions
         static inline int compare(const v2d &lhs, const v2d &rhs) throw()
         {
             const T *l = &lhs.x; const T *r = &rhs.x;

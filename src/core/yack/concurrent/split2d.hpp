@@ -69,7 +69,7 @@ namespace yack
             //
             // methods
             //__________________________________________________________________
-           
+            
             //! add a new tile, update items
             inline void add(const v2d<T> &org, const T len)
             {
@@ -82,10 +82,50 @@ namespace yack
             
             //__________________________________________________________________
             //
+            //! code to loop over all vertices
+            //__________________________________________________________________
+            
+#define YACK_SYNC_TILES2D(CODE)                       \
+/**/  for(const tile2D<T> *t=tiles.head;t;t=t->next) \
+/**/  {                                             \
+/**/    T      len = t->width;                     \
+/**/    v2d<T> pos = t->start;                    \
+/**/    while(len-- >0)                          \
+/**/    {                                       \
+/**/      CODE;                                \
+/**/      ++pos.x;                            \
+/**/    }                                    \
+/**/  }
+            
+            //__________________________________________________________________
+            //
+            //! apply proc(vertex)
+            //__________________________________________________________________
+            template <typename PROC>
+            void apply(PROC &proc) const
+            {
+                YACK_SYNC_TILES2D(proc(pos))
+            }
+            
+            //__________________________________________________________________
+            //
+            //! apply proc(vertex,args)
+            //__________________________________________________________________
+            template <typename PROC, typename ARGS>
+            void apply(PROC &proc, ARGS &args) const
+            {
+                YACK_SYNC_TILES2D(proc(pos,args))
+            }
+            
+            
+            //__________________________________________________________________
+            //
             // members
             //__________________________________________________________________
             const size_t   items; //!< total items
-                                  //!
+            
+            
+            
         private:
             YACK_DISABLE_COPY_AND_ASSIGN(tiles2D);
             cxx_pool_of< tile2D<T> > tiles;
@@ -198,11 +238,11 @@ namespace yack
                     //__________________________________________________________
                 }
             }
-                      
+            
         };
-
+        
     }
-
+    
 }
 
 #endif

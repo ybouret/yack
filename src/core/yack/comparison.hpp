@@ -59,6 +59,7 @@ namespace yack
             return true;
         }
         
+        //! lexicographic comparison of same lengths arrays[1..n]
         template <typename T> static inline
         int lexicographic(const T *lhs, const T *rhs, const size_t n) throw()
         {
@@ -73,13 +74,9 @@ namespace yack
                 else
                 {
                     if(R<L)
-                    {
                         return 1;
-                    }
                     else
-                    {
                         continue;
-                    }
                 }
             }
             return 0;
