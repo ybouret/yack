@@ -5,103 +5,40 @@
 
 namespace yack
 {
-    namespace
-    {
-        static const uint8_t bit[8] = {1,2,4,8,16,32,64,128};
-    }
     
-    utf8::status utf8::query(uint8_t &data, uint8_t &bits, const uint8_t u)
-    {
-        
-        if(u<bit[7])
-        {
-            data = u;
-            bits = 8;
-            return header1;
-        }
-        else
-        {
-            const uint8_t header2_mask = bit[7]|bit[6]|bit[5];
-            const uint8_t header2_byte = bit[7]|bit[6];
-            if(header2_byte==(u&header2_mask))
-            {
-                static const uint8_t content_mask = bit[4]|bit[3]|bit[2]|bit[1]|bit[0];
-                data = (u&content_mask);
-                bits = 4;
-                return header2;
-            }
-            else
-            {
-                static const uint8_t header3_mask = bit[7]|bit[6]|bit[5]|bit[4];
-                static const uint8_t header3_byte = bit[7]|bit[6]|bit[5];
-                if(header3_byte==(u&header3_mask))
-                {
-                    static const uint8_t content_mask = bit[3]|bit[2]|bit[1]|bit[0];
-                    data = (u&content_mask);
-                    bits = 4;
-                    return header3;
-                }
-                else
-                {
-                    static const uint8_t header4_mask = bit[7]|bit[6]|bit[5]|bit[4]|bit[3];
-                    static const uint8_t header4_byte = bit[7]|bit[6]|bit[5]|bit[4];
-                    if(header4_byte==(u&header4_mask))
-                    {
-                        static const uint8_t content_mask = bit[2]|bit[1]|bit[0];
-                        data = (u&content_mask);
-                        bits = 3;
-                        return header4;
-                    }
-                    else
-                    {
-                        static const uint8_t headerB_mask = bit[7]|bit[6];
-                        static const uint8_t headerB_byte = bit[7];
-                        if(headerB_byte==(u&headerB_mask))
-                        {
-                            static const uint8_t content_mask = bit[5]|bit[4]|bit[3]|bit[2]|bit[1]|bit[0];
-                            data = (u&content_mask);
-                            bits = 6;
-                            return headerB;
-                        }
-                        else
-                        {
-                            //BAD
-                            throw libc::exception(EINVAL,"utf8(invalid %02x)",unsigned(u));
-                        }
-                    }
-                }
-            }
-        }
-    }
     
     
     size_t utf8:: encode(uint8_t data[], uint32_t code)
     {
         if(code<=0x7f)
         {
+            // 0-7 bits
             data[0] = uint8_t(code);
             return 1;
         }
         else
         {
             assert(code>=0x80);
-            static const uint32_t mask6 = bit[0]|bit[1]|bit[2]|bit[3]|bit[4]|bit[5];
+            static const uint32_t mask6 = 1|2|4|8|16|32;
+            static const uint8_t  bit7  = 128;
+            static const uint8_t  bit6  = 64;
             if(code<=0x07ff)
             {
-                static const uint32_t mask5 = bit[0]|bit[1]|bit[2]|bit[3]|bit[4];
-                data[1] = bit[7] | (code&mask6); code >>= 6;
-                data[0] = (bit[7]|bit[6]) | (code&mask5);
+                // 8-11 : 5 + 6
+                data[1] = bit7        | uint8_t(code&mask6); code >>= 6;
+                data[0] = (bit7|bit6) | uint8_t(code);
                 return 2;
             }
             else
             {
                 assert(code>=0x0800);
+                static const uint8_t bit5 = 32;
                 if(code<=0xffff)
                 {
-                    static const uint32_t mask4 = bit[0]|bit[1]|bit[2]|bit[3];
-                    data[2] = bit[7] | (code&mask6); code >>= 6;
-                    data[1] = bit[7] | (code&mask6); code >>= 6;
-                    data[0] = (bit[7]|bit[6]|bit[5]) | (code&mask4);
+                    // 12 - 16 : 4 + 6 + 6
+                    data[2] = bit7             | uint8_t(code&mask6); code >>= 6;
+                    data[1] = bit7             | uint8_t(code&mask6); code >>= 6;
+                    data[0] = (bit7|bit6|bit5) | uint8_t(code);
                     return 3;
                 }
                 else
@@ -109,11 +46,12 @@ namespace yack
                     assert(code>=0x10000);
                     if(code<=0x10FFFF)
                     {
-                        static const uint32_t mask3 = bit[0]|bit[1]|bit[2];
-                        data[3] = bit[7] | (code&mask6); code >>= 6;
-                        data[2] = bit[7] | (code&mask6); code >>= 6;
-                        data[1] = bit[7] | (code&mask6); code >>= 6;
-                        data[0] = (bit[7]|bit[6]|bit[5]|bit[4]) | (code&mask3);
+                        static const uint8_t bit4 = 16;
+                        // 17-21: 3+6+6+6
+                        data[2] = bit7                  | uint8_t(code&mask6); code >>= 6;
+                        data[2] = bit7                  | uint8_t(code&mask6); code >>= 6;
+                        data[1] = bit7                  | uint8_t(code&mask6); code >>= 6;
+                        data[0] = (bit7|bit6|bit5|bit4) | uint8_t(code);
                         return 4;
                     }
                     else
