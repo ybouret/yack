@@ -12,16 +12,33 @@ namespace yack
     namespace concurrent
     {
         
+        //______________________________________________________________________
+        //
+        //
+        //! 2D tesselation
+        //
+        //______________________________________________________________________
         template <typename T>
         class tess2D : public cxx_array< tiles2D<T> >
         {
         public:
-            typedef tiles2D<T> tiles_type;
+            //__________________________________________________________________
+            //
+            // types
+            //__________________________________________________________________
+            typedef tiles2D<T>            tiles_type; //!< alias
+            typedef cxx_array<tiles_type> array_type; //!< alias
             
+            //__________________________________________________________________
+            //
+            // C++
+            //__________________________________________________________________
+            
+            //! setup
             inline explicit tess2D(const v2d<T>  &lower,
                                    const v2d<T>  &upper,
                                    const size_t   size) :
-            cxx_array< tiles2D<T> >(size)
+            array_type(size)
             {
                 tiles_type *t = **this;
                 for(size_t rank=0;rank<size;++rank)
@@ -30,10 +47,8 @@ namespace yack
                 }
             }
             
-            inline virtual ~tess2D() throw()
-            {
-                
-            }
+            //! cleanup
+            inline virtual ~tess2D() throw() {}
                                    
         private:
             YACK_DISABLE_COPY_AND_ASSIGN(tess2D);

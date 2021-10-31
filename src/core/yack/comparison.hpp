@@ -59,6 +59,14 @@ namespace yack
             return true;
         }
         
+#if 0
+        template <typename T> static inline
+        int lexicographic(const T *ra, const size_t na,
+                          const T *rb, const size_t nb)
+        {
+            return 0;
+        }
+#endif
         
     };
     

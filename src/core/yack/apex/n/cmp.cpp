@@ -5,7 +5,7 @@ namespace yack
 {
     namespace apex
     {
-
+        
         YACK_APN_BINARY_REP(int natural::compare,
                             throw() { YACK_APN_BINARY_IMPL(cmp); })
         
@@ -15,7 +15,7 @@ namespace yack
             // sanity check
             const size_t     nl  = l.words;
             const size_t     nr  = r.words;
-
+            
             if(nl<nr)
             {
                 return -1;
@@ -55,14 +55,14 @@ namespace yack
                 }
             }
         }
-
-        number::sign_type natural:: scmp(const handle &l,
-                                         const handle &r) throw()
+        
+        sign_type natural:: scmp(const handle &l,
+                                 const handle &r) throw()
         {
             // sanity check
             const size_t     nl  = l.words;
             const size_t     nr  = r.words;
-
+            
             if(nl<nr)
             {
                 return negative;
@@ -98,11 +98,11 @@ namespace yack
                             }
                         }
                     }
-                    return naught;
+                    return __zero__;
                 }
             }
         }
-
+        
     }
-
+    
 }

@@ -32,12 +32,9 @@ namespace yack
         //______________________________________________________________________
         
         //! cleanup
-        inline virtual ~cxx_array() throw()
-        {
-            ++entry; kill();
-        }
+        inline virtual ~cxx_array() throw() { ++entry; kill(); }
         
-        //! setup
+        //! setup with default argument
         inline explicit cxx_array(const size_t n) :
         bytes( 0 ),
         items( n ),
@@ -59,16 +56,19 @@ namespace yack
         //
         // interface
         //______________________________________________________________________
+        //! initial count of objects
         inline virtual size_t       size() const throw() { return count; }
+        //! access
         inline virtual type       & operator[](const size_t indx)       throw() { assert(indx>=1); assert(indx<=size()); return entry[indx]; }
+        //! access, const
         inline virtual const_type & operator[](const size_t indx) const throw() { assert(indx>=1); assert(indx<=size()); return entry[indx]; }
         
         //______________________________________________________________________
         //
         // contiguous interface
         //______________________________________________________________________
-        inline virtual type       * operator*()       throw() { return entry; }
-        inline virtual const_type * operator*() const throw() { return entry; }
+        inline virtual type       * operator*()       throw() { return entry; } //!< for [1..size()]
+        inline virtual const_type * operator*() const throw() { return entry; } //!< for [1..size()]
         
     private:
         YACK_DISABLE_COPY_AND_ASSIGN(cxx_array);

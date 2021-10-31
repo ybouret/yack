@@ -50,10 +50,16 @@ YACK_UTEST(counting_part)
     std::cerr << "part.granted() = " << part.granted() << std::endl;
     
     part.boot();
+    //apn Bell = 0;
     do
     {
         std::cerr << part << std::endl;
+        //apn tmp =apn::comb(n,part.size());
+        //std::cerr << "+" << tmp << std::endl;
+       // Bell += tmp;
+        
     } while( part.next() );
+    //std::cerr << "Bell=" << Bell << std::endl;
     
 }
 YACK_UDONE()

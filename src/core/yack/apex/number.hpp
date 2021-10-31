@@ -6,6 +6,7 @@
 
 #include "yack/object.hpp"
 #include "yack/ios/serializable.hpp"
+#include "yack/signs.hpp"
 
 namespace yack
 {
@@ -24,14 +25,6 @@ namespace yack
         class number : public object, public ios::serializable
         {
         public:
-            //! named signed type
-            enum sign_type
-            {
-                negative, //!< value is < 0
-                naught,   //!< value is 0
-                positive  //!< value is > 0
-            };
-
             static uint64_t add_ticks;  //!< cumulative ticks
             static size_t   add_count;  //!< cumulative count
             static uint64_t sub_ticks;  //!< cumulative ticks

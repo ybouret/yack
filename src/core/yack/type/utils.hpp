@@ -7,29 +7,39 @@
 
 namespace yack
 {
-    template <typename T> static inline
+    //! min of (a,b)
+    template <typename T> inline
     T min_of(const T lhs, const T rhs) throw()
     {
         return (lhs < rhs) ? lhs : rhs;
     }
 
-
-    template <typename T> static inline
+    //! max of (a,b)
+    template <typename T> inline
     T max_of(const T lhs, const T rhs) throw()
     {
         return (lhs < rhs) ? rhs : lhs;
     }
     
-    template <typename T> static inline
+    //! x^2
+    template <typename T> inline
     T squared(const T x) throw()
     {
         return x*x;
     }
     
-    template <typename T> static inline
+    //! x+x
+    template <typename T> inline
     T twice(const T x) throw()
     {
         return x+x;
+    }
+    
+    //! |x|
+    template <typename T> inline
+    T absolute(const T x) throw()
+    {
+        return x < 0 ? -x : x;
     }
     
 

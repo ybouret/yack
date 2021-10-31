@@ -21,13 +21,13 @@ namespace yack
                 const handle B(b);
                 switch(scmp(A,B))
                 {
-                    case number::negative:
+                    case negative:
                         assert(a<b);
                         a.xch(b);
                         break;
-                    case number::naught:
+                    case __zero__:
                         return x;
-                    case number::positive:
+                    case positive:
                         assert(a>b);
                         break;
                 }

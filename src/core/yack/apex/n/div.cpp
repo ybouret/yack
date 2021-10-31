@@ -53,8 +53,8 @@ namespace yack
             //__________________________________________________________________
             switch( scmp(numerator,denominator) )
             {
-                case number::negative: return natural(0);
-                case number::naught:   return natural(1);
+                case negative: return natural(0);
+                case __zero__: return natural(1);
                 default:
                     if(denominator.is1())
                         return natural(numerator.entry,numerator.words);
@@ -83,7 +83,7 @@ namespace yack
                 switch( scmp(Num,numerator) )
                 {
                     case negative: break;            // too small
-                    case naught:   return qhi;       // early   return
+                    case __zero__: return qhi;       // early   return
                     case positive: goto BISECTION;   // generic case
                 }
                 ++p;
@@ -123,7 +123,7 @@ namespace yack
                     switch( scmp(Num,numerator) )
                     {
                         case negative:  qlo.xch(q); break;  // move qlo up
-                        case naught:     return q;          // early return
+                        case __zero__:  return   q;         // early return
                         case positive:  qhi.xch(q); break;  // move qhi down
                     }
                 }
