@@ -6,6 +6,7 @@
 
 #include "yack/type/args.hpp"
 #include "yack/type/utils.hpp"
+#include "yack/comparison.hpp"
 #include <iostream>
 
 namespace yack
@@ -120,6 +121,25 @@ namespace yack
         {
             return squared(x) + squared(y);
         }
+        
+        //! norm1
+        inline mutable_type norm1() const throw()
+        {
+            return absolute(x) + absolute(y);
+        }
+        
+        //! test different
+        inline friend bool operator!=(const v2d &lhs, const v2d &rhs) throw()
+        {
+            return lhs.x!=rhs.x || lhs.y!=rhs.y;
+        }
+        
+        static inline int compare(const v2d &lhs, const v2d &rhs) throw()
+        {
+            const T *l = &lhs.x; const T *r = &rhs.x;
+            return comparison::lexicographic(--l,--r,2);
+        }
+        
         
     };
 }

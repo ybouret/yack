@@ -59,14 +59,31 @@ namespace yack
             return true;
         }
         
-#if 0
         template <typename T> static inline
-        int lexicographic(const T *ra, const size_t na,
-                          const T *rb, const size_t nb)
+        int lexicographic(const T *lhs, const T *rhs, const size_t n) throw()
         {
+            assert(NULL!=lhs);
+            assert(NULL!=rhs);
+            for(size_t i=1;i<=n;++i)
+            {
+                const T &L = *(++lhs);
+                const T &R = *(++rhs);
+                if(L<R)
+                    return -1;
+                else
+                {
+                    if(R<L)
+                    {
+                        return 1;
+                    }
+                    else
+                    {
+                        continue;
+                    }
+                }
+            }
             return 0;
         }
-#endif
         
     };
     

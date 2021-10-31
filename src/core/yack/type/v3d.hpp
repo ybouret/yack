@@ -123,6 +123,24 @@ namespace yack
             return squared(x) + squared(y) + squared(z);
         }
 
+        //! norm1
+        inline mutable_type norm1() const throw()
+        {
+            return absolute(x) + absolute(y) + absolute(z);
+        }
+        
+        //! test different
+        inline friend bool operator!=(const v3d &lhs, const v3d &rhs) throw()
+        {
+            return lhs.x!=rhs.x || lhs.y!=rhs.y || lhs.z != rhs.z;
+        }
+        
+        //! lexicographic comparison
+        static inline int compare(const v3d &lhs, const v3d &rhs) throw()
+        {
+            const T *l = &lhs.x; const T *r = &rhs.x;
+            return comparison::lexicographic(--l,--r,3);
+        }
     };
 }
 
