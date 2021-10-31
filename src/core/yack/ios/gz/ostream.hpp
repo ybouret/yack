@@ -22,8 +22,11 @@ namespace yack
         class ogzstream : public ostream, public gzstream
         {
         public:
-            virtual ~ogzstream() throw();             //!< cleanup
-            explicit ogzstream(const char *filename); //!< open
+            //! close
+            virtual ~ogzstream() throw();
+           
+            //! open
+            explicit ogzstream(const char *filename, const int level=6); //!< open
             
             virtual void write(const char C);
             virtual void flush();

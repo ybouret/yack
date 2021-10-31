@@ -341,6 +341,16 @@ set(rtld ${rtld_impl} ${rtld_decl})
 SOURCE_GROUP(rtld FILES ${rtld})
 install( FILES ${rtld_decl} DESTINATION include/yack/rtld )
 
+########################################################################
+##
+## string
+##
+########################################################################
+file(GLOB string_impl yack/string/*.cpp)
+file(GLOB string_decl yack/string/*.hpp)
+set(string ${string_impl} ${string_decl})
+SOURCE_GROUP(string FILES ${string})
+install( FILES ${string_decl} DESTINATION include/yack/string )
 
 
 # create the library
@@ -362,6 +372,7 @@ ${randomized}
 ${sort}
 ${counting} ${counting_c}
 ${rtld}
+${string}
 ${kr}
 ${hashing}
 ${utest}

@@ -14,9 +14,32 @@ namespace yack
         {
         }
         
-        ogzstream:: ogzstream(const char *filename) :
+        static inline
+        const char *gz_wmode(const int level)
+        {
+            static const char *_[] =
+            {
+                NULL,
+                "w1",
+                "w2",
+                "w3",
+                "w4",
+                "w5",
+                "w6",
+                "w7",
+                "w8",
+                "w9"
+            };
+            
+            if(level>=1&&level<=9) return _[level];
+            throw libc::exception(EINVAL,"gz::ostream invalid level=%d",level);
+        }
+        
+        
+        ogzstream:: ogzstream(const char *filename,
+                              const int   level) :
         ostream(),
-        gzstream(filename,"w6")
+        gzstream(filename,gz_wmode(level))
         {
         }
         

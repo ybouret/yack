@@ -39,6 +39,10 @@ source_group(counting FILES ${counting})
 file(GLOB rtld rtld/*.cpp)
 source_group(rtld FILES ${rtld})
 
+
+file(GLOB string string/*.cpp)
+source_group(string FILES ${string})
+
 add_executable(test-yack main.cpp
 ${base}
 ${type}
@@ -53,6 +57,7 @@ ${rand}
 ${sort}
 ${rtld}
 ${counting}
+${string}
 )
 
 yack_link_libraries(test-yack)
@@ -148,5 +153,8 @@ add_test(counting:perm  test-yack counting_perm)
 add_test(counting:part  test-yack counting_part)
 
 add_test(rtld:dso test-yack rtld_dso)
+
+add_test(string:utf8 test-yack string_utf8)
+
 
 yack_testing(yack)

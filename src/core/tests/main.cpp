@@ -86,6 +86,8 @@ YACK_UTEST_DECL(80)
     YACK_UTEST(counting_part);
 
     YACK_UTEST(rtld_dso);
+    
+    YACK_UTEST(string_utf8);
 
 }
 YACK_UTEST_EXEC()
