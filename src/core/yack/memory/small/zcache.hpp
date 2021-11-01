@@ -1,4 +1,3 @@
-
 //! \file
 
 #ifndef YACK_MEMORY_ZCACHE_INCLUDED
@@ -63,6 +62,8 @@ namespace yack
             void *acquire_unlocked();               //!< from repo or well
             void  release_unlocked(void *) throw(); //!< to repo
 
+            static void xdisabled(const char *clid); //!< system error
+            
             //__________________________________________________________________
             //
             // members

@@ -4,14 +4,30 @@
 #include "yack/type/utils.hpp"
 #include "yack/memory/allocator/global.hpp"
 #include "yack/type/out-of-reach.hpp"
+#include "yack/system/error.hpp"
+#include "yack/type/cstring.h"
 
 #include <cstring>
 #include <new>
+#include <cerrno>
 
 namespace yack
 {
     namespace memory
     {
+        
+        
+
+        void zcache:: xdisabled(const char *clid)
+        {
+            char msg[256];
+            assert(clid);
+            yack_cstring_msgcpy(msg,sizeof(msg),"disabled for ");
+            yack_cstring_msgcat(msg,sizeof(msg),clid);
+            system_error::critical_bsd(EINVAL,msg);
+        }
+
+        
         zcache:: ~zcache() throw()
         {
             free();
