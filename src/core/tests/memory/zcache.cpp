@@ -29,7 +29,7 @@ namespace
     const char foo::call_sign[] = "foo";
     
     template <typename T>
-    class ore : public singleton< ore<T> >
+    class ore : public singleton< ore<T> >, public memory::zcache
     {
     public:
         typedef ore<T>               self_type;
@@ -41,22 +41,21 @@ namespace
         inline void *zacquire()
         {
             YACK_LOCK(access);
-            return static_cast<T *>(cache.acquire_unlocked());
+            return  acquire_unlocked();
         }
         
         inline void zrelease(void *addr) throw()
         {
             assert(NULL!=addr);
             YACK_LOCK(access);
-            cache.release_unlocked(addr);
+            release_unlocked(addr);
         }
         
-        memory::zcache cache;
-
+        
     private:
         YACK_DISABLE_COPY_AND_ASSIGN(ore);
         friend class singleton<self_type>;
-        inline explicit ore() : cache( sizeof(T) ) {}
+        inline explicit ore() : zcache( sizeof(T) ) {}
         inline virtual ~ore() throw() {}
     };
     
@@ -66,7 +65,7 @@ namespace
     void * foo:: operator new(size_t n)
     {
         static ore<foo> &repo = ore<foo>::instance();
-        assert(repo.cache.block_size>=n);
+        assert(repo.block_size>=n);
         return repo.zacquire();
     }
     
@@ -75,7 +74,7 @@ namespace
         if(block_addr)
         {
             static ore<foo> &repo = ore<foo>::location();
-            assert(repo.cache.block_size>=block_size);
+            assert(repo.block_size>=block_size);
             repo.zrelease(block_addr);
         }
     }
@@ -104,9 +103,7 @@ YACK_UTEST(memory_zcache)
             zc.release_unlocked(addr[i]);
         }
     }
-    
-    //ore<foo> &repo = ore<foo>::instance();
-    
+        
     foo *f = new foo();
     
     delete f;
