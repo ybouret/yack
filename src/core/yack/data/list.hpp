@@ -4,7 +4,7 @@
 #define YACK_DATA_LIST_INCLUDED 1
 
 #include "yack/data/linked.hpp"
-#include "yack/data/core-list.hpp"
+#include "yack/data/list/core.hpp"
 
 namespace yack
 {

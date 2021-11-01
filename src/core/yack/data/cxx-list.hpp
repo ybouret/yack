@@ -13,7 +13,7 @@ namespace yack
     //__________________________________________________________________________
     //
     //
-    //! list of C++ objects
+    //! list of C++ nodes
     //
     //__________________________________________________________________________
     template <typename NODE>
@@ -53,6 +53,7 @@ namespace yack
             cxx_list_of temp(other);
             this->merge_back(other);
         }
+        
 
     private:
         YACK_DISABLE_ASSIGN(cxx_list_of);

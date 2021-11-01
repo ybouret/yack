@@ -5,7 +5,7 @@
 #define YACK_MEMORY_ARENA_INCLUDED 1
 
 #include "yack/setup.hpp"
-#include "yack/data/core-list.hpp"
+#include "yack/data/list/core.hpp"
 #include "yack/data/core-pool.hpp"
 
 namespace yack
