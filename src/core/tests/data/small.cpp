@@ -1,7 +1,7 @@
 
 
 #include "yack/data/list/cxx.hpp"
-#include "yack/data/cxx-pool.hpp"
+#include "yack/data/pool/cxx.hpp"
 #include "yack/data/small/list.hpp"
 #include "yack/data/small/pool.hpp"
 

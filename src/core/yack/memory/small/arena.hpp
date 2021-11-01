@@ -6,7 +6,7 @@
 
 #include "yack/setup.hpp"
 #include "yack/data/list/core.hpp"
-#include "yack/data/core-pool.hpp"
+#include "yack/data/pool/core.hpp"
 
 namespace yack
 {

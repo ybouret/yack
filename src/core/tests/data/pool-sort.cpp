@@ -1,7 +1,7 @@
 
 
-#include "yack/data/pool-sort.hpp"
-#include "yack/data/cxx-pool.hpp"
+#include "yack/data/pool/sort.hpp"
+#include "yack/data/pool/cxx.hpp"
 #include "yack/utest/run.hpp"
 #include <cstring>
 

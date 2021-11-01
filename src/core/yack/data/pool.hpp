@@ -5,7 +5,7 @@
 #define YACK_DATA_POOL_INCLUDED 1
 
 #include "yack/data/linked.hpp"
-#include "yack/data/core-pool.hpp"
+#include "yack/data/pool/core.hpp"
 
 namespace yack
 {

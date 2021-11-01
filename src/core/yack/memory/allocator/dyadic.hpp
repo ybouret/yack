@@ -6,7 +6,7 @@
 #include "yack/memory/allocator.hpp"
 #include "yack/memory/allocator/dyadic-longevity.hpp"
 #include "yack/singleton.hpp"
-#include "yack/data/core-pool.hpp"
+#include "yack/data/pool/core.hpp"
 
 namespace yack
 {

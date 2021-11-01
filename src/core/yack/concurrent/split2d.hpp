@@ -6,7 +6,7 @@
 #include "yack/concurrent/split1d.hpp"
 #include "yack/type/v2d.hpp"
 #include "yack/object.hpp"
-#include "yack/data/cxx-pool.hpp"
+#include "yack/data/pool/cxx.hpp"
 
 namespace yack
 {

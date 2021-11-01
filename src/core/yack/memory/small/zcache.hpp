@@ -4,7 +4,7 @@
 #define YACK_MEMORY_ZCACHE_INCLUDED 1
 
 #include "yack/setup.hpp"
-#include "yack/data/core-pool.hpp"
+#include "yack/data/pool/core.hpp"
 #include "yack/memory/small/arena-words.hpp"
 
 namespace yack

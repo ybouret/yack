@@ -6,7 +6,7 @@
 
 #include "yack/arith/ilog2.hpp"
 #include "yack/arith/base2.hpp"
-#include "yack/data/core-pool.hpp"
+#include "yack/data/pool/core.hpp"
 #include "yack/arith/align.hpp"
 
 namespace yack

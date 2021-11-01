@@ -4,7 +4,7 @@
 #define YACK_DATA_SMALL_POOL_INCLUDED 1
 
 #include "yack/data/small/node.hpp"
-#include "yack/data/cxx-pool.hpp"
+#include "yack/data/pool/cxx.hpp"
 
 namespace yack
 {

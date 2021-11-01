@@ -91,6 +91,13 @@ set(data_list ${data_list_impl} ${data_list_decl})
 SOURCE_GROUP(data/list FILES ${data_list})
 install( FILES ${data_list_decl} DESTINATION include/yack/data/list )
 
+file(GLOB data_pool_impl yack/data/pool/*.cpp)
+file(GLOB data_pool_decl yack/data/pool/*.hpp)
+set(data_pool ${data_pool_impl} ${data_pool_decl})
+SOURCE_GROUP(data/pool FILES ${data_pool})
+install( FILES ${data_pool_decl} DESTINATION include/yack/data/pool )
+
+
 ########################################################################
 ##
 ## container   
@@ -367,7 +374,7 @@ ${type}
 ${arith}
 ${check}
 ${system}
-${data} ${data_list} ${data_small}
+${data} ${data_list} ${data_pool} ${data_small}
 ${container} ${container_matrix}
 ${sequence}
 ${memory} ${memory_allocator} ${memory_small} ${memory_large} ${memory_joint} ${memory_buffer}
