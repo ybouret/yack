@@ -3,7 +3,7 @@
 #include "yack/memory/small/arena.hpp"
 #include "yack/system/exception.hpp"
 #include "yack/utest/run.hpp"
-#include "yack/data/cxx-list.hpp"
+#include "yack/data/list/cxx.hpp"
 #include <cstring>
 #include <cerrno>
 

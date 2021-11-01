@@ -1,6 +1,6 @@
 
-#include "yack/data/list-sort.hpp"
-#include "yack/data/cxx-list.hpp"
+#include "yack/data/list/sort.hpp"
+#include "yack/data/list/cxx.hpp"
 #include "yack/utest/run.hpp"
 #include <cstring>
 

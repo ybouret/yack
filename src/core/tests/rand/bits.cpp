@@ -1,7 +1,7 @@
 #include "yack/randomized/rand.hpp"
 #include "yack/randomized/park-miller.hpp"
 #include "yack/randomized/shuffle.hpp"
-#include "yack/data/raw-list.hpp"
+#include "yack/data/list/raw.hpp"
 #include "yack/utest/run.hpp"
 #include "yack/system/seed.hpp"
 

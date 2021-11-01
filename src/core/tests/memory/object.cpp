@@ -2,7 +2,7 @@
 
 #include "yack/object.hpp"
 #include "yack/utest/run.hpp"
-#include "yack/data/cxx-list.hpp"
+#include "yack/data/list/cxx.hpp"
 #include "yack/arith/align.hpp"
 #include <cstring>
 #include <cerrno>

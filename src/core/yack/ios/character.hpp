@@ -4,7 +4,7 @@
 #define YACK_IOS_CHARACTER_INCLUDED 1
 
 #include "yack/memory/small/exclusive.hpp"
-#include "yack/data/cxx-list.hpp"
+#include "yack/data/list/cxx.hpp"
 #include "yack/data/cxx-pool.hpp"
 
 namespace yack

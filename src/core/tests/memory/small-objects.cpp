@@ -1,7 +1,7 @@
 
 #include "yack/memory/small/object-allocator.hpp"
 #include "yack/utest/run.hpp"
-#include "yack/data/cxx-list.hpp"
+#include "yack/data/list/cxx.hpp"
 #include <cstring>
 #include <cerrno>
 

@@ -1,6 +1,6 @@
 
-#include "yack/data/raw-list.hpp"
-#include "yack/data/cxx-list.hpp"
+#include "yack/data/list/raw.hpp"
+#include "yack/data/list/cxx.hpp"
 #include "yack/utest/run.hpp"
 #include "yack/system/offset.hpp"
 #include <cstring>

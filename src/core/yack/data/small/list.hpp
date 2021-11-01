@@ -5,7 +5,7 @@
 #define YACK_DATA_SMALL_LIST_INCLUDED 1
 
 #include "yack/data/small/node.hpp"
-#include "yack/data/cxx-list.hpp"
+#include "yack/data/list/cxx.hpp"
 
 namespace yack
 {
