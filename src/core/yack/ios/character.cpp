@@ -69,16 +69,12 @@ namespace yack
         {
         }
 
-        void characters:: add(const void *addr, size_t size)
+        void characters:: load(const void *addr, size_t size)
         {
             assert(!(NULL==addr&&size>0));
             const uint8_t *q    = static_cast<const uint8_t *>(addr);
-            characters_   &self = *this;
             while(size-- > 0)
-            {
-                self << *(q++);
-            }
-
+                 add( *(q++) );
         }
 
         characters & characters:: operator=(const characters &other)
@@ -89,9 +85,15 @@ namespace yack
         }
 
 
+        characters & characters:: operator<<(const uint8_t chr)
+        {
+            add(chr);
+            return *this;
+        }
+
         characters & characters:: operator<<(const char *msg)
         {
-            add(msg,yack_cstring_size(msg));
+            load(msg,yack_cstring_size(msg));
             return *this;
         }
 

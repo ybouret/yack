@@ -209,7 +209,7 @@ YACK_UTEST(data_list)
         L.append_front( ran.full<int16_t>() );
         if(ran()>=0.2)
         {
-            Lbis << int(iter);
+            Lbis.add( int(iter) );
         }
     }
 

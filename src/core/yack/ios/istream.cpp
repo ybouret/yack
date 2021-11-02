@@ -66,6 +66,16 @@ namespace yack
             }
         }
 
+        bool istream:: gets(characters &line)
+        {
+            line.release();
+
+            
+
+            return false;
+        }
+
+
     }
 
 }

@@ -2,6 +2,7 @@
 #include "yack/memory/small/studio.hpp"
 #include "yack/memory/small/exclusive.hpp"
 #include "yack/ios/character.hpp"
+#include "yack/data/small/node.hpp"
 
 #include "yack/singleton.hpp"
 #include "yack/utest/run.hpp"
@@ -36,9 +37,11 @@ YACK_UTEST(memory_zcache)
     ios::characters ch;
     for(size_t i=0;i<=10;++i)
     {
-        ch.push_back( new ios::character('a') );
-        
+        ch << uint8_t('a' + i);
     }
+
+    YACK_SIZEOF(ios::character);
+    YACK_SIZEOF(small_node<uint8_t>);
     
     
 }

@@ -62,6 +62,9 @@ namespace yack
         // methods
         //______________________________________________________________________
 
+        //! simple push back helper
+        inline void add(param_type args) { this->push_back( new NODE(args) ); }
+
         //! push_back new node
         inline type & append_back(param_type args)  { return **(this->push_back(  new NODE(args) )); }
 
@@ -81,8 +84,6 @@ namespace yack
         inline type pull_back()  { const_type temp = **tail; delete_back();  return temp; } //!< copy back/delete/return copy
         inline type pull_front() { const_type temp = **head; delete_front(); return temp; } //!< copy front/delete/return copy
 
-        //! syntax helper
-        inline klist & operator<<(param_type   rhs)  { (void)(this->push_back( new NODE(rhs) )); return *this; }
 
         //! syntax helper
         inline klist & operator<<(const klist &rhs)  { this->merge_back_copy(rhs); return *this; }

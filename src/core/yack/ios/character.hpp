@@ -53,9 +53,21 @@ namespace yack
             uint8_t    code; //!< data
             
         };
-        
+
+        //______________________________________________________________________
+        //
+        //
+        //! base class for characters
+        //
+        //______________________________________________________________________
         typedef klist<uint8_t,character> characters_;
 
+        //______________________________________________________________________
+        //
+        //
+        //! concrete list of characters
+        //
+        //______________________________________________________________________
         class characters : public characters_
         {
         public:
@@ -63,15 +75,18 @@ namespace yack
             //
             // C++
             //__________________________________________________________________
-
-            characters() throw();
-            virtual ~characters() throw();
-            characters(const characters &);
-            characters & operator=(const characters &);
-
-            void add(const void *addr, size_t size);
-            characters & operator<<(const char *msg);
-
+            characters()          throw();              //!< setup empty
+            virtual ~characters() throw();              //!< cleanup
+            characters(const characters &);             //!< copy
+            characters & operator=(const characters &); //!< assign by copy swap
+            
+            //__________________________________________________________________
+            //
+            // methods
+            //__________________________________________________________________
+            void         load(const void *addr, size_t size);    //!< add a block
+            characters & operator<<(const char   *msg); //!< add a message
+            characters & operator<<(const uint8_t chr); //!< add a byte
         };
 
 
