@@ -5,6 +5,7 @@
 #include "yack/comparison.hpp"
 #include "yack/type/cstring.h"
 #include <cstdio>
+#include <cstring>
 
 using namespace yack;
 
