@@ -256,6 +256,11 @@ set(ios_gz ${ios_gz_impl} ${ios_gz_decl})
 SOURCE_GROUP(ios/gz FILES ${ios_gz})
 install( FILES ${ios_gz_decl} DESTINATION include/yack/ios/gz)
 
+file(GLOB ios_fmt_impl yack/ios/fmt/*.cpp)
+file(GLOB ios_fmt_decl yack/ios/fmt/*.hpp)
+set(ios_fmt ${ios_fmt_impl} ${ios_fmt_decl})
+SOURCE_GROUP(ios/fmt FILES ${ios_fmt})
+install( FILES ${ios_fmt_decl} DESTINATION include/yack/ios/fmt)
 
 ########################################################################
 ##
@@ -381,7 +386,7 @@ ${memory} ${memory_allocator} ${memory_small} ${memory_large} ${memory_joint} ${
 ${fft}
 ${apex} ${apex_n} ${apex_m}
 ${concurrent} ${concurrent_quark} ${concurrent_loop}
-${ios} ${ios_c} ${ios_gz}
+${ios} ${ios_c} ${ios_gz} ${ios_fmt}
 ${randomized}
 ${sort}
 ${counting} ${counting_c}

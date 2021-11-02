@@ -1,5 +1,6 @@
 #include "yack/rtld/dso.hpp"
 #include "yack/utest/run.hpp"
+#include "yack/ios/fmt/hexa.hpp"
 
 using namespace yack;
 
@@ -31,6 +32,14 @@ YACK_UTEST(rtld_dso)
             {
                 std::cerr << "Sin(" << x << ")=" << Sin(x) << std::endl;
             }
+        }
+
+        void *p = dll.load("Data");
+        if( p )
+        {
+            std::cerr << "Found Data @" <<  p << std::endl;
+            const uint32_t value = *(uint32_t *)p;
+            std::cerr << ios::hexa(value) << std::endl;
         }
 
 

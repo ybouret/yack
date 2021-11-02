@@ -140,6 +140,7 @@ add_test(apex:io        test-yack  apex_io)
 add_test(ios::c-file    test-yack ios_c_file)
 add_test(ios:streams    test-yack ios_streams)
 add_test(ios:gz         test-yack ios_gz)
+add_test(ios:fmt        test-yack ios_fmt)
 
 add_test(hashing::64    test-yack hash64)
 
