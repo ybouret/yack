@@ -21,7 +21,7 @@ extern "C" {
     void   yack_cstring_msgcpy(char *buffer, const size_t buflen, const char *msg); //!< wrapper
     void   yack_cstring_msgcat(char *buffer, const size_t buflen, const char *msg); //!< wrapper
 
-    //! vsnprintf wrapper with address of a va_list
+    /**! vsnprintf wrapper with address of a va_list */
     int    yack_cstring_format(char *buffer, const size_t buflen, const char *fmt, void *args);
     
 
