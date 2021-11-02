@@ -365,6 +365,13 @@ set(concurrent_loop ${concurrent_loop_impl} ${concurrent_loop_decl})
 SOURCE_GROUP(concurrent/loop FILES ${concurrent_loop})
 install( FILES ${concurrent_loop_decl} DESTINATION include/yack/concurrent/loop )
 
+# concurrent/queue operations
+file(GLOB concurrent_queue_impl yack/concurrent/queue/*.cpp)
+file(GLOB concurrent_queue_decl yack/concurrent/queue/*.hpp)
+set(concurrent_queue ${concurrent_queue_impl} ${concurrent_queue_decl})
+SOURCE_GROUP(concurrent/queue FILES ${concurrent_queue})
+install( FILES ${concurrent_queue_decl} DESTINATION include/yack/concurrent/queue )
+
 ########################################################################
 ##
 ## rtld
@@ -401,7 +408,7 @@ ${sequence}
 ${memory} ${memory_allocator} ${memory_small} ${memory_large} ${memory_joint} ${memory_buffer}
 ${fft}
 ${apex} ${apex_n} ${apex_m}
-${concurrent} ${concurrent_quark} ${concurrent_loop}
+${concurrent} ${concurrent_quark} ${concurrent_loop} ${concurrent_queue}
 ${ios} ${ios_c} ${ios_gz} ${ios_fmt}
 ${randomized}
 ${sort}
