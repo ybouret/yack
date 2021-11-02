@@ -4,6 +4,7 @@
 
 #include <cstdio>
 #include <cerrno>
+#include <cstring>
 
 namespace yack
 {
@@ -32,32 +33,37 @@ namespace yack
             handle = 0;
         }
 
+        static void throw_on_null(const char *id)
+        {
+            assert(id);
+            libc::exception(EINVAL,"%s is NULL",id);
+        }
 
         c_file:: c_file(const cstdin_t &) :
-        handle( stdin ),
-        _close( false )
+        _close( false ),
+        handle( stdin )
         {
-            if(!handle) throw libc::exception(EINVAL,"ios::stdin is NULL");
+            if(!handle) throw_on_null("ios::stdin");
         }
 
         c_file:: c_file(const cstdout_t &) :
-        handle( stdout ),
-        _close( false  )
+        _close( false  ),
+        handle( stdout )
         {
-            if(!handle) throw libc::exception(EINVAL,"ios::stdout is NULL");
+            if(!handle) throw_on_null("ios::stdout");
         }
 
 
         c_file:: c_file(const cstderr_t &) :
-        handle( stderr ),
-        _close( false  )
+        _close( false  ),
+        handle( stderr )
         {
-            if(!handle) throw libc::exception(EINVAL,"ios::stderr is NULL");
+            if(!handle) throw_on_null("ios::stderr");
         }
 
         c_file:: c_file(const char *filename, mode_type m) :
-        handle( _open(filename,m) ),
-        _close( true )
+        _close( true ),
+        handle( _open(filename,m,coerce(_close)) )
         {
 
         }
@@ -74,14 +80,50 @@ namespace yack
             return NULL;
         }
 
-        void * c_file:: _open(const char *filename, mode_type m)
+        void * c_file:: _open(const char *filename, mode_type m, bool &auto_close)
         {
+            // default parameters
             assert(NULL!=filename);
+            assert(true==auto_close);
+
             YACK_GIANT_LOCK();
+
+            switch(m)
+            {
+                case r:
+                    if( 0 == strcmp(filename,YACK_STDIN) )
+                    {
+                        if(NULL==stdin) throw_on_null(filename);
+                        auto_close = false;
+                        return stdin;
+                    }
+                    break;
+
+
+                case w:
+                case a:
+                    if( 0 == strcmp(filename,YACK_STDOUT) )
+                    {
+                        if(NULL==stdout)  throw_on_null(filename);
+                        auto_close = false;
+                        return stdout;
+                    }
+
+                    if( 0 == strcmp(filename,YACK_STDERR) )
+                    {
+                        if(NULL==stderr) throw_on_null(filename);
+                        auto_close = false;
+                        return stderr;
+                    }
+                    break;
+            }
+
+            // default file
             const char *tx = mode2text(m);
             FILE       *fp = fopen(filename,tx);
             if(!fp) throw libc::exception(errno,"fopen(%s,%s)",filename,tx);
             return fp;
+
         }
 
         void c_file:: flush()

@@ -70,9 +70,41 @@ namespace yack
         {
             line.release();
 
-            
+            char C = 0;
 
-            return false;
+            while( query(C) )
+            {
+                switch(C)
+                {
+                    case '\n':
+                        return true;
+
+                    case '\r':
+                        if(query(C))
+                        {
+                            if(C=='\n')
+                            {
+                                return true;
+                            }
+                            else
+                            {
+                                store(C);
+                                return true;
+                            }
+                        }
+                        else
+                        {
+                            // end of file
+                            return true;
+                        }
+
+                    default:
+                        line << C;
+                }
+            }
+
+            // end of file
+            return line.size>0;
         }
 
 

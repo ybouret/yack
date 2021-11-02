@@ -31,7 +31,7 @@ namespace yack
         zcache:: ~zcache() throw()
         {
             free();
-            well->display_arena();
+            //well->display_arena();
             out_of_reach::zset(destructed(well),sizeof(impl));
         }
         

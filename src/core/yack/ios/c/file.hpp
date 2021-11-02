@@ -20,6 +20,11 @@ namespace yack
         typedef int2type<2>    cstderr_t; //!< alias  for stderr
         extern const cstderr_t cstderr;   //!< helper for stderr
 
+#define YACK_STDIN  ":STDIN:"
+#define YACK_STDOUT ":STDOUT:"
+#define YACK_STDERR ":STDERR:"
+
+
         //______________________________________________________________________
         //
         //
@@ -65,12 +70,12 @@ namespace yack
             //
             // members
             //__________________________________________________________________
-            void      *handle; //!< anonymous FILE
+            const  bool   _close; //!< autoclose
+            void         *handle; //!< anonymous FILE
 
         private:
             YACK_DISABLE_COPY_AND_ASSIGN(c_file);
-            const  bool   _close;
-            static void * _open(const char *, mode_type);
+            static void * _open(const char *, mode_type, bool &auto_close);
         };
 
     }

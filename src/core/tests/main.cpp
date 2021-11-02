@@ -74,6 +74,7 @@ YACK_UTEST_DECL(80)
     YACK_UTEST(ios_streams);
     YACK_UTEST(ios_gz);
     YACK_UTEST(ios_fmt);
+    YACK_UTEST(ios_gets);
 
     YACK_UTEST(hash64);
 
