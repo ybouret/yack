@@ -10,10 +10,16 @@ namespace yack
 
     namespace ios
     {
-        
+        //______________________________________________________________________
+        //
+        //
+        //! display tight hexa
+        //
+        //______________________________________________________________________
         class hexa
         {
         public:
+            //! setup
             template <typename T>
             inline hexa(const T x) throw() :
             qword( uint64_t(x) ),
@@ -21,9 +27,10 @@ namespace yack
             {
             }
 
-            hexa(const hexa &_) throw();
-            ~hexa() throw();
+            hexa(const hexa &_) throw(); //!< copy
+            ~hexa() throw();             //!< cleanup
 
+            //! display
             template <typename OSTREAM> inline
             friend OSTREAM & operator<<(OSTREAM &os, const hexa &x)
             {

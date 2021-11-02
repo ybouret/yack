@@ -4,17 +4,23 @@
 #ifndef YACK_IOS_FMT_BIN_INCLUDED
 #define YACK_IOS_FMT_BIN_INCLUDED 1
 
-#include "yack/type/ints.hpp"
+#include "yack/setup.hpp"
 
 namespace yack
 {
 
     namespace ios
     {
-
+        //______________________________________________________________________
+        //
+        //
+        //! display tight binary
+        //
+        //______________________________________________________________________
         class binary
         {
         public:
+            //! setup
             template <typename T>
             inline binary(const T x) throw() :
             qword( uint64_t(x)  ),
@@ -22,9 +28,11 @@ namespace yack
             {
             }
 
-            binary(const binary &_) throw();
-            ~binary() throw();
 
+            binary(const binary &_) throw(); //!< copy
+            ~binary() throw();               //!< cleanup
+
+            //! display
             template <typename OSTREAM> inline
             friend OSTREAM & operator<<(OSTREAM &os, const binary &b)
             {
