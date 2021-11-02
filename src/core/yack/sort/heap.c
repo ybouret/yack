@@ -1,32 +1,40 @@
 #include "yack/sort/heap.h"
 
+#include <string.h>
 
-void hpsort(const size_t n,
-            float        ra[],
-            int (*proc)(const void *lhs, const void *rhs, void *args),
-            void *args)
+void yack_heap_sort(void        *item,
+                    const size_t n,
+                    const size_t width,
+                    void        *rra,
+                    int (*proc)(const void *lhs, const void *rhs, void *args),
+                    void *args)
 {
-    float rra;
+    assert(NULL!=proc);
+    assert(NULL!=rra);
 
     if (n < 2)
         return;
     else
     {
-        size_t l = (n>>1)+1;
-        size_t ir=n;
+        uint8_t *ra = (uint8_t *)item;
+        uint8_t *ra1 = ra+width;
+        size_t  l   = (n>>1)+1;
+        size_t  ir  = n;
+        assert(NULL!=item);
         for(;;)
         {
             if(l>1)
             {
-                rra=ra[--l];
+                memcpy(rra,&ra[--l*width],width);
             }
             else
             {
-                rra=ra[ir];
-                ra[ir]=ra[1];
+                void *ra_ir = &ra[ir*width];
+                memcpy(rra,ra_ir,width);
+                memcpy(ra_ir,ra1,width);
                 if (--ir == 1)
                 {
-                    ra[1]=rra;
+                    memcpy(ra1,rra,width);
                     break;
                 }
             }
@@ -35,19 +43,19 @@ void hpsort(const size_t n,
                 size_t j=l+l;
                 while(j<=ir)
                 {
-                    if ( (j<ir) && proc(&ra[j],&ra[j+1],args) < 0 )
+                    if ( (j<ir) && proc(&ra[j*width],&ra[(j+1)*width],args) < 0 )
                         ++j;
 
-                    if( proc(&rra,&ra[j],args)<0 )
+                    if( proc(rra,&ra[j*width],args)<0 )
                     {
-                        ra[i]=ra[j];
+                        memcpy(&ra[i*width],&ra[j*width],width);
                         i=j;
                         j <<= 1;
                     }
                     else
                         break;
                 }
-                ra[i]=rra;
+                memcpy(&ra[i*width],rra,width);
             }
         }
     }

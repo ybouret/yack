@@ -16,14 +16,16 @@ YACK_UTEST(info_bwt)
 {
     randomized::rand_ ran;
 
+    void *rra[1];
+
     vector<float> data(100,as_capacity);
     for(size_t n=1+ran.leq(20);n>0;--n)
     {
-        data.push_back( ran.to<float>() );
+        data.push_back( ran.to<float>()-0.5f );
     }
 
     std::cerr << "raw:" <<  data << std::endl;
-    hpsort(data.size(),*data,cmp<float>,NULL);
+    yack_heap_sort(*data,data.size(),sizeof(float),rra,cmp<float>,NULL);
 
     std::cerr << "srt:" << data << std::endl;
     YACK_CHECK(comparison::ordered(&data[1],data.size(), comparison::increasing<float> ));
