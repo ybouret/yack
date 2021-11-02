@@ -20,7 +20,7 @@ namespace yack
         {
             if(cache.size)
             {
-                C = cache.remove_front();
+                C = cache.pull_front();
                 return true;
             }
             else
@@ -45,7 +45,7 @@ namespace yack
                 {
                     for(size_t i=size;i>0;--i)
                     {
-                        *(ptr++) = cache.remove_front();
+                        *(ptr++) = cache.pull_front();
                     }
                     return size;
                 }
@@ -55,7 +55,7 @@ namespace yack
                     const size_t nc = cache.size;
                     while(cache.size)
                     {
-                        *(ptr++) = cache.remove_front();
+                        *(ptr++) = cache.pull_front();
                     }
                     return nc + fetch_(ptr,size-nc);
                 }

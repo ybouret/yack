@@ -16,10 +16,10 @@ void yack_heap_sort(void        *item,
         return;
     else
     {
-        uint8_t *ra = (uint8_t *)item;
+        uint8_t *ra  = (uint8_t *)item;
         uint8_t *ra1 = ra+width;
-        size_t  l   = (n>>1)+1;
-        size_t  ir  = n;
+        size_t  l    = (n>>1)+1;
+        size_t  ir   = n;
         assert(NULL!=item);
         for(;;)
         {

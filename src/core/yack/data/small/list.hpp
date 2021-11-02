@@ -5,7 +5,7 @@
 #define YACK_DATA_SMALL_LIST_INCLUDED 1
 
 #include "yack/data/small/node.hpp"
-#include "yack/data/list/cxx.hpp"
+#include "yack/data/list/concrete.hpp"
 
 namespace yack
 {
@@ -16,7 +16,7 @@ namespace yack
     //
     //__________________________________________________________________________
     template <typename T>
-    class small_list : public cxx_list_of< small_node<T> >
+    class small_list : public klist< T, small_node<T> >
     {
     public:
         //______________________________________________________________________
@@ -24,10 +24,8 @@ namespace yack
         // types and definitions
         //______________________________________________________________________
         YACK_DECL_ARGS(T,type);                           //!< aliases
-        typedef small_node<T>                  node_type; //!< alias
-        typedef cxx_list_of<node_type>         self_type; //!< alias
-        using self_type::head;
-        using self_type::tail;
+        typedef small_node<T>      node_type; //!< alias
+        typedef klist<T,node_type> self_type; //!< alias
 
         //______________________________________________________________________
         //
@@ -37,15 +35,6 @@ namespace yack
         inline virtual ~small_list() throw() {}               //!< cleanup
         inline          small_list(const small_list &other) : self_type(other) {} //!< hard copy
 
-        //______________________________________________________________________
-        //
-        // methods
-        //______________________________________________________________________
-        inline void append_back(param_type args) { this->push_back( new node_type(args) ); }                      //!< create node/push_back
-        inline type remove_back() throw()        { const_type tmp = **tail; delete this->pop_back(); return tmp;} //!< pop_back value
-
-        inline void append_front(param_type args) { this->push_front( new node_type(args) ); }                       //!< create node/push_front
-        inline type remove_front() throw()        { const_type tmp = **head; delete this->pop_front(); return tmp; } //!< pop_front value
         
     private:
         YACK_DISABLE_ASSIGN(small_list);

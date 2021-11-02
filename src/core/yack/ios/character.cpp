@@ -49,85 +49,53 @@ namespace yack
     }
 }
 
-#include <cstring>
+#include "yack/type/cstring.h"
 
 namespace yack
 {
     namespace ios
     {
-        characters:: ~characters() throw() {}
         
         characters:: characters() throw() : characters_()
         {
-            
         }
-        
+
         characters:: characters(const characters &other) :
         characters_(other)
         {
         }
-        
-        characters & characters:: operator= (const characters &other)
+
+        characters:: ~characters() throw()
         {
-            characters_ tmp(other);
-            swap_with(tmp);
-            return *this;
-        }
-        
-        void characters:: add(const void *addr, size_t size)
-        {
-            assert( !(NULL==addr&&size>0) );
-            const uint8_t *p = static_cast<const uint8_t *>(addr);
-            while(size-- > 0)
-            {
-                (*this) << *(p++);
-            }
-        }
-       
-        characters & characters:: operator<<(const uint8_t C)
-        {
-            push_back( new character(C) );
-            return *this;
-        }
-        
-        void characters:: append_front(const uint8_t C)
-        {
-            push_front( new character(C) );
-        }
-            
-        uint8_t characters:: remove_front()  throw()
-        {
-            assert(size>0);
-            const uint8_t res = **head;
-            delete pop_front();
-            return res;
-        }
-        
-        uint8_t characters:: remove_back()  throw()
-        {
-            assert(size>0);
-            const uint8_t res = **tail;
-            delete pop_back();
-            return res;
         }
 
-        
+        void characters:: add(const void *addr, size_t size)
+        {
+            assert(!(NULL==addr&&size>0));
+            const uint8_t *q    = static_cast<const uint8_t *>(addr);
+            characters_   &self = *this;
+            while(size-- > 0)
+            {
+                self << *(q++);
+            }
+
+        }
+
+        characters & characters:: operator=(const characters &other)
+        {
+            characters_ &self = *this;
+            self = other;
+            return *this;
+        }
+
+
         characters & characters:: operator<<(const char *msg)
         {
-            if(msg)
-            {
-                add(msg,strlen(msg));
-            }
+            add(msg,yack_cstring_size(msg));
             return *this;
         }
-        
-        characters & characters:: operator<<(const characters &other)
-        {
-            characters_ tmp(other);
-            merge_back(tmp);
-            return *this;
-        }
-        
+
+
     }
 }
 

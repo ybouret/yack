@@ -4,7 +4,7 @@
 #define YACK_IOS_CHARACTER_INCLUDED 1
 
 #include "yack/memory/small/exclusive.hpp"
-#include "yack/data/list/cxx.hpp"
+#include "yack/data/list/concrete.hpp"
 #include "yack/data/pool/cxx.hpp"
 
 namespace yack
@@ -54,20 +54,8 @@ namespace yack
             
         };
         
-        //______________________________________________________________________
-        //
-        //
-        //! list of characters alias
-        //
-        //______________________________________________________________________
-        typedef cxx_list_of<character> characters_;
-        
-        //______________________________________________________________________
-        //
-        //
-        //! characters
-        //
-        //______________________________________________________________________
+        typedef klist<uint8_t,character> characters_;
+
         class characters : public characters_
         {
         public:
@@ -75,26 +63,19 @@ namespace yack
             //
             // C++
             //__________________________________________________________________
-            characters() throw();                       //!< setup empty
-            virtual ~characters() throw();              //!< cleanup
-            characters(const characters&);              //!< hard copy
-            characters & operator=(const characters &); //!< copy/assign
-            
-            //__________________________________________________________________
-            //
-            // methods
-            //__________________________________________________________________
-            void add(const void *addr, size_t size);     //!< add buffer content
-            characters & operator<<(const uint8_t);      //!< add single byte
-            characters & operator<<(const char  *);      //!< add message
-            characters & operator<<(const characters &); //!< copy/merge_back
-            
-            void    append_front(const uint8_t); //!< push_front
-            uint8_t remove_front() throw();      //!< pop_front, return value
-            uint8_t remove_back() throw();       //!< pop_back, return value
-            
+
+            characters() throw();
+            virtual ~characters() throw();
+            characters(const characters &);
+            characters & operator=(const characters &);
+
+            void add(const void *addr, size_t size);
+            characters & operator<<(const char *msg);
+
         };
-        
+
+
+
         //______________________________________________________________________
         //
         //
