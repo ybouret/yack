@@ -94,11 +94,11 @@ namespace yack
                     const handle t(tmp);
                     natural         q = quot(t,ten,r); assert(r<10);
                     const uint_type u = r.lsu(); assert(u<10);
-                    code.append('0'+u);
+                    code.push('0'+u);
                     tmp.xch(q);
                 }
                 while(code.size)
-                    os << code.remove();
+                    os << code.pull();
             }
             return os;
         }

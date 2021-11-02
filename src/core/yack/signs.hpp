@@ -13,9 +13,24 @@ namespace yack
     //__________________________________________________________________________
     enum sign_type
     {
-        negative, //!< value <  0
-        __zero__, //!< value == 0
-        positive  //!< 0     < value
+        negative = -1, //!< value <  0
+        __zero__ =  0, //!< value == 0
+        positive =  1 //!< 0     < value
+    };
+    
+    enum sign_pair
+    {
+        nn_pair,
+        nz_pair,
+        np_pair,
+        
+        zn_pair,
+        zz_pair,
+        zp_pair,
+        
+        pn_pair,
+        pz_pair,
+        pp_pair
     };
     
     //__________________________________________________________________________
@@ -34,7 +49,15 @@ namespace yack
             return (value<0?negative:(0<value?positive:__zero__));
         }
         
+        static sign_type opposite(const sign_type) throw();
+        
+        static sign_pair pair(const sign_type lhs, const sign_type rhs) throw();
+        
+        
     };
+    
+   
+    
     
 }
 

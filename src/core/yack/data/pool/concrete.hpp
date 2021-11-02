@@ -42,7 +42,8 @@ namespace yack
         }
         
         inline type & push(param_type args) { return **(this->store( new NODE(args)) ); }
-        
+        inline void   pop() throw() { delete this->query(); }
+        inline type   pull() { const_type tmp = **head; delete this->query(); return tmp; }
     };
     
 }

@@ -1,4 +1,3 @@
-
 //! \file
 
 #ifndef YACK_APEX_NATURAL_INCLUDED
@@ -289,6 +288,11 @@ YACK_APN_BITWISE_DECL(^)
                 return res;
             }
 
+            //__________________________________________________________________
+            //
+            // parsing
+            //__________________________________________________________________
+            
 
         private:
             size_t       bytes;
