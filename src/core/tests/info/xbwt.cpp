@@ -3,6 +3,7 @@
 #include "yack/info/modulation/echo.hpp"
 #include "yack/info/modulation/mtf.hpp"
 #include "yack/info/modulation/delta.hpp"
+#include "yack/info/entropy.hpp"
 
 #include "yack/utest/run.hpp"
 #include "yack/sequence/vector.hpp"
@@ -18,6 +19,7 @@ using namespace yack;
 template <typename ENC, typename DEC> static inline
 void test_xbwt(const char *buffer, const char *filename)
 {
+    std::cerr << "Saving to <" << filename << ">" << std::endl;
     size_t indices[NMAX]; memset(indices,0,sizeof(indices));
     char   encoded[NMAX]; memset(encoded,0,sizeof(encoded));
     char   decoded[NMAX]; memset(decoded,0,sizeof(decoded));
@@ -30,10 +32,13 @@ void test_xbwt(const char *buffer, const char *filename)
         ios::ocstream fp(filename);
         fp.frame(encoded,size);
     }
+    const double E  = information::entropy::of(encoded,size);
 
     DEC dec;
     yack_bwt_xdecode(decoded,encoded,size,indices,pidx,information::modulation::call,dec.self());
     YACK_CHECK( 0 == memcmp(buffer,decoded,size) );
+    std::cerr << "entropy: " << E << std::endl;
+    std::cerr << std::endl;
 
 
 }
