@@ -23,7 +23,7 @@ namespace yack
         hexa:: ~hexa() throw() {}
 
 
-        size_t  hexa:: load(char tab[]) const
+        size_t  hexa:: load(char tab[]) const throw()
         {
             if(count>0)
             {

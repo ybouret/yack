@@ -10,8 +10,7 @@ namespace yack
 
     namespace ios
     {
-
-
+        
         class hexa
         {
         public:
@@ -38,7 +37,7 @@ namespace yack
             YACK_DISABLE_ASSIGN(hexa);
             const uint64_t qword;
             const size_t   count;
-            size_t         load(char tab[]) const;
+            size_t         load(char tab[]) const throw();
             static size_t  width(const uint64_t) throw();
 
         };
