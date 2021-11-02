@@ -77,6 +77,10 @@ namespace yack
 /* disable [] ops */ \
 /**/  void * CLASS:: operator new[](size_t) throw()           { memory::zcache::xdisabled(call_sign); return 0; }\
 /**/  void   CLASS:: operator delete[](void *,size_t) throw() { memory::zcache::xdisabled(call_sign); }\
+/* get cache */ \
+/**/  memory::zcache & CLASS::provider() { \
+/**/    static memory::studio<CLASS> &repo = memory::studio<CLASS>::instance(); \
+/**/    return repo; } \
 /* call_sign */ \
 /**/  const char CLASS::call_sign[] = #CLASS
 

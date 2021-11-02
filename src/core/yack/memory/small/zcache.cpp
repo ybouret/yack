@@ -55,7 +55,13 @@ namespace yack
             well = new ( memset(impl,0,sizeof(impl)) ) arena(block_size,mem,compact);
             
         }
-        
+
+        size_t  zcache:: here() const throw()
+        {
+            return repo.size;
+        }
+
+
         void zcache:: load(size_t n)
         {
             while(n-- > 0 )

@@ -52,8 +52,9 @@ namespace yack
             //
             // repository helpers
             //__________________________________________________________________
-            void  load(size_t);   //!< well -> repo
-            void  free() throw(); //!< repo -> well
+            void    load(size_t);         //!< well -> repo
+            void    free() throw();       //!< repo -> well
+            size_t  here() const throw(); //!< repo size
 
             //__________________________________________________________________
             //

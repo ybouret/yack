@@ -1,11 +1,15 @@
 #include "yack/ios/icstream.hpp"
 #include "yack/utest/run.hpp"
+#include "yack/memory/small/zcache.hpp"
 
 
 using namespace yack;
 
 YACK_UTEST(ios_gets)
 {
+
+    memory::zcache &repo = ios::character::provider();
+    repo.load(1000);
 
     if(argc>1)
     {
@@ -18,6 +22,8 @@ YACK_UTEST(ios_gets)
         }
 
     }
+
+    std::cerr << "#repo=" << repo.here() << std::endl;
 
 }
 YACK_UDONE()

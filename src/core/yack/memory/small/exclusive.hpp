@@ -10,6 +10,8 @@ namespace yack
 {
     namespace memory
     {
+        class zcache;
+        
         //______________________________________________________________________
         //
         //
@@ -29,7 +31,8 @@ static void * operator new(size_t);                           \
 static void   operator delete(void *,size_t) throw();         \
 /* mutliple new[]/delete[] => error */                        \
 static void * operator new[](size_t) throw();                 \
-static void   operator delete[](void *,size_t) throw()
+static void   operator delete[](void *,size_t) throw();       \
+static memory::zcache & provider()
 
         
         
