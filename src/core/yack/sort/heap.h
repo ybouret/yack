@@ -11,7 +11,10 @@
 extern "C" {
 #endif
 
-    void hpsort(unsigned long n, float ra[]);
+    void hpsort(const size_t  n,
+                float         ra[],
+                int (*proc)(const void *lhs, const void *rhs, void *args),
+                void *args);
 
 
 #if defined(__cplusplus)
