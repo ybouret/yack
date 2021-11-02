@@ -40,6 +40,9 @@ YACK_UTEST(memory_zcache)
         ch << uint8_t('a' + i);
     }
 
+    ch.display(std::cerr) << std::endl;
+    std::cerr << ch << std::endl;
+
     YACK_SIZEOF(ios::character);
     YACK_SIZEOF(small_node<uint8_t>);
     

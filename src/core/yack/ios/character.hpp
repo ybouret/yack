@@ -87,6 +87,14 @@ namespace yack
             void         load(const void *addr, size_t size);    //!< add a block
             characters & operator<<(const char   *msg); //!< add a message
             characters & operator<<(const uint8_t chr); //!< add a byte
+
+            template <typename OSTREAM> inline
+            friend OSTREAM & operator<<(OSTREAM &os, const characters &chars)
+            {
+                chars.display(os,0,0,0);
+                return os;
+            }
+
         };
 
 

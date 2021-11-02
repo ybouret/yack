@@ -95,6 +95,28 @@ namespace yack
             compare_t<COMPARE_DATA> compare = { compare_data };
             merge_list_of<NODE>::sort(*this,compare);
         }
+
+        template <typename OSTREAM> inline
+        OSTREAM & display(OSTREAM &os, const char pfx='[', const char sfx=']', const char sep=';' ) const
+        {
+            if(pfx)
+                os << pfx;
+            const NODE *node = head;
+            if(node)
+            {
+                os << **node;
+                for(node=node->next;node;node=node->next)
+                {
+                    if(sep) os << sep;
+                    os << **node;
+                }
+            }
+            if(sfx)
+                os << sfx;
+            return os;
+        }
+
+
     };
 
 }
