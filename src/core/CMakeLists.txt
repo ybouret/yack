@@ -295,6 +295,12 @@ set(info ${info_impl} ${info_decl})
 SOURCE_GROUP(info FILES ${info})
 install( FILES ${info_decl} DESTINATION include/yack/info )
 
+file(GLOB info_modulation_impl yack/info/modulation/*.cpp)
+file(GLOB info_modulation_decl yack/info/modulation/*.hpp)
+set(info_modulation ${info_modulation_impl} ${info_modulation_decl})
+SOURCE_GROUP(info/modulation FILES ${info_modulation})
+install( FILES ${info_modulation_decl} DESTINATION include/yack/info/modulation )
+
 ########################################################################
 ##
 ## randomized
@@ -404,7 +410,7 @@ ${rtld}
 ${string}
 ${kr}
 ${hashing}
-${info}
+${info} ${info_modulation}
 ${utest}
 )
 
