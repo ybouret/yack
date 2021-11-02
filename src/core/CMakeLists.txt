@@ -284,6 +284,16 @@ set(hashing ${hashing_impl} ${hashing_decl})
 SOURCE_GROUP(hashing FILES ${hashing})
 install( FILES ${hashing_decl} DESTINATION include/yack/hashing )
 
+########################################################################
+##
+## info
+##
+########################################################################
+file(GLOB info_impl yack/info/*.cpp yack/info/*.c)
+file(GLOB info_decl yack/info/*.hpp yack/info/*.h)
+set(info ${info_impl} ${info_decl})
+SOURCE_GROUP(info FILES ${info})
+install( FILES ${info_decl} DESTINATION include/yack/info )
 
 ########################################################################
 ##
@@ -301,8 +311,8 @@ install( FILES ${randomized_decl} DESTINATION include/yack/randomized )
 ## sort
 ##
 ########################################################################
-file(GLOB sort_impl yack/sort/*.cpp)
-file(GLOB sort_decl yack/sort/*.hpp)
+file(GLOB sort_impl yack/sort/*.cpp yack/sort/*.c)
+file(GLOB sort_decl yack/sort/*.hpp yack/sort/*.h)
 set(sort ${sort_impl} ${sort_decl})
 SOURCE_GROUP(sort FILES ${sort})
 install( FILES ${sort_decl} DESTINATION include/yack/sort )
@@ -394,6 +404,7 @@ ${rtld}
 ${string}
 ${kr}
 ${hashing}
+${info}
 ${utest}
 )
 

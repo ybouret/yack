@@ -90,5 +90,7 @@ YACK_UTEST_DECL(80)
     
     YACK_UTEST(string_utf8);
 
+    YACK_UTEST(info_bwt);
+
 }
 YACK_UTEST_EXEC()

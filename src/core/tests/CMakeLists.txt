@@ -39,6 +39,8 @@ source_group(counting FILES ${counting})
 file(GLOB rtld rtld/*.cpp)
 source_group(rtld FILES ${rtld})
 
+file(GLOB info info/*.cpp)
+source_group(info FILES ${info})
 
 file(GLOB string string/*.cpp)
 source_group(string FILES ${string})
@@ -58,6 +60,7 @@ ${sort}
 ${rtld}
 ${counting}
 ${string}
+${info}
 )
 
 yack_link_libraries(test-yack)
@@ -156,6 +159,8 @@ add_test(counting:part  test-yack counting_part)
 add_test(rtld:dso test-yack rtld_dso)
 
 add_test(string:utf8 test-yack string_utf8)
+
+add_test(info:bwt test-yack info_bwt)
 
 
 yack_testing(yack)
