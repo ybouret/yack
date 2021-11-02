@@ -82,9 +82,11 @@ size_t yack_bwt_encode( void *output, const void *input, const size_t size, size
         size_t            ii      = 0;
         struct rotlexdat  rotlex  = { buf_in, size };
 
-        /* fill indices */
-        for(size_t i=0;i<size;++i) indices[i] = i;
-
+        {
+            size_t i;
+            /* fill indices */
+            for(i=0;i<size;++i) indices[i] = i;
+        }
         /* use pidx as workspace */
         yack_heap_sort(indices-1,size,sizeof(size_t), &pidx, rotlexcmp, &rotlex);
 
