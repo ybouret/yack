@@ -284,6 +284,13 @@ assert(NULL!=NODE); assert(NULL==(NODE)->next); assert(NULL==(NODE)->prev)
                 }
             }
         }
+
+        //! merge front
+        void merge_front(list_of &other) throw()
+        {
+            other.merge_back(*this);
+            swap_with(other);
+        }
         
         //! store by increasing memory
         NODE *store_increasing_memory(NODE *node) throw()

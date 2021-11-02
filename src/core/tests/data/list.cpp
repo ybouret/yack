@@ -30,7 +30,17 @@ namespace
     private:
         YACK_DISABLE_ASSIGN(XNode);
     };
-    
+
+    template <typename LIST>
+    static inline void display(const LIST &L)
+    {
+        std::cerr << "{";
+        for(const typename LIST::node_type *node=L.head;node;node=node->next)
+        {
+            std::cerr << ' ' << **node;
+        }
+        std::cerr << " }" << std::endl;
+    }
 }
 
 YACK_UTEST(data_list)
@@ -192,22 +202,25 @@ YACK_UTEST(data_list)
     std::cerr << YACK_OFFSET_OF(core_list_of<DNode>,size) << std::endl;
 
     std::cerr << "concrete list" << std::endl;
-    klist< int,small_node<int> > L,Lbis,Lter;
-    for(size_t iter=0;iter<=100;++iter)
+    klist< int,small_node<int> > L,Lbis;
+    for(size_t iter=0;iter<=5;++iter)
     {
         L.append_back(  ran.full<int16_t>() );
         L.append_front( ran.full<int16_t>() );
-        if(ran.choice()>=0.5)
+        if(ran.choice()>=0.2)
         {
             Lbis << int(iter);
-            Lbis >> -int(iter);
         }
     }
 
+    std::cerr << "L=";    display(L);
+    std::cerr << "Lbis="; display(Lbis);
     L << Lbis;
+    std::cerr << "L=";    display(L);
+
+    L.sort(comparison::increasing<int>);
     
 
-    
 }
 YACK_UDONE()
 

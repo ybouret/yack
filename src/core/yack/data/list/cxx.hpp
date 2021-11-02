@@ -59,6 +59,13 @@ namespace yack
             cxx_list_of temp(other);
             this->merge_back(temp);
         }
+
+        //! merge of copy of another list
+        inline void merge_front_copy(const cxx_list_of &other)
+        {
+            cxx_list_of temp(other);
+            this->merge_front(temp);
+        }
         
 
     private:

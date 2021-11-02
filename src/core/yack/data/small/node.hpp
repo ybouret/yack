@@ -29,9 +29,9 @@ namespace yack
         //
         // C++
         //______________________________________________________________________
-        inline  small_node(param_type args) : next(0), prev(0), data(args) {}             //!< setup
-        inline ~small_node() throw() { assert(NULL==next); assert(NULL==prev); }          //!< cleanup
-        inline  small_node(const small_node &node) : next(0), prev(0), data(node.data) {} //!< hard copy
+        inline  small_node(param_type args) : next(0), prev(0), data(args) {}                       //!< setup
+        inline ~small_node() throw() { assert(NULL==next); assert(NULL==prev); }                    //!< cleanup
+        inline  small_node(const small_node &node) : object(), next(0), prev(0), data(node.data) {} //!< hard copy
 
         //______________________________________________________________________
         //

@@ -4,50 +4,96 @@
 #define YACK_DATA_ACTUAL_LIST_INCLUDED 1
 
 #include "yack/data/list/cxx.hpp"
+#include "yack/data/list/sort.hpp"
 #include "yack/type/args.hpp"
 
 namespace yack
 {
 
-    //!
+    //__________________________________________________________________________
+    //
+    //
+    //! list of C++ data
+    //
     /**
      - NODE must be constructed with param_type
      - NODE must have a copy constructor
      - NODE must have a operator*
      */
+    //__________________________________________________________________________
     template <typename T, typename NODE>
     class klist : public cxx_list_of<NODE>
     {
     public:
-        YACK_DECL_ARGS(T,type);
-        typedef cxx_list_of<NODE> list_type;
-        typedef NODE              node_type;
+        YACK_DECL_ARGS(T,type);               //!< aliases
+        typedef cxx_list_of<NODE> list_type;  //!< alias
+        typedef NODE              node_type;  //!< alias
         using list_type::size;
         using list_type::head;
         using list_type::tail;
 
-        inline explicit klist() throw() : list_type() {}
-        inline virtual ~klist() throw() {}
-        inline klist(const klist &other) : list_type(other) {}
+        //! wrapper to send compare
+        template <typename COMPARE_DATA> struct compare_t
+        {
+            COMPARE_DATA &compare_data; //!< reference to user's data comparison
+            //! forward call
+            inline int operator()(const NODE *lhs, const NODE *rhs) throw()
+            {
+                assert(lhs); assert(rhs); return compare_data(**lhs,**rhs);
+            }
+        };
 
-        inline type & append_back(param_type args)  { return **(this->push_back( new NODE(args) )); }
+        //______________________________________________________________________
+        //
+        // C++
+        //______________________________________________________________________
+        inline explicit klist() throw() : list_type() {}       //!< setup empty
+        inline virtual ~klist() throw() {}                     //!< cleanup
+        inline klist(const klist &other) : list_type(other) {} //!< hard-copy
+        //!assign by copy/swap
+        inline klist & operator=(const klist &other) {
+            klist tmp(other);
+            this->swap_with(tmp);
+            return *this;
+        }
+
+        //______________________________________________________________________
+        //
+        // methods
+        //______________________________________________________________________
+
+        //! push_back new node
+        inline type & append_back(param_type args)  { return **(this->push_back(  new NODE(args) )); }
+
+        //! push_front new node
         inline type & append_front(param_type args) { return **(this->push_front( new NODE(args) )); }
 
-        inline type       & front()       throw() { assert(size>0); return **head; }
-        inline const_type & front() const throw() { assert(size>0); return **head; }
+        
+        inline type       & front()       throw() { assert(size>0); return **head; } //!< get front item
+        inline const_type & front() const throw() { assert(size>0); return **head; } //!< get front item, const
 
-        inline type       & back()       throw() { assert(size>0); return **tail; }
-        inline const_type & back() const throw() { assert(size>0); return **tail; }
+        inline type       & back()       throw() { assert(size>0); return **tail; }  //!< get back item
+        inline const_type & back() const throw() { assert(size>0); return **tail; }  //!< get back item, const
 
-        inline void delete_back()  throw() { delete this->pop_back();  }
-        inline void delete_front() throw() { delete this->pop_front(); }
+        inline void delete_back()  throw() { delete this->pop_back();  }             //!< delete pop_back
+        inline void delete_front() throw() { delete this->pop_front(); }             //!< delete pop_front
 
-        inline type pull_back()  { const_type temp = **tail; delete_back(); return temp; }
-        inline type pull_front() { const_type temp = **head; delete_front(); return temp; }
+        inline type pull_back()  { const_type temp = **tail; delete_back();  return temp; } //!< copy back/delete/return copy
+        inline type pull_front() { const_type temp = **head; delete_front(); return temp; } //!< copy front/delete/return copy
 
-        klist & operator<<(param_type   rhs)  { (void)(this->push_back( new NODE(rhs) )); return *this; }
-        klist & operator<<(const klist &rhs)  { this->merge_back_copy(rhs); return *this; }
-        inline klist & operator>>(param_type rhs) { (void)(this->push_front( new NODE(rhs) )); return *this; }
+        //! syntax helper
+        inline klist & operator<<(param_type   rhs)  { (void)(this->push_back( new NODE(rhs) )); return *this; }
+
+        //! syntax helper
+        inline klist & operator<<(const klist &rhs)  { this->merge_back_copy(rhs); return *this; }
+
+        //! sort list wrapper
+        template <typename COMPARE_DATA>
+        inline void sort(COMPARE_DATA &compare_data)
+        {
+            compare_t<COMPARE_DATA> compare = { compare_data };
+            merge_list_of<NODE>::sort(*this,compare);
+        }
     };
 
 }
