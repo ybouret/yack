@@ -9,34 +9,36 @@ namespace yack
 {
     namespace ios
     {
-        
-        gzstream:: ~gzstream() throw()
+        namespace gz
         {
-            assert(GZ);
-            gzclose( static_cast<gzFile>(GZ) );
-            GZ=0;
-        }
-        
-        static inline
-        void *open_gzstream(const char *filename, const char *mode)
-        {
-            assert(NULL!=filename);
-            assert(NULL!=mode);
-            YACK_GIANT_LOCK();
-            gzFile fp = gzopen(filename,mode);
-            if(!fp)
+            stream:: ~stream() throw()
             {
-                throw libc::exception(errno,"gzopen(%s,%s)",filename,mode);
+                assert(GZ);
+                gzclose( static_cast<gzFile>(GZ) );
+                GZ=0;
             }
-            
-            return fp;
+
+            static inline
+            void *open_gzstream(const char *filename, const char *mode)
+            {
+                assert(NULL!=filename);
+                assert(NULL!=mode);
+                YACK_GIANT_LOCK();
+                gzFile fp = gzopen(filename,mode);
+                if(!fp)
+                {
+                    throw libc::exception(errno,"gzopen(%s,%s)",filename,mode);
+                }
+
+                return fp;
+            }
+
+            stream:: stream(const char *filename, const char *mode) :
+            GZ( open_gzstream(filename,mode) )
+            {
+            }
+
         }
-        
-        gzstream:: gzstream(const char *filename, const char *mode) :
-        GZ( open_gzstream(filename,mode) )
-        {
-        }
-        
         
     }
     

@@ -9,41 +9,44 @@ namespace yack
 {
     namespace ios
     {
-        igzstream:: ~igzstream() throw()
+
+        namespace gz
         {
-        }
-        
-        igzstream:: igzstream(const char *filename) :
-        istream(),
-        gzstream(filename,"r")
-        {
-        }
-        
-        bool igzstream:: query_(char &C)
-        {
-            const int ch = gzgetc( static_cast<gzFile>(GZ) );
-            if(ch<0)
+            istream:: ~istream() throw()
             {
-                return false;
             }
-            else
+
+            istream:: istream(const char *filename) :
+            ios::istream(),
+            stream(filename,"r")
             {
-                C = char(ch);
-                return true;
+            }
+
+            bool istream:: query_(char &C)
+            {
+                const int ch = gzgetc( static_cast<gzFile>(GZ) );
+                if(ch<0)
+                {
+                    return false;
+                }
+                else
+                {
+                    C = char(ch);
+                    return true;
+                }
+            }
+
+            size_t istream:: fetch_(void *addr, const size_t size)
+            {
+
+                const int res = gzread(static_cast<gzFile>(GZ),addr,size);
+                if(res<0)
+                {
+                    throw libc::exception(EIO,"gzread");
+                }
+                return size_t(res);
             }
         }
-        
-        size_t igzstream:: fetch_(void *addr, const size_t size)
-        {
-            
-            const int res = gzread(static_cast<gzFile>(GZ),addr,size);
-            if(res<0)
-            {
-                throw libc::exception(EIO,"gzread");
-            }
-            return size_t(res);
-        }
-        
     }
     
 }

@@ -12,23 +12,26 @@ namespace yack
 {
     namespace ios
     {
-        //______________________________________________________________________
-        //
-        //
-        //! input gzstream
-        //
-        //______________________________________________________________________
-        class igzstream : public istream, public gzstream
+        namespace gz
         {
-        public:
-            virtual ~igzstream() throw(); //!< cleanup
-            explicit igzstream(const char *filename); //!< open
-            
-        private:
-            YACK_DISABLE_COPY_AND_ASSIGN(igzstream);
-            virtual bool   query_(char &C);
-            virtual size_t fetch_(void *addr, const size_t size);
-        };
+            //__________________________________________________________________
+            //
+            //
+            //! input gzstream
+            //
+            //__________________________________________________________________
+            class istream : public ios::istream, public stream
+            {
+            public:
+                virtual ~istream() throw(); //!< cleanup
+                explicit istream(const char *filename); //!< open
+
+            private:
+                YACK_DISABLE_COPY_AND_ASSIGN(istream);
+                virtual bool   query_(char &C);
+                virtual size_t fetch_(void *addr, const size_t size);
+            };
+        }
     }
 }
 

@@ -10,25 +10,28 @@ namespace yack
 {
     namespace ios
     {
-        //______________________________________________________________________
-        //
-        //
-        //! base class for streams
-        //
-        //______________________________________________________________________
-        class gzstream
+        namespace gz
         {
-        public:
-            virtual ~gzstream() throw(); //!< cleanup
-            
-        protected:
-            //! open any gzFile
-            explicit gzstream(const char *filename, const char *mode);
-            void *GZ; //!< handle got gzFile
+            //__________________________________________________________________
+            //
+            //
+            //! base class for streams
+            //
+            //__________________________________________________________________
+            class stream
+            {
+            public:
+                virtual ~stream() throw(); //!< cleanup
 
-        private:
-            YACK_DISABLE_COPY_AND_ASSIGN(gzstream);
-        };
+            protected:
+                //! open any gzFile
+                explicit stream(const char *filename, const char *mode);
+                void *GZ; //!< handle got gzFile
+                
+            private:
+                YACK_DISABLE_COPY_AND_ASSIGN(stream);
+            };
+        }
     }
 }
 

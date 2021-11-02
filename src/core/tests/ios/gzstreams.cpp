@@ -16,7 +16,7 @@ YACK_UTEST(ios_gz)
     {
         {
             std::cerr << "// byte wise..." << std::endl;
-            ios::igzstream fp(argv[1]);
+            ios::gz::istream fp(argv[1]);
             char C;
             while( fp.query(C) )
             {
@@ -26,7 +26,7 @@ YACK_UTEST(ios_gz)
         
         {
             std::cerr << "// block wise..." << std::endl;
-            ios::igzstream fp(argv[1]);
+            ios::gz::istream fp(argv[1]);
             const size_t block_size = 256;
             char         block_addr[block_size];
             size_t       nr = 0;
@@ -41,7 +41,7 @@ YACK_UTEST(ios_gz)
     }
     
     {
-        ios::ogzstream fp("data.gz");
+        ios::gz::ostream fp("data.gz");
         
         fp << "Hello, World!";
     }

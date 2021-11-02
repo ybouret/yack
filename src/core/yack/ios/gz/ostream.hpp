@@ -13,28 +13,31 @@ namespace yack
 {
     namespace ios
     {
-        //______________________________________________________________________
-        //
-        //
-        //! input gzstream
-        //
-        //______________________________________________________________________
-        class ogzstream : public ostream, public gzstream
+        namespace gz
         {
-        public:
-            //! close
-            virtual ~ogzstream() throw();
-           
-            //! open
-            explicit ogzstream(const char *filename, const int level=6); //!< open
-            
-            virtual void write(const char C);
-            virtual void flush();
-            
-        private:
-            YACK_DISABLE_COPY_AND_ASSIGN(ogzstream);
-            
-        };
+            //__________________________________________________________________
+            //
+            //
+            //! input gzstream
+            //
+            //__________________________________________________________________
+            class ostream : public ios::ostream, public stream
+            {
+            public:
+                //! close
+                virtual ~ostream() throw();
+
+                //! open
+                explicit ostream(const char *filename, const int level=6); //!< open
+
+                virtual void write(const char C);
+                virtual void flush();
+
+            private:
+                YACK_DISABLE_COPY_AND_ASSIGN(ostream);
+
+            };
+        }
     }
 }
 
