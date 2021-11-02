@@ -84,14 +84,17 @@ namespace yack
             //
             // methods
             //__________________________________________________________________
-            void         load(const void *addr, size_t size);    //!< add a block
+            void         load(const void *, size_t);    //!< add a block
             characters & operator<<(const char   *msg); //!< add a message
             characters & operator<<(const uint8_t chr); //!< add a byte
 
             template <typename OSTREAM> inline
             friend OSTREAM & operator<<(OSTREAM &os, const characters &chars)
             {
-                chars.display(os,0,0,0);
+                for(const node_type *node = chars.head;node;node=node->next)
+                {
+                    os << **node;
+                }
                 return os;
             }
 

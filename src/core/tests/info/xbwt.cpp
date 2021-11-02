@@ -49,7 +49,7 @@ YACK_UTEST(info_xbwt)
     for(int i=1;i<argc;++i)
     {
         const char *args = argv[i];
-        char buffer[NMAX];
+        char        buffer[NMAX];
         yack_cstring_msgcpy(buffer,sizeof(buffer),args);
         test_xbwt<information::echo,information::echo>(buffer,"bwt-echo.bin");
         test_xbwt<information::mtf_encoder,information::mtf_decoder>(buffer,"bwt-mtf.bin");
