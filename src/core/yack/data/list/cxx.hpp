@@ -57,7 +57,7 @@ namespace yack
         inline void merge_back_copy(const cxx_list_of &other)
         {
             cxx_list_of temp(other);
-            this->merge_back(other);
+            this->merge_back(temp);
         }
         
 

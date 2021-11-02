@@ -1,6 +1,7 @@
 
 #include "yack/data/list/raw.hpp"
-#include "yack/data/list/actual.hpp"
+#include "yack/data/list/concrete.hpp"
+#include "yack/data/small/node.hpp"
 #include "yack/utest/run.hpp"
 #include "yack/system/offset.hpp"
 #include <cstring>
@@ -189,6 +190,22 @@ YACK_UTEST(data_list)
     std::cerr << YACK_OFFSET_OF(core_list_of<DNode>,head) << std::endl;
     std::cerr << YACK_OFFSET_OF(core_list_of<DNode>,tail) << std::endl;
     std::cerr << YACK_OFFSET_OF(core_list_of<DNode>,size) << std::endl;
+
+    std::cerr << "concrete list" << std::endl;
+    klist< int,small_node<int> > L,Lbis,Lter;
+    for(size_t iter=0;iter<=100;++iter)
+    {
+        L.append_back(  ran.full<int16_t>() );
+        L.append_front( ran.full<int16_t>() );
+        if(ran.choice()>=0.5)
+        {
+            Lbis << int(iter);
+            Lbis >> -int(iter);
+        }
+    }
+
+    L << Lbis;
+    
 
     
 }
