@@ -28,7 +28,7 @@ assert(NULL!=NODE); assert(NULL==(NODE)->next); assert(NULL==(NODE)->prev)
         //
         // types and definition
         //______________________________________________________________________
-        typedef NODE node_type; //!< alias
+        typedef NODE node_type;         //!< alias
         using interlinked<NODE>::head;
         using linked::size;
         

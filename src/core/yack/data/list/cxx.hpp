@@ -1,5 +1,3 @@
-
-
 //! \file
 
 #ifndef YACK_DATA_CXX_LIST_INCLUDED
@@ -36,7 +34,15 @@ namespace yack
             }
             catch(...) { release_(); throw; }
         }
-        
+
+        //! assign using copy/swap
+        inline cxx_list_of & operator=(const cxx_list_of &other)
+        {
+            cxx_list_of tmp(other);
+            swap_with(other);
+            return *this;
+        }
+
         //______________________________________________________________________
         //
         // methods
@@ -56,7 +62,6 @@ namespace yack
         
 
     private:
-        YACK_DISABLE_ASSIGN(cxx_list_of);
         inline void release_() throw()
         {
             while(this->size) delete this->pop_back();
