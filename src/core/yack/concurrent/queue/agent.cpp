@@ -6,6 +6,7 @@ namespace yack
 {
     namespace concurrent
     {
+#if 0
         agent:: ~agent() throw()
         {
         }
@@ -48,7 +49,7 @@ namespace yack
 
 
         }
-        
+#endif
 
         
     }

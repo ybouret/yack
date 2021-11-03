@@ -13,6 +13,7 @@ namespace yack
     namespace concurrent
     {
 
+#if 0
         //! todo
         class agent : public object
         {
@@ -47,6 +48,7 @@ namespace yack
             YACK_DISABLE_COPY_AND_ASSIGN(agency);
 
         };
+#endif
 
 
     }

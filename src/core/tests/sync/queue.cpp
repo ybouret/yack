@@ -6,7 +6,7 @@ using namespace yack;
 
 YACK_UTEST(sync_queue)
 {
-    YACK_SIZEOF(concurrent::agent);
+    //YACK_SIZEOF(concurrent::agent);
 
 }
 YACK_UDONE()

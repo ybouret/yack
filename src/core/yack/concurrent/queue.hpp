@@ -11,6 +11,7 @@ namespace yack
     namespace concurrent
     {
 
+        //! queue of jobs
         class queue
         {
         public:
