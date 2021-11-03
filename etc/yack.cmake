@@ -231,6 +231,13 @@ function(yack_link_libraries program)
 		list(APPEND yack_libs "rt")
 		list(APPEND yack_libs "dl")
 	endif()
+
+	if(YACK_WINDOWS)
+		if(YACK_GNU)
+			target_link_libraries(${program} -static-libgcc -static-libstdc++) 
+		endif()
+	endif()
+
  	
 	message( STATUS "[YACK] link libraries @${program} : ${yack_libs}" )
 	target_link_libraries(${program} ${yack_libs})
