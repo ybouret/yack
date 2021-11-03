@@ -61,6 +61,13 @@ YACK_UTEST(apz)
         { apz P = L; P *= R; YACK_ASSERT(P==p); }
         { apz P = L; P *= r; YACK_ASSERT(P==p); }
 
+        const int64_t q = l/r;
+        { const apz Q = L/R; YACK_ASSERT(Q==q); }
+        { const apz Q = l/R; YACK_ASSERT(Q==q); }
+        { const apz Q = L/r; YACK_ASSERT(Q==q); }
+        { apz Q = L; Q /= R; YACK_ASSERT(Q==q); }
+        { apz Q = L; Q /= r; YACK_ASSERT(Q==q); }
+
     }
 
     std::cerr << "[INCR/DECR]" << std::endl;
