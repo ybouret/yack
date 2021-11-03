@@ -109,6 +109,8 @@ YACK_UTEST(string_utf8)
     }
     show(dmin,dmax,4);
     std::cerr << std::endl;
+    
+    YACK_SIZEOF(utf8);
 }
 YACK_UDONE()
 

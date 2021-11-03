@@ -66,7 +66,8 @@ namespace yack
             static int compare(const integer  &lhs, const rational &rhs); //!< comparison
             static int compare(const rational &lhs, const int_type  rhs); //!< comparison
             static int compare(const int_type  lhs, const rational &rhs); //!< comparison
-
+            static int compare(const rational &lhs, const natural  &rhs); //!< comparison
+            static int compare(const natural  &lhs, const rational &rhs); //!< comparison
 
 
             //__________________________________________________________________

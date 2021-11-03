@@ -22,7 +22,12 @@ namespace yack
         //______________________________________________________________________
         static const char clid[]; //!< "UTF-8"
         typedef  uint32_t type;
-      
+        struct bank {
+            type lower;
+            type upper;
+            bool owns(const type) const throw();
+        };
+        static const bank banks[4];
         
         //______________________________________________________________________
         //
@@ -59,16 +64,11 @@ namespace yack
         static uint32_t decode(const uint8_t data[], const size_t size);
         
     private:
-        type    code;
-        size_t  clen;
+        type     code;
+        uint8_t  clen;
         
         static size_t validate( type &codepoint);
-        struct bank {
-            type lower;
-            type upper;
-            bool owns(const type) const throw();
-        };
-        static const bank banks[4];
+       
     };
     
 }

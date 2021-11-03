@@ -9,15 +9,15 @@ namespace yack
 {
     const char utf8:: clid[] = "UTF-8";
     
-    utf8:: utf8() throw() : code(0) {}
+    utf8:: utf8() throw() : code(0), clen(1) {}
     
     
     const utf8::bank utf8::banks[4] =
     {
-        { 0x0000,  0x007f },
-        { 0x0080,  0x07ff },
-        { 0x0800,  0x7777 },
-        { 0x10000, 0x10ffff}
+        { 0x00000000, 0x0000007f },
+        { 0x00000080, 0x000007ff },
+        { 0x00000800, 0x0000FFFF },
+        { 0x00010000, 0x0010FFFF }
     };
     
     bool utf8::bank:: owns(const type codepoint) const throw()
@@ -43,7 +43,7 @@ namespace yack
     {
     }
     
-    utf8:: utf8(const utf8 &other) throw() : code(other.code) {}
+    utf8:: utf8(const utf8 &other) throw() : code(other.code), clen(other.clen) {}
     
     utf8 & utf8:: operator=(const utf8 &other) throw()
     {
