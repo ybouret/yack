@@ -43,7 +43,7 @@ static void yack_bwt_build(size_t           *indices,
 {
     struct rotlexdat  rotlex  = { buf_in, size };
     size_t            i;
-    for(size_t i=0;i<size;++i) indices[i] = i;
+    for(i=0;i<size;++i) indices[i] = i;
     yack_heap_sort(indices-1,size,sizeof(size_t), &i, rotlexcmp, &rotlex);
 
 }

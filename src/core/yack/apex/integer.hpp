@@ -123,7 +123,11 @@ namespace yack
             //__________________________________________________________________
             YACK_APZ_REP(*,mul)
 
-
+            //__________________________________________________________________
+            //
+            // division
+            //__________________________________________________________________
+            YACK_APZ_REP(/,div)
 
         private:
             class handle_
@@ -155,6 +159,7 @@ namespace yack
             static integer   add(const handle &lh, const handle &rh);
             static integer   sub(const handle &lh, const handle &rh);
             static integer   mul(const handle &lh, const handle &rh);
+            static integer   div(const handle &lh, const handle &rh);
 
         };
     }
