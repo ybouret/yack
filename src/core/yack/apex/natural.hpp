@@ -47,27 +47,29 @@ namespace yack
             //__________________________________________________________________
             static const char clid[]; //!< "apn"
             
-            // native computation
             typedef unsigned_for<YACK_APEX_TYPE>::type       core_type; //!< native type
-            typedef unsigned_int< sizeof(core_type)/2>::type word_type;      //!< internal type
+            typedef unsigned_int< sizeof(core_type)/2>::type word_type; //!< internal type
             
-            static const size_t core_size = sizeof(core_type);      //!< native type size
-            static const size_t core_bits = sizeof(core_type) << 3; //!< native type bits
+            static const size_t core_size = sizeof(core_type);          //!< native type size
+            static const size_t core_bits = sizeof(core_type) << 3;     //!< native type bits
             
             // internal storage
-            static const size_t     word_size = sizeof(word_type);                   //!< internal type size
-            static const size_t     word_bits = sizeof(word_type) << 3;                   //!< internal type bits
+            static const size_t     word_size = sizeof(word_type);                //!< internal type size
+            static const size_t     word_bits = sizeof(word_type) << 3;           //!< internal type bits
             static const size_t     word_exp2 = ilog2<word_size>::value;          //!< word_size = 2^word_exp2
             static const core_type  word_base = core_type(1) << word_bits;        //!< 2^[8|16|32] on larger type
             static const core_type  word_maxi = integral_for<word_type>::maximum; //!< maximum  for core_type
-            
-            
+
+            // internal parameters
             static  const size_t    min_words_bytes = 2 * sizeof(uint_type);          //!< minimal memory, in bytes
             static  const size_t    min_words_size  = min_words_bytes >> word_exp2;   //!< minimal memory, in words
             static  const size_t    min_words_exp2  = ilog2<min_words_size>::value;   //!< shift for allocating
             static  const size_t    words_per_uint  = sizeof(uint_type)>>word_exp2;   //!< words per unit
             static  size_t          words_exp2_for(const size_t nw);                  //!< compute exponent such that nw <= 2^exponent
-            
+
+            //! number of words to use fft
+            static  const size_t    shift_to_fft = 512;
+
             //__________________________________________________________________
             //
             // C++
@@ -244,18 +246,18 @@ namespace yack
             // bitwise ops
             //__________________________________________________________________
             //! declare some bitwise ops
-#define YACK_APN_BITWISE_DECL(OP)                                      \
-friend natural operator OP (const natural  &lhs, const natural  &rhs); \
-friend natural operator OP (const natural  &lhs, const uint_type rhs); \
-friend natural operator OP (const uint_type lhs, const natural  &rhs); \
-natural      & operator OP##=(const natural  &rhs);                    \
-natural      & operator OP##=(const uint_type lhs)
+#define      YACK_APN_BITWISE_DECL(OP)                                              \
+/**/         friend natural operator OP (const natural  &lhs, const natural  &rhs); \
+/**/         friend natural operator OP (const natural  &lhs, const uint_type rhs); \
+/**/         friend natural operator OP (const uint_type lhs, const natural  &rhs); \
+/**/         natural      & operator OP##=(const natural  &rhs);                    \
+/**/         natural      & operator OP##=(const uint_type lhs)
 
             //! declare bitwise ops
-#define YACK_APN_BITWISE_OPS() \
-YACK_APN_BITWISE_DECL(|);      \
-YACK_APN_BITWISE_DECL(&);      \
-YACK_APN_BITWISE_DECL(^)
+#define     YACK_APN_BITWISE_OPS()         \
+/**/        YACK_APN_BITWISE_DECL(|);      \
+/**/        YACK_APN_BITWISE_DECL(&);      \
+/**/        YACK_APN_BITWISE_DECL(^)
 
             YACK_APN_BITWISE_OPS();    //!< logical operators
             natural operator~() const; //!< logical
@@ -294,7 +296,12 @@ YACK_APN_BITWISE_DECL(^)
             //
             // parsing
             //__________________________________________________________________
-            
+            static natural parse_dec(const char *data,size_t size);    //!< parse decimal
+            static natural parse_dec(const char *data);                //!< parse decimal
+            static natural parse_hex(const char *data,size_t size);    //!< parse hexadecimal
+            static natural parse_hex(const char *data);                //!< parse hexadecimal
+            static natural parse(const char *data, const size_t size); //!< parse dec|hex
+            static natural parse(const char *data);                    //!< parse
 
         private:
             friend class integer;

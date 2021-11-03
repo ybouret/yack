@@ -7,6 +7,7 @@
 
 using namespace yack;
 
+
 YACK_UTEST(apn)
 {
 
@@ -78,6 +79,25 @@ YACK_UTEST(apn)
     }
 
 
+    {
+        std::cerr << "dec:" << std::endl;
+        const apn n0 = apn::parse_dec("");  std::cerr << "n0=" << n0 << std::endl;
+        const apn n2 = apn::parse_dec("2"); std::cerr << "n2=" << n2 << std::endl;
+        const apn nn = apn::parse_dec("12345678901234567890");
+        std::cerr << "nn=" << nn << std::endl;
+    }
+    {
+        std::cerr << "hex:" << std::endl;
+        const apn n0 = apn::parse_hex("");  std::cerr << "n0=" << n0 << std::endl;
+        const apn n2 = apn::parse_hex("C"); std::cerr << "n2=" << n2 << std::endl;
+        n2.output_hex(std::cerr << "\t") << std::endl;
+        const apn nn = apn::parse_hex("1234567890ABCDEFabcdef");
+        std::cerr << "nn=" << nn << std::endl;
+        nn.output_hex(std::cerr << "\t") << std::endl;
+
+    }
+    
+    
     std::cerr << "[CMP]" << std::endl;
     for(size_t ibits=0;ibits<=60;++ibits)
     {
