@@ -1,8 +1,12 @@
 
 message( STATUS "[YACK] <lua>" )
 
-add_definitions(-DLUA_COMPAT_5_3)
+#add_definitions(-DLUA_COMPAT_5_3)
 set(lualib_public_decl lua.h luaconf.h lualib.h lauxlib.h lua.hpp)
+
+if(YACK_GNU)
+	set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -std=c99")
+endif()
 
 install( FILES ${lua_public_decl}
 DESTINATION include/yack/lua )
