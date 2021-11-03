@@ -40,6 +40,9 @@ namespace yack
         rational:: rational(const sign_type S, const natural &N) : number(), num(S,N), den(1) {}
 
 
+        rational:: rational(const natural &N) : num(N), den(1) {}
+        
+
         rational& rational:: operator=(const rational &q)
         {
             rational tmp(q);

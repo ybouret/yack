@@ -42,9 +42,10 @@ namespace yack
             rational(const int_type);                   //!< num/1
             rational(const integer &);                  //!< num/1
             rational(const sign_type, const natural &); //!< num/1
+            rational(const natural &);                  //!< num/1
             rational&operator=(const rational &);       //!< assign by copy/xch
 
-            //! inline constructors
+            //! inline binary constructors
 #define     YACK_APQ_CTOR(NTYPE,DTYPE) \
 /**/        inline rational(const NTYPE N, const DTYPE D) :\
 /**/        number(), num(N), den(D) { setup(); }
@@ -53,8 +54,12 @@ namespace yack
             YACK_APQ_CTOR(integer&,natural&)
             YACK_APQ_CTOR(int_type,natural&)
             YACK_APQ_CTOR(integer&,uint_type)
-            
 
+
+            //__________________________________________________________________
+            //
+            // comparisons
+            //__________________________________________________________________
             static int compare(const rational &lhs, const rational &rhs); //!< comparison
             static int compare(const rational &lhs, const integer  &rhs); //!< comparison
             static int compare(const integer  &lhs, const rational &rhs); //!< comparison
