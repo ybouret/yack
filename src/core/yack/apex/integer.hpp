@@ -11,33 +11,63 @@ namespace yack
     
     namespace apex
     {
-        
+        //______________________________________________________________________
+        //
+        //
+        //! drop-in signed replacement
+        //
+        //______________________________________________________________________
         class integer : public number
         {
         public:
-            static const char clid[];
-            
+            //__________________________________________________________________
+            //
+            // definitions
+            //__________________________________________________________________
+            static const char clid[]; //!< "apz"
+
+            //__________________________________________________________________
+            //
+            // members
+            //__________________________________________________________________
             const sign_type s;
             const natural   n;
-            
-            virtual ~integer() throw();
-            integer();
-            integer(const int_type z);
-            integer(const integer &z);
-            integer(const sign_type, const natural &);
-            
-            integer & operator=(const integer &);
-            integer & operator=(const int_type z);
-            
-            void xch(integer &) throw();
-            
+
+            //__________________________________________________________________
+            //
+            // C++
+            //__________________________________________________________________
+            virtual ~integer() throw();                //!< cleanup
+            integer();                                 //!< default=0
+            integer(const int_type z);                 //!< from integral type
+            integer(const integer &z);                 //!< copy
+            integer(const sign_type, const natural &); //!< s+n
+            integer & operator=(const integer  &);     //!< assign by copy/xch
+            integer & operator=(const int_type z);     //!< assign by copy/xch
+
+            //__________________________________________________________________
+            //
+            // serializable interface
+            //__________________________________________________________________
             virtual const char * class_uid()       const throw();
             virtual size_t       serialize(ios::ostream &) const;
-            
-            friend std::ostream &operator<<(std::ostream &, const integer &);
+
+            //__________________________________________________________________
+            //
+            // methods
+            //__________________________________________________________________
+
+            //! no-throw exchange
+            void xch(integer &) throw();
             
 
+            //! display
+            friend std::ostream &operator<<(std::ostream &, const integer &);
+            
+            //__________________________________________________________________
+            //
             // comparison
+            //__________________________________________________________________
 #define     YACK_APZ_REP_NO_THROW(PROLOG,CALL)                           \
 /**/        inline PROLOG (const integer &lhs, const integer &rhs) throw() \
 /**/        { const handle L(lhs), R(rhs); return CALL; }                  \
@@ -69,18 +99,31 @@ namespace yack
 /**/ inline integer & operator OP##=(const int_type rhs) \
 /**/ { const handle L(*this), R(rhs); integer res = FCN(L,R); xch(res); return *this; }
 
+            //__________________________________________________________________
+            //
             // addition
+            //__________________________________________________________________
             integer  operator+() const; //!< self
             integer &operator++();      //!< pre  increase operator
             integer  operator++(int);   //!< post increase operator
             YACK_APZ_REP(+,add)
             
-
+            //__________________________________________________________________
+            //
             // subtraction
+            //__________________________________________________________________
             integer  operator-() const;
             integer &operator--();      //!< pre  decrease operator
             integer  operator--(int);   //!< post decrease operator
             YACK_APZ_REP(-,sub)
+
+            //__________________________________________________________________
+            //
+            // multiplication
+            //__________________________________________________________________
+            YACK_APZ_REP(*,mul)
+
+
 
         private:
             class handle_
@@ -111,6 +154,7 @@ namespace yack
             static sign_type scmp(const handle &lh, const handle &rh) throw();
             static integer   add(const handle &lh, const handle &rh);
             static integer   sub(const handle &lh, const handle &rh);
+            static integer   mul(const handle &lh, const handle &rh);
 
         };
     }

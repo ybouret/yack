@@ -1,6 +1,7 @@
 #include "yack/apex/integer.hpp"
 #include "yack/type/utils.hpp"
 #include "yack/system/exception.hpp"
+#include <cerrno>
 
 namespace yack
 {
