@@ -219,11 +219,6 @@ set(apex ${apex_impl} ${apex_decl})
 SOURCE_GROUP(apex FILES ${apex})
 install( FILES ${apex_decl} DESTINATION include/yack/apex ) 
  
-file(GLOB apex_n_impl yack/apex/n/*.cpp)
-file(GLOB apex_n_decl yack/apex/n/*.hpp)
-set(apex_n ${apex_n_impl} ${apex_n_decl})
-SOURCE_GROUP(apex/n FILES ${apex_n})
-install( FILES ${apex_n_decl} DESTINATION include/yack/apex/n ) 
 
 file(GLOB apex_m_impl yack/apex/m/*.cpp)
 file(GLOB apex_m_decl yack/apex/m/*.hpp)
@@ -231,7 +226,17 @@ set(apex_m ${apex_m_impl} ${apex_m_decl})
 SOURCE_GROUP(apex/m FILES ${apex_m})
 install( FILES ${apex_m_decl} DESTINATION include/yack/apex/m ) 
 
+file(GLOB apex_n_impl yack/apex/n/*.cpp)
+file(GLOB apex_n_decl yack/apex/n/*.hpp)
+set(apex_n ${apex_n_impl} ${apex_n_decl})
+SOURCE_GROUP(apex/n FILES ${apex_n})
+install( FILES ${apex_n_decl} DESTINATION include/yack/apex/n ) 
 
+file(GLOB apex_z_impl yack/apex/z/*.cpp)
+file(GLOB apex_z_decl yack/apex/z/*.hpp)
+set(apex_z ${apex_z_impl} ${apex_z_decl})
+SOURCE_GROUP(apex/z FILES ${apex_z})
+install( FILES ${apex_z_decl} DESTINATION include/yack/apex/z ) 
 
 ########################################################################
 ##
@@ -407,7 +412,7 @@ ${container} ${container_matrix}
 ${sequence}
 ${memory} ${memory_allocator} ${memory_small} ${memory_large} ${memory_joint} ${memory_buffer}
 ${fft}
-${apex} ${apex_n} ${apex_m}
+${apex} ${apex_m} ${apex_n} ${apex_z}
 ${concurrent} ${concurrent_quark} ${concurrent_loop} ${concurrent_queue}
 ${ios} ${ios_c} ${ios_gz} ${ios_fmt}
 ${randomized}

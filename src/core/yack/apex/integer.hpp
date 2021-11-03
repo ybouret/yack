@@ -63,7 +63,11 @@ namespace yack
 /**/ inline friend integer operator OP (const integer &lhs, const int_type rhs)\
 /**/ { const handle L(lhs), R(rhs); return FCN(L,R); }                         \
 /**/ inline friend integer operator OP (const int_type lhs, const integer &rhs)\
-/**/ { const handle L(lhs), R(rhs); return FCN(L,R); }
+/**/ { const handle L(lhs), R(rhs); return FCN(L,R); } \
+/**/ inline integer & operator OP##=(const integer &rhs) \
+/**/ { const handle L(*this), R(rhs); integer res = FCN(L,R); xch(res); return *this; }\
+/**/ inline integer & operator OP##=(const int_type rhs) \
+/**/ { const handle L(*this), R(rhs); integer res = FCN(L,R); xch(res); return *this; }
 
             // addition
             integer  operator+() const; //!< self
@@ -73,8 +77,10 @@ namespace yack
             
 
             // subtraction
-            integer operator-() const;
-
+            integer  operator-() const;
+            integer &operator--();      //!< pre  decrease operator
+            integer  operator--(int);   //!< post decrease operator
+            YACK_APZ_REP(-,sub)
 
         private:
             class handle_
@@ -104,6 +110,7 @@ namespace yack
             static int       cmp(const  handle &lh, const handle &rh) throw();
             static sign_type scmp(const handle &lh, const handle &rh) throw();
             static integer   add(const handle &lh, const handle &rh);
+            static integer   sub(const handle &lh, const handle &rh);
 
         };
     }

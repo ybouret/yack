@@ -47,9 +47,9 @@ namespace yack
             //
             // non virtual interface
             //__________________________________________________________________
-            size_t leq(const size_t value) throw(); //!< floor( ran() * value + 0.5 )
-            bool   choice() throw();                //!< ran <= 0.5
-
+            size_t leq(const size_t value) throw();            //!< floor( ran() * value + 0.5 )
+            bool   choice() throw();                           //!< ran <= 0.5
+            unit_t in(const unit_t a, const unit_t b) throw(); //!< in [a:b]
 
             //! double|float|uint[8:16:32:64]_t
             template <typename T> T to() throw();

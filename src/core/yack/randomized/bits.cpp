@@ -27,6 +27,14 @@ namespace yack
             return floor( value * ran() + 0.5);
         }
 
+        unit_t bits::in(const unit_t a, const unit_t b) throw()
+        {
+            bits        &ran = *this;
+            const unit_t res = a + unit_t( floor( (b-a) * ran() + 0.5 ) );
+            assert(res>=a); assert(res<=b);
+            return res;
+        }
+
         bool bits:: choice() throw()
         {
             return (*this)() <= 0.5;

@@ -50,7 +50,7 @@ namespace yack
         }
         
         static sign_type opposite(const sign_type) throw();
-        
+        static void      change(sign_type&) throw();
         static sign_pair pair(const sign_type lhs, const sign_type rhs) throw();
         
         

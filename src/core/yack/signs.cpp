@@ -27,6 +27,12 @@ namespace yack
         return __zero__;
     }
 
+    void __sign::change(sign_type &s) throw()
+    {
+        s = opposite(s);
+    }
+
+
     sign_pair __sign::pair(const sign_type lhs, const sign_type rhs) throw()
     {
         switch(lhs)
