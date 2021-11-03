@@ -16,6 +16,10 @@ namespace yack
         {
         }
 
+        natural:: handle:: ~handle() throw()
+        {
+        }
+
         natural:: handle:: handle(uint_type &u) throw() :
         words(0),
         bytes(0),

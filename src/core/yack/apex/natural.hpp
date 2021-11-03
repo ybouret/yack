@@ -29,7 +29,9 @@ namespace yack
 #if !defined(YACK_APEX_TYPE)
 #     define YACK_APEX_TYPE void * //!< default matching type
 #endif
-        
+
+        class integer;
+
         //______________________________________________________________________
         //
         //
@@ -295,13 +297,15 @@ YACK_APN_BITWISE_DECL(^)
             
 
         private:
-            size_t       bytes;
-            size_t       words;
-            const size_t max_words_exp2;
-            const size_t max_bytes_exp2;
-            word_type   *word;
-            const size_t max_words; //!< 1 << wexp2
-            const size_t max_bytes; //!< 1 << block_exp2
+            friend class integer;
+
+            size_t       bytes;          //!< current byte
+            size_t       words;          //!< current words
+            const size_t max_words_exp2; //!< words <= 2^max_words_exp2
+            const size_t max_bytes_exp2; //!< bytes <= 2^max_bytes_exp2
+            word_type   *word;           //!< least significant word address
+            const size_t max_words;      //!< 1 << max_words_exp2
+            const size_t max_bytes;      //!< 1 << max_bytes_exp2
             
             class handle {
             public:
@@ -309,10 +313,11 @@ YACK_APN_BITWISE_DECL(^)
                 const size_t            bytes; //!< bytes count
                 const word_type * const entry; //!< words entry
                 
-                handle(const natural &) throw(); //!< from natural
-                handle(uint_type     &) throw(); //!< from uint_type
-                handle(word_type     &) throw(); //!< one word reference
-                
+                explicit handle(const natural &) throw(); //!< from natural
+                explicit handle(uint_type     &) throw(); //!< from uint_type
+                explicit handle(word_type     &) throw(); //!< one word reference
+                virtual ~handle() throw();                //!< cleanup
+
                 void display(std::ostream &) const; //!< helper
                 bool is0() const throw();           //!< test is 0
                 bool is1() const throw();           //!< test is 1

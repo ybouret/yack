@@ -14,10 +14,13 @@ YACK_UTEST(apz)
     
     {
         ios::ocstream fp("apz.dat");
-        std::cerr << m << " ->" << m.serialize(fp) << std::endl;
-        std::cerr << z << " ->" << z.serialize(fp) << std::endl;
-        std::cerr << p << " ->" << p.serialize(fp) << std::endl;
-
+        std::cerr << m << " ->" << m.serialize(fp) << "b" << std::endl;
+        std::cerr << z << " ->" << z.serialize(fp) << "b" << std::endl;
+        std::cerr << p << " ->" << p.serialize(fp) << "b" << std::endl;
     }
+
+    m = -m; std::cerr << m << std::endl;
+    z = -z; std::cerr << z << std::endl;
+    p = -p; std::cerr << p << std::endl;
 }
 YACK_UDONE()

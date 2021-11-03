@@ -37,23 +37,26 @@ namespace yack
                     case negative: return nn_pair;
                     case __zero__: return nz_pair;
                     case positive: return np_pair;
-                }
+                } break;
+
             case __zero__:
                 switch(rhs)
                 {
                     case negative: return zn_pair;
                     case __zero__: return zz_pair;
                     case positive: return zp_pair;
-                }
+                } break;
+
             case positive:
                 switch(rhs)
                 {
                     case negative: return pn_pair;
                     case __zero__: return pz_pair;
                     case positive: return pp_pair;
-                }
-        };
-        
+                } break;
+        }
+        // never get here
+        return zz_pair;
     }
     
     

@@ -11,21 +11,23 @@ namespace yack
         {
         }
         
-        integer:: integer() : s(__zero__), n(0) {}
+        integer:: integer() : number(), s(__zero__), n(0) {}
         
         integer:: integer(int_type z) :
+        number(),
         s( __sign::of(z) ),
         n( absolute(z)   )
         {
         }
         
-        integer:: integer(const integer &z) :
+        integer:: integer(const integer &z) : number(),
         s(z.s),
         n(z.n)
         {
         }
         
         integer:: integer(const sign_type S, const natural &N) :
+        number(),
         s(S),
         n(N)
         {
@@ -86,6 +88,94 @@ namespace yack
 }
 
 
+
+namespace yack
+{
+
+    namespace apex
+    {
+        integer::handle_::  handle_() throw() : u(0) {}
+        integer::handle_:: ~handle_() throw() {}
+
+        integer::handle_::  handle_(const int_type I) throw() :
+        u( absolute(I) )
+        {
+        }
+
+
+
+        integer:: handle:: handle(const integer &z) throw() :
+        handle_(),
+        natural::handle(z.n),
+        s(z.s)
+        {
+        }
+
+        integer:: handle:: handle(const int_type I) throw() :
+        handle_(I),
+        natural::handle(u),
+        s( __sign::of(I) )
+        {
+        }
+
+        integer:: handle:: ~handle() throw()
+        {
+            
+        }
+
+    }
+
+}
+
+namespace yack
+{
+    namespace apex
+    {
+        int integer::cmp(const handle &lh, const handle &rh) throw()
+        {
+            switch( __sign::pair(lh.s,rh.s) )
+            {
+                case nn_pair: return natural::cmp(rh,lh);
+                case nz_pair: return -1;
+                case np_pair: return -1;
+
+                case zn_pair: return 1;
+                case zz_pair: return 0;
+                case zp_pair: return 1;
+
+                case pn_pair: return 1;
+                case pz_pair: return 1;
+                case pp_pair: return natural::cmp(lh,rh);
+            }
+            return 0;
+        }
+
+        sign_type integer::scmp(const handle &lh, const handle &rh) throw()
+        {
+            switch( __sign::pair(lh.s,rh.s) )
+            {
+                case nn_pair: return natural::scmp(rh,lh);
+                case nz_pair: return negative;
+                case np_pair: return negative;
+
+                case zn_pair: return positive;
+                case zz_pair: return __zero__;
+                case zp_pair: return negative;
+
+                case pn_pair: return positive;
+                case pz_pair: return positive;
+                case pp_pair: return natural::scmp(lh,rh);
+            }
+            return __zero__;
+        }
+        
+        
+
+    }
+
+}
+
+
 namespace yack
 {
     namespace apex
@@ -95,7 +185,30 @@ namespace yack
         {
             return *this;
         }
-        
+
+        integer & integer:: operator++()
+        {
+            static const int_type one = 1;
+            const handle L(*this);
+            const handle R(one);
+            integer      I = add(L,R);
+            xch(I);
+            return *this;
+        }
+
+        integer integer:: add(const handle &lh, const handle &rh)
+        {
+            return integer();
+        }
+
+    }
+
+}
+
+namespace yack
+{
+    namespace apex
+    {
         integer integer:: operator-() const
         {
             return integer( __sign::opposite(s), n );

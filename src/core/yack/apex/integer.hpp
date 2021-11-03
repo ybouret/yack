@@ -36,14 +36,75 @@ namespace yack
             
             friend std::ostream &operator<<(std::ostream &, const integer &);
             
-            integer operator+() const;
+
+            // comparison
+#define     YACK_APZ_REP_NO_THROW(PROLOG,CALL)                           \
+/**/        inline PROLOG (const integer &lhs, const integer &rhs) throw() \
+/**/        { const handle L(lhs), R(rhs); return CALL; }                  \
+/**/        inline PROLOG (const integer &lhs, const int_type rhs) throw() \
+/**/        { const handle L(lhs), R(rhs); return CALL; }                  \
+/**/        inline PROLOG (const int_type lhs, const integer &rhs) throw() \
+/**/        { const handle L(lhs), R(rhs); return CALL; }                  \
+
+            YACK_APZ_REP_NO_THROW(static int compare,cmp(L,R))
+
+#define     YACK_APZ_REP_CMP(OP) YACK_APZ_REP_NO_THROW(friend bool operator OP, cmp(L,R) OP 0)
+
+            YACK_APZ_REP_CMP(==)
+            YACK_APZ_REP_CMP(!=)
+            YACK_APZ_REP_CMP(<=)
+            YACK_APZ_REP_CMP(>=)
+            YACK_APZ_REP_CMP(<)
+            YACK_APZ_REP_CMP(>)
+
+#define     YACK_APZ_REP(OP,FCN) \
+/**/ inline friend integer operator OP (const integer &lhs, const integer &rhs)\
+/**/ { const handle L(lhs), R(rhs); return FCN(L,R); }                         \
+/**/ inline friend integer operator OP (const integer &lhs, const int_type rhs)\
+/**/ { const handle L(lhs), R(rhs); return FCN(L,R); }                         \
+/**/ inline friend integer operator OP (const int_type lhs, const integer &rhs)\
+/**/ { const handle L(lhs), R(rhs); return FCN(L,R); }
+
+            // addition
+            integer  operator+() const; //!< self
+            integer &operator++();      //!< pre  increase operator
+            integer  operator++(int);   //!< post increase operator
+            YACK_APZ_REP(+,add)
+            
+
+            // subtraction
             integer operator-() const;
-            
-            friend integer operator+(const integer &lhs, const integer &rhs);
-            
-            
+
+
         private:
-            
+            class handle_
+            {
+            public:
+                virtual ~handle_() throw();
+            protected:
+                explicit handle_() throw();
+                explicit handle_(const int_type) throw();
+                uint_type u;
+            private:
+                YACK_DISABLE_COPY_AND_ASSIGN(handle_);
+            };
+
+            class handle : public handle_, public natural::handle
+            {
+            public:
+                explicit handle(const integer &) throw();
+                explicit handle(const int_type ) throw();
+                virtual ~handle() throw();
+
+                const sign_type s;
+            private:
+                YACK_DISABLE_COPY_AND_ASSIGN(handle);
+            };
+
+            static int       cmp(const  handle &lh, const handle &rh) throw();
+            static sign_type scmp(const handle &lh, const handle &rh) throw();
+            static integer   add(const handle &lh, const handle &rh);
+
         };
     }
     
