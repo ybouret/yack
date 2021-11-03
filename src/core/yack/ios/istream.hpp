@@ -24,7 +24,7 @@ namespace yack
             bool     query(char &C);                       //!< query one (cached) char
             void     store(char  C);                       //!< store char in cache
             size_t   fetch(void *addr, const size_t size); //!< fetch (cached) block
-            bool     gets(characters &line);
+            bool     gets(characters &line);               //!< detect line
 
         protected:
             explicit istream() throw(); //!< setup

@@ -13,6 +13,7 @@ namespace yack
     namespace concurrent
     {
 
+        //! todo
         class agent : public object
         {
         public:

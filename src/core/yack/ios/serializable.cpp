@@ -22,6 +22,13 @@ namespace yack
             return encoder::serialize(os,class_uid(),yack_cstring_size(class_uid()));
         }
 
+        size_t  serializable:: marshal(ostream &fp) const
+        {
+            const size_t n = save_class_ui(fp);
+            return n + serialize(fp);
+        }
+
+
     }
 
 }

@@ -68,6 +68,7 @@ YACK_UTEST_DECL(80)
     YACK_UTEST(apex_mem);
     YACK_UTEST(apn);
     YACK_UTEST(apz);
+    YACK_UTEST(apq);
     YACK_UTEST(apex_ari);
     YACK_UTEST(apex_io);
     YACK_UTEST(apex_perf);

@@ -20,9 +20,9 @@ namespace yack
         typedef int2type<2>    cstderr_t; //!< alias  for stderr
         extern const cstderr_t cstderr;   //!< helper for stderr
 
-#define YACK_STDIN  ":STDIN:"
-#define YACK_STDOUT ":STDOUT:"
-#define YACK_STDERR ":STDERR:"
+#define YACK_STDIN  ":STDIN:"    //!< special
+#define YACK_STDOUT ":STDOUT:"   //!< special
+#define YACK_STDERR ":STDERR:"   //!< special
 
 
         //______________________________________________________________________

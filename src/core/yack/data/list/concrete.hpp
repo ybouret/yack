@@ -96,6 +96,7 @@ namespace yack
             merge_list_of<NODE>::sort(*this,compare);
         }
 
+        //! default output
         template <typename OSTREAM> inline
         OSTREAM & display(OSTREAM &os, const char pfx='[', const char sfx=']', const char sep=';' ) const
         {

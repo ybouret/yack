@@ -1,4 +1,3 @@
-
 //! \file
 
 #ifndef YACK_APEX_INTEGER_INCLUDED
@@ -30,8 +29,8 @@ namespace yack
             //
             // members
             //__________________________________________________________________
-            const sign_type s;
-            const natural   n;
+            const sign_type s; //!< sign
+            const natural   n; //!< absolute value
 
             //__________________________________________________________________
             //
@@ -68,6 +67,7 @@ namespace yack
             //
             // comparison
             //__________________________________________________________________
+            //! build API
 #define     YACK_APZ_REP_NO_THROW(PROLOG,CALL)                           \
 /**/        inline PROLOG (const integer &lhs, const integer &rhs) throw() \
 /**/        { const handle L(lhs), R(rhs); return CALL; }                  \
@@ -75,9 +75,15 @@ namespace yack
 /**/        { const handle L(lhs), R(rhs); return CALL; }                  \
 /**/        inline PROLOG (const int_type lhs, const integer &rhs) throw() \
 /**/        { const handle L(lhs), R(rhs); return CALL; }                  \
+/**/        inline PROLOG (const integer &lhs, const natural &rhs) throw() \
+/**/        { const handle L(lhs), R(rhs); return CALL; }                  \
+/**/        inline PROLOG (const natural &lhs, const integer &rhs) throw() \
+/**/        { const handle L(lhs), R(rhs); return CALL; }
+
 
             YACK_APZ_REP_NO_THROW(static int compare,cmp(L,R))
 
+            //! build comparison operators
 #define     YACK_APZ_REP_CMP(OP) YACK_APZ_REP_NO_THROW(friend bool operator OP, cmp(L,R) OP 0)
 
             YACK_APZ_REP_CMP(==)
@@ -87,17 +93,25 @@ namespace yack
             YACK_APZ_REP_CMP(<)
             YACK_APZ_REP_CMP(>)
 
+            //! build algebraic operators
 #define     YACK_APZ_REP(OP,FCN) \
-/**/ inline friend integer operator OP (const integer &lhs, const integer &rhs)\
-/**/ { const handle L(lhs), R(rhs); return FCN(L,R); }                         \
-/**/ inline friend integer operator OP (const integer &lhs, const int_type rhs)\
-/**/ { const handle L(lhs), R(rhs); return FCN(L,R); }                         \
-/**/ inline friend integer operator OP (const int_type lhs, const integer &rhs)\
-/**/ { const handle L(lhs), R(rhs); return FCN(L,R); } \
-/**/ inline integer & operator OP##=(const integer &rhs) \
-/**/ { const handle L(*this), R(rhs); integer res = FCN(L,R); xch(res); return *this; }\
-/**/ inline integer & operator OP##=(const int_type rhs) \
-/**/ { const handle L(*this), R(rhs); integer res = FCN(L,R); xch(res); return *this; }
+/**/ inline friend integer operator OP (const integer &lhs, const integer &rhs) \
+/**/ { const handle L(lhs), R(rhs); return FCN(L,R); }                          \
+/**/ inline friend integer operator OP (const integer &lhs, const int_type rhs) \
+/**/ { const handle L(lhs), R(rhs); return FCN(L,R); }                          \
+/**/ inline friend integer operator OP (const int_type lhs, const integer &rhs) \
+/**/ { const handle L(lhs), R(rhs); return FCN(L,R); }                          \
+/**/ inline friend integer operator OP (const integer &lhs, const natural &rhs) \
+/**/ { const handle L(lhs), R(rhs); return FCN(L,R); }                          \
+/**/ inline friend integer operator OP (const natural &lhs, const integer &rhs) \
+/**/ { const handle L(lhs), R(rhs); return FCN(L,R); }                          \
+/* unary ops*/ \
+/**/ inline integer & operator OP##=(const integer &rhs)                                \
+/**/ { const handle L(*this), R(rhs); integer res = FCN(L,R); xch(res); return *this; } \
+/**/ inline integer & operator OP##=(const int_type rhs)                                \
+/**/ { const handle L(*this), R(rhs); integer res = FCN(L,R); xch(res); return *this; } \
+/**/ inline integer & operator OP##=(const natural &rhs)                                \
+/**/ { const handle L(*this), R(rhs); integer res = FCN(L,R); xch(res); return *this; } 
 
             //__________________________________________________________________
             //
@@ -112,7 +126,7 @@ namespace yack
             //
             // subtraction
             //__________________________________________________________________
-            integer  operator-() const;
+            integer  operator-() const; //!< change sign
             integer &operator--();      //!< pre  decrease operator
             integer  operator--(int);   //!< post decrease operator
             YACK_APZ_REP(-,sub)
@@ -145,8 +159,10 @@ namespace yack
             class handle : public handle_, public natural::handle
             {
             public:
-                explicit handle(const integer &) throw();
-                explicit handle(const int_type ) throw();
+                explicit handle(const integer  &) throw();
+                explicit handle(const int_type &) throw();
+                explicit handle(const natural  &) throw();
+                explicit handle(uint_type      &) throw();
                 virtual ~handle() throw();
 
                 const sign_type s;
@@ -164,9 +180,9 @@ namespace yack
         };
     }
     
-    typedef apex::integer apz;
+    typedef apex::integer apz; //!< alias
     
 }
 
 #endif
-        
+

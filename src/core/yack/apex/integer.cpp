@@ -112,7 +112,7 @@ namespace yack
         {
         }
 
-        integer:: handle:: handle(const int_type I) throw() :
+        integer:: handle:: handle(const int_type &I) throw() :
         handle_(I),
         natural::handle(u),
         s( __sign::of(I) )
@@ -123,6 +123,23 @@ namespace yack
         {
             
         }
+
+
+        integer:: handle:: handle(const natural &N) throw() :
+        handle_(),
+        natural::handle(N),
+        s( (N>0) ? positive : __zero__ )
+        {
+        }
+
+        integer:: handle:: handle(uint_type &N) throw() :
+        handle_(),
+        natural::handle(N),
+        s( (N>0) ? positive : __zero__ )
+        {
+        }
+
+
 
     }
 

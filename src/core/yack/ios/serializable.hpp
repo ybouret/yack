@@ -32,6 +32,7 @@ namespace yack
             // non-virtual interface
             //__________________________________________________________________
             size_t  save_class_ui(ostream &) const; //!< emit strlen(class_uid) and class_uid
+            size_t  marshal(ostream &) const;       //!< save_class_ui, serialize
 
             //__________________________________________________________________
             //

@@ -238,6 +238,12 @@ set(apex_z ${apex_z_impl} ${apex_z_decl})
 SOURCE_GROUP(apex/z FILES ${apex_z})
 install( FILES ${apex_z_decl} DESTINATION include/yack/apex/z ) 
 
+file(GLOB apex_q_impl yack/apex/q/*.cpp)
+file(GLOB apex_q_decl yack/apex/q/*.hpp)
+set(apex_q ${apex_q_impl} ${apex_q_decl})
+SOURCE_GROUP(apex/q FILES ${apex_q})
+install( FILES ${apex_q_decl} DESTINATION include/yack/apex/q ) 
+
 ########################################################################
 ##
 ## ios
@@ -412,7 +418,7 @@ ${container} ${container_matrix}
 ${sequence}
 ${memory} ${memory_allocator} ${memory_small} ${memory_large} ${memory_joint} ${memory_buffer}
 ${fft}
-${apex} ${apex_m} ${apex_n} ${apex_z}
+${apex} ${apex_m} ${apex_n} ${apex_z} ${apex_q}
 ${concurrent} ${concurrent_quark} ${concurrent_loop} ${concurrent_queue}
 ${ios} ${ios_c} ${ios_gz} ${ios_fmt}
 ${randomized}

@@ -88,6 +88,7 @@ namespace yack
             characters & operator<<(const char   *msg); //!< add a message
             characters & operator<<(const uint8_t chr); //!< add a byte
 
+            //! display as C-style string
             template <typename OSTREAM> inline
             friend OSTREAM & operator<<(OSTREAM &os, const characters &chars)
             {

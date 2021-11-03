@@ -40,6 +40,7 @@ namespace yack
         static void critical_win(const uint32_t err, const char *ctx) throw();
 #endif
 
+        //! helper for never_get_here code
         static  void never_get_here(const char *ctx) throw();
       
     };
