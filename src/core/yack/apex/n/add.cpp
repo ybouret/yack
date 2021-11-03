@@ -94,20 +94,20 @@ namespace yack
 
         natural & natural:: operator++()
         {
-            const handle lhs(*this);
-            word_type    one = 1;
-            const handle rhs(one);
-            natural      res = add(lhs,rhs);
+            static word_type    one = 1;
+            static const handle rhs(one);
+            const handle        lhs(*this);
+            natural             res = add(lhs,rhs);
             xch(res);
             return *this;
         }
 
         natural  natural:: operator++(int)
         {
-            const handle lhs(*this);
-            word_type    one = 1;
-            const handle rhs(one);
-            natural      res = add(lhs,rhs);
+            static word_type    one = 1;
+            static const handle rhs(one);
+            const handle        lhs(*this);
+            natural             res = add(lhs,rhs);
             xch(res);
             return res;
         }

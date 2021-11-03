@@ -13,9 +13,8 @@ namespace yack
 
         integer & integer:: operator++()
         {
-            static const int_type one = 1;
-            const handle L(*this);
-            const handle R(one);
+            static const handle R(1);
+            const        handle L(*this);
             integer      I = add(L,R);
             xch(I);
             return *this;
@@ -23,9 +22,8 @@ namespace yack
 
         integer integer:: operator++(int)
         {
-            static const int_type one = 1;
-            const handle L(*this);
-            const handle R(one);
+            static const handle R(1);
+            const        handle L(*this);
             integer      I = add(L,R);
             xch(I);
             return I;

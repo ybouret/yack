@@ -40,6 +40,16 @@ YACK_UTEST(apz)
         { const apz D = L-r; YACK_ASSERT(D==d); }
         { apz D = L; D -= R; YACK_ASSERT(D==d); }
         { apz D = L; D -= r; YACK_ASSERT(D==d); }
+
+        const apn U(ran,1+ran.leq(20));
+        {
+            apz X(ran,1+ran.leq(20));
+            apz Y = X+U;
+            Y += U;
+            Y  = Y - 2*U;
+            YACK_ASSERT(X==Y);
+        }
+
     }
 
     std::cerr << "[MUL/DIV]" << std::endl;
@@ -67,6 +77,16 @@ YACK_UTEST(apz)
         { const apz Q = L/r; YACK_ASSERT(Q==q); }
         { apz Q = L; Q /= R; YACK_ASSERT(Q==q); }
         { apz Q = L; Q /= r; YACK_ASSERT(Q==q); }
+
+        const apn U(ran,1+ran.leq(20));
+        {
+            apz X(ran,1+ran.leq(20));
+            apz Y = X*U;
+            Y *= U;
+            Y /= U;
+            Y = Y/U;
+            YACK_ASSERT(X==Y);
+        }
 
     }
 

@@ -2,6 +2,7 @@
 #include "yack/type/utils.hpp"
 #include "yack/system/exception.hpp"
 #include <cerrno>
+#include "yack/randomized/bits.hpp"
 
 namespace yack
 {
@@ -43,6 +44,19 @@ namespace yack
                     throw libc::exception(EINVAL,"%s(zero,n>0)",clid);
                 }
             }
+        }
+
+        integer:: integer(const natural &N) :
+        s( (N>0) ? positive : __zero__ ),
+        n( N )
+        {
+        }
+
+        integer:: integer(randomized::bits &ran, const size_t nbits) :
+        s(nbits<=0?__zero__ : (ran.choice()?positive:negative)),
+        n(ran,nbits)
+        {
+            
         }
 
         
@@ -132,15 +146,7 @@ namespace yack
         {
         }
 
-        integer:: handle:: handle(uint_type &N) throw() :
-        handle_(),
-        natural::handle(N),
-        s( (N>0) ? positive : __zero__ )
-        {
-        }
-
-
-
+        
     }
 
 }

@@ -93,7 +93,7 @@ namespace yack
             //__________________________________________________________________
             virtual size_t      serialize(ios::ostream &) const;          //!< serialize content as readable
             virtual const char *class_uid()       const throw();          //!< clid
-            static  natural construct(ios::istream &, size_t &cumul); //!< reload a serialized natural
+            static  natural     construct(ios::istream &, size_t &cumul); //!< reload a serialized natural
             
             //__________________________________________________________________
             //

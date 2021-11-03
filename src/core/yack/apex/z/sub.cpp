@@ -17,20 +17,18 @@ namespace yack
 
         integer & integer:: operator--()
         {
-            static const int_type minus_one = -1;
-            const handle L(*this);
-            const handle R(minus_one);
-            integer      I = add(L,R);
+            static const handle R(-1);
+            const handle        L(*this);
+            integer             I = add(L,R);
             xch(I);
             return *this;
         }
 
         integer integer:: operator--(int)
         {
-            static const int_type minus_one = -1;
-            const handle L(*this);
-            const handle R(minus_one);
-            integer      I = add(L,R);
+            static const handle R(-1);
+            const handle        L(*this);
+            integer             I = add(L,R);
             xch(I);
             return I;
         }

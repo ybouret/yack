@@ -36,13 +36,15 @@ namespace yack
             //
             // C++
             //__________________________________________________________________
-            virtual ~integer() throw();                //!< cleanup
-            integer();                                 //!< default=0
-            integer(const int_type z);                 //!< from integral type
-            integer(const integer &z);                 //!< copy
-            integer(const sign_type, const natural &); //!< s+n
-            integer & operator=(const integer  &);     //!< assign by copy/xch
-            integer & operator=(const int_type z);     //!< assign by copy/xch
+            virtual ~integer() throw();                      //!< cleanup
+            integer();                                       //!< default=0
+            integer(const int_type z);                       //!< from integral type
+            integer(const integer &z);                       //!< copy
+            integer(const sign_type, const natural &);       //!< s+n
+            integer(const natural &);                        //!< (positive) value
+            integer & operator=(const integer  &);           //!< assign by copy/xch
+            integer & operator=(const int_type z);           //!< assign by copy/xch
+            integer(randomized::bits &, const size_t nbits); //!< make exactly nbits, and random/random sign
 
             //__________________________________________________________________
             //
@@ -67,6 +69,7 @@ namespace yack
             //
             // comparison
             //__________________________________________________________________
+
             //! build API
 #define     YACK_APZ_REP_NO_THROW(PROLOG,CALL)                           \
 /**/        inline PROLOG (const integer &lhs, const integer &rhs) throw() \
@@ -93,25 +96,29 @@ namespace yack
             YACK_APZ_REP_CMP(<)
             YACK_APZ_REP_CMP(>)
 
+            //__________________________________________________________________
+            //
             //! build algebraic operators
+            //__________________________________________________________________
+
 #define     YACK_APZ_REP(OP,FCN) \
-/**/ inline friend integer operator OP (const integer &lhs, const integer &rhs) \
-/**/ { const handle L(lhs), R(rhs); return FCN(L,R); }                          \
-/**/ inline friend integer operator OP (const integer &lhs, const int_type rhs) \
-/**/ { const handle L(lhs), R(rhs); return FCN(L,R); }                          \
-/**/ inline friend integer operator OP (const int_type lhs, const integer &rhs) \
-/**/ { const handle L(lhs), R(rhs); return FCN(L,R); }                          \
-/**/ inline friend integer operator OP (const integer &lhs, const natural &rhs) \
-/**/ { const handle L(lhs), R(rhs); return FCN(L,R); }                          \
-/**/ inline friend integer operator OP (const natural &lhs, const integer &rhs) \
-/**/ { const handle L(lhs), R(rhs); return FCN(L,R); }                          \
-/* unary ops*/ \
-/**/ inline integer & operator OP##=(const integer &rhs)                                \
-/**/ { const handle L(*this), R(rhs); integer res = FCN(L,R); xch(res); return *this; } \
-/**/ inline integer & operator OP##=(const int_type rhs)                                \
-/**/ { const handle L(*this), R(rhs); integer res = FCN(L,R); xch(res); return *this; } \
-/**/ inline integer & operator OP##=(const natural &rhs)                                \
-/**/ { const handle L(*this), R(rhs); integer res = FCN(L,R); xch(res); return *this; } 
+/**/        inline friend integer operator OP (const integer &lhs, const integer &rhs)         \
+/**/        { const handle L(lhs), R(rhs); return FCN(L,R); }                                  \
+/**/        inline friend integer operator OP (const integer &lhs, const int_type rhs)         \
+/**/        { const handle L(lhs), R(rhs); return FCN(L,R); }                                  \
+/**/        inline friend integer operator OP (const int_type lhs, const integer &rhs)         \
+/**/        { const handle L(lhs), R(rhs); return FCN(L,R); }                                  \
+/**/        inline friend integer operator OP (const integer &lhs, const natural &rhs)         \
+/**/        { const handle L(lhs), R(rhs); return FCN(L,R); }                                  \
+/**/        inline friend integer operator OP (const natural &lhs, const integer &rhs)         \
+/**/        { const handle L(lhs), R(rhs); return FCN(L,R); }                                  \
+/*          unary ops       */                                                                 \
+/**/        inline integer & operator OP##=(const integer &rhs)                                \
+/**/        { const handle L(*this), R(rhs); integer res = FCN(L,R); xch(res); return *this; } \
+/**/        inline integer & operator OP##=(const int_type rhs)                                \
+/**/        { const handle L(*this), R(rhs); integer res = FCN(L,R); xch(res); return *this; } \
+/**/        inline integer & operator OP##=(const natural &rhs)                                \
+/**/        { const handle L(*this), R(rhs); integer res = FCN(L,R); xch(res); return *this; }
 
             //__________________________________________________________________
             //
@@ -144,6 +151,8 @@ namespace yack
             YACK_APZ_REP(/,div)
 
         private:
+
+            //! data to hold an uint_type to use natural::handle
             class handle_
             {
             public:
@@ -156,13 +165,13 @@ namespace yack
                 YACK_DISABLE_COPY_AND_ASSIGN(handle_);
             };
 
+            //! local handle for multiple types of calls
             class handle : public handle_, public natural::handle
             {
             public:
                 explicit handle(const integer  &) throw();
                 explicit handle(const int_type &) throw();
                 explicit handle(const natural  &) throw();
-                explicit handle(uint_type      &) throw();
                 virtual ~handle() throw();
 
                 const sign_type s;
@@ -170,12 +179,12 @@ namespace yack
                 YACK_DISABLE_COPY_AND_ASSIGN(handle);
             };
 
-            static int       cmp(const  handle &lh, const handle &rh) throw();
+            static int        cmp(const handle &lh, const handle &rh) throw();
             static sign_type scmp(const handle &lh, const handle &rh) throw();
-            static integer   add(const handle &lh, const handle &rh);
-            static integer   sub(const handle &lh, const handle &rh);
-            static integer   mul(const handle &lh, const handle &rh);
-            static integer   div(const handle &lh, const handle &rh);
+            static integer    add(const handle &lh, const handle &rh);
+            static integer    sub(const handle &lh, const handle &rh);
+            static integer    mul(const handle &lh, const handle &rh);
+            static integer    div(const handle &lh, const handle &rh);
 
         };
     }
