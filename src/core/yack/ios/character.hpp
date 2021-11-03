@@ -5,7 +5,7 @@
 
 #include "yack/memory/small/exclusive.hpp"
 #include "yack/data/list/concrete.hpp"
-#include "yack/data/pool/cxx.hpp"
+#include "yack/data/pool/concrete.hpp"
 
 namespace yack
 {
@@ -65,6 +65,14 @@ namespace yack
         //______________________________________________________________________
         //
         //
+        //! pool for local cache
+        //
+        //______________________________________________________________________
+        typedef kpool<uint8_t,character> char_cache;
+
+        //______________________________________________________________________
+        //
+        //
         //! concrete list of characters
         //
         //______________________________________________________________________
@@ -103,14 +111,7 @@ namespace yack
 
 
 
-        //______________________________________________________________________
-        //
-        //
-        //! pool for local cache
-        //
-        //______________________________________________________________________
-        typedef cxx_pool_of<character> char_cache;
-        
+       
     
         
     }

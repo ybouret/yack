@@ -9,6 +9,71 @@ namespace yack
 {
     const char utf8:: clid[] = "UTF-8";
     
+    utf8:: utf8() throw() : code(0) {}
+    
+    
+    const utf8::bank utf8::banks[4] =
+    {
+        { 0x0000,  0x007f },
+        { 0x0080,  0x07ff },
+        { 0x0800,  0x7777 },
+        { 0x10000, 0x10ffff}
+    };
+    
+    bool utf8::bank:: owns(const type codepoint) const throw()
+    {
+        return codepoint >= lower && codepoint <= upper;
+    }
+    
+    
+    size_t utf8:: validate(type &codepoint)
+    {
+        for(size_t i=0;i<sizeof(banks)/sizeof(banks[0]);++i)
+        {
+            if(banks[i].owns(codepoint)) return ++i;
+        }
+        codepoint = 0;
+        throw exception("%s invalid U+%X",clid,codepoint);
+    }
+
+    
+    utf8:: utf8(const type codepoint) :
+    code(codepoint),
+    clen(validate(code))
+    {
+    }
+    
+    utf8:: utf8(const utf8 &other) throw() : code(other.code) {}
+    
+    utf8 & utf8:: operator=(const utf8 &other) throw()
+    {
+        utf8 temp(other);
+        xch(temp);
+        return *this;
+    }
+    
+    void utf8:: xch(utf8 &other) throw()
+    {
+        cswap(code,other.code);
+        cswap(clen,other.clen);
+    }
+
+    
+    utf8 & utf8:: operator=(type codepoint)
+    {
+        utf8 temp(codepoint);
+        xch(temp);
+        return *this;
+    }
+    
+    
+
+    
+}
+
+namespace yack
+{
+    
     
     size_t utf8:: encode(uint8_t data[], uint32_t code)
     {
@@ -104,6 +169,15 @@ namespace yack
     ERROR:
         throw libc::exception(EINVAL,"%s invalid first byte 0x%02x",clid,data);
     }
+    
+    static inline uint8_t  decode6bits(const uint8_t data)
+    {
+        if(data>=0x80&&data<=0xBF)
+        {
+            return (data&63);
+        }
+        throw libc::exception(EINVAL,"%s invalid coding byte 0x%02x",utf8::clid,data);
+    }
 
     utf8::decoding utf8::decode_next(uint32_t      &code,
                                      const uint8_t  data,
@@ -134,14 +208,7 @@ namespace yack
         throw exception("%s corrupted decoder",clid);
     }
     
-    uint8_t  utf8::decode6bits(const uint8_t data)
-    {
-        if(data>=0x80&&data<=0xBF)
-        {
-            return (data&63);
-        }
-        throw libc::exception(EINVAL,"%s invalid coding byte 0x%02x",clid,data);
-    }
+  
 
     uint32_t utf8::decode(const uint8_t data[], const size_t size)
     {

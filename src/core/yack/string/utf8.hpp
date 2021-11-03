@@ -13,14 +13,29 @@ namespace yack
     //! UTF-8 encoding/decoding
     //
     //__________________________________________________________________________
-    struct utf8
+    class utf8
     {
+    public:
         //______________________________________________________________________
         //
         // types and definitions
         //______________________________________________________________________
         static const char clid[]; //!< "UTF-8"
-       
+        typedef  uint32_t type;
+      
+        
+        //______________________________________________________________________
+        //
+        // C++
+        //______________________________________________________________________
+        utf8() throw();
+        utf8(const type codepoint);
+        utf8(const utf8 &) throw();
+        utf8 & operator=( const utf8 &other ) throw();
+        utf8 & operator=( type codepoint);
+      
+        void xch(utf8 &) throw();
+        
         //! decoding status
         enum decoding
         {
@@ -44,8 +59,16 @@ namespace yack
         static uint32_t decode(const uint8_t data[], const size_t size);
         
     private:
-        static uint8_t  decode6bits(const uint8_t data);
+        type    code;
+        size_t  clen;
         
+        static size_t validate( type &codepoint);
+        struct bank {
+            type lower;
+            type upper;
+            bool owns(const type) const throw();
+        };
+        static const bank banks[4];
     };
     
 }
