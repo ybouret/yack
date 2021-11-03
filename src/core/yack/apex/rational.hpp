@@ -54,6 +54,7 @@ namespace yack
             YACK_APQ_CTOR(integer&,natural&)
             YACK_APQ_CTOR(int_type,natural&)
             YACK_APQ_CTOR(integer&,uint_type)
+            YACK_APQ_CTOR(natural&,natural&)
 
 
             //__________________________________________________________________
@@ -63,6 +64,8 @@ namespace yack
             static int compare(const rational &lhs, const rational &rhs); //!< comparison
             static int compare(const rational &lhs, const integer  &rhs); //!< comparison
             static int compare(const integer  &lhs, const rational &rhs); //!< comparison
+            static int compare(const rational &lhs, const int_type  rhs); //!< comparison
+            static int compare(const int_type  lhs, const rational &rhs); //!< comparison
 
 
 

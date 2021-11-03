@@ -11,7 +11,7 @@ namespace yack
     //__________________________________________________________________________
     //
     //
-    //! pool with nodes based on object::memory
+    //! conrete pool with nodes based on object::memory
     //
     //__________________________________________________________________________
     template <typename T>
