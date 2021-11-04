@@ -117,23 +117,24 @@ YACK_UTEST(string_utf8)
     YACK_SIZEOF(utf8);
 
     YACK_SIZEOF(UTF8);
-    const size_t max_bits = 21;
-    for(size_t i=0;i<0xffffffff;++i)
+    size_t count = 0;
+    for(size_t j=0;j<UTF8::num_banks;++j)
     {
-        if(bits_for(i)>max_bits)
+        const UTF8::range<UTF8::code_t> &plan = UTF8::code_bank[j];
+        for(uint32_t i=plan.lower;i<=plan.upper;++i)
         {
-            --i;
-            YACK_ASSERT(max_bits==bits_for(i));
-            const apn I = i;
-            YACK_CHECK(max_bits==I.bits());
-            I.output_dec(std::cerr) << std::endl;
-            I.output_hex(std::cerr) << std::endl;
-            I.output_bin(std::cerr) << std::endl;
-
-
-            break;
+            ++count;
+            const UTF8 U(i);
+            if(i!=*U)
+            {
+                std::cerr << i << " != "<< *U << std::endl;
+            }
+            YACK_ASSERT(i==*U);
+            YACK_ASSERT(j+1==U.bytes());
         }
     }
+    std::cerr << "processed " << count << " " << UTF8::clid << std::endl;
+    
 
 
 }

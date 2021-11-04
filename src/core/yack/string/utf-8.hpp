@@ -27,7 +27,7 @@ namespace yack
         template <typename T> struct range {
             T lower;
             T upper;
-            inline bool owns(const T value) throw()
+            inline bool owns(const T value) const throw()
             {
                 return value>=lower && value<=upper;
             }
@@ -40,7 +40,22 @@ namespace yack
         static const range<code_t> code_bank[num_banks];
         static const range<byte_t> byte_bank[num_banks];
         static const range<byte_t> continuation;
-
+        
+        static size_t validate(code_t &codepoint);
+        
+        UTF8(const code_t);
+        UTF8(const UTF8&) throw();
+        UTF8 & operator=(const UTF8 &) throw();
+        UTF8 & operator=(code_t);
+        ~UTF8() throw();
+        
+        size_t bytes()     const throw(); //! [1:4]
+        code_t operator*() const throw();
+        
+    private:
+        code_t code;
+        
+        
     };
 
 }
