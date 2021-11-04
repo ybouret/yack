@@ -1,6 +1,10 @@
 #include "yack/string/utf8.hpp"
+#include "yack/string/utf-8.hpp"
+
 #include "yack/utest/run.hpp"
 #include "yack/type/utils.hpp"
+#include "yack/apex/natural.hpp"
+
 #include <cstring>
 
 using namespace yack;
@@ -111,6 +115,27 @@ YACK_UTEST(string_utf8)
     std::cerr << std::endl;
     
     YACK_SIZEOF(utf8);
+
+    YACK_SIZEOF(UTF8);
+    const size_t max_bits = 21;
+    for(size_t i=0;i<0xffffffff;++i)
+    {
+        if(bits_for(i)>max_bits)
+        {
+            --i;
+            YACK_ASSERT(max_bits==bits_for(i));
+            const apn I = i;
+            YACK_CHECK(max_bits==I.bits());
+            I.output_dec(std::cerr) << std::endl;
+            I.output_hex(std::cerr) << std::endl;
+            I.output_bin(std::cerr) << std::endl;
+
+
+            break;
+        }
+    }
+
+
 }
 YACK_UDONE()
 
