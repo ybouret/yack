@@ -114,6 +114,56 @@ namespace yack
 
         //______________________________________________________________________
         //
+        // multiplication
+        //______________________________________________________________________
+
+        //! by scalar
+        inline friend v3d operator * (const T factor, const v3d &rhs) throw()
+        {
+            return v3d(factor*rhs.x, factor*rhs.y, factor*rhs.z);
+        }
+
+        inline friend v3d operator * ( const v3d &lhs, const T factor) throw()
+        {
+            return v3d(factor*lhs.x, factor*lhs.y, factor*lhs.z);
+        }
+
+        //! by scalar
+        inline v3d & operator*=(const T factor) throw()
+        {
+            x*=factor;
+            y*=factor;
+            z*=factor;
+            return *this;
+        }
+
+        //! scalar product
+        inline friend T operator*( const v3d &lhs, const v3d &rhs) throw()
+        {
+            return lhs.x*rhs.x + lhs.y*rhs.y + lhs.z*rhs.z;
+        }
+
+        //______________________________________________________________________
+        //
+        // division
+        //______________________________________________________________________
+        //! by scalar
+        inline friend v3d operator / ( const v3d &lhs, const T factor) throw()
+        {
+            return v3d(lhs.x/factor,lhs.y/factor,lhs.z/factor);
+        }
+
+        //! in place
+        inline v3d & operator/=(const T factor) throw()
+        {
+            x/=factor;
+            y/=factor;
+            z/=factor;
+            return *this;
+        }
+
+        //______________________________________________________________________
+        //
         // norms
         //______________________________________________________________________
       

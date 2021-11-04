@@ -326,8 +326,8 @@ namespace yack
                 virtual ~handle() throw();                //!< cleanup
 
                 void display(std::ostream &) const; //!< helper
-                bool is0() const throw();           //!< test is 0
-                bool is1() const throw();           //!< test is 1
+                bool is0() const throw();           //!< test if is 0
+                bool is1() const throw();           //!< test if is 1
                 
             private:
                 YACK_DISABLE_COPY_AND_ASSIGN(handle);

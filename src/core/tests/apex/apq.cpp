@@ -14,6 +14,10 @@ YACK_UTEST(apq)
     { apq q = 7; std::cerr << q << std::endl; }
     { apq q(5,10); std::cerr << q << std::endl; }
 
+    {
+        
+    }
+
 }
 YACK_UDONE()
 
