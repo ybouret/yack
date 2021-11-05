@@ -21,21 +21,25 @@ namespace yack
 
         int rational:: compare(const rational &lhs, const int_type  rhs)
         {
-            const  integer R = lhs.den * rhs;
+            const  integer::handle lh(lhs.den);
+            const  integer::handle rh(rhs);
+            const  integer R = integer::mul(lh,rh);
             return integer::compare(lhs.num,R);
         }
         
         
         int rational:: compare(const integer  &lhs, const rational &rhs)
         {
-            const integer L = lhs * rhs.den;
+            const  integer L = lhs * rhs.den;
             return integer::compare(lhs,rhs.num);
         }
         
         int rational:: compare(const int_type  lhs, const rational &rhs)
         {
-            const integer L = lhs * rhs.den;
-            return integer::compare(lhs,rhs.num);
+            const  integer::handle lh(lhs);
+            const  integer::handle rh(rhs.den);
+            const  integer         L =  integer::mul(lh,rh);
+            return integer::compare(L,rhs.num);
         }
 
         int rational:: compare(const rational &lhs, const natural  &rhs)
@@ -46,7 +50,7 @@ namespace yack
 
         int rational:: compare(const natural  &lhs, const rational &rhs)
         {
-            const integer L = lhs * rhs.den;
+            const  integer L = lhs * rhs.den;
             return integer::compare(lhs,rhs.num);
         }
     }
