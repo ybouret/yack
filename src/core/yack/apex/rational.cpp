@@ -34,6 +34,13 @@ namespace yack
             return tmp;
         }
 
+        rational rational:: mod2() const
+        {
+            const  integer num2 = num.mod2();
+            const  natural den2 = den.mod2();
+            return rational(num2,den2);
+        }
+
 
 
         rational:: rational(const int_type N) : number(), num(N), den(1) {}
@@ -72,7 +79,7 @@ namespace yack
         num(ran,nbits),
         den(ran,dbits<=0?1:dbits)
         {
-
+            reduce();
         }
         
 

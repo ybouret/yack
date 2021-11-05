@@ -27,6 +27,20 @@ namespace yack
             }
         }
 
+        integer integer:: mod2() const
+        {
+            if(__zero__!=s)
+            {
+                const  natural tmp = natural::squared(n);
+                return integer(tmp);
+            }
+            else
+            {
+                return *this;
+            }
+
+        }
+
         integer:: integer(int_type z) :
         number(),
         s( __sign::of(z) ),

@@ -151,11 +151,35 @@ namespace yack
         //! z1/z2
         inline friend complex operator / (const complex &lhs, const complex &rhs) throw()
         {
-            const T rere = lhs.re * rhs.re;
-            const T imim = lhs.im * rhs.im;
-            return complex(rere-imim,(lhs.re+lhs.im)*(rhs.re+rhs.im) - rere - imim);
+            return (lhs*rhs.conj())/rhs.mod2();
         }
 
+        ///! z1 /= z2
+        inline complex & operator/=(const complex &rhs) throw()
+        {
+            const complex res = (*this) / rhs;
+            return ( (*this) = (*this) / rhs);
+        }
+
+        //! z/x
+        inline friend complex operator / (const complex &lhs, const T rhs ) throw()
+        {
+            return complex(lhs.re/rhs,lhs.im/rhs);
+        }
+
+        //! z /= x
+        inline complex & operator/=(const T rhs) throw()
+        {
+            re/=rhs;
+            im/=rhs;
+            return *this;
+        }
+
+        //! x / z
+        inline friend complex operator / (const T lhs, const complex &rhs) throw()
+        {
+            return complex(lhs,0) / rhs;
+        }
 
         //______________________________________________________________________
         //

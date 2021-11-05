@@ -157,8 +157,9 @@ namespace yack
             //
             // other methods
             //__________________________________________________________________
-            integer abs() const;
-
+            integer abs()  const; //!< |z|
+            integer mod2() const; //!< |z|^2
+            
         private:
             friend class rational;
             
