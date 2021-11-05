@@ -57,7 +57,12 @@ namespace yack
             if(0==den) throw libc::exception(EDOM,"rational(zero denominator)");
         }
 
+        rational:: rational(randomized::bits &ran, const size_t nbits, const size_t dbits) :
+        num(ran,nbits),
+        den(ran,dbits<=0?1:dbits)
+        {
 
+        }
         
 
         std::ostream &operator<<(std::ostream &os, const rational &q)

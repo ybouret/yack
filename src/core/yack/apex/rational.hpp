@@ -56,6 +56,8 @@ namespace yack
             YACK_APQ_CTOR(integer&,uint_type)
             YACK_APQ_CTOR(natural&,natural&)
 
+            rational(randomized::bits &, const size_t nbits, const size_t dbits); //!< random
+
 
             //__________________________________________________________________
             //
@@ -91,11 +93,24 @@ namespace yack
 
             YACK_APQ_CMP_IMPL()
 
+#define     YACK_APQ_DECL(OP,CALL) \
+/**/        YACK_APQ_REP(inline friend rational operator,OP,{return CALL(lhs,rhs);})\
+/**/        inline rational & operator OP##=(const rational &rhs) { rational _ = CALL(*this,rhs); xch(_); return *this; } \
+/**/        inline rational & operator OP##=(const integer  &rhs) { rational _ = CALL(*this,rhs); xch(_); return *this; } \
+/**/        inline rational & operator OP##=(const natural  &rhs) { rational _ = CALL(*this,rhs); xch(_); return *this; } \
+/**/        inline rational & operator OP##=(const int_type  rhs) { rational _ = CALL(*this,rhs); xch(_); return *this; }
+
+
             //__________________________________________________________________
             //
             // ADD
             //__________________________________________________________________
             YACK_APQ_REP(static rational,add,;)
+            YACK_APQ_DECL(+,add)
+            rational  operator+() const; //!< self
+            rational &operator++();      //!< pre  increase operator
+            rational  operator++(int);   //!< post increase operator
+
 
             //__________________________________________________________________
             //
