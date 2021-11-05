@@ -15,10 +15,12 @@ namespace yack
             return rational(num,den);
         }
 
-#define YACK_APQ_ADD_RHS()         \
-const integer R   = rhs * lhs.den; \
-const integer num = lhs.num + R;   \
-return rational(num,lhs.den)
+#define YACK_APQ_ADD_RHS()               \
+const integer::handle lh(lhs.den);       \
+const integer::handle rh(rhs);           \
+const integer R   = integer::mul(lh,rh); \
+const integer num = lhs.num+R;           \
+return rational(num,lhs.den);
 
         rational rational:: add(const rational &lhs, const integer &rhs)
         {
@@ -35,10 +37,12 @@ return rational(num,lhs.den)
             YACK_APQ_ADD_RHS();
         }
 
-#define YACK_APQ_ADD_LHS()         \
-const integer L   = lhs * rhs.den; \
-const integer num = L + rhs.num;   \
-return rational(num,rhs.den)
+#define YACK_APQ_ADD_LHS()                     \
+const integer::handle lh(lhs);                 \
+const integer::handle rh(rhs.den);             \
+const integer         L = integer::mul(lh,rh); \
+const integer         num = L + rhs.num;       \
+return rational(num,rhs.den);
 
         rational rational:: add(const integer  &lhs, const rational &rhs)
         {

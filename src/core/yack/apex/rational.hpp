@@ -111,6 +111,16 @@ namespace yack
             rational &operator++();      //!< pre  increase operator
             rational  operator++(int);   //!< post increase operator
 
+            //__________________________________________________________________
+            //
+            // sub
+            //__________________________________________________________________
+            YACK_APQ_REP(static rational,sub,;)
+            YACK_APQ_DECL(-,sub)
+            rational  operator-() const; //!< -self
+            rational &operator--();      //!< pre  increase operator
+            rational  operator--(int);   //!< post increase operator
+
 
             //__________________________________________________________________
             //

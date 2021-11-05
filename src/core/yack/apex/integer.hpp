@@ -10,6 +10,9 @@ namespace yack
     
     namespace apex
     {
+
+        class rational;
+
         //______________________________________________________________________
         //
         //
@@ -151,7 +154,8 @@ namespace yack
             YACK_APZ_REP(/,div)
 
         private:
-
+            friend class rational;
+            
             //! data to hold an uint_type to use natural::handle
             class handle_
             {

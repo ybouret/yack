@@ -6,7 +6,7 @@
 
 using namespace yack;
 
-template <typename T> static inline void check_cmp(const apq &q)
+template <typename T> static inline void check_cmp(const apq &q, randomized::bits &)
 {
     const T one = 1;
     const T two = 2;
@@ -24,25 +24,37 @@ template <typename T> static inline void check_cmp(const apq &q)
 }
 
 #define YACK_APQ_CHECK(PROC) \
-PROC<apex::rational>(q);\
-PROC<apex::int_type>(q);\
-PROC<apex::integer>(q);\
-PROC<apex::natural>(q);
+PROC<apex::rational>(q,ran);\
+PROC<apex::int_type>(q,ran);\
+PROC<apex::integer>(q,ran);\
+PROC<apex::natural>(q,ran);
 
-template <typename T> static inline void check_add(const apq &q)
+template <typename T> static inline void check_add(const apq &q, randomized::bits &ran)
 {
-    const apq q1  = 1;
-    const T   one = 1;
-    const apq sum = q+q1;
-    YACK_ASSERT(q+one==sum);
-    YACK_ASSERT(one+q==sum);
+    const T   t   = apex::int_type(ran.in(-1000,1000));
+    const apq Q   = t;
+    const apq sum = q+Q;
+    YACK_ASSERT(q+t==sum);
+    YACK_ASSERT(t+q==sum);
     {
         apq tmp=q;
-        tmp += one;
+        tmp += t;
         YACK_ASSERT(tmp==sum);
     }
+}
 
-
+template <typename T> static inline void check_sub(const apq &q, randomized::bits &ran)
+{
+    const T   t   = apex::int_type(ran.in(-1000,1000));
+    const apq Q   = t;
+    const apq sum = q-Q;
+    YACK_ASSERT(q-t==sum);
+    YACK_ASSERT(t-q==-sum);
+    {
+        apq tmp=q;
+        tmp -= t;
+        YACK_ASSERT(tmp==sum);
+    }
 }
 
 
@@ -65,6 +77,10 @@ YACK_UTEST(apq)
     for(size_t iter=0;iter<1024;++iter)
     {
         const apq q(ran,20,8);
+        {
+            const apq qq = +q;
+            YACK_ASSERT(qq==q);
+        }
         YACK_APQ_CHECK(check_add);
     }
 
@@ -77,6 +93,29 @@ YACK_UTEST(apq)
     for(apq q(-2,3);q<=10;)
     {
         std::cerr << q++ << '/';
+    }
+    std::cerr << std::endl;
+
+    std::cerr << "[SUB]" << std::endl;
+    for(size_t iter=0;iter<1024;++iter)
+    {
+        const apq q(ran,20,8);
+        {
+            const apq m = -q;
+            YACK_ASSERT(0 == m+q );
+        }
+        YACK_APQ_CHECK(check_sub);
+    }
+
+    for(apq q(2,3);q>=-10;)
+    {
+        std::cerr << --q << '/';
+    }
+    std::cerr << std::endl;
+
+    for(apq q(2,3);q>=-10;)
+    {
+        std::cerr << q-- << '/';
     }
     std::cerr << std::endl;
 
