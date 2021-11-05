@@ -59,7 +59,7 @@ namespace yack
 
             //__________________________________________________________________
             //
-            // comparisons
+            // compare functions
             //__________________________________________________________________
 #define     YACK_APQ_REP(PROLOG,FUNCTION,EPILOG)                      \
 /**/        PROLOG FUNCTION (const rational &lhs, const rational &rhs) EPILOG \
@@ -76,7 +76,10 @@ namespace yack
 #define     YACK_APQ_REP_CMP(OP) YACK_APQ_REP(inline friend bool operator,OP,{ return compare(lhs,rhs) OP 0; })
 
 
-
+            //__________________________________________________________________
+            //
+            // comparison operators
+            //__________________________________________________________________
 #define     YACK_APQ_CMP_IMPL()  \
 /**/        YACK_APQ_REP_CMP(==) \
 /**/        YACK_APQ_REP_CMP(!=) \
@@ -87,6 +90,12 @@ namespace yack
 
 
             YACK_APQ_CMP_IMPL()
+
+            //__________________________________________________________________
+            //
+            // ADD
+            //__________________________________________________________________
+            YACK_APQ_REP(static rational,add,;)
 
             //__________________________________________________________________
             //
