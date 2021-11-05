@@ -26,22 +26,24 @@ namespace yack
         static const uint32_t info_mask = 0xff000000; //!< to store info
         static const uint32_t info_move = 24;         //!< info shifting
 
+        //! local range
         template <typename T> struct range {
-            T lower;
-            T upper;
-            inline bool owns(const T value) const throw()
-            {
-                return value>=lower && value<=upper;
-            }
+            T lower; //!< lower bound
+            T upper; //!< upper bound
+
+            //! check insied
+            inline bool owns(const T value) const throw() { return value>=lower && value<=upper; }
+
+            //! compute width
             inline size_t width() const throw() {
                 return 1+size_t(upper)-size_t(lower);
             }
         };
 
-        static const size_t          num_banks = 4;
-        static const range<uint32_t> code_bank[num_banks];
-        static const range<uint8_t>  byte_bank[num_banks];
-        static const range<uint8_t>  continuation;
+        static const size_t          num_banks = 4;         //!< number of banks
+        static const range<uint32_t> code_bank[num_banks];  //!< codes per bank
+        static const range<uint8_t>  byte_bank[num_banks];  //!< first byte per bank
+        static const range<uint8_t>  continuation;          //!< continuation byte
 
         //! decoding status
         enum decoding
@@ -56,11 +58,11 @@ namespace yack
         //
         // C++
         //______________________________________________________________________
-        utf8(const uint32_t);
-        utf8(const utf8&) throw();
-        utf8 & operator=(const utf8 &) throw();
-        utf8 & operator=(uint32_t);
-        ~utf8() throw();
+        utf8(const uint32_t);                   //!< setup
+        utf8(const utf8&) throw();              //!< copy
+        utf8 & operator=(const utf8 &) throw(); //!< assign
+        utf8 & operator=(uint32_t);             //!< assign
+        ~utf8() throw();                        //!< cleanup
 
 
 
@@ -76,10 +78,12 @@ namespace yack
         void          encode(uint8_t *data) const throw(); //!< code to data[bytes]
 
 
-
+        //! define operators
 #define YACK_UTF8_CMP(OP)\
 /**/    inline friend bool operator OP (const utf8 &lhs, const utf8 &rhs) throw()\
 /**/    { return compare(lhs,rhs) OP 0; }
+
+        //! implement operators
 #define YACK_UTF8_COMPARISONS() \
 /**/    YACK_UTF8_CMP(==)       \
 /**/    YACK_UTF8_CMP(!=)       \
@@ -89,6 +93,7 @@ namespace yack
 /**/    YACK_UTF8_CMP(>)        \
 /**/    static int compare(const utf8 &lhs, const utf8 &rhs) throw()
 
+        //! implement operators
         YACK_UTF8_COMPARISONS();
 
         //______________________________________________________________________

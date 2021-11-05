@@ -64,7 +64,35 @@ namespace yack
         // never get here
         return zz_pair;
     }
-    
+
+
+    sign_type __sign:: product(const sign_type lhs, const sign_type rhs) throw()
+    {
+
+        switch(lhs)
+        {
+            case negative:
+                switch(rhs)
+                {
+                    case negative: return positive;
+                    case __zero__: return __zero__;
+                    case positive: return negative;
+                } break;
+
+            case __zero__:
+                return __zero__;
+
+            case positive:
+                switch(rhs)
+                {
+                    case negative: return negative;
+                    case __zero__: return __zero__;
+                    case positive: return positive;
+                } break;
+        }
+        // never get here
+        return __zero__;
+    }
     
     
 }

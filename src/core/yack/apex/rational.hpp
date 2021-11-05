@@ -63,7 +63,8 @@ namespace yack
             //
             // compare functions
             //__________________________________________________________________
-#define     YACK_APQ_REP(PROLOG,FUNCTION,EPILOG)                      \
+            //! preparing all protopype
+#define     YACK_APQ_REP(PROLOG,FUNCTION,EPILOG)                              \
 /**/        PROLOG FUNCTION (const rational &lhs, const rational &rhs) EPILOG \
 /**/        PROLOG FUNCTION (const rational &lhs, const integer  &rhs) EPILOG \
 /**/        PROLOG FUNCTION (const integer  &lhs, const rational &rhs) EPILOG \
@@ -72,16 +73,21 @@ namespace yack
 /**/        PROLOG FUNCTION (const rational &lhs, const natural  &rhs) EPILOG \
 /**/        PROLOG FUNCTION (const natural  &lhs, const rational &rhs) EPILOG
 
+            //! declare all comparison function
             YACK_APQ_REP(static int,compare,;)
 
 
-#define     YACK_APQ_REP_CMP(OP) YACK_APQ_REP(inline friend bool operator,OP,{ return compare(lhs,rhs) OP 0; })
 
 
             //__________________________________________________________________
             //
             // comparison operators
             //__________________________________________________________________
+
+            //! preparing all prototypes
+#define     YACK_APQ_REP_CMP(OP) YACK_APQ_REP(inline friend bool operator,OP,{ return compare(lhs,rhs) OP 0; })
+
+            //! collect all operators
 #define     YACK_APQ_CMP_IMPL()  \
 /**/        YACK_APQ_REP_CMP(==) \
 /**/        YACK_APQ_REP_CMP(!=) \
@@ -91,8 +97,15 @@ namespace yack
 /**/        YACK_APQ_REP_CMP(<)
 
 
+            //! implement all comparisons
             YACK_APQ_CMP_IMPL()
 
+            //__________________________________________________________________
+            //
+            // operators
+            //__________________________________________________________________
+
+            //! declare all operators
 #define     YACK_APQ_DECL(OP,CALL) \
 /**/        YACK_APQ_REP(inline friend rational operator,OP,{return CALL(lhs,rhs);})\
 /**/        inline rational & operator OP##=(const rational &rhs) { rational _ = CALL(*this,rhs); xch(_); return *this; } \
@@ -128,6 +141,13 @@ namespace yack
             //__________________________________________________________________
             YACK_APQ_REP(static rational,mul,;)
             YACK_APQ_DECL(*,mul)
+
+            //__________________________________________________________________
+            //
+            // div
+            //__________________________________________________________________
+            YACK_APQ_REP(static rational,div,;)
+            YACK_APQ_DECL(/,div)
 
             //__________________________________________________________________
             //

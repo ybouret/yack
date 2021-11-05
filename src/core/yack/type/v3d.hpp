@@ -123,6 +123,7 @@ namespace yack
             return v3d(factor*rhs.x, factor*rhs.y, factor*rhs.z);
         }
 
+        //! by scalar
         inline friend v3d operator * ( const v3d &lhs, const T factor) throw()
         {
             return v3d(factor*lhs.x, factor*lhs.y, factor*lhs.z);
@@ -138,7 +139,7 @@ namespace yack
         }
 
         //! scalar product
-        inline friend T operator*( const v3d &lhs, const v3d &rhs) throw()
+        inline friend T operator*(const v3d &lhs, const v3d &rhs) throw()
         {
             return lhs.x*rhs.x + lhs.y*rhs.y + lhs.z*rhs.z;
         }

@@ -71,6 +71,22 @@ template <typename T> static inline void check_mul(const apq &q, randomized::bit
     }
 }
 
+template <typename T> static inline void check_div(const apq &q, randomized::bits &ran)
+{
+    T            t    = apex::int_type(ran.in(-1000,1000));
+    while(t==0)  t    = apex::int_type(ran.in(-1000,1000));
+    const apq    Q    = t;
+    const apq    quot = q/Q;
+    const apq    invq = Q/q;
+    YACK_ASSERT(q/t==quot);
+    YACK_ASSERT(t/q==invq);
+    {
+        apq tmp=q;
+        tmp /= t;
+        YACK_ASSERT(tmp==quot);
+    }
+}
+
 
 YACK_UTEST(apq)
 {
@@ -138,6 +154,13 @@ YACK_UTEST(apq)
     {
         const apq q(ran,20,8);
         YACK_APQ_CHECK(check_mul);
+    }
+
+    std::cerr << "[DIV]" << std::endl;
+    for(size_t iter=0;iter<1024;++iter)
+    {
+        const apq q(ran,20,8);
+        YACK_APQ_CHECK(check_div);
     }
 
 }
