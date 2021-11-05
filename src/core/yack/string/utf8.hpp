@@ -14,7 +14,7 @@ namespace yack
     //! UTF-8 encoding/decoding
     //
     //__________________________________________________________________________
-    class UTF8
+    class utf8
     {
     public:
         //______________________________________________________________________
@@ -56,11 +56,11 @@ namespace yack
         //
         // C++
         //______________________________________________________________________
-        UTF8(const uint32_t);
-        UTF8(const UTF8&) throw();
-        UTF8 & operator=(const UTF8 &) throw();
-        UTF8 & operator=(uint32_t);
-        ~UTF8() throw();
+        utf8(const uint32_t);
+        utf8(const utf8&) throw();
+        utf8 & operator=(const utf8 &) throw();
+        utf8 & operator=(uint32_t);
+        ~utf8() throw();
 
 
 
@@ -70,7 +70,7 @@ namespace yack
         // methods
         //______________________________________________________________________
         static void   validate(uint32_t &codepoint);       //!< check/format codepoint
-        void          xch(UTF8 &)                 throw(); //!< no-throw exchange
+        void          xch(utf8 &)                 throw(); //!< no-throw exchange
         size_t        bytes()               const throw(); //!< [1:4]
         uint32_t      operator*()           const throw(); //!< 21-bits of code
         void          encode(uint8_t *data) const throw(); //!< code to data[bytes]
@@ -78,7 +78,7 @@ namespace yack
 
 
 #define YACK_UTF8_CMP(OP)\
-/**/    inline friend bool operator OP (const UTF8 &lhs, const UTF8 &rhs) throw()\
+/**/    inline friend bool operator OP (const utf8 &lhs, const utf8 &rhs) throw()\
 /**/    { return compare(lhs,rhs) OP 0; }
 #define YACK_UTF8_COMPARISONS() \
 /**/    YACK_UTF8_CMP(==)       \
@@ -87,7 +87,7 @@ namespace yack
 /**/    YACK_UTF8_CMP(>=)       \
 /**/    YACK_UTF8_CMP(<)        \
 /**/    YACK_UTF8_CMP(>)        \
-/**/    static int compare(const UTF8 &lhs, const UTF8 &rhs) throw()
+/**/    static int compare(const utf8 &lhs, const utf8 &rhs) throw()
 
         YACK_UTF8_COMPARISONS();
 
@@ -102,7 +102,7 @@ namespace yack
         static decoding decode_next(uint32_t &code, const uint8_t data, const decoding flag);
 
         //! decode a valid sequence
-        static UTF8 decode(const uint8_t data[], const size_t size);
+        static utf8 decode(const uint8_t data[], const size_t size);
 
     private:
         uint32_t code;

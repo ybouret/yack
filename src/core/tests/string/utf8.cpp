@@ -1,4 +1,4 @@
-#include "yack/string/utf-8.hpp"
+#include "yack/string/utf8.hpp"
 
 #include "yack/utest/run.hpp"
 #include "yack/type/utils.hpp"
@@ -45,11 +45,11 @@ static inline void show(const unsigned dmin[], const unsigned dmax[], const size
 YACK_UTEST(string_utf8)
 {
 
-    YACK_SIZEOF(UTF8);
+    YACK_SIZEOF(utf8);
     size_t total = 0;
-    for(size_t j=0;j<UTF8::num_banks;++j)
+    for(size_t j=0;j<utf8::num_banks;++j)
     {
-        const UTF8::range<uint32_t> &plan = UTF8::code_bank[j];
+        const utf8::range<uint32_t> &plan = utf8::code_bank[j];
         const size_t bytes=j+1;
         std::cerr << "UTF8@bytes=" << bytes << std::endl;
         uint8_t  data[4] = { 0,0,0,0 };
@@ -59,7 +59,7 @@ YACK_UTEST(string_utf8)
         size_t   count   = 0;
         {
             const uint32_t i = plan.lower;
-            const UTF8 U(i);
+            const utf8 U(i);
             YACK_ASSERT(i==*U);
             YACK_ASSERT(bytes==U.bytes());
             U.encode(data);
@@ -69,12 +69,13 @@ YACK_UTEST(string_utf8)
         for(uint32_t i=plan.lower;i<=plan.upper;++i)
         {
             ++count;
-            const UTF8 U(i);
+            const utf8 U(i);
             YACK_ASSERT(i==*U);
             YACK_ASSERT(bytes==U.bytes());
             U.encode(data);
             find(dmin,dmax,data);
-            const UTF8 V = UTF8::decode(data,U.bytes());
+            const utf8 V = utf8::decode(data,U.bytes());
+            YACK_ASSERT(V==U);
         }
 
         total += count;
@@ -82,7 +83,7 @@ YACK_UTEST(string_utf8)
         std::cerr << "\tcount=" << count << std::endl;
         std::cerr << std::endl;
     }
-    std::cerr << "processed " << total << " " << UTF8::clid << std::endl;
+    std::cerr << "processed " << total << " " << utf8::clid << std::endl;
     
 
 

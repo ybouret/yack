@@ -1,6 +1,6 @@
 
 
-#include "yack/string/utf-8.hpp"
+#include "yack/string/utf8.hpp"
 #include "yack/system/exception.hpp"
 #include "yack/system/error.hpp"
 #include <cerrno>
@@ -9,11 +9,11 @@
 
 namespace yack
 {
-    const char UTF8:: clid[] = "UTF-8";
+    const char utf8:: clid[] = "UTF-8";
     
     
     
-    const UTF8::range<uint32_t> UTF8::code_bank[num_banks] =
+    const utf8::range<uint32_t> utf8::code_bank[num_banks] =
     {
         { 0x00000000, 0x0000007f },
         { 0x00000080, 0x000007ff },
@@ -21,7 +21,7 @@ namespace yack
         { 0x00010000, 0x0010FFFF }
     };
     
-    const UTF8::range<uint8_t> UTF8::byte_bank[num_banks] =
+    const utf8::range<uint8_t> utf8::byte_bank[num_banks] =
     {
         { 0x00, 0x7f },
         { 0xc2, 0xdf },
@@ -29,9 +29,9 @@ namespace yack
         { 0xf0, 0xf4 }
     };
     
-    const UTF8:: range<uint8_t> UTF8::continuation = { 0x80, 0xbf };
+    const utf8:: range<uint8_t> utf8::continuation = { 0x80, 0xbf };
     
-    void UTF8:: validate(uint32_t &codepoint)
+    void utf8:: validate(uint32_t &codepoint)
     {
         for(size_t i=0,n=1;i<num_banks;++i,++n)
         {
@@ -46,52 +46,52 @@ namespace yack
         throw libc::exception(EINVAL,"%s invalid codepoint U+%x",clid,temp);
     }
     
-    UTF8:: UTF8(const uint32_t codepoint) :
+    utf8:: utf8(const uint32_t codepoint) :
     code(codepoint)
     {
         validate(code);
     }
     
-    UTF8:: ~UTF8() throw()
+    utf8:: ~utf8() throw()
     {
         code=0;
     }
     
-    UTF8:: UTF8(const UTF8 &U) throw() : code(U.code)
+    utf8:: utf8(const utf8 &U) throw() : code(U.code)
     {
     }
     
-    UTF8 & UTF8::operator=(const UTF8 &U) throw()
+    utf8 & utf8::operator=(const utf8 &U) throw()
     {
         code=U.code;
         return *this;
     }
     
-    UTF8 & UTF8::operator=(uint32_t codepoint)
+    utf8 & utf8::operator=(uint32_t codepoint)
     {
         validate(codepoint);
         code=codepoint;
         return *this;
     }
   
-    size_t UTF8:: bytes() const throw()
+    size_t utf8:: bytes() const throw()
     {
         const size_t res = (code>>info_move);
         assert(res>=1); assert(res<=4);
         return res;
     }
 
-    uint32_t UTF8:: operator*() const throw()
+    uint32_t utf8:: operator*() const throw()
     {
         return (code&code_mask);
     }
 
-    void UTF8:: xch(UTF8 &U) throw()
+    void utf8:: xch(utf8 &U) throw()
     {
         cswap(code,U.code);
     }
 
-    int UTF8::compare(const UTF8 &lhs, const UTF8 &rhs) throw()
+    int utf8::compare(const utf8 &lhs, const utf8 &rhs) throw()
     {
         const uint32_t L = *lhs;
         const uint32_t R = *rhs;
@@ -100,7 +100,7 @@ namespace yack
 
 
 
-    void UTF8:: encode(uint8_t *data) const throw()
+    void utf8:: encode(uint8_t *data) const throw()
     {
         static const uint32_t msk6 = 1|2|4|8|16|32;
         static const uint32_t bit7 = 128;
@@ -141,7 +141,7 @@ namespace yack
 
 namespace yack
 {
-    UTF8::decoding UTF8::decode_init(uint32_t &code, const uint8_t data)
+    utf8::decoding utf8::decode_init(uint32_t &code, const uint8_t data)
     {
         if(data<=0x7f)
         {
@@ -183,10 +183,10 @@ namespace yack
         {
             return (data&63);
         }
-        throw libc::exception(EINVAL,"%s invalid coding byte 0x%02x",UTF8::clid,data);
+        throw libc::exception(EINVAL,"%s invalid coding byte 0x%02x",utf8::clid,data);
     }
 
-    UTF8::decoding UTF8::decode_next(uint32_t      &code,
+    utf8::decoding utf8::decode_next(uint32_t      &code,
                                      const uint8_t  data,
                                      const decoding flag)
     {
@@ -217,7 +217,7 @@ namespace yack
 
 
 
-    UTF8 UTF8::decode(const uint8_t data[], const size_t size)
+    utf8 utf8::decode(const uint8_t data[], const size_t size)
     {
         assert(data!=NULL);
         assert(size>0);
@@ -234,7 +234,7 @@ namespace yack
         {
             case decoding_done:
                 if(left>0) break;
-                return UTF8(code);
+                return utf8(code);
 
             case decoding_wait1:
                 if(left!=1) break;
