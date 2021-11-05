@@ -87,6 +87,38 @@ template <typename T> static inline void check_div(const apq &q, randomized::bit
     }
 }
 
+#include "yack/sequence/vector.hpp"
+
+static void test_large(randomized::bits &ran)
+{
+    const size_t n = 10 + ran.leq(200);
+    vector<apq>  Q(n,as_capacity);
+    for(size_t i=n;i>0;--i) Q.push_back( apq(ran,30,10) );
+    std::cerr << "With #" << n << " apq" << std::endl;
+    std::cerr << "|_add/sub" << std::endl;
+    {
+        apq sum = 0;
+        for(size_t i=n;i>0;--i) sum += Q[i];
+        randomized::shuffle::data(&Q[1],n,ran);
+        for(size_t i=n;i>0;--i) sum -= Q[i];
+        YACK_CHECK(0==sum);
+    }
+
+    std::cerr << "|_mul/div" << std::endl;
+    {
+        apq fac = 1;
+        randomized::shuffle::data(&Q[1],n,ran);
+        for(size_t i=n;i>0;--i) fac *= Q[i];
+        randomized::shuffle::data(&Q[1],n,ran);
+        for(size_t i=n;i>0;--i) fac /= Q[i];
+        YACK_CHECK(1==fac);
+
+    }
+
+
+
+}
+
 
 YACK_UTEST(apq)
 {
@@ -150,18 +182,21 @@ YACK_UTEST(apq)
     std::cerr << std::endl;
 
     std::cerr << "[MUL]" << std::endl;
-    for(size_t iter=0;iter<1024;++iter)
+    for(size_t iter=0;iter<256;++iter)
     {
         const apq q(ran,20,8);
         YACK_APQ_CHECK(check_mul);
     }
 
     std::cerr << "[DIV]" << std::endl;
-    for(size_t iter=0;iter<1024;++iter)
+    for(size_t iter=0;iter<256;++iter)
     {
         const apq q(ran,20,8);
         YACK_APQ_CHECK(check_div);
     }
+
+    std::cerr << "[Large]" << std::endl;
+    test_large(ran);
 
 }
 YACK_UDONE()
