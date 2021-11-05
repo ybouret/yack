@@ -117,7 +117,7 @@ namespace yack
             return *this;
         }
         
-        //! z*z
+        //! z1*z2
         inline friend complex operator * (const complex &lhs, const complex &rhs) throw()
         {
             const T rere = lhs.re * rhs.re;
@@ -144,7 +144,19 @@ namespace yack
         //______________________________________________________________________
         inline real_t mod2() const throw() { return re*re+im*im; }
 
-        
+        //______________________________________________________________________
+        //
+        // DIV
+        //______________________________________________________________________
+        //! z1/z2
+        inline friend complex operator / (const complex &lhs, const complex &rhs) throw()
+        {
+            const T rere = lhs.re * rhs.re;
+            const T imim = lhs.im * rhs.im;
+            return complex(rere-imim,(lhs.re+lhs.im)*(rhs.re+rhs.im) - rere - imim);
+        }
+
+
         //______________________________________________________________________
         //
         //! display
