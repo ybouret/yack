@@ -24,6 +24,17 @@ namespace yack
             coerce(den).xch( coerce(q.den) );
         }
 
+        rational rational:: abs() const
+        {
+            rational tmp  = *this;
+            if(tmp.num.s==negative)
+            {
+                coerce(tmp.num.s) = positive;
+            }
+            return tmp;
+        }
+
+
 
         rational:: rational(const int_type N) : number(), num(N), den(1) {}
         

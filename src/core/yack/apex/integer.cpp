@@ -14,7 +14,19 @@ namespace yack
         }
         
         integer:: integer() : number(), s(__zero__), n(0) {}
-        
+
+        integer integer:: abs() const
+        {
+            if(negative==s)
+            {
+                return integer(positive,n);
+            }
+            else
+            {
+                return *this;
+            }
+        }
+
         integer:: integer(int_type z) :
         number(),
         s( __sign::of(z) ),
