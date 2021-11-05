@@ -47,13 +47,27 @@ template <typename T> static inline void check_sub(const apq &q, randomized::bit
 {
     const T   t   = apex::int_type(ran.in(-1000,1000));
     const apq Q   = t;
-    const apq sum = q-Q;
-    YACK_ASSERT(q-t==sum);
-    YACK_ASSERT(t-q==-sum);
+    const apq dif = q-Q;
+    YACK_ASSERT(q-t==dif);
+    YACK_ASSERT(t-q==-dif);
     {
         apq tmp=q;
         tmp -= t;
-        YACK_ASSERT(tmp==sum);
+        YACK_ASSERT(tmp==dif);
+    }
+}
+
+template <typename T> static inline void check_mul(const apq &q, randomized::bits &ran)
+{
+    const T   t   = apex::int_type(ran.in(-1000,1000));
+    const apq Q   = t;
+    const apq prod = q*Q;
+    YACK_ASSERT(q*t==prod);
+    YACK_ASSERT(t*q==prod);
+    {
+        apq tmp=q;
+        tmp *= t;
+        YACK_ASSERT(tmp==prod);
     }
 }
 
@@ -118,6 +132,13 @@ YACK_UTEST(apq)
         std::cerr << q-- << '/';
     }
     std::cerr << std::endl;
+
+    std::cerr << "[MUL]" << std::endl;
+    for(size_t iter=0;iter<1024;++iter)
+    {
+        const apq q(ran,20,8);
+        YACK_APQ_CHECK(check_mul);
+    }
 
 }
 YACK_UDONE()
