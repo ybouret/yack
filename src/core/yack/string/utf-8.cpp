@@ -2,6 +2,7 @@
 
 #include "yack/string/utf-8.hpp"
 #include "yack/system/exception.hpp"
+#include "yack/system/error.hpp"
 #include <cerrno>
 
 #include <iostream>
@@ -12,7 +13,7 @@ namespace yack
     
     
     
-    const UTF8::range<UTF8::code_t> UTF8::code_bank[num_banks] =
+    const UTF8::range<uint32_t> UTF8::code_bank[num_banks] =
     {
         { 0x00000000, 0x0000007f },
         { 0x00000080, 0x000007ff },
@@ -20,7 +21,7 @@ namespace yack
         { 0x00010000, 0x0010FFFF }
     };
     
-    const UTF8::range<UTF8::byte_t> UTF8::byte_bank[num_banks] =
+    const UTF8::range<uint8_t> UTF8::byte_bank[num_banks] =
     {
         { 0x00, 0x7f },
         { 0xc2, 0xdf },
@@ -28,16 +29,16 @@ namespace yack
         { 0xf0, 0xf4 }
     };
     
-    const UTF8:: range<UTF8::byte_t> UTF8::continuation = { 0x80, 0xbf };
+    const UTF8:: range<uint8_t> UTF8::continuation = { 0x80, 0xbf };
     
-    size_t UTF8:: validate(code_t &codepoint)
+    void UTF8:: validate(uint32_t &codepoint)
     {
         for(size_t i=0,n=1;i<num_banks;++i,++n)
         {
             if(code_bank[i].owns(codepoint))
             {
                 codepoint |= (n<<info_move);
-                return n;
+                return;
             }
         }
         const uint32_t temp = codepoint;
@@ -45,10 +46,10 @@ namespace yack
         throw libc::exception(EINVAL,"%s invalid codepoint U+%x",clid,temp);
     }
     
-    UTF8:: UTF8(const code_t codepoint) :
+    UTF8:: UTF8(const uint32_t codepoint) :
     code(codepoint)
     {
-        (void) validate(code);
+        validate(code);
     }
     
     UTF8:: ~UTF8() throw()
@@ -66,9 +67,9 @@ namespace yack
         return *this;
     }
     
-    UTF8 & UTF8::operator=( code_t codepoint)
+    UTF8 & UTF8::operator=(uint32_t codepoint)
     {
-        (void)validate(codepoint);
+        validate(codepoint);
         code=codepoint;
         return *this;
     }
@@ -80,10 +81,177 @@ namespace yack
         return res;
     }
 
-    UTF8::code_t UTF8:: operator*() const throw()
+    uint32_t UTF8:: operator*() const throw()
     {
         return (code&code_mask);
     }
+
+    void UTF8:: xch(UTF8 &U) throw()
+    {
+        cswap(code,U.code);
+    }
+
+    int UTF8::compare(const UTF8 &lhs, const UTF8 &rhs) throw()
+    {
+        const uint32_t L = *lhs;
+        const uint32_t R = *rhs;
+        return (L<R) ? -1 : ( (R<L) ? 1 : 0 );
+    }
+
+
+
+    void UTF8:: encode(uint8_t *data) const throw()
+    {
+        static const uint32_t msk6 = 1|2|4|8|16|32;
+        static const uint32_t bit7 = 128;
+        static const uint32_t bit6 = 64;
+        static const uint32_t bit5 = 32;
+        static const uint32_t bit4 = 16;
+
+        assert(data);
+        uint32_t qw = **this;
+        switch( bytes() )
+        {
+            case 1: // 0-7 bits
+                data[0] = uint8_t(qw);
+                return;
+
+            case 2: // 8-11 bits: 5 + 6
+                data[1] = bit7        | uint8_t(qw&msk6); qw >>= 6;
+                data[0] = (bit7|bit6) | uint8_t(qw);
+                return;
+
+            case 3:  // 12 - 16 : 4 + 6 + 6
+                data[2] = bit7             | uint8_t(qw&msk6); qw >>= 6;
+                data[1] = bit7             | uint8_t(qw&msk6); qw >>= 6;
+                data[0] = (bit7|bit6|bit5) | uint8_t(qw);
+                return;
+
+            case 4:
+                // 17-21: 3+6+6+6
+                data[3] = bit7                  | uint8_t(qw&msk6); qw >>= 6;
+                data[2] = bit7                  | uint8_t(qw&msk6); qw >>= 6;
+                data[1] = bit7                  | uint8_t(qw&msk6); qw >>= 6;
+                data[0] = (bit7|bit6|bit5|bit4) | uint8_t(qw);
+                return;
+        }
+    }
 }
 
+
+namespace yack
+{
+    UTF8::decoding UTF8::decode_init(uint32_t &code, const uint8_t data)
+    {
+        if(data<=0x7f)
+        {
+            code = data;
+            return decoding_done;
+        }
+
+        if(data<0xC2) goto ERROR;
+
+        if(data<=0xDF)
+        {
+            assert(data>=0xC2);
+            code = uint32_t(data & 31) << 6;
+            return decoding_wait1;
+        }
+
+        if(data<=0xEF)
+        {
+            assert(data>=0xE0);
+            code = uint32_t(data & 15) << 6;
+            return decoding_wait2;
+        }
+
+        if(data<=0xF4)
+        {
+            assert(data>=0xF0);
+            code = uint32_t(data & 7) << 6;
+            return decoding_wait3;
+        }
+
+
+    ERROR:
+        throw libc::exception(EINVAL,"%s invalid first byte 0x%02x",clid,data);
+    }
+
+    static inline uint8_t  decode6bits(const uint8_t data)
+    {
+        if(data>=0x80&&data<=0xBF)
+        {
+            return (data&63);
+        }
+        throw libc::exception(EINVAL,"%s invalid coding byte 0x%02x",UTF8::clid,data);
+    }
+
+    UTF8::decoding UTF8::decode_next(uint32_t      &code,
+                                     const uint8_t  data,
+                                     const decoding flag)
+    {
+        assert(0==(code&63));
+
+        switch(flag)
+        {
+            case decoding_wait1:
+                code |= decode6bits(data);
+                return decoding_done;
+
+            case decoding_wait2:
+                code |= decode6bits(data);
+                code <<= 6;
+                return decoding_wait1;
+
+            case decoding_wait3:
+                code |= decode6bits(data);
+                code <<= 6;
+                return decoding_wait2;
+
+            default:
+                break;
+        }
+        // never get here
+        throw exception("%s corrupted decode_next",clid);
+    }
+
+
+
+    UTF8 UTF8::decode(const uint8_t data[], const size_t size)
+    {
+        assert(data!=NULL);
+        assert(size>0);
+        assert(size<=4);
+        uint32_t       code = 0;
+        const uint8_t *addr = data;
+        size_t         left = size;
+        decoding       flag = decode_init(code,*addr);
+    DECODE:
+        assert(left>0);
+        ++addr;
+        --left;
+        switch(flag)
+        {
+            case decoding_done:
+                if(left>0) break;
+                return UTF8(code);
+
+            case decoding_wait1:
+                if(left!=1) break;
+                flag = decode_next(code,*addr,flag);
+                goto DECODE;
+
+            case decoding_wait2:
+                if(left!=2) break;
+                flag = decode_next(code,*addr,flag);
+                goto DECODE;
+
+            case decoding_wait3:
+                if(left!=3) break;
+                flag = decode_next(code,*addr,flag);
+                goto DECODE;
+        }
+        throw libc::exception(EINVAL,"%s invalid sequence",clid);
+    }
+}
 
