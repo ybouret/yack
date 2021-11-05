@@ -61,14 +61,32 @@ namespace yack
             //
             // comparisons
             //__________________________________________________________________
-            static int compare(const rational &lhs, const rational &rhs); //!< comparison
-            static int compare(const rational &lhs, const integer  &rhs); //!< comparison
-            static int compare(const integer  &lhs, const rational &rhs); //!< comparison
-            static int compare(const rational &lhs, const int_type  rhs); //!< comparison
-            static int compare(const int_type  lhs, const rational &rhs); //!< comparison
-            static int compare(const rational &lhs, const natural  &rhs); //!< comparison
-            static int compare(const natural  &lhs, const rational &rhs); //!< comparison
+#define     YACK_APQ_REP(PROLOG,FUNCTION,EPILOG)                      \
+/**/        PROLOG FUNCTION (const rational &lhs, const rational &rhs) EPILOG \
+/**/        PROLOG FUNCTION (const rational &lhs, const integer  &rhs) EPILOG \
+/**/        PROLOG FUNCTION (const integer  &lhs, const rational &rhs) EPILOG \
+/**/        PROLOG FUNCTION (const rational &lhs, const int_type  rhs) EPILOG \
+/**/        PROLOG FUNCTION (const int_type  lhs, const rational &rhs) EPILOG \
+/**/        PROLOG FUNCTION (const rational &lhs, const natural  &rhs) EPILOG \
+/**/        PROLOG FUNCTION (const natural  &lhs, const rational &rhs) EPILOG
 
+            YACK_APQ_REP(static int,compare,;)
+
+
+#define     YACK_APQ_REP_CMP(OP) YACK_APQ_REP(inline friend bool operator,OP,{ return compare(lhs,rhs) OP 0; })
+
+
+
+#define     YACK_APQ_CMP_IMPL()  \
+/**/        YACK_APQ_REP_CMP(==) \
+/**/        YACK_APQ_REP_CMP(!=) \
+/**/        YACK_APQ_REP_CMP(<=) \
+/**/        YACK_APQ_REP_CMP(>=) \
+/**/        YACK_APQ_REP_CMP(>)  \
+/**/        YACK_APQ_REP_CMP(<)
+
+
+            YACK_APQ_CMP_IMPL()
 
             //__________________________________________________________________
             //
