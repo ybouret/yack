@@ -42,7 +42,8 @@ YACK_UTEST(data_pool_sort)
     {
         l.store( new Node(i) ) ;
     }
-    //ran.shuffle_pool(l);
+    randomized::shuffle::pool(l,ran);
+    
     for(const Node *node=l.head;node;node=node->next)
     {
         std::cerr << node->value << '/';

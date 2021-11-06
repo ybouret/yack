@@ -98,5 +98,7 @@ YACK_UTEST_DECL(80)
     YACK_UTEST(info_mod);
     YACK_UTEST(info_xbwt);
 
+    YACK_UTEST(math_api);
+
 }
 YACK_UTEST_EXEC()

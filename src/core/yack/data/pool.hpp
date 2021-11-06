@@ -86,6 +86,27 @@ assert(NULL!=NODE); assert(NULL==(NODE)->next)
             return node;
         }
         
+        //! stash a new node
+        NODE *stash(NODE *node) throw()
+        {
+            YACK_POOL_CHECK(node);
+            if(size>0)
+            {
+                NODE *curr = head;
+                while(curr->next)
+                {
+                    curr=curr->next;
+                }
+                curr->next = node;
+                this->increase();
+                return node;
+            }
+            else
+            {
+                return store(node);
+            }
+        }
+        
         //! query head
         NODE *query() throw()
         {

@@ -55,6 +55,21 @@ namespace yack
                 }
                 tmp.swap_with(l);
             }
+            //__________________________________________________________________
+            //
+            //! card-desk shuffle for pool
+            //__________________________________________________________________
+            template <typename POOL> static inline
+            void pool(POOL &p, bits &ran) throw()
+            {
+                POOL tmp;
+                while(p.size)
+                {
+                    typename POOL::node_type *node=p.query();
+                    if(ran.choice()) tmp.store(node); else tmp.stash(node);
+                }
+                tmp.swap_with(p);
+            }
             
 
 

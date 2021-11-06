@@ -56,13 +56,16 @@ YACK_UTEST(data_pool)
 
         std::cerr << "shuffle..." << std::endl;
         for(size_t i=0;i<num;++i) pool.store(nodes+i)->data = i;
-        //ran.shuffle_pool(pool);
-        while(pool.size)
+        randomized::shuffle::pool(pool,ran);
+        for(const cNode *node=pool.head;node;node=node->next)
         {
-            cNode *node = pool.query();
-            //std::cerr << node->data << '/';
-            YACK_ASSERT(node->data==static_cast<size_t>(node-nodes));
+            std::cerr << node->data << '/';
         }
+        std::cerr << std::endl;
+        
+        pool.restart();
+        memset(nodes,0,sizeof(nodes));
+
         
         std::cerr << "store by memory..." << std::endl;
         cNode *meta[num] = { 0 };

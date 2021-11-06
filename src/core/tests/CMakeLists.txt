@@ -45,6 +45,9 @@ source_group(info FILES ${info})
 file(GLOB string string/*.cpp)
 source_group(string FILES ${string})
 
+file(GLOB math math/*.cpp)
+source_group(math FILES ${math})
+
 add_executable(test-yack main.cpp
 ${base}
 ${type}
@@ -61,6 +64,7 @@ ${rtld}
 ${counting}
 ${string}
 ${info}
+${math}
 )
 
 yack_link_libraries(test-yack)
@@ -168,5 +172,6 @@ add_test(info:bwt  test-yack info_bwt)
 add_test(info:mod  test-yack info_mod)
 add_test(info:xbwt test-yack info_xbwt)
 
+add_test(math:api test-yack math_api)
 
 yack_testing(yack)

@@ -405,6 +405,17 @@ set(string ${string_impl} ${string_decl})
 SOURCE_GROUP(string FILES ${string})
 install( FILES ${string_decl} DESTINATION include/yack/string )
 
+########################################################################
+##
+## math
+##
+########################################################################
+file(GLOB math_impl yack/math/*.cpp)
+file(GLOB math_decl yack/math/*.hpp)
+set(math ${math_impl} ${math_decl})
+SOURCE_GROUP(math FILES ${math})
+install( FILES ${math_decl} DESTINATION include/yack/math )
+
 
 # create the library
 add_library(yack
@@ -429,6 +440,7 @@ ${string}
 ${kr}
 ${hashing}
 ${info} ${info_modulation}
+${math}
 ${utest}
 )
 
