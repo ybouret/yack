@@ -1,4 +1,3 @@
-
 //! \file
 
 #ifndef YACK_RANDOMIZED_SHUFFLE_INCLUDED

@@ -54,6 +54,14 @@ namespace yack
             //! double|float|uint[8:16:32:64]_t
             template <typename T> T to() throw();
 
+            //! double|float
+            template <typename T> inline
+            T symm() throw() {
+                static const T half(0.5);
+                const T d = (*this)()-half;
+                return d+d;
+            }
+            
             //! bitwise full construction
             template <typename T> inline
             T full() throw()
