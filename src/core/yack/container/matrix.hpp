@@ -190,7 +190,7 @@ namespace yack
             if(rows>0)
             {
                 line[1].display(os);
-                for(size_t r=1;r<=rows;++r) line[r].display(os<<';');
+                for(size_t r=2;r<=rows;++r) line[r].display(os<<';');
             }
             os << ']';
         }

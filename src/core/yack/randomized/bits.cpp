@@ -51,6 +51,11 @@ namespace yack
         {
             return (*this)();
         }
+        
+        template <> long double bits:: to<long double>() throw()
+        {
+            return static_cast<long double>( (*this)() );
+        }
 
         template <> uint8_t bits:: to<uint8_t>() throw()
         {

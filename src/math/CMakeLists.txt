@@ -1,4 +1,4 @@
-include_directories(../core)
+include_directories(. ../core)
 
 file(GLOB math_main_decl yack/math/*.hpp)
 file(GLOB math_main_srcs yack/math/*.cpp)
@@ -22,4 +22,4 @@ ${math_algebra}
 install( TARGETS yack-math ARCHIVE DESTINATION lib )
 
 add_subdirectory(tests)
-yack_utest(yack-math)
+yack_utest(math)

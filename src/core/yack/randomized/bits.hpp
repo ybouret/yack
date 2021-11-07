@@ -58,7 +58,7 @@ namespace yack
             template <typename T> inline
             T symm() throw() {
                 static const T half(0.5);
-                const T d = (*this)()-half;
+                const T d = (*this).to<T>()-half;
                 return d+d;
             }
             

@@ -5,7 +5,7 @@
 #define YACK_RANDOMIZED_IN2D_INCLUDED 1
 
 #include "yack/randomized/bits.hpp"
- 
+
 namespace yack
 {
     
@@ -34,11 +34,33 @@ namespace yack
                 }
             }
             
-            template <typename T, template <typename> class VTX>
+            template <typename T, template <typename> class VTX> static inline
             VTX<T> on_circle(bits &ran)
             {
                 T x(0),y(0);
                 on_circle(x,y,ran);
+                return VTX<T>(x,y);
+            }
+            
+            template <typename T> static inline
+            void in_disk(T &x, T &y, bits &ran)
+            {
+            TRY:
+                const T x1  = ran.symm<T>();
+                const T x2  = ran.symm<T>();
+                const T x12 = x1*x1;
+                const T x22 = x2*x2;
+                if(x12+x22>1.0) goto TRY;
+                x=x1;
+                y=x2;
+                
+            }
+            
+            template <typename T, template <typename> class VTX> static inline
+            VTX<T> in_disk(bits &ran)
+            {
+                T x(0),y(0);
+                in_disk(x,y,ran);
                 return VTX<T>(x,y);
             }
             

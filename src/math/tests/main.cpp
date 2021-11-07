@@ -2,6 +2,6 @@
  
 YACK_UTEST_DECL(80)
 {
-    
+    YACK_UTEST(lu);
 }
 YACK_UTEST_EXEC()

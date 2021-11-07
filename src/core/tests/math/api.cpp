@@ -9,7 +9,7 @@ YACK_UTEST(math_api)
 {
     {
         const complex<float> cplx(2,2);
-        std::cerr << math::mod2(cplx) << std::endl;
+        std::cerr << math::mod2_of(cplx) << std::endl;
     }
 }
 YACK_UDONE()

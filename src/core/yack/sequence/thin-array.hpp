@@ -6,6 +6,7 @@
 #define YACK_THIN_ARRAY_INCLUDED 1
 
 #include "yack/sequence/contiguous.hpp"
+#include "yack/type/out-of-reach.hpp"
 
 namespace yack
 {

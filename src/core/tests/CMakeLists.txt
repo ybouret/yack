@@ -48,7 +48,7 @@ source_group(string FILES ${string})
 file(GLOB math math/*.cpp)
 source_group(math FILES ${math})
 
-add_executable(test-yack main.cpp
+add_executable(test-yack main.cpp main.hpp
 ${base}
 ${type}
 ${memory}

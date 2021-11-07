@@ -122,6 +122,10 @@ namespace yack
         return allocated;
     }
 
+    bool matrix_metrics:: is_square() const throw()
+    {
+        return rows==cols;
+    }
 
     bool matrix_metrics:: have_same_sizes(const matrix_metrics &lhs, const matrix_metrics &rhs) throw()
     {
