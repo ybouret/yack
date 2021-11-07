@@ -30,6 +30,14 @@ namespace yack
 #     define YACK_APEX_TYPE void * //!< default matching type
 #endif
 
+#define YACK_APN_CHECKING
+        
+#if defined(YACK_APN_CHECKING)
+#  define YACK_APN_CHECK(WHEN) check(WHEN)
+#else
+#define YACK_APN_CHECK(WHEN)
+#endif
+        
         class integer;
 
         //______________________________________________________________________
@@ -307,6 +315,12 @@ namespace yack
             static natural parse(const char *data, const size_t size); //!< parse dec|hex
             static natural parse(const char *data);                    //!< parse
 
+            //__________________________________________________________________
+            //
+            // debug
+            //__________________________________________________________________
+            void check(const char *when) const;
+            
         private:
             friend class integer;
 
