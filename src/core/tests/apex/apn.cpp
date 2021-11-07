@@ -13,7 +13,14 @@ YACK_UTEST(apn)
 
     randomized::rand_  ran;
 
-
+    {
+        const apn lhs = apn::parse_dec("284072859224920306778500916225362834106457889629436213417069809370325278813250");
+        const apn rhs = apn::parse_dec("37113033567955029841474593385562785912727189891052434818859633091457268932923");
+        const apn dif = lhs-rhs;
+        std::cerr << "dif=" << dif << std::endl;
+    }
+    
+    
     for(size_t bits=0;bits<=64;++bits)
     {
         for(size_t iter=0;iter<16;++iter)
