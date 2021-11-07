@@ -32,9 +32,9 @@ namespace yack
                          proc         done);
             
             void *get_scal() throw();
-           
+            
             bool   dneg;
-
+            
         private:
             YACK_DISABLE_COPY_AND_ASSIGN(lu_);
             size_t      *upos; //!< [1..size]
@@ -73,8 +73,8 @@ namespace yack
                 assert(a.is_square());
                 assert(a.rows>0);
                 assert(a.rows<=dims);
-                const scalar_type one = 1;
-                const size_t      n   = a.rows;
+                const scalar_type one  = 1;
+                const size_t      n    = a.rows;
                 writable<size_t> &indx = *this;
                 dneg = false;
                 
@@ -95,7 +95,6 @@ namespace yack
                     if(piv<=0) return false; // a zero row
                     scal[i] = one/piv;
                 }
-                std::cerr << "scal=" << scal << std::endl;
                 
                 //--------------------------------------------------------------
                 //
@@ -125,15 +124,23 @@ namespace yack
                             imax=i;
                         }
                     }
-                    if (j != imax) {
+                    if (j != imax)
+                    {
                         a.swap_rows(j,imax);
                         dneg       = !dneg;
                         scal[imax] = scal[j];
                     }
+                    if( abs_of(a[j][j]) <= 0 )
+                        return false;
                     indx[j] = imax;
+                    if(j!=n)
+                    {
+                        const T fac=one/(a[j][j]);
+                        for(size_t i=j+1;i<=n;++i) a[i][j] *= fac;
+                    }
                 }
                 
-                return false;
+                return true;
             }
             
             
