@@ -63,7 +63,7 @@ namespace yack
             {
             }
             
-            inline bool build(matrix<T> &a) throw()
+            inline bool build(matrix<T> &a)
             {
                 //--------------------------------------------------------------
                 //
@@ -143,7 +143,49 @@ namespace yack
                 return true;
             }
             
+            inline T det(const matrix<T> &a) const
+            {
+                assert(a.is_square());
+                assert(a.rows>0);
+                assert(a.rows<=dims);
+                T d = a[1][1];
+                for(size_t i=a.rows;i>1;--i) d *= a[i][i];
+                return dneg ? -d:d;
+            }
             
+            inline void solve(const matrix<T> &a, writable<T> &b) const
+            {
+                assert(a.is_square());
+                assert(a.rows>0);
+                assert(a.rows<=dims);
+                assert(b.size()==a.rows);
+                const size_t            n    = a.rows;
+                const readable<size_t> &indx = *this;
+                size_t                  ii   = 0;
+                for(size_t i=1;i<=n;i++)
+                {
+                    size_t ip=indx[i];
+                    T sum=b[ip];
+                    b[ip]=b[i];
+                    if (ii)
+                    {
+                        for(size_t j=ii;j<=i-1;j++) sum -= a[i][j]*b[j];
+                    }
+                    else
+                    {
+                        if( abs_of(sum) > 0) ii=i;
+                    }
+                    b[i] = sum;
+                }
+                
+                for (size_t i=n;i>=1;i--)
+                {
+                    T sum=b[i];
+                    for(size_t j=i+1;j<=n;j++)
+                        sum -= a[i][j]*b[j];
+                    b[i]=sum/a[i][i];
+                }
+            }
             
         private:
             YACK_DISABLE_COPY_AND_ASSIGN(lu);

@@ -67,6 +67,14 @@ namespace yack
             os << item[1]; for(size_t i=2;i<=cols;++i) os << ' ' << item[i];
         }
 
+        template <typename U>
+        inline type dot(const readable<U> &rhs) const
+        {
+            assert(cols==rhs.size());
+            type sum = item[1]*rhs[1];
+            for(size_t k=cols;k>1;--k) sum += item[k]*rhs[k];
+            return sum;
+        }
 
         //______________________________________________________________________
         //

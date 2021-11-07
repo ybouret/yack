@@ -114,6 +114,21 @@ namespace yack
 
         //______________________________________________________________________
         //
+        // methods
+        //______________________________________________________________________
+        template <typename U>
+        inline void operator()(writable<T> &lhs, const readable<U> &rhs) const
+        {
+            assert(lhs.size()<=rows);
+            assert(lhs.size()==rhs.size());
+            for(size_t i=lhs.size();i>0;--i)
+            {
+                lhs[i] = line[i].template dot<U>(rhs);
+            }
+        }
+        
+        //______________________________________________________________________
+        //
         // output
         //______________________________________________________________________
 
@@ -186,6 +201,13 @@ namespace yack
 
         inline void display(std::ostream &os) const
         {
+            switch(rows)
+            {
+                case 0: os << "[]"; return;
+                case 1: os << *head; return;
+                default:
+                    break;
+            }
             os << '[';
             if(rows>0)
             {

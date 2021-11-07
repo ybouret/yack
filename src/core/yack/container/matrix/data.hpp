@@ -30,7 +30,7 @@ namespace yack
         //______________________________________________________________________
         inline virtual ~matrix_data() throw() { line=0; head=0; }  //!< cleanup
         
-      
+       
         
     protected:
         inline explicit matrix_data() throw() : line(0), head(0) {} //!< setup
