@@ -183,6 +183,7 @@ max_bytes(size_t(1)<<max_bytes_exp2 )
                     bytes=other.bytes;
                     for(size_t i=0;i<words;++i) word[i] = other.word[i];
                     zpad();
+                    assert(*this==other);
                 }
                 else
                 {
