@@ -117,6 +117,7 @@ namespace yack
         //
         // methods
         //______________________________________________________________________
+
         //! lhs = M*rhs
         template <typename U>
         inline void operator()(writable<T> &lhs, const readable<U> &rhs) const
@@ -126,6 +127,30 @@ namespace yack
             for(size_t i=lhs.size();i>0;--i)
             {
                 lhs[i] = line[i].template dot<U>(rhs);
+            }
+        }
+
+        //! this = A*B
+        inline void operator()(const matrix<T> &A, const matrix<T> &B)
+        {
+            assert(rows==A.rows);
+            assert(cols==B.cols);
+            assert(A.cols==B.rows);
+            const size_t nc = cols;
+            const size_t nk = A.cols;
+            for(size_t i=rows;i>0;--i)
+            {
+                matrix_row<T>       &r_i = (*this)[i];
+                const matrix_row<T> &A_i = A[i];
+                for(size_t j=nc;j>0;--j)
+                {
+                    T sum = A_i[1] * B[1][j];
+                    for(size_t k=nk;k>1;--k)
+                    {
+                        sum += A_i[k] * B[k][j];
+                    }
+                    r_i[j] = sum;
+                }
             }
         }
 

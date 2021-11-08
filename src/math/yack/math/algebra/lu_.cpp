@@ -14,21 +14,10 @@ namespace yack
         }
 
         
-        size_t & lu_:: operator[](const size_t i) throw()
+        size_t * lu_::indx_() throw()
         {
-            assert(i>=1);
-            assert(i<=dims);
-            return upos[i];
+            return upos;
         }
-        
-        const size_t & lu_:: operator[](const size_t i) const throw()
-        {
-            assert(i>=1);
-            assert(i<=dims);
-            return upos[i];
-        }
-        
-
         
         lu_:: ~lu_() throw()
         {
@@ -37,17 +26,21 @@ namespace yack
         }
         
         lu_::lu_(const size_t nmax,
-                 const size_t itsz) :
+                 const size_t s_sz,
+                 const size_t t_sz) :
         dims(nmax),
         dneg(false),
         upos(NULL),
-        data(NULL),
+        sdat(NULL),
+        tdat(NULL),
         wksp(NULL),
         wlen(0)
         {
             static memory::allocator &mem = memory::dyadic::instance();
             assert(nmax>0);
-            assert(itsz>0);
+            assert(s_sz>0);
+            assert(t_sz>0);
+
 
             //------------------------------------------------------------------
             //
@@ -58,19 +51,16 @@ namespace yack
                 memory::embed emb[] =
                 {
                     memory::embed(upos,dims),
-                    memory::embed(data,itsz*dims)
+                    memory::embed(sdat,s_sz*dims),
+                    memory::embed(tdat,t_sz*dims),
                 };
                 wksp = YACK_MEMORY_EMBED(emb,mem,wlen);
             }
             
 
-            --upos;
         }
         
-        size_t lu_:: size() const throw()
-        {
-            return dims;
-        }
+
         
         
         

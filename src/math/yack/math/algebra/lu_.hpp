@@ -19,7 +19,7 @@ namespace yack
         //! linear memory for LU decomposition
         //
         //______________________________________________________________________
-        class lu_ : public writable<size_t>, public dynamic
+        class lu_ :  public dynamic
         {
         public:
             //__________________________________________________________________
@@ -33,9 +33,6 @@ namespace yack
             // methods
             //__________________________________________________________________
             virtual               ~lu_()                          throw(); //!< cleanup
-            virtual size_t         size()                   const throw(); //!< dims
-            virtual size_t &       operator[](const size_t)       throw(); //!< in [1..dims]
-            virtual const size_t & operator[](const size_t) const throw(); //!< in [1..dims]
             virtual size_t         granted()                const throw(); //!< allocated bytes
 
             //__________________________________________________________________
@@ -49,19 +46,29 @@ namespace yack
 
             //! allocate memory and create dims object
             explicit lu_(const size_t nmax,
-                         const size_t itsz);
+                         const size_t s_sz,
+                         const size_t t_sz);
+
+            size_t *indx_() throw();
 
             //! address for scal
-            template <typename T> T *scal_() throw()
+            template <typename T> inline T *scal_() throw()
             {
-                return coerce_cast<T>(data);
+                return coerce_cast<T>(sdat);
+            }
+
+            //! address for extra row
+            template <typename T> inline T *xrow_() throw()
+            {
+                return coerce_cast<T>(tdat);
             }
 
 
         private:
             YACK_DISABLE_COPY_AND_ASSIGN(lu_);
             size_t      *upos; //!< [1..size]
-            uint8_t     *data; //!< first byte of data
+            uint8_t     *sdat; //!< first byte for scalar data
+            uint8_t     *tdat; //!< first byte for object data
             void        *wksp; //!< memory
             size_t       wlen; //!< granted
         };

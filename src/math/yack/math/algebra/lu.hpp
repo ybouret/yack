@@ -33,9 +33,12 @@ namespace yack
             //__________________________________________________________________
             //! setup to solve up to nmax*nmax systems
             explicit inline lu(const size_t nmax) :
-            lu_(nmax,sizeof(T)),
-            scal( scal_<scalar_type>(),dims),
-            impl(&scal[1],dims)
+            lu_(nmax,sizeof(scalar_type),sizeof(T)),
+            indx(indx_(),dims),
+            scal(scal_<scalar_type>(),dims),
+            xrow(xrow_<T>(),dims),
+            s_op(&scal[1],dims),
+            t_op(&xrow[1],dims)
             {}
 
             //! cleanup
@@ -63,7 +66,6 @@ namespace yack
                 assert(a.rows<=dims);
                 const scalar_type one  = 1;
                 const size_t      n    = a.rows;
-                writable<size_t> &indx = *this;
                 dneg = false;
                 
                 //--------------------------------------------------------------
@@ -161,13 +163,11 @@ namespace yack
                 assert(a.is_square());
                 assert(a.rows>0);
                 assert(a.rows<=dims);
-                assert(b.size()==a.rows);
-                const size_t            n    = a.rows;
-                const readable<size_t> &indx = *this;
-                size_t                  ii   = 0;
+                assert(b.size()>=a.rows);
+                const size_t n  = a.rows;
+                size_t       ii = 0;
                 for(size_t i=1;i<=n;i++)
                 {
-
                     size_t ip=indx[i];
                     T sum=b[ip];
                     b[ip]=b[i];
@@ -195,11 +195,34 @@ namespace yack
             }
 
 
+            inline void inv(matrix<T> &q, const matrix<T> &a)
+            {
+                assert(a.is_square());
+                assert(a.rows>0);
+                assert(a.rows<=dims);
+                assert(matrix_metrics::have_same_sizes(q,a));
+                const size_t  n    = a.rows;
+                thin_array<T> u(xrow_<T>(),n);
+                for(size_t j=n;j>0;--j)
+                {
+                    for(size_t k=n;k>0;--k) u[k] = 0;
+                    u[j] = 1;
+                    solve(a,u);
+                    for(size_t k=n;k>0;--k) q[k][j] = u[k];
+                }
+            }
+
+
+
         private:
             YACK_DISABLE_COPY_AND_ASSIGN(lu);
+            thin_array<size_t>                       indx; //!< indices
             thin_array<scalar_type>                  scal; //!< scaling
-            const memory::operative_of<scalar_type>  impl; //!< memory I/O
-            
+            thin_array<T>                            xrow; //!< extra row/col
+            const memory::operative_of<scalar_type>  s_op; //!< memory I/O for scalar
+            const memory::operative_of<T>            t_op; //!< memory I/O for objects
+
+
         };
         
     }

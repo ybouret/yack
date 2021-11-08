@@ -14,13 +14,13 @@ static inline void do_LU(const size_t n,
                          const bool exact = false)
 {
     lu<T> LU(n);
-    
+
+
     matrix<T> a(n,n);
 
     for(size_t iter=0;iter<4;++iter)
     {
         bring::fill(a,ran);
-        //std::cerr << "a=" << a << std::endl;
 
         matrix<T> alu = a;
         if(!LU.build(alu))
@@ -31,15 +31,12 @@ static inline void do_LU(const size_t n,
 
         vector<T> rhs(n,0);
         bring::fill(rhs,ran);
-        //std::cerr << "rhs=" << rhs << std::endl;
         vector<T> sol(rhs);
         LU.solve(alu,sol);
-        //std::cerr << "sol=" << sol << std::endl;
 
         vector<T> chk(n,0);
         a(chk,sol);
         for(size_t i=n;i>0;--i) chk[i] -= rhs[i];
-        //std::cerr << "chk=" << chk << std::endl;
 
         typename scalar_for<T>::type rms2 = 0;
         for(size_t i=n;i>0;--i)
@@ -53,6 +50,13 @@ static inline void do_LU(const size_t n,
         {
             std::cerr << "rms2=" << rms2 << std::endl;
         }
+        matrix<T> q(n,n);
+        LU.inv(q,alu);
+        
+        matrix<T> I(n,n);
+        I(a,q);
+        std::cerr << "I=" << I << std::endl;
+
     }
 
 }
