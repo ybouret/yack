@@ -33,7 +33,6 @@ namespace yack
 #define YACK_APN_CHECKING 1
         
 #if defined(YACK_APN_CHECKING)
-//#  warning "Enable APN Checking!"
 #  define YACK_APN_CHECK(SELF,WHEN) check(SELF,WHEN)
 #else
 #define YACK_APN_CHECK(SELF,WHEN)
@@ -378,7 +377,9 @@ namespace yack
             
             typedef uint8_t   (*bitproc)(uint8_t, uint8_t);
             static natural      bitwise(bitproc proc, const natural &lhs, const natural &rhs);
-            void    cast_overflow(const char *who) const;
+            void                cast_overflow(const char *who) const;
+
+            static void replay_sub(const handle &l, const handle &r);
         };
         
     }

@@ -2,6 +2,7 @@
 #include "yack/apex/natural.hpp"
 #include "yack/system/endian.hpp"
 #include "yack/arith/base2.hpp"
+#include "yack/ios/fmt/hexa.hpp"
 #include <iostream>
 
 namespace yack
@@ -37,14 +38,14 @@ namespace yack
 
         std::ostream & natural::handle:: display(std::ostream &os) const
         {
-            os << "#" << words << "{";
+            os << "#" << words << ":{";
             const word_type *p = entry+words;
             for(size_t i=words;i>0;--i)
             {
-                os << ' ' << std::hex << uint64_t( *(--p) );
+                //os << ' ' << std::hex << uint64_t( *(--p) );
+                os << ' ' << ios::hexa(*(--p));
             }
             os << " }";
-            os << std::dec;
             return os;
         }
 
