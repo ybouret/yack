@@ -40,6 +40,7 @@ namespace yack
         //! test tranposed metrics
         static bool are_transposed(const matrix_metrics &lhs, const matrix_metrics &rhs) throw();
 
+        //! rows==cols
         bool is_square() const throw();
 
         //______________________________________________________________________

@@ -3,71 +3,54 @@
 #ifndef YACK_MATH_LU_INCLUDED
 #define YACK_MATH_LU_INCLUDED 1
 
-#include "yack/type/scalar.hpp"
-#include "yack/container/matrix.hpp"
-#include "yack/sequence/thin-array.hpp"
-#include "yack/math/api.hpp"
+#include "yack/math/algebra/lu_.hpp"
 
 namespace yack
 {
     namespace math
     {
-        class lu_ : public writable<size_t>, public dynamic
+
+        //______________________________________________________________________
+        //
+        //
+        //! LU decomposition and system solving
+        //
+        //______________________________________________________________________
+        template <typename T> class lu : public lu_
         {
         public:
-            typedef void (*proc)(void*);
-            virtual ~lu_() throw();
-            
-            const size_t dims;
-            
-            virtual size_t         size() const throw();
-            virtual size_t &       operator[](const size_t) throw();
-            virtual const size_t & operator[](const size_t) const throw();
-            virtual size_t         granted() const throw();
-            
-        protected:
-            explicit lu_(const size_t nmax,
-                         const size_t itsz,
-                         proc         make,
-                         proc         done);
-            
-            void *get_scal() throw();
-            
-            bool   dneg;
-            
-        private:
-            YACK_DISABLE_COPY_AND_ASSIGN(lu_);
-            size_t      *upos; //!< [1..size]
-            uint8_t     *data; //!<
-            const size_t step; //!<
-            proc         kill; //!<
-            void        *wksp;
-            size_t       wlen;
-            void         clear(size_t) throw();
-        };
-        
-        template <typename T> class lu :
-        public lu_
-        {
-        public:
-            typedef typename scalar_for<T>::type scalar_type;
-            thin_array<scalar_type>              scal;
-            
+            //__________________________________________________________________
+            //
+            // definitions
+            //__________________________________________________________________
+            typedef typename scalar_for<T>::type scalar_type; //!< alias
+            thin_array<scalar_type>              scal;        //!< alias
+
+            //__________________________________________________________________
+            //
+            // C++
+            //__________________________________________________________________
+            //! setup to solve up to nmax*nmax systems
             explicit inline lu(const size_t nmax) :
             lu_(nmax,sizeof(T),make,done),
-            scal( static_cast<scalar_type*>(get_scal()),dims)
-            {
-            }
-            
-            virtual ~lu() throw()
-            {
-            }
-            
+            scal( scal_<scalar_type>(),dims)
+            {}
+
+            //! cleanup
+            virtual ~lu() throw() {}
+
+
+            //__________________________________________________________________
+            //
+            // methods
+            //__________________________________________________________________
+
+            //! build decomposition, matrix is altered
             inline bool build(matrix<T> &a)
             {
                 //--------------------------------------------------------------
                 //
-                // sanity check
+                // sanity check and initialize
                 //
                 //--------------------------------------------------------------
                 assert(a.is_square());
@@ -142,7 +125,9 @@ namespace yack
                 
                 return true;
             }
-            
+
+
+            //! return determinant of a LU matrix
             inline T det(const matrix<T> &a) const
             {
                 assert(a.is_square());
@@ -152,7 +137,9 @@ namespace yack
                 for(size_t i=a.rows;i>1;--i) d *= a[i][i];
                 return dneg ? -d:d;
             }
-            
+
+
+            //! in-place solve a*u=b
             inline void solve(const matrix<T> &a, writable<T> &b) const
             {
                 assert(a.is_square());
@@ -164,12 +151,15 @@ namespace yack
                 size_t                  ii   = 0;
                 for(size_t i=1;i<=n;i++)
                 {
+
                     size_t ip=indx[i];
                     T sum=b[ip];
                     b[ip]=b[i];
                     if (ii)
                     {
-                        for(size_t j=ii;j<=i-1;j++) sum -= a[i][j]*b[j];
+                        const readable<T> &a_i = a[i];
+                        for(size_t j=ii;j<i;++j)
+                            sum -= a_i[j]*b[j];
                     }
                     else
                     {
@@ -180,10 +170,11 @@ namespace yack
                 
                 for (size_t i=n;i>=1;i--)
                 {
+                    const readable<T> &a_i = a[i];
                     T sum=b[i];
-                    for(size_t j=i+1;j<=n;j++)
-                        sum -= a[i][j]*b[j];
-                    b[i]=sum/a[i][i];
+                    for(size_t j=n;j>i;--j)
+                        sum -= a_i[j]*b[j];
+                    b[i]=sum/a_i[i];
                 }
             }
             

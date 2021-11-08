@@ -24,6 +24,12 @@ namespace yack
 
     //__________________________________________________________________________
     //
+    //! common vector constructor
+    //__________________________________________________________________________
+#define YACK_VECTOR_CTOR() collection(), sequence<T>(), contiguous<T>(), dynamic()
+
+    //__________________________________________________________________________
+    //
     //
     //! vector of contiguous objects
     //
@@ -44,18 +50,21 @@ namespace yack
         //______________________________________________________________________
 
         //! setup empty
-        inline explicit vector() : count(0), utter(0), owned(0), base(0), item(0) {}
+        inline explicit vector() :
+        YACK_VECTOR_CTOR(), count(0), utter(0), owned(0), base(0), item(0) {}
 
         //! cleanup
         inline virtual ~vector() throw() { release_(); }
 
         //! setup with capacity
         inline explicit vector(const size_t n, const as_capacity_t &) :
+        YACK_VECTOR_CTOR(),
         count(0), utter(n), owned(0), base(zacquire(utter,owned)), item(base-1)
         {}
 
         //! setup with the same data
         inline explicit vector(const size_t n, param_type args) :
+        YACK_VECTOR_CTOR(),
         count(0), utter(n), owned(0), base(zacquire(utter,owned)), item(base-1)
         {
             try {
@@ -69,6 +78,7 @@ namespace yack
 
         //! hard copy
         inline   vector(const vector &other) :
+        YACK_VECTOR_CTOR(),
         count(0), utter(other.count), owned(0), base(zacquire(utter,owned)), item(base-1)
         {
             try {

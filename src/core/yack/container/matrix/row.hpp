@@ -67,6 +67,7 @@ namespace yack
             os << item[1]; for(size_t i=2;i<=cols;++i) os << ' ' << item[i];
         }
 
+        //! return <this|rhs>
         template <typename U>
         inline type dot(const readable<U> &rhs) const
         {

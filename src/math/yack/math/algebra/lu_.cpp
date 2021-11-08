@@ -104,11 +104,7 @@ namespace yack
             return dims;
         }
         
-        void *lu_:: get_scal() throw()
-        {
-            return data;
-        }
-
+        
         
     }
 }

@@ -9,11 +9,9 @@ namespace yack
 {
     namespace math
     {
-        template <typename T>
-        typename scalar_for<T>::type mod2_of( const T & );
-   
-        template <typename T>
-        typename scalar_for<T>::type abs_of( const T & );
+
+        template <typename T> typename scalar_for<T>::type mod2_of(const T &); //!< |x|^2
+        template <typename T> typename scalar_for<T>::type abs_of( const T &); //!< |x|
         
     }
 }

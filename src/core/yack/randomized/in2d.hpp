@@ -11,9 +11,12 @@ namespace yack
     
     namespace randomized
     {
+
+        //! getting randomized values in 2D
         struct in2d
         {
-            
+
+            //! compute (x,y) on unit circle
             template <typename T> static inline
             void on_circle(T &x, T &y, bits &ran)
             {
@@ -33,7 +36,8 @@ namespace yack
                     }
                 }
             }
-            
+
+            //! create complex/vertex on circle
             template <typename T, template <typename> class VTX> static inline
             VTX<T> on_circle(bits &ran)
             {
@@ -41,7 +45,8 @@ namespace yack
                 on_circle(x,y,ran);
                 return VTX<T>(x,y);
             }
-            
+
+            //! set (x,y) withing the unit disk
             template <typename T> static inline
             void in_disk(T &x, T &y, bits &ran)
             {
@@ -55,7 +60,8 @@ namespace yack
                 y=x2;
                 
             }
-            
+
+            //! set vertex/complex within the unit disk
             template <typename T, template <typename> class VTX> static inline
             VTX<T> in_disk(bits &ran)
             {

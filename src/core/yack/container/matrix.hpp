@@ -116,6 +116,7 @@ namespace yack
         //
         // methods
         //______________________________________________________________________
+        //! lhs = M*rhs
         template <typename U>
         inline void operator()(writable<T> &lhs, const readable<U> &rhs) const
         {
