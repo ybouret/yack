@@ -1,7 +1,7 @@
 #include "yack/utest/driver.hpp"
 #include <cstdio>
 
-YACK_UTEST_DECL(80)
+YACK_UTEST_DECL(128)
 {
     YACK_UTEST(crc32);
     YACK_UTEST(error);
@@ -13,6 +13,7 @@ YACK_UTEST_DECL(80)
     YACK_UTEST(wtime);
     YACK_UTEST(complex);
     YACK_UTEST(gcd64);
+    YACK_UTEST(functor);
 
     YACK_UTEST(type_ints);
     YACK_UTEST(type_traits);

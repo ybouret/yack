@@ -127,6 +127,17 @@ set(sequence ${sequence_impl} ${sequence_decl})
 SOURCE_GROUP(sequence FILES ${sequence})
 install( FILES ${sequence_decl} DESTINATION include/yack/sequence )
 
+########################################################################
+##
+## functor(s)   
+##
+########################################################################
+file(GLOB functor_impl yack/functor/*.cpp)
+file(GLOB functor_decl yack/functor/*.hpp)
+set(functor ${functor_impl} ${functor_decl})
+SOURCE_GROUP(functor FILES ${functor})
+install( FILES ${functor_decl} DESTINATION include/yack/functor )
+
 #########################################################################
 ##
 ## memory operations
@@ -429,6 +440,7 @@ ${container} ${container_matrix}
 ${sequence}
 ${memory} ${memory_allocator} ${memory_small} ${memory_large} ${memory_joint} ${memory_buffer}
 ${fft}
+${functor}
 ${apex} ${apex_m} ${apex_n} ${apex_z} ${apex_q}
 ${concurrent} ${concurrent_quark} ${concurrent_loop} ${concurrent_queue}
 ${ios} ${ios_c} ${ios_gz} ${ios_fmt}
