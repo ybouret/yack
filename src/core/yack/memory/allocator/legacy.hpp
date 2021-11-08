@@ -10,12 +10,17 @@ namespace yack
 {
     namespace memory
     {
-
+        //______________________________________________________________________
+        //
+        //
+        //! legacy interface, base on pooled allocator
+        //
+        //______________________________________________________________________
         struct legacy
         {
-            static void *acquire(const size_t n);
-            static void *c_alloc(const size_t n) throw();
-            static void  release(void *) throw();
+            static void *acquire(const size_t n);          //!< acquire, may throw
+            static void *c_alloc(const size_t n) throw();  //!< acquire, no throw
+            static void  release(void *) throw();          //!< release
         };
 
     }
