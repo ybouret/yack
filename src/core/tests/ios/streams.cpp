@@ -9,6 +9,7 @@
 #include "yack/ios/decoder.hpp"
 
 #include "yack/utest/run.hpp"
+#include <cstring>
 
 using namespace yack;
 
