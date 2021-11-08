@@ -92,6 +92,12 @@ namespace yack
             return cap;
         }
 
+        size_t parcel:: size_of(const void *addr) throw()
+        {
+            assert(addr);
+            return (static_cast<const stamp_t*>(addr)-1)->size;
+        }
+
     }
 
 }

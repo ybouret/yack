@@ -2,6 +2,7 @@
 #include "yack/memory/allocator/global.hpp"
 #include "yack/memory/allocator/dyadic.hpp"
 #include "yack/memory/allocator/pooled.hpp"
+#include "yack/memory/allocator/legacy.hpp"
 
 #include "yack/utest/run.hpp"
 #include <cstring>
@@ -63,11 +64,33 @@ namespace
 
 YACK_UTEST(memory_alloc)
 {
+    randomized::rand_ ran;
+
     concurrent::single::verbose = true;
     test_alloc(memory::global::instance());
     test_alloc(memory::dyadic::instance());
     test_alloc(memory::pooled::instance());
-    
-    
+
+    std::cerr << std::endl;
+    std::cerr << "Using Legacy" << std::endl;
+    {
+        void        *addr[12];
+        const size_t num = sizeof(addr)/sizeof(addr[0]);
+        for(size_t i=0;i<num;++i)
+        {
+            addr[i] = memory::legacy::acquire( ran.leq(100) );
+        }
+
+        randomized::shuffle::data(addr,num,ran);
+        for(size_t i=0;i<num;++i)
+        {
+            memory::legacy::release(addr[i]);
+            addr[i] = 0;
+        }
+    }
+
+
+    std::cerr << std::endl;
+
 }
 YACK_UDONE()

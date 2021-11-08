@@ -1,5 +1,3 @@
-
-
 //! \file
 
 #ifndef YACK_MEMORY_ALLOCATOR_POOLED_INCLUDED
@@ -38,13 +36,16 @@ namespace yack
             virtual void *       acquire(size_t &count, const size_t block_size);
             virtual void         release(void * &addr, size_t &size)     throw();
             virtual const char * variety()                         const throw();
-            
+
+
         private:
             YACK_DISABLE_COPY_AND_ASSIGN(pooled);
             explicit pooled();
             virtual ~pooled() throw();
             friend class singleton<pooled>;
         };
+        
+
         
     }
 }
