@@ -81,25 +81,28 @@ namespace yack
                 
                 //--------------------------------------------------------------
                 //
-                // Crout's
+                // Crout's algorithm
                 //
                 //--------------------------------------------------------------
                 for (size_t j=1;j<=n;++j)
                 {
                     for(size_t i=1;i<j;++i)
                     {
-                        T sum=a[i][j];
-                        for(size_t k=1;k<i;++k) sum -= a[i][k]*a[k][j];
-                        a[i][j]=sum;
+                        writable<T> &a_i = a[i];
+                        T sum=a_i[j];
+                        for(size_t k=1;k<i;++k)
+                            sum -= a_i[k]*a[k][j];
+                        a_i[j]=sum;
                     }
-                    scalar_type vmax  = 0;
+                    scalar_type vmax = 0;
                     size_t      imax = 0;
                     for (size_t i=j;i<=n;i++)
                     {
-                        T sum=a[i][j];
+                        writable<T> &a_i = a[i];
+                        T sum=a_i[j];
                         for (size_t k=1;k<j;++k)
-                            sum -= a[i][k]*a[k][j];
-                        a[i][j]=sum;
+                            sum -= a_i[k]*a[k][j];
+                        a_i[j]=sum;
                         const scalar_type dum = scal[i] * abs_of(sum);
                         if ( dum >= vmax)
                         {
