@@ -10,7 +10,7 @@ namespace yack
 {
     namespace math
     {
-
+        
         //______________________________________________________________________
         //
         //
@@ -25,8 +25,8 @@ namespace yack
             // definitions
             //__________________________________________________________________
             typedef typename scalar_for<T>::type scalar_type; //!< alias
-
-
+            
+            
             //__________________________________________________________________
             //
             //
@@ -42,17 +42,17 @@ namespace yack
             s_op(&scal[1],dims),
             t_op(&xrow[1],dims)
             {}
-
+            
             //! cleanup
             virtual ~lu() throw() {}
-
+            
             //__________________________________________________________________
             //
             //
             // methods
             //
             //__________________________________________________________________
-
+            
             //__________________________________________________________________
             //
             //! build decomposition, matrix is altered
@@ -123,17 +123,17 @@ namespace yack
                             }
                         }
                     }
-
+                    
                     if (j != imax)
                     {
                         a.swap_rows(j,imax);
                         dneg       = !dneg;
                         scal[imax] = scal[j];
                     }
-
+                    
                     if( abs_of(a_j[j]) <= 0 )
                         return false;
-
+                    
                     indx[j] = imax;
                     if(j!=n)
                     {
@@ -145,7 +145,7 @@ namespace yack
                 
                 return true;
             }
-
+            
             //__________________________________________________________________
             //
             //! return determinant of a LU matrix
@@ -159,7 +159,7 @@ namespace yack
                 for(size_t i=a.rows;i>0;--i) d *= a[i][i];
                 return d;
             }
-
+            
             //__________________________________________________________________
             //
             //! in-place solve a*u=b
@@ -199,7 +199,7 @@ namespace yack
                     b[i]=sum/a_i[i];
                 }
             }
-
+            
             //__________________________________________________________________
             //
             //! compute inverse matrix from decomposition
@@ -220,7 +220,7 @@ namespace yack
                     for(size_t k=n;k>0;--k) q[k][j] = u[k];
                 }
             }
-
+            
             //__________________________________________________________________
             //
             //! compute adjoint matrix
@@ -229,7 +229,6 @@ namespace yack
             inline void adj(matrix<T> &q, const matrix<U> &a)
             {
                 assert(a.is_square());
-                assert(a.rows>0);
                 assert(a.rows<=dims+1);
                 assert(matrix_metrics::have_same_sizes(q,a));
                 const size_t  n    = a.rows;
@@ -241,34 +240,33 @@ namespace yack
                         break;
                 }
                 matrix<T> m(n-1,n-1);
-                for(size_t i=n;i>0;--i)
+                for(size_t j=n;j>0;--j)
                 {
-                    for(size_t j=n;j>0;--j)
+                    matrix_row<T> &q_j = q[j];
+                    for(size_t i=n;i>0;--i)
                     {
                         a.minor(m,i,j);
                         if(build(m))
                         {
-                            q[j][i] = (0==((i+j)&1)) ? det(m) : -det(m);
+                            q_j[i] = (0==((i+j)&1)) ? det(m) : -det(m);
                         }
                         else
                         {
-                            q[j][i] = 0;
+                            q_j[i] = 0;
                         }
                     }
                 }
             }
-
             
-
+            
+            
         private:
             YACK_DISABLE_COPY_AND_ASSIGN(lu);
             thin_array<size_t>                       indx; //!< indices
             thin_array<scalar_type>                  scal; //!< scaling
             thin_array<T>                            xrow; //!< extra row/col
             const memory::operative_of<scalar_type>  s_op; //!< memory I/O for scalar
-            const memory::operative_of<T>            t_op; //!< memory I/O for objects
-
-
+            const memory::operative_of<T>            t_op; //!< memory I/O for objects            
         };
         
     }
