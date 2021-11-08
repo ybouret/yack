@@ -38,6 +38,8 @@ namespace yack
         
         //! setup
         inline explicit thin_array(type *arr, const size_t num) throw() :
+        collection(),
+        contiguous<T>(),
         entry( coerce_cast<mutable_type>(arr)-1 ),
         count(num)
         {
@@ -45,6 +47,8 @@ namespace yack
         
         //! copy
         inline   thin_array(const thin_array &other ) throw() :
+        collection(),
+        contiguous<T>(),
         entry(other.entry),
         count(other.count)
         {
