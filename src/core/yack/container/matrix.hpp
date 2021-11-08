@@ -7,6 +7,7 @@
 #include "yack/container/matrix/metrics.hpp"
 #include "yack/type/destruct.hpp"
 #include "yack/type/out-of-reach.hpp"
+#include "yack/sequence/thin-array.hpp"
 #include <iostream>
 
 namespace yack
@@ -127,7 +128,13 @@ namespace yack
                 lhs[i] = line[i].template dot<U>(rhs);
             }
         }
-        
+
+        //! access linear space
+        inline thin_array<type>       get_contiguous() throw()       { return thin_array<type>(head,items); }
+
+        //! access linear space
+        inline thin_array<const_type> get_contiguous() const throw() { return thin_array<const_type>(head,items); }
+
         //______________________________________________________________________
         //
         // output
@@ -154,8 +161,11 @@ namespace yack
         
 #define YACK_MATRIX_SETUP_ENTER() try                                  //!< enter setup
 #define YACK_MATRIX_SETUP_LEAVE() catch(...) { clear(built); throw; }  //!< leave setup
-        //!
+
+        //______________________________________________________________________
+        //
         //! setup items
+        //______________________________________________________________________
         inline void setup()
         {
             size_t        built = 0;
@@ -168,7 +178,10 @@ namespace yack
             } YACK_MATRIX_SETUP_LEAVE()
         }
 
-        //! setup items
+        //______________________________________________________________________
+        //
+        //! setup items by direct copy
+        //______________________________________________________________________
         inline void setup_from(const matrix &M)
         {
             assert(have_same_sizes(*this,M));
@@ -184,7 +197,10 @@ namespace yack
             } YACK_MATRIX_SETUP_LEAVE()
         }
 
+        //______________________________________________________________________
+        //
         //! setup items
+        //______________________________________________________________________
         inline void setup_from_transposed(const matrix &M)
         {
             assert(are_transposed(*this,M));
@@ -200,6 +216,10 @@ namespace yack
             } YACK_MATRIX_SETUP_LEAVE()
         }
 
+        //______________________________________________________________________
+        //
+        // display Julia's style
+        //______________________________________________________________________
         inline void display(std::ostream &os) const
         {
             switch(rows)

@@ -31,10 +31,8 @@ namespace yack
         template <typename T> static inline
         void fill(matrix<T> &a, randomized::bits &ran)
         {
-            for(size_t i=a.rows;i>0;--i)
-            {
-                fill(a[i],ran);
-            }
+            thin_array<T> arr = a.get_contiguous();
+            fill(arr,ran);
         }
         
         
