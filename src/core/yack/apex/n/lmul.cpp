@@ -57,7 +57,6 @@ namespace yack
                     lmul_ticks += wtime::ticks()-mark;
                     ++lmul_count;
 #endif
-                    YACK_APN_CHECK(res, "lmul");
                     return res;
                 }
                 else

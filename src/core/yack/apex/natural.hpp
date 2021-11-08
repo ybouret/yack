@@ -30,14 +30,6 @@ namespace yack
 #     define YACK_APEX_TYPE void * //!< default matching type
 #endif
 
-#define YACK_APN_CHECKING 1
-        
-#if defined(YACK_APN_CHECKING)
-#  define YACK_APN_CHECK(SELF,WHEN) check(SELF,WHEN)
-#else
-#define YACK_APN_CHECK(SELF,WHEN)
-#endif
-        
         class integer;
 
         //______________________________________________________________________
@@ -314,12 +306,6 @@ namespace yack
             static natural parse_hex(const char *data);                //!< parse hexadecimal
             static natural parse(const char *data, const size_t size); //!< parse dec|hex
             static natural parse(const char *data);                    //!< parse
-
-            //__________________________________________________________________
-            //
-            // debug
-            //__________________________________________________________________
-            static void check(const natural &self, const char *when);
             
         private:
             friend class integer;
@@ -379,7 +365,6 @@ namespace yack
             static natural      bitwise(bitproc proc, const natural &lhs, const natural &rhs);
             void                cast_overflow(const char *who) const;
 
-            static void replay_sub(const handle &l, const handle &r);
         };
         
     }

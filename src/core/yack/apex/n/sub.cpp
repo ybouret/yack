@@ -27,7 +27,7 @@ namespace yack
             //
             //------------------------------------------------------------------
             const size_t lnw = l.words;
-            const size_t rnw = l.words;
+            const size_t rnw = r.words;
             if(lnw<rnw)
             {
                 throw libc::exception(EDOM,"%slhs<rhs [level-1]",fn);
@@ -91,14 +91,6 @@ namespace yack
 
             if(carry!=0)
             {
-                replay_sub(l,r);
-                const natural L(l.entry,l.words);
-                const natural R(r.entry,r.words);
-                std::cerr << "*** Error: carry=" << carry << std::endl;
-                std::cerr << "*** Error: lhs = ";  L.output_hex(std::cerr) << std::endl;
-                std::cerr << "*** Error: lh  = ";  l.display(std::cerr) << std::endl;
-                std::cerr << "*** Error: rhs = ";  R.output_hex(std::cerr) << std::endl;
-                std::cerr << "*** Error: rh  = ";  r.display(std::cerr) << std::endl;
                 throw libc::exception(EDOM,"%slhs<rhs [level-2]",fn);
             }
 
@@ -108,7 +100,6 @@ namespace yack
             sub_ticks += wtime::ticks() - mark;
             ++sub_count;
 #endif
-            YACK_APN_CHECK(ans,"sub");
             return ans;
         }
 
@@ -136,80 +127,3 @@ namespace yack
 
 }
 
-#include "yack/ios/fmt/hexa.hpp"
-namespace yack
-{
-    namespace apex
-    {
-
-        void natural:: replay_sub(const handle &l, const handle &r)
-        {
-            assert(l.words>=r.words);
-            std::cerr << "<apn:replay_sub>" << std::endl;
-            const size_t lnw = l.words;
-            const size_t rnw = l.words;
-            std::cerr << "    lhs: "; l.display(std::cerr) << std::endl;
-            std::cerr << "    rhs: "; r.display(std::cerr) << std::endl;
-            natural          ans(lnw,as_capacity);
-            word_type       *s   = ans.word;
-            const word_type *lhs = l.entry;
-            const word_type *rhs = r.entry;
-
-            //__________________________________________________________________
-            //
-            // firt loop: common words
-            //__________________________________________________________________
-            carry_t   carry = 0;
-            for( size_t i=rnw; i>0; --i )
-            {
-                const carry_t a = *(lhs++); // L[i];
-                const carry_t b = *(rhs++); // R[i];
-                carry_t       d = (a-b)-carry;
-                std::cerr << "\t" << ios::hexa(a) << '-' << ios::hexa(b) << std::endl;
-                if( d < 0 )
-                {
-                    d    += radix;
-                    carry = 1;
-                }
-                else
-                {
-                    carry = 0;
-                }
-                assert(d>=0);
-                assert(d<radix);
-                *(s++) = word_type(d);
-            }
-
-
-            //__________________________________________________________________
-            //
-            // second loop: propagate carry
-            //__________________________________________________________________
-            for(size_t i=lnw-rnw;i>0;--i)
-            {
-                const carry_t a = *(lhs++);  //L[i];
-                carry_t       d = a-carry;
-                if( d < 0 )
-                {
-                    d    += radix;
-                    carry = 1;
-                }
-                else
-                {
-                    carry = 0;
-                }
-                assert(d>=0);
-                assert(d<radix);
-                *(s++) = word_type(d);
-            }
-
-            ans.words=lnw;
-            ans.update();
-            std::cerr << "<apn:replay_sub/>" << std::endl;
-
-        }
-
-
-    }
-
-}

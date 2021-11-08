@@ -69,7 +69,6 @@ namespace yack
                     add_ticks += wtime::ticks() - mark;
                     ++add_count;
 #endif
-                    YACK_APN_CHECK(ans,"add");
                     return ans;
                 }
                 else
