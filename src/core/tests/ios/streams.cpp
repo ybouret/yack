@@ -1,6 +1,7 @@
 
 #include "yack/ios/ocstream.hpp"
 #include "yack/ios/null-ostream.hpp"
+#include "yack/memory/allocator/legacy.hpp"
 
 #include "yack/ios/encoder.hpp"
 
@@ -198,6 +199,32 @@ YACK_UTEST(ios_streams)
         ios::null_ostream fp;
         const size_t nw = fp("Hello");
         std::cerr << "nw.null=" << nw << std::endl;
+    }
+
+    {
+        const char   msg[] = "Hello, World!!";
+        const size_t len   = strlen(msg);
+
+        size_t nw = 0;
+        {
+            ios::ocstream fp("bin.dat");
+            nw = ios::encoder::serialize(fp,msg,len);
+        }
+        std::cerr << "binary written=" << nw << std::endl;
+
+        {
+            ios::icstream fp("bin.dat");
+            void  *block_addr = 0;
+            size_t block_size = 0;
+            const size_t nr = ios::decoder::construct(fp,block_addr,block_size,"message");
+            std::cerr << "binary read=" << nr << std::endl;
+
+            YACK_CHECK(nr==nw);
+            YACK_CHECK(len==block_size);
+            YACK_CHECK(0==memcmp(msg,block_addr,block_size));
+            memory::legacy::release(block_addr);
+        }
+
     }
 
 

@@ -57,12 +57,12 @@ namespace yack
 
             //__________________________________________________________________
             //
-            //! construct a previously serialized type
+            //! construct a previously serialized integral type
             //__________________________________________________________________
             template <typename T> static inline
             size_t construct(istream    &fp,
                              T          &value,
-                             const char *info=0)
+                             const char *info)
             {
                 static const size_t max_bits = sizeof(T) * 8 ;
                 uint64_t     x  = 0;
@@ -72,6 +72,15 @@ namespace yack
                 value = T(y);
                 return nr;
             }
+
+            //__________________________________________________________________
+            //
+            //! reconstruct a binary block
+            //__________________________________________________________________
+            static size_t construct(istream    &fp,
+                                    void *     &block_addr,
+                                    size_t     &block_size,
+                                    const char *info);
 
 
         private:

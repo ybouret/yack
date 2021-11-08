@@ -149,3 +149,44 @@ namespace yack
 }
 
 
+#include "yack/memory/allocator/legacy.hpp"
+
+namespace yack
+{
+    namespace ios
+    {
+        size_t decoder::construct(istream    &fp,
+                                  void  *    &block_addr,
+                                  size_t     &block_size,
+                                  const char *info)
+        {
+            assert(NULL==block_addr);
+            assert(0==block_size);
+
+            size_t bs = 0;
+            size_t nr = construct<size_t>(fp,bs,info);
+            if(bs>0)
+            {
+                void *bp = memory::legacy::acquire(bs);
+                try {
+                    const size_t nd = fp.fetch(bp,bs);
+                    if(nd<bs)
+                    {
+                        throw libc::exception(EIO,"missing %u bytes for '%s'",unsigned(bs-nd),info?info:yack_unknown);
+                    }
+                    nr += nd;
+                    block_addr = bp;
+                    block_size = bs;
+                }
+                catch(...)
+                {
+                    memory::legacy::release(bp);
+                    throw;
+                }
+            }
+            return nr;
+        }
+
+    }
+
+}
