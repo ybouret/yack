@@ -13,7 +13,7 @@ namespace yack
 {
     struct bring
     {
-        static const size_t apex_bits=40;
+        static const size_t apex_bits=20;
         
         template <typename T>
         static T get(randomized::bits &);

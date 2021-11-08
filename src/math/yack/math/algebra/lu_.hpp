@@ -49,6 +49,7 @@ namespace yack
                          const size_t s_sz,
                          const size_t t_sz);
 
+            //! address of indices
             size_t *indx_() throw();
 
             //! address for scal

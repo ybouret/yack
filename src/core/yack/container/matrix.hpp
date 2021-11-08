@@ -160,6 +160,28 @@ namespace yack
         //! access linear space
         inline thin_array<const_type> get_contiguous() const throw() { return thin_array<const_type>(head,items); }
 
+        //! compute minor matrix
+        template <typename U>
+        inline void minor(matrix<U> &m, const size_t i, const size_t j) const
+        {
+            assert(rows>1);
+            assert(cols>1);
+            assert(rows-1==m.rows);
+            assert(cols-1==m.cols);
+            assert(i>=1); assert(i<=rows);
+            const matrix<T> &a = *this;
+
+            for(size_t r=i-1;r>0;--r)
+            {
+                minor_row(m[r],a[r],j);
+            }
+
+            for(size_t r=rows;r>i;--r)
+            {
+                minor_row(m[r-1],a[r],j);
+            }
+        }
+
         //______________________________________________________________________
         //
         // output
@@ -172,6 +194,19 @@ namespace yack
 
 
     private:
+
+        template <typename U> void minor_row(matrix_row<U> &target, const matrix_row<T> &source, const size_t j) const
+        {
+            assert(j>=1); assert(j<=cols);
+            for(size_t c=j-1;c>0;--c)
+            {
+                target[c] = source[c];
+            }
+            for(size_t c=cols;c>j;--c)
+            {
+                target[c-1]=source[c];
+            }
+        }
 
         //! creation of a row
         static inline void build_row_at(void *row_addr, void *data_ptr, const size_t num_cols) throw()

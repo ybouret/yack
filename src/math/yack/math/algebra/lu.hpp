@@ -29,7 +29,9 @@ namespace yack
 
             //__________________________________________________________________
             //
+            //
             // C++
+            //
             //__________________________________________________________________
             //! setup to solve up to nmax*nmax systems
             explicit inline lu(const size_t nmax) :
@@ -44,10 +46,11 @@ namespace yack
             //! cleanup
             virtual ~lu() throw() {}
 
-
             //__________________________________________________________________
             //
+            //
             // methods
+            //
             //__________________________________________________________________
 
             //__________________________________________________________________
@@ -91,7 +94,7 @@ namespace yack
                 // Crout's algorithm
                 //
                 //--------------------------------------------------------------
-                for (size_t j=1;j<=n;++j)
+                for(size_t j=1;j<=n;++j)
                 {
                     for(size_t i=1;i<j;++i)
                     {
@@ -120,14 +123,17 @@ namespace yack
                             }
                         }
                     }
+
                     if (j != imax)
                     {
                         a.swap_rows(j,imax);
                         dneg       = !dneg;
                         scal[imax] = scal[j];
                     }
+
                     if( abs_of(a_j[j]) <= 0 )
                         return false;
+
                     indx[j] = imax;
                     if(j!=n)
                     {
@@ -149,9 +155,9 @@ namespace yack
                 assert(a.is_square());
                 assert(a.rows>0);
                 assert(a.rows<=dims);
-                T d = a[1][1];
-                for(size_t i=a.rows;i>1;--i) d *= a[i][i];
-                return dneg ? -d:d;
+                T d = dneg ? -1:1;
+                for(size_t i=a.rows;i>0;--i) d *= a[i][i];
+                return d;
             }
 
             //__________________________________________________________________
@@ -194,7 +200,10 @@ namespace yack
                 }
             }
 
-
+            //__________________________________________________________________
+            //
+            //! compute inverse matrix from decomposition
+            //__________________________________________________________________
             inline void inv(matrix<T> &q, const matrix<T> &a)
             {
                 assert(a.is_square());
@@ -212,7 +221,44 @@ namespace yack
                 }
             }
 
+            //__________________________________________________________________
+            //
+            //! compute adjoint matrix
+            //__________________________________________________________________
+            template <typename U>
+            inline void adj(matrix<T> &q, const matrix<U> &a)
+            {
+                assert(a.is_square());
+                assert(a.rows>0);
+                assert(a.rows<=dims+1);
+                assert(matrix_metrics::have_same_sizes(q,a));
+                const size_t  n    = a.rows;
+                switch(n)
+                {
+                    case 0: return;
+                    case 1: q[1][1] = 1; return;
+                    default:
+                        break;
+                }
+                matrix<T> m(n-1,n-1);
+                for(size_t i=n;i>0;--i)
+                {
+                    for(size_t j=n;j>0;--j)
+                    {
+                        a.minor(m,i,j);
+                        if(build(m))
+                        {
+                            q[j][i] = (0==((i+j)&1)) ? det(m) : -det(m);
+                        }
+                        else
+                        {
+                            q[j][i] = 0;
+                        }
+                    }
+                }
+            }
 
+            
 
         private:
             YACK_DISABLE_COPY_AND_ASSIGN(lu);

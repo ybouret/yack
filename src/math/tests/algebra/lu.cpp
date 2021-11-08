@@ -9,13 +9,11 @@ using namespace yack;
 using namespace math;
 
 template <typename T>
-static inline void do_LU(const size_t n,
+static inline void do_LU(const size_t       n,
                          randomized::bits &ran,
                          const bool exact = false)
 {
-    lu<T> LU(n);
-
-
+    lu<T>      LU(n);
     matrix<T> a(n,n);
 
     for(size_t iter=0;iter<4;++iter)
@@ -28,6 +26,7 @@ static inline void do_LU(const size_t n,
             std::cerr << "singular" << std::endl;
             return;
         }
+        const T d = LU.det(alu);
 
         vector<T> rhs(n,0);
         bring::fill(rhs,ran);
@@ -55,8 +54,46 @@ static inline void do_LU(const size_t n,
         
         matrix<T> I(n,n);
         I(a,q);
-        std::cerr << "I=" << I << std::endl;
+        if(exact)
+        {
+            bool inverted = true;
+            for(size_t i=1;i<=n;++i)
+            {
+                for(size_t j=1;j<=n;++j)
+                {
+                    T value = (i==j) ? 1 : 0;
+                    value -= I[i][j];
+                    if(abs_of(value)>0)
+                    {
+                        inverted=false;
+                        break;
+                    }
+                }
+            }
+            YACK_CHECK(inverted);
+        }
+        matrix<T> A(n,n);
+        LU.adj(A,a);
 
+        I(a,A);
+        if(exact)
+        {
+            bool adjoint = true;
+            for(size_t i=1;i<=n;++i)
+            {
+                for(size_t j=1;j<=n;++j)
+                {
+                    T value = (i==j) ? d : 0;
+                    value -= I[i][j];
+                    if(abs_of(value)>0)
+                    {
+                        adjoint=false;
+                        break;
+                    }
+                }
+            }
+            YACK_CHECK(adjoint);
+        }
     }
 
 }
@@ -66,7 +103,7 @@ YACK_UTEST(lu)
     randomized::rand_ ran;
 
     std::cerr << "standard types" << std::endl;
-    for(size_t dim=1;dim<=32;++dim)
+    for(size_t dim=1;dim<=16;++dim)
     {
         do_LU<float>(dim,ran);
         do_LU<double>(dim,ran);
@@ -77,7 +114,7 @@ YACK_UTEST(lu)
     }
 
     std::cerr << "apex types" << std::endl;
-    for(size_t dim=1;dim<=6;++dim)
+    for(size_t dim=1;dim<=5;++dim)
     {
         do_LU<apq>(dim,ran,true);
     }
