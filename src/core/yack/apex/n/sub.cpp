@@ -16,10 +16,15 @@ namespace yack
                               const handle &r)
         {
 
-            static const char fn[] = "natural::sub: ";
+            static const char                   fn[] = "natural::sub: ";
             typedef signed_int<core_size>::type carry_t;
             static  const  carry_t              radix(word_base);
 
+            //------------------------------------------------------------------
+            //
+            // initialize, lhs>=rhs
+            //
+            //------------------------------------------------------------------
             const size_t lnw = l.words;
             const size_t rnw = l.words;
             if(lnw<rnw)
@@ -65,7 +70,7 @@ namespace yack
             //
             // second loop: propagate carry
             //__________________________________________________________________
-            for( size_t i=lnw-rnw; i>0; --i )
+            for(size_t i=lnw-rnw;i>0;--i)
             {
                 const carry_t a = *(lhs++);  //L[i];
                 carry_t       d = a-carry;
@@ -101,6 +106,7 @@ namespace yack
             sub_ticks += wtime::ticks() - mark;
             ++sub_count;
 #endif
+            YACK_APN_CHECK(ans,"sub");
             return ans;
         }
 

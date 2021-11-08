@@ -33,7 +33,7 @@ namespace yack
 
         natural:: ~natural() throw()
         {
-            YACK_APN_CHECK("~natural");
+            YACK_APN_CHECK(*this,"~natural");
             bytes=0;
             words=0;
             archon::release_field(word,coerce(max_words_exp2), coerce(max_bytes_exp2));
@@ -55,7 +55,7 @@ max_bytes(size_t(1)<<max_bytes_exp2 )
         words(0),
         YACK_APEX_NATURAL(min_words_exp2)
         {
-            YACK_APN_CHECK("natural()");
+            YACK_APN_CHECK(*this,"natural()");
         }
         
         natural:: natural(uint_type u) :
@@ -66,7 +66,7 @@ max_bytes(size_t(1)<<max_bytes_exp2 )
         YACK_APEX_NATURAL(min_words_exp2)
         {
             ldu(u);
-            YACK_APN_CHECK("natural(u)");
+            YACK_APN_CHECK(*this,"natural(u)");
         }
 
 
@@ -77,26 +77,26 @@ max_bytes(size_t(1)<<max_bytes_exp2 )
         YACK_APEX_NATURAL(words_exp2_for(num_words))
         {
             assert(max_words>=num_words);
-            YACK_APN_CHECK("natural(num_words,as_capacity)");
+            YACK_APN_CHECK(*this,"natural(num_words,as_capacity)");
         }
 
         natural:: natural(const word_type *w, const size_t num_words) :
         number(), readable<uint8_t>(),
-        bytes(0),
-        words(0),
+        bytes(num_words<<word_exp2),
+        words(num_words),
         YACK_APEX_NATURAL(words_exp2_for(num_words))
         {
             assert(max_words>=num_words);
-            memcpy(word,w,( bytes = (words=num_words) << word_exp2) );
+            memcpy(word,w,bytes);
             update();
-            YACK_APN_CHECK("natural(w,n)");
+            YACK_APN_CHECK(*this,"natural(w,n)");
         }
 
         void natural:: ldz() throw()
         {
             words = bytes = 0;
             memset(word,0,max_bytes);
-            YACK_APN_CHECK("ldz");
+            YACK_APN_CHECK(*this,"ldz");
         }
 
         size_t natural:: ldw(word_type *w,
@@ -162,14 +162,14 @@ max_bytes(size_t(1)<<max_bytes_exp2 )
         YACK_APEX_NATURAL(other.max_words_exp2)
         {
             for(size_t i=0;i<words;++i) word[i] = other.word[i];
-            YACK_APN_CHECK("natural(other)");
+            YACK_APN_CHECK(*this,"natural(other)");
         }
 
 #define YACK_NATURAL_XCH(FIELD) coerce_cswap(FIELD,other.FIELD)
 
         void natural:: xch(natural &other) throw()
         {
-            YACK_APN_CHECK("pre-xch");
+            YACK_APN_CHECK(*this,"pre-xch");
             YACK_NATURAL_XCH(bytes);
             YACK_NATURAL_XCH(words);
             YACK_NATURAL_XCH(max_words_exp2);
@@ -177,7 +177,7 @@ max_bytes(size_t(1)<<max_bytes_exp2 )
             YACK_NATURAL_XCH(word);
             YACK_NATURAL_XCH(max_words);
             YACK_NATURAL_XCH(max_bytes);
-            YACK_APN_CHECK("post-xch");
+            YACK_APN_CHECK(*this,"post-xch");
         }
 
         natural & natural:: operator=(const natural &other)
@@ -191,7 +191,7 @@ max_bytes(size_t(1)<<max_bytes_exp2 )
                     for(size_t i=0;i<words;++i) word[i] = other.word[i];
                     zpad();
                     assert(*this==other);
-                    YACK_APN_CHECK("operator=other");
+                    YACK_APN_CHECK(*this,"operator=other");
                 }
                 else
                 {
@@ -205,7 +205,7 @@ max_bytes(size_t(1)<<max_bytes_exp2 )
         natural & natural:: operator= (const uint_type u) throw()
         {
             ldu(u);
-            YACK_APN_CHECK("operator=u");
+            YACK_APN_CHECK(*this,"operator=u");
             return *this;
         }
 
@@ -217,7 +217,11 @@ max_bytes(size_t(1)<<max_bytes_exp2 )
 
         void natural:: update() throw()
         {
+            //------------------------------------------------------------------
+            //
             // check most significant index from words
+            //
+            //------------------------------------------------------------------
             size_t msi = words-1;
             while(words>0&&word[msi]<=0)
             {
@@ -225,7 +229,11 @@ max_bytes(size_t(1)<<max_bytes_exp2 )
                 --msi;
             }
 
-            // updated bytes
+            //------------------------------------------------------------------
+            //
+            // update bytes count
+            //
+            //------------------------------------------------------------------
             if(words>0)
             {
                 const  word_type msw = word[msi]; assert(msw>0);
@@ -236,7 +244,11 @@ max_bytes(size_t(1)<<max_bytes_exp2 )
                 bytes = 0;
             }
 
+            //------------------------------------------------------------------
+            //
             // clean remaining
+            //
+            //------------------------------------------------------------------
             zpad();
         }
 
@@ -278,27 +290,27 @@ max_bytes(size_t(1)<<max_bytes_exp2 )
 
         
 #define YACK_APN_CHECK_(COND) \
-do { if( !(COND) )\
-{ std::cerr << "[apn] '" << #COND << "' FAILURE in <" << when << ">" << std::endl;\
-exit(1);\
-} } while(false)
+/**/  do { if( !(COND) )\
+/**/       { std::cerr << "[apn] '" << #COND << "' FAILURE in <" << when << ">" << std::endl;\
+/**/         exit(1);}\
+/**/  } while(false)
         
-        void natural:: check(const char *when) const
+        void natural:: check(const natural &self, const char *when)
         {
             //std::cerr << "<chk " << when << ">" << std::endl;
             assert(when);
-            YACK_APN_CHECK_(NULL!=word);
-            YACK_APN_CHECK_(words<=max_words);
-            YACK_APN_CHECK_(bytes<=max_bytes);
-            if(words>0)
+            YACK_APN_CHECK_(NULL!=self.word);
+            YACK_APN_CHECK_(self.words<=self.max_words);
+            YACK_APN_CHECK_(self.bytes<=self.max_bytes);
+            if(self.words>0)
             {
-                const word_type msw = word[words-1];
+                const word_type msw = self.word[self.words-1];
                 YACK_APN_CHECK_(msw!=0);
-                YACK_APN_CHECK_( (words-1)*sizeof(word_type)+bytes_for(msw) == bytes);
+                YACK_APN_CHECK_( (self.words-1)*sizeof(word_type)+bytes_for(msw) == self.bytes);
             }
-            for(size_t i=words;i<max_words;++i)
+            for(size_t i=self.words;i<self.max_words;++i)
             {
-                YACK_APN_CHECK_(0==word[i]);
+                YACK_APN_CHECK_(0==self.word[i]);
             }
         }
 
@@ -343,7 +355,7 @@ namespace yack
                 }
             }
             assert(nbit==bits());
-            YACK_APN_CHECK("naural(ran,nbit)");
+            YACK_APN_CHECK(*this,"naural(ran,nbit)");
         }
 
 

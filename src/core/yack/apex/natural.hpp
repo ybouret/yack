@@ -33,10 +33,10 @@ namespace yack
 #define YACK_APN_CHECKING 1
         
 #if defined(YACK_APN_CHECKING)
-#  warning "Enable APN Checking!"
-#  define YACK_APN_CHECK(WHEN) check(WHEN)
+//#  warning "Enable APN Checking!"
+#  define YACK_APN_CHECK(SELF,WHEN) check(SELF,WHEN)
 #else
-#define YACK_APN_CHECK(WHEN)
+#define YACK_APN_CHECK(SELF,WHEN)
 #endif
         
         class integer;
@@ -320,7 +320,7 @@ namespace yack
             //
             // debug
             //__________________________________________________________________
-            void check(const char *when) const;
+            static void check(const natural &self, const char *when);
             
         private:
             friend class integer;
