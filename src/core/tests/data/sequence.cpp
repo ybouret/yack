@@ -3,6 +3,7 @@
 #include "yack/sequence/cxx-array.hpp"
 #include "yack/memory/allocator/global.hpp"
 #include "yack/memory/allocator/dyadic.hpp"
+#include "yack/apex.hpp"
 
 #include "yack/utest/run.hpp"
 
@@ -75,7 +76,8 @@ YACK_UTEST(data_sequence)
     test_seq<int>(ran);
     
     cxx_array<int> ir(10);
-    
+    cxx_array<apq> qr(100);
+
 
 }
 YACK_UDONE()

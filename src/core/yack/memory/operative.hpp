@@ -41,14 +41,37 @@ namespace yack
             //! no-throw swap
             void     swap_with(operative &op) throw();
 
+            //! construct helper
+            template <typename T> static inline void init(void *addr) { new (addr) T(); }
+
+            //! destruct helper
+            template <typename T> static inline void quit(void *addr) throw() { static_cast<T*>(addr)->~T(); }
+
         private:
             YACK_DISABLE_COPY_AND_ASSIGN(operative);
-            void            *base;
-            size_t           live;
+            void            *base; //!< base memory
+            size_t           live; //!< internal count
             const size_t     step; //!< sizeof item
-            const procedure  kill;
+            const procedure  kill; //!< destruct procedure
 
             void zap() throw();
+        };
+
+        //! parametrized operative
+        template <typename T> class operative_of : public operative
+        {
+        public:
+            //! cleanup
+            inline virtual ~operative_of() throw() {}
+
+            //! setup
+            inline explicit operative_of(void *entry, const size_t count) :
+            operative(entry,count,sizeof(T), init<T>, quit<T>)
+            {
+            }
+            
+        private:
+            YACK_DISABLE_COPY_AND_ASSIGN(operative_of);
         };
 
     }

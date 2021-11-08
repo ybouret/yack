@@ -28,44 +28,30 @@ namespace yack
             return upos[i];
         }
         
-        void lu_:: clear(size_t n) throw()
-        {
-            assert(kill);
-            while(n-- > 0)
-            {
-                kill(data+step*n);
-            }
-        }
+
         
         lu_:: ~lu_() throw()
         {
             static memory::allocator &mem = memory::dyadic::location();
-            clear(dims);
             mem.release(wksp,wlen);
         }
         
         lu_::lu_(const size_t nmax,
-                 const size_t itsz,
-                 proc         make,
-                 proc         done) :
+                 const size_t itsz) :
         dims(nmax),
         dneg(false),
         upos(NULL),
         data(NULL),
-        step(itsz),
-        kill(done),
         wksp(NULL),
         wlen(0)
         {
             static memory::allocator &mem = memory::dyadic::instance();
             assert(nmax>0);
             assert(itsz>0);
-            assert(make);
-            assert(done);
-            
+
             //------------------------------------------------------------------
             //
-            // linear memory
+            // create linear memory
             //
             //------------------------------------------------------------------
             {
@@ -77,25 +63,7 @@ namespace yack
                 wksp = YACK_MEMORY_EMBED(emb,mem,wlen);
             }
             
-            //------------------------------------------------------------------
-            //
-            // create objects
-            //
-            //------------------------------------------------------------------
-            size_t built = 0;
-            try {
-                while(built<dims)
-                {
-                    make(data+step*built);
-                    ++built;
-                }
-            }
-            catch(...)
-            {
-                clear(built);
-                mem.release(wksp,wlen);
-                throw;
-            }
+
             --upos;
         }
         

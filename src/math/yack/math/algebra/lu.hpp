@@ -4,6 +4,7 @@
 #define YACK_MATH_LU_INCLUDED 1
 
 #include "yack/math/algebra/lu_.hpp"
+#include "yack/memory/operative.hpp"
 
 namespace yack
 {
@@ -24,7 +25,7 @@ namespace yack
             // definitions
             //__________________________________________________________________
             typedef typename scalar_for<T>::type scalar_type; //!< alias
-            thin_array<scalar_type>              scal;        //!< alias
+
 
             //__________________________________________________________________
             //
@@ -32,8 +33,9 @@ namespace yack
             //__________________________________________________________________
             //! setup to solve up to nmax*nmax systems
             explicit inline lu(const size_t nmax) :
-            lu_(nmax,sizeof(T),make,done),
-            scal( scal_<scalar_type>(),dims)
+            lu_(nmax,sizeof(T)),
+            scal( scal_<scalar_type>(),dims),
+            impl(&scal[1],dims)
             {}
 
             //! cleanup
@@ -191,18 +193,13 @@ namespace yack
                     b[i]=sum/a_i[i];
                 }
             }
-            
+
+
         private:
             YACK_DISABLE_COPY_AND_ASSIGN(lu);
-            static inline void make(void *addr)
-            {
-                new (addr) scalar_type();
-            }
+            thin_array<scalar_type>                  scal; //!< scaling
+            const memory::operative_of<scalar_type>  impl; //!< memory I/O
             
-            static inline void done(void *addr) throw()
-            {
-                destruct( static_cast<scalar_type *>(addr) );
-            }
         };
         
     }

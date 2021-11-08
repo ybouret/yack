@@ -16,7 +16,7 @@ namespace yack
         //______________________________________________________________________
         //
         //
-        //! memory for LU decomposition
+        //! linear memory for LU decomposition
         //
         //______________________________________________________________________
         class lu_ : public writable<size_t>, public dynamic
@@ -49,9 +49,7 @@ namespace yack
 
             //! allocate memory and create dims object
             explicit lu_(const size_t nmax,
-                         const size_t itsz,
-                         proc         make,
-                         proc         done);
+                         const size_t itsz);
 
             //! address for scal
             template <typename T> T *scal_() throw()
@@ -64,11 +62,8 @@ namespace yack
             YACK_DISABLE_COPY_AND_ASSIGN(lu_);
             size_t      *upos; //!< [1..size]
             uint8_t     *data; //!< first byte of data
-            const size_t step; //!< sizeof(type)
-            proc         kill; //!< ~type()
             void        *wksp; //!< memory
             size_t       wlen; //!< granted
-            void         clear(size_t) throw();
         };
         
     }
