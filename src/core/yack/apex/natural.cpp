@@ -77,7 +77,7 @@ max_bytes(size_t(1)<<max_bytes_exp2 )
         YACK_APEX_NATURAL(words_exp2_for(num_words))
         {
             assert(max_words>=num_words);
-            YACK_APN_CHECK("natural(num_words,as_capacity");
+            YACK_APN_CHECK("natural(num_words,as_capacity)");
         }
 
         natural:: natural(const word_type *w, const size_t num_words) :
@@ -285,10 +285,21 @@ exit(1);\
         
         void natural:: check(const char *when) const
         {
+            //std::cerr << "<chk " << when << ">" << std::endl;
             assert(when);
             YACK_APN_CHECK_(NULL!=word);
             YACK_APN_CHECK_(words<=max_words);
             YACK_APN_CHECK_(bytes<=max_bytes);
+            if(words>0)
+            {
+                const word_type msw = word[words-1];
+                YACK_APN_CHECK_(msw!=0);
+                YACK_APN_CHECK_( (words-1)*sizeof(word_type)+bytes_for(msw) == bytes);
+            }
+            for(size_t i=words;i<max_words;++i)
+            {
+                YACK_APN_CHECK_(0==word[i]);
+            }
         }
 
         

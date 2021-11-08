@@ -30,9 +30,10 @@ namespace yack
 #     define YACK_APEX_TYPE void * //!< default matching type
 #endif
 
-#define YACK_APN_CHECKING
+#define YACK_APN_CHECKING 1
         
 #if defined(YACK_APN_CHECKING)
+#  warning "Enable APN Checking!"
 #  define YACK_APN_CHECK(WHEN) check(WHEN)
 #else
 #define YACK_APN_CHECK(WHEN)
@@ -343,9 +344,9 @@ namespace yack
                 explicit handle(word_type     &) throw(); //!< one word reference
                 virtual ~handle() throw();                //!< cleanup
 
-                void display(std::ostream &) const; //!< helper
-                bool is0() const throw();           //!< test if is 0
-                bool is1() const throw();           //!< test if is 1
+                std::ostream &display(std::ostream &) const; //!< helper
+                bool          is0() const throw();           //!< test if is 0
+                bool          is1() const throw();           //!< test if is 1
                 
             private:
                 YACK_DISABLE_COPY_AND_ASSIGN(handle);

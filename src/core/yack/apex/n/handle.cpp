@@ -35,7 +35,7 @@ namespace yack
             assert(W>0);
         }
 
-        void natural::handle:: display(std::ostream &os) const
+        std::ostream & natural::handle:: display(std::ostream &os) const
         {
             os << "#" << words << "{";
             const word_type *p = entry+words;
@@ -44,6 +44,8 @@ namespace yack
                 os << ' ' << std::hex << uint64_t( *(--p) );
             }
             os << " }";
+            os << std::dec;
+            return os;
         }
 
 

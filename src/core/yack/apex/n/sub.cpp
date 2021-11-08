@@ -88,10 +88,10 @@ namespace yack
                 const natural L(l.entry,l.words);
                 const natural R(r.entry,r.words);
                 std::cerr << "*** Error: carry=" << carry << std::endl;
-                std::cerr << "*** Error: #L=" << l.words << " | #R=" << r.words << std::endl;
-                std::cerr << "*** Error: #L=" << L.words << " | #R=" << R.words << std::endl;
-                std::cerr << "*** Error: @L=" << L.bytes << " | @R=" << R.bytes << std::endl;
-                std::cerr << "*** Error: " << L << "<" << R << std::endl;
+                std::cerr << "*** Error: lhs = ";  L.output_hex(std::cerr) << std::endl;
+                std::cerr << "*** Error: lh  = ";  l.display(std::cerr) << std::endl;
+                std::cerr << "*** Error: rhs = ";  R.output_hex(std::cerr) << std::endl;
+                std::cerr << "*** Error: rh  = ";  r.display(std::cerr) << std::endl;
                 throw libc::exception(EDOM,"%slhs<rhs [level-2]",fn);
             }
 
