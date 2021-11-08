@@ -94,20 +94,23 @@ namespace yack
                             sum -= a_i[k]*a[k][j];
                         a_i[j]=sum;
                     }
-                    scalar_type vmax = 0;
-                    size_t      imax = 0;
-                    for (size_t i=j;i<=n;i++)
+                    size_t       imax = 0;
+                    writable<T> &a_j  = a[j];
                     {
-                        writable<T> &a_i = a[i];
-                        T sum=a_i[j];
-                        for (size_t k=1;k<j;++k)
-                            sum -= a_i[k]*a[k][j];
-                        a_i[j]=sum;
-                        const scalar_type dum = scal[i] * abs_of(sum);
-                        if ( dum >= vmax)
+                        scalar_type vmax  = 0;
+                        for (size_t i=j;i<=n;i++)
                         {
-                            vmax=dum;
-                            imax=i;
+                            writable<T> &a_i = a[i];
+                            T sum=a_i[j];
+                            for (size_t k=1;k<j;++k)
+                                sum -= a_i[k]*a[k][j];
+                            a_i[j]=sum;
+                            const scalar_type dum = scal[i] * abs_of(sum);
+                            if ( dum >= vmax)
+                            {
+                                vmax=dum;
+                                imax=i;
+                            }
                         }
                     }
                     if (j != imax)
@@ -116,13 +119,14 @@ namespace yack
                         dneg       = !dneg;
                         scal[imax] = scal[j];
                     }
-                    if( abs_of(a[j][j]) <= 0 )
+                    if( abs_of(a_j[j]) <= 0 )
                         return false;
                     indx[j] = imax;
                     if(j!=n)
                     {
-                        const T fac=one/(a[j][j]);
-                        for(size_t i=j+1;i<=n;++i) a[i][j] *= fac;
+                        const T fac=one/(a_j[j]);
+                        for(size_t i=n;i>j;--i)
+                            a[i][j] *= fac;
                     }
                 }
                 
