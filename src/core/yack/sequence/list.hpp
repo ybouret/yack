@@ -148,6 +148,11 @@ namespace yack
             merge_list_of<node_type>::sort(alive,compare_nodes);
         }
 
+        inline void reverse() throw()
+        {
+            alive.reverse();
+        }
+
     private:
         YACK_DISABLE_ASSIGN(list);
         list_of<node_type> alive;

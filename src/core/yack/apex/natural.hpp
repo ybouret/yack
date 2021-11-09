@@ -295,7 +295,7 @@ namespace yack
                 return res;
             }
 
-            
+
 
             //__________________________________________________________________
             //
@@ -312,8 +312,8 @@ namespace yack
             //
             // floating point ops
             //__________________________________________________________________
-            static double ratio(const natural &num, const natural &den);
-            double        to_double() const;
+            static double ratio(const natural &num, const natural &den); //!< ratio
+            double        to_double() const;                             //!< integer
 
         private:
             friend class integer;

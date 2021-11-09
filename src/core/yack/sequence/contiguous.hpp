@@ -39,7 +39,7 @@ namespace yack
 
         //______________________________________________________________________
         //
-        // sorting
+        //! sorting
         //______________________________________________________________________
         template <typename COMPARE_DATA> inline
         void sort(COMPARE_DATA &compare_data)

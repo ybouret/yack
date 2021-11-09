@@ -8,10 +8,18 @@
 
 namespace yack
 {
+    //__________________________________________________________________________
+    //
+    //
+    //! wrapper to call data comparison from linked node
+    //
+    //__________________________________________________________________________
     template <typename NODE, typename COMPARE_DATA>
     struct nodes_comparison
     {
-        COMPARE_DATA &compare_data;
+        COMPARE_DATA &compare_data; //!< user defined function
+
+        //! call user function on **nodes
         inline int operator()(const NODE *lhs, const NODE *rhs)
         {
             assert(lhs);
