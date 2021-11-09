@@ -30,11 +30,12 @@ namespace yack
             data = new ( out_of_reach::zset(impl,sizeof(impl)) ) mutable_type(args);
         }
 
-        inline void free() throw()
+        inline tree_knot *free() throw()
         {
             assert(NULL!=data);
             data->~mutable_type();
             data = NULL;
+            return this;
         }
 
         inline bool is_alive() const throw() { return NULL != data; }
@@ -46,9 +47,9 @@ namespace yack
 
         tree_knot    *next;
         tree_knot    *prev;
-
+        const NODE   *node;
+        
     private:
-        NODE          *node;
         mutable_type  *data;
         void          *impl[ YACK_WORDS_FOR(T) ];
         YACK_DISABLE_COPY_AND_ASSIGN(tree_knot);

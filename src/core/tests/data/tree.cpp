@@ -34,7 +34,9 @@ YACK_UTEST(data_tree)
 
     if(argc>1)
     {
-        suffix_tree<size_t,char> tree;
+        suffix_tree<size_t,char>     tree;
+        suffix_tree<size_t,uint32_t> tree2;
+
         ios::icstream   fp(argv[1]);
         ios::characters line;
         size_t          indx = 0;
@@ -44,8 +46,10 @@ YACK_UTEST(data_tree)
             ++indx;
             char *key = line.cstr();
             try {
-               if(!tree.insert(indx,key,line.size))
-                   ++collisions;
+                const bool res =tree.insert(indx,key,line.size);
+                if(!res)
+                    ++collisions;
+                YACK_ASSERT(res==tree2.insert(indx,key,line.size));
                 line.free(key);
             }
             catch(...)
@@ -54,9 +58,24 @@ YACK_UTEST(data_tree)
                 throw;
             }
         }
-        std::cerr << "loaded    =" << tree.size() << std::endl;
-        std::cerr << "collisions=" << collisions  << std::endl;
+        std::cerr << "loaded     = " << tree.size() << std::endl;
+        std::cerr << "loaded2    = " << tree2.size() << std::endl;
+        std::cerr << "collisions = " << collisions  << std::endl;
 
+        std::cerr << "  <output>" << std::endl;
+        suffix_tree<size_t,char>::vkey_type vkey;
+        for(const suffix_tree<size_t,char>::knot_type *knot=tree.head();knot;knot=knot->next)
+        {
+            std::cerr << "data=" << **knot << std::endl;
+            knot->node->print_key();
+            knot->node->save(vkey);
+            std::cerr << "    |_" << vkey << std::endl;
+        }
+        std::cerr << "  <output/>" << std::endl;
+
+        tree.free();
+        std::cerr << "loaded     = " << tree.size() << std::endl;
+        tree2.release();
     }
 
 

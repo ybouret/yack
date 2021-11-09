@@ -43,7 +43,9 @@ namespace yack
      
         inline type       &back()       throw() { return *(type *) _back(); }   //!< back item
         inline const_type &back() const throw() { return *         _back(); }   //!< back item, const
+
         
+
         //______________________________________________________________________
         //
         // C++
