@@ -325,19 +325,3 @@ namespace yack
     }
 
 }
-
-#include "yack/system/exception.hpp"
-#include <cerrno>
-
-namespace yack
-{
-
-    namespace apex
-    {
-        void natural:: cast_overflow(const char *who) const
-        {
-            throw libc::exception(ERANGE,"apn::cast_to('%s')", (who?who:yack_unknown) );
-        }
-    }
-
-}

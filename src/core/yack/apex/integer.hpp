@@ -159,7 +159,33 @@ namespace yack
             //__________________________________________________________________
             integer abs()  const; //!< |z|
             integer mod2() const; //!< |z|^2
-            
+
+            //__________________________________________________________________
+            //
+            // casting
+            //__________________________________________________________________
+            //! try to cast to a system integer
+            template <typename T> inline
+            bool try_cast_to(T &res) const throw()
+            {
+                switch (s) {
+                    case __zero__: res=0; return true;
+                    case positive: break;
+                    case negative: break;
+                }
+                return false;
+            }
+
+
+            //! cast with overflow check
+            template <typename T> inline
+            T cast_to(const char *who=NULL) const
+            {
+                T res=0;
+                if(!try_cast_to(res)) cast_overflow(who);
+                return res;
+            }
+
         private:
             friend class rational;
             

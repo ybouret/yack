@@ -247,13 +247,9 @@ namespace yack
                     {
                         a.minor(m,i,j);
                         if(build(m))
-                        {
                             q_j[i] = (0==((i+j)&1)) ? det(m) : -det(m);
-                        }
                         else
-                        {
                             q_j[i] = 0;
-                        }
                     }
                 }
             }

@@ -54,7 +54,8 @@ namespace yack
             virtual ~number() throw(); //!< cleanup
 
         protected:
-            explicit number() throw(); //!< setup
+            explicit number() throw();                     //!< setup
+            void     cast_overflow(const char *who) const; //!< rise exception
 
         private:
             YACK_DISABLE_COPY_AND_ASSIGN(number);

@@ -74,6 +74,7 @@ YACK_UTEST_DECL(128)
     YACK_UTEST(apex_ari);
     YACK_UTEST(apex_io);
     YACK_UTEST(apex_perf);
+    YACK_UTEST(apex_conv);
 
     YACK_UTEST(ios_c_file);
     YACK_UTEST(ios_streams);

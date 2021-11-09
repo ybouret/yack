@@ -103,3 +103,20 @@ namespace yack
 
 }
 
+
+#include "yack/system/exception.hpp"
+#include <cerrno>
+
+namespace yack
+{
+
+    namespace apex
+    {
+        void number:: cast_overflow(const char *who) const
+        {
+            throw libc::exception(ERANGE,"%s::cast_to('%s')", class_uid(), (who?who:yack_unknown) );
+        }
+    }
+
+}
+

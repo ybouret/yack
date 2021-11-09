@@ -148,6 +148,7 @@ add_test(apex:ari       test-yack  apex_ari)
 add_test(apex:io        test-yack  apex_io)
 add_test(apex:z         test-yack  apz)
 add_test(apex:q         test-yack  apq)
+add_test(apex:conv      test-yack  apex_conv)
 
 add_test(ios::c-file    test-yack ios_c_file)
 add_test(ios:streams    test-yack ios_streams)

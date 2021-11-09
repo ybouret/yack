@@ -271,25 +271,24 @@ namespace yack
             // conversion
             //__________________________________________________________________
             //! try to cast to a system integer
-            template <typename T>
+            template <typename T> inline
             bool try_cast_to(T &res) const throw()
             {
-                static const uint_type umax = uint_type( integral_for<T>::maximum );
-                const        uint_type vmax = lsu();
-                if(vmax>umax)
-                {
+                uint_type    umax = uint_type( integral_for<T>::maximum );
+                const handle hmax(umax);
+                const handle self(*this);
+                if( cmp(self,hmax) > 0 )
                     return false;
-                }
                 else
                 {
-                    res = T(vmax);
+                    res = T( lsu() );
                     return true;
                 }
             }
 
             //! cast with overflow check
-            template <typename T>
-            T cast_to(const char *who) const
+            template <typename T> inline
+            T cast_to(const char *who=NULL) const
             {
                 T res=0;
                 if(!try_cast_to(res)) cast_overflow(who);
@@ -362,8 +361,7 @@ namespace yack
             static natural   quot(const handle &numerator, const handle &denominator, natural &rem); //!< simultaneous quot/rem
             
             typedef uint8_t   (*bitproc)(uint8_t, uint8_t);
-            static natural      bitwise(bitproc proc, const natural &lhs, const natural &rhs);
-            void                cast_overflow(const char *who) const;
+            static natural      bitwise(bitproc proc, const natural &lhs, const natural &rhs); //!< bitwise call
 
         };
         
