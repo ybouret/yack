@@ -40,31 +40,35 @@ YACK_UTEST(data_list_ordered)
     int keys[10];
     const size_t knum = sizeof(keys)/sizeof(keys[0]);
 
-    for(size_t i=0;i<knum;++i) keys[i] = int(i);
+    for(size_t i=0;i<knum;++i) keys[i] = int(i)*2;
 
-    randomized::shuffle::data(keys,knum,ran);
-
-    List L;
-    for(size_t i=0;i<knum;++i)
+    for(size_t iter=0;iter<16;++iter)
     {
-        const int key  = keys[i];
-        Node     *node = NULL;
-        YACK_ASSERT(!ordered_list::search(L,key,Node::Compare,node));
-        if(node)
+        randomized::shuffle::data(keys,knum,ran);
+
+        List L;
+        for(size_t i=0;i<knum;++i)
         {
-            L.insert_after(node, new Node(key) );
+            const int key  = keys[i];
+            Node     *node = NULL;
+            YACK_ASSERT(!ordered_list::search(L,key,Node::Compare,node));
+            if(node)
+            {
+                std::cerr << "insert " << key << " after " << node->code << std::endl;
+                L.insert_after(node, new Node(key) );
+            }
+            else
+            {
+                std::cerr << "push front " << key << std::endl;
+                L.push_front( new Node(key) );
+            }
         }
-        else
+
+        for(const Node *node=L.head;node;node=node->next)
         {
-            L.push_front( new Node(key) );
+            std::cerr << node->code << std::endl;
         }
     }
-
-    for(const Node *node=L.head;node;node=node->next)
-    {
-        std::cerr << node->code << std::endl;
-    }
-
 
 }
 YACK_UDONE()

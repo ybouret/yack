@@ -28,19 +28,18 @@ namespace yack
             }
             else
             {
-
                 const NODE *lower = l.head;
                 switch(compare(value,lower))
                 {
-                    case negative: return false;
-                    case __zero__: target = (NODE*)lower; return true;
+                    case negative: assert(NULL==target);  return false; // => push_front
+                    case __zero__: target = (NODE*)lower; return true; 
                     default:
                         break;
                 }
                 // data is strictly after lower
 
                 const NODE *upper = l.tail;
-                switch(compare(value,lower))
+                switch(compare(value,upper))
                 {
                     case positive: target = (NODE*)upper; return false;
                     case __zero__: target = (NODE*)upper; return true;
@@ -51,7 +50,41 @@ namespace yack
                 // data is strictly before upper as well
                 assert(size>=2);
 
-                return false;
+                assert(positive==compare(value,lower));
+                assert(negative==compare(value,upper));
+            SEARCH:
+                const NODE *next = lower->next; assert(next);
+                switch( compare(value,next) )
+                {
+                    case negative: target = (NODE*)lower; return false;
+                    case __zero__: target = (NODE*)next;  return true;
+                    case positive:
+                        if(next==upper)
+                        {
+                            target = (NODE*)next;
+                            return false;
+                        }
+                }
+                lower = next;
+                assert(lower!=upper);
+                assert(positive==compare(value,lower));
+                const NODE *prev = upper->prev;
+                switch(compare(value,prev))
+                {
+                    case positive: target = (NODE*)prev; return false;
+                    case __zero__: target = (NODE*)prev; return true;
+                    case negative:
+                        if(prev==lower)
+                        {
+                            target = (NODE*)prev;
+                            return false;
+                        }
+                }
+                upper = prev;
+                assert(lower!=upper);
+                assert(negative==compare(value,upper));
+                goto SEARCH;
+
             }
 
         }
