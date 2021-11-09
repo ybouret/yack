@@ -25,7 +25,9 @@ namespace yack
 
         inline explicit suffix_tree() throw() :
         root(),
-        data()
+        data(),
+        znodes(),
+        zknots()
         {
         }
 
