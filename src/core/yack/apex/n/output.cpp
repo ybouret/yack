@@ -70,7 +70,6 @@ namespace yack
 
 }
 
-#include "yack/data/pool/concrete.hpp"
 #include "yack/ios/character.hpp"
 
 namespace yack
@@ -85,8 +84,7 @@ namespace yack
             }
             else
             {
-                //small_pool<char> code;
-                ios::char_cache   code;
+                ios::repository   code;
                 uint_type    _10 = 10;
                 const handle ten(_10);
                 natural      tmp(*this);

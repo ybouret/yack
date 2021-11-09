@@ -68,7 +68,7 @@ namespace yack
         //! pool for local cache
         //
         //______________________________________________________________________
-        typedef kpool<uint8_t,character> char_cache;
+        typedef kpool<uint8_t,character> repository;
 
         //______________________________________________________________________
         //

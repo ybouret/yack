@@ -20,7 +20,7 @@ namespace yack
         typedef cxx_pool_of<node_type>  pool_type;
 
         inline explicit tree_node(const CODE c) throw() :
-        code(c), next(NULL), prev(NULL), chld(), knot(NULL)
+        code(c), next(NULL), prev(NULL), from(NULL), chld(), knot(NULL)
         {
         }
 
@@ -48,6 +48,7 @@ namespace yack
         const CODE  code;
         tree_node  *next;
         tree_node  *prev;
+        tree_node  *from;
         list_type   chld;
         knot_type  *knot;
 

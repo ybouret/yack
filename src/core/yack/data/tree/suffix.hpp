@@ -59,27 +59,14 @@ namespace yack
                     curr=&(node->chld);
                     goto WALK;
                 }
-                //--------------------------------------------------------------
-                // code not found
-                //--------------------------------------------------------------
-            }
-
-            //------------------------------------------------------------------
-            //
-            // check status of node
-            //
-            //------------------------------------------------------------------
-            if(node!=NULL)
-            {
-                if(node->is_filled())
-                    return **node;
                 else
+                {
                     return NULL;
+                }
             }
-            else
-            {
-                return NULL;
-            }
+            assert(node);
+            return (NULL!=node->knot) ? &(**node) : NULL;
+            
         }
 
         template <typename ITERATOR> inline
