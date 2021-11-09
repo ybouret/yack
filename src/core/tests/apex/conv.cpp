@@ -9,8 +9,9 @@ using namespace yack;
 
 YACK_UTEST(apex_conv)
 {
-    apn n = 1000;
+    apn n = 100001;
     std::cerr << n.cast_to<int>() << std::endl;
+    std::cerr << n.to_double()    << std::endl;
     apz z = -100;
     std::cerr << int(z.cast_to<int8_t>()) << std::endl;
 

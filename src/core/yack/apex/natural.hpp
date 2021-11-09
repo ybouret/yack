@@ -305,7 +305,14 @@ namespace yack
             static natural parse_hex(const char *data);                //!< parse hexadecimal
             static natural parse(const char *data, const size_t size); //!< parse dec|hex
             static natural parse(const char *data);                    //!< parse
-            
+
+            //__________________________________________________________________
+            //
+            // floating point ops
+            //__________________________________________________________________
+            static double ratio(const natural &num, const natural &den);
+            double        to_double() const;
+
         private:
             friend class integer;
 
