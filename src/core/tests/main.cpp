@@ -44,6 +44,7 @@ YACK_UTEST_DECL(128)
 
     YACK_UTEST(data_list);
     YACK_UTEST(data_list_sort);
+    YACK_UTEST(data_list_ordered);
     YACK_UTEST(data_pool);
     YACK_UTEST(data_pool_sort);
     YACK_UTEST(data_small);

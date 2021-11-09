@@ -48,10 +48,18 @@ namespace yack
         
         //! value to sign
         template <typename T> static inline
-        sign_type of(const T value) throw()
+        sign_type of(const T value)
         {
             return (value<0?negative:(0<value?positive:__zero__));
         }
+
+        //! comparison to sign
+        template <typename T> static inline
+        sign_type of(const T &lhs, const T &rhs)
+        {
+            return (lhs<rhs) ? negative : ( (rhs<lhs) ? positive : __zero__ );
+        }
+        
 
         //! opposite sign
         static sign_type opposite(const sign_type) throw();

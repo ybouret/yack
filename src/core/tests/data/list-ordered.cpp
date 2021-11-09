@@ -1,0 +1,71 @@
+
+#include "yack/data/list/ordered.hpp"
+#include "yack/data/list/cxx.hpp"
+#include "yack/utest/run.hpp"
+#include "yack/object.hpp"
+#include <cstring>
+
+using namespace yack;
+
+namespace
+{
+    class Node : public object
+    {
+    public:
+        explicit Node(const int c) : code(c), next(0), prev(0) {}
+        virtual ~Node() throw() {}
+
+        const int code;
+        Node     *next;
+        Node     *prev;
+
+        static sign_type Compare(const int &code, const Node *node)
+        {
+            return __sign::of(code,node->code);
+        }
+
+    private:
+        YACK_DISABLE_COPY_AND_ASSIGN(Node);
+    };
+
+    typedef cxx_list_of<Node> List;
+
+}
+
+YACK_UTEST(data_list_ordered)
+{
+
+    randomized::rand_ ran;
+
+    int keys[10];
+    const size_t knum = sizeof(keys)/sizeof(keys[0]);
+
+    for(size_t i=0;i<knum;++i) keys[i] = int(i);
+
+    randomized::shuffle::data(keys,knum,ran);
+
+    List L;
+    for(size_t i=0;i<knum;++i)
+    {
+        const int key  = keys[i];
+        Node     *node = NULL;
+        YACK_ASSERT(!ordered_list::search(L,key,Node::Compare,node));
+        if(node)
+        {
+            L.insert_after(node, new Node(key) );
+        }
+        else
+        {
+            L.push_front( new Node(key) );
+        }
+    }
+
+    for(const Node *node=L.head;node;node=node->next)
+    {
+        std::cerr << node->code << std::endl;
+    }
+
+
+}
+YACK_UDONE()
+

@@ -13,10 +13,10 @@ namespace yack
     struct ordered_list
     {
 
-        template <typename DATA, typename NODE>
+        template <typename DATA, typename NODE> static inline
         bool search(const list_of<NODE> &l,
                     const DATA          &value,
-                    sign_type          (*compare)(DATA &, const NODE *),
+                    sign_type          (*compare)(const DATA &, const NODE *),
                     NODE * &             target)
         {
             assert(NULL!=compare);
@@ -33,7 +33,7 @@ namespace yack
                 switch(compare(value,lower))
                 {
                     case negative: return false;
-                    case __zero__: target = coerce(lower); return true;
+                    case __zero__: target = (NODE*)lower; return true;
                     default:
                         break;
                 }
@@ -42,8 +42,8 @@ namespace yack
                 const NODE *upper = l.tail;
                 switch(compare(value,lower))
                 {
-                    case positive: target = coerce(upper); return false;
-                    case __zero__: target = coerce(upper); return true;
+                    case positive: target = (NODE*)upper; return false;
+                    case __zero__: target = (NODE*)upper; return true;
                     default:
                         break;
                 }
