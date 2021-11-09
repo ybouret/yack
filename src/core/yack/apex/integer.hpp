@@ -168,12 +168,19 @@ namespace yack
             template <typename T> inline
             bool try_cast_to(T &res) const throw()
             {
-                switch (s) {
+                switch(s)
+                {
                     case __zero__: res=0; return true;
-                    case positive: break;
-                    case negative: break;
+                    case positive: return n.try_cast_to(res);
+                    case negative:
+                        break;
                 }
-                return false;
+                const int_type imin = int_type( integral_for<T>::minimum );
+                const handle   hmin(imin);
+                const handle   self(*this);
+                if( cmp(self,hmin) < 0 ) return false;
+                res = -int_type( n.lsu() );
+                return true;
             }
 
 

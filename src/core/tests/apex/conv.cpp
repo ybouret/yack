@@ -11,7 +11,9 @@ YACK_UTEST(apex_conv)
 {
     apn n = 1000;
     std::cerr << n.cast_to<int>() << std::endl;
-    //std::cerr << n.cast_to<uint8_t>("byte") << std::endl;
+    apz z = -100;
+    std::cerr << int(z.cast_to<int8_t>()) << std::endl;
+
 }
 YACK_UDONE()
 
