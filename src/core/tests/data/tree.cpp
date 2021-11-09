@@ -75,6 +75,21 @@ YACK_UTEST(data_tree)
 
         tree.free();
         std::cerr << "loaded     = " << tree.size() << std::endl;
+
+        if(tree2.size()<=10)
+        {
+            std::cerr << "  <output2>" << std::endl;
+            suffix_tree<size_t,uint32_t>::vkey_type vkey2;
+            for(const suffix_tree<size_t,uint32_t>::knot_type *knot=tree2.head();knot;knot=knot->next)
+            {
+                std::cerr << "data=" << **knot << std::endl;
+                knot->node->print_key();
+                knot->node->save(vkey2);
+                std::cerr << "    |_" << vkey2 << std::endl;
+            }
+            std::cerr << "  <output2/>" << std::endl;
+        }
+
         tree2.release();
     }
 
