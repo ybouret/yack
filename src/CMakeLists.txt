@@ -23,8 +23,6 @@ endmacro()
 
 add_subdirectory(core)
 
-string( STRIP "${UNIT_TESTS}" UNIT_TESTS) 
-message( STATUS "[YACK] Unit Tests: '${UNIT_TESTS}'" )
 
 find_program(doxygen doxygen)
 if("${doxygen}" STREQUAL "doxygen-NOTFOUND")
@@ -41,3 +39,13 @@ add_subdirectory(cli)
 add_subdirectory(zlib)
 add_subdirectory(lua)
 add_subdirectory(math)
+
+string( STRIP "${UNIT_TESTS}" UNIT_TESTS)
+string( REPLACE " " ";" UNIT_TESTS "${UNIT_TESTS}" )
+
+message( STATUS "[YACK] Unit Tests: '${UNIT_TESTS}'" )
+add_custom_target(regression
+	#COMMAND ${CMAKE_COMMAND} -E echo "[YACK] Regression"
+	DEPENDS ${UNIT_TESTS}
+	COMMENT "[YACK] Regression")
+	
