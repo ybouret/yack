@@ -245,7 +245,7 @@ namespace yack
                     matrix_row<T> &q_j = q[j];
                     for(size_t i=n;i>0;--i)
                     {
-                        a.minor(m,i,j);
+                        a.compute_minor(m,i,j);
                         if(build(m))
                             q_j[i] = (0==((i+j)&1)) ? det(m) : -det(m);
                         else

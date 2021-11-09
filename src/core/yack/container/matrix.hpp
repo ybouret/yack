@@ -162,7 +162,7 @@ namespace yack
 
         //! compute minor matrix
         template <typename U>
-        inline void minor(matrix<U> &m, const size_t i, const size_t j) const
+        inline void compute_minor(matrix<U> &m, const size_t i, const size_t j) const
         {
             assert(rows>1);
             assert(cols>1);
