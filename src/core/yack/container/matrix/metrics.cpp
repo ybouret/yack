@@ -42,7 +42,7 @@ namespace yack
     {
     }
 
-    void matrix_metrics:: swap_with(matrix_metrics &other) throw()
+    void matrix_metrics:: swap_metrics_with(matrix_metrics &other) throw()
     {
         coerce_cswap(rows,other.rows);
         coerce_cswap(cols,other.cols);

@@ -70,7 +70,7 @@ namespace yack
         explicit matrix_metrics() throw();
 
         //! no-throw swap
-        void swap_with(matrix_metrics &other) throw();
+        void swap_metrics_with(matrix_metrics &other) throw();
 
     private:
         YACK_DISABLE_COPY_AND_ASSIGN(matrix_metrics);

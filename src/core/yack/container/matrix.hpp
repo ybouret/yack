@@ -94,8 +94,8 @@ namespace yack
         //! no throw exchange
         inline void xch(matrix &other) throw()
         {
-            matrix_data<T>::swap_with(other);
-            matrix_metrics::swap_with(other);
+            this->swap_data_with(other);
+            swap_metrics_with(other);
         }
 
         //! load same value

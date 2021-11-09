@@ -38,7 +38,7 @@ namespace yack
         mutable_type *head;                                         //!< first data
         
         //! no-throw swap
-        void swap_with(matrix_data &other) throw()
+        void swap_data_with(matrix_data &other) throw()
         {
             cswap(line,other.line);
             cswap(head,other.head);
