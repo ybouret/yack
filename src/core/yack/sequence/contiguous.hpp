@@ -49,6 +49,10 @@ namespace yack
             hsort(self,compare_data);
         }
 
+        //______________________________________________________________________
+        //
+        //! reverse order
+        //______________________________________________________________________
         inline void reverse() throw()
         {
             writable<T> &self  = *this;

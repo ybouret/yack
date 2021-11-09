@@ -13,23 +13,44 @@
 namespace yack
 {
 
+    //__________________________________________________________________________
+    //
+    //
+    //! knot to store data beside a tree
+    //
+    //__________________________________________________________________________
     template <typename T,typename NODE>
     class tree_knot : public object
     {
     public:
-        YACK_DECL_ARGS(T,type);
-        typedef cxx_list_of<tree_knot> list_type;
-        typedef cxx_pool_of<tree_knot> pool_type;
+        //______________________________________________________________________
+        //
+        // types and definition
+        //______________________________________________________________________
+        YACK_DECL_ARGS(T,type);                    //!< aliases
+        typedef cxx_list_of<tree_knot> list_type;  //!< alias
+        typedef cxx_pool_of<tree_knot> pool_type;  //!< alias
 
-        inline explicit tree_knot() throw() : next(0), prev(0), node(0), data(0), impl() {}
-        inline virtual ~tree_knot() throw() { if(data) free(); }
+        //______________________________________________________________________
+        //
+        // C++
+        //______________________________________________________________________
+        inline explicit tree_knot() throw() : next(0), prev(0), node(0), data(0), impl() {} //!< setup
+        inline virtual ~tree_knot() throw() { if(data) free(); }                            //!< cleanup
 
+        //______________________________________________________________________
+        //
+        // methods
+        //______________________________________________________________________
+
+        //! construct data
         inline void make(const_type &args)
         {
             assert(NULL==data);
             data = new ( out_of_reach::zset(impl,sizeof(impl)) ) mutable_type(args);
         }
 
+        //! destruct data
         inline tree_knot *free() throw()
         {
             assert(NULL!=data);
@@ -38,16 +59,17 @@ namespace yack
             return this;
         }
 
-        inline bool is_alive() const throw() { return NULL != data; }
-        inline bool is_zombi() const throw() { return NULL == data; }
+        inline bool         is_alive()  const throw() { return NULL != data; }              //!< check satus
+        inline type       & operator*()       throw() { assert(is_alive()); return *data; } //!< access data
+        inline const_type & operator*() const throw() { assert(is_alive()); return *data; } //!< access const data
 
-        inline type       & operator*()       throw() { assert(is_alive()); return *data; }
-        inline const_type & operator*() const throw() { assert(is_alive()); return *data; }
-
-
-        tree_knot    *next;
-        tree_knot    *prev;
-        const NODE   *node;
+        //______________________________________________________________________
+        //
+        // members
+        //______________________________________________________________________
+        tree_knot    *next; //!< for list/pool
+        tree_knot    *prev; //!< for list
+        const NODE   *node; //!< node within tree
         
     private:
         mutable_type  *data;

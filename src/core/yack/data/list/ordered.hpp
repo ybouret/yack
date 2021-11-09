@@ -9,9 +9,26 @@
 
 namespace yack
 {
-
+    //__________________________________________________________________________
+    //
+    //
+    //! operations on ordered list
+    //
+    //__________________________________________________________________________
     struct ordered_list
     {
+
+        //______________________________________________________________________
+        //
+        //! search algorithm
+        /**
+         * \param l       the list
+         * \param value   value of a node
+         * \param compare compare(value,node)
+         * \param target  the exact node or the node BEFORE
+         * \return value was found
+         */
+        //______________________________________________________________________
 
         template <typename DATA, typename NODE> static inline
         bool search(const list_of<NODE> &l,
@@ -24,10 +41,18 @@ namespace yack
             const size_t size = l.size;
             if(size<=0)
             {
+                //______________________________________________________________
+                //
+                // no way
+                //______________________________________________________________
                 return false;
             }
             else
             {
+                //______________________________________________________________
+                //
+                // initialize lower search
+                //______________________________________________________________
                 const NODE *lower = l.head;
                 switch(compare(value,lower))
                 {
@@ -36,8 +61,11 @@ namespace yack
                     default:
                         break;
                 }
-                // data is strictly after lower
 
+                //______________________________________________________________
+                //
+                // data is strictly after lower, initialize upper
+                //______________________________________________________________
                 const NODE *upper = l.tail;
                 switch(compare(value,upper))
                 {
@@ -47,11 +75,18 @@ namespace yack
                         break;
                 }
 
+                //______________________________________________________________
+                //
                 // data is strictly before upper as well
+                //______________________________________________________________
                 assert(size>=2);
-
                 assert(positive==compare(value,lower));
                 assert(negative==compare(value,upper));
+
+                //______________________________________________________________
+                //
+                // one step search
+                //______________________________________________________________
             SEARCH:
                 const NODE *next = lower->next; assert(next);
                 switch( compare(value,next) )

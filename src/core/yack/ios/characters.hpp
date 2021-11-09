@@ -63,8 +63,8 @@ namespace yack
                 return os;
             }
 
-            char        *cstr() const;
-            static void  free(char *) throw();
+            char        *cstr() const;         //!< filled from legacy::acquire
+            static void  free(char *) throw(); //!< free   with legacy::release
 
         };
 

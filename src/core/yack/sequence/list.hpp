@@ -148,6 +148,10 @@ namespace yack
             merge_list_of<node_type>::sort(alive,compare_nodes);
         }
 
+        //______________________________________________________________________
+        //
+        //! reverse nodes
+        //______________________________________________________________________
         inline void reverse() throw()
         {
             alive.reverse();

@@ -11,21 +11,36 @@
 
 namespace yack
 {
-
+    //__________________________________________________________________________
+    //
+    //
+    //! generic suffix tree
+    //
+    //__________________________________________________________________________
     template <typename T, typename CODE>
     class suffix_tree : public collection, public releasable
     {
     public:
-        YACK_DECL_ARGS(T,type);
-        typedef tree_node<T,CODE>             node_type;
-        typedef typename node_type::list_type node_list;
-        typedef typename node_type::pool_type node_pool;
-        typedef typename node_type::vkey_type vkey_type;
+        //______________________________________________________________________
+        //
+        // types and definition
+        //______________________________________________________________________
+        YACK_DECL_ARGS(T,type);                           //!< aliases
+        typedef tree_node<T,CODE>             node_type;  //!< node in the tree
+        typedef typename node_type::list_type node_list;  //!< list of nodes
+        typedef typename node_type::pool_type node_pool;  //!< pool of nodes
+        typedef typename node_type::vkey_type vkey_type;  //!< encoded top-down key
 
-        typedef tree_knot<T,node_type>        knot_type;
-        typedef typename knot_type::list_type knot_list;
-        typedef typename knot_type::pool_type knot_pool;
+        typedef tree_knot<T,node_type>        knot_type;  //!< knot of data
+        typedef typename knot_type::list_type knot_list;  //!< list of knots
+        typedef typename knot_type::pool_type knot_pool;  //!< pool of knots
 
+        //______________________________________________________________________
+        //
+        // C++
+        //______________________________________________________________________
+
+        //! setup empty
         inline explicit suffix_tree() throw() :
         root(),
         data(),
@@ -34,19 +49,21 @@ namespace yack
         {
         }
 
+        //! cleanup
         inline virtual ~suffix_tree() throw()
         {
         }
         
+        //______________________________________________________________________
+        //
+        //! collection:size()
+        //______________________________________________________________________
+        inline  virtual size_t size() const throw() { return data.size; }
 
-        virtual size_t size() const throw() { return data.size; }
-        virtual void   free() throw()
-        {
-            purge(root);
-            while(data.size)
-                pool.store( data.pop_back()->free() );
-        }
-
+        //______________________________________________________________________
+        //
+        //! releasable:release()
+        //______________________________________________________________________
         virtual void release() throw()
         {
             root.release();
@@ -55,8 +72,28 @@ namespace yack
             pool.release();
         }
 
+        //______________________________________________________________________
+        //
+        // methods
+        //______________________________________________________________________
+
+        //! free content, keep nodes and knots
+        inline virtual void   free() throw()
+        {
+            purge(root);
+            while(data.size)
+                pool.store( data.pop_back()->free() );
+        }
+
+        //! available nodes for the tree
+        inline size_t cache() const throw()
+        { return repo.size(); }
 
 
+        //______________________________________________________________________
+        //
+        //! search methods
+        //______________________________________________________________________
         template <typename ITERATOR> inline
         const_type *search(ITERATOR iter, size_t n) const throw()
         {
@@ -84,15 +121,17 @@ namespace yack
                     goto WALK;
                 }
                 else
-                {
                     return NULL;
-                }
             }
             assert(node);
             return (NULL!=node->knot) ? &(**node) : NULL;
             
         }
 
+        //______________________________________________________________________
+        //
+        //! insertion method
+        //______________________________________________________________________
         template <typename ITERATOR> inline
         bool insert(param_type args, ITERATOR iter, size_t n)
         {
@@ -123,7 +162,7 @@ namespace yack
                 else
                 {
                     //----------------------------------------------------------
-                    // create a new way
+                    // create a new way, link
                     //----------------------------------------------------------
                     const node_type *from = node;
                     node = (repo.size>0) ? repo.query()->reset(code) : new node_type(code);
@@ -152,6 +191,7 @@ namespace yack
             }
         }
 
+        //! first knot of data
         const knot_type *head() const throw() { return data.head; }
 
     private:
