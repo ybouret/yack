@@ -30,6 +30,18 @@ YACK_UTEST(data_tree)
         YACK_CHECK(tree.search(key,4));
         YACK_CHECK(!tree.search(key,5));
 
+        YACK_CHECK(!tree.remove(key,5));
+        YACK_CHECK(tree.remove(key,2));
+        YACK_CHECK(!tree.remove(key,2));
+        YACK_CHECK(tree.remove(key,1));
+        YACK_CHECK(!tree.remove(key,1));
+        YACK_CHECK(tree.remove(key,3));
+        YACK_CHECK(!tree.remove(key,3));
+        YACK_CHECK(tree.remove(key,4));
+        YACK_CHECK(!tree.remove(key,4));
+
+        YACK_CHECK(tree.size()==0);
+
     }
 
     if(argc>1)

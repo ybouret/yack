@@ -128,6 +128,13 @@ namespace yack
             
         }
 
+        template <typename ITERATOR> inline
+        type *search(ITERATOR iter, size_t n) throw()
+        {
+            const suffix_tree &self = *this;
+            return (type *)(self.search(iter,n));
+        }
+
         //______________________________________________________________________
         //
         //! insertion method
@@ -191,7 +198,65 @@ namespace yack
             }
         }
 
+        //______________________________________________________________________
+        //
+        //! remove
+        //______________________________________________________________________
+        template <typename ITERATOR> inline
+        bool remove(ITERATOR iter, size_t n) throw()
+        {
+            node_type *node = NULL;
+            node_list *curr = &root;
+
+            //------------------------------------------------------------------
+            //
+            // walk down the tree
+            //
+            //------------------------------------------------------------------
+        WALK:
+            if(n-- > 0)
+            {
+                //--------------------------------------------------------------
+                // get code to look for
+                //--------------------------------------------------------------
+                const CODE code = *(iter++);
+                node_type *scan = NULL;
+                if( ordered_list::search(*curr,code,node_type::compare,scan) )
+                {
+                    assert(scan); assert(code==scan->code); assert(scan->from==node);
+                    node=scan;
+                    curr=&(node->chld);
+                    goto WALK;
+                }
+                else
+                    return false;
+            }
+            assert(node);
+
+
+            if(node->knot)
+            {
+                //--------------------------------------------------------------
+                //
+                // dual stage unlink
+                //
+                //--------------------------------------------------------------
+                pool.store( data.pop(node->knot)->free() );
+                node->knot = 0;
+                return true;
+            }
+            else
+            {
+                // empty node
+                return false;
+            }
+        }
+
+
+        //______________________________________________________________________
+        //
         //! first knot of data
+        //______________________________________________________________________
         const knot_type *head() const throw() { return data.head; }
 
     private:
