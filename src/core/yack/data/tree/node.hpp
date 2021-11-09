@@ -10,6 +10,7 @@
 
 namespace yack
 {
+    template <typename,typename> class suffix_tree;
 
     //__________________________________________________________________________
     //
@@ -51,11 +52,6 @@ namespace yack
         // methods
         //______________________________________________________________________
 
-        //! change code
-        inline tree_node *reset(const CODE new_code) throw() {
-            coerce(code) = new_code;
-            return this;
-        }
 
 
         inline type       & operator*()       throw() { assert(knot); assert(knot->is_alive()); return **knot; } //!< access data
@@ -68,7 +64,7 @@ namespace yack
         }
 
         //! save compiled key
-        void save( vkey_type &vkey ) const
+        void encode( vkey_type &vkey ) const
         {
             vkey.free();
             const node_type *node = this;
@@ -93,6 +89,13 @@ namespace yack
 
     private:
         YACK_DISABLE_COPY_AND_ASSIGN(tree_node);
+        friend class suffix_tree<T,CODE>;
+
+        //! change code
+        inline tree_node *reset(const CODE new_code) throw() {
+            coerce(code) = new_code;
+            return this;
+        }
 
     };
 

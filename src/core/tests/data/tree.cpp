@@ -79,7 +79,7 @@ YACK_UTEST(data_tree)
         for(const suffix_tree<size_t,char>::knot_type *knot=tree.head();knot;knot=knot->next)
         {
             std::cerr << "data=" << **knot << std::endl;
-            knot->node->save(vkey);
+            knot->node->encode(vkey);
             std::cerr << " |_" << vkey << std::endl;
         }
         std::cerr << "  <output/>" << std::endl;
@@ -94,7 +94,7 @@ YACK_UTEST(data_tree)
             for(const suffix_tree<size_t,uint32_t>::knot_type *knot=tree2.head();knot;knot=knot->next)
             {
                 std::cerr << "data=" << **knot << std::endl;
-                knot->node->save(vkey2);
+                knot->node->encode(vkey2);
                 std::cerr << "|_" << vkey2 << std::endl;
             }
             std::cerr << "  <output2/>" << std::endl;

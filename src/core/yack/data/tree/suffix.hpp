@@ -92,7 +92,7 @@ namespace yack
 
         //______________________________________________________________________
         //
-        //! search methods
+        //! search method
         //______________________________________________________________________
         template <typename ITERATOR> inline
         const_type *search(ITERATOR iter, size_t n) const throw()
@@ -128,6 +128,10 @@ namespace yack
             
         }
 
+        //______________________________________________________________________
+        //
+        //! search method
+        //______________________________________________________________________
         template <typename ITERATOR> inline
         type *search(ITERATOR iter, size_t n) throw()
         {
@@ -243,6 +247,9 @@ namespace yack
                 //--------------------------------------------------------------
                 pool.store( data.pop(node->knot)->free() );
                 node->knot = 0;
+
+                // TODO: prune
+
                 return true;
             }
             else
@@ -265,6 +272,7 @@ namespace yack
         knot_list data;
         node_pool repo;
         knot_pool pool;
+
 
         void purge(node_list &nodes) throw()
         {
