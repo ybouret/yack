@@ -1,13 +1,8 @@
 
-#include "yack/memory/small/studio.hpp"
-#include "yack/memory/small/exclusive.hpp"
-#include "yack/ios/character.hpp"
+#include "yack/memory/small/zcache.hpp"
+#include "yack/ios/characters.hpp"
 #include "yack/data/small/node.hpp"
-
-#include "yack/singleton.hpp"
 #include "yack/utest/run.hpp"
-#include <cstring>
-#include <cerrno>
 
 using namespace yack;
 

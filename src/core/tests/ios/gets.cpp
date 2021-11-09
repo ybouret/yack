@@ -18,7 +18,9 @@ YACK_UTEST(ios_gets)
 
         while(fp.gets(line))
         {
-            std::cout << line << std::endl;
+            char *msg = line.cstr();
+            std::cout << line << "/" << msg << std::endl;
+            line.free(msg);
         }
 
     }

@@ -26,10 +26,17 @@ namespace yack
         inline explicit suffix_tree() throw() :
         root(),
         data(),
-        znodes(),
-        zknots()
+        zn(),
+        zk()
         {
         }
+
+        inline virtual ~suffix_tree() throw()
+        {
+        }
+        
+
+        virtual size_t size() const throw() { return data.size; }
 
 
 
@@ -95,7 +102,7 @@ namespace yack
                 }
                 else
                 {
-                    node = new node_type(code);
+                    node = (zn.size>0) ? zn.query()->reset(code) : new node_type(code);
                     if(scan)
                         curr->insert_after(scan,node);
                     else
@@ -107,9 +114,9 @@ namespace yack
             assert(node!=NULL);
             if(NULL == node->knot)
             {
-                knot_type *knot = (zknots.size>0) ? zknots.query() : new knot_type();
-                try { knot->make(args); } catch(...) { zknots.store(knot); throw;}
-                node->knot = knot;
+                knot_type *knot = (zk.size>0) ? zk.query() : new knot_type();
+                try { knot->make(args); } catch(...) { zk.store(knot); throw;}
+                node->knot = data.push_back(knot);
                 return true;
             }
             else
@@ -121,8 +128,9 @@ namespace yack
         YACK_DISABLE_COPY_AND_ASSIGN(suffix_tree);
         node_list root;
         knot_list data;
-        node_pool znodes;
-        knot_pool zknots;
+        node_pool zn;
+        knot_pool zk;
+        
     };
 
 }

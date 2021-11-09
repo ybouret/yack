@@ -26,13 +26,13 @@ namespace yack
 
         inline virtual ~tree_node() throw()
         {
-            if(knot)
-            {
-                delete knot;
-                knot = 0;
-            }
+            
         }
 
+        inline tree_node *reset(const CODE new_code) throw() {
+            coerce(code) = new_code;
+            return this;
+        }
 
 
         inline type       & operator*()       throw() { assert(knot); assert(knot->is_alive()); return **knot; }

@@ -70,7 +70,7 @@ namespace yack
 
 }
 
-#include "yack/ios/character.hpp"
+#include "yack/ios/characters.hpp"
 
 namespace yack
 {

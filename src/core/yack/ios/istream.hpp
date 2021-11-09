@@ -5,7 +5,7 @@
 #define YACK_IOS_ISTREAM_INCLUDED 1
 
 #include "yack/ios/stream.hpp"
-#include "yack/ios/character.hpp"
+#include "yack/ios/characters.hpp"
 
 namespace yack
 {
