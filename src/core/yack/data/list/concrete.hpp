@@ -6,6 +6,7 @@
 #include "yack/data/list/cxx.hpp"
 #include "yack/data/list/sort.hpp"
 #include "yack/type/args.hpp"
+#include "yack/data/nodes-comparison.hpp"
 
 namespace yack
 {
@@ -32,16 +33,6 @@ namespace yack
         using list_type::head;
         using list_type::tail;
 
-        //! wrapper to send compare
-        template <typename COMPARE_DATA> struct compare_t
-        {
-            COMPARE_DATA &compare_data; //!< reference to user's data comparison
-            //! forward call
-            inline int operator()(const NODE *lhs, const NODE *rhs) throw()
-            {
-                assert(lhs); assert(rhs); return compare_data(**lhs,**rhs);
-            }
-        };
 
         //______________________________________________________________________
         //
@@ -92,7 +83,7 @@ namespace yack
         template <typename COMPARE_DATA>
         inline void sort(COMPARE_DATA &compare_data)
         {
-            compare_t<COMPARE_DATA> compare = { compare_data };
+            nodes_comparison<NODE,COMPARE_DATA> compare = { compare_data };
             merge_list_of<NODE>::sort(*this,compare);
         }
 

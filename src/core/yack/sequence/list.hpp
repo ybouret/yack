@@ -12,7 +12,9 @@
 #include "yack/type/out-of-reach.hpp"
 #include "yack/type/args.hpp"
 #include "yack/data/list.hpp"
+#include "yack/data/list/sort.hpp"
 #include "yack/data/pool.hpp"
+#include "yack/data/nodes-comparison.hpp"
 #include "yack/object.hpp"
 
 namespace yack
@@ -134,6 +136,18 @@ namespace yack
         inline virtual void pop_back()  throw() { free_(alive.pop_back());  }
         inline virtual void pop_front() throw() { free_(alive.pop_front()); }
 
+
+        //______________________________________________________________________
+        //
+        //! sort
+        //______________________________________________________________________
+        template <typename COMPARE_DATA> inline
+        void sort(COMPARE_DATA &compare_data)
+        {
+            nodes_comparison<node_type,COMPARE_DATA> compare_nodes = { compare_data };
+            merge_list_of<node_type>::sort(alive,compare_nodes);
+        }
+
     private:
         YACK_DISABLE_ASSIGN(list);
         list_of<node_type> alive;
@@ -179,7 +193,7 @@ namespace yack
         inline virtual const_type *_back() const throw()
         { assert(alive.tail); return & (**alive.tail); }
 
-
+        
     };
     
 }
