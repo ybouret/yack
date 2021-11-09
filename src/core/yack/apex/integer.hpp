@@ -193,6 +193,10 @@ namespace yack
                 return res;
             }
 
+            //! signed natural
+            double to_double() const;
+
+
         private:
             friend class rational;
             

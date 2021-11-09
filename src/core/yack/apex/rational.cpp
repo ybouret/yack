@@ -42,6 +42,19 @@ namespace yack
         }
 
 
+        double rational:: to_double() const
+        {
+            switch(num.s)
+            {
+                case negative: return - natural::ratio(num.n,den);
+                case __zero__: return 0;
+                case positive: return   natural::ratio(num.n,den);
+            }
+            // never get here
+            return 0;
+        }
+
+
 
         rational:: rational(const int_type N) : number(), num(N), den(1) {}
         

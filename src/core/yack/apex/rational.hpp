@@ -175,6 +175,8 @@ namespace yack
             //! display
             friend std::ostream &operator<<(std::ostream &, const rational &);
 
+            //! conversion
+            double to_double() const;
 
         private:
             void reduce();
