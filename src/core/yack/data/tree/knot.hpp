@@ -24,7 +24,7 @@ namespace yack
         inline explicit tree_knot() throw() : next(0), prev(0), node(0), data(0), impl() {}
         inline virtual ~tree_knot() throw() { if(data) free(); }
 
-        void make(const_type &args)
+        inline void make(const_type &args)
         {
             assert(NULL==data);
             data = new ( out_of_reach::zset(impl,sizeof(impl)) ) mutable_type(args);

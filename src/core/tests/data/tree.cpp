@@ -14,12 +14,15 @@ YACK_UTEST(data_tree)
 {
 
     suffix_tree<apq,uint32_t> tree;
-
+    YACK_SIZEOF(tree);
     const char *key  = "hello";
     const apq   value(1/2);
 
     tree.insert(value,key,1);
-    
+    tree.insert(value,key,2);
+    tree.insert(value,key,3);
+    tree.insert(value,key,4);
+
 
 
 

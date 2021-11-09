@@ -8,6 +8,7 @@
 
 #include "yack/container/writable.hpp"
 #include "yack/sort/heap.hpp"
+#include "yack/type/mswap.hpp"
 
 namespace yack
 {
@@ -48,12 +49,28 @@ namespace yack
             hsort(self,compare_data);
         }
 
+        inline void reverse() throw()
+        {
+            writable<T> &self  = *this;
+            size_t       upper = this->size();
+            if(upper>=2)
+            {
+                size_t lower = 1;
+                size_t count = upper>>1;
+                while(count-- > 0)
+                {
+                    mswap(self[lower++],self[upper--]);
+                }
+            }
+        }
+
 
         //______________________________________________________________________
         //
         // C++
         //______________________________________________________________________
         inline virtual ~contiguous() throw() {} //!< cleanup
+
     protected:
         inline explicit contiguous() throw() {} //!< setup
 

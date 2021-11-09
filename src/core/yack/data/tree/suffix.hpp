@@ -51,21 +51,22 @@ namespace yack
                 // get code to look for
                 //--------------------------------------------------------------
                 const CODE code = *(iter++);
-                for(const node_type *scan=curr->head;scan;scan=scan->next)
+                node_type *scan = NULL;
+                if( ordered_list::search(*curr,code,node_type::compare,scan) )
                 {
-                    if(code==scan->code)
-                    {
-                        node=scan;
-                        curr=&(node->chld);
-                        goto WALK; // code was found
-                    }
+                    assert(scan); assert(code==scan->code);
+                    node=scan;
+                    curr=&(node->chld);
+                    goto WALK;
                 }
-                // code not found: break
+                //--------------------------------------------------------------
+                // code not found
+                //--------------------------------------------------------------
             }
 
             //------------------------------------------------------------------
             //
-            // check status of found node
+            // check status of node
             //
             //------------------------------------------------------------------
             if(node!=NULL)
@@ -93,32 +94,39 @@ namespace yack
             // walk down the tree
             //
             //------------------------------------------------------------------
-        WALK:
-            if(n--)
+            while(n--)
             {
                 //--------------------------------------------------------------
                 // get code to look for
                 //--------------------------------------------------------------
                 const CODE code = *(iter++);
-                for(node_type *scan=curr->head;scan;scan=scan->next)
+                node_type *scan = NULL;
+                if( ordered_list::search(*curr,code,node_type::compare,scan) )
                 {
-                    if(code==scan->code)
-                    {
-                        node=scan;
-                        curr=&(node->chld);
-                        goto WALK; // code was found at this level
-                    }
+                    assert(scan); assert(code==scan->code);
+                    node=scan;
                 }
-
-                //--------------------------------------------------------------
-                // create new node with code
-                //--------------------------------------------------------------
-                //node = new node_type(code);
-
+                else
+                {
+                    node = new node_type(code);
+                    if(scan)
+                        curr->insert_after(scan,node);
+                    else
+                        curr->push_front(node);
+                }
+                curr=&(node->chld);
             }
 
-
-            return false;
+            assert(node!=NULL);
+            if(NULL == node->knot)
+            {
+                knot_type *knot = (zknots.size>0) ? zknots.query() : new knot_type();
+                try { knot->make(args); } catch(...) { zknots.store(knot); throw;}
+                node->knot = knot;
+                return true;
+            }
+            else
+                return false;
         }
 
 

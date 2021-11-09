@@ -4,6 +4,7 @@
 #define YACK_DATA_TREE_NODE_INCLUDED 1
 
 #include "yack/data/tree/knot.hpp"
+#include "yack/signs.hpp"
 
 namespace yack
 {
@@ -25,23 +26,32 @@ namespace yack
 
         inline virtual ~tree_node() throw()
         {
-
+            if(knot)
+            {
+                delete knot;
+                knot = 0;
+            }
         }
 
-        inline bool is_filled() const throw() { return NULL != knot; }
-        inline bool is_vacant() const throw() { return NULL == knot; }
+
 
         inline type       & operator*()       throw() { assert(knot); assert(knot->is_alive()); return **knot; }
         inline const_type & operator*() const throw() { assert(knot); assert(knot->is_alive()); return **knot; }
 
+        static inline sign_type compare(const CODE &code, const node_type *node) throw()
+        {
+            return __sign::of(code,node->code);
+        }
 
-        const CODE code;
-        tree_node *next;
-        tree_node *prev;
-        list_type  chld;
+        
+
+        const CODE  code;
+        tree_node  *next;
+        tree_node  *prev;
+        list_type   chld;
+        knot_type  *knot;
 
     private:
-        knot_type  *knot;
         YACK_DISABLE_COPY_AND_ASSIGN(tree_node);
 
     };
