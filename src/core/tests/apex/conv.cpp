@@ -15,6 +15,13 @@ YACK_UTEST(apex_conv)
     apz z = -100;
     std::cerr << int(z.cast_to<int8_t>()) << std::endl;
 
+    {
+        apn num = 31;
+        apn den = 7;
+        double ans = apn::ratio(num,den);
+        std::cerr << num << "/" << den << " = " << ans << std::endl;
+    }
+
 }
 YACK_UDONE()
 
