@@ -254,8 +254,16 @@ namespace yack
                 }
                 // prunable!!
                 std::cerr << "prunable!!" << std::endl;
-
+                if(node->from)
+                {
+                    std::cerr << " |_from leaf!" << std::endl;
+                }
+                else
+                {
+                    std::cerr << " |_from root!" << std::endl;
+                }
                 return true;
+
             }
             else
             {
