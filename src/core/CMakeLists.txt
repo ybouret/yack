@@ -290,6 +290,13 @@ set(ios_fmt ${ios_fmt_impl} ${ios_fmt_decl})
 SOURCE_GROUP(ios/fmt FILES ${ios_fmt})
 install( FILES ${ios_fmt_decl} DESTINATION include/yack/ios/fmt)
 
+file(GLOB ios_gv_impl yack/ios/gv/*.cpp)
+file(GLOB ios_gv_decl yack/ios/gv/*.hpp)
+set(ios_gv ${ios_gv_impl} ${ios_gv_decl})
+SOURCE_GROUP(ios/gv FILES ${ios_gv})
+install( FILES ${ios_gv_decl} DESTINATION include/yack/ios/gv)
+
+
 ########################################################################
 ##
 ## kr
@@ -449,7 +456,7 @@ ${fft}
 ${functor}
 ${apex} ${apex_m} ${apex_n} ${apex_z} ${apex_q}
 ${concurrent} ${concurrent_quark} ${concurrent_loop} ${concurrent_queue}
-${ios} ${ios_c} ${ios_gz} ${ios_fmt}
+${ios} ${ios_c} ${ios_gz} ${ios_fmt} ${io_gv}
 ${randomized}
 ${sort}
 ${counting} ${counting_c}
