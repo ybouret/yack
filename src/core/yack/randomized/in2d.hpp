@@ -1,4 +1,3 @@
-
 //! \file
 
 #ifndef YACK_RANDOMIZED_IN2D_INCLUDED
