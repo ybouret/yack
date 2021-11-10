@@ -30,6 +30,7 @@ namespace yack
             hexa(const hexa &_) throw(); //!< copy
             ~hexa() throw();             //!< cleanup
 
+            //! load textual data
             template <typename T>
             static size_t text(char tab[], const T x) throw()
             {

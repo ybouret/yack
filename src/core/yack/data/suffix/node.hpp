@@ -75,7 +75,8 @@ namespace yack
             }
             vkey.reverse();
         }
-        
+
+        //! recursive cheking of load
         inline bool is_loaded() const
         {
             if(knot) return true;

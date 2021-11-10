@@ -6,6 +6,7 @@
 namespace yack
 {
 
+    //! string
     class string
     {
     public:
