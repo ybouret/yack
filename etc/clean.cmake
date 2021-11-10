@@ -14,6 +14,8 @@ macro(remove_pattern p)
 endmacro()
 
 remove_pattern(*.dat)
+remove_pattern(*.dot)
+remove_pattern(*.png)
 
 foreach(f IN LISTS to_remove )
 	message( STATUS "removing ${f}" )
