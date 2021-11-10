@@ -15,7 +15,7 @@ YACK_UTEST(data_tree)
 {
 
     {
-        suffix_tree<apq,uint32_t> tree;
+        suffix_tree<apq,char> tree;
         YACK_SIZEOF(tree);
         const char *key  = "hello";
         const apq   value(1/2);

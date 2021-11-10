@@ -3,6 +3,7 @@
 #include "yack/ios/gv/vizible.hpp"
 #include "yack/ios/encoder.hpp"
 #include "yack/ios/ascii/encoded.hpp"
+#include "yack/ios/fmt/hexa.hpp"
 #include "yack/type/cstring.h"
 #include <cstring>
 #include <cstdlib>
@@ -21,6 +22,41 @@ namespace yack
             (void) ios::encoder::addr2hexa(os,addr);
             return os;
         }
+
+        ostream & vizible:: make_label(ostream &os, const void *addr, const size_t size)
+        {
+            switch(size)
+            {
+                case 0: return os;
+                case 1:
+                    assert(addr);
+                    return text(os,*(const char *)addr );
+
+                case 2:
+                    assert(addr);
+                    return os << hexa( *(uint16_t *)addr );
+
+                case 4:
+                    assert(addr);
+                    return os << hexa( *(uint32_t *)addr );
+
+                case 8:
+                    assert(addr);
+                    return os << hexa( *(uint64_t *)addr );
+
+                default:
+                    break;
+            }
+            assert(addr);
+            assert(size);
+            const char *p = (const char *)addr;
+            for(size_t i=0;i<size;++i)
+            {
+                text(os,p[i]);
+            }
+            return os;
+        }
+
 
         ostream & vizible:: end(ostream &os)
         {

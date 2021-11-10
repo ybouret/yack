@@ -102,6 +102,9 @@ namespace yack
         {
             ios::vizible::uuid(fp,this) << '[';
             fp << "shape=rectangle";
+            fp << ",label=\"";
+            ios::vizible::make_label(fp,&code,sizeof(CODE));
+            fp << "\"";
             ios::vizible::end(fp << ']');
             for(const tree_node *child=chld.head;child;child=child->next)
             {
