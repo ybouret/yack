@@ -106,5 +106,7 @@ YACK_UTEST_DECL(128)
 
     YACK_UTEST(math_api);
 
+    YACK_UTEST(vfs);
+
 }
 YACK_UTEST_EXEC()

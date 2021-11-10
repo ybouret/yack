@@ -4,6 +4,8 @@
 #include <typeinfo>
 #include "yack/ios/icstream.hpp"
 #include "yack/ios/ocstream.hpp"
+#include "yack/sequence/list.hpp"
+
 using namespace yack;
 
 namespace
@@ -50,7 +52,52 @@ YACK_UTEST(data_tree)
 
     }
 
+
     if(argc>1)
+    {
+        suffix_tree<size_t,char>     tree;
+        typedef tree_key<char>       key_type;
+        list<key_type>               keys;
+
+        ios::icstream   fp(argv[1]);
+        ios::characters line;
+        size_t          indx = 0;
+        size_t          collisions = 0;
+        while( fp.gets(line) )
+        {
+            ++indx;
+            char *path = line.cstr();
+            try {
+                const bool res = tree.insert(indx,path,line.size);
+                if(!res)
+                    ++collisions;
+                else
+                {
+                    {
+                        key_type k;
+                        tree.tail()->node->encode(k);
+                        keys.push_back(k);
+                    }
+                    std::cerr << "+" << keys.back() << std::endl;
+                }
+                line.free(path);
+            }
+            catch(...)
+            {
+                line.free(path);
+                throw;
+            }
+        }
+
+        tree.gv("stree.dot");
+        ios::vizible::render("stree.dot");
+
+
+
+    }
+
+
+    if(false)
     {
         suffix_tree<size_t,char>     tree;
         suffix_tree<size_t,uint32_t> tree2;

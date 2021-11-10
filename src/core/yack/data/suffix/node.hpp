@@ -14,6 +14,21 @@ namespace yack
 {
     template <typename,typename> class suffix_tree;
 
+
+    template <typename CODE>
+    class tree_key : public vector<CODE,memory::pooled>
+    {
+    public:
+        typedef vector<CODE,memory::pooled> base_type;
+        inline  explicit tree_key() throw() : base_type() {}
+        inline  virtual ~tree_key() throw() {}
+        inline  tree_key(const tree_key &other) : base_type(other) {}
+
+    private:
+        YACK_DISABLE_ASSIGN(tree_key);
+    };
+
+
     //__________________________________________________________________________
     //
     //
@@ -29,7 +44,7 @@ namespace yack
         // types and definition
         //______________________________________________________________________
         YACK_DECL_ARGS(T,type);                        //!< aliases
-        typedef vector<CODE,memory::pooled> vkey_type; //!< compiled key
+        typedef tree_key<CODE>              vkey_type; //!< compiled key
         typedef tree_node<T,CODE>           node_type; //!< alias
         typedef tree_knot<T,node_type>      knot_type; //!< alias
         typedef cxx_list_of<node_type>      list_type; //!< alias
@@ -101,7 +116,14 @@ namespace yack
         inline ios::ostream &gv(ios::ostream &fp) const
         {
             ios::vizible::uuid(fp,this) << '[';
-            fp << "shape=rectangle";
+            if(knot)
+            {
+                fp << "shape=rectangle,style=bold";
+            }
+            else
+            {
+                fp << "shape=ellipse";
+            }
             fp << ",label=\"";
             ios::vizible::make_label(fp,&code,sizeof(CODE));
             fp << "\"";

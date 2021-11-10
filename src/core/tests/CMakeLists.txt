@@ -23,6 +23,8 @@ source_group(fft FILES ${fft})
 file(GLOB ios ios/*.cpp)
 source_group(ios FILES ${ios})
 
+file(GLOB fs fs/*.cpp)
+source_group(fs FILES ${fs})
 
 file(GLOB hashing hashing/*.cpp)
 source_group(hashing FILES ${hashing})
@@ -65,6 +67,7 @@ ${counting}
 ${string}
 ${info}
 ${math}
+${fs}
 )
 
 yack_link_libraries(test-yack)
@@ -179,5 +182,8 @@ add_test(info:mod  test-yack info_mod)
 add_test(info:xbwt test-yack info_xbwt)
 
 add_test(math:api test-yack math_api)
+
+add_test(vfs  test-yack vfs)
+
 
 yack_testing(yack)
