@@ -24,7 +24,7 @@ namespace yack
             //
             // virtual interface
             //__________________________________________________________________
-            virtual           ~function() throw();          //!< destructor
+            virtual            ~function()     throw();     //!< destructor
 			virtual const char *name()   const throw() = 0; //!< get a name
 			virtual void        set() throw() = 0;          //!< initialize
 			virtual void        run(const void *buffer, size_t buflen) throw() = 0; //!< process bytes
@@ -33,7 +33,7 @@ namespace yack
             
             
             //! helper, usually used by the virtual 'get' method.
-			static void fill( void *output, size_t outlen, const void *input, size_t inlen ) throw();
+			static void fill(void *output, size_t outlen, const void *input, size_t inlen) throw();
             
 		protected:
             //! initialize function length and window
