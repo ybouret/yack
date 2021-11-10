@@ -95,7 +95,10 @@ namespace yack
         //
         // collection interface
         //______________________________________________________________________
+        //! size
         inline virtual size_t      size()     const throw() { return count; }
+
+        //! category
         inline virtual const char *category() const throw()
         {
             static char        buff[32];
@@ -107,15 +110,17 @@ namespace yack
         //
         // releasable interface
         //______________________________________________________________________
+        //! release all memory
         inline virtual void     release()         throw() { release_(); }
 
         //______________________________________________________________________
         //
         // container interface
         //______________________________________________________________________
-        inline virtual size_t   capacity()  const throw() { return utter; }
-        inline virtual size_t   available() const throw() { return utter-count; }
-        inline virtual void     free()            throw() { kill_(); }
+        inline virtual size_t   capacity()  const throw() { return utter; }        //!< utter
+        inline virtual size_t   available() const throw() { return utter-count; }  //!< utter-count
+        inline virtual void     free()            throw() { kill_(); }             //!< destruct all objects, keep memory
+        //! grow for n more objects
         inline virtual void     reserve(size_t n)
         {
             if(n>0) {
@@ -130,14 +135,18 @@ namespace yack
         //
         // writable interface
         //______________________________________________________________________
+        //! access
         inline type       & operator[](const size_t indx) throw()       { assert(indx>=1); assert(indx<=size()); return item[indx]; }
+        //! access, const
         inline const_type & operator[](const size_t indx) const throw() { assert(indx>=1); assert(indx<=size()); return item[indx]; }
 
         //______________________________________________________________________
         //
         // contiguous interface
         //______________________________________________________________________
+        //! access[1..size]
         inline virtual type       * operator*()       throw() { return item; }
+        //! const access[1..size]
         inline virtual const_type * operator*() const throw() { return item; }
 
 
@@ -145,6 +154,7 @@ namespace yack
         //
         // sequence interface
         //______________________________________________________________________
+        //! push back
         inline virtual void push_back(param_type  args)
         {
             if(count>=utter)
@@ -163,6 +173,7 @@ namespace yack
             }
         }
 
+        //! push_front
         inline virtual void push_front(param_type args)
         {
             if(count>=utter)
@@ -185,13 +196,29 @@ namespace yack
             }
 
         }
-        inline virtual void pop_back()  throw() {   }
-        inline virtual void pop_front() throw() {   }
+
+        //! pop back
+        inline virtual void pop_back()  throw()
+        {
+            assert(count>0);
+            out_of_reach::zset( destructed( &item[count--] ), sizeof(T));
+        }
+
+        //! pop front
+        inline virtual void pop_front() throw()
+        {
+            assert(count>0);
+            mutable_type *target = destructed(base);
+            out_of_reach::move(target,target+1,(--count)*sizeof(T));
+            out_of_reach::zset(&target[count],sizeof(T));
+        }
 
         //______________________________________________________________________
         //
         // dynamic
         //______________________________________________________________________
+
+        //! private linear bytes
         inline virtual size_t granted() const throw() { return owned; }
 
         //______________________________________________________________________

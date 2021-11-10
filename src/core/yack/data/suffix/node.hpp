@@ -12,17 +12,29 @@
 
 namespace yack
 {
+    //__________________________________________________________________________
+    //
+    //
+    //! forward declaration
+    //
+    //__________________________________________________________________________
     template <typename,typename> class suffix_tree;
 
-
+    //__________________________________________________________________________
+    //
+    //
+    //! compile tree_key = path to data
+    //
+    //__________________________________________________________________________
     template <typename CODE>
     class tree_key : public vector<CODE,memory::pooled>
     {
     public:
-        typedef vector<CODE,memory::pooled> base_type;
-        inline  explicit tree_key() throw() : base_type() {}
-        inline  virtual ~tree_key() throw() {}
-        inline  tree_key(const tree_key &other) : base_type(other) {}
+        typedef vector<CODE,memory::pooled> base_type; //!< alias
+
+        inline  explicit tree_key() throw() : collection(), base_type() {} //!< setup
+        inline  virtual ~tree_key() throw() {}                              //!< cleanup
+        inline  tree_key(const tree_key &_) : collection(), base_type(_) {} //!< hard copy
 
     private:
         YACK_DISABLE_ASSIGN(tree_key);
@@ -111,7 +123,7 @@ namespace yack
 
         //______________________________________________________________________
         //
-        // grapviz
+        //! grapviz encoding
         //______________________________________________________________________
         inline ios::ostream &gv(ios::ostream &fp) const
         {

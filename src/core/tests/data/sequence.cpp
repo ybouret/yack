@@ -49,12 +49,45 @@ namespace
             }
         }
 
+        std::cerr << "Filled: " << std::endl;
+        show(l);
+        show(pv);
+        show(gv);
+        show(dv);
+        std::cerr << std::endl;
+
+        while(l.size())
+        {
+            if(ran.choice())
+            {
+                l.pop_front();
+                pv.pop_front();
+                dv.pop_front();
+                gv.pop_front();
+
+            }
+            else
+            {
+                l.pop_back();
+                pv.pop_back();
+                dv.pop_back();
+                gv.pop_back();
+
+            }
+        }
+
+        std::cerr << "Freed: " << std::endl;
         show(l);
         show(pv);
         show(gv);
         show(dv);
 
+
+
     }
+
+
+
 
 
 
@@ -74,7 +107,8 @@ YACK_UTEST(data_sequence)
     }
 
     test_seq<int>(ran);
-    
+    test_seq<apq>(ran);
+
     cxx_array<int> ir(10);
     cxx_array<apq> qr(100);
 

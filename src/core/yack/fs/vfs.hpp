@@ -9,16 +9,16 @@
 namespace yack
 {
 
+    //! Virtual File System interface
     class vfs
     {
     public:
-        static const char *get_base_name(const char *path, const size_t plen) throw();
-        static const char *get_base_name(const char *path) throw();
+        static const char *get_base_name(const char *path, const size_t plen) throw(); //!< get base name
+        static const char *get_base_name(const char *path) throw();                    //!< get base name
 
-        static const char *get_extension(const char *path, const size_t plen) throw();
-        static const char *get_extension(const char *path)                    throw();
+        static const char *get_extension(const char *path, const size_t plen) throw(); //!< get extension, NULL if none
+        static const char *get_extension(const char *path)                    throw(); //!< get extension
         
-
     private:
         YACK_DISABLE_COPY_AND_ASSIGN(vfs);
     };

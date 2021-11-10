@@ -21,6 +21,8 @@ namespace yack
         size_t  c_maxi; //!< c_maxi=c_room-1
         size_t  c_size; //!< c_size<=c_maxi
         char   *c_addr; //!< buffer
+
+        YACK_DISABLE_COPY_AND_ASSIGN(string);
     };
 
 }
