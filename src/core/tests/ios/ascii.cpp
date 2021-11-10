@@ -21,8 +21,9 @@ static inline ios::ostream & print_text(ios::ostream &fp, const char *txt)
 YACK_UTEST(ios_ascii)
 {
 
+    if(false)
     {
-        ios::ocstream fp("encoded.cxx");
+        ios::ocstream fp("encoded.hxx");
         unsigned count = 0;
         for(unsigned i=0;i<32;++i)
         {

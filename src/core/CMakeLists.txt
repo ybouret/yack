@@ -296,7 +296,7 @@ set(ios_gv ${ios_gv_impl} ${ios_gv_decl})
 SOURCE_GROUP(ios/gv FILES ${ios_gv})
 install( FILES ${ios_gv_decl} DESTINATION include/yack/ios/gv)
 
-file(GLOB ios_ascii_impl yack/ios/ascii/*.cpp yack/ios/ascii/*.cxx)
+file(GLOB ios_ascii_impl yack/ios/ascii/*.cpp yack/ios/ascii/*.hxx)
 file(GLOB ios_ascii_decl yack/ios/ascii/*.hpp)
 set(ios_ascii ${ios_ascii_impl} ${ios_ascii_decl})
 SOURCE_GROUP(ios/ascii FILES ${ios_ascii})
