@@ -76,6 +76,16 @@ namespace yack
             vkey.reverse();
         }
         
+        inline bool prunable() const
+        {
+            if(knot) return false;
+            for(const tree_node *child=chld.head;child;child=child->next)
+            {
+                
+            }
+            
+        }
+        
         //______________________________________________________________________
         //
         // members
