@@ -144,7 +144,7 @@ namespace yack
         const CODE        code; //!< code for this node
         tree_node        *next; //!< for list/pool
         tree_node        *prev; //!< for list
-        const tree_node  *from; //!< origin
+        tree_node        *from; //!< origin
         list_type         chld; //!< leaves
         knot_type        *knot; //!< NULL:vacant, otherwise alive
 
