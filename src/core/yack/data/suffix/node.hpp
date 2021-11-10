@@ -7,6 +7,7 @@
 #include "yack/data/suffix/knot.hpp"
 #include "yack/signs.hpp"
 #include "yack/ios/gv/vizible.hpp"
+#include "yack/ios/ostream.hpp"
 
 
 namespace yack
@@ -99,8 +100,9 @@ namespace yack
         //______________________________________________________________________
         inline ios::ostream &gv(ios::ostream &fp) const
         {
-            ios::vizible::uuid(fp,this);
-            ios::vizible::end(fp);
+            ios::vizible::uuid(fp,this) << '[';
+            fp << "shape=rectangle";
+            ios::vizible::end(fp << ']');
             for(const tree_node *child=chld.head;child;child=child->next)
             {
                 child->gv(fp);

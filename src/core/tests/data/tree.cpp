@@ -27,6 +27,7 @@ YACK_UTEST(data_tree)
 
         {
             tree.gv("tree.dot");
+            ios::vizible::render("tree.dot");
         }
 
         YACK_CHECK(tree.search(key,1));

@@ -74,11 +74,19 @@ namespace yack
         void vizible:: render(const char *filename)
         {
             static const char prolog[] = "dot -Tpng ";
+            static const char output[] = " -o ";
+            static const char outext[] = ".png";
+
             assert(filename);
-            char cmd[1024];
+            char   cmd[1024];
             memset(cmd,0,sizeof(cmd));
             yack_cstring_msgcat(cmd,sizeof(cmd),prolog);
-
+            yack_cstring_msgcat(cmd,sizeof(cmd),filename);
+            yack_cstring_msgcat(cmd,sizeof(cmd),output);;
+            yack_cstring_msgcat(cmd,sizeof(cmd),filename);
+            yack_cstring_msgcat(cmd,sizeof(cmd),outext);
+            std::cerr << "cmd='" << cmd << "'" << std::endl;
+            system(cmd);
         }
     }
 

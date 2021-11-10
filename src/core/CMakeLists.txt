@@ -315,6 +315,17 @@ install( FILES ${kr_decl} DESTINATION include/yack/kr )
 
 ########################################################################
 ##
+## fs
+##
+########################################################################
+file(GLOB fs_impl yack/fs/*.cpp)
+file(GLOB fs_decl yack/fs/*.hpp)
+set(fs ${fs_impl} ${fs_decl})
+SOURCE_GROUP(fs FILES ${fs})
+install( FILES ${fs_decl} DESTINATION include/yack/fs )
+
+########################################################################
+##
 ## hashing
 ##
 ########################################################################
@@ -468,6 +479,7 @@ ${counting} ${counting_c}
 ${rtld}
 ${string}
 ${kr}
+${fs}
 ${hashing}
 ${info} ${info_modulation}
 ${math}

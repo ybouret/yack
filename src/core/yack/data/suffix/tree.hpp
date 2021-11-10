@@ -283,6 +283,13 @@ namespace yack
 
             ios::vizible::end(ios::vizible::uuid(fp,this) << " [label=\"root\"]");
 
+            for(const node_type *node=root.head;node;node=node->next)
+            {
+                node->gv(fp);
+                ios::vizible::end(ios::vizible::arrow(fp,this,node));
+            }
+
+
             ios::vizible::digraph_quit(fp);
         }
 
