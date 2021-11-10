@@ -280,7 +280,7 @@ e += S(a,5) + F(b,c,d) + K + x; b = S(b,30);        \
 		{
 		}
 		
-        const char sha1:: CLID[] = "sha1";
+        const char sha1:: clid[] = "sha1";
 		
 		
 		void sha1:: set() throw()

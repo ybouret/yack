@@ -1,10 +1,10 @@
 //! \file
-#ifndef YOCTO_HASHING_MD5_INCLUDED
-#define YOCTO_HASHING_MD5_INCLUDED 1
+#ifndef YACK_HASHING_MD5_INCLUDED
+#define YACK_HASHING_MD5_INCLUDED 1
 
-#include "y/hashing/function.hpp"
+#include "yack/hashing/function.hpp"
 
-namespace upsylon
+namespace yack
 {
 	namespace hashing
 	{
@@ -24,11 +24,11 @@ namespace upsylon
 		class md5 : public function
 		{
 		public:
-			Y_HASHING_FUNCTION_DECL(md5,16,64); //!< specs
+			YACK_HASHING_FUNCTION_DECL(md5,16,64); //!< specs
 
 		private:
 			RFC1321::MD5_CTX ctx;
-			Y_DISABLE_COPY_AND_ASSIGN(md5);
+			YACK_DISABLE_COPY_AND_ASSIGN(md5);
 		};
 
 	}

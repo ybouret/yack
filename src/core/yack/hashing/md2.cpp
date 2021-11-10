@@ -1,7 +1,7 @@
-#include "y/hashing/md2.hpp"
+#include "yack/hashing/md2.hpp"
 #include <cstring>
 
-namespace upsylon
+namespace yack
 {
 	namespace hashing
 	{
@@ -187,7 +187,7 @@ namespace upsylon
 		{
 		}
 		
-		const char md2:: CLID[]= "md2";
+		const char md2:: clid[]= "md2";
 		
 		void md2:: set() throw()
 		{

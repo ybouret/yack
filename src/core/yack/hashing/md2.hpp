@@ -1,10 +1,10 @@
 //! \file
-#ifndef Y_HASHING_MD2_INCLUDED
-#define Y_HASHING_MD2_INCLUDED 1
+#ifndef YACK_HASHING_MD2_INCLUDED
+#define YACK_HASHING_MD2_INCLUDED 1
 
-#include "y/hashing/function.hpp"
+#include "yack/hashing/function.hpp"
 
-namespace upsylon
+namespace yack
 {
     namespace hashing
     {
@@ -25,11 +25,11 @@ namespace upsylon
         class md2 : public function
         {
         public:
-            Y_HASHING_FUNCTION_DECL(md2,16,48); //!< specs
+            YACK_HASHING_FUNCTION_DECL(md2,16,48); //!< specs
 
         private:
             RFC1319::MD2_CTX ctx;
-            Y_DISABLE_COPY_AND_ASSIGN(md2);
+            YACK_DISABLE_COPY_AND_ASSIGN(md2);
         };
 
     }

@@ -1,6 +1,7 @@
 #include "yack/hashing/rmd128.hpp"
+#include <cstring>
 
-namespace upsylon
+namespace yack
 {
     namespace hashing
     {
@@ -271,15 +272,15 @@ namespace upsylon
         RMD(),
         MDbuf()
         {
-            Y_BZSET_STATIC(MDbuf);
+            memset(MDbuf,0,sizeof(MDbuf));
         }
         
         rmd128:: ~rmd128() throw()
         {
-            Y_BZSET_STATIC(MDbuf);
+            memset(MDbuf,0,sizeof(MDbuf));
         }
         
-        const char rmd128:: CLID[] = "rmd128";
+        const char rmd128:: clid[] = "rmd128";
         
         void rmd128:: set() throw()
         {
