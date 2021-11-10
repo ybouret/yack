@@ -248,15 +248,25 @@ namespace yack
                 //--------------------------------------------------------------
                 pool.store( data.pop(node->knot)->free() );
                 node->knot = 0;
+
+                //--------------------------------------------------------------
+                //
+                // check is prunable
+                //
+                //--------------------------------------------------------------
                 for(const node_type *child=node->chld.head;child;child=child->next)
                 {
                     if(child->is_loaded()) return true;
                 }
+
+
+
                 // prunable!!
                 std::cerr << "prunable!!" << std::endl;
                 if(node->from)
                 {
                     std::cerr << " |_from leaf!" << std::endl;
+                    // need recursion
                     node_type *from = node->from;
                     node->from=NULL;
                     prune(from->chld.pop(node));
