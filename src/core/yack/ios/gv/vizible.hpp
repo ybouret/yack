@@ -3,7 +3,7 @@
 #ifndef YACK_VIZIBLE_INCLUDED
 #define YACK_VIZIBLE_INCLUDED 1
 
-#include "yack/ios/ostream.hpp"
+#include "yack/ios/fwd.hpp"
 
 namespace yack
 {
@@ -36,20 +36,10 @@ namespace yack
             static ostream& text(ostream &, const char *);                //!< encoded chats
             static ostream& end(ostream &);                               //!< append ";\n"
             static ostream& arrow(ostream &, const void *, const void *); //!< prepare arrow
+            static ostream& digraph_init(ostream &os, const char *);      //!< init digraph
+            static void     digraph_quit(ostream &os);                    //!< quit digraph
 
-            //! init digraph
-            template <typename NAME> static inline
-            ostream & digraph_init(ostream &os, const NAME &name)
-            {
-                os << "digraph " << name << '{' << '\n';
-                return os;
-            }
-
-            //! quit digraph
-            static void digraph_quit(ostream &os);
-
-
-
+            static void render(const char *filename);
 
             //__________________________________________________________________
             //

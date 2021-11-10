@@ -8,6 +8,7 @@
 #include "yack/container/releasable.hpp"
 #include "yack/data/suffix/node.hpp"
 #include "yack/data/list/ordered.hpp"
+#include "yack/ios/ocstream.hpp"
 
 namespace yack
 {
@@ -269,6 +270,22 @@ namespace yack
         //! first knot of data
         //______________________________________________________________________
         const knot_type *head() const throw() { return data.head; }
+
+        //______________________________________________________________________
+        //
+        //! GraphViz
+        //______________________________________________________________________
+        template <typename FILENAME>
+        inline void gv(const FILENAME &filename) const
+        {
+            ios::ocstream fp(filename);
+            ios::vizible::digraph_init(fp,"G");
+
+            ios::vizible::end(ios::vizible::uuid(fp,this) << " [label=\"root\"]");
+
+            ios::vizible::digraph_quit(fp);
+        }
+
 
     private:
         YACK_DISABLE_COPY_AND_ASSIGN(suffix_tree);

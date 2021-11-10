@@ -3,6 +3,7 @@
 #include "yack/apex.hpp"
 #include <typeinfo>
 #include "yack/ios/icstream.hpp"
+#include "yack/ios/ocstream.hpp"
 using namespace yack;
 
 namespace
@@ -23,6 +24,10 @@ YACK_UTEST(data_tree)
         YACK_CHECK(tree.insert(value,key,2));
         YACK_CHECK(tree.insert(value,key,3));
         YACK_CHECK(tree.insert(value,key,4));
+
+        {
+            tree.gv("tree.dot");
+        }
 
         YACK_CHECK(tree.search(key,1));
         YACK_CHECK(tree.search(key,2));

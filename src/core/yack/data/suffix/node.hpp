@@ -6,6 +6,7 @@
 #include "yack/sequence/vector.hpp"
 #include "yack/data/suffix/knot.hpp"
 #include "yack/signs.hpp"
+#include "yack/ios/gv/vizible.hpp"
 
 
 namespace yack
@@ -52,8 +53,6 @@ namespace yack
         // methods
         //______________________________________________________________________
 
-
-
         inline type       & operator*()       throw() { assert(knot); assert(knot->is_alive()); return **knot; } //!< access data
         inline const_type & operator*() const throw() { assert(knot); assert(knot->is_alive()); return **knot; } //!< access data, condt
 
@@ -63,7 +62,10 @@ namespace yack
             return __sign::of(code,node->code);
         }
 
+        //______________________________________________________________________
+        //
         //! save compiled key
+        //______________________________________________________________________
         void encode( vkey_type &vkey ) const
         {
             vkey.free();
@@ -76,7 +78,10 @@ namespace yack
             vkey.reverse();
         }
 
+        //______________________________________________________________________
+        //
         //! recursive cheking of load
+        //______________________________________________________________________
         inline bool is_loaded() const
         {
             if(knot) return true;
@@ -86,7 +91,25 @@ namespace yack
             }
             return false;
         }
-        
+
+
+        //______________________________________________________________________
+        //
+        // grapviz
+        //______________________________________________________________________
+        inline ios::ostream &gv(ios::ostream &fp) const
+        {
+            ios::vizible::uuid(fp,this);
+            ios::vizible::end(fp);
+            for(const tree_node *child=chld.head;child;child=child->next)
+            {
+                child->gv(fp);
+                ios::vizible::end(ios::vizible::arrow(fp,this,child));
+            }
+            return fp;
+        }
+
+
         //______________________________________________________________________
         //
         // members

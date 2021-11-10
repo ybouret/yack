@@ -3,6 +3,9 @@
 #include "yack/ios/gv/vizible.hpp"
 #include "yack/ios/encoder.hpp"
 #include "yack/ios/ascii/encoded.hpp"
+#include "yack/type/cstring.h"
+#include <cstring>
+#include <cstdlib>
 
 namespace yack
 {
@@ -47,6 +50,11 @@ namespace yack
             return os;
         }
 
+        ostream & vizible:: digraph_init(ostream &os, const char *name)
+        {
+            os << "digraph " << name << '{' << '\n';
+            return os;
+        }
 
         void vizible:: digraph_quit(ostream &os)
         {
@@ -63,7 +71,15 @@ namespace yack
             return arrow(os,this,target);
         }
 
+        void vizible:: render(const char *filename)
+        {
+            static const char prolog[] = "dot -Tpng ";
+            assert(filename);
+            char cmd[1024];
+            memset(cmd,0,sizeof(cmd));
+            yack_cstring_msgcat(cmd,sizeof(cmd),prolog);
 
+        }
     }
 
 }
