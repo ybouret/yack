@@ -247,8 +247,12 @@ namespace yack
                 //--------------------------------------------------------------
                 pool.store( data.pop(node->knot)->free() );
                 node->knot = 0;
-
-                // TODO: prune
+                for(const node_type *child=node->chld.head;child;child=child->next)
+                {
+                    if(child->is_loaded()) return true;
+                }
+                // prunable!!
+                std::cerr << "prunable!!" << std::endl;
 
                 return true;
             }

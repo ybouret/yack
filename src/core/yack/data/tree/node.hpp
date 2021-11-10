@@ -76,14 +76,14 @@ namespace yack
             vkey.reverse();
         }
         
-        inline bool prunable() const
+        inline bool is_loaded() const
         {
-            if(knot) return false;
+            if(knot) return true;
             for(const tree_node *child=chld.head;child;child=child->next)
             {
-                
+                if(child->is_loaded()) return true;
             }
-            
+            return false;
         }
         
         //______________________________________________________________________
