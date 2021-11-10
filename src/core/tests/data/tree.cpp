@@ -1,4 +1,4 @@
-#include "yack/data/tree/suffix.hpp"
+#include "yack/data/suffix/tree.hpp"
 #include "yack/utest/run.hpp"
 #include "yack/apex.hpp"
 #include <typeinfo>

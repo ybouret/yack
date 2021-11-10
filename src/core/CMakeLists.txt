@@ -97,11 +97,11 @@ set(data_pool ${data_pool_impl} ${data_pool_decl})
 SOURCE_GROUP(data/pool FILES ${data_pool})
 install( FILES ${data_pool_decl} DESTINATION include/yack/data/pool )
 
-file(GLOB data_tree_impl yack/data/tree/*.cpp)
-file(GLOB data_tree_decl yack/data/tree/*.hpp)
-set(data_tree ${data_tree_impl} ${data_tree_decl})
-SOURCE_GROUP(data/tree FILES ${data_tree})
-install( FILES ${data_tree_decl} DESTINATION include/yack/data/tree )
+file(GLOB data_suffix_impl yack/data/suffix/*.cpp)
+file(GLOB data_suffix_decl yack/data/suffix/*.hpp)
+set(data_suffix ${data_suffix_impl} ${data_suffix_decl})
+SOURCE_GROUP(data/suffix FILES ${data_suffix})
+install( FILES ${data_suffix_decl} DESTINATION include/yack/data/suffix )
 
 
 ########################################################################
@@ -448,7 +448,7 @@ ${type}
 ${arith}
 ${check}
 ${system}
-${data} ${data_list} ${data_pool} ${data_small} ${data_tree}
+${data} ${data_list} ${data_pool} ${data_small} ${data_suffix}
 ${container} ${container_matrix}
 ${sequence}
 ${memory} ${memory_allocator} ${memory_small} ${memory_large} ${memory_joint} ${memory_buffer}

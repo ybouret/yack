@@ -6,7 +6,7 @@
 
 #include "yack/container/collection.hpp"
 #include "yack/container/releasable.hpp"
-#include "yack/data/tree/node.hpp"
+#include "yack/data/suffix/node.hpp"
 #include "yack/data/list/ordered.hpp"
 
 namespace yack

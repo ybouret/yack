@@ -4,7 +4,7 @@
 #define YACK_DATA_TREE_NODE_INCLUDED 1
 
 #include "yack/sequence/vector.hpp"
-#include "yack/data/tree/knot.hpp"
+#include "yack/data/suffix/knot.hpp"
 #include "yack/signs.hpp"
 
 
