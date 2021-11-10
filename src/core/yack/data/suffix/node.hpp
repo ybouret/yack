@@ -27,17 +27,17 @@ namespace yack
     //
     //__________________________________________________________________________
     template <typename CODE>
-    class tree_key : public vector<CODE,memory::pooled>
+    class tree_path : public vector<CODE,memory::pooled>
     {
     public:
         typedef vector<CODE,memory::pooled> base_type; //!< alias
 
-        inline  explicit tree_key() throw() : collection(), base_type() {} //!< setup
-        inline  virtual ~tree_key() throw() {}                              //!< cleanup
-        inline  tree_key(const tree_key &_) : collection(), base_type(_) {} //!< hard copy
+        inline  explicit tree_path() throw() : collection(), base_type() {}   //!< setup
+        inline  virtual ~tree_path() throw() {}                               //!< cleanup
+        inline  tree_path(const tree_path &_) : collection(), base_type(_) {} //!< hard copy
 
     private:
-        YACK_DISABLE_ASSIGN(tree_key);
+        YACK_DISABLE_ASSIGN(tree_path);
     };
 
 
@@ -56,7 +56,7 @@ namespace yack
         // types and definition
         //______________________________________________________________________
         YACK_DECL_ARGS(T,type);                        //!< aliases
-        typedef tree_key<CODE>              vkey_type; //!< compiled key
+        typedef tree_path<CODE>             path_type; //!< compiled path
         typedef tree_node<T,CODE>           node_type; //!< alias
         typedef tree_knot<T,node_type>      knot_type; //!< alias
         typedef cxx_list_of<node_type>      list_type; //!< alias
@@ -94,16 +94,16 @@ namespace yack
         //
         //! save compiled key
         //______________________________________________________________________
-        void encode( vkey_type &vkey ) const
+        void encode( path_type &path ) const
         {
-            vkey.free();
+            path.free();
             const node_type *node = this;
             while(node)
             {
-                vkey.push_back(node->code);
+                path.push_back(node->code);
                 node=node->from;
             }
-            vkey.reverse();
+            path.reverse();
         }
 
         //______________________________________________________________________
