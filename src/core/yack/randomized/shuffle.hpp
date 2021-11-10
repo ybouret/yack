@@ -54,6 +54,7 @@ namespace yack
                 }
                 tmp.swap_with(l);
             }
+            
             //__________________________________________________________________
             //
             //! card-desk shuffle for pool

@@ -4,7 +4,7 @@
 #include <typeinfo>
 #include "yack/ios/icstream.hpp"
 #include "yack/ios/ocstream.hpp"
-#include "yack/sequence/list.hpp"
+#include "yack/data/small/list.hpp"
 
 using namespace yack;
 
@@ -15,6 +15,8 @@ namespace
 
 YACK_UTEST(data_tree)
 {
+
+    randomized::rand_ ran;
 
     {
         suffix_tree<apq,char> tree;
@@ -57,7 +59,7 @@ YACK_UTEST(data_tree)
     {
         suffix_tree<size_t,char>     tree;
         typedef tree_key<char>       key_type;
-        list<key_type>               keys;
+        small_list<key_type>         keys;
 
         ios::icstream   fp(argv[1]);
         ios::characters line;
@@ -76,7 +78,7 @@ YACK_UTEST(data_tree)
                     {
                         key_type k;
                         tree.tail()->node->encode(k);
-                        keys.push_back(k);
+                        keys.add(k);
                     }
                     std::cerr << "+" << keys.back() << std::endl;
                 }
@@ -92,7 +94,23 @@ YACK_UTEST(data_tree)
         tree.gv("stree.dot");
         ios::vizible::render("stree.dot");
 
+        randomized::shuffle::list(keys,ran);
+        for( small_node<key_type> *k = keys.head; k; k=k->next )
+        {
+            const key_type &key = **k;
+            std::cerr << key << std::endl;
+        }
 
+        const size_t half = keys.size/2;
+        while(keys.size>half)
+        {
+            const key_type &key = **keys.tail;
+            std::cerr << "Removing " << key << std::endl;
+            YACK_ASSERT(tree.remove(&key[1],key.size()));
+            keys.delete_back();
+        }
+        tree.gv("shalf.dot");
+        ios::vizible::render("shalf.dot");
 
     }
 
