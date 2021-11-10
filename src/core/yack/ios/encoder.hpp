@@ -62,9 +62,12 @@ namespace yack
                 return nw;
             }
             
-            //! encode size, write binary block
+            //! encode size, write binary block, return total written
             static size_t serialize(ostream &, const void *block_addr, const size_t block_size);
-            
+
+            //! encode address to hexa decimal
+            static size_t addr2hexa(ostream &, const void *addr, const char pfx = 'x' );
+
         };
 
     }

@@ -144,6 +144,26 @@ namespace yack
         }
 
 
+
     }
 }
 
+#include "yack/ios/fmt/hexa.hpp"
+
+namespace yack
+{
+    namespace ios
+    {
+        size_t encoder:: addr2hexa(ostream &os, const void *addr, const char pfx )
+        {
+            // prefix
+            const size_t nw  = (pfx!=0) ? emit<uint8_t>(os,pfx) : 0;
+            char         ch[16] = { 0 };
+            const size_t nc  = hexa::text(ch,addr);
+            os.frame(ch,nc);
+            return nw+nc;
+        }
+
+    }
+
+}

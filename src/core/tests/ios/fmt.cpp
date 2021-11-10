@@ -1,5 +1,7 @@
 #include "yack/ios/fmt/hexa.hpp"
 #include "yack/ios/fmt/binary.hpp"
+#include "yack/ios/ocstream.hpp"
+#include "yack/ios/encoder.hpp"
 #include "yack/utest/run.hpp"
 
 using namespace yack;
@@ -41,6 +43,16 @@ YACK_UTEST(ios_fmt)
         a = 0x02;      std::cerr << ios::binary(a) << std::endl;
         a = 0xab;      std::cerr << ios::binary(a) << std::endl;
         a = 0x80;      std::cerr << ios::binary(a) << std::endl;
+    }
+
+    {
+        const int     n = 10;
+        ios::ocstream fp(ios::cstderr);
+
+        size_t nw = ios::encoder::addr2hexa(fp,&n);
+        fp << '\n';
+        std::cerr << "Written #" << nw << std::endl;
+
 
     }
 

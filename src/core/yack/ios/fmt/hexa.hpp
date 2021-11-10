@@ -30,6 +30,13 @@ namespace yack
             hexa(const hexa &_) throw(); //!< copy
             ~hexa() throw();             //!< cleanup
 
+            template <typename T>
+            static size_t text(char tab[], const T x) throw()
+            {
+                const hexa _(x);
+                return _.load(tab);
+            }
+
             //! display
             template <typename OSTREAM> inline
             friend OSTREAM & operator<<(OSTREAM &os, const hexa &x)
@@ -44,8 +51,10 @@ namespace yack
             YACK_DISABLE_ASSIGN(hexa);
             const uint64_t qword;
             const size_t   count;
-            size_t         load(char tab[]) const throw();
             static size_t  width(const uint64_t) throw();
+            //! load chars in tab[0..15], return number of chars
+            size_t load(char tab[]) const throw();
+
 
         };
 

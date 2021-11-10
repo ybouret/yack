@@ -83,6 +83,7 @@ YACK_UTEST_DECL(128)
     YACK_UTEST(ios_gz);
     YACK_UTEST(ios_fmt);
     YACK_UTEST(ios_gets);
+    YACK_UTEST(ios_ascii);
 
     YACK_UTEST(hash64);
 

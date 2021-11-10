@@ -296,6 +296,11 @@ set(ios_gv ${ios_gv_impl} ${ios_gv_decl})
 SOURCE_GROUP(ios/gv FILES ${ios_gv})
 install( FILES ${ios_gv_decl} DESTINATION include/yack/ios/gv)
 
+file(GLOB ios_ascii_impl yack/ios/ascii/*.cpp yack/ios/ascii/*.cxx)
+file(GLOB ios_ascii_decl yack/ios/ascii/*.hpp)
+set(ios_ascii ${ios_ascii_impl} ${ios_ascii_decl})
+SOURCE_GROUP(ios/ascii FILES ${ios_ascii})
+install( FILES ${ios_ascii_decl} DESTINATION include/yack/ios/ascii)
 
 ########################################################################
 ##
@@ -456,7 +461,7 @@ ${fft}
 ${functor}
 ${apex} ${apex_m} ${apex_n} ${apex_z} ${apex_q}
 ${concurrent} ${concurrent_quark} ${concurrent_loop} ${concurrent_queue}
-${ios} ${ios_c} ${ios_gz} ${ios_fmt} ${io_gv}
+${ios} ${ios_c} ${ios_gz} ${ios_fmt} ${ios_gv} ${ios_ascii}
 ${randomized}
 ${sort}
 ${counting} ${counting_c}
