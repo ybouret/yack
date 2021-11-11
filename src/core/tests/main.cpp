@@ -41,6 +41,7 @@ YACK_UTEST_DECL(128)
     YACK_UTEST(memory_embed);
     YACK_UTEST(memory_zcache);
     YACK_UTEST(memory_operative);
+    YACK_UTEST(memory_ptr);
 
     YACK_UTEST(data_list);
     YACK_UTEST(data_list_sort);

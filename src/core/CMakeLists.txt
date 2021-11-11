@@ -456,6 +456,18 @@ set(math ${math_impl} ${math_decl})
 SOURCE_GROUP(math FILES ${math})
 install( FILES ${math_decl} DESTINATION include/yack/math )
 
+########################################################################
+##
+## ptr
+##
+########################################################################
+file(GLOB ptr_impl yack/ptr/*.cpp)
+file(GLOB ptr_decl yack/ptr/*.hpp)
+set(ptr ${ptr_impl} ${ptr_decl})
+SOURCE_GROUP(ptr FILES ${ptr})
+install( FILES ${ptr_decl} DESTINATION include/yack/ptr )
+
+
 
 # create the library
 add_library(yack
@@ -483,6 +495,7 @@ ${fs}
 ${hashing}
 ${info} ${info_modulation}
 ${math}
+${ptr}
 ${utest}
 )
 

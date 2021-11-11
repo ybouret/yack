@@ -119,6 +119,7 @@ add_test(memory:buffers   test-yack memory_buffers)
 add_test(memory:embed     test-yack memory_embed)
 add_test(memory:zcache    test-yack memory_zcache)
 add_test(memory:operative test-yack memory_operative)
+add_test(memory:ptr       test-yack memory_ptr)
 
 add_test(object          test-yack object)
 
