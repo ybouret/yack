@@ -31,7 +31,10 @@ namespace yack
         inline auto_ptr & operator=(const auto_ptr &other)
         {
             if(this!=&other)
+            {
+                release();
                 pointee = coerce(other).yield();
+            }
             return *this;
         }
         
