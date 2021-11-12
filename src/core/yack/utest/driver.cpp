@@ -125,6 +125,7 @@ namespace yack
             {
                 utest[i].display(std::cout << '\t',width);
             }
+            std::cout << "#" << program << " = " << count << std::endl;
             return 0;
         }
         else
