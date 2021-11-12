@@ -33,7 +33,6 @@ namespace  {
         std::cerr << " | length = " <<  std::setw(3) << h.length;
         std::cerr << " | window = " <<  std::setw(3) << h.window;
 
-        digest md(h.length);
         if(filename)
         {
             h.set();
@@ -46,7 +45,7 @@ namespace  {
                 if(!nr) break;
                 h.run(buffer,nr);
             }
-            h.get(&md[1],h.length);
+            const digest md = h.md();
             std::cerr << " | " << md;
         }
 
@@ -90,6 +89,9 @@ YACK_UTEST(hashing_fcn)
         hashing::function &hfn = *H[i];
         test_hashing(hfn,argv[1]);
     }
+
+    
+
 
 }
 YACK_UDONE()

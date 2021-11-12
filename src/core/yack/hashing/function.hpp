@@ -40,10 +40,25 @@ namespace yack
 			virtual void        get(void *output, size_t outlen) throw() = 0;       //!< finalize/fill array
 
             
-            
+            //__________________________________________________________________
+            //
+            // non virtual interface
+            //__________________________________________________________________
+
             //! helper, usually used by the virtual 'get' method.
 			static void fill(void *output, size_t outlen, const void *input, size_t inlen) throw();
-            
+
+            //! hash a block
+            void        block(void *output, size_t outlen, const void *block_addr, const size_t block_size) throw();
+
+            //! hash a message
+            void        block(void *output, size_t outlen, const char *msg) throw();
+
+            digest md();
+            digest md(const void *block_addr, const size_t block_size);
+            digest md(const char *msg);
+
+
 		protected:
             //! initialize function length and window
 			explicit function( size_t L, size_t W) throw();
