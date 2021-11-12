@@ -83,7 +83,9 @@ YACK_UTEST(hashing_fcn)
     ADD_FUNC(sha256);
     ADD_FUNC(sha384);
     ADD_FUNC(sha512);
-    
+
+    hashing::md5::tests();
+
     for(size_t i=1;i<=H.size();++i)
     {
         hashing::function &hfn = *H[i];

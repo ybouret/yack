@@ -67,7 +67,7 @@ blen( N )
             for(size_t i=0;i<n;++i)
             {
                 const int h = hexa::convert(*(--p)); assert(h>=0); assert(h<16);
-                std::cerr << hexa::lowercase_char[h] << std::endl;
+                //std::cerr << hexa::lowercase_char[h] << std::endl;
                 const size_t j = blen - (i >> 1);
                 if(0==(i&1))
                 {

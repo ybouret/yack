@@ -26,6 +26,8 @@ namespace yack
 		public:
 			YACK_HASHING_FUNCTION_DECL(md5,16,64); //!< specs
 
+            static void tests();
+            
 		private:
 			RFC1321::MD5_CTX ctx;
 			YACK_DISABLE_COPY_AND_ASSIGN(md5);

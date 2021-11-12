@@ -38,7 +38,7 @@ namespace yack
         virtual const uint8_t * operator*()                   const throw(); //!< address
         friend std::ostream   & operator<<(std::ostream  &, const digest &); //!< output
         friend bool operator==(const digest &, const digest &)      throw(); //!< equality
-
+        
     private:
         YACK_DISABLE_ASSIGN(digest);
         uint8_t     *addr;
