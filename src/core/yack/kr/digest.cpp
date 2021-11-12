@@ -68,14 +68,14 @@ blen( N )
             {
                 const int h = hexa::convert(*(--p)); assert(h>=0); assert(h<16);
                 std::cerr << hexa::lowercase_char[h] << std::endl;
-                const size_t j = i >> 1;
+                const size_t j = blen - (i >> 1);
                 if(0==(i&1))
                 {
-                    addr[j] = h;
+                    byte[j] = h;
                 }
                 else
                 {
-                    addr[j] |= unsigned(h) << 4;
+                    byte[j] |= unsigned(h) << 4;
                 }
             }
         }
