@@ -1,5 +1,6 @@
 #include "yack/ptr/auto.hpp"
 #include "yack/ptr/arc.hpp"
+#include "yack/ptr/shared.hpp"
 #include "yack/counted.hpp"
 
 #include "yack/utest/run.hpp"
@@ -30,8 +31,14 @@ namespace
 
 YACK_UTEST(memory_ptr)
 {
+    YACK_SIZEOF(auto_ptr<dummy>);
+    YACK_SIZEOF(arc_ptr<dummy>);
+    YACK_SIZEOF(shared_ptr<dummy>);
+
+    std::cerr << "NIL" << std::endl;
     std::cerr << ptr_::nil << std::endl;
-    
+
+    std::cerr << "auto_ptr" << std::endl;
     {
         auto_ptr<apq> nil;
         std::cerr << nil << std::endl;
@@ -45,11 +52,17 @@ YACK_UTEST(memory_ptr)
         pq = new apq(2,3);
         std::cerr << pq << std::endl;
     }
-    
+
+    std::cerr << "arc_ptr" << std::endl;
     {
         arc_ptr<dummy> p = new dummy(2);
         std::cerr << p << std::endl;
-        
+        {
+            arc_ptr<dummy> q = p;
+            ++(q->value);
+            std::cerr << q << std::endl;
+        }
+        std::cerr << p << std::endl;
     }
 }
 YACK_UDONE()

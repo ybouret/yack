@@ -43,7 +43,6 @@ namespace yack
         }
         
         
-        
     protected:
         explicit ptr(type *addr) throw() :
         pointee( (mutable_type *) addr )

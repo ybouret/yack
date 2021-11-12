@@ -37,7 +37,10 @@ namespace yack
             }
             return *this;
         }
-        
+
+        inline bool is_valid() const throw() { return NULL!=pointee; }
+        inline bool is_empty() const throw() { return NULL==pointee; }
+
         inline virtual ~auto_ptr() throw() { release(); }
         
         inline auto_ptr & operator=(type *addr)

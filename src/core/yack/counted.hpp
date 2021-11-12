@@ -22,11 +22,11 @@ namespace yack
         explicit counted() throw();
         void     withhold() throw();
         bool     liberate() throw();
-        
-        const size_t references;
-        
+        size_t   quantity() const throw();
+
     private:
         YACK_DISABLE_COPY_AND_ASSIGN(counted);
+        size_t nref;
     };
     
 }
