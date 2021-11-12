@@ -20,6 +20,8 @@
 #include "yack/ios/icstream.hpp"
 #include "yack/type/hexa.hpp"
 
+#include "yack/kr/digest.hpp"
+
 using namespace yack;
 
 namespace  {
@@ -31,7 +33,7 @@ namespace  {
         std::cerr << " | length = " <<  std::setw(3) << h.length;
         std::cerr << " | window = " <<  std::setw(3) << h.window;
 
-        vector<uint8_t> md(h.length,0);
+        digest md(h.length);
         if(filename)
         {
             h.set();
@@ -45,12 +47,7 @@ namespace  {
                 h.run(buffer,nr);
             }
             h.get(&md[1],h.length);
-            std::cerr << " | ";
-            for(size_t i=1;i<=h.length;++i)
-            {
-                std::cerr << hexa::lowercase_text[ md[i] ];
-            }
-
+            std::cerr << " | " << md;
         }
 
         std::cerr << std::endl;

@@ -9,6 +9,8 @@
 
 namespace yack
 {
+
+    class digest;
     
 	namespace hashing
     {
