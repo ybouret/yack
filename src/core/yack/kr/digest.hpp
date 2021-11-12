@@ -6,20 +6,35 @@
 namespace yack
 {
 
+    //__________________________________________________________________________
+    //
+    //
+    //! digest interface, fixed length
+    //
+    //__________________________________________________________________________
     class digest : public contiguous<uint8_t>
     {
     public:
-        digest(const size_t n);
-        digest(const digest &);
-        virtual ~digest() throw();
+        //______________________________________________________________________
+        //
+        // C++
+        //______________________________________________________________________
+        digest(const size_t n); //!< setup with n bytes
+        digest(const digest &); //!< copy, same size
+        digest(const size_t n, const uint8_t b); //!< [b...b] n times
+        virtual ~digest() throw(); //!< cleanup
 
-        virtual size_t size() const throw();
-        virtual uint8_t       & operator[](const size_t indx)       throw();
-        virtual const uint8_t & operator[](const size_t indx) const throw();
-        virtual uint8_t       * operator*() throw();
-        virtual const uint8_t * operator*() const throw();
-
-        friend std::ostream & operator<<(std::ostream &os, const digest &);
+        //______________________________________________________________________
+        //
+        // methods
+        //______________________________________________________________________
+        virtual size_t          size()                        const throw(); //!< bytes
+        virtual uint8_t       & operator[](const size_t indx)       throw(); //!< [1..size()]
+        virtual const uint8_t & operator[](const size_t indx) const throw(); //!< [1..size()]
+        virtual uint8_t       * operator*()                         throw(); //!< address
+        virtual const uint8_t * operator*()                   const throw(); //!< address
+        friend std::ostream   & operator<<(std::ostream  &, const digest &); //!< output
+        friend bool operator==(const digest &, const digest &)      throw(); //!< equality
 
     private:
         YACK_DISABLE_ASSIGN(digest);
