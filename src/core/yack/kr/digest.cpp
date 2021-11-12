@@ -10,6 +10,14 @@
 namespace yack
 {
 
+    const char digest::clid[] = "digest";
+
+    const char *digest:: class_uid() const throw()
+    {
+        return clid;
+    }
+
+
 #define YACK_DIGEST_CTOR(N) \
 contiguous<uint8_t>(), \
 addr( static_cast<uint8_t*>(memory::legacy::acquire(N)) ), \
@@ -150,3 +158,17 @@ blen( N )
 
 
 }
+
+#include "yack/ios/encoder.hpp"
+#include "yack/ios/ostream.hpp"
+
+namespace yack
+{
+    size_t digest:: serialize(ios::ostream &os) const
+    {
+        const size_t nw = ios::encoder::emit(os,blen);
+        os.frame(addr,blen);
+        return nw + blen;
+    }
+}
+

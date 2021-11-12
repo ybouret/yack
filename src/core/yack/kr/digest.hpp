@@ -2,6 +2,8 @@
 #define YACK_CRYPTO_DIGEST_INCLUDED 1
 
 #include "yack/sequence/contiguous.hpp"
+#include "yack/ios/serializable.hpp"
+#include "yack/ios/fwd.hpp"
 
 namespace yack
 {
@@ -12,9 +14,10 @@ namespace yack
     //! digest interface, fixed length
     //
     //__________________________________________________________________________
-    class digest : public contiguous<uint8_t>
+    class digest : public contiguous<uint8_t>, public ios::serializable
     {
     public:
+        static const char clid[];
         //______________________________________________________________________
         //
         // C++
@@ -26,6 +29,13 @@ namespace yack
 
         digest(const char *h);
 
+        //______________________________________________________________________
+        //
+        // serializable
+        //______________________________________________________________________
+        virtual const char *class_uid() const throw();
+        virtual size_t      serialize(ios::ostream &) const;
+        static  digest      construct(ios::istream &, size_t &cumul);
 
         //______________________________________________________________________
         //
