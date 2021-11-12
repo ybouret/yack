@@ -80,8 +80,8 @@ namespace yack
             {
                 shared_ptr_ref::release(ref_ptr);
                 delete pointee;
-                pointee = NULL;
             }
+            pointee = NULL;
         }
 
         //______________________________________________________________________

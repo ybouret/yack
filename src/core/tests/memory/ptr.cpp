@@ -70,6 +70,13 @@ YACK_UTEST(memory_ptr)
     {
         shared_ptr<apq> p = new apq(3,5);
         std::cerr << p << std::endl;
+        {
+            shared_ptr<apq> q = p;
+            std::cerr << q->to_double() << std::endl;
+            ++(*q);
+            std::cerr << q->to_double() << std::endl;
+        }
+        std::cerr << p << std::endl;
     }
 
 }
