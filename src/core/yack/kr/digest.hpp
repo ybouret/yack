@@ -24,6 +24,9 @@ namespace yack
         digest(const size_t n, const uint8_t b); //!< [b...b] n times
         virtual ~digest() throw(); //!< cleanup
 
+        digest(const char *h);
+
+
         //______________________________________________________________________
         //
         // methods

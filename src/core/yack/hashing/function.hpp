@@ -58,6 +58,17 @@ namespace yack
             digest md(const void *block_addr, const size_t block_size);
             digest md(const char *msg);
 
+            template <typename T> inline
+            T to() throw() { T res = 0; get(&res,sizeof(res)); return res; }
+
+            template <typename T> inline
+            T to(const void *block_addr, const size_t block_size) throw()
+            { T res = 0; block(&res,sizeof(res),block_addr,block_size); return res; }
+
+            template <typename T> inline
+            T to(const char *msg) throw()
+            { T res = 0; block(&res,sizeof(res),msg); return res; }
+
 
 		protected:
             //! initialize function length and window

@@ -50,6 +50,10 @@ source_group(string FILES ${string})
 file(GLOB math math/*.cpp)
 source_group(math FILES ${math})
 
+file(GLOB kr kr/*.cpp)
+source_group(kr FILES ${kr})
+
+
 add_executable(test-yack main.cpp main.hpp
 ${base}
 ${type}
@@ -68,6 +72,7 @@ ${string}
 ${info}
 ${math}
 ${fs}
+${kr}
 )
 
 yack_link_libraries(test-yack)
@@ -187,5 +192,6 @@ add_test(math:api test-yack math_api)
 
 add_test(vfs  test-yack vfs)
 
+add_test(kr:digest   test-yack kr_digest)
 
 yack_testing(yack)
