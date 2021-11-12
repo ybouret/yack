@@ -7,6 +7,13 @@
 #include "yack/hashing/md2.hpp"
 #include "yack/hashing/md4.hpp"
 #include "yack/hashing/md5.hpp"
+#include "yack/hashing/pjw.hpp"
+#include "yack/hashing/rmd128.hpp"
+#include "yack/hashing/rmd160.hpp"
+#include "yack/hashing/sfh.hpp"
+#include "yack/hashing/sha1.hpp"
+#include "yack/hashing/sha256.hpp"
+#include "yack/hashing/sha512.hpp"
 
 #include "yack/utest/run.hpp"
 #include "yack/sequence/vector.hpp"
@@ -71,7 +78,16 @@ YACK_UTEST(hashing_fcn)
     ADD_FUNC(md2);
     ADD_FUNC(md4);
     ADD_FUNC(md5);
-
+    ADD_FUNC(pjw);
+    ADD_FUNC(rmd128);
+    ADD_FUNC(rmd160);
+    ADD_FUNC(sfh);
+    ADD_FUNC(sha1);
+    ADD_FUNC(sha224);
+    ADD_FUNC(sha256);
+    ADD_FUNC(sha384);
+    ADD_FUNC(sha512);
+    
     for(size_t i=1;i<=H.size();++i)
     {
         hashing::function &hfn = *H[i];
