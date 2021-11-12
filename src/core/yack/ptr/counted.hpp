@@ -9,17 +9,22 @@
 namespace yack
 {
 
+    //__________________________________________________________________________
+    //
+    //
+    //! base class for counted pointed (arc,shared...)
+    //
+    //__________________________________________________________________________
     template <typename T>
     class counted_ptr : public ptr<T>
     {
     public:
-        typedef typename ptr<T>::type type;
-
-        inline virtual ~counted_ptr() throw() {}
-
-        virtual size_t references() const throw() = 0;
+        typedef typename ptr<T>::type type;             //!< alias
+        virtual size_t  references() const throw() = 0; //!< interface
+        inline virtual ~counted_ptr() throw() {}        //!< cleanup
 
     protected:
+        //! setup by forwarding
         inline explicit counted_ptr(type *addr) throw() : ptr<T>(addr) {}
 
     private:

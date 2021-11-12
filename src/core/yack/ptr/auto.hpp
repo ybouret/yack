@@ -8,26 +8,40 @@
 
 namespace yack
 {
-    
+
+    //__________________________________________________________________________
+    //
+    //
+    //! auto_ptr on unique instance
+    //
+    //__________________________________________________________________________
     template <typename T>
     class auto_ptr : public ptr<T>
     {
     public:
-        typedef typename ptr<T>::type         type;
-        typedef typename ptr<T>::mutable_type mutable_type;
+        //______________________________________________________________________
+        //
+        // types
+        //______________________________________________________________________
+        typedef typename ptr<T>::type         type;          //!< alias
+        typedef typename ptr<T>::mutable_type mutable_type;  //!< alias
         using ptr<T>::pointee;
-        
-        inline type *yield() throw()
-        {
-            type *old = pointee;
-            pointee = 0;
-            return old;
-        }
-        
+
+        //______________________________________________________________________
+        //
+        // C++
+        //______________________________________________________________________
+
+        //! setup empty
         inline auto_ptr() throw() : ptr<T>(0) {}
+
+        //! setup anything
         inline auto_ptr(type *addr) throw() : ptr<T>(addr) {}
+
+        //! copy, take ownershipt
         inline auto_ptr(const auto_ptr &_) throw() : ptr<T>( coerce(_).yield() ) {}
-        
+
+        //! assign, take ownership
         inline auto_ptr & operator=(const auto_ptr &other)
         {
             if(this!=&other)
@@ -38,11 +52,11 @@ namespace yack
             return *this;
         }
 
-        inline bool is_valid() const throw() { return NULL!=pointee; }
-        inline bool is_empty() const throw() { return NULL==pointee; }
 
+        //! cleanup
         inline virtual ~auto_ptr() throw() { release(); }
-        
+
+        //! assign new address
         inline auto_ptr & operator=(type *addr)
         {
             if(pointee!=addr)
@@ -52,6 +66,23 @@ namespace yack
             }
             return *this;
         }
+
+        //______________________________________________________________________
+        //
+        // methods
+        //______________________________________________________________________
+
+        inline bool is_valid() const throw() { return NULL!=pointee; } //!< check pointee
+        inline bool is_empty() const throw() { return NULL==pointee; } //!< check !pointee
+
+        //! surrender
+        inline type *yield() throw()
+        {
+            type *old = pointee;
+            pointee = 0;
+            return old;
+        }
+
     private:
         inline void release() throw() {
             if(pointee) { delete pointee; pointee=0; }

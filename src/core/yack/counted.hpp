@@ -18,11 +18,20 @@ namespace yack
     class counted
     {
     public:
+        //______________________________________________________________________
+        //
+        // C++
+        //______________________________________________________________________
         virtual ~counted() throw();
         explicit counted() throw();
-        void     withhold() throw();
-        bool     liberate() throw();
-        size_t   quantity() const throw();
+
+        //______________________________________________________________________
+        //
+        // methods
+        //______________________________________________________________________
+        void     withhold() throw();         //!< increase quantity
+        bool     liberate() throw();         //!< decrease quantity, true if 0==quantity()
+        size_t   quantity() const throw();   //!< current  quantity
 
     private:
         YACK_DISABLE_COPY_AND_ASSIGN(counted);

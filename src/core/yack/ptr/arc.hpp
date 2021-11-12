@@ -9,31 +9,46 @@ namespace yack
 {
 
 
+    //__________________________________________________________________________
+    //
     //! counted pointer of counted object
     /**
      * pointee must have void withhold(), bool liberate() and size_t quantity()
      */
+    //__________________________________________________________________________
     template <typename T>
     class arc_ptr : public counted_ptr<T>
     {
     public:
-        typedef typename ptr<T>::type         type;
-        typedef typename ptr<T>::mutable_type mutable_type;
+        //______________________________________________________________________
+        //
+        // types and definitions
+        //______________________________________________________________________
+        typedef typename ptr<T>::type         type;         //!< alias
+        typedef typename ptr<T>::mutable_type mutable_type; //!< alias
         using ptr<T>::pointee;
         
         
-        
+        //______________________________________________________________________
+        //
+        // C++
+        //______________________________________________________________________
+
+        //! setup with valid address
         inline arc_ptr(type *addr) throw() : counted_ptr<T>(addr)
         {
             assert(pointee);
             pointee->withhold();
         }
-        
+
+
+        //! no-throw copy
         inline arc_ptr(const arc_ptr &_) throw() : counted_ptr<T>( coerce(_).pointee )
         {
             pointee->withhold();
         }
-        
+
+        //! no-throw assign by copy/swap
         inline arc_ptr & operator=(const arc_ptr &other)
         {
             arc_ptr temp(other);
@@ -41,7 +56,7 @@ namespace yack
             return *this;
         }
         
-        
+        //! cleanup
         inline virtual ~arc_ptr() throw()
         {
             assert(pointee);
@@ -52,6 +67,12 @@ namespace yack
             pointee = NULL;
         }
 
+        //______________________________________________________________________
+        //
+        // methods
+        //______________________________________________________________________
+
+        //! counted_ptr interface
         virtual size_t references() const throw()
         {
             assert(pointee);

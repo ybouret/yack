@@ -34,6 +34,7 @@ YACK_UTEST(memory_ptr)
     YACK_SIZEOF(auto_ptr<dummy>);
     YACK_SIZEOF(arc_ptr<dummy>);
     YACK_SIZEOF(shared_ptr<dummy>);
+    YACK_SIZEOF(counted_ptr<dummy>);
 
     std::cerr << "NIL" << std::endl;
     std::cerr << ptr_::nil << std::endl;
@@ -64,6 +65,13 @@ YACK_UTEST(memory_ptr)
         }
         std::cerr << p << std::endl;
     }
+
+    std::cerr << "shared_ptr" << std::endl;
+    {
+        shared_ptr<apq> p = new apq(3,5);
+        std::cerr << p << std::endl;
+    }
+
 }
 YACK_UDONE()
 

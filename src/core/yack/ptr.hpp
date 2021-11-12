@@ -7,34 +7,52 @@
 
 namespace yack
 {
- 
+
+    //__________________________________________________________________________
+    //
+    //
+    //! common data for smart pointer
+    //
+    //__________________________________________________________________________
     class ptr_
     {
     public:
-        static const char nil[];
-        virtual ~ptr_() throw();
+        static const char nil[]; //!< "(nil)"
+        virtual ~ptr_() throw(); //!< cleanup
         
     protected:
-        explicit ptr_() throw();
+        explicit ptr_() throw(); //!< setu[
         
     private:
         YACK_DISABLE_COPY_AND_ASSIGN(ptr_);
     };
-    
+
+    //__________________________________________________________________________
+    //
+    //
+    //! base class for generic smart pointers
+    //
+    //__________________________________________________________________________
     template <typename T>
     class ptr : public ptr_
     {
     public:
-        YACK_DECL_ARGS(T,type);
-        inline virtual ~ptr() throw() { assert(NULL==pointee); }
-        
-        
-        inline type       & operator*()       throw() { assert(pointee); return *pointee; }
-        inline const_type & operator*() const throw() { assert(pointee); return *pointee; }
-        
-        inline type       * operator->()       throw() { return pointee; }
-        inline const_type * operator->() const throw() { return pointee; }
-        
+        //______________________________________________________________________
+        //
+        // definition
+        //______________________________________________________________________
+        YACK_DECL_ARGS(T,type); //!< aliases
+
+        //______________________________________________________________________
+        //
+        // methods
+        //______________________________________________________________________
+        inline type       & operator*()        throw() { assert(pointee); return *pointee; } //!< access
+        inline const_type & operator*()  const throw() { assert(pointee); return *pointee; } //!< access, const
+        inline type       * operator->()       throw() { return pointee; }                   //!< transitive access
+        inline const_type * operator->() const throw() { return pointee; }                   //!< transistie access, const
+
+        //! smart display
         template <typename OSTREAM> inline
         friend OSTREAM & operator<<(OSTREAM &os, const ptr<T> &self)
         {
@@ -42,16 +60,16 @@ namespace yack
             return os;
         }
         
-        
+        //______________________________________________________________________
+        //
+        // C++
+        //______________________________________________________________________
+        inline virtual ~ptr() throw() { assert(NULL==pointee); }         //!< cleanup
+
     protected:
-        explicit ptr(type *addr) throw() :
-        pointee( (mutable_type *) addr )
-        {
-        }
-        
-        mutable_type *pointee;
-        
-        
+        explicit ptr(type *_) throw() : pointee( (mutable_type *)_ ) { } //!< setup
+        mutable_type *pointee;                                           //!< the (protected) pointee
+
     private:
         YACK_DISABLE_COPY_AND_ASSIGN(ptr);
     };
