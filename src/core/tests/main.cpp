@@ -87,6 +87,7 @@ YACK_UTEST_DECL(128)
     YACK_UTEST(ios_ascii);
 
     YACK_UTEST(hash64);
+    YACK_UTEST(hashing_fcn);
 
     YACK_UTEST(rand_bits);
 

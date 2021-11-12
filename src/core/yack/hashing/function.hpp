@@ -3,19 +3,26 @@
 #define YACK_HASHING_FUNCTION_INCLUDED 1
 
 
-#include "yack/setup.hpp"
+#include "yack/object.hpp"
+#include "yack/counted.hpp"
+#include "yack/ptr/arc.hpp"
 
 namespace yack
 {
     
 	namespace hashing
-	{
-		
+    {
+
+        //______________________________________________________________________
+        //
+        //
         //! base class for hashing function
-		class function //: public counted_object
+        //
+        //______________________________________________________________________
+		class function : public object, public counted
 		{
 		public:
-            //typedef arc_ptr<function> pointer; //!< pointer type
+            typedef arc_ptr<function> pointer; //!< pointer type
 
 			const size_t length; //!< output generation
 			const size_t window; //!< internal window size

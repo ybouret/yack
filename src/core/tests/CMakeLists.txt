@@ -163,7 +163,8 @@ add_test(ios:fmt        test-yack ios_fmt)
 add_test(ios:gets       test-yack ios_gets)
 add_test(ios:ascii      test-yack ios_ascii)
 
-add_test(hashing::64    test-yack hash64)
+add_test(hashing:64    test-yack hash64)
+add_test(hashing:fcn   test-yack hashing_fcn)
 
 add_test(rand:bits      test-yack rand_bits)
 

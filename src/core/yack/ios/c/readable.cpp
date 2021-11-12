@@ -48,7 +48,7 @@ namespace yack
             const size_t nr = fread(addr,1,size,fp);
             if(nr<size && ferror(fp))
                 throw libc::exception(errno,"ios::readable_file::get(%lu)",(unsigned long)size);
-            return size;
+            return nr;
         }
 
     }
