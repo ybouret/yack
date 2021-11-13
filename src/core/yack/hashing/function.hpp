@@ -9,7 +9,11 @@
 
 namespace yack
 {
-
+    
+    namespace memory
+    {
+        class ro_buffer;
+    }
     class digest;
     
 	namespace hashing
@@ -46,29 +50,67 @@ namespace yack
 
             //! helper, usually used by the virtual 'get' method.
 			static void fill(void *output, size_t outlen, const void *input, size_t inlen) throw();
-
+            
+            //! run(block_addr,block_size)
+            void operator()(const void *block_addr, const size_t block_size) throw();
+            
+            //! run(msg)
+            void operator()(const char *msg) throw();
+            
+            //! run(buffer.ro_addr(),buffer.measure());
+            void operator()(const memory::ro_buffer &) throw();
+            
             //! hash a block
             void        block(void *output, size_t outlen, const void *block_addr, const size_t block_size) throw();
-
+            
+            //! hash a memory buffer
+            void        block(void *output, size_t outlen, const memory::ro_buffer &) throw();
+            
             //! hash a message
             void        block(void *output, size_t outlen, const char *msg) throw();
 
-            digest md();
-            digest md(const void *block_addr, const size_t block_size);
-            digest md(const char *msg);
-
+            //__________________________________________________________________
+            //
+            // getting digest
+            //__________________________________________________________________
+            digest md();                                                //!< from current state
+            digest md(const void *block_addr, const size_t block_size); //!< set/run/md
+            digest md(const char *msg);                                 //!< set/run/md
+            digest md(const memory::ro_buffer &);                       //!< set/run/md
+            
+            //__________________________________________________________________
+            //
+            // getting integer types
+            //__________________________________________________________________
+            
+            //! from current state
             template <typename T> inline
             T to() throw() { T res = 0; get(&res,sizeof(res)); return res; }
 
+            //! set/run/to
             template <typename T> inline
             T to(const void *block_addr, const size_t block_size) throw()
             { T res = 0; block(&res,sizeof(res),block_addr,block_size); return res; }
 
+            //! set/run/to
             template <typename T> inline
             T to(const char *msg) throw()
             { T res = 0; block(&res,sizeof(res),msg); return res; }
 
-
+            //! set/run/to
+            template <typename T> inline
+            T to(const memory::ro_buffer &buf) throw()
+            { T res = 0; block(&res,sizeof(res),buf); return res; }
+           
+            //__________________________________________________________________
+            //
+            // getting hash keys
+            //__________________________________________________________________
+            size_t hkey()  throw();                                               //!< from current key
+            size_t hkey(const void *block_addr, const size_t block_size) throw(); //!< set/run/to
+            size_t hkey(const char *msg) throw();                                 //!< set/run/to
+            size_t hkey(const memory::ro_buffer &buf) throw();                    //!< set/run/to
+            
 		protected:
             //! initialize function length and window
 			explicit function( size_t L, size_t W) throw();

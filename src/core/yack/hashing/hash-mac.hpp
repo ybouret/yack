@@ -2,13 +2,11 @@
 #ifndef YACK_HASHING_HASH_MAC_INCLUDED
 #define YACK_HASHING_HASH_MAC_INCLUDED 1
 
-#if 0
+ 
+#include "yack/kr/digest.hpp"
+#include "yack/hashing/function.hpp"
 
-#include "y/hashing/digest.hpp"
-#include "y/hashing/function.hpp"
-#include "y/string.hpp"
-
-namespace upsylon
+namespace yack
 {
     namespace hashing
     {
@@ -18,8 +16,9 @@ namespace upsylon
         {
         public:
             //! setup
-            explicit hash_mac( function &H, const memory::ro_buffer &key );
-
+            explicit hash_mac(function &H, const memory::ro_buffer &key );
+            
+            
             //! cleanup
             virtual ~hash_mac() throw();
 
@@ -32,9 +31,16 @@ namespace upsylon
             digest    key_;
             digest    tmp_;
             digest    end_;
-            Y_DISABLE_COPY_AND_ASSIGN(hash_mac);
+            YACK_DISABLE_COPY_AND_ASSIGN(hash_mac);
         };
 
+        
+    }
+    
+}
+
+
+#if 0
         //! embedded HMAC function
         template <typename HFN>
         class hmac : public function

@@ -85,6 +85,7 @@ YACK_UTEST(hashing_fcn)
     ADD_FUNC(sha512);
 
     hashing::md5::tests();
+    hashing::sha1::tests();
 
     for(size_t i=1;i<=H.size();++i)
     {

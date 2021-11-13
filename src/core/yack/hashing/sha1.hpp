@@ -27,6 +27,8 @@ namespace yack
             //! prototype
 			YACK_HASHING_FUNCTION_DECL(sha1,20,64);
 			
+            static void tests(); //!< tests from RFC
+            
 		private:
 			RFC3174::SHA1_CTX ctx;
 			YACK_DISABLE_COPY_AND_ASSIGN(sha1);

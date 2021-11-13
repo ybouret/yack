@@ -155,6 +155,9 @@ blen( N )
             return false;
         }
     }
+    
+    const void * digest:: ro_addr() const throw() { return addr; }
+    size_t       digest:: measure() const throw() { return blen; }
 
 
 }
