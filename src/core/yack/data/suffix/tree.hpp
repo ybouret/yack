@@ -251,7 +251,7 @@ namespace yack
 
                 //--------------------------------------------------------------
                 //
-                // check is prunable
+                // check is prunable, since node is unused
                 //
                 //--------------------------------------------------------------
                 for(const node_type *child=node->chld.head;child;child=child->next)
