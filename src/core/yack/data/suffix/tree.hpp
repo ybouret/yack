@@ -256,7 +256,7 @@ namespace yack
                 //--------------------------------------------------------------
                 for(const node_type *child=node->chld.head;child;child=child->next)
                 {
-                    if(child->is_loaded()) return true;
+                    if(child->has_content()) return true;
                 }
 
 

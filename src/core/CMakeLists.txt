@@ -103,6 +103,12 @@ set(data_suffix ${data_suffix_impl} ${data_suffix_decl})
 SOURCE_GROUP(data/suffix FILES ${data_suffix})
 install( FILES ${data_suffix_decl} DESTINATION include/yack/data/suffix )
 
+file(GLOB data_hash_impl yack/data/hash/*.cpp)
+file(GLOB data_hash_decl yack/data/hash/*.hpp)
+set(data_hash ${data_hash_impl} ${data_hash_decl})
+SOURCE_GROUP(data/hash FILES ${data_hash})
+install( FILES ${data_hash_decl} DESTINATION include/yack/data/hash )
+
 
 ########################################################################
 ##
@@ -476,7 +482,7 @@ ${type}
 ${arith}
 ${check}
 ${system}
-${data} ${data_list} ${data_pool} ${data_small} ${data_suffix}
+${data} ${data_list} ${data_pool} ${data_small} ${data_suffix} ${data_hash}
 ${container} ${container_matrix}
 ${sequence}
 ${memory} ${memory_allocator} ${memory_small} ${memory_large} ${memory_joint} ${memory_buffer}

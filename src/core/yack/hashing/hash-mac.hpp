@@ -22,16 +22,17 @@ namespace yack
             //! cleanup
             virtual ~hash_mac() throw();
 
-            void set( function &H ) throw(); //!< initialize
+            void set( function &H ) throw();                              //!< initialize
             void get( function &H, void *output, size_t outlen ) throw(); //!< finalize
 
         private:
+            YACK_DISABLE_COPY_AND_ASSIGN(hash_mac);
             const     size_t L;
             const     size_t B;
             digest    key_;
             digest    tmp_;
             digest    end_;
-            YACK_DISABLE_COPY_AND_ASSIGN(hash_mac);
+            void setup(function &H, const void *key_addr, const size_t key_size) throw();
         };
 
         

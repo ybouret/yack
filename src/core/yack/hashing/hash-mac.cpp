@@ -14,6 +14,8 @@ namespace yack
             coerce(B) = 0;
         }
         
+       
+        
         hash_mac:: hash_mac( function &H, const memory::ro_buffer &key ) :
         L( H.length ),
         B( H.window ),

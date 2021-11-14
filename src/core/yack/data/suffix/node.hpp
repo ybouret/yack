@@ -110,12 +110,12 @@ namespace yack
         //
         //! recursive cheking of load
         //______________________________________________________________________
-        inline bool is_loaded() const
+        inline bool has_content() const
         {
             if(knot) return true;
             for(const tree_node *child=chld.head;child;child=child->next)
             {
-                if(child->is_loaded()) return true;
+                if(child->has_content()) return true;
             }
             return false;
         }

@@ -60,6 +60,8 @@ namespace yack
             //! run(buffer.ro_addr(),buffer.measure());
             void operator()(const memory::ro_buffer &) throw();
             
+            
+            
             //! hash a block
             void        block(void *output, size_t outlen, const void *block_addr, const size_t block_size) throw();
             
