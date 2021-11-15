@@ -21,7 +21,6 @@ namespace yack
             
             //! cleanup
             virtual ~hash_mac() throw();
-
             void set( function &H ) throw();                              //!< initialize
             void get( function &H, void *output, size_t outlen ) throw(); //!< finalize
 

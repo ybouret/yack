@@ -18,6 +18,12 @@ namespace yack
     }
 
 
+    void digest:: ldz() throw()
+    {
+        memset(addr,0,blen);
+    }
+
+
 #define YACK_DIGEST_CTOR(N) \
 contiguous<uint8_t>(), \
 addr( static_cast<uint8_t*>(memory::legacy::acquire(N)) ), \
@@ -87,6 +93,19 @@ blen( N )
                 }
             }
         }
+    }
+
+    digest:: digest(const memory::ro_buffer &buf) :
+    YACK_DIGEST_CTOR(buf.measure())
+    {
+        memcpy(addr,buf.ro_addr(),blen);
+    }
+
+    digest:: digest(const void *block_addr, const size_t block_size) :
+    YACK_DIGEST_CTOR(block_size)
+    {
+        assert(!(NULL==block_addr&&block_size>0));
+        memcpy(addr,block_addr,blen);
     }
 
 
