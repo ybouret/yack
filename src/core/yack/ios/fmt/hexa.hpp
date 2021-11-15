@@ -5,6 +5,9 @@
 
 #include "yack/type/ints.hpp"
 
+#include <iosfwd>
+#include "yack/ios/fwd.hpp"
+
 namespace yack
 {
 
@@ -37,16 +40,10 @@ namespace yack
                 const hexa _(x);
                 return _.load(tab);
             }
+            
+            friend std::ostream & operator<<(std::ostream &, const hexa &x);
+            friend ios::ostream & operator<<(ios::ostream &, const hexa &x);
 
-            //! display
-            template <typename OSTREAM> inline
-            friend OSTREAM & operator<<(OSTREAM &os, const hexa &x)
-            {
-                char tab[16];
-                size_t n = x.load(tab); assert(n>0);
-                while(n-- > 0) os << tab[n];
-                return os;
-            }
 
         private:
             YACK_DISABLE_ASSIGN(hexa);

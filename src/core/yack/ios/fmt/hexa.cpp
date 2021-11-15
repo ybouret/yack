@@ -44,4 +44,33 @@ namespace yack
             }
         }
     }
+
+
+}
+
+#include <iostream>
+#include "yack/ios/ostream.hpp"
+
+namespace yack
+{
+
+    namespace ios
+    {
+
+        std::ostream & operator<<(std::ostream &os, const hexa &x)
+        {
+            char tab[16];
+            size_t n = x.load(tab); assert(n>0);
+            while(n-- > 0) os << tab[n];
+            return os;
+        }
+
+        ios::ostream & operator<<(ios::ostream &os, const hexa &x)
+        {
+            char tab[16];
+            //size_t n = x.load(tab); assert(n>0);
+            os.frame(tab,x.load(tab));
+            return os;
+        }
+    }
 }
