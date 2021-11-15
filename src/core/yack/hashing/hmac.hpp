@@ -1,5 +1,5 @@
-
 //! \file
+
 #ifndef YACK_HASHING_HMAC_INCLUDED
 #define YACK_HASHING_HMAC_INCLUDED 1
 
