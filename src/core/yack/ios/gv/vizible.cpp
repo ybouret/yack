@@ -122,7 +122,10 @@ namespace yack
             yack_cstring_msgcat(cmd,sizeof(cmd),filename);
             yack_cstring_msgcat(cmd,sizeof(cmd),outext);
             std::cerr << "cmd='" << cmd << "'" << std::endl;
-            system(cmd);
+            if(0!=system(cmd))
+            {
+                std::cerr << "[failure]" << std::endl;
+            }
         }
     }
 

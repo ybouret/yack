@@ -1,7 +1,7 @@
 #include "yack/ptr/auto.hpp"
 #include "yack/ptr/arc.hpp"
 #include "yack/ptr/shared.hpp"
-#include "yack/ptr/str.hpp"
+#include "yack/ptr/cstr.hpp"
 #include "yack/counted.hpp"
 
 #include "yack/utest/run.hpp"

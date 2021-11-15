@@ -1,5 +1,5 @@
 
-#include "yack/ptr/str.hpp"
+#include "yack/ptr/cstr.hpp"
 #include "yack/memory/allocator/legacy.hpp"
 #include "yack/type/cstring.h"
 #include <cstring>
