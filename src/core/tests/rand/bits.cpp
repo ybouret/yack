@@ -81,8 +81,11 @@ YACK_UTEST(rand_bits)
 {
     randomized::rand_       ran;
     randomized::ParkMiller  ranPM( system_seed::get<randomized::ParkMiller::word_type>() );
-    
+
+    std::cerr << "Testing rand()" << std::endl;
     test_bits(ran);
+
+    std::cerr << "Testing Park-Miller" << std::endl;
     test_bits(ranPM);
 
 

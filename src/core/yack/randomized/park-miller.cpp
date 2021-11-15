@@ -1,6 +1,8 @@
 #include "yack/randomized/park-miller.hpp"
 #include "yack/hashing/des64.hpp"
 
+#include <iostream>
+
 namespace yack
 {
     
@@ -37,10 +39,11 @@ namespace yack
             static const long IQ   = 127773;
             static const long IR   = 2836;
 
+            assert(word>=0);
             word ^= MASK;
             const long k=word/IQ;
             word=IA*(word-k*IQ)-IR*k;
-            if (word < 0) word += IM;
+            while (word < 0) word += IM;
             const long ans = word;
             word ^= MASK;
             return ans;
