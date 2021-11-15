@@ -48,3 +48,31 @@ namespace yack
 
 }
 
+#include <iostream>
+#include "yack/ios/ostream.hpp"
+
+namespace yack
+{
+
+    namespace ios
+    {
+        std::ostream & operator<<(std::ostream &os, const binary &b)
+        {
+            char tab[64];
+            size_t n  = b.load(tab);
+            while(n-- > 0) os << tab[n];
+            return os;
+        }
+        
+        ios::ostream & operator<<(ios::ostream &os, const binary &b)
+        {
+            char tab[16];
+            os.frame(tab,b.load(tab));
+            return os;
+        }
+        
+    }
+
+}
+
+

@@ -4,9 +4,8 @@
 #define YACK_IOS_FMT_HEXA_INCLUDED 1
 
 #include "yack/type/ints.hpp"
-
-#include <iosfwd>
 #include "yack/ios/fwd.hpp"
+#include <iosfwd>
 
 namespace yack
 {

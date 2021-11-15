@@ -5,7 +5,8 @@
 #define YACK_IOS_FMT_BIN_INCLUDED 1
 
 #include "yack/setup.hpp"
-
+#include "yack/ios/fwd.hpp"
+#include <iosfwd>
 namespace yack
 {
 
@@ -32,6 +33,7 @@ namespace yack
             binary(const binary &_) throw(); //!< copy
             ~binary() throw();               //!< cleanup
 
+#if 0
             //! display
             template <typename OSTREAM> inline
             friend OSTREAM & operator<<(OSTREAM &os, const binary &b)
@@ -41,6 +43,10 @@ namespace yack
                 while(n-- > 0) os << tab[n];
                 return os;
             }
+#endif
+
+            friend std::ostream & operator<<(std::ostream &, const binary &x);
+            friend ios::ostream & operator<<(ios::ostream &, const binary &x);
 
         private:
             YACK_DISABLE_ASSIGN(binary);
