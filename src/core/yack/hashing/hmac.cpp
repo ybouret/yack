@@ -6,24 +6,36 @@ namespace yack
 {
     namespace hashing
     {
+        const char hmac:: prefix[] = "hmac-";
+
         hmac:: ~hmac() throw()
         {
             coerce(L) = 0;
             coerce(B) = 0;
         }
 
+
+#define YACK_HMAC_CTOR() \
+L(H.length),\
+B(H.window),\
+key(B),\
+ikp(B),\
+okp(B),\
+tmp(L)
         hmac:: hmac(function       &H,
                     const void     *key_addr,
                     const size_t    key_size) :
-        L(H.length),
-        B(H.window),
-        key(B),
-        ikp(B),
-        okp(B),
-        tmp(L)
+        YACK_HMAC_CTOR()
         {
             assert(!(NULL==key_addr&&key_size>0));
             setup(H,key_addr,key_size);
+        }
+
+
+        hmac:: hmac(function &H, const memory::ro_buffer &usr) :
+        YACK_HMAC_CTOR()
+        {
+            setup(H,usr.ro_addr(),usr.measure());
         }
 
         void hmac:: setup(function    &H,

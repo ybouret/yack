@@ -22,10 +22,17 @@ namespace yack
         public:
             //__________________________________________________________________
             //
+            // types and definitions
+            //__________________________________________________________________
+            static const char prefix[]; //!< "HMAC-";
+
+            //__________________________________________________________________
+            //
             // C++
             //__________________________________________________________________
             virtual ~hmac() throw(); //!< cleanup
             explicit hmac(function &H, const void *key_addr, const size_t key_size); //!< setup
+            explicit hmac(function &H, const memory::ro_buffer &);                   //!< setup
 
             //__________________________________________________________________
             //

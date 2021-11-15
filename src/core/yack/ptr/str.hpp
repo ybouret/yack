@@ -24,6 +24,7 @@ namespace yack
         //______________________________________________________________________
         cstr_ptr(const size_t);      //!< allocate
         cstr_ptr(const char *);      //!< copy text
+        cstr_ptr(const char *,const char *); //!< merge text
         cstr_ptr(const cstr_ptr &);  //!< copy data
         virtual ~cstr_ptr() throw(); //!< cleanup
 
@@ -40,7 +41,7 @@ namespace yack
         //______________________________________________________________________
         char       & operator[](const size_t indx)       throw(); //!< [0..length-1]
         const char & operator[](const size_t indx) const throw(); //!< [0..length]
-
+        
         //______________________________________________________________________
         //
         // methods

@@ -1,6 +1,7 @@
 
 #include "yack/ptr/str.hpp"
 #include "yack/memory/allocator/legacy.hpp"
+#include "yack/type/cstring.h"
 #include <cstring>
 
 namespace yack
@@ -18,8 +19,16 @@ ch( static_cast<char *>(memory::legacy::acquire(in_mem)) )
     }
 
 
+    cstr_ptr:: cstr_ptr(const char *lhs,const char *rhs) :
+    YACK_CSTR_CTOR( yack_cstring_size(lhs) + yack_cstring_size(rhs) )
+    {
+        const size_t l = yack_cstring_size(lhs);
+        memcpy(ch,lhs,l);
+        memcpy(ch+l,rhs,yack_cstring_size(rhs));
+    }
+
     cstr_ptr:: cstr_ptr(const char *msg) :
-    YACK_CSTR_CTOR(msg?strlen(msg):0)
+    YACK_CSTR_CTOR( yack_cstring_size(msg) )
     {
         memcpy(ch,msg,length);
     }

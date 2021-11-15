@@ -251,25 +251,29 @@ namespace yack
 
                 //--------------------------------------------------------------
                 //
-                // check is prunable, since node is unused
+                // check is superfluous, since node is unused
                 //
                 //--------------------------------------------------------------
                 for(const node_type *child=node->chld.head;child;child=child->next)
                 {
-                    if(child->has_content()) return true;
+                    if(child->has_content())
+                        return true; // has content, just return succes
                 }
 
-
-
-                // prunable!!
-                std::cerr << "prunable!!" << std::endl;
+                //--------------------------------------------------------------
+                //
+                // superfluous
+                //
+                //--------------------------------------------------------------
+                std::cerr << "superfluous!!" << std::endl;
                 if(node->from)
                 {
                     std::cerr << " |_from leaf!" << std::endl;
-                    // need recursion
                     node_type *from = node->from;
                     node->from=NULL;
                     prune(from->chld.pop(node));
+                    
+
                 }
                 else
                 {
@@ -354,7 +358,9 @@ namespace yack
             }
             repo.store(node);
         }
-        
+
+
+
     };
 
 }
