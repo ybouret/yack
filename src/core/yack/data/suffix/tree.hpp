@@ -248,39 +248,13 @@ namespace yack
                 //--------------------------------------------------------------
                 pool.store( data.pop(node->knot)->free() );
                 node->knot = 0;
-
-                //--------------------------------------------------------------
-                //
-                // check is superfluous, since node is unused
-                //
-                //--------------------------------------------------------------
-                for(const node_type *child=node->chld.head;child;child=child->next)
+                
+                if(node->chld.size<=0)
                 {
-                    if(child->has_content())
-                        return true; // has content, just return succes
-                }
-
-                //--------------------------------------------------------------
-                //
-                // superfluous
-                //
-                //--------------------------------------------------------------
-                std::cerr << "superfluous!!" << std::endl;
-                if(node->from)
-                {
-                    std::cerr << " |_from leaf!" << std::endl;
-                    node_type *from = node->from;
-                    node->from=NULL;
-                    prune(from->chld.pop(node));
                     
-
                 }
-                else
-                {
-                    std::cerr << " |_from root!" << std::endl;
-                    assert(root.owns(node));
-                    prune(root.pop(node));
-                }
+                
+             
                 return true;
 
             }
@@ -344,23 +318,7 @@ namespace yack
             }
         }
 
-        void prune(node_type *node) throw()
-        {
-            assert(0==node->knot);
-            assert(0==node->from);
-            node_list &chld = node->chld;
-            while(chld.size)
-            {
-                assert(chld.tail->knot==0);
-                node_type *child = chld.pop_back();
-                child->from = NULL;
-                prune(child);
-            }
-            repo.store(node);
-        }
-
-
-
+        
     };
 
 }
