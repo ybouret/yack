@@ -25,7 +25,10 @@ namespace yack
 
 
 #define YACK_DIGEST_CTOR(N) \
-contiguous<uint8_t>(), \
+collection(),               \
+contiguous<uint8_t>(),      \
+memory::rw_buffer(),        \
+ios::serializable(),        \
 addr( static_cast<uint8_t*>(memory::legacy::acquire(N)) ), \
 byte(addr-1),\
 blen( N )

@@ -1,5 +1,6 @@
 
 #include "yack/hashing/hmac.hpp"
+#include <cstring>
 
 namespace yack
 {
