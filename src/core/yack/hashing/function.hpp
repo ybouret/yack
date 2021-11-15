@@ -28,6 +28,10 @@ namespace yack
 		class function : public object, public counted
 		{
 		public:
+            //__________________________________________________________________
+            //
+            // types and definitions
+            //__________________________________________________________________
             typedef arc_ptr<function> pointer; //!< pointer type
 
 			const size_t length; //!< output generation

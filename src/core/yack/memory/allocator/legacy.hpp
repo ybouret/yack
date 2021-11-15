@@ -21,6 +21,14 @@ namespace yack
             static void *acquire(const size_t n);          //!< acquire, may throw
             static void *c_alloc(const size_t n) throw();  //!< acquire, no throw
             static void  release(void *) throw();          //!< release
+
+            //! helper
+            template <typename T> static inline
+            T *allocate(const size_t n)
+            {
+                return static_cast<T*>(n*sizeof(T));
+            }
+
         };
 
     }

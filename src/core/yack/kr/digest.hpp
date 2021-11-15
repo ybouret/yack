@@ -54,7 +54,7 @@ namespace yack
         virtual const uint8_t * operator*()                   const throw(); //!< address
         friend std::ostream   & operator<<(std::ostream  &, const digest &); //!< output
         friend bool operator==(const digest &, const digest &)      throw(); //!< equality
-        void   ldz() throw();
+        void   ldz() throw(); //!< set to zero
 
         //______________________________________________________________________
         //

@@ -3,6 +3,7 @@
 
 namespace yack
 {
+    //! WIP
     template <typename T, typename NODE>
     class hash_knot : public object
     {

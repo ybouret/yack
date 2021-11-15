@@ -1,6 +1,7 @@
 #include "yack/ptr/auto.hpp"
 #include "yack/ptr/arc.hpp"
 #include "yack/ptr/shared.hpp"
+#include "yack/ptr/str.hpp"
 #include "yack/counted.hpp"
 
 #include "yack/utest/run.hpp"
@@ -79,6 +80,16 @@ YACK_UTEST(memory_ptr)
         std::cerr << p << std::endl;
     }
 
+
+    std::cerr << "cstr_ptr" << std::endl;
+    {
+        cstr_ptr p(5);
+        std::cerr << "p=" << p << std::endl;
+    }
+    {
+        cstr_ptr p = "Hello, World!";
+        std::cerr << "p=" << p << std::endl;
+    }
 }
 YACK_UDONE()
 

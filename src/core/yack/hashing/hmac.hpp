@@ -11,20 +11,35 @@ namespace yack
 {
     namespace hashing
     {
-        //! RFC 2104
+        //______________________________________________________________________
+        //
+        //
+        //! RFC 2104 HMAC
+        //
+        //______________________________________________________________________
         class hmac
         {
         public:
-            virtual ~hmac() throw();
-            explicit hmac(function &H, const void *key_addr, const size_t key_size);
+            //__________________________________________________________________
+            //
+            // C++
+            //__________________________________________________________________
+            virtual ~hmac() throw(); //!< cleanup
+            explicit hmac(function &H, const void *key_addr, const size_t key_size); //!< setup
 
-            void                     set(function &H) throw(); //!< H.set(), H(prolog)
-            const memory::ro_buffer &get(function &H) throw();
+            //__________________________________________________________________
+            //
+            // methods
+            //__________________________________________________________________
+            void                     set(function &H) throw(); //!< initialize H function
+            const memory::ro_buffer &get(function &H) throw(); //!< finalize
 
-
+            //__________________________________________________________________
+            //
+            // members
+            //__________________________________________________________________
             const size_t L; //!< hash function length
             const size_t B; //!< hash function window
-
 
         private:
             YACK_DISABLE_COPY_AND_ASSIGN(hmac);
