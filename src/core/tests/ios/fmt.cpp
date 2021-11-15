@@ -10,8 +10,8 @@ YACK_UTEST(ios_fmt)
 {
 
     {
-        ios::ocstream os("fmt.dat");
-
+        ios::ocstream fp("fmt.dat");
+        ios::ostream &os = fp;
         {
             uint8_t a = 0; std::cerr << ios::hexa(a) << std::endl; os << ios::hexa(a) << '\n';
             a = 0x0a;      std::cerr << ios::hexa(a) << std::endl; os << ios::hexa(a) << '\n';
