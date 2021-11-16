@@ -5,11 +5,7 @@ using namespace yack;
 
 YACK_UTEST(data_hash)
 {
-    YACK_SIZEOF( hash_table<int>::slot_type );
-
-    hash_table<int> itable;
-
-    itable.free();
+    
 
 }
 YACK_UDONE()
