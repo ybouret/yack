@@ -137,6 +137,7 @@ add_test(data:small        test-yack data_small)
 add_test(data:matrix       test-yack data_matrix)
 add_test(data:sequence     test-yack data_sequence)
 add_test(data:tree         test-yack data_tree)
+add_test(data:hash         test-yack data_hash)
 
 add_test(sync:lockable  test-yack sync_lockable)
 add_test(sync:primitive test-yack sync_primitive)

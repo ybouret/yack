@@ -33,18 +33,6 @@ namespace yack
             binary(const binary &_) throw(); //!< copy
             ~binary() throw();               //!< cleanup
 
-#if 0
-            //! display
-            template <typename OSTREAM> inline
-            friend OSTREAM & operator<<(OSTREAM &os, const binary &b)
-            {
-                char tab[64];
-                size_t n  = b.load(tab);
-                while(n-- > 0) os << tab[n];
-                return os;
-            }
-#endif
-
             friend std::ostream & operator<<(std::ostream &, const binary &x);
             friend ios::ostream & operator<<(ios::ostream &, const binary &x);
 
