@@ -16,7 +16,8 @@ static inline void do_LU(const size_t       n,
     lu<T>      LU(n);
     matrix<T> a(n,n);
 
-    for(size_t iter=0;iter<4;++iter)
+    const size_t iter_max=exact ? 2 : 8;
+    for(size_t iter=0;iter<iter_max;++iter)
     {
         bring::fill(a,ran);
 

@@ -92,6 +92,7 @@ template <typename T> static inline void check_div(const apq &q, randomized::bit
 static void test_large(randomized::bits &ran)
 {
     const size_t n = 10 + ran.leq(200);
+
     vector<apq>  Q(n,as_capacity);
     for(size_t i=n;i>0;--i) Q.push_back( apq(ran,30,10) );
     std::cerr << "With #" << n << " apq" << std::endl;

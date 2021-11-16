@@ -13,7 +13,7 @@ namespace
 {
 
     static double rates[64];
-    static size_t nrate=0;
+    static size_t nrate   = 0;
     static double tsample = 0.5;
 
     template <typename T,const size_t exp2>

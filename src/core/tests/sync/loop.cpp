@@ -88,9 +88,12 @@ namespace
 
 YACK_UTEST(sync_loop)
 {
+    double tsample = 1.0;
+
     concurrent::thread::verbose = true;
     int        threads = 1;
     if(argc>1) threads = atoi(argv[1]);
+    if(argc>2) tsample = atof(argv[2]);
 
     if(false)
     {
@@ -134,7 +137,7 @@ YACK_UTEST(sync_loop)
     std::cerr << "seq: " << eng.get(seq.size()) << std::endl;
     std::cerr << "seq rate:" << std::endl;
     double seqRate = 0;
-    YACK_TMX_RATE(seqRate,seq.run(eng),1.0);
+    YACK_TMX_RATE(seqRate,seq.run(eng),tsample);
     std::cerr << "\t" << seqRate  << std::endl;
 
 
@@ -144,7 +147,7 @@ YACK_UTEST(sync_loop)
 
     std::cerr << "par rate:" << std::endl;
     double parRate = 0;
-    YACK_TMX_RATE(parRate,par.run(eng),1.0);
+    YACK_TMX_RATE(parRate,par.run(eng),tsample);
     std::cerr << "\t" << parRate << std::endl;
 
     std::cerr << "speed up=" << parRate/seqRate << std::endl;

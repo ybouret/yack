@@ -13,12 +13,6 @@ YACK_UTEST(apn)
 
     randomized::rand_  ran;
 
-    {
-        const apn lhs = apn::parse_dec("284072859224920306778500916225362834106457889629436213417069809370325278813250");
-        const apn rhs = apn::parse_dec("37113033567955029841474593385562785912727189891052434818859633091457268932923");
-        const apn dif = lhs-rhs;
-        std::cerr << "dif=" << dif << std::endl;
-    }
     
     
     for(size_t bits=0;bits<=64;++bits)
@@ -326,7 +320,7 @@ YACK_ASSERT( (u OP v) == (U OP v) )
     {
         for(size_t dbit=1;dbit<=nbit;++dbit)
         {
-            for(size_t iter=0;iter<8;++iter)
+            for(size_t iter=0;iter<2;++iter)
             {
                 const apex::uint_type u = ran.gen<apex::uint_type>(nbit);
                 const apex::uint_type v = ran.gen<apex::uint_type>(dbit);
@@ -334,7 +328,6 @@ YACK_ASSERT( (u OP v) == (U OP v) )
                 const apex::uint_type m = u%v;
                 const apn U=u;
                 const apn V=v;
-                //std::cerr << u << "/" << v << "=>" << q << std::endl;
                 {
                     const apn Q=U/V; YACK_ASSERT(Q.lsu()==q);
                     const apn M=U%V; YACK_ASSERT(M.lsu()==m);

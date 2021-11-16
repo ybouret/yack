@@ -9,12 +9,12 @@ using namespace yack;
 YACK_UTEST(apz)
 {
     randomized::rand_ ran;
-
+    size_t        iter_max = 10000;
     const int64_t add_max = 1000000000;
     const int64_t add_min = -add_max;
 
     std::cerr << "[ADD/SUB]" << std::endl;
-    for(size_t iter=0;iter<=1024*16;++iter)
+    for(size_t iter=0;iter<=iter_max;++iter)
     {
         const int64_t l = ran.in(add_min,add_max);
         const int64_t r = ran.in(add_min,add_max);
@@ -55,7 +55,7 @@ YACK_UTEST(apz)
     std::cerr << "[MUL/DIV]" << std::endl;
     const int64_t mul_max = 65000;
     const int64_t mul_min = -mul_max;
-    for(size_t iter=0;iter<=1024*16;++iter)
+    for(size_t iter=0;iter<=iter_max;++iter)
     {
         const int64_t l = ran.in(mul_min,mul_max);
         int64_t       r = ran.in(mul_min,mul_max);
