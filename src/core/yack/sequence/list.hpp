@@ -171,7 +171,8 @@ namespace yack
         inline void free_( node_type *node )
         {
             assert(node);
-            cache.store( static_cast<node_type*>(out_of_reach::zset( destructed(node), sizeof(node_type) ) ) );
+            cache.store( out_of_reach::naught( destructed(node) ) );
+
         }
 
         void free_() throw()

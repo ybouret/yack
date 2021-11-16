@@ -30,11 +30,23 @@ namespace yack
 
         //______________________________________________________________________
         //
+        // methods
+        //______________________________________________________________________
+        inline hash_node *free() throw()
+        {
+            assert(NULL==prev); assert(NULL==next);
+            node = 0;
+            hkey = 0;
+            return this;
+        }
+
+        //______________________________________________________________________
+        //
         // members
         //______________________________________________________________________
         hash_node   *next; //!< for list/pool
         hash_node   *prev; //!< for list
-        const size_t hkey; //!< hashed key
+        size_t       hkey; //!< hashed key
         NODE        *node; //!< user's data
 
     private:

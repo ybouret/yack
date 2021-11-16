@@ -201,7 +201,7 @@ namespace yack
         inline virtual void pop_back()  throw()
         {
             assert(count>0);
-            out_of_reach::zset( destructed( &item[count--] ), sizeof(T));
+            out_of_reach::naught( destructed( &item[count--] ) );
         }
 
         //! pop front
@@ -210,7 +210,7 @@ namespace yack
             assert(count>0);
             mutable_type *target = destructed(base);
             out_of_reach::move(target,target+1,(--count)*sizeof(T));
-            out_of_reach::zset(&target[count],sizeof(T));
+            out_of_reach::naught( &target[count] );
         }
 
         //______________________________________________________________________
@@ -272,7 +272,7 @@ namespace yack
 
         inline void kill_() throw() {
             while(count>0)
-                out_of_reach::zset(destructed(&item[count--]),sizeof(T));
+                out_of_reach::naught(destructed(&item[count--]));
         }
 
         inline void release_() throw() {

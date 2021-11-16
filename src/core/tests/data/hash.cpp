@@ -1,6 +1,7 @@
 #include "yack/data/hash/table.hpp"
 #include "yack/hashing/to.hpp"
 #include "yack/utest/run.hpp"
+#include "yack/hashing/md5.hpp"
 
 using namespace yack;
 
@@ -30,6 +31,7 @@ namespace
             return key_;
         }
 
+        static dummy *Quit(dummy *d) throw() { return d; }
 
     private:
         YACK_DISABLE_COPY_AND_ASSIGN(dummy);
@@ -42,10 +44,26 @@ namespace
 YACK_UTEST(data_hash)
 {
 
-    typedef dummy<int>    Dummy;
-    hash_table<int,Dummy> tab;
-    
-    
+
+    typedef dummy<int>             Dummy;
+    typedef hash_table<int,Dummy>  DTable;
+    DTable tab;
+    hashing::to_hkey<hashing::md5> kh;
+    cxx_pool_of<Dummy>             dpool;
+
+    YACK_SIZEOF(Dummy);
+    YACK_SIZEOF(DTable::meta_node);
+
+    {
+        const int    user = 0;
+        const size_t hkey = kh(user); std::cerr << "hkey0=" << hkey << std::endl;
+        YACK_CHECK( !tab.search(hkey,user) );
+        Dummy *d  = new Dummy(user);
+        YACK_CHECK( tab.insert(hkey,d->key(),d,dpool,Dummy::Quit) );
+    }
+
+    tab.free_with(dpool,Dummy::Quit);
+
 
 
 }
