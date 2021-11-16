@@ -32,7 +32,9 @@ namespace yack
         //
         // methods
         //______________________________________________________________________
-        inline hash_node *free() throw()
+
+        //! return this freed from data
+        inline hash_node *freed() throw()
         {
             assert(NULL==prev); assert(NULL==next);
             node = 0;

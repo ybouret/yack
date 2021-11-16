@@ -24,6 +24,7 @@ namespace yack
         static unit_t      diff(const void *a, const void *b)                        throw(); //!< b-a
         static bool        is0(const void *addr, const size_t size)                  throw(); //!< check only zero
 
+        //! helper with type casting
         template <typename T> inline
         static T *naught(T *obj) throw() { assert(NULL!=obj); return static_cast<T*>(zset(obj,sizeof(T))); }
 
