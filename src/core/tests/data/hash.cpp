@@ -47,7 +47,7 @@ YACK_UTEST(data_hash)
 
     typedef dummy<int>             Dummy;
     typedef hash_table<int,Dummy>  DTable;
-    DTable tab;
+    DTable                         tab;
     hashing::to_hkey<hashing::md5> kh;
     cxx_pool_of<Dummy>             dpool;
 
@@ -62,7 +62,25 @@ YACK_UTEST(data_hash)
         YACK_CHECK( tab.insert(hkey,d->key(),d,dpool,Dummy::Quit) );
     }
 
+
+    {
+        for(int i=1;i<100;++i)
+        {
+            Dummy       *d  = new Dummy(i);
+            const size_t h  = kh(d->key());
+            YACK_ASSERT( !tab.search(h,d->key()));
+            YACK_ASSERT( tab.insert(h,d->key(),d,dpool,Dummy::Quit) );
+        }
+    }
+
+    std::cerr << "size=" << tab.size() << std::endl;
+
+    tab.reload(4);
+
     tab.free_with(dpool,Dummy::Quit);
+    std::cerr << "size=" << tab.size() << std::endl;
+
+
 
 
 

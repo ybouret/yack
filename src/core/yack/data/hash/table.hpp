@@ -7,9 +7,19 @@
 #include "yack/data/hash/node.hpp"
 #include "yack/data/pool/cxx.hpp"
 #include "yack/type/out-of-reach.hpp"
+#include "yack/arith/base2.hpp"
+#include "yack/arith/ilog2.hpp"
+#include <iostream>
 
 namespace yack
 {
+    struct hash_table_
+    {
+        static void *acquire(const size_t page_exp2);
+        static void  release(void *the_addr, const size_t page_exp2) throw();
+        static void  check(const size_t user_exp2, const size_t maxi_exp2);
+    };
+
     //__________________________________________________________________________
     //
     //
@@ -28,6 +38,8 @@ namespace yack
         typedef list_of<meta_node>     slot_type; //!< slot type
         typedef cxx_pool_of<meta_node> meta_pool; //!< pool of meta nodes
         typedef NODE *               (*quit_proc)(NODE*);
+        
+
 
 
         //______________________________________________________________________
@@ -45,7 +57,7 @@ namespace yack
         //! cleanup
         inline virtual ~hash_table() throw()
         {
-
+            // must have no data!
         }
 
 
@@ -173,8 +185,13 @@ namespace yack
             return true;
         }
 
-        void free_with(pool_type &pool,
-                       quit_proc  quit) throw()
+
+        //______________________________________________________________________
+        //
+        //! free all nodes, keep resources
+        //______________________________________________________________________
+        inline void free_with(pool_type &pool,
+                              quit_proc  quit) throw()
         {
             //__________________________________________________________________
             //
@@ -183,7 +200,10 @@ namespace yack
             assert(NULL!=quit);
             while(data.size) pool.store( quit(data.pop_back()) );
 
+            //__________________________________________________________________
+            //
             // cleanup slots
+            //__________________________________________________________________
             for(size_t i=0;i<slots;++i)
             {
                 slot_type &load = slot[i];
@@ -191,6 +211,85 @@ namespace yack
             }
         }
 
+#if 0
+        inline void release_with(quit_proc kill) throw()
+        {
+            //__________________________________________________________________
+            //
+            // remove data
+            //__________________________________________________________________
+            assert(NULL!=kill);
+            while(data.size)  kill(data.pop_back());
+
+            //__________________________________________________________________
+            //
+            // cleanup slots
+            //__________________________________________________________________
+            for(size_t i=0;i<slots;++i)
+            {
+                slot_type &load = slot[i];
+                while(load.size) delete load.pop_back();
+            }
+            repo.release();
+        }
+#endif
+
+        inline size_t size() const throw() { return data.size; }
+
+        inline void reload(const size_t new_sexp2) throw()
+        {
+
+
+#if 0
+            if(new_sexp2!=sexp2)
+            {
+                if(0==new_sexp2)
+                {
+                    assert(slot!=&base);
+                    assert(sexp2!=0);
+                    hash_table_::release(slot,sexp2+slot_exp2);
+                    slot = &base;
+                    sexp2 = 0;
+                    smask = 0;
+                    slots = 1;
+                }
+                else
+                {
+                    // acquire new resources
+                    hash_table_::check(new_sexp2,maxi_exp2);
+                    const size_t page_exp2 = new_sexp2 + slot_exp2;  //!< page_exp2
+                    const size_t new_slots = size_t(1) << new_sexp2; //!< new slots
+                    const size_t new_smask = new_slots-1;            //!< new smask
+                    slot_type   *new_slot  = static_cast<slot_type *>( hash_table_::acquire(page_exp2) );
+
+                    // format new resources
+                    for(size_t i=0;i<new_slots;++i) new (new_slot+i) slot_type();
+
+                    // move meta nodes
+                    for(size_t i=0;i<slots;++i)
+                    {
+                        slot_type &load = slot[i];
+                        while(load.size)
+                        {
+                            meta_node *meta = load.pop_back();
+                            new_slot[meta->hkey&new_smask].push_front(meta);
+                        }
+                    }
+
+                    // change resources
+                    if(sexp2!=0)
+                    {
+                        hash_table_::release(slot,sexp2+slot_exp2);
+                    }
+                    slot  = new_slot;
+                    sexp2 = new_sexp2;
+                    smask = new_smask;
+                    slots = new_slots;
+
+                }
+            }
+#endif
+        }
 
 
     private:
@@ -198,6 +297,7 @@ namespace yack
         list_type  data;  //!< user's data
         slot_type *slot;  //!< first slot
         size_t     slots; //!< a power of two, 1=>use base
+        size_t     sexp2; //!< slots = 1<< sexp2
         size_t     smask; //!< slots-1
         meta_pool  repo;  //!< meta node repository
         slot_type  base;  //!< initial slot
