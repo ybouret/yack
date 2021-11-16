@@ -21,6 +21,10 @@ namespace yack
         class hexa
         {
         public:
+            //__________________________________________________________________
+            //
+            // C++
+            //__________________________________________________________________
             //! setup
             template <typename T>
             inline hexa(const T x) throw() :
@@ -32,6 +36,11 @@ namespace yack
             hexa(const hexa &_) throw(); //!< copy
             ~hexa() throw();             //!< cleanup
 
+            //__________________________________________________________________
+            //
+            // methods
+            //__________________________________________________________________
+
             //! load textual data
             template <typename T>
             static size_t text(char tab[], const T x) throw()
@@ -40,8 +49,8 @@ namespace yack
                 return _.load(tab);
             }
             
-            friend std::ostream & operator<<(std::ostream &, const hexa &x);
-            friend ios::ostream & operator<<(ios::ostream &, const hexa &x);
+            friend std::ostream & operator<<(std::ostream &, const hexa &x); //!< char-wise output
+            friend ios::ostream & operator<<(ios::ostream &, const hexa &x); //!< frame output
 
 
         private:

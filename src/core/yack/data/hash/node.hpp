@@ -11,17 +11,31 @@
 namespace yack
 {
 
+    //__________________________________________________________________________
+    //
+    //
+    //! hash_node
+    //
+    //__________________________________________________________________________
     template <typename KEY, typename NODE>
     class hash_node : public object
     {
     public:
-        inline virtual ~hash_node() throw() {}
-        inline explicit hash_node() throw() : next(0), prev(0), hkey(0), node() {}
+        //______________________________________________________________________
+        //
+        // C++
+        //______________________________________________________________________
+        inline virtual ~hash_node() throw()                                      {} //!< cleanup
+        inline explicit hash_node() throw() : next(0), prev(0), hkey(0), node(0) {} //!< setup empty
 
-        hash_node   *next;
-        hash_node   *prev;
-        const size_t hkey;
-        NODE        *node;
+        //______________________________________________________________________
+        //
+        // members
+        //______________________________________________________________________
+        hash_node   *next; //!< for list/pool
+        hash_node   *prev; //!< for list
+        const size_t hkey; //!< hashed key
+        NODE        *node; //!< user's data
 
     private:
         YACK_DISABLE_COPY_AND_ASSIGN(hash_node);

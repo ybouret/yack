@@ -16,12 +16,18 @@ namespace yack
     {
         class function;
 
+        //______________________________________________________________________
+        //
+        //
+        //! message digests
+        //
+        //______________________________________________________________________
         struct md
         {
-            static digest of(function &);
-            static digest of(function &H, const void *block_addr, const size_t block_size);
-            static digest of(function &H, const char *msg);
-            static digest of(function &H, const memory::ro_buffer &);
+            static digest of(function &H);                               //!< H content to digest
+            static digest of(function &H, const void * ,const size_t  ); //!< block to digest
+            static digest of(function &H, const char *);                 //!< text to digest
+            static digest of(function &H, const memory::ro_buffer &);    //!< buffer to digest
 
         };
 

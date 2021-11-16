@@ -24,6 +24,8 @@
 
 #include "yack/kr/digest.hpp"
 
+#include <cstring>
+
 using namespace yack;
 
 namespace  {

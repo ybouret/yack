@@ -1,4 +1,5 @@
 #include "yack/data/hash/table.hpp"
+#include "yack/hashing/to.hpp"
 #include "yack/utest/run.hpp"
 
 using namespace yack;
@@ -43,7 +44,7 @@ YACK_UTEST(data_hash)
 
     typedef dummy<int>    Dummy;
     hash_table<int,Dummy> tab;
-
+    
     
 
 

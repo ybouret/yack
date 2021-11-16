@@ -16,7 +16,7 @@ namespace yack
     class hash_table
     {
     public:
-        YACK_DECL_ARGS(KEY,key_type);
+        YACK_DECL_ARGS(KEY,key_type);             //!< aliases
         typedef NODE                   node_type; //!< alias
         typedef cxx_list_of<NODE>      list_type; //!< live nodes
         typedef pool_of<NODE>          pool_type; //!< for user to get back node
@@ -35,6 +35,7 @@ namespace yack
 
         }
 
+        //! generic search function
         inline const node_type *search(const size_t    hkey,
                                        const_key_type &key) throw()
         {

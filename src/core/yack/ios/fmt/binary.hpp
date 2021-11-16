@@ -21,6 +21,10 @@ namespace yack
         class binary
         {
         public:
+            //__________________________________________________________________
+            //
+            // C++
+            //__________________________________________________________________
             //! setup
             template <typename T>
             inline binary(const T x) throw() :
@@ -29,12 +33,15 @@ namespace yack
             {
             }
 
-
             binary(const binary &_) throw(); //!< copy
             ~binary() throw();               //!< cleanup
 
-            friend std::ostream & operator<<(std::ostream &, const binary &x);
-            friend ios::ostream & operator<<(ios::ostream &, const binary &x);
+            //__________________________________________________________________
+            //
+            // methods
+            //__________________________________________________________________
+            friend std::ostream & operator<<(std::ostream &, const binary &x);  //!< char-wise output
+            friend ios::ostream & operator<<(ios::ostream &, const binary &x);  //!< frame output
 
         private:
             YACK_DISABLE_ASSIGN(binary);
