@@ -35,7 +35,7 @@ namespace yack
         //
         // C++
         //______________________________________________________________________
-        inline explicit hash_knot() throw() : next(0), prev(0), hkey(0), node(0), data(0), impl() {} //!< setup
+        inline explicit hash_knot() throw() : next(0), prev(0), node(0), data(0), impl() {} //!< setup
         inline virtual ~hash_knot() throw() { if(data) free(); }                            //!< cleanup
 
         //______________________________________________________________________
@@ -44,12 +44,10 @@ namespace yack
         //______________________________________________________________________
 
         //! construct data
-        inline void make(const size_t hval, const_type &args)
+        inline void make(const_type &args)
         {
             assert(NULL==data);
-            assert(0==hkey);
             data = new ( out_of_reach::zset(impl,sizeof(impl)) ) mutable_type(args);
-            coerce(hkey) = hval;
         }
 
         //! destruct data
@@ -58,7 +56,6 @@ namespace yack
             assert(NULL!=data);
             data->~mutable_type();
             data = NULL;
-            coerce(hkey) = 0;
             return this;
         }
 
@@ -72,7 +69,6 @@ namespace yack
         //______________________________________________________________________
         hash_knot    *next; //!< for list/pool
         hash_knot    *prev; //!< for list
-        const size_t  hkey; //!< for table
         const NODE   *node; //!< node within tree
 
     private:

@@ -1,4 +1,4 @@
-#include "yack/data/hash/knot.hpp"
+#include "yack/data/hash/node.hpp"
 #include "yack/utest/run.hpp"
 
 using namespace yack;

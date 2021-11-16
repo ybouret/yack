@@ -289,7 +289,7 @@ namespace yack
 
         //______________________________________________________________________
         //
-        //! GraphViz
+        //! GraphViz encoding
         //______________________________________________________________________
         template <typename FILENAME>
         inline void gv(const FILENAME &filename) const
@@ -299,12 +299,10 @@ namespace yack
 
             ios::vizible::end(ios::vizible::uuid(fp,this) << " [label=\"root\"]");
 
-            for(const node_type *node=root.head;node;node=node->next)
-            {
+            for(const node_type *node=root.head;node;node=node->next) {
                 node->gv(fp);
                 ios::vizible::end(ios::vizible::arrow(fp,this,node));
             }
-
 
             ios::vizible::digraph_quit(fp);
         }
@@ -317,7 +315,10 @@ namespace yack
         node_pool repo;
         knot_pool pool;
 
-
+        //______________________________________________________________________
+        //
+        //! recursively purge nodes, disarding knots
+        //______________________________________________________________________
         inline void purge(node_list &nodes) throw()
         {
             while(nodes.size>0)
