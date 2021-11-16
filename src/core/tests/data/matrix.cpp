@@ -14,7 +14,7 @@ namespace
         size_t        rank;
         static size_t count;
 
-        inline dummy() throw() : rank(1) { ++count; }
+        inline  dummy() throw() : rank(1) { ++count; }
         inline ~dummy() throw() { --count; }
 
     private:
