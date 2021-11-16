@@ -4,7 +4,7 @@
 #ifndef YACK_DATA_HASH_NODE_INCLUDED
 #define YACK_DATA_HASH_NODE_INCLUDED 1
 
-#include "yack/data/hash/knot.hpp"
+#include "yack/data/knot.hpp"
 
 
 namespace yack
@@ -26,7 +26,7 @@ namespace yack
         //______________________________________________________________________
         YACK_DECL_ARGS(T,type);                        //!< aliases
         typedef hash_node<T>                node_type; //!< alias
-        typedef hash_knot<T,node_type>      knot_type; //!< alias
+        typedef data_knot<T,node_type>      knot_type; //!< alias
         typedef cxx_list_of<node_type>      list_type; //!< alias
         typedef cxx_pool_of<node_type>      pool_type; //!< aluas
 

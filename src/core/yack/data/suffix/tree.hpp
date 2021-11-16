@@ -32,7 +32,7 @@ namespace yack
         typedef typename node_type::pool_type node_pool;  //!< pool of nodes
         typedef typename node_type::path_type path_type;  //!< encoded top-down key
 
-        typedef tree_knot<T,node_type>        knot_type;  //!< knot of data
+        typedef data_knot<T,node_type>        knot_type;  //!< knot of data
         typedef typename knot_type::list_type knot_list;  //!< list of knots
         typedef typename knot_type::pool_type knot_pool;  //!< pool of knots
 

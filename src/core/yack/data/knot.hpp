@@ -1,7 +1,7 @@
 //! \file
 
-#ifndef YACK_DATA_HASH_KNOT_INCLUDED
-#define YACK_DATA_HASH_KNOT_INCLUDED 1
+#ifndef YACK_DATA_KNOT_INCLUDED
+#define YACK_DATA_KNOT_INCLUDED 1
 
 #include "yack/object.hpp"
 #include "yack/arith/align.hpp"
@@ -16,11 +16,11 @@ namespace yack
     //__________________________________________________________________________
     //
     //
-    //! knot to store data beside a tree
+    //! knot to store data for tree/table
     //
     //__________________________________________________________________________
     template <typename T,typename NODE>
-    class hash_knot : public object
+    class data_knot : public object
     {
     public:
         //______________________________________________________________________
@@ -28,15 +28,15 @@ namespace yack
         // types and definition
         //______________________________________________________________________
         YACK_DECL_ARGS(T,type);                    //!< aliases
-        typedef cxx_list_of<hash_knot> list_type;  //!< alias
-        typedef cxx_pool_of<hash_knot> pool_type;  //!< alias
+        typedef cxx_list_of<data_knot> list_type;  //!< alias
+        typedef cxx_pool_of<data_knot> pool_type;  //!< alias
 
         //______________________________________________________________________
         //
         // C++
         //______________________________________________________________________
-        inline explicit hash_knot() throw() : next(0), prev(0), node(0), data(0), impl() {} //!< setup
-        inline virtual ~hash_knot() throw() { if(data) free(); }                            //!< cleanup
+        inline explicit data_knot() throw() : next(0), prev(0), node(0), data(0), impl() {} //!< setup
+        inline virtual ~data_knot() throw() { if(data) free(); }                            //!< cleanup
 
         //______________________________________________________________________
         //
@@ -51,7 +51,7 @@ namespace yack
         }
 
         //! destruct data
-        inline hash_knot *free() throw()
+        inline data_knot *free() throw()
         {
             assert(NULL!=data);
             data->~mutable_type();
@@ -67,14 +67,14 @@ namespace yack
         //
         // members
         //______________________________________________________________________
-        hash_knot    *next; //!< for list/pool
-        hash_knot    *prev; //!< for list
+        data_knot    *next; //!< for list/pool
+        data_knot    *prev; //!< for list
         const NODE   *node; //!< node within tree
 
     private:
         mutable_type  *data;
         void          *impl[ YACK_WORDS_FOR(T) ];
-        YACK_DISABLE_COPY_AND_ASSIGN(hash_knot);
+        YACK_DISABLE_COPY_AND_ASSIGN(data_knot);
     };
 
 }

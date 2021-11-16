@@ -5,7 +5,7 @@ using namespace yack;
 
 YACK_UTEST(data_hash)
 {
-    hash_knot<int,void> node;
+    data_knot<int,void> node;
 }
 YACK_UDONE()
 

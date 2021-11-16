@@ -4,7 +4,7 @@
 #define YACK_DATA_TREE_NODE_INCLUDED 1
 
 #include "yack/sequence/vector.hpp"
-#include "yack/data/suffix/knot.hpp"
+#include "yack/data/knot.hpp"
 #include "yack/signs.hpp"
 #include "yack/ios/gv/vizible.hpp"
 #include "yack/ios/ostream.hpp"
@@ -58,7 +58,7 @@ namespace yack
         YACK_DECL_ARGS(T,type);                        //!< aliases
         typedef tree_path<CODE>             path_type; //!< compiled path
         typedef tree_node<T,CODE>           node_type; //!< alias
-        typedef tree_knot<T,node_type>      knot_type; //!< alias
+        typedef data_knot<T,node_type>      knot_type; //!< alias
         typedef cxx_list_of<node_type>      list_type; //!< alias
         typedef cxx_pool_of<node_type>      pool_type; //!< aluas
 
