@@ -9,13 +9,14 @@ namespace yack
 
     namespace iterating
     {
+        //! iterating direction
         enum direction
         {
-            forward,
-            reverse
+            forward, //!< forward
+            reverse  //!< reverse
         };
 
-        const char *direction_text(const direction d) throw();
+        const char *direction_text(const direction d) throw(); //!< textual direction
     }
 
 }

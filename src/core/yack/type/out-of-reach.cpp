@@ -65,4 +65,15 @@ namespace yack
             cswap(*(p++),*(q++));
         }
     }
+
+    void * out_of_reach:: shift(void *addr, const ptrdiff_t offset) throw()
+    {
+        return static_cast<char *>(addr) + offset;
+    }
+
+    const void * out_of_reach:: shift(const void *addr, const ptrdiff_t offset) throw()
+    {
+        return static_cast<const char *>(addr) + offset;
+    }
+
 }

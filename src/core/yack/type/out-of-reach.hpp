@@ -23,10 +23,18 @@ namespace yack
         static void        swap(void *target, void *source, size_t size)             throw(); //!< memswap(target,source,size)
         static unit_t      diff(const void *a, const void *b)                        throw(); //!< b-a
         static bool        is0(const void *addr, const size_t size)                  throw(); //!< check only zero
+        static void       *shift(void *addr, const ptrdiff_t offset)                 throw(); //!< addr += offset
+        static const void *shift(const void *addr, const ptrdiff_t offset)           throw(); //!< addr += offset, const
 
         //! helper with type casting
         template <typename T> inline
         static T *naught(T *obj) throw() { assert(NULL!=obj); return static_cast<T*>(zset(obj,sizeof(T))); }
+
+        //! helper to shift addresses
+        template <typename T> inline
+        static T *haul(T *obj, const ptrdiff_t n) throw() { return static_cast<T*>(shift(obj, ptrdiff_t(sizeof(T))*n )); }
+
+
 
     };
 

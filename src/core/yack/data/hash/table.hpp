@@ -352,6 +352,7 @@ namespace yack
             }
         }
 
+        //! compute exp2 for xtable to preserve load_factor
         size_t exp2_for(const size_t load_factor) const throw()
         {
             const size_t total = data.size;
