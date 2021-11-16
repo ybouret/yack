@@ -352,6 +352,20 @@ namespace yack
             }
         }
 
+        size_t exp2_for(const size_t load_factor) const throw()
+        {
+            const size_t total = data.size;
+            size_t       shift = 0;
+            size_t       count = 1;
+
+            while(total/count>load_factor)
+            {
+                count <<= 1;
+                ++shift;
+            }
+            return shift;
+        }
+
 
     private:
         YACK_DISABLE_COPY_AND_ASSIGN(hash_table);

@@ -73,19 +73,18 @@ YACK_UTEST(data_hash)
         }
     }
 
-    std::cerr << "size=" << tab.size() << std::endl;
-    std::cerr << "load: " << tab.average_load() << std::endl;
+    std::cerr << "size= " << tab.size() << std::endl;
+    std::cerr << "load= " << tab.average_load() << std::endl;
 
-    tab.reload(4);
-    std::cerr << "slots: " << tab.slots() << std::endl;
-    std::cerr << "load:  " << tab.average_load() << std::endl;
+    const size_t x2 = tab.exp2_for(4);
+    std::cerr << "-> exp2=" << x2 << std::endl;
 
-    tab.reload(12);
-    std::cerr << "slots: " << tab.slots() << std::endl;
-    std::cerr << "load:  " << tab.average_load() << std::endl;
+    tab.reload(x2);
+    std::cerr << "load= " << tab.average_load() << std::endl;
+
 
     tab.free_with(dpool,Dummy::Quit);
-    std::cerr << "size=" << tab.size() << std::endl;
+    std::cerr << "size= " << tab.size() << std::endl;
     
 
 
