@@ -9,6 +9,7 @@
 #include "yack/container/writable.hpp"
 #include "yack/sort/heap.hpp"
 #include "yack/type/mswap.hpp"
+#include "yack/container/iterator/linear.hpp"
 
 namespace yack
 {
@@ -29,14 +30,14 @@ namespace yack
         //______________________________________________________________________
         typedef typename writable<T>::type       type;        //!< alias
         typedef typename writable<T>::const_type const_type;  //!< alias
-
+        using writable<T>::size;
 
         //______________________________________________________________________
         //
         // access methods
         //______________________________________________________________________
         virtual type       * operator*()       throw() = 0; //!< access to [1..size()]
-        virtual const type * operator*() const throw() = 0; //!< access to [1..size()]
+        virtual const_type * operator*() const throw() = 0; //!< access to [1..size()]
 
         //______________________________________________________________________
         //
@@ -80,6 +81,21 @@ namespace yack
 
     private:
         YACK_DISABLE_COPY_AND_ASSIGN(contiguous);
+        
+    public:
+        //______________________________________________________________________
+        //
+        // iterators
+        //______________________________________________________________________
+        typedef iterating::linear<type,iterating::forward> iterator;
+        inline iterator begin() throw() { return **this+1; }
+        inline iterator end()   throw() { return (**this)+size()+1; }
+        
+        typedef iterating::linear<const_type,iterating::forward> const_iterator;
+        inline const_iterator begin() const throw() { return **this+1; }
+        inline const iterator end()   const throw() { return (**this)+size()+1; }
+        
+        
     };
 
 }

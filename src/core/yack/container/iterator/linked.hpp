@@ -25,7 +25,7 @@ namespace yack
             //
             // types and definitions
             //__________________________________________________________________
-            YACK_DECL_ARGS_(T,type); //!< aliases
+            YACK_DECL_ARGS_(T,type);         //!< aliases
             YACK_DECL_ARGS_(NODE,node_type); //!< aliases
 
             //__________________________________________________________________
@@ -42,7 +42,7 @@ namespace yack
             //
             //! prefix increment operator
             //__________________________________________________________________
-            inline linked & operator++()
+            inline linked & operator++() throw()
             {
                 static const int2type<D> way = {}; incr(way); return *this;
             }
@@ -51,7 +51,7 @@ namespace yack
             //
             //! postfix increment operator
             //__________________________________________________________________
-            inline linked  operator++(int)
+            inline linked  operator++(int) throw()
             {
                 static const int2type<D> way = {};
                 const linked             tmp = *this;
@@ -62,7 +62,7 @@ namespace yack
             //
             //! prefix decrement operator
             //__________________________________________________________________
-            inline linked & operator--()
+            inline linked & operator--() throw()
             {
                 static const int2type<D> way = {}; decr(way); return *this;
             }
@@ -71,7 +71,7 @@ namespace yack
             //
             //! postfix decrement operator
             //__________________________________________________________________
-            inline linked  operator--(int)
+            inline linked  operator--(int) throw()
             {
                 static const int2type<D> way = {};
                 const linked tmp = *this; decr(way); return tmp;

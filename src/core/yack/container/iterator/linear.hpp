@@ -41,7 +41,7 @@ namespace yack
             //
             //! prefix increment operator
             //__________________________________________________________________
-            inline linear & operator++()
+            inline linear & operator++() throw()
             {
                 static const int2type<D> way = {}; incr(way); return *this;
             }
@@ -50,7 +50,7 @@ namespace yack
             //
             //! postfix increment operator
             //__________________________________________________________________
-            inline linear  operator++(int)
+            inline linear  operator++(int) throw()
             {
                 static const int2type<D> way = {};
                 const linear             tmp = *this;
@@ -61,7 +61,7 @@ namespace yack
             //
             //! prefix decrement operator
             //__________________________________________________________________
-            inline linear & operator--()
+            inline linear & operator--() throw()
             {
                 static const int2type<D> way = {}; decr(way); return *this;
             }
@@ -70,7 +70,7 @@ namespace yack
             //
             //! postfix decrement operator
             //__________________________________________________________________
-            inline linear  operator--(int)
+            inline linear  operator--(int) throw()
             {
                 static const int2type<D> way = {};
                 const linear tmp = *this; decr(way); return tmp;
