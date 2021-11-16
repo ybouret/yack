@@ -8,8 +8,9 @@ namespace yack
 {
 
 #define YACK_CSTR_CTOR(N) \
-length(N),\
-in_mem(length+1),\
+memory::ro_buffer(),      \
+length(N),                \
+in_mem(length+1),         \
 ch( static_cast<char *>(memory::legacy::acquire(in_mem)) )
 
     cstr_ptr:: cstr_ptr(const size_t n) :
