@@ -131,13 +131,12 @@ namespace yack
 
         //______________________________________________________________________
         //
-        //! search method
+        //! search method, nutable
         //______________________________________________________________________
         template <typename ITERATOR> inline
         type *search(ITERATOR iter, size_t n) throw()
         {
-            const suffix_tree &self = *this;
-            return (type *)(self.search(iter,n));
+            const suffix_tree &self = *this; return (type *)(self.search(iter,n));
         }
 
         //______________________________________________________________________
@@ -231,10 +230,10 @@ namespace yack
                     assert(scan); assert(code==scan->code); assert(scan->from==node);
                     node=scan;
                     curr=&(node->chld);
-                    goto WALK;
+                    goto WALK;    // continue
                 }
                 else
-                    return false;
+                    return false; // not path
             }
             assert(node);
 
@@ -243,24 +242,34 @@ namespace yack
             {
                 //--------------------------------------------------------------
                 //
-                // dual stage unlink
+                // free and remove knot
                 //
                 //--------------------------------------------------------------
                 pool.store( data.pop(node->knot)->free() );
                 node->knot = 0;
-                
-                if(node->chld.size<=0)
-                {
-                    
-                }
-                
-             
+
+                //--------------------------------------------------------------
+                //
+                // prune from node
+                //
+                //--------------------------------------------------------------
+                prune(node);
+
+                //--------------------------------------------------------------
+                //
+                // successfully removed
+                //
+                //--------------------------------------------------------------
                 return true;
 
             }
             else
             {
-                // empty node
+                //--------------------------------------------------------------
+                //
+                // empty or already removed path
+                //
+                //--------------------------------------------------------------
                 return false;
             }
         }
@@ -309,13 +318,18 @@ namespace yack
         knot_pool pool;
 
 
-        void purge(node_list &nodes) throw()
+        inline void purge(node_list &nodes) throw()
         {
             while(nodes.size>0)
             {
                 purge(nodes.tail->chld);
                 repo.store( nodes.pop_back() )->knot = 0;
             }
+        }
+
+        inline void prune(node_type *node) throw()
+        {
+
         }
 
         
