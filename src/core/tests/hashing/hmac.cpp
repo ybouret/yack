@@ -2,6 +2,7 @@
 #include "yack/hashing/md5.hpp"
 #include "yack/utest/run.hpp"
 #include "yack/hashing/sha1.hpp"
+#include "yack/hashing/md.hpp"
 
 #include <cstring>
 
@@ -44,17 +45,17 @@ namespace
         assert(data);
         hashing::hmac_on<FUNCTION> HMAC(key);
         std::cerr << "Using [" << HMAC.name() << "]" << std::endl;
-        const digest md = HMAC.md(data);
+        const digest result   = hashing::md::of(HMAC,data);
         const size_t data_len = strlen(data);
         std::cerr << "key       = " << key << std::endl;
         std::cerr << "key_len   = " << key.size() << std::endl;
         std::cerr << "data      = " << data << std::endl;
         std::cerr << "data_len  = " << data_len << std::endl;
-        std::cerr << "hmac      = " << md       << std::endl;
+        std::cerr << "hmac      = " << result   << std::endl;
         if(hres)
         {
             const digest expected = hres;
-            YACK_CHECK(md==expected);
+            YACK_CHECK(result==expected);
         }
         std::cerr << std::endl;
     }

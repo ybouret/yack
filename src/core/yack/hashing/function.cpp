@@ -100,7 +100,7 @@ namespace yack
 
 }
 
-#include "yack/kr/digest.hpp"
+#include "yack/memory/buffer/ro.hpp"
 
 
 namespace yack
@@ -121,34 +121,6 @@ namespace yack
             get(output,outlen);
         }
 
-        
-        digest function::md()
-        {
-            digest d(length);
-            get(*d,length);
-            return d;
-        }
-
-        digest function:: md(const void *block_addr, const size_t block_size)
-        {
-            digest d(length);
-            block(*d,length,block_addr,block_size);
-            return d;
-        }
-
-        digest function:: md(const char *msg)
-        {
-            digest d(length);
-            block(*d,length,msg);
-            return d;
-        }
-
-        digest function:: md(const memory::ro_buffer &buf)
-        {
-            digest d(length);
-            block(*d,length,buf);
-            return d;
-        }
     }
 
 }

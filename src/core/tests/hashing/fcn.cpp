@@ -14,6 +14,7 @@
 #include "yack/hashing/sha1.hpp"
 #include "yack/hashing/sha256.hpp"
 #include "yack/hashing/sha512.hpp"
+#include "yack/hashing/md.hpp"
 
 #include "yack/utest/run.hpp"
 #include "yack/sequence/vector.hpp"
@@ -45,7 +46,7 @@ namespace  {
                 if(!nr) break;
                 h.run(buffer,nr);
             }
-            const digest md = h.md();
+            const digest md = hashing::md::of(h);
             std::cerr << " | " << md;
         }
 

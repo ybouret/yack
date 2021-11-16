@@ -14,8 +14,7 @@ namespace yack
     {
         class ro_buffer;
     }
-    class digest;
-    
+
 	namespace hashing
     {
 
@@ -74,15 +73,6 @@ namespace yack
             
             //! hash a message
             void        block(void *output, size_t outlen, const char *msg) throw();
-
-            //__________________________________________________________________
-            //
-            // getting digest
-            //__________________________________________________________________
-            digest md();                                                //!< from current state
-            digest md(const void *block_addr, const size_t block_size); //!< set/run/md
-            digest md(const char *msg);                                 //!< set/run/md
-            digest md(const memory::ro_buffer &);                       //!< set/run/md
             
             //__________________________________________________________________
             //

@@ -311,6 +311,8 @@ e += S(a,5) + F(b,c,d) + K + x; b = S(b,30);        \
 }
 
 #include "yack/hashing/testing.hpp"
+#include "yack/hashing/md.hpp"
+
 #include "yack/kr/digest.hpp"
 #include "yack/exception.hpp"
 
@@ -370,7 +372,7 @@ namespace yack
                     H(testarray[itest]);
                 }
                 
-                const digest md = H.md();
+                const digest md = md::of(H);
                 const digest tx = arr2txt(resultarray[itest]);
                 
                 std::cerr << md << " <=> " << tx << std::endl;
