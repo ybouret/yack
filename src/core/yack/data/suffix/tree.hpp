@@ -327,9 +327,27 @@ namespace yack
             }
         }
 
+        //! prune from a vacant node
         inline void prune(node_type *node) throw()
         {
-
+            assert(NULL!=node);
+            assert(NULL==node->knot);
+            if(node->chld.size<=0)
+            {
+                node_type *parent = node->from;
+                if(parent)
+                {
+                    assert(parent->chld.owns(node));
+                }
+                else
+                {
+                    assert(root.owns(node));
+                }
+            }
+            else
+            {
+                // TODO: assert no content
+            }
         }
 
         
