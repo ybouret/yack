@@ -9,7 +9,7 @@
 namespace yack
 {
 
-    template <typename T>
+    template <typename KEY, typename T>
     class hash_table
     {
     public:
@@ -18,7 +18,8 @@ namespace yack
         // types and definition
         //______________________________________________________________________
         YACK_DECL_ARGS(T,type);                           //!< aliases
-        typedef hash_node<T>                  node_type;  //!< node in the tree
+        YACK_DECL_ARGS(KEY,key_type);                     //!< aliases
+        typedef hash_node<KEY,T>              node_type;  //!< node in the tree
         typedef list_of<node_type>            slot_type;  //!<
         typedef typename node_type::pool_type node_pool;  //!< pool of nodes
 
@@ -37,6 +38,35 @@ namespace yack
             
         }
 
+        inline void free() throw()
+        {
+            // free knots
+            while(data.size)
+                pool.store( data.pop_back()->free() );
+
+            // free nodes
+            for(size_t i=0;i<slots;++i)
+            {
+                slot_type &s = slot[i];
+                while(s.size)
+                    repo.store(s.pop_back())->knot = 0;
+            }
+        }
+
+        inline bool insert(const size_t   hkey,
+                           param_key_type  ,
+                           param_type      )
+        {
+            slot_type &entry = slot[hkey&smask];
+            for(const node_type *node=entry.head;node;node=node->next)
+            {
+                
+            }
+
+            return false;
+        }
+
+
 
 
     private:
@@ -45,9 +75,9 @@ namespace yack
         slot_type *slot;
         size_t     slots; //!< a power of two: 1 => use base
         size_t     smask; //!< slots-1
-        knot_pool pool;
-        node_pool repo;
-        slot_type base;
+        knot_pool  pool;
+        node_pool  repo;
+        slot_type  base;
 
     };
 

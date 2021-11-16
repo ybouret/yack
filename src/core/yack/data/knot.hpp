@@ -56,6 +56,7 @@ namespace yack
             assert(NULL!=data);
             data->~mutable_type();
             data = NULL;
+            node = NULL;
             return this;
         }
 
@@ -69,7 +70,7 @@ namespace yack
         //______________________________________________________________________
         data_knot    *next; //!< for list/pool
         data_knot    *prev; //!< for list
-        const NODE   *node; //!< node within tree
+        NODE         *node; //!< node within structure
 
     private:
         mutable_type  *data;
