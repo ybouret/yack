@@ -4,7 +4,7 @@
 #define YACK_DATA_TREE_NODE_INCLUDED 1
 
 #include "yack/sequence/vector.hpp"
-#include "yack/data/knot.hpp"
+#include "yack/data/suffix/knot.hpp"
 #include "yack/signs.hpp"
 #include "yack/ios/gv/vizible.hpp"
 #include "yack/ios/ostream.hpp"

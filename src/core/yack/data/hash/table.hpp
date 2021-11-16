@@ -9,7 +9,8 @@
 namespace yack
 {
 
-    template <typename KEY, typename T>
+    //! basic hash_table
+    template <typename KEY, typename NODE>
     class hash_table
     {
     public:
