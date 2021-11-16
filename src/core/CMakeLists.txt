@@ -127,6 +127,12 @@ set(container_matrix ${container_matrix_impl} ${container_matrix_decl})
 SOURCE_GROUP(container/matrix FILES ${container_matrix})
 install( FILES ${container_matrix_decl} DESTINATION include/yack/container/matrix )
 
+file(GLOB container_iterator_impl yack/container/iterator/*.cpp)
+file(GLOB container_iterator_decl yack/container/iterator/*.hpp)
+set(container_iterator ${container_iterator_impl} ${container_iterator_decl})
+SOURCE_GROUP(container/iterator FILES ${container_iterator})
+install( FILES ${container_iterator_decl} DESTINATION include/yack/container/iterator )
+
 
 ########################################################################
 ##
@@ -483,7 +489,7 @@ ${arith}
 ${check}
 ${system}
 ${data} ${data_list} ${data_pool} ${data_small} ${data_suffix} ${data_hash}
-${container} ${container_matrix}
+${container} ${container_matrix} ${container_iterator}
 ${sequence}
 ${memory} ${memory_allocator} ${memory_small} ${memory_large} ${memory_joint} ${memory_buffer}
 ${fft}
