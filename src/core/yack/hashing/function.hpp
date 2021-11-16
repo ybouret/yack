@@ -74,30 +74,7 @@ namespace yack
             //! hash a message
             void        block(void *output, size_t outlen, const char *msg) throw();
             
-            //__________________________________________________________________
-            //
-            // getting integer types
-            //__________________________________________________________________
             
-            //! from current state
-            template <typename T> inline
-            T to() throw() { T res = 0; get(&res,sizeof(res)); return res; }
-
-            //! set/run/to
-            template <typename T> inline
-            T to(const void *block_addr, const size_t block_size) throw()
-            { T res = 0; block(&res,sizeof(res),block_addr,block_size); return res; }
-
-            //! set/run/to
-            template <typename T> inline
-            T to(const char *msg) throw()
-            { T res = 0; block(&res,sizeof(res),msg); return res; }
-
-            //! set/run/to
-            template <typename T> inline
-            T to(const memory::ro_buffer &buf) throw()
-            { T res = 0; block(&res,sizeof(res),buf); return res; }
-           
             //__________________________________________________________________
             //
             // getting hash keys

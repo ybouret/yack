@@ -15,6 +15,7 @@
 #include "yack/hashing/sha256.hpp"
 #include "yack/hashing/sha512.hpp"
 #include "yack/hashing/md.hpp"
+#include "yack/hashing/to.hpp"
 
 #include "yack/utest/run.hpp"
 #include "yack/sequence/vector.hpp"
@@ -93,6 +94,17 @@ YACK_UTEST(hashing_fcn)
         hashing::function &hfn = *H[i];
         test_hashing(hfn,argv[1]);
     }
+
+    hashing::to_key<uint16_t,hashing::md5> kh;
+
+    const char data[] = "message digest";
+    digest         src(data,strlen(data));
+    const int      tmp = 10;
+    const uint16_t k1  = kh(src);
+    const uint16_t k2  = kh(tmp);
+    std::cerr << "k1=" << k1 << std::endl;
+    std::cerr << "k2=" << k2 << std::endl;
+
 
     
 

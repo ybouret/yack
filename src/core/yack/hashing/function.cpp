@@ -75,26 +75,6 @@ namespace yack
             }
             get(output,outlen);
         }
-
-        size_t function:: hkey()  throw()
-        {
-            return to<size_t>();
-        }
-        
-        size_t function:: hkey(const void *block_addr, const size_t block_size) throw()
-        {
-            return to<size_t>(block_addr,block_size);
-        }
-        
-        size_t function:: hkey(const char *msg) throw()
-        {
-            return to<size_t>(msg);
-        }
-
-        size_t function:: hkey(const memory::ro_buffer &buf) throw()
-        {
-            return to<size_t>(buf);
-        }
         
 	}
 

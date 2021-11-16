@@ -363,6 +363,7 @@ namespace yack
         
         void sha1:: tests()
         {
+            std::cerr << "<hashing::test sha1>" << std::endl;
             sha1 H;
             for(size_t itest=0;itest<4;++itest)
             {
@@ -375,10 +376,10 @@ namespace yack
                 const digest md = md::of(H);
                 const digest tx = arr2txt(resultarray[itest]);
                 
-                std::cerr << md << " <=> " << tx << std::endl;
+                std::cerr << "\t" << md << " <=> " << tx << std::endl;
                 if(md!=tx) throw exception("sha1 tests failure");
             }
-            
+            std::cerr << "<hashing::test sha1/>" << std::endl;
         }
     }
 }
