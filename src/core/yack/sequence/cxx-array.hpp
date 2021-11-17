@@ -41,6 +41,7 @@ namespace yack
             mem.withdraw(entry,coerce(bytes));
             coerce(items)=0;
             coerce(count)=0;
+            basis        =0;
         }
 
     protected:
@@ -49,7 +50,8 @@ namespace yack
         bytes( 0 ),
         items( n ),
         entry( zget() ),
-        count( n )
+        count( n ),
+        basis( entry )
         {
             --entry;
         }
@@ -63,6 +65,7 @@ namespace yack
     protected:
         mutable_type     *entry; //!< shifted first item: entry[1..count]
         const size_t      count; //!< initial count
+        mutable_type     *basis; //!< first item
 
     private:
         inline mutable_type *zget()
@@ -71,6 +74,8 @@ namespace yack
             return mem.allocate<mutable_type>(coerce(items),coerce(bytes));
         }
         virtual const_type *cxx() const throw() { return entry; }
+        virtual const_type *mem() const throw() { return basis; }
+
     };
 
     

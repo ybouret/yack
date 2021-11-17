@@ -26,7 +26,7 @@ namespace
         std::cerr << "data_len  = " << data_len << std::endl;
         std::cerr << "expected  = " << expected << std::endl;
 
-        hashing::hmac HMAC(H,*key,key.size());
+        hashing::hmac HMAC(H,key(),key.size());
         
         HMAC.set(H);
         H(data,data_len);

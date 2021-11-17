@@ -65,6 +65,7 @@ namespace yack
         uint8_t     *byte;
         const size_t blen;
         virtual const_type *cxx() const throw();
+        virtual const_type *mem() const throw();
     };
     
 }

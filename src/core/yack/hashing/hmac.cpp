@@ -48,11 +48,11 @@ tmp(L)
             {
                 H.set();
                 H.run(key_addr,key_size);
-                H.get(*coerce(key),L);
+                H.get(coerce(key)(),L);
             }
             else
             {
-                memcpy(*coerce(key), key_addr, key_size);
+                memcpy(coerce(key)(), key_addr, key_size);
             }
 
             for(size_t i=B;i>0;--i)
@@ -71,11 +71,11 @@ tmp(L)
 
         const memory::ro_buffer & hmac:: get(function &H) throw()
         {
-            H.get(*tmp,L);
+            H.get(tmp(),L);
             H.set();
             H(okp);
             H(tmp);
-            H.get(*tmp,L);
+            H.get(tmp(),L);
             return tmp;
         }
 

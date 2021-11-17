@@ -28,6 +28,11 @@ namespace yack
         return byte;
     }
 
+    digest::const_type * digest:: mem() const throw()
+    {
+        return addr;
+    }
+
 
 #define YACK_DIGEST_CTOR(N) \
 collection(),               \

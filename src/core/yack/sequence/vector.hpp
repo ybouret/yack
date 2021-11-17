@@ -228,8 +228,10 @@ namespace yack
         mutable_type *base;  //!< first   object location base[0..count-1]
         mutable_type *item;  //!< shifted object location item[1..count]
 
-        //! contiguois interface
+        //! contiguous interface
         virtual const_type * cxx() const throw() { return item; }
+
+        virtual const_type * mem() const throw() { return base; }
 
 
         //! acquire zombi-memory

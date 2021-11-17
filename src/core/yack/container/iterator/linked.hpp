@@ -114,16 +114,14 @@ namespace yack
             {
                 linked tmp = lhs; tmp -= n; return tmp;
             }
-
-
-
+            
             //__________________________________________________________________
             //
             //! equality
             //__________________________________________________________________
             inline friend bool operator==(const linked &lhs, const linked &rhs) throw()
             {
-                return lhs.ptr == rhs.ptr;
+                return lhs.node == rhs.node;
             }
 
             //__________________________________________________________________
@@ -132,7 +130,7 @@ namespace yack
             //__________________________________________________________________
             inline friend bool operator!=(const linked &lhs, const linked &rhs) throw()
             {
-                return lhs.ptr != rhs.ptr;
+                return lhs.node != rhs.node;
             }
 
             //__________________________________________________________________

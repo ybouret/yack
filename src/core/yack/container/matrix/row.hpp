@@ -79,7 +79,9 @@ namespace yack
     private:
         mutable_type *item;
         YACK_DISABLE_COPY_AND_ASSIGN(matrix_row);
-        inline virtual const_type *cxx() const throw() { return item; }
+        inline virtual const_type *cxx() const throw() { return item;   }
+        inline virtual const_type *mem() const throw() { return item+1; }
+
     };
 }
 

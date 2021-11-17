@@ -16,6 +16,7 @@
 #include "yack/data/pool.hpp"
 #include "yack/data/nodes-comparison.hpp"
 #include "yack/object.hpp"
+#include "yack/container/iterator/linked.hpp"
 
 namespace yack
 {
@@ -159,7 +160,7 @@ namespace yack
 
         //______________________________________________________________________
         //
-        // 
+        //
         //______________________________________________________________________
 
 
@@ -209,7 +210,22 @@ namespace yack
         inline virtual const_type *_back() const throw()
         { assert(alive.tail); return & (**alive.tail); }
 
-        
+    public:
+        typedef iterating::linked<type,node_type,iterating::forward> iterator;                           //!< forward iterator
+        inline  iterator begin() throw() { return alive.head; }                                          //!< forward iterator begin
+        inline  iterator end()   throw() { return 0;          }                                          //!< forward iterator end
+
+        typedef iterating::linked<const_type,const node_type,iterating::forward> const_iterator;         //!< const forward iterator
+        inline  const_iterator begin() const throw() { return alive.head; }                              //!< const forward iterator begin
+        inline  const_iterator end()   const throw() { return 0;          }                              //!< const forward iterator end
+
+        typedef iterating::linked<type,node_type,iterating::reverse> reverse_iterator;                   //!< reverse iterator
+        inline  reverse_iterator rbegin() throw() { return alive.tail; }                                 //!< reverse iterator begin
+        inline  reverse_iterator rend()   throw() { return 0;          }                                 //!< reverse iterator end
+
+        typedef iterating::linked<const_type,const node_type,iterating::reverse> const_reverse_iterator; //!< const reverse iterator
+        inline  const_reverse_iterator rbegin() const throw() { return alive.tail; }                     //!< const reverse iterator begin
+        inline  const_reverse_iterator rend()   const throw() { return 0;          }                     //!< const reverse iterator end
     };
     
 }

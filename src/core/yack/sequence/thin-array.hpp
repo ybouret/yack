@@ -41,7 +41,8 @@ namespace yack
         collection(),
         contiguous<T>(),
         entry( coerce_cast<mutable_type>(arr)-1 ),
-        count(num)
+        count(num),
+        basis(entry+1)
         {
         }
         
@@ -50,7 +51,8 @@ namespace yack
         collection(),
         contiguous<T>(),
         entry(other.entry),
-        count(other.count)
+        count(other.count),
+        basis(other.basis)
         {
         }
         
@@ -58,14 +60,17 @@ namespace yack
         //
         // interface
         //______________________________________________________________________
-        inline virtual size_t       size() const throw() { return count; }
+        inline virtual size_t size() const throw() { return count; }
         
         
     private:
         mutable_type *entry;
         const size_t  count;
+        mutable_type *basis;
+
         YACK_DISABLE_ASSIGN(thin_array);
         inline virtual const_type *cxx() const throw() { return entry; }
+        inline virtual const_type *mem() const throw() { return basis; }
     };
 
 }

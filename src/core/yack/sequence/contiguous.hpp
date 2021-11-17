@@ -61,7 +61,11 @@ namespace yack
         //______________________________________________________________________
         inline const_type * operator*() const throw() { return cxx();        } //!< direct [1..size()]
         inline type       * operator*()       throw() { return (type*)cxx(); } //!< direct [1..size()]
-
+        
+        inline const_type *operator()(void)              const throw() { return mem();            } //!< first const object
+        inline type       *operator()(void)                    throw() { return (type*)mem();     } //!< first object
+        inline const_type *operator()(const ptrdiff_t n) const throw() { return mem()+n;          } //!< shifted first const object
+        inline type       *operator()(const ptrdiff_t n)       throw() { return (type*)(mem()+n); } //!< shifted first object
 
         //______________________________________________________________________
         //
@@ -81,15 +85,13 @@ namespace yack
         inline void reverse() throw()
         {
             writable<T> &self  = *this;
-            size_t       upper = this->size();
+            size_t       upper = size();
             if(upper>=2)
             {
                 size_t lower = 1;
                 size_t count = upper>>1;
                 while(count-- > 0)
-                {
                     mswap(self[lower++],self[upper--]);
-                }
             }
         }
 
@@ -106,22 +108,30 @@ namespace yack
     private:
         YACK_DISABLE_COPY_AND_ASSIGN(contiguous);
         virtual const_type *cxx() const throw() = 0; //!< to access[1..size()]
+        virtual const_type *mem() const throw() = 0; //!< to access[0..size()-1]
 
     public:
-#if 1
         //______________________________________________________________________
         //
         // iterators
         //______________________________________________________________________
-        typedef iterating::linear<type,iterating::forward> iterator;
-        inline  iterator begin() throw() { return **this+1; }
-        inline  iterator end()   throw() { return (**this)+size()+1; }
-        
-        typedef iterating::linear<const_type,iterating::forward> const_iterator;
-        inline  const_iterator begin() const throw() { return **this+1; }
-        inline  const iterator end()   const throw() { return (**this)+size()+1; }
-#endif
-        
+        typedef iterating::linear<type,iterating::forward> iterator;                     //!< forward iterator
+        inline  iterator begin() throw() { return (type*)mem();          }               //!< forward iterator begin
+        inline  iterator end()   throw() { return ((type*)mem())+size(); }               //!< forward iterator end
+
+        typedef iterating::linear<const_type,iterating::forward> const_iterator;         //!< const forward iterator
+        inline  const_iterator begin() const throw() { return mem(); }                   //!< const forward iterator begin
+        inline  const_iterator end()   const throw() { return mem()+size(); }            //!< const forward iterator end
+
+        typedef iterating::linear<type,iterating::reverse> reverse_iterator;             //!< reverse iterator
+        inline  reverse_iterator rbegin() throw() { return ((type *)cxx())+size();  }    //!< reverse iterator begin
+        inline  reverse_iterator rend()   throw() { return (type*)cxx();            }    //!< reverse iterator end
+
+        typedef iterating::linear<const_type,iterating::reverse> const_reverse_iterator; //!< const reverse iterator
+        inline  const_reverse_iterator rbegin() const throw() { return cxx()+size();  }  //!< const reverse iterator begin
+        inline  const_reverse_iterator rend()   const throw() { return cxx();         }  //!< const reverse iterator end
+
+
     };
 
 }
