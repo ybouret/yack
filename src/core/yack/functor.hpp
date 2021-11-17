@@ -18,17 +18,17 @@ namespace yack
      */
     //__________________________________________________________________________
     template <typename R, class TLIST>
-    class functor : public core::callable<R,TLIST>
+    class functor : public kernel::callable<R,TLIST>
     {
     public:
         //______________________________________________________________________
         //
         // types and definitions
         //______________________________________________________________________
-        typedef R                                 result;    //!< alias for result
-        typedef TLIST                             arguments; //!< alias for type list
-        typedef typename core::callable<R,TLIST>  callable;  //!< base class
-        YACK_FUNCTOR_PARAMETERS();                           //!< alias for parameters
+        typedef R                                   result;    //!< alias for result
+        typedef TLIST                               arguments; //!< alias for type list
+        typedef typename kernel::callable<R,TLIST>  callable;  //!< base class
+        YACK_FUNCTOR_PARAMETERS();                             //!< alias for parameters
 
 
         //______________________________________________________________________
@@ -69,11 +69,11 @@ namespace yack
          with the functor prototype. In that case, THE C++ OBJECT IS COPIED, i.e. the whole
          context is wrapped in that functor.
 
-         This is achieved through the core::callback which uses the copy semantic of FUNCTION.
+         This is achieved through the kernel::callback which uses the copy semantic of FUNCTION.
          */
         template <typename FUNCTION>
         inline functor( const FUNCTION &functionoid ) : callable(),
-        function_( new core::callback<R,TLIST,FUNCTION>(functionoid) ) {}
+        function_( new kernel::callback<R,TLIST,FUNCTION>(functionoid) ) {}
 
         //! object+method constructor
         /**
@@ -85,7 +85,7 @@ namespace yack
          */
         template <typename OBJECT_POINTER, typename METHOD_POINTER>
         inline functor( OBJECT_POINTER o, METHOD_POINTER m ) :  callable(),
-        function_( new core::command<R,TLIST,OBJECT_POINTER,METHOD_POINTER>( o, m ) ) {}
+        function_( new kernel::command<R,TLIST,OBJECT_POINTER,METHOD_POINTER>( o, m ) ) {}
 
         //______________________________________________________________________
         //
@@ -154,7 +154,7 @@ namespace yack
     };
 
 
-    namespace core {
+    namespace kernel {
 
         //! first parameter binding
         /**
@@ -220,12 +220,12 @@ namespace yack
     //! bind first parameter to make a new functor
     template <typename incoming>
     inline
-    typename core::binder_first<incoming>::outgoing
-    bind_first( const incoming &f, typename core::binder_first<incoming>::bounded_param p )
+    typename kernel::binder_first<incoming>::outgoing
+    bind_first( const incoming &f, typename kernel::binder_first<incoming>::bounded_param p )
     {
-        typedef typename core::binder_first<incoming>::outgoing out_functor;
-        typedef typename out_functor::callable                  out_callable;
-        out_callable *proc = new core::binder_first<incoming>( f, p );
+        typedef typename kernel::binder_first<incoming>::outgoing out_functor;
+        typedef typename out_functor::callable                    out_callable;
+        out_callable *proc = new kernel::binder_first<incoming>( f, p );
         return  out_functor( proc );
     }
 

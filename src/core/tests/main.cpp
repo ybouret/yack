@@ -54,6 +54,8 @@ YACK_UTEST_DECL(128)
     YACK_UTEST(data_tree);
     YACK_UTEST(data_hash);
     YACK_UTEST(data_iter);
+    YACK_UTEST(data_hash_map);
+    YACK_UTEST(data_hash_set);
 
 
     YACK_UTEST(sync_lockable);

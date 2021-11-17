@@ -45,8 +45,8 @@ YACK_UTEST(data_hash)
 {
 
 
-    typedef dummy<int>             Dummy;
-    typedef hash_table<int,Dummy>  DTable;
+    typedef dummy<int>                     Dummy;
+    typedef kernel::hash_table<int,Dummy>  DTable;
     DTable                         tab;
     hashing::to_hkey<hashing::md5> kh;
     cxx_pool_of<Dummy>             dpool;
@@ -86,10 +86,7 @@ YACK_UTEST(data_hash)
     tab.free_with(dpool,Dummy::Quit);
     std::cerr << "size= " << tab.size() << std::endl;
     
-
-
-
-
+    
 }
 YACK_UDONE()
 

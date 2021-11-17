@@ -139,6 +139,8 @@ add_test(data:sequence     test-yack data_sequence)
 add_test(data:tree         test-yack data_tree)
 add_test(data:hash         test-yack data_hash)
 add_test(data:iter         test-yack data_iter)
+add_test(data:hash_set     test-yack data_hash_set)
+add_test(data:hash_map     test-yack data_hash_map)
 
 add_test(sync:lockable  test-yack sync_lockable)
 add_test(sync:primitive test-yack sync_primitive)

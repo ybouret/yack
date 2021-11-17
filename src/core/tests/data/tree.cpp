@@ -19,7 +19,7 @@ YACK_UTEST(data_tree)
     randomized::rand_ ran;
 
     {
-        suffix_tree<apq,char> tree;
+        kernel::suffix_tree<apq,char> tree;
         YACK_SIZEOF(tree);
         const char *key  = "hello";
         const apq   value(1/2);
@@ -50,15 +50,15 @@ YACK_UTEST(data_tree)
         YACK_CHECK(tree.remove(key,4));
         YACK_CHECK(!tree.remove(key,4));
 
-        YACK_CHECK(tree.size()==0);
+        YACK_CHECK( (*tree).size==0);
 
     }
 
 
     if(argc>1)
     {
-        suffix_tree<size_t,char>     tree;
-        typedef tree_path<char>      key_type;
+        kernel::suffix_tree<size_t,char>     tree;
+        typedef kernel::tree_path<char>      key_type;
         small_list<key_type>         keys;
 
         ios::icstream   fp(argv[1]);
@@ -77,7 +77,7 @@ YACK_UTEST(data_tree)
                 {
                     {
                         key_type k;
-                        tree.tail()->node->encode(k);
+                        (*tree).tail->node->encode(k);
                         keys.add(k);
                     }
                     std::cerr << "+" << keys.back() << std::endl;
@@ -112,67 +112,15 @@ YACK_UTEST(data_tree)
         tree.gv("shalf.dot");
         ios::vizible::render("shalf.dot");
 
+        {
+            std::cerr << "Making a copy..." << std::endl;
+            kernel::suffix_tree<size_t,char> tree_copy(tree);
+        }
+
     }
 
 
-    if(false)
-    {
-        suffix_tree<size_t,char>     tree;
-        suffix_tree<size_t,uint32_t> tree2;
-
-        ios::icstream   fp(argv[1]);
-        ios::characters line;
-        size_t          indx = 0;
-        size_t          collisions = 0;
-        while( fp.gets(line) )
-        {
-            ++indx;
-            char *key = line.cstr();
-            try {
-                const bool res =tree.insert(indx,key,line.size);
-                if(!res)
-                    ++collisions;
-                YACK_ASSERT(res==tree2.insert(indx,key,line.size));
-                line.free(key);
-            }
-            catch(...)
-            {
-                line.free(key);
-                throw;
-            }
-        }
-        std::cerr << "loaded     = " << tree.size() << std::endl;
-        std::cerr << "loaded2    = " << tree2.size() << std::endl;
-        std::cerr << "collisions = " << collisions  << std::endl;
-
-        std::cerr << "  <output>" << std::endl;
-        suffix_tree<size_t,char>::path_type vkey;
-        for(const suffix_tree<size_t,char>::knot_type *knot=tree.head();knot;knot=knot->next)
-        {
-            std::cerr << "data=" << **knot << std::endl;
-            knot->node->encode(vkey);
-            std::cerr << " |_" << vkey << std::endl;
-        }
-        std::cerr << "  <output/>" << std::endl;
-
-        tree.free();
-        std::cerr << "loaded     = " << tree.size() << std::endl;
-
-        if(tree2.size()<=10)
-        {
-            std::cerr << "  <output2>" << std::endl;
-            suffix_tree<size_t,uint32_t>::path_type vkey2;
-            for(const suffix_tree<size_t,uint32_t>::knot_type *knot=tree2.head();knot;knot=knot->next)
-            {
-                std::cerr << "data=" << **knot << std::endl;
-                knot->node->encode(vkey2);
-                std::cerr << "|_" << vkey2 << std::endl;
-            }
-            std::cerr << "  <output2/>" << std::endl;
-        }
-
-        tree2.release();
-    }
+    
 
 
 

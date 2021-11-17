@@ -11,49 +11,52 @@
 namespace yack
 {
 
-    //__________________________________________________________________________
-    //
-    //
-    //! hash_node
-    //
-    //__________________________________________________________________________
-    template <typename KEY, typename NODE>
-    class hash_node : public object
+    namespace kernel
     {
-    public:
         //______________________________________________________________________
         //
-        // C++
-        //______________________________________________________________________
-        inline virtual ~hash_node() throw()                                      {} //!< cleanup
-        inline explicit hash_node() throw() : next(0), prev(0), hkey(0), node(0) {} //!< setup empty
-
-        //______________________________________________________________________
         //
-        // methods
+        //! hash_node
+        //
         //______________________________________________________________________
-
-        //! return this freed from data
-        inline hash_node *freed() throw()
+        template <typename KEY, typename NODE>
+        class hash_node : public object
         {
-            assert(NULL==prev); assert(NULL==next);
-            node = 0;
-            hkey = 0;
-            return this;
-        }
+        public:
+            //__________________________________________________________________
+            //
+            // C++
+            //__________________________________________________________________
+            inline virtual ~hash_node() throw()                                      {} //!< cleanup
+            inline explicit hash_node() throw() : next(0), prev(0), hkey(0), node(0) {} //!< setup empty
 
-        //______________________________________________________________________
-        //
-        // members
-        //______________________________________________________________________
-        hash_node   *next; //!< for list/pool
-        hash_node   *prev; //!< for list
-        size_t       hkey; //!< hashed key
-        NODE        *node; //!< user's data
+            //__________________________________________________________________
+            //
+            // methods
+            //__________________________________________________________________
 
-    private:
-        YACK_DISABLE_COPY_AND_ASSIGN(hash_node);
-    };
+            //! return this freed from data
+            inline hash_node *freed() throw()
+            {
+                assert(NULL==prev); assert(NULL==next);
+                node = 0;
+                hkey = 0;
+                return this;
+            }
+
+            //__________________________________________________________________
+            //
+            // members
+            //__________________________________________________________________
+            hash_node   *next; //!< for list/pool
+            hash_node   *prev; //!< for list
+            size_t       hkey; //!< hashed key
+            NODE        *node; //!< user's data
+
+        private:
+            YACK_DISABLE_COPY_AND_ASSIGN(hash_node);
+        };
+    }
     
 }
 

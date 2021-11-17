@@ -145,6 +145,25 @@ set(sequence ${sequence_impl} ${sequence_decl})
 SOURCE_GROUP(sequence FILES ${sequence})
 install( FILES ${sequence_decl} DESTINATION include/yack/sequence )
 
+
+########################################################################
+##
+## associative(s)   
+##
+########################################################################
+file(GLOB associative_impl yack/associative/*.cpp)
+file(GLOB associative_decl yack/associative/*.hpp)
+set(associative ${associative_impl} ${associative_decl})
+SOURCE_GROUP(associative FILES ${associative})
+install( FILES ${associative_decl} DESTINATION include/yack/associative )
+
+file(GLOB associative_hash_impl yack/associative/hash/*.cpp)
+file(GLOB associative_hash_decl yack/associative/hash/*.hpp)
+set(associative_hash ${associative_hash_impl} ${associative_hash_decl})
+SOURCE_GROUP(associative/hash FILES ${associative_hash})
+install( FILES ${associative_hash_decl} DESTINATION include/yack/associative/hash )
+
+
 ########################################################################
 ##
 ## functor(s)   
@@ -491,6 +510,7 @@ ${system}
 ${data} ${data_list} ${data_pool} ${data_small} ${data_suffix} ${data_hash}
 ${container} ${container_matrix} ${container_iterator}
 ${sequence}
+${associative} ${associative_hash}
 ${memory} ${memory_allocator} ${memory_small} ${memory_large} ${memory_joint} ${memory_buffer}
 ${fft}
 ${functor}

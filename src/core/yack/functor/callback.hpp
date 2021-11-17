@@ -6,7 +6,7 @@
 
 namespace yack {
 
-    namespace core
+    namespace kernel
     {
 
         //______________________________________________________________________
