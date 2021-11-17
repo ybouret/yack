@@ -164,6 +164,12 @@ SOURCE_GROUP(associative/hash FILES ${associative_hash})
 install( FILES ${associative_hash_decl} DESTINATION include/yack/associative/hash )
 
 
+file(GLOB associative_suffix_impl yack/associative/suffix/*.cpp)
+file(GLOB associative_suffix_decl yack/associative/suffix/*.hpp)
+set(associative_suffix ${associative_suffix_impl} ${associative_suffix_decl})
+SOURCE_GROUP(associative/suffix FILES ${associative_suffix})
+install( FILES ${associative_suffix_decl} DESTINATION include/yack/associative/suffix )
+
 ########################################################################
 ##
 ## functor(s)   
@@ -510,7 +516,7 @@ ${system}
 ${data} ${data_list} ${data_pool} ${data_small} ${data_suffix} ${data_hash}
 ${container} ${container_matrix} ${container_iterator}
 ${sequence}
-${associative} ${associative_hash}
+${associative} ${associative_hash} ${associative_suffix}
 ${memory} ${memory_allocator} ${memory_small} ${memory_large} ${memory_joint} ${memory_buffer}
 ${fft}
 ${functor}

@@ -75,8 +75,14 @@ namespace yack
         //
         // C++
         //______________________________________________________________________
+        
+        //! cleanup
         inline virtual ~hash_set() throw() {}
+        
+        //! setup
         inline explicit hash_set() throw() : base_type()  {}
+        
+        //! copy
         inline hash_set(const hash_set &other) : base_type()
         {
             try {

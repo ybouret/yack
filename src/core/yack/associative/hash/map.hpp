@@ -76,8 +76,13 @@ namespace yack
         //
         // C++
         //______________________________________________________________________
+        //! cleanup
         inline virtual ~hash_map() throw() {}
+        
+        //! setup empty
         inline explicit hash_map() throw() : base_type() {}
+        
+        //! copy
         inline hash_map(const hash_map &other) : base_type()
         {
             try {
