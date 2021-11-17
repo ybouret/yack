@@ -13,9 +13,10 @@ namespace yack
 
     namespace kernel
     {
+        //! helpers for suffix_tree
         struct suffix_tree_
         {
-            static void duplicate_failure();
+            static void duplicate_failure(); //!< throw exception
         };
 
         //______________________________________________________________________
@@ -299,6 +300,7 @@ namespace yack
             }
 
 
+            //! data access
             inline const list_of<knot_type> & operator *() const throw() { return data; }
 
             //__________________________________________________________________

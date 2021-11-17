@@ -189,10 +189,8 @@ namespace yack
             }
 
 
-            //__________________________________________________________________
-            //
+
             //! generic search function, const
-            //__________________________________________________________________
             inline const node_type *search(const size_t    hkey,
                                            const_key_type &key) const throw()
             {
@@ -223,44 +221,7 @@ namespace yack
                 return NULL;
             }
 
-            //__________________________________________________________________
-            //
-            //! generic search function, not const
-            //__________________________________________________________________
-            inline node_type *search(const size_t    hkey,
-                                     const_key_type &key) throw()
-            {
-
-                //______________________________________________________________
-                //
-                // find slot
-                //______________________________________________________________
-                slot_type &load = xtab[hkey];
-
-                //______________________________________________________________
-                //
-                // scan slot
-                //______________________________________________________________
-                for( meta_node *meta = load.head;meta;meta=meta->next)
-                {
-                    assert(NULL!=meta->node);
-                    const node_type *node = meta->node;
-                    //__________________________________________________________
-                    //
-                    // two stages comparison
-                    //__________________________________________________________
-                    if( (hkey==meta->hkey) && (key==node->key()) )
-                    {
-                        return load.move_to_front(meta)->node; //!< moved to front of slot
-                    }
-                }
-                return NULL;
-            }
-
-            //__________________________________________________________________
-            //
             //! generic insert function
-            //__________________________________________________________________
             inline bool insert(const size_t    hkey,
                                const_key_type &key,
                                NODE           *node,
@@ -311,11 +272,30 @@ namespace yack
                 return true;
             }
 
+            //! generic remove algorithm
+            inline bool remove(const size_t    hkey,
+                               const_key_type &key,
+                               pool_type      &pool,
+                               quit_proc       quit) throw()
+            {
+                assert(NULL!=quit);
+                slot_type     &load = xtab[hkey]; // scan this slot
+                for(meta_node *meta=load.head;meta;meta=meta->next)
+                {
+                    assert(meta->node);
+                    if( (hkey==meta->hkey) && (key==meta->node->key()) )
+                    {
+                        pool.store( quit(data.pop(meta->node)) );
+                        repo.store( load.pop(meta)->freed() );
+                        return true;
+                    }
+                }
+                return false;
+            }
 
-            //__________________________________________________________________
-            //
+
+
             //! free all nodes, keep resources
-            //__________________________________________________________________
             inline void free_with(pool_type &pool,
                                   quit_proc  quit) throw()
             {
@@ -334,9 +314,9 @@ namespace yack
             }
 
 
+            //! access data
             inline const list_of<NODE> & operator*() const throw() { return data; }
 
-            
             //! get current slots
             inline size_t slots()        const throw() { return xtab.size; }
 
@@ -370,6 +350,7 @@ namespace yack
                 return shift;
             }
 
+            //! try to adjust table size to match load_factor
             void adjust_for(const size_t load_factor)
             {
                 const size_t total = data.size;
@@ -394,6 +375,11 @@ namespace yack
                 while(n-- > 0) repo.store( new meta_node() );
             }
 
+            //! delete cache meta nodes
+            inline void trim() throw()
+            {
+                repo.release();
+            }
 
         private:
             YACK_DISABLE_COPY_AND_ASSIGN(hash_table);

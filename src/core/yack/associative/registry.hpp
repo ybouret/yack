@@ -8,20 +8,35 @@
 
 namespace yack
 {
-
+    //__________________________________________________________________________
+    //
+    //
+    //! registry of types holding their own key
+    //
+    //__________________________________________________________________________
     template <typename KEY, typename T>
     class registry : public associative<KEY,T>
     {
     public:
-        YACK_DECL_ARGS(T,type);
-        YACK_DECL_ARGS(KEY,key_type);
+        //______________________________________________________________________
+        //
+        // types and definitions
+        //______________________________________________________________________
+        YACK_DECL_ARGS(T,type); //!< aliases
 
-        inline virtual ~registry() throw() {}
-
+        //______________________________________________________________________
+        //
+        //! interface to insert a single type
+        //______________________________________________________________________
         virtual bool insert(param_type) = 0;
 
+        //______________________________________________________________________
+        //
+        // C++
+        //______________________________________________________________________
+        inline virtual ~registry() throw() {} //!< cleanup
     protected:
-        inline explicit registry() throw() {}
+        inline explicit registry() throw() {} //!< setup
 
     private:
         YACK_DISABLE_COPY_AND_ASSIGN(registry);

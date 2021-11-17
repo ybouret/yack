@@ -8,19 +8,37 @@
 namespace yack
 {
 
+    //__________________________________________________________________________
+    //
+    //
+    //! glossary (key,type)
+    //
+    //__________________________________________________________________________
     template <typename KEY, typename T>
     class glossary : public associative<KEY,T>
     {
     public:
-        YACK_DECL_ARGS(T,type);
-        YACK_DECL_ARGS(KEY,key_type);
+        //______________________________________________________________________
+        //
+        // types and definitions
+        //______________________________________________________________________
+        YACK_DECL_ARGS(T,type);          //!< aliases
+        YACK_DECL_ARGS(KEY,key_type);    //!< aliases
 
-        inline virtual ~glossary() throw() {}
 
+        //______________________________________________________________________
+        //
+        //! insert key+value
+        //______________________________________________________________________
         virtual bool insert(param_key_type,param_type) = 0;
 
+        //______________________________________________________________________
+        //
+        // C++
+        //______________________________________________________________________
+        inline virtual ~glossary() throw() {} //!< cleanup
     protected:
-        inline explicit glossary() throw() {}
+        inline explicit glossary() throw() {} //!< setup
 
     private:
         YACK_DISABLE_COPY_AND_ASSIGN(glossary);

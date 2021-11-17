@@ -9,51 +9,79 @@
 namespace yack
 {
 
-
-    template <typename KEY,typename T>
-    class hash_set_node
+    namespace kernel
     {
-    public:
-        YACK_DECL_ARGS(T,type);
-        YACK_DECL_ARGS_(KEY,key_type);
-
-        inline ~hash_set_node() throw() {}
-        inline  hash_set_node(param_type v) :
-        next(0), prev(0), val_(v)
+        //______________________________________________________________________
+        //
+        //! node containing type (with a key() method)
+        //______________________________________________________________________
+        template <typename KEY,typename T>
+        class hash_set_node
         {
-        }
+        public:
+            //__________________________________________________________________
+            //
+            // types and definitions
+            //__________________________________________________________________
+            YACK_DECL_ARGS(T,type);         //!< aliases
+            YACK_DECL_ARGS_(KEY,key_type);  //!< aliases
 
-        inline type           & operator*()       throw() { return val_; }
-        inline const_type     & operator*() const throw() { return val_; }
-        inline const_key_type & key() const throw() { return val_.key(); }
+            //__________________________________________________________________
+            //
+            // emthods
+            //__________________________________________________________________
+            inline hash_set_node(param_type v) : next(0), prev(0), val_(v) {}    //!< setup
+            inline                 ~hash_set_node()   throw() {}                 //!< cleanup
+            inline type           & operator*()       throw() { return val_; }   //!< access
+            inline const_type     & operator*() const throw() { return val_; }   //!< access
+            inline const_key_type & key() const throw() { return val_.key(); }   //!< key access
 
-        hash_set_node *next;
-        hash_set_node *prev;
-    private:
-        YACK_DISABLE_COPY_AND_ASSIGN(hash_set_node);
-        type           val_;
-    };
+            hash_set_node *next; //!< for list/pool
+            hash_set_node *prev; //!< for list
+        private:
+            YACK_DISABLE_COPY_AND_ASSIGN(hash_set_node);
+            type           val_;
+        };
+    }
 
+    //__________________________________________________________________________
+    //
+    //
+    //! registry of type(containing key) bases on a hash table
+    //
+    //__________________________________________________________________________
     template <
     typename KEY,
     typename T,
     typename KEY_HASHER = key_hasher<KEY> >
-    class hash_set : public hash_compound< KEY,T,hash_set_node<KEY,T>,KEY_HASHER,registry<KEY,T> >
+    class hash_set : public hash_compound< KEY,T,kernel::hash_set_node<KEY,T>,KEY_HASHER,registry<KEY,T> >
     {
     public:
-        typedef hash_set_node<KEY,T>                                        node_type;
-        typedef hash_compound< KEY,T,node_type,KEY_HASHER,registry<KEY,T> > base_type;
-        YACK_DECL_ARGS(T,type);
-        YACK_DECL_ARGS(KEY,key_type);
+        //______________________________________________________________________
+        //
+        // types and definitions
+        //______________________________________________________________________
+        typedef kernel::hash_set_node<KEY,T>                                node_type; //!< alias
+        typedef hash_compound< KEY,T,node_type,KEY_HASHER,registry<KEY,T> > base_type; //!< alias
+        YACK_DECL_ARGS(T,type);                                                        //!< aliases
+        YACK_DECL_ARGS(KEY,key_type);                                                  //!< aliases
         using base_type::table;
         using base_type::zpool;
         using base_type::hash;
         using base_type::quit;
 
+        //______________________________________________________________________
+        //
+        // C++
+        //______________________________________________________________________
         inline virtual ~hash_set() throw() {}
         inline explicit hash_set() throw() : base_type()  {}
 
+
+        //______________________________________________________________________
+        //
         //! registry interface
+        //______________________________________________________________________
         inline virtual bool insert(param_type args)
         {
             const_key_type &key = args.key();
