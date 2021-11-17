@@ -40,14 +40,14 @@ namespace yack
     typename KEY,
     typename T,
     typename KEY_HASHER = key_hasher<KEY> >
-    class hash_map : public hash_compound<KEY,T,hash_map_node<KEY,T>,KEY_HASHER,glossary>
+    class hash_map : public hash_compound< KEY,T,hash_map_node<KEY,T>,KEY_HASHER,glossary<KEY,T> >
     {
     public:
         YACK_DECL_ARGS(T,type);
         YACK_DECL_ARGS(KEY,key_type);
 
-        typedef hash_map_node<KEY,T>                               node_type;
-        typedef hash_compound<KEY,T,node_type,KEY_HASHER,glossary> base_type;
+        typedef hash_map_node<KEY,T>                                        node_type;
+        typedef hash_compound< KEY,T,node_type,KEY_HASHER,glossary<KEY,T> > base_type;
         using base_type::table;
         using base_type::zpool;
         using base_type::quit;

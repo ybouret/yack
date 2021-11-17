@@ -38,11 +38,11 @@ namespace yack
     typename KEY,
     typename T,
     typename KEY_HASHER = key_hasher<KEY> >
-    class hash_set : public hash_compound<KEY,T,hash_set_node<KEY,T>,KEY_HASHER,registry>
+    class hash_set : public hash_compound< KEY,T,hash_set_node<KEY,T>,KEY_HASHER,registry<KEY,T> >
     {
     public:
-        typedef hash_set_node<KEY,T>                               node_type;
-        typedef hash_compound<KEY,T,node_type,KEY_HASHER,registry> base_type;
+        typedef hash_set_node<KEY,T>                                        node_type;
+        typedef hash_compound< KEY,T,node_type,KEY_HASHER,registry<KEY,T> > base_type;
         YACK_DECL_ARGS(T,type);
         YACK_DECL_ARGS(KEY,key_type);
         using base_type::table;

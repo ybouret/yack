@@ -18,9 +18,9 @@ namespace yack
     typename T,
     typename NODE,
     typename KEY_HASHER,
-    template <typename,typename> class ASSOCIATIVE
+	class    ASSOCIATIVE
     >
-    class hash_compound : public ASSOCIATIVE<KEY,T>
+    class hash_compound : public ASSOCIATIVE
     {
     public:
         YACK_DECL_ARGS_(T,type);
@@ -45,7 +45,7 @@ namespace yack
 
         mutable KEY_HASHER  hash;
     protected:
-        inline explicit hash_compound() throw() : ASSOCIATIVE<KEY,T>(), hash(), table(), zpool(), adjusted(true) {}
+        inline explicit hash_compound() throw() : ASSOCIATIVE(), hash(), table(), zpool(), adjusted(true) {}
         inline void     safe_adjust() throw()
         {
             coerce(adjusted) = false;
