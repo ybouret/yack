@@ -131,24 +131,6 @@ namespace yack
             }
         }
 
-        //______________________________________________________________________
-        //
-        // writable interface
-        //______________________________________________________________________
-        //! access
-        inline type       & operator[](const size_t indx) throw()       { assert(indx>=1); assert(indx<=size()); return item[indx]; }
-        //! access, const
-        inline const_type & operator[](const size_t indx) const throw() { assert(indx>=1); assert(indx<=size()); return item[indx]; }
-
-        //______________________________________________________________________
-        //
-        // contiguous interface
-        //______________________________________________________________________
-        //! access[1..size]
-        inline virtual type       * operator*()       throw() { return item; }
-        //! const access[1..size]
-        inline virtual const_type * operator*() const throw() { return item; }
-
 
         //______________________________________________________________________
         //
@@ -246,12 +228,18 @@ namespace yack
         mutable_type *base;  //!< first   object location base[0..count-1]
         mutable_type *item;  //!< shifted object location item[1..count]
 
+        //! contiguois interface
+        virtual const_type * cxx() const throw() { return item; }
+
+
+        //! acquire zombi-memory
         static inline mutable_type *zacquire(size_t &request, size_t &allocated)
         {
             static memory::allocator &mgr = ALLOCATOR::instance();
             return mgr.allocate<mutable_type>(request,allocated);
         }
 
+        //! release zombi-memory
         static inline void zrelease(mutable_type * &entry, size_t &objects, size_t &allocated) throw()
         {
             if(entry)
@@ -259,7 +247,7 @@ namespace yack
                 assert(objects>0);
                 assert(allocated>=objects*sizeof(T));
                 static memory::allocator &mgr = ALLOCATOR::location();
-                mgr.withdraw(entry,allocated);
+                mgr.withdraw(entry,allocated); assert(0==entry); assert(0==allocated);
                 objects=0;
             }
             else
@@ -269,6 +257,7 @@ namespace yack
             }
 
         }
+
 
         inline void kill_() throw() {
             while(count>0)

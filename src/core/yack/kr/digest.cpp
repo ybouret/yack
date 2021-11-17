@@ -23,6 +23,11 @@ namespace yack
         memset(addr,0,blen);
     }
 
+    digest::const_type * digest:: cxx() const throw()
+    {
+        return byte;
+    }
+
 
 #define YACK_DIGEST_CTOR(N) \
 collection(),               \
@@ -123,30 +128,7 @@ blen( N )
     {
         return blen;
     }
-
-    uint8_t &  digest:: operator[](const size_t indx) throw()
-    {
-        assert(indx>0);
-        assert(indx<=size());
-        return byte[indx];
-    }
-
-    const uint8_t &  digest:: operator[](const size_t indx) const throw()
-    {
-        assert(indx>0);
-        assert(indx<=size());
-        return byte[indx];
-    }
-
-    uint8_t * digest:: operator*() throw()
-    {
-        return addr;
-    }
-
-    const uint8_t * digest:: operator*() const throw()
-    {
-        return addr;
-    }
+    
 
     std::ostream & operator<<(std::ostream &os, const digest &d)
     {

@@ -33,8 +33,6 @@ namespace yack
         // writable interface
         //______________________________________________________________________
         inline virtual size_t size() const throw() { return cols; }
-        inline virtual type       &operator[](const size_t c) throw()       { assert(c>=1); assert(c<=cols); return item[c]; }
-        inline virtual const_type &operator[](const size_t c) const throw() { assert(c>=1); assert(c<=cols); return item[c]; }
 
         //______________________________________________________________________
         //
@@ -42,7 +40,7 @@ namespace yack
         //______________________________________________________________________
 
         //! cleanup
-        inline virtual ~matrix_row() throw() {}
+        inline virtual ~matrix_row() throw() { coerce(cols)=0; item=0; }
 
         //! setup with offseted pointed
         inline explicit matrix_row(mutable_type *p, const size_t  c) throw() :
@@ -51,12 +49,6 @@ namespace yack
         {
         }
 
-        //______________________________________________________________________
-        //
-        // contiguous interface
-        //______________________________________________________________________
-        inline virtual type       * operator*()       throw() { return item; }
-        inline virtual const_type * operator*() const throw() { return item; }
 
         //______________________________________________________________________
         //
@@ -87,6 +79,7 @@ namespace yack
     private:
         mutable_type *item;
         YACK_DISABLE_COPY_AND_ASSIGN(matrix_row);
+        inline virtual const_type *cxx() const throw() { return item; }
     };
 }
 

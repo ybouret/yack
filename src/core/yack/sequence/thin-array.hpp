@@ -59,21 +59,13 @@ namespace yack
         // interface
         //______________________________________________________________________
         inline virtual size_t       size() const throw() { return count; }
-        inline virtual type       & operator[](const size_t indx)       throw() { assert(indx>=1); assert(indx<=size()); return entry[indx]; }
-        inline virtual const_type & operator[](const size_t indx) const throw() { assert(indx>=1); assert(indx<=size()); return entry[indx]; }
-
-        //______________________________________________________________________
-        //
-        // contiguous interface
-        //______________________________________________________________________
-        inline virtual type       * operator*()       throw() { return entry; }
-        inline virtual const_type * operator*() const throw() { return entry; }
+        
         
     private:
         mutable_type *entry;
         const size_t  count;
-        
         YACK_DISABLE_ASSIGN(thin_array);
+        inline virtual const_type *cxx() const throw() { return entry; }
     };
 
 }

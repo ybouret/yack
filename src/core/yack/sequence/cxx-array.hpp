@@ -27,18 +27,8 @@ namespace yack
         //______________________________________________________________________
         //! initial count of objects
         inline virtual size_t       size() const throw() { return count; }
-        //! access
-        inline virtual type       & operator[](const size_t indx)       throw() { assert(indx>=1); assert(indx<=size()); return entry[indx]; }
-        //! access, const
-        inline virtual const_type & operator[](const size_t indx) const throw() { assert(indx>=1); assert(indx<=size()); return entry[indx]; }
-
-        //______________________________________________________________________
-        //
-        // contiguous interface
-        //______________________________________________________________________
-        inline virtual type       * operator*()       throw() { return entry; } //!< for [1..size()]
-        inline virtual const_type * operator*() const throw() { return entry; } //!< for [1..size()]
-
+        
+        
         //______________________________________________________________________
         //
         // C++
@@ -80,6 +70,7 @@ namespace yack
             static memory::allocator &mem = ALLOCATOR::instance();
             return mem.allocate<mutable_type>(coerce(items),coerce(bytes));
         }
+        virtual const_type *cxx() const throw() { return entry; }
     };
 
     

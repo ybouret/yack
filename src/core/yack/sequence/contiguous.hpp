@@ -32,12 +32,36 @@ namespace yack
         typedef typename writable<T>::const_type const_type;  //!< alias
         using writable<T>::size;
 
+
         //______________________________________________________________________
         //
-        // access methods
+        //! readable interface
         //______________________________________________________________________
-        virtual type       * operator*()       throw() = 0; //!< access to [1..size()]
-        virtual const_type * operator*() const throw() = 0; //!< access to [1..size()]
+        inline virtual const_type & operator[](const size_t indx) const throw()
+        {
+            assert(indx>=1); assert(indx<=size());
+            assert(cxx());
+            return *(cxx()+indx);
+        }
+
+        //______________________________________________________________________
+        //
+        //! writable interface
+        //______________________________________________________________________
+        inline virtual type & operator[](const size_t indx) throw()
+        {
+            assert(indx>=1); assert(indx<=size());
+            assert(cxx());
+            return coerce(*(cxx()+indx));
+        }
+
+        //______________________________________________________________________
+        //
+        // non virtual interface
+        //______________________________________________________________________
+        inline const_type * operator*() const throw() { return cxx();        } //!< direct [1..size()]
+        inline type       * operator*()       throw() { return (type*)cxx(); } //!< direct [1..size()]
+
 
         //______________________________________________________________________
         //
@@ -81,20 +105,22 @@ namespace yack
 
     private:
         YACK_DISABLE_COPY_AND_ASSIGN(contiguous);
-        
+        virtual const_type *cxx() const throw() = 0; //!< to access[1..size()]
+
     public:
+#if 1
         //______________________________________________________________________
         //
         // iterators
         //______________________________________________________________________
         typedef iterating::linear<type,iterating::forward> iterator;
-        inline iterator begin() throw() { return **this+1; }
-        inline iterator end()   throw() { return (**this)+size()+1; }
+        inline  iterator begin() throw() { return **this+1; }
+        inline  iterator end()   throw() { return (**this)+size()+1; }
         
         typedef iterating::linear<const_type,iterating::forward> const_iterator;
-        inline const_iterator begin() const throw() { return **this+1; }
-        inline const iterator end()   const throw() { return (**this)+size()+1; }
-        
+        inline  const_iterator begin() const throw() { return **this+1; }
+        inline  const iterator end()   const throw() { return (**this)+size()+1; }
+#endif
         
     };
 

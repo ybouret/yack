@@ -10,12 +10,12 @@ using namespace yack;
 template <typename SEQ>
 static inline void test_seq( SEQ &seq )
 {
-    
+#if 1
     for(typename SEQ::iterator it=seq.begin();it!=seq.end();it++)
     {
         std::cerr << *it << "/";
     }
-    
+#endif
 }
 
     
@@ -49,7 +49,7 @@ YACK_UTEST(data_iter)
         }
         
         {
-            const iterating::linear<int,iterating::reverse> end(out_of_reach::haul(data,-1));
+            const iterating::linear<int,iterating::reverse> end(out_of_reach::prev(data));
             iterating::linear<int,iterating::reverse>       cur(data+4);
             while(cur!=end)
             {
@@ -58,7 +58,7 @@ YACK_UTEST(data_iter)
         }
         
         {
-            const iterating::linear<const int,iterating::reverse> end(out_of_reach::haul(data,-1));
+            const iterating::linear<const int,iterating::reverse> end(out_of_reach::prev(data));
             iterating::linear<const int,iterating::reverse>       cur(data+4);
             while(cur!=end)
             {

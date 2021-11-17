@@ -27,14 +27,30 @@ namespace yack
         static const void *shift(const void *addr, const ptrdiff_t offset)           throw(); //!< addr += offset, const
 
         //! helper with type casting
-        template <typename T> inline
-        static T *naught(T *obj) throw() { assert(NULL!=obj); return static_cast<T*>(zset(obj,sizeof(T))); }
+        template <typename T> static inline
+        T *naught(T *obj) throw() { assert(NULL!=obj); return static_cast<T*>(zset(obj,sizeof(T))); }
 
         //! helper to shift addresses
-        template <typename T> inline
-        static T *haul(T *obj, const ptrdiff_t n) throw() { return static_cast<T*>(shift(obj, ptrdiff_t(sizeof(T))*n )); }
+        template <typename T> static inline T *haul(T *obj, const ptrdiff_t n) throw()
+        {
+            static const ptrdiff_t sz = sizeof(T);
+            return static_cast<T*>(shift(obj,sz*n));
+        }
 
+        //! next object
+        template <typename T> static inline T *next(T *obj) throw()
+        {
+            static const ptrdiff_t sz = sizeof(T);
+            return static_cast<T*>(shift(obj,sz));
 
+        }
+
+        //! previous object
+        template <typename T> static inline T *prev(T *obj) throw()
+        {
+            static const ptrdiff_t sz = -ptrdiff_t(sizeof(T));
+            return static_cast<T*>(shift(obj,sz));
+        }
 
     };
 

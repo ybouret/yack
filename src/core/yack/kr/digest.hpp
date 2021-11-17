@@ -48,10 +48,6 @@ namespace yack
         // methods
         //______________________________________________________________________
         virtual size_t          size()                        const throw(); //!< bytes
-        virtual uint8_t       & operator[](const size_t indx)       throw(); //!< [1..size()]
-        virtual const uint8_t & operator[](const size_t indx) const throw(); //!< [1..size()]
-        virtual uint8_t       * operator*()                         throw(); //!< address
-        virtual const uint8_t * operator*()                   const throw(); //!< address
         friend std::ostream   & operator<<(std::ostream  &, const digest &); //!< output
         friend bool operator==(const digest &, const digest &)      throw(); //!< equality
         void   ldz() throw(); //!< set to zero
@@ -68,7 +64,7 @@ namespace yack
         uint8_t     *addr;
         uint8_t     *byte;
         const size_t blen;
-        
+        virtual const_type *cxx() const throw();
     };
     
 }
