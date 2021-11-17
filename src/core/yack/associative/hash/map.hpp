@@ -5,60 +5,79 @@
 #ifndef YACK_HASH_MAP_INCLUDED
 #define YACK_HASH_MAP_INCLUDED 1
 
-#include "yack/container/associative.hpp"
-#include "yack/data/hash/table.hpp"
-#include "yack/associative/hash/key-hasher.hpp"
+#include "yack/associative/hash/compound.hpp"
+#include "yack/associative/glossary.hpp"
 
 namespace yack
 {
-    
+    template <typename KEY,typename T>
+    class hash_map_node
+    {
+    public:
+        YACK_DECL_ARGS(T,type);
+        YACK_DECL_ARGS(KEY,key_type);
+
+        inline ~hash_map_node() throw() {}
+        inline  hash_map_node(param_key_type k, param_type v) :
+        next(0), prev(0), key_(k), val_(v)
+        {
+        }
+
+        inline type       & operator*()       throw() { return val_; }
+        inline const_type & operator*() const throw() { return val_; }
+
+        inline const_key_type & key() const throw() { return key_; }
+
+        hash_map_node *next;
+        hash_map_node *prev;
+    private:
+        YACK_DISABLE_COPY_AND_ASSIGN(hash_map_node);
+        const_key_type key_;
+        type           val_;
+    };
 
     template <
     typename KEY,
     typename T,
     typename KEY_HASHER = key_hasher<KEY> >
-    class hash_map : public associative<KEY,T>
+    class hash_map : public hash_compound<KEY,T,hash_map_node<KEY,T>,KEY_HASHER,glossary>
     {
     public:
         YACK_DECL_ARGS(T,type);
         YACK_DECL_ARGS(KEY,key_type);
-        class node_type
-        {
-        public:
-            inline ~node_type() throw() {}
-            inline  node_type(param_key_type k, param_type v) :
-            next(0), prev(0), key_(k), val_(v)
-            {
-            }
 
-            inline type       & operator*()       throw() { return val_; }
-            inline const_type & operator*() const throw() { return val_; }
-
-            inline const_key_type & key() const throw() { return key_; }
-
-            node_type *next;
-            node_type *prev;
-        private:
-            YACK_DISABLE_COPY_AND_ASSIGN(node_type);
-            const_key_type key_;
-            type           val_;
-        };
-
-        typedef kernel::hash_table<KEY,node_type> htable_type;
+        typedef hash_map_node<KEY,T>                               node_type;
+        typedef hash_compound<KEY,T,node_type,KEY_HASHER,glossary> base_type;
+        using base_type::table;
+        using base_type::zpool;
+        using base_type::quit;
+        using base_type::hash;
         
         inline virtual ~hash_map() throw() {}
-        inline explicit hash_map() throw() : hash(), table() {}
+        inline explicit hash_map() throw() : base_type() {}
 
-        const_type *search(param_key_type key) const throw()
+
+        //! glossary interface
+        inline virtual bool insert(param_key_type key, param_type args)
         {
-            const node_type *node = table.search(hash(key),key);
-            return node ? & (**node) : NULL;
+            if(table.insert( hash(key),key,make(key,args),zpool,quit))
+            {
+                this->safe_adjust();
+                return true;
+            }
+            else
+            {
+                return false;
+            }
         }
 
-        mutable KEY_HASHER  hash;
+
     private:
         YACK_DISABLE_COPY_AND_ASSIGN(hash_map);
-        htable_type table;
+        inline node_type *make(const_key_type &key, const_type &args)
+        {
+            return new (zpool.size ? zpool.query() : object::zacquire<node_type>()) node_type(key,args);
+        }
     };
 
 }

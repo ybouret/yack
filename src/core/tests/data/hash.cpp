@@ -73,7 +73,7 @@ YACK_UTEST(data_hash)
         }
     }
 
-    std::cerr << "size= " << tab.size() << std::endl;
+    std::cerr << "size= " << (*tab).size << std::endl;
     std::cerr << "load= " << tab.average_load() << std::endl;
 
     const size_t x2 = tab.exp2_for(4);
@@ -84,7 +84,7 @@ YACK_UTEST(data_hash)
 
 
     tab.free_with(dpool,Dummy::Quit);
-    std::cerr << "size= " << tab.size() << std::endl;
+    std::cerr << "size= " << (*tab).size << std::endl;
     
     
 }

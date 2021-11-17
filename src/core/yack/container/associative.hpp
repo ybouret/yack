@@ -17,6 +17,8 @@ namespace yack
 
         inline virtual ~associative() throw() {}
 
+        virtual const_type *search(param_key_type) const throw() = 0;
+
     protected:
         inline explicit associative() throw() {}
         

@@ -126,6 +126,7 @@ namespace yack
                             slot[meta->hkey&mask].push_front(meta);
                         }
                     }
+
                 }
 
                 //! slot access
@@ -333,9 +334,9 @@ namespace yack
             }
 
 
-            //! get current size
-            inline size_t size()         const throw() { return data.size; }
+            inline const list_of<NODE> & operator*() const throw() { return data; }
 
+            
             //! get current slots
             inline size_t slots()        const throw() { return xtab.size; }
 
@@ -369,7 +370,29 @@ namespace yack
                 return shift;
             }
 
+            void adjust_for(const size_t load_factor)
+            {
+                const size_t total = data.size;
+                size_t       count = xtab.size;
 
+                if(total/count>load_factor)
+                {
+                    size_t shift = xtab.exp2;
+                    while(total/count>load_factor)
+                    {
+                        count <<= 1;
+                        ++shift;
+                    }
+                    reload(shift);
+                }
+
+            }
+
+            //! reserve empty meta nodes
+            void reserve(size_t n)
+            {
+                while(n-- > 0) repo.store( new meta_node() );
+            }
 
 
         private:

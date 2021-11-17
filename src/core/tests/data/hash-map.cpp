@@ -9,7 +9,6 @@ YACK_UTEST(data_hash_map)
 {
     {
         hash_map<int,apn> m;
-
         m.search(5);
 
     }
