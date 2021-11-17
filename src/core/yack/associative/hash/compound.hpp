@@ -7,6 +7,8 @@
 #include "yack/data/hash/table.hpp"
 #include "yack/associative/hash/key-hasher.hpp"
 
+#include "yack/container/iterator/linked.hpp"
+
 
 namespace yack
 {
@@ -77,6 +79,7 @@ namespace yack
             table.free_with(zpool,quit);
         }
 
+        //! trim superfluous nodes
         inline void trim() throw()
         {
             table.trim();
@@ -90,6 +93,7 @@ namespace yack
             trim();
         }
 
+        //! info, query load factor
         inline size_t load_factor() const throw() { return table.average_load(); }
 
 
@@ -132,6 +136,16 @@ namespace yack
 
     public:
         const bool adjusted;        //!< table matches the load factor
+
+        //______________________________________________________________________
+        //
+        // iterators
+        //______________________________________________________________________
+        typedef iterating::linked<const_type,const NODE,iterating::forward> const_iterator; //!< forward const iterator
+        const_iterator begin() const throw() { return (*table).head; }                      //!< forward const begin
+        const_iterator end()   const throw() { return NULL;          }                      //!< forward const end
+
+        
     };
 
 

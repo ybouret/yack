@@ -141,9 +141,21 @@ namespace yack
 
             //__________________________________________________________________
             //
+            //! transitive node access
+            //__________________________________________________________________
+            inline NODE       * operator->()      throw() { assert(node); return node;   }
+
+            //__________________________________________________________________
+            //
             //! access, const
             //__________________________________________________________________
-            inline const_type & operator*() const throw() { assert(node); return **node; }
+            inline const_type & operator*()  const  throw() { assert(node); return **node; }
+
+            //__________________________________________________________________
+            //
+            //! transitive node access
+            //__________________________________________________________________
+            inline const NODE * operator->() const throw() { assert(node); return node;   }
 
         private:
             mutable_node_type *node;

@@ -25,6 +25,12 @@ namespace
         {
         }
 
+        friend std::ostream & operator<<( std::ostream &os, const dummy &d)
+        {
+            os << '[' << d.k << ']';
+            return os;
+        }
+
         const int & key() const throw() { return k; }
 
     private:
@@ -39,16 +45,21 @@ YACK_UTEST(data_hash_set)
     {
         hash_set<int,dummy> s;
         vector<int> keys;
-        for(int i=0;i<100;++i)
+        for(int i=0;i<10;++i)
         {
             keys.push_back(i);
             const dummy  d(i);
             YACK_ASSERT(s.insert(d));
         }
-        std::cerr << "#keys=" << keys.size() << std::endl;
-        std::cerr << "#data=" << s.size() << std::endl;
+        std::cerr << "#keys=" << keys.size()     << std::endl;
+        std::cerr << "#data=" << s.size()        << std::endl;
         std::cerr << "#lfac=" << s.load_factor() << std::endl;
-        
+
+        for(hash_set<int,dummy>::const_iterator it=s.begin();it!=s.end();++it)
+        {
+            std::cerr << *it << ", key=" << it->key() << std::endl;
+        }
+
         randomized::shuffle::data( keys(), keys.size(), ran);
 
         while(keys.size())
