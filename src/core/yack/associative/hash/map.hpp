@@ -70,6 +70,7 @@ namespace yack
         using base_type::zpool;
         using base_type::quit;
         using base_type::hash;
+        using base_type::release;
 
         //______________________________________________________________________
         //
@@ -77,7 +78,16 @@ namespace yack
         //______________________________________________________________________
         inline virtual ~hash_map() throw() {}
         inline explicit hash_map() throw() : base_type() {}
-
+        inline hash_map(const hash_map &other) : base_type()
+        {
+            try {
+                for(const node_type *node= (*other.table).head;node;node=node->next)
+                {
+                    (void) insert(node->key(),**node);
+                }
+            }
+            catch(...) { release(); throw; }
+        }
         //______________________________________________________________________
         //
         //! glossary interface
@@ -97,11 +107,20 @@ namespace yack
 
 
     private:
-        YACK_DISABLE_COPY_AND_ASSIGN(hash_map);
+        YACK_DISABLE_ASSIGN(hash_map);
         inline node_type *make(const_key_type &key, const_type &args)
         {
             return new (zpool.size ? zpool.query() : object::zacquire<node_type>()) node_type(key,args);
         }
+
+    public:
+        //______________________________________________________________________
+        //
+        // iterators
+        //______________________________________________________________________
+        typedef iterating::linked<type,node_type,iterating::forward> iterator; //!< forward const iterator
+        iterator begin()   throw() { return (*table).head; }                   //!< forward const begin
+        iterator end()     throw() { return NULL;          }                   //!< forward const end
     };
 
 }

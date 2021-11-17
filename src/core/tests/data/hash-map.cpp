@@ -23,10 +23,16 @@ YACK_UTEST(data_hash_map)
             YACK_ASSERT( m.insert(i,n) );
         }
 
-        for(hash_map<int,apn>::const_iterator it=m.begin();it!=m.end();++it)
+        for(hash_map<int,apn>::iterator it=m.begin();it!=m.end();++it)
         {
             std::cerr << *it << ", key=" << it->key() << std::endl;
         }
+
+        {
+            hash_map<int,apn> tmp(m);
+            YACK_CHECK(tmp.size()==m.size());
+        }
+
         while(keys.size())
         {
             const int &key = keys.back();

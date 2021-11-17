@@ -60,6 +60,11 @@ YACK_UTEST(data_hash_set)
             std::cerr << *it << ", key=" << it->key() << std::endl;
         }
 
+        {
+            hash_set<int,dummy> tmp(s);
+            YACK_CHECK(tmp.size()==s.size());
+        }
+
         randomized::shuffle::data( keys(), keys.size(), ran);
 
         while(keys.size())

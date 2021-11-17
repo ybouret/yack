@@ -69,6 +69,7 @@ namespace yack
         using base_type::zpool;
         using base_type::hash;
         using base_type::quit;
+        using base_type::release;
 
         //______________________________________________________________________
         //
@@ -76,7 +77,16 @@ namespace yack
         //______________________________________________________________________
         inline virtual ~hash_set() throw() {}
         inline explicit hash_set() throw() : base_type()  {}
-
+        inline hash_set(const hash_set &other) : base_type()
+        {
+            try {
+                for(const node_type *node= (*other.table).head;node;node=node->next)
+                {
+                    (void) insert(**node);
+                }
+            }
+            catch(...) { release(); throw; }
+        }
 
         //______________________________________________________________________
         //
@@ -97,7 +107,7 @@ namespace yack
         }
 
     private:
-        YACK_DISABLE_COPY_AND_ASSIGN(hash_set);
+        YACK_DISABLE_ASSIGN(hash_set);
 
         inline node_type *make(const_type &args)
         {
