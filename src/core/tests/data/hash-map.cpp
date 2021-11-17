@@ -13,9 +13,6 @@ YACK_UTEST(data_hash_map)
 
     }
 
-    {
-        hash_map<digest,size_t> m;
-    }
-
+    
 }
 YACK_UDONE()
