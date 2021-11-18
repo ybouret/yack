@@ -6,7 +6,7 @@
 
 
 #include "yack/hashing/function.hpp"
-#include "yack/type/conversion.hpp"
+#include "yack/associative/key-variety.hpp"
 
 namespace yack
 {
