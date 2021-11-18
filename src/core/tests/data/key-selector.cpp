@@ -11,7 +11,7 @@ namespace
     static inline void check_key(const key_variety::type guess,
                                  const char             *id)
     {
-        static const key_variety::type kv = key_variety::cull<KEY>::variety;
+        static const key_variety::type kv = key_variety::cull<KEY>::value;
         std::cerr << key_variety::text(kv) << " <== ";
         std::cerr << "KEY=<" << typeid(KEY).name() << "> = '" << id << "'";
         if(guess!=kv)
@@ -19,12 +19,30 @@ namespace
             throw exception("key_variety mismatch");
         }
         std::cerr << " [OK]" << std::endl;
-
+        
     }
-
+    
     
     struct dummy
     {
+    };
+    
+    template <typename T>
+    struct is_array
+    {
+        enum { value = false };
+    };
+    
+    template <typename T>
+    struct is_array<T []>
+    {
+        enum { value = true };
+    };
+    
+    template <typename T, size_t N>
+    struct is_array<T [N]>
+    {
+        enum { value = true };
     };
     
 }
@@ -32,6 +50,8 @@ namespace
 #define YACK_CHECK_KEY(GUESS,TYPE) \
 check_key<TYPE>(key_variety::is_##GUESS,#TYPE);\
 check_key<const TYPE>(key_variety::is_##GUESS,"const " #TYPE)
+
+#define SHOW(EXPR) std::cerr << #EXPR << " : " << ( (EXPR) ? "true" : "false" ) << std::endl
 
 YACK_UTEST(data_key_selector)
 {
@@ -41,15 +61,15 @@ YACK_UTEST(data_key_selector)
     YACK_CHECK_KEY(not_available,dummy);
     YACK_CHECK_KEY(memory_buffer,digest);
     YACK_CHECK_KEY(legacy_string,char *);
-
-#if 0
-    YACK_CHECK_KEY(char);
-    YACK_CHECK_KEY(int32_t);
-    YACK_CHECK_KEY(dummy);
-    YACK_CHECK_KEY(void*);
-    YACK_CHECK_KEY(digest);
-    YACK_CHECK_KEY(char *);
-#endif
+    
+    
+    
+    SHOW(is_array<char>::value);
+    SHOW(is_array<char[]>::value);
+    SHOW(is_array<char [2]>::value);
+    SHOW(is_array<const char>::value);
+    SHOW(is_array<const char[]>::value);
+    SHOW(is_array<const char [2]>::value);
     
 }
 YACK_UDONE()

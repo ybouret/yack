@@ -68,33 +68,34 @@ namespace yack
             //
             // methods
             //__________________________________________________________________
-
-            //! generic hashing
-            inline T of(const void *block_addr, const size_t block_size) throw()
-            {
-                return to<T>(*this,block_addr,block_size);
-            }
+            
 
             //! type dependent convertion
             template <typename U> inline
             T operator()(const U &obj) throw()
             {
-                static const int2type<YACK_IS_SUPERSUBCLASS(memory::ro_buffer,U)> choice = {};
-                return compute<U>(obj,choice);
+                static const int2type< key_variety::cull<U>::value > which = {};
+                return compute<U>(obj,which);
             }
             
         private:
             YACK_DISABLE_COPY_AND_ASSIGN(to_key);
             template <typename U>
-            inline T compute( const U &buf, int2type<true> ) throw()
+            inline T compute( const U &buf, const key_variety::memory_buffer & ) throw()
             {
-                return of(buf.ro_addr(),buf.measure());
+                return to<T>(*this,buf);
             }
 
             template <typename U>
-            inline T compute( const U &buf, int2type<false> ) throw()
+            inline T compute( const U &buf, const key_variety::integral_type &) throw()
             {
-                return of(&buf,sizeof(U));
+                return to<T>(*this,&buf,sizeof(U));
+            }
+            
+            template <typename U>
+            inline T compute(const U &buf, const key_variety::legacy_string &) throw()
+            {
+                return to<T>(*this,buf);
             }
         };
 

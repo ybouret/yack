@@ -178,6 +178,7 @@ add_test(ios:ascii      test-yack ios_ascii)
 add_test(hashing:64    test-yack hash64)
 add_test(hashing:fcn   test-yack hashing_fcn)
 add_test(hashing:hmac  test-yack hashing_hmac)
+add_test(hashing:key   test-yack hashing_key)
 
 add_test(rand:bits      test-yack rand_bits)
 

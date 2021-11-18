@@ -31,15 +31,18 @@ namespace yack
             static const bool _integral_type  = type_traits<mutable_key>::is_primitive;
             static const bool _memory_buffer  = YACK_IS_SUPERSUBCLASS(memory::ro_buffer,KEY);
             
-            static const type variety =
+            static const type value =
             (   _legacy_string ? is_legacy_string :
              (  _integral_type ? is_integral_type :
               ( _memory_buffer ? is_memory_buffer : is_not_available)));
-            
-            
         };
         
+        typedef int2type<is_integral_type> integral_type;
+        typedef int2type<is_legacy_string> legacy_string;
+        typedef int2type<is_memory_buffer> memory_buffer;
+
     };
+    
     
     
     

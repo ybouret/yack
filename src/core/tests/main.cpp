@@ -96,6 +96,7 @@ YACK_UTEST_DECL(128)
     YACK_UTEST(hash64);
     YACK_UTEST(hashing_fcn);
     YACK_UTEST(hashing_hmac);
+    YACK_UTEST(hashing_key);
 
     YACK_UTEST(rand_bits);
 
