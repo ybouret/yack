@@ -44,15 +44,33 @@ namespace yack
             return tree.search(ptr,len);
         }
 
+        //! remove method
+        inline virtual bool remove(param_key_type key) throw()
+        {
+            size_t         len = 0;
+            const uint8_t *ptr = walk(key,len);
+            return tree.remove(ptr,len);
+        }
+
+
+        inline virtual size_t size() const throw() { return (*tree).size; }
+
         //______________________________________________________________________
         //
         // C++
         //______________________________________________________________________
-        inline virtual ~suffix_compound() throw() {}                         //!< cleanup
+        inline virtual ~suffix_compound() throw() {}                                 //!< cleanup
     protected:
-        inline explicit suffix_compound() throw() : ASSOCIATIVE(), walk() {} //!< setup
+        inline explicit suffix_compound() throw() : ASSOCIATIVE(), walk(), tree() {} //!< setup
+
+        //! copy tree 
+        inline suffix_compound(const suffix_compound &other) :
+        ASSOCIATIVE(), walk(), tree(other.tree)
+        {
+        }
+
     private:
-        YACK_DISABLE_COPY_AND_ASSIGN(suffix_compound);
+        YACK_DISABLE_ASSIGN(suffix_compound);
 
         //______________________________________________________________________
         //
