@@ -31,6 +31,11 @@ namespace yack
         //______________________________________________________________________
         //
         //! compute bytes/length for path
+        /**
+         * if key is integral_type, it is used as local space to swap BE integer
+         * since the function is called a search/insert/remove function!!
+         *
+         */
         //______________________________________________________________________
         inline const uint8_t * operator()(const KEY &key, size_t &len) throw()
         {
@@ -50,11 +55,11 @@ namespace yack
         
         inline const uint8_t * walk(const KEY &key, size_t &len, const key_variety::integral_type &) throw()
         {
-            len = sizeof(KEY);
-            return coerce_cast<uint8_t>(&key);
+            len          = sizeof(KEY);
+            return static_cast<const uint8_t *>(endianness::BEaddr((void*)&key,sizeof(KEY)));
         }
 
-        inline const uint8_t * walk(const KEY &key, size_t &len, const key_variety::legacy_string &) throw()
+        inline const uint8_t * walk(const KEY key, size_t &len, const key_variety::legacy_string &) throw()
         {
             len = key?0:strlen(key);
             return coerce_cast<uint8_t>(key);

@@ -59,6 +59,8 @@ namespace yack
         //
         // specific methods
         //______________________________________________________________________
+
+        //! get tree structure
         inline const tree_type &get_tree() const throw() { return tree; }
 
         //______________________________________________________________________

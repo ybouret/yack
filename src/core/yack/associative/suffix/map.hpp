@@ -8,6 +8,12 @@
 namespace yack
 {
 
+    //__________________________________________________________________________
+    //
+    //
+    //! suffix_map (key,type), key is not stored but used as path
+    //
+    //__________________________________________________________________________
     template <typename KEY,
     typename T,
     typename KEY_WALKER = key_walker<KEY>
@@ -15,16 +21,30 @@ namespace yack
     class suffix_map : public suffix_compound<KEY,T,KEY_WALKER, glossary<KEY,T> >
     {
     public:
-        YACK_DECL_ARGS(T,type);
-        YACK_DECL_ARGS(KEY,key_type);
-        typedef suffix_compound<KEY,T,KEY_WALKER, glossary<KEY,T> > base_type;
+        //______________________________________________________________________
+        //
+        // types and definitions
+        //______________________________________________________________________
+        YACK_DECL_ARGS(T,type);                                                //!< aliases
+        YACK_DECL_ARGS(KEY,key_type);                                          //!< aliases
+        typedef suffix_compound<KEY,T,KEY_WALKER, glossary<KEY,T> > base_type; //!< alias
         using base_type::tree;
         using base_type::walk;
 
 
-        inline explicit suffix_map() throw() : base_type() {}
-        inline virtual ~suffix_map() throw() {}
+        //______________________________________________________________________
+        //
+        // C++
+        //______________________________________________________________________
+        inline explicit suffix_map() throw() : base_type() {} //!< setup empty
+        inline virtual ~suffix_map() throw() {}               //!< cleanup
 
+        //______________________________________________________________________
+        //
+        // glossary interface
+        //______________________________________________________________________
+        
+        //! insert by key to path walking
         virtual bool insert(param_key_type key, param_type args)
         {
             size_t         len = 0;
