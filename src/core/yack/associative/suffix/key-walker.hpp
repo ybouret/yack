@@ -6,6 +6,7 @@
 #include "yack/associative/key-variety.hpp"
 #include "yack/memory/buffer/ro.hpp"
 #include "yack/type/out-of-reach.hpp"
+#include "yack/system/endian.hpp"
 #include <cstring>
 
 namespace yack
@@ -40,6 +41,7 @@ namespace yack
         
     private:
         YACK_DISABLE_COPY_AND_ASSIGN(key_walker);
+
         inline const uint8_t * walk(const KEY &key, size_t &len, const key_variety::memory_buffer &) throw()
         {
             len = key.measure();
@@ -60,4 +62,3 @@ namespace yack
     };
 }
 #endif
-

@@ -52,8 +52,14 @@ namespace yack
             return tree.remove(ptr,len);
         }
 
-
+        //! size interface
         inline virtual size_t size() const throw() { return (*tree).size; }
+
+        //______________________________________________________________________
+        //
+        // specific methods
+        //______________________________________________________________________
+        inline const tree_type &get_tree() const throw() { return tree; }
 
         //______________________________________________________________________
         //

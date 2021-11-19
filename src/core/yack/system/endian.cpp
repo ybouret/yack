@@ -1,4 +1,5 @@
 #include "yack/system/endian.hpp"
+#include "yack/setup.hpp"
 
 namespace yack {
 
@@ -16,4 +17,32 @@ namespace yack {
     {
         return !BE();
     }
+
+    namespace
+    {
+        static inline void swap_block(void *addr, size_t size) throw()
+        {
+            assert(addr);
+            assert(size);
+            uint8_t *lower = static_cast<uint8_t *>(addr);
+            uint8_t *upper = static_cast<uint8_t *>(addr) + size;
+            for(size>>=1;size>0;--size)
+            {
+                cswap(*(lower++),*(--upper));
+            }
+        }
+
+        static inline void keep_block(void *,size_t) throw()
+        {
+
+        }
+
+    }
+
+    endianness::swap_proc endianness::BEswap() throw()
+    {
+        static const swap_proc proc = BE() ? keep_block : swap_block;
+        return proc;
+    }
+
 }

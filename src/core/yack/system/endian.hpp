@@ -19,6 +19,9 @@ namespace yack
     {
         static bool BE() throw(); //!< if Big    Endian
         static bool LE() throw(); //!< of Little Endian
+
+        typedef void (*swap_proc)(void *addr, size_t);
+        static  swap_proc   BEswap() throw();
     };
 }
 
