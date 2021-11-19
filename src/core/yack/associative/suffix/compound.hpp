@@ -9,6 +9,12 @@
 namespace yack
 {
 
+    //__________________________________________________________________________
+    //
+    //
+    //! base class to use tree for set/map
+    //
+    //__________________________________________________________________________
     template <
     typename KEY,
     typename T,
@@ -17,13 +23,20 @@ namespace yack
     class suffix_compound : public ASSOCIATIVE
     {
     public:
-        YACK_DECL_ARGS_(T,type);
-        YACK_DECL_ARGS(KEY,key_type);
+        //______________________________________________________________________
+        //
+        // types and definitions
+        //______________________________________________________________________
+        YACK_DECL_ARGS_(T,type);                           //!< aliases
+        YACK_DECL_ARGS(KEY,key_type);                      //!< aliases
+        typedef kernel::suffix_tree<T,uint8_t> tree_type;  //!< alias
 
-        typedef kernel::suffix_tree<T,uint8_t> tree_type;
 
-        inline virtual ~suffix_compound() throw() {}
-
+        //______________________________________________________________________
+        //
+        // ASSOCIATIVE interface
+        //______________________________________________________________________
+        //! search method
         inline virtual const_type *search(param_key_type key) const throw()
         {
             size_t         len = 0;
@@ -31,19 +44,24 @@ namespace yack
             return tree.search(ptr,len);
         }
 
-
-
-
+        //______________________________________________________________________
+        //
+        // C++
+        //______________________________________________________________________
+        inline virtual ~suffix_compound() throw() {}                         //!< cleanup
     protected:
-        inline explicit suffix_compound() throw() : ASSOCIATIVE(), walk() {}
+        inline explicit suffix_compound() throw() : ASSOCIATIVE(), walk() {} //!< setup
     private:
         YACK_DISABLE_COPY_AND_ASSIGN(suffix_compound);
 
-
+        //______________________________________________________________________
+        //
+        // members
+        //______________________________________________________________________
     public:
-        mutable KEY_WALKER walk;
+        mutable KEY_WALKER walk; //!< convert KEY to path
     protected:
-        tree_type          tree;
+        tree_type          tree; //!< holding data
 
     };
 

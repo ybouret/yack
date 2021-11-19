@@ -37,7 +37,7 @@ check_key<const TYPE>(key_variety::is_##GUESS,"const " #TYPE)
 
 #define SHOW(EXPR) std::cerr << std::setw(40) << #EXPR << " : " << ( (EXPR) ? "true" : "false" ) << std::endl
 
-YACK_UTEST(data_key_selector)
+YACK_UTEST(data_key_variety)
 {
 
     
