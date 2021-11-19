@@ -27,7 +27,7 @@ namespace yack
         struct cull
         {
             typedef typename type_traits<KEY>::mutable_type mutable_key;
-            static const bool _legacy_string  = is_same_type<mutable_key,char *>::value;
+            static const bool _legacy_string  = is_same_type<mutable_key,char *>::value || type_traits<mutable_key>::is_array;
             static const bool _integral_type  = type_traits<mutable_key>::is_primitive;
             static const bool _memory_buffer  = YACK_IS_SUPERSUBCLASS(memory::ro_buffer,KEY);
             

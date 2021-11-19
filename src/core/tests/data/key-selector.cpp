@@ -39,13 +39,7 @@ check_key<const TYPE>(key_variety::is_##GUESS,"const " #TYPE)
 
 YACK_UTEST(data_key_selector)
 {
-    YACK_CHECK_KEY(integral_type,char);
-    YACK_CHECK_KEY(integral_type,int32_t);
-    YACK_CHECK_KEY(integral_type,void*);
-    YACK_CHECK_KEY(not_available,dummy);
-    YACK_CHECK_KEY(memory_buffer,digest);
-    YACK_CHECK_KEY(legacy_string,char *);
-    
+
     
     
     SHOW(type_traits<char>::is_array);
@@ -54,7 +48,19 @@ YACK_UTEST(data_key_selector)
     SHOW(type_traits<const char[]>::is_array);
     SHOW(type_traits<char [2]>::is_array);
     SHOW(type_traits<const char [2]>::is_array);
-    
+
+
+    YACK_CHECK_KEY(integral_type,char);
+    YACK_CHECK_KEY(integral_type,int32_t);
+    YACK_CHECK_KEY(integral_type,void*);
+    YACK_CHECK_KEY(not_available,dummy);
+    YACK_CHECK_KEY(memory_buffer,digest);
+    YACK_CHECK_KEY(legacy_string,char *);
+    YACK_CHECK_KEY(legacy_string,char []);
+    YACK_CHECK_KEY(legacy_string,char [1]);
+    YACK_CHECK_KEY(legacy_string,char [2]);
+    YACK_CHECK_KEY(legacy_string,char [4]);
+
 }
 YACK_UDONE()
 
