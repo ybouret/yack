@@ -27,23 +27,7 @@ namespace
     {
     };
     
-    template <typename T>
-    struct is_array
-    {
-        enum { value = false };
-    };
     
-    template <typename T>
-    struct is_array<T []>
-    {
-        enum { value = true };
-    };
-    
-    template <typename T, size_t N>
-    struct is_array<T [N]>
-    {
-        enum { value = true };
-    };
     
 }
 
@@ -51,7 +35,7 @@ namespace
 check_key<TYPE>(key_variety::is_##GUESS,#TYPE);\
 check_key<const TYPE>(key_variety::is_##GUESS,"const " #TYPE)
 
-#define SHOW(EXPR) std::cerr << #EXPR << " : " << ( (EXPR) ? "true" : "false" ) << std::endl
+#define SHOW(EXPR) std::cerr << std::setw(40) << #EXPR << " : " << ( (EXPR) ? "true" : "false" ) << std::endl
 
 YACK_UTEST(data_key_selector)
 {
@@ -64,12 +48,12 @@ YACK_UTEST(data_key_selector)
     
     
     
-    SHOW(is_array<char>::value);
-    SHOW(is_array<char[]>::value);
-    SHOW(is_array<char [2]>::value);
-    SHOW(is_array<const char>::value);
-    SHOW(is_array<const char[]>::value);
-    SHOW(is_array<const char [2]>::value);
+    SHOW(type_traits<char>::is_array);
+    SHOW(type_traits<const char>::is_array);
+    SHOW(type_traits<char[]>::is_array);
+    SHOW(type_traits<const char[]>::is_array);
+    SHOW(type_traits<char [2]>::is_array);
+    SHOW(type_traits<const char [2]>::is_array);
     
 }
 YACK_UDONE()

@@ -50,9 +50,10 @@ namespace yack
     template <class T>
     class type_traits
     {
-        //==================================================================
+        //______________________________________________________________________
+        //
         // changing qualifiers
-        //==================================================================
+        //______________________________________________________________________
     private:
         template <class U>
         struct unconst
@@ -128,9 +129,10 @@ namespace yack
 
 
 
-        //==================================================================
+        //______________________________________________________________________
+        //
         // is_pointer
-        //==================================================================
+        //______________________________________________________________________
     private:
         template <class U>
         struct pointer_traits
@@ -150,9 +152,10 @@ namespace yack
         enum { is_pointer = pointer_traits<T>::value /*!< true if 'T' can be written as 'U *'. */ };
         typedef typename pointer_traits<T>::pointee_type pointee_type; //!< returns 'U' for 'U *', null_type otherwise.
 
-        //==================================================================
+        //______________________________________________________________________
+        //
         // is_pointer_to_member
-        //==================================================================
+        //______________________________________________________________________
     private:
         template <class U>
         struct pointer_to_memberTraits
@@ -171,9 +174,10 @@ namespace yack
 
 
 
-        //==================================================================
+        //______________________________________________________________________
+        //
         // is_reference
-        //==================================================================
+        //______________________________________________________________________
     private:
         template <class U>
         struct reference_traits
@@ -194,6 +198,17 @@ namespace yack
         typedef typename reference_traits<T>::referred_type                  &reference_type;      //!< returns 'U' for 'U &' and 'U'.
         typedef const typename reference_traits<mutable_type>::referred_type &const_reference_type; //!< returns 'const U'.
 
+        //______________________________________________________________________
+        //
+        // is array
+        //______________________________________________________________________
+    private:
+        template <typename U> struct array_traits                  { enum { value = false }; };
+        template <typename U> struct array_traits<U []>            { enum { value = true  }; };
+        template <typename U, size_t N> struct array_traits<U [N]> { enum { value = true  }; };
+
+    public:
+        enum { is_array = array_traits<T>::value };
 
 
     public:
