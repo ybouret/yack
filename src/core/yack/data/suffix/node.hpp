@@ -82,10 +82,13 @@ namespace yack
             //
             // methods
             //__________________________________________________________________
-
             inline type       & operator*()       throw() { assert(knot); assert(knot->is_alive()); return **knot; } //!< access data
             inline const_type & operator*() const throw() { assert(knot); assert(knot->is_alive()); return **knot; } //!< access data, condt
 
+            inline type       * operator->()       throw() { assert(knot); assert(knot->is_alive()); return & **knot; } //!< transitive access node
+            inline const_type * operator->() const throw() { assert(knot); assert(knot->is_alive()); return & **knot; } //!< transitive access node
+            
+            
             //! comparison for ordered_list ops
             static inline sign_type compare(const CODE &code, const node_type *node) throw()
             {

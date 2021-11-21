@@ -96,9 +96,9 @@ namespace yack
         // iterators
         //______________________________________________________________________
         typedef iterating::linked<const_type,const knot_type,iterating::forward> const_iterator; //!< forward const iterator
-        const_iterator begin() const throw() { return (*tree).head; }                      //!< forward const begin
-        const_iterator end()   const throw() { return NULL;          }                      //!< forward const end
-
+        const_iterator begin() const throw() { return (*tree).head; }                            //!< forward const begin
+        const_iterator end()   const throw() { return NULL;         }                            //!< forward const end
+      
     };
 
 }

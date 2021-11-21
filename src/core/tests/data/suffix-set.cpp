@@ -42,7 +42,6 @@ YACK_UTEST(data_suffix_set)
 {
     randomized::rand_ ran;
     
-#if 1
     {
         suffix_set<int,dummy> s;
         vector<int> keys;
@@ -57,7 +56,15 @@ YACK_UTEST(data_suffix_set)
         
         for(suffix_set<int,dummy>::const_iterator it=s.begin();it!=s.end();++it)
         {
-            std::cerr << *it << ", key=" << it->key() << std::endl;
+            const suffix_set<int,dummy>::knot_type *kn = it.operator->();
+            kn->node;
+            //const int k = kn->k;
+            const dummy *d = (*kn).operator->();
+            //const int    k = d->k;
+            //const int    kk = it->k;
+            // std::cerr << *it << ", key=" << it->key() << std::endl;
+            std::cerr << *it << std::endl;
+            
         }
         
         {
@@ -79,7 +86,6 @@ YACK_UTEST(data_suffix_set)
         std::cerr << "#keys=" << keys.size() << std::endl;
         std::cerr << "#data=" << s.size() << std::endl;
      }
-#endif
     
 }
 YACK_UDONE()
