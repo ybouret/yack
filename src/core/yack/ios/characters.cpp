@@ -77,3 +77,20 @@ namespace yack
     }
 
 }
+
+#include "yack/string.hpp"
+
+namespace yack
+{
+    namespace ios
+    {
+        string characters:: to_string()  const
+        {
+            string ans(size,as_capacity);
+            for(const character *ch=head;ch;ch=ch->next)
+                ans += char(**ch);
+            return ans;
+        }
+    }
+}
+

@@ -7,6 +7,16 @@ namespace yack
     namespace kernel
     {
 
+        template <> const char string<char>::clid[] = "string";
+       
+        template <>
+        const char * string<CH>:: class_uid() const throw()
+        {
+            return clid;
+        }
+        
+       
+        
         static inline
         void copy_msg(char *item, const char *msg, size_t &chars) throw()
         {
@@ -131,3 +141,22 @@ namespace yack
 
     }
 }
+
+#include "yack/ios/encoder.hpp"
+#include "yack/ios/ostream.hpp"
+
+namespace yack
+{
+    namespace kernel
+    {
+        template <>
+        size_t string<char>::serialize(ios::ostream &os) const
+        {
+            const size_t nw = ios::encoder::serialize<size_t>(os,chars);
+            os.frame(block,chars);
+            return nw + chars;
+        }
+    }
+    
+}
+

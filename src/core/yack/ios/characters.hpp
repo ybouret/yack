@@ -5,6 +5,7 @@
 #define YACK_IOS_CHARACTERS_INCLUDED 1
 
 #include "yack/ios/character.hpp"
+#include "yack/string/fwd.hpp"
 
 namespace yack
 {
@@ -65,7 +66,7 @@ namespace yack
 
             char        *cstr() const;         //!< filled from legacy::acquire
             static void  free(char *) throw(); //!< free   with legacy::release
-
+            string       to_string()  const;   //!< directly to string
         };
 
     }

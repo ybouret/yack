@@ -7,6 +7,7 @@
 #include "yack/object.hpp"
 #include "yack/counted.hpp"
 #include "yack/memory/buffer/ro.hpp"
+#include "yack/ios/serializable.hpp"
 
 namespace yack
 {
@@ -19,7 +20,11 @@ namespace yack
         //! memory handling for strings
         //
         //______________________________________________________________________
-        class string_ : public object, public counted, public memory::ro_buffer
+        class string_ :
+        public object,
+        public counted,
+        public memory::ro_buffer,
+        public ios::serializable
         {
         public:
             //! memory buffer interface

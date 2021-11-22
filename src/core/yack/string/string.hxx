@@ -7,6 +7,8 @@ namespace yack
     namespace kernel
     {
 
+       
+        
         template <>
         void string<CH>:: xch(string &other) throw()
         {

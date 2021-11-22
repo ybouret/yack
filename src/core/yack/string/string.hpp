@@ -25,7 +25,8 @@ namespace yack
         public:
             typedef  typename writable<T>::const_type const_type;
             typedef  typename writable<T>::type       type;
-
+            static   const char clid[];
+            
             
             explicit string();                   //!< default empty
             virtual ~string() throw();           //!< cleanup
@@ -37,7 +38,13 @@ namespace yack
             string & operator=(const char *);            //!< assign/convert
             string(const size_t, const as_capacity_t &); //!< with capacity, empty
 
-
+            //__________________________________________________________________
+            //
+            // memory::ro_buffer interface
+            //__________________________________________________________________
+            virtual const char *class_uid() const throw();
+            virtual size_t      serialize(ios::ostream &) const;
+            
             //__________________________________________________________________
             //
             // memory::ro_buffer interface
@@ -91,7 +98,25 @@ namespace yack
             //__________________________________________________________________
             string & skip(const size_t n) throw();
             string & trim(const size_t n) throw();
-
+            
+            
+            template <typename FUNCTION> inline
+            string & trim_if( FUNCTION &is_bad ) throw()
+            {
+                size_t n = 0;
+                while(n<chars && is_bad( item[chars-n]) ) ++n;
+                return trim(n);
+            }
+            
+            template <typename FUNCTION> inline
+            string & skip_if( FUNCTION &is_bad ) throw()
+            {
+                size_t n = 0;
+                while(n<chars && is_bad( item[n+1]) ) ++n;
+                return skip(n);
+            }
+            
+            
 
         private:
             type *item;
