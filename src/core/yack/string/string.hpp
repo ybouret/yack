@@ -62,18 +62,24 @@ namespace yack
             // methods
             //__________________________________________________________________
             void xch(string &) throw(); //!< no-throw exchange
-            void clear() throw();       //!< clear data
+            void clear()       throw(); //!< clear data
 
 
             //__________________________________________________________________
             //
             // catenation
             //__________________________________________________________________
-            friend string operator+(const string &lhs, const string &rhs); //!< cat
-            friend string operator+(const string &lhs, const char   *rhs); //!< cat/convert
-            friend string operator+(const char   *lhs, const string &rhs); //!< cat/convert
-            friend string operator+(const string &lhs, const T       rhs); //!< cat
-            friend string operator+(const T       lhs, const string &rhs); //!< cat
+            static string cat(const string &lhs, const string &rhs); //!< cat
+            static string cat(const string &lhs, const char   *rhs); //!< cat/convert
+            static string cat(const char   *lhs, const string &rhs); //!< cat/convert
+            static string cat(const string &lhs, const T       rhs); //!< cat
+            static string cat(const T       lhs, const string &rhs); //!< cat
+
+            inline friend string operator+(const string &lhs, const string &rhs) { return cat(lhs,rhs); } //!< alias
+            inline friend string operator+(const string &lhs, const char   *rhs) { return cat(lhs,rhs); } //!< alias
+            inline friend string operator+(const char   *lhs, const string &rhs) { return cat(lhs,rhs); } //!< alias
+            inline friend string operator+(const string &lhs, const T       rhs) { return cat(lhs,rhs); } //!< alias
+            inline friend string operator+(const T       lhs, const string &rhs) { return cat(lhs,rhs); } //!< alias
 
             string & operator+=(const string &); //!< cat
             string & operator+=(const T       ); //!< cat
@@ -89,6 +95,8 @@ namespace yack
         private:
             type *item;
         };
+
+
 
     }
 

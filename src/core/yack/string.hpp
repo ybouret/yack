@@ -8,7 +8,7 @@
 
 namespace yack
 {
-    typedef kernel::string<char> string;
+    typedef kernel::string<char> string; //!< alias
 }
 
 #endif

@@ -123,8 +123,8 @@ namespace yack
             return item[indx];
         }
 
-
-        string<CH>   operator+(const string<CH> &lhs, const string<CH> &rhs)
+        template <>
+        string<CH>   string<CH>::cat(const string<CH> &lhs, const string<CH> &rhs)
         {
             const size_t L = lhs.chars;
             const size_t R = rhs.chars;
@@ -142,7 +142,8 @@ namespace yack
             return ans;
         }
 
-        string<CH> operator+(const string<CH> &lhs, const CH rhs)
+        template <>
+        string<CH> string<CH>::cat(const string<CH> &lhs, const CH rhs)
         {
             const size_t L = lhs.chars;
             string<CH>   ans(L+1,as_capacity);
@@ -155,7 +156,8 @@ namespace yack
             return ans;
         }
 
-        string<CH> operator+(const CH lhs, const string<CH> &rhs)
+        template <>
+        string<CH> string<CH>::cat(const CH lhs, const string<CH> &rhs)
         {
             const size_t R = rhs.chars;
             string<CH>   ans(R+1,as_capacity);

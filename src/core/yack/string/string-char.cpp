@@ -55,8 +55,8 @@ namespace yack
             return *this;
         }
 
-
-        string<char>  operator+(const string<char> &lhs, const char *rhs)
+        template <>
+        string<char>  string<char>::cat(const string<char> &lhs, const char *rhs)
         {
             if(rhs)
             {
@@ -80,7 +80,8 @@ namespace yack
             }
         }
 
-        string<char> operator+(const char   *lhs, const string<char> &rhs)
+        template <>
+        string<char> string<char>::cat(const char   *lhs, const string<char> &rhs)
         {
             if(lhs)
             {
