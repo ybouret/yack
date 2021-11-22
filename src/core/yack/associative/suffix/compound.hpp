@@ -31,7 +31,7 @@ namespace yack
         YACK_DECL_ARGS_(T,type);                           //!< aliases
         YACK_DECL_ARGS(KEY,key_type);                      //!< aliases
         typedef kernel::suffix_tree<T,uint8_t> tree_type;  //!< alias
-        typedef typename tree_type::knot_type  knot_type;
+        typedef typename tree_type::knot_type  knot_type;  //!< alias
 
         //______________________________________________________________________
         //

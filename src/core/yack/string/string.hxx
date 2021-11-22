@@ -64,6 +64,13 @@ namespace yack
         {
         }
 
+        template <>
+        string<CH> &  string<CH>:: operator=(const string &other)
+        {
+            string tmp(other);
+            xch(tmp);
+            return *this;
+        }
 
     }
 }

@@ -13,21 +13,33 @@ namespace yack
 
     namespace kernel
     {
-
+        //______________________________________________________________________
+        //
+        //
+        //! memory handling for strings
+        //
+        //______________________________________________________________________
         class string_ : public object, public counted, public memory::ro_buffer
         {
         public:
-            virtual ~string_() throw();
-
-
+            //! memory buffer interface
             virtual const void * ro_addr() const throw();
 
-        protected:
-            explicit string_(size_t       num,
-                             const size_t bpc);
-            explicit string_(const string_ &str,
-                             const size_t   bpc);
-            
+            //__________________________________________________________________
+            //
+            // C++
+            //__________________________________________________________________
+            virtual ~string_() throw();            //!< cleanup
+        protected:                                 //|
+            explicit string_(size_t         num,   //|
+                             const size_t   bpc);  //!< setup for width>=num
+            explicit string_(const string_ &str,   //|
+                             const size_t   bpc);  //!< copy
+
+            //__________________________________________________________________
+            //
+            // members
+            //__________________________________________________________________
             size_t       chars; //!< [0..width]
         public:                 //|
             const size_t width; //!< max items
@@ -35,7 +47,7 @@ namespace yack
         protected:              //|
             void        *block; //!< address of first char
 
-            void swap_with(string_ &other) throw();
+            void swap_with(string_ &other) throw(); //!< no-throw swap
 
         private:
             YACK_DISABLE_COPY_AND_ASSIGN(string_);
