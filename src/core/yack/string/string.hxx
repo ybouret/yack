@@ -13,7 +13,9 @@ namespace yack
 
         template <>
         string<CH>:: string() :
+        collection(),
         string_(0,sizeof(CH)),
+        writable<CH>(),
         item( static_cast<CH*>(block)-1 )
         {
         }
@@ -44,6 +46,22 @@ namespace yack
             assert(indx>=1);
             assert(indx<=chars);
             return item[indx];
+        }
+
+        template <>
+        void string<CH>:: xch(string &other) throw()
+        {
+            swap_with(other);
+            cswap(item,other.item);
+        }
+
+        template <>
+        string<CH>:: string(const string &other) :
+        collection(),
+        string_(other,sizeof(CH)),
+        writable<CH>(),
+        item( static_cast<CH*>(block)-1 )
+        {
         }
 
 

@@ -12,7 +12,12 @@ namespace yack
     namespace kernel
     {
 
-        
+        //______________________________________________________________________
+        //
+        //
+        //! generic string
+        //
+        //______________________________________________________________________
         template <typename T>
         class string : public string_, public writable<T>
         {
@@ -22,12 +27,34 @@ namespace yack
 
             explicit string();
             virtual ~string() throw();
+            string(const string &);    //!< copy
+            string & operator=(const string &); //!< copy/swap
 
-            virtual size_t measure() const throw();
-            virtual size_t size() const throw();
+            //__________________________________________________________________
+            //
+            // memory::ro_buffer interface
+            //__________________________________________________________________
+            virtual size_t measure() const throw(); //!< chars * sizeof(T)
+
+            //__________________________________________________________________
+            //
+            // readable interface
+            //__________________________________________________________________
+            virtual size_t      size()                        const throw(); //!< chars
             virtual const_type &operator[](const size_t indx) const throw(); //!< [1..chars+1]
+
+            //__________________________________________________________________
+            //
+            // writable interface
+            //__________________________________________________________________
             virtual type       &operator[](const size_t indx)       throw(); //!< [1..chars]
 
+            //__________________________________________________________________
+            //
+            // methods
+            //__________________________________________________________________
+            void xch(string &) throw(); //!< no-throw exchange
+            
         private:
             type *item;
         };
