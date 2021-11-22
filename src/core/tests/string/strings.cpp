@@ -1,20 +1,14 @@
-#include "yack/string/string_.hpp"
+#include "yack/string/string.hpp"
+#include "yack/string/utf8.hpp"
 #include "yack/utest/run.hpp"
 
 using namespace yack;
 
 YACK_UTEST(strings)
 {
-    const size_t bpc[] = {1,4};
+    kernel::string<char> s1; std::cerr << "s1.width=" << s1.width << std::endl;
+    kernel::string<utf8> s2; std::cerr << "s2.width=" << s2.width << std::endl;
 
-    for(size_t i=0;i<=10;++i)
-    {
-        for(size_t j=0;j<2;++j)
-        {
-            kernel::string_ s(i,bpc[j]);
-            std::cerr << "req=" << i << "*" << bpc[j] << " => width=" << s.width << std::endl;
-        }
-    }
 }
 YACK_UDONE()
 

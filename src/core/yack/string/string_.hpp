@@ -18,18 +18,18 @@ namespace yack
         {
         public:
             virtual ~string_() throw();
-            explicit string_(size_t       num,
-                             const size_t bpc);
+
 
             virtual const void * ro_addr() const throw();
-            virtual size_t       measure() const throw();
 
         protected:
+            explicit string_(size_t       num,
+                             const size_t bpc);
             size_t       chars; //!< [0..width]
         public:                 //|
             const size_t width; //!< max items
             const size_t space; //!< width+1
-        private:                //|
+        protected:              //|
             void        *block; //!< address of first char
             
         private:

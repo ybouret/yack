@@ -52,11 +52,7 @@ namespace yack
             return block;
         }
 
-        size_t string_::measure() const throw()
-        {
-            return chars;
-        }
-
+        
 
     }
 }
