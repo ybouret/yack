@@ -94,6 +94,24 @@ namespace yack
 
             //__________________________________________________________________
             //
+            // output
+            //__________________________________________________________________
+            std::ostream & display(std::ostream &) const;
+            ios::ostream & display(ios::ostream &) const;
+            
+            inline friend std::ostream & operator<<(std::ostream &os, const string &s)
+            {
+                return s.display(os);
+            }
+            
+            inline friend ios::ostream & operator<<(ios::ostream &os, const string &s)
+            {
+                return s.display(os);
+            }
+            
+            
+            //__________________________________________________________________
+            //
             // skip/trim
             //__________________________________________________________________
             string & skip(const size_t n) throw();

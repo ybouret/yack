@@ -241,5 +241,15 @@ namespace yack
         }
 
         
+        template <>
+        std::ostream & string<CH>:: display(std::ostream &os) const
+        {
+            for(size_t i=1;i<=chars;++i)
+            {
+                os << item[i];
+            }
+            return os;
+        }
+        
     }
 }

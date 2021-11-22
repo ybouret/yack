@@ -10,6 +10,7 @@
 #include "yack/container/matrix.hpp"
 #include "yack/type/complex.hpp"
 #include "yack/type/v3d.hpp"
+#include "yack/string.hpp"
 
 
 namespace yack
@@ -139,6 +140,18 @@ namespace yack
         return randomized::in3d::in_ball<long double,v3d>(ran);
     }
 
+    // string
+    template <>
+    inline string bring:: get< string >( randomized::bits &ran )
+    {
+        const size_t n = 1+ran.leq(15);
+        string ans(n,as_capacity);
+        for(size_t i=0;i<n;++i)
+        {
+            ans += ran.in('a','z');
+        }
+        return ans;;
+    }
     
 }
 

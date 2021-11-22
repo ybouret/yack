@@ -109,6 +109,16 @@ namespace yack
         //! decode a valid sequence
         static utf8 decode(const uint8_t data[], const size_t size);
 
+        template <typename OSTREAM> inline friend
+        OSTREAM & operator<<(OSTREAM &os, const utf8 &u)
+        {
+            size_t  nout    = u.bytes();
+            uint8_t data[4] = { 0,0,0,0 };
+            u.encode(data);
+            for(size_t i=0;i<nout;++i) os << char(data[i]);
+            return os;
+        }
+        
     private:
         uint32_t code;
     };
