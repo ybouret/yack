@@ -120,6 +120,11 @@ namespace yack
             }
         }
 
+        friend inline std::ostream & operator<<(std::ostream &os, const hash_set &s)
+        {
+            return base_type::template display(os, (*s.table).head );
+        }
+        
     private:
         YACK_DISABLE_ASSIGN(hash_set);
 

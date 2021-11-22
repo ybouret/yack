@@ -37,7 +37,23 @@ namespace yack
         inline virtual ~registry() throw() {} //!< cleanup
     protected:
         inline explicit registry() throw() {} //!< setup
-
+        
+        template <typename OSTREAM, typename NODE> static inline
+        OSTREAM &display(OSTREAM &os, const NODE *node)
+        {
+            assert(node);
+            os << '{';
+            if(node)
+            {
+                os << **node;
+                while(NULL!=(node=node->next))
+                {
+                    os << ',' << **node;
+                }
+            }
+            os << '}';
+            return os;
+        }
     private:
         YACK_DISABLE_COPY_AND_ASSIGN(registry);
     };

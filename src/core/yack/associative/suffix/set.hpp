@@ -1,3 +1,4 @@
+//! \file
 
 #ifndef YACK_ASSOCIATIVE_SUFFIX_SET_INCLUDED
 #define YACK_ASSOCIATIVE_SUFFIX_SET_INCLUDED 1
@@ -62,6 +63,10 @@ namespace yack
         //! category for container
         virtual const char *category() const throw() { return kernel::suffix_set_category; }
         
+        friend inline std::ostream & operator<<(std::ostream &os, const suffix_set &s)
+        {
+            return base_type::template display(os, (*s.tree).head );
+        }
         
     private:
         YACK_DISABLE_ASSIGN(suffix_set);
