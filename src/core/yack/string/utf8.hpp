@@ -5,6 +5,8 @@
 #define YACK_UTF_8_INCLUDED 1
 
 #include "yack/setup.hpp"
+#include <iosfwd>
+#include "yack/ios/fwd.hpp"
 
 namespace yack
 {
@@ -75,7 +77,7 @@ namespace yack
         void          xch(utf8 &)                 throw(); //!< no-throw exchange
         size_t        bytes()               const throw(); //!< [1:4]
         uint32_t      operator*()           const throw(); //!< 21-bits of code
-        void          encode(uint8_t *data) const throw(); //!< code to data[bytes]
+        size_t        encode(uint8_t *data) const throw(); //!< code to data[bytes]
 
 
         //! define operators
@@ -109,16 +111,9 @@ namespace yack
         //! decode a valid sequence
         static utf8 decode(const uint8_t data[], const size_t size);
 
-        template <typename OSTREAM> inline friend
-        OSTREAM & operator<<(OSTREAM &os, const utf8 &u)
-        {
-            size_t  nout    = u.bytes();
-            uint8_t data[4] = { 0,0,0,0 };
-            u.encode(data);
-            for(size_t i=0;i<nout;++i) os << char(data[i]);
-            return os;
-        }
-        
+        friend std::ostream & operator<<(std::ostream &, const utf8 &);
+        friend ios::ostream & operator<<(ios::ostream &, const utf8 &);
+
     private:
         uint32_t code;
     };

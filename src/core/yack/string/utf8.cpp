@@ -100,7 +100,7 @@ namespace yack
 
 
 
-    void utf8:: encode(uint8_t *data) const throw()
+    size_t utf8:: encode(uint8_t *data) const throw()
     {
         static const uint32_t msk6 = 1|2|4|8|16|32;
         static const uint32_t bit7 = 128;
@@ -114,18 +114,18 @@ namespace yack
         {
             case 1: // 0-7 bits
                 data[0] = uint8_t(qw);
-                return;
+                return 1;
 
             case 2: // 8-11 bits: 5 + 6
                 data[1] = bit7        | uint8_t(qw&msk6); qw >>= 6;
                 data[0] = (bit7|bit6) | uint8_t(qw);
-                return;
+                return 2;
 
             case 3:  // 12 - 16 : 4 + 6 + 6
                 data[2] = bit7             | uint8_t(qw&msk6); qw >>= 6;
                 data[1] = bit7             | uint8_t(qw&msk6); qw >>= 6;
                 data[0] = (bit7|bit6|bit5) | uint8_t(qw);
-                return;
+                return 3;
 
             case 4:
                 // 17-21: 3+6+6+6
@@ -133,8 +133,9 @@ namespace yack
                 data[2] = bit7                  | uint8_t(qw&msk6); qw >>= 6;
                 data[1] = bit7                  | uint8_t(qw&msk6); qw >>= 6;
                 data[0] = (bit7|bit6|bit5|bit4) | uint8_t(qw);
-                return;
+                return 4;
         }
+        return 0;
     }
 }
 
@@ -255,3 +256,30 @@ namespace yack
     }
 }
 
+#include <iostream>
+
+namespace yack
+{
+    std::ostream & operator<<(std::ostream &os, const utf8 &u)
+    {
+        uint8_t      data[4] = { 0,0,0,0};
+        const size_t nout    = u.encode(data);
+        for(size_t i=0;i<nout;++i)
+        {
+            os << char(data[i]);
+        }
+        return os;
+    }
+}
+
+#include "yack/ios/ostream.hpp"
+
+namespace yack
+{
+    ios::ostream & operator<<(ios::ostream &os, const utf8 &u)
+    {
+        uint8_t data[4] = { 0,0,0,0};
+        os.frame(data,u.encode(data));
+        return os;
+    }
+}

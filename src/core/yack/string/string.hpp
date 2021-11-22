@@ -134,10 +134,20 @@ namespace yack
                 return skip(n);
             }
             
+            //__________________________________________________________________
+            //
+            // comparison
+            //__________________________________________________________________
+            inline friend bool operator==(const string &lhs, const string &rhs) throw()
+            {
+                return eq(static_cast<const_type*>(lhs.block),lhs.chars,
+                          static_cast<const_type*>(rhs.block),rhs.chars);
+            }
             
-
         private:
             type *item;
+            static bool eq(const T *l, const size_t nl,
+                           const T *r, const size_t nr) throw();
         };
 
 

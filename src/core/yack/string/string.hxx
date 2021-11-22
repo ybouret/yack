@@ -251,5 +251,28 @@ namespace yack
             return os;
         }
         
+        template <>
+        bool string<CH>:: eq(const CH    *l,
+                             const size_t nl,
+                             const CH    *r,
+                             const size_t nr) throw()
+        {
+            assert(!(NULL==l&&nl>0));
+            assert(!(NULL==r&&nr>0));
+            
+            if(nl!=nr)
+            {
+                return false;
+            }
+            else
+            {
+                for(size_t i=nl;i>0;--i)
+                {
+                    if( *(l++) != *(r++) ) return false;
+                }
+                return true;
+            }
+        }
+        
     }
 }
