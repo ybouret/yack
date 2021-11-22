@@ -112,7 +112,7 @@ namespace yack
             string & skip_if( FUNCTION &is_bad ) throw()
             {
                 size_t n = 0;
-                while(n<chars && is_bad( item[n+1]) ) ++n;
+                while(n<chars && is_bad(item[n+1]) ) ++n;
                 return skip(n);
             }
             
