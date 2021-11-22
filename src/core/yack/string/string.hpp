@@ -5,6 +5,7 @@
 
 #include "yack/string/string_.hpp"
 #include "yack/container/writable.hpp"
+#include "yack/container/as-capacity.hpp"
 
 namespace yack
 {
@@ -25,12 +26,17 @@ namespace yack
             using typename writable<T>::const_type;
             using typename writable<T>::type;
 
-            explicit string();
-            virtual ~string() throw();
-            string(const string &);    //!< copy
-            string & operator=(const string &); //!< copy/swap
-            string(const T);
             
+            explicit string();                   //!< default empty
+            virtual ~string() throw();           //!< cleanup
+            string(const string &);              //!< copy
+            string & operator=(const string &);  //!< copy/swap
+            string(const      T);                //!< single CHAR
+            string(const char *);                //!< copy/convert
+            string & operator=(const T) throw();         //!< assign single CHAR
+            string & operator=(const char *);            //!< assign/convert
+            string(const size_t, const as_capacity_t &); //!< with capacity, empty
+
 
             //__________________________________________________________________
             //
@@ -56,7 +62,30 @@ namespace yack
             // methods
             //__________________________________________________________________
             void xch(string &) throw(); //!< no-throw exchange
+            void clear() throw();       //!< clear data
+
+
+            //__________________________________________________________________
+            //
+            // catenation
+            //__________________________________________________________________
+            friend string operator+(const string &lhs, const string &rhs); //!< cat
+            friend string operator+(const string &lhs, const char   *rhs); //!< cat/convert
+            friend string operator+(const char   *lhs, const string &rhs); //!< cat/convert
+            friend string operator+(const string &lhs, const T       rhs); //!< cat
+            friend string operator+(const T       lhs, const string &rhs); //!< cat
+
+            string & operator+=(const string &); //!< cat
+            string & operator+=(const T       ); //!< cat
+            string & operator+=(const char   *); //!< cat
+
+            //__________________________________________________________________
+            //
+            // output
+            //__________________________________________________________________
             
+
+
         private:
             type *item;
         };
