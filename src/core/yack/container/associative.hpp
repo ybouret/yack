@@ -4,6 +4,7 @@
 #define YACK_ASSOCIATIVE_INCLUDED 1
 
 #include "yack/type/args.hpp"
+#include "yack/container.hpp"
 
 namespace yack
 {

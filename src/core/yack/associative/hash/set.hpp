@@ -28,7 +28,7 @@ namespace yack
 
             //__________________________________________________________________
             //
-            // emthods
+            // methods
             //__________________________________________________________________
             inline hash_set_node(param_type v) : next(0), prev(0), val_(v) {}    //!< setup
             inline                 ~hash_set_node()   throw() {}                 //!< cleanup
@@ -36,8 +36,8 @@ namespace yack
             inline const_type     & operator*() const throw() { return val_; }   //!< access
             inline const_key_type & key() const throw() { return val_.key(); }   //!< key access
 
-            inline type       * operator->()       throw() { return &val_; } //!< for drill-down behavior
-            inline const_type * operator->() const throw() { return &val_; } //!< for drill-down behavior
+            inline type       * operator->()       throw() { return &val_; } //!< final drilled-down pointer
+            inline const_type * operator->() const throw() { return &val_; } //!< final drilled-down pointer
 
 
             hash_set_node *next; //!< for list/pool

@@ -141,7 +141,7 @@ namespace yack
 
             //__________________________________________________________________
             //
-            //! transitive node access
+            //! used to drill-down
             //__________________________________________________________________
             inline NODE       & operator->()      throw() { assert(node); return *node;   }
 
@@ -153,7 +153,7 @@ namespace yack
 
             //__________________________________________________________________
             //
-            //! transitive node access
+            //! used to drill-down
             //__________________________________________________________________
             inline const NODE & operator->() const throw() { assert(node); return *node;   }
 
