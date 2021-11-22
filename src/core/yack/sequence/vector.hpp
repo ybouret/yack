@@ -16,12 +16,14 @@
 namespace yack
 {
 
-    //__________________________________________________________________________
-    //
-    //! formatting category
-    //__________________________________________________________________________
-    const char *vector_category_build(char *,const size_t,const char *) throw();
-
+    namespace kernel
+    {
+        //______________________________________________________________________
+        //
+        //! formatting category
+        //______________________________________________________________________
+        const char *vector_category_build(char *,const size_t,const char *) throw();
+    }
     //__________________________________________________________________________
     //
     //! common vector constructor
@@ -102,7 +104,7 @@ namespace yack
         inline virtual const char *category() const throw()
         {
             static char        buff[32];
-            static const char *id = vector_category_build(buff,sizeof(buff),ALLOCATOR::call_sign);
+            static const char *id = kernel::vector_category_build(buff,sizeof(buff),ALLOCATOR::call_sign);
             return id;
         }
 
