@@ -23,8 +23,8 @@ namespace yack
         class string : public string_, public writable<T>
         {
         public:
-            using  typename writable<T>::const_type;
-            using  typename writable<T>::type;
+            typedef  typename writable<T>::const_type const_type;
+            typedef  typename writable<T>::type       type;
 
             
             explicit string();                   //!< default empty
