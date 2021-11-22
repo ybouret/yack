@@ -15,7 +15,7 @@ namespace yack
     //
     //__________________________________________________________________________
     template <typename KEY, typename T>
-    class associative
+    class associative : public container
     {
     public:
         //______________________________________________________________________

@@ -8,6 +8,11 @@
 namespace yack
 {
 
+    namespace kernel
+    {
+        extern const char suffix_map_category[];
+    }
+
     //__________________________________________________________________________
     //
     //
@@ -38,7 +43,9 @@ namespace yack
         //______________________________________________________________________
         inline explicit suffix_map() throw() : base_type() {} //!< setup empty
         inline virtual ~suffix_map() throw() {}               //!< cleanup
-        inline suffix_map(const suffix_map &other) : base_type(other) {} //!< hard copy
+        inline          suffix_map(const suffix_map &other) :
+        collection(),
+        base_type(other) {} //!< hard copy
 
         //______________________________________________________________________
         //
@@ -55,6 +62,7 @@ namespace yack
 
 
 
+        virtual const char *category() const throw() { return kernel::suffix_map_category; }
 
 
 

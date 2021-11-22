@@ -2,5 +2,8 @@
 
 namespace yack
 {
-    const char list_category[] = "list";
+    namespace kernel
+    {
+        const char list_category[] = "list";
+    }
 }

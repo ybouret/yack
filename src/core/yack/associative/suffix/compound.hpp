@@ -56,6 +56,22 @@ namespace yack
         //! size interface
         inline virtual size_t size() const throw() { return (*tree).size; }
 
+        //! available
+        inline size_t available() const throw() { return tree.cache(); }
+
+        //! capacity
+        inline size_t capacity() const throw() { return tree.cache()+(*tree).size; }
+
+        //! reserve
+        inline void reserve(const size_t n) { tree.cache(n); }
+
+        //! free
+        inline void free() throw() { tree.free(); }
+
+
+        //! release
+        inline void release() throw() { tree.release(); }
+
         //______________________________________________________________________
         //
         // specific methods
@@ -74,7 +90,7 @@ namespace yack
 
         //! copy tree 
         inline suffix_compound(const suffix_compound &other) :
-        ASSOCIATIVE(), walk(), tree(other.tree)
+        collection(), ASSOCIATIVE(), walk(), tree(other.tree)
         {
         }
 

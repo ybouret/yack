@@ -60,6 +60,19 @@ namespace yack
 
         }
 
+        //! for container
+        inline virtual size_t available() const throw()
+        {
+            return zpool.size;
+        }
+
+
+        //! for container
+        inline virtual size_t capacity() const throw()
+        {
+            return zpool.size+(*table).size;
+        }
+
         //! associative<KEY,T> interface: search
         inline virtual const_type *search(param_key_type key) const throw()
         {

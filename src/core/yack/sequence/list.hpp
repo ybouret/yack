@@ -20,8 +20,10 @@
 
 namespace yack
 {
-
-    extern const char list_category[]; //!< shared category name
+    namespace kernel
+    {
+        extern const char list_category[]; //!< shared category name
+    }
     
     //__________________________________________________________________________
     //
@@ -104,7 +106,7 @@ namespace yack
         // collection interface
         //______________________________________________________________________
         inline virtual size_t      size()     const throw() { return alive.size; }
-        inline virtual const char *category() const throw() { return list_category; }
+        inline virtual const char *category() const throw() { return kernel::list_category; }
 
         //______________________________________________________________________
         //

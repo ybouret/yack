@@ -7,6 +7,11 @@
 
 namespace yack
 {
+    namespace kernel
+    {
+        extern const char suffix_set_category[];
+    }
+
     //__________________________________________________________________________
     //
     //
@@ -37,7 +42,8 @@ namespace yack
         //______________________________________________________________________
         inline explicit suffix_set() throw() : base_type() {}            //!< setup empty
         inline virtual ~suffix_set() throw() {}                          //!< cleanup
-        inline suffix_set(const suffix_set &other) : base_type(other) {} //!< hard copy
+        inline          suffix_set(const suffix_set &other) :
+        collection(), base_type(other) {} //!< hard copy
 
         //______________________________________________________________________
         //
@@ -52,7 +58,9 @@ namespace yack
             const uint8_t *ptr = walk(key,len);
             return tree.insert(args,ptr,len);
         }
-        
+
+        //! category for container
+        virtual const char *category() const throw() { return kernel::suffix_set_category; }
         
         
     private:

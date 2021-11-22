@@ -12,6 +12,7 @@ namespace yack
 {
     namespace kernel
     {
+        extern const char hash_map_category[]; //!< "hash_map"
 
         //______________________________________________________________________
         //
@@ -88,7 +89,7 @@ namespace yack
         inline explicit hash_map() throw() : base_type() {}
         
         //! copy
-        inline hash_map(const hash_map &other) : base_type()
+        inline hash_map(const hash_map &other) : collection(), base_type()
         {
             try {
                 for(const node_type *node= (*other.table).head;node;node=node->next)
@@ -98,6 +99,10 @@ namespace yack
             }
             catch(...) { release(); throw; }
         }
+
+        virtual const char *category() const throw() { return kernel::hash_map_category; }
+
+
         //______________________________________________________________________
         //
         //! glossary interface

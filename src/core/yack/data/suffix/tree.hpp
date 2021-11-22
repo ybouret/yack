@@ -109,7 +109,16 @@ namespace yack
             }
 
             //! available nodes for the tree
-            inline size_t cache() const throw() { return repo.size(); }
+            inline size_t cache() const throw() { return repo.size; }
+
+            //! put data nodes in cache
+            inline void cache(size_t n)
+            {
+                while(n-- > 0)
+                {
+                    pool.store( new knot_type() );
+                }
+            }
 
             //__________________________________________________________________
             //

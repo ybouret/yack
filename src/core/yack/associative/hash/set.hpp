@@ -11,6 +11,8 @@ namespace yack
 
     namespace kernel
     {
+        extern const char hash_set_category[]; //!< "hash_set"
+
         //______________________________________________________________________
         //
         //! node containing type (with a key() method)
@@ -87,7 +89,7 @@ namespace yack
         inline explicit hash_set() throw() : base_type()  {}
         
         //! copy
-        inline hash_set(const hash_set &other) : base_type()
+        inline hash_set(const hash_set &other) : collection(), base_type()
         {
             try {
                 for(const node_type *node= (*other.table).head;node;node=node->next)
@@ -97,6 +99,8 @@ namespace yack
             }
             catch(...) { release(); throw; }
         }
+
+        virtual const char *category() const throw() { return kernel::hash_set_category; }
 
         //______________________________________________________________________
         //
