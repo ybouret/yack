@@ -3,10 +3,5 @@
 
 namespace yack
 {
-    string:: ~string() throw()
-    {
-    }
-
     
-
 }

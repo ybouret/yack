@@ -192,6 +192,7 @@ add_test(counting:part  test-yack counting_part)
 add_test(rtld:dso test-yack rtld_dso)
 
 add_test(string:utf8 test-yack string_utf8)
+add_test(strings     test-yack strings)
 
 add_test(info:bwt  test-yack info_bwt)
 add_test(info:mod  test-yack info_mod)

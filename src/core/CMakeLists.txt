@@ -478,7 +478,7 @@ install( FILES ${rtld_decl} DESTINATION include/yack/rtld )
 ########################################################################
 file(GLOB string_impl yack/string/*.cpp)
 file(GLOB string_decl yack/string/*.hpp)
-set(string ${string_impl} ${string_decl})
+set(string ${string_impl} ${string_decl} yack/string/string.hxx)
 SOURCE_GROUP(string FILES ${string})
 install( FILES ${string_decl} DESTINATION include/yack/string )
 

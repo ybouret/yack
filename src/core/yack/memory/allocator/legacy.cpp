@@ -34,6 +34,7 @@ namespace yack
             }
             
         }
+        
 
         void legacy:: release(void *addr) throw()
         {

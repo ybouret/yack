@@ -37,6 +37,7 @@ namespace yack
             virtual void         release(void * &addr, size_t &size)     throw();
             virtual const char * variety()                         const throw();
 
+            
 
         private:
             YACK_DISABLE_COPY_AND_ASSIGN(pooled);
