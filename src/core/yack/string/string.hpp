@@ -87,9 +87,10 @@ namespace yack
 
             //__________________________________________________________________
             //
-            // output
+            // skip/trim
             //__________________________________________________________________
-            
+            string & skip(const size_t n) throw();
+            string & trim(const size_t n) throw();
 
 
         private:

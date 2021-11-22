@@ -53,6 +53,12 @@ YACK_UTEST(strings)
 
         {
             string s = "damn" + rhs; std::cerr << s << std::endl;
+            std::cerr << s.skip(1) << std::endl;
+            std::cerr << s.skip(2) << std::endl;
+
+            std::cerr << s.trim(1) << std::endl;
+            std::cerr << s.trim(2) << std::endl;
+
         }
 
     }

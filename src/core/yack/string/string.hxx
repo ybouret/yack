@@ -206,5 +206,38 @@ namespace yack
             return *this;
         }
 
+
+        template <> string<CH> & string<CH>:: skip(const size_t n) throw()
+        {
+            if(n>=chars)
+            {
+                clear();
+            }
+            else
+            {
+                chars -=n;
+                memmove(block,out_of_reach::shift(block,ptrdiff_t(n) * sizeof(CH)),chars*sizeof(CH));
+                memset(out_of_reach::shift(block,ptrdiff_t(chars)*sizeof(CH)),0,n*sizeof(CH));
+            }
+            return *this;
+        }
+
+        template <> string<CH> & string<CH>:: trim(const size_t n) throw()
+        {
+            if(n>=chars)
+            {
+                clear();
+            }
+            else
+            {
+                for(size_t i=n;i>0;--i)
+                {
+                    item[chars--] = 0;
+                }
+            }
+            return *this;
+        }
+
+        
     }
 }
