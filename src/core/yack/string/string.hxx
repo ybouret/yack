@@ -21,6 +21,17 @@ namespace yack
         }
 
         template <>
+        string<CH>:: string(const CH ch) :
+        collection(),
+        string_(1,sizeof(CH)),
+        writable<CH>(),
+        item( static_cast<CH*>(block)-1 )
+        {
+            item[chars=1] = ch;
+        }
+
+
+        template <>
         size_t string<CH>:: measure() const throw()
         {
             return chars * sizeof(CH);

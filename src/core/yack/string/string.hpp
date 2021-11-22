@@ -29,6 +29,8 @@ namespace yack
             virtual ~string() throw();
             string(const string &);    //!< copy
             string & operator=(const string &); //!< copy/swap
+            string(const T);
+            
 
             //__________________________________________________________________
             //
