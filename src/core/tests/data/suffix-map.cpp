@@ -29,6 +29,11 @@ YACK_UTEST(data_suffix_map)
     }
     std::cerr << "keys=" << keys << std::endl;
 
+    {
+        suffix_map<int,apn> tmp(m);
+        YACK_CHECK(tmp.size()==m.size());
+    }
+
     m.get_tree().gv("suffix-map.dot");
     ios::vizible::render("suffix-map.dot");
 

@@ -35,9 +35,10 @@ namespace yack
         //
         // C++
         //______________________________________________________________________
-        inline explicit suffix_set() throw() : base_type() {} //!< setup empty
-        inline virtual ~suffix_set() throw() {}               //!< cleanup
-        
+        inline explicit suffix_set() throw() : base_type() {}            //!< setup empty
+        inline virtual ~suffix_set() throw() {}                          //!< cleanup
+        inline suffix_set(const suffix_set &other) : base_type(other) {} //!< hard copy
+
         //______________________________________________________________________
         //
         // glossary interface
@@ -54,11 +55,8 @@ namespace yack
         
         
         
-        
-        
-        
     private:
-        YACK_DISABLE_COPY_AND_ASSIGN(suffix_set);
+        YACK_DISABLE_ASSIGN(suffix_set);
     };
 }
 

@@ -36,6 +36,32 @@ namespace
     private:
         YACK_DISABLE_ASSIGN(dummy);
     };
+
+
+    struct client
+    { int a; };
+
+    struct proxy {
+        client *target;
+        client *operator->() const
+        { return target; }
+    };
+
+    struct proxy2 {
+        proxy *target;
+        proxy &operator->() const
+        { return * target; }
+    };
+
+    static  inline void f() {
+        client x = { 3 };
+        proxy  y = { & x };
+        proxy2 z = { & y };
+
+        std::cout << x.a << y->a << z->a << std::endl;; // print "333"
+    }
+
+
 }
 
 YACK_UTEST(data_hash_set)
@@ -58,6 +84,7 @@ YACK_UTEST(data_hash_set)
         for(hash_set<int,dummy>::const_iterator it=s.begin();it!=s.end();++it)
         {
             std::cerr << *it << ", key=" << it->key() << std::endl;
+            std::cerr << *it << std::endl;
         }
 
         {
@@ -78,8 +105,8 @@ YACK_UTEST(data_hash_set)
         }
         std::cerr << "#keys=" << keys.size() << std::endl;
         std::cerr << "#data=" << s.size() << std::endl;
-
-
     }
+
+    f();
 }
 YACK_UDONE()

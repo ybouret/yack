@@ -143,7 +143,7 @@ namespace yack
             //
             //! transitive node access
             //__________________________________________________________________
-            inline NODE       * operator->()      throw() { assert(node); return node;   }
+            inline NODE       & operator->()      throw() { assert(node); return *node;   }
 
             //__________________________________________________________________
             //
@@ -155,7 +155,7 @@ namespace yack
             //
             //! transitive node access
             //__________________________________________________________________
-            inline const NODE * operator->() const throw() { assert(node); return node;   }
+            inline const NODE & operator->() const throw() { assert(node); return *node;   }
 
         private:
             mutable_node_type *node;

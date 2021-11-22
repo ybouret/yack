@@ -65,11 +65,9 @@ namespace yack
             inline type       & operator*()       throw() { assert(is_alive()); return *data; } //!< access data
             inline const_type & operator*() const throw() { assert(is_alive()); return *data; } //!< access const data
 
-#if 1
-            inline type       * operator->()       throw() { assert(is_alive()); return data; } //!< transitive access node
-            inline const_type * operator->() const throw() { assert(is_alive()); return data; } //!< transitive access node
-#endif
-            
+            inline type       * operator->()       throw() { assert(is_alive()); return data; } //!< drill-down
+            inline const_type * operator->() const throw() { assert(is_alive()); return data; } //!< drill-down
+
             //__________________________________________________________________
             //
             // members

@@ -56,20 +56,12 @@ YACK_UTEST(data_suffix_set)
         
         for(suffix_set<int,dummy>::const_iterator it=s.begin();it!=s.end();++it)
         {
-            const suffix_set<int,dummy>::knot_type *kn = it.operator->();
-            kn->node;
-            //const int k = kn->k;
-            const dummy *d = (*kn).operator->();
-            //const int    k = d->k;
-            //const int    kk = it->k;
-            // std::cerr << *it << ", key=" << it->key() << std::endl;
-            std::cerr << *it << std::endl;
-            
+            std::cerr << *it << ", key=" << it->key() << std::endl;
         }
         
         {
-            //hash_set<int,dummy> tmp(s);
-            //YACK_CHECK(tmp.size()==s.size());
+            suffix_set<int,dummy> tmp(s);
+            YACK_CHECK(tmp.size()==s.size());
         }
         
         randomized::shuffle::data( keys(), keys.size(), ran);

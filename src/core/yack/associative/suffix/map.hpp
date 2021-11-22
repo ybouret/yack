@@ -38,6 +38,7 @@ namespace yack
         //______________________________________________________________________
         inline explicit suffix_map() throw() : base_type() {} //!< setup empty
         inline virtual ~suffix_map() throw() {}               //!< cleanup
+        inline suffix_map(const suffix_map &other) : base_type(other) {} //!< hard copy
 
         //______________________________________________________________________
         //
@@ -58,7 +59,7 @@ namespace yack
 
 
     private:
-        YACK_DISABLE_COPY_AND_ASSIGN(suffix_map);
+        YACK_DISABLE_ASSIGN(suffix_map);
     };
 
 

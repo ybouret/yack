@@ -35,6 +35,11 @@ namespace yack
             inline const_type     & operator*() const throw() { return val_; } //!< access
             inline const_key_type & key()       const throw() { return key_; } //!< access
 
+
+            inline hash_map_node       * operator->()       throw() { return this; } //!< for drill down behavior
+            inline const hash_map_node * operator->() const throw() { return this; } //!< for drill down behavior
+
+
             hash_map_node *next; //!< for list/pool
             hash_map_node *prev; //!< for list
         private:
