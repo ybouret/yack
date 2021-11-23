@@ -140,6 +140,38 @@ namespace yack
                 return skip(n);
             }
             
+
+            inline
+            string & trim_with(const T *bad, const size_t num) throw()
+            {
+                assert(!(num>0&&NULL==bad));
+                const belongs_to is_bad = { bad, num };
+                return trim_if(is_bad);
+            }
+
+            inline
+            string & trim_with(const T bad) throw()
+            {
+                const belongs_to is_bad = { &bad, 1 };
+                return trim_if(is_bad);
+            }
+
+            inline
+            string & skip_with(const T *bad, const size_t num) throw()
+            {
+                assert(!(num>0&&NULL==bad));
+                const belongs_to is_bad = { bad, num };
+                return skip_if(is_bad);
+            }
+
+            inline
+            string & skip_with(const T bad) throw()
+            {
+                const belongs_to is_bad = { &bad, 1 };
+                return skip_if(is_bad);
+            }
+
+
             //__________________________________________________________________
             //
             // comparisons
@@ -156,6 +188,19 @@ namespace yack
             type *item;
             static bool eq(const T *l, const size_t nl,
                            const T *r, const size_t nr) throw();
+
+            struct belongs_to
+            {
+                const T *entry;
+                size_t   count;
+                inline bool operator()(const T ch) throw()
+                {
+                    const T *p  = entry;
+                    size_t   n  = count;
+                    while(n-- > 0) { if (ch == *(p++) ) return true; }
+                    return false;
+                }
+            };
         };
 
 
