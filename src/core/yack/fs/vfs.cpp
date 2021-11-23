@@ -1,7 +1,6 @@
 
 #include "yack/fs/vfs.hpp"
 #include "yack/type/cstring.h"
-#include "yack/memory/allocator/legacy.hpp"
 
 namespace yack
 {
@@ -30,6 +29,12 @@ namespace yack
             return path;
         }
     }
+
+    const char *vfs:: get_base_name(const string &path) throw()
+    {
+        return get_base_name(&path[1],path.size());
+    }
+
 
     const char *vfs:: get_base_name(const char *path) throw()
     {
@@ -67,7 +72,10 @@ namespace yack
 
     }
 
-
+    const char *vfs:: get_extension(const string &path) throw()
+    {
+        return get_extension(&path[1],path.size());
+    }
     
 
 
