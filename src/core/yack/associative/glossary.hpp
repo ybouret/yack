@@ -48,18 +48,25 @@ namespace yack
             os << '{';
             if(node)
             {
-                os << **node;
+                disp(os,node);
                 while(NULL!=(node=node->next))
                 {
-                    os << ',' << **node;
+                    disp(os << ',',node);
                 }
             }
             os << '}';
             return os;
         }
 
+
     private:
         YACK_DISABLE_COPY_AND_ASSIGN(glossary);
+        template <typename OSTREAM, typename NODE> static inline
+        void disp(OSTREAM &os, const NODE *node)
+        {
+            os << **node;
+        }
+
     };
 
 }
