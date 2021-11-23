@@ -7,6 +7,7 @@
 
 #include "yack/associative/hash/compound.hpp"
 #include "yack/associative/glossary.hpp"
+#include "yack/ios/fwd.hpp"
 
 namespace yack
 {
@@ -118,6 +119,18 @@ namespace yack
             {
                 return false;
             }
+        }
+
+        //! output to std::ostream
+        friend inline std::ostream & operator<<(std::ostream &os, const hash_map &s)
+        {
+            return base_type::template display(os, (*s.table).head );
+        }
+
+        //! output to ios::ostream
+        friend inline ios::ostream & operator<<(ios::ostream &os, const hash_map &s)
+        {
+            return base_type::template display(os, (*s.table).head );
         }
 
 

@@ -111,8 +111,8 @@ namespace yack
         //! decode a valid sequence
         static utf8 decode(const uint8_t data[], const size_t size);
 
-        friend std::ostream & operator<<(std::ostream &, const utf8 &);
-        friend ios::ostream & operator<<(ios::ostream &, const utf8 &);
+        friend std::ostream & operator<<(std::ostream &, const utf8 &); //!< output decoded
+        friend ios::ostream & operator<<(ios::ostream &, const utf8 &); //!< output decoded
 
     private:
         uint32_t code;

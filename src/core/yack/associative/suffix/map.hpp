@@ -5,6 +5,7 @@
 
 #include "yack/associative/suffix/compound.hpp"
 #include "yack/associative/glossary.hpp"
+
 namespace yack
 {
 
@@ -64,6 +65,17 @@ namespace yack
 
         virtual const char *category() const throw() { return kernel::suffix_map_category; }
 
+        //! output to std::ostream
+        friend inline std::ostream & operator<<(std::ostream &os, const suffix_map &s)
+        {
+            return base_type::template display(os, (*s.tree).head );
+        }
+
+        //! output to ios::ostream
+        friend inline ios::ostream & operator<<(ios::ostream &os, const suffix_map &s)
+        {
+            return base_type::template display(os, (*s.tree).head );
+        }
 
 
     private:

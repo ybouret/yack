@@ -23,20 +23,29 @@ namespace yack
         class string : public string_, public writable<T>
         {
         public:
-            typedef  typename writable<T>::const_type const_type;
-            typedef  typename writable<T>::type       type;
-            static   const char clid[];
+            //__________________________________________________________________
+            //
+            // types and definitions
+            //__________________________________________________________________
+            typedef  typename writable<T>::const_type const_type; //!< alias
+            typedef  typename writable<T>::type       type;       //!< alias
+            static   const char                       clid[];     //!< class id,
             
-            
-            explicit string();                   //!< default empty
-            virtual ~string() throw();           //!< cleanup
-            string(const string &);              //!< copy
-            string & operator=(const string &);  //!< copy/swap
-            string(const      T);                //!< single CHAR
-            string(const char *);                //!< copy/convert
+            //__________________________________________________________________
+            //
+            // C++
+            //__________________________________________________________________
+            explicit string();                           //!< default empty
+            virtual ~string() throw();                   //!< cleanup
+            string(const string &);                      //!< copy
+            string & operator=(const string &);          //!< copy/swap
+            string(const      T);                        //!< single CHAR
+            string(const char *);                        //!< copy/convert
             string & operator=(const T) throw();         //!< assign single CHAR
             string & operator=(const char *);            //!< assign/convert
-            string(const size_t, const as_capacity_t &); //!< with capacity, empty
+
+            //! build with capacity, filled or not
+            string(const size_t, const as_capacity_t &,bool filled=false); //!< with capacity, empty or 0
 
             //__________________________________________________________________
             //
@@ -96,28 +105,24 @@ namespace yack
             //
             // output
             //__________________________________________________________________
-            std::ostream & display(std::ostream &) const;
-            ios::ostream & display(ios::ostream &) const;
-            
-            inline friend std::ostream & operator<<(std::ostream &os, const string &s)
-            {
-                return s.display(os);
-            }
-            
-            inline friend ios::ostream & operator<<(ios::ostream &os, const string &s)
-            {
-                return s.display(os);
-            }
+            std::ostream & display(std::ostream &) const; //!< output method
+            ios::ostream & display(ios::ostream &) const; //!< output method
+
+            //! display to std::ostream
+            inline friend std::ostream & operator<<(std::ostream &os, const string &s) { return s.display(os); }
+
+            //! display to ios::ostream
+            inline friend ios::ostream & operator<<(ios::ostream &os, const string &s) { return s.display(os); }
             
             
             //__________________________________________________________________
             //
             // skip/trim
             //__________________________________________________________________
-            string & skip(const size_t n) throw();
-            string & trim(const size_t n) throw();
+            string & skip(const size_t n) throw(); //!< skip n first chars
+            string & trim(const size_t n) throw(); //!< trim n last chars
             
-            
+            //! trim last bad chars
             template <typename FUNCTION> inline
             string & trim_if( FUNCTION &is_bad ) throw()
             {
@@ -125,7 +130,8 @@ namespace yack
                 while(n<chars && is_bad( item[chars-n]) ) ++n;
                 return trim(n);
             }
-            
+
+            //! skip first bad chars
             template <typename FUNCTION> inline
             string & skip_if( FUNCTION &is_bad ) throw()
             {
@@ -136,8 +142,10 @@ namespace yack
             
             //__________________________________________________________________
             //
-            // comparison
+            // comparisons
             //__________________________________________________________________
+
+            //! equality operator (the difference comes with writable<T>)
             inline friend bool operator==(const string &lhs, const string &rhs) throw()
             {
                 return eq(static_cast<const_type*>(lhs.block),lhs.chars,

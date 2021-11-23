@@ -39,12 +39,13 @@ namespace yack
         }
 
         template <>
-        string<CH>::  string(const size_t n, const as_capacity_t &) :
+        string<CH>::  string(const size_t n, const as_capacity_t &, const bool filled) :
         collection(),
         string_(n,sizeof(CH)),
         writable<CH>(),
         item( static_cast<CH*>(block)-1 )
         {
+            if(filled) chars=n;
         }
 
 

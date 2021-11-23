@@ -10,7 +10,7 @@ namespace yack
 {
     namespace kernel
     {
-        extern const char suffix_set_category[];
+        extern const char suffix_set_category[]; //!< "suffix_set"
     }
 
     //__________________________________________________________________________
@@ -62,12 +62,19 @@ namespace yack
 
         //! category for container
         virtual const char *category() const throw() { return kernel::suffix_set_category; }
-        
+
+        //! output to std::ostream
         friend inline std::ostream & operator<<(std::ostream &os, const suffix_set &s)
         {
             return base_type::template display(os, (*s.tree).head );
         }
-        
+
+        //! output to ios::ostream
+        friend inline ios::ostream & operator<<(ios::ostream &os, const suffix_set &s)
+        {
+            return base_type::template display(os, (*s.tree).head );
+        }
+
     private:
         YACK_DISABLE_ASSIGN(suffix_set);
     };

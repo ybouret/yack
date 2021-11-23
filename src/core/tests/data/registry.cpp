@@ -1,8 +1,9 @@
-#include "yack/utest/run.hpp"
-#include "yack/associative/suffix/set.hpp"
 #include "yack/associative/hash/set.hpp"
+#include "yack/associative/suffix/set.hpp"
+
 #include "yack/sequence/vector.hpp"
 #include "../main.hpp"
+#include "yack/utest/run.hpp"
 
 using namespace yack;
 

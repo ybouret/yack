@@ -37,7 +37,8 @@ namespace yack
         inline virtual ~registry() throw() {} //!< cleanup
     protected:
         inline explicit registry() throw() {} //!< setup
-        
+
+        //! multipurpose display
         template <typename OSTREAM, typename NODE> static inline
         OSTREAM &display(OSTREAM &os, const NODE *node)
         {
