@@ -114,6 +114,7 @@ YACK_UTEST_DECL(128)
     
     YACK_UTEST(string_utf8);
     YACK_UTEST(strings);
+    YACK_UTEST(string_tokenize);
 
     YACK_UTEST(info_bwt);
     YACK_UTEST(info_mod);

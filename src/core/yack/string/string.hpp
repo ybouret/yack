@@ -47,6 +47,9 @@ namespace yack
             //! build with capacity, filled or not
             string(const size_t, const as_capacity_t &,bool filled=false); //!< with capacity, empty or 0
 
+            //! build with sub-string
+            string(const T *entry, const size_t count);
+
             //__________________________________________________________________
             //
             // memory::ro_buffer interface

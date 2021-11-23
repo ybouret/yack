@@ -29,6 +29,7 @@ namespace yack
             item=0;
         }
 
+
         template <>
         string<CH>:: string() :
         collection(),
@@ -48,6 +49,18 @@ namespace yack
             if(filled) chars=n;
         }
 
+
+
+        template <>
+        string<CH>:: string(const CH *entry, const size_t count) :
+        collection(),
+        string_(count,sizeof(CH)),
+        writable<CH>(),
+        item( static_cast<CH*>(block)-1 )
+        {
+            chars = count;
+            if(entry) memcpy(block,entry,count*sizeof(CH));
+        }
 
 
         template <>
