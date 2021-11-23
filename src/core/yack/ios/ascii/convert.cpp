@@ -2,9 +2,6 @@
 #include "yack/ios/ascii/hybrid.hpp"
 #include "yack/system/exception.hpp"
 #include <cerrno>
-#include <cstring>
-#include "yack/string.hpp"
-#include "yack/type/ints.hpp"
 
 namespace yack
 {
@@ -14,6 +11,16 @@ namespace yack
 
         namespace ascii
         {
+
+            void convert:: out_of_range_signed(const size_t bytes, const char *ctx)
+            {
+                throw libc::exception(EDOM,"out of range int%u_t for %s",unsigned(8*bytes),ctx?ctx:yack_unknown);
+            }
+
+            void convert:: out_of_range_unsigned(const size_t bytes, const char *ctx)
+            {
+                throw libc::exception(EDOM,"out of range uint%u_t for %s",unsigned(8*bytes),ctx?ctx:yack_unknown);
+            }
 
             int64_t convert::to_int64(const char *args, const char *ctx)
             {
