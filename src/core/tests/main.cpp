@@ -105,6 +105,7 @@ YACK_UTEST_DECL(128)
 
     YACK_UTEST(sort_heap);
     YACK_UTEST(sort_indexing);
+    YACK_UTEST(sort_sum);
 
     YACK_UTEST(counting_comb);
     YACK_UTEST(counting_perm);

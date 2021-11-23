@@ -3,7 +3,7 @@
 #ifndef YACK_COMPARISON_INCLUDED
 #define YACK_COMPARISON_INCLUDED 1
 
-#include "yack/setup.hpp"
+#include "yack/type/utils.hpp"
 
 namespace yack
 {
@@ -17,14 +17,27 @@ namespace yack
     {
         //______________________________________________________________________
         //
-        //! increasiong
+        //! increasing
         //______________________________________________________________________
         template <typename T> static inline
         int increasing(const T &lhs, const T &rhs) throw()
         {
             return (lhs<rhs) ? -1 : (rhs<lhs ? 1 : 0);
         }
-        
+
+        //______________________________________________________________________
+        //
+        //! increasing absolute value
+        //______________________________________________________________________
+        template <typename T> static inline
+        int increasing_abs(const T &lhs, const T &rhs) throw()
+        {
+            const T L = absolute(lhs);
+            const T R = absolute(rhs);
+            return (L<R) ? -1 : (R<L ? 1 : 0);
+        }
+
+
         //______________________________________________________________________
         //
         //! decreasing
@@ -34,7 +47,21 @@ namespace yack
         {
             return (lhs<rhs) ? 1 : (rhs<lhs ? -1 : 0);
         }
-        
+
+        //______________________________________________________________________
+        //
+        //! increasing absolute value
+        //______________________________________________________________________
+        template <typename T> static inline
+        int decreasing_abs(const T &lhs, const T &rhs) throw()
+        {
+            const T L = absolute(lhs);
+            const T R = absolute(rhs);
+            return (L<R) ? 1 : (R<L ? -1 : 0);
+        }
+
+
+
         //______________________________________________________________________
         //
         //! test ordered range
