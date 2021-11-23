@@ -53,11 +53,10 @@ namespace yack
         class tree_node_ : public object
         {
         public:
-            virtual ~tree_node_() throw();
-
             static void format(std::ostream &, const void *, const size_t ); //!< key format
             static void format(ios::ostream &, const void *, const size_t ); //!< key format
 
+            virtual ~tree_node_() throw();
         protected:
             explicit tree_node_() throw();
 
@@ -185,7 +184,10 @@ namespace yack
             void disp(OSTREAM &os) const
             {
                 assert(knot);
-                os << '@' << **knot;
+                path_type path(depth(),as_capacity);
+                encode(path);
+                format(os,path(),path.size());
+                os << ':' << **knot;
             }
 
             //__________________________________________________________________
