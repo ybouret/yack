@@ -68,6 +68,7 @@ namespace yack
             inline type       * operator->()       throw() { assert(is_alive()); return data; } //!< drill-down
             inline const_type * operator->() const throw() { assert(is_alive()); return data; } //!< drill-down
 
+            //! forward display to node
             template <typename OSTREAM>
             inline void disp(OSTREAM &os) const
             {

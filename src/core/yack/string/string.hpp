@@ -140,7 +140,7 @@ namespace yack
                 return skip(n);
             }
             
-
+            //! trim_with
             inline
             string & trim_with(const T *bad, const size_t num) throw()
             {
@@ -149,6 +149,7 @@ namespace yack
                 return trim_if(is_bad);
             }
 
+            //! trim_with
             inline
             string & trim_with(const T bad) throw()
             {
@@ -156,6 +157,7 @@ namespace yack
                 return trim_if(is_bad);
             }
 
+            //! skip_with
             inline
             string & skip_with(const T *bad, const size_t num) throw()
             {
@@ -164,6 +166,7 @@ namespace yack
                 return skip_if(is_bad);
             }
 
+            //! skip_with
             inline
             string & skip_with(const T bad) throw()
             {

@@ -71,7 +71,7 @@ namespace yack
             {
                 try
                 {
-                    path_type path;
+                    path_type path(other.depth(),as_capacity);
                     for(const knot_type *knot=other.data.head;knot;knot=knot->next)
                     {
                         knot->node->encode(path);
@@ -118,6 +118,18 @@ namespace yack
                 {
                     pool.store( new knot_type() );
                 }
+            }
+
+            //! max depth
+            inline size_t depth() const throw()
+            {
+                size_t deep = 0;
+                for(const knot_type *knot=data.head;knot;knot=knot->next)
+                {
+                    const size_t  temp = knot->node->depth();
+                    if(temp>deep) deep = temp;
+                }
+                return deep;
             }
 
             //__________________________________________________________________

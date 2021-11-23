@@ -10,11 +10,7 @@
 namespace yack
 {
 
-    typedef kernel::tree_path<uint8_t> suffix_path;
-
-
-
-
+    
     //__________________________________________________________________________
     //
     //

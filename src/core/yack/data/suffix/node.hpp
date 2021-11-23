@@ -34,14 +34,36 @@ namespace yack
         public:
             typedef vector<CODE,memory::pooled> base_type; //!< alias
 
-            inline  explicit tree_path() throw() : collection(), base_type() {}   //!< setup
+            inline  explicit tree_path() throw() : collection(), base_type()   {} //!< setup
             inline  virtual ~tree_path() throw() {}                               //!< cleanup
             inline  tree_path(const tree_path &_) : collection(), base_type(_) {} //!< hard copy
+            //! initialize with capacity
+            inline  tree_path(const size_t n, const as_capacity_t &_) : collection(), base_type(n,_) {}
 
         private:
             YACK_DISABLE_ASSIGN(tree_path);
         };
 
+        //______________________________________________________________________
+        //
+        //
+        //! base class for tree_node
+        //
+        //______________________________________________________________________
+        class tree_node_ : public object
+        {
+        public:
+            virtual ~tree_node_() throw();
+
+            static void format(std::ostream &, const void *, const size_t ); //!< key format
+            static void format(ios::ostream &, const void *, const size_t ); //!< key format
+
+        protected:
+            explicit tree_node_() throw();
+
+        private:
+            YACK_DISABLE_COPY_AND_ASSIGN(tree_node_);
+        };
 
         //______________________________________________________________________
         //
@@ -50,7 +72,7 @@ namespace yack
         //
         //______________________________________________________________________
         template <typename T, typename CODE>
-        class tree_node : public object
+        class tree_node : public tree_node_
         {
         public:
             //__________________________________________________________________
@@ -71,7 +93,7 @@ namespace yack
 
             //! setup
             inline explicit tree_node(const CODE c) throw() :
-            code(c), next(NULL), prev(NULL), from(NULL), chld(), knot(NULL)
+            tree_node_(), code(c), next(NULL), prev(NULL), from(NULL), chld(), knot(NULL)
             {
             }
 
@@ -95,9 +117,21 @@ namespace yack
                 return __sign::of(code,node->code);
             }
 
+            //! climb up tree to compute depth>=1
+            inline size_t depth() const
+            {
+                size_t           deep = 0;
+                const node_type *node = this;
+                while(node)
+                {
+                    node=node->from;
+                    ++deep;
+                }
+                return deep;
+            }
 
             //! save compiled key
-            void encode( path_type &path ) const
+            inline void encode( path_type &path ) const
             {
                 path.free();
                 const node_type *node = this;

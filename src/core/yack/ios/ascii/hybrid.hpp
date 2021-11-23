@@ -3,7 +3,7 @@
 //! \file
 
 #ifndef YACK_ASCII_HYBRID_INCLUDED
-#define YACK_ASCII_HYBIRD_INCLUDED 1
+#define YACK_ASCII_HYBRID_INCLUDED 1
 
 #include "yack/ios/ostream.hpp"
 

@@ -45,6 +45,7 @@ namespace yack
             hash_map_node *next; //!< for list/pool
             hash_map_node *prev; //!< for list
 
+            //! display key:value
             template <typename OSTREAM>
             inline void disp(OSTREAM &os) const
             {
