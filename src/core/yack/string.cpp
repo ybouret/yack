@@ -5,6 +5,7 @@
 
 #include <cstdarg>
 #include <cerrno>
+#include <cstdio>
 
 namespace yack
 {
