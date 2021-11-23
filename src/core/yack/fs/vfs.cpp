@@ -2,6 +2,7 @@
 #include "yack/fs/vfs.hpp"
 #include "yack/type/cstring.h"
 #include "yack/string.hpp"
+#include <cstring>
 
 namespace yack
 {
