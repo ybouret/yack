@@ -274,6 +274,65 @@ namespace yack
                 return true;
             }
         }
-        
+
+        template <> int  string<CH>:: cmp(const CH *l, const size_t nl,
+                                          const CH *r, const size_t nr) throw()
+        {
+            assert(!(NULL==l&&nl>0));
+            assert(!(NULL==r&&nr>0));
+            const CH *small = l;
+            const CH *great = r;
+            size_t    ns    = nl;
+            size_t    ng    = nr;
+            bool      exch  = false;
+            if(ng<ns)
+            {
+                cswap(small,great);
+                cswap(ns,ng);
+                exch = true;
+            }
+
+            // compare small parts
+            for(size_t i=0;i<ns;++i)
+            {
+                const CH s = *(small++);
+                const CH g = *(great++);
+                if(s<g)
+                {
+                    return exch ? 1:-1;
+                }
+                else
+                {
+                    if(g<s)
+                    {
+                        return exch ? -1:1;
+                    }
+                    else
+                    {
+                        assert(g==s);
+                        continue;
+                    }
+                }
+            }
+
+            // equality on small parts
+            if(ns==ng)
+            {
+                // the same
+                return 0;
+            }
+            else
+            {
+                // small<great
+                return exch ? 1:-1;
+            }
+        }
+
+        template <> int  string<CH>:: compare(const string &lhs, const string &rhs) throw()
+        {
+            return cmp(static_cast<const CH*>(lhs.block), lhs.chars,
+                       static_cast<const CH*>(rhs.block), rhs.chars);
+        }
+
     }
 }
