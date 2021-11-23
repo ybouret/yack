@@ -81,8 +81,8 @@ YACK_UTEST(data_registry)
             YACK_ASSERT(h_set.search(keys[i]));
         }
         
-        std::cerr << s_set << std::endl;
-        std::cerr << h_set << std::endl;
+        std::cerr << "suffix_set = " << s_set << std::endl;
+        std::cerr << "hash_set   = " << h_set << std::endl;
 
     }
     

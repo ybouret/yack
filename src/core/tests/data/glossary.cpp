@@ -46,8 +46,8 @@ YACK_UTEST(data_glossary)
             YACK_ASSERT(h_map.search(keys[i]));
         }
 
-        //std::cerr << s_map << std::endl;
-        std::cerr << h_map << std::endl;
+        std::cerr << "suffix_map = " << s_map << std::endl;
+        std::cerr << "hash_map   = " << h_map << std::endl;
 
     }
 

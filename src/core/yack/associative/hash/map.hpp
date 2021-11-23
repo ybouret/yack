@@ -44,6 +44,13 @@ namespace yack
 
             hash_map_node *next; //!< for list/pool
             hash_map_node *prev; //!< for list
+
+            template <typename OSTREAM>
+            inline void disp(OSTREAM &os) const
+            {
+                os << key_ << ':' << val_;
+            }
+
         private:
             YACK_DISABLE_COPY_AND_ASSIGN(hash_map_node);
             const_key_type key_;
