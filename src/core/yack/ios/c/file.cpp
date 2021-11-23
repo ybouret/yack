@@ -71,7 +71,7 @@ namespace yack
 
         c_file:: c_file(const string &filename, mode_type m) :
         _close( true ),
-        handle( _open( &filename[1],m,coerce(_close)) )
+        handle( _open(filename(),m,coerce(_close)) )
         {
 
         }

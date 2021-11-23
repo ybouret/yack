@@ -31,7 +31,7 @@ namespace yack
 
             //! setup from string
             inline explicit tokenizer(const string<T> &str) throw() :
-            curr(&str[1]), last(curr+str.size()), size(0)
+            curr( str() ), last(curr+str.size()), size(0)
             {
             }
 

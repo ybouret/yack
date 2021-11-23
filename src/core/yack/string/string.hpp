@@ -56,7 +56,14 @@ namespace yack
             //__________________________________________________________________
             virtual const char *class_uid() const throw();
             virtual size_t      serialize(ios::ostream &) const;
-            
+
+
+            //__________________________________________________________________
+            //
+            // memory::ro_buffer interface
+            //__________________________________________________________________
+            const T * operator()(void) const throw(); //!< raw R/O access
+
             //__________________________________________________________________
             //
             // memory::ro_buffer interface

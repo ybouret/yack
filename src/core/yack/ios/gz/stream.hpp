@@ -25,9 +25,8 @@ namespace yack
                 virtual ~stream() throw(); //!< cleanup
 
             protected:
-                //! open any gzFile
-                explicit stream(const char   *filename, const char *mode);
-                explicit stream(const string &filename, const char *mode);
+                explicit stream(const char   *filename, const char *mode); //!< open a gzFile
+                explicit stream(const string &filename, const char *mode); //!< open a gzFile
 
                 void *GZ; //!< handle got gzFile
                 

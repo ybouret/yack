@@ -6,6 +6,11 @@ namespace yack
 {
     namespace kernel
     {
+        template <>
+        const CH * string<CH>:: operator()(void) const throw()
+        {
+            return static_cast<const CH*>(block);
+        }
 
        
         

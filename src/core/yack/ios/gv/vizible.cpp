@@ -148,7 +148,7 @@ namespace yack
 
             std::cerr << "cmd='" << cmd << "'" << std::endl;
 
-            if(0!=system(&cmd[1]))
+            if(0!=system( cmd() ))
             {
                 std::cerr << "[failure]" << std::endl;
             }

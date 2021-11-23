@@ -40,7 +40,7 @@ namespace yack
             }
 
             stream:: stream(const string &filename, const char *mode) :
-            GZ( open_gzstream(&filename[1],mode) )
+            GZ( open_gzstream(filename(),mode) )
             {
             }
 

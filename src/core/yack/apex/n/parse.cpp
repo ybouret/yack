@@ -2,6 +2,7 @@
 #include "yack/apex/natural.hpp"
 #include "yack/type/cstring.h"
 #include "yack/system/exception.hpp"
+#include "yack/ios/ascii/hybrid.hpp"
 #include <cerrno>
 
 namespace yack
@@ -27,7 +28,7 @@ namespace yack
                 default:
                     break;
             }
-            throw libc::exception(EINVAL,"natural::parse_dec('%c')",c);
+            throw libc::exception(EINVAL,"natural::parse_dec('%s')",ios::ascii::hybrid[ uint8_t(c) ]);
         }
 
         natural natural:: parse_dec(const char *data,size_t size)
@@ -85,7 +86,7 @@ namespace yack
                 default:
                     break;
             }
-            throw libc::exception(EINVAL,"natural::parse_hex('%c')",c);
+            throw libc::exception(EINVAL,"natural::parse_hex('%s')",ios::ascii::hybrid[ uint8_t(c) ]);
         }
 
         natural natural:: parse_hex(const char *data,size_t size)
