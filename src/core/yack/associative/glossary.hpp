@@ -64,7 +64,7 @@ namespace yack
         template <typename OSTREAM, typename NODE> static inline
         void disp(OSTREAM &os, const NODE *node)
         {
-            os << **node;
+            os << node->key() << ':' << **node;
         }
 
     };

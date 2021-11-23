@@ -46,7 +46,7 @@ YACK_UTEST(data_glossary)
             YACK_ASSERT(h_map.search(keys[i]));
         }
 
-        std::cerr << s_map << std::endl;
+        //std::cerr << s_map << std::endl;
         std::cerr << h_map << std::endl;
 
     }
