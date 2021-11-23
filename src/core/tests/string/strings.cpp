@@ -61,6 +61,11 @@ YACK_UTEST(strings)
 
         }
 
+        {
+            string ans = vformat("%s", "1234");
+            std::cerr << "ans = '" <<  ans << "'" << std::endl;
+        }
+
     }
 
 }
