@@ -10,6 +10,11 @@
 namespace yack
 {
 
+    typedef kernel::tree_path<uint8_t> suffix_path;
+
+
+
+
     //__________________________________________________________________________
     //
     //
@@ -21,7 +26,7 @@ namespace yack
     typename T,
     typename KEY_WALKER,
     typename ASSOCIATIVE>
-    class suffix_compound : public ASSOCIATIVE
+    class suffix_compound : public ASSOCIATIVE 
     {
     public:
         //______________________________________________________________________

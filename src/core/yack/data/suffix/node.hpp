@@ -146,6 +146,13 @@ namespace yack
                 return fp;
             }
 
+            //! helper to display key
+            template <typename OSTREAM> inline
+            void disp(OSTREAM &os) const
+            {
+                assert(knot);
+                os << '@' << **knot;
+            }
 
             //__________________________________________________________________
             //
@@ -157,6 +164,8 @@ namespace yack
             tree_node        *from; //!< origin
             list_type         chld; //!< leaves
             knot_type        *knot; //!< NULL:vacant, otherwise alive
+
+
 
         private:
             YACK_DISABLE_COPY_AND_ASSIGN(tree_node);

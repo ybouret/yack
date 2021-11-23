@@ -5,6 +5,7 @@
 #include "yack/ios/ascii/encoded.hpp"
 #include "yack/ios/fmt/hexa.hpp"
 #include "yack/type/cstring.h"
+#include "yack/ios/ostream.hpp"
 #include <cstring>
 #include <cstdlib>
 

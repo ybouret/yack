@@ -4,7 +4,7 @@
 #ifndef YACK_ASCII_ENCODED_INCLUDED
 #define YACK_ASCII_ENCODED_INCLUDED 1
 
-#include "yack/ios/ostream.hpp"
+#include "yack/setup.hpp"
 
 namespace yack
 {

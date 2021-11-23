@@ -71,8 +71,8 @@ namespace yack
             template <typename OSTREAM>
             inline void disp(OSTREAM &os) const
             {
-                assert(is_alive());
-                os << *data;
+                assert(node);
+                node->disp(os);
             }
 
 
