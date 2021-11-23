@@ -1,4 +1,5 @@
 #include "yack/utest/run.hpp"
+#include <cstdio>
 
 using namespace yack;
 
