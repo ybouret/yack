@@ -5,6 +5,7 @@
 #define YACK_IOS_GZSTREAM_INCLUDED 1
 
 #include "yack/setup.hpp"
+#include "yack/string/fwd.hpp"
 
 namespace yack
 {
@@ -25,7 +26,9 @@ namespace yack
 
             protected:
                 //! open any gzFile
-                explicit stream(const char *filename, const char *mode);
+                explicit stream(const char   *filename, const char *mode);
+                explicit stream(const string &filename, const char *mode);
+
                 void *GZ; //!< handle got gzFile
                 
             private:

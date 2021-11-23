@@ -23,10 +23,11 @@ namespace yack
             //
             // C++
             //__________________________________________________________________
-            virtual ~ocstream() throw();                                      //!< cleanup
-            explicit ocstream(const ios::cstderr_t &);                        //!< link to stderr
-            explicit ocstream(const ios::cstdout_t &);                        //!< link to stdout
-            explicit ocstream(const char *filename, const bool append=false); //!< open file
+            virtual ~ocstream() throw();                                        //!< cleanup
+            explicit ocstream(const ios::cstderr_t &);                          //!< link to stderr
+            explicit ocstream(const ios::cstdout_t &);                          //!< link to stdout
+            explicit ocstream(const char   *filename, const bool append=false); //!< open file
+            explicit ocstream(const string &filename, const bool append=false); //!< open file
 
             //__________________________________________________________________
             //

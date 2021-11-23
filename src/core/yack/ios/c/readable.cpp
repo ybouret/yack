@@ -23,6 +23,11 @@ namespace yack
         c_file(filename,r)
         {
         }
+
+        readable_file:: readable_file(const string &filename) :
+        c_file(filename,r)
+        {
+        }
         
         bool readable_file:: get(char &C)
         {

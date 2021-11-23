@@ -24,6 +24,11 @@ namespace yack
         {
         }
 
+        icstream:: icstream(const string &filename) :
+        file(filename)
+        {
+        }
+
         bool icstream:: query_(char &C)
         {
             return file.get(C);

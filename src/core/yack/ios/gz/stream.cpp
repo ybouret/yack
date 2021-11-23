@@ -4,6 +4,7 @@
 #include "yack/system/exception.hpp"
 #include "yack/lockable.hpp"
 #include <cerrno>
+#include "yack/string.hpp"
 
 namespace yack
 {
@@ -35,6 +36,11 @@ namespace yack
 
             stream:: stream(const char *filename, const char *mode) :
             GZ( open_gzstream(filename,mode) )
+            {
+            }
+
+            stream:: stream(const string &filename, const char *mode) :
+            GZ( open_gzstream(&filename[1],mode) )
             {
             }
 

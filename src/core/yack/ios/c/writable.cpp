@@ -23,11 +23,10 @@ namespace yack
         {
         }
 
-        writable_file:: writable_file(const char *filename, const bool append) :
-        c_file(filename,append?a:w)
-        {
+        writable_file:: writable_file(const char *filename, const bool append) : c_file(filename,append?a:w) {}
 
-        }
+        writable_file:: writable_file(const string &filename, const bool append) : c_file(filename,append?a:w) {}
+
 
         void writable_file:: put(const char C)
         {

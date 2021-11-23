@@ -1,6 +1,7 @@
 
 #include "yack/fs/vfs.hpp"
 #include "yack/type/cstring.h"
+#include "yack/string.hpp"
 
 namespace yack
 {
@@ -41,6 +42,11 @@ namespace yack
         return get_base_name(path,yack_cstring_size(path));
     }
 
+}
+
+namespace yack
+{
+
     const char *vfs:: get_extension(const char *path, const size_t plen) throw()
     {
         if(plen<=0)
@@ -76,9 +82,77 @@ namespace yack
     {
         return get_extension(&path[1],path.size());
     }
-    
-
 
 }
 
 
+namespace yack
+{
+
+    string vfs:: make_null_ext(const char   *path, const size_t plen)
+    {
+        const char *ext = get_extension(path,plen);
+        if(ext)
+        {
+            return string(path,--ext-path);
+        }
+        else
+        {
+            return string(path,plen);
+        }
+    }
+
+    string vfs:: make_null_ext(const char   *path)
+    {
+        if(path)
+        {
+            return make_null_ext(path,strlen(path));
+        }
+        else
+        {
+            return string();
+        }
+    }
+
+    string vfs:: make_null_ext(const string &path)
+    {
+        return make_null_ext(&path[1],path.size());
+    }
+
+}
+
+namespace yack
+{
+
+    string vfs::new_extension(const char *path, const size_t plen, const char *ext)
+    {
+        string raw = make_null_ext(path,plen);
+        if(ext)
+        {
+            raw += '.';
+            raw += ext;
+            return raw;
+        }
+        else
+        {
+            return raw;
+        }
+    }
+
+    string vfs:: new_extension(const char *path, const char *ext)
+    {
+        return new_extension(path,path?strlen(path):0,ext);
+    }
+
+    string vfs:: new_extension(const string &path, const char *ext)
+    {
+        return new_extension(&path[1],path.size(),ext);
+    }
+
+    string vfs::new_extension(const string &path, const string &ext)
+    {
+        return new_extension(&path[1],path.size(),&ext[1]);
+    }
+
+
+}

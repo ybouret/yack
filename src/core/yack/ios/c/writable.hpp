@@ -24,10 +24,11 @@ namespace yack
             //
             // C++
             //__________________________________________________________________
-            virtual  ~writable_file() throw();                                //!< cleanup
-            explicit  writable_file(const cstderr_t &);                       //!< link to stderr
-            explicit  writable_file(const cstdout_t &);                       //!< link to stdout
-            explicit  writable_file(const char *filename, const bool append); //!< open file
+            virtual  ~writable_file() throw();                                  //!< cleanup
+            explicit  writable_file(const cstderr_t &);                         //!< link to stderr
+            explicit  writable_file(const cstdout_t &);                         //!< link to stdout
+            explicit  writable_file(const char   *filename, const bool append); //!< open file
+            explicit  writable_file(const string &filename, const bool append); //!< open file
 
             //__________________________________________________________________
             //

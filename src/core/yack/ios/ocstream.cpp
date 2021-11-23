@@ -37,6 +37,11 @@ namespace yack
         {
         }
 
+        ocstream:: ocstream(const string &filename, const bool append) :
+        file(filename,append)
+        {
+        }
+
         void ocstream:: overwrite(const char *filename)
         {
             volatile ocstream temp(filename,false);

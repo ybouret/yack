@@ -108,26 +108,52 @@ namespace yack
             return arrow(os,this,target);
         }
 
+    }
+
+}
+
+#include "yack/fs/vfs.hpp"
+#include "yack/exception.hpp"
+#include "yack/string.hpp"
+
+namespace yack
+{
+
+    namespace ios
+    {
+
         void vizible:: render(const char *filename)
         {
+            const string _(filename);
+            render(_);
+        }
+
+        void vizible:: render(const string &filename)
+        {
+            static const char dotext[] = "dot";
             static const char prolog[] = "dot -Tpng ";
             static const char output[] = " -o ";
-            static const char outext[] = ".png";
+            static const char outext[] = "png";
 
-            assert(filename);
-            char   cmd[1024];
-            memset(cmd,0,sizeof(cmd));
-            yack_cstring_msgcat(cmd,sizeof(cmd),prolog);
-            yack_cstring_msgcat(cmd,sizeof(cmd),filename);
-            yack_cstring_msgcat(cmd,sizeof(cmd),output);;
-            yack_cstring_msgcat(cmd,sizeof(cmd),filename);
-            yack_cstring_msgcat(cmd,sizeof(cmd),outext);
+            const char *file_ext = vfs::get_extension(filename);
+            if(!file_ext||0!=strcmp(dotext,file_ext))
+            {
+                throw exception("bad file extension");
+            }
+            string cmd = prolog + filename + output;
+            {
+                const string target = vfs::new_extension(filename,outext);
+                cmd += target;
+            }
+
             std::cerr << "cmd='" << cmd << "'" << std::endl;
-            if(0!=system(cmd))
+
+            if(0!=system(&cmd[1]))
             {
                 std::cerr << "[failure]" << std::endl;
             }
         }
+
     }
 
 }

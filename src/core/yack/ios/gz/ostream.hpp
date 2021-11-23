@@ -28,7 +28,10 @@ namespace yack
                 virtual ~ostream() throw();
 
                 //! open
-                explicit ostream(const char *filename, const int level=6); //!< open
+                explicit ostream(const char *filename, const int level=6);
+
+                //! open
+                explicit ostream(const string &filename, const int level=6);
 
                 virtual void write(const char C);
                 virtual void flush();

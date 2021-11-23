@@ -23,8 +23,9 @@ namespace yack
             class istream : public ios::istream, public stream
             {
             public:
-                virtual ~istream() throw(); //!< cleanup
-                explicit istream(const char *filename); //!< open
+                virtual ~istream() throw();               //!< cleanup
+                explicit istream(const char   *filename); //!< open
+                explicit istream(const string &filename); //!< open
 
             private:
                 YACK_DISABLE_COPY_AND_ASSIGN(istream);

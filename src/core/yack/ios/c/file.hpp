@@ -6,6 +6,7 @@
 
 #include "yack/system/error.hpp"
 #include "yack/setup.hpp"
+#include "yack/string/fwd.hpp"
 
 namespace yack
 {
@@ -59,13 +60,14 @@ namespace yack
             //
             // C++
             //__________________________________________________________________
-            virtual ~c_file() throw();                //!< cleanup
+            virtual ~c_file() throw();                  //!< cleanup
         protected:
-            explicit c_file(const cstdin_t  &);       //!< link to stdin
-            explicit c_file(const cstdout_t &);       //!< link to stdout
-            explicit c_file(const cstderr_t &);       //!< link to stderr
-            explicit c_file(const char *, mode_type); //!< open a file
-            
+            explicit c_file(const cstdin_t  &);         //!< link to stdin
+            explicit c_file(const cstdout_t &);         //!< link to stdout
+            explicit c_file(const cstderr_t &);         //!< link to stderr
+            explicit c_file(const char   *, mode_type); //!< open a file
+            explicit c_file(const string &, mode_type); //!< open a file
+
             //__________________________________________________________________
             //
             // members

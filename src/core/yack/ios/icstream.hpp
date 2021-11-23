@@ -19,9 +19,10 @@ namespace yack
         class icstream : public istream
         {
         public:
-            virtual ~icstream() throw();             //!< cleanup
-            explicit icstream(const cstdin_t &);     //!< link to stdin
-            explicit icstream(const char *filename); //!< open at beginning
+            virtual ~icstream() throw();               //!< cleanup
+            explicit icstream(const cstdin_t &);       //!< link to stdin
+            explicit icstream(const char   *filename); //!< open at beginning
+            explicit icstream(const string &filename); //!< open at beginning
 
         private:
             YACK_DISABLE_COPY_AND_ASSIGN(icstream);

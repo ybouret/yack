@@ -22,6 +22,12 @@ namespace yack
             {
             }
 
+            istream:: istream(const string &filename) :
+            ios::istream(),
+            stream(filename,"r")
+            {
+            }
+
             bool istream:: query_(char &C)
             {
                 const int ch = gzgetc( static_cast<gzFile>(GZ) );

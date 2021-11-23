@@ -45,6 +45,14 @@ namespace yack
             {
             }
 
+            ostream:: ostream(const string &filename,
+                              const int      level) :
+            ios::ostream(),
+            stream(filename,gz_wmode(level))
+            {
+            }
+
+
             void ostream:: flush()
             {
 

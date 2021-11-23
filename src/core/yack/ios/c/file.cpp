@@ -1,6 +1,7 @@
 #include "yack/ios/c/file.hpp"
 #include "yack/system/exception.hpp"
 #include "yack/lockable.hpp"
+#include "yack/string.hpp"
 
 #include <cstdio>
 #include <cerrno>
@@ -64,6 +65,13 @@ namespace yack
         c_file:: c_file(const char *filename, mode_type m) :
         _close( true ),
         handle( _open(filename,m,coerce(_close)) )
+        {
+
+        }
+
+        c_file:: c_file(const string &filename, mode_type m) :
+        _close( true ),
+        handle( _open( &filename[1],m,coerce(_close)) )
         {
 
         }

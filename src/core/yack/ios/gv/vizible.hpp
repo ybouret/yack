@@ -4,6 +4,7 @@
 #define YACK_VIZIBLE_INCLUDED 1
 
 #include "yack/ios/fwd.hpp"
+#include "yack/string/fwd.hpp"
 
 namespace yack
 {
@@ -38,7 +39,8 @@ namespace yack
             static ostream& digraph_init(ostream &os, const char *);           //!< init digraph
             static void     digraph_quit(ostream &os);                         //!< quit digraph
             static ostream& make_label(ostream &, const void *, const size_t); //!< unsigned to label
-            static void     render(const char *filename);                      //!< render filename with dot
+            static void     render(const char   *filename);                    //!< render filename with dot
+            static void     render(const string &filename);                    //!< render filename with dot
 
             //__________________________________________________________________
             //
