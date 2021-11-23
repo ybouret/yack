@@ -146,6 +146,7 @@ add_test(data:suffix_set   test-yack data_suffix_set)
 add_test(data:suffix_map   test-yack data_suffix_map)
 add_test(data:registry     test-yack data_registry)
 add_test(data:glossary     test-yack data_glossary)
+add_test(data:arrays       test-yack data_arrays)
 
 add_test(sync:lockable  test-yack sync_lockable)
 add_test(sync:primitive test-yack sync_primitive)

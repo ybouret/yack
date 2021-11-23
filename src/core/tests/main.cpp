@@ -61,6 +61,7 @@ YACK_UTEST_DECL(128)
     YACK_UTEST(data_suffix_set);
     YACK_UTEST(data_registry);
     YACK_UTEST(data_glossary);
+    YACK_UTEST(data_arrays);
 
 
     YACK_UTEST(sync_lockable);
