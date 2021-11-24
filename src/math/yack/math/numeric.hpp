@@ -19,7 +19,7 @@ namespace yack
 
 #if !defined(_MSC_VER)
         //! declaring constants is necessary
-#define YACK_MATH_NUMERIC(VALUE) \
+#define YACK_MATH_NUMERIC(VALUE)                           \
 template <> const float       numeric<float>      ::VALUE; \
 template <> const double      numeric<double>     ::VALUE; \
 template <> const long double numeric<long double>::VALUE

@@ -4,7 +4,7 @@
 #include "yack/sequence/vector.hpp"
 #include "yack/ios/ocstream.hpp"
 #include "yack/string.hpp"
-
+#include <typeinfo>
 
 using namespace yack;
 using namespace math;
@@ -22,7 +22,7 @@ namespace
             dy[1] = -a * y[1];
         }
 
-        
+
 
     };
 
