@@ -3,32 +3,32 @@
 #ifndef YACK_SORT_HEAP_INCLUDED
 #define YACK_SORT_HEAP_INCLUDED 1
 
-#include "yack/container/writable.hpp"
 #include "yack/type/mmove.hpp"
 #include "yack/arith/align.hpp"
 
 namespace yack
 {
-    
+
     //______________________________________________________________________
     //
     //
     //! heap sort for more than 2 items
     //
     //______________________________________________________________________
-    template <typename T,typename FUNC>
-    inline void hsort(writable<T> &ra,
-                       FUNC        &compare)
+    template <typename ARRAY,typename FUNC>
+    inline void hsort(ARRAY &ra,
+                      FUNC  &compare)
     {
         const size_t n = ra.size();
         if(n<2) return;
-        
+
         //----------------------------------------------------------------------
         // local memory
         //----------------------------------------------------------------------
-        void *arr[ YACK_WORDS_FOR(T) ]; assert(sizeof(arr)>=sizeof(T));
-        T    &rra = *coerce_cast<T>(arr);
-        
+        typedef typename ARRAY::type type;
+        void *arr[ YACK_WORDS_FOR(type) ]; assert(sizeof(arr)>=sizeof(type));
+        type &rra = *coerce_cast<type>(arr);
+
         //----------------------------------------------------------------------
         // algorithm
         //----------------------------------------------------------------------
@@ -72,9 +72,7 @@ namespace yack
             mmove( ra[i], rra );
         }
     }
-    
-    
-    
+
     
     
     
@@ -85,8 +83,8 @@ namespace yack
     //! heap co sort
     //
     //__________________________________________________________________________
-    template <typename T, typename U, typename FUNC>
-    inline void hsort(writable<T> &ra, writable<U> &rb, FUNC &compare)
+    template <typename ARR, typename BRR, typename FUNC>
+    inline void hsort(ARR &ra, BRR &rb, FUNC &compare)
     {
         assert( ra.size() == rb.size() );
         const size_t n = ra.size();
@@ -95,9 +93,11 @@ namespace yack
         //----------------------------------------------------------------------
         // local memory
         //----------------------------------------------------------------------
+        typedef typename ARR::type T;
         void *arr[ YACK_WORDS_FOR(T) ]; assert(sizeof(arr)>=sizeof(T));
         T    &rra = *coerce_cast<T>(arr);
-        
+
+        typedef typename BRR::type U;
         void *brr[ YACK_WORDS_FOR(U) ]; assert(sizeof(brr)>=sizeof(T));
         U    &rrb = *coerce_cast<U>(brr);
         

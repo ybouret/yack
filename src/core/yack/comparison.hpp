@@ -81,7 +81,7 @@ namespace yack
             while(--n>0)
             {
                 const ITERATOR curr = iter++;
-                if( compare(*curr,*iter) >0 ) return false;
+                if( compare(*curr,*iter) > 0 ) return false;
             }
             return true;
         }

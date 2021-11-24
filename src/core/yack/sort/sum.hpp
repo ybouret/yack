@@ -32,8 +32,8 @@ namespace yack
         //______________________________________________________________________
 
         //! sum after sorting by value
-        template <typename T> inline static
-        T  sum(writable<T> &arr, const by_value_t &)
+        template <typename ARR> inline static
+        typename ARR::mutable_type  sum(ARR &arr, const by_value_t &)
         {
             size_t i = arr.size();
             switch(i)
@@ -41,16 +41,16 @@ namespace yack
                 case  0: return 0;
                 case  1: return arr[1];
                 default:
-                    hsort(arr,comparison::decreasing<T>);
+                    hsort(arr,comparison::decreasing<typename ARR::mutable_type>);
             }
-            T res = arr[i];
+            typename ARR::mutable_type res = arr[i];
             while(--i>0) res += arr[i];
             return res;
         }
 
         //! sum after sorting by absolute value
-        template <typename T> static inline
-        T sum(writable<T> &arr, const by_abs_value_t &)
+        template <typename ARR> static inline
+        typename ARR::mutable_type sum(ARR &arr, const by_abs_value_t &)
         {
             size_t i = arr.size();
             switch(i)
@@ -58,9 +58,9 @@ namespace yack
                 case  0: return 0;
                 case  1: return arr[1];
                 default:
-                    hsort(arr,comparison::decreasing_abs<T>);
+                    hsort(arr,comparison::decreasing_abs<typename ARR::mutable_type>);
             }
-            T res = arr[i];
+            typename ARR::mutable_type res = arr[i];
             while(--i>0) res += arr[i];
             return res;
         }

@@ -1,11 +1,15 @@
 
+file(GLOB global global/*.cpp)
+source_group(global FILES ${global} )
+
 file(GLOB algebra algebra/*.cpp)
 source_group(algebra FILES ${algebra} )
 
 file(GLOB ode ode/*.cpp)
 source_group(ode FILES ${ode} )
 
-add_executable(test-math main.cpp numeric.cpp
+add_executable(test-math main.cpp
+${global}
 ${algebra}
 ${ode}
 )
@@ -18,6 +22,7 @@ yack_testing(math)
 enable_testing()
 
 add_test(numeric    test-math numeric)
+add_test(triplet    test-math triplet)
 add_test(algebra:lu test-math lu)
 
 add_test(ode:rk4 test-math rk4)
