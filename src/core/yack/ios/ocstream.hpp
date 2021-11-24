@@ -42,8 +42,10 @@ namespace yack
             //
             // methods
             //__________________________________________________________________
-            static void overwrite(const char *filename);                  //!< overwrite file name
-            static void echo(const char *filename, const char *fmt, ...); //!< append to filename
+            static void overwrite(const char   *filename);                  //!< overwrite filename
+            static void overwrite(const string &filename);                  //!< overwrite filename
+            static void echo(const char   *filename, const char *fmt, ...); //!< append to filename
+            static void echo(const string &filename, const char *fmt, ...); //!< append to filename
 
 
         private:

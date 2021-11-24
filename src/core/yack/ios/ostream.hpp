@@ -4,6 +4,7 @@
 #define YACK_IOS_OSTREAM_INCLUDED 1
 
 #include "yack/ios/stream.hpp"
+#include "yack/string/fwd.hpp"
 
 namespace yack
 {
@@ -38,6 +39,7 @@ namespace yack
             //__________________________________________________________________
             ostream & operator<<(const char C);     //!< uses write
             ostream & operator<<(const char *msg);  //!< uses frame
+            ostream & operator<<(const string &);   //!< uses frame
 
             //__________________________________________________________________
             //

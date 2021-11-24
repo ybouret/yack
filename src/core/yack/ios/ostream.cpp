@@ -5,6 +5,7 @@
 #include "yack/type/cstring.h"
 #include "yack/memory/buffers.hpp"
 #include "yack/memory/allocator/pooled.hpp"
+#include "yack/string.hpp"
 
 #include <iostream>
 #include <cerrno>
@@ -43,6 +44,12 @@ namespace yack
         ostream & ostream:: operator<<(const char *msg)
         {
             frame(msg,yack_cstring_size(msg));
+            return *this;
+        }
+
+        ostream & ostream:: operator<<(const string &str)
+        {
+            frame(str(),str.size());
             return *this;
         }
 

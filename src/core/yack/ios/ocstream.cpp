@@ -47,6 +47,11 @@ namespace yack
             volatile ocstream temp(filename,false);
         }
 
+        void ocstream:: overwrite(const string &filename)
+        {
+            volatile ocstream temp(filename,false);
+        }
+
         void ocstream:: write(const char C)
         {
             file.put(C);
@@ -76,6 +81,17 @@ namespace yack
         void ocstream:: echo(const char *filename, const char *fmt, ...)
         {
             assert(NULL!=filename);
+            assert(NULL!=fmt);
+            ocstream temp(filename,true);
+
+            va_list ap;
+            va_start(ap,fmt);
+            temp.file.put(fmt,&ap);
+            va_end(ap);
+        }
+
+        void ocstream:: echo(const string &filename, const char *fmt, ...)
+        {
             assert(NULL!=fmt);
             ocstream temp(filename,true);
 
