@@ -2,7 +2,7 @@
 file(GLOB algebra algebra/*.cpp)
 source_group(algebra FILES ${algebra} )
 
-add_executable(test-math main.cpp
+add_executable(test-math main.cpp numeric.cpp
 ${algebra}
 )
 
@@ -13,5 +13,6 @@ yack_testing(math)
 
 enable_testing()
 
+add_test(numeric    test-math numeric)
 add_test(algebra:lu test-math lu)
 
