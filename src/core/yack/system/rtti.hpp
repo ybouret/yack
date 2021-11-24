@@ -9,11 +9,16 @@
 
 namespace yack
 {
-
+    //__________________________________________________________________________
+    //
+    //
+    //! Run Time Type Information system
+    //
+    //__________________________________________________________________________
     class rtti
     {
     public:
-        virtual ~rtti() throw();
+        virtual ~rtti() throw(); //!<cleanup
 
     private:
         YACK_DISABLE_COPY_AND_ASSIGN(rtti);
