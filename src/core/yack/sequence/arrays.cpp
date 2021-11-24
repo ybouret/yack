@@ -41,6 +41,20 @@ namespace yack
         release_arrays();
     }
 
+    size_t arrays:: mutual_size() const throw()
+    {
+        return capacity;
+    }
+
+    size_t arrays:: fixed_bytes() const throw()
+    {
+        return bytes;
+    }
+
+    size_t arrays:: granted() const throw()
+    {
+        return acquired;
+    }
     
 
 
@@ -68,8 +82,7 @@ namespace yack
             release_arrays();
             throw;
         }
-        std::cerr << "#arrays: " << count    << " : bytes=" << bytes    << std::endl;
-        std::cerr << "#capa  : " << capacity << " : bytes=" << acquired << std::endl;
+        
     }
 
 

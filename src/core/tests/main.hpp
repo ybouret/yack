@@ -41,7 +41,14 @@ namespace yack
         
         
     };
-    
+
+    // char
+    template <>
+    inline char bring:: get<char>(randomized::bits &ran)
+    {
+        return char(ran.in('a','z'));
+    }
+
     // floating point
     template <>
     inline float bring:: get<float>(randomized::bits &ran)

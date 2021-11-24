@@ -4,6 +4,33 @@
 
 using namespace yack;
 
+namespace {
+
+    template <typename T>
+    static inline void test_arrays(const size_t      num_arrays,
+                                   const size_t      num_blocks,
+                                   randomized::bits &ran)
+    {
+        arrays_of<T> arr(num_arrays,num_blocks);
+        std::cerr << "#arr=" << arr.size() << std::endl;
+        std::cerr << "    |_mutual_size: " << arr.mutual_size() << std::endl;
+        std::cerr << "    |_fixed_bytes: " << arr.fixed_bytes() << std::endl;
+        std::cerr << "    |_granted    : " << arr.granted()     << std::endl;
+
+        for(size_t i=arr.size();i>0;--i)
+        {
+            writable<T> &a = arr[i];
+            YACK_ASSERT(a.size() == arr.mutual_size());
+            for(size_t j=a.size();j>0;--j)
+            {
+                const T tmp = bring::get<T>(ran);
+                a[j] = tmp;
+            }
+        }
+
+    }
+}
+
 YACK_UTEST(data_arrays)
 {
     randomized::rand_ ran;
@@ -16,27 +43,13 @@ YACK_UTEST(data_arrays)
     {
         for(size_t num_blocks=0;num_blocks<=100;++num_blocks)
         {
-            arrays_of<char>   iarr(num_arrays,num_blocks);
-            arrays_of<double> darr(num_arrays,num_blocks);
-            arrays_of<string> sarr(num_arrays,num_blocks);
-
+            test_arrays<char>(num_arrays,num_blocks,ran);
+            test_arrays<double>(num_arrays,num_blocks,ran);
+            test_arrays<string>(num_arrays,num_blocks,ran);
         }
     }
 
-
-
-#if 0
-    arrays_of<double> arr(10,32);
-    for(size_t i=1;i<=arr.count;++i)
-    {
-        writable<double> &a = arr[i];
-        std::cerr << "a[" << i << "].size=" << a.size() << std::endl;
-        for(size_t j=1;j<=a.size();++j)
-        {
-            a[j] = ran.symm<double>();
-        }
-    }
-#endif
+    
     
 }
 YACK_UDONE()

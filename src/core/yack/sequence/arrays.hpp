@@ -6,6 +6,7 @@
 #include "yack/setup.hpp"
 #include "yack/sequence/thin-array.hpp"
 #include "yack/memory/operative.hpp"
+#include "yack/container/dynamic.hpp"
 
 namespace yack
 {
@@ -15,7 +16,7 @@ namespace yack
     //! memory and metrics for arrays
     //
     //__________________________________________________________________________
-    class arrays
+    class arrays : public dynamic
     {
     public:
         //______________________________________________________________________
@@ -48,6 +49,10 @@ namespace yack
         void release_arrays() throw();
         void release_blocks() throw();
 
+    public:
+        virtual size_t granted()     const throw(); //!< bytes for object
+        size_t         mutual_size() const throw(); //!< mutual size per array
+        size_t         fixed_bytes() const throw(); //!< allocated for arrays
     };
 
 
@@ -67,7 +72,8 @@ namespace yack
         //______________________________________________________________________
         typedef thin_array<T>        array_type; //!< alias
         typedef writable<array_type> base_type;  //!< alias
-
+        typedef typename array_type::mutable_type object_type; //!< alias;
+        //!
         //______________________________________________________________________
         //
         // C++
@@ -81,14 +87,17 @@ namespace yack
                                   const size_t num_blocks) :
         arrays(num_arrays,sizeof(T),num_blocks),
         arr( static_cast<array_type*>(entry) - 1 ),
-        mem(position,gathered)
+        mem(position,gathered),
+        use(0)
         {
+            link();
         }
 
         //______________________________________________________________________
         //
         // methods
         //______________________________________________________________________
+
 
         //! collection interface
         inline virtual size_t size() const throw() { return count; }
@@ -105,10 +114,30 @@ namespace yack
             assert(NULL!=arr); assert(indx>=1); assert(indx<=size()); return arr[indx];
         }
 
+        //______________________________________________________________________
+        //
+        //! get next array
+        //______________________________________________________________________
+        array_type & next() throw() { assert(use<=size()); return arr[++use]; }
+
+
     private:
         YACK_DISABLE_COPY_AND_ASSIGN(arrays_of);
         array_type              *arr;
         memory::operative_of<T>  mem;
+        size_t                   use;
+
+        inline void link() throw()
+        {
+            object_type *obj = static_cast<object_type*>(position);
+            const size_t stp = capacity;
+            const size_t num = count;
+            for(size_t i=1;i<=num;++i,obj+=stp)
+            {
+                new (&arr[i]) array_type(obj,capacity);
+            }
+        }
+
     };
 
 
