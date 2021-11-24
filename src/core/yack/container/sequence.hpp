@@ -6,6 +6,7 @@
 
 #include "yack/container.hpp"
 #include "yack/type/args.hpp"
+#include "yack/signs.hpp"
 
 namespace yack
 {
@@ -44,6 +45,25 @@ namespace yack
         inline type       &back()       throw() { return *(type *) _back(); }   //!< back item
         inline const_type &back() const throw() { return *         _back(); }   //!< back item, const
 
+        //! adjust size
+        inline void adjust(const size_t n, param_type pad)
+        {
+            switch( __sign::of(n,size()) )
+            {
+                case negative:
+                    assert(n<size());
+                    while(n<size())
+                        pop_back();
+                    break;
+
+                case __zero__: assert(size()==n); break;
+                case positive:
+                    assert(size()<n);
+                    while(size()<n)
+                        push_back(pad);
+                    break;
+            }
+        }
         
 
         //______________________________________________________________________

@@ -17,6 +17,7 @@ namespace
         const char *id = typeid(T).name();
         NUM_DISP(eps);
 
+        std::cerr << "sqrt(eps)=" << sqrt( numeric<T>::eps ) << std::endl;
         std::cerr << std::endl;
     }
 }
