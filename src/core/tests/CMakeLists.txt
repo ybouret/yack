@@ -97,6 +97,7 @@ add_test(wtime   test-yack wtime)
 add_test(complex  test-yack complex)
 add_test(gcd64    test-yack gcd64)
 add_test(functor  test-yack functor)
+add_test(rtti     test-yack rtti)
 
 add_test(type:ints   test-yack type_ints)
 add_test(type:traits test-yack type_traits)
