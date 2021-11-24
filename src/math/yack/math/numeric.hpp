@@ -15,12 +15,14 @@ namespace yack
             static const T eps;
         };
 
+#if !defined(_MSC_VER)
 #define YACK_MATH_NUMERIC(VALUE) \
 template <> const float       numeric<float>      ::VALUE; \
 template <> const double      numeric<double>     ::VALUE; \
 template <> const long double numeric<long double>::VALUE
 
         YACK_MATH_NUMERIC(eps);
+#endif
 
     }
 
