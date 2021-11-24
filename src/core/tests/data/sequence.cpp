@@ -82,7 +82,27 @@ namespace
         show(gv);
         show(dv);
 
+        std::cerr << "Adjust:" << std::endl;
+        const T z = 0;
+        size_t n1 = 100;
+        l.adjust(n1,z);   YACK_ASSERT(n1==l.size());
+        pv.adjust(n1,z);  YACK_ASSERT(n1==pv.size());
+        gv.adjust(n1,z);  YACK_ASSERT(n1==gv.size());
+        dv.adjust(n1,z);  YACK_ASSERT(n1==dv.size());
+        show(l);
+        show(pv);
+        show(gv);
+        show(dv);
 
+        n1 /= 2;
+        l.adjust(n1,z);   YACK_ASSERT(n1==l.size());
+        pv.adjust(n1,z);  YACK_ASSERT(n1==pv.size());
+        gv.adjust(n1,z);  YACK_ASSERT(n1==gv.size());
+        dv.adjust(n1,z);  YACK_ASSERT(n1==dv.size());
+        show(l);
+        show(pv);
+        show(gv);
+        show(dv);
 
     }
 
