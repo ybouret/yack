@@ -1,5 +1,6 @@
 #include "yack/sequence/arrays.hpp"
 #include "yack/utest/run.hpp"
+#include "../main.hpp"
 
 using namespace yack;
 
@@ -15,7 +16,10 @@ YACK_UTEST(data_arrays)
     {
         for(size_t num_blocks=0;num_blocks<=100;++num_blocks)
         {
-            arrays arr(num_arrays,8,num_blocks);
+            arrays_of<char>   iarr(num_arrays,num_blocks);
+            arrays_of<double> darr(num_arrays,num_blocks);
+            arrays_of<string> sarr(num_arrays,num_blocks);
+
         }
     }
 

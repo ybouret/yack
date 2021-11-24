@@ -37,10 +37,11 @@ namespace yack
                 static uint64_t to_uint64(const char   *text, const char *ctx = NULL);              //!< text to uint64_t
                 static uint64_t to_uint64(const string &data, const char *ctx = NULL);              //!< text to uint64_t
 
-                typedef int2type<true>     to_signed;
-                typedef int2type<false>    to_unsigned;
+                typedef int2type<true>     to_signed;   //!< alias
+                typedef int2type<false>    to_unsigned; //!< alias
 
 
+                //! convert to integer type
                 template <typename T> static inline
                 T to(const char *args, const size_t size, const char *ctx=NULL)
                 {
@@ -48,6 +49,7 @@ namespace yack
                     return to_integer<T>(args,size,ctx,which);
                 }
 
+                //! convert to integer type
                 template <typename T> static inline
                 T to(const char *text, const char *ctx=NULL)
                 {
@@ -55,6 +57,7 @@ namespace yack
                     return to<T>(text,strlen(text),ctx);
                 }
 
+                //! convert to integer type
                 template <typename T> static inline
                 T to(const string &data, const char *ctx=NULL)
                 {

@@ -43,7 +43,10 @@ namespace yack
     {
         cswap( coerce(lhs), coerce(rhs) );
     }
-    
+
+    //! helper for no-throw swap methods using 'other' args
+#define YACK_EXCHANGE(FIELD) coerce_cswap(FIELD,other.FIELD)
+
     //! make a class from a type
     template <typename T>
     struct type2type

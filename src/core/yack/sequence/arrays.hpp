@@ -5,119 +5,111 @@
 
 #include "yack/setup.hpp"
 #include "yack/sequence/thin-array.hpp"
+#include "yack/memory/operative.hpp"
 
 namespace yack
 {
-
-
-    class arrays : public collection
+    //__________________________________________________________________________
+    //
+    //
+    //! memory and metrics for arrays
+    //
+    //__________________________________________________________________________
+    class arrays
     {
     public:
+        //______________________________________________________________________
+        //
+        // C++
+        //______________________________________________________________________
+        //! cleanup
         virtual ~arrays() throw();
 
-        virtual size_t size() const throw();
-
+    protected:
+        //! setup all memory
         explicit arrays(const size_t num_arrays,
                         const size_t block_size,
                         const size_t num_blocks);
-
-    private:
-        YACK_DISABLE_COPY_AND_ASSIGN(arrays);
+        //______________________________________________________________________
+        //
+        // members
+        //______________________________________________________________________
         size_t count; //!< arrays: count => size()
         size_t bytes; //!< arrays: memory byte
         void  *entry; //!< arrays: first one
 
         size_t capacity; //!< max items per array
-        size_t acquired; //!< capacity*count*block_size
+        size_t gathered; //!< capacity*count
+        size_t acquired; //!< gathered*block_size
         void  *position; //!< first object
 
     private:
+        YACK_DISABLE_COPY_AND_ASSIGN(arrays);
         void release_arrays() throw();
         void release_blocks() throw();
 
     };
 
-#if 0
-    class arrays
-    {
-    public:
-        virtual ~arrays() throw();
 
-        explicit arrays(const size_t num_arrays,
-                        const size_t block_size,
-                        const size_t num_blocks);
-
-        const size_t count;
-        const size_t items;
-
-    protected:
-        size_t       arr_bytes;
-        void        *arr_entry;
-        size_t       obj_bytes;
-        void        *obj_entry;
-
-
-    private:
-        YACK_DISABLE_COPY_AND_ASSIGN(arrays);
-        void release_objets() throw();
-        void release_arrays() throw();
-    };
-
+    //__________________________________________________________________________
+    //
+    //
+    //! multiple arrays of same type, same size
+    //
+    //__________________________________________________________________________
     template <typename T>
-    class arrays_of : public arrays
+    class arrays_of : public arrays, public writable< thin_array<T> >
     {
     public:
-        YACK_DECL_ARGS_(T,type);
-        typedef thin_array<T> array_type;
+        //______________________________________________________________________
+        //
+        // types and definitions
+        //______________________________________________________________________
+        typedef thin_array<T>        array_type; //!< alias
+        typedef writable<array_type> base_type;  //!< alias
 
+        //______________________________________________________________________
+        //
+        // C++
+        //______________________________________________________________________
+
+        //! cleanup
         inline virtual ~arrays_of() throw() {}
 
-        inline explicit arrays_of(size_t num_arrays,
-                                  size_t num_blocks) :
+        //! setup memory
+        inline explicit arrays_of(const size_t num_arrays,
+                                  const size_t num_blocks) :
         arrays(num_arrays,sizeof(T),num_blocks),
-        arr(static_cast<array_type *>(arr_entry)-1),
-        used(0)
+        arr( static_cast<array_type*>(entry) - 1 ),
+        mem(position,gathered)
         {
-            link();
         }
 
-        inline array_type &operator[](const size_t indx) throw()
+        //______________________________________________________________________
+        //
+        // methods
+        //______________________________________________________________________
+
+        //! collection interface
+        inline virtual size_t size() const throw() { return count; }
+
+        //! readable interface
+        inline virtual const array_type &operator[](const size_t indx) const throw()
         {
-            assert(indx>0);
-            assert(indx<=count);
-            return arr[indx];
+            assert(NULL!=arr); assert(indx>=1); assert(indx<=size()); return arr[indx];
         }
 
-        inline const array_type &operator[](const size_t indx) const throw()
+        //! writable interface
+        inline virtual array_type &operator[](const size_t indx) throw()
         {
-            assert(indx>0);
-            assert(indx<=count);
-            return arr[indx];
+            assert(NULL!=arr); assert(indx>=1); assert(indx<=size()); return arr[indx];
         }
-
-        inline array_type &next() throw()
-        {
-            assert(used<count);
-            return arr[++used];
-        }
-
 
     private:
         YACK_DISABLE_COPY_AND_ASSIGN(arrays_of);
-        array_type *arr;
-        size_t      used;
-
-        inline void link() throw()
-        {
-            std::cerr << "linking..." << std::endl;
-            mutable_type *obj = static_cast<mutable_type *>(obj_entry);
-            for(size_t i=1;i<=count;++i,obj+=items)
-            {
-                new ( &arr[i] ) array_type(obj,items);
-            }
-        }
+        array_type              *arr;
+        memory::operative_of<T>  mem;
     };
-#endif
 
 
 }
