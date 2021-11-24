@@ -11,7 +11,7 @@ namespace yack
         return mgr.acquire(count,block_size);
     }
 
-    static inline void arrays_release(void * &addr, size_t &size) throw()
+    void arrays:: release(void * &addr, size_t &size) throw()
     {
         static memory::allocator &mgr = memory::pooled::location();
         mgr.release(addr,size);
@@ -20,10 +20,22 @@ namespace yack
 
     void arrays:: release_blocks() throw()
     {
-        arrays_release(position,acquired);
+        release(position,acquired);
         capacity = 0;
         gathered = 0;
     }
+
+    
+
+    void * arrays::query(const size_t num_blocks, const size_t block_size, size_t &gathered_, size_t &acquired_) const
+    {
+        assert(0==gathered_);
+        assert(0==acquired_);
+        gathered_ = num_blocks * count;
+        acquired_ = gathered_;
+        return arrays_acquire(acquired_,block_size);
+    }
+
 
     void arrays:: release_arrays() throw()
     {
@@ -31,7 +43,7 @@ namespace yack
         assert(0==gathered);
         assert(0==acquired);
         assert(0==position);
-        arrays_release(entry,bytes);
+        release(entry,bytes);
         count = 0;
     }
 
@@ -86,63 +98,6 @@ namespace yack
     }
 
 
-#if 0
-
-
-    static inline void arrays_release(void * &addr, size_t &size) throw()
-    {
-        static memory::allocator &mgr = memory::pooled::location();
-        mgr.release(addr,size);
-    }
-
-    arrays:: ~arrays() throw()
-    {
-        release_objets();
-        release_arrays();
-    }
-
-
-    void arrays:: release_objets() throw()
-    {
-        arrays_release(obj_entry,obj_bytes);
-        coerce(items) = 0;
-    }
-
-    void arrays:: release_arrays() throw()
-    {
-        assert(0==items);
-        assert(0==obj_bytes);
-        assert(0==obj_entry);
-        arrays_release(arr_entry,arr_bytes);
-        coerce(count) = 0;
-    }
-
-
-    arrays:: arrays(const size_t num_arrays,
-                    const size_t block_size,
-                    const size_t num_blocks) :
-    count(num_arrays),
-    items(num_blocks),
-    arr_bytes(count),
-    arr_entry( arrays_acquire( coerce(arr_bytes),sizeof(thin_array<int>))),
-    obj_bytes(items*count),
-    obj_entry(NULL)
-    {
-        assert(block_size>0);
-        try
-        {
-            obj_entry = arrays_acquire(obj_bytes,block_size);
-        }
-        catch(...)
-        {
-            coerce(items) = 0;
-            obj_bytes     = 0;
-            obj_entry     = 0;
-            release_arrays();
-            throw;
-        }
-    }
-#endif
-
+    
 
 }

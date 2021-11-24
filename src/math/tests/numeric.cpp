@@ -1,6 +1,7 @@
 
 #include "yack/math/numeric.hpp"
 #include "yack/utest/run.hpp"
+#include <typeinfo>
 
 using namespace yack;
 using namespace math;

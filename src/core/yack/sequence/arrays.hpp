@@ -44,10 +44,18 @@ namespace yack
         size_t acquired; //!< gathered*block_size
         void  *position; //!< first object
 
+
+        void *query(const size_t num_blocks,
+                    const size_t block_size,
+                    size_t &     gathered_,
+                    size_t &     acquired_) const;
+
+        static void release(void * &, size_t &) throw();
+
     private:
         YACK_DISABLE_COPY_AND_ASSIGN(arrays);
-        void release_arrays() throw();
         void release_blocks() throw();
+        void release_arrays() throw();
 
     public:
         virtual size_t granted()     const throw(); //!< bytes for object
@@ -70,10 +78,11 @@ namespace yack
         //
         // types and definitions
         //______________________________________________________________________
-        typedef thin_array<T>        array_type; //!< alias
-        typedef writable<array_type> base_type;  //!< alias
-        typedef typename array_type::mutable_type object_type; //!< alias;
-        //!
+        typedef thin_array<T>                     array_type;     //!< alias
+        typedef writable<array_type>              base_type;      //!< alias
+        typedef typename array_type::mutable_type object_type;    //!< alias;
+        typedef memory::operative_of<T>           operative_type; //!< alias
+
         //______________________________________________________________________
         //
         // C++
@@ -116,16 +125,16 @@ namespace yack
 
         //______________________________________________________________________
         //
-        //! get next array
+        //! get next array for setup
         //______________________________________________________________________
         array_type & next() throw() { assert(use<=size()); return arr[++use]; }
 
 
     private:
         YACK_DISABLE_COPY_AND_ASSIGN(arrays_of);
-        array_type              *arr;
-        memory::operative_of<T>  mem;
-        size_t                   use;
+        array_type     *arr;
+        operative_type  mem;
+        size_t          use;
 
         inline void link() throw()
         {
@@ -135,6 +144,24 @@ namespace yack
             for(size_t i=1;i<=num;++i,obj+=stp)
             {
                 new (&arr[i]) array_type(obj,capacity);
+            }
+        }
+
+        inline void rebuild(const size_t num_blocks)
+        {
+            {
+                size_t gathered_ = 0;
+                size_t acquired_ = 0;
+                void  *position_ = query(num_blocks,sizeof(T),gathered_,acquired_);
+                try {
+                    operative_type mem_(position_,gathered_);
+
+                }
+                catch(...)
+                {
+                    release(position_,acquired_);
+                    throw;
+                }
             }
         }
 
