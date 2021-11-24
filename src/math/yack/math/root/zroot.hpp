@@ -11,12 +11,29 @@ namespace yack
     
     namespace math
     {
-        
+        //______________________________________________________________________
+        //
+        //
+        //! base class to setup algorithms
+        //
+        //______________________________________________________________________
         class zroot
         {
         public:
-            triplet<sign_type> s;
+            //__________________________________________________________________
+            //
+            // C++
+            //__________________________________________________________________
+            virtual ~zroot() throw(); //!< cleanup
             
+        protected:
+            explicit zroot() throw(); //!< setup
+           
+            //__________________________________________________________________
+            //
+            // types
+            //__________________________________________________________________
+            //! initialize result
             enum result
             {
                 success, //! exact zero
@@ -24,24 +41,32 @@ namespace yack
                 compute  //! need to work
             };
             
-            virtual ~zroot() throw();
-            
-        protected:
-            explicit zroot() throw();
-            
         private:
             YACK_DISABLE_COPY_AND_ASSIGN(zroot);
         };
         
+        //______________________________________________________________________
+        //
+        //
+        //! initialize algorithm
+        //
+        //______________________________________________________________________
         template <typename T>
         class zalgo : public zroot
         {
         public:
-            inline virtual ~zalgo() throw() {}
-            inline explicit zalgo() throw() : zroot() {}
+            inline virtual ~zalgo() throw() {}            //!< cleanup
+            inline explicit zalgo() throw() : zroot() {}  //!< setup
             
-            inline
-            result initialize( triplet<T> &x, triplet<T> &f)
+        protected:
+            //! setup from precomputed (x.a,f.a), (x.c,f.c)
+            /** recompute F(x.b) in case of 'exact' zero
+             */
+            template <typename FUNCTION>
+            inline result initialize(FUNCTION           &F,
+                                     triplet<T>         &x,
+                                     triplet<T>         &f,
+                                     triplet<sign_type> &s) const throw()
             {
                 s.a = __sign::of(f.a);
                 s.c = __sign::of(f.c);
@@ -54,14 +79,12 @@ namespace yack
                     case zp_pair:
                     case zn_pair:
                     case zz_pair:
-                        x.b = x.a;
-                        f.b = f.a;
+                        f.b = f.a = F(x.b=x.a);
                         return success;
                         
                     case pz_pair:
                     case nz_pair:
-                        x.b = x.c;
-                        f.b = f.c;
+                        f.b = f.c = F(x.b = x.c);
                         return success;
                         
                     case np_pair:
