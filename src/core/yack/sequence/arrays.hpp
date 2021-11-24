@@ -149,13 +149,37 @@ namespace yack
 
         inline void rebuild(const size_t num_blocks)
         {
+            //__________________________________________________________________
+            //
+            // acquire new resources
+            //__________________________________________________________________
             {
+                //______________________________________________________________
+                //
+                // linear part
+                //______________________________________________________________
                 size_t gathered_ = 0;
                 size_t acquired_ = 0;
                 void  *position_ = query(num_blocks,sizeof(T),gathered_,acquired_);
-                try {
-                    operative_type mem_(position_,gathered_);
+                try
+                {
+                    //__________________________________________________________
+                    //
+                    // use local operative
+                    //__________________________________________________________
+                    {
+                        operative_type mem_(position_,gathered_);
+                        cswap(gathered,gathered_);
+                        cswap(acquired,acquired_);
+                        cswap(position,position_);
+                        mem_.swap_with(mem);
+                    }
 
+                    //__________________________________________________________
+                    //
+                    // clear old memory
+                    //__________________________________________________________
+                    release(position_,acquired_);
                 }
                 catch(...)
                 {
@@ -163,6 +187,12 @@ namespace yack
                     throw;
                 }
             }
+
+            //__________________________________________________________________
+            //
+            // relink
+            //__________________________________________________________________
+            link();
         }
 
     };
