@@ -14,7 +14,9 @@ namespace yack
     {
         //______________________________________________________________________
         //
+        //
         //! helper to create/delete assembly of types in memory area
+        //
         //______________________________________________________________________
         class operative
         {
@@ -57,7 +59,12 @@ namespace yack
             void zap() throw();
         };
 
+        //______________________________________________________________________
+        //
+        //
         //! parametrized operative
+        //
+        //______________________________________________________________________
         template <typename T> class operative_of : public operative
         {
         public:

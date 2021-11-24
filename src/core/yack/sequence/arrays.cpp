@@ -5,12 +5,49 @@
 namespace yack
 {
 
-
     static inline void *arrays_acquire(size_t &count, const size_t block_size)
     {
         static memory::allocator &mgr = memory::pooled::instance();
         return mgr.acquire(count,block_size);
     }
+
+    static inline void arrays_release(void * &addr, size_t &size) throw()
+    {
+        static memory::allocator &mgr = memory::pooled::location();
+        mgr.release(addr,size);
+    }
+
+
+    void arrays:: release_arrays() throw()
+    {
+        arrays_release(entry,bytes);
+        count = 0;
+    }
+
+    arrays:: ~arrays() throw()
+    {
+        release_arrays();
+    }
+
+    size_t arrays:: size() const throw()
+    {
+        return count;
+    }
+
+
+
+    arrays:: arrays(const size_t num_arrays) :
+    count(num_arrays),
+    bytes(num_arrays),
+    entry( arrays_acquire(bytes,sizeof(thin_array<int>)) )
+    {
+
+        std::cerr << "#arrays: " << count << " : bytes=" << bytes << std::endl;
+    }
+
+
+#if 0
+
 
     static inline void arrays_release(void * &addr, size_t &size) throw()
     {
@@ -65,7 +102,7 @@ namespace yack
             throw;
         }
     }
-
+#endif
 
 
 }

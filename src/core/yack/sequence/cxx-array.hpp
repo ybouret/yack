@@ -106,7 +106,7 @@ namespace yack
         //! setup with default argument
         inline explicit cxx_array(const size_t n) :
         cxx_array_<T,ALLOCATOR>(n),
-        memIO(this->entry+1,this->count)
+        memIO(this->basis,this->count)
         {
         }
         

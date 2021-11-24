@@ -9,6 +9,28 @@
 namespace yack
 {
 
+
+    class arrays : public collection
+    {
+    public:
+        virtual ~arrays() throw();
+
+        virtual size_t size() const throw();
+
+        explicit arrays(const size_t num_arrays);
+
+    private:
+        YACK_DISABLE_COPY_AND_ASSIGN(arrays);
+        size_t count; //!< arrays: count => size()
+        size_t bytes; //!< arrays: memory byte
+        void  *entry; //!< arrays: first one
+
+        void release_arrays() throw();
+
+
+    };
+
+#if 0
     class arrays
     {
     public:
@@ -88,6 +110,7 @@ namespace yack
             }
         }
     };
+#endif
 
 
 }

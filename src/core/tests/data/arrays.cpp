@@ -10,6 +10,13 @@ YACK_UTEST(data_arrays)
     YACK_SIZEOF(thin_array<double>);
     YACK_SIZEOF(thin_array<int>);
 
+    { arrays arr(0); }
+    { arrays arr(1); }
+    { arrays arr(10); }
+    { arrays arr(100); }
+    { arrays arr(1000); }
+
+#if 0
     arrays_of<double> arr(10,32);
     for(size_t i=1;i<=arr.count;++i)
     {
@@ -20,7 +27,8 @@ YACK_UTEST(data_arrays)
             a[j] = ran.symm<double>();
         }
     }
-
+#endif
+    
 }
 YACK_UDONE()
 
