@@ -22,6 +22,12 @@ namespace
             dy[1] = -a * y[1];
         }
 
+        inline void dCos(writable<T> &dy, T, const readable<T> &y )
+        {
+            dy[1] =      y[2];
+            dy[2] = -a * y[1];
+        }
+
 
 
     };
@@ -52,6 +58,27 @@ namespace
                 ios::ocstream::echo(filename,"%g %g\n",x1,y[1]);
             }
         }
+
+        {
+            pb.a = 4;
+            const string filename = "rk4-cos-" + id + ".dat";
+            typename ode::field<T>::equation eq(&pb, & problem<T>::dCos );
+            vector<T> y(2,0);
+            y[1] = 1;
+            y[2] = 0;
+            size_t    np = 100;
+            T         dx = T(2)/np;
+            ios::ocstream::overwrite(filename);
+            ios::ocstream::echo(filename,"%lg %lg %lg\n",T(0),y[1],y[2]);
+            for(size_t i=1;i<=100;++i)
+            {
+                const T x0 = (i-1)*dx;
+                const T x1 = i*dx;
+                odeint(y,x0,x1,eq);
+                ios::ocstream::echo(filename,"%lg %lg %lg\n",x1,y[1],y[2]);
+            }
+        }
+
     }
 
 }
