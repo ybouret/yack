@@ -21,6 +21,13 @@ set(math_algebra ${math_algebra_decl} ${math_algebra_srcs})
 SOURCE_GROUP(math/algebra FILES ${math_algebra})
 install( FILES ${math_algebra_decl} DESTINATION include/yack/math/algebra )
 
+# root
+file(GLOB math_root_decl yack/math/root/*.hpp)
+file(GLOB math_root_srcs yack/math/root/*.cpp)
+set(math_root ${math_root_decl} ${math_root_srcs})
+SOURCE_GROUP(math/root FILES ${math_root})
+install( FILES ${math_root_decl} DESTINATION include/yack/math/root )
+
 #ode
 file(GLOB math_ode_decl yack/math/ode/*.hpp)
 file(GLOB math_ode_srcs yack/math/ode/*.cpp)
@@ -39,6 +46,7 @@ ${math_main}
 ${math_tao}
 ${math_algebra}
 ${math_ode} ${math_ode_explicit}
+${math_root}
 )
 
 install( TARGETS yack-math ARCHIVE DESTINATION lib )
