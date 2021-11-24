@@ -27,6 +27,10 @@ namespace {
                 a[j] = tmp;
             }
         }
+        arr.make(num_blocks*2);
+        std::cerr << "    |_mutual_size: " << arr.mutual_size() << std::endl;
+        std::cerr << "    |_fixed_bytes: " << arr.fixed_bytes() << std::endl;
+        std::cerr << "    |_granted    : " << arr.granted()     << std::endl;
 
     }
 }

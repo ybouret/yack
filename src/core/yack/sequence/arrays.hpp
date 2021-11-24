@@ -39,17 +39,18 @@ namespace yack
         size_t bytes; //!< arrays: memory byte
         void  *entry; //!< arrays: first one
 
-        size_t capacity; //!< max items per array
+        size_t capacity; //!< capacity per item
         size_t gathered; //!< capacity*count
         size_t acquired; //!< gathered*block_size
         void  *position; //!< first object
 
-
+        //! query memory for num_blocks
         void *query(const size_t num_blocks,
                     const size_t block_size,
                     size_t &     gathered_,
                     size_t &     acquired_) const;
 
+        //! allocator release part
         static void release(void * &, size_t &) throw();
 
     private:
@@ -129,6 +130,18 @@ namespace yack
         //______________________________________________________________________
         array_type & next() throw() { assert(use<=size()); return arr[++use]; }
 
+        //______________________________________________________________________
+        //
+        //! make new mutual size
+        //______________________________________________________________________
+        void make(const size_t n)
+        {
+            if(n!=capacity)
+            {
+                rebuild(n);
+                assert(n==mutual_size());
+            }
+        }
 
     private:
         YACK_DISABLE_COPY_AND_ASSIGN(arrays_of);
@@ -165,13 +178,14 @@ namespace yack
                 {
                     //__________________________________________________________
                     //
-                    // use local operative
+                    // use local operative and update data upon success
                     //__________________________________________________________
                     {
                         operative_type mem_(position_,gathered_);
-                        cswap(gathered,gathered_);
                         cswap(acquired,acquired_);
                         cswap(position,position_);
+                        gathered = gathered_;
+                        capacity = num_blocks;
                         mem_.swap_with(mem);
                     }
 
@@ -183,6 +197,7 @@ namespace yack
                 }
                 catch(...)
                 {
+                    // here, operative setup was a failure
                     release(position_,acquired_);
                     throw;
                 }
