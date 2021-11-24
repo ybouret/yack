@@ -10,11 +10,16 @@ YACK_UTEST(data_arrays)
     YACK_SIZEOF(thin_array<double>);
     YACK_SIZEOF(thin_array<int>);
 
-    { arrays arr(0); }
-    { arrays arr(1); }
-    { arrays arr(10); }
-    { arrays arr(100); }
-    { arrays arr(1000); }
+
+    for(size_t num_arrays=0;num_arrays<=10;++num_arrays)
+    {
+        for(size_t num_blocks=0;num_blocks<=100;++num_blocks)
+        {
+            arrays arr(num_arrays,8,num_blocks);
+        }
+    }
+
+
 
 #if 0
     arrays_of<double> arr(10,32);

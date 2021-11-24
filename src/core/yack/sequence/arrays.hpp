@@ -17,7 +17,9 @@ namespace yack
 
         virtual size_t size() const throw();
 
-        explicit arrays(const size_t num_arrays);
+        explicit arrays(const size_t num_arrays,
+                        const size_t block_size,
+                        const size_t num_blocks);
 
     private:
         YACK_DISABLE_COPY_AND_ASSIGN(arrays);
@@ -25,8 +27,13 @@ namespace yack
         size_t bytes; //!< arrays: memory byte
         void  *entry; //!< arrays: first one
 
-        void release_arrays() throw();
+        size_t capacity; //!< max items per array
+        size_t acquired; //!< capacity*count*block_size
+        void  *position; //!< first object
 
+    private:
+        void release_arrays() throw();
+        void release_blocks() throw();
 
     };
 

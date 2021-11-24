@@ -18,14 +18,24 @@ namespace yack
     }
 
 
+    void arrays:: release_blocks() throw()
+    {
+        arrays_release(position,acquired);
+        capacity = 0;
+    }
+
     void arrays:: release_arrays() throw()
     {
+        assert(0==capacity);
+        assert(0==acquired);
+        assert(0==position);
         arrays_release(entry,bytes);
         count = 0;
     }
 
     arrays:: ~arrays() throw()
     {
+        release_blocks();
         release_arrays();
     }
 
@@ -36,13 +46,30 @@ namespace yack
 
 
 
-    arrays:: arrays(const size_t num_arrays) :
+    arrays:: arrays(const size_t num_arrays,
+                    const size_t block_size,
+                    const size_t num_blocks) :
     count(num_arrays),
     bytes(num_arrays),
-    entry( arrays_acquire(bytes,sizeof(thin_array<int>)) )
+    entry( arrays_acquire(bytes,sizeof(thin_array<int>)) ),
+    capacity(num_blocks),
+    acquired(capacity*count),
+    position(0)
     {
-
-        std::cerr << "#arrays: " << count << " : bytes=" << bytes << std::endl;
+        try
+        {
+            position = arrays_acquire(acquired,block_size);
+        }
+        catch(...)
+        {
+            capacity = 0;
+            acquired = 0;
+            position = 0;
+            release_arrays();
+            throw;
+        }
+        std::cerr << "#arrays: " << count    << " : bytes=" << bytes    << std::endl;
+        std::cerr << "#capa  : " << capacity << " : bytes=" << acquired << std::endl;
     }
 
 
