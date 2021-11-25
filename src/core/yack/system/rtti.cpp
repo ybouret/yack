@@ -106,6 +106,7 @@ namespace yack
         rtti & use(const std::type_info &ti)
         {
             YACK_LOCK(access);
+
             const char   *id = ti.name();
             rtti_ptr     *pp = get(id);
             if(pp)
@@ -133,7 +134,9 @@ namespace yack
             rtti_ptr    *pp = get(alias);
             if(pp)
             {
+                //--------------------------------------------------------------
                 // alias exists, check same ti
+                //--------------------------------------------------------------
                 const rtti_ptr *qq = get(ID);
                 if(qq)
                 {
@@ -147,11 +150,15 @@ namespace yack
             }
             else
             {
-                // alias doesn't exists : get principal rtti
+                //--------------------------------------------------------------
+                // alias doesn't exists : get principal rtti and add alias
+                //--------------------------------------------------------------
                 rtti &self = use(ti);
                 self.store( new kernel::rtti(alias) );
 
+                //--------------------------------------------------------------
                 // register global alias
+                //--------------------------------------------------------------
                 try
                 {
                     const rtti_ptr temp = &self;
@@ -174,11 +181,13 @@ namespace yack
     private:
         YACK_DISABLE_COPY_AND_ASSIGN(rtti_db);
         friend class singleton<rtti_db>;
-        inline explicit rtti_db() throw() : singleton<rtti_db>(), rtti_map() {}
-        inline virtual ~rtti_db() throw()
+        inline virtual ~rtti_db() throw() {}
+        inline explicit rtti_db() throw() : singleton<rtti_db>(), rtti_map()
         {
+            setup();
         }
 
+        void setup();
     };
 
     const char rtti_db:: call_sign[] = "rtti";
@@ -201,4 +210,37 @@ namespace yack
         return use(ti,_);
     }
 
+    void rtti:: gv()
+    {
+        static const rtti_db &db = rtti_db::instance();
+        db.tree.gv("rtti.dot");
+        ios::vizible::render("rtti.dot");
+    }
+
+    void rtti::display()
+    {
+        static const rtti_db &db = rtti_db::instance();
+        std::cerr << "<rtti count=" << db.size() << ">" << std::endl;
+        for(rtti_db::const_iterator it=db.begin();it!=db.end();++it)
+        {
+            std::cerr << "    " << *it << std::endl;
+        }
+        std::cerr << "<rtti/>" << std::endl;
+    }
+
+
+}
+
+
+namespace yack
+{
+#define YACK_RTTI(TYPE) do { const string alias = #TYPE; (void) use( typeid(TYPE), alias); } while(false)
+
+    void rtti_db:: setup()
+    {
+        YACK_RTTI(int8_t);
+        YACK_RTTI(int16_t);
+        YACK_RTTI(int32_t);
+        YACK_RTTI(int64_t);
+    }
 }

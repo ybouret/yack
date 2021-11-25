@@ -56,6 +56,16 @@ namespace yack
 
         friend std::ostream & operator<<(std::ostream &, const rtti &);
 
+        static void gv();
+        static void display();
+        
+        static const string &name(const std::type_info &);
+        template <typename T> static inline
+        const string & name() { return name( typeid(T) ); }
+        
+
+
+
     private:
         YACK_DISABLE_COPY_AND_ASSIGN(rtti);
     };
