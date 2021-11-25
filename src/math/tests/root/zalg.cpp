@@ -24,6 +24,7 @@ namespace
     template <typename T, template <typename> class ZROOT>
     static inline void zsolve( )
     {
+        size_t  W = 15;
         Func<T> F = { 0 };
         
         ZROOT<T> solve;
@@ -35,8 +36,7 @@ namespace
             F.count = 0;
             if( solve(F,x,f) )
             {
-                std::cerr << "F(" << x.b << ")=" << f.b << std::endl;
-                std::cerr << "|_count=" << F.count << std::endl;
+                std::cerr << "F(" << std::setw(W) << x.b << ")=" << std::setw(W) << f.b << " #" << F.count << std::endl;
             }
         }
 
@@ -48,11 +48,9 @@ namespace
             F.count = 0;
             if( solve(F,x,f) )
             {
-                std::cerr << "F(" << x.b << ")=" << f.b << std::endl;
-                std::cerr << "|_count=" << F.count << std::endl;
+                std::cerr << "F(" << std::setw(W) << x.b << ")=" << std::setw(W) << f.b << " #" << F.count << std::endl;
             }
         }
-        return;
 
         
         {
@@ -62,8 +60,7 @@ namespace
             F.count = 0;
             if( solve(F,x,f) )
             {
-                std::cerr << "F(" << x.b << ")=" << f.b << std::endl;
-                std::cerr << "|_count=" << F.count << std::endl;
+                std::cerr << "F(" << std::setw(W) << x.b << ")=" << std::setw(W) << f.b << " #" << F.count << std::endl;
             }
         }
     }
@@ -75,13 +72,19 @@ YACK_UTEST(root_zalg)
 {
 
 
+    std::cerr << clamp<float>(0,0.1,1) << std::endl;
+    std::cerr << clamp<float>(0,0,1) << std::endl;
+    std::cerr << clamp<float>(0,1,1) << std::endl;
+    std::cerr << clamp<float>(0,-1,1) << std::endl;
+    std::cerr << clamp<float>(0,2,1) << std::endl;
+
     zsolve<float,zbis>();
     zsolve<float,zrid>();
 
 
     zsolve<double,zbis>();
     zsolve<double,zrid>();
-    
+
     zsolve<long double,zbis>();
     zsolve<long double,zrid>();
 }

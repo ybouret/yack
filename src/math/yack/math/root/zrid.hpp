@@ -41,7 +41,7 @@ namespace yack
             template <typename FUNCTION> inline
             bool operator()(FUNCTION &F, triplet<T> &x, triplet<T> &f) const
             {
-                static const T     h(0.5);
+                static const T     half(0.5);
                 //______________________________________________________________
                 //
                 // initialize
@@ -67,10 +67,11 @@ namespace yack
                 //
                 // initialize search
                 //______________________________________________________________
-                const T sh = (s.c == negative) ? h : -h;
-                T  width = fabs(x.c-x.a);
-                T *x_neg = &x.a, *x_pos = &x.c;
-                T *f_neg = &f.a, *f_pos = &f.c;
+                const T sh    = (s.c == negative) ? half : -half;
+                T       width = fabs(x.c-x.a);
+                T      *x_neg = &x.a, *x_pos = &x.c;
+                T      *f_neg = &f.a, *f_pos = &f.c;
+
                 if(positive==s.a)
                 {
                     assert(negative==s.c);
@@ -84,8 +85,9 @@ namespace yack
                 //______________________________________________________________
             CYCLE:
                 // first evaluation
-                if(__zero__==(s.b = __sign::of(f.b = F(x.b = h*(x.a+x.c)))) ) return true;
-                const T del = sh*width*(f.b/sqrt(f.b*f.b-f.a*f.c));
+                if(__zero__==(s.b = __sign::of(f.b = F(x.b = half*(x.a+x.c)))) ) return true;
+                const T den = sqrt(f.b*f.b-f.a*f.c); if(den<=fabs(f.b))          return true;
+                const T del = sh*width*(f.b/den);
 
                 //second evaluation
                 switch(s.b = __sign::of(f.b = F(x.b = clamp(x.a,x.b+del,x.c) )))
@@ -95,11 +97,8 @@ namespace yack
                     case positive: *x_pos = x.b; *f_pos=f.b; break;
                 }
                 assert(x.a<=x.c);
-                if(fabs(f.a-f.c)<=0)
-                    return true;
-                const T new_width = fabs(x.c-x.a);
-                if(new_width>=width)
-                    return true;
+                if(fabs(f.a-f.c)<=0) return true;
+                const T new_width = fabs(x.c-x.a); if(new_width>=width) return true;
                 width = new_width;
                 goto CYCLE;
             }

@@ -41,7 +41,7 @@ namespace yack
             template <typename FUNCTION> inline
             bool operator()(FUNCTION &F, triplet<T> &x, triplet<T> &f) const
             {
-                static const T     h(0.5);
+                static const T     half(0.5);
                 //______________________________________________________________
                 //
                 // initialize
@@ -82,19 +82,15 @@ namespace yack
                 // cycles
                 //______________________________________________________________
             CYCLE:
-                switch(s.b = __sign::of(f.b = F(x.b = h*(x.a+x.c))))
+                switch(s.b = __sign::of(f.b = F(x.b=half*(x.a+x.c))))
                 {
                     case __zero__: return true; // early return
                     case negative: *x_neg = x.b; *f_neg=f.b; break;
                     case positive: *x_pos = x.b; *f_pos=f.b; break;
                 }
                 assert(x.a<=x.c);
-                //std::cerr << "dx: " << fabs(x.c-x.a) << " | df: " << fabs(f.c-f.a) << std::endl;
-                if(fabs(f.a-f.c)<=0)
-                    return true;
-                const T new_width = fabs(x.c-x.a);
-                if(new_width>=width)
-                    return true;
+                if(fabs(f.a-f.c)<=0) return true;
+                const T new_width = fabs(x.c-x.a); if(new_width>=width) return true;
                 width = new_width;
                 goto CYCLE;
             }
