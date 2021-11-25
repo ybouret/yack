@@ -58,13 +58,12 @@ namespace yack
     {
         assert(r.size>0);
         const kernel::rtti *node = r.head;
-        os << '[';
-        os << '<' << **node << '>';
+        os << '<' << **node;
         while( NULL != (node=node->next) )
         {
-            os << " <- <" << **node << ">";
+            os << '|' << **node;
         }
-        os << ']';
+        os << '>';
         return os;
     }
 
@@ -204,6 +203,12 @@ namespace yack
         return db.use(ti,alias);
     }
 
+    const string & rtti::name(const std::type_info &ti)
+    {
+        static rtti_db &db = rtti_db::instance();
+        return db.use(ti).name();
+    }
+
     const rtti & rtti:: use(const std::type_info &ti, const char *alias)
     {
         const string  _(alias);
@@ -242,5 +247,37 @@ namespace yack
         YACK_RTTI(int16_t);
         YACK_RTTI(int32_t);
         YACK_RTTI(int64_t);
+
+        YACK_RTTI(char);
+        YACK_RTTI(short);
+        YACK_RTTI(int);
+        YACK_RTTI(long);
+        YACK_RTTI(long long);
+
+
+        YACK_RTTI(unit_t);
+
+
+
+        YACK_RTTI(uint8_t);
+        YACK_RTTI(uint16_t);
+        YACK_RTTI(uint32_t);
+        YACK_RTTI(uint64_t);
+
+        YACK_RTTI(unsigned char);
+        YACK_RTTI(unsigned short);
+        YACK_RTTI(unsigned);
+        YACK_RTTI(unsigned long);
+        YACK_RTTI(unsigned long long);
+
+        YACK_RTTI(size_t);
+
+        YACK_RTTI(float);
+        YACK_RTTI(double);
+        YACK_RTTI(long double);
+
+        YACK_RTTI(bool);
+
+
     }
 }

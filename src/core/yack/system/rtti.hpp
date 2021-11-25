@@ -8,6 +8,7 @@
 #include "yack/object.hpp"
 #include "yack/counted.hpp"
 #include <typeinfo>
+#include <iosfwd>
 
 namespace yack
 {
@@ -26,6 +27,7 @@ namespace yack
 
             rtti         *next;
         private:
+            YACK_DISABLE_COPY_AND_ASSIGN(rtti);
             yack::string *impl;
         };
     }
@@ -58,7 +60,7 @@ namespace yack
 
         static void gv();
         static void display();
-        
+
         static const string &name(const std::type_info &);
         template <typename T> static inline
         const string & name() { return name( typeid(T) ); }

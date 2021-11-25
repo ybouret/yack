@@ -4,13 +4,17 @@
 
 using namespace yack;
 
+
+#define YACK_RTTI(TYPE) std::cerr << "<" << #TYPE << "> => " << rtti::name<TYPE>() << std::endl
+
 YACK_UTEST(rtti)
 {
 
-    
+
     rtti::display();
 
-    rtti::gv();
+    //rtti::gv();
+    YACK_RTTI(int);
 
 }
 YACK_UDONE()
