@@ -85,26 +85,36 @@ namespace yack
                 // cycles
                 //______________________________________________________________
             CYCLE:
-                // first evaluation
-                if(__zero__==(s.b = __sign::of(f.b = F(x.b = half*(x.a+x.c)))) ) return true;
-                const T den = sqrt(f.b*f.b-f.a*f.c); if(den<=fabs(f.b))          return true;
-                const T del = sh*width*(f.b/den);
+                //--------------------------------------------------------------
+                // first pass: reduce by bisection
+                //--------------------------------------------------------------
+                const T fafc = f.a*f.c; // save for discriminant
+                switch(s.b = __sign::of(f.b = F(x.b=half*(x.a+x.c))))
+                {
+                    case __zero__: return true; // early return
+                    case negative: *x_neg = x.b; *f_neg=f.b; break;
+                    case positive: *x_pos = x.b; *f_pos=f.b; break;
+                }
 
-				//second evaluation
-				s.b = __sign::of(f.b = F(x.b = clamp<T>(x.a, x.b + del, x.c)));
-                switch(s.b)
+                //--------------------------------------------------------------
+                // second pass: ridder's correction
+                //--------------------------------------------------------------
+                const T den = sqrt(f.b*f.b-fafc); if(den<=fabs(f.b)) return true; // early return
+                const T del = sh*width*(f.b/den);
+                switch( s.b = __sign::of(f.b = F(x.b = clamp<T>(x.a, x.b + del, x.c))) )
                 {
                     case __zero__:                     return true; // early return
                     case negative: *x_neg = x.b; *f_neg=f.b; break;
                     case positive: *x_pos = x.b; *f_pos=f.b; break;
                 }
-                
+
+                //--------------------------------------------------------------
 				// check step
+                //--------------------------------------------------------------
                 assert(x.is_increasing());
                 if(fabs(f.a-f.c)<=0) return true;
                 const T new_width = fabs(x.c-x.a); if(new_width>=width) return true;
-				std::cerr << "width=" << width << "->"<< new_width << ", delta="<< width-new_width << std::endl;
-				width = new_width;
+                width = new_width;
                 goto CYCLE;
             }
 
