@@ -12,7 +12,27 @@ namespace yack
     namespace math
     {
 
-        
+        namespace core
+        {
+            //__________________________________________________________________
+            //
+            //
+            //! base class for root finding algorithm
+            //
+            //__________________________________________________________________
+            class zroot
+            {
+            public:
+                virtual            ~zroot()      throw();     //!< cleanup
+                virtual const char *name() const throw() = 0; //!< identifier
+            protected:                                        //|
+                explicit            zroot()      throw();     //!< setup
+                
+            private:
+                YACK_DISABLE_COPY_AND_ASSIGN(zroot);
+            };
+        }
+
         //______________________________________________________________________
         //
         //
@@ -20,11 +40,11 @@ namespace yack
         //
         //______________________________________________________________________
         template <typename T>
-        class zroot
+        class zroot : public core::zroot
         {
         public:
             inline virtual ~zroot() throw() {}  //!< cleanup
-            inline explicit zroot() throw() {}  //!< setup
+            inline explicit zroot() throw() : core::zroot() {}  //!< setup
             
         protected:
             //__________________________________________________________________

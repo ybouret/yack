@@ -11,7 +11,12 @@ namespace yack
     
     namespace math
     {
-        
+
+        namespace core
+        {
+            extern const char zbis_name[]; //!< "zbis"
+        }
+
         //______________________________________________________________________
         //
         //
@@ -22,9 +27,10 @@ namespace yack
         class zbis : public zroot<T>
         {
         public:
-            inline virtual ~zbis() throw() {}                //!< setup
-            inline explicit zbis() throw() : zroot<T>() {}   //!< cleanup
-            
+            inline virtual            ~zbis() throw() {}                //!< setup
+            inline explicit            zbis() throw() : zroot<T>() {}   //!< cleanup
+            inline virtual const char *name() const throw() { return core::zbis_name; }
+
             //! bisection operator, reentrant
             /**
              upon success, f.b = F(x.b) was the last call
@@ -83,8 +89,7 @@ namespace yack
                     case positive: *x_pos = x.b; *f_pos=f.b; break;
                 }
                 assert(x.a<=x.c);
-                std::cerr << "df: " << fabs(f.a-f.c) << std::endl;
-                std::cerr << "dx: " << fabs(x.a-x.c) << std::endl;
+                std::cerr << "dx: " << fabs(x.c-x.a) << " | df: " << fabs(f.c-f.a) << std::endl;
                 if(fabs(f.a-f.c)<=0)
                     return true;
                 const T new_width = fabs(x.c-x.a);

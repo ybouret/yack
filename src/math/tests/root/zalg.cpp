@@ -21,12 +21,13 @@ namespace
     };
     
     
-    template <typename T>
+    template <typename T, template <typename> class ZROOT>
     static inline void zsolve( )
     {
         Func<T> F = { 0 };
         
-        zbis<T> solve;
+        ZROOT<T> solve;
+        std::cerr << "Using [" << solve.name() << "]" << std::endl;
         {
             triplet<T> x = { 0, -1, 1 };
             triplet<T> f = { F(x.a), -1, F(x.c) };
@@ -66,10 +67,14 @@ namespace
 YACK_UTEST(root_zalg)
 {
     
-    zsolve<float>();
-    //zsolve<double>();
-    //zsolve<long double>();
+    zsolve<float,zbis>();
+    zsolve<float,zrid>();
 
+    zsolve<double,zbis>();
+    zsolve<double,zrid>();
+
+    zsolve<long double,zbis>();
+    zsolve<long double,zrid>();
 }
 YACK_UDONE()
 

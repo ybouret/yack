@@ -12,6 +12,10 @@ namespace yack
 
     namespace math
     {
+        namespace core
+        {
+            extern const char zrid_name[]; //!< "zrid"
+        }
 
         //______________________________________________________________________
         //
@@ -23,10 +27,11 @@ namespace yack
         class zrid : public zroot<T>
         {
         public:
-            inline virtual ~zrid() throw() {}                //!< setup
-            inline explicit zrid() throw() : zroot<T>() {}   //!< cleanup
+            inline virtual            ~zrid() throw() {}                //!< setup
+            inline explicit            zrid() throw() : zroot<T>() {}   //!< cleanup
+            inline virtual const char *name() const throw() { return core::zrid_name; }
 
-            //! bisection operator, reentrant
+            //! Ridder's operator, reentrant
             /**
              upon success, f.b = F(x.b) was the last call
              \param F  function to zero
@@ -62,6 +67,7 @@ namespace yack
                 //
                 // initialize search
                 //______________________________________________________________
+                const T sh = (s.c == negative) ? h : -h;
                 T  width = fabs(x.c-x.a);
                 T *x_neg = &x.a, *x_pos = &x.c;
                 T *f_neg = &f.a, *f_pos = &f.c;
@@ -77,15 +83,18 @@ namespace yack
                 // cycles
                 //______________________________________________________________
             CYCLE:
-                switch(s.b = __sign::of(f.b = F(x.b = h*(x.a+x.c))))
+                // first evaluation
+                if(__zero__==(s.b = __sign::of(f.b = F(x.b = h*(x.a+x.c)))) ) return true;
+                const T del = sh*width*(f.b/sqrt(f.b*f.b-f.a*f.c));
+
+                //second evaluation
+                switch(s.b = __sign::of(f.b = F(x.b = clamp(x.a,x.b+del,x.c) )))
                 {
                     case __zero__: return true; // early return
                     case negative: *x_neg = x.b; *f_neg=f.b; break;
                     case positive: *x_pos = x.b; *f_pos=f.b; break;
                 }
                 assert(x.a<=x.c);
-                std::cerr << "df: " << fabs(f.a-f.c) << std::endl;
-                std::cerr << "dx: " << fabs(x.a-x.c) << std::endl;
                 if(fabs(f.a-f.c)<=0)
                     return true;
                 const T new_width = fabs(x.c-x.a);

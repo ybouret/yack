@@ -20,6 +20,13 @@ namespace yack
     {
         return (lhs < rhs) ? rhs : lhs;
     }
+
+    //! keep within [lower:upper]
+    template <typename T> inline
+    T clamp(const T lower, const T value, const T upper) throw()
+    {
+        return (value<lower) ? lower : ( (upper<value) ? upper : value );
+    }
     
     //! x^2
     template <typename T> inline
