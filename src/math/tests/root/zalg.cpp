@@ -1,4 +1,5 @@
 #include "yack/math/root/zbis.hpp"
+#include "yack/math/root/zrid.hpp"
 #include "yack/utest/run.hpp"
 #include <cmath>
 
@@ -66,8 +67,8 @@ YACK_UTEST(root_zalg)
 {
     
     zsolve<float>();
-    zsolve<double>();
-    zsolve<long double>();
+    //zsolve<double>();
+    //zsolve<long double>();
 
 }
 YACK_UDONE()

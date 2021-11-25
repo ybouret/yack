@@ -11,24 +11,22 @@ namespace yack
     
     namespace math
     {
+
+        
         //______________________________________________________________________
         //
         //
-        //! base class to setup algorithms
+        //! base class to setup find algorithm
         //
         //______________________________________________________________________
+        template <typename T>
         class zroot
         {
         public:
-            //__________________________________________________________________
-            //
-            // C++
-            //__________________________________________________________________
-            virtual ~zroot() throw(); //!< cleanup
+            inline virtual ~zroot() throw() {}  //!< cleanup
+            inline explicit zroot() throw() {}  //!< setup
             
         protected:
-            explicit zroot() throw(); //!< setup
-           
             //__________________________________________________________________
             //
             // types
@@ -40,27 +38,11 @@ namespace yack
                 failure, //! unexpected
                 compute  //! need to work
             };
-            
-        private:
-            YACK_DISABLE_COPY_AND_ASSIGN(zroot);
-        };
-        
-        //______________________________________________________________________
-        //
-        //
-        //! initialize algorithm
-        //
-        //______________________________________________________________________
-        template <typename T>
-        class zalgo : public zroot
-        {
-        public:
-            inline virtual ~zalgo() throw() {}            //!< cleanup
-            inline explicit zalgo() throw() : zroot() {}  //!< setup
-            
-        protected:
+
             //! setup from precomputed (x.a,f.a), (x.c,f.c)
-            /** recompute F(x.b) in case of 'exact' zero
+            /**
+             - prepare signs
+             - recompute F(x.b) in case of 'exact' zero
              */
             template <typename FUNCTION>
             inline result initialize(FUNCTION           &F,
@@ -104,7 +86,7 @@ namespace yack
             
             
         private:
-            YACK_DISABLE_COPY_AND_ASSIGN(zalgo);
+            YACK_DISABLE_COPY_AND_ASSIGN(zroot);
         };
         
     }

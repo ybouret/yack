@@ -1,4 +1,3 @@
-
 //! \file
 
 #ifndef YACK_ROOT_ZBIS_INCLUDED
@@ -20,16 +19,16 @@ namespace yack
         //
         //______________________________________________________________________
         template <typename T>
-        class zbis : public zalgo<T>
+        class zbis : public zroot<T>
         {
         public:
             inline virtual ~zbis() throw() {}                //!< setup
-            inline explicit zbis() throw() : zalgo<T>() {}   //!< cleanup
+            inline explicit zbis() throw() : zroot<T>() {}   //!< cleanup
             
             //! bisection operator, reentrant
             /**
              upon success, f.b = F(x.b) was the last call
-             \param F a function to zero
+             \param F  function to zero
              \param x x.a and x.c must be set
              \param f f.a and f.c must be set
             */
@@ -44,9 +43,9 @@ namespace yack
                 triplet<sign_type> s = { __zero__, __zero__, __zero__ };
                 switch( this->initialize(F,x,f,s) )
                 {
-                    case zroot::failure: return false;
-                    case zroot::success: return true;
-                    case zroot::compute: break;
+                    case zroot<T>::failure: return false;
+                    case zroot<T>::success: return true;
+                    case zroot<T>::compute: break;
                 }
                 
                 //______________________________________________________________
@@ -84,6 +83,10 @@ namespace yack
                     case positive: *x_pos = x.b; *f_pos=f.b; break;
                 }
                 assert(x.a<=x.c);
+                std::cerr << "df: " << fabs(f.a-f.c) << std::endl;
+                std::cerr << "dx: " << fabs(x.a-x.c) << std::endl;
+                if(fabs(f.a-f.c)<=0)
+                    return true;
                 const T new_width = fabs(x.c-x.a);
                 if(new_width>=width)
                     return true;
