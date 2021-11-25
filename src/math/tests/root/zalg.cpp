@@ -68,7 +68,7 @@ namespace
     
 }
 
-YACK_UTEST(root_zalg)
+YACK_UTEST(zroot)
 {
 
 

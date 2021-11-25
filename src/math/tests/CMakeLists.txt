@@ -31,4 +31,4 @@ add_test(algebra:lu test-math lu)
 
 add_test(ode:rk4 test-math rk4)
 
-add_test(root:zalg test-math root_zalg)
+add_test(zroot test-math zroot)

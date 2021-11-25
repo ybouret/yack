@@ -7,9 +7,10 @@
 
 using namespace yack;
 
-class dummy : public object
+class dummy : public object, public counted
 {
 public:
+    typedef arc_ptr<dummy> ptr;
     const string k;
     const size_t u;
     
