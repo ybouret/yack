@@ -88,18 +88,26 @@ namespace yack
                 if(__zero__==(s.b = __sign::of(f.b = F(x.b = half*(x.a+x.c)))) ) return true;
                 const T den = sqrt(f.b*f.b-f.a*f.c); if(den<=fabs(f.b))          return true;
                 const T del = sh*width*(f.b/den);
-
-                //second evaluation
-                switch(s.b = __sign::of(f.b = F(x.b = clamp(x.a,x.b+del,x.c) )))
+				std::cerr << "bis: x=" << x << ", f=" << f << std::endl;
+				
+				//second evaluation
+				s.b = __sign::of(f.b = F(x.b = clamp<T>(x.a, x.b + del, x.c)));
+				std::cerr << "rid: x=" << x << ", f=" << f << std::endl;
+                switch(s.b)
                 {
                     case __zero__: return true; // early return
                     case negative: *x_neg = x.b; *f_neg=f.b; break;
                     case positive: *x_pos = x.b; *f_pos=f.b; break;
                 }
-                assert(x.a<=x.c);
+				
+				std::cerr << "out: x=" << x << ", f=" << f << std::endl;
+
+				// check step
+				assert(x.a <= x.b); assert(x.b <= x.c);
                 if(fabs(f.a-f.c)<=0) return true;
                 const T new_width = fabs(x.c-x.a); if(new_width>=width) return true;
-                width = new_width;
+				std::cerr << "width=" << width << "->"<< new_width << ", delta="<< width-new_width << std::endl;
+				width = new_width;
                 goto CYCLE;
             }
 
