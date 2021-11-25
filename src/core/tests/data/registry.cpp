@@ -22,7 +22,7 @@ public:
     {
     }
     
-    dummy(const dummy &d) : object(),
+    dummy(const dummy &d) : object(), counted(),
     k(d.k),
     u(d.u)
     {
