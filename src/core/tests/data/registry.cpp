@@ -1,5 +1,6 @@
 #include "yack/associative/hash/set.hpp"
 #include "yack/associative/suffix/set.hpp"
+#include "yack/ptr/ark.hpp"
 
 #include "yack/sequence/vector.hpp"
 #include "../main.hpp"
@@ -10,7 +11,7 @@ using namespace yack;
 class dummy : public object, public counted
 {
 public:
-    typedef arc_ptr<dummy> ptr;
+    typedef ark_ptr<string,dummy> ptr;
     const string k;
     const size_t u;
     
@@ -65,28 +66,51 @@ YACK_UTEST(data_registry)
         
         std::cerr << "keys=" << keys << std::endl;
         
-        suffix_set<string,dummy> s_set;
-        hash_set<string,dummy>   h_set;
+        suffix_set<string,dummy>      s_set;
+        hash_set<string,dummy>        h_set;
+        suffix_set<string,dummy::ptr> S_set;
+        hash_set<string,dummy::ptr>   H_set;
+
+        std::cerr << "creating registries" << std::endl;
         for(size_t i=1;i<=n;++i)
         {
-            const dummy d(keys[i],i);
-            YACK_ASSERT(s_set.insert(d));
-            YACK_ASSERT(h_set.insert(d));
+            {
+                const dummy d(keys[i],i);
+                YACK_ASSERT(s_set.insert(d));
+                YACK_ASSERT(h_set.insert(d));
+            }
+
+            {
+                const dummy::ptr d = new dummy(keys[i],i);
+                YACK_ASSERT(S_set.insert(d));
+                YACK_ASSERT(H_set.insert(d));
+            }
         }
-        
+
+        std::cerr << "make local copies" << std::endl;
+        {
+            suffix_set<string,dummy>      s_set_copy(s_set); YACK_CHECK(s_set_copy.size()==s_set.size());
+            hash_set<string,dummy>        h_set_copy(h_set); YACK_CHECK(h_set_copy.size()==h_set.size());
+            suffix_set<string,dummy::ptr> S_set_copy(S_set); YACK_CHECK(S_set_copy.size()==S_set.size());
+            hash_set<string,dummy::ptr>   H_set_copy(H_set); YACK_CHECK(H_set_copy.size()==H_set.size());
+        }
+
         randomized::shuffle::data( keys(), keys.size(), ran);
         std::cerr << "keys=" << keys << std::endl;
         for(size_t i=1;i<=n;++i)
         {
             YACK_ASSERT(s_set.search(keys[i]));
             YACK_ASSERT(h_set.search(keys[i]));
+            YACK_ASSERT(S_set.search(keys[i]));
+            YACK_ASSERT(H_set.search(keys[i]));
         }
         
         std::cerr << "suffix_set = " << s_set << std::endl;
         std::cerr << "hash_set   = " << h_set << std::endl;
 
     }
-    
+
+
 }
 YACK_UDONE()
 
