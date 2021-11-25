@@ -68,15 +68,17 @@ namespace yack
                 // initialize search
                 //______________________________________________________________
                 T  width = fabs(x.c-x.a);
-                T *x_neg = &x.a, *x_pos = &x.c;
-                T *f_neg = &f.a, *f_pos = &f.c;
+                T *x_neg = &x.a; T *f_neg = &f.a;
+                T *x_pos = &x.c; T *f_pos = &f.c;
                 if(positive==s.a)
                 {
                     assert(negative==s.c);
                     cswap(x_neg,x_pos);
                     cswap(f_neg,f_pos);
                 }
-                
+                assert( negative == __sign::of(*f_neg) );
+                assert( positive == __sign::of(*f_pos) );
+
                 //______________________________________________________________
                 //
                 // cycles
@@ -88,7 +90,7 @@ namespace yack
                     case negative: *x_neg = x.b; *f_neg=f.b; break;
                     case positive: *x_pos = x.b; *f_pos=f.b; break;
                 }
-                assert(x.a<=x.c);
+                assert(x.is_increasing());
                 if(fabs(f.a-f.c)<=0) return true;
                 const T new_width = fabs(x.c-x.a); if(new_width>=width) return true;
                 width = new_width;
