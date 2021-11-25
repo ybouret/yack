@@ -36,29 +36,36 @@ namespace
             if( solve(F,x,f) )
             {
                 std::cerr << "F(" << x.b << ")=" << f.b << std::endl;
+                std::cerr << "|_count=" << F.count << std::endl;
             }
         }
-        
+
+
         {
             triplet<T> x = { 1, -1, 2 };
             triplet<T> f = { F(x.a), -1, F(x.c) };
-            
+
+            F.count = 0;
             if( solve(F,x,f) )
             {
                 std::cerr << "F(" << x.b << ")=" << f.b << std::endl;
+                std::cerr << "|_count=" << F.count << std::endl;
             }
         }
+        return;
+
         
         {
             triplet<T> x = { 3, -1, 4 };
             triplet<T> f = { F(x.a), -1, F(x.c) };
-            
+
+            F.count = 0;
             if( solve(F,x,f) )
             {
                 std::cerr << "F(" << x.b << ")=" << f.b << std::endl;
+                std::cerr << "|_count=" << F.count << std::endl;
             }
         }
-        std::cerr << "#count=" << F.count << std::endl;
     }
     
     
@@ -66,12 +73,15 @@ namespace
 
 YACK_UTEST(root_zalg)
 {
-    
+
+
     zsolve<float,zbis>();
     zsolve<float,zrid>();
 
+
     zsolve<double,zbis>();
     zsolve<double,zrid>();
+    return 0;
 
     zsolve<long double,zbis>();
     zsolve<long double,zrid>();

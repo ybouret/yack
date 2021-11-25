@@ -89,7 +89,7 @@ namespace yack
                     case positive: *x_pos = x.b; *f_pos=f.b; break;
                 }
                 assert(x.a<=x.c);
-                std::cerr << "dx: " << fabs(x.c-x.a) << " | df: " << fabs(f.c-f.a) << std::endl;
+                //std::cerr << "dx: " << fabs(x.c-x.a) << " | df: " << fabs(f.c-f.a) << std::endl;
                 if(fabs(f.a-f.c)<=0)
                     return true;
                 const T new_width = fabs(x.c-x.a);
