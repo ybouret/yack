@@ -147,7 +147,7 @@ namespace yack
             //! to sort strings
             static int compare(const string &lhs, const string &rhs) throw();
 
-            
+            const string &key() const throw();
 
 
         private:

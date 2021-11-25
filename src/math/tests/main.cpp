@@ -10,5 +10,8 @@ YACK_UTEST_DECL(80)
     YACK_UTEST(rk4);
 
     YACK_UTEST(zroot);
+
+    YACK_UTEST(minimize);
+
 }
 YACK_UTEST_EXEC()

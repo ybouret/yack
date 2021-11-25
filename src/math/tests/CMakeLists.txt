@@ -11,11 +11,15 @@ source_group(root FILES ${root} )
 file(GLOB ode ode/*.cpp)
 source_group(ode FILES ${ode} )
 
+file(GLOB opt opt/*.cpp)
+source_group(opt FILES ${opt})
+
 add_executable(test-math main.cpp
 ${global}
 ${algebra}
 ${ode}
 ${root}
+${opt}
 )
 
 yack_link_libraries(test-math)
@@ -32,3 +36,5 @@ add_test(algebra:lu test-math lu)
 add_test(ode:rk4 test-math rk4)
 
 add_test(zroot test-math zroot)
+
+add_test(minimize test-math minimize)

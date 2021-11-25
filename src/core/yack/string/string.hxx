@@ -7,6 +7,10 @@ namespace yack
     namespace kernel
     {
         template <>
+        const string<CH> & string<CH>::key() const throw() { return *this; }
+
+
+        template <>
         const CH * string<CH>:: operator()(void) const throw()
         {
             return static_cast<const CH*>(block);
