@@ -81,8 +81,7 @@ YACK_UTEST(root_zalg)
 
     zsolve<double,zbis>();
     zsolve<double,zrid>();
-    return 0;
-
+    
     zsolve<long double,zbis>();
     zsolve<long double,zrid>();
 }
