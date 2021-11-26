@@ -7,6 +7,7 @@
 
 #include "yack/ios/icstream.hpp"
 #include "yack/ios/decoder.hpp"
+#include "yack/ios/imstream.hpp"
 
 #include "yack/utest/run.hpp"
 #include <cstring>
@@ -224,6 +225,17 @@ YACK_UTEST(ios_streams)
             YACK_CHECK(len==block_size);
             YACK_CHECK(0==memcmp(msg,block_addr,block_size));
             memory::legacy::release(block_addr);
+        }
+
+        {
+            std::cerr << "imstream: [";
+            ios::imstream fp(msg,len);
+            char C;
+            while( fp.query(C) )
+            {
+                std::cerr << C;
+            }
+            std::cerr << "]" << std::endl;
         }
 
     }
