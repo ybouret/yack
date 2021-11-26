@@ -44,7 +44,7 @@ namespace
         const string id = typeid(T).name();
         {
             const string filename = "rk4-exp-" + id + ".dat";
-            typename ode::field<T>::equation eq(&pb, & problem<T>::dExp );
+            typename ode::named<T>::equation eq(&pb, & problem<T>::dExp );
             vector<T> y(1,1);
             size_t    np = 100;
             T         dx = T(2)/np;
@@ -62,7 +62,7 @@ namespace
         {
             pb.a = 4;
             const string filename = "rk4-cos-" + id + ".dat";
-            typename ode::field<T>::equation eq(&pb, & problem<T>::dCos );
+            typename ode::named<T>::equation eq(&pb, & problem<T>::dCos );
             vector<T> y(2,0);
             y[1] = 1;
             y[2] = 0;

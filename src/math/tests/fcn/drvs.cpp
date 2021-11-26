@@ -1,4 +1,4 @@
-#include "yack/math/fcn/derivative.hpp"
+#include "yack/math/fcn/gradient.hpp"
 #include "yack/utest/run.hpp"
 #include "yack/system/rtti.hpp"
 #include "yack/ios/ocstream.hpp"

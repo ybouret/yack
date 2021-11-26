@@ -20,7 +20,7 @@ namespace yack
             //
             //__________________________________________________________________
             template  <typename T>
-            struct field
+            struct named
             {
                 //! interface equation
                 typedef functor<void,TL3(writable<T> &,T,const readable<T> &)> equation;

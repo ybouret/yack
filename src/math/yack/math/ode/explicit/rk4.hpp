@@ -26,7 +26,7 @@ namespace yack
                 //
                 // types and definitions
                 //______________________________________________________________
-                typedef typename field<T>::equation   equation; //!< alias
+                typedef typename named<T>::equation   equation; //!< alias
                 typedef arrays_of<T>                  tableaux; //!< alias
                 typedef typename tableaux::array_type array;    //!< alias
                 using tableaux::next;

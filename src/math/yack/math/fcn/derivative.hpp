@@ -1,18 +1,18 @@
-
-
 //! \file
 
 #ifndef YACK_MATH_DERIVATIVE_INCLUDED
 #define YACK_MATH_DERIVATIVE_INCLUDED 1
 
 #include "yack/container/matrix.hpp"
+#include "yack/object.hpp"
+#include "yack/counted.hpp"
+#include "yack/ptr/arc.hpp"
 #include <cmath>
 
 namespace yack
 {
     namespace math
     {
-
         
         //______________________________________________________________________
         //
@@ -21,9 +21,11 @@ namespace yack
         //
         //______________________________________________________________________
         template <typename T>
-        class derivative
+        class derivative : public object, public counted
         {
         public:
+            typedef arc_ptr< derivative<T> > pointer;
+
             //__________________________________________________________________
             //
             // C++
