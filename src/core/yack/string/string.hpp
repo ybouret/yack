@@ -60,9 +60,9 @@ namespace yack
 
             //__________________________________________________________________
             //
-            // memory::ro_buffer interface
+            //  specific access
             //__________________________________________________________________
-            const T * operator()(void) const throw(); //!< raw R/O access
+            const T * operator()() const throw(); //!< raw R/O access
 
             //__________________________________________________________________
             //
@@ -147,6 +147,7 @@ namespace yack
             //! to sort strings
             static int compare(const string &lhs, const string &rhs) throw();
 
+            //! self key
             const string &key() const throw();
 
 

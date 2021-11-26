@@ -58,6 +58,7 @@ namespace yack
         //
         // methods
         //______________________________________________________________________
+        //! access pointee key
         inline const_key_type &key() const throw() { return pointee->key(); }
 
 
