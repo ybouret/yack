@@ -19,6 +19,23 @@ namespace yack
         }
 
         template <>
+        real_t derivative<real_t>:: unit_step_size() throw()
+        {
+            static const real_t one(1);
+            static const real_t three(3);
+            static const real_t third = one/three;
+            static const real_t value = timings::round_floor<real_t>( pow(numeric<real_t>::epsilon,third) );
+            return value;
+        }
+
+        template <>
+        real_t derivative<real_t>:: diff_maxi_ftol() throw()
+        {
+            static const real_t value = timings::round_ceil<real_t>( sqrt( numeric<real_t>::epsilon ) );
+            return value;
+        }
+
+        template <>
         void derivative<real_t>:: regularize(const real_t x, real_t &h)
         {
             volatile real_t temp = x+h;
@@ -42,19 +59,22 @@ namespace yack
             static const real_t one(1);
             static const real_t mul(YACK_DRVS_CTRL*YACK_DRVS_CTRL);
             real_t              fac = mul;
-            for(size_t j=2;j<=i;++j)
+            bool                ini = (2==i);
+            const size_t        im  = i-1;
+            for(size_t j=2,jm=1;j<=i;++j,++jm)
             {
-                a[j][i]=(a[j-1][i]*fac-a[j-1][i-1])/(fac-one);
+                a[j][i]=(a[jm][i]*fac-a[jm][im])/(fac-one);
 
-                const real_t errt=max_of(fabs(a[j][i]-a[j-1][i]),fabs(a[j][i]-a[j-1][i-1]));
-                if(i==2 || (errt<=err) )
+                const real_t errt=max_of(fabs(a[j][i]-a[jm][i]),fabs(a[j][i]-a[jm][im]));
+                if(ini || (errt<=err) )
                 {
                     err = errt;
                     ans = a[j][i];
+                    ini = false;
                 }
                 fac=mul*fac;
             }
-            return ( fabs(a[i][i]-a[i-1][i-1]) >= twice(err) );
+            return ( fabs(a[i][i]-a[im][im]) >= twice(err) );
         }
 
 

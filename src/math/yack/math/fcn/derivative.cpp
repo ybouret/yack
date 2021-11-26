@@ -2,6 +2,8 @@
 #include "yack/system/exception.hpp"
 #include <cerrno>
 #include "yack/type/utils.hpp"
+#include "yack/math/timings.hpp"
+#include "yack/math/numeric.hpp"
 
 #define real_t float
 #include "derivative.hxx"

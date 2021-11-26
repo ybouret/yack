@@ -14,10 +14,9 @@ namespace
     struct Func
     {
         size_t count;
-        double operator()(T x)
+        T  operator()(T x)
         {
-            static const T a(0.2);
-            return sin(a*x*x);
+            return cos(x);
         }
 
     };
@@ -26,16 +25,19 @@ namespace
     static inline  void test()
     {
         std::cerr << "drvs for " << rtti::name<T>() << std::endl;
+        std::cerr << "   unit_step_size: " << derivative<T>::unit_step_size() << std::endl;
+        std::cerr << "   diff_maxi_ftol: " << derivative<T>::diff_maxi_ftol() << std::endl;
+
         Func<T>       F = { 0 };
         derivative<T> drvs;
-        T             err = -1;
         const T       h(1e-4);
         const string  filename = vformat("drvs%u.dat", unsigned(sizeof(T)*8) );
         ios::ocstream fp(filename);
-        for(T x=-10;x<=10;x+=T(0.1))
+        for(T x=-10;x<=10;x+=T(0.01))
         {
-            const T dF = drvs(F,x,h,err);
-            fp("%llg %llg %llg\n", x, F(x), dF);
+            const T dF  = drvs.diff(F,x,h);
+            const T f0  = F(x);
+            fp("%Lg %Lg %Lg\n", (long double)x, (long double)f0, (long double)dF);
         }
 
     }
@@ -45,6 +47,9 @@ namespace
 YACK_UTEST(drvs)
 {
     test<float>();
+    test<double>();
+    test<long double>();
+
 }
 YACK_UDONE()
 

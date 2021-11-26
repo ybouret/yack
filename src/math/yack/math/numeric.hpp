@@ -4,16 +4,23 @@
 #define YACK_MATH_NUMERIC_INCLUDED 1
 
 #include "yack/setup.hpp"
+#include <cmath>
 
 namespace yack
 {
     namespace math
     {
+
+        inline float        anint(const float       x) throw() { return floor(x+0.5f); }
+        inline double       anint(const double      x) throw() { return floor(x+0.5);  }
+        inline long double  anint(const long double x) throw() { return floor(x+0.5L); }
+
+
         //! all useful numeric constants
         template <typename T>
         struct numeric
         {
-            static const T eps;     //!< epsilon
+            static const T epsilon; //!< epsilon
             static const T minimum; //!< minimum
             static const T maximum; //!< maximum
         };
@@ -26,7 +33,7 @@ template <> const float       numeric<float>      ::VALUE; \
 template <> const double      numeric<double>     ::VALUE; \
 template <> const long double numeric<long double>::VALUE
 
-        YACK_MATH_NUMERIC(eps);     //!< eps
+        YACK_MATH_NUMERIC(epsilon);     //!< eps
         YACK_MATH_NUMERIC(minimum); //!< minimum
         YACK_MATH_NUMERIC(maximum); //!< maximum
 

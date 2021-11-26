@@ -12,7 +12,7 @@ namespace yack
 {
     namespace math
     {
-        YACK_NUMERIC(eps,EPSILON);
+        YACK_NUMERIC(epsilon,EPSILON);
         YACK_NUMERIC(minimum,MIN);
         YACK_NUMERIC(maximum,MAX);
 
