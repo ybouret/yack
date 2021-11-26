@@ -7,6 +7,14 @@ set(math_main ${math_main_decl} ${math_main_srcs})
 SOURCE_GROUP(math FILES ${math_main})
 install( FILES ${math_main_decl} DESTINATION include/yack/math )
 
+# fcn
+file(GLOB math_fcn_decl yack/math/fcn/*.hpp)
+file(GLOB math_fcn_srcs yack/math/fcn/*.cpp yack/math/fcn/*.hxx)
+set(math_fcn ${math_fcn_decl} ${math_fcn_srcs})
+SOURCE_GROUP(math/fcn FILES ${math_fcn})
+install( FILES ${math_fcn_decl} DESTINATION include/yack/math/fcn )
+
+
 # tao
 file(GLOB math_tao_decl yack/math/tao/*.hpp)
 file(GLOB math_tao_srcs yack/math/tao/*.cpp)
@@ -50,6 +58,7 @@ install( FILES ${math_ode_explicit_decl} DESTINATION include/yack/math/ode/expli
 
 add_library(yack-math STATIC
 ${math_main}
+${math_fcn}
 ${math_tao}
 ${math_algebra}
 ${math_ode} ${math_ode_explicit}

@@ -1,6 +1,8 @@
 #include "yack/math/root/zbis.hpp"
 #include "yack/math/root/zrid.hpp"
 #include "yack/utest/run.hpp"
+#include "yack/system/rtti.hpp"
+#include "yack/string.hpp"
 #include <cmath>
 
 using namespace yack;
@@ -28,7 +30,7 @@ namespace
         Func<T> F = { 0 };
         
         ZROOT<T> solve;
-        std::cerr << "Using [" << solve.name() << "]" << std::endl;
+        std::cerr << "Using [" << solve.name() << "]/" << rtti::name<T>() << std::endl;
         {
             triplet<T> x = { 0, -1, 1 };
             triplet<T> f = { F(x.a), -1, F(x.c) };
