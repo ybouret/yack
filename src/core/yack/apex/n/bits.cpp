@@ -58,7 +58,7 @@ namespace yack
         
         natural natural:: exp2(const size_t shift)
         {
-            static const apn_get_proc proc =  endianness::BE() ? getBE : getLE;
+            static const apn_get_proc proc =  endian::BE() ? getBE : getLE;
             
             const size_t bits  = shift+1;
             const size_t bytes = YACK_ALIGN_ON(8,bits)>>3;

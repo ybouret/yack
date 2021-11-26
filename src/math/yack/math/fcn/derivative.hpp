@@ -13,23 +13,39 @@ namespace yack
     namespace math
     {
 
+        
+        //______________________________________________________________________
+        //
+        //
+        //! first order derivative evaluation
+        //
+        //______________________________________________________________________
         template <typename T>
         class derivative
         {
         public:
-            virtual ~derivative() throw();
-            explicit derivative();
+            //__________________________________________________________________
+            //
+            // C++
+            //__________________________________________________________________
+            explicit derivative();          //!< setup, allocate matrix
+            virtual ~derivative() throw();  //!< cleanup
 
-
-
+            //__________________________________________________________________
+            //
+            // methods
+            //__________________________________________________________________
             static T unit_step_size() throw(); //!< step scaling w.r.t characteristic scale of 1
             static T diff_maxi_ftol() throw(); //!< first order max fractional tolerance
 
+            //__________________________________________________________________
+            //
             //! estimate derivative by Ridder's method
             /**
              if x_c is the characteristic scaling of f variations, then
              h = x_c * unit_step_size() is a good choice
              */
+            //__________________________________________________________________
             template <typename FUNCTION> inline
             T diff(FUNCTION &f, const T x, T h, T &err)
             {

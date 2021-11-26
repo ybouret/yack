@@ -27,7 +27,7 @@ namespace yack
 
         const uint8_t & natural:: operator[](const size_t indx) const throw()
         {
-            static const apn_get_proc proc =  endianness::BE() ? getBE : getLE;
+            static const apn_get_proc proc =  endian::BE() ? getBE : getLE;
 
             assert(indx>0);
             assert(indx<=bytes);

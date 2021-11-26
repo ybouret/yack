@@ -53,6 +53,12 @@ namespace yack
         return **head;
     }
 
+    const string & rtti:: native() const throw()
+    {
+        return **tail();
+    }
+
+
 
     std::ostream & operator<<(std::ostream &os, const rtti &r)
     {
@@ -85,36 +91,28 @@ namespace yack
         static const char                   call_sign[];
         static const at_exit::longevity     life_time = 0;
 
-        rtti_ptr *get(const char *path, const size_t plen)   throw()
-        {
-            return tree.search(path,plen);
-        }
-
-        rtti_ptr *get(const char *path)   throw()
-        {
-            assert(path);
-            return tree.search(path,strlen(path));
-        }
-
-        rtti_ptr *get(const string &path)   throw()
-        {
-            return tree.search(path(),path.size());
-        }
+        rtti_ptr *get(const char   *path, const size_t plen) throw() { return tree.search(path,plen);          }
+        rtti_ptr *get(const char   *path) throw() { assert(path);      return tree.search(path,strlen(path));  }
+        rtti_ptr *get(const string &path) throw() {                    return tree.search(path(),path.size()); }
 
 
         rtti & use(const std::type_info &ti)
         {
             YACK_LOCK(access);
-
             const char   *id = ti.name();
             rtti_ptr     *pp = get(id);
             if(pp)
             {
-                // already present
+                //--------------------------------------------------------------
+                // already present : recall
+                //--------------------------------------------------------------
                 return **pp;
             }
             else
             {
+                //--------------------------------------------------------------
+                // not present: create
+                //--------------------------------------------------------------
                 rtti_ptr     p( new rtti(ti) );
                 const string path = p->name();
                 if(!tree.insert(p,path(),path.size()))
@@ -128,31 +126,24 @@ namespace yack
         rtti & use(const std::type_info &ti, const string &alias)
         {
             YACK_LOCK(access);
-            const char  *id = ti.name();
-            const string ID = id;
-            rtti_ptr    *pp = get(alias);
+            rtti           &self = use(ti);
+            const rtti_ptr *pp   = get(alias);
             if(pp)
             {
-                //--------------------------------------------------------------
-                // alias exists, check same ti
-                //--------------------------------------------------------------
-                const rtti_ptr *qq = get(ID);
-                if(qq)
+                // alias already exist
+                const rtti &info = **pp;
+                if(&self != &info)
                 {
-                    if(& **pp != & **qq)
-                    {
-                        const string &other = (*qq)->name();
-                        throw exception("%s cannot alias <%s> to <%s>, in use for <%s>", call_sign, id, alias(), other() );
-                    }
+                    const string &me = self.name();
+                    const string &it = info.name();
+                    throw exception("%s cannot alias <%s> to <%s>, in use for <%s>", call_sign, me(), alias(), it() );
                 }
-                return **pp;
             }
             else
             {
                 //--------------------------------------------------------------
-                // alias doesn't exists : get principal rtti and add alias
+                // append alias
                 //--------------------------------------------------------------
-                rtti &self = use(ti);
                 self.store( new kernel::rtti(alias) );
 
                 //--------------------------------------------------------------
@@ -163,7 +154,8 @@ namespace yack
                     const rtti_ptr temp = &self;
                     if(!tree.insert(temp,alias(),alias.size()))
                     {
-                        throw exception("%s insert alias <%s> for <%s> failure", call_sign, alias(), id);
+                        const string &me = self.name();
+                        throw exception("%s insert alias <%s> for <%s> failure", call_sign, alias(), me());
                     }
                 }
                 catch(...)
@@ -171,9 +163,11 @@ namespace yack
                     delete self.query();
                     throw;
                 }
-                return self;
             }
 
+
+            return self;
+            
         }
 
         

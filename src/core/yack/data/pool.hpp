@@ -85,19 +85,34 @@ assert(NULL!=NODE); assert(NULL==(NODE)->next)
             this->increase();
             return node;
         }
-        
+
+        //! last node for size>0
+        NODE *tail() throw()
+        {
+            assert(size>0);
+            NODE *curr = head;
+            while(curr->next)
+                curr=curr->next;
+            return curr;
+        }
+
+        //! const last node for size>0
+        const NODE *tail() const throw()
+        {
+            assert(size>0);
+            const NODE *curr = head;
+            while(curr->next)
+                curr=curr->next;
+            return curr;
+        }
+
         //! stash a new node
         NODE *stash(NODE *node) throw()
         {
             YACK_POOL_CHECK(node);
             if(size>0)
             {
-                NODE *curr = head;
-                while(curr->next)
-                {
-                    curr=curr->next;
-                }
-                curr->next = node;
+                tail()->next = node;
                 this->increase();
                 return node;
             }

@@ -1,6 +1,6 @@
 #include "yack/system/rtti.hpp"
 #include "yack/utest/run.hpp"
-#include "yack/string.hpp"
+#include "../main.hpp"
 
 using namespace yack;
 
@@ -15,6 +15,9 @@ YACK_UTEST(rtti)
 
     //rtti::gv();
     YACK_RTTI(int);
+    YACK_RTTI(apn);
+    YACK_RTTI(apz);
+    YACK_RTTI(apq);
 
 }
 YACK_UDONE()

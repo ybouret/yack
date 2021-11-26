@@ -59,7 +59,7 @@ YACK_UTEST(apn)
     std::cerr << std::dec;
 
     YACK_SIZEOF(apn);
-    std::cerr << "BE=" << endianness::BE() << std::endl;
+    std::cerr << "BE=" << endian::BE() << std::endl;
     std::cerr << "apn::min_words_bytes = " << apn::min_words_bytes << std::endl;
     std::cerr << "apn::min_words_size  = " << apn::min_words_size  << std::endl;
     std::cerr << "apn::min_words_exp2  = " << apn::min_words_exp2  << std::endl;

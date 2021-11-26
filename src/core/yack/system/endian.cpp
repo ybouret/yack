@@ -5,7 +5,7 @@
 
 namespace yack {
 
-    bool endianness:: BE() throw()
+    bool endian:: BE() throw()
     {
         static const union {
             uint32_t i;
@@ -15,7 +15,7 @@ namespace yack {
         return result;
     }
 
-    bool endianness:: LE() throw()
+    bool endian:: LE() throw()
     {
         return !BE();
     }
@@ -30,33 +30,11 @@ namespace yack {
             uint8_t *upper = static_cast<uint8_t *>(addr) + size;
             size_t   count = size;
 
-#if 0
-            {
-                std::cerr << "BEswap" << size * 8 << " : ";
-                for(size_t i=0;i<size;++i)
-                {
-                    std::cerr << hexa::lowercase_text[ lower[i] ];
-                }
-                std::cerr << " -> ";
-            }
-#endif
-
             for(count>>=1;count>0;--count)
             {
                 cswap(*(lower++),*(--upper));
             }
-
-#if 0
-            {
-                lower = static_cast<uint8_t *>(addr);
-                for(size_t i=0;i<size;++i)
-                {
-                    std::cerr << hexa::lowercase_text[ lower[i] ];
-                }
-                std::cerr << std::endl;
-            }
-#endif
-
+            
         }
 
         static inline void keep_block(void *,size_t) throw()
@@ -66,13 +44,13 @@ namespace yack {
 
     }
 
-    endianness::swap_proc endianness::BEswap() throw()
+    endian::swap_proc endian::BEswap() throw()
     {
         static const swap_proc proc = BE() ? keep_block : swap_block;
         return proc;
     }
 
-    void       *endianness:: BEaddr(void *addr,size_t size) throw()
+    void       *endian:: BEaddr(void *addr,size_t size) throw()
     {
         static const swap_proc proc = BEswap();
         proc(addr,size);

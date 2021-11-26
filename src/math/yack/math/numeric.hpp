@@ -11,9 +11,9 @@ namespace yack
     namespace math
     {
 
-        inline float        anint(const float       x) throw() { return floor(x+0.5f); }
-        inline double       anint(const double      x) throw() { return floor(x+0.5);  }
-        inline long double  anint(const long double x) throw() { return floor(x+0.5L); }
+        inline float        anint(const float       x) throw() { return floor(x+0.5f); } //!< closest float
+        inline double       anint(const double      x) throw() { return floor(x+0.5);  } //!< closest double
+        inline long double  anint(const long double x) throw() { return floor(x+0.5L); } //!< closest long double
 
 
         //! all useful numeric constants

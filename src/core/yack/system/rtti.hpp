@@ -54,8 +54,8 @@ namespace yack
         //
         // methods
         //______________________________________________________________________
-        const string &name() const throw();    //!< get current name
-
+        const string &name()   const throw();    //!< get current name
+        const string &native() const throw();    //!< get native name
 
         static                              const rtti & use(const std::type_info &);       //!< declare/recall typeid
         template <typename T> static inline const rtti & use() { return use( typeid(T) ); } //!< declare/recall typeid

@@ -56,7 +56,7 @@ namespace yack
         inline const uint8_t * walk(const KEY &key, size_t &len, const key_variety::integral_type &) throw()
         {
             len          = sizeof(KEY);
-            return static_cast<const uint8_t *>(endianness::BEaddr((void*)&key,sizeof(KEY)));
+            return static_cast<const uint8_t *>(endian::BEaddr((void*)&key,sizeof(KEY)));
         }
 
         inline const uint8_t * walk(const KEY key, size_t &len, const key_variety::legacy_string &) throw()

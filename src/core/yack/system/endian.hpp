@@ -15,7 +15,7 @@ namespace yack
     //! testing endianness
     //
     //__________________________________________________________________________
-    struct endianness
+    struct endian
     {
         static bool BE() throw(); //!< if Big    Endian
         static bool LE() throw(); //!< of Little Endian
