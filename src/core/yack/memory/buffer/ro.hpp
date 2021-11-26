@@ -5,6 +5,7 @@
 #define YACK_MEMORY_BUFFER_RO_INCLUDED 1
 
 #include "yack/setup.hpp"
+#include <iosfwd>
 
 namespace yack
 {
@@ -27,6 +28,12 @@ namespace yack
             //__________________________________________________________________
             virtual size_t      measure() const throw() = 0; //!< usable bytes
             virtual const void *ro_addr() const throw() = 0; //!< first byte address
+
+            //__________________________________________________________________
+            //
+            // helper
+            //__________________________________________________________________
+            std::ostream &display_hexa(std::ostream &) const;
 
             //__________________________________________________________________
             //

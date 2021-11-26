@@ -1,6 +1,9 @@
 #include "yack/system/rtti.hpp"
+#include "yack/associative/be-addr.hpp"
+
 #include "yack/utest/run.hpp"
 #include "../main.hpp"
+#include "yack/concurrent/single.hpp"
 
 using namespace yack;
 
@@ -9,7 +12,7 @@ using namespace yack;
 
 YACK_UTEST(rtti)
 {
-
+    concurrent::single::verbose = true;
 
     rtti::display();
 
@@ -18,6 +21,13 @@ YACK_UTEST(rtti)
     YACK_RTTI(apn);
     YACK_RTTI(apz);
     YACK_RTTI(apq);
+    
+    if(false)
+    {
+        int a = 10;
+        be_address A(a);
+        std::cerr << "a@" << A << std::endl;
+    }
 
 }
 YACK_UDONE()
