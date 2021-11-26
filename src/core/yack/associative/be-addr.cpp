@@ -1,5 +1,6 @@
 
 #include "yack/associative/be-addr.hpp"
+#include "yack/system/endian.hpp"
 
 namespace yack
 {
@@ -25,7 +26,7 @@ namespace yack
 
     void be_address:: setup() throw()
     {
-        
+        endian::BEaddr((void*)ro_addr(),measure());
     }
 
 }

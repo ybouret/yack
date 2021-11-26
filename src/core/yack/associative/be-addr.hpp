@@ -8,19 +8,38 @@
 
 namespace yack
 {
-
+    //__________________________________________________________________________
+    //
+    //
+    //! address stored as big endian, to use as key for unique 
+    //
+    //__________________________________________________________________________
     class be_address : public memory::ro_buffer
     {
     public:
-        virtual ~be_address() throw();
-
+        //______________________________________________________________________
+        //
+        // C++
+        //______________________________________________________________________
+        //! setup
         template <typename T> inline
         explicit be_address(const T &args) throw() : impl(&args) { setup(); }
+        be_address(const be_address &) throw(); //!< copy
+        virtual ~be_address()          throw(); //!< cleanup
 
-        virtual size_t      measure() const throw();
-        virtual const void *ro_addr() const throw();
 
-        friend std::ostream & operator<<(std::ostream &os, const be_address &);
+        //______________________________________________________________________
+        //
+        // buffer interface
+        //______________________________________________________________________
+        virtual size_t      measure() const throw(); //!< sizeof(void*)
+        virtual const void *ro_addr() const throw(); //!< &impl
+
+        //______________________________________________________________________
+        //
+        // methods
+        //______________________________________________________________________
+        friend std::ostream & operator<<(std::ostream &os, const be_address &); //!< display
 
     private:
         YACK_DISABLE_ASSIGN(be_address);

@@ -73,6 +73,7 @@ namespace yack
         static                              const string & name(const std::type_info &);        //!< get name
         template <typename T> static inline const string & name() { return name( typeid(T) ); } //!< get name
         
+
         static void gv();        //!< make a graph
         static void display();   //!< make a graph
 

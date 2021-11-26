@@ -231,6 +231,7 @@ namespace yack
 
 }
 
+#include "yack/apex.hpp"
 
 namespace yack
 {
@@ -272,6 +273,10 @@ namespace yack
         YACK_RTTI(long double);
 
         YACK_RTTI(bool);
+
+        YACK_RTTI(apn);
+        YACK_RTTI(apz);
+        YACK_RTTI(apq);
 
 
     }

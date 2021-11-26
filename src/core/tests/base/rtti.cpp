@@ -22,11 +22,14 @@ YACK_UTEST(rtti)
     YACK_RTTI(apz);
     YACK_RTTI(apq);
     
-    if(false)
     {
         int a = 10;
         be_address A(a);
-        std::cerr << "a@" << A << std::endl;
+        std::cerr << "a@" << (void*)&a << " => " << A  << std::endl;
+    }
+
+    {
+
     }
 
 }
