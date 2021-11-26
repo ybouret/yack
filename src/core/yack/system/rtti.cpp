@@ -79,6 +79,7 @@ namespace yack
 #include "yack/associative/suffix/map.hpp"
 #include "yack/ptr/arc.hpp"
 #include "yack/exception.hpp"
+#include "yack/memory/allocator/pooled-longevity.hpp"
 
 namespace yack
 {
@@ -89,7 +90,7 @@ namespace yack
     {
     public:
         static const char                   call_sign[];
-        static const at_exit::longevity     life_time = 0;
+        static const at_exit::longevity     life_time = YACK_MEMORY_POOLED_ALLOCATOR_LONGEVITY-1;
 
         rtti_ptr *get(const char   *path, const size_t plen) throw() { return tree.search(path,plen);          }
         rtti_ptr *get(const char   *path) throw() { assert(path);      return tree.search(path,strlen(path));  }
