@@ -24,7 +24,11 @@ namespace yack
         class derivative : public object, public counted
         {
         public:
-            typedef arc_ptr< derivative<T> > pointer;
+            //__________________________________________________________________
+            //
+            // types and definitions
+            //__________________________________________________________________
+            typedef arc_ptr< derivative<T> > pointer; //!< alias
 
             //__________________________________________________________________
             //
