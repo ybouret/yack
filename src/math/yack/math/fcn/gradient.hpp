@@ -35,15 +35,10 @@ namespace yack
             //__________________________________________________________________
             
             //! cleanup
-            inline virtual ~gradient() throw() {}
+            virtual ~gradient() throw();
             
             //! setup
-            inline explicit gradient(const derivative_ptr &p,
-                                     const T               h = 1e-4) throw() :
-            drvs(p),
-            scal(h)
-            {
-            }
+            explicit gradient(const derivative_ptr &, const T = 1e-4) throw();
 
             //__________________________________________________________________
             //
