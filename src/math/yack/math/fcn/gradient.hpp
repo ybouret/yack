@@ -1,4 +1,3 @@
-
 //! \file
 
 #ifndef YACK_MATH_GRADIENT_INCLUDED
@@ -6,7 +5,6 @@
 
 #include "yack/math/fcn/derivative.hpp"
 #include "yack/type/temporary.hpp"
-#include "yack/functor.hpp"
 
 namespace yack
 {
