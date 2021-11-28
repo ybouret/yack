@@ -44,6 +44,16 @@ namespace yack
             //__________________________________________________________________
             //! generic computation
             
+            template <typename FUNCTION, typename INPUT> inline
+            void compute( matrix<T> &J, FUNCTION &f, INPUT &x)
+            {
+                assert(x.size()==J.cols);
+                const size_t nvar = x.size();
+                const size_t nfcn = J.rows;
+                
+            }
+            
+            
             //__________________________________________________________________
             //
             // members
