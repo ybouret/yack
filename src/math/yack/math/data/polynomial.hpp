@@ -52,7 +52,7 @@ namespace yack
                 T operator()(T x, X &xa, Y &ya, T &dy)
                 {
                     assert( xa.size() == ya.size() );
-                    const size_t n   = xa.size(); this->make(n);
+                    const size_t n   = xa.size(); this->ensure(n);
                     size_t       ns  = 1;
                     {
                         T del = fabs(x-xa[1]);

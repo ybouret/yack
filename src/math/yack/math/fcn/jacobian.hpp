@@ -3,7 +3,8 @@
 #ifndef YACK_MATH_JACOBIAN_INCLUDED
 #define YACK_MATH_JACOBIAN_INCLUDED 1
 
-#include "yack/math/fcn/derivative.hpp"
+#include "yack/container/matrix.hpp"
+#include "yack/sequence/arrays.hpp"
 #include "yack/type/temporary.hpp"
 
 namespace yack
@@ -18,15 +19,15 @@ namespace yack
         //
         //______________________________________________________________________
         template <typename T>
-        class jacobian
+        class jacobian : public arrays_of<T>
         {
         public:
             //__________________________________________________________________
             //
             // types and definitions
             //__________________________________________________________________
-            typedef typename derivative<T>::pointer derivative_ptr; //!< alias
-            
+            typedef arrays_of<T>            tableaux;   //!< alias
+            typedef typename tableaux::type array_type; //!< alias
             //__________________________________________________________________
             //
             // C++
@@ -36,7 +37,7 @@ namespace yack
             virtual ~jacobian() throw();
             
             //! setup
-            explicit jacobian(const derivative_ptr &, const T = 1e-4) throw();
+            explicit jacobian(const size_t ndat, const T = 1e-4) throw();
             
             //__________________________________________________________________
             //
@@ -45,9 +46,25 @@ namespace yack
             //! generic computation
             
             template <typename FUNCTION, typename INPUT> inline
-            void compute( matrix<T> &, FUNCTION &, INPUT &)
+            void operator()(matrix<T> &J, FUNCTION &f, INPUT &x)
             {
-                
+                assert(J.cols==x.size());
+                const size_t nvar = x.size();
+                const size_t dims = J.rows;
+                this->ensure(dims);
+                for(size_t j=nvar;j>0;--j)
+                {
+                    T &xj = coerce(x[j]);
+                    T  hp = scal;
+                    T  hm = scal;
+                    { const temporary<T> _(xj,regp(xj,hp)); f(fp,x); }
+                    { const temporary<T> _(xj,regm(xj,hm)); f(fm,x); }
+                    const T den = hm+hp;
+                    for(size_t i=dims;i>0;--i)
+                    {
+                        J[i][j] = (fp[i]-fm[i])/den;
+                    }
+                }
             }
             
             
@@ -55,12 +72,15 @@ namespace yack
             //
             // members
             //__________________________________________________________________
-            derivative_ptr drvs; //!< 1D numerical derivative
-            T              scal; //!< initial scaling
+            T              scal; //!< scaling
             
         private:
             YACK_DISABLE_COPY_AND_ASSIGN(jacobian);
-            
+            array_type &fp;
+            array_type &fm;
+            static T regp(const T xx, T &hh);
+            static T regm(const T xx, T &hh);
+
         };
         
     }

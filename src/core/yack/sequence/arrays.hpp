@@ -134,7 +134,7 @@ namespace yack
         //
         //! make new mutual size
         //______________________________________________________________________
-        void make(const size_t n)
+        inline void make(const size_t n)
         {
             if(n!=capacity)
             {
@@ -142,6 +142,21 @@ namespace yack
                 assert(n==mutual_size());
             }
         }
+
+        //______________________________________________________________________
+        //
+        //! ensure mutual size
+        //______________________________________________________________________
+        inline void ensure(const size_t n)
+        {
+            if(n>capacity)
+            {
+                rebuild(n);
+                assert(n==mutual_size());
+            }
+        }
+
+
 
     private:
         YACK_DISABLE_COPY_AND_ASSIGN(arrays_of);

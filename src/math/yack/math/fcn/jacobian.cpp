@@ -1,5 +1,8 @@
 
 #include "yack/math/fcn/jacobian.hpp"
+#include "yack/system/exception.hpp"
+#include <cerrno>
+#include <cmath>
 
 #define real_t float
 #include "jacobian.hxx"

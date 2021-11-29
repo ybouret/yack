@@ -14,6 +14,7 @@ YACK_UTEST_DECL(80)
     YACK_UTEST(minimize);
 
     YACK_UTEST(drvs);
+    YACK_UTEST(fjac);
 
     YACK_UTEST(poly);
 }
