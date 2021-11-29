@@ -5,6 +5,8 @@
 #include "yack/utest/run.hpp"
 #include "../main.hpp"
 #include "yack/sequence/vector.hpp"
+#include "yack/associative/hash/set.hpp"
+#include "yack/ptr/ark.hpp"
 
 using namespace yack;
 
@@ -91,6 +93,26 @@ YACK_UTEST(strings)
         strings.sort( string::compare );
         std::cerr << strings << std::endl;
     }
+
+    {
+        typedef ark_ptr<string,string> string_ptr;
+        hash_set<string,string>     h_set;
+        hash_set<string,string_ptr> H_set;
+
+        for(size_t i=1;i<=10;++i)
+        {
+            const string_ptr tmp = new string( bring::get<string>(ran) );
+            if( h_set.insert(*tmp) )
+            {
+                YACK_ASSERT( H_set.insert(tmp) );
+            }
+
+        }
+        std::cerr << "h_set=" << h_set << std::endl;
+        std::cerr << "H_set=" << H_set << std::endl;
+
+    }
+
 
 
 }
