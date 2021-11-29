@@ -66,7 +66,7 @@ namespace yack
                 // loop
                 //
                 //--------------------------------------------------------------
-                T width = fabs(x3-x0);
+                T old_width = fabs(x3-x0);
                 while(true)
                 {
                     assert( (x0<=x1&&x1<=x2&&x2<=x3) || (x0>=x1&&x1>=x2&&x2>=x3) );
@@ -84,14 +84,12 @@ namespace yack
                         x.b = x2;
                         f.b = f2;
                     }
-                    const T new_width = fabs(x3-x0);
-                    //std::cerr << "width: " << width << " -> " << new_width << std::endl;
-
-                    if( (new_width>=width) || (new_width <= tol * ( fabs(x1) + fabs(x2) )) )
+                    const T width = fabs(x3-x0);
+                    if( (width>=old_width) || (width <= tol * ( fabs(x1) + fabs(x2) )) )
                     {
                         break;
                     }
-                    width = new_width;
+                    old_width = width;
                 }
 
                 //--------------------------------------------------------------
