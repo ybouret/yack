@@ -44,7 +44,7 @@ namespace yack
             // methods
             //__________________________________________________________________
 
-            //! generic computation
+            //! generic computation, with steps regularization
             template <typename FUNCTION, typename INPUT> inline
             void operator()(matrix<T> &J, FUNCTION &f, INPUT &x)
             {
