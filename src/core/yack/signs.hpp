@@ -44,8 +44,8 @@ namespace yack
     struct __sign
     {
         //! named sign
-        static const char *text(const sign_type) throw();
-        static const char *symbol(const sign_type) throw();
+        static const char *text(const sign_type)   throw(); //!< named sign
+        static const char *symbol(const sign_type) throw(); //!< -/0/+
 
         //! value to sign
         template <typename T> static inline
