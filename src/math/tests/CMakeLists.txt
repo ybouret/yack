@@ -18,6 +18,10 @@ source_group(opt FILES ${opt})
 file(GLOB fcn fcn/*.cpp)
 source_group(fcn FILES ${fcn})
 
+file(GLOB data data/*.cpp)
+source_group(data FILES ${data})
+
+
 add_executable(test-math main.cpp
 ${global}
 ${algebra}
@@ -25,6 +29,7 @@ ${ode}
 ${root}
 ${opt}
 ${fcn}
+${data}
 )
 
 yack_link_libraries(test-math)
@@ -44,3 +49,7 @@ add_test(zroot test-math zroot)
 
 add_test(minimize test-math minimize)
 add_test(drvs     test-math drvs)
+
+add_test(data:poly test-math poly)
+
+
