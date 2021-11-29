@@ -35,7 +35,7 @@ namespace yack
                 static const real_t half  = static_cast<real_t>(0.5);
                 const size_t        nvar = y0.size();
 
-                ensure(nvar);
+                make(nvar);
                 const real_t h0 = x1-x0;
                 const real_t h2 = h0 * half;
                 const real_t xm = x0+h2;
@@ -49,6 +49,7 @@ namespace yack
                 {
                     y0[i] += h0 * (k1[i] + twice(k2[i] + k3[i]) + k4[i] ) * sixth;
                 }
+                YACK_RK4_CB(y0,x1);
 
             }
 
