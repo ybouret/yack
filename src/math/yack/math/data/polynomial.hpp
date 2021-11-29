@@ -4,25 +4,50 @@
 #define YACK_MATH_POLYNOMIAL_INCLUDED 1
 
 #include "yack/sequence/arrays.hpp"
+#include <cmath>
 
 namespace yack
 {
     namespace math
     {
 
+        //______________________________________________________________________
+        //
+        //
+        //! polynomial utilities
+        //
+        //______________________________________________________________________
         struct polynomial
         {
 
+            //__________________________________________________________________
+            //
+            //
+            //! Lagrange's interpolation
+            //
+            //______________________________________________________________________
             template <typename T>
             class interpolate : public arrays_of<T>
             {
             public:
-                typedef arrays_of<T>                  tableaux;
-                typedef typename tableaux::array_type array_type;
-                explicit interpolate(const size_t ndat);
-                virtual ~interpolate() throw();
+                //______________________________________________________________
+                //
+                // types and definitions
+                //______________________________________________________________
+                typedef arrays_of<T>                  tableaux;   //!< alias
+                typedef typename tableaux::array_type array_type; //!< alias
 
+                //______________________________________________________________
+                //
+                // C++
+                //______________________________________________________________
+                explicit interpolate(const size_t ndat=0); //!< setup with initial data
+                virtual ~interpolate() throw();            //!< cleanup
 
+                //______________________________________________________________
+                //
+                //! generic call
+                //______________________________________________________________
                 template <typename X,typename Y> inline
                 T operator()(T x, X &xa, Y &ya, T &dy)
                 {
@@ -31,7 +56,7 @@ namespace yack
                     size_t       ns  = 1;
                     {
                         T del = fabs(x-xa[1]);
-                        c[1] = d[1] = ya[1];
+                        c[1]  = d[1] = ya[1];
                         for(size_t i=n;i>1;--i)
                         {
                             c[i] = d[i] = ya[i];
@@ -53,7 +78,7 @@ namespace yack
                             const T ho=xa[i]-x;
                             const T hp=xa[i+m]-x;
                             const T w=c[i+1]-d[i];
-                            const T den=ho-hp;
+                            T       den=ho-hp;
                             if( fabs(den) <= 0 ) throw_singular();
                             den=w/den;
                             d[i]=hp*den;
