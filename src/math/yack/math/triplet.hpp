@@ -67,6 +67,8 @@ namespace yack
                 hsort(*this,comparison::increasing<T>);
             }
 
+            
+
             //! check if is increasing
             inline bool is_increasing() const throw()
             {

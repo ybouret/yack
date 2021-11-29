@@ -30,8 +30,7 @@ namespace yack
             template <typename T, typename FUNCTION> static inline
             bool inside(triplet <T> &x, triplet<T> &f, FUNCTION &F)
             {
-                static const T r = numeric<T>::golden_r;
-
+                static const T half(0.5);
                 //--------------------------------------------------------------
                 //
                 // going downwards from a to c
@@ -42,15 +41,13 @@ namespace yack
                     cswap(f.a,f.c);
                     cswap(x.a,x.c);
                 }
-
                 T width = fabs(x.c-x.a);
             CYCLE:
                 assert(f.c<=f.a);
-                // put b closer to the smallest value
-                f.b     = F(x.b =  x.a + r * (x.c-x.a)); assert(x.is_ordered());
+                f.b     = F(x.b = half*(x.a+x.c)); assert(x.is_ordered());
                 if(f.b<=f.c)
                 {
-                    assert(f.b<=f.c); // since f.c <= f.a
+                    assert(f.b<=f.a); // since f.c <= f.a
                     return true;
                 }
                 else
