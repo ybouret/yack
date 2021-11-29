@@ -45,7 +45,8 @@ namespace yack
     {
         //! named sign
         static const char *text(const sign_type) throw();
-        
+        static const char *symbol(const sign_type) throw();
+
         //! value to sign
         template <typename T> static inline
         sign_type of(const T value)

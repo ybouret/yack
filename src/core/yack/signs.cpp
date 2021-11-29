@@ -15,6 +15,18 @@ namespace yack
         return yack_unknown;
     }
     
+    const char * __sign:: symbol(const sign_type s) throw()
+    {
+        switch(s)
+        {
+            case negative: return "-";
+            case __zero__: return "0";
+            case positive: return "+";
+        }
+        return yack_unknown;
+    }
+
+
     sign_type __sign:: opposite(const sign_type s) throw()
     {
         switch(s)

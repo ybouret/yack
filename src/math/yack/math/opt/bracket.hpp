@@ -5,7 +5,7 @@
 #define YACK_OPT_BRACKET_INCLUDED 1
 
 #include "yack/math/triplet.hpp"
-#include "yack/signs.hpp"
+#include "yack/math/numeric.hpp"
 #include <cmath>
 
 namespace yack
@@ -24,31 +24,44 @@ namespace yack
         {
 
             //! inside [x.a,x.c], with f.a and f.c computed
+            /**
+             Look for f.b<=f.a and f.c <= f.c
+             */
             template <typename T, typename FUNCTION> static inline
-            void inside(triplet <T> &x, triplet<T> &f, FUNCTION &F)
+            bool inside(triplet <T> &x, triplet<T> &f, FUNCTION &F)
             {
-                static const T half(0.5);
-                //T width = fabs(x.c-x.a);
-                //CYCLE:
-                f.b     = F( x.b = half * (x.a+x.c) );
+                static const T r = numeric<T>::golden_r;
 
-                const sign_type lower = __sign::of(f.b,f.a);
-                const sign_type upper = __sign::of(f.b,f.c);
-
-                switch( __sign::pair(lower,upper) )
+                //--------------------------------------------------------------
+                //
+                // going downwards from a to c
+                //
+                //--------------------------------------------------------------
+                if(f.c>f.a)
                 {
-                    case nn_pair:
-                    case nz_pair:
-                    case zn_pair:
-                    case zz_pair:
-                        assert(f.b<=f.a); assert(f.b<=f.c);
-                        return;
-
-
+                    cswap(f.a,f.c);
+                    cswap(x.a,x.c);
                 }
 
-
-
+                T width = fabs(x.c-x.a);
+            CYCLE:
+                assert(f.c<=f.a);
+                // put b closer to the smallest value
+                f.b     = F(x.b =  x.a + r * (x.c-x.a)); assert(x.is_ordered());
+                if(f.b<=f.c)
+                {
+                    assert(f.b<=f.c); // since f.c <= f.a
+                    return true;
+                }
+                else
+                {
+                    x.a = x.b;
+                    f.a = f.b;
+                    const T new_width = fabs(x.c-x.a);
+                    if(new_width>=width) return false;
+                    width = new_width;
+                    goto CYCLE;
+                }
 
 
             }

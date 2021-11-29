@@ -73,6 +73,19 @@ namespace yack
                 return comparison::ordered(&a,3,comparison::increasing<T>);
             }
 
+            //! check if is decreasing
+            inline bool is_decreasing() const throw()
+            {
+                return comparison::ordered(&a,3,comparison::decreasing<T>);
+            }
+
+            //! check if is ordered
+            inline bool is_ordered() const throw()
+            {
+                return is_increasing() || is_decreasing();
+            }
+
+
             //! output as a 3-array
             friend inline
             std::ostream & operator<<(std::ostream &os, const triplet &t)

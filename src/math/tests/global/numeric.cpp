@@ -3,7 +3,8 @@
 #include "yack/math/timings.hpp"
 
 #include "yack/utest/run.hpp"
-#include <typeinfo>
+#include "yack/system/rtti.hpp"
+#include "yack/string.hpp"
 
 using namespace yack;
 using namespace math;
@@ -16,10 +17,14 @@ namespace
     template <typename T>
     static inline void display()
     {
-        const char *id = typeid(T).name();
+        const string &id = rtti::name<T>();
+        
         NUM_DISP(epsilon);
         NUM_DISP(minimum);
         NUM_DISP(maximum);
+        NUM_DISP(golden_r);
+        NUM_DISP(golden_c);
+        NUM_DISP(golden_i);
 
         const T a = T(1.1e-4);  std::cerr << " a = " << a << std::endl;
         const T fa = timings::round_floor(a); std::cerr << "fa = " << fa << std::endl;

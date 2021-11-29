@@ -34,10 +34,8 @@ namespace
             const T yy1 = squared(y[1]);
             const T yy2 = squared(y[2])/fabs(a);
             const T den = sqrt(yy1+yy2);
-            //std::cerr << "y=" << y << " => ";
             y[1] /= den;
             y[2] /= den;
-            //std::cerr <<  y << std::endl;
         }
 
 

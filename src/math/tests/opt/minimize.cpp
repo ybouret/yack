@@ -20,11 +20,26 @@ namespace
     template <typename T>
     static inline void test_min()
     {
-        Func<T>    F = { 0 };
-        triplet<T> x = { -5, 0, 1 };
-        triplet<T> f = { F(x.a), 0, F(x.c) };
+        {
+            Func<T>    F = { 0 };
+            triplet<T> x = { 1, 0, -5 };
+            triplet<T> f = { F(x.a), 0, F(x.c) };
 
-        bracket::inside(x,f,F);
+            if( bracket::inside(x,f,F) )
+            {
+                std::cerr << "bracketed" << std::endl;
+                std::cerr << "x=" << x << std::endl;
+                std::cerr << "f=" << f << std::endl;
+            }
+            else
+            {
+                std::cerr << "not bracketed" << std::endl;
+            }
+
+        }
+
+        
+
         
     }
 
@@ -33,6 +48,8 @@ namespace
 YACK_UTEST(minimize)
 {
     test_min<float>();
+    test_min<double>();
+    test_min<long double>();
 
 }
 YACK_UDONE()
