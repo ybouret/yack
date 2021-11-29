@@ -15,7 +15,7 @@ namespace yack
         //______________________________________________________________________
         //
         //
-        //! numerical gradient from derivative
+        //! numerical jacobian
         //
         //______________________________________________________________________
         template <typename T>
@@ -43,8 +43,8 @@ namespace yack
             //
             // methods
             //__________________________________________________________________
+
             //! generic computation
-            
             template <typename FUNCTION, typename INPUT> inline
             void operator()(matrix<T> &J, FUNCTION &f, INPUT &x)
             {
