@@ -22,8 +22,9 @@ namespace yack
             template  <typename T>
             struct named
             {
-                //! interface equation
-                typedef functor<void,TL3(writable<T> &,T,const readable<T> &)> equation;
+
+                typedef functor<void,TL3(writable<T> &,T,const readable<T> &)> equation; //!< interface equation
+                typedef functor<void,TL2(writable<T> &,T)>                     callback; //!< callback for phase space
             };
 
         }

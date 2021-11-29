@@ -27,6 +27,7 @@ namespace yack
                 // types and definitions
                 //______________________________________________________________
                 typedef typename named<T>::equation   equation; //!< alias
+                typedef typename named<T>::callback   callback; //!< alias
                 typedef arrays_of<T>                  tableaux; //!< alias
                 typedef typename tableaux::array_type array;    //!< alias
                 using tableaux::next;
@@ -41,11 +42,19 @@ namespace yack
                 //______________________________________________________________
                 //
                 //! integration method
+                /**
+                 * \param y0 initial phase space, assumin to fullfil callback
+                 * \param x0 starting point
+                 * \param x1 final point
+                 * \param eq ODE to integrate
+                 * \param cb phase space projection
+                 */
                 //______________________________________________________________
                 void operator()(writable<T> &y0,
                                 const T      x0,
                                 const T      x1,
-                                equation    &eq);
+                                equation    &eq,
+                                callback    *cb = 0);
 
                 //______________________________________________________________
                 //

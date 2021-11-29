@@ -21,24 +21,28 @@ namespace yack
             yt( next() )
             {}
 
+#if !defined(YACK_RK4_CB)
+#define      YACK_RK4_CB(Y,X) do { if(cb) (*cb)(Y,X); } while(false)
+#endif
             template <>
             void rk4<real_t>:: operator()(writable<real_t> &y0,
                                           const real_t      x0,
                                           const real_t      x1,
-                                          equation         &eq)
+                                          equation         &eq,
+                                          callback         *cb)
             {
                 static const real_t sixth = ( (real_t)1 )/6;
                 static const real_t half  = static_cast<real_t>(0.5);
                 const size_t        nvar = y0.size();
 
-                make(nvar);
+                ensure(nvar);
                 const real_t h0 = x1-x0;
                 const real_t h2 = h0 * half;
                 const real_t xm = x0+h2;
 
-                eq(k1,x0,y0); tao::v1::muladd(yt,y0,h2,k1);
-                eq(k2,xm,yt); tao::v1::muladd(yt,y0,h2,k2);
-                eq(k3,xm,yt); tao::v1::muladd(yt,y0,h0,k3);
+                eq(k1,x0,y0); tao::v1::muladd(yt,y0,h2,k1); YACK_RK4_CB(yt,xm);
+                eq(k2,xm,yt); tao::v1::muladd(yt,y0,h2,k2); YACK_RK4_CB(yt,xm);
+                eq(k3,xm,yt); tao::v1::muladd(yt,y0,h0,k3); YACK_RK4_CB(yt,x1);
                 eq(k4,x1,yt);
 
                 for(size_t i=nvar;i>0;--i)
