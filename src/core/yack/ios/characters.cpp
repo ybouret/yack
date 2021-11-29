@@ -79,18 +79,33 @@ namespace yack
 }
 
 #include "yack/string.hpp"
+#include "yack/ptr/auto.hpp"
 
 namespace yack
 {
     namespace ios
     {
+
+        static inline void transfer(string &target, const characters &source)
+        {
+            for(const character *ch=source.head;ch;ch=ch->next)
+                target += char(**ch);
+        }
+
         string characters:: to_string()  const
         {
             string ans(size,as_capacity);
-            for(const character *ch=head;ch;ch=ch->next)
-                ans += char(**ch);
+            transfer(ans,*this);
             return ans;
         }
+
+        string *characters:: to_new_string() const
+        {
+            auto_ptr<string> handle = new string(size,as_capacity);
+            transfer(*handle,*this);
+            return handle.yield();
+        }
+
     }
 }
 

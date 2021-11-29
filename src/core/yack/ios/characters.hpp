@@ -64,9 +64,10 @@ namespace yack
                 return os;
             }
 
-            char        *cstr() const;         //!< filled from legacy::acquire
-            static void  free(char *) throw(); //!< free   with legacy::release
-            string       to_string()  const;   //!< directly to string
+            char        *cstr()          const; //!< filled from legacy::acquire
+            static void  free(char *)  throw(); //!< free   with legacy::release
+            string       to_string()     const; //!< directly to string
+            string      *to_new_string() const; //!< to string pointer directly
         };
 
     }
