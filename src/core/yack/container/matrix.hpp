@@ -113,6 +113,14 @@ namespace yack
             out_of_reach::swap(&line[r1][1],&line[r2][1],stride);
         }
 
+        //! swap cols contents
+        inline void swap_cols(const size_t c1, const size_t c2) throw()
+        {
+            assert(c1>=1); assert(c1<=cols);
+            assert(c2>=1); assert(c2<=cols);
+            for(size_t i=rows;i>0;--i) out_of_reach::swap(&line[i][c1],&line[i][c2],sizeof(T));
+        }
+
         //______________________________________________________________________
         //
         // methods

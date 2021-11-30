@@ -41,7 +41,9 @@ enable_testing()
 
 add_test(numeric    test-math numeric)
 add_test(triplet    test-math triplet)
-add_test(algebra:lu test-math lu)
+
+add_test(algebra:lu     test-math lu)
+add_test(algebra:jacobi test-math jacobi)
 
 add_test(ode:rk4 test-math rk4)
 

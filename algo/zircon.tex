@@ -1,0 +1,29 @@
+\documentclass[aps,12pt]{revtex4}
+\usepackage[a4paper]{geometry}
+\usepackage{graphicx}
+\usepackage{amssymb,amsfonts,amsmath,amsthm}
+\usepackage{bm}
+\usepackage{pslatex}
+\usepackage{mathptmx}
+
+ 	 
+\begin{document}
+
+We want to find in $\mathbb{R}^N$:
+\begin{equation}
+	\vec{F}(\vec{x}) = \vec{0}
+\end{equation}
+starting from $\vec{x_n}$:
+\begin{equation}
+	\vec{F}(\vec{x_n}+\vec{h}) \simeq \vec{F} + \bm{J} \cdot \vec{h}
+\end{equation}
+We define the control function:
+\begin{equation}
+	f(\vec{x}) = \dfrac{1}{2} \vec{F} \cdot \vec{F}
+\end{equation}
+and:
+\begin{equation}
+	f(\vec{x}+\vec{h}) \simeq \dfrac{1}{2}\vec{F}^2 + <\vec{F} | \bm{J} | \vec{h} > + \dfrac{1}{2} <\vec{h}|\bm{J}^t | \bm{J} | \vec{h}>
+\end{equation}
+
+\end{document}

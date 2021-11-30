@@ -47,6 +47,14 @@ template <> const long double numeric<long double>::VALUE
 
 #endif
 
+
+        template <typename T>
+        static inline bool almost_equal( const T X, const T Y) throw()
+        {
+            static T fac = T(0.5) * numeric<T>::epsilon;
+            return ( fabs(X-Y) <= fac * ( fabs(X) + fabs(Y) ) );
+        }
+
     }
 
 }

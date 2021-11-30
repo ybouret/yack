@@ -51,10 +51,10 @@ namespace yack
             bool   choice() throw();                           //!< ran <= 0.5
             unit_t in(const unit_t a, const unit_t b) throw(); //!< in [a:b]
 
-            //! double|float|uint[8:16:32:64]_t
+            //! double|float|long double|uint[8:16:32:64]_t
             template <typename T> T to() throw();
 
-            //! double|float
+            //! double|float|long double
             template <typename T> inline
             T symm() throw() {
                 static const T half(0.5);

@@ -24,7 +24,7 @@ install( FILES ${math_tao_decl} DESTINATION include/yack/math/tao )
 
 # algebra
 file(GLOB math_algebra_decl yack/math/algebra/*.hpp)
-file(GLOB math_algebra_srcs yack/math/algebra/*.cpp)
+file(GLOB math_algebra_srcs yack/math/algebra/*.cpp yack/math/algebra/*.hxx)
 set(math_algebra ${math_algebra_decl} ${math_algebra_srcs})
 SOURCE_GROUP(math/algebra FILES ${math_algebra})
 install( FILES ${math_algebra_decl} DESTINATION include/yack/math/algebra )
