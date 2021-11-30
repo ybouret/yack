@@ -1,5 +1,7 @@
 #include "yack/math/root/zircon.hpp"
 #include "yack/utest/run.hpp"
+#include "yack/system/rtti.hpp"
+#include "yack/string.hpp"
 
 using namespace yack;
 using namespace math;
@@ -26,12 +28,14 @@ namespace {
     template <typename T>
     static inline void do_zircon()
     {
-        F2D<T> F = { 0 };
-        zircon<T> solver;
+        std::cerr << "zircon<" << rtti::name<T>() << ">" << std::endl;
+
+        F2D<T>    F = { 0 };
+        zircon<T> solver(2);
 
         solver.X[1] = 0.1; solver.X[2] = 0.2;
         solver.load(F);
-        
+        std::cerr << std::endl;
     }
 
 }

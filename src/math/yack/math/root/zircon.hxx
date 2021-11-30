@@ -48,10 +48,16 @@ namespace yack
         template <>
         void zircon<real_t>:: analyze()
         {
+
             Jt.assign(J,transposed);
             iJ.assign(J);
             Jt(G,F);
             f0 = objective(F);
+            std::cerr << "X=" << X << std::endl;
+            std::cerr << "F=" << F << std::endl;
+            std::cerr << "J=" << J << std::endl;
+            std::cerr << "G=" << G << std::endl;
+            std::cerr << "f0=" << f0 << std::endl;
         }
 
 

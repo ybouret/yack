@@ -50,7 +50,10 @@ namespace yack
             matrix<T>   Jt;    //!< current jacobian
             matrix<T>   iJ;    //!< decomposed jacobian
             jacobian<T> fdjac; //!< finite difference jacobian, with inital scaling
-            
+
+            void setup(size_t dims);
+
+
             //! X is set
             /**
              * - userF(F,X)
@@ -82,7 +85,6 @@ namespace yack
 
         private:
             YACK_DISABLE_COPY_AND_ASSIGN(zircon);
-            void setup(size_t dims);
             void analyze();
             T    objective(const array_type &FF) throw();
             
