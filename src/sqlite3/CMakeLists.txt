@@ -15,6 +15,8 @@ add_definitions(-DSQLITE_ENABLE_FTS4)
 add_definitions(-DSQLITE_ENABLE_FTS5)
  
 add_library(yack-sqlite3 STATIC sqlite3.c)
+
+include_directories(../zlib)
 add_executable(yack_sqlite3_shell shell.c)
 target_link_libraries(yack_sqlite3_shell yack-sqlite3 yack-z m)
 
