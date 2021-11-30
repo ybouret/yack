@@ -43,7 +43,7 @@ namespace yack
             array_type &X;  //!< current position
             array_type &F;  //!< current values
             array_type &G;  //!< current control gradient
-            array_type &V;  //!< temporary vector
+            array_type &VV; //!< temporary vector
             T           f0; //!< current control value F^2/2
 
             matrix<T>   J;     //!< jacobian
@@ -51,6 +51,7 @@ namespace yack
             matrix<T>   iJ;    //!< decomposed jacobian
             jacobian<T> fdjac; //!< finite difference jacobian, with inital scaling
 
+            //! prepare memory
             void setup(size_t dims);
 
 

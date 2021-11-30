@@ -1,4 +1,6 @@
 
+#include "yack/sequence/vector.hpp"
+
 namespace yack
 {
 
@@ -14,10 +16,10 @@ namespace yack
         template <>
         zircon<real_t>:: zircon(const size_t dims) :
         tableaux(4,dims),
-        X( next() ),
-        F( next() ),
-        G( next() ),
-        V( next() ),
+        X(  next() ),
+        F(  next() ),
+        G(  next() ),
+        VV( next() ),
         f0(0),
         J(dims,dims),
         Jt(dims,dims),
@@ -40,14 +42,15 @@ namespace yack
         {
             static const real_t half(0.5);
             for(size_t i=FF.size();i>0;--i)
-                V[i] = squared(FF[i]);
-            return sorted::sum(V,sorted::by_value) * half;
+                VV[i] = squared(FF[i]);
+            return sorted::sum(VV,sorted::by_value) * half;
         }
 
 
         template <>
         void zircon<real_t>:: analyze()
         {
+            const size_t n = X.size();
 
             Jt.assign(J,transposed);
             iJ.assign(J);
@@ -58,6 +61,19 @@ namespace yack
             std::cerr << "J=" << J << std::endl;
             std::cerr << "G=" << G << std::endl;
             std::cerr << "f0=" << f0 << std::endl;
+
+            matrix<real_t> J2(n,n);
+            vector<real_t> d(n,0);
+            matrix<real_t> v(n,n);
+            tao::v3::gram(J2,J);
+            std::cerr << "J2=" << J2 << std::endl;
+            jacobi<real_t> eigen(2);
+            if( !eigen(J2,d,v,sort_eigv_by_module) )
+            {
+                std::cerr << "Bad!" << std::endl;
+                return;
+            }
+            std::cerr << "d=" << d << std::endl;
         }
 
 

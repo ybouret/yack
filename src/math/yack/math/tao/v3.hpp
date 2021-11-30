@@ -78,7 +78,7 @@ namespace yack
                 }
 
                 //! M = A*A'
-                template <typename T, typename U, typename V> static inline
+                template <typename T, typename U> static inline
                 void gram(matrix<T> &M, const matrix<U> &A)
                 {
                     assert(M.rows==A.rows);
@@ -91,7 +91,7 @@ namespace yack
                         const matrix_row<U> &Ai = A[i];
                         for(size_t j=nr;j>0;--j)
                         {
-                            const matrix_row<V> &Aj = A[j];
+                            const matrix_row<U> &Aj = A[j];
                             T sum = 0;
                             for(size_t k=nc;k>0;--k) sum += Ai[k] * Aj[k];
                             Mi[j] = sum;

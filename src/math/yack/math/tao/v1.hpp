@@ -22,6 +22,14 @@ namespace yack
             //__________________________________________________________________
             struct v1
             {
+                //! a=[value;...;value]
+                template <typename A> static inline
+                void ld(A &a, typename A::param_type value)
+                {
+                    for(size_t i=a.size();i>0;--i) a[i] = value;
+                }
+
+
                 //! a = b+c
                 template <typename A, typename B, typename C> static inline
                 void add( A &a, B &b, C &c)
@@ -79,6 +87,17 @@ namespace yack
                         a[i] = -b[i];
                     }
                 }
+
+                //! in place negation
+                template <typename T> static inline void neg_( T &x ) { x=-x; }
+
+                //! a=-a
+                template <typename A> static inline
+                void neg(A &a)
+                {
+                    for(size_t i=a.size();i>0;--i) neg_( a[i] );
+                }
+
 
                 //! a = x*b
                 template <typename A, typename X, typename B> static inline
