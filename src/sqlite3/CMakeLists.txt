@@ -24,6 +24,6 @@ endif()
 
 if(YACK_WINDOWS)
 	if(YACK_GNU)
-		target_link_libraries(${program} -static-libgcc -static-libstdc++) 
+		target_link_libraries(yack_sqlite3_shell -static-libgcc -static-libstdc++) 
 	endif()
 endif()
