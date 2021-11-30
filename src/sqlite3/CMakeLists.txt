@@ -16,4 +16,8 @@ add_definitions(-DSQLITE_ENABLE_FTS5)
  
 add_library(yack-sqlite3 STATIC sqlite3.c)
 add_executable(yack_sqlite3_shell shell.c)
-target_link_libraries(yack_sqlite3_shell yack-sqlite3)
+target_link_libraries(yack_sqlite3_shell yack-sqlite3 m)
+
+if(YACK_LINUX)
+	target_link_libraries(yack_sqlite3_shell dl)
+endif()
