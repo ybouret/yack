@@ -2,7 +2,7 @@ project(sqlite3 C)
 
 add_definitions(-DSQLITE_THREADSAFE=0)
 add_definitions(-DSQLITE_ENABLE_EXPLAIN_COMMENTS)
-#-DSQLITE_HAVE_ZLIB
+add_definitions(-DSQLITE_HAVE_ZLIB)
 add_definitions(-DSQLITE_INTROSPECTION_PRAGMAS)
 add_definitions(-DSQLITE_ENABLE_UNKNOWN_SQL_FUNCTION)
 add_definitions(-DSQLITE_ENABLE_STMTVTAB)
@@ -16,7 +16,7 @@ add_definitions(-DSQLITE_ENABLE_FTS5)
  
 add_library(yack-sqlite3 STATIC sqlite3.c)
 add_executable(yack_sqlite3_shell shell.c)
-target_link_libraries(yack_sqlite3_shell yack-sqlite3 m)
+target_link_libraries(yack_sqlite3_shell yack-sqlite3 yack-z m)
 
 if(YACK_LINUX)
 	target_link_libraries(yack_sqlite3_shell dl)
