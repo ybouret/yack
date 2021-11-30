@@ -26,7 +26,11 @@ namespace {
     template <typename T>
     static inline void do_zircon()
     {
+        F2D<T> F = { 0 };
         zircon<T> solver;
+
+        solver.X[1] = 0.1; solver.X[2] = 0.2;
+        solver.load(F);
         
     }
 

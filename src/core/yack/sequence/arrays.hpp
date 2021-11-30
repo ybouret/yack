@@ -7,6 +7,7 @@
 #include "yack/sequence/thin-array.hpp"
 #include "yack/memory/operative.hpp"
 #include "yack/container/dynamic.hpp"
+#include "yack/container/releasable.hpp"
 
 namespace yack
 {
@@ -16,7 +17,7 @@ namespace yack
     //! memory and metrics for arrays
     //
     //__________________________________________________________________________
-    class arrays : public dynamic
+    class arrays : public dynamic, public releasable
     {
     public:
         //______________________________________________________________________
@@ -156,7 +157,18 @@ namespace yack
             }
         }
 
-
+        //______________________________________________________________________
+        //
+        //! release memory for objects
+        //______________________________________________________________________
+        inline virtual void release() throw()
+        {
+            { operative_type nil(NULL,0); mem.swap_with(nil); }
+            deallocate(position,acquired);
+            capacity = 0;
+            gathered = 0;
+            link();
+        }
 
     private:
         YACK_DISABLE_COPY_AND_ASSIGN(arrays_of);
@@ -174,6 +186,10 @@ namespace yack
                 new (&arr[i]) array_type(obj,capacity);
             }
         }
+
+
+
+
 
         inline void rebuild(const size_t num_blocks)
         {

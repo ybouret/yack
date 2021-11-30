@@ -49,7 +49,7 @@ namespace yack
             matrix<T>   J;     //!< jacobian
             matrix<T>   Jt;    //!< current jacobian
             matrix<T>   iJ;    //!< decomposed jacobian
-            jacobian<T> fdjac; //!< finite difference jacobian
+            jacobian<T> fdjac; //!< finite difference jacobian, with inital scaling
             
             //! X is set
             /**
@@ -62,7 +62,20 @@ namespace yack
             {
                 userF(F,X);
                 userJ(J,X);
+                analyze();
             }
+
+            //! X is set
+            /**
+             load values with internal jacobian computation
+             */
+            template <typename FUNCTION>
+            void load(FUNCTION &userF)
+            {
+                jwrap<FUNCTION> userJ = { fdjac, userF };
+                load(userF,userJ);
+            }
+
 
 
 
@@ -73,6 +86,15 @@ namespace yack
             void analyze();
             T    objective(const array_type &FF) throw();
             
+
+            template <typename FUNCTION>
+            struct jwrap
+            {
+                jacobian<T> &jac;
+                FUNCTION    &fcn;
+                inline void operator()(matrix<T> &JJ, const readable<T> &XX) { jac(JJ,fcn,XX); }
+            };
+
 
         };
 

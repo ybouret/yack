@@ -32,6 +32,7 @@ namespace {
         std::cerr << "    |_fixed_bytes: " << arr.fixed_bytes() << std::endl;
         std::cerr << "    |_granted    : " << arr.granted()     << std::endl;
 
+        arr.release();
     }
 }
 
