@@ -51,7 +51,7 @@ namespace yack
                     size_t &     acquired_) const;
 
         //! allocator release part
-        static void release(void * &, size_t &) throw();
+        static void deallocate(void * &, size_t &) throw();
 
     private:
         YACK_DISABLE_COPY_AND_ASSIGN(arrays);
@@ -208,12 +208,12 @@ namespace yack
                     //
                     // clear old memory
                     //__________________________________________________________
-                    release(position_,acquired_);
+                    deallocate(position_,acquired_);
                 }
                 catch(...)
                 {
                     // here, operative setup was a failure
-                    release(position_,acquired_);
+                    deallocate(position_,acquired_);
                     throw;
                 }
             }

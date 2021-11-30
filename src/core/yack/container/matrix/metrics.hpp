@@ -5,6 +5,7 @@
 
 #include "yack/container/matrix/row.hpp"
 #include "yack/container/dynamic.hpp"
+#include "yack/container/releasable.hpp"
 
 namespace yack
 {
@@ -15,7 +16,7 @@ namespace yack
     //! metrics and raw memory allocation
     //
     //__________________________________________________________________________
-    class matrix_metrics : public dynamic
+    class matrix_metrics : public releasable, public dynamic
     {
     public:
         //______________________________________________________________________

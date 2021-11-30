@@ -21,7 +21,8 @@ namespace yack
         f0(0),
         J(dims,dims),
         Jt(dims,dims),
-        iJ(dims,dims)
+        iJ(dims,dims),
+        fdjac(0)
         {
         }
 
@@ -31,6 +32,7 @@ namespace yack
             make(dims);
             J.make(dims,dims);
             Jt.make(dims,dims);
+            iJ.make(dims,dims);
         }
 
         template <>

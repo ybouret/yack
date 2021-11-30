@@ -11,7 +11,7 @@ namespace yack
         return mgr.acquire(count,block_size);
     }
 
-    void arrays:: release(void * &addr, size_t &size) throw()
+    void arrays:: deallocate(void * &addr, size_t &size) throw()
     {
         static memory::allocator &mgr = memory::pooled::location();
         mgr.release(addr,size);
@@ -20,7 +20,7 @@ namespace yack
 
     void arrays:: release_blocks() throw()
     {
-        release(position,acquired);
+        deallocate(position,acquired);
         capacity = 0;
         gathered = 0;
     }
@@ -43,7 +43,7 @@ namespace yack
         assert(0==gathered);
         assert(0==acquired);
         assert(0==position);
-        release(entry,bytes);
+        deallocate(entry,bytes);
         count = 0;
     }
 

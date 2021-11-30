@@ -5,7 +5,7 @@
 #define YACK_ROOT_ZIRCON_INCLUDED 1
 
 #include "yack/container/matrix.hpp"
-#include "yack/sequence/arrays.hpp"
+#include "yack/math/fcn/jacobian.hpp"
 
 namespace yack
 {
@@ -46,11 +46,11 @@ namespace yack
             array_type &V;  //!< temporary vector
             T           f0; //!< current control value F^2/2
 
-            matrix<T>   J;  //!< jacobian
-            matrix<T>   Jt; //!< current jacobian
-            matrix<T>   iJ; //!< decomposed jacobian
-
-
+            matrix<T>   J;     //!< jacobian
+            matrix<T>   Jt;    //!< current jacobian
+            matrix<T>   iJ;    //!< decomposed jacobian
+            jacobian<T> fdjac; //!< finite difference jacobian
+            
             //! X is set
             /**
              * - userF(F,X)
