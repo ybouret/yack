@@ -123,8 +123,9 @@ namespace yack
                     for(size_t iq=ip+1;iq<=n;++iq)
                     {
                         real_t g = hundred * fabs(a[ip][iq]);
-                        if ( (iter>min_iter) && almost_equal( fabs(d[ip])+g, fabs(d[ip]))
-                            && almost_equal( fabs(d[iq])+g, fabs(d[iq])) )
+                        if ( (iter>min_iter) &&
+                            almost_equal<real_t>( fabs(d[ip])+g, fabs(d[ip])) &&
+                            almost_equal<real_t>( fabs(d[iq])+g, fabs(d[iq])) )
                         {
                             a[ip][iq]=0;
                         }
@@ -133,7 +134,7 @@ namespace yack
                             {
                                 real_t h = d[iq]-d[ip];
                                 real_t t = 0;
-                                if ( almost_equal(fabs(h)+g,fabs(h)) )
+                                if ( almost_equal<real_t>(fabs(h)+g,fabs(h)) )
                                 {
                                     t=(a[ip][iq])/h;
                                 }

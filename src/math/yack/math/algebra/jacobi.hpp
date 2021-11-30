@@ -29,14 +29,26 @@ namespace yack
         class jacobi : public arrays_of<T>
         {
         public:
-            typedef arrays_of<T> tableaux;
-            typedef typename tableaux::array_type array_type;
-            static const size_t min_iter = 4;  //!< for tolerance scaling
-            static const size_t max_iter = 64; //!< algorithm should converge before
+            //__________________________________________________________________
+            //
+            // types and definitions
+            //__________________________________________________________________
+            typedef arrays_of<T>                  tableaux;   //!< alias
+            typedef typename tableaux::array_type array_type; //!< alias
+            static const size_t min_iter = 4;                 //!< for tolerance scaling
+            static const size_t max_iter = 64;                //!< algorithm should converge before
 
-            explicit jacobi(const size_t n=0);
-            virtual ~jacobi() throw();
+            //__________________________________________________________________
+            //
+            // C++
+            //__________________________________________________________________
+            explicit jacobi(const size_t n=0); //!< setup
+            virtual ~jacobi() throw();         //!< cleanup
 
+            //__________________________________________________________________
+            //
+            // methods
+            //__________________________________________________________________
             //! Jacobi reduction
             /**
              \param a    is a symetric matrix, REGENERATED at the end...

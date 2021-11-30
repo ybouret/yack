@@ -114,9 +114,11 @@ namespace yack
                     }
                 }
 
+                //! helper to compute mod2(a-b)
                 template <typename T>
                 struct mod2
                 {
+                    //! |a-b|^2
                     template <typename A, typename B> static inline
                     T of(A &a, B &b)
                     {
