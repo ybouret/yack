@@ -44,7 +44,7 @@ namespace yack
             virtual ~characters() throw();              //!< cleanup
             characters(const characters &);             //!< copy
             characters & operator=(const characters &); //!< assign by copy swap
-
+            
             //__________________________________________________________________
             //
             // methods
@@ -68,6 +68,7 @@ namespace yack
             static void  free(char *)  throw(); //!< free   with legacy::release
             string       to_string()     const; //!< directly to string
             string      *to_new_string() const; //!< to string pointer directly
+            
         };
 
     }

@@ -11,7 +11,7 @@ namespace yack
         }
 
         characters:: characters(const characters &other) :
-        characters_(other)
+        characters_(other) 
         {
         }
 
