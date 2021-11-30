@@ -31,7 +31,7 @@ install( FILES ${math_algebra_decl} DESTINATION include/yack/math/algebra )
 
 # root
 file(GLOB math_root_decl yack/math/root/*.hpp)
-file(GLOB math_root_srcs yack/math/root/*.cpp)
+file(GLOB math_root_srcs yack/math/root/*.cpp yack/math/root/*.hxx)
 set(math_root ${math_root_decl} ${math_root_srcs})
 SOURCE_GROUP(math/root FILES ${math_root})
 install( FILES ${math_root_decl} DESTINATION include/yack/math/root )

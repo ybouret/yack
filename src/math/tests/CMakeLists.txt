@@ -47,7 +47,8 @@ add_test(algebra:jacobi test-math jacobi)
 
 add_test(ode:rk4 test-math rk4)
 
-add_test(zroot test-math zroot)
+add_test(zroot  test-math zroot)
+add_test(zircon test-math zircon)
 
 add_test(minimize test-math minimize)
 add_test(drvs     test-math drvs)

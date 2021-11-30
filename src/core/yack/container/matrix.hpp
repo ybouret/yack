@@ -121,6 +121,17 @@ namespace yack
             for(size_t i=rows;i>0;--i) out_of_reach::swap(&line[i][c1],&line[i][c2],sizeof(T));
         }
 
+        //! make nr x nc iff mismatching sizes
+        inline void make(const size_t nr, const size_t nc)
+        {
+            if(rows!=nr||cols!=nc)
+            {
+                matrix tmp(nr,nc);
+                xch(tmp);
+            }
+        }
+
+
         //______________________________________________________________________
         //
         // methods
@@ -184,6 +195,34 @@ namespace yack
             for(size_t r=rows;r>i;--r)
                 minor_row(m[r-1],a[r],j);
         }
+
+        //! assign using '=' semantics
+        template <typename U> inline
+        void assign(const matrix<U> &M)
+        {
+            assert( matrix_metrics::have_same_sizes(*this,M) );
+            mutable_type                   *target = this->head;
+            typename matrix<U>::const_type *source = M.head;
+            for(size_t i=items;i>0;--i)
+            {
+                *(target++) = *(source++);
+            }
+        }
+
+        //! assign transposed, using '=' semantics
+        template <typename U> inline
+        void assign(const matrix<U> &M, const transposed_t &)
+        {
+            assert( matrix_metrics::are_transposed(*this,M) );
+            for(size_t i=rows;i>0;--i)
+            {
+                for(size_t j=cols;j>0;--j)
+                {
+                    (*this)[i][j] = M[j][i];
+                }
+            }
+        }
+
 
         //______________________________________________________________________
         //

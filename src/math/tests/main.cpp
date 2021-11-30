@@ -11,6 +11,7 @@ YACK_UTEST_DECL(80)
     YACK_UTEST(rk4);
 
     YACK_UTEST(zroot);
+    YACK_UTEST(zircon);
 
     YACK_UTEST(minimize);
 

@@ -136,6 +136,12 @@ YACK_UTEST(data_matrix)
     }
 
 
+    {
+        matrix<double> a(10,10);
+        matrix<int>    d(10,10);
+        a.assign(d);
+    }
+
     
 }
 YACK_UDONE()

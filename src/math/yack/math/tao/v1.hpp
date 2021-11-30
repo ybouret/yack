@@ -69,6 +69,17 @@ namespace yack
                     }
                 }
 
+                //! a = -b
+                template <typename A, typename B> static inline
+                void neg(A &a, B &b)
+                {
+                    assert(a.size()<=b.size());
+                    for(size_t i=a.size();i>0;--i)
+                    {
+                        a[i] = -b[i];
+                    }
+                }
+
                 //! a = x*b
                 template <typename A, typename X, typename B> static inline
                 void mul( A &a, X &x, B &b)
@@ -132,8 +143,38 @@ namespace yack
                         return sum;
                     }
 
+                    //! |a|^2
+                    template <typename A> static inline
+                    T of(A &a)
+                    {
+                        T sum = 0;
+                        for(size_t i=a.size();i>0;--i)
+                        {
+                            sum += mod2_of(a[i]);
+                        }
+                        return sum;
+                    }
+
+
                 };
 
+                //! helper to compute a.b
+                template <typename T>
+                struct dot
+                {
+                    //! a.b
+                    template <typename A, typename B> static inline
+                    T of(A &a, B &b)
+                    {
+                        assert(a.size()<=b.size());
+                        T sum = 0;
+                        for(size_t i=a.size();i>0;--i)
+                        {
+                            sum += a[i] * b[i];
+                        }
+                        return sum;
+                    }
+                };
                 
             };
 
