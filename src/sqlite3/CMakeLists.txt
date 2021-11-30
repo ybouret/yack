@@ -18,10 +18,14 @@ add_library(yack-sqlite3 STATIC sqlite3.c)
 
 include_directories(../zlib)
 add_executable(yack_sqlite3_shell shell.c)
-target_link_libraries(yack_sqlite3_shell yack-sqlite3 yack-z m)
+target_link_libraries(yack_sqlite3_shell yack-sqlite3 yack-z)
 
 if(YACK_LINUX)
 	target_link_libraries(yack_sqlite3_shell dl)
+endif()
+
+if(NOT YACK_MICROSOFT)
+	target_link_libraries(yack_sqlite3_shell m)
 endif()
 
 if(YACK_WINDOWS)
