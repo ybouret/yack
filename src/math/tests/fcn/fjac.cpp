@@ -7,6 +7,7 @@
 #include "yack/sequence/vector.hpp"
 #include "yack/sequence/list.hpp"
 #include "yack/arith/ipower.hpp"
+#include "yack/system/rtti.hpp"
 
 using namespace yack;
 using namespace math;
@@ -38,6 +39,7 @@ namespace
     template <typename T> static inline
     void test_fjac(randomized::bits &ran)
     {
+        std::cerr << "jacobian for <" << rtti::name<T>() << ">" << std::endl;
         Func<T>     F = { 0 };
         jacobian<T> fjac(8);
         for(size_t domain=1;domain<=4;++domain)
@@ -57,7 +59,7 @@ namespace
                 }
             }
         }
-
+        std::cerr << std::endl;
     }
 
 }
@@ -68,6 +70,17 @@ YACK_UTEST(fjac)
     randomized::rand_ ran;
 
     test_fjac<float>(ran);
+    test_fjac<double>(ran);
+    test_fjac<long double>(ran);
+
+    YACK_SIZEOF(jacobian<float>);
+    YACK_SIZEOF(jacobian<double>);
+    YACK_SIZEOF(jacobian<long double>);
+    YACK_SIZEOF(arrays_of<float>);
+    YACK_SIZEOF(arrays_of<double>);
+    YACK_SIZEOF(arrays_of<long double>);
+
+
 }
 YACK_UDONE()
 

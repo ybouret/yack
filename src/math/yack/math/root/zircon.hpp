@@ -72,7 +72,7 @@ namespace yack
             void setup(size_t dims);
             void analyze();
             T    objective(const array_type &FF) throw();
-
+            
 
         };
 

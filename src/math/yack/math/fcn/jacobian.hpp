@@ -73,7 +73,9 @@ namespace yack
             // members
             //__________________________________________________________________
             T              scal; //!< scaling
+
             
+
         private:
             YACK_DISABLE_COPY_AND_ASSIGN(jacobian);
             array_type &fp;
