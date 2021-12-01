@@ -14,7 +14,7 @@ namespace yack
         //______________________________________________________________________
         //
         //
-        //! dynamic character with dedicater allocator
+        //! dynamic character with dedicated allocator
         //
         //______________________________________________________________________
         class character
