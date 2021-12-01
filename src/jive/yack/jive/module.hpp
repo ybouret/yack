@@ -3,7 +3,7 @@
 #ifndef YACK_JIVE_MODULE_INCLUDED
 #define YACK_JIVE_MODULE_INCLUDED 1
 
-#include "yack/jive/character.hpp"
+#include "yack/jive/token.hpp"
 #include "yack/ios/istream.hpp"
 
 namespace yack
@@ -44,6 +44,7 @@ namespace yack
             //__________________________________________________________________
             character *get();
             void       newline() throw();
+            bool       gets(token &line);
             
             //__________________________________________________________________
             //

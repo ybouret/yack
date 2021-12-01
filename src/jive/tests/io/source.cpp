@@ -18,7 +18,6 @@ YACK_UTEST(source)
         {
             const auto_ptr<jive::character> p = ch;
             std::cerr << **p;
-            
         }
         
     }

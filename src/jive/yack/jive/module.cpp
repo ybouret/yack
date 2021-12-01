@@ -59,6 +59,27 @@ namespace yack
             coerce(column) = 1;
         }
 
+        bool module:: gets(token &line)
+        {
+            line.release();
+            ios::characters temp;
+            if(handle->gets(temp))
+            {
+                while(temp.size)
+                {
+                    const ios::character &ch = *temp.head;
+                    ++coerce(column);
+                    line.push_back( new character(*this,*ch) );
+                    delete temp.pop_front();
+                }
+                newline();
+                return true;
+            }
+            else
+            {
+                return false;
+            }
+        }
 
         
     }
