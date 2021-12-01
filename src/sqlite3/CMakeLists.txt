@@ -1,5 +1,13 @@
 project(sqlite3 C)
 
+message( STATUS "[YACK] <SQLite3>" )
+string(REPLACE "-Wall"   "" CMAKE_C_FLAGS "${CMAKE_C_FLAGS}")
+string(REPLACE "-Wextra" "" CMAKE_C_FLAGS "${CMAKE_C_FLAGS}")
+string(STRIP "${CMAKE_C_FLAGS}" CMAKE_C_FLAGS)
+
+message( STATUS "[YACK]  SQLite3.CMAKE_C_FLAGS='${CMAKE_C_FLAGS}'")
+
+#following advices from official docs
 add_definitions(-DSQLITE_THREADSAFE=0)
 add_definitions(-DSQLITE_ENABLE_EXPLAIN_COMMENTS)
 add_definitions(-DSQLITE_HAVE_ZLIB)
@@ -33,3 +41,5 @@ if(YACK_WINDOWS)
 		target_link_libraries(y_sqlite3 -static-libgcc -static-libstdc++) 
 	endif()
 endif()
+
+message( STATUS "[YACK] <SQLite3/>" )

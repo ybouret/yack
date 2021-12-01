@@ -42,7 +42,6 @@ namespace yack
         template <typename OSTREAM, typename NODE> static inline
         OSTREAM &display(OSTREAM &os, const NODE *node)
         {
-            assert(node);
             os << '{';
             if(node)
             {

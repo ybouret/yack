@@ -85,7 +85,7 @@ extern "C" {
     extern const char yack_success[];         //!< "success"
     extern const char yack_failure[];         //!< "failure"
     int               yack_die(const char *); //!< return 1
-    
+    int               yack_good(const void *addr, const size_t size); //!< !(addr==NULL&&size>0)
 #if defined(__cplusplus)
 }
 #endif
