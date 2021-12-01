@@ -240,6 +240,11 @@ YACK_UTEST(ios_streams)
 
     }
 
+
+    YACK_SIZEOF(ios::istream);
+    YACK_SIZEOF(ios::icstream);
+    YACK_SIZEOF(ios::imstream);
+
     
 
 

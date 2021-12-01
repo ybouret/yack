@@ -6,6 +6,8 @@
 
 #include "yack/ios/stream.hpp"
 #include "yack/ios/characters.hpp"
+#include "yack/object.hpp"
+#include "yack/counted.hpp"
 
 namespace yack
 {
@@ -17,7 +19,7 @@ namespace yack
         //! base class for input streams
         //
         //______________________________________________________________________
-        class istream
+        class istream : public object, public counted
         {
         public:
             virtual ~istream() throw();                    //!< cleanup

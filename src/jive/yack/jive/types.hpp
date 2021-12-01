@@ -6,6 +6,7 @@
 #include "yack/string.hpp"
 #include "yack/ptr/ark.hpp"
 #include "yack/associative/suffix/set.hpp"
+#include "yack/ios/istream.hpp"
 
 namespace yack
 {
@@ -14,6 +15,7 @@ namespace yack
 
         typedef ark_ptr<string,string> tag;     //!< shared string
         typedef suffix_set<string,tag> tags_;   //!< base class for database
+        typedef arc_ptr<ios::istream>  input;   //!< input class
     }
 }
 
