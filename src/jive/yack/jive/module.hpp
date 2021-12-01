@@ -10,8 +10,20 @@ namespace yack
 {
     namespace jive
     {
+        //______________________________________________________________________
+        //
+        //
+        //! alias for input
+        //
+        //______________________________________________________________________
         typedef arc_ptr<ios::istream> input;
         
+        //______________________________________________________________________
+        //
+        //
+        //! a module transform a source of chars intro a source of jive::chars
+        //
+        //______________________________________________________________________
         class module : public context
         {
         public:
@@ -19,39 +31,42 @@ namespace yack
             //
             // types and definitions
             //__________________________________________________________________
+            //! kind of module
             enum whence
             {
-                from_file
+                from_file, //!< loaded from file
+                from_data  //!< loaded from data
             };
             
             //__________________________________________________________________
             //
             // C++
             //__________________________________________________________________
-            virtual ~module() throw();
-            
+            virtual        ~module() throw(); //!< cleanup
+            static module *open_stdin();      //!< open stdin
+
+            //! open a C file by its name
             template <typename FILENAME> inline
             static module *open_file(const FILENAME &filename)
             {
                 static const int2type<from_file> as_file = {};
                 return new module(filename,as_file);
             }
-            static module *open_stdin();
             
             //__________________________________________________________________
             //
             // methods
             //__________________________________________________________________
-            character *get();
-            void       newline() throw();
-            bool       gets(token &line);
+            character *get();             //!< get next char, NULL => EOF
+            void       newline() throw(); //!< update context
+            bool       gets(token &line); //!< helper to get line
             
             //__________________________________________________________________
             //
             // members
             //__________________________________________________________________
-            input        handle;
-            const whence origin;
+            input        handle; //!< used handle
+            const whence origin; //!< keep trace of origin
 
 
         private:

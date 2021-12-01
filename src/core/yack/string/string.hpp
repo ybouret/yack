@@ -30,7 +30,7 @@ namespace yack
             typedef  typename writable<T>::const_type const_type; //!< alias
             typedef  typename writable<T>::type       type;       //!< alias
             static   const char                       clid[];     //!< class id,
-            static size_t  length_of(const T *msg) throw();
+            static size_t  length_of(const T *msg) throw();       //!< strlen alias
             
             //__________________________________________________________________
             //
@@ -145,24 +145,28 @@ namespace yack
                           static_cast<const_type*>(rhs.block),rhs.chars);
             }
            
+            //! fast equality string/message
             inline friend bool operator==(const string &lhs, const T *rhs) throw()
             {
                 return eq(static_cast<const_type*>(lhs.block),lhs.chars,
                           rhs,length_of(rhs));
             }
 
+            //! fast equality message/string
             inline friend bool operator==(const T *lhs, const string &rhs) throw()
             {
                 return eq(lhs,length_of(lhs),
                           static_cast<const_type*>(rhs.block),rhs.chars);
             }
             
+            //! fast difference string/message
             inline friend bool operator!=(const string &lhs, const T *rhs) throw()
             {
                 return neq(static_cast<const_type*>(lhs.block),lhs.chars,
                           rhs,length_of(rhs));
             }
             
+            //! fast difference message/string
             inline friend bool operator!=(const T *lhs, const string &rhs) throw()
             {
                 return neq(lhs,length_of(lhs),
