@@ -20,7 +20,7 @@ namespace yack
         class tags : public singleton<tags>, public tags_
         {
         public:
-            static const at_exit::longevity life_time = 0; //!< singleton life time
+            static const at_exit::longevity life_time = 2; //!< singleton life time
             static const char               call_sign[];   //!< singleton call sign
 
             static string *make(const char *buffer, const size_t buflen); //!< make/create

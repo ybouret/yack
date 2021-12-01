@@ -40,7 +40,7 @@ namespace yack
 {
     namespace jive
     {
-        YACK_EXCLUSIVE_IMPL(character);
+        YACK_EXCLUSIVE_IMPL(character,"jive.");
     }
 }
 

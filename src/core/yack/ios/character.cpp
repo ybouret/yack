@@ -57,7 +57,7 @@ namespace yack
 {
     namespace ios
     {
-        YACK_EXCLUSIVE_IMPL(character);
+        YACK_EXCLUSIVE_IMPL(character,"ios.");
     }
 }
 

@@ -48,7 +48,9 @@ namespace yack
         for(size_t i=0;i<at_exit_size;++i)
         {
             if(at_exit_data[i].rank == rank_ )
+            {
                 system_error::critical_bsd(EACCES,"at_exit multiple longevities");
+            }
         }
         
         {

@@ -6,7 +6,7 @@
 
 using namespace yack;
 
-YACK_UTEST(source)
+YACK_UTEST(module)
 {
     if(argc>1)
     {

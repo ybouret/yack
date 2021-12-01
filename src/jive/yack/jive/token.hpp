@@ -45,7 +45,7 @@ namespace yack
             //! display
             inline friend std::ostream & operator<< (std::ostream &os, const token &t)
             {
-                return t.display(os);
+                return t.display(os,0,0,0);
             }
 
             //__________________________________________________________________

@@ -61,7 +61,7 @@ namespace yack
         //! implement new/delete operators
         //
         //______________________________________________________________________
-#define YACK_EXCLUSIVE_IMPL(CLASS) \
+#define YACK_EXCLUSIVE_IMPL(CLASS,PFX) \
 /* operator new */ \
 /**/  void * CLASS:: operator new(size_t block_size) {\
 /**/    (void)block_size; \
@@ -82,7 +82,7 @@ namespace yack
 /**/    static memory::studio<CLASS> &repo = memory::studio<CLASS>::instance(); \
 /**/    return repo; } \
 /* call_sign */ \
-/**/  const char CLASS::call_sign[] = #CLASS
+/**/  const char CLASS::call_sign[] = PFX #CLASS
 
     }
 }
