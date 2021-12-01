@@ -30,6 +30,7 @@ namespace yack
             typedef  typename writable<T>::const_type const_type; //!< alias
             typedef  typename writable<T>::type       type;       //!< alias
             static   const char                       clid[];     //!< class id,
+            static size_t  length_of(const T *msg) throw();
             
             //__________________________________________________________________
             //
@@ -143,7 +144,33 @@ namespace yack
                 return eq(static_cast<const_type*>(lhs.block),lhs.chars,
                           static_cast<const_type*>(rhs.block),rhs.chars);
             }
+           
+            inline friend bool operator==(const string &lhs, const T *rhs) throw()
+            {
+                return eq(static_cast<const_type*>(lhs.block),lhs.chars,
+                          rhs,length_of(rhs));
+            }
 
+            inline friend bool operator==(const T *lhs, const string &rhs) throw()
+            {
+                return eq(lhs,length_of(lhs),
+                          static_cast<const_type*>(rhs.block),rhs.chars);
+            }
+            
+            inline friend bool operator!=(const string &lhs, const T *rhs) throw()
+            {
+                return neq(static_cast<const_type*>(lhs.block),lhs.chars,
+                          rhs,length_of(rhs));
+            }
+            
+            inline friend bool operator!=(const T *lhs, const string &rhs) throw()
+            {
+                return neq(lhs,length_of(lhs),
+                          static_cast<const_type*>(rhs.block),rhs.chars);
+            }
+            
+            
+            
             //! to sort strings
             static int compare(const string &lhs, const string &rhs) throw();
 
@@ -155,6 +182,9 @@ namespace yack
             type *item;
             static bool eq(const T *l, const size_t nl,
                            const T *r, const size_t nr) throw();
+            
+            static bool neq(const T *l, const size_t nl,
+                            const T *r, const size_t nr) throw();
 
             static int cmp(const T *l, const size_t nl,
                            const T *r, const size_t nr) throw();

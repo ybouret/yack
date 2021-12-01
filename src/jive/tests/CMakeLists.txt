@@ -15,8 +15,9 @@ yack_testing(jive)
 
 enable_testing()
 
-add_test(io:tags  test-jive tags)
-add_test(io:token test-jive token)
+add_test(io:tags    test-jive tags)
+add_test(io::source test-jive source)
+add_test(io:token   test-jive token)
 
 
 

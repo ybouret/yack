@@ -275,6 +275,21 @@ namespace yack
         }
         
         template <>
+        size_t string<CH>:: length_of(const CH *msg) throw()
+        {
+            if(msg)
+            {
+                size_t cnt = 0;
+                while( 0 != *(msg++) ) ++cnt;
+                return cnt;
+            }
+            else
+            {
+                return 0;
+            }
+        }
+        
+        template <>
         bool string<CH>:: eq(const CH    *l,
                              const size_t nl,
                              const CH    *r,
@@ -294,6 +309,29 @@ namespace yack
                     if( *(l++) != *(r++) ) return false;
                 }
                 return true;
+            }
+        }
+        
+        template <>
+        bool string<CH>:: neq(const CH    *l,
+                              const size_t nl,
+                              const CH    *r,
+                              const size_t nr) throw()
+        {
+            assert(!(NULL==l&&nl>0));
+            assert(!(NULL==r&&nr>0));
+            
+            if(nl!=nr)
+            {
+                return true;
+            }
+            else
+            {
+                for(size_t i=nl;i>0;--i)
+                {
+                    if( *(l++) != *(r++) ) return true;
+                }
+                return false; // are equal!
             }
         }
 

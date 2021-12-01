@@ -25,7 +25,7 @@ namespace yack
 
             //! generic setup
             template <typename LABEL> inline
-            explicit context(LABEL &id, const unsigned l, const unsigned c) : tag( tags::make(id) ), line(l), column(c) { }
+            explicit context(LABEL &id) : tag( tags::make(id) ), line(1), column(1) { }
             virtual ~context() throw();       //!< cleanup
             context(const context &) throw(); //!< no-throw copy
 
