@@ -6,6 +6,8 @@
 
 #include "yack/ios/character.hpp"
 #include "yack/string/fwd.hpp"
+#include "yack/data/list/concrete.hpp"
+#include "yack/data/pool/concrete.hpp"
 
 namespace yack
 {

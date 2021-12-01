@@ -24,8 +24,13 @@ namespace yack
         code(other.code)
         {
         }
+
         
 
+        const uint8_t & character:: operator*() const throw()
+        {
+            return code;
+        }
     }
 }
 

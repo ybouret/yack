@@ -1,52 +1,59 @@
-
 //! \file
 
-#ifndef YACK_JIVE_CHARACTER_INCLUDED
-#define YACK_JIVE_CHARACTER_INCLUDED 1
+#ifndef YACK_JIVE_TOKEN_INCLUDED
+#define YACK_JIVE_TOKEN_INCLUDED 1
 
-#include "yack/jive/context.hpp"
-#include "yack/memory/small/exclusive.hpp"
+#include "yack/jive/character.hpp"
+#include "yack/data/list/concrete.hpp"
+//#include "yack/data/pool/concrete.hpp"
 
 namespace yack
 {
     namespace jive
     {
+
+        typedef klist<uint8_t,character> characters; //!< base class for token
+        //typedef kpool<uint8_t,character> repository; //!< bool of tokens
+
         //______________________________________________________________________
         //
         //
         //! character with full info
         //
         //______________________________________________________________________
-        class character : public context
+        class token : public characters
         {
         public:
             //__________________________________________________________________
             //
             // types and definitions
             //__________________________________________________________________
-            YACK_EXCLUSIVE_DECL(character,0); //!< aliases
 
             //__________________________________________________________________
             //
             // C++
             //__________________________________________________________________
-            virtual ~character() throw();                               //!< cleanup
-            explicit character(const context &, const uint8_t) throw(); //!< no-throw build
-            character(const character &) throw();                       //!< no-throw copy
+            virtual ~token() throw();  //!< cleanup
+            explicit token() throw();  //!< no-throw build
+            token(const token &);      //!< char-wise copy
 
             //__________________________________________________________________
             //
             // methods
             //__________________________________________________________________
-            const uint8_t & operator*() const throw(); //!< access
+
+            //! display
+            inline friend std::ostream & operator<< (std::ostream &os, const token &t)
+            {
+                return t.display(os);
+            }
 
             //__________________________________________________________________
             //
             // members
             //__________________________________________________________________
-            character    *next; //!< for list/pool
-            character    *prev; //!< for list
-            const uint8_t code; //!< the code
+            token        *next; //!< for list/pool
+            token        *prev; //!< for list
 
         private:
             YACK_DISABLE_ASSIGN(character);
