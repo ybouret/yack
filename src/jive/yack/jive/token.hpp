@@ -5,7 +5,7 @@
 
 #include "yack/jive/character.hpp"
 #include "yack/data/list/concrete.hpp"
-//#include "yack/data/pool/concrete.hpp"
+#include "yack/data/pool/concrete.hpp"
 
 namespace yack
 {
@@ -13,7 +13,7 @@ namespace yack
     {
 
         typedef klist<uint8_t,character> characters; //!< base class for token
-        //typedef kpool<uint8_t,character> repository; //!< bool of tokens
+        typedef kpool<uint8_t,character> repository; //!< bool of tokens
 
         //______________________________________________________________________
         //
