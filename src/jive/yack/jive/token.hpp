@@ -56,7 +56,7 @@ namespace yack
             token        *prev; //!< for list
 
         private:
-            YACK_DISABLE_ASSIGN(character);
+            YACK_DISABLE_ASSIGN(token);
         };
 
     }

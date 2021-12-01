@@ -8,8 +8,8 @@ add_executable(test-jive main.cpp
 ${io}
  )
 
-yack_link_libraries(test-jive)
 target_link_libraries(test-jive yack-jive)
+yack_link_libraries(test-jive)
 
 yack_testing(jive)
 
