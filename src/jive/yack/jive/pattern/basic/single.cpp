@@ -28,6 +28,11 @@ namespace yack
             return ++nw;
         }
 
+        bool single:: strong() const
+        {
+            return true;
+        }
+
         pattern::result single:: accept(source &src, token &tkn) const
         {
             assert(0==tkn.size);

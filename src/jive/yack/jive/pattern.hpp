@@ -54,6 +54,14 @@ namespace yack
              */
             virtual result accept(YACK_JIVE_PATTERN_ARGS) const = 0;
 
+            //! not empty token are accepted
+            virtual bool   strong() const                       = 0;
+
+            //__________________________________________________________________
+            //
+            // non virtual interface
+            //__________________________________________________________________
+            bool           feeble() const; //!< !strong(), empty token may be accepted!
 
             //__________________________________________________________________
             //

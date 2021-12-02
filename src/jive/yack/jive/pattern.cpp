@@ -28,6 +28,11 @@ namespace yack
         {
             return ios::encoder::emit(fp,uuid);
         }
+
+        bool pattern:: feeble() const
+        {
+            return !strong();
+        }
     }
 
 }

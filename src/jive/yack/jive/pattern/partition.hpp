@@ -101,13 +101,13 @@ namespace yack
             void grow(domain *dom)           throw(); //!< grow with a single domain
             void grow(list_of<domain> &doms) throw(); //!< grow with other domains
 
-            void add(const uint8_t);                 //!< grow( new domain(a)   )
-            void add(const uint8_t, const uint8_t);  //!< grow( new domain(a,b) )
+            void add(const uint8_t);                  //!< grow( new domain(a)   )
+            void add(const uint8_t, const uint8_t);   //!< grow( new domain(a,b) )
 
             //! display
             friend std::ostream & operator<<(std::ostream &, const partition &);
 
-
+            
         private:
             YACK_DISABLE_ASSIGN(partition);
             bool is_valid() const throw();
