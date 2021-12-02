@@ -24,7 +24,7 @@ namespace yack
         //! a module transform a source of chars intro a source of jive::chars
         //
         //______________________________________________________________________
-        class module : public context
+        class module : public object, public context
         {
         public:
             //__________________________________________________________________
@@ -65,8 +65,8 @@ namespace yack
             //
             // members
             //__________________________________________________________________
-            input        handle; //!< used handle
-            const whence origin; //!< keep trace of origin
+        private: input        handle; //!< used handle
+        public:  const whence origin; //!< keep trace of origin
 
 
         private:

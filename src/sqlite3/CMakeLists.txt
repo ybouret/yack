@@ -25,20 +25,20 @@ add_definitions(-DSQLITE_ENABLE_FTS5)
 add_library(yack-sqlite3 STATIC sqlite3.c)
 
 include_directories(../zlib)
-add_executable(y_sqlite3 shell.c)
-target_link_libraries(y_sqlite3 yack-sqlite3 yack-z)
+add_executable(yack_sqlite3 shell.c)
+target_link_libraries(yack_sqlite3 yack-sqlite3 yack-z)
 
 if(YACK_LINUX)
-	target_link_libraries(y_sqlite3 dl)
+	target_link_libraries(yack_sqlite3 dl)
 endif()
 
 if(NOT YACK_MICROSOFT)
-	target_link_libraries(y_sqlite3 m)
+	target_link_libraries(yack_sqlite3 m)
 endif()
 
 if(YACK_WINDOWS)
 	if(YACK_GNU)
-		target_link_libraries(y_sqlite3 -static-libgcc -static-libstdc++) 
+		target_link_libraries(yack_sqlite3 -static-libgcc -static-libstdc++) 
 	endif()
 endif()
 
