@@ -12,6 +12,7 @@ namespace yack
     namespace jive
     {
 
+        //! arguments for accept routine
 #define YACK_JIVE_PATTERN_ARGS source &src, token &tkn
 
         //______________________________________________________________________
@@ -23,6 +24,12 @@ namespace yack
         class pattern : public object, public counted, public ios::serializable
         {
         public:
+            //__________________________________________________________________
+            //
+            // types and definitions
+            //__________________________________________________________________
+
+            //! accept method result
             enum result
             {
                 accepted, //!< accepted
@@ -40,6 +47,11 @@ namespace yack
             //
             // interface
             //__________________________________________________________________
+            //! accept routine
+            /**
+             * token must be empty on call, and left empty if
+             * result it not accepted
+             */
             virtual result accept(YACK_JIVE_PATTERN_ARGS) const = 0;
 
 
@@ -55,7 +67,7 @@ namespace yack
         protected:
             explicit pattern(const uint32_t) throw(); //!< setup with uuid, self=0
             void     I_am(const void*) throw();       //!< set self to most derived class
-            size_t   emit_uuid(ios::ostream &) const;
+            size_t   emit_uuid(ios::ostream &) const; //!< emit uuid, return written bytes
 
             //! helper
             template <typename T> inline

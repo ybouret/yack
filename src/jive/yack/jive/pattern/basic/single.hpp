@@ -24,34 +24,35 @@ namespace yack
             //
             // types and definition
             //__________________________________________________________________
-            static const uint32_t mark = YACK_FOURCC('B','Y','T','E');
-            static const char     clid[];
+            static const uint32_t mark = YACK_FOURCC('B','Y','T','E'); //!< mark
+            static const char     clid[];                              //!< "single"
 
             //__________________________________________________________________
             //
             // C++
             //__________________________________________________________________
-            explicit single(const uint8_t) throw();
-            virtual ~single()              throw();
+            explicit single(const uint8_t) throw(); //!< setup code
+            virtual ~single()              throw(); //!< cleanup
 
             //__________________________________________________________________
             //
             // pattern interface
             //__________________________________________________________________
+            //! accept is one char matching code
             virtual result      accept(YACK_JIVE_PATTERN_ARGS) const;
 
             //__________________________________________________________________
             //
             // serializable interfacer
             //__________________________________________________________________
-            virtual const char *class_uid() const throw();
-            virtual size_t      serialize(ios::ostream &) const;
+            virtual const char *class_uid() const throw();       //!< clid
+            virtual size_t      serialize(ios::ostream &) const; //!< mark+code
 
             //__________________________________________________________________
             //
             // members
             //__________________________________________________________________
-            const uint8_t code;
+            const uint8_t code; //!< matching code
         private:
             YACK_DISABLE_COPY_AND_ASSIGN(single);
         };
