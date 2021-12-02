@@ -37,7 +37,7 @@ namespace yack
             return true;
         }
 
-        pattern::result within:: accept(source &src, token &tkn) const
+        bool within:: accept(source &src, token &tkn) const
         {
             assert(0==tkn.size);
             character *ch = src.query();
@@ -48,18 +48,19 @@ namespace yack
                 {
                     // match
                     tkn.push_back(ch);
-                    return accepted;
+                    return true;
                 }
                 else
                 {
                     // no match
-                    return rejected;
+                    src.store(ch);
+                    return false;
                 }
             }
             else
             {
                 // EOF
-                return finished;
+                return false;
             }
         }
 

@@ -29,13 +29,6 @@ namespace yack
             // types and definitions
             //__________________________________________________________________
 
-            //! accept method result
-            enum result
-            {
-                accepted, //!< accepted
-                rejected, //!< rejected
-                finished  //!< end of stream
-            };
 
             //__________________________________________________________________
             //
@@ -52,7 +45,7 @@ namespace yack
              * token must be empty on call, and left empty if
              * result it not accepted
              */
-            virtual result accept(YACK_JIVE_PATTERN_ARGS) const = 0;
+            virtual bool   accept(YACK_JIVE_PATTERN_ARGS) const = 0;
 
             //! not empty token are accepted
             virtual bool   strong() const                       = 0;

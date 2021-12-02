@@ -30,6 +30,28 @@ namespace yack
                     return new within(lower,upper);
                 }
 
+                case optional::mark:
+                {
+                    return optional::create( load(fp) );
+                }
+
+                case at_least::mark:
+                {
+                    size_t count = 0;
+                    (void) ios::decoder::construct(fp,count,"at_least::count");
+                    return at_least::create(count,load(fp));
+                }
+
+                case counting::mark:
+                {
+                    size_t nmin = 0;
+                    size_t nmax = 0;
+                    (void) ios::decoder::construct(fp,nmin,"counting::nmin");
+                    (void) ios::decoder::construct(fp,nmax,"counting::nmax");
+                    return counting::create(nmin,nmax,load(fp));
+                }
+
+
                 default:
                     break;
             }

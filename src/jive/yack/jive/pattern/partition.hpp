@@ -106,7 +106,7 @@ namespace yack
 
             //! display
             friend std::ostream & operator<<(std::ostream &, const partition &);
-
+            
             
         private:
             YACK_DISABLE_ASSIGN(partition);

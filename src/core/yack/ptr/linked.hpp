@@ -36,7 +36,7 @@ namespace yack
         // C++
         //______________________________________________________________________
 
-        //! create new linked_ptr as node, take care of valid address
+        //! create new linked_ptr as node, take care of memory
         static inline linked_ptr *make(type *addr)
         {
             const arc_ptr<T> temp(addr);

@@ -21,10 +21,23 @@ set(jive_pattern_basic ${jive_pattern_basic_decl} ${jive_pattern_basic_srcs})
 SOURCE_GROUP(jive/pattern/basic FILES ${jive_pattern_basic})
 install( FILES ${jive_pattern_basic_decl} DESTINATION include/yack/jive/pattern/basic )
 
+#pattern/joker
+file(GLOB jive_pattern_joker_decl yack/jive/pattern/joker/*.hpp)
+file(GLOB jive_pattern_joker_srcs yack/jive/pattern/joker/*.cpp)
+set(jive_pattern_joker ${jive_pattern_joker_decl} ${jive_pattern_joker_srcs})
+SOURCE_GROUP(jive/pattern/joker FILES ${jive_pattern_joker})
+install( FILES ${jive_pattern_joker_decl} DESTINATION include/yack/jive/pattern/joker )
+
+#pattern/logic
+file(GLOB jive_pattern_logic_decl yack/jive/pattern/logic/*.hpp)
+file(GLOB jive_pattern_logic_srcs yack/jive/pattern/logic/*.cpp)
+set(jive_pattern_logic ${jive_pattern_logic_decl} ${jive_pattern_logic_srcs})
+SOURCE_GROUP(jive/pattern/logic FILES ${jive_pattern_logic})
+install( FILES ${jive_pattern_logic_decl} DESTINATION include/yack/jive/pattern/logic )
 
 add_library(yack-jive STATIC
 ${jive_main}
-${jive_pattern} ${jive_pattern_basic}
+${jive_pattern} ${jive_pattern_basic} ${jive_pattern_joker} ${jive_pattern_logic}
 )
 
 install( TARGETS yack-jive ARCHIVE DESTINATION lib )

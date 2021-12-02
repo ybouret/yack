@@ -1,9 +1,10 @@
+
 //! \file
 
-#ifndef YACK_JIVE_PATTERN_BASIC_WITHIN_INCLUDED
-#define YACK_JIVE_PATTERN_BASIC_WITHIN_INCLUDED 1
+#ifndef YACK_JIVE_PATTERN_COUNTING_AT_LEAST_INCLUDED
+#define YACK_JIVE_PATTERN_COUNTING_AT_LEAST_INCLUDED 1
 
-#include "yack/jive/pattern.hpp"
+#include "yack/jive/pattern/joker/joker.hpp"
 #include "yack/type/fourcc.h"
 
 namespace yack
@@ -13,51 +14,62 @@ namespace yack
         //______________________________________________________________________
         //
         //
-        //! single byte matching
+        //! counting pattern
         //
         //______________________________________________________________________
-        class within : public pattern
+        class counting : public joker
         {
         public:
             //__________________________________________________________________
             //
             // types and definition
             //__________________________________________________________________
-            static const uint32_t mark = YACK_FOURCC('[','I','N',']'); //!< mark
-            static const char     clid[];                              //!< "single"
+            static const char     clid[];                              //!< "counting"
+            static const uint32_t mark = YACK_FOURCC('[','<','>',']'); //!< mark
 
             //__________________________________________________________________
             //
-            // C++
+            // interface
             //__________________________________________________________________
-            explicit within(const uint8_t, const uint8_t) throw(); //!< setup lower/upper
-            virtual ~within()                             throw(); //!< cleanup
+            //! always accepted
+            virtual bool       accept(YACK_JIVE_PATTERN_ARGS) const;
+            //! nmin>0 and joker is strong
+            virtual bool       strong() const;
+
+
+            virtual const char *class_uid() const throw();          //!< clid
+            virtual size_t      serialize(ios::ostream &fp) const;  //!< uuid+nmin+nmax+jk
 
             //__________________________________________________________________
             //
-            // pattern interface
+            // methods
             //__________________________________________________________________
-            virtual bool accept(YACK_JIVE_PATTERN_ARGS) const; //!< accept is one char within range
-            virtual bool strong() const;                       //!< always strong
-
-            //__________________________________________________________________
-            //
-            // serializable interfacer
-            //__________________________________________________________________
-            virtual const char *class_uid() const throw();       //!< clid
-            virtual size_t      serialize(ios::ostream &) const; //!< mark+lower and upper
+            static pattern *create(const size_t,const size_t,pattern *); //!< create
 
             //__________________________________________________________________
             //
             // members
             //__________________________________________________________________
-            const uint8_t lower; //!< lower code
-            const uint8_t upper; //!< upper code
-        private:
-            YACK_DISABLE_COPY_AND_ASSIGN(within);
-        };
-    }
+            const size_t nmin; //!< minimal count
+            const size_t nmax; //!< maximal count
 
+
+            //__________________________________________________________________
+            //
+            // C++
+            //__________________________________________________________________
+            virtual ~counting() throw();               //!< cleanup
+
+        protected:
+            explicit counting(const size_t, const size_t, pattern*) throw(); //!< setup
+
+        private:
+            YACK_DISABLE_COPY_AND_ASSIGN(counting);
+
+        };
+
+    }
 }
 
 #endif
+

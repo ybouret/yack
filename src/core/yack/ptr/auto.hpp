@@ -83,6 +83,12 @@ namespace yack
             return old;
         }
 
+        //! dismiss
+        inline void dismiss() throw()
+        {
+            pointee=0;
+        }
+
     private:
         inline void release() throw() {
             if(pointee) { delete pointee; pointee=0; }

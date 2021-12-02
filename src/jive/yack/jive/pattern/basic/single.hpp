@@ -24,7 +24,7 @@ namespace yack
             //
             // types and definition
             //__________________________________________________________________
-            static const uint32_t mark = YACK_FOURCC('B','Y','T','E'); //!< mark
+            static const uint32_t mark = YACK_FOURCC('C','H','R',':'); //!< mark
             static const char     clid[];                              //!< "single"
 
             //__________________________________________________________________
@@ -39,7 +39,7 @@ namespace yack
             // pattern interface
             //__________________________________________________________________
             //! accept is one char matching code
-            virtual result      accept(YACK_JIVE_PATTERN_ARGS) const;
+            virtual bool        accept(YACK_JIVE_PATTERN_ARGS) const;
             //! always strong
             virtual bool        strong() const;
 
