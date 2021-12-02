@@ -21,7 +21,7 @@ namespace yack
 
         void pattern:: I_am(const void *addr) throw()
         {
-            *&coerce(*self) = addr;
+            *(void **)&self = (void*)addr;
         }
 
         size_t pattern:: emit_uuid(ios::ostream &fp) const

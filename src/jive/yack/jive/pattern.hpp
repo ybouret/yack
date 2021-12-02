@@ -65,7 +65,34 @@ namespace yack
 
             //__________________________________________________________________
             //
-            // methods
+            //! reload
+            //__________________________________________________________________
+            static pattern *load(ios::istream &);
+
+            //__________________________________________________________________
+            //
+            //! required conversion
+            //__________________________________________________________________
+            template <typename PATTERN> inline
+            PATTERN *as() throw()
+            {
+                assert(self); assert(uuid==PATTERN::mark); return (PATTERN *)self;
+            }
+
+            //__________________________________________________________________
+            //
+            //! required conversion
+            //__________________________________________________________________
+            template <typename PATTERN> inline
+            const PATTERN *as() const throw()
+            {
+                assert(self); assert(uuid==PATTERN::mark); return (const PATTERN *)self;
+            }
+
+
+            //__________________________________________________________________
+            //
+            // members
             //__________________________________________________________________
             const uint32_t      uuid; //!< identifier
             pattern            *next; //!< for list
