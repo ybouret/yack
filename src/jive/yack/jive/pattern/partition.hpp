@@ -54,6 +54,9 @@ namespace yack
             //! relative lhs / rhs
             static position compare(const domain *lhs, const domain *rhs) throw();
 
+            //! check ownership of byte
+            bool owns(const uint8_t) const throw();
+
             //__________________________________________________________________
             //
             // members
@@ -100,10 +103,13 @@ namespace yack
             //__________________________________________________________________
             void grow(domain *dom)           throw(); //!< grow with a single domain
             void grow(list_of<domain> &doms) throw(); //!< grow with other domains
+            void full();                              //!< set to 1 domain 0x00->0xff
 
             void add(const uint8_t);                  //!< grow( new domain(a)   )
             void add(const uint8_t, const uint8_t);   //!< grow( new domain(a,b) )
 
+            void sub(const uint8_t); //!< remove a byte
+            
             //! display
             friend std::ostream & operator<<(std::ostream &, const partition &);
             

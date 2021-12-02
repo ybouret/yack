@@ -48,6 +48,19 @@ YACK_UTEST(part)
         YACK_ASSERT(0xff==p.head->upper);
     }
 
+    {
+        p.full();
+        std::cerr << p << std::endl;
+        uint8_t arr[256];
+        for(size_t i=0;i<256;++i) arr[i] = uint8_t(i);
+        randomized::shuffle::data(arr,256,ran);
+        for(size_t i=0;i<256;++i)
+        {
+            p.sub(arr[i]);
+            std::cerr << p << std::endl;
+        }
+    }
+
 }
 YACK_UDONE()
 

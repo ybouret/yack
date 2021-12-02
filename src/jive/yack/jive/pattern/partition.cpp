@@ -38,6 +38,12 @@ namespace yack
             }
         }
 
+        bool domain::owns(const uint8_t value) const throw()
+        {
+            return lower<=value && value<=upper;
+        }
+
+
         domain::position domain::compare(const domain *lhs, const domain *rhs) throw()
         {
             assert(NULL!=lhs);
@@ -157,6 +163,23 @@ namespace yack
             return true;
         }
 
+        void partition:: full()
+        {
+            if(size<=0)
+            {
+                push_back( new domain(0x00,0xff) );
+            }
+            else
+            {
+                while(size>1)
+                {
+                    delete pop_back();
+                }
+                assert(1==size);
+                coerce(head->lower) = 0x00;
+                coerce(head->upper) = 0xff;
+            }
+        }
 
         void partition:: grow(domain *dom) throw()
         {
@@ -256,6 +279,43 @@ namespace yack
         void partition:: grow(list_of<domain> &doms) throw()
         {
             while(doms.size) grow(doms.pop_back());
+        }
+
+        void partition:: sub(const uint8_t value)
+        {
+            domain *dom = head;
+            while(dom && !(dom->owns(value))) dom=dom->next;
+            if(dom)
+            {
+                // owned by this domain
+                if(dom->lower>=dom->upper)
+                {
+                    // singulet
+                    delete pop(dom);
+                }
+                else
+                {
+                    if(value==dom->lower)
+                    {
+                        ++coerce(dom->lower);
+                    }
+                    else
+                    {
+                        if(value==dom->upper)
+                        {
+                            --coerce(dom->upper);
+                        }
+                        else
+                        {
+                            assert(dom->lower<value);
+                            assert(value<dom->upper);
+                            domain *nxt = new domain(value+1,dom->upper);
+                            coerce(dom->upper) = value-1;
+                            insert_after(dom,nxt);
+                        }
+                    }
+                }
+            }
         }
 
     }
