@@ -1,0 +1,69 @@
+
+//! \file
+
+#ifndef YACK_LINKED_PTR_INCLUDED
+#define YACK_LINKED_PTR_INCLUDED 1
+
+#include "yack/ptr/arc.hpp"
+#include "yack/object.hpp"
+
+namespace yack
+{
+
+
+    //__________________________________________________________________________
+    //
+    //! counted pointer of counted object
+    /**
+     * pointee must have void withhold(), bool liberate() and size_t quantity()
+     */
+    //__________________________________________________________________________
+    template <typename T>
+    class linked_ptr : public object, public arc_ptr<T>
+    {
+    public:
+        //______________________________________________________________________
+        //
+        // types and definitions
+        //______________________________________________________________________
+        typedef typename ptr<T>::type         type;         //!< alias
+        typedef typename ptr<T>::mutable_type mutable_type; //!< alias
+        using ptr<T>::pointee;
+
+
+        //______________________________________________________________________
+        //
+        // C++
+        //______________________________________________________________________
+
+        //! create new linked_ptr as node, take care of valid address
+        static inline linked_ptr *make(type *addr)
+        {
+            const arc_ptr<T> temp(addr);
+            return new linked_ptr(temp);
+        }
+
+        //! no-throw copy
+        inline linked_ptr(const linked_ptr &_) throw() : arc_ptr<T>(_), next(0), prev(0) {}
+
+        //! cleanup
+        inline virtual ~linked_ptr() throw() { }
+
+        //______________________________________________________________________
+        //
+        // extra members
+        //______________________________________________________________________
+        linked_ptr *next; //!< for list/pool
+        linked_ptr *prev; //!< for list
+
+
+    private:
+        YACK_DISABLE_ASSIGN(linked_ptr);
+        //! setup with valid address
+        inline linked_ptr(const arc_ptr<T> &user) throw() : arc_ptr<T>(user), next(0), prev(0) { }
+    };
+
+
+}
+
+#endif

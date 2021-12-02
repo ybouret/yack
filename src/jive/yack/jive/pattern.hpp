@@ -5,7 +5,7 @@
 
 #include "yack/jive/source.hpp"
 #include "yack/ios/serializable.hpp"
-#include "yack/data/list/cloneable.hpp"
+#include "yack/ptr/linked.hpp"
 
 namespace yack
 {
@@ -30,8 +30,7 @@ namespace yack
             //
             // interface
             //__________________________________________________________________
-            virtual pattern *clone() const = 0; //!< cloneable interface
-            
+
             //__________________________________________________________________
             //
             // methods
@@ -41,14 +40,16 @@ namespace yack
             pattern            *prev; //!< for list
             const void * const *self; //!< to retrieve
         protected:
+            explicit pattern(const uint32_t) throw(); //!< setup with uuid, self=0
+            void I_am(void*) throw();                 //!< set self to most derived class
 
         private:
             YACK_DISABLE_COPY_AND_ASSIGN(pattern);
         };
 
-        typedef arc_ptr<const pattern>       motif;    //!< alias
-        typedef cloneable_list_of<pattern>   patterns; //!< alias
-
+        typedef linked_ptr<const pattern> motif;    //!< alias
+        typedef cxx_list_of<motif>        motifs;   //!< alias
+        
     }
 }
 

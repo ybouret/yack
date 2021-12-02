@@ -2,7 +2,10 @@
 #include "yack/ptr/arc.hpp"
 #include "yack/ptr/shared.hpp"
 #include "yack/ptr/cstr.hpp"
+#include "yack/ptr/linked.hpp"
 #include "yack/counted.hpp"
+
+#include "yack/data/list/cxx.hpp"
 
 #include "yack/utest/run.hpp"
 #include "yack/apex.hpp"
@@ -32,10 +35,13 @@ namespace
 
 YACK_UTEST(memory_ptr)
 {
+    randomized::rand_ ran;
+
     YACK_SIZEOF(auto_ptr<dummy>);
     YACK_SIZEOF(arc_ptr<dummy>);
     YACK_SIZEOF(shared_ptr<dummy>);
     YACK_SIZEOF(counted_ptr<dummy>);
+    YACK_SIZEOF(linked_ptr<dummy>);
 
     std::cerr << "NIL" << std::endl;
     std::cerr << ptr_::nil << std::endl;
@@ -89,6 +95,28 @@ YACK_UTEST(memory_ptr)
     {
         cstr_ptr p = "Hello, World!";
         std::cerr << "p=" << p << std::endl;
+    }
+
+
+    std::cerr << "linked_ptr" << std::endl;
+    {
+        typedef linked_ptr<dummy> node_type;
+        cxx_list_of< node_type > L;
+        for(size_t i=0;i<10;++i)
+        {
+            if( ran.choice() )
+            {
+                L.push_back( node_type::make( new dummy(i) ) );
+            }
+            else
+            {
+                L.push_front( node_type::make( new dummy(i) ) );
+            }
+        }
+        for(const node_type *node=L.head;node;node=node->next)
+        {
+            std::cerr << **node << std::endl;
+        }
     }
 }
 YACK_UDONE()
