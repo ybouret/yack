@@ -1,4 +1,5 @@
 #include "yack/jive/pattern/basic/single.hpp"
+#include "yack/jive/pattern/first-bytes.hpp"
 
 namespace yack
 {
@@ -55,6 +56,12 @@ namespace yack
                 // EOF
                 return false;
             }
+        }
+
+        void single:: firsts(first_bytes &fc) const
+        {
+            assert(0==(*fc).size);
+            fc.add(code);
         }
 
     }

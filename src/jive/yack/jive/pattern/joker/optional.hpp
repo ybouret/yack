@@ -33,9 +33,8 @@ namespace yack
             //__________________________________________________________________
             //! always accepted
             virtual bool accept(YACK_JIVE_PATTERN_ARGS) const;
-            //! never strong
-            virtual bool strong() const;
-
+            virtual bool strong() const;//!< never strong
+            
 
             virtual const char *class_uid() const throw();          //!< clid
             virtual size_t      serialize(ios::ostream &fp) const;  //!< uuid+jk

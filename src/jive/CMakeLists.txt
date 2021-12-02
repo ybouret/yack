@@ -14,6 +14,14 @@ set(jive_pattern ${jive_pattern_decl} ${jive_pattern_srcs})
 SOURCE_GROUP(jive/pattern FILES ${jive_pattern})
 install( FILES ${jive_pattern_decl} DESTINATION include/yack/jive/pattern )
 
+#pattern/hood
+file(GLOB jive_pattern_hood_decl yack/jive/pattern/hood/*.hpp)
+file(GLOB jive_pattern_hood_srcs yack/jive/pattern/hood/*.cpp)
+set(jive_pattern_hood ${jive_pattern_hood_decl} ${jive_pattern_hood_srcs})
+SOURCE_GROUP(jive/pattern/hood FILES ${jive_pattern_hood})
+install( FILES ${jive_pattern_hood_decl} DESTINATION include/yack/jive/pattern/hood )
+
+
 #pattern/basic
 file(GLOB jive_pattern_basic_decl yack/jive/pattern/basic/*.hpp)
 file(GLOB jive_pattern_basic_srcs yack/jive/pattern/basic/*.cpp)
@@ -37,7 +45,7 @@ install( FILES ${jive_pattern_logic_decl} DESTINATION include/yack/jive/pattern/
 
 add_library(yack-jive STATIC
 ${jive_main}
-${jive_pattern} ${jive_pattern_basic} ${jive_pattern_joker} ${jive_pattern_logic}
+${jive_pattern}  ${jive_pattern_hood} ${jive_pattern_basic} ${jive_pattern_joker} ${jive_pattern_logic}
 )
 
 install( TARGETS yack-jive ARCHIVE DESTINATION lib )

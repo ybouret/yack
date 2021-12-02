@@ -40,8 +40,13 @@ namespace yack
             //__________________________________________________________________
             //! accept is one char matching code
             virtual bool        accept(YACK_JIVE_PATTERN_ARGS) const;
+
             //! always strong
             virtual bool        strong() const;
+
+            //! one domain
+            virtual void   firsts(first_bytes &) const;
+
 
             //__________________________________________________________________
             //

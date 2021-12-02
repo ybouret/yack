@@ -19,7 +19,10 @@ namespace yack
             return *jk;
         }
 
-      
+        void joker:: firsts(first_bytes &fc) const
+        {
+            jk->firsts(fc);
+        }
     }
 
 }

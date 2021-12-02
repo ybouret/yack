@@ -12,6 +12,8 @@ namespace yack
     namespace jive
     {
 
+        class first_bytes;
+
         //! arguments for accept routine
 #define YACK_JIVE_PATTERN_ARGS source &src, token &tkn
 
@@ -47,8 +49,12 @@ namespace yack
              */
             virtual bool   accept(YACK_JIVE_PATTERN_ARGS) const = 0;
 
-            //! not empty token are accepted
+            //! true if not empty token are accepted
             virtual bool   strong() const                       = 0;
+
+            //! fill first bytes
+            virtual void   firsts(first_bytes &) const          = 0;
+
 
             //__________________________________________________________________
             //

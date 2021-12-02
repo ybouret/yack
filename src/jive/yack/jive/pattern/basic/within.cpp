@@ -1,4 +1,5 @@
 #include "yack/jive/pattern/basic/within.hpp"
+#include "yack/jive/pattern/first-bytes.hpp"
 
 namespace yack
 {
@@ -64,6 +65,11 @@ namespace yack
             }
         }
 
+        void within:: firsts(first_bytes &fc) const
+        {
+            assert(0==(*fc).size);
+            fc.add(lower,upper);
+        }
     }
 
 }

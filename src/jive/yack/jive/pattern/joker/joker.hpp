@@ -23,8 +23,8 @@ namespace yack
             // methods
             //__________________________________________________________________
             const pattern & operator*() const throw(); //!< get joker
+            virtual void firsts(first_bytes &) const;  //!< forward
 
-            
 
 
             //__________________________________________________________________
