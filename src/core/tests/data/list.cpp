@@ -1,6 +1,7 @@
 
 #include "yack/data/list/raw.hpp"
 #include "yack/data/list/concrete.hpp"
+#include "yack/data/list/cloneable.hpp"
 #include "yack/data/small/node.hpp"
 #include "yack/utest/run.hpp"
 #include "yack/system/offset.hpp"
@@ -26,7 +27,9 @@ namespace
         inline  XNode() throw() : next(0), prev(0) {}
         inline ~XNode() throw() { assert(0==next); assert(0==prev); }
         inline  XNode(const XNode &) throw() : next(0), prev(0) {}
-        
+
+        XNode *clone() const { return new XNode(); }
+
     private:
         YACK_DISABLE_ASSIGN(XNode);
     };
@@ -219,7 +222,23 @@ YACK_UTEST(data_list)
     std::cerr << "L=";    display(L);
 
     L.sort(comparison::increasing<int>);
-    
+
+
+    {
+        std::cerr << "cxx_list/ops" << std::endl;
+        cxx_list_of<XNode> xl;
+        std::cerr << "  push" << std::endl;
+        for(size_t i=1+ran.leq(1000);i>0;--i)
+        {
+            if(ran.choice()) xl.push_back(  new XNode() );
+            else             xl.push_front( new XNode() );
+        }
+
+        std::cerr << "  copy" << std::endl;
+        {
+            cxx_list_of<XNode> xlc(xl);
+        }
+    }
 
 }
 YACK_UDONE()

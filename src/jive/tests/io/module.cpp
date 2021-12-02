@@ -10,10 +10,10 @@ YACK_UTEST(module)
 {
     if(argc>1)
     {
-        const string filename = argv[1];
-        auto_ptr<jive::module> m =  (filename != YACK_STDIN) ? jive::module::open_file(argv[1]) : jive::module::open_stdin();
+        const string           filename = argv[1];
+        auto_ptr<jive::module> m        =  (filename != YACK_STDIN) ? jive::module::open_file(argv[1]) : jive::module::open_stdin();
         std::cerr << "opened " << m << std::endl;
-        jive::character *ch; //= new jive::character(*m,'a');
+        jive::character *ch;
         while( NULL != (ch = m->get()) )
         {
             const auto_ptr<jive::character> p = ch;

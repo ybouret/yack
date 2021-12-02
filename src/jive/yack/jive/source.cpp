@@ -42,8 +42,7 @@ namespace yack
 
         void source:: store_copy(const token &t)
         {
-            token tmp(t);
-            store(tmp);
+            cache.merge_front_copy(t);
         }
 
         const character *source:: peek()
