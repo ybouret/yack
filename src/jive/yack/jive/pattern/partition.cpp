@@ -2,6 +2,7 @@
 #include "yack/signs.hpp"
 #include <iostream>
 #include "yack/ios/ascii/hybrid.hpp"
+#include "yack/type/utils.hpp"
 
 namespace yack
 {
@@ -15,6 +16,8 @@ namespace yack
 
         domain:: domain(const uint8_t v) throw() :
         object(),
+        next(0),
+        prev(0),
         lower(v),
         upper(v)
         {
@@ -22,6 +25,8 @@ namespace yack
 
         domain:: domain(const uint8_t a, const uint8_t b) throw():
         object(),
+        next(0),
+        prev(0),
         lower(a),
         upper(b)
         {
@@ -32,6 +37,48 @@ namespace yack
                 case __zero__: assert(lower==upper); break;
             }
         }
+
+        domain::position domain::compare(const domain *lhs, const domain *rhs) throw()
+        {
+            assert(NULL!=lhs);
+            assert(NULL!=rhs);
+            if(lhs->upper <= rhs->lower)
+            {
+                switch(rhs->lower - lhs->upper)
+                {
+                    case 0:
+                    case 1:
+                        return overlap;
+                    default:
+                        break;
+                }
+                return before;
+            }
+            else
+            {
+                assert(lhs->upper>rhs->lower);
+                if(rhs->upper <= lhs->lower)
+                {
+                    switch(lhs->lower-rhs->upper)
+                    {
+                        case 0:
+                        case 1:
+                            return overlap;
+                        default:
+                            break;
+                    }
+                    return after;
+                }
+                else
+                {
+                    assert(lhs->upper>rhs->lower);
+                    assert(rhs->upper>lhs->lower);
+                    return overlap;
+                }
+            }
+
+        }
+
 
 
         static inline void display_byte(std::ostream &os, const uint8_t b)
@@ -50,7 +97,7 @@ namespace yack
 
                 os << '[';
                 display_byte(os,d.lower);
-                os << ':';
+                os << '-';
                 display_byte(os,d.upper);
                 os << ']';
             }
@@ -81,58 +128,114 @@ namespace yack
         }
 
 
+        bool partition:: is_valid() const throw()
+        {
+            for(const domain *dom=head;dom;dom=dom->next)
+            {
+                if(dom->lower>dom->upper)
+                {
+                    std::cerr << "invalid domain " << *dom << std::endl;
+                    return false;
+                }
+
+                if(dom->next)
+                {
+                    if( (dom->next->lower) <= (dom->upper))
+                    {
+                        std::cerr << "overlapping level-1 " << *dom << " " << *(dom->next) << std::endl;
+                        return false;
+                    }
+
+                    if(dom->next->lower-dom->upper<=1)
+                    {
+                        std::cerr << "overlapping level-2 " << *dom << " " << *(dom->next) << std::endl;
+                        return false;
+                    }
+                }
+            }
+
+            return true;
+        }
+
+
         void partition:: grow(domain *dom) throw()
         {
             assert(dom);
             if(size<=0)
             {
-                push_back(dom);
+                //--------------------------------------------------------------
+                //
+                // first item
+                //
+                //--------------------------------------------------------------
+                push_back(dom); assert(is_valid());
             }
             else
             {
-
-                if(dom->upper <= head->lower)
+                if( (dom->upper) <= (head->lower) )
                 {
-                    //__________________________________________________________
+                    //----------------------------------------------------------
                     //
                     // merge with head of push_front
-                    //__________________________________________________________
-                    switch((head->lower)-(dom->upper))
+                    //
+                    //----------------------------------------------------------
+                    switch( (head->lower) - (dom->upper) )
                     {
                         case 0:
-                        case 1:
-                            coerce(head->lower)=dom->lower;
-                            delete dom;
-                            break;
-                        default:
-                            push_front(dom);
+                        case 1:  coerce(head->lower) = dom->lower; delete dom; assert(is_valid()); break;
+                        default: push_front(dom); assert(is_valid()); break;
                     }
                 }
                 else
                 {
-                    assert(dom->upper > head->lower);
-
-                    if(tail->upper<=dom->lower)
+                    if((tail->upper) <= (dom->lower))
                     {
-                        //______________________________________________________
+                        //------------------------------------------------------
                         //
-                        // merge with tail or push_back
-                        //______________________________________________________
+                        // merge with tail of push_back
+                        //
+                        //------------------------------------------------------
                         switch((dom->lower) - (tail->upper))
                         {
                             case 0:
-                            case 1:
-                                coerce(tail->upper) = dom->upper;
-                                delete dom;
-                                break;
-
-                            default:
-                                push_back(dom);
+                            case 1:  coerce(tail->upper) = dom->upper; delete dom; assert(is_valid()); break;
+                            default: push_back(dom); assert(is_valid()); break;
                         }
                     }
                     else
                     {
+                        //------------------------------------------------------
+                        // spare prolog
+                        //------------------------------------------------------
+                        domains prolog;
+                        while( size && domain::before == domain::compare(head,dom) )
+                        {
+                            prolog.push_back( pop_front() );
+                        }
 
+                        //------------------------------------------------------
+                        // spare epilog
+                        //------------------------------------------------------
+                        domains epilog;
+                        while(size && domain::after == domain::compare(tail,dom) )
+                        {
+                            epilog.push_front( pop_back() );
+                        }
+
+                        //------------------------------------------------------
+                        // merge
+                        //------------------------------------------------------
+                        if(size)
+                        {
+                            coerce(dom->lower) = min_of(dom->lower,head->lower);
+                            coerce(dom->upper) = max_of(dom->upper,tail->upper);
+                            release();
+                        }
+
+                        swap_with(prolog);
+                        push_back(dom);
+                        merge_back(epilog);
+                        assert(is_valid());
                     }
                 }
 
@@ -149,6 +252,11 @@ namespace yack
             grow( new domain(lo,up) );
         }
 
+
+        void partition:: grow(list_of<domain> &doms) throw()
+        {
+            while(doms.size) grow(doms.pop_back());
+        }
 
     }
 

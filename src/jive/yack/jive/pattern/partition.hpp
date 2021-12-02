@@ -25,9 +25,18 @@ namespace yack
             virtual ~domain() throw();
             explicit domain(const uint8_t) throw();
             explicit domain(const uint8_t, const uint8_t) throw();
-            
 
             friend std::ostream & operator<<(std::ostream &, const domain &);
+
+            enum position
+            {
+                before,
+                overlap,
+                after
+            };
+
+            static position compare(const domain *lhs, const domain *rhs) throw();
+
 
         private:
             YACK_DISABLE_COPY_AND_ASSIGN(domain);
@@ -44,6 +53,7 @@ namespace yack
             virtual ~partition() throw();
 
             void grow(domain *dom) throw();
+            void grow(list_of<domain> &doms) throw();
 
             void add(const uint8_t);
             void add(const uint8_t, const uint8_t);
@@ -53,6 +63,7 @@ namespace yack
 
         private:
             YACK_DISABLE_COPY_AND_ASSIGN(partition);
+            bool is_valid() const throw();
         };
 
 
