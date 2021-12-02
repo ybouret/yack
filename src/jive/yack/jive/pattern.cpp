@@ -1,5 +1,6 @@
 
 #include "yack/jive/pattern.hpp"
+#include "yack/ios/encoder.hpp"
 
 namespace yack
 {
@@ -18,11 +19,15 @@ namespace yack
 
         }
 
-        void pattern:: I_am(void *addr) throw()
+        void pattern:: I_am(const void *addr) throw()
         {
             *&coerce(*self) = addr;
         }
-        
+
+        size_t pattern:: emit_uuid(ios::ostream &fp) const
+        {
+            return ios::encoder::emit(fp,uuid);
+        }
     }
 
 }
