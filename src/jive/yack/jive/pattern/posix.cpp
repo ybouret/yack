@@ -29,100 +29,93 @@ namespace yack
             return new within('0','9');
         }
 
-#if 0
-        Pattern * posix:: alnum()
+        pattern * posix:: alnum()
         {
-            auto_ptr<Or> p = Or::Create();
+            auto_ptr<op_or> p = new op_or();
             p->push_back( lower() );
             p->push_back( upper() );
             p->push_back( digit() );
-            p->rework();
-            return p.yield();
+            return pattern::optimize( p.yield() );
         }
 
-        Pattern * posix:: word()
+        pattern * posix:: word()
         {
-            auto_ptr<Or> p = Or::Create();
+            auto_ptr<op_or> p = new op_or();
             p->push_back( lower() );
             p->push_back( upper() );
             p->push_back( digit() );
             p->add(  '_'  );
-            p->rework();
-            return p.yield();
+            return pattern::optimize( p.yield() );
         }
 
-        Pattern * posix:: xdigit()
+        pattern * posix:: xdigit()
         {
-            auto_ptr<Or> p = Or::Create();
+            auto_ptr<op_or> p = new op_or();
             p->push_back( digit() );
             p->add('a','f');
             p->add('A','F');
-            p->rework();
-            return p.yield();
+            return pattern::optimize( p.yield() );
         }
 
-        Pattern * posix:: blank()
+        pattern * posix:: blank()
         {
-            return Logical::Among(" \t");
+            static const char data[] = " \t";
+            return logical::among(data,sizeof(data)-1);
         }
 
-        Pattern * posix:: space()
+        pattern * posix:: space()
         {
-            return Logical::Among(" \t\n\r\v\f");
+            return logical::among(" \t\n\r\v\f");
         }
 
-        Pattern * posix::punct()
+        pattern * posix::punct()
         {
-            return Logical::Among("][!\"#$%&'()*+,./:;<=>?@\\^_`{|}~-");
+            return logical::among("][!\"#$%&'()*+,./:;<=>?@\\^_`{|}~-");
         }
 
-        static inline void __fill_endl( Pattern::List &ops )
+        static inline void __fill_endl( patterns &ops )
         {
-            ops.push_back( Single::Create('\n') );
-            ops.push_back( Single::Create('\r') );
-            ops.push_back( Logical::Equal("\r\n") );
+            ops.push_back( new single('\n') );
+            ops.push_back( new single('\r') );
+            ops.push_back( logical::equal("\r\n") );
         }
 
-        Pattern * posix:: endl()
+        pattern * posix:: endl()
         {
-            auto_ptr<Or> p = Or::Create();
+            auto_ptr<op_or> p = new op_or();
             __fill_endl(*p);
-            p->rework();
-            return p.yield();
+            return pattern::optimize( p.yield() );
         }
 
-        Pattern * posix:: dot()
+        pattern * posix:: dot()
         {
-            auto_ptr<None> p = None::Create();
+            auto_ptr<op_none> p = new op_none();
             __fill_endl(*p);
-            p->rework();
-            return p.yield();
+            return pattern::optimize( p.yield() );
         }
 
-        Pattern * posix:: core()
+        pattern * posix:: core()
         {
-            auto_ptr<Or> p = Or::Create();
+            auto_ptr<op_or> p = new op_or();
             p->add( 0x20 );
             p->add( 0x21 );
             p->add( 0x23,0x26 );
             p->add( 0x28,0x5B );
             p->add( 0x5D,0x7F );
-            p->rework();
-            return p.yield();
+            return pattern::optimize( p.yield() );
         }
 
         static const char __vowels__[] = "aeiouyAEIOUY";
 
-        Pattern * posix:: vowel()
+        pattern * posix:: vowel()
         {
-            return Logical::Among(__vowels__);
+            return logical::among(__vowels__);
         }
 
-        Pattern * posix:: consonant()
+        pattern * posix:: consonant()
         {
-            return Logical::Avoid(__vowels__);
+            return logical::avoid(__vowels__);
         }
-#endif
     }
 
 }

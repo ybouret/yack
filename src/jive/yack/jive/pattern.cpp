@@ -43,7 +43,46 @@ namespace yack
         {
             return !pattern::are_same(lhs,rhs);
         }
+
+        void pattern:: saveGV(ios::ostream &fp) const
+        {
+            ios::vizible::digraph_init(fp,"G");
+            encode(fp);
+            ios::vizible::digraph_quit(fp);
+        }
+
     }
 
 }
 
+#include "yack/ios/ocstream.hpp"
+
+namespace yack
+{
+    namespace jive
+    {
+
+        template <typename FILENAME> static inline
+        void doGV(const pattern *p, const FILENAME &filename)
+        {
+            {
+                ios::ocstream fp(filename);
+                p->saveGV(fp);
+            }
+
+            ios::vizible::render(filename);
+        }
+
+        void pattern:: makeGV(const string &filename) const
+        {
+            doGV(this,filename);
+        }
+
+        void pattern:: makeGV(const char *filename) const
+        {
+            doGV(this,filename);
+        }
+
+    }
+
+}

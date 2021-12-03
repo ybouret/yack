@@ -9,6 +9,7 @@ YACK_UTEST_DECL(8)
     YACK_UTEST(pattern);
     YACK_UTEST(spec);
     YACK_UTEST(viz);
+    YACK_UTEST(posix);
 }
 YACK_UTEST_EXEC()
 

@@ -21,6 +21,12 @@ namespace yack
             //! append a new pattern
             logical & operator<<( pattern *p ) throw();
 
+            //! append a new single
+            logical & add(const uint8_t);
+
+            //! append a new range
+            logical & add(const uint8_t, const uint8_t);
+
             //__________________________________________________________________
             //
             // interface

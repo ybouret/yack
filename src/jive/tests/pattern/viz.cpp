@@ -9,16 +9,7 @@ namespace
 {
     static inline void render(const jive::pattern &p, const char *filename)
     {
-        {
-            ios::ocstream fp(filename);
-            p.digraph_init(fp, "G");
-            p.encode(fp);
-            p.digraph_quit(fp);
-        }
-
-        {
-            ios::vizible::render(filename);
-        }
+        p.makeGV(filename);
     }
 }
 

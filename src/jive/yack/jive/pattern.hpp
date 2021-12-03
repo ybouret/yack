@@ -64,6 +64,9 @@ namespace yack
             // non virtual interface
             //__________________________________________________________________
             bool           feeble() const; //!< !strong(), empty token may be accepted!
+            void           saveGV(ios::ostream &) const; //!< encode with prolog/epilog
+            void           makeGV(const string &) const; //!< save/render
+            void           makeGV(const  char  *) const; //!< save/render
 
             //__________________________________________________________________
             //
