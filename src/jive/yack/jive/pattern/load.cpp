@@ -49,6 +49,12 @@ namespace yack
                     return new within(lower,upper);
                 }
 
+                case except::mark:
+                {
+                    char C = 0; if(!fp.query(C)) throw exception("%smissing code for %s",fn,except::clid);
+                    return new except(C);
+                }
+
                     //----------------------------------------------------------
                     //
                     // joker
@@ -79,8 +85,9 @@ namespace yack
                     // logical
                     //
                     //----------------------------------------------------------
-                case op_and::mark: return load_op<op_and>(fp);
-                case op_or::mark:  return load_op<op_or>(fp);
+                case op_and:: mark:  return load_op<op_and>(fp);
+                case op_or::  mark:  return load_op<op_or>(fp);
+                case op_none::mark:  return load_op<op_none>(fp);
 
                 default:
                     break;
