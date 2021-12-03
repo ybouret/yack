@@ -61,9 +61,10 @@ namespace yack
 
         void except:: firsts(first_bytes &fc) const
         {
-            assert(0==fc.size);
-            fc.all();
-            fc -= code;
+            first_bytes sub;
+            sub.all();
+            sub -= code;
+            fc << sub;
         }
 
         bool except:: is_same_than(const except *other) const throw()

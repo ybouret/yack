@@ -23,6 +23,11 @@ YACK_UTEST(spec)
         q->serialize(efp);
         r->serialize(xfp);
 
+        {
+            p->makeGV("among.dot");
+            q->makeGV("equal.dot");
+            q->makeGV("avoid.dot");
+        }
     }
 }
 YACK_UDONE()

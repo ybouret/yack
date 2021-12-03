@@ -51,9 +51,13 @@ namespace yack
             return false;
         }
 
-        void op_and:: firsts(first_bytes &) const
+        void op_and:: firsts(first_bytes &fc) const
         {
-
+            for(const pattern *m=head;m;m=m->next)
+            {
+                m->firsts(fc);
+                if(m->strong()) break;
+            }
         }
         
         void op_and:: encode(ios::ostream &fp) const

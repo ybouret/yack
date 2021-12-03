@@ -53,7 +53,7 @@ namespace yack
             //! true if not empty token are accepted
             virtual bool   strong() const                       = 0;
 
-            //! fill first bytes
+            //! collect first bytes
             virtual void   firsts(first_bytes &) const          = 0;
 
             //! encode as GraphViz

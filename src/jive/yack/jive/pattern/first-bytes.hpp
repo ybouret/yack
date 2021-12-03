@@ -106,7 +106,7 @@ namespace yack
             first_bytes & operator<<(list_of<domain> &doms) throw(); //!< include by stealing domains
             first_bytes & operator-=(const uint8_t);                 //!< exclude single byte
             first_bytes & operator-=(list_of<domain> &doms);         //!< exclude all (stolen) domains
-            
+            first_bytes & inverse();                                 //!< all - this
             
             //! display
             friend std::ostream & operator<<(std::ostream &, const first_bytes &);

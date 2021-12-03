@@ -13,6 +13,8 @@ YACK_UTEST(firsts)
     jive::first_bytes p;
     jive::domains     doms;
 
+
+
     for(size_t iter=0;iter<4;++iter)
     {
         p.release();
@@ -51,6 +53,11 @@ YACK_UTEST(firsts)
         }
     }
 
+    p.release();
+    p << new jive::domain('a','z');
+    p << new jive::domain('A','Z');
+    std::cerr << p << std::endl;
+    std::cerr << p.inverse() << std::endl;
 }
 YACK_UDONE()
 

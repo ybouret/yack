@@ -24,6 +24,8 @@ namespace yack
             // methods
             //__________________________________________________________________
             void     no_multiple() throw(); //!< remove multiple patterns
+            void     smart_merge();         //!< out of order merging
+            void     rewrite();             //!< no multiple/smart merge
             
             //__________________________________________________________________
             //

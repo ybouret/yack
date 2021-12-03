@@ -1,4 +1,5 @@
 #include "yack/jive/pattern/logic/or.hpp"
+#include "yack/jive/pattern/first-bytes.hpp"
 
 namespace yack
 {
@@ -22,18 +23,37 @@ namespace yack
 
         bool op_or:: strong()  const
         {
-            return false;
+            for(const pattern *m=head;m;m=m->next)
+            {
+                if(m->feeble()) return false; //!< may return empty
+            }
+            return true;
         }
 
         void op_or:: firsts(first_bytes &fc) const
         {
-
+            for(const pattern *m=head;m;m=m->next)
+            {
+                m->firsts(fc);
+            }
         }
 
         bool op_or:: accept(YACK_JIVE_PATTERN_ARGS) const
         {
+            bool result = false;
+            for(const pattern *m=head;m;m=m->next)
+            {
+                if(m->accept(src,tkn))
+                {
+                    result = true;
+                    if(tkn.size<=0)
+                        continue; // give a chance to another one
+                    else
+                        break;    // got data
+                }
+            }
 
-            return false;
+            return result;
         }
 
         void op_or:: encode(ios::ostream &fp) const

@@ -352,6 +352,14 @@ namespace yack
         }
 
 
+        first_bytes & first_bytes:: inverse()
+        {
+            domains   content;
+            swap_with(content);
+            all();
+            return (*this -= content);
+        }
+
         first_bytes:: ~first_bytes() throw()
         {
         }

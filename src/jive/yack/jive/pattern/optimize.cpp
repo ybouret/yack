@@ -43,7 +43,7 @@ namespace yack
         pattern * optimized(op_or *p)
         {
             auto_ptr<pattern> q(p);
-            p->no_multiple();
+            p->rewrite();
 
             if(1==p->size)
             {
@@ -60,7 +60,7 @@ namespace yack
         pattern * optimized(op_none *p)
         {
             auto_ptr<pattern> q(p);
-            p->no_multiple();
+            p->rewrite();
 
             return q.yield();
         }
@@ -70,14 +70,28 @@ namespace yack
         static inline pattern *optimized_logical(pattern *p)
         {
             auto_ptr<OP> q(p->as<OP>());
+
+            // recursive optimization
             {
                 patterns ops;
                 while(q->size)
                 {
-                    ops.push_back( pattern::optimize(q->pop_front()) );
+                    pattern *r = pattern::optimize(q->pop_front());
+                    if(OP::mark==r->uuid)
+                    {
+                        ops.merge_back( *(r->as<OP>()) );
+                        delete r;
+                    }
+                    else
+                    {
+                        ops.push_back(r);
+                    }
                 }
                 q->swap_with(ops);
             }
+
+
+
             return optimized( q.yield() );
         }
 

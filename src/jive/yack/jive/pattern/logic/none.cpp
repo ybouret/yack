@@ -1,6 +1,7 @@
 
 
 #include "yack/jive/pattern/logic/none.hpp"
+#include "yack/jive/pattern/first-bytes.hpp"
 
 namespace yack
 {
@@ -24,18 +25,44 @@ namespace yack
 
         bool op_none:: strong()  const
         {
-            return false;
+            return true;
         }
 
         void op_none:: firsts(first_bytes &fc) const
         {
-
+            first_bytes sub;
+            for(const pattern *m=head;m;m=m->next)
+            {
+                m->firsts(sub);
+            }
+            fc << sub.inverse();
         }
 
         bool op_none:: accept(YACK_JIVE_PATTERN_ARGS) const
         {
+            // try to reject all
+            for(const pattern *m=head;m;m=m->next)
+            {
+                if(m->accept(src,tkn))
+                {
+                    src.store(tkn);
+                    return false;
+                }
+            }
 
-            return false;
+            // check candidate
+            assert(0==tkn.size);
+            if(src.peek())
+            {
+                tkn.push_back( src.query() );
+                return true;
+            }
+            else
+            {
+                return false; // EOF
+            }
+
+
         }
 
         void op_none:: encode(ios::ostream &fp) const
