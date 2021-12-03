@@ -26,10 +26,10 @@ namespace yack
         class tags : public singleton<tags>, public tags_
         {
         public:
-            typedef pattern * (*pcreator)();
-            typedef suffix_map<string,pcreator> pfactory;
-            static const at_exit::longevity life_time = 2; //!< singleton life time
-            static const char               call_sign[];   //!< singleton call sign
+            typedef pattern *                 (*pcreator)(); //!< posix::NAME() prototype
+            typedef suffix_map<string,pcreator> pfactory;    //!< map NAME to posix::NAME()
+            static const at_exit::longevity life_time = 2;   //!< singleton life time
+            static const char               call_sign[];     //!< singleton call sign
 
 
             static string *make(const char *buffer, const size_t buflen); //!< make/create
@@ -41,16 +41,14 @@ namespace yack
 
             static void gv(); //!< save render in jive-tags.[dot|png]
 
-            static pfactory & factory();
-            
+            const pfactory pdb; //!< database of pattern creator
 
         private:
             YACK_DISABLE_COPY_AND_ASSIGN(tags);
             friend class singleton<tags>;
             virtual ~tags() throw();
             explicit tags() throw();
-            pfactory pdb;
-
+            void     setup_pdb();
         };
     }
 }

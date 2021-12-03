@@ -15,6 +15,7 @@ namespace yack
 
         tags:: tags() throw() : singleton<tags>(), tags_(), pdb()
         {
+            setup_pdb();
         }
 
         string * tags::make(const char *buffer, const size_t buflen)

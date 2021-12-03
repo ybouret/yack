@@ -48,7 +48,8 @@ namespace yack
             // query
             //
             //------------------------------------------------------------------
-            static pattern *create(const string &);
+            static pattern *create(const string &); //!< from database
+            static pattern *create(const char   *); //!< from database
 
         };
 

@@ -4,7 +4,14 @@
 
 using namespace yack;
 
-#define YPOSIX(NAME) do { const auto_ptr<jive::pattern> p = jive::posix::NAME(); p->makeGV( #NAME ".dot" ); } while(false)
+#define YPOSIX(NAME) \
+do { \
+/**/ const auto_ptr<jive::pattern> p = jive::posix::NAME();\
+/**/ p->makeGV( #NAME ".dot" ); \
+/**/ const auto_ptr<jive::pattern> q = jive::posix::create(#NAME);\
+/**/ YACK_CHECK( *q == *p );\
+} \
+while(false)
 
 YACK_UTEST(posix)
 {
@@ -24,9 +31,7 @@ YACK_UTEST(posix)
     YPOSIX(core);
     YPOSIX(vowel);
     YPOSIX(consonant);
-
-    jive::tags::factory();
-
+    
 
 
 }

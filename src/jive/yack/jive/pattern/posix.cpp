@@ -132,15 +132,12 @@ namespace yack
 #define YPOSIX(NAME) \
 /**/  do { \
 /**/    const char name[] = #NAME;\
-/**/    if( !pmap.tree.insert(posix::NAME,name,sizeof(name)-1)) throw exception("unable to use %s",name);\
+/**/    if( ! coerce(pdb).tree.insert(posix::NAME,name,sizeof(name)-1)) throw exception("unable to use %s",name);\
 /**/  } while(false)
 
-        tags::pfactory & tags:: factory()
+        void tags:: setup_pdb()
         {
-            static pfactory &pmap = instance().pdb;
-            static bool      init = true;
-            if(init)
-            {
+            
                 YPOSIX(lower);
                 YPOSIX(upper);
                 YPOSIX(alpha);
@@ -157,19 +154,26 @@ namespace yack
                 YPOSIX(core);
                 YPOSIX(vowel);
                 YPOSIX(consonant);
-                pmap.tree.gv("posix.dot");
+                pdb.tree.gv("posix.dot");
                 ios::vizible::render("posix.dot");
-                init = false;
-            }
-            return pmap;
+            
         }
 
         pattern * posix::create(const string &id)
         {
-            static const tags::pfactory & pfac = tags:: factory();
-
-            return 0;
+            static const tags::pfactory & db = tags::instance().pdb;
+            const tags::pcreator         *mk = db.search(id);
+            if(!mk) throw exception("no posix::%s",id());
+            return (*mk)();
         }
+        
+        pattern * posix::create(const char *s)
+        {
+            const string _(s);
+            return create(_);
+        }
+
+        
     }
 
 }
