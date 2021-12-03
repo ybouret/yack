@@ -17,19 +17,19 @@ namespace yack
 
         void bank:: no_multiple() throw()
         {
-            motifs temp;
+            patterns temp;
             while(size)
             {
                 bool found = false;
-                for(const motif *m=temp.head;m;m=m->next)
+                for(const pattern *m=temp.head;m;m=m->next)
                 {
-                    if( **m == **head )
+                    if( *m == *head )
                     {
                         found = true;
                         break;
                     }
                 }
-                motif *mine = pop_front();
+                pattern *mine = pop_front();
                 if(found)
                 {
                     delete mine;

@@ -8,20 +8,14 @@ namespace yack
     namespace jive
     {
 
-        pattern *logical:: equal(const char *buff, size_t size)
+        pattern *logical:: equal(const char *buff, const size_t size)
         {
-            assert(yack_good(buff,size));
-            auto_ptr<logical> p = new op_and();
-            while(size-- > 0)
-            {
-                (*p) << new single( *(buff++) );
-            }
-            return optimize(p.yield());
+            return fill(new op_and(),buff,size);
         }
 
         pattern * logical:: equal(const char *buff)
         {
-            return equal(buff,buff?0:strlen(buff));
+            return equal(buff,buff?strlen(buff):0);
         }
 
         pattern * logical:: equal(const string &s)

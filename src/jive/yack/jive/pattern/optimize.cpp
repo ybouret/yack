@@ -30,10 +30,12 @@ namespace yack
             auto_ptr<pattern> q(p);
             if(1==p->size)
             {
-                
+                return p->pop_back();
             }
-
-            return q.yield();
+            else
+            {
+                return q.yield();
+            }
         }
 
         //! optimize after optimized_logical
@@ -43,7 +45,14 @@ namespace yack
             auto_ptr<pattern> q(p);
             p->no_multiple();
 
-            return q.yield();
+            if(1==p->size)
+            {
+                return p->pop_back();
+            }
+            else
+            {
+                return q.yield();
+            }
         }
 
         //! optimize after optimized_logical
@@ -56,16 +65,18 @@ namespace yack
             return q.yield();
         }
 
-        // optime motifs and return corresponding optimized
+        // optimize operands and return corresponding typed optimized
         template <typename OP>
         static inline pattern *optimized_logical(pattern *p)
         {
             auto_ptr<OP> q(p->as<OP>());
-            for(motif *m=q->head;m;m=m->next)
             {
-                pattern                *source = & coerce(**m);
-                arc_ptr<const pattern>  target = pattern::optimize(source);
-                *m = target;
+                patterns ops;
+                while(q->size)
+                {
+                    ops.push_back( pattern::optimize(q->pop_front()) );
+                }
+                q->swap_with(ops);
             }
             return optimized( q.yield() );
         }

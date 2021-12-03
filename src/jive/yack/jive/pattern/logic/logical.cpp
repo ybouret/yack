@@ -12,13 +12,14 @@ namespace yack
 
         logical:: logical(const uint32_t t) throw() :
         pattern(t),
-        motifs()
+        patterns()
         {
         }
 
-        logical & logical:: operator<<( pattern *p )
+        logical & logical:: operator<<( pattern *p ) throw()
         {
-            push_back( motif::make(p) );
+            assert(p);
+            push_back(p);
             return *this;
         }
 
@@ -26,15 +27,39 @@ namespace yack
         {
             size_t nw = emit_uuid(fp);
             nw       += ios::encoder::serialize(fp,size);
-            for(const motif *m=head;m;m=m->next)
+            for(const pattern *m=head;m;m=m->next)
             {
-                nw += (**m).serialize(fp);
+                nw += m->serialize(fp);
             }
             return nw;
         }
+
 
         
 
     }
 
 }
+
+#include "yack/jive/pattern/basic/single.hpp"
+
+namespace yack
+{
+    namespace jive
+    {
+        pattern * logical::fill(logical *p, const char *buff, size_t size)
+        {
+            assert(p);
+            assert(yack_good(buff,size));
+            
+            auto_ptr<pattern> q(p);
+            while(size-- > 0)
+            {
+                (*p) << new single( *(buff++) );
+            }
+
+            return optimize(q.yield());
+        }
+    }
+}
+

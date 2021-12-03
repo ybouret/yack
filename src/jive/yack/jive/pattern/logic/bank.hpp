@@ -10,16 +10,28 @@ namespace yack
 {
     namespace jive
     {
-
+        //______________________________________________________________________
+        //
+        //
+        //! bank of patterns for OR/NONE
+        //
+        //______________________________________________________________________
         class bank : public logical
         {
         public:
-            virtual ~bank() throw();
-            void     no_multiple() throw();
+            //__________________________________________________________________
+            //
+            // methods
+            //__________________________________________________________________
+            void     no_multiple() throw(); //!< remove multiple patterns
 
-
-        protected:
-            explicit bank(const uint32_t) throw();
+            //__________________________________________________________________
+            //
+            // C++
+            //__________________________________________________________________
+            virtual ~bank()               throw(); //!< cleanup
+        protected:                                 //|    and
+            explicit bank(const uint32_t) throw(); //!<  setup
 
         private:
             YACK_DISABLE_COPY_AND_ASSIGN(bank);

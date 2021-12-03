@@ -26,9 +26,9 @@ namespace yack
             }
             else
             {
-                for(const motif *l=L->head,*r=R->head;l;l=l->next,r=r->next)
+                for(const pattern *l=L->head,*r=R->head;l;l=l->next,r=r->next)
                 {
-                    if( !pattern::are_same(**l,**r) ) return false;
+                    if( !pattern::are_same(*l,*r) ) return false;
                 }
                 return true;
             }

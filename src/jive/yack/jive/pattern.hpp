@@ -5,7 +5,6 @@
 
 #include "yack/jive/source.hpp"
 #include "yack/ios/serializable.hpp"
-#include "yack/ptr/linked.hpp"
 
 namespace yack
 {
@@ -129,9 +128,8 @@ namespace yack
             YACK_DISABLE_COPY_AND_ASSIGN(pattern);
         };
 
-        typedef linked_ptr<const pattern> motif;    //!< alias
-        typedef cxx_list_of<motif>        motifs;   //!< alias
-        
+        typedef arc_ptr<const pattern> motif;    //!< alias
+        typedef cxx_list_of<pattern>   patterns; //!< alias
     }
 }
 

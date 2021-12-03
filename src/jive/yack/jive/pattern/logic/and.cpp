@@ -23,10 +23,10 @@ namespace yack
 
         bool op_and:: accept( YACK_JIVE_PATTERN_ARGS ) const
         {
-            for(const motif *m=head;m;m=m->next)
+            for(const pattern *m=head;m;m=m->next)
             {
                 token sub;
-                if( (**m).accept(src,sub) )
+                if( m->accept(src,sub) )
                 {
                     tkn.merge_back(sub);
                 }
@@ -44,9 +44,9 @@ namespace yack
 
         bool op_and:: strong() const
         {
-            for(const motif *m=head;m;m=m->next)
+            for(const pattern *m=head;m;m=m->next)
             {
-                if( (**m).strong() ) return true;
+                if( m->strong() ) return true;
             }
             return false;
         }
