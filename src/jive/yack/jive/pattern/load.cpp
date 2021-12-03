@@ -10,6 +10,20 @@ namespace yack
     {
         static const char fn[] = "jive::pattern::load ";
 
+
+        template <typename LOGICAL> static inline
+        pattern *load_op(ios::istream &fp)
+        {
+            auto_ptr<LOGICAL> p = new LOGICAL();
+            size_t            n = 0;
+            (void) ios::decoder::construct(fp, n, "#operands");
+            while(n-- > 0)
+            {
+                (*p) << pattern::load(fp);
+            }
+            return p.yield();
+        }
+
         pattern * pattern::load(ios::istream &fp)
         {
             uint32_t mark = 0;
@@ -17,6 +31,11 @@ namespace yack
 
             switch(mark)
             {
+                    //----------------------------------------------------------
+                    //
+                    // basic
+                    //
+                    //----------------------------------------------------------
                 case single::mark:
                 {
                     char C = 0; if(!fp.query(C)) throw exception("%smissing code for %s",fn,single::clid);
@@ -30,6 +49,11 @@ namespace yack
                     return new within(lower,upper);
                 }
 
+                    //----------------------------------------------------------
+                    //
+                    // joker
+                    //
+                    //----------------------------------------------------------
                 case optional::mark:
                 {
                     return optional::create( load(fp) );
@@ -50,7 +74,12 @@ namespace yack
                     (void) ios::decoder::construct(fp,nmax,"counting::nmax");
                     return counting::create(nmin,nmax,load(fp));
                 }
-
+                    //----------------------------------------------------------
+                    //
+                    // logical
+                    //
+                    //----------------------------------------------------------
+                case op_and::mark: return load_op<op_and>(fp);
 
                 default:
                     break;

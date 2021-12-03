@@ -6,11 +6,26 @@ using namespace yack;
 
 YACK_UTEST(pattern)
 {
+    std::cerr << "<basic>" << std::endl;
     YACK_SIZEOF(jive::single);
     YACK_SIZEOF(jive::within);
-    YACK_SIZEOF(jive::joker);
+    YACK_SIZEOF(jive::except);
+    std::cerr << "<basic/>" << std::endl << std::endl;
+
+    std::cerr << "<joker>" << std::endl;
     YACK_SIZEOF(jive::optional);
     YACK_SIZEOF(jive::at_least);
+    YACK_SIZEOF(jive::counting);
+    std::cerr << "<joker/>" << std::endl << std::endl;
+
+
+    std::cerr << "<logic>" << std::endl;
+    YACK_SIZEOF(jive::op_and);
+    YACK_SIZEOF(jive::op_or);
+    YACK_SIZEOF(jive::op_none);
+    std::cerr << "<logic/>" << std::endl << std::endl;
+
+    YACK_SIZEOF(jive::motif);
 
 
     std::cerr << "create/save" << std::endl;
@@ -20,7 +35,7 @@ YACK_UTEST(pattern)
     auto_ptr<jive::pattern> p3 = jive::at_least::create( 1, new jive::single('c') );
     auto_ptr<jive::pattern> p4 = jive::counting::create( 2, 3, new jive::single('d') );
     auto_ptr<jive::pattern> p5 = jive::zero_or_more( new jive::within('A','Z') );
-    auto_ptr<jive::pattern> p6 = jive::one_or_more( new jive::within('0','9') );
+    auto_ptr<jive::pattern> p6 = jive::one_or_more(  new jive::within('0','9') );
 
 
     {

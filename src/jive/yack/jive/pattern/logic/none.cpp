@@ -15,6 +15,7 @@ namespace yack
 
         op_none:: op_none() throw() : logical(mark)
         {
+            I_am<op_none>();
         }
 
         op_none:: ~op_none() throw()

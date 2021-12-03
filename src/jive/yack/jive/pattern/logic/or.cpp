@@ -13,6 +13,7 @@ namespace yack
 
         op_or:: op_or() throw() : logical(mark)
         {
+            I_am<op_or>();
         }
 
         op_or:: ~op_or() throw()
