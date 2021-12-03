@@ -1,16 +1,16 @@
-#include "yack/jive/pattern/hood/partition.hpp"
+#include "yack/jive/pattern/first-bytes.hpp"
 #include "yack/utest/run.hpp"
 
 using namespace yack;
 
-YACK_UTEST(part)
+YACK_UTEST(firsts)
 {
     randomized::rand_ ran;
-    YACK_SIZEOF(jive::hood::domain);
+    YACK_SIZEOF(jive::domain);
 
 
 
-    jive::hood::partition p;
+    jive::first_bytes p;
     p.add('h','r'); std::cerr << p << std::endl;
     p.add('a');     std::cerr << p << std::endl;
     p.add('b');     std::cerr << p << std::endl;
@@ -21,7 +21,7 @@ YACK_UTEST(part)
     p.add('Z','f'); std::cerr << p << std::endl;
     p.add('g');     std::cerr << p << std::endl;
 
-    cxx_list_of<jive::hood::domain> doms;
+   jive::domains doms;
 
     for(size_t iter=0;iter<4;++iter)
     {
@@ -31,7 +31,7 @@ YACK_UTEST(part)
         while(lower<255) {
             size_t upper = lower + ran.leq(16);
             if(upper>255) upper=255;
-            doms.push_back( new jive::hood::domain(lower,upper) );
+            doms.push_back( new jive::domain(lower,upper) );
             lower = upper;
             //std::cerr << *doms.tail << std::endl;
         }

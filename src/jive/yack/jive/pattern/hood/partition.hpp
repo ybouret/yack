@@ -4,6 +4,7 @@
 #ifndef YACK_JIVE_PATTERN_PARTITION_INCLUDED
 #define YACK_JIVE_PATTERN_PARTITION_INCLUDED 1
 
+#if 0
 #include "yack/object.hpp"
 #include "yack/data/list/cxx.hpp"
 #include <iosfwd>
@@ -128,6 +129,7 @@ namespace yack
         }
     }
 }
+#endif
 
 #endif
 

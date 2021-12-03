@@ -22,8 +22,8 @@ add_test(io:tags    test-jive tags)
 add_test(io::module test-jive module)
 add_test(io:token   test-jive token)
 
-add_test(pattern:part test-jive part)
-add_test(pattern      test-jive pattern)
+add_test(pattern:firsts test-jive firsts)
+add_test(pattern        test-jive pattern)
 
 
 

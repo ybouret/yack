@@ -1,4 +1,6 @@
 #include "yack/jive/pattern/hood/partition.hpp"
+
+#if 0
 #include "yack/signs.hpp"
 #include <iostream>
 #include "yack/ios/ascii/hybrid.hpp"
@@ -358,4 +360,5 @@ namespace yack
     }
 
 }
+#endif
 
