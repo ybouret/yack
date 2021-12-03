@@ -80,6 +80,11 @@ namespace yack
             //! wrapper
             friend bool operator!=(const pattern &lhs, const pattern &rhs) throw();
 
+            //__________________________________________________________________
+            //
+            //! optimize
+            //__________________________________________________________________
+            static pattern *optimize(pattern *);
 
             //__________________________________________________________________
             //

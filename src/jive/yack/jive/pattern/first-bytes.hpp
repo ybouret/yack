@@ -1,4 +1,3 @@
-
 //! \file
 
 #ifndef YACK_JIVE_PATTERN_FIRST_BYTES_INCLUDED

@@ -26,7 +26,15 @@ namespace yack
             // interface
             //__________________________________________________________________
             virtual size_t serialize(ios::ostream &fp) const;
-            
+
+            static pattern *among(const char *,size_t);
+            static pattern *among(const char *);
+            static pattern *among(const string &);
+
+            static pattern *equal(const char *,size_t);
+            static pattern *equal(const char *);
+            static pattern *equal(const string &);
+
             //__________________________________________________________________
             //
             // C++
@@ -37,6 +45,7 @@ namespace yack
         private:
             YACK_DISABLE_COPY_AND_ASSIGN(logical);
         };
+
 
     }
 

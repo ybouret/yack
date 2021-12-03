@@ -8,8 +8,6 @@ namespace yack
     namespace jive
     {
 
-
-
         template <typename JOKER> static inline
         bool are_same_joker(const pattern &lhs, const pattern &rhs) throw()
         {
