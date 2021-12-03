@@ -37,6 +37,23 @@ YACK_UTEST(pattern)
     auto_ptr<jive::pattern> p5 = jive::zero_or_more( new jive::within('A','Z') );
     auto_ptr<jive::pattern> p6 = jive::one_or_more(  new jive::within('0','9') );
 
+    auto_ptr<jive::op_and> p7 = new jive::op_and();
+    {
+        *p7 << new jive::single('a');
+        *p7 << jive::optional::create( new jive::single('b') );
+    }
+
+    auto_ptr<jive::op_or> p8 = new jive::op_or();
+    {
+        *p8 << new jive::within('a','z');
+        *p8 << jive::optional::create( new jive::within('0','9') );
+    }
+
+    auto_ptr<jive::op_none> p9 = new jive::op_none();
+    {
+        *p9 << new jive::except(' ');
+    }
+
 
     {
         ios::ocstream fp("patterns.bin");
@@ -47,6 +64,9 @@ YACK_UTEST(pattern)
         p4->serialize(fp);
         p5->serialize(fp);
         p6->serialize(fp);
+        p7->serialize(fp);
+        p8->serialize(fp);
+        p9->serialize(fp);
 
     }
 
@@ -91,6 +111,20 @@ YACK_UTEST(pattern)
             YACK_CHECK(*mp==*p6);
         }
 
+        {
+            arc_ptr<jive::pattern> mp = jive::pattern::load(fp);
+            YACK_CHECK(*mp==*p7);
+        }
+
+        {
+            arc_ptr<jive::pattern> mp = jive::pattern::load(fp);
+            YACK_CHECK(*mp==*p8);
+        }
+
+        {
+            arc_ptr<jive::pattern> mp = jive::pattern::load(fp);
+            YACK_CHECK(*mp==*p9);
+        }
 
     }
 }

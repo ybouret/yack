@@ -80,6 +80,7 @@ namespace yack
                     //
                     //----------------------------------------------------------
                 case op_and::mark: return load_op<op_and>(fp);
+                case op_or::mark:  return load_op<op_or>(fp);
 
                 default:
                     break;

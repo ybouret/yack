@@ -20,6 +20,22 @@ namespace yack
         {
         }
 
+        bool op_or:: strong()  const
+        {
+            return false;
+        }
+
+        void op_or:: firsts(first_bytes &fc) const
+        {
+
+        }
+
+        bool op_or:: accept(YACK_JIVE_PATTERN_ARGS) const
+        {
+
+            return false;
+        }
+
     }
 
 }
