@@ -1,14 +1,13 @@
 #include "yack/math/numeric.hpp"
 #include <cmath>
 #include <cfloat>
-
+#include "yack/arith/ipower.hpp"
 
 #define YACK_NUMERIC(NAME,VALUE) \
 template <> const float       numeric<float>       :: NAME = FLT_##VALUE;\
 template <> const double      numeric<double>      :: NAME = DBL_##VALUE;\
 template <> const long double numeric<long double> :: NAME = LDBL_##VALUE
 
-#
 
 namespace yack
 {
@@ -29,6 +28,15 @@ namespace yack
         template <> const float       numeric<float>::       golden_i = 1.0f + numeric<float>::golden_r;
         template <> const double      numeric<double>::      golden_i = 1.0  + numeric<double>::golden_r;
         template <> const long double numeric<long double>:: golden_i = 1.0L + numeric<long double>::golden_r;
+
+        template <> const unsigned numeric<float>      ::dig = FLT_DIG;
+        template <> const unsigned numeric<double>     ::dig = DBL_DIG;
+        template <> const unsigned numeric<long double>::dig = LDBL_DIG;
+
+        template <> const float       numeric<float>::       ftol = ipower<float,unsigned>(0.1f,dig);
+        template <> const double      numeric<double>::      ftol = ipower<double,unsigned>(0.1,dig);
+        template <> const long double numeric<long double>:: ftol = ipower<long double,unsigned>(0.1L,dig);
+
     }
 
 }

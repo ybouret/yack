@@ -6,6 +6,7 @@
 
 #include "yack/container/matrix.hpp"
 #include "yack/math/fcn/jacobian.hpp"
+#include "yack/math/algebra/jacobi.hpp"
 
 namespace yack
 {
@@ -40,17 +41,21 @@ namespace yack
             //
             // members
             //__________________________________________________________________
-            array_type &X;  //!< current position
-            array_type &F;  //!< current values
-            array_type &G;  //!< current control gradient
-            array_type &VV; //!< temporary vector
-            T           f0; //!< current control value F^2/2
+            array_type &X;   //!< current position
+            array_type &F;   //!< current values
+            array_type &G;   //!< current control gradient
+            array_type &mu;  //!< eigen values
+            array_type &S;   //!< computed step
+            array_type &VV;  //!< temporary vector
+            T           f0;  //!< current control value F^2/2
 
             matrix<T>   J;     //!< jacobian
             matrix<T>   Jt;    //!< current jacobian
-            matrix<T>   iJ;    //!< decomposed jacobian
+            matrix<T>   J2;    //!< J*J'
+            matrix<T>   V;     //!< J2 = V * diagm(mu) * V'
+            matrix<T>   Vt;    //!< V'
+            jacobi<T>   eigen; //!< solver
             jacobian<T> fdjac; //!< finite difference jacobian, with inital scaling
-
             //! prepare memory
             void setup(size_t dims);
 
@@ -66,7 +71,7 @@ namespace yack
             {
                 userF(F,X);
                 userJ(J,X);
-                analyze();
+                initialize();
             }
 
             //! X is set
@@ -81,14 +86,16 @@ namespace yack
             }
 
 
-
+            bool analyze();
 
 
         private:
             YACK_DISABLE_COPY_AND_ASSIGN(zircon);
-            void analyze();
+
+            //! from F and J
+            void initialize();
             T    objective(const array_type &FF) throw();
-            
+
 
             template <typename FUNCTION>
             struct jwrap

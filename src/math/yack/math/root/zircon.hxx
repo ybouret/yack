@@ -15,15 +15,20 @@ namespace yack
 
         template <>
         zircon<real_t>:: zircon(const size_t dims) :
-        tableaux(4,dims),
+        tableaux(6,dims),
         X(  next() ),
         F(  next() ),
         G(  next() ),
+        mu( next() ),
+        S( next()  ),
         VV( next() ),
         f0(0),
         J(dims,dims),
         Jt(dims,dims),
-        iJ(dims,dims),
+        J2(dims,dims),
+        V(dims,dims),
+        Vt(dims,dims),
+        eigen(dims),
         fdjac(0)
         {
         }
@@ -34,7 +39,9 @@ namespace yack
             make(dims);
             J.make(dims,dims);
             Jt.make(dims,dims);
-            iJ.make(dims,dims);
+            J2.make(dims,dims);
+            V.make(dims,dims),
+            Vt.make(dims,dims);
         }
 
         template <>
@@ -48,12 +55,11 @@ namespace yack
 
 
         template <>
-        void zircon<real_t>:: analyze()
+        void zircon<real_t>:: initialize()
         {
-            const size_t n = X.size();
+            //const size_t n = X.size();
 
             Jt.assign(J,transposed);
-            iJ.assign(J);
             Jt(G,F);
             f0 = objective(F);
             std::cerr << "X=" << X << std::endl;
@@ -61,21 +67,27 @@ namespace yack
             std::cerr << "J=" << J << std::endl;
             std::cerr << "G=" << G << std::endl;
             std::cerr << "f0=" << f0 << std::endl;
-
-            matrix<real_t> J2(n,n);
-            vector<real_t> d(n,0);
-            matrix<real_t> v(n,n);
             tao::v3::gram(J2,J);
             std::cerr << "J2=" << J2 << std::endl;
-            jacobi<real_t> eigen(2);
-            if( !eigen(J2,d,v,sort_eigv_by_module) )
-            {
-                std::cerr << "Bad!" << std::endl;
-                return;
-            }
-            std::cerr << "d=" << d << std::endl;
         }
 
+        template <>
+        bool zircon<real_t>:: analyze()
+        {
+            real_t factor = 1;
+
+            if( !eigen(J2,mu,V,sort_eigv_by_module))
+            {
+                std::cerr << "no eigen value" << std::endl;
+                return false;
+            }
+
+            std::cerr << "mu=" << mu << std::endl;
+            
+
+            return true;
+
+        }
 
     }
 }

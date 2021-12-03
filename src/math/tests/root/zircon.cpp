@@ -34,9 +34,10 @@ namespace {
         zircon<T> solver(2);
 
         solver.X[1] = 0.1; solver.X[2] = 0.2;
-        solver.X[1] = 1e-8; solver.X[2] = 0.0;
+        solver.X[1] = 0;   solver.X[2] = 1e-6;
 
         solver.load(F);
+        solver.analyze();
         std::cerr << std::endl;
     }
 

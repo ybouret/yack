@@ -25,8 +25,10 @@ namespace
         NUM_DISP(golden_r);
         NUM_DISP(golden_c);
         NUM_DISP(golden_i);
+        NUM_DISP(dig);
+        NUM_DISP(ftol);
 
-        const T a = T(1.1e-4);  std::cerr << " a = " << a << std::endl;
+        const T a  = T(1.1e-4);  std::cerr << " a = " << a << std::endl;
         const T fa = timings::round_floor(a); std::cerr << "fa = " << fa << std::endl;
         const T ca = timings::round_ceil(a);  std::cerr << "ca = " << ca << std::endl;
 

@@ -5,7 +5,6 @@
 #include "yack/math/tao/v3.hpp"
 #include "yack/type/utils.hpp"
 #include "yack/sort/sum.hpp"
-#include "yack/math/algebra/jacobi.hpp"
 #include <cerrno>
 #include <cmath>
 

@@ -129,7 +129,7 @@ namespace yack
         //
         //! get next array for setup
         //______________________________________________________________________
-        array_type & next() throw() { assert(use<=size()); return arr[++use]; }
+        array_type & next() throw() { assert(use<size()); return arr[++use]; }
 
         //______________________________________________________________________
         //
