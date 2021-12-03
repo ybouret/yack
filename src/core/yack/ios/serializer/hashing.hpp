@@ -12,6 +12,7 @@ namespace yack
     {
         namespace serializer
         {
+            //! hashing ops
             struct hash
             {
                 //! directly run object into hasher, no set

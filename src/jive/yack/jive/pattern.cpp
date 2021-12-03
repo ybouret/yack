@@ -33,6 +33,16 @@ namespace yack
         {
             return !strong();
         }
+
+        bool operator==(const pattern &lhs, const pattern &rhs) throw()
+        {
+            return pattern::are_same(lhs,rhs);
+        }
+
+        bool operator!=(const pattern &lhs, const pattern &rhs) throw()
+        {
+            return !pattern::are_same(lhs,rhs);
+        }
     }
 
 }

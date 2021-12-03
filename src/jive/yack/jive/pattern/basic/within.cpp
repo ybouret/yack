@@ -70,6 +70,14 @@ namespace yack
             assert(0==fc.size);
             fc << new domain(lower,upper);
         }
+
+        bool within:: is_same_than(const within *other) const throw()
+        {
+            assert(other);
+            return (lower==other->lower) && (upper==other->upper);
+        }
+
+
     }
 
 }

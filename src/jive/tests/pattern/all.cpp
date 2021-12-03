@@ -55,36 +55,41 @@ YACK_UTEST(pattern)
         ios::icstream          fp("patterns.bin");
         {
             arc_ptr<jive::pattern> mp = jive::pattern::load(fp);
-            YACK_CHECK(jive::single::mark==mp->uuid);
-            YACK_CHECK('a'==mp->as<jive::single>()->code);
+            YACK_CHECK(*mp==p0);
+
         }
         {
             arc_ptr<jive::pattern> mp = jive::pattern::load(fp);
-            YACK_CHECK(jive::within::mark==mp->uuid);
-            YACK_CHECK('a'==mp->as<jive::within>()->lower);
-            YACK_CHECK('z'==mp->as<jive::within>()->upper);
+            YACK_CHECK(*mp==p1);
         }
         
         {
             arc_ptr<jive::pattern> mp = jive::pattern::load(fp);
-            YACK_CHECK(jive::optional::mark==mp->uuid);
+            YACK_CHECK(*mp==*p2);
 
         }
 
         {
             arc_ptr<jive::pattern> mp = jive::pattern::load(fp);
-            YACK_CHECK(jive::at_least::mark==mp->uuid);
-            YACK_CHECK(1==mp->as<jive::at_least>()->count);
+            YACK_CHECK(*mp==*p3);
+
         }
 
         {
             arc_ptr<jive::pattern> mp = jive::pattern::load(fp);
-            YACK_CHECK(jive::counting::mark==mp->uuid);
-            YACK_CHECK(2==mp->as<jive::counting>()->nmin);
-            YACK_CHECK(3==mp->as<jive::counting>()->nmax);
-
+            YACK_CHECK(*mp==*p4);
         }
 
+
+        {
+            arc_ptr<jive::pattern> mp = jive::pattern::load(fp);
+            YACK_CHECK(*mp==*p5);
+        }
+
+        {
+            arc_ptr<jive::pattern> mp = jive::pattern::load(fp);
+            YACK_CHECK(*mp==*p6);
+        }
 
 
     }

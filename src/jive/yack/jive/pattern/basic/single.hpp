@@ -40,13 +40,13 @@ namespace yack
             // pattern interface
             //__________________________________________________________________
             //! accept is one char matching code
-            virtual bool        accept(YACK_JIVE_PATTERN_ARGS) const;
+            virtual bool accept(YACK_JIVE_PATTERN_ARGS) const;
 
             //! always strong
-            virtual bool        strong() const;
+            virtual bool strong() const;
 
             //! one domain
-            virtual void   firsts(first_bytes &) const;
+            virtual void firsts(first_bytes &) const;
 
 
             //__________________________________________________________________
@@ -55,6 +55,12 @@ namespace yack
             //__________________________________________________________________
             virtual const char *class_uid() const throw();       //!< clid
             virtual size_t      serialize(ios::ostream &) const; //!< mark+code
+
+            //__________________________________________________________________
+            //
+            // methods
+            //__________________________________________________________________
+            bool is_same_than(const single *other) const throw(); //!< same code
 
             //__________________________________________________________________
             //

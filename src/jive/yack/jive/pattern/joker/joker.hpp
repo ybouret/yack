@@ -25,7 +25,7 @@ namespace yack
             const pattern & operator*() const throw(); //!< get joker
             virtual void firsts(first_bytes &) const;  //!< forward to internal
 
-
+            
 
             //__________________________________________________________________
             //

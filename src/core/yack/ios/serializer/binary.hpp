@@ -13,9 +13,10 @@ namespace yack
     {
         namespace serializer
         {
+            //! convert to binary representation
             struct to_binary
             {
-                static string from(const serializable &obj);
+                static string from(const serializable &obj); //!< make a binary string
             };
         }
     }

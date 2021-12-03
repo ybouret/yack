@@ -66,6 +66,13 @@ namespace yack
             fc -= code;
         }
 
+        bool except:: is_same_than(const except *other) const throw()
+        {
+            assert(other);
+            return code==other->code;
+        }
+
+
     }
 
 }

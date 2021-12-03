@@ -20,6 +20,13 @@ namespace yack
             I_am<single>();
         }
 
+        bool single:: is_same_than(const single *other) const throw()
+        {
+            assert(other);
+            return code == other->code;
+        }
+
+
         size_t single:: serialize(ios::ostream &fp) const
         {
             size_t nw = emit_uuid(fp);

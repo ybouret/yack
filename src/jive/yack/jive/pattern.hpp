@@ -74,6 +74,13 @@ namespace yack
             //__________________________________________________________________
             static bool are_same(const pattern &lhs, const pattern &rhs) throw();
 
+            //! wrapper
+            friend bool operator==(const pattern &lhs, const pattern &rhs) throw();
+
+            //! wrapper
+            friend bool operator!=(const pattern &lhs, const pattern &rhs) throw();
+
+
             //__________________________________________________________________
             //
             //! required conversion
