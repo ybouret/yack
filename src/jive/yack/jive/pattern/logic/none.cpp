@@ -13,7 +13,7 @@ namespace yack
             return clid;
         }
 
-        op_none:: op_none() throw() : logical(mark)
+        op_none:: op_none() throw() : bank(mark)
         {
             I_am<op_none>();
         }

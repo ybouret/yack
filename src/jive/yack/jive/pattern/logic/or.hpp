@@ -3,7 +3,7 @@
 #ifndef YACK_JIVE_PATTERN_LOGICAL_OR_INCLUDED
 #define YACK_JIVE_PATTERN_LOGICAL_OR_INCLUDED 1
 
-#include "yack/jive/pattern/logic/logical.hpp"
+#include "yack/jive/pattern/logic/bank.hpp"
 #include "yack/type/fourcc.h"
 
 namespace yack
@@ -16,7 +16,7 @@ namespace yack
         //! logical OR
         //
         //______________________________________________________________________
-        class op_or : public logical
+        class op_or : public bank
         {
         public:
             //__________________________________________________________________

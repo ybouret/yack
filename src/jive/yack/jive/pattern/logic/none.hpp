@@ -5,7 +5,7 @@
 #ifndef YACK_JIVE_PATTERN_LOGICAL_NONE_INCLUDED
 #define YACK_JIVE_PATTERN_LOGICAL_NONE_INCLUDED 1
 
-#include "yack/jive/pattern/logic/logical.hpp"
+#include "yack/jive/pattern/logic/bank.hpp"
 #include "yack/type/fourcc.h"
 
 namespace yack
@@ -18,7 +18,7 @@ namespace yack
         //! logical NONE
         //
         //______________________________________________________________________
-        class op_none : public logical
+        class op_none : public bank
         {
         public:
             //__________________________________________________________________

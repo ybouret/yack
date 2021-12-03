@@ -11,7 +11,7 @@ namespace yack
             return clid;
         }
 
-        op_or:: op_or() throw() : logical(mark)
+        op_or:: op_or() throw() : bank(mark)
         {
             I_am<op_or>();
         }

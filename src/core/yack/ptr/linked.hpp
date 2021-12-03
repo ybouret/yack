@@ -36,6 +36,9 @@ namespace yack
         // C++
         //______________________________________________________________________
 
+        //! setup with valid address
+        inline linked_ptr(const arc_ptr<T> &user) throw() : arc_ptr<T>(user), next(0), prev(0) { }
+
         //! create new linked_ptr as node, take care of memory
         static inline linked_ptr *make(type *addr)
         {
@@ -46,6 +49,14 @@ namespace yack
         //! no-throw copy
         inline linked_ptr(const linked_ptr &_) throw() : arc_ptr<T>(_), next(0), prev(0) {}
 
+        //! no throw assign
+        inline linked_ptr & operator=(const linked_ptr &other) throw()
+        {
+            arc_ptr<T> &lhs = *this; const arc_ptr<T> &rhs = other;
+            lhs = rhs;
+            return *this;
+        }
+
         //! cleanup
         inline virtual ~linked_ptr() throw() { }
 
@@ -55,12 +66,7 @@ namespace yack
         //______________________________________________________________________
         linked_ptr *next; //!< for list/pool
         linked_ptr *prev; //!< for list
-
-
-    private:
-        YACK_DISABLE_ASSIGN(linked_ptr);
-        //! setup with valid address
-        inline linked_ptr(const arc_ptr<T> &user) throw() : arc_ptr<T>(user), next(0), prev(0) { }
+        
     };
 
 
