@@ -339,6 +339,12 @@ set(ios_ascii ${ios_ascii_impl} ${ios_ascii_decl})
 SOURCE_GROUP(ios/ascii FILES ${ios_ascii})
 install( FILES ${ios_ascii_decl} DESTINATION include/yack/ios/ascii)
 
+file(GLOB ios_serializer_impl yack/ios/serializer/*.cpp yack/ios/serializer/*.hxx)
+file(GLOB ios_serializer_decl yack/ios/serializer/*.hpp)
+set(ios_serializer ${ios_serializer_impl} ${ios_serializer_decl})
+SOURCE_GROUP(ios/serializer FILES ${ios_serializer})
+install( FILES ${ios_serializer_decl} DESTINATION include/yack/ios/serializer)
+
 ########################################################################
 ##
 ## kr
@@ -522,7 +528,7 @@ ${fft}
 ${functor}
 ${apex} ${apex_m} ${apex_n} ${apex_z} ${apex_q}
 ${concurrent} ${concurrent_quark} ${concurrent_loop} ${concurrent_queue}
-${ios} ${ios_c} ${ios_gz} ${ios_fmt} ${ios_gv} ${ios_ascii}
+${ios} ${ios_c} ${ios_gz} ${ios_fmt} ${ios_gv} ${ios_ascii} ${ios_serializer}
 ${randomized}
 ${sort}
 ${counting} ${counting_c}

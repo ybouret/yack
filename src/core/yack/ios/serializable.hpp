@@ -4,6 +4,7 @@
 #define YACK_IOS_SERIALIZABLE_INCLUDED 1
 
 #include "yack/setup.hpp"
+#include "yack/string/fwd.hpp"
 
 namespace yack
 {
@@ -33,6 +34,7 @@ namespace yack
             //__________________________________________________________________
             size_t  save_class_ui(ostream &) const; //!< emit strlen(class_uid) and class_uid
             size_t  marshal(ostream &) const;       //!< save_class_ui, serialize
+            string  to_binary() const;              //!< make a binary string from object
 
             //__________________________________________________________________
             //
