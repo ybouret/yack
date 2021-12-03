@@ -23,7 +23,7 @@ namespace yack
             // methods
             //__________________________________________________________________
             const pattern & operator*() const throw(); //!< get joker
-            virtual void firsts(first_bytes &) const;  //!< forward
+            virtual void firsts(first_bytes &) const;  //!< forward to internal
 
 
 
@@ -31,7 +31,7 @@ namespace yack
             //
             // C++
             //__________________________________________________________________
-            virtual ~joker() throw();                              //!< cleanup
+            virtual ~joker() throw();                        //!< cleanup
 
         protected:
             explicit joker(const uint32_t,pattern*) throw(); //!< setup
