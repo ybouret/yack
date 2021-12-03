@@ -11,21 +11,11 @@ YACK_UTEST(firsts)
 
 
     jive::first_bytes p;
-    p.add('h','r'); std::cerr << p << std::endl;
-    p.add('a');     std::cerr << p << std::endl;
-    p.add('b');     std::cerr << p << std::endl;
-    p.add('d');     std::cerr << p << std::endl;
-    p.add('e');     std::cerr << p << std::endl;
-    p.add('c');     std::cerr << p << std::endl;
-
-    p.add('Z','f'); std::cerr << p << std::endl;
-    p.add('g');     std::cerr << p << std::endl;
-
-   jive::domains doms;
+    jive::domains     doms;
 
     for(size_t iter=0;iter<4;++iter)
     {
-        p.kill();
+        p.release();
         doms.release();
         size_t lower = 0;
         while(lower<255) {
@@ -40,23 +30,23 @@ YACK_UTEST(firsts)
         randomized::shuffle::list(doms,ran);
         while(doms.size)
         {
-            p.grow(doms.pop_back());
+            p << doms.pop_back();
             std::cerr << p << std::endl;
         }
-        YACK_ASSERT(1==(*p).size);
-        YACK_ASSERT(0x00==(*p).head->lower);
-        YACK_ASSERT(0xff==(*p).head->upper);
+        YACK_ASSERT(1==p.size);
+        YACK_ASSERT(0x00==p.head->lower);
+        YACK_ASSERT(0xff==p.head->upper);
     }
 
     {
-        p.full();
+        p.all();
         std::cerr << p << std::endl;
         uint8_t arr[256];
         for(size_t i=0;i<256;++i) arr[i] = uint8_t(i);
         randomized::shuffle::data(arr,256,ran);
         for(size_t i=0;i<256;++i)
         {
-            p.sub(arr[i]);
+            p -= arr[i];
             std::cerr << p << std::endl;
         }
     }

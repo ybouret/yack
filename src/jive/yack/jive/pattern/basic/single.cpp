@@ -60,8 +60,8 @@ namespace yack
 
         void single:: firsts(first_bytes &fc) const
         {
-            assert(0==(*fc).size);
-            fc.add(code);
+            assert(0==fc.size);
+            fc << new domain(code);
         }
 
     }

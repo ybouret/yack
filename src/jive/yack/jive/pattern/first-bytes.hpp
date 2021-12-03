@@ -12,19 +12,19 @@ namespace yack
 {
     namespace jive
     {
-        //__________________________________________________________________
+        //______________________________________________________________________
         //
         //
         //! domain of bytes
         //
-        //__________________________________________________________________
+        //______________________________________________________________________
         class domain : public object
         {
         public:
-            //______________________________________________________________
+            //__________________________________________________________________
             //
             // types and definitions
-            //______________________________________________________________
+            //__________________________________________________________________
 
             //! relative position of domains
             enum position
@@ -35,19 +35,19 @@ namespace yack
             };
 
 
-            //______________________________________________________________
+            //__________________________________________________________________
             //
             // C++
-            //______________________________________________________________
+            //__________________________________________________________________
             explicit domain(const uint8_t, const uint8_t) throw(); //!< [lower:upper]
             explicit domain(const uint8_t) throw();                //!< [lower:lower]
             virtual ~domain() throw();                             //!< cleanup
             domain(const domain &other) throw();                   //!< copy
             
-            //______________________________________________________________
+            //__________________________________________________________________
             //
             // methods
-            //______________________________________________________________
+            //__________________________________________________________________
 
             //! display
             friend std::ostream & operator<<(std::ostream &, const domain &);
@@ -58,10 +58,10 @@ namespace yack
             //! check ownership of byte
             bool owns(const uint8_t) const throw();
 
-            //______________________________________________________________
+            //__________________________________________________________________
             //
             // members
-            //______________________________________________________________
+            //__________________________________________________________________
             domain       *next;  //!< for list
             domain       *prev;  //!< for list
             const uint8_t lower; //!< lower bound
@@ -71,55 +71,52 @@ namespace yack
             YACK_DISABLE_ASSIGN(domain);
         };
 
-        //__________________________________________________________________
+        //______________________________________________________________________
         //
         //
         //! alias for list of domains
         //
-        //__________________________________________________________________
+        //______________________________________________________________________
         typedef cxx_list_of<domain> domains;
 
 
-        //__________________________________________________________________
+        //______________________________________________________________________
         //
         //
         //! list of separated, ordered domains
         //
-        //__________________________________________________________________
-        class first_bytes
+        //______________________________________________________________________
+        class first_bytes : public domains
         {
         public:
-            //______________________________________________________________
+            //__________________________________________________________________
             //
             // C++
-            //______________________________________________________________
+            //__________________________________________________________________
             first_bytes()           throw(); //!< setup
             ~first_bytes()          throw(); //!< cleanup
             first_bytes(const first_bytes&); //!< hard copy
 
-            //______________________________________________________________
+
+            //__________________________________________________________________
             //
             // methods
-            //______________________________________________________________
-            void grow(domain *dom)           throw();          //!< grow with a single domain
-            void grow(list_of<domain> &doms) throw();          //!< grow with other domains
-            void full();                                       //!< set to 1 domain 0x00->0xff
-            void kill() throw();                               //!< release content
-            void add(const uint8_t);                           //!< grow( new domain(a)   )
-            void add(const uint8_t, const uint8_t);            //!< grow( new domain(a,b) )
-            void sub(const uint8_t);                           //!< remove a byte
-            const list_of<domain> & operator*() const throw(); //!< access
-
-            void merge(first_bytes &other) throw();
-            void exclude(first_bytes &other);
-
+            //__________________________________________________________________
+            void          all();                                     //!< set to 1 domain 0x00->0xff
+            first_bytes & operator<<( domain *dom ) throw();         //!< include a new domain
+            first_bytes & operator<<(list_of<domain> &doms) throw(); //!< include by stealing domains
+            first_bytes & operator-=(const uint8_t);                 //!< exclude single byte
+            first_bytes & operator-=(list_of<domain> &doms);         //!< exclude all (stolen) domains
+            
+            
             //! display
             friend std::ostream & operator<<(std::ostream &, const first_bytes &);
 
 
         private:
             YACK_DISABLE_ASSIGN(first_bytes);
-            domains self;
+            void add(domain *dom) throw(); //!< grow with a single domain
+            void sub(const uint8_t);        //!< remove a byte
             bool is_valid() const throw();
         };
 

@@ -125,16 +125,13 @@ namespace yack
             return os;
         }
 
-        const list_of<domain> & first_bytes:: operator*() const throw()
-        {
-            return self;
-        }
+
 
 
         std::ostream & operator<<(std::ostream &os, const first_bytes &p)
         {
             os << '{';
-            const domain *dom = p.self.head;
+            const domain *dom = p.head;
             if(dom)
             {
                 os << *dom;
@@ -151,7 +148,7 @@ namespace yack
 
         bool first_bytes:: is_valid() const throw()
         {
-            for(const domain *dom=self.head;dom;dom=dom->next)
+            for(const domain *dom=head;dom;dom=dom->next)
             {
                 if(dom->lower>dom->upper)
                 {
@@ -178,71 +175,81 @@ namespace yack
             return true;
         }
 
-        void first_bytes:: kill() throw()
-        {
-            self.release();
-        }
+       
 
-        void first_bytes:: full()
+        void first_bytes:: all()
         {
-            if(self.size<=0)
+            if(size<=0)
             {
-                self.push_back( new domain(0x00,0xff) );
+                push_back( new domain(0x00,0xff) );
             }
             else
             {
-                while(self.size>1)
+                while(size>1)
                 {
-                    delete self.pop_back();
+                    delete pop_back();
                 }
-                assert(1==self.size);
-                coerce(self.head->lower) = 0x00;
-                coerce(self.head->upper) = 0xff;
+                assert(1==size);
+                coerce(head->lower) = 0x00;
+                coerce(head->upper) = 0xff;
             }
         }
 
-        void first_bytes:: grow(domain *dom) throw()
+        first_bytes &  first_bytes:: operator<<( domain *dom ) throw()
+        {
+            add(dom);
+            return *this;
+        }
+
+        
+        first_bytes &  first_bytes:: operator<<(list_of<domain> &doms) throw()
+        {
+            while(doms.size) add(doms.pop_back());
+            return *this;
+        }
+
+        void first_bytes:: add(domain *dom) throw()
         {
             assert(dom);
-            if(self.size<=0)
+            if(size<=0)
             {
                 //--------------------------------------------------------------
                 //
                 // first item
                 //
                 //--------------------------------------------------------------
-                self.push_back(dom); assert(is_valid());
+                push_back(dom); assert(is_valid());
             }
             else
             {
-                if( (dom->upper) <= (self.head->lower) )
+                if( (dom->upper) <= (head->lower) )
                 {
                     //----------------------------------------------------------
                     //
                     // merge with head of push_front
                     //
                     //----------------------------------------------------------
-                    switch( (self.head->lower) - (dom->upper) )
+                    switch( (head->lower) - (dom->upper) )
                     {
                         case 0:
-                        case 1:  coerce(self.head->lower) = dom->lower; delete dom; assert(is_valid()); break;
-                        default: self.push_front(dom); assert(is_valid()); break;
+                        case 1:  coerce(head->lower) = dom->lower; delete dom; assert(is_valid()); break;
+                        default: push_front(dom); assert(is_valid()); break;
                     }
                 }
                 else
                 {
-                    if((self.tail->upper) <= (dom->lower))
+                    if((tail->upper) <= (dom->lower))
                     {
                         //------------------------------------------------------
                         //
                         // merge with tail of push_back
                         //
                         //------------------------------------------------------
-                        switch((dom->lower) - (self.tail->upper))
+                        switch((dom->lower) - (tail->upper))
                         {
                             case 0:
-                            case 1:  coerce(self.tail->upper) = dom->upper; delete dom; assert(is_valid()); break;
-                            default: self.push_back(dom); assert(is_valid()); break;
+                            case 1:  coerce(tail->upper) = dom->upper; delete dom; assert(is_valid()); break;
+                            default: push_back(dom); assert(is_valid()); break;
                         }
                     }
                     else
@@ -251,33 +258,33 @@ namespace yack
                         // spare prolog
                         //------------------------------------------------------
                         domains prolog;
-                        while( self.size && domain::before == domain::compare(self.head,dom) )
+                        while( size && domain::before == domain::compare(head,dom) )
                         {
-                            prolog.push_back( self.pop_front() );
+                            prolog.push_back(pop_front() );
                         }
 
                         //------------------------------------------------------
                         // spare epilog
                         //------------------------------------------------------
                         domains epilog;
-                        while(self.size && domain::after == domain::compare(self.tail,dom) )
+                        while(size && domain::after == domain::compare(tail,dom) )
                         {
-                            epilog.push_front( self.pop_back() );
+                            epilog.push_front( pop_back() );
                         }
 
                         //------------------------------------------------------
                         // merge
                         //------------------------------------------------------
-                        if(self.size)
+                        if(size)
                         {
-                            coerce(dom->lower) = min_of(dom->lower,self.head->lower);
-                            coerce(dom->upper) = max_of(dom->upper,self.tail->upper);
-                            self.release();
+                            coerce(dom->lower) = min_of(dom->lower,head->lower);
+                            coerce(dom->upper) = max_of(dom->upper,tail->upper);
+                            release();
                         }
 
-                        self.swap_with(prolog);
-                        self.push_back(dom);
-                        self.merge_back(epilog);
+                        swap_with(prolog);
+                        push_back(dom);
+                        merge_back(epilog);
                         assert(is_valid());
                     }
                 }
@@ -285,25 +292,10 @@ namespace yack
             }
         }
 
-        void first_bytes:: add(const uint8_t value)
-        {
-            grow( new domain(value) );
-        }
-
-        void first_bytes:: add(const uint8_t lo, const uint8_t up)
-        {
-            grow( new domain(lo,up) );
-        }
-
-
-        void first_bytes:: grow(list_of<domain> &doms) throw()
-        {
-            while(doms.size) grow(doms.pop_back());
-        }
 
         void first_bytes:: sub(const uint8_t value)
         {
-            domain *dom = self.head;
+            domain *dom = head;
             while(dom && !(dom->owns(value))) dom=dom->next;
             if(dom)
             {
@@ -311,7 +303,7 @@ namespace yack
                 if(dom->lower>=dom->upper)
                 {
                     // singulet
-                    delete self.pop(dom);
+                    delete pop(dom);
                 }
                 else
                 {
@@ -331,33 +323,32 @@ namespace yack
                             assert(value<dom->upper);
                             domain *nxt = new domain(value+1,dom->upper);
                             coerce(dom->upper) = value-1;
-                            self.insert_after(dom,nxt);
+                            insert_after(dom,nxt);
                         }
                     }
                 }
             }
         }
 
-        void first_bytes:: merge(first_bytes &other) throw()
+        first_bytes & first_bytes:: operator -=(const uint8_t c)
         {
-            while(other.self.size)
-            {
-                grow(self.pop_back());
-            }
+            sub(c);
+            return *this;
         }
 
-        void first_bytes:: exclude(first_bytes &other)
+        first_bytes &  first_bytes::  operator -=(list_of<domain> &other)
         {
-            while(other.self.size)
+            while(other.size)
             {
-                const size_t lower = other.self.head->lower;
-                const size_t upper = other.self.head->upper;
+                const size_t lower = other.head->lower;
+                const size_t upper = other.head->upper;
                 for(size_t i=lower;i<=upper;++i)
                 {
                     sub( uint8_t(i) );
                 }
-                delete other.self.pop_front();
+                delete other.pop_front();
             }
+            return *this;
         }
 
 
@@ -365,11 +356,11 @@ namespace yack
         {
         }
 
-        first_bytes:: first_bytes() throw() : self()
+        first_bytes:: first_bytes() throw() : domains()
         {
         }
 
-        first_bytes:: first_bytes(const first_bytes &other) : self(other.self)
+        first_bytes:: first_bytes(const first_bytes &other) : domains(other)
         {
         }
         
