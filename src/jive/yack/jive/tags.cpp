@@ -13,7 +13,7 @@ namespace yack
         {
         }
 
-        tags:: tags() throw() : singleton<tags>(), tags_()
+        tags:: tags() throw() : singleton<tags>(), tags_(), pdb()
         {
         }
 

@@ -1,4 +1,5 @@
 #include "yack/jive/pattern/posix.hpp"
+#include "yack/jive/tags.hpp"
 #include "yack/utest/run.hpp"
 
 using namespace yack;
@@ -23,6 +24,8 @@ YACK_UTEST(posix)
     YPOSIX(core);
     YPOSIX(vowel);
     YPOSIX(consonant);
+
+    jive::tags::factory();
 
 
 

@@ -116,6 +116,61 @@ namespace yack
         {
             return logical::avoid(__vowels__);
         }
+
     }
 
 }
+
+#include "yack/jive/tags.hpp"
+#include "yack/exception.hpp"
+
+namespace yack
+{
+    namespace jive
+    {
+
+#define YPOSIX(NAME) \
+/**/  do { \
+/**/    const char name[] = #NAME;\
+/**/    if( !pmap.tree.insert(posix::NAME,name,sizeof(name)-1)) throw exception("unable to use %s",name);\
+/**/  } while(false)
+
+        tags::pfactory & tags:: factory()
+        {
+            static pfactory &pmap = instance().pdb;
+            static bool      init = true;
+            if(init)
+            {
+                YPOSIX(lower);
+                YPOSIX(upper);
+                YPOSIX(alpha);
+                YPOSIX(digit);
+                YPOSIX(alnum);
+                YPOSIX(xdigit);
+                YPOSIX(blank);
+                YPOSIX(space);
+                YPOSIX(punct);
+
+                YPOSIX(word);
+                YPOSIX(endl);
+                YPOSIX(dot);
+                YPOSIX(core);
+                YPOSIX(vowel);
+                YPOSIX(consonant);
+                pmap.tree.gv("posix.dot");
+                ios::vizible::render("posix.dot");
+                init = false;
+            }
+            return pmap;
+        }
+
+        pattern * posix::create(const string &id)
+        {
+            static const tags::pfactory & pfac = tags:: factory();
+
+            return 0;
+        }
+    }
+
+}
+

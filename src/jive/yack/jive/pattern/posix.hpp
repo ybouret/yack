@@ -43,6 +43,13 @@ namespace yack
             static pattern *vowel();     //!< vowels
             static pattern *consonant(); //!< consonants
 
+            //------------------------------------------------------------------
+            //
+            // query
+            //
+            //------------------------------------------------------------------
+            static pattern *create(const string &);
+
         };
 
     }
