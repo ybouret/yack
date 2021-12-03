@@ -1,35 +1,35 @@
 
 #include "yack/jive/pattern/posix.hpp"
+#include "yack/jive/pattern/all.hpp"
 
 namespace yack
 {
     namespace jive
     {
-#if 0
-        Pattern * posix:: lower()
+        pattern * posix:: lower()
         {
-            return Range::Create('a','z');
+            return new within('a','z');
         }
 
-        Pattern * posix:: upper()
+        pattern * posix:: upper()
         {
-            return Range::Create('A','Z');
+            return new within('A','Z');
         }
 
-        Pattern * posix:: alpha()
+        pattern * posix:: alpha()
         {
-            auto_ptr<Or> p = Or::Create();
+            auto_ptr<op_or> p = new op_or();
             p->push_back( lower() );
             p->push_back( upper() );
-            p->rework();
-            return p.yield();
+            return pattern::optimize( p.yield() );
         }
 
-        Pattern * posix:: digit()
+        pattern * posix:: digit()
         {
-            return Range::Create('0','9');
+            return new within('0','9');
         }
 
+#if 0
         Pattern * posix:: alnum()
         {
             auto_ptr<Or> p = Or::Create();
