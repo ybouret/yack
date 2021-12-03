@@ -75,7 +75,7 @@ namespace yack
 
         void at_least:: encode(ios::ostream &fp) const
         {
-            tag(fp) << "[";
+            logo(fp) << "[";
             fp << "label=\"";
             switch(count)
             {

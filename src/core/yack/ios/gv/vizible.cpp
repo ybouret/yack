@@ -98,7 +98,7 @@ namespace yack
             os << '}' << '\n';
         }
 
-        ostream & vizible:: tag(ostream &os) const
+        ostream & vizible:: logo(ostream &os) const
         {
             return uuid(os,this);
         }

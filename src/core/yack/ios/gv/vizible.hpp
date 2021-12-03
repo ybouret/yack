@@ -24,7 +24,7 @@ namespace yack
             //
             // methods
             //__________________________________________________________________
-            ostream & tag(ostream &os)                   const; //!< output address as uuid
+            ostream & logo(ostream &os)                  const; //!< output address as uuid
             ostream & link(ostream &os, const vizible *) const; //!< prepare arrow
 
             //__________________________________________________________________

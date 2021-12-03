@@ -75,7 +75,7 @@ namespace yack
 
         void except:: encode(ios::ostream &fp) const
         {
-            tag(fp) << "[";
+            logo(fp) << "[";
             fp << "label=\"'"; text(fp,code); fp << "'\"";
             fp << ",shape=triangle";
             fp << "]";

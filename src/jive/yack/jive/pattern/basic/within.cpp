@@ -78,7 +78,7 @@ namespace yack
 
         void within:: encode(ios::ostream &fp) const
         {
-            tag(fp) << "[";
+            logo(fp) << "[";
             fp << "label=\"'"; text(fp,lower); fp << "'-'"; text(fp,upper); fp << "'\"";
             fp << ",shape=box";
             fp << "]";

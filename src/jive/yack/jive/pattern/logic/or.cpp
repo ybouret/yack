@@ -58,7 +58,7 @@ namespace yack
 
         void op_or:: encode(ios::ostream &fp) const
         {
-            tag(fp) << "[";
+            logo(fp) << "[";
             fp << "label=\"||\"";
             fp << ",shape=egg";
             fp << "]";

@@ -72,7 +72,7 @@ namespace yack
 
         void single:: encode(ios::ostream &fp) const
         {
-            tag(fp) << "[";
+            logo(fp) << "[";
             fp << "label=\"'"; text(fp,code); fp << "'\"";
             fp << ",shape=square";
             fp << "]";

@@ -72,7 +72,7 @@ namespace yack
 
         void counting:: encode(ios::ostream &fp) const
         {
-            tag(fp) << "[";
+            logo(fp) << "[";
             fp << "label=\"{";
             fp("%u:%u", unsigned(nmin), unsigned(nmax));
             fp << "}\"";
