@@ -41,11 +41,10 @@ namespace yack
             //! accept is one char not matching code
             virtual bool accept(YACK_JIVE_PATTERN_ARGS) const;
 
-            //! always strong
-            virtual bool strong() const;
 
-            //! all but code
-            virtual void firsts(first_bytes &) const;
+            virtual bool strong() const;               //!< always strong
+            virtual void firsts(first_bytes  &) const; //!< all but code
+            virtual void encode(ios::ostream &) const; //!< graphviz
 
 
             //__________________________________________________________________

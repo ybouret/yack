@@ -34,7 +34,20 @@ namespace yack
             return nw;
         }
 
-
+        void logical::viz(ios::ostream &fp) const
+        {
+            unsigned indx=1;
+            for(const pattern *m=head;m;m=m->next,++indx)
+            {
+                m->encode(fp);
+                link(fp,m);
+                if(size>1)
+                {
+                    fp("[label=\"%u\"]",indx);
+                }
+                end(fp);
+            }
+        }
         
 
     }

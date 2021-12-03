@@ -56,7 +56,15 @@ namespace yack
 
         }
         
-
+        void op_and:: encode(ios::ostream &fp) const
+        {
+            tag(fp) << "[";
+            fp << "label=\"&&\"";
+            fp << ",shape=house";
+            fp << "]";
+            end(fp);
+            viz(fp);
+        }
 
 
     }

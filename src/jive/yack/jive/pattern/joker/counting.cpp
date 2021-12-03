@@ -70,6 +70,18 @@ namespace yack
             return nw + (**this).serialize(fp);
         }
 
+        void counting:: encode(ios::ostream &fp) const
+        {
+            tag(fp) << "[";
+            fp << "label=\"{";
+            fp("%u:%u", unsigned(nmin), unsigned(nmax));
+            fp << "}\"";
+            fp << ",shape=octagon";
+            fp << "]";
+            end(fp);
+            viz(fp);
+        }
+
     }
 
 }

@@ -117,13 +117,10 @@ namespace yack
             // output
             //__________________________________________________________________
             std::ostream & display(std::ostream &) const; //!< output method
-            ios::ostream & display(ios::ostream &) const; //!< output method
 
             //! display to std::ostream
             inline friend std::ostream & operator<<(std::ostream &os, const string &s) { return s.display(os); }
 
-            //! display to ios::ostream
-            inline friend ios::ostream & operator<<(ios::ostream &os, const string &s) { return s.display(os); }
             
             
             //__________________________________________________________________

@@ -5,6 +5,7 @@
 
 #include "yack/jive/source.hpp"
 #include "yack/ios/serializable.hpp"
+#include "yack/ios/gv/vizible.hpp"
 
 namespace yack
 {
@@ -22,14 +23,15 @@ namespace yack
         //! matching patterns
         //
         //______________________________________________________________________
-        class pattern : public object, public counted, public ios::serializable
+        class pattern :
+        public object, public counted, public ios::serializable, public ios::vizible
         {
         public:
             //__________________________________________________________________
             //
             // types and definitions
             //__________________________________________________________________
-
+            
 
             //__________________________________________________________________
             //
@@ -54,6 +56,8 @@ namespace yack
             //! fill first bytes
             virtual void   firsts(first_bytes &) const          = 0;
 
+            //! encode as GraphViz
+            virtual void   encode(ios::ostream &) const         = 0;
 
             //__________________________________________________________________
             //

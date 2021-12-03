@@ -73,6 +73,24 @@ namespace yack
 
 
 
+        void at_least:: encode(ios::ostream &fp) const
+        {
+            tag(fp) << "[";
+            fp << "label=\"";
+            switch(count)
+            {
+                case 0: fp << '*'; break;
+                case 1: fp << '+'; break;
+                default:
+                    fp(">=%u",unsigned(count));
+            }
+            fp << "\"";
+            fp << ",shape=circle";
+            fp << "]";
+            end(fp);
+            viz(fp);
+        }
+
     }
 
 }

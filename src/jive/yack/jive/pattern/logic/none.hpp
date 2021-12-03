@@ -42,6 +42,7 @@ namespace yack
             virtual bool accept(YACK_JIVE_PATTERN_ARGS) const;
             virtual bool strong() const;
             virtual void firsts(first_bytes &) const;
+            virtual void encode(ios::ostream &) const; //!< graphviz
 
             //__________________________________________________________________
             //

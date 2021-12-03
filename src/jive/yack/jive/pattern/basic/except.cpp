@@ -72,6 +72,14 @@ namespace yack
             return code==other->code;
         }
 
+        void except:: encode(ios::ostream &fp) const
+        {
+            tag(fp) << "[";
+            fp << "label=\"'"; text(fp,code); fp << "'\"";
+            fp << ",shape=triangle";
+            fp << "]";
+            end(fp);
+        }
 
     }
 

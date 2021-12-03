@@ -37,6 +37,17 @@ namespace yack
 
             return false;
         }
+
+        void op_none:: encode(ios::ostream &fp) const
+        {
+            tag(fp) << "[";
+            fp << "label=\"!!\"";
+            fp << ",shape=Msquare";
+            fp << "]";
+            end(fp);
+            viz(fp);
+        }
+        
     }
 
 }

@@ -36,9 +36,9 @@ namespace yack
             static pattern *equal(const string &);            //!< AND
 
 
-            static pattern *avoid(const char *,const size_t); //!< AND
-            static pattern *avoid(const char *);              //!< AND
-            static pattern *avoid(const string &);            //!< AND
+            static pattern *avoid(const char *,const size_t); //!< NONE
+            static pattern *avoid(const char *);              //!< NONE
+            static pattern *avoid(const string &);            //!< NONE
 
             //__________________________________________________________________
             //
@@ -47,6 +47,8 @@ namespace yack
             virtual ~logical() throw();               //!< cleanup
         protected:
             explicit logical(const uint32_t) throw(); //!< setup
+            void     viz(ios::ostream &)       const; //!< render patterns and create links
+            
         private:
             YACK_DISABLE_COPY_AND_ASSIGN(logical);
             static pattern *fill(logical *p, const char *, size_t);

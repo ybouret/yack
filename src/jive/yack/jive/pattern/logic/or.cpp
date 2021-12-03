@@ -36,7 +36,15 @@ namespace yack
             return false;
         }
 
-       
+        void op_or:: encode(ios::ostream &fp) const
+        {
+            tag(fp) << "[";
+            fp << "label=\"||\"";
+            fp << ",shape=egg";
+            fp << "]";
+            end(fp);
+            viz(fp);
+        }
 
     }
 

@@ -32,9 +32,10 @@ namespace yack
             // interface
             //__________________________________________________________________
             //! always accepted
-            virtual bool       accept(YACK_JIVE_PATTERN_ARGS) const;
-            //! nmin>0 and joker is strong
-            virtual bool       strong() const;
+            virtual bool accept(YACK_JIVE_PATTERN_ARGS) const;
+
+            virtual bool strong() const;               //!< nmin>0 and joker is strong
+            virtual void encode(ios::ostream &) const; //!< graphviz
 
 
             virtual const char *class_uid() const throw();          //!< clid

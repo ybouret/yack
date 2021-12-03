@@ -24,6 +24,7 @@ add_test(io:token   test-jive token)
 
 add_test(pattern:firsts test-jive firsts)
 add_test(pattern        test-jive pattern)
+add_test(pattern:viz    test-jive viz)
 
 
 

@@ -71,6 +71,16 @@ namespace yack
             fc << new domain(code);
         }
 
+        void single:: encode(ios::ostream &fp) const
+        {
+            tag(fp) << "[";
+            fp << "label=\"'"; text(fp,code); fp << "'\"";
+            fp << ",shape=square";
+            fp << "]";
+            end(fp);
+        }
+
+
     }
 
 }

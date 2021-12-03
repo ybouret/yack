@@ -24,7 +24,11 @@ namespace yack
             jk->firsts(fc);
         }
 
-        
+        void joker:: viz(ios::ostream &fp) const
+        {
+            jk->encode(fp);
+            link(fp,&*jk);
+        }
 
 
     }

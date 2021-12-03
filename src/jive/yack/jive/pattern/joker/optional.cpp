@@ -54,7 +54,15 @@ namespace yack
             return nw + (**this).serialize(fp);
         }
 
-
+        void optional:: encode(ios::ostream &fp) const
+        {
+            tag(fp) << "[";
+            fp << "label=\"?\"";
+            fp << ",shape=diamond";
+            fp << "]";
+            end(fp);
+            viz(fp);
+        }
 
     }
 

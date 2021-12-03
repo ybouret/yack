@@ -48,6 +48,8 @@ namespace yack
             //! one domain
             virtual void firsts(first_bytes &) const;
 
+            //! graphviz
+            virtual void   encode(ios::ostream &) const;
 
             //__________________________________________________________________
             //
