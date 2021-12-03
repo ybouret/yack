@@ -50,7 +50,7 @@ namespace yack
 
             //__________________________________________________________________
             //
-            // serializable interfacer
+            // serializable interface
             //__________________________________________________________________
             virtual const char *class_uid() const throw();       //!< clid
             virtual size_t      serialize(ios::ostream &) const; //!< mark+code
