@@ -13,9 +13,11 @@ namespace yack
 {
     namespace jive
     {
-        class   pattern;
+        class   pattern; //!< forward declaration
+
         typedef ark_ptr<string,string> tag;     //!< shared string
         typedef suffix_set<string,tag> tags_;   //!< base class for database
+
 
         //______________________________________________________________________
         //

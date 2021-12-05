@@ -1,5 +1,5 @@
 
-#include "yack/ios/serializer/hashing.hpp"
+#include "yack/ios/serializer/hash.hpp"
 #include "yack/ios/ohstream.hpp"
 
 namespace yack
