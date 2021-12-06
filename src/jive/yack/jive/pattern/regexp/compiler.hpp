@@ -13,7 +13,8 @@ namespace yack
     {
 
         class dictionary;
-        typedef ios::xindent<2> rx_indent;
+
+        typedef ios::xindent<2> rx_indent; //!< alias
 
         //______________________________________________________________________
         //

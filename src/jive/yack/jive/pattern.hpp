@@ -28,7 +28,7 @@ namespace yack
         public object, public counted, public ios::serializable, public ios::vizible
         {
         public:
-            static bool verbose;
+            static bool verbose; //!< activate tracing
             
             //__________________________________________________________________
             //

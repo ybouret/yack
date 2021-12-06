@@ -10,13 +10,20 @@ namespace yack
 {
     namespace ios
     {
+        //______________________________________________________________________
+        //
+        //
+        //! indentation
+        //
+        //______________________________________________________________________
         class indent
         {
         public:
-            indent(const size_t sz, const char sp = ' ') throw();
-            indent(const indent &) throw();
-            virtual ~indent() throw();
+            indent(const size_t sz, const char sp = ' ') throw(); //!< setup
+            indent(const indent &)                       throw(); //!< copy
+            virtual ~indent()                            throw(); //!< cleanup
 
+            //! generic output
             template <typename OSTREAM> inline
             friend OSTREAM & operator<<(OSTREAM &os, const indent &i)
             {
@@ -31,13 +38,19 @@ namespace yack
             const char   c;
         };
 
+        //______________________________________________________________________
+        //
+        //
+        //! extended indentation
+        //
+        //______________________________________________________________________
         template <const size_t N>
         class xindent : public indent
         {
         public:
-            inline xindent(const size_t sz, const char sp = ' ') throw() : indent(sz*N,sp) {}
-            inline xindent(const xindent &_) throw() : indent(_) {}
-            inline virtual ~xindent() throw() {}
+            inline xindent(const size_t sz, const char sp = ' ') throw() : indent(sz*N,sp) {} //!< setup
+            inline xindent(const xindent &_) throw() : indent(_) {} //!< copy
+            inline virtual ~xindent() throw() {} //!< cleanup
 
         private:
             YACK_DISABLE_ASSIGN(xindent);
