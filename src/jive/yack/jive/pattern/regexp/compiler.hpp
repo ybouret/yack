@@ -57,7 +57,8 @@ namespace yack
             //__________________________________________________________________
             pattern *expression(); //!< create new 'AND' from current position
 
-            
+
+
             //__________________________________________________________________
             //
             // members
@@ -70,6 +71,8 @@ namespace yack
         private:
             YACK_DISABLE_COPY_AND_ASSIGN(RXCompiler);
             void jokerize(logical &p, const char j) const;
+            pattern *group();      //!< create a 'OR/NONE' group
+            pattern *posix(); //!< extract posix
         };
     }
 
