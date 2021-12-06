@@ -161,8 +161,8 @@ namespace yack
 
         pattern * posix::create(const string &id)
         {
-            static const tags::pfactory & db = tags::instance().pdb;
-            const tags::pcreator         *mk = db.search(id);
+            static const tags::pattern_factory & db = tags::instance().pdb;
+            const tags::pattern_creator         *mk = db.search(id);
             if(!mk) throw exception("no posix::%s",id());
             return (*mk)();
         }
