@@ -26,6 +26,8 @@ add_test(pattern:firsts test-jive firsts)
 add_test(pattern        test-jive pattern)
 add_test(pattern:viz    test-jive viz)
 add_test(pattern:posix  test-jive posix)
+add_test(pattern:regexp test-jive regexp)
+
 
 
 

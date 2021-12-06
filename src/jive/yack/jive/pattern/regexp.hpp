@@ -9,9 +9,12 @@ namespace yack
 {
     namespace jive
     {
-
+        class dictionary;
+        
+        //! REGular EXPression compiler
         struct regexp
         {
+            static pattern *compile(const string &expr, const dictionary *dict=NULL);
         };
     }
 
