@@ -16,6 +16,12 @@ namespace yack
         {
         }
 
+        logical:: logical(const logical &other) :
+        pattern(other.uuid),
+        patterns(other)
+        {
+        }
+
         logical & logical:: operator<<( pattern *p ) throw()
         {
             assert(p);

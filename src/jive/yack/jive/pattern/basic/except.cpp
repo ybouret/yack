@@ -82,6 +82,10 @@ namespace yack
             end(fp);
         }
 
+        pattern * except::clone() const
+        {
+            return new except(code);
+        }
     }
 
 }

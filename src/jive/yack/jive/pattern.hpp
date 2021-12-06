@@ -6,6 +6,7 @@
 #include "yack/jive/source.hpp"
 #include "yack/ios/serializable.hpp"
 #include "yack/ios/gv/vizible.hpp"
+#include "yack/data/list/cloneable.hpp"
 
 namespace yack
 {
@@ -55,6 +56,9 @@ namespace yack
 
             //! collect first bytes
             virtual void   firsts(first_bytes &) const          = 0;
+
+            //! clone
+            virtual pattern *clone()             const          = 0;
 
             //! encode as GraphViz
             virtual void   encode(ios::ostream &) const         = 0;
@@ -135,8 +139,8 @@ namespace yack
             YACK_DISABLE_COPY_AND_ASSIGN(pattern);
         };
 
-        typedef arc_ptr<const pattern> motif;    //!< alias
-        typedef cxx_list_of<pattern>   patterns; //!< alias
+        typedef arc_ptr<const pattern>      motif;    //!< alias
+        typedef cloneable_list_of<pattern>  patterns; //!< alias
     }
 }
 

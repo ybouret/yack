@@ -43,9 +43,17 @@ set(jive_pattern_logic ${jive_pattern_logic_decl} ${jive_pattern_logic_srcs})
 SOURCE_GROUP(jive/pattern/logic FILES ${jive_pattern_logic})
 install( FILES ${jive_pattern_logic_decl} DESTINATION include/yack/jive/pattern/logic )
 
+#pattern/regexp
+file(GLOB jive_pattern_regexp_decl yack/jive/pattern/regexp/*.hpp)
+file(GLOB jive_pattern_regexp_srcs yack/jive/pattern/regexp/*.cpp)
+set(jive_pattern_regexp ${jive_pattern_regexp_decl} ${jive_pattern_regexp_srcs})
+SOURCE_GROUP(jive/pattern/regexp FILES ${jive_pattern_regexp})
+#install( FILES ${jive_pattern_regex_decl} DESTINATION include/yack/jive/pattern/regex )
+
 add_library(yack-jive STATIC
 ${jive_main}
 ${jive_pattern} ${jive_pattern_basic} ${jive_pattern_joker} ${jive_pattern_logic}
+${jive_pattern_regexp}
 )
 
 install( TARGETS yack-jive ARCHIVE DESTINATION lib )

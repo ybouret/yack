@@ -31,9 +31,10 @@ namespace yack
             // interface
             //__________________________________________________________________
 
-            virtual bool accept(YACK_JIVE_PATTERN_ARGS) const; //!< num>=count
-            virtual bool strong() const;                       //! count>0 and joker is strong
-            virtual void encode(ios::ostream &) const;         //!< graphviz
+            virtual bool     accept(YACK_JIVE_PATTERN_ARGS) const; //!< num>=count
+            virtual bool     strong() const;                       //! count>0 and joker is strong
+            virtual void     encode(ios::ostream &) const;         //!< graphviz
+            virtual pattern *clone()                const;         //!< clone
 
 
             virtual const char *class_uid() const throw();          //!< clid
@@ -56,13 +57,14 @@ namespace yack
             //
             // C++
             //__________________________________________________________________
-            virtual ~at_least() throw();               //!< cleanup
+            virtual ~at_least() throw();                      //!< cleanup
 
         protected:
             explicit at_least(const size_t,pattern*) throw(); //!< setup
 
         private:
-            YACK_DISABLE_COPY_AND_ASSIGN(at_least);
+            at_least(const at_least &) throw();
+            YACK_DISABLE_ASSIGN(at_least);
 
         };
 

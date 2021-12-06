@@ -53,10 +53,11 @@ namespace yack
             virtual ~logical() throw();               //!< cleanup
         protected:
             explicit logical(const uint32_t) throw(); //!< setup
+            explicit logical(const logical &);        //!< copy
             void     viz(ios::ostream &)       const; //!< render patterns and create links
             
         private:
-            YACK_DISABLE_COPY_AND_ASSIGN(logical);
+            YACK_DISABLE_ASSIGN(logical);
             static pattern *fill(logical *p, const char *, size_t);
         };
 

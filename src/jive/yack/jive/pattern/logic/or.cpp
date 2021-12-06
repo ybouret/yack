@@ -66,6 +66,17 @@ namespace yack
             viz(fp);
         }
 
+        op_or:: op_or(const op_or &other) :
+        bank(other)
+        {
+        }
+
+        pattern * op_or:: clone() const
+        {
+            return new op_or(*this);
+        }
+
+
     }
 
 }

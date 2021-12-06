@@ -37,10 +37,11 @@ namespace yack
             //
             // pattern interface
             //__________________________________________________________________
-            virtual bool accept(YACK_JIVE_PATTERN_ARGS) const; //!< accept is one char within range
-            virtual bool strong() const;                       //!< always strong
-            virtual void firsts(first_bytes  &) const;         //!< one domain
-            virtual void encode(ios::ostream &) const;         //!< graphviz
+            virtual bool     accept(YACK_JIVE_PATTERN_ARGS) const; //!< accept is one char within range
+            virtual bool     strong() const;                       //!< always strong
+            virtual void     firsts(first_bytes  &) const;         //!< one domain
+            virtual void     encode(ios::ostream &) const;         //!< graphviz
+            virtual pattern *clone()                const;         //!< clone
 
             //__________________________________________________________________
             //

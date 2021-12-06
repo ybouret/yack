@@ -34,9 +34,10 @@ namespace yack
             virtual ~bank()               throw(); //!< cleanup
         protected:                                 //|    and
             explicit bank(const uint32_t) throw(); //!<  setup
-
+            explicit bank(const bank &);           //!< copy
+            
         private:
-            YACK_DISABLE_COPY_AND_ASSIGN(bank);
+            YACK_DISABLE_ASSIGN(bank);
         };
 
     }

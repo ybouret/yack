@@ -32,11 +32,15 @@ namespace yack
             // interface
             //__________________________________________________________________
             //! always accepted
-            virtual bool accept(YACK_JIVE_PATTERN_ARGS) const;
-            virtual bool strong() const;               //!< never strong
-            virtual void encode(ios::ostream &) const; //!< graphviz
+            virtual bool     accept(YACK_JIVE_PATTERN_ARGS) const;
+            virtual bool     strong() const;               //!< never strong
+            virtual void     encode(ios::ostream &) const; //!< graphviz
+            virtual pattern *clone()                const; //!< clone
 
-
+            //__________________________________________________________________
+            //
+            // serializable
+            //__________________________________________________________________
             virtual const char *class_uid() const throw();          //!< clid
             virtual size_t      serialize(ios::ostream &fp) const;  //!< uuid+jk
 
@@ -57,7 +61,8 @@ namespace yack
             explicit optional(pattern*) throw(); //!< setup
 
         private:
-            YACK_DISABLE_COPY_AND_ASSIGN(optional);
+            optional(const optional &) throw(); //!< copy
+            YACK_DISABLE_ASSIGN(optional);
         };
 
     }

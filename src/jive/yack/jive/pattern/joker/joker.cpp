@@ -14,6 +14,13 @@ namespace yack
 
         }
 
+        joker:: joker(const joker &other) throw() :
+        pattern(other.uuid),
+        jk(other.jk)
+        {
+        }
+        
+
         const pattern & joker:: operator*() const throw()
         {
             return *jk;

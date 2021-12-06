@@ -64,6 +64,17 @@ namespace yack
             viz(fp);
         }
 
+        optional:: optional(const optional &other) throw() :
+        joker(other)
+        {
+        }
+        
+
+        pattern * optional::clone() const
+        {
+            return new optional(*this);
+        }
+
     }
 
 }

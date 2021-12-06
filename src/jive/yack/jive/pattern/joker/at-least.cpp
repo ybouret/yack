@@ -91,6 +91,17 @@ namespace yack
             viz(fp);
         }
 
+        at_least:: at_least(const at_least &other) throw() :
+        joker(other),
+        count(other.count)
+        {
+        }
+
+        pattern * at_least:: clone() const
+        {
+            return new at_least(*this);
+        }
+
     }
 
 }

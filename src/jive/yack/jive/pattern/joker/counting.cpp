@@ -82,6 +82,19 @@ namespace yack
             viz(fp);
         }
 
+        counting:: counting(const counting &other) throw() :
+        joker(other),
+        nmin(other.nmin),
+        nmax(other.nmax)
+        {
+        }
+
+        pattern * counting:: clone() const
+        {
+            return new counting(*this);
+        }
+
+
     }
 
 }

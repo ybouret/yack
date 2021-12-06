@@ -35,10 +35,11 @@ namespace yack
 
         protected:
             explicit joker(const uint32_t,pattern*) throw(); //!< setup
-
+            explicit joker(const joker &)           throw(); //!< copy
+            
             void viz(ios::ostream &) const; //!< render joker and link
         private:
-            YACK_DISABLE_COPY_AND_ASSIGN(joker);
+            YACK_DISABLE_ASSIGN(joker);
             const arc_ptr<const pattern> jk;
         };
 

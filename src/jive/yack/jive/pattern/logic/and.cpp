@@ -70,6 +70,15 @@ namespace yack
             viz(fp);
         }
 
+        op_and:: op_and(const op_and &other) :
+        logical(other)
+        {
+        }
+        
+        pattern * op_and:: clone() const
+        {
+            return new op_and(*this);
+        }
 
     }
 

@@ -79,6 +79,10 @@ namespace yack
             end(fp);
         }
 
+        pattern * single::clone() const
+        {
+            return new single(code);
+        }
 
     }
 

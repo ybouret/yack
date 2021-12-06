@@ -84,7 +84,11 @@ namespace yack
             fp << "]";
             end(fp);
         }
-        
+
+        pattern * within::clone() const
+        {
+            return new within(lower,upper);
+        }
     }
 
 }

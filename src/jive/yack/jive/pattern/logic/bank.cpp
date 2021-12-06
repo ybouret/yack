@@ -17,6 +17,12 @@ namespace yack
 
         }
 
+        bank:: bank(const bank &other) :
+        logical(other)
+        {
+        }
+        
+
         void bank:: no_multiple() throw()
         {
             patterns temp;

@@ -74,7 +74,17 @@ namespace yack
             end(fp);
             viz(fp);
         }
-        
+
+        op_none:: op_none(const op_none &other) :
+        bank(other)
+        {
+        }
+
+        pattern * op_none:: clone() const
+        {
+            return new op_none(*this);
+        }
+
     }
 
 }

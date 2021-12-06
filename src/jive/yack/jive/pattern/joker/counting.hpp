@@ -34,10 +34,14 @@ namespace yack
             //! always accepted
             virtual bool accept(YACK_JIVE_PATTERN_ARGS) const;
 
-            virtual bool strong() const;               //!< nmin>0 and joker is strong
-            virtual void encode(ios::ostream &) const; //!< graphviz
+            virtual bool     strong() const;               //!< nmin>0 and joker is strong
+            virtual void     encode(ios::ostream &) const; //!< graphviz
+            virtual pattern *clone()                const; //!< clone
 
-
+            //__________________________________________________________________
+            //
+            // serializable
+            //__________________________________________________________________
             virtual const char *class_uid() const throw();          //!< clid
             virtual size_t      serialize(ios::ostream &fp) const;  //!< uuid+nmin+nmax+jk
 
@@ -63,9 +67,10 @@ namespace yack
 
         protected:
             explicit counting(const size_t, const size_t, pattern*) throw(); //!< setup
+            counting(const counting &other) throw();                         //!< copy
 
         private:
-            YACK_DISABLE_COPY_AND_ASSIGN(counting);
+            YACK_DISABLE_ASSIGN(counting);
 
         };
 

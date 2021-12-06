@@ -46,10 +46,9 @@ namespace yack
             virtual bool strong() const;
 
             //! one domain
-            virtual void firsts(first_bytes &) const;
-
-            //! graphviz
-            virtual void   encode(ios::ostream &) const;
+            virtual void     firsts(first_bytes  &) const;
+            virtual void     encode(ios::ostream &) const; //!< graphviz
+            virtual pattern *clone()                const; //!< clone
 
             //__________________________________________________________________
             //
