@@ -60,6 +60,7 @@ namespace yack
                     case zom:
                     case opt:
                     case oom:
+                    case ign:
                         YACK_JIVE_PRINTLN(rx_indent(deep) << "<joker '" << c << "'/>");
                         jokerize(*p,c);
                         break;
@@ -89,7 +90,7 @@ namespace yack
                 case oom: p.push_back( one_or_more(p.pop_back()) );     break;
                 case opt: p.push_back( optional::create(p.pop_back())); break;
                 default:
-                    throw exception("%s: unhandled joke '%c' in '%s'",clid,j,expr);
+                    throw exception("%s: unhandled joker '%c' in '%s'",clid,j,expr);
             }
         }
 

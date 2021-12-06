@@ -1,5 +1,6 @@
 
 #include "yack/jive/pattern/joker/joker.hpp"
+#include <iostream>
 
 namespace yack
 {
@@ -37,6 +38,8 @@ namespace yack
             link(fp,&*jk);
             end(fp);
         }
+
+        
 
 
     }

@@ -37,6 +37,8 @@ namespace yack
             explicit joker(const joker &)           throw(); //!< copy
             
             void viz(ios::ostream &) const; //!< render joker and link
+
+            void display(std::ostream &) const;
             
         private:
             YACK_DISABLE_ASSIGN(joker);

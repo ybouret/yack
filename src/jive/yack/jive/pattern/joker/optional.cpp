@@ -23,7 +23,7 @@ namespace yack
 
         bool optional:: strong() const { return false; }
 
-      bool optional:: accept(source &src, token &tkn) const
+        bool optional:: accept(source &src, token &tkn) const
         {
             assert(0==tkn.size);
             if( (*this).accept(src,tkn) )
@@ -74,6 +74,8 @@ namespace yack
         {
             return new optional(*this);
         }
+        
+
 
     }
 

@@ -50,7 +50,7 @@ namespace yack
             // methods
             //__________________________________________________________________
             static pattern *create(const size_t,const size_t,pattern *); //!< create
-
+            
             //__________________________________________________________________
             //
             // members
