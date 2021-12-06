@@ -11,22 +11,43 @@ namespace yack
 
     namespace kernel
     {
+        //______________________________________________________________________
+        //
+        //
+        //! base class for common factory methods
+        //
+        //______________________________________________________________________
         class factory
         {
         public:
+            //__________________________________________________________________
+            //
+            // C++
+            //__________________________________________________________________
             virtual ~factory() throw();
 
         protected:
             explicit factory() throw();
-            void   throw_multiple_key(const std::type_info &) const;
-            size_t check_valid_length(const char *key, const std::type_info &) const;
-            void   throw_unknown_key(const std::type_info &) const;
+
+            //__________________________________________________________________
+            //
+            // methods
+            //__________________________________________________________________
+            void    throw_multiple_key(const std::type_info &)                  const; //!< rise exception
+            size_t  check_valid_length(const char *key, const std::type_info &) const; //!< rise exception
+            void    throw_unknown_key(const std::type_info &)                   const; //!< rise exception
 
         private:
             YACK_DISABLE_COPY_AND_ASSIGN(factory);
         };
     }
 
+    //__________________________________________________________________________
+    //
+    //
+    //! generic factory
+    //
+    //__________________________________________________________________________
     template <
     typename T,
     typename KEY,
@@ -34,12 +55,25 @@ namespace yack
     class factory : public kernel::factory, public suffix_map<KEY,CREATOR>
     {
     public:
-        YACK_DECL_ARGS(KEY,key_type);
-        typedef suffix_map<KEY,CREATOR> map_type;
+        //______________________________________________________________________
+        //
+        // types and definitions
+        //______________________________________________________________________
+        YACK_DECL_ARGS(KEY,key_type);             //!< aliases
+        typedef suffix_map<KEY,CREATOR> map_type; //!< alias
         using   map_type::insert;
 
-        inline explicit factory() throw() : kernel::factory(), map_type() {}
-        inline virtual ~factory() throw() {}
+        //______________________________________________________________________
+        //
+        // C++
+        //______________________________________________________________________
+        inline explicit factory() throw() : kernel::factory(), map_type() {} //!< setup
+        inline virtual ~factory() throw() {}                                 //!< cleanup
+
+        //______________________________________________________________________
+        //
+        // declaration methods
+        //______________________________________________________________________
 
         //! declaration
         inline void declare(param_key_type key, CREATOR creator)
@@ -55,6 +89,12 @@ namespace yack
             if(!this->tree.insert(creator,key,len)) throw_multiple_key(typeid(T));
         }
 
+        //______________________________________________________________________
+        //
+        // creation methods
+        //______________________________________________________________________
+
+        //! create new object by key
         template <typename PARAM>
         T * operator()(const PARAM &key) const
         {

@@ -62,7 +62,7 @@ namespace yack
         }
 
 
-
+        //! same category for suffix map
         virtual const char *category() const throw() { return kernel::suffix_map_category; }
 
         //! output to std::ostream
