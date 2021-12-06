@@ -11,11 +11,11 @@ namespace yack
 {
     namespace jive
     {
-
-        class dictionary;
-        class logical;
-        typedef ios::xindent<2> rx_indent; //!< alias
-
+        
+        class   dictionary;
+        class   logical;
+        typedef ios::xindent<2> RXIndent; //!< alias
+        
         //______________________________________________________________________
         //
         //
@@ -44,21 +44,21 @@ namespace yack
             //
             // C++
             //__________________________________________________________________
-
+            
             //! setup all internal pointers
             RXCompiler(const char       *entry,
-                        const size_t      count,
-                        const dictionary *usrDB) throw();
+                       const size_t      count,
+                       const dictionary *usrDB) throw();
             ~RXCompiler() throw(); //!< cleanup
-
+            
             //__________________________________________________________________
             //
             // methods
             //__________________________________________________________________
             pattern *expression(); //!< create new 'AND' from current position
-
-
-
+            
+            
+            
             //__________________________________________________________________
             //
             // members
@@ -71,11 +71,11 @@ namespace yack
         private:
             YACK_DISABLE_COPY_AND_ASSIGN(RXCompiler);
             void jokerize(logical &p, const char j) const;
-            pattern *group();      //!< create a 'OR/NONE' group
+            pattern *group(); //!< create a 'OR/NONE' group
             pattern *posix(); //!< extract posix
         };
     }
-
+    
 }
 
 #endif

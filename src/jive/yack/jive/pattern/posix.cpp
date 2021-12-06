@@ -21,7 +21,7 @@ namespace yack
             auto_ptr<op_or> p = new op_or();
             p->push_back( lower() );
             p->push_back( upper() );
-            return pattern::optimize( p.yield() );
+            return   p.yield();
         }
 
         pattern * posix:: digit()
@@ -35,7 +35,7 @@ namespace yack
             p->push_back( lower() );
             p->push_back( upper() );
             p->push_back( digit() );
-            return pattern::optimize( p.yield() );
+            return p.yield();
         }
 
         pattern * posix:: word()
@@ -45,7 +45,7 @@ namespace yack
             p->push_back( upper() );
             p->push_back( digit() );
             p->add(  '_'  );
-            return pattern::optimize( p.yield() );
+            return p.yield();
         }
 
         pattern * posix:: xdigit()
@@ -54,7 +54,7 @@ namespace yack
             p->push_back( digit() );
             p->add('a','f');
             p->add('A','F');
-            return pattern::optimize( p.yield() );
+            return   p.yield();
         }
 
         pattern * posix:: blank()
@@ -84,14 +84,14 @@ namespace yack
         {
             auto_ptr<op_or> p = new op_or();
             __fill_endl(*p);
-            return pattern::optimize( p.yield() );
+            return   p.yield();
         }
 
         pattern * posix:: dot()
         {
             auto_ptr<op_none> p = new op_none();
             __fill_endl(*p);
-            return pattern::optimize( p.yield() );
+            return  p.yield();
         }
 
         pattern * posix:: core()
