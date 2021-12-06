@@ -1,5 +1,6 @@
 #include "yack/jive/pattern/basic/within.hpp"
 #include "yack/jive/pattern/first-bytes.hpp"
+#include "yack/ios/ascii/hybrid.hpp"
 
 namespace yack
 {
@@ -23,6 +24,7 @@ namespace yack
                 coerce_cswap(lower,upper);
             }
             I_am<within>();
+            YACK_JIVE_PRINTLN("new " << *this);
         }
 
         size_t within:: serialize(ios::ostream &fp) const
@@ -74,6 +76,12 @@ namespace yack
         {
             assert(other);
             return (lower==other->lower) && (upper==other->upper);
+        }
+
+        std::ostream & operator<<(std::ostream &os,const within &p)
+        {
+            os << '[' << ios::ascii::hybrid[p.lower] << '-' << ios::ascii::hybrid[p.upper] << ']';
+            return os;
         }
 
         void within:: encode(ios::ostream &fp) const

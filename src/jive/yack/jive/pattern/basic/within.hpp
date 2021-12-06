@@ -54,7 +54,8 @@ namespace yack
             //
             // method
             //__________________________________________________________________
-            bool is_same_than(const within *other) const throw(); //!< same boundaries
+            bool is_same_than(const within *other) const throw();            //!< same boundaries
+            friend std::ostream & operator<<(std::ostream &,const within &); //!< display
 
 
             //__________________________________________________________________

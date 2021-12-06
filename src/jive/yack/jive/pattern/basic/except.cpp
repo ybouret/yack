@@ -1,6 +1,7 @@
 
 #include "yack/jive/pattern/basic/except.hpp"
 #include "yack/jive/pattern/first-bytes.hpp"
+#include "yack/ios/ascii/hybrid.hpp"
 
 namespace yack
 {
@@ -72,6 +73,14 @@ namespace yack
             assert(other);
             return code==other->code;
         }
+
+        std::ostream & operator<<(std::ostream &os, const except &p)
+        {
+            os << '!' << '\'' << ios::ascii::hybrid[p.code] << '\'';
+            return os;
+        }
+
+        
 
         void except:: encode(ios::ostream &fp) const
         {

@@ -28,6 +28,8 @@ namespace yack
         public object, public counted, public ios::serializable, public ios::vizible
         {
         public:
+            static bool verbose;
+            
             //__________________________________________________________________
             //
             // C++
@@ -137,6 +139,11 @@ namespace yack
         typedef cloneable_list_of<pattern>  patterns; //!< alias
     }
 }
+
+//! trace working
+#define YACK_JIVE_PRINTLN(MSG)  do { if(jive::pattern::verbose) { std::cerr << MSG << std::endl; } } while(false)
+
+
 
 #endif
 

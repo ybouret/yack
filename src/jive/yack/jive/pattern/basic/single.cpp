@@ -1,5 +1,6 @@
 #include "yack/jive/pattern/basic/single.hpp"
 #include "yack/jive/pattern/first-bytes.hpp"
+#include "yack/ios/ascii/hybrid.hpp"
 
 namespace yack
 {
@@ -18,12 +19,19 @@ namespace yack
         code(ch)
         {
             I_am<single>();
+            YACK_JIVE_PRINTLN("new " << *this);
         }
 
         bool single:: is_same_than(const single *other) const throw()
         {
             assert(other);
             return code == other->code;
+        }
+
+        std::ostream & operator<<(std::ostream &os,const single &p)
+        {
+            os << '\'' << ios::ascii::hybrid[p.code] << '\'';
+            return os;
         }
 
 

@@ -8,9 +8,12 @@ namespace yack
     {
         pattern * regexp:: compile(const string &expr, const dictionary *dict)
         {
-            rx_compiler rxc(expr(),expr.size(),dict);
-            if(rxc.depth>0) throw exception("%s unfinished '%s'",rxc.clid,rxc.expr);
-            return NULL;
+            YACK_JIVE_PRINTLN("<regex '" << expr << "'>");
+            rx_compiler       rxc(expr(),expr.size(),dict);
+            auto_ptr<pattern> res = rxc.new_expression();
+            if(rxc.deep>0) throw exception("%s unfinished '%s'",rxc.clid,rxc.expr);
+            YACK_JIVE_PRINTLN("<regex/>");
+            return res.yield();
         }
     }
 }

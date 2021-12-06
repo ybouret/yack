@@ -6,6 +6,8 @@ namespace yack
 {
     namespace jive
     {
+        bool pattern:: verbose = false;
+        
         pattern:: ~pattern() throw()
         {
         }

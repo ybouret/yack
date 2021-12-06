@@ -11,11 +11,13 @@ YACK_UTEST(regexp)
     jive::dictionary dict;
     dict("INT", jive::one_or_more( jive::posix::digit() ) );
     dict.query("INT")->makeGV("int.dot");
-    
+
+    jive::pattern::verbose = true;
     if(argc>1)
     {
         const string      rs = argv[1];
         const jive::motif rx = jive::regexp::compile(rs,NULL);
+        rx->makeGV("rx.dot");
     }
 
 }

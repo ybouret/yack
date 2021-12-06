@@ -57,7 +57,8 @@ namespace yack
             //
             // methods
             //__________________________________________________________________
-            bool is_same_than(const except *other) const throw(); //!< same code
+            bool is_same_than(const except *other) const throw();            //!< same code
+            friend std::ostream & operator<<(std::ostream &,const except &); //!< display
 
             //__________________________________________________________________
             //

@@ -19,9 +19,9 @@ namespace yack
         curr(expr),
         last(curr+count),
         dict(usrDB),
-        depth(0)
+        deep(0)
         {
-
+            
         }
     }
 
