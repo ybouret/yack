@@ -37,6 +37,7 @@ namespace yack
             explicit joker(const joker &)           throw(); //!< copy
             
             void viz(ios::ostream &) const; //!< render joker and link
+            
         private:
             YACK_DISABLE_ASSIGN(joker);
             const arc_ptr<const pattern> jk;

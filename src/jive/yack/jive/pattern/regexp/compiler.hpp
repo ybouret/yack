@@ -13,7 +13,7 @@ namespace yack
     {
 
         class dictionary;
-
+        class logical;
         typedef ios::xindent<2> rx_indent; //!< alias
 
         //______________________________________________________________________
@@ -22,7 +22,7 @@ namespace yack
         //! internal rx_compiler
         //
         //______________________________________________________________________
-        class rx_compiler
+        class RXCompiler
         {
         public:
             //__________________________________________________________________
@@ -32,7 +32,10 @@ namespace yack
             static const char clid[];       //!< "regexp"
             static const char lparen = '('; //!< alias
             static const char rparen = ')'; //!< alias
-            static const char altern = '|'; //!< alias
+            static const char altern = '|'; //!< alternation
+            static const char zom    = '*'; //!< zero or more
+            static const char oom    = '+'; //!< one or more
+            static const char opt    = '?'; //!< optional
             
             //__________________________________________________________________
             //
@@ -40,10 +43,10 @@ namespace yack
             //__________________________________________________________________
 
             //! setup all internal pointers
-            rx_compiler(const char       *entry,
+            RXCompiler(const char       *entry,
                         const size_t      count,
                         const dictionary *usrDB) throw();
-            ~rx_compiler() throw(); //!< cleanup
+            ~RXCompiler() throw(); //!< cleanup
 
             //__________________________________________________________________
             //
@@ -62,8 +65,8 @@ namespace yack
             const dictionary * const dict;  //!< optional dictionary
             int                      deep;  //!< current depth
         private:
-            YACK_DISABLE_COPY_AND_ASSIGN(rx_compiler);
-
+            YACK_DISABLE_COPY_AND_ASSIGN(RXCompiler);
+            void jokerize(logical &p, const char j) const;
         };
     }
 

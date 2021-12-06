@@ -9,7 +9,7 @@ namespace yack
         pattern * regexp:: compile(const string &expr, const dictionary *dict)
         {
             YACK_JIVE_PRINTLN("<regex '" << expr << "'>");
-            rx_compiler       rxc(expr(),expr.size(),dict);
+            RXCompiler        rxc(expr(),expr.size(),dict);
             auto_ptr<pattern> res = rxc.expression();
             if(rxc.deep>0) throw exception("%s unfinished '%s'",rxc.clid,rxc.expr);
             YACK_JIVE_PRINTLN("<regex/>");

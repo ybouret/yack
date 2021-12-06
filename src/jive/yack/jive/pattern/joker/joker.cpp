@@ -35,6 +35,7 @@ namespace yack
         {
             jk->encode(fp);
             link(fp,&*jk);
+            end(fp);
         }
 
 
