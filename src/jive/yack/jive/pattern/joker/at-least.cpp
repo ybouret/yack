@@ -72,7 +72,7 @@ namespace yack
                     nw += ios::encoder::serialize(fp,count);
                     break;
             }
-            return  (**this).serialize(fp);
+            return  nw + (**this).serialize(fp);
         }
 
 

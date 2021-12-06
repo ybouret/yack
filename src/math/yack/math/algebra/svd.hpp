@@ -44,10 +44,11 @@ namespace yack
 
             //! singular values decomposition
             /**
-             Given a matrix a[1..m][1..n], this routine computes its singular value
-             decomposition, a = u.w.v'.  The matrix u replaces a on output.  The diagonal
-             matrix of singular values w is output as a vector w[1..n].  The matrix v (not
-             the transpose v') is output as v[1..n][1..n].
+             - Given a matrix a[1..m][1..n], this routine computes its singular value
+             decomposition, a = u.w.v'.
+             - The matrix u replaces a on output.
+             - The diagonal matrix of singular values w is output as a vector w[1..n].
+             - The matrix v (not the transpose v') is output as v[1..n][1..n].
              */
             bool build(matrix<T> &a, writable<T> &w, matrix<T> &v);
 
