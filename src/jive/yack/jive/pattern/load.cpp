@@ -72,6 +72,9 @@ namespace yack
                     return at_least::create(count,load(fp));
                 }
 
+                case at_least::zom_: return zero_or_more(load(fp));
+                case at_least::oom_: return one_or_more(load(fp));
+
                 case counting::mark:
                 {
                     size_t nmin = 0;

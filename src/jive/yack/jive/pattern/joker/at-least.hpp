@@ -25,6 +25,8 @@ namespace yack
             //__________________________________________________________________
             static const char     clid[];                              //!< "at_least"
             static const uint32_t mark = YACK_FOURCC('[','>','=',']'); //!< mark
+            static const uint32_t zom_ = YACK_FOURCC('Z','O','M',':'); //!< for zero or more
+            static const uint32_t oom_ = YACK_FOURCC('O','O','M',':'); //!< for one  or more
 
             //__________________________________________________________________
             //

@@ -62,9 +62,17 @@ namespace yack
 
         size_t at_least:: serialize(ios::ostream &fp) const
         {
-            size_t nw = emit_uuid(fp);
-            nw       += ios::encoder::serialize(fp,count);
-            return nw + (**this).serialize(fp);
+            size_t nw = 0;
+            switch(count)
+            {
+                case 0: nw = ios::encoder::emit(fp,zom_); break;
+                case 1: nw = ios::encoder::emit(fp,oom_); break;
+                default:
+                    nw  = emit_uuid(fp);
+                    nw += ios::encoder::serialize(fp,count);
+                    break;
+            }
+            return  (**this).serialize(fp);
         }
 
 
