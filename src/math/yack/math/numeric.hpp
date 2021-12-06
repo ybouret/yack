@@ -3,7 +3,7 @@
 #ifndef YACK_MATH_NUMERIC_INCLUDED
 #define YACK_MATH_NUMERIC_INCLUDED 1
 
-#include "yack/setup.hpp"
+#include "yack/type/utils.hpp"
 #include <cmath>
 
 namespace yack
@@ -50,12 +50,38 @@ template <> const long double numeric<long double>::VALUE
 #endif
 
 
+        //! test almost equal
         template <typename T>
-        static inline bool almost_equal( const T X, const T Y) throw()
+        inline bool almost_equal( const T X, const T Y) throw()
         {
             static T fac = T(0.5) * numeric<T>::epsilon;
             return ( fabs(X-Y) <= fac * ( fabs(X) + fabs(Y) ) );
         }
+
+        //! precise hypothenuse
+        template <typename T>
+        inline T hypothenuse(const T a, const T b) throw()
+        {
+            static const T one(1);
+            const T        absa=fabs(a);
+            const T        absb=fabs(b);
+            if(absa>absb)
+            {
+                return absa*sqrt(one+squared(absb/absa));
+            }
+            else
+            {
+                return (absb <= 0 ? 0 : absb*sqrt(one+squared(absa/absb)));
+            }
+        }
+
+        //! return the signed value of a w.r.t the sign of b
+        template <typename T, typename U>
+        inline T __sgn(T a, U b) throw()
+        {
+            return (b >= 0) ? fabs(a) : -fabs(a);
+        }
+
 
     }
 
