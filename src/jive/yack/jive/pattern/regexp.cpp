@@ -10,7 +10,7 @@ namespace yack
         {
             YACK_JIVE_PRINTLN("<regex '" << expr << "'>");
             rx_compiler       rxc(expr(),expr.size(),dict);
-            auto_ptr<pattern> res = rxc.new_expression();
+            auto_ptr<pattern> res = rxc.expression();
             if(rxc.deep>0) throw exception("%s unfinished '%s'",rxc.clid,rxc.expr);
             YACK_JIVE_PRINTLN("<regex/>");
             return res.yield();

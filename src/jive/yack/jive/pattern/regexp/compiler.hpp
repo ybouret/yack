@@ -32,7 +32,8 @@ namespace yack
             static const char clid[];       //!< "regexp"
             static const char lparen = '('; //!< alias
             static const char rparen = ')'; //!< alias
-
+            static const char altern = '|'; //!< alias
+            
             //__________________________________________________________________
             //
             // C++
@@ -48,7 +49,7 @@ namespace yack
             //
             // methods
             //__________________________________________________________________
-            pattern *new_expression(); //!< create new 'AND' from current position
+            pattern *expression(); //!< create new 'AND' from current position
 
             
             //__________________________________________________________________
