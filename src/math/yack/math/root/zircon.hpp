@@ -6,7 +6,7 @@
 
 #include "yack/container/matrix.hpp"
 #include "yack/math/fcn/jacobian.hpp"
-#include "yack/math/algebra/jacobi.hpp"
+#include "yack/math/algebra/svd.hpp"
 
 namespace yack
 {
@@ -44,18 +44,18 @@ namespace yack
             array_type &X;   //!< current position
             array_type &F;   //!< current values
             array_type &G;   //!< current control gradient
-            array_type &mu;  //!< eigen values
+            array_type &W;   //!< singular values
             array_type &S;   //!< computed step
             array_type &VV;  //!< temporary vector
             T           f0;  //!< current control value F^2/2
 
             matrix<T>   J;     //!< jacobian
             matrix<T>   Jt;    //!< current jacobian
-            matrix<T>   J2;    //!< J*J'
-            matrix<T>   V;     //!< J2 = V * diagm(mu) * V'
-            matrix<T>   Vt;    //!< V'
-            jacobi<T>   eigen; //!< solver
+            matrix<T>   U;     //!< for svd
+            matrix<T>   V;     //!< for svd
+            svd<T>      study; //!<
             jacobian<T> fdjac; //!< finite difference jacobian, with inital scaling
+
             //! prepare memory
             void setup(size_t dims);
 
