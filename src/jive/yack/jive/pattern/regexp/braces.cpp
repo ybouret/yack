@@ -11,14 +11,20 @@ namespace yack
 {
     namespace jive
     {
-
+        //______________________________________________________________________
+        //
+        // tokenizer separator
+        //______________________________________________________________________
         static inline bool is_sep(const char c) throw()
         {
             return c == ',';
         }
 
 
-
+        //______________________________________________________________________
+        //
+        // create a 'NONE' from last pattern
+        //______________________________________________________________________
         static inline void exclude_last(logical &p)
         {
             assert(p.size>0);
@@ -27,6 +33,10 @@ namespace yack
             p.push_back(op);
         }
 
+        //______________________________________________________________________
+        //
+        // braces with single parameter
+        //______________________________________________________________________
         static inline void braces_mono(logical &p, const string &s)
         {
             assert(p.size>0);
@@ -41,6 +51,10 @@ namespace yack
             }
         }
 
+        //______________________________________________________________________
+        //
+        // braces with two parameters
+        //______________________________________________________________________
         static inline void braces_dual(logical &p, const string &smin, const string &smax)
         {
             assert(p.size>0);
@@ -71,11 +85,19 @@ namespace yack
             p.push_back( counting::create(nmin,nmax,p.pop_back()) );
         }
 
+        //______________________________________________________________________
+        //
+        // check at least one operand
+        //______________________________________________________________________
         static inline void check_valid(const logical &p, const string &data)
         {
             if(p.size<=0) throw exception("%s: no expression before '{%s}'", RXCompiler::clid, data());
         }
 
+        //______________________________________________________________________
+        //
+        // compile braces
+        //______________________________________________________________________
         void  RXCompiler:: braces(logical &p)
         {
             //------------------------------------------------------------------
