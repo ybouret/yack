@@ -53,7 +53,7 @@ namespace yack
             matrix<T>   Jt;    //!< current jacobian
             matrix<T>   U;     //!< for svd
             matrix<T>   V;     //!< for svd
-            svd<T>      study; //!<
+            svd<T>      study; //!< study definition by svd
             jacobian<T> fdjac; //!< finite difference jacobian, with inital scaling
 
             //! prepare memory
@@ -92,9 +92,9 @@ namespace yack
         private:
             YACK_DISABLE_COPY_AND_ASSIGN(zircon);
 
-            //! from F and J
-            void initialize();
-            T    objective(const array_type &FF) throw();
+
+            void initialize(); //!< compute values from F and J
+            T    objective(const array_type &FF) throw(); //!< |FF^2|/2
 
 
             template <typename FUNCTION>

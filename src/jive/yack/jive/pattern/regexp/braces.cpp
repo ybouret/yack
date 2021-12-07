@@ -105,7 +105,6 @@ namespace yack
             // detect end of brace
             //
             //------------------------------------------------------------------
-
             assert(curr[-1]==lbrace);
             const char *org = curr;
             while(curr<last)
