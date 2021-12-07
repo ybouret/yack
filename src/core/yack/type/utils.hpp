@@ -34,6 +34,13 @@ namespace yack
     {
         return x*x;
     }
+
+    //! x *= x, in situ
+    template <typename T> inline
+    void square(T &x) throw()
+    {
+        x *= x;
+    }
     
     //! x+x
     template <typename T> inline

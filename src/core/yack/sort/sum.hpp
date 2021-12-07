@@ -64,7 +64,25 @@ namespace yack
             while(--i>0) res += arr[i];
             return res;
         }
-        
+
+        //! sum after sorting squares
+        template <typename ARR> inline static
+        typename ARR::mutable_type  sum_squared(ARR &arr)
+        {
+            size_t i = arr.size();
+            switch(i)
+            {
+                case  0: return 0;
+                case  1: return squared(arr[1]);
+                default:
+                    for(size_t j=i;j>0;--j) square(arr[j]);
+                    hsort(arr,comparison::decreasing<typename ARR::mutable_type>);
+            }
+            typename ARR::mutable_type res = arr[i];
+            while(--i>0) res += arr[i];
+            return res;
+        }
+
     };
 
 

@@ -19,12 +19,12 @@ namespace yack
         X(  next() ),
         F(  next() ),
         G(  next() ),
-        W( next() ),
-        S( next()  ),
+        W(  next() ),
+        S(  next()  ),
         XX( next() ),
+        FF( next() ),
         VV( next() ),
         f0(0),
-        sigma(0),
         J(dims,dims),
         Jt(dims,dims),
         U(dims,dims),
@@ -55,9 +55,13 @@ namespace yack
 
 
         template <>
-        void zircon<real_t>:: initialize()
+        core::zircon::topology zircon<real_t>:: initialize()
         {
-
+            //------------------------------------------------------------------
+            //
+            // complete local values@X
+            //
+            //------------------------------------------------------------------
             Jt.assign(J,transposed);
             U.assign(J);
             Jt(G,F);
@@ -69,52 +73,59 @@ namespace yack
             std::cerr << "G=" << G   << std::endl;
             std::cerr << "f0=" << f0 << std::endl;
 
-        }
-
-        template <>
-        core::zircon::topology zircon<real_t>:: analyze()
-        {
-
-            if(!study.build(U,W,V))
+            //------------------------------------------------------------------
+            //
+            // study @X
+            //
+            //------------------------------------------------------------------
+            if(study.build(U,W,V))
             {
-                std::cerr << "cannot SVD..." << std::endl;
-                return singular;
-            }
+                const size_t n = W.size();
+                std::cerr << "W   = " << W << std::endl;
+                const size_t ker = study.ker(W,1e-6);
+                std::cerr << "W   = " << W   << std::endl;
+                std::cerr << "ker = " << ker << std::endl;
 
-            std::cerr << "W=" << W << std::endl;
-            const size_t ker = study.ker(W,1e-6);
-            std::cerr << "W=" << W << std::endl;
-            std::cerr << "ker=" << ker << std::endl;
-            if(ker<=0)
-            {
-                study.solve(U,W,V,S,F);
-                sigma = 0;
-                for(size_t i=S.size();i>0;--i)
+                if(ker>=n)
                 {
-                    XX[i]  = X[i] + tao::v1::neg__(S[i]);
-                    sigma -= G[i] * S[i];
-                }
-                return regular;
-            }
-            else
-            {
-                if(ker>=W.size())
-                {
-                    // bad, bad...
+                    // all zero
                     return singular;
                 }
                 else
                 {
-                    // would use gradient
-                    sigma = 0;
-                    for(size_t i=S.size();i>0;--i)
+                    // evaluate step
+                    study.solve(U,W,V,S,F);
+                    for(size_t i=n;i>0;--i)
                     {
-                        sigma += squared( S[i] = -G[i] );
+                        const real_t S_i = tao::v1::neg__(S[i]);
+                        XX[i] = X[i] + S_i;
+                        VV[i] = S_i * G[i];
                     }
-                    
-                    return degenerate;
+                    std::cerr << "S=" << S << std::endl;
+                    const real_t sigma = -sorted::sum(VV, sorted::by_abs_value);
+                    std::cerr << "sigma=" << sigma << std::endl;
+                    if(sigma<=0)
+                    {
+                        std::cerr << "singular slope" << std::endl;
+                        return singular;
+                    }
+                    if(ker>0)
+                    {
+                        return degenerate;
+                    }
+                    else
+                    {
+                        return regular;
+                    }
                 }
+
             }
+            else
+            {
+                // numeric failure
+                return singular;
+            }
+
         }
 
 

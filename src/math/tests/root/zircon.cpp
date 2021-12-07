@@ -36,19 +36,16 @@ namespace {
         //solver.X[1] = 0.1;  solver.X[2] = 0.2;
         solver.X[1] = 1e-5; solver.X[2] = 1e-6;
 
-        solver.load(F);
-        switch( solver.analyze() )
+        switch( solver.load(F) )
         {
             case core::zircon::singular:
                 std::cerr << "singular" << std::endl; break;
             case core::zircon::regular:
                 std::cerr << "regular" << std::endl;
-                std::cerr << "S=" << solver.S << std::endl;
-                std::cerr << "sigma=" << solver.sigma << std::endl;
                 break;
             case core::zircon::degenerate:
                 std::cerr << "degenerate" << std::endl;
-                std::cerr << "sigma=" << solver.sigma << std::endl;
+                solver.forward(F);
                 break;
         }
 
