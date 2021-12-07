@@ -3,7 +3,6 @@
 #include "yack/jive/pattern/all.hpp"
 #include "yack/jive/pattern/posix.hpp"
 #include "yack/exception.hpp"
-#include "yack/exception.hpp"
 #include "yack/type/temporary.hpp"
 
 namespace yack
@@ -68,20 +67,45 @@ namespace yack
                     const char c = *(curr++);
                     switch(c)
                     {
+                            //--------------------------------------------------
                             // end of group
+                            //--------------------------------------------------
                         case rbrack: goto RETURN;
 
+                            //--------------------------------------------------
                             // escape sequence
+                            //--------------------------------------------------
                         case backslash:
                             p->push_back(bank_esc());
                             break;
 
+                            //--------------------------------------------------
                             // recursive
+                            //--------------------------------------------------
                         case lbrack:
                             p->push_back(group());
                             break;
 
+                            //--------------------------------------------------
+                            // create a range
+                            //--------------------------------------------------
+                        case '-': {
+                            // must have a valid single before
+                            if(p->size<=0) throw exception("%s: no info before '-' in '%s'",clid,expr);
+                            if(p->tail->uuid!=single::mark) throw exception("%s: invalid pattern before '-' in %s",clid,expr);
+                            auto_ptr<pattern>  lo = p->pop_back();
+
+                            // must have a valid single after
+                            auto_ptr<pattern> up = upper();
+                            if(up->uuid!=single::mark) throw exception("%s: invalid pattern after '-' in '%s'",clid,expr);
+
+                            // assemble range
+                            p->push_back( new within( lo->as<single>()->code, up->as<single>()->code) );
+                        } break;
+
+                            //--------------------------------------------------
                             // default
+                            //--------------------------------------------------
                         default:
                             p->push_back( new single(c) );
                     }
@@ -93,35 +117,7 @@ namespace yack
             return pattern::optimize(p.yield());
         }
         
-        pattern *RXCompiler:: posix()
-        {
-            static const tags::pattern_factory & db = tags::instance().pdb;
-            assert(curr[-1]==':');
-            assert(curr[-2]==lbrack);
-            
-            const char *org  = curr;
-            const char *next = org+1;
-            while(next<last)
-            {
-                if(':'==curr[0]&&rbrack==curr[1])
-                {
-                    // get id
-                    const string id(org,curr-org);
-                    YACK_JIVE_PRINTLN(RXIndent(deep) << "<posix id='" << id << "'>");
-                    
-                    // search for it
-                    const tags::pattern_creator *mk = db.search(id);
-                    if(!mk) throw exception("%s: unknown [:%s:] in '%s'",clid,id(), expr);
-                    
-                    // update and return
-                    curr += 2;
-                    return (*mk)();
-                }
-                ++curr;
-                ++next;
-            }
-            throw exception("%s: POSIX expression unfinished in '%s'",clid,expr);
-        }
+     
     }
     
 }

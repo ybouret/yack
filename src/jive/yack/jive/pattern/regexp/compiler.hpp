@@ -78,7 +78,8 @@ namespace yack
             void     braces(logical &p); //!< proceed with braces
             pattern *expr_esc();         //!< expression escape sequence
             pattern *hexa_esc();         //!< during escape sequence
-            pattern *bank_esc();         //!< grouyp escape sequence
+            pattern *bank_esc();         //!< group escape sequence
+            pattern *upper();            //!< single upper for range
         };
     }
     
