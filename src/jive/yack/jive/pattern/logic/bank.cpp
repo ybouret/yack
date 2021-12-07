@@ -53,8 +53,6 @@ namespace yack
 
         void bank:: smart_merge()  
         {
-            patterns    si; //!< singulet
-            patterns    in; //!< interval
             patterns    hl; //!< high level
             first_bytes fc; //!< low  level
             while(size)
@@ -77,20 +75,9 @@ namespace yack
                 }
             }
             assert(0==size);
-            for(const domain *dom = fc.head; dom; dom=dom->next )
-            {
-                if(dom->lower>=dom->upper)
-                {
-                    si.push_back( new single(dom->lower) );
-                }
-                else
-                {
-                    in.push_back( new within(dom->lower,dom->upper) );
-                }
-            }
-            merge_back(si);
-            merge_back(in);
-            merge_back(hl);
+
+            fc.build(*this); // append singulet/interval
+            merge_back(hl);  // append higher level
 
         }
 
