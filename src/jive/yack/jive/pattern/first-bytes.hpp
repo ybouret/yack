@@ -11,6 +11,8 @@ namespace yack
 {
     namespace jive
     {
+        class pattern;
+
         //______________________________________________________________________
         //
         //
@@ -56,6 +58,7 @@ namespace yack
 
             //! check ownership of byte
             bool owns(const uint8_t) const throw();
+            
 
             //__________________________________________________________________
             //
@@ -111,6 +114,7 @@ namespace yack
             //! display
             friend std::ostream & operator<<(std::ostream &, const first_bytes &);
 
+            void build(list_of<pattern> &) const;
 
         private:
             YACK_DISABLE_ASSIGN(first_bytes);

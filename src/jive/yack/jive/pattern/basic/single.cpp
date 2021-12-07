@@ -19,7 +19,6 @@ namespace yack
         code(ch)
         {
             I_am<single>();
-            YACK_JIVE_PRINTLN("new " << *this);
         }
 
         bool single:: is_same_than(const single *other) const throw()

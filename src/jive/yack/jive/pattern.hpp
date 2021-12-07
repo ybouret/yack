@@ -24,8 +24,7 @@ namespace yack
         //! matching patterns
         //
         //______________________________________________________________________
-        class pattern :
-        public object, public counted, public ios::serializable, public ios::vizible
+        class pattern : public object, public counted, public ios::serializable, public ios::vizible
         {
         public:
             static bool verbose; //!< activate tracing
@@ -73,7 +72,14 @@ namespace yack
             //! reload
             //__________________________________________________________________
             static pattern *load(ios::istream &);
-            
+
+            //__________________________________________________________________
+            //
+            //! ignore case
+            //__________________________________________________________________
+            static pattern *ignore_case(pattern *p);
+
+
             //__________________________________________________________________
             //
             //! equality

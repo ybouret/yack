@@ -56,6 +56,7 @@ namespace yack
             return lower<=value && value<=upper;
         }
 
+        
 
 
 

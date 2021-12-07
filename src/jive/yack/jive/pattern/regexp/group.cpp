@@ -57,15 +57,24 @@ namespace yack
                         //------------------------------------------------------
                 }
                 
-                throw exception("not implemented");
                 while(curr<last)
                 {
-                    
+                    const char c = *(curr++);
+                    switch(c)
+                    {
+
+                        case rbrack: goto RETURN;
+
+
+                        default:
+                            p->push_back( new single(c) );
+                    }
                 }
             }
-            
+
+        RETURN:
             YACK_JIVE_PRINTLN(RXIndent(deep) << "<group>");
-            return NULL;
+            return pattern::optimize(p.yield());
         }
         
         pattern *RXCompiler:: posix()

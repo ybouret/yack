@@ -24,7 +24,6 @@ namespace yack
                 coerce_cswap(lower,upper);
             }
             I_am<within>();
-            YACK_JIVE_PRINTLN("new " << *this);
         }
 
         size_t within:: serialize(ios::ostream &fp) const
