@@ -30,17 +30,18 @@ namespace yack
             // types and definitions
             //__________________________________________________________________
             static const char clid[];       //!< "regexp"
-            static const char lparen = '('; //!< alias
-            static const char rparen = ')'; //!< alias
-            static const char altern = '|'; //!< alternation
-            static const char zom    = '*'; //!< zero or more
-            static const char oom    = '+'; //!< one or more
-            static const char opt    = '?'; //!< optional
-            static const char ign    = '&'; //!< ignore case
-            static const char lbrack = '['; //!< alias
-            static const char rbrack = ']'; //!< alias
-            static const char lbrace = '{'; //!< alias
-            static const char rbrace = '}'; //!< alias
+            static const char lparen    = '('; //!< alias
+            static const char rparen    = ')'; //!< alias
+            static const char altern    = '|'; //!< alternation
+            static const char zom       = '*'; //!< zero or more
+            static const char oom       = '+'; //!< one or more
+            static const char opt       = '?'; //!< optional
+            static const char ign       = '&'; //!< ignore case
+            static const char lbrack    = '['; //!< alias
+            static const char rbrack    = ']'; //!< alias
+            static const char lbrace    = '{'; //!< alias
+            static const char rbrace    = '}'; //!< alias
+            static const char backslash = '\\'; //!< alias
 
             //__________________________________________________________________
             //
@@ -57,9 +58,8 @@ namespace yack
             //
             // methods
             //__________________________________________________________________
-            pattern *expression(); //!< create new 'AND' from current position
-            
-            
+            pattern *expression();      //!< create new 'AND' from current position
+
             
             //__________________________________________________________________
             //
@@ -73,9 +73,12 @@ namespace yack
         private:
             YACK_DISABLE_COPY_AND_ASSIGN(RXCompiler);
             void     joker(logical &p, const char j) const; //!< create a joker
-            pattern *group(); //!< create a 'OR/NONE' group
-            pattern *posix(); //!< extract posix
+            pattern *group();            //!< create a 'OR/NONE' group
+            pattern *posix();            //!< extract posix
             void     braces(logical &p); //!< proceed with braces
+            pattern *expr_esc();         //!< expression escape sequence
+            pattern *hexa_esc();         //!< during escape sequence
+
         };
     }
     

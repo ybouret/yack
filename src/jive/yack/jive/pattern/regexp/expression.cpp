@@ -82,7 +82,15 @@ namespace yack
                     case lbrack:
                         p->push_back( group() );
                         break;
-                        
+
+                        //______________________________________________________
+                        //
+                        // escape sequences
+                        //______________________________________________________
+                    case '\\':
+                        p->push_back( expr_esc() );
+                        break;
+
                     default:
                         p->push_back( new single(c) );
                 }
