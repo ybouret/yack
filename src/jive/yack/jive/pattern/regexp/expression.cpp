@@ -62,9 +62,19 @@ namespace yack
                     case oom:
                     case ign:
                         YACK_JIVE_PRINTLN(RXIndent(deep) << "<joker '" << c << "'/>");
-                        jokerize(*p,c);
+                        joker(*p,c);
                         break;
 
+                        //______________________________________________________
+                        //
+                        // braces
+                        //______________________________________________________
+                    case lbrace:
+                        ++deep;
+                        braces(*p);
+                        --deep;
+                        break;
+                        
                         //______________________________________________________
                         //
                         // group:

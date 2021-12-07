@@ -74,7 +74,7 @@ namespace yack
         {
             logo(fp) << "[";
             fp << "label=\"{";
-            fp("%u:%u", unsigned(nmin), unsigned(nmax));
+            fp("%u,%u", unsigned(nmin), unsigned(nmax));
             fp << "}\"";
             fp << ",shape=octagon";
             fp << "]";

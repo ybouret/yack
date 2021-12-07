@@ -39,7 +39,9 @@ namespace yack
             static const char ign    = '&'; //!< ignore case
             static const char lbrack = '['; //!< alias
             static const char rbrack = ']'; //!< alias
-            
+            static const char lbrace = '{'; //!< alias
+            static const char rbrace = '}'; //!< alias
+
             //__________________________________________________________________
             //
             // C++
@@ -70,9 +72,10 @@ namespace yack
             int                      deep;  //!< current depth
         private:
             YACK_DISABLE_COPY_AND_ASSIGN(RXCompiler);
-            void jokerize(logical &p, const char j) const;
+            void     joker(logical &p, const char j) const; //!< create a joker
             pattern *group(); //!< create a 'OR/NONE' group
             pattern *posix(); //!< extract posix
+            void     braces(logical &p); //!< proceed with braces
         };
     }
     

@@ -7,7 +7,7 @@ namespace yack
 {
     namespace jive
     {
-        void RXCompiler:: jokerize(logical &p, const char j) const
+        void RXCompiler:: joker(logical &p, const char j) const
         {
             if(p.size<=0)
             {
