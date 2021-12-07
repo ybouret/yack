@@ -134,9 +134,22 @@ namespace yack
                 std::cerr << "F(" << u1 << ")=" << f1 << std::endl;
                 while(f1>f0-slope*u1)
                 {
-                    triplet<T> u = { 0,   u1/2,  u1 };
-                    triplet<T> f = { f0, F(u.b), f1 };
-                    
+                    const T um = u1/2;
+                    const T fm = F(um);
+                    if(fm<1)
+                    {
+                        std::cerr << "\tmay locate..." << std::endl;
+                        std::cerr << "\tsigma=" << sigma << std::endl;
+
+                        ios::ocstream fp("zpoints.dat");
+                        fp("%g %g\n", double(0),  double(f0));
+                        fp("%g %g\n", double(um), double(fm));
+                        fp("%g %g\n", double(u1), double(f1));
+
+                    }
+                    u1 = um;
+                    f1 = fm;
+                    std::cerr << "F(" << u1 << ")=" << f1 << std::endl;
                 }
 
 
