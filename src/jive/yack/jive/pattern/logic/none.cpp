@@ -78,6 +78,7 @@ namespace yack
         op_none:: op_none(const op_none &other) :
         bank(other)
         {
+            I_am<op_none>();
         }
 
         pattern * op_none:: clone() const

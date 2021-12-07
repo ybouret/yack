@@ -114,6 +114,7 @@ namespace yack
             //! display
             friend std::ostream & operator<<(std::ostream &, const first_bytes &);
 
+            //! append singulets/intervals to list
             void build(list_of<pattern> &) const;
 
         private:

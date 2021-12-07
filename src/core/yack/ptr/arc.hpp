@@ -67,6 +67,12 @@ namespace yack
             pointee = NULL;
         }
 
+        //! no-throw inline exchange
+        inline void commute(arc_ptr &other) throw()
+        {
+            cswap(pointee,other.pointee);
+        }
+
         //______________________________________________________________________
         //
         // methods

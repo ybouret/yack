@@ -24,7 +24,8 @@ namespace yack
             //__________________________________________________________________
             const pattern & operator*() const throw(); //!< get joker
             virtual void firsts(first_bytes &) const;  //!< forward to internal
-            
+
+            void substitute(pattern *) throw();        //!< subsitute pattern
 
             //__________________________________________________________________
             //
@@ -35,14 +36,12 @@ namespace yack
         protected:
             explicit joker(const uint32_t,pattern*) throw(); //!< setup
             explicit joker(const joker &)           throw(); //!< copy
-            
-            void viz(ios::ostream &) const; //!< render joker and link
+            void     viz(ios::ostream &) const;              //!< render joker and link
 
-            void display(std::ostream &) const;
-            
+
         private:
             YACK_DISABLE_ASSIGN(joker);
-            const arc_ptr<const pattern> jk;
+            const motif jk;
         };
 
     }

@@ -27,7 +27,7 @@ namespace yack
         // ignore case for single : couple OR if necessary
         //
         //----------------------------------------------------------------------
-        static inline pattern *ign_build(single *s)
+        static inline pattern *ign_basic(single *s)
         {
             const int lhs = s->code;
             if( isupper(lhs) )
@@ -53,7 +53,7 @@ namespace yack
         // ignore case for except : couple NONE if necessary
         //
         //----------------------------------------------------------------------
-        static inline pattern *ign_build(except *s)
+        static inline pattern *ign_basic(except *s)
         {
             const int lhs = s->code;
             if( isupper(lhs) )
@@ -79,7 +79,7 @@ namespace yack
         // ignore case for a range : use first_bytes to collect possibilities
         //
         //----------------------------------------------------------------------
-        static inline pattern *ign_build(within *w)
+        static inline pattern *ign_basic(within *w)
         {
             auto_ptr<pattern> guard(w);
             first_bytes       fc;
@@ -104,7 +104,7 @@ namespace yack
         //
         //----------------------------------------------------------------------
         template <typename OP>
-        static inline pattern *ign_dup(OP *p)
+        static inline pattern *ign_logic(OP *p)
         {
             auto_ptr<pattern> old(p);
             auto_ptr<logical> res = new OP();
@@ -113,17 +113,36 @@ namespace yack
             return pattern::optimize(res.yield());
         }
 
+        //----------------------------------------------------------------------
+        //
+        // duplicate a joker with changed operand
+        //
+        //----------------------------------------------------------------------
+        template <typename JK>
+        static inline pattern *ign_joker(JK *jk)
+        {
+            auto_ptr<pattern> p(jk);
+            jk->substitute( pattern::ignore_case( (**jk).clone() ) );
+            return p.yield();
+        }
+
 
         pattern * pattern:: ignore_case(pattern *p)
         {
             switch(p->uuid)
             {
-                case single::  mark: return ign_build(p->as<single>());
-                case within::  mark: return ign_build(p->as<within>());
-                case except::  mark: return ign_build(p->as<except>());
-                case op_and::  mark: return ign_dup<op_and>(  p->as<op_and>()  );
-                case op_or::   mark: return ign_dup<op_or>(   p->as<op_or>()   );
-                case op_none:: mark: return ign_dup<op_none>( p->as<op_none>() );
+                case single::  mark: return ign_basic( p->as<single>() );
+                case within::  mark: return ign_basic( p->as<within>() );
+                case except::  mark: return ign_basic( p->as<except>() );
+
+                case op_and::  mark: return ign_logic( p->as<op_and>()  );
+                case op_or::   mark: return ign_logic( p->as<op_or>()   );
+                case op_none:: mark: return ign_logic( p->as<op_none>() );
+
+                case optional::mark: return ign_joker( p->as<optional>() );
+                case at_least::mark: return ign_joker( p->as<at_least>() );
+                case counting::mark: return ign_joker( p->as<counting>() );
+
                 default:
                     break;
             }

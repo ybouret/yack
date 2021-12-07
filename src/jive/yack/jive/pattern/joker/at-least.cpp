@@ -103,6 +103,7 @@ namespace yack
         joker(other),
         count(other.count)
         {
+            I_am<at_least>();
         }
 
         pattern * at_least:: clone() const

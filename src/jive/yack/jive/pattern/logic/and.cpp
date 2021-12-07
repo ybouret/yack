@@ -73,6 +73,7 @@ namespace yack
         op_and:: op_and(const op_and &other) :
         logical(other)
         {
+            I_am<op_and>();
         }
         
         pattern * op_and:: clone() const

@@ -69,6 +69,7 @@ namespace yack
         op_or:: op_or(const op_or &other) :
         bank(other)
         {
+            I_am<op_or>();
         }
 
         pattern * op_or:: clone() const

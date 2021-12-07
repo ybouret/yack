@@ -39,6 +39,16 @@ namespace yack
             end(fp);
         }
 
+        void joker:: substitute(pattern *p) throw()
+        {
+            assert(NULL!=p);
+            const motif &lhs = jk;
+            const motif  rhs(p);
+
+            coerce(lhs).commute( coerce(rhs) );
+
+        }
+
         
 
 

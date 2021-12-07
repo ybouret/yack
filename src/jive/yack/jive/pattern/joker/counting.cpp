@@ -87,6 +87,7 @@ namespace yack
         nmin(other.nmin),
         nmax(other.nmax)
         {
+            I_am<counting>();
         }
 
         pattern * counting:: clone() const

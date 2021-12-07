@@ -67,6 +67,7 @@ namespace yack
         optional:: optional(const optional &other) throw() :
         joker(other)
         {
+            I_am<optional>();
         }
         
 
