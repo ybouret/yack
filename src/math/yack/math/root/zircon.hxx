@@ -15,14 +15,16 @@ namespace yack
 
         template <>
         zircon<real_t>:: zircon(const size_t dims) :
-        tableaux(6,dims),
+        tableaux(8,dims),
         X(  next() ),
         F(  next() ),
         G(  next() ),
         W( next() ),
         S( next()  ),
+        XX( next() ),
         VV( next() ),
         f0(0),
+        sigma(0),
         J(dims,dims),
         Jt(dims,dims),
         U(dims,dims),
@@ -70,28 +72,52 @@ namespace yack
         }
 
         template <>
-        bool zircon<real_t>:: analyze()
+        core::zircon::topology zircon<real_t>:: analyze()
         {
-            //const size_t n = mutual_size();
 
             if(!study.build(U,W,V))
             {
                 std::cerr << "cannot SVD..." << std::endl;
-                return false;
+                return singular;
             }
 
             std::cerr << "W=" << W << std::endl;
             const size_t ker = study.ker(W,1e-6);
             std::cerr << "W=" << W << std::endl;
             std::cerr << "ker=" << ker << std::endl;
-
-
-
-
-
-            return true;
-
+            if(ker<=0)
+            {
+                study.solve(U,W,V,S,F);
+                sigma = 0;
+                for(size_t i=S.size();i>0;--i)
+                {
+                    XX[i]  = X[i] + tao::v1::neg__(S[i]);
+                    sigma -= G[i] * S[i];
+                }
+                return regular;
+            }
+            else
+            {
+                if(ker>=W.size())
+                {
+                    // bad, bad...
+                    return singular;
+                }
+                else
+                {
+                    // would use gradient
+                    sigma = 0;
+                    for(size_t i=S.size();i>0;--i)
+                    {
+                        sigma += squared( S[i] = -G[i] );
+                    }
+                    
+                    return degenerate;
+                }
+            }
         }
+
+
 
     }
 }

@@ -8,6 +8,23 @@
 #include <cerrno>
 #include <cmath>
 
+namespace yack
+{
+    namespace math
+    {
+        namespace core
+        {
+            zircon:: zircon() throw()
+            {
+            }
+
+            zircon:: ~zircon() throw()
+            {
+            }
+
+        }
+    }
+}
 
 #define real_t float
 #include "zircon.hxx"

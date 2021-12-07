@@ -89,13 +89,15 @@ namespace yack
                 }
 
                 //! in place negation
-                template <typename T> static inline void neg_( T &x ) { x=-x; }
+                template <typename T> static inline void neg_(  T &x ) {  (x=-x); }
+                template <typename T> static inline T &  neg__( T &x ) {  neg_(x); return x; }
+
 
                 //! a=-a
                 template <typename A> static inline
                 void neg(A &a)
                 {
-                    for(size_t i=a.size();i>0;--i) neg_( a[i] );
+                    for(size_t i=a.size();i>0;--i)  neg_( a[i] );
                 }
 
 

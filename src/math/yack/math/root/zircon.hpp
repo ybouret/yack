@@ -13,6 +13,31 @@ namespace yack
 
     namespace math
     {
+
+        namespace core
+        {
+            class zircon
+            {
+            public:
+
+                enum topology
+                {
+                    regular,
+                    degenerate,
+                    singular
+                };
+
+                virtual ~zircon() throw();
+
+
+            protected:
+                explicit zircon() throw();
+
+            private:
+                YACK_DISABLE_COPY_AND_ASSIGN(zircon);
+            };
+        }
+
         //______________________________________________________________________
         //
         //
@@ -20,7 +45,7 @@ namespace yack
         //
         //______________________________________________________________________
         template <typename T>
-        class zircon : public arrays_of<T>
+        class zircon : public core::zircon, public arrays_of<T>
         {
         public:
             //__________________________________________________________________
@@ -46,9 +71,10 @@ namespace yack
             array_type &G;   //!< current control gradient
             array_type &W;   //!< singular values
             array_type &S;   //!< computed step
-            array_type &VV;  //!< temporary vector
-            T           f0;  //!< current control value F^2/2
-
+            array_type &XX;    //!< temporary vector
+            array_type &VV;    //!< temporary vector
+            T           f0;    //!< current control value F^2/2
+            T           sigma; //!< initial slope of objective function = S.G
             matrix<T>   J;     //!< jacobian
             matrix<T>   Jt;    //!< current jacobian
             matrix<T>   U;     //!< for svd
@@ -65,8 +91,7 @@ namespace yack
              * - userF(F,X)
              * - userJ(J,X)
              */
-            template <typename FUNCTION,
-            typename JACOBIAN>
+            template <typename FUNCTION, typename JACOBIAN>
             void load(FUNCTION &userF, JACOBIAN &userJ)
             {
                 userF(F,X);
@@ -86,8 +111,9 @@ namespace yack
             }
 
 
-            bool analyze();
+            topology analyze();
 
+            
 
         private:
             YACK_DISABLE_COPY_AND_ASSIGN(zircon);
