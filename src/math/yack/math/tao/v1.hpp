@@ -90,6 +90,8 @@ namespace yack
 
                 //! in place negation
                 template <typename T> static inline void neg_(  T &x ) {  (x=-x); }
+
+                //! in place negation with return
                 template <typename T> static inline T &  neg__( T &x ) {  neg_(x); return x; }
 
 

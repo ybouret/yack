@@ -49,6 +49,7 @@ namespace yack
                         ++curr;return posix();
                         //------------------------------------------------------
 
+
                         //------------------------------------------------------
                         // otherwise, create an emtpy OR, curr is still active
                     default:
@@ -56,16 +57,31 @@ namespace yack
                         p = new op_or(); break;
                         //------------------------------------------------------
                 }
-                
+
+                //--------------------------------------------------------------
+                //
+                // process remaining input
+                //
+                //--------------------------------------------------------------
                 while(curr<last)
                 {
                     const char c = *(curr++);
                     switch(c)
                     {
-
+                            // end of group
                         case rbrack: goto RETURN;
 
+                            // escape sequence
+                        case backslash:
+                            p->push_back(bank_esc());
+                            break;
 
+                            // recursive
+                        case lbrack:
+                            p->push_back(group());
+                            break;
+
+                            // default
                         default:
                             p->push_back( new single(c) );
                     }

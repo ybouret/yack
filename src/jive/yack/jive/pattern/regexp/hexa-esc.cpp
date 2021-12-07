@@ -1,4 +1,3 @@
-
 #include "yack/jive/pattern/regexp/compiler.hpp"
 #include "yack/jive/pattern/all.hpp"
 #include "yack/exception.hpp"

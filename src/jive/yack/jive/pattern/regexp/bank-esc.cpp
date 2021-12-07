@@ -7,10 +7,9 @@ namespace yack
 {
     namespace jive
     {
-
-        pattern * RXCompiler:: expr_esc()
+        pattern *RXCompiler:: bank_esc()
         {
-            YACK_JIVE_PRINTLN(RXIndent(deep) << "<ESC expr>");
+            YACK_JIVE_PRINTLN(RXIndent(deep) << "<ESC bank>");
             assert(backslash==curr[-1]);
             if(curr>=last) throw exception("%s: unfinished escape sequence in '%s'",clid,expr);
             const char c = *(curr++);
@@ -25,17 +24,10 @@ namespace yack
                 case 'f':  return new single('\f');
                 case 'v':  return new single('\v');
                 case '\\': return new single('\\');
-                    YACK_JIVE_ESC('.');
-                    YACK_JIVE_ESC('+');
-                    YACK_JIVE_ESC('*');
-                    YACK_JIVE_ESC('?');
-                    YACK_JIVE_ESC('&');
-                    YACK_JIVE_ESC('(');
-                    YACK_JIVE_ESC(')');
+                    YACK_JIVE_ESC('-');
+                    YACK_JIVE_ESC('^');
                     YACK_JIVE_ESC('[');
                     YACK_JIVE_ESC(']');
-                    YACK_JIVE_ESC('{');
-                    YACK_JIVE_ESC('}');
                     YACK_JIVE_ESC('/');
                 case 'x': return hexa_esc();
                 default:
@@ -46,7 +38,6 @@ namespace yack
         }
 
     }
-
 }
 
 

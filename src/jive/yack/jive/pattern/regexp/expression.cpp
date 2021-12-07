@@ -1,6 +1,7 @@
 #include "yack/jive/pattern/regexp/compiler.hpp"
 #include "yack/jive/pattern/all.hpp"
 #include "yack/exception.hpp"
+#include "yack/jive/pattern/posix.hpp"
 
 namespace yack
 {
@@ -89,6 +90,14 @@ namespace yack
                         //______________________________________________________
                     case '\\':
                         p->push_back( expr_esc() );
+                        break;
+
+                        //______________________________________________________
+                        //
+                        // dot
+                        //______________________________________________________
+                    case '.':
+                        p->push_back( posix::dot() );
                         break;
 
                     default:

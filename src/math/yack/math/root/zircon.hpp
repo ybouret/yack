@@ -18,10 +18,12 @@ namespace yack
 
         namespace core
         {
+            //! base class
             class zircon
             {
             public:
 
+                //! result from analyze
                 enum topology
                 {
                     regular,
@@ -29,11 +31,11 @@ namespace yack
                     singular
                 };
 
-                virtual ~zircon() throw();
+                virtual ~zircon() throw(); //!< cleanup
 
 
             protected:
-                explicit zircon() throw();
+                explicit zircon() throw(); //!< setup
 
             private:
                 YACK_DISABLE_COPY_AND_ASSIGN(zircon);
@@ -159,10 +161,9 @@ namespace yack
                     fp("%.15g %.15g %.15g\n", double(u), double(F(u)), double(f0-sigma*u));
                 }
 
-
             }
 
-
+            
             const array_type & probe(const T u) const throw();
             T                  objective(const array_type &Ftmp) throw(); //!< |Ftmp^2|/2
 
