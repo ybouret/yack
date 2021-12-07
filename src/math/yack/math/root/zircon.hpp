@@ -7,6 +7,8 @@
 #include "yack/container/matrix.hpp"
 #include "yack/math/fcn/jacobian.hpp"
 #include "yack/math/algebra/svd.hpp"
+#include "yack/ios/ocstream.hpp"
+#include "yack/math/triplet.hpp"
 
 namespace yack
 {
@@ -75,6 +77,7 @@ namespace yack
             array_type &FF;    //!< temporary vector
             array_type &VV;    //!< temporary vector
             T           f0;    //!< current control value F^2/2
+            T           sigma; //!< initial negative slope
             matrix<T>   J;     //!< jacobian
             matrix<T>   Jt;    //!< current jacobian
             matrix<T>   U;     //!< for svd
@@ -113,27 +116,49 @@ namespace yack
                 return load(userF,userJ);
             }
 
+
             template <typename FUNCTION>
             void forward(FUNCTION &userF)
             {
                 std::cerr << "<forward>" << std::endl;
+
+                // XX=X+S is computed: evaluate FF
                 userF(FF,XX);
-                T f1 = objective(FF);
-                std::cerr << "XX=" << XX << std::endl;
-                std::cerr << "FF=" << FF << std::endl;
-                std::cerr << "f1=" << f1 << ", df=" << f0-f1 << std::endl;
-                
+
+                // evaluate f1
+                T               u1    = 1;
+                T               f1    = objective(FF);
+                fwrap<FUNCTION> F     = { userF, *this };
+                const T         slope = 0.1*sigma;
+
+                std::cerr << "F(" << u1 << ")=" << f1 << std::endl;
+                while(f1>f0-slope*u1)
+                {
+                    triplet<T> u = { 0,   u1/2,  u1 };
+                    triplet<T> f = { f0, F(u.b), f1 };
+                    
+                }
+
+
+                ios::ocstream fp("zircon.dat");
+                for(T u=0;u<=u1;u+=T(0.001*u1))
+                {
+                    fp("%.15g %.15g %.15g\n", double(u), double(F(u)), double(f0-sigma*u));
+                }
+
+
             }
 
 
-            
+            const array_type & probe(const T u) const throw();
+            T                  objective(const array_type &Ftmp) throw(); //!< |Ftmp^2|/2
 
         private:
             YACK_DISABLE_COPY_AND_ASSIGN(zircon);
 
 
             topology initialize(); //!< compute values from F and J
-            T        objective(const array_type &Ftmp) throw(); //!< |Ftmp^2|/2
+
 
 
             template <typename FUNCTION>
@@ -142,6 +167,18 @@ namespace yack
                 jacobian<T> &jac;
                 FUNCTION    &fcn;
                 inline void operator()(matrix<T> &JJ, const readable<T> &XX) { jac(JJ,fcn,XX); }
+            };
+
+            template <typename FUNCTION>
+            struct fwrap
+            {
+                FUNCTION         &func;
+                zircon           &self;
+                inline T operator()(const T u)
+                {
+                    func(self.FF,self.probe(u));
+                    return self.objective(self.FF);
+                }
             };
 
 

@@ -25,6 +25,7 @@ namespace yack
         FF( next() ),
         VV( next() ),
         f0(0),
+        sigma(0),
         J(dims,dims),
         Jt(dims,dims),
         U(dims,dims),
@@ -53,6 +54,13 @@ namespace yack
             return sorted::sum(VV,sorted::by_value) * half;
         }
 
+        template <>
+        const zircon<real_t>::array_type & zircon<real_t>:: probe(const real_t u) const throw()
+        {
+            tao::v1::muladd(XX,X,u,S);
+            return XX;
+        }
+
 
         template <>
         core::zircon::topology zircon<real_t>:: initialize()
@@ -65,8 +73,9 @@ namespace yack
             Jt.assign(J,transposed);
             U.assign(J);
             Jt(G,F);
-            f0 = objective(F);
-            
+            f0    = objective(F);
+            sigma = 0;
+
             std::cerr << "X=" << X   << std::endl;
             std::cerr << "F=" << F   << std::endl;
             std::cerr << "J=" << J   << std::endl;
@@ -102,13 +111,15 @@ namespace yack
                         VV[i] = S_i * G[i];
                     }
                     std::cerr << "S=" << S << std::endl;
-                    const real_t sigma = -sorted::sum(VV, sorted::by_abs_value);
+                    sigma = -sorted::sum(VV, sorted::by_abs_value);
                     std::cerr << "sigma=" << sigma << std::endl;
+
                     if(sigma<=0)
                     {
                         std::cerr << "singular slope" << std::endl;
                         return singular;
                     }
+
                     if(ker>0)
                     {
                         return degenerate;
