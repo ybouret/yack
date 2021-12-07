@@ -18,6 +18,7 @@ YACK_UTEST(regexp)
         const string      rs = argv[1];
         const jive::motif rx = jive::regexp::compile(rs,&dict);
         rx->makeGV("rx.dot");
+        
     }
 
 }
