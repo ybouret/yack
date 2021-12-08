@@ -1,6 +1,7 @@
 
 #include "yack/jive/module.hpp"
 #include "yack/ios/icstream.hpp"
+#include "yack/ios/imstream.hpp"
 
 namespace yack
 {
@@ -10,23 +11,21 @@ namespace yack
         {
         }
         
-        module:: module(const string &filename,
-                        const int2type<from_file> &) :
+        module:: module(const string &filename) :
         context(filename),
         handle( new ios::icstream(filename) ),
         origin(from_file)
         {
         }
         
-        module:: module(const char *filename,
-                        const int2type<from_file> &) :
+        module:: module(const char *filename) :
         context(filename),
         handle( new ios::icstream(filename) ),
         origin(from_file)
         {
         }
 
-        module:: module(const int2type<from_file> &) :
+        module:: module() :
         context(YACK_STDIN),
         handle( new ios::icstream(ios::cstdin) ),
         origin(from_file)
@@ -35,10 +34,22 @@ namespace yack
       
         module *module:: open_stdin()
         {
-            static const int2type<from_file> use_stdin = {};
-            return new module(use_stdin);
+            return new module();
         }
+
+        module:: module(const string &dataname, const void *addr, const size_t size) :
+        context(dataname),
+        handle( new ios::imstream(addr,size) ),
+        origin( from_data )
+        {}
         
+        module:: module(const char *dataname, const void *addr, const size_t size) :
+        context(dataname),
+        handle( new ios::imstream(addr,size) ),
+        origin( from_data )
+        {}
+
+
         character *module:: get()
         {
             char C = 0;
