@@ -91,11 +91,11 @@ namespace yack
             {
                 const size_t n = W.size();
                 std::cerr << "W   = " << W << std::endl;
-                const size_t ker = study.ker(W,1e-6);
+                const size_t nullity = study.nullity(W,1e-4);
                 std::cerr << "W   = " << W   << std::endl;
-                std::cerr << "ker = " << ker << std::endl;
+                std::cerr << "ker = " << nullity << std::endl;
 
-                if(ker>=n)
+                if(nullity>=n)
                 {
                     // all zero
                     return singular;
@@ -120,7 +120,7 @@ namespace yack
                         return singular;
                     }
 
-                    if(ker>0)
+                    if(nullity>0)
                     {
                         return degenerate;
                     }

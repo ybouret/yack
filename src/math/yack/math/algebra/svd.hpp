@@ -55,8 +55,8 @@ namespace yack
             //! singular value solve u.w.v' x = b
             void solve(const matrix<T> &u, const readable<T> &w, const matrix<T> &v, writable<T> &x, const readable<T> &b);
 
-            //! return kernel size w.r.t ftol
-            static size_t ker(writable<T> &w, const T ftol) throw();
+            //! return nullity of original matrix  w.r.t ftol
+            static size_t nullity(writable<T> &w, const T ftol) throw();
 
         private:
             YACK_DISABLE_COPY_AND_ASSIGN(svd);

@@ -33,13 +33,13 @@ namespace {
                     std::cerr << "[FAILURE]" << std::endl;
                 }
                 std::cerr << "w=" << w << " => ";
-                const size_t ker = svd<T>::ker(w,1e-6);
-                std::cerr << "w=" << w << "; ker=" << ker << std::endl;
+                const size_t nullity = svd<T>::nullity(w,1e-6);
+                std::cerr << "w=" << w << "; ker=" << nullity << std::endl;
 
                 if(r==c)
                 {
-                    std::cerr << "\tsquare@" << r << "/ker=" << ker << std::endl;
-                    if(ker<=0)
+                    std::cerr << "\tsquare@" << r << "/ker=" << nullity << std::endl;
+                    if(nullity<=0)
                     {
                         cxx_array<T> x(r);
                         cxx_array<T> b(r);

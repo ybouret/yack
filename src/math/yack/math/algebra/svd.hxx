@@ -297,12 +297,16 @@ namespace yack
         }
 
         template <>
-        size_t svd<real_t>:: ker(writable<real_t> &w, const real_t ftol) throw()
+        size_t svd<real_t>:: nullity(writable<real_t> &w, const real_t ftol) throw()
         {
             const size_t n = w.size();
             if(n>0)
             {
+                //--------------------------------------------------------------
+                //
                 // first pass: find wmax
+                //
+                //--------------------------------------------------------------
                 real_t wmax = fabs(w[n]);
                 {
                     size_t i=n;
@@ -312,7 +316,11 @@ namespace yack
                     }
                 }
 
+                //--------------------------------------------------------------
+                //
                 // second pass: remove smallest components
+                //
+                //--------------------------------------------------------------
                 size_t     res=0;
                 for(size_t i=n;i>0;--i)
                 {

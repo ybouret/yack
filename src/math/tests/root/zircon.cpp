@@ -58,7 +58,7 @@ namespace {
 YACK_UTEST(zircon)
 {
     do_zircon<float>();
-    do_zircon<double>();
+    //do_zircon<double>();
     //do_zircon<long double>();
 
     YACK_SIZEOF(zircon<float>);
