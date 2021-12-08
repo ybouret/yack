@@ -240,6 +240,24 @@ YACK_UTEST(data_list)
         }
     }
 
+    {
+        std::cerr << "cloneable_list/ops" << std::endl;
+        cloneable_list_of<XNode> xl;
+        std::cerr << "  push" << std::endl;
+        for(size_t i=1+ran.leq(1000);i>0;--i)
+        {
+            if(ran.choice()) xl.push_back(  new XNode() );
+            else             xl.push_front( new XNode() );
+        }
+
+        std::cerr << "  copy" << std::endl;
+        {
+            cloneable_list_of<XNode> xlc(xl);
+        }
+    }
+
+
+
 }
 YACK_UDONE()
 
