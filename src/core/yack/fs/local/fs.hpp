@@ -9,7 +9,12 @@
 
 namespace yack
 {
+    //__________________________________________________________________________
+    //
+    //
     //! local file system interface
+    //
+    //__________________________________________________________________________
     class local_fs : public vfs, public singleton<local_fs>
     {
     public:
@@ -21,6 +26,7 @@ namespace yack
         YACK_DISABLE_COPY_AND_ASSIGN(local_fs);
         virtual ~local_fs() throw();
         explicit local_fs() throw();
+        friend class singleton<local_fs>;
     };
 
 

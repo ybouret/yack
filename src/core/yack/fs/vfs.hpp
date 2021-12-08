@@ -9,11 +9,19 @@
 
 namespace yack
 {
-
+    //__________________________________________________________________________
+    //
+    //
     //! Virtual File System interface
+    //
+    //__________________________________________________________________________
     class vfs
     {
     public:
+        //______________________________________________________________________
+        //
+        // path utilities
+        //______________________________________________________________________
         static const char *get_base_name(const char *path, const size_t plen) throw(); //!< get base name
         static const char *get_base_name(const char *path) throw();                    //!< get base name
         static const char *get_base_name(const string &path) throw();                  //!< get base name
@@ -32,7 +40,17 @@ namespace yack
         static string      new_extension(const string &path, const char   *ext);                  //!< change extension
         static string      new_extension(const string &path, const string &ext);                  //!< change extension
 
+        //______________________________________________________________________
+        //
+        // types and definitions
+        //______________________________________________________________________
+        
 
+
+        //______________________________________________________________________
+        //
+        // C++
+        //______________________________________________________________________
         virtual ~vfs() throw();
     protected:
         explicit vfs() throw();
