@@ -140,6 +140,18 @@ namespace yack
             }
         }
 
+        //! get column into target
+        void get_column(writable<T> &target,
+                        const size_t column) const
+        {
+            assert(column<=cols);
+            assert(column>=1);
+            assert(target.size()>=rows);
+            for(size_t i=rows;i>0;--i)
+            {
+                target[i] = (*this)[i][column];
+            }
+        }
 
         //______________________________________________________________________
         //
