@@ -25,6 +25,7 @@ namespace
         NUM_DISP(golden_r);
         NUM_DISP(golden_c);
         NUM_DISP(golden_i);
+        NUM_DISP(mant_dig);
         NUM_DISP(dig);
         NUM_DISP(ftol);
         NUM_DISP(min_exp);

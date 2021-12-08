@@ -26,6 +26,7 @@ namespace yack
             static const T        golden_r;    //!< (sqrt(5)-1)/2
             static const T        golden_c;    //!< 1-golden_r
             static const T        golden_i;    //!< 1/golden_r = 1+golden_r
+            static const unsigned mant_dig;    //!< mantissa digits
             static const unsigned dig;         //!< digital decimal precision
             static const T        ftol;        //!< 10^(-dig)
             static const int      min_exp;     //!< minimal exp value

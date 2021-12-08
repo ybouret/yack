@@ -77,6 +77,23 @@ namespace
 
 }
 
+#include "yack/type/ints.hpp"
+
+
+template <typename T>
+static inline uint32_t find_conv(uint32_t curr)
+{
+    static const uint32_t umax = 0xffffffff;
+    while(true)
+    {
+        const T        f    = static_cast<T>(curr);
+        const uint32_t back = static_cast<uint32_t>(f);
+        if(back!=curr) return curr;
+        if(umax==curr) return 0;
+        ++curr;
+    }
+}
+
 YACK_UTEST(rand_bits)
 {
     randomized::rand_       ran;
@@ -88,7 +105,16 @@ YACK_UTEST(rand_bits)
     std::cerr << "Testing Park-Miller" << std::endl;
     test_bits(ranPM);
 
+    const uint32_t uf = find_conv<float>(1);
+    std::cerr << "uf = " << uf << std::endl;
+#if 0
+    const uint32_t ud = find_conv<double>(1);
+    std::cerr << "ud = " << ud << std::endl;
 
+    const uint32_t ul = find_conv<long double>(1);
+    std::cerr << "ul = " << ul << std::endl;
+#endif
+    
 }
 YACK_UDONE()
 

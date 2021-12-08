@@ -21,6 +21,7 @@ namespace yack
         YACK_NUMERIC(minimum,MIN);
         YACK_NUMERIC(maximum,MAX);
         YACK_NUMERIC_(unsigned,dig,DIG);
+        YACK_NUMERIC_(unsigned,mant_dig,MANT_DIG);
 
         YACK_NUMERIC_(int,min_exp,MIN_EXP);
         YACK_NUMERIC_(int,max_exp,MAX_EXP);
