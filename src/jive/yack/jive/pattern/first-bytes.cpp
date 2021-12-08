@@ -373,7 +373,39 @@ namespace yack
         {
         }
         
-        
+        bool first_bytes:: has(const uint8_t code) const throw()
+        {
+            assert(is_valid());
+            if(size)
+            {
+                if(code<head->lower)
+                {
+                    return false;
+                }
+                else
+                {
+                    if(code>tail->upper)
+                    {
+                        return false;
+                    }
+                    else
+                    {
+                        for(const domain *dom=head;dom;dom=dom->next)
+                        {
+                            if(dom->owns(code)) return true;
+                        }
+                        return false;
+                    }
+                }
+            }
+            else
+            {
+                return false;
+            }
+
+
+        }
+
     }
 
 }

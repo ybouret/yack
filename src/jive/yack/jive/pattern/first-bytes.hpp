@@ -88,7 +88,7 @@ namespace yack
         //! list of separated, ordered domains
         //
         //______________________________________________________________________
-        class first_bytes : public domains
+        class first_bytes : public object, public domains
         {
         public:
             //__________________________________________________________________
@@ -96,7 +96,7 @@ namespace yack
             // C++
             //__________________________________________________________________
             first_bytes()           throw(); //!< setup
-            ~first_bytes()          throw(); //!< cleanup
+            virtual ~first_bytes()  throw(); //!< cleanup
             first_bytes(const first_bytes&); //!< hard copy
 
 
@@ -116,6 +116,9 @@ namespace yack
 
             //! append singulets/intervals to list
             void build(list_of<pattern> &) const;
+
+            //! check if code is within domains
+            bool has(const uint8_t code) const throw();
 
         private:
             YACK_DISABLE_ASSIGN(first_bytes);

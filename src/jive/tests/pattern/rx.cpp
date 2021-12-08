@@ -37,13 +37,7 @@ YACK_UTEST(regexp)
         lut(*rx);
     }
 
-
-#if 0
-    YACK_SIZEOF(jive::scatter_node);
-    YACK_SIZEOF(jive::scatter_slot);
-    std::cerr << "jive::scatter_table::slot_size=" << jive::scatter_table::slot_size << std::endl;
-    std::cerr << "jive::scatter_table::work_size=" << jive::scatter_table::work_size << std::endl;
-#endif
+    YACK_SIZEOF(jive::first_bytes);
     
 }
 YACK_UDONE()
