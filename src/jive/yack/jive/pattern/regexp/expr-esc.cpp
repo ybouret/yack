@@ -37,6 +37,7 @@ namespace yack
                     YACK_JIVE_ESC('{');
                     YACK_JIVE_ESC('}');
                     YACK_JIVE_ESC('/');
+                    YACK_JIVE_ESC('!');
                 case 'x': return hexa_esc();
                 default:
                     break;

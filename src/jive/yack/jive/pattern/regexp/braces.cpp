@@ -40,14 +40,14 @@ namespace yack
         static inline void braces_mono(logical &p, const string &s)
         {
             assert(p.size>0);
-            const unsigned count = ios::ascii::convert::to<unsigned>(s,"jive::counting");
+            const unsigned count = ios::ascii::convert::to<unsigned>(s,"jive::at_least");
             switch(count)
             {
-                case 0: exclude_last(p); break;
-                case 1: break; // do-nothing!
+                case 0: p.push_back( zero_or_more(p.pop_back())); break;
+                case 1: p.push_back(  one_or_more(p.pop_back())); break;
                 default:
                     assert(count>=2);
-                    p.push_back( counting::create(count,count,p.pop_back()) );
+                    p.push_back( at_least::create(count,p.pop_back()) );
             }
         }
 

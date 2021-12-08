@@ -75,9 +75,16 @@ namespace yack
 
             //__________________________________________________________________
             //
-            //! ignore case
+            //! build the ignore case version
             //__________________________________________________________________
             static pattern *ignore_case(pattern *p);
+
+            //__________________________________________________________________
+            //
+            //! express as string
+            //__________________________________________________________________
+            static void     express(string &target, const pattern *p);
+            string          express() const; //!< express as string
 
 
             //__________________________________________________________________
@@ -100,23 +107,24 @@ namespace yack
 
             //__________________________________________________________________
             //
-            //! required conversion
+            //! check conversion
             //__________________________________________________________________
             template <typename PATTERN> inline
-            PATTERN *as() throw()
-            {
-                assert(self); assert(uuid==PATTERN::mark); return (PATTERN *)self;
-            }
+            bool is() const throw() { return PATTERN::mark == uuid; }
 
             //__________________________________________________________________
             //
             //! required conversion
             //__________________________________________________________________
             template <typename PATTERN> inline
-            const PATTERN *as() const throw()
-            {
-                assert(self); assert(uuid==PATTERN::mark); return (const PATTERN *)self;
-            }
+            PATTERN *as() throw() { assert(self); assert(uuid==PATTERN::mark); return (PATTERN *)self; }
+
+            //__________________________________________________________________
+            //
+            //! required conversion
+            //__________________________________________________________________
+            template <typename PATTERN> inline
+            const PATTERN *as() const throw() { assert(self); assert(uuid==PATTERN::mark); return (const PATTERN *)self; }
 
 
             //__________________________________________________________________

@@ -79,7 +79,15 @@ namespace yack
         pattern * optimized(op_none *p)
         {
             auto_ptr<pattern> q(p);
-            p->rewrite(); // reduce complexity
+            p->rewrite();    // reduce complexity
+            if(1==p->size)
+            {
+                pattern *m = p->head;
+                if(m->is<single>())
+                {
+                    return new except(m->as<single>()->code);
+                }
+            }
 
             return q.yield();
         }

@@ -4,7 +4,7 @@
 #ifndef YACK_JIVE_DICT_INCLUDED
 #define YACK_JIVE_DICT_INCLUDED 1
 
-#include "yack/jive/pattern.hpp"
+#include "yack/jive/pattern/regexp.hpp"
 
 namespace yack
 {
@@ -47,6 +47,16 @@ namespace yack
             //__________________________________________________________________
             void operator()(const string &key, pattern *p); //!< register
             void operator()(const char   *key, pattern *p); //!< register
+
+            //! register from regular expression
+            template <typename KEY, typename EXPR>
+            inline void decl(const KEY &key, const EXPR &expr)
+            {
+                dictionary &self = *this;
+                self(key, regexp::compile(expr,this) );
+            }
+            
+
 
         private:
             YACK_DISABLE_COPY_AND_ASSIGN(dictionary);

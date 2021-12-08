@@ -15,6 +15,12 @@ namespace yack
             YACK_JIVE_PRINTLN("<regex/>");
             return res.yield();
         }
+
+        pattern * regexp:: compile(const char   *expr, const dictionary *dict)
+        {
+            const string _(expr);
+            return compile(_,dict);
+        }
     }
 }
 

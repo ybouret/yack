@@ -16,6 +16,9 @@ namespace yack
         {
             //! compile, using optional dict
             static pattern *compile(const string &expr, const dictionary *dict=NULL);
+
+            //! compile wrapper
+            static pattern *compile(const char   *expr, const dictionary *dict=NULL);
         };
     }
 

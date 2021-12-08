@@ -3,6 +3,7 @@
 #include "yack/utest/run.hpp"
 #include "yack/jive/pattern/all.hpp"
 #include "yack/jive/pattern/posix.hpp"
+#include "yack/jive/pattern/first-bytes.hpp"
 
 using namespace yack;
 
@@ -12,13 +13,21 @@ YACK_UTEST(regexp)
     dict("INT", jive::one_or_more( jive::posix::digit() ) );
     dict.query("INT")->makeGV("int.dot");
 
-    jive::pattern::verbose = true;
+    //jive::pattern::verbose = true;
     if(argc>1)
     {
         const string      rs = argv[1];
+        std::cerr << "Expression: '" << rs << "'" << std::endl;
         const jive::motif rx = jive::regexp::compile(rs,&dict);
         rx->makeGV("rx.dot");
-        
+        jive::first_bytes fc;
+        rx->firsts(fc);
+        std::cerr << "first bytes : " << fc << std::endl;
+        std::cerr << "strong      : " << rx->strong() << std::endl;
+        const string express = rx->express();
+        std::cerr << "express     : " << express << std::endl;
+        const jive::motif ry = jive::regexp::compile(express);
+        YACK_CHECK(*rx==*ry);
     }
 
 }

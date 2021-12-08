@@ -35,7 +35,8 @@ namespace yack
             static const char altern    = '|'; //!< alternation
             static const char zom       = '*'; //!< zero or more
             static const char oom       = '+'; //!< one or more
-            static const char opt       = '?'; //!< optional
+            static const char opt       = '?'; //!< optional previous
+            static const char Not       = '!'; //!< not previous
             static const char ign       = '&'; //!< ignore case
             static const char lbrack    = '['; //!< alias
             static const char rbrack    = ']'; //!< alias

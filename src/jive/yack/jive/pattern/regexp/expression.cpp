@@ -62,6 +62,7 @@ namespace yack
                     case opt:
                     case oom:
                     case ign:
+                    case Not:
                         YACK_JIVE_PRINTLN(RXIndent(deep) << "<joker '" << c << "'/>");
                         joker(*p,c);
                         break;
@@ -108,7 +109,9 @@ namespace yack
 
             YACK_JIVE_PRINTLN(RXIndent(deep) << "<expression/>");
         RETURN:
-            return pattern::optimize( p.yield() );
+            auto_ptr<pattern> ans = pattern::optimize( p.yield() );
+
+            return ans.yield();
         }
 
 
