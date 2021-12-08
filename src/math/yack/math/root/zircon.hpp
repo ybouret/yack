@@ -9,6 +9,7 @@
 #include "yack/math/algebra/svd.hpp"
 #include "yack/ios/ocstream.hpp"
 #include "yack/math/triplet.hpp"
+#include "yack/math/tao/v1.hpp"
 
 namespace yack
 {
@@ -128,37 +129,30 @@ namespace yack
                 userF(FF,XX);
 
                 // evaluate f1
-                T               u1    = 1;
-                T               f1    = objective(FF);
                 fwrap<FUNCTION> F     = { userF, *this };
-                const T         slope = 0.1*sigma;
 
-                std::cerr << "F(" << u1 << ")=" << f1 << std::endl;
-                while(f1>f0-slope*u1)
+                triplet<T> u = { 0, T(0.5), 1 };
+                triplet<T> f = { f0, -1   , objective(FF) }; f.b = F(u.b);
+
+                std::cerr << "u=" << u << std::endl;
+                std::cerr << "f=" << f << std::endl;
+
+                const T slope = sigma * 0.1;
+                while(f.b>f.a - slope * u.b)
                 {
-                    const T um = u1/2;
-                    const T fm = F(um);
-                    if(fm<1)
-                    {
-                        std::cerr << "\tmay locate..." << std::endl;
-                        std::cerr << "\tsigma=" << sigma << std::endl;
+                    f.c = f.b;
+                    u.c = u.b;
 
-                        ios::ocstream fp("zpoints.dat");
-                        fp("%g %g\n", double(0),  double(f0));
-                        fp("%g %g\n", double(um), double(fm));
-                        fp("%g %g\n", double(u1), double(f1));
-
-                    }
-                    u1 = um;
-                    f1 = fm;
-                    std::cerr << "F(" << u1 << ")=" << f1 << std::endl;
+                    f.b = F(u.b/=2);
+                    std::cerr << "u=" << u << std::endl;
+                    std::cerr << "f=" << f << std::endl;
                 }
 
 
                 ios::ocstream fp("zircon.dat");
-                for(T u=0;u<=u1;u+=T(0.001*u1))
+                for(T uu=0;uu<=u.c;uu+=T(0.001*u.c))
                 {
-                    fp("%.15g %.15g %.15g\n", double(u), double(F(u)), double(f0-sigma*u));
+                    fp("%.15g %.15g %.15g %.15g\n", double(uu), double(F(uu)), double(f0-sigma*uu), double(f.a-slope*uu));
                 }
 
             }

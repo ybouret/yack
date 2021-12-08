@@ -31,15 +31,23 @@ The gradient of the control function is:
 	\vec{\nabla} f = \vec{G} = \bm{J}^t \cdot \vec{F}
 \end{equation}
 
-
+We perform the SVD of $\bm{J}$:
 \begin{equation}
-	f(x) = f_a - \sigma x + \beta x^2 + \gamma x^3
+	\bm{J} = \bm{U} \bm{W} \bm{V}^t
 \end{equation}
-
+and we define the pseudo-inverse of $\bm{J}$ for a given fractional tolerance:
 \begin{equation}
-	f'(x) =   - \sigma  + 2\beta x + 3\gamma x^2
+	\tilde{\bm{J}} = \bm{V} \tilde{\bm{W}} \bm{U}^t
+\end{equation}	
+We compute the step:
+\begin{equation}
+	\vec{S} = - \tilde{\bm{J}} \cdot \vec{F} 
 \end{equation}
-
+and we define the initial slope $\sigma$:
+\begin{equation}
+	\sigma = -\vec{S}\vec{G} = <\vec{F}| \bm{U} \bm{W}\tilde{\bm{W}}\bm{U}|\vec{F}> \geq 0
+\end{equation}
+If $\sigma\leq 0$, then the point is singular.
 
 
 \end{document}
