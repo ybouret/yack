@@ -369,7 +369,7 @@ namespace yack
         {
         }
 
-        first_bytes:: first_bytes(const first_bytes &other) : domains(other)
+        first_bytes:: first_bytes(const first_bytes &other) : object(), domains(other)
         {
         }
         

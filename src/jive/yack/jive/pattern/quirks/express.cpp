@@ -15,8 +15,37 @@ namespace yack
 
             static inline void express_c_code(string &target, const uint8_t code)
             {
-                const string tmp = vformat("\\x%02x",code);
-                target += tmp;
+                bool use_hexa = true;
+                if(isalnum(code))
+                {
+                    use_hexa = false;
+                }
+                else
+                {
+                    switch(code)
+                    {
+                        case ' ':
+                        case '_':
+                        case '@':
+                        case ',':
+                        case ';':
+                        case '<':
+                        case '=':
+                        case '>':
+                            use_hexa = false;
+                        default:
+                            break;
+                    }
+                }
+                if(use_hexa)
+                {
+                    target += vformat("\\x%02x",code);
+                }
+                else
+                {
+                    target += char(code);
+                }
+
             }
 
             template <typename T>
