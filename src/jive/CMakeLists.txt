@@ -50,10 +50,18 @@ set(jive_pattern_regexp ${jive_pattern_regexp_decl} ${jive_pattern_regexp_srcs})
 SOURCE_GROUP(jive/pattern/regexp FILES ${jive_pattern_regexp})
 #install( FILES ${jive_pattern_regex_decl} DESTINATION include/yack/jive/pattern/regex )
 
+#pattern/quirks
+file(GLOB jive_pattern_quirks_decl yack/jive/pattern/quirks/*.hpp)
+file(GLOB jive_pattern_quirks_srcs yack/jive/pattern/quirks/*.cpp)
+set(jive_pattern_quirks ${jive_pattern_quirks_decl} ${jive_pattern_quirks_srcs})
+SOURCE_GROUP(jive/pattern/quirks FILES ${jive_pattern_quirks})
+#install( FILES ${jive_pattern_regex_decl} DESTINATION include/yack/jive/pattern/regex )
+
 add_library(yack-jive STATIC
 ${jive_main}
 ${jive_pattern} ${jive_pattern_basic} ${jive_pattern_joker} ${jive_pattern_logic}
 ${jive_pattern_regexp}
+${jive_pattern_quirks}
 )
 
 install( TARGETS yack-jive ARCHIVE DESTINATION lib )

@@ -38,7 +38,8 @@ namespace yack
     template <> struct ilog2<4096> { enum { value = 12 }; };
     //! sizeof=8192
     template <> struct ilog2<8192> { enum { value = 13 }; };
-    
+    //! sizeof=16384
+    template <> struct ilog2<16384> { enum { value = 14 }; };
     
     
     //! proxy to get ilog2 using the type size

@@ -14,7 +14,7 @@ namespace yack
         //______________________________________________________________________
         //
         //
-        //! transform module into a stream of characters
+        //! transform module into a stream of jive::character
         //
         //______________________________________________________________________
         class source
