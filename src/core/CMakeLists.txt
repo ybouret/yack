@@ -367,6 +367,12 @@ set(fs ${fs_impl} ${fs_decl})
 SOURCE_GROUP(fs FILES ${fs})
 install( FILES ${fs_decl} DESTINATION include/yack/fs )
 
+file(GLOB fs_local_impl yack/fs/local/*.cpp)
+file(GLOB fs_local_decl yack/fs/local/*.hpp)
+set(fs_local ${fs_local_impl} ${fs_local_decl})
+SOURCE_GROUP(fs/local FILES ${fs_local})
+install( FILES ${fs_local_decl} DESTINATION include/yack/fs/local )
+
 ########################################################################
 ##
 ## hashing
@@ -535,7 +541,7 @@ ${counting} ${counting_c}
 ${rtld}
 ${string}
 ${kr}
-${fs}
+${fs} ${fs_local}
 ${hashing}
 ${info} ${info_modulation}
 ${math}

@@ -31,7 +31,11 @@ namespace yack
         static string      new_extension(const char   *path, const char   *ext);                  //!< change extension
         static string      new_extension(const string &path, const char   *ext);                  //!< change extension
         static string      new_extension(const string &path, const string &ext);                  //!< change extension
-        
+
+
+        virtual ~vfs() throw();
+    protected:
+        explicit vfs() throw();
     private:
         YACK_DISABLE_COPY_AND_ASSIGN(vfs);
     };

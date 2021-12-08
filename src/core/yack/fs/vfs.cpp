@@ -7,6 +7,15 @@
 namespace yack
 {
 
+    vfs:: vfs() throw()
+    {
+    }
+
+    vfs:: ~vfs() throw()
+    {
+    }
+    
+
     const char *vfs:: get_base_name(const char *path, const size_t plen) throw()
     {
         if(plen<=0)
