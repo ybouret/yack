@@ -30,10 +30,9 @@ namespace yack
                         return i-1;
                     }
                 }
-                
+
                 return mant_dig;
             }
-
         }
 
 
