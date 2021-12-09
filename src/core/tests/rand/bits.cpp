@@ -81,13 +81,13 @@ namespace
 
 
 template <typename T>
-static inline uint32_t find_conv(uint32_t curr)
+static inline uint32_t find_conv(volatile uint32_t curr)
 {
     static const uint32_t umax = 0xffffffff;
     while(true)
     {
-        const T        f    = static_cast<T>(curr);
-        const uint32_t back = static_cast<uint32_t>(f);
+        volatile T        f    = static_cast<T>(curr);
+        volatile uint32_t back = static_cast<uint32_t>(f);
         if(back!=curr) return curr;
         if(umax==curr) return 0;
         ++curr;
