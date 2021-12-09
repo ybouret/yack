@@ -7,11 +7,13 @@ namespace yack
     {
 
         scatter:: node:: node(const pattern &p) throw() :
+        object(),
         next(0),
         prev(0),
         host(p) {}
 
         scatter:: node:: node(const node &other) throw() :
+        object(),
         next(0),
         prev(0),
         host(other.host) {}
@@ -46,7 +48,6 @@ namespace yack
 #include "yack/jive/pattern.hpp"
 #include "yack/exception.hpp"
 #include "yack/ios/ascii/hybrid.hpp"
-//#include <iostream>
 #include <iomanip>
 
 namespace yack

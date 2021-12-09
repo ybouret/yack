@@ -365,11 +365,13 @@ namespace yack
         {
         }
 
-        first_bytes:: first_bytes() throw() : domains()
+        first_bytes:: first_bytes() throw() :
+        object(), counted(), domains()
         {
         }
 
-        first_bytes:: first_bytes(const first_bytes &other) : object(), domains(other)
+        first_bytes:: first_bytes(const first_bytes &other) :
+        object(), counted(), domains(other)
         {
         }
         

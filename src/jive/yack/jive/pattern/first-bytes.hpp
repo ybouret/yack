@@ -4,6 +4,7 @@
 #define YACK_JIVE_PATTERN_FIRST_BYTES_INCLUDED 1
 
 #include "yack/object.hpp"
+#include "yack/counted.hpp"
 #include "yack/data/list/cxx.hpp"
 #include <iosfwd>
 
@@ -88,7 +89,7 @@ namespace yack
         //! list of separated, ordered domains
         //
         //______________________________________________________________________
-        class first_bytes : public object, public domains
+        class first_bytes : public object, public counted, public domains
         {
         public:
             //__________________________________________________________________
