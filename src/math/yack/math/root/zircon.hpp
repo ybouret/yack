@@ -34,7 +34,8 @@ namespace yack
 
                 virtual ~zircon() throw(); //!< cleanup
 
-
+                bool verbose;
+                
             protected:
                 explicit zircon() throw(); //!< setup
 
@@ -42,6 +43,8 @@ namespace yack
                 YACK_DISABLE_COPY_AND_ASSIGN(zircon);
             };
         }
+
+#define YACK_ZIRCON_PRINTLN(MSG) do { if(verbose) { std::cerr << MSG << std::endl; } } while(false)
 
         //______________________________________________________________________
         //
@@ -53,6 +56,18 @@ namespace yack
         class zircon : public core::zircon, public arrays_of<T>
         {
         public:
+            class f1d {
+            public:
+                virtual ~f1d() throw() {}
+
+                virtual T operator()(const T) = 0;
+
+            protected:
+                explicit f1d() throw() {}
+
+            private:
+                YACK_DISABLE_COPY_AND_ASSIGN(f1d);
+            };
             //__________________________________________________________________
             //
             // types and definitions
@@ -79,8 +94,6 @@ namespace yack
             array_type &XX;    //!< temporary vector
             array_type &FF;    //!< temporary vector
             array_type &VV;    //!< temporary vector
-            T           f0;    //!< current control value F^2/2
-            T           sigma; //!< initial negative slope
             matrix<T>   J;     //!< jacobian
             matrix<T>   Jt;    //!< current jacobian
             matrix<T>   U;     //!< for svd
@@ -103,9 +116,10 @@ namespace yack
             template <typename FUNCTION, typename JACOBIAN>
             topology load(FUNCTION &userF, JACOBIAN &userJ)
             {
-                userF(F,X);
-                userJ(J,X);
-                return initialize();
+                userF(F,X); // F=userF(X)
+                userJ(J,X); // J=userJ(X);
+                fwrap<FUNCTION> F1d(userF,*this);
+                return lookup(F1d);
             }
 
             //! X is set
@@ -119,79 +133,13 @@ namespace yack
                 return load(userF,userJ);
             }
 
-
-            template <typename FUNCTION>
-            void forward(FUNCTION &userF)
-            {
-                std::cerr << "<forward>" << std::endl;
-
-                const size_t n = X.size();
-                // XX=X+S is computed: evaluate FF
-                userF(FF,XX);
-
-                // prepare function
-                fwrap<FUNCTION> ff    = { userF, *this };
-                const T         f1    = objective(FF);
-                const T         slope = 0.1 * sigma;
-                if(f1<=f0-slope)
-                {
-                    // take full step
-                    for(size_t i=n;i>0;--i)
-                    {
-                        VV[i] = fabs(X[i]-XX[i]);
-                        X[i] = XX[i];
-                        F[i] = FF[i];
-                    }
-                }
-                else
-                {
-                    // initialize triplet
-                    triplet<T> u = { 0, T(0.5),     1  };
-                    triplet<T> f = { f0, ff(u.b)  , f1 };
-
-                    std::cerr << "u=" << u << ", f=" << f << std::endl;
-
-                    // shrink
-                    while(f.b>f.a-slope*u.b)
-                    {
-                        f.c = f.b;
-                        u.c = u.b;
-                        f.b = ff(u.b/=2);
-                        std::cerr << "u=" << u << ", f=" << f << std::endl;
-                    }
-
-                    const T lam   = u.c;
-                    const T lam3  = lam*lam*lam;
-                    const T rc    = f.c - f.a + sigma * u.c;
-                    const T rb    = f.b - f.a + sigma * u.b;
-                    const T beta  = (-lam/8 * rc + lam * rb) * 8/lam3;
-                    const T gamma = (rc/4-rb) * 8/lam3;
-
-                    ios::ocstream fp("zircon.dat");
-                    for(T uu=0;uu<=u.c;uu+=T(0.001*u.c))
-                    {
-                        fp("%.15g %.15g %.15g %.15g %.15g\n",
-                           double(uu),
-                           double(ff(uu)),
-                           double(f0-sigma*uu),
-                           double(f.a-slope*uu),
-                           double(f.a-sigma*uu + beta * uu*uu + gamma * uu *uu *uu));
-                    }
-                }
-
-
-            }
-
+            T                 control(const array_type &Ftmp) throw(); //!< |Ftmp^2|/2
+            const array_type &probe(const T u) throw();                //!< XX = X + u * S
             
-            const array_type & probe(const T u) const throw();
-            T                  objective(const array_type &Ftmp) throw(); //!< |Ftmp^2|/2
-
         private:
             YACK_DISABLE_COPY_AND_ASSIGN(zircon);
 
-
-            topology initialize(); //!< compute values from F and J
-
+            topology lookup(f1d &f);
 
 
             template <typename FUNCTION>
@@ -203,15 +151,28 @@ namespace yack
             };
 
             template <typename FUNCTION>
-            struct fwrap
+            class fwrap : public f1d
             {
+            public:
+                inline virtual ~fwrap() throw() {}
+                inline explicit fwrap(FUNCTION &user_f,
+                                      zircon   &myself) throw() :
+                func(user_f),
+                self(myself)
+                {
+                }
+
                 FUNCTION         &func;
                 zircon           &self;
-                inline T operator()(const T u)
+
+                inline virtual T operator()(const T u)
                 {
                     func(self.FF,self.probe(u));
-                    return self.objective(self.FF);
+                    return self.control(self.FF);
                 }
+
+            private:
+                YACK_DISABLE_COPY_AND_ASSIGN(fwrap);
             };
 
 

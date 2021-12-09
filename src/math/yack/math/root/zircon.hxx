@@ -24,8 +24,6 @@ namespace yack
         XX( next() ),
         FF( next() ),
         VV( next() ),
-        f0(0),
-        sigma(0),
         J(dims,dims),
         Jt(dims,dims),
         U(dims,dims),
@@ -46,7 +44,7 @@ namespace yack
         }
 
         template <>
-        real_t zircon<real_t>:: objective(const array_type &FF) throw()
+        real_t zircon<real_t>:: control(const array_type &FF) throw()
         {
             static const real_t half(0.5);
             for(size_t i=FF.size();i>0;--i)
@@ -55,88 +53,131 @@ namespace yack
         }
 
         template <>
-        const zircon<real_t>::array_type & zircon<real_t>:: probe(const real_t u) const throw()
+        const zircon<real_t>::array_type & zircon<real_t>:: probe(const real_t u) throw()
         {
             tao::v1::muladd(XX,X,u,S);
             return XX;
         }
 
-
         template <>
-        core::zircon::topology zircon<real_t>:: initialize()
+        core::zircon::topology zircon<real_t>:: lookup(f1d &f1)
         {
             //------------------------------------------------------------------
             //
             // complete local values@X
             //
             //------------------------------------------------------------------
-            Jt.assign(J,transposed);
-            U.assign(J);
-            Jt(G,F);
-            f0    = objective(F);
-            sigma = 0;
+            YACK_ZIRCON_PRINTLN("// lookup ");
+            
+            Jt.assign(J,transposed); // Jt = J'
+            U.assign(J);             // U  = J
+            Jt(G,F);                 // G = J'*F, gradient of control
 
-            std::cerr << "X=" << X   << std::endl;
-            std::cerr << "F=" << F   << std::endl;
-            std::cerr << "J=" << J   << std::endl;
-            std::cerr << "G=" << G   << std::endl;
-            std::cerr << "f0=" << f0 << std::endl;
+            triplet<real_t> f = { control(F), -1, -1 };
+            triplet<real_t> u = { 0,          -1,  1 };
+            YACK_ZIRCON_PRINTLN("X     = " << X);
+            YACK_ZIRCON_PRINTLN("F     = " << F);
+            YACK_ZIRCON_PRINTLN("J     = " << J);
+            YACK_ZIRCON_PRINTLN("G     = " << G);
+            YACK_ZIRCON_PRINTLN("f0    = " << f.a);
 
             //------------------------------------------------------------------
             //
-            // study @X
+            // decompose jacobian
             //
             //------------------------------------------------------------------
-            if(study.build(U,W,V))
+            if(!study.build(U,W,V))
             {
-                const size_t n = W.size();
-                std::cerr << "W   = " << W << std::endl;
-                const size_t nullity = study.nullity(W,1e-4);
-                std::cerr << "W   = " << W   << std::endl;
-                std::cerr << "ker = " << nullity << std::endl;
-
-                if(nullity>=n)
-                {
-                    // all zero
-                    return singular;
-                }
-                else
-                {
-                    // evaluate step
-                    study.solve(U,W,V,S,F);
-                    for(size_t i=n;i>0;--i)
-                    {
-                        const real_t S_i = tao::v1::neg__(S[i]);
-                        XX[i] = X[i] + S_i;
-                        VV[i] = S_i * G[i];
-                    }
-                    std::cerr << "S=" << S << std::endl;
-                    sigma = -sorted::sum(VV, sorted::by_abs_value);
-                    std::cerr << "sigma=" << sigma << std::endl;
-
-                    if(sigma<=0)
-                    {
-                        std::cerr << "singular slope" << std::endl;
-                        return singular;
-                    }
-
-                    if(nullity>0)
-                    {
-                        return degenerate;
-                    }
-                    else
-                    {
-                        return regular;
-                    }
-                }
-
-            }
-            else
-            {
-                // numeric failure
+                //! bad matrix!
+                YACK_ZIRCON_PRINTLN("invalid jacobian");
                 return singular;
             }
 
+            //------------------------------------------------------------------
+            //
+            // check nullity
+            //
+            //------------------------------------------------------------------
+            const size_t dimension = W.size();                     YACK_ZIRCON_PRINTLN("W     = " << W);
+            const size_t nullity   = svd<real_t>::nullity(W,1e-4);
+
+            if(nullity>0)
+            {
+                YACK_ZIRCON_PRINTLN("W     = " << W);
+                YACK_ZIRCON_PRINTLN("nil   = " << nullity);
+            }
+
+            if(nullity>=dimension)
+            {
+                YACK_ZIRCON_PRINTLN("nul jacobian");
+                return singular;
+            }
+
+            //------------------------------------------------------------------
+            //
+            // construct step
+            //
+            //------------------------------------------------------------------
+            study.solve(U,W,V,S,F);
+            for(size_t i=dimension;i>0;--i)
+            {
+                const real_t S_i = tao::v1::neg__(S[i]);
+                //XX[i] = X[i] + S_i;
+                VV[i] = S_i * G[i];
+            }
+
+            //------------------------------------------------------------------
+            //
+            // evaluate decrease rate of the control function
+            //
+            //------------------------------------------------------------------
+            real_t sigma = -sorted::sum(VV, sorted::by_abs_value);
+            YACK_ZIRCON_PRINTLN("S     = " << S);
+            YACK_ZIRCON_PRINTLN("sigma = " << sigma);
+            if(sigma<=0)
+            {
+                YACK_ZIRCON_PRINTLN("zero numerical slope");
+                return singular;
+            }
+
+            //------------------------------------------------------------------
+            //
+            // prepare triplet using full step
+            //
+            //------------------------------------------------------------------
+            f.c = f1(u.c);
+
+            real_t slope = 0.1*sigma;
+            if(f.c>f.a-slope*u.c)
+            {
+                YACK_ZIRCON_PRINTLN("bactrack");
+                f.b = f1(u.b=u.c/2);
+                YACK_ZIRCON_PRINTLN("u=" << u << ", f=" << f);
+                while(f.b>f.a-slope*u.b)
+                {
+                    f.c = f.b;
+                    u.c = u.b;
+                    f.b = f1(u.b/=2);
+                }
+                YACK_ZIRCON_PRINTLN("u=" << u << ", f=" << f);
+            }
+            else
+            {
+                YACK_ZIRCON_PRINTLN("full step");
+            }
+
+            {
+                ios::ocstream fp("zircon.dat");
+                for(real_t uu=0;uu<=u.c;uu+=(0.001*u.c))
+                {
+                    const real_t ff = f1(uu);
+                    fp("%.15g %.15g %.15g\n", double(uu), double(ff), double(f.a-sigma*uu) );
+                }
+            }
+
+
+
+            return regular;
         }
 
 

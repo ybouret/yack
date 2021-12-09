@@ -33,8 +33,10 @@ namespace {
         F2D<T>    F = { 0 };
         zircon<T> solver(2);
 
+        solver.verbose = true;
+
         solver.X[1] = 0.1;  solver.X[2] = 0.2;
-        //solver.X[1] = 1e-4; solver.X[2] = 2e-3;
+        solver.X[1] = 1e-4; solver.X[2] = 2e-3;
 
         switch( solver.load(F) )
         {
@@ -42,11 +44,9 @@ namespace {
                 std::cerr << "singular" << std::endl; break;
             case core::zircon::regular:
                 std::cerr << "regular" << std::endl;
-                solver.forward(F);
                 break;
             case core::zircon::degenerate:
                 std::cerr << "degenerate" << std::endl;
-                solver.forward(F);
                 break;
         }
 

@@ -14,7 +14,7 @@ namespace yack
     {
         namespace core
         {
-            zircon:: zircon() throw()
+            zircon:: zircon() throw() : verbose(false)
             {
             }
 
