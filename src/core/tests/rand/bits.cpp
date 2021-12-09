@@ -9,7 +9,7 @@
 
 
 #include "yack/randomized/metrics.hpp"
-
+#include <typeinfo>
 #include <cstring>
 
 using namespace yack;
