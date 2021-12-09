@@ -40,8 +40,8 @@ namespace yack
         class metrics_of : public metrics
         {
         public:
-            static const unsigned   real_bits; //!< from real mantissa
-            static const word_type  word_mask; //!< 2^real_bits-1
+            static const unsigned   max_bits; //!< from real mantissa
+            static const word_type  max_mask; //!< 2^max_bits-1
 
             inline  metrics_of() throw() : metrics() {}
             inline ~metrics_of() throw() {}
@@ -49,8 +49,8 @@ namespace yack
             static inline T word_to_unit(const word_type w) throw()
             {
                 static const T half(0.5);
-                static const T uden = T(word_mask)+T(1);
-                return (static_cast<T>(w&word_mask) + half)/uden;
+                static const T uden = T(max_mask)  + T(1);
+                return (static_cast<T>(w&max_mask) + half)/uden;
             }
 
 
