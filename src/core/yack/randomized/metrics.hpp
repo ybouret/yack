@@ -40,25 +40,26 @@ namespace yack
         class metrics_of : public metrics
         {
         public:
-            static const unsigned   max_bits; //!< from real mantissa
-            static const word_type  max_mask; //!< 2^max_bits-1
+            static const unsigned   system_bits; //!< from floating point
+            static const word_type  system_mask; //!< 2^max_bits-1
 
-            inline  metrics_of() throw() : metrics() {}
+            inline  metrics_of(const word_type  ) throw() : metrics()
+            {
+
+            }
+
             inline ~metrics_of() throw() {}
 
-            static inline T word_to_unit(const word_type w) throw()
-            {
-                static const T half(0.5);
-                static const T uden = T(max_mask)  + T(1);
-                return (static_cast<T>(w&max_mask) + half)/uden;
-            }
+
+
+            const unsigned usr_bits;
 
         private:
             YACK_DISABLE_COPY_AND_ASSIGN(metrics_of);
         };
 
         //! declaring constants if necessary
-#define YACK_RANDOMIZED_METRICS(VALUE)                           \
+#define YACK_RANDOMIZED_METRICS(VALUE)                        \
 template <> const float       metrics_of<float>      ::VALUE; \
 template <> const double      metrics_of<double>     ::VALUE; \
 template <> const long double metrics_of<long double>::VALUE
@@ -68,9 +69,11 @@ template <> const long double metrics_of<long double>::VALUE
         class converter
         {
         public:
+
             explicit converter(const uint32_t umax) throw();
             virtual ~converter() throw();
             
+
 
         private:
 
