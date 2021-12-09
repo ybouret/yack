@@ -7,6 +7,9 @@
 #include "yack/utest/run.hpp"
 #include "yack/system/seed.hpp"
 
+
+#include "yack/randomized/metrics.hpp"
+
 #include <cstring>
 
 using namespace yack;
@@ -94,6 +97,13 @@ static inline uint32_t find_conv(volatile uint32_t curr)
     }
 }
 
+template <typename T>
+static inline void show_metrics()
+{
+    std::cerr << "Using <" << typeid(T).name() << ">" << std::endl;
+    YACK_OUTPUT(randomized::metrics_of<T>::real_bits);
+}
+
 YACK_UTEST(rand_bits)
 {
     randomized::rand_       ran;
@@ -114,7 +124,12 @@ YACK_UTEST(rand_bits)
     const uint32_t ul = find_conv<long double>(1);
     std::cerr << "ul = " << ul << std::endl;
 #endif
-    
+
+    show_metrics<float>();
+    show_metrics<double>();
+    show_metrics<long double>();
+
+
 }
 YACK_UDONE()
 
