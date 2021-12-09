@@ -29,6 +29,7 @@ namespace yack
                 T        rmin = half/(static_cast<T>(M)+one);
                 std::cerr << "RMIN@" << shift << " = " << rmin << std::endl;
 
+                exit(1);
                 while(rmin<epsilon)
                 {
                     --shift;
@@ -52,8 +53,8 @@ namespace yack
 #define YACK_RAND_METRICS_MASK()  (max_bits>=word_bits) ? integral_for<word_type>::maximum : ( (word_unit<<max_bits)-word_unit )
 
         template <> const metrics::word_type metrics_of<float>::       max_mask = YACK_RAND_METRICS_MASK();
-        template <> const metrics::word_type metrics_of<double>::      max_mask = YACK_RAND_METRICS_MASK();
-        template <> const metrics::word_type metrics_of<long double>:: max_mask = YACK_RAND_METRICS_MASK();
+        template <> const metrics::word_type metrics_of<double>::      max_mask = 0xFFFFFFFF; //YACK_RAND_METRICS_MASK();
+        template <> const metrics::word_type metrics_of<long double>:: max_mask = 0xFFFFFFFF; //YACK_RAND_METRICS_MASK();
 
 #if 0
         template <> const float       metrics_of<float>::       unit_den = 1.0f + static_cast<float>(word_mask);
