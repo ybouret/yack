@@ -4,7 +4,7 @@
 #include "yack/type/utils.hpp"
 #include "yack/type/ints.hpp"
 #include <cfloat>
-
+#include <iostream>
 namespace yack
 {
     namespace randomized
@@ -19,27 +19,34 @@ namespace yack
                 static const T half(0.5);
                 static const T one(1);
 
-                for(unsigned i=0;i<=mant_dig;++i)
+                unsigned shift = min_of<unsigned>(mant_dig,metrics::word_bits);
+
+                // test low bound
+                uint64_t N = uint64_t(1) << shift;
+                uint64_t M = N-1;
+
+                std::cerr << "EPSILON=" << epsilon << std::endl;
+                T        rmin = half/(static_cast<T>(M)+one);
+                std::cerr << "RMIN@" << shift << " = " << rmin << std::endl;
+
+                while(rmin<epsilon)
                 {
-                    const uint64_t N = uint64_t(1) << i;
-                    const uint64_t M = N-1;
-                    const T    num = static_cast<T>(M)+half;
-                    const T    den = static_cast<T>(M)+one;
-                    const T    res = one - (num/den);
-                    if(res<epsilon/2)
-                    {
-                        return i-1;
-                    }
+                    --shift;
+                    N >>= 1;
+                    M = M-1;
+                    rmin = half/(static_cast<T>(M)+one);
+                    std::cerr << "RMIN@" << shift << " = " << rmin << std::endl;
                 }
 
-                return mant_dig;
+                return shift;
+
             }
         }
 
 
-        template <> const unsigned metrics_of<float>::      max_bits = max_bits_for<float>(min_of<unsigned>(word_bits,FLT_MANT_DIG),FLT_EPSILON);
-        template <> const unsigned metrics_of<double>::     max_bits = max_bits_for<double>(min_of<unsigned>(word_bits,DBL_MANT_DIG),DBL_EPSILON);
-        template <> const unsigned metrics_of<long double>::max_bits = max_bits_for<long double>(min_of<unsigned>(word_bits,LDBL_MANT_DIG),LDBL_EPSILON);
+        template <> const unsigned metrics_of<float>::      max_bits = max_bits_for<float>(FLT_MANT_DIG,FLT_EPSILON);
+        template <> const unsigned metrics_of<double>::     max_bits = 32;//max_bits_for<double>(DBL_MANT_DIG,DBL_EPSILON);
+        template <> const unsigned metrics_of<long double>::max_bits = 32; //max_bits_for<long double>(LDBL_MANT_DIG,LDBL_EPSILON);
 
 
 #define YACK_RAND_METRICS_MASK()  (max_bits>=word_bits) ? integral_for<word_type>::maximum : ( (word_unit<<max_bits)-word_unit )

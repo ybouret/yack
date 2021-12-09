@@ -106,6 +106,7 @@ YACK_UTEST_DECL(128)
     YACK_UTEST(hashing_key);
 
     YACK_UTEST(rand_bits);
+    YACK_UTEST(rand_metrics);
 
     YACK_UTEST(sort_heap);
     YACK_UTEST(sort_indexing);
