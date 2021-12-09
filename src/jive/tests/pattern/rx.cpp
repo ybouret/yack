@@ -39,9 +39,8 @@ YACK_UTEST(regexp)
         std::cerr << lut << std::endl;
 
     }
-
-    YACK_SIZEOF(jive::first_bytes);
     
+
 }
 YACK_UDONE()
 

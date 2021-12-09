@@ -36,7 +36,7 @@ namespace yack
         typedef suffix_compound<KEY,T,KEY_WALKER, glossary<KEY,T> > base_type; //!< alias
         using base_type::tree;
         using base_type::walk;
-
+        
 
         //______________________________________________________________________
         //
@@ -44,9 +44,8 @@ namespace yack
         //______________________________________________________________________
         inline explicit suffix_map() throw() : base_type() {} //!< setup empty
         inline virtual ~suffix_map() throw() {}               //!< cleanup
-        inline          suffix_map(const suffix_map &other) :
-        collection(),
-        base_type(other) {} //!< hard copy
+        inline          suffix_map(const suffix_map &other) : //|
+        collection(), base_type(other) {}                     //!< hard copy
 
         //______________________________________________________________________
         //
@@ -76,6 +75,8 @@ namespace yack
         {
             return base_type::template display(os, (*s.tree).head );
         }
+
+      
 
 
     private:

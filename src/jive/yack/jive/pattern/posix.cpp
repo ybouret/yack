@@ -173,6 +173,18 @@ namespace yack
             return create(_);
         }
 
+
+        void    posix:: collect(sequence<string> &keys)
+        {
+            static const tags::pattern_factory & db = tags::instance().pdb;
+            kernel::tree_path<uint8_t> path( db.tree.depth(), as_capacity );
+            for(tags::pattern_factory::const_iterator it = db.begin();it!=db.end();++it)
+            {
+                (it.operator->()).encode(path);
+                const string tmp((const char *)path(),path.size());
+                keys.push_back(tmp);
+            }
+        }
         
     }
 

@@ -76,6 +76,13 @@ namespace yack
                 node->disp(os);
             }
 
+            //! forward encoding to node
+            inline void encode( typename NODE::path_type &path ) const
+            {
+                assert(is_alive());
+                node->encode(path);
+            }
+
 
             //__________________________________________________________________
             //

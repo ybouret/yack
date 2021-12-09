@@ -33,7 +33,8 @@ namespace yack
         YACK_DECL_ARGS(KEY,key_type);                      //!< aliases
         typedef kernel::suffix_tree<T,uint8_t> tree_type;  //!< alias
         typedef typename tree_type::knot_type  knot_type;  //!< alias
-
+        typedef kernel::tree_path<uint8_t>     path_type;  //!< alias
+        
         //______________________________________________________________________
         //
         // ASSOCIATIVE interface
@@ -115,7 +116,16 @@ namespace yack
         typedef iterating::linked<const_type,const knot_type,iterating::forward> const_iterator; //!< forward const iterator
         const_iterator begin() const throw() { return (*tree).head; }                            //!< forward const begin
         const_iterator end()   const throw() { return NULL;         }                            //!< forward const end
-      
+
+        //! prototype...
+        inline void foreach( )
+        {
+            path_type path(tree.depth(),as_capacity);
+            for(const knot_type *knot = (*tree).head;knot;knot=knot->next)
+            {
+                knot->encode(path);
+            }
+        }
     };
 
 }

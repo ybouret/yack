@@ -50,6 +50,7 @@ namespace yack
             //------------------------------------------------------------------
             static pattern *create(const string &); //!< from database
             static pattern *create(const char   *); //!< from database
+            static void     collect(sequence<string> &keys);
 
         };
 

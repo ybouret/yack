@@ -32,8 +32,9 @@ YACK_UTEST(posix)
     YPOSIX(vowel);
     YPOSIX(consonant);
     
-
-
+    vector<string> keys;
+    jive::posix::collect(keys);
+    std::cerr << "keys=" << keys << std::endl;
 }
 YACK_UDONE()
 

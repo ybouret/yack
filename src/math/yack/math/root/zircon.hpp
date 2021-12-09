@@ -44,6 +44,7 @@ namespace yack
             };
         }
 
+        //! helper to trace
 #define YACK_ZIRCON_PRINTLN(MSG) do { if(verbose) { std::cerr << MSG << std::endl; } } while(false)
 
         //______________________________________________________________________
@@ -56,6 +57,10 @@ namespace yack
         class zircon : public core::zircon, public arrays_of<T>
         {
         public:
+            //__________________________________________________________________
+            //
+            //! 1D function interface
+            //__________________________________________________________________
             class f1d {
             public:
                 virtual ~f1d() throw() {}
@@ -68,6 +73,7 @@ namespace yack
             private:
                 YACK_DISABLE_COPY_AND_ASSIGN(f1d);
             };
+            
             //__________________________________________________________________
             //
             // types and definitions

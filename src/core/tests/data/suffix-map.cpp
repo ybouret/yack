@@ -40,6 +40,9 @@ YACK_UTEST(data_suffix_map)
     randomized::shuffle::data(keys(),keys.size(),ran);
     std::cerr << "keys=" << keys << std::endl;
     YACK_CHECK( keys.size() == m.size() );
+
+    m.foreach();
+
     while( keys.size() )
     {
         const int &key = keys.back();
@@ -49,8 +52,9 @@ YACK_UTEST(data_suffix_map)
         YACK_ASSERT(  !m.remove(key)   );
         keys.pop_back();
         YACK_ASSERT(keys.size() == m.size() );
-
     }
+
+
 
 
 }

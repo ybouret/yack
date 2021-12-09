@@ -43,7 +43,7 @@ namespace yack
             static void gv(); //!< save render in jive-tags.[dot|png]
 
             const pattern_factory pdb; //!< database of pattern creator
-
+            
         private:
             YACK_DISABLE_COPY_AND_ASSIGN(tags);
             friend class singleton<tags>;
