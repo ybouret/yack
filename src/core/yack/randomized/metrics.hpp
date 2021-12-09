@@ -53,7 +53,6 @@ namespace yack
                 return (static_cast<T>(w&max_mask) + half)/uden;
             }
 
-
         private:
             YACK_DISABLE_COPY_AND_ASSIGN(metrics_of);
         };
@@ -65,6 +64,17 @@ template <> const double      metrics_of<double>     ::VALUE; \
 template <> const long double metrics_of<long double>::VALUE
 
         //YACK_RANDOMIZED_METRICS(unit_den);     //!< unit_den
+
+        class converter
+        {
+        public:
+            explicit converter(const uint32_t umax) throw();
+            virtual ~converter() throw();
+            
+
+        private:
+
+        };
 
 
     }

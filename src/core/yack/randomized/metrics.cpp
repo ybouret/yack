@@ -13,7 +13,8 @@ namespace yack
         namespace
         {
 
-            template <typename T> unsigned max_bits_for(const unsigned mant_dig) throw()
+            template <typename T> unsigned max_bits_for(const unsigned mant_dig,
+                                                        const T        epsilon) throw()
             {
                 static const T half(0.5);
                 static const T one(1);
@@ -25,7 +26,7 @@ namespace yack
                     const T    num = static_cast<T>(M)+half;
                     const T    den = static_cast<T>(M)+one;
                     const T    res = one - (num/den);
-                    if(res<=0)
+                    if(res<epsilon/2)
                     {
                         return i-1;
                     }
@@ -36,9 +37,9 @@ namespace yack
         }
 
 
-        template <> const unsigned metrics_of<float>::      max_bits = max_bits_for<float>(min_of<unsigned>(word_bits,FLT_MANT_DIG));
-        template <> const unsigned metrics_of<double>::     max_bits = max_bits_for<double>(min_of<unsigned>(word_bits,DBL_MANT_DIG));
-        template <> const unsigned metrics_of<long double>::max_bits = max_bits_for<long double>(min_of<unsigned>(word_bits,LDBL_MANT_DIG));
+        template <> const unsigned metrics_of<float>::      max_bits = max_bits_for<float>(min_of<unsigned>(word_bits,FLT_MANT_DIG),FLT_EPSILON);
+        template <> const unsigned metrics_of<double>::     max_bits = max_bits_for<double>(min_of<unsigned>(word_bits,DBL_MANT_DIG),DBL_EPSILON);
+        template <> const unsigned metrics_of<long double>::max_bits = max_bits_for<long double>(min_of<unsigned>(word_bits,LDBL_MANT_DIG),LDBL_EPSILON);
 
 
 #define YACK_RAND_METRICS_MASK()  (max_bits>=word_bits) ? integral_for<word_type>::maximum : ( (word_unit<<max_bits)-word_unit )
