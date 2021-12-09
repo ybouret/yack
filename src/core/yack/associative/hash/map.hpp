@@ -154,9 +154,14 @@ namespace yack
         //
         // iterators
         //______________________________________________________________________
-        typedef iterating::linked<type,node_type,iterating::forward> iterator; //!< forward const iterator
-        iterator begin()   throw() { return (*table).head; }                   //!< forward const begin
-        iterator end()     throw() { return NULL;          }                   //!< forward const end
+        typedef iterating::linked<type,node_type,iterating::forward> iterator; //!< forward   iterator
+        iterator begin()   throw() { return (*table).head; }                   //!< forward   begin
+        iterator end()     throw() { return NULL;          }                   //!< forward   end
+
+        typedef iterating::linked<const_type,const node_type,iterating::forward> const_iterator; //!< forward const iterator
+        const_iterator begin() const throw() { return (*table).head; }                      //!< forward const begin
+        const_iterator end()   const throw() { return NULL;          }                      //!< forward const end
+
     };
 
 }

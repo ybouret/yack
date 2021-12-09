@@ -1,9 +1,4 @@
-
 #include "yack/jive/pattern/scatter-table.hpp"
-#include "yack/type/out-of-reach.hpp"
-#include "yack/type/destruct.hpp"
-#include "yack/memory/allocator/dyadic.hpp"
-#include <new>
 
 
 namespace yack
@@ -11,68 +6,58 @@ namespace yack
     namespace jive
     {
 
-        scatter_node:: scatter_node(const pattern &p) throw() :
+        scatter:: node:: node(const pattern &p) throw() :
         next(0),
         prev(0),
-        host(p)
-        {
+        host(p) {}
 
-        }
+        scatter:: node:: node(const node &other) throw() :
+        next(0),
+        prev(0),
+        host(other.host) {}
 
-        scatter_node:: ~scatter_node() throw()
-        {
 
-        }
+        scatter:: node:: ~node() throw() {}
 
+        const pattern & scatter::node:: operator*() const throw() { return host; }
 
     }
 
 }
 
+
+
 namespace yack
 {
     namespace jive
     {
-        scatter_table:: scatter_table():
-        slot( static_cast<slot_type *>(memory::dyadic::instance().query(work_exp2)) )
+        scatter:: hasher::  hasher() throw() {}
+        scatter:: hasher:: ~hasher() throw() {}
+
+        size_t scatter::hasher:: operator()(const uint8_t &code) const throw()
         {
-            slot_type *s = slot;
-            for(size_t i=0;i<num_codes;++i)
-            {
-                new (s++) slot_type();
-            }
+            return code;
         }
-
-        scatter_table:: ~scatter_table() throw()
-        {
-            slot_type *s = slot;
-            for(size_t i=0;i<num_codes;++i)
-            {
-                while(s->size) delete s->pop_back();
-                out_of_reach::zset(destructed(s),slot_size);
-                ++s;
-            }
-            memory::dyadic::location().store(slot,work_exp2);
-        }
-
-        const scatter_table::slot_type & scatter_table:: operator[](const uint8_t code) const throw()
-        {
-            return slot[code];
-        }
-
-
     }
 
 }
 
 #include "yack/jive/pattern/first-bytes.hpp"
 #include "yack/jive/pattern.hpp"
+#include "yack/exception.hpp"
+#include "yack/ios/ascii/hybrid.hpp"
+//#include <iostream>
+#include <iomanip>
 
 namespace yack
 {
     namespace jive
     {
-        void scatter_table:: operator()(const pattern &p)
+        scatter:: table:: table() throw() : table_() {}
+
+        scatter:: table:: ~table() throw() {}
+
+        void scatter::table:: operator()(const pattern &p)
         {
             first_bytes fc;
             p.firsts(fc);
@@ -81,13 +66,54 @@ namespace yack
                 const size_t up = dom->upper;
                 for(size_t code=dom->lower;code<=up;++code)
                 {
-                    assert(code<num_codes);
-                    slot[code].push_back( new node_type(p) );
+                    use(code,p);
                 }
             }
         }
 
+        void scatter::table:: use(const uint8_t code, const pattern &p)
+        {
+            static const char fn[] = "jive::scatter:table: ";
+
+            const slot *s = search(code);
+            if(!s)
+            {
+                const slot empty;
+                if( !insert(code,empty)  ) throw exception("%s unexpected insert failure",fn);
+                if(NULL==(s=search(code))) throw exception("%s unexpected search failure",fn);
+            }
+            assert(NULL!=s);
+            coerce(*s).push_back( new node(p) );
+
+        }
+
+        const scatter::node * scatter::table:: operator[](const uint8_t code) const throw()
+        {
+            const slot *s = search(code);
+            return (NULL!=s) ? s->head : NULL;
+        }
+
+        std::ostream & operator<<(std::ostream &os, const scatter::table &lut)
+        {
+            os << "<scatter::table size='" << lut.size() << "'>" << std::endl;
+            for(scatter::table::const_iterator it=lut.begin();it!=lut.end();++it)
+            {
+                const uint8_t        code = it->key();
+                const scatter::slot &data = *it;
+                os << "\t@" << std::setw(3) << ios::ascii::hybrid[code] << " :";
+                for(const scatter::node *info=data.head;info;info=info->next)
+                {
+                    os << ' ' << (**info).express();
+                }
+                os << std::endl;
+            }
+            os << "<scatter::table/>";
+            return os;
+        }
+
+
     }
 
 }
+
 

@@ -5,6 +5,7 @@
 #include "yack/jive/pattern/all.hpp"
 #include "yack/jive/pattern/posix.hpp"
 #include "yack/jive/pattern/first-bytes.hpp"
+#include "yack/ios/ascii/hybrid.hpp"
 
 using namespace yack;
 
@@ -15,7 +16,7 @@ YACK_UTEST(regexp)
     dict("INT", jive::one_or_more( jive::posix::digit() ) );
     dict.query("INT")->makeGV("int.dot");
 
-    jive::scatter_table lut;
+    jive::scatter::table lut;
 
 
     //jive::pattern::verbose = true;
@@ -35,6 +36,8 @@ YACK_UTEST(regexp)
         const jive::motif ry = jive::regexp::compile(express);
         YACK_CHECK(*rx==*ry);
         lut(*rx);
+        std::cerr << lut << std::endl;
+
     }
 
     YACK_SIZEOF(jive::first_bytes);

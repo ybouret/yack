@@ -140,7 +140,15 @@ namespace yack
         {
             return new (zpool.size ? zpool.query() : object::zacquire<node_type>()) node_type(args);
         }
-        
+
+    public:
+        //______________________________________________________________________
+        //
+        // iterators
+        //______________________________________________________________________
+        typedef iterating::linked<const_type,const node_type,iterating::forward> const_iterator; //!< forward const iterator
+        const_iterator begin() const throw() { return (*table).head; }                           //!< forward const begin
+        const_iterator end()   const throw() { return NULL;          }                           //!< forward const end
     };
 
 }
