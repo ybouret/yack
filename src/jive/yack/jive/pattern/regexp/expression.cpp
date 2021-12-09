@@ -110,7 +110,7 @@ namespace yack
             YACK_JIVE_PRINTLN(RXIndent(deep) << "<expression/>");
         RETURN:
             auto_ptr<pattern> ans = pattern::optimize( p.yield() );
-
+            
             return ans.yield();
         }
 
