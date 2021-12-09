@@ -101,6 +101,10 @@ namespace yack
                         p->push_back( posix::dot() );
                         break;
 
+                        //______________________________________________________
+                        //
+                        // default
+                        //______________________________________________________
                     default:
                         p->push_back( new single(c) );
                 }
@@ -110,7 +114,7 @@ namespace yack
             YACK_JIVE_PRINTLN(RXIndent(deep) << "<expression/>");
         RETURN:
             auto_ptr<pattern> ans = pattern::optimize( p.yield() );
-            
+            if(ans->is_empty()) throw exception("%s: empty sub-expression detected in '%s'",clid,expr);
             return ans.yield();
         }
 

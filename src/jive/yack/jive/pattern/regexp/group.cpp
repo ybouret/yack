@@ -23,6 +23,7 @@ namespace yack
             {
                 throw exception("%s: no data after '%c'",clid,lbrack);
             }
+            
             auto_ptr<logical> p = NULL;
             {
                 const temporary<int> temp(deep,deep+1);
@@ -114,7 +115,9 @@ namespace yack
 
         RETURN:
             YACK_JIVE_PRINTLN(RXIndent(deep) << "<group>");
-            return pattern::optimize(p.yield());
+            auto_ptr<pattern> ans = pattern::optimize(p.yield());
+            if(ans->is_empty()) throw exception("%s: empty group detected in '%s'",clid,expr);
+            return ans.yield();
         }
         
      

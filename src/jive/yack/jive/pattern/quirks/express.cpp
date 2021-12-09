@@ -1,4 +1,3 @@
-
 #include "yack/jive/pattern/all.hpp"
 #include "yack/exception.hpp"
 #include "yack/type/fourcc.h"
@@ -8,8 +7,6 @@ namespace yack
 {
     namespace jive
     {
-
-
 
         namespace {
 
