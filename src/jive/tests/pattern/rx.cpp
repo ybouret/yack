@@ -6,6 +6,8 @@
 #include "yack/jive/pattern/posix.hpp"
 #include "yack/jive/pattern/first-bytes.hpp"
 #include "yack/ios/ascii/hybrid.hpp"
+#include "yack/ios/serializer/cfile.hpp"
+#include "yack/ios/icstream.hpp"
 
 using namespace yack;
 
@@ -35,6 +37,12 @@ YACK_UTEST(regexp)
         std::cerr << "express     : " << express << std::endl;
         const jive::motif ry = jive::regexp::compile(express);
         YACK_CHECK(*rx==*ry);
+        ios::serializer::cfile::save("rx.bin",*rx);
+        {
+            ios::icstream fp("rx.bin");
+            const jive::motif rz = jive::pattern::load(fp);
+            YACK_CHECK(*rz==*rx);
+        }
         lut(*rx);
         std::cerr << lut << std::endl;
 

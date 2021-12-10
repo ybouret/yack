@@ -37,9 +37,7 @@ namespace yack
             matching(const matching &) throw(); //!< copy, without token content
             virtual ~matching()        throw(); //!< cleanup
 
-            //! TODO
-            bool exactly(source &src);
-
+            
             //__________________________________________________________________
             //
             // members

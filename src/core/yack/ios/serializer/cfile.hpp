@@ -17,7 +17,7 @@ namespace yack
             struct cfile
             {
                 //! save to file, return written bytes
-                size_t save(const char   *, const serializable &, const bool append=false);
+                static size_t save(const char   *, const serializable &, const bool append=false);
               
                 //! save to file, return written bytes
                 static size_t save(const string &, const serializable &, const bool append=false);
