@@ -41,6 +41,7 @@ namespace yack
                     ++num;
                     continue;
                 }
+                break;
             }
             if(num>=nmin&&num<=nmax)
             {

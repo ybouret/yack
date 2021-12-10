@@ -39,6 +39,7 @@ namespace yack
                     ++num;
                     continue;
                 }
+                break;
             }
             if(num>=count)
             {
