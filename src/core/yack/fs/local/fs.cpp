@@ -4,6 +4,7 @@
 
 #if defined(YACK_BSD)
 #include <unistd.h>
+#include <cerrno>
 #endif
 
 #if defined(YACK_WIN)
