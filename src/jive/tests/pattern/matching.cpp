@@ -14,7 +14,8 @@ YACK_UTEST(matching)
         const string   expr = argv[1];
         jive::matching match = expr;
         std::cerr << "express: " << match.scheme->express() << std::endl;;
-        
+        std::cerr << "strong : " << match.strong            << std::endl;;
+
         if(argc>2)
         {
             ios::icstream   fp(argv[2]);

@@ -26,7 +26,7 @@ namespace yack
         bool optional:: accept(source &src, token &tkn) const
         {
             assert(0==tkn.size);
-            if( (*this).accept(src,tkn) )
+            if( (**this).accept(src,tkn) )
             {
                 return true;
             }
