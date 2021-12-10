@@ -29,7 +29,7 @@ namespace yack
         //
         // methods
         //______________________________________________________________________
-        virtual void remove_file(const string &path);
+        virtual void remove_file(const string &path); //!< unlink/DeleteFile
         
 
     private:

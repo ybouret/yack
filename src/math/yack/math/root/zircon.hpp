@@ -34,7 +34,7 @@ namespace yack
 
                 virtual ~zircon() throw(); //!< cleanup
 
-                bool verbose;
+                bool verbose;              //!< verbosity
                 
             protected:
                 explicit zircon() throw(); //!< setup

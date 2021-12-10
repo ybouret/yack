@@ -50,14 +50,23 @@ namespace yack
         //
         // interface
         //______________________________________________________________________
-        virtual void remove_file(const string &path) = 0;
+        virtual void remove_file(const string &path) = 0; //!< remove given filename
 
 
         //______________________________________________________________________
         //
         // non-virtual interface
         //______________________________________________________________________
-        void remove_file(const char *path);
+        void remove_file(const char *path); //!< wrapper
+
+        //! helper, a.k.a rm -f
+        template <typename PATH> inline
+        bool try_remove_file(const PATH &path) throw()
+        {
+            try { remove_file(path); return true; }
+            catch(...) { return false; }
+        }
+
 
         //______________________________________________________________________
         //

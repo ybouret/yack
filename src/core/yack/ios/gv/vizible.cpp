@@ -112,7 +112,7 @@ namespace yack
 
 }
 
-#include "yack/fs/vfs.hpp"
+#include "yack/fs/local/fs.hpp"
 #include "yack/exception.hpp"
 #include "yack/string.hpp"
 
@@ -122,13 +122,13 @@ namespace yack
     namespace ios
     {
 
-        void vizible:: render(const char *filename)
+        void vizible:: render(const char *filename, const bool keep)
         {
             const string _(filename);
-            render(_);
+            render(_,keep);
         }
 
-        void vizible:: render(const string &filename)
+        void vizible:: render(const string &filename, const bool keep)
         {
             static const char dotext[] = "dot";
             static const char prolog[] = "dot -Tpng ";
@@ -151,6 +151,14 @@ namespace yack
             if(0!=system( cmd() ))
             {
                 std::cerr << "[failure]" << std::endl;
+            }
+            else
+            {
+                if(!keep)
+                {
+                    static vfs &fs = local_fs::instance();
+                    fs.try_remove_file(filename);
+                }
             }
         }
 
