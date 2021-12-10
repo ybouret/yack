@@ -143,31 +143,65 @@ namespace yack
 
             //------------------------------------------------------------------
             //
-            // prepare triplet using full step
+            // prepare triplet using initial full step
             //
             //------------------------------------------------------------------
             f.c = f1(u.c);
-            
             real_t slope = 0.1*sigma;
             if(f.c>f.a-slope*u.c)
             {
-                YACK_ZIRCON_PRINTLN(fn<<"bactrack");
+                //--------------------------------------------------------------
+                //
+                // backtrack using reduced intervals and
+                // deducing optimal point by cubic interpolation
+                //
+                //--------------------------------------------------------------
+            BACKTRACK:
+                YACK_ZIRCON_PRINTLN(fn<<"<bactrack>");
                 f.b = f1(u.b=u.c/2);
-                YACK_ZIRCON_PRINTLN("u=" << u << ", f=" << f);
+                YACK_ZIRCON_PRINTLN("\tu=" << u << ", f=" << f);
                 while(f.b>f.a-slope*u.b)
                 {
                     f.c = f.b;
                     u.c = u.b;
                     f.b = f1(u.b/=2);
                 }
-                YACK_ZIRCON_PRINTLN("u=" << u << ", f=" << f);
+                YACK_ZIRCON_PRINTLN("\tu=" << u << ", f=" << f);
+                const real_t delta_b = f.b - f.a;
+                const real_t delta_c = f.c - f.a;
+                const real_t sigma_c = sigma*u.c;
+                const real_t beta    = delta_c - 8 * delta_b - 3*sigma_c;
+                const real_t gamma   = twice(delta_c - 4*delta_b - sigma_c);
+                YACK_ZIRCON_PRINTLN("\tbeta = " << beta << "; gamma=" << gamma);
+                if(beta<=0||gamma<=0)
+                {
+                    YACK_ZIRCON_PRINTLN("spurious singular backtracking point");
+                    return singular;
+                }
+                {
+                    ios::ocstream fp("zircon.dat");
+                    for(real_t uu=0;uu<=u.c;uu+=(0.001*u.c))
+                    {
+                        const real_t ff = f1(uu);
+                        fp("%.15g %.15g %.15g\n", double(uu), double(ff), double(f.a-sigma*uu-beta*squared(uu/u.c)+gamma*cubed(uu/u.c)) );
+                    }
+                }
+                const real_t three_gamma = 3*gamma;
+                u.c *= (beta+sqrt(beta*beta+sigma_c*three_gamma))/three_gamma;
+                f.c  = f1(u.c);
+                YACK_ZIRCON_PRINTLN("\tf(" << u.c << ")=" << f.c);
+                if(f.c>f.a-slope*u.c)
+                    goto BACKTRACK;
+
             }
             else
             {
-                YACK_ZIRCON_PRINTLN(fn<<"full step");
-            }
-
-            {
+                //--------------------------------------------------------------
+                //
+                // accept full step
+                //
+                //--------------------------------------------------------------
+                YACK_ZIRCON_PRINTLN(fn<<"<full step>");
                 ios::ocstream fp("zircon.dat");
                 for(real_t uu=0;uu<=u.c;uu+=(0.001*u.c))
                 {
@@ -176,9 +210,12 @@ namespace yack
                 }
             }
 
+            YACK_ZIRCON_PRINTLN(fn<<"<new position>");
+            std::cerr << "XX=" << XX << std::endl;
 
 
-            return regular;
+
+            return (nullity<=0) ? regular : degenerate;
         }
 
 

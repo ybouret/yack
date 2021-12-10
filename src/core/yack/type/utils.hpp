@@ -35,6 +35,13 @@ namespace yack
         return x*x;
     }
 
+    //! x^3
+    template <typename T> inline
+    T cubed(const T x) throw()
+    {
+        return x*x*x;
+    }
+
     //! x *= x, in situ
     template <typename T> inline
     void square(T &x) throw()
