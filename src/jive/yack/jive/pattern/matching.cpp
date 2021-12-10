@@ -29,6 +29,57 @@ namespace yack
         }
         
 
+        bool matching:: exactly(source &src)
+        {
+            release();
+            if(strong)
+            {
+                const character *ch = src.peek();
+                if(ch)
+                {
+                    const uint8_t code = **ch;
+                    if(firsts->has(code))
+                    {
+                        if(scheme->accept(src,*this))
+                        {
+                            return src.done(); // source must be empty
+                        }
+                        else
+                        {
+                            return false;      // not accepted
+                        }
+                    }
+                    else
+                    {
+                        // early return false
+                        return false;
+                    }
+                }
+                else
+                {
+                    // EOF
+                    return false;
+                }
+            }
+            else
+            {
+                // try in any case
+                if(scheme->accept(src,*this))
+                {
+                    return src.done(); //!< source must be empty
+                }
+                else
+                {
+                    return false;
+                }
+            }
+        }
+
+
+        bool matching:: somehow(source &)
+        {
+            return false;
+        }
 
     }
 }

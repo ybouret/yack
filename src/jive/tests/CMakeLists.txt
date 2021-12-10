@@ -22,11 +22,13 @@ add_test(io:tags    test-jive tags)
 add_test(io::module test-jive module)
 add_test(io:token   test-jive token)
 
-add_test(pattern:firsts test-jive firsts)
-add_test(pattern        test-jive pattern)
-add_test(pattern:viz    test-jive viz)
-add_test(pattern:posix  test-jive posix)
-add_test(pattern:regexp test-jive regexp)
+add_test(pattern:firsts   test-jive firsts)
+add_test(pattern          test-jive pattern)
+add_test(pattern:viz      test-jive viz)
+add_test(pattern:posix    test-jive posix)
+add_test(pattern:regexp   test-jive regexp)
+add_test(pattern:matching test-jive matching)
+
 
 
 

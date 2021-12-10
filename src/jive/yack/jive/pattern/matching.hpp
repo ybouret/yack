@@ -37,7 +37,23 @@ namespace yack
             matching(const matching &) throw(); //!< copy, without token content
             virtual ~matching()        throw(); //!< cleanup
 
-            
+
+            //__________________________________________________________________
+            //
+            // methods
+            //__________________________________________________________________
+
+            //! search for full match
+            /**
+             * accepted part is kept in token, even if source is not done
+             */
+            bool exactly(source &);
+
+            //! search for partial match
+            bool somehow(source &);
+
+
+
             //__________________________________________________________________
             //
             // members

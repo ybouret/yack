@@ -65,6 +65,26 @@ namespace yack
             }
         }
 
+        bool source:: done()
+        {
+            return NULL == peek();
+        }
+
+        void source:: skip() throw()
+        {
+            assert(cache.size>0);
+            delete cache.pop_front();
+        }
+
+        void source:: skip(size_t n) throw()
+        {
+            assert(cache.size>=n);
+            while(n-- > 0)
+            {
+                assert(cache.size>0);
+                delete cache.pop_front();
+            }
+        }
 
     }
 }

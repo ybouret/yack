@@ -36,7 +36,9 @@ namespace yack
             void             store(token &)     throw();  //!< store read token
             void             store_copy(const token &);   //!< store a copy of a read token
             const character *peek();                      //!< peek next char, NULL => EOF
-
+            void             skip() throw();              //!< skip first cached characters
+            void             skip(size_t n) throw();      //!< skip first n cached characters
+            bool             done();                      //!< NULL == peek()
         private:
             YACK_DISABLE_COPY_AND_ASSIGN(source);
             auto_ptr<module> intake;
