@@ -5,7 +5,7 @@
 
 #if defined(YACK_BSD)
 #include <unistd.h>
-extern "C" const char **environ;
+extern "C" char **environ;
 #endif
 
 namespace yack
@@ -15,7 +15,7 @@ namespace yack
     {
         YACK_GIANT_LOCK();
 #if defined(YACK_BSD)
-        for(const char **env=environ;*env;++env)
+        for(char **env=environ;*env;++env)
         {
             std::cerr << "[" << *env << "]" << std::endl;
         }
