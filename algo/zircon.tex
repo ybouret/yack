@@ -50,14 +50,14 @@ and we define the initial slope $\sigma$:
 If $\sigma\leq 0$, then the point is singular.
 
 \begin{equation}
-f(x) = f_a - \sigma x + \beta x^2 + \gamma x^3
+f(x) = f_a - \sigma x - \beta x^2 +  \gamma  x^3
 \end{equation}
 
-With $b<c$:
+ 
 \begin{equation}
 \begin{bmatrix}
-	b^2 & b^3 \\
-	c^2 & c^3 \\
+	-\dfrac{c^2}{4} & \dfrac{c^3}{8} \\
+	-c^2 & c^3 \\
 \end{bmatrix}
 \begin{bmatrix}
 	\beta\\
@@ -65,7 +65,7 @@ With $b<c$:
 \end{bmatrix}
 =
 \begin{bmatrix}
-	f_b - f_a + \sigma b\\
+	f_b - f_a + \sigma \dfrac{c}{2}\\
 	f_c - f_a + \sigma c\\
 \end{bmatrix}
 \end{equation}
@@ -75,14 +75,23 @@ With $b<c$:
 	\beta\\
 	\gamma\\
 \end{bmatrix}
-= \dfrac{1}{b^2c^3-b^3c^2} 
+= \dfrac{8}{c^3} 
 \begin{bmatrix}
-	c^3 & -b^3 \\
-	-c^2 & b^2 \\
+	-c & \frac{c}{8} \\
+	-1 & \frac{1}{4} \\
 \end{bmatrix}
 \begin{bmatrix}
-	f_b - f_a + \sigma b\\
-	f_c - f_a + \sigma c\\
+	\delta_b   + \sigma \frac{c}{2}\\
+	\delta_c   + \sigma c\\
+\end{bmatrix}
+= \dfrac{1}{c^3} 
+\begin{bmatrix}
+	-8c & c \\
+	-8  & 2 \\
+\end{bmatrix}
+\begin{bmatrix}
+	\delta_b   + \sigma \frac{c}{2}\\
+	\delta_c   + \sigma c\\
 \end{bmatrix}
 \end{equation}
 
@@ -92,43 +101,21 @@ With $b<c$:
 	\beta\\
 	\gamma\\
 \end{bmatrix}
-= \dfrac{1}{b^2c^2(c-b)} 
+= \dfrac{1}{c^3} 
 \begin{bmatrix}
-	c^3 \delta_b -  b^3 \delta_c + \sigma (bc^3-cb^3)\\
-	b^2 \delta_c - c^2 \delta_b + \sigma (cb^2 - b c ^2)\\
+	 c\left[\delta_c - 8\delta_b - 3 \sigma c \right]\\
+	 2\left[\delta_c - 4\delta_b - \sigma c \right]\\
 \end{bmatrix}
 \end{equation}
 
-We use $b=\alpha c,\;\alpha<1$,
-
+The minimum is at:
 \begin{equation}
-	\Lambda = b^2c^2(c-b) > 0
+	x_+ = \dfrac{\beta+\sqrt{\beta^2+3\sigma\gamma}}{3\gamma}
 \end{equation}
-
-	\begin{equation}
-	\begin{bmatrix}
-	\beta\\
-	\gamma\\
-\end{bmatrix}
-= \dfrac{1}{c^3(1-\alpha)\alpha^2} 
-\begin{bmatrix}
-	c^3 \delta_b -  c^3 \alpha^3 \delta_c + c^3 \sigma (\alpha-\alpha^3)\\
-	c^2 \alpha^3 \delta_c - c^2 \delta_b + \sigma c^2 (\alpha^2 - \alpha)\\
-\end{bmatrix}
-\end{equation}
-
-
+Using $\beta=\dfrac{\beta'}{c^2},\gamma=\dfrac{\gamma'}{c^3}$:
+ 	 
 \begin{equation}
-	f'(x) = -\sigma + 2 \beta x + 3 \gamma x^2
+	x_+ = \dfrac{\beta'+\sqrt{\beta'^2+3 (\sigma c) \gamma'}}{3\gamma'} c
 \end{equation}
-
-\begin{equation}
-	\Delta' = \beta^2 + 3\gamma\sigma = \dfrac{1}{\Lambda^2} \left( \beta'^2 + 3 \gamma' \sigma \Lambda \right)
-\end{equation}
-
-\begin{equation}
-	x_\pm = \dfrac{-\beta \pm \sqrt{\beta^2 + 3\gamma\sigma}}{3\gamma}
-\end{equation}
-
 
 \end{document}
