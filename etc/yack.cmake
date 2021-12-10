@@ -92,7 +92,7 @@ macro(YACK_FIND_COMPILER_VERSION)
 endmacro(YACK_FIND_COMPILER_VERSION)
 
 # macro to modify flags
-macro(YACK_ADD_FLAGS flag)
+macro(yack_add_flags flag)
 	message( STATUS "[YACK] adding C/C++ FLAGS : '${flag}'" )
 	set(CMAKE_C_FLAGS   "${CMAKE_C_FLAGS} ${flag}")
     set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${flag}")
