@@ -18,8 +18,18 @@ namespace yack
     class local_fs : public vfs, public singleton<local_fs>
     {
     public:
+        //______________________________________________________________________
+        //
+        // types and definitions
+        //______________________________________________________________________
         static const at_exit::longevity life_time=0; //!< life time
         static const char               call_sign[]; //!< "local_fs"
+
+        //______________________________________________________________________
+        //
+        // methods
+        //______________________________________________________________________
+        virtual void remove_file(const string &path);
         
 
     private:

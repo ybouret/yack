@@ -166,3 +166,13 @@ namespace yack
 
 
 }
+
+namespace yack
+{
+    void vfs::remove_file(const char *path)
+    {
+        const string _(path);
+        remove_file(_);
+    }
+
+}
