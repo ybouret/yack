@@ -67,7 +67,8 @@ namespace yack
             // complete local values@X
             //
             //------------------------------------------------------------------
-            YACK_ZIRCON_PRINTLN("// lookup ");
+            static const char fn[] = "[zircon] ";
+            YACK_ZIRCON_PRINTLN(fn << "lookup");
             
             Jt.assign(J,transposed); // Jt = J'
             U.assign(J);             // U  = J
@@ -89,7 +90,7 @@ namespace yack
             if(!study.build(U,W,V))
             {
                 //! bad matrix!
-                YACK_ZIRCON_PRINTLN("invalid jacobian");
+                YACK_ZIRCON_PRINTLN(fn<<"invalid jacobian");
                 return singular;
             }
 
@@ -109,7 +110,7 @@ namespace yack
 
             if(nullity>=dimension)
             {
-                YACK_ZIRCON_PRINTLN("nul jacobian");
+                YACK_ZIRCON_PRINTLN(fn<<"nul jacobian");
                 return singular;
             }
 
@@ -136,7 +137,7 @@ namespace yack
             YACK_ZIRCON_PRINTLN("sigma = " << sigma);
             if(sigma<=0)
             {
-                YACK_ZIRCON_PRINTLN("zero numerical slope");
+                YACK_ZIRCON_PRINTLN(fn<<"zero numerical slope");
                 return singular;
             }
 
@@ -150,7 +151,7 @@ namespace yack
             real_t slope = 0.1*sigma;
             if(f.c>f.a-slope*u.c)
             {
-                YACK_ZIRCON_PRINTLN("bactrack");
+                YACK_ZIRCON_PRINTLN(fn<<"bactrack");
                 f.b = f1(u.b=u.c/2);
                 YACK_ZIRCON_PRINTLN("u=" << u << ", f=" << f);
                 while(f.b>f.a-slope*u.b)
@@ -163,7 +164,7 @@ namespace yack
             }
             else
             {
-                YACK_ZIRCON_PRINTLN("full step");
+                YACK_ZIRCON_PRINTLN(fn<<"full step");
             }
 
             {
