@@ -23,6 +23,8 @@ namespace yack
 
 #if defined(YACK_WIN)
         LPTCH lpvEnv = ::GetEnvironmentStrings();
+        if(!lpvEnv) throw win32::exception( ::GetLastError(), "GetEnvironmentStrings()" );
+        ::FreeEnvironmentStrings(lpvEnv);
 #endif
 
 
