@@ -27,7 +27,16 @@ namespace yack
         firsts(other.firsts)
         {
         }
-        
+
+    }
+
+}
+
+namespace yack
+{
+
+    namespace jive
+    {
 
         bool matching:: exactly(source &src)
         {
@@ -75,9 +84,20 @@ namespace yack
             }
         }
 
+    }
 
-        bool matching:: somehow(source &)
-        {
+}
+
+
+namespace yack
+{
+
+    namespace jive
+    {
+
+        bool matching:: somehow(source &src)
+        { 
+
             return false;
         }
 
