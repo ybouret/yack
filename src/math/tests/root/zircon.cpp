@@ -35,10 +35,10 @@ namespace {
 
         solver.verbose = true;
 
-        solver.X[1] = 0.1;  solver.X[2] = 0.2;
-        //solver.X[1] = 1e-4; solver.X[2] = 2e-3;
+        //solver.X[1] = 0.1;  solver.X[2] = 0.2;
+        solver.X[1] = 1e-4; solver.X[2] = 2e-3;
 
-        switch( solver.load(F) )
+        switch( solver.step(F) )
         {
             case core::zircon::singular:
                 std::cerr << "singular" << std::endl; break;

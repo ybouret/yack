@@ -116,11 +116,10 @@ namespace yack
              * - userF(F,X)
              * - userJ(J,X)
              * - study J
-             * - if not singular, the corresponding full step=S
-             *   is computed along with the estimated position XX=X+S
+             * - forward to XX
              */
             template <typename FUNCTION, typename JACOBIAN>
-            topology load(FUNCTION &userF, JACOBIAN &userJ)
+            topology step(FUNCTION &userF, JACOBIAN &userJ)
             {
                 userF(F,X); // F=userF(X)
                 userJ(J,X); // J=userJ(X);
@@ -133,10 +132,10 @@ namespace yack
              load values with internal jacobian computation
              */
             template <typename FUNCTION>
-            topology load(FUNCTION &userF)
+            topology step(FUNCTION &userF)
             {
                 jwrap<FUNCTION> userJ = { fdjac, userF };
-                return load(userF,userJ);
+                return step(userF,userJ);
             }
 
             T                 control(const array_type &Ftmp) throw(); //!< |Ftmp^2|/2

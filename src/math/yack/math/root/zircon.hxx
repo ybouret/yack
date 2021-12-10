@@ -213,8 +213,7 @@ namespace yack
             YACK_ZIRCON_PRINTLN(fn<<"<new position>");
             std::cerr << "XX=" << XX << std::endl;
 
-
-
+            
             return (nullity<=0) ? regular : degenerate;
         }
 
