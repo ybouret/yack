@@ -111,10 +111,10 @@ namespace yack
 
 
     //! counting number of bits for value
-    template <typename T> size_t bits_for(const T b) throw()
+    template <typename T> unsigned bits_for(const T b) throw()
     {
-        T      ibit = base2<T>::max_power_of_two;
-        size_t nbit = sizeof(T)*8;
+        T        ibit = base2<T>::max_power_of_two;
+        unsigned nbit = sizeof(T)*8;
         while(nbit>0)
         {
             if(0!=(ibit&b)) return nbit;

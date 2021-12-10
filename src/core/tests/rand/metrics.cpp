@@ -19,6 +19,8 @@ static inline void show_metrics()
     YACK_OUTPUT(randomized::metrics_of<T>::system_mask);
     std::cerr << "\t-> " << ios::hexa(randomized::metrics_of<T>::system_mask) << std::endl;
 
+    randomized::metrics_of<T> m(65535);
+    
     
 
 }
@@ -28,6 +30,8 @@ YACK_UTEST(rand_metrics)
     show_metrics<float>();
     show_metrics<double>();
     show_metrics<long double>();
+
+
 
 }
 YACK_UDONE()

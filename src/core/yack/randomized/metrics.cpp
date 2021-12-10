@@ -11,8 +11,28 @@ namespace yack
     namespace randomized
     {
 
+        metrics:: metrics(unsigned nbit) throw() :
+        span_bits(nbit),
+        span_mask(0)
+        {
+            assert(nbit>0);
+            assert(nbit<=word_bits);
+            while(nbit-- > 0)
+            {
+                (coerce(span_mask)<<= 1) |= 1;
+            }
+        }
+
+        metrics:: ~metrics() throw()
+        {
+
+        }
+        
+
         namespace
         {
+
+
 
             template <typename T> unsigned max_bits_for(const unsigned mant_dig,
                                                         const T        epsilon) throw()

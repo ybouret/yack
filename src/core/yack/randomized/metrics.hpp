@@ -3,7 +3,9 @@
 #ifndef YACK_RANDOMIZED_METRICS_INCLUDED
 #define YACK_RANDOMIZED_METRICS_INCLUDED 1
 
-#include "yack/setup.hpp"
+#include "yack/arith/base2.hpp"
+#include "yack/type/utils.hpp"
+
 namespace yack
 {
     namespace randomized
@@ -23,8 +25,11 @@ namespace yack
             static const unsigned  word_bits = word_size << 3;    //!< alias
             static const word_type word_unit = 1;                 //!< alias
 
-            explicit metrics();
+            explicit metrics(unsigned nbit) throw();
             virtual ~metrics() throw();
+
+            const unsigned  span_bits;
+            const word_type span_mask;
 
         private:
             YACK_DISABLE_COPY_AND_ASSIGN(metrics);
@@ -43,42 +48,18 @@ namespace yack
             static const unsigned   system_bits; //!< from floating point
             static const word_type  system_mask; //!< 2^max_bits-1
 
-            inline  metrics_of(const word_type  ) throw() : metrics()
+            inline  metrics_of(const word_type umax) throw() :
+            metrics(min_of<word_type>( bits_for(umax), system_bits))
             {
-
             }
 
-            inline ~metrics_of() throw() {}
-
-
-
-            const unsigned usr_bits;
+            inline virtual ~metrics_of() throw() {}
 
         private:
             YACK_DISABLE_COPY_AND_ASSIGN(metrics_of);
         };
 
-        //! declaring constants if necessary
-#define YACK_RANDOMIZED_METRICS(VALUE)                        \
-template <> const float       metrics_of<float>      ::VALUE; \
-template <> const double      metrics_of<double>     ::VALUE; \
-template <> const long double metrics_of<long double>::VALUE
-
-        //YACK_RANDOMIZED_METRICS(unit_den);     //!< unit_den
-
-        class converter
-        {
-        public:
-
-            explicit converter(const uint32_t umax) throw();
-            virtual ~converter() throw();
-            
-
-
-        private:
-
-        };
-
+        
 
     }
 }
