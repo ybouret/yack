@@ -22,7 +22,7 @@ namespace yack
         //
         // types and definitions
         //______________________________________________________________________
-        static const at_exit::longevity life_time=0; //!< life time
+        static const at_exit::longevity life_time=1000; //!< life time
         static const char               call_sign[]; //!< "local_fs"
 
         //______________________________________________________________________

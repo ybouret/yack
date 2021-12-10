@@ -26,17 +26,26 @@ YACK_UTEST(matching)
             {
                 ++il;
                 const string data = line.to_string();
-                //std::cerr << data << std::endl;
                 const string name = fn + vformat("%u",il);
-                jive::source src( jive::module::open_data(name,data) );
-                if( match.exactly(src) )
                 {
-                    std::cerr << data << " => '" << match << "'" << std::endl;
+                    jive::source src( jive::module::open_data(name,data) );
+                    if( match.exactly(src) )
+                    {
+                        std::cerr << data << " [=> exactly] '" << match << "'" << std::endl;
+                    }
                 }
+
+                {
+                    jive::source src( jive::module::open_data(name,data) );
+                    if( match.somehow(src) )
+                    {
+                        std::cerr << data << " [=> somehow] '" << match << "'" << std::endl;
+                    }
+                }
+
+
             }
-
         }
-
     }
 
 }

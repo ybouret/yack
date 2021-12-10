@@ -96,9 +96,54 @@ namespace yack
     {
 
         bool matching:: somehow(source &src)
-        { 
+        {
+            release();
+            if(strong)
+            {
+            TRY_STRONG:
+                if( scheme->accept(src,*this) )
+                {
+                    assert(size>0);
+                    return true;
+                }
+                else
+                {
+                    if( src.done() )
+                    {
+                        return false;
+                    }
+                    else
+                    {
+                        src.skip();
+                        goto TRY_STRONG;
+                    }
+                }
+            }
+            else
+            {
+                bool result = false;
+            TRY_FEEBLE:
+                if(scheme->accept(src,*this))
+                {
+                    if(size>0)
+                    {
+                        return true;
+                    }
+                    result = true;
+                }
+                assert(0==size);
+                if( src.done() )
+                {
+                    return result;
+                }
+                else
+                {
+                    // leave a chance for not empty match
+                    src.skip();
+                    goto TRY_FEEBLE;
+                }
+            }
 
-            return false;
         }
 
     }
