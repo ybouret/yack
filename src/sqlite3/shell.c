@@ -54,6 +54,7 @@
 #if !defined(SQLITE_OS_WINRT)
 # define SQLITE_OS_WINRT 0
 #endif
+#include <string.h>
 
 /*
 ** Warning pragmas copied from msvc.h in the core.
