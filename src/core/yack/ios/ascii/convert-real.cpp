@@ -225,21 +225,21 @@ namespace yack
             }
 
             template <>
-            float convert::to_real<float>(const char *args, const size_t size, const char *ctx)
+            float convert:: real<float>(const char *args, const size_t size, const char *ctx)
             {
                 a2r<float> conv(args,size,ctx);
                 return conv();
             }
 
             template <>
-            double convert::to_real<double>(const char *args, const size_t size, const char *ctx)
+            double convert:: real<double>(const char *args, const size_t size, const char *ctx)
             {
                 a2r<double> conv(args,size,ctx);
                 return conv();
             }
 
             template <>
-            long double convert::to_real<long double>(const char *args, const size_t size, const char *ctx)
+            long double convert:: real<long double>(const char *args, const size_t size, const char *ctx)
             {
                 a2r<long double> conv(args,size,ctx);
                 return conv();

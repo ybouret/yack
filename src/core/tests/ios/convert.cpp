@@ -63,8 +63,22 @@ YACK_UTEST(ios_convert)
                 case 'f':
                 {
                     args.skip(1);
-                    float f = ios::ascii::convert::to_real<float>(args,"float");
+                    float f = ios::ascii::convert::real<float>(args,"float");
                     std::cerr << "f=" << f << std::endl;
+                } break;
+
+                case 'd':
+                {
+                    args.skip(1);
+                    double d = ios::ascii::convert::real<double>(args,"double");
+                    std::cerr << "d=" << d << std::endl;
+                } break;
+
+                case 'e':
+                {
+                    args.skip(1);
+                    double e = ios::ascii::convert::real<long double>(args,"long double");
+                    std::cerr << "e=" << e << std::endl;
                 } break;
 
                 default:

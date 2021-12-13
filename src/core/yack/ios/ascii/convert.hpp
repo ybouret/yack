@@ -66,20 +66,20 @@ namespace yack
                 
                 
                 template <typename T> static
-                T to_real(const char *args, const size_t size, const char *ctx=NULL);
+                T real(const char *args, const size_t size, const char *ctx=NULL);
                 
                 template <typename T> static inline
-                T to_real(const char *text, const char *ctx)
+                T real(const char *text, const char *ctx)
                 {
                     assert(text);
-                    return to_real<T>(text,strlen(text),ctx);
+                    return real<T>(text,strlen(text),ctx);
                 }
                 
                 //! convert to integer type
                 template <typename T> static inline
-                T to_real(const string &data, const char *ctx=NULL)
+                T real(const string &data, const char *ctx=NULL)
                 {
-                    return to_real<T>(data(),data.size(),ctx);
+                    return real<T>(data(),data.size(),ctx);
                 }
                 
                 
