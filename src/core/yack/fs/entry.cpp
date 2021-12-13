@@ -13,12 +13,14 @@ namespace yack
     next(0),
     prev(0),
     path(full_path),
-    base(vfs::get_base_name(path))
+    base(vfs::get_base_name(path)),
+    cext(vfs::get_extension(base))
     {
     }
 
     vfs::scanner:: ~scanner() throw() {}
-    vfs::scanner:: scanner(const string &dirname) : object(), path(dirname) {
+    vfs::scanner:: scanner(const string &dirname) : object(), path(dirname)
+    {
         make_dir_name( coerce(path) );
     }
     

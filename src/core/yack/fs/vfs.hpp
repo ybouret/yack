@@ -60,6 +60,8 @@ namespace yack
             entry *prev;             //!< for list/pool
             const string       path; //!< full path
             const char * const base; //!< base name
+            const char * const cext; //!< extension
+            
         private:
             YACK_DISABLE_COPY_AND_ASSIGN(entry);
         };
