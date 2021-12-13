@@ -26,21 +26,21 @@ namespace yack
         public:
             inline ESQuery() : lpvEnv(::GetEnvironmentStrings())
             {
-				if(!lpvEnv) throw win32::exception(::GetLastError(), "GetEnvironmentStrings()");
+                if(!lpvEnv) throw win32::exception(::GetLastError(), "GetEnvironmentStrings()");
             }
 
-			inline LPTSTR operator*() throw()
-			{
-				return (LPSTR)lpvEnv;
-			}
+            inline LPTSTR operator*() throw()
+            {
+                return (LPSTR)lpvEnv;
+            }
 
             inline ~ESQuery() throw()
             {
-				::FreeEnvironmentStrings(lpvEnv);
-				lpvEnv = 0;
+                ::FreeEnvironmentStrings(lpvEnv);
+                lpvEnv = 0;
             }
 
-			LPTCH lpvEnv;
+            LPTCH lpvEnv;
 
         private:
             YACK_DISABLE_COPY_AND_ASSIGN(ESQuery);
@@ -60,8 +60,8 @@ namespace yack
 #endif
 
 #if defined(YACK_WIN)
-		ESQuery esq;
-		LPTSTR lpszVariable = *esq;
+        ESQuery esq;
+        LPTSTR lpszVariable = *esq;
 
         // Variable strings are separated by NULL byte, and the block is
         // terminated by a NULL byte.
@@ -73,46 +73,46 @@ namespace yack
             lpszVariable += lstrlen(lpszVariable) + 1;
         }
 
-       
+
 #endif
     }
 
-	static inline void check(const char *equal)
-	{
-		if (!equal) throw exception("bad %s environment string", YACK_PLATFORM);
-	}
-	
-	static inline void grow(glossary<string, string> &dict, const string &es)
-	{
+    static inline void check(const char *equal)
+    {
+        if (!equal) throw exception("bad %s environment string", YACK_PLATFORM);
+    }
+
+    static inline void grow(glossary<string, string> &dict, const string &es)
+    {
         const char * const entry = es();
-		const char *       equal = strchr(entry, '='); check(equal);
+        const char *       equal = strchr(entry, '='); check(equal);
         const char * const leave = entry + es.size();
-		const string       key(entry, equal - entry); ++equal;
-		const string       val(equal, leave - equal);
-		 
+        const string       key(entry, equal - entry); ++equal;
+        const string       val(equal, leave - equal);
+
         std::cerr << "\t|_key='" << key << "'" << std::endl;
         std::cerr << "\t|_val='" << val << "'" << std::endl;
         if(!dict.insert(key,val))
         {
             throw exception("unexpected multiple ENV '%s'",key());
         }
-	}
+    }
 
     void environment:: get(glossary<string,string> &dict)
     {
         dict.free();
         YACK_GIANT_LOCK();
 #if defined(YACK_WIN)
-		ESQuery esq;
-		LPTSTR  lpszVariable = *esq;
-		while (*lpszVariable)
-		{
-			//_tprintf(TEXT("%s\n"), lpszVariable);
-			size_t sz = lstrlen(lpszVariable);
-			const string es((const char *)lpszVariable, sz);
-			grow(dict, es);
-			lpszVariable += ++sz;
-		}
+        ESQuery esq;
+        LPTSTR  lpszVariable = *esq;
+        while (*lpszVariable)
+        {
+            //_tprintf(TEXT("%s\n"), lpszVariable);
+            size_t sz = lstrlen(lpszVariable);
+            const string es((const char *)lpszVariable, sz);
+            grow(dict, es);
+            lpszVariable += ++sz;
+        }
 #endif
 
 #if defined(YACK_BSD)
@@ -144,29 +144,29 @@ namespace yack
 #endif
 
 #if defined(YACK_WIN)
-		if (val) val->clear();
-		ESQuery esq;
-		LPTSTR  lpszVariable = *esq;
-		while (*lpszVariable)
-		{
-			//_tprintf(TEXT("%s\n"), lpszVariable);
-			size_t sz = lstrlen(lpszVariable);
-			const string es((const char *)lpszVariable, sz);
-			const char * const entry = es();
-			const char *       equal = strchr(entry, '='); check(equal);
-			const string       sub(entry, equal - entry);
-			if (sub==key)
-			{
-				if (val)
-				{
-					++equal;
-					*val = string(equal, (entry + es.size()) - equal);
-				}
-				return true;
-			}
-			lpszVariable += ++sz;
-		}
-		return false;
+        if (val) val->clear();
+        ESQuery esq;
+        LPTSTR  lpszVariable = *esq;
+        while (*lpszVariable)
+        {
+            //_tprintf(TEXT("%s\n"), lpszVariable);
+            size_t sz = lstrlen(lpszVariable);
+            const string es((const char *)lpszVariable, sz);
+            const char * const entry = es();
+            const char *       equal = strchr(entry, '='); check(equal);
+            const string       sub(entry, equal - entry);
+            if (sub==key)
+            {
+                if (val)
+                {
+                    ++equal;
+                    *val = string(equal, (entry + es.size()) - equal);
+                }
+                return true;
+            }
+            lpszVariable += ++sz;
+        }
+        return false;
 #endif
     }
 
@@ -176,5 +176,63 @@ namespace yack
         return get(_,val);
     }
 
+
+    void environment:: set(const string &key, const string &val)
+    {
+        YACK_GIANT_LOCK();
+
+#if defined(YACK_BSD)
+        if(0!=(setenv(key(),val(),1)))
+        {
+            throw libc::exception(errno,"setenv(%s,%s)",key(),val());
+        }
+#endif
+
+#if defined(YACK_WIN)
+        if(!::SetEnvironmentVariable(key(),val()))
+        {
+            throw win32::exception(::GetLastError(),"SetEnv(%s,%s)",key(),val());
+        }
+#endif
+
+    }
+
+
+    void environment:: set(const string &key, const char *val)
+    {
+        const string __(val);
+        set(key,__);
+    }
+
+    void environment:: set(const char   *key, const string &val)
+    {
+        const string _(key); set(_,val);
+    }
+
+    void environment:: set(const char   *key, const char *val)
+    {
+        const string _(key);
+        const string __(val); set(_,__);
+    }
+
+    void    environment:: clr(const string &key)
+    {
+        YACK_GIANT_LOCK();
+
+#if defined(YACK_BSD)
+        if( 0 != unsetenv(key())) throw libc::exception(errno,"unsetenv(%s)",key());
+#endif
+
+#if defined(YACK_WIN)
+        if(! ::SetEnvironmentVariable(key(),NULL) ) throw win32::exception(::GetLastError(),"unsetenv(%s)",key());
+#endif
+
+    }
+
+    void    environment:: clr(const char *key)
+    {
+        const string _(key);
+        clr(_);
+    }
 }
 

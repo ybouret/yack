@@ -16,6 +16,18 @@ YACK_UTEST(env)
     std::cerr << db << std::endl;
     std::cerr << std::endl;
 
+    std::cerr << "Local ENV" << std::endl;
+    {
+        const string content = "my content";
+        environment::set("toto",content);
+        string val;
+        YACK_CHECK(environment::get("toto",&val));
+        YACK_CHECK(content==val);
+        environment::clr("toto");
+        YACK_CHECK(!environment::get("toto",NULL));
+    }
+    std::cerr << std::endl;
+
     std::cerr << "User's queries..." << std::endl;
     for(int i=1;i<argc;++i)
     {
