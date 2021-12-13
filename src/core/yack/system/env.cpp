@@ -5,6 +5,7 @@
 
 #if defined(YACK_BSD)
 #include <unistd.h>
+#include <cerrno>
 extern "C" char **environ;
 #endif
 
