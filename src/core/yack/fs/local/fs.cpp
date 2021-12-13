@@ -11,6 +11,7 @@
 #if defined(YACK_WIN)
 #define WIN32_LEAN_AND_MEAN
 #include <windows.h>
+#include "yack/ptr/auto.hpp"
 #endif
 
 
@@ -39,7 +40,7 @@ namespace yack
 #endif
 
 #if defined(YACK_WIN)
-        if( ! ::DeleteFile(path()) )
+        if( ! DeleteFile(path()) )
         {
             throw win32::exception( ::GetLastError(), "DeleteFile(%s)", path() );
         }
@@ -60,7 +61,54 @@ namespace yack
         public:
 
 #if defined(YACK_WIN)
+			inline virtual ~local_scanner() throw()
+			{
+				FindClose(hfind);
+			}
 
+			inline explicit local_scanner(const string &dirname) :
+			vfs::scanner(dirname),
+			hfind(INVALID_HANDLE_VALUE),
+			has(false),
+			wfd()
+			{
+				YACK_GIANT_LOCK();
+				if (dirname.size() > MAX_PATH - 3) throw exception("FindFirstFile(dirname is too long)");
+				string szDir = dirname + "\\*";
+				hfind = FindFirstFile(szDir(), &wfd);
+				if (INVALID_HANDLE_VALUE == hfind)
+				{
+					throw win32::exception(GetLastError(), "FindFirstFile(%s)", dirname());
+				}
+				has = true;
+			}
+
+			virtual vfs::entry *next()
+			{
+				if(has)
+				{
+					auto_ptr<vfs::entry> ep = new vfs::entry(wfd.cFileName);
+					has = false;
+					YACK_GIANT_LOCK();
+					if(!FindNextFile(hfind,&wfd))
+					{
+						const DWORD err = GetLastError();
+						if (err != ERROR_NO_MORE_FILES) throw win32::exception(err, "FindNextFile(%s)", path());
+					}
+					else
+					{
+						has = true;
+					}
+					return ep.yield();
+				}
+				else
+				{
+					return NULL;
+				}
+			}
+			HANDLE               hfind;
+			bool                 has;
+			WIN32_FIND_DATA      wfd;
 #endif
 
 #if defined(YACK_BSD)
