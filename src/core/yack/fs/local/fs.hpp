@@ -29,8 +29,8 @@ namespace yack
         //
         // methods
         //______________________________________________________________________
-        virtual void remove_file(const string &path); //!< unlink/DeleteFile
-        
+        virtual void     remove_file(const string &path); //!< unlink/DeleteFile
+        virtual scanner *open_folder(const string &path); //!< use opendir/FindFirstFile
 
     private:
         YACK_DISABLE_COPY_AND_ASSIGN(local_fs);

@@ -1,7 +1,6 @@
 
 #include "yack/fs/vfs.hpp"
 #include "yack/type/cstring.h"
-#include "yack/string.hpp"
 #include <cstring>
 
 namespace yack
@@ -151,7 +150,7 @@ namespace yack
 
     string vfs:: new_extension(const char *path, const char *ext)
     {
-        return new_extension(path,path?strlen(path):0,ext);
+        return new_extension(path,yack_cstring_size(path),ext);
     }
 
     string vfs:: new_extension(const string &path, const char *ext)

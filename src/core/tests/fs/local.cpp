@@ -3,6 +3,7 @@
 #include "yack/utest/run.hpp"
 #include "yack/string.hpp"
 #include "yack/system/exception.hpp"
+#include "yack/ptr/auto.hpp"
 
 #if defined(YACK_BSD)
 #include <dirent.h>
@@ -19,20 +20,25 @@ YACK_UTEST(vfs_local)
     {
         const string dname = argv[1];
         std::cerr << "opening " << dname << std::endl;
-#if defined(YACK_BSD)
-        DIR *hdir = opendir( dname() );
-        if(!hdir)
+        vfs::entries           elist;
+        size_t                 pmax = 0;
         {
-            throw libc::exception(errno,"opendir(%s)", dname() );
-        }
-        dirent *scan = NULL;
-        while( NULL !=(scan=readdir(hdir)) )
-        {
-            std::cerr << scan->d_name << " | " << int(scan->d_type) << std::endl;
+            auto_ptr<vfs::scanner> scan = fs.open_folder(dname);
+            vfs::entry            *ep   = 0;
+            while(NULL!=(ep=scan->next()))
+            {
+                elist.push_back(ep);
+                //std::cerr << ep->path << std::endl;
+                if(ep->path.size()>=pmax) pmax=ep->path.size();
+            }
         }
 
-        closedir(hdir);
-#endif
+        for(const vfs::entry *ep=elist.head;ep;ep=ep->next)
+        {
+            std::cerr << std::setw(pmax) << ep->path() << " :";
+            std::cerr << std::endl;
+        }
+        
 
     }
 

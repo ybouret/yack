@@ -4,8 +4,8 @@
 #ifndef YACK_VFS_INCLUDED
 #define YACK_VFS_INCLUDED 1
 
-#include "yack/setup.hpp"
-#include "yack/string/fwd.hpp"
+#include "yack/string.hpp"
+#include "yack/data/list/cxx.hpp"
 
 namespace yack
 {
@@ -44,14 +44,46 @@ namespace yack
         //
         // types and definitions
         //______________________________________________________________________
-        
+
+        // a file system entry
+        class entry : public object
+        {
+        public:
+            virtual ~entry() throw();
+            explicit entry(const char *);
+            entry *next; //!< for list/pool
+            entry *prev; //!< for list/pool
+            const string       path;
+            const char * const base;
+        private:
+            YACK_DISABLE_COPY_AND_ASSIGN(entry);
+        };
+
+        typedef cxx_list_of<entry> entries;
+
+        //! a file system entry scanner
+        class scanner : public object, public counted
+        {
+        public:
+            virtual ~scanner() throw();
+            virtual entry *next() = 0;
+
+            const string path;
+
+
+        protected:
+            explicit scanner(const string &dirname);
+
+        private:
+            YACK_DISABLE_COPY_AND_ASSIGN(scanner);
+        };
 
         //______________________________________________________________________
         //
         // interface
         //______________________________________________________________________
-        virtual void remove_file(const string &path) = 0; //!< remove given filename
-
+        virtual void     remove_file(const string &path) = 0; //!< remove given filename
+        virtual scanner *open_folder(const string &path) = 0; //!< get a new scanning object
 
         //______________________________________________________________________
         //

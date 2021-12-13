@@ -18,6 +18,8 @@ YACK_UTEST(vfs)
         std::cerr << "nxt=" << nxt << std::endl;
     }
 
+    YACK_SIZEOF(vfs::entry);
+    
 }
 YACK_UDONE()
 
