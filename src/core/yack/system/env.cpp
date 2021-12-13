@@ -83,7 +83,7 @@ namespace yack
         const char *       equal = strchr(entry,'=');
         const char * const leave = entry + es.size();
 
-        std::cerr << "[" << es << "]" << std::endl;
+        //std::cerr << "[" << es << "]" << std::endl;
 
         if(!equal) throw exception("bad environment string");
         const string key(entry,equal-entry); ++equal;
@@ -120,6 +120,27 @@ namespace yack
             grow(dict,es);
         }
 #endif
+
+    }
+
+
+    bool environment:: get(const string &key, string &val)
+    {
+        YACK_GIANT_LOCK();
+#if defined(YACK_BSD)
+        const char *res = getenv(key());
+        if(!res)
+        {
+            val.clear();
+            return false;
+        }
+        else
+        {
+            val = res;
+            return true;
+        }
+#endif
+
 
     }
 

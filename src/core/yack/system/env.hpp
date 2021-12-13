@@ -18,8 +18,9 @@ namespace yack
     struct environment
     {
 
-        static void show();                        //!< quick show
-        static void get(glossary<string,string>&); //!< free/fill database
+        static void        show();                              //!< quick show
+        static void        get(glossary<string,string>&);       //!< free/fill database
+        static bool        get(const string &key, string &val); //!< query key
     };
 
 }

@@ -15,7 +15,21 @@ YACK_UTEST(env)
 	environment::get(db);
     std::cerr << db << std::endl;
     std::cerr << std::endl;
-    
+
+    std::cerr << "User's queries..." << std::endl;
+    for(int i=1;i<argc;++i)
+    {
+        string val;
+        const char *key = argv[i];
+        if( environment::get(key,val) )
+        {
+            std::cerr << key << " = " << val << std::endl;
+        }
+        else
+        {
+            std::cerr << "NO " << key << std::endl;
+        }
+    }
 
 }
 YACK_UDONE()
