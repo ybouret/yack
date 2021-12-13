@@ -11,17 +11,11 @@ namespace yack
     namespace randomized
     {
 
-        metrics:: metrics(unsigned nbit) throw() :
-        span_bits(nbit),
-        span_mask(0)
+        metrics:: metrics(const word_type umax) throw() :
+        span(umax)
         {
-            assert(nbit>0);
-            assert(nbit<=word_bits);
-            while(nbit-- > 0)
-            {
-                (coerce(span_mask)<<= 1) |= 1;
-            }
         }
+        
 
         metrics:: ~metrics() throw()
         {
@@ -31,8 +25,6 @@ namespace yack
 
         namespace
         {
-
-
 
             template <typename T> unsigned max_bits_for(const unsigned mant_dig,
                                                         const T        epsilon) throw()
@@ -72,24 +64,18 @@ namespace yack
         }
 
 
-        template <> const unsigned metrics_of<float>::      system_bits = max_bits_for<float>(FLT_MANT_DIG,FLT_EPSILON);
-        template <> const unsigned metrics_of<double>::     system_bits = max_bits_for<double>(DBL_MANT_DIG,DBL_EPSILON);
-        template <> const unsigned metrics_of<long double>::system_bits = max_bits_for<long double>(LDBL_MANT_DIG,LDBL_EPSILON);
+
+        template <> const unsigned metrics::from<float>::      bits = max_bits_for<float>(FLT_MANT_DIG,FLT_EPSILON);
+        template <> const unsigned metrics::from<double>::     bits = max_bits_for<double>(DBL_MANT_DIG,DBL_EPSILON);
+        template <> const unsigned metrics::from<long double>::bits = max_bits_for<long double>(LDBL_MANT_DIG,LDBL_EPSILON);
 
 
-#define YACK_RAND_METRICS_MASK()  (system_bits>=word_bits) ? integral_for<word_type>::maximum : ( (word_unit<<system_bits)-word_unit )
+#define YACK_RAND_METRICS_MASK()  (bits>=word_bits) ? integral_for<word_type>::maximum : ( (word_unit<<bits)-word_unit )
 
-        template <> const metrics::word_type metrics_of<float>::       system_mask = YACK_RAND_METRICS_MASK();
-        template <> const metrics::word_type metrics_of<double>::      system_mask = YACK_RAND_METRICS_MASK();
-        template <> const metrics::word_type metrics_of<long double>:: system_mask = YACK_RAND_METRICS_MASK();
-
-#if 0
-        template <> const float       metrics_of<float>::       unit_den = 1.0f + static_cast<float>(word_mask);
-        template <> const double      metrics_of<double>::      unit_den = 1.0  + static_cast<double>(word_mask);
-        template <> const long double metrics_of<long double>:: unit_den = 1.0L + static_cast<long double>(word_mask);
-#endif
-
-
+        template <> const metrics::word_type metrics::from<float>::       maxi = YACK_RAND_METRICS_MASK();
+        template <> const metrics::word_type metrics::from<double>::      maxi = YACK_RAND_METRICS_MASK();
+        template <> const metrics::word_type metrics::from<long double>:: maxi = YACK_RAND_METRICS_MASK();
+        
     }
 
 }

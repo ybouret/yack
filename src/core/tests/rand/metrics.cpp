@@ -11,17 +11,27 @@
 
 using namespace yack;
 
+
 template <typename T>
 static inline void show_metrics()
 {
     std::cerr << "Using <" << typeid(T).name() << ">" << std::endl;
-    YACK_OUTPUT(randomized::metrics_of<T>::system_bits);
-    YACK_OUTPUT(randomized::metrics_of<T>::system_mask);
-    std::cerr << "\t-> " << ios::hexa(randomized::metrics_of<T>::system_mask) << std::endl;
+    YACK_OUTPUT(randomized::metrics::from<T>::bits);
+    YACK_OUTPUT(randomized::metrics::from<T>::maxi);
+    std::cerr << "\t-> " << ios::hexa(randomized::metrics::from<T>::maxi) << std::endl;
 
-    randomized::metrics_of<T> m(65535);
-    
-    
+    {
+        randomized::metrics::from<T> m(1000);
+        std::cerr << "compacted: " << m.compacted << std::endl;
+        std::cerr << "unit_deno: " << m.unit_deno << std::endl;
+    }
+
+    {
+        randomized::metrics::from<T> m(0xffffffff);
+        std::cerr << "compacted: " << m.compacted << std::endl;
+        std::cerr << "unit_deno: " << m.unit_deno << std::endl;
+    }
+
 
 }
 
