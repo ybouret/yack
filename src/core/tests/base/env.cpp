@@ -6,9 +6,16 @@ using namespace yack;
 
 YACK_UTEST(env)
 {
-	hash_map<string, string> db;
+    std::cerr << "ENV" << std::endl;
 	environment::show();
+    std::cerr << std::endl;
+
+    std::cerr << "ENV db" << std::endl;
+    hash_map<string, string> db;
 	environment::get(db);
+    std::cerr << db << std::endl;
+    std::cerr << std::endl;
+    
 
 }
 YACK_UDONE()

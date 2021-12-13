@@ -9,11 +9,17 @@
 namespace yack
 {
 
+    //__________________________________________________________________________
+    //
+    //
+    //! environment variables API
+    //
+    //__________________________________________________________________________
     struct environment
     {
 
-        static void show();
-        static void get(glossary<string,string>&);
+        static void show();                        //!< quick show
+        static void get(glossary<string,string>&); //!< free/fill database
     };
 
 }

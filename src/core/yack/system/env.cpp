@@ -13,6 +13,7 @@ extern "C" char **environ;
 #include <windows.h>
 #endif
 
+#include <cstring>
 
 namespace yack
 {
@@ -54,7 +55,7 @@ namespace yack
 #if defined(YACK_BSD)
         for(char **env=environ;*env;++env)
         {
-            std::cerr << "[" << *env << "]" << std::endl;
+            std::cerr << *env << std::endl;
         }
 #endif
 
@@ -78,12 +79,27 @@ namespace yack
 
 	static inline void grow(glossary<string, string> &dict, const string &es)
 	{
-		std::cerr << "[" << es << "]" << std::endl;
+        const char * const entry = es();
+        const char *       equal = strchr(entry,'=');
+        const char * const leave = entry + es.size();
+
+        std::cerr << "[" << es << "]" << std::endl;
+
+        if(!equal) throw exception("bad environment string");
+        const string key(entry,equal-entry); ++equal;
+        const string val(equal,leave-equal);
+        std::cerr << "\t|_key='" << key << "'" << std::endl;
+        std::cerr << "\t|_val='" << val << "'" << std::endl;
+        if(!dict.insert(key,val))
+        {
+            throw exception("unexpected multiple ENV '%s'",key());
+        }
 	}
 
     void environment:: get(glossary<string,string> &dict)
     {
         dict.free();
+        YACK_GIANT_LOCK();
 #if defined(YACK_WIN)
 		ESQuery esq;
 		LPTSTR  lpszVariable = *esq;
@@ -96,6 +112,15 @@ namespace yack
 			lpszVariable += ++sz;
 		}
 #endif
+
+#if defined(YACK_BSD)
+        for(char **env=environ;*env;++env)
+        {
+            const string es(*env);
+            grow(dict,es);
+        }
+#endif
+
     }
 
 
