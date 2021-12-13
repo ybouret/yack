@@ -8,6 +8,7 @@ namespace yack
 
 
         metrics:: metrics(const uint32_t umax) throw() :
+        m(umax),
         f(umax),
         d(umax),
         l(umax)

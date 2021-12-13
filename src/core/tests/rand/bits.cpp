@@ -36,6 +36,7 @@ namespace
 
     static void test_bits( randomized::bits &ran )
     {
+
         draw<uint8_t>(ran);
         draw<uint16_t>(ran);
         draw<uint32_t>(ran);
@@ -62,61 +63,69 @@ namespace
         randomized::shuffle::list(l,ran);
         
         l.restart();
-        
-        double sum = 0;
-        size_t num = 100000;
-        for(size_t i=num;i>0;--i)
+
         {
-            sum += ran();
+            double sum = 0;
+            size_t num = 100000;
+            for(size_t i=num;i>0;--i)
+            {
+                sum += ran();
+            }
+            sum /= num;
+            std::cerr << "ave=" << sum << std::endl;
         }
-        sum /= num;
-        std::cerr << "ave=" << sum << std::endl;
-        
-        
+
     }
 
 }
 
-#include "yack/type/ints.hpp"
-#include "yack/ios/fmt/hexa.hpp"
-
-
-template <typename T>
-static inline uint32_t find_conv(volatile uint32_t curr)
-{
-    static const uint32_t umax = 0xffffffff;
-    while(true)
-    {
-        volatile T        f    = static_cast<T>(curr);
-        volatile uint32_t back = static_cast<uint32_t>(f);
-        if(back!=curr) return curr;
-        if(umax==curr) return 0;
-        ++curr;
-    }
-}
 
 
 YACK_UTEST(rand_bits)
 {
-    randomized::rand_       ran;
-    randomized::ParkMiller  ranPM( system_seed::get<randomized::ParkMiller::word_type>() );
+    {
+        randomized::rand_       ran;
+        randomized::ParkMiller  ranPM( system_seed::get<randomized::ParkMiller::word_type>() );
 
-    std::cerr << "Testing rand()" << std::endl;
-    test_bits(ran);
+        std::cerr << "Testing rand()" << std::endl;
+        test_bits(ran);
 
-    std::cerr << "Testing Park-Miller" << std::endl;
-    test_bits(ranPM);
+        std::cerr << "Testing Park-Miller" << std::endl;
+        test_bits(ranPM);
+    }
 
-    const uint32_t uf = find_conv<float>(1);
-    std::cerr << "uf = " << uf << std::endl;
-#if 0
-    const uint32_t ud = find_conv<double>(1);
-    std::cerr << "ud = " << ud << std::endl;
+    {
+        const long seed = system_seed::get<randomized::ParkMiller::word_type>();
+        randomized::ParkMiller ranF(seed), ranD(seed), ranL(seed);
 
-    const uint32_t ul = find_conv<long double>(1);
-    std::cerr << "ul = " << ul << std::endl;
-#endif
+        float       sumF = 0;
+        double      sumD = 0;
+        long double sumL = 0;
+        float       aveF = 0;
+        double      aveD = 0;
+        long double aveL = 0;
+        size_t      count = 0;
+        while(true)
+        {
+            sumF += ranF.to<float>();
+            sumD += ranD.to<double>();
+            sumL += ranL.to<long double>();
 
+            ++count;
+            const float new_aveF = sumF/count;
+            //const bool  done = fabs(new_aveF-aveF) <= 0.0f;
+            aveF = new_aveF;
+            aveD = sumD/count;
+            aveL = sumL/count;
+
+            //if(done) break;
+            if(count>=10000)
+                break;
+        }
+
+        std::cerr << "done in " << count << " trials" << std::endl;
+        std::cerr << aveF << " / " << aveD << " / " << aveL << std::endl;
+    }
 
 }
 YACK_UDONE()

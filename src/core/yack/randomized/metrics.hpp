@@ -4,6 +4,7 @@
 #define YACK_RANDOMIZED_METRICS_INCLUDED 1
 
 #include "yack/type/utils.hpp"
+#include "yack/ios/fmt/hexa.hpp"
 
 namespace yack
 {
@@ -38,6 +39,7 @@ namespace yack
             {
                 return ((*this).*unit_proc)(u);
             }
+
 
 
         private:
@@ -91,15 +93,13 @@ namespace yack
             explicit metrics(const uint32_t umax) throw();
             virtual ~metrics() throw();
 
-            const u32_to<float>       f;
-            const u32_to<double>      d;
-            const u32_to<long double> l;
+            const uint32_t            m; //!< maxi
+            const u32_to<float>       f; //!< float       metrics
+            const u32_to<double>      d; //!< double      metrics
+            const u32_to<long double> l; //!< long double metrics
 
             template <typename T> T unit(const uint32_t u) const throw();
             
-
-
-
         private:
             YACK_DISABLE_COPY_AND_ASSIGN(metrics);
 
