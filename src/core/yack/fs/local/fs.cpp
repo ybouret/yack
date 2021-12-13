@@ -87,6 +87,7 @@ namespace yack
             {
                 if(has)
                 {
+					//std::cerr << "path=" << path << "+" << wfd.cFileName << std::endl;
                     const string         full_path = path + wfd.cFileName;
                     auto_ptr<vfs::entry> ep        = new vfs::entry(full_path);
                     has = false;
