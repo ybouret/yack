@@ -60,6 +60,12 @@ YACK_UTEST(ios_convert)
                     std::cerr << "w=" << uint64_t(w) << std::endl;
                 } break;
 
+                case 'f':
+                {
+                    args.skip(1);
+                    float f = ios::ascii::convert::to_real<float>(args,"float");
+                    std::cerr << "f=" << f << std::endl;
+                } break;
 
                 default:
                     throw exception("unknown prefix '%c'",args[1]);
