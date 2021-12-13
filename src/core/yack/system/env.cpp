@@ -109,7 +109,7 @@ namespace yack
         while (*lpszVariable)
         {
             //_tprintf(TEXT("%s\n"), lpszVariable);
-            size_t sz = lstrlen(lpszVariable);
+            size_t       sz = lstrlen(lpszVariable);
             const string es((const char *)lpszVariable, sz);
             grow(dict, es);
             lpszVariable += ++sz;
