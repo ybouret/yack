@@ -2,6 +2,7 @@
 #include "yack/ios/ocstream.hpp"
 #include "yack/ios/null-ostream.hpp"
 #include "yack/memory/allocator/legacy.hpp"
+#include "yack/arith/base2.hpp"
 
 #include "yack/ios/encoder.hpp"
 

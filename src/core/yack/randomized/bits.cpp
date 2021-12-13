@@ -14,11 +14,15 @@ namespace yack
         }
 
 
-        bits:: bits(const size_t num_bits) throw() :
-        count(num_bits),
-        bytes(YACK_ALIGN_ON(8,count) >> 3)
+        bits:: bits(const uint32_t umax) throw() :
+        metrics(umax)
         {
 
+        }
+
+        double bits:: operator()(void) throw()
+        {
+            return unit<double>( next32() );
         }
 
         size_t bits:: leq(const size_t value) throw()
@@ -43,18 +47,18 @@ namespace yack
 
         template <> double bits:: to<double>() throw()
         {
-            return (*this)();
+            return unit<double>(next32());
         }
 
 
         template <> float bits:: to<float>() throw()
         {
-            return (*this)();
+            return unit<float>( next32() );
         }
         
         template <> long double bits:: to<long double>() throw()
         {
-            return static_cast<long double>( (*this)() );
+            return unit<long double>( next32() );
         }
 
         template <> uint8_t bits:: to<uint8_t>() throw()

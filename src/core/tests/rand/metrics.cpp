@@ -16,12 +16,12 @@ template <typename T>
 static inline void show_metrics()
 {
     std::cerr << "Using <" << typeid(T).name() << ">" << std::endl;
-    YACK_OUTPUT(randomized::metrics::from<T>::bits);
-    YACK_OUTPUT(randomized::metrics::from<T>::maxi);
-    std::cerr << "\t-> " << ios::hexa(randomized::metrics::from<T>::maxi) << std::endl;
+    YACK_OUTPUT(randomized::u32_to<T>::bits);
+    YACK_OUTPUT(randomized::u32_to<T>::maxi);
+    std::cerr << "\t-> " << ios::hexa(randomized::u32_to<T>::maxi) << std::endl;
 
     {
-        randomized::metrics::from<T> m(1000000);
+        randomized::u32_to<T> m(1000000);
         std::cerr << "compacted: " << m.compacted << std::endl;
         std::cerr << "unit_deno: " << m.unit_deno << std::endl;
         uint32_t u = 10;
@@ -29,7 +29,7 @@ static inline void show_metrics()
     }
 
     {
-        randomized::metrics::from<T> m(0xffffffff);
+        randomized::u32_to<T> m(0xffffffff);
         std::cerr << "compacted: " << m.compacted << std::endl;
         std::cerr << "unit_deno: " << m.unit_deno << std::endl;
         uint32_t u = 10;

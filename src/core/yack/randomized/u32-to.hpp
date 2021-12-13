@@ -1,9 +1,9 @@
 //! \file
 
-#ifndef YACK_RANDOMIZED_METRICS_INCLUDED
-#define YACK_RANDOMIZED_METRICS_INCLUDED 1
+#ifndef YACK_RANDOMIZED_U32_TO_INCLUDED
+#define YACK_RANDOMIZED_U32_TO_INCLUDED 1
 
-#include "yack/type/utils.hpp"
+#include "yack/setup.hpp"
 
 namespace yack
 {
@@ -79,37 +79,8 @@ namespace yack
 
         };
 
-        //______________________________________________________________________
-        //
-        //
-        //! base class for metrics
-        //
-        //______________________________________________________________________
-        class metrics
-        {
-        public:
-            explicit metrics(const uint32_t umax) throw();
-            virtual ~metrics() throw();
-
-            const u32_to<float>       f;
-            const u32_to<double>      d;
-            const u32_to<long double> l;
-
-            template <typename T> T unit(const uint32_t u) const throw();
-            
-
-
-
-        private:
-            YACK_DISABLE_COPY_AND_ASSIGN(metrics);
-
-        };
-
-
-
-        
-
     }
+
 }
 
 #endif

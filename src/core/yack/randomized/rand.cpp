@@ -14,14 +14,14 @@ namespace yack
         }
 
         rand_:: rand_() throw() :
-        self_type( unsigned(RAND_MAX) )
+        bits( unsigned(RAND_MAX) )
         {
             srand( system_seed::get<long>() );
         }
 
-        unsigned rand_::next() throw()
+        uint32_t rand_:: next32() throw()
         {
-            return rand();
+            return uint32_t(rand());
         }
 
 

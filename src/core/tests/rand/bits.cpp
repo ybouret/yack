@@ -36,8 +36,6 @@ namespace
 
     static void test_bits( randomized::bits &ran )
     {
-        YACK_OUTPUT(ran.count);
-        YACK_OUTPUT(ran.bytes);
         draw<uint8_t>(ran);
         draw<uint16_t>(ran);
         draw<uint32_t>(ran);

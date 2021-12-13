@@ -28,12 +28,12 @@ namespace yack
         }
 
         ParkMiller:: ParkMiller(const long seed) throw() :
-        self_type( IM-1 ),
+        bits( IM-1 ),
         word(reseed(seed))
         {
         }
         
-        long ParkMiller::next() throw()
+        uint32_t ParkMiller::next32() throw()
         {
             static const long IA   = 16807;
             static const long IQ   = 127773;
@@ -46,7 +46,7 @@ namespace yack
             while (word < 0) word += IM;
             const long ans = word;
             word ^= MASK;
-            return ans;
+            return uint32_t(ans);
         }
         
         
