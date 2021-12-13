@@ -45,7 +45,7 @@ namespace yack
                         switch(*curr)
                         {
                             case '-':
-                                s = true;
+                                s = true;  // FALLTHRU
                             case '+':
                                 ++curr;
                                 break;
