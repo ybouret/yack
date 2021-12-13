@@ -13,13 +13,13 @@
 
 namespace yack
 {
-
+    
     namespace ios
     {
-
+        
         namespace ascii
         {
-
+            
             //__________________________________________________________________
             //
             //
@@ -28,19 +28,19 @@ namespace yack
             //__________________________________________________________________
             struct convert
             {
-
+                
                 static int64_t  to_int64(const char   *args, size_t size, const char *ctx = NULL); //!< substring to int64_t
                 static int64_t  to_int64(const char   *text, const char *ctx = NULL );             //!< text to int64_t
                 static int64_t  to_int64(const string &data, const char *ctx = NULL);              //!< text to int64_t
-
+                
                 static uint64_t to_uint64(const char   *args, size_t size, const char *ctx = NULL); //!< substring to uint64_t
                 static uint64_t to_uint64(const char   *text, const char *ctx = NULL);              //!< text to uint64_t
                 static uint64_t to_uint64(const string &data, const char *ctx = NULL);              //!< text to uint64_t
-
+                
                 typedef int2type<true>     to_signed;   //!< alias
                 typedef int2type<false>    to_unsigned; //!< alias
-
-
+                
+                
                 //! convert to integer type
                 template <typename T> static inline
                 T to(const char *args, const size_t size, const char *ctx=NULL)
@@ -48,7 +48,7 @@ namespace yack
                     static const int2type< is_signed<T>::value > which = {};
                     return to_integer<T>(args,size,ctx,which);
                 }
-
+                
                 //! convert to integer type
                 template <typename T> static inline
                 T to(const char *text, const char *ctx=NULL)
@@ -56,17 +56,33 @@ namespace yack
                     assert(text);
                     return to<T>(text,strlen(text),ctx);
                 }
-
+                
                 //! convert to integer type
                 template <typename T> static inline
                 T to(const string &data, const char *ctx=NULL)
                 {
                     return to<T>(data(),data.size(),ctx);
                 }
-
-
-
-
+                
+                
+                template <typename T> static
+                T to_real(const char *args, const size_t size, const char *ctx=NULL);
+                
+                template <typename T> static inline
+                T to_real(const char *text, const char *ctx)
+                {
+                    assert(text);
+                    return to_real<T>(text,strlen(text),ctx);
+                }
+                
+                //! convert to integer type
+                template <typename T> static inline
+                T to_real(const string &data, const char *ctx=NULL)
+                {
+                    return to_real<T>(data(),data.size(),ctx);
+                }
+                
+                
             private:
                 template <typename T> static inline
                 T to_integer(const char       *args,
@@ -83,8 +99,8 @@ namespace yack
                     }
                     return T(value);
                 }
-
-
+                
+                
                 template <typename T> static inline
                 T to_integer(const char       *args,
                              const size_t     size,
@@ -99,17 +115,17 @@ namespace yack
                     }
                     return T(value);
                 }
-
-
-
+                
+                
+                
                 static void out_of_range_signed(const   size_t bytes,const char *ctx);
                 static void out_of_range_unsigned(const size_t bytes,const char *ctx);
-
+                
             };
-
+            
         }
-
+        
     }
-
+    
 }
 #endif
