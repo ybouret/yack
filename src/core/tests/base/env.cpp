@@ -23,7 +23,7 @@ YACK_UTEST(env)
         const char *key = argv[i];
         if( environment::get(key,&val) )
         {
-            std::cerr << key << " = " << val << std::endl;
+            std::cerr << key << " = '" << val << "'" << std::endl;
         }
         else
         {

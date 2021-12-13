@@ -77,17 +77,19 @@ namespace yack
 #endif
     }
 
+	static inline void check(const char *equal)
+	{
+		if (!equal) throw exception("bad %s environment string", YACK_PLATFORM);
+	}
+	
 	static inline void grow(glossary<string, string> &dict, const string &es)
 	{
         const char * const entry = es();
-        const char *       equal = strchr(entry,'=');
+		const char *       equal = strchr(entry, '='); check(equal);
         const char * const leave = entry + es.size();
-
-        //std::cerr << "[" << es << "]" << std::endl;
-
-        if(!equal) throw exception("bad environment string");
-        const string key(entry,equal-entry); ++equal;
-        const string val(equal,leave-equal);
+		const string       key(entry, equal - entry); ++equal;
+		const string       val(equal, leave - equal);
+		 
         std::cerr << "\t|_key='" << key << "'" << std::endl;
         std::cerr << "\t|_val='" << val << "'" << std::endl;
         if(!dict.insert(key,val))
@@ -141,6 +143,31 @@ namespace yack
         }
 #endif
 
+#if defined(YACK_WIN)
+		if (val) val->clear();
+		ESQuery esq;
+		LPTSTR  lpszVariable = *esq;
+		while (*lpszVariable)
+		{
+			//_tprintf(TEXT("%s\n"), lpszVariable);
+			size_t sz = lstrlen(lpszVariable);
+			const string es((const char *)lpszVariable, sz);
+			const char * const entry = es();
+			const char *       equal = strchr(entry, '='); check(equal);
+			const string       sub(entry, equal - entry);
+			if (sub==key)
+			{
+				if (val)
+				{
+					++equal;
+					*val = string(equal, (entry + es.size()) - equal);
+				}
+				return true;
+			}
+			lpszVariable += ++sz;
+		}
+		return false;
+#endif
     }
 
     bool environment:: get(const char *key, string *val)
