@@ -4,6 +4,10 @@
 #define YACK_RANDOMIZED_BITS_INCLUDED 1
 
 #include "yack/randomized/metrics.hpp"
+#include "yack/ptr/arc.hpp"
+#include "yack/object.hpp"
+#include "yack/counted.hpp"
+
 
 namespace yack
 {
@@ -16,7 +20,7 @@ namespace yack
         //! bits interface
         //
         //______________________________________________________________________
-        class bits : public metrics
+        class bits : public object, public counted, public metrics
         {
         public:
 
@@ -99,9 +103,14 @@ namespace yack
             YACK_DISABLE_COPY_AND_ASSIGN(bits);
         };
 
-
-      
-
+        //______________________________________________________________________
+        //
+        //
+        //! alias to shared bits
+        //
+        //______________________________________________________________________
+        typedef arc_ptr<bits> shared_bits;
+        
 
 
     }

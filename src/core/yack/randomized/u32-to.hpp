@@ -9,17 +9,31 @@ namespace yack
 {
     namespace randomized
     {
-
+        //______________________________________________________________________
+        //
+        //
+        //! u32 to real
+        //
+        //______________________________________________________________________
         template <typename T>
         class u32_to
         {
         public:
+            //__________________________________________________________________
+            //
+            // types and definitions
+            //__________________________________________________________________
             static const unsigned    bits; //!< for word_type to real conversion
             static const uint32_t    maxi; //!< values in 2^bits - 1
-            typedef T   (u32_to<T>::*proc)(const uint32_t) const;
+            typedef T   (u32_to<T>::*proc)(const uint32_t) const; //!< alias
 
-            inline ~u32_to() throw() {}
+            //__________________________________________________________________
+            //
+            //C++
+            //__________________________________________________________________
+            inline ~u32_to() throw() {} //!< cleanup
 
+            //! setup
             inline u32_to(const uint32_t umax) throw() :
             user_maxi(umax),
             compacted(user_maxi>maxi),
@@ -29,15 +43,27 @@ namespace yack
                 setup();
             }
 
-            const uint32_t  user_maxi;
-            const bool      compacted;
-            const T         unit_deno;
-            proc            unit_proc;
-
-            inline T unit(const uint32_t u) const
+            //__________________________________________________________________
+            //
+            // methods
+            //__________________________________________________________________
+            
+            //! call to transform 0..user_maxi into ]0:1[
+            inline T unit(const uint32_t u) const throw()
             {
                 return ((*this).*unit_proc)(u);
             }
+            
+            //__________________________________________________________________
+            //
+            // members
+            //__________________________________________________________________
+            const uint32_t  user_maxi; //!< user maxi value
+            const bool      compacted; //!< user_maxi>maxi
+            const T         unit_deno; //!< pre-computed denominator
+            proc            unit_proc; //!< pre-computed method
+
+         
 
 
         private:

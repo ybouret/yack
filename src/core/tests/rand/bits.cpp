@@ -2,6 +2,7 @@
 #include "yack/randomized/park-miller.hpp"
 #include "yack/randomized/shuffle.hpp"
 #include "yack/randomized/in2d.hpp"
+#include "yack/randomized/gaussian.hpp"
 
 #include "yack/data/list/raw.hpp"
 #include "yack/utest/run.hpp"
@@ -79,7 +80,18 @@ namespace
 
 }
 
-
+template <typename T>
+static inline
+void test_gaussian( const randomized::shared_bits &sh )
+{
+    randomized::gaussian<T> gran( sh );
+    
+    for(size_t i=0;i<10;++i)
+    {
+        std::cerr << gran() << std::endl;
+    }
+    
+}
 
 YACK_UTEST(rand_bits)
 {
@@ -95,36 +107,10 @@ YACK_UTEST(rand_bits)
     }
 
     {
-        const long seed = system_seed::get<randomized::ParkMiller::word_type>();
-        randomized::ParkMiller ranF(seed), ranD(seed), ranL(seed);
-
-        float       sumF = 0;
-        double      sumD = 0;
-        long double sumL = 0;
-        float       aveF = 0;
-        double      aveD = 0;
-        long double aveL = 0;
-        size_t      count = 0;
-        while(true)
-        {
-            sumF += ranF.to<float>();
-            sumD += ranD.to<double>();
-            sumL += ranL.to<long double>();
-
-            ++count;
-            const float new_aveF = sumF/count;
-            //const bool  done = fabs(new_aveF-aveF) <= 0.0f;
-            aveF = new_aveF;
-            aveD = sumD/count;
-            aveL = sumL/count;
-
-            //if(done) break;
-            if(count>=10000)
-                break;
-        }
-
-        std::cerr << "done in " << count << " trials" << std::endl;
-        std::cerr << aveF << " / " << aveD << " / " << aveL << std::endl;
+        randomized::shared_bits sh_ran = new randomized::ParkMiller( system_seed::get<randomized::ParkMiller::word_type>()  );
+        test_gaussian<float>(sh_ran);
+        
+    
     }
 
 }

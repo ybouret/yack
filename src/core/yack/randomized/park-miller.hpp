@@ -17,9 +17,9 @@ namespace yack
         class ParkMiller : public bits
         {
         public:
-            typedef long word_type;
+            typedef long word_type; //!< internal computation/seed
 
-            virtual ~ParkMiller() throw(); //!< cleanup
+            virtual ~ParkMiller() throw();                //!< cleanup
             explicit ParkMiller(const long seed) throw(); //!< setup
             virtual uint32_t next32() throw();
         private:
