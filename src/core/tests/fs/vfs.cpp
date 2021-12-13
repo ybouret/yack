@@ -16,7 +16,6 @@ YACK_UTEST(vfs)
         std::cerr << "raw=" << raw << std::endl;
         const string nxt = vfs::new_extension(path, "png");
         std::cerr << "nxt=" << nxt << std::endl;
-
     }
 
 }

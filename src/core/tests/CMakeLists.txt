@@ -212,6 +212,7 @@ add_test(info:xbwt test-yack info_xbwt)
 add_test(math:api test-yack math_api)
 
 add_test(vfs  test-yack vfs)
+add_test(vfs:local test-yack vfs_local)
 
 add_test(kr:digest   test-yack kr_digest)
 

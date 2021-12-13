@@ -130,6 +130,7 @@ YACK_UTEST_DECL(128)
     YACK_UTEST(math_api);
 
     YACK_UTEST(vfs);
+    YACK_UTEST(vfs_local);
 
     YACK_UTEST(kr_digest);
 
