@@ -13,7 +13,7 @@ namespace yack
     {
 
         static void show();
-
+        static void get(glossary<string,string>&);
     };
 
 }

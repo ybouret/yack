@@ -17,6 +17,26 @@ extern "C" char **environ;
 namespace yack
 {
 
+    namespace
+    {
+#if defined(YACK_WIN)
+        class ESQuery
+        {
+        public:
+            inline ESQuery()
+            {
+            }
+
+            inline ~ESQuery() throw()
+            {
+            }
+        private:
+            YACK_DISABLE_COPY_AND_ASSIGN(ESQuery);
+        };
+#endif
+
+    }
+
     void environment::show()
     {
         YACK_GIANT_LOCK();
@@ -44,9 +64,14 @@ namespace yack
 
         ::FreeEnvironmentStrings(lpvEnv);
 #endif
+    }
 
+    void environment:: get(glossary<string,string> &dict)
+    {
+        dict.free();
 
     }
+
 
 }
 
