@@ -18,7 +18,7 @@ namespace yack
     }
 
     vfs::scanner:: ~scanner() throw() {}
-    vfs::scanner:: scanner(const string &dirname) : object(), counted(), path(dirname) {}
+    vfs::scanner:: scanner(const string &dirname) : object(), path(dirname) {}
     
 
 }

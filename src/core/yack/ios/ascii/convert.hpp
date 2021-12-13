@@ -64,10 +64,12 @@ namespace yack
                     return to<T>(data(),data.size(),ctx);
                 }
                 
-                
+
+                //! convert to real
                 template <typename T> static
                 T real(const char *args, const size_t size, const char *ctx=NULL);
-                
+
+                //! convert to real
                 template <typename T> static inline
                 T real(const char *text, const char *ctx)
                 {
@@ -75,7 +77,7 @@ namespace yack
                     return real<T>(text,strlen(text),ctx);
                 }
                 
-                //! convert to integer type
+                //! convert to real
                 template <typename T> static inline
                 T real(const string &data, const char *ctx=NULL)
                 {

@@ -10,12 +10,14 @@ YACK_UTEST(vfs)
     {
         const char *path      = argv[i];
         const char *base_name = vfs::get_base_name(path);
-        const char *extension = vfs::get_extension(path);
+        const char *extension = vfs::get_extension(base_name);
         std::cerr << "[" << path << "] => [" << base_name << "] => .[" << (extension ? extension : "(nil)") << "]" << std::endl;
         const string raw = vfs::make_null_ext(path);
         std::cerr << "raw=" << raw << std::endl;
         const string nxt = vfs::new_extension(path, "png");
         std::cerr << "nxt=" << nxt << std::endl;
+        const string dir = vfs::get_dir_name(path);
+        std::cerr << "dir=" << dir << std::endl;
     }
 
     YACK_SIZEOF(vfs::entry);

@@ -25,9 +25,11 @@ namespace yack
         static const char *get_base_name(const char *path, const size_t plen) throw(); //!< get base name
         static const char *get_base_name(const char *path) throw();                    //!< get base name
         static const char *get_base_name(const string &path) throw();                  //!< get base name
+        static void        make_dir_name(string &path, const string dir_sep='/');      //!< ensure path is a directory
+        static string      get_dir_name(const char   *path);                           //!< get directory name
+        static string      get_dir_name(const string &path);                           //!< get directory name
 
-
-        static const char *get_extension(const char   *path, const size_t plen) throw(); //!< get extension, NULL if none
+        static const char *get_extension(const char   *path, const size_t plen) throw(); //!< get extension, NULL if none, use BASENAME!
         static const char *get_extension(const char   *path)                    throw(); //!< get extension
         static const char *get_extension(const string &path) throw();                    //!< get extension
         
@@ -45,34 +47,55 @@ namespace yack
         // types and definitions
         //______________________________________________________________________
 
-        // a file system entry
+        //______________________________________________________________________
+        //
+        //! a file system entry
+        //______________________________________________________________________
         class entry : public object
         {
         public:
-            virtual ~entry() throw();
-            explicit entry(const char *);
-            entry *next; //!< for list/pool
-            entry *prev; //!< for list/pool
-            const string       path;
-            const char * const base;
+            virtual ~entry() throw();     //!< cleanup
+            explicit entry(const char *); //!< setup
+            entry *next;             //!< for list/pool
+            entry *prev;             //!< for list/pool
+            const string       path; //!< full path
+            const char * const base; //!< base name
         private:
             YACK_DISABLE_COPY_AND_ASSIGN(entry);
         };
 
+        //______________________________________________________________________
+        //
+        //! alias
+        //______________________________________________________________________
         typedef cxx_list_of<entry> entries;
 
-        //! a file system entry scanner
-        class scanner : public object, public counted
+        //______________________________________________________________________
+        //
+        //! file system scanner API
+        //______________________________________________________________________
+        class scanner : public object
         {
         public:
-            virtual ~scanner() throw();
-            virtual entry *next() = 0;
+            //__________________________________________________________________
+            //
+            // methods
+            //__________________________________________________________________
+            virtual entry *next() = 0; //!< get next entry
 
-            const string path;
+            //__________________________________________________________________
+            //
+            // members
+            //__________________________________________________________________
+            const string   path;       //!< open path
 
-
+            //__________________________________________________________________
+            //
+            // C++
+            //__________________________________________________________________
+            virtual       ~scanner() throw(); //!< cleanup
         protected:
-            explicit scanner(const string &dirname);
+            explicit       scanner(const string &dirname); //!< open folder
 
         private:
             YACK_DISABLE_COPY_AND_ASSIGN(scanner);

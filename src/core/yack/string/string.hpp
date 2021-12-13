@@ -88,9 +88,12 @@ namespace yack
             //
             // methods
             //__________________________________________________________________
-            void xch(string &) throw(); //!< no-throw exchange
-            void clear()       throw(); //!< clear data
-
+            void        xch(string &) throw(); //!< no-throw exchange
+            void        clear()       throw(); //!< clear data
+            type       &front()       throw(); //!< (*this)[1]
+            const_type &front() const throw(); //!< (*this)[1]
+            type       &back()        throw(); //!< (*this)[chars]
+            const_type &back()  const throw(); //!< (*this)[chars]
 
             //__________________________________________________________________
             //

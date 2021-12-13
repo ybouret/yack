@@ -394,5 +394,34 @@ namespace yack
                        static_cast<const CH*>(rhs.block), rhs.chars);
         }
 
+
+        template <>
+        CH  &string<CH>:: front() throw()
+        {
+            assert(size()>0);
+            return item[1];
+        }
+
+        template <>
+        const CH  &string<CH>:: front() const throw()
+        {
+            assert(size()>0);
+            return item[1];
+        }
+
+        template <>
+        CH  &string<CH>:: back() throw()
+        {
+            assert(size()>0);
+            return item[chars];
+        }
+
+        template <>
+        const CH  &string<CH>:: back() const throw()
+        {
+            assert(size()>0);
+            return item[chars];
+        }
+
     }
 }
