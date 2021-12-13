@@ -23,13 +23,24 @@ namespace yack
         class ESQuery
         {
         public:
-            inline ESQuery()
+            inline ESQuery() : lpvEnv(::GetEnvironmentStrings())
             {
+				if(!lpvEnv) throw win32::exception(::GetLastError(), "GetEnvironmentStrings()");
             }
+
+			inline LPTSTR operator*() throw()
+			{
+				return (LPSTR)lpvEnv;
+			}
 
             inline ~ESQuery() throw()
             {
+				::FreeEnvironmentStrings(lpvEnv);
+				lpvEnv = 0;
             }
+
+			LPTCH lpvEnv;
+
         private:
             YACK_DISABLE_COPY_AND_ASSIGN(ESQuery);
         };
@@ -48,9 +59,8 @@ namespace yack
 #endif
 
 #if defined(YACK_WIN)
-        LPTCH lpvEnv = ::GetEnvironmentStrings();
-        if(!lpvEnv) throw win32::exception( ::GetLastError(), "GetEnvironmentStrings()" );
-        LPTSTR lpszVariable = (LPTSTR) lpvEnv;
+		ESQuery esq;
+		LPTSTR lpszVariable = *esq;
 
         // Variable strings are separated by NULL byte, and the block is
         // terminated by a NULL byte.
@@ -62,14 +72,30 @@ namespace yack
             lpszVariable += lstrlen(lpszVariable) + 1;
         }
 
-        ::FreeEnvironmentStrings(lpvEnv);
+       
 #endif
     }
+
+	static inline void grow(glossary<string, string> &dict, const string &es)
+	{
+		std::cerr << "[" << es << "]" << std::endl;
+	}
 
     void environment:: get(glossary<string,string> &dict)
     {
         dict.free();
-
+#if defined(YACK_WIN)
+		ESQuery esq;
+		LPTSTR  lpszVariable = *esq;
+		while (*lpszVariable)
+		{
+			//_tprintf(TEXT("%s\n"), lpszVariable);
+			size_t sz = lstrlen(lpszVariable);
+			const string es((const char *)lpszVariable, sz);
+			grow(dict, es);
+			lpszVariable += ++sz;
+		}
+#endif
     }
 
 
