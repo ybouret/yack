@@ -20,7 +20,8 @@ namespace yack
 
         static void        show();                              //!< quick show
         static void        get(glossary<string,string>&);       //!< free/fill database
-        static bool        get(const string &key, string &val); //!< query key
+        static bool        get(const string &key, string *val); //!< query key
+        static bool        get(const char   *key, string *val); //!< query key
     };
 
 }

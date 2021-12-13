@@ -124,26 +124,30 @@ namespace yack
     }
 
 
-    bool environment:: get(const string &key, string &val)
+    bool environment:: get(const string &key, string *val)
     {
         YACK_GIANT_LOCK();
 #if defined(YACK_BSD)
         const char *res = getenv(key());
         if(!res)
         {
-            val.clear();
+            if(val) val->clear();
             return false;
         }
         else
         {
-            val = res;
+            if(val) *val = res;
             return true;
         }
 #endif
 
-
     }
 
+    bool environment:: get(const char *key, string *val)
+    {
+        const string _(key);
+        return get(_,val);
+    }
 
 }
 
