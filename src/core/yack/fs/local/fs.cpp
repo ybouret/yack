@@ -18,7 +18,7 @@
 namespace yack
 {
 
-    const char local_fs::call_sign[] = "local_fs";
+    const char local_fs::call_sign[] = "localFS";
 
     local_fs:: local_fs() throw() : vfs(), singleton<local_fs>()
     {
@@ -61,54 +61,55 @@ namespace yack
         public:
 
 #if defined(YACK_WIN)
-			inline virtual ~local_scanner() throw()
-			{
-				FindClose(hfind);
-			}
+            inline virtual ~local_scanner() throw()
+            {
+                FindClose(hfind);
+            }
 
-			inline explicit local_scanner(const string &dirname) :
-			vfs::scanner(dirname),
-			hfind(INVALID_HANDLE_VALUE),
-			has(false),
-			wfd()
-			{
-				YACK_GIANT_LOCK();
-				if (dirname.size() > MAX_PATH - 3) throw exception("FindFirstFile(dirname is too long)");
-				string szDir = dirname + "\\*";
-				hfind = FindFirstFile(szDir(), &wfd);
-				if (INVALID_HANDLE_VALUE == hfind)
-				{
-					throw win32::exception(GetLastError(), "FindFirstFile(%s)", dirname());
-				}
-				has = true;
-			}
+            inline explicit local_scanner(const string &dirname) :
+            vfs::scanner(dirname),
+            hfind(INVALID_HANDLE_VALUE),
+            has(false),
+            wfd()
+            {
+                YACK_GIANT_LOCK();
+                if (dirname.size() > MAX_PATH - 3) throw exception("FindFirstFile(dirname is too long)");
+                string szDir = dirname + "\\*";
+                hfind = FindFirstFile(szDir(), &wfd);
+                if (INVALID_HANDLE_VALUE == hfind)
+                {
+                    throw win32::exception(GetLastError(), "FindFirstFile(%s)", dirname());
+                }
+                has = true;
+            }
 
-			virtual vfs::entry *next()
-			{
-				if(has)
-				{
-					auto_ptr<vfs::entry> ep = new vfs::entry(wfd.cFileName);
-					has = false;
-					YACK_GIANT_LOCK();
-					if(!FindNextFile(hfind,&wfd))
-					{
-						const DWORD err = GetLastError();
-						if (err != ERROR_NO_MORE_FILES) throw win32::exception(err, "FindNextFile(%s)", path());
-					}
-					else
-					{
-						has = true;
-					}
-					return ep.yield();
-				}
-				else
-				{
-					return NULL;
-				}
-			}
-			HANDLE               hfind;
-			bool                 has;
-			WIN32_FIND_DATA      wfd;
+            virtual vfs::entry *next()
+            {
+                if(has)
+                {
+                    const string         full_path = path + wfd.cFileName;
+                    auto_ptr<vfs::entry> ep        = new vfs::entry(full_path);
+                    has = false;
+                    YACK_GIANT_LOCK();
+                    if(!FindNextFile(hfind,&wfd))
+                    {
+                        const DWORD err = GetLastError();
+                        if (err != ERROR_NO_MORE_FILES) throw win32::exception(err, "FindNextFile(%s)", path());
+                    }
+                    else
+                    {
+                        has = true;
+                    }
+                    return ep.yield();
+                }
+                else
+                {
+                    return NULL;
+                }
+            }
+            HANDLE               hfind;
+            bool                 has;
+            WIN32_FIND_DATA      wfd;
 #endif
 
 #if defined(YACK_BSD)
@@ -144,7 +145,8 @@ namespace yack
                 }
                 else
                 {
-                    return new vfs::entry(ep->d_name);
+                    const string full_path = path + ep->d_name;
+                    return new vfs::entry(full_path);
                 }
             }
 

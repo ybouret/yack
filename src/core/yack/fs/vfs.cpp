@@ -51,11 +51,11 @@ namespace yack
         return get_base_name(path,yack_cstring_size(path));
     }
 
-    void vfs:: make_dir_name(string &path, const string dir_sep)
+    void vfs:: make_dir_name(string &path)
     {
         if(path.size()<=0)
         {
-            path = '.'; path += dir_sep;
+            path = "./";
         }
         else
         {
@@ -66,7 +66,7 @@ namespace yack
                     break;
 
                 default:
-                    path += dir_sep;
+                    path += '/';
                     break;
             }
         }

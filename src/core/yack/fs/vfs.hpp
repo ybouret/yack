@@ -25,7 +25,7 @@ namespace yack
         static const char *get_base_name(const char *path, const size_t plen) throw(); //!< get base name
         static const char *get_base_name(const char *path) throw();                    //!< get base name
         static const char *get_base_name(const string &path) throw();                  //!< get base name
-        static void        make_dir_name(string &path, const string dir_sep='/');      //!< ensure path is a directory
+        static void        make_dir_name(string &path);                                //!< ensure path is a directory
         static string      get_dir_name(const char   *path);                           //!< get directory name
         static string      get_dir_name(const string &path);                           //!< get directory name
 
@@ -54,8 +54,8 @@ namespace yack
         class entry : public object
         {
         public:
-            virtual ~entry() throw();     //!< cleanup
-            explicit entry(const char *); //!< setup
+            virtual ~entry() throw();       //!< cleanup
+            explicit entry(const string &); //!< setup with full_path
             entry *next;             //!< for list/pool
             entry *prev;             //!< for list/pool
             const string       path; //!< full path
