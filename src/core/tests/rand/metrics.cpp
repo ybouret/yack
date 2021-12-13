@@ -42,11 +42,8 @@ static inline void show_metrics()
 YACK_UTEST(rand_metrics)
 {
     show_metrics<float>();
-    //show_metrics<double>();
-    //show_metrics<long double>();
-
-
-
+    show_metrics<double>();
+    show_metrics<long double>();
 }
 YACK_UDONE()
 
