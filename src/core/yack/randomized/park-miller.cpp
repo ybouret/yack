@@ -1,5 +1,6 @@
 #include "yack/randomized/park-miller.hpp"
 #include "yack/hashing/des64.hpp"
+#include "yack/system/seed.hpp"
 
 #include <iostream>
 
@@ -29,7 +30,7 @@ namespace yack
 
         ParkMiller:: ParkMiller(const long seed) throw() :
         bits( IM-1 ),
-        word(reseed(seed))
+        word( seed == 0 ? reseed( system_seed::get<long>() ) : reseed(seed))
         {
         }
         

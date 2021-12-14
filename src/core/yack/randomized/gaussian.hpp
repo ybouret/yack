@@ -68,8 +68,8 @@ namespace yack
                 static const T    two_pi    = pi+pi;
                 randomized::bits &ran       = **this;
                 assert(gen==true);
-                const T U = ran.to<T>();
-                const T V = ran.to<T>();
+                const T U     = ran.to<T>();
+                const T V     = ran.to<T>();
                 const T theta = two_pi * V;
                 const T lnU   = log(U);
                 const T rho   = sqrt( -(lnU+lnU) );

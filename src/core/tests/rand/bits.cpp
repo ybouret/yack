@@ -2,13 +2,14 @@
 #include "yack/randomized/park-miller.hpp"
 #include "yack/randomized/shuffle.hpp"
 #include "yack/randomized/in2d.hpp"
+#include "yack/randomized/in3d.hpp"
 #include "yack/randomized/gaussian.hpp"
 
-#include "yack/data/list/raw.hpp"
 #include "yack/utest/run.hpp"
-#include "yack/system/seed.hpp"
-
-
+#include "yack/sequence/stats.hpp"
+#include "yack/ios/fmt/hexa.hpp"
+#include "yack/system/rtti.hpp"
+#include "yack/string.hpp"
 
 #include <cstring>
 
@@ -23,81 +24,67 @@ namespace
         std::cerr << "uint" << sizeof(T)*8 << "_t:";
         for(size_t i=0;i<4;++i)
         {
-            std::cerr << " " << uint64_t( ran.to<T>() );
+            std::cerr << ' ' << ios::hexa( ran.to<T>() );
         }
         std::cerr << std::endl;
     }
 
-    struct node_t
+    template <typename SEQUENCE> static inline
+    void do_stats( SEQUENCE &seq, const char *kind )
     {
-        node_t *next;
-        node_t *prev;
-        size_t  indx;
-    };
+        typedef typename SEQUENCE::mutable_type type;
 
-    static void test_bits( randomized::bits &ran )
+        std::cerr << "<" << kind << "/" << rtti::name<type>() << ">" << std::endl;
+        type ave = statistical::average<type>::of(seq);
+        std::cerr << "\taverage = " << ave << std::endl;
+        type sig = sqrt(statistical::variance<type>::of(seq,ave) );
+        std::cerr << "\tstd_dev = " << sig << std::endl;
+
+
+    }
+
+    static void test_bits( randomized::shared_bits &sh )
     {
-
+        randomized::bits &ran = *sh;
         draw<uint8_t>(ran);
         draw<uint16_t>(ran);
         draw<uint32_t>(ran);
         draw<uint64_t>(ran);
 
-        size_t       data[20];
-        const size_t nd = sizeof(data)/sizeof(data[0]);
-        for(unsigned i=0;i<nd;++i)
+        const size_t   N = 10000;
+        vector<float>  xf(N,as_capacity);
+        vector<double> xd(N,as_capacity);
+        for(size_t i=0;i<N;++i)
         {
-            data[i] = i;
+            xf.push_back( ran.to<float>()  );
+            xd.push_back( ran.to<double>() );
         }
 
-        randomized::shuffle::data(data,nd,ran);
+        do_stats(xf,"uniform");
+        do_stats(xd,"uniform");
 
-
-        node_t nodes[20];
-        memset(nodes,0,sizeof(nodes));
-        const size_t nn = sizeof(nodes)/sizeof(nodes[0]);
-        raw_list_of<node_t> l;
-        for(size_t i=0;i<nn;++i)
+        xf.free();
+        xd.free();
+        randomized::gaussian<float>  gf(sh);
+        randomized::gaussian<double> gd(sh);
+        for(size_t i=0;i<N;++i)
         {
-            l.push_back(nodes+i)->indx=i;
+            xf.push_back( gf()  );
+            xd.push_back( gd() );
         }
-        randomized::shuffle::list(l,ran);
-        
-        l.restart();
-
-        {
-            double sum = 0;
-            size_t num = 100000;
-            for(size_t i=num;i>0;--i)
-            {
-                sum += ran();
-            }
-            sum /= num;
-            std::cerr << "ave=" << sum << std::endl;
-        }
+        do_stats(xf,"gaussian");
+        do_stats(xd,"gaussian");
 
     }
 
 }
 
-template <typename T>
-static inline
-void test_gaussian( const randomized::shared_bits &sh )
-{
-    randomized::gaussian<T> gran( sh );
-    
-    for(size_t i=0;i<10;++i)
-    {
-        std::cerr << gran() << std::endl;
-    }
-    
-}
 
 YACK_UTEST(rand_bits)
 {
     {
-        randomized::rand_       ran;
-        randomized::ParkMiller  ranPM( system_seed::get<randomized::ParkMiller::word_type>() );
+        randomized::shared_bits  ran   = new randomized::rand_();
+        randomized::shared_bits  ranPM = new randomized::ParkMiller();
 
         std::cerr << "Testing rand()" << std::endl;
         test_bits(ran);
@@ -106,12 +93,6 @@ YACK_UTEST(rand_bits)
         test_bits(ranPM);
     }
 
-    {
-        randomized::shared_bits sh_ran = new randomized::ParkMiller( system_seed::get<randomized::ParkMiller::word_type>()  );
-        test_gaussian<float>(sh_ran);
-        
-    
-    }
 
 }
 YACK_UDONE()
