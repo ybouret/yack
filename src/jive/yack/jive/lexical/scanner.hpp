@@ -72,8 +72,8 @@ namespace yack
                 //! default emit method
                 bool    emit(const token &) throw();
 
-                //! get next lexeme
-                lexeme *get(source &source);
+                //! probe next lexeme
+                lexeme *probe(source &source);
 
                 //______________________________________________________________
                 //
