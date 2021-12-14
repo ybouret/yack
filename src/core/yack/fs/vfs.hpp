@@ -47,7 +47,7 @@ namespace yack
         //
         // types and definitions
         //______________________________________________________________________
-        typedef arc_ptr<const string> string_ptr;
+        typedef arc_ptr<const string> string_ptr; //!< alias
 
 
         //______________________________________________________________________
@@ -61,12 +61,12 @@ namespace yack
             //
             // types and definitions
             //__________________________________________________________________
-            typedef unsigned attr_t;
-            static const attr_t attr_reg = 0x01;
-            static const attr_t attr_dir = 0x02;
-            static const attr_t attr_lnk = 0x04;
-            static const attr_t attr_unk = 0x00;
-            static const attr_t attr_msk = attr_reg|attr_dir;
+            typedef unsigned    attr_t;                          //!< alias
+            static const attr_t attr_reg = 0x01;                 //!< regular file
+            static const attr_t attr_dir = 0x02;                 //!< directory
+            static const attr_t attr_lnk = 0x04;                 //!< link
+            static const attr_t attr_unk = 0x00;                 //!< unknown
+            static const attr_t attr_msk = attr_reg|attr_dir;    //!< helper
 
             //__________________________________________________________________
             //
@@ -80,10 +80,10 @@ namespace yack
             //
             // methods
             //__________________________________________________________________
-            bool is_unk() const throw();
-            bool is_reg() const throw();
-            bool is_dir() const throw();
-            bool is_lnk() const throw();
+            bool is_unk() const throw(); //!< check if unknown
+            bool is_reg() const throw(); //!< check if regular
+            bool is_dir() const throw(); //!< check if directory
+            bool is_lnk() const throw(); //!< check if link
 
             //__________________________________________________________________
             //

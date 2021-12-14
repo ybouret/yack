@@ -78,11 +78,13 @@ namespace yack
 #endif
     }
 
+#if 0
     static inline void check(const char *equal)
     {
         if (!equal) throw exception("bad %s environment string", YACK_PLATFORM);
     }
-
+#endif
+    
     static inline void grow(glossary<string, string> &dict, const string &es)
     {
         const char * const entry = es();
