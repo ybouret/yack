@@ -10,6 +10,7 @@
 #include "yack/ios/fmt/hexa.hpp"
 #include "yack/system/rtti.hpp"
 #include "yack/string.hpp"
+#include "yack/system/seed.hpp"
 
 #include <cstring>
 
@@ -82,6 +83,9 @@ namespace
 
 YACK_UTEST(rand_bits)
 {
+
+
+
     {
         randomized::shared_bits  ran   = new randomized::rand_();
         randomized::shared_bits  ranPM = new randomized::ParkMiller();
@@ -94,6 +98,11 @@ YACK_UTEST(rand_bits)
     }
 
 
+    std::cerr << "seeds: " << std::endl;
+    for(size_t i=0;i<10;++i)
+    {
+        std::cerr << ios::hexa( system_seed::get64() ) << std::endl;
+    }
 }
 YACK_UDONE()
 

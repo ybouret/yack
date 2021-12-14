@@ -28,7 +28,6 @@ YACK_UTEST(vfs_local)
             while(NULL!=(ep=scan->next()))
             {
                 elist.push_back(ep);
-                //std::cerr << ep->path << std::endl;
                 if(ep->path.size()>=pmax) pmax=ep->path.size();
             }
         }
