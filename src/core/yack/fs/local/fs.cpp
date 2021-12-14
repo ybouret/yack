@@ -169,13 +169,14 @@ namespace yack
     vfs::entry::attr_t local_fs:: get_attr_of(const string &path) const
     {
         YACK_GIANT_LOCK();
-        entry::attr_t attr = entry::attr_bad;
+        entry::attr_t attr = entry::attr_unk;
 
 #if defined(YACK_BSD)
         struct stat buf;
         memset(&buf,0,sizeof(buf));
         if( 0 != lstat(path(),&buf) ) throw libc::exception(errno,"lstat(%s)",path());
-        const mode_t m = buf.st_mode;
+        const mode_t m = (buf.st_mode & S_IFMT);
+        std::cerr << "mode=" << m << " for '" << path << "'" << std::endl;
         if( S_ISREG(m) ) attr |= entry::attr_reg;
         if( S_ISDIR(m) ) attr |= entry::attr_dir;
         if( S_ISLNK(m) ) attr |= entry::attr_lnk;

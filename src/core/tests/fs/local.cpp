@@ -4,6 +4,7 @@
 #include "yack/string.hpp"
 #include "yack/system/exception.hpp"
 #include "yack/ptr/auto.hpp"
+#include "yack/ios/fmt/hexa.hpp"
 
 #if defined(YACK_BSD)
 #include <dirent.h>
@@ -35,9 +36,10 @@ YACK_UTEST(vfs_local)
         for(const vfs::entry *ep=elist.head;ep;ep=ep->next)
         {
             std::cerr << std::setw(pmax) << (*(ep->path))() << " |";
+            std::cerr << ios::hexa(ep->attr) << "|";
             if(ep->is_reg()) std::cerr << " regular   |";
             if(ep->is_dir()) std::cerr << " directory |";
-            if(ep->is_lnk()) std::cerr << " link";
+            if(ep->is_lnk()) std::cerr << " link      |";
             std::cerr << std::endl;
         }
         

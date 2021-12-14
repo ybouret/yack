@@ -20,24 +20,24 @@ namespace yack
     {
     }
 
-    bool vfs::entry:: is_bad() const throw()
+    bool vfs::entry:: is_unk() const throw()
     {
-        return attr_bad == (attr&attr_msk);
+        return 0  == (attr&attr_msk);
     }
 
     bool vfs::entry:: is_reg() const throw()
     {
-        return attr_reg == (attr&attr_msk);
+        return 0 !=  (attr&attr_reg);
     }
 
     bool vfs::entry:: is_dir() const throw()
     {
-        return attr_dir == (attr&attr_msk);
+        return 0 !=  (attr&attr_dir);
     }
 
     bool vfs::entry:: is_lnk() const throw()
     {
-        return  0 != (attr&attr_lnk);
+        return  0 != (attr_lnk&attr);
     }
 
     vfs::scanner:: ~scanner() throw() {}

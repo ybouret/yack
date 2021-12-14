@@ -65,7 +65,7 @@ namespace yack
             static const attr_t attr_reg = 0x01;
             static const attr_t attr_dir = 0x02;
             static const attr_t attr_lnk = 0x04;
-            static const attr_t attr_bad = 0x00;
+            static const attr_t attr_unk = 0x00;
             static const attr_t attr_msk = attr_reg|attr_dir;
 
             //__________________________________________________________________
@@ -80,7 +80,7 @@ namespace yack
             //
             // methods
             //__________________________________________________________________
-            bool is_bad() const throw();
+            bool is_unk() const throw();
             bool is_reg() const throw();
             bool is_dir() const throw();
             bool is_lnk() const throw();
