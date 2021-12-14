@@ -86,7 +86,7 @@ namespace yack
     static inline void grow(glossary<string, string> &dict, const string &es)
     {
         const char * const entry = es();
-        const char *       equal = strchr(entry, '='); check(equal);
+		const char *       equal = strchr(entry+1, '='); if (!equal) return;
         const char * const leave = entry + es.size();
         const string       key(entry, equal - entry); ++equal;
         const string       val(equal, leave - equal);
@@ -154,17 +154,20 @@ namespace yack
             size_t sz = lstrlen(lpszVariable);
             const string es((const char *)lpszVariable, sz);
             const char * const entry = es();
-            const char *       equal = strchr(entry, '='); check(equal);
-            const string       sub(entry, equal - entry);
-            if (sub==key)
-            {
-                if (val)
-                {
-                    ++equal;
-                    *val = string(equal, (entry + es.size()) - equal);
-                }
-                return true;
-            }
+            const char *       equal = strchr(entry+1, '='); 
+			if (equal)
+			{
+				const string       sub(entry, equal - entry);
+				if (sub == key)
+				{
+					if (val)
+					{
+						++equal;
+						*val = string(equal, (entry + es.size()) - equal);
+					}
+					return true;
+				}
+			}
             lpszVariable += ++sz;
         }
         return false;

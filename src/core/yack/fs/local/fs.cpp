@@ -183,7 +183,8 @@ namespace yack
 #endif
 
 #if defined(YACK_WIN)
-
+		const DWORD dw = GetFileAttributes(path());
+		if (INVALID_FILE_ATTRIBUTES == dw) throw win32::exception(GetLastError(), "GetFileAttributes(%s)", path());
 #endif
 
         return attr;
