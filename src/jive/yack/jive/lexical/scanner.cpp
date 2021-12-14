@@ -19,7 +19,7 @@ namespace yack
 
                 const instruction task = new directive(t,m,a);
                 if(!instr->insert(task)) throw exception("<%s> multiple directive '%s'", (*label)(), (*t)());
-                (*table)(*m);
+                //(*table)(*m);
             }
 
             bool scanner:: emit(const token &) throw()
@@ -28,9 +28,9 @@ namespace yack
             }
 
 
-            lexeme * scanner::get(source &source)
+            lexeme * scanner:: probe(source &src)
             {
-                const character *ch = source.peek();
+                const character *ch = src.peek();
                 if(!ch)
                 {
                     return NULL; // EOF
@@ -39,9 +39,10 @@ namespace yack
                 {
                     for(const scatter::node *node = (*table)[**ch];node;node=node->next)
                     {
+                        //const pattern &p = **node;
                     }
                     exception excp("unexpected '%s' for <%s>", ios::ascii::hybrid[**ch], (*label)() );
-                    throw (*source).stamp(excp);
+                    throw (*src).stamp(excp);
                 }
                 return NULL;
             }

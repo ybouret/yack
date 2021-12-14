@@ -21,7 +21,7 @@ namespace yack
         
         exception &  context:: stamp(exception &excp) const throw()
         {
-            return excp.pre("%s:%u%u: ", (**this)(), line, column);
+            return excp.pre("%s:%u:%u: ", (**this)(), line, column);
         }
 
     }

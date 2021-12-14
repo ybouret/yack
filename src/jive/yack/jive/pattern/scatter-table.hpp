@@ -36,27 +36,21 @@ namespace yack
                 //
                 // C++
                 //______________________________________________________________
-                explicit node(const pattern &) throw(); //!< setup
+                explicit node(const pattern &, const void*) throw(); //!< setup
                 node(const node &)             throw(); //!< copy
                 virtual ~node()                throw(); //!< cleanup
-
-                //______________________________________________________________
-                //
-                // methods
-                //______________________________________________________________
-                const pattern & operator*() const throw(); //!< access
+                
 
                 //______________________________________________________________
                 //
                 // members
                 //______________________________________________________________
-                node  *next; //!< for list
-                node  *prev; //!< for list
-
+                node              *next; //!< for pool
+                const pattern &    host;
+                const void * const data;
 
             private:
                 YACK_DISABLE_ASSIGN(node);
-                const pattern &host;
             };
 
             //__________________________________________________________________
@@ -65,7 +59,7 @@ namespace yack
             //! list of nodes
             //
             //__________________________________________________________________
-            typedef cxx_list_of<node> slot;
+            typedef cxx_pool_of<node> slot;
 
             //__________________________________________________________________
             //
@@ -122,11 +116,14 @@ namespace yack
                 //
                 //! dispatch pattern to used slots
                 //______________________________________________________________
-                void operator()(const pattern &);
+                void operator()(const pattern &, const void *);
 
                 //______________________________________________________________
                 //
                 //! first node for given code, NULL meaning no corresponding
+                /**
+                 - the nodes are in chronological order
+                 */
                 //______________________________________________________________
                 const node * operator[](const uint8_t code) const throw();
 
@@ -138,7 +135,7 @@ namespace yack
 
             private:
                 YACK_DISABLE_COPY_AND_ASSIGN(table);
-                void use(const uint8_t code, const pattern &);
+                void use(const uint8_t code, const pattern &, const void *);
             };
 
         };

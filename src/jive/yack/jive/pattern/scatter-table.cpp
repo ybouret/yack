@@ -6,22 +6,23 @@ namespace yack
     namespace jive
     {
 
-        scatter:: node:: node(const pattern &p) throw() :
+        scatter:: node:: node(const pattern &p, const void *h) throw() :
         object(),
         next(0),
-        prev(0),
-        host(p) {}
+        host(p),
+        data(h)
+        {}
 
         scatter:: node:: node(const node &other) throw() :
         object(),
         next(0),
-        prev(0),
-        host(other.host) {}
+        host(other.host),
+        data(other.data)
+        {}
 
 
         scatter:: node:: ~node() throw() {}
 
-        const pattern & scatter::node:: operator*() const throw() { return host; }
 
     }
 
@@ -58,7 +59,7 @@ namespace yack
 
         scatter:: table:: ~table() throw() {}
 
-        void scatter::table:: operator()(const pattern &p)
+        void scatter::table:: operator()(const pattern &p, const void *h)
         {
             first_bytes fc;
             p.firsts(fc);
@@ -67,12 +68,12 @@ namespace yack
                 const size_t up = dom->upper;
                 for(size_t code=dom->lower;code<=up;++code)
                 {
-                    use(code,p);
+                    use(code,p,h);
                 }
             }
         }
 
-        void scatter::table:: use(const uint8_t code, const pattern &p)
+        void scatter::table:: use(const uint8_t code, const pattern &p, const void *h)
         {
             static const char fn[] = "jive::scatter:table: ";
 
@@ -84,7 +85,7 @@ namespace yack
                 if(NULL==(s=search(code))) throw exception("%s unexpected search failure",fn);
             }
             assert(NULL!=s);
-            coerce(*s).push_back( new node(p) );
+            coerce(*s).stash( new node(p,h) );
 
         }
 
@@ -104,7 +105,7 @@ namespace yack
                 os << "\t@" << std::setw(3) << ios::ascii::hybrid[code] << " :";
                 for(const scatter::node *info=data.head;info;info=info->next)
                 {
-                    os << ' ' << (**info).express();
+                    os << ' ' << info->host.express();
                 }
                 os << std::endl;
             }

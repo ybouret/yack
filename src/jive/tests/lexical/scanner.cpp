@@ -31,8 +31,22 @@ YACK_UTEST(scanner)
     YACK_SIZEOF(jive::lexical::instruction);
     YACK_SIZEOF(jive::lexical::instructions);
     YACK_SIZEOF(jive::lexical::scanner);
+    YACK_SIZEOF(jive::scatter::node);
+    YACK_SIZEOF(jive::scatter::slot);
 
     my_scanner scan;
+
+    jive::lexemes lxm;
+    jive::lexeme *lx  = 0;
+    if(argc>1)
+    {
+        jive::source src( jive::module::open_file(argv[1]) );
+        while(NULL!=(lx=scan.probe(src)))
+        {
+            std::cerr << *lx << std::endl;
+        }
+    }
+
 
 
 }
