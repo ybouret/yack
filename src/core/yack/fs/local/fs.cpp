@@ -185,6 +185,8 @@ namespace yack
 #if defined(YACK_WIN)
 		const DWORD dw = GetFileAttributes(path());
 		if (INVALID_FILE_ATTRIBUTES == dw) throw win32::exception(GetLastError(), "GetFileAttributes(%s)", path());
+		if( 0!=(dw&FILE_ATTRIBUTE_ARCHIVE))   attr |= entry::attr_reg;
+		if( 0!=(dw&FILE_ATTRIBUTE_DIRECTORY)) attr |= entry::attr_dir;
 #endif
 
         return attr;
