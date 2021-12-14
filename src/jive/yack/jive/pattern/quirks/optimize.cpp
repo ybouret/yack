@@ -87,6 +87,12 @@ namespace yack
                 {
                     return new except(m->as<single>()->code);
                 }
+
+                if(m->is<op_or>())
+                {
+                    p->merge_back(*(m->as<op_or>()));
+                    delete p->pop_front();
+                }
             }
 
             return q.yield();
