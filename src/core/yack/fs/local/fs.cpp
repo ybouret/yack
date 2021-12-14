@@ -68,8 +68,9 @@ namespace yack
                 FindClose(hfind);
             }
 
-            inline explicit local_scanner(const string &dirname) :
-            vfs::scanner(dirname),
+            inline explicit local_scanner(const vfs &fs,
+				const string &dirname) :
+            vfs::scanner(fs,dirname),
             hfind(INVALID_HANDLE_VALUE),
             has(false),
             wfd()
@@ -89,9 +90,8 @@ namespace yack
             {
                 if(has)
                 {
-					//std::cerr << "path=" << path << "+" << wfd.cFileName << std::endl;
-                    const string         full_path = path + wfd.cFileName;
-                    auto_ptr<vfs::entry> ep        = new vfs::entry(full_path);
+                    const string         here = path + wfd.cFileName;
+                    auto_ptr<vfs::entry> ep   = new vfs::entry(root,here);
                     has = false;
                     YACK_GIANT_LOCK();
                     if(!FindNextFile(hfind,&wfd))
