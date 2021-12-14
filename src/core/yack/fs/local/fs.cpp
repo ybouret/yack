@@ -177,9 +177,9 @@ namespace yack
         if( 0 != lstat(path(),&buf) ) throw libc::exception(errno,"lstat(%s)",path());
         const mode_t m = (buf.st_mode & S_IFMT);
         std::cerr << "mode=" << m << " for '" << path << "'" << std::endl;
-        if( S_ISREG(m) ) attr |= entry::attr_reg;
-        if( S_ISDIR(m) ) attr |= entry::attr_dir;
-        if( S_ISLNK(m) ) attr |= entry::attr_lnk;
+        if( m & S_IFREG ) attr |= entry::attr_reg;
+        if( m & S_IFDIR ) attr |= entry::attr_dir;
+        if( m & S_IFLNK ) attr |= entry::attr_lnk;
 #endif
 
 #if defined(YACK_WIN)
