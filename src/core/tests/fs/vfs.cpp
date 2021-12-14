@@ -21,7 +21,8 @@ YACK_UTEST(vfs)
     }
 
     YACK_SIZEOF(vfs::entry);
-    
+    YACK_SIZEOF(string);
+
 }
 YACK_UDONE()
 

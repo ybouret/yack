@@ -6,6 +6,7 @@
 #include <unistd.h>
 #include <cerrno>
 #include <dirent.h>
+#include <sys/stat.h>
 #endif
 
 #if defined(YACK_WIN)
@@ -120,8 +121,9 @@ namespace yack
                 hdir = 0;
             }
             
-            inline local_scanner(const string &dirname) :
-            vfs::scanner(dirname),
+            inline local_scanner(const vfs    &fs,
+                                 const string &dirname) :
+            vfs::scanner(fs,dirname),
             hdir( setup(path) )
             {
             }
@@ -146,8 +148,8 @@ namespace yack
                 }
                 else
                 {
-                    const string full_path = path + ep->d_name;
-                    return new vfs::entry(full_path);
+                    const string   here = path + ep->d_name;
+                    return new vfs::entry(root,here);
                 }
             }
 
@@ -160,7 +162,30 @@ namespace yack
 
     vfs::scanner * local_fs:: open_folder(const string &path)
     {
-        return new local_scanner(path);
+        return new local_scanner(*this,path);
     }
+
+    vfs::entry::attr_t local_fs:: get_attr_of(const string &path) const
+    {
+        YACK_GIANT_LOCK();
+        entry::attr_t attr = entry::attr_bad;
+
+#if defined(YACK_BSD)
+        struct stat buf;
+        memset(&buf,0,sizeof(buf));
+        if( 0 != lstat(path(),&buf) ) throw libc::exception(errno,"lstat(%s)",path());
+        const mode_t m = buf.st_mode;
+        if( S_ISREG(m) ) attr |= entry::attr_reg;
+        if( S_ISDIR(m) ) attr |= entry::attr_dir;
+        if( S_ISLNK(m) ) attr |= entry::attr_lnk;
+#endif
+
+#if defined(YACK_WIN)
+
+#endif
+
+        return attr;
+    }
+
 
 }

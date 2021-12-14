@@ -6,6 +6,7 @@
 
 #include "yack/string.hpp"
 #include "yack/data/list/cxx.hpp"
+#include "yack/ptr/arc.hpp"
 
 namespace yack
 {
@@ -46,6 +47,8 @@ namespace yack
         //
         // types and definitions
         //______________________________________________________________________
+        typedef arc_ptr<const string> string_ptr;
+
 
         //______________________________________________________________________
         //
@@ -54,14 +57,45 @@ namespace yack
         class entry : public object
         {
         public:
-            virtual ~entry() throw();       //!< cleanup
-            explicit entry(const string &); //!< setup with full_path
-            entry *next;             //!< for list/pool
-            entry *prev;             //!< for list/pool
-            const string       path; //!< full path
-            const char * const base; //!< base name
-            const char * const cext; //!< extension
-            
+            //__________________________________________________________________
+            //
+            // types and definitions
+            //__________________________________________________________________
+            typedef unsigned attr_t;
+            static const attr_t attr_reg = 0x01;
+            static const attr_t attr_dir = 0x02;
+            static const attr_t attr_lnk = 0x04;
+            static const attr_t attr_bad = 0x00;
+            static const attr_t attr_msk = attr_reg|attr_dir;
+
+            //__________________________________________________________________
+            //
+            // C++
+            //__________________________________________________________________
+            explicit entry(const vfs     &root,
+                           const string  &here);        //!< setup with full_path
+            virtual ~entry() throw();                   //!< cleanup
+
+            //__________________________________________________________________
+            //
+            // methods
+            //__________________________________________________________________
+            bool is_bad() const throw();
+            bool is_reg() const throw();
+            bool is_dir() const throw();
+            bool is_lnk() const throw();
+
+            //__________________________________________________________________
+            //
+            // members
+            //__________________________________________________________________
+            entry             *next;                    //!< for list/pool
+            entry             *prev;                    //!< for list/pool
+            const string_ptr   path;                    //!< full path
+            const char * const base;                    //!< base name
+            const char * const cext;                    //!< extension
+            const attr_t       attr;                    //!< attributes
+
         private:
             YACK_DISABLE_COPY_AND_ASSIGN(entry);
         };
@@ -89,6 +123,7 @@ namespace yack
             //
             // members
             //__________________________________________________________________
+            const vfs     &root;       //!< root fs
             const string   path;       //!< open path
 
             //__________________________________________________________________
@@ -97,7 +132,8 @@ namespace yack
             //__________________________________________________________________
             virtual       ~scanner() throw(); //!< cleanup
         protected:
-            explicit       scanner(const string &dirname); //!< open folder
+            explicit       scanner(const vfs    &fs,
+                                   const string &dirname); //!< open folder
 
         private:
             YACK_DISABLE_COPY_AND_ASSIGN(scanner);
@@ -107,8 +143,9 @@ namespace yack
         //
         // interface
         //______________________________________________________________________
-        virtual void     remove_file(const string &path) = 0; //!< remove given filename
-        virtual scanner *open_folder(const string &path) = 0; //!< get a new scanning object
+        virtual void          remove_file(const string &path)       = 0; //!< remove given filename
+        virtual scanner      *open_folder(const string &path)       = 0; //!< get a new scanning object
+        virtual entry::attr_t get_attr_of(const string &path) const = 0; //!< attribute
 
         //______________________________________________________________________
         //
