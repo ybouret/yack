@@ -14,14 +14,6 @@ set(jive_pattern ${jive_pattern_decl} ${jive_pattern_srcs})
 SOURCE_GROUP(jive/pattern FILES ${jive_pattern})
 install( FILES ${jive_pattern_decl} DESTINATION include/yack/jive/pattern )
 
-#pattern/hood
-#file(GLOB jive_pattern_hood_decl yack/jive/pattern/hood/*.hpp)
-#file(GLOB jive_pattern_hood_srcs yack/jive/pattern/hood/*.cpp)
-#set(jive_pattern_hood ${jive_pattern_hood_decl} ${jive_pattern_hood_srcs})
-#SOURCE_GROUP(jive/pattern/hood FILES ${jive_pattern_hood})
-#install( FILES ${jive_pattern_hood_decl} DESTINATION include/yack/jive/pattern/hood )
-
-
 #pattern/basic
 file(GLOB jive_pattern_basic_decl yack/jive/pattern/basic/*.hpp)
 file(GLOB jive_pattern_basic_srcs yack/jive/pattern/basic/*.cpp)
@@ -57,11 +49,21 @@ set(jive_pattern_quirks ${jive_pattern_quirks_decl} ${jive_pattern_quirks_srcs})
 SOURCE_GROUP(jive/pattern/quirks FILES ${jive_pattern_quirks})
 #install( FILES ${jive_pattern_regex_decl} DESTINATION include/yack/jive/pattern/regex )
 
+ 
+#lexical
+file(GLOB jive_lexical_decl yack/jive/lexical/*.hpp)
+file(GLOB jive_lexical_srcs yack/jive/lexical/*.cpp)
+set(jive_lexical ${jive_lexical_decl} ${jive_lexical_srcs})
+SOURCE_GROUP(jive/lexical FILES ${jive_lexical})
+install( FILES ${jive_lexical_decl} DESTINATION include/yack/jive/lexical )
+
+
 add_library(yack-jive STATIC
 ${jive_main}
 ${jive_pattern} ${jive_pattern_basic} ${jive_pattern_joker} ${jive_pattern_logic}
 ${jive_pattern_regexp}
 ${jive_pattern_quirks}
+${jive_lexical}
 )
 
 install( TARGETS yack-jive ARCHIVE DESTINATION lib )

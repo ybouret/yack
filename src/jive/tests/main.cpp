@@ -12,6 +12,8 @@ YACK_UTEST_DECL(16)
     YACK_UTEST(posix);
     YACK_UTEST(regexp);
     YACK_UTEST(matching);
+
+    YACK_UTEST(scanner);
 }
 YACK_UTEST_EXEC()
 
