@@ -39,6 +39,8 @@ namespace yack
             void             skip() throw();              //!< skip first cached characters
             void             skip(size_t n) throw();      //!< skip first n cached characters
             bool             done();                      //!< NULL == peek()
+            const context &  operator*() const throw();   //!< *intake
+
         private:
             YACK_DISABLE_COPY_AND_ASSIGN(source);
             auto_ptr<module> intake;

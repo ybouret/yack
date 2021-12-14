@@ -86,6 +86,11 @@ namespace yack
             }
         }
 
+        const context & source:: operator*() const throw()
+        {
+            return *intake;
+        }
+
     }
 }
 

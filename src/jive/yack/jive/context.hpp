@@ -7,6 +7,8 @@
 
 namespace yack
 {
+    class exception;
+
     namespace jive
     {
         //______________________________________________________________________
@@ -26,8 +28,17 @@ namespace yack
             //! generic setup
             template <typename LABEL> inline
             explicit context(LABEL &id) : tag( tags::make(id) ), line(1), column(1) { }
-            virtual ~context() throw();       //!< cleanup
+            virtual ~context()       throw(); //!< cleanup
             context(const context &) throw(); //!< no-throw copy
+
+            //__________________________________________________________________
+            //
+            // methods
+            //_________________________________________________________________
+
+            //! prepend tag:line:col:
+            exception & stamp(exception &) const throw();
+
 
             //__________________________________________________________________
             //
@@ -35,6 +46,7 @@ namespace yack
             //__________________________________________________________________
             const unsigned line;     //!< line
             const unsigned column;   //!< column
+
 
         private:
             YACK_DISABLE_ASSIGN(context);

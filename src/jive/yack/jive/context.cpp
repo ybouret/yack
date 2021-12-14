@@ -1,5 +1,6 @@
 
 #include "yack/jive/context.hpp"
+#include "yack/exception.hpp"
 
 namespace yack
 {
@@ -18,7 +19,10 @@ namespace yack
         {
         }
         
-
+        exception &  context:: stamp(exception &excp) const throw()
+        {
+            return excp.pre("%s:%u%u: ", (**this)(), line, column);
+        }
 
     }
 }
