@@ -1,6 +1,7 @@
 #include "yack/fs/local/fs.hpp"
 #include "yack/string.hpp"
 #include "yack/system/exception.hpp"
+#include <cstring>
 
 #if defined(YACK_BSD)
 #include <unistd.h>
