@@ -11,11 +11,11 @@ namespace
         {
             verbose = true;
             //make("ID","[:word:]+",this,&my_scanner::emit);
-            emit("INT","[:digit:]+");
-            emit("DBL","[:digit:]+\\.[:digit:]*");
-            emit("FLT",   "[:digit:]+\\.[:digit:]*f");
-            drop("BLANKS","[:blank:]+");
-
+            emit("INT", "[:digit:]+");
+            emit("DBL", "[:digit:]+\\.[:digit:]*");
+            emit("FLT", "[:digit:]+\\.[:digit:]*f");
+            drop("[:blank:]+");
+            endl("[:endl:]");
             std::cerr << *table << std::endl;
 
         }
@@ -48,9 +48,12 @@ YACK_UTEST(scanner)
     jive::lexeme *lx  = 0;
     if(argc>1)
     {
+        bool ctrl=false;
         jive::source src( jive::module::open_file(argv[1]) );
-        while(NULL!=(lx=scan.probe(src)))
+        while(NULL!=(lx=scan.probe(src,ctrl)))
         {
+            YACK_ASSERT(false==ctrl);
+            lxm.push_back(lx);
             std::cerr << *lx << std::endl;
         }
     }

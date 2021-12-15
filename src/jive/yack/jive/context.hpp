@@ -39,6 +39,8 @@ namespace yack
             //! prepend tag:line:col:
             exception & stamp(exception &) const throw();
 
+            //! tag:line:col
+            //friend std::ostream & operator<<(std::ostream &, const context &);
 
             //__________________________________________________________________
             //

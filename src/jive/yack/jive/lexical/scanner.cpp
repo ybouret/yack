@@ -38,6 +38,12 @@ namespace yack
                 return discard;
             }
 
+            behavior scanner:: on_newline(const token &) throw()
+            {
+                assert(curr_);
+                curr_->newline();
+                return discard;
+            }
 
             void scanner:: check_token(const tag &uuid, const token &word) const
             {
@@ -61,10 +67,12 @@ namespace yack
         namespace lexical
         {
 
-            lexeme * scanner:: probe(source &src)
+            lexeme * scanner:: probe(source &src, bool &ctrl)
             {
+
                 const temporary<module *> assign(curr_,& *src);
                 assert(NULL!=curr_);
+                ctrl = false;
 
             PROBE:
                 const character *ch = src.peek();
@@ -82,16 +90,16 @@ namespace yack
                 {
                     //----------------------------------------------------------
                     //
-                    // initialize search of matchin pattern starting with char
+                    // initialize search of matching pattern starting with char
                     //
                     //----------------------------------------------------------
-                    size_t               left = 0;
-                    const scatter::node *node = table->query(**ch,left);
-                    const directive     *best = 0;
-                    token                word;
+                    size_t               left = 0;                       // number of possible pattern
+                    const scatter::node *node = table->query(**ch,left); // get first possible node
+                    const directive     *best = 0;                       // the best matching directive
+                    token                word;                           // the best matching token
                     while(left>0)
                     {
-                        --left;
+                        --left; assert(node);
                         best = static_cast<const directive *>(**node); assert(best);
                         if(best->info->accept(src,word))
                         {
@@ -172,7 +180,7 @@ namespace yack
                     // found a matching rule
                     //
                     //----------------------------------------------------------
-                    if(verbose) std::cerr << "<" << label << "> scan '" << best->uuid << "' = '" << word << "'" << std::endl;
+                    if(verbose) std::cerr << "<" << label << "> scan '" << best->uuid << "' = '" << word << "' @" << *curr_ << ':' << curr_->line << std::endl;
 
                     action &perform = coerce(best->duty);
                     switch(perform(word))
@@ -184,7 +192,8 @@ namespace yack
                             goto PROBE;
 
                         case control:
-                            throw exception("not implemented");
+                            ctrl = true;
+                            return NULL;
                     }
 
                     lexeme *lx = new lexeme( *(word.head) );

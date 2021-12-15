@@ -71,10 +71,18 @@ namespace yack
                     make(t,m,a);
                 }
 
-
-                behavior on_produce(const token &) throw(); //!< default produce method: return produce
-                behavior on_discard(const token &) throw(); //!< default discard method: return discard
-                behavior on_newline(const token &) throw(); //!< update
+                //! generic helper to build directive
+                template <
+                typename EXPRESSION,
+                typename OBJECT_POINTER,
+                typename METHOD_POINTER
+                >
+                inline void make(const EXPRESSION     &expr,
+                                 const OBJECT_POINTER  host,
+                                 const METHOD_POINTER  meth)
+                {
+                    make(expr,expr,host,meth);
+                }
 
 
                 //! helper to emit/produce uuid
@@ -99,9 +107,45 @@ namespace yack
                     make(uuid,expr,this,&scanner::on_discard);
                 }
 
+                //! helper to drop/discard expr=uuid
+                template <typename EXPRESSION>
+                inline void drop(const EXPRESSION     &expr)
+                {
+                    make(expr,expr,this,&scanner::on_discard);
+                }
 
+
+                //! helper to newline
+                template <
+                typename IDENTIFIER,
+                typename EXPRESSION
+                >
+                inline void endl(const IDENTIFIER     &uuid,
+                                 const EXPRESSION     &expr)
+                {
+                    make(uuid,expr,this,&scanner::on_newline);
+                }
+
+                //! helper to newline
+                template <typename EXPRESSION>
+                inline void endl(const EXPRESSION &expr)
+                {
+                    endl(expr,expr);
+                }
+
+
+                behavior on_produce(const token &) throw(); //!< default produce method: return produce
+                behavior on_discard(const token &) throw(); //!< default discard method: return discard
+                behavior on_newline(const token &) throw(); //!< curr_->newline()    and return discard
+
+                //______________________________________________________________
+                //
                 //! probe next lexeme
-                lexeme *probe(source &source);
+                /**
+
+                 */
+                //______________________________________________________________
+                lexeme *probe(source &source, bool &ctrl);
 
                 
                 //______________________________________________________________
