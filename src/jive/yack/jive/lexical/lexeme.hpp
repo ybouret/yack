@@ -16,25 +16,32 @@ namespace yack
         //! a lexeme is created by a scanner
         //
         //______________________________________________________________________
-        class lexeme : public token, public context
+        class lexeme : public context
         {
         public:
             //__________________________________________________________________
             //
             // C++
             //__________________________________________________________________
-            explicit lexeme(const context &ctx) throw(); //!< setup from context
+            explicit lexeme(const tag     &who,
+                            const context &ctx) throw(); //!< setup from context
             virtual ~lexeme()                   throw(); //!< cleanup
+
+            friend std::ostream & operator<<(std::ostream &, const lexeme &);
+
 
             //__________________________________________________________________
             //
             // members
             //__________________________________________________________________
-            lexeme *next; //!< for list/pool
-            lexeme *prev; //!< for list/pool
+            const tag uuid;
+            token     data;
+            lexeme   *next; //!< for list/pool
+            lexeme   *prev; //!< for list/pool
 
         private:
             YACK_DISABLE_COPY_AND_ASSIGN(lexeme);
+
         };
 
         //______________________________________________________________________

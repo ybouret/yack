@@ -40,7 +40,7 @@ namespace yack
             exception & stamp(exception &) const throw();
 
             //! tag:line:col
-            //friend std::ostream & operator<<(std::ostream &, const context &);
+            friend std::ostream & operator<<(std::ostream &, const context &);
 
             //__________________________________________________________________
             //

@@ -128,6 +128,7 @@ namespace yack
                     // look for better matches, with cache management
                     //
                     //----------------------------------------------------------
+                    bool replaced = false;
                     if(left>0)
                     {
                         assert(node);                  // of best directive
@@ -153,6 +154,7 @@ namespace yack
                                     best = deed;
                                     if(verbose) std::cerr << "<" << label << "> keep '" << best->uuid << "' = '" << word << "'" << std::endl;
                                     assert(src.read()>=word.size);
+                                    replaced=true;
                                 }
                                 else
                                 {
@@ -180,7 +182,7 @@ namespace yack
                     // found a matching rule
                     //
                     //----------------------------------------------------------
-                    if(verbose) std::cerr << "<" << label << "> scan '" << best->uuid << "' = '" << word << "' @" << *curr_ << ':' << curr_->line << std::endl;
+                    if(verbose&&replaced) std::cerr << "<" << label << "> scan '" << best->uuid << "' = '" << word << "' @" << *curr_ << ':' << curr_->line << std::endl;
 
                     action &perform = coerce(best->duty);
                     switch(perform(word))
@@ -196,8 +198,8 @@ namespace yack
                             return NULL;
                     }
 
-                    lexeme *lx = new lexeme( *(word.head) );
-                    lx->swap_with(word);
+                    lexeme *lx = new lexeme( best->uuid, *(word.head) );
+                    lx->data.swap_with(word);
                     return lx;
                 }
 

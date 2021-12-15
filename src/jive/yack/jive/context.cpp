@@ -24,13 +24,11 @@ namespace yack
             return excp.pre("%s:%u:%u: ", (**this)(), line, column);
         }
 
-#if 0
         std::ostream & operator<<(std::ostream &os, const context &ctx)
         {
             std::cerr << *ctx << ':' << ctx.line << ':' << ctx.column;
             return os;
         }
-#endif
         
     }
 }
