@@ -86,11 +86,16 @@ namespace yack
             }
         }
 
-        const context & source:: operator*() const throw()
+        module & source:: operator*() throw()
         {
+            assert(intake.is_valid());
             return *intake;
         }
 
+        size_t source:: read() const throw()
+        {
+            return cache.size;
+        }
     }
 }
 

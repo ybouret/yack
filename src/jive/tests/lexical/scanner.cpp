@@ -13,7 +13,8 @@ namespace
             //make("ID","[:word:]+",this,&my_scanner::emit);
             emit("INT","[:digit:]+");
             emit("DBL","[:digit:]+\\.[:digit:]*");
-            emit("FLT","[:digit:]+\\.[:digit:]*f");
+            emit("FLT",   "[:digit:]+\\.[:digit:]*f");
+            drop("BLANKS","[:blank:]+");
 
             std::cerr << *table << std::endl;
 

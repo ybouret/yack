@@ -39,6 +39,7 @@ namespace yack
                 instr( new instructions()   ),
                 table( new scatter::table() ),
                 dict_(user_dict),
+                curr_(NULL),
                 verbose(false)
                 {}
 
@@ -73,6 +74,8 @@ namespace yack
 
                 behavior on_produce(const token &) throw(); //!< default produce method: return produce
                 behavior on_discard(const token &) throw(); //!< default discard method: return discard
+                behavior on_newline(const token &) throw(); //!< update
+
 
                 //! helper to emit/produce uuid
                 template <
@@ -110,9 +113,11 @@ namespace yack
                 const auto_ptr<const scatter::table>  table; //!< scattered directives
                 
             private:
-                const dictionary               *dict_;
+                const dictionary                      *dict_;
+                module                                *curr_;
                 YACK_DISABLE_COPY_AND_ASSIGN(scanner);
-                void check_token(const tag &uuid, const token &word, const context &whom) const;
+                void check_token(const tag &uuid, const token &word) const;
+
             public:
                 bool verbose; //!< trigger verbositu
             };

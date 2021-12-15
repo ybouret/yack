@@ -35,23 +35,38 @@ namespace yack
 
             behavior scanner:: on_discard(const token &) throw()
             {
-                return produce;
+                return discard;
             }
 
 
-            void scanner:: check_token(const tag &uuid, const token &word, const context &whom) const
+            void scanner:: check_token(const tag &uuid, const token &word) const
             {
+                assert(NULL!=curr_);
                 if(word.size<=0)
                 {
                     exception excp("unexpected empty token '%s' for <%s>", (*uuid)(), (*label)() );
-                    throw whom.stamp(excp);
+                    throw curr_->stamp(excp);
                 }
             }
+        }
 
+    }
+}
 
+#include "yack/type/temporary.hpp"
+namespace yack
+{
+    namespace jive
+    {
+        namespace lexical
+        {
 
             lexeme * scanner:: probe(source &src)
             {
+                const temporary<module *> assign(curr_,& *src);
+                assert(NULL!=curr_);
+
+            PROBE:
                 const character *ch = src.peek();
                 if(!ch)
                 {
@@ -81,7 +96,7 @@ namespace yack
                         if(best->info->accept(src,word))
                         {
                             if(verbose) std::cerr << "<" << label << "> init '" << best->uuid << "' = '" << word << "'" << std::endl;
-                            check_token(best->uuid,word,*src);
+                            check_token(best->uuid,word);
                             break;
                         }
                         best = NULL;
@@ -102,22 +117,24 @@ namespace yack
 
                     //----------------------------------------------------------
                     //
-                    // look for better matches
+                    // look for better matches, with cache management
                     //
                     //----------------------------------------------------------
-                    //if(verbose) std::cerr << "<" << label << "> remaining directives: " << left << std::endl;
                     if(left>0)
                     {
-                        assert(node);          // of best directive
-                        src.store_copy(word);  // restore source, keeping current word
+                        assert(node);                  // of best directive
+                        src.store_copy(word);          // restore source, keeping current word
+                        assert(src.read()>=word.size); // sanity check
 
+                        // loop over next possibilities
                         while(NULL!=(node=node->next))
                         {
                             const directive *deed = static_cast<const directive *>(**node); assert(deed);
                             token            temp;
+
                             if(deed->info->accept(src,temp))
                             {
-                                check_token(deed->uuid,temp,*src);
+                                check_token(deed->uuid,temp);
                                 if(temp.size>word.size)
                                 {
                                     //------------------------------------------
@@ -127,6 +144,7 @@ namespace yack
                                     word.swap_with(temp);
                                     best = deed;
                                     if(verbose) std::cerr << "<" << label << "> keep '" << best->uuid << "' = '" << word << "'" << std::endl;
+                                    assert(src.read()>=word.size);
                                 }
                                 else
                                 {
@@ -134,13 +152,19 @@ namespace yack
                                     // too late, return to source
                                     //------------------------------------------
                                     src.store(temp);
+                                    assert(src.read()>=word.size);
                                 }
                             }
                             else
                             {
                                 assert(0==temp.size);
+                                assert(src.read()>=word.size);
                             }
                         }
+                        assert(src.read()>=word.size);
+
+                        // update source according to the best match
+                        src.skip( word.size );
                     }
 
                     //----------------------------------------------------------
@@ -149,10 +173,23 @@ namespace yack
                     //
                     //----------------------------------------------------------
                     if(verbose) std::cerr << "<" << label << "> scan '" << best->uuid << "' = '" << word << "'" << std::endl;
-                    src.skip( word.size );
-                    
 
-                    return NULL;
+                    action &perform = coerce(best->duty);
+                    switch(perform(word))
+                    {
+                        case produce:
+                            break;
+
+                        case discard:
+                            goto PROBE;
+
+                        case control:
+                            throw exception("not implemented");
+                    }
+
+                    lexeme *lx = new lexeme( *(word.head) );
+                    lx->swap_with(word);
+                    return lx;
                 }
 
             }
