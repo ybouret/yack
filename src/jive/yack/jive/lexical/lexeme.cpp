@@ -13,9 +13,9 @@ namespace yack
                         const context &ctx) throw() :
         context(ctx),
         uuid(who),
-        data(),
         next(0),
-        prev(0)
+        prev(0),
+        data()
         {
         }
 
@@ -25,6 +25,18 @@ namespace yack
             os << ctx << ": [" << lx.uuid << "] '" << lx.data << "'";
             return os;
         }
+
+        token & lexeme::operator*() throw()
+        {
+            return data;
+        }
+
+        const token & lexeme::operator*() const throw()
+        {
+            return data;
+        }
+
+
 
     }
 

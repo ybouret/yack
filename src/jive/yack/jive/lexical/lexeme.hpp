@@ -24,23 +24,32 @@ namespace yack
             // C++
             //__________________________________________________________________
             explicit lexeme(const tag     &who,
-                            const context &ctx) throw(); //!< setup from context
+                            const context &ctx) throw(); //!< setup from directive uuid and context
             virtual ~lexeme()                   throw(); //!< cleanup
 
+            //__________________________________________________________________
+            //
+            // methods
+            //__________________________________________________________________
+
+            //! full display: ctx uuid data
             friend std::ostream & operator<<(std::ostream &, const lexeme &);
+
+            token       & operator*()       throw(); //!< access
+            const token & operator*() const throw(); //!< access
 
 
             //__________________________________________________________________
             //
             // members
             //__________________________________________________________________
-            const tag uuid;
-            token     data;
+            const tag uuid; //!< from directive
             lexeme   *next; //!< for list/pool
             lexeme   *prev; //!< for list/pool
 
         private:
             YACK_DISABLE_COPY_AND_ASSIGN(lexeme);
+            token     data; //!< from scanner
 
         };
 

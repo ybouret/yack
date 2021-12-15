@@ -199,7 +199,7 @@ namespace yack
                     }
 
                     lexeme *lx = new lexeme( best->uuid, *(word.head) );
-                    lx->data.swap_with(word);
+                    (**lx).swap_with(word);
                     return lx;
                 }
 
