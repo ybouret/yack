@@ -18,7 +18,7 @@ namespace yack
             counted(),
             uuid(t),
             info(m),
-            todo(a)
+            duty(a)
             {
             }
 

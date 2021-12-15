@@ -6,17 +6,15 @@ namespace yack
     namespace jive
     {
 
-        scatter:: node:: node(const pattern &p, const void *h) throw() :
+        scatter:: node:: node(const void *h) throw() :
         object(),
         next(0),
-        host(p),
         data(h)
         {}
 
         scatter:: node:: node(const node &other) throw() :
         object(),
         next(0),
-        host(other.host),
         data(other.data)
         {}
 
@@ -68,12 +66,12 @@ namespace yack
                 const size_t up = dom->upper;
                 for(size_t code=dom->lower;code<=up;++code)
                 {
-                    use(code,p,h);
+                    use(code,h);
                 }
             }
         }
 
-        void scatter::table:: use(const uint8_t code, const pattern &p, const void *h)
+        void scatter::table:: use(const uint8_t code, const void *h)
         {
             static const char fn[] = "jive::scatter:table: ";
 
@@ -85,7 +83,7 @@ namespace yack
                 if(NULL==(s=search(code))) throw exception("%s unexpected search failure",fn);
             }
             assert(NULL!=s);
-            coerce(*s).stash( new node(p,h) );
+            coerce(*s).stash( new node(h) );
 
         }
 
@@ -98,17 +96,14 @@ namespace yack
         std::ostream & operator<<(std::ostream &os, const scatter::table &lut)
         {
             os << "<scatter::table size='" << lut.size() << "'>" << std::endl;
+            size_t idx = 0;
             for(scatter::table::const_iterator it=lut.begin();it!=lut.end();++it)
             {
                 const uint8_t        code = it->key();
-                const scatter::slot &data = *it;
-                os << "\t@" << std::setw(3) << ios::ascii::hybrid[code] << " :";
-                for(const scatter::node *info=data.head;info;info=info->next)
-                {
-                    os << ' ' << info->host.express();
-                }
-                os << std::endl;
+                os << ' ' << std::setw(3) << ios::ascii::hybrid[code];
+                if( 0 == (++idx%16) ) os << std::endl;
             }
+            os << std::endl;
             os << "<scatter::table/>";
             return os;
         }

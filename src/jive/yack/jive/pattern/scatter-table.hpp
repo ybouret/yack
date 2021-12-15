@@ -36,9 +36,9 @@ namespace yack
                 //
                 // C++
                 //______________________________________________________________
-                explicit node(const pattern &, const void*) throw(); //!< setup
-                node(const node &)             throw(); //!< copy
-                virtual ~node()                throw(); //!< cleanup
+                explicit node(const void*) throw(); //!< setup
+                node(const node &)         throw(); //!< copy
+                virtual ~node()            throw(); //!< cleanup
                 
 
                 //______________________________________________________________
@@ -46,10 +46,9 @@ namespace yack
                 // members
                 //______________________________________________________________
                 node              *next; //!< for pool
-                const pattern &    host;
-                const void * const data;
 
             private:
+                const void * const data;
                 YACK_DISABLE_ASSIGN(node);
             };
 
@@ -114,7 +113,7 @@ namespace yack
 
                 //______________________________________________________________
                 //
-                //! dispatch pattern to used slots
+                //! stash data to each slot matching pattern's first bytes
                 //______________________________________________________________
                 void operator()(const pattern &, const void *);
 
@@ -135,7 +134,7 @@ namespace yack
 
             private:
                 YACK_DISABLE_COPY_AND_ASSIGN(table);
-                void use(const uint8_t code, const pattern &, const void *);
+                void use(const uint8_t code, const void *);
             };
 
         };

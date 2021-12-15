@@ -49,7 +49,7 @@ namespace yack
                 //______________________________________________________________
                 const tag    uuid; //!< unique user ID
                 const motif  info; //!< pattern info
-                const action todo; //!< todo if chose
+                const action duty; //!< task if chosen
 
                 
             private:
