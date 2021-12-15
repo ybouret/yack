@@ -38,7 +38,8 @@ namespace yack
                 label( tags::make(id)       ),
                 instr( new instructions()   ),
                 table( new scatter::table() ),
-                dict_(user_dict)
+                dict_(user_dict),
+                verbose(false)
                 {}
 
                 //______________________________________________________________
@@ -69,22 +70,51 @@ namespace yack
                     make(t,m,a);
                 }
 
-                //! default emit method
-                bool    emit(const token &) throw();
+
+                behavior on_produce(const token &) throw(); //!< default produce method: return produce
+                behavior on_discard(const token &) throw(); //!< default discard method: return discard
+
+                //! helper to emit/produce uuid
+                template <
+                typename IDENTIFIER,
+                typename EXPRESSION
+                >
+                inline void emit(const IDENTIFIER     &uuid,
+                                 const EXPRESSION     &expr)
+                {
+                    make(uuid,expr,this,&scanner::on_produce);
+                }
+
+                //! helper to drop/discard uuid
+                template <
+                typename IDENTIFIER,
+                typename EXPRESSION
+                >
+                inline void drop(const IDENTIFIER     &uuid,
+                                 const EXPRESSION     &expr)
+                {
+                    make(uuid,expr,this,&scanner::on_discard);
+                }
+
 
                 //! probe next lexeme
                 lexeme *probe(source &source);
 
+                
                 //______________________________________________________________
                 //
                 // members
                 //______________________________________________________________
-                const tag                       label; //!< scanner label
+                const tag                             label; //!< scanner label
+                const auto_ptr<const instructions>    instr; //!< set of instructions
+                const auto_ptr<const scatter::table>  table; //!< scattered directives
+                
             private:
-                auto_ptr<instructions>          instr;
-                auto_ptr<scatter::table>        table;
                 const dictionary               *dict_;
                 YACK_DISABLE_COPY_AND_ASSIGN(scanner);
+                void check_token(const tag &uuid, const token &word, const context &whom) const;
+            public:
+                bool verbose; //!< trigger verbositu
             };
         }
 

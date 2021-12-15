@@ -40,6 +40,11 @@ namespace yack
                 node(const node &)         throw(); //!< copy
                 virtual ~node()            throw(); //!< cleanup
                 
+                //______________________________________________________________
+                //
+                // methods
+                //______________________________________________________________
+                const void * operator*() const throw(); //!< access data
 
                 //______________________________________________________________
                 //
@@ -115,7 +120,7 @@ namespace yack
                 //
                 //! stash data to each slot matching pattern's first bytes
                 //______________________________________________________________
-                void operator()(const pattern &, const void *);
+                void store(const pattern &, const void *);
 
                 //______________________________________________________________
                 //
@@ -124,7 +129,7 @@ namespace yack
                  - the nodes are in chronological order
                  */
                 //______________________________________________________________
-                const node * operator[](const uint8_t code) const throw();
+                const node * query(const uint8_t code, size_t &count) const throw();
 
                 //______________________________________________________________
                 //

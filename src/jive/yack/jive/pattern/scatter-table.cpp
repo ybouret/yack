@@ -21,6 +21,10 @@ namespace yack
 
         scatter:: node:: ~node() throw() {}
 
+        const void * scatter:: node:: operator*() const throw()
+        {
+            return data;
+        }
 
     }
 
@@ -57,7 +61,7 @@ namespace yack
 
         scatter:: table:: ~table() throw() {}
 
-        void scatter::table:: operator()(const pattern &p, const void *h)
+        void scatter::table:: store(const pattern &p, const void *h)
         {
             first_bytes fc;
             p.firsts(fc);
@@ -87,10 +91,19 @@ namespace yack
 
         }
 
-        const scatter::node * scatter::table:: operator[](const uint8_t code) const throw()
+        const scatter::node * scatter::table:: query(const uint8_t code, size_t &count) const throw()
         {
             const slot *s = search(code);
-            return (NULL!=s) ? s->head : NULL;
+            if(s)
+            {
+                count = s->size;
+                return  s->head;
+            }
+            else
+            {
+                count = 0;
+                return NULL;
+            }
         }
 
         std::ostream & operator<<(std::ostream &os, const scatter::table &lut)
@@ -100,7 +113,9 @@ namespace yack
             for(scatter::table::const_iterator it=lut.begin();it!=lut.end();++it)
             {
                 const uint8_t        code = it->key();
+                const scatter::slot &data = *it;
                 os << ' ' << std::setw(3) << ios::ascii::hybrid[code];
+                os << ':' << std::setw(2) << data.size;
                 if( 0 == (++idx%16) ) os << std::endl;
             }
             os << std::endl;

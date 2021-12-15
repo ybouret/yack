@@ -46,7 +46,7 @@ YACK_UTEST(regexp)
             const jive::motif rz = jive::pattern::load(fp);
             YACK_CHECK(*rz==*rx);
         }
-        lut(*rx,NULL);
+        lut.store(*rx,NULL);
         std::cerr << lut << std::endl;
 
     }
