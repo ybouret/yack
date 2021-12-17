@@ -6,6 +6,7 @@
 
 #include "yack/jive/lexical/scanner.hpp"
 #include "yack/jive/pattern/dictionary.hpp"
+//#include "yack/jive/pattern/dictionary.hpp"
 
 namespace yack
 {
@@ -25,6 +26,7 @@ namespace yack
             public:
                 typedef ark_ptr<string,scanner>     scan_ptr; //!< alias
                 typedef suffix_set<string,scan_ptr> scan_set; //!< alias
+                
 
                 //______________________________________________________________
                 //
@@ -36,7 +38,10 @@ namespace yack
 
                 //! setup, withhold and self registration
                 template <typename LABEL> inline
-                analyzer(const LABEL &id) : scanner(id,&dict), sdb(), dict()
+                analyzer(const LABEL &id) : scanner(id,&dict),
+                scan(this),
+                sdb(),
+                dict()
                 {
                     setup();
                 }
@@ -49,6 +54,7 @@ namespace yack
 
             private:
                 YACK_DISABLE_COPY_AND_ASSIGN(analyzer);
+                scanner *scan; //!< current scanner
                 scan_set sdb;
                 void     setup();
 
