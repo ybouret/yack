@@ -18,6 +18,14 @@ namespace yack
             }
             return os;
         }
+        
+        const context & token:: operator*() const throw()
+        {
+            assert(size>0);
+            return *head;
+        }
+
+        
     }
 
 }

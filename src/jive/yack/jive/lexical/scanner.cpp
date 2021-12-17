@@ -46,18 +46,18 @@ namespace yack
 
             behavior scanner:: on_newline(const token &) throw()
             {
-                assert(curr_);
-                (**curr_).newline();
+                assert(root);
+                (**root).newline();
                 return discard;
             }
 
             void scanner:: check_word(const tag &uuid, const token &word) const
             {
-                assert(NULL!=curr_);
+                assert(NULL!=root);
                 if(word.size<=0)
                 {
                     exception excp("unexpected empty token '%s' for <%s>", (*uuid)(), (*label)() );
-                    throw (**curr_).stamp(excp);
+                    throw (**root).stamp(excp);
                 }
             }
 
@@ -88,8 +88,7 @@ namespace yack
             lexeme * scanner:: probe(source &src, bool &ctrl)
             {
 
-                const temporary<source *> assign(curr_,&src);
-                assert(NULL!=curr_);
+                const temporary<source *> assign(root,&src);
                 ctrl = false;
 
             PROBE:
@@ -200,7 +199,8 @@ namespace yack
                     // found a matching rule
                     //
                     //----------------------------------------------------------
-                    if(verbose&&replaced) std::cerr << "<" << label << "> scan '" << best->uuid << "' = '" << word << "' @" << *curr_ << ':' << curr_->line << std::endl;
+                    if(verbose&&replaced)
+                        std::cerr << "<" << label << "> scan '" << best->uuid << "' = '" << word << "' @" << **root << ':' << (**root).line << std::endl;
 
                     action &perform = coerce(best->duty);
                     switch(perform(word))

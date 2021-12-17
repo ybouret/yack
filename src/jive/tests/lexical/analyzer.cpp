@@ -12,7 +12,7 @@ namespace
     class mylexer : public jive::lexer
     {
     public:
-        explicit mylexer() : jive::lexer("lexer")
+        explicit mylexer() : jive::lexer("lexer"), t_int()
         {
             verbose = true;
             emit("ID","[:alpha:][:word:]*");
@@ -48,7 +48,11 @@ namespace
 
         inline void leaveInt(jive::token &nxt)
         {
-            std::cerr << "leaveInt" << std::endl;
+            restore(nxt);
+            std::cerr << "leaveInt [" << t_int << "]" << std::endl;
+            jive::lexeme *lx =  new jive::lexeme( (*this)["getInt"].label, *t_int );
+            store(lx);
+            (**lx).swap_with(t_int);
         }
 
         jive::token t_int;

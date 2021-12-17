@@ -1,6 +1,7 @@
 
 #include "yack/jive/lexical/analyzer.hpp"
 #include "yack/exception.hpp"
+#include "yack/type/temporary.hpp"
 
 namespace yack
 {
@@ -9,10 +10,6 @@ namespace yack
         
         namespace lexical
         {
-            
-            
-            
-            
             analyzer:: ~analyzer() throw()
             {
                 sdb.release();
@@ -25,13 +22,19 @@ namespace yack
                 return sdb;
             }
             
+            const scanner & analyzer:: operator[](const string &label) const
+            {
+                const scan_ptr *pps = sdb.search(label);
+                if(!pps) throw exception("no scanner");
+                return **pps;
+            }
             
             void   analyzer:: setup()
             {
                 withhold();
                 const scan_ptr tmp = this;
                 if(!sdb.insert(tmp)) throw exception("<%s> unexpected self insertion", (*label)());
-                linked_to(*this);
+                link_to(*this);
             }
             
             
@@ -39,17 +42,22 @@ namespace yack
             {
                 const scan_ptr p(s);
                 if(!sdb.insert(p)) throw exception("<%s> has multiple <%s>", (*label)(), (*(p->label))() );
-                s->linked_to(*this);
+                s->link_to(*this);
             }
             
-            void scanner:: linked_to(analyzer &parent) throw()
+            void scanner:: link_to(analyzer &parent) throw()
             {
                 if(verbose) std::cerr << "<" << label << "> -> <" << parent.label << ">" << std::endl;
-                dict_   = & parent.dict;
+                dict    = & parent.dict;
                 ctrl_   = & parent;
                 verbose = parent.verbose;
             }
             
+            void scanner:: restore(token &word) throw()
+            {
+                assert(root);
+                root->store(word);
+            }
             
             scanner * analyzer:: request(const string &target,
                                          const char   *when) const
@@ -63,14 +71,20 @@ namespace yack
             void analyzer:: impl_jump(const string &target)
             {
                 scanner *dest = request(target,"jump to"); assert(dest);
-                if(verbose) std::cerr << "jump <" << scan->label << "> ==> <" << dest->label << ">" << std::endl;
+                if(verbose)
+                {
+                    std::cerr << "jump <" << scan->label << "> ==> <" << dest->label << ">" << std::endl;
+                }
                 scan = dest;
             }
             
             void analyzer:: impl_call(const string &target)
             {
                 scanner *dest = request(target,"call"); assert(dest);
-                if(verbose) std::cerr << "jump <" << scan->label << "> ==> <" << dest->label << ">" << std::endl;                hist.push(scan);
+                if(verbose)
+                {
+                    std::cerr << "jump <" << scan->label << "> ==> <" << dest->label << ">" << std::endl;                hist.push(scan);
+                }
                 hist.push_back(scan);
                 scan = dest;
             }
@@ -93,6 +107,7 @@ namespace yack
             
             lexeme * analyzer:: query(source &src)
             {
+                const temporary<source *> assign(root,&src);
             QUERY:
                 if(repo.size)
                 {

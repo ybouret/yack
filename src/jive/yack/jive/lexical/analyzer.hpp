@@ -17,10 +17,6 @@ namespace yack
 
         namespace lexical
         {
-
-
-            
-
             //__________________________________________________________________
             //
             //
@@ -74,7 +70,9 @@ namespace yack
                     return *s;
                 }
 
-
+                const scanner & operator[](const string &label) const;
+                
+                
                 void impl_jump(const string &target);
                 void impl_call(const string &target);
                 void impl_back();

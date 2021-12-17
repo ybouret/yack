@@ -44,7 +44,10 @@ namespace yack
 
             //! display
             friend std::ostream & operator<< (std::ostream &os, const token &t);
-
+            
+            //! get context from first char
+            const context & operator*() const throw();
+            
             //__________________________________________________________________
             //
             // members

@@ -41,7 +41,7 @@ namespace yack
             bool             done();                      //!< NULL == peek()
             size_t           read()      const throw();   //!< cache size
             module         & operator*()       throw();   //!< *intake
-
+            
         private:
             YACK_DISABLE_COPY_AND_ASSIGN(source);
             auto_ptr<module> intake;

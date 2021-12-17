@@ -40,8 +40,8 @@ namespace yack
                 label( tags::make(id)       ),
                 instr( new instructions()   ),
                 table( new scatter::table() ),
-                dict_(NULL),
-                curr_(NULL),
+                root(NULL),
+                dict(NULL),
                 ctrl_(NULL),
                 verbose(false)
                 {}
@@ -74,7 +74,7 @@ namespace yack
                     assert(meth);
                     const tag    t = tags::make(uuid);
                     const action a(host,meth);
-                    const motif  m(regexp::compile(expr,dict_) );
+                    const motif  m(regexp::compile(expr,dict) );
                     on(t,m,a);
                 }
 
@@ -167,7 +167,7 @@ namespace yack
                     
                     const flow::callback  cb(host,meth);
                     const flow::jump      fn(t_name,*ctrl_,cb);
-                    const motif     m( regexp::compile(*t_expr,dict_) );
+                    const motif     m( regexp::compile(*t_expr,dict) );
                     const action    a(fn);
                     on(t_jump,m,a);
                 }
@@ -180,8 +180,10 @@ namespace yack
                  */
                 //______________________________________________________________
                 lexeme *probe(source &source, bool &ctrl);
-
-                void    linked_to(analyzer&) throw();
+                
+                void     link_to(analyzer&) throw();
+                void     restore(token&)    throw();
+                
                 
                 //______________________________________________________________
                 //
@@ -191,9 +193,12 @@ namespace yack
                 const auto_ptr<const instructions>    instr; //!< set of instructions
                 const auto_ptr<const scatter::table>  table; //!< scattered directives
                 
+                
+            protected:
+                source                                *root;
+            
             private:
-                const dictionary                      *dict_;
-                source                                *curr_;
+                const dictionary                      *dict;
                 analyzer                              *ctrl_;
                 YACK_DISABLE_COPY_AND_ASSIGN(scanner);
                 void check_word(const tag &uuid, const token &word) const;

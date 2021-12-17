@@ -55,8 +55,9 @@ namespace yack
             char C = 0;
             if(handle->query(C))
             {
+                character *ch = new character(*this,C);
                 ++coerce(column);
-                return new character(*this,C);
+                return ch;
             }
             else
             {

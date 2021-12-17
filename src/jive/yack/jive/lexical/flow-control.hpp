@@ -21,8 +21,14 @@ namespace yack
             
             namespace flow
             {
-                typedef functor<void,TL1(token&)> callback;
+                typedef functor<void,TL1(token&)> callback; //!< alias
                 
+                //______________________________________________________________
+                //
+                //
+                //! base class for jump/call/back
+                //
+                //______________________________________________________________
                 class branching
                 {
                 public:
@@ -31,8 +37,8 @@ namespace yack
                                        const callback &);
                     explicit branching(const branching &);
                     
-                    analyzer &az;
-                    callback  cb;
+                    analyzer &az; //!< target
+                    callback  cb; //!< init/quit upon branchin
                     
                     
                 private:
