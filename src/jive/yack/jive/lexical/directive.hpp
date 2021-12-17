@@ -4,6 +4,7 @@
 #define YACK_LEXICAL_DIRECTIVE_INCLUDED 1
 
 #include "yack/jive/pattern.hpp"
+#include "yack/jive/lexical/behavior.hpp"
 #include "yack/functor.hpp"
 
 namespace yack
@@ -12,19 +13,7 @@ namespace yack
     {
         namespace lexical
         {
-            //__________________________________________________________________
-            //
-            //
-            //! behavior when a matching directive is found
-            //
-            //__________________________________________________________________
-            enum behavior
-            {
-                produce,
-                discard,
-                control
-            };
-
+            
             //__________________________________________________________________
             //
             //

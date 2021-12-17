@@ -47,20 +47,25 @@ namespace yack
             behavior scanner:: on_newline(const token &) throw()
             {
                 assert(curr_);
-                curr_->newline();
+                (**curr_).newline();
                 return discard;
             }
 
-            void scanner:: check_token(const tag &uuid, const token &word) const
+            void scanner:: check_word(const tag &uuid, const token &word) const
             {
                 assert(NULL!=curr_);
                 if(word.size<=0)
                 {
                     exception excp("unexpected empty token '%s' for <%s>", (*uuid)(), (*label)() );
-                    throw curr_->stamp(excp);
+                    throw (**curr_).stamp(excp);
                 }
             }
 
+            void scanner:: check_ctrl() const
+            {
+                if(!ctrl_) throw exception("<%s> is not linked (branching not supported)", (*label)() );
+            }
+            
             std::ostream & operator<<(std::ostream &os, const scanner &s)
             {
                 os << '<' << s.label << '>';
@@ -83,7 +88,7 @@ namespace yack
             lexeme * scanner:: probe(source &src, bool &ctrl)
             {
 
-                const temporary<module *> assign(curr_,& *src);
+                const temporary<source *> assign(curr_,&src);
                 assert(NULL!=curr_);
                 ctrl = false;
 
@@ -117,7 +122,7 @@ namespace yack
                         if(best->info->accept(src,word))
                         {
                             if(verbose) std::cerr << "<" << label << "> init '" << best->uuid << "' = '" << word << "'" << std::endl;
-                            check_token(best->uuid,word);
+                            check_word(best->uuid,word);
                             break;
                         }
                         best = NULL;
@@ -156,7 +161,7 @@ namespace yack
 
                             if(deed->info->accept(src,temp))
                             {
-                                check_token(deed->uuid,temp);
+                                check_word(deed->uuid,temp);
                                 if(temp.size>word.size)
                                 {
                                     //------------------------------------------

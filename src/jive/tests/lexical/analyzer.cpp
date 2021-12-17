@@ -16,7 +16,7 @@ namespace
         {
             verbose = true;
             emit("ID","[:alpha:][:word:]*");
-            jump("[:digit:]", "getInt",this,&mylexer::enterInt);
+            jump("getInt","[:digit:]",this,&mylexer::enterInt);
 
 
             endl("[:endl:]");
@@ -24,7 +24,7 @@ namespace
 
             scanner &getInt = decl( new scanner("getInt") );
             getInt.make("[:digit:]+",this,&mylexer::growInt);
-            //getInt.jump("[:digit:]!","lexer",this,&mylexer::leaveInt);
+            getInt.jump("lexer","[:digit:]!",this,&mylexer::leaveInt);
 
 
         }
@@ -46,7 +46,7 @@ namespace
             return yack::jive::lexical::discard;
         }
 
-        inline void leaveInt(jive::token &)
+        inline void leaveInt(jive::token &nxt)
         {
             std::cerr << "leaveInt" << std::endl;
         }

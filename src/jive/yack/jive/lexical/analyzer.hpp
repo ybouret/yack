@@ -19,58 +19,7 @@ namespace yack
         {
 
 
-            typedef functor<void,TL1(token&)> callback;
-
-            class regulator
-            {
-            public:
-                const tag       name;
-                const callback  proc;
-                analyzer       &ctrl;
-
-                virtual ~regulator() throw();
-
-            protected:
-                regulator(const tag      &,
-                          const callback &,
-                          analyzer       &);
-
-                regulator(const regulator &);
-
-            private:
-                YACK_DISABLE_ASSIGN(regulator);
-            };
-
-            class jump : public regulator
-            {
-            public:
-                explicit jump(const tag      &n,
-                              const callback &p,
-                              analyzer       &c) :
-                regulator(n,p,c)
-                {
-                }
-
-                virtual ~jump() throw()
-                {
-
-                }
-
-                jump(const jump &_) : regulator(_) {}
-                
-                behavior operator()(token &word);
-
-
-            private:
-                YACK_DISABLE_ASSIGN(jump);
-            };
-
-
-
-
-
-
-
+            
 
             //__________________________________________________________________
             //
@@ -126,40 +75,10 @@ namespace yack
                 }
 
 
-                template <
-                typename EXPRESSION,
-                typename IDENTIFIER,
-                typename OBJECT_POINTER,
-                typename METHOD_POINTER
-                > inline
-                void jump(const EXPRESSION     &expr,
-                          const IDENTIFIER     &whom,
-                          OBJECT_POINTER        host,
-                          METHOD_POINTER        meth)
-                {
-
-                    // create expr.jmp.whom
-                    const tag    txpr = tags::make(expr);
-                    const tag    tjmp = tags::make("@");
-                    const tag    ttgt = tags::make(whom);
-                    const string temp = *txpr + *tjmp + *ttgt;
-                    const tag    name = tags::make(temp);
-
-                    // create callback
-                    const callback proc(host,meth);
-
-                    // create regulator
-                    const lexical::jump ctrl(ttgt,proc,*this);
-
-                    // create motif
-                    const motif          info( regexp::compile(*txpr,&dict) );
-
-                    // create action
-                    on(name,info,ctrl);
-                }
-
-                void do_jump(const string &);
-
+                void impl_jump(const string &target);
+                void impl_call(const string &target);
+                void impl_back();
+                
                 lexeme * query(source &);
                 void     store(lexeme *) throw();
 
@@ -171,7 +90,9 @@ namespace yack
                 scan_set sdb;
                 void     setup();
                 void     declare(scanner *);
-
+                scanner *request(const string &target, const char *when) const;
+                
+                
             public:
                 dictionary dict; //!< shared dictionary
 

@@ -4,6 +4,7 @@
 #define YACK_LEXICAL_SCANNER_INCLUDED 1
 
 #include "yack/jive/lexical/instructions.hpp"
+#include "yack/jive/lexical/flow-control.hpp"
 #include "yack/jive/lexical/lexeme.hpp"
 #include "yack/jive/pattern/scatter-table.hpp"
 #include "yack/jive/pattern/regexp.hpp"
@@ -15,8 +16,7 @@ namespace yack
 
         namespace lexical
         {
-            class analyzer;
-
+           
             //__________________________________________________________________
             //
             //
@@ -147,6 +147,31 @@ namespace yack
 
                 friend std::ostream & operator<<(std::ostream &, const scanner &); //!< output quoted label
 
+                template <
+                typename IDENTIFIER,
+                typename EXPRESSION,
+                typename OBJECT_POINTER,
+                typename METHOD_POINTER
+                >
+                inline void jump(const IDENTIFIER &name,
+                                 const EXPRESSION &expr,
+                                 OBJECT_POINTER    host,
+                                 METHOD_POINTER    meth)
+                {
+                    check_ctrl();
+                    const tag    t_expr = tags::make( expr );
+                    const tag    t_text = tags::make( flow::jump::text );
+                    const tag    t_name = tags::make( name );
+                    const string temp    = *t_expr + *t_text + *t_name;
+                    const tag    t_jump = tags::make( temp );
+                    
+                    const flow::callback  cb(host,meth);
+                    const flow::jump      fn(t_name,*ctrl_,cb);
+                    const motif     m( regexp::compile(*t_expr,dict_) );
+                    const action    a(fn);
+                    on(t_jump,m,a);
+                }
+                
                 //______________________________________________________________
                 //
                 //! probe next lexeme
@@ -168,10 +193,11 @@ namespace yack
                 
             private:
                 const dictionary                      *dict_;
-                module                                *curr_;
+                source                                *curr_;
                 analyzer                              *ctrl_;
                 YACK_DISABLE_COPY_AND_ASSIGN(scanner);
-                void check_token(const tag &uuid, const token &word) const;
+                void check_word(const tag &uuid, const token &word) const;
+                void check_ctrl() const;
                 
             public:
                 bool verbose; //!< trigger verbositu
