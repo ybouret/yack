@@ -31,7 +31,7 @@ namespace yack
             //! generic action alias
             //
             //__________________________________________________________________
-            typedef functor<behavior,TL1(const token &)> action;
+            typedef functor<behavior,TL1(token &)> action;
 
             //__________________________________________________________________
             //

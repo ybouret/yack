@@ -6,18 +6,52 @@ using namespace yack;
 
 namespace
 {
+
+
+
     class mylexer : public jive::lexer
     {
     public:
         explicit mylexer() : jive::lexer("lexer")
         {
+            verbose = true;
+            emit("ID","[:alpha:][:word:]*");
+            jump("[:digit:]", "getInt",this,&mylexer::enterInt);
+
+
+            endl("[:endl:]");
+            drop("[:blank:]+");
+
+            scanner &getInt = decl( new scanner("getInt") );
+            getInt.make("[:digit:]+",this,&mylexer::growInt);
+            //getInt.jump("[:digit:]!","lexer",this,&mylexer::leaveInt);
+
+
         }
 
         virtual ~mylexer() throw()
         {
         }
         
+        inline void enterInt(jive::token &t)
+        {
+            std::cerr << "enterInt [" << t << "]" << std::endl;
+            t_int.swap_with(t);
+        }
 
+        inline jive::lexical::behavior growInt(jive::token &t)
+        {
+            std::cerr << "growInt [" << t << "]" << std::endl;
+            t_int.merge_back(t);
+            return yack::jive::lexical::discard;
+        }
+
+        inline void leaveInt(jive::token &)
+        {
+            std::cerr << "leaveInt" << std::endl;
+        }
+
+        jive::token t_int;
 
     private:
         YACK_DISABLE_COPY_AND_ASSIGN(mylexer);
@@ -32,8 +66,28 @@ YACK_UTEST(analyzer)
 
     mylexer lex;
     std::cerr << lex.label << " is ready" << std::endl;
-
     std::cerr << *lex << std::endl;
+
+    if(argc>1)
+    {
+        jive::lexemes lxm;
+        jive::lexeme *lx = 0;
+        {
+            jive::source src( jive::module::open_file(argv[1]) );
+            while(NULL!=(lx=lex.query(src)))
+            {
+                lxm.push_back(lx);
+                std::cerr << *lx << std::endl;
+            }
+        }
+
+        for(const jive::lexeme *lx=lxm.head;lx;lx=lx->next)
+        {
+            std::cerr << *lx << std::endl;
+        }
+
+
+    }
 
 }
 YACK_UDONE()

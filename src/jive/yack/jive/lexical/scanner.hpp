@@ -15,6 +15,7 @@ namespace yack
 
         namespace lexical
         {
+            class analyzer;
 
             //__________________________________________________________________
             //
@@ -33,14 +34,15 @@ namespace yack
 
                 //! setup with optional dictionary
                 template <typename LABEL> inline
-                explicit scanner(const LABEL &id, const dictionary *user_dict) :
+                explicit scanner(const LABEL &id) :
                 object(),
                 counted(),
                 label( tags::make(id)       ),
                 instr( new instructions()   ),
                 table( new scatter::table() ),
-                dict_(user_dict),
+                dict_(NULL),
                 curr_(NULL),
+                ctrl_(NULL),
                 verbose(false)
                 {}
 
@@ -54,7 +56,7 @@ namespace yack
 
 
                 //! register a new directive
-                void make(const tag &t, const motif &m, const action &a);
+                void on(const tag &t, const motif &m, const action &a);
 
                 //! generic helper to build directive
                 template <
@@ -73,7 +75,7 @@ namespace yack
                     const tag    t = tags::make(uuid);
                     const action a(host,meth);
                     const motif  m(regexp::compile(expr,dict_) );
-                    make(t,m,a);
+                    on(t,m,a);
                 }
 
                 //! generic helper to build directive
@@ -154,6 +156,7 @@ namespace yack
                 //______________________________________________________________
                 lexeme *probe(source &source, bool &ctrl);
 
+                void    linked_to(analyzer&) throw();
                 
                 //______________________________________________________________
                 //
@@ -166,9 +169,10 @@ namespace yack
             private:
                 const dictionary                      *dict_;
                 module                                *curr_;
+                analyzer                              *ctrl_;
                 YACK_DISABLE_COPY_AND_ASSIGN(scanner);
                 void check_token(const tag &uuid, const token &word) const;
-
+                
             public:
                 bool verbose; //!< trigger verbositu
             };

@@ -7,7 +7,7 @@ namespace
     class my_scanner : public jive::lexical::scanner
     {
     public:
-        explicit my_scanner() : jive::lexical::scanner("my_scanner",NULL)
+        explicit my_scanner() : jive::lexical::scanner("my_scanner")
         {
             verbose = true;
             emit("INT", "[:digit:]+");

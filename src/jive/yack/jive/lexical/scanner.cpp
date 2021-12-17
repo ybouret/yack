@@ -19,12 +19,12 @@ namespace yack
             }
 
 
-            void scanner:: make(const tag &t, const motif &m, const action &a)
+            void scanner:: on(const tag &t, const motif &m, const action &a)
             {
                 if(verbose)
                 {
                     const string xp = m->express();
-                    std::cerr << "<" << label << "> (*) " << t << " <-- '" << xp << "'" << std::endl;
+                    std::cerr << "<" << label << "> (*) " << t << " <== '" << xp << "'" << std::endl;
                 }
 
                 if(m->feeble()) throw exception("<%s> using feeble pattern!", (*label)() );
