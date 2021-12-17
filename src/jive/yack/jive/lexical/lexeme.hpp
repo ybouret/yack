@@ -1,7 +1,7 @@
 //! \file
 
-#ifndef YACK_LEXEME_INCLUDED
-#define YACK_LEXEME_INCLUDED 1
+#ifndef YACK_JIVE_LEXEME_INCLUDED
+#define YACK_JIVE_LEXEME_INCLUDED 1
 
 #include "yack/jive/token.hpp"
 
@@ -32,7 +32,7 @@ namespace yack
             // methods
             //__________________________________________________________________
 
-            //! full display: ctx uuid data
+            //! full display: ctx+uuid+data
             friend std::ostream & operator<<(std::ostream &, const lexeme &);
 
             token       & operator*()       throw(); //!< access

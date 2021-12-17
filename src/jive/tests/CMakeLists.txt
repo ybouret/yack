@@ -33,7 +33,9 @@ add_test(pattern:viz      test-jive viz)
 add_test(pattern:posix    test-jive posix)
 add_test(pattern:regexp   test-jive regexp)
 add_test(pattern:matching test-jive matching)
+
 add_test(lexical:scanner  test-jive scanner)
+add_test(lexical:analyzer test-jive analyzer)
 
 
 

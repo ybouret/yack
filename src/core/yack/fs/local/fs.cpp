@@ -193,4 +193,47 @@ namespace yack
     }
 
 
+    void local_fs:: make_folder(const string &path,
+                                bool          allow_already_exists)
+    {
+        YACK_GIANT_LOCK();
+
+#if defined(YACK_BSD)
+        static const mode_t m = S_IRWXU | (S_IXGRP|S_IRGRP) | (S_IXOTH|S_IROTH);
+        if( 0 != mkdir(path(),m) )
+        {
+            const int err = errno;
+            switch(err)
+            {
+                case EEXIST:
+                    if(allow_already_exists) return;
+                    break;
+
+                default:
+                    break;
+            }
+            throw libc::exception(err,"mkdir(%s)",path());
+        }
+#endif
+
+#if defined(YACK_WIN)
+        if( !CreateDirectory(path(),NULL))
+        {
+            const DWORD err = GetLastError();
+            switch(err)
+            {
+                case ERROR_ALREADY_EXISTS:
+                    if(allow_already_exists) return;
+                    break;
+                    
+                default:
+                    break;
+            }
+            throw win32::exception(err,"CreateDirectory(%s)",path());
+        }
+#endif
+
+    }
+
+
 }

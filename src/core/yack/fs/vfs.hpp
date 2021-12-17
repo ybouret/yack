@@ -138,17 +138,20 @@ namespace yack
             YACK_DISABLE_COPY_AND_ASSIGN(scanner);
         };
 
+
+
         //______________________________________________________________________
         //
         // interface
         //______________________________________________________________________
-        virtual void          remove_file(const string &path)       = 0; //!< remove given filename
-        virtual scanner      *open_folder(const string &path)       = 0; //!< get a new scanning object
-        virtual entry::attr_t get_attr_of(const string &path) const = 0; //!< attribute
+        virtual void          remove_file(const string &path)         = 0; //!< remove given filename
+        virtual scanner      *open_folder(const string &path)         = 0; //!< get a new scanning object
+        virtual entry::attr_t get_attr_of(const string &path)   const = 0; //!< attribute
+        virtual void          make_folder(const string &dirname,bool) = 0; //!< 
 
         //______________________________________________________________________
         //
-        // non-virtual interface
+        // non-virtual interface: remove file(s)
         //______________________________________________________________________
         void remove_file(const char *path); //!< wrapper
 
@@ -159,6 +162,11 @@ namespace yack
             try { remove_file(path); return true; }
             catch(...) { return false; }
         }
+
+        //______________________________________________________________________
+        //
+        // non-virtual interface: create directory
+        //______________________________________________________________________
 
 
         //______________________________________________________________________
