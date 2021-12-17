@@ -10,19 +10,31 @@
 namespace yack
 {
 
-    
-
+    //__________________________________________________________________________
+    //
+    //
+    //! FIFO pipe based on a SEQUENCE
+    //
+    //__________________________________________________________________________
     template <typename T, typename SEQUENCE>
     class queue : public pipe_on<T,pipe::fifo,SEQUENCE>
     {
     public:
-        YACK_DECL_ARGS(T,type);
-        typedef pipe_on<T,pipe::fifo,SEQUENCE> pipe_type;
+        //______________________________________________________________________
+        //
+        // types and definition
+        //______________________________________________________________________
+        YACK_DECL_ARGS(T,type);                            //!< aliases
+        typedef pipe_on<T,pipe::fifo,SEQUENCE> pipe_type;  //!< alias
 
-        inline explicit queue() throw() : pipe_type()  {}
-        inline queue(const size_t n)    : pipe_type(n) {}
-        inline queue(const queue &_)    : pipe_type(_) {}
-        inline virtual ~queue() throw()                {}
+        //______________________________________________________________________
+        //
+        // C++
+        //______________________________________________________________________
+        inline explicit queue() throw() : pipe_type()  {} //!< setup empty
+        inline queue(const size_t n)    : pipe_type(n) {} //!< setup with capacity
+        inline queue(const queue &_)    : pipe_type(_) {} //!< copy using sequence
+        inline virtual ~queue() throw()                {} //!< cleanup
 
 
     private:

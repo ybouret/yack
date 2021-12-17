@@ -24,6 +24,9 @@ YACK_UTEST(data_pipes)
         ils.push(j);
         ivq.push(j);
         ilq.push(j);
+
+        std::cerr << "peek: " << ivs.peek() << " " << ils.peek() << " " << ivq.peek() << " " << ilq.peek() << std::endl;
+
     }
 
     std::cerr << ivs << std::endl;

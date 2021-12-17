@@ -9,18 +9,31 @@
 namespace yack
 {
     
-
+    //__________________________________________________________________________
+    //
+    //
+    //! LIFO pipe based on a SEQUENCE
+    //
+    //__________________________________________________________________________
     template <typename T, typename SEQUENCE>
     class stack : public pipe_on<T,pipe::lifo,SEQUENCE>
     {
     public:
-        YACK_DECL_ARGS(T,type);
-        typedef pipe_on<T,pipe::lifo,SEQUENCE> pipe_type;
+        //______________________________________________________________________
+        //
+        // types and definition
+        //______________________________________________________________________
+        YACK_DECL_ARGS(T,type);                           //!< aliases
+        typedef pipe_on<T,pipe::lifo,SEQUENCE> pipe_type; //!< alias
 
-        inline explicit stack() throw() : pipe_type()  {}
-        inline stack(const size_t n)    : pipe_type(n) {}
-        inline stack(const stack &_)    : pipe_type(_) {}
-        inline virtual ~stack() throw()                {}
+        //______________________________________________________________________
+        //
+        // C++
+        //______________________________________________________________________
+        inline explicit stack() throw() : pipe_type()  {} //!< setup empty
+        inline stack(const size_t n)    : pipe_type(n) {} //!< setup with capacity
+        inline stack(const stack &_)    : pipe_type(_) {} //!< copy using sequence
+        inline virtual ~stack() throw()                {} //!< cleanup
 
 
     private:
