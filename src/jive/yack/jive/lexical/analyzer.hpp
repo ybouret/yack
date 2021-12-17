@@ -6,7 +6,9 @@
 
 #include "yack/jive/lexical/scanner.hpp"
 #include "yack/jive/pattern/dictionary.hpp"
-//#include "yack/jive/pattern/dictionary.hpp"
+#include "yack/pipe/stack.hpp"
+#include "yack/sequence/list.hpp"
+
 
 namespace yack
 {
@@ -24,9 +26,9 @@ namespace yack
             class analyzer : public scanner
             {
             public:
-                typedef ark_ptr<string,scanner>     scan_ptr; //!< alias
-                typedef suffix_set<string,scan_ptr> scan_set; //!< alias
-                
+                typedef ark_ptr<string,scanner>          scan_ptr; //!< alias
+                typedef suffix_set<string,scan_ptr>      scan_set; //!< alias
+                typedef stack<scanner *,list<scanner*> > history;
 
                 //______________________________________________________________
                 //
@@ -40,6 +42,7 @@ namespace yack
                 template <typename LABEL> inline
                 analyzer(const LABEL &id) : scanner(id,&dict),
                 scan(this),
+                hist(),
                 sdb(),
                 dict()
                 {
@@ -55,6 +58,7 @@ namespace yack
             private:
                 YACK_DISABLE_COPY_AND_ASSIGN(analyzer);
                 scanner *scan; //!< current scanner
+                history  hist; //!< call stack
                 scan_set sdb;
                 void     setup();
 
