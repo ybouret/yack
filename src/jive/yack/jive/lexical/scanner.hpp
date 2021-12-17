@@ -3,7 +3,7 @@
 #ifndef YACK_LEXICAL_SCANNER_INCLUDED
 #define YACK_LEXICAL_SCANNER_INCLUDED 1
 
-#include "yack/jive/lexical/directive.hpp"
+#include "yack/jive/lexical/instructions.hpp"
 #include "yack/jive/lexical/lexeme.hpp"
 #include "yack/jive/pattern/scatter-table.hpp"
 #include "yack/jive/pattern/regexp.hpp"
@@ -22,7 +22,7 @@ namespace yack
             //! lexical scanner to produce lexemes
             //
             //__________________________________________________________________
-            class scanner : public object
+            class scanner : public object, public counted
             {
             public:
                 //______________________________________________________________
@@ -35,6 +35,7 @@ namespace yack
                 template <typename LABEL> inline
                 explicit scanner(const LABEL &id, const dictionary *user_dict) :
                 object(),
+                counted(),
                 label( tags::make(id)       ),
                 instr( new instructions()   ),
                 table( new scatter::table() ),
@@ -47,6 +48,10 @@ namespace yack
                 //
                 // methods
                 //______________________________________________________________
+
+                //! return *tag
+                const string & key() const throw();
+
 
                 //! register a new directive
                 void make(const tag &t, const motif &m, const action &a);
@@ -137,6 +142,8 @@ namespace yack
                 behavior on_produce(const token &) throw(); //!< default produce method: return produce
                 behavior on_discard(const token &) throw(); //!< default discard method: return discard
                 behavior on_newline(const token &) throw(); //!< curr_->newline()    and return discard
+
+                friend std::ostream & operator<<(std::ostream &, const scanner &); //!< output quoted label
 
                 //______________________________________________________________
                 //

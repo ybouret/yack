@@ -1,4 +1,3 @@
-
 //! \file
 
 #ifndef YACK_LEXICAL_DIRECTIVE_INCLUDED
@@ -68,9 +67,6 @@ namespace yack
             private:
                 YACK_DISABLE_COPY_AND_ASSIGN(directive);
             };
-
-            typedef ark_ptr<string,directive>      instruction;  //!< alias
-            typedef suffix_set<string,instruction> instructions; //!< alias
 
         }
 

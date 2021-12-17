@@ -13,6 +13,12 @@ namespace yack
             }
 
 
+            const string & scanner:: key() const throw()
+            {
+                return *label;
+            }
+
+
             void scanner:: make(const tag &t, const motif &m, const action &a)
             {
                 if(verbose)
@@ -54,6 +60,13 @@ namespace yack
                     throw curr_->stamp(excp);
                 }
             }
+
+            std::ostream & operator<<(std::ostream &os, const scanner &s)
+            {
+                os << '<' << s.label << '>';
+                return os;
+            }
+
         }
 
     }

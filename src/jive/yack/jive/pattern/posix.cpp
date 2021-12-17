@@ -154,8 +154,10 @@ namespace yack
                 YPOSIX(core);
                 YPOSIX(vowel);
                 YPOSIX(consonant);
+#if 0
                 pdb.tree.gv("posix.dot");
                 ios::vizible::render("posix.dot");
+#endif
             
         }
 
