@@ -175,8 +175,8 @@ namespace yack
                     
                     const flow::callback  cb(host,meth);
                     const flow::jump      fn(t_name,*ctrl_,cb);
-                    const motif     m( regexp::compile(*t_expr,dict) );
-                    const action    a(fn);
+                    const motif           m( regexp::compile(*t_expr,dict) );
+                    const action          a(fn);
                     on(t_jump,m,a);
                 }
                 
@@ -203,19 +203,49 @@ namespace yack
                     const tag    t_text = tags::make( flow::call::text );
                     const tag    t_name = tags::make( name );
                     const string temp   = *t_expr + *t_text + *t_name;
-                    const tag    t_jump = tags::make( temp );
+                    const tag    t_call = tags::make( temp );
                     
                     const flow::callback  cb(host,meth);
-                    const flow::jump      fn(t_name,*ctrl_,cb);
-                    const motif     m( regexp::compile(*t_expr,dict) );
-                    const action    a(fn);
-                    on(t_jump,m,a);
+                    const flow::call      fn(t_name,*ctrl_,cb);
+                    const motif           m( regexp::compile(*t_expr,dict) );
+                    const action          a(fn);
+                    on(t_call,m,a);
                 }
+                
+                //! create a return to calling scanner
+                /**
+                 - when found 'expr'
+                 - and performing callback host.meth(word)
+                 */
+                template <
+                typename EXPRESSION,
+                typename OBJECT_POINTER,
+                typename METHOD_POINTER
+                >
+                inline void back(const EXPRESSION &expr,
+                                 OBJECT_POINTER    host,
+                                 METHOD_POINTER    meth)
+                {
+                    check_ctrl();
+                    const tag    t_expr = tags::make( expr );
+                    const tag    t_text = tags::make( flow::back::text );
+                    const string temp   = *t_expr + *t_text;
+                    const tag    t_back = tags::make( temp );
+                    
+                    const flow::callback  cb(host,meth);
+                    const flow::back      fn(*ctrl_,cb);
+                    const motif           m( regexp::compile(*t_expr,dict) );
+                    const action          a(fn);
+                    on(t_back,m,a);
+                }
+                
+                
+                
                 //______________________________________________________________
                 //
                 //! probe next lexeme
                 /**
-
+                 
                  */
                 //______________________________________________________________
                 lexeme *probe(source &source, bool &ctrl);

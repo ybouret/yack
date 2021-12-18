@@ -27,7 +27,7 @@ namespace yack
                 {
                 }
                 
-                const char back::text[] = "<==";
+                const char back::text[] = ".back";
                 
             }
             

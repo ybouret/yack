@@ -28,7 +28,7 @@ namespace yack
                 {
                 }
                 
-                const char jump::text[] = "-->";
+                const char jump::text[] = "->";
                 
             }
             

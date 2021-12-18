@@ -24,7 +24,7 @@ namespace yack
                 if(verbose)
                 {
                     const string xp = m->express();
-                    std::cerr << "<" << label << "> (*) " << t << " <== '" << xp << "'" << std::endl;
+                    std::cerr << "<" << label << "> (*) " << t << " : '" << xp << "'" << std::endl;
                 }
 
                 if(m->feeble()) throw exception("<%s> using feeble pattern!", (*label)() );
