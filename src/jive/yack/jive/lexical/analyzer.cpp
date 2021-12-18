@@ -5,6 +5,7 @@
 
 namespace yack
 {
+    
     namespace jive
     {
         
@@ -99,31 +100,8 @@ namespace yack
                 scan = hist.pop();
             }
             
-            namespace flow
-            {
-                behavior jump:: operator()(token &word)
-                {
-                    cb(word);
-                    az.impl_jump(*to);
-                    return control;
-                }
-                
-                behavior call:: operator()(token &word)
-                {
-                    cb(word);
-                    az.impl_call(*to);
-                    return control;
-                }
-                
-                behavior back::operator()(token &word)
-                {
-                    cb(word);
-                    az.impl_back();
-                    return control;
-                }
-                
-                
-            }
+          
+            
             void analyzer:: store(lexeme *lx) throw()
             {
                 assert(NULL!=lx);
