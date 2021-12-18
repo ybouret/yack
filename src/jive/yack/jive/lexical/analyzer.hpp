@@ -32,7 +32,7 @@ namespace yack
                 //______________________________________________________________
                 typedef ark_ptr<string,scanner>          scan_ptr; //!< alias
                 typedef suffix_set<string,scan_ptr>      scan_set; //!< alias
-                typedef stack<scanner *,list<scanner*> > history;
+                typedef stack<scanner *,list<scanner*> > history;  //!< call stack
 
 
 
@@ -63,6 +63,7 @@ namespace yack
                 //______________________________________________________________
                 const scan_set & operator*() const throw(); //!< access to db
 
+                //! declare and link a new scanner
                 template <typename SCANNER>
                 SCANNER & decl( SCANNER *s )
                 {
@@ -70,15 +71,17 @@ namespace yack
                     return *s;
                 }
 
+                //! access existing scanner by lable
                 const scanner & operator[](const string &label) const;
                 
                 
-                void impl_jump(const string &target);
-                void impl_call(const string &target);
-                void impl_back();
+                void impl_jump(const string &target); //!< change scanner
+                void impl_call(const string &target); //!< call scanner
+                void impl_back();                     //!< back from calling scanner
                 
-                lexeme * query(source &);
-                void     store(lexeme *) throw();
+               
+                lexeme * query(source &);         //!< query next lexeme
+                void     store(lexeme *) throw(); //!< store a parsed lexeme
 
             private:
                 YACK_DISABLE_COPY_AND_ASSIGN(analyzer);

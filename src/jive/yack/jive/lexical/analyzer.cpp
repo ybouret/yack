@@ -83,7 +83,7 @@ namespace yack
                 scanner *dest = request(target,"call"); assert(dest);
                 if(verbose)
                 {
-                    std::cerr << "jump <" << scan->label << "> ==> <" << dest->label << ">" << std::endl;                hist.push(scan);
+                    std::cerr << "call <" << scan->label << "> ==> <" << dest->label << ">" << std::endl;                hist.push(scan);
                 }
                 hist.push_back(scan);
                 scan = dest;
@@ -95,6 +95,13 @@ namespace yack
                 {
                     cb(word);
                     az.impl_jump(*to);
+                    return control;
+                }
+                
+                behavior call:: operator()(token &word)
+                {
+                    cb(word);
+                    az.impl_call(*to);
                     return control;
                 }
                 

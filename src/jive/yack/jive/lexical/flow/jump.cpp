@@ -1,31 +1,15 @@
-#include "yack/jive/lexical/flow-control.hpp"
+#include "yack/jive/lexical/flow/jump.hpp"
+
 namespace yack
 {
     namespace jive
     {
-        
         
         namespace lexical
         {
             
             namespace flow
             {
-
-                branching:: ~branching() throw()
-                {
-                }
-                
-                branching:: branching(analyzer       &A,
-                                      const callback &C) :
-                az(A), cb(C)
-                {
-                }
-                
-                branching:: branching(const branching &_) :
-                az(_.az),
-                cb(_.cb)
-                {
-                }
                 
                 
                 jump:: jump(const tag      &T,

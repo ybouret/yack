@@ -57,13 +57,19 @@ set(jive_lexical ${jive_lexical_decl} ${jive_lexical_srcs})
 SOURCE_GROUP(jive/lexical FILES ${jive_lexical})
 install( FILES ${jive_lexical_decl} DESTINATION include/yack/jive/lexical )
 
+#lexical/flow
+file(GLOB jive_lexical_flow_decl yack/jive/lexical/flow/*.hpp)
+file(GLOB jive_lexical_flow_srcs yack/jive/lexical/flow/*.cpp)
+set(jive_lexical_flow ${jive_lexical_flow_decl} ${jive_lexical_flow_srcs})
+SOURCE_GROUP(jive/lexical/flow FILES ${jive_lexical_flow})
+install( FILES ${jive_lexical_flow_decl} DESTINATION include/yack/jive/lexical/flow )
 
 add_library(yack-jive STATIC
 ${jive_main}
 ${jive_pattern} ${jive_pattern_basic} ${jive_pattern_joker} ${jive_pattern_logic}
 ${jive_pattern_regexp}
 ${jive_pattern_quirks}
-${jive_lexical}
+${jive_lexical} ${jive_lexical_flow}
 )
 
 install( TARGETS yack-jive ARCHIVE DESTINATION lib )

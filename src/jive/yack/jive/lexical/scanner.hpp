@@ -4,7 +4,8 @@
 #define YACK_LEXICAL_SCANNER_INCLUDED 1
 
 #include "yack/jive/lexical/instructions.hpp"
-#include "yack/jive/lexical/flow-control.hpp"
+#include "yack/jive/lexical/flow/jump.hpp"
+#include "yack/jive/lexical/flow/call.hpp"
 #include "yack/jive/lexical/lexeme.hpp"
 #include "yack/jive/pattern/scatter-table.hpp"
 #include "yack/jive/pattern/regexp.hpp"
@@ -147,6 +148,12 @@ namespace yack
 
                 friend std::ostream & operator<<(std::ostream &, const scanner &); //!< output quoted label
 
+                //! create a jump
+                /**
+                 - to scanner 'name'
+                 - when found 'expr'
+                 - and performing callback host.meth(word)
+                 */
                 template <
                 typename IDENTIFIER,
                 typename EXPRESSION,
@@ -162,7 +169,7 @@ namespace yack
                     const tag    t_expr = tags::make( expr );
                     const tag    t_text = tags::make( flow::jump::text );
                     const tag    t_name = tags::make( name );
-                    const string temp    = *t_expr + *t_text + *t_name;
+                    const string temp   = *t_expr + *t_text + *t_name;
                     const tag    t_jump = tags::make( temp );
                     
                     const flow::callback  cb(host,meth);
@@ -172,6 +179,37 @@ namespace yack
                     on(t_jump,m,a);
                 }
                 
+                
+                //! create a call
+                /**
+                 - to scanner 'name'
+                 - when found 'expr'
+                 - and performing callback host.meth(word)
+                 */
+                template <
+                typename IDENTIFIER,
+                typename EXPRESSION,
+                typename OBJECT_POINTER,
+                typename METHOD_POINTER
+                >
+                inline void call(const IDENTIFIER &name,
+                                 const EXPRESSION &expr,
+                                 OBJECT_POINTER    host,
+                                 METHOD_POINTER    meth)
+                {
+                    check_ctrl();
+                    const tag    t_expr = tags::make( expr );
+                    const tag    t_text = tags::make( flow::call::text );
+                    const tag    t_name = tags::make( name );
+                    const string temp   = *t_expr + *t_text + *t_name;
+                    const tag    t_jump = tags::make( temp );
+                    
+                    const flow::callback  cb(host,meth);
+                    const flow::jump      fn(t_name,*ctrl_,cb);
+                    const motif     m( regexp::compile(*t_expr,dict) );
+                    const action    a(fn);
+                    on(t_jump,m,a);
+                }
                 //______________________________________________________________
                 //
                 //! probe next lexeme
@@ -181,8 +219,8 @@ namespace yack
                 //______________________________________________________________
                 lexeme *probe(source &source, bool &ctrl);
                 
-                void     link_to(analyzer&) throw();
-                void     restore(token&)    throw();
+                void     link_to(analyzer&) throw(); //!< set dictionary and ctrl
+                void     restore(token&)    throw(); //!< restore read token
                 
                 
                 //______________________________________________________________
@@ -193,9 +231,8 @@ namespace yack
                 const auto_ptr<const instructions>    instr; //!< set of instructions
                 const auto_ptr<const scatter::table>  table; //!< scattered directives
                 
-                
             protected:
-                source                                *root;
+                source                                *root; //!< set during a probe call
             
             private:
                 const dictionary                      *dict;
