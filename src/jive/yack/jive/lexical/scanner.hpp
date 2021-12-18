@@ -6,6 +6,7 @@
 #include "yack/jive/lexical/instructions.hpp"
 #include "yack/jive/lexical/flow/jump.hpp"
 #include "yack/jive/lexical/flow/call.hpp"
+#include "yack/jive/lexical/flow/back.hpp"
 #include "yack/jive/lexical/lexeme.hpp"
 #include "yack/jive/pattern/scatter-table.hpp"
 #include "yack/jive/pattern/regexp.hpp"

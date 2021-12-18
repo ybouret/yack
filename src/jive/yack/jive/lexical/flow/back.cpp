@@ -1,4 +1,5 @@
-#include "yack/jive/lexical/flow/jump.hpp"
+
+#include "yack/jive/lexical/flow/back.hpp"
 
 namespace yack
 {
@@ -12,23 +13,21 @@ namespace yack
             {
                 
                 
-                jump:: jump(const tag      &T,
-                            analyzer       &A,
+                back:: back(analyzer       &A,
                             const callback &C) :
-                branching(A,C),
-                to(T)
+                branching(A,C)
                 {
                 }
                 
-                jump:: ~jump() throw()
+                back:: ~back() throw()
                 {
                 }
                 
-                jump:: jump(const jump &_) : branching(_), to(_.to)
+                back:: back(const back &_) : branching(_)
                 {
                 }
                 
-                const char jump::text[] = "-->";
+                const char back::text[] = "<==";
                 
             }
             

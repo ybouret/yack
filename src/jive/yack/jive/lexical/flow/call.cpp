@@ -29,7 +29,7 @@ namespace yack
                 {
                 }
                 
-                const char call::text[] = "=>";
+                const char call::text[] = "==>";
                 
             }
             

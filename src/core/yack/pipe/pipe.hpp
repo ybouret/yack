@@ -73,7 +73,7 @@ namespace yack
         // interface
         //______________________________________________________________________
         virtual void        push(param_type)     = 0; //!< push an object
-        virtual void        pop()  throw()       = 0; //!< remove object according to policy
+        virtual type        pop()  throw()       = 0; //!< remove object according to policy
         virtual type       &peek() throw()       = 0; //!< next available object
         virtual const_type &peek() const throw() = 0; //!< next available const object
 
@@ -121,10 +121,10 @@ namespace yack
         }
 
         //! pop: lifo=back, fifo=front
-        inline virtual void pop() throw()
+        inline virtual type pop() throw()
         {
             static const int2type<SCHEME> manner = {};
-            pop_(manner);
+            return pop_(manner);
         }
 
         //! peek: lifo=back, fifo=front
@@ -155,8 +155,10 @@ namespace yack
 
     private:
         YACK_DISABLE_ASSIGN(pipe_on);
-        inline void pop_(const int2type<pipe::lifo>&) throw() { this->pop_back();  }
-        inline void pop_(const int2type<pipe::fifo>&) throw() { this->pop_front(); }
+        inline type pop_(const int2type<pipe::lifo>&) throw()
+        { type ans = this->back(); this->pop_back(); return ans; }
+        inline type pop_(const int2type<pipe::fifo>&) throw()
+        { type ans = this->front(); this->pop_front(); return ans; }
 
         inline const_type &peek_(const int2type<pipe::lifo>&) const throw() { return this->back();  }
         inline const_type &peek_(const int2type<pipe::fifo>&) const throw() { return this->front(); }

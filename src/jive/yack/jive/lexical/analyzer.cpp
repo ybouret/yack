@@ -85,8 +85,18 @@ namespace yack
                 {
                     std::cerr << "call <" << scan->label << "> ==> <" << dest->label << ">" << std::endl;                hist.push(scan);
                 }
-                hist.push_back(scan);
+                hist.push(scan);
                 scan = dest;
+            }
+            
+            void analyzer:: impl_back()
+            {
+                if(hist.size()<=0) throw exception("<%s> cannot return", (*(scan->label))() );
+                if(verbose)
+                {
+                    std::cerr << "<" << scan->label << "> back to <" << hist.peek()->label << ">" << std::endl;
+                }
+                scan = hist.pop();
             }
             
             namespace flow
@@ -104,6 +114,14 @@ namespace yack
                     az.impl_call(*to);
                     return control;
                 }
+                
+                behavior back::operator()(token &word)
+                {
+                    cb(word);
+                    az.impl_back();
+                    return control;
+                }
+                
                 
             }
             void analyzer:: store(lexeme *lx) throw()
