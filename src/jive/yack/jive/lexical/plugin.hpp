@@ -64,6 +64,7 @@ namespace yack
                 YACK_DISABLE_COPY_AND_ASSIGN(plugin);
                 virtual void enter(token&) = 0;
             };
+
         }
 
     }

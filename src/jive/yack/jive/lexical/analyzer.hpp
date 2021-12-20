@@ -73,10 +73,40 @@ namespace yack
 
                 //! register a plugin
                 void import(plugin *);
-                
-                
 
+                //! import a no-arg plugin
+                template <
+                typename PLUGIN,
+                typename IDENTIFIER
+                >
+                inline void plug( type2type<PLUGIN>, const IDENTIFIER &uuid)
+                {
+                    import( new PLUGIN(uuid,*this) );
+                }
 
+                //! import a 1-arg plugin
+                template <
+                typename PLUGIN,
+                typename IDENTIFIER,
+                typename EXPRESSION
+                >
+                inline void plug( type2type<PLUGIN>, const IDENTIFIER &uuid, const EXPRESSION &expr)
+                {
+                    import( new PLUGIN(uuid,expr,*this) );
+                }
+
+                //! import a 2-args plugin
+                template <
+                typename PLUGIN,
+                typename IDENTIFIER,
+                typename EXPRESSINI,
+                typename EXPRESSEND
+                >
+                inline void plug( type2type<PLUGIN>, const IDENTIFIER &uuid, const EXPRESSINI &init, const EXPRESSEND &done)
+                {
+                    import( new PLUGIN(uuid,init,done,*this) );
+                }
+                
                 //! access existing scanner by label
                 const scanner & operator[](const string &label) const;
                 

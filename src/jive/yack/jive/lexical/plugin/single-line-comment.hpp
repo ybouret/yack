@@ -49,6 +49,22 @@ namespace yack
                 virtual void enter(token &) throw();  //!< token matches expr
             };
 
+            //! helper for inline single line comment
+#define YACK_JIVE_SINGLE_LINE_COMMENT(NAME,EXPR) \
+/**/  class NAME : public single_line_comment\
+/**/  {\
+/**/   public:\
+/**/    inline virtual ~NAME() throw() {}\
+/**/    template<typename IDENTIFIER>\
+/**/    inline explicit NAME(const IDENTIFIER &uuid,analyzer &host) :\
+/**/      single_line_comment(uuid,EXPR,host) {} \
+/**/   private:\
+/**/    YACK_DISABLE_COPY_AND_ASSIGN(NAME);\
+/**/  }
+
+            //! example C++ comment
+            YACK_JIVE_SINGLE_LINE_COMMENT(cxx_comment,"//");
+
         }
 
     }
