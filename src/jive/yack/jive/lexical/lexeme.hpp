@@ -25,15 +25,7 @@ namespace yack
             //__________________________________________________________________
             explicit lexeme(const tag &, const context &) throw(); //!< setup from directive uuid and context
             virtual ~lexeme()                             throw(); //!< cleanup
-
-            //! helper
-            template <typename UUID> static inline
-            lexeme *create(const UUID &who, const context &ctx)
-            {
-                const tag host = tags::make(who);
-                return new lexeme(host,ctx);
-            }
-
+            
             //__________________________________________________________________
             //
             // methods

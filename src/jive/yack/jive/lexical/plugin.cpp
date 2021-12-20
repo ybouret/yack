@@ -1,5 +1,6 @@
 
-#include "yack/jive/lexical/plugin.hpp"
+#include "yack/jive/lexical/analyzer.hpp"
+#include "yack/exception.hpp"
 
 namespace yack
 {
@@ -12,10 +13,18 @@ namespace yack
             {}
 
 
-            void plugin:: enter(token &word)
+            void plugin:: on_call(token &word)
             {
-                initialize(word);
+                enter(word);
             }
+
+            void plugin:: inject(token &word) const
+            {
+                if(word.size<=0) throw exception("<%s> returned empty", (*label)());
+                lexeme *lx = new lexeme(label,*word);
+                root->store(lx);
+            }
+
 
         }
 

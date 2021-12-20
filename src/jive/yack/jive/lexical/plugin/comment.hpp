@@ -13,12 +13,24 @@ namespace yack
         namespace lexical
         {
 
+            //__________________________________________________________________
+            //
+            //
+            //! base class to create comments
+            //
+            //__________________________________________________________________
             class comment : public plugin
             {
             public:
-                virtual ~comment() throw();
+                //______________________________________________________________
+                //
+                // C++
+                //______________________________________________________________
+                virtual ~comment() throw(); //!< cleanup
 
             protected:
+
+                //! setup with triggering expression
                 template <
                 typename IDENTIFIER,
                 typename EXPRESSION

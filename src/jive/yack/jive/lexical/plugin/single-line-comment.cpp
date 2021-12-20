@@ -17,7 +17,7 @@ namespace yack
                 drop(".+");
             }
 
-            void single_line_comment:: initialize(token &) throw()
+            void single_line_comment:: enter(token &) throw()
             {
 
             }

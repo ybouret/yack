@@ -71,11 +71,12 @@ namespace yack
                     return *s;
                 }
 
+                //! register a plugin
                 void plug( plugin *plg )
                 {
                     assert(NULL!=plg);
                     plugin &p = decl<plugin>(plg);
-                    call(p.label,p.trigger,&p,&plugin::enter);
+                    call(p.label,p.trigger,&p,&plugin::on_call);
                 }
                 
 

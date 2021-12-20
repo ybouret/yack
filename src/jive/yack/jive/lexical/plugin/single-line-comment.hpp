@@ -14,11 +14,22 @@ namespace yack
         namespace lexical
         {
 
+            //__________________________________________________________________
+            //
+            //
+            //! create single line comment
+            //
+            //__________________________________________________________________
             class single_line_comment : public comment
             {
             public:
-                virtual ~single_line_comment() throw();
+                //______________________________________________________________
+                //
+                // C++
+                //______________________________________________________________
+                virtual ~single_line_comment() throw(); //!< cleanup
 
+                //! setup with triggering expression
                 template <
                 typename IDENTIFIER,
                 typename EXPRESSION
@@ -33,9 +44,9 @@ namespace yack
 
             private:
                 YACK_DISABLE_COPY_AND_ASSIGN(single_line_comment);
-                void compile();
-                void leave(token &) throw();               //!< restore endl
-                virtual void initialize(token &) throw();  //!< token matches expr
+                void         compile();
+                void         leave(token &) throw();  //!< restore endl
+                virtual void enter(token &) throw();  //!< token matches expr
             };
 
         }
