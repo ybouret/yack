@@ -1,6 +1,7 @@
 
 #include "yack/jive/lexical/analyzer.hpp"
 #include "yack/jive/lexical/plugin/single-line-comment.hpp"
+#include "yack/jive/lexical/plugin/multi-lines-comment.hpp"
 #include "yack/utest/run.hpp"
 
 using namespace yack;
@@ -33,6 +34,10 @@ namespace
             HEXA.back("[:xdigit:]!",this,&mylexer::leaveHex);
 
             plug( new jive::lexical::single_line_comment("C++Comment","//",*this) );
+            plug( new jive::lexical::single_line_comment("HT_Comment","#",*this) );
+
+            plug( new jive::lexical::multi_lines_comment("C_Comments","/\\*","\\*/",*this) );
+
 
         }
 

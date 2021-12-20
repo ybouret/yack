@@ -15,10 +15,10 @@ namespace yack
             void multi_lines_comment:: compile()
             {
                 endl("[:endl:]");
-                drop(".");
+                drop(".+");
             }
 
-            void multi_lines_comment:: initialize(token &) throw()
+            void multi_lines_comment:: enter(token &) throw()
             {
 
             }
