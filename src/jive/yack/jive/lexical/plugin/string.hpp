@@ -54,7 +54,13 @@ namespace yack
                 YACK_DISABLE_COPY_AND_ASSIGN(string_);
                 void         setup();
                 void         leave(token &);
-                virtual void enter(token &) throw();
+                virtual void enter(token &)    throw();
+                behavior     claim(token &)    throw();
+                behavior     esc_copy(token &) throw();
+                behavior     esc_code(token &) throw();
+                behavior     esc_hexa(token &) throw();
+                behavior     esc_fail(token &);
+                behavior     all_fail(token &);
             };
 
         }
