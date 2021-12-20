@@ -1,6 +1,7 @@
 
-#include "yack/ios/ascii/loader.hpp"
+#include "yack/ios/ascii/converter.hpp"
 #include "yack/ios/ascii/convert.hpp"
+#include "yack/system/rtti.hpp"
 #include "yack/associative/be-addr.hpp"
 #include "yack/exception.hpp"
 
@@ -11,9 +12,9 @@ namespace yack
         namespace ascii
         {
 
-            const char loader:: call_sign[] = "ascii::loader";
+            const char converter:: call_sign[] = "ascii::converter";
 
-            loader:: ~loader() throw()
+            converter:: ~converter() throw()
             {
             }
 
@@ -33,7 +34,7 @@ namespace yack
 
 
             template <typename T>
-            static inline void insert_intg(loader::tree_type &tree)
+            static inline void insert_intg(converter::tree_type &tree)
             {
                 const be_address key( rtti::use<T>() );
                 (void) tree.insert( to_intg<T>, key.begin(), key.measure() );
@@ -53,7 +54,7 @@ namespace yack
             }
 
             template <typename T>
-            static inline void insert_real(loader::tree_type &tree)
+            static inline void insert_real(converter::tree_type &tree)
             {
                 const rtti      &tid = rtti::use<T>();
                 const be_address key( tid );
@@ -68,7 +69,7 @@ namespace yack
                 *static_cast<string*>(target) = string(buff,size);
             }
 
-            static inline void insert_str(loader::tree_type &tree)
+            static inline void insert_str(converter::tree_type &tree)
             {
                 const rtti      &tid = rtti::use<string>();
                 const be_address key( tid );
@@ -77,7 +78,7 @@ namespace yack
             }
 
 
-            loader:: loader() : singleton<loader>()
+            converter:: converter() : singleton<converter>()
             {
                 insert_intg<int8_t>(tree);
                 insert_intg<int16_t>(tree);
@@ -115,7 +116,7 @@ namespace yack
 
             }
 
-            loader::builder & loader::operator[](const rtti &tid) const
+            converter::builder & converter::operator[](const rtti &tid) const
             {
                 const be_address key(tid);
                 const builder   *hfn = tree.search(key.begin(),key.measure());

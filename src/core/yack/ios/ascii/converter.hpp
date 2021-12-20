@@ -1,20 +1,23 @@
 //! \file
 
-#ifndef YACK_IOS_ASCII_LOADER_INCLUDED
-#define YACK_IOS_ASCII_LOADER_INCLUDED 1
+#ifndef YACK_IOS_ASCII_CONVERTER_INCLUDED
+#define YACK_IOS_ASCII_CONVERTER_INCLUDED 1
 
 #include "yack/singleton.hpp"
 #include "yack/data/suffix/tree.hpp"
-#include "yack/system/rtti.hpp"
 
 namespace yack
 {
+
+    class rtti;
+
+
     namespace ios
     {
         namespace ascii
         {
 
-            class loader : public singleton<loader>
+            class converter : public singleton<converter>
             {
             public:
                 static const char               call_sign[];
@@ -27,10 +30,10 @@ namespace yack
 
 
             private:
-                YACK_DISABLE_COPY_AND_ASSIGN(loader);
-                explicit loader();
-                virtual ~loader() throw();
-                friend class singleton<loader>;
+                YACK_DISABLE_COPY_AND_ASSIGN(converter);
+                explicit converter();
+                virtual ~converter() throw();
+                friend class singleton<converter>;
                 tree_type tree;
 
 
