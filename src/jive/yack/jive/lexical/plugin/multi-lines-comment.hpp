@@ -50,8 +50,8 @@ namespace yack
 
             private:
                 YACK_DISABLE_COPY_AND_ASSIGN(multi_lines_comment);
-                void compile();
-                void leave(token &) throw();               //!< drop done expression
+                void         compile();               //!< create directives
+                void         leave(token &) throw();  //!< drop done expression
                 virtual void enter(token &) throw();  //!< drop init expression
             };
 
