@@ -42,9 +42,9 @@ namespace yack
                 label( tags::make(id)       ),
                 instr( new instructions()   ),
                 table( new scatter::table() ),
-                root(NULL),
+                flux(NULL),
                 dict(NULL),
-                ctrl_(NULL),
+                root(NULL),
                 verbose(false)
                 {}
 
@@ -177,7 +177,7 @@ namespace yack
                                  OBJECT_POINTER    host,
                                  METHOD_POINTER    meth)
                 {
-                    check_ctrl();
+                    check_root();
                     const tag    t_expr = tags::make( expr );
                     const tag    t_text = tags::make( flow::jump::text );
                     const tag    t_name = tags::make( name );
@@ -185,7 +185,7 @@ namespace yack
                     const tag    t_jump = tags::make( temp );
                     
                     const flow::callback  cb(host,meth);
-                    const flow::jump      fn(t_name,*ctrl_,cb);
+                    const flow::jump      fn(t_name,*root,cb);
                     const motif           m( regexp::compile(*t_expr,dict) );
                     const action          a(fn);
                     on(t_jump,m,a);
@@ -209,7 +209,7 @@ namespace yack
                                  OBJECT_POINTER    host,
                                  METHOD_POINTER    meth)
                 {
-                    check_ctrl();
+                    check_root();
                     const tag    t_expr = tags::make( expr );
                     const tag    t_text = tags::make( flow::call::text );
                     const tag    t_name = tags::make( name );
@@ -217,7 +217,7 @@ namespace yack
                     const tag    t_call = tags::make( temp );
                     
                     const flow::callback  cb(host,meth);
-                    const flow::call      fn(t_name,*ctrl_,cb);
+                    const flow::call      fn(t_name,*root,cb);
                     const motif           m( regexp::compile(*t_expr,dict) );
                     const action          a(fn);
                     on(t_call,m,a);
@@ -237,14 +237,14 @@ namespace yack
                                  OBJECT_POINTER    host,
                                  METHOD_POINTER    meth)
                 {
-                    check_ctrl();
+                    check_root();
                     const tag    t_expr = tags::make( expr );
                     const tag    t_text = tags::make( flow::back::text );
                     const string temp   = *t_expr + *t_text;
                     const tag    t_back = tags::make( temp );
                     
                     const flow::callback  cb(host,meth);
-                    const flow::back      fn(*ctrl_,cb);
+                    const flow::back      fn(*root,cb);
                     const motif           m( regexp::compile(*t_expr,dict) );
                     const action          a(fn);
                     on(t_back,m,a);
@@ -257,12 +257,17 @@ namespace yack
                 //! probe next lexeme
                 /**
                  - find out the best motif
+                 - if produce: emit lexeme
+                 - if discard: drop lexeme, probe again
+                 - if NULL:
+                 -- if !ctrl : EOF
+                 -- if  ctrl: something happened: should probe again (see analyzer)
                  */
                 //______________________________________________________________
                 lexeme  *probe(source &source, bool &ctrl);
                 
                 void     link_to(analyzer&) throw(); //!< set dictionary and ctrl
-                void     restore(token&)    throw(); //!< restore read token
+                void     restore(token&)    throw(); //!< restore read token to root
                 
                 
                 //______________________________________________________________
@@ -274,14 +279,14 @@ namespace yack
                 const auto_ptr<const scatter::table>  table; //!< scattered directives
                 
             protected:
-                source                                *root; //!< set during a probe call
+                source                                *flux; //!< set during a probe call
             
             private:
                 const dictionary                      *dict;
-                analyzer                              *ctrl_;
+                analyzer                              *root;
                 YACK_DISABLE_COPY_AND_ASSIGN(scanner);
                 void check_word(const tag &uuid, const token &word) const;
-                void check_ctrl() const;
+                void check_root() const;
                 
             public:
                 bool verbose; //!< trigger verbosity

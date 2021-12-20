@@ -50,14 +50,14 @@ namespace yack
             {
                 if(verbose) std::cerr << "<" << label << "> -> <" << parent.label << ">" << std::endl;
                 dict    = & parent.dict;
-                ctrl_   = & parent;
+                root    = & parent;
                 verbose = parent.verbose;
             }
             
             void scanner:: restore(token &word) throw()
             {
-                assert(root);
-                root->store(word);
+                assert(flux);
+                flux->store(word);
             }
             
             scanner * analyzer:: request(const string &target,
@@ -110,7 +110,7 @@ namespace yack
             
             lexeme * analyzer:: query(source &src)
             {
-                const temporary<source *> assign(root,&src);
+                const temporary<source *> assign(flux,&src);
             QUERY:
                 if(repo.size)
                 {
@@ -122,6 +122,7 @@ namespace yack
                     lexeme *lx   = scan->probe(src,ctrl);
                     if(lx)
                     {
+                        // produce lexeme
                         return lx;
                     }
                     else

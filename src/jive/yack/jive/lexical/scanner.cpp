@@ -46,24 +46,24 @@ namespace yack
 
             behavior scanner:: on_newline(const token &) throw()
             {
-                assert(root);
-                (**root).newline();
+                assert(flux);
+                (**flux).newline();
                 return discard;
             }
 
             void scanner:: check_word(const tag &uuid, const token &word) const
             {
-                assert(NULL!=root);
+                assert(NULL!=flux);
                 if(word.size<=0)
                 {
                     exception excp("unexpected empty token '%s' for <%s>", (*uuid)(), (*label)() );
-                    throw (**root).stamp(excp);
+                    throw (**flux).stamp(excp);
                 }
             }
 
-            void scanner:: check_ctrl() const
+            void scanner:: check_root() const
             {
-                if(!ctrl_) throw exception("<%s> is not linked (branching not supported)", (*label)() );
+                if(!root) throw exception("<%s> is not linked (branching not supported)", (*label)() );
             }
             
             std::ostream & operator<<(std::ostream &os, const scanner &s)
@@ -88,7 +88,7 @@ namespace yack
             lexeme * scanner:: probe(source &src, bool &ctrl)
             {
 
-                const temporary<source *> assign(root,&src);
+                const temporary<source *> assign(flux,&src);
                 ctrl = false;
 
             PROBE:
@@ -200,7 +200,7 @@ namespace yack
                     //
                     //----------------------------------------------------------
                     if(verbose&&replaced)
-                        std::cerr << "<" << label << "> scan '" << best->uuid << "' = '" << word << "' @" << **root << ':' << (**root).line << std::endl;
+                        std::cerr << "<" << label << "> scan '" << best->uuid << "' = '" << word << "' @" << **flux << ':' << (**flux).line << std::endl;
 
                     action &perform = coerce(best->duty);
                     switch(perform(word))
