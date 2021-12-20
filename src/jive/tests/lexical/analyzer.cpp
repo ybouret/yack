@@ -33,10 +33,9 @@ namespace
             HEXA.make("[:xdigit:]+",this,&mylexer::growHex);
             HEXA.back("[:xdigit:]!",this,&mylexer::leaveHex);
 
-            plug( new jive::lexical::single_line_comment("C++Comment","//",*this) );
-            plug( new jive::lexical::single_line_comment("HT_Comment","#",*this) );
-
-            plug( new jive::lexical::multi_lines_comment("C_Comments","/\\*","\\*/",*this) );
+            import( new jive::lexical::single_line_comment("C++Comment","//",*this) );
+            import( new jive::lexical::single_line_comment("HT_Comment","#",*this) );
+            import( new jive::lexical::multi_lines_comment("C_Comments","/\\*","\\*/",*this) );
 
 
         }

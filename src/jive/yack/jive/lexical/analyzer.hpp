@@ -72,13 +72,10 @@ namespace yack
                 }
 
                 //! register a plugin
-                void plug( plugin *plg )
-                {
-                    assert(NULL!=plg);
-                    plugin &p = decl<plugin>(plg);
-                    call(p.label,p.trigger,&p,&plugin::on_call);
-                }
+                void import(plugin *);
                 
+                
+
 
                 //! access existing scanner by label
                 const scanner & operator[](const string &label) const;

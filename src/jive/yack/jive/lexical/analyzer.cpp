@@ -45,6 +45,15 @@ namespace yack
                 if(!sdb.insert(p)) throw exception("<%s> has multiple <%s>", (*label)(), (*(p->label))() );
                 s->link_to(*this);
             }
+
+            void analyzer::import( plugin *plg )
+            {
+                assert(NULL!=plg);
+                plugin &p = decl<plugin>(plg);
+                call(p.label,p.trigger,&p,&plugin::on_call);
+            }
+
+
             
             void scanner:: link_to(analyzer &parent) throw()
             {
