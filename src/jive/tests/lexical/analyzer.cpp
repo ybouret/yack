@@ -12,7 +12,7 @@ namespace
     class mylexer : public jive::lexer
     {
     public:
-        explicit mylexer() : jive::lexer("lexer"), t_int()
+        explicit mylexer() : jive::lexer("lexer"), t_int(), t_hex()
         {
             verbose = true;
             emit("ID","[:alpha:][:word:]*");

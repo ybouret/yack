@@ -29,7 +29,7 @@ namespace yack
                     //
                     // types and definitions
                     //__________________________________________________________
-                    static const char text[]; //!< for create labels
+                    static const char text[]; //!< to create labels
                     
                     //__________________________________________________________
                     //

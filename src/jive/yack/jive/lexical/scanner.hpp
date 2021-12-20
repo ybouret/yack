@@ -58,9 +58,20 @@ namespace yack
 
 
                 //! register a new directive
+                /**
+                 with label 't',
+                 carry out action 'a' if motif 'm' is selected
+                 */
                 void on(const tag &t, const motif &m, const action &a);
 
                 //! generic helper to build directive
+                /**
+                 - create a directive 'uuid'
+                 - when expression    'expr' is mest
+                 - using a class pointer 'host'
+                 - and a class method    'meth'
+                    as actiont to perform
+                 */
                 template <
                 typename IDENTIFIER,
                 typename EXPRESSION,
@@ -147,7 +158,7 @@ namespace yack
                 behavior on_discard(const token &) throw(); //!< default discard method: return discard
                 behavior on_newline(const token &) throw(); //!< curr_->newline()    and return discard
 
-                friend std::ostream & operator<<(std::ostream &, const scanner &); //!< output quoted label
+                friend std::ostream & operator<<(std::ostream &, const scanner &); //!< output quoted directives
 
                 //! create a jump
                 /**
@@ -245,10 +256,10 @@ namespace yack
                 //
                 //! probe next lexeme
                 /**
-                 
+                 - find out the best motif
                  */
                 //______________________________________________________________
-                lexeme *probe(source &source, bool &ctrl);
+                lexeme  *probe(source &source, bool &ctrl);
                 
                 void     link_to(analyzer&) throw(); //!< set dictionary and ctrl
                 void     restore(token&)    throw(); //!< restore read token
@@ -273,7 +284,7 @@ namespace yack
                 void check_ctrl() const;
                 
             public:
-                bool verbose; //!< trigger verbositu
+                bool verbose; //!< trigger verbosity
             };
         }
 

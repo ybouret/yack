@@ -23,9 +23,16 @@ namespace yack
             //
             // C++
             //__________________________________________________________________
-            explicit lexeme(const tag     &who,
-                            const context &ctx) throw(); //!< setup from directive uuid and context
-            virtual ~lexeme()                   throw(); //!< cleanup
+            explicit lexeme(const tag &, const context &) throw(); //!< setup from directive uuid and context
+            virtual ~lexeme()                             throw(); //!< cleanup
+
+            //! helper
+            template <typename UUID> static inline
+            lexeme *create(const UUID &who, const context &ctx)
+            {
+                const tag host = tags::make(who);
+                return new lexeme(host,ctx);
+            }
 
             //__________________________________________________________________
             //
@@ -37,7 +44,6 @@ namespace yack
 
             token       & operator*()       throw(); //!< access
             const token & operator*() const throw(); //!< access
-
 
             //__________________________________________________________________
             //

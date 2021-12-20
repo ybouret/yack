@@ -1,5 +1,3 @@
-
-
 //! \file
 
 #ifndef YACK_LEXICAL_FLOW_CALL_INCLUDED
@@ -16,12 +14,13 @@ namespace yack
         {
             
             namespace flow
-            {  //______________________________________________________________
-               //
-               //
-               //! make a call to scanner
-               //
-               //______________________________________________________________
+            {
+                //______________________________________________________________
+                //
+                //
+                //! make a call to scanner
+                //
+                //______________________________________________________________
                 class call : public branching
                 {
                 public:
@@ -29,7 +28,7 @@ namespace yack
                     //
                     // types and definitions
                     //__________________________________________________________
-                    static const char text[]; //!< for create labels
+                    static const char text[]; //!< to create labels
                     
                     //__________________________________________________________
                     //
