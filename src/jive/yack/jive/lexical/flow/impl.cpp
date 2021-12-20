@@ -13,21 +13,21 @@ namespace yack
                 behavior jump:: operator()(token &word)
                 {
                     cb(word);
-                    az.impl_jump(*to);
+                    az.flow_jump(*to);
                     return control;
                 }
                 
                 behavior call:: operator()(token &word)
                 {
                     cb(word);
-                    az.impl_call(*to);
+                    az.flow_call(*to);
                     return control;
                 }
                 
                 behavior back::operator()(token &word)
                 {
                     cb(word);
-                    az.impl_back();
+                    az.flow_back();
                     return control;
                 }
                 

@@ -12,7 +12,11 @@ namespace yack
             {}
 
 
-            
+            void plugin:: enter(token &word)
+            {
+                initialize(word);
+            }
+
         }
 
     }

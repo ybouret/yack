@@ -1,5 +1,6 @@
 
 #include "yack/jive/lexical/analyzer.hpp"
+#include "yack/jive/lexical/plugin/single-line-comment.hpp"
 #include "yack/utest/run.hpp"
 
 using namespace yack;
@@ -30,6 +31,9 @@ namespace
             scanner &HEXA = decl( new scanner("HEXA") );
             HEXA.make("[:xdigit:]+",this,&mylexer::growHex);
             HEXA.back("[:xdigit:]!",this,&mylexer::leaveHex);
+
+            plug( new jive::lexical::single_line_comment("C++Comment","//",*this) );
+
         }
 
         virtual ~mylexer() throw()

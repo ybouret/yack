@@ -4,7 +4,7 @@
 #ifndef YACK_JIVE_LEXICAL_ANALYZER_INCLUDED
 #define YACK_JIVE_LEXICAL_ANALYZER_INCLUDED 1
 
-#include "yack/jive/lexical/scanner.hpp"
+#include "yack/jive/lexical/plugin.hpp"
 #include "yack/jive/pattern/dictionary.hpp"
 #include "yack/pipe/stack.hpp"
 #include "yack/sequence/list.hpp"
@@ -59,7 +59,7 @@ namespace yack
 
                 //______________________________________________________________
                 //
-                // methods
+                // setup methods
                 //______________________________________________________________
                 const scan_set & operator*() const throw(); //!< access to db
 
@@ -71,15 +71,31 @@ namespace yack
                     return *s;
                 }
 
-                //! access existing scanner by lable
+                void plug( plugin *plg )
+                {
+                    assert(NULL!=plg);
+                    plugin &p = decl<plugin>(plg);
+                    call(p.label,p.trigger,&p,&plugin::enter);
+                }
+                
+
+                //! access existing scanner by label
                 const scanner & operator[](const string &label) const;
                 
+
+                //______________________________________________________________
+                //
+                // flow methods
+                //______________________________________________________________
+                void flow_jump(const string &target); //!< change scanner
+                void flow_call(const string &target); //!< call scanner
+                void flow_back();                     //!< back from calling scanner
                 
-                void impl_jump(const string &target); //!< change scanner
-                void impl_call(const string &target); //!< call scanner
-                void impl_back();                     //!< back from calling scanner
-                
-               
+
+                //______________________________________________________________
+                //
+                // high-level analyzing
+                //______________________________________________________________
                 lexeme * query(source &);         //!< query next lexeme
                 void     store(lexeme *) throw(); //!< store a parsed lexeme
 

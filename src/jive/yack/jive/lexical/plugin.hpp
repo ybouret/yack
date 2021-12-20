@@ -3,7 +3,7 @@
 #ifndef YACK_JIVE_LEXICAL_PLUGIN_INCLUDED
 #define YACK_JIVE_LEXICAL_PLUGIN_INCLUDED 1
 
-#include "yack/jive/lexical/analyzer.hpp"
+#include "yack/jive/lexical/scanner.hpp"
 
 namespace yack
 {
@@ -23,14 +23,18 @@ namespace yack
                 explicit plugin(const IDENTIFIER &uuid,
                                 const EXPRESSION &expr,
                                 analyzer         &host) :
-                scanner(label)
+                scanner(uuid),
+                trigger( tags::make(expr) )
                 {
-
+                    link_to(host);
                 }
 
-                
+                const tag trigger;
+                void      enter(token &);
+
             private:
                 YACK_DISABLE_COPY_AND_ASSIGN(plugin);
+                virtual void initialize(token&) = 0;
             };
         }
 

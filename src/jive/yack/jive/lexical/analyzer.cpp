@@ -69,7 +69,7 @@ namespace yack
                 return &coerce(**temp);
             }
             
-            void analyzer:: impl_jump(const string &target)
+            void analyzer:: flow_jump(const string &target)
             {
                 scanner *dest = request(target,"jump to"); assert(dest);
                 if(verbose)
@@ -79,7 +79,7 @@ namespace yack
                 scan = dest;
             }
             
-            void analyzer:: impl_call(const string &target)
+            void analyzer:: flow_call(const string &target)
             {
                 scanner *dest = request(target,"call"); assert(dest);
                 if(verbose)
@@ -90,7 +90,7 @@ namespace yack
                 scan = dest;
             }
             
-            void analyzer:: impl_back()
+            void analyzer:: flow_back()
             {
                 if(hist.size()<=0) throw exception("<%s> cannot return", (*(scan->label))() );
                 if(verbose)

@@ -43,8 +43,8 @@ namespace yack
                 instr( new instructions()   ),
                 table( new scatter::table() ),
                 flux(NULL),
-                dict(NULL),
                 root(NULL),
+                dict(NULL),
                 verbose(false)
                 {}
 
@@ -280,10 +280,10 @@ namespace yack
                 
             protected:
                 source                                *flux; //!< set during a probe call
-            
+                analyzer                              *root; //!< set by link_to
+                const dictionary                      *dict; //!< set by link_to
+
             private:
-                const dictionary                      *dict;
-                analyzer                              *root;
                 YACK_DISABLE_COPY_AND_ASSIGN(scanner);
                 void check_word(const tag &uuid, const token &word) const;
                 void check_root() const;
