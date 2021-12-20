@@ -7,6 +7,8 @@ namespace yack
 
         namespace lexical
         {
+            YACK_JIVE_PLUGIN_IMPL(jstring);
+
             jstring:: ~jstring() throw()
             {
 

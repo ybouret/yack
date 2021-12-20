@@ -107,6 +107,7 @@ namespace yack
                     import( new PLUGIN(uuid,init,done,*this) );
                 }
                 
+
                 //! access existing scanner by label
                 const scanner & operator[](const string &label) const;
                 

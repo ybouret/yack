@@ -12,6 +12,11 @@ namespace yack
 
         namespace lexical
         {
+
+
+#define YACK_JIVE_PLUGIN_DECL(CLASS) static const type2type<CLASS> clid       //!< helper to declare plugin type
+#define YACK_JIVE_PLUGIN_IMPL(CLASS) const type2type<CLASS> CLASS::clid = {}  //!< helper to implement plugin type
+
             //__________________________________________________________________
             //
             //

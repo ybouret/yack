@@ -2,6 +2,11 @@
 #include "yack/jive/lexical/analyzer.hpp"
 #include "yack/jive/lexical/plugin/single-line-comment.hpp"
 #include "yack/jive/lexical/plugin/multi-lines-comment.hpp"
+
+#include "yack/jive/lexical/plugin/jstring.hpp"
+#include "yack/jive/lexical/plugin/rstring.hpp"
+#include "yack/jive/lexical/plugin/bstring.hpp"
+
 #include "yack/utest/run.hpp"
 
 using namespace yack;
@@ -35,10 +40,13 @@ namespace
 
             import( new jive::lexical::multi_lines_comment("C_Comments","/\\*","\\*/",*this) );
 
-            plug( type2type<jive::lexical::cxx_comment>(),         "C++Comment");
+            plug( jive::lexical::cxx_comment::clid, "C++Comment");
             plug( type2type<jive::lexical::single_line_comment>(), "Sh_Comment",'#');
             plug( type2type<jive::lexical::multi_lines_comment>(), "XMLComment","<\\!--","-->");
 
+            plug(jive::lexical::jstring::clid, "jstring");
+            plug(jive::lexical::rstring::clid, "rstring");
+            plug(jive::lexical::bstring::clid, "bstring");
         }
 
         virtual ~mylexer() throw()

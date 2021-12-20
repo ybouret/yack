@@ -2,6 +2,7 @@
 #include "yack/jive/lexical/analyzer.hpp"
 #include "yack/exception.hpp"
 #include "yack/type/temporary.hpp"
+#include "yack/ios/fmt/align.hpp"
 
 namespace yack
 {
@@ -11,6 +12,7 @@ namespace yack
         
         namespace lexical
         {
+
             analyzer:: ~analyzer() throw()
             {
                 sdb.release();
@@ -57,10 +59,13 @@ namespace yack
             
             void scanner:: link_to(analyzer &parent) throw()
             {
-                if(verbose) std::cerr << "<" << label << "> -> <" << parent.label << ">" << std::endl;
+                if(verbose)
+                {
+                    const string id = '<' + *label + '>';
+                    std::cerr << ios::align(id,output_width) << " [link to <" << parent.label << ">]" << std::endl;
+                }
                 dict    = & parent.dict;
                 root    = & parent;
-                verbose = parent.verbose;
             }
             
             void scanner:: restore(token &word) throw()

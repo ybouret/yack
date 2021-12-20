@@ -23,6 +23,8 @@ namespace yack
             class jstring : public string_
             {
             public:
+                YACK_JIVE_PLUGIN_DECL(jstring); //!< declare
+
                 //______________________________________________________________
                 //
                 // C++

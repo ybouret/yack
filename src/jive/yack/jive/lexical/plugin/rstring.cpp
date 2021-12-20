@@ -8,6 +8,8 @@ namespace yack
 
         namespace lexical
         {
+            YACK_JIVE_PLUGIN_IMPL(rstring);
+
             rstring:: ~rstring() throw()
             {
 

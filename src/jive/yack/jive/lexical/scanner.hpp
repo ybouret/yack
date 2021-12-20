@@ -28,6 +28,9 @@ namespace yack
             class scanner : public object, public counted
             {
             public:
+                static size_t output_width; //!< verbose output names alignment
+                static bool   verbose;      //!< class wise verbosity
+
                 //______________________________________________________________
                 //
                 // C++
@@ -44,8 +47,7 @@ namespace yack
                 table( new scatter::table() ),
                 flux(NULL),
                 root(NULL),
-                dict(NULL),
-                verbose(false)
+                dict(NULL)
                 {}
 
                 //______________________________________________________________
@@ -288,8 +290,6 @@ namespace yack
                 void check_word(const tag &uuid, const token &word) const;
                 void check_root() const;
                 
-            public:
-                bool verbose; //!< trigger verbosity
             };
         }
 

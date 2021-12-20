@@ -1,6 +1,7 @@
 #include "yack/jive/lexical/scanner.hpp"
 #include "yack/exception.hpp"
 #include "yack/ios/ascii/hybrid.hpp"
+#include "yack/ios/fmt/align.hpp"
 
 namespace yack
 {
@@ -8,6 +9,9 @@ namespace yack
     {
         namespace lexical
         {
+            bool   scanner:: verbose = false;
+            size_t scanner:: output_width = 20;
+
             scanner:: ~scanner() throw()
             {
             }
@@ -24,7 +28,11 @@ namespace yack
                 if(verbose)
                 {
                     const string xp = m->express();
-                    std::cerr << "<" << label << "> (*) " << t << " : '" << xp << "'" << std::endl;
+                    const string id = '<' + *label + '>';
+                    std::cerr << ios::align(id,output_width);
+                    const string ts = '@' + *t + '@';
+                    std::cerr << ' ' << ios::align(ts,output_width);
+                    std::cerr << " : '" << xp << "'" << std::endl;
                 }
 
                 if(m->feeble()) throw exception("<%s> using feeble pattern!", (*label)() );

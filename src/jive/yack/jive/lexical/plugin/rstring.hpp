@@ -22,6 +22,8 @@ namespace yack
             class rstring : public string_
             {
             public:
+                YACK_JIVE_PLUGIN_DECL(rstring); //!< declare
+
                 //______________________________________________________________
                 //
                 // C++

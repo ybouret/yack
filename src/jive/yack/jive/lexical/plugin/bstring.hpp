@@ -22,12 +22,15 @@ namespace yack
             class bstring : public string_
             {
             public:
+                YACK_JIVE_PLUGIN_DECL(bstring); //!< declare
+
                 //______________________________________________________________
                 //
                 // C++
                 //______________________________________________________________
                 virtual ~bstring() throw(); //!< cleanup
 
+                //! setup with brackets
                 template <typename IDENTIFIER>
                 explicit bstring(const IDENTIFIER &uuid,
                                  analyzer         &host) :
@@ -37,7 +40,7 @@ namespace yack
 
 
             private:
-                YACK_DISABLE_COPY_AND_ASSIGN(rstring);
+                YACK_DISABLE_COPY_AND_ASSIGN(bstring);
 
             };
 

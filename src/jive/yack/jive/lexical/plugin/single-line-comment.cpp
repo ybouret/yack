@@ -28,6 +28,7 @@ namespace yack
                 restore(word);
             }
 
+            YACK_JIVE_PLUGIN_IMPL(cxx_comment);
         }
     }
 }

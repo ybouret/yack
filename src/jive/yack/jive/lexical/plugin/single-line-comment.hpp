@@ -54,6 +54,7 @@ namespace yack
 /**/  class NAME : public single_line_comment\
 /**/  {\
 /**/   public:\
+/**/    YACK_JIVE_PLUGIN_DECL(NAME);    \
 /**/    inline virtual ~NAME() throw() {}\
 /**/    template<typename IDENTIFIER>\
 /**/    inline explicit NAME(const IDENTIFIER &uuid,analyzer &host) :\
