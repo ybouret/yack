@@ -13,9 +13,9 @@ namespace yack
 
             }
 
-            void string_:: setup(const char done)
+            void string_:: setup()
             {
-                back(done,this, &string_::leave);
+                back(eos,this, &string_::leave);
             }
 
             void string_:: enter(token &t) throw()
