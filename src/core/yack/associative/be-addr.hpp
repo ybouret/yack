@@ -34,6 +34,7 @@ namespace yack
         //______________________________________________________________________
         virtual size_t      measure() const throw(); //!< sizeof(void*)
         virtual const void *ro_addr() const throw(); //!< &impl
+        const   uint8_t    *begin()   const throw();
 
         //______________________________________________________________________
         //

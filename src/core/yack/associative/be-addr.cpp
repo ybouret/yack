@@ -29,6 +29,11 @@ namespace yack
         endian::BEaddr((void*)ro_addr(),measure());
     }
 
+    const   uint8_t *be_address:: begin()   const throw()
+    {
+        return static_cast<const uint8_t *>(ro_addr());
+    }
+
 }
 
 
