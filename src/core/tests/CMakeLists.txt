@@ -53,6 +53,7 @@ source_group(math FILES ${math})
 file(GLOB kr kr/*.cpp)
 source_group(kr FILES ${kr})
 
+set(HERE ${CMAKE_CURRENT_SOURCE_DIR})
 
 add_executable(test-yack main.cpp main.hpp
 ${base}
@@ -184,7 +185,7 @@ add_test(ios:gets       test-yack ios_gets)
 add_test(ios:ascii      test-yack ios_ascii)
 add_test(ios:hybrid     test-yack ios_hybrid)
 add_test(ios:convert    test-yack ios_convert i9223372036854775807 i-9223372036854775808 u18446744073709551615)
-add_test(ios:loader     test-yack ios_loader)
+add_test(ios:loader     test-yack ios_loader ${HERE}/sample.txt)
 
 add_test(hashing:64    test-yack hash64)
 add_test(hashing:fcn   test-yack hashing_fcn)

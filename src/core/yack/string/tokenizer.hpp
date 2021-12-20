@@ -21,17 +21,17 @@ namespace yack
         {
         public:
             //! cleanup
-            inline virtual ~tokenizer() throw() { curr=0;last=0;size=0; }
+            inline virtual ~tokenizer() throw() { curr=0;last=0;size=0;indx=0; }
 
             //! setup from sub-string
             inline explicit tokenizer(const T *entry, const size_t count) throw() :
-            curr(entry), last(curr+count), size(0)
+            curr(entry), last(curr+count), size(0), indx(0)
             {
             }
 
             //! setup from string
             inline explicit tokenizer(const string<T> &str) throw() :
-            curr( str() ), last(curr+str.size()), size(0)
+            curr( str() ), last(curr+str.size()), size(0), indx(0)
             {
             }
 
@@ -51,11 +51,13 @@ namespace yack
 
             DONE:
                 size=scan-curr;
+                ++indx;
                 return true;
             }
 
             inline const T *token() const throw() { return curr; } //!< current token position
             inline size_t   units() const throw() { return size; } //!< current token units
+            inline size_t   count() const throw() { return indx; } //!< current token count
 
             //! split source into words
             template <typename SEQUENCE, typename FUNCTION> static inline
@@ -67,11 +69,12 @@ namespace yack
                 return tkn.fill(words,is_separator);
             }
 
-
         private:
-            const T *curr; //!< current position
-            const T *last; //!< first invalid char
-            size_t   size; //!< current token chars
+            const T     *curr; //!< current position
+            const T     *last; //!< first invalid char
+            size_t       size; //!< current token chars
+            size_t       indx; //!< current index
+
             YACK_DISABLE_COPY_AND_ASSIGN(tokenizer);
             
             template <typename SEQUENCE, typename FUNCTION> inline

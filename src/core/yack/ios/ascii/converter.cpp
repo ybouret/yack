@@ -78,7 +78,7 @@ namespace yack
             }
 
 
-            converter:: converter() : singleton<converter>()
+            converter:: converter() : singleton<converter>(), tree()
             {
                 insert_intg<int8_t>(tree);
                 insert_intg<int16_t>(tree);
@@ -116,14 +116,21 @@ namespace yack
 
             }
 
-            converter::builder & converter::operator[](const rtti &tid) const
+            builder & converter::operator[](const rtti &tid) const
             {
                 const be_address key(tid);
                 const builder   *hfn = tree.search(key.begin(),key.measure());
                 if(!hfn) throw exception("no %s[%s]",call_sign,tid.name()());
                 return coerce(*hfn);
             }
-            
+
+
+            builder & converter::of(const rtti &tid)
+            {
+                static const converter &db = converter::instance();
+                YACK_LOCK(db.access);
+                return db[tid];
+            }
         }
     }
 }

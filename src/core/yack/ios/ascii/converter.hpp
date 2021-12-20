@@ -17,17 +17,38 @@ namespace yack
         namespace ascii
         {
 
+            //__________________________________________________________________
+            //
+            //
+            //! builder procedure for a given type
+            //
+            //__________________________________________________________________
+            typedef void (*builder)(void *,const char *,const size_t,const char *);
+
+
+            //__________________________________________________________________
+            //
+            //
+            //! database to convert ints, reals and string
+            //
+            //__________________________________________________________________
             class converter : public singleton<converter>
             {
             public:
-                static const char               call_sign[];
-                static const at_exit::longevity life_time = 10000;
+                //______________________________________________________________
+                //
+                // types and definition
+                //______________________________________________________________
+                static const char                            call_sign[];       //!< ascii::converter
+                static const at_exit::longevity              life_time = 10000; //!< longevity
+                typedef kernel::suffix_tree<builder,uint8_t> tree_type;         //!< alias
 
-                typedef void (*builder)(void *,const char *,const size_t,const char *);
-                typedef kernel::suffix_tree<builder,uint8_t> tree_type;
-
-                builder & operator[](const rtti &) const;
-
+                //______________________________________________________________
+                //
+                // methods
+                //______________________________________________________________
+                builder        & operator[](const rtti &) const; //!< find builder for rtti
+                static builder & of(const rtti &);               //!< global find builder for rtti
 
             private:
                 YACK_DISABLE_COPY_AND_ASSIGN(converter);
