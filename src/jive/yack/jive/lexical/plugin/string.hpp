@@ -39,7 +39,7 @@ namespace yack
                                  const char        done,
                                  const char        keep,
                                  analyzer         &host) :
-                plugin(uuid,init,host)  
+                plugin(uuid,init,host), content()
                 {
                     setup(done,keep);
                 }
