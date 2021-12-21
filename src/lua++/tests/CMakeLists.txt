@@ -5,7 +5,7 @@ file(GLOB srcs test-*.cpp)
 add_executable(test-lua++ main.cpp ${srcs})
 
 yack_link_libraries(test-lua++)
-#target_link_libraries(test-lua++yack-math)
+target_link_libraries(test-lua++ yack-lua++ yack-lua)
 
 yack_testing(lua++)
 
