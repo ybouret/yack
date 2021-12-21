@@ -25,7 +25,11 @@ namespace yack
             make_folder(curr);
         }
 
+    }
 
-
+    void vfs:: create_subdirectory(const  char *path)
+    {
+        const string _(path);
+        create_subdirectory(_);
     }
 }

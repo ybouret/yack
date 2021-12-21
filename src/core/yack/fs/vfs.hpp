@@ -19,6 +19,7 @@ namespace yack
     class vfs
     {
     public:
+        
         //______________________________________________________________________
         //
         // path utilities
@@ -167,7 +168,8 @@ namespace yack
         //
         // non-virtual interface: create directory
         //______________________________________________________________________
-        void create_subdirectory(const string &path);
+        void create_subdirectory(const string &path); //!< mkdir -p path
+        void create_subdirectory(const char   *path); //!< mkdir -p path, alias
 
         //______________________________________________________________________
         //

@@ -152,12 +152,15 @@ namespace yack
                 template <typename T>
                 struct mod2
                 {
+                    //! result is scalar
+                    typedef typename scalar_for<T>::type result_type;
+
                     //! |a-b|^2
                     template <typename A, typename B> static inline
-                    T of(A &a, B &b)
+                    result_type of(A &a, B &b)
                     {
                         assert(a.size()<=b.size());
-                        T sum = 0;
+                        result_type sum = 0;
                         for(size_t i=a.size();i>0;--i)
                         {
                             typename A::mutable_type d = a[i] - b[i];
@@ -168,9 +171,9 @@ namespace yack
 
                     //! |a|^2
                     template <typename A> static inline
-                    T of(A &a)
+                    result_type of(A &a)
                     {
-                        T sum = 0;
+                        result_type sum = 0;
                         for(size_t i=a.size();i>0;--i)
                         {
                             sum += mod2_of(a[i]);
