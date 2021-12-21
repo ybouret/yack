@@ -69,7 +69,7 @@ namespace yack
             }
 
             inline explicit local_scanner(const vfs &fs,
-				const string &dirname) :
+                                          const string &dirname) :
             vfs::scanner(fs,dirname),
             hfind(INVALID_HANDLE_VALUE),
             has(false),
@@ -177,24 +177,28 @@ namespace yack
         struct stat buf;
         // first pass: check if link
         memset(&buf,0,sizeof(buf));
-        if( 0 != lstat(path(),&buf) ) throw libc::exception(errno,"lstat(%s)",path());
-        if(S_IFLNK==(buf.st_mode&S_IFMT)) attr |= entry::attr_lnk;
-
-        // second pass: check type
-        memset(&buf,0,sizeof(buf));
-        if( 0 == stat(path(),&buf) )
+        if( 0 == lstat(path(),&buf) )
         {
-            const mode_t m = (buf.st_mode&S_IFMT);
-            if( m & S_IFREG )                  attr |= entry::attr_reg;
-            if( m & S_IFDIR )                  attr |= entry::attr_dir;
+            if(S_IFLNK==(buf.st_mode&S_IFMT)) attr |= entry::attr_lnk;
+
+            // second pass: check type
+            memset(&buf,0,sizeof(buf));
+            if( 0 == stat(path(),&buf) )
+            {
+                const mode_t m = (buf.st_mode&S_IFMT);
+                if( m & S_IFREG )                  attr |= entry::attr_reg;
+                if( m & S_IFDIR )                  attr |= entry::attr_dir;
+            }
         }
 #endif
 
 #if defined(YACK_WIN)
-		const DWORD dw = GetFileAttributes(path());
-		if (INVALID_FILE_ATTRIBUTES == dw) throw win32::exception(GetLastError(), "GetFileAttributes(%s)", path());
-		if( 0!=(dw&FILE_ATTRIBUTE_ARCHIVE))   attr |= entry::attr_reg;
-		if( 0!=(dw&FILE_ATTRIBUTE_DIRECTORY)) attr |= entry::attr_dir;
+        const DWORD dw = GetFileAttributes(path());
+        if (INVALID_FILE_ATTRIBUTES != dw)
+        {
+            if( 0!=(dw&FILE_ATTRIBUTE_ARCHIVE))   attr |= entry::attr_reg;
+            if( 0!=(dw&FILE_ATTRIBUTE_DIRECTORY)) attr |= entry::attr_dir;
+        }
 #endif
 
         return attr;
@@ -202,7 +206,7 @@ namespace yack
 
 
     void localFS:: make_folder(const string &path,
-                                bool          allow_already_exists)
+                               bool          allow_already_exists)
     {
         YACK_GIANT_LOCK();
 
@@ -216,7 +220,7 @@ namespace yack
                 case EEXIST:
                     if(allow_already_exists) return;
                     break;
-
+                    
                 default:
                     break;
             }
