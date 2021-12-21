@@ -1,5 +1,5 @@
 project(sqlite3 C)
-
+include_directories(../yack/zlib)
 message( STATUS "[YACK] <SQLite3>" )
 string(REPLACE "-Wall"   "" CMAKE_C_FLAGS "${CMAKE_C_FLAGS}")
 string(REPLACE "-Wextra" "" CMAKE_C_FLAGS "${CMAKE_C_FLAGS}")
