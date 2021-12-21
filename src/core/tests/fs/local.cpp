@@ -37,6 +37,7 @@ YACK_UTEST(vfs_local)
         {
             std::cerr << std::setw(pmax) << (*(ep->path))() << " |";
             std::cerr << ios::hexa(ep->attr) << "|";
+            if(ep->is_unk()) std::cerr << " unknown   |";
             if(ep->is_reg()) std::cerr << " regular   |";
             if(ep->is_dir()) std::cerr << " directory |";
             if(ep->is_lnk()) std::cerr << " link      |";

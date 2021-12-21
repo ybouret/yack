@@ -167,7 +167,7 @@ namespace yack
         //
         // non-virtual interface: create directory
         //______________________________________________________________________
-        
+        void create_subdirectory(const string &path);
 
         //______________________________________________________________________
         //

@@ -2,7 +2,28 @@
 #include "yack/utest/run.hpp"
 #include "yack/string.hpp"
 
+#if defined(YACK_BSD)
+#include <sys/stat.h>
+#include "yack/ios/fmt/binary.hpp"
+#include "yack/ios/fmt/hexa.hpp"
+#include "yack/ios/fmt/align.hpp"
+#endif
+
 using namespace yack;
+
+#if defined(YACK_BSD)
+
+namespace
+{
+    static inline void show(const char *name, const uint16_t flag)
+    {
+        std::cerr << ios::align(name,16) << ios::hexa(flag,true)  << " | " << ios::binary(flag,true) << std::endl;
+    }
+#define YACK_SHOW(ID) show(#ID,ID)
+}
+
+#endif
+
 
 YACK_UTEST(vfs)
 {
@@ -22,6 +43,15 @@ YACK_UTEST(vfs)
 
     YACK_SIZEOF(vfs::entry);
     YACK_SIZEOF(string);
+
+
+#if defined(YACK_BSD)
+    YACK_SHOW(S_IFMT);
+    YACK_SHOW(S_IFLNK);
+    YACK_SHOW(S_IFREG);
+    YACK_SHOW(S_IFDIR);
+#endif
+
 
 }
 YACK_UDONE()

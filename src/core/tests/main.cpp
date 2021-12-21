@@ -136,6 +136,7 @@ YACK_UTEST_DECL(128)
     YACK_UTEST(vfs);
     YACK_UTEST(vfs_local);
     YACK_UTEST(vfs_attr);
+    YACK_UTEST(vfs_mkdir);
 
     YACK_UTEST(kr_digest);
 

@@ -27,9 +27,9 @@ namespace yack
             //__________________________________________________________________
             //! setup
             template <typename T>
-            inline binary(const T x) throw() :
+            inline binary(const T x, const bool full=false) throw() :
             qword( uint64_t(x)  ),
-            nbits( width(qword) )
+            nbits( full ? (sizeof(T)*8) : width(qword) )
             {
             }
 

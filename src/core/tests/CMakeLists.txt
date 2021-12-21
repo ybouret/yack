@@ -219,6 +219,7 @@ add_test(math:api test-yack math_api)
 add_test(vfs  test-yack vfs)
 add_test(vfs:local test-yack vfs_local)
 add_test(vfs:attr  test-yack vfs_attr)
+add_test(vfs:mkdir test-yack vfs_mkdir)
 
 add_test(kr:digest   test-yack kr_digest)
 

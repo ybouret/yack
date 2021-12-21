@@ -1,4 +1,5 @@
 #include "yack/ios/fmt/align.hpp"
+#include <cstring>
 
 namespace yack
 {
@@ -17,6 +18,16 @@ namespace yack
         jflag(j)
         {
         }
+
+        align:: align(const char *text, const size_t w, const justify j) throw() :
+        entry(text),
+        count(text?strlen(text):0),
+        width(w),
+        jflag(j)
+        {
+
+        }
+
 
         align:: align(const align &a) throw() :
         entry(a.entry),

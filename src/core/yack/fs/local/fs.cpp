@@ -166,6 +166,8 @@ namespace yack
         return new local_scanner(*this,path);
     }
 
+
+
     vfs::entry::attr_t localFS:: get_attr_of(const string &path) const
     {
         YACK_GIANT_LOCK();
@@ -173,13 +175,19 @@ namespace yack
 
 #if defined(YACK_BSD)
         struct stat buf;
+        // first pass: check if link
         memset(&buf,0,sizeof(buf));
         if( 0 != lstat(path(),&buf) ) throw libc::exception(errno,"lstat(%s)",path());
-        const mode_t m = (buf.st_mode & S_IFMT);
-        std::cerr << "mode=" << m << " for '" << path << "'" << std::endl;
-        if( m & S_IFREG )  attr |= entry::attr_reg;
-        if( m & S_IFDIR )  attr |= entry::attr_dir;
-        if( m == S_IFLNK ) attr |= entry::attr_lnk;
+        if(S_IFLNK==(buf.st_mode&S_IFMT)) attr |= entry::attr_lnk;
+
+        // second pass: check type
+        memset(&buf,0,sizeof(buf));
+        if( 0 == stat(path(),&buf) )
+        {
+            const mode_t m = (buf.st_mode&S_IFMT);
+            if( m & S_IFREG )                  attr |= entry::attr_reg;
+            if( m & S_IFDIR )                  attr |= entry::attr_dir;
+        }
 #endif
 
 #if defined(YACK_WIN)

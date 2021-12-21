@@ -27,9 +27,9 @@ namespace yack
             //__________________________________________________________________
             //! setup
             template <typename T>
-            inline hexa(const T x) throw() :
-            qword( uint64_t(x) ),
-            count(width(qword))
+            inline hexa(const T x,const bool full=false) throw() :
+            qword( uint64_t(x)  ),
+            count( full? sizeof(T) : width(qword) )
             {
             }
 
