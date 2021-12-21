@@ -25,17 +25,26 @@ namespace yack
         class State : public object, public counted
         {
         public:
+            //__________________________________________________________________
+            //
+            // C++
+            //__________________________________________________________________
             virtual ~State() throw(); //!< lua_close
             explicit State();         //!< lua_newstate
 
-            void getglobal(const string &);
-            void getglobal(const char   *);
+            //__________________________________________________________________
+            //
+            // methods
+            //__________________________________________________________________
+            void getglobal(const string &); //!< clear/getglobal
+            void getglobal(const char   *); //!< clear/getglobal
 
-            void dofile(const string &);
-            void dofile(const char   *);
-            void dostring(const string &);
-            void dostring(const char   *);
+            void dofile(const string &);   //!< dofile
+            void dofile(const char   *);   //!< dofile
+            void dostring(const string &); //!< dostring
+            void dostring(const char   *); //!< dostring
 
+            //! conversion to lua_Integer/lua_Number/string
             template <typename T>
             T to(const size_t idx)
             {
@@ -43,12 +52,15 @@ namespace yack
                 return to(which,idx);
             }
 
+            //! getglobal and convert
             template <typename T> inline
             T get(const string &name) { getglobal(name); return to<T>(-1); }
 
+            //! getglobal and convert
             template <typename T> inline
             T get(const char   *name) { getglobal(name); return to<T>(-1); }
 
+            //! access operator
             lua_State * operator*() throw();
 
         private:
