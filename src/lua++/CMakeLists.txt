@@ -1,4 +1,4 @@
-include_directories(. ../core)
+include_directories(. .. ../core)
 
 #main
 file(GLOB lua_main_decl yack/lua++/*.hpp)

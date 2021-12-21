@@ -4,6 +4,7 @@
 #define YACK_LUAXX_STATE_INCLUDED 1
 
 #include "yack/string.hpp"
+#include "yack/lua/lua.h"
 
 namespace yack
 {

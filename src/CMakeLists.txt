@@ -36,8 +36,8 @@ add_custom_target(dox
 endif()
 
 add_subdirectory(cli)
-add_subdirectory(zlib)
-add_subdirectory(lua)
+add_subdirectory(yack/zlib)
+add_subdirectory(yack/lua)
 add_subdirectory(math)
 add_subdirectory(lua++)
 add_subdirectory(jive)

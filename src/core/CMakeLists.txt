@@ -1,6 +1,6 @@
 project(core C CXX)
 
-include_directories(.)
+include_directories(. ..)
 
 ########################################################################
 ##

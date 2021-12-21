@@ -7,7 +7,7 @@ target_link_libraries(z-example yack-z)
 add_custom_command( TARGET z-example
 POST_BUILD
 COMMAND z-example
-COMMAND ${CMAKE_COMMAND} -E cmake_echo_color --blue --bold "[YACK]  <zlib example/>"
+COMMAND ${CMAKE_COMMAND} -E echo "[YACK]  <zlib example/>"
 COMMENT "[YACK]  <zlib example>"
 VERBATIM)
  
