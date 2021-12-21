@@ -15,7 +15,7 @@ using namespace yack;
 
 YACK_UTEST(vfs_local)
 {
-    local_fs &fs = local_fs::instance();
+    localFS &fs = localFS::instance();
     std::cerr << fs.call_sign << std::endl;
     if(argc>1)
     {

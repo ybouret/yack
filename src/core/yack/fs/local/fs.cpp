@@ -20,18 +20,18 @@
 namespace yack
 {
 
-    const char local_fs::call_sign[] = "localFS";
+    const char localFS::call_sign[] = "localFS";
 
-    local_fs:: local_fs() throw() : vfs(), singleton<local_fs>()
+    localFS:: localFS() throw() : vfs(), singleton<localFS>()
     {
     }
 
-    local_fs:: ~local_fs() throw()
+    localFS:: ~localFS() throw()
     {
     }
 
 
-    void local_fs:: remove_file(const string &path)
+    void localFS:: remove_file(const string &path)
     {
         YACK_GIANT_LOCK();
 #if defined(YACK_BSD)
@@ -161,12 +161,12 @@ namespace yack
         };
     }
 
-    vfs::scanner * local_fs:: open_folder(const string &path)
+    vfs::scanner * localFS:: open_folder(const string &path)
     {
         return new local_scanner(*this,path);
     }
 
-    vfs::entry::attr_t local_fs:: get_attr_of(const string &path) const
+    vfs::entry::attr_t localFS:: get_attr_of(const string &path) const
     {
         YACK_GIANT_LOCK();
         entry::attr_t attr = entry::attr_unk;
@@ -177,9 +177,9 @@ namespace yack
         if( 0 != lstat(path(),&buf) ) throw libc::exception(errno,"lstat(%s)",path());
         const mode_t m = (buf.st_mode & S_IFMT);
         std::cerr << "mode=" << m << " for '" << path << "'" << std::endl;
-        if( m & S_IFREG ) attr |= entry::attr_reg;
-        if( m & S_IFDIR ) attr |= entry::attr_dir;
-        if( m & S_IFLNK ) attr |= entry::attr_lnk;
+        if( m & S_IFREG )  attr |= entry::attr_reg;
+        if( m & S_IFDIR )  attr |= entry::attr_dir;
+        if( m == S_IFLNK ) attr |= entry::attr_lnk;
 #endif
 
 #if defined(YACK_WIN)
@@ -193,7 +193,7 @@ namespace yack
     }
 
 
-    void local_fs:: make_folder(const string &path,
+    void localFS:: make_folder(const string &path,
                                 bool          allow_already_exists)
     {
         YACK_GIANT_LOCK();

@@ -15,7 +15,7 @@ namespace yack
     //! local file system interface
     //
     //__________________________________________________________________________
-    class local_fs : public vfs, public singleton<local_fs>
+    class localFS : public vfs, public singleton<localFS>
     {
     public:
         //______________________________________________________________________
@@ -35,10 +35,10 @@ namespace yack
         virtual void          make_folder(const string &dirname,bool); //!< from mkdir/CreateDirectory
 
     private:
-        YACK_DISABLE_COPY_AND_ASSIGN(local_fs);
-        virtual ~local_fs() throw();
-        explicit local_fs() throw();
-        friend class singleton<local_fs>;
+        YACK_DISABLE_COPY_AND_ASSIGN(localFS);
+        virtual ~localFS() throw();
+        explicit localFS() throw();
+        friend class singleton<localFS>;
     };
 
 

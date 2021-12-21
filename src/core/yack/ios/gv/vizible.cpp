@@ -156,7 +156,7 @@ namespace yack
             {
                 if(!keep)
                 {
-                    static vfs &fs = local_fs::instance();
+                    static vfs &fs = localFS::instance();
                     fs.try_remove_file(filename);
                 }
             }
