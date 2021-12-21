@@ -22,7 +22,7 @@ namespace yack
             const entry here(*this,curr);
             if(here.is_dir()) continue;
             if(here.attr) throw exception("vfs::cannot walk '%s'",curr());
-            make_folder(curr,true);
+            make_folder(curr);
         }
 
 

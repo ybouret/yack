@@ -205,8 +205,7 @@ namespace yack
     }
 
 
-    void localFS:: make_folder(const string &path,
-                               bool          allow_already_exists)
+    void localFS:: make_folder(const string &path)
     {
         YACK_GIANT_LOCK();
 
@@ -218,8 +217,7 @@ namespace yack
             switch(err)
             {
                 case EEXIST:
-                    if(allow_already_exists) return;
-                    break;
+                    return;
                     
                 default:
                     break;
@@ -234,9 +232,7 @@ namespace yack
             const DWORD err = GetLastError();
             switch(err)
             {
-                case ERROR_ALREADY_EXISTS:
-                    if(allow_already_exists) return;
-                    break;
+                case ERROR_ALREADY_EXISTS: return;
                     
                 default:
                     break;

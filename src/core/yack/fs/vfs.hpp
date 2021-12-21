@@ -147,7 +147,7 @@ namespace yack
         virtual void          remove_file(const string &path)         = 0; //!< remove given filename
         virtual scanner      *open_folder(const string &path)         = 0; //!< get a new scanning object
         virtual entry::attr_t get_attr_of(const string &path)   const = 0; //!< attribute
-        virtual void          make_folder(const string &dirname,bool) = 0; //!< make a new folder
+        virtual void          make_folder(const string &dirname)      = 0; //!< make a new folder
 
         //______________________________________________________________________
         //
