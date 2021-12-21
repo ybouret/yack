@@ -28,8 +28,6 @@ namespace yack
                 //______________________________________________________________
                 virtual ~string_() throw(); //!< cleanup
 
-                const char eos; //!< end of string marker
-                const char raw; //!< possible raw char (unescaped)
 
             protected:
                 //! setup with enter/leave char
@@ -41,18 +39,16 @@ namespace yack
                                  const char        done,
                                  const char        keep,
                                  analyzer         &host) :
-                plugin(uuid,init,host),
-                eos(done),
-                raw(keep)
+                plugin(uuid,init,host)  
                 {
-                    setup();
+                    setup(done,keep);
                 }
                 
                 token content; //!< accumulator
 
             private:
                 YACK_DISABLE_COPY_AND_ASSIGN(string_);
-                void         setup();
+                void         setup(const char eos, const char raw);
                 void         leave(token &);
                 virtual void enter(token &)    throw();
                 behavior     claim(token &)    throw();

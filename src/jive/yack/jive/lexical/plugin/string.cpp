@@ -15,7 +15,7 @@ namespace yack
 
             }
 
-            void string_:: setup()
+            void string_:: setup(const char eos, const char raw)
             {
                 back(eos,this, &string_::leave);
 
