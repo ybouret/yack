@@ -46,6 +46,7 @@ add_test(algebra:lu      test-math lu)
 add_test(algebra:jacobi  test-math jacobi)
 add_test(algebra:svd     test-math svd)
 add_test(algebra:tridiag test-math tridiag)
+add_test(algebra:cyclic  test-math cyclic)
 
 add_test(ode:rk4 test-math rk4)
 
