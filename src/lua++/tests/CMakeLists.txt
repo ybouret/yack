@@ -12,5 +12,5 @@ yack_testing(lua++)
 
 enable_testing()
 
-add_test(state test-lua++ state ${HERE}/sample.lua)
-add_test(state test-lua++ function)
+add_test(state    test-lua++ state ${HERE}/sample.lua)
+add_test(function test-lua++ function)
