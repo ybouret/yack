@@ -39,6 +39,7 @@ add_subdirectory(cli)
 add_subdirectory(zlib)
 add_subdirectory(lua)
 add_subdirectory(math)
+add_subdirectory(lua++)
 add_subdirectory(jive)
 add_subdirectory(sqlite3)
 

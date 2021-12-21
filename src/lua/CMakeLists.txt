@@ -8,7 +8,7 @@ if(YACK_GNU)
 	set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -std=c99")
 endif()
 
-install( FILES ${lua_public_decl}
+install( FILES ${lualib_public_decl}
 DESTINATION include/yack/lua )
 
 
