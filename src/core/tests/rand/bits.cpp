@@ -87,6 +87,12 @@ namespace
         do_stats(xf,"symmetric");
         do_stats(xd,"symmetric");
 
+        vector<long double>               hsphere(5);
+        randomized::gaussian<long double> ge(sh);
+
+        ge(hsphere);
+        std::cerr << "hsphere: " << hsphere << std::endl;
+
     }
 
 }

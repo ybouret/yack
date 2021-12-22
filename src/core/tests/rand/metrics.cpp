@@ -86,7 +86,6 @@ YACK_UTEST(rand_metrics)
     show_metrics<long double>();
     show_metrics<double>();
     show_metrics<float>();
-
 }
 YACK_UDONE()
 
