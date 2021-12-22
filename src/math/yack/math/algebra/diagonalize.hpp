@@ -4,6 +4,7 @@
 
 #include "yack/math/algebra/svd.hpp"
 #include "yack/math/numeric.hpp"
+#include "yack/math/look-for.hpp"
 #include "yack/math/tao/v1.hpp"
 #include "yack/type/utils.hpp"
 #include "yack/sort/heap.hpp"
@@ -359,25 +360,26 @@ namespace yack
             template <typename T> static inline
             int __compare_fabs(const T lhs, const T rhs) throw()
             {
-                const T L = fabs_of(lhs);
-                const T R = fabs_of(rhs);
+                const T L = fabs(lhs);
+                const T R = fabs(rhs);
                 return comparison::increasing(L,R);
             }
             
             //! find the eigenvectors from initial eigenvalues
             /**
+             TODO: need to be written again ?
              \param ev transpose eigenvectors: e.vrows <= number of REAL eigenvalues
-             \param A  initial matrix
+             \param A  original matrix
              \param wr initial eigenvalues, 1..ev.rows are REAL. MUST be SORTED
              \param s  a svd object
              */
             template <typename T> static inline
-            void eigv(matrix<T>       &ev,
+            bool eigv(matrix<T>       &ev,
                       const matrix<T> &A,
                       writable<T>     &wr,
                       svd<T>          &s)
             {
-                assert( A.is_square );
+                assert( A.is_square() );
                 assert( wr.size() >= ev.rows );
                 
                 const size_t n  = A.rows;
@@ -420,10 +422,10 @@ namespace yack
                         U.assign(B);
                         if( !s.build(U, W, V) )
                         {
-                            throw exception("diag::eigv(bad matrix,level-1)");
+                            return false;
                         }
                         //nz = __find<T>::truncate(W);
-                        nz = svd<T>::nullity(W);
+                        nz = look_for<T>::nullity(W,0);
                         indexing::make(J, __compare_fabs<T>, W);
                         
                         if(nz>0)
@@ -463,7 +465,7 @@ namespace yack
                         wr[iv] = tau;
                         writable<T>    &vec = ev[iv];
                         const size_t    j   = J[k]; assert(j>0); assert(j<=n);
-                        assert(fabs_of(W[j])<=0);
+                        assert(fabs(W[j])<=0);
                         for(size_t i=n;i>0;--i)
                         {
                             vec[i] = V[i][j];
@@ -471,6 +473,7 @@ namespace yack
                         ++iv;
                     }
                 }
+                return true;
             }
             
         };
