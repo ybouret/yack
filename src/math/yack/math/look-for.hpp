@@ -11,11 +11,30 @@ namespace yack
     namespace math
     {
 
+        //______________________________________________________________________
+        //
+        //
+        //! look for values on ranges/sequences
+        //
+        //______________________________________________________________________
         template <typename T>
         struct look_for
         {
-            YACK_DECL_ARGS(T,type);
+            //__________________________________________________________________
+            //
+            // types
+            //__________________________________________________________________
+            YACK_DECL_ARGS(T,type); //!< aliases
 
+            //__________________________________________________________________
+            //
+            //! nullity for a range of given values
+            /**
+             - find max(|values|)
+             - if(ftol<=0) then ftol = card(values) * epsilon * vmax
+             - set to zero and return number of variables below threshold
+             */
+            //__________________________________________________________________
             template <typename ITERATOR> static inline
             size_t nullity(const ITERATOR curr,
                            const ITERATOR last,
@@ -32,14 +51,15 @@ namespace yack
                 }
 
                 // adjust ftol
-                if(ftol<=0) ftol = n * numeric<T>::epsilon * a;
+                if(ftol<=0) ftol      = n * numeric<T>::epsilon;
+                const_type  threshold = a*ftol;
 
-                // second pass: cut value
+                // second pass: cut values below threshold
                 size_t ker = 0;
                 for(ITERATOR it=curr;it!=last;++it)
                 {
                     mutable_type &x = *it;
-                    if(fabs(x)<=ftol) {
+                    if(fabs(x)<=threshold) {
                         x=0;
                         ++ker;
                     }
@@ -47,6 +67,10 @@ namespace yack
                 return ker;
             }
 
+            //__________________________________________________________________
+            //
+            //! nullity for a sequence
+            //__________________________________________________________________
             template <typename SEQUENCE> static inline
             size_t nullity(SEQUENCE &seq, const T ftol) throw()
             {

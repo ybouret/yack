@@ -48,6 +48,7 @@ namespace yack
             //! get context from first char
             const context & operator*() const throw();
 
+            //! transfer to string
             string to_string(size_t nskip=0, size_t ntrim=0) const;
 
             //__________________________________________________________________

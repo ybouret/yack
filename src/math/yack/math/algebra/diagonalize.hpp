@@ -369,6 +369,7 @@ namespace yack
              \param ev transpose eigenvectors: e.vrows <= number of REAL eigenvalues
              \param A  initial matrix
              \param wr initial eigenvalues, 1..ev.rows are REAL. MUST be SORTED
+             \param s  a svd object
              */
             template <typename T> static inline
             void eigv(matrix<T>       &ev,
