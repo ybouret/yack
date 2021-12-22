@@ -6,7 +6,7 @@
 #include "yack/string.hpp"
 #include "yack/math/tao/v3.hpp"
 #include "../../../core/tests/main.hpp"
-#include "yack/math/numeric.hpp"
+#include "yack/math/look-for.hpp"
 
 using namespace yack;
 using namespace math;
@@ -33,7 +33,7 @@ namespace {
                     std::cerr << "[FAILURE]" << std::endl;
                 }
                 std::cerr << "w=" << w << " => ";
-                const size_t nullity = svd<T>::nullity(w,1e-6);
+                const size_t nullity = look_for<T>::nullity(w,1e-6);
                 std::cerr << "w=" << w << "; ker=" << nullity << std::endl;
 
                 if(r==c)

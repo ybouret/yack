@@ -26,6 +26,8 @@ namespace yack
     }
 }
 
+#include "yack/math/look-for.hpp"
+
 #define real_t float
 #include "zircon.hxx"
 

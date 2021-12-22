@@ -86,6 +86,9 @@ template <> const long double numeric<long double>::VALUE
             return (b >= 0) ? fabs(a) : -fabs(a);
         }
 
+        //! identity operator
+        template <typename T>
+        inline T __id(const T &f) { return f; }
 
     }
 

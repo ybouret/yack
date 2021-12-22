@@ -130,6 +130,14 @@ namespace yack
             for(size_t i=rows;i>0;--i) out_of_reach::swap(&line[i][c1],&line[i][c2],sizeof(T));
         }
 
+        //! swap both rows and cols
+        inline void swap_both(const size_t i, const size_t j) throw()
+        {
+            swap_rows(i,j);
+            swap_cols(i,j);
+        }
+
+
         //! make nr x nc iff mismatching sizes
         inline void make(const size_t nr, const size_t nc)
         {

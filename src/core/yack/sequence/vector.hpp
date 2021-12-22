@@ -78,6 +78,21 @@ namespace yack
             catch(...) { release_(); throw; }
         }
 
+
+        //! setup with default constructor
+        inline explicit vector(const size_t n) :
+        YACK_VECTOR_CTOR(),
+        count(0), utter(n), owned(0), base(zacquire(utter,owned)), item(base-1)
+        {
+            try {
+                while(count<n) {
+                    new (base+count) mutable_type();
+                    ++count;
+                }
+            }
+            catch(...) { release_(); throw; }
+        }
+
         //! hard copy
         inline   vector(const vector &other) :
         YACK_VECTOR_CTOR(),

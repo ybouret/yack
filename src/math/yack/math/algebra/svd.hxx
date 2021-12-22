@@ -296,6 +296,7 @@ namespace yack
 
         }
 
+#if 0
         template <>
         size_t svd<real_t>:: nullity(writable<real_t> &w, const real_t ftol) throw()
         {
@@ -338,6 +339,7 @@ namespace yack
                 return 0;
             }
         }
+#endif
     }
 
 }

@@ -1,5 +1,5 @@
 
-#include "yack/sequence/vector.hpp"
+
 
 namespace yack
 {
@@ -100,7 +100,7 @@ namespace yack
             //
             //------------------------------------------------------------------
             const size_t dimension = W.size();                     YACK_ZIRCON_PRINTLN("W     = " << W);
-            const size_t nullity   = svd<real_t>::nullity(W,1e-4);
+            const size_t nullity   = look_for<real_t>::nullity(W,1e-4);//svd<real_t>::nullity(W,1e-4);
 
             if(nullity>0)
             {

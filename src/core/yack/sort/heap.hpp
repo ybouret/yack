@@ -17,9 +17,10 @@ namespace yack
     //______________________________________________________________________
     template <typename ARRAY,typename FUNC>
     inline void hsort(ARRAY &ra,
+                      const size_t n,
                       FUNC  &compare)
     {
-        const size_t n = ra.size();
+        assert(n<=ra.size());
         if(n<2) return;
 
         //----------------------------------------------------------------------
@@ -73,6 +74,18 @@ namespace yack
         }
     }
 
+    //______________________________________________________________________
+    //
+    //
+    //! heap sort for more than 2 items
+    //
+    //______________________________________________________________________
+    template <typename ARRAY,typename FUNC>
+    inline void hsort(ARRAY &ra,
+                      FUNC  &compare)
+    {
+        hsort(ra,ra.size(),compare);
+    }
     
     
     
