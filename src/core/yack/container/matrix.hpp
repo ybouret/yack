@@ -222,7 +222,7 @@ namespace yack
         void assign(const matrix<U> &M)
         {
             assert( matrix_metrics::have_same_sizes(*this,M) );
-            mutable_type                   *target = this->head;
+            mutable_type                   *target = head;
             typename matrix<U>::const_type *source = M.head;
             for(size_t i=items;i>0;--i)
             {
