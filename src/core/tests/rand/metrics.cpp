@@ -14,11 +14,20 @@ using namespace yack;
 
 
 template <typename T> static inline
-void show(randomized::u32_to<T> &m, const uint32_t u)
+void showU(randomized::u32_to<T> &m, const uint32_t u)
 {
     const T value = m.unit(u);
     std::cerr << "\tunit(" << std::setw(10) << u << ") = " << value << std::endl;
 }
+
+template <typename T> static inline
+void showS(randomized::u32_to<T> &m, const uint32_t u)
+{
+    const T value = m.symm(u);
+    std::cerr << "\tsymm(" << std::setw(10) << u << ") = " << value << std::endl;
+}
+
+
 
 template <typename T>
 static inline void show_metrics()
@@ -35,10 +44,18 @@ static inline void show_metrics()
         std::cerr << "unit_deno: " << m.unit_deno << std::endl;
         std::cerr << "symm_deno: " << m.symm_deno << std::endl;
         std::cerr << "unit:" << std::endl;
-        show(m,0);
-        show(m,small/2);
-        show(m,small);
+        showU(m,0);
+        showU(m,small/2);
+        showU(m,small);
+
+        showS(m,0);
+        showS(m,small/2);
+        showS(m,small);
+
+        YACK_CHECK(m.unit(0)>0);
         YACK_CHECK(T(1)-m.unit(small)>0);
+        YACK_CHECK(T(1)+m.symm(0)>0);
+        YACK_CHECK(T(1)-m.symm(small)>0);
 
     }
 
@@ -49,10 +66,17 @@ static inline void show_metrics()
         std::cerr << "unit_deno: " << m.unit_deno << std::endl;
         std::cerr << "symm_deno: " << m.symm_deno << std::endl;
         std::cerr << "unit:" << std::endl;
-        show(m,0);
-        show(m,big/2);
-        show(m,big);
+        showU(m,0);
+        showU(m,big/2);
+        showU(m,big);
+        showS(m,0);
+        showS(m,big/2);
+        showS(m,big);
+
+        YACK_CHECK(m.unit(0)>0);
         YACK_CHECK(T(1)-m.unit(big)>0);
+        YACK_CHECK(T(1)+m.symm(0)>0);
+        //YACK_CHECK(T(1)-m.symm(big)>0);
     }
 
     std::cerr << std::endl;

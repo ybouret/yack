@@ -56,6 +56,12 @@ namespace yack
             {
                 return ((*this).*unit_proc)(u);
             }
+
+            //! call to transform 0..user_maxi into ]-1:1[
+            inline T symm(const uint32_t u) const throw()
+            {
+                return ((*this).*symm_proc)(u);
+            }
             
             //__________________________________________________________________
             //
@@ -96,6 +102,7 @@ namespace yack
 
                 }
                 coerce(symm_deno) = static_cast<T>(half_maxi)+half;
+                coerce(symm_deno) = static_cast<T>(half_maxi)+one;
             }
 
             inline T unit_proc_all_range(const uint32_t u) const throw()
@@ -126,11 +133,10 @@ namespace yack
 
             inline T symm_proc_compacted(const uint32_t u) const throw()
             {
-                static const T half(0.5);
                 assert(user_maxi>maxi);
                 assert(u<=user_maxi);
                 const uint32_t U = static_cast<uint32_t>( (uint64_t(u) * uint64_t(maxi))/uint64_t(user_maxi) );
-                return (half+static_cast<T>(U))/unit_deno;
+                return ( (U<half_maxi) ? -static_cast<T>(half_maxi-U) : static_cast<T>(U-half_maxi) )/symm_deno;
             }
 
         };
