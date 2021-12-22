@@ -52,13 +52,8 @@ namespace yack
             //! double|float|long double|uint[8:16:32:64]_t
             template <typename T> T to() throw();
 
-            //! double|float|long double
-            template <typename T> inline
-            T symm() throw() {
-                static const T half(0.5);
-                const T d = (*this).to<T>()-half;
-                return d+d;
-            }
+            //! double|float|long double|int[8:16:32:64]_t
+            template <typename T> T symm() throw();
             
             //! bitwise full construction
             template <typename T> inline
@@ -93,7 +88,6 @@ namespace yack
                     return T(0);
                 }
             }
-
 
             //! fill with non zero bytes
             void fill(void *addr, size_t size) throw();

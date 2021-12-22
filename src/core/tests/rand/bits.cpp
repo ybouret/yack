@@ -76,6 +76,17 @@ namespace
         do_stats(xf,"gaussian");
         do_stats(xd,"gaussian");
 
+
+        xf.free();
+        xd.free();
+        for(size_t i=0;i<N;++i)
+        {
+            xf.push_back( ran.symm<float>()  );
+            xd.push_back( ran.symm<double>() );
+        }
+        do_stats(xf,"symmetric");
+        do_stats(xd,"symmetric");
+
     }
 
 }

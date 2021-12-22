@@ -42,7 +42,6 @@ static inline void show_metrics()
         randomized::u32_to<T> m(small);
         std::cerr << "compacted: " << m.compacted << std::endl;
         std::cerr << "unit_deno: " << m.unit_deno << std::endl;
-        std::cerr << "symm_deno: " << m.symm_deno << std::endl;
         std::cerr << "unit:" << std::endl;
         showU(m,0);
         showU(m,small/2);
@@ -64,7 +63,6 @@ static inline void show_metrics()
         randomized::u32_to<T> m(big);
         std::cerr << "compacted: " << m.compacted << std::endl;
         std::cerr << "unit_deno: " << m.unit_deno << std::endl;
-        std::cerr << "symm_deno: " << m.symm_deno << std::endl;
         std::cerr << "unit:" << std::endl;
         showU(m,0);
         showU(m,big/2);
@@ -76,7 +74,7 @@ static inline void show_metrics()
         YACK_CHECK(m.unit(0)>0);
         YACK_CHECK(T(1)-m.unit(big)>0);
         YACK_CHECK(T(1)+m.symm(0)>0);
-        //YACK_CHECK(T(1)-m.symm(big)>0);
+        YACK_CHECK(T(1)-m.symm(big)>0);
     }
 
     std::cerr << std::endl;

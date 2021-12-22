@@ -22,22 +22,44 @@ namespace yack
         }
 
         template <>
-        float metrics:: unit<float>(const uint32_t u) const throw()
+        float metrics:: unit_<float>(const uint32_t u) const throw()
         {
             return f.unit(u);
         }
 
         template <>
-        double metrics:: unit<double>(const uint32_t u) const throw()
+        double metrics:: unit_<double>(const uint32_t u) const throw()
         {
             return d.unit(u);
         }
 
         template <>
-        long double metrics:: unit<long double>(const uint32_t u) const throw()
+        long double metrics:: unit_<long double>(const uint32_t u) const throw()
         {
             return l.unit(u);
         }
+
+        template <>
+        float metrics:: symm_<float>(const uint32_t u) const throw()
+        {
+            return f.symm(u);
+        }
+
+        template <>
+        double metrics:: symm_<double>(const uint32_t u) const throw()
+        {
+            return d.symm(u);
+        }
+
+        template <>
+        long double metrics:: symm_<long double>(const uint32_t u) const throw()
+        {
+            return l.symm(u);
+        }
+
+
+
+
 
     }
 
