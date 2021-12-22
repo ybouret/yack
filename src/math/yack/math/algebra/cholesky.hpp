@@ -1,4 +1,3 @@
-
 //! \file
 
 #ifndef YACK_MATH_CHOLESKY_INCLUDED
@@ -27,9 +26,18 @@ namespace yack
             //__________________________________________________________________
             typedef vector<T>       base_type; //!< alias
 
+            //__________________________________________________________________
+            //
+            // C++
+            //__________________________________________________________________
             explicit cholesky()       throw(); //!< default setup
             explicit cholesky(const size_t n); //!< setup with data
             virtual ~cholesky()       throw(); //!< cleanup
+
+            //__________________________________________________________________
+            //
+            // methods
+            //__________________________________________________________________
 
             //! build the decomposition of a symmetric positive matrix
             /**
