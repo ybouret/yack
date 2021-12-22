@@ -4,6 +4,7 @@
 #define YACK_RANDOMIZED_GAUSSIAN_INCLUDED 1
 
 #include "yack/randomized/bits.hpp"
+#include "yack/container/writable.hpp"
 #include <cmath>
 
 namespace yack
@@ -53,7 +54,24 @@ namespace yack
                     return g2;
                 }
             }
-            
+
+            //! on an hypesphere
+            inline void operator()(writable<T> &hypersphere) throw()
+            {
+                const size_t n = hypersphere.size(); assert(n>0);
+            TRIAL:
+                T nrm = 0;
+                for(size_t i=n;i>0;--i)
+                {
+                    const T x = (*this)();
+                    hypersphere[i] = x;
+                    nrm += x*x;
+                }
+                if(nrm<=0) goto TRIAL;
+                nrm = sqrt(nrm);
+                for(size_t i=n;i>0;--i) hypersphere[i]/=nrm;
+            }
+
 
         private:
             YACK_DISABLE_COPY_AND_ASSIGN(gaussian);
