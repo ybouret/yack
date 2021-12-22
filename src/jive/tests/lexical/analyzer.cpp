@@ -132,7 +132,8 @@ YACK_UTEST(analyzer)
 
         for(const jive::lexeme *lx=lxm.head;lx;lx=lx->next)
         {
-            std::cerr << *lx << std::endl;
+            const string  s = (**lx).to_string();
+            std::cerr << *lx <<  " = " << s << std::endl;
         }
 
 

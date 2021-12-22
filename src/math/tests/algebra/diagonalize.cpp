@@ -32,6 +32,8 @@ namespace
                     }
                 }
                 a0.assign(a);
+
+                // look for eigenvalues
                 std::cerr << "a=" << a << std::endl;
                 if(!math::diagonalize::eig(a,wr,wi,nr))
                 {
@@ -41,7 +43,11 @@ namespace
                 std::cerr << "nr=" << nr << std::endl;
                 std::cerr << "wr=" << wr << std::endl;
                 std::cerr << "wi=" << wi << std::endl;
+
+                // look for eigenvectors
+
             }
+
             
         }
         std::cerr << std::endl;

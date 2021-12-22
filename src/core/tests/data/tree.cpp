@@ -110,7 +110,7 @@ YACK_UTEST(data_tree)
             const key_type &key = **keys.tail;
             std::cerr << "Removing " << key << std::endl;
             YACK_ASSERT(tree.remove(&key[1],key.size()));
-            keys.delete_back();
+            keys.trim();
         }
         tree.gv("shalf.dot");
         ios::vizible::render("shalf.dot");

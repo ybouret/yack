@@ -47,7 +47,9 @@ namespace yack
             
             //! get context from first char
             const context & operator*() const throw();
-            
+
+            string to_string(size_t nskip=0, size_t ntrim=0) const;
+
             //__________________________________________________________________
             //
             // members

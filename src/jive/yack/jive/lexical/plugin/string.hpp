@@ -55,6 +55,7 @@ namespace yack
                 behavior     esc_copy(token &) throw();
                 behavior     esc_code(token &) throw();
                 behavior     esc_hexa(token &) throw();
+                behavior     esc_utf8(token &);
                 behavior     esc_fail(token &);
                 behavior     all_fail(token &);
             };

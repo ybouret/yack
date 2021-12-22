@@ -2,6 +2,9 @@
 #include "yack/jive/lexical/plugin/string.hpp"
 #include "yack/exception.hpp"
 #include "yack/ios/ascii/hybrid.hpp"
+#include "yack/ios/fmt/hexa.hpp"
+#include "yack/type/hexa.hpp"
+#include "yack/string/utf8.hpp"
 
 namespace yack
 {
@@ -41,6 +44,9 @@ namespace yack
 
                 // hexacode
                 make("\\x5cx[:xdigit:][:xdigit:]",this,&string_::esc_hexa);
+
+                // utf8 code
+                make("\\x5cu[:xdigit:][:xdigit:][:xdigit:][:xdigit:]",this,&string_::esc_utf8);
 
                 // fail esc
                 make("\\x5c[\\x00-\\xff]",this,&string_::esc_fail);
@@ -94,14 +100,62 @@ namespace yack
             behavior string_:: esc_hexa(token &t) throw()
             {
                 assert(4==t.size);
-                delete t.pop_front();
-                const uint8_t lo = t.tail->code; delete t.pop_back();
-                const uint8_t hi = t.tail->code; delete t.pop_back();
+                assert('x'==**(t.head->next));
+                delete t.pop(t.head->next);
+                const uint8_t lo = hexa::convert(t.pull_back());
+                const uint8_t hi = hexa::convert(t.pull_back());
 
                 coerce(t.head->code) = lo + (hi<<4);
                 content.merge_back(t);
                 return discard;
             }
+
+            behavior string_:: esc_utf8(token &t)
+            {
+                assert(6==t.size);
+                assert('\\'==**(t.head));
+                assert('u' ==**(t.head->next));
+                // keep context and cleanup
+                const context here = *t;
+                t.skip(2);
+                
+                // construct u32
+                uint32_t dw = 0;
+                for(size_t i=4;i>0;--i)
+                {
+                    const int h = hexa::convert(t.pull_front());
+                    dw <<= 4;
+                    dw  |= h;
+                }
+
+                std::cerr << "codepoint=" << ios::hexa(dw,true) << std::endl;
+                uint8_t data[4] = { 0,0,0,0 };
+                size_t  size    = 0;
+                try
+                {
+
+                    const utf8 U(dw);      // check utf8
+                    size = U.encode(data); // fill  data
+                    assert(size<=4);
+                }
+                catch(exception &excp)
+                {
+                    here.stamp(excp);
+                    throw excp;
+                }
+                catch(...)
+                {
+                    throw;
+                }
+
+                // modify token
+                for(size_t i=0;i<size;++i)
+                {
+                    content.push_back( new character(here,data[i]) );
+                }
+                return discard;
+            }
+
 
 
             void string_:: leave(token &t)

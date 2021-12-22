@@ -69,11 +69,14 @@ namespace yack
         inline type       & back()       throw() { assert(size>0); return **tail; }  //!< get back item
         inline const_type & back() const throw() { assert(size>0); return **tail; }  //!< get back item, const
 
-        inline void delete_back()  throw() { delete this->pop_back();  }             //!< delete pop_back
-        inline void delete_front() throw() { delete this->pop_front(); }             //!< delete pop_front
+        inline void trim() throw() { delete this->pop_back();  }                      //!< delete pop_back
+        inline void skip() throw() { delete this->pop_front(); }                      //!< delete pop_front
 
-        inline type pull_back()  { const_type temp = **tail; delete_back();  return temp; } //!< copy back/delete/return copy
-        inline type pull_front() { const_type temp = **head; delete_front(); return temp; } //!< copy front/delete/return copy
+        inline type pull_back()  { const_type temp = **tail; trim(); return temp; } //!< copy back/delete/return copy
+        inline type pull_front() { const_type temp = **head; skip(); return temp; } //!< copy front/delete/return copy
+
+        inline void trim(size_t n) throw() { while(n-- > 0) delete this->pop_back(); } //!< trim last n values
+        inline void skip(size_t n) throw() { while(n-- > 0) delete this->pop_front(); } //!< skip fist n values
 
 
         //! syntax helper

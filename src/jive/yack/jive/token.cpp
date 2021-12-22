@@ -25,6 +25,29 @@ namespace yack
             return *head;
         }
 
+        string token:: to_string(size_t nskip, size_t ntrim) const
+        {
+            const size_t removed = nskip+ntrim;
+            if(removed>=size)
+            {
+                return string();
+            }
+            else
+            {
+                size_t           len = size-removed;
+                string           res(len,as_capacity);
+                const character *chr = head;
+                while(nskip-- > 0) chr=chr->next;
+                while(len--   > 0)
+                {
+                    res += char(**chr);
+                    chr=chr->next;
+                }
+                return res;
+            }
+
+        }
+
         
     }
 
