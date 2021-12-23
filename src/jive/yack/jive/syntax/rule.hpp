@@ -12,27 +12,57 @@ namespace yack
     {
         namespace syntax
         {
+            //__________________________________________________________________
+            //
+            //
+            //! define the family of rules
+            //
+            //__________________________________________________________________
             enum family
             {
-                is_terminal,
-                is_internal
+                is_terminal, //!< a  terminal rule
+                is_internal  //!< an internal rule
             };
 
+
+            //__________________________________________________________________
+            //
+            //
+            //! a syntax rule
+            //
+            //__________________________________________________________________
             class rule : public object
             {
             public:
-                virtual ~rule() throw();
+                //______________________________________________________________
+                //
+                // members
+                //______________________________________________________________
+                const tag      name; //!< unique name
+                const family   kind; //!< internal/terminal
+                const uint32_t uuid; //!< unique user ID
+                rule          *next; //!< for list
+                rule          *prev; //!< for list
 
-                const tag      name;
-                const family   kind;
-                const uint32_t uuid;
-                rule          *next;
-                rule          *prev;
-                
+                //______________________________________________________________
+                //
+                // C++
+                //______________________________________________________________
+                virtual ~rule() throw(); //!< cleanup
+
             protected:
+                //! setup
                 explicit rule(const tag     &name_,
                               const family   kind_,
-                              const uint32_t uuid_ ) throw();
+                              const uint32_t uuid_) throw();
+
+                void *self; //!< most derived class
+
+                //! helper to set address of most derived class
+                template <typename CLASS> void I_am() throw()
+                {
+                    self = static_cast<CLASS *>(this);
+                }
 
             private:
                 YACK_DISABLE_COPY_AND_ASSIGN(rule);

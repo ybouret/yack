@@ -15,34 +15,73 @@ namespace yack
         namespace syntax
         {
 
+            class terminal;
+            class internal;
 
+            //__________________________________________________________________
+            //
+            //
+            //! flexible node to hold the syntax tree
+            //
+            //__________________________________________________________________
             class xnode : public object, public authority<const rule>
             {
             public:
+                //______________________________________________________________
+                //
+                // types and definitions
+                //______________________________________________________________
+                typedef authority<const rule> auth;  //!< alias
+                typedef cxx_list_of<xnode>    list_; //!< base class for xlist
 
-                typedef cxx_list_of<xnode> list_;
-                
+                //______________________________________________________________
+                //
+                //! xlist implementation
+                //______________________________________________________________
                 class list : public object, public list_
                 {
                 public:
-                    virtual ~list() throw();
-                    explicit list() throw();
+                    virtual ~list() throw(); //!< cleanup
+                    explicit list() throw(); //!< setup empty
 
                 private:
                     YACK_DISABLE_COPY_AND_ASSIGN(list);
                 };
 
-                xnode       *next;
-                xnode       *prev;
-                
-                virtual ~xnode() throw();
-                explicit xnode(const rule &); //!< internal
+                //______________________________________________________________
+                //
+                // methods
+                //______________________________________________________________
+                static xnode *create(const internal &);           //!< create data=xlist
+                static xnode *create(const terminal &, lexeme *); //!< set    data=lexeme
+
+                //______________________________________________________________
+                //
+                // members
+                //______________________________________________________________
+                xnode       *next; //!< for xlist
+                xnode       *prev; //!< for xlist
+
+                //______________________________________________________________
+                //
+                // C++
+                //______________________________________________________________
+                virtual ~xnode() throw(); //!< cleanup
 
             private:
                 YACK_DISABLE_COPY_AND_ASSIGN(xnode);
-                void *data;
+                explicit xnode(const internal &);                   //!< internal
+                explicit xnode(const terminal &, lexeme *) throw(); //!< terminal
+                void    *data; //!< lexeme/xlist
+
             };
 
+            //__________________________________________________________________
+            //
+            //
+            //! internal list of xnodes
+            //
+            //__________________________________________________________________
             typedef xnode::list xlist;
             
         }

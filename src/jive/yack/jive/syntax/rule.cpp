@@ -19,7 +19,8 @@ namespace yack
             kind(kind_),
             uuid(uuid_),
             next(0),
-            prev(0)
+            prev(0),
+            self(0)
             {
             }
 

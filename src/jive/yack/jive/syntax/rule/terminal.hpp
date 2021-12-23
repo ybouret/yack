@@ -13,13 +13,27 @@ namespace yack
         namespace syntax
         {
 
+            //__________________________________________________________________
+            //
+            //
+            //! a terminal producing rule
+            //
+            //__________________________________________________________________
             class terminal : public rule
             {
             public:
-                static const uint32_t mark = YACK_FOURCC('T', 'E', 'R', 'M');
+                //______________________________________________________________
+                //
+                // types and definitions
+                //______________________________________________________________
+                static const uint32_t mark = YACK_FOURCC('T', 'E', 'R', 'M'); //!< UUID
 
-                virtual ~terminal()            throw();
-                explicit terminal(const tag &) throw();
+                //______________________________________________________________
+                //
+                // C++
+                //______________________________________________________________
+                virtual ~terminal()            throw(); //!< cleanup
+                explicit terminal(const tag &) throw(); //!< setup name
 
             private:
                 YACK_DISABLE_COPY_AND_ASSIGN(terminal);

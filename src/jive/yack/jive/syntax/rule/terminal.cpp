@@ -16,6 +16,7 @@ namespace yack
             terminal:: terminal(const tag &t) throw() :
             rule(t,is_terminal,mark)
             {
+                I_am<terminal>();
             }
             
             

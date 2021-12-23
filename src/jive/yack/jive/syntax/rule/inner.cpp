@@ -15,6 +15,7 @@ namespace yack
             inner:: inner(const tag &name_) throw() :
             internal(name_,mark)
             {
+                I_am<inner>();
             }
 
 

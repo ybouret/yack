@@ -14,14 +14,27 @@ namespace yack
     {
         namespace syntax
         {
-
+            //__________________________________________________________________
+            //
+            //
+            //! demo internal rule
+            //
+            //__________________________________________________________________
             class inner : public internal
             {
             public:
-                static const uint32_t mark = YACK_FOURCC('I', 'N', 'N', 'R');
+                //______________________________________________________________
+                //
+                // definition
+                //______________________________________________________________
+                static const uint32_t mark = YACK_FOURCC('I', 'N', 'N', 'R'); //!< UUID
 
-                virtual ~inner()           throw();
-                explicit inner(const tag &) throw();
+                //______________________________________________________________
+                //
+                // C++
+                //______________________________________________________________
+                virtual ~inner()            throw(); //!< cleanup
+                explicit inner(const tag &) throw(); //!< setup
 
             private:
                 YACK_DISABLE_COPY_AND_ASSIGN(inner);

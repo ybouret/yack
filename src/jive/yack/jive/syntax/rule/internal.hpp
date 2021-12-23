@@ -12,14 +12,23 @@ namespace yack
     {
         namespace syntax
         {
-
+            //__________________________________________________________________
+            //
+            //
+            //! base class for internal rules
+            //
+            //__________________________________________________________________
             class internal : public rule
             {
             public:
-                virtual ~internal()                            throw();
+                //______________________________________________________________
+                //
+                // C++
+                //______________________________________________________________
+                virtual ~internal()                            throw(); //!< cleanup
 
             protected:
-                explicit internal(const tag &, const uint32_t) throw();
+                explicit internal(const tag &, const uint32_t) throw(); //!< set name/uuid
 
             private:
                 YACK_DISABLE_COPY_AND_ASSIGN(internal);
