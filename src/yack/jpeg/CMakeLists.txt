@@ -21,6 +21,20 @@ tests/cdjpeg.c
 
 target_link_libraries(yack_cjpeg yack-jpeg)
 
+add_custom_command( TARGET yack_cjpeg
+POST_BUILD
+COMMAND           ${CMAKE_COMMAND} -E ${cmake_rm} -f testout.jpg testoutp.jpg
+COMMAND           $<TARGET_FILE:yack_cjpeg> -dct int -outfile                   testout.jpg  testimg.ppm
+COMMAND           $<TARGET_FILE:yack_cjpeg> -dct int -progressive -opt -outfile testoutp.jpg testimg.ppm
+COMMAND           ${CMAKE_COMMAND} -E compare_files testout.jpg  testimg.jpg
+COMMAND           ${CMAKE_COMMAND} -E compare_files testoutp.jpg testimgp.jpg
+COMMAND           ${CMAKE_COMMAND} -E ${cmake_rm} -f testout.jpg testoutp.jpg
+DEPENDS           yack_cjpeg
+WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/tests
+COMMENT           "[YACK]  <cjpeg>"
+VERBATIM)
+
+
 
 add_executable(yack_djpeg tests/djpeg.c
 tests/cdjpeg.c
@@ -40,5 +54,16 @@ tests/transupp.c
 tests/rdswitch.c
 )
 
-
 target_link_libraries(yack_jpegtran yack-jpeg)
+
+add_custom_command( TARGET yack_jpegtran
+POST_BUILD
+COMMAND           ${CMAKE_COMMAND} -E ${cmake_rm} -f testoutt.jpg
+COMMAND           $<TARGET_FILE:yack_jpegtran> -outfile testoutt.jpg testprog.jpg
+COMMAND           ${CMAKE_COMMAND} -E compare_files testoutt.jpg testorig.jpg
+COMMAND           ${CMAKE_COMMAND} -E ${cmake_rm} -f testoutt.jpg
+DEPENDS           yack_jpegtran
+WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/tests
+COMMENT           "[YACK]  <jpegtran>"
+VERBATIM)
+
