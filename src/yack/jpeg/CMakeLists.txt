@@ -87,3 +87,7 @@ WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/tests
 COMMENT           "[YACK]  <jpegtran>"
 VERBATIM)
 
+#example for I/O
+#add_executable(yack_jpeg_example tests/example.c)
+#target_link_libraries(yack_jpeg_example yack-jpeg)
+
