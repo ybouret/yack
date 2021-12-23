@@ -11,7 +11,8 @@ target_link_libraries(yack_jbig yack-jbig)
 
 add_custom_command( TARGET yack_jbig
 POST_BUILD
-COMMAND           $<TARGET_FILE:yack_jbig>
-DEPENDS           yack_jbig
-COMMENT           "[YACK]  testing [jbig]"
+COMMAND    $<TARGET_FILE:yack_jbig>
+COMMAND    ${CMAKE_COMMAND} -E echo "[YACK] done [jbig]"
+DEPENDS    yack_jbig
+COMMENT    "[YACK] test [jbig]"
 VERBATIM)

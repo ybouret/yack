@@ -76,7 +76,7 @@ COMMAND yack_lua ${THERE}/sieve.lua
 COMMAND ${CMAKE_COMMAND} -E echo "[YACK]    testing sort.lua.."
 COMMAND yack_lua ${THERE}/sort.lua
 COMMAND ${CMAKE_COMMAND} -E echo "[YACK]  <lua::tests/>"
-COMMENT "[YACK]  performing lua tests..."
+COMMENT "[YACK] performing lua tests..."
 VERBATIM)
 
 

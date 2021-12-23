@@ -16,6 +16,7 @@ POST_BUILD
 COMMAND           $<TARGET_FILE:yack_pngtest>
 COMMAND           ${CMAKE_COMMAND} -E ${cmake_rm} -f pngout.png
 DEPENDS           yack_pngtest
+COMMAND           ${CMAKE_COMMAND} -E echo "[YACK] done [png]"
 WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/tests
-COMMENT           "[YACK]  testing [png]"
+COMMENT           "[YACK] test [png]"
 VERBATIM)
