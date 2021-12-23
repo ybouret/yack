@@ -13,6 +13,7 @@ namespace yack
         namespace syntax
         {
 
+            class rule;
             
             class xnode : public object
             {
@@ -34,14 +35,19 @@ namespace yack
                     YACK_DISABLE_COPY_AND_ASSIGN(list);
                 };
 
-                xnode *next;
-                xnode *prev;
+
+                const tag    uuid;
+                const family kind;
+                xnode       *next;
+                xnode       *prev;
                 
                 virtual ~xnode() throw();
-
+                explicit xnode(lexeme *lx) throw();
+                explicit xnode(const tag &rule_id);
 
             private:
                 YACK_DISABLE_COPY_AND_ASSIGN(xnode);
+                void *data;
             };
 
             typedef xnode::list xlist;
