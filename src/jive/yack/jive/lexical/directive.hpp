@@ -48,7 +48,7 @@ namespace yack
                 //
                 // members
                 //______________________________________________________________
-                const tag    uuid; //!< unique user ID
+                const tag    name; //!< unique name
                 const motif  info; //!< pattern info
                 const action duty; //!< task if chosen
 

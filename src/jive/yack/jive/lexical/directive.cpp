@@ -16,7 +16,7 @@ namespace yack
                                   const action &a) :
             object(),
             counted(),
-            uuid(t),
+            name(t),
             info(m),
             duty(a)
             {
@@ -24,7 +24,7 @@ namespace yack
 
             const string & directive:: key() const throw()
             {
-                return *uuid;
+                return *name;
             }
 
             

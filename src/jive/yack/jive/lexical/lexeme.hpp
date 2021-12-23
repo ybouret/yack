@@ -41,7 +41,7 @@ namespace yack
             //
             // members
             //__________________________________________________________________
-            const tag uuid; //!< from directive
+            const tag name; //!< from directive
             lexeme   *next; //!< for list/pool
             lexeme   *prev; //!< for list/pool
 

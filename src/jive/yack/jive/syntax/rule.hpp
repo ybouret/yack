@@ -23,11 +23,16 @@ namespace yack
             public:
                 virtual ~rule() throw();
 
-                const tag    uuid;
-                const family kind;
-
+                const tag      name;
+                const family   kind;
+                const uint32_t uuid;
+                rule          *next;
+                rule          *prev;
+                
             protected:
-                explicit rule(const tag &id, const family &fm) throw();
+                explicit rule(const tag     &name_,
+                              const family   kind_,
+                              const uint32_t uuid_ ) throw();
 
             private:
                 YACK_DISABLE_COPY_AND_ASSIGN(rule);

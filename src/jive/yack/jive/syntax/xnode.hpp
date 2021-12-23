@@ -32,12 +32,11 @@ namespace yack
                     YACK_DISABLE_COPY_AND_ASSIGN(list);
                 };
 
-                const rule  &from;
                 xnode       *next;
                 xnode       *prev;
                 
                 virtual ~xnode() throw();
-                
+                explicit xnode(const rule &); //!< internal
 
             private:
                 YACK_DISABLE_COPY_AND_ASSIGN(xnode);

@@ -12,7 +12,7 @@ namespace yack
         lexeme:: lexeme(const tag     &who,
                         const context &ctx) throw() :
         context(ctx),
-        uuid(who),
+        name(who),
         next(0),
         prev(0),
         data()
@@ -22,7 +22,7 @@ namespace yack
         std::ostream & operator<<(std::ostream &os, const lexeme &lx)
         {
             const context &ctx = lx;
-            os << ctx << ": [" << lx.uuid << "] '" << lx.data << "'";
+            os << ctx << ": [" << lx.name << "] '" << lx.data << "'";
             return os;
         }
 

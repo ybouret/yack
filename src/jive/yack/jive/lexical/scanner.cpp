@@ -128,8 +128,8 @@ namespace yack
                         best = static_cast<const directive *>(**node); assert(best);
                         if(best->info->accept(src,word))
                         {
-                            if(verbose) std::cerr << "<" << label << "> init '" << best->uuid << "' = '" << word << "'" << std::endl;
-                            check_word(best->uuid,word);
+                            if(verbose) std::cerr << "<" << label << "> init '" << best->name << "' = '" << word << "'" << std::endl;
+                            check_word(best->name,word);
                             break;
                         }
                         best = NULL;
@@ -168,7 +168,7 @@ namespace yack
 
                             if(deed->info->accept(src,temp))
                             {
-                                check_word(deed->uuid,temp);
+                                check_word(deed->name,temp);
                                 if(temp.size>word.size)
                                 {
                                     //------------------------------------------
@@ -177,7 +177,7 @@ namespace yack
                                     src.store_copy(temp);
                                     word.swap_with(temp);
                                     best = deed;
-                                    if(verbose) std::cerr << "<" << label << "> keep '" << best->uuid << "' = '" << word << "'" << std::endl;
+                                    if(verbose) std::cerr << "<" << label << "> keep '" << best->name << "' = '" << word << "'" << std::endl;
                                     assert(src.read()>=word.size);
                                     replaced=true;
                                 }
@@ -208,7 +208,7 @@ namespace yack
                     //
                     //----------------------------------------------------------
                     if(verbose&&replaced)
-                        std::cerr << "<" << label << "> scan '" << best->uuid << "' = '" << word << "' @" << **flux << ':' << (**flux).line << std::endl;
+                        std::cerr << "<" << label << "> scan '" << best->name << "' = '" << word << "' @" << **flux << ':' << (**flux).line << std::endl;
 
                     action &perform = coerce(best->duty);
                     switch(perform(word))
@@ -224,7 +224,7 @@ namespace yack
                             return NULL;
                     }
 
-                    lexeme *lx = new lexeme( best->uuid, *(word.head) );
+                    lexeme *lx = new lexeme(best->name,*word);
                     (**lx).swap_with(word);
                     return lx;
                 }
