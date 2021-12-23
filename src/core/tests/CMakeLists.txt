@@ -83,8 +83,9 @@ add_library(dso MODULE dso.cpp)
 add_custom_command( TARGET dso
 POST_BUILD
 COMMAND $<TARGET_FILE:test-yack> rtld_dso $<TARGET_FILE:dso>
+COMMAND ${CMAKE_COMMAND} -E echo "[YACK] done [DSO]"
 DEPENDS test-yack
-COMMENT "[YACK]  <testing DSO/>")
+COMMENT "[YACK] test [DSO]")
 
 enable_testing()
 add_test(crc32   test-yack crc32)
