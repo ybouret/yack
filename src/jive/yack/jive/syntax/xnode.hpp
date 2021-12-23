@@ -4,6 +4,8 @@
 #define YACK_JIVE_SYNTAX_XNODE_INCLUDED 1
 
 #include "yack/jive/lexical/lexeme.hpp"
+#include "yack/jive/syntax/rule.hpp"
+#include "yack/type/authority.hpp"
 
 
 namespace yack
@@ -13,16 +15,11 @@ namespace yack
         namespace syntax
         {
 
-            class rule;
-            
-            class xnode : public object
+
+            class xnode : public object, public authority<const rule>
             {
             public:
-                enum family
-                {
-                    is_terminal,
-                    is_internal
-                };
+
                 typedef cxx_list_of<xnode> list_;
                 
                 class list : public object, public list_
@@ -35,15 +32,12 @@ namespace yack
                     YACK_DISABLE_COPY_AND_ASSIGN(list);
                 };
 
-
-                const tag    uuid;
-                const family kind;
+                const rule  &from;
                 xnode       *next;
                 xnode       *prev;
                 
                 virtual ~xnode() throw();
-                explicit xnode(lexeme *lx) throw();
-                explicit xnode(const tag &rule_id);
+                
 
             private:
                 YACK_DISABLE_COPY_AND_ASSIGN(xnode);

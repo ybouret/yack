@@ -1,4 +1,4 @@
-#include "yack/jive/syntax/rule.hpp"
+#include "yack/jive/syntax/xnode.hpp"
 #include "yack/utest/run.hpp"
 
 using namespace yack;
