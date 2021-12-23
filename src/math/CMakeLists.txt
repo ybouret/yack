@@ -51,7 +51,7 @@ SOURCE_GROUP(math/data FILES ${math_data})
 install( FILES ${math_data_decl} DESTINATION include/yack/math/data )
 
 #ode
-file(GLOB math_ode_decl yack/math/ode/*.hpp)
+file(GLOB math_ode_decl yack/math/ode/*.hpp yack/math/ode/*.hxx)
 file(GLOB math_ode_srcs yack/math/ode/*.cpp)
 set(math_ode ${math_ode_decl} ${math_ode_srcs})
 SOURCE_GROUP(math/ode FILES ${math_ode})
