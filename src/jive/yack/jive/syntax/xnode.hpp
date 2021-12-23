@@ -13,6 +13,7 @@ namespace yack
         namespace syntax
         {
 
+            
             class xnode : public object
             {
             public:
@@ -20,6 +21,17 @@ namespace yack
                 {
                     is_terminal,
                     is_internal
+                };
+                typedef cxx_list_of<xnode> list_;
+                
+                class list : public object, public list_
+                {
+                public:
+                    virtual ~list() throw();
+                    explicit list() throw();
+
+                private:
+                    YACK_DISABLE_COPY_AND_ASSIGN(list);
                 };
 
                 xnode *next;
@@ -31,6 +43,9 @@ namespace yack
             private:
                 YACK_DISABLE_COPY_AND_ASSIGN(xnode);
             };
+
+            typedef xnode::list xlist;
+            
         }
     }
 }

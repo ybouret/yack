@@ -21,7 +21,7 @@ namespace yack
         //! character with full info
         //
         //______________________________________________________________________
-        class token : public characters
+        class token : public object, public characters
         {
         public:
             //__________________________________________________________________

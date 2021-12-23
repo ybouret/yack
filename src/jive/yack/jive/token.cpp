@@ -7,8 +7,8 @@ namespace yack
     namespace jive
     {
         token:: ~token() throw() {}
-        token::  token() throw()       : characters(),  next(0), prev(0) {}
-        token::  token(const token &t) : characters(t), next(0), prev(0) {}
+        token::  token() throw()       : object(), characters(),  next(0), prev(0) {}
+        token::  token(const token &t) : object(), characters(t), next(0), prev(0) {}
         
         std::ostream & operator<< (std::ostream &os, const token &t)
         {

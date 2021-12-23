@@ -18,6 +18,7 @@ endif()
 add_custom_command( TARGET yack_pngtest
 POST_BUILD
 COMMAND           $<TARGET_FILE:yack_pngtest>
+COMMAND           ${CMAKE_COMMAND} -E rm -f pngout.png
 DEPENDS           yack_pngtest
 WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/tests
 COMMENT           "[YACK]  <pngtest>")
