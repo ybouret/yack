@@ -71,12 +71,20 @@ set(jive_lexical_plugin ${jive_lexical_plugin_decl} ${jive_lexical_plugin_srcs})
 SOURCE_GROUP(jive/lexical/plugin FILES ${jive_lexical_plugin})
 install( FILES ${jive_lexical_plugin_decl} DESTINATION include/yack/jive/lexical/plugin )
 
+#syntax
+file(GLOB jive_syntax_decl yack/jive/syntax/*.hpp)
+file(GLOB jive_syntax_srcs yack/jive/syntax/*.cpp)
+set(jive_syntax ${jive_syntax_decl} ${jive_syntax_srcs})
+SOURCE_GROUP(jive/syntax FILES ${jive_syntax})
+install( FILES ${jive_syntax_decl} DESTINATION include/yack/jive/syntax )
+
 add_library(yack-jive STATIC
 ${jive_main}
 ${jive_pattern} ${jive_pattern_basic} ${jive_pattern_joker} ${jive_pattern_logic}
 ${jive_pattern_regexp}
 ${jive_pattern_quirks}
 ${jive_lexical} ${jive_lexical_flow} ${jive_lexical_plugin}
+${jive_syntax}
 )
 
 install( TARGETS yack-jive ARCHIVE DESTINATION lib )
