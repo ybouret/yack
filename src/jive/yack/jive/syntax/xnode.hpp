@@ -12,10 +12,21 @@ namespace yack
     {
         namespace syntax
         {
+
             class xnode : public object
             {
             public:
+                enum family
+                {
+                    is_terminal,
+                    is_internal
+                };
+
+                xnode *next;
+                xnode *prev;
+                
                 virtual ~xnode() throw();
+
 
             private:
                 YACK_DISABLE_COPY_AND_ASSIGN(xnode);

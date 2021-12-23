@@ -9,11 +9,14 @@ source_group(pattern FILES ${pattern} )
 file(GLOB lexical lexical/*.cpp)
 source_group(lexical FILES ${lexical} )
 
+file(GLOB syntax syntax/*.cpp)
+source_group(syntax FILES ${syntax} )
 
 add_executable(test-jive main.cpp
 ${io}
 ${pattern}
 ${lexical}
+${syntax}
 )
 
 target_link_libraries(test-jive yack-jive)
@@ -37,6 +40,7 @@ add_test(pattern:matching test-jive matching)
 add_test(lexical:scanner  test-jive scanner)
 add_test(lexical:analyzer test-jive analyzer)
 
+add_test(syntax:types     test-jive syntax_types)
 
 
 
