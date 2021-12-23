@@ -16,4 +16,7 @@ do
 	echo $s;
 	cp ../$s png 
 done
+rm -f png.tgz
+tar cfvz png.tgz png
+
 
