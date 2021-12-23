@@ -1,4 +1,3 @@
-
 #include "yack/math/algebra/cholesky.hpp"
 #include <cmath>
 
