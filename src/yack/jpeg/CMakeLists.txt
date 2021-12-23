@@ -10,6 +10,7 @@ include_directories(.)
 
 add_library(yack-jpeg STATIC ${srcs})
 
+# cjpeg
 add_executable(yack_cjpeg tests/cjpeg.c 
 tests/rdbmp.c
 tests/rdgif.c
@@ -35,7 +36,7 @@ COMMENT           "[YACK]  <cjpeg>"
 VERBATIM)
 
 
-
+#djepeg
 add_executable(yack_djpeg tests/djpeg.c
 tests/cdjpeg.c
 tests/wrbmp.c
@@ -48,6 +49,25 @@ tests/rdcolmap.c
 
 target_link_libraries(yack_djpeg yack-jpeg)
 
+add_custom_command( TARGET yack_djpeg
+POST_BUILD
+COMMAND           ${CMAKE_COMMAND} -E ${cmake_rm} -f testout.ppm testout.gif testout.bmp testoutp.ppm
+COMMAND           $<TARGET_FILE:yack_djpeg> -dct int -ppm -outfile testout.ppm testorig.jpg
+COMMAND           ${CMAKE_COMMAND} -E compare_files testout.ppm  testimg.ppm
+COMMAND           $<TARGET_FILE:yack_djpeg> -dct int -gif -outfile testout.gif testorig.jpg
+COMMAND           ${CMAKE_COMMAND} -E compare_files testout.gif  testimg.gif
+COMMAND           $<TARGET_FILE:yack_djpeg> -dct int -bmp -colors 256 -outfile testout.bmp testorig.jpg
+COMMAND           ${CMAKE_COMMAND} -E compare_files testout.bmp  testimg.bmp
+COMMAND           $<TARGET_FILE:yack_djpeg> -dct int -ppm -outfile testoutp.ppm testprog.jpg
+COMMAND           ${CMAKE_COMMAND} -E compare_files testoutp.ppm  testimg.ppm
+COMMAND           ${CMAKE_COMMAND} -E ${cmake_rm} -f testout.ppm testout.gif testout.bmp testoutp.ppm 
+DEPENDS           yack_djpeg
+WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/tests
+COMMENT           "[YACK]  <djpeg>"
+VERBATIM)
+
+
+# jpegtran
 add_executable(yack_jpegtran tests/jpegtran.c
 tests/cdjpeg.c
 tests/transupp.c
