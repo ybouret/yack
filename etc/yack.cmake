@@ -248,3 +248,13 @@ function(yack_link_libraries program)
 	target_link_libraries(${program} ${yack_libs})
 endfunction()
 
+# check if we need to explicitly link libm for a C program
+set(YACK_NEEDS_LIBM OFF)
+if(YACK_WINDOWS)
+	if(NOT YACK_MICROSOFT)
+		set(YACK_NEEDS_LIBM ON)
+	endif()
+else()
+		set(YACK_NEEDS_LIBM ON)
+endif()
+

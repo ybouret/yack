@@ -7,12 +7,8 @@ add_executable(yack_pngtest tests/pngtest.c)
 target_link_libraries(yack_pngtest yack-png yack-z)
 
 
-if(YACK_WINDOWS)
-	if(NOT YACK_MICROSOFT)
-		target_link_libraries(yack_pngtest m)
-	endif()
-else()
-		target_link_libraries(yack_pngtest m)
+if(YACK_NEEDS_LIBM)
+	target_link_libraries(yack_pngtest m)
 endif()
 
 add_custom_command( TARGET yack_pngtest
