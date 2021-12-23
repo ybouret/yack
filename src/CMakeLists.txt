@@ -42,6 +42,7 @@ add_subdirectory(math)
 add_subdirectory(lua++)
 add_subdirectory(jive)
 add_subdirectory(sqlite3)
+add_subdirectory(yack/png)
 
 
 string( STRIP "${UNIT_TESTS}" UNIT_TESTS)
