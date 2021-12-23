@@ -44,6 +44,7 @@ add_subdirectory(jive)
 add_subdirectory(sqlite3)
 add_subdirectory(yack/png)
 add_subdirectory(yack/jpeg)
+add_subdirectory(yack/jbig)
 
 
 string( STRIP "${UNIT_TESTS}" UNIT_TESTS)

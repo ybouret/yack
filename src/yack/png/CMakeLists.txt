@@ -17,5 +17,5 @@ COMMAND           $<TARGET_FILE:yack_pngtest>
 COMMAND           ${CMAKE_COMMAND} -E ${cmake_rm} -f pngout.png
 DEPENDS           yack_pngtest
 WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/tests
-COMMENT           "[YACK]  <pngtest>"
+COMMENT           "[YACK]  testing [png]"
 VERBATIM)
