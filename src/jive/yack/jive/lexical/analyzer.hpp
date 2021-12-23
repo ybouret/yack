@@ -127,6 +127,7 @@ namespace yack
                 //______________________________________________________________
                 lexeme * query(source &);         //!< query next lexeme
                 void     store(lexeme *) throw(); //!< store a parsed lexeme
+                void     reset()         throw(); //!< reset all
 
             private:
                 YACK_DISABLE_COPY_AND_ASSIGN(analyzer);

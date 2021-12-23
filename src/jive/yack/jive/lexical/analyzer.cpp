@@ -19,7 +19,15 @@ namespace yack
                 assert(quantity()>0);
                 liberate();
             }
-            
+
+            void analyzer:: reset() throw()
+            {
+                scan = this;
+                repo.release();
+                hist.release();
+            }
+
+
             const analyzer::scan_set & analyzer:: operator*() const throw()
             {
                 return sdb;
