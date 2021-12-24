@@ -1,11 +1,11 @@
+
+
 //! \file
 
-#ifndef YACK_ODE_STEP_INCLUDED
-#define YACK_ODE_STEP_INCLUDED 1
+#ifndef YACK_ODE_EXPLICIT_RK45_INCLUDED
+#define YACK_ODE_EXPLICIT_RK45_INCLUDED 1
 
-#include "yack/math/ode/types.hpp"
-#include "yack/sequence/arrays.hpp"
-
+#include "yack/math/ode/explicit/step.hpp"
 namespace yack
 {
     namespace math
@@ -20,16 +20,27 @@ namespace yack
             //
             //__________________________________________________________________
             template <typename T>
-            class step : public arrays_of<T>
+            class rk45 : public explicit_step<T>
             {
             public:
                 //______________________________________________________________
                 //
                 // types and definitions
                 //______________________________________________________________
-                typedef typename named<T>::equation equation; //!< alias
-                typedef typename named<T>::callback callback; //!< alias
-                typedef arrays_of<T>                tableaux; //!< alias
+                typedef typename named<T>::equation   equation;   //!< alias
+                typedef typename named<T>::callback   callback;   //!< alias
+                typedef arrays_of<T>                  tableaux;   //!< alias
+                typedef typename tableaux::array_type array_type; //!< alias
+
+
+
+                //______________________________________________________________
+                //
+                // C++
+                //______________________________________________________________
+                virtual ~rk45() throw(); //!< cleanup
+                explicit rk45();         //!< setup
+
 
                 //! interface to be driven
                 virtual bool operator()(writable<T>       &y,
@@ -41,17 +52,13 @@ namespace yack
                                         T                 &hdid,
                                         T                 &hnxt,
                                         equation          &drvs,
-                                        callback          *proc) = 0;
+                                        callback          *proc);
 
-                //______________________________________________________________
-                //
-                // C++
-                //______________________________________________________________
-                virtual ~step() throw(); //!< cleanup
 
-            protected:
-                explicit step(const size_t num_arrays); //!< setup
-                YACK_DISABLE_COPY_AND_ASSIGN(step);
+                
+            private:
+                YACK_DISABLE_COPY_AND_ASSIGN(rk45);
+                array_type &yerr, &ytmp;
             };
 
         }

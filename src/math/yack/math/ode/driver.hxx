@@ -72,7 +72,10 @@ namespace yack
                     const real_t xold=x;
                     real_t       hdid=0;
                     real_t       hnxt=0;
-                    moving(y,dydx,x,h,eps,yscal,hdid,hnxt,drvs,proc);
+                    if(!moving(y,dydx,x,h,eps,yscal,hdid,hnxt,drvs,proc))
+                    {
+                        return false; //!< underflow within step
+                    }
 
                     //__________________________________________________________
                     //
