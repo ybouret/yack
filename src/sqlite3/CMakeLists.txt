@@ -1,12 +1,11 @@
 project(sqlite3 C)
 include_directories(../yack/zlib)
-message( STATUS "[YACK] <SQLite3>" )
-string(REPLACE "-Wall"   "" CMAKE_C_FLAGS "${CMAKE_C_FLAGS}")
-string(REPLACE "-Wextra" "" CMAKE_C_FLAGS "${CMAKE_C_FLAGS}")
-string(STRIP "${CMAKE_C_FLAGS}" CMAKE_C_FLAGS)
+
+yack_no_warnings()
+
 
 if(NOT YACK_WINDOWS)
-yack_add_flags("-std=c99")
+	yack_add_flags("-std=c99")
 endif()
 
 message( STATUS "[YACK]  SQLite3.CMAKE_C_FLAGS='${CMAKE_C_FLAGS}'")

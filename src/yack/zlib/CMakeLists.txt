@@ -2,12 +2,7 @@
 PROJECT(zlib C)
 message( STATUS "[YACK] <zlib>" )
 
-if(YACK_GNU)
-	message( STATUS "[YACK]   cleaning compile flags" )
-	string(REPLACE "-Wextra"
-			"" CMAKE_C_FLAGS
-			"${CMAKE_C_FLAGS}" )
-endif()
+yack_no_warnings()
 
 file(GLOB zlib_srcs *.c)
 

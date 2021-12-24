@@ -1,8 +1,7 @@
 project(jpeg C)
 
-string(REPLACE "-Wall"   "" CMAKE_C_FLAGS "${CMAKE_C_FLAGS}")
-string(REPLACE "-Wextra" "" CMAKE_C_FLAGS "${CMAKE_C_FLAGS}")
-string(STRIP "${CMAKE_C_FLAGS}" CMAKE_C_FLAGS)
+yack_no_warnings()
+
 
 file(GLOB srcs j*.c)
 

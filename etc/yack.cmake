@@ -259,9 +259,11 @@ else()
 endif()
 
 macro(yack_no_warnings)
-string(REPLACE "-Wall"   "" CMAKE_C_FLAGS "${CMAKE_C_FLAGS}")
-string(REPLACE "-Wextra" "" CMAKE_C_FLAGS "${CMAKE_C_FLAGS}")
-string(STRIP "${CMAKE_C_FLAGS}" CMAKE_C_FLAGS)
+if(YACK_GNU)
+	string(REPLACE "-Wall"   "" CMAKE_C_FLAGS "${CMAKE_C_FLAGS}")
+	string(REPLACE "-Wextra" "" CMAKE_C_FLAGS "${CMAKE_C_FLAGS}")
+	string(STRIP "${CMAKE_C_FLAGS}" CMAKE_C_FLAGS)
+endif()
 endmacro(yack_no_warnings)
 
 
