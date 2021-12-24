@@ -81,6 +81,16 @@ namespace yack
                 }
             }
 
+            void xnode:: grow( xnode * &tree, const internal &r )
+            {
+                grow( tree, make(r) );
+            }
+
+            void xnode:: grow( xnode * &tree, const terminal &r, lexeme *l )
+            {
+                grow( tree, make(r,l) );
+            }
+
             lexeme & xnode:: lex() throw()
             {
                 assert(terminal_type==(**this).type);

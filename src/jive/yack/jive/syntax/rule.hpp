@@ -24,7 +24,16 @@ namespace yack
                 internal_type  //!< an internal rule
             };
 
-            
+            class xnode; //!< forward
+
+            //__________________________________________________________________
+            //
+            //
+            //! arguments for rule
+            //
+            //__________________________________________________________________
+#define YACK_JIVE_RULE_ARGS source &src, lexer &lxr, xnode * &tree
+
             //__________________________________________________________________
             //
             //
@@ -43,6 +52,17 @@ namespace yack
                 const uint32_t  uuid; //!< unique user ID
                 rule           *next; //!< for list
                 rule           *prev; //!< for list
+
+                //______________________________________________________________
+                //
+                // interface
+                //______________________________________________________________
+
+                //! accept method
+                /**
+                 upon success, accept, grow tree with produced node
+                 */
+                virtual bool accept(YACK_JIVE_RULE_ARGS) const = 0;
 
                 //______________________________________________________________
                 //

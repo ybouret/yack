@@ -51,17 +51,20 @@ namespace yack
                 //
                 // methods
                 //______________________________________________________________
-                static xnode *make(const internal &);           //!< create data=xlist
-                static xnode *make(const terminal &, lexeme *); //!< set    data=lexeme
-                static void   grow( xnode * &tree, xnode *node) throw();
+                static xnode *make(const internal &);                           //!< create data=xlist
+                static xnode *make(const terminal &, lexeme *);                 //!< set    data=lexeme
+                static void   grow( xnode * &tree, xnode *node) throw();        //!< grow tree
+                static void   grow( xnode * &tree, const internal &);           //!< grow(tree,make(internal))
+                static void   grow( xnode * &tree, const terminal &, lexeme *); //!< grow(tree,make(terminal,lexeme))
 
-                lexeme               &lex()       throw();
-                const lexeme         &lex() const throw();
-                list_of<xnode>       &sub()       throw();
-                const list_of<xnode> &sub() const throw();
 
-                lexeme               *rip() throw(); //!< extract lexeme, delete this
-                static void           ret(lexer &L, xnode *node) throw();
+                lexeme               &lex()       throw(); //!< return content  for terminal
+                const lexeme         &lex() const throw(); //!< return content  for terminal
+                list_of<xnode>       &sub()       throw(); //!< retun  children for internal
+                const list_of<xnode> &sub() const throw(); //!< return children for internal
+
+                lexeme               *rip() throw();                //!< extract lexeme, delete this
+                static void           ret(lexer &,xnode *) throw(); //!< return node to lexer
 
                 //______________________________________________________________
                 //

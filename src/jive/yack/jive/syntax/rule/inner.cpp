@@ -18,6 +18,14 @@ namespace yack
                 I_am<inner>();
             }
 
+            bool inner:: accept(YACK_JIVE_RULE_ARGS) const
+            {
+                (void)src;
+                (void)lxr;
+                (void)tree;
+
+                return false;
+            }
 
         }
     }
