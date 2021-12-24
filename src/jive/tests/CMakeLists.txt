@@ -41,6 +41,7 @@ add_test(lexical:scanner  test-jive scanner)
 add_test(lexical:analyzer test-jive analyzer)
 
 add_test(syntax:types     test-jive syntax_types)
+add_test(syntax:grammar   test-jive grammar)
 
 
 

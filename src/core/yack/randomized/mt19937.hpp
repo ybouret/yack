@@ -26,9 +26,9 @@ namespace yack
             //__________________________________________________________________
             static const size_t N          = 624;          //!< period parameter
             static const size_t M          = 397;          //!< period parameter
-            static const long   MATRIX_A   = 0x9908b0dfUL; //!< constant vector a
-            static const long   UPPER_MASK = 0x80000000UL; //!< most significant w-r bits
-            static const long   LOWER_MASK = 0x7fffffffUL; //!< least significant r bits
+            static const unsigned long   MATRIX_A   = 0x9908b0dfUL; //!< constant vector a
+            static const unsigned long   UPPER_MASK = 0x80000000UL; //!< most significant w-r bits
+            static const unsigned long   LOWER_MASK = 0x7fffffffUL; //!< least significant r bits
 
             //__________________________________________________________________
             //
