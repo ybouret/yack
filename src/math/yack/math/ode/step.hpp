@@ -31,18 +31,18 @@ namespace yack
                 typedef typename named<T>::callback callback; //!< alias
                 typedef arrays_of<T>                tableaux; //!< alias
 
-                //______________________________________________________________
-                //
-                //! interface
-                //______________________________________________________________
-                virtual void run(const readable<T> &y,
-                                 const readable<T> &dydx,
-                                 const T            x,
-                                 const T            h,
-                                 writable<T>       &yout,
-                                 writable<T>       &yerr,
-                                 equation          &drvs,
-                                 callback          *proc) = 0;
+                //! interface to be driven
+                virtual void operator()(writable<T>       &y,
+                                        const readable<T> &dydx,
+                                        T                 &x,
+                                        const T            htry,
+                                        const T            eps,
+                                        const readable<T> &yscal,
+                                        T                 &hdid,
+                                        T                 &hnxt,
+                                        equation          &drvs,
+                                        callback          *proc) = 0;
+
                 //______________________________________________________________
                 //
                 // C++
