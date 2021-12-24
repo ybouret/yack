@@ -27,7 +27,7 @@ YACK_UTEST(syntax_types)
     const jive::tag              name = jive::tags::make( "demo" );
     const jive::syntax::inner    demo(name);
 
-    auto_ptr<jive::syntax::xnode> tree =  jive::syntax::xnode::create(demo);
+    auto_ptr<jive::syntax::xnode> tree =  jive::syntax::xnode::make(demo);
     
 
 }

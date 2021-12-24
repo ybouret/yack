@@ -22,12 +22,12 @@ namespace yack
             {
                 if(data)
                 {
-                    switch( (**this).kind )
+                    switch( (**this).type )
                     {
-                        case is_terminal:
+                        case terminal_type:
                             break;
 
-                        case is_internal:
+                        case internal_type:
                             delete static_cast<xlist*>(data);
                             break;
                     }
@@ -54,12 +54,12 @@ namespace yack
                 assert(data);
             }
 
-            xnode * xnode:: create(const internal &r)
+            xnode * xnode:: make(const internal &r)
             {
                 return new xnode(r);
             }
 
-            xnode * xnode:: create(const terminal &r, lexeme *lx)
+            xnode * xnode:: make(const terminal &r, lexeme *lx)
             {
                 assert(lx);
                 auto_ptr<lexeme> g(lx);
@@ -68,6 +68,77 @@ namespace yack
                 return p;
             }
             
+            void xnode:: grow( xnode * &tree, xnode *node) throw()
+            {
+                assert(node);
+                if(NULL==tree)
+                {
+                    tree = node;
+                }
+                else
+                {
+                    assert( (**tree).type == internal_type );
+                }
+            }
+
+            lexeme & xnode:: lex() throw()
+            {
+                assert(terminal_type==(**this).type);
+                return *static_cast<lexeme *>(data);
+            }
+
+            const lexeme & xnode:: lex() const throw()
+            {
+                assert(terminal_type==(**this).type);
+                return *static_cast<const lexeme *>(data);
+            }
+
+            list_of<xnode> & xnode:: sub()       throw()
+            {
+                assert(internal_type==(**this).type);
+                return *static_cast<xlist *>(data);
+            }
+
+            const list_of<xnode> & xnode:: sub() const throw()
+            {
+                assert(internal_type==(**this).type);
+                return *static_cast<const xlist *>(data);
+            }
+
+            lexeme * xnode::rip() throw()
+            {
+                assert(terminal_type==(**this).type);
+                lexeme *res = static_cast<lexeme *>(data);
+                data = 0;
+                delete this;
+                return res;
+            }
+
+            static inline void xlist_ret(lexer &L, list_of<xnode> &chld) throw()
+            {
+                while(chld.size)
+                {
+                    xnode::ret(L,chld.pop_back());
+                }
+            }
+
+            void xnode::ret(lexer &L, xnode *node) throw()
+            {
+                assert(node);
+                switch( (**node).type )
+                {
+                    case internal_type:
+                        xlist_ret(L,node->sub());
+                        delete node;
+                        break;
+
+                    case terminal_type:
+                        L.store( node->rip() );
+                        break;
+                }
+            }
+
+
 
         }
 

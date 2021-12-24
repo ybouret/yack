@@ -18,13 +18,13 @@ namespace yack
             //! define the family of rules
             //
             //__________________________________________________________________
-            enum family
+            enum rule_type
             {
-                is_terminal, //!< a  terminal rule
-                is_internal  //!< an internal rule
+                terminal_type, //!< a  terminal rule
+                internal_type  //!< an internal rule
             };
 
-
+            
             //__________________________________________________________________
             //
             //
@@ -38,11 +38,11 @@ namespace yack
                 //
                 // members
                 //______________________________________________________________
-                const tag      name; //!< unique name
-                const family   kind; //!< internal/terminal
-                const uint32_t uuid; //!< unique user ID
-                rule          *next; //!< for list
-                rule          *prev; //!< for list
+                const tag       name; //!< unique name
+                const rule_type type; //!< internal/terminal
+                const uint32_t  uuid; //!< unique user ID
+                rule           *next; //!< for list
+                rule           *prev; //!< for list
 
                 //______________________________________________________________
                 //
@@ -52,9 +52,9 @@ namespace yack
 
             protected:
                 //! setup
-                explicit rule(const tag     &name_,
-                              const family   kind_,
-                              const uint32_t uuid_) throw();
+                explicit rule(const tag      &name_,
+                              const rule_type type_,
+                              const uint32_t  uuid_) throw();
 
                 void *self; //!< most derived class
 

@@ -15,7 +15,7 @@ namespace yack
             }
 
             internal:: internal(const tag &name_, const uint32_t uuid_) throw() :
-            rule(name_,is_internal,uuid_)
+            rule(name_,internal_type,uuid_)
             {
             }
 

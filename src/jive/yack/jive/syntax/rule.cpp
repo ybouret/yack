@@ -12,11 +12,11 @@ namespace yack
             {
             }
 
-            rule:: rule(const tag     &name_,
-                        const family   kind_,
-                        const uint32_t uuid_ ) throw() :
+            rule:: rule(const tag        &name_,
+                        const rule_type   type_,
+                        const uint32_t    uuid_ ) throw() :
             name(name_),
-            kind(kind_),
+            type(type_),
             uuid(uuid_),
             next(0),
             prev(0),

@@ -3,7 +3,6 @@
 #ifndef YACK_JIVE_SYNTAX_XNODE_INCLUDED
 #define YACK_JIVE_SYNTAX_XNODE_INCLUDED 1
 
-#include "yack/jive/lexical/lexeme.hpp"
 #include "yack/jive/syntax/rule.hpp"
 #include "yack/type/authority.hpp"
 
@@ -52,8 +51,17 @@ namespace yack
                 //
                 // methods
                 //______________________________________________________________
-                static xnode *create(const internal &);           //!< create data=xlist
-                static xnode *create(const terminal &, lexeme *); //!< set    data=lexeme
+                static xnode *make(const internal &);           //!< create data=xlist
+                static xnode *make(const terminal &, lexeme *); //!< set    data=lexeme
+                static void   grow( xnode * &tree, xnode *node) throw();
+
+                lexeme               &lex()       throw();
+                const lexeme         &lex() const throw();
+                list_of<xnode>       &sub()       throw();
+                const list_of<xnode> &sub() const throw();
+
+                lexeme               *rip() throw(); //!< extract lexeme, delete this
+                static void           ret(lexer &L, xnode *node) throw();
 
                 //______________________________________________________________
                 //
