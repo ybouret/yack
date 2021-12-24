@@ -197,6 +197,7 @@ add_test(hashing:key   test-yack hashing_key)
 add_test(rand:bits      test-yack rand_bits)
 add_test(rand:metrics   test-yack rand_metrics)
 add_test(rand:shuffle   test-yack rand_shuffle)
+add_test(rand:mt19937   test-yack rand_mt19937)
 
 add_test(sort:heap      test-yack sort_heap)
 add_test(sort:indexing  test-yack sort_indexing)

@@ -1,9 +1,7 @@
 
 message( STATUS "[YACK] <lua>" )
 
-string(REPLACE "-Wall"   "" CMAKE_C_FLAGS "${CMAKE_C_FLAGS}")
-string(REPLACE "-Wextra" "" CMAKE_C_FLAGS "${CMAKE_C_FLAGS}")
-string(STRIP "${CMAKE_C_FLAGS}" CMAKE_C_FLAGS)
+yack_no_warnings()
 
 #add_definitions(-DLUA_COMPAT_5_3)
 set(lualib_public_decl lua.h luaconf.h lualib.h lauxlib.h lua.hpp)

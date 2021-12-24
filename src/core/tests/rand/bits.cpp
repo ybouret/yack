@@ -1,5 +1,8 @@
+
 #include "yack/randomized/rand.hpp"
 #include "yack/randomized/park-miller.hpp"
+#include "yack/randomized/mt19937.hpp"
+
 #include "yack/randomized/shuffle.hpp"
 #include "yack/randomized/in2d.hpp"
 #include "yack/randomized/in3d.hpp"
@@ -106,12 +109,16 @@ YACK_UTEST(rand_bits)
     {
         randomized::shared_bits  ran   = new randomized::rand_();
         randomized::shared_bits  ranPM = new randomized::ParkMiller();
+        randomized::shared_bits  mt    = new randomized::mt19937();
 
         std::cerr << "Testing rand()" << std::endl;
         test_bits(ran);
 
         std::cerr << "Testing Park-Miller" << std::endl;
         test_bits(ranPM);
+
+        std::cerr << "Testing mt19937" << std::endl;
+        test_bits(mt);
     }
 
 

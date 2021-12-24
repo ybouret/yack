@@ -1,5 +1,3 @@
-
-
 //! \file
 
 #ifndef YACK_RANDOMIZED_PARK_MILLER_INCLUDED

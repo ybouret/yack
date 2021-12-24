@@ -258,3 +258,10 @@ else()
 		set(YACK_NEEDS_LIBM ON)
 endif()
 
+macro(yack_no_warnings)
+string(REPLACE "-Wall"   "" CMAKE_C_FLAGS "${CMAKE_C_FLAGS}")
+string(REPLACE "-Wextra" "" CMAKE_C_FLAGS "${CMAKE_C_FLAGS}")
+string(STRIP "${CMAKE_C_FLAGS}" CMAKE_C_FLAGS)
+endmacro(yack_no_warnings)
+
+
