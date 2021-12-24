@@ -63,7 +63,7 @@ namespace yack
                  upon success, accept, grow tree with produced node
                  */
                 virtual bool accept(YACK_JIVE_RULE_ARGS) const = 0;
-
+                
                 //______________________________________________________________
                 //
                 // C++
