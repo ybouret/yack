@@ -63,12 +63,18 @@ set(math_ode_explicit ${math_ode_explicit_decl} ${math_ode_explicit_srcs})
 SOURCE_GROUP(math/ode/explicit FILES ${math_ode_explicit})
 install( FILES ${math_ode_explicit_decl} DESTINATION include/yack/math/ode/explicit )
 
+file(GLOB math_ode_explicit_rk45_decl yack/math/ode/explicit/rk45/*.hpp)
+file(GLOB math_ode_explicit_rk45_srcs yack/math/ode/explicit/rk45/*.cpp yack/math/ode/explicit/rk45/*.hxx)
+set(math_ode_explicit_rk45 ${math_ode_explicit_rk45_decl} ${math_ode_explicit_rk45_srcs})
+SOURCE_GROUP(math/ode/explicit/rk45 FILES ${math_ode_explicit_rk45})
+install( FILES ${math_ode_explicit_rk45_decl} DESTINATION include/yack/math/ode/explicit/rk45 )
+
 add_library(yack-math STATIC
 ${math_main}
 ${math_fcn}
 ${math_tao}
 ${math_algebra}
-${math_ode} ${math_ode_explicit}
+${math_ode} ${math_ode_explicit} ${math_ode_explicit_rk45}
 ${math_root}
 ${math_opt}
 ${math_data}

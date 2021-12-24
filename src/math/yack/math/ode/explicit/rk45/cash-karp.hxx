@@ -9,7 +9,7 @@ namespace yack
             template <> cash_karp<real_t>:: ~cash_karp() throw() {}
 
             template <> cash_karp<real_t>::  cash_karp() :
-            explicit_step<real_t>(6),
+            base_type(6),
             ak2( next() ),
             ak3( next() ),
             ak4( next() ),
@@ -21,14 +21,14 @@ namespace yack
             }
 
             template <>
-            void cash_karp<real_t>:: run(const readable<real_t> &y,
-                                         const readable<real_t> &dydx,
-                                         const real_t            x,
-                                         const real_t            h,
-                                         writable<real_t>       &yout,
-                                         writable<real_t>       &yerr,
-                                         equation               &drvs,
-                                         callback               *proc)
+            void cash_karp<real_t>:: operator()(const readable<real_t> &y,
+                                                const readable<real_t> &dydx,
+                                                const real_t            x,
+                                                const real_t            h,
+                                                writable<real_t>       &yout,
+                                                writable<real_t>       &yerr,
+                                                equation               &drvs,
+                                                callback               *proc)
             {
                 static const real_t a2=0.2,a3=0.3,a4=0.6,a5=1.0,a6=0.875;
                 static const real_t b21=0.2,

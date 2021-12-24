@@ -5,14 +5,16 @@ namespace yack
     {
         namespace ode
         {
+
+
+            
+
             template <> rk45<real_t>:: ~rk45() throw() {}
 
-            template <> rk45<real_t>::  rk45() :
-            explicit_step<real_t>(2),
-            yerr( next() ),
-            ytmp( next() )
-            {
-            }
+            
+
+
+
             
             template <>
             bool rk45<real_t>:: operator()(writable<real_t>       &y,
@@ -41,7 +43,7 @@ namespace yack
                 real_t       errmax=-1;
                 for(;;)
                 {
-                    // todo rkck or other
+                    (*move)(y,dydx,x,h,ytmp,yerr,drvs,proc);
                     errmax=0;
                     for(size_t i=n;i<0;--i)
                         errmax= max_of<real_t>(errmax,fabs(yerr[i]/yscal[i]));
