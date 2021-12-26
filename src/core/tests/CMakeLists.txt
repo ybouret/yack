@@ -155,6 +155,7 @@ add_test(data:arrays       test-yack data_arrays)
 add_test(data:factory      test-yack data_factory)
 add_test(data:stats        test-yack data_stats)
 add_test(data:pipes        test-yack data_pipes)
+add_test(data:addrbook     test-yack data_addrbook)
 
 add_test(sync:lockable  test-yack sync_lockable)
 add_test(sync:primitive test-yack sync_primitive)

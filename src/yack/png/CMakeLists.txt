@@ -1,4 +1,7 @@
 project(png C)
+
+yack_no_warnings()
+
 include_directories(. ../zlib)
 file(GLOB srcs png*.c)
 add_library(yack-png STATIC ${srcs})

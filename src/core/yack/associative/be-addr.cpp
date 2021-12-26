@@ -4,6 +4,9 @@
 
 namespace yack
 {
+    
+    const as_address_t as_address = {};
+    
     be_address:: ~be_address() throw()
     {
         impl = 0;
@@ -33,6 +36,17 @@ namespace yack
     {
         return static_cast<const uint8_t *>(ro_addr());
     }
+    
+    be_address:: be_address(const be_address &other) throw() : impl(other.impl)
+    {
+    }
+    
+    be_address:: be_address(const void *addr, const as_address_t &) throw() :
+    impl(addr)
+    {
+        setup();
+    }
+    
 
 }
 

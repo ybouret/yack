@@ -8,6 +8,10 @@
 
 namespace yack
 {
+    
+    typedef type2type<void *> as_address_t;
+    extern const as_address_t as_address;
+    
     //__________________________________________________________________________
     //
     //
@@ -23,10 +27,10 @@ namespace yack
         //______________________________________________________________________
         //! setup
         template <typename T> inline
-        explicit be_address(const T &args) throw() : impl(&args) { setup(); }
+        be_address(const T &args) throw() : impl(&args) { setup(); }
         be_address(const be_address &) throw(); //!< copy
         virtual ~be_address()          throw(); //!< cleanup
-
+        be_address(const void *addr, const as_address_t &) throw();
 
         //______________________________________________________________________
         //

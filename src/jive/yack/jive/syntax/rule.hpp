@@ -11,7 +11,7 @@ namespace yack
     namespace jive
     {
         namespace syntax
-        {
+        {            
             //__________________________________________________________________
             //
             //
