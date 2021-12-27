@@ -1,9 +1,9 @@
 //! \file
 
-#ifndef YACK_ODE_EXPLICIT_STEP_INCLUDED
-#define YACK_ODE_EXPLICIT_STEP_INCLUDED 1
+#ifndef YACK_ODE_EXPLICIT_RK45_RZEXTR_INCLUDED
+#define YACK_ODE_EXPLICIT_RK45_RZEXTR_INCLUDED 1
 
-#include "yack/math/ode/step.hpp"
+#include "yack/math/ode/explicit/rk45/zextr.hpp"
 
 namespace yack
 {
@@ -15,36 +15,38 @@ namespace yack
             //__________________________________________________________________
             //
             //
-            //! generic step
+            //! polynomial zero extrapolation
             //
             //__________________________________________________________________
             template <typename T>
-            class explicit_step : public step<T>
+            class rzextr  : public zextr<T>
             {
             public:
                 //______________________________________________________________
                 //
                 // types and definitions
                 //______________________________________________________________
-                typedef typename named<T>::equation equation; //!< alias
-                typedef typename named<T>::callback callback; //!< alias
+                typedef arrays_of<T>                  tableaux;   //!< alias
+                typedef typename tableaux::array_type array_type; //!< alias
 
                 //______________________________________________________________
                 //
                 // C++
                 //______________________________________________________________
-                virtual ~explicit_step() throw();                //!< cleanup
-
-            protected:
-                explicit explicit_step(const size_t num_arrays); //!< setup
+                virtual ~rzextr() throw(); //!< cleanup
+                explicit rzextr();         //!< setup
 
             private:
-                YACK_DISABLE_COPY_AND_ASSIGN(explicit_step);
+                YACK_DISABLE_COPY_AND_ASSIGN(rzextr);
             };
+
+
 
         }
 
     }
+
 }
 
 #endif
+

@@ -8,6 +8,8 @@ namespace yack
             template <> driver<real_t>:: ~driver() throw() {}
             template <> driver<real_t>::  driver() :
             tableaux(3,0),
+            nfit(0),
+            nbad(0),
             tiny(1e-30),
             y(     next() ),
             dydx(  next() ),

@@ -54,7 +54,7 @@ ytmp( this->next() )
             //__________________________________________________________________
             //
             //
-            //! generic step
+            //! generic 4/5 adaptive step
             //
             //__________________________________________________________________
             template <typename T>
@@ -77,10 +77,16 @@ ytmp( this->next() )
                 //______________________________________________________________
                 virtual ~rk45() throw();          //!< cleanup
 
-
+                //! setup from new engine
                 explicit rk45(rk45_step<T> *eng) : YACK_RK45_CTOR() {}
+
+                //! setup from shared engine
                 explicit rk45(const typename rk45_step<T>::pointer &eng) :YACK_RK45_CTOR() {}
-                
+
+                //______________________________________________________________
+                //
+                // interface
+                //______________________________________________________________
 
                 //! interface to be driven
                 virtual void operator()(writable<T>       &y,

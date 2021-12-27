@@ -1,8 +1,4 @@
-
 #include "yack/math/ode/explicit/rk45/step.hpp"
-
-//#include <cmath>
-
 
 #define real_t float
 #include "step.hxx"

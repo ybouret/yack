@@ -40,6 +40,8 @@ namespace yack
                 //
                 // interface
                 //______________________________________________________________
+
+                //! evaluate yout from nstep midpoints
                 void operator()(const readable<T> &y,
                                 const readable<T> &dydx,
                                 const T            xs,

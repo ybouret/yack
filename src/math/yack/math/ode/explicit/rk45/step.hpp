@@ -26,12 +26,21 @@ namespace yack
             class rk45_step : public object, public counted, public arrays_of<T>
             {
             public:
+                //______________________________________________________________
+                //
+                // types and definitions
+                //______________________________________________________________
                 typedef typename named<T>::equation    equation;    //!< alias
                 typedef typename named<T>::callback    callback;    //!< alias
                 typedef arc_ptr<rk45_step>             pointer;     //!< alias
                 
-                virtual ~rk45_step() throw();
 
+                //______________________________________________________________
+                //
+                // interface
+                //______________________________________________________________
+
+                //! take trial step
                 virtual void operator()(const readable<T> &y,
                                         const readable<T> &dydx,
                                         const T            x,
@@ -41,8 +50,14 @@ namespace yack
                                         equation          &drvs,
                                         callback          *proc) = 0;
 
+                //______________________________________________________________
+                //
+                // C++
+                //______________________________________________________________
+                virtual ~rk45_step() throw(); //!< cleanup
+
             protected:
-                explicit rk45_step(const size_t n);
+                explicit rk45_step(const size_t); //!< setup with arrays
 
             private:
                 YACK_DISABLE_COPY_AND_ASSIGN(rk45_step);

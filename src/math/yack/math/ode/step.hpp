@@ -51,6 +51,8 @@ namespace yack
 
             protected:
                 explicit step(const size_t num_arrays); //!< setup
+
+            private:
                 YACK_DISABLE_COPY_AND_ASSIGN(step);
             };
 

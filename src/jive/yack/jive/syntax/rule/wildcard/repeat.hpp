@@ -29,7 +29,7 @@ namespace yack
                 //
                 // types and definitions
                 //______________________________________________________________
-                static const uint32_t mark = YACK_FOURCC('R','E','P',':');
+                static const uint32_t mark = YACK_FOURCC('R','E','P',':'); //!< alias
 
                 //______________________________________________________________
                 //
