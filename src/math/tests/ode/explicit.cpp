@@ -111,8 +111,7 @@ namespace
     template <typename T>
     static inline void solvePrj()
     {
-        string       id = "prj-" + rtti::name<T>() + ".dat";
-        const string filename = cxx_name::of(id);
+        const string filename = cxx_name::of("prj-" + rtti::name<T>() ) + ".dat";
         problem<T> pb = { 4.0 };
         typename ode::named<T>::equation drvs(&pb,&problem<T>::dCos);
         typename ode::named<T>::callback proc(&pb,&problem<T>::Prj);
@@ -153,6 +152,13 @@ YACK_UTEST(explicit)
     solveCos<float>();
     solvePrj<float>();
 
+    solveExp<double>();
+    solveCos<double>();
+    solvePrj<double>();
+
+    solveExp<long double>();
+    solveCos<long double>();
+    solvePrj<long double>();
 
 
 }

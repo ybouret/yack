@@ -1,4 +1,3 @@
-
 //! \file
 
 #ifndef YACK_ODE_EXPLICIT_RK45_STEP_INCLUDED
