@@ -45,7 +45,8 @@ namespace yack
                 assert( y.size() == yout.size() );
                 assert( y.size() == yerr.size() );
                 const size_t n = y.size();
-
+                make(n);
+                
                 {
                     const real_t fac = b21*h;
                     const real_t xx = x+a2*h;

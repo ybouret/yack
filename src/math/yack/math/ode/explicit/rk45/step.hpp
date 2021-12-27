@@ -31,7 +31,7 @@ namespace yack
                 typedef typename named<T>::callback    callback;    //!< alias
                 typedef arc_ptr<rk45_step>             pointer;     //!< alias
                 
-                virtual ~rk45_step() throw() {}
+                virtual ~rk45_step() throw();
 
                 virtual void operator()(const readable<T> &y,
                                         const readable<T> &dydx,
@@ -43,9 +43,7 @@ namespace yack
                                         callback          *proc) = 0;
 
             protected:
-                explicit rk45_step(const size_t n) : arrays_of<T>(n,0)
-                {
-                }
+                explicit rk45_step(const size_t n);
 
             private:
                 YACK_DISABLE_COPY_AND_ASSIGN(rk45_step);

@@ -26,7 +26,7 @@ namespace yack
                                              callback         *proc)
             {
                 const size_t n = ystart.size();
-                make(n);
+                make(n);  
                 nfit=0;
                 nbad=0;
 
