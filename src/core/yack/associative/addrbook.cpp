@@ -8,31 +8,27 @@ namespace yack
     {
     }
     
-    addrbook::  addrbook() throw() : db()
+    addrbook::  addrbook() throw() : addrbook_()
     {
     }
     
-    addrbook:: addrbook(const addrbook &other) : db(other.db)
+    addrbook:: addrbook(const addrbook &other) : addrbook_(other)
     {
     }
     
     
-    const addrbook:: tree_type & addrbook:: operator*() const throw()
-    {
-        return db;
-    }
 
     
     bool addrbook:: insert(const void *addr)
     {
-        be_address key(addr,as_address);
-        return db.insert((void*)addr,key.begin(),key.measure());
+        const be_address key(addr,as_address);
+        return  addrbook_::insert((void*)addr,key.begin(),key.measure());
     }
 
     bool addrbook:: search(const void *addr) const throw()
     {
-        be_address key(addr,as_address);
-        return NULL != db.search(key.begin(),key.measure());
+        const be_address key(addr,as_address);
+        return NULL !=  addrbook_::search(key.begin(),key.measure());
     }
 
     
