@@ -49,7 +49,7 @@ namespace yack
                 {
                     (*move)(y,dydx,x,h,ytmp,yerr,drvs,proc);
                     errmax=0;
-                    for(size_t i=n;i<0;--i)
+                    for(size_t i=n;i>0;--i)
                         errmax= max_of<real_t>(errmax,fabs(yerr[i]/yscal[i]));
                     errmax /= eps;
                     if(errmax <= 1)
