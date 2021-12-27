@@ -3,6 +3,9 @@
 #include "yack/math/ode/explicit/rk45.hpp"
 #include "yack/sequence/vector.hpp"
 #include "yack/utest/run.hpp"
+#include "yack/system/rtti.hpp"
+#include "yack/string/cxx-name.hpp"
+#include "yack/ios/ocstream.hpp"
 
 using namespace yack;
 using namespace math;
@@ -40,6 +43,8 @@ namespace
     template <typename T>
     static inline void solveExp()
     {
+        string       id = "exp-" + rtti::name<T>() + ".dat";
+        const string filename = cxx_name::of(id);
         problem<T> pb = { 4.0 };
         typename ode::named<T>::equation drvs(&pb,&problem<T>::dExp);
         ode::driver<T>                   odeint;
@@ -52,16 +57,18 @@ namespace
         vector<T> y(1);
         y[1] = 1;
 
+        ios::ocstream::overwrite(filename);
+        ios::ocstream::echo(filename,"%.15g %.15g\n", double(x), double(y[1]));
+
         for(size_t i=1;i<=nmax;++i)
         {
             const T x_end = (i*xmax)/nmax;
             odeint(step,y,x,x_end,1e-4,h,drvs,NULL);
             x=x_end;
             std::cerr << "@" << x << " " << y << std::endl;
+            ios::ocstream::echo(filename,"%.15g %.15g\n", double(x), double(y[1]));
         }
-
-
-
+        
     }
 
 }
