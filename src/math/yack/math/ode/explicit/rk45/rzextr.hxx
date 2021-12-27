@@ -29,7 +29,7 @@ namespace yack
                 assert(iest<=x.size());
                 assert(iest<=d.cols);
 
-                const size_t nv = yest.size(); make(nv);
+                const size_t nv = yest.size(); ensure(iest);
                 
                 x[iest]=xest;
                 if (iest == 1)
@@ -47,12 +47,12 @@ namespace yack
                         fx[k+1]=x[iest-k]/xest;
                     for (size_t j=1;j<=nv;j++) {
                         real_t v=d[j][1];
-                        real_t c=d[j][1]=yy=yest[j];
+                        real_t c=d[j][1]=yest[j],yy=c;
+                        real_t ddy = 0;
                         for(size_t k=2;k<=iest;k++)
                         {
                             real_t b1=fx[k]*v;
                             real_t b=b1-c;
-                            real_t ddy = 0;
                             if( fabs(b) > 0 )
                             {
                                 b=(c-v)/b;
