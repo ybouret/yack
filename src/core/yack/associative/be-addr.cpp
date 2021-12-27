@@ -37,7 +37,9 @@ namespace yack
         return static_cast<const uint8_t *>(ro_addr());
     }
     
-    be_address:: be_address(const be_address &other) throw() : impl(other.impl)
+    be_address:: be_address(const be_address &other) throw() :
+    memory::ro_buffer(),
+    impl(other.impl)
     {
     }
     
