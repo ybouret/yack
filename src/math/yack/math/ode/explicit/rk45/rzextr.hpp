@@ -36,8 +36,22 @@ namespace yack
                 virtual ~rzextr() throw(); //!< cleanup
                 explicit rzextr();         //!< setup
 
+                //______________________________________________________________
+                //
+                // interface
+                //______________________________________________________________
+                //! extrapolate using polynomials
+                virtual void operator()(const size_t       iest,
+                                        const T            xest,
+                                        const readable<T> &yest,
+                                        writable<T>       &yz,
+                                        writable<T>       &dy,
+                                        writable<T>       &x,
+                                        matrix<T>         &d);
+
             private:
                 YACK_DISABLE_COPY_AND_ASSIGN(rzextr);
+                array_type &fx;
             };
 
 
