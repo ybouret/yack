@@ -17,29 +17,37 @@ namespace yack
             //__________________________________________________________________
             //
             //
-            //! base class to manage step
+            //! base class to manage step pointer
             //
             //__________________________________________________________________
             template <typename T>
             class rk45_
             {
             public:
-                virtual ~rk45_() throw() {}
+                //______________________________________________________________
+                //
+                // C++
+                //______________________________________________________________
+                virtual ~rk45_()               throw(); //!< cleanup
+                explicit rk45_(rk45_step<T> *) throw(); //!< setup from new engine
+                explicit rk45_(const typename rk45_step<T>::pointer &) throw(); //!< setup from shared engine
 
-                explicit rk45_( rk45_step<T> *eng ) throw() : move(eng) {}
-                explicit rk45_( const typename rk45_step<T>::pointer &eng ) throw() : move(eng) {}
-
-                typename rk45_step<T>::pointer move;
+                //______________________________________________________________
+                //
+                // member
+                //______________________________________________________________
+                typename rk45_step<T>::pointer move; //!< the step/move implementation
 
             private:
                 YACK_DISABLE_COPY_AND_ASSIGN(rk45_);
 
             };
 
+            //! helper to create rk45
 #define YACK_RK45_CTOR()  \
-rk45_<T>(eng),\
-explicit_step<T>(2),\
-yerr( this->next() ),\
+rk45_<T>(eng),            \
+explicit_step<T>(2),      \
+yerr( this->next() ),     \
 ytmp( this->next() )
 
 

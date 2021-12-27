@@ -9,9 +9,9 @@ namespace yack
     {
         namespace syntax
         {
-            const rule &grammar:: opt(const tag &id, const rule &r)
+            const rule &grammar:: opt_(const tag &id, const rule &r)
             {
-                if(!rules.owns(&r)) throw exception("[%s] does not owns <%s>",(*lang)(), (*r.name)());
+                if(!rules.owns(&r)) throw exception("[%s] does not owns <%s> for optional rule",(*lang)(), (*r.name)());
                 return decl( new option(id,r) );
             }
 

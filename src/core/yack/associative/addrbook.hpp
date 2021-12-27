@@ -41,10 +41,16 @@ namespace yack
         bool              insert(const void *);               //!< insert, address is BE key
         bool              search(const void *) const throw(); //!< search if registered
 
+        //______________________________________________________________________
+        //
+        // iterator
+        //______________________________________________________________________
+
+        //! alias, const only
         typedef iterating::linked<void *,const knot_type,iterating::forward> const_iterator;
 
-        const_iterator begin() const throw() { return (**this).head; }
-        const_iterator end()   const throw() { return NULL; }
+        const_iterator begin() const throw() { return (**this).head; } //!< forward iterator begin
+        const_iterator end()   const throw() { return NULL; }          //!< forward itetator end
 
     private:
         YACK_DISABLE_ASSIGN(addrbook);

@@ -17,7 +17,12 @@ namespace yack
         namespace ode
         {
 
-
+            //__________________________________________________________________
+            //
+            //
+            //! interface to a rk45 step
+            //
+            //__________________________________________________________________
             template <typename T>
             class rk45_step : public object, public counted, public arrays_of<T>
             {

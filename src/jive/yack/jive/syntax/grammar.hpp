@@ -49,10 +49,42 @@ namespace yack
                     return *r;
                 }
 
-                const rule &opt(const tag &id, const rule &r);
-                const rule &rep(const tag &id, const rule &r, const size_t n);
-                const rule &zom(const tag &id, const rule &r);
-                const rule &oom(const tag &id, const rule &r);
+                //! create an optional rule from an existing rule
+                const rule &opt_(const tag &id, const rule &r);
+
+                //! create a repeating rule from an existing rule
+                const rule &rep_(const tag &id, const rule &r, const size_t n);
+
+                //! create an optional rule from an existing rule
+                template <typename ID> inline
+                const rule &opt(const ID &id, const rule &r)
+                {
+                    const tag _ = tags::make(id); return opt_(_,r);
+                }
+
+                //! create a repeating rule from an existing rule
+                template <typename ID> inline
+                const rule &rep(const ID &id, const rule &r, const size_t n)
+                {
+                    const tag _ = tags::make(id); return rep(_,r,n);
+                }
+
+                //! create a repeating>=0 rule from an existing rule
+                template <typename ID> inline
+                const rule &zom(const ID &id, const rule &r)
+                {
+                    return rep(id,r,0);
+                }
+
+                //! create a repeating>=1 rule from an existing rule
+                template <typename ID> inline
+                const rule &oom(const ID &id, const rule &r)
+                {
+                    return rep(id,r,1);
+                }
+
+
+
 
                 //______________________________________________________________
                 //
