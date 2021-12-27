@@ -47,7 +47,7 @@ namespace yack
                 //______________________________________________________________
                 
                 //! always accept
-                virtual bool accept(YACK_JIVE_RULE_ARGS) const = 0;
+                virtual bool accept(YACK_JIVE_RULE_ARGS) const;
 
                 
             private:

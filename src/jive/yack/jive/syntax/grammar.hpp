@@ -49,6 +49,11 @@ namespace yack
                     return *r;
                 }
 
+                const rule &opt(const tag &id, const rule &r);
+                const rule &rep(const tag &id, const rule &r, const size_t n);
+                const rule &zom(const tag &id, const rule &r);
+                const rule &oom(const tag &id, const rule &r);
+
                 //______________________________________________________________
                 //
                 // members

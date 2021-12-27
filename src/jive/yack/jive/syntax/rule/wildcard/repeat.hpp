@@ -48,7 +48,7 @@ namespace yack
                 // interface
                 //______________________________________________________________
                 //! accept if host accepted >= count times
-                virtual bool accept(YACK_JIVE_RULE_ARGS) const = 0;
+                virtual bool accept(YACK_JIVE_RULE_ARGS) const;
 
                 //______________________________________________________________
                 //

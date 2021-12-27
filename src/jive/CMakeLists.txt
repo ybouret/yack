@@ -85,7 +85,14 @@ set(jive_syntax_rule ${jive_syntax_rule_decl} ${jive_syntax_rule_srcs})
 SOURCE_GROUP(jive/syntax/rule FILES ${jive_syntax_rule})
 install( FILES ${jive_syntax_rule_decl} DESTINATION include/yack/jive/syntax/rule )
 
-#syntax/rule.wildcard
+ #syntax/grammar
+file(GLOB jive_syntax_grammar_decl yack/jive/syntax/grammar/*.hpp)
+file(GLOB jive_syntax_grammar_srcs yack/jive/syntax/grammar/*.cpp)
+set(jive_syntax_grammar ${jive_syntax_grammar_decl} ${jive_syntax_grammar_srcs})
+SOURCE_GROUP(jive/syntax/grammar FILES ${jive_syntax_grammar})
+install( FILES ${jive_syntax_grammar_decl} DESTINATION include/yack/jive/syntax/grammar )
+
+#syntax/rule/wildcard
 file(GLOB jive_syntax_rule_wildcard_decl yack/jive/syntax/rule/wildcard/*.hpp)
 file(GLOB jive_syntax_rule_wildcard_srcs yack/jive/syntax/rule/wildcard/*.cpp)
 set(jive_syntax_rule_wildcard ${jive_syntax_rule_wildcard_decl} ${jive_syntax_rule_wildcard_srcs})
@@ -99,7 +106,7 @@ ${jive_pattern} ${jive_pattern_basic} ${jive_pattern_joker} ${jive_pattern_logic
 ${jive_pattern_regexp}
 ${jive_pattern_quirks}
 ${jive_lexical} ${jive_lexical_flow} ${jive_lexical_plugin}
-${jive_syntax} ${jive_syntax_rule} ${jive_syntax_rule_wildcard}
+${jive_syntax} ${jive_syntax_rule} ${jive_syntax_grammar} ${jive_syntax_rule_wildcard}
 )
 
 install( TARGETS yack-jive ARCHIVE DESTINATION lib )
