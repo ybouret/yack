@@ -25,8 +25,16 @@ namespace yack
             class repeat : public wildcard
             {
             public:
+                //______________________________________________________________
+                //
+                // types and definitions
+                //______________________________________________________________
                 static const uint32_t mark = YACK_FOURCC('R','E','P',':');
-                
+
+                //______________________________________________________________
+                //
+                // C++
+                //______________________________________________________________
                 //! cleanup
                 virtual ~repeat() throw();
                 
@@ -34,9 +42,19 @@ namespace yack
                 explicit repeat(const tag      &name_,
                                 const rule     &host_,
                                 const size_t    nmin);
-                
-                //! minimal count
-                const size_t count;
+
+                //______________________________________________________________
+                //
+                // interface
+                //______________________________________________________________
+                //! accept if host accepted >= count times
+                virtual bool accept(YACK_JIVE_RULE_ARGS) const = 0;
+
+                //______________________________________________________________
+                //
+                // members
+                //______________________________________________________________
+                const size_t count; //!< minimal count
                 
             private:
                 YACK_DISABLE_COPY_AND_ASSIGN(repeat);

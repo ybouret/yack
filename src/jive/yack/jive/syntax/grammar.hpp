@@ -39,9 +39,10 @@ namespace yack
                 //
                 // methods
                 //______________________________________________________________
+
                 //! declare a new (derived) rule
                 template <typename RULE>
-                RULE &toto(RULE *r)
+                RULE &decl(RULE *r)
                 {
                     assert(r);
                     declare(r);

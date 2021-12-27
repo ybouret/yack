@@ -1,6 +1,5 @@
-
 #include "yack/jive/syntax/rule/wildcard/option.hpp"
-
+#include "yack/jive/syntax/xnode.hpp"
 
 namespace yack
 {
@@ -16,6 +15,17 @@ namespace yack
                             const rule     &host_) :
             wildcard(name_,mark,host_)
             {
+            }
+
+            bool option:: accept(YACK_JIVE_RULE_ARGS) const
+            {
+                const rule &r    = **this;
+                xnode      *node = NULL;
+                if( r.accept(src,lxr,node) )
+                {
+                    xnode::grow(tree,node);
+                }
+                return true;
             }
             
         }

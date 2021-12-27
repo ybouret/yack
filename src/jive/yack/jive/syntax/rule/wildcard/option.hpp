@@ -24,15 +24,31 @@ namespace yack
             class option : public wildcard
             {
             public:
+                //______________________________________________________________
+                //
+                // types and definitions
+                //______________________________________________________________
                 static const uint32_t mark = YACK_FOURCC('O','P','T',':');
-                
+
+                //______________________________________________________________
+                //
+                // C++
+                //______________________________________________________________
                 //! cleanup
                 virtual ~option() throw();
                 
                 //! setup
                 explicit option(const tag      &name_,
                                 const rule     &host_);
+
+                //______________________________________________________________
+                //
+                // interface
+                //______________________________________________________________
                 
+                //! always accept
+                virtual bool accept(YACK_JIVE_RULE_ARGS) const = 0;
+
                 
             private:
                 YACK_DISABLE_COPY_AND_ASSIGN(option);
