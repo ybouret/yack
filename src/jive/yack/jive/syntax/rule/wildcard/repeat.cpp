@@ -17,6 +17,7 @@ namespace yack
             wildcard(name_,mark,host_),
             count(nmin)
             {
+                I_am<repeat>();
             }
 
             bool repeat:: accept(YACK_JIVE_RULE_ARGS) const

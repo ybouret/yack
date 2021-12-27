@@ -15,6 +15,7 @@ namespace yack
                             const rule     &host_) :
             wildcard(name_,mark,host_)
             {
+                I_am<option>();
             }
 
             bool option:: accept(YACK_JIVE_RULE_ARGS) const

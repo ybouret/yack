@@ -13,15 +13,23 @@ namespace yack
     {
         namespace syntax
         {
+            class terminal;
+
             //__________________________________________________________________
             //
             //
             //! grammar
             //
             //__________________________________________________________________
-            class grammar
+            class grammar : public ios::vizible
             {
             public:
+                //______________________________________________________________
+                //
+                // types and definitions
+                //______________________________________________________________
+                typedef syntax::rule     rule;
+
                 //______________________________________________________________
                 //
                 // C++
@@ -49,11 +57,28 @@ namespace yack
                     return *r;
                 }
 
+                const rule &term__(const tag &id);
+
                 //! create an optional rule from an existing rule
                 const rule &opt_(const tag &id, const rule &r);
 
+                //! opt_ with auto-naming
+                const rule &opt(const rule &r);
+
+
                 //! create a repeating rule from an existing rule
                 const rule &rep_(const tag &id, const rule &r, const size_t n);
+
+                //! rep_ with auto-naming
+                const rule &rep(const rule &r, const size_t n);
+
+
+                template <typename ID> inline
+                const rule &term_(const ID &id)
+                {
+                    const tag _ = tags::make(id); return term__(_);
+                }
+
 
                 //! create an optional rule from an existing rule
                 template <typename ID> inline
@@ -70,21 +95,13 @@ namespace yack
                 }
 
                 //! create a repeating>=0 rule from an existing rule
-                template <typename ID> inline
-                const rule &zom(const ID &id, const rule &r)
-                {
-                    return rep(id,r,0);
-                }
+                const rule &zom(const rule &r);
+
 
                 //! create a repeating>=1 rule from an existing rule
-                template <typename ID> inline
-                const rule &oom(const ID &id, const rule &r)
-                {
-                    return rep(id,r,1);
-                }
+                const rule &oom(const rule &r);
 
-
-
+                void gv() const;
 
                 //______________________________________________________________
                 //
@@ -96,6 +113,7 @@ namespace yack
                 YACK_DISABLE_COPY_AND_ASSIGN(grammar);
                 cxx_list_of<rule> rules;
                 void       declare(rule *);
+                void       gv_draw(ios::ostream &fp) const;
 
             };
 

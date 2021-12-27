@@ -15,6 +15,13 @@ namespace yack
                 return decl( new option(id,r) );
             }
 
+            const rule & grammar:: opt(const rule &r)
+            {
+                const string r_id = *r.name + '?';
+                const tag    id   = tags::make(r_id);
+                return opt_(id,r);
+            }
+
         }
 
     }

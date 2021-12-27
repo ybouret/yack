@@ -16,7 +16,32 @@ namespace yack
                 return decl( new repeat(id,r,n) );
             }
 
-            
+            const rule & grammar:: rep(const rule &r, const size_t n)
+            {
+                string r_id = *r.name;
+                switch(n)
+                {
+                    case 0:  r_id += '*'; break;
+                    case 1:  r_id += '+'; break;
+                    default: r_id += vformat(">=%u", unsigned(n));
+                }
+
+                const tag id = tags::make(r_id);
+                return rep_(id,r,n);
+
+            }
+
+            const rule & grammar:: zom(const rule &r)
+            {
+                return rep(r,0);
+            }
+
+            const rule & grammar:: oom(const rule &r)
+            {
+                return rep(r,1);
+            }
+
+
         }
 
     }

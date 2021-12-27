@@ -40,7 +40,7 @@ namespace yack
             //! a syntax rule
             //
             //__________________________________________________________________
-            class rule : public object
+            class rule : public object, public ios::vizible
             {
             public:
                 //______________________________________________________________
@@ -63,7 +63,28 @@ namespace yack
                  upon success, accept, grow tree with produced node
                  */
                 virtual bool accept(YACK_JIVE_RULE_ARGS) const = 0;
-                
+
+                //______________________________________________________________
+                //
+                // methods
+                //______________________________________________________________
+                template <typename CLASS> inline
+                CLASS *as() throw()
+                {
+                    assert(uuid==CLASS::mark);
+                    assert(NULL!=self);
+                    return static_cast<CLASS *>(self);
+                }
+
+                template <typename CLASS> inline
+                const CLASS *as() const throw()
+                {
+                    assert(uuid==CLASS::mark);
+                    assert(NULL!=self);
+                    return static_cast<const CLASS *>(self);
+                }
+
+
                 //______________________________________________________________
                 //
                 // C++

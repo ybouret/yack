@@ -80,6 +80,15 @@ namespace yack
             return fp;
         }
 
+        ostream & vizible:: add_label(ostream &fp,const char *msg)
+        {
+            fp << "label=\"";
+            text(fp,msg);
+            fp << "\"";
+            return fp;
+        }
+
+
         ostream & vizible:: arrow(ostream &os, const void *source, const void *target)
         {
             uuid(os,source) << " -> ";
