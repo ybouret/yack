@@ -39,7 +39,7 @@ namespace yack
                 
                 //! setup
                 explicit option(const tag      &name_,
-                                const rule     &host_);
+                                const rule     &host_) throw();
 
                 //______________________________________________________________
                 //

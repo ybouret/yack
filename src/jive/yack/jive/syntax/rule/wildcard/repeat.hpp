@@ -41,7 +41,7 @@ namespace yack
                 //! setup
                 explicit repeat(const tag      &name_,
                                 const rule     &host_,
-                                const size_t    nmin);
+                                const size_t    nmin) throw();
 
                 //______________________________________________________________
                 //

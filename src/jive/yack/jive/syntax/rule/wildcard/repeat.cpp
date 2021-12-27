@@ -13,7 +13,7 @@ namespace yack
             
             repeat:: repeat(const tag      &name_,
                             const rule     &host_,
-                            const size_t    nmin) :
+                            const size_t    nmin) throw() :
             wildcard(name_,mark,host_),
             count(nmin)
             {

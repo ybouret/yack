@@ -68,6 +68,8 @@ namespace yack
                 //
                 // methods
                 //______________________________________________________________
+               
+                //! cast w.r.t uuid
                 template <typename CLASS> inline
                 CLASS *as() throw()
                 {
@@ -76,6 +78,7 @@ namespace yack
                     return static_cast<CLASS *>(self);
                 }
 
+                //! cast w.r.t uuid, const
                 template <typename CLASS> inline
                 const CLASS *as() const throw()
                 {
@@ -83,8 +86,7 @@ namespace yack
                     assert(NULL!=self);
                     return static_cast<const CLASS *>(self);
                 }
-
-
+                
                 //______________________________________________________________
                 //
                 // C++

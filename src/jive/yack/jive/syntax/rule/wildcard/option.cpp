@@ -12,7 +12,7 @@ namespace yack
             }
             
             option:: option(const tag      &name_,
-                            const rule     &host_) :
+                            const rule     &host_) throw():
             wildcard(name_,mark,host_)
             {
                 I_am<option>();

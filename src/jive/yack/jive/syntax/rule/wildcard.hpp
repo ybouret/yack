@@ -30,7 +30,7 @@ namespace yack
                 //! setup with name, uuid and host
                 explicit wildcard(const tag      &name_,
                                   const uint32_t  uuid_,
-                                  const rule     &host_);
+                                  const rule     &host_) throw();
                 
             private:
                 YACK_DISABLE_COPY_AND_ASSIGN(wildcard);

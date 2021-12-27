@@ -28,7 +28,7 @@ namespace yack
                 //
                 // types and definitions
                 //______________________________________________________________
-                typedef syntax::rule     rule;
+                typedef syntax::rule     rule; //!< alias
 
                 //______________________________________________________________
                 //
@@ -57,6 +57,7 @@ namespace yack
                     return *r;
                 }
 
+                //! terminal creation
                 const rule &term__(const tag &id);
 
                 //! create an optional rule from an existing rule
@@ -73,6 +74,7 @@ namespace yack
                 const rule &rep(const rule &r, const size_t n);
 
 
+                //! generic term
                 template <typename ID> inline
                 const rule &term_(const ID &id)
                 {
@@ -101,6 +103,7 @@ namespace yack
                 //! create a repeating>=1 rule from an existing rule
                 const rule &oom(const rule &r);
 
+                //! render grammar
                 void gv() const;
 
                 //______________________________________________________________

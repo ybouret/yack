@@ -99,6 +99,13 @@ set(jive_syntax_rule_wildcard ${jive_syntax_rule_wildcard_decl} ${jive_syntax_ru
 SOURCE_GROUP(jive/syntax/rule/wildcard FILES ${jive_syntax_rule_wildcard})
 install( FILES ${jive_syntax_rule_wildcard_decl} DESTINATION include/yack/jive/syntax/rule/wildcard )
 
+#syntax/rule/compound
+file(GLOB jive_syntax_rule_compound_decl yack/jive/syntax/rule/compound/*.hpp)
+file(GLOB jive_syntax_rule_compound_srcs yack/jive/syntax/rule/compound/*.cpp)
+set(jive_syntax_rule_compound ${jive_syntax_rule_compound_decl} ${jive_syntax_rule_compound_srcs})
+SOURCE_GROUP(jive/syntax/rule/compound FILES ${jive_syntax_rule_compound})
+install( FILES ${jive_syntax_rule_compound_decl} DESTINATION include/yack/jive/syntax/rule/compound )
+
 
 add_library(yack-jive STATIC
 ${jive_main}
@@ -106,7 +113,7 @@ ${jive_pattern} ${jive_pattern_basic} ${jive_pattern_joker} ${jive_pattern_logic
 ${jive_pattern_regexp}
 ${jive_pattern_quirks}
 ${jive_lexical} ${jive_lexical_flow} ${jive_lexical_plugin}
-${jive_syntax} ${jive_syntax_rule} ${jive_syntax_grammar} ${jive_syntax_rule_wildcard}
+${jive_syntax} ${jive_syntax_rule} ${jive_syntax_grammar} ${jive_syntax_rule_wildcard} ${jive_syntax_rule_compound}
 )
 
 install( TARGETS yack-jive ARCHIVE DESTINATION lib )
