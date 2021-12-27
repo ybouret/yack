@@ -21,7 +21,7 @@ namespace yack
 
             
             template <>
-            bool rk45<real_t>:: operator()(writable<real_t>       &y,
+            void rk45<real_t>:: operator()(writable<real_t>       &y,
                                            const readable<real_t> &dydx,
                                            real_t                 &x,
                                            const real_t            htry,
@@ -60,7 +60,10 @@ namespace yack
                     const real_t htemp=SAFETY*h*pow(errmax,PSHRNK);
                     h=(h >= 0.0 ? max_of<real_t>(htemp,tenth*h) : min_of<real_t>(htemp,tenth*h));
                     const real_t xnew=x+h;
-                    if( fabs(xnew-x) <= 0) return false; // underflow
+                    if( fabs(xnew-x) <= 0)
+                    {
+                        throw libc::exception(EDOM,"underflow in rk45 @x=%.15g", double(x));
+                    }
                 }
 
                 if (errmax>ERRCON)
@@ -71,7 +74,6 @@ namespace yack
                 // update
                 x += (hdid=h);
                 for(size_t i=n;i>0;--i) y[i]=ytmp[i];
-                return true;
             }
 
         }

@@ -58,7 +58,7 @@ ytmp( this->next() )
             //
             //__________________________________________________________________
             template <typename T>
-            class rk45 : public rk45_<T>, explicit_step<T>
+            class rk45 : public rk45_<T>, public explicit_step<T>
             {
             public:
                 //______________________________________________________________
@@ -83,7 +83,7 @@ ytmp( this->next() )
                 
 
                 //! interface to be driven
-                virtual bool operator()(writable<T>       &y,
+                virtual void operator()(writable<T>       &y,
                                         const readable<T> &dydx,
                                         T                 &x,
                                         const T            htry,

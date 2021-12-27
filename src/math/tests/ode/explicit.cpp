@@ -1,16 +1,77 @@
 #include "yack/math/ode/driver.hpp"
 #include "yack/math/ode/explicit/rk45/cash-karp.hpp"
 #include "yack/math/ode/explicit/rk45.hpp"
-
+#include "yack/sequence/vector.hpp"
 #include "yack/utest/run.hpp"
 
 using namespace yack;
 using namespace math;
 
+namespace
+{
+
+    template <typename T>
+    struct problem
+    {
+        T a;
+
+        inline void dExp(writable<T> &dy, T, const readable<T> &y )
+        {
+            dy[1] = -a * y[1];
+        }
+
+        inline void dCos(writable<T> &dy, T, const readable<T> &y )
+        {
+            dy[1] =      y[2];
+            dy[2] = -a * y[1];
+        }
+
+        inline void Prj(writable<T> &y, const T)
+        {
+            const T yy1 = squared(y[1]);
+            const T yy2 = squared(y[2])/fabs(a);
+            const T den = sqrt(yy1+yy2);
+            y[1] /= den;
+            y[2] /= den;
+        }
+        
+    };
+
+    template <typename T>
+    static inline void solveExp()
+    {
+        problem<T> pb = { 4.0 };
+        typename ode::named<T>::equation drvs(&pb,&problem<T>::dExp);
+        ode::driver<T>                   odeint;
+        ode::rk45<T>                     step( new ode::cash_karp<T>() );
+
+        T         h    = 1e-3;
+        T         x    = 0;
+        const T   xmax = 2.2;
+        size_t    nmax = 100;
+        vector<T> y(1);
+        y[1] = 1;
+
+        for(size_t i=1;i<=nmax;++i)
+        {
+            const T x_end = (i*xmax)/nmax;
+            odeint(step,y,x,x_end,1e-4,h,drvs,NULL);
+            x=x_end;
+            std::cerr << "@" << x << " " << y << std::endl;
+        }
+
+
+
+    }
+
+}
+
 YACK_UTEST(explicit)
 {
 
-    ode::rk45<float> step( new ode::cash_karp<float>() );
-    
+    solveExp<float>();
+
+
+
 }
 YACK_UDONE()

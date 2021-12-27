@@ -2,6 +2,9 @@
 #include "yack/type/utils.hpp"
 #include <cmath>
 
+#include "yack/system/exception.hpp"
+#include <cerrno>
+
 
 #define real_t float
 #include "rk45.hxx"

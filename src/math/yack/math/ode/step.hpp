@@ -32,7 +32,7 @@ namespace yack
                 typedef arrays_of<T>                tableaux; //!< alias
 
                 //! interface to be driven
-                virtual bool operator()(writable<T>       &y,
+                virtual void operator()(writable<T>       &y,
                                         const readable<T> &dydx,
                                         T                 &x,
                                         const T            htry,
