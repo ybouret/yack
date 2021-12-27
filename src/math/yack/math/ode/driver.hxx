@@ -16,7 +16,7 @@ namespace yack
 
 
             template <>
-            bool driver<real_t>:: operator()(step<real_t>     &moving,
+            void driver<real_t>:: operator()(step<real_t>     &moving,
                                              writable<real_t> &ystart,
                                              const real_t      x1,
                                              const real_t      x2,
@@ -49,7 +49,7 @@ namespace yack
                     bool would_finish = false;
                     {
                         const real_t xp = x+h;
-                        if ((xp-x2)*(xp-x1) >= 0)
+                        if ((xp-x2)*(xp-x1) >= 0) // xp out of interval
                         {
                             h=x2-x;
                             would_finish = true;
@@ -69,13 +69,10 @@ namespace yack
                     //
                     // take step
                     //__________________________________________________________
-                    const real_t xold=x;
                     real_t       hdid=0;
                     real_t       hnxt=0;
-                    if(!moving(y,dydx,x,h,eps,yscal,hdid,hnxt,drvs,proc))
-                    {
-                        return false; //!< underflow within step
-                    }
+                    moving(y,dydx,x,h,eps,yscal,hdid,hnxt,drvs,proc);
+
 
                     //__________________________________________________________
                     //
@@ -92,7 +89,7 @@ namespace yack
                         {
                             for(size_t i=n;i>0;--i) ystart[i] = y[i];
                             h1 = hnxt;
-                            return true;
+                            return;
                         }
                     }
                     else
@@ -104,14 +101,6 @@ namespace yack
                         ++nbad;
                     }
 
-                    //__________________________________________________________
-                    //
-                    // check that x has moved
-                    //__________________________________________________________
-                    if(fabs(x-xold)<=0)
-                    {
-                        return false;
-                    }
 
                     //__________________________________________________________
                     //

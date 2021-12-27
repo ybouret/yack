@@ -45,7 +45,7 @@ namespace yack
                 //______________________________________________________________
 
                 //! go from x1 to x2
-                bool operator()(step<T>     &moving,
+                void operator()(step<T>     &moving,
                                 writable<T> &ystart,
                                 const T      x1,
                                 const T      x2,
