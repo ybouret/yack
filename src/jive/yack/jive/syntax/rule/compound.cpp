@@ -26,10 +26,17 @@ namespace yack
             
             compound:: compound(const tag     &name_,
                                 const uint32_t uuid_) throw() :
-            rule(name_,internal_type,uuid_), manifest()
+            internal(name_,uuid_), manifest()
             {
             }
-            
+
+            compound & compound:: operator<<(const rule &r)
+            {
+                push_back( new component(r) );
+                return *this;
+            }
+
+
         }
     }
 }

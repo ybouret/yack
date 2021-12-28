@@ -3,7 +3,7 @@
 #ifndef YACK_JIVE_SYNTAX_COMPOUND_INCLUDED
 #define YACK_JIVE_SYNTAX_COMPOUND_INCLUDED 1
 
-#include "yack/jive/syntax/rule.hpp"
+#include "yack/jive/syntax/rule/internal.hpp"
 #include "yack/type/authority.hpp"
 
 namespace yack
@@ -23,8 +23,8 @@ namespace yack
             public:
                 virtual ~component()             throw(); //!< cleanup
                 explicit component(const rule &) throw(); //!< setup
-                component *next; //!< for manifest
-                component *prev; //!< for manifest
+                component *next;                          //!< for manifest
+                component *prev;                          //!< for manifest
             private:
                 YACK_DISABLE_COPY_AND_ASSIGN(component);
             };
@@ -43,11 +43,13 @@ namespace yack
             //! base class for compounds
             //
             //__________________________________________________________________
-            class compound : public rule, public manifest
+            class compound : public internal, public manifest
             {
             public:
                 virtual ~compound() throw(); //!< cleanup
-                
+
+                compound & operator<<(const rule &);
+
             protected:
                 explicit compound(const tag     &name_,
                                   const uint32_t uuid_) throw(); //!< setup

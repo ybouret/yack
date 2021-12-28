@@ -41,9 +41,7 @@ namespace yack
                 virtual ~terminal()            throw(); //!< cleanup
                 explicit terminal(const tag &) throw(); //!< setup name
 
-                //! helper
-               
-
+                
             private:
                 YACK_DISABLE_COPY_AND_ASSIGN(terminal);
             };
