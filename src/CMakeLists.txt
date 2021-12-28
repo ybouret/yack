@@ -37,6 +37,7 @@ endif()
 
 add_subdirectory(cli)
 add_subdirectory(yack/zlib)
+add_subdirectory(yack/bzip2)
 add_subdirectory(yack/lua)
 add_subdirectory(math)
 add_subdirectory(lua++)
