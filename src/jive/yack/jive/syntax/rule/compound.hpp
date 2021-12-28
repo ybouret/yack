@@ -46,10 +46,8 @@ namespace yack
             class compound : public internal, public manifest
             {
             public:
-                virtual ~compound() throw(); //!< cleanup
-
-                compound & operator<<(const rule &);
-
+                compound & operator<<(const rule &); //!< helper method
+                virtual ~compound() throw();         //!< cleanup
             protected:
                 explicit compound(const tag     &name_,
                                   const uint32_t uuid_) throw(); //!< setup

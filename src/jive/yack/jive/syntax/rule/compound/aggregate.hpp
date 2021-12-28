@@ -26,19 +26,21 @@ namespace yack
                 //
                 // types and definitions
                 //______________________________________________________________
-                static const uint32_t mark = YACK_FOURCC('A','G','G',':');
+                static const uint32_t mark = YACK_FOURCC('A','G','G',':'); //!< alias
 
                 //______________________________________________________________
                 //
                 // C++
                 //______________________________________________________________
-                virtual ~aggregate() throw();
-                explicit aggregate(const tag &name_) throw();
+                virtual ~aggregate() throw();                 //!< cleanup
+                explicit aggregate(const tag &name_) throw(); //!< setup
 
                 //______________________________________________________________
                 //
                 // interface
                 //______________________________________________________________
+
+                //! must accept all
                 virtual bool accept(YACK_JIVE_RULE_ARGS) const;
 
             private:

@@ -32,8 +32,15 @@ namespace yack
 
             void grammar:: top(const rule &r)
             {
-                if(!rules.owns(&r)) throw exception("[%s] doesn't owns <%s>", (*lang)(), ( *(r.name) )() );
+                must_own(r,"top");
                 rules.move_to_front( &coerce(r) );
+            }
+
+
+            void grammar:: must_own(const rule &r, const char *fn) const
+            {
+                assert(fn);
+                if(!rules.owns(&r)) throw exception("[%s] does not own <%s> in %s()", (*lang)(), ( *(r.name) )(), fn);
             }
         }
     }

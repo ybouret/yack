@@ -27,14 +27,14 @@ namespace yack
                 //
                 // types and definitions
                 //______________________________________________________________
-                static const uint32_t mark = YACK_FOURCC('A','L','T',':');
+                static const uint32_t mark = YACK_FOURCC('A','L','T',':'); //!< alias
 
                 //______________________________________________________________
                 //
                 // C++
                 //______________________________________________________________
-                virtual ~alternate() throw();
-                explicit alternate(const tag &name_) throw();
+                virtual ~alternate()                 throw(); //!< cleanup
+                explicit alternate(const tag &name_) throw(); //!< setup
 
                 //______________________________________________________________
                 //

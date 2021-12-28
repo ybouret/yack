@@ -28,11 +28,10 @@ namespace yack
                 // try to accept all components
                 for(const component *chld=head;chld;chld=chld->next)
                 {
-                    const rule &r = **chld;
-                    if(!r.accept(src,lxr,here))
+                    if(! (**chld).accept(src,lxr,here))
                     {
-                        keep.dismiss();
-                        xnode::ret(lxr,here);
+                        keep.dismiss();       // yield
+                        xnode::ret(lxr,here); // return sub tree
                         return false;
                     }
                 }
