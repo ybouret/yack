@@ -4,6 +4,7 @@
 #define YACK_JIVE_SYNTAX_TERMINAL_INCLUDED 1
 
 #include "yack/jive/syntax/rule.hpp"
+#include "yack/jive/syntax/rule/term-role.hpp"
 #include "yack/type/fourcc.h"
 
 namespace yack
@@ -28,6 +29,7 @@ namespace yack
                 //______________________________________________________________
                 static const uint32_t mark = YACK_FOURCC('T', 'E', 'R', 'M'); //!< UUID
 
+
                 //______________________________________________________________
                 //
                 // interface
@@ -39,9 +41,14 @@ namespace yack
                 // C++
                 //______________________________________________________________
                 virtual ~terminal()            throw(); //!< cleanup
-                explicit terminal(const tag &) throw(); //!< setup name
+                explicit terminal(const tag &, const term_role) throw(); //!< setup name
 
-                
+                //______________________________________________________________
+                //
+                // member
+                //______________________________________________________________
+                const term_role role; //!< terminal classification
+
             private:
                 YACK_DISABLE_COPY_AND_ASSIGN(terminal);
             };

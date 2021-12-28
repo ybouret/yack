@@ -16,6 +16,12 @@ namespace yack
                 assert(r);
                 assert(!rules.owns(r));
                 auto_ptr<rule> guard(r);
+
+                if(lexical::scanner::verbose)
+                {
+                    std::cerr << "[" << lang << "] declare <" << r->name << ">" << std::endl;
+                }
+                
                 const string  &id = *(r->name);
                 for(const rule *p=rules.head;p;p=p->next)
                 {
@@ -32,6 +38,10 @@ namespace yack
 
             void grammar:: top(const rule &r)
             {
+                if(lexical::scanner::verbose)
+                {
+                    std::cerr << "[" << lang << "] set toplevel <" << r.name << ">" << std::endl;
+                }
                 must_own(r,"top");
                 rules.move_to_front( &coerce(r) );
             }

@@ -9,9 +9,9 @@ namespace yack
     {
         namespace syntax
         {
-            const rule &grammar:: term__(const tag &id)
+            const rule &grammar:: term__(const tag &id, const term_role role)
             {
-                return decl( new terminal(id) );
+                return decl( new terminal(id,role) );
             }
 
         }

@@ -5,6 +5,7 @@
 #define YACK_JIVE_SYNTAX_GRAMMAR_INCLUDED 1
 
 #include "yack/jive/syntax/rule/compound.hpp"
+#include "yack/jive/syntax/rule/term-role.hpp"
 
 
 namespace yack
@@ -30,6 +31,7 @@ namespace yack
                 //______________________________________________________________
                 typedef syntax::rule     rule; //!< alias
                 typedef syntax::compound compound; //!< alias
+                
 
                 //______________________________________________________________
                 //
@@ -64,13 +66,13 @@ namespace yack
                 //______________________________________________________________
 
                 //! terminal creation
-                const rule &term__(const tag &id);
+                const rule &term__(const tag &id, const term_role role);
 
                 //! generic term
                 template <typename ID> inline
-                const rule &term_(const ID &id)
+                const rule &term_(const ID &id, const term_role role=standard)
                 {
-                    const tag _ = tags::make(id); return term__(_);
+                    const tag _ = tags::make(id); return term__(_,role);
                 }
 
                 //______________________________________________________________
@@ -177,7 +179,8 @@ namespace yack
                 //! render grammar
                 void gv() const;
 
-
+                //! validate grammar
+                void validate() const;
 
                 //______________________________________________________________
                 //
@@ -188,10 +191,12 @@ namespace yack
             private:
                 YACK_DISABLE_COPY_AND_ASSIGN(grammar);
                 cxx_list_of<rule> rules;
+
                 void       declare(rule *);
                 void       gv_draw(ios::ostream &fp) const;
                 void       must_own(const rule &a, const char *fn) const;
             };
+
 
         }
 

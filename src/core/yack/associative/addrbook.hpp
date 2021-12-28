@@ -38,6 +38,7 @@ namespace yack
         //
         // methods
         //______________________________________________________________________
+        void              ensure(const void *);               //!< ensure presence
         bool              insert(const void *);               //!< insert, address is BE key
         bool              search(const void *) const throw(); //!< search if registered
 

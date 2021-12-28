@@ -31,5 +31,11 @@ namespace yack
         return NULL !=  addrbook_::search(key.begin(),key.measure());
     }
 
+    void addrbook:: ensure(const void *addr)
+    {
+        const be_address key(addr,as_address);
+        (void) addrbook_::insert((void*)addr,key.begin(),key.measure());
+    }
+
     
 }

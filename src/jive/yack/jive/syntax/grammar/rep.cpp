@@ -1,5 +1,3 @@
-
-
 #include "yack/jive/syntax/grammar.hpp"
 #include "yack/jive/syntax/rule/wildcard/repeat.hpp"
 #include "yack/exception.hpp"

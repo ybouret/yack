@@ -12,8 +12,9 @@ namespace yack
             {
             }
 
-            terminal:: terminal(const tag &t) throw() :
-            rule(t,terminal_type,mark)
+            terminal:: terminal(const tag &t, const term_role r) throw() :
+            rule(t,terminal_type,mark),
+            role(r)
             {
                 I_am<terminal>();
             }

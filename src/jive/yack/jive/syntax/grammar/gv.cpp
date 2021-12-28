@@ -65,7 +65,10 @@ namespace yack
                 digraph_init(fp,"G");
 
                 logo(fp) << '[';
-                add_label(fp,(*lang)());
+                {
+                    const string root_id = *lang + ".grammar";
+                    add_label(fp,root_id());
+                }
                 fp << ",shape=rectangle";
                 end(fp << ']');
 
