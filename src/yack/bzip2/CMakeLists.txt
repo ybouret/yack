@@ -42,7 +42,7 @@ COMMAND ${CMAKE_COMMAND} -E compare_files sample3.ref sample3.tst
 COMMAND ${CMAKE_COMMAND} -E ${cmake_rm} -f  sample3.tst 
 
 
-COMMAND ${CMAKE_COMMAND} -E echo "[YACK] done [bzip2]"
+COMMAND ${CMAKE_COMMAND} -E cmake_echo_color --blue --bold "[YACK] done [bzip2]"
 WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
 COMMENT "[YACK] test [bzip2]"
 VERBATIM)
