@@ -32,7 +32,7 @@ namespace yack
                 const size_t nv = yest.size(); ensure(iest);
                 
                 x[iest]=xest;
-                if (iest == 1)
+                if(iest == 1)
                 {
                     for(size_t j=1;j<=nv;j++)
                     {
@@ -45,7 +45,8 @@ namespace yack
                 {
                     for (size_t k=1;k<iest;k++)
                         fx[k+1]=x[iest-k]/xest;
-                    for (size_t j=1;j<=nv;j++) {
+                    for (size_t j=1;j<=nv;j++)
+                    {
                         real_t v=d[j][1];
                         real_t c=d[j][1]=yest[j],yy=c;
                         real_t ddy = 0;

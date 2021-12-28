@@ -49,7 +49,7 @@ namespace yack
                 
                 {
                     const real_t fac = b21*h;
-                    const real_t xx = x+a2*h;
+                    const real_t xx  = x+a2*h;
                     for(size_t i=n;i>0;--i) ytemp[i]=y[i]+fac*dydx[i];
                     if(proc) (*proc)(ytemp,xx);
                     drvs(ak2,xx,ytemp);
