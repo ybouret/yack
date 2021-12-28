@@ -96,6 +96,12 @@ namespace yack
         {
             return new within(lower,upper);
         }
+
+        bool within:: is_univocal() const throw()
+        {
+            return lower==upper;
+        }
+
     }
 
 }

@@ -112,6 +112,11 @@ namespace yack
             return new at_least(*this);
         }
 
+        bool at_least:: is_univocal() const throw()
+        {
+            return false;
+        }
+
     }
 
 }

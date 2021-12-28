@@ -95,6 +95,11 @@ namespace yack
         {
             return new except(code);
         }
+
+        bool except:: is_univocal() const throw()
+        {
+            return false;
+        }
     }
 
 }

@@ -37,7 +37,7 @@ namespace yack
             virtual bool     strong() const;                       //! count>0 and joker is strong
             virtual void     encode(ios::ostream &) const;         //!< graphviz
             virtual pattern *clone()                const;         //!< clone
-
+            virtual bool     is_univocal()  const throw();         //!< false
 
             virtual const char *class_uid() const throw();          //!< clid
             virtual size_t      serialize(ios::ostream &fp) const;  //!< uuid+count+jk

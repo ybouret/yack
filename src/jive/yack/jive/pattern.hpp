@@ -44,19 +44,12 @@ namespace yack
              * token must be empty on call, and left empty if
              * result it not accepted
              */
-            virtual bool   accept(YACK_JIVE_PATTERN_ARGS) const = 0;
-
-            //! true if not empty token are accepted
-            virtual bool   strong() const                       = 0;
-
-            //! collect first bytes
-            virtual void   firsts(first_bytes &) const          = 0;
-
-            //! clone
-            virtual pattern *clone()             const          = 0;
-
-            //! encode as GraphViz
-            virtual void   encode(ios::ostream &) const         = 0;
+            virtual bool     accept(YACK_JIVE_PATTERN_ARGS) const = 0;
+            virtual bool     strong() const                       = 0; //!< true if not empty token are accepted
+            virtual void     firsts(first_bytes &)  const         = 0; //!< collect first bytes
+            virtual void     encode(ios::ostream &) const         = 0; //!< encode as GraphViz
+            virtual pattern *clone()                const         = 0; //!< clone
+            virtual bool     is_univocal()          const throw() = 0; //!< if univocal
 
             //__________________________________________________________________
             //

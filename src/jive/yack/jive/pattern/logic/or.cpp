@@ -77,6 +77,19 @@ namespace yack
             return new op_or(*this);
         }
 
+        bool op_or:: is_univocal()  const throw()
+        {
+            switch(size)
+            {
+                case 0: return true;
+                case 1: return head->is_univocal();
+                default:
+                    break;
+            }
+            return false;
+        }
+
+
 
     }
 

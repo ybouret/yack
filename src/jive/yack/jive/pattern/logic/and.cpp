@@ -81,6 +81,15 @@ namespace yack
             return new op_and(*this);
         }
 
+        bool op_and:: is_univocal()  const throw()
+        {
+            for(const pattern *m=head;m;m=m->next)
+            {
+                if(!m->is_univocal()) return false;
+            }
+            return true;
+        }
+
     }
 
 }

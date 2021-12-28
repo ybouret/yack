@@ -43,6 +43,7 @@ namespace yack
             virtual void     firsts(first_bytes  &) const; //!< collect
             virtual void     encode(ios::ostream &) const; //!< graphviz
             virtual pattern *clone()                const; //!< clone
+            virtual bool     is_univocal()  const throw(); //!< all univocal
 
             //__________________________________________________________________
             //

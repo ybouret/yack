@@ -91,6 +91,10 @@ namespace yack
             return new single(code);
         }
 
+        bool single:: is_univocal() const throw()
+        {
+            return true;
+        }
     }
 
 }

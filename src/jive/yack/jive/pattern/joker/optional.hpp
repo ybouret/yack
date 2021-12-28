@@ -36,6 +36,7 @@ namespace yack
             virtual bool     strong() const;               //!< never strong
             virtual void     encode(ios::ostream &) const; //!< graphviz
             virtual pattern *clone()                const; //!< clone
+            virtual bool     is_univocal()  const throw(); //!< false
 
             //__________________________________________________________________
             //

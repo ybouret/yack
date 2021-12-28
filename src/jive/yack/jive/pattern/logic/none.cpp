@@ -86,6 +86,11 @@ namespace yack
             return new op_none(*this);
         }
 
+        bool op_none:: is_univocal()  const throw()
+        {
+            return false;
+        }
+
     }
 
 }

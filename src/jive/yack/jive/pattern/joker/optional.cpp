@@ -76,7 +76,10 @@ namespace yack
             return new optional(*this);
         }
         
-
+        bool optional:: is_univocal()  const throw()
+        {
+            return false;
+        }
 
     }
 

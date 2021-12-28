@@ -97,6 +97,11 @@ namespace yack
         }
 
 
+        bool counting:: is_univocal()  const throw()
+        {
+            return (nmin == nmax) && (**this).is_univocal();
+        }
+
     }
 
 }

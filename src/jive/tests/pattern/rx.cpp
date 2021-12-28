@@ -34,6 +34,7 @@ YACK_UTEST(regexp)
         ios::serializer::cfile::save("rx.bin",*rx);
         std::cerr << "first bytes : " << fc << std::endl;
         std::cerr << "strong      : " << rx->strong() << std::endl;
+        std::cerr << "univocal    : " << rx->is_univocal() << std::endl;
         const string express = rx->express();
         std::cerr << "express     : " << express << std::endl;
         const jive::motif expressed = jive::regexp::compile(express);
