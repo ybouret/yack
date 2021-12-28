@@ -41,11 +41,10 @@ add_subdirectory(yack/lua)
 add_subdirectory(math)
 add_subdirectory(lua++)
 add_subdirectory(jive)
-add_subdirectory(sqlite3)
 add_subdirectory(yack/png)
 add_subdirectory(yack/jpeg)
 add_subdirectory(yack/jbig)
-
+add_subdirectory(yack/sqlite3)
 
 string( STRIP "${UNIT_TESTS}" UNIT_TESTS)
 string( REPLACE " " ";" UNIT_TESTS "${UNIT_TESTS}" )
