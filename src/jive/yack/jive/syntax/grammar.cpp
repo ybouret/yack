@@ -23,7 +23,18 @@ namespace yack
                 }
                 rules.push_back( guard.yield() );
             }
-            
+
+            const list_of<rule> & grammar:: operator*() const throw()
+            {
+                return rules;
+            }
+
+
+            void grammar:: top(const rule &r)
+            {
+                if(!rules.owns(&r)) throw exception("[%s] doesn't owns <%s>", (*lang)(), ( *(r.name) )() );
+                rules.move_to_front( &coerce(r) );
+            }
         }
     }
 

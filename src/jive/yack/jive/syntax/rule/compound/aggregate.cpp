@@ -17,6 +17,7 @@ namespace yack
             aggregate:: aggregate(const tag &name_) throw() :
             compound(name_,mark)
             {
+                I_am<aggregate>();
             }
 
             bool aggregate:: accept(YACK_JIVE_RULE_ARGS) const

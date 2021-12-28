@@ -14,6 +14,7 @@ namespace yack
             alternate:: alternate(const tag &name_) throw() :
             compound(name_,mark)
             {
+                I_am<alternate>();
             }
             
 

@@ -45,7 +45,7 @@ namespace yack
 
                 //______________________________________________________________
                 //
-                // methods
+                // construction methods
                 //______________________________________________________________
 
                 //! declare a new (derived) rule
@@ -103,8 +103,21 @@ namespace yack
                 //! create a repeating>=1 rule from an existing rule
                 const rule &oom(const rule &r);
 
+                //! return content
+                const list_of<rule> & operator*() const throw();
+
+                //! set top level rule
+                void top(const rule &);
+
+                //______________________________________________________________
+                //
+                // other methods
+                //______________________________________________________________
+
                 //! render grammar
                 void gv() const;
+
+
 
                 //______________________________________________________________
                 //

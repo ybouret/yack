@@ -11,13 +11,12 @@ namespace
     public:
         explicit Gram() : jive::syntax::grammar( "Gram" )
         {
-            const rule &ID =  term_("ID");
-            (void)ID;
+            const rule &ID     = term_("ID");
+            const rule &INT    = term_("INT");
             const rule &OPT_ID = opt(ID);
-            (void)OPT_ID;
-
             const rule &ZOM_ID = zom(ID);
             (void)ZOM_ID;
+
 
 
         }
@@ -34,6 +33,7 @@ namespace
 YACK_UTEST(grammar)
 {
     Gram G;
+    std::cerr << "#rules=" << (*G).size << std::endl;
 
     G.gv();
 
