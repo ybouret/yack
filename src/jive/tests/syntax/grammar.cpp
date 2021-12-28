@@ -54,8 +54,6 @@ YACK_UTEST(grammar)
     std::cerr << G.lang << " #rules=" << (*G).size << std::endl;
 
 
-    YACK_SIZEOF(jive::syntax::grammar);
-    YACK_SIZEOF(addrbook);
 }
 YACK_UDONE()
 

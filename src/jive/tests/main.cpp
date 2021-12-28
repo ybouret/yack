@@ -18,6 +18,7 @@ YACK_UTEST_DECL(16)
 
     YACK_UTEST(syntax_types);
     YACK_UTEST(grammar);
+    YACK_UTEST(parser);
 
 }
 YACK_UTEST_EXEC()
