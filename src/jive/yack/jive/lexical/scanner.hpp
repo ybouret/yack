@@ -18,7 +18,15 @@ namespace yack
 
         namespace lexical
         {
-           
+
+            //! ens of stream policy
+            enum eos_policy
+            {
+                accept_eos,
+                reject_eos
+            };
+
+
             //__________________________________________________________________
             //
             //
@@ -28,6 +36,10 @@ namespace yack
             class scanner : public object, public counted
             {
             public:
+                //______________________________________________________________
+                //
+                // types and definition
+                //______________________________________________________________
                 static size_t output_width; //!< verbose output names alignment
                 static bool   verbose;      //!< class wise verbosity
 
@@ -37,14 +49,15 @@ namespace yack
                 //______________________________________________________________
                 virtual ~scanner() throw(); //!< cleanup
 
-                //! setup with optional dictionary
+                //! setup with default policy for standalone scanner
                 template <typename LABEL> inline
-                explicit scanner(const LABEL &id) :
+                explicit scanner(const LABEL &id, const eos_policy flag=accept_eos) :
                 object(),
                 counted(),
                 label( tags::make(id)       ),
                 instr( new instructions()   ),
                 table( new scatter::table() ),
+                onEOS(flag),
                 flux(NULL),
                 root(NULL),
                 dict(NULL)
@@ -279,7 +292,8 @@ namespace yack
                 const tag                             label; //!< scanner label
                 const auto_ptr<const instructions>    instr; //!< set of instructions
                 const auto_ptr<const scatter::table>  table; //!< scattered directives
-                
+                const eos_policy                      onEOS; //!< to check EOS
+
             protected:
                 source                                *flux; //!< set during a probe call
                 analyzer                              *root; //!< set by link_to
@@ -289,7 +303,7 @@ namespace yack
                 YACK_DISABLE_COPY_AND_ASSIGN(scanner);
                 void check_word(const tag &uuid, const token &word) const;
                 void check_root() const;
-                
+
             };
         }
 

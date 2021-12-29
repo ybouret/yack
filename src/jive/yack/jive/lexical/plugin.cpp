@@ -18,12 +18,13 @@ namespace yack
                 enter(word);
             }
 
-            void plugin:: inject(token &word) const
+            lexeme &plugin:: inject(token &word) const
             {
                 if(word.size<=0) throw exception("<%s> returned empty", (*label)());
                 lexeme *lx = new lexeme(label,*word);
                 (**lx).swap_with(word);
                 root->store(lx);
+                return *lx;
             }
 
 

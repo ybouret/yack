@@ -6,6 +6,7 @@
 #include "yack/jive/lexical/plugin/jstring.hpp"
 #include "yack/jive/lexical/plugin/rstring.hpp"
 #include "yack/jive/lexical/plugin/bstring.hpp"
+#include "yack/jive/lexical/plugin/verbatim.hpp"
 
 #include "yack/utest/run.hpp"
 
@@ -47,6 +48,10 @@ namespace
             plug(jive::lexical::jstring::clid, "jstring");
             plug(jive::lexical::rstring::clid, "rstring");
             plug(jive::lexical::bstring::clid, "bstring");
+
+            plug(jive::lexical::verbatim::clid,"block","<verb>","<verb/>");
+            
+            
         }
 
         virtual ~mylexer() throw()
@@ -116,6 +121,12 @@ YACK_UTEST(analyzer)
     mylexer lex;
     std::cerr << lex.label << " is ready" << std::endl;
     std::cerr << *lex << std::endl;
+
+    if(false)
+    {
+        ios::ocstream::overwrite("example.dat");
+        ios::ocstream::echo("example.dat","\"string");
+    }
 
     if(argc>1)
     {

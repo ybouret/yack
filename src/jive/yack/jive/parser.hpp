@@ -52,9 +52,12 @@ namespace yack
                 return create(t,m,a,r);
             }
 
-            const rule & term(const string &id); //!< create a terminal whose expression is id
-            const rule & term(const char   *id); //!< create a terminal whose expression is id
-            const rule & term(const char     C); //!< create a terminal from single C
+            //! create a terminal whose regexp is id
+            template <typename ID> inline
+            const rule &term(const ID &id)
+            {
+                return term(id,id);
+            }
 
             //__________________________________________________________________
             //
@@ -72,10 +75,12 @@ namespace yack
                 return term__(t,syntax::division);
             }
 
-            const rule & mark(const string &id); //!< create a mark whose expression is id
-            const rule & mark(const char   *id); //!< create a mark whose expression is id
-            const rule & mark(const char     C); //!< create a mark from single C
-
+            //! create a mark whose regexp is id
+            template <typename ID> inline
+            const rule &mark(const ID &id)
+            {
+                return mark(id,id);
+            }
 
 
             //__________________________________________________________________

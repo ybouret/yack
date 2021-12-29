@@ -37,7 +37,7 @@ namespace yack
                 explicit single_line_comment(const IDENTIFIER &uuid,
                                              const EXPRESSION &expr,
                                              analyzer         &host) :
-                comment(uuid,expr,host)
+                comment(uuid,expr,host,accept_eos)
                 {
                     compile();
                 }

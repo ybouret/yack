@@ -42,7 +42,7 @@ namespace yack
                                              const EXPRESSINI &init,
                                              const EXPRESSEND &done,
                                              analyzer         &host) :
-                comment(uuid,init,host)
+                comment(uuid,init,host,reject_eos)
                 {
                     back(done,this,&multi_lines_comment::leave);
                     compile();

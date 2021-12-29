@@ -145,7 +145,11 @@ namespace yack
                     lexeme *lx   = scan->probe(src,ctrl);
                     if(lx)
                     {
+                        //------------------------------------------------------
+                        //
                         // produce lexeme
+                        //
+                        //------------------------------------------------------
                         return lx;
                     }
                     else
@@ -153,12 +157,33 @@ namespace yack
                         assert(NULL==lx);
                         if(ctrl)
                         {
+                            //--------------------------------------------------
+                            //
                             // something happened, probe again
+                            //
+                            //--------------------------------------------------
                             goto QUERY;
                         }
                         else
                         {
+                            //--------------------------------------------------
+                            //
                             // EOF
+                            //
+                            //--------------------------------------------------
+                            switch(scan->onEOS)
+                            {
+                                case accept_eos:
+                                    std::cerr << scan->label << " accept EOS" << std::endl;
+                                    break;
+                                case reject_eos: {
+                                    std::cerr << scan->label << " reject EOS" << std::endl;
+                                    exception excp("End Of Stream for <%s>", (*(scan->label))() );
+                                    (**flux).stamp(excp);
+                                    throw excp;
+                                } break;
+                            }
+
                             return NULL;
                         }
                     }

@@ -38,8 +38,9 @@ namespace yack
                 typename EXPRESSION>
                 explicit plugin(const IDENTIFIER &uuid,
                                 const EXPRESSION &expr,
-                                analyzer         &host) :
-                scanner(uuid),
+                                analyzer         &host,
+                                const eos_policy  flag) :
+                scanner(uuid,flag),
                 trigger( tags::make(expr) )
                 {
                     link_to(host);
@@ -62,8 +63,11 @@ namespace yack
                 //______________________________________________________________
                 //
                 //! store a new lexeme built from label and non-empty token
+                /**
+                 return lexeme for further manupulation if necessary
+                 */
                 //______________________________________________________________
-                void inject(token &) const;
+                lexeme &inject(token &) const;
 
             private:
                 YACK_DISABLE_COPY_AND_ASSIGN(plugin);

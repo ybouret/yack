@@ -19,6 +19,10 @@ namespace yack
 
             //! compile wrapper
             static pattern *compile(const char   *expr, const dictionary *dict=NULL);
+
+            //! compile wrapper, just single
+            static pattern *compile(const char c, const dictionary * =NULL);
+
         };
     }
 

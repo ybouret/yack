@@ -1,5 +1,6 @@
 #include "yack/jive/pattern/regexp.hpp"
 #include "yack/jive/pattern/regexp/compiler.hpp"
+#include "yack/jive/pattern/basic/single.hpp"
 #include "yack/exception.hpp"
 
 namespace yack
@@ -21,6 +22,12 @@ namespace yack
             const string _(expr);
             return compile(_,dict);
         }
+
+        pattern * regexp:: compile(const char c, const dictionary *)
+        {
+            return new single(c);
+        }
+
     }
 }
 

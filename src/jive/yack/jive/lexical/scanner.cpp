@@ -105,11 +105,11 @@ namespace yack
                 {
                     //----------------------------------------------------------
                     //
-                    // eof
+                    // eos
                     //
                     //----------------------------------------------------------
-                    if(verbose) std::cerr << "<" << label << "> EOF" << std::endl;
-                    return NULL; // EOF
+                    if(verbose) std::cerr << "<" << label << "> EOS" << std::endl;
+                    return NULL; // EOS
                 }
                 else
                 {

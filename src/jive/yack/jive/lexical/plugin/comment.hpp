@@ -37,8 +37,9 @@ namespace yack
                 > inline
                 explicit comment(const IDENTIFIER &uuid,
                                  const EXPRESSION &expr,
-                                 analyzer         &host) :
-                plugin(uuid,expr,host)
+                                 analyzer         &host,
+                                 const eos_policy  flag) :
+                plugin(uuid,expr,host,flag)
                 {
                 }
 
