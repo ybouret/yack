@@ -72,16 +72,16 @@ namespace yack
                 }
 
                 //! register a plugin
-                void import(plugin *);
+                const plugin & import(plugin *);
 
                 //! import a no-arg plugin
                 template <
                 typename PLUGIN,
                 typename IDENTIFIER
                 >
-                inline void plug( type2type<PLUGIN>, const IDENTIFIER &uuid)
+                inline const plugin & plug( type2type<PLUGIN>, const IDENTIFIER &uuid)
                 {
-                    import( new PLUGIN(uuid,*this) );
+                    return import( new PLUGIN(uuid,*this) );
                 }
 
                 //! import a 1-arg plugin
@@ -90,9 +90,9 @@ namespace yack
                 typename IDENTIFIER,
                 typename EXPRESSION
                 >
-                inline void plug( type2type<PLUGIN>, const IDENTIFIER &uuid, const EXPRESSION &expr)
+                inline const plugin & plug( type2type<PLUGIN>, const IDENTIFIER &uuid, const EXPRESSION &expr)
                 {
-                    import( new PLUGIN(uuid,expr,*this) );
+                    return import( new PLUGIN(uuid,expr,*this) );
                 }
 
                 //! import a 2-args plugin
@@ -102,9 +102,9 @@ namespace yack
                 typename EXPRESSINI,
                 typename EXPRESSEND
                 >
-                inline void plug( type2type<PLUGIN>, const IDENTIFIER &uuid, const EXPRESSINI &init, const EXPRESSEND &done)
+                inline const plugin & plug( type2type<PLUGIN>, const IDENTIFIER &uuid, const EXPRESSINI &init, const EXPRESSEND &done)
                 {
-                    import( new PLUGIN(uuid,init,done,*this) );
+                    return import( new PLUGIN(uuid,init,done,*this) );
                 }
                 
 
@@ -134,7 +134,7 @@ namespace yack
                 scanner *scan; //!< current scanner
                 lexemes  repo; //!< cache
                 history  hist; //!< call stack
-                scan_set sdb;
+                scan_set sdb;  //!< scanner database
                 void     setup();
                 void     declare(scanner *);
                 scanner *request(const string &target, const char *when) const;

@@ -56,11 +56,12 @@ namespace yack
                 s->link_to(*this);
             }
 
-            void analyzer::import( plugin *plg )
+            const plugin & analyzer::import( plugin *plg )
             {
                 assert(NULL!=plg);
                 plugin &p = decl<plugin>(plg);
                 call(p.label,p.trigger,&p,&plugin::on_call);
+                return *plg;
             }
 
 
