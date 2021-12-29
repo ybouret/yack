@@ -1,6 +1,6 @@
 #include "yack/math/ode/driver.hpp"
-#include "yack/math/ode/explicit/rk45/cash-karp.hpp"
-#include "yack/math/ode/explicit/rk45.hpp"
+#include "yack/math/ode/explicit/rkck.hpp"
+#include "yack/math/ode/explicit/rkdp.hpp"
 #include "yack/sequence/vector.hpp"
 #include "yack/utest/run.hpp"
 #include "yack/system/rtti.hpp"
@@ -41,15 +41,15 @@ namespace
         
     };
 
-    template <typename T>
-    static inline void solveExp()
+    template <typename T, template <typename> class STEP>
+    static inline void solveExp(const char *ext)
     {
-        string       id = "exp-" + rtti::name<T>() + ".dat";
+        string       id = "exp-" + rtti::name<T>() + "-" + ext + ".dat";
         const string filename = cxx_name::of(id);
         problem<T> pb = { 4.0 };
         typename ode::named<T>::equation drvs(&pb,&problem<T>::dExp);
         ode::driver<T>                   odeint;
-        ode::rk45<T>                     step( new ode::cash_karp<T>() );
+        typename STEP<T>::device         step;
 
         std::cerr << filename << std::endl;
 
@@ -141,13 +141,20 @@ namespace
 
     }
 
-
+    template <typename T>
+    static inline void solveAll()
+    {
+        solveExp<T,ode::rkck>("rkck");
+    }
 
 }
 
 YACK_UTEST(explicit)
 {
 
+    solveAll<float>();
+
+#if 0
     solveExp<float>();
     solveCos<float>();
     solvePrj<float>();
@@ -159,7 +166,7 @@ YACK_UTEST(explicit)
     solveExp<long double>();
     solveCos<long double>();
     solvePrj<long double>();
-
+#endif
 
 }
 YACK_UDONE()
