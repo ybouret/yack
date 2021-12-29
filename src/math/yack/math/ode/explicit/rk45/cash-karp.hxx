@@ -15,7 +15,7 @@ namespace yack
             ak4( next() ),
             ak5( next() ),
             ak6( next() ),
-            ytemp( next() )
+            ytmp( next() )
             {
                 
             }
@@ -50,37 +50,37 @@ namespace yack
                 {
                     const real_t fac = b21*h;
                     const real_t xx  = x+a2*h;
-                    for(size_t i=n;i>0;--i) ytemp[i]=y[i]+fac*dydx[i];
-                    if(proc) (*proc)(ytemp,xx);
-                    drvs(ak2,xx,ytemp);
+                    for(size_t i=n;i>0;--i) ytmp[i]=y[i]+fac*dydx[i];
+                    if(proc) (*proc)(ytmp,xx);
+                    drvs(ak2,xx,ytmp);
                 }
 
                 {
                     const real_t xx = x+a3*h;
-                    for(size_t i=n;i>0;--i) ytemp[i]=y[i]+h*(b31*dydx[i]+b32*ak2[i]);
-                    if(proc) (*proc)(ytemp,xx);
-                    drvs(ak3,xx,ytemp);
+                    for(size_t i=n;i>0;--i) ytmp[i]=y[i]+h*(b31*dydx[i]+b32*ak2[i]);
+                    if(proc) (*proc)(ytmp,xx);
+                    drvs(ak3,xx,ytmp);
                 }
 
                 {
                     const real_t xx = x+a4*h;
-                    for(size_t i=n;i>0;--i) ytemp[i]=y[i]+h*(b41*dydx[i]+b42*ak2[i]+b43*ak3[i]);
-                    if(proc) (*proc)(ytemp,xx);
-                    drvs(ak4,xx,ytemp);
+                    for(size_t i=n;i>0;--i) ytmp[i]=y[i]+h*(b41*dydx[i]+b42*ak2[i]+b43*ak3[i]);
+                    if(proc) (*proc)(ytmp,xx);
+                    drvs(ak4,xx,ytmp);
                 }
 
                 {
                     const real_t xx = x+a5*h;
-                    for(size_t i=n;i>0;--i) ytemp[i]=y[i]+h*(b51*dydx[i]+b52*ak2[i]+b53*ak3[i]+b54*ak4[i]);
-                    if(proc) (*proc)(ytemp,xx);
-                    drvs(ak5,xx,ytemp);
+                    for(size_t i=n;i>0;--i) ytmp[i]=y[i]+h*(b51*dydx[i]+b52*ak2[i]+b53*ak3[i]+b54*ak4[i]);
+                    if(proc) (*proc)(ytmp,xx);
+                    drvs(ak5,xx,ytmp);
                 }
 
                 {
                     const real_t xx = x+a6*h;
-                    for(size_t i=n;i>0;--i) ytemp[i]=y[i]+h*(b61*dydx[i]+b62*ak2[i]+b63*ak3[i]+b64*ak4[i]+b65*ak5[i]);
-                    if(proc) (*proc)(ytemp,xx);
-                    drvs(ak6,xx,ytemp);
+                    for(size_t i=n;i>0;--i) ytmp[i]=y[i]+h*(b61*dydx[i]+b62*ak2[i]+b63*ak3[i]+b64*ak4[i]+b65*ak5[i]);
+                    if(proc) (*proc)(ytmp,xx);
+                    drvs(ak6,xx,ytmp);
                 }
 
                 // evaluate output

@@ -57,7 +57,7 @@ namespace yack
                                         callback          *proc);
                 
             private:
-                array_type &ak2, &ak3, &ak4, &ak5, &ak6, &ytemp;
+                array_type &ak2, &ak3, &ak4, &ak5, &ak6, &ytmp;
             };
 
         }
