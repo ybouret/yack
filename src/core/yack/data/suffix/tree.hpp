@@ -58,7 +58,7 @@ namespace yack
             }
 
             //! cleanup
-            inline ~suffix_tree() throw()
+            inline virtual ~suffix_tree() throw()
             {
             }
 
