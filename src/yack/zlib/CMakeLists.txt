@@ -1,5 +1,5 @@
-
 PROJECT(zlib C)
+
 message( STATUS "[YACK] <zlib>" )
 
 yack_no_warnings()
@@ -15,5 +15,5 @@ add_library(yack-z ${zlib})
 install( TARGETS yack-z ARCHIVE DESTINATION lib )
 
 add_subdirectory(tests)
-
+yack_third_party(z-example)
 message( STATUS "[YACK] <zlib/>" )

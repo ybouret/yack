@@ -77,6 +77,7 @@ COMMAND ${CMAKE_COMMAND} -E echo "[YACK]  <lua::tests/>"
 COMMENT "[YACK] performing lua tests..."
 VERBATIM)
 
+yack_third_party(yack_lua)
 
 message( STATUS "[YACK] <lua/>" )
 

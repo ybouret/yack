@@ -1,4 +1,5 @@
 project(png C)
+message( STATUS "[YACK] <png>" )
 
 yack_no_warnings()
 
@@ -23,3 +24,7 @@ COMMAND           ${CMAKE_COMMAND} -E cmake_echo_color --blue --bold "[YACK] don
 WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/tests
 COMMENT           "[YACK] test [png]"
 VERBATIM)
+
+yack_third_party(yack_pngtest)
+
+message( STATUS "[YACK] <png/>" )

@@ -23,7 +23,7 @@ endmacro()
 
 add_subdirectory(core)
 
-
+# check documentation generation
 find_program(doxygen doxygen)
 if("${doxygen}" STREQUAL "doxygen-NOTFOUND")
 	message( STATUS "[YACK] no possible documentation" )
@@ -34,6 +34,12 @@ add_custom_target(dox
 	WORKING_DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}/.."
 	COMMENT "[YACK] Creating Documentation with Doxygen")
 endif()
+
+
+SET(THIRD_PARTY "")
+macro(yack_third_party target)
+	set(THIRD_PARTY "${THIRD_PARTY} ${target}" PARENT_SCOPE)
+endmacro()
 
 add_subdirectory(cli)
 add_subdirectory(yack/zlib)
@@ -47,11 +53,23 @@ add_subdirectory(yack/jpeg)
 add_subdirectory(yack/jbig)
 add_subdirectory(yack/sqlite3)
 
+# creating regression from unit tests
 string( STRIP "${UNIT_TESTS}" UNIT_TESTS)
 string( REPLACE " " ";" UNIT_TESTS "${UNIT_TESTS}" )
+
+
 
 message( STATUS "[YACK] Unit Tests: '${UNIT_TESTS}'" )
 add_custom_target(regression 
 	DEPENDS ${UNIT_TESTS}
-	COMMENT "[YACK] Regression")
+	COMMENT "[YACK] Performed Regression")
 	
+# creating third party
+string( STRIP "${THIRD_PARTY}" THIRD_PARTY)
+string( REPLACE " " ";" THIRD_PARTY "${THIRD_PARTY}" )
+
+message( STATUS "[YACK] Third Party: '${THIRD_PARTY}'" )
+
+add_custom_target(third_party 
+	DEPENDS ${THIRD_PARTY}
+	COMMENT "[YACK] Built Third Party")

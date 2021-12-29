@@ -1,5 +1,7 @@
 project(jbig C)
 
+message( STATUS "[YACK] <jbig>" )
+
 add_library(yack-jbig STATIC 
 jbig.h
 jbig.c 
@@ -16,3 +18,7 @@ COMMAND    ${CMAKE_COMMAND} -E cmake_echo_color --blue --bold  "[YACK] done [jbi
 DEPENDS    yack_jbig
 COMMENT    "[YACK] test [jbig]"
 VERBATIM)
+
+yack_third_party(yack_jbig)
+
+message( STATUS "[YACK] <jbig/>" )

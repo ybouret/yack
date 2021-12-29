@@ -1,4 +1,5 @@
 project(jpeg C)
+message( STATUS "[YACK] <jpeg>" )
 
 yack_no_warnings()
 
@@ -88,6 +89,10 @@ DEPENDS           yack_jpegtran
 WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/tests
 COMMENT           "[YACK] test [jpegtran]"
 VERBATIM)
+
+yack_third_party("yack_cjpeg yack_djpeg yack_jpegtran")
+
+message( STATUS "[YACK] <jpeg/>" )
 
 #example for I/O
 #add_executable(yack_jpeg_example tests/example.c)

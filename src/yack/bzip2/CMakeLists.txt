@@ -1,4 +1,5 @@
 project(bz2 C)
+message( STATUS "[YACK] <bzip2>" )
 
 yack_no_warnings()
 add_definitions(-D_FILE_OFFSET_BITS=64)
@@ -14,6 +15,8 @@ add_library(yack-bz2 STATIC
 
 add_executable(yack_bzip2 bzip2.c)
 target_link_libraries(yack_bzip2 yack-bz2)
+
+yack_third_party(yack_bzip2)
 
 add_custom_command( TARGET yack_bzip2
 POST_BUILD
@@ -47,3 +50,5 @@ WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
 COMMENT "[YACK] test [bzip2]"
 VERBATIM)
  
+message( STATUS "[YACK] <bzip2/>" )
+

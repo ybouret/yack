@@ -1,4 +1,7 @@
 project(sqlite3 C)
+
+message( STATUS "[YACK] <SQLite3>" )
+
 include_directories(../yack/zlib)
 
 yack_no_warnings()
