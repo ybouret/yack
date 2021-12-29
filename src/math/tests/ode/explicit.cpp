@@ -44,7 +44,7 @@ namespace
     template <typename T, template <typename> class STEP>
     static inline void solveExp(const char *ext)
     {
-        string       id = "exp-" + rtti::name<T>() + "-" + ext + ".dat";
+        string       id = cxx_name::of("exp-" + rtti::name<T>() + "-" + ext) + ".dat";
         const string filename = cxx_name::of(id);
         problem<T> pb = { 4.0 };
         typename ode::named<T>::equation drvs(&pb,&problem<T>::dExp);
@@ -68,21 +68,20 @@ namespace
             const T x_end = (i*xmax)/nmax;
             odeint(step,y,x,x_end,1e-4,h,drvs,NULL);
             x=x_end;
-            //std::cerr << "@" << x << " " << y << std::endl;
             ios::ocstream::echo(filename,"%.15g %.15g\n", double(x), double(y[1]));
         }
 
     }
 
-    template <typename T>
-    static inline void solveCos()
+    template <typename T, template <typename> class STEP>
+    static inline void solveCos(const char *ext)
     {
-        string       id = "cos-" + rtti::name<T>() + ".dat";
+        string       id = cxx_name::of("cos-" + rtti::name<T>() + "-" + ext) + ".dat";
         const string filename = cxx_name::of(id);
         problem<T> pb = { 4.0 };
         typename ode::named<T>::equation drvs(&pb,&problem<T>::dCos);
         ode::driver<T>                   odeint;
-        ode::rk45<T>                     step( new ode::cash_karp<T>() );
+        typename STEP<T>::device         step;
 
         std::cerr << filename << std::endl;
 
@@ -108,15 +107,15 @@ namespace
     }
 
 
-    template <typename T>
-    static inline void solvePrj()
+    template <typename T, template <typename> class STEP>
+    static inline void solvePrj(const char *ext)
     {
-        const string filename = cxx_name::of("prj-" + rtti::name<T>() ) + ".dat";
+        const string filename = cxx_name::of("prj-" + rtti::name<T>() + "-" + ext) + ".dat";
         problem<T> pb = { 4.0 };
         typename ode::named<T>::equation drvs(&pb,&problem<T>::dCos);
         typename ode::named<T>::callback proc(&pb,&problem<T>::Prj);
         ode::driver<T>                   odeint;
-        ode::rk45<T>                     step( new ode::cash_karp<T>() );
+        typename STEP<T>::device         step;
 
         std::cerr << filename << std::endl;
 
@@ -145,6 +144,11 @@ namespace
     static inline void solveAll()
     {
         solveExp<T,ode::rkck>("rkck");
+        solveExp<T,ode::rkdp>("rkdp");
+        solveCos<T,ode::rkck>("rkck");
+        solveCos<T,ode::rkdp>("rkdp");
+        solvePrj<T,ode::rkck>("rkck");
+        solvePrj<T,ode::rkdp>("rkdp");
     }
 
 }

@@ -14,18 +14,21 @@ namespace yack
         namespace ode
         {
 
+            //__________________________________________________________________
+            //
+            //
             //! Runge-Kutta 4/5 Control Step
+            //
+            //__________________________________________________________________
             template <typename T,
             template <typename> class ENGINE>
             class rkcs : public rk45<T>
             {
             public:
-                typedef ENGINE<T> engine;
-
-                inline virtual ~rkcs() throw() {}
-                inline explicit rkcs() : rk45<T>( new engine() ) {}
+                typedef ENGINE<T> engine;                           //!< alias
+                inline virtual ~rkcs() throw()                   {} //!< cleanup
+                inline explicit rkcs() : rk45<T>( new engine() ) {} //!< setup
                 
-
             private:
                 YACK_DISABLE_COPY_AND_ASSIGN(rkcs);
             };

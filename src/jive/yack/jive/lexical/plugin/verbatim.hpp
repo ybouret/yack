@@ -23,7 +23,7 @@ namespace yack
             class verbatim : public plugin
             {
             public:
-                YACK_JIVE_PLUGIN_DECL(verbatim);
+                YACK_JIVE_PLUGIN_DECL(verbatim); //!< alias
 
                 //______________________________________________________________
                 //

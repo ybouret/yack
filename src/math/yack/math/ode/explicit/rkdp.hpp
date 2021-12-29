@@ -16,10 +16,16 @@ namespace yack
 
         namespace ode
         {
+            //__________________________________________________________________
+            //
+            //
+            //! Runge-Kutta Dormand-Prince
+            //
+            //__________________________________________________________________
             template <typename T>
             struct rkdp
             {
-                typedef rkcs<T,dormand_prince> device;
+                typedef rkcs<T,dormand_prince> device; //!< alias
             };
         }
 

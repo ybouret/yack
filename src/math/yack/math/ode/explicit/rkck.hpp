@@ -15,10 +15,16 @@ namespace yack
 
         namespace ode
         {
+            //__________________________________________________________________
+            //
+            //
+            //! Runge-Kutta Cask Kark device
+            //
+            //__________________________________________________________________
             template <typename T>
             struct rkck
             {
-                typedef rkcs<T,cash_karp> device;
+                typedef rkcs<T,cash_karp> device; //!< alias
             };
         }
 

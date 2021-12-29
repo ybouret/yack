@@ -8,8 +8,8 @@ namespace yack
             template <> dormand_prince<real_t>:: ~dormand_prince() throw() {}
 
             template <> dormand_prince<real_t>::  dormand_prince() :
-            base_type(6),
-            ak2( next() ),
+            base_type(7),
+            ak2( next()  ),
             ak3( next()  ),
             ak4( next()  ),
             ak5( next()  ),
