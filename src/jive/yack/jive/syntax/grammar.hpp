@@ -29,7 +29,7 @@ namespace yack
                 //
                 // types and definitions
                 //______________________________________________________________
-                typedef syntax::rule     rule; //!< alias
+                typedef syntax::rule     rule;     //!< alias
                 typedef syntax::compound compound; //!< alias
                 
 

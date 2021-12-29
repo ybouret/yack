@@ -55,6 +55,25 @@ namespace yack
                 virtual void enter(token &) throw();  //!< drop init expression
             };
 
+
+            //! helper for inline mutli lines comment
+#define YACK_JIVE_MULTI_LINES_COMMENT(NAME,EXPRINI,EXPREND) \
+/**/  class NAME : public multi_lines_comment \
+/**/  {\
+/**/   public:\
+/**/    YACK_JIVE_PLUGIN_DECL(NAME);    \
+/**/    inline virtual ~NAME() throw() {}\
+/**/    template<typename IDENTIFIER>\
+/**/    inline explicit NAME(const IDENTIFIER &uuid,analyzer &host) :\
+/**/      multi_lines_comment(uuid,EXPRINI,EXPREND,host) {} \
+/**/   private:\
+/**/    YACK_DISABLE_COPY_AND_ASSIGN(NAME);\
+/**/  }
+
+            //! example c comments
+            YACK_JIVE_MULTI_LINES_COMMENT(c_comments,"/\\*","\\*/");
+
+
         }
 
     }

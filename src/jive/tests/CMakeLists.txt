@@ -43,6 +43,7 @@ add_test(lexical:analyzer test-jive analyzer)
 add_test(syntax:types     test-jive syntax_types)
 add_test(syntax:grammar   test-jive grammar)
 add_test(parser           test-jive parser)
+add_test(syntax:eval      test-jive eval)
 
 
 

@@ -15,7 +15,7 @@ namespace yack
             void multi_lines_comment:: compile()
             {
                 endl("[:endl:]");
-                drop(".+");
+                drop(".");
             }
 
             void multi_lines_comment:: enter(token &) throw()
@@ -27,6 +27,8 @@ namespace yack
             {
 
             }
+
+            YACK_JIVE_PLUGIN_IMPL(c_comments);
 
         }
     }
