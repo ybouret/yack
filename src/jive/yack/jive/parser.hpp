@@ -49,16 +49,12 @@ namespace yack
                 const motif             m = regexp::compile(rx,&dict);
                 const lexical::action   a(this,&scanner::on_produce);
                 const syntax::term_role r = m->is_univocal() ? syntax::univocal : syntax::standard;
-                on(t,m,a);
-                return term__(t,r);
+                return create(t,m,a,r);
             }
 
-            //! create a terminal whose expression is id
-            template <typename ID> inline
-            const rule & term(const ID &id)
-            {
-                return term(id,id);
-            }
+            const rule & term(const string &id); //!< create a terminal whose expression is id
+            const rule & term(const char   *id); //!< create a terminal whose expression is id
+            const rule & term(const char     C); //!< create a terminal from single C
 
             //__________________________________________________________________
             //
@@ -76,12 +72,11 @@ namespace yack
                 return term__(t,syntax::division);
             }
 
-            //! create a division whose expression is 'id'
-            template <typename ID> inline
-            const rule & mark(const ID &id)
-            {
-                return mark(id,id);
-            }
+            const rule & mark(const string &id); //!< create a mark whose expression is id
+            const rule & mark(const char   *id); //!< create a mark whose expression is id
+            const rule & mark(const char     C); //!< create a mark from single C
+
+
 
             //__________________________________________________________________
             //
@@ -105,6 +100,7 @@ namespace yack
 
         private:
             YACK_DISABLE_COPY_AND_ASSIGN(parser);
+            const rule &create(const tag &, const motif &, const lexical::action &, const syntax::term_role);
         };
     }
 }

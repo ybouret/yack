@@ -66,10 +66,10 @@ namespace yack
 
                 logo(fp) << '[';
                 {
-                    const string root_id = *lang + ".grammar";
+                    const string root_id = '[' + *lang + ']';
                     add_label(fp,root_id());
                 }
-                fp << ",shape=rectangle";
+                fp << ",shape=component";
                 end(fp << ']');
 
 
@@ -86,6 +86,12 @@ namespace yack
                     {
                         case terminal::mark:
                             fp << ",shape=box";
+                            switch(r->as<terminal>()->role)
+                            {
+                                case standard: fp << ",style=\"bold,filled\""; break;
+                                case univocal: fp << ",style=\"bold,filled,rounded\""; break;
+                                case division: fp << ",style=\"bold,filled,dashed\"";  break;
+                            }
                             break;
 
                         case option::mark:

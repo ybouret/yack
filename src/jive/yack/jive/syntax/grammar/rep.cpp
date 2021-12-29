@@ -10,7 +10,6 @@ namespace yack
         {
             const rule &grammar:: rep_(const tag &id, const rule &r, const size_t n)
             {
-                std::cerr << "rep_(" << id << ")" << std::endl;
                 if(!rules.owns(&r)) throw exception("[%s] does not owns <%s> for repeating rule",(*lang)(), (*r.name)());
                 return decl( new repeat(id,r,n) );
             }
