@@ -39,7 +39,7 @@ namespace yack
                 static const real_t c1  = REAL(35.0)/REAL(384.0),                            c3  = REAL(500.0)/REAL(1113.0),        c4  = REAL(125.0)/REAL(192.0),    c5  = REAL(-2187.0)/REAL(6784.0),       c6=REAL(11.0)/REAL(84.0);
                 static const real_t dc1 = c1 - REAL(5179.0)/REAL(57600.0),                     dc3 = c3 -    REAL(7571.0)/REAL(16695.0),    dc4 = c4-REAL(393.0)/REAL(640.0), dc5 = c5+REAL(92097.0)/REAL(339200.0),  dc6 = c6 - REAL(187.0)/REAL(2100.0), dc7 =  REAL(-1.0)/REAL(40.0);
 
-                const size_t n = y.size();
+                const size_t n = y.size(); make(n);
 
                 //______________________________________________________________
                 //
