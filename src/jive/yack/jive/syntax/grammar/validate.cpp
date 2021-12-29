@@ -78,16 +78,33 @@ namespace yack
                 {
                     std::cerr << "[" << lang << "] validating..." << std::endl;
                 }
+
+                //--------------------------------------------------------------
+                //
+                // check top level rule
+                //
+                //--------------------------------------------------------------
                 const char *id = (*lang)();
                 if(rules.size<=0) throw exception("[%s] has no rules",id);
 
+                //--------------------------------------------------------------
+                //
+                // check all rules are accessible from top-level
+                //
+                //--------------------------------------------------------------
                 {
+                    //----------------------------------------------------------
+                    // recursive visit
+                    //----------------------------------------------------------
                     addrbook visited;
                     unsigned orphans = 0;
                     visiting::a_rule(visited,rules.head);
 
                     for(const rule *r=rules.head;r;r=r->next)
                     {
+                        //------------------------------------------------------
+                        // check used
+                        //------------------------------------------------------
                         const bool used = visited.search(r);
                         if(used)
                         {
@@ -100,6 +117,9 @@ namespace yack
                         }
                         if(lexical::scanner::verbose) std::cerr << " <" << r->name << ">" << std::endl;
 
+                        //------------------------------------------------------
+                        // check compounds are not empty
+                        //------------------------------------------------------
                         switch(r->uuid)
                         {
                             case alternate::mark: check_not_empty(r->as<alternate>(),id); break;
