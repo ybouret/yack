@@ -9,13 +9,30 @@
  	 
 \begin{document}
 
-Let $F(\vec{X},\vec{a})$ be a scalar function with $\vec{X} \in \mathbb{R}^d$ and $\vec{a}\in\mathbb{R}^n$.
+Let $F(\vec{X},\vec{a})$ be a scalar function with $\vec{X} \in \mathbb{R}^d$ and $\vec{a}\in\mathbb{R}^m$.
 
 Let $\mathsf{S}_s$ be a sample of $N_s$ points $\lbrace(Y_{s1},\vec{X}_{s1}),\ldots,(Y_{sN_s},\vec{X}_{sN_s})\rbrace$
 that we want to adjust through $\vec{a}_s$.
 We define:
 \begin{equation}
 	D_s(\vec{a}_s) = \dfrac{1}{2}\sum_{i=1}^{N_s} \left[ Y_{si} - F(\vec{X}_{si},\vec{a}_s)\right] ^2
+\end{equation}
+
+We want to simultaneously adjust $S$ samples with specific parameters coming for the global parameters $\vec{A}\in\mathbb{R}^M$:
+	
+\begin{equation}
+	\vec{a}_s = \bm{\Gamma}_s \vec{A}
+\end{equation}
+
+We form the global indicator:
+
+\begin{equation}
+	D(\vec{A}) = \dfrac{\sum_{i=1}^{S} N_s D_s(\vec{a}_s)}{\sum_s N_s }
+\end{equation}
+
+\begin{equation}
+	\vec{\beta}_s = -\partial_{\vec{a}_s} D_s 
+	= \sum_{i=1}^{N_s} \left[Y_{si} - F(\vec{X}_{si},\vec{a}_s)\right] \vec{\nabla}_s F_{si} 
 \end{equation}
 
 \end{document}
