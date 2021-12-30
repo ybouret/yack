@@ -11,4 +11,11 @@
 
 Let $F(\vec{X},\vec{a})$ be a scalar function with $\vec{X} \in \mathbb{R}^d$ and $\vec{a}\in\mathbb{R}^n$.
 
+Let $\mathsf{S}_s$ be a sample of $N_s$ points $\lbrace(Y_{s1},\vec{X}_{s1}),\ldots,(Y_{sN_s},\vec{X}_{sN_s})\rbrace$
+that we want to adjust through $\vec{a}_s$.
+We define:
+\begin{equation}
+	D_s(\vec{a}_s) = \dfrac{1}{2}\sum_{i=1}^{N_s} \left[ Y_{si} - F(\vec{X}_{si},\vec{a}_s)\right] ^2
+\end{equation}
+
 \end{document}
