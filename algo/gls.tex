@@ -9,6 +9,7 @@
  	 
 \begin{document}
 
+\section{Definition}
 Let $F(\vec{X},\vec{a})$ be a scalar function with $\vec{X} \in \mathbb{R}^d$ and $\vec{a}\in\mathbb{R}^m$.
 
 Let $\mathsf{S}_s$ be a sample of $N_s$ points $\lbrace(Y_{s1},\vec{X}_{s1}),\ldots,(Y_{sN_s},\vec{X}_{sN_s})\rbrace$
@@ -21,7 +22,7 @@ We define:
 We want to simultaneously adjust $S$ samples with specific parameters coming for the global parameters $\vec{A}\in\mathbb{R}^M$:
 	
 \begin{equation}
-	\vec{a}_s = \bm{\Gamma}_s \vec{A}
+	\vec{a}_s = \bm{\Gamma}_s \vec{A},\;\; \bm{\Gamma}_s \in \mathcal{M}_{m,M}
 \end{equation}
 
 We form the global indicator:
@@ -30,9 +31,34 @@ We form the global indicator:
 	D(\vec{A}) = \dfrac{\sum_{i=1}^{S} N_s D_s(\vec{a}_s)}{\sum_s N_s }
 \end{equation}
 
+\section{Descent Directions}
+The descent direction of $D_s$ w.r.t $\vec{a}_s$ is:
 \begin{equation}
 	\vec{\beta}_s = -\partial_{\vec{a}_s} D_s 
 	= \sum_{i=1}^{N_s} \left[Y_{si} - F(\vec{X}_{si},\vec{a}_s)\right] \vec{\nabla}_s F_{si} 
 \end{equation}
+
+The descent direction of $D$ w.r.t $\vec{A}$ is:
+\begin{equation}
+	\vec{\beta} = -\partial_{\vec{A}} D = \dfrac{1}{N} \sum_{s=1}^{N_s} \bm{\Gamma}_s^t \cdot \vec{\beta}_s
+\end{equation}
+and
+\begin{equation}
+	\bm{\Gamma}_s^t \cdot \vec{\beta}_s =  \sum_{i=1}^{N_s} \left[Y_{si} - F(\vec{X}_{si},\vec{a}_s)\right]
+	\left(  \bm{\Gamma}_s^t \vert \vec{\nabla}_s F_{si} \rangle\right)
+\end{equation}
+
+\section{Curvatures}
+We define:
+
+\begin{equation}
+	\bm{C}_s = \sum_{i=1}^{N_s} \vert \vec{\nabla}_s F_{si} \rangle  \langle \vec{\nabla}_s F_{si} \vert \simeq -\partial_{\vec{a}_s} \vec{\beta}_s 
+\end{equation}
+
+so that the total approximate curvature is:
+\begin{equation}
+	\bm{C} =  \dfrac{1}{N} \sum_{s=1}^{N_s} \left(  \bm{\Gamma}_s^t \vert \vec{\nabla}_s F_{si} \rangle\right) \left( \langle \vec{\nabla}_s F_{si} \vert \bm{\Gamma}_s\right)
+\end{equation}
+
 
 \end{document}
