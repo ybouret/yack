@@ -25,6 +25,7 @@ namespace yack
                     switch( (**this).type )
                     {
                         case terminal_type:
+                            delete static_cast<lexeme*>(data);
                             break;
 
                         case internal_type:
@@ -78,6 +79,7 @@ namespace yack
                 else
                 {
                     assert( (**tree).type == internal_type );
+                    tree->sub().push_back(node);
                 }
             }
 
@@ -138,11 +140,13 @@ namespace yack
                 switch( (**node).type )
                 {
                     case internal_type:
+                        std::cerr << "\t\t\tret '" << (**node).name << "'" << std::endl;
                         xlist_ret(L,node->sub());
                         delete node;
                         break;
 
                     case terminal_type:
+                        std::cerr << "\t\t\tret '" << *(node->lex()) << "'" << std::endl;
                         L.store( node->rip() );
                         break;
                 }

@@ -43,6 +43,8 @@ namespace yack
             class rule : public object, public ios::vizible
             {
             public:
+                static bool verbose;
+                
                 //______________________________________________________________
                 //
                 // members

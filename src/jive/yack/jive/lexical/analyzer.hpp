@@ -129,6 +129,12 @@ namespace yack
                 void     store(lexeme *) throw(); //!< store a parsed lexeme
                 void     reset()         throw(); //!< reset all
 
+                //______________________________________________________________
+                //
+                // helper
+                //______________________________________________________________
+                void show() const;
+
             private:
                 YACK_DISABLE_COPY_AND_ASSIGN(analyzer);
                 scanner *scan; //!< current scanner

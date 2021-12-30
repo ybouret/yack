@@ -2,6 +2,7 @@
 #include "yack/jive/parser.hpp"
 #include "yack/utest/run.hpp"
 #include "yack/jive/lexical/plugin/jstring.hpp"
+#include "yack/jive/syntax/xnode.hpp"
 
 using namespace yack;
 
@@ -50,13 +51,14 @@ namespace
             endl("[:endl:]");
 
             gv();
+            validate();
         }
         
         virtual ~myparser() throw()
         {
         }
         
-    
+
     private:
         YACK_DISABLE_COPY_AND_ASSIGN(myparser);
     };
@@ -64,9 +66,28 @@ namespace
 
 YACK_UTEST(parser)
 {
+    jive::syntax::rule::verbose = true;
     myparser J;
     std::cerr << J.label << std::endl;
-    
+
+    if(argc>1)
+    {
+        jive::source                  src( jive::module::open_file(argv[1]) );
+        if( true)
+        {
+            auto_ptr<jive::syntax::xnode> tree = J(src);
+        }
+        else
+        {
+            jive::lexeme *lx = NULL;
+            while( NULL != (lx=J.query(src)) )
+            {
+                auto_ptr<jive::lexeme> keep = lx;
+                std::cerr << *lx << std::endl;
+            }
+        }
+    }
+
 }
 YACK_UDONE()
 

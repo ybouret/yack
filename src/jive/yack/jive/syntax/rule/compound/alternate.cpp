@@ -21,7 +21,7 @@ namespace yack
             bool alternate:: accept(YACK_JIVE_RULE_ARGS) const
             {
                 bool result = false;
-
+                if(verbose) std::cerr << "?alt  <" << name << ">" << std::endl;
                 for(const component *chld=head;chld;chld=chld->next)
                 {
                     xnode *here = NULL;
@@ -30,6 +30,7 @@ namespace yack
                         result = true;
                         if(here)
                         {
+                            if(verbose) std::cerr << "+alt  <" << name << "> as <" << (**here).name << ">" << std::endl;
                             xnode::grow(tree,here);
                             return true;
                         }
@@ -37,7 +38,12 @@ namespace yack
                         // but result will be true
                     }
                 }
-                
+
+                if(verbose)
+                {
+                    if(result) std::cerr << "+alt  <" << name << "> EMPTY" << std::endl;
+                    else       std::cerr << "-alt  <" << name << ">" << std::endl;
+                }
                 return result;
             }
 

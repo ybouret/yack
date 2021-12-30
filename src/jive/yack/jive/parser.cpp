@@ -16,7 +16,13 @@ namespace yack
             on(t,m,a);
             return term__(t,r);
         }
-        
+
+
+        syntax::xnode * parser:: operator()(source &src)  
+        {
+            return run(src,*this);
+        }
+
     }
 }
 

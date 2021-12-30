@@ -102,7 +102,12 @@ namespace yack
                 return term__(plug( type2type<PLUGIN>(), id).label,syntax::standard);
             }
 
-
+            //__________________________________________________________________
+            //
+            // parse
+            //__________________________________________________________________
+            syntax::xnode * operator()(source &);
+            
         private:
             YACK_DISABLE_COPY_AND_ASSIGN(parser);
             const rule &create(const tag &, const motif &, const lexical::action &, const syntax::term_role);

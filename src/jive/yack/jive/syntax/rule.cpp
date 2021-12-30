@@ -8,6 +8,8 @@ namespace yack
         namespace syntax
         {
 
+            bool rule::verbose = false;
+            
             rule:: ~rule() throw()
             {
             }
