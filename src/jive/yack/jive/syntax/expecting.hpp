@@ -22,7 +22,7 @@ namespace yack
             {
             public:
                 typedef  cxx_list_of<expected> list;
-                
+
                 virtual ~expected() throw();
 
                 expected(const terminal &) throw();
@@ -30,6 +30,7 @@ namespace yack
                 expected *next;
                 expected *prev;
 
+                
             private:
                 YACK_DISABLE_COPY_AND_ASSIGN(expected);
             };
