@@ -1,4 +1,3 @@
-
 #include "yack/jive/syntax/grammar.hpp"
 #include "yack/jive/syntax/rule/all.hpp"
 #include "yack/associative/addrbook.hpp"
