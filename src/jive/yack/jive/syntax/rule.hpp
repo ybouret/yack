@@ -43,7 +43,11 @@ namespace yack
             class rule : public object, public ios::vizible
             {
             public:
-                static bool verbose;
+                //______________________________________________________________
+                //
+                // typea and definition
+                //______________________________________________________________
+                static bool verbose; //!< verbosity while scanning
                 
                 //______________________________________________________________
                 //
