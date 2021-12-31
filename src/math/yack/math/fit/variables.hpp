@@ -84,13 +84,14 @@ namespace yack
                     return (*this)(var.name,var);
                 }
 
-
+                //! access by name R/O
                 template <typename T, typename ID>
                 const T & operator()(const readable<T> &arr, const ID &id) const
                 {
                     return fetch(id)(arr);
                 }
 
+                //! access by name R/W
                 template <typename T, typename ID>
                 T & operator()(writable <T> &arr, const ID &id) const
                 {

@@ -17,17 +17,31 @@ namespace yack
 
         namespace fit
         {
-
+            //__________________________________________________________________
+            //
+            //
+            //! sample base type
+            //
+            //__________________________________________________________________
             class sample_ : public object, public counted, public gateway<variables>
             {
             public:
-                virtual       ~sample_() throw();
-                const string & key() const throw();
+                //______________________________________________________________
+                //
+                // methods
+                //______________________________________________________________
+                virtual       ~sample_()   throw(); //!< cleanup
+                const string & key() const throw(); //!< for db
 
-                const string   name;
-                vector<size_t> indx;
+                //______________________________________________________________
+                //
+                // members
+                //______________________________________________________________
+                const string   name; //!< identifier
+                vector<size_t> indx; //!< to access data
 
             protected:
+                //! setup with name
                 template <typename ID> inline
                 explicit sample_(const ID &id) :
                 object(),
@@ -39,11 +53,15 @@ namespace yack
             private:
                 YACK_DISABLE_COPY_AND_ASSIGN(sample_);
                 virtual const_type & bulk() const throw();
-                
                 auto_ptr<variables> vars;
             };
 
-            
+            //__________________________________________________________________
+            //
+            //
+            //! generic sample
+            //
+            //__________________________________________________________________
             template <
             typename ABSCISSA,
             typename ORDINATE>
@@ -52,10 +70,12 @@ namespace yack
             public:
                 using sample_::indx;
 
-                const readable<ABSCISSA> &abscissa;
-                const readable<ORDINATE> &ordinate;
-                writable<ORDINATE>       &adjusted;
 
+                //______________________________________________________________
+                //
+                // methods
+                //______________________________________________________________
+                //! setup
                 template <typename ID> inline
                 explicit sample(const ID                 &id,
                                 const readable<ABSCISSA> &x,
@@ -68,10 +88,12 @@ namespace yack
                 {
                 }
 
+                //! cleanup
                 inline virtual ~sample() throw()
                 {
                 }
 
+                //! common size
                 inline size_t size() const throw()
                 {
                     assert(abscissa.size()==ordinate.size());
@@ -80,6 +102,7 @@ namespace yack
                     return abscissa.size();
                 }
 
+                //! prepare index
                 inline void setup()
                 {
                     assert(abscissa.size()==ordinate.size());
@@ -91,6 +114,7 @@ namespace yack
 
                 }
 
+                //! get D2(A) with function and parameters
                 template <typename FUNC>
                 ORDINATE D2(FUNC &F, const readable<ORDINATE> &A)
                 {
@@ -108,6 +132,13 @@ namespace yack
                     return sum2;
                 }
 
+                //______________________________________________________________
+                //
+                // members
+                //______________________________________________________________
+                const readable<ABSCISSA> &abscissa; //!< abscissae
+                const readable<ORDINATE> &ordinate; //!< ordinates
+                writable<ORDINATE>       &adjusted; //!< adjusted ordinates
 
             private:
                 YACK_DISABLE_COPY_AND_ASSIGN(sample);
