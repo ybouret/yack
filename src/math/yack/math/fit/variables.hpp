@@ -80,8 +80,7 @@ namespace yack
                 }
 
                 //! append replica with same name
-                template <>
-                variables & operator<<(const variable &var)
+                inline variables & operator<<(const variable &var)
                 {
                     return (*this)(var.name,var);
                 }
