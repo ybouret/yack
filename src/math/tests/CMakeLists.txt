@@ -36,8 +36,8 @@ ${data}
 ${fit}
 )
 
-yack_link_libraries(test-math)
 target_link_libraries(test-math yack-math)
+yack_link_libraries(test-math)
 
 yack_testing(math)
 
