@@ -67,9 +67,9 @@ YACK_UTEST(fit)
         *s1 << "rc" << "xc" << "yc";
         vector<double> A1(s1.size());
         Circle         F;
-        const double d1 = s1.D2(F,A1);
+        const double   d1 = s1.D2_(F,A1);
         std::cerr << "d1=" << d1 << std::endl;
-
+        
     }
 
 

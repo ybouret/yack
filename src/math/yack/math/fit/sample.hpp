@@ -4,11 +4,12 @@
 #ifndef YACK_FIT_SAMPLE_INCLUDED
 #define YACK_FIT_SAMPLE_INCLUDED 1
 
-#include "yack/math/fit/variables.hpp"
+#include "yack/math/fit/sequential.hpp"
 #include "yack/type/gateway.hpp"
 #include "yack/type/utils.hpp"
 #include "yack/ptr/auto.hpp"
 #include "yack/sequence/vector.hpp"
+#include "yack/sort/sum.hpp"
 
 namespace yack
 {
@@ -47,6 +48,7 @@ namespace yack
                 object(),
                 counted(),
                 name(id),
+                indx(),
                 vars(new variables())
                 {}
 
@@ -68,8 +70,22 @@ namespace yack
             class sample : public sample_
             {
             public:
+                typedef sequential<ABSCISSA,ORDINATE> sequential_type; //!< alias
                 using sample_::indx;
 
+                //! create a wrapper for a simple function
+                template <typename FUNC>
+                class sequential_function : public sequential_type
+                {
+                public:
+                    inline explicit sequential_function(FUNC &f) throw() : sequential_type(), host(f) {} //!< setup
+                    inline virtual ~sequential_function()        throw() {}                              //!< cleanup
+
+                private:
+                    FUNC &host;
+                    inline virtual ORDINATE on_start(const ABSCISSA ini, const readable<ORDINATE> &A, const variables &vars) { return host(ini,A,vars); }
+                    inline virtual ORDINATE on_reach(const ABSCISSA, const ABSCISSA end, const readable<ORDINATE> &A, const variables &vars) { return host(end,A,vars); }
+                };
 
                 //______________________________________________________________
                 //
@@ -84,7 +100,8 @@ namespace yack
                 sample_(id),
                 abscissa(x),
                 ordinate(y),
-                adjusted(z)
+                adjusted(z),
+                wksp()
                 {
                 }
 
@@ -110,27 +127,59 @@ namespace yack
 
                     const size_t n = abscissa.size();
                     indx.free();
-                    for(size_t i=1;i<=n;++i) indx.push_back(i);
+                    wksp.free();
+                    for(size_t i=1;i<=n;++i)
+                    {
+                        indx.push_back(i);
+                        wksp.push_back(0);
+                    }
 
                 }
 
-                //! get D2(A) with function and parameters
-                template <typename FUNC>
-                ORDINATE D2(FUNC &F, const readable<ORDINATE> &A)
+                //! get D2(A) with sequential and parameters
+                inline ORDINATE D2(sequential_type          &F,
+                                   const readable<ORDINATE> &A)
                 {
                     assert(abscissa.size()==ordinate.size());
                     assert(adjusted.size()==ordinate.size());
+                    assert(abscissa.size()==indx.size());
+                    assert(abscissa.size()==wksp.size());
 
-                    ORDINATE         sum2 = 0;
-                    const variables &vars = **this;
-                    const size_t     size = abscissa.size();
-                    for(size_t j=1;j<=size;++j)
+                    const size_t size = abscissa.size();
+                    if(size>0)
                     {
-                        const size_t i = indx[j];
-                        sum2 += squared( ordinate[i] - (adjusted[i] = F(abscissa[i],A,vars)));
+                        const variables &vars = **this;
+                        {
+                            const size_t i = indx[1];
+                            wksp[1] = squared(ordinate[i] - (adjusted[i] = F.start(abscissa[i],A,vars)));
+                        }
+                        for(size_t j=2;j<=size;++j)
+                        {
+                            const size_t i = indx[j];
+                            wksp[j] = squared( ordinate[i] - (adjusted[i] = F.reach(abscissa[i],A,vars)));
+                        }
+                        return sorted::sum(wksp,sorted::by_value);
                     }
-                    return sum2;
+                    else
+                    {
+                        return 0;
+                    }
                 }
+
+                //! get D2(A) with FUNCTION and parameters
+                template <typename FUNC>
+                inline ORDINATE D2_(FUNC                     &f,
+                                    const readable<ORDINATE> &A)
+                {
+                    sequential_function<FUNC> F(f);
+                    return D2(F,A);
+                }
+
+
+
+
+
+
 
                 //______________________________________________________________
                 //
@@ -139,6 +188,7 @@ namespace yack
                 const readable<ABSCISSA> &abscissa; //!< abscissae
                 const readable<ORDINATE> &ordinate; //!< ordinates
                 writable<ORDINATE>       &adjusted; //!< adjusted ordinates
+                vector<ORDINATE>          wksp; //!< workspace
 
             private:
                 YACK_DISABLE_COPY_AND_ASSIGN(sample);
