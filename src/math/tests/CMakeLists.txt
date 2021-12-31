@@ -21,6 +21,9 @@ source_group(fcn FILES ${fcn})
 file(GLOB data data/*.cpp)
 source_group(data FILES ${data})
 
+file(GLOB fit fit/*.cpp)
+source_group(fit FILES ${fit})
+
 
 add_executable(test-math main.cpp
 ${global}
@@ -30,6 +33,7 @@ ${root}
 ${opt}
 ${fcn}
 ${data}
+${fit}
 )
 
 yack_link_libraries(test-math)
@@ -60,5 +64,7 @@ add_test(drvs     test-math drvs)
 add_test(fjac     test-math fjac)
 
 add_test(data:poly test-math poly)
+
+add_test(fit test-math fit)
 
 

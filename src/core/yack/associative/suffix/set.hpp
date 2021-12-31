@@ -46,6 +46,17 @@ namespace yack
         inline          suffix_set(const suffix_set &other) :
         collection(), base_type(other) {} //!< hard copy
 
+        //! assign by copy/swap, keep resources
+        inline suffix_set & operator=(const suffix_set &other)
+        {
+            if(&other != this)
+            {
+                suffix_set temp(other);
+                this->exchange_content_with(temp);
+            }
+            return *this;
+        }
+        
         //______________________________________________________________________
         //
         // glossary interface
@@ -75,8 +86,8 @@ namespace yack
             return base_type::template display(os, (*s.tree).head );
         }
 
-    private:
-        YACK_DISABLE_ASSIGN(suffix_set);
+
+
     };
 }
 

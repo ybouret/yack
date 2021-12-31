@@ -82,6 +82,12 @@ namespace yack
         //! get tree structure
         inline const tree_type &get_tree() const throw() { return tree; }
 
+        //! exchange content, keep resources
+        void exchange_content_with(suffix_compound &other) throw()
+        {
+            tree.exchange_content_with(other.tree);
+        }
+
         //______________________________________________________________________
         //
         // C++

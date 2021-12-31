@@ -25,5 +25,7 @@ YACK_UTEST_DECL(80)
     YACK_UTEST(fjac);
 
     YACK_UTEST(poly);
+    
+    YACK_UTEST(fit);
 }
 YACK_UTEST_EXEC()

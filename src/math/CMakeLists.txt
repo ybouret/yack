@@ -50,6 +50,13 @@ set(math_data ${math_data_decl} ${math_data_srcs})
 SOURCE_GROUP(math/data FILES ${math_data})
 install( FILES ${math_data_decl} DESTINATION include/yack/math/data )
 
+# fit
+file(GLOB math_fit_decl yack/math/fit/*.hpp)
+file(GLOB math_fit_srcs yack/math/fit/*.cpp yack/math/fit/*.hxx)
+set(math_fit ${math_fit_decl} ${math_fit_srcs})
+SOURCE_GROUP(math/fit FILES ${math_fit})
+install( FILES ${math_fit_decl} DESTINATION include/yack/math/fit )
+
 #ode
 file(GLOB math_ode_decl yack/math/ode/*.hpp yack/math/ode/*.hxx)
 file(GLOB math_ode_srcs yack/math/ode/*.cpp)
@@ -78,6 +85,7 @@ ${math_ode} ${math_ode_explicit} ${math_ode_explicit_rk45}
 ${math_root}
 ${math_opt}
 ${math_data}
+${math_fit}
 )
 
 install( TARGETS yack-math ARCHIVE DESTINATION lib )

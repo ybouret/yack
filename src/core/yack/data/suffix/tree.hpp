@@ -324,6 +324,14 @@ namespace yack
             //! data access
             inline const list_of<knot_type> & operator *() const throw() { return data; }
 
+
+            //! exchange contant, keep resources
+            inline void exchange_content_with(suffix_tree &other) throw()
+            {
+                root.swap_with(other.root);
+                data.swap_with(other.data);
+            }
+
             //__________________________________________________________________
             //
             //! GraphViz encoding
@@ -343,6 +351,8 @@ namespace yack
 
                 ios::vizible::digraph_quit(fp);
             }
+
+
 
 
         private:
