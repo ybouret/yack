@@ -28,7 +28,7 @@ namespace yack
             //! database of variables
             //
             //__________________________________________________________________
-            class variables : public variables_
+            class variables : public variables_, public object 
             {
             public:
                 //______________________________________________________________
@@ -82,6 +82,19 @@ namespace yack
                 inline variables & operator<<(const variable &var)
                 {
                     return (*this)(var.name,var);
+                }
+
+
+                template <typename T, typename ID>
+                const T & operator()(const readable<T> &arr, const ID &id) const
+                {
+                    return fetch(id)(arr);
+                }
+
+                template <typename T, typename ID>
+                T & operator()(writable <T> &arr, const ID &id) const
+                {
+                    return fetch(id)(arr);
                 }
 
 
