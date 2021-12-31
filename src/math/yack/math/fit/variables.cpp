@@ -32,6 +32,19 @@ namespace yack
             }
 
 
+            const variable & variables::fetch(const string &id) const
+            {
+                const handle *ptr = search(id);
+                if(!ptr) throw exception("no variable '%s'", id() );
+                return **ptr;
+            }
+
+            const variable & variables::fetch(const char *id) const
+            {
+                const string _(id); return fetch(_);
+            }
+
+
         }
     }
 }

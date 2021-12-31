@@ -12,15 +12,25 @@ namespace yack
 
         namespace fit
         {
+            //__________________________________________________________________
+            //
+            //
+            //! a named variable
+            //
+            //__________________________________________________________________
             class variable : public object, public counted
             {
             public:
+                //______________________________________________________________
+                //
                 // methods
+                //______________________________________________________________
                 virtual       ~variable()          throw(); //!< cleanup
                 const string & key()         const throw(); //!< name
                 size_t         operator*()   const throw(); //!< get index
                 void           check(const size_t n) const; //!< in 1:n
 
+                //! access
                 template <typename T> inline
                 const T & operator()(const readable<T> &arr) const
                 {
@@ -28,6 +38,7 @@ namespace yack
                     return arr[ **this ];
                 }
 
+                //! access
                 template <typename T> inline
                 T & operator()(writable<T> &arr) const
                 {
@@ -35,10 +46,13 @@ namespace yack
                     return arr[ **this ];
                 }
 
+                //! display
                 friend std::ostream & operator<<(std::ostream &, const variable &);
 
-
+                //______________________________________________________________
+                //
                 // members
+                //______________________________________________________________
                 const string name; //!< identifier
 
                 

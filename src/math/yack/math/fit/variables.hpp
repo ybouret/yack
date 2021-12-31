@@ -15,28 +15,82 @@ namespace yack
         namespace fit
         {
 
+            //__________________________________________________________________
+            //
+            //
+            //! base class for variables database
+            //
+            //__________________________________________________________________
             typedef suffix_set<string,replica::handle> variables_;
 
+            //__________________________________________________________________
+            //
+            //
+            //! database of variables
+            //
+            //__________________________________________________________________
             class variables : public variables_
             {
             public:
-                typedef replica::handle handle;
-                
-                explicit variables() throw();
-                virtual ~variables() throw();
-                variables(const variables &);
-                variables & operator=(const variables &);
+                //______________________________________________________________
+                //
+                // types and definitions
+                //______________________________________________________________
+                typedef replica::handle handle; //!< alias
 
+                //______________________________________________________________
+                //
+                // C++
+                //______________________________________________________________
+                explicit variables() throw();                //!< setup empty
+                virtual ~variables() throw();                //!< cleanup
+                variables(const variables &);                //!< copy
+                variables & operator=(const variables &);    //!< assing
+
+                //______________________________________________________________
+                //
+                // methods
+                //______________________________________________________________
+
+                //! append a primary variable
                 template <typename ID>
                 variables & operator<<(const ID &id) {
                     const handle h = new primary(id,size()+1);
                     grow(h);
                     return *this;
                 }
+                
+
+
+                //! query variable
+                template <typename ID> inline
+                const variable & operator[](const ID &id) const
+                {
+                    return fetch(id);
+                }
+
+                //! append a replica variable
+                template <typename TARGET>
+                variables & operator()(const TARGET &target, const variable &var)
+                {
+                    const handle src = &var;
+                    const handle tgt = new replica(target,src);
+                    grow(tgt);
+                    return *this;
+                }
+
+                //! append replica with same name
+                template <>
+                variables & operator<<(const variable &var)
+                {
+                    return (*this)(var.name,var);
+                }
+
 
             private:
                 void grow(const handle &);
-
+                const variable & fetch(const string &id) const;
+                const variable & fetch(const char   *id) const;
             };
 
 

@@ -13,11 +13,23 @@ namespace yack
 
         namespace fit
         {
+            //__________________________________________________________________
+            //
+            //
+            //! a primary variable
+            //
+            //__________________________________________________________________
             class primary : public variable
             {
             public:
+                //______________________________________________________________
+                //
+                // C++
+                //______________________________________________________________
+                //! cleanup
                 virtual ~primary() throw();
 
+                //! setup
                 template <typename ID>
                 explicit primary(const ID &i, const size_t p) :
                 variable(i),

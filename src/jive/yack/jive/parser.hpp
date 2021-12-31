@@ -106,7 +106,7 @@ namespace yack
             //
             // parse
             //__________________________________________________________________
-            syntax::xnode * operator()(source &);
+            syntax::xnode * operator()(source &); //!< parse source from current lexeme status
             
         private:
             YACK_DISABLE_COPY_AND_ASSIGN(parser);

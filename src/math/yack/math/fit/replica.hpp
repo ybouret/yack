@@ -15,13 +15,30 @@ namespace yack
 
         namespace fit
         {
+            //__________________________________________________________________
+            //
+            //
+            //! replica variable, linked to a primary
+            //
+            //__________________________________________________________________
             class replica : public variable
             {
             public:
-                typedef ark_ptr<string,const primary> handle;
+                //______________________________________________________________
+                //
+                // types and definitions
+                //______________________________________________________________
+                typedef ark_ptr<string,const variable> handle; //!< alias
 
+                //______________________________________________________________
+                //
+                // C++
+                //______________________________________________________________
+
+                //! cleanup
                 virtual ~replica() throw();
 
+                //! setup
                 template <typename ID>
                 explicit replica(const ID &i,const handle &h) :
                 variable(i),

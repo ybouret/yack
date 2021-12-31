@@ -133,7 +133,7 @@ namespace yack
                 //
                 // helper
                 //______________________________________________________________
-                void show() const;
+                void show() const; //!< display what's in repository
 
             private:
                 YACK_DISABLE_COPY_AND_ASSIGN(analyzer);
