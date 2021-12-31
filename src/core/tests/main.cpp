@@ -26,6 +26,7 @@ YACK_UTEST_DECL(128)
     YACK_UTEST(type_fourcc);
     YACK_UTEST(type_vtx);
     YACK_UTEST(type_constant);
+    YACK_UTEST(type_gateway);
 
     YACK_UTEST(ram);
     YACK_UTEST(memory_chunk);
