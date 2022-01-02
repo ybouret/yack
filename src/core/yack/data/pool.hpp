@@ -55,6 +55,7 @@ assert(NULL!=NODE); assert(NULL==(NODE)->next)
         // interlinked interface
         //______________________________________________________________________
         
+        //! test ownership
         inline virtual bool owns(const NODE *node) const throw()
         {
             assert(node);
@@ -65,6 +66,7 @@ assert(NULL!=NODE); assert(NULL==(NODE)->next)
             return false;
         }
         
+        //! reversing
         inline virtual void reverse() throw()
         {
             pool_of tmp;

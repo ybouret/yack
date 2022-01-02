@@ -28,7 +28,7 @@ namespace yack
                 {
                     const  rule     &you = **this;
                     auto_ptr<xnode>  ptr = sub;
-                    while(you.accept(src,lxr,sub))
+                    while(you.accept(src,lxr,sub,obs))
                     {
                         ++num;
                     }

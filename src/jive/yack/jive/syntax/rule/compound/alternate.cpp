@@ -25,7 +25,7 @@ namespace yack
                 for(const component *chld=head;chld;chld=chld->next)
                 {
                     xnode *here = NULL;
-                    if( (**chld).accept(src,lxr,here) )
+                    if( (**chld).accept(src,lxr,here,obs) )
                     {
                         result = true;
                         if(here)

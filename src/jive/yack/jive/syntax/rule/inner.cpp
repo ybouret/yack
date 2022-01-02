@@ -23,7 +23,8 @@ namespace yack
                 (void)src;
                 (void)lxr;
                 (void)tree;
-
+                (void)obs;
+                
                 return false;
             }
 

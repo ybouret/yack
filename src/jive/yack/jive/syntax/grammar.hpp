@@ -15,7 +15,7 @@ namespace yack
         namespace syntax
         {
             class terminal;
-
+            
             //__________________________________________________________________
             //
             //
@@ -37,7 +37,7 @@ namespace yack
                 //
                 // C++
                 //______________________________________________________________
-                virtual ~grammar() throw(); //!< cleanup
+                virtual ~grammar() throw();       //!< cleanup
 
                 //! setup
                 template <typename LANG> inline

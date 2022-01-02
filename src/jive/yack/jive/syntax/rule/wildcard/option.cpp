@@ -22,7 +22,7 @@ namespace yack
             {
                 const rule &r    = **this;
                 xnode      *node = NULL;
-                if( r.accept(src,lxr,node) )
+                if( r.accept(src,lxr,node,obs) )
                 {
                     xnode::grow(tree,node);
                 }

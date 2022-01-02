@@ -1,6 +1,7 @@
 
 #include "yack/jive/syntax/grammar.hpp"
 #include "yack/exception.hpp"
+#include "yack/jive/syntax/xnode.hpp"
 
 namespace yack
 {
@@ -20,20 +21,22 @@ namespace yack
                 }
 
                 xnode      *tree = NULL;
-                if(top->accept(src,lxr,tree))
+                observer    obs  = { NULL };
+                
+                if(top->accept(src,lxr,tree,obs))
                 {
-                    if(rule::verbose)
-                    {
-                        std::cerr << lang << " accepted..." << std::endl;
-                    }
+                    auto_ptr<xnode> keep = tree;
+                    
+                    if(rule::verbose) std::cerr << lang << " accepted..." << std::endl;
+                    
+                    return keep.yield();
                 }
                 else
                 {
-                    if(rule::verbose)
-                    {
-                        std::cerr << lang << " rejected..." << std::endl;
-                    }
+                    if(rule::verbose) std::cerr << lang << " rejected..." << std::endl;
                     assert(NULL==tree);
+                    if(obs.accepted) std::cerr << "accepted: " << *obs.accepted << std::endl;
+
                 }
 
                 return tree;

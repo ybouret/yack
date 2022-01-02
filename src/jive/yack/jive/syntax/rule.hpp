@@ -24,15 +24,26 @@ namespace yack
                 internal_type  //!< an internal rule
             };
 
-            class xnode; //!< forward
-
+            class  xnode;     //!< forward
+            
+            //__________________________________________________________________
+            //
+            //
+            //! help monitoring
+            //
+            //__________________________________________________________________
+            struct observer
+            {
+                const lexeme *accepted; //!< last accepted
+            };
+            
             //__________________________________________________________________
             //
             //
             //! arguments for rule
             //
             //__________________________________________________________________
-#define YACK_JIVE_RULE_ARGS source &src, lexer &lxr, xnode * &tree
+#define YACK_JIVE_RULE_ARGS source &src, lexer &lxr, xnode * &tree, observer &obs
 
             //__________________________________________________________________
             //

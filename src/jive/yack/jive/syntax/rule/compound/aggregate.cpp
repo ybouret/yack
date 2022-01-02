@@ -33,7 +33,7 @@ namespace yack
                 //--------------------------------------------------------------
                 for(const component *chld=head;chld;chld=chld->next)
                 {
-                    if(! (**chld).accept(src,lxr,here))
+                    if(! (**chld).accept(src,lxr,here,obs))
                     {
                         keep.dismiss();       // dismiss guard
                         xnode::ret(lxr,here); // return sub tree
