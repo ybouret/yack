@@ -44,23 +44,23 @@ YACK_UTEST(scanner)
     my_scanner scan;
 
     jive::lexemes lxm;
-    jive::lexeme *lx  = 0;
+    jive::lexeme *lex = 0;
     if(argc>1)
     {
         {
             bool ctrl=false;
             jive::source src( jive::module::open_file(argv[1]) );
-            while(NULL!=(lx=scan.probe(src,ctrl)))
+            while(NULL!=(lex=scan.probe(src,ctrl)))
             {
                 YACK_ASSERT(false==ctrl);
-                lxm.push_back(lx);
-                std::cerr << *lx << std::endl;
+                lxm.push_back(lex);
+                std::cerr << *lex << std::endl;
             }
         }
 
         for(const jive::lexeme *lx=lxm.head;lx;lx=lx->next)
         {
-            std::cerr << *lx << std::endl;
+            std::cerr << '#' << lx->indx << " : " << *lx << std::endl;
         }
 
 

@@ -30,7 +30,9 @@ namespace
             endl("[:endl:]");
             drop("[:blank:]+");
 
+
             scanner &INT = decl( new scanner("INT") );
+
             INT.make("[:digit:]+",this,&mylexer::growInt);
             INT.jump("lexer","[:digit:]!",this,&mylexer::leaveInt);
 
@@ -39,23 +41,27 @@ namespace
             HEXA.make("[:xdigit:]+",this,&mylexer::growHex);
             HEXA.back("[:xdigit:]!",this,&mylexer::leaveHex);
 
+
             import( new jive::lexical::multi_lines_comment("C_Comments","/\\*","\\*/",*this) );
 
             plug( jive::lexical::cxx_comment::clid, "C++Comment");
+
+
             plug( type2type<jive::lexical::single_line_comment>(), "Sh_Comment",'#');
             plug( type2type<jive::lexical::multi_lines_comment>(), "XMLComment","<\\!--","-->");
 
-            plug(jive::lexical::jstring::clid, "jstring");
-            plug(jive::lexical::rstring::clid, "rstring");
-            plug(jive::lexical::bstring::clid, "bstring");
+            plug(jive::lexical::verbatim::clid, "block","<verb>","<verb/>");
+            plug(jive::lexical::jstring::clid,  "jstring");
 
-            plug(jive::lexical::verbatim::clid,"block","<verb>","<verb/>");
-            
+            plug(jive::lexical::rstring::clid,  "rstring");
+            plug(jive::lexical::bstring::clid,  "bstring");
+
             
         }
 
         virtual ~mylexer() throw()
         {
+            std::cerr << "~mylexer" << std::endl;
         }
         
         inline void enterInt(jive::token &t)
@@ -75,7 +81,7 @@ namespace
         {
             restore(nxt);
             std::cerr << "\tleaveInt [" << t_int << "]" << std::endl;
-            jive::lexeme *lx =  new jive::lexeme( (*this)["INT"].label, *t_int );
+            jive::lexeme *lx =  newlex( (*this)["INT"].label, *t_int );
             store(lx);
             (**lx).swap_with(t_int);
         }
@@ -98,10 +104,10 @@ namespace
             restore(nxt);
             std::cerr << "\tleaveHex [" << t_hex << "]" << std::endl;
             if(t_hex.size<=0) throw exception("missing hex...");
-            jive::lexeme *lx =  new jive::lexeme( (*this)["HEXA"].label, *t_hex );
+            jive::lexeme *lx = newlex( (*this)["HEXA"].label, *t_hex );
             store(lx);
             (**lx).swap_with(t_hex);
-         }
+        }
         
         
         jive::token t_int;
@@ -120,7 +126,7 @@ YACK_UTEST(analyzer)
 
     mylexer lex;
     std::cerr << lex.label << " is ready" << std::endl;
-    std::cerr << *lex << std::endl;
+    //std::cerr << *lex << std::endl;
 
     if(false)
     {
@@ -144,7 +150,7 @@ YACK_UTEST(analyzer)
         for(const jive::lexeme *lx=lxm.head;lx;lx=lx->next)
         {
             const string  s = (**lx).to_string();
-            std::cerr << *lx <<  " = " << s << std::endl;
+            std::cerr << '#' << lx->indx << " : " << *lx <<  " = " << s << std::endl;
         }
 
 

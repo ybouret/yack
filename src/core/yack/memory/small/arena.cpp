@@ -340,30 +340,34 @@ namespace yack
         
         
         static inline
-        void search_error()
+        void search_error(const size_t)
         {
+            //std::cerr << "error for block_size=" << bs << std::endl;
             system_error::critical_bsd(EACCES,"memory::arena::release(corrupted block address)");
-
         }
         
         static inline
-        void search_prev(chunk * & releasing, const void *addr) throw()
+        void search_prev(chunk *    & releasing,
+                         const void * addr,
+                         const size_t bs) throw()
         {
             for(releasing=releasing->prev;releasing;releasing=releasing->prev)
             {
                 if(releasing->contains(addr)) return;
             }
-            search_error();
+            search_error(bs);
         }
         
         static inline
-        void search_next(chunk * & releasing, const void *addr) throw()
+        void search_next(chunk *   &  releasing,
+                         const void  *addr,
+                         const size_t bs) throw()
         {
             for(releasing=releasing->next;releasing;releasing=releasing->next)
             {
                 if(releasing->contains(addr)) return;
             }
-            search_error();
+            search_error(bs);
         }
 
         void arena::find(void *addr)  throw()
@@ -372,9 +376,9 @@ namespace yack
             assert(releasing);
             switch(releasing->whose(addr))
             {
-                case owned_by_prev: search_prev(releasing,addr); break;
+                case owned_by_prev: search_prev(releasing,addr,block_size); break;
                 case owned_by_self: break;
-                case owned_by_next: search_next(releasing,addr); break;
+                case owned_by_next: search_next(releasing,addr,block_size); break;
             }
         }
 

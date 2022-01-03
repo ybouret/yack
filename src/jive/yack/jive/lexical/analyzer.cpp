@@ -4,6 +4,8 @@
 #include "yack/type/temporary.hpp"
 #include "yack/ios/fmt/align.hpp"
 
+
+
 namespace yack
 {
     
@@ -25,6 +27,8 @@ namespace yack
                 scan = this;
                 repo.release();
                 hist.release();
+                assert(index);
+                *indx = 0;
             }
 
 
@@ -45,36 +49,50 @@ namespace yack
                 withhold();
                 const scan_ptr tmp = this;
                 if(!sdb.insert(tmp)) throw exception("<%s> unexpected self insertion", (*label)());
-                link_to(*this);
+                mydb = &dict;
+                root = this;
             }
             
             
-            void analyzer:: declare(scanner *s)
+            void analyzer:: declare(scanner *s, const decl_t d)
             {
+                assert(s);
                 const scan_ptr p(s);
                 if(!sdb.insert(p)) throw exception("<%s> has multiple <%s>", (*label)(), (*(p->label))() );
-                s->link_to(*this);
+                switch(d)
+                {
+                    case declare_manual:
+                        s->link_to(*this);
+                        break;
+
+                    case declare_plugin:
+                        // already linked
+                        assert(s->linked_to(*this));
+                        break;
+                }
             }
 
             const plugin & analyzer::import( plugin *plg )
             {
                 assert(NULL!=plg);
-                plugin &p = decl<plugin>(plg);
+                plugin &p = decl<plugin>(plg,declare_plugin);
                 call(p.label,p.trigger,&p,&plugin::on_call);
                 return *plg;
             }
 
 
-            
             void scanner:: link_to(analyzer &parent) throw()
             {
+                assert(standalone());
                 if(verbose)
                 {
                     const string id = '<' + *label + '>';
-                    std::cerr << ios::align(id,output_width) << " [link to <" << parent.label << ">]" << std::endl;
+                    std::cerr << ios::align(id,output_width) << " [ link to <" << parent.label << "> ]" << std::endl;
                 }
-                dict    = & parent.dict;
+                mydb    = & parent.dict;
                 root    = & parent;
+                indx    =   parent.indx;
+
             }
             
             void scanner:: restore(token &word) throw()
@@ -107,7 +125,7 @@ namespace yack
                 scanner *dest = request(target,"call"); assert(dest);
                 if(verbose)
                 {
-                    std::cerr << "call <" << scan->label << "> ==> <" << dest->label << ">" << std::endl;                hist.push(scan);
+                    std::cerr << "call <" << scan->label << "> ==> <" << dest->label << ">" << std::endl;
                 }
                 hist.push(scan);
                 scan = dest;
@@ -123,7 +141,7 @@ namespace yack
                 scan = hist.pop();
             }
             
-          
+
             
             void analyzer:: store(lexeme *lx) throw()
             {

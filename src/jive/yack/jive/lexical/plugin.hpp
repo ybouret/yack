@@ -40,7 +40,7 @@ namespace yack
                                 const EXPRESSION &expr,
                                 analyzer         &host,
                                 const eos_policy  flag) :
-                scanner(uuid,flag),
+                scanner( uuid,flag ),
                 trigger( tags::make(expr) )
                 {
                     link_to(host);
@@ -67,7 +67,7 @@ namespace yack
                  return lexeme for further manupulation if necessary
                  */
                 //______________________________________________________________
-                lexeme &inject(token &) const;
+                lexeme &inject(token &);
 
             private:
                 YACK_DISABLE_COPY_AND_ASSIGN(plugin);

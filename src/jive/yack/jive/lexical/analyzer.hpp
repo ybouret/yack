@@ -17,6 +17,8 @@ namespace yack
 
         namespace lexical
         {
+
+
             //__________________________________________________________________
             //
             //
@@ -34,6 +36,12 @@ namespace yack
                 typedef suffix_set<string,scan_ptr>      scan_set; //!< alias
                 typedef stack<scanner *,list<scanner*> > history;  //!< call stack
 
+                //! how to declare a new scanner
+                enum decl_t
+                {
+                    declare_manual, //!< declare as manual => link_to
+                    declare_plugin  //!< declare as plugin => already linked_to
+                };
 
 
                 //______________________________________________________________
@@ -63,11 +71,11 @@ namespace yack
                 //______________________________________________________________
                 const scan_set & operator*() const throw(); //!< access to db
 
-                //! declare and link a new scanner
+                //! declare a new scanner, post-process according to decl_t
                 template <typename SCANNER>
-                SCANNER & decl( SCANNER *s )
+                SCANNER & decl(SCANNER *s, const decl_t d = declare_manual )
                 {
-                    declare(s);
+                    declare(s,d);
                     return *s;
                 }
 
@@ -128,6 +136,7 @@ namespace yack
                 lexeme * query(source &);         //!< query next lexeme
                 void     store(lexeme *) throw(); //!< store a parsed lexeme
                 void     reset()         throw(); //!< reset all
+                
 
                 //______________________________________________________________
                 //
@@ -141,8 +150,9 @@ namespace yack
                 lexemes  repo; //!< cache
                 history  hist; //!< call stack
                 scan_set sdb;  //!< scanner database
+                
                 void     setup();
-                void     declare(scanner *);
+                void     declare(scanner *, const decl_t);
                 scanner *request(const string &target, const char *when) const;
                 
                 

@@ -93,6 +93,40 @@ namespace yack
         namespace lexical
         {
 
+            bool  scanner:: standalone() const throw()
+            {
+                return indx == &indx_;
+            }
+
+            bool scanner:: linked_to(const scanner &host) const throw()
+            {
+                if( host.indx == indx )
+                {
+                    return true;
+                }
+                else
+                {
+                    return false;
+                }
+            }
+
+
+            lexeme  * scanner:: newlex(const tag &uid, const context &ctx)
+            {
+                try
+                {
+                    assert(indx);
+                    const size_t I = ++(*indx);
+                    return new lexeme(uid,ctx,I);
+                }
+                catch(...)
+                {
+                    --(*indx);
+                    throw;
+                }
+            }
+
+
             lexeme * scanner:: probe(source &src, bool &ctrl)
             {
 
@@ -224,7 +258,7 @@ namespace yack
                             return NULL;
                     }
 
-                    lexeme *lx = new lexeme(best->name,*word);
+                    lexeme *lx = newlex(best->name,*word);
                     (**lx).swap_with(word);
                     return lx;
                 }

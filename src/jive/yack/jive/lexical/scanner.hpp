@@ -51,17 +51,22 @@ namespace yack
 
                 //! setup with default policy for standalone scanner
                 template <typename LABEL> inline
-                explicit scanner(const LABEL &id, const eos_policy flag=accept_eos) :
+                explicit scanner(const LABEL     &label_,
+                                 const eos_policy flag=accept_eos) :
                 object(),
                 counted(),
-                label( tags::make(id)       ),
+                label( tags::make(label_)   ),
                 instr( new instructions()   ),
                 table( new scatter::table() ),
                 onEOS(flag),
                 flux(NULL),
                 root(NULL),
-                dict(NULL)
-                {}
+                indx(NULL),
+                mydb(NULL),
+                indx_(0)
+                {
+                    indx = &indx_;
+                }
 
                 //______________________________________________________________
                 //
@@ -102,7 +107,7 @@ namespace yack
                     assert(meth);
                     const tag    t = tags::make(uuid);
                     const action a(host,meth);
-                    const motif  m(regexp::compile(expr,dict) );
+                    const motif  m(regexp::compile(expr,mydb) );
                     on(t,m,a);
                 }
 
@@ -201,7 +206,7 @@ namespace yack
                     
                     const flow::callback  cb(host,meth);
                     const flow::jump      fn(t_name,*root,cb);
-                    const motif           m( regexp::compile(*t_expr,dict) );
+                    const motif           m( regexp::compile(*t_expr,mydb) );
                     const action          a(fn);
                     on(t_jump,m,a);
                 }
@@ -233,7 +238,7 @@ namespace yack
                     
                     const flow::callback  cb(host,meth);
                     const flow::call      fn(t_name,*root,cb);
-                    const motif           m( regexp::compile(*t_expr,dict) );
+                    const motif           m( regexp::compile(*t_expr,mydb) );
                     const action          a(fn);
                     on(t_call,m,a);
                 }
@@ -260,7 +265,7 @@ namespace yack
                     
                     const flow::callback  cb(host,meth);
                     const flow::back      fn(*root,cb);
-                    const motif           m( regexp::compile(*t_expr,dict) );
+                    const motif           m( regexp::compile(*t_expr,mydb) );
                     const action          a(fn);
                     on(t_back,m,a);
                 }
@@ -279,12 +284,20 @@ namespace yack
                  -- if  ctrl: something happened: should probe again (see analyzer)
                  */
                 //______________________________________________________________
-                lexeme  *probe(source &source, bool &ctrl);
-                
-                void     link_to(analyzer&) throw(); //!< set dictionary and ctrl
-                void     restore(token&)    throw(); //!< restore read token to root
-                
-                
+                lexeme  *probe(source &source,
+                               bool   &ctrl);
+
+
+                //______________________________________________________________
+                //
+                // other methods
+                //______________________________________________________________
+                void     link_to(analyzer&) throw();                   //!< set dict, root and index
+                void     restore(token&)    throw();                   //!< restore read token to root
+                lexeme  *newlex(const tag &, const context &);         //!< create with *index
+                bool     standalone() const throw();                   //!< index == &indx_
+                bool     linked_to(const scanner &host) const throw(); //!< index == &host.indx_
+
                 //______________________________________________________________
                 //
                 // members
@@ -297,12 +310,14 @@ namespace yack
             protected:
                 source                                *flux; //!< set during a probe call
                 analyzer                              *root; //!< set by link_to
-                const dictionary                      *dict; //!< set by link_to
+                size_t                                *indx; //!< external/internal index
+                const dictionary                      *mydb; //!< set by link_to
 
             private:
                 YACK_DISABLE_COPY_AND_ASSIGN(scanner);
                 void check_word(const tag &uuid, const token &word) const;
                 void check_root() const;
+                size_t indx_; //!< default internal index
 
             };
         }

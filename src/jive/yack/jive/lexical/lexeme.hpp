@@ -23,8 +23,10 @@ namespace yack
             //
             // C++
             //__________________________________________________________________
-            explicit lexeme(const tag &, const context &) throw(); //!< setup from directive uuid and context
-            virtual ~lexeme()                             throw(); //!< cleanup
+            explicit lexeme(const tag     &,
+                            const context &,
+                            const size_t) throw(); //!< setup from directive uuid and context
+            virtual ~lexeme()             throw(); //!< cleanup
             
             //__________________________________________________________________
             //
@@ -41,9 +43,10 @@ namespace yack
             //
             // members
             //__________________________________________________________________
-            const tag name; //!< from directive
-            lexeme   *next; //!< for list/pool
-            lexeme   *prev; //!< for list/pool
+            const tag    name; //!< from directive
+            const size_t indx; //!< index
+            lexeme      *next; //!< for list/pool
+            lexeme      *prev; //!< for list/pool
 
         private:
             YACK_DISABLE_COPY_AND_ASSIGN(lexeme);

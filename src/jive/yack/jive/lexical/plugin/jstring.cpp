@@ -11,7 +11,6 @@ namespace yack
 
             jstring:: ~jstring() throw()
             {
-
             }
         }
 
