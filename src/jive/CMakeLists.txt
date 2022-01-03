@@ -85,12 +85,7 @@ set(jive_syntax_rule ${jive_syntax_rule_decl} ${jive_syntax_rule_srcs})
 SOURCE_GROUP(jive/syntax/rule FILES ${jive_syntax_rule})
 install( FILES ${jive_syntax_rule_decl} DESTINATION include/yack/jive/syntax/rule )
 
- #syntax/grammar
-file(GLOB jive_syntax_grammar_decl yack/jive/syntax/grammar/*.hpp)
-file(GLOB jive_syntax_grammar_srcs yack/jive/syntax/grammar/*.cpp)
-set(jive_syntax_grammar ${jive_syntax_grammar_decl} ${jive_syntax_grammar_srcs})
-SOURCE_GROUP(jive/syntax/grammar FILES ${jive_syntax_grammar})
-install( FILES ${jive_syntax_grammar_decl} DESTINATION include/yack/jive/syntax/grammar )
+
 
 #syntax/rule/wildcard
 file(GLOB jive_syntax_rule_wildcard_decl yack/jive/syntax/rule/wildcard/*.hpp)
@@ -106,6 +101,19 @@ set(jive_syntax_rule_compound ${jive_syntax_rule_compound_decl} ${jive_syntax_ru
 SOURCE_GROUP(jive/syntax/rule/compound FILES ${jive_syntax_rule_compound})
 install( FILES ${jive_syntax_rule_compound_decl} DESTINATION include/yack/jive/syntax/rule/compound )
 
+#syntax/grammar
+file(GLOB jive_syntax_grammar_decl yack/jive/syntax/grammar/*.hpp)
+file(GLOB jive_syntax_grammar_srcs yack/jive/syntax/grammar/*.cpp)
+set(jive_syntax_grammar ${jive_syntax_grammar_decl} ${jive_syntax_grammar_srcs})
+SOURCE_GROUP(jive/syntax/grammar FILES ${jive_syntax_grammar})
+install( FILES ${jive_syntax_grammar_decl} DESTINATION include/yack/jive/syntax/grammar )
+
+#syntax/xnode
+file(GLOB jive_syntax_xnode_decl yack/jive/syntax/xnode/*.hpp)
+file(GLOB jive_syntax_xnode_srcs yack/jive/syntax/xnode/*.cpp)
+set(jive_syntax_xnode ${jive_syntax_xnode_decl} ${jive_syntax_xnode_srcs})
+SOURCE_GROUP(jive/syntax/xnode FILES ${jive_syntax_xnode})
+install( FILES ${jive_syntax_xnode_decl} DESTINATION include/yack/jive/syntax/xnode )
 
 add_library(yack-jive STATIC
 ${jive_main}
@@ -113,7 +121,10 @@ ${jive_pattern} ${jive_pattern_basic} ${jive_pattern_joker} ${jive_pattern_logic
 ${jive_pattern_regexp}
 ${jive_pattern_quirks}
 ${jive_lexical} ${jive_lexical_flow} ${jive_lexical_plugin}
-${jive_syntax} ${jive_syntax_rule} ${jive_syntax_grammar} ${jive_syntax_rule_wildcard} ${jive_syntax_rule_compound}
+${jive_syntax} 
+${jive_syntax_rule} ${jive_syntax_rule_wildcard} ${jive_syntax_rule_compound}
+${jive_syntax_grammar} 
+${jive_syntax_xnode}
 )
 
 install( TARGETS yack-jive ARCHIVE DESTINATION lib )

@@ -26,15 +26,17 @@ namespace yack
             class xnode :
             public object,
             public authority<const rule>,
-            public ios::vizible
+            public ios::vizible,
+            public ios::serializable
             {
             public:
                 //______________________________________________________________
                 //
                 // types and definitions
                 //______________________________________________________________
-                typedef authority<const rule> auth;  //!< alias
-                typedef cxx_list_of<xnode>    list_; //!< base class for xlist
+                typedef authority<const rule> auth;   //!< alias
+                typedef cxx_list_of<xnode>    list_;  //!< base class for xlist
+                static const char             clid[]; //!< "xnode"
 
                 //______________________________________________________________
                 //
@@ -70,8 +72,19 @@ namespace yack
                 static void           ret(lexer &,xnode *) throw(); //!< return node to lexer, node is deleted
                 void                  gv(const string &)     const; //!< save/render graphviz
                 void                  gv(const char   *)     const; //!< save/render graphviz
+
+                //______________________________________________________________
+                //
+                //! concrete tree to abstract tree, may return NULL
+                //______________________________________________________________
                 static xnode         *ast(xnode *node) throw();
 
+                //______________________________________________________________
+                //
+                // serializable interface
+                //______________________________________________________________
+                virtual const char * class_uid() const throw();
+                virtual size_t       serialize(ios::ostream &) const;
 
                 //______________________________________________________________
                 //

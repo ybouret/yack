@@ -64,6 +64,8 @@ namespace
     };
 }
 
+#include "yack/ios/serializer/cfile.hpp"
+
 YACK_UTEST(parser)
 {
     jive::syntax::rule::verbose = true;
@@ -73,20 +75,11 @@ YACK_UTEST(parser)
     if(argc>1)
     {
         jive::source                  src( jive::module::open_file(argv[1]) );
-        if( true)
-        {
-            auto_ptr<jive::syntax::xnode> tree = J(src);
-            tree->gv("tree.dot");
-        }
-        else
-        {
-            jive::lexeme *lx = NULL;
-            while( NULL != (lx=J.query(src)) )
-            {
-                auto_ptr<jive::lexeme> keep = lx;
-                std::cerr << *lx << std::endl;
-            }
-        }
+        auto_ptr<jive::syntax::xnode> tree = J(src);
+        YACK_ASSERT(tree.is_valid());
+        tree->gv("tree.dot");
+        ios::serializer::cfile::save("tree.bin",*tree);
+
     }
 
 }

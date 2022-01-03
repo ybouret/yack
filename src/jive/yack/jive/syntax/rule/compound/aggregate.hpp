@@ -48,7 +48,7 @@ namespace yack
                 //
                 // member
                 //______________________________________________________________
-                const agg_role role;
+                const agg_role role; //!< give a role to the aggregate
 
             private:
                 YACK_DISABLE_COPY_AND_ASSIGN(aggregate);

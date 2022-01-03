@@ -76,9 +76,9 @@ namespace yack
                     if(next)
                     {
                         exception excp("extraneous ");
+                        next->stamp(excp);
                         add_excp(excp,*this,next);
                         excp.add(" in %s", gid);
-                        next->stamp(excp);
                         throw excp;
                     }
 
@@ -99,9 +99,11 @@ namespace yack
                     if(obs.accepted) std::cerr << "last accepted: " << *obs.accepted << std::endl;
                     lxr.show();
                     exception excp("rejected");
+
+
                     throw excp;
                 }
-                
+
             }
 
         }
