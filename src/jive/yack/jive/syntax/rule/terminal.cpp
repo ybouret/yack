@@ -33,7 +33,12 @@ namespace yack
                         {
                             std::cerr << "+term <" << name << "> = '" << **lx << "'" << std::endl;
                         }
-                        obs.accepted = lx;
+
+                        if(NULL==obs.accepted || obs.accepted->indx<lx->indx)
+                        {
+                            obs.accepted = lx;
+                        }
+
                         return true;
                     }
                     else

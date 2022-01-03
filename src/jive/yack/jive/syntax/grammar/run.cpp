@@ -36,7 +36,7 @@ namespace yack
                     if(rule::verbose) std::cerr << lang << " rejected..." << std::endl;
                     assert(NULL==tree);
                     if(obs.accepted) std::cerr << "accepted: " << *obs.accepted << std::endl;
-
+                    lxr.show();
                 }
 
                 return tree;
