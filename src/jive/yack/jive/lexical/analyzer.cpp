@@ -207,6 +207,17 @@ namespace yack
                     }
                 }
             }
+
+
+            const lexeme * analyzer:: found(source &src)
+            {
+                lexeme *ans = query(src);
+                if(ans)
+                {
+                    store(ans);
+                }
+                return ans;
+            }
             
             void analyzer:: show() const
             {

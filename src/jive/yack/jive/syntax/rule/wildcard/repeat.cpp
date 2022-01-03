@@ -22,27 +22,36 @@ namespace yack
 
             bool repeat:: accept(YACK_JIVE_RULE_ARGS) const
             {
-                xnode           *sub = xnode::make(*this);
-                size_t           num = 0;
+                xnode           *here = xnode::make(*this);
+                size_t           nrep = 0;
 
                 {
-                    const  rule     &you = **this;
-                    auto_ptr<xnode>  ptr = sub;
-                    while(you.accept(src,lxr,sub,obs))
+                    const  rule     &that = **this;
+                    auto_ptr<xnode>  keep = here;
+                    while(that.accept(src,lxr,here,obs))
                     {
-                        ++num;
+                        ++nrep;
                     }
-                    ptr.dismiss();
+                    keep.dismiss();
                 }
 
-                if(num>=count)
+                if(nrep>=count)
                 {
-                    xnode::grow(tree,sub);
+                    if(NULL==tree)
+                    {
+                        tree = here;
+                    }
+                    else
+                    {
+                        assert( (**tree).type == internal_type );
+                        tree->sub().merge_back(here->sub());
+                        delete here;
+                    }
                     return true;
                 }
                 else
                 {
-                    xnode::ret(lxr,sub);
+                    xnode::ret(lxr,here);
                     return false;
                 }
             }

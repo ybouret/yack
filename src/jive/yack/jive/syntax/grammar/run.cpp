@@ -35,32 +35,71 @@ namespace yack
 
             xnode * grammar:: run(source &src, lexer &lxr) const
             {
+                //______________________________________________________________
+                //
+                //
+                // prepare run
+                //
+                //______________________________________________________________
                 const rule *top = rules.head;
                 const char *gid = (*lang)();
-                if(!top) throw exception("[%s] no top-level rule",gid);
+                if(!top) throw exception("%s no top-level rule",gid);
 
                 if(rule::verbose)
                 {
-                    std::cerr << lang << " run..." << std::endl;
+                    std::cerr << lang << " running!!" << std::endl;
                 }
 
                 xnode      *tree = NULL;
                 observer    obs  = { NULL };
-                
+
+                //______________________________________________________________
+                //
+                //
+                // accept top level rule
+                //
+                //______________________________________________________________
                 if(top->accept(src,lxr,tree,obs))
                 {
+                    //__________________________________________________________
+                    //
+                    // accepted
+                    //__________________________________________________________
                     auto_ptr<xnode> keep = tree;
-                    if(rule::verbose) std::cerr << lang << " accepted..." << std::endl;
-                    
+                    if(rule::verbose) std::cerr << lang << " [accepted]" << std::endl;
 
+                    //__________________________________________________________
+                    //
+                    // check EOS
+                    //__________________________________________________________
+                    const lexeme *next = lxr.found(src);
+                    if(next)
+                    {
+                        exception excp("extraneous ");
+                        add_excp(excp,*this,next);
+                        excp.add(" in %s", gid);
+                        next->stamp(excp);
+                        throw excp;
+                    }
+
+                    //__________________________________________________________
+                    //
+                    // success!
+                    //__________________________________________________________
                     return keep.yield();
                 }
                 else
                 {
-                    if(rule::verbose) std::cerr << lang << " rejected..." << std::endl;
+                    //__________________________________________________________
+                    //
+                    // rejected
+                    //__________________________________________________________
+                    if(rule::verbose) std::cerr << lang << " [rejected]" << std::endl;
                     assert(NULL==tree);
-                    if(obs.accepted) std::cerr << "accepted: " << *obs.accepted << std::endl;
+                    if(obs.accepted) std::cerr << "last accepted: " << *obs.accepted << std::endl;
                     lxr.show();
+                    exception excp("rejected");
+                    throw excp;
                 }
 
                 return tree;
