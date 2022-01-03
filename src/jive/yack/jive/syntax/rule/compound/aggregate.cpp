@@ -14,8 +14,10 @@ namespace yack
             {
             }
 
-            aggregate:: aggregate(const tag &name_) throw() :
-            compound(name_,mark)
+            aggregate:: aggregate(const tag     &name_,
+                                  const agg_role role_) throw() :
+            compound(name_,mark),
+            role(role_)
             {
                 I_am<aggregate>();
             }
@@ -48,7 +50,11 @@ namespace yack
                 // all done
                 if(verbose) std::cerr << "+agg  <" << name << "> with #" << here->sub().size << std::endl;
                 keep.dismiss();
-                xnode::grow(tree,here);
+                switch(role)
+                {
+                    case entity: xnode::grow(tree,here); break;
+                    case acting: xnode::join(tree,here); break;
+                }
                 return true;
             }
             

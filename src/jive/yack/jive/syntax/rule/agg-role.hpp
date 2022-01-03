@@ -15,7 +15,8 @@ namespace yack
             //! role for an aggregate
             enum agg_role
             {
-                toto
+                entity, //!< make a sub expression
+                acting  //!< only act
             };
 
         }

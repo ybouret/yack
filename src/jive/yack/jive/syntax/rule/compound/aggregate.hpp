@@ -4,6 +4,7 @@
 #define YACK_JIVE_SYNTAX_AGGREGATE_INCLUDED 1
 
 #include "yack/jive/syntax/rule/compound.hpp"
+#include "yack/jive/syntax/rule/agg-role.hpp"
 #include "yack/type/fourcc.h"
 
 namespace yack
@@ -32,8 +33,8 @@ namespace yack
                 //
                 // C++
                 //______________________________________________________________
-                virtual ~aggregate() throw();                 //!< cleanup
-                explicit aggregate(const tag &name_) throw(); //!< setup
+                virtual ~aggregate()                            throw(); //!< cleanup
+                explicit aggregate(const tag &, const agg_role) throw(); //!< setup
 
                 //______________________________________________________________
                 //
@@ -42,6 +43,12 @@ namespace yack
 
                 //! must accept all
                 virtual bool accept(YACK_JIVE_RULE_ARGS) const;
+
+                //______________________________________________________________
+                //
+                // member
+                //______________________________________________________________
+                const agg_role role;
 
             private:
                 YACK_DISABLE_COPY_AND_ASSIGN(aggregate);

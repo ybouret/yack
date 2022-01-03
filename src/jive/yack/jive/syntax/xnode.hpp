@@ -59,7 +59,7 @@ namespace yack
                 static void   grow( xnode * &tree, xnode *node) throw();        //!< grow tree
                 static void   grow( xnode * &tree, const internal &);           //!< grow(tree,make(internal))
                 static void   grow( xnode * &tree, const terminal &, lexeme *); //!< grow(tree,make(terminal,lexeme))
-
+                static void   join( xnode * &tree, xnode *node) throw();        //!< set tree or merge content
 
                 lexeme               &lex()       throw(); //!< return content  for terminal
                 const lexeme         &lex() const throw(); //!< return content  for terminal
@@ -70,7 +70,9 @@ namespace yack
                 static void           ret(lexer &,xnode *) throw(); //!< return node to lexer, node is deleted
                 void                  gv(const string &)     const; //!< save/render graphviz
                 void                  gv(const char   *)     const; //!< save/render graphviz
-                
+                static xnode         *ast(xnode *node) throw();
+
+
                 //______________________________________________________________
                 //
                 // members

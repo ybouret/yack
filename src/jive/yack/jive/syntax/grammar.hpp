@@ -6,6 +6,7 @@
 
 #include "yack/jive/syntax/rule/compound.hpp"
 #include "yack/jive/syntax/rule/term-role.hpp"
+#include "yack/jive/syntax/rule/agg-role.hpp"
 
 
 namespace yack
@@ -124,14 +125,25 @@ namespace yack
                 //______________________________________________________________
 
                 //! create an aggregate
-                compound &agg_(const tag &name);
+                compound &agg_(const tag     &name,
+                               const agg_role role);
 
-                //! create an optional rule from an existing rule
+                //! create an entity rule
                 template <typename ID> inline
                 compound &agg(const ID &id)
                 {
-                    const tag _ = tags::make(id); return agg_(_);
+                    const tag _ = tags::make(id); return agg_(_,entity);
                 }
+
+                //! create an acting rule
+                template <typename ID> inline
+                compound &act(const ID &id)
+                {
+                    const tag _ = tags::make(id); return agg_(_,acting);
+                }
+
+
+
 
                 //! (a,b)
                 const rule &cat(const rule &a, const rule &b);
@@ -192,6 +204,7 @@ namespace yack
                 //! run is accepting first rule
                 //______________________________________________________________
                 xnode *run(source &, lexer &) const;
+                
 
                 //______________________________________________________________
                 //

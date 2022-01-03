@@ -83,6 +83,22 @@ namespace yack
                 }
             }
 
+            void xnode:: join( xnode * &tree, xnode *node) throw()
+            {
+                assert(node);
+                assert((**node).type == internal_type );
+                if(NULL==tree)
+                {
+                    tree = node;
+                }
+                else
+                {
+                    assert( (**tree).type == internal_type );
+                    tree->sub().merge_back(node->sub());
+                    delete node;
+                }
+            }
+
             void xnode:: grow( xnode * &tree, const internal &r )
             {
                 grow( tree, make(r) );

@@ -86,7 +86,7 @@ namespace yack
                     //
                     // success!
                     //__________________________________________________________
-                    return keep.yield();
+                    return xnode::ast( keep.yield() );
                 }
                 else
                 {
@@ -101,9 +101,7 @@ namespace yack
                     exception excp("rejected");
                     throw excp;
                 }
-
-                return tree;
-
+                
             }
 
         }

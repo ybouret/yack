@@ -37,16 +37,7 @@ namespace yack
 
                 if(nrep>=count)
                 {
-                    if(NULL==tree)
-                    {
-                        tree = here;
-                    }
-                    else
-                    {
-                        assert( (**tree).type == internal_type );
-                        tree->sub().merge_back(here->sub());
-                        delete here;
-                    }
+                    xnode::join(tree,here);
                     return true;
                 }
                 else

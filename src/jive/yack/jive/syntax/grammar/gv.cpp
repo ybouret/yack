@@ -104,6 +104,16 @@ namespace yack
 
                         case aggregate::mark:
                             fp << ",shape=house";
+                            switch(r->as<aggregate>()->role)
+                            {
+                                case entity:
+                                    fp << ",style=\"bold,filled\"";
+                                    break;
+
+                                case acting:
+                                    //fp << ",style=dashed";
+                                    break;
+                            }
                             break;
 
                         case alternate::mark:
