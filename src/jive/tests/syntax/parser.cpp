@@ -76,6 +76,7 @@ YACK_UTEST(parser)
         if( true)
         {
             auto_ptr<jive::syntax::xnode> tree = J(src);
+            tree->gv("tree.dot");
         }
         else
         {

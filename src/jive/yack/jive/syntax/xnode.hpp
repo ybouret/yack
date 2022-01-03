@@ -23,7 +23,10 @@ namespace yack
             //! flexible node to hold the syntax tree
             //
             //__________________________________________________________________
-            class xnode : public object, public authority<const rule>
+            class xnode :
+            public object,
+            public authority<const rule>,
+            public ios::vizible
             {
             public:
                 //______________________________________________________________
@@ -65,7 +68,9 @@ namespace yack
 
                 lexeme               *rip() throw();                //!< extract lexeme, delete this
                 static void           ret(lexer &,xnode *) throw(); //!< return node to lexer, node is deleted
-
+                void                  gv(const string &)     const; //!< save/render graphviz
+                void                  gv(const char   *)     const; //!< save/render graphviz
+                
                 //______________________________________________________________
                 //
                 // members
@@ -83,8 +88,9 @@ namespace yack
                 YACK_DISABLE_COPY_AND_ASSIGN(xnode);
                 explicit xnode(const internal &);                   //!< internal
                 explicit xnode(const terminal &, lexeme *) throw(); //!< terminal
-                void    *data; //!< lexeme/xlist
+                void     gv_(ios::ostream &)                 const; //!< write self, child, link
 
+                void    *data; //!< lexeme/xlist
             };
 
             //__________________________________________________________________
