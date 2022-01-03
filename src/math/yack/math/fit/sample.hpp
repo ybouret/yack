@@ -70,18 +70,19 @@ namespace yack
             class sample : public sample_
             {
             public:
-                typedef sequential<ABSCISSA,ORDINATE> sequential_type; //!< alias
+                typedef sequential_function<ABSCISSA,ORDINATE> sequential_func; //!< alias
                 using sample_::indx;
 
                 //! create a wrapper for a simple function
                 template <typename FUNC>
-                class sequential_function : public sequential_type
+                class sequential_wrapper : public sequential_func
                 {
                 public:
-                    inline explicit sequential_function(FUNC &f) throw() : sequential_type(), host(f) {} //!< setup
-                    inline virtual ~sequential_function()        throw() {}                              //!< cleanup
+                    inline explicit sequential_wrapper(FUNC &f) throw() : sequential_func(), host(f) {} //!< setup
+                    inline virtual ~sequential_wrapper()        throw() {}                              //!< cleanup
 
                 private:
+                    YACK_DISABLE_COPY_AND_ASSIGN(sequential_wrapper);
                     FUNC &host;
                     inline virtual ORDINATE on_start(const ABSCISSA ini, const readable<ORDINATE> &A, const variables &vars) { return host(ini,A,vars); }
                     inline virtual ORDINATE on_reach(const ABSCISSA, const ABSCISSA end, const readable<ORDINATE> &A, const variables &vars) { return host(end,A,vars); }
@@ -137,7 +138,7 @@ namespace yack
                 }
 
                 //! get D2(A) with sequential and parameters
-                inline ORDINATE D2(sequential_type          &F,
+                inline ORDINATE D2(sequential_func          &F,
                                    const readable<ORDINATE> &A)
                 {
                     assert(abscissa.size()==ordinate.size());
@@ -174,7 +175,7 @@ namespace yack
                 inline ORDINATE D2_(FUNC                     &f,
                                     const readable<ORDINATE> &A)
                 {
-                    sequential_function<FUNC> F(f);
+                    sequential_wrapper<FUNC> F(f);
                     return D2(F,A);
                 }
 
