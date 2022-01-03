@@ -59,7 +59,11 @@ string( REPLACE " " ";" UNIT_TESTS "${UNIT_TESTS}" )
 
 
 
-message( STATUS "[YACK] Unit Tests: '${UNIT_TESTS}'" )
+message( STATUS "[YACK] Unit Tests  :" )
+foreach(t IN LISTS UNIT_TESTS)
+	message( STATUS "     |_${t}")
+endforeach()
+
 add_custom_target(regression 
 	DEPENDS ${UNIT_TESTS}
 	COMMENT "[YACK] Performed Regression")
@@ -68,7 +72,10 @@ add_custom_target(regression
 string( STRIP "${THIRD_PARTY}" THIRD_PARTY)
 string( REPLACE " " ";" THIRD_PARTY "${THIRD_PARTY}" )
 
-message( STATUS "[YACK] Third Party: '${THIRD_PARTY}'" )
+message( STATUS "[YACK] Third Party :" )
+foreach(t IN LISTS THIRD_PARTY)
+	message( STATUS "     |_${t}")
+endforeach()
 
 add_custom_target(third_party 
 	DEPENDS ${THIRD_PARTY}
