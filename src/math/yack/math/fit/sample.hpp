@@ -119,7 +119,7 @@ namespace yack
                     return abscissa.size();
                 }
 
-                //! prepare index
+                //! prepare index and workspace
                 inline void setup()
                 {
                     assert(abscissa.size()==ordinate.size());
@@ -165,6 +165,9 @@ namespace yack
                         return 0;
                     }
                 }
+
+                
+
 
                 //! get D2(A) with FUNCTION and parameters
                 template <typename FUNC>

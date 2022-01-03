@@ -15,7 +15,7 @@ namespace yack
             {
             }
 
-            variables:: variables(const variables &other) : collection(), variables_(other) {}
+            variables:: variables(const variables &other) : collection(), object(), variables_(other) {}
 
             variables & variables:: operator=( const variables &other )
             {

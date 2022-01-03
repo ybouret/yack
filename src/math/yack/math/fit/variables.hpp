@@ -28,7 +28,7 @@ namespace yack
             //! database of variables
             //
             //__________________________________________________________________
-            class variables : public variables_, public object 
+            class variables :  public object , public variables_
             {
             public:
                 //______________________________________________________________
