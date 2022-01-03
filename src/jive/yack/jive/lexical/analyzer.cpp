@@ -213,7 +213,7 @@ namespace yack
                 std::cerr << "\t<" << label << " repo='" << repo.size << "'>" << std::endl;
                 for(const lexeme *lx=repo.head;lx;lx=lx->next)
                 {
-                    std::cerr << "\t\t" << lx->name << " : '" << **lx << "'" << std::endl;
+                    std::cerr << "\t\t" << '#' << lx->indx << " : " << lx->name << " : '" << **lx << "'" << std::endl;
                 }
                 std::cerr << "\t<" << label <<"/>" << std::endl;
             }

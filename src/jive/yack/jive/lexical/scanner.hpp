@@ -18,12 +18,14 @@ namespace yack
 
         namespace lexical
         {
-
-            //! ens of stream policy
+            //__________________________________________________________________
+            //
+            //! End Of Stream policy
+            //__________________________________________________________________
             enum eos_policy
             {
-                accept_eos,
-                reject_eos
+                accept_eos, //!< scanner may  stop at EOS
+                reject_eos  //!< unauthorized stop at EOS
             };
 
 
@@ -61,11 +63,10 @@ namespace yack
                 onEOS(flag),
                 flux(NULL),
                 root(NULL),
-                indx(NULL),
+                indx( &indx_ ),
                 mydb(NULL),
                 indx_(0)
                 {
-                    indx = &indx_;
                 }
 
                 //______________________________________________________________
@@ -292,11 +293,11 @@ namespace yack
                 //
                 // other methods
                 //______________________________________________________________
-                void     link_to(analyzer&) throw();                   //!< set dict, root and index
+                void     link_to(analyzer&) throw();                   //!< set dict, root and indx
                 void     restore(token&)    throw();                   //!< restore read token to root
-                lexeme  *newlex(const tag &, const context &);         //!< create with *index
-                bool     standalone() const throw();                   //!< index == &indx_
-                bool     linked_to(const scanner &host) const throw(); //!< index == &host.indx_
+                lexeme  *newlex(const tag &, const context &);         //!< create with *indx
+                bool     standalone() const throw();                   //!< indx == &indx_
+                bool     linked_to(const scanner &host) const throw(); //!< indx == &host.indx
 
                 //______________________________________________________________
                 //
@@ -317,7 +318,7 @@ namespace yack
                 YACK_DISABLE_COPY_AND_ASSIGN(scanner);
                 void check_word(const tag &uuid, const token &word) const;
                 void check_root() const;
-                size_t indx_; //!< default internal index
+                size_t indx_; //!< default internal index for standalone scanner
 
             };
         }

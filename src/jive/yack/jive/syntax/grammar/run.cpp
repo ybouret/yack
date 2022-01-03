@@ -2,6 +2,7 @@
 #include "yack/jive/syntax/grammar.hpp"
 #include "yack/exception.hpp"
 #include "yack/jive/syntax/xnode.hpp"
+#include "yack/jive/syntax/rule/terminal.hpp"
 
 namespace yack
 {
@@ -9,6 +10,29 @@ namespace yack
     {
         namespace syntax
         {
+
+            static inline
+            void add_excp(exception     &excp,
+                          const grammar &gram,
+                          const lexeme  *lexm)
+            {
+                assert(lexm);
+                const string &id = *(lexm->name);
+                excp.add("'%s'", id());
+
+                switch(gram[id].role)
+                {
+                    case standard:
+                    {
+                        const string s = (**lexm).to_string();
+                        excp.add("='%s'", s());
+                    } break;
+
+                    default:
+                        break;
+                }
+            }
+
             xnode * grammar:: run(source &src, lexer &lxr) const
             {
                 const rule *top = rules.head;
@@ -26,9 +50,9 @@ namespace yack
                 if(top->accept(src,lxr,tree,obs))
                 {
                     auto_ptr<xnode> keep = tree;
-                    
                     if(rule::verbose) std::cerr << lang << " accepted..." << std::endl;
                     
+
                     return keep.yield();
                 }
                 else

@@ -165,11 +165,16 @@ namespace yack
                 // access
                 //______________________________________________________________
 
-                //! return content
+                //! return current list of rules
                 const list_of<rule> & operator*() const throw();
 
                 //! set top level rule
                 void top(const rule &);
+
+                //! get terminal by name
+                const terminal & operator[](const string &) const;
+
+
 
                 //______________________________________________________________
                 //
