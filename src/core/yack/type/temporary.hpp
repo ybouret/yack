@@ -21,11 +21,11 @@ namespace yack
     public:
 
         //! backup host value, then host=temp
-        inline   temporary(T &host, T  temp) : who(host), old(host)
+        inline explicit temporary(T &host, T  temp) : who(host), old(host)
         { host = temp; }
 
         //! restore original host value
-        inline ~temporary() throw() { who = old; }
+        inline virtual ~temporary() throw() { who = old; }
 
 
     private:
@@ -34,6 +34,22 @@ namespace yack
         T   old;
     };
 
+    //__________________________________________________________________________
+    //
+    //
+    //! temporary increase a value
+    //
+    //__________________________________________________________________________
+    template <typename T, const size_t N=1>
+    class temporary_increase : public temporary<T>
+    {
+    public:
+        inline explicit temporary_increase(T &host) : temporary<T>(host,host+N) {} //!< save and set
+        inline virtual ~temporary_increase() throw() {}                            //!< reset
+
+    private:
+        YACK_DISABLE_COPY_AND_ASSIGN(temporary_increase);
+    };
 }
 
 #endif

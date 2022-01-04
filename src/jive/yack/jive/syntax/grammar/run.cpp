@@ -45,13 +45,10 @@ namespace yack
                 const char *gid = (*lang)();
                 if(!top) throw exception("%s no top-level rule",gid);
 
-                if(rule::verbose)
-                {
-                    std::cerr << lang << " running!!" << std::endl;
-                }
 
                 xnode      *tree = NULL;
-                observer    obs  = { NULL };
+                observer    obs  = { NULL, 0};
+                YACK_JIVE_SYN_PRINTLN(obs << lang << " running!!");
 
                 //______________________________________________________________
                 //
@@ -66,7 +63,7 @@ namespace yack
                     // accepted
                     //__________________________________________________________
                     auto_ptr<xnode> keep = tree;
-                    if(rule::verbose) std::cerr << lang << " [accepted]" << std::endl;
+                    YACK_JIVE_SYN_PRINTLN(obs << lang << " [accepted]");
 
                     //__________________________________________________________
                     //
@@ -94,12 +91,14 @@ namespace yack
                     //
                     // rejected
                     //__________________________________________________________
-                    if(rule::verbose) std::cerr << lang << " [rejected]" << std::endl;
+                    YACK_JIVE_SYN_PRINTLN(obs << lang << " [rejected]");
                     assert(NULL==tree);
-                    if(obs.accepted) std::cerr << "last accepted: " << *obs.accepted << std::endl;
-                    lxr.show();
+                    if(rule::verbose)
+                    {
+                        if(obs.accepted) std::cerr << "last accepted: " << *obs.accepted << std::endl;
+                        lxr.show();
+                    }
                     exception excp("rejected");
-
 
                     throw excp;
                 }

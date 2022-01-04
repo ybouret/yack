@@ -35,6 +35,9 @@ namespace yack
             struct observer
             {
                 const lexeme *accepted; //!< last accepted
+                unsigned      depth;    //!< current depth
+                //! helper to format information
+                friend   std::ostream & operator<<(std::ostream &os, const observer &obs);
             };
             
             //__________________________________________________________________
@@ -45,7 +48,7 @@ namespace yack
             //__________________________________________________________________
 #define YACK_JIVE_RULE_ARGS source &src, lexer &lxr, xnode * &tree, observer &obs
 
-
+            //! helper to display syntax info
 #define YACK_JIVE_SYN_PRINTLN(MSG) do { if(jive::syntax::rule::verbose) std::cerr << MSG << std::endl; } while(false)
 
             //__________________________________________________________________

@@ -28,6 +28,7 @@ namespace yack
                 reject_eos  //!< unauthorized stop at EOS
             };
 
+            //! helper to display lexical info
 #define YACK_JIVE_LEX_PRINTLN(MSG) do { if(jive::lexical::scanner::verbose) { std::cerr << MSG << std::endl; } } while(false)
 
             //__________________________________________________________________

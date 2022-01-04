@@ -1,5 +1,6 @@
 #include "yack/jive/syntax/rule/wildcard/option.hpp"
 #include "yack/jive/syntax/xnode.hpp"
+#include "yack/type/temporary.hpp"
 
 namespace yack
 {
@@ -22,6 +23,8 @@ namespace yack
             {
                 const rule &r    = **this;
                 xnode      *node = NULL;
+                YACK_JIVE_SYN_PRINTLN(obs<<"?opt(" << r.name << ")");
+                const temporary_increase<unsigned> incr(obs.depth);
                 if( r.accept(src,lxr,node,obs) )
                 {
                     xnode::grow(tree,node);

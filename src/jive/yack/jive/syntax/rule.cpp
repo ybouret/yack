@@ -26,7 +26,12 @@ namespace yack
             {
             }
 
-
+            std::ostream & operator<<(std::ostream &os, const observer &obs)
+            {
+                os << '|' << '_';
+                for(size_t i=obs.depth;i>0;--i) os << '_';
+                return os;
+            }
             
         }
 

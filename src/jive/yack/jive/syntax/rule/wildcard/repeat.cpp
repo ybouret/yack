@@ -1,5 +1,6 @@
 #include "yack/jive/syntax/rule/wildcard/repeat.hpp"
 #include "yack/jive/syntax/xnode.hpp"
+#include "yack/type/temporary.hpp"
 
 namespace yack
 {
@@ -28,7 +29,8 @@ namespace yack
 
                 {
                     auto_ptr<xnode>  keep = here;
-                    YACK_JIVE_SYN_PRINTLN("?rep(" << that.name << ")>=" << count);
+                    YACK_JIVE_SYN_PRINTLN( obs << "?rep(" << that.name << ")>=" << count);
+                    const temporary_increase<unsigned> incr(obs.depth);
                     while(that.accept(src,lxr,here,obs))
                     {
                         ++nrep;
@@ -38,13 +40,13 @@ namespace yack
 
                 if(nrep>=count)
                 {
-                    YACK_JIVE_SYN_PRINTLN("+rep(" << that.name << ") #" << nrep);
+                    YACK_JIVE_SYN_PRINTLN(obs << "+rep(" << that.name << ") #" << nrep);
                     xnode::join(tree,here);
                     return true;
                 }
                 else
                 {
-                    YACK_JIVE_SYN_PRINTLN("-rep(" << that.name << ") #" << nrep << "<" << count);
+                    YACK_JIVE_SYN_PRINTLN(obs << "-rep(" << that.name << ") #" << nrep << "<" << count);
                     xnode::ret(lxr,here);
                     return false;
                 }

@@ -1,5 +1,6 @@
 #include "yack/jive/syntax/rule/compound/alternate.hpp"
 #include "yack/jive/syntax/xnode.hpp"
+#include "yack/type/temporary.hpp"
 
 namespace yack
 {
@@ -21,28 +22,32 @@ namespace yack
             bool alternate:: accept(YACK_JIVE_RULE_ARGS) const
             {
                 bool result = false;
-                YACK_JIVE_SYN_PRINTLN("?alt  <" << name << ">");
-                for(const component *chld=head;chld;chld=chld->next)
+                YACK_JIVE_SYN_PRINTLN(obs << "?alt  <" << name << ">");
                 {
-                    xnode *here = NULL;
-                    if( (**chld).accept(src,lxr,here,obs) )
+                    const temporary_increase<unsigned> incr(obs.depth);
+                    for(const component *chld=head;chld;chld=chld->next)
                     {
-                        result = true;
-                        if(here)
+                        xnode *here = NULL;
+                        if( (**chld).accept(src,lxr,here,obs) )
                         {
-                            YACK_JIVE_SYN_PRINTLN("+alt  <" << name << "> as <" << (**here).name << ">");
-                            xnode::grow(tree,here);
-                            return true;
+                            result = true;
+                            if(here)
+                            {
+                                --obs.depth;
+                                YACK_JIVE_SYN_PRINTLN(obs << "+alt  <" << name << "> as <" << (**here).name << ">");
+                                xnode::grow(tree,here);
+                                return true;
+                            }
+                            // else leave a chance to another component,
+                            // but result will be true
                         }
-                        // else leave a chance to another component,
-                        // but result will be true
                     }
                 }
 
                 if(verbose)
                 {
-                    if(result) std::cerr << "+alt  <" << name << "> EMPTY" << std::endl;
-                    else       std::cerr << "-alt  <" << name << ">"       << std::endl;
+                    if(result) std::cerr << obs << "+alt  <" << name << "> EMPTY" << std::endl;
+                    else       std::cerr << obs << "-alt  <" << name << ">"       << std::endl;
                 }
                 return result;
             }

@@ -2,6 +2,7 @@
 
 #include "yack/jive/syntax/rule/compound/aggregate.hpp"
 #include "yack/jive/syntax/xnode.hpp"
+#include "yack/type/temporary.hpp"
 
 namespace yack
 {
@@ -27,25 +28,29 @@ namespace yack
                 xnode          *here = xnode::make(*this);
                 auto_ptr<xnode> keep = here;
 
-                YACK_JIVE_SYN_PRINTLN("?agg  <" << name << ">");
+                YACK_JIVE_SYN_PRINTLN(obs << "?agg  <" << name << ">");
                 //--------------------------------------------------------------
                 //
                 // try to accept all components
                 //
                 //--------------------------------------------------------------
-                for(const component *chld=head;chld;chld=chld->next)
                 {
-                    if(! (**chld).accept(src,lxr,here,obs))
+                    const temporary_increase<unsigned> incr(obs.depth);
+                    for(const component *chld=head;chld;chld=chld->next)
                     {
-                        keep.dismiss();       // dismiss guard
-                        xnode::ret(lxr,here); // return sub tree
-                        YACK_JIVE_SYN_PRINTLN("-agg  <" << name << ">");
-                        return false;
+                        if(! (**chld).accept(src,lxr,here,obs))
+                        {
+                            keep.dismiss();       // dismiss guard
+                            xnode::ret(lxr,here); // return sub tree
+                            --obs.depth;
+                            YACK_JIVE_SYN_PRINTLN(obs << "-agg  <" << name << ">");
+                            return false;
+                        }
                     }
                 }
 
                 // all done
-                YACK_JIVE_SYN_PRINTLN("+agg  <" << name << "> with #" << here->sub().size);
+                YACK_JIVE_SYN_PRINTLN(obs << "+agg  <" << name << "> with #" << here->sub().size);
                 keep.dismiss();
                 switch(role)
                 {
