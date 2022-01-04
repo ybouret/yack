@@ -134,10 +134,10 @@ namespace yack
         //
         //! sequence interface
         //______________________________________________________________________
-        inline virtual void push_back(param_type args)  { alive.push_back( build(args) ); }
-        inline virtual void push_front(param_type args) { alive.push_front( build(args)); }
-        inline virtual void pop_back()  throw() { free_(alive.pop_back());  }
-        inline virtual void pop_front() throw() { free_(alive.pop_front()); }
+        inline virtual void push_back(param_type args)  { alive.push_back( build(args) ); } //!< push back
+        inline virtual void push_front(param_type args) { alive.push_front( build(args)); } //!< push front
+        inline virtual void pop_back()  throw() { free_(alive.pop_back());  }               //!< pop back
+        inline virtual void pop_front() throw() { free_(alive.pop_front()); }               //!< pop front
 
 
         //______________________________________________________________________

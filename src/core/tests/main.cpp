@@ -39,6 +39,7 @@ YACK_UTEST_DECL(128)
     YACK_UTEST(memory_dyadic);
     YACK_UTEST(memory_objects);
     YACK_UTEST(object);
+    YACK_UTEST(thing);
     YACK_UTEST(memory_parcel);
     YACK_UTEST(memory_parcels);
     YACK_UTEST(memory_buffers);

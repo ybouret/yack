@@ -12,7 +12,7 @@ namespace yack
             {
             }
 
-            sample_::const_type & sample_::bulk() const throw() { return *vars; }
+            const string & sample_:: key() const throw() { return name; }
             
 
         }

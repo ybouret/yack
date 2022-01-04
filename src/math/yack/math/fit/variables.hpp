@@ -5,6 +5,7 @@
 
 #include "yack/math/fit/replica.hpp"
 #include "yack/associative/suffix/set.hpp"
+#include "yack/ios/fmt/align.hpp"
 
 namespace yack
 {
@@ -50,6 +51,10 @@ namespace yack
                 //
                 // methods
                 //______________________________________________________________
+
+                //! max name size
+                size_t width() const throw();
+
 
                 //! append a primary variable
                 template <typename ID>
@@ -97,6 +102,20 @@ namespace yack
                 {
                     return fetch(id)(arr);
                 }
+
+                //! display name array
+                template <typename T> inline
+                std::ostream & display(std::ostream &os, const readable<T> &arr) const
+                {
+                    const size_t w = width();
+                    for(const_iterator it=begin();it!=end();++it)
+                    {
+                        const variable &v = **it;
+                        os << ios::align(v.name,w) << " = " << v(arr) << std::endl;
+                    }
+                    return os;
+                }
+
 
 
             private:

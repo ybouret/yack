@@ -48,7 +48,16 @@ namespace yack
     {
         x *= x;
     }
-    
+
+    //! x *= x in situ, return x
+    template <typename T> inline
+    T square_pop(T &x) throw()
+    {
+        const T ans = x;
+        x *= x;
+        return x;
+    }
+
     //! x+x
     template <typename T> inline
     T twice(const T x) throw()

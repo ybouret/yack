@@ -1,15 +1,15 @@
-
 //! \file
 
 #ifndef YACK_FIT_SAMPLE_INCLUDED
 #define YACK_FIT_SAMPLE_INCLUDED 1
 
 #include "yack/math/fit/sequential.hpp"
-#include "yack/type/gateway.hpp"
+#include "yack/container/matrix.hpp"
 #include "yack/type/utils.hpp"
 #include "yack/ptr/auto.hpp"
 #include "yack/sequence/vector.hpp"
 #include "yack/sort/sum.hpp"
+#include "yack/thing.hpp"
 
 namespace yack
 {
@@ -24,7 +24,7 @@ namespace yack
             //! sample base type
             //
             //__________________________________________________________________
-            class sample_ : public object, public counted, public gateway<variables>
+            class sample_ : public thing, public counted
             {
             public:
                 //______________________________________________________________
@@ -39,29 +39,27 @@ namespace yack
                 // members
                 //______________________________________________________________
                 const string   name; //!< identifier
-                vector<size_t> indx; //!< to access data
-
+                variables      vars; //!< variables
+                
             protected:
                 //! setup with name
                 template <typename ID> inline
                 explicit sample_(const ID &id) :
-                object(),
+                thing(),
                 counted(),
                 name(id),
-                indx(),
-                vars(new variables())
+                vars()
                 {}
 
             private:
                 YACK_DISABLE_COPY_AND_ASSIGN(sample_);
-                virtual const_type & bulk() const throw();
-                auto_ptr<variables> vars;
+
             };
 
             //__________________________________________________________________
             //
             //
-            //! generic sample
+            //! sample interface
             //
             //__________________________________________________________________
             template <
@@ -70,15 +68,19 @@ namespace yack
             class sample : public sample_
             {
             public:
-                typedef sequential_function<ABSCISSA,ORDINATE> sequential_func; //!< alias
-                using sample_::indx;
+                //______________________________________________________________
+                //
+                // types and definitions
+                //______________________________________________________________
+                typedef sequential<ABSCISSA,ORDINATE>      sequential_type; //!< alias
+                typedef typename sequential_type::gradient sequential_grad; //!< alias
 
                 //! create a wrapper for a simple function
                 template <typename FUNC>
-                class sequential_wrapper : public sequential_func
+                class sequential_wrapper : public sequential_type
                 {
                 public:
-                    inline explicit sequential_wrapper(FUNC &f) throw() : sequential_func(), host(f) {} //!< setup
+                    inline explicit sequential_wrapper(FUNC &f) throw() : sequential_type(), host(f) {} //!< setup
                     inline virtual ~sequential_wrapper()        throw() {}                              //!< cleanup
 
                 private:
@@ -90,29 +92,118 @@ namespace yack
 
                 //______________________________________________________________
                 //
-                // methods
+                // virtual interface
+                //______________________________________________________________
+                virtual size_t   dimension() const throw()  = 0; //!< number of data
+                virtual void     get_ready()                = 0; //!< prepare internal data
+
+                //! compute D2 from parameters aorg using internal variables
+                virtual ORDINATE D2(sequential_type          &func,
+                                    const readable<ORDINATE> &aorg) = 0;
+
+
+                //______________________________________________________________
+                //
+                // non virtual interface
+                //______________________________________________________________
+
+                //! helper for regular functions
+                template <typename FUNC> inline
+                ORDINATE D2_(FUNC                     &func,
+                             const readable<ORDINATE> &aorg)
+                {
+                    sequential_wrapper<FUNC> call(func);
+                    return D2(call,aorg);
+                }
+
+                //______________________________________________________________
+                //
+                // members
+                //______________________________________________________________
+                matrix<ORDINATE> curv; //!< curvature matrix
+                vector<ORDINATE> beta; //!< descent direction
+
+                //______________________________________________________________
+                //
+                // C++
+                //______________________________________________________________
+
+                //! cleanup
+                inline virtual ~sample() throw() {}
+
+            protected:
+
+                //! setup with name
+                template <typename ID> inline
+                explicit sample(const ID &id) :
+                sample_(id),
+                curv(),
+                beta()
+                {
+                }
+
+
+            private:
+                YACK_DISABLE_COPY_AND_ASSIGN(sample);
+
+            };
+
+
+
+            //__________________________________________________________________
+            //
+            //
+            //! generic sample
+            //
+            //__________________________________________________________________
+            template <
+            typename ABSCISSA,
+            typename ORDINATE>
+            class sample_of : public sample<ABSCISSA,ORDINATE>
+            {
+            public:
+                //______________________________________________________________
+                //
+                // types and definitions
+                //______________________________________________________________
+                typedef sample<ABSCISSA,ORDINATE>             sample_type;      //!< alias
+                typedef typename sample_type::sequential_type sequential_type;  //!< alias
+                typedef typename sample_type::sequential_grad sequential_grad;  //!< alias
+                using sample_::vars;
+
+                //______________________________________________________________
+                //
+                // C++
                 //______________________________________________________________
                 //! setup
                 template <typename ID> inline
-                explicit sample(const ID                 &id,
-                                const readable<ABSCISSA> &x,
-                                const readable<ORDINATE> &y,
-                                writable<ORDINATE>       &z) :
-                sample_(id),
+                explicit sample_of(const ID                 &id,
+                                   const readable<ABSCISSA> &x,
+                                   const readable<ORDINATE> &y,
+                                   writable<ORDINATE>       &z) :
+                sample_type(id),
                 abscissa(x),
                 ordinate(y),
                 adjusted(z),
-                wksp()
+                wksp(),
+                indx(),
+                beta(),
+                dFda()
                 {
                 }
 
                 //! cleanup
-                inline virtual ~sample() throw()
+                inline virtual ~sample_of() throw()
                 {
                 }
 
-                //! common size
-                inline size_t size() const throw()
+                //______________________________________________________________
+                //
+                // methods
+                //______________________________________________________________
+
+                //! common dimension
+                inline virtual size_t dimension() const throw()
                 {
                     assert(abscissa.size()==ordinate.size());
                     assert(adjusted.size()==ordinate.size());
@@ -121,7 +212,7 @@ namespace yack
                 }
 
                 //! prepare index and workspace
-                inline void setup()
+                inline virtual void get_ready()
                 {
                     assert(abscissa.size()==ordinate.size());
                     assert(adjusted.size()==ordinate.size());
@@ -137,24 +228,24 @@ namespace yack
 
                 }
 
+
                 //! get D2(A) with sequential and parameters
-                inline ORDINATE D2(sequential_func          &F,
-                                   const readable<ORDINATE> &A)
+                inline virtual ORDINATE D2(sequential_type          &F,
+                                           const readable<ORDINATE> &A)
                 {
                     assert(abscissa.size()==ordinate.size());
                     assert(adjusted.size()==ordinate.size());
                     assert(abscissa.size()==indx.size());
                     assert(abscissa.size()==wksp.size());
 
-                    const size_t size = abscissa.size();
-                    if(size>0)
+                    const size_t dims = dimension();
+                    if(dims>0)
                     {
-                        const variables &vars = **this;
                         {
                             const size_t i = indx[1];
                             wksp[1] = squared(ordinate[i] - (adjusted[i] = F.start(abscissa[i],A,vars)));
                         }
-                        for(size_t j=2;j<=size;++j)
+                        for(size_t j=2;j<=dims;++j)
                         {
                             const size_t i = indx[j];
                             wksp[j] = squared( ordinate[i] - (adjusted[i] = F.reach(abscissa[i],A,vars)));
@@ -167,18 +258,77 @@ namespace yack
                     }
                 }
 
-                
 
 
-                //! get D2(A) with FUNCTION and parameters
-                template <typename FUNC>
-                inline ORDINATE D2_(FUNC                     &f,
-                                    const readable<ORDINATE> &A)
+#if 0
+                inline ORDINATE D2(sequential_type          &F,
+                                   sequential_grad          &G,
+                                   const readable<ORDINATE> &aorg,
+                                   const readable<bool>     &used)
                 {
-                    sequential_wrapper<FUNC> F(f);
-                    return D2(F,A);
+                    assert(abscissa.size()==ordinate.size());
+                    assert(adjusted.size()==ordinate.size());
+                    assert(abscissa.size()==indx.size());
+                    assert(abscissa.size()==wksp.size());
+
+                    const size_t     npar = aorg.size();
+                    const size_t     nvar = vars.size();
+                    const size_t     dims = dimension();
+                    dFda.adjust(nvar,0);
+                    beta.adjust(npar,0);
+                    beta.ld(0);
+                    curv.ld(0);
+                    if(dims>0)
+                    {
+                        //------------------------------------------------------
+                        //
+                        // first pass: store dY in workspace
+                        //
+                        //------------------------------------------------------
+                        {
+                            const size_t   i  = indx[1];
+                            wksp[1] = (ordinate[i] - (adjusted[i] = F.start(abscissa[i],aorg,vars)));
+                        }
+                        for(size_t j=2;j<=dims;++j)
+                        {
+                            const size_t i = indx[j];
+                            wksp[j] = ( ordinate[i] - (adjusted[i] = F.reach(abscissa[i],aorg,vars)));
+                        }
+
+                        //------------------------------------------------------
+                        //
+                        // second pass: accumulate gradient, curvature, and dY^2
+                        //
+                        //------------------------------------------------------
+                        for(size_t j=1;j<=dims;++j)
+                        {
+                            dFda.ld(0);
+                            const ORDINATE  dY  = square_pop(wksp[j]);
+                            G(dFda,abscissa[ indx[j] ],aorg,vars,used);
+                            for(size_t k=nvar;k>0;--k)
+                            {
+                                const size_t        kk      = *vars[k];
+                                const ORDINATE      dFda_k  = dFda[k];
+                                writable<ORDINATE> &curv_kk = curv[kk];
+                                beta[kk] += dY * dFda[k];
+                                for(size_t l=k;l>0;--l)
+                                {
+                                    const size_t ll = *vars[l];
+                                    curv_kk[ll] += dFda_k * dFda[l];
+                                }
+                            }
+                        }
+
+                        return sorted::sum(wksp,sorted::by_value);
+                    }
+                    else
+                    {
+                        // clean
+                        return 0;
+                    }
                 }
 
+#endif
 
 
 
@@ -192,10 +342,14 @@ namespace yack
                 const readable<ABSCISSA> &abscissa; //!< abscissae
                 const readable<ORDINATE> &ordinate; //!< ordinates
                 writable<ORDINATE>       &adjusted; //!< adjusted ordinates
-                vector<ORDINATE>          wksp; //!< workspace
+                vector<ORDINATE>          wksp;     //!< workspace
+                vector<size_t>            indx;     //!< indexing abscissae
+                vector<ORDINATE>          beta;     //!< descent direction
+                vector<ORDINATE>          dFda;     //!< local gradients
 
             private:
-                YACK_DISABLE_COPY_AND_ASSIGN(sample);
+                YACK_DISABLE_COPY_AND_ASSIGN(sample_of);
+
             };
 
 

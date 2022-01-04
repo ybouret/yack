@@ -16,7 +16,7 @@ namespace yack
     //__________________________________________________________________________
     //
     //
-    //! suffix_sey (key,type), key is not stored but used as path
+    //! suffix_set (key,type), key is not stored but used as path
     //
     //__________________________________________________________________________
     template <typename KEY,

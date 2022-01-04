@@ -133,6 +133,7 @@ add_test(memory:operative test-yack memory_operative)
 add_test(memory:ptr       test-yack memory_ptr)
 
 add_test(object          test-yack object)
+add_test(thing           test-yack thing)
 
 add_test(data:list         test-yack data_list)
 add_test(data:list:sort    test-yack data_list_sort)

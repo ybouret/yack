@@ -69,7 +69,7 @@ namespace yack
     //__________________________________________________________________________
     //
     //
-    //! multiple arrays of same type, same size
+    //! multiple arrays of same type, same sizes = mutual_size()
     //
     //__________________________________________________________________________
     template <typename T>

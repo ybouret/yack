@@ -1,6 +1,8 @@
 
 #include "yack/math/fit/variables.hpp"
 #include "yack/exception.hpp"
+#include "yack/type/utils.hpp"
+
 namespace yack
 {
     namespace math
@@ -44,6 +46,17 @@ namespace yack
                 const string _(id); return fetch(_);
             }
 
+
+            size_t variables:: width() const throw()
+            {
+                size_t w = 0;
+                for(const_iterator it=begin();it!=end();++it)
+                {
+                    const variable &v = **it;
+                    w = max_of(w,v.name.size());
+                }
+                return w;
+            }
 
         }
     }

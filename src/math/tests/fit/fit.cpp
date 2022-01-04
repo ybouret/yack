@@ -1,4 +1,4 @@
-#include "yack/math/fit/sample.hpp"
+#include "yack/math/fit/samples.hpp"
 #include "yack/type/v2d.hpp"
 #include "yack/utest/run.hpp"
 #include "yack/randomized/in2d.hpp"
@@ -34,6 +34,10 @@ YACK_UTEST(fit)
     YACK_SIZEOF(fit::replica);
     YACK_SIZEOF(fit::variables);
     YACK_SIZEOF(fit::sample_);
+    typedef fit::sample_of<vtx,double>    vsample;
+    typedef fit::sample_of<double,double> dsample;
+    YACK_SIZEOF(vsample);
+    YACK_SIZEOF(dsample);
 
     {
 
@@ -60,16 +64,26 @@ YACK_UTEST(fit)
             f21.push_back(0);
         }
 
-        fit::sample<vtx,double> s1("s1",vt1,r21,f21);
+        fit::sample_of<vtx,double> s1("s1",vt1,r21,f21);
 
-        s1.setup();
 
-        *s1 << "rc" << "xc" << "yc";
-        vector<double> A1(s1.size());
+        s1.vars << "rc" << "xc" << "yc";
+        vector<double> A1(s1.vars.size());
+
+        s1.get_ready();
+
+
+
+        s1.vars(A1,"rc") = 1;
+        s1.vars.display(std::cerr,A1);
+
         Circle         F;
         const double   d1 = s1.D2_(F,A1);
         std::cerr << "d1=" << d1 << std::endl;
-        
+
+
+        fit::samples_of<vtx,double> S("samples");
+
     }
 
 
