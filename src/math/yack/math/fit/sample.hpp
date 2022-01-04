@@ -4,11 +4,16 @@
 #define YACK_FIT_SAMPLE_INCLUDED 1
 
 #include "yack/math/fit/sequential.hpp"
-#include "yack/container/matrix.hpp"
+
 #include "yack/type/utils.hpp"
-#include "yack/ptr/auto.hpp"
+#include "yack/type/gateway.hpp"
+
 #include "yack/sequence/vector.hpp"
+#include "yack/container/matrix.hpp"
+
 #include "yack/sort/sum.hpp"
+#include "yack/sort/indexing.hpp"
+
 #include "yack/thing.hpp"
 
 namespace yack
@@ -24,7 +29,7 @@ namespace yack
             //! sample base type
             //
             //__________________________________________________________________
-            class sample_ : public thing, public counted
+            class sample_ : public thing, public counted, public gateway<variables>
             {
             public:
                 //______________________________________________________________
@@ -39,8 +44,7 @@ namespace yack
                 // members
                 //______________________________________________________________
                 const string   name; //!< identifier
-                variables      vars; //!< variables
-                
+
             protected:
                 //! setup with name
                 template <typename ID> inline
@@ -51,8 +55,12 @@ namespace yack
                 vars()
                 {}
 
+                void throw_multiple_name(const string &) const;
+
             private:
                 YACK_DISABLE_COPY_AND_ASSIGN(sample_);
+                virtual const_type &bulk() const throw();
+                variables      vars; //!< variables
 
             };
 
@@ -72,8 +80,10 @@ namespace yack
                 //
                 // types and definitions
                 //______________________________________________________________
-                typedef sequential<ABSCISSA,ORDINATE>      sequential_type; //!< alias
-                typedef typename sequential_type::gradient sequential_grad; //!< alias
+                typedef sequential<ABSCISSA,ORDINATE>      sequential_type;    //!< alias
+                typedef typename sequential_type::gradient sequential_grad;    //!< alias
+                typedef int (*comparator)(const ABSCISSA &, const ABSCISSA &); //!< alias
+
 
                 //! create a wrapper for a simple function
                 template <typename FUNC>
@@ -95,7 +105,7 @@ namespace yack
                 // virtual interface
                 //______________________________________________________________
                 virtual size_t   dimension() const throw()  = 0; //!< number of data
-                virtual void     get_ready()                = 0; //!< prepare internal data
+                virtual void     get_ready(comparator)      = 0; //!< prepare internal data
 
                 //! compute D2 from parameters aorg using internal variables
                 virtual ORDINATE D2(sequential_type          &func,
@@ -169,7 +179,8 @@ namespace yack
                 typedef sample<ABSCISSA,ORDINATE>             sample_type;      //!< alias
                 typedef typename sample_type::sequential_type sequential_type;  //!< alias
                 typedef typename sample_type::sequential_grad sequential_grad;  //!< alias
-                using sample_::vars;
+                typedef typename sample_type::comparator      comparator;       //!< alias
+
 
                 //______________________________________________________________
                 //
@@ -212,7 +223,7 @@ namespace yack
                 }
 
                 //! prepare index and workspace
-                inline virtual void get_ready()
+                inline virtual void get_ready(comparator cmp)
                 {
                     assert(abscissa.size()==ordinate.size());
                     assert(adjusted.size()==ordinate.size());
@@ -224,6 +235,11 @@ namespace yack
                     {
                         indx.push_back(i);
                         wksp.push_back(0);
+                    }
+
+                    if(cmp)
+                    {
+
                     }
 
                 }
@@ -243,12 +259,12 @@ namespace yack
                     {
                         {
                             const size_t i = indx[1];
-                            wksp[1] = squared(ordinate[i] - (adjusted[i] = F.start(abscissa[i],A,vars)));
+                            wksp[1] = squared(ordinate[i] - (adjusted[i] = F.start(abscissa[i],A,**this)));
                         }
                         for(size_t j=2;j<=dims;++j)
                         {
                             const size_t i = indx[j];
-                            wksp[j] = squared( ordinate[i] - (adjusted[i] = F.reach(abscissa[i],A,vars)));
+                            wksp[j] = squared( ordinate[i] - (adjusted[i] = F.reach(abscissa[i],A,**this)));
                         }
                         return sorted::sum(wksp,sorted::by_value);
                     }

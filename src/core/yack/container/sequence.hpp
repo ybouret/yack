@@ -64,7 +64,13 @@ namespace yack
                     break;
             }
         }
-        
+
+        //! helper
+        inline sequence & operator<<(param_type args)
+        {
+            push_back(args);
+            return *this;
+        }
 
         //______________________________________________________________________
         //

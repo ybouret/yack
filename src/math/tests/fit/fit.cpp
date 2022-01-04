@@ -25,6 +25,7 @@ namespace {
 
 }
 
+
 YACK_UTEST(fit)
 {
     randomized::rand_ ran;
@@ -38,6 +39,9 @@ YACK_UTEST(fit)
     typedef fit::sample_of<double,double> dsample;
     YACK_SIZEOF(vsample);
     YACK_SIZEOF(dsample);
+
+
+
 
     {
 
@@ -64,6 +68,42 @@ YACK_UTEST(fit)
             f21.push_back(0);
         }
 
+        // second circle
+        const double x2 = -4.2;
+        const double y2 =  2.1;
+        size_t       n2 = 10 + ran.leq(10);
+
+        vector<double> r22;
+        vector<vtx>    vt2;
+        vector<double> f22;
+
+        for(size_t i=0;i<n2;++i)
+        {
+            vtx delta = r0 * randomized::in2d::on_circle<double,v2d>(ran);
+
+            delta.x += x2 + ran.symm<double>() * 0.1;
+            delta.y += y2 + ran.symm<double>() * 0.1;
+
+            r22.push_back(delta.norm2());
+            vt2.push_back(delta);
+            f22.push_back(0);
+        }
+
+
+        fit::samples_of<vtx,double> circles("circles");
+        fit::sample_of<vtx,double> &circle1 = circles("circle1",vt1,r21,f21);
+        fit::sample_of<vtx,double> &circle2 = circles("circle2",vt2,r22,f22);
+
+        circle1.get_ready(NULL);
+        circle2.get_ready(NULL);
+        circles.get_ready(NULL);
+
+        *circles << "r" << "x1" << "y1" << "x2" << "y2";
+        std::cerr << *circles << std::endl;
+
+
+
+#if 0
         fit::sample_of<vtx,double> s1("s1",vt1,r21,f21);
 
 
@@ -83,7 +123,7 @@ YACK_UTEST(fit)
 
 
         fit::samples_of<vtx,double> S("samples");
-
+#endif
     }
 
 

@@ -39,6 +39,7 @@ namespace yack
                 typedef typename samples_set::const_iterator  const_iterator;   //!< alias
                 typedef typename sample_type::sequential_type sequential_type;  //!< alias
                 typedef typename sample_type::sequential_grad sequential_grad;  //!< alias
+                typedef typename sample_type::comparator      comparator;       //!< alias
 
                 //______________________________________________________________
                 //
@@ -59,6 +60,32 @@ namespace yack
 
                 //______________________________________________________________
                 //
+                // methods
+                //______________________________________________________________
+                inline single_type & operator()(const string             &id,
+                                         const readable<ABSCISSA> &x,
+                                         const readable<ORDINATE> &y,
+                                         writable<ORDINATE>       &z)
+                {
+                    shared_type sh = new single_type(id,x,y,z);
+                    if( ! this->insert(sh) ) this->throw_multiple_name(id);
+                    return *sh;
+                }
+
+
+                inline single_type & operator()(const char *id,
+                                                const readable<ABSCISSA> &x,
+                                                const readable<ORDINATE> &y,
+                                                writable<ORDINATE>       &z)
+                {
+                    const string _(id); return (*this)(_,x,y,z);
+                }
+
+
+
+
+                //______________________________________________________________
+                //
                 // sample interface
                 //______________________________________________________________
 
@@ -75,12 +102,12 @@ namespace yack
                 }
 
                 //! prepare all
-                inline virtual void get_ready()
+                inline virtual void get_ready(comparator cmp)
                 {
                     for(const_iterator it=this->begin();it!=this->end();++it)
                     {
                         sample_type &s = coerce(**it);
-                        s.get_ready();
+                        s.get_ready(cmp);
                     }
                 }
 
