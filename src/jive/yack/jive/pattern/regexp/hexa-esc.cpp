@@ -11,7 +11,7 @@ namespace yack
         pattern * RXCompiler:: hexa_esc()
         {
             // parsing hexadecimal escape sequence
-            YACK_JIVE_PRINTLN(RXIndent(deep) << "<ESC hexa>");
+            YACK_JIVE_PATTERN_PRINTLN(RXIndent(deep) << "<ESC hexa>");
             assert(backslash==curr[-2]);
             assert('x'==curr[-1]);
 

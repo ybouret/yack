@@ -24,10 +24,11 @@ namespace yack
             {
                 xnode           *here = xnode::make(*this);
                 size_t           nrep = 0;
+                const  rule     &that = **this;
 
                 {
-                    const  rule     &that = **this;
                     auto_ptr<xnode>  keep = here;
+                    YACK_JIVE_SYN_PRINTLN("?rep(" << that.name << ")>=" << count);
                     while(that.accept(src,lxr,here,obs))
                     {
                         ++nrep;
@@ -37,11 +38,13 @@ namespace yack
 
                 if(nrep>=count)
                 {
+                    YACK_JIVE_SYN_PRINTLN("+rep(" << that.name << ") #" << nrep);
                     xnode::join(tree,here);
                     return true;
                 }
                 else
                 {
+                    YACK_JIVE_SYN_PRINTLN("-rep(" << that.name << ") #" << nrep << "<" << count);
                     xnode::ret(lxr,here);
                     return false;
                 }

@@ -45,6 +45,9 @@ namespace yack
             //__________________________________________________________________
 #define YACK_JIVE_RULE_ARGS source &src, lexer &lxr, xnode * &tree, observer &obs
 
+
+#define YACK_JIVE_SYN_PRINTLN(MSG) do { if(jive::syntax::rule::verbose) std::cerr << MSG << std::endl; } while(false)
+
             //__________________________________________________________________
             //
             //

@@ -20,7 +20,7 @@ namespace yack
                 {
                     // get id
                     const string id(org,curr-org);
-                    YACK_JIVE_PRINTLN(RXIndent(deep) << "<posix id='" << id << "'>");
+                    YACK_JIVE_PATTERN_PRINTLN(RXIndent(deep) << "<posix id='" << id << "'>");
 
                     // search for it
                     const tags::pattern_creator *mk = db.search(id);

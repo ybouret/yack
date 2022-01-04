@@ -27,7 +27,7 @@ namespace yack
                 xnode          *here = xnode::make(*this);
                 auto_ptr<xnode> keep = here;
 
-                if(verbose) std::cerr << "?agg  <" << name << ">" << std::endl;
+                YACK_JIVE_SYN_PRINTLN("?agg  <" << name << ">");
                 //--------------------------------------------------------------
                 //
                 // try to accept all components
@@ -39,16 +39,13 @@ namespace yack
                     {
                         keep.dismiss();       // dismiss guard
                         xnode::ret(lxr,here); // return sub tree
-                        if(verbose)
-                        {
-                            std::cerr << "-agg  <" << name << ">" << std::endl;
-                        }
+                        YACK_JIVE_SYN_PRINTLN("-agg  <" << name << ">");
                         return false;
                     }
                 }
 
                 // all done
-                if(verbose) std::cerr << "+agg  <" << name << "> with #" << here->sub().size << std::endl;
+                YACK_JIVE_SYN_PRINTLN("+agg  <" << name << "> with #" << here->sub().size);
                 keep.dismiss();
                 switch(role)
                 {

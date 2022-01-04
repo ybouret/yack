@@ -23,38 +23,30 @@ namespace yack
             bool terminal:: accept(YACK_JIVE_RULE_ARGS) const
             {
                 lexeme *lx = lxr.query(src);
-                if(verbose) std::cerr << "?term <" << name << ">" << std::endl;
+                YACK_JIVE_SYN_PRINTLN("?term <" << name << ">" );
                 if(lx)
                 {
                     if( *(lx->name) == *(this->name) )
                     {
                         xnode::grow(tree,*this,lx);
-                        if(verbose)
-                        {
-                            std::cerr << "+term <" << name << "> = '" << **lx << "'" << std::endl;
-                        }
-
+                        YACK_JIVE_SYN_PRINTLN("+term <" << name << "> = '" << **lx << "'");
                         if(NULL==obs.accepted || obs.accepted->indx<lx->indx)
                         {
                             obs.accepted = lx;
                         }
-
                         return true;
                     }
                     else
                     {
-                        if(verbose)
-                        {
-                            std::cerr << "-term <" << name << "> but <" << lx->name << ">" << std::endl;
-                        }
+                        YACK_JIVE_SYN_PRINTLN("-term <" << name << "> but <" << lx->name << ">");
                         lxr.store(lx);
                         return false;
                     }
                 }
                 else
                 {
-                    if(verbose) std::cerr << "-term <" << name << "> but EOS" << std::endl;
                     // EOF
+                    YACK_JIVE_SYN_PRINTLN("-term <" << name << "> but EOS");
                     return false;
                 }
             }

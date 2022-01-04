@@ -125,7 +125,7 @@ namespace yack
             //------------------------------------------------------------------
             assert(rbrace==curr[-1]);
             const string data(org,(curr-org)-1);
-            YACK_JIVE_PRINTLN( RXIndent(deep) << "<braces data='" << data << "'/>");
+            YACK_JIVE_PATTERN_PRINTLN( RXIndent(deep) << "<braces data='" << data << "'/>");
             if(data.size()<=0) throw exception("%s: empty braces in '%s'",clid,expr);
 
             const int ch = data[1];
@@ -134,7 +134,7 @@ namespace yack
                 //--------------------------------------------------------------
                 // alias
                 //--------------------------------------------------------------
-                YACK_JIVE_PRINTLN( RXIndent(deep) << "  -> aliasing" );
+                YACK_JIVE_PATTERN_PRINTLN( RXIndent(deep) << "  -> aliasing" );
                 if(!dict) throw exception("%s: no dictionary for '%s'", clid, data());
 
                 const pattern *alias = dict->query(data);
@@ -150,7 +150,7 @@ namespace yack
                     //----------------------------------------------------------
                     // counting
                     //----------------------------------------------------------
-                    YACK_JIVE_PRINTLN( RXIndent(deep) << "  -> counting" );
+                    YACK_JIVE_PATTERN_PRINTLN( RXIndent(deep) << "  -> counting" );
                     vector<string> words(2,as_capacity);
                     switch(tokenizer::split(words,is_sep,data))
                     {
@@ -165,7 +165,7 @@ namespace yack
                     //----------------------------------------------------------
                     // failure
                     //----------------------------------------------------------
-                    YACK_JIVE_PRINTLN( RXIndent(deep) << "  -> invalid!" );
+                    YACK_JIVE_PATTERN_PRINTLN( RXIndent(deep) << "  -> invalid!" );
                     throw exception("%s: invalid braces content '{%s}' in '%s'",clid,data(),expr);
                 }
             }

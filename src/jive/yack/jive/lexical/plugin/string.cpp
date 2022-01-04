@@ -128,7 +128,7 @@ namespace yack
                     dw  |= h;
                 }
 
-                std::cerr << "codepoint=" << ios::hexa(dw,true) << std::endl;
+                //std::cerr << "codepoint=" << ios::hexa(dw,true) << std::endl;
                 uint8_t data[4] = { 0,0,0,0 };
                 size_t  size    = 0;
                 try

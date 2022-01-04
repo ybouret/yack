@@ -72,6 +72,10 @@ namespace yack
                 const scan_set & operator*() const throw(); //!< access to db
 
                 //! declare a new scanner, post-process according to decl_t
+                /**
+                 - if declare_manual, scanner is linked to this
+                 - if declare_plugin, plugin is already linked
+                 */
                 template <typename SCANNER>
                 SCANNER & decl(SCANNER *s, const decl_t d = declare_manual )
                 {

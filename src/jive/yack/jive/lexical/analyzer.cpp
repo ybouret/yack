@@ -84,15 +84,11 @@ namespace yack
             void scanner:: link_to(analyzer &parent) throw()
             {
                 assert(standalone());
-                if(verbose)
-                {
-                    const string id = '<' + *label + '>';
-                    std::cerr << ios::align(id,output_width) << " [ link to <" << parent.label << "> ]" << std::endl;
-                }
+                YACK_JIVE_LEX_PRINTLN( ios::align(sid(),output_width) << " [ link to <" << parent.label << "> ]" );
+
                 mydb    = & parent.dict;
                 root    = & parent;
                 indx    =   parent.indx;
-
             }
             
             void scanner:: restore(token &word) throw()
@@ -113,20 +109,14 @@ namespace yack
             void analyzer:: flow_jump(const string &target)
             {
                 scanner *dest = request(target,"jump to"); assert(dest);
-                if(verbose)
-                {
-                    std::cerr << "jump <" << scan->label << "> ==> <" << dest->label << ">" << std::endl;
-                }
+                YACK_JIVE_LEX_PRINTLN("jump " << scan->sid() << " ==> " << dest->sid());
                 scan = dest;
             }
             
             void analyzer:: flow_call(const string &target)
             {
                 scanner *dest = request(target,"call"); assert(dest);
-                if(verbose)
-                {
-                    std::cerr << "call <" << scan->label << "> ==> <" << dest->label << ">" << std::endl;
-                }
+                YACK_JIVE_LEX_PRINTLN("call " << scan->sid() << " ==> " << dest->sid());
                 hist.push(scan);
                 scan = dest;
             }
@@ -134,10 +124,7 @@ namespace yack
             void analyzer:: flow_back()
             {
                 if(hist.size()<=0) throw exception("<%s> cannot return", (*(scan->label))() );
-                if(verbose)
-                {
-                    std::cerr << "<" << scan->label << "> back to <" << hist.peek()->label << ">" << std::endl;
-                }
+                YACK_JIVE_LEX_PRINTLN(scan->sid() << "back to " << hist.peek()->sid());
                 scan = hist.pop();
             }
             
@@ -192,10 +179,11 @@ namespace yack
                             switch(scan->onEOS)
                             {
                                 case accept_eos:
-                                    std::cerr << scan->label << " accept EOS" << std::endl;
+                                    YACK_JIVE_LEX_PRINTLN(scan->sid() << " accept EOS");
                                     break;
+
                                 case reject_eos: {
-                                    std::cerr << scan->label << " reject EOS" << std::endl;
+                                    YACK_JIVE_LEX_PRINTLN(scan->sid() << " reject EOS");
                                     exception excp("End Of Stream for <%s>", (*(scan->label))() );
                                     (**flux).stamp(excp);
                                     throw excp;

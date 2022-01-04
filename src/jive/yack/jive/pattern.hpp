@@ -155,7 +155,7 @@ namespace yack
 }
 
 //! trace working
-#define YACK_JIVE_PRINTLN(MSG)  do { if(jive::pattern::verbose) { std::cerr << MSG << std::endl; } } while(false)
+#define YACK_JIVE_PATTERN_PRINTLN(MSG)  do { if(jive::pattern::verbose) { std::cerr << MSG << std::endl; } } while(false)
 
 
 

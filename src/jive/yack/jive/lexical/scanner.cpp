@@ -22,6 +22,11 @@ namespace yack
                 return *label;
             }
 
+            const string scanner:: sid() const
+            {
+                return '<' + *label + '>';
+            }
+            
 
             void scanner:: on(const tag &t, const motif &m, const action &a)
             {
@@ -142,7 +147,7 @@ namespace yack
                     // eos
                     //
                     //----------------------------------------------------------
-                    if(verbose) std::cerr << "<" << label << "> EOS" << std::endl;
+                    YACK_JIVE_LEX_PRINTLN(sid() << " EOS");
                     return NULL; // EOS
                 }
                 else
@@ -162,7 +167,7 @@ namespace yack
                         best = static_cast<const directive *>(**node); assert(best);
                         if(best->info->accept(src,word))
                         {
-                            if(verbose) std::cerr << "<" << label << "> init '" << best->name << "' = '" << word << "'" << std::endl;
+                            YACK_JIVE_LEX_PRINTLN(sid() << " init '" << best->name << "' = '" << word << "'");
                             check_word(best->name,word);
                             break;
                         }
@@ -211,7 +216,7 @@ namespace yack
                                     src.store_copy(temp);
                                     word.swap_with(temp);
                                     best = deed;
-                                    if(verbose) std::cerr << "<" << label << "> keep '" << best->name << "' = '" << word << "'" << std::endl;
+                                    YACK_JIVE_LEX_PRINTLN(sid() << " keep '" << best->name << "' = '" << word << "'");
                                     assert(src.read()>=word.size);
                                     replaced=true;
                                 }
@@ -241,8 +246,7 @@ namespace yack
                     // found a matching rule
                     //
                     //----------------------------------------------------------
-                    if(verbose&&replaced)
-                        std::cerr << "<" << label << "> scan '" << best->name << "' = '" << word << "' @" << **flux << ':' << (**flux).line << std::endl;
+                    if(replaced) YACK_JIVE_LEX_PRINTLN(sid() << " scan '" << best->name << "' = '" << word << "' @" << **flux << ':' << (**flux).line);
 
                     action &perform = coerce(best->duty);
                     switch(perform(word))

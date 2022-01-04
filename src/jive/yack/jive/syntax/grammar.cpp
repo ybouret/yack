@@ -17,15 +17,12 @@ namespace yack
                 assert(!rules.owns(r));
                 auto_ptr<rule> guard(r);
 
-                if(lexical::scanner::verbose)
+                YACK_JIVE_SYN_PRINTLN(lang << " declare " << r->name);
+
+                const string   &i = *(r->name);
+                for(const rule *p = rules.head;p;p=p->next)
                 {
-                    std::cerr << "[" << lang << "] declare <" << r->name << ">" << std::endl;
-                }
-                
-                const string  &id = *(r->name);
-                for(const rule *p=rules.head;p;p=p->next)
-                {
-                    if( *(p->name) == id ) throw exception("[%s] multiple rule <%s>", (*lang)(), id());
+                    if( *(p->name) == i ) throw exception("[%s] multiple rule <%s>", (*lang)(), i());
                 }
                 rules.push_back( guard.yield() );
             }
@@ -38,10 +35,7 @@ namespace yack
 
             void grammar:: top(const rule &r)
             {
-                if(lexical::scanner::verbose)
-                {
-                    std::cerr << "[" << lang << "] set toplevel <" << r.name << ">" << std::endl;
-                }
+                YACK_JIVE_SYN_PRINTLN(lang << " set top-level " << r.name);
                 must_own(r,"top");
                 rules.move_to_front( &coerce(r) );
             }

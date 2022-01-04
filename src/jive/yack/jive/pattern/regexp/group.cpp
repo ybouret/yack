@@ -13,7 +13,7 @@ namespace yack
         pattern *RXCompiler:: group()
         {
             assert(lbrack==curr[-1]);
-            YACK_JIVE_PRINTLN(RXIndent(deep) << "<group>");
+            YACK_JIVE_PATTERN_PRINTLN(RXIndent(deep) << "<group>");
             //------------------------------------------------------------------
             //
             // analyze current char
@@ -32,14 +32,14 @@ namespace yack
                         //------------------------------------------------------
                         // create a NONE group
                     case '^':
-                        YACK_JIVE_PRINTLN(RXIndent(deep) << "<NONE>");
+                        YACK_JIVE_PATTERN_PRINTLN(RXIndent(deep) << "<NONE>");
                         p = new op_none(); ++curr; break;
                         //------------------------------------------------------
 
                         //------------------------------------------------------
                         // create or OR with default '-'
                     case '-':
-                        YACK_JIVE_PRINTLN(RXIndent(deep) << "<NONE with '-'>");
+                        YACK_JIVE_PATTERN_PRINTLN(RXIndent(deep) << "<NONE with '-'>");
                         p = new op_or();   ++curr; p->push_back( new single('-') ); break;
                         //------------------------------------------------------
 
@@ -53,7 +53,7 @@ namespace yack
                         //------------------------------------------------------
                         // otherwise, create an emtpy OR, curr is still active
                     default:
-                        YACK_JIVE_PRINTLN(RXIndent(deep) << "<OR>");
+                        YACK_JIVE_PATTERN_PRINTLN(RXIndent(deep) << "<OR>");
                         p = new op_or(); break;
                         //------------------------------------------------------
                 }
@@ -114,7 +114,7 @@ namespace yack
             }
 
         RETURN:
-            YACK_JIVE_PRINTLN(RXIndent(deep) << "<group>");
+            YACK_JIVE_PATTERN_PRINTLN(RXIndent(deep) << "<group>");
             auto_ptr<pattern> ans = pattern::optimize(p.yield());
             if(ans->is_empty()) throw exception("%s: empty group detected in '%s'",clid,expr);
             return ans.yield();

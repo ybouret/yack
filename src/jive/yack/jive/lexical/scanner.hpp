@@ -28,6 +28,7 @@ namespace yack
                 reject_eos  //!< unauthorized stop at EOS
             };
 
+#define YACK_JIVE_LEX_PRINTLN(MSG) do { if(jive::lexical::scanner::verbose) { std::cerr << MSG << std::endl; } } while(false)
 
             //__________________________________________________________________
             //
@@ -49,9 +50,11 @@ namespace yack
                 //
                 // C++
                 //______________________________________________________________
-                virtual ~scanner() throw(); //!< cleanup
 
-                //! setup with default policy for standalone scanner
+                //! cleanup
+                virtual ~scanner() throw();
+
+                //! setup with default policy and internal index for lexemes
                 template <typename LABEL> inline
                 explicit scanner(const LABEL     &label_,
                                  const eos_policy flag=accept_eos) :
@@ -77,6 +80,8 @@ namespace yack
                 //! return *tag
                 const string & key() const throw();
 
+                //! return '<' + *label + '>'
+                const string   sid() const; 
 
                 //! register a new directive
                 /**
@@ -87,11 +92,10 @@ namespace yack
 
                 //! generic helper to build directive
                 /**
-                 - create a directive 'uuid'
-                 - when expression    'expr' is mest
+                 - create a directive    'uuid'
+                 - when expression       'expr' is mest
                  - using a class pointer 'host'
-                 - and a class method    'meth'
-                    as actiont to perform
+                 - and a class method    'meth' as action to perform
                  */
                 template <
                 typename IDENTIFIER,
@@ -296,6 +300,11 @@ namespace yack
                 void     link_to(analyzer&) throw();                   //!< set dict, root and indx
                 void     restore(token&)    throw();                   //!< restore read token to root
                 lexeme  *newlex(const tag &, const context &);         //!< create with *indx
+
+                //______________________________________________________________
+                //
+                // helpers to check status
+                //______________________________________________________________
                 bool     standalone() const throw();                   //!< indx == &indx_
                 bool     linked_to(const scanner &host) const throw(); //!< indx == &host.indx
 

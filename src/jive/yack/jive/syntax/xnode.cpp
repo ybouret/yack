@@ -158,13 +158,13 @@ namespace yack
                 switch( (**node).type )
                 {
                     case internal_type:
-                        std::cerr << "\t\t\tret '" << (**node).name << "'" << std::endl;
+                        //std::cerr << "\t\t\tret '" << (**node).name << "'" << std::endl;
                         xlist_ret(L,node->sub());
                         delete node;
                         break;
 
                     case terminal_type:
-                        std::cerr << "\t\t\tret '" << *(node->lex()) << "'" << std::endl;
+                        //std::cerr << "\t\t\tret '" << *(node->lex()) << "'" << std::endl;
                         L.store( node->rip() );
                         break;
                 }

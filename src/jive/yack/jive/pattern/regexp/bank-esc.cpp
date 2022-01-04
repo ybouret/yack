@@ -9,7 +9,7 @@ namespace yack
     {
         pattern *RXCompiler:: bank_esc()
         {
-            YACK_JIVE_PRINTLN(RXIndent(deep) << "<ESC bank>");
+            YACK_JIVE_PATTERN_PRINTLN(RXIndent(deep) << "<ESC bank>");
             assert(backslash==curr[-1]);
             if(curr>=last) throw exception("%s: unfinished escape sequence in '%s'",clid,expr);
             const char c = *(curr++);

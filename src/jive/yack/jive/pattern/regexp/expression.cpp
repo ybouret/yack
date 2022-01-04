@@ -11,7 +11,7 @@ namespace yack
         pattern * RXCompiler:: expression()
         {
             auto_ptr<logical> p = new op_and();
-            YACK_JIVE_PRINTLN( RXIndent(deep) << "<expression depth='" << deep << "'>");
+            YACK_JIVE_PATTERN_PRINTLN( RXIndent(deep) << "<expression depth='" << deep << "'>");
             while(curr<last)
             {
                 //______________________________________________________________
@@ -35,7 +35,7 @@ namespace yack
                         // end sub-expression
                         //______________________________________________________
                     case rparen:
-                        YACK_JIVE_PRINTLN(RXIndent(deep) << "<expression/>");
+                        YACK_JIVE_PATTERN_PRINTLN(RXIndent(deep) << "<expression/>");
                         if(--deep<0) throw exception("%s: extraneous '%c' in '%s'",clid,rparen,expr);
                         goto RETURN;
 
@@ -44,13 +44,13 @@ namespace yack
                         // alternation
                         //______________________________________________________
                     case altern: {
-                        YACK_JIVE_PRINTLN(RXIndent(deep) << "<alternation>");
+                        YACK_JIVE_PATTERN_PRINTLN(RXIndent(deep) << "<alternation>");
                         if(p->size<=0) throw exception("%s: empty expression before '%c' in '%s'",clid,rparen,expr);
                         auto_ptr<logical> q = new op_or();
                         q->push_back( p.yield()    );  // lhs of alternation
                         q->push_back( expression() );  // rhs of alternation
                         p = q;                         //  new result
-                        YACK_JIVE_PRINTLN(RXIndent(deep) << "<alternation/>");
+                        YACK_JIVE_PATTERN_PRINTLN(RXIndent(deep) << "<alternation/>");
                         goto RETURN;                  // return optimized
                     } break;
 
@@ -63,7 +63,7 @@ namespace yack
                     case oom:
                     case ign:
                     case Not:
-                        YACK_JIVE_PRINTLN(RXIndent(deep) << "<joker '" << c << "'/>");
+                        YACK_JIVE_PATTERN_PRINTLN(RXIndent(deep) << "<joker '" << c << "'/>");
                         joker(*p,c);
                         break;
 
@@ -111,7 +111,7 @@ namespace yack
 
             }
 
-            YACK_JIVE_PRINTLN(RXIndent(deep) << "<expression/>");
+            YACK_JIVE_PATTERN_PRINTLN(RXIndent(deep) << "<expression/>");
         RETURN:
             auto_ptr<pattern> ans = pattern::optimize( p.yield() );
             if(ans->is_empty()) throw exception("%s: empty sub-expression detected in '%s'",clid,expr);
