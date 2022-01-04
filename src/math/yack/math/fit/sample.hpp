@@ -55,6 +55,7 @@ namespace yack
                 vars()
                 {}
 
+                //! throw if multiple names for samples
                 void throw_multiple_name(const string &) const;
 
             private:

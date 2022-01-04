@@ -98,8 +98,32 @@ YACK_UTEST(fit)
         circle2.get_ready(NULL);
         circles.get_ready(NULL);
 
-        *circles << "r" << "x1" << "y1" << "x2" << "y2";
-        std::cerr << *circles << std::endl;
+        fit::variables &vars = *circles;
+        vars << "r" << "x1" << "y1" << "x2" << "y2";
+        std::cerr << vars << std::endl;
+
+        fit::variables &v1 = *circle1;
+        v1("rc",vars["r"])("xc",vars["x1"])("yc",vars["y1"]);
+        std::cerr << v1 << std::endl;
+
+
+        fit::variables &v2 = *circle2;
+        v2("rc",vars["r"])("xc",vars["x2"])("yc",vars["y2"]);
+        std::cerr << v2 << std::endl;
+
+        vector<double> aorg( vars.size() );
+
+        Circle F;
+
+        const double D21 = circle1.D2_(F,aorg);
+        const double D22 = circle2.D2_(F,aorg);
+        const double D2A = circles.D2_(F,aorg);
+
+
+
+        std::cerr << "D21=" << D21 << " #" << circle1.dimension() << std::endl;
+        std::cerr << "D22=" << D22 << " #" << circle2.dimension() << std::endl;
+        std::cerr << "D2A=" << D2A << " #" << circles.dimension() << std::endl;
 
 
 

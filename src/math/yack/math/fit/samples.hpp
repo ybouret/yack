@@ -62,10 +62,12 @@ namespace yack
                 //
                 // methods
                 //______________________________________________________________
+
+                //! creation of a named sample
                 inline single_type & operator()(const string             &id,
-                                         const readable<ABSCISSA> &x,
-                                         const readable<ORDINATE> &y,
-                                         writable<ORDINATE>       &z)
+                                                const readable<ABSCISSA> &x,
+                                                const readable<ORDINATE> &y,
+                                                writable<ORDINATE>       &z)
                 {
                     shared_type sh = new single_type(id,x,y,z);
                     if( ! this->insert(sh) ) this->throw_multiple_name(id);
@@ -73,6 +75,7 @@ namespace yack
                 }
 
 
+                //! creation of a named sample, wrapper
                 inline single_type & operator()(const char *id,
                                                 const readable<ABSCISSA> &x,
                                                 const readable<ORDINATE> &y,
