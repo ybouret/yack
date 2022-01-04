@@ -36,6 +36,7 @@ namespace yack
             {
                 const lexeme *accepted; //!< last accepted
                 unsigned      depth;    //!< current depth
+                
                 //! helper to format information
                 friend   std::ostream & operator<<(std::ostream &os, const observer &obs);
             };
@@ -62,7 +63,7 @@ namespace yack
             public:
                 //______________________________________________________________
                 //
-                // typea and definition
+                // types and definitions
                 //______________________________________________________________
                 static bool verbose; //!< verbosity while scanning
                 
