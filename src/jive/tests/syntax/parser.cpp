@@ -2,7 +2,7 @@
 #include "yack/jive/parser.hpp"
 #include "yack/utest/run.hpp"
 #include "yack/jive/lexical/plugin/jstring.hpp"
-#include "yack/jive/syntax/xnode.hpp"
+#include "yack/jive/syntax/translator.hpp"
 
 using namespace yack;
 
@@ -79,6 +79,9 @@ YACK_UTEST(parser)
         YACK_ASSERT(tree.is_valid());
         tree->gv("tree.dot");
         ios::serializer::cfile::save("tree.bin",*tree);
+
+        jive::syntax::translator xt;
+        xt.walk(*tree);
 
     }
 

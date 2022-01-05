@@ -65,8 +65,8 @@ namespace yack
 
                 lexeme               &lex()       throw(); //!< return content  for terminal
                 const lexeme         &lex() const throw(); //!< return content  for terminal
-                list_of<xnode>       &sub()       throw(); //!< retun  children for internal
-                const list_of<xnode> &sub() const throw(); //!< return children for internal
+                list                 &sub()       throw(); //!< retun  children for internal
+                const list           &sub() const throw(); //!< return children for internal
 
                 lexeme               *rip() throw();                //!< extract lexeme, delete this
                 static void           ret(lexer &,xnode *) throw(); //!< return node to lexer, node is deleted

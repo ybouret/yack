@@ -123,13 +123,13 @@ namespace yack
                 return *static_cast<const lexeme *>(data);
             }
 
-            list_of<xnode> & xnode:: sub()       throw()
+            xlist & xnode:: sub()       throw()
             {
                 assert(internal_type==(**this).type);
                 return *static_cast<xlist *>(data);
             }
 
-            const list_of<xnode> & xnode:: sub() const throw()
+            const xlist & xnode:: sub() const throw()
             {
                 assert(internal_type==(**this).type);
                 return *static_cast<const xlist *>(data);
