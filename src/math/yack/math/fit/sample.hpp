@@ -82,7 +82,6 @@ namespace yack
                 // types and definitions
                 //______________________________________________________________
                 typedef sequential<ABSCISSA,ORDINATE>      sequential_type;    //!< alias
-                typedef typename sequential_type::gradient sequential_grad;    //!< alias
                 typedef int (*comparator)(const ABSCISSA &, const ABSCISSA &); //!< alias
 
 
@@ -223,7 +222,6 @@ namespace yack
                 //______________________________________________________________
                 typedef sample<ABSCISSA,ORDINATE>             sample_type;      //!< alias
                 typedef typename sample_type::sequential_type sequential_type;  //!< alias
-                typedef typename sample_type::sequential_grad sequential_grad;  //!< alias
                 typedef typename sample_type::comparator      comparator;       //!< alias
                 typedef variables::const_iterator             var_iterator;     //!< alias
                 using sample_type::beta;

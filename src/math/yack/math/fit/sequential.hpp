@@ -4,7 +4,6 @@
 #define YACK_MATH_FIT_SEQUENTIAL_INCLUDED 1
 
 #include "yack/math/fit/variables.hpp"
-#include "yack/functor.hpp"
 
 namespace yack
 {
@@ -29,9 +28,7 @@ namespace yack
                 typedef writable<ORDINATE> field_type; //!< alias
                 typedef readable<bool>     flags_type; //!< alias
 
-                //! gradient interface definition
-                typedef functor<void,TL5(field_type &,ABSCISSA,const parameters &,const variables &,const flags_type &)> gradient;
-
+                
                 //! cleanup
                 inline virtual ~sequential() throw() {}
 

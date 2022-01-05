@@ -38,7 +38,6 @@ namespace yack
                 typedef suffix_set<string,shared_type>        samples_set;      //!< alias
                 typedef typename samples_set::const_iterator  const_iterator;   //!< alias
                 typedef typename sample_type::sequential_type sequential_type;  //!< alias
-                typedef typename sample_type::sequential_grad sequential_grad;  //!< alias
                 typedef typename sample_type::comparator      comparator;       //!< alias
                 using sample_type::beta;
                 using sample_type::curv;
