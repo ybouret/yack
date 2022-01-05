@@ -40,6 +40,8 @@ namespace yack
                 typedef typename sample_type::sequential_type sequential_type;  //!< alias
                 typedef typename sample_type::sequential_grad sequential_grad;  //!< alias
                 typedef typename sample_type::comparator      comparator;       //!< alias
+                using sample_type::beta;
+                using sample_type::curv;
 
                 //______________________________________________________________
                 //
@@ -54,7 +56,8 @@ namespace yack
                 explicit samples_of(const ID &id) :
                 sample_type(id),
                 samples_set(),
-                wksp()
+                wksp(),
+                temp()
                 {
                 }
 
@@ -129,13 +132,79 @@ namespace yack
                     return sorted::sum(wksp,sorted::by_value);
                 }
 
-             
+                virtual ORDINATE D2_full(sequential_type          &func,
+                                         const readable<ORDINATE> &aorg,
+                                         const readable<bool>     &used,
+                                         derivative<ORDINATE>     &drvs,
+                                         const readable<ORDINATE> &scal)
+                {
+
+                    //----------------------------------------------------------
+                    // prepare local curv and beta
+                    //----------------------------------------------------------
+                    this->make(aorg);
+
+                    //----------------------------------------------------------
+                    // first pass: collect D2 and build beta and curv
+                    //----------------------------------------------------------
+                    wksp.free();
+                    const size_t dims = dimension();
+                    for(const_iterator it=this->begin();it!=this->end();++it)
+                    {
+                        single_type   &s = coerce(**it);
+                        const ORDINATE n = static_cast<ORDINATE>( s.dimension() );
+                        wksp.push_back( (n/dims) * s.D2_full(func,aorg,used,drvs,scal) );
+                    }
+
+                    //----------------------------------------------------------
+                    // second pass: build beta
+                    //----------------------------------------------------------
+                    const size_t n = aorg.size();
+                    for(size_t k=n;k>0;--k)
+                    {
+                        if(!used[k]) continue;
+                        temp.free();
+                        for(const_iterator it=this->begin();it!=this->end();++it)
+                        {
+                            const single_type   &s = **it;
+                            const ORDINATE       n = static_cast<ORDINATE>( s.dimension() );
+                            const ORDINATE       w = (n/dims);
+                            temp.push_back(w*s.beta[k]);
+                        }
+                        beta[k] = sorted::sum(temp,sorted::by_abs_value);
+                    }
+
+                    //----------------------------------------------------------
+                    // third pass: build curv
+                    //----------------------------------------------------------
+                    for(size_t k=n;k>0;--k)
+                    {
+                        if(!used[k]) continue;
+                        for(size_t l=k;l>0;--l)
+                        {
+                            if(!used[l]) continue;
+                            temp.free();
+                            for(const_iterator it=this->begin();it!=this->end();++it)
+                            {
+                                const single_type   &s = **it;
+                                const ORDINATE       n = static_cast<ORDINATE>( s.dimension() );
+                                const ORDINATE       w = (n/dims);
+                                temp.push_back(w*s.curv[k][l]);
+                            }
+                            curv[k][l] = sorted::sum(temp,sorted::by_abs_value);
+                        }
+                    }
+
+                    // and return D2
+                    return sorted::sum(wksp,sorted::by_value);
+
+                }
 
 
             private:
                 YACK_DISABLE_COPY_AND_ASSIGN(samples_of);
                 vector<ORDINATE> wksp;
-
+                vector<ORDINATE> temp;
 
             };
 

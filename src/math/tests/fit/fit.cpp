@@ -45,7 +45,7 @@ YACK_UTEST(fit)
 
     {
 
-        const double r0 = 1.7;
+        const double r0 = 11.7;
 
         // first circle
         const double x1 = 2.3;
@@ -112,12 +112,15 @@ YACK_UTEST(fit)
         std::cerr << v2 << std::endl;
 
         vector<double> aorg( vars.size() );
+        vars(aorg,"r") = 5;
 
         Circle F;
 
         const double D21 = circle1.D2_(F,aorg);
         const double D22 = circle2.D2_(F,aorg);
         const double D2A = circles.D2_(F,aorg);
+
+        vars.display(std::cerr,aorg);
 
 
 
@@ -130,12 +133,25 @@ YACK_UTEST(fit)
         vector<double>     scal(vars.size(),1e-4);
         vector<bool>       used(vars.size(),true);
 
-        const double D21full = circle1.D2_full_(F,aorg,used,drvs,scal);
+        const double D21full = circle1.D2_full_(F,aorg,used,drvs,scal); circle1.finalize();
+        const double D22full = circle2.D2_full_(F,aorg,used,drvs,scal); circle2.finalize();
+        const double D2Afull = circles.D2_full_(F,aorg,used,drvs,scal); circles.finalize();
 
         std::cerr << "D21full=" << D21full << std::endl;
-        YACK_CHECK( fabs(D21-D21full) <= 0);
+        std::cerr << "D22full=" << D22full << std::endl;
+        std::cerr << "D2Afull=" << D2Afull << std::endl;
 
-        
+        YACK_CHECK( fabs(D21-D21full) <= 0 );
+        YACK_CHECK( fabs(D22-D22full) <= 0 );
+        YACK_CHECK( fabs(D2A-D2Afull) <= 0 );
+
+        std::cerr << "beta1=" << circle1.beta << std::endl;
+        std::cerr << "curv1=" << circle1.curv << std::endl;
+        std::cerr << "beta2=" << circle2.beta << std::endl;
+        std::cerr << "curv2=" << circle2.curv << std::endl;
+        std::cerr << "betaA=" << circles.beta << std::endl;
+        std::cerr << "curvA=" << circles.curv << std::endl;
+
     }
 
 

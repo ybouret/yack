@@ -108,10 +108,16 @@ namespace yack
                 virtual size_t   dimension() const throw()  = 0; //!< number of data
                 virtual void     get_ready(comparator)      = 0; //!< prepare internal data
 
-                //! compute D2 from parameters aorg using internal variables
+                //! compute D2 from parameters aorg
                 virtual ORDINATE D2(sequential_type          &func,
                                     const readable<ORDINATE> &aorg) = 0;
 
+                //! compute D2 and full metrics from aorg and used
+                virtual ORDINATE D2_full(sequential_type          &F,
+                                         const readable<ORDINATE> &aorg,
+                                         const readable<bool>     &used,
+                                         derivative<ORDINATE>     &drvs,
+                                         const readable<ORDINATE> &scal) = 0;
 
                 //______________________________________________________________
                 //
@@ -128,8 +134,31 @@ namespace yack
                 }
 
 
+                //! helper for regular functions
+                template <typename FUNC>
+                inline ORDINATE D2_full_(FUNC                    &func,
+                                         const readable<ORDINATE> &aorg,
+                                         const readable<bool>     &used,
+                                         derivative<ORDINATE>     &drvs,
+                                         const readable<ORDINATE> &scal)
+                {
+                    sequential_wrapper<FUNC> call(func);
+                    return D2_full(call,aorg,used,drvs,scal);
+                }
 
-
+                //! make symmetric curv
+                void finalize() throw()
+                {
+                    assert(curv.is_square());
+                    const size_t n = curv.rows;
+                    for(size_t k=n;k>0;--k)
+                    {
+                        for(size_t l=k-1;l>0;--l)
+                        {
+                            curv[l][k] = curv[k][l];
+                        }
+                    }
+                }
 
                 //______________________________________________________________
                 //
@@ -155,6 +184,17 @@ namespace yack
                 curv(),
                 beta()
                 {
+                }
+
+                //! helper for D2_full
+                inline void make(const collection &params)
+                {
+                    const size_t npar = params.size();
+                    curv.make(npar,npar);
+                    beta.adjust(npar,0);
+
+                    curv.ld(0);
+                    beta.ld(0);
                 }
 
 
@@ -185,7 +225,7 @@ namespace yack
                 typedef typename sample_type::sequential_type sequential_type;  //!< alias
                 typedef typename sample_type::sequential_grad sequential_grad;  //!< alias
                 typedef typename sample_type::comparator      comparator;       //!< alias
-                typedef variables::const_iterator             var_iterator;
+                typedef variables::const_iterator             var_iterator;     //!< alias
                 using sample_type::beta;
                 using sample_type::curv;
 
@@ -281,11 +321,11 @@ namespace yack
                 }
                 
 
-                inline ORDINATE D2_full(sequential_type          &F,
-                                        const readable<ORDINATE> &aorg,
-                                        const readable<bool>     &used,
-                                        derivative<ORDINATE>     &drvs,
-                                        const readable<ORDINATE> &scal)
+                inline virtual ORDINATE D2_full(sequential_type          &F,
+                                                const readable<ORDINATE> &aorg,
+                                                const readable<bool>     &used,
+                                                derivative<ORDINATE>     &drvs,
+                                                const readable<ORDINATE> &scal)
                 {
                     assert(abscissa.size()==ordinate.size());
                     assert(adjusted.size()==ordinate.size());
@@ -297,12 +337,9 @@ namespace yack
                     const size_t     npar = aorg.size();
                     const size_t     nvar = vars.size();
                     const size_t     dims = dimension();
+                    this->make(aorg);
                     dFda.adjust(npar,0);
-                    beta.adjust(npar,0);
-                    curv.make(npar,npar);
-                    
-                    beta.ld(0);
-                    curv.ld(0);
+
 
                     if(dims>0)
                     {
@@ -329,13 +366,19 @@ namespace yack
                         var_iterator first_var = vars.begin();
                         for(size_t j=1;j<=dims;++j)
                         {
+                            //--------------------------------------------------
                             // get dY and square wksp[j]
+                            //--------------------------------------------------
                             const ORDINATE            dY = square_pop(wksp[j]);
 
+                            //--------------------------------------------------
                             // prepare 1D function for derivative
+                            //--------------------------------------------------
                             call1D                    F1 = { 0, aorg, vars, F, abscissa[ indx[j] ] };
 
+                            //--------------------------------------------------
                             // loop over variables to fill dFda
+                            //--------------------------------------------------
                             dFda.ld(0);
                             {
                                 var_iterator it = first_var;
@@ -348,10 +391,11 @@ namespace yack
                                 }
                             }
 
-
+                            //--------------------------------------------------
                             // update descent direction and curvature
                             // variables could have mixed-up indices,
                             // so use the full parameters range
+                            //--------------------------------------------------
                             for(size_t k=npar;k>0;--k)
                             {
                                 if(!used[k]) continue;
@@ -379,16 +423,7 @@ namespace yack
 
 
 
-                template <typename FUNC>
-                inline ORDINATE D2_full_(FUNC                    &func,
-                                         const readable<ORDINATE> &aorg,
-                                         const readable<bool>     &used,
-                                         derivative<ORDINATE>     &drvs,
-                                         const readable<ORDINATE> &scal)
-                {
-                    typename sample_type::template sequential_wrapper<FUNC> call(func);
-                    return D2_full(call,aorg,used,drvs,scal);
-                }
+
                 
 
                 //______________________________________________________________
