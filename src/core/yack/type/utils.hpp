@@ -55,7 +55,7 @@ namespace yack
     {
         const T ans = x;
         x *= x;
-        return x;
+        return ans;
     }
 
     //! x+x

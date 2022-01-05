@@ -48,6 +48,7 @@ namespace yack
                     return on_reach(org,saved=end,A,vars);
                 }
 
+
             protected:
                 inline explicit sequential() throw() : saved() {} //!< setup
 

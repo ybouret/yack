@@ -129,6 +129,8 @@ namespace yack
                     return sorted::sum(wksp,sorted::by_value);
                 }
 
+             
+
 
             private:
                 YACK_DISABLE_COPY_AND_ASSIGN(samples_of);

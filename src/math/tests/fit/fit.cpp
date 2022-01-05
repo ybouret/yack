@@ -126,28 +126,16 @@ YACK_UTEST(fit)
         std::cerr << "D2A=" << D2A << " #" << circles.dimension() << std::endl;
 
 
+        derivative<double> drvs;
+        vector<double>     scal(vars.size(),1e-4);
+        vector<bool>       used(vars.size(),true);
 
-#if 0
-        fit::sample_of<vtx,double> s1("s1",vt1,r21,f21);
+        const double D21full = circle1.D2_full_(F,aorg,used,drvs,scal);
 
+        std::cerr << "D21full=" << D21full << std::endl;
+        YACK_CHECK( fabs(D21-D21full) <= 0);
 
-        s1.vars << "rc" << "xc" << "yc";
-        vector<double> A1(s1.vars.size());
-
-        s1.get_ready();
-
-
-
-        s1.vars(A1,"rc") = 1;
-        s1.vars.display(std::cerr,A1);
-
-        Circle         F;
-        const double   d1 = s1.D2_(F,A1);
-        std::cerr << "d1=" << d1 << std::endl;
-
-
-        fit::samples_of<vtx,double> S("samples");
-#endif
+        
     }
 
 

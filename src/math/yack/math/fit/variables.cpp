@@ -58,6 +58,16 @@ namespace yack
                 return w;
             }
 
+
+            size_t variables:: span() const throw()
+            {
+                size_t res = 0;
+                for(const_iterator it=begin();it!=end();++it)
+                {
+                    res = max_of(res,***it);
+                }
+                return res;
+            }
         }
     }
 }

@@ -55,6 +55,8 @@ namespace yack
                 //! max name size
                 size_t width() const throw();
 
+                size_t span() const throw(); //!< max index
+
 
                 //! append a primary variable
                 template <typename ID>

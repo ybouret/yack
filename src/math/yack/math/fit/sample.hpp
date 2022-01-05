@@ -4,13 +4,13 @@
 #define YACK_FIT_SAMPLE_INCLUDED 1
 
 #include "yack/math/fit/sequential.hpp"
+#include "yack/math/fcn/derivative.hpp"
 
 #include "yack/type/utils.hpp"
 #include "yack/type/gateway.hpp"
+#include "yack/type/temporary.hpp"
 
 #include "yack/sequence/vector.hpp"
-#include "yack/container/matrix.hpp"
-
 #include "yack/sort/sum.hpp"
 #include "yack/sort/indexing.hpp"
 
@@ -127,6 +127,10 @@ namespace yack
                     return D2(call,aorg);
                 }
 
+
+
+
+
                 //______________________________________________________________
                 //
                 // members
@@ -181,7 +185,9 @@ namespace yack
                 typedef typename sample_type::sequential_type sequential_type;  //!< alias
                 typedef typename sample_type::sequential_grad sequential_grad;  //!< alias
                 typedef typename sample_type::comparator      comparator;       //!< alias
-
+                typedef variables::const_iterator             var_iterator;
+                using sample_type::beta;
+                using sample_type::curv;
 
                 //______________________________________________________________
                 //
@@ -199,7 +205,6 @@ namespace yack
                 adjusted(z),
                 wksp(),
                 indx(),
-                beta(),
                 dFda()
                 {
                 }
@@ -240,7 +245,7 @@ namespace yack
 
                     if(cmp)
                     {
-
+                        indexing::make(indx,*cmp,abscissa);
                     }
 
                 }
@@ -267,34 +272,38 @@ namespace yack
                             const size_t i = indx[j];
                             wksp[j] = squared( ordinate[i] - (adjusted[i] = F.reach(abscissa[i],A,**this)));
                         }
-                        return sorted::sum(wksp,sorted::by_value);
+                        return sorted::sum(wksp,sorted::by_value)/2;
                     }
                     else
                     {
                         return 0;
                     }
                 }
+                
 
-
-
-#if 0
-                inline ORDINATE D2(sequential_type          &F,
-                                   sequential_grad          &G,
-                                   const readable<ORDINATE> &aorg,
-                                   const readable<bool>     &used)
+                inline ORDINATE D2_full(sequential_type          &F,
+                                        const readable<ORDINATE> &aorg,
+                                        const readable<bool>     &used,
+                                        derivative<ORDINATE>     &drvs,
+                                        const readable<ORDINATE> &scal)
                 {
                     assert(abscissa.size()==ordinate.size());
                     assert(adjusted.size()==ordinate.size());
                     assert(abscissa.size()==indx.size());
                     assert(abscissa.size()==wksp.size());
+                    assert(aorg.size()==used.size());
 
+                    const variables &vars = **this;        assert(vars.span()<=aorg.size());
                     const size_t     npar = aorg.size();
                     const size_t     nvar = vars.size();
                     const size_t     dims = dimension();
-                    dFda.adjust(nvar,0);
+                    dFda.adjust(npar,0);
                     beta.adjust(npar,0);
+                    curv.make(npar,npar);
+                    
                     beta.ld(0);
                     curv.ld(0);
+
                     if(dims>0)
                     {
                         //------------------------------------------------------
@@ -317,26 +326,49 @@ namespace yack
                         // second pass: accumulate gradient, curvature, and dY^2
                         //
                         //------------------------------------------------------
+                        var_iterator first_var = vars.begin();
                         for(size_t j=1;j<=dims;++j)
                         {
+                            // get dY and square wksp[j]
+                            const ORDINATE            dY = square_pop(wksp[j]);
+
+                            // prepare 1D function for derivative
+                            call1D                    F1 = { 0, aorg, vars, F, abscissa[ indx[j] ] };
+
+                            // loop over variables to fill dFda
                             dFda.ld(0);
-                            const ORDINATE  dY  = square_pop(wksp[j]);
-                            G(dFda,abscissa[ indx[j] ],aorg,vars,used);
-                            for(size_t k=nvar;k>0;--k)
                             {
-                                const size_t        kk      = *vars[k];
-                                const ORDINATE      dFda_k  = dFda[k];
-                                writable<ORDINATE> &curv_kk = curv[kk];
-                                beta[kk] += dY * dFda[k];
-                                for(size_t l=k;l>0;--l)
+                                var_iterator it = first_var;
+                                for(size_t iv=nvar;iv>0;--iv,++it)
                                 {
-                                    const size_t ll = *vars[l];
-                                    curv_kk[ll] += dFda_k * dFda[l];
+                                    const variable &var = **it;
+                                    if( !var(used) ) continue;
+                                    F1.apos   = *var;
+                                    var(dFda) = drvs.diff(F1,var(aorg),var(scal));
                                 }
                             }
+
+
+                            // update descent direction and curvature
+                            // variables could have mixed-up indices,
+                            // so use the full parameters range
+                            for(size_t k=npar;k>0;--k)
+                            {
+                                if(!used[k]) continue;
+                                const ORDINATE      dFda_k  = dFda[k];
+                                writable<ORDINATE> &curv_k  = curv[k];
+                                beta[k] -= dY * dFda[k];
+                                for(size_t l=k;l>0;--l)
+                                {
+                                    if(!used[l]) continue;
+                                    curv_k[l] += dFda_k * dFda[l];
+                                }
+                            }
+                            
                         }
 
-                        return sorted::sum(wksp,sorted::by_value);
+
+                        return sorted::sum(wksp,sorted::by_value)/2;
                     }
                     else
                     {
@@ -345,12 +377,19 @@ namespace yack
                     }
                 }
 
-#endif
 
 
-
-
-
+                template <typename FUNC>
+                inline ORDINATE D2_full_(FUNC                    &func,
+                                         const readable<ORDINATE> &aorg,
+                                         const readable<bool>     &used,
+                                         derivative<ORDINATE>     &drvs,
+                                         const readable<ORDINATE> &scal)
+                {
+                    typename sample_type::template sequential_wrapper<FUNC> call(func);
+                    return D2_full(call,aorg,used,drvs,scal);
+                }
+                
 
                 //______________________________________________________________
                 //
@@ -361,12 +400,25 @@ namespace yack
                 writable<ORDINATE>       &adjusted; //!< adjusted ordinates
                 vector<ORDINATE>          wksp;     //!< workspace
                 vector<size_t>            indx;     //!< indexing abscissae
-                vector<ORDINATE>          beta;     //!< descent direction
                 vector<ORDINATE>          dFda;     //!< local gradients
 
             private:
                 YACK_DISABLE_COPY_AND_ASSIGN(sample_of);
+                struct call1D
+                {
+                    size_t                    apos;
+                    const readable<ORDINATE> &atmp;
+                    const variables          &vars;
+                    sequential_type          &func;
+                    const ABSCISSA           &xpos;
 
+                    inline ORDINATE operator()(const ORDINATE A)
+                    {
+                        ORDINATE                  &a = coerce(atmp[apos]);
+                        const temporary<ORDINATE>  t(a,A);
+                        return func.start(xpos,atmp,vars);
+                    }
+                };
             };
 
 
