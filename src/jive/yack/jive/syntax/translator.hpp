@@ -40,7 +40,7 @@ namespace yack
                 //
                 // non-virtual interface
                 //______________________________________________________________
-                void         walk(const xnode &tree); //!< recurvsive, post-order traversing
+                void         walk(const xnode &tree); //!< recursive travelling
 
 
             protected:

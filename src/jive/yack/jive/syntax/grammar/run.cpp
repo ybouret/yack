@@ -92,12 +92,18 @@ namespace yack
                     // rejected
                     //__________________________________________________________
                     YACK_JIVE_SYN_PRINTLN(obs << lang << " [rejected]");
+
                     assert(NULL==tree);
                     if(rule::verbose)
                     {
                         if(obs.accepted) std::cerr << "last accepted: " << *obs.accepted << std::endl;
                         lxr.show();
                     }
+
+                    //__________________________________________________________
+                    //
+                    // check reason...
+                    //__________________________________________________________
                     exception excp("rejected");
 
                     throw excp;
