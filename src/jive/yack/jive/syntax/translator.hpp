@@ -13,21 +13,39 @@ namespace yack
         namespace syntax
         {
 
+            //__________________________________________________________________
+            //
+            //
+            //! base class for translator
+            //
+            //__________________________________________________________________
             class translator
             {
             public:
-                explicit translator() throw();
-                virtual ~translator() throw();
+                //______________________________________________________________
+                //
+                // C++
+                //______________________________________________________________
+                explicit translator() throw(); //!< setup
+                virtual ~translator() throw(); //!< cleanup
 
-                virtual void on_terminal(const string &, const token&);
-                virtual void on_internal(const string &, const size_t);
-                void         walk(const xnode &tree);
+                //______________________________________________________________
+                //
+                // virtual interface
+                //______________________________________________________________
+                virtual void on_terminal(const string &, const token&); //!< call with name/data
+                virtual void on_internal(const string &, const size_t); //!< call with name/size
+
+                //______________________________________________________________
+                //
+                // non-virtual interface
+                //______________________________________________________________
+                void         walk(const xnode &tree); //!< recurvsive, post-order traversing
 
 
             protected:
-                unsigned depth;
-
-                std::ostream & indent(std::ostream &) const;
+                unsigned depth;                              //!< helper for nesting level
+                std::ostream & indent(std::ostream &) const; //!< helper for tracing
 
             private:
                 YACK_DISABLE_COPY_AND_ASSIGN(translator);
