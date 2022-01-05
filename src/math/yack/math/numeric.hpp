@@ -33,6 +33,7 @@ namespace yack
             static const int      max_exp;     //!< maximal exp value
             static const int      min_10_exp;  //!< minimal 10 exp value
             static const int      max_10_exp;  //!< maximal 10 exp value
+            static const T        pi;          //!< pi
         };
 
 
@@ -50,6 +51,7 @@ template <> const long double numeric<long double>::VALUE
         YACK_MATH_NUMERIC(golden_c);    //!< golden_c
         YACK_MATH_NUMERIC(golden_i);    //!< golden_i
         YACK_MATH_NUMERIC(ftol);        //!< ftol
+        YACK_MATH_NUMERIC(pi);          //!< pi
 
 #endif
 

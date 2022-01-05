@@ -63,7 +63,8 @@ add_test(minimize test-math minimize)
 add_test(drvs     test-math drvs)
 add_test(fjac     test-math fjac)
 
-add_test(data:poly test-math poly)
+add_test(data:poly      test-math poly)
+add_test(data:chebyshev test-math chebyshev)
 
 add_test(fit test-math fit)
 

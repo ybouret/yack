@@ -25,6 +25,7 @@ YACK_UTEST_DECL(80)
     YACK_UTEST(fjac);
 
     YACK_UTEST(poly);
+    YACK_UTEST(chebyshev);
     
     YACK_UTEST(fit);
 }

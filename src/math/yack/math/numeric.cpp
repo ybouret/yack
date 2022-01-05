@@ -48,6 +48,10 @@ namespace yack
         template <> const double      numeric<double>::      ftol = ipower<double,unsigned>(0.1,dig);
         template <> const long double numeric<long double>:: ftol = ipower<long double,unsigned>(0.1L,dig);
 
+        template <> const float       numeric<float>::      pi = float(M_PI);
+        template <> const double      numeric<double>::     pi = float(M_PI);
+        template <> const long double numeric<long double>::pi = (long double)(M_PI);
+
     }
 
 }
