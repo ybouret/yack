@@ -1,6 +1,6 @@
 
 #include "yack/jive/syntax/grammar.hpp"
-#include "yack/exception.hpp"
+#include "yack/system/imported.hpp"
 #include "yack/jive/syntax/xnode.hpp"
 #include "yack/jive/syntax/rule/terminal.hpp"
 
@@ -75,7 +75,11 @@ namespace yack
                         exception excp("extraneous ");
                         next->stamp(excp);
                         add_excp(excp,*this,next);
-                        excp.add(" in %s", gid);
+                        if(obs.accepted)
+                        {
+                            excp.add(" after ");
+                            add_excp(excp,*this,obs.accepted);
+                        }
                         throw excp;
                     }
 
@@ -92,19 +96,14 @@ namespace yack
                     // rejected
                     //__________________________________________________________
                     YACK_JIVE_SYN_PRINTLN(obs << lang << " [rejected]");
-
                     assert(NULL==tree);
-                    if(rule::verbose)
-                    {
-                        if(obs.accepted) std::cerr << "last accepted: " << *obs.accepted << std::endl;
-                        lxr.show();
-                    }
 
                     //__________________________________________________________
                     //
                     // check reason...
                     //__________________________________________________________
-                    exception     excp("rejected");
+                    const string        wid = *lang + " exception";
+                    imported::exception excp( wid(), "" );
                     const lexeme *curr = obs.accepted;
                     if(curr)
                     {
@@ -114,11 +113,17 @@ namespace yack
                         const lexeme *next = curr->next;
                         if(next)
                         {
-                            std::cerr << "invalid " << *next << " after " << *curr  << std::endl;
+                            excp.add("invalid ");
+                            add_excp(excp,*this,next);
+                            excp.add(" after ");
+                            add_excp(excp,*this,curr);
+                            next->stamp(excp);
                         }
                         else
                         {
-                            std::cerr << "unexpected EOS after " << *curr << std::endl;
+                            excp.add("unexpected EOS after ");
+                            add_excp(excp,*this,curr);
+                            curr->stamp(excp);
                         }
                     }
                     else
@@ -129,11 +134,14 @@ namespace yack
                         const lexeme *head = lxr.found(src);
                         if(head)
                         {
-                            std::cerr << "cannot start with " << *head << std::endl;
+                            excp.add("cannot start with ");
+                            add_excp(excp,*this,head);
+                            head->stamp(excp);
                         }
                         else
                         {
-                            std::cerr << "cannot be empty" << std::endl;
+                            excp.add("unaccepted empty source");
+                            (*src).stamp(excp);
                         }
                     }
 
