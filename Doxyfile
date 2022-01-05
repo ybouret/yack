@@ -877,6 +877,7 @@ WARN_LOGFILE           =
 INPUT                  = src/core/yack \
                          src/math/yack \
                          src/jive/yack \
+			 src/json/yack \
                          src/lua++/yack
 
 # This tag can be used to specify the character encoding of the source files

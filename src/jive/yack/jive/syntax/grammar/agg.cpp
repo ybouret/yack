@@ -16,12 +16,13 @@ namespace yack
             }
 
             static const char fn[] = "cat";
+            static const char sp   = '&';
 
             const rule &grammar:: cat(const rule &a, const rule &b)
             {
                 must_own(a,fn);
                 must_own(b,fn);
-                const string r_id = '(' + *a.name + ',' + *b.name + ')';
+                const string r_id = '(' + *a.name + sp + *b.name + ')';
                 compound    &res  = act(r_id);
                 return (res << a << b);
             }
@@ -30,7 +31,7 @@ namespace yack
             {
                 must_own(a,fn);
                 must_own(b,fn);
-                const string r_id = '(' + *a.name + ',' + *b.name + ',' + *c.name + ')';
+                const string r_id = '(' + *a.name + sp + *b.name + sp + *c.name + ')';
                 compound    &res  = act(r_id);
                 return (res << a << b << c);
             }
