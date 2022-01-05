@@ -104,7 +104,39 @@ namespace yack
                     //
                     // check reason...
                     //__________________________________________________________
-                    exception excp("rejected");
+                    exception     excp("rejected");
+                    const lexeme *curr = obs.accepted;
+                    if(curr)
+                    {
+                        //------------------------------------------------------
+                        // something was accepted
+                        //------------------------------------------------------
+                        const lexeme *next = curr->next;
+                        if(next)
+                        {
+                            std::cerr << "invalid " << *next << " after " << *curr  << std::endl;
+                        }
+                        else
+                        {
+                            std::cerr << "unexpected EOS after " << *curr << std::endl;
+                        }
+                    }
+                    else
+                    {
+                        //------------------------------------------------------
+                        // nothing was accepted
+                        //------------------------------------------------------
+                        const lexeme *head = lxr.found(src);
+                        if(head)
+                        {
+                            std::cerr << "cannot start with " << *head << std::endl;
+                        }
+                        else
+                        {
+                            std::cerr << "cannot be empty" << std::endl;
+                        }
+                    }
+
 
                     throw excp;
                 }
