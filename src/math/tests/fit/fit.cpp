@@ -1,3 +1,4 @@
+#include "yack/math/fit/least-squares.hpp"
 #include "yack/math/fit/samples.hpp"
 #include "yack/type/v2d.hpp"
 #include "yack/utest/run.hpp"

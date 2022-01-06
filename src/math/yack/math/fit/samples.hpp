@@ -3,7 +3,7 @@
 #ifndef YACK_FIT_SAMPLES_INCLUDED
 #define YACK_FIT_SAMPLES_INCLUDED 1
 
-#include "yack/math/fit/sample.hpp"
+#include "yack/math/fit/sample1.hpp"
 #include "yack/associative/suffix/set.hpp"
 
 namespace yack
