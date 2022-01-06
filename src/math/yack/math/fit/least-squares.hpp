@@ -15,12 +15,17 @@ namespace yack
             template <
             typename ABSCISSA,
             typename ORDINATE>
-            class least_squares
+            class least_squares 
             {
             public:
+                typedef sample<ABSCISSA,ORDINATE>              sample_type;
+                typedef typename derivative<ORDINATE>::pointer drvs_type;
 
                 inline virtual ~least_squares() throw() {}
                 inline explicit least_squares() throw() {}
+
+                
+
 
             private:
                 YACK_DISABLE_COPY_AND_ASSIGN(least_squares);
