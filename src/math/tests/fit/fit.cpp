@@ -41,6 +41,13 @@ YACK_UTEST(fit)
     YACK_SIZEOF(vsample);
     YACK_SIZEOF(dsample);
 
+    {
+        fit::lambda<float> lam;
+        std::cerr << "pmin: " << lam.lower << std::endl;
+        std::cerr << "pmax: " << lam.upper << std::endl;
+        std::cerr << "p_in: " << lam.p_in << std::endl;
+
+    }
 
 
 
@@ -113,7 +120,7 @@ YACK_UTEST(fit)
         std::cerr << v2 << std::endl;
 
         vector<double> aorg( vars.size() );
-        vars(aorg,"r") = 5;
+        vars(aorg,"r") = 8;
 
         Circle F;
 
@@ -153,9 +160,34 @@ YACK_UTEST(fit)
         std::cerr << "betaA=" << circles.beta << std::endl;
         std::cerr << "curvA=" << circles.curv << std::endl;
 
+
+        fit::least_squares<vtx,double> ls;
+
+        ls.verbose = true;
+
+        (*circle1)(used,"rc") = false;
+        
+
+        ls.fit_(circle1,F,aorg,used,scal,NULL);
+
+        std::cerr << "ftol: " << ls.ftol << std::endl;
+        std::cerr << "dtol: " << ls.dtol << std::endl;
+
     }
 
 
+    {
+        fit::least_squares<float,float> ls;
+        std::cerr << "ftol: " << ls.ftol << std::endl;
+        std::cerr << "dtol: " << ls.dtol << std::endl;
+    }
+
+
+    {
+        fit::least_squares<long double,long double> ls;
+        std::cerr << "ftol: " << ls.ftol << std::endl;
+        std::cerr << "dtol: " << ls.dtol << std::endl;
+    }
 }
 YACK_UDONE()
 

@@ -65,8 +65,9 @@ namespace yack
                     grow(h);
                     return *this;
                 }
-                
 
+                //! check if parameter index is handled
+                bool handles(const size_t iparam) const throw();
 
                 //! query variable
                 template <typename ID> inline
@@ -107,13 +108,14 @@ namespace yack
 
                 //! display name array
                 template <typename T> inline
-                std::ostream & display(std::ostream &os, const readable<T> &arr) const
+                std::ostream & display(std::ostream &os, const readable<T> &arr, const char *pfx=NULL) const
                 {
                     const size_t w = width();
+                    if(!pfx) pfx="";
                     for(const_iterator it=begin();it!=end();++it)
                     {
                         const variable &v = **it;
-                        os << ios::align(v.name,w) << " = " << v(arr) << std::endl;
+                        os << pfx << ios::align(v.name,w) << " = " << v(arr) << std::endl;
                     }
                     return os;
                 }

@@ -208,7 +208,7 @@ namespace yack
                                 if(!used[k]) continue;
                                 const ORDINATE      dFda_k  = dFda[k];
                                 writable<ORDINATE> &curv_k  = curv[k];
-                                beta[k] -= dY * dFda[k];
+                                beta[k] += dY * dFda[k];
                                 for(size_t l=k;l>0;--l)
                                 {
                                     if(!used[l]) continue;

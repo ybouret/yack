@@ -24,8 +24,8 @@ namespace yack
         bool cholesky<real_t>:: build( matrix<real_t> &a )
         {
             assert(a.is_square());
-            const size_t      n = a.rows;adjust(n,0);
-            writable<real_t> &p = *this; assert(n==p.size());
+            const size_t      n = a.rows; adjust(n,0);
+            writable<real_t> &p = *this;  assert(n==p.size());
 
             for (size_t i=1;i<=n;++i)
             {

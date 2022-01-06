@@ -24,6 +24,9 @@ namespace yack
         wksp = memory::embed::zalloc(emb,num,mgr,wlen);
     }
 
-
+    size_t field:: granted() const throw()
+    {
+        return wlen;
+    }
 }
 

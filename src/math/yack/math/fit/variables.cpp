@@ -68,6 +68,17 @@ namespace yack
                 }
                 return res;
             }
+
+
+            bool variables:: handles(const size_t iparam) const throw()
+            {
+                for(const_iterator it=begin();it!=end();++it)
+                {
+                    if(iparam == ***it) return true;
+                }
+                return false;
+            }
+
         }
     }
 }

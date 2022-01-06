@@ -5,6 +5,7 @@
 
 #include "yack/string.hpp"
 #include "yack/memory/embed.hpp"
+#include "yack/container/dynamic.hpp"
 
 namespace yack
 {
@@ -14,14 +15,15 @@ namespace yack
     //! base class for fields
     //
     //__________________________________________________________________________
-    class field
+    class field : public dynamic
     {
     public:
         //______________________________________________________________________
         //
         // methods
         //______________________________________________________________________
-        const string &key() const throw(); //!< for sets
+        const string  &key()     const throw(); //!< for sets
+        virtual size_t granted() const throw(); //!< wlen
 
         //______________________________________________________________________
         //

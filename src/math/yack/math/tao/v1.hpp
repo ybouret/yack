@@ -29,6 +29,21 @@ namespace yack
                     for(size_t i=a.size();i>0;--i) a[i] = value;
                 }
 
+                //! a=b, same sizes
+                template <typename A, typename B> static inline
+                void set(A &a, B &b)
+                {
+                    assert(a.size()==b.size());
+                    for(size_t i=a.size();i>0;--i) a[i] = b[i];
+                }
+
+                //! A = B[1:a.size()]
+                template <typename A, typename B> static inline
+                void load(A &a, B &b)
+                {
+                    assert(a.size()<=b.size());
+                    for(size_t i=a.size();i>0;--i) a[i] = b[i];
+                }
 
                 //! a = b+c
                 template <typename A, typename B, typename C> static inline
