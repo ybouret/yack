@@ -60,11 +60,24 @@ namespace yack
         //
         // methods
         //______________________________________________________________________
-        
+
+        //! access
+        inline row_type & operator[](const unit_t y) throw()
+        {
+            assert(row); assert(y>=lower.y); assert(y<=upper.y); return row[y];
+        }
+
+        //! access
+        inline const row_type & operator[](const unit_t y) const throw()
+        {
+            assert(row); assert(y>=lower.y); assert(y<=upper.y); return row[y];
+        }
+
+
 
     private:
         YACK_DISABLE_COPY_AND_ASSIGN(field2D);
-        row_type *row;
+        row_type *row; //!< in [lower.y:upper.y]
 
         void setup(row_type *r, mutable_type *p)
         {

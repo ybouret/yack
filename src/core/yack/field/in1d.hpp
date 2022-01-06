@@ -62,13 +62,13 @@ namespace yack
         //! access
         inline type & operator[](const unit_t x) throw()
         {
-            assert(x>=lower); assert(x<=upper); return item[x];
+            assert(item); assert(x>=lower); assert(x<=upper); return item[x];
         }
 
         //! access
         inline const_type & operator[](const unit_t x) const throw()
         {
-            assert(x>=lower); assert(x<=upper); return item[x];
+            assert(item); assert(x>=lower); assert(x<=upper); return item[x];
         }
 
 

@@ -102,7 +102,7 @@ namespace yack
         inline friend
         std::ostream & operator<<(std::ostream &os, const layout &l)
         {
-            os << '{' << l.lower << "->" << l.upper << " : #" << l.witdh << "=" << l.items << '}';
+            os << '{' << l.lower << "->" << l.upper << " : #" << l.width << "=" << l.items << '}';
             return os;
         }
 

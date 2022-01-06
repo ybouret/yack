@@ -11,6 +11,8 @@ YACK_UTEST(fields)
 
     field1D<string> s( "s", layout1D(-5,6) );
 
+    std::cerr << s.name << " is " << s << std::endl;
+
     for(unit_t i=s.lower;i<=s.upper;++i)
     {
         s[i] = bring::get<string>(ran);
