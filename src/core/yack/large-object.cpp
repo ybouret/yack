@@ -1,5 +1,5 @@
 
-#include "yack/thing.hpp"
+#include "yack/large-object.hpp"
 #include "yack/memory/allocator/legacy.hpp"
 #include "yack/memory/joint/parcel.hpp"
 #include "yack/system/error.hpp"
@@ -8,8 +8,8 @@
 
 namespace yack
 {
-    thing::  thing() throw() {}
-    thing:: ~thing() throw() {}
+    large_object::  large_object() throw() {}
+    large_object:: ~large_object() throw() {}
 
     static inline void hard_check(const void *block_addr, const size_t block_size ) throw()
     {
@@ -21,13 +21,13 @@ namespace yack
         }
     }
 
-    void * thing:: operator new(const size_t block_size)
+    void * large_object:: operator new(const size_t block_size)
     {
         assert(block_size>0);
         return memory::legacy::acquire(block_size);
     }
 
-    void thing:: operator delete(void *block_addr,const size_t block_size) throw()
+    void large_object:: operator delete(void *block_addr,const size_t block_size) throw()
     {
         assert(block_size>0);
         if(NULL!=block_addr)
@@ -37,13 +37,13 @@ namespace yack
         }
     }
 
-    void * thing:: operator new [](const size_t block_size)
+    void * large_object:: operator new [](const size_t block_size)
     {
         assert(block_size>0);
         return memory::legacy::acquire(block_size);
     }
 
-    void thing:: operator delete[](void *block_addr, const size_t block_size) throw()
+    void large_object:: operator delete[](void *block_addr, const size_t block_size) throw()
     {
         assert(block_size>0);
         if(NULL!=block_addr)
@@ -54,7 +54,7 @@ namespace yack
     }
 
 
-    void * thing::operator new(size_t block_size, void *addr) throw()
+    void * large_object::operator new(size_t block_size, void *addr) throw()
     {
         assert(block_size>0);
         assert(addr!=NULL);
@@ -62,7 +62,7 @@ namespace yack
         return addr;
     }
 
-    void thing:: operator delete(void *, void *) throw()
+    void large_object:: operator delete(void *, void *) throw()
     {}
 
 }

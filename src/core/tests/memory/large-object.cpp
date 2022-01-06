@@ -1,4 +1,4 @@
-#include "yack/thing.hpp"
+#include "yack/large-object.hpp"
 #include "yack/utest/run.hpp"
 #include "yack/data/list/cxx.hpp"
 #include "yack/arith/align.hpp"
@@ -11,7 +11,7 @@ namespace {
     static size_t all_blocks = 0;
 
     template <size_t N>
-    class block : public thing
+    class block : public large_object
     {
     public:
         block *next;
@@ -72,7 +72,7 @@ namespace {
 
 }
 
-YACK_UTEST(thing)
+YACK_UTEST(large_object)
 {
     randomized::rand_  ran;
     do_test_obj<1>(ran);

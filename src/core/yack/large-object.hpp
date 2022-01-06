@@ -1,7 +1,7 @@
 //! \file
 
-#ifndef YACK_THING_INCLUDED
-#define YACK_THING_INCLUDED 1
+#ifndef YACK_LARGE_OBJECT_INCLUDED
+#define YACK_LARGE_OBJECT_INCLUDED 1
 
 #include "yack/setup.hpp"
 
@@ -11,18 +11,18 @@ namespace yack
     //__________________________________________________________________________
     //
     //
-    //! base class for (midsize) thing
+    //! base class for large_object
     //
     //__________________________________________________________________________
-    class thing
+    class large_object
     {
     public:
         //______________________________________________________________________
         //
         // C++
         //______________________________________________________________________
-        virtual ~thing() throw();
-        explicit thing() throw();
+        virtual ~large_object() throw();
+        explicit large_object() throw();
 
         //______________________________________________________________________
         //
@@ -52,15 +52,15 @@ namespace yack
 
         //! acquire one zombie block
         template <typename T> static inline
-        T *zacquire() { return static_cast<T *>( thing::operator new(sizeof(T)) ); }
+        T *zacquire() { return static_cast<T *>( large_object::operator new(sizeof(T)) ); }
 
         //! release one zombie block
         template <typename T> static inline
-        void zrelease(T *obj) throw() { assert(obj); thing::operator delete(obj,sizeof(T)); }
+        void zrelease(T *obj) throw() { assert(obj); large_object::operator delete(obj,sizeof(T)); }
 
 
     private:
-        YACK_DISABLE_COPY_AND_ASSIGN(thing);
+        YACK_DISABLE_COPY_AND_ASSIGN(large_object);
     };
     
 }

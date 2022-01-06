@@ -14,7 +14,7 @@
 #include "yack/sort/sum.hpp"
 #include "yack/sort/indexing.hpp"
 
-#include "yack/thing.hpp"
+#include "yack/large-object.hpp"
 
 namespace yack
 {
@@ -29,7 +29,7 @@ namespace yack
             //! sample base type
             //
             //__________________________________________________________________
-            class sample_ : public thing, public counted, public gateway<variables>
+            class sample_ : public large_object, public counted, public gateway<variables>
             {
             public:
                 //______________________________________________________________
@@ -49,7 +49,7 @@ namespace yack
                 //! setup with name
                 template <typename ID> inline
                 explicit sample_(const ID &id) :
-                thing(),
+                large_object(),
                 counted(),
                 name(id),
                 vars()
