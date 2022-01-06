@@ -34,6 +34,17 @@ namespace yack
             setup_with(p);
         }
 
+        inline type & operator[](const unit_t x) throw()
+        {
+            assert(x>=lower); assert(x<=upper); return item[x];
+        }
+
+        inline const_type & operator[](const unit_t x) const throw()
+        {
+            assert(x>=lower); assert(x<=upper); return item[x];
+        }
+
+
     private:
         YACK_DISABLE_COPY_AND_ASSIGN(field1D);
         mutable_type *item; //!< [lower:upper]
