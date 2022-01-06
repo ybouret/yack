@@ -11,19 +11,24 @@ namespace yack
     {
         namespace fit
         {
+            //__________________________________________________________________
+            //
+            //
+            //! precomputed factors
+            //
+            //__________________________________________________________________
             template <typename T>
             class lambda : public field1D<T>
             {
             public:
-                typedef field1D<T> field_type;
+                typedef field1D<T> field_type; //!< alias
                 
-                static unit_t pmin() throw();
-                static unit_t pmax() throw();
+                static unit_t pmin() throw();  //!< ceil( log10(epsilon) )
+                static unit_t pmax() throw();  //!< max_exp10
 
-                explicit lambda();
-                virtual ~lambda() throw();
+                explicit lambda();         //!< setup
+                virtual ~lambda() throw(); //!< cleanup
 
-                const unit_t p_in;
 
             private:
                 YACK_DISABLE_COPY_AND_ASSIGN(lambda);

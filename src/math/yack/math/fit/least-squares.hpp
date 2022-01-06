@@ -4,10 +4,7 @@
 #define YACK_FIT_LEAST_SQUARES_INCLUDED 1
 
 #include "yack/math/fit/sample.hpp"
-#include "yack/math/fit/lambda.hpp"
-#include "yack/math/algebra/lu.hpp"
-#include "yack/sequence/arrays.hpp"
-#include "yack/ptr/auto.hpp"
+#include "yack/math/fit/least-squares-data.hpp"
 #include "yack/math/tao/v1.hpp"
 #include "yack/functor.hpp"
 
@@ -18,49 +15,63 @@ namespace yack
         namespace fit
         {
 
+            //! identify cycle result
             enum cycle_result
             {
-                cycle_success,
-                cycle_process,
-                cycle_failure
+                cycle_success, //!< expanding search, decreased D2
+                cycle_process, //!< shrinking search, decreased D2
+                cycle_failure  //!< unable to decrease D2
             };
 
+            //__________________________________________________________________
+            //
+            //
+            //! least squares algorithm for a sample interface
+            //
+            //__________________________________________________________________
             template <
             typename ABSCISSA,
             typename ORDINATE>
-            class least_squares : public large_object, public arrays_of<ORDINATE>
+            class least_squares : public least_squares_data<ORDINATE>
             {
             public:
-                typedef sample<ABSCISSA,ORDINATE>                sample_type;
-                typedef arrays_of<ORDINATE>                      tableaux;
-                typedef typename arrays_of<ORDINATE>::array_type array_type;
-                typedef sequential<ABSCISSA,ORDINATE>            sequential_type;
-                typedef lu<ORDINATE>                             lu_type;
-                typedef auto_ptr<lu_type>                        algo_type;
-                typedef functor<bool,TL1(writable<ORDINATE>&)>   callback; //!< true->ok, false->bad
+                //______________________________________________________________
+                //
+                // definitions
+                //______________________________________________________________
+                typedef least_squares_data<ORDINATE>             base_type;       //!< alias
+                typedef sample<ABSCISSA,ORDINATE>                sample_type;     //!< alias
+                typedef sequential<ABSCISSA,ORDINATE>            sequential_type; //!< alias
+                typedef functor<bool,TL1(writable<ORDINATE>&)>   callback;        //!< true->ok, false->bad
 
+                //______________________________________________________________
+                //
+                // using
+                //______________________________________________________________
+                using base_type::verbose;
+                using base_type::algo;
+                using base_type::step;
+                using base_type::atry;
+                using base_type::curv;
 
+                //______________________________________________________________
+                //
+                // C++
+                //______________________________________________________________
+
+                //! cleanup
 
                 inline virtual ~least_squares() throw() {}
-                inline explicit least_squares() :
-                large_object(),
-                tableaux(4,0),
-                D2(0),
-                step( this->next() ),
-                atry( this->next() ),
-                curv(),
-                drvs(),
-                algo(),
-                lam(),
-                pmin( lam.lower ),
-                pmax( lam.upper ),
-                ftol( lam[pmin+1] ),
-                dtol( lam[pmin/2] ),
-                shrinking(false),
-                verbose(false)
+
+                //! setup
+                inline explicit least_squares() : base_type()
                 {
                 }
 
+                //______________________________________________________________
+                //
+                //! perform one cycle
+                //______________________________________________________________
                 cycle_result cycle(sample_type              &s,
                                    unit_t                   &p,
                                    sequential_type          &func,
@@ -74,23 +85,24 @@ namespace yack
 
                     //----------------------------------------------------------
                     //
-                    // initialize local memory
+                    // initialize and check
                     //
                     //----------------------------------------------------------
-                    const size_t   np = aorg.size(); initialize(np);
-                    p = clamp(pmin,p,pmax);
+                    const size_t   np = aorg.size();
+                    this->initialize(np);
+                    p = clamp(this->pmin,p,this->pmax);
 
                     //----------------------------------------------------------
                     //
                     // compute all metrics @aorg
                     //
                     //----------------------------------------------------------
-                    const ORDINATE D2ini = D2 = s.D2_full(func,aorg,used,drvs,scal);
+                    const ORDINATE D2ini = this->D2 = s.D2_full(func,aorg,used,this->drvs,scal);
                     s.finalize();
 
                     if(verbose)
                     {
-                        std::cerr << "[LS] cycle @p=" << p << " => lambda=" << lam[p] << std::endl;;
+                        std::cerr << "[LS] cycle @p=" << p << " => lambda=" << this->lam[p] << std::endl;;
                         std::cerr << "aorg  = " << aorg << std::endl;
                         (*s).display(std::cerr,aorg,"\taorg.");
                         std::cerr << "D2ini = " << D2ini << std::endl;
@@ -141,7 +153,7 @@ namespace yack
                         {
                             if(verbose) std::cerr << "[LS] post-processing warning" << std::endl;
                             // something happened
-                            if(!shrink(p))
+                            if(!this->shrink(p))
                             {
                                 if(verbose) std::cerr << "[LS] post-processing caused failure" << std::endl;
                                 return cycle_failure;
@@ -149,6 +161,11 @@ namespace yack
                         }
                     }
 
+                    //----------------------------------------------------------
+                    //
+                    // recompute step and find D2try
+                    //
+                    //----------------------------------------------------------
                     tao::v1::sub(step,atry,aorg);             // recompute step in any case
                     const ORDINATE D2try = s.D2(func,atry);   // compute trial value
                     if(verbose)
@@ -166,8 +183,8 @@ namespace yack
                         //
                         //------------------------------------------------------
                         tao::v1::set(aorg,atry);
-                        D2 = D2try;
-                        if(shrinking)
+                        this->D2 = D2try;
+                        if(this->shrinking)
                         {
                             if(verbose) std::cerr << "should process again" << std::endl;
                             return cycle_process;
@@ -175,7 +192,7 @@ namespace yack
                         else
                         {
                             if(verbose) std::cerr << "successful step" << std::endl;
-                            p = max_of(--p,pmin);
+                            p = max_of(--p,this->pmin);
                             return cycle_success;
                         }
                     }
@@ -186,7 +203,7 @@ namespace yack
                         // increase of D2 : shrink and recompute curvature
                         //
                         //------------------------------------------------------
-                        if(!shrink(p))
+                        if(!this->shrink(p))
                         {
                             return cycle_failure;
                         }
@@ -195,6 +212,10 @@ namespace yack
 
                 }
 
+                //______________________________________________________________
+                //
+                //! wrapper to cycle
+                //______________________________________________________________
                 template <typename FUNC>
                 cycle_result cycle_(sample_type              &s,
                                     unit_t                   &p,
@@ -208,6 +229,10 @@ namespace yack
                     return cycle(s,p,F,aorg,used,scal,proc);
                 }
 
+                //______________________________________________________________
+                //
+                //! fit session
+                //______________________________________________________________
                 inline bool fit(sample_type              &s,
                                 sequential_type          &func,
                                 writable<ORDINATE>       &aorg,
@@ -222,7 +247,7 @@ namespace yack
                     //----------------------------------------------------------
                     unit_t p  = 0;
                     size_t c  = 1;
-                    if(verbose) std::cerr << "[LS] @cycle #" << c << std::endl;
+                    if(verbose) std::cerr << "[LS] -------- @cycle #" << c << " --------" << std::endl;
 
                     //----------------------------------------------------------
                     //
@@ -231,20 +256,31 @@ namespace yack
                     //----------------------------------------------------------
                     switch(cycle(s,p,func,aorg,used,scal,proc))
                     {
-                        case cycle_failure: return false; // error/singular
-                        case cycle_process: break;        // not finished
-                        case cycle_success:               // successful, test variables
-                            if(converged(aorg))
+                            //--------------------------------------------------
+                            // error/singular
+                            //--------------------------------------------------
+                        case cycle_failure:
+                            if(verbose) std::cerr << "[LS] singular system" << std::endl;
+                            return false;
+
+                            //--------------------------------------------------
+                            // not finished
+                            //--------------------------------------------------
+                        case cycle_process: break;
+
+                            //--------------------------------------------------
+                            // successful, test variables
+                            //--------------------------------------------------
+                        case cycle_success:
+                            if(this->converged(aorg))
                             {
-                                if(verbose) std::cerr << "[LS] converged variables" << std::endl;
+                                if(verbose) std::cerr << "[LS] converged variables @cycle #" << c << std::endl;
                                 return true;
                             }
                             break;
-
-
                     }
 
-                    ORDINATE D2old = D2;
+                    ORDINATE D2old = this->D2;
 
                     //----------------------------------------------------------
                     //
@@ -253,36 +289,52 @@ namespace yack
                     //----------------------------------------------------------
                 LOOP:
                     ++c;
-                    if(verbose) std::cerr << "[LS] @cycle #" << c << std::endl;
+                    if(verbose) std::cerr << "[LS] -------- @cycle #" << c << " --------" << std::endl;
                     switch(cycle(s,p,func,aorg,used,scal,proc))
                     {
                             //--------------------------------------------------
+                            //
                             // singularity
+                            //
                             //--------------------------------------------------
                         case cycle_failure: return false;
 
+
+                            //--------------------------------------------------
+                            //
+                            // successful step
+                            //
+                            //--------------------------------------------------
                         case cycle_success:
                             //--------------------------------------------------
                             // test convergence on variable
                             //--------------------------------------------------
-                            if(converged(aorg))
+                            if(this->converged(aorg))
                             {
-                                if(verbose) std::cerr << "[LS] converged parameters" << std::endl;
+                                if(verbose) std::cerr << "[LS] converged parameters @cycle #" << c << std::endl;
                                 return true;
                             }
 
                             //--------------------------------------------------
                             // test convergence on D
                             //--------------------------------------------------
-                            if(fabs(D2old-D2) <= dtol * D2old )
+                            if(fabs(D2old-this->D2) <= this->dtol * D2old )
                             {
-                                if(verbose) std::cerr << "[LS] converged D2" << std::endl;
+                                if(verbose) std::cerr << "[LS] converged D2=" << this->D2 << " @cycle #" << c << std::endl;
                                 return true;
                             }
 
-                            D2old = D2;
+                            //--------------------------------------------------
+                            // update D2old
+                            //--------------------------------------------------
+                            D2old = this->D2;
                             goto LOOP;
 
+                            //--------------------------------------------------
+                            //
+                            // not settled yet
+                            //
+                            //--------------------------------------------------
                         case cycle_process:
                             goto LOOP;
                     }
@@ -291,6 +343,10 @@ namespace yack
                     return true;
                 }
 
+                //______________________________________________________________
+                //
+                //! fit session wrapper
+                //______________________________________________________________
                 template <typename FUNC> inline
                 bool fit_(sample_type              &s,
                           FUNC                     &func,
@@ -305,66 +361,23 @@ namespace yack
 
 
 
-                ORDINATE               D2;   //!< last D2
-                array_type            &step; //!< last step
-                array_type            &atry; //!< trial parameters
-                matrix<ORDINATE>       curv; //!< modified matrix
-                derivative<ORDINATE>   drvs; //!< derivative
-                algo_type              algo; //!< algebra
-                const lambda<ORDINATE> lam;  //!< pre-computed coefficients
-                const unit_t           pmin;
-                const unit_t           pmax;
-                const ORDINATE         ftol; //!< lam[pmin+1]
-                const ORDINATE         dtol; //!< lam[pmin/2]
 
             private:
                 YACK_DISABLE_COPY_AND_ASSIGN(least_squares);
-                bool shrinking; //!< internal flag per cycle
 
-                bool converged(const readable<ORDINATE> &atmp) const throw()
-                {
-                    assert( atmp.size() == step.size() );
-
-                    for(size_t i=atmp.size();i>0;--i)
-                    {
-                        const ORDINATE da = fabs( step[i] );
-                        const ORDINATE aa = fabs( atmp[i] );
-                        if( da > ftol * aa ) return false;
-                    }
-
-
-                    return true;
-                }
-
-                void initialize(const size_t npar)
-                {
-                    this->make(npar);
-                    curv.make(npar,npar);
-                    shrinking = false;
-                    if(algo.is_empty()||algo->dims<npar)
-                    {
-                        algo = new lu_type(npar);
-                    }
-                }
-
-                bool shrink(unit_t &p) throw()
-                {
-                    shrinking = true;
-                    return ++p <= pmax;
-                }
-
+                inline
                 bool compute_curvature(const sample_type    &s,
                                        unit_t               &p,
                                        const readable<bool> &used)
                 {
-                    assert(p>=lam.lower);
-                    assert(p<=lam.upper);
+                    assert(p>=this->lam.lower);
+                    assert(p<=this->lam.upper);
                     static const ORDINATE _1(1);
                     const size_t          npar = used.size();
                     const variables      &vars = *s;
 
                 TRY:
-                    const ORDINATE        dfac = _1 +lam[p];
+                    const ORDINATE        dfac = _1 + this->lam[p];
                     curv.assign(s.curv);
                     for(size_t i=npar;i>0;--i)
                     {
@@ -381,7 +394,7 @@ namespace yack
 
                     if(!algo->build(curv))
                     {
-                        if(!shrink(p)) return false; // singular
+                        if(!this->shrink(p)) return false; // singular
                         goto TRY;
                     }
 
@@ -390,8 +403,6 @@ namespace yack
 
                 }
 
-            public:
-                bool verbose; //!< verbosity
 
             };
 

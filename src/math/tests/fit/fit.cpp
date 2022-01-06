@@ -45,8 +45,7 @@ YACK_UTEST(fit)
         fit::lambda<float> lam;
         std::cerr << "pmin: " << lam.lower << std::endl;
         std::cerr << "pmax: " << lam.upper << std::endl;
-        std::cerr << "p_in: " << lam.p_in << std::endl;
-
+        
     }
 
 

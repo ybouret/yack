@@ -64,7 +64,7 @@ namespace yack
             class f1d {
             public:
                 virtual ~f1d() throw() {}
-
+                
                 virtual T operator()(const T) = 0;
 
             protected:

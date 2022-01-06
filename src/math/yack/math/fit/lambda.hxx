@@ -23,8 +23,7 @@ namespace yack
             }
 
             template <> lambda<real_t>:: lambda() :
-            field_type("lambda", layout1D(pmin(),pmax())),
-            p_in(lower/2)
+            field_type("lambda", layout1D(pmin(),pmax())) 
             {
                 static const real_t ten(10);
                 field_type &self = *this;
