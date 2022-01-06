@@ -33,6 +33,13 @@ namespace yack
                 }
             }
 
+            static inline
+            void make_excp( imported::exception &excp, const grammar &gram)
+            {
+                excp.describe("%s exception",(*gram.lang)());
+            }
+
+
             xnode * grammar:: run(source &src, lexer &lxr) const
             {
                 //______________________________________________________________
@@ -72,7 +79,9 @@ namespace yack
                     const lexeme *next = lxr.found(src);
                     if(next)
                     {
-                        exception excp("extraneous ");
+                        imported::exception excp;
+                        make_excp(excp,*this);
+                        excp.add("extraneous ");
                         next->stamp(excp);
                         add_excp(excp,*this,next);
                         if(obs.accepted)
@@ -102,9 +111,10 @@ namespace yack
                     //
                     // check reason...
                     //__________________________________________________________
-                    const string        wid = *lang + " exception";
-                    imported::exception excp( wid(), "" );
-                    const lexeme *curr = obs.accepted;
+
+                    imported::exception excp;
+                    const lexeme       *curr = obs.accepted;
+                    make_excp(excp,*this);
                     if(curr)
                     {
                         //------------------------------------------------------

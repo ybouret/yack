@@ -35,7 +35,7 @@ namespace yack
             exception(const exception &) throw(); //!< nothrow copy
             //! set what()=where, format when()
             explicit exception(const char *where, const char *fmt,...) throw() YACK_PRINTF_CHECK(3,4);
-
+            
             //______________________________________________________________________
             //
             // interface
