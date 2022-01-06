@@ -10,19 +10,39 @@
 
 namespace yack
 {
+    //__________________________________________________________________________
+    //
+    // 1D types
+    //__________________________________________________________________________
+    typedef unit_t          coord1D;   //!< coordinate
+    typedef layout<coord1D> layout1D;  //!< layout
 
-    typedef unit_t          coord1D;
-    typedef layout<coord1D> layout1D;
-
+    //__________________________________________________________________________
+    //
+    //
+    //! 1D field
+    //
+    //__________________________________________________________________________
     template <typename T>
     class field1D : public layout1D, public field_of<T>
     {
     public:
-        YACK_DECL_ARGS_(T,type);
-        typedef layout1D layout_type;
+        //______________________________________________________________________
+        //
+        // types
+        //______________________________________________________________________
+        YACK_DECL_ARGS_(T,type);      //!< aliases
+        typedef layout1D layout_type; //!< alias
 
+        //______________________________________________________________________
+        //
+        // C++
+        //______________________________________________________________________
+
+        //! cleanup
         inline virtual ~field1D() throw() { item+=lower; clear(width); }
 
+        //! setup
         template <typename ID>
         explicit field1D(const ID         &I,
                          const layout_type L,
@@ -34,11 +54,18 @@ namespace yack
             setup_with(p);
         }
 
+        //______________________________________________________________________
+        //
+        // methods
+        //______________________________________________________________________
+
+        //! access
         inline type & operator[](const unit_t x) throw()
         {
             assert(x>=lower); assert(x<=upper); return item[x];
         }
 
+        //! access
         inline const_type & operator[](const unit_t x) const throw()
         {
             assert(x>=lower); assert(x<=upper); return item[x];
@@ -49,6 +76,7 @@ namespace yack
         YACK_DISABLE_COPY_AND_ASSIGN(field1D);
         mutable_type *item; //!< [lower:upper]
 
+        //! setup data
         inline void setup_with(mutable_type *p)
         {
             if(p)

@@ -8,21 +8,35 @@
 
 namespace yack
 {
-
+    //__________________________________________________________________________
+    //
+    //
+    //! base class for fields
+    //
+    //__________________________________________________________________________
     class field
     {
     public:
-        virtual ~field() throw();
+        //______________________________________________________________________
+        //
+        // methods
+        //______________________________________________________________________
+        const string &key() const throw(); //!< for sets
 
+        //______________________________________________________________________
+        //
+        // members
+        //______________________________________________________________________
+        const string name; //!< identifier
 
-        const string &key() const throw();
-
-
-        const string name;
-
-
+        //______________________________________________________________________
+        //
+        // C++
+        //______________________________________________________________________
+        virtual ~field() throw(); //!< cleanup
 
     protected:
+        //! setup
         template <typename ID> inline
         explicit field(const ID &id) :
         name(id),
@@ -31,26 +45,47 @@ namespace yack
         {
         }
 
-        void  *wksp;
-        size_t wlen;
 
+        //! allocated memory in private workspace
         void   allocate(memory::embed emb[], const size_t num);
 
 
     private:
         YACK_DISABLE_COPY_AND_ASSIGN(field);
+        void  *wksp;
+        size_t wlen;
 
     };
 
+
+    //__________________________________________________________________________
+    //
+    //
+    //! base class for typed fields
+    //
+    //__________________________________________________________________________
     template <typename T>
     class field_of : public field
     {
     public:
-        YACK_DECL_ARGS_(T,type);
+        //______________________________________________________________________
+        //
+        // types
+        //______________________________________________________________________
+        YACK_DECL_ARGS_(T,type); //!< aliases
 
+
+        //______________________________________________________________________
+        //
+        // methods
+        //______________________________________________________________________
+
+        //! cleanup
         inline virtual ~field_of() throw() {}
 
     protected:
+
+        //! setup
         template <typename ID>
         inline explicit field_of(const ID     &id) :
         field(id)

@@ -5,24 +5,41 @@
 #define YACK_FIELD_LAYOUT_INCLUDED 1
 
 #include "yack/type/out-of-reach.hpp"
+#include <iostream>
 
 namespace yack
 {
 
     namespace kernel
     {
+        //______________________________________________________________________
+        //
+        //
+        //! base class for layouts
+        //
+        //______________________________________________________________________
         class layout
         {
         public:
-            virtual ~layout() throw();
+            //__________________________________________________________________
+            //
+            // members
+            //__________________________________________________________________
 
-            const size_t dims;
-            const size_t items;
+            const size_t dims;  //!< run-time dimension
+            const size_t items; //!< number of linear items
+
+            //__________________________________________________________________
+            //
+            // C++
+            //__________________________________________________________________
+            virtual ~layout() throw(); //!< cleanup
 
         protected:
-            explicit layout(const size_t d) throw();
-            explicit layout(const layout &) throw();
+            explicit layout(const size_t d) throw(); //!< setup
+            explicit layout(const layout &) throw(); //!< cleanup
 
+            //! post-construction setup
             void setup(unit_t *lo, unit_t *hi, unit_t *w) throw();
 
         private:
@@ -31,14 +48,31 @@ namespace yack
 
     }
 
+    //______________________________________________________________________
+    //
+    //
+    //! base class for layouts
+    //
+    //______________________________________________________________________
     template <typename COORD>
     class layout : public kernel::layout
     {
     public:
-        static const size_t dimension = sizeof(COORD)/sizeof(unit_t);
+        //______________________________________________________________________
+        //
+        // types and definitions
+        //______________________________________________________________________
+        static const size_t dimension = sizeof(COORD)/sizeof(unit_t); //!< compile-time dimension
 
+        //______________________________________________________________________
+        //
+        // C++
+        //______________________________________________________________________
+
+        //! cleanup
         inline virtual ~layout() throw() {}
 
+        //! setup
         inline explicit layout(const COORD lo, const COORD up) throw() :
         kernel::layout(dimension),
         lower(lo),
@@ -50,6 +84,7 @@ namespace yack
                   (unit_t *) out_of_reach::address(&width) );
         }
 
+        //! copy
         inline   layout(const layout &other) throw() :
         kernel::layout(other),
         lower(other.lower),
@@ -57,11 +92,28 @@ namespace yack
         width(other.width)
         {
         }
-        
 
-        const COORD lower;
-        const COORD upper;
-        const COORD width;
+        //______________________________________________________________________
+        //
+        // methods
+        //______________________________________________________________________
+
+        //! display
+        inline friend
+        std::ostream & operator<<(std::ostream &os, const layout &l)
+        {
+            os << '{' << l.lower << "->" << l.upper << " : #" << l.witdh << "=" << l.items << '}';
+            return os;
+        }
+
+        //______________________________________________________________________
+        //
+        // members
+        //______________________________________________________________________
+        const COORD lower; //!< lower coordinate
+        const COORD upper; //!< upper coordinate
+        const COORD width; //!< width
+        
 
     private:
         YACK_DISABLE_ASSIGN(layout);
