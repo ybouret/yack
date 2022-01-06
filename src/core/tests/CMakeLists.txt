@@ -53,6 +53,9 @@ source_group(math FILES ${math})
 file(GLOB kr kr/*.cpp)
 source_group(kr FILES ${kr})
 
+file(GLOB field field/*.cpp)
+source_group(field FILES ${field})
+
 set(HERE ${CMAKE_CURRENT_SOURCE_DIR})
 
 add_executable(test-yack main.cpp main.hpp
@@ -74,6 +77,7 @@ ${info}
 ${math}
 ${fs}
 ${kr}
+${field}
 )
 
 yack_link_libraries(test-yack)
@@ -228,5 +232,8 @@ add_test(vfs:attr  test-yack vfs_attr)
 add_test(vfs:mkdir test-yack vfs_mkdir)
 
 add_test(kr:digest   test-yack kr_digest)
+
+add_test(fields     test-yack fields)
+
 
 yack_testing(yack)

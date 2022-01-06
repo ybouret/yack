@@ -25,7 +25,8 @@ namespace yack
                 typedef typename derivative<ORDINATE>::pointer   drvs_type;
                 typedef arrays_of<ORDINATE>                      tableaux;
                 typedef typename arrays_of<ORDINATE>::array_type array_type;
-
+                typedef sequential<ABSCISSA,ORDINATE>            sequential_type;
+                
                 inline virtual ~least_squares() throw() {}
                 inline explicit least_squares() :
                 large_object(),
@@ -36,7 +37,16 @@ namespace yack
                 {
                 }
 
+                void run(sample_type              &s,
+                         sequential_type          &func,
+                         writable<ORDINATE>       &aorg,
+                         const readable<bool>     &used,
+                         const readable<ORDINATE> &scal)
+                {
+                    const ORDINATE D2 = s.D2_full(func,aorg, used, drvs, scal);
+                }
 
+                
 
                 array_type          &step; //!< current step
                 matrix<ORDINATE>     curv; //!< modified matrix

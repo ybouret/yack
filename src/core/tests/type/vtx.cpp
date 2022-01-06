@@ -1,4 +1,4 @@
-#include "yack/type/v3d.hpp"
+#include "yack/type/v4d.hpp"
 #include "yack/utest/run.hpp"
 
 
@@ -41,6 +41,7 @@ YACK_UTEST(type_vtx)
     test_vtx< v2d<double> >(ran);
     test_vtx< v3d<float>  >(ran);
     test_vtx< v3d<double> >(ran);
+    test_vtx< v4d<long double> >(ran);
 
 
 }

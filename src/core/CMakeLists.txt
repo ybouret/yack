@@ -527,6 +527,17 @@ set(ptr ${ptr_impl} ${ptr_decl})
 SOURCE_GROUP(ptr FILES ${ptr})
 install( FILES ${ptr_decl} DESTINATION include/yack/ptr )
 
+########################################################################
+##
+## fields
+##
+########################################################################
+file(GLOB field_impl yack/field/*.cpp)
+file(GLOB field_decl yack/field/*.hpp)
+set(field ${field_impl} ${field_decl})
+SOURCE_GROUP(field FILES ${field})
+install( FILES ${field_decl} DESTINATION include/yack/field )
+
 
 
 # create the library
@@ -558,6 +569,7 @@ ${hashing}
 ${info} ${info_modulation}
 ${math}
 ${ptr}
+${field}
 ${utest}
 )
 
