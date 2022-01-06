@@ -53,6 +53,7 @@ namespace yack
                 using base_type::step;
                 using base_type::atry;
                 using base_type::curv;
+                using base_type::shrinking;
 
                 //______________________________________________________________
                 //
@@ -91,6 +92,7 @@ namespace yack
                     const size_t   np = aorg.size();
                     this->initialize(np);
                     p = clamp(this->pmin,p,this->pmax);
+                    call1D g = { atry, aorg, step, s, func };
 
                     //----------------------------------------------------------
                     //
@@ -146,13 +148,19 @@ namespace yack
                     //
                     //----------------------------------------------------------
                     tao::v1::add(atry,aorg,step);             // atry=aorg+step
-                    if(proc)                                  // post process
+
+                    //----------------------------------------------------------
+                    //
+                    // check post-processing
+                    //
+                    //----------------------------------------------------------
+                    if(proc)
                     {
 
                         if( !(*proc)(atry) )
                         {
-                            if(verbose) std::cerr << "[LS] post-processing warning" << std::endl;
                             // something happened
+                            if(verbose) std::cerr << "[LS] post-processing warning" << std::endl;
                             if(!this->shrink(p))
                             {
                                 if(verbose) std::cerr << "[LS] post-processing caused failure" << std::endl;
@@ -177,6 +185,26 @@ namespace yack
 
                     if(D2try<=D2ini)
                     {
+                        if(!shrinking)
+                        {
+                            static int count = 0;
+                            if(1==++count)
+                            {
+                                const ORDINATE slope = tao::v1::dot<ORDINATE>::of(s.beta,step);
+                                std::cerr << "SLOPE=" << slope << std::endl;
+                                ios::ocstream fp("d2.dat");
+                                for(ORDINATE u=0;u<=2;u+=0.1)
+                                {
+                                    fp("%g %g\n", double(u), double( g(u)));
+                                }
+                                (void)g(1);
+                                const ORDINATE gamma = slope - (D2ini-D2try);
+                                std::cerr << "plot \"d2.dat\" w lp, " << D2ini << "-x*(" << slope << ")+(" << gamma << ")*x*x" << std::endl;
+
+                                exit(1);
+                            }
+                        }
+
                         //------------------------------------------------------
                         //
                         // decreased
@@ -184,7 +212,7 @@ namespace yack
                         //------------------------------------------------------
                         tao::v1::set(aorg,atry);
                         this->D2 = D2try;
-                        if(this->shrinking)
+                        if(shrinking)
                         {
                             if(verbose) std::cerr << "should process again" << std::endl;
                             return cycle_process;
@@ -249,6 +277,7 @@ namespace yack
                     size_t c  = 1;
                     if(verbose) std::cerr << "[LS] -------- @cycle #" << c << " --------" << std::endl;
 
+
                     //----------------------------------------------------------
                     //
                     // first step
@@ -281,6 +310,8 @@ namespace yack
                     }
 
                     ORDINATE D2old = this->D2;
+
+
 
                     //----------------------------------------------------------
                     //
@@ -365,6 +396,8 @@ namespace yack
             private:
                 YACK_DISABLE_COPY_AND_ASSIGN(least_squares);
 
+                // try to compute curvature.
+                // increase p if necessary
                 inline
                 bool compute_curvature(const sample_type    &s,
                                        unit_t               &p,
@@ -398,10 +431,23 @@ namespace yack
                         goto TRY;
                     }
 
-
                     return true;
-
                 }
+
+                struct call1D
+                {
+                    writable<ORDINATE>       &atry;
+                    const readable<ORDINATE> &aorg;
+                    const readable<ORDINATE> &step;
+                    sample_type              &data;
+                    sequential_type          &func;
+
+                    inline ORDINATE operator()(const ORDINATE u)
+                    {
+                        tao::v1::muladd(atry,aorg,u,step);
+                        return data.D2(func,atry);
+                    }
+                };
 
 
             };

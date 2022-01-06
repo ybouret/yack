@@ -164,7 +164,7 @@ YACK_UTEST(fit)
 
         ls.verbose = true;
 
-        (*circle1)(used,"rc") = false;
+        //(*circle1)(used,"rc") = false;
         
 
         ls.fit_(circle1,F,aorg,used,scal,NULL);
