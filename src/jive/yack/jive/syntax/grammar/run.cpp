@@ -71,7 +71,20 @@ namespace yack
                     //__________________________________________________________
                     auto_ptr<xnode> keep = tree;
                     YACK_JIVE_SYN_PRINTLN(obs << lang << " [accepted]");
-                    
+                    if(rule::verbose)
+                    {
+                        if(obs.accepted)
+                        {
+                            std::cerr << lang << " last accepted=[" << *obs.accepted << "]" << std::endl;
+                        }
+                        else
+                        {
+                            std::cerr << lang << " none accepted" << std::endl;
+                        }
+                        lxr.show();
+
+                    }
+
                     //__________________________________________________________
                     //
                     // check EOS
