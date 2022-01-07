@@ -188,7 +188,7 @@ namespace yack
                         if(!shrinking)
                         {
                             static int count = 0;
-                            if(1==++count)
+                            if(0==++count)
                             {
                                 const ORDINATE slope = tao::v1::dot<ORDINATE>::of(s.beta,step);
                                 std::cerr << "SLOPE=" << slope << std::endl;
