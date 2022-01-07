@@ -22,13 +22,16 @@ namespace yack
             bool option:: accept(YACK_JIVE_RULE_ARGS) const
             {
                 const rule &r    = **this;
-                xnode      *node = NULL;
                 YACK_JIVE_SYN_PRINTLN(obs<<"?opt(" << r.name << ")");
                 const temporary_increase<unsigned> incr(obs.depth);
+#if 0
+                xnode      *node = NULL;
                 if( r.accept(src,lxr,node,obs) )
                 {
                     xnode::grow(tree,node);
                 }
+#endif
+                (void)r.accept(src,lxr,tree,obs);
                 return true;
             }
             
