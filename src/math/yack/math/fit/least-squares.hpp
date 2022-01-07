@@ -193,7 +193,7 @@ namespace yack
                                 const ORDINATE slope = tao::v1::dot<ORDINATE>::of(s.beta,step);
                                 std::cerr << "SLOPE=" << slope << std::endl;
                                 ios::ocstream fp("d2.dat");
-                                for(ORDINATE u=0;u<=2;u+=0.1)
+                                for(ORDINATE u=0;u<=3;u+=0.02)
                                 {
                                     fp("%g %g\n", double(u), double( g(u)));
                                 }
