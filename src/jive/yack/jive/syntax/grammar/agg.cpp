@@ -16,7 +16,7 @@ namespace yack
             }
 
             static const char fn[] = "cat";
-            static const char sp   = '&';
+            static const char sp   = ' ';
 
             const rule &grammar:: cat(const rule &a, const rule &b)
             {

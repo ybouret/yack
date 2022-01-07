@@ -1,5 +1,6 @@
 
 #include "yack/jive/parser.hpp"
+#include "yack/jive/syntax/translator.hpp"
 #include "yack/utest/run.hpp"
 #include "yack/jive/lexical/plugin/single-line-comment.hpp"
 #include "yack/jive/lexical/plugin/multi-lines-comment.hpp"
@@ -11,9 +12,26 @@ namespace
     class Eval : public jive::parser
     {
     public:
-        explicit Eval() : jive::parser("Eval")
+        explicit Eval() : jive::parser("eval")
         {
 
+            compound   &ATOM    = alt("atom");
+            compound    &POW    = agg("pow") << ATOM; POW << opt( cat( term('^'), POW) );
+            const rule  &MUL    = term('*');
+            const rule  &DIV    = term('/');
+            compound    &MULOP  = agg("mulop") << POW << zom( cat( choice(MUL,DIV), POW ) );
+
+            const rule  &ADD    = term('+');
+            const rule  &SUB    = term('-');
+            compound    &ADDOP  = agg("addop") << MULOP << zom( cat( choice(ADD,SUB), MULOP) );
+
+            ATOM << term("number","[:digit:]+");
+            ATOM << cat( mark('('), ADDOP , mark(')') );
+
+            top( zom(agg("expr") << ADDOP << mark(';')) );
+
+            gv();
+            validate();
             plug( jive::lexical::cxx_comment::clid, "C++Comment");
             plug( jive::lexical::c_comments::clid,  "C_Comments");
             drop("[:blank:]+");
@@ -34,6 +52,19 @@ namespace
 YACK_UTEST(eval)
 {
     Eval eval;
+    jive::syntax::rule::verbose = true;
+
+    if( argc>1 )
+    {
+        jive::source                  src( jive::module::open_file(argv[1]) );
+        auto_ptr<jive::syntax::xnode> tree = eval(src);
+
+        if(tree.is_valid())
+        {
+
+        }
+    }
+
 
 }
 YACK_UDONE()
