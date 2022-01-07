@@ -71,7 +71,7 @@ namespace yack
                     //__________________________________________________________
                     auto_ptr<xnode> keep = tree;
                     YACK_JIVE_SYN_PRINTLN(obs << lang << " [accepted]");
-
+                    
                     //__________________________________________________________
                     //
                     // check EOS
