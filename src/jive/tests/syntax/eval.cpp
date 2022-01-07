@@ -16,14 +16,14 @@ namespace
         {
 
             compound   &ATOM    = alt("atom");
-            compound    &POW    = agg("pow") << ATOM; POW << opt( cat( term('^'), POW) );
+            compound    &POW    = act("pow") << ATOM; POW << opt( cat( mark('^'), POW) );
             const rule  &MUL    = term('*');
             const rule  &DIV    = term('/');
-            compound    &MULOP  = agg("mulop") << POW << zom( cat( choice(MUL,DIV), POW ) );
+            compound    &MULOP  = act("mulop") << POW << zom( cat( choice(MUL,DIV), POW ) );
 
             const rule  &ADD    = term('+');
             const rule  &SUB    = term('-');
-            compound    &ADDOP  = agg("addop") << MULOP << zom( cat( choice(ADD,SUB), MULOP) );
+            compound    &ADDOP  = act("addop") << MULOP << zom( cat( choice(ADD,SUB), MULOP) );
 
             ATOM << term("number","[:digit:]+");
             ATOM << cat( mark('('), ADDOP , mark(')') );
@@ -61,7 +61,7 @@ YACK_UTEST(eval)
 
         if(tree.is_valid())
         {
-
+            tree->gv("tree.dot");
         }
     }
 

@@ -128,21 +128,27 @@ namespace yack
                 compound &agg_(const tag     &name,
                                const agg_role role);
 
-                //! create an entity rule
+                //! create a (default) named rule
                 template <typename ID> inline
                 compound &agg(const ID &id)
                 {
-                    const tag _ = tags::make(id); return agg_(_,entity);
+                    const tag _ = tags::make(id); return agg_(_,syntax::named);
                 }
 
-                //! create an acting rule
+                //! create a group rule (only transient)
+                template <typename ID> inline
+                compound &grp(const ID &id)
+                {
+                    const tag _ = tags::make(id); return agg_(_,syntax::group);
+                }
+
+                //! create a proxy rule
                 template <typename ID> inline
                 compound &act(const ID &id)
                 {
-                    const tag _ = tags::make(id); return agg_(_,acting);
+                    const tag _ = tags::make(id); return agg_(_,syntax::proxy);
                 }
-
-
+                
 
 
                 //! (a,b)

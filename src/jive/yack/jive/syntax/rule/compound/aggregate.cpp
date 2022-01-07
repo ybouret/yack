@@ -54,8 +54,16 @@ namespace yack
                 keep.dismiss();
                 switch(role)
                 {
-                    case entity: xnode::grow(tree,here); break;
-                    case acting: xnode::join(tree,here); break;
+                    case named: xnode::grow(tree,here); break;
+                    case group: xnode::join(tree,here); break;
+                    case proxy:
+                        switch(here->sub().size)
+                        {
+                            case 0:  delete here; break;
+                            case 1:  xnode::join(tree,here); break;
+                            default: xnode::grow(tree,here); break;
+                        }
+                        break;
                 }
                 return true;
             }

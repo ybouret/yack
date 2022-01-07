@@ -23,7 +23,7 @@ namespace yack
                 must_own(a,fn);
                 must_own(b,fn);
                 const string r_id = '(' + *a.name + sp + *b.name + ')';
-                compound    &res  = act(r_id);
+                compound    &res  = grp(r_id);
                 return (res << a << b);
             }
 
@@ -32,7 +32,7 @@ namespace yack
                 must_own(a,fn);
                 must_own(b,fn);
                 const string r_id = '(' + *a.name + sp + *b.name + sp + *c.name + ')';
-                compound    &res  = act(r_id);
+                compound    &res  = grp(r_id);
                 return (res << a << b << c);
             }
 

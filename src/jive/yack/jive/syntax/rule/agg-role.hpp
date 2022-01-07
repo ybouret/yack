@@ -15,8 +15,9 @@ namespace yack
             //! role for an aggregate
             enum agg_role
             {
-                entity, //!< make a sub expression
-                acting  //!< only act
+                named, //!< make a named internal
+                group, //!< transient grouping
+                proxy  //!< yield if single content
             };
 
         }

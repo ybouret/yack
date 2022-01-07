@@ -106,11 +106,15 @@ namespace yack
                             fp << ",shape=house";
                             switch(r->as<aggregate>()->role)
                             {
-                                case entity:
+                                case named:
                                     fp << ",style=\"bold,filled\"";
                                     break;
 
-                                case acting:
+                                case proxy:
+                                    fp << ",style=\"bold,filled,rounded\"";
+                                    break;
+
+                                case group:
                                     //fp << ",style=dashed";
                                     break;
                             }
