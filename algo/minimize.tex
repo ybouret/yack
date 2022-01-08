@@ -1,0 +1,53 @@
+\documentclass[aps,12pt]{revtex4}
+\usepackage[a4paper]{geometry}
+\usepackage{graphicx}
+\usepackage{amssymb,amsfonts,amsmath,amsthm}
+\usepackage{bm}
+\usepackage{pslatex}
+\usepackage{mathptmx}
+
+ 	 
+\begin{document}
+
+Let us have 
+$$a \leq b \leq c$$ 
+with 
+$$f(b)\leq f(a) \text{ and } f(b)\leq f(c).$$
+What is most likely location for the minimum ?
+Let us define $$\delta_a = f(a)-f(b) + \epsilon_f > 0 \text{ and } \delta_c = f(a)-f(b) + \epsilon_f > 0.$$ 
+Let us define 
+$$
+	\beta = 
+	\left\lbrace
+	\begin{array}{rcl}
+	0 & \text{if} & b\leq a,\\
+	1 & \text{if} & b\geq c,\\
+	\frac{b-a}{c-a} & & \text{otherwise}
+	\end{array}
+	\right.
+$$
+We approximate the reduced curve with:
+$$
+	P(u) = \gamma \left( \left[ x -(\beta+\mu)\right]^2 - \mu^2 \right)
+$$
+with
+\begin{equation}
+	\left\lbrace
+	\begin{array}{rcl}
+	P(\beta) & = & 0\\
+	\delta_a & = & \gamma \left( [\beta+\mu]^2 - \mu^2 \right)\\
+ 	\delta_c & = & \gamma \left( [ (1-\beta)+\mu]^2 - \mu^2 \right)\\
+	\end{array}
+	\right.
+\end{equation}
+
+\begin{equation}
+	\mu = \dfrac{1}{2} \dfrac{(1-\beta)^2\delta_a - \beta^2 \delta_c}{(1-\beta)\delta_a + \beta \delta_c}
+\end{equation}
+
+and
+\begin{equation}
+	u_0=	\mu + \beta = \dfrac{1}{2} \dfrac{(1-\beta^2) \delta_a + \beta^2 \delta_c}{(1-\beta)\delta_a + \beta \delta_c}
+\end{equation}
+
+\end{document}
