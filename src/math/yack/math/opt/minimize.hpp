@@ -5,6 +5,7 @@
 
 #include "yack/math/opt/bracket.hpp"
 #include "yack/math/timings.hpp"
+#include "yack/math/scalar-function.hpp"
 
 namespace yack
 {
@@ -21,6 +22,10 @@ namespace yack
         struct minimize
         {
 
+            template <typename T> static inline
+            void move(triplet<T> &x, triplet<T> &f, scalar_function<T> &F);
+            
+            
             //! find minimum of a bracketed function
             /**
              * return x.b, and f.b is always the last evaluated F

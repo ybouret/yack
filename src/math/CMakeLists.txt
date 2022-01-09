@@ -2,7 +2,7 @@ include_directories(. ../core)
 
 #main
 file(GLOB math_main_decl yack/math/*.hpp)
-file(GLOB math_main_srcs yack/math/*.cpp)
+file(GLOB math_main_srcs yack/math/*.cpp yack/math/*.hxx)
 set(math_main ${math_main_decl} ${math_main_srcs})
 SOURCE_GROUP(math FILES ${math_main})
 install( FILES ${math_main_decl} DESTINATION include/yack/math )
