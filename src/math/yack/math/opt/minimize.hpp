@@ -21,14 +21,19 @@ namespace yack
         //______________________________________________________________________
         struct minimize
         {
-
+            //__________________________________________________________________
+            //
+            //! making one step
+            //__________________________________________________________________
             template <typename T>
             struct move
             {
+                //! constrained parabolic extrapolation
                 static void one_step(triplet<T>       &x,
                                      triplet<T>       &f,
                                      real_function<T> &F);
 
+                //! wrapper to any callbale real function
                 template <typename FUNC>
                 static inline void one_step_(triplet<T>       &x,
                                              triplet<T>       &f,
