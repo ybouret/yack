@@ -33,24 +33,18 @@ namespace
 
             x.sort(f);
             T w     = fabs(x.c-x.a);
-            T new_w = minimize::move<T>::one_step_(x,f,F);
-            std::cerr << "w=" << w << " -> " << new_w << std::endl;
-            std::cerr << "x=" << x << ", f=" << f << std::endl;
-            std::cerr << "dw=" << new_w - w << std::endl;
-
-            for(size_t iter=1;iter<=6;++iter)
+            for(size_t iter=1;iter<=5;++iter)
             {
-                w     = new_w;
-                new_w = minimize::move<T>::one_step_(x,f,F);
+                T new_w = minimize::move<T>::run_(x,f,F);
                 std::cerr << "w=" << w << " -> " << new_w << std::endl;
                 std::cerr << "x=" << x << ", f=" << f << std::endl;
-                std::cerr << "dw=" << new_w - w << std::endl;
+                std::cerr << "dw=" <<  w-new_w << std::endl;
+                w = new_w;
+                std::cerr << "minimax: " << f.minimax() << std::endl;
             }
 
 
-            return;
-            const T xmin = minimize::find(x,f,F);
-            std::cerr << "xmin=" << xmin << " in x=" << x << ", f=" << f << " #calls=" << F.count << std::endl;
+
 
         }
         else
@@ -65,8 +59,7 @@ namespace
     {
         std::cerr << "minimize<" << rtti::name<T>() << ">" << std::endl;
         test_min<T>(-5,2);
-
-        //test_min<T>(1,10);
+        test_min<T>(0,10);
         std::cerr << std::endl;
     }
 
@@ -74,15 +67,11 @@ namespace
 
 YACK_UTEST(minimize)
 {
-    Func<float> F = { 0 };
-    real_function_of<float>::call< Func<float> > f( F );
-    
-    
-    test_min<float>();
-    return 0;
+
+    //test_min<float>();
 
     test_min<double>();
-    test_min<long double>();
+    //test_min<long double>();
 
 }
 YACK_UDONE()

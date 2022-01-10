@@ -103,6 +103,52 @@ namespace yack
             }
 
 
+            //! return minimum value
+            inline T mini() const throw()
+            {
+                T ans = a;
+                if(b<ans) ans=b;
+                if(c<ans) ans=c;
+                return ans;
+            }
+
+            //! return maximum value
+            inline T maxi() const throw()
+            {
+                T ans = a;
+                if(ans<b) ans=b;
+                if(ans<c) ans=c;
+                return ans;
+            }
+
+            //! return minimax
+            inline T minimax() const throw()
+            {
+                T lo=a, hi=lo;
+                if(b<lo)
+                {
+                    lo=b;
+                }
+                else
+                {
+                    if(hi<b)
+                        hi=b;
+                }
+
+                if(c<lo)
+                {
+                    lo=c;
+                }
+                else
+                {
+                    if(hi<c)
+                        hi=c;
+                }
+
+                return hi-lo;
+            }
+
+
         };
 
     }

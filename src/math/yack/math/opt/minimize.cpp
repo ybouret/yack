@@ -2,6 +2,7 @@
 #include "yack/math/opt/minimize.hpp"
 #include "yack/signs.hpp"
 #include "yack/sort/heap.hpp"
+#include "yack/exception.hpp"
 
 #define real_t float
 #include "minimize.hxx"

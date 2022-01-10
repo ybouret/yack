@@ -50,7 +50,7 @@ namespace yack
             class call : public real_function<T>
             {
             public:
-                inline explicit call(FUNC &func) throw() : real_function<T>(), host(func) {}   //! setup
+                inline explicit call(FUNC &func) throw() : real_function<T>(), host(func) {}   //!< setup
                 inline virtual ~call()           throw() {}                                    //!< cleanup
                 inline virtual T operator()(T x) { return host(x); }                           //!< forward call
 
