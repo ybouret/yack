@@ -1,3 +1,4 @@
+#define _USE_MATH_DEFINES
 #include "yack/math/numeric.hpp"
 #include <cmath>
 #include <cfloat>
