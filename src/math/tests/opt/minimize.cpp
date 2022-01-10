@@ -2,12 +2,15 @@
 #include "yack/utest/run.hpp"
 #include "yack/system/rtti.hpp"
 #include "yack/string.hpp"
+#include "yack/ios/ascii/convert.hpp"
 
 using namespace yack;
 using namespace math;
 
 namespace
 {
+    static float xtol = 1e-6;
+
     template <typename T>
     struct Func
     {
@@ -30,27 +33,18 @@ namespace
 
         if( bracket::inside(x,f,F) )
         {
-
+            F.count = 0;
             x.sort(f);
-            T w     = fabs(x.c-x.a);
-            for(size_t iter=1;iter<=5;++iter)
-            {
-                T new_w = minimize::move<T>::run_(x,f,F);
-                std::cerr << "w=" << w << " -> " << new_w << std::endl;
-                std::cerr << "x=" << x << ", f=" << f << std::endl;
-                std::cerr << "dw=" <<  w-new_w << std::endl;
-                w = new_w;
-                std::cerr << "minimax: " << f.minimax() << std::endl;
-            }
+            const T x_opt = minimize::find<T>::run(x,f,F,T(xtol));
 
-
-
+            std::cerr << "\tf_opt=" << f.b << "@" << x_opt << ", #calls=" << F.count << std::endl;
 
         }
         else
         {
-            std::cerr << "not bracketed" << std::endl;
+            std::cerr << "\tnot bracketed" << std::endl;
         }
+        std::cerr << std::endl;
 
     }
 
@@ -67,11 +61,16 @@ namespace
 
 YACK_UTEST(minimize)
 {
+    minimize::verbose = true;
 
-    //test_min<float>();
+    if(argc>1)
+    {
+        xtol =  ios::ascii::convert::real<float>(argv[1],"xtol");
+    }
 
+    test_min<float>();
     test_min<double>();
-    //test_min<long double>();
+    test_min<long double>();
 
 }
 YACK_UDONE()

@@ -1,6 +1,5 @@
 
 #include "yack/ios/ocstream.hpp"
-#include "yack/sequence/thin-array.hpp"
 
 namespace yack
 {
@@ -19,9 +18,9 @@ namespace yack
         }
 
         template <>
-        real_t minimize:: move<real_t>:: run(triplet<real_t>       &x,
-                                             triplet<real_t>       &f,
-                                             real_function<real_t> &func)
+        void minimize:: move<real_t>:: run_(triplet<real_t>       &x,
+                                            triplet<real_t>       &f,
+                                            real_function<real_t> &func)
         {
             static const real_t tiny(1e-30);
             static const real_t one(1);
@@ -111,23 +110,6 @@ namespace yack
             thin_array<real_t> F(ff,nn);
             hsort(X,F,comparison::increasing<real_t>);
 
-            {
-                ios::ocstream fp("min-dat.dat");
-                for(size_t i=1;i<=nn;++i)
-                {
-                    fp("%.15g %.15g\n", double(X[i]), double(F[i]-f.b));
-                }
-            }
-
-            {
-                ios::ocstream fp("min-fcn.dat");
-                for(real_t v=0;v<=1.0;v += 0.01)
-                {
-                    const real_t xx = x.a + v * w;
-                    fp("%g %g\n", double(xx), double(func(xx)-f.b));
-                }
-            }
-
             //------------------------------------------------------------------
             //
             // number of possible triplets
@@ -154,12 +136,11 @@ namespace yack
                     x.c=X[ic];
                     i_opt=ia;
                     w_opt=fabs(x.c-x.a);
-                    std::cerr << "\t init x=" << x << ", f=" << f << ", w=" << w_opt << std::endl;
                     break;
                 }
             }
 
-            if(!i_opt) throw exception("corrupted minimize");
+            if(!i_opt) throw exception("[minimize] corrupted input!!!");
 
             //------------------------------------------------------------------
             // find best next interval
@@ -186,9 +167,96 @@ namespace yack
                 }
             }
 
-            
-            return fabs(x.c-x.a);
+        }
 
+
+        template <>
+        real_t minimize:: find<real_t>:: run_(triplet<real_t>       &x,
+                                              triplet<real_t>       &f,
+                                              real_function<real_t> &func,
+                                              real_t                 xtol)
+        {
+            static const real_t  ftol = numeric<real_t>::ftol;
+            static const real_t  mtol = timings::round_floor( sqrt(numeric<real_t>::epsilon) );
+
+            //------------------------------------------------------------------
+            //
+            // initialize search
+            //
+            //------------------------------------------------------------------
+            assert(x.is_increasing());
+            assert( f.a>=f.b );
+            assert( f.c>=f.b );
+
+            real_t x_opt = x.b;
+            real_t delta = fabs(x.c-x.a);
+
+            //------------------------------------------------------------------
+            //
+            // loop
+            //
+            //------------------------------------------------------------------
+            YACK_MINIMIZE("[minimize] x_ini=" << x << ", f_ini=" << f << ", dx=" << delta);
+            for(;;)
+            {
+                //--------------------------------------------------------------
+                // contract interval and locate x.b
+                //--------------------------------------------------------------
+                minimize::move<real_t>::run(x,f,func);
+                const real_t new_delta = fabs(x_opt-x.b);
+                x_opt=x.b;
+                YACK_MINIMIZE("[minimize] x_opt=" << x_opt << ", f_opt=" << f.b << ", dx=" << new_delta);
+
+
+                //--------------------------------------------------------------
+                // algorithm couldn't reduce interval
+                //--------------------------------------------------------------
+                if(new_delta>=delta)
+                {
+                    YACK_MINIMIZE("[minimize] no better contraction");
+                    break;
+                }
+                delta = new_delta;
+
+                //--------------------------------------------------------------
+                // user control, valid for xtol>0
+                //--------------------------------------------------------------
+                if(delta<=xtol)
+                {
+                    YACK_MINIMIZE("[minimize] reached XTOL=" << xtol);
+                    break;
+                }
+
+                //--------------------------------------------------------------
+                // machine's precision control on interval
+                //--------------------------------------------------------------
+                if(delta<=mtol*fabs(x_opt))
+                {
+                    YACK_MINIMIZE("[minimize] reached MTOL=" << mtol);
+                    break;
+                }
+
+                //--------------------------------------------------------------
+                // machine's precision control on function values
+                //--------------------------------------------------------------
+                const real_t df = f.amplitude();
+                if(df<=ftol*f.maxabs())
+                {
+                    YACK_MINIMIZE("[minimize] reached FTOL=" << ftol);
+                    break;
+                }
+            }
+
+            //------------------------------------------------------------------
+            //
+            // best guess and last call
+            //
+            //------------------------------------------------------------------
+
+            f.b = func(x.b=x_opt);
+            YACK_MINIMIZE("[minimize] x_end=" << x << ", f_end=" << f);
+            return x.b;
+            
         }
 
     }

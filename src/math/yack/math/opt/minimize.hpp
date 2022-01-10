@@ -21,6 +21,8 @@ namespace yack
         //______________________________________________________________________
         struct minimize
         {
+            static bool verbose; //!< trigger verbosity
+            
             //__________________________________________________________________
             //
             //! making one step
@@ -30,110 +32,50 @@ namespace yack
             {
                 
                 //! constrained parabolic extrapolation
-                static T run(triplet<T>       &x,
-                             triplet<T>       &f,
-                             real_function<T> &F);
+                static void run_(triplet<T>       &x,
+                                 triplet<T>       &f,
+                                 real_function<T> &F);
 
                 //! wrapper to any callbale real function
                 template <typename FUNC>
-                static inline T run_(triplet<T>       &x,
-                                     triplet<T>       &f,
-                                     FUNC             &F)
+                static inline void run(triplet<T>       &x,
+                                       triplet<T>       &f,
+                                       FUNC             &F)
                 {
                     typename real_function_of<T>::template call<FUNC> FF(F);
-                    return run(x,f,FF);
+                    return run_(x,f,FF);
                 }
 
             };
 
-
-
-
-            //! find minimum of a bracketed function
-            /**
-             * return x.b, and f.b is always the last evaluated F
-             */
-            template <typename T, typename FUNCTION> static inline
-            T find(triplet<T> &x, triplet<T> &f, FUNCTION &F)
+            //__________________________________________________________________
+            //
+            //! initialize and make step until convergence
+            //__________________________________________________________________
+            template <typename T>
+            struct find
             {
-                static const T half(0.5);
-                static const T tol = timings::round_floor( sqrt(numeric<T>::epsilon) );
-                //std::cerr << "tol=" << tol << std::endl;
 
-                //--------------------------------------------------------------
-                //
-                // sanity check
-                //
-                //--------------------------------------------------------------
-                assert(x.is_ordered());
-                assert(f.b<=f.a);
-                assert(f.b<=f.c);
+                //! initialize and cycle up to XTOL, MTOL, FTOL
+                static T run_(triplet<T>       &x,
+                              triplet<T>       &f,
+                              real_function<T> &F,
+                              T                 xtol);
 
-                //--------------------------------------------------------------
-                //
-                // initialize
-                //
-                //--------------------------------------------------------------
-                T x0 = x.a, f0=f.a;
-                T x3 = x.c, f3=f.c;
-                T x1 = x.b, x2=x.b, f1=f.b, f2=f.b;
-                if(fabs(x3-x1)>fabs(x1-x0))
+                //! wrapper to any callable real function
+                template <typename FUNC>
+                static inline T run(triplet<T>       &x,
+                                    triplet<T>       &f,
+                                    FUNC             &F,
+                                    T                 xtol=0)
                 {
-                    x.b = x2 = half*(x1+x3);
-                    f.b = f2 = F(x2);
+                    typename real_function_of<T>::template call<FUNC> FF(F);
+                    return run_(x,f,FF,xtol);
                 }
-                else
-                {
-                    x.b = x1 = half*(x0+x1);
-                    f.b = f1 = F(x1);
-                }
-                assert(x.is_ordered());
+            };
 
-                //--------------------------------------------------------------
-                //
-                // loop
-                //
-                //--------------------------------------------------------------
-                T old_width = fabs(x3-x0);
-                while(true)
-                {
-                    assert( (x0<=x1&&x1<=x2&&x2<=x3) || (x0>=x1&&x1>=x2&&x2>=x3) );
-                    if(f1<f2)
-                    {
-                        x3=x2; x2=x1; x1 = half*(x0+x1);
-                        f3=f2; f2=f1; f1 = F(x1);
-                        x.b = x1;
-                        f.b = f1;
-                    }
-                    else
-                    {
-                        x0=x1; x1=x2; x2 = half*(x2+x3);
-                        f0=f1; f1=f2; f2 = F(x2);
-                        x.b = x2;
-                        f.b = f2;
-                    }
-                    const T width = fabs(x3-x0);
-                    if( (width>=old_width) || (width <= tol * ( fabs(x1) + fabs(x2) )) )
-                    {
-                        break;
-                    }
-                    old_width = width;
-                }
-
-                //--------------------------------------------------------------
-                //
-                // finalize
-                //
-                //--------------------------------------------------------------
-                x.a = x0; x.c = x3;
-                f.a = f0; f.c = f3;
-                assert(x.is_ordered());
-
-                return x.b;
-            }
 
         };
-
 
 
 

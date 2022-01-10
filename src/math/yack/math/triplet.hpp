@@ -121,8 +121,8 @@ namespace yack
                 return ans;
             }
 
-            //! return minimax
-            inline T minimax() const throw()
+            //! return amplitude
+            inline T amplitude() const throw()
             {
                 T lo=a, hi=lo;
                 if(b<lo)
@@ -148,6 +148,23 @@ namespace yack
                 return hi-lo;
             }
 
+            //! return max(|a|,|b|,|c|)
+            inline T maxabs() const throw()
+            {
+                T ans = absolute(a);
+                { const T tmp = absolute(b); if(ans<tmp) ans=tmp; }
+                { const T tmp = absolute(c); if(ans<tmp) ans=tmp; }
+                return ans;
+            }
+
+            //! return min(|a|,|b|,|c|)
+            inline T minabs() const throw()
+            {
+                T ans = absolute(a);
+                { const T tmp = absolute(b); if(tmp<ans) ans=tmp; }
+                { const T tmp = absolute(c); if(tmp<ans) ans=tmp; }
+                return ans;
+            }
 
         };
 

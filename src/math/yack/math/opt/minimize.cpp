@@ -3,6 +3,16 @@
 #include "yack/signs.hpp"
 #include "yack/sort/heap.hpp"
 #include "yack/exception.hpp"
+#include "yack/sequence/thin-array.hpp"
+
+namespace yack
+{
+    namespace math
+    {
+        bool minimize::verbose = false;
+#define YACK_MINIMIZE(MSG) do { if(minimize::verbose) { std::cerr << MSG << std::endl; } } while(false)
+    }
+}
 
 #define real_t float
 #include "minimize.hxx"
