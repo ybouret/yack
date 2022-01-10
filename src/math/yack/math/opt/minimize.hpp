@@ -4,8 +4,8 @@
 #define YACK_OPT_MINIMIZE_INCLUDED 1
 
 #include "yack/math/opt/bracket.hpp"
-#include "yack/math/timings.hpp"
 #include "yack/math/real-function.hpp"
+#include "yack/math/timings.hpp"
 
 namespace yack
 {

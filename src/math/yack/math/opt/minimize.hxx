@@ -1,5 +1,6 @@
 
 #include "yack/ios/ocstream.hpp"
+#include "yack/sequence/thin-array.hpp"
 
 namespace yack
 {
@@ -17,6 +18,7 @@ namespace yack
             assert( f.c>=f.b );
             assert(tiny>0);
 
+            // compute the new position u from local parabolic fit
             const real_t w     = fabs(x.c-x.a);
             const real_t beta  = (x.b<=x.a) ? 0 : (x.c<=x.b) ? 1 : (x.b-x.a)/w;
             const real_t d_a   = fabs(f.a-f.b)+tiny; assert(d_a>0);
@@ -24,11 +26,11 @@ namespace yack
             const real_t beta2 = beta*beta;
             const real_t num   = (one-beta2) * d_a + beta2 * d_c;
             const real_t den   = (one-beta)  * d_a + beta  * d_c;
-            const real_t u     = clamp<real_t>(x.a,x.a+num/(den+den)*w,x.c);
+            const real_t xu    = clamp<real_t>(x.a,x.a+num/(den+den)*w,x.c);
 
             std::cerr << "x=" << x << std::endl;
             std::cerr << "f=" << f << std::endl;
-            std::cerr << "u=" << u << std::endl;
+            std::cerr << "u=" << xu << std::endl;
 
             {
                 ios::ocstream fp("min-fcn.dat");
@@ -40,12 +42,42 @@ namespace yack
             }
 
             {
+                real_t xx[4] = { x.a, x.b, x.c, xu    };
+                real_t ff[4] = { f.a, f.b, f.c, F(xu) };
+                thin_array<real_t> _x(xx,4);
+                thin_array<real_t> _f(ff,4);
+                hsort(_x,_f,comparison::increasing<real_t>);
                 ios::ocstream fp("min-dat.dat");
-                fp("%g %g\n", double(x.a), double(f.a));
-                fp("%g %g\n", double(x.b), double(f.b));
-                fp("%g %g\n", double(x.c), double(f.c));
-
+                for(size_t i=0;i<4;++i)
+                {
+                    fp("%g %g\n", double(xx[i]), double(ff[i]));
+                }
             }
+
+            // analyze
+            if(xu<=x.a||xu>=x.c)
+            {
+                return; // limiting cases...
+            }
+            else
+            {
+                switch( __sign::of(x.b,xu) )
+                {
+                    case __zero__: // didn't move
+                        return;
+
+                    case negative: // xu in [b:c]
+                        assert(x.b<xu);
+                        break;
+
+                    case positive: // xu in [a:c]
+                        assert(xu<x.b);
+                        break;
+                }
+            }
+
+
+
         }
 
     }

@@ -1,6 +1,7 @@
 
 #include "yack/math/opt/minimize.hpp"
-#include "yack/sort/sum.hpp"
+#include "yack/signs.hpp"
+#include "yack/sort/heap.hpp"
 
 #define real_t float
 #include "minimize.hxx"
