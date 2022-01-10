@@ -35,12 +35,16 @@ namespace
             T w     = fabs(x.c-x.a);
             T new_w = minimize::move<T>::one_step_(x,f,F);
             std::cerr << "w=" << w << " -> " << new_w << std::endl;
+            std::cerr << "x=" << x << ", f=" << f << std::endl;
+            std::cerr << "dw=" << new_w - w << std::endl;
 
-            for(size_t iter=1;iter<=2;++iter)
+            for(size_t iter=1;iter<=6;++iter)
             {
                 w     = new_w;
                 new_w = minimize::move<T>::one_step_(x,f,F);
                 std::cerr << "w=" << w << " -> " << new_w << std::endl;
+                std::cerr << "x=" << x << ", f=" << f << std::endl;
+                std::cerr << "dw=" << new_w - w << std::endl;
             }
 
 

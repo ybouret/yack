@@ -30,18 +30,23 @@ namespace yack
             {
                 //! constrained parabolic extrapolation
                 static T one_step(triplet<T>       &x,
-                                     triplet<T>       &f,
-                                     real_function<T> &F);
+                                  triplet<T>       &f,
+                                  real_function<T> &F);
 
                 //! wrapper to any callbale real function
                 template <typename FUNC>
                 static inline T one_step_(triplet<T>       &x,
-                                             triplet<T>       &f,
-                                             FUNC             &F)
+                                          triplet<T>       &f,
+                                          FUNC             &F)
                 {
                     typename real_function_of<T>::template call<FUNC> FF(F);
                     return one_step(x,f,FF);
                 }
+
+                //! constrained parabolic extrapolation
+                static T make_step(triplet<T>       &x,
+                                   triplet<T>       &f,
+                                   real_function<T> &F);
 
             };
 
