@@ -32,7 +32,17 @@ namespace
         {
 
             x.sort(f);
-            minimize::move<T>::one_step_(x,f,F);
+            T w     = fabs(x.c-x.a);
+            T new_w = minimize::move<T>::one_step_(x,f,F);
+            std::cerr << "w=" << w << " -> " << new_w << std::endl;
+
+            for(size_t iter=1;iter<=2;++iter)
+            {
+                w     = new_w;
+                new_w = minimize::move<T>::one_step_(x,f,F);
+                std::cerr << "w=" << w << " -> " << new_w << std::endl;
+            }
+
 
             return;
             const T xmin = minimize::find(x,f,F);

@@ -7,7 +7,7 @@ namespace yack
     namespace math
     {
         template <>
-        void minimize:: move<real_t>:: one_step(triplet<real_t>       &x,
+        real_t minimize:: move<real_t>:: one_step(triplet<real_t>       &x,
                                                 triplet<real_t>       &f,
                                                 real_function<real_t> &F)
         {
@@ -18,7 +18,11 @@ namespace yack
             assert( f.c>=f.b );
             assert(tiny>0);
 
+            //------------------------------------------------------------------
+            //
             // compute the new position u from local parabolic fit
+            //
+            //------------------------------------------------------------------
             const real_t w     = fabs(x.c-x.a);
             const real_t beta  = (x.b<=x.a) ? 0 : (x.c<=x.b) ? 1 : (x.b-x.a)/w;
             const real_t d_a   = fabs(f.a-f.b)+tiny; assert(d_a>0);
@@ -54,29 +58,69 @@ namespace yack
                 }
             }
 
+            //------------------------------------------------------------------
+            //
             // analyze
+            //
+            //------------------------------------------------------------------
             if(xu<=x.a||xu>=x.c)
             {
-                return; // limiting cases...
+                return w; // limiting cases...
             }
             else
             {
                 switch( __sign::of(x.b,xu) )
                 {
+                        //------------------------------------------------------
                     case __zero__: // didn't move
-                        return;
+                        //------------------------------------------------------
+                        return w;
 
+                        //------------------------------------------------------
                     case negative: // xu in [b:c]
-                        assert(x.b<xu);
-                        break;
+                        //------------------------------------------------------
+                        assert(x.b<xu); {
+                            const real_t fu = F(xu);
+                            if(fu>=f.b)
+                            {
+                                // c->u
+                                f.c = fu; x.c = xu;
+                                assert(x.is_increasing()); assert(f.b<=f.a); assert(f.b<=f.c);
+                            }
+                            else
+                            {
+                                assert(fu<f.b);
+                                // a->b, b->u
+                                x.a = x.b; f.a = f.b;
+                                x.b = xu;  f.b = fu;
+                                assert(x.is_increasing()); assert(f.b<=f.a); assert(f.b<=f.c);
+                            }
+                        } break;
 
-                    case positive: // xu in [a:c]
-                        assert(xu<x.b);
-                        break;
+                        //------------------------------------------------------
+                    case positive: // xu in [a:b]
+                        //------------------------------------------------------
+                        assert(xu<x.b); {
+                            const real_t fu = F(xu);
+                            if(fu>=f.b)
+                            {
+                                // a->u
+                                f.a = fu; x.a = xu;
+                                assert(x.is_increasing()); assert(f.b<=f.a); assert(f.b<=f.c);
+                            }
+                            else
+                            {
+                                assert(fu<f.b);
+                                // c->b, b->u
+                                x.c = x.b; f.c = f.b;
+                                x.b = xu;  f.b = fu;
+                                assert(x.is_increasing()); assert(f.b<=f.a); assert(f.b<=f.c);
+                            }
+                        } break;
                 }
             }
 
-
+            return fabs(x.c-x.a);
 
         }
 
