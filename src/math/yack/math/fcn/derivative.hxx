@@ -78,6 +78,41 @@ namespace yack
         }
 
 
+        template <>
+        real_t derivative<real_t>:: diff_( real_function<real_t> &f, const real_t x, real_t h, real_t &err)
+        {
+            const size_t dim = a.rows; regularize(x,h);
+            real_t       ans = (a[1][1] = ( f(x+h)-f(x-h) ) / (h+h));
+            for(size_t i=2;i<=dim;++i)
+            {
+                rescale(x,h);
+                a[1][i] = ( f(x+h)-f(x-h) ) / (h+h);
+                if(converged(ans,i,err)) return ans;
+            }
+            return ans;
+        }
+
+
+        template <>
+        real_t derivative<real_t>:: diff_( real_function<real_t> &f, const real_t x, real_t h)
+        {
+            static const real_t max_ftol = diff_maxi_ftol();
+            real_t err  = 0;
+            real_t dFdx = diff_(f,x,h,err);
+            while(err>max_ftol*fabs(dFdx) )
+            {
+                real_t       new_err  = 0;
+                const real_t new_dFdx = diff_(f,x,h/=2,new_err);
+                if(new_err>=err)
+                {
+                    break; // not better
+                }
+                err  = new_err;
+                dFdx = new_dFdx;
+            }
+            return dFdx;
+        }
+
     }
 
 
