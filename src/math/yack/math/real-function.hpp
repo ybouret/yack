@@ -25,25 +25,31 @@ namespace yack
             
         private:
             YACK_DISABLE_COPY_AND_ASSIGN(real_function);
-            
-        public:
+
+        };
+
+        template <typename T>
+        struct real_function_of
+        {
             template <typename FUNC>
-            class call : public real_function
+            class call : public real_function<T>
             {
             public:
-                inline explicit call(FUNC &func) throw() : real_function(), host(func) {}
+                inline explicit call(FUNC &func) throw() : real_function<T>(), host(func) {}
                 inline virtual ~call() throw() {}
-                
+
                 inline virtual T operator()(T x)
                 {
                     return host(x);
                 }
-                
+
             private:
                 YACK_DISABLE_COPY_AND_ASSIGN(call);
                 FUNC &host;
             };
+
         };
+
     }
     
 }

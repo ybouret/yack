@@ -22,10 +22,27 @@ namespace yack
         struct minimize
         {
 
-            template <typename T> static inline
-            void move(triplet<T> &x, triplet<T> &f, real_function<T> &F);
-            
-            
+            template <typename T>
+            struct move
+            {
+                static void one_step(triplet<T>       &x,
+                                     triplet<T>       &f,
+                                     real_function<T> &F);
+
+                template <typename FUNC>
+                static inline void one_step_(triplet<T>       &x,
+                                             triplet<T>       &f,
+                                             FUNC             &F)
+                {
+                    typename real_function_of<T>::template call<FUNC> FF(F);
+                    one_step(x,f,FF);
+                }
+
+            };
+
+
+
+
             //! find minimum of a bracketed function
             /**
              * return x.b, and f.b is always the last evaluated F
@@ -110,6 +127,9 @@ namespace yack
             }
 
         };
+
+
+
 
     }
 

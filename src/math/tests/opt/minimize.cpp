@@ -30,6 +30,11 @@ namespace
 
         if( bracket::inside(x,f,F) )
         {
+
+            x.sort(f);
+            minimize::move<T>::one_step_(x,f,F);
+
+            return;
             const T xmin = minimize::find(x,f,F);
             std::cerr << "xmin=" << xmin << " in x=" << x << ", f=" << f << " #calls=" << F.count << std::endl;
 
@@ -46,8 +51,8 @@ namespace
     {
         std::cerr << "minimize<" << rtti::name<T>() << ">" << std::endl;
         test_min<T>(-5,2);
-        test_min<T>(1,10);
 
+        //test_min<T>(1,10);
         std::cerr << std::endl;
     }
 
@@ -56,10 +61,12 @@ namespace
 YACK_UTEST(minimize)
 {
     Func<float> F = { 0 };
-    real_function<float>::call< Func<float> > f( F );
+    real_function_of<float>::call< Func<float> > f( F );
     
     
     test_min<float>();
+    return 0;
+
     test_min<double>();
     test_min<long double>();
 
