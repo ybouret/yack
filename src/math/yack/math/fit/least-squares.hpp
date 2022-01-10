@@ -43,6 +43,7 @@ namespace yack
                 typedef sample<ABSCISSA,ORDINATE>                sample_type;     //!< alias
                 typedef sequential<ABSCISSA,ORDINATE>            sequential_type; //!< alias
                 typedef functor<bool,TL1(writable<ORDINATE>&)>   callback;        //!< true->ok, false->bad
+                typedef real_function_of<ORDINATE>               real_func;       //!< alias
 
                 //______________________________________________________________
                 //
@@ -72,6 +73,15 @@ namespace yack
                 //______________________________________________________________
                 //
                 //! perform one cycle
+                /**
+                 \param s a sample
+                 \param p current power indicator
+                 \param func a sequential fit function
+                 \param aorg current parameters
+                 \param used currently used parameters
+                 \param scal scaling factor for gradient of func
+                 \param ctrl control function
+                 */
                 //______________________________________________________________
                 cycle_result cycle(sample_type              &s,
                                    unit_t                   &p,
@@ -79,24 +89,32 @@ namespace yack
                                    writable<ORDINATE>       &aorg,
                                    const readable<bool>     &used,
                                    const readable<ORDINATE> &scal,
-                                   callback                 *proc)
+                                   callback                 *ctrl)
                 {
                     assert(aorg.size()==used.size());
                     assert(aorg.size()==scal.size());
 
                     //----------------------------------------------------------
                     //
-                    // initialize and check
+                    // initialize memory, set shrinking to false
+                    // and check power
                     //
                     //----------------------------------------------------------
                     const size_t   np = aorg.size();
                     this->initialize(np);
                     p = clamp(this->pmin,p,this->pmax);
-                    call1D g = { atry, aorg, step, s, func };
 
                     //----------------------------------------------------------
                     //
-                    // compute all metrics @aorg
+                    // prepare a real function
+                    //
+                    //----------------------------------------------------------
+                    call1D  f1d = { atry, aorg, step, s, func };
+                    typename real_func:: template call<call1D> g(f1d);
+
+                    //----------------------------------------------------------
+                    //
+                    // compute all metrics @aorg: COSTLY
                     //
                     //----------------------------------------------------------
                     const ORDINATE D2ini = this->D2 = s.D2_full(func,aorg,used,this->drvs,scal);
@@ -112,6 +130,11 @@ namespace yack
                         std::cerr << "beta  = " << s.beta << std::endl;
                     }
 
+                    //----------------------------------------------------------
+                    //
+                    // making the best out of full metrics
+                    //
+                    //----------------------------------------------------------
 
                 CURV:
                     //----------------------------------------------------------
@@ -154,10 +177,10 @@ namespace yack
                     // check post-processing
                     //
                     //----------------------------------------------------------
-                    if(proc)
+                    if(ctrl)
                     {
 
-                        if( !(*proc)(atry) )
+                        if( !(*ctrl)(atry) )
                         {
                             // something happened
                             if(verbose) std::cerr << "[LS] post-processing warning" << std::endl;
@@ -183,13 +206,25 @@ namespace yack
                         std::cerr << "D2try = " << D2try << std::endl;
                     }
 
+                    //----------------------------------------------------------
+                    //
+                    // check resulting D2
+                    //
+                    //----------------------------------------------------------
                     if(D2try<=D2ini)
                     {
+                        //------------------------------------------------------
+                        //
+                        // success
+                        //
+                        //------------------------------------------------------
                         if(!shrinking)
                         {
+                            // allowed to explore more :)
                             static int count = 0;
-                            if(0==++count)
+                            if(1==++count)
                             {
+                                // original decreasing slope@D2ini, slope>0
                                 const ORDINATE slope = tao::v1::dot<ORDINATE>::of(s.beta,step);
                                 std::cerr << "SLOPE=" << slope << std::endl;
                                 ios::ocstream fp("d2.dat");
@@ -273,8 +308,8 @@ namespace yack
                     // initialize
                     //
                     //----------------------------------------------------------
-                    unit_t p  = 0;
-                    size_t c  = 1;
+                    unit_t p  = 0; // power indicator
+                    size_t c  = 1; // cycle indicator
                     if(verbose) std::cerr << "[LS] -------- @cycle #" << c << " --------" << std::endl;
 
 
