@@ -67,6 +67,12 @@ namespace yack
                 hsort(*this,comparison::increasing<T>);
             }
 
+            //! co-sort in increasing order
+            template <typename U>
+            inline void sort( triplet<U> &other ) throw()
+            {
+                hsort(*this,other,comparison::increasing<T>);
+            }
             
 
             //! check if is increasing

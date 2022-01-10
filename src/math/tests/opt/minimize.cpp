@@ -56,7 +56,7 @@ namespace
 YACK_UTEST(minimize)
 {
     Func<float> F = { 0 };
-    scalar_function<float>::call< Func<float> > f( F );
+    real_function<float>::call< Func<float> > f( F );
     
     
     test_min<float>();

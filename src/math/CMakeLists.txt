@@ -38,7 +38,7 @@ install( FILES ${math_root_decl} DESTINATION include/yack/math/root )
 
 # opt
 file(GLOB math_opt_decl yack/math/opt/*.hpp)
-file(GLOB math_opt_srcs yack/math/opt/*.cpp)
+file(GLOB math_opt_srcs yack/math/opt/*.cpp yack/math/opt/*.hxx)
 set(math_opt ${math_opt_decl} ${math_opt_srcs})
 SOURCE_GROUP(math/opt FILES ${math_opt})
 install( FILES ${math_opt_decl} DESTINATION include/yack/math/opt )

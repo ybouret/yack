@@ -13,25 +13,25 @@ namespace yack
     {
         
         template <typename T>
-        class scalar_function
+        class real_function
         {
         public:
-            virtual ~scalar_function() throw();
+            virtual ~real_function() throw();
             
             virtual T operator()(T) = 0;
             
         protected:
-            explicit scalar_function() throw();
+            explicit real_function() throw();
             
         private:
-            YACK_DISABLE_COPY_AND_ASSIGN(scalar_function);
+            YACK_DISABLE_COPY_AND_ASSIGN(real_function);
             
         public:
             template <typename FUNC>
-            class call : public scalar_function
+            class call : public real_function
             {
             public:
-                inline explicit call(FUNC &func) throw() : host(func) {}
+                inline explicit call(FUNC &func) throw() : real_function(), host(func) {}
                 inline virtual ~call() throw() {}
                 
                 inline virtual T operator()(T x)

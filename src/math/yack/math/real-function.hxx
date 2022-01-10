@@ -5,13 +5,13 @@ namespace yack
     {
 
         template <>
-        scalar_function<real_t>:: scalar_function() throw()
+        real_function<real_t>:: real_function() throw()
         {
         }
         
         
         template <>
-        scalar_function<real_t>:: ~scalar_function() throw()
+        real_function<real_t>:: ~real_function() throw()
         {
         }
     }
