@@ -110,18 +110,7 @@ namespace yack
 
         virtual bool next() throw()
         {
-            assert(active>0);
-            while(!moving[active](values[active],target[active]))
-            {
-                ++active;
-                if(active>levels)
-                {
-                    active=0;
-                    return false;
-                }
-            }
-
-            return true;
+            return false;
         }
 
         //______________________________________________________________________
