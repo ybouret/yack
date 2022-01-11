@@ -55,6 +55,7 @@ namespace yack
                 using base_type::atry;
                 using base_type::curv;
                 using base_type::shrinking;
+                using base_type::lam;
 
                 //______________________________________________________________
                 //
@@ -227,6 +228,7 @@ namespace yack
                                 // original decreasing slope@D2ini, slope>0
                                 const ORDINATE slope = tao::v1::dot<ORDINATE>::of(s.beta,step);
                                 std::cerr << "SLOPE=" << slope << std::endl;
+                                std::cerr << "FACTOR=" << 1+lam[p] << std::endl;
                                 ios::ocstream fp("d2.dat");
                                 for(ORDINATE u=0;u<=3;u+=0.02)
                                 {
@@ -445,7 +447,7 @@ namespace yack
                     const variables      &vars = *s;
 
                 TRY:
-                    const ORDINATE        dfac = _1 + this->lam[p];
+                    const ORDINATE        dfac = _1 + lam[p];
                     curv.assign(s.curv);
                     for(size_t i=npar;i>0;--i)
                     {
