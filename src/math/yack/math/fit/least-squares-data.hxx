@@ -87,14 +87,12 @@ namespace yack
             template <>
             real_t  least_squares_data<real_t>:: optimize(real_function<real_t> &g,
                                                           const real_t           g0,
-                                                          const real_t           g1,
-                                                          const real_t           sigma) const
+                                                          const real_t           g1) const
             {
                 static const real_t one(1);
 
                 assert(g1<=g0);
-                assert(sigma>=0);
-
+                
                 //______________________________________________________________
                 //
                 // take at least another sample

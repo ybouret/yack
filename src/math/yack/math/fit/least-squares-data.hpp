@@ -96,8 +96,7 @@ namespace yack
                 //______________________________________________________________
                 ORDINATE optimize(real_function<ORDINATE> &g,
                                   const ORDINATE           g0,
-                                  const ORDINATE           g1,
-                                  const ORDINATE           sigma) const;
+                                  const ORDINATE           g1) const;
                 
             };
         }

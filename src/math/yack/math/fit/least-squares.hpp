@@ -222,7 +222,7 @@ namespace yack
                         if(!shrinking)
                         {
                             // allowed to explore more
-                            D2try = this->optimize(g,D2ini,D2try,tao::v1::dot<ORDINATE>::of(s.beta,step));
+                            D2try = this->optimize(g,D2ini,D2try);
                         }
 
                         //------------------------------------------------------
