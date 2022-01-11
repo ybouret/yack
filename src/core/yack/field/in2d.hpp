@@ -1,5 +1,3 @@
-
-
 //! \file
 
 #ifndef YACK_FIELD2D_INCLUDED
@@ -33,7 +31,6 @@ namespace yack
         //______________________________________________________________________
         YACK_DECL_ARGS_(T,type);         //!< aliases
         typedef layout2D   layout_type;  //!< alias
-        typedef layout1D   row_layout;   //!< alias
         typedef field1D<T> row_type;     //!< alias
 
         //______________________________________________________________________
