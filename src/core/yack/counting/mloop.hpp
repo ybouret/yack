@@ -74,6 +74,7 @@ namespace yack
                               const size_t dim) :
         kernel::mloop(dim),
         values(0),
+        moving(0),
         origin(0),
         target(0)
         {
@@ -110,7 +111,17 @@ namespace yack
         virtual bool next() throw()
         {
             assert(active>0);
-            return false;
+            while(!moving[active](values[active],target[active]))
+            {
+                ++active;
+                if(active>levels)
+                {
+                    active=0;
+                    return false;
+                }
+            }
+
+            return true;
         }
 
         //______________________________________________________________________
@@ -121,7 +132,7 @@ namespace yack
         //! helper
         void display() const
         {
-            std::cerr << "<mloop #levels=" << levels << ", #frames=" << frames << ">" << std::endl;
+            std::cerr << "<mloop #levels=" << levels << ", #frames=" << frames << ", granted=" << granted() << ">" << std::endl;
             for(size_t i=1;i<=levels;++i)
             {
                 std::cerr << "#" << i << " : " << origin[i] << " -> " << target[i] << std::endl;
@@ -179,17 +190,33 @@ namespace yack
 
         static inline bool incr(mutable_type &v, const_type t) throw()
         {
-            return ++v >= t;
+           if(v<t)
+           {
+               ++v;
+               return true;
+           }
+           else
+           {
+               return false;
+           }
         }
 
         static inline bool decr(mutable_type &v, const type t) throw()
         {
-            return --v <= t;
+            if(v>t)
+            {
+                --v;
+                return true;
+            }
+            else
+            {
+                return false;
+            }
         }
 
         static inline bool skip(mutable_type &, const type) throw()
         {
-            return true;
+            return false;
         }
 
     };
