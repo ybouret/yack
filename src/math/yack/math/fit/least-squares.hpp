@@ -42,7 +42,7 @@ namespace yack
                 typedef least_squares_data<ORDINATE>             base_type;       //!< alias
                 typedef sample<ABSCISSA,ORDINATE>                sample_type;     //!< alias
                 typedef sequential<ABSCISSA,ORDINATE>            sequential_type; //!< alias
-                typedef functor<bool,TL1(writable<ORDINATE>&)>   callback;        //!< true->ok, false->bad
+                typedef functor<bool,TL1(writable<ORDINATE>&)>   control;         //!< true->ok, false->bad
                 typedef real_function_of<ORDINATE>               real_func;       //!< alias
 
                 //______________________________________________________________
@@ -90,7 +90,7 @@ namespace yack
                                    writable<ORDINATE>       &aorg,
                                    const readable<bool>     &used,
                                    const readable<ORDINATE> &scal,
-                                   callback                 *ctrl)
+                                   control                  *ctrl)
                 {
                     assert(aorg.size()==used.size());
                     assert(aorg.size()==scal.size());
@@ -199,7 +199,7 @@ namespace yack
                     //
                     //----------------------------------------------------------
                     tao::v1::sub(step,atry,aorg);             // recompute step in any case
-                    const ORDINATE D2try = s.D2(func,atry);   // compute trial value
+                    ORDINATE D2try = s.D2(func,atry);   // compute trial value
                     if(verbose)
                     {
                         std::cerr << "atry  = " << atry << std::endl;
@@ -221,25 +221,8 @@ namespace yack
                         //------------------------------------------------------
                         if(!shrinking)
                         {
-                            // allowed to explore more :)
-                            static int count = 0;
-                            if(1==++count)
-                            {
-                                // original decreasing slope@D2ini, slope>0
-                                const ORDINATE slope = tao::v1::dot<ORDINATE>::of(s.beta,step);
-                                std::cerr << "SLOPE=" << slope << std::endl;
-                                std::cerr << "FACTOR=" << 1+lam[p] << std::endl;
-                                ios::ocstream fp("d2.dat");
-                                for(ORDINATE u=0;u<=3;u+=0.02)
-                                {
-                                    fp("%g %g\n", double(u), double( g(u)));
-                                }
-                                (void)g(1);
-                                const ORDINATE gamma = slope - (D2ini-D2try);
-                                std::cerr << "plot \"d2.dat\" w lp, " << D2ini << "-x*(" << slope << ")+(" << gamma << ")*x*x" << std::endl;
-
-                                exit(1);
-                            }
+                            // allowed to explore more
+                            D2try = this->optimize(g,D2ini,D2try,tao::v1::dot<ORDINATE>::of(s.beta,step));
                         }
 
                         //------------------------------------------------------
@@ -288,7 +271,7 @@ namespace yack
                                     writable<ORDINATE>       &aorg,
                                     const readable<bool>     &used,
                                     const readable<ORDINATE> &scal,
-                                    callback                 *proc)
+                                    control                 *proc)
                 {
                     typename sample_type:: template sequential_wrapper<FUNC> F(func);
                     return cycle(s,p,F,aorg,used,scal,proc);
@@ -303,7 +286,7 @@ namespace yack
                                 writable<ORDINATE>       &aorg,
                                 const readable<bool>     &used,
                                 const readable<ORDINATE> &scal,
-                                callback                 *proc)
+                                control                 *proc)
                 {
                     //----------------------------------------------------------
                     //
@@ -421,7 +404,7 @@ namespace yack
                           writable<ORDINATE>       &aorg,
                           const readable<bool>     &used,
                           const readable<ORDINATE> &scal,
-                          callback                 *proc)
+                          control                  *proc)
                 {
                     typename sample_type:: template sequential_wrapper<FUNC> F(func);
                     return fit(s,F,aorg,used,scal,proc);

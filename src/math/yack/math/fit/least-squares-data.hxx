@@ -71,3 +71,68 @@ namespace yack
 
 }
 
+
+namespace yack
+{
+    namespace math
+    {
+        namespace fit
+        {
+
+            static inline bool acceptable(const triplet<real_t> &G) throw()
+            {
+                return (G.b<=G.a && G.b<=G.c);
+            }
+
+            template <>
+            real_t  least_squares_data<real_t>:: optimize(real_function<real_t> &g,
+                                                          const real_t           g0,
+                                                          const real_t           g1,
+                                                          const real_t           sigma) const
+            {
+                static const real_t one(1);
+
+                assert(g1<=g0);
+                assert(sigma>=0);
+
+                //______________________________________________________________
+                //
+                // take at least another sample
+                //______________________________________________________________
+
+                triplet<real_t> U = {0, 1, 2     };
+                triplet<real_t> G = {g0,g1,g(U.c)};
+                assert(G.b<=G.a);
+
+                while( !acceptable(G) )
+                {
+                    U.a = U.b; U.b = U.c;
+                    G.a = G.b; G.b = G.c;
+                    G.c = g( U.c += one);
+                }
+
+                //______________________________________________________________
+                //
+                // now we are around a minimum
+                //______________________________________________________________
+                const real_t U_opt = minimize::parabolic_guess(U,G);
+                const real_t G_opt = g(U_opt);
+
+                // choose the minimum
+                if(verbose)
+                {
+                    std::cerr << "[LS] minimum in u=" << U << ", g=" << G << std::endl;
+                    std::cerr << "[LS] estimated [" << G_opt << " @" << U_opt << "]" << std::endl;
+                }
+
+                return G_opt;
+
+            }
+
+
+        }
+
+    }
+
+}
+

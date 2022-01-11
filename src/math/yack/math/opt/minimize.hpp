@@ -22,7 +22,12 @@ namespace yack
         struct minimize
         {
             static bool verbose; //!< trigger verbosity
-            
+
+            //! found parabolic min for increasing x, f.b<=f.a, f.b<=f.c
+            template <typename T>
+            static T parabolic_guess(const triplet<T> &x,
+                                     const triplet<T> &f) throw();
+
             //__________________________________________________________________
             //
             //! making one step

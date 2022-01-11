@@ -18,12 +18,31 @@ namespace yack
         }
 
         template <>
+        real_t minimize:: parabolic_guess(const triplet<real_t> &x, const triplet<real_t> &f) throw()
+        {
+            static const real_t tiny(1e-30);
+            static const real_t one(1);
+
+            assert( x.is_increasing() );
+            assert( f.a>=f.b );
+            assert( f.c>=f.b );
+            const real_t w     = fabs(x.c-x.a);
+            const real_t beta  = (x.b<=x.a) ? 0 : (x.c<=x.b) ? 1 : (x.b-x.a)/w;
+            const real_t d_a   = fabs(f.a-f.b)+tiny; assert(d_a>0);
+            const real_t d_c   = fabs(f.c-f.b)+tiny; assert(d_c>0);
+            const real_t beta2 = beta*beta;
+            const real_t num   = (one-beta2) * d_a + beta2 * d_c;
+            const real_t den   = (one-beta)  * d_a + beta  * d_c;
+
+            return clamp<real_t>(x.a,x.a+num/(den+den)*w,x.c);
+
+        }
+
+        template <>
         void minimize:: move<real_t>:: run_(triplet<real_t>       &x,
                                             triplet<real_t>       &f,
                                             real_function<real_t> &func)
         {
-            static const real_t tiny(1e-30);
-            static const real_t one(1);
             static const real_t half(0.5);
 
             //------------------------------------------------------------------
@@ -41,18 +60,10 @@ namespace yack
             // compute the new position u from local parabolic fit
             //
             //------------------------------------------------------------------
-            const real_t w     = fabs(x.c-x.a);
-            const real_t beta  = (x.b<=x.a) ? 0 : (x.c<=x.b) ? 1 : (x.b-x.a)/w;
-            const real_t d_a   = fabs(f.a-f.b)+tiny; assert(d_a>0);
-            const real_t d_c   = fabs(f.c-f.b)+tiny; assert(d_c>0);
-            const real_t beta2 = beta*beta;
-            const real_t num   = (one-beta2) * d_a + beta2 * d_c;
-            const real_t den   = (one-beta)  * d_a + beta  * d_c;
-            const real_t x_u   = clamp<real_t>(x.a,x.a+num/(den+den)*w,x.c);
-
-            real_t xx[8] = { x.a, x.b, x.c, 0,0,0,0,0 };
-            real_t ff[8] = { f.a, f.b, f.c, 0,0,0,0,0 };
-            size_t nn    = 3;
+            real_t       xx[8] = { x.a, x.b, x.c, 0,0,0,0,0 };
+            real_t       ff[8] = { f.a, f.b, f.c, 0,0,0,0,0 };
+            size_t       nn    = 3;
+            const real_t x_u   = parabolic_guess(x,f);
 
             switch( __sign::of(x.b,x_u) )
             {

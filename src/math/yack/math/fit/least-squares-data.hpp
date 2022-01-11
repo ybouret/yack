@@ -90,6 +90,14 @@ namespace yack
                 //______________________________________________________________
                 bool shrink(unit_t &p) throw();
 
+                //______________________________________________________________
+                //
+                //! try to optimize descent step
+                //______________________________________________________________
+                ORDINATE optimize(real_function<ORDINATE> &g,
+                                  const ORDINATE           g0,
+                                  const ORDINATE           g1,
+                                  const ORDINATE           sigma) const;
                 
             };
         }
