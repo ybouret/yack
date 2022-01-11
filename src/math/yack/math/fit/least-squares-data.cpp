@@ -3,6 +3,7 @@
 #include "yack/math/fit/least-squares-data.hpp"
 #include "yack/math/numeric.hpp"
 #include "yack/math/opt/minimize.hpp"
+#include "yack/math/fit/variables.hpp"
 
 #define real_t float
 #include "least-squares-data.hxx"

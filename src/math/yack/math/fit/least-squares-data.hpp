@@ -16,6 +16,8 @@ namespace yack
     {
         namespace fit
         {
+            class variables;
+            
             //__________________________________________________________________
             //
             //
@@ -89,6 +91,15 @@ namespace yack
                 //! try to increase p to shrink step
                 //______________________________________________________________
                 bool shrink(unit_t &p) throw();
+
+                //______________________________________________________________
+                //
+                //! try to compute look-up curvature
+                //______________________________________________________________
+                bool compute_curvature(unit_t                 &p,
+                                       const matrix<ORDINATE> &hess,
+                                       const variables        &vars,
+                                       const readable<bool>   &used);
 
                 //______________________________________________________________
                 //

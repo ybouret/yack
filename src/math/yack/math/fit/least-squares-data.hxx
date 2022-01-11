@@ -65,7 +65,44 @@ namespace yack
                 return ++p <= pmax;
             }
 
+            template <>
+            bool least_squares_data<real_t>:: compute_curvature(unit_t                 &p,
+                                                                const matrix<real_t>   &hess,
+                                                                const variables        &vars,
+                                                                const readable<bool>   &used)
+            {
+                assert(p>=this->lam.lower);
+                assert(p<=this->lam.upper);
+                static const real_t one(1);
+                const        size_t npar = used.size();
+
+            TRY:
+                const real_t  dfac = one + lam[p];
+                curv.assign(hess);
+                for(size_t i=npar;i>0;--i)
+                {
+                    if(!used[i]||!vars.handles(i))
+                    {
+                        curv[i][i] = one;
+                    }
+                    else
+                    {
+                        curv[i][i] *= dfac;
+                    }
+                }
+
+
+                if(!algo->build(curv))
+                {
+                    if(!this->shrink(p)) return false; // singular
+                    goto TRY;
+                }
+
+                return true;
+            }
+            
         }
+
 
     }
 

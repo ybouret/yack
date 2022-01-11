@@ -143,7 +143,7 @@ namespace yack
                     // try compute curvature
                     //
                     //----------------------------------------------------------
-                    if(!compute_curvature(s,p,used))
+                    if(!this->compute_curvature(p,s.curv,*s,used))
                     {
                         //------------------------------------------------------
                         // singular
@@ -415,45 +415,7 @@ namespace yack
 
             private:
                 YACK_DISABLE_COPY_AND_ASSIGN(least_squares);
-
-                // try to compute curvature.
-                // increase p if necessary
-                inline
-                bool compute_curvature(const sample_type    &s,
-                                       unit_t               &p,
-                                       const readable<bool> &used)
-                {
-                    assert(p>=this->lam.lower);
-                    assert(p<=this->lam.upper);
-                    static const ORDINATE _1(1);
-                    const size_t          npar = used.size();
-                    const variables      &vars = *s;
-
-                TRY:
-                    const ORDINATE        dfac = _1 + lam[p];
-                    curv.assign(s.curv);
-                    for(size_t i=npar;i>0;--i)
-                    {
-                        if(!used[i]||!vars.handles(i))
-                        {
-                            curv[i][i] = _1;
-                        }
-                        else
-                        {
-                            curv[i][i] *= dfac;
-                        }
-                    }
-
-
-                    if(!algo->build(curv))
-                    {
-                        if(!this->shrink(p)) return false; // singular
-                        goto TRY;
-                    }
-
-                    return true;
-                }
-
+                
                 struct call1D
                 {
                     writable<ORDINATE>       &atry;
