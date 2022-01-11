@@ -24,5 +24,17 @@ YACK_UTEST(fields)
     }
 
 
+    field2D<string> s2( "s2", layout2D( coord2D(-2,-3), coord2D(4,5) ));
+    std::cerr << s2.name << " is " << s2 << std::endl;
+
+    for(unit_t y=s2.lower.y;y<=s2.upper.y;++y)
+    {
+        for(unit_t x=s2.lower.x;x<=s2.upper.x;++x)
+        {
+            s2[y][x] = bring::get<string>(ran);
+        }
+    }
+
+
 }
 YACK_UDONE()
