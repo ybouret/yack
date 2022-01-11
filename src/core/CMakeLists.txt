@@ -576,5 +576,5 @@ ${utest}
 install( TARGETS yack ARCHIVE DESTINATION lib )
 
 add_subdirectory(tests)
-yack_utest(yack)
+yack_utest(core)
 

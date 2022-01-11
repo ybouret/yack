@@ -20,7 +20,20 @@ namespace yack
         width_(other.width_)
         {
         }
-        
+
+        void embed:: cxx() throw()
+        {
+            assert(handle);
+            const ptrdiff_t offset = -ptrdiff_t(width_);
+            *handle = out_of_reach::shift(*handle,offset);
+        }
+
+        void  embed:: cxx(embed emb[],const size_t num) throw()
+        {
+            assert(!(0==emb&&num>0));
+            for(size_t i=0;i<num;++i) emb[i].cxx();
+        }
+
         std::ostream & operator<<(std::ostream &os, const embed &emb)
         {
             assert(emb.handle);

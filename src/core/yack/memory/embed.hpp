@@ -41,6 +41,8 @@ namespace yack
                 *handle = 0;
             }
 
+            void cxx() throw(); //!< decrease address for C++ usage
+
             //! no-throw copy
             embed(const embed &) throw();
 
@@ -49,7 +51,10 @@ namespace yack
 
             //! allocate all
             static void *zalloc(embed emb[], const size_t num, allocator &mem, size_t &bs);
-            
+
+            //! decrease all addresses
+            static void  cxx(embed emb[],const size_t num) throw();
+
         private:
             YACK_DISABLE_ASSIGN(embed);
         };

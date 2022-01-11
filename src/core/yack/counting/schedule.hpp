@@ -16,9 +16,7 @@ namespace yack
     //! counting with indices
     //
     //__________________________________________________________________________
-    class schedule : public counting,
-    public readable<size_t>,
-    public dynamic
+    class schedule : public counting, public readable<size_t>, public dynamic
     {
     public:
         virtual ~schedule() throw(); //!< cleanup
