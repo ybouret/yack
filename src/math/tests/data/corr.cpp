@@ -14,18 +14,25 @@ namespace
     {
 
         correlation<T> corr;
-        const size_t n = 10 + ran.leq(100);
-        const T a = ran.symm<T>() * 10;
-        const T b = ran.symm<T>() * 10;
-        for(size_t i=n;i>0;--i)
+
+        for(size_t iter=0;iter<2;++iter)
         {
-            const T x = ran.symm<T>()* 30;
-            const T y = a*x+b;
-            corr(y,y+ran.symm<T>() * 0.5);
+            corr.free();
+            YACK_CHECK(0==corr.size());
+            const size_t n = 10 + ran.leq(30);
+            const T a = ran.symm<T>() * 10;
+            const T b = ran.symm<T>() * 10;
+            for(size_t i=n;i>0;--i)
+            {
+                const T x = ran.symm<T>()* 30;
+                const T y = a*x+b;
+                corr(y,y+ran.symm<T>() * 0.5);
+            }
+            YACK_CHECK(n==corr.size());
+            std::cerr << "corr=" << corr() << " //" << corr.size() << std::endl;
         }
 
-        std::cerr << "corr=" << corr() << std::endl;
-
+        std::cerr << std::endl;
 
     }
 }

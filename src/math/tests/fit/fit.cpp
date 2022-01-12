@@ -167,19 +167,83 @@ YACK_UTEST(fit)
         //(*circle1)(used,"rc") = false;
         
 
-        vector<double> aerr(vars.size(),0);
-
+        vector<double>      aerr(vars.size(),0);
+        correlation<double> corr;
+        
         if( ls.fit(circle1,F,aorg,used,scal,NULL) )
         {
             std::cerr << "SUCCESS" << std::endl;
             ls.errors(aerr,circle1,F,aorg,used,scal);
             (*circles).display(std::cerr,aerr,"\t\terr.");
+            const double cc = circle1.compute_corr(corr);
+            std::cerr << "corr=" << cc << std::endl;
+
+            {
+                ios::ocstream        fp("circle1.dat");
+                const readable<vtx> &v = circle1.abscissa;
+                for(size_t i=v.size();i>0;--i)
+                {
+                    fp("%g %g\n",v[i].x, v[i].y);
+                }
+            }
+
+            {
+                ios::ocstream        fp("circle1.fit");
+                const double x1 = vars(aorg,"x1");
+                const double y1 = vars(aorg,"y1");
+                const double r  = vars(aorg,"r");
+                for(size_t i=0;i<=100;++i)
+                {
+                    const double theta = (6.28 * i) / 100;
+                    fp("%g %g\n", x1+r*cos(theta), y1+r*sin(theta));
+                }
+
+            }
+
+
         }
         else
         {
             std::cerr << "FAILURE" << std::endl;
         }
 
+
+        if( ls.fit(circle2,F,aorg,used,scal,NULL) )
+        {
+            std::cerr << "SUCCESS" << std::endl;
+            ls.errors(aerr,circle2,F,aorg,used,scal);
+            (*circles).display(std::cerr,aerr,"\t\terr.");
+            const double cc = circle1.compute_corr(corr);
+            std::cerr << "corr=" << cc << std::endl;
+
+            {
+                ios::ocstream        fp("circle2.dat");
+                const readable<vtx> &v = circle2.abscissa;
+                for(size_t i=v.size();i>0;--i)
+                {
+                    fp("%g %g\n",v[i].x, v[i].y);
+                }
+            }
+
+            {
+                ios::ocstream        fp("circle2.fit");
+                const double x2 = vars(aorg,"x2");
+                const double y2 = vars(aorg,"y2");
+                const double r  = vars(aorg,"r");
+                for(size_t i=0;i<=100;++i)
+                {
+                    const double theta = (6.28 * i) / 100;
+                    fp("%g %g\n", x2+r*cos(theta), y2+r*sin(theta));
+                }
+
+            }
+
+
+        }
+        else
+        {
+            std::cerr << "FAILURE" << std::endl;
+        }
 
 
 
