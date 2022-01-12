@@ -148,7 +148,7 @@ namespace yack
                         //------------------------------------------------------
                         // singular
                         //------------------------------------------------------
-                        if(verbose) std::cerr << "[LS] singular parameters" << std::endl;
+                        YACK_LSF_PRINTLN("[LS] singular parameters");
                         return cycle_failure;
                     }
 
@@ -281,12 +281,12 @@ namespace yack
                 //
                 //! fit session
                 //______________________________________________________________
-                inline bool fit(sample_type              &s,
-                                sequential_type          &func,
-                                writable<ORDINATE>       &aorg,
-                                const readable<bool>     &used,
-                                const readable<ORDINATE> &scal,
-                                control                 *proc)
+                inline bool fit_(sample_type              &s,
+                                 sequential_type          &func,
+                                 writable<ORDINATE>       &aorg,
+                                 const readable<bool>     &used,
+                                 const readable<ORDINATE> &scal,
+                                 control                 *proc)
                 {
                     //----------------------------------------------------------
                     //
@@ -399,19 +399,44 @@ namespace yack
                 //! fit session wrapper
                 //______________________________________________________________
                 template <typename FUNC> inline
-                bool fit_(sample_type              &s,
-                          FUNC                     &func,
-                          writable<ORDINATE>       &aorg,
-                          const readable<bool>     &used,
-                          const readable<ORDINATE> &scal,
-                          control                  *proc)
+                bool fit(sample_type              &s,
+                         FUNC                     &func,
+                         writable<ORDINATE>       &aorg,
+                         const readable<bool>     &used,
+                         const readable<ORDINATE> &scal,
+                         control                  *proc)
                 {
                     typename sample_type:: template sequential_wrapper<FUNC> F(func);
-                    return fit(s,F,aorg,used,scal,proc);
+                    return fit_(s,F,aorg,used,scal,proc);
                 }
 
+                //______________________________________________________________
+                //
+                // error computation
+                //______________________________________________________________
+                inline ORDINATE errors_(writable<ORDINATE>       &aerr,
+                                        sample_type              &s,
+                                        sequential_type          &func,
+                                        const readable<ORDINATE> &aorg,
+                                        const readable<bool>     &used,
+                                        const readable<ORDINATE> &scal)
+                {
+                    this->D2 = s.D2_full(func,aorg,used,this->drvs,scal);
+                    this->compute_errors(aerr,s.curv,*s,used,s.dimension());
+                    return 0;
+                }
 
-
+                template <typename FUNC>
+                inline ORDINATE errors(writable<ORDINATE>       &aerr,
+                                       sample_type              &s,
+                                       FUNC                     &func,
+                                        const readable<ORDINATE> &aorg,
+                                        const readable<bool>     &used,
+                                        const readable<ORDINATE> &scal)
+                {
+                    typename sample_type:: template sequential_wrapper<FUNC> F(func);
+                    return errors_(aerr,s,F,aorg,used,scal);
+                }
 
             private:
                 YACK_DISABLE_COPY_AND_ASSIGN(least_squares);

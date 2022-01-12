@@ -108,8 +108,21 @@ namespace yack
                 ORDINATE optimize(real_function<ORDINATE> &g,
                                   const ORDINATE           g0,
                                   const ORDINATE           g1) const;
+
+                //______________________________________________________________
+                //
+                //! compute erros on parameters
+                //______________________________________________________________
+                void compute_errors(writable<ORDINATE>   &aerr,
+                                    matrix<ORDINATE>     &covm,
+                                    const variables      &vars,
+                                    const readable<bool> &used,
+                                    const size_t          ndat);
                 
             };
+
+#define YACK_LSF_PRINTLN(MSG) do { if(verbose) { std::cerr << MSG << std::endl; } } while(false)
+            
         }
     }
 }

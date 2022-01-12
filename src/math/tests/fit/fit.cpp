@@ -167,26 +167,24 @@ YACK_UTEST(fit)
         //(*circle1)(used,"rc") = false;
         
 
-        ls.fit_(circle1,F,aorg,used,scal,NULL);
+        vector<double> aerr(vars.size(),0);
 
-        std::cerr << "ftol: " << ls.ftol << std::endl;
-        std::cerr << "dtol: " << ls.dtol << std::endl;
+        if( ls.fit(circle1,F,aorg,used,scal,NULL) )
+        {
+            std::cerr << "SUCCESS" << std::endl;
+            ls.errors(aerr,circle1,F,aorg,used,scal);
+        }
+        else
+        {
+            std::cerr << "FAILURE" << std::endl;
+        }
+
+
+
 
     }
 
 
-    {
-        fit::least_squares<float,float> ls;
-        std::cerr << "ftol: " << ls.ftol << std::endl;
-        std::cerr << "dtol: " << ls.dtol << std::endl;
-    }
-
-
-    {
-        fit::least_squares<long double,long double> ls;
-        std::cerr << "ftol: " << ls.ftol << std::endl;
-        std::cerr << "dtol: " << ls.dtol << std::endl;
-    }
 }
 YACK_UDONE()
 

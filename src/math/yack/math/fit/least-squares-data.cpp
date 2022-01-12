@@ -4,6 +4,7 @@
 #include "yack/math/numeric.hpp"
 #include "yack/math/opt/minimize.hpp"
 #include "yack/math/fit/variables.hpp"
+#include "yack/exception.hpp"
 
 #define real_t float
 #include "least-squares-data.hxx"

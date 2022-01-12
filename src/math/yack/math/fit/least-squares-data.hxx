@@ -67,27 +67,30 @@ namespace yack
 
             template <>
             bool least_squares_data<real_t>:: compute_curvature(unit_t                 &p,
-                                                                const matrix<real_t>   &hess,
+                                                                const matrix<real_t>   &covm,
                                                                 const variables        &vars,
                                                                 const readable<bool>   &used)
             {
                 assert(p>=this->lam.lower);
                 assert(p<=this->lam.upper);
+                assert(used.size()==covm.rows);
+                assert(used.size()==covm.cols);
                 static const real_t one(1);
                 const        size_t npar = used.size();
 
             TRY:
                 const real_t  dfac = one + lam[p];
-                curv.assign(hess);
+                curv.assign(covm);
                 for(size_t i=npar;i>0;--i)
                 {
+                    writable<real_t> &curv_i = curv[i];
                     if(!used[i]||!vars.handles(i))
                     {
-                        curv[i][i] = one;
+                        curv_i[i] = one;
                     }
                     else
                     {
-                        curv[i][i] *= dfac;
+                        curv_i[i] *= dfac;
                     }
                 }
 
@@ -100,6 +103,64 @@ namespace yack
 
                 return true;
             }
+
+
+            template <>
+            void  least_squares_data<real_t>:: compute_errors(writable<real_t>     &aerr,
+                                                              matrix<real_t>       &covm,
+                                                              const variables      &vars,
+                                                              const readable<bool> &used,
+                                                              const size_t          ndat)
+            {
+                assert(aerr.size()==used.size());
+                assert(aerr.size()==covm.rows);
+                assert(aerr.size()==covm.cols);
+                assert(D2>=0);
+                static const real_t one(1);
+                const        size_t npar = used.size();
+                size_t              nfit = npar;
+
+                //--------------------------------------------------------------
+                //
+                // initialize
+                //
+                //--------------------------------------------------------------
+
+                initialize(npar);
+                aerr.ld(-1);
+                curv.assign(covm);
+
+                //--------------------------------------------------------------
+                //
+                // regularize
+                //
+                //--------------------------------------------------------------
+                for(size_t i=npar;i>0;--i)
+                {
+                    writable<real_t> &curv_i = curv[i];
+                    if(!used[i]||!vars.handles(i))
+                    {
+                        curv_i[i] = one;
+                        aerr[i]   = 0;
+                        --nfit;
+                    }
+                }
+
+                std::cerr << "#params = " << npar << std::endl;
+                std::cerr << "#active = " << nfit << std::endl;
+                std::cerr << "#data   = " << ndat << std::endl;
+
+                // compute inverse of covariance matrix
+                if(!algo->build(curv))
+                {
+                    throw exception("singular covariance in least squares");
+                }
+
+                algo->inv(covm,curv);
+
+            }
+            
+
             
         }
 
@@ -153,12 +214,8 @@ namespace yack
                 const real_t U_opt = minimize::parabolic_guess(U,G);
                 const real_t G_opt = g(U_opt);
 
-                // choose the minimum
-                if(verbose)
-                {
-                    std::cerr << "[LS] minimum in u=" << U << ", g=" << G << std::endl;
-                    std::cerr << "[LS] estimated [" << G_opt << " @" << U_opt << "]" << std::endl;
-                }
+                YACK_LSF_PRINTLN("[LS] minimum in u=" << U << ", g=" << G);
+                YACK_LSF_PRINTLN("[LS] estimated [" << G_opt << " @ " << U_opt << "]");
 
                 return G_opt;
 
