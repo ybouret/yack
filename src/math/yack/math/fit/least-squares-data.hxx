@@ -189,7 +189,7 @@ namespace yack
                 }
 
                 sig2 /= ndof;
-                YACK_LSF_PRINTLN(clid << " D2  = " << D2);
+                YACK_LSF_PRINTLN(clid << " D2   = " << D2);
                 YACK_LSF_PRINTLN(clid << " ndof = " << ndof);
                 YACK_LSF_PRINTLN(clid << " sig2 = " << sig2);
 
