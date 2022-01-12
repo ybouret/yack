@@ -56,6 +56,9 @@ namespace yack
                 using base_type::curv;
                 using base_type::shrinking;
                 using base_type::lam;
+                using base_type::clid;
+                using base_type::D2;
+                using base_type::drvs;
 
                 //______________________________________________________________
                 //
@@ -101,8 +104,9 @@ namespace yack
                     // and check power
                     //
                     //----------------------------------------------------------
-                    const size_t   np = aorg.size();
-                    this->initialize(np);
+                    const size_t     npar = aorg.size();
+                    const variables &vars = *s;
+                    this->initialize(npar);
                     p = clamp(this->pmin,p,this->pmax);
 
                     //----------------------------------------------------------
@@ -118,18 +122,14 @@ namespace yack
                     // compute all metrics @aorg: COSTLY
                     //
                     //----------------------------------------------------------
-                    const ORDINATE D2ini = this->D2 = s.D2_full(func,aorg,used,this->drvs,scal);
+                    const ORDINATE D2ini = D2 = s.D2_full(func,aorg,used,drvs,scal);
                     s.finalize();
 
-                    if(verbose)
-                    {
-                        std::cerr << "[LS] cycle @p=" << p << " => lambda=" << this->lam[p] << std::endl;;
-                        std::cerr << "aorg  = " << aorg << std::endl;
-                        (*s).display(std::cerr,aorg,"\taorg.");
-                        std::cerr << "D2ini = " << D2ini << std::endl;
-                        std::cerr << "curv  = " << s.curv << std::endl;
-                        std::cerr << "beta  = " << s.beta << std::endl;
-                    }
+
+                    YACK_LSF_PRINTLN(clid << " cycle [p=" << p << "] => lambda=" << lam[p]);
+                    if(verbose) vars.display(std::cerr,aorg,"\taorg.");
+                    YACK_LSF_PRINTLN("D2ini = " << D2ini);
+
 
                     //----------------------------------------------------------
                     //
@@ -143,28 +143,25 @@ namespace yack
                     // try compute curvature
                     //
                     //----------------------------------------------------------
-                    if(!this->compute_curvature(p,s.curv,*s,used))
+                    if(!this->compute_curvature(p,s.curv,vars,used))
                     {
                         //------------------------------------------------------
                         // singular
                         //------------------------------------------------------
-                        YACK_LSF_PRINTLN("[LS] singular parameters");
+                        YACK_LSF_PRINTLN(clid << " singular parameters");
                         return cycle_failure;
                     }
 
                     //----------------------------------------------------------
                     //
-                    // compute step
+                    // from estimated curvature and gradient, compute step
                     //
                     //----------------------------------------------------------
                     tao::v1::load(step,s.beta);
                     algo->solve(curv,step);
-                    if(verbose)
-                    {
-                        std::cerr << "[LS] step @p=" << p << std::endl;
-                        std::cerr << "step  = " << step << std::endl;
-                        (*s).display(std::cerr,step,"\tstep.");
-                    }
+
+                    YACK_LSF_PRINTLN(clid << " step [p=" << p << "]");
+                    if(verbose) vars.display(std::cerr,step,"\tstep.");
 
                     //----------------------------------------------------------
                     //
@@ -184,10 +181,10 @@ namespace yack
                         if( !(*ctrl)(atry) )
                         {
                             // something happened
-                            if(verbose) std::cerr << "[LS] post-processing warning" << std::endl;
+                            YACK_LSF_PRINTLN(clid << " post-processing warning");
                             if(!this->shrink(p))
                             {
-                                if(verbose) std::cerr << "[LS] post-processing caused failure" << std::endl;
+                                YACK_LSF_PRINTLN(clid << " post-processing caused failure");
                                 return cycle_failure;
                             }
                         }
@@ -198,14 +195,13 @@ namespace yack
                     // recompute step and find D2try
                     //
                     //----------------------------------------------------------
-                    tao::v1::sub(step,atry,aorg);             // recompute step in any case
+                    tao::v1::sub(step,atry,aorg);       // recompute step in any case
                     ORDINATE D2try = s.D2(func,atry);   // compute trial value
-                    if(verbose)
-                    {
-                        std::cerr << "atry  = " << atry << std::endl;
-                        (*s).display(std::cerr,atry,"\tatry.");
-                        std::cerr << "D2try = " << D2try << std::endl;
-                    }
+
+                    YACK_LSF_PRINTLN(clid << " atry [p=" << p << "]");
+                    if(verbose) vars.display(std::cerr,atry,"\tatry.");
+                    YACK_LSF_PRINTLN("D2try = " << D2try);
+
 
                     //----------------------------------------------------------
                     //
@@ -231,15 +227,15 @@ namespace yack
                         //
                         //------------------------------------------------------
                         tao::v1::set(aorg,atry);
-                        this->D2 = D2try;
+                        D2 = D2try;
                         if(shrinking)
                         {
-                            if(verbose) std::cerr << "should process again" << std::endl;
+                            YACK_LSF_PRINTLN(clid << " would process again");
                             return cycle_process;
                         }
                         else
                         {
-                            if(verbose) std::cerr << "successful step" << std::endl;
+                            YACK_LSF_PRINTLN(clid << " consistent cycle");
                             p = max_of(--p,this->pmin);
                             return cycle_success;
                         }
@@ -253,6 +249,7 @@ namespace yack
                         //------------------------------------------------------
                         if(!this->shrink(p))
                         {
+                            YACK_LSF_PRINTLN(clid << " unable to decrease!!");
                             return cycle_failure;
                         }
                         goto CURV;
@@ -295,7 +292,7 @@ namespace yack
                     //----------------------------------------------------------
                     unit_t p  = 0; // power indicator
                     size_t c  = 1; // cycle indicator
-                    if(verbose) std::cerr << "[LS] -------- @cycle #" << c << " --------" << std::endl;
+                    YACK_LSF_PRINTLN(clid << " -------- @cycle #" << c << " --------");
 
 
                     //----------------------------------------------------------
@@ -309,7 +306,7 @@ namespace yack
                             // error/singular
                             //--------------------------------------------------
                         case cycle_failure:
-                            if(verbose) std::cerr << "[LS] singular system" << std::endl;
+                            YACK_LSF_PRINTLN(clid << " singular system");
                             return false;
 
                             //--------------------------------------------------
@@ -323,13 +320,13 @@ namespace yack
                         case cycle_success:
                             if(this->converged(aorg))
                             {
-                                if(verbose) std::cerr << "[LS] converged variables @cycle #" << c << std::endl;
+                                YACK_LSF_PRINTLN(clid << " converged variables @cycle #" << c);
                                 return true;
                             }
                             break;
                     }
 
-                    ORDINATE D2old = this->D2;
+                    ORDINATE D2old = D2;
 
 
 
@@ -340,7 +337,7 @@ namespace yack
                     //----------------------------------------------------------
                 LOOP:
                     ++c;
-                    if(verbose) std::cerr << "[LS] -------- @cycle #" << c << " --------" << std::endl;
+                    YACK_LSF_PRINTLN(clid << " -------- @cycle #" << c << " --------");
                     switch(cycle(s,p,func,aorg,used,scal,proc))
                     {
                             //--------------------------------------------------
@@ -362,7 +359,7 @@ namespace yack
                             //--------------------------------------------------
                             if(this->converged(aorg))
                             {
-                                if(verbose) std::cerr << "[LS] converged parameters @cycle #" << c << std::endl;
+                                YACK_LSF_PRINTLN(clid << " converged parameters @cycle #" << c);
                                 return true;
                             }
 
@@ -371,14 +368,14 @@ namespace yack
                             //--------------------------------------------------
                             if(fabs(D2old-this->D2) <= this->dtol * D2old )
                             {
-                                if(verbose) std::cerr << "[LS] converged D2=" << this->D2 << " @cycle #" << c << std::endl;
+                                YACK_LSF_PRINTLN(clid << " converged D2=" << D2 << " @cycle #" << c);
                                 return true;
                             }
 
                             //--------------------------------------------------
                             // update D2old
                             //--------------------------------------------------
-                            D2old = this->D2;
+                            D2old =  D2;
                             goto LOOP;
 
                             //--------------------------------------------------
@@ -421,8 +418,9 @@ namespace yack
                                         const readable<bool>     &used,
                                         const readable<ORDINATE> &scal)
                 {
-                    this->D2 = s.D2_full(func,aorg,used,this->drvs,scal);
-                    this->compute_errors(aerr,s.curv,*s,used,s.dimension());
+
+                    D2 = s.D2_full(func,aorg,used,drvs,scal);                // load D2 and compute metrics
+                    this->compute_errors(aerr,s.curv,*s,used,s.dimension()); // deduce errors
                     return 0;
                 }
 
@@ -434,9 +432,9 @@ namespace yack
                 inline ORDINATE errors(writable<ORDINATE>       &aerr,
                                        sample_type              &s,
                                        FUNC                     &func,
-                                        const readable<ORDINATE> &aorg,
-                                        const readable<bool>     &used,
-                                        const readable<ORDINATE> &scal)
+                                       const readable<ORDINATE> &aorg,
+                                       const readable<bool>     &used,
+                                       const readable<ORDINATE> &scal)
                 {
                     typename sample_type:: template sequential_wrapper<FUNC> F(func);
                     return errors_(aerr,s,F,aorg,used,scal);

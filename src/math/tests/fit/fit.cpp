@@ -173,6 +173,7 @@ YACK_UTEST(fit)
         {
             std::cerr << "SUCCESS" << std::endl;
             ls.errors(aerr,circle1,F,aorg,used,scal);
+            (*circles).display(std::cerr,aerr,"\t\terr.");
         }
         else
         {

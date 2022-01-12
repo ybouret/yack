@@ -261,8 +261,8 @@ namespace yack
                 const real_t U_opt = minimize::parabolic_guess(U,G);
                 const real_t G_opt = g(U_opt);
 
-                YACK_LSF_PRINTLN("[LS] minimum in u=" << U << ", g=" << G);
-                YACK_LSF_PRINTLN("[LS] estimated [" << G_opt << " @ " << U_opt << "]");
+                YACK_LSF_PRINTLN(clid << " minimum in u=" << U << ", g=" << G);
+                YACK_LSF_PRINTLN(clid << " estimated [" << G_opt << " @ " << U_opt << "]");
 
                 return G_opt;
 
