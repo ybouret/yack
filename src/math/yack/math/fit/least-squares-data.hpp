@@ -17,7 +17,24 @@ namespace yack
         namespace fit
         {
             class variables;
-            
+
+            //__________________________________________________________________
+            //
+            //
+            //! info for least squares
+            //
+            //__________________________________________________________________
+            class least_squares_info : public large_object
+            {
+            public:
+                static const char clid[];              //!< least-square
+                explicit least_squares_info() throw(); //!< setup
+                virtual ~least_squares_info() throw(); //!< cleanup
+
+            private:
+                YACK_DISABLE_COPY_AND_ASSIGN(least_squares_info);
+            };
+
             //__________________________________________________________________
             //
             //
@@ -25,7 +42,7 @@ namespace yack
             //
             //__________________________________________________________________
             template <typename ORDINATE>
-            class least_squares_data : public large_object, public arrays_of<ORDINATE>
+            class least_squares_data :  public least_squares_info, public arrays_of<ORDINATE>
             {
             public:
                 //______________________________________________________________
@@ -121,6 +138,7 @@ namespace yack
                 
             };
 
+            //! helper to display least squares fit messages
 #define YACK_LSF_PRINTLN(MSG) do { if(verbose) { std::cerr << MSG << std::endl; } } while(false)
             
         }

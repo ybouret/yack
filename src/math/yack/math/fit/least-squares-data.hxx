@@ -13,7 +13,7 @@ namespace yack
 
             template <>
             least_squares_data<real_t>:: least_squares_data() :
-            large_object(),
+            least_squares_info(),
             tableaux(2,0),
             D2(0),
             step( this->next() ),
@@ -146,24 +146,54 @@ namespace yack
                     }
                 }
 
-                std::cerr << "#params = " << npar << std::endl;
-                std::cerr << "#active = " << nfit << std::endl;
-                std::cerr << "#data   = " << ndat << std::endl;
-
-                // compute inverse of covariance matrix
-                if(!algo->build(curv))
+                if(verbose)
                 {
-                    throw exception("singular covariance in least squares");
+                    std::cerr << clid << " #params = " << npar << std::endl;
+                    std::cerr << clid << " #active = " << nfit << std::endl;
+                    std::cerr << clid << " #data   = " << ndat << std::endl;
                 }
 
+                //--------------------------------------------------------------
+                //
+                // compute inverse of covariance matrix
+                //
+                //--------------------------------------------------------------
+                if(!algo->build(curv))
+                {
+                    throw exception("%s: singular covariance", clid);
+                }
                 algo->inv(covm,curv);
+
+                //--------------------------------------------------------------
+                //
+                // compute total err and d.o.f
+                //
+                //--------------------------------------------------------------
+                real_t err = 0;
+                size_t dof = ndat;
+                switch( __sign::of(ndat,nfit))
+                {
+                    case negative: assert(ndat<nfit);
+                        throw exception("%s: too many active #active=%u for #data=%u",clid, unsigned(nfit), unsigned(ndat));
+                        break;
+
+                    case __zero__:
+                        YACK_LSF_PRINTLN(clid << " interpolation"); // keep error to zero
+                        dof=1;
+                        break;
+
+                    case positive: assert(ndat>nfit);
+                        err  = D2;
+                        dof -= nfit;
+                        break;
+                }
+
 
             }
             
 
             
         }
-
 
     }
 

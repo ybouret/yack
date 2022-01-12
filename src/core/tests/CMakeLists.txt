@@ -205,6 +205,7 @@ add_test(rand:bits      test-core rand_bits)
 add_test(rand:metrics   test-core rand_metrics)
 add_test(rand:shuffle   test-core rand_shuffle)
 add_test(rand:mt19937   test-core rand_mt19937)
+add_test(rand:gaussian  test-core rand_gaussian)
 
 add_test(sort:heap      test-core sort_heap)
 add_test(sort:indexing  test-core sort_indexing)

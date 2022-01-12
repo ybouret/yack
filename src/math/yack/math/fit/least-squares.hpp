@@ -412,7 +412,7 @@ namespace yack
 
                 //______________________________________________________________
                 //
-                // error computation
+                //! per-parameter error computation
                 //______________________________________________________________
                 inline ORDINATE errors_(writable<ORDINATE>       &aerr,
                                         sample_type              &s,
@@ -426,6 +426,10 @@ namespace yack
                     return 0;
                 }
 
+                //______________________________________________________________
+                //
+                //! per-parameter error computation, wrapper
+                //______________________________________________________________
                 template <typename FUNC>
                 inline ORDINATE errors(writable<ORDINATE>       &aerr,
                                        sample_type              &s,

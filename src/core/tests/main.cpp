@@ -118,6 +118,7 @@ YACK_UTEST_DECL(128)
     YACK_UTEST(rand_metrics);
     YACK_UTEST(rand_shuffle);
     YACK_UTEST(rand_mt19937);
+    YACK_UTEST(rand_gaussian);
 
     YACK_UTEST(sort_heap);
     YACK_UTEST(sort_indexing);
