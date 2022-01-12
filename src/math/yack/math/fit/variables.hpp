@@ -6,6 +6,7 @@
 #include "yack/math/fit/replica.hpp"
 #include "yack/associative/suffix/set.hpp"
 #include "yack/ios/fmt/align.hpp"
+#include "yack/type/utils.hpp"
 
 namespace yack
 {
@@ -37,6 +38,7 @@ namespace yack
                 // types and definitions
                 //______________________________________________________________
                 typedef replica::handle handle; //!< alias
+                typedef vector<string>  strings; //!< alias
 
                 //______________________________________________________________
                 //
@@ -120,12 +122,74 @@ namespace yack
                     return os;
                 }
 
+                template <typename OSTREAM,typename T> inline
+                OSTREAM & display(OSTREAM &os, const readable<T> &arr, const readable<T> &err, const char *pfx=NULL) const
+                {
+                    const string prolog = pfx;
+                    strings      output;
+
+                    size_t   wres=0;
+                    {
+                        const size_t w = width();
+                        for(const_iterator it=begin();it!=end();++it)
+                        {
+                            const variable &v = **it;
+                            output.push_back(prolog);
+                            string &tmp = output.back();
+                            tmp += v.name;
+                            for(size_t i=v.name.size();i<w;++i) tmp += ' ';
+                            tmp += " = ";
+                            tmp += vformat("%.15g",v(arr));
+                            wres = max_of(wres,tmp.size());
+                        }
+                    }
+
+
+                    size_t werr=0;
+                    {
+                        size_t j=1;
+                        for(const_iterator it=begin();it!=end();++it,++j)
+                        {
+                            const variable &v = **it;
+                            string &tmp = output[j];
+                            for(size_t i=tmp.size();i<wres;++i) tmp += ' ';
+                            tmp += " +/- ";
+                            tmp += vformat("%.15g",v(err));
+                            werr = max_of(werr,tmp.size());
+                        }
+                    }
+
+
+                    {
+                        size_t j=1;
+                        for(const_iterator it=begin();it!=end();++it,++j)
+                        {
+                            string &tmp = output[j];
+                            for(size_t i=tmp.size();i<werr;++i) tmp += ' ';
+                            tmp += " | ";
+                        }
+                    }
+
+
+                    for(size_t i=1;i<=output.size();++i)
+                    {
+                        os << output[i] << '\n';
+                    }
+
+
+                    return os;
+                }
+
+
 
 
             private:
                 void grow(const handle &);
                 const variable & fetch(const string &id) const;
                 const variable & fetch(const char   *id) const;
+
+
+
             };
 
 

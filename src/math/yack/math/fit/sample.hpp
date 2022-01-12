@@ -167,8 +167,8 @@ namespace yack
                 //! compute total correlation
                 inline ORDINATE compute_corr(correlation<ORDINATE> &corr) const
                 {
-                    corr.free();
-                    update_correlation(corr);
+                    corr.free();              assert( 0           == corr.size() );
+                    update_correlation(corr); assert( dimension() == corr.size() );
                     return corr();
                 }
 

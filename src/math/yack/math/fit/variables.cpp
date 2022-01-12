@@ -1,7 +1,6 @@
 
 #include "yack/math/fit/variables.hpp"
 #include "yack/exception.hpp"
-#include "yack/type/utils.hpp"
 
 namespace yack
 {
