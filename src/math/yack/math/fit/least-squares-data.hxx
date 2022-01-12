@@ -204,7 +204,8 @@ namespace yack
                     const real_t variance = sig2 * fabs(covm[i][i]);
                     aerr[i] = sqrt(variance/ndat);
                 }
-                vars.display(std::cerr,aerr,"\tsig.");
+
+                if(verbose) vars.display(std::cerr,aerr,"\terr.");
 
             }
             

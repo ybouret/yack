@@ -174,7 +174,6 @@ YACK_UTEST(fit)
         {
             std::cerr << "SUCCESS" << std::endl;
             ls.errors(aerr,circle1,F,aorg,used,scal);
-            (*circles).display(std::cerr,aerr,"\t\terr.");
             const double cc = circle1.compute_corr(corr);
             std::cerr << "corr=" << cc << std::endl;
 
@@ -212,7 +211,6 @@ YACK_UTEST(fit)
         {
             std::cerr << "SUCCESS" << std::endl;
             ls.errors(aerr,circle2,F,aorg,used,scal);
-            (*circles).display(std::cerr,aerr,"\t\terr.");
             const double cc = circle1.compute_corr(corr);
             std::cerr << "corr=" << cc << std::endl;
 
@@ -245,6 +243,20 @@ YACK_UTEST(fit)
             std::cerr << "FAILURE" << std::endl;
         }
 
+
+        if( ls.fit(circles,F,aorg,used,scal,NULL) )
+        {
+            std::cerr << "SUCCESS" << std::endl;
+            ls.errors(aerr,circles,F,aorg,used,scal);
+            const double cc = circle2.compute_corr(corr);
+            std::cerr << "corr=" << cc << std::endl;
+
+
+        }
+        else
+        {
+            std::cerr << "FAILURE" << std::endl;
+        }
 
 
     }
