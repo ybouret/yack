@@ -143,7 +143,7 @@ namespace yack
                         for(const_iterator it=begin();it!=end();++it,++j)
                         {
                             const variable &v = **it;
-                            output[j] += vformat(" = %.15g",v(arr));
+                            output[j] += vformat(" = %.15g",double(v(arr)));
                         }
                     }
                     align_all(output);
@@ -154,7 +154,7 @@ namespace yack
                         for(const_iterator it=begin();it!=end();++it,++j)
                         {
                             const variable &v = **it;
-                            output[j] += vformat(" +/- %.15g",v(err));
+                            output[j] += vformat(" +/- %.15g",double(v(err)));
                         }
                     }
                     align_all(output);
@@ -164,7 +164,9 @@ namespace yack
                         for(const_iterator it=begin();it!=end();++it,++j)
                         {
                             const variable &v = **it;
-                            output[j] += " | ";
+                            const T         xx = v(arr);
+                            const T         dx = v(err);
+                            output[j] += vformat(" | (%7.2f%%)",42.0);
                         }
                     }
                     align_all(output);
