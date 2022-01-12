@@ -61,6 +61,7 @@ namespace yack
 
         //! copy head content, delete head, return content
         inline type   pull() { const_type tmp = **head; delete this->query(); return tmp; }
+
     };
     
 }

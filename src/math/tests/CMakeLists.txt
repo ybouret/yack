@@ -65,6 +65,7 @@ add_test(fjac     test-math fjac)
 
 add_test(data:poly      test-math poly)
 add_test(data:chebyshev test-math chebyshev)
+add_test(data:corr      test-math corr)
 
 add_test(fit test-math fit)
 

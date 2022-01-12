@@ -228,7 +228,24 @@ namespace yack
                     }
                 }
 
+                //! upadate correlation
+                virtual void update_correlation(correlation<ORDINATE> &corr) const
+                {
+                    for(size_t i=dimension();i>0;--i)
+                    {
+                        corr( adjusted[i], ordinate[i] );
+                    }
+                }
 
+                //______________________________________________________________
+                //
+                //! coefficient of determination
+                //______________________________________________________________
+                inline virtual ORDINATE R2() throw()
+                {
+                    static const ORDINATE one(1);
+                    return one - SSres()/SStot();
+                }
 
 
 
@@ -261,6 +278,38 @@ namespace yack
                         return func.start(xpos,atmp,vars);
                     }
                 };
+
+                inline ORDINATE  SSres() throw()
+                {
+                    for(size_t i=dimension();i>0;--i)
+                    {
+                        wksp[i] = squared(ordinate[i]-adjusted[i]);
+                    }
+                    return sorted::sum(wksp,sorted::by_value);
+                }
+
+                inline ORDINATE get_average() throw()
+                {
+                    const size_t n = dimension();
+                    for(size_t i=n;i>0;--i)
+                    {
+                        wksp[i] = ordinate[i];
+                    }
+                    return sorted::sum(wksp,sorted::by_abs_value)/n;
+                }
+
+                inline ORDINATE  SStot() throw()
+                {
+                    const ORDINATE average = get_average();
+                    for(size_t i=dimension();i>0;--i)
+                    {
+                        wksp[i] = squared(ordinate[i]-average);
+                    }
+                    return sorted::sum(wksp,sorted::by_value);
+                }
+
+
+
             };
 
 

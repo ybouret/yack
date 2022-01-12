@@ -5,6 +5,7 @@
 
 #include "yack/math/fit/sequential.hpp"
 #include "yack/math/fcn/derivative.hpp"
+#include "yack/math/data/corr.hpp"
 
 #include "yack/type/utils.hpp"
 #include "yack/type/gateway.hpp"
@@ -118,6 +119,10 @@ namespace yack
                                          derivative<ORDINATE>     &drvs,
                                          const readable<ORDINATE> &scal) = 0;
 
+                //! compute correlation
+                virtual void update_correlation(correlation<ORDINATE> &corr) const = 0;
+
+
                 //______________________________________________________________
                 //
                 // non virtual interface
@@ -146,7 +151,7 @@ namespace yack
                 }
 
                 //! make symmetric curv
-                void finalize() throw()
+                inline void finalize() throw()
                 {
                     assert(curv.is_square());
                     const size_t n = curv.rows;
@@ -158,6 +163,15 @@ namespace yack
                         }
                     }
                 }
+
+                //! compute total correlation
+                inline ORDINATE compute_corr(correlation<ORDINATE> &corr) const
+                {
+                    corr.free();
+                    update_correlation(corr);
+                    return corr();
+                }
+
 
                 //______________________________________________________________
                 //

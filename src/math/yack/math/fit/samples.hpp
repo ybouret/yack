@@ -200,6 +200,16 @@ namespace yack
                 }
 
 
+                //! update correlation
+                virtual void update_correlation(correlation<ORDINATE> &corr) const
+                {
+                    for(const_iterator it=this->begin();it!=this->end();++it)
+                    {
+                        const single_type   &s = **it;
+                        s.update_correlation(corr);
+                    }
+                }
+
             private:
                 YACK_DISABLE_COPY_AND_ASSIGN(samples_of);
                 vector<ORDINATE> wksp;

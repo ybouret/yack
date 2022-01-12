@@ -125,7 +125,7 @@ namespace yack
                     const ORDINATE D2ini = D2 = s.D2_full(func,aorg,used,drvs,scal);
                     s.finalize();
 
-
+                    
                     YACK_LSF_PRINTLN(clid << " cycle [p=" << p << "] => lambda=" << lam[p]);
                     if(verbose) vars.display(std::cerr,aorg,"\taorg.");
                     YACK_LSF_PRINTLN("D2ini = " << D2ini);

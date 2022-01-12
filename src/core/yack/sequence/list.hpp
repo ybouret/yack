@@ -105,30 +105,30 @@ namespace yack
         //
         // collection interface
         //______________________________________________________________________
-        inline virtual size_t      size()     const throw() { return alive.size; }
-        inline virtual const char *category() const throw() { return kernel::list_category; }
+        inline virtual size_t      size()     const throw() { return alive.size; }              //!< alive size
+        inline virtual const char *category() const throw() { return kernel::list_category; }   //!< categiry
 
         //______________________________________________________________________
         //
         // releasable interface
         //______________________________________________________________________
-        inline virtual void     release()         throw() { trim_(); kill_(); }
+        inline virtual void     release()         throw() { trim_(); kill_(); }  //!< release all nodes
 
         //______________________________________________________________________
         //
         // container interface
         //______________________________________________________________________
-        inline virtual size_t   capacity()  const throw() { return alive.size+cache.size; }
-        inline virtual size_t   available() const throw() { return cache.size; }
-        inline virtual void     free()            throw() { }
-        inline virtual void     reserve(size_t n) { while(n-- > 0) cache.store( object::zacquire<node_type>()); }
+        inline virtual size_t   capacity()  const throw() { return alive.size+cache.size; }                       //!< alive+cache
+        inline virtual size_t   available() const throw() { return cache.size; }                                  //!< cache only
+        inline virtual void     free()            throw() { free_();           }                                  //!< remove alive
+        inline virtual void     reserve(size_t n) { while(n-- > 0) cache.store( object::zacquire<node_type>()); } //!< append zombie node into cache
 
         //______________________________________________________________________
         //
         // writable interface
         //______________________________________________________________________
-        inline type       & operator[](const size_t indx) throw()       { return **alive.get(indx); }
-        inline const_type & operator[](const size_t indx) const throw() { return **alive.get(indx); }
+        inline type       & operator[](const size_t indx) throw()       { return **alive.get(indx); } //!< slow access
+        inline const_type & operator[](const size_t indx) const throw() { return **alive.get(indx); } //!< slow access
 
         //______________________________________________________________________
         //
@@ -162,9 +162,11 @@ namespace yack
 
         //______________________________________________________________________
         //
-        //
+        // read only helpers
         //______________________________________________________________________
 
+        inline const node_type *head() const throw() { return alive.head; } //!< direct access
+        inline const node_type *tail() const throw() { return alive.tail; } //!< direct access
 
     private:
         YACK_DISABLE_ASSIGN(list);
