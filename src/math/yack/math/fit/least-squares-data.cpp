@@ -18,7 +18,7 @@ namespace yack
             {
             }
 
-            const char least_squares_info::clid[] = "least-squares";
+            const char least_squares_info::clid[] = "[least-squares]";
 
             least_squares_info:: ~least_squares_info() throw()
             {

@@ -166,11 +166,11 @@ namespace yack
 
                 //--------------------------------------------------------------
                 //
-                // compute total err and d.o.f
+                // compute total variance and degrees of freedom
                 //
                 //--------------------------------------------------------------
-                real_t err = 0;
-                size_t dof = ndat;
+                real_t sig2 = 0;
+                size_t ndof = ndat;
                 switch( __sign::of(ndat,nfit))
                 {
                     case negative: assert(ndat<nfit);
@@ -179,15 +179,32 @@ namespace yack
 
                     case __zero__:
                         YACK_LSF_PRINTLN(clid << " interpolation"); // keep error to zero
-                        dof=1;
+                        ndof=1;
                         break;
 
                     case positive: assert(ndat>nfit);
-                        err  = D2;
-                        dof -= nfit;
+                        sig2  = D2;
+                        ndof -= nfit;
                         break;
                 }
 
+                sig2 /= ndof;
+                YACK_LSF_PRINTLN(clid << " D2  = " << D2);
+                YACK_LSF_PRINTLN(clid << " ndof = " << ndof);
+                YACK_LSF_PRINTLN(clid << " sig2 = " << sig2);
+
+
+                for(size_t i=npar;i>0;--i)
+                {
+                    if(!used[i]||!vars.handles(i))
+                    {
+                        continue;
+                    }
+
+                    const real_t variance = sig2 * fabs(covm[i][i]);
+                    aerr[i] = sqrt(variance/ndat);
+                }
+                vars.display(std::cerr,aerr,"\tsig.");
 
             }
             
