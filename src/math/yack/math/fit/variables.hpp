@@ -128,48 +128,46 @@ namespace yack
                     const string prolog = pfx;
                     strings      output;
 
-                    size_t   wres=0;
+
+                    for(const_iterator it=begin();it!=end();++it)
                     {
-                        const size_t w = width();
-                        for(const_iterator it=begin();it!=end();++it)
-                        {
-                            const variable &v = **it;
-                            output.push_back(prolog);
-                            string &tmp = output.back();
-                            tmp += v.name;
-                            for(size_t i=v.name.size();i<w;++i) tmp += ' ';
-                            tmp += " = ";
-                            tmp += vformat("%.15g",v(arr));
-                            wres = max_of(wres,tmp.size());
-                        }
+                        const variable &v = **it;
+                        output.push_back(prolog);
+                        string &tmp = output.back();
+                        tmp += v.name;
                     }
+                    align_all(output);
 
-
-                    size_t werr=0;
                     {
                         size_t j=1;
                         for(const_iterator it=begin();it!=end();++it,++j)
                         {
                             const variable &v = **it;
-                            string &tmp = output[j];
-                            for(size_t i=tmp.size();i<wres;++i) tmp += ' ';
-                            tmp += " +/- ";
-                            tmp += vformat("%.15g",v(err));
-                            werr = max_of(werr,tmp.size());
+                            output[j] += vformat(" = %.15g",v(arr));
                         }
                     }
+                    align_all(output);
 
 
                     {
                         size_t j=1;
                         for(const_iterator it=begin();it!=end();++it,++j)
                         {
-                            string &tmp = output[j];
-                            for(size_t i=tmp.size();i<werr;++i) tmp += ' ';
-                            tmp += " | ";
+                            const variable &v = **it;
+                            output[j] += vformat(" +/- %.15g",v(err));
                         }
                     }
+                    align_all(output);
 
+                    {
+                        size_t j=1;
+                        for(const_iterator it=begin();it!=end();++it,++j)
+                        {
+                            const variable &v = **it;
+                            output[j] += " | ";
+                        }
+                    }
+                    align_all(output);
 
                     for(size_t i=1;i<=output.size();++i)
                     {
@@ -188,7 +186,7 @@ namespace yack
                 const variable & fetch(const string &id) const;
                 const variable & fetch(const char   *id) const;
 
-
+                static void align_all(strings &out);
 
             };
 

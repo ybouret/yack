@@ -78,6 +78,24 @@ namespace yack
                 return false;
             }
 
+            static inline void align_to(const size_t w, string &tmp)
+            {
+                for(size_t j=tmp.size();j<w;++j) tmp +=  ' ';
+            }
+
+            void variables:: align_all(strings &out)
+            {
+                const size_t n = out.size();
+                size_t       w = 0;
+
+                for(size_t i=n;i>0;--i)
+                    w = max_of(w,out[i].size());
+
+                for(size_t i=n;i>0;--i)
+                    align_to(w,out[i]);
+            }
+
+
         }
     }
 }
