@@ -4,6 +4,7 @@
 #define YACK_FIT_VARIABLES_INCLUDED 1
 
 #include "yack/math/fit/replica.hpp"
+#include "yack/math/data/percent.hpp"
 #include "yack/associative/suffix/set.hpp"
 #include "yack/ios/fmt/align.hpp"
 #include "yack/type/utils.hpp"
@@ -122,6 +123,9 @@ namespace yack
                     return os;
                 }
 
+
+
+                //! display extensive result
                 template <typename OSTREAM,typename T> inline
                 OSTREAM & display(OSTREAM &os, const readable<T> &arr, const readable<T> &err, const char *pfx=NULL) const
                 {
@@ -166,7 +170,7 @@ namespace yack
                             const variable &v = **it;
                             const T         xx = v(arr);
                             const T         dx = v(err);
-                            output[j] += vformat(" | (%7.2f%%)",42.0);
+                            output[j] += vformat(" | (%6.2f%%)", percent::of<T,2>(xx,dx) );
                         }
                     }
                     align_all(output);

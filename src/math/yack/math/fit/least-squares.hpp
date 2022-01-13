@@ -119,7 +119,7 @@ namespace yack
 
                     //----------------------------------------------------------
                     //
-                    // compute all metrics @aorg: COSTLY
+                    // compute all metrics @aorg: may be costly
                     //
                     //----------------------------------------------------------
                     const ORDINATE D2ini = D2 = s.D2_full(func,aorg,used,drvs,scal);
