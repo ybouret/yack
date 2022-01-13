@@ -82,6 +82,7 @@ ${field}
 
 yack_link_libraries(test-core)
 target_link_libraries(test-core yack-z)
+target_link_libraries(test-core yack-bz2)
 
 add_library(dso MODULE dso.cpp)
 add_custom_command( TARGET dso

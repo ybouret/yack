@@ -24,11 +24,12 @@ namespace yack
             {
             public:
                 virtual ~stream() throw(); //!< cleanup
+                static const char *errstr(const int err) throw(); //!< named errors
+
 
             protected:
-                explicit stream(void *) throw();
-
-                void *BZ; //!< handle got bzFile
+                explicit stream(void *) throw(); //!< assign BZ
+                void *BZ;                        //!< handle for BZFILE
 
             private:
                 YACK_DISABLE_COPY_AND_ASSIGN(stream);
