@@ -128,6 +128,7 @@ namespace yack
                 }
 
 
+                //! compute full metrics, return D2
                 inline virtual ORDINATE D2_full(sequential_type          &F,
                                                 const readable<ORDINATE> &aorg,
                                                 const readable<bool>     &used,

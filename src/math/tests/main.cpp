@@ -29,5 +29,7 @@ YACK_UTEST_DECL(80)
     YACK_UTEST(corr);
     
     YACK_UTEST(fit);
+    YACK_UTEST(gls);
+
 }
 YACK_UTEST_EXEC()

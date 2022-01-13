@@ -65,28 +65,24 @@ namespace yack
                 // methods
                 //______________________________________________________________
 
-                //! creation of a named sample
-                inline single_type & operator()(const string             &id,
+                //! insertion with multiple detection
+                inline void use(const shared_type &ptr)
+                {
+                    if( ! this->insert(ptr) ) this->throw_multiple_name(ptr->name);
+                }
+
+                
+                //! creation of a named, default sample
+                template <typename ID>
+                inline single_type & operator()(const ID                 &id,
                                                 const readable<ABSCISSA> &x,
                                                 const readable<ORDINATE> &y,
                                                 writable<ORDINATE>       &z)
                 {
-                    shared_type sh = new single_type(id,x,y,z);
-                    if( ! this->insert(sh) ) this->throw_multiple_name(id);
-                    return *sh;
+                    shared_type  ptr = new single_type(id,x,y,z);
+                    use(ptr);
+                    return *ptr;
                 }
-
-
-                //! creation of a named sample, wrapper
-                inline single_type & operator()(const char *id,
-                                                const readable<ABSCISSA> &x,
-                                                const readable<ORDINATE> &y,
-                                                writable<ORDINATE>       &z)
-                {
-                    const string _(id); return (*this)(_,x,y,z);
-                }
-
-
 
 
                 //______________________________________________________________
@@ -131,6 +127,7 @@ namespace yack
                     return sorted::sum(wksp,sorted::by_value);
                 }
 
+                //! full metrics for all the samples
                 virtual ORDINATE D2_full(sequential_type          &func,
                                          const readable<ORDINATE> &aorg,
                                          const readable<bool>     &used,

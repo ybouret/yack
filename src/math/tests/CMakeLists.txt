@@ -68,5 +68,6 @@ add_test(data:chebyshev test-math chebyshev)
 add_test(data:corr      test-math corr)
 
 add_test(fit test-math fit)
+add_test(gls test-math gls)
 
 
