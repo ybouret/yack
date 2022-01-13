@@ -332,6 +332,12 @@ set(ios_gz ${ios_gz_impl} ${ios_gz_decl})
 SOURCE_GROUP(ios/gz FILES ${ios_gz})
 install( FILES ${ios_gz_decl} DESTINATION include/yack/ios/gz)
 
+file(GLOB ios_bz_impl yack/ios/bz/*.cpp)
+file(GLOB ios_bz_decl yack/ios/bz/*.hpp)
+set(ios_bz ${ios_bz_impl} ${ios_bz_decl})
+SOURCE_GROUP(ios/bz FILES ${ios_bz})
+install( FILES ${ios_bz_decl} DESTINATION include/yack/ios/bz)
+
 file(GLOB ios_fmt_impl yack/ios/fmt/*.cpp)
 file(GLOB ios_fmt_decl yack/ios/fmt/*.hpp)
 set(ios_fmt ${ios_fmt_impl} ${ios_fmt_decl})
@@ -557,7 +563,7 @@ ${fft}
 ${functor}
 ${apex} ${apex_m} ${apex_n} ${apex_z} ${apex_q}
 ${concurrent} ${concurrent_quark} ${concurrent_loop} ${concurrent_queue}
-${ios} ${ios_c} ${ios_gz} ${ios_fmt} ${ios_gv} ${ios_ascii} ${ios_serializer}
+${ios} ${ios_c} ${ios_gz} ${ios_bz} ${ios_fmt} ${ios_gv} ${ios_ascii} ${ios_serializer}
 ${randomized}
 ${sort}
 ${counting} ${counting_c}
