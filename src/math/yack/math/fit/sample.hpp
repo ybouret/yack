@@ -59,6 +59,9 @@ namespace yack
                 //! throw if multiple names for samples
                 void throw_multiple_name(const string &) const;
 
+                //! throw if name is not found
+                void throw_unknown_name(const string &) const;
+
             private:
                 YACK_DISABLE_COPY_AND_ASSIGN(sample_);
                 virtual const_type &bulk() const throw();
@@ -200,7 +203,7 @@ namespace yack
                 }
 
                 //! helper for D2_full
-                inline void make(const collection &params)
+                inline void initialize(const collection &params)
                 {
                     const size_t npar = params.size();
                     curv.make(npar,npar);

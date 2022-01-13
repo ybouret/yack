@@ -17,7 +17,12 @@ namespace yack
             
             void sample_:: throw_multiple_name(const string &id) const
             {
-                throw exception("fit::samples(multile '%s')", id());
+                throw exception("fit::samples(multiple '%s')", id());
+            }
+
+            void sample_:: throw_unknown_name(const string &id) const
+            {
+                throw exception("no fit::sample['%s'])", id());
             }
 
             const variables & sample_:: bulk() const throw() { return vars; }

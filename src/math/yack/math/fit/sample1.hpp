@@ -145,7 +145,7 @@ namespace yack
                     const size_t     npar = aorg.size();
                     const size_t     nvar = vars.size();
                     const size_t     dims = dimension();
-                    this->make(aorg);
+                    this->initialize(aorg);
                     dFda.adjust(npar,0);
 
 

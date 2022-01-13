@@ -43,7 +43,7 @@ namespace yack
                     // local types and definitions
                     //__________________________________________________________
                     typedef void (*append)(column&,const char *,const size_t, const char*); //!< alias
-                    typedef void (*erase)(column&); //!< alias
+                    typedef void (*erase)(column&);                                         //!< alias
 
                     //__________________________________________________________
                     //

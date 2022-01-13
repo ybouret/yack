@@ -84,6 +84,21 @@ namespace yack
                     return *ptr;
                 }
 
+                //! get sample by name
+                single_type & operator[](const string &name)
+                {
+                    const shared_type *pps = this->search(name);
+                    if(!pps) this->throw_unknown_name(name);
+                    return coerce(**pps);
+                }
+
+                //! get sample by name, wrapper
+                single_type & operator[](const char *name)
+                {
+                    const string _(name);
+                    return (*this)[_];
+                }
+
 
                 //______________________________________________________________
                 //
@@ -138,7 +153,7 @@ namespace yack
                     //----------------------------------------------------------
                     // prepare local curv and beta
                     //----------------------------------------------------------
-                    this->make(aorg);
+                    this->initialize(aorg);
 
                     //----------------------------------------------------------
                     // first pass: collect D2 and build beta and curv

@@ -59,6 +59,24 @@ namespace yack
                     return add( new real_sample_type(id,n) );
                 }
 
+                //! creation from data
+                template <typename ID, typename U, typename V>
+                inline real_sample_type & operator()(const ID &id, const U x[], const V y[], const size_t n)
+                {
+                    assert( yack_good(x,n) );
+                    assert( yack_good(y,n) );
+
+                    real_sample_type & s =   add( new real_sample_type(id,n) );
+                    for(size_t i=0,j=1;i<n;++i,++j)
+                    {
+                        coerce(s.abscissa[j]) = static_cast<T>(x[i]);
+                        coerce(s.ordinate[j]) = static_cast<T>(y[i]);
+                    }
+                    s.prepare();
+                    return s;
+                }
+
+
 
             private:
                 YACK_DISABLE_COPY_AND_ASSIGN(real_samples_of);

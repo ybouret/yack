@@ -7,6 +7,7 @@
 
 #include "yack/math/fit/sample1.hpp"
 #include "yack/sequence/arrays.hpp"
+#include "yack/ios/icstream.hpp"
 
 namespace yack
 {
@@ -49,9 +50,26 @@ namespace yack
                 sample_type(id, (*this)[1], (*this)[2], (*this)[3] )
                 {
                 }
-
                 
+                void prepare(); //!< get_ready(compare)
 
+
+                //! load columns ix and iy, and get_ready
+                size_t load(ios::istream &,
+                            const size_t ix,
+                            const size_t iy,
+                            const size_t nskip=0);
+
+                //! wrapper to load files
+                template <typename FILENAME> inline
+                size_t load_file(const FILENAME &filename,
+                                 const size_t ix,
+                                 const size_t iy,
+                                 const size_t nskip=0)
+                {
+                    ios::icstream fp(filename);
+                    return load(fp,ix,iy,nskip);
+                }
 
             private:
                 YACK_DISABLE_COPY_AND_ASSIGN(real_sample_of);
