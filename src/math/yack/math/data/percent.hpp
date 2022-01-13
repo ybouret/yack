@@ -15,7 +15,7 @@ namespace yack
         struct percent
         {
             //! with significant digits
-            template <typename T,const size_t DIGITS=2> static inline
+            template <typename T,const size_t DIGITS> static inline
             T of(const T x, const T dx) throw()
             {
                 static const T tiny(1e-30);
