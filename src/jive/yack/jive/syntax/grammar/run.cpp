@@ -70,19 +70,21 @@ namespace yack
                     // accepted
                     //__________________________________________________________
                     auto_ptr<xnode> keep = tree;
+                    const lexeme   *last = obs.accepted;
                     YACK_JIVE_SYN_PRINTLN(obs << lang << " [accepted]");
                     if(rule::verbose)
                     {
-                        if(obs.accepted)
+                        static const char pfx[] = "(*) ";
+                        if(last)
                         {
-                            std::cerr << lang << " last accepted=[ " << *obs.accepted << " ]" << std::endl;
+                            std::cerr << pfx << lang << " last accepted [ " << *last << " ]" << std::endl;
                         }
                         else
                         {
-                            std::cerr << lang << " none accepted" << std::endl;
+                            std::cerr << pfx << lang << " none accepted" << std::endl;
                         }
-                        lxr.show();
-
+                        lxr.show(pfx);
+                        
                     }
 
                     //__________________________________________________________
@@ -94,19 +96,41 @@ namespace yack
                     {
                         imported::exception excp;
                         make_excp(excp,*this);
-                        
+
+                        if(last)
+                        {
+                            if(lxr.owns(last))
+                            {
+                                next=last->next;
+                                if(next)
+                                {
+                                    excp.add("invalid ");
+                                    add_excp(excp,*this,next);
+                                    excp.add("after ");
+                                }
+                                else
+                                {
+                                    excp.add("unfinished expression after ");
+                                }
+                                last->stamp(excp);
+                                add_excp(excp,*this,last);
+                            }
+                            else
+                            {
+                                excp.add("extraneous ");
+                                next->stamp(excp);
+                                add_excp(excp,*this,next);
+                            }
+                        }
+                        else
+                        {
+                            excp.add("unexpected ");
+                            next->stamp(excp);
+                            add_excp(excp,*this,next);
+                        }
 
 
-                        /*
-                         excp.add("extraneous ");
-                         next->stamp(excp);
-                         add_excp(excp,*this,next);
-                         if(obs.accepted)
-                         {
-                         excp.add(" after ");
-                         add_excp(excp,*this,obs.accepted);
-                         }
-                         */
+
                         throw excp;
                     }
 

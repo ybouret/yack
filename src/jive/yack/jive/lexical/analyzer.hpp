@@ -152,7 +152,7 @@ namespace yack
                 //
                 // helper
                 //______________________________________________________________
-                void show() const; //!< display what's in repository
+                void show(const char *pfx=NULL) const; //!< display what's in repository
 
             private:
                 YACK_DISABLE_COPY_AND_ASSIGN(analyzer);
