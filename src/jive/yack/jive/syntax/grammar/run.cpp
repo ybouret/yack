@@ -75,7 +75,7 @@ namespace yack
                     {
                         if(obs.accepted)
                         {
-                            std::cerr << lang << " last accepted=[" << *obs.accepted << "]" << std::endl;
+                            std::cerr << lang << " last accepted=[ " << *obs.accepted << " ]" << std::endl;
                         }
                         else
                         {
@@ -89,19 +89,24 @@ namespace yack
                     //
                     // check EOS
                     //__________________________________________________________
-                    const lexeme *next = lxr.found(src);
+                    const lexeme *next = lxr.peek(src);
                     if(next)
                     {
                         imported::exception excp;
                         make_excp(excp,*this);
-                        excp.add("extraneous ");
-                        next->stamp(excp);
-                        add_excp(excp,*this,next);
-                        if(obs.accepted)
-                        {
-                            excp.add(" after ");
-                            add_excp(excp,*this,obs.accepted);
-                        }
+                        
+
+
+                        /*
+                         excp.add("extraneous ");
+                         next->stamp(excp);
+                         add_excp(excp,*this,next);
+                         if(obs.accepted)
+                         {
+                         excp.add(" after ");
+                         add_excp(excp,*this,obs.accepted);
+                         }
+                         */
                         throw excp;
                     }
 
@@ -154,7 +159,7 @@ namespace yack
                         //------------------------------------------------------
                         // nothing was accepted
                         //------------------------------------------------------
-                        const lexeme *head = lxr.found(src);
+                        const lexeme *head = lxr.peek(src);
                         if(head)
                         {
                             excp.add("cannot start with ");

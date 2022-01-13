@@ -197,7 +197,7 @@ namespace yack
             }
 
 
-            const lexeme * analyzer:: found(source &src)
+            const lexeme * analyzer:: peek(source &src)
             {
                 lexeme *ans = query(src);
                 if(ans)
@@ -206,7 +206,13 @@ namespace yack
                 }
                 return ans;
             }
-            
+
+            bool analyzer:: owns(const lexeme *lx) const throw()
+            {
+                return repo.owns(lx);
+            }
+
+
             void analyzer:: show() const
             {
                 std::cerr << "\t<" << label << " repo='" << repo.size << "'>" << std::endl;

@@ -137,10 +137,16 @@ namespace yack
                 //
                 // high-level analyzing
                 //______________________________________________________________
-                const lexeme *found(source &);         //!< found next?
                 lexeme *      query(source &);         //!< query next lexeme
                 void          store(lexeme *) throw(); //!< store a parsed lexeme
                 void          reset()         throw(); //!< reset all
+
+                //______________________________________________________________
+                //
+                // check status
+                //______________________________________________________________
+                const lexeme *peek(source &);                     //!< found next?
+                bool          owns(const lexeme *) const throw(); //!< in repository ?
 
                 //______________________________________________________________
                 //

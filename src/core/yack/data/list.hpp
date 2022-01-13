@@ -71,7 +71,6 @@ assert(NULL!=NODE); assert(NULL==(NODE)->next); assert(NULL==(NODE)->prev)
         //! sequential ownership test
         inline virtual bool owns(const NODE *node) const throw()
         {
-            assert(NULL!=node);
             for(const NODE *mine=head;mine;mine=mine->next)
             {
                 if(mine==node) return true;
