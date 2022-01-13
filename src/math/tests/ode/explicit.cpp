@@ -157,20 +157,9 @@ YACK_UTEST(explicit)
 {
 
     solveAll<float>();
-
-#if 0
-    solveExp<float>();
-    solveCos<float>();
-    solvePrj<float>();
-
-    solveExp<double>();
-    solveCos<double>();
-    solvePrj<double>();
-
-    solveExp<long double>();
-    solveCos<long double>();
-    solvePrj<long double>();
-#endif
+    solveAll<double>();
+    solveAll<long double>();
+    
 
 }
 YACK_UDONE()

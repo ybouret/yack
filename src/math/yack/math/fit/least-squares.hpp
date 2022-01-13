@@ -366,7 +366,7 @@ namespace yack
                             //--------------------------------------------------
                             // test convergence on D
                             //--------------------------------------------------
-                            if(fabs(D2old-this->D2) <= this->dtol * D2old )
+                            if(fabs(D2old-D2) <= this->dtol * D2old )
                             {
                                 YACK_LSF_PRINTLN(clid << " converged D2=" << D2 << " @cycle #" << c);
                                 return true;
