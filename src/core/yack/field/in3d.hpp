@@ -34,6 +34,7 @@ namespace yack
         typedef layout3D   layout_type;  //!< alias
         typedef field1D<T> row_type;     //!< alias
         typedef field2D<T> slice_type;   //!< alias
+        static const size_t dimensions = 3;
 
         //______________________________________________________________________
         //
@@ -43,19 +44,79 @@ namespace yack
         //! cleanup
         inline virtual ~field3D() throw()
         {
-
+            slice += lower.z;
+            clear(width.z);
         }
 
         //! setup
         template <typename ID>
         explicit field3D(const ID         &I,
-                         const layout_type L)
+                         const layout_type L,
+                         slice_type       *s=0,
+                         row_type         *r=0,
+                         mutable_type     *p=0) :
+        layout_type(L),
+        field_of<T>(I,dimensions),
+        slice(0)
         {
+            setup(s,r,p);
         }
 
 
     private:
         YACK_DISABLE_COPY_AND_ASSIGN(field3D);
+        slice_type *slice;
+
+        inline void clear(unit_t done) throw()
+        {
+            while(done>0)
+            {
+                destruct( &slice[--done] );
+            }
+        }
+
+        inline void setup(slice_type       *s,
+                          row_type         *r,
+                          mutable_type     *p)
+        {
+            if(!s)
+            {
+                assert(!p); assert(!r);
+                memory::embed emb[] =
+                {
+                    memory::embed(s,width.z),
+                    memory::embed(r,width.z*width.y),
+                    memory::embed(p,items)
+                };
+                this->allocate(emb,sizeof(emb)/sizeof(emb[0]));
+            }
+
+            assert(s); assert(r); assert(p);
+            // link
+            unit_t done = 0;
+            slice       = s;
+            try
+            {
+                const layout2D l2( lower.xy(), upper.xy() );
+                const size_t   dp = l2.items;
+                const size_t   dr = width.y;
+                while(done<width.z)
+                {
+                    const string id = this->name + vformat("[%ld]", (long)done );
+                    new (s+done) slice_type(id,l2,r,p);
+                    ++done;
+                    p += dp;
+                    r += dr;
+                }
+            }
+            catch(...)
+            {
+                clear(done);
+                throw;
+            }
+            slice -= lower.z;
+
+        }
 
 
     };

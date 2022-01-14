@@ -38,7 +38,7 @@ namespace yack
         inline  v3d() throw() : x(0), y(0), z(0) {}                     //!< setup
         inline ~v3d() throw() {}                                        //!< cleanup
         inline  v3d(const v3d &v) throw() : x(v.x), y(v.y), z(v.z) {}   //!< copy
-        //!
+
         //! setup
         inline  v3d(const_type X,
                     const_type Y,
@@ -71,6 +71,8 @@ namespace yack
             assert(indx>=1);assert(indx<=3);
             return *( &x + --indx );
         }
+
+        v2d<T> xy() const throw() { return v2d<T>(x,y); }
 
         //______________________________________________________________________
         //

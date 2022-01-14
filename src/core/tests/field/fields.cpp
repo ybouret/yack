@@ -1,4 +1,4 @@
-#include "yack/field/in2d.hpp"
+#include "yack/field/in3d.hpp"
 #include "yack/utest/run.hpp"
 #include "../main.hpp"
 
@@ -34,6 +34,11 @@ YACK_UTEST(fields)
             s2[y][x] = bring::get<string>(ran);
         }
     }
+
+
+    field3D<string> s3( "s3", layout3D( coord3D(-1,-2,-3), coord3D(4,5,6) ));
+    std::cerr << s3.name << " is " << s3 << std::endl;
+
 
 
 }

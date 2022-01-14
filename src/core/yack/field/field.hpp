@@ -30,6 +30,7 @@ namespace yack
         // members
         //______________________________________________________________________
         const string name; //!< identifier
+        const size_t dims; //!< dimension
 
         //______________________________________________________________________
         //
@@ -40,8 +41,9 @@ namespace yack
     protected:
         //! setup
         template <typename ID> inline
-        explicit field(const ID &id) :
+        explicit field(const ID &id, const size_t nd) :
         name(id),
+        dims(nd),
         wksp(0),
         wlen(0)
         {
@@ -76,7 +78,6 @@ namespace yack
         //______________________________________________________________________
         YACK_DECL_ARGS_(T,type); //!< aliases
 
-
         //______________________________________________________________________
         //
         // methods
@@ -89,8 +90,8 @@ namespace yack
 
         //! setup
         template <typename ID>
-        inline explicit field_of(const ID     &id) :
-        field(id)
+        inline explicit field_of(const ID &id, const size_t nd) :
+        field(id,nd)
         {
         }
         

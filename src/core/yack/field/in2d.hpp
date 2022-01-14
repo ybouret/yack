@@ -32,6 +32,7 @@ namespace yack
         YACK_DECL_ARGS_(T,type);         //!< aliases
         typedef layout2D   layout_type;  //!< alias
         typedef field1D<T> row_type;     //!< alias
+        static const size_t dimensions = 2;
 
         //______________________________________________________________________
         //
@@ -52,7 +53,7 @@ namespace yack
                          row_type         *r=0,
                          mutable_type     *p=0) :
         layout_type(L),
-        field_of<T>(I),
+        field_of<T>(I,dimensions),
         row(0)
         {
             setup(r,p);

@@ -32,7 +32,8 @@ namespace yack
         // types
         //______________________________________________________________________
         YACK_DECL_ARGS_(T,type);      //!< aliases
-        typedef layout1D layout_type; //!< alias
+        typedef layout1D    layout_type; //!< alias
+        static const size_t dimensions = 1;
 
         //______________________________________________________________________
         //
@@ -48,7 +49,7 @@ namespace yack
                          const layout_type L,
                          mutable_type     *p=NULL) :
         layout_type(L),
-        field_of<T>(I),
+        field_of<T>(I,dimensions),
         item(0)
         {
             setup_with(p);
