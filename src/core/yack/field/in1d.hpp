@@ -31,9 +31,9 @@ namespace yack
         //
         // types
         //______________________________________________________________________
-        YACK_DECL_ARGS_(T,type);      //!< aliases
-        typedef layout1D    layout_type; //!< alias
-        static const size_t dimensions = 1;
+        YACK_DECL_ARGS_(T,type);             //!< aliases
+        typedef layout1D    layout_type;     //!< alias
+        static const size_t dimensions = 1;  //!< static dims
 
         //______________________________________________________________________
         //

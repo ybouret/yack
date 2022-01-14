@@ -30,11 +30,11 @@ namespace yack
         //
         // types
         //______________________________________________________________________
-        YACK_DECL_ARGS_(T,type);         //!< aliases
-        typedef layout3D   layout_type;  //!< alias
-        typedef field1D<T> row_type;     //!< alias
-        typedef field2D<T> slice_type;   //!< alias
-        static const size_t dimensions = 3;
+        YACK_DECL_ARGS_(T,type);            //!< aliases
+        typedef layout3D   layout_type;     //!< alias
+        typedef field1D<T> row_type;        //!< alias
+        typedef field2D<T> slice_type;      //!< alias
+        static const size_t dimensions = 3; //!< static dimensions
 
         //______________________________________________________________________
         //
@@ -62,6 +62,22 @@ namespace yack
             setup(s,r,p);
         }
 
+        //______________________________________________________________________
+        //
+        // methods
+        //______________________________________________________________________
+
+        //! access
+        inline slice_type & operator[](const unit_t z) throw()
+        {
+            assert(slice);assert(z>=lower.z); assert(z<=upper.z); return slice[z];
+        }
+
+        //! access, const
+        inline const slice_type & operator[](const unit_t z) const throw()
+        {
+            assert(slice);assert(z>=lower.z); assert(z<=upper.z); return slice[z];
+        }
 
     private:
         YACK_DISABLE_COPY_AND_ASSIGN(field3D);

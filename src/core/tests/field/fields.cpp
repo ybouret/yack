@@ -39,7 +39,16 @@ YACK_UTEST(fields)
     field3D<string> s3( "s3", layout3D( coord3D(-1,-2,-3), coord3D(4,5,6) ));
     std::cerr << s3.name << " is " << s3 << std::endl;
 
-
+    for(unit_t z=s3.lower.z;z<=s3.upper.z;++z)
+    {
+        for(unit_t y=s3.lower.y;y<=s3.upper.y;++y)
+        {
+            for(unit_t x=s3.lower.x;x<=s3.upper.x;++x)
+            {
+                s3[z][y][x] = bring::get<string>(ran);
+            }
+        }
+    }
 
 }
 YACK_UDONE()

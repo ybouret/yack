@@ -72,6 +72,7 @@ namespace yack
             return *( &x + --indx );
         }
 
+        //! return v2d(x,y)
         v2d<T> xy() const throw() { return v2d<T>(x,y); }
 
         //______________________________________________________________________
