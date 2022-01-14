@@ -13,6 +13,8 @@ YACK_UTEST(counting_loop)
     loop.display();
 
     std::cerr << "loop=" << loop << std::endl;
+    std::cerr << std::endl;
+    
     loop.boot();
     std::cerr << "loop=" << loop << std::endl;
     while( loop.next() )

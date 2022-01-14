@@ -31,8 +31,7 @@ namespace yack
             const size_t frames; //!< product of dimension per level
             
         protected:
-            size_t        active; //!< current level
-
+            size_t       active;
             explicit mloop(const size_t dim)             throw(); //!< setup
             void     allocate_cxx(memory::embed[], const size_t); //!< allocate
 
@@ -104,13 +103,22 @@ namespace yack
         //______________________________________________________________________
         virtual void boot() throw()
         {
-            active = 1;
+            active=1;
             for(size_t i=levels;i>0;--i) values[i] = origin[i];
         }
 
         virtual bool next() throw()
         {
+            assert(active>=1);
+            assert(active<=levels);
+
             return false;
+        }
+
+        size_t next_level(size_t dim) const throw()
+        {
+            assert(dim>=1); assert(dim<=levels);
+            return ++dim > levels ? 1 : dim;
         }
 
         //______________________________________________________________________
@@ -207,6 +215,13 @@ namespace yack
         {
             return false;
         }
+
+        inline size_t next_dim(size_t dim) const throw()
+        {
+            return ++dim > levels ? 1 : dim;
+        }
+
+
 
     };
 
