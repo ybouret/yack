@@ -12,9 +12,6 @@ namespace yack
     {
         namespace bz
         {
-
-
-
             void * istream::open_stream(void *handle)
             {
                 assert(handle);
@@ -38,8 +35,6 @@ namespace yack
                 BZ2_bzReadClose(&err,static_cast<BZFILE*>(BZ));
                 BZ = 0;
             }
-
-
 
             size_t istream:: fetch_(void *addr, const size_t size)
             {

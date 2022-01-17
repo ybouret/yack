@@ -21,10 +21,21 @@ namespace yack
             class istream : public ios::istream,   public readable_file, public stream
             {
             public:
+                //______________________________________________________________
+                //
+                // types and definitions
+                //______________________________________________________________
                 static const char clid[]; //!< bz::istream
 
-                virtual ~istream() throw();               //!< cleanup
+                //______________________________________________________________
+                //
+                // C++
+                //______________________________________________________________
 
+                //! cleanup
+                virtual ~istream() throw();
+
+                //! setup
                 template <typename INPUT> inline
                 explicit istream(const INPUT &input) :
                 ios::istream(), readable_file(input),
@@ -40,9 +51,8 @@ namespace yack
                 YACK_DISABLE_COPY_AND_ASSIGN(istream);
                 virtual bool   query_(char &C);
                 virtual size_t fetch_(void *addr, const size_t size);
-                bool    eos;
-
-                static void *open_stream(void*);
+                bool           eos; //!< end of stream was met
+                static void   *open_stream(void*);
 
             };
         }

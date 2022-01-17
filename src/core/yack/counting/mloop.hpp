@@ -31,7 +31,7 @@ namespace yack
             const size_t frames; //!< product of dimension per level
             
         protected:
-            size_t       active;
+            size_t       active; //!< TODO
             explicit mloop(const size_t dim)             throw(); //!< setup
             void     allocate_cxx(memory::embed[], const size_t); //!< allocate
 
@@ -115,11 +115,6 @@ namespace yack
             return false;
         }
 
-        size_t next_level(size_t dim) const throw()
-        {
-            assert(dim>=1); assert(dim<=levels);
-            return ++dim > levels ? 1 : dim;
-        }
 
         //______________________________________________________________________
         //
