@@ -29,10 +29,11 @@ namespace yack
         //
         // types
         //______________________________________________________________________
-        YACK_DECL_ARGS_(T,type);           //!< aliases
-        typedef layout2D   layout_type;    //!< alias
-        typedef field1D<T> row_type;       //!< alias
-        static const size_t dimensions = 2;//!< static dims
+        YACK_DECL_ARGS_(T,type);            //!< aliases
+        typedef layout2D   layout_type;     //!< alias
+        typedef coord2D    coord_type;      //!< alias
+        typedef field1D<T> row_type;        //!< alias
+        static const size_t dimensions = 2; //!< static dims
 
         //______________________________________________________________________
         //

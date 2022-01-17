@@ -26,7 +26,7 @@ namespace yack
             // members
             //__________________________________________________________________
 
-            const size_t dims;  //!< run-time dimension
+            const size_t space; //!< run-time dimension
             const size_t items; //!< number of linear items
 
             //__________________________________________________________________
@@ -62,7 +62,7 @@ namespace yack
         //
         // types and definitions
         //______________________________________________________________________
-        static const size_t dimension = sizeof(COORD)/sizeof(unit_t); //!< compile-time dimension
+        static const size_t coords = sizeof(COORD)/sizeof(unit_t); //!< compile-time dimension
 
         //______________________________________________________________________
         //
@@ -74,7 +74,7 @@ namespace yack
 
         //! setup
         inline explicit layout(const COORD lo, const COORD up) throw() :
-        kernel::layout(dimension),
+        kernel::layout(coords),
         lower(lo),
         upper(up),
         width()

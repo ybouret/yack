@@ -76,6 +76,9 @@ namespace yack
             return *( &x + --indx );
         }
 
+        //! get xyz
+        inline const v3d<T> xyz() const throw() { return v3d<T>(x,y,z); }
+
         //______________________________________________________________________
         //
         //! display

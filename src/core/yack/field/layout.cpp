@@ -7,18 +7,18 @@ namespace yack
     {
         layout:: ~layout() throw()
         {
-            coerce(dims)=0;
+            coerce(space)=0;
             coerce(items)=0;
         }
 
         layout:: layout(const size_t d) throw() :
-        dims(d),
+        space(d),
         items(0)
         {
         }
 
         layout:: layout(const layout &other) throw() :
-        dims(other.dims),
+        space(other.space),
         items(other.items)
         {
         }
@@ -31,7 +31,7 @@ namespace yack
             assert(w);
             size_t &prod = coerce(items);
             prod = 1;
-            for(size_t i=0;i<dims;++i)
+            for(size_t i=0;i<space;++i)
             {
                 unit_t &l = lo[i];
                 unit_t &h = hi[i];

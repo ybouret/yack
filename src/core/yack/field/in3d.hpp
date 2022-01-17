@@ -1,4 +1,3 @@
-
 //! \file
 
 #ifndef YACK_FIELD3D_INCLUDED
@@ -32,6 +31,7 @@ namespace yack
         //______________________________________________________________________
         YACK_DECL_ARGS_(T,type);            //!< aliases
         typedef layout3D   layout_type;     //!< alias
+        typedef coord3D    coord_type;      //!< alias
         typedef field1D<T> row_type;        //!< alias
         typedef field2D<T> slice_type;      //!< alias
         static const size_t dimensions = 3; //!< static dimensions
@@ -110,6 +110,7 @@ namespace yack
             assert(s); assert(r); assert(p);
             // link
             unit_t done = 0;
+            unit_t indx = lower.z;
             slice       = s;
             try
             {
@@ -118,9 +119,10 @@ namespace yack
                 const size_t   dr = width.y;
                 while(done<width.z)
                 {
-                    const string id = this->name + vformat("[%ld]", (long)done );
+                    const string id = this->name + vformat("[%ld]", (long)indx );
                     new (s+done) slice_type(id,l2,r,p);
                     ++done;
+                    ++indx;
                     p += dp;
                     r += dr;
                 }

@@ -1,8 +1,19 @@
-#include "yack/field/in3d.hpp"
+#include "yack/field/in4d.hpp"
 #include "yack/utest/run.hpp"
 #include "../main.hpp"
 
 using namespace  yack;
+
+namespace
+{
+    template <typename FIELD>
+    static inline void display(FIELD &F)
+    {
+        std::cerr << "F.dims=" << F.dims << "/" << F.dimensions << "/"<< F.space << "/" << F.coords << std::endl;
+        std::cerr << "F.name=" << F.name << " is " << F << std::endl;
+        std::cerr << std::endl;
+    }
+}
 
 
 YACK_UTEST(fields)
@@ -10,22 +21,18 @@ YACK_UTEST(fields)
     randomized::rand_ ran;
 
     field1D<string> s( "s", layout1D(-5,6) );
-
-    std::cerr << s.name << " is " << s << std::endl;
+    display(s);
 
     for(unit_t i=s.lower;i<=s.upper;++i)
     {
         s[i] = bring::get<string>(ran);
     }
 
-    for(unit_t i=s.lower;i<=s.upper;++i)
-    {
-        std::cerr << s[i] << std::endl;
-    }
+
 
 
     field2D<string> s2( "s2", layout2D( coord2D(-2,-3), coord2D(4,5) ));
-    std::cerr << s2.name << " is " << s2 << std::endl;
+    display(s2);
 
     for(unit_t y=s2.lower.y;y<=s2.upper.y;++y)
     {
@@ -37,7 +44,7 @@ YACK_UTEST(fields)
 
 
     field3D<string> s3( "s3", layout3D( coord3D(-1,-2,-3), coord3D(4,5,6) ));
-    std::cerr << s3.name << " is " << s3 << std::endl;
+    display(s3);
 
     for(unit_t z=s3.lower.z;z<=s3.upper.z;++z)
     {
@@ -49,6 +56,10 @@ YACK_UTEST(fields)
             }
         }
     }
+
+    field4D<string> s4( "s4", layout4D( coord4D(-1,-2,-3,-4), coord4D(4,5,6,7) ));
+    display(s4);
+
 
 }
 YACK_UDONE()
