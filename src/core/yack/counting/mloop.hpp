@@ -31,7 +31,6 @@ namespace yack
             const size_t frames; //!< product of dimension per level
             
         protected:
-            size_t       active; //!< TODO
             explicit mloop(const size_t dim)             throw(); //!< setup
             void     allocate_cxx(memory::embed[], const size_t); //!< allocate
 
@@ -57,7 +56,7 @@ namespace yack
         // types and definition
         //______________________________________________________________________
         YACK_DECL_ARGS_(T,type);                           //!< aliases
-        typedef bool (*shift)(mutable_type &, const_type); //!< alias
+        typedef void  (*change)(mutable_type&);
 
         //______________________________________________________________________
         //
@@ -74,6 +73,7 @@ namespace yack
         kernel::mloop(dim),
         values(0),
         moving(0),
+        stride(0),
         origin(0),
         target(0)
         {
@@ -103,14 +103,11 @@ namespace yack
         //______________________________________________________________________
         virtual void boot() throw()
         {
-            active=1;
             for(size_t i=levels;i>0;--i) values[i] = origin[i];
         }
 
         virtual bool next() throw()
         {
-            assert(active>=1);
-            assert(active<=levels);
 
             return false;
         }
@@ -135,7 +132,8 @@ namespace yack
     private:
         YACK_DISABLE_COPY_AND_ASSIGN(mloop);
         mutable_type *values;
-        shift        *moving;
+        const bool   *moving;
+        change       *stride;
         const_type   *origin;
         const_type   *target;
 
@@ -145,6 +143,7 @@ namespace yack
             {
                 memory::embed(values,levels),
                 memory::embed(moving,levels),
+                memory::embed(stride,levels),
                 memory::embed(origin,levels),
                 memory::embed(target,levels)
             };
@@ -164,58 +163,38 @@ namespace yack
                 {
                     case negative: assert(lo<hi);
                         prod *= (hi-lo+1);
-                        moving[j] = incr;
+                        coerce(moving[j]) = true;
+                        coerce(stride[j]) = incr;
                         break;
 
                     case __zero__: assert(lo==hi);
-                        moving[j] = skip;
+                        coerce(moving[j]) = false;
+                        coerce(stride[j]) = NULL;
                         break;
 
                     case positive: assert(lo>hi);
                         prod *= (lo-hi+1);
-                        moving[j] = decr;
+                        coerce(moving[j]) = true;
+                        coerce(stride[j]) = decr;
                         break;
                 }
                 values[j] = lo;
             }
         }
 
-        static inline bool incr(mutable_type &v, const_type t) throw()
-        {
-           if(v<t)
-           {
-               ++v;
-               return true;
-           }
-           else
-           {
-               return false;
-           }
-        }
-
-        static inline bool decr(mutable_type &v, const type t) throw()
-        {
-            if(v>t)
-            {
-                --v;
-                return true;
-            }
-            else
-            {
-                return false;
-            }
-        }
-
-        static inline bool skip(mutable_type &, const type) throw()
-        {
-            return false;
-        }
+        static inline void incr(mutable_type &v) throw() { ++v; }
+        static inline void decr(mutable_type &v) throw() { --v; }
 
         inline size_t next_dim(size_t dim) const throw()
         {
             return ++dim > levels ? 1 : dim;
         }
 
+        void recursive_move(const size_t odim)
+        {
+
+            
+        }
 
 
     };
