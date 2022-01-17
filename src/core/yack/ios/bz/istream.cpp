@@ -13,22 +13,19 @@ namespace yack
         namespace bz
         {
 
-            static inline
-            void * open_stream(const char *filename, void **ppf)
+
+
+            void * istream::open_stream(void *handle)
             {
-                assert(filename);
-                assert(ppf);
+                assert(handle);
                 YACK_GIANT_LOCK();
-                FILE   *fp  = fopen(filename,"rb");  if(!fp) throw libc::exception(errno,"%s(%s)", istream::clid, filename);
                 int     err = BZ_OK;
-                BZFILE *ptr = BZ2_bzReadOpen(&err,fp,0,0,NULL,0);
+                BZFILE *ptr = BZ2_bzReadOpen(&err,(FILE*)handle,0,0,NULL,0);
                 if(BZ_OK!=err)
                 {
                     BZ2_bzReadClose(&err,ptr);
-                    fclose(fp);
-                    throw exception("%s in %s(%s)", bz::stream::errstr(err), istream::clid, filename);
+                    throw exception("%s in %s", bz::stream::errstr(err), istream::clid);
                 }
-                *ppf = fp;
                 return ptr;
             }
 
@@ -36,27 +33,13 @@ namespace yack
 
             istream:: ~istream() throw()
             {
+                assert(handle);
                 int     err = BZ_OK;
                 BZ2_bzReadClose(&err,static_cast<BZFILE*>(BZ));
                 BZ = 0;
-                fclose((FILE*)fp);
             }
 
-            istream:: istream(const string &filename) :
-            ios::istream(),
-            stream(),
-            eos(false)
-            {
-                BZ = open_stream(filename(),&fp);
-            }
 
-            istream:: istream(const char *filename) :
-            ios::istream(),
-            stream( ),
-            eos(false)
-            {
-                BZ = open_stream(filename,&fp);
-            }
 
             size_t istream:: fetch_(void *addr, const size_t size)
             {

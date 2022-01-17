@@ -13,10 +13,10 @@ namespace yack
             }
             
 
-            stream:: stream() throw() :
-            BZ(0),
-            fp(0)
+            stream:: stream(void *ptr) throw() :
+            BZ(ptr)
             {
+                assert(NULL!=BZ);
             }
 
 #define YACK_BZ(ERR) case ERR: return #ERR
