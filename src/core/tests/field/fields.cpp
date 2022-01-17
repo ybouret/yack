@@ -60,6 +60,19 @@ YACK_UTEST(fields)
     field4D<string> s4( "s4", layout4D( coord4D(-1,-2,-3,-4), coord4D(4,5,6,7) ));
     display(s4);
 
+    for(unit_t w=s4.lower.w;w<=s4.upper.w;++w)
+    {
+        for(unit_t z=s4.lower.z;z<=s4.upper.z;++z)
+        {
+            for(unit_t y=s4.lower.y;y<=s4.upper.y;++y)
+            {
+                for(unit_t x=s4.lower.x;x<=s4.upper.x;++x)
+                {
+                    s4[w][z][y][x] = bring::get<string>(ran);
+                }
+            }
+        }
+    }
 
 }
 YACK_UDONE()
