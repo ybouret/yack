@@ -28,9 +28,10 @@ namespace yack
 
 
             protected:
-                explicit stream(void *) throw(); //!< assign BZ
+                explicit stream() throw();
                 void *BZ;                        //!< handle for BZFILE
-
+                void *fp;
+                
             private:
                 YACK_DISABLE_COPY_AND_ASSIGN(stream);
             };

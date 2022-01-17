@@ -43,6 +43,7 @@ namespace yack
                 BZ=0;
             }
 
+#if 0
             ostream:: ostream(const string &filename, const int level) :
             ios::ostream(),
             stream( open_stream( filename(), clamp<int>(0,level,9) ) )
@@ -56,7 +57,8 @@ namespace yack
             {
 
             }
-
+#endif
+            
         }
     }
 }

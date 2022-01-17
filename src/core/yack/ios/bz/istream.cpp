@@ -14,9 +14,10 @@ namespace yack
         {
 
             static inline
-            void * open_stream(const char *filename)
+            void * open_stream(const char *filename, void **ppf)
             {
                 assert(filename);
+                assert(ppf);
                 YACK_GIANT_LOCK();
                 FILE   *fp  = fopen(filename,"rb");  if(!fp) throw libc::exception(errno,"%s(%s)", istream::clid, filename);
                 int     err = BZ_OK;
@@ -24,8 +25,10 @@ namespace yack
                 if(BZ_OK!=err)
                 {
                     BZ2_bzReadClose(&err,ptr);
+                    fclose(fp);
                     throw exception("%s in %s(%s)", bz::stream::errstr(err), istream::clid, filename);
                 }
+                *ppf = fp;
                 return ptr;
             }
 
@@ -40,18 +43,18 @@ namespace yack
 
             istream:: istream(const string &filename) :
             ios::istream(),
-            stream( open_stream(filename()) ),
+            stream(),
             eos(false)
             {
-
+                BZ = open_stream(filename(),&fp);
             }
 
             istream:: istream(const char *filename) :
             ios::istream(),
-            stream( open_stream(filename) ),
+            stream( ),
             eos(false)
             {
-
+                BZ = open_stream(filename,&fp);
             }
 
             size_t istream:: fetch_(void *addr, const size_t size)
