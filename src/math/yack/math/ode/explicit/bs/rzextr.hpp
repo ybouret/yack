@@ -1,9 +1,9 @@
 //! \file
 
-#ifndef YACK_ODE_EXPLICIT_RK45_RZEXTR_INCLUDED
-#define YACK_ODE_EXPLICIT_RK45_RZEXTR_INCLUDED 1
+#ifndef YACK_ODE_EXPLICIT_BS_RZEXTR_INCLUDED
+#define YACK_ODE_EXPLICIT_BS_RZEXTR_INCLUDED 1
 
-#include "yack/math/ode/explicit/rk45/zextr.hpp"
+#include "yack/math/ode/explicit/bs/zextr.hpp"
 
 namespace yack
 {

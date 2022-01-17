@@ -1,14 +1,11 @@
 
+
 //! \file
 
-#ifndef YACK_ODE_EXPLICIT_RK45_ZEXTR_INCLUDED
-#define YACK_ODE_EXPLICIT_RK45_ZEXTR_INCLUDED 1
+#ifndef YACK_ODE_EXPLICIT_BS_PZEXTR_INCLUDED
+#define YACK_ODE_EXPLICIT_BS_PZEXTR_INCLUDED 1
 
-#include "yack/math/ode/types.hpp"
-#include "yack/sequence/arrays.hpp"
-#include "yack/counted.hpp"
-#include "yack/ptr/arc.hpp"
-#include "yack/container/matrix.hpp"
+#include "yack/math/ode/explicit/bs/zextr.hpp"
 
 namespace yack
 {
@@ -17,49 +14,47 @@ namespace yack
 
         namespace ode
         {
-
             //__________________________________________________________________
             //
             //
-            //! zero-extrapolation of vectors
+            //! polynomial zero extrapolation
             //
             //__________________________________________________________________
             template <typename T>
-            class zextr  : public object, public counted, public arrays_of<T>
+            class pzextr  : public zextr<T>
             {
             public:
                 //______________________________________________________________
                 //
                 // types and definitions
                 //______________________________________________________________
-                typedef arrays_of<T>   tableaux; //!< alias
-                typedef arc_ptr<zextr> pointer;  //!< alias
+                typedef arrays_of<T>                  tableaux;   //!< alias
+                typedef typename tableaux::array_type array_type; //!< alias
 
                 //______________________________________________________________
                 //
                 // C++
                 //______________________________________________________________
-                virtual ~zextr() throw(); //!< cleanup
+                virtual ~pzextr() throw(); //!< cleanup
+                explicit pzextr();         //!< setup
 
                 //______________________________________________________________
                 //
                 // interface
                 //______________________________________________________________
 
-                //! compute yz and dz from a new estimate (xest,yest)
+                //! extrapolate using polynomials
                 virtual void operator()(const size_t       iest,
                                         const T            xest,
                                         const readable<T> &yest,
                                         writable<T>       &yz,
                                         writable<T>       &dy,
                                         writable<T>       &x,
-                                        matrix<T>         &d) = 0;
-
-            protected:
-                explicit zextr(const size_t num_arrays); //!< setup
+                                        matrix<T>         &d);
 
             private:
-                YACK_DISABLE_COPY_AND_ASSIGN(zextr);
+                YACK_DISABLE_COPY_AND_ASSIGN(pzextr);
+                array_type &c;
             };
 
 

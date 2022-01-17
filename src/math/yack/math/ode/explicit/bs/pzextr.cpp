@@ -1,6 +1,6 @@
 
 
-#include "yack/math/ode/explicit/rk45/pzextr.hpp"
+#include "yack/math/ode/explicit/bs/pzextr.hpp"
 
 #define real_t float
 #include "pzextr.hxx"

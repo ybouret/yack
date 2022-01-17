@@ -1,5 +1,5 @@
 
-#include "yack/math/ode/explicit/rk45/zextr.hpp"
+#include "yack/math/ode/explicit/bs/zextr.hpp"
 
 #define real_t float
 #include "zextr.hxx"

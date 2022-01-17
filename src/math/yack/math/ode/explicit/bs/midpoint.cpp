@@ -1,4 +1,4 @@
-#include "yack/math/ode/explicit/rk45/midpoint.hpp"
+#include "yack/math/ode/explicit/bs/midpoint.hpp"
 
 //#include <cmath>
 
