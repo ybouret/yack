@@ -45,6 +45,11 @@ namespace yack
                 const string _(id); return fetch(_);
             }
 
+            variables & variables::operator<<(const variable &var)
+            {
+                return (*this)(var.name,var);
+            }
+
 
             size_t variables:: width() const throw()
             {
@@ -94,6 +99,8 @@ namespace yack
                 for(size_t i=n;i>0;--i)
                     align_to(w,out[i]);
             }
+
+            bool variables::is_sep(const int c) throw() { return ':' == c; }
 
 
         }

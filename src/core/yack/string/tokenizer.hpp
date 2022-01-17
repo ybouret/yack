@@ -93,7 +93,29 @@ namespace yack
 
     }
 
-    typedef kernel::tokenizer<char> tokenizer; //!< alias
+
+    //__________________________________________________________________________
+    //
+    //! base class
+    //__________________________________________________________________________
+    typedef kernel::tokenizer<char> tokenizer_;
+
+    //__________________________________________________________________________
+    //
+    //
+    //! default tokenizer
+    //
+    //__________________________________________________________________________
+    class tokenizer : public tokenizer_
+    {
+    public:
+        virtual ~tokenizer()              throw(); //!< cleanup
+        explicit tokenizer(const string&) throw(); //!< setup
+        explicit tokenizer(const char  *) throw(); //!< setup
+
+    private:
+        YACK_DISABLE_COPY_AND_ASSIGN(tokenizer);
+    };
 
 }
 

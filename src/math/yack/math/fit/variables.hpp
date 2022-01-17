@@ -8,6 +8,7 @@
 #include "yack/associative/suffix/set.hpp"
 #include "yack/ios/fmt/align.hpp"
 #include "yack/type/utils.hpp"
+#include "yack/string/tokenizer.hpp"
 
 namespace yack
 {
@@ -58,8 +59,11 @@ namespace yack
                 //! max name size
                 size_t width() const throw();
 
-                size_t span() const throw(); //!< max index
+                //! max index
+                size_t span() const throw();
 
+                //! check if parameter index is handled
+                bool handles(const size_t iparam) const throw();
 
                 //! append a primary variable
                 template <typename ID>
@@ -68,9 +72,6 @@ namespace yack
                     grow(h);
                     return *this;
                 }
-
-                //! check if parameter index is handled
-                bool handles(const size_t iparam) const throw();
 
                 //! query variable
                 template <typename ID> inline
@@ -90,10 +91,8 @@ namespace yack
                 }
 
                 //! append replica with same name
-                inline variables & operator<<(const variable &var)
-                {
-                    return (*this)(var.name,var);
-                }
+                variables & operator<<(const variable &var);
+
 
                 //! access by name R/O
                 template <typename T, typename ID>
@@ -123,6 +122,56 @@ namespace yack
                     return os;
                 }
 
+                //! load all values in span to the same value
+                template <typename T> inline
+                void ld(writable<T> &arr, typename writable<T>::param_type value )
+                {
+                    for(size_t i=span();i>0;--i) arr[i] = value;
+                }
+
+
+                //! load column-separated to the same value
+                template <typename T, typename ID> inline
+                void ld(writable<T> &arr, const ID &descr, typename writable<T>::param_type value)
+                {
+                    tokenizer tkn(descr);
+                    while(tkn.find(is_sep))
+                    {
+                        const string id(tkn.token(),tkn.units());
+                        var(arr,id) = value;
+                    }
+                }
+
+
+                //! turn on variables list
+                template <typename ID> inline
+                void on(writable<bool> &used, const ID &descr)
+                {
+                    ld<bool,ID>(used,descr,true);
+                }
+
+                //! turn off variables list
+                template <typename ID> inline
+                void off(writable<bool> &used, const ID &descr)
+                {
+                    ld<bool,ID>(used,descr,false);
+                }
+
+                //! turn on ONLY variables list
+                template <typename ID> inline
+                void only_on(writable<bool> &used, const ID &descr)
+                {
+                    ld<bool>(used,false);
+                    on(used,descr);
+                }
+
+                //! turn off ONLY variables list
+                template <typename ID> inline
+                void only_off(writable<bool> &used, const ID &descr)
+                {
+                    ld<bool>(used,true);
+                    off(used,descr);
+                }
 
 
                 //! display extensive result
@@ -191,9 +240,8 @@ namespace yack
                 void grow(const handle &);
                 const variable & fetch(const string &id) const;
                 const variable & fetch(const char   *id) const;
-
                 static void align_all(strings &out);
-
+                static bool is_sep(const int c) throw();
             };
 
 
