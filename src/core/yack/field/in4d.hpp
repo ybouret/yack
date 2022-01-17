@@ -29,12 +29,13 @@ namespace yack
         //
         // types
         //______________________________________________________________________
-        YACK_DECL_ARGS_(T,type);            //!< aliases
-        typedef layout4D   layout_type;     //!< alias
-        typedef coord4D    coord_type;      //!< alias
-        typedef field1D<T> row_type;        //!< alias
-        typedef field2D<T> slice_type;      //!< alias
-        typedef field3D<T> volume_type;     //!< alias
+        YACK_DECL_ARGS_(T,type);                 //!< aliases
+        typedef layout4D            layout_type; //!< alias
+        typedef coord4D             coord_type;  //!< alias
+        typedef loop_on<coord_type> loop_type;   //!< alias
+        typedef field1D<T>          row_type;    //!< alias
+        typedef field2D<T>          slice_type;  //!< alias
+        typedef field3D<T>          volume_type; //!< alias
 
         static const size_t dimensions = 4; //!< static dimensions
 
@@ -136,6 +137,13 @@ namespace yack
 
             volume -= lower.w;
 
+        }
+
+        //! read
+        const_type & fetch(const readable<unit_t> &coord) const throw()
+        {
+            assert(coord.size()>=4);
+            return (*this)[coord[4]][coord[3]][coord[2]][coord[1]];
         }
 
     };

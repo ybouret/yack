@@ -57,7 +57,6 @@ namespace yack
         // types and definition
         //______________________________________________________________________
         YACK_DECL_ARGS_(T,type);                           //!< aliases
-        typedef void  (*change)(mutable_type&);
 
         //______________________________________________________________________
         //
@@ -73,10 +72,10 @@ namespace yack
                               const size_t dim) :
         kernel::mloop(dim),
         values(0),
-        moving(0),
-        stride(0),
         origin(0),
-        target(0)
+        target(0),
+        moving(0),
+        stride(0)
         {
             assert(ini);
             assert(end);
@@ -102,12 +101,15 @@ namespace yack
         //
         // counting interface
         //______________________________________________________________________
+
+        //! reset initial values
         virtual void boot() throw()
         {
             coerce(active)=1;
             for(size_t i=levels;i>0;--i) values[i] = origin[i];
         }
 
+        //! find next frame
         virtual bool next() throw()
         {
             if(active<frames)
@@ -128,6 +130,16 @@ namespace yack
         // other methods
         //______________________________________________________________________
 
+        //! reset value with SAME dims
+        void reset(const T     *ini,
+                   const T     *end)
+        {
+            assert(ini);
+            assert(end);
+            setup_status(ini,end);
+            coerce(active)=1;
+        }
+
         //! helper
         void display() const
         {
@@ -139,13 +151,18 @@ namespace yack
             std::cerr << "<mloop/>" << std::endl;
         }
 
+
+    protected:
+        mutable_type   *values; //!< current [1..size()] values
+        const_type     *origin; //!< origin  [1..size()] values
+        const_type     *target; //!< target  [1..size()] values
+
     private:
         YACK_DISABLE_COPY_AND_ASSIGN(mloop);
-        mutable_type *values;
-        const bool   *moving;
-        change       *stride;
-        const_type   *origin;
-        const_type   *target;
+        typedef void  (*change)(mutable_type&);
+        const bool     *moving;
+        change         *stride;
+
 
         inline void setup_memory()
         {
@@ -161,7 +178,7 @@ namespace yack
         }
 
         inline void setup_status(const T     *ini,
-                                 const T     *end) throw()
+                                 const T     *end)
         {
             size_t &prod = coerce(frames);
             prod=1;

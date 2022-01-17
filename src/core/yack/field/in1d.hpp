@@ -7,6 +7,7 @@
 #include "yack/field/field.hpp"
 #include "yack/field/layout.hpp"
 #include "yack/type/destruct.hpp"
+#include "yack/counting/loop-on.hpp"
 
 namespace yack
 {
@@ -31,10 +32,11 @@ namespace yack
         //
         // types
         //______________________________________________________________________
-        YACK_DECL_ARGS_(T,type);             //!< aliases
-        typedef layout1D    layout_type;     //!< alias
-        typedef coord1D     coord_type;      //!< alias
-        static const size_t dimensions = 1;  //!< static dims
+        YACK_DECL_ARGS_(T,type);                 //!< aliases
+        typedef layout1D            layout_type; //!< alias
+        typedef coord1D             coord_type;  //!< alias
+        typedef loop_on<coord_type> loop_type;   //!< alias
+        static const size_t dimensions = 1;      //!< static dims
 
         //______________________________________________________________________
         //
@@ -122,6 +124,13 @@ namespace yack
             {
                 destruct(&item[--n]);
             }
+        }
+
+        //! read
+        const_type & fetch(const readable<unit_t> &coord) const throw()
+        {
+            assert(coord.size()>=1);
+            return (*this)[coord[1]];
         }
 
     };

@@ -29,12 +29,13 @@ namespace yack
         //
         // types
         //______________________________________________________________________
-        YACK_DECL_ARGS_(T,type);            //!< aliases
-        typedef layout3D   layout_type;     //!< alias
-        typedef coord3D    coord_type;      //!< alias
-        typedef field1D<T> row_type;        //!< alias
-        typedef field2D<T> slice_type;      //!< alias
-        static const size_t dimensions = 3; //!< static dimensions
+        YACK_DECL_ARGS_(T,type);                 //!< aliases
+        typedef layout3D            layout_type; //!< alias
+        typedef coord3D             coord_type;  //!< alias
+        typedef loop_on<coord_type> loop_type;   //!< alias
+        typedef field1D<T>          row_type;    //!< alias
+        typedef field2D<T>          slice_type;  //!< alias
+        static const size_t dimensions = 3;      //!< static dimensions
 
         //______________________________________________________________________
         //
@@ -134,6 +135,13 @@ namespace yack
             }
             slice -= lower.z;
 
+        }
+
+        //! read
+        const_type & fetch(const readable<unit_t> &coord) const throw()
+        {
+            assert(coord.size()>=3);
+            return (*this)[coord[3]][coord[2]][coord[1]];
         }
 
 

@@ -1,4 +1,4 @@
-#include "yack/counting/mloop.hpp"
+#include "yack/counting/loop-on.hpp"
 #include "yack/utest/run.hpp"
 #include "yack/container/matrix.hpp"
 
@@ -6,41 +6,45 @@ using namespace yack;
 
 YACK_UTEST(counting_loop)
 {
-    const int ini[] = { 1, 3, 4, -1};
-    const int end[] = { 2, 3, 0,  5};
 
-    mloop<int> loop(ini,end,4);
-    loop.display();
-
-    std::cerr << "loop=" << loop << std::endl;
-    std::cerr << std::endl;
-    
-    loop.boot();
-    std::cerr << loop << std::endl;
-    while( loop.next() )
     {
-        std::cerr  << loop << std::endl;
-    }
+        const int ini[] = { 1, 3, 4, -1};
+        const int end[] = { 2, 3, 0,  5};
 
-    matrix<int>    frame(loop.frames,loop.size());
+        mloop<int> loop(ini,end,4);
+        loop.display();
 
-    loop.boot();
-    do
-    {
-        for(size_t j=loop.size();j>0;--j)
+        std::cerr << "loop=" << loop << std::endl;
+        std::cerr << std::endl;
+
+        loop.boot();
+        std::cerr << loop << std::endl;
+        while( loop.next() )
         {
-            frame[loop.active][j] = loop[j];
+            std::cerr  << loop << std::endl;
         }
 
-        for(size_t i=loop.active-1;i>0;--i)
+        matrix<int>    frame(loop.frames,loop.size());
+
+        loop.boot();
+        do
         {
-            if(!(frame[i] != loop))
+            for(size_t j=loop.size();j>0;--j)
             {
-                throw exception("multiple loop value");
+                frame[loop.active][j] = loop[j];
             }
-        }
-        
-    } while( loop.next() );
+
+            for(size_t i=loop.active-1;i>0;--i)
+            {
+                if(!(frame[i] != loop))
+                {
+                    throw exception("multiple loop value");
+                }
+            }
+            
+        } while( loop.next() );
+
+    }
 
 
 

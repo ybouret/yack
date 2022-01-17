@@ -86,6 +86,24 @@ namespace yack
         //! cleanup
         inline virtual ~field_of() throw() {}
 
+
+        //______________________________________________________________________
+        //
+        // interface
+        //______________________________________________________________________
+
+        //! access by [x,y,z,w]
+        inline const_type & operator()(const readable<unit_t> &coord) const throw()
+        {
+            return fetch(coord);
+        }
+
+        //! access by [x,y,z,w]
+        inline type & operator()(const readable<unit_t> &coord) throw()
+        {
+            return (type&)fetch(coord);
+        }
+
     protected:
 
         //! setup
@@ -98,6 +116,9 @@ namespace yack
 
     private:
         YACK_DISABLE_COPY_AND_ASSIGN(field_of);
+
+        virtual const_type & fetch(const readable<unit_t> &coord) const throw() = 0;
+
     };
 
    

@@ -29,11 +29,12 @@ namespace yack
         //
         // types
         //______________________________________________________________________
-        YACK_DECL_ARGS_(T,type);            //!< aliases
-        typedef layout2D   layout_type;     //!< alias
-        typedef coord2D    coord_type;      //!< alias
-        typedef field1D<T> row_type;        //!< alias
-        static const size_t dimensions = 2; //!< static dims
+        YACK_DECL_ARGS_(T,type);                 //!< aliases
+        typedef layout2D            layout_type; //!< alias
+        typedef coord2D             coord_type;  //!< alias
+        typedef loop_on<coord_type> loop_type;   //!< alias
+        typedef field1D<T>          row_type;    //!< alias
+        static const size_t dimensions = 2;      //!< static dims
 
         //______________________________________________________________________
         //
@@ -142,6 +143,14 @@ namespace yack
                 throw;
             }
             row -= lower.y;
+        }
+
+
+        //! read
+        const_type & fetch(const readable<unit_t> &coord) const throw()
+        {
+            assert(coord.size()>=2);
+            return (*this)[coord[2]][coord[1]];
         }
 
     };
