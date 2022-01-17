@@ -15,22 +15,17 @@ namespace yack
         namespace bz
         {
 
-            static inline
-            void * open_stream(const char *filename, const int level)
+            void * ostream:: open_stream(void *fp, const int level)
             {
-                assert(filename);
+                assert(NULL!=fp);
                 YACK_GIANT_LOCK();
-                FILE *fp = fopen(filename,"wb");
-                if(!fp)
-                {
-                    throw libc::exception(errno,"%s(%s)", ostream::clid, filename);
-                }
+
                 int     err = BZ_OK;
-                BZFILE *ptr = BZ2_bzWriteOpen(&err,fp, level, 0, 0);
+                BZFILE *ptr = BZ2_bzWriteOpen(&err,(FILE*)fp, clamp<int>(0,level,9), 0, 0);
                 if(BZ_OK!=err)
                 {
                     BZ2_bzWriteClose(&err,ptr,1,NULL,NULL);
-                    throw exception("%s in %s(%s)", stream::errstr(err), ostream::clid, filename);
+                    throw exception("%s in %s", stream::errstr(err), ostream::clid);
                 }
 
                 return ptr;
@@ -40,24 +35,13 @@ namespace yack
 
             ostream:: ~ostream() throw()
             {
-                BZ=0;
+                // close
+                YACK_GIANT_LOCK();
+                int     err = BZ_OK;
+                BZFILE *ptr = (BZFILE*)BZ;
+                BZ2_bzWriteClose(&err,ptr,0,NULL,NULL);
             }
 
-#if 0
-            ostream:: ostream(const string &filename, const int level) :
-            ios::ostream(),
-            stream( open_stream( filename(), clamp<int>(0,level,9) ) )
-            {
-
-            }
-
-            ostream:: ostream(const char *filename, const int level) :
-            ios::ostream(),
-            stream( open_stream(filename, clamp<int>(0,level,9) ) )
-            {
-
-            }
-#endif
             
         }
     }

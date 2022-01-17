@@ -1,7 +1,8 @@
 
 #include "yack/ios/bz/istream.hpp"
-//#include "yack/ios/gz/ostream.hpp"
+#include "yack/ios/bz/ostream.hpp"
 #include "yack/utest/run.hpp"
+#include "yack/string.hpp"
 
 using namespace yack;
 
@@ -20,6 +21,11 @@ YACK_UTEST(ios_bz)
         {
             std::cerr << C;
         }
+    }
+    else
+    {
+        const string     fn = "data.data.bz2";
+        //ios::bz::ostream fp(fn);
     }
 }
 YACK_UDONE()

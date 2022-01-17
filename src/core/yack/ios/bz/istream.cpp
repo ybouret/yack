@@ -41,6 +41,7 @@ namespace yack
                 assert(BZ);
                 assert(yack_good(addr,size));
                 if(eos) return 0;
+                YACK_GIANT_LOCK();
                 int err = BZ_OK;
                 int res = BZ2_bzRead(&err, static_cast<BZFILE *>(BZ),addr,int(size));
                 switch(err)
