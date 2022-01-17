@@ -39,6 +39,7 @@ namespace yack
                 int     err = BZ_OK;
                 BZ2_bzReadClose(&err,static_cast<BZFILE*>(BZ));
                 BZ = 0;
+                fclose((FILE*)fp);
             }
 
             istream:: istream(const string &filename) :
