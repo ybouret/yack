@@ -20,6 +20,39 @@ namespace
         }
         std::cerr << ']' << std::endl;
     }
+
+    size_t call_p(size_t n, size_t k)
+    {
+        //std::cerr << "call_p(" << n << "," << k << ")" << std::endl;
+        if(1==k)
+        {
+            return 1;
+        }
+        else
+        {
+
+            switch( __sign::of(k,n) )
+            {
+                case negative: assert(k<n);  return call_p(n-1,k-1)+call_p(n-k,k);
+                case __zero__: assert(k==n); return 1;
+                case positive: assert(k>n);  return 0;
+            }
+            return 0;
+        }
+    }
+
+    size_t give_p(size_t n)
+    {
+        assert(n>0);
+        size_t sum = 0;
+        for(size_t k=1;k<=n;++k)
+        {
+            sum += call_p(n,k);
+        }
+        return sum;
+    }
+
+
 }
 
 YACK_UTEST(counting_part)
@@ -30,12 +63,15 @@ YACK_UTEST(counting_part)
     {
         n = atol(argv[1]);
     }
-    
+
+    const size_t np = give_p(n);
+    std::cerr << "p(" << n << ")=" << np << std::endl;
+
+    size_t count = 0;
     {
         yack_part        param;
         vector<size_t > ints(n,0);
         yack_part_init(&param,n);
-        size_t count = 0;
         yack_part_boot(&param,*ints);
         do
         {
@@ -50,17 +86,11 @@ YACK_UTEST(counting_part)
     std::cerr << "part.granted() = " << part.granted() << std::endl;
     
     part.boot();
-    //apn Bell = 0;
     do
     {
         std::cerr << part << std::endl;
-        //apn tmp =apn::comb(n,part.size());
-        //std::cerr << "+" << tmp << std::endl;
-       // Bell += tmp;
-        
     } while( part.next() );
-    //std::cerr << "Bell=" << Bell << std::endl;
-    
+    std::cerr << count << "/" << np << std::endl;
 }
 YACK_UDONE()
 

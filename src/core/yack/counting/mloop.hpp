@@ -27,9 +27,10 @@ namespace yack
             virtual       ~mloop()         throw(); //!< cleanup
             virtual size_t granted() const throw(); //!< allocated
 
+            const size_t active; //!< [1..frames]
             const size_t levels; //!< number of levels
             const size_t frames; //!< product of dimension per level
-            
+
         protected:
             explicit mloop(const size_t dim)             throw(); //!< setup
             void     allocate_cxx(memory::embed[], const size_t); //!< allocate
@@ -103,13 +104,22 @@ namespace yack
         //______________________________________________________________________
         virtual void boot() throw()
         {
+            coerce(active)=1;
             for(size_t i=levels;i>0;--i) values[i] = origin[i];
         }
 
         virtual bool next() throw()
         {
-
-            return false;
+            if(active<frames)
+            {
+                update(1);
+                ++coerce(active);
+                return true;
+            }
+            else
+            {
+                return false;
+            }
         }
 
 
@@ -151,7 +161,7 @@ namespace yack
         }
 
         inline void setup_status(const T     *ini,
-                          const T     *end) throw()
+                                 const T     *end) throw()
         {
             size_t &prod = coerce(frames);
             prod=1;
@@ -184,16 +194,36 @@ namespace yack
 
         static inline void incr(mutable_type &v) throw() { ++v; }
         static inline void decr(mutable_type &v) throw() { --v; }
-
-        inline size_t next_dim(size_t dim) const throw()
+        inline size_t      next(size_t dim) const throw()
         {
             return ++dim > levels ? 1 : dim;
         }
 
-        void recursive_move(const size_t odim)
+        void update(const size_t odim) throw()
         {
+            assert(odim>=1);
+            assert(odim<=levels);
 
-            
+            size_t idim = odim;
+        TRY_MOVE:
+            if(moving[idim])
+            {
+                mutable_type &curr = values[idim];
+                if(target[idim]==curr)
+                {
+                    curr=origin[idim];
+                    goto NEXT_DOF;
+                }
+
+                stride[idim](curr);
+                return;
+            }
+
+        NEXT_DOF:
+            idim = next(idim);
+            if(odim==idim) return;
+            goto TRY_MOVE;
+
         }
 
 
