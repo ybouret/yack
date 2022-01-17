@@ -31,7 +31,7 @@ namespace yack
             // default virtual functions
             //__________________________________________________________________
             virtual void   frame(const void *, const size_t); //!< default: write all block as chars
-            virtual size_t operator()(const char *fmt,...);   //!< default it not implemented yet
+            virtual size_t operator()(const char *fmt,...);   //!< default: format to block, write block
             
             //__________________________________________________________________
             //

@@ -35,19 +35,31 @@ namespace yack
                 //______________________________________________________________
                 virtual ~ostream() throw();               //!< cleanup
 
+                //! open
                 template <typename OUTPUT> inline
-                explicit ostream(const OUTPUT &output, const int level=default_level) :
+                explicit ostream(const OUTPUT &output,
+                                 const int  level=default_level,
+                                 const bool append=false) :
                 ios::ostream(),
-                writable_file(output),
+                writable_file(output,append),
                 stream( open_stream(handle,level) )
                 {
                 }
 
+                //______________________________________________________________
+                //
+                // C++
+                //______________________________________________________________
+                virtual void write(char C);                     //!< output(&C,1)
+                virtual void flush();                           //!< do nothing
+                virtual void frame(const void *, const size_t); //!< output
+                
 
             private:
                 YACK_DISABLE_COPY_AND_ASSIGN(ostream);
                 static void   *open_stream(void*,const int);
-
+                void           output(const void *addr, const size_t size);
+                
             };
         }
     }

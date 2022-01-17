@@ -7,6 +7,7 @@
 #include "yack/string.hpp"
 #include <cstdio>
 #include "yack/type/utils.hpp"
+#include "yack/type/ints.hpp"
 
 namespace yack
 {
@@ -35,13 +36,42 @@ namespace yack
 
             ostream:: ~ostream() throw()
             {
-                // close
                 YACK_GIANT_LOCK();
                 int     err = BZ_OK;
                 BZFILE *ptr = (BZFILE*)BZ;
                 BZ2_bzWriteClose(&err,ptr,0,NULL,NULL);
+                BZ=0;
             }
 
+
+            void ostream:: output(const void *addr, const size_t size)
+            {
+                assert( yack_good(addr,size) );
+                static const size_t szmax = integral_for<int>::maximum;
+                if(size>szmax) throw libc::exception(EIO,"%s max output size exceeded",clid);
+                int     err = BZ_OK;
+                BZFILE *ptr = (BZFILE*)BZ;
+                BZ2_bzWrite(&err,ptr,(void*)addr,(int)size);
+                if(BZ_OK!=err)
+                {
+                    throw exception("%s in %s::output", stream::errstr(err), ostream::clid);
+                }
+            }
+
+            void ostream:: frame(const void *addr, const size_t size)
+            {
+                output(addr,size);
+            }
+
+            void ostream:: flush()
+            {
+
+            }
+
+            void ostream:: write(char C)
+            {
+                output(&C,1);
+            }
             
         }
     }
