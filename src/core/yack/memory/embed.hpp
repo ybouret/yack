@@ -22,12 +22,10 @@ namespace yack
         class embed
         {
         public:
-            ~embed() throw(); //!< cleanup
-            
-            void       **handle; //!< pointer to address
-            size_t       offset; //!< offset in memory
-            size_t       length; //!< length in bytes
-            const size_t width_; //!< item size
+            //__________________________________________________________________
+            //
+            // C++
+            //__________________________________________________________________
 
             //! generic setup
             template <typename T>
@@ -41,10 +39,16 @@ namespace yack
                 *handle = 0;
             }
 
-            void cxx() throw(); //!< decrease address for C++ usage
+            embed(const embed &) throw(); //!< no-throw copy
+            ~embed() throw();             //!< cleanup
 
-            //! no-throw copy
-            embed(const embed &) throw();
+            //__________________________________________________________________
+            //
+            // methods
+            //__________________________________________________________________
+
+            //! decrease address for C++ usage [1..something]
+            void cxx() throw();
 
             //! display helper
             friend std::ostream & operator<<(std::ostream &os, const embed&);
@@ -54,6 +58,16 @@ namespace yack
 
             //! decrease all addresses
             static void  cxx(embed emb[],const size_t num) throw();
+
+
+            //__________________________________________________________________
+            //
+            // members
+            //__________________________________________________________________
+            void       **handle; //!< pointer to address
+            size_t       offset; //!< offset in memory
+            size_t       length; //!< length in bytes
+            const size_t width_; //!< item size
 
         private:
             YACK_DISABLE_ASSIGN(embed);
