@@ -48,4 +48,6 @@ if(YACK_WINDOWS)
 	endif()
 endif()
 
+yack_third_party(yack_sqlite3)
+
 message( STATUS "[YACK] <SQLite3/>" )
