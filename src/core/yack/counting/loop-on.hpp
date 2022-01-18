@@ -57,8 +57,8 @@ namespace yack
         //! reset by coordinates
         inline void reset(const COORD lo, const COORD up)
         {
-            self_loop::reset_(coerce_cast<unit_t,COORD>(&lo),
-                              coerce_cast<unit_t,COORD>(&up));
+            reset_(coerce_cast<unit_t,COORD>(&lo),
+                   coerce_cast<unit_t,COORD>(&up));
         }
 
 
