@@ -1,6 +1,6 @@
 
 #include "yack/math/fit/least-squares.hpp"
-#include "yack/math/fit/real-samples.hpp"
+#include "yack/math/fit/samples/real.hpp"
 #include "yack/utest/run.hpp"
 
 using namespace yack;
