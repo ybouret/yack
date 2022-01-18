@@ -1,5 +1,5 @@
 
-#include "yack/math/fit/least-squares.hpp"
+#include "yack/math/fit/least-squares/gls.hpp"
 #include "yack/math/fit/samples/real.hpp"
 #include "yack/utest/run.hpp"
 
@@ -99,7 +99,7 @@ YACK_UTEST(gls)
     D1 = 0.3;
     D2 = 0.4;
 
-    fit::least_squares<double,double> ls;
+    fit::gls<double> ls;
 
     //ls.verbose = true;
 
