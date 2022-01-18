@@ -15,6 +15,7 @@ YACK_UTEST_DECL(80)
 
     YACK_UTEST(rk4);
     YACK_UTEST(explicit);
+    YACK_UTEST(app);
 
     YACK_UTEST(zroot);
     YACK_UTEST(zircon);

@@ -21,7 +21,7 @@ namespace yack
             //
             //__________________________________________________________________
             template <typename T>
-            class rk45_
+            class rk45_ : public virtual entity
             {
             public:
                 //______________________________________________________________
@@ -104,7 +104,7 @@ ytmp( this->next() )
             private:
                 YACK_DISABLE_COPY_AND_ASSIGN(rk45);
                 array_type &yerr;
-                array_type  &ytmp;
+                array_type &ytmp;
             };
 
         }

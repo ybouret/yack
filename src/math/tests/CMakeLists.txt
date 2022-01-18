@@ -55,6 +55,7 @@ add_test(algebra:diag    test-math diagonalize)
 
 add_test(ode:rk4 test-math rk4)
 add_test(ode:explicit test-math explicit)
+add_test(ode:app      test-math app)
 
 add_test(zroot  test-math zroot)
 add_test(zircon test-math zircon)

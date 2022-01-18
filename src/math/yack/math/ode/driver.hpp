@@ -20,7 +20,7 @@ namespace yack
             //
             //__________________________________________________________________
             template <typename T>
-            class driver : public arrays_of<T>
+            class driver : public entity, arrays_of<T>
             {
             public:
                 //______________________________________________________________

@@ -20,7 +20,7 @@ namespace yack
             //
             //__________________________________________________________________
             template <typename T>
-            class step : public arrays_of<T>
+            class step : public virtual entity, public arrays_of<T>
             {
             public:
                 //______________________________________________________________

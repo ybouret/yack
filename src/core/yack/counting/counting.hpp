@@ -4,7 +4,7 @@
 #ifndef YACK_COUNTING_INCLUDED
 #define YACK_COUNTING_INCLUDED 1
 
-#include "yack/setup.hpp"
+#include "yack/apex/natural.hpp"
 
 namespace yack
 {
