@@ -3,7 +3,7 @@
 #ifndef YACK_MEMORY_EMBED_INCLUDED
 #define YACK_MEMORY_EMBED_INCLUDED 1
 
-#include "yack/setup.hpp"
+#include "yack/type/out-of-reach.hpp"
 #include <iosfwd>
 
 namespace yack
@@ -30,7 +30,7 @@ namespace yack
             //! generic setup
             template <typename T>
             inline embed( T * &addr, const size_t size) throw() :
-            handle( (void **)&addr ),
+            handle( static_cast<void **>(out_of_reach::address(&addr)) ),
             offset(0),
             length(size*sizeof(T)),
             width_(sizeof(T))
