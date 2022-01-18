@@ -5,7 +5,7 @@
 #ifndef YACK_FIT_REAL_SAMPLE_INCLUDED
 #define YACK_FIT_REAL_SAMPLE_INCLUDED 1
 
-#include "yack/math/fit/sample1.hpp"
+#include "yack/math/fit/sample/of.hpp"
 #include "yack/sequence/arrays.hpp"
 #include "yack/ios/icstream.hpp"
 

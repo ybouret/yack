@@ -57,6 +57,20 @@ set(math_fit ${math_fit_decl} ${math_fit_srcs})
 SOURCE_GROUP(math/fit FILES ${math_fit})
 install( FILES ${math_fit_decl} DESTINATION include/yack/math/fit )
 
+# fit/variable
+file(GLOB math_fit_variable_decl yack/math/fit/variable/*.hpp)
+file(GLOB math_fit_variable_srcs yack/math/fit/variable/*.cpp yack/math/fit/variable/*.hxx)
+set(math_fit_variable ${math_fit_variable_decl} ${math_fit_variable_srcs})
+SOURCE_GROUP(math/fit/variable FILES ${math_fit_variable})
+install( FILES ${math_fit_variable_decl} DESTINATION include/yack/math/fit/variable )
+
+# fit/sample
+file(GLOB math_fit_sample_decl yack/math/fit/sample/*.hpp)
+file(GLOB math_fit_sample_srcs yack/math/fit/sample/*.cpp yack/math/fit/sample/*.hxx)
+set(math_fit_sample ${math_fit_sample_decl} ${math_fit_sample_srcs})
+SOURCE_GROUP(math/fit/sample FILES ${math_fit_sample})
+install( FILES ${math_fit_sample_decl} DESTINATION include/yack/math/fit/sample )
+
 #ode
 file(GLOB math_ode_decl yack/math/ode/*.hpp yack/math/ode/*.hxx)
 file(GLOB math_ode_srcs yack/math/ode/*.cpp)
@@ -91,7 +105,7 @@ ${math_ode} ${math_ode_explicit} ${math_ode_explicit_rk45} ${math_ode_explicit_b
 ${math_root}
 ${math_opt}
 ${math_data}
-${math_fit}
+${math_fit} ${math_fit_variable} ${math_fit_sample}
 )
 
 install( TARGETS yack-math ARCHIVE DESTINATION lib )

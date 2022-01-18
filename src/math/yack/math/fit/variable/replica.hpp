@@ -5,7 +5,7 @@
 #ifndef YACK_FIT_REPLICA_INCLUDED
 #define YACK_FIT_REPLICA_INCLUDED 1
 
-#include "yack/math/fit/primary.hpp"
+#include "yack/math/fit/variable/primary.hpp"
 #include "yack/ptr/ark.hpp"
 
 namespace yack

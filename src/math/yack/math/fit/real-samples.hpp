@@ -5,7 +5,7 @@
 #define YACK_FIT_REAL_SAMPLES_INCLUDED 1
 
 #include "yack/math/fit/samples.hpp"
-#include "yack/math/fit/real-sample.hpp"
+#include "yack/math/fit/sample/real.hpp"
 
 namespace yack
 {

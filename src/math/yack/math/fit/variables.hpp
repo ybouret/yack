@@ -3,7 +3,7 @@
 #ifndef YACK_FIT_VARIABLES_INCLUDED
 #define YACK_FIT_VARIABLES_INCLUDED 1
 
-#include "yack/math/fit/replica.hpp"
+#include "yack/math/fit/variable/replica.hpp"
 #include "yack/math/data/percent.hpp"
 #include "yack/associative/suffix/set.hpp"
 #include "yack/ios/fmt/align.hpp"

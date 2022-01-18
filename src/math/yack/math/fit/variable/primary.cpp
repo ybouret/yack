@@ -1,6 +1,6 @@
 
 
-#include "yack/math/fit/primary.hpp"
+#include "yack/math/fit/variable/primary.hpp"
 
 namespace yack
 {
