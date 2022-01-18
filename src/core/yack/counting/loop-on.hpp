@@ -23,8 +23,8 @@ namespace yack
         //
         // types and definition
         //______________________________________________________________________
-        typedef mloop<unit_t> self_loop;                                 //!< alias
-        static const size_t   dimensions = sizeof(COORD)/sizeof(unit_t); //!< alias
+        typedef yack::mloop<unit_t> self_loop;                                 //!< alias
+        static const size_t         dimensions = sizeof(COORD)/sizeof(unit_t); //!< alias
 
         //______________________________________________________________________
         //
@@ -57,8 +57,8 @@ namespace yack
         //! reset by coordinates
         inline void reset(const COORD lo, const COORD up)
         {
-            reset_(coerce_cast<unit_t,COORD>(&lo),
-                   coerce_cast<unit_t,COORD>(&up));
+            self_loop::reset(coerce_cast<unit_t,COORD>(&lo),
+                             coerce_cast<unit_t,COORD>(&up));
         }
 
 

@@ -131,8 +131,8 @@ namespace yack
         //______________________________________________________________________
 
         //! reset value with SAME dims
-        void reset_(const T     *ini,
-                    const T     *end)
+        void reset(const T     *ini,
+                   const T     *end)
         {
             assert(ini);
             assert(end);
