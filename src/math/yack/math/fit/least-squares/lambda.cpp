@@ -1,5 +1,5 @@
 
-#include "yack/math/fit/lambda.hpp"
+#include "yack/math/fit/least-squares/lambda.hpp"
 #include "yack/math/numeric.hpp"
 
 #define real_t float

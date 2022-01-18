@@ -3,7 +3,7 @@
 #ifndef YACK_FIT_LEAST_SQUARES_DATA_INCLUDED
 #define YACK_FIT_LEAST_SQUARES_DATA_INCLUDED 1
 
-#include "yack/math/fit/lambda.hpp"
+#include "yack/math/fit/least-squares/lambda.hpp"
 #include "yack/math/algebra/lu.hpp"
 #include "yack/math/fcn/derivative.hpp"
 #include "yack/sequence/arrays.hpp"

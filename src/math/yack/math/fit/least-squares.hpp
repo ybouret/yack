@@ -4,7 +4,7 @@
 #define YACK_FIT_LEAST_SQUARES_INCLUDED 1
 
 #include "yack/math/fit/sample.hpp"
-#include "yack/math/fit/least-squares-data.hpp"
+#include "yack/math/fit/least-squares/data.hpp"
 #include "yack/math/tao/v1.hpp"
 #include "yack/functor.hpp"
 
