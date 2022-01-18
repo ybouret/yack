@@ -13,12 +13,18 @@ namespace yack
         namespace fit
         {
 
+            //__________________________________________________________________
+            //
+            //
+            //! specialized general least squares
+            //
+            //__________________________________________________________________
             template <typename T>
             class gls : public least_squares<T,T>
             {
             public:
-                explicit gls();
-                virtual ~gls() throw();
+                explicit gls();         //!< setup
+                virtual ~gls() throw(); //!< cleanup
 
             private:
                 YACK_DISABLE_COPY_AND_ASSIGN(gls);

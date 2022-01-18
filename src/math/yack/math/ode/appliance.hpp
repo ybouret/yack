@@ -70,12 +70,21 @@ namespace yack
                 YACK_DISABLE_COPY_AND_ASSIGN(appliance);
             };
 
+            //__________________________________________________________________
+            //
+            //
+            //! specialized appliance
+            //
+            //__________________________________________________________________
             template <typename T, template <typename> class STEP>
             class app : public appliance<T>
             {
             public:
+
+                //! cleanup
                 inline virtual ~app() throw() {}
-                
+
+                //! setup
                 inline explicit app(const T epsilon) :
                 appliance<T>( new typename STEP<T>::device(), epsilon)
                 {
