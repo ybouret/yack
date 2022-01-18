@@ -78,7 +78,7 @@ namespace yack
         {
             const T *entry;
             size_t   count;
-            inline bool operator()(const T ch) throw()
+            inline bool operator()(const T ch) const throw()
             {
                 const T *p  = entry;
                 size_t   n  = count;
