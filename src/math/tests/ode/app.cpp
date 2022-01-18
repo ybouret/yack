@@ -68,7 +68,7 @@ namespace
     {
         assert(fn);
 
-        ode::appliance<T,STEP>           app(1e-5);
+        ode::app<T,STEP>                 app(1e-7);
         vector<T>                        y(4,0);
         enzyme<T>                        enz(ran);
         typename ode::named<T>::equation sys( &enz, & enzyme<T>::rate );
@@ -92,7 +92,6 @@ namespace
             enz.save(fn,t,y);
         }
 
-
     }
 
 }
@@ -103,6 +102,7 @@ YACK_UTEST(app)
     run<float,ode::rkck>(ran,"enz-rkck.dat");
     run<float,ode::rkdp>(ran,"enz-rkdp.dat");
 
+    
 }
 YACK_UDONE()
 

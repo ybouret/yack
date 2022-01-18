@@ -20,11 +20,8 @@ namespace yack
             //! make an appliance to integrate equation
             //
             //__________________________________________________________________
-            template <
-            typename T,
-            template <typename> class STEP
-            >
-            class appliance
+            template <typename T>
+            class appliance : public object, public counted
             {
             public:
                 //______________________________________________________________
@@ -35,8 +32,9 @@ namespace yack
                 typedef typename named<T>::callback   callback; //!< alias
                 typedef driver<T>                     driver_t; //!< alias
                 typedef arc_ptr<driver_t >            driver_p; //!< alias
-                typedef typename STEP<T>::device      device_t; //!< alias
+                typedef step<T>                       device_t; //!< alias
                 typedef arc_ptr<device_t>             device_p; //!< alias
+                typedef arc_ptr<appliance>            pointer;  //!< alias
 
                 //______________________________________________________________
                 //
@@ -44,41 +42,50 @@ namespace yack
                 //______________________________________________________________
 
                 //! cleanup
-                inline virtual ~appliance() throw() {}
+                virtual ~appliance() throw();
 
                 //! setup
-                inline explicit appliance(const T epsilon=1e-4) :
-                drv( new driver_t() ),
-                dev( new device_t() ),
-                eps( epsilon )
-                {
-                }
+                explicit appliance(step<T> *forward, const T  epsilon);
 
                 //______________________________________________________________
                 //
                 //! integration
                 //______________________________________________________________
-                inline void operator()(writable<T> &ystart,
-                                       const T      x1,
-                                       const T      x2,
-                                       T           &h1,
-                                       equation     drvs,
-                                       callback    *proc)
-                {
-                    (*drv)( *dev, ystart,x1,x2,eps,h1,drvs,proc) ;
-                }
+                void operator()(writable<T> &ystart,
+                                const T      x1,
+                                const T      x2,
+                                T           &h1,
+                                equation     drvs,
+                                callback    *proc=NULL);
 
                 //______________________________________________________________
                 //
                 // members
                 //______________________________________________________________
-                driver_p drv; //!< driver
                 device_p dev; //!< device
+                driver_p drv; //!< driver
                 T        eps; //!< tolerance
 
             private:
                 YACK_DISABLE_COPY_AND_ASSIGN(appliance);
             };
+
+            template <typename T, template <typename> class STEP>
+            class app : public appliance<T>
+            {
+            public:
+                inline virtual ~app() throw() {}
+                
+                inline explicit app(const T epsilon) :
+                appliance<T>( new typename STEP<T>::device(), epsilon)
+                {
+                }
+
+
+            private:
+                YACK_DISABLE_COPY_AND_ASSIGN(app);
+            };
+
 
         }
 
