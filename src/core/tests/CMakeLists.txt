@@ -213,10 +213,11 @@ add_test(sort:heap      test-core sort_heap)
 add_test(sort:indexing  test-core sort_indexing)
 add_test(sort:sum       test-core sort_sum)
 
-add_test(counting:comb  test-core counting_comb)
-add_test(counting:perm  test-core counting_perm)
-add_test(counting:part  test-core counting_part)
-add_test(counting:loop  test-core counting_loop)
+add_test(counting:comb   test-core counting_comb)
+add_test(counting:perm   test-core counting_perm)
+add_test(counting:part   test-core counting_part)
+add_test(counting:loop   test-core counting_loop)
+add_test(counting:limits test-core counting_limits)
 
 add_test(rtld:dso test-core rtld_dso)
 

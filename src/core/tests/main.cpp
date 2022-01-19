@@ -129,6 +129,7 @@ YACK_UTEST_DECL(128)
     YACK_UTEST(counting_perm);
     YACK_UTEST(counting_part);
     YACK_UTEST(counting_loop);
+    YACK_UTEST(counting_limits);
 
     YACK_UTEST(rtld_dso);
     
