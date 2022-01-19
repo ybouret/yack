@@ -36,11 +36,12 @@ namespace yack
         // interface
         //______________________________________________________________________
         virtual size_t size() const throw(); //!< current size in 1..n
-        virtual void   boot() throw();       //!< size()=1, [1] = n
-        virtual bool   next() throw();       //!< up to [1 1...1 1]
+
         
     private:
         YACK_DISABLE_COPY_AND_ASSIGN(partition);
+        virtual void on_boot() throw();       //!< size()=1, [1] = n
+        virtual bool on_next() throw();       //!< up to [1 1...1 1]
     };
     
 }

@@ -25,10 +25,11 @@ YACK_UTEST(counting_loop)
         }
 
         matrix<int>    frame(loop.total,loop.size());
-
+        cardinality_t  count =0;
         loop.boot();
         do
         {
+            ++count;
             for(size_t j=loop.size();j>0;--j)
             {
                 frame[loop.index][j] = loop[j];
@@ -44,6 +45,7 @@ YACK_UTEST(counting_loop)
             
         } while( loop.next() );
 
+        YACK_ASSERT(loop.total==count);
     }
 
 

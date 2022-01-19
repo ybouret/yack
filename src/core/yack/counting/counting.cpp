@@ -14,5 +14,19 @@ namespace yack
     counting:: ~counting() throw()
     {
     }
+
+    void counting:: boot() throw()
+    {
+        coerce(index)=1;
+    }
+
+    bool counting:: next() throw()
+    {
+        assert(index<=total);
+        ++coerce(index);
+        return on_next();
+    }
+    
+
 }
 

@@ -96,32 +96,7 @@ namespace yack
             assert(values); assert(i>=1); assert(i<=levels); return values[i];
         }
 
-        //______________________________________________________________________
-        //
-        // counting interface
-        //______________________________________________________________________
 
-        //! reset initial values
-        virtual void boot() throw()
-        {
-            coerce(index)=1;
-            for(size_t i=levels;i>0;--i) values[i] = origin[i];
-        }
-
-        //! find next frame
-        virtual bool next() throw()
-        {
-            if(index<total)
-            {
-                update(1);
-                ++coerce(index);
-                return true;
-            }
-            else
-            {
-                return false;
-            }
-        }
 
 
         //______________________________________________________________________
@@ -210,7 +185,7 @@ namespace yack
 
         static inline void incr(mutable_type &v) throw() { ++v; }
         static inline void decr(mutable_type &v) throw() { --v; }
-        inline size_t      next(size_t dim) const throw()
+        inline size_t      scan(size_t dim) const throw()
         {
             return ++dim > levels ? 1 : dim;
         }
@@ -236,12 +211,36 @@ namespace yack
             }
 
         NEXT_DOF:
-            idim = next(idim);
+            idim = scan(idim);
             if(odim==idim) return;
             goto TRY_MOVE;
 
         }
 
+        //______________________________________________________________________
+        //
+        // counting interface
+        //______________________________________________________________________
+
+        //! reset initial values
+        virtual void on_boot() throw()
+        {
+            for(size_t i=levels;i>0;--i) values[i] = origin[i];
+        }
+
+        //! find next frame
+        virtual bool on_next() throw()
+        {
+            if(index<=total)
+            {
+                update(1);
+                return true;
+            }
+            else
+            {
+                return false;
+            }
+        }
 
     };
 

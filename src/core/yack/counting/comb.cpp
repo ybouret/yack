@@ -38,12 +38,12 @@ namespace yack
         yack_comb_boot(static_cast<yack_comb*>(addr),data);
     }
     
-    void combination:: boot() throw()
+    void combination:: on_boot() throw()
     {
         yack_comb_boot( static_cast<yack_comb*>(addr),data);
     }
     
-    bool  combination::  next() throw()
+    bool  combination::  on_next() throw()
     {
         return  yack_comb_next( static_cast<yack_comb*>(addr),data) != 0;
     }

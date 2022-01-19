@@ -42,12 +42,12 @@ namespace yack
         return static_cast<yack_part*>(addr)->k;
     }
     
-    void partition:: boot() throw()
+    void partition:: on_boot() throw()
     {
         yack_part_boot( static_cast<yack_part*>(addr),data);
     }
     
-    bool  partition::  next() throw()
+    bool  partition::  on_next() throw()
     {
         return  yack_part_next( static_cast<yack_part*>(addr),data) != 0;
     }

@@ -29,11 +29,12 @@ namespace yack
         // interface
         //______________________________________________________________________
         virtual size_t size() const throw(); //!< n
-        virtual void   boot() throw();       //!< [1..n]
-        virtual bool   next() throw();       //!< find next permutation
+
         
     private:
         YACK_DISABLE_COPY_AND_ASSIGN(permutation);
+        virtual void   on_boot() throw();       //!< [1..n]
+        virtual bool   on_next() throw();       //!< find next permutation
     };
     
 }

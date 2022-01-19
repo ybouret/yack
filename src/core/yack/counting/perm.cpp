@@ -39,12 +39,12 @@ namespace yack
         return static_cast<yack_perm*>(addr)->n;
     }
 
-    void permutation:: boot() throw()
+    void permutation:: on_boot() throw()
     {
         yack_perm_boot( static_cast<yack_perm*>(addr),data);
     }
     
-    bool  permutation::  next() throw()
+    bool  permutation::  on_next() throw()
     {
         return  yack_perm_next( static_cast<yack_perm*>(addr),data) != 0;
     }
