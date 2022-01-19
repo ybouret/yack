@@ -104,10 +104,7 @@ namespace yack
         return p.back();
     }
 
-
-
-
-
+    
     apn partition:: compute(const size_t n)
     {
         return euler(n);

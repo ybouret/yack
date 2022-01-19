@@ -1,5 +1,3 @@
-
-
 //! \file
 
 #ifndef YACK_COUNTING_PARTITION_INCLUDED
@@ -25,7 +23,7 @@ namespace yack
         explicit partition(const size_t n); //!< setup n>0
         virtual ~partition() throw();       //!< cleanup
 
-        static apn compute(const size_t n);
+        static apn compute(const size_t n); //!< possible case
 
         //______________________________________________________________________
         //
