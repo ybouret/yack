@@ -12,7 +12,7 @@ namespace yack
     //__________________________________________________________________________
     //
     //
-    //! handling partitions
+    //! handling partitions of integers
     //
     //__________________________________________________________________________
     class partition : public schedule
@@ -24,7 +24,9 @@ namespace yack
         //______________________________________________________________________
         explicit partition(const size_t n); //!< setup n>0
         virtual ~partition() throw();       //!< cleanup
-        
+
+        static apn compute(const size_t n);
+
         //______________________________________________________________________
         //
         // interface
