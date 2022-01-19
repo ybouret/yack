@@ -35,8 +35,8 @@ namespace yack
         //
         // members
         //______________________________________________________________________
-        const cardinality_t index;
-        const cardinality_t total;
+        const cardinality_t index; //!< current [1..total] index
+        const cardinality_t total; //!< total number of configurations
 
         //______________________________________________________________________
         //
