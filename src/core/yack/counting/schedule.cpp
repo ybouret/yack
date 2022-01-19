@@ -5,8 +5,10 @@
 namespace yack
 {
     
-    schedule:: schedule(const size_t ctx_size,
-                        const size_t max_size) :
+    schedule:: schedule(const size_t        ctx_size,
+                        const size_t        max_size,
+                        const cardinality_t num) :
+    counting(num),
     addr(0),
     data(0),
     used(0)

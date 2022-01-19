@@ -19,9 +19,7 @@ namespace yack
         }
 
         mloop:: mloop(const size_t dim) throw() :
-        active(1),
         levels(dim),
-        frames(0),
         wksp(0),
         wlen(0)
         {

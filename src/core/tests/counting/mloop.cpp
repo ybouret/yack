@@ -24,17 +24,17 @@ YACK_UTEST(counting_loop)
             std::cerr  << loop << std::endl;
         }
 
-        matrix<int>    frame(loop.frames,loop.size());
+        matrix<int>    frame(loop.total,loop.size());
 
         loop.boot();
         do
         {
             for(size_t j=loop.size();j>0;--j)
             {
-                frame[loop.active][j] = loop[j];
+                frame[loop.index][j] = loop[j];
             }
 
-            for(size_t i=loop.active-1;i>0;--i)
+            for(size_t i=loop.index-1;i>0;--i)
             {
                 if(!(frame[i] != loop))
                 {

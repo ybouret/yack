@@ -7,6 +7,12 @@
 
 namespace yack
 {
+
+    namespace apex
+    {
+        class natural;
+    }
+
     //__________________________________________________________________________
     //
     //
@@ -23,7 +29,7 @@ namespace yack
         explicit partition(const size_t n); //!< setup n>0
         virtual ~partition() throw();       //!< cleanup
 
-        static apn compute(const size_t n); //!< possible case
+        static apex::natural cardinality(const size_t n); //!< cardinality
 
         //______________________________________________________________________
         //

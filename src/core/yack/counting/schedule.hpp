@@ -28,8 +28,9 @@ namespace yack
         
     protected:
         //! setup memory
-        explicit schedule(const size_t ctx_size,
-                          const size_t max_size);
+        explicit schedule(const size_t        ctx_size,
+                          const size_t        max_size,
+                          const cardinality_t num);
         void   *addr; //!< context
         size_t *data; //!< data[1..max_size]
         

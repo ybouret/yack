@@ -1,5 +1,6 @@
 #include "yack/counting/perm.hpp"
 #include "yack/counting/c/perm.h"
+#include "yack/apex/natural.hpp"
 #include "yack/system/exception.hpp"
 #include <cerrno>
 
@@ -15,9 +16,19 @@ namespace yack
         if(n<=0) throw libc::exception(EDOM,"permutation(0)");
         return n;
     }
-    
+
+    static inline
+    cardinality_t perm_card(const size_t n)
+    {
+        const apn     num = apn::factorial(n);
+        cardinality_t res = 0;
+        if(!num.try_cast_to(res))
+            throw libc::exception(ERANGE,"permutation(%lu)",(unsigned long)n);
+        return res;
+    }
+
     permutation:: permutation(const size_t n) :
-    schedule(sizeof(yack_perm),check_perm(n))
+    schedule(sizeof(yack_perm),n,perm_card(check_perm(n)))
     {
         yack_perm_init( static_cast<yack_perm*>(addr), n);
         yack_perm_boot( static_cast<yack_perm*>(addr),data);

@@ -5,6 +5,7 @@
 #include "yack/sequence/vector.hpp"
 #include "yack/sequence/list.hpp"
 #include <cerrno>
+#include "yack/apex/natural.hpp"
 
 namespace yack
 {
@@ -18,9 +19,19 @@ namespace yack
         if(n<=0) throw libc::exception(EDOM,"partition(0)");
         return n;
     }
-    
+
+    static inline
+    cardinality_t part_card(const size_t n)
+    {
+        const apn     num = partition::cardinality(n);
+        cardinality_t res = 0;
+        if(!num.try_cast_to(res))
+            throw libc::exception(ERANGE,"partition(%lu)",(unsigned long)n);
+        return res;
+    }
+
     partition:: partition(const size_t n) :
-    schedule(sizeof(yack_part),check_part(n))
+    schedule(sizeof(yack_part),n,part_card(check_part(n)))
     {
         yack_part_init( static_cast<yack_part*>(addr), n);
         yack_part_boot( static_cast<yack_part*>(addr),data);
@@ -104,10 +115,10 @@ namespace yack
         return p.back();
     }
 
-    
-    apn partition:: compute(const size_t n)
+    apn partition:: cardinality(const size_t n)
     {
         return euler(n);
     }
+
 
 }

@@ -128,7 +128,7 @@ namespace
         {
             const size_t n = nn[i];
             const apn    expected = apn::parse_dec(np[i]);
-            const apn    computed = partition::compute(n);
+            const apn    computed = partition::cardinality(n);
             std::cerr << "\t#part= " << computed << "/" << expected << std::endl;
             YACK_ASSERT(computed==expected);
         }
@@ -139,7 +139,7 @@ namespace
             size_t n   = 1;
             while(true)
             {
-                const apn np = partition::compute(n);
+                const apn np = partition::cardinality(n);
                 if(np.bits()>32)
                 {
                     n32 = n-1;
@@ -149,11 +149,11 @@ namespace
             }
 
         FOUND32:
-            std::cerr << "\tn32=" << n32 << " with " << partition::compute(n32) << " configurations" << std::endl;
+            std::cerr << "\tn32=" << n32 << " with " << partition::cardinality(n32) << " configurations" << std::endl;
 
             while(true)
             {
-                const apn np = partition::compute(n);
+                const apn np = partition::cardinality(n);
                 if(np.bits()>64)
                 {
                     n64 = n-1;
@@ -163,7 +163,7 @@ namespace
             }
 
         FOUND64:
-            std::cerr << "\tn64=" << n64 << " with " << partition::compute(n64) << " configurations" << std::endl;
+            std::cerr << "\tn64=" << n64 << " with " << partition::cardinality(n64) << " configurations" << std::endl;
 
         }
 

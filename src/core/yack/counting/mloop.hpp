@@ -27,9 +27,7 @@ namespace yack
             virtual       ~mloop()         throw(); //!< cleanup
             virtual size_t granted() const throw(); //!< allocated
 
-            const size_t active; //!< [1..frames]
             const size_t levels; //!< number of levels
-            const size_t frames; //!< product of dimension per level
 
         protected:
             explicit mloop(const size_t dim)             throw(); //!< setup
@@ -49,7 +47,7 @@ namespace yack
     //
     //__________________________________________________________________________
     template <typename T>
-    class mloop : public kernel::mloop, public counting, public readable<T>
+    class mloop :  public counting, public kernel::mloop,public readable<T>
     {
     public:
         //______________________________________________________________________
@@ -70,6 +68,7 @@ namespace yack
         inline explicit mloop(const T     *ini,
                               const T     *end,
                               const size_t dim) :
+        counting(1),
         kernel::mloop(dim),
         values(0),
         origin(0),
@@ -105,17 +104,17 @@ namespace yack
         //! reset initial values
         virtual void boot() throw()
         {
-            coerce(active)=1;
+            coerce(index)=1;
             for(size_t i=levels;i>0;--i) values[i] = origin[i];
         }
 
         //! find next frame
         virtual bool next() throw()
         {
-            if(active<frames)
+            if(index<total)
             {
                 update(1);
-                ++coerce(active);
+                ++coerce(index);
                 return true;
             }
             else
@@ -137,13 +136,13 @@ namespace yack
             assert(ini);
             assert(end);
             setup_status(ini,end);
-            coerce(active)=1;
+            coerce(index)=1;
         }
 
         //! helper
         void display() const
         {
-            std::cerr << "<mloop #levels=" << levels << ", #frames=" << frames << ", granted=" << granted() << ">" << std::endl;
+            std::cerr << "<mloop #levels=" << levels << ", #total=" << total << ", granted=" << granted() << ">" << std::endl;
             for(size_t i=1;i<=levels;++i)
             {
                 std::cerr << "#" << i << " : " << origin[i] << " -> " << target[i] << std::endl;
@@ -180,7 +179,7 @@ namespace yack
         inline void setup_status(const T     *ini,
                                  const T     *end)
         {
-            size_t &prod = coerce(frames);
+            cardinality_t &prod = coerce(total);
             prod=1;
             for(size_t i=0,j=1;i<levels;++i,++j)
             {
