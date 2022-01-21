@@ -109,6 +109,12 @@ namespace yack
             return is_inside((const unit_t*)&c, (const unit_t *)&lower, (const unit_t *)&upper);
         }
 
+        //! COORD => index
+        inline unit_t index_of(const COORD) const throw()
+        {
+            return 0;
+        }
+
 
         //! display
         inline friend
