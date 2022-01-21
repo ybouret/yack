@@ -10,47 +10,6 @@
 using namespace yack;
 
 
-namespace
-{
-    static inline
-    void compute_comb_limits()
-    {
-        ios::ocstream::overwrite("comb32.dat");
-        ios::ocstream::overwrite("comb64.dat");
-        for(size_t n=1;;++n)
-        {
-            list<size_t> gt32;
-            list<size_t> gt64;
-            for(size_t k=1;k<=n;++k)
-            {
-                const apn    nc = apn::comb(n,k);
-                const size_t nb = nc.bits();
-                if(nb>32)
-                {
-                    gt32.push_back(k);
-                }
-                if(nb>64)
-                {
-                    gt64.push_back(k);
-                }
-            }
-            if(gt32.size())
-            {
-                std::cerr << "( * ) n=" << n << ": " << gt32.front() << " -> " << gt32.back() << std::endl;
-                ios::ocstream::echo("comb32.dat","%u %u %u\n",unsigned(n),unsigned(gt32.front()),unsigned(gt32.back()));
-            }
-            if(gt64.size())
-            {
-                std::cerr << "(***) n=" << n << ": " << gt64.front() << " -> " << gt64.back() << std::endl;
-                ios::ocstream::echo("comb64.dat","%u %u %u\n",unsigned(n),unsigned(gt64.front()),unsigned(gt64.back()));
-            }
-            
-            if(n>=80)
-                break;
-        }
-    }
-}
-
 YACK_UTEST(counting_comb)
 {
     
@@ -94,10 +53,7 @@ YACK_UTEST(counting_comb)
     } while(comb.next());
     
     
-    
-    
-    if(false)
-        compute_comb_limits();
+
     
     
 }
