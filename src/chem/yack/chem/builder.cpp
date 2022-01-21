@@ -48,6 +48,7 @@ namespace yack
             jive::source                              src( jive::module::open_data(expr) );
             const auto_ptr<const jive::syntax::xnode> ast = (*sp)(src);
 
+            exit(1);
             return NULL;
         }
 

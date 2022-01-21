@@ -13,5 +13,12 @@ YACK_UTEST(library)
     const species &proton = lib("H+",1);
     std::cerr << proton << std::endl;
 
+    if(argc>1)
+    {
+        const string   expr = argv[1];
+        const species &sp   = lib(expr);
+        std::cerr << "species=" << sp << std::endl;
+    }
+    
 }
 YACK_UDONE()
