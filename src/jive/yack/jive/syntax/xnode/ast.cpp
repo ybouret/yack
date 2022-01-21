@@ -42,6 +42,7 @@ namespace yack
                         //
                         //------------------------------------------------------
                     case internal_type: {
+                        std::cerr << "ast <" << r.name << ">" << std::endl;
                         list_of<xnode> &chld = node->sub();
                         xlist           temp;
                         while(chld.size>0) {

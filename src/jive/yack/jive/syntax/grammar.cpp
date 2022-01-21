@@ -39,6 +39,12 @@ namespace yack
                 must_own(r,"top");
                 rules.move_to_front( &coerce(r) );
             }
+            
+            const rule * grammar:: top() const throw()
+            {
+                return rules.head;
+            }
+
 
 
             void grammar:: must_own(const rule &r, const char *fn) const

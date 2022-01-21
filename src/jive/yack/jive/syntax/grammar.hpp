@@ -189,6 +189,9 @@ namespace yack
                 //! set top level rule
                 void top(const rule &);
 
+                //! get top level rult
+                const rule *top() const throw();
+                
                 //! get terminal by name
                 const terminal & operator[](const string &) const;
 

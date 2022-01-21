@@ -27,6 +27,7 @@ namespace yack
                     SPECIES << opt( CHARGES );
                     gv();
                     drop("[:blank:]");
+                    validate();
                 }
 
 
@@ -49,12 +50,14 @@ namespace yack
 
         species * builder:: parse_species(const string &expr)
         {
+            sp->top()->verbose = true;
             sp->reset();
             jive::source                              src( jive::module::open_data(expr) );
             const auto_ptr<const jive::syntax::xnode> ast = (*sp)(src);
             if(ast.is_empty()) throw exception("%s: corrupted %s",call_sign,(*(sp->label))());
             
             ast->gv("species.dot");
+            
             
             exit(1);
             return NULL;
