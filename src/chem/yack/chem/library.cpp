@@ -1,6 +1,7 @@
 
 #include "yack/chem/library.hpp"
 #include "yack/exception.hpp"
+#include "yack/chem/builder.hpp"
 
 namespace yack
 {
@@ -36,6 +37,20 @@ namespace yack
             {
                 throw exception("library is locked, cannot declare '%s'", sp->name());
             }
+        }
+
+        const species & library:: operator()(const string &expr)
+        {
+            static builder        &mgr = builder::instance();
+            const species::pointer ptr = mgr.parse_species(expr);
+            decl(ptr);
+            return *ptr;
+        }
+
+        const species & library:: operator()(const char *expr)
+        {
+            const string _(expr);
+            return (*this)(_);
         }
 
 

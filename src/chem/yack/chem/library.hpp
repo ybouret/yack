@@ -46,7 +46,9 @@ namespace yack
                 return *ptr;
             }
 
-            
+            const species & operator()(const string &expr);
+            const species & operator()(const char   *expr);
+
             virtual size_t       size() const throw(); //!< number of registered species
             const species::knot *head() const throw(); //!< fist species knot
 
