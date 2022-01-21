@@ -119,7 +119,7 @@ namespace yack
         {
             unit_t arr[4] = { 0,0,0,0 };
             coord_of_(arr,idx,(const unit_t *)&lower,(const unit_t *)&pitch);
-            return *(COORD *)arr;
+            return *coerce_cast<COORD>(arr);
         }
 
 
