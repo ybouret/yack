@@ -39,11 +39,10 @@ namespace yack
             explicit layout(const size_t d) throw(); //!< setup
             explicit layout(const layout &) throw(); //!< cleanup
 
-            //! post-construction setup
-            void setup(unit_t *lo, unit_t *hi, unit_t *w) throw();
 
-            //! check is insideg p[0..space-1]
-            bool is_inside(const unit_t *p,const unit_t *lo,const unit_t *hi) const throw();
+            void   finalize_(unit_t *lo, unit_t *hi, unit_t *width, unit_t *pitch)             throw(); //!< post-construction setup
+            bool   contains_(const unit_t *cr, const unit_t *lower, const unit_t *upper) const throw(); //!< check if inside
+            unit_t index_of_(const unit_t *cr, const unit_t *lower, const unit_t *pitch) const throw(); //!< coord to index
 
         private:
             YACK_DISABLE_ASSIGN(layout);
@@ -80,11 +79,13 @@ namespace yack
         kernel::layout(coords),
         lower(lo),
         upper(up),
-        width()
+        width(lo),
+        pitch(lo)
         {
-            setup((unit_t *) out_of_reach::address(&lower),
-                  (unit_t *) out_of_reach::address(&upper),
-                  (unit_t *) out_of_reach::address(&width) );
+            finalize_((unit_t *) out_of_reach::address(&lower),
+                      (unit_t *) out_of_reach::address(&upper),
+                      (unit_t *) out_of_reach::address(&width),
+                      (unit_t *) out_of_reach::address(&pitch));
         }
 
         //! copy
@@ -92,7 +93,8 @@ namespace yack
         kernel::layout(other),
         lower(other.lower),
         upper(other.upper),
-        width(other.width)
+        width(other.width),
+        pitch(other.pitch)
         {
         }
 
@@ -104,15 +106,12 @@ namespace yack
         //______________________________________________________________________
 
         //! check if contains coord
-        inline bool contains(const COORD c) const throw()
-        {
-            return is_inside((const unit_t*)&c, (const unit_t *)&lower, (const unit_t *)&upper);
-        }
+        inline bool   contains(const COORD c) const throw() { return contains_((const unit_t*)&c, (const unit_t *)&lower, (const unit_t *)&upper); }
 
         //! COORD => index
-        inline unit_t index_of(const COORD) const throw()
+        inline unit_t index_of(const COORD c) const throw()
         {
-            return 0;
+            return index_of_((const unit_t *)&c,(const unit_t *)&lower,(const unit_t *)&pitch);
         }
 
 
@@ -131,7 +130,7 @@ namespace yack
         const COORD lower; //!< lower coordinate
         const COORD upper; //!< upper coordinate
         const COORD width; //!< width
-        
+        const COORD pitch; //!< pitch
 
     private:
         YACK_DISABLE_ASSIGN(layout);

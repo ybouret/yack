@@ -33,6 +33,26 @@ namespace
         YACK_CHECK(D==R);
         std::cerr << std::endl;
     }
+
+    template <typename FIELD>
+    static inline void check_layout(const FIELD &F)
+    {
+        std::cerr << "testing layout" << F.dimensions << "D" << std::endl;
+        typename FIELD::loop_type loop(F.lower,F.upper);
+        loop.boot();
+        do
+        {
+            const unit_t        idx = F.index_of( *loop );
+            YACK_ASSERT(idx>=0);
+            YACK_ASSERT(idx<unit_t(F.items));
+            const cardinality_t crd = loop.index;
+            YACK_ASSERT( crd-1 == cardinality_t(idx) );
+        }
+        while(loop.next());
+        std::cerr << std::endl;
+
+    }
+
 }
 
 
@@ -49,7 +69,7 @@ YACK_UTEST(fields)
     }
     const digest md1 = hashing::md::of(H);
     display(s,H,md1);
-
+    check_layout(s);
 
 
 
@@ -64,6 +84,7 @@ YACK_UTEST(fields)
     }
     const digest md2 = hashing::md::of(H);
     display(s2,H,md2);
+    check_layout(s2);
 
 
     field3D<string> s3( "s3", layout3D( coord3D(-1,-2,-3), coord3D(4,5,6) ));
@@ -80,6 +101,7 @@ YACK_UTEST(fields)
     }
     const digest md3 = hashing::md::of(H);
     display(s3,H,md3);
+    check_layout(s3);
 
 
 
@@ -101,6 +123,7 @@ YACK_UTEST(fields)
     }
     const digest md4 = hashing::md::of(H);
     display(s4,H,md4);
+    check_layout(s4);
 
 
 }
