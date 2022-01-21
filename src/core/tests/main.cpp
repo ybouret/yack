@@ -16,6 +16,7 @@ YACK_UTEST_DECL(128)
     YACK_UTEST(functor);
     YACK_UTEST(rtti);
     YACK_UTEST(env);
+    YACK_UTEST(div);
 
     YACK_UTEST(type_ints);
     YACK_UTEST(type_traits);
