@@ -46,8 +46,7 @@ namespace yack
                 //! setup
                 template <typename NAME> inline
                 explicit real_sample_of(const NAME &id, const size_t dim=0) :
-                tableaux(3,dim),
-                sample_type(id, (*this)[1], (*this)[2], (*this)[3] )
+                tableaux(3,dim), sample_type(id, (*this)[1], (*this)[2], (*this)[3] )
                 {
                 }
                 
