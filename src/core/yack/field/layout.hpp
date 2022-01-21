@@ -42,6 +42,9 @@ namespace yack
             //! post-construction setup
             void setup(unit_t *lo, unit_t *hi, unit_t *w) throw();
 
+            //! check is insideg p[0..space-1]
+            bool is_inside(const unit_t *p,const unit_t *lo,const unit_t *hi) const throw();
+
         private:
             YACK_DISABLE_ASSIGN(layout);
         };
@@ -93,10 +96,19 @@ namespace yack
         {
         }
 
+
+
         //______________________________________________________________________
         //
         // methods
         //______________________________________________________________________
+
+        //! check if contains coord
+        inline bool contains(const COORD c) const throw()
+        {
+            return is_inside((const unit_t*)&c, (const unit_t *)&lower, (const unit_t *)&upper);
+        }
+
 
         //! display
         inline friend

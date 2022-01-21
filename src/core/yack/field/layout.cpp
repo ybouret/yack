@@ -24,7 +24,7 @@ namespace yack
         }
         
 
-        void layout:: setup(unit_t *lo, unit_t *hi, unit_t *w) throw()
+        void layout:: setup(unit_t *lo, unit_t *hi, unit_t *w)   throw()
         {
             assert(lo);
             assert(hi);
@@ -38,6 +38,23 @@ namespace yack
                 if(l>h) cswap(l,h);
                 prod *= ( w[i] = 1+h-l );
             }
+        }
+
+        bool layout:: is_inside(const unit_t *p,const unit_t *lo,const unit_t *hi) const throw()
+        {
+            assert(p!=NULL);
+            assert(lo!=NULL);
+            assert(hi!=NULL);
+
+            for(size_t i=space;i>0;--i)
+            {
+                const unit_t here = *(p++);
+                if(here<*(lo++)) return false;
+                if(here>*(hi++)) return false;
+            }
+
+            return true;
+
         }
     }
 }
