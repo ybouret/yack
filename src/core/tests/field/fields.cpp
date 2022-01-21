@@ -47,10 +47,12 @@ namespace
             YACK_ASSERT(idx<unit_t(F.items));
             const cardinality_t crd = loop.index;
             YACK_ASSERT( crd-1 == cardinality_t(idx) );
+
+            typename FIELD::coord_type pos = F.coord_of(idx);
+            YACK_ASSERT(pos == *loop);
         }
         while(loop.next());
         std::cerr << std::endl;
-
     }
 
 }

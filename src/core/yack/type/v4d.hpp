@@ -184,6 +184,13 @@ namespace yack
             return absolute(x) + absolute(y) + absolute(z) + absolute(w);
         }
 
+
+        //! test equality
+        inline friend bool operator==(const v4d &lhs, const v4d &rhs) throw()
+        {
+            return lhs.x==rhs.x && lhs.y==rhs.y && lhs.z==rhs.z && lhs.w==rhs.w;
+        }
+
         //! test different
         inline friend bool operator!=(const v4d &lhs, const v4d &rhs) throw()
         {

@@ -178,7 +178,14 @@ namespace yack
         {
             return absolute(x) + absolute(y);
         }
-        
+
+
+        //! test equality
+        inline friend bool operator==(const v2d &lhs, const v2d &rhs) throw()
+        {
+            return lhs.x==rhs.x && lhs.y==rhs.y;
+        }
+
         //! test different
         inline friend bool operator!=(const v2d &lhs, const v2d &rhs) throw()
         {

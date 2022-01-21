@@ -67,12 +67,32 @@ namespace yack
 
         unit_t layout:: index_of_(const unit_t *cr, const unit_t *lower, const unit_t *pitch) const throw()
         {
+            assert(NULL!=cr);
+            assert(NULL!=lower);
+            assert(NULL!=pitch);
+
             unit_t res = cr[0] - lower[0];
             for(size_t i=1;i<space;++i)
             {
                 res += (cr[i]-lower[i]) * pitch[i];
             }
             return res;
+        }
+
+        void  layout:: coord_of_(unit_t *arr, unit_t idx, const unit_t *lower, const unit_t *pitch) const throw()
+        {
+            assert(NULL!=arr);
+            assert(NULL!=lower);
+            assert(NULL!=pitch);
+            assert(idx>=0);
+            assert(idx<unit_t(items));
+            for(size_t i=space;i>0;)
+            {
+                --i;
+                const ldiv_t d = ldiv(idx,pitch[i]);
+                arr[i] = d.quot + lower[i];
+                idx    = d.rem;
+            }
         }
 
     }

@@ -36,7 +36,7 @@ namespace yack
         typedef layout1D            layout_type; //!< alias
         typedef coord1D             coord_type;  //!< alias
         typedef loop_on<coord_type> loop_type;   //!< alias
-        static const size_t dimensions = 1;      //!< static dims
+        static const size_t  dimensions = 1;     //!< static dims
 
         //______________________________________________________________________
         //

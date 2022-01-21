@@ -40,9 +40,10 @@ namespace yack
             explicit layout(const layout &) throw(); //!< cleanup
 
 
-            void   finalize_(unit_t *lo, unit_t *hi, unit_t *width, unit_t *pitch)             throw(); //!< post-construction setup
-            bool   contains_(const unit_t *cr, const unit_t *lower, const unit_t *upper) const throw(); //!< check if inside
-            unit_t index_of_(const unit_t *cr, const unit_t *lower, const unit_t *pitch) const throw(); //!< coord to index
+            void   finalize_(unit_t *lo, unit_t *hi, unit_t *width, unit_t *pitch)                    throw(); //!< post-construction setup
+            bool   contains_(const unit_t *cr, const unit_t *lower, const unit_t *upper)        const throw(); //!< check if inside
+            unit_t index_of_(const unit_t *cr, const unit_t *lower, const unit_t *pitch)        const throw(); //!< coord to index
+            void   coord_of_(unit_t *arr, unit_t idx, const unit_t *lower, const unit_t *pitch) const throw(); //!< index to coord
 
         private:
             YACK_DISABLE_ASSIGN(layout);
@@ -105,13 +106,20 @@ namespace yack
         // methods
         //______________________________________________________________________
 
+
+
         //! check if contains coord
         inline bool   contains(const COORD c) const throw() { return contains_((const unit_t*)&c, (const unit_t *)&lower, (const unit_t *)&upper); }
 
         //! COORD => index
-        inline unit_t index_of(const COORD c) const throw()
+        inline unit_t index_of(const COORD c) const throw() { return index_of_((const unit_t *)&c,(const unit_t *)&lower,(const unit_t *)&pitch); }
+
+        //! index => COORD
+        inline COORD  coord_of(const unit_t idx) const throw()
         {
-            return index_of_((const unit_t *)&c,(const unit_t *)&lower,(const unit_t *)&pitch);
+            unit_t arr[4] = { 0,0,0,0 };
+            coord_of_(arr,idx,(const unit_t *)&lower,(const unit_t *)&pitch);
+            return *(COORD *)arr;
         }
 
 

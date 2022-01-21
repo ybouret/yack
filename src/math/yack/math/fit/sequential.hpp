@@ -24,13 +24,19 @@ namespace yack
             class sequential
             {
             public:
+                //______________________________________________________________
+                //
+                // types and definitions
+                //______________________________________________________________
                 typedef readable<ORDINATE> parameters; //!< alias
                 typedef writable<ORDINATE> field_type; //!< alias
                 typedef readable<bool>     flags_type; //!< alias
 
                 
-                //! cleanup
-                inline virtual ~sequential() throw() {}
+                //______________________________________________________________
+                //
+                // non-virtual interface
+                //______________________________________________________________
 
                 //! initialize call
                 inline ORDINATE start(const ABSCISSA ini, const parameters &A, const variables &vars)
@@ -45,7 +51,11 @@ namespace yack
                     return on_reach(org,saved=end,A,vars);
                 }
 
-
+                //______________________________________________________________
+                //
+                // C++
+                //______________________________________________________________
+                inline virtual ~sequential() throw() {}           //!< cleanup
             protected:
                 inline explicit sequential() throw() : saved() {} //!< setup
 
