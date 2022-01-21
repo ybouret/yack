@@ -1,6 +1,7 @@
 
 #include "yack/chem/builder.hpp"
 #include "yack/jive/syntax/xnode.hpp"
+#include "yack/exception.hpp"
 
 namespace yack
 {
@@ -17,10 +18,14 @@ namespace yack
                 {
                 }
 
-                inline explicit sp_parser() : jive::parser("chemical::species::parser")
+                inline explicit sp_parser() : jive::parser("chemical::species")
                 {
-
-                    
+                    compound &SPECIES = agg("species");
+                    SPECIES << term("name","[:upper:][:word:]*");
+                    compound &CHARGES = alt("charges");
+                    CHARGES << oom( term('+') ) << oom( term('-') );
+                    SPECIES << opt( CHARGES );
+                    gv();
                     drop("[:blank:]");
                 }
 
@@ -47,7 +52,10 @@ namespace yack
             sp->reset();
             jive::source                              src( jive::module::open_data(expr) );
             const auto_ptr<const jive::syntax::xnode> ast = (*sp)(src);
-
+            if(ast.is_empty()) throw exception("%s: corrupted %s",call_sign,(*(sp->label))());
+            
+            ast->gv("species.dot");
+            
             exit(1);
             return NULL;
         }
