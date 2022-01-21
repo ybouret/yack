@@ -5,6 +5,7 @@
 
 #include "yack/string.hpp"
 #include "yack/ptr/ark.hpp"
+#include "yack/associative/suffix/set.hpp"
 
 namespace yack
 {
@@ -24,7 +25,9 @@ namespace yack
             //
             // types and definitions
             //__________________________________________________________________
-            typedef ark_ptr<string,const species> pointer;
+            typedef ark_ptr<string,const species> pointer; //!< alias
+            typedef suffix_set<string,pointer>    set;     //!< alias for database
+            typedef set::knot_type                knot;    //!< alias for fast access
 
             //__________________________________________________________________
             //
@@ -35,7 +38,7 @@ namespace yack
             //! setup with name+algebraic charge
             template <typename NAME> inline
             explicit species(const NAME &user_n, const unit_t user_z) :
-            name(user_n), z(user_z)
+            name(user_n), z(user_z), indx(0)
             {
             }
 
@@ -43,7 +46,10 @@ namespace yack
             //
             // methods
             //__________________________________________________________________
-            const string &key() const throw();
+            const string &key() const throw(); //!< for pointer
+
+            //! display
+            friend std::ostream & operator<<(std::ostream &, const species &);
 
             //__________________________________________________________________
             //
@@ -51,7 +57,7 @@ namespace yack
             //__________________________________________________________________
             const string name;   //!< unique name
             const unit_t z;      //!< algebraic charge
-
+            const size_t indx;   //!< unique index in library
 
         private:
             YACK_DISABLE_COPY_AND_ASSIGN(species);

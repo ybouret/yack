@@ -11,7 +11,7 @@ namespace yack
     //__________________________________________________________________________
     //
     //
-    //! interfacer to lockable objects
+    //! interface to lockable objects
     //
     //__________________________________________________________________________
     class lockable
@@ -40,6 +40,9 @@ namespace yack
             YACK_DISABLE_COPY_AND_ASSIGN(scope);
         };
 
+
+
+
         //______________________________________________________________________
         //
         // C++
@@ -67,7 +70,23 @@ namespace yack
 
     //! shared giant top level lock
 #define YACK_GIANT_LOCK() YACK_LOCK(lockable::giant())
+
     
+    //__________________________________________________________________________
+    //
+    //! user defined scope unlocking, to use after a try_lock
+    //__________________________________________________________________________
+    class return_unlocked
+    {
+    public:
+        return_unlocked(lockable &) throw(); //!< do nothing
+        ~return_unlocked()          throw(); //!< unlock
+
+    private:
+        lockable &host;
+        YACK_DISABLE_COPY_AND_ASSIGN(return_unlocked);
+    };
+
 }
 
 #endif

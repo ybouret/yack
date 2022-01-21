@@ -17,4 +17,7 @@ namespace yack
         host.unlock();
     }
 
+    return_unlocked::  return_unlocked(lockable &args) throw() : host(args) {}
+    return_unlocked:: ~return_unlocked() throw() { host.unlock(); }
+
 }

@@ -9,6 +9,9 @@ yack_testing(chem)
 
 enable_testing()
 
+add_test(species test-chem species)
+add_test(library test-chem library)
+
 
 
 
