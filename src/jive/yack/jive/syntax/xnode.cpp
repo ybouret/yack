@@ -129,6 +129,29 @@ namespace yack
                 return *static_cast<xlist *>(data);
             }
 
+            size_t xnode:: size() const throw()
+            {
+                switch((**this).type)
+                {
+                    case internal_type: return sub().size;
+                    case terminal_type: return word().size;
+                }
+                // never get here
+                return 0;
+            }
+            
+            const xnode * xnode::head() const throw()
+            {
+                assert(internal_type==(**this).type);
+                return static_cast<const xlist *>(data)->head;
+            }
+            
+            const token & xnode:: word() const throw()
+            {
+                assert(terminal_type==(**this).type);
+                return **static_cast<lexeme *>(data);
+            }
+            
             const xlist & xnode:: sub() const throw()
             {
                 assert(internal_type==(**this).type);

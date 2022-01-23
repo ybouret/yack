@@ -25,6 +25,7 @@ namespace yack
             //__________________________________________________________________
             class xnode :
             public object,
+            public collection,
             public authority<const rule>,
             public ios::vizible,
             public ios::serializable
@@ -72,7 +73,11 @@ namespace yack
                 static void           ret(lexer &,xnode *) throw(); //!< return node to lexer, node is deleted
                 void                  gv(const string &)     const; //!< save/render graphviz
                 void                  gv(const char   *)     const; //!< save/render graphviz
-
+                
+                const xnode           *head() const throw(); //!< first children for internal
+                const token           &word() const throw(); //!< return token   for terminal
+                virtual size_t         size() const throw(); //!< internal: list size, terminal: word.size
+                
                 //______________________________________________________________
                 //
                 //! concrete tree to abstract tree, may return NULL
