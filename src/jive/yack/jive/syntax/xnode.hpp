@@ -74,6 +74,10 @@ namespace yack
                 void                  gv(const string &)     const; //!< save/render graphviz
                 void                  gv(const char   *)     const; //!< save/render graphviz
                 
+                //______________________________________________________________
+                //
+                // helpers
+                //______________________________________________________________
                 const xnode           *head() const throw(); //!< first children for internal
                 const token           &word() const throw(); //!< return token   for terminal
                 virtual size_t         size() const throw(); //!< internal: list size, terminal: word.size

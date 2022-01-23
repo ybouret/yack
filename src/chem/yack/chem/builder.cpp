@@ -21,12 +21,14 @@ namespace yack
                 
                 inline explicit sp_parser() : jive::parser("chemical::species")
                 {
-                    compound &SPECIES = agg("species");
+                    compound   &SPECIES = agg("species");
+                    //const rule &COEFF   = term("coeff","-?[1-9][0-9]*");
                     SPECIES << term("name","[:upper:][:word:]*");
-                    compound &CHARGES = alt("charges");
-                    CHARGES << oom( term('+') ) << oom( term('-') );
+                    compound   &CHARGES  = alt("charges");
+                    CHARGES << term("positive","\\x2B+");
+                    CHARGES << term("negative","\\x2D+");
                     SPECIES << opt( CHARGES );
-                    //gv();
+                    gv();
                     drop("[:blank:]");
                     validate();
                 }
@@ -63,22 +65,28 @@ namespace yack
                 tr.walk(*ast);
             }
             
-            const jive::syntax::xlist &content = ast->sub();
-            const jive::syntax::xnode *node    = content.head;
-            string                     name    = node->word().to_string();
-            const size_t               nsgn    = content.size-1;
-            unit_t                     z       = 0;
-            if(nsgn)
+            const jive::syntax::xnode *node = ast->head();
+            string                     name = node->word().to_string();
+            unit_t                     z    = 0;
+            if( NULL != (node=node->next) )
             {
-                char s = '+';
-                node=node->next;
-                if('-'==*((**node).name))
+                const string &id = *(**node).name;
+                const size_t  nz = node->size();
+                char          s  = 0;
+                if( "negative" == id)
                 {
-                    s='-';
-                    z=-z;
+                    z = -unit_t(nz);
+                    s = '-';
                 }
-                for(size_t i=nsgn;i>0;--i) name += s;
+                if( "positive" == id)
+                {
+                    z = unit_t(nz);
+                    s = '+';
+                }
+                for(size_t i=nz;i>0;--i)
+                    name += s;
             }
+            
             return new species(name,z);
         }
         
