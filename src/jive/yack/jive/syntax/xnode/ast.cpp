@@ -1,6 +1,5 @@
 #include "yack/jive/syntax/xnode.hpp"
-#include "yack/jive/syntax/rule/terminal.hpp"
-#include "yack/jive/syntax/rule/compound/aggregate.hpp"
+#include "yack/jive/syntax/rule/all.hpp"
 
 
 namespace yack
@@ -10,6 +9,36 @@ namespace yack
         namespace syntax
         {
 
+            static inline
+            xnode * ast_internal(xnode *node) throw()
+            {
+                assert(NULL!=node);
+                list_of<xnode> &chld = node->sub(); // this child(ren)
+                xlist           temp;               // temporary
+                while(chld.size>0)
+                {
+                    // extract head child
+                    auto_ptr<xnode> ch = xnode::ast(chld.pop_front());  if(ch.is_empty()) continue;
+                    const rule     &sr = **ch;
+                    
+                    // process
+                    switch(sr.uuid)
+                    {
+                        case repeat::mark:
+                        case option::mark:
+                            temp.merge_back(ch->sub());
+                            break;
+                            
+                        default:
+                            temp.push_back(ch.yield());
+                    }
+                }
+                
+                
+                chld.swap_with(temp); // assign newly formed child(ren)
+                return node;
+            }
+            
             xnode * xnode:: ast(xnode *node) throw()
             {
                 assert(node);
@@ -41,16 +70,7 @@ namespace yack
                         // process an internal
                         //
                         //------------------------------------------------------
-                    case internal_type: {
-                        std::cerr << "ast <" << r.name << "> [" << yack_fourcc(r.uuid) << "]" << std::endl;
-                        list_of<xnode> &chld = node->sub();
-                        xlist           temp;
-                        while(chld.size>0) {
-                            xnode *ch =ast(chld.pop_front());
-                            if(ch) temp.push_back(ch);
-                        }
-                        chld.swap_with(temp);
-                    } break;
+                    case internal_type: return ast_internal(node);
                 }
 
                 return node;

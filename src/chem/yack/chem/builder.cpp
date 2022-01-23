@@ -1,6 +1,7 @@
 
 #include "yack/chem/builder.hpp"
 #include "yack/jive/syntax/xnode.hpp"
+#include "yack/jive/syntax/translator.hpp"
 #include "yack/exception.hpp"
 
 namespace yack
@@ -57,6 +58,9 @@ namespace yack
             if(ast.is_empty()) throw exception("%s: corrupted %s",call_sign,(*(sp->label))());
             
             ast->gv("species.dot");
+            
+            jive::syntax::translator tr;
+            tr.walk(*ast);
             
             
             exit(1);
