@@ -19,6 +19,9 @@ namespace yack
 
         perfect:: ~perfect() throw()
         {
+            assert(root);
+            delete root;
+            root = NULL;
         }
 
         perfect:: perfect() :

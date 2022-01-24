@@ -1,7 +1,7 @@
 #include "yack/utest/driver.hpp"
 #include <cstdio>
 
-YACK_UTEST_DECL(128)
+YACK_UTEST_DECL(256)
 {
     YACK_UTEST(crc32);
     YACK_UTEST(error);
