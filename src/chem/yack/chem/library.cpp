@@ -42,7 +42,7 @@ namespace yack
         const species & library:: operator()(const string &expr)
         {
             static builder        &mgr = builder::instance();
-            const species::pointer ptr = mgr.parse_species(expr);
+            const species::pointer ptr = NULL;
             decl(ptr);
             return *ptr;
         }

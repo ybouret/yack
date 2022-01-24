@@ -22,7 +22,13 @@ namespace yack
             class translator
             {
             public:
-                typedef jive::lexeme lexeme;
+                //______________________________________________________________
+                //
+                // types and definition
+                //______________________________________________________________
+                typedef jive::lexeme lexeme; //!< alias
+
+
                 //______________________________________________________________
                 //
                 // C++

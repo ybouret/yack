@@ -36,6 +36,10 @@ namespace yack
                     compound &FIRST_COEFF   = agg("first_coeff") << opt(SIGN) << OPT_COEFF;
 
 
+                    //__________________________________________________________
+                    //
+                    // define an optional first coefficient
+                    //__________________________________________________________
                     EQUILIBRIUM << FIRST_COEFF;
 
                     //__________________________________________________________
@@ -55,6 +59,10 @@ namespace yack
                         SPECIES << mark(']');
                     }
 
+                    //__________________________________________________________
+                    //
+                    // define optional extra species
+                    //__________________________________________________________
                     EQUILIBRIUM << SPECIES;
                     compound &EXTRA_COEFF = agg("extra_coeff") << SIGN << OPT_COEFF;
                     EQUILIBRIUM << zom( cat(EXTRA_COEFF,SPECIES) );
@@ -83,12 +91,12 @@ namespace yack
             
         }
         
-        species * builder:: parse_species(const string &expr)
+        builder::xnode * builder:: compile(const string &expr)
         {
             eq->top()->verbose = true;
             eq->reset();
-            source                              src( module::open_data(expr) );
-            const auto_ptr<const syntax::xnode> ast = eq->parse(src);
+            source                  src( module::open_data(expr) );
+            auto_ptr<syntax::xnode> ast = eq->parse(src);
             if(ast.is_empty()) throw exception("%s: corrupted %s",call_sign,(*(eq->label))());
             
             ast->gv("eq.dot");
@@ -97,8 +105,7 @@ namespace yack
                 tr.walk(*ast);
             }
 
-            exit(1);
-            return NULL;
+            return ast.yield();
         }
         
         

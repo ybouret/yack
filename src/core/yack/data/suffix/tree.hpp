@@ -132,6 +132,12 @@ namespace yack
                 return deep;
             }
 
+            //! reverse data order
+            inline void reverse() throw()
+            {
+                data.reverse();
+            }
+
             //__________________________________________________________________
             //
             //! search method

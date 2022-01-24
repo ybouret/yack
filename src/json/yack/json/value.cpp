@@ -11,7 +11,7 @@ namespace yack
 
         Array:: ~Array() throw() {}
 
-        Array:: Array(const Array &arr) : collection(), Array_(arr) {}
+        Array:: Array(const Array &arr) : collection(), object(), Array_(arr) {}
 
         Array & Array:: operator=(const Array &arr)
         {
@@ -30,6 +30,40 @@ namespace yack
             return back();
         }
 
+    }
+
+}
+
+namespace yack
+{
+    namespace JSON
+    {
+
+        Object:: Object() throw() : Object_() {}
+
+        Object:: ~Object() throw() {}
+
+        Object:: Object(const Object &arr) : collection(), large_object(), Object_(arr) {}
+
+        Object & Object:: operator=(const Object &obj)
+        {
+            {
+                Object_       &self = *this;
+                const Object_ &that = obj;
+                self = that;
+            }
+            return *this;
+        }
+
+    }
+
+}
+
+
+namespace yack
+{
+    namespace JSON
+    {
 
         Pair_:: ~Pair_() throw()
         {
@@ -40,6 +74,8 @@ namespace yack
         val_()
         {
         }
+
+        const string & Pair_:: key() const throw() { return key_; }
 
         std::ostream & operator<<(std::ostream &os, const Pair_ &p)
         {
@@ -80,6 +116,9 @@ namespace yack
                 case isArray:
                     jkill<Array>(impl);
                     break;
+
+                case isObject:
+                    jkill<Object>(impl);
             }
 
             qword        = 0;
@@ -117,6 +156,10 @@ namespace yack
 
                 case isArray:
                     impl = jcopy<Array>(other.impl);
+                    break;
+
+                case isObject:
+                    impl = jcopy<Object>(other.impl);
                     break;
             }
         }
@@ -163,6 +206,14 @@ namespace yack
             impl = new Array();
         }
 
+        const asObject_ asObject = {};
+
+        Value:: Value(const asObject_ &) :
+        type(isObject)
+        {
+            impl = new Object();
+        }
+
 
 
         void Value:: xch(Value &other) throw()
@@ -184,6 +235,7 @@ template <> const TYPE & Value::as<TYPE>() const throw() { assert(is##TYPE==type
 
         YACK_JSON_VALUE_AS(String)
         YACK_JSON_VALUE_AS(Array)
+        YACK_JSON_VALUE_AS(Object)
 
         template <> Number &       Value::as<Number>()       throw() { return number; }
         template <> const Number & Value::as<Number>() const throw() { return number; }
@@ -200,6 +252,18 @@ template <> const TYPE & Value::as<TYPE>() const throw() { assert(is##TYPE==type
         {
             while(depth-- > 0) os << ' ';
             return os;
+        }
+
+        static inline
+        void display_pair(std::ostream &os,
+                          const Pair_  &p,
+                          const size_t depth,
+                          const size_t width)
+        {
+            jspace(os,depth); os << '\"' << p.key_ << '\"';
+            for(size_t i=p.key_.size();i<width;++i) os << ' ';
+            os << " : ";
+            os << p.val_;
         }
 
         void Value:: display(std::ostream &os, size_t depth) const
@@ -229,8 +293,29 @@ template <> const TYPE & Value::as<TYPE>() const throw() { assert(is##TYPE==type
                     jspace(os,depth);
                     os << ']';
                 } break;
-                default:
+
+                case isObject:
+                    os << '{' << std::endl;
+                    ++depth;
+                    const Object &obj = as<Object>();
+                    if(obj.size()>0)
+                    {
+                        const size_t           w = obj.tree.depth();
+                        size_t                 i  = 1;
+                        Object::const_iterator it = obj.begin();
+                        display_pair(os,**it,depth,w);
+                        for(++i,++it;i<=obj.size();++i,++it)
+                        {
+                            os << ',' << std::endl;
+                            display_pair(os,**it,depth,w);
+                        }
+
+                    }
+                    --depth;
+                    jspace(os,depth);
+                    os << '}';
                     break;
+
             }
         }
     }

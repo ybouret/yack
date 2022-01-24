@@ -29,9 +29,9 @@ namespace yack
             //
             // C++
             //__________________________________________________________________
-            explicit perfect();
-            virtual ~perfect() throw();
-            explicit perfect(const char * keys[], const size_t size);
+            explicit perfect();         //!< setup
+            virtual ~perfect() throw(); //!< cleanup
+            explicit perfect(const char * keys[], const size_t size); //!< register keys
 
 
             //__________________________________________________________________

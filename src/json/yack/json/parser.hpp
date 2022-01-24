@@ -12,20 +12,25 @@ namespace yack
 
     namespace JSON
     {
-
-        //! parser
-        class Parser : public jive::parser
+        
+        //______________________________________________________________________
+        //
+        //
+        //! JSON parser
+        //
+        //______________________________________________________________________
+        class Parser : public jive::parser, public Value
         {
         public:
-            explicit Parser();
-            virtual ~Parser() throw();
+            explicit Parser();         //!< setup
+            virtual ~Parser() throw(); //!< cleanup
 
-            void operator()(jive::module *);
-            
-            
+            Value &operator()(jive::module *); //!< return *this after parsing
+
         private:
             YACK_DISABLE_COPY_AND_ASSIGN(Parser);
             auto_ptr<jive::syntax::translator> tr;
+
         };
 
     }

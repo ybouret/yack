@@ -14,14 +14,22 @@ namespace yack
     namespace chemical
     {
 
+        //______________________________________________________________________
+        //
+        //
+        //! builder and database
+        //
+        //______________________________________________________________________
         class builder : public singleton<builder>
         {
         public:
             static const at_exit::longevity life_time = 0; //!< life time
             static const char               call_sign[];   //!< call sign
+            typedef jive::syntax::xnode     xnode;         //!< alias
 
-            species * parse_species(const string &);
-            
+            //! from species to equations...
+            xnode *compile(const string &expr);
+
 
         private:
             YACK_DISABLE_COPY_AND_ASSIGN(builder);

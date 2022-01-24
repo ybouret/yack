@@ -74,6 +74,9 @@ namespace yack
         //! release
         inline void release() throw() { tree.release(); }
 
+        //! reverse
+        inline void reverse() throw() { tree.reverse(); }
+
         //______________________________________________________________________
         //
         // specific methods

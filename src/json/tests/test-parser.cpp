@@ -15,11 +15,16 @@ YACK_UTEST(parser)
     JSON::Value  v5 = s;
     JSON::Value  v6 = JSON::asArray;
 
+    YACK_SIZEOF(JSON::Array);
+    YACK_SIZEOF(JSON::Object);
+
+
     JSON::Parser J;
 
     if(argc>1)
     {
-        J(jive::module::open_file(argv[1]));
+        const JSON::Value &jv = J(jive::module::open_file(argv[1]));
+        std::cerr << jv << std::endl;
     }
 
 }

@@ -16,12 +16,17 @@ namespace yack
         {
             "empty_array",
             "heavy_array",
-            "pair"
+            "pair",
+            "empty_object",
+            "heavy_object"
         };
 
-#define YACK_JSON_EMPTY_ARRAY 0
-#define YACK_JSON_HEAVY_ARRAY 1
-#define YACK_JSON_PAIR        2
+#define YACK_JSON_EMPTY_ARRAY  0
+#define YACK_JSON_HEAVY_ARRAY  1
+#define YACK_JSON_PAIR         2
+#define YACK_JSON_EMPTY_OBJECT 3
+#define YACK_JSON_HEAVY_OBJECT 4
+
 
         static const char *ScalarKW[] =
         {
@@ -42,8 +47,9 @@ namespace yack
         class Translator : public jive::syntax::translator
         {
         public:
-            inline  Translator() :
+            inline  Translator(Value &tgt) :
             jive::syntax::translator(),
+            target(tgt),
             scalars( YACK_HASHING_PERFECT(ScalarKW) ),
             structs( YACK_HASHING_PERFECT(StructKW) ),
             vstack(),
@@ -51,6 +57,7 @@ namespace yack
             {}
             inline ~Translator() throw() {}
 
+            Value                 &target;
             const hashing::perfect scalars;
             const hashing::perfect structs;
             list<Value>            vstack;
@@ -62,16 +69,18 @@ namespace yack
 
             virtual void on_init()
             {
-                std::cerr << "<JSON>" << std::endl;
                 vstack.free();
                 pstack.free();
             }
 
             virtual void on_quit() throw()
             {
-                std::cerr << "vstack=" << vstack << std::endl;
-                std::cerr << "pstack=" << pstack << std::endl;
-                std::cerr << "<JSON/>" << std::endl;
+                if(1==vstack.size())
+                {
+                    target.xch(vstack.back());
+                }
+                vstack.free();
+                pstack.free();
             }
 
             Value & new_value()
@@ -85,7 +94,7 @@ namespace yack
 
             virtual void on_terminal(const lexeme &lex)
             {
-                jive::syntax::translator::on_terminal(lex);
+                //jive::syntax::translator::on_terminal(lex);
                 const string name = *lex.name;
                 Value v;
                 switch( scalars(name) )
@@ -112,10 +121,11 @@ namespace yack
 
             virtual void on_internal(const string &name, const size_t size)
             {
-                jive::syntax::translator::on_internal(name,size);
+                //jive::syntax::translator::on_internal(name,size);
                 switch( structs(name) )
                 {
                     case YACK_JSON_EMPTY_ARRAY: {
+                        assert(0==size);
                         Value tmp( asArray );
                         new_value().xch(tmp);
                     } break;
@@ -148,6 +158,31 @@ namespace yack
                     } break;
 
 
+                    case YACK_JSON_EMPTY_OBJECT: {
+                        assert(0==size);
+                        Value tmp( asObject );
+                        new_value().xch(tmp);
+                    } break;
+
+
+                    case YACK_JSON_HEAVY_OBJECT: {
+                        assert(size<=pstack.size());
+                        Value  tmp( asObject );
+                        {
+                            Object &obj = tmp.as<Object>();
+                            for(size_t i=size;i>0;--i)
+                            {
+                                obj.insert( pstack.back() );
+                                pstack.pop_back();
+                            }
+                            obj.reverse();
+                        }
+                        new_value().xch(tmp);
+                    } break;
+
+
+
+
 
                     default:
                         throw exception("unknown '%s'", name() );
@@ -161,7 +196,7 @@ namespace yack
 
 
         Parser:: Parser() : jive::parser("JSON"),
-        tr( new Translator() )
+        tr( new Translator(*this) )
         {
             compound &self = alt("JSON");
 
@@ -201,7 +236,7 @@ namespace yack
             drop("[:blank:]");
             endl("[:endl:]");
 
-            gv();
+            //gv();
             validate();
 
         }
@@ -210,16 +245,20 @@ namespace yack
         {
         }
 
-        void Parser:: operator()(jive::module *m)
+        Value &Parser:: operator()(jive::module *m)
         {
             assert(m);
             reset();
+            nil();
+
             jive::source                  src(m);
             auto_ptr<jive::syntax::xnode> ast = parse(src);
             if(ast.is_empty()) throw exception("corrupted JSON parser");
 
             tr->walk(*ast);
 
+
+            return *this;
         }
 
     }
