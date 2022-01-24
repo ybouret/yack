@@ -115,6 +115,7 @@ YACK_UTEST_DECL(128)
     YACK_UTEST(hashing_fcn);
     YACK_UTEST(hashing_hmac);
     YACK_UTEST(hashing_key);
+    YACK_UTEST(hashing_perfect);
 
     YACK_UTEST(rand_bits);
     YACK_UTEST(rand_metrics);
