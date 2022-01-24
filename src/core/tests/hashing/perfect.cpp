@@ -8,6 +8,19 @@ using namespace yack;
 
 YACK_UTEST(hashing_perfect)
 {
+    static const char *info[] =
+    {
+        "hello",
+        "hell",
+        "world"
+    };
+
+    {
+        const hashing::perfect tab(YACK_HASHING_PERFECT(info));
+        tab.gv("tab.dot");
+
+    }
+
     hashing::perfect mph;
     vector<string>   keys;
 

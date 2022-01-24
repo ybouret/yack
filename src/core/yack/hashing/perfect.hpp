@@ -31,6 +31,8 @@ namespace yack
             //__________________________________________________________________
             explicit perfect();
             virtual ~perfect() throw();
+            explicit perfect(const char * keys[], const size_t size);
+
 
             //__________________________________________________________________
             //
@@ -98,6 +100,9 @@ namespace yack
             node_type *root;
             int        hash;
         };
+
+        //! helper for static tables
+#define YACK_HASHING_PERFECT(KEYS) KEYS,sizeof(KEYS)/sizeof(KEYS[0])
 
     }
 

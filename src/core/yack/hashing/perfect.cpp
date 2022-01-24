@@ -49,6 +49,26 @@ namespace yack
         {
         }
 
+        perfect:: perfect(const char * keys[], const size_t size) :
+        root( new node_type(0,0) ),
+        hash(0)
+        {
+            try
+            {
+                assert(keys);
+                for(size_t i=0;i<size;++i)
+                {
+                    insert(keys[i]);
+                }
+            }
+            catch(...)
+            {
+                delete root;
+                root = NULL;
+                throw;
+            }
+        }
+
 
 
         void perfect:: insert(const void   *addr,
