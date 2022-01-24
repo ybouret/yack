@@ -29,15 +29,7 @@ namespace yack
             return os;
         }
 
-        token & lexeme::operator*() throw()
-        {
-            return data;
-        }
-
-        const token & lexeme::operator*() const throw()
-        {
-            return data;
-        }
+        
 
 
 

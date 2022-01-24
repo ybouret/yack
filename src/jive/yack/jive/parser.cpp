@@ -18,7 +18,7 @@ namespace yack
         }
 
 
-        syntax::xnode * parser:: operator()(source &src)  
+        syntax::xnode * parser:: parse(source &src)  
         {
             return run(src,*this);
         }

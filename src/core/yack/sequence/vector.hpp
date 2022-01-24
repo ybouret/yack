@@ -108,6 +108,18 @@ namespace yack
         }
 
 
+        //! assign by (optimizer) copy/swap
+        inline vector & operator=( const vector &other)
+        {
+            if(this!=&other)
+            {
+                vector temp(other);
+                swap_with(temp);
+            }
+            return *this;
+        }
+
+
         //______________________________________________________________________
         //
         // collection interface
@@ -238,7 +250,6 @@ namespace yack
      
 
     private:
-        YACK_DISABLE_ASSIGN(vector);
         size_t        count; //!< size
         size_t        utter; //!< capacity
         size_t        owned; //!< memory

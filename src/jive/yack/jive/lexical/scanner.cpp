@@ -263,7 +263,7 @@ namespace yack
                     }
 
                     lexeme *lx = newlex(best->name,*word);
-                    (**lx).swap_with(word);
+                    lx->data.swap_with(word);
                     return lx;
                 }
 

@@ -22,7 +22,7 @@ namespace yack
             {
                 if(word.size<=0) throw exception("<%s> returned empty", (*label)());
                 lexeme *lx = newlex(label,*word);
-                (**lx).swap_with(word);
+                lx->data.swap_with(word);
                 root->store(lx);
                 return *lx;
             }

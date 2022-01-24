@@ -35,9 +35,7 @@ namespace yack
 
             //! full display: ctx+uuid+data
             friend std::ostream & operator<<(std::ostream &, const lexeme &);
-
-            token       & operator*()       throw(); //!< access
-            const token & operator*() const throw(); //!< access
+            
 
             //__________________________________________________________________
             //
@@ -47,10 +45,10 @@ namespace yack
             const size_t indx; //!< index
             lexeme      *next; //!< for list/pool
             lexeme      *prev; //!< for list/pool
+            token        data; //!< from scanner
 
         private:
             YACK_DISABLE_COPY_AND_ASSIGN(lexeme);
-            token     data; //!< from scanner
 
         };
 

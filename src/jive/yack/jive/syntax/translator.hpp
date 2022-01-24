@@ -22,6 +22,7 @@ namespace yack
             class translator
             {
             public:
+                typedef jive::lexeme lexeme;
                 //______________________________________________________________
                 //
                 // C++
@@ -33,14 +34,15 @@ namespace yack
                 //
                 // virtual interface
                 //______________________________________________________________
-                virtual void on_terminal(const string &, const token&); //!< call with name/data
+                virtual void on_terminal(const lexeme &);               //!< call with name/data
                 virtual void on_internal(const string &, const size_t); //!< call with name/size
+
 
                 //______________________________________________________________
                 //
                 // non-virtual interface
                 //______________________________________________________________
-                void         walk(const xnode &tree); //!< recursive travelling
+                void         walk(const xnode &tree); //!< init/inspect/quit
 
 
             protected:
@@ -49,8 +51,9 @@ namespace yack
 
             private:
                 YACK_DISABLE_COPY_AND_ASSIGN(translator);
-                void inspect(const xnode *node);
-                
+                void         inspect(const xnode *node);    //!< recursive call
+                virtual void on_init();                     //!< prepare resources
+                virtual void on_quit() throw();             //!< free resources
             };
         }
 

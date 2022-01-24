@@ -47,7 +47,7 @@ namespace yack
                         {
                             case standard:
                                 l += " = '";
-                                l += (*lex()).to_string();
+                                l += lex().data.to_string();
                                 l += "'";
                                 fp << '[';
                                 add_label(fp,l());

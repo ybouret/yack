@@ -57,7 +57,7 @@ YACK_UTEST(eval)
     if( argc>1 )
     {
         jive::source                  src( jive::module::open_file(argv[1]) );
-        auto_ptr<jive::syntax::xnode> tree = eval(src);
+        auto_ptr<jive::syntax::xnode> tree = eval.parse(src);
 
         if(tree.is_valid())
         {

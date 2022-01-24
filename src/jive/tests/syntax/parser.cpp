@@ -75,7 +75,7 @@ YACK_UTEST(parser)
     if(argc>1)
     {
         jive::source                  src( jive::module::open_file(argv[1]) );
-        auto_ptr<jive::syntax::xnode> tree = J(src);
+        auto_ptr<jive::syntax::xnode> tree = J.parse(src);
         YACK_ASSERT(tree.is_valid());
         tree->gv("tree.dot");
         ios::serializer::cfile::save("tree.bin",*tree);

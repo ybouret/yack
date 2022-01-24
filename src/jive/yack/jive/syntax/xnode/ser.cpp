@@ -19,7 +19,7 @@ namespace yack
                 {
                     case terminal_type: {
                         const lexeme &l = lex();
-                        const token  &t = *l;
+                        const token  &t = l.data;
                         written += ios::encoder::serialize(fp,t.size);
                         for(const character *ch=t.head;ch;ch=ch->next,++written)
                         {

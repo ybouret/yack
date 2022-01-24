@@ -23,18 +23,33 @@ namespace yack
                 return os;
             }
 
+            void translator:: on_init() {}
+
+            void translator:: on_quit() throw()
+            {
+            }
+
 
 
             void translator:: walk(const xnode &tree)
             {
                 depth = 0;
-                inspect(&tree);
+                try {
+                    on_init();
+                    inspect(&tree);
+                    on_quit();
+                }
+                catch(...)
+                {
+                    on_quit();
+                    throw;
+                }
             }
 
-            void translator:: on_terminal(const string &name, const token &data)
+            void translator:: on_terminal(const lexeme &lex)
             {
-                indent(std::cerr) << "[push] " << name;
-                if(data.size) std::cerr << "@'" << data << "'";
+                indent(std::cerr) << "[push] " << lex.name;
+                if(lex.data.size) std::cerr << "@'" <<  lex.data << "'";
                 std::cerr << std::endl;
             }
 
@@ -50,10 +65,9 @@ namespace yack
                 const rule &r = **node;
                 switch(r.type)
                 {
-                    case terminal_type: {
-                        const lexeme &lex = node->lex();
-                        on_terminal(*lex.name,*lex);
-                    } break;
+                    case terminal_type:
+                        on_terminal(node->lex());
+                     break;
 
                     case internal_type:
                         ++depth; {

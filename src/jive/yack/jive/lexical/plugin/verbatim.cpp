@@ -42,7 +42,7 @@ namespace yack
             void verbatim:: leave(token &)
             {
                 assert(content.size>=to_skip);
-                token &result = *inject(content);
+                token &result = inject(content).data;
                 assert(result.size>=to_skip);
                 result.skip(to_skip);
                 coerce(to_skip) = 0;

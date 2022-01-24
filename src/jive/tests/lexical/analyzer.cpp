@@ -83,7 +83,7 @@ namespace
             std::cerr << "\tleaveInt [" << t_int << "]" << std::endl;
             jive::lexeme *lx =  newlex( (*this)["INT"].label, *t_int );
             store(lx);
-            (**lx).swap_with(t_int);
+            lx->data.swap_with(t_int);
         }
 
         inline void enterHex(jive::token &t)
@@ -106,7 +106,7 @@ namespace
             if(t_hex.size<=0) throw exception("missing hex...");
             jive::lexeme *lx = newlex( (*this)["HEXA"].label, *t_hex );
             store(lx);
-            (**lx).swap_with(t_hex);
+            lx->data.swap_with(t_hex);
         }
         
         
@@ -149,7 +149,7 @@ YACK_UTEST(analyzer)
 
         for(const jive::lexeme *lx=lxm.head;lx;lx=lx->next)
         {
-            const string  s = (**lx).to_string();
+            const string  s = lx->data.to_string();
             std::cerr << '#' << lx->indx << " : " << *lx <<  " = " << s << std::endl;
         }
 

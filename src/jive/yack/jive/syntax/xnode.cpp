@@ -149,7 +149,7 @@ namespace yack
             const token & xnode:: word() const throw()
             {
                 assert(terminal_type==(**this).type);
-                return **static_cast<lexeme *>(data);
+                return static_cast<lexeme *>(data)->data;
             }
             
             const xlist & xnode:: sub() const throw()

@@ -106,7 +106,7 @@ namespace yack
                                 break;
 
                             case univocal:
-                                (*(node->lex())).release();
+                                node->lex().data.release();
                                 break;
 
                             case division:

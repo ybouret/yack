@@ -88,7 +88,7 @@ namespace yack
             eq->top()->verbose = true;
             eq->reset();
             source                              src( module::open_data(expr) );
-            const auto_ptr<const syntax::xnode> ast = (*eq)(src);
+            const auto_ptr<const syntax::xnode> ast = eq->parse(src);
             if(ast.is_empty()) throw exception("%s: corrupted %s",call_sign,(*(eq->label))());
             
             ast->gv("eq.dot");

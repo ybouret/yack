@@ -24,7 +24,7 @@ namespace yack
                 {
                     case standard:
                     {
-                        const string s = (**lexm).to_string();
+                        const string s = lexm->data.to_string();
                         excp.add("='%s'", s());
                     } break;
 
