@@ -103,6 +103,7 @@ YACK_UTEST(gls)
 
     //ls.verbose = true;
 
+    std::cerr << "Fitting s1" << std::endl;
     if(!ls.fit(s1,F,aorg,used,scal,NULL))
     {
         throw exception("couldn't fit s1");
@@ -113,6 +114,7 @@ YACK_UTEST(gls)
     std::cerr << std::endl;
 
 
+    std::cerr << "Fitting s2" << std::endl;
     if(!ls.fit(s2,F,aorg,used,scal,NULL))
     {
         throw exception("couldn't fit s2");
@@ -121,6 +123,8 @@ YACK_UTEST(gls)
     (*s2).display(std::cerr,aorg,aerr,"  ( s2 ) ");
     std::cerr << std::endl;
 
+
+    std::cerr << "Fitting Both" << std::endl;
     if(!ls.fit(both,F,aorg,used,scal,NULL))
     {
         throw exception("couldn't fit both");
