@@ -129,12 +129,12 @@ YACK_UTEST(gls)
     vars.display(std::cerr,aorg,aerr,"  (both) ");
     std::cerr << std::endl;
 
-
+    std::cerr << "Saving..." << std::endl;
     save_sample(s1);
     save_sample(s2);
 
 
-
+    std::cerr << "Done..." << std::endl;
 
 
 
