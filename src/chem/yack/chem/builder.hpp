@@ -29,7 +29,7 @@ namespace yack
             explicit builder();
             virtual ~builder() throw();
 
-            auto_ptr<jive::parser> sp;
+            auto_ptr<jive::parser> eq;
 
 
         };

@@ -9,33 +9,55 @@ namespace yack
     
     namespace chemical
     {
-        
+        using namespace jive;
+
         namespace
         {
-            class sp_parser : public jive::parser
+            class eq_parser : public  parser
             {
             public:
-                inline virtual ~sp_parser() throw()
+                inline virtual ~eq_parser() throw()
                 {
                 }
                 
-                inline explicit sp_parser() : jive::parser("chemical::species")
+                inline explicit eq_parser() : parser("chemical::parser")
                 {
+
+                    compound &EQUILIBRIUM = act("equilibrium");
+
+                    //__________________________________________________________
+                    //
+                    // define a species
+                    //__________________________________________________________
                     compound   &SPECIES = agg("species");
-                    //const rule &COEFF   = term("coeff","-?[1-9][0-9]*");
-                    SPECIES << term("name","[:upper:][:word:]*");
-                    compound   &CHARGES  = alt("charges");
-                    CHARGES << term("positive","\\x2B+");
-                    CHARGES << term("negative","\\x2D+");
-                    SPECIES << opt( CHARGES );
+                    {
+                        SPECIES << term("name","[:upper:][:word:]*");
+                        compound   &CHARGES  = alt("charges");
+                        CHARGES << term("positive","\\x2B+");
+                        CHARGES << term("negative","\\x2D+");
+                        SPECIES << opt( CHARGES );
+                    }
+
+                    EQUILIBRIUM << SPECIES;
+
+
                     gv();
                     drop("[:blank:]");
                     validate();
                 }
-                
+
+                inline syntax::xnode *compile(const string &expr)
+                {
+                    reset();
+                    source         src( module::open_data(expr) );
+                    syntax::xnode *res = (*this)(src);
+                    if(!res) throw exception("%s: corrupted %s", builder::call_sign, (*label)() );
+                    return res;
+                }
+
                 
             private:
-                YACK_DISABLE_COPY_AND_ASSIGN(sp_parser);
+                YACK_DISABLE_COPY_AND_ASSIGN(eq_parser);
             };
         }
         
@@ -46,25 +68,25 @@ namespace yack
         }
         
         builder:: builder() :
-        sp( new sp_parser() )
+        eq( new eq_parser() )
         {
             
         }
         
         species * builder:: parse_species(const string &expr)
         {
-            //sp->top()->verbose = true;
-            sp->reset();
-            jive::source                              src( jive::module::open_data(expr) );
-            const auto_ptr<const jive::syntax::xnode> ast = (*sp)(src);
-            if(ast.is_empty()) throw exception("%s: corrupted %s",call_sign,(*(sp->label))());
+            eq->reset();
+            source                              src( module::open_data(expr) );
+            const auto_ptr<const syntax::xnode> ast = (*eq)(src);
+            if(ast.is_empty()) throw exception("%s: corrupted %s",call_sign,(*(eq->label))());
             
-            //ast->gv("species.dot");
+            ast->gv("eq.dot");
             {
                 jive::syntax::translator tr;
                 tr.walk(*ast);
             }
-            
+
+#if 0
             const jive::syntax::xnode *node = ast->head();
             string                     name = node->word().to_string();
             unit_t                     z    = 0;
@@ -86,8 +108,10 @@ namespace yack
                 for(size_t i=nz;i>0;--i)
                     name += s;
             }
-            
             return new species(name,z);
+#endif
+            exit(1);
+            return NULL;
         }
         
         

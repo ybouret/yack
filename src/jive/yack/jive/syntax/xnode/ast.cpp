@@ -9,34 +9,83 @@ namespace yack
         namespace syntax
         {
 
+            static inline bool is_proxy(const xnode *node) throw()
+            {
+                assert(node);
+                const rule &self = **node; assert(self.type==internal_type);
+                switch(self.uuid)
+                {
+                    case aggregate::mark:
+                        return proxy == self.as<aggregate>()->role;
+
+                    default:
+                        break;
+                }
+                return false;
+            }
             static inline
             xnode * ast_internal(xnode *node) throw()
             {
+                //--------------------------------------------------------------
+                //
+                // initialize
+                //
+                //--------------------------------------------------------------
                 assert(NULL!=node);
-                list_of<xnode> &chld = node->sub(); // this child(ren)
-                xlist           temp;               // temporary
-                while(chld.size>0)
+                list_of<xnode> &chld = node->sub();
+
+                //--------------------------------------------------------------
+                //
+                //  loop
+                //
+                //--------------------------------------------------------------
                 {
-                    // extract head child
-                    auto_ptr<xnode> ch = xnode::ast(chld.pop_front());  if(ch.is_empty()) continue;
-                    const rule     &sr = **ch;
-                    
-                    // process
-                    switch(sr.uuid)
+                    xlist           temp;
+                    while(chld.size>0)
                     {
-                        case repeat::mark:
-                        case option::mark:
-                            temp.merge_back(ch->sub());
-                            break;
-                            
-                        default:
-                            temp.push_back(ch.yield());
+                        //------------------------------------------------------
+                        // recursive call
+                        //------------------------------------------------------
+                        auto_ptr<xnode> ch = xnode::ast(chld.pop_front()); // extract head child
+                        if(ch.is_empty()) continue;                        // done here
+                        const rule     &sr = **ch;                         // sub rule
+
+                        //------------------------------------------------------
+                        // post-process
+                        //------------------------------------------------------
+                        switch(sr.uuid)
+                        {
+                            case repeat::mark:
+                            case option::mark:
+                                temp.merge_back(ch->sub());
+                                break;
+
+                            default:
+                                temp.push_back(ch.yield());
+                        }
                     }
+
+                    //----------------------------------------------------------
+                    //
+                    //  update child(ren)
+                    //
+                    //----------------------------------------------------------
+                    chld.swap_with(temp); // assign newly formed child(ren)
                 }
-                
-                
-                chld.swap_with(temp); // assign newly formed child(ren)
-                return node;
+
+                //--------------------------------------------------------------
+                //
+                // finalize
+                //
+                //--------------------------------------------------------------
+                if(1==chld.size && is_proxy(node) )
+                {
+                    xnode *held = chld.pop_back();
+                    delete node;
+                    return held;
+                }
+                else
+                    return node;
             }
             
             xnode * xnode:: ast(xnode *node) throw()
