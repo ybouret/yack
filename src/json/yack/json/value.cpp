@@ -11,7 +11,7 @@ namespace yack
 
         Array:: ~Array() throw() {}
 
-        Array:: Array(const Array &arr) : Array_(arr) {}
+        Array:: Array(const Array &arr) : collection(), Array_(arr) {}
 
         Array & Array:: operator=(const Array &arr)
         {
@@ -22,6 +22,31 @@ namespace yack
             }
             return *this;
         }
+
+        Value & Array:: push_null()
+        {
+            const Value tmp;
+            push_back(tmp);
+            return back();
+        }
+
+
+        Pair_:: ~Pair_() throw()
+        {
+        }
+
+        Pair_:: Pair_(const String &k) :
+        key_(k),
+        val_()
+        {
+        }
+
+        std::ostream & operator<<(std::ostream &os, const Pair_ &p)
+        {
+            std::cerr << '\"' << p.key_ << '\"' << " : " << p.val_;
+            return os;
+        }
+
 
 
         Value:: Value() throw() :
@@ -87,11 +112,11 @@ namespace yack
                     break;
 
                 case isString:
-                    impl = jcopy<String>(impl);
+                    impl = jcopy<String>(other.impl);
                     break;
 
                 case isArray:
-                    impl = jcopy<Array>(impl);
+                    impl = jcopy<Array>(other.impl);
                     break;
             }
         }
@@ -112,7 +137,7 @@ namespace yack
             flag = b;
         }
 
-        Value:: Value(const double d) throw() :
+        Value:: Value(const Number d) throw() :
         type(isNumber)
         {
             number=d;
@@ -151,8 +176,63 @@ namespace yack
             Value _;
             xch(_);
         }
-        
 
+#define YACK_JSON_VALUE_AS(TYPE) \
+template <> TYPE       & Value::as<TYPE>()       throw() { assert(is##TYPE==type); return *static_cast<TYPE*>(impl);       } \
+template <> const TYPE & Value::as<TYPE>() const throw() { assert(is##TYPE==type); return *static_cast<const TYPE*>(impl); }
+
+
+        YACK_JSON_VALUE_AS(String)
+        YACK_JSON_VALUE_AS(Array)
+
+        template <> Number &       Value::as<Number>()       throw() { return number; }
+        template <> const Number & Value::as<Number>() const throw() { return number; }
+
+
+
+        std::ostream & operator<<(std::ostream &os, const Value &value)
+        {
+            value.display(os,0);
+            return os;
+        }
+
+        static inline std::ostream &jspace(std::ostream &os, size_t depth)
+        {
+            while(depth-- > 0) os << ' ';
+            return os;
+        }
+
+        void Value:: display(std::ostream &os, size_t depth) const
+        {
+            jspace(os,depth);
+            switch(type)
+            {
+                case isNull:    os << "null"; break;
+                case isFalse:   os << "true"; break;
+                case isTrue:    os << "false"; break;
+                case isNumber:  os << as<Number>(); break;
+                case isString:  os << '\"' << as<String>() << '\"'; break;
+                case isArray: {
+                    os << '[' << std::endl;
+                    ++depth;
+                    const Array &arr = as<Array>();
+                    if(arr.size()>0)
+                    {
+                        arr[1].display(os,depth);
+                        for(size_t i=2;i<=arr.size();++i)
+                        {
+                            os << ',' << std::endl;
+                            arr[i].display(os,depth);
+                        }
+                    }
+                    --depth;
+                    jspace(os,depth);
+                    os << ']';
+                } break;
+                default:
+                    break;
+            }
+        }
     }
 
 }

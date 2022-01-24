@@ -41,15 +41,14 @@ namespace yack
             //
             // members
             //__________________________________________________________________
-            const tag    name; //!< from directive
-            const size_t indx; //!< index
-            lexeme      *next; //!< for list/pool
-            lexeme      *prev; //!< for list/pool
-            token        data; //!< from scanner
+            const tag    name;  //!< from directive
+            const size_t indx;  //!< index
+            lexeme      *next;  //!< for list/pool
+            lexeme      *prev;  //!< for list/pool
+            token        data;  //!< from scanner
 
         private:
             YACK_DISABLE_COPY_AND_ASSIGN(lexeme);
-
         };
 
         //______________________________________________________________________

@@ -12,6 +12,16 @@ namespace yack
 
     namespace JSON
     {
+        static const char  *StructKW[] =
+        {
+            "empty_array",
+            "heavy_array",
+            "pair"
+        };
+
+#define YACK_JSON_EMPTY_ARRAY 0
+#define YACK_JSON_HEAVY_ARRAY 1
+#define YACK_JSON_PAIR        2
 
         static const char *ScalarKW[] =
         {
@@ -34,14 +44,17 @@ namespace yack
         public:
             inline  Translator() :
             jive::syntax::translator(),
-            skw( YACK_HASHING_PERFECT(ScalarKW) ),
-            vstack()
+            scalars( YACK_HASHING_PERFECT(ScalarKW) ),
+            structs( YACK_HASHING_PERFECT(StructKW) ),
+            vstack(),
+            pstack()
             {}
             inline ~Translator() throw() {}
 
-            const hashing::perfect skw;
+            const hashing::perfect scalars;
+            const hashing::perfect structs;
             list<Value>            vstack;
-
+            list<Pair>             pstack;
 
 
         private:
@@ -51,11 +64,23 @@ namespace yack
             {
                 std::cerr << "<JSON>" << std::endl;
                 vstack.free();
+                pstack.free();
             }
 
             virtual void on_quit() throw()
             {
+                std::cerr << "vstack=" << vstack << std::endl;
+                std::cerr << "pstack=" << pstack << std::endl;
                 std::cerr << "<JSON/>" << std::endl;
+            }
+
+            Value & new_value()
+            {
+                {
+                    const Value z;
+                    vstack.push_back(z);
+                }
+                return vstack.back();
             }
 
             virtual void on_terminal(const lexeme &lex)
@@ -63,7 +88,7 @@ namespace yack
                 jive::syntax::translator::on_terminal(lex);
                 const string name = *lex.name;
                 Value v;
-                switch( skw(name) )
+                switch( scalars(name) )
                 {
                     case YACK_JSON_NULL:  break;
                     case YACK_JSON_FALSE: v=false; break;
@@ -75,18 +100,58 @@ namespace yack
                     } break;
 
                     case YACK_JSON_STRING: {
-                        const string tmp = lex.data.to_string();
+                        const string tmp = lex.data.to_string(1,1);
                         v = tmp;
                     } break;
 
                     default:
                         throw exception("unknown '%s'", name() );
                 }
+                new_value().xch(v);
+            }
+
+            virtual void on_internal(const string &name, const size_t size)
+            {
+                jive::syntax::translator::on_internal(name,size);
+                switch( structs(name) )
                 {
-                    const Value z;
-                    vstack.push_back(v);
+                    case YACK_JSON_EMPTY_ARRAY: {
+                        Value tmp( asArray );
+                        new_value().xch(tmp);
+                    } break;
+
+                    case YACK_JSON_HEAVY_ARRAY:
+                    {
+                        assert(size<=vstack.size());
+                        Value  tmp( asArray );
+                        {
+                            Array &arr = tmp.as<Array>();
+                            for(size_t i=size;i>0;--i)
+                            {
+                                arr.push_null().xch( vstack.back() );
+                                vstack.pop_back();
+                            }
+                            arr.reverse();
+                        }
+                        new_value().xch(tmp);
+                    } break;
+
+                    case YACK_JSON_PAIR: {
+                        assert(2==size);
+                        assert(size<=vstack.size());
+                        Value         pair_val; pair_val.xch(vstack.back()); vstack.pop_back();
+                        const String &pair_key = vstack.back().as<String>();
+                        Pair          pair     = new Pair_(pair_key);
+                        pair->val_.xch(pair_val);
+                        pstack.push_back(pair);
+                        vstack.pop_back();
+                    } break;
+
+                    default:
+                        throw exception("unknown '%s'", name() );
+
                 }
-                vstack.back().xch(v);
+
             }
 
 
@@ -123,7 +188,7 @@ namespace yack
                     const rule &RBRACE = mark('}');
                     OBJECT << ( agg("empty_object") << LBRACE << RBRACE );
                     {
-                        const rule &PAIR = ( agg("PAIR") << STRING << mark(':') << VALUE );
+                        const rule &PAIR = ( agg("pair") << STRING << mark(':') << VALUE );
                         OBJECT << ( agg("heavy_object") << LBRACE << PAIR << zom( cat(COMMA,PAIR) ) << RBRACE);
                     }
                 }

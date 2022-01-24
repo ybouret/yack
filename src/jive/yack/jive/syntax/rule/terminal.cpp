@@ -29,7 +29,7 @@ namespace yack
                     if( *(lx->name) == *(this->name) )
                     {
                         xnode::grow(tree,*this,lx);
-                        YACK_JIVE_SYN_PRINTLN(obs << "+term <" << name << "> = '" << **lx << "'");
+                        YACK_JIVE_SYN_PRINTLN(obs << "+term <" << name << "> = '" << lx->data << "'");
                         if(NULL==obs.accepted || obs.accepted->indx<lx->indx)
                         {
                             obs.accepted = lx;

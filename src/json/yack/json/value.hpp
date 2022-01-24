@@ -13,8 +13,9 @@ namespace yack
     namespace JSON
     {
 
-        class Value;
+        class           Value;
         typedef string String;
+        typedef double Number;
 
         enum ValueType
         {
@@ -40,21 +41,14 @@ namespace yack
             virtual ~Array() throw();
             Array(const Array &);
             Array & operator=(const Array &);
+
+            Value &push_null();
+
         };
 
 
-        class Pair_ : public object
-        {
-        public:
-            explicit Pair_(const String &, const Value &);
-            virtual ~Pair_() throw();
 
-            const string &key() const throw();
-
-        private:
-            YACK_DISABLE_COPY_AND_ASSIGN(Pair_);
-        };
-
+        class Pair_;
         typedef ark_ptr<string,Pair_> Pair;
 
 
@@ -68,7 +62,7 @@ namespace yack
             Value & operator= (const Value &);
 
             Value(const bool)       throw();
-            Value(const double)     throw();
+            Value(const Number)     throw();
             Value(const string   &);
             Value(const char     *);
             Value(const asArray_ &);
@@ -79,6 +73,10 @@ namespace yack
 
             const ValueType type;
 
+            friend std::ostream & operator<<(std::ostream &os, const Value &);
+
+            template <typename T> T       &as() throw();
+            template <typename T> const T &as() const throw();
 
 
         private:
@@ -90,7 +88,25 @@ namespace yack
                 double   number;
                 uint64_t qword;
             };
-            
+
+            void display(std::ostream &os, size_t depth) const;
+        };
+
+
+        class Pair_ : public object, public counted
+        {
+        public:
+            explicit Pair_(const String &);
+            virtual ~Pair_() throw();
+
+            const string &key() const throw();
+
+            const String  key_;
+            Value         val_;
+            friend std::ostream & operator<<(std::ostream &, const Pair_ &);
+
+        private:
+            YACK_DISABLE_COPY_AND_ASSIGN(Pair_);
         };
 
     }
