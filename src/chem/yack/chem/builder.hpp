@@ -7,6 +7,7 @@
 #include "yack/chem/species.hpp"
 #include "yack/singleton.hpp"
 #include "yack/jive/parser.hpp"
+#include "yack/hashing/perfect.hpp"
 
 namespace yack
 {
@@ -26,9 +27,12 @@ namespace yack
             static const at_exit::longevity life_time = 0; //!< life time
             static const char               call_sign[];   //!< call sign
             typedef jive::syntax::xnode     xnode;         //!< alias
+            
 
-            //! from species to equations...
-            xnode *compile(const string &expr);
+            xnode   *ast(const string &expr);                 //!< from species to equations...
+            species *ast_to_species(const xnode &tree) const; //!< from a single species node
+
+            species *compile_species(const string &expr);
 
 
         private:
@@ -38,6 +42,7 @@ namespace yack
             virtual ~builder() throw();
 
             auto_ptr<jive::parser> eq;
+            const hashing::perfect zh; //!< z hahsing
 
 
         };

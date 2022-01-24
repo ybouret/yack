@@ -11,7 +11,7 @@ namespace yack
 
         library:: ~library() throw() {}
 
-        library:: library() : db()
+        library:: library() : db(), width(0)
         {
 
         }
@@ -32,6 +32,7 @@ namespace yack
             {
                 const return_unlocked _(*this);
                 if(!db.insert(sp)) throw exception("multiple species '%s'", sp->name() );
+                coerce(width) = max_of(width,sp->name.size());
             }
             else
             {
@@ -41,10 +42,19 @@ namespace yack
 
         const species & library:: operator()(const string &expr)
         {
-            static builder        &mgr = builder::instance();
-            const species::pointer ptr = NULL;
-            decl(ptr);
-            return *ptr;
+            static builder         &mgr = builder::instance();
+            const species::pointer  ptr = mgr.compile_species(expr);
+            const species::pointer *pps = db.search(ptr->name);
+            if(pps)
+            {
+                if( (*pps)->z != ptr->z ) throw exception("charge mismatch for '%s'", (ptr->name)() );
+                return **pps;
+            }
+            else
+            {
+                decl(ptr);
+                return *ptr;
+            }
         }
 
         const species & library:: operator()(const char *expr)

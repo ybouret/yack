@@ -25,6 +25,7 @@ namespace yack
             // types and definitions
             //__________________________________________________________________
 
+            
             //__________________________________________________________________
             //
             // C++
@@ -57,6 +58,8 @@ namespace yack
             YACK_DISABLE_COPY_AND_ASSIGN(library);
             species::set db;
             void decl(const species::pointer &sp);
+        public:
+            const size_t width;
 
         };
     }
