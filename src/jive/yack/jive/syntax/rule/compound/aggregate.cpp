@@ -50,21 +50,25 @@ namespace yack
                 }
 
                 // all done
-                YACK_JIVE_SYN_PRINTLN(obs << "+agg  <" << name << "> with #" << here->sub().size);
-                keep.dismiss();
-                switch(role)
+                YACK_JIVE_SYN_PRINTLN(obs << "+agg  <" << name << "> with #" << here->size());
+                if(here->size()>0)
                 {
-                    case named: xnode::grow(tree,here); break;
-                    case group: xnode::join(tree,here); break;
-                    case proxy:
-                        switch(here->sub().size)
-                        {
-                            case 0:  delete here; break;
-                            case 1:  xnode::join(tree,here); break;
-                            default: xnode::grow(tree,here); break;
-                        }
-                        break;
+                    keep.dismiss();
+                    switch(role)
+                    {
+                        case named: xnode::grow(tree,here); break;
+                        case group: xnode::join(tree,here); break;
+                        case proxy:
+                            switch(here->size())
+                            {
+                                case 0:  delete here; break;
+                                case 1:  xnode::join(tree,here); break;
+                                default: xnode::grow(tree,here); break;
+                            }
+                            break;
+                    }
                 }
+                // else here is deleted...
                 return true;
             }
             

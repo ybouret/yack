@@ -38,7 +38,7 @@ namespace yack
                     }
                     else
                     {
-                        YACK_JIVE_SYN_PRINTLN(obs << "-term <" << name << "> but <" << lx->name << ">");
+                        YACK_JIVE_SYN_PRINTLN(obs << "-term <" << name << ">, found <" << lx->name << ">");
                         lxr.store(lx);
                         return false;
                     }
@@ -46,7 +46,7 @@ namespace yack
                 else
                 {
                     // EOF
-                    YACK_JIVE_SYN_PRINTLN(obs << "-term <" << name << "> but EOS");
+                    YACK_JIVE_SYN_PRINTLN(obs << "-term <" << name << ">, met EOS");
                     return false;
                 }
             }
