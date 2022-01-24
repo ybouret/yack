@@ -67,6 +67,7 @@ namespace yack
                     assert( yack_good(y,n) );
 
                     real_sample_type & s =   add( new real_sample_type(id,n) );
+                    assert( s.mutual_size() == n);
                     for(size_t i=0,j=1;i<n;++i,++j)
                     {
                         coerce(s.abscissa[j]) = static_cast<T>(x[i]);
