@@ -43,7 +43,7 @@ namespace yack
         const species & library:: operator()(const string &expr)
         {
             static builder         &mgr = builder::instance();
-            const species::pointer  ptr = mgr.compile_species(expr);
+            const species::pointer  ptr = mgr.compile(expr);
             const species::pointer *pps = db.search(ptr->name);
             if(pps)
             {

@@ -4,7 +4,7 @@
 #ifndef YACK_CHEM_BUILDER_INCLUDED
 #define YACK_CHEM_BUILDER_INCLUDED 1
 
-#include "yack/chem/species.hpp"
+#include "yack/chem/components.hpp"
 #include "yack/singleton.hpp"
 #include "yack/jive/parser.hpp"
 #include "yack/hashing/perfect.hpp"
@@ -29,11 +29,10 @@ namespace yack
             typedef jive::syntax::xnode     xnode;         //!< alias
             
 
-            xnode   *ast(const string &expr);                 //!< from species to equations...
-            species *ast_to_species(const xnode &tree) const; //!< from a single species node
-
-            species *compile_species(const string &expr);
-
+            xnode   *ast(const string &expr);                          //!< from species to equations...
+            species *ast_to_species(const xnode &tree) const;          //!< from a single species node
+            species *compile(const string &expr);                      //!< string to single species
+            void     compile(components &, const string &, library &); //!< string to components
 
         private:
             YACK_DISABLE_COPY_AND_ASSIGN(builder);

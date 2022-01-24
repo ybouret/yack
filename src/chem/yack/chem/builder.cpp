@@ -155,13 +155,20 @@ namespace yack
             return new species(name,z);
         }
 
-        species * builder:: compile_species(const string &expr)
+        species * builder:: compile(const string &expr)
         {
             const auto_ptr<xnode> tree = ast(expr);
             return ast_to_species(*tree);
         }
 
-        
+
+        void builder:: compile(components &cmps, const string &expr, library &lib)
+        {
+            const auto_ptr<xnode> tree = ast(expr);
+            
+
+        }
+
     }
     
 }
