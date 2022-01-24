@@ -17,8 +17,8 @@ namespace yack
         class builder : public singleton<builder>
         {
         public:
-            static const at_exit::longevity life_time = 0;
-            static const char               call_sign[];
+            static const at_exit::longevity life_time = 0; //!< life time
+            static const char               call_sign[];   //!< call sign
 
             species * parse_species(const string &);
             

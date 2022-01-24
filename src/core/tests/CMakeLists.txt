@@ -203,7 +203,7 @@ add_test(hashing:64      test-core hash64)
 add_test(hashing:fcn     test-core hashing_fcn)
 add_test(hashing:hmac    test-core hashing_hmac)
 add_test(hashing:key     test-core hashing_key)
-add_test(hashing:perfect test-core hasing_perfect)
+add_test(hashing:perfect test-core hashing_perfect ${HERE}/../../../small.db)
 
 add_test(rand:bits      test-core rand_bits)
 add_test(rand:metrics   test-core rand_metrics)
