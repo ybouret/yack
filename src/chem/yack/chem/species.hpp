@@ -63,6 +63,9 @@ namespace yack
             YACK_DISABLE_COPY_AND_ASSIGN(species);
         };
 
+        //! alias
+        typedef species::knot snode;
+
     }
 
 }

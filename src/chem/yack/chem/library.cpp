@@ -76,6 +76,37 @@ namespace yack
             return (*this)(_);
         }
 
+        std::ostream & operator<<(std::ostream &os, const library &lib)
+        {
+            lib.display(os);
+            return os;
+        }
+
+    }
+
+}
+
+#include "yack/ios/fmt/align.hpp"
+
+namespace yack
+{
+
+    namespace chemical
+    {
+
+        void library:: display(std::ostream &os) const
+        {
+            os << '{' << std::endl;
+            for(const species::knot *node=head();node;node=node->next)
+            {
+                const species &sp = ***node;
+                os << ios::align(sp.name,width) << ':';
+                os << " @"  << sp.indx;
+                os << " z=" << sp.z;
+                os << std::endl;
+            }
+            os << '}';
+        }
 
     }
 }

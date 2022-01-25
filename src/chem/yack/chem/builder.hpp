@@ -41,8 +41,7 @@ namespace yack
             virtual ~builder() throw();
 
             auto_ptr<jive::parser> cm; //!< components parser
-            const hashing::perfect zh; //!< z hashing
-            const hashing::perfect th; //!< species/equilibrium hashing
+            const hashing::perfect H;  //!< key words hasher
 
 
         };

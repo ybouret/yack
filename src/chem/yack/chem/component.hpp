@@ -42,7 +42,9 @@ namespace yack
             //
             // methods
             //__________________________________________________________________
-            const string &key() const throw(); //!< for components
+            const string &key() const throw();                                   //!< for components
+            void          display(std::ostream &, const bool first)       const; //!< display
+            friend std::ostream & operator<<(std::ostream &, const component &); //!< display
 
             //__________________________________________________________________
             //

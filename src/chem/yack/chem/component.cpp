@@ -27,6 +27,32 @@ namespace yack
             if(nu==0)       throw exception("%s: null stoichiometry for '%s'",fn,sp.name());
         }
 
+        void component:: display(std::ostream &os, const bool first) const
+        {
+            if(nu<0)
+            {
+                if(nu==-1)
+                    os << '-';
+                else
+                    os << nu;
+            }
+            else
+            {
+                assert(nu>0);
+                if(!first) os << '+';
+                if(nu>1)   os << nu;
+            }
+            os << '[' << sp.name << ']';
+
+        }
+
+        std::ostream & operator<<(std::ostream &os, const component &c)
+        {
+            c.display(os,true);
+            return os;
+        }
+
+
     }
 
 }

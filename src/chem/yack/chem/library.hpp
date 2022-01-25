@@ -22,12 +22,6 @@ namespace yack
         public:
             //__________________________________________________________________
             //
-            // types and definitions
-            //__________________________________________________________________
-
-            
-            //__________________________________________________________________
-            //
             // C++
             //__________________________________________________________________
             explicit library();           //!< setup
@@ -53,12 +47,18 @@ namespace yack
             const species & operator()(const string &expr); //!< parse a species
             const species & operator()(const char   *expr); //!< parse a species
 
-            virtual size_t       size() const throw(); //!< number of registered species
-            const species::knot *head() const throw(); //!< fist species knot
+            virtual size_t size() const throw(); //!< number of registered species
+            const snode   *head() const throw(); //!< fist species knot
+
+            //! display
+            friend std::ostream & operator<<(std::ostream &, const library &);
+
 
         private:
             YACK_DISABLE_COPY_AND_ASSIGN(library);
             species::set db;
+            void display(std::ostream &) const;
+
         public:
             const size_t width; //!< species name max size
 

@@ -1,5 +1,5 @@
 #include "yack/chem/components.hpp"
-
+#include "yack/exception.hpp"
 
 namespace yack
 {
@@ -16,12 +16,33 @@ namespace yack
         }
 
 
-        bool components:: add(const species  &sp,
-                              const unit_t    nu)
+        void components:: create(const species  &sp,
+                                 const unit_t    nu)
         {
             const component::pointer p = new component(sp,nu);
-            return insert(p);
+            if(!insert(p)) throw exception("chemical::components: multiple '%s'", sp.name());
         }
+
+        void components:: display(std::ostream &os) const
+        {
+            if(size()>0)
+            {
+                const const_iterator done = end();
+                const_iterator       curr = begin();
+                (**curr).display(os,true);
+                while(++curr!=done)
+                {
+                    (**curr).display(os,false);
+                }
+            }
+        }
+
+        std::ostream & operator<<(std::ostream &os, const components &c)
+        {
+            c.display(os);
+            return os;
+        }
+
     }
 
 }
@@ -38,6 +59,12 @@ namespace yack
         {
             static builder &mgr = builder::instance();
             mgr.compile(*this,expr,lib);
+        }
+
+        void components:: operator()(const char   *expr, library &lib)
+        {
+            const string _(expr);
+            (*this)(_,lib);
         }
 
     }

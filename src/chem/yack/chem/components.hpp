@@ -39,11 +39,22 @@ namespace yack
             explicit components() throw(); //!< setup
 
             //! helper to form and insert a new component
-            bool add(const species  &sp,
-                     const unit_t    nu);
+            void create(const species  &sp,
+                        const unit_t    nu);
 
             //! compile expression
             void operator()(const string &expr, library &lib);
+
+            //! compile expression
+            void operator()(const char   *expr, library &lib);
+
+            //! display
+            void display(std::ostream&) const;
+
+            //! display
+            friend std::ostream &operator<<(std::ostream &os, const components &);
+
+
 
 
         private:

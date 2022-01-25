@@ -151,7 +151,14 @@ namespace yack
                 assert(terminal_type==(**this).type);
                 return static_cast<lexeme *>(data)->data;
             }
-            
+
+            const string & xnode:: name() const throw()
+            {
+                return *(**this).name;
+            }
+
+
+
             const xlist & xnode:: sub() const throw()
             {
                 assert(internal_type==(**this).type);

@@ -81,6 +81,7 @@ namespace yack
                 const xnode           *head() const throw(); //!< first children for internal
                 const token           &word() const throw(); //!< return token   for terminal
                 virtual size_t         size() const throw(); //!< internal: list size, terminal: word.size
+                const string          &name() const throw(); //!< rule name
                 
                 //______________________________________________________________
                 //

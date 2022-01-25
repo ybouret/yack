@@ -11,10 +11,13 @@ YACK_UTEST(components)
 {
 
     chemical::library    lib;
-    chemical::components comp;
+    chemical::components cmp;
     if(argc>1)
     {
-        comp(argv[1],lib);
+        cmp(argv[1],lib);
     }
+    std::cerr << lib << std::endl;
+    std::cerr << cmp << std::endl;
+
 }
 YACK_UDONE()

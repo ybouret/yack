@@ -19,6 +19,7 @@ YACK_UTEST(library)
         const species &sp   = lib(expr);
         std::cerr << "species=" << sp << std::endl;
     }
-    
+    std::cerr << lib << std::endl;
+
 }
 YACK_UDONE()
