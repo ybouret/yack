@@ -79,7 +79,8 @@ namespace yack
                 const        size_t npar = used.size();
 
             TRY:
-                if(p>pmax) throw exception("bad p!!");
+                YACK_LSF_PRINTLN("[least-squares] curv [p=" << p << "]");
+                if(p>pmax) throw exception("bad p!!"); // TODO: remove
                 const real_t  dfac = one + lam[p];
                 curv.assign(covm);
                 for(size_t i=npar;i>0;--i)
@@ -101,11 +102,13 @@ namespace yack
                     if(shrink(p))
                     {
                         assert(p>pmax);
+                        YACK_LSF_PRINTLN("[least-squares] curv.failure");
                         return false; // singular
                     }
                     goto TRY;
                 }
 
+                YACK_LSF_PRINTLN("[least-squares] curv.success");
                 return true;
             }
 
