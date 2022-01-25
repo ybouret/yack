@@ -26,10 +26,10 @@ namespace yack
             assert( x.is_increasing() );
             assert( f.a>=f.b );
             assert( f.c>=f.b );
-            const real_t w     = fabs(x.c-x.a);
+            const real_t w     = std::abs(x.c-x.a);
             const real_t beta  = (x.b<=x.a) ? 0 : (x.c<=x.b) ? 1 : (x.b-x.a)/w;
-            const real_t d_a   = fabs(f.a-f.b)+tiny; assert(d_a>0);
-            const real_t d_c   = fabs(f.c-f.b)+tiny; assert(d_c>0);
+            const real_t d_a   = std::abs(f.a-f.b)+tiny; assert(d_a>0);
+            const real_t d_c   = std::abs(f.c-f.b)+tiny; assert(d_c>0);
             const real_t beta2 = beta*beta;
             const real_t num   = (one-beta2) * d_a + beta2 * d_c;
             const real_t den   = (one-beta)  * d_a + beta  * d_c;
@@ -146,7 +146,7 @@ namespace yack
                     x.b=X[ib];
                     x.c=X[ic];
                     i_opt=ia;
-                    w_opt=fabs(x.c-x.a);
+                    w_opt=std::abs(x.c-x.a);
                     break;
                 }
             }
@@ -167,7 +167,7 @@ namespace yack
                 {
                     const real_t x_a = X[ia];
                     const real_t x_c = X[ic];
-                    const real_t w_tmp = fabs(x_c-x_a);
+                    const real_t w_tmp = std::abs(x_c-x_a);
                     if(w_tmp<=w_opt)
                     {
                         i_opt=ia;
@@ -200,7 +200,7 @@ namespace yack
             assert( f.c>=f.b );
 
             real_t x_opt = x.b;
-            real_t delta = fabs(x.c-x.a);
+            real_t delta = std::abs(x.c-x.a);
 
             //------------------------------------------------------------------
             //
@@ -214,7 +214,7 @@ namespace yack
                 // contract interval and locate x.b
                 //--------------------------------------------------------------
                 minimize::move<real_t>::run(x,f,func);
-                const real_t new_delta = fabs(x_opt-x.b);
+                const real_t new_delta = std::abs(x_opt-x.b);
                 x_opt=x.b;
                 YACK_MINIMIZE("[minimize] x_opt=" << x_opt << ", f_opt=" << f.b << ", dx=" << new_delta);
 
@@ -241,7 +241,7 @@ namespace yack
                 //--------------------------------------------------------------
                 // machine's precision control on interval
                 //--------------------------------------------------------------
-                if(delta<=mtol*fabs(x_opt))
+                if(delta<=mtol*std::abs(x_opt))
                 {
                     YACK_MINIMIZE("[minimize] reached MTOL=" << mtol);
                     break;

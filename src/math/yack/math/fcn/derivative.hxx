@@ -99,7 +99,7 @@ namespace yack
             static const real_t max_ftol = diff_maxi_ftol();
             real_t err  = 0;
             real_t dFdx = diff_(f,x,h,err);
-            while(err>max_ftol*fabs(dFdx) )
+            while(err>max_ftol*std::abs(dFdx) )
             {
                 real_t       new_err  = 0;
                 const real_t new_dFdx = diff_(f,x,h/=2,new_err);

@@ -54,7 +54,7 @@ namespace yack
                         {
                             real_t b1=fx[k]*v;
                             real_t b=b1-c;
-                            if( fabs(b) > 0 )
+                            if( std::abs(b) > 0 )
                             {
                                 b=(c-v)/b;
                                 ddy=c*b;

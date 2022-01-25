@@ -68,7 +68,7 @@ namespace yack
                 // initialize search
                 //______________________________________________________________
                 const T sh    = (s.c == negative) ? half : -half;
-                T       width = fabs(x.c-x.a);
+                T       width = std::abs(x.c-x.a);
                 T *x_neg = &x.a; T *f_neg = &f.a;
                 T *x_pos = &x.c; T *f_pos = &f.c;
                 if(positive==s.a)
@@ -99,7 +99,7 @@ namespace yack
                 //--------------------------------------------------------------
                 // second pass: ridder's correction
                 //--------------------------------------------------------------
-                const T den = sqrt(f.b*f.b-fafc); if(den<=fabs(f.b)) return true; // early return
+                const T den = sqrt(f.b*f.b-fafc); if(den<=std::abs(f.b)) return true; // early return
                 const T del = sh*width*(f.b/den);
                 switch( s.b = __sign::of(f.b = F(x.b = clamp<T>(x.a, x.b + del, x.c))) )
                 {
@@ -112,8 +112,8 @@ namespace yack
 				// check step
                 //--------------------------------------------------------------
                 assert(x.is_increasing());
-                if(fabs(f.a-f.c)<=0) return true;
-                const T new_width = fabs(x.c-x.a); if(new_width>=width) return true;
+                if(std::abs(f.a-f.c)<=0) return true;
+                const T new_width = std::abs(x.c-x.a); if(new_width>=width) return true;
                 width = new_width;
                 goto CYCLE;
             }

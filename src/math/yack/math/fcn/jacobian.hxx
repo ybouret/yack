@@ -24,7 +24,7 @@ namespace yack
         {
             volatile real_t ans = xx + hh;
             hh = ans - xx;
-            if( fabs(hh)<=0 ) throw libc::exception(ERANGE,"jacobian positive underflow");
+            if( std::abs(hh)<=0 ) throw libc::exception(ERANGE,"jacobian positive underflow");
             return ans;
         }
 
@@ -33,7 +33,7 @@ namespace yack
         {
             volatile real_t ans = xx - hh;
             hh = xx-ans;
-            if( fabs(hh)<=0 ) throw libc::exception(ERANGE,"jacobian negative underflow");
+            if( std::abs(hh)<=0 ) throw libc::exception(ERANGE,"jacobian negative underflow");
             return ans;
         }
 

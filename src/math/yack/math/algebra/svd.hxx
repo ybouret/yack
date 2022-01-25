@@ -45,7 +45,7 @@ namespace yack
                 {
                     for(k=i;k<=m;++k)
                     {
-                        scale += fabs(a[k][i]);
+                        scale += std::abs(a[k][i]);
                     }
                     if(scale>0)
                     {
@@ -75,7 +75,7 @@ namespace yack
                 {
                     for(k=l;k<=n;++k)
                     {
-                        scale += fabs(a[i][k]);
+                        scale += std::abs(a[i][k]);
                     }
                     if (scale>0)
                     {
@@ -100,13 +100,13 @@ namespace yack
                             a[i][k] *= scale;
                     }
                 }
-                anorm = max_of<real_t>(anorm,(fabs(w[i])+fabs(rv1[i])));
+                anorm = max_of<real_t>(anorm,(std::abs(w[i])+std::abs(rv1[i])));
             }
             for(size_t i=n;i>=1;--i)
             {
                 if (i<n)
                 {
-                    if(fabs(g)>0)
+                    if(std::abs(g)>0)
                     {
                         for(size_t j=l;j<=n;++j)
                             v[j][i]=(a[i][j]/a[i][l])/g;
@@ -132,7 +132,7 @@ namespace yack
                 g=w[i];
                 for(size_t j=l;j<=n;j++)
                     a[i][j]=0.0;
-                if(fabs(g)>0)
+                if(std::abs(g)>0)
                 {
                     g=one/g;
                     for(size_t j=l;j<=n;j++)
@@ -161,12 +161,12 @@ namespace yack
                         nm=l-1;
 
                         /* Note that rv1[1] is always zero. */
-                        if ((fabs(rv1[l])+anorm) == anorm)
+                        if ((std::abs(rv1[l])+anorm) == anorm)
                         {
                             flag=0;
                             break;
                         }
-                        if ((fabs(w[nm])+anorm) == anorm) break;
+                        if ((std::abs(w[nm])+anorm) == anorm) break;
                     }
                     if (flag)
                     {
@@ -175,7 +175,7 @@ namespace yack
                         for(size_t i=l;i<=k;i++) {
                             f=s*rv1[i];
                             rv1[i]=c*rv1[i];
-                            if ((fabs(f)+anorm) == anorm) break;
+                            if ((std::abs(f)+anorm) == anorm) break;
                             g=w[i];
                             h=hypothenuse(f,g);
                             w[i]=h;
@@ -279,7 +279,7 @@ namespace yack
             {
                 real_t       sum = 0;
                 const real_t den = w[j];
-                if(fabs(den)>0)
+                if(std::abs(den)>0)
                 {
                     for(size_t i=m;i>0;--i) sum += u[i][j]*b[i];
                     sum /= den;

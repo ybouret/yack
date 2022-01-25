@@ -27,7 +27,7 @@ namespace yack
         template <>
         float abs_of<float>(const float &x)
         {
-            return fabs(x);
+            return fabsf(x);
         }
         
         template <>
@@ -39,7 +39,7 @@ namespace yack
         template <>
         long double abs_of<long double>(const long double &x)
         {
-            return fabs(x);
+            return fabsl(x);
         }
         
         

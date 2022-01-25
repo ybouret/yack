@@ -55,12 +55,12 @@ namespace yack
                     const size_t n   = xa.size(); this->ensure(n);
                     size_t       ns  = 1;
                     {
-                        T del = fabs(x-xa[1]);
+                        T del = std::abs(x-xa[1]);
                         c[1]  = d[1] = ya[1];
                         for(size_t i=n;i>1;--i)
                         {
                             c[i] = d[i] = ya[i];
-                            const T tmp = fabs(x-xa[i]);
+                            const T tmp = std::abs(x-xa[i]);
                             if(tmp<del)
                             {
                                 del = tmp;
@@ -79,7 +79,7 @@ namespace yack
                             const T hp=xa[i+m]-x;
                             const T w=c[i+1]-d[i];
                             T       den=ho-hp;
-                            if( fabs(den) <= 0 ) throw_singular();
+                            if( std::abs(den) <= 0 ) throw_singular();
                             den=w/den;
                             d[i]=hp*den;
                             c[i]=ho*den;

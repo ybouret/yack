@@ -67,7 +67,7 @@ namespace yack
                 //
                 // initialize search
                 //______________________________________________________________
-                T  width = fabs(x.c-x.a);
+                T  width = std::abs(x.c-x.a);
                 T *x_neg = &x.a; T *f_neg = &f.a;
                 T *x_pos = &x.c; T *f_pos = &f.c;
                 if(positive==s.a)
@@ -91,8 +91,8 @@ namespace yack
                     case positive: *x_pos = x.b; *f_pos=f.b; break;
                 }
                 assert(x.is_increasing());
-                if(fabs(f.a-f.c)<=0) return true;
-                const T new_width = fabs(x.c-x.a); if(new_width>=width) return true;
+                if(std::abs(f.a-f.c)<=0) return true;
+                const T new_width = std::abs(x.c-x.a); if(new_width>=width) return true;
                 width = new_width;
                 goto CYCLE;
             }

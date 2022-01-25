@@ -38,8 +38,8 @@ namespace yack
 
                 for(size_t i=atmp.size();i>0;--i)
                 {
-                    const real_t da = fabs( step[i] );
-                    const real_t aa = fabs( atmp[i] );
+                    const real_t da = std::abs( step[i] );
+                    const real_t aa = std::abs( atmp[i] );
                     if( da > ftol * aa ) return false;
                 }
 
@@ -201,7 +201,7 @@ namespace yack
                         continue;
                     }
 
-                    const real_t variance = sig2 * fabs(covm[i][i]);
+                    const real_t variance = sig2 * std::abs(covm[i][i]);
                     aerr[i] = sqrt(variance/ndat);
                 }
 

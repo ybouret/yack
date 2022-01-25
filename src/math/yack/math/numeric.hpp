@@ -61,7 +61,7 @@ template <> const long double numeric<long double>::VALUE
         inline bool almost_equal( const T X, const T Y) throw()
         {
             static T fac = T(0.5) * numeric<T>::epsilon;
-            return ( fabs(X-Y) <= fac * ( fabs(X) + fabs(Y) ) );
+            return ( std::abs(X-Y) <= fac * ( std::abs(X) + std::abs(Y) ) );
         }
 
         //! precise hypothenuse
@@ -69,8 +69,8 @@ template <> const long double numeric<long double>::VALUE
         inline T hypothenuse(const T a, const T b) throw()
         {
             static const T one(1);
-            const T        absa=fabs(a);
-            const T        absb=fabs(b);
+            const T        absa=std::abs(a);
+            const T        absb=std::abs(b);
             if(absa>absb)
             {
                 return absa*sqrt(one+squared(absb/absa));
@@ -85,7 +85,7 @@ template <> const long double numeric<long double>::VALUE
         template <typename T, typename U>
         inline T __sgn(T a, U b) throw()
         {
-            return (b >= 0) ? fabs(a) : -fabs(a);
+            return (b >= 0) ? std::abs(a) : -std::abs(a);
         }
 
         //! identity operator

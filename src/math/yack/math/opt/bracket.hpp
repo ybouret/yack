@@ -41,7 +41,7 @@ namespace yack
                     cswap(f.a,f.c);
                     cswap(x.a,x.c);
                 }
-                T width = fabs(x.c-x.a);
+                T width = std::abs(x.c-x.a);
             CYCLE:
                 assert(f.c<=f.a);
                 f.b     = F(x.b = half*(x.a+x.c)); assert(x.is_ordered());
@@ -54,7 +54,7 @@ namespace yack
                 {
                     x.a = x.b;
                     f.a = f.b;
-                    const T new_width = fabs(x.c-x.a);
+                    const T new_width = std::abs(x.c-x.a);
                     if(new_width>=width) return false;
                     width = new_width;
                     goto CYCLE;

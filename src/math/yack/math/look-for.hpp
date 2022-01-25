@@ -46,7 +46,7 @@ namespace yack
                 for(ITERATOR it=curr;it!=last;++it,++n)
                 {
                     const_type x = *it;
-                    const_type t = fabs(x);
+                    const_type t = std::abs(x);
                     if(t>a)    a = t;
                 }
 
@@ -59,7 +59,7 @@ namespace yack
                 for(ITERATOR it=curr;it!=last;++it)
                 {
                     mutable_type &x = *it;
-                    if(fabs(x)<=threshold) {
+                    if(std::abs(x)<=threshold) {
                         x=0;
                         ++ker;
                     }
