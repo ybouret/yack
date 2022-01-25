@@ -39,7 +39,7 @@ namespace yack
         void derivative<real_t>:: regularize(const real_t x, real_t &h)
         {
             volatile real_t temp = x+h;
-            if(fabs( (h = temp-x) ) <= 0)
+            if(std::abs( (h = temp-x) ) <= 0)
                 throw libc::exception(ERANGE,"underflow in derivative");
 
         }
