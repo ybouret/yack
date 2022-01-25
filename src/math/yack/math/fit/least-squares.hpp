@@ -200,17 +200,16 @@ namespace yack
 
                     YACK_LSF_PRINTLN(clid << " atry [p=" << p << "]");
                     if(verbose) vars.display(std::cerr,atry,"\tatry.");
-                    bool stuck = this->converged(aorg);
-                    YACK_LSF_PRINTLN("D2try = " << D2try);
-                    YACK_LSF_PRINTLN("stuck = " << stuck);
-
+                    const bool stuck = this->converged(aorg);
+                    YACK_LSF_PRINTLN("D2try = " << D2try << "; // stuck=" << stuck);
+                    
 
                     //----------------------------------------------------------
                     //
                     // check resulting D2
                     //
                     //----------------------------------------------------------
-                    if(D2try<=D2ini)
+                    if(stuck || D2try<=D2ini)
                     {
                         //------------------------------------------------------
                         //
