@@ -66,7 +66,9 @@ namespace yack
                     assert( yack_good(x,n) );
                     assert( yack_good(y,n) );
 
-                    real_sample_type & s =   add( new real_sample_type(id,n) );
+                    //real_sample_type & s =   add( new real_sample_type(id,n) );
+                    real_sample_type & s =  (*this)(id,n);
+
                     assert( s.mutual_size() == n);
                     for(size_t i=0,j=1;i<n;++i,++j)
                     {
