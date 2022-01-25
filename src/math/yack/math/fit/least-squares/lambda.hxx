@@ -25,13 +25,24 @@ namespace yack
             template <> lambda<real_t>:: lambda() :
             field_type("lambda", layout1D(pmin(),pmax())) 
             {
-                static const real_t ten(10);
+
                 field_type &self = *this;
-                assert(fabs(self[lower])<=0);
-                for(unit_t p=lower+1;p<=upper;++p)
+                assert(std::abs(self[lower])<=0);
+                self[0] = 1;
+                
+                for(unit_t p=lower+1;p<0;++p)
                 {
-                    self[p] = pow(ten,static_cast<real_t>(p));
+                    static const real_t fac(0.1);
+                    self[p] = ipower<real_t,unit_t>(fac,-p);
                 }
+
+                for(unit_t p=1;p<=upper;++p)
+                {
+                    static const real_t fac(10);
+                    self[p] = ipower<real_t,unit_t>(fac,p);
+                }
+
+
             }
 
 
