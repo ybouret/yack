@@ -54,7 +54,7 @@ namespace yack
                 real_t p = d[k];
                 for (size_t j=ip;j<=n;j++)
                 {
-                    if ( fabs(d[j]) >= fabs(p) )
+                    if ( std::abs(d[j]) >= std::abs(p) )
                     {
                         p=d[k=j];
                     }
@@ -126,7 +126,7 @@ namespace yack
                 real_t sm = 0;
                 for(size_t ip=1;ip<n;++ip) {
                     for(size_t iq=ip+1;iq<=n; ++iq)
-                        sm += fabs(a[ip][iq]);
+                        sm += std::abs(a[ip][iq]);
                 }
                 if (sm <= numeric<real_t>::minimum )
                 {
@@ -141,26 +141,26 @@ namespace yack
                 {
                     for(size_t iq=ip+1;iq<=n;++iq)
                     {
-                        real_t g = hundred * fabs(a[ip][iq]);
+                        real_t g = hundred * std::abs(a[ip][iq]);
                         if ( (iter>min_iter) &&
-                            almost_equal<real_t>( fabs(d[ip])+g, fabs(d[ip])) &&
-                            almost_equal<real_t>( fabs(d[iq])+g, fabs(d[iq])) )
+                            almost_equal<real_t>( std::abs(d[ip])+g, std::abs(d[ip])) &&
+                            almost_equal<real_t>( std::abs(d[iq])+g, std::abs(d[iq])) )
                         {
                             a[ip][iq]=0;
                         }
                         else
-                            if (fabs(a[ip][iq]) > tresh)
+                            if (std::abs(a[ip][iq]) > tresh)
                             {
                                 real_t h = d[iq]-d[ip];
                                 real_t t = 0;
-                                if ( almost_equal<real_t>(fabs(h)+g,fabs(h)) )
+                                if ( almost_equal<real_t>(std::abs(h)+g,std::abs(h)) )
                                 {
                                     t=(a[ip][iq])/h;
                                 }
                                 else
                                 {
                                     const real_t theta= half*h/(a[ip][iq]);
-                                    t=one/(fabs(theta)+sqrt(one+theta*theta));
+                                    t=one/(std::abs(theta)+sqrt(one+theta*theta));
                                     if (theta < 0)
                                         t = -t;
                                 }

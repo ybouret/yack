@@ -27,8 +27,8 @@ namespace yack
                     for (size_t j=1;j<=n;j++)
                         if (j != i)
                         {
-                            c += fabs(a[j][i]);
-                            r += fabs(a[i][j]);
+                            c += std::abs(a[j][i]);
+                            r += std::abs(a[i][j]);
                         }
                     if( (c>0) && (r>0) )
                     {
@@ -86,7 +86,7 @@ namespace yack
                     // find the pivot
                     //----------------------------------------------------------
                     const real_t tmp = a[j][r];
-                    if(fabs(tmp)>fabs(piv))
+                    if(std::abs(tmp)>std::abs(piv))
                     {
                         piv = tmp;
                         s   = j;
@@ -95,7 +95,7 @@ namespace yack
                 if( s != m )
                 {
                     //std::cerr << "\t#SWAP(" << s << "," << m << ")" <<  "/pivot=" << piv << std::endl;
-                    assert(fabs(piv)>0);
+                    assert(std::abs(piv)>0);
                     //----------------------------------------------------------
                     // First similarity transform: exchange colums/rows
                     //----------------------------------------------------------
@@ -104,7 +104,7 @@ namespace yack
                     //----------------------------------------------------------
                     // Second similarity transform
                     //----------------------------------------------------------
-                    assert( fabs(piv-a[m][m-1]) <= 0 );
+                    assert( std::abs(piv-a[m][m-1]) <= 0 );
                     for(size_t i=m+1;i<=n;++i)
                     {
                         const real_t factor = a[i][r] / piv;
@@ -160,7 +160,7 @@ namespace yack
             anorm = 0;
             for (i=1;i<=n;i++)
                 for (j=max_of<size_t>(i-1,1);j<=n;j++)
-                    anorm += fabs(a[i][j]);
+                    anorm += std::abs(a[i][j]);
             nn=n;
             t=0;
             while(nn>=1)
@@ -170,10 +170,10 @@ namespace yack
                 {
                     for (l=nn;l>=2;l--)
                     {
-                        s=fabs(a[l-1][l-1])+fabs(a[l][l]);
+                        s=std::abs(a[l-1][l-1])+std::abs(a[l][l]);
                         if (s <= 0)
                             s=anorm;
-                        if ((real_t)(fabs(a[l][l-1]) + s) == s)
+                        if ((real_t)(std::abs(a[l][l-1]) + s) == s)
                             break;
                     }
                     x=a[nn][nn];
@@ -194,13 +194,13 @@ namespace yack
                         {
                             p=static_cast<real_t>(0.5)*(y-x);
                             q=p*p+w;
-                            z=sqrt(fabs(q));
+                            z=sqrt(std::abs(q));
                             x += t;
                             if (q >= 0)
                             {
                                 z=p+__sgn(z,p);
                                 wr[ir+1]=wr[ir]=x+z;
-                                if( fabs(z)>0 )
+                                if( std::abs(z)>0 )
                                     wr[ir]=x-w/z;
                                 //std::cerr << "#EIG: real pair: " << wr[ir] << ", " << wr[ir+1] << ", x=" << x << ", w=" << w << ", z=" << z << ", p=" << p << ", sq=" << Sqrt(Fabs(q)) << std::endl;
                                 wi[ir+1]=wi[ir]=0;
@@ -226,7 +226,7 @@ namespace yack
                                 t += x;
                                 for (i=1;i<=nn;i++)
                                     a[i][i] -= x;
-                                s=fabs(a[nn][nn-1])+fabs(a[nn-1][nn-2]);
+                                s=std::abs(a[nn][nn-1])+std::abs(a[nn-1][nn-2]);
                                 y=x= static_cast<real_t>(0.75)*s;
                                 w  = static_cast<real_t>(-0.4375)*s*s;
                             }
@@ -239,7 +239,7 @@ namespace yack
                                 p=(r*s-w)/a[m+1][m]+a[m][m+1];
                                 q=a[m+1][m+1]-z-r-s;
                                 r=a[m+2][m+1];
-                                s=fabs(p)+fabs(q)+fabs(r);
+                                s=std::abs(p)+std::abs(q)+std::abs(r);
                                 p /= s;
                                 q /= s;
                                 r /= s;
@@ -247,8 +247,8 @@ namespace yack
                                 {
                                     break;
                                 }
-                                u=fabs(a[m][m-1])*(fabs(q)+fabs(r));
-                                v=fabs(p)*(fabs(a[m-1][m-1])+fabs(z)+fabs(a[m+1][m+1]));
+                                u=std::abs(a[m][m-1])*(std::abs(q)+std::abs(r));
+                                v=std::abs(p)*(std::abs(a[m-1][m-1])+std::abs(z)+std::abs(a[m+1][m+1]));
                                 if ((real_t)(u+v) == v)
                                 {
                                     break;
@@ -268,14 +268,14 @@ namespace yack
                                     q=a[k+1][k-1];
                                     r=0;
                                     if (k != (nn-1)) r=a[k+2][k-1];
-                                    if ( (x=fabs(p)+fabs(q)+fabs(r))>0 )
+                                    if ( (x=std::abs(p)+std::abs(q)+std::abs(r))>0 )
                                     {
                                         p /= x;
                                         q /= x;
                                         r /= x;
                                     }
                                 }
-                                if( fabs(s=__sgn(sqrt(p*p+q*q+r*r),p)) > 0 )
+                                if( std::abs(s=__sgn(sqrt(p*p+q*q+r*r),p)) > 0 )
                                 {
                                     if (k == m)
                                     {

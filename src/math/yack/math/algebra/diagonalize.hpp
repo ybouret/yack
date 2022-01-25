@@ -63,8 +63,8 @@ namespace yack
             template <typename T> static inline
             int __compare_fabs(const T lhs, const T rhs) throw()
             {
-                const T L = fabs(lhs);
-                const T R = fabs(rhs);
+                const T L = std::abs(lhs);
+                const T R = std::fabs(rhs);
                 return comparison::increasing(L,R);
             }
             
@@ -168,7 +168,7 @@ namespace yack
                         wr[iv] = tau;
                         writable<T>    &vec = ev[iv];
                         const size_t    j   = J[k]; assert(j>0); assert(j<=n);
-                        assert(fabs(W[j])<=0);
+                        assert(std::abs(W[j])<=0);
                         for(size_t i=n;i>0;--i)
                         {
                             vec[i] = V[i][j];

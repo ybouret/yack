@@ -33,7 +33,7 @@ namespace
         inline void Prj(writable<T> &y, const T)
         {
             const T yy1 = squared(y[1]);
-            const T yy2 = squared(y[2])/fabs(a);
+            const T yy2 = squared(y[2])/std::abs(a);
             const T den = sqrt(yy1+yy2);
             y[1] /= den;
             y[2] /= den;
