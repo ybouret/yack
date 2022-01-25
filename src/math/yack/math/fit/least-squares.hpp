@@ -123,7 +123,7 @@ namespace yack
                     //
                     //----------------------------------------------------------
                     const ORDINATE D2ini = D2 = s.D2_full(func,aorg,used,drvs,scal);
-                    s.finalize();
+                    s.finalize(); // make curvatire symmetrical
 
                     
                     YACK_LSF_PRINTLN(clid << " cycle [p=" << p << "] => lambda=" << lam[p]);

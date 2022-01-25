@@ -79,7 +79,7 @@ namespace yack
                 const        size_t npar = used.size();
 
             TRY:
-                YACK_LSF_PRINTLN("[least-squares] curv [p=" << p << "]");
+                YACK_LSF_PRINTLN(clid<< " curv [p=" << p << "]");
                 if(p>pmax) throw exception("bad p!!"); // TODO: remove
                 const real_t  dfac = one + lam[p];
                 curv.assign(covm);
@@ -96,19 +96,22 @@ namespace yack
                     }
                 }
 
+                YACK_LSF_PRINTLN(clid << " curv.algo");
+                const bool regular = algo->build(curv);
+                YACK_LSF_PRINTLN(clid << " curv.done");
 
-                if(!algo->build(curv))
+                if(!regular)
                 {
                     if(shrink(p))
                     {
                         assert(p>pmax);
-                        YACK_LSF_PRINTLN("[least-squares] curv.failure");
+                        YACK_LSF_PRINTLN(clid << " curv.failure");
                         return false; // singular
                     }
                     goto TRY;
                 }
 
-                YACK_LSF_PRINTLN("[least-squares] curv.success");
+                YACK_LSF_PRINTLN(clid << " curv.success");
                 return true;
             }
 
