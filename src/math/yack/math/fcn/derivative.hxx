@@ -65,7 +65,7 @@ namespace yack
             {
                 a[j][i]=(a[jm][i]*fac-a[jm][im])/(fac-one);
 
-                const real_t errt=max_of(fabs(a[j][i]-a[jm][i]),fabs(a[j][i]-a[jm][im]));
+                const real_t errt=max_of(std::abs(a[j][i]-a[jm][i]),std::abs(a[j][i]-a[jm][im]));
                 if(ini || (errt<=err) )
                 {
                     err = errt;
@@ -74,7 +74,7 @@ namespace yack
                 }
                 fac=mul*fac;
             }
-            return ( fabs(a[i][i]-a[im][im]) >= twice(err) );
+            return ( std::abs(a[i][i]-a[im][im]) >= twice(err) );
         }
 
 
