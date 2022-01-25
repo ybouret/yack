@@ -73,8 +73,6 @@ YACK_UTEST(gls)
     std::cerr << s2.name << " : " << s2.dimension() << std::endl;
 
 
-
-
     fit::variables &vars = *both;
     vars << "t0" << "D1" << "D2";
     (*s1) << vars["t0"]; (*s1)("D",vars["D1"]);
@@ -83,6 +81,7 @@ YACK_UTEST(gls)
     std::cerr << "vars: " << vars << std::endl;
     std::cerr << "v1  : " << *s1  << std::endl;
     std::cerr << "v2  : " << *s2  << std::endl;
+
 
     const size_t   nvar = vars.size();
     vector<double> aorg(nvar,0);
@@ -97,13 +96,14 @@ YACK_UTEST(gls)
     double &D1 = vars(aorg,"D1");
     double &D2 = vars(aorg,"D2");
 
+
     t0 = -100; vars(scal,"t0") = 1;
     D1 = 0.3;
     D2 = 0.4;
 
     fit::gls<double> ls;
 
-    //ls.verbose = true;
+    ls.verbose = true;
 
     std::cerr << "Fitting s1" << std::endl;
     if(!ls.fit(s1,F,aorg,used,scal,NULL))
@@ -121,6 +121,7 @@ YACK_UTEST(gls)
     {
         throw exception("couldn't fit s2");
     }
+
     ls.errors(aerr,s2,F,aorg,used,scal);
     (*s2).display(std::cerr,aorg,aerr,"  ( s2 ) ");
     std::cerr << std::endl;
