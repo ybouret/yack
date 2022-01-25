@@ -27,7 +27,7 @@ namespace yack
                 scan = this;
                 repo.release();
                 hist.release();
-                assert(index);
+                assert(indx);
                 *indx = 0;
             }
 
