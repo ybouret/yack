@@ -79,6 +79,7 @@ namespace yack
                 const        size_t npar = used.size();
 
             TRY:
+                if(p>pmax) throw exception("bad p!!");
                 const real_t  dfac = one + lam[p];
                 curv.assign(covm);
                 for(size_t i=npar;i>0;--i)
@@ -97,7 +98,11 @@ namespace yack
 
                 if(!algo->build(curv))
                 {
-                    if(!this->shrink(p)) return false; // singular
+                    if(shrink(p))
+                    {
+                        assert(p>pmax);
+                        return false; // singular
+                    }
                     goto TRY;
                 }
 
