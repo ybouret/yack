@@ -38,13 +38,15 @@ namespace yack
             // methods
             //__________________________________________________________________
 
-            //! declare a new species with name+charge
+            //! check/insert
+            const species & check(const species::pointer &sp);
+
+            //! on the fly species with name+charge
             template <typename NAME>
             const species & operator()(const NAME &name, const unit_t z)
             {
                 const species::pointer ptr = new species(name,z);
-                decl(ptr);
-                return *ptr;
+                return check(ptr);
             }
 
 
@@ -57,9 +59,8 @@ namespace yack
         private:
             YACK_DISABLE_COPY_AND_ASSIGN(library);
             species::set db;
-            void decl(const species::pointer &sp);
         public:
-            const size_t width;
+            const size_t width; //!< species name max size
 
         };
     }

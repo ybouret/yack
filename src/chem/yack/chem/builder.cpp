@@ -13,20 +13,19 @@ namespace yack
 
         namespace
         {
-            class eq_parser : public  parser
+            class cm_parser : public  parser
             {
             public:
-                inline virtual ~eq_parser() throw()
+                inline virtual ~cm_parser() throw()
                 {
                 }
 
-
-
-                inline explicit eq_parser() : parser("chemical::parser")
+                
+                inline explicit cm_parser() : parser("chemical::parser")
                 {
 
 
-                    compound   &EQUILIBRIUM = act("equilibrium");
+                    compound   &COMPONENTS  = act("components");
                     const rule &COEFFICIENT = term("coefficient","[1-9][0-9]*");
                     const rule &POS_SOLO    = term("pos_solo",'+');
                     const rule &NEG_SOLO    = term("neg_solo",'-');
@@ -40,7 +39,7 @@ namespace yack
                     //
                     // define an optional first coefficient
                     //__________________________________________________________
-                    EQUILIBRIUM << FIRST_COEFF;
+                    COMPONENTS << FIRST_COEFF;
 
                     //__________________________________________________________
                     //
@@ -63,9 +62,9 @@ namespace yack
                     //
                     // define optional extra species
                     //__________________________________________________________
-                    EQUILIBRIUM << SPECIES;
+                    COMPONENTS << SPECIES;
                     compound &EXTRA_COEFF = agg("extra_coeff") << SIGN << OPT_COEFF;
-                    EQUILIBRIUM << zom( cat(EXTRA_COEFF,SPECIES) );
+                    COMPONENTS << zom( cat(EXTRA_COEFF,SPECIES) );
 
                     gv();
                     drop("[:blank:]");
@@ -75,7 +74,7 @@ namespace yack
 
                 
             private:
-                YACK_DISABLE_COPY_AND_ASSIGN(eq_parser);
+                YACK_DISABLE_COPY_AND_ASSIGN(cm_parser);
             };
         }
         
@@ -94,27 +93,39 @@ namespace yack
             "neg_many"
         };
 
+
 #define YACK_CHEM_POS_SOLO 0
 #define YACK_CHEM_POS_MANY 1
 #define YACK_CHEM_NEG_SOLO 2
 #define YACK_CHEM_NEG_MANY 3
 
+        static const char *tkw[] =
+        {
+            "species",
+            "components"
+        };
+
+#define YACK_CHEM_SP 0
+#define YACK_CHEM_CM 1
+
+
         builder:: builder() :
-        eq( new eq_parser() ),
-        zh( YACK_HASHING_PERFECT(zkw) )
+        cm( new cm_parser() ),
+        zh( YACK_HASHING_PERFECT(zkw) ),
+        th( YACK_HASHING_PERFECT(tkw) )
         {
             
         }
         
         builder::xnode * builder:: ast(const string &expr)
         {
-            eq->top()->verbose = true;
-            eq->reset();
+            cm->top()->verbose = true;
+            cm->reset();
             source                  src( module::open_data(expr) );
-            auto_ptr<syntax::xnode> ast = eq->parse(src);
-            if(ast.is_empty()) throw exception("%s: corrupted %s",call_sign,(*(eq->label))());
+            auto_ptr<syntax::xnode> ast = cm->parse(src);
+            if(ast.is_empty()) throw exception("%s: corrupted %s",call_sign,(*(cm->label))());
             
-            ast->gv("eq.dot");
+            ast->gv("components.dot");
             {
                 jive::syntax::translator tr;
                 tr.walk(*ast);
@@ -128,9 +139,12 @@ namespace yack
         species * builder:: ast_to_species(const xnode &tree) const
         {
             static const char fn[] = "ast_to_species";
+            static const char *sp  = tkw[YACK_CHEM_SP];
+
             const jive::syntax::rule &self = *tree;
             const string             &self_name = *self.name;
-            if("species" != self_name)
+
+            if(sp != self_name)
             {
                 throw exception("%s::%s: unexpected '%s'",call_sign,fn,self_name());
             }
@@ -161,11 +175,48 @@ namespace yack
             return ast_to_species(*tree);
         }
 
+    }
 
-        void builder:: compile(components &cmps, const string &expr, library &lib)
+}
+
+#include "yack/chem/library.hpp"
+namespace yack
+{
+
+    namespace chemical
+    {
+
+        void builder:: compile(components   &cmps,
+                               const string &expr,
+                               library      &lib)
         {
+            static const char fn[] = "compile";
             const auto_ptr<xnode> tree = ast(expr);
-            
+            const string         &kind = *(**tree).name;
+
+            switch(th(kind))
+            {
+                case YACK_CHEM_SP: {
+                    std::cerr << "simple species" << std::endl;
+                    const species::pointer sp = ast_to_species(*tree);
+                    if(!cmps.add(lib.check(sp),1))
+                    {
+
+                    }
+                } break;
+
+                case YACK_CHEM_CM:
+                    std::cerr << "components..." << std::endl;
+                    break;
+
+                default:
+                    throw exception("%s::%s invalid tree kind '%s'",call_sign,fn,kind());
+            }
+
+
+
+
+
 
         }
 

@@ -90,6 +90,9 @@ namespace yack
                         wksp.push_back(0);
                     }
 
+                    assert(n==indx.size());
+                    assert(n==wksp.size());
+
                     if(cmp)
                     {
                         indexing::make(indx,*cmp,abscissa);

@@ -12,17 +12,38 @@ namespace yack
     namespace chemical
     {
 
-        class library;
+        //______________________________________________________________________
+        //
+        //
+        //! base class for components
+        //
+        //______________________________________________________________________
         typedef suffix_set<string,component::pointer> components_;
+        class   library;
 
+
+        //______________________________________________________________________
+        //
+        //
+        //! set of components
+        //
+        //______________________________________________________________________
         class components : public components_
         {
         public:
-            virtual ~components() throw();
-            explicit components() throw();
+            //__________________________________________________________________
+            //
+            // C++
+            //__________________________________________________________________
+            virtual ~components() throw(); //!< cleanup
+            explicit components() throw(); //!< setup
 
+            //! helper to form and insert a new component
+            bool add(const species  &sp,
+                     const unit_t    nu);
+
+            //! compile expression
             void operator()(const string &expr, library &lib);
-
 
 
         private:

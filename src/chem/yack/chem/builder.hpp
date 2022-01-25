@@ -40,8 +40,9 @@ namespace yack
             explicit builder();
             virtual ~builder() throw();
 
-            auto_ptr<jive::parser> eq;
-            const hashing::perfect zh; //!< z hahsing
+            auto_ptr<jive::parser> cm; //!< components parser
+            const hashing::perfect zh; //!< z hashing
+            const hashing::perfect th; //!< species/equilibrium hashing
 
 
         };

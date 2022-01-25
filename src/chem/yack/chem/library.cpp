@@ -26,35 +26,48 @@ namespace yack
             return (*db.tree).head;
         }
 
-        void library:: decl(const species::pointer &sp)
+        static const char fn[] = "chemical::library";
+
+        const species &library:: check(const species::pointer &ptr)
         {
-            if(try_lock())
+            //------------------------------------------------------------------
+            // try to lock access
+            //------------------------------------------------------------------
+            if(!try_lock()) throw exception("%s is locked, cannot declare '%s'", fn, ptr->name());
+            const return_unlocked   ___(*this);
+
+            //------------------------------------------------------------------
+            // look for same name
+            //------------------------------------------------------------------
+            const string           &key = ptr->name;
+            const species::pointer *pps = db.search(key);
+            if(pps)
             {
-                const return_unlocked _(*this);
-                if(!db.insert(sp)) throw exception("multiple species '%s'", sp->name() );
-                coerce(width) = max_of(width,sp->name.size());
+                //--------------------------------------------------------------
+                // already registered
+                //--------------------------------------------------------------
+                const species::pointer &the = *pps;
+                if( the->z != ptr->z ) throw exception("%s charge mismatch for '%s'",fn,key());
+                return *the; //!< already declared species
             }
             else
             {
-                throw exception("library is locked, cannot declare '%s'", sp->name());
+                //--------------------------------------------------------------
+                // new species
+                //--------------------------------------------------------------
+                if(!db.insert(ptr)) throw exception("%s unable to insert '%s'",fn,key());
+                coerce(width)     = max_of(width,key.size());
+                coerce(ptr->indx) = db.size();
+                return *ptr; //!< the passed-on species
             }
+
         }
 
         const species & library:: operator()(const string &expr)
         {
             static builder         &mgr = builder::instance();
             const species::pointer  ptr = mgr.compile(expr);
-            const species::pointer *pps = db.search(ptr->name);
-            if(pps)
-            {
-                if( (*pps)->z != ptr->z ) throw exception("charge mismatch for '%s'", (ptr->name)() );
-                return **pps;
-            }
-            else
-            {
-                decl(ptr);
-                return *ptr;
-            }
+            return check(ptr);
         }
 
         const species & library:: operator()(const char *expr)

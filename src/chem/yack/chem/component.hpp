@@ -11,19 +11,45 @@ namespace yack
     namespace chemical
     {
 
+        //______________________________________________________________________
+        //
+        //
+        //! component: algebraic coefficient and a registered species
+        //
+        //______________________________________________________________________
         class component : public object, public counted
         {
         public:
-            typedef ark_ptr<string,const component> pointer;
+            //__________________________________________________________________
+            //
+            // types and definitions
+            //__________________________________________________________________
+            typedef ark_ptr<string,const component> pointer; //!< alias
 
+            //__________________________________________________________________
+            //
+            // C++
+            //__________________________________________________________________
+
+            //! cleanup
             virtual ~component() throw();
-            explicit component(const species::pointer &sp_,
-                               const unit_t            nu_);
 
-            const string &key() const throw();
+            //! setup with a register species and a not null coeff
+            explicit component(const species  &sp_,
+                               const unit_t    nu_);
 
-            const species::pointer sp;
-            const unit_t           nu;
+            //__________________________________________________________________
+            //
+            // methods
+            //__________________________________________________________________
+            const string &key() const throw(); //!< for components
+
+            //__________________________________________________________________
+            //
+            // members
+            //__________________________________________________________________
+            const species &sp; //!< species
+            const unit_t   nu; //!< stoichiometry
 
         private:
             YACK_DISABLE_ASSIGN(component);

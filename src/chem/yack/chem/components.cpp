@@ -14,6 +14,14 @@ namespace yack
         components:: components() throw() : components_()
         {
         }
+
+
+        bool components:: add(const species  &sp,
+                              const unit_t    nu)
+        {
+            const component::pointer p = new component(sp,nu);
+            return insert(p);
+        }
     }
 
 }
