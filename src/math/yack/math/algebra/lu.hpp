@@ -86,7 +86,7 @@ namespace yack
                         if(tmp>piv) piv=tmp;
                     }
                     if(piv<=0) return false; // a zero row
-                    scal[i] = one/piv;
+                    scal[i] = one/piv;       // save scaling
                 }
                 
                 //--------------------------------------------------------------
@@ -123,6 +123,12 @@ namespace yack
                             }
                         }
                     }
+
+                    if(imax<=0) {
+                        // ill-conditioned matrix
+                        return false;
+                    }
+
                     
                     if (j != imax)
                     {
