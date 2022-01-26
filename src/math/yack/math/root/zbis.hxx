@@ -4,7 +4,7 @@ namespace yack
 
     namespace math
     {
-        template <> zbis<real_t>:: zbis() throw() : zroot<real_t>() {}
+        template <> zbis<real_t>:: zbis() throw() : math::zroot<real_t>() {}
 
         template <> zbis<real_t>:: ~zbis() throw() {}
 
