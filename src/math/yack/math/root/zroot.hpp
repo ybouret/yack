@@ -4,6 +4,7 @@
 #define YACK_ROOT_ZROOT_INCLUDED 1
 
 #include "yack/math/triplet.hpp"
+#include "yack/math/real-function.hpp"
 #include "yack/signs.hpp"
 
 namespace yack
