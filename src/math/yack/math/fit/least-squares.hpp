@@ -84,8 +84,8 @@ namespace yack
                 // methods
                 //______________________________________________________________
 
-#include "yack/math/fit/least-squares/round.hxx"
-#include "yack/math/fit/least-squares/fit.hxx"
+#include "least-squares/round.hpp"
+#include "least-squares/fit.hpp"
 
                 //______________________________________________________________
                 //
