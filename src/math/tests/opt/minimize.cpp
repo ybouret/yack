@@ -24,8 +24,8 @@ namespace
     };
 
 
-    template <typename T>
-    static inline void test_min(const T x1, const T x2)
+    template <typename T> static inline
+    void test_min(const T x1, const T x2)
     {
         Func<T>    F = { 0 };
         triplet<T> x = { x1,     0,   x2   };

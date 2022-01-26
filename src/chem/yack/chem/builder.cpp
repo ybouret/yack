@@ -152,9 +152,9 @@ namespace yack
                 const string & zid = *(**node).name;
                 switch(H(zid))
                 {
-                    case YACK_CHEM_POS_SOLO: z=1;             name += '+'; break;
+                    case YACK_CHEM_POS_SOLO: z= 1;            name += '+'; break;
                     case YACK_CHEM_NEG_SOLO: z=-1;            name += '-'; break;
-                    case YACK_CHEM_POS_MANY: z=node->ssize();  for(unit_t i=z;i>0;--i) name += '+'; break;
+                    case YACK_CHEM_POS_MANY: z= node->ssize(); for(unit_t i=z;i>0;--i) name += '+'; break;
                     case YACK_CHEM_NEG_MANY: z=-node->ssize(); for(unit_t i=z;i<0;++i) name += '-'; break;
 
                     default:
