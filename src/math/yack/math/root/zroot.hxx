@@ -48,6 +48,35 @@ namespace yack
             return compute;
         }
 
+
+        template <> bool zroot<real_t>::find(real_function<real_t>   &F,
+                                             triplet<real_t>         &x,
+                                             triplet<real_t>         &f) const
+        {
+            //______________________________________________________________
+            //
+            // initialize
+            //______________________________________________________________
+            triplet<sign_type> s = { __zero__, __zero__, __zero__ };
+            switch( initialize(F,x,f,s) )
+            {
+                case failure: return false;
+                case success: return true;
+                case compute: break;
+            }
+
+            //______________________________________________________________
+            //
+            // processing
+            //______________________________________________________________
+            assert(x.a<=x.c);
+            assert(s.a!=__zero__);
+            assert(s.c!=__zero__);
+            assert(s.a!=s.c);
+
+            return processing(F,x,f,s);
+        }
+
     }
 
 }
