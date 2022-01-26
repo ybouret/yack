@@ -16,3 +16,16 @@ namespace yack
     }
 }
 
+
+#define real_t float
+#include "zrid.hxx"
+
+#undef  real_t
+#define real_t double
+#include "zrid.hxx"
+
+
+#undef  real_t
+#define real_t long double
+#include "zrid.hxx"
+

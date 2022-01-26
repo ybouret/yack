@@ -24,6 +24,23 @@ namespace yack
             class zroot
             {
             public:
+                //______________________________________________________________
+                //
+                // types
+                //______________________________________________________________
+
+                //! result type
+                enum result
+                {
+                    success, //! (almost) exact zero
+                    failure, //! unexpected
+                    compute  //! need to work
+                };
+
+                //______________________________________________________________
+                //
+                // C++
+                //______________________________________________________________
                 virtual            ~zroot()      throw();     //!< cleanup
                 virtual const char *name() const throw() = 0; //!< identifier
             protected:                                        //|
@@ -44,67 +61,78 @@ namespace yack
         class zroot : public core::zroot
         {
         public:
-            inline virtual ~zroot() throw() {}  //!< cleanup
-            inline explicit zroot() throw() : core::zroot() {}  //!< setup
-            
-        protected:
-            //__________________________________________________________________
-            //
-            // types
-            //__________________________________________________________________
-            //! initialize result
-            enum result
+            explicit zroot() throw();  //!< setup
+            virtual ~zroot() throw(); //!< cleanup
+
+
+            bool find(real_function<T>   &F,
+                      triplet<T>         &x,
+                      triplet<T>         &f) const
             {
-                success, //! exact zero
-                failure, //! unexpected
-                compute  //! need to work
-            };
+                //______________________________________________________________
+                //
+                // initialize
+                //______________________________________________________________
+                triplet<sign_type> s = { __zero__, __zero__, __zero__ };
+                switch( initialize(F,x,f,s) )
+                {
+                    case failure: return false;
+                    case success: return true;
+                    case compute: break;
+                }
+
+                //______________________________________________________________
+                //
+                // processing
+                //______________________________________________________________
+                assert(x.a<=x.c);
+                assert(s.a!=__zero__);
+                assert(s.c!=__zero__);
+                assert(s.a!=s.c);
+
+                return processing(F,x,f,s);
+            }
+
+            template <typename FUNCTION> inline
+            bool operator()(FUNCTION   &F,
+                            triplet<T> &x,
+                            triplet<T> &f) const
+            {
+                typename real_function_of<T>::template call<FUNCTION> FF(F);
+                return find(FF,x,f);
+            }
+
+
+        protected:
 
             //! setup from precomputed (x.a,f.a), (x.c,f.c)
             /**
              - prepare signs
              - recompute F(x.b) in case of 'exact' zero
              */
+            result initialize(real_function<T>   &F,
+                              triplet<T>         &x,
+                              triplet<T>         &f,
+                              triplet<sign_type> &s) const;
+
+            //! wrapper for initialize
             template <typename FUNCTION>
-            inline result initialize(FUNCTION           &F,
-                                     triplet<T>         &x,
-                                     triplet<T>         &f,
-                                     triplet<sign_type> &s) const throw()
+            inline result initialize_for(FUNCTION           &F,
+                                         triplet<T>         &x,
+                                         triplet<T>         &f,
+                                         triplet<sign_type> &s) const
             {
-                s.a = __sign::of(f.a);
-                s.c = __sign::of(f.c);
-                switch( __sign::pair(s.a,s.c) )
-                {
-                    case nn_pair:
-                    case pp_pair:
-                        return failure;
-                        
-                    case zp_pair:
-                    case zn_pair:
-                    case zz_pair:
-                        f.b = f.a = F(x.b=x.a);
-                        return success;
-                        
-                    case pz_pair:
-                    case nz_pair:
-                        f.b = f.c = F(x.b = x.c);
-                        return success;
-                        
-                    case np_pair:
-                    case pn_pair:
-                        break;
-                      
-                }
-                if(x.a>x.c)
-                {
-                    cswap(x.a,x.c);
-                    cswap(f.a,f.c);
-                    cswap(s.a,s.c);
-                }
-                assert(x.a<=x.c);
-                return compute;
+
+                typename real_function_of<T>::template call<FUNCTION> FF(F);
+                return initialize(FF,x,f,s);
             }
-            
+
+            virtual bool processing(real_function<T> &F,
+                                    triplet<T> &x,
+                                    triplet<T> &f,
+                                    triplet<sign_type> &s) const = 0;
+
+
             
         private:
             YACK_DISABLE_COPY_AND_ASSIGN(zroot);
