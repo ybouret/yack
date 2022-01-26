@@ -41,8 +41,8 @@ inline bool fit(sample_type              &s,
                 return true;
             }
             break;
-
     }
+
 
     //----------------------------------------------------------
     //
@@ -83,7 +83,7 @@ NEXT_ROUND:
             }
 
             //--------------------------------------------------
-            // test convergence on D
+            // test convergence on D2
             //--------------------------------------------------
             if(std::abs(D2old-D2) <= self.dtol * D2old )
             {
@@ -107,5 +107,8 @@ NEXT_ROUND:
             D2old = D2;
             goto NEXT_ROUND;
     }
+
+    // never get here!
+    return false;
 
 }
