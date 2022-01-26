@@ -31,6 +31,20 @@ namespace yack
             {
             }
 
+
+            template <>
+            bool least_squares_data<real_t>:: has_moved() const throw()
+            {
+
+                for(size_t i=step.size();i>0;--i)
+                {
+                    if( std::abs(step[i])>0 ) return true;
+                }
+                return false;
+
+            }
+
+
             template <>
             bool least_squares_data<real_t>::converged(const readable<real_t> &atmp) const throw()
             {
@@ -71,6 +85,11 @@ namespace yack
                                                                 const variables        &vars,
                                                                 const readable<bool>   &used)
             {
+                //--------------------------------------------------------------
+                //
+                // sanity check, initialize
+                //
+                //--------------------------------------------------------------
                 assert(p>=this->lam.lower);
                 assert(p<=this->lam.upper);
                 assert(used.size()==covm.rows);
@@ -78,6 +97,11 @@ namespace yack
                 static const real_t one(1);
                 const        size_t npar = used.size();
 
+                //--------------------------------------------------------------
+                //
+                // construct the modified matrix
+                //
+                //--------------------------------------------------------------
             TRY:
                 const real_t  dfac = one + lam[p];
                 curv.assign(covm);
@@ -94,10 +118,15 @@ namespace yack
                     }
                 }
 
+                //--------------------------------------------------------------
+                //
+                // try to perform LU
+                //
+                //--------------------------------------------------------------
                 const bool regular = algo->build(curv);
                 if(!regular)
                 {
-                    if(shrink(p))
+                    if(!shrink(p))
                     {
                         assert(p>pmax);
                         return false; // singular

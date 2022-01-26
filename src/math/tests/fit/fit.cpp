@@ -163,17 +163,17 @@ YACK_UTEST(fit)
 
         fit::least_squares<vtx,double> ls;
 
-        //ls.verbose = true;
+        ls.verbose = true;
 
-
+        
 
         vector<double>      aerr(vars.size(),0);
         correlation<double> corr;
         
-        if( ls.fit(circle1,F,aorg,used,scal,NULL) )
+        if( ls.fit_for(circle1,F,aorg,used,scal,NULL) )
         {
             std::cerr << "SUCCESS" << std::endl;
-            ls.errors(aerr,circle1,F,aorg,used,scal);
+            ls.errors_for(aerr,circle1,F,aorg,used,scal);
             const double cc = circle1.compute_corr(corr);
             (*circle1).display(std::cerr,aorg,aerr, " (*) ");
             std::cerr << "corr=" << cc << std::endl;
@@ -208,10 +208,10 @@ YACK_UTEST(fit)
         }
 
 
-        if( ls.fit(circle2,F,aorg,used,scal,NULL) )
+        if( ls.fit_for(circle2,F,aorg,used,scal,NULL) )
         {
             std::cerr << "SUCCESS" << std::endl;
-            ls.errors(aerr,circle2,F,aorg,used,scal);
+            ls.errors_for(aerr,circle2,F,aorg,used,scal);
             const double cc = circle2.compute_corr(corr);
             (*circle2).display(std::cerr,aorg,aerr, " (*) ");
 
@@ -247,10 +247,10 @@ YACK_UTEST(fit)
         }
 
 
-        if( ls.fit(circles,F,aorg,used,scal,NULL) )
+        if( ls.fit_for(circles,F,aorg,used,scal,NULL) )
         {
             std::cerr << "SUCCESS" << std::endl;
-            ls.errors(aerr,circles,F,aorg,used,scal);
+            ls.errors_for(aerr,circles,F,aorg,used,scal);
             (*circles).display(std::cerr,aorg,aerr, " (*) ");
             const double cc = circles.compute_corr(corr);
             std::cerr << "corr=" << cc << std::endl;

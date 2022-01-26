@@ -106,33 +106,33 @@ YACK_UTEST(gls)
     ls.verbose = true;
 
     std::cerr << "Fitting s1" << std::endl;
-    if(!ls.fit(s1,F,aorg,used,scal,NULL))
+    if(!ls.fit_for(s1,F,aorg,used,scal,NULL))
     {
         throw exception("couldn't fit s1");
     }
 
-    ls.errors(aerr,s1,F,aorg,used,scal);
+    ls.errors_for(aerr,s1,F,aorg,used,scal);
     (*s1).display(std::cerr,aorg,aerr,"  ( s1 ) ");
     std::cerr << std::endl;
 
 
     std::cerr << "Fitting s2" << std::endl;
-    if(!ls.fit(s2,F,aorg,used,scal,NULL))
+    if(!ls.fit_for(s2,F,aorg,used,scal,NULL))
     {
         throw exception("couldn't fit s2");
     }
 
-    ls.errors(aerr,s2,F,aorg,used,scal);
+    ls.errors_for(aerr,s2,F,aorg,used,scal);
     (*s2).display(std::cerr,aorg,aerr,"  ( s2 ) ");
     std::cerr << std::endl;
 
 
     std::cerr << "Fitting Both" << std::endl;
-    if(!ls.fit(both,F,aorg,used,scal,NULL))
+    if(!ls.fit_for(both,F,aorg,used,scal,NULL))
     {
         throw exception("couldn't fit both");
     }
-    ls.errors(aerr,both,F,aorg,used,scal);
+    ls.errors_for(aerr,both,F,aorg,used,scal);
     vars.display(std::cerr,aorg,aerr,"  (both) ");
     std::cerr << std::endl;
 

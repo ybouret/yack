@@ -91,6 +91,13 @@ namespace yack
 
             protected:
 
+
+                //______________________________________________________________
+                //
+                //! test step not zero
+                //______________________________________________________________
+                bool has_moved() const throw();
+
                 //______________________________________________________________
                 //
                 //! test convergence w.r.t last step
@@ -99,7 +106,7 @@ namespace yack
 
                 //______________________________________________________________
                 //
-                //! initialize for a cycle
+                //! initialize for a cycle: curvature, mutual size and algo
                 //______________________________________________________________
                 void initialize(const size_t npar);
 
