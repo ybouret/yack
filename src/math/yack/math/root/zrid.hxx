@@ -5,7 +5,7 @@ namespace yack
 
     namespace math
     {
-        template <> zrid<real_t>:: zrid() throw() : zroot<real_t>() {}
+        template <> zrid<real_t>:: zrid() throw() : math::zroot<real_t>() {}
 
         template <> zrid<real_t>:: ~zrid() throw() {}
 
