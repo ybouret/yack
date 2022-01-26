@@ -39,7 +39,8 @@ YACK_PROGRAM()
         for(size_t i=1;i<=words.size();++i)
         {
             const string &word = words[i];
-            if(word=='|' || word=='-')
+           // if(word=='|' || word=='-')
+            if(word=='|')
             {
                 std::cout << " \\sep";
             }
