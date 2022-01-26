@@ -6,9 +6,9 @@ namespace yack
     namespace math
     {
         static inline
-        real_t grow(real_t  xx[],
-                    real_t  ff[],
-                    size_t &nn,
+        real_t grow(real_t                 xx[],
+                    real_t                 ff[],
+                    size_t                &nn,
                     real_function<real_t> &func,
                     const real_t           xtmp)
         {
@@ -39,9 +39,9 @@ namespace yack
         }
 
         template <>
-        void minimize:: move<real_t>:: run_(triplet<real_t>       &x,
-                                            triplet<real_t>       &f,
-                                            real_function<real_t> &func)
+        void minimize:: move<real_t>:: run(real_function<real_t> &func,
+                                           triplet<real_t>       &x,
+                                           triplet<real_t>       &f)
         {
             static const real_t half(0.5);
 
@@ -182,10 +182,10 @@ namespace yack
 
 
         template <>
-        real_t minimize:: find<real_t>:: run_(triplet<real_t>       &x,
-                                              triplet<real_t>       &f,
-                                              real_function<real_t> &func,
-                                              real_t                 xtol)
+        real_t minimize:: find<real_t>:: run(real_function<real_t> &func,
+                                             triplet<real_t>       &x,
+                                             triplet<real_t>       &f,
+                                             real_t                 xtol)
         {
             static const real_t  ftol = numeric<real_t>::ftol;
             static const real_t  mtol = timings::round_floor( sqrt(numeric<real_t>::epsilon) );
@@ -208,12 +208,14 @@ namespace yack
             //
             //------------------------------------------------------------------
             YACK_MINIMIZE("[minimize] x_ini=" << x << ", f_ini=" << f << ", dx=" << delta);
-            for(;;)
+            while(true)
             {
                 //--------------------------------------------------------------
-                // contract interval and locate x.b
+                //
+                // -  contract interval and locate x.b
+                //
                 //--------------------------------------------------------------
-                minimize::move<real_t>::run(x,f,func);
+                minimize::move<real_t>::run(func,x,f);
                 const real_t new_delta = std::abs(x_opt-x.b);
                 x_opt=x.b;
                 YACK_MINIMIZE("[minimize] x_opt=" << x_opt << ", f_opt=" << f.b << ", dx=" << new_delta);
@@ -263,7 +265,6 @@ namespace yack
             // best guess and last call
             //
             //------------------------------------------------------------------
-
             f.b = func(x.b=x_opt);
             YACK_MINIMIZE("[minimize] x_end=" << x << ", f_end=" << f);
             return x.b;

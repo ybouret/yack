@@ -31,11 +31,11 @@ namespace
         triplet<T> x = { x1,     0,   x2   };
         triplet<T> f = { F(x.a), 0, F(x.c) };
 
-        if( bracket::inside(x,f,F) )
+        if( bracket::inside_for(F,x,f) )
         {
             F.count = 0;
             x.sort(f);
-            const T x_opt = minimize::find<T>::run(x,f,F,T(xtol));
+            const T x_opt = minimize::find<T>::run_for(F,x,f,T(xtol));
 
             std::cerr << "\tf_opt=" << f.b << "@" << x_opt << ", #calls=" << F.count << std::endl;
 

@@ -5,7 +5,7 @@
 #define YACK_OPT_BRACKET_INCLUDED 1
 
 #include "yack/math/triplet.hpp"
-#include "yack/math/numeric.hpp"
+#include "yack/math/real-function.hpp"
 #include <cmath>
 
 namespace yack
@@ -23,44 +23,26 @@ namespace yack
         struct bracket
         {
 
+            //__________________________________________________________________
+            //
             //! inside [x.a,x.c], with f.a and f.c computed
             /**
-             Look for f.b<=f.a and f.c <= f.c
+             - Look for f.b<=f.a and f.c <= f.c
+             - f.b = f(x.b) is always the last evaluated value
              */
+            //__________________________________________________________________
+            template <typename T> static
+            bool inside(real_function<T> &F, triplet<T> &x, triplet<T> &f);
+
+            //__________________________________________________________________
+            //
+            //! wrapper for inside
+            //__________________________________________________________________
             template <typename T, typename FUNCTION> static inline
-            bool inside(triplet <T> &x, triplet<T> &f, FUNCTION &F)
+            bool inside_for(FUNCTION &F, triplet <T> &x, triplet<T> &f)
             {
-                static const T half(0.5);
-                //--------------------------------------------------------------
-                //
-                // going downwards from a to c
-                //
-                //--------------------------------------------------------------
-                if(f.c>f.a)
-                {
-                    cswap(f.a,f.c);
-                    cswap(x.a,x.c);
-                }
-                T width = std::abs(x.c-x.a);
-            CYCLE:
-                assert(f.c<=f.a);
-                f.b     = F(x.b = half*(x.a+x.c)); assert(x.is_ordered());
-                if(f.b<=f.c)
-                {
-                    assert(f.b<=f.a); // since f.c <= f.a
-                    return true;
-                }
-                else
-                {
-                    x.a = x.b;
-                    f.a = f.b;
-                    const T new_width = std::abs(x.c-x.a);
-                    if(new_width>=width) return false;
-                    width = new_width;
-                    goto CYCLE;
-                }
-
-
+                typename real_function_of<T>::template call<FUNCTION> FF(F);
+                return inside(FF,x,f);
             }
 
         };

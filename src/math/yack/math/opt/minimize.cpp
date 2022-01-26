@@ -1,5 +1,6 @@
 
 #include "yack/math/opt/minimize.hpp"
+#include "yack/math/numeric.hpp"
 #include "yack/signs.hpp"
 #include "yack/sort/heap.hpp"
 #include "yack/exception.hpp"
