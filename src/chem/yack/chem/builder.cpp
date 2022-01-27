@@ -49,18 +49,13 @@ namespace yack
                     }
 
                     COMPONENTS << opt(COEF1) << SPECIES;
-
                     COMPONENTS << zom( cat(COEFX,SPECIES) );
 
+                    drop("[:blank:]");
 
-
-
-
-
-                    gv();
+                    //gv();
                     validate();
 
-                    drop("[:blank:]");
                 }
 
 
@@ -115,13 +110,12 @@ namespace yack
         
         builder::xnode * builder:: ast(const string &expr)
         {
-            P->top()->verbose = true;
+            //P->top()->verbose = true;
             P->reset();
             auto_ptr<syntax::xnode> ast = P->parse( module::open_data(expr) );
             if(ast.is_empty()) throw exception("%s: corrupted %s",call_sign,(*(P->label))());
             
-            //ast->gv("components.dot");
-            if(true)
+            if(false)
             {
                 ast->gv("chem.dot");
                 jive::syntax::translator tr;
@@ -211,9 +205,9 @@ namespace yack
             throw exception("%s: invalid coef node '%s'", builder::call_sign, id() );
         }
 
+        
 
-
-        void builder:: compile(components   &cmps,
+        void builder:: compile(equilibrium  &eq,
                                const string &expr,
                                library      &lib)
         {
@@ -234,7 +228,8 @@ namespace yack
             {
                 case YACK_CHEM_SPEC: {
                     const species::pointer sp = ast_to_species(*tree);
-                    cmps.create(lib.check(sp),1);
+                    //cmps.create(lib.check(sp),1);
+                    eq.add(lib.check(sp),1);
                 } return;
 
                 case YACK_CHEM_COMP:
@@ -274,7 +269,7 @@ namespace yack
             assert(spid==node->name());
             {
                 const species::pointer sp = ast_to_species(*node);
-                cmps.create(lib.check(sp),nu);
+                eq.add(lib.check(sp),nu);
             }
 
             //------------------------------------------------------------------
@@ -288,7 +283,7 @@ namespace yack
                 nu   = node_to_coef(node,H);
                 node = node->next; assert(node);
                 const species::pointer sp = ast_to_species(*node);
-                cmps.create(lib.check(sp),nu);
+                eq.add(lib.check(sp),nu);
                 node = node->next;
             }
 

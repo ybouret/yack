@@ -41,13 +41,7 @@ namespace yack
             //! helper to form and insert a new component
             const component & create(const species  &sp,
                                      const unit_t    nu);
-
-            //! compile expression
-            void operator()(const string &expr, library &lib);
-
-            //! compile expression
-            void operator()(const char   *expr, library &lib);
-
+            
             //! display
             void display(std::ostream&) const;
 

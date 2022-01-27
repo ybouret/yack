@@ -11,6 +11,22 @@ namespace yack
         {
         }
 
+        const components  & equilibrium:: bulk() const throw()
+        {
+            return comp;
+        }
+
+        size_t equilibrium:: size() const throw()
+        {
+            return comp.size();
+        }
+
+        const cnode * equilibrium:: head() const throw()
+        {
+            return (*comp.tree).head;
+        }
+
+
         void equilibrium:: add(const species &sp, const unit_t nu)
         {
             const string     &spid = sp.name;
@@ -36,6 +52,48 @@ namespace yack
             }
 
         }
+
+
+        void equilibrium:: display(std::ostream &os, const size_t w, const double t) const
+        {
+            os << '<' << name << '>';
+            for(size_t i=name.size();i<=w;++i) os << ' ';
+            os << " : ";
+            os << comp;
+        }
+
+        std::ostream & operator<<(std::ostream &os, const equilibrium &eq)
+        {
+            eq.display(os,0,0);
+            return os;
+        }
+    }
+
+}
+
+
+#include "yack/chem/builder.hpp"
+
+namespace yack
+{
+
+    namespace chemical
+    {
+
+        void equilibrium:: load(const string &expr, library &lib)
+        {
+            static builder &mgr = builder::instance();
+            mgr.compile(*this,expr,lib);
+        }
+
+
+        void equilibrium:: load(const char *expr, library &lib)
+        {
+            const string _(expr);
+            return load(_,lib);
+        }
+
+
 
     }
 

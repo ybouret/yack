@@ -13,13 +13,27 @@ namespace yack
     namespace chemical
     {
 
+        //______________________________________________________________________
+        //
+        //
+        //! actor in an equilibrium
+        //
+        //______________________________________________________________________
         class actor : public object, public authority<const species>
         {
         public:
-            virtual ~actor() throw();
-            explicit actor(const component &c) throw();
+            //__________________________________________________________________
+            //
+            // C++
+            //__________________________________________________________________
+            explicit actor(const component &) throw(); //!< setup
+            virtual ~actor() throw();                  //!< cleanup
 
-            const size_t nu;   //!< |c.nu| > 0
+            //__________________________________________________________________
+            //
+            // members
+            //__________________________________________________________________
+            const size_t nu;   //!< |nu| > 0
             const size_t nu1;  //!< nu-1
             actor       *next; //!< for list
             actor       *prev; //!< for list
@@ -28,6 +42,12 @@ namespace yack
             YACK_DISABLE_COPY_AND_ASSIGN(actor);
         };
 
+        //______________________________________________________________________
+        //
+        //
+        //! list of actors
+        //
+        //______________________________________________________________________
         typedef cxx_list_of<actor> actors;
 
 

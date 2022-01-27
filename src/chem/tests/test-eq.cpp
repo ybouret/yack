@@ -1,23 +1,24 @@
 
 
-#include "yack/chem/components.hpp"
+#include "yack/chem/equilibrium.hpp"
 #include "yack/chem/library.hpp"
 #include "yack/utest/run.hpp"
 
 using namespace yack;
 using namespace chemical;
 
-YACK_UTEST(components)
+YACK_UTEST(eq)
 {
 
     chemical::library    lib;
-    chemical::components cmp;
+    chemical::equilibrium eq("eq");
     if(argc>1)
     {
-        cmp(argv[1],lib);
+        eq.load(argv[1],lib);
     }
+
     std::cerr << lib << std::endl;
-    std::cerr << cmp << std::endl;
+    std::cerr << eq << std::endl;
 
 }
 YACK_UDONE()

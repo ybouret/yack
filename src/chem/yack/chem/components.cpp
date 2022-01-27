@@ -48,27 +48,4 @@ namespace yack
 
 }
 
-#include "yack/chem/builder.hpp"
-
-namespace yack
-{
-
-    namespace chemical
-    {
-
-        void components:: operator()(const string &expr, library &lib)
-        {
-            static builder &mgr = builder::instance();
-            mgr.compile(*this,expr,lib);
-        }
-
-        void components:: operator()(const char   *expr, library &lib)
-        {
-            const string _(expr);
-            (*this)(_,lib);
-        }
-
-    }
-
-}
 
