@@ -16,11 +16,12 @@ namespace yack
         }
 
 
-        void components:: create(const species  &sp,
+        const component & components:: create(const species  &sp,
                                  const unit_t    nu)
         {
             const component::pointer p = new component(sp,nu);
             if(!insert(p)) throw exception("chemical::components: multiple '%s'", sp.name());
+            return *p;
         }
 
         void components:: display(std::ostream &os) const

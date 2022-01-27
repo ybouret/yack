@@ -39,8 +39,8 @@ namespace yack
             explicit components() throw(); //!< setup
 
             //! helper to form and insert a new component
-            void create(const species  &sp,
-                        const unit_t    nu);
+            const component & create(const species  &sp,
+                                     const unit_t    nu);
 
             //! compile expression
             void operator()(const string &expr, library &lib);
