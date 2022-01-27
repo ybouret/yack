@@ -23,6 +23,14 @@ namespace yack
             return run(src,*this);
         }
 
+        syntax::xnode * parser::parse(module *m)
+        {
+            assert(m);
+            source src(m);
+            return parse(src);
+
+        }
+
     }
 }
 

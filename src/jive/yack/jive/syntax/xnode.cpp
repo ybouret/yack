@@ -145,6 +145,12 @@ namespace yack
                 assert(internal_type==(**this).type);
                 return static_cast<const xlist *>(data)->head;
             }
+
+            const xnode * xnode::tail() const throw()
+            {
+                assert(internal_type==(**this).type);
+                return static_cast<const xlist *>(data)->tail;
+            }
             
             const token & xnode:: word() const throw()
             {

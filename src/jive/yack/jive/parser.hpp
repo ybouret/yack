@@ -106,8 +106,10 @@ namespace yack
             //
             // parse
             //__________________________________________________________________
-            syntax::xnode * parse(source &); //!< parse source from current lexeme status
-            
+            syntax::xnode * parse(source &); //!< parse source from current lexer status
+            syntax::xnode * parse(module *); //!< parse module from current lexer status
+
+
         private:
             YACK_DISABLE_COPY_AND_ASSIGN(parser);
             const rule &create(const tag &, const motif &, const lexical::action &, const syntax::term_role);
