@@ -108,11 +108,11 @@ namespace yack
                 //! per-parameter error computation
                 //______________________________________________________________
                 inline ORDINATE errors(writable<ORDINATE>       &aerr,
-                                        sample_type              &s,
-                                        sequential_type          &func,
-                                        const readable<ORDINATE> &aorg,
-                                        const readable<bool>     &used,
-                                        const readable<ORDINATE> &scal)
+                                       sample_type              &s,
+                                       sequential_type          &func,
+                                       const readable<ORDINATE> &aorg,
+                                       const readable<bool>     &used,
+                                       const readable<ORDINATE> &scal)
                 {
 
                     D2 = s.D2_full(func,aorg,used,drvs,scal);                // load D2 and compute metrics

@@ -133,8 +133,8 @@ namespace yack
 
                 //! helper for regular functions
                 template <typename FUNC> inline
-                ORDINATE D2_(FUNC                     &func,
-                             const readable<ORDINATE> &aorg)
+                ORDINATE D2_for(FUNC                     &func,
+                                const readable<ORDINATE> &aorg)
                 {
                     sequential_wrapper<FUNC> call(func);
                     return D2(call,aorg);
@@ -143,11 +143,11 @@ namespace yack
 
                 //! helper for regular functions
                 template <typename FUNC>
-                inline ORDINATE D2_full_(FUNC                    &func,
-                                         const readable<ORDINATE> &aorg,
-                                         const readable<bool>     &used,
-                                         derivative<ORDINATE>     &drvs,
-                                         const readable<ORDINATE> &scal)
+                inline ORDINATE D2_full_for(FUNC                    &func,
+                                            const readable<ORDINATE> &aorg,
+                                            const readable<bool>     &used,
+                                            derivative<ORDINATE>     &drvs,
+                                            const readable<ORDINATE> &scal)
                 {
                     sequential_wrapper<FUNC> call(func);
                     return D2_full(call,aorg,used,drvs,scal);
@@ -218,10 +218,10 @@ namespace yack
                 YACK_DISABLE_COPY_AND_ASSIGN(sample);
 
             };
+            
 
 
 
-          
 
         }
 

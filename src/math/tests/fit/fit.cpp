@@ -124,9 +124,9 @@ YACK_UTEST(fit)
 
         Circle F;
 
-        const double D21 = circle1.D2_(F,aorg);
-        const double D22 = circle2.D2_(F,aorg);
-        const double D2A = circles.D2_(F,aorg);
+        const double D21 = circle1.D2_for(F,aorg);
+        const double D22 = circle2.D2_for(F,aorg);
+        const double D2A = circles.D2_for(F,aorg);
 
         vars.display(std::cerr,aorg);
 
@@ -141,9 +141,9 @@ YACK_UTEST(fit)
         vector<double>     scal(vars.size(),1e-4);
         vector<bool>       used(vars.size(),true);
 
-        const double D21full = circle1.D2_full_(F,aorg,used,drvs,scal); circle1.finalize();
-        const double D22full = circle2.D2_full_(F,aorg,used,drvs,scal); circle2.finalize();
-        const double D2Afull = circles.D2_full_(F,aorg,used,drvs,scal); circles.finalize();
+        const double D21full = circle1.D2_full_for(F,aorg,used,drvs,scal); circle1.finalize();
+        const double D22full = circle2.D2_full_for(F,aorg,used,drvs,scal); circle2.finalize();
+        const double D2Afull = circles.D2_full_for(F,aorg,used,drvs,scal); circles.finalize();
 
         std::cerr << "D21full=" << D21full << std::endl;
         std::cerr << "D22full=" << D22full << std::endl;
@@ -188,10 +188,10 @@ YACK_UTEST(fit)
             }
 
             {
-                ios::ocstream        fp("circle1.fit");
-                const double x1 = vars(aorg,"x1");
-                const double y1 = vars(aorg,"y1");
-                const double r  = vars(aorg,"r");
+                ios::ocstream fp("circle1.fit");
+                const double  x1 = vars(aorg,"x1");
+                const double  y1 = vars(aorg,"y1");
+                const double  r  = vars(aorg,"r");
                 for(size_t i=0;i<=100;++i)
                 {
                     const double theta = (6.28 * i) / 100;
