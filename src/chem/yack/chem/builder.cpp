@@ -244,19 +244,32 @@ namespace yack
                     throw exception("%s::%s invalid tree kind '%s'",call_sign,fn,kind());
             }
 
-
+            //------------------------------------------------------------------
+            //
+            //
+            // parse components
+            //
+            //
+            //------------------------------------------------------------------
             const xnode *node = tree->head();
             unit_t       nu   = 1;
 
+            //------------------------------------------------------------------
+            //
             // optional first coef
+            //
+            //------------------------------------------------------------------
             if(node->name()!=spid)
             {
                 nu = node_to_coef(node,H);
                 node=node->next;
             }
 
-
-            // first species
+            //------------------------------------------------------------------
+            //
+            // first species mandatory
+            //
+            //------------------------------------------------------------------
             assert(node);
             assert(spid==node->name());
             {
@@ -264,19 +277,21 @@ namespace yack
                 cmps.create(lib.check(sp),nu);
             }
 
+            //------------------------------------------------------------------
+            //
             // extra species
+            //
+            //------------------------------------------------------------------
             node=node->next;
             while(node)
             {
-                //std::cerr << "node@" << node->name() << std::endl;
                 nu   = node_to_coef(node,H);
                 node = node->next; assert(node);
-                //std::cerr << "node@" << node->name() << std::endl;
                 const species::pointer sp = ast_to_species(*node);
                 cmps.create(lib.check(sp),nu);
                 node = node->next;
             }
-            
+
 
         }
 
