@@ -47,6 +47,7 @@ namespace yack
             //
             // interface
             //__________________________________________________________________
+            double         K(double) const;
             virtual size_t size() const throw(); //!< number of registered components
             const cnode   *head() const throw(); //!< fist component
 
@@ -58,9 +59,15 @@ namespace yack
             void load(const string &expr, library &lib);  //!< load from string
             void load(const char   *expr, library &lib);  //!< load from string
 
+            //! display with name witdh alignment at time t
             void display(std::ostream &os, const size_t w, const double t) const;
 
+            //! display w=0, t=0
             friend std::ostream & operator<<(std::ostream &, const equilibrium &);
+
+            //! K * prod - reac
+            double Gamma(const double K0, const readable<double> &C) const;
+
 
             //__________________________________________________________________
             //
@@ -73,7 +80,29 @@ namespace yack
         private:
             const components comp;
             virtual const_type &bulk() const throw();
+            virtual double      getK(double) const = 0;
+
         };
+
+        class const_equilibrium : public equilibrium
+        {
+        public:
+            virtual ~const_equilibrium() throw();
+
+            template <typename ID> inline
+            explicit const_equilibrium(const ID &id, const double K_) :
+            equilibrium(id), value(K_)
+            {}
+
+
+
+        private:
+            YACK_DISABLE_COPY_AND_ASSIGN(const_equilibrium);
+            const double value;
+            virtual double getK(double) const;
+
+        };
+
 
     }
 

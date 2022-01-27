@@ -60,6 +60,7 @@ namespace yack
             for(size_t i=name.size();i<=w;++i) os << ' ';
             os << " : ";
             os << comp;
+            os << " | K(" << t << ")=" << getK(t);
         }
 
         std::ostream & operator<<(std::ostream &os, const equilibrium &eq)
@@ -67,6 +68,35 @@ namespace yack
             eq.display(os,0,0);
             return os;
         }
+
+        double equilibrium:: K(double t) const
+        {
+            const double ans = getK(t);
+            if(ans<=0)
+            {
+                throw exception("<%s> K(%g)=%g", name(), t, ans);
+            }
+            return ans;
+        }
+    }
+
+}
+
+namespace yack
+{
+
+    namespace chemical
+    {
+
+        const_equilibrium:: ~const_equilibrium() throw()
+        {
+        }
+
+        double const_equilibrium:: getK(double) const
+        {
+            return value;
+        }
+
     }
 
 }
