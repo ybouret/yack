@@ -3,7 +3,7 @@
 #ifndef YACK_CHEM_EQ_INCLUDED
 #define YACK_CHEM_EQ_INCLUDED 1
 
-#include "yack/chem/actor.hpp"
+#include "yack/chem/actors.hpp"
 #include "yack/chem/components.hpp"
 #include "yack/type/gateway.hpp"
 
@@ -47,7 +47,7 @@ namespace yack
             //
             // interface
             //__________________________________________________________________
-            double         K(double) const;
+            double         K(double) const;      //!< check valid getK(t)
             virtual size_t size() const throw(); //!< number of registered components
             const cnode   *head() const throw(); //!< fist component
 
@@ -66,7 +66,7 @@ namespace yack
             friend std::ostream & operator<<(std::ostream &, const equilibrium &);
 
             //! K * prod - reac
-            double Gamma(const double K0, const readable<double> &C) const;
+            double mass_action(const double K0, const readable<double> &C) const;
 
 
             //__________________________________________________________________
@@ -84,11 +84,24 @@ namespace yack
 
         };
 
+        //______________________________________________________________________
+        //
+        //
+        //! constant equilibrium
+        //
+        //______________________________________________________________________
         class const_equilibrium : public equilibrium
         {
         public:
+            //__________________________________________________________________
+            //
+            // C++
+            //__________________________________________________________________
+
+            //! cleanup
             virtual ~const_equilibrium() throw();
 
+            //! setup
             template <typename ID> inline
             explicit const_equilibrium(const ID &id, const double K_) :
             equilibrium(id), value(K_)

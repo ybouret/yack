@@ -50,14 +50,33 @@ namespace yack
             virtual size_t size() const throw(); //!< number of registered species
             const snode   *head() const throw(); //!< fist species knot
 
+            const species & operator[](const string &) const; //!< access
+            const species & operator[](const char   *) const; //!< access
+
+
             //! display
             friend std::ostream & operator<<(std::ostream &, const library &);
+
+            //! display named values
+            template <typename T> inline
+            void operator()(std::ostream &os, const readable<T> &arr) const
+            {
+                os << '{' << std::endl;
+                for(const snode *node=head();node;node=node->next)
+                {
+                    const species &sp = ***node; assert(sp.indx>=1); assert(sp.indx<=size());
+                    os << ' '; display(os,sp);
+                    os << " = " << arr[sp.indx] << std::endl;
+                }
+                os << '}' << std::endl;
+            }
 
 
         private:
             YACK_DISABLE_COPY_AND_ASSIGN(library);
             species::set db;
             void display(std::ostream &) const;
+            void display(std::ostream &, const species &) const;
 
         public:
             const size_t width; //!< species name max size

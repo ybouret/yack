@@ -38,7 +38,7 @@ namespace yack
             //! setup with name+algebraic charge
             template <typename NAME> inline
             explicit species(const NAME &user_n, const unit_t user_z) :
-            name(user_n), z(user_z), indx(0)
+            name(user_n), z(user_z), indx(0), rank(0)
             {
             }
 
@@ -51,6 +51,8 @@ namespace yack
             //! display
             friend std::ostream & operator<<(std::ostream &, const species &);
 
+
+
             //__________________________________________________________________
             //
             // members
@@ -58,7 +60,8 @@ namespace yack
             const string name;   //!< unique name
             const unit_t z;      //!< algebraic charge
             const size_t indx;   //!< unique index in library
-
+            const size_t rank;   //!< 0: spectator 1:primary >1:secondary
+            
         private:
             YACK_DISABLE_COPY_AND_ASSIGN(species);
         };

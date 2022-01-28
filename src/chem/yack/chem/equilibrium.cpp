@@ -29,20 +29,21 @@ namespace yack
 
         void equilibrium:: add(const species &sp, const unit_t nu)
         {
+            // initialize new component
             const string     &spid = sp.name;
             const component  &c    = coerce(comp).create(sp,nu);
             actors           *a    = 0;
 
-            switch( __sign::of(nu) )
-            {
-                case __zero__: throw exception("<%s> invalid nu=0 for '%s'", name(), spid() );
-                case negative: a = & coerce(reac); break;
-                case positive: a = & coerce(prod); break;
-            }
-
-            assert(NULL!=a);
+            // check
             try
             {
+                switch( __sign::of(nu) )
+                {
+                    case __zero__: throw exception("<%s> invalid nu=0 for '%s'", name(), spid() );
+                    case negative: a = & coerce(reac); break;
+                    case positive: a = & coerce(prod); break;
+                }
+                assert(NULL!=a);
                 a->push_back( new actor(c) );
             }
             catch(...)
@@ -50,6 +51,9 @@ namespace yack
                 (void) coerce(comp).remove(spid);
                 throw;
             }
+
+            // update species
+            coerce(sp.rank)++;
 
         }
 
@@ -78,6 +82,15 @@ namespace yack
             }
             return ans;
         }
+
+
+        double equilibrium:: mass_action(const double            K0,
+                                         const readable<double> &C) const
+        {
+            return reac.mass_action(K0,C) - prod.mass_action(1,C);
+        }
+
+
     }
 
 }

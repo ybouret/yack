@@ -1,4 +1,3 @@
-
 //! \file
 
 #ifndef YACK_CHEM_ACTOR_INCLUDED
@@ -42,13 +41,7 @@ namespace yack
             YACK_DISABLE_COPY_AND_ASSIGN(actor);
         };
 
-        //______________________________________________________________________
-        //
-        //
-        //! list of actors
-        //
-        //______________________________________________________________________
-        typedef cxx_list_of<actor> actors;
+     
         
 
     }

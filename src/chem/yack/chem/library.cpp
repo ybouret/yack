@@ -82,11 +82,23 @@ namespace yack
             return os;
         }
 
+        const species & library:: operator[](const string &name) const
+        {
+            const species::pointer *pps = db.search(name);
+            if(!pps) throw exception("no library['%s']", name());
+            return **pps;
+        }
+
+        const species & library:: operator[](const char *name) const
+        {
+            const string _(name); return (*this)[_];
+        }
+
     }
 
 }
 
-#include "yack/ios/fmt/align.hpp"
+#include <iomanip>
 
 namespace yack
 {
@@ -94,15 +106,25 @@ namespace yack
     namespace chemical
     {
 
+
+        void library:: display(std::ostream &os, const species &sp) const
+        {
+            os << '[' << sp.name << ']';
+            for(size_t i=sp.name.size();i<width;++i) os << ' ';
+
+        }
+
         void library:: display(std::ostream &os) const
         {
             os << '{' << std::endl;
             for(const species::knot *node=head();node;node=node->next)
             {
                 const species &sp = ***node;
-                os << ios::align(sp.name,width) << ':';
-                os << " @"  << sp.indx;
-                os << " z=" << sp.z;
+                display(os << "  ",sp);
+                os << ':';
+                os << " @"     << std::setw(3) << sp.indx;
+                os << " z="    << std::setw(3) << sp.z;
+                os << " rank=" << std::setw(3) << sp.rank;
                 os << std::endl;
             }
             os << '}';
