@@ -1,10 +1,9 @@
-
 //! \file
 
 #ifndef YACK_CHEM_ACTORS_INCLUDED
 #define YACK_CHEM_ACTORS_INCLUDED 1
 
-#include "yack/chem/actor.hpp"
+#include "yack/chem/eq/limiting.hpp"
 
 namespace yack
 {
@@ -41,13 +40,16 @@ namespace yack
             // methods
             //__________________________________________________________________
             //! K * law of mass action
-            double   mass_action(double                  K,
-                                 const readable<double> &C) const throw();
+            double          mass_action(double K, const readable<double> &C) const throw();
 
-            
+            //! limiting species, associated extent
+            const limiting *find_limiting(const readable<double> &C) const throw();
 
         private:
             YACK_DISABLE_COPY_AND_ASSIGN(actors);
+            mutable void *wksp[YACK_WORDS_FOR(limiting)];
+
+            const limiting *make(const actor *pa, const double xi) const throw();
         };
 
         

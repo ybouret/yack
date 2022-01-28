@@ -20,6 +20,8 @@ namespace yack
         class library : public latch, public collection
         {
         public:
+
+
             //__________________________________________________________________
             //
             // C++
@@ -53,6 +55,10 @@ namespace yack
             const species & operator[](const string &) const; //!< access
             const species & operator[](const char   *) const; //!< access
 
+            //! fill a trial set of concentrations
+            void fill(writable<double> &C,
+                      const double      zabove,
+                      randomized::bits &ran) throw();
 
             //! display
             friend std::ostream & operator<<(std::ostream &, const library &);
@@ -70,6 +76,7 @@ namespace yack
                 }
                 os << '}' << std::endl;
             }
+
 
 
         private:

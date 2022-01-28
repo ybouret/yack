@@ -91,6 +91,12 @@ namespace yack
         }
 
 
+        const limits & equilibrium:: find_limits(const readable<double> &C) const throw()
+        {
+            return *new ( out_of_reach::zset(wksp,sizeof(wksp)) ) limits( reac.find_limiting(C), prod.find_limiting(C) );
+        }
+
+
     }
 
 }

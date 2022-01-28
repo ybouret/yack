@@ -1,55 +1,52 @@
 //! \file
 
-#ifndef YACK_CHEM_ACTOR_INCLUDED
-#define YACK_CHEM_ACTOR_INCLUDED 1
+#ifndef YACK_CHEM_LIMITS_INCLUDED
+#define YACK_CHEM_LIMITS_INCLUDED 1
 
-#include "yack/chem/component.hpp"
-#include "yack/type/authority.hpp"
+#include "yack/chem/eq/limiting.hpp"
 
 namespace yack
 {
 
     namespace chemical
     {
-
         //______________________________________________________________________
         //
         //
-        //! actor in an equilibrium
+        //! limits for the extent of one equilibrium
         //
         //______________________________________________________________________
-        class actor : public object, public authority<const species>
+        class limits
         {
         public:
             //__________________________________________________________________
             //
             // C++
             //__________________________________________________________________
-            explicit actor(const component &) throw(); //!< setup
-            virtual ~actor() throw();                  //!< cleanup
 
+            //! setup
+            limits(const limiting *r, const limiting *p) throw();
 
             //__________________________________________________________________
             //
             // methods
             //__________________________________________________________________
-            double extent(const readable<double> &C) const throw(); //!< (**this)(C)/nu
+            //! display
+            friend std::ostream & operator<<(std::ostream &, const limits &);
 
             //__________________________________________________________________
             //
             // members
             //__________________________________________________________________
-            const size_t nu;   //!< |nu| > 0
-            const size_t nu1;  //!< nu-1
-            actor       *next; //!< for list
-            actor       *prev; //!< for list
-
+            const limiting    * const reac; //!< limiting reactant
+            const limiting    * const prod; //!< limiting product
+            const limiting::status    type; //!< classification
+            
         private:
-            YACK_DISABLE_COPY_AND_ASSIGN(actor);
+            YACK_DISABLE_COPY_AND_ASSIGN(limits);
+            limiting::status make() const throw();
+            ~limits() throw();
         };
-
-     
-        
 
     }
 

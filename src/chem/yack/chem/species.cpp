@@ -1,4 +1,6 @@
 #include "yack/chem/species.hpp"
+#include "yack/randomized/bits.hpp"
+#include <cmath>
 
 namespace yack
 {
@@ -18,6 +20,18 @@ namespace yack
             std::cerr << s.name;
             return os;
         }
+
+        bool species:: index_in(const collection &arr) const throw()
+        {
+            return indx>=1 && indx <= arr.size();
+        }
+
+        double species:: concentration( randomized::bits &ran ) throw()
+        {
+            const double p = double(pmin) + ran.to<double>() * (pmax-pmin);
+            return pow(10.0,p);
+        }
+
 
     }
 }

@@ -1,8 +1,9 @@
-
+//! \file
 
 #ifndef YACK_CHEM_EQ_INCLUDED
 #define YACK_CHEM_EQ_INCLUDED 1
 
+#include "yack/chem/eq/limits.hpp"
 #include "yack/chem/actors.hpp"
 #include "yack/chem/components.hpp"
 #include "yack/type/gateway.hpp"
@@ -13,6 +14,7 @@ namespace yack
     namespace chemical
     {
 
+        
         typedef components::knot_type cnode; //!< alias
 
         //______________________________________________________________________
@@ -21,7 +23,7 @@ namespace yack
         //! named equilibrium
         //
         //______________________________________________________________________
-        class equilibrium : public object, public counted,
+        class equilibrium : public large_object, public counted,
         public gateway<const components>,
         public collection
         {
@@ -39,7 +41,8 @@ namespace yack
             name(id),
             reac(),
             prod(),
-            comp()
+            comp(),
+            wksp()
             {
             }
 
@@ -68,6 +71,12 @@ namespace yack
             //! K * prod - reac
             double mass_action(const double K0, const readable<double> &C) const;
 
+            //! find full limits
+            const limits & find_limits(const readable<double> &C) const throw();
+
+            //! solve valid set of concentrations
+            void solve(const double K0, writable<double> &C, writable<double> &Ctry);
+
 
             //__________________________________________________________________
             //
@@ -78,7 +87,9 @@ namespace yack
             const actors prod; //!< list of product(s)
 
         private:
+            YACK_DISABLE_COPY_AND_ASSIGN(equilibrium);
             const components comp;
+            mutable void    *wksp[ YACK_WORDS_FOR(limits) ];
             virtual const_type &bulk() const throw();
             virtual double      getK(double) const = 0;
 

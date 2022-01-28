@@ -2,6 +2,7 @@
 #include "yack/chem/library.hpp"
 #include "yack/exception.hpp"
 #include "yack/chem/builder.hpp"
+#include "yack/randomized/bits.hpp"
 
 namespace yack
 {
@@ -93,6 +94,32 @@ namespace yack
         {
             const string _(name); return (*this)[_];
         }
+
+        void library:: fill(writable<double> &C,
+                            const double      zabove,
+                            randomized::bits &ran) throw()
+        {
+            for(const snode *node=head();node;node=node->next)
+            {
+                const species &sp = ***node;
+                double         sg = 1;
+                if(sp.rank<=0)
+                {
+                    if(ran.choice()) sg = -1;
+                }
+
+                if(ran.to<double>()>zabove)
+                {
+                    sp(C) = 0;
+                }
+                else
+                {
+                    sp(C) = sg * species::concentration(ran);
+                }
+
+            }
+        }
+
 
     }
 
