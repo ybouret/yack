@@ -41,8 +41,10 @@ namespace yack
             // methods
             //__________________________________________________________________
             //! K * law of mass action
-            double   mass_action( double                 K,
+            double   mass_action(double                  K,
                                  const readable<double> &C) const throw();
+
+            
 
         private:
             YACK_DISABLE_COPY_AND_ASSIGN(actors);
