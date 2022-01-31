@@ -11,33 +11,23 @@ namespace yack
 
     namespace chemical
     {
+        enum limitation
+        {
+            limited_by_none,
+            limited_by_reac,
+            limited_by_prod,
+            limited_by_both
+        };
       
         //______________________________________________________________________
         //
         //
-        //! limiting actor
+        //! limiting actor an its extent
         //
         //______________________________________________________________________
         class limiting
         {
         public:
-            //__________________________________________________________________
-            //
-            // types and definitions
-            //__________________________________________________________________
-            
-            //! classification
-            enum status
-            {
-                by_none, //!< no limits
-                by_reac, //!< limited by reactant
-                by_prod, //!< limited by product
-                by_both  //!< limited by both sides
-            };
-
-            //! helper
-            static const char *text(const status s) throw();
-
             //__________________________________________________________________
             //
             // C++

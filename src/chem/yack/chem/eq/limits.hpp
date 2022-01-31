@@ -38,13 +38,13 @@ namespace yack
             //
             // members
             //__________________________________________________________________
-            const limiting    * const reac; //!< limiting reactant
-            const limiting    * const prod; //!< limiting product
-            const limiting::status    type; //!< classification
+            const limiting  * const reac; //!< limiting reactant/NULL
+            const limiting  * const prod; //!< limiting product/NULL
+            const limitation        type; //!< classification
             
         private:
             YACK_DISABLE_COPY_AND_ASSIGN(limits);
-            limiting::status make() const throw();
+            limitation make() const throw();
             ~limits() throw();
         };
 

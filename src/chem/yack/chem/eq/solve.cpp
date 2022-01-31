@@ -12,6 +12,7 @@ namespace yack
 
         namespace {
 
+            // wrapper to build a changed concentration
             struct eqzcall
             {
                 const equilibrium       &eq;
@@ -49,21 +50,21 @@ namespace yack
 
             switch(lm.type)
             {
-                case limiting::by_both:
+                case limited_by_both:
                     f.a = F(x.a = -lm.prod->xi);
                     f.c = F(x.c = lm.reac->xi);
                     break;
-                case limiting::by_reac:
+                case limited_by_reac:
                     f.c = F(x.c = lm.reac->xi);
                     f.a = F(x.a = -1);
                     break;
 
-                case limiting::by_prod:
+                case limited_by_prod:
                     f.a = F(x.a = -lm.prod->xi);
                     f.c = F(x.c = 1);
                     break;
 
-                case limiting::by_none:
+                case limited_by_none:
                     f.a = F(x.a=-1);
                     f.c = F(x.c=1);
                     break;
@@ -77,12 +78,10 @@ namespace yack
                 f.c  = F(x.c);
             }
 
-            //std::cerr << "x=" << x << ", f=" << f << std::endl;
 
             zrid<double>  Z;
             if(!Z(F,x,f)) throw exception("can't solve corrupted <%s>", name() );
 
-            //std::cerr << "x=" << x << ", f=" << f << std::endl;
             for(const cnode *node=head();node;node=node->next)
             {
                 const component &cm = ***node;

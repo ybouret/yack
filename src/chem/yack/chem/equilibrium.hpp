@@ -71,7 +71,7 @@ namespace yack
             //! K * prod - reac
             double mass_action(const double K0, const readable<double> &C) const;
 
-            //! find full limits
+            //! find full limits for single equilibrium
             const limits & find_limits(const readable<double> &C) const throw();
 
             //! solve valid set of concentrations
