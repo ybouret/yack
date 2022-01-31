@@ -34,6 +34,8 @@ namespace yack
             //! display
             friend std::ostream & operator<<(std::ostream &, const limits &);
 
+            double crop(const double xi) const throw();
+
             //__________________________________________________________________
             //
             // members
@@ -41,7 +43,8 @@ namespace yack
             const limiting  * const reac; //!< limiting reactant/NULL
             const limiting  * const prod; //!< limiting product/NULL
             const limitation        type; //!< classification
-            
+
+
         private:
             YACK_DISABLE_COPY_AND_ASSIGN(limits);
             limitation make() const throw();

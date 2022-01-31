@@ -55,7 +55,6 @@ namespace yack
             const double ma = F(0);
             std::cerr << "ma=" << ma << std::endl;
 
-            exit(1);
 
             // initialize search
             switch(lm.type)
@@ -79,15 +78,8 @@ namespace yack
                     f.c = F(x.c=1);
                     break;
             }
-
-            // expand extents
-            while(f.a*f.c>0)
-            {
-                x.a -= 1; x.a *= 2;
-                x.c += 1; x.c *= 2;
-                f.a  = F(x.a);
-                f.c  = F(x.c);
-            }
+            
+            exit(1);
 
 
             zrid<double>  Z;

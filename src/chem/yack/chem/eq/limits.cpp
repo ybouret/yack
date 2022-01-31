@@ -1,5 +1,6 @@
 
 #include "yack/chem/eq/limits.hpp"
+#include "yack/type/utils.hpp"
 
 namespace yack
 {
@@ -37,6 +38,20 @@ namespace yack
                 }
             }
         }
+
+        double limits:: crop(const double xi) const throw()
+        {
+            switch(type)
+            {
+                case limited_by_none: break;
+                case limited_by_reac: return min_of(xi,reac->xi);
+                case limited_by_prod: return max_of(xi,-prod->xi);
+                case limited_by_both: return clamp(-prod->xi,xi,reac->xi);
+            }
+            return xi;
+        }
+
+
 
 
         std::ostream & operator<<(std::ostream &os, const limits &l)
