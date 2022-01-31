@@ -62,13 +62,30 @@ namespace yack
 
         }
 
+        static inline void displayA(std::ostream &os, const actors &A)
+        {
+            if(A.size)
+            {
+                const actor *a = A.head;
+                if(a->nu>1) os << (a->nu);
+                os << (**a).name;
+                for(a=a->next;a;a=a->next)
+                {
+                    os << '+';
+                    if(a->nu>1) os << (a->nu);
+                    os << (**a).name;
+                }
+            }
+        }
 
         void equilibrium:: display(std::ostream &os, const size_t w, const double t) const
         {
             os << '<' << name << '>';
             for(size_t i=name.size();i<=w;++i) os << ' ';
             os << " : ";
-            os << comp;
+            displayA(os,reac);
+            os << " <=> ";
+            displayA(os,prod);
             os << " | K(" << t << ")=" << getK(t);
         }
 

@@ -45,6 +45,9 @@ namespace yack
             //! K * derivatives
             void            drvs_action(writable<double> &psi, const double K, const readable<double> &C) const throw();
 
+            //! maximum
+            double          maximum(const readable<double> &C) const throw();
+
 
             //! limiting species, associated extent
             const limiting *find_limiting(const readable<double> &C) const throw();

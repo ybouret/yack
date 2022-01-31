@@ -60,10 +60,27 @@ namespace yack
                 case  0: return;
                 case  1:
                     std::cerr << "need reac->prod" << std::endl;
+                    f.a = ma;
+                    x.a = 0;
+                    switch(lm.type)
+                    {
+                        case limited_by_reac:
+                        case limited_by_both:
+                            f.c = F(x.c = lm.reac->xi);
+                            break;
+
+                        case limited_by_none:
+                        case limited_by_prod:
+                            f.c = F(x.c=1);
+                            break;
+
+                    }
+                    std::cerr << "x=" << x << ", f=" << f << std::endl;
                     break;
 
                 case -1:
                     std::cerr << "need prod->reac" << std::endl;
+                    f.c = F(x.c=0);
                     break;
             }
 

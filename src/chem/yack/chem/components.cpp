@@ -26,6 +26,7 @@ namespace yack
 
         void components:: display(std::ostream &os) const
         {
+            
             if(size()>0)
             {
                 const const_iterator done = end();

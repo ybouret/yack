@@ -5,6 +5,7 @@
 \usepackage{bm}
 \usepackage{pslatex}
 \usepackage{mathptmx}
+\usepackage{bookman}
 
  	 
 \begin{document}
@@ -20,10 +21,26 @@ and
 	- \prod_{j=1}^{M} [A_j]^{\nu^p_{i,j}} = 0
 \end{equation}
 
+We express the derivative of a product w.r.t. one term:
 \begin{equation}
 	\partial_{A_k} \left( \prod_{j=1}^{M} [A_j]^{\nu_{j}} \right)  =
 	\nu_k [A_k]^{\nu_k-1} \left( \prod_{j=1,j\not=k}^{M} [A_j]^{\nu_{j}} \right)
 \end{equation}
+
+For a given set of concentrations, $\Gamma_i$ is proportional
+to the rate of the reaction corresponding to the equilibrium:
+for a given amount of time:
+\begin{equation}
+	\delta \vec{C} = \bm{\nu}^T
+	\begin{bmatrix}
+	\lambda_1 & & \\
+	 & \ddots & \\
+	 & & \lambda_N \\
+	\end{bmatrix}
+	\vec{\Gamma}
+	= \bm{\Omega} \vec{\lambda}, \;\; \bm{\Omega}_{ij} = \left(\bm{\nu}^T\right)_{ij} \Gamma_j
+\end{equation}
+
 
 
 \end{document}

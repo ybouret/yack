@@ -2,6 +2,7 @@
 #include "yack/chem/actors.hpp"
 #include "yack/arith/ipower.hpp"
 #include "yack/type/out-of-reach.hpp"
+#include "yack/type/utils.hpp"
 #include <new>
 
 namespace yack
@@ -80,6 +81,25 @@ namespace yack
                 }
             }
             return make(pb,xi);
+        }
+
+        double actors:: maximum(const readable<double> &C) const throw()
+        {
+            switch(size)
+            {
+                case 0: return 0;
+                case 1: return (**head)(C);
+                default:
+                    break;
+            }
+
+            const actor *a = head;
+            double       m = (**a)(C);
+            for(a=a->next;a;a=a->next)
+            {
+                m = max_of(m, (**a)(C) );
+            }
+            return m;
         }
 
     }
