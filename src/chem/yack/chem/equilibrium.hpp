@@ -66,6 +66,18 @@ namespace yack
             void load(const string &expr, library &lib);  //!< load from string
             void load(const char   *expr, library &lib);  //!< load from string
 
+            template <typename T> inline
+            void fill(writable<T> &nu) const
+            {
+                for(const cnode *node=head();node;node=node->next)
+                {
+                    const component &c = ***node;
+                    c.sp(nu) = c.nu;
+                }
+            }
+
+
+
             //! display with name witdh alignment at time t
             void display(std::ostream &os, const size_t w, const double t) const;
 

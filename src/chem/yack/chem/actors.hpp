@@ -43,7 +43,7 @@ namespace yack
             double          mass_action(double K, const readable<double> &C) const throw();
 
             //! K * derivatives
-            void            drvs_action(writable<double> &phi, const double K, const readable<double> &C) const throw();
+            void            drvs_action(writable<double> &psi, const double K, const readable<double> &C) const throw();
 
 
             //! limiting species, associated extent

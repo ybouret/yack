@@ -25,6 +25,8 @@ namespace yack
         class State : public object, public counted
         {
         public:
+            static const char dummy_name[];
+
             //__________________________________________________________________
             //
             // C++
@@ -60,6 +62,22 @@ namespace yack
             template <typename T> inline
             T get(const char   *name) { getglobal(name); return to<T>(-1); }
 
+            //! evaluate expression
+            template <typename T> inline
+            T eval(const string &expr)
+            {
+                set_dummy_name(expr);
+                return get<T>(dummy_name);
+            }
+
+            //! evaluate expression
+            template <typename T> inline
+            T eval(const char *expr)
+            {
+                set_dummy_name(expr);
+                return get<T>(dummy_name);
+            }
+
             //! access operator
             lua_State * operator*() throw();
 
@@ -69,6 +87,8 @@ namespace yack
             lua_Integer to(const type2type<lua_Integer> &, const int);
             lua_Number  to(const type2type<lua_Number>  &, const int);
             string      to(const type2type<string>      &, const int);
+            void        set_dummy_name(const string &);
+            void        set_dummy_name(const char   *);
         };
 
         //______________________________________________________________________

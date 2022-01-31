@@ -30,19 +30,19 @@ namespace yack
         }
 
 
-        void actors:: drvs_action(writable<double>       &phi,
+        void actors:: drvs_action(writable<double>       &psi,
                                   const double            K,
                                   const readable<double> &C) const throw()
         {
 
-            assert(phi.size()<=C.size());
+            assert(psi.size()<=C.size());
 
             for(const actor *a=head;a;a=a->next)
             {
                 double res = a->derivs(K,C);
                 for(const actor *b=a->prev;b;b=b->prev) res *= b->action(C);
                 for(const actor *b=a->next;b;b=b->next) res *= b->action(C);
-                (**a)(phi) = res;
+                (**a)(psi) = res;
             }
             
         }

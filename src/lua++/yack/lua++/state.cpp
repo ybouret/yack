@@ -6,6 +6,8 @@ namespace yack
 {
     namespace Lua
     {
+        const char State:: dummy_name[] = "dummy_name";
+
         State:: ~State() throw()
         {
             lua_close(L);
@@ -96,6 +98,18 @@ namespace yack
             size_t      len = 0;
             const char *str = lua_tolstring(L,idx,&len);
             return string(str,len);
+        }
+
+        void State:: set_dummy_name(const string &expr)
+        {
+            const string code = dummy_name + ( '=' + expr);
+            dostring(code);
+        }
+
+        void State:: set_dummy_name(const char *expr)
+        {
+            const string _(expr);
+            set_dummy_name(_);
         }
 
     }
