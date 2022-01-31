@@ -20,7 +20,11 @@ namespace yack
         class library : public latch, public collection
         {
         public:
-            static const char separator = ':';
+            //__________________________________________________________________
+            //
+            // definitions
+            //__________________________________________________________________
+            static const char separator = ':'; //!< parsing separator
 
             //__________________________________________________________________
             //

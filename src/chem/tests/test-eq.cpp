@@ -89,6 +89,9 @@ YACK_UTEST(eq)
     eq.drvs_action(Ctry,K0,C);
     std::cerr << "phi=" << Ctry << std::endl;
 
+    eq.solve(K0,C,Ctry);
+
+
     return 0;
 
     if(eq.size())

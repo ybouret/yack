@@ -11,12 +11,16 @@ namespace yack
 
     namespace chemical
     {
+        //______________________________________________________________________
+        //
+        //! extent limitation status
+        //______________________________________________________________________
         enum limitation
         {
-            limited_by_none,
-            limited_by_reac,
-            limited_by_prod,
-            limited_by_both
+            limited_by_none, //!< no limit
+            limited_by_reac, //!< limited by a positive extent
+            limited_by_prod, //!< limited by a negative extent
+            limited_by_both  //!< limited by a range of extent
         };
       
         //______________________________________________________________________

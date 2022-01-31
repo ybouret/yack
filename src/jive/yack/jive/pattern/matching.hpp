@@ -47,10 +47,18 @@ namespace yack
             /**
              * accepted part is kept in token, even if source is not done
              */
-            bool exactly(source &);
+            bool exactly_(source &);
 
             //! search for partial match
-            bool somehow(source &);
+            bool somehow_(source &);
+
+            //! helper for string/text
+            template <typename DATANAME> inline
+            bool somehow(const DATANAME &data)
+            {
+                source src( module::open_data(data) );
+                return somehow_(src);
+            }
 
 
 

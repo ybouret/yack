@@ -7,6 +7,7 @@
 #include "yack/string/ops.hpp"
 #include "yack/lua++/function.hpp"
 #include "yack/ptr/auto.hpp"
+#include "yack/chem/builder.hpp"
 
 namespace yack
 {
@@ -62,7 +63,7 @@ namespace yack
 
         void lua_equilibria:: operator()(const string &expr, library &lib)
         {
-
+            
             static const char fn[] = "chemical::equilibria";
 
             vector<string> words;
@@ -106,6 +107,15 @@ namespace yack
                     (void) use( eq.yield() );
 
                 } break;
+
+                case '#' : {
+                    // assuming in database
+                    entry.skip(1);
+                    if(entry.size()<=0) throw exception("%s: invalid empty query name in '%s'",fn, expr());
+                    if(words.size()!=1) throw exception("%s: extraneous data for query '%s'", fn, expr());
+                    builder::instance().compile(*this,entry,lib,**this);
+                } break;
+
 
                 default:
                     throw exception("%s: unhandled first entry '%s' in '%s'",fn, entry(), expr());

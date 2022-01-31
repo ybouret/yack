@@ -34,6 +34,7 @@ namespace yack
             //! display
             friend std::ostream & operator<<(std::ostream &, const limits &);
 
+            //! crop a guess extent
             double crop(const double xi) const throw();
 
             //__________________________________________________________________

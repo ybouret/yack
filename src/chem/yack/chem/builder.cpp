@@ -293,3 +293,59 @@ namespace yack
     }
     
 }
+
+
+#include "yack/lua++/state.hpp"
+#include "yack/jive/pattern/matching.hpp"
+
+namespace yack
+{
+
+    namespace chemical
+    {
+
+        namespace
+        {
+            struct eqcode
+            {
+                const char   *name;
+                const char   *desc;
+                const char   *kxpr;
+            };
+
+            static const eqcode myeqs[] =
+            {
+#include "yack/chem/eq/db.hxx"
+            };
+
+        }
+
+        void  builder:: compile(equilibria &eqs, const string &name, library &lib, Lua::State &lvm)
+        {
+            static const size_t     num   = sizeof(myeqs)/sizeof(myeqs[0]);
+            size_t                  found = 0;
+            jive::matching          match(name);
+            for(size_t i=0;i<num;++i)
+            {
+                const eqcode &code = myeqs[i];
+                const string  cid  = code.name;
+                if(match.somehow(cid))
+                {
+                    ++found;
+                    auto_ptr<equilibrium> eq = new const_equilibrium(cid,lvm.eval<double>(code.kxpr));
+                    const string          __ = code.desc;
+                    compile(*eq,__,lib);
+                    (void) eqs.use(eq.yield());
+                }
+            }
+            
+            if(!found) throw exception("%s: no matching <%s>", call_sign, name());
+
+        }
+
+    }
+
+}
+
+
+

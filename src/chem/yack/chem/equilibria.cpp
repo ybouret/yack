@@ -1,6 +1,7 @@
 
 #include "yack/chem/equilibria.hpp"
 #include "yack/exception.hpp"
+#include "yack/type/utils.hpp"
 
 namespace yack
 {
@@ -13,25 +14,42 @@ namespace yack
 
         }
 
-        equilibria:: equilibria() throw() : equilibria_()
+        equilibria:: equilibria() throw() : db(), width(0)
         {
 
         }
-
 
         equilibrium & equilibria:: use(equilibrium *pEq)
         {
             assert(pEq);
             const equilibrium::pointer eq = pEq;
-            if(!insert(eq)) throw exception("equilibria use multiple <%s>", (eq->name)());
+            if(!db.insert(eq)) throw exception("equilibria use multiple <%s>", (eq->name)());
+            coerce(width) = max_of(width,pEq->name.size());
             return *pEq;
         }
 
         const enode * equilibria:: head() const throw()
         {
-            return (*tree).head;
+            return (*db.tree).head;
         }
 
+        size_t equilibria:: size() const throw()
+        {
+            return db.size();
+        }
+
+        std::ostream & operator<<(std::ostream &os, const equilibria &eqs)
+        {
+            os << '{' << std::endl;
+            for(const enode *node=eqs.head();node;node=node->next)
+            {
+                const equilibrium &eq = ***node;
+                eq.display(os << "  (*) ", eqs.width, 0);
+                os << std::endl;
+            }
+            os << '}';
+            return os;
+        }
 
     }
 

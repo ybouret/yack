@@ -25,7 +25,11 @@ namespace yack
         class State : public object, public counted
         {
         public:
-            static const char dummy_name[];
+            //__________________________________________________________________
+            //
+            // definition
+            //__________________________________________________________________
+            static const char dummy_name[]; //!< used for evaluation
 
             //__________________________________________________________________
             //

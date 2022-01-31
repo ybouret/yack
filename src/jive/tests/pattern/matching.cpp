@@ -29,7 +29,7 @@ YACK_UTEST(matching)
                 const string name = fn + vformat("%u",il);
                 {
                     jive::source src( jive::module::open_data(name,data) );
-                    if( match.exactly(src) )
+                    if( match.exactly_(src) )
                     {
                         std::cerr << data << " [=> exactly] '" << match << "'" << std::endl;
                     }
@@ -37,7 +37,7 @@ YACK_UTEST(matching)
 
                 {
                     jive::source src( jive::module::open_data(name,data) );
-                    if( match.somehow(src) )
+                    if( match.somehow_(src) )
                     {
                         std::cerr << data << " [=> somehow] '" << match << "'" << std::endl;
                     }

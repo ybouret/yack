@@ -4,13 +4,17 @@
 #ifndef YACK_CHEM_BUILDER_INCLUDED
 #define YACK_CHEM_BUILDER_INCLUDED 1
 
-#include "yack/chem/equilibrium.hpp"
+#include "yack/chem/equilibria.hpp"
 #include "yack/singleton.hpp"
 #include "yack/jive/parser.hpp"
 #include "yack/hashing/perfect.hpp"
 
 namespace yack
 {
+    namespace Lua
+    {
+        class State;
+    };
 
     namespace chemical
     {
@@ -29,10 +33,12 @@ namespace yack
             typedef jive::syntax::xnode     xnode;         //!< alias
             
 
-            xnode   *ast(const string &expr);                           //!< from species to equations...
-            species *ast_to_species(const xnode &tree) const;           //!< from a single species node
-            species *compile(const string &expr);                       //!< string to single species
-            void     compile(equilibrium &, const string &, library &); //!< string to components for equilibrium
+            xnode       *ast(const string &expr);                           //!< from species to equations...
+            species     *ast_to_species(const xnode &tree) const;           //!< from a single species node
+            species     *compile(const string &expr);                       //!< string to single species
+            void         compile(equilibrium &, const string &, library &); //!< string to components for equilibrium
+            void         compile(equilibria  &, const string &, library &, Lua::State &); //!< query database
+
 
         private:
             YACK_DISABLE_COPY_AND_ASSIGN(builder);
@@ -42,6 +48,7 @@ namespace yack
 
             auto_ptr<jive::parser> P; //!< components parser
             const hashing::perfect H; //!< key words hasher
+
 
 
         };

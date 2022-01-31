@@ -8,7 +8,7 @@ SOURCE_GROUP(chem FILES ${chem_main})
 install( FILES ${chem_main_decl} DESTINATION include/yack/chem )
 
 #eq
-file(GLOB chem_eq_decl yack/chem/eq/*.hpp)
+file(GLOB chem_eq_decl yack/chem/eq/*.hpp yack/chem/eq/*.hxx)
 file(GLOB chem_eq_srcs yack/chem/eq/*.cpp)
 set(chem_eq ${chem_eq_decl} ${chem_eq_srcs})
 SOURCE_GROUP(chem/eq FILES ${chem_eq})

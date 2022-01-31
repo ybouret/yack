@@ -69,6 +69,7 @@ namespace yack
                 return tkn.fill(words,is_separator);
             }
 
+            //! split using one char
             template <typename SEQUENCE> static inline
             size_t split_with(const char C, SEQUENCE &words, const string<T> &source)
             {

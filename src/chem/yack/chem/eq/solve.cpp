@@ -55,7 +55,20 @@ namespace yack
             const double ma = F(0);
             std::cerr << "ma=" << ma << std::endl;
 
+            switch( __sign::of(ma) )
+            {
+                case  0: return;
+                case  1:
+                    std::cerr << "need reac->prod" << std::endl;
+                    break;
 
+                case -1:
+                    std::cerr << "need prod->reac" << std::endl;
+                    break;
+            }
+
+            exit(1);
+            
             // initialize search
             switch(lm.type)
             {

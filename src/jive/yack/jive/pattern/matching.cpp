@@ -38,7 +38,7 @@ namespace yack
     namespace jive
     {
 
-        bool matching:: exactly(source &src)
+        bool matching:: exactly_(source &src)
         {
             release();
             if(strong)
@@ -95,7 +95,7 @@ namespace yack
     namespace jive
     {
 
-        bool matching:: somehow(source &src)
+        bool matching:: somehow_(source &src)
         {
             release();
             if(strong)

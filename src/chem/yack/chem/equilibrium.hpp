@@ -14,8 +14,13 @@ namespace yack
     namespace chemical
     {
 
-        
-        typedef components::knot_type cnode; //!< alias
+        //______________________________________________________________________
+        //
+        //
+        //! alias to loop over components
+        //
+        //______________________________________________________________________
+        typedef components::knot_type cnode;
 
         //______________________________________________________________________
         //
@@ -28,7 +33,11 @@ namespace yack
         public collection
         {
         public:
-            typedef ark_ptr<string,equilibrium> pointer;
+            //__________________________________________________________________
+            //
+            // types
+            //__________________________________________________________________
+            typedef ark_ptr<string,equilibrium> pointer; //!< alias
 
             //__________________________________________________________________
             //
@@ -66,6 +75,7 @@ namespace yack
             void load(const string &expr, library &lib);  //!< load from string
             void load(const char   *expr, library &lib);  //!< load from string
 
+            //! fill row of topology
             template <typename T> inline
             void fill(writable<T> &nu) const
             {
@@ -100,7 +110,7 @@ namespace yack
             //
             // checking
             //__________________________________________________________________
-            bool is_neutral() const throw();
+            bool is_neutral() const throw(); //!< delta_r Z = 0
 
             //__________________________________________________________________
             //
