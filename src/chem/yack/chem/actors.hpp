@@ -39,8 +39,12 @@ namespace yack
             //
             // methods
             //__________________________________________________________________
-            //! K * law of mass action
+            //! K * partial law of mass action
             double          mass_action(double K, const readable<double> &C) const throw();
+
+            //! K * derivatives
+            void            drvs_action(writable<double> &phi, const double K, const readable<double> &C) const throw();
+
 
             //! limiting species, associated extent
             const limiting *find_limiting(const readable<double> &C) const throw();

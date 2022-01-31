@@ -90,10 +90,20 @@ namespace yack
 
 
         double equilibrium:: mass_action(const double            K0,
-                                         const readable<double> &C) const
+                                         const readable<double> &C) const throw()
         {
             return reac.mass_action(K0,C) - prod.mass_action(1,C);
         }
+
+
+        void equilibrium:: drvs_action(writable<double>       &phi,
+                                       const double            K0,
+                                       const readable<double> &C) const throw()
+        {
+            reac.drvs_action(phi,K0,C);
+            prod.drvs_action(phi,-1,C);
+        }
+
 
 
         const limits & equilibrium:: find_limits(const readable<double> &C) const throw()

@@ -73,7 +73,10 @@ namespace yack
             friend std::ostream & operator<<(std::ostream &, const equilibrium &);
 
             //! K * prod - reac
-            double mass_action(const double K0, const readable<double> &C) const;
+            double mass_action(const double K0, const readable<double> &C) const throw();
+
+            //! derivative of mass action
+            void   drvs_action(writable<double> &phi, const double K0, const readable<double> &C) const throw();
 
             //! find full limits for single equilibrium
             const limits & find_limits(const readable<double> &C) const throw();

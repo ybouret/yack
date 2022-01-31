@@ -24,11 +24,39 @@ namespace yack
 
             for(const actor *a=head;a;a=a->next)
             {
-                const size_t   nu = a->nu; assert(nu>0);
-                K *= ipower<double,size_t>( (**a)(C),nu);
+                K *= a->action(C);
             }
             return K;
         }
+
+
+        void actors:: drvs_action(writable<double>       &phi,
+                                  const double            K,
+                                  const readable<double> &C) const throw()
+        {
+
+            assert(phi.size()<=C.size());
+
+            for(const actor *a=head;a;a=a->next)
+            {
+                const species &sp  = **a; //std::cerr << "_[" << sp.name << "]" << std::endl;
+                const size_t   nu  = a->nu;    assert(nu>0);
+                const size_t   k   = sp.indx;  assert(k>=1); assert(k<=phi.size());
+                double         res = a->derivs(K,C);
+                for(const actor *b=a->prev;b;b=b->prev)
+                {
+                    res *= b->action(C);
+                }
+                for(const actor *b=a->next;b;b=b->next)
+                {
+                    res *= b->action(C);
+                }
+                phi[k] = res;
+            }
+            
+        }
+
+
 
 
         const limiting * actors:: make(const actor *pa, const double xi) const throw()

@@ -7,17 +7,8 @@
 using namespace yack;
 using namespace chemical;
 
-YACK_UTEST(eq)
+static inline void test_comb(randomized::bits &ran)
 {
-
-    randomized::rand_ ran;
-
-    YACK_SIZEOF(species);
-    YACK_SIZEOF(actors);
-    YACK_SIZEOF(equilibrium);
-    YACK_SIZEOF(const_equilibrium);
-
-
     for(size_t nr=0;nr<=4;++nr)
     {
         for(size_t np=0;np<=4;++np)
@@ -54,13 +45,25 @@ YACK_UTEST(eq)
                 lib.fill(C,0.8,ran);
                 eq.solve(K0,C,Ctry);
             }
-            
+
 
 
         }
     }
+}
 
-#if 0
+YACK_UTEST(eq)
+{
+
+    randomized::rand_ ran;
+
+    YACK_SIZEOF(species);
+    YACK_SIZEOF(actors);
+    YACK_SIZEOF(equilibrium);
+    YACK_SIZEOF(const_equilibrium);
+
+    //test_comb(ran);
+
     chemical::library           lib;
     chemical::const_equilibrium eq("eq",1e-3);
     if(argc>1)
@@ -68,23 +71,30 @@ YACK_UTEST(eq)
         eq.load(argv[1],lib);
     }
 
-    lib("[Na+]");
+    lib.load("[Na+]:[Cl-]");
 
-    const size_t nv = lib.size();
+    const size_t   nv = lib.size();
     vector<double> C(nv,0);
+    vector<double> Ctry(nv,0);
+
     std::cerr << lib << std::endl;
     std::cerr << eq  << std::endl;
 
+    lib.fill(C,0.8,ran);
     lib(std::cerr,C);
+
 
     const double K0 = eq.K(0);
     std::cerr << "mass_action: " << eq.mass_action(K0,C) << std::endl;
     const limits &lm = eq.find_limits(C);
     std::cerr << lm << std::endl;
+    eq.drvs_action(Ctry,K0,C);
+    std::cerr << "phi=" << Ctry << std::endl;
+
+    return 0;
 
     if(eq.size())
     {
-        vector<double> Ctry(nv,0);
         eq.solve(K0,C,Ctry);
 
         for(size_t iter=0;iter<100;++iter)
@@ -96,7 +106,6 @@ YACK_UTEST(eq)
             std::cerr << "mass_action: " << eq.mass_action(K0,C) << std::endl;
         }
     }
-#endif
 
 }
 YACK_UDONE()
