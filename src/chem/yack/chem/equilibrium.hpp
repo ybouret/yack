@@ -77,7 +77,11 @@ namespace yack
             //! solve valid set of concentrations
             void solve(const double K0, writable<double> &C, writable<double> &Ctry);
 
-
+            //__________________________________________________________________
+            //
+            // checking
+            //__________________________________________________________________
+            
             //__________________________________________________________________
             //
             // members
