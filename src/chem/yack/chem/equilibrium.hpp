@@ -28,6 +28,8 @@ namespace yack
         public collection
         {
         public:
+            typedef ark_ptr<string,equilibrium> pointer;
+
             //__________________________________________________________________
             //
             // C++
@@ -41,6 +43,7 @@ namespace yack
             name(id),
             reac(),
             prod(),
+            indx(0),
             comp(),
             wksp()
             {
@@ -53,7 +56,8 @@ namespace yack
             double         K(double) const;      //!< check valid getK(t)
             virtual size_t size() const throw(); //!< number of registered components
             const cnode   *head() const throw(); //!< fist component
-
+            const string  &key()  const throw(); //!< name for equilibria
+            
             //__________________________________________________________________
             //
             // methods
@@ -81,7 +85,8 @@ namespace yack
             //
             // checking
             //__________________________________________________________________
-            
+            bool is_neutral() const throw();
+
             //__________________________________________________________________
             //
             // members
@@ -89,6 +94,7 @@ namespace yack
             const string name; //!< identifier
             const actors reac; //!< list of reactant(s)
             const actors prod; //!< list of product(s)
+            const size_t indx; //!< in equilibria
 
         private:
             YACK_DISABLE_COPY_AND_ASSIGN(equilibrium);

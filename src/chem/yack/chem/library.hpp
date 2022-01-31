@@ -20,7 +20,7 @@ namespace yack
         class library : public latch, public collection
         {
         public:
-
+            static const char separator = ':';
 
             //__________________________________________________________________
             //
@@ -48,12 +48,15 @@ namespace yack
 
             const species & operator()(const string &expr); //!< parse a species
             const species & operator()(const char   *expr); //!< parse a species
+            void            load(const string &splist);     //!< parse list of species
+            void            load(const char   *splist);     //!< parse list of species
 
             virtual size_t size() const throw(); //!< number of registered species
             const snode   *head() const throw(); //!< fist species knot
 
             const species & operator[](const string &) const; //!< access
             const species & operator[](const char   *) const; //!< access
+
 
             //! fill a trial set of concentrations
             void fill(writable<double> &C,

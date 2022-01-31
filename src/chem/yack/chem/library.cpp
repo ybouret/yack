@@ -3,6 +3,7 @@
 #include "yack/exception.hpp"
 #include "yack/chem/builder.hpp"
 #include "yack/randomized/bits.hpp"
+#include "yack/string/tokenizer.hpp"
 
 namespace yack
 {
@@ -64,11 +65,29 @@ namespace yack
 
         }
 
+        
         const species & library:: operator()(const string &expr)
         {
             static builder         &mgr = builder::instance();
             const species::pointer  ptr = mgr.compile(expr);
             return check(ptr);
+        }
+
+        
+        void library:: load(const string &splist)
+        {
+            vector<string> words;
+            tokenizer::split_with(separator,words,splist);
+            for(size_t i=1;i<=words.size();++i)
+            {
+                (void) (*this)(words[i]);
+            }
+        }
+
+        void library:: load(const char *splist)
+        {
+            const string _(splist);
+            load(_);
         }
 
         const species & library:: operator()(const char *expr)

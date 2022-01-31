@@ -29,7 +29,7 @@ namespace yack
                         const size_t     j  = sp.indx; assert(j>=1); assert(j<=C.size()); assert(j<=Ctry.size());
                         const unit_t     nu = cm.nu;
                         const double     Cj = C[j];    assert(C[j]>=0);
-                        Ctry[j] = max_of<double>(Cj + nu * xi,0);
+                        Ctry[j] = Cj + nu * xi;
                     }
                     return eq.mass_action(K0,Ctry);
                 }
@@ -42,12 +42,22 @@ namespace yack
                                   writable<double> &Ctry)
         {
 
+            assert(size()>0);
+
+            // initialize limits
+
             const limits      &lm  = find_limits(C);
-            std::cerr << lm << std::endl;
             triplet<double>    x  = { 0, 0, 0 };            // extents
             triplet<double>    f  = { 0, 0, 0 };            // mass action
             eqzcall            F  = { *this, K0, C, Ctry }; // callable
 
+            std::cerr << lm << std::endl;
+            const double ma = F(0);
+            std::cerr << "ma=" << ma << std::endl;
+
+            exit(1);
+
+            // initialize search
             switch(lm.type)
             {
                 case limited_by_both:
@@ -70,6 +80,7 @@ namespace yack
                     break;
             }
 
+            // expand extents
             while(f.a*f.c>0)
             {
                 x.a -= 1; x.a *= 2;

@@ -37,17 +37,17 @@ namespace yack
 
             //! the main find function
             template <typename FUNCTION>
-            bool find(FUNCTION &is_separator) throw()
+            bool find(FUNCTION &is_sep) throw()
             {
                 curr += size;
             SKIP:
                 if(curr>=last) return false;
-                if(is_separator(*curr)) { ++curr; goto SKIP; }
+                if(is_sep(*curr)) { ++curr; goto SKIP; }
 
                 const T *scan = curr;
             SCAN:
                 if(++scan>=last) goto DONE;
-                if(!is_separator(*scan)) goto SCAN;
+                if(!is_sep(*scan)) goto SCAN;
 
             DONE:
                 size=scan-curr;
@@ -69,6 +69,13 @@ namespace yack
                 return tkn.fill(words,is_separator);
             }
 
+            template <typename SEQUENCE> static inline
+            size_t split_with(const char C, SEQUENCE &words, const string<T> &source)
+            {
+                is_separator_t is_separator = { C };
+                return split(words,is_separator,source);
+            }
+            
         private:
             const T     *curr; //!< current position
             const T     *last; //!< first invalid char
@@ -76,7 +83,14 @@ namespace yack
             size_t       indx; //!< current index
 
             YACK_DISABLE_COPY_AND_ASSIGN(tokenizer);
-            
+            struct is_separator_t
+            {
+                int tgt;
+                inline bool operator()(const int src) const throw() {
+                    return src==tgt;
+                }
+            };
+
             template <typename SEQUENCE, typename FUNCTION> inline
             size_t fill(SEQUENCE &words, FUNCTION &is_separator)
             {

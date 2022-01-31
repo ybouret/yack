@@ -16,6 +16,11 @@ namespace yack
             return comp;
         }
 
+        const string  & equilibrium:: key()  const throw()
+        {
+            return name;
+        }
+
         size_t equilibrium:: size() const throw()
         {
             return comp.size();
@@ -93,7 +98,18 @@ namespace yack
 
         const limits & equilibrium:: find_limits(const readable<double> &C) const throw()
         {
-            return *new ( out_of_reach::zset(wksp,sizeof(wksp)) ) limits( reac.find_limiting(C), prod.find_limiting(C) );
+            return *new ( YACK_STATIC_ZSET(wksp) ) limits( reac.find_limiting(C), prod.find_limiting(C) );
+        }
+
+        bool equilibrium:: is_neutral() const throw()
+        {
+            unit_t drZ = 0;
+            for(const cnode *node=head();node;node=node->next)
+            {
+                const component &c = ***node;
+                drZ += c.sp.z * c.nu;
+            }
+            return 0 == drZ;
         }
 
 

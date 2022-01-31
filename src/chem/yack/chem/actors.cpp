@@ -35,7 +35,7 @@ namespace yack
         {
             assert(pa);
             assert(xi>=0);
-            return new ( out_of_reach::zset(wksp,sizeof(wksp)) ) limiting(pa,xi);
+            return new ( YACK_STATIC_ZSET(wksp) ) limiting(pa,xi);
         }
 
 

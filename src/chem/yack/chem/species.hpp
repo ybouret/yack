@@ -7,16 +7,11 @@
 #include "yack/ptr/ark.hpp"
 #include "yack/associative/suffix/set.hpp"
 #include "yack/large-object.hpp"
-
+#include "yack/randomized/fwd.hpp"
 
 namespace yack
 {
-
-    namespace randomized
-    {
-        class bits;
-    }
-
+    
     namespace chemical
     {
         //______________________________________________________________________
