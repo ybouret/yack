@@ -99,6 +99,17 @@ namespace yack
                     }
                 }
 
+                //! M = factor * A
+                template <typename T, typename U> static inline
+                void smul(matrix<T> &M, typename type_traits<T>::parameter_type factor, const matrix<U> &A)
+                {
+                    assert(matrix_metrics::have_same_sizes(M,A));
+                    for(size_t i=M.rows;i>0;--i)
+                    {
+                        v1::mul(M[i],factor,A[i]);
+                    }
+                }
+
 
 
             };

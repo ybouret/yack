@@ -30,7 +30,7 @@ YACK_UTEST(plexus)
     cs.computeK(0);
     std::cerr << "K=" << cs.K << std::endl;
 
-    vector<double> C(lib.size(),0);
+    vector<double> C(lib.size()+2,0);
     //lib.fill(C,0.8, ran);
     lib(std::cerr,C);
     cs.computeGamma(C);
@@ -38,10 +38,12 @@ YACK_UTEST(plexus)
     cs.computeGammaAndPsi(C);
     std::cerr << "Gamma=" << cs.Gamma << std::endl;
     std::cerr << "Psi  =" << cs.Psi   << std::endl;
-    cs.computeOmega();
-    std::cerr << "Omega=" << cs.Omega << std::endl;
+    std::cerr << "NuT  =" << cs.NuT << std::endl;
+    std::cerr << "Cini=" << C << std::endl;
+    cs.solve(C);
+    
+    
 
-    cs.study();
 
 }
 YACK_UDONE()

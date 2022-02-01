@@ -43,9 +43,8 @@ namespace yack
             void computeK(const double t);                              //!< pre-compute constants
             void computeGamma(const readable<double> &C)       throw(); //!< evaluate mass action
             void computeGammaAndPsi(const readable<double> &C) throw(); //!< evaluate mass action and jacobian
-            void computeOmega() throw();                                //!< from Gamma and NuT
-
-            void study();
+            
+            void solve(writable<double> &C);
 
             //__________________________________________________________________
             //
@@ -61,13 +60,16 @@ namespace yack
             tableaux ntab;
             tableaux mtab;
         public:
-            array_type       &K;      //!< constants at a given time
-            array_type       &Gamma;  //!< Gamma for precomputed K
+            array_type       &K;      //!< [N] constants at a given time
+            array_type       &Gamma;  //!< [N] Gamma for precomputed K
+            array_type       &Corg;   //!< [M] initial concentrations
+            array_type       &Ctry;   //!< [M] trial concentrations
+            array_type       &dC;     //!< [M] delta C
             const matrix<int> Nu;     //!< topology
             const matrix<int> NuT;    //!< Nu'
             matrix<double>    Psi;    //!< jacobian of Gamm
             matrix<double>    Omega;  //!< Omega
-
+            vector<double>    stack;  //!< temporary stack
 
 
         private:

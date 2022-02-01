@@ -10,6 +10,8 @@
  	 
 \begin{document}
 
+\section{Notations}
+
 Let $A_1,\ldots,A_M$ be $M$ species involved in $N$ equilibria:
 \begin{equation}
 	\forall i\in[1:N], \; \sum_j \nu_{i,j} A_j = 0
@@ -21,26 +23,51 @@ and
 	- \prod_{j=1}^{M} [A_j]^{\nu^p_{i,j}} = 0
 \end{equation}
 
+\section{Derivatives}
 We express the derivative of a product w.r.t. one term:
 \begin{equation}
 	\partial_{A_k} \left( \prod_{j=1}^{M} [A_j]^{\nu_{j}} \right)  =
 	\nu_k [A_k]^{\nu_k-1} \left( \prod_{j=1,j\not=k}^{M} [A_j]^{\nu_{j}} \right)
 \end{equation}
 
-For a given set of concentrations, $\Gamma_i$ is proportional
-to the rate of the reaction corresponding to the equilibrium.
-For a given amount of time:
+Then:
 \begin{equation}
-	\delta \vec{C} = \bm{\nu}^T
-	\begin{bmatrix}
-	\lambda_1 & & \\
-	 & \ddots & \\
-	 & & \lambda_N \\
-	\end{bmatrix}
-	\vec{\Gamma}
-	= \bm{\Omega} \vec{\lambda}, \;\; \bm{\Omega}_{ij} = \left(\bm{\nu}^T\right)_{ij} \Gamma_j
+	\partial^2_{A_k, A_k} \left( \prod_{j=1}^{M} [A_j]^{\nu_{j}} \right)  =
+	\nu_k (\nu_k-1) [A_k]^{\nu_k-2} \left( \prod_{j=1,j\not=k}^{M} [A_j]^{\nu_{j}} \right)
+\end{equation}
+and:
+\begin{equation}
+	\partial^2_{A_k\not=A_l} \left( \prod_{j=1}^{M} [A_j]^{\nu_{j}} \right)  =
+	\nu_k [A_k]^{\nu_k-1} \nu_l [A_l]^{\nu_l-1}\left( \prod_{j=1,j\not=k,j\not=l}^{M} [A_j]^{\nu_{j}} \right)
 \end{equation}
 
+\section{Evolution}
+Let us assume we have a out of equilibria system.
+For a given set of concentrations, $\Gamma_i$ is proportional
+to the rate of the reaction corresponding to the equilibrium.
+For a reduced time $\tau$,
+\begin{equation}
+	\partial_\tau \vec{C} = \bm{\nu}^T    \vec{\Gamma}(\vec{C})
+\end{equation}
+Let us integrate implicitly with $\tau$, since we have the form:
+\begin{equation}
+	\partial_\tau \vec{C} = \vec{F}(\vec{C})
+\end{equation}
+
+\begin{equation}
+	\vec{C}_{n+1} = \vec{C}_n +  \tau\left[ \bm{I}_M - \tau \partial_{\vec{C}} \vec{F} \right]^{-1} \vec{F}(\vec{C}_n)
+\end{equation}
+then
+\begin{equation}
+	\vec{C}_{n+1} = \vec{C}_n + \tau\left[ \bm{I}_M - \tau  \cdot \bm{\nu}^T  \bm{\Psi} \right]^{-1}  
+	\bm{\nu}^T     \vec{\Gamma}
+\end{equation}
+
+
+\begin{equation}
+	(\bm{\nu}^T \bm{\Psi})_{ii} = \sum_{k=1}^N (\bm{\nu}^T)_{ik} \bm{\Psi}_{kj} =  \sum_{k=1}^N \bm{\nu}_{ki} \bm{\Psi}_{kj}
+= \sum_{k=1}^N \bm{\nu}_{ki} \partial_{A_k}\Gamma_i \leq 0
+\end{equation}
 
 
 \end{document}

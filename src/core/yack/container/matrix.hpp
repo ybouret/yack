@@ -167,8 +167,8 @@ namespace yack
         //______________________________________________________________________
 
         //! lhs = M*rhs
-        template <typename U>
-        inline void operator()(writable<T> &lhs, const readable<U> &rhs) const
+        template <typename U, typename V>
+        inline void operator()(writable<U> &lhs, const readable<V> &rhs) const
         {
             assert(lhs.size()<=rows);
             assert(lhs.size()==rhs.size());

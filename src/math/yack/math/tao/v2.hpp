@@ -1,8 +1,7 @@
+//! \file
 
-/! \file
-
-#ifndef YACK_MATH_TAO_V1_INCLUDED
-#define YACK_MATH_TAO_V1_INCLUDED 1
+#ifndef YACK_MATH_TAO_V2_INCLUDED
+#define YACK_MATH_TAO_V2_INCLUDED 1
 
 #include "yack/math/tao/v1.hpp"
 
@@ -24,7 +23,7 @@ namespace yack
                     assert(lhs.size()<=M.rows);
                     for(size_t i=M.rows;i>0;--i)
                     {
-                        lhs[i] = dot<typename LHS::mutable_type>(M[i],rhs);
+                        lhs[i] = v1::dot<typename LHS::mutable_type>::of(M[i],rhs);
                     }
                 }
             };

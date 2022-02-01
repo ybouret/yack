@@ -3,7 +3,11 @@
 #include "yack/chem/plexus.hpp"
 #include "yack/exception.hpp"
 #include "yack/math/tao/v3.hpp"
+#include "yack/math/tao/v2.hpp"
 #include "yack/math/algebra/lu.hpp"
+#include"yack/sort/sum.hpp"
+
+#include <cmath>
 
 namespace yack
 {
@@ -34,12 +38,20 @@ namespace yack
         A(lib.active()),
         ntab(10,N),
         mtab(10,M),
+
         K(ntab.next()),
         Gamma(ntab.next()),
+
+        Corg(mtab.next()),
+        Ctry(mtab.next()),
+        dC(mtab.next()),
+
         Nu(N, (N>0) ? M : 0),
         NuT(Nu.cols,Nu.rows),
         Psi(Nu.rows,Nu.cols),
-        Omega(Nu.cols,Nu.rows),
+        Omega(M,M),
+        stack(M,as_capacity),
+        
         lib_lock( coerce(lib) )
         {
             std::cerr << "#species=" << M << std::endl;
@@ -104,56 +116,112 @@ namespace yack
             }
         }
 
-        void plexus:: computeOmega() throw()
-        {
-            for(size_t i=N;i>0;--i)
+
+
+        namespace {
+
+            struct zGamma
             {
-                for(size_t j=M;j>0;--j)
+                plexus &sys;
+
+                inline double operator()(double u)
                 {
-                    Omega[j][i] = NuT[j][i] * Gamma[i];
+                    tao::v1::muladd(sys.Ctry,sys.Corg,u,sys.dC);
+                    sys.computeGamma(sys.Ctry);
+                    sys.stack.free();
+                    for(size_t i=sys.N;i>0;--i)
+                    {
+                        sys.stack.push_back(sys.Gamma[i]);
+                    }
+                    return sorted::sum_squared(sys.stack)*0.5;
                 }
-            }
+
+            };
         }
 
 
-        void plexus:: study()
+        void plexus:: solve(writable<double> &C)
         {
-
-            vector<double> values;
-
-            for(const enode *E=eqs.head();E;E=E->next)
+            assert(C.size()>=M);
+            if(N>0)
             {
-                const equilibrium   &eq = ***E;
-                const size_t         ii = eq.indx;
-                const double         gm = Gamma[ii];
-                const readable<int> &ni = Nu[ii];
+                tao::v1::load(Corg,C);
+                std::cerr << "Corg=" << Corg << std::endl;
 
-                std::cerr << "<" << eq.name << ">" << std::endl;
-                std::cerr << "\tgamma=" << gm << std::endl;
+                matrix<double> W(M,M);
+                lu<double>     LU(M);
+                zGamma         G = { *this };
 
-                values.free();
-                for(const snode *S = lib.head();S;S=S->next)
+                // initialize
+                computeGammaAndPsi(Corg);
+                tao::v3::mmul(Omega,NuT,Psi);
+                double tau = 1;
+
+                // search for implicit solution
+                tao::v3::smul(W,-tau,Omega);
+                for(size_t i=M;i>0;--i) W[i][i] += 1.0;
+
+                std::cerr << "W=" << W << std::endl;
+
+                if(!LU.build(W))
                 {
-                    const species &sp = ***S;
-                    const size_t   jj = sp.indx;
-                    const int      nu = ni[jj];
-                    if(!nu) continue;
-                    const double   omega = nu*gm;
-                    if(omega<0)
+                    std::cerr << "not inversible" << std::endl;
+                    exit(1);
+                }
+
+                tao::v2::mul(dC,NuT,Gamma);
+                std::cerr << "NuTG=" << dC << std::endl;
+                LU.solve(W,dC);
+                std::cerr << "dC0 =" << dC << std::endl;
+                tao::v1::mul(dC,tau,dC);
+                std::cerr << "dC  =" << dC << std::endl;
+
+                // scan for alpha max
+                stack.free();
+                for(const snode *S=lib.head();S;S=S->next)
+                {
+                    const species &s = ***S;
+                    // drop spectator
+                    if(s.rank<=0)
                     {
-                        std::cerr << "\t\tlimited by  " << sp.name << std::endl;
+                        assert( fabs(s(dC)) <= 0);
+                        continue;
                     }
-                    else
+
+                    // process active
+                    assert(s(C)>=0);
+                    const size_t j = s.indx;
+                    const double dS = dC[j];
+                    if(dS<0)
                     {
-                        std::cerr << "\t\tno limit by " << sp.name << std::endl;
+                        std::cerr << "could be limited by " << s.name << std::endl;
+                        stack << -C[j]/dS;
                     }
                 }
 
+                std::cerr << "stack:" << stack << std::endl;
+                double  alpha_max=100;
+                if(stack.size())
+                {
+                    hsort(stack,comparison::increasing<double>);
+                    alpha_max=stack[1];
+                }
+                std::cerr << "alpha_max: " << alpha_max << std::endl;
+
+                std::cerr << "G(0)=" << G(0) << std::endl;
+
+                {
+                    ios::ocstream fp("gamma.dat");
+                    for(double u=0;u<=0.99*alpha_max;u+=0.01)
+                    {
+                        fp("%.15g %.15g\n",u,G(u));
+                    }
+                }
+
+
             }
-
-
-
         }
+
 
     }
     
