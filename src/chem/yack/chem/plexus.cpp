@@ -3,6 +3,7 @@
 #include "yack/chem/plexus.hpp"
 #include "yack/exception.hpp"
 #include "yack/math/tao/v3.hpp"
+#include "yack/math/algebra/lu.hpp"
 
 namespace yack
 {
@@ -52,9 +53,15 @@ namespace yack
             {
                 matrix<apq> G(N,N);
                 tao::v3::gram(G,Nu);
-                std::cerr << "Nu=" << Nu << std::endl;
+                std::cerr << "Nu="  << Nu << std::endl;
                 std::cerr << "NuT=" << NuT << std::endl;
-                std::cerr << "G=" << G << std::endl;
+                std::cerr << "G="   << G << std::endl;
+                lu<apq> LU(N);
+                if(!LU.build(G))
+                {
+                    throw exception("%s: dependant equilibria detected",fn);
+                }
+
             }
 
         }
