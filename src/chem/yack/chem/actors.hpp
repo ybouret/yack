@@ -42,8 +42,8 @@ namespace yack
             //! K * partial law of mass action
             double          mass_action(double K, const readable<double> &C) const throw();
 
-            //! K * derivatives
-            void            drvs_action(writable<double> &psi, const double K, const readable<double> &C) const throw();
+            //! K * derivatives, return mass action
+            double         drvs_action(writable<double> &psi, const double K, const readable<double> &C) const throw();
 
             //! maximum
             double          maximum(const readable<double> &C) const throw();

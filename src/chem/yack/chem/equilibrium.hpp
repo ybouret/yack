@@ -97,8 +97,8 @@ namespace yack
             //! K * prod - reac
             double mass_action(const double K0, const readable<double> &C) const throw();
 
-            //! derivative of mass action
-            void   drvs_action(writable<double> &phi, const double K0, const readable<double> &C) const throw();
+            //! derivative of mass action, return mass action
+            double drvs_action(writable<double> &psi, const double K0, const readable<double> &C) const throw();
 
             //! find full limits for single equilibrium
             const limits & find_limits(const readable<double> &C) const throw();
@@ -111,6 +111,7 @@ namespace yack
             // checking
             //__________________________________________________________________
             bool is_neutral() const throw(); //!< delta_r Z = 0
+            void validate()  const;          //!< not empty, neutral
 
             //__________________________________________________________________
             //

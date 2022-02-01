@@ -113,12 +113,12 @@ namespace yack
         }
 
 
-        void equilibrium:: drvs_action(writable<double>       &phi,
-                                       const double            K0,
-                                       const readable<double> &C) const throw()
+        double equilibrium:: drvs_action(writable<double>       &psi,
+                                         const double            K0,
+                                         const readable<double> &C) const throw()
         {
-            reac.drvs_action(phi,K0,C);
-            prod.drvs_action(phi,-1,C);
+            for(size_t i=psi.size();i>0;--i) psi[i]=0;
+            return reac.drvs_action(psi,K0,C) + prod.drvs_action(psi,-1,C);
         }
 
 
@@ -139,6 +139,13 @@ namespace yack
             return 0 == drZ;
         }
 
+
+        void equilibrium:: validate()  const
+        {
+            const char *id = name();
+            if(!size())       throw exception("<%s> is empty", id);
+            if(!is_neutral()) throw exception("<%s> has unbalanced charges",id);
+        }
 
     }
 

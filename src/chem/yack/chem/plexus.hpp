@@ -13,30 +13,61 @@ namespace yack
 {
     namespace chemical
     {
-        
+        //______________________________________________________________________
+        //
+        //
+        //! system operation
+        //
+        //______________________________________________________________________
         class plexus
         {
         public:
-            typedef arrays_of<double>    tableaux;
-            typedef tableaux::array_type array_type;
+            //__________________________________________________________________
+            //
+            // types and definitions
+            //__________________________________________________________________
+            typedef arrays_of<double>    tableaux;   //!< alias
+            typedef tableaux::array_type array_type; //!< alias
 
-            const library    &lib;
-            const equilibria &eqs;
-            
-            virtual ~plexus() throw();
-            explicit plexus(library &, equilibria &);
+            //__________________________________________________________________
+            //
+            // C++
+            //__________________________________________________________________
+            virtual ~plexus() throw();                //!< cleanup
+            explicit plexus(library &, equilibria &); //!< setup
 
-            const size_t N;
-            const size_t M;
+            //__________________________________________________________________
+            //
+            // methods
+            //__________________________________________________________________
+            void computeK(const double t);                              //!< pre-compute constants
+            void computeGamma(const readable<double> &C)       throw(); //!< evaluate mass action
+            void computeGammaAndPsi(const readable<double> &C) throw(); //!< evaluate mass action and jacobian
+            void computeOmega() throw();                                //!< from Gamma and NuT
+
+            void study();
+
+            //__________________________________________________________________
+            //
+            // members
+            //__________________________________________________________________
+            const library    &lib;  //!< support library
+            const equilibria &eqs;  //!< support equilibria
+            const size_t      N;    //!< equilibria count
+            const size_t      M;    //!< species count
+            const size_t      A;    //!< active species
+
         private:
             tableaux ntab;
             tableaux mtab;
         public:
-            array_type       &K;
-            const matrix<int> Nu;
-            const matrix<int> NuT;
+            array_type       &K;      //!< constants at a given time
+            array_type       &Gamma;  //!< Gamma for precomputed K
+            const matrix<int> Nu;     //!< topology
+            const matrix<int> NuT;    //!< Nu'
+            matrix<double>    Psi;    //!< jacobian of Gamm
+            matrix<double>    Omega;  //!< Omega
 
-            void computeK(const double t);
 
 
         private:

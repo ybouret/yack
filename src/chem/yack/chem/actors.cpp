@@ -31,21 +31,24 @@ namespace yack
         }
 
 
-        void actors:: drvs_action(writable<double>       &psi,
-                                  const double            K,
-                                  const readable<double> &C) const throw()
+        double actors:: drvs_action(writable<double>       &psi,
+                                    const double            K,
+                                    const readable<double> &C) const throw()
         {
 
             assert(psi.size()<=C.size());
-
+            double ans = K;
             for(const actor *a=head;a;a=a->next)
             {
-                double res = a->derivs(K,C);
-                for(const actor *b=a->prev;b;b=b->prev) res *= b->action(C);
-                for(const actor *b=a->next;b;b=b->next) res *= b->action(C);
-                (**a)(psi) = res;
+                ans *= a->action(C);
+                {
+                    double res = a->derivs(K,C);
+                    for(const actor *b=a->prev;b;b=b->prev) res *= b->action(C);
+                    for(const actor *b=a->next;b;b=b->next) res *= b->action(C);
+                    (**a)(psi) = res;
+                }
             }
-            
+            return ans;
         }
 
 

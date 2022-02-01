@@ -65,6 +65,16 @@ namespace yack
 
         }
 
+        size_t library:: active() const throw()
+        {
+            size_t ans = 0;
+            for(const snode *node=head();node;node=node->next)
+            {
+                const species &sp = ***node;
+                if(sp.rank>0) ++ans;
+            }
+            return ans;
+        }
         
         const species & library:: operator()(const string &expr)
         {
@@ -73,7 +83,9 @@ namespace yack
             return check(ptr);
         }
 
+
         
+
         void library:: load(const string &splist)
         {
             vector<string> words;

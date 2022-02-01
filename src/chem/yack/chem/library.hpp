@@ -61,6 +61,7 @@ namespace yack
             const species & operator[](const string &) const; //!< access
             const species & operator[](const char   *) const; //!< access
 
+            size_t active() const throw(); //!< count active species
 
             //! fill a trial set of concentrations
             void fill(writable<double> &C,
