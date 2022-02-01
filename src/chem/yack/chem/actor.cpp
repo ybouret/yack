@@ -1,6 +1,7 @@
 
 #include "yack/chem/actor.hpp"
 #include "yack/arith/ipower.hpp"
+#include "yack/type/utils.hpp"
 
 namespace yack
 {
@@ -14,7 +15,7 @@ namespace yack
         actor:: actor(const component &c) throw() :
         object(),
         authority<const species>(c.sp),
-        nu( std::abs(c.nu) ),
+        nu( absolute(c.nu) ),
         nu1(nu-1),
         next(0),
         prev(0)

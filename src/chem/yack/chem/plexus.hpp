@@ -43,7 +43,8 @@ namespace yack
             void computeK(const double t);                              //!< pre-compute constants
             void computeGamma(const readable<double> &C)       throw(); //!< evaluate mass action
             void computeGammaAndPsi(const readable<double> &C) throw(); //!< evaluate mass action and jacobian
-            
+
+            //! solve
             void solve(writable<double> &C);
 
             //__________________________________________________________________
