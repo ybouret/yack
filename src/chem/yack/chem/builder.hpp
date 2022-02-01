@@ -38,7 +38,7 @@ namespace yack
             species     *compile(const string &expr);                       //!< string to single species
             void         compile(equilibrium &, const string &, library &); //!< string to components for equilibrium
             void         compile(equilibria  &, const string &, library &, Lua::State &); //!< query database
-
+            
 
         private:
             YACK_DISABLE_COPY_AND_ASSIGN(builder);

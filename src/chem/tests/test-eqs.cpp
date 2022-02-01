@@ -23,6 +23,9 @@ YACK_UTEST(eqs)
     std::cerr << lib << std::endl;
     std::cerr << eqs << std::endl;
 
+    vector<string> existing;
+    equilibria::gather(existing);
+    std::cerr << "existing=" << existing << std::endl;
 
 }
 YACK_UDONE()

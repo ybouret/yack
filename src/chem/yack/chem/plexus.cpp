@@ -57,6 +57,7 @@ namespace yack
             // finalize
             coerce(NuT).assign(Nu,transposed);
 
+            // check equilibria independence
             if(N>0)
             {
                 matrix<apq> G(N,N);

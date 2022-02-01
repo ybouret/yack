@@ -61,6 +61,14 @@ namespace yack
             }
 
 
+            //! helper for string/text
+            template <typename DATANAME> inline
+            bool extacly(const DATANAME &data)
+            {
+                source src( module::open_data(data) );
+                return exactly_(src);
+            }
+
 
             //__________________________________________________________________
             //

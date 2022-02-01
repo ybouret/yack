@@ -343,6 +343,17 @@ namespace yack
 
         }
 
+        void equilibria:: gather(sequence<string> &existing)
+        {
+            static const size_t     num   = sizeof(myeqs)/sizeof(myeqs[0]);
+            for(size_t i=0;i<num;++i)
+            {
+                const eqcode &code = myeqs[i];
+                const string  cid  = code.name;
+                existing << cid;
+            }
+        }
+
     }
 
 }

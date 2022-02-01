@@ -67,6 +67,8 @@ namespace yack
             //! display
             friend std::ostream & operator<<(std::ostream &, const equilibria &);
 
+            //! gather existing equilibria in database
+            static void gather(sequence<string> &existing);
 
         private:
             YACK_DISABLE_COPY_AND_ASSIGN(equilibria);
