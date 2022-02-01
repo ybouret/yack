@@ -329,7 +329,7 @@ namespace yack
             {
                 const eqcode &code = myeqs[i];
                 const string  cid  = code.name;
-                if(match.somehow(cid))
+                if(match.exactly(cid))
                 {
                     ++found;
                     auto_ptr<equilibrium> eq = new const_equilibrium(cid,lvm.eval<double>(code.kxpr));
