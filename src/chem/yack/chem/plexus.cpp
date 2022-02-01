@@ -119,6 +119,8 @@ namespace yack
         void plexus:: study()
         {
 
+            vector<double> values;
+
             for(const enode *E=eqs.head();E;E=E->next)
             {
                 const equilibrium   &eq = ***E;
@@ -129,6 +131,7 @@ namespace yack
                 std::cerr << "<" << eq.name << ">" << std::endl;
                 std::cerr << "\tgamma=" << gm << std::endl;
 
+                values.free();
                 for(const snode *S = lib.head();S;S=S->next)
                 {
                     const species &sp = ***S;
@@ -136,7 +139,7 @@ namespace yack
                     const int      nu = ni[jj];
                     if(!nu) continue;
                     const double   omega = nu*gm;
-                    if(omega<=0)
+                    if(omega<0)
                     {
                         std::cerr << "\t\tlimited by  " << sp.name << std::endl;
                     }
