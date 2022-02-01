@@ -19,9 +19,15 @@ Let $A_1,\ldots,A_M$ be $M$ species involved in $N$ equilibria:
 and
 \begin{equation}
 	\forall i\in[1:N], \; 
-	\Gamma_i = K_i \prod_{j=1}^{M} [A_j]^{\nu^r_{i,j}} 
-	- \prod_{j=1}^{M} [A_j]^{\nu^p_{i,j}} = 0
+	\Gamma_i = K_i \prod_{j=1}^{M} [A_j]^{\nu^r_{ij}} 
+	- \prod_{j=1}^{M} [A_j]^{\nu^p_{ij}} = 0
 \end{equation}
+
+\begin{itemize}
+\item The unit of $\Gamma_i$ is $C_0^{\sum_j \nu^p_{ij} }$
+\item The unit of $K_i$ is $C_0^{\Delta_r \nu}$
+\end{itemize}
+
 
 \section{Derivatives}
 We express the derivative of a product w.r.t. one term:
@@ -47,7 +53,7 @@ For a given set of concentrations, $\Gamma_i$ is proportional
 to the rate of the reaction corresponding to the equilibrium.
 For a reduced time $\tau$,
 \begin{equation}
-	\partial_\tau \vec{C} = \bm{\nu}^T    \vec{\Gamma}(\vec{C})
+	\partial_\tau \vec{C} = \bm{\nu}^T    \bm{\Lambda} \vec{\Gamma}(\vec{C})
 \end{equation}
 Let us integrate implicitly with $\tau$, since we have the form:
 \begin{equation}
@@ -59,8 +65,8 @@ Let us integrate implicitly with $\tau$, since we have the form:
 \end{equation}
 then
 \begin{equation}
-	\vec{C}_{n+1} = \vec{C}_n + \tau\left[ \bm{I}_M - \tau  \cdot \bm{\nu}^T  \bm{\Psi} \right]^{-1}  
-	\bm{\nu}^T     \vec{\Gamma}
+	\vec{C}_{n+1} = \vec{C}_n + \tau\left[ \bm{I}_M - \tau  \cdot \bm{\nu}^T   \bm{\Lambda} \bm{\Psi} \right]^{-1}  
+	\bm{\nu}^T     \bm{\Lambda} \vec{\Gamma}
 \end{equation}
 
 
