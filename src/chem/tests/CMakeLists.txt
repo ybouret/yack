@@ -13,6 +13,7 @@ add_test(species test-chem species)
 add_test(library test-chem library)
 add_test(eq      test-chem eq)
 add_test(eqs     test-chem eqs)
+add_test(plexus  test-chem plexus)
 
 
 

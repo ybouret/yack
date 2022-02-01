@@ -352,16 +352,14 @@ namespace yack
             switch(rows)
             {
                 case 0: os << "[]"; return;
-                case 1: os << *head; return;
+                case 1: if(cols==1) { os << *head; return; } break;
                 default:
                     break;
             }
+            assert(rows>0);
             os << '[';
-            if(rows>0)
-            {
-                line[1].display(os);
-                for(size_t r=2;r<=rows;++r) line[r].display(os<<';');
-            }
+            line[1].display(os);
+            for(size_t r=2;r<=rows;++r) line[r].display(os<<';');
             os << ']';
         }
 

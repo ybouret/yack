@@ -41,6 +41,7 @@ namespace yack
             // C++
             //__________________________________________________________________
             virtual ~single() throw(); //!< cleanup
+
         protected:
             //! setup from call_sign and life_time
             explicit single(const char *             call_sign,
@@ -50,8 +51,11 @@ namespace yack
             //
             // methods
             //__________________________________________________________________
-            void     enter() const throw(); //!< show creation
-            void     leave() const throw(); //!< show destruction
+            void        enter() const throw(); //!< show creation
+            void        leave() const throw(); //!< show destruction
+            //! display info if verbose
+            static void shrug(const char              *call_sign,
+                              const at_exit::longevity life_time);
 
         private:
             YACK_DISABLE_COPY_AND_ASSIGN(single);

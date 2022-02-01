@@ -131,6 +131,18 @@ namespace yack
                 }
             }
 
+            static inline bool is_word(const character *ch) throw()
+            {
+                if(!ch)
+                {
+                    return false;
+                }
+                else
+                {
+                    const int c = **ch;
+                    return ( (c>='0' && c<='9') || (c>='a' && c <='z') || (c>='A' && c <='Z') );
+                }
+            }
 
             lexeme * scanner:: probe(source &src, bool &ctrl)
             {
@@ -183,7 +195,15 @@ namespace yack
                     if(!best)
                     {
                         assert(0==word.size);
-                        exception excp("unexpected '%s' for <%s>", ios::ascii::hybrid[**ch], (*label)() );
+                        // try to collect something...
+                        if(is_word(word.push_back(src.query())))
+                        {
+                            while(is_word(src.peek())) word.push_back(src.query());
+                        }
+                        string s(word.size,as_capacity);
+                        for(ch=word.head;ch;ch=ch->next)
+                            s += ios::ascii::hybrid[**ch];
+                        exception excp("unexpected '%s' for <%s>", s(), (*label)() );
                         throw (*src).stamp(excp);
                     }
 

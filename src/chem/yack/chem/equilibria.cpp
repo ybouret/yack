@@ -22,9 +22,13 @@ namespace yack
         equilibrium & equilibria:: use(equilibrium *pEq)
         {
             assert(pEq);
+            // try to insert equlibrium
             const equilibrium::pointer eq = pEq;
             if(!db.insert(eq)) throw exception("equilibria use multiple <%s>", (eq->name)());
-            coerce(width) = max_of(width,pEq->name.size());
+
+            // update status
+            coerce(width)     = max_of(width,pEq->name.size());
+            coerce(pEq->indx) = size();
             return *pEq;
         }
 

@@ -116,6 +116,7 @@ assert(NULL!=NODE); assert(NULL==(NODE)->next); assert(NULL==(NODE)->prev)
             }
         }
 
+        
         //! push_front a new node
         inline NODE *push_front(NODE *node) throw()
         {

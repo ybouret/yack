@@ -23,21 +23,31 @@ namespace yack
     public:
         //______________________________________________________________________
         //
+        //
         //! query existence
+        //
         //______________________________________________________________________
         static inline bool exists() throw() { return NULL!=instance_; }
         
         //______________________________________________________________________
         //
+        //
         //! create/recall instance, with double locking pattern
+        //
         //______________________________________________________________________
         static inline CLASS & instance()
         {
+            //__________________________________________________________________
+            //
             // local satic variables
+            //__________________________________________________________________
             static volatile void *impl[ YACK_WORDS_FOR(CLASS) ] = { 0 };
             static volatile bool  init = true;
 
+            //__________________________________________________________________
+            //
             // check/create
+            //__________________________________________________________________
             YACK_GIANT_LOCK();
             if(!instance_)
             {
@@ -45,10 +55,11 @@ namespace yack
                 if(init)
                 {
                     // called only once
+                    shrug(CLASS::call_sign,CLASS::life_time);
                     at_exit::perform(destroy,0,CLASS::life_time);
                     init = false;
                 }
-                new (out_of_reach::zset(impl,sizeof(impl))) CLASS();
+                new ( YACK_STATIC_ZSET(impl) ) CLASS();
                 return *(instance_ = coerce_cast<CLASS>(impl));
             }
             else
@@ -58,7 +69,9 @@ namespace yack
       
         //______________________________________________________________________
         //
+        //
         //! recall a valid instance
+        //
         //______________________________________________________________________
         static CLASS & location() throw() { assert(exists()); return *instance_; }
         

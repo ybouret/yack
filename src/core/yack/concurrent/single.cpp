@@ -32,6 +32,16 @@ namespace yack
             std::cerr << ' ' << span << std::endl;
         }
 
+        void single:: shrug(const char              *call_sign,
+                            const at_exit::longevity life_time)
+        {
+            assert(call_sign);
+            if(verbose)
+            {
+                std::cerr << "<singleton call_sign='" << call_sign << "' life_time='" << life_time << "'/>" << std::endl;
+            }
+        }
+
         void single:: enter() const throw()
         {
             try
