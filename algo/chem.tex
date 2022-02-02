@@ -68,6 +68,15 @@ Starting from $[A]$, the extent $x$ is:
 	x = \dfrac{K[A]-1}{K} = \dfrac{\Gamma}{K}
 \end{equation}
 
+\subsection{Equilibrium $[0,n]$}
+\begin{equation}
+	\xrightleftharpoons[]{} n A, \;\; \Gamma = K - [A]^n
+\end{equation}
+Starting from $[A]$, the extent $x$ is solution of:
+\begin{equation}
+	0 = K-([A]+nx)^n \Leftrightarrow x = \dfrac{K^{1/n} - [A]}{n}
+\end{equation}
+
 
 
 \subsection{Equilibrium $[1,1]$}
@@ -94,7 +103,6 @@ so that:
 \end{equation}
 
 \subsection{Equilibrium $[1,[1,1]]$}
-\subsection{Equilibrium $[0,[1,1]]$}
 \begin{equation}
 	A \xrightleftharpoons[]{} B+C, \;\; \Gamma = K[A] - [B][C]
 \end{equation}
@@ -109,6 +117,41 @@ The discriminant is:
 The solution is:
 \begin{equation}
 	x = \dfrac{\sqrt{\Delta}-(K+b+c)}{2} = \Gamma \dfrac{2}{\sqrt{\Delta}+(K+b+c)}
+\end{equation}
+
+\subsection{Equilibrium $[1,2]$}
+\begin{equation}
+	A \xrightleftharpoons[]{} 2B, \;\; \Gamma = K[A] - [B]^2
+\end{equation}
+The solving extent is solution of:
+\begin{equation}
+ K([A]-x) - ([B]+2x)^2 = 0
+\end{equation}
+With:
+\begin{equation}
+\Delta = 8K[B]+16K[A]+K^2
+\end{equation}
+we get:
+\begin{equation}
+	x = \Gamma \dfrac{2}{\sqrt{\Delta} + K+4[B]}
+\end{equation}
+
+
+\subsection{Equilibrium $[ [1,1], [1,1]]$}
+\begin{equation}
+	A+B \xrightleftharpoons[]{} C+D, \;\; \Gamma = K[A][B] - [C][D]
+\end{equation}
+The solving extent is solution of:
+\begin{equation}
+	K([A]-x)([B]-x) - ([C]+x)([D]+x)= 0
+\end{equation}
+The discriminant is:
+\begin{equation}
+	\Delta = \left[K([A]+[B])+([C]+[D])\right]^2 + 4 (1-K) \Gamma
+\end{equation}
+
+\begin{equation}
+x = \Gamma \dfrac{2}{\sqrt{\Delta}+\left[K([A]+[B])+([C]+[D])\right]}
 \end{equation}
 
 \section{Evolution}
