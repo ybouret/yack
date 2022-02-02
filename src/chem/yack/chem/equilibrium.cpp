@@ -39,14 +39,16 @@ namespace yack
             const component  &c    = coerce(comp).create(sp,nu);
             actors           *a    = 0;
 
+            unit_t delta_p = 0;
+            unit_t delta_r = 0;
             // check
             try
             {
                 switch( __sign::of(nu) )
                 {
                     case __zero__: throw exception("<%s> invalid nu=0 for '%s'", name(), spid() );
-                    case negative: a = & coerce(reac); break;
-                    case positive: a = & coerce(prod); break;
+                    case negative: a = & coerce(reac); delta_r = -nu; break;
+                    case positive: a = & coerce(prod); delta_p =  nu; break;
                 }
                 assert(NULL!=a);
                 a->push_back( new actor(c) );
@@ -59,6 +61,9 @@ namespace yack
 
             // update species
             coerce(sp.rank)++;
+            coerce(nu_p) += delta_p;
+            coerce(nu_r) += delta_r;
+            coerce(d_nu)  = nu_p - nu_r;
 
         }
 
@@ -87,6 +92,7 @@ namespace yack
             os << " <=> ";
             displayA(os,prod);
             os << " | K(" << t << ")=" << getK(t);
+            os << " nu_r: " << nu_r << ", nu_p:" << nu_p << ", d_nu:" << d_nu;
         }
 
         std::ostream & operator<<(std::ostream &os, const equilibrium &eq)

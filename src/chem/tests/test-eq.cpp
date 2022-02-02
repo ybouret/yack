@@ -89,24 +89,15 @@ YACK_UTEST(eq)
     eq.drvs_action(Ctry,K0,C);
     std::cerr << "phi=" << Ctry << std::endl;
 
-    eq.solve(K0,C,Ctry);
+    if(eq.size())
+    {
+        eq.solve(K0,C,Ctry);
+    }
 
 
     return 0;
 
-    if(eq.size())
-    {
-        eq.solve(K0,C,Ctry);
 
-        for(size_t iter=0;iter<100;++iter)
-        {
-            lib.fill(C,0.8,ran);
-            lib(std::cerr << "Cini=" << std::endl,C);
-            eq.solve(K0,C,Ctry);
-            lib(std::cerr << "Cend=" << std::endl,C);
-            std::cerr << "mass_action: " << eq.mass_action(K0,C) << std::endl;
-        }
-    }
 
 }
 YACK_UDONE()

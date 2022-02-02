@@ -53,6 +53,9 @@ namespace yack
             reac(),
             prod(),
             indx(0),
+            nu_p(0),
+            nu_r(0),
+            d_nu(0),
             comp(),
             wksp()
             {
@@ -103,8 +106,8 @@ namespace yack
             //! find full limits for single equilibrium
             const limits & find_limits(const readable<double> &C) const throw();
 
-            //! solve valid set of concentrations
-            void solve(const double K0, writable<double> &C, writable<double> &Ctry);
+            //! move to a null mass action
+            void solve(const double K0, writable<double> &C, writable<double> &Ctry) const throw();
 
             //__________________________________________________________________
             //
@@ -121,13 +124,16 @@ namespace yack
             const actors reac; //!< list of reactant(s)
             const actors prod; //!< list of product(s)
             const size_t indx; //!< in equilibria
-
+            const unit_t nu_p; //!< sum nu_p
+            const unit_t nu_r; //!< sum nu_r
+            const unit_t d_nu; //!< nu_p-nu_r
         private:
             YACK_DISABLE_COPY_AND_ASSIGN(equilibrium);
             const components comp;
             mutable void    *wksp[ YACK_WORDS_FOR(limits) ];
             virtual const_type &bulk() const throw();
             virtual double      getK(double) const = 0;
+            
 
         };
 

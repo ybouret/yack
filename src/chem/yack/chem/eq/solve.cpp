@@ -29,7 +29,7 @@ namespace yack
                         const size_t     j  = sp.indx; assert(j>=1); assert(j<=C.size()); assert(j<=Ctry.size());
                         const unit_t     nu = cm.nu;
                         const double     Cj = C[j];    assert(C[j]>=0);
-                        Ctry[j] = Cj + nu * xi;
+                        Ctry[j] = max_of<double>(0,Cj + nu * xi);
                     }
                     return eq.mass_action(K0,Ctry);
                 }
@@ -39,90 +39,63 @@ namespace yack
 
         void equilibrium::  solve(const double      K0,
                                   writable<double> &C,
-                                  writable<double> &Ctry)
+                                  writable<double> &Ctry) const throw()
         {
 
+            std::cerr << "<" << name << " solving@" << C << ">" << std::endl;
             assert(size()>0);
+            assert(is_neutral());
+            assert(K0>0);
+            eqzcall g = { *this, K0, C, Ctry };
 
-            // initialize limits
 
-            const limits      &lm  = find_limits(C);
-            triplet<double>    x  = { 0, 0, 0 };            // extents
-            triplet<double>    f  = { 0, 0, 0 };            // mass action
-            eqzcall            F  = { *this, K0, C, Ctry }; // callable
+            triplet<double> x = { 0,      0, 0 };
+            triplet<double> f = { g(x.a), 0, 0 };
 
-            std::cerr << lm << std::endl;
-            const double ma = F(0);
-            std::cerr << "ma=" << ma << std::endl;
-
-            switch( __sign::of(ma) )
+            switch( __sign::of(f.a) )
             {
-                case  0: return;
-                case  1:
-                    std::cerr << "need reac->prod" << std::endl;
-                    f.a = ma;
-                    x.a = 0;
-                    switch(lm.type)
+                case __zero__:
+                    std::cerr << "\tGamma=0" << std::endl;
+                    // reached or blocked
+                    break;
+
+                case positive: {
+                    // need to move forward
+                    std::cerr << "\tGamma>0" << std::endl;
+                    const limiting * const lim = reac.find_limiting(C);
+                    if(lim)
                     {
-                        case limited_by_reac:
-                        case limited_by_both:
-                            f.c = F(x.c = lm.reac->xi);
-                            break;
-
-                        case limited_by_none:
-                        case limited_by_prod:
-                            f.c = F(x.c=1);
-                            break;
-
+                        std::cerr << "\tlimited by " << (**(lim->pa)).name << std::endl;
+                        f.c = g(x.c=lim->xi);
+                        std::cerr << "x=" << x << ", f=" << f << std::endl;
                     }
-                    std::cerr << "x=" << x << ", f=" << f << std::endl;
-                    break;
+                    else
+                    {
+                        std::cerr << "\tnot limited " << std::endl;
+                    }
+                } break;
 
-                case -1:
-                    std::cerr << "need prod->reac" << std::endl;
-                    f.c = F(x.c=0);
-                    break;
-            }
-
-            exit(1);
-            
-            // initialize search
-            switch(lm.type)
-            {
-                case limited_by_both:
-                    f.a = F(x.a = -lm.prod->xi);
-                    f.c = F(x.c = lm.reac->xi);
-                    break;
-                case limited_by_reac:
-                    f.c = F(x.c = lm.reac->xi);
-                    f.a = F(x.a = -1);
-                    break;
-
-                case limited_by_prod:
-                    f.a = F(x.a = -lm.prod->xi);
-                    f.c = F(x.c = 1);
-                    break;
-
-                case limited_by_none:
-                    f.a = F(x.a=-1);
-                    f.c = F(x.c=1);
+                case negative:
+                    // need to move reverse
+                    std::cerr << "\tGamma<0" << std::endl;
+                    const limiting * const lim = prod.find_limiting(C);
+                    if(lim)
+                    {
+                        std::cerr << "\tlimited by " << (**(lim->pa)).name << std::endl;
+                        f.c = g(x.c=-lim->xi);
+                        std::cerr << "x=" << x << ", f=" << f << std::endl;
+                    }
+                    else
+                    {
+                        std::cerr << "\tnot limited " << std::endl;
+                    }
                     break;
             }
-            
-            exit(1);
 
-
-            zrid<double>  Z;
-            if(!Z(F,x,f)) throw exception("can't solve corrupted <%s>", name() );
-
-            for(const cnode *node=head();node;node=node->next)
-            {
-                const component &cm = ***node;
-                const size_t     j  = cm.sp.indx;
-                C[j] = Ctry[j];
-            }
-            assert( std::abs(mass_action(K0,C)-f.b) <= 0 );
+            std::cerr << "<" << name << " solving/>" << std::endl;
 
         }
+        
+
     }
 }
