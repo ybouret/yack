@@ -6,6 +6,7 @@
 \usepackage{pslatex}
 \usepackage{mathptmx}
 \usepackage{bookman}
+\usepackage{chemarr}
 
  	 
 \begin{document}
@@ -47,8 +48,71 @@ and:
 	\nu_k [A_k]^{\nu_k-1} \nu_l [A_l]^{\nu_l-1}\left( \prod_{j=1,j\not=k,j\not=l}^{M} [A_j]^{\nu_{j}} \right)
 \end{equation}
 
+\section{Solving}
+
+\subsection{Equilibrium $[0,1]$}
+\begin{equation}
+	\xrightleftharpoons[]{} A, \;\; \Gamma = K - [A]
+\end{equation}
+Starting from $[A]$, the extent $x$ is:
+\begin{equation}
+	x = K-[A] = \Gamma
+\end{equation}
+
+\subsection{Equilibrium $[1,0]$}
+\begin{equation}
+	A \xrightleftharpoons[]{} , \;\; \Gamma = K[A]-1
+\end{equation}
+Starting from $[A]$, the extent $x$ is:
+\begin{equation}
+	x = \dfrac{K[A]-1}{K} = \dfrac{\Gamma}{K}
+\end{equation}
+
+
+
+\subsection{Equilibrium $[1,1]$}
+
+\begin{equation}
+	A \xrightleftharpoons[]{} B, \;\; \Gamma = K[A] - [B]
+\end{equation}
+The solving extent is:
+\begin{equation}
+	x = \dfrac{K[A]-[B]}{1+K} = \dfrac{\Gamma}{1+K}
+\end{equation}
+
+\subsection{Equilibrium $[0,[1,1]]$}
+\begin{equation}
+	\xrightleftharpoons[]{} A+B, \;\; \Gamma = K - [A][B]
+\end{equation}
+The solving extent is solution of:
+\begin{equation}
+	0 = K - ([A]+x)([B]+x) = (K - [A][B]) - ([A]+[B]) x - x^2
+\end{equation}
+so that:
+\begin{equation}
+	x = \dfrac{\sqrt{4K+([A]-[B])^2} - ([A]+[B])}{2} = \Gamma \dfrac{2}{\sqrt{4K+([A]-[B])^2} + ([A]+[B])}
+\end{equation}
+
+\subsection{Equilibrium $[1,[1,1]]$}
+\subsection{Equilibrium $[0,[1,1]]$}
+\begin{equation}
+	A \xrightleftharpoons[]{} B+C, \;\; \Gamma = K[A] - [B][C]
+\end{equation}
+The solving extent is solution of:
+\begin{equation}
+	K([A]-x) - ([B]+x)([C]+x)= 0
+\end{equation}
+The discriminant is:
+\begin{equation}
+	\Delta = K^2 + ([B]-[C])^2 + 2K(2[A]+[B]+[C])
+\end{equation}
+The solution is:
+\begin{equation}
+	x = \dfrac{\sqrt{\Delta}-(K+b+c)}{2} = \Gamma \dfrac{2}{\sqrt{\Delta}+(K+b+c)}
+\end{equation}
+
 \section{Evolution}
-Let us assume we have a out of equilibria system.
+Let us assume we have an out of equilibria system.
 For a given set of concentrations, $\Gamma_i$ is proportional
 to the rate of the reaction corresponding to the equilibrium.
 For a reduced time $\tau$,
