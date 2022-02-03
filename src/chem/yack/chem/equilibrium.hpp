@@ -127,10 +127,11 @@ namespace yack
             const unit_t nu_p; //!< sum nu_p
             const unit_t nu_r; //!< sum nu_r
             const unit_t d_nu; //!< nu_p-nu_r
+                               
         private:
             YACK_DISABLE_COPY_AND_ASSIGN(equilibrium);
-            const components comp;
-            mutable void    *wksp[ YACK_WORDS_FOR(limits) ];
+            const components    comp;
+            mutable void       *wksp[ YACK_WORDS_FOR(limits) ];
             virtual const_type &bulk() const throw();
             virtual double      getK(double) const = 0;
             

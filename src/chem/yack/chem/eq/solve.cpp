@@ -48,7 +48,7 @@ namespace yack
             assert(K0>0);
             eqzcall g = { *this, K0, C, Ctry };
 
-
+            zrid<double>    Z;
             triplet<double> x = { 0,      0, 0 };
             triplet<double> f = { g(x.a), 0, 0 };
 
@@ -72,7 +72,15 @@ namespace yack
                     else
                     {
                         std::cerr << "\tnot limited " << std::endl;
+                        f.c = g(x.c=1);
+                        while(f.c>0)
+                        {
+                            f.c = g(x.c *= 2);
+                        }
+                        std::cerr << "x=" << x << ", f=" << f << std::endl;
                     }
+                    Z(g,x,f);
+                    std::cerr << "x=" << x << ", f=" << f << std::endl;
                 } break;
 
                 case negative:
@@ -88,7 +96,15 @@ namespace yack
                     else
                     {
                         std::cerr << "\tnot limited " << std::endl;
+                        f.c = g(x.c=-1);
+                        while(f.c<0)
+                        {
+                            f.c = g(x.c *= 2);
+                        }
+                        std::cerr << "x=" << x << ", f=" << f << std::endl;
                     }
+                    Z(g,x,f);
+                    std::cerr << "x=" << x << ", f=" << f << std::endl;
                     break;
             }
 
