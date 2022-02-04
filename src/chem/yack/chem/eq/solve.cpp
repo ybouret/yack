@@ -42,7 +42,6 @@ namespace yack
                                   writable<double> &Ctry) const
         {
 
-            std::cerr << "<" << name << " solving@" << C << ">" << std::endl;
             assert(size()>0);
             assert(is_neutral());
             assert(K0>0);
@@ -51,13 +50,14 @@ namespace yack
             triplet<double> x = { 0,      0, 0 };
             triplet<double> f = { g(x.a), 0, 0 };
 
+            std::cerr << "<" << name << " solving@" << C << ", Gamma=" << f.a << ">" << std::endl;
+
             switch( __sign::of(f.a) )
             {
                 case __zero__:
                     //----------------------------------------------------------
                     // reached or blocked
                     //----------------------------------------------------------
-                    std::cerr << " Gamma=0" << std::endl;
                     break;
 
                 case positive: {
@@ -112,7 +112,7 @@ namespace yack
             zrid<double>    Z;
             if(!Z(g,x,f))
             {
-                
+                throw exception("%s: cannot solve <%s>", clid, name() );
             }
 
             std::cerr << " x=" << x << ", f=" << f << std::endl;

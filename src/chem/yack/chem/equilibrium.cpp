@@ -7,6 +7,9 @@ namespace yack
     namespace chemical
     {
 
+
+        const char equilibrium:: clid[] = "chemical::equilibrium";
+        
         equilibrium:: ~equilibrium() throw()
         {
         }

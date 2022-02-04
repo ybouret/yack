@@ -38,7 +38,8 @@ namespace yack
             // types
             //__________________________________________________________________
             typedef ark_ptr<string,equilibrium> pointer; //!< alias
-
+            static const char                   clid[];  //!< chemical::equilibrium
+            
             //__________________________________________________________________
             //
             // C++
