@@ -4,6 +4,7 @@
 #define YACK_CHEM_COMPONENT_INCLUDED 1
 
 #include "yack/chem/species.hpp"
+#include "yack/type/authority.hpp"
 
 namespace yack
 {
@@ -17,7 +18,7 @@ namespace yack
         //! component: algebraic coefficient and a registered species
         //
         //______________________________________________________________________
-        class component : public object, public counted
+        class component : public object, public counted, public authority<const species>
         {
         public:
             //__________________________________________________________________
@@ -50,7 +51,6 @@ namespace yack
             //
             // members
             //__________________________________________________________________
-            const species &sp; //!< species
             const unit_t   nu; //!< stoichiometry
 
         private:

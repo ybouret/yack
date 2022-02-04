@@ -64,6 +64,14 @@ namespace yack
             coerce(nu_p) += delta_p;
             coerce(nu_r) += delta_r;
             coerce(d_nu)  = nu_p - nu_r;
+            if(d_nu!=0)
+            {
+                coerce(sexp) = 1.0 / d_nu;
+            }
+            else
+            {
+                coerce(sexp) = 0;
+            }
 
         }
 
@@ -140,7 +148,8 @@ namespace yack
             for(const cnode *node=head();node;node=node->next)
             {
                 const component &c = ***node;
-                drZ += c.sp.z * c.nu;
+                const species   &s = *c;
+                drZ += s.z * c.nu;
             }
             return 0 == drZ;
         }
@@ -152,7 +161,7 @@ namespace yack
             if(!size())       throw exception("<%s> is empty", id);
             if(!is_neutral()) throw exception("<%s> has unbalanced charges",id);
         }
-
+        
     }
 
 }

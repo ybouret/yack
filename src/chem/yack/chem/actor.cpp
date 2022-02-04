@@ -14,7 +14,7 @@ namespace yack
 
         actor:: actor(const component &c) throw() :
         object(),
-        authority<const species>(c.sp),
+        authority<const species>(*c),
         nu( absolute(c.nu) ),
         nu1(nu-1),
         next(0),

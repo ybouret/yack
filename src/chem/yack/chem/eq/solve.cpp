@@ -25,7 +25,7 @@ namespace yack
                     for(const cnode *node=eq.head();node;node=node->next)
                     {
                         const component &cm = ***node;
-                        const species   &sp = cm.sp;
+                        const species   &sp = *cm;
                         const size_t     j  = sp.indx; assert(j>=1); assert(j<=C.size()); assert(j<=Ctry.size());
                         const unit_t     nu = cm.nu;
                         const double     Cj = C[j];    assert(C[j]>=0);
@@ -39,77 +39,85 @@ namespace yack
 
         void equilibrium::  solve(const double      K0,
                                   writable<double> &C,
-                                  writable<double> &Ctry) const throw()
+                                  writable<double> &Ctry) const
         {
 
             std::cerr << "<" << name << " solving@" << C << ">" << std::endl;
             assert(size()>0);
             assert(is_neutral());
             assert(K0>0);
-            eqzcall g = { *this, K0, C, Ctry };
 
-            zrid<double>    Z;
+            eqzcall         g = { *this, K0, C, Ctry };
             triplet<double> x = { 0,      0, 0 };
             triplet<double> f = { g(x.a), 0, 0 };
 
             switch( __sign::of(f.a) )
             {
                 case __zero__:
-                    std::cerr << "\tGamma=0" << std::endl;
+                    //----------------------------------------------------------
                     // reached or blocked
+                    //----------------------------------------------------------
+                    std::cerr << " Gamma=0" << std::endl;
                     break;
 
                 case positive: {
+                    //----------------------------------------------------------
                     // need to move forward
-                    std::cerr << "\tGamma>0" << std::endl;
+                    //----------------------------------------------------------
+                    std::cerr << " Gamma>0" << std::endl;
                     const limiting * const lim = reac.find_limiting(C);
                     if(lim)
                     {
-                        std::cerr << "\tlimited by " << (**(lim->pa)).name << std::endl;
+                        std::cerr << " limited by " << (**(lim->pa)).name << std::endl;
                         f.c = g(x.c=lim->xi);
-                        std::cerr << "x=" << x << ", f=" << f << std::endl;
                     }
                     else
                     {
-                        std::cerr << "\tnot limited " << std::endl;
-                        f.c = g(x.c=1);
+                        std::cerr << " not limited " << std::endl;
+                        assert(d_nu>0);
+                        f.c = g(x.c=pow(K0,sexp));
                         while(f.c>0)
                         {
                             f.c = g(x.c *= 2);
                         }
-                        std::cerr << "x=" << x << ", f=" << f << std::endl;
                     }
-                    Z(g,x,f);
-                    std::cerr << "x=" << x << ", f=" << f << std::endl;
+
                 } break;
 
                 case negative:
+                    //----------------------------------------------------------
                     // need to move reverse
-                    std::cerr << "\tGamma<0" << std::endl;
+                    //----------------------------------------------------------
+                    std::cerr << " Gamma<0" << std::endl;
                     const limiting * const lim = prod.find_limiting(C);
                     if(lim)
                     {
-                        std::cerr << "\tlimited by " << (**(lim->pa)).name << std::endl;
+                        std::cerr << " limited by " << (**(lim->pa)).name << std::endl;
                         f.c = g(x.c=-lim->xi);
-                        std::cerr << "x=" << x << ", f=" << f << std::endl;
                     }
                     else
                     {
-                        std::cerr << "\tnot limited " << std::endl;
-                        f.c = g(x.c=-1);
+                        std::cerr << " not limited " << std::endl;
+                        assert(d_nu<0);
+                        //std::cerr << "Cs=" << pow(K0,sexp) << std::endl;
+                        f.c = g(x.c=-pow(K0,sexp));
                         while(f.c<0)
                         {
                             f.c = g(x.c *= 2);
                         }
-                        std::cerr << "x=" << x << ", f=" << f << std::endl;
                     }
-                    Z(g,x,f);
-                    std::cerr << "x=" << x << ", f=" << f << std::endl;
                     break;
             }
+            std::cerr << " x=" << x << ", f=" << f << std::endl;
+            zrid<double>    Z;
+            if(!Z(g,x,f))
+            {
+                
+            }
 
+            std::cerr << " x=" << x << ", f=" << f << std::endl;
+            set(C,Ctry);
             std::cerr << "<" << name << " solving/>" << std::endl;
-
         }
         
 

@@ -60,7 +60,9 @@ YACK_UTEST(eq)
     YACK_SIZEOF(equilibrium);
     YACK_SIZEOF(const_equilibrium);
 
-    //test_comb(ran);
+    if(false)
+        test_comb(ran);
+
 
     chemical::library           lib;
     chemical::const_equilibrium eq("eq",1e-3);
@@ -92,11 +94,11 @@ YACK_UTEST(eq)
     if(eq.size())
     {
         eq.solve(K0,C,Ctry);
+        lib(std::cerr,C);
     }
 
 
-    return 0;
-
+    
 
 
 }

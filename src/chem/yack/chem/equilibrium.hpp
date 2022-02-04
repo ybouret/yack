@@ -56,6 +56,7 @@ namespace yack
             nu_p(0),
             nu_r(0),
             d_nu(0),
+            sexp(0),
             comp(),
             wksp()
             {
@@ -85,9 +86,22 @@ namespace yack
                 for(const cnode *node=head();node;node=node->next)
                 {
                     const component &c = ***node;
-                    c.sp(nu) = c.nu;
+                    const species   &s = *c;
+                    s(nu) = c.nu;
                 }
             }
+
+            //! set only active indices
+            template <typename TARGET, typename SOURCE> inline
+            void set(TARGET &target, SOURCE &source) const
+            {
+                for(const cnode *node=head();node;node=node->next)
+                {
+                    const size_t j  = (****node).indx;
+                    target[j] = source[j];
+                }
+            }
+            
 
 
 
@@ -107,14 +121,14 @@ namespace yack
             const limits & find_limits(const readable<double> &C) const throw();
 
             //! move to a null mass action
-            void solve(const double K0, writable<double> &C, writable<double> &Ctry) const throw();
+            void solve(const double K0, writable<double> &C, writable<double> &Ctry) const;
 
             //__________________________________________________________________
             //
             // checking
             //__________________________________________________________________
-            bool is_neutral() const throw(); //!< delta_r Z = 0
-            void validate()  const;          //!< not empty, neutral
+            bool   is_neutral() const throw(); //!< delta_r Z = 0
+            void   validate()  const;          //!< not empty, neutral
 
             //__________________________________________________________________
             //
@@ -127,14 +141,14 @@ namespace yack
             const unit_t nu_p; //!< sum nu_p
             const unit_t nu_r; //!< sum nu_r
             const unit_t d_nu; //!< nu_p-nu_r
-                               
+            const double sexp; //!< scaling exponent 1/d_nu
+            
         private:
             YACK_DISABLE_COPY_AND_ASSIGN(equilibrium);
             const components    comp;
             mutable void       *wksp[ YACK_WORDS_FOR(limits) ];
             virtual const_type &bulk() const throw();
             virtual double      getK(double) const = 0;
-            
 
         };
 
