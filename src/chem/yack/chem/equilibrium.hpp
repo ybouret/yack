@@ -39,7 +39,7 @@ namespace yack
             //__________________________________________________________________
             typedef ark_ptr<string,equilibrium> pointer; //!< alias
             static const char                   clid[];  //!< chemical::equilibrium
-            
+
             //__________________________________________________________________
             //
             // C++
@@ -151,6 +151,15 @@ namespace yack
             virtual const_type &bulk() const throw();
             virtual double      getK(double) const = 0;
 
+            void zfwd(const double      K0,
+                      writable<double> &C,
+                      writable<double> &Ctry,
+                      const double      g0) const;
+
+            void zrev(const double      K0,
+                      writable<double> &C,
+                      writable<double> &Ctry,
+                      const double      g0) const;
         };
 
         //______________________________________________________________________

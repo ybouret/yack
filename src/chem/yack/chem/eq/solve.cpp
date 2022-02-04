@@ -13,7 +13,7 @@ namespace yack
         namespace {
 
             // wrapper to build a changed concentration
-            struct eqzcall
+            struct eqz
             {
                 const equilibrium       &eq;
                 const double             K0;
@@ -33,6 +33,15 @@ namespace yack
                     }
                     return eq.mass_action(K0,Ctry);
                 }
+
+                void solve(triplet<double> &x, triplet<double> &f, const string &name)
+                {
+                    zrid<double> zfind;
+                    if(!zfind(*this,x,f))
+                    {
+                        throw exception("%s: cannot solve <%s>", equilibrium::clid, name() );
+                    }
+                }
             };
 
         }
@@ -45,14 +54,9 @@ namespace yack
             assert(size()>0);
             assert(is_neutral());
             assert(K0>0);
-
-            eqzcall         g = { *this, K0, C, Ctry };
-            triplet<double> x = { 0,      0, 0 };
-            triplet<double> f = { g(x.a), 0, 0 };
-
-            std::cerr << "<" << name << " solving@" << C << ", Gamma=" << f.a << ">" << std::endl;
-
-            switch( __sign::of(f.a) )
+            const double    g0 = mass_action(K0,C);
+            
+            switch( __sign::of(g0) )
             {
                 case __zero__:
                     //----------------------------------------------------------
@@ -63,63 +67,95 @@ namespace yack
                 case positive: {
                     //----------------------------------------------------------
                     // need to move forward
-                    //----------------------------------------------------------
-                    std::cerr << " Gamma>0" << std::endl;
-                    const limiting * const lim = reac.find_limiting(C);
-                    if(lim)
-                    {
-                        std::cerr << " limited by " << (**(lim->pa)).name << std::endl;
-                        f.c = g(x.c=lim->xi);
-                    }
-                    else
-                    {
-                        std::cerr << " not limited " << std::endl;
-                        assert(d_nu>0);
-                        f.c = g(x.c=pow(K0,sexp));
-                        while(f.c>0)
-                        {
-                            f.c = g(x.c *= 2);
-                        }
-                    }
-
-                } break;
+                    //---------------------------------------------------------_
+                    zfwd(K0,C,Ctry,g0);
+                    break;
 
                 case negative:
                     //----------------------------------------------------------
                     // need to move reverse
                     //----------------------------------------------------------
-                    std::cerr << " Gamma<0" << std::endl;
-                    const limiting * const lim = prod.find_limiting(C);
-                    if(lim)
-                    {
-                        std::cerr << " limited by " << (**(lim->pa)).name << std::endl;
-                        f.c = g(x.c=-lim->xi);
-                    }
-                    else
-                    {
-                        std::cerr << " not limited " << std::endl;
-                        assert(d_nu<0);
-                        //std::cerr << "Cs=" << pow(K0,sexp) << std::endl;
-                        f.c = g(x.c=-pow(K0,sexp));
-                        while(f.c<0)
-                        {
-                            f.c = g(x.c *= 2);
-                        }
-                    }
+                    zrev(K0,C,Ctry,g0);
                     break;
-            }
-            std::cerr << " x=" << x << ", f=" << f << std::endl;
-            zrid<double>    Z;
-            if(!Z(g,x,f))
-            {
-                throw exception("%s: cannot solve <%s>", clid, name() );
+                }
+
             }
 
-            std::cerr << " x=" << x << ", f=" << f << std::endl;
-            set(C,Ctry);
-            std::cerr << "<" << name << " solving/>" << std::endl;
         }
-        
+
+        void equilibrium:: zfwd(const double      K0,
+                                writable<double> &C,
+                                writable<double> &Ctry,
+                                const double      g0) const
+        {
+            assert(g0>0);
+            assert(K0>0);
+            eqz                    g = { *this, K0, C, Ctry };
+            const limiting * const l = reac.find_limiting(C);
+            triplet<double>        x = { 0,  0, 0 };
+            triplet<double>        f = { g0, 0, 0 };
+            if(l)
+            {
+                f.c = g(x.c=l->xi);
+                if(f.c>0)
+                {
+                    x.b = x.c;
+                    f.b = f.c;
+                    goto DONE;
+                }
+            }
+            else
+            {
+                assert(d_nu>0);
+                f.c = g(x.c=pow(K0,sexp));
+                while(f.c>0)
+                {
+                    f.c = g(x.c *= 2);
+                }
+            }
+            g.solve(x,f,name);
+            
+        DONE:
+            set(C,Ctry);
+        }
+
+
+        void equilibrium:: zrev(const double      K0,
+                                writable<double> &C,
+                                writable<double> &Ctry,
+                                const double      g0) const
+        {
+
+            assert(g0<0);
+            assert(K0>0);
+            eqz                    g = { *this, K0, C, Ctry };
+            const limiting * const l = prod.find_limiting(C);
+            triplet<double>        x = { 0,  0, 0 };
+            triplet<double>        f = { g0, 0, 0 };
+            if(l)
+            {
+                f.c = g(x.c=-l->xi);
+                if(f.c<0)
+                {
+                    x.b = x.c;
+                    f.b = f.c;
+                    goto DONE;
+                }
+            }
+            else
+            {
+                assert(d_nu<0);
+                f.c = g(x.c=-pow(K0,sexp));
+                while(f.c<0)
+                {
+                    f.c = g(x.c *= 2);
+                }
+            }
+            g.solve(x,f,name);
+
+        DONE:
+            set(C,Ctry);
+        }
 
     }
 }
