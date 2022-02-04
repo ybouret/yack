@@ -7,6 +7,16 @@
 using namespace yack;
 using namespace chemical;
 
+static inline void output_sign(const double g)
+{
+    switch( __sign::of(g) )
+    {
+        case __zero__: std::cerr << '0'; break;
+        case positive: std::cerr << '+'; break;
+        case negative: std::cerr << '-'; break;
+    }
+}
+
 static inline void test_comb(randomized::bits &ran)
 {
 
@@ -60,13 +70,14 @@ static inline void test_comb(randomized::bits &ran)
 
                         // solve zero
                         eq.solve(K0,C,Ctry);
-                        std::cerr << eq.mass_action(K0,C);
+                        output_sign(eq.mass_action(K0,C));
                         // solve other
                         for(size_t iter=0;iter<128;++iter)
                         {
                             lib.fill(C,0.8,ran);
                             eq.solve(K0,C,Ctry);
-                            std::cerr << '/' << eq.mass_action(K0,C);
+                            std::cerr << '/';
+                            output_sign(eq.mass_action(K0,C));
                         }
                         std::cerr << std::endl;
 

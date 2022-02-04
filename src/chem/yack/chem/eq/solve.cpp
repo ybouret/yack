@@ -15,11 +15,13 @@ namespace yack
             // wrapper to build a changed concentration
             struct eqz
             {
+                // user's data
                 const equilibrium       &eq;
                 const double             K0;
                 const readable<double>  &C;
                 writable<double>        &Ctry;
 
+                // setting a checked trial and computing its mass action
                 double operator()(const double xi)
                 {
                     for(const cnode *node=eq.head();node;node=node->next)
@@ -34,13 +36,13 @@ namespace yack
                     return eq.mass_action(K0,Ctry);
                 }
 
-                void solve(triplet<double> &x, triplet<double> &f, const string &name)
+                inline void solve(triplet<double> &x,
+                                  triplet<double> &f,
+                                  const string    &name)
                 {
                     zrid<double> zfind;
                     if(!zfind(*this,x,f))
-                    {
                         throw exception("%s: cannot solve <%s>", equilibrium::clid, name() );
-                    }
                 }
             };
 
@@ -99,8 +101,10 @@ namespace yack
                 f.c = g(x.c=l->xi);
                 if(f.c>0)
                 {
+                    // full forward...
                     x.b = x.c;
                     f.b = f.c;
+                    (**(l->pa))(C) = 0;
                     goto DONE;
                 }
             }
@@ -137,8 +141,10 @@ namespace yack
                 f.c = g(x.c=-l->xi);
                 if(f.c<0)
                 {
+                    // full reverse
                     x.b = x.c;
                     f.b = f.c;
+                    (**(l->pa))(C) = 0;
                     goto DONE;
                 }
             }
