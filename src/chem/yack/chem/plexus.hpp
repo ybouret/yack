@@ -13,6 +13,10 @@ namespace yack
 {
     namespace chemical
     {
+
+        typedef matrix<double> rmatrix;
+        typedef matrix<int>    imatrix;
+
         //______________________________________________________________________
         //
         //
@@ -66,10 +70,10 @@ namespace yack
             array_type       &Corg;   //!< [M] initial concentrations
             array_type       &Ctry;   //!< [M] trial concentrations
             array_type       &dC;     //!< [M] delta C
-            const matrix<int> Nu;     //!< topology
-            const matrix<int> NuT;    //!< Nu'
-            matrix<double>    Psi;    //!< jacobian of Gamm
-            matrix<double>    Omega;  //!< Omega
+            const imatrix     Nu;     //!< topology
+            const imatrix     NuT;    //!< Nu'
+            rmatrix           Psi;    //!< jacobian of Gamm
+            rmatrix           Omega;  //!< Omega
             vector<double>    stack;  //!< temporary stack
 
 

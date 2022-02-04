@@ -49,7 +49,7 @@ namespace yack
         Nu(N, (N>0) ? M : 0),
         NuT(Nu.cols,Nu.rows),
         Psi(Nu.rows,Nu.cols),
-        Omega(M,M),
+        Omega(NuT.rows,NuT.cols),
         stack(M,as_capacity),
         
         lib_lock( coerce(lib) )
@@ -118,6 +118,7 @@ namespace yack
 
 
 
+#if 0
         namespace {
 
             struct zGamma
@@ -138,87 +139,23 @@ namespace yack
 
             };
         }
-
+#endif
 
         void plexus:: solve(writable<double> &C)
         {
             assert(C.size()>=M);
             if(N>0)
             {
-                tao::v1::load(Corg,C);
-                std::cerr << "Corg=" << Corg << std::endl;
-
-                matrix<double> W(M,M);
-                lu<double>     LU(M);
-                zGamma         G = { *this };
-
-                // initialize
-                computeGammaAndPsi(Corg);
-                tao::v3::mmul(Omega,NuT,Psi);
-                double tau = 1;
-
-                // search for implicit solution
-                tao::v3::smul(W,-tau,Omega);
-                for(size_t i=M;i>0;--i) W[i][i] += 1.0;
-
-                std::cerr << "W=" << W << std::endl;
-
-                if(!LU.build(W))
+                for(size_t j=M;j>0;--j)
                 {
-                    std::cerr << "not inversible" << std::endl;
-                    exit(1);
-                }
-
-                tao::v2::mul(dC,NuT,Gamma);
-                std::cerr << "NuTG=" << dC << std::endl;
-                LU.solve(W,dC);
-                std::cerr << "dC0 =" << dC << std::endl;
-                tao::v1::mul(dC,tau,dC);
-                std::cerr << "dC  =" << dC << std::endl;
-
-                // scan for alpha max
-                stack.free();
-                for(const snode *S=lib.head();S;S=S->next)
-                {
-                    const species &s = ***S;
-                    // drop spectator
-                    if(s.rank<=0)
+                    rmatrix::row        &Omega_j = Omega[j];
+                    const imatrix::row  &NuT_j   = NuT[j];
+                    for(size_t i=N;i>0;--i)
                     {
-                        assert( fabs(s(dC)) <= 0);
-                        continue;
-                    }
-
-                    // process active
-                    assert(s(C)>=0);
-                    const size_t j = s.indx;
-                    const double dS = dC[j];
-                    if(dS<0)
-                    {
-                        std::cerr << "could be limited by " << s.name << std::endl;
-                        stack << -C[j]/dS;
+                        Omega_j[i] = NuT_j[i] * Gamma[i];
                     }
                 }
-
-                std::cerr << "stack:" << stack << std::endl;
-                double  alpha_max=100;
-                if(stack.size())
-                {
-                    hsort(stack,comparison::increasing<double>);
-                    alpha_max=stack[1];
-                }
-                std::cerr << "alpha_max: " << alpha_max << std::endl;
-
-                std::cerr << "G(0)=" << G(0) << std::endl;
-
-                {
-                    ios::ocstream fp("gamma.dat");
-                    for(double u=0;u<=0.99*alpha_max;u+=0.01)
-                    {
-                        fp("%.15g %.15g\n",u,G(u));
-                    }
-                }
-
-
+                std::cerr << "Omega=" << Omega << std::endl;
             }
         }
 

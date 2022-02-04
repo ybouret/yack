@@ -87,7 +87,7 @@ namespace yack
                 os << (**a).name;
                 for(a=a->next;a;a=a->next)
                 {
-                    os << '+';
+                    os << ' ' << '+' << ' ';
                     if(a->nu>1) os << (a->nu);
                     os << (**a).name;
                 }
