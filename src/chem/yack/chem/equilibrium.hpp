@@ -142,7 +142,7 @@ namespace yack
             const unit_t nu_p; //!< sum nu_p
             const unit_t nu_r; //!< sum nu_r
             const unit_t d_nu; //!< nu_p-nu_r
-            const double sexp; //!< scaling exponent 1/d_nu
+            const double sexp; //!< scaling exponent: 0 or 1/d_nu
             
         private:
             YACK_DISABLE_COPY_AND_ASSIGN(equilibrium);

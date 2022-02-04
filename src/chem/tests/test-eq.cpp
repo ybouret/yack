@@ -60,13 +60,15 @@ static inline void test_comb(randomized::bits &ran)
 
                         // solve zero
                         eq.solve(K0,C,Ctry);
-
+                        std::cerr << eq.mass_action(K0,C);
                         // solve other
                         for(size_t iter=0;iter<128;++iter)
                         {
                             lib.fill(C,0.8,ran);
                             eq.solve(K0,C,Ctry);
+                            std::cerr << '/' << eq.mass_action(K0,C);
                         }
+                        std::cerr << std::endl;
 
                     }
                 } while(pp.next());
