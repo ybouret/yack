@@ -86,9 +86,10 @@ namespace yack
 
 
         Value:: Value() throw() :
-        type(isNull)
+        type(isNull),
+        impl(NULL)
         {
-            qword = 0;
+
         }
 
         template <typename T>
@@ -106,7 +107,10 @@ namespace yack
                 case isNull:
                 case isFalse:
                 case isTrue:
+                    break;
+                    
                 case isNumber:
+                    jkill<Number>(impl);
                     break;
 
                 case isString:
@@ -121,7 +125,6 @@ namespace yack
                     jkill<Object>(impl);
             }
 
-            qword        = 0;
             coerce(type) = isNull;
         }
 
@@ -135,19 +138,18 @@ namespace yack
 
         Value:: Value(const Value &other) :
         object(),
-        type(other.type)
+        type(other.type),
+        impl(NULL)
         {
-            qword = 0;
             switch(type)
             {
-                case isNull: break;
+                case isNull:
                 case isFalse:
                 case isTrue:
-                    flag = other.flag;
                     break;
 
                 case isNumber:
-                    number = other.number;
+                    impl = jcopy<Number>(other.impl);
                     break;
 
                 case isString:
@@ -175,43 +177,47 @@ namespace yack
 
 
         Value:: Value(const bool b) throw() :
-        type(b?isTrue:isFalse)
+        type(b?isTrue:isFalse),
+        impl(NULL)
         {
-            flag = b;
         }
 
         Value:: Value(const Number d) throw() :
-        type(isNumber)
+        type(isNumber),
+        impl( new Number(d) )
         {
-            number=d;
         }
 
         Value:: Value(const string &s) :
-        type(isString)
+        type(isString),
+        impl(new String(s))
         {
-            impl = new String(s);
+
         }
 
         Value:: Value(const char   *s) :
-        type(isString)
+        type(isString),
+        impl(new String(s))
         {
-            impl = new String(s);
+
         }
 
         const asArray_ asArray = {};
 
         Value:: Value(const asArray_ &) :
-        type(isArray)
+        type(isArray),
+        impl( new Array() )
         {
-            impl = new Array();
+
         }
 
         const asObject_ asObject = {};
 
         Value:: Value(const asObject_ &) :
-        type(isObject)
+        type(isObject),
+        impl(new Object())
         {
-            impl = new Object();
+
         }
 
 
@@ -219,7 +225,7 @@ namespace yack
         void Value:: xch(Value &other) throw()
         {
             coerce_cswap(type,other.type);
-            coerce_cswap(qword,other.qword);
+            coerce_cswap(impl,other.impl);
         }
 
         void Value:: nil() throw()
@@ -236,9 +242,7 @@ template <> const TYPE & Value::as<TYPE>() const throw() { assert(is##TYPE==type
         YACK_JSON_VALUE_AS(String)
         YACK_JSON_VALUE_AS(Array)
         YACK_JSON_VALUE_AS(Object)
-
-        template <> Number &       Value::as<Number>()       throw() { return number; }
-        template <> const Number & Value::as<Number>() const throw() { return number; }
+        YACK_JSON_VALUE_AS(Number)
 
 
 

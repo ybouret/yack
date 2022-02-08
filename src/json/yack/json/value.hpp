@@ -156,6 +156,8 @@ namespace yack
             const ValueType type; //!< the type
 
         private:
+            void *impl;
+#if 0
             union
             {
                 void    *impl;   //!< for allocated types
@@ -163,7 +165,8 @@ namespace yack
                 double   number; //!< number
                 uint64_t qword;  //!< to reset
             };
-
+#endif
+            
             void display(std::ostream &os, size_t depth) const;
         };
 
