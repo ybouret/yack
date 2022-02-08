@@ -122,7 +122,11 @@ namespace yack
             const limits & find_limits(const readable<double> &C) const throw();
 
             //! move to a null mass action
-            void solve(const double K0, writable<double> &C, writable<double> &Ctry) const;
+            void   solve(const double K0, writable<double> &C, writable<double> &Ctry) const;
+
+            //! find solving extent
+            double scale(const double K0, const readable<double> &C, writable<double> &Ctry) const;
+
 
             //__________________________________________________________________
             //
@@ -160,6 +164,17 @@ namespace yack
                       writable<double> &C,
                       writable<double> &Ctry,
                       const double      g0) const;
+
+            double sfwd(const double             K0,
+                        const  readable<double> &C,
+                        writable<double>        &Ctry,
+                        const double             g0) const;
+
+
+            double srev(const double             K0,
+                        const  readable<double> &C,
+                        writable<double>        &Ctry,
+                        const double             g0) const;
         };
 
         //______________________________________________________________________

@@ -28,6 +28,15 @@ namespace yack
             return (*db.tree).head;
         }
 
+        const species & library:: operator[](const size_t j) const throw()
+        {
+            assert(j>=1);
+            assert(j<=size());
+            const list_of<snode> &l = *db.tree;
+            const snode          *s = l.get(j);
+            return ***s;
+        }
+
         static const char fn[] = "chemical::library";
 
         const species &library:: check(const species::pointer &ptr)

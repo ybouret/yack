@@ -170,8 +170,8 @@ namespace yack
         template <typename U, typename V>
         inline void operator()(writable<U> &lhs, const readable<V> &rhs) const
         {
-            assert(lhs.size()<=rows);
-            assert(lhs.size()==rhs.size());
+            assert(lhs.size()==rows);
+            assert(rhs.size()==cols);
             for(size_t i=lhs.size();i>0;--i)
             {
                 lhs[i] = line[i].template dot<U>(rhs);

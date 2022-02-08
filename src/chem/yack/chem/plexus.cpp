@@ -146,16 +146,68 @@ namespace yack
             assert(C.size()>=M);
             if(N>0)
             {
+                vector<double> xi(N,0);
+                for(const enode *node=eqs.head();node;node=node->next)
+                {
+                    const equilibrium &eq = ***node;
+                    const size_t       i  = eq.indx;
+                    xi[i] = eq.scale(K[i],C,Ctry);
+                }
+                std::cerr << "xi_s=" << xi << std::endl;
+                tao::v2::mul(dC,NuT,xi);
+                std::cerr << "dC  =" << dC << std::endl;
+                stack.free();
+                stack << 1;
                 for(size_t j=M;j>0;--j)
                 {
-                    rmatrix::row        &Omega_j = Omega[j];
-                    const imatrix::row  &NuT_j   = NuT[j];
+                    const double d = -dC[j];
+                    if(d>0)
+                    {
+                        const double c = C[j];
+                        //std::cerr << "Checking " << lib[j] << std::endl;
+                        if(d>c)
+                        {
+                            stack << (c/d);
+                        }
+                    }
+                }
+                hsort(stack,comparison::increasing<double>);
+                std::cerr << "stack= " << stack << std::endl;
+
+                for(size_t j=M;j>0;--j)
+                {
                     for(size_t i=N;i>0;--i)
                     {
-                        Omega_j[i] = NuT_j[i] * Gamma[i];
+                        Omega[j][i] = Nu[i][j] * xi[i];
                     }
                 }
                 std::cerr << "Omega=" << Omega << std::endl;
+                rmatrix W(N,N);
+                tao::v3::mmul(W,Psi,Omega);
+                std::cerr << "W=" << W << std::endl;
+
+                lu<double> LU(N);
+                if(!LU.build(W))
+                {
+                    std::cerr << "singular..." << std::endl;
+                }
+                else
+                {
+                    vector<double> lam(N,0);
+                    tao::v1::neg(lam,Gamma);
+                    LU.solve(W,lam);
+                    std::cerr << "lam=" << lam << std::endl;
+                    tao::v2::mul(dC,Omega,lam);
+                    std::cerr << "dC=" << dC << std::endl;
+                    for(size_t j=M;j>0;--j)
+                    {
+                        C[j] += dC[j];
+                    }
+                    std::cerr << "Cnew=" << C << std::endl;
+                    computeGamma(C);
+                    std::cerr << "Gam1=" << Gamma << std::endl;
+                }
+
             }
         }
 

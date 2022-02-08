@@ -6,6 +6,20 @@
 using namespace yack;
 using namespace chemical;
 
+
+static inline void try_solve(plexus &cs, writable<double> &C)
+{
+    cs.lib(std::cerr,C);
+    std::cerr << "Cini=" << C << std::endl;
+    std::cerr << "NuT  =" << cs.NuT << std::endl;
+    cs.computeGamma(C);
+    std::cerr << "Gamma=" << cs.Gamma << std::endl;
+    cs.computeGammaAndPsi(C);
+    std::cerr << "Gamma=" << cs.Gamma << std::endl;
+    std::cerr << "Psi  =" << cs.Psi   << std::endl;
+    cs.solve(C);
+}
+
 YACK_UTEST(plexus)
 {
     //concurrent::single::verbose = true;
@@ -31,18 +45,11 @@ YACK_UTEST(plexus)
     std::cerr << "K=" << cs.K << std::endl;
 
     vector<double> C(lib.size(),0);
-    lib.fill(C,0.8, ran);
-    lib(std::cerr,C);
-    cs.computeGamma(C);
-    std::cerr << "Gamma=" << cs.Gamma << std::endl;
-    cs.computeGammaAndPsi(C);
-    std::cerr << "Gamma=" << cs.Gamma << std::endl;
-    std::cerr << "Psi  =" << cs.Psi   << std::endl;
-    std::cerr << "NuT  =" << cs.NuT << std::endl;
-    std::cerr << "Cini=" << C << std::endl;
-    cs.solve(C);
-    
-    
+    try_solve(cs,C);
+
+    lib.fill(C,0.8,ran);
+    try_solve(cs,C);
+
 
 
 }

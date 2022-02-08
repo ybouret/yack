@@ -60,6 +60,7 @@ namespace yack
 
             const species & operator[](const string &) const; //!< access
             const species & operator[](const char   *) const; //!< access
+            const species & operator[](const size_t j) const throw(); //!< access
 
             size_t active() const throw(); //!< count active species
 
