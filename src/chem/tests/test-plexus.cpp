@@ -30,8 +30,8 @@ YACK_UTEST(plexus)
     cs.computeK(0);
     std::cerr << "K=" << cs.K << std::endl;
 
-    vector<double> C(lib.size()+2,0);
-    //lib.fill(C,0.8, ran);
+    vector<double> C(lib.size(),0);
+    lib.fill(C,0.8, ran);
     lib(std::cerr,C);
     cs.computeGamma(C);
     std::cerr << "Gamma=" << cs.Gamma << std::endl;
