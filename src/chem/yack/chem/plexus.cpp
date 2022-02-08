@@ -5,7 +5,9 @@
 #include "yack/math/tao/v3.hpp"
 #include "yack/math/tao/v2.hpp"
 #include "yack/math/algebra/lu.hpp"
-#include"yack/sort/sum.hpp"
+#include "yack/sort/sum.hpp"
+#include "yack/sort/indexing.hpp"
+#include "yack/math/opt/minimize.hpp"
 
 #include <cmath>
 
@@ -128,6 +130,7 @@ namespace yack
                 inline double operator()(double u)
                 {
                     tao::v1::muladd(sys.Ctry,sys.Corg,u,sys.dC);
+                    //std::cerr << "Ctry@" << sys.Ctry << std::endl;
                     sys.computeGamma(sys.Ctry);
                     sys.stack.free();
                     for(size_t i=sys.N;i>0;--i)
@@ -144,6 +147,26 @@ namespace yack
         void plexus:: solve(writable<double> &C)
         {
             assert(C.size()>=M);
+
+
+            if(N>0)
+            {
+
+                // scaling
+                vector<double> xi(N,0);
+                for(const enode *node=eqs.head();node;node=node->next)
+                {
+                    const equilibrium &eq = ***node;
+                    const size_t       i  = eq.indx;
+                    xi[i] = eq.scale(K[i],C,Ctry);
+                }
+                std::cerr << "xi=" << xi << std::endl;
+                
+
+
+            }
+
+#if 0
             if(N>0)
             {
                 vector<double> xi(N,0);
@@ -209,6 +232,7 @@ namespace yack
                 }
 
             }
+#endif
         }
 
 

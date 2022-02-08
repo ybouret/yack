@@ -52,6 +52,8 @@ namespace yack
             const enode   *head() const throw(); //!< first equilibrium
             virtual size_t size() const throw(); //!< number of equilibria
 
+            const equilibrium & operator[](const size_t indx) const throw();
+
             //__________________________________________________________________
             //
             // helpers

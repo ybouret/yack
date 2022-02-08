@@ -37,6 +37,14 @@ namespace yack
             return (*db.tree).head;
         }
 
+
+        const equilibrium & equilibria:: operator[](const size_t indx) const throw()
+        {
+            assert(indx>=1);
+            assert(indx<=size());
+            return ***(*db.tree).get(indx);
+        }
+
         size_t equilibria:: size() const throw()
         {
             return db.size();
