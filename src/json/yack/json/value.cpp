@@ -108,9 +108,9 @@ namespace yack
                 case isFalse:
                 case isTrue:
                     break;
-                    
+
                 case isNumber:
-                    jkill<Number>(impl);
+                    object::zrelease(static_cast<Number*>(impl));
                     break;
 
                 case isString:
@@ -149,7 +149,7 @@ namespace yack
                     break;
 
                 case isNumber:
-                    impl = jcopy<Number>(other.impl);
+                    impl = new ( object::zacquire<Number>() ) Number( *static_cast<const Number*>(other.impl) );
                     break;
 
                 case isString:
@@ -184,7 +184,7 @@ namespace yack
 
         Value:: Value(const Number d) throw() :
         type(isNumber),
-        impl( new Number(d) )
+        impl( new (object::zacquire<Number>()) Number(d) )
         {
         }
 
