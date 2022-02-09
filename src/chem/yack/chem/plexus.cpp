@@ -170,7 +170,6 @@ namespace yack
                 //
                 //
                 //--------------------------------------------------------------
-
                 tao::v1::load(Corg,C);
                 if(verbose) lib(std::cerr << "C0=",Corg);
                 computeGammaAndPsi(Corg);
@@ -431,7 +430,7 @@ namespace yack
                     YACK_CHEM_PRINTLN("// [backtrack/minimize]");
                     if(!bracket::inside_for(self,x,g))
                         throw exception("%s: cannot bracket equilibria",fn);
-                    
+
                     (void) minimize::find<double>::run_for(self,x,g);
                     YACK_CHEM_PRINTLN("x=" << x << ";  g=" << g);
 
@@ -481,7 +480,26 @@ namespace yack
                 //
                 //
                 //--------------------------------------------------------------
-                tao::v1::set(Corg,Ctry);
+                bool converged = true;
+                for(size_t j=M;j>0;--j)
+                {
+                    const double source = Ctry[j];
+                    double      &target = Corg[j];
+                    if(fabs(source-target)>0)
+                    {
+                        converged = false;
+                    }
+                    target = source;
+                }
+
+                if(converged)
+                {
+                    YACK_CHEM_PRINTLN("// converged @iter=" << iter);
+                    tao::v1::set(C,Corg);
+                    return;
+                }
+
+                //tao::v1::set(Corg,Ctry);
                 goto ITER;
 
 
