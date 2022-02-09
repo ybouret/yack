@@ -45,10 +45,11 @@ namespace yack
             //
             // methods
             //__________________________________________________________________
-            void computeK(const double t);                              //!< pre-compute constants
-            void computeGamma(const readable<double> &C)       throw(); //!< evaluate mass action
-            void computeGammaAndPsi(const readable<double> &C) throw(); //!< evaluate mass action and jacobian
-
+            void   computeK(const double t);                              //!< pre-compute constants
+            void   computeGamma(const readable<double> &C)       throw(); //!< evaluate mass action
+            void   computeGammaAndPsi(const readable<double> &C) throw(); //!< evaluate mass action and jacobian
+            double objectiveGamma() throw();
+            
             //! solve
             void solve(writable<double> &C);
 
@@ -71,11 +72,13 @@ namespace yack
             array_type       &Corg;   //!< [M] initial concentrations
             array_type       &Ctry;   //!< [M] trial concentrations
             array_type       &dC;     //!< [M] delta C
+            array_type       &xi;     //!< [N] xi
             const imatrix     Nu;     //!< topology
             const imatrix     NuT;    //!< Nu'
             rmatrix           Psi;    //!< jacobian of Gamm
             rmatrix           Omega;  //!< Omega
-            vector<double>    stack;  //!< temporary stack
+            vector<double>    rstack; //!< temporary stack of real
+            vector<size_t>    ustack; //!< temporary stack of unsigned
             math::lu<double>  LU;     //!< [N]
 
         private:
