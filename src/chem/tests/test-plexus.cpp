@@ -2,6 +2,7 @@
 #include "yack/chem/plexus.hpp"
 #include "yack/chem/lua/equilibria.hpp"
 #include "yack/utest/run.hpp"
+#include "yack/system/env.hpp"
 
 using namespace yack;
 using namespace chemical;
@@ -35,7 +36,8 @@ YACK_UTEST(plexus)
     std::cerr << "eqs=" << eqs << std::endl;
 
     plexus cs(lib,eqs);
-    //cs.verbose = true;
+    if( environment::get("YACK_CHEM_VERBOSE", NULL) )
+        cs.verbose = true;
 
     cs.computeK(0);
     std::cerr << "K=" << cs.K << std::endl;
