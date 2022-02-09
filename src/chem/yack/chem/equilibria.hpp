@@ -72,12 +72,27 @@ namespace yack
             //! gather existing equilibria in database
             static void gather(sequence<string> &existing);
 
+            //! display named values
+            template <typename T> inline
+            void operator()(std::ostream &os, const readable<T> &arr) const
+            {
+                os << '{' << std::endl;
+                for(const enode *node=head();node;node=node->next)
+                {
+                    const equilibrium &eq = ***node;
+                    pad(os << ' ' << '@' << eq.name,eq.name.size());
+                    os << " = " << arr[eq.indx] << std::endl;
+                }
+                os << '}' << std::endl;
+            }
+
         private:
             YACK_DISABLE_COPY_AND_ASSIGN(equilibria);
             eqdb db;
 
         public:
             const size_t width; //!< max name length
+            std::ostream & pad(std::ostream &,const size_t) const;
         };
 
     }

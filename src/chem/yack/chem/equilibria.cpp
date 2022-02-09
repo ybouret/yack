@@ -63,6 +63,12 @@ namespace yack
             return os;
         }
 
+        std::ostream &  equilibria:: pad(std::ostream &os, const size_t n) const
+        {
+            for(size_t i=n;i<width;++i) os << ' ';
+            return os;
+        }
+
     }
 
 }

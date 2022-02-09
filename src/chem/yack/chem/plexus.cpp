@@ -152,6 +152,39 @@ namespace yack
             if(N>0)
             {
 
+                // initialize
+                lib(std::cerr << "C0=",C);
+                computeGammaAndPsi(C);
+                vector<bool> regular(N,as_capacity);
+                for(const enode *node=eqs.head();node;node=node->next)
+                {
+                    const equilibrium &eq = ***node;
+                    const size_t       i  = eq.indx;
+                    const readable<double> &psi = Psi[i];
+                    if( tao::v1::mod2<double>::of(psi) > 0)
+                    {
+                        regular << i;
+                    }
+                    else
+                    {
+                        std::cerr << "checking " << eq.name << std::endl;
+                        eq.solve(K[i],C,Ctry);
+                        computeGammaAndPsi(C);
+                        if( tao::v1::mod2<double>::of(psi) > 0 )
+                        {
+                            regular << i;
+                        }
+                    }
+                }
+                lib(std::cerr << "C1=",C);
+                //eqs(std::cerr << "regular=",regular);
+                std::cerr << "regular=" << regular << std::endl;
+                
+                std::cerr << "Gamma=" << Gamma << std::endl;
+                std::cerr << "Psi  =" << Psi   << std::endl;
+
+
+
                 // scaling
                 vector<double> xi(N,0);
                 for(const enode *node=eqs.head();node;node=node->next)
