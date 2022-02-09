@@ -14,9 +14,14 @@ namespace yack
 {
     namespace chemical
     {
-
-        typedef matrix<double> rmatrix;
-        typedef matrix<int>    imatrix;
+        //______________________________________________________________________
+        //
+        //
+        // global definitions
+        //
+        //______________________________________________________________________
+        typedef matrix<double> rmatrix; //!< real matrix
+        typedef matrix<int>    imatrix; //!< integer matrix
 
         //______________________________________________________________________
         //
@@ -48,12 +53,13 @@ namespace yack
             void   computeK(const double t);                              //!< pre-compute constants
             void   computeGamma(const readable<double> &C)       throw(); //!< evaluate mass action
             void   computeGammaAndPsi(const readable<double> &C) throw(); //!< evaluate mass action and jacobian
-            double objectiveGamma() throw();
+            double objectiveGamma()                              throw(); //!< 1/2*|Gamma|^2
             
             //! solve
             void solve(writable<double> &C);
 
-            double operator()(const double);
+            //! objectiveGamma() at Ctry = Corg + u * dC
+            double operator()(const double u);
 
             //__________________________________________________________________
             //

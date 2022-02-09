@@ -48,11 +48,10 @@ namespace yack
             //
             // methods
             //__________________________________________________________________
-            equilibrium & use(equilibrium *);    //!< register into database
-            const enode   *head() const throw(); //!< first equilibrium
-            virtual size_t size() const throw(); //!< number of equilibria
-
-            const equilibrium & operator[](const size_t indx) const throw();
+            equilibrium &       use(equilibrium *);                     //!< register into database
+            const enode        *head()                   const throw(); //!< first equilibrium
+            virtual size_t      size()                   const throw(); //!< number of equilibria
+            const equilibrium & operator[](const size_t) const throw(); //!< (slow) access by index
 
             //__________________________________________________________________
             //
@@ -92,7 +91,7 @@ namespace yack
 
         public:
             const size_t width; //!< max name length
-            std::ostream & pad(std::ostream &,const size_t) const;
+            std::ostream & pad(std::ostream &,const size_t) const; //!< pad to witdh
         };
 
     }

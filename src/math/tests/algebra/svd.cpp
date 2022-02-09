@@ -33,7 +33,7 @@ namespace {
                     std::cerr << "[FAILURE]" << std::endl;
                 }
                 std::cerr << "w=" << w << " => ";
-                const size_t nullity = look_for<T>::nullity(w,1e-6);
+                const size_t nullity = look_for<T>::nullity::of(w,1e-6);
                 std::cerr << "w=" << w << "; ker=" << nullity << std::endl;
 
                 if(r==c)

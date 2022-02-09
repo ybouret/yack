@@ -135,31 +135,7 @@ namespace yack
         }
 
 
-
-#if 0
-        namespace {
-
-            struct zGamma
-            {
-                plexus &sys;
-
-                inline double operator()(double u)
-                {
-                    tao::v1::muladd(sys.Ctry,sys.Corg,u,sys.dC);
-                    //std::cerr << "Ctry@" << sys.Ctry << std::endl;
-                    sys.computeGamma(sys.Ctry);
-                    sys.stack.free();
-                    for(size_t i=sys.N;i>0;--i)
-                    {
-                        sys.stack.push_back(sys.Gamma[i]);
-                    }
-                    return sorted::sum_squared(sys.stack)*0.5;
-                }
-
-            };
-        }
-#endif
-
+        
         double plexus::operator()(const double u)
         {
             tao::v1::muladd(Ctry,Corg,u,dC);

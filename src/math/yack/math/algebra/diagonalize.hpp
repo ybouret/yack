@@ -128,7 +128,7 @@ namespace yack
                             return false;
                         }
                         //nz = __find<T>::truncate(W);
-                        nz = look_for<T>::nullity(W,0);
+                        nz = look_for<T>::nullity::of(W,0);
                         indexing::make(J, __compare_fabs<T>, W);
                         
                         if(nz>0)
