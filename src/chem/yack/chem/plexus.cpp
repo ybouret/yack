@@ -455,6 +455,11 @@ namespace yack
                     YACK_CHEM_PRINTLN("// [accept step]");
                     x.b = x.c;
                     g.b = g.c;
+
+                    // how to expand...
+
+                    exit(1);
+
                 }
 
                 //--------------------------------------------------------------
