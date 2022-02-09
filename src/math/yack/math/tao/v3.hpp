@@ -54,7 +54,7 @@ namespace yack
                     }
                 }
 
-                //! M = A*B
+                //! M = A*B'
                 template <typename T, typename U, typename V> static inline
                 void mmul_trn(matrix<T> &M, const matrix<U> &A, const matrix<V> &B)
                 {

@@ -8,6 +8,7 @@
 #include "yack/sequence/arrays.hpp"
 #include "yack/container/matrix.hpp"
 #include "yack/apex.hpp"
+#include "yack/math/algebra/lu.hpp"
 
 namespace yack
 {
@@ -75,7 +76,7 @@ namespace yack
             rmatrix           Psi;    //!< jacobian of Gamm
             rmatrix           Omega;  //!< Omega
             vector<double>    stack;  //!< temporary stack
-
+            math::lu<double>  LU;     //!< [N]
 
         private:
             YACK_DISABLE_COPY_AND_ASSIGN(plexus);

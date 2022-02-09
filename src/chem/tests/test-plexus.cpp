@@ -47,7 +47,6 @@ YACK_UTEST(plexus)
     vector<double> C(lib.size(),0);
     try_solve(cs,C);
 
-    return 0;
     
     lib.fill(C,0.8,ran);
     try_solve(cs,C);

@@ -53,7 +53,9 @@ namespace yack
         Psi(Nu.rows,Nu.cols),
         Omega(NuT.rows,NuT.cols),
         stack(M,as_capacity),
-        
+
+        LU(N),
+
         lib_lock( coerce(lib) )
         {
             std::cerr << "#species=" << M << std::endl;
@@ -79,8 +81,8 @@ namespace yack
                 std::cerr << "Nu  = " << Nu << std::endl;
                 std::cerr << "NuT = " << NuT << std::endl;
                 std::cerr << "G   = " << G << std::endl;
-                lu<apq> LU(N);
-                if(!LU.build(G))
+                lu<apq> alu(N);
+                if(!alu.build(G))
                 {
                     throw exception("%s: dependant equilibria detected",fn);
                 }
@@ -156,6 +158,8 @@ namespace yack
                 lib(std::cerr << "C0=",C);
                 computeGammaAndPsi(C);
                 vector<size_t> regular(N,as_capacity);
+                vector<size_t> singular(N,as_capacity);
+
                 for(const enode *node=eqs.head();node;node=node->next)
                 {
                     const equilibrium &eq = ***node;
@@ -175,27 +179,71 @@ namespace yack
                         {
                             regular << i;
                         }
+                        else
+                        {
+                            singular << i;
+                        }
                     }
                 }
                 lib(std::cerr << "C1=",C);
-                //eqs(std::cerr << "regular=",regular);
-                std::cerr << "regular=" << regular << std::endl;
+                std::cerr << "regular  =" << regular  << std::endl;
+                std::cerr << "singular =" << singular << std::endl;
 
                 std::cerr << "Gamma=" << Gamma << std::endl;
                 std::cerr << "Psi  =" << Psi   << std::endl;
+                std::cerr << "Nu   =" << Nu    << std::endl;
 
+                rmatrix W(N,N);
+                tao::v3::mmul(W,Psi,NuT);
+
+                for(size_t k=singular.size();k>0;--k)
+                {
+                    Gamma[k] = 0;
+                    W[k][k]  = 1;
+                }
+
+                std::cerr << "W    =" << W << std::endl;
+
+                lu<double> LU(N);
+                if(!LU.build(W))
+                {
+                    throw exception("singular concentrations");
+                }
+                vector<double> xi(N,0);
+                tao::v1::neg(xi,Gamma);
+                LU.solve(W,xi);
+                std::cerr << "xi   =" << xi << std::endl;
 
 
                 // scaling
-                vector<double> xi(N,0);
+                vector<double> xi_s(N,0);
                 for(const enode *node=eqs.head();node;node=node->next)
                 {
                     const equilibrium &eq = ***node;
                     const size_t       i  = eq.indx;
-                    xi[i] = eq.scale(K[i],C,Ctry);
+                    xi_s[i] = eq.scale(K[i],C,Ctry);
                 }
-                std::cerr << "xi=" << xi << std::endl;
-                
+                std::cerr << "xi_s =" << xi_s << std::endl;
+
+                for(size_t i=N;i>0;--i)
+                {
+                    double       &x = xi[i];
+                    const double  s = xi_s[i];
+                    if(x*s<=0)
+                    {
+                        x = 0;
+                    }
+                    else
+                    {
+                        max_of<double>(x,s);
+                    }
+                }
+
+                std::cerr << "xi   =" << xi << std::endl;
+
+
+
+
 
 
             }

@@ -2,6 +2,7 @@
 #include "yack/math/algebra/lu.hpp"
 #include "yack/memory/embed.hpp"
 #include "yack/memory/allocator/dyadic.hpp"
+#include "yack/type/utils.hpp"
 
 namespace yack
 {
@@ -28,7 +29,7 @@ namespace yack
         lu_::lu_(const size_t nmax,
                  const size_t s_sz,
                  const size_t t_sz) :
-        dims(nmax),
+        dims(max_of<size_t>(nmax,1)),
         dneg(false),
         upos(NULL),
         sdat(NULL),
@@ -37,7 +38,7 @@ namespace yack
         wlen(0)
         {
             static memory::allocator &mem = memory::dyadic::instance();
-            assert(nmax>0);
+            assert(dims>0);
             assert(s_sz>0);
             assert(t_sz>0);
 
