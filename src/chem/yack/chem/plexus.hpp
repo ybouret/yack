@@ -53,6 +53,8 @@ namespace yack
             //! solve
             void solve(writable<double> &C);
 
+            double operator()(const double);
+
             //__________________________________________________________________
             //
             // members

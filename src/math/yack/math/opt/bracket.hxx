@@ -27,6 +27,7 @@ namespace yack
             if(f.b<=f.c)
             {
                 assert(f.b<=f.a); // since f.c <= f.a
+                x.sort(f);
                 return true;
             }
             else

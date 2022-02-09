@@ -160,6 +160,13 @@ namespace yack
         }
 #endif
 
+        double plexus::operator()(const double u)
+        {
+            tao::v1::muladd(Ctry,Corg,u,dC);
+            computeGamma(Ctry);
+            return objectiveGamma();
+        }
+
         void plexus:: solve(writable<double> &C)
         {
             assert(C.size()>=M);
@@ -167,6 +174,7 @@ namespace yack
 
             if(N>0)
             {
+                plexus &self = *this;
                 rmatrix W(N,N);
 
                 //--------------------------------------------------------------
@@ -178,8 +186,8 @@ namespace yack
                 lib(std::cerr << "C0=",Corg);
                 computeGammaAndPsi(Corg);
                 size_t iter = 0;
-
-                ITER:
+                
+            ITER:
                 ++iter;
                 ustack.free();
                 // ensure maximum regularity
@@ -198,12 +206,13 @@ namespace yack
                     ustack << i;
                 }
                 lib(std::cerr << "C1=",Corg);
-                const double G0 = objectiveGamma();
+                triplet<double> x = { 0,0,0 };
+                triplet<double> g = { objectiveGamma(),0,0};
                 std::cerr << "singular=" << ustack << std::endl;
                 std::cerr << "Gamma=" << Gamma << std::endl;
                 std::cerr << "Psi  =" << Psi   << std::endl;
                 std::cerr << "Nu   =" << Nu    << std::endl;
-                std::cerr << "G0   =" << G0    << std::endl;
+                std::cerr << "G0   =" << g.a   << std::endl;
 
 
                 tao::v3::mmul_trn(W,Psi,Nu);
@@ -258,6 +267,8 @@ namespace yack
                     }
                 }
 
+
+
                 if(rstack.size())
                 {
                     std::cerr << "rstack=" << rstack << std::endl;
@@ -277,12 +288,13 @@ namespace yack
                     {
                         const species &sp = ***node;
                         const size_t   j  = sp.indx;
-                        Corg[j] = max_of<double>(Corg[j]+scale*dC[j],0);
+                        Ctry[j] = max_of<double>(Corg[j]+scale*dC[j],0);
                     }
                     for(size_t i=count;i>0;--i)
                     {
-                        Corg[ ustack[i] ] = 0;
+                        Ctry[ ustack[i] ] = 0;
                     }
+                    x.c = scale;
                 }
                 else
                 {
@@ -291,100 +303,60 @@ namespace yack
                     {
                         const species &sp = ***node;
                         const size_t   j  = sp.indx;
-                        Corg[j] = max_of<double>(Corg[j]+dC[j],0);
+                        Ctry[j] = max_of<double>(Corg[j]+dC[j],0);
                     }
+                    x.c = 1;
                 }
-                lib(std::cerr << "C2=",Corg);
-                computeGammaAndPsi(Corg);
-                const double G1 = objectiveGamma();
-                std::cerr << "G1=" << G1 << "/G0=" << G0 << std::endl;
+                lib(std::cerr << "C2=",Ctry);
+                computeGamma(Ctry);
+                g.c = objectiveGamma();
 
-                if(iter<10)
-                    goto ITER;
-
-
-
-#if 0
-                // scaling
-                vector<double> xi_s(N,0);
-                for(const enode *node=eqs.head();node;node=node->next)
+                if(g.c>=g.a)
                 {
-                    const equilibrium &eq = ***node;
-                    const size_t       i  = eq.indx;
-                    xi_s[i] = eq.scale(K[i],C,Ctry);
-                }
-                std::cerr << "xi_s =" << xi_s << std::endl;
-#endif
-
-            }
-
-#if 0
-            if(N>0)
-            {
-                vector<double> xi(N,0);
-                for(const enode *node=eqs.head();node;node=node->next)
-                {
-                    const equilibrium &eq = ***node;
-                    const size_t       i  = eq.indx;
-                    xi[i] = eq.scale(K[i],C,Ctry);
-                }
-                std::cerr << "xi_s=" << xi << std::endl;
-                tao::v2::mul(dC,NuT,xi);
-                std::cerr << "dC  =" << dC << std::endl;
-                stack.free();
-                stack << 1;
-                for(size_t j=M;j>0;--j)
-                {
-                    const double d = -dC[j];
-                    if(d>0)
+                    std::cerr << "backtrack..." << std::endl;
+                    if(!bracket::inside_for(self,x,g))
                     {
-                        const double c = C[j];
-                        //std::cerr << "Checking " << lib[j] << std::endl;
-                        if(d>c)
+                        throw exception("cannot bracket...");
+                    }
+
+                    std::cerr << "bracketed..." << std::endl;
+                    std::cerr << "x=" << x << ", g=" << g << std::endl;
+
+                    (void) minimize::find<double>::run_for(self,x,g);
+                    std::cerr << "x=" << x << ", g=" << g << std::endl;
+
+                    {
+                        ios::ocstream fp("gam.dat");
+                        for(double u=0;u<=1; u+=0.01)
                         {
-                            stack << (c/d);
+                            const double xx = u*x.c;
+                            fp("%g %g\n", xx, self(xx) );
                         }
                     }
                 }
-                hsort(stack,comparison::increasing<double>);
-                std::cerr << "stack= " << stack << std::endl;
-
-                for(size_t j=M;j>0;--j)
-                {
-                    for(size_t i=N;i>0;--i)
-                    {
-                        Omega[j][i] = Nu[i][j] * xi[i];
-                    }
-                }
-                std::cerr << "Omega=" << Omega << std::endl;
-                rmatrix W(N,N);
-                tao::v3::mmul(W,Psi,Omega);
-                std::cerr << "W=" << W << std::endl;
-
-                lu<double> LU(N);
-                if(!LU.build(W))
-                {
-                    std::cerr << "singular..." << std::endl;
-                }
                 else
                 {
-                    vector<double> lam(N,0);
-                    tao::v1::neg(lam,Gamma);
-                    LU.solve(W,lam);
-                    std::cerr << "lam=" << lam << std::endl;
-                    tao::v2::mul(dC,Omega,lam);
-                    std::cerr << "dC=" << dC << std::endl;
-                    for(size_t j=M;j>0;--j)
-                    {
-                        C[j] += dC[j];
-                    }
-                    std::cerr << "Cnew=" << C << std::endl;
-                    computeGamma(C);
-                    std::cerr << "Gam1=" << Gamma << std::endl;
+                    // g.c < g.a
+                    std::cerr << "accept!" << std::endl;
+                    x.b = x.c;
+                    g.b = g.c;
                 }
 
+
+                tao::v1::set(Corg,Ctry);
+                computeGammaAndPsi(Corg);
+                if(g.b>=g.a)
+                {
+                    std::cerr << "minimized@iter=" << iter << std::endl;
+                    return;
+                }
+
+                goto ITER;
+
+
             }
-#endif
+
+            
         }
 
 
