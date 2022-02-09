@@ -488,6 +488,7 @@ namespace yack
                     if(fabs(source-target)>0)
                     {
                         converged = false;
+                        YACK_CHEM_PRINTLN("// " << lib[j].name << " not converged");
                     }
                     target = source;
                 }
