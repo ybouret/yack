@@ -23,6 +23,9 @@ namespace yack
         typedef matrix<double> rmatrix; //!< real matrix
         typedef matrix<int>    imatrix; //!< integer matrix
 
+        //! helper for verbosity
+#define YACK_CHEM_PRINTLN(MSG) do { if(plexus::verbose) { std::cerr << MSG << std::endl; } } while(false)
+
         //______________________________________________________________________
         //
         //
@@ -38,6 +41,7 @@ namespace yack
             //__________________________________________________________________
             typedef arrays_of<double>    tableaux;   //!< alias
             typedef tableaux::array_type array_type; //!< alias
+            static bool                  verbose;    //!< verbosity
 
             //__________________________________________________________________
             //
@@ -55,7 +59,7 @@ namespace yack
             void   computeGammaAndPsi(const readable<double> &C) throw(); //!< evaluate mass action and jacobian
             double objectiveGamma()                              throw(); //!< 1/2*|Gamma|^2
             
-            //! solve
+            //! solve, Gamma and Psi are ready
             void solve(writable<double> &C);
 
             //! objectiveGamma() at Ctry = Corg + u * dC
@@ -83,8 +87,8 @@ namespace yack
             array_type       &xi;     //!< [N] xi
             const imatrix     Nu;     //!< topology
             const imatrix     NuT;    //!< Nu'
-            rmatrix           Psi;    //!< jacobian of Gamm
-            rmatrix           Omega;  //!< Omega
+            rmatrix           Psi;    //!< [NxM] jacobian of Gamm
+            rmatrix           W;      //!< [NxN] Psi*NuT
             vector<double>    rstack; //!< temporary stack of real
             vector<size_t>    ustack; //!< temporary stack of unsigned
             math::lu<double>  LU;     //!< [N]

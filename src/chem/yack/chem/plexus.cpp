@@ -18,6 +18,7 @@ namespace yack
 
     namespace chemical
     {
+        bool plexus::verbose = false;
 
         plexus:: ~plexus() throw() {}
 
@@ -53,7 +54,7 @@ namespace yack
         Nu(N, (N>0) ? M : 0),
         NuT(Nu.cols,Nu.rows),
         Psi(Nu.rows,Nu.cols),
-        Omega(NuT.rows,NuT.cols),
+        W(N,N),
         rstack(M,as_capacity),
         ustack(M,as_capacity),
 
@@ -61,11 +62,15 @@ namespace yack
 
         lib_lock( coerce(lib) )
         {
-            std::cerr << "#species=" << M << std::endl;
-            std::cerr << "#active =" << A << std::endl;
-            std::cerr << "#eqs    =" << N << std::endl;
+            YACK_CHEM_PRINTLN("#species=" << M );
+            YACK_CHEM_PRINTLN("#active =" << A );
+            YACK_CHEM_PRINTLN("#eqs    =" << N );
 
+            //------------------------------------------------------------------
+            //
             // initialize Nu
+            //
+            //------------------------------------------------------------------
             for(const enode *node=eqs.head();node;node=node->next)
             {
                 const equilibrium &eq = ***node;
@@ -73,22 +78,29 @@ namespace yack
                 eq.fill(coerce(Nu[eq.indx]));
             }
 
+            //------------------------------------------------------------------
+            //
             // finalize
+            //
+            //------------------------------------------------------------------
             coerce(NuT).assign(Nu,transposed);
 
+            //------------------------------------------------------------------
+            //
             // check equilibria independence
+            //
+            //------------------------------------------------------------------
             if(N>0)
             {
                 matrix<apq> G(N,N);
                 tao::v3::gram(G,Nu);
-                std::cerr << "Nu  = " << Nu << std::endl;
-                std::cerr << "NuT = " << NuT << std::endl;
-                std::cerr << "G   = " << G << std::endl;
+                YACK_CHEM_PRINTLN( "Nu  = " << Nu );
+                YACK_CHEM_PRINTLN( "NuT = " << NuT);
+                YACK_CHEM_PRINTLN( "G   = " << G  );
+
                 lu<apq> alu(N);
                 if(!alu.build(G))
-                {
                     throw exception("%s: dependant equilibria detected",fn);
-                }
 
             }
 
@@ -151,46 +163,92 @@ namespace yack
             if(N>0)
             {
                 plexus &self = *this;
-                rmatrix W(N,N);
-
                 //--------------------------------------------------------------
                 //
+                //
                 // initialize
+                //
+                //
                 //--------------------------------------------------------------
 
                 tao::v1::load(Corg,C);
-                lib(std::cerr << "C0=",Corg);
+                if(verbose) lib(std::cerr << "C0=",Corg);
                 computeGammaAndPsi(Corg);
                 size_t iter = 0;
                 
             ITER:
                 ++iter;
-                ustack.free();
+                //--------------------------------------------------------------
+                //
+                //
                 // ensure maximum regularity
+                //
+                //
+                //--------------------------------------------------------------
+                bool moved = false;
+                ustack.free();
                 for(const enode *node=eqs.head();node;node=node->next)
                 {
-                    const equilibrium &eq = ***node;
-                    const size_t       i  = eq.indx;
+                    const equilibrium      &eq  = ***node;
+                    const size_t            i   = eq.indx;
                     const readable<double> &psi = Psi[i];
-                    if( tao::v1::mod2<double>::of(psi) > 0)
-                        continue;
-                    std::cerr << " moving " << eq.name << std::endl;
+
+                    //----------------------------------------------------------
+                    // check acceptable gradient
+                    //----------------------------------------------------------
+                    if( tao::v1::mod2<double>::of(psi) > 0) continue; // OK level-1
+
+                    moved = true;
+                    YACK_CHEM_PRINTLN("  moving " << eq.name);
                     eq.solve(K[i],Corg,Ctry);
                     computeGammaAndPsi(Corg);
-                    if( tao::v1::mod2<double>::of(psi) > 0)
-                        continue;
+
+                    //----------------------------------------------------------
+                    // check new acceptable gradient
+                    //----------------------------------------------------------
+                    if( tao::v1::mod2<double>::of(psi) > 0) continue; // OK level-2
+
+                    //----------------------------------------------------------
+                    // register as singular
+                    //----------------------------------------------------------
                     ustack << i;
                 }
-                lib(std::cerr << "C1=",Corg);
+
+                if(verbose&&moved) lib(std::cerr << "Corg=",Corg);
+
+                //--------------------------------------------------------------
+                //
+                //
+                // initialize status
+                //
+                //
+                //--------------------------------------------------------------
                 triplet<double> x = { 0,0,0 };
                 triplet<double> g = { objectiveGamma(),0,0};
-                std::cerr << "singular=" << ustack << std::endl;
-                std::cerr << "Gamma=" << Gamma << std::endl;
-                std::cerr << "Psi  =" << Psi   << std::endl;
-                std::cerr << "Nu   =" << Nu    << std::endl;
-                std::cerr << "G0   =" << g.a   << std::endl;
 
+                YACK_CHEM_PRINTLN("block = " << ustack);
+                YACK_CHEM_PRINTLN("Gamma = " << Gamma);
+                YACK_CHEM_PRINTLN("Psi   = " << Psi);
+                YACK_CHEM_PRINTLN("Nu    = " << Nu  );
+                YACK_CHEM_PRINTLN("G0    = " << g.a );
+                
+                if( fabs(g.a) <= 0)
+                {
+                    //----------------------------------------------------------
+                    // early return
+                    //----------------------------------------------------------
+                    tao::v1::set(C,Corg);
+                    YACK_CHEM_PRINTLN("// [numerical success]");
+                    return;
+                }
 
+                //--------------------------------------------------------------
+                //
+                //
+                // computed regularized Jacobian
+                //
+                //
+                //--------------------------------------------------------------
                 tao::v3::mmul_trn(W,Psi,Nu);
                 for(size_t i=ustack.size();i>0;--i)
                 {
@@ -198,31 +256,61 @@ namespace yack
                     W[k][k]  = 1;
                     Gamma[k] = 0;
                 }
-                std::cerr << "W    =" << W << std::endl;
+                YACK_CHEM_PRINTLN("W     = " << W);
 
                 if(!LU.build(W))
                 {
-                    throw exception("Singular...");
+                    throw exception("%s: singular concentrations", fn);
                 }
 
-                // Newton's step
+                //--------------------------------------------------------------
+                //
+                //
+                // computed Newton's extent
+                //
+                //
+                //--------------------------------------------------------------
                 tao::v1::neg(xi,Gamma);
                 LU.solve(W,xi);
-                std::cerr << "xi0  =" << xi << std::endl;
+                YACK_CHEM_PRINTLN("xi    = " << xi);
 
-                // checking legal
+                //--------------------------------------------------------------
+                //
+                //
+                // imposing legal direction : xi \propto Gamma
+                //
+                //
+                //--------------------------------------------------------------
+                moved=false;
                 for(size_t i=N;i>0;--i)
                 {
                     double &x = xi[i];
-                    if(x*Gamma[i]<=0) x=0;
+                    if(x*Gamma[i]<=0)
+                    {
+                        x=0;
+                        moved = true;
+                    }
                 }
-                std::cerr << "xi1  =" << xi << std::endl;
+                if(moved) { YACK_CHEM_PRINTLN("xi    = " << xi); }
 
+                //--------------------------------------------------------------
+                //
+                //
                 // estimating dC
+                //
+                //
+                //--------------------------------------------------------------
                 tao::v2::mul(dC,NuT,xi);
-                std::cerr << "dC   =" << dC << std::endl;
+                YACK_CHEM_PRINTLN("dC    = " << dC);
 
-                
+
+                //--------------------------------------------------------------
+                //
+                //
+                // full step truncation to ensure positivity
+                //
+                //
+                //--------------------------------------------------------------
                 rstack.free();
                 ustack.free();
                 for(const snode *node=lib.head();node;node=node->next)
@@ -232,7 +320,7 @@ namespace yack
                     const double   d  = dC[j];
                     if(d<0)
                     {
-                        std::cerr << "  need to check " << sp << std::endl;
+                        YACK_CHEM_PRINTLN("//    checking " << sp);
                         const double b = -d;
                         const double c = Corg[j]; assert(c>=0);
                         if(b>=c)
@@ -243,12 +331,21 @@ namespace yack
                     }
                 }
 
-
-
+                //--------------------------------------------------------------
+                //
+                //
+                // study result
+                //
+                //
+                //--------------------------------------------------------------
                 if(rstack.size())
                 {
-                    std::cerr << "rstack=" << rstack << std::endl;
-                    std::cerr << "ustack=" << ustack << std::endl;
+                    YACK_CHEM_PRINTLN("// [rescaling]");
+                    //----------------------------------------------------------
+                    //
+                    // evaluate step reduction
+                    //
+                    //----------------------------------------------------------
                     hsort(rstack,ustack,comparison::increasing<double>);
                     const double scale = rstack.front();
                     size_t       count = 1;
@@ -258,49 +355,87 @@ namespace yack
                         rstack.pop_back();
                         ustack.pop_back();
                     }
-                    std::cerr << "rstack=" << rstack << std::endl;
-                    std::cerr << "ustack=" << ustack << std::endl;
+                    YACK_CHEM_PRINTLN("rstack=");
+                    YACK_CHEM_PRINTLN("ustack=");
+
+                    //----------------------------------------------------------
+                    //
+                    // compute Ctry
+                    //
+                    //----------------------------------------------------------
                     for(const snode *node=lib.head();node;node=node->next)
                     {
                         const species &sp = ***node;
                         const size_t   j  = sp.indx;
                         Ctry[j] = max_of<double>(Corg[j]+scale*dC[j],0);
                     }
+
+                    //----------------------------------------------------------
+                    //
+                    // set 0 to vanishing species
+                    //
+                    //----------------------------------------------------------
                     for(size_t i=count;i>0;--i)
                     {
                         Ctry[ ustack[i] ] = 0;
                     }
+
+                    //----------------------------------------------------------
+                    //
+                    // register scale as interval boundary
+                    //
+                    //----------------------------------------------------------
                     x.c = scale;
                 }
                 else
                 {
-                    std::cerr << "full step" << std::endl;
+                    //----------------------------------------------------------
+                    //
+                    // compute Ctry@Corg+dC
+                    //
+                    //----------------------------------------------------------
+                    YACK_CHEM_PRINTLN("// [full step]");
                     for(const snode *node=lib.head();node;node=node->next)
                     {
                         const species &sp = ***node;
                         const size_t   j  = sp.indx;
                         Ctry[j] = max_of<double>(Corg[j]+dC[j],0);
                     }
+
+                    //----------------------------------------------------------
+                    //
+                    // register full step as interval
+                    //
+                    //----------------------------------------------------------
                     x.c = 1;
                 }
-                lib(std::cerr << "C2=",Ctry);
+                if(verbose) lib(std::cerr << "Ctry=",Ctry);
+
+                //--------------------------------------------------------------
+                //
+                //
+                // checking new values
+                //
+                //
+                //--------------------------------------------------------------
                 computeGamma(Ctry);
                 g.c = objectiveGamma();
 
                 if(g.c>=g.a)
                 {
-                    std::cerr << "backtrack..." << std::endl;
+                    //----------------------------------------------------------
+                    //
+                    // g.c >= g.a need to backtrack
+                    //
+                    //----------------------------------------------------------
+                    YACK_CHEM_PRINTLN("// [backtrack/minimize]");
                     if(!bracket::inside_for(self,x,g))
-                    {
-                        throw exception("cannot bracket...");
-                    }
-
-                    std::cerr << "bracketed..." << std::endl;
-                    std::cerr << "x=" << x << ", g=" << g << std::endl;
-
+                        throw exception("%s: cannot bracket equilibria",fn);
+                    
                     (void) minimize::find<double>::run_for(self,x,g);
-                    std::cerr << "x=" << x << ", g=" << g << std::endl;
+                    YACK_CHEM_PRINTLN("x=" << x << ";  g=" << g);
 
+#if 0
                     {
                         ios::ocstream fp("gam.dat");
                         for(double u=0;u<=1; u+=0.01)
@@ -309,24 +444,44 @@ namespace yack
                             fp("%g %g\n", xx, self(xx) );
                         }
                     }
+#endif
                 }
                 else
                 {
-                    // g.c < g.a
-                    std::cerr << "accept!" << std::endl;
+                    //----------------------------------------------------------
+                    //
+                    // g.c < g.a: take step
+                    //
+                    //----------------------------------------------------------
+                    YACK_CHEM_PRINTLN("// [accept step]");
                     x.b = x.c;
                     g.b = g.c;
                 }
 
+                //--------------------------------------------------------------
+                //
+                //
+                // we now are on a decreased Gamma@Ctry
+                //
+                //
+                //--------------------------------------------------------------
+                computeGammaAndPsi(Ctry);
 
-                tao::v1::set(Corg,Ctry);
-                computeGammaAndPsi(Corg);
                 if(g.b>=g.a)
                 {
-                    std::cerr << "minimized@iter=" << iter << std::endl;
+                    YACK_CHEM_PRINTLN("// minimized @iter=" << iter);
+                    tao::v1::set(C,Ctry);
                     return;
                 }
 
+                //--------------------------------------------------------------
+                //
+                //
+                // iter again
+                //
+                //
+                //--------------------------------------------------------------
+                tao::v1::set(Corg,Ctry);
                 goto ITER;
 
 
