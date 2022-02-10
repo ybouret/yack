@@ -40,6 +40,7 @@ namespace yack
                 {
                     // monotonic
                     x.sort(f);
+                    f.a = f.b = f.c = f.mini();
                     return;
                 }
                 width = new_width;

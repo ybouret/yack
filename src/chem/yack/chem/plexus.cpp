@@ -147,13 +147,39 @@ namespace yack
         }
 
 
-        
+
+        static inline
+        void make_boundary(writable<double>       &Ctry,
+                           const readable<double> &Corg,
+                           const double            scale,
+                           const readable<double> &dC) throw()
+        {
+            for(size_t j=Ctry.size();j>0;--j)   Ctry[j]  = max_of<double>(0,Corg[j]+scale*dC[j]);
+        }
+
         double plexus::operator()(const double u)
         {
-            tao::v1::muladd(Ctry,Corg,u,dC);
+            make_boundary(Ctry,Corg,u,dC);
             computeGamma(Ctry);
             return objectiveGamma();
         }
+
+
+
+
+
+        static inline
+        void make_boundary(writable<double>       &Ctry,
+                           const readable<double> &Corg,
+                           const double            scale,
+                           const readable<double> &dC,
+                           const readable<size_t> &ustack) throw()
+        {
+            make_boundary(Ctry,Corg,scale,dC);
+            for(size_t j=ustack.size();j>0;--j) Ctry[ ustack[j] ] = 0;
+        }
+
+
 
         void plexus:: solve(writable<double> &C)
         {
@@ -177,6 +203,7 @@ namespace yack
                 
             ITER:
                 ++iter;
+                YACK_CHEM_PRINTLN("// [solve.iter=" << iter << "]");
                 //--------------------------------------------------------------
                 //
                 //
@@ -199,7 +226,7 @@ namespace yack
                         if( tao::v1::mod2<double>::of(psi) > 0) continue; // OK level-1
 
                         moved = true;
-                        YACK_CHEM_PRINTLN("//  moving " << eq.name);
+                        YACK_CHEM_PRINTLN("//  [moving " << eq.name << "]");
                         eq.solve(K[i],Corg,Ctry);
                         computeGammaAndPsi(Corg);
 
@@ -224,8 +251,9 @@ namespace yack
                 //
                 //
                 //--------------------------------------------------------------
+                const double    g0 = objectiveGamma();
                 triplet<double> x = { 0,0,0 };
-                triplet<double> g = { objectiveGamma(),0,0};
+                triplet<double> g = { g0,0,0};
 
                 YACK_CHEM_PRINTLN("block = " << ustack);
                 YACK_CHEM_PRINTLN("Gamma = " << Gamma);
@@ -358,33 +386,107 @@ namespace yack
                 //--------------------------------------------------------------
                 if(!count)
                 {
+                    //----------------------------------------------------------
+                    //
                     YACK_CHEM_PRINTLN("// [unlimited]");
+                    //
+                    //----------------------------------------------------------
                     g.b = self(x.b = 1);
                     g.c = self(x.c = 2);
                     (void) minimize::find<double>::run_for(self, x, g, minimize::expand);
-                    YACK_CHEM_PRINTLN("// [unlimited.min] x=" << x << "; g=" << g);
+                    YACK_CHEM_PRINTLN("// [unlimited] x=" << x.b << "; g=" << g.b);
                     YACK_CHEM_PRINTLN("// [unlimited] Ctry=" << Ctry << "; Gamma=" << Gamma);
 
-                    exit(1);
+
                 }
                 else
                 {
-                    YACK_CHEM_PRINTLN("// [limited]");
+                    //----------------------------------------------------------
+                    //
+                    YACK_CHEM_PRINTLN("// [limited] @" << scale);
+                    //
+                    //----------------------------------------------------------
 
-                    exit(1);
+                    if(scale<=1)
+                    {
+                        YACK_CHEM_PRINTLN("// [limited] @" << scale << " <= 1");
+                        //------------------------------------------------------
+                        // prepare hard boundary
+                        //------------------------------------------------------
+                        x.c = scale;
+                        make_boundary(Ctry,Corg,scale,dC,ustack);
+                        computeGamma(Ctry);
+                        g.c = objectiveGamma();
+
+                        //------------------------------------------------------
+                        // backtrack
+                        //------------------------------------------------------
+                        (void) minimize::find<double>::run_for(self, x, g, minimize::inside);
+                        YACK_CHEM_PRINTLN("// [limited<=1] x=" << x.b << "; g=" << g.b);
+                        YACK_CHEM_PRINTLN("// [limited<=1] Ctry=" << Ctry << "; Gamma=" << Gamma);
+                    }
+                    else
+                    {
+                        YACK_CHEM_PRINTLN("// [limited] @" << scale << " > 1");
+                        //------------------------------------------------------
+                        // prepare soft boundary
+                        //------------------------------------------------------
+                        x.c = x.b = 1;
+                        make_boundary(Ctry,Corg,scale,dC);
+                        computeGamma(Ctry);
+                        g.c = g.b = objectiveGamma();
+
+                        //YACK_CHEM_PRINTLN("// [limited>1] x=" << x.b << "; g=" << g.b);
+                        //------------------------------------------------------
+                        // backtrack if not decreased
+                        //------------------------------------------------------
+                        if(g.c>=g.a)
+                        {
+                            (void) minimize::find<double>::run_for(self, x, g, minimize::inside);
+                        }
+                        YACK_CHEM_PRINTLN("// [limited>1] x=" << x.b << "; g=" << g.b);
+                        YACK_CHEM_PRINTLN("// [limited>1] Ctry=" << Ctry << "; Gamma=" << Gamma);
+
+                    }
+
                 }
 
-
-
+                //--------------------------------------------------------------
+                //
+                // prepare for return of next iter
+                //
+                //--------------------------------------------------------------
                 computeGammaAndPsi(Ctry);
-                if(g.b>=g.a)
+
+
+                //--------------------------------------------------------------
+                //
+                // check |Gamma| convergence
+                //
+                //--------------------------------------------------------------
+                if(g.b>=g0)
                 {
-                    YACK_CHEM_PRINTLN("// minimum reached @iter=" << iter);
+                    YACK_CHEM_PRINTLN("// [minimum reached @iter=" << iter << "]");
                     tao::v1::set(C,Ctry);
                     return;
                 }
 
+                //--------------------------------------------------------------
+                //
+                // check delta C convergence
+                //
+                //--------------------------------------------------------------
+                bool converged = true;
+                for(const snode *node=lib.head();node;node=node->next)
+                {
+                    const species &sp = ***node;
+                    const size_t   j  = sp.indx;
+                    const double   d  = fabs(Corg[j]-Ctry[j]);
+                    //std::cerr << "delta." << sp.name << " : " << d << "/" << Ctry[j] << std::endl;
+
+                }
                 tao::v1::set(Corg,Ctry);
+
                 goto ITER;
 
 
