@@ -483,9 +483,20 @@ namespace yack
                     const size_t   j  = sp.indx;
                     const double   d  = fabs(Corg[j]-Ctry[j]);
                     std::cerr << "delta." << sp.name << " : " << d << "/" << Ctry[j] << std::endl;
-
+                    if(d>0)
+                    {
+                        converged = false;
+                    }
+                    Corg[j] = Ctry[j];
                 }
-                tao::v1::set(Corg,Ctry);
+                
+                if(converged)
+                {
+                    YACK_CHEM_PRINTLN("// [converged @iter=" << iter << "]");
+                    tao::v1::set(C,Ctry);
+                    return;
+                }
+
 
                 goto ITER;
 
