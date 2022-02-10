@@ -24,7 +24,7 @@ namespace yack
         virtual size_t         granted()                const throw(); //!< dynamic interface
         virtual size_t       & operator[](const size_t)       throw(); //!< data[1..size()]
         virtual const size_t & operator[](const size_t) const throw(); //!< data[1..size()]
-
+        
         
     protected:
         //! setup memory

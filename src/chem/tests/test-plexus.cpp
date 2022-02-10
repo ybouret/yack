@@ -4,6 +4,7 @@
 #include "yack/utest/run.hpp"
 #include "yack/system/env.hpp"
 #include "yack/math/opt/minimize.hpp"
+#include "yack/counting/comb.hpp"
 
 using namespace yack;
 using namespace chemical;
@@ -69,32 +70,34 @@ YACK_UTEST(plexus)
             }
             YACK_CHECK(spec.size() == cs.A );
 
-
-            //----------------------------------------------------------------------
-            // just one not zero
-            //----------------------------------------------------------------------
-            for(size_t j=1;j<=spec.size();++j)
+            for(size_t na=1;na<=spec.size();++na)
             {
-                const species &s = *spec[j];
-                for(size_t iter=0;iter<16;++iter)
+                combination       comb(spec.size(),na);
+                vector<species *> sub(na,NULL);
+                do
                 {
+                    std::cerr << "-- using";
+                    for(size_t i=1;i<=na;++i)
+                    {
+                        sub[i] = spec[ comb[i] ];
+                        std::cerr << " " << *sub[i];
+                    }
+                    std::cerr << std::endl;
+
                     C.ld(0);
-                    C[s.indx] = species::concentration(ran);
-                    std::cerr << "---------- With only [" << s << "]=" << s(C) << std::endl;
+                    for(size_t i=1;i<=na;++i)
+                    {
+                        const species &s = *sub[i];
+                        const size_t   j = s.indx;
+                        C[j] = species::concentration(ran);
+                    }
                     try_solve(cs,C);
-                }
-                std::cerr << std::endl;
+
+                } while( comb.next() );
             }
 
 
-            //----------------------------------------------------------------------
-            // random
-            //----------------------------------------------------------------------
-            for(size_t iter=0;iter<16;++iter)
-            {
-                lib.fill(C,0.8,ran);
-                try_solve(cs,C);
-            }
+
 
         }
         catch(const exception &e)
