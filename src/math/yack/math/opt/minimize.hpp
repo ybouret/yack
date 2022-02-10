@@ -20,12 +20,21 @@ namespace yack
         //______________________________________________________________________
         struct minimize
         {
-            static bool verbose; //!< trigger verbosity
+            //__________________________________________________________________
+            //
+            //! trigger verbosity
+            //__________________________________________________________________
+            static bool verbose;
+
+            //__________________________________________________________________
+            //
+            //! prolog to run
+            //__________________________________________________________________
             enum prolog
             {
-                direct,
-                inside,
-                expand
+                direct, //!< no prolog
+                inside, //!< bracket inside x.a,x.c with f.a,f.c
+                expand  //!< bracket expand from x.a,x.b,x.c with f.a,f.b,f.c computed
             };
 
             //__________________________________________________________________
@@ -85,6 +94,9 @@ namespace yack
                 //
                 //! initialize and cycle up to XTOL, MTOL, FTOL
                 /**
+                 - direct: x.a <= x.b <= x.c and f.b <= f.a and f.b <= f.c
+                 - inside: x.a,f.a and x.c,f.c are precomputed
+                 - expand: all triplets are precomputed
                  \return x.b such that f.b = F(x.b) is the last evaluated value
                  */
                 //______________________________________________________________

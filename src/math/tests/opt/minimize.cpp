@@ -26,15 +26,20 @@ namespace
 
 
     template <typename T> static inline
-    void test_min(const T x1, const T x2)
+    void test_min(const T x1, const T x2, const minimize::prolog flag)
     {
         std::cerr << "Minimizing in " << x1 << ":" << x2 << std::endl;
         Func<T>    F = { 0 };
         triplet<T> x = { x1,     0,   x2   };
         triplet<T> f = { F(x.a), 0, F(x.c) };
 
+        if(minimize::expand==flag)
+        {
+            x.b = (x.a+x.c)/2;
+            f.b = F(x.b);
+        }
 
-        const T x_opt = minimize::find<T>::run_for(F,x,f,minimize::inside,T(xtol));
+        const T x_opt = minimize::find<T>::run_for(F,x,f,flag,T(xtol));
 
         std::cerr << "\tf_opt=" << f.b << "@" << x_opt << ", #calls=" << F.count << std::endl;
 
@@ -47,9 +52,9 @@ namespace
     static inline void test_min()
     {
         std::cerr << "minimize<" << rtti::name<T>() << ">" << std::endl;
-        test_min<T>(-5,2);
-        test_min<T>(0,10);
-        test_min<T>(-5,-1);
+        test_min<T>(-5,2,minimize::inside);
+        test_min<T>(0,10,minimize::inside);
+        test_min<T>(-5,-1,minimize::expand);
         std::cerr << std::endl;
     }
 

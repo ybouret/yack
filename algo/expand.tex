@@ -1,0 +1,44 @@
+\documentclass[aps,12pt]{revtex4}
+\usepackage[a4paper]{geometry}
+\usepackage{graphicx}
+\usepackage{amssymb,amsfonts,amsmath,amsthm}
+\usepackage{bm}
+\usepackage{pslatex}
+\usepackage{mathptmx}
+\usepackage{bookman}
+\usepackage{chemarr}
+
+ 	 
+\begin{document}
+
+Let us have $x_a\leq x_b \leq x_c$ with corresponding $f_a,f_b,f_c$.
+Reducing to the interval width where $x_b$ become $0\leq \beta \leq 1$, 
+
+\begin{equation}
+	f(u) = f_a + \sigma u + \gamma u^2
+\end{equation}
+
+We find the coefficient by solving
+\begin{equation}
+\begin{array}{rcl}
+	f_c - f_a & = & \sigma + \gamma\\
+	f_b - f_a & = & \sigma \beta + \gamma \beta^2\\
+\end{array}
+\end{equation}
+
+We have the curvature:
+\begin{equation}
+(\beta-\beta^2) \gamma = \beta \delta_c - \delta_b
+\end{equation}
+
+If $\gamma\leq0$, then expand the interval by its own length in the proper direction.
+
+We have the slope:
+\begin{equation}
+(\beta-\beta^2) \sigma = \delta_b - \beta^2 \delta_c
+\end{equation}
+
+
+
+
+\end{document}

@@ -206,7 +206,7 @@ namespace yack
                     break;
 
                 case expand:
-                    throw exception("expand not handled");
+                    bracket::expand(func,x,f);
                     break;
             }
 
