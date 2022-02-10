@@ -4,6 +4,7 @@
 #include "yack/math/tao/v2.hpp"
 #include "yack/math/opt/minimize.hpp"
 #include "yack/math/look-for.hpp"
+#include "yack/sort/sum.hpp"
 
 #include <cmath>
 #include <iomanip>
@@ -14,6 +15,27 @@ namespace yack
 
     namespace chemical
     {
+
+
+        double  plexus::  computeRMS(const readable<double> &C)
+        {
+            assert(C.size()>=M);
+            if(N>0)
+            {
+                for(const enode *node=eqs.head();node;node=node->next)
+                {
+                    const equilibrium &eq = ***node;
+                    const size_t       ii = eq.indx;
+                    sc[ii] = eq.scale(K[ii],C,Ctmp);
+                }
+                return sqrt( sorted::sum_squared(sc)/N );
+            }
+            else
+            {
+                return 0;
+            }
+
+        }
 
         static inline
         void make_boundary(writable<double>       &Ctry,
@@ -29,9 +51,6 @@ namespace yack
             make_boundary(Ctry,Corg,u,dC);
             return computeRMS(Ctry);
         }
-
-
-
 
 
         static inline
@@ -260,11 +279,19 @@ namespace yack
                     //
                     //
                     //----------------------------------------------------------
-                    g.b = self(x.b = 1);
-                    g.c = self(x.c = 2);
-                    (void) minimize::find<double>::run_for(self, x, g, minimize::expand);
-                    YACK_CHEM_PRINTLN("// [unlimited] x=" << x.b  << "; g=" << g.b);
-                    YACK_CHEM_PRINTLN("// [unlimited] C=" << Ctry << "; Gamma=" << Gamma);
+                    g.c = g.b = self(x.c=x.b = 1);
+                    if(g.c>=g.a)
+                    {
+                        // too far
+                        YACK_CHEM_PRINTLN("// [unlimited.backtrack] ");
+                        (void) minimize::find<double>::run_for(self, x, g, minimize::inside);
+                        YACK_CHEM_PRINTLN("// [unlimited.bactrack] x=" << x.b  << "; g=" << g.b);
+                    }
+                    else
+                    {
+                        // may accept
+                        YACK_CHEM_PRINTLN("// [unlimited.forward]");
+                    }
 
                 }
                 else
@@ -287,7 +314,6 @@ namespace yack
                         g.c = computeRMS(Ctry);                       // right-most value
                         (void) minimize::find<double>::run_for(self,x,g,minimize::inside);
                         YACK_CHEM_PRINTLN("// [limited @" << scale << " <= 1] x=" << x.b  << ", g=" << g);
-                        YACK_CHEM_PRINTLN("// [limited @" << scale << " <= 1] C=" << Ctry << ", Gamma=" << Gamma);
                     }
                     else
                     {
@@ -307,7 +333,6 @@ namespace yack
                             YACK_CHEM_PRINTLN("// [limited @" << scale << " > 1] backtrack from 1");
                             (void) minimize::find<double>::run_for(self,x,g,minimize::inside);
                             YACK_CHEM_PRINTLN("// [limited @" << scale << " > 1] x=" << x.b  << ", g=" << g);
-                            YACK_CHEM_PRINTLN("// [limited @" << scale << " > 1] C=" << Ctry << ", Gamma=" << Gamma);
                         }
                         else
                         {
@@ -339,7 +364,6 @@ namespace yack
                                 g.b = g.c; // save result
                             }
                             YACK_CHEM_PRINTLN("// [limited @" << scale << " > 1] x=" << x.b  << ", g=" << g);
-                            YACK_CHEM_PRINTLN("// [limited @" << scale << " > 1] C=" << Ctry << ", Gamma=" << Gamma);
                         }
 
                     }
@@ -399,6 +423,7 @@ namespace yack
                 if(converged)
                 {
                     YACK_CHEM_PRINTLN("// [converged @iter=" << iter << "]");
+                    tao::v1::set(C,Ctry);
                     return;
                 }
 

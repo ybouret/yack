@@ -51,9 +51,9 @@ YACK_UTEST(plexus)
             //----------------------------------------------------------------------
             // from 0
             //----------------------------------------------------------------------
-            lib.fill(C,0.8,ran);
+            //lib.fill(C,0.8,ran);
             try_solve(cs,C);
-            return 0;
+
 
             //----------------------------------------------------------------------
             // loading active
@@ -76,16 +76,17 @@ YACK_UTEST(plexus)
             for(size_t j=1;j<=spec.size();++j)
             {
                 const species &s = *spec[j];
-                std::cerr << "---------- With only " << s << std::endl;
-                for(size_t iter=0;iter<10;++iter)
+                for(size_t iter=0;iter<1;++iter)
                 {
                     C.ld(0);
                     C[s.indx] = species::concentration(ran);
+                    std::cerr << "---------- With only [" << s << "]=" << s(C) << std::endl;
                     try_solve(cs,C);
                 }
                 std::cerr << std::endl;
             }
 
+            return 0;
 
             //----------------------------------------------------------------------
             // random

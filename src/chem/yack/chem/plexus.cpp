@@ -132,27 +132,7 @@ namespace yack
         }
 
 
-        
-        double  plexus::  computeRMS(const readable<double> &C)
-        {
-            assert(C.size()>=M);
-            if(N>0)
-            {
-                for(const enode *node=eqs.head();node;node=node->next)
-                {
-                    const equilibrium &eq = ***node;
-                    const size_t       ii = eq.indx;
-                    sc[ii] = eq.scale(K[ii],C,Ctmp);
-                }
-                std::cerr << "sc=" << sc << std::endl;
-                return sqrt( sorted::sum_squared(sc)/N );
-            }
-            else
-            {
-                return 0;
-            }
-
-        }
+   
 
 
 
