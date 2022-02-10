@@ -482,7 +482,7 @@ namespace yack
                     const species &sp = ***node;
                     const size_t   j  = sp.indx;
                     const double   d  = fabs(Corg[j]-Ctry[j]);
-                    //std::cerr << "delta." << sp.name << " : " << d << "/" << Ctry[j] << std::endl;
+                    std::cerr << "delta." << sp.name << " : " << d << "/" << Ctry[j] << std::endl;
 
                 }
                 tao::v1::set(Corg,Ctry);
