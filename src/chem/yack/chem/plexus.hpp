@@ -55,12 +55,11 @@ namespace yack
             //
             // methods
             //__________________________________________________________________
-            void   computeK(const double t);                              //!< pre-compute constants
-            void   computeGamma(const readable<double> &C)       throw(); //!< evaluate mass action
-            void   computeGammaAndPsi(const readable<double> &C) throw(); //!< evaluate mass action and jacobian
-            double objectiveGamma()                              throw(); //!< 1/2*|Gamma|^2
-            double objectiveGamma(const readable<double> &C)     throw(); //!< compute/evaluate
-            
+            void    computeK(const double t);                              //!< pre-compute constants
+            void    computeGamma(const readable<double> &C)       throw(); //!< evaluate mass action
+            void    computeGammaAndPsi(const readable<double> &C) throw(); //!< evaluate mass action and jacobian
+            double  computeRMS(const readable<double> &C); //!< RMS to equilibria, uses sc and Ctmp
+
             //! solve, Gamma and Psi are ready
             void solve(writable<double> &C);
 
@@ -85,8 +84,10 @@ namespace yack
             array_type       &Gamma;  //!< [N] Gamma for precomputed K
             array_type       &Corg;   //!< [M] initial concentrations
             array_type       &Ctry;   //!< [M] trial concentrations
+            array_type       &Ctmp;   //!< [M] trial concentrations
             array_type       &dC;     //!< [M] delta C
             array_type       &xi;     //!< [N] xi
+            array_type       &sc;     //!< [N] to compute RMS
             const imatrix     Nu;     //!< topology
             const imatrix     NuT;    //!< Nu'
             rmatrix           Psi;    //!< [NxM] jacobian of Gamm

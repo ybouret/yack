@@ -85,6 +85,8 @@ namespace yack
                 os << '}' << std::endl;
             }
 
+            
+
         private:
             YACK_DISABLE_COPY_AND_ASSIGN(equilibria);
             eqdb db;

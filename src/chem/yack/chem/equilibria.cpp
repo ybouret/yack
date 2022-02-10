@@ -68,6 +68,7 @@ namespace yack
             for(size_t i=n;i<width;++i) os << ' ';
             return os;
         }
+        
 
     }
 

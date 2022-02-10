@@ -27,8 +27,7 @@ namespace yack
         double plexus::operator()(const double u)
         {
             make_boundary(Ctry,Corg,u,dC);
-            computeGamma(Ctry);
-            return objectiveGamma();
+            return computeRMS(Ctry);
         }
 
 
@@ -118,15 +117,15 @@ namespace yack
                 //
                 //
                 //--------------------------------------------------------------
-                const double    g0 = objectiveGamma();
+                const double    g0 = computeRMS(Corg);
                 triplet<double> x = { 0,0,0 };
                 triplet<double> g = { g0,0,0};
 
                 YACK_CHEM_PRINTLN("  block = " << ustack);
-                YACK_CHEM_PRINTLN("  Gamma = " << Gamma);
-                YACK_CHEM_PRINTLN("  Psi   = " << Psi);
-                YACK_CHEM_PRINTLN("  Nu    = " << Nu  );
-                YACK_CHEM_PRINTLN("  G0    = " << g.a );
+                YACK_CHEM_PRINTLN("  Gamma = " << Gamma );
+                YACK_CHEM_PRINTLN("  Psi   = " << Psi   );
+                YACK_CHEM_PRINTLN("  Nu    = " << Nu    );
+                YACK_CHEM_PRINTLN("  G0    = " << g0    );
 
                 if( fabs(g0) <= 0)
                 {
@@ -285,7 +284,7 @@ namespace yack
                         //
                         //------------------------------------------------------
                         make_boundary(Ctry,Corg,x.c=scale,dC,ustack); // hard boundary
-                        g.c = objectiveGamma(Ctry);                   // right-most value
+                        g.c = computeRMS(Ctry);                       // right-most value
                         (void) minimize::find<double>::run_for(self,x,g,minimize::inside);
                         YACK_CHEM_PRINTLN("// [limited @" << scale << " <= 1] x=" << x.b  << ", g=" << g);
                         YACK_CHEM_PRINTLN("// [limited @" << scale << " <= 1] C=" << Ctry << ", Gamma=" << Gamma);
@@ -318,7 +317,7 @@ namespace yack
                             if(scale<=xmax)
                             {
                                 make_boundary(Ctry,Corg,x.c=scale,dC,ustack); // hard boundary
-                                g.c = objectiveGamma(Ctry);                   // right-most value
+                                g.c = computeRMS(Ctry);                       // right-most value
 
                             }
                             else
@@ -362,7 +361,6 @@ namespace yack
                 //--------------------------------------------------------------
                 const double g1 = g.b;
                 YACK_CHEM_PRINTLN("// g0=" << g0 << "; g1=" << g1 << "; dg=" << g1-g0);
-                YACK_CHEM_PRINTLN("// s0=" << sqrt(g0) << "; s1=" << sqrt(g1) << "; ds=" << sqrt(g1)-sqrt(g0) );
 
                 if(g1>=g0)
                 {
@@ -401,7 +399,6 @@ namespace yack
                 if(converged)
                 {
                     YACK_CHEM_PRINTLN("// [converged @iter=" << iter << "]");
-                    tao::v1::set(C,Ctry);
                     return;
                 }
 

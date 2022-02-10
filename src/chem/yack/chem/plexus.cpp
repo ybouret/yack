@@ -41,8 +41,11 @@ namespace yack
 
         Corg(mtab.next()),
         Ctry(mtab.next()),
+        Ctmp(mtab.next()),
         dC(mtab.next()),
+
         xi(ntab.next()),
+        sc(ntab.next()),
 
         Nu(N, (N>0) ? M : 0),
         NuT(Nu.cols,Nu.rows),
@@ -129,26 +132,29 @@ namespace yack
         }
 
 
-        double plexus:: objectiveGamma() throw()
+        
+        double  plexus::  computeRMS(const readable<double> &C)
         {
-            rstack.free();
-            for(size_t i=N;i>0;--i)
+            assert(C.size()>=M);
+            if(N>0)
             {
-                rstack.push_back( squared(Gamma[i]) );
+                for(const enode *node=eqs.head();node;node=node->next)
+                {
+                    const equilibrium &eq = ***node;
+                    const size_t       ii = eq.indx;
+                    sc[ii] = eq.scale(K[ii],C,Ctmp);
+                }
+                std::cerr << "sc=" << sc << std::endl;
+                return sqrt( sorted::sum_squared(sc)/N );
             }
-            return sorted::sum(rstack,sorted::by_value)*0.5;
+            else
+            {
+                return 0;
+            }
+
         }
 
 
-        double plexus:: objectiveGamma(const readable<double> &C) throw()
-        {
-            computeGamma(C);
-            return objectiveGamma();
-        }
-
-
-
-       
 
     }
     
