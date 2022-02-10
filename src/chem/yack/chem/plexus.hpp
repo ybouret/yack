@@ -42,7 +42,8 @@ namespace yack
             typedef arrays_of<double>    tableaux;   //!< alias
             typedef tableaux::array_type array_type; //!< alias
             static bool                  verbose;    //!< verbosity
-
+            static const char            clid[];     //!< chemical::plexus
+            
             //__________________________________________________________________
             //
             // C++
@@ -58,6 +59,7 @@ namespace yack
             void   computeGamma(const readable<double> &C)       throw(); //!< evaluate mass action
             void   computeGammaAndPsi(const readable<double> &C) throw(); //!< evaluate mass action and jacobian
             double objectiveGamma()                              throw(); //!< 1/2*|Gamma|^2
+            double objectiveGamma(const readable<double> &C)     throw(); //!< compute/evaluate
             
             //! solve, Gamma and Psi are ready
             void solve(writable<double> &C);

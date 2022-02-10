@@ -96,6 +96,7 @@ namespace yack
 
         public:
             const size_t width; //!< species name max size
+            std::ostream & pad(std::ostream &,const size_t) const; //!< pad to witdh
 
         };
     }

@@ -173,12 +173,16 @@ namespace yack
     namespace chemical
     {
 
+        std::ostream & library:: pad(std::ostream &os, const size_t n) const
+        {
+            for(size_t i=n;i<width;++i) os << ' ';
+            return os;
+        }
 
         void library:: display(std::ostream &os, const species &sp) const
         {
             os << '[' << sp.name << ']';
-            for(size_t i=sp.name.size();i<width;++i) os << ' ';
-
+            pad(os,sp.name.size());
         }
 
         void library:: display(std::ostream &os) const
