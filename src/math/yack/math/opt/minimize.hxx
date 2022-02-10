@@ -38,6 +38,15 @@ namespace yack
 
         }
 
+        //! compute sqrt(epsilon)
+        template <>
+        real_t minimize:: get_mtol<real_t>() throw()
+        {
+            static const real_t mtol = timings::round_floor( sqrt(numeric<real_t>::epsilon) );
+            return mtol;
+        }
+
+
         template <>
         void minimize:: move<real_t>:: run(real_function<real_t> &func,
                                            triplet<real_t>       &x,
@@ -181,6 +190,8 @@ namespace yack
         }
 
 
+        
+
         template <>
         real_t minimize:: find<real_t>:: run(real_function<real_t> &func,
                                              triplet<real_t>       &x,
@@ -189,7 +200,7 @@ namespace yack
                                              real_t                 xtol)
         {
             static const real_t  ftol = numeric<real_t>::ftol;
-            static const real_t  mtol = timings::round_floor( sqrt(numeric<real_t>::epsilon) );
+            static const real_t  mtol = get_mtol<real_t>();
 
             //------------------------------------------------------------------
             //

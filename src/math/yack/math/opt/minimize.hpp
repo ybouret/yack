@@ -46,6 +46,9 @@ namespace yack
             template <typename T>
             static T parabolic_guess(const triplet<T> &x, const triplet<T> &f) throw();
 
+            //! compute sqrt(epsilon)
+            template <typename T>
+            static T get_mtol() throw();
 
             //__________________________________________________________________
             //

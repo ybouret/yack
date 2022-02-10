@@ -3,6 +3,7 @@
 #include "yack/chem/lua/equilibria.hpp"
 #include "yack/utest/run.hpp"
 #include "yack/system/env.hpp"
+#include "yack/math/opt/minimize.hpp"
 
 using namespace yack;
 using namespace chemical;
@@ -50,11 +51,10 @@ YACK_UTEST(plexus)
             //----------------------------------------------------------------------
             // from 0
             //----------------------------------------------------------------------
-            lib.fill(C,0.8,ran);
+            //lib.fill(C,0.8,ran);
             try_solve(cs,C);
 
-            return 0;
-            
+
             //----------------------------------------------------------------------
             // loading active
             //----------------------------------------------------------------------
@@ -86,6 +86,7 @@ YACK_UTEST(plexus)
                 std::cerr << std::endl;
             }
 
+
             //----------------------------------------------------------------------
             // random
             //----------------------------------------------------------------------
@@ -103,6 +104,7 @@ YACK_UTEST(plexus)
         }
     }
 
+    std::cerr << "mtol=" << math::minimize::get_mtol<double>() << std::endl;
 
 }
 YACK_UDONE()

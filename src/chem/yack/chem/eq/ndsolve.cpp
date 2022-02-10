@@ -6,6 +6,7 @@
 #include "yack/math/look-for.hpp"
 
 #include <cmath>
+#include <iomanip>
 
 namespace yack
 {
@@ -50,7 +51,7 @@ namespace yack
         void plexus:: solve(writable<double> &C)
         {
             assert(C.size()>=M);
-
+            static const double vtol = minimize::get_mtol<double>();
 
             if(N>0)
             {
@@ -69,7 +70,7 @@ namespace yack
 
             ITER:
                 ++iter;
-                YACK_CHEM_PRINTLN("// [solve.iter=" << iter << "]");
+                YACK_CHEM_PRINTLN("//" << std::endl << "// [solve.iter=" << iter << "]");
                 //--------------------------------------------------------------
                 //
                 //
@@ -107,7 +108,7 @@ namespace yack
                         ustack << i;
                     }
 
-                    if(verbose&&moved) lib(std::cerr << "Corg=",Corg);
+                    if(verbose&&moved) lib(std::cerr << "C0=",Corg);
                 }
 
                 //--------------------------------------------------------------
@@ -121,13 +122,13 @@ namespace yack
                 triplet<double> x = { 0,0,0 };
                 triplet<double> g = { g0,0,0};
 
-                YACK_CHEM_PRINTLN("block = " << ustack);
-                YACK_CHEM_PRINTLN("Gamma = " << Gamma);
-                YACK_CHEM_PRINTLN("Psi   = " << Psi);
-                YACK_CHEM_PRINTLN("Nu    = " << Nu  );
-                YACK_CHEM_PRINTLN("G0    = " << g.a );
+                YACK_CHEM_PRINTLN("  block = " << ustack);
+                YACK_CHEM_PRINTLN("  Gamma = " << Gamma);
+                YACK_CHEM_PRINTLN("  Psi   = " << Psi);
+                YACK_CHEM_PRINTLN("  Nu    = " << Nu  );
+                YACK_CHEM_PRINTLN("  G0    = " << g.a );
 
-                if( fabs(g.a) <= 0)
+                if( fabs(g0) <= 0)
                 {
                     //----------------------------------------------------------
                     // early return
@@ -151,7 +152,7 @@ namespace yack
                     W[k][k]  = 1;
                     Gamma[k] = 0;
                 }
-                YACK_CHEM_PRINTLN("W     = " << W);
+                YACK_CHEM_PRINTLN("  W     = " << W);
 
                 if(!LU.build(W))
                 {
@@ -167,7 +168,7 @@ namespace yack
                 //--------------------------------------------------------------
                 tao::v1::neg(xi,Gamma);
                 LU.solve(W,xi);
-                YACK_CHEM_PRINTLN("xi    = " << xi);
+                YACK_CHEM_PRINTLN("  xi    = " << xi);
 
                 //--------------------------------------------------------------
                 //
@@ -187,7 +188,7 @@ namespace yack
                             moved = true;
                         }
                     }
-                    if(moved) { YACK_CHEM_PRINTLN("xi    = " << xi); }
+                    if(moved) { YACK_CHEM_PRINTLN("  xi    = " << xi); }
                 }
 
                 //--------------------------------------------------------------
@@ -198,7 +199,7 @@ namespace yack
                 //
                 //--------------------------------------------------------------
                 tao::v2::mul(dC,NuT,xi);
-                YACK_CHEM_PRINTLN("dC    = " << dC);
+                YACK_CHEM_PRINTLN("  dC    = " << dC);
 
 
                 //--------------------------------------------------------------
@@ -208,6 +209,7 @@ namespace yack
                 //
                 //
                 //--------------------------------------------------------------
+                YACK_CHEM_PRINTLN("// [truncation]");
                 rstack.free();
                 ustack.free();
                 for(const snode *node=lib.head();node;node=node->next)
@@ -239,8 +241,8 @@ namespace yack
                         rstack.pop_back();
                         ustack.pop_back();
                     }
-                    YACK_CHEM_PRINTLN("rstack="<<rstack);
-                    YACK_CHEM_PRINTLN("ustack="<<ustack);
+                    YACK_CHEM_PRINTLN("// rstack="<<rstack);
+                    YACK_CHEM_PRINTLN("// ustack="<<ustack);
                 }
 
                 //--------------------------------------------------------------
@@ -305,8 +307,8 @@ namespace yack
                             //--------------------------------------------------
                             YACK_CHEM_PRINTLN("// [limited @" << scale << " > 1] backtrack from 1");
                             (void) minimize::find<double>::run_for(self,x,g,minimize::inside);
-                            YACK_CHEM_PRINTLN("// [limited @" << scale << " <= 1] x=" << x.b  << ", g=" << g);
-                            YACK_CHEM_PRINTLN("// [limited @" << scale << " <= 1] C=" << Ctry << ", Gamma=" << Gamma);
+                            YACK_CHEM_PRINTLN("// [limited @" << scale << " > 1] x=" << x.b  << ", g=" << g);
+                            YACK_CHEM_PRINTLN("// [limited @" << scale << " > 1] C=" << Ctry << ", Gamma=" << Gamma);
                         }
                         else
                         {
@@ -358,7 +360,11 @@ namespace yack
                 // check |Gamma| convergence
                 //
                 //--------------------------------------------------------------
-                if(g.b>=g0)
+                const double g1 = g.b;
+                YACK_CHEM_PRINTLN("// g0=" << g0 << "; g1=" << g1 << "; dg=" << g1-g0);
+                YACK_CHEM_PRINTLN("// s0=" << sqrt(g0) << "; s1=" << sqrt(g1) << "; ds=" << sqrt(g1)-sqrt(g0) );
+
+                if(g1>=g0)
                 {
                     YACK_CHEM_PRINTLN("// [minimum reached @iter=" << iter << "]");
                     tao::v1::set(C,Ctry);
@@ -370,20 +376,25 @@ namespace yack
                 // check delta C convergence
                 //
                 //--------------------------------------------------------------
+                YACK_CHEM_PRINTLN("// [test convergence]");
                 bool converged = true;
                 for(const snode *node=lib.head();node;node=node->next)
                 {
                     const species &sp  = ***node;
                     const size_t   j   = sp.indx;
                     const double   d   = fabs(Corg[j]-Ctry[j]);
-                    const double   err = numeric<double>::ftol * fabs(Ctry[j]);
-                    std::cerr << "delta." << sp.name;
-                    lib.pad(std::cerr,sp.name.size());
-                    std::cerr << " : " << d << "/" << Ctry[j] << ", err=" << err << std::endl;
-                    if(d>err)
+                    const double   err = vtol * fabs(Ctry[j]);
+                    const bool     bad = d>err;
+                    if(verbose)
                     {
-                        converged = false;
+                        std::cerr << "//   d[" << sp.name << "]";
+                        lib.pad(std::cerr,sp.name.size());
+                        std::cerr << " : " << std::setw(14) << d;
+                        std::cerr << " / " << std::setw(14) << err;
+                        std::cerr << " | " << std::setw(14) << Ctry[j];
+                        std::cerr << " | (" << (bad?'-':'+') << ")" << std::endl;
                     }
+                    if(bad) converged = false;
                     Corg[j] = Ctry[j];
                 }
 
