@@ -218,6 +218,7 @@ namespace yack
                 //--------------------------------------------------------------
                 tao::v2::mul(dC,NuT,xi);
                 YACK_CHEM_PRINTLN("  dC    = " << dC);
+                YACK_CHEM_PRINTLN("   C    = " << Corg);
 
 
                 //--------------------------------------------------------------
@@ -280,11 +281,12 @@ namespace yack
                     //
                     //----------------------------------------------------------
                     g.c = g.b = self(x.c=x.b = 1);
+
                     if(g.c>=g.a)
                     {
                         // too far
                         YACK_CHEM_PRINTLN("// [unlimited.backtrack] ");
-                        (void) minimize::find<double>::run_for(self, x, g, minimize::inside);
+                        minimize::find<double>::run_for(self, x, g, minimize::inside);
                         YACK_CHEM_PRINTLN("// [unlimited.bactrack] x=" << x.b  << "; g=" << g.b);
                     }
                     else
@@ -312,8 +314,8 @@ namespace yack
                         //------------------------------------------------------
                         make_boundary(Ctry,Corg,x.c=scale,dC,ustack); // hard boundary
                         g.c = computeRMS(Ctry);                       // right-most value
-                        (void) minimize::find<double>::run_for(self,x,g,minimize::inside);
-                        YACK_CHEM_PRINTLN("// [limited @" << scale << " <= 1] x=" << x.b  << ", g=" << g);
+                        minimize::find<double>::run_for(self,x,g,minimize::inside);
+                        YACK_CHEM_PRINTLN("// [limited @" << scale << " <= 1] x=" << x.b  << ", g=" << g.b);
                     }
                     else
                     {
@@ -331,8 +333,8 @@ namespace yack
                             // not decreased: backtrack
                             //--------------------------------------------------
                             YACK_CHEM_PRINTLN("// [limited @" << scale << " > 1] backtrack from 1");
-                            (void) minimize::find<double>::run_for(self,x,g,minimize::inside);
-                            YACK_CHEM_PRINTLN("// [limited @" << scale << " > 1] x=" << x.b  << ", g=" << g);
+                            minimize::find<double>::run_for(self,x,g,minimize::inside);
+                            YACK_CHEM_PRINTLN("// [limited @" << scale << " > 1] x=" << x.b  << ", g=" << g.b);
                         }
                         else
                         {
@@ -349,13 +351,13 @@ namespace yack
                             {
                                 g.c = self(x.c=xmax);
                             }
-                            YACK_CHEM_PRINTLN("// [limited @" << scale << " > 1] x=" << x << ", g=" << g);
+                            //YACK_CHEM_PRINTLN("// [limited @" << scale << " > 1] x=" << x.b << ", g=" << g.b);
 
 
                             if(g.c>=g.b)
                             {
                                 YACK_CHEM_PRINTLN("// [limited @" << scale << " > 1] minimize::direct");
-                                (void) minimize::find<double>::run_for(self,x,g,minimize::direct);
+                                minimize::find<double>::run_for(self,x,g,minimize::direct);
                             }
                             else
                             {
@@ -363,7 +365,7 @@ namespace yack
                                 x.b = x.c; // save result
                                 g.b = g.c; // save result
                             }
-                            YACK_CHEM_PRINTLN("// [limited @" << scale << " > 1] x=" << x.b  << ", g=" << g);
+                            YACK_CHEM_PRINTLN("// [limited @" << scale << " > 1] x=" << x.b  << ", g=" << g.b);
                         }
 
                     }
@@ -384,9 +386,17 @@ namespace yack
                 //
                 //--------------------------------------------------------------
                 const double g1 = g.b;
-                YACK_CHEM_PRINTLN("// g0=" << g0 << "; g1=" << g1 << "; dg=" << g1-g0);
+                const double dg = fabs(g1-g0);
+                YACK_CHEM_PRINTLN("// g0=" << g0 << "; g1=" << g1 << "; dg=" << -dg);
 
-                if(g1>=g0)
+                if(iter>100)
+                {
+                    std::cerr << "too many.."<< std::endl;
+                    exit(1);
+                }
+
+                if(dg <= vtol * g0)
+                //if(g1>=g0)
                 {
                     YACK_CHEM_PRINTLN("// [minimum reached @iter=" << iter << "]");
                     tao::v1::set(C,Ctry);
@@ -423,7 +433,7 @@ namespace yack
                 if(converged)
                 {
                     YACK_CHEM_PRINTLN("// [converged @iter=" << iter << "]");
-                    tao::v1::set(C,Ctry);
+                    tao::v1::set(C,Corg);
                     return;
                 }
 

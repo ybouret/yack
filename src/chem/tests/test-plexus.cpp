@@ -23,7 +23,6 @@ YACK_UTEST(plexus)
     //concurrent::single::verbose = true;
     
     randomized::rand_ ran;
-
     library           lib;
     lua_equilibria    eqs;
 
@@ -39,10 +38,14 @@ YACK_UTEST(plexus)
 
     plexus cs(lib,eqs);
     if( environment::get("YACK_CHEM_VERBOSE", NULL) )
+    {
         cs.verbose = true;
+        math::minimize::verbose = true;
+    }
 
     cs.computeK(0);
     std::cerr << "K=" << cs.K << std::endl;
+
 
     if(cs.N)
     {
