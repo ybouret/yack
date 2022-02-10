@@ -42,60 +42,63 @@ YACK_UTEST(plexus)
     cs.computeK(0);
     std::cerr << "K=" << cs.K << std::endl;
 
-    vector<double> C(lib.size(),0);
-    try
+    if(cs.N)
     {
-        //----------------------------------------------------------------------
-        // from 0
-        //----------------------------------------------------------------------
-        lib.fill(C,0.8,ran);
-        try_solve(cs,C);
-
-        //----------------------------------------------------------------------
-        // loading active
-        //----------------------------------------------------------------------
-        vector<species *> spec;
-        for(const snode *node=lib.head();node;node=node->next)
+        vector<double> C(lib.size(),0);
+        try
         {
-            const species &s = ***node;
-            if(s.rank>0)
-            {
-                spec.push_back( (species *)&s );
-            }
-        }
-        YACK_CHECK(spec.size() == cs.A );
-
-
-        //----------------------------------------------------------------------
-        // just one not zero
-        //----------------------------------------------------------------------
-        for(size_t j=1;j<=spec.size();++j)
-        {
-            const species &s = *spec[j];
-            std::cerr << "---------- With only " << s << std::endl;
-            for(size_t iter=0;iter<10;++iter)
-            {
-                C.ld(0);
-                C[s.indx] = species::concentration(ran);
-                try_solve(cs,C);
-            }
-            std::cerr << std::endl;
-        }
-
-        //----------------------------------------------------------------------
-        // random
-        //----------------------------------------------------------------------
-        for(size_t iter=0;iter<10;++iter)
-        {
+            //----------------------------------------------------------------------
+            // from 0
+            //----------------------------------------------------------------------
             lib.fill(C,0.8,ran);
             try_solve(cs,C);
-        }
 
-    }
-    catch(const exception &e)
-    {
-        e.show(std::cerr);
-        std::cerr << "C=" << C << std::endl;
+            //----------------------------------------------------------------------
+            // loading active
+            //----------------------------------------------------------------------
+            vector<species *> spec;
+            for(const snode *node=lib.head();node;node=node->next)
+            {
+                const species &s = ***node;
+                if(s.rank>0)
+                {
+                    spec.push_back( (species *)&s );
+                }
+            }
+            YACK_CHECK(spec.size() == cs.A );
+
+
+            //----------------------------------------------------------------------
+            // just one not zero
+            //----------------------------------------------------------------------
+            for(size_t j=1;j<=spec.size();++j)
+            {
+                const species &s = *spec[j];
+                std::cerr << "---------- With only " << s << std::endl;
+                for(size_t iter=0;iter<10;++iter)
+                {
+                    C.ld(0);
+                    C[s.indx] = species::concentration(ran);
+                    try_solve(cs,C);
+                }
+                std::cerr << std::endl;
+            }
+
+            //----------------------------------------------------------------------
+            // random
+            //----------------------------------------------------------------------
+            for(size_t iter=0;iter<10;++iter)
+            {
+                lib.fill(C,0.8,ran);
+                try_solve(cs,C);
+            }
+
+        }
+        catch(const exception &e)
+        {
+            e.show(std::cerr);
+            std::cerr << "C=" << C << std::endl;
+        }
     }
 
 

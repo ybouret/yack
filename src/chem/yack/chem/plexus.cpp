@@ -349,118 +349,32 @@ namespace yack
                     YACK_CHEM_PRINTLN("ustack="<<ustack);
                 }
 
-
                 //--------------------------------------------------------------
                 //
                 //
-                // now we need to deal with the different possibilities
+                // now we need to deal with the possibilities
                 //
                 //
                 //--------------------------------------------------------------
                 if(!count)
                 {
-                    //----------------------------------------------------------
-                    //
-                    // unlimited
-                    //
-                    //----------------------------------------------------------
                     YACK_CHEM_PRINTLN("// [unlimited]");
-                    g.c = g.b = self( x.c = x.b = 1);
+                    g.b = self(x.b = 1);
+                    g.c = self(x.c = 2);
+                    (void) minimize::find<double>::run_for(self, x, g, minimize::expand);
+                    YACK_CHEM_PRINTLN("// [unlimited.min] x=" << x << "; g=" << g);
+                    YACK_CHEM_PRINTLN("// [unlimited] Ctry=" << Ctry << "; Gamma=" << Gamma);
 
-                    if(g.b>=g.a)
-                    {
-                        YACK_CHEM_PRINTLN("// [unlimited.bracket full step]");
-                        bracket::inside_for(self,x,g);
-                        YACK_CHEM_PRINTLN("// x=" << x << ", g=" << g);
-                    }
-                    else
-                    {
-                        YACK_CHEM_PRINTLN("// [unlimited.expand full step]");
-                        while( (g.c = self( x.c*=2 ))< g.b )
-                        {
-                            YACK_CHEM_PRINTLN("// x=" << x << ", g=" << g);
-                        }
-                    }
-
-                    (void) minimize::find<double>::run_for(self,x,g,minimize::direct);
-                    YACK_CHEM_PRINTLN("// x=" << x << ", g=" << g);
-                    YACK_CHEM_PRINTLN("// [unlimited] Ctry=" << Ctry << "; G=" << Gamma);
+                    exit(1);
                 }
                 else
                 {
-                    //----------------------------------------------------------
-                    //
-                    // limited
-                    //
-                    //----------------------------------------------------------
-                    YACK_CHEM_PRINTLN("// [limited] @" << scale);
+                    YACK_CHEM_PRINTLN("// [limited]");
 
-                    if(true)
-                    {
-                        ios::ocstream fp("gam.dat");
-                        for(double u=0;u<=1;u+=0.01)
-                        {
-                            const double xx=u*min_of(scale,1.0);
-                            fp("%g %g\n",xx,self(xx));
-                        }
-                    }
-
-                    if(scale<=1)
-                    {
-                        //------------------------------------------------------
-                        // cannot got further than full step
-                        //------------------------------------------------------
-                        g.c = g.b = self( x.c = x.b = scale);
-
-                        if(g.b>=g.a)
-                        {
-                            YACK_CHEM_PRINTLN("// [limited.bracket] @" << scale);
-                            bracket::inside_for(self,x,g);
-                            YACK_CHEM_PRINTLN("//   x=" << x << ", g=" << g);
-                            (void) minimize::find<double>::run_for(self,x,g,minimize::inside);
-                            YACK_CHEM_PRINTLN("//   x=" << x << ", g=" << g);
-                            YACK_CHEM_PRINTLN("// [limited] Ctry=" << Ctry << "; G=" << Gamma);
-
-                        }
-                        else
-                        {
-                            YACK_CHEM_PRINTLN("// [limited.accept]");
-                            for(size_t i=count;i>0;--i)
-                            {
-                                Ctry[ ustack[i] ] = 0;
-                            }
-                            YACK_CHEM_PRINTLN("// [limited] Ctry=" << Ctry << "; G=" << Gamma);
-                        }
-
-
-                    }
-                    else
-                    {
-                        //------------------------------------------------------
-                        // could go further than full step
-                        //------------------------------------------------------
-                        g.c = g.b = self( x.c = x.b = 1);
-                        if(g.b>=g.a)
-                        {
-                            YACK_CHEM_PRINTLN("// [limited.shrink]");
-                            (void) minimize::find<double>::run_for(self,x,g,minimize::inside);
-                            YACK_CHEM_PRINTLN("//   x=" << x << ", g=" << g);
-                            YACK_CHEM_PRINTLN("// [limited] Ctry=" << Ctry << "; G=" << Gamma);
-
-                        }
-                        else
-                        {
-                            YACK_CHEM_PRINTLN("// [limited.expand]");
-
-                            exit(1);
-                        }
-
-                    }
-
-
-
-
+                    exit(1);
                 }
+
+
 
                 computeGammaAndPsi(Ctry);
                 if(g.b>=g.a)
