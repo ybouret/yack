@@ -76,7 +76,7 @@ YACK_UTEST(plexus)
             for(size_t j=1;j<=spec.size();++j)
             {
                 const species &s = *spec[j];
-                for(size_t iter=0;iter<1;++iter)
+                for(size_t iter=0;iter<16;++iter)
                 {
                     C.ld(0);
                     C[s.indx] = species::concentration(ran);
@@ -86,12 +86,11 @@ YACK_UTEST(plexus)
                 std::cerr << std::endl;
             }
 
-            return 0;
 
             //----------------------------------------------------------------------
             // random
             //----------------------------------------------------------------------
-            for(size_t iter=0;iter<10;++iter)
+            for(size_t iter=0;iter<16;++iter)
             {
                 lib.fill(C,0.8,ran);
                 try_solve(cs,C);
