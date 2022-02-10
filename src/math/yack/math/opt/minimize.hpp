@@ -5,7 +5,6 @@
 
 #include "yack/math/opt/bracket.hpp"
 #include "yack/math/real-function.hpp"
-#include "yack/math/timings.hpp"
 
 namespace yack
 {
@@ -30,9 +29,7 @@ namespace yack
             //
             //__________________________________________________________________
             template <typename T>
-            static T parabolic_guess(const triplet<T> &x,
-                                     const triplet<T> &f) throw();
-
+            static T parabolic_guess(const triplet<T> &x, const triplet<T> &f) throw();
 
 
             //__________________________________________________________________
@@ -89,7 +86,7 @@ namespace yack
                              triplet<T>       &x,
                              triplet<T>       &f,
                              T                 xtol);
-
+                
                 //______________________________________________________________
                 //
                 //! wrapper to any callable real function

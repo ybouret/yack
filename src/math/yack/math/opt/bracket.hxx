@@ -7,7 +7,7 @@ namespace yack
     {
 
         template < >
-        bool bracket:: inside<real_t>(real_function<real_t> &F, triplet<real_t> &x, triplet<real_t> &f)
+        void bracket:: inside<real_t>(real_function<real_t> &F, triplet<real_t> &x, triplet<real_t> &f)
         {
             static const real_t half(0.5);
             //--------------------------------------------------------------
@@ -28,14 +28,19 @@ namespace yack
             {
                 assert(f.b<=f.a); // since f.c <= f.a
                 x.sort(f);
-                return true;
+                return;
             }
             else
             {
                 x.a = x.b;
                 f.a = f.b;
                 const real_t new_width = std::abs(x.c-x.a);
-                if(new_width>=width) return false;
+                if(new_width>=width)
+                {
+                    // monotonic
+                    x.sort(f);
+                    return;
+                }
                 width = new_width;
                 goto CYCLE;
             }

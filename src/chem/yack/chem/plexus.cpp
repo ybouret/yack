@@ -370,7 +370,7 @@ namespace yack
                     if(g.b>=g.a)
                     {
                         YACK_CHEM_PRINTLN("// [unlimited.bracket full step]");
-                        if(!bracket::inside_for(self,x,g)) throw exception("%s: cannot bracket (unlimited)",fn);
+                        bracket::inside_for(self,x,g);
                         YACK_CHEM_PRINTLN("// x=" << x << ", g=" << g);
                     }
                     else
@@ -415,7 +415,7 @@ namespace yack
                         if(g.b>=g.a)
                         {
                             YACK_CHEM_PRINTLN("// [limited.bracket] @" << scale);
-                            if(!bracket::inside_for(self,x,g)) throw exception("%s: cannot bracket (limited@%g)",fn,scale);
+                            bracket::inside_for(self,x,g);
                             YACK_CHEM_PRINTLN("//   x=" << x << ", g=" << g);
                             (void) minimize::find<double>::run_for(self,x,g);
                             YACK_CHEM_PRINTLN("//   x=" << x << ", g=" << g);
@@ -443,7 +443,7 @@ namespace yack
                         if(g.b>=g.a)
                         {
                             YACK_CHEM_PRINTLN("// [limited.shrink]");
-                            if(!bracket::inside_for(self,x,g)) throw exception("%s: cannot backtrack limited",fn);
+                            bracket::inside_for(self,x,g);
                             YACK_CHEM_PRINTLN("//   x=" << x << ", g=" << g);
                             (void) minimize::find<double>::run_for(self,x,g);
                             YACK_CHEM_PRINTLN("//   x=" << x << ", g=" << g);

@@ -5,6 +5,7 @@
 #include "yack/sort/heap.hpp"
 #include "yack/exception.hpp"
 #include "yack/sequence/thin-array.hpp"
+#include "yack/math/timings.hpp"
 
 namespace yack
 {

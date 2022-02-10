@@ -24,15 +24,19 @@ namespace
     };
 
 
+
     template <typename T> static inline
     void test_min(const T x1, const T x2)
     {
+        std::cerr << "Minimizing in " << x1 << ":" << x2 << std::endl;
         Func<T>    F = { 0 };
         triplet<T> x = { x1,     0,   x2   };
         triplet<T> f = { F(x.a), 0, F(x.c) };
 
-        if( bracket::inside_for(F,x,f) )
+        bracket::inside_for(F,x,f);
         {
+            std::cerr << "<bracketed> "  << "x=" << x << "; f=" << f << std::endl;
+
             F.count = 0;
             x.sort(f);
             const T x_opt = minimize::find<T>::run_for(F,x,f,T(xtol));
@@ -40,10 +44,7 @@ namespace
             std::cerr << "\tf_opt=" << f.b << "@" << x_opt << ", #calls=" << F.count << std::endl;
 
         }
-        else
-        {
-            std::cerr << "\tnot bracketed" << std::endl;
-        }
+        
         std::cerr << std::endl;
 
     }
@@ -54,6 +55,7 @@ namespace
         std::cerr << "minimize<" << rtti::name<T>() << ">" << std::endl;
         test_min<T>(-5,2);
         test_min<T>(0,10);
+        test_min<T>(-5,-1);
         std::cerr << std::endl;
     }
 
