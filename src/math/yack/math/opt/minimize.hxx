@@ -185,6 +185,7 @@ namespace yack
         real_t minimize:: find<real_t>:: run(real_function<real_t> &func,
                                              triplet<real_t>       &x,
                                              triplet<real_t>       &f,
+                                             const prolog           flag,
                                              real_t                 xtol)
         {
             static const real_t  ftol = numeric<real_t>::ftol;
@@ -195,6 +196,20 @@ namespace yack
             // initialize search
             //
             //------------------------------------------------------------------
+            switch(flag)
+            {
+                case direct:
+                    break;
+
+                case inside:
+                    bracket::inside(func,x,f);
+                    break;
+
+                case expand:
+                    throw exception("expand not handled");
+                    break;
+            }
+
             assert(x.is_increasing());
             assert( f.a>=f.b );
             assert( f.c>=f.b );

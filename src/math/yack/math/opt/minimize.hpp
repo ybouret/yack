@@ -21,6 +21,12 @@ namespace yack
         struct minimize
         {
             static bool verbose; //!< trigger verbosity
+            enum prolog
+            {
+                direct,
+                inside,
+                expand
+            };
 
             //__________________________________________________________________
             //
@@ -85,8 +91,9 @@ namespace yack
                 static T run(real_function<T> &F,
                              triplet<T>       &x,
                              triplet<T>       &f,
+                             const prolog      flag,
                              T                 xtol);
-                
+
                 //______________________________________________________________
                 //
                 //! wrapper to any callable real function
@@ -95,10 +102,11 @@ namespace yack
                 static inline T run_for(FUNC             &F,
                                         triplet<T>       &x,
                                         triplet<T>       &f,
+                                        const prolog      flag,
                                         T                 xtol=0)
                 {
                     typename real_function_of<T>::template call<FUNC> FF(F);
-                    return run(FF,x,f,xtol);
+                    return run(FF,x,f,flag,xtol);
                 }
             };
 

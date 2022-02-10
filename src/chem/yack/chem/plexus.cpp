@@ -382,7 +382,7 @@ namespace yack
                         }
                     }
 
-                    (void) minimize::find<double>::run_for(self,x,g);
+                    (void) minimize::find<double>::run_for(self,x,g,minimize::direct);
                     YACK_CHEM_PRINTLN("// x=" << x << ", g=" << g);
                     YACK_CHEM_PRINTLN("// [unlimited] Ctry=" << Ctry << "; G=" << Gamma);
                 }
@@ -417,7 +417,7 @@ namespace yack
                             YACK_CHEM_PRINTLN("// [limited.bracket] @" << scale);
                             bracket::inside_for(self,x,g);
                             YACK_CHEM_PRINTLN("//   x=" << x << ", g=" << g);
-                            (void) minimize::find<double>::run_for(self,x,g);
+                            (void) minimize::find<double>::run_for(self,x,g,minimize::inside);
                             YACK_CHEM_PRINTLN("//   x=" << x << ", g=" << g);
                             YACK_CHEM_PRINTLN("// [limited] Ctry=" << Ctry << "; G=" << Gamma);
 
@@ -443,9 +443,7 @@ namespace yack
                         if(g.b>=g.a)
                         {
                             YACK_CHEM_PRINTLN("// [limited.shrink]");
-                            bracket::inside_for(self,x,g);
-                            YACK_CHEM_PRINTLN("//   x=" << x << ", g=" << g);
-                            (void) minimize::find<double>::run_for(self,x,g);
+                            (void) minimize::find<double>::run_for(self,x,g,minimize::inside);
                             YACK_CHEM_PRINTLN("//   x=" << x << ", g=" << g);
                             YACK_CHEM_PRINTLN("// [limited] Ctry=" << Ctry << "; G=" << Gamma);
 
