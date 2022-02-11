@@ -213,7 +213,11 @@ namespace yack
                     break;
 
                 case inside:
-                    bracket::inside(func,x,f);
+                    if(!bracket::inside(func,x,f))
+                    {
+                        YACK_MINIMIZE("// [minimize] global @" << x.b);
+                        return x.b; // directly set
+                    }
                     break;
 
                 case expand:
@@ -233,7 +237,7 @@ namespace yack
             // loop
             //
             //------------------------------------------------------------------
-            YACK_MINIMIZE("[minimize] x_ini=" << x << ", f_ini=" << f << ", dx=" << delta);
+            YACK_MINIMIZE("// [minimize] x_ini=" << x << ", f_ini=" << f << ", dx=" << delta);
             while(true)
             {
                 //--------------------------------------------------------------
@@ -244,7 +248,7 @@ namespace yack
                 minimize::move<real_t>::run(func,x,f);
                 const real_t new_delta = std::abs(x_opt-x.b);
                 x_opt=x.b;
-                YACK_MINIMIZE("[minimize] x_opt=" << x_opt << ", f_opt=" << f.b << ", dx=" << new_delta);
+                YACK_MINIMIZE("// [minimize] x_opt=" << x_opt << ", f_opt=" << f.b << ", dx=" << new_delta);
 
 
                 //--------------------------------------------------------------
@@ -252,7 +256,7 @@ namespace yack
                 //--------------------------------------------------------------
                 if(new_delta>=delta)
                 {
-                    YACK_MINIMIZE("[minimize] no better contraction");
+                    YACK_MINIMIZE("// [minimize] no better contraction");
                     break;
                 }
                 delta = new_delta;
@@ -262,7 +266,7 @@ namespace yack
                 //--------------------------------------------------------------
                 if(delta<=xtol)
                 {
-                    YACK_MINIMIZE("[minimize] reached XTOL=" << xtol);
+                    YACK_MINIMIZE("// [minimize] reached XTOL=" << xtol);
                     break;
                 }
 
@@ -271,7 +275,7 @@ namespace yack
                 //--------------------------------------------------------------
                 if(delta<=mtol*std::abs(x_opt))
                 {
-                    YACK_MINIMIZE("[minimize] reached MTOL=" << mtol);
+                    YACK_MINIMIZE("// [minimize] reached MTOL=" << mtol);
                     break;
                 }
 
@@ -281,7 +285,7 @@ namespace yack
                 const real_t df = f.amplitude();
                 if(df<=ftol*f.maxabs())
                 {
-                    YACK_MINIMIZE("[minimize] reached FTOL=" << ftol);
+                    YACK_MINIMIZE("// [minimize] reached FTOL=" << ftol);
                     break;
                 }
             }
@@ -292,7 +296,7 @@ namespace yack
             //
             //------------------------------------------------------------------
             f.b = func(x.b=x_opt);
-            YACK_MINIMIZE("[minimize] x_end=" << x << ", f_end=" << f);
+            YACK_MINIMIZE("// [minimize] x_end=" << x << ", f_end=" << f);
             return x.b;
             
         }

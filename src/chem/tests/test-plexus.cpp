@@ -58,6 +58,7 @@ YACK_UTEST(plexus)
             //lib.fill(C,0.8,ran);
             try_solve(cs,C);
 
+            //return 0;
 
             //----------------------------------------------------------------------
             // loading active

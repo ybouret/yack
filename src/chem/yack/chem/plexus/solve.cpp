@@ -17,18 +17,26 @@ namespace yack
     {
 
 
-        double  plexus::  computeRMS(const readable<double> &C)
+        double  plexus::  computeVariance(const readable<double> &C)
         {
             assert(C.size()>=M);
             if(N>0)
             {
+#if 0
                 for(const enode *node=eqs.head();node;node=node->next)
                 {
                     const equilibrium &eq = ***node;
                     const size_t       ii = eq.indx;
                     sc[ii] = eq.scale(K[ii],C,Ctmp);
                 }
-                return sqrt( sorted::sum_squared(sc)/N );
+                return  ( sorted::sum_squared(sc)/N );
+#endif
+                computeGamma(C);
+                for(size_t i=N;i>0;--i)
+                {
+                    sc[i] = squared(Gamma[i]);
+                }
+                return  (sorted::sum(sc,sorted::by_value)/N);
             }
             else
             {
@@ -37,6 +45,8 @@ namespace yack
 
         }
 
+
+#if 0
         static inline
         void make_boundary(writable<double>       &Ctry,
                            const readable<double> &Corg,
@@ -45,7 +55,6 @@ namespace yack
         {
             for(size_t j=Ctry.size();j>0;--j)   Ctry[j]  = max_of<double>(0,Corg[j]+scale*dC[j]);
         }
-
 
 
 
@@ -59,12 +68,26 @@ namespace yack
             make_boundary(Ctry,Corg,scale,dC);
             for(size_t j=ustack.size();j>0;--j) Ctry[ ustack[j] ] = 0;
         }
+#endif
+
+
+
+        void plexus:: save_profile(const char *filename, const double umax)  
+        {
+            ios::ocstream fp(filename);
+            YACK_CHEM_PRINTLN("// [saving " << filename << "]");
+            for(double u=0;u<1;u+=0.001)
+            {
+                const double xx = u * umax;
+                fp("%.15g %.15g\n", xx, (*this)(xx) );
+            }
+        }
 
 
         double plexus::operator()(const double u)
         {
             make_trial(u);
-            return computeRMS(Ctry);
+            return computeVariance(Ctry);
         }
 
         void plexus:: computeDeltaC(const readable<size_t> &blocked)
@@ -186,7 +209,7 @@ namespace yack
                 //
                 //
                 //--------------------------------------------------------------
-                const double    g0 = computeRMS(Corg);
+                const double    g0 = computeVariance(Corg);
                 triplet<double> x  = { 0,  0, 0 };
                 triplet<double> g  = { g0, 0, 0 };
 
@@ -226,15 +249,6 @@ namespace yack
                 double       scale = 1;
                 const size_t count = findTruncation(scale);
 
-                
-
-                //--------------------------------------------------------------
-                //
-                //
-                // now we need to deal with the possibilities
-                //
-                //
-                //--------------------------------------------------------------
                 if(!count)
                 {
                     //----------------------------------------------------------
@@ -244,97 +258,71 @@ namespace yack
                     //
                     //
                     //----------------------------------------------------------
-                    g.c = g.b = self(x.c=x.b = 1);
+
+                    tao::v1::add(Ctry,Corg,dC);
+                    g.b = g.c = computeVariance(Ctry);
+                    x.b = x.c = 1;
+                    YACK_CHEM_PRINTLN("// [unlimited] g1=" << g.b << " @" << Ctry);
 
                     if(g.c>=g.a)
                     {
-                        // too far
-                        YACK_CHEM_PRINTLN("// [unlimited.backtrack] ");
-                        minimize::find<double>::run_for(self, x, g, minimize::inside);
-                        YACK_CHEM_PRINTLN("// [unlimited.bactrack] x=" << x.b  << "; g=" << g.b);
+                        //------------------------------------------------------
+                        //
+                        // backtrack
+                        //
+                        //------------------------------------------------------
+                        save_profile("ulim.dat",x.c);
+                        minimize::find<double>::run_for(self,x,g,minimize::inside);
+                        YACK_CHEM_PRINTLN("// [unlimited.backtrack] x=" << x.b <<"; g=" << g.b << " @" << Ctry);
                     }
                     else
                     {
-                        // may accept
-                        YACK_CHEM_PRINTLN("// [unlimited.forward]");
+                        //------------------------------------------------------
+                        //
+                        // accept or explore
+                        //
+                        //------------------------------------------------------
+                        YACK_CHEM_PRINTLN("// [unlimited.expand]");
+                        do { g.c = self( x.c *= 1.2 ); } while(g.c<g.b);
+                        save_profile("ulim.dat",x.c);
+                        minimize::find<double>::run_for(self,x,g,minimize::direct);
+                        YACK_CHEM_PRINTLN("// [unlimited.expand] x=" << x.b <<"; g=" << g.b << " @" << Ctry);
                     }
-
                 }
                 else
                 {
                     //----------------------------------------------------------
                     //
                     //
-                    YACK_CHEM_PRINTLN("// [limited]");
+                    YACK_CHEM_PRINTLN("// [limited@" << scale << "]");
                     //
                     //
                     //----------------------------------------------------------
-                    if(scale<=1)
+                    static const double xmax = 2.0;
+                    if(scale>xmax)
                     {
-                        //------------------------------------------------------
-                        //
-                        YACK_CHEM_PRINTLN("// [limited @" << scale << " <= 1] optimize");
-                        //
-                        //------------------------------------------------------
-                        make_boundary(Ctry,Corg,x.c=scale,dC,ustack); // hard boundary
-                        g.c = computeRMS(Ctry);                       // right-most value
-                        minimize::find<double>::run_for(self,x,g,minimize::inside);
-                        YACK_CHEM_PRINTLN("// [limited @" << scale << " <= 1] x=" << x.b  << ", g=" << g.b);
+                        // soft boundary
+                        g.c = self(x.c=xmax);
                     }
                     else
                     {
-                        //------------------------------------------------------
-                        //
-                        YACK_CHEM_PRINTLN("// [limited @" << scale << " > 1]");
-                        //
-                        //------------------------------------------------------
-
-                        // check full step
-                        g.c = g.b = self(x.c=x.b=1);
-                        if(g.b >= g.a)
-                        {
-                            //--------------------------------------------------
-                            // not decreased: backtrack
-                            //--------------------------------------------------
-                            YACK_CHEM_PRINTLN("// [limited @" << scale << " > 1] backtrack from 1");
-                            minimize::find<double>::run_for(self,x,g,minimize::inside);
-                            YACK_CHEM_PRINTLN("// [limited @" << scale << " > 1] x=" << x.b  << ", g=" << g.b);
-                        }
-                        else
-                        {
-                            static const double xmax = 2;
-                            YACK_CHEM_PRINTLN("// [limited @" << scale << " > 1] expanding from 1");
-
-                            if(scale<=xmax)
-                            {
-                                make_boundary(Ctry,Corg,x.c=scale,dC,ustack); // hard boundary
-                                g.c = computeRMS(Ctry);                       // right-most value
-
-                            }
-                            else
-                            {
-                                g.c = self(x.c=xmax);
-                            }
-                            //YACK_CHEM_PRINTLN("// [limited @" << scale << " > 1] x=" << x.b << ", g=" << g.b);
-
-
-                            if(g.c>=g.b)
-                            {
-                                YACK_CHEM_PRINTLN("// [limited @" << scale << " > 1] minimize::direct");
-                                minimize::find<double>::run_for(self,x,g,minimize::direct);
-                            }
-                            else
-                            {
-                                YACK_CHEM_PRINTLN("// [limited @" << scale << " > 1] accept...");
-                                x.b = x.c; // save result
-                                g.b = g.c; // save result
-                            }
-                            YACK_CHEM_PRINTLN("// [limited @" << scale << " > 1] x=" << x.b  << ", g=" << g.b);
-                        }
-
+                        // hard boundary
+                        g.c = computeVariance(make_trial(x.c=scale,ustack));
                     }
+                    save_profile("ulim.dat",x.c);
 
+
+                    minimize::find<double>::run_for(self,x,g,minimize::inside);
+                    if(x.b>=scale)
+                    {
+                        YACK_CHEM_PRINTLN("// [limited] reached " << scale);
+                        g.c = computeVariance(make_trial(x.b=scale,ustack));
+                    }
+                    YACK_CHEM_PRINTLN("// [limited] x=" << x.b <<"; g=" << g.b << " @" << Ctry);
+                    
                 }
+
+
 
                 //--------------------------------------------------------------
                 //

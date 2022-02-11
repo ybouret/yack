@@ -58,7 +58,7 @@ namespace yack
             void    computeK(const double t);                              //!< pre-compute constants
             void    computeGamma(const readable<double> &C)       throw(); //!< evaluate mass action
             void    computeGammaAndPsi(const readable<double> &C) throw(); //!< evaluate mass action and jacobian
-            double  computeRMS(const readable<double> &C); //!< RMS to equilibria, uses sc and Ctmp
+            double  computeVariance(const readable<double> &C); //!< variance to equilibria, uses sc and Ctmp
 
             //! solve, Gamma and Psi are ready
             void solve(writable<double> &C);
@@ -100,8 +100,8 @@ namespace yack
             YACK_DISABLE_COPY_AND_ASSIGN(plexus);
             const lockable::scope lib_lock;
 
-            void make_trial(const double u) throw(); //!< Ctry = Corg + u * dC, >=0 
-            void make_trial(const double u, const readable<size_t> &vanishing) throw(); //!< Ctry = Corg + u * dC, >=0, set vanishing
+            const readable<double> & make_trial(const double u) throw(); //!< Ctry = Corg + u * dC, >=0
+            const readable<double> & make_trial(const double u, const readable<size_t> &vanishing) throw(); //!< Ctry = Corg + u * dC, >=0, set vanishing
 
             //!  minimize blocked equilibria.
             /**
@@ -115,6 +115,9 @@ namespace yack
             
             //! detect truncation, use rstack and ustack
             size_t findTruncation(double &scale);
+
+            //! helper
+            void save_profile(const char *filename, const double umax);
 
         };
         

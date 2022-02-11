@@ -8,7 +8,7 @@ namespace yack
     {
 
         template < >
-        void bracket:: inside<real_t>(real_function<real_t> &F, triplet<real_t> &x, triplet<real_t> &f)
+        bool bracket:: inside<real_t>(real_function<real_t> &F, triplet<real_t> &x, triplet<real_t> &f)
         {
             static const real_t half(0.5);
             //--------------------------------------------------------------
@@ -21,6 +21,7 @@ namespace yack
                 cswap(f.a,f.c);
                 cswap(x.a,x.c);
             }
+            assert(f.c<=f.a);
             real_t width = std::abs(x.c-x.a);
         CYCLE:
             assert(f.c<=f.a);
@@ -29,19 +30,20 @@ namespace yack
             {
                 assert(f.b<=f.a); // since f.c <= f.a
                 x.sort(f);
-                return;
+                return true;
             }
             else
             {
+                // f.b > f.c
                 x.a = x.b;
                 f.a = f.b;
                 const real_t new_width = std::abs(x.c-x.a);
                 if(new_width>=width)
                 {
-                    // monotonic
-                    x.sort(f);
-                    f.a = f.b = f.c = f.mini();
-                    return;
+                    // monotonic => f.c wins
+                    f.a = f.b = f.c;
+                    x.a = x.b = x.c;
+                    return false;
                 }
                 width = new_width;
                 goto CYCLE;
@@ -106,7 +108,6 @@ namespace yack
             //------------------------------------------------------------------
             x.sort(f);
 
-            std::cerr << "enter: x=" << x << ", f=" << f << std::endl;
             while(!is_bracketing(f))
             {
                 const real_t w    = std::abs(x.c-x.a);
@@ -158,17 +159,7 @@ namespace yack
                             //--------------------------------------------------
                             // minimum falls in acceptable range
                             //--------------------------------------------------
-#if 0
-                            {
-                                ios::ocstream fp("brackfn.dat");
-                                const double c1 = slope/beta/(1-beta);
-                                const double c2 = curv/beta/(1-beta);
-                                for(real_t u=0;u<=1;u+=0.01)
-                                {
-                                    fp("%g %g\n", double(x.a+w*u), double(f.a + u * c1 + u*u*c2));
-                                }
-                            }
-#endif
+
                             //--------------------------------------------------
                             // build sampling
                             //--------------------------------------------------
@@ -194,16 +185,6 @@ namespace yack
                                     
                             }
 
-#if 0
-                            {
-                                ios::ocstream fp("bracket.dat");
-                                for(size_t i=0;i<4;++i)
-                                {
-                                    fp("%g %g\n", double(xx[i]), double(ff[i]));
-                                }
-                            }
-#endif
-                            
                         }
                     }
                 }
@@ -227,7 +208,6 @@ namespace yack
                 assert(x.is_increasing());
                 continue;
             }
-            std::cerr << "leave: x=" << x << ", f=" << f << std::endl;
         }
 
     }

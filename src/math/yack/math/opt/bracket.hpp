@@ -33,7 +33,7 @@ namespace yack
              */
             //__________________________________________________________________
             template <typename T> static
-            void inside(real_function<T> &F, triplet<T> &x, triplet<T> &f);
+            bool inside(real_function<T> &F, triplet<T> &x, triplet<T> &f);
 
 
             //__________________________________________________________________
@@ -41,10 +41,10 @@ namespace yack
             //! wrapper for inside
             //__________________________________________________________________
             template <typename T, typename FUNCTION> static inline
-            void inside_for(FUNCTION &F, triplet <T> &x, triplet<T> &f)
+            bool inside_for(FUNCTION &F, triplet <T> &x, triplet<T> &f)
             {
                 typename real_function_of<T>::template call<FUNCTION> FF(F);
-                inside(FF,x,f);
+                return inside(FF,x,f);
             }
 
 
