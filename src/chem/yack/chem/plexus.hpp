@@ -99,6 +99,23 @@ namespace yack
         private:
             YACK_DISABLE_COPY_AND_ASSIGN(plexus);
             const lockable::scope lib_lock;
+
+            void make_trial(const double u) throw(); //!< Ctry = Corg + u * dC, >=0 
+            void make_trial(const double u, const readable<size_t> &vanishing) throw(); //!< Ctry = Corg + u * dC, >=0, set vanishing
+
+            //!  minimize blocked equilibria.
+            /**
+             - from GammaAndPhi at Corg, move to the most regular concentration
+             - return true is something was done
+             */
+            bool regularize(sequence<size_t> &blocked);
+
+            //! regularized W = inv(Phi * NuT)
+            void computeDeltaC(const readable<size_t> &blocked);
+            
+            //! detect truncation, use rstack and ustack
+            size_t findTruncation(double &scale);
+
         };
         
     }

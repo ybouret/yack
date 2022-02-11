@@ -132,7 +132,24 @@ namespace yack
         }
 
 
-   
+        void plexus:: make_trial(const double u) throw()
+        {
+            for(const snode *node=lib.head();node;node=node->next)
+            {
+                const species &sp = ***node;
+                const size_t   j  = sp.indx;
+                Ctry[j] = max_of<double>(0,Corg[j]+u*dC[j]);
+            }
+        }
+
+        void plexus:: make_trial(const double u, const readable<size_t> &vanishing) throw()
+        {
+            make_trial(u);
+            for(size_t k=vanishing.size();k>0;--k)
+            {
+                Ctry[ vanishing[k] ] = 0;
+            }
+        }
 
 
 
