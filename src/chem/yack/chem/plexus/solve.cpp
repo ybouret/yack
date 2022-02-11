@@ -138,7 +138,6 @@ namespace yack
                 dC[jj] = sorted::sum(sc, sorted::by_abs_value);
             }
 
-            //tao::v2::mul(dC,NuT,xi);
             YACK_CHEM_PRINTLN("  dC    = " << dC);
             YACK_CHEM_PRINTLN("   C    = " << Corg);
 
@@ -167,8 +166,6 @@ namespace yack
             ITER:
                 ++iter;
                 YACK_CHEM_PRINTLN("//" << std::endl << "// [solve.iter=" << iter << "]");
-
-
                 //--------------------------------------------------------------
                 //
                 //
@@ -185,7 +182,7 @@ namespace yack
                 //--------------------------------------------------------------
                 //
                 //
-                // initialize status
+                // initialize status with regularized state
                 //
                 //
                 //--------------------------------------------------------------
@@ -199,20 +196,20 @@ namespace yack
                 YACK_CHEM_PRINTLN("  Nu    = " << Nu    );
                 YACK_CHEM_PRINTLN("  G0    = " << g0    );
 
-                if( fabs(g0) <= 0)
+                if( fabs(g0) <= 0 )
                 {
                     //----------------------------------------------------------
                     // early return
                     //----------------------------------------------------------
                     tao::v1::set(C,Corg);
-                    YACK_CHEM_PRINTLN("// [numerical success]");
+                    YACK_CHEM_PRINTLN("// [numerical success level-1]");
                     return;
                 }
 
                 //--------------------------------------------------------------
                 //
                 //
-                // computed regularized Jacobian
+                // compute search dC
                 //
                 //
                 //--------------------------------------------------------------
@@ -228,6 +225,8 @@ namespace yack
                 //--------------------------------------------------------------
                 double       scale = 1;
                 const size_t count = findTruncation(scale);
+
+                
 
                 //--------------------------------------------------------------
                 //
@@ -343,14 +342,23 @@ namespace yack
                 //
                 //--------------------------------------------------------------
                 computeGammaAndPsi(Ctry);
+                const double g1 = g.b;
 
+                if( fabs(g1) <= 0 )
+                {
+                    //----------------------------------------------------------
+                    // early return
+                    //----------------------------------------------------------
+                    tao::v1::set(C,Ctry);
+                    YACK_CHEM_PRINTLN("// [numerical success level-2]");
+                    return;
+                }
 
                 //--------------------------------------------------------------
                 //
                 // check |Gamma| convergence
                 //
                 //--------------------------------------------------------------
-                const double g1 = g.b;
                 const double dg = fabs(g1-g0);
                 YACK_CHEM_PRINTLN("// g0=" << g0 << "; g1=" << g1 << "; dg=" << -dg);
 

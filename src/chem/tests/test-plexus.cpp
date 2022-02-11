@@ -37,7 +37,7 @@ YACK_UTEST(plexus)
     std::cerr << "eqs=" << eqs << std::endl;
 
     plexus cs(lib,eqs);
-    if( environment::get("YACK_CHEM_VERBOSE", NULL) )
+    if( environment::flag("YACK_CHEM_VERBOSE") )
     {
         cs.verbose = true;
         math::minimize::verbose = true;

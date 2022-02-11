@@ -240,5 +240,54 @@ namespace yack
         const string _(key);
         clr(_);
     }
+
+}
+
+#include "yack/string/ops.hpp"
+
+namespace yack
+{
+
+    bool environment:: flag(const string &key)
+    {
+        static const char *isTrue[]  = { "1", "ON", "TRUE", "YES" };
+        static const char *isFalse[] = { "0", "OFF", "FALSE", "NO" };
+
+        string val;
+        if(get(key,&val))
+        {
+            //------------------------------------------------------------------
+            // defined
+            //------------------------------------------------------------------
+            strops::make_upper(val);
+
+            for(unsigned i=0;i<sizeof(isTrue)/sizeof(isTrue[0]);++i)
+            {
+                if(isTrue[i]==val) return true;
+            }
+
+            for(unsigned i=0;i<sizeof(isFalse)/sizeof(isFalse[0]);++i)
+            {
+                if(isFalse[i]==val) return false;
+            }
+
+
+            throw exception("environment::flag: bad '%s'", val());
+        }
+        else
+        {
+            //------------------------------------------------------------------
+            // not defined
+            //------------------------------------------------------------------
+            return false;
+        }
+    }
+
+    bool environment:: flag(const char *key)
+    {
+        const string _(key);
+        return flag(_);
+    }
+
 }
 

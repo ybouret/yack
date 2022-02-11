@@ -70,6 +70,9 @@ namespace yack
             return clean_if(is_bad,s);
         }
 
+        static void make_lower(string &) throw();
+        static void make_upper(string &) throw();
+
 
     private:
 

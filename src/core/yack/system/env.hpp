@@ -29,6 +29,13 @@ namespace yack
         static void        clr(const string &key);                    //!< remove
         static void        clr(const char   *key);                    //!< remove
 
+        //! check for boolean key
+        /**
+
+         */
+        static bool        flag(const string &key);
+
+        static bool        flag(const char   *key);
     };
 
 }
