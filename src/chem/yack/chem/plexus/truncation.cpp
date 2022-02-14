@@ -1,4 +1,3 @@
-
 #include "yack/chem/plexus.hpp"
 #include "yack/sort/heap.hpp"
 #include "yack/comparison.hpp"
@@ -8,7 +7,7 @@ namespace yack
     
     namespace chemical
     {
-        size_t plexus:: findTruncation(double &scale)
+        size_t plexus:: truncation(double &scale)
         {
             YACK_CHEM_PRINTLN("// [truncation]");
             assert( absolute(1.0-scale) <= 0);

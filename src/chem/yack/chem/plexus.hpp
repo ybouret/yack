@@ -118,7 +118,10 @@ namespace yack
             void computeDeltaC();
 
             //! detect truncation, use rstack and ustack
-            size_t findTruncation(double &scale);
+            size_t truncation(double &scale);
+
+            //! move algorithm
+            double move(const double g0);
 
             //! helper
             void save_profile(const char *filename, const double umax);

@@ -154,6 +154,16 @@ namespace yack
             return Ctry;
         }
 
+        void plexus:: save_profile(const char *filename, const double umax)
+        {
+            ios::ocstream fp(filename);
+            YACK_CHEM_PRINTLN("// [saving " << filename << "]");
+            for(double u=0;u<1;u+=0.001)
+            {
+                const double xx = u * umax;
+                fp("%.15g %.15g\n", xx, (*this)(xx) );
+            }
+        }
 
 
     }
