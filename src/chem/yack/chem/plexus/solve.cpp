@@ -144,7 +144,7 @@ namespace yack
             YACK_CHEM_PRINTLN("   C    = " << Corg);
         }
 
-        
+
         void plexus:: solve(writable<double> &C)
         {
             assert(C.size()>=M);
@@ -192,7 +192,7 @@ namespace yack
                 if(g0<=0)
                 {
 
-                    YACK_CHEM_PRINTLN("//  [numerical success]");
+                    YACK_CHEM_PRINTLN("// [numerical success]");
                     tao::v1::set(C,Corg);
                     return;
                 }
@@ -240,10 +240,12 @@ namespace yack
 
                 if(count)
                 {
-                    
+                    YACK_CHEM_PRINTLN("// [limited]");
+
                 }
                 else
                 {
+                    YACK_CHEM_PRINTLN("// [unlimited]");
 
                 }
 
