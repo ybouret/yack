@@ -87,8 +87,13 @@ namespace yack
 
                 YACK_CHEM_PRINTLN("  Gamma  = " << Gamma);
                 YACK_CHEM_PRINTLN("  g0     = " << g0);
-                YACK_CHEM_PRINTLN("  Psi    = " << g0);
-                
+                YACK_CHEM_PRINTLN("  Psi    = " << Psi);
+
+                //--------------------------------------------------------------
+                //
+                // early return ?
+                //
+                //--------------------------------------------------------------
                 if(g0<=0) {
                     YACK_CHEM_PRINTLN("// [numerical success level-1]");
                     tao::v1::set(C,Corg);
@@ -110,7 +115,6 @@ namespace yack
                 //
                 //--------------------------------------------------------------
                 computeDeltaC();
-
 
 
                 //--------------------------------------------------------------
