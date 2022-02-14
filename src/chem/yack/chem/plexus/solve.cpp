@@ -46,32 +46,7 @@ namespace yack
 
         }
 
-
-#if 0
-        static inline
-        void make_boundary(writable<double>       &Ctry,
-                           const readable<double> &Corg,
-                           const double            scale,
-                           const readable<double> &dC) throw()
-        {
-            for(size_t j=Ctry.size();j>0;--j)   Ctry[j]  = max_of<double>(0,Corg[j]+scale*dC[j]);
-        }
-
-
-
-        static inline
-        void make_boundary(writable<double>       &Ctry,
-                           const readable<double> &Corg,
-                           const double            scale,
-                           const readable<double> &dC,
-                           const readable<size_t> &ustack) throw()
-        {
-            make_boundary(Ctry,Corg,scale,dC);
-            for(size_t j=ustack.size();j>0;--j) Ctry[ ustack[j] ] = 0;
-        }
-#endif
-
-
+        
 
         void plexus:: save_profile(const char *filename, const double umax)  
         {
@@ -153,7 +128,6 @@ namespace yack
             if(N>0)
             {
                 plexus &self = *this;
-                vector<limits*> lim(N,NULL);
 
                 //--------------------------------------------------------------
                 //
@@ -162,7 +136,10 @@ namespace yack
                 //
                 //
                 //--------------------------------------------------------------
-                tao::v1::load(Corg,C);
+                for(size_t j=M;j>0;--j)
+                {
+                    Corg[j] = Ctry[j] = C[j];
+                }
                 if(verbose) lib(std::cerr << "C0=",Corg);
                 computeGammaAndPsi(Corg);
                 size_t iter = 0;
@@ -235,17 +212,43 @@ namespace yack
                 //--------------------------------------------------------------
                 computeDeltaC();
 
-                double       scale = 1.0;
-                const size_t count = findTruncation(scale);
+                double          scale = 1.0;
+                const size_t    count = findTruncation(scale);
+                triplet<double> x     = { 0,  0, 0 };
+                triplet<double> g     = { g0, 0, 0 };
 
                 if(count)
                 {
                     YACK_CHEM_PRINTLN("// [limited]");
 
+                    exit(1);
                 }
                 else
                 {
                     YACK_CHEM_PRINTLN("// [unlimited]");
+                    save_profile("ulim.dat",1);
+                    g.c = g.b = self(x.c = x.b = 1);
+                    if(g.b>=g.a)
+                    {
+                        YACK_CHEM_PRINTLN("// [unlimited.backtrack]");
+                        minimize::find<double>::run_for(self,x,g,minimize::inside);
+                        YACK_CHEM_PRINTLN("// [unlimited.backtrack] g=" << g.b << " @" << x.b);
+
+                    }
+                    else
+                    {
+                        YACK_CHEM_PRINTLN("// [unlimited.forward]");
+                        do
+                        {
+                            g.c = self( x.c *= 1.2);
+                        } while( g.c<g.b );
+                        save_profile("ulim.dat",x.c);
+                        minimize::find<double>::run_for(self,x,g,minimize::direct);
+                        YACK_CHEM_PRINTLN("// [unlimited.forward] g=" << g.b << " @" << x.b);
+
+                        exit(1);
+                    }
+
 
                 }
 
