@@ -48,7 +48,11 @@ namespace yack
             const actor   * const pa; //!< actor address
             const double          xi; //!< extent
 
-            friend std::ostream & operator<<(std::ostream &, const limiting &);
+            //__________________________________________________________________
+            //
+            // helper
+            //__________________________________________________________________
+            friend std::ostream & operator<<(std::ostream &, const limiting &); //!< display
 
         private:
             YACK_DISABLE_COPY_AND_ASSIGN(limiting);

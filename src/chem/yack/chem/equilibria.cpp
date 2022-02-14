@@ -45,17 +45,7 @@ namespace yack
             return ***(*db.tree).get(indx);
         }
 
-        void equilibria:: find_primary(writable<limits*>      &lim,
-                                       const readable<double> &C) const throw()
-        {
-            assert(lim.size()>=size());
-            for(const enode *node=head();node;node=node->next)
-            {
-                const equilibrium &eq = ***node;
-                const limits      &lm = eq.find_primary_limits(C);
-                lim[eq.indx] = (limits*) &lm;
-            }
-        }
+        
 
 
         size_t equilibria:: size() const throw()

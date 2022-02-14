@@ -5,6 +5,7 @@
 #include "yack/math/opt/minimize.hpp"
 #include "yack/math/look-for.hpp"
 #include "yack/sort/sum.hpp"
+#include "yack/ios/fmt/align.hpp"
 
 #include <cmath>
 #include <iomanip>
@@ -90,6 +91,7 @@ namespace yack
             return computeVariance(Ctry);
         }
 
+
         void plexus:: computeXi()
         {
             //------------------------------------------------------------------
@@ -126,68 +128,8 @@ namespace yack
             YACK_CHEM_PRINTLN("  xi     = " << xi);
         }
 
-#if 0
-        void plexus:: computeDeltaC(const readable<size_t> &blocked)
+        void plexus:: computeDeltaC()
         {
-            //------------------------------------------------------------------
-            //
-            // Phi*NuT
-            //
-            //------------------------------------------------------------------
-            tao::v3::mmul_trn(W,Psi,Nu);
-            for(size_t i=blocked.size();i>0;--i)
-            {
-                const size_t k = ustack[i];
-                W[k][k]  = 1;
-                Gamma[k] = 0;
-            }
-            YACK_CHEM_PRINTLN("  PhiNuT  = " << W);
-
-            //------------------------------------------------------------------
-            //
-            // inverse
-            //
-            //------------------------------------------------------------------
-            if(!LU.build(W))
-            {
-                throw exception("%s: singular concentrations", clid);
-            }
-
-            //------------------------------------------------------------------
-            //
-            // xi = -inv(Phi*NuT)*Gamma
-            //
-            //------------------------------------------------------------------
-            tao::v1::neg(xi,Gamma);
-            LU.solve(W,xi);
-            YACK_CHEM_PRINTLN("  xi    = " << xi);
-
-            //------------------------------------------------------------------
-            //
-            // imposing legal direction : xi \propto Gamma
-            //
-            //------------------------------------------------------------------
-            {
-                bool stuck=false;
-                for(size_t i=N;i>0;--i)
-                {
-                    double &x = xi[i];
-                    if(x*Gamma[i]<=0)
-                    {
-                        x=0;
-                        stuck = true;
-                    }
-                }
-                if(stuck) { YACK_CHEM_PRINTLN("  xi    = " << xi); }
-            }
-
-            //--------------------------------------------------------------
-            //
-            //
-            // estimating dC = NuT * xi
-            //
-            //
-            //--------------------------------------------------------------
             dC.ld(0);
             for(const snode *node=lib.head();node;node=node->next)
             {
@@ -200,10 +142,9 @@ namespace yack
 
             YACK_CHEM_PRINTLN("  dC    = " << dC);
             YACK_CHEM_PRINTLN("   C    = " << Corg);
-
         }
-#endif
 
+        
         void plexus:: solve(writable<double> &C)
         {
             assert(C.size()>=M);
@@ -279,9 +220,32 @@ namespace yack
                     const limits      &lm = eq.find_primary_limits(C);
                     const size_t       ii = eq.indx;
                     double            &xx = xi[ii];
-                    YACK_CHEM_PRINTLN("// @" << eq.name << " : " << xx << " | " << lm);
+                    YACK_CHEM_PRINTLN("// @" << ios::align(eq.name,eqs.width) << " : " << xx);
+                    YACK_CHEM_PRINTLN("// |_" << lm);
+                    xx = lm.crop(xx);
                 }
+                YACK_CHEM_PRINTLN("  xi     = " << xi);
 
+                //--------------------------------------------------------------
+                //
+                //
+                // compute associated dC
+                //
+                //
+                //--------------------------------------------------------------
+                computeDeltaC();
+
+                double       scale = 1.0;
+                const size_t count = findTruncation(scale);
+
+                if(count)
+                {
+                    
+                }
+                else
+                {
+
+                }
 
 
                 return;

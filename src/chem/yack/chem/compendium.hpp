@@ -15,21 +15,35 @@ namespace yack
 
     namespace chemical
     {
-
-        class compendium :
-        public latch,
-        public collection
+        //______________________________________________________________________
+        //
+        //
+        //! for library/equilibria base class
+        //
+        //______________________________________________________________________
+        class compendium : public latch, public collection
         {
         public:
-            virtual ~compendium() throw();
+            //__________________________________________________________________
+            //
+            // helpers
+            //__________________________________________________________________
+            std::ostream & pad(std::ostream &, const size_t n) const; //!< n to width
+            std::ostream & pad(std::ostream &, const string &) const; //!< n to width
 
-            std::ostream & pad(std::ostream &, const size_t n) const;
-            std::ostream & pad(std::ostream &, const string &) const;
-            
-            const size_t width;
+            //__________________________________________________________________
+            //
+            // members
+            //__________________________________________________________________
+            const size_t width;  //!< max name length (species/equilibria)
 
+            //__________________________________________________________________
+            //
+            // C++
+            //__________________________________________________________________
+            virtual ~compendium() throw(); //!< cleanup
         protected:
-            explicit compendium() throw();
+            explicit compendium() throw(); //!< setup
 
         private:
             YACK_DISABLE_COPY_AND_ASSIGN(compendium);

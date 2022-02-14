@@ -31,10 +31,14 @@ namespace yack
 
         //! check for boolean key
         /**
-
+         - search value
+         - if not found, return false
+         - if found, return true for 1,true,yes,on
+         - if dound, return false for 0,false,no,off
          */
         static bool        flag(const string &key);
 
+        //! check boolean key, wrapper
         static bool        flag(const char   *key);
     };
 

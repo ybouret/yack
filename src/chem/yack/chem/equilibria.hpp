@@ -53,7 +53,8 @@ namespace yack
             const enode        *head()                   const throw(); //!< first equilibrium
             virtual size_t      size()                   const throw(); //!< number of equilibria
             const equilibrium & operator[](const size_t) const throw(); //!< (slow) access by index
-            void                find_primary(writable<limits*> &lim, const readable<double> &C) const throw();
+
+
 
             //__________________________________________________________________
             //
