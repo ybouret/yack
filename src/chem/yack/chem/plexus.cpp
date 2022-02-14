@@ -51,9 +51,10 @@ namespace yack
         NuT(Nu.cols,Nu.rows),
         Psi(Nu.rows,Nu.cols),
         W(N,N),
+        blocked(N,as_capacity),
+        
         rstack(M,as_capacity),
         ustack(M,as_capacity),
-
         LU(N),
 
         lib_lock( coerce(lib) )

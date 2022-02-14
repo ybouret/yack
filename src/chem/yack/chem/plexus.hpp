@@ -103,7 +103,7 @@ namespace yack
 
             const readable<double> & make_trial(const double u) throw(); //!< Ctry = Corg + u * dC, >=0
             const readable<double> & make_trial(const double u, const readable<size_t> &vanishing) throw(); //!< Ctry = Corg + u * dC, >=0, set vanishing
-
+            
             //!  minimize blocked equilibria.
             /**
              - from GammaAndPhi at Corg, move to the most regular concentration

@@ -101,6 +101,24 @@ namespace yack
             tao::v1::neg(xi,Gamma);
             LU.solve(W,xi);
             YACK_CHEM_PRINTLN("  xi     = " << xi);
+
+            //------------------------------------------------------------------
+            //
+            // validate Xi with primary limits
+            //
+            //------------------------------------------------------------------
+            for(const enode *node=eqs.head();node;node=node->next)
+            {
+                const equilibrium &eq = ***node;
+                const limits      &lm = eq.find_primary_limits(Corg);
+                const size_t       ii = eq.indx;
+                double            &xx = xi[ii];
+                YACK_CHEM_PRINTLN("// @" << ios::align(eq.name,eqs.width) << " : " << xx);
+                YACK_CHEM_PRINTLN("// |_" << lm);
+                xx = lm.crop(xx);
+            }
+            YACK_CHEM_PRINTLN("  xi     = " << xi);
+
         }
 
         void plexus:: computeDeltaC()
@@ -115,8 +133,8 @@ namespace yack
                 dC[jj] = sorted::sum(sc, sorted::by_abs_value);
             }
 
-            YACK_CHEM_PRINTLN("  dC    = " << dC);
-            YACK_CHEM_PRINTLN("   C    = " << Corg);
+            YACK_CHEM_PRINTLN("  dC     = " << dC);
+            YACK_CHEM_PRINTLN("   C     = " << Corg);
         }
 
 
@@ -164,12 +182,11 @@ namespace yack
                 YACK_CHEM_PRINTLN("  Gamma  = " << Gamma);
                 YACK_CHEM_PRINTLN("  g0     = " << g0);
                 YACK_CHEM_PRINTLN("  Psi    = " << g0);
-
-
+                
                 if(g0<=0)
                 {
 
-                    YACK_CHEM_PRINTLN("// [numerical success]");
+                    YACK_CHEM_PRINTLN("// [numerical success level-1]");
                     tao::v1::set(C,Corg);
                     return;
                 }
@@ -184,24 +201,6 @@ namespace yack
                 //--------------------------------------------------------------
                 computeXi();
 
-                //--------------------------------------------------------------
-                //
-                //
-                // validate Xi with primary limits
-                //
-                //
-                //--------------------------------------------------------------
-                for(const enode *node=eqs.head();node;node=node->next)
-                {
-                    const equilibrium &eq = ***node;
-                    const limits      &lm = eq.find_primary_limits(C);
-                    const size_t       ii = eq.indx;
-                    double            &xx = xi[ii];
-                    YACK_CHEM_PRINTLN("// @" << ios::align(eq.name,eqs.width) << " : " << xx);
-                    YACK_CHEM_PRINTLN("// |_" << lm);
-                    xx = lm.crop(xx);
-                }
-                YACK_CHEM_PRINTLN("  xi     = " << xi);
 
                 //--------------------------------------------------------------
                 //
@@ -219,25 +218,47 @@ namespace yack
 
                 if(count)
                 {
+                    //----------------------------------------------------------
+                    //
+                    //
                     YACK_CHEM_PRINTLN("// [limited]");
+                    //
+                    //
+                    //----------------------------------------------------------
+                    
+
 
                     exit(1);
                 }
                 else
                 {
+                    //----------------------------------------------------------
+                    //
+                    //
                     YACK_CHEM_PRINTLN("// [unlimited]");
+                    //
+                    //
+                    //----------------------------------------------------------
                     save_profile("ulim.dat",1);
                     g.c = g.b = self(x.c = x.b = 1);
                     if(g.b>=g.a)
                     {
+                        //------------------------------------------------------
+                        //
                         YACK_CHEM_PRINTLN("// [unlimited.backtrack]");
+                        //
+                        //------------------------------------------------------
                         minimize::find<double>::run_for(self,x,g,minimize::inside);
                         YACK_CHEM_PRINTLN("// [unlimited.backtrack] g=" << g.b << " @" << x.b);
 
                     }
                     else
                     {
+                        //------------------------------------------------------
+                        //
                         YACK_CHEM_PRINTLN("// [unlimited.forward]");
+                        //
+                        //------------------------------------------------------
                         do
                         {
                             g.c = self( x.c *= 1.2);
@@ -245,15 +266,49 @@ namespace yack
                         save_profile("ulim.dat",x.c);
                         minimize::find<double>::run_for(self,x,g,minimize::direct);
                         YACK_CHEM_PRINTLN("// [unlimited.forward] g=" << g.b << " @" << x.b);
-
-                        exit(1);
                     }
-
 
                 }
 
+                //--------------------------------------------------------------
+                //
+                //
+                // compute Gamma and Psi at new position, for success of iter
+                //
+                //
+                //--------------------------------------------------------------
+                computeGammaAndPsi(Ctry);
 
-                return;
+                //--------------------------------------------------------------
+                //
+                //
+                // process
+                //
+                //
+                //--------------------------------------------------------------
+                const double g1 = g.b;
+                if( g1 <= 0)
+                {
+                    YACK_CHEM_PRINTLN("// [numerical success level-2]");
+                    tao::v1::set(C,Ctry);
+                    return;
+                }
+
+                if( g1 >= g0 )
+                {
+                    YACK_CHEM_PRINTLN("// [numerical convergence]");
+                    tao::v1::set(C,Ctry);
+                    return;
+                }
+
+
+                for(const snode *node=lib.head();node;node=node->next)
+                {
+                    const species &s = ***node;
+                    const size_t   j = s.indx;
+                    Corg[j] = Ctry[j];
+                }
+
 
                 goto ITER;
             }
