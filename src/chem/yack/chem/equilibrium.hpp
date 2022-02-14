@@ -119,7 +119,11 @@ namespace yack
             double drvs_action(writable<double> &psi, const double K0, const readable<double> &C) const throw();
 
             //! find full limits for single equilibrium
-            const limits & find_limits(const readable<double> &C) const throw();
+            const limits & find_private_limits(const readable<double> &C) const throw();
+
+            //! find limits from primary species
+            const limits & find_primary_limits(const readable<double> &C) const throw();
+
 
             //! move to a null mass action
             void   solve(const double K0, writable<double> &C, writable<double> &Ctry) const;

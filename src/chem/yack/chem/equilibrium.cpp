@@ -140,7 +140,7 @@ namespace yack
 
 
 
-        const limits & equilibrium:: find_limits(const readable<double> &C) const throw()
+        const limits & equilibrium:: find_private_limits(const readable<double> &C) const throw()
         {
             return *new ( YACK_STATIC_ZSET(wksp) ) limits( reac.find_limiting(C), prod.find_limiting(C) );
         }
