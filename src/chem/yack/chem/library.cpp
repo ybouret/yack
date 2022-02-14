@@ -13,7 +13,7 @@ namespace yack
 
         library:: ~library() throw() {}
 
-        library:: library() : db(), width(0)
+        library:: library() : compendium(), db() 
         {
 
         }
@@ -173,11 +173,7 @@ namespace yack
     namespace chemical
     {
 
-        std::ostream & library:: pad(std::ostream &os, const size_t n) const
-        {
-            for(size_t i=n;i<width;++i) os << ' ';
-            return os;
-        }
+
 
         void library:: display(std::ostream &os, const species &sp) const
         {

@@ -62,7 +62,7 @@ namespace yack
         }
 
 
-        const limiting *actors:: find_limiting(const readable<double> &C ) const throw()
+        const limiting *actors:: find_private_limiting(const readable<double> &C ) const throw()
         {
             switch( size )
             {
@@ -84,6 +84,45 @@ namespace yack
                 }
             }
             return make(pb,xi);
+        }
+
+        const limiting * actors:: find_primary_limiting(const readable<double> &C) const throw()
+        {
+            //------------------------------------------------------------------
+            //
+            // look for first primary
+            //
+            //------------------------------------------------------------------
+            const actor *pb = NULL;
+            double       xi = 0;
+
+            for(const actor *pa=head;pa;pa=pa->next)
+            {
+                if((**pa).rank!=1) continue;
+                pb=pa;
+                xi=pa->extent(C);
+                break;
+            }
+            if(!pb) return NULL;
+
+            //------------------------------------------------------------------
+            //
+            // look for next best primary
+            //
+            //------------------------------------------------------------------
+            for(const actor *pa=pb->next;pa;pa=pa->next)
+            {
+                const species &sp = **pa;
+                if(sp.rank!=1) continue;
+                const double   xi_temp = pa->extent(C);
+                if(xi_temp<xi)
+                {
+                    pb = pa;
+                    xi = xi_temp;
+                }
+            }
+
+            return  make(pb,xi);
         }
 
         double actors:: maximum(const readable<double> &C) const throw()

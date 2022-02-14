@@ -14,7 +14,7 @@ namespace yack
 
         }
 
-        equilibria:: equilibria() throw() : db(), width(0)
+        equilibria:: equilibria() throw() : compendium(), db()
         {
 
         }
@@ -45,6 +45,19 @@ namespace yack
             return ***(*db.tree).get(indx);
         }
 
+        void equilibria:: find_primary(writable<limits*>      &lim,
+                                       const readable<double> &C) const throw()
+        {
+            assert(lim.size()>=size());
+            for(const enode *node=head();node;node=node->next)
+            {
+                const equilibrium &eq = ***node;
+                const limits      &lm = eq.find_primary_limits(C);
+                lim[eq.indx] = (limits*) &lm;
+            }
+        }
+
+
         size_t equilibria:: size() const throw()
         {
             return db.size();
@@ -63,11 +76,7 @@ namespace yack
             return os;
         }
 
-        std::ostream &  equilibria:: pad(std::ostream &os, const size_t n) const
-        {
-            for(size_t i=n;i<width;++i) os << ' ';
-            return os;
-        }
+        
         
 
     }

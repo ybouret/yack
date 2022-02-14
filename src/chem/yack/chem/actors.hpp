@@ -49,8 +49,12 @@ namespace yack
             double          maximum(const readable<double> &C) const throw();
 
 
-            //! limiting species, associated extent
-            const limiting *find_limiting(const readable<double> &C) const throw();
+            //! limiting species, associated extent for self
+            const limiting *find_private_limiting(const readable<double> &C) const throw();
+
+            //! limiting primary species, associated extent
+            const limiting *find_primary_limiting(const readable<double> &C) const throw();
+
 
         private:
             YACK_DISABLE_COPY_AND_ASSIGN(actors);

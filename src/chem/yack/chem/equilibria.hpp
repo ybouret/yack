@@ -5,6 +5,7 @@
 #define YACK_CHEM_EQS_INCLUDED 1
 
 #include "yack/chem/equilibrium.hpp"
+#include "yack/chem/compendium.hpp"
 
 namespace yack
 {
@@ -34,7 +35,7 @@ namespace yack
         //! set of equilibria
         //
         //______________________________________________________________________
-        class equilibria : public collection
+        class equilibria : public compendium
         {
         public:
             //__________________________________________________________________
@@ -52,6 +53,7 @@ namespace yack
             const enode        *head()                   const throw(); //!< first equilibrium
             virtual size_t      size()                   const throw(); //!< number of equilibria
             const equilibrium & operator[](const size_t) const throw(); //!< (slow) access by index
+            void                find_primary(writable<limits*> &lim, const readable<double> &C) const throw();
 
             //__________________________________________________________________
             //
@@ -79,7 +81,7 @@ namespace yack
                 for(const enode *node=head();node;node=node->next)
                 {
                     const equilibrium &eq = ***node;
-                    pad(os << ' ' << '@' << eq.name,eq.name.size());
+                    pad(os << ' ' << '@' << eq.name,eq.name);
                     os << " = " << arr[eq.indx] << std::endl;
                 }
                 os << '}' << std::endl;
@@ -91,9 +93,6 @@ namespace yack
             YACK_DISABLE_COPY_AND_ASSIGN(equilibria);
             eqdb db;
 
-        public:
-            const size_t width; //!< max name length
-            std::ostream & pad(std::ostream &,const size_t) const; //!< pad to witdh
         };
 
     }

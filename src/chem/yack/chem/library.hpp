@@ -4,7 +4,7 @@
 #define YACK_CHEM_LIBRARY_INCLUDED 1
 
 #include "yack/chem/species.hpp"
-#include "yack/latch.hpp"
+#include "yack/chem/compendium.hpp"
 
 namespace yack
 {
@@ -17,7 +17,7 @@ namespace yack
         //! library of species
         //
         //______________________________________________________________________
-        class library : public latch, public collection
+        class library : public compendium
         {
         public:
             //__________________________________________________________________
@@ -93,10 +93,7 @@ namespace yack
             species::set db;
             void display(std::ostream &) const;
             void display(std::ostream &, const species &) const;
-
-        public:
-            const size_t width; //!< species name max size
-            std::ostream & pad(std::ostream &,const size_t) const; //!< pad to witdh
+            
 
         };
     }

@@ -92,9 +92,10 @@ namespace yack
             const imatrix     NuT;    //!< Nu'
             rmatrix           Psi;    //!< [NxM] jacobian of Gamm
             rmatrix           W;      //!< [NxN] Psi*NuT
-            vector<double>    rstack; //!< temporary stack of real
-            vector<size_t>    ustack; //!< temporary stack of unsigned
-            math::lu<double>  LU;     //!< [N]
+            vector<size_t>    blocked; //!< stack of blocked equilibria indices
+            vector<double>    rstack;  //!< temporary stack of real
+            vector<size_t>    ustack;  //!< temporary stack of unsigned
+            math::lu<double>  LU;      //!< [N]
 
         private:
             YACK_DISABLE_COPY_AND_ASSIGN(plexus);
@@ -108,11 +109,11 @@ namespace yack
              - from GammaAndPhi at Corg, move to the most regular concentration
              - return true is something was done
              */
-            bool regularize(sequence<size_t> &blocked);
-
-            //! regularized W = inv(Phi * NuT)
-            void computeDeltaC(const readable<size_t> &blocked);
+            bool regularize();
             
+            //! from regularized W = inv(Phi * NuT) with blocked equilibrium(a)
+            void computeXi();
+
             //! detect truncation, use rstack and ustack
             size_t findTruncation(double &scale);
 

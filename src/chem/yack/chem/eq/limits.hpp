@@ -45,6 +45,7 @@ namespace yack
             const limiting  * const prod; //!< limiting product/NULL
             const limitation        type; //!< classification
 
+            
 
         private:
             YACK_DISABLE_COPY_AND_ASSIGN(limits);

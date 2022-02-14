@@ -142,8 +142,14 @@ namespace yack
 
         const limits & equilibrium:: find_private_limits(const readable<double> &C) const throw()
         {
-            return *new ( YACK_STATIC_ZSET(wksp) ) limits( reac.find_limiting(C), prod.find_limiting(C) );
+            return *new ( YACK_STATIC_ZSET(wksp) ) limits( reac.find_private_limiting(C), prod.find_private_limiting(C) );
         }
+
+        const limits & equilibrium:: find_primary_limits(const readable<double> &C) const throw()
+        {
+            return *new ( YACK_STATIC_ZSET(wksp) ) limits( reac.find_primary_limiting(C), prod.find_primary_limiting(C) );
+        }
+
 
         bool equilibrium:: is_neutral() const throw()
         {

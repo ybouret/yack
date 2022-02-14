@@ -94,7 +94,7 @@ namespace yack
             assert(g0>0);
             assert(K0>0);
             eqz                    g = { *this, K0, C, Ctry };
-            const limiting * const l = reac.find_limiting(C);
+            const limiting * const l = reac.find_private_limiting(C);
             triplet<double>        x = { 0,  0, 0 };
             triplet<double>        f = { g0, 0, 0 };
             if(l)
@@ -134,7 +134,7 @@ namespace yack
             assert(g0<0);
             assert(K0>0);
             eqz                    g = { *this, K0, C, Ctry };
-            const limiting * const l = prod.find_limiting(C);
+            const limiting * const l = prod.find_private_limiting(C);
             triplet<double>        x = { 0,  0, 0 };
             triplet<double>        f = { g0, 0, 0 };
             if(l)
