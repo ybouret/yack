@@ -13,7 +13,7 @@ namespace yack
             static const real_t half(0.5);
             //--------------------------------------------------------------
             //
-            // going downwards from a to c
+            // going DOWNWARDS from a to c
             //
             //--------------------------------------------------------------
             if(f.c>f.a)
@@ -23,13 +23,32 @@ namespace yack
             }
             assert(f.c<=f.a);
             real_t width = std::abs(x.c-x.a);
+
+
         CYCLE:
+            //--------------------------------------------------------------
+            //
+            // start cycle
+            //
+            //--------------------------------------------------------------
             assert(f.c<=f.a);
-            f.b     = F(x.b = half*(x.a+x.c)); assert(x.is_ordered());
+            f.b     = F( x.b=half*(x.a+x.c) );
+            assert(x.is_ordered());
             if(f.b<=f.c)
             {
-                assert(f.b<=f.a); // since f.c <= f.a
-                x.sort(f);
+                //--------------------------------------------------------------
+                // f.b<=f.c and f.a<=f.c => success
+                //--------------------------------------------------------------
+                assert(x.is_ordered());
+                assert(f.b<=f.c);
+                assert(f.b<=f.a);
+                if(x.a>x.c) {
+                    cswap(f.a,f.c);
+                    cswap(x.a,x.c);
+                }
+                assert(x.is_increasing());
+                assert(f.b<=f.c);
+                assert(f.b<=f.a);
                 return true;
             }
             else
@@ -43,6 +62,7 @@ namespace yack
                     // monotonic => f.c wins
                     f.a = f.b = f.c;
                     x.a = x.b = x.c;
+                    assert(x.is_increasing());
                     return false;
                 }
                 width = new_width;

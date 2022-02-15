@@ -88,7 +88,7 @@ YACK_UTEST(plexus)
                     }
                     std::cerr << std::endl;
 
-                    for(size_t iter=0;iter<1;++iter)
+                    for(size_t iter=0;iter<16;++iter)
                     {
                         C.ld(0);
                         for(size_t i=1;i<=na;++i)

@@ -210,24 +210,34 @@ namespace yack
             switch(flag)
             {
                 case direct:
+                    YACK_MINIMIZE("// [minimize.direct]");
+                    assert(x.is_increasing());
+                    assert( f.a>=f.b );
+                    assert( f.c>=f.b );
                     break;
 
                 case inside:
+                    YACK_MINIMIZE("// [minimize.inside]");
                     if(!bracket::inside(func,x,f))
                     {
                         YACK_MINIMIZE("// [minimize] global @" << x.b);
                         return x.b; // directly set
                     }
+                    assert(x.is_increasing());
+                    assert( f.a>=f.b );
+                    assert( f.c>=f.b );
                     break;
 
                 case expand:
+                    YACK_MINIMIZE("// [minimize.expand]");
                     bracket::expand(func,x,f);
+                    assert(x.is_increasing());
+                    assert( f.a>=f.b );
+                    assert( f.c>=f.b );
                     break;
             }
 
-            assert(x.is_increasing());
-            assert( f.a>=f.b );
-            assert( f.c>=f.b );
+
 
             real_t x_opt = x.b;
             real_t delta = std::abs(x.c-x.a);
