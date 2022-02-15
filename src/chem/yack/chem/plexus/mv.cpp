@@ -87,6 +87,7 @@ namespace yack
                     YACK_CHEM_PRINTLN("// [unlimited.forward]");
                     //
                     //----------------------------------------------------------
+                    assert(g.b<g.a);
                     do
                     {
                         g.c = self( x.c *= 1.2);
