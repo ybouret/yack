@@ -167,44 +167,25 @@ x = \Gamma \dfrac{2}{\sqrt{\Delta}+\left[K([A]+[B])+([C]+[D])\right]}
 \end{equation}
 
 \section{Evolution}
-Let us assume we have an out of equilibria system.
-For a given set of concentrations, $\Gamma_i$ is proportional
-to the rate of the reaction corresponding to the equilibrium.
-For a reduced time $\tau$,
+
+\subsection{Regularization}
+We define:
 \begin{equation}
-	\partial_\tau \vec{C} = \bm{\nu}^T    \bm{\Lambda} \vec{\Gamma}(\vec{C})
+\vec{\Psi}_i = \partial_{\vec{C}} \Gamma_i.
 \end{equation}
-Let us integrate implicitly with $\tau$, since we have the form:
-\begin{equation}
-	\partial_\tau \vec{C} = \vec{F}(\vec{C})
-\end{equation}
+If $|\vec{\Psi}_i|=0$, then we solve $\Gamma_i$. If we still have $|\vec{\Psi}_i|=0$, we declare $\Gamma_i$ blocked.
+
+\subsection{Evolution}
 
 \begin{equation}
-	\vec{C}_{n+1} = \vec{C}_n +  \tau\left[ \bm{I}_M - \tau \partial_{\vec{C}} \vec{F} \right]^{-1} \vec{F}(\vec{C}_n)
-\end{equation}
-then
-\begin{equation}
-	\vec{C}_{n+1} = \vec{C}_n + \tau\left[ \bm{I}_M - \tau  \cdot \bm{\nu}^T   \bm{\Lambda} \bm{\Psi} \right]^{-1}  
-	\bm{\nu}^T     \bm{\Lambda} \vec{\Gamma}
-\end{equation}
+	\vec{\Gamma}(\vec{C}+\bm{\nu}^T \vec{\xi}) \simeq \vec{\Gamma} + \bm{\Psi} \bm{\nu}^T \vec{\xi}
+\end{equation}	
+	
 
 
-\begin{equation}
-	(\bm{\nu}^T \bm{\Psi})_{ii} = \sum_{k=1}^N (\bm{\nu}^T)_{ik} \bm{\Psi}_{kj} =  \sum_{k=1}^N \bm{\nu}_{ki} \bm{\Psi}_{kj}
-= \sum_{k=1}^N \bm{\nu}_{ki} \partial_{A_k}\Gamma_i \leq 0
-\end{equation}
 
-\begin{equation}
-	\forall j \in [1:M], \;\; (\bm{\nu}^T     \bm{\Lambda} \vec{\Gamma})_j = \sum_{k=1}^N (\bm{\nu}^T)_{jk} \lambda_k \Gamma_k = 
-	\sum_{k=1}^N (\bm{\nu}^T_{kj}\Gamma_k)  \lambda_k = \sum_{k=1}^N \bm{\Omega}_{jk} \lambda_k
-\end{equation}
 
-\begin{equation}
-	\forall (j,k) \in [1:M]^2, (\bm{\nu}^T   \bm{\Lambda} \bm{\Psi})_{jk} 
-	= \sum_{l=1}^N (\bm{\nu}^T)_{jl} \lambda_l \bm{\Psi}_{lk}
-	%= \sum_{l=1}^N (\bm{\nu}_{lj}  \bm{\Psi}_{lk}) \lambda_l
-\end{equation}
-
+ 
 
 
  

@@ -128,8 +128,10 @@ namespace yack
             //! move to a null mass action
             void   solve(const double K0, writable<double> &C, writable<double> &Ctry) const;
 
-            //! find solving extent
+            //! find solving extent to a null mass action
             double scale(const double K0, const readable<double> &C, writable<double> &Ctry) const;
+
+            
 
 
             //__________________________________________________________________

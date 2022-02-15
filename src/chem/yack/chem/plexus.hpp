@@ -60,11 +60,13 @@ namespace yack
             void    computeGammaAndPsi(const readable<double> &C) throw(); //!< evaluate mass action and jacobian
             double  computeVariance(const readable<double> &C); //!< variance to equilibria, uses sc and Ctmp
 
-            //! solve, Gamma and Psi are ready
+            //! solve, Gamma and Psi are ready on return
             void solve(writable<double> &C);
 
             //! objectiveGamma() at Ctry = Corg + u * dC
             double operator()(const double u);
+
+            void solve2(writable<double> &C);
 
             //__________________________________________________________________
             //

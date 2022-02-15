@@ -13,7 +13,7 @@ using namespace chemical;
 static inline void try_solve(plexus &cs, writable<double> &C)
 {
     cs.lib(std::cerr << "Cini=",C);
-    cs.solve(C);
+    cs.solve2(C);
     cs.lib(std::cerr << "Cend=",C);
     std::cerr << "Gamma=" << cs.Gamma << std::endl;
 }
@@ -55,10 +55,10 @@ YACK_UTEST(plexus)
             //----------------------------------------------------------------------
             // from 0
             //----------------------------------------------------------------------
-            //lib.fill(C,0.8,ran);
+            lib.fill(C,0.8,ran);
             try_solve(cs,C);
 
-            //return 0;
+            return 0;
 
             //----------------------------------------------------------------------
             // loading active
