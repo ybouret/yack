@@ -76,6 +76,30 @@ namespace yack
                 coerce(sexp) = 0;
             }
 
+            if(reac.size)
+            {
+                if(prod.size)
+                {
+                    coerce(type) = has_both_ways;
+                }
+                else
+                {
+                    coerce(type) = consumes_only;
+                }
+            }
+            else
+            {
+                if(prod.size)
+                {
+                    coerce(type) = produces_only;
+                }
+                else
+                {
+                    // never get here
+                    coerce(type) = is_unfinished;
+                }
+            }
+
         }
 
         static inline void displayA(std::ostream &os, const actors &A)

@@ -1,6 +1,7 @@
 #include "yack/chem/plexus.hpp"
 #include "yack/sort/heap.hpp"
 #include "yack/comparison.hpp"
+#include <iomanip>
 
 namespace yack
 {
@@ -16,16 +17,24 @@ namespace yack
             ustack.free();
             for(const snode *node=lib.head();node;node=node->next)
             {
-                const species &sp = ***node;
-                const size_t   j  = sp.indx;
+                const species &s  = ***node;
+                const size_t   j  = s.indx;
                 const double   d  = dC[j];
                 if(d<0)
                 {
-                    YACK_CHEM_PRINTLN("//    checking " << sp);
                     const double b = -d;      assert(b>0);
                     const double c = Corg[j]; assert(c>=0);
                     rstack << c/b;
                     ustack << j;
+                    if(verbose)
+                    {
+                        lib.pad(std::cerr <<  "//    checking [" << s << "]",s.name);;
+                        std::cerr << " = " << std::setw(14) << c;
+                        std::cerr << " / " << std::setw(14) << d;
+                        std::cerr << " -> " << rstack.back();
+                        std::cerr << std::endl;
+                    }
+
                 }
             }
 
@@ -44,6 +53,10 @@ namespace yack
                 }
                 YACK_CHEM_PRINTLN("// rstack="<<rstack);
                 YACK_CHEM_PRINTLN("// ustack="<<ustack);
+            }
+            else
+            {
+                YACK_CHEM_PRINTLN("// none detected!");
             }
             return count;
         }

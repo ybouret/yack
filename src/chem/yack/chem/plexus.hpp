@@ -32,7 +32,7 @@ namespace yack
         //! system operation
         //
         //______________________________________________________________________
-        class plexus
+        class plexus : public ios::vizible
         {
         public:
             //__________________________________________________________________
@@ -68,6 +68,8 @@ namespace yack
 
             void solve2(writable<double> &C);
 
+            void gv(const string &filename) const;
+            
             //__________________________________________________________________
             //
             // members

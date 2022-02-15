@@ -8,6 +8,7 @@
 #include "yack/associative/suffix/set.hpp"
 #include "yack/large-object.hpp"
 #include "yack/randomized/fwd.hpp"
+#include "yack/ios/gv/vizible.hpp"
 
 namespace yack
 {
@@ -20,7 +21,7 @@ namespace yack
         //! names species
         //
         //______________________________________________________________________
-        class species : public large_object, public counted
+        class species : public large_object, public counted, public ios::vizible
         {
         public:
             //__________________________________________________________________

@@ -46,6 +46,7 @@ YACK_UTEST(plexus)
     cs.computeK(0);
     std::cerr << "K=" << cs.K << std::endl;
 
+    cs.gv("plexus.dot");
 
     if(cs.N)
     {
@@ -55,10 +56,9 @@ YACK_UTEST(plexus)
             //----------------------------------------------------------------------
             // from 0
             //----------------------------------------------------------------------
-            lib.fill(C,0.8,ran);
+            //lib.fill(C,0.8,ran);
             try_solve(cs,C);
-
-            return 0;
+            //return 0;
 
             //----------------------------------------------------------------------
             // loading active
@@ -88,7 +88,7 @@ YACK_UTEST(plexus)
                     }
                     std::cerr << std::endl;
 
-                    for(size_t iter=0;iter<16;++iter)
+                    for(size_t iter=0;iter<1;++iter)
                     {
                         C.ld(0);
                         for(size_t i=1;i<=na;++i)

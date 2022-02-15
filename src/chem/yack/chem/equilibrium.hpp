@@ -22,13 +22,17 @@ namespace yack
         //______________________________________________________________________
         typedef components::knot_type cnode;
 
+
         //______________________________________________________________________
         //
         //
         //! named equilibrium
         //
         //______________________________________________________________________
-        class equilibrium : public large_object, public counted,
+        class equilibrium :
+        public large_object,
+        public counted,
+        public ios::vizible,
         public gateway<const components>,
         public collection
         {
@@ -39,6 +43,14 @@ namespace yack
             //__________________________________________________________________
             typedef ark_ptr<string,equilibrium> pointer; //!< alias
             static const char                   clid[];  //!< chemical::equilibrium
+
+            enum genus
+            {
+                is_unfinished,
+                has_both_ways,
+                produces_only,
+                consumes_only
+            };
 
             //__________________________________________________________________
             //
@@ -51,6 +63,7 @@ namespace yack
             template <typename ID> inline
             explicit equilibrium(const ID &id) :
             name(id),
+            type(is_unfinished),
             reac(),
             prod(),
             indx(0),
@@ -79,6 +92,10 @@ namespace yack
             void add(const species &sp, const unit_t nu); //!< add a registers species
             void load(const string &expr, library &lib);  //!< load from string
             void load(const char   *expr, library &lib);  //!< load from string
+
+
+
+
 
             //! fill row of topology
             template <typename T> inline
@@ -146,6 +163,7 @@ namespace yack
             // members
             //__________________________________________________________________
             const string name; //!< identifier
+            const genus  type; //!< qualification
             const actors reac; //!< list of reactant(s)
             const actors prod; //!< list of product(s)
             const size_t indx; //!< in equilibria
@@ -160,7 +178,7 @@ namespace yack
             mutable void       *wksp[ YACK_WORDS_FOR(limits) ];
             virtual const_type &bulk() const throw();
             virtual double      getK(double) const = 0;
-
+            
             void zfwd(const double      K0,
                       writable<double> &C,
                       writable<double> &Ctry,
