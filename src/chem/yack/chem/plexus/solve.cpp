@@ -4,6 +4,7 @@
 #include "yack/math/tao/v2.hpp"
 #include "yack/math/opt/minimize.hpp"
 #include "yack/sort/sum.hpp"
+#include "yack/math/numeric.hpp"
 
 #include <cmath>
 #include <iomanip>
@@ -37,7 +38,7 @@ namespace yack
 
         
 
-    
+
 
         double plexus::operator()(const double u)
         {
@@ -46,7 +47,7 @@ namespace yack
         }
 
 
-      
+
 
 
         void plexus:: solve(writable<double> &C)
@@ -134,7 +135,7 @@ namespace yack
                 
                 //--------------------------------------------------------------
                 //
-                // process
+                // check numerical result
                 //
                 //--------------------------------------------------------------
                 if(g1 <= 0)
@@ -152,13 +153,42 @@ namespace yack
                 }
 
 
+
+                bool converged  = true;
                 for(const snode *node=lib.head();node;node=node->next)
                 {
-                    const species &s = ***node;
-                    const size_t   j = s.indx;
-                    Corg[j] = Ctry[j];
+                    const species &s   = ***node;
+                    const size_t   j   = s.indx;
+                    const double   c   = Ctry[j]; assert(c>=0);
+                    const double   d   = fabs( Corg[j] - c);
+                    const double   err = fabs( c * numeric<double>::ftol );
+                    const bool     bad = (d>err);
+                    if(verbose)
+                    {
+                        lib.pad(std::cerr << "// " << s.name,s.name) << " : " << std::setw(14) << c;
+                        std::cerr << " +/- " << std::setw(14) << d;
+                        std::cerr << "  /  " << std::setw(14) << err;
+                        std::cerr << " | (" << (bad?'-':'+') << ")";
+                        std::cerr << std::endl;
+                    }
+
+
+                    if(bad) converged = false;
+                    Corg[j] = c;
                 }
 
+                if(converged)
+                {
+                    YACK_CHEM_PRINTLN("// [concentration convergence]");
+                    tao::v1::set(C,Corg);
+                    return;
+                }
+
+                if(iter>100)
+                {
+                    std::cerr << "  TOO MANY " << std::endl;
+                    exit(1);
+                }
 
                 goto ITER;
             }

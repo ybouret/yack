@@ -54,9 +54,7 @@ namespace yack
                     minimize::find<double>::run_for(self,x,g,minimize::inside);
                 }
                 YACK_CHEM_PRINTLN("// [limited@" << scale << " <= 1] g=" << g.b << " @" << x.b);
-
-
-
+                
             }
             else
             {
