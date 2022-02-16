@@ -8,10 +8,10 @@ namespace yack
 
     namespace chemical
     {
-        bool plexus:: regularize()
+        size_t plexus:: regularize()
         {
             YACK_CHEM_PRINTLN("// [regularizing]");
-            bool moved = false;
+            size_t moved = 0;
             blocked.free();
             for(const enode *node=eqs.head();node;node=node->next)
             {
@@ -27,7 +27,7 @@ namespace yack
                 //--------------------------------------------------------------
                 if( tao::v1::mod2<double>::of(psi) > 0) continue; // OK level-1
 
-                moved = true;
+                ++moved;
                 YACK_CHEM_PRINTLN("// |_[moving " << eq.name << "]");
                 eq.solve(K[i],Corg,Ctry);
                 computeGammaAndPsi(Corg);

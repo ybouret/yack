@@ -30,9 +30,7 @@ namespace yack
         //
         //______________________________________________________________________
         class equilibrium :
-        public large_object,
-        public counted,
-        public ios::vizible,
+        public entity,
         public gateway<const components>,
         public collection
         {
@@ -44,12 +42,13 @@ namespace yack
             typedef ark_ptr<string,equilibrium> pointer; //!< alias
             static const char                   clid[];  //!< chemical::equilibrium
 
+            //! genus of equilibrium
             enum genus
             {
-                is_unfinished,
-                has_both_ways,
-                produces_only,
-                consumes_only
+                is_unfinished, //!< no component
+                has_both_ways, //!< reactant(s) and product(s)
+                produces_only, //!< only product(s)
+                consumes_only  //!< only reactant(s)
             };
 
             //__________________________________________________________________
@@ -62,11 +61,10 @@ namespace yack
             //! setup
             template <typename ID> inline
             explicit equilibrium(const ID &id) :
-            name(id),
+            entity(id),
             type(is_unfinished),
             reac(),
             prod(),
-            indx(0),
             nu_p(0),
             nu_r(0),
             d_nu(0),
@@ -83,7 +81,6 @@ namespace yack
             double         K(double) const;      //!< check valid getK(t)
             virtual size_t size() const throw(); //!< number of registered components
             const cnode   *head() const throw(); //!< fist component
-            const string  &key()  const throw(); //!< name for equilibria
             
             //__________________________________________________________________
             //
@@ -92,10 +89,6 @@ namespace yack
             void add(const species &sp, const unit_t nu); //!< add a registers species
             void load(const string &expr, library &lib);  //!< load from string
             void load(const char   *expr, library &lib);  //!< load from string
-
-
-
-
 
             //! fill row of topology
             template <typename T> inline
@@ -108,6 +101,9 @@ namespace yack
                     s(nu) = c.nu;
                 }
             }
+
+
+
 
             //! set only active indices
             template <typename TARGET, typename SOURCE> inline
@@ -162,11 +158,9 @@ namespace yack
             //
             // members
             //__________________________________________________________________
-            const string name; //!< identifier
             const genus  type; //!< qualification
             const actors reac; //!< list of reactant(s)
             const actors prod; //!< list of product(s)
-            const size_t indx; //!< in equilibria
             const unit_t nu_p; //!< sum nu_p
             const unit_t nu_r; //!< sum nu_r
             const unit_t d_nu; //!< nu_p-nu_r

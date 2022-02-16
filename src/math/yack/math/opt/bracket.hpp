@@ -23,6 +23,8 @@ namespace yack
         struct bracket
         {
 
+            static bool verbose;
+            
             //__________________________________________________________________
             //
             //! inside [x.a,x.c], with f.a and f.c computed

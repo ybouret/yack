@@ -10,10 +10,7 @@ namespace yack
 
         species:: ~species() throw() {}
 
-        const string & species:: key() const throw()
-        {
-            return name;
-        }
+        
 
         std::ostream & operator<<(std::ostream &os, const species &s)
         {
@@ -21,10 +18,7 @@ namespace yack
             return os;
         }
 
-        bool species:: index_in(const collection &arr) const throw()
-        {
-            return indx>=1 && indx <= arr.size();
-        }
+      
 
         double species:: concentration( randomized::bits &ran ) throw()
         {

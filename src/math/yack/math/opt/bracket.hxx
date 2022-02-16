@@ -10,7 +10,9 @@ namespace yack
         template < >
         bool bracket:: inside<real_t>(real_function<real_t> &F, triplet<real_t> &x, triplet<real_t> &f)
         {
-            static const real_t half(0.5);
+            static const real_t       half(0.5);
+            static const char * const prolog = bracket_inside;
+
             //--------------------------------------------------------------
             //
             // going DOWNWARDS from a to c
@@ -24,7 +26,6 @@ namespace yack
             assert(f.c<=f.a);
             real_t width = std::abs(x.c-x.a);
 
-
         CYCLE:
             //--------------------------------------------------------------
             //
@@ -33,6 +34,7 @@ namespace yack
             //--------------------------------------------------------------
             assert(f.c<=f.a);
             f.b     = F( x.b=half*(x.a+x.c) );
+            YACK_BRACKET(prolog << "x=" << x << ", f=" << f << ", width=" << width);
             assert(x.is_ordered());
             if(f.b<=f.c)
             {
@@ -49,6 +51,7 @@ namespace yack
                 assert(x.is_increasing());
                 assert(f.b<=f.c);
                 assert(f.b<=f.a);
+                YACK_BRACKET(prolog<<"<succes>");
                 return true;
             }
             else
@@ -67,6 +70,7 @@ namespace yack
                     f.a = f.b = f.c;
                     x.a = x.b = x.c;
                     assert(x.is_increasing());
+                    YACK_BRACKET(prolog<<"<monotonic>");
                     return false;
                 }
                 width = new_width;
@@ -105,6 +109,7 @@ namespace yack
                 thin_array<real_t> XX(xx,4);
                 thin_array<real_t> FF(ff,4);
                 hsort(XX,FF,comparison::increasing<real_t>);
+                YACK_BRACKET(bracket_expand << "<x=" << XX << ", f=" << FF << ">");
             }
             size_t i=0;
             real_t m=ff[i];
@@ -124,6 +129,7 @@ namespace yack
         void bracket:: expand<real_t>(real_function<real_t> &F, triplet<real_t> &x, triplet<real_t> &f)
         {
             static const size_t block_size = 3*sizeof(real_t);
+            static const char * const prolog = bracket_expand;
 
             //------------------------------------------------------------------
             //
@@ -131,6 +137,8 @@ namespace yack
             //
             //------------------------------------------------------------------
             x.sort(f);
+            YACK_BRACKET(prolog << "x=" << x << ", f=" << f);
+
 
             while(!is_bracketing(f))
             {
@@ -221,6 +229,7 @@ namespace yack
                 x.b = x.c; f.b = f.c;
                 x.c = x.c + w;
                 f.c = F(x.c);
+                YACK_BRACKET(prolog<<" -> x.c=" << x.c << ", f.c=" << f.c);
                 assert(x.is_increasing());
                 continue;
 
@@ -229,9 +238,12 @@ namespace yack
                 x.b = x.a; f.b = f.a;
                 x.a = x.a - w;
                 f.a = F(x.a);
+                YACK_BRACKET(prolog<<" -> x.a=" << x.a << ", f.a=" << f.a);
                 assert(x.is_increasing());
                 continue;
             }
+            YACK_BRACKET(prolog << "x=" << x << ", f=" << f);
+            YACK_BRACKET(prolog << "<success>");
         }
 
     }

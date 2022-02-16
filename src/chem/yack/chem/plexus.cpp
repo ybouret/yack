@@ -108,7 +108,7 @@ namespace yack
             for(const enode *node=eqs.head();node;node=node->next)
             {
                 const equilibrium &eq = ***node;
-                K[eq.indx] = eq.K(t);
+                eq(K) = eq.K(t);
             }
         }
 
@@ -157,8 +157,8 @@ namespace yack
         void plexus:: save_profile(const char *filename, const double umax)
         {
             ios::ocstream fp(filename);
-            YACK_CHEM_PRINTLN("// [saving " << filename << "]");
-            for(double u=0;u<1;u+=0.001)
+            YACK_CHEM_PRINTLN("// [saving " << filename << "] -> " << umax);
+            for(double u=0;u<1;u+=0.0001)
             {
                 const double xx = u * umax;
                 fp("%.15g %.15g\n", xx, (*this)(xx) );

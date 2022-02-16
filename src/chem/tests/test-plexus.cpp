@@ -13,9 +13,9 @@ using namespace chemical;
 static inline void try_solve(plexus &cs, writable<double> &C)
 {
     cs.lib(std::cerr << "Cini=",C);
-    cs.solve2(C);
+    cs.solve(C);
     cs.lib(std::cerr << "Cend=",C);
-    std::cerr << "Gamma=" << cs.Gamma << std::endl;
+    cs.eqs(std::cerr << "Gamma=",cs.Gamma);
 }
 
 YACK_UTEST(plexus)
@@ -41,6 +41,7 @@ YACK_UTEST(plexus)
     {
         cs.verbose = true;
         math::minimize::verbose = true;
+        math::bracket::verbose  = true;
     }
 
     cs.computeK(0);
@@ -58,6 +59,7 @@ YACK_UTEST(plexus)
             //----------------------------------------------------------------------
             //lib.fill(C,0.8,ran);
             try_solve(cs,C);
+
             //return 0;
 
             //----------------------------------------------------------------------

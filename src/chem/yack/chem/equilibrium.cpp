@@ -18,12 +18,7 @@ namespace yack
         {
             return comp;
         }
-
-        const string  & equilibrium:: key()  const throw()
-        {
-            return name;
-        }
-
+        
         size_t equilibrium:: size() const throw()
         {
             return comp.size();

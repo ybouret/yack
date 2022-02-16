@@ -210,14 +210,14 @@ namespace yack
             switch(flag)
             {
                 case direct:
-                    YACK_MINIMIZE("// [minimize.direct]");
+                    YACK_MINIMIZE("// [minimize.direct] x=" << x << ", f=" << f);
                     assert(x.is_increasing());
                     assert( f.a>=f.b );
                     assert( f.c>=f.b );
                     break;
 
                 case inside:
-                    YACK_MINIMIZE("// [minimize.inside]");
+                    YACK_MINIMIZE("// [minimize.inside] x=" << x << ", f=" << f);
                     if(!bracket::inside(func,x,f))
                     {
                         YACK_MINIMIZE("// [minimize] global @" << x.b);
@@ -229,7 +229,7 @@ namespace yack
                     break;
 
                 case expand:
-                    YACK_MINIMIZE("// [minimize.expand]");
+                    YACK_MINIMIZE("// [minimize.expand] x=" << x << ", f=" << f);
                     bracket::expand(func,x,f);
                     assert(x.is_increasing());
                     assert( f.a>=f.b );

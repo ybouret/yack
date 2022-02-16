@@ -78,6 +78,8 @@ namespace yack
             triplet<double> x     = { 0,  0, 0 };
             triplet<double> g     = { g0, 0, 0 };
 
+            exit(1);
+            
             return;
 
             if(count && scale<=1 )

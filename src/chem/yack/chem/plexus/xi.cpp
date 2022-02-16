@@ -4,6 +4,7 @@
 #include "yack/math/tao/v3.hpp"
 #include "yack/exception.hpp"
 #include "yack/ios/fmt/align.hpp"
+#include <iomanip>
 
 namespace yack
 {
@@ -58,7 +59,8 @@ namespace yack
                 const limits      &lm = eq.find_primary_limits(Corg);
                 const size_t       ii = eq.indx;
                 double            &xx = xi[ii];
-                YACK_CHEM_PRINTLN("// @" << ios::align(eq.name,eqs.width) << " : " << xx);
+                
+                YACK_CHEM_PRINTLN("// @" << ios::align(eq.name,eqs.width) << " : " << std::setw(14) << xx);
                 YACK_CHEM_PRINTLN("// |_" << lm);
                 xx = lm.crop(xx);
             }

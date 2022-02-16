@@ -66,8 +66,10 @@ namespace yack
             //! objectiveGamma() at Ctry = Corg + u * dC
             double operator()(const double u);
 
+            //! solving...
             void solve2(writable<double> &C);
 
+            //! chemical graph
             void gv(const string &filename) const;
             
             //__________________________________________________________________
@@ -111,9 +113,9 @@ namespace yack
             //!  minimize blocked equilibria.
             /**
              - from GammaAndPhi at Corg, move to the most regular concentration
-             - return true is something was done
+             - return number of moved equilibria
              */
-            bool regularize();
+            size_t regularize();
             
             //! from regularized W = inv(Phi * NuT) with blocked equilibrium(a)
             void computeXi();

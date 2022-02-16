@@ -25,6 +25,7 @@ namespace yack
 
             YACK_CHEM_PRINTLN("  dC     = " << dC);
             YACK_CHEM_PRINTLN("   C     = " << Corg);
+            YACK_CHEM_PRINTLN("   Gamma = " << Gamma);
         }
 
     }
