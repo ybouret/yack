@@ -41,7 +41,7 @@ YACK_UTEST(plexus)
     {
         cs.verbose = true;
         math::minimize::verbose = true;
-        math::bracket::verbose  = true;
+        //math::bracket::verbose  = true;
     }
 
     cs.computeK(0);

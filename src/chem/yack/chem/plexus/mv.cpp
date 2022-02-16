@@ -31,7 +31,7 @@ namespace yack
                 YACK_CHEM_PRINTLN("// [limited@" << scale << "]");
                 //
                 //------------------------------------------------------------------
-                save_profile("lim.dat",min_of(scale,2.0));
+                //save_profile("lim.dat",min_of(scale,2.0));
                 if(scale <= 1)
                 {
                     //----------------------------------------------------------

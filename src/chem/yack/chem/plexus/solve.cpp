@@ -50,7 +50,10 @@ namespace yack
 
 
 
-
+        static inline char choice(const bool flag)
+        {
+            return flag?'+':'-';
+        }
 
         void plexus:: solve(writable<double> &C)
         {
@@ -124,7 +127,7 @@ namespace yack
             //
             //------------------------------------------------------------------
             YACK_CHEM_PRINTLN("// [descent]");
-            bool stopped = false;
+            bool altered = false;
             for(const enode *node=eqs.head();node;node=node->next)
             {
                 const equilibrium &eq = ***node;
@@ -135,17 +138,17 @@ namespace yack
                 YACK_CHEM_PRINTLN("//   @" << ios::align(eq.name,eqs.width)
                                   << " = " << std::setw(14) << xx
                                   << " | gamma = " << std::setw(14) << gx
-                                  << " | " << (ok?'+':'-') );
+                                  << " | " << choice(ok) );
                 if(!ok)
                 {
                     xi[i]   = 0;
-                    stopped = true;
+                    altered = true;
                 }
             }
 
-            if(stopped)
+            if(altered)
             {
-                YACK_CHEM_PRINTLN("// [descent] altering composition");
+                YACK_CHEM_PRINTLN("// [descent] altering extent");
                 YACK_CHEM_PRINTLN("  xi     = " << xi);
             }
             else
@@ -169,26 +172,53 @@ namespace yack
             //------------------------------------------------------------------
             const double g1 = move(g0);
 
+            if(altered)
+            {
+                std::cerr << "Was Altered..." << std::endl;
+                const equilibrium *best = NULL;
+                double             xmax = 0;
+                for(const enode *node = eqs.head();node;node=node->next)
+                {
+                    const equilibrium &eq  = ***node;
+                    const size_t       i   = eq.indx;
+                    sc[i] = eq.scale(K[i],Ctry,Ctmp);
+                    eqs.pad(std::cerr << "$" << eq.name,eq.name);
+                    std::cerr << " : " << sc[i];
+                    std::cerr << std::endl;
+                    const double x = fabs(sc[i]);
+                    if(x>xmax)
+                    {
+                        best=&eq;
+                        xmax=x;
+                    }
+                }
+                if(best)
+                {
+                    lib(std::cerr << "Ctry=",Ctry);
+                    best->solve(K[best->indx],Ctry,Ctmp);
+                    lib(std::cerr << "Ctry=",Ctry);
+                    computeGammaAndPsi(Ctry);
+                    const double g2 = computeVariance(Ctry);
+                    std::cerr << "g2=" << g2 << "/g1=" << g1 << std::endl;
+                }
+                exit(1);
+            }
+
             //------------------------------------------------------------------
             //
             // check new values
             //
             //------------------------------------------------------------------
-            tao::v1::set(xi,Gamma);    // save
+            //tao::v1::set(xi,Gamma);    // save old Gamma in xi
             computeGammaAndPsi(Ctry);  // new values
             const double dg = g1-g0;
             YACK_CHEM_PRINTLN("// g1=" << g1 << " (dg=" << dg << ") @Ctry=" << Ctry);
-            for(size_t i=N;i>0;--i)
-            {
-                xi[i] = fabs(xi[i] - Gamma[i]);
-            }
-            YACK_CHEM_PRINTLN("// Gamma = " << Gamma << " +/- " << xi);
+
 
             if( g1 <= 0 )
             {
                 YACK_CHEM_PRINTLN("// [numerical success level-2]");
-                tao::v1::set(C,Ctry);
-                return;
+                goto SUCCESS;
             }
 
 
@@ -196,9 +226,43 @@ namespace yack
             if( g1 >= g0 )
             {
                 YACK_CHEM_PRINTLN("// [numerical minimum @" << g1 << "]");
-                tao::v1::set(C,Ctry);
-                return;
+                goto SUCCESS;
             }
+
+#if 0
+            static const double     gtol = numeric<double>::ftol;
+            {
+                bool converged = true;
+                for(const enode *node = eqs.head();node;node=node->next)
+                {
+                    const equilibrium &eq  = ***node;
+                    const size_t       i   = eq.indx;
+                    const double       gm  = Gamma[i];
+                    const double       dg  = fabs(xi[i]-gm);
+                    const double       err = gtol * fabs(gm);
+                    const bool         bad = (dg > err);
+                    if(verbose)
+                    {
+                        eqs.pad(std::cerr << "// (" << choice(!bad) << ") Gamma(" << eq.name << ")",eq.name) ;
+                        std::cerr << " : " << std::setw(14) << dg;
+                        std::cerr << " / " << std::setw(14) << err;
+                        std::cerr << " @"  << gm;
+                        std::cerr << std::endl;
+                    }
+                    if(bad)
+                    {
+                        converged = false;
+                        if(!verbose) break;
+                    }
+                }
+                if(converged)
+                {
+                    YACK_CHEM_PRINTLN("// [unchanged variance]");
+                    goto SUCCESS;
+                }
+            }
+#endif
+
 
 
             YACK_CHEM_PRINTLN("// [updating]");
@@ -217,8 +281,7 @@ namespace yack
                 const bool     bad = (d>err);
                 if(verbose)
                 {
-                    const char ch = bad ? '-':'+';
-                    lib.pad(std::cerr << "// (" << ch << ") d[" << s.name << "]",s.name) ;
+                    lib.pad(std::cerr << "// (" << choice(!bad) << ") d[" << s.name << "]",s.name) ;
                     std::cerr << " : " << std::setw(14) << d;
                     std::cerr << " / " << std::setw(14) << err;
                     std::cerr << " @"  << c;
@@ -233,6 +296,10 @@ namespace yack
                 exit(1);
             }
             goto ITER;
+
+        SUCCESS:
+            tao::v1::set(C,Ctry);
+            return;
 
         }
 
