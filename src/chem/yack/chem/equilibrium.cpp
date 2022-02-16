@@ -182,12 +182,38 @@ namespace yack
             return 0 == drZ;
         }
 
+    }
 
+}
+
+#include "yack/arith/gcd.h"
+
+namespace yack
+{
+
+    namespace chemical
+    {
         void equilibrium:: validate()  const
         {
             const char *id = name();
             if(!size())       throw exception("<%s> is empty", id);
             if(!is_neutral()) throw exception("<%s> has unbalanced charges",id);
+
+            if(size()>1)
+            {
+                vector<uint64_t> nu( size(), as_capacity );
+                for(const actor *a=reac.head;a;a=a->next) nu << a->nu;
+                for(const actor *a=prod.head;a;a=a->next) nu << a->nu;
+                assert(size()==nu.size());
+                uint64_t g = yack_gcd64(nu[1],nu[2]);
+                for(size_t i=size();i>2;--i)
+                {
+                    g = yack_gcd64(g,nu[i]);
+                }
+                if(1!=g) throw exception("<%s> is not minimal (gcd=%lu)",id, static_cast<long unsigned>(g));
+            }
+
+
         }
         
     }

@@ -66,8 +66,7 @@ namespace yack
             //! objectiveGamma() at Ctry = Corg + u * dC
             double operator()(const double u);
 
-            //! solving...
-            void solve2(writable<double> &C);
+            
 
             //! chemical graph
             void gv(const string &filename) const;

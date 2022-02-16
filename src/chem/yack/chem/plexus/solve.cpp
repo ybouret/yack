@@ -64,10 +64,6 @@ namespace yack
             //
             //
             //------------------------------------------------------------------
-            vector<size_t>       corrected(N,as_capacity);
-            vector<equilibrium*> estack;
-
-            plexus &self = *this;
             for(size_t j=M;j>0;--j)
             {
                 Corg[j] = Ctry[j] = C[j];
@@ -101,9 +97,12 @@ namespace yack
             }
             if(verbose) lib(std::cerr<<"C0=",Corg);
 
-        //RESTART:
+            //------------------------------------------------------------------
+            //
+            // regularized variance |Gamma|@Corg
+            //
+            //------------------------------------------------------------------
             const double g0 = computeVariance(Corg);
-
             if( g0 <= 0 )
             {
                 YACK_CHEM_PRINTLN("// [numerical success level-1]");
@@ -113,7 +112,7 @@ namespace yack
 
             //------------------------------------------------------------------
             //
-            // compute Xi
+            // compute Xi@Corg
             //
             //------------------------------------------------------------------
             computeXi();
@@ -121,7 +120,7 @@ namespace yack
 
             //------------------------------------------------------------------
             //
-            // check compatible descent
+            // check   descent
             //
             //------------------------------------------------------------------
             YACK_CHEM_PRINTLN("// [descent]");
@@ -162,84 +161,28 @@ namespace yack
             //
             //------------------------------------------------------------------
             computeDeltaC();
-            double          scale = 1;
-            const size_t    count = truncation(scale);
-            triplet<double> x     = { 0,  0, 0 };
-            triplet<double> g     = { g0, 0, 0 };
-            if(count>0)
-            {
-                //--------------------------------------------------------------
-                //
-                YACK_CHEM_PRINTLN("// [limited@" << scale << "]");
-                //
-                //------------------------------------------------------------------
-                save_profile("lim.dat",min_of(scale,2.0));
-                if(scale <= 1)
-                {
-                    //----------------------------------------------------------
-                    YACK_CHEM_PRINTLN("// [limited@" << scale << " <= 1]");
-                    //----------------------------------------------------------
-                    g.c = computeVariance( make_trial(x.c=scale,ustack) );
-                    minimize::find<double>::run_for(self,x,g,minimize::inside);
-                    if(x.b>=scale)
-                    {
-                        // recompute
-                        g.b = computeVariance( make_trial(x.b=scale,ustack) );
-                    }
-                }
-                else
-                {
-                    //----------------------------------------------------------
-                    YACK_CHEM_PRINTLN("// [limited@" << scale << " >  1]");
-                    //----------------------------------------------------------
-                    g.c=g.b=self(x.b=x.c=1);
-                    if(g.c>=g.a)
-                    {
-                        YACK_CHEM_PRINTLN("// |_backtrack");
-                        minimize::find<double>::run_for(self,x,g,minimize::inside);
-                    }
-                    else
-                    {
-                        YACK_CHEM_PRINTLN("// |_accept");
-                    }
-                }
 
-            }
-            else
-            {
-                //--------------------------------------------------------------
-                //
-                YACK_CHEM_PRINTLN("// [unlimited]");
-                //
-                //--------------------------------------------------------------
-                g.c = self(x.c=1);
-                if(g.c<g.a)
-                {
-                    //save_profile("ulim.dat",1.2);
-                    //----------------------------------------------------------
-                    YACK_CHEM_PRINTLN("// [unlimited] forward");
-                    //----------------------------------------------------------
-                    g.b = self( x.b = 0.5);
-                    minimize::find<double>::run_for(self,x,g,minimize::expand);
-                }
-                else
-                {
-                    //----------------------------------------------------------
-                    YACK_CHEM_PRINTLN("// [unlimited] backtrack");
-                    //----------------------------------------------------------
-                    //save_profile("ulim.dat",1);
-                    minimize::find<double>::run_for(self,x,g,minimize::inside);
-                }
+            //------------------------------------------------------------------
+            //
+            // move along dC
+            //
+            //------------------------------------------------------------------
+            const double g1 = move(g0);
 
-            }
-
-            // new value @Ctry: compute for next iter or return
-            tao::v1::set(xi,Gamma);
-            computeGammaAndPsi(Ctry);
-            const double g1 = g.b;
+            //------------------------------------------------------------------
+            //
+            // check new values
+            //
+            //------------------------------------------------------------------
+            tao::v1::set(xi,Gamma);    // save
+            computeGammaAndPsi(Ctry);  // new values
             const double dg = g1-g0;
             YACK_CHEM_PRINTLN("// g1=" << g1 << " (dg=" << dg << ") @Ctry=" << Ctry);
-            YACK_CHEM_PRINTLN("// Gamma: " << xi << " -> " << Gamma);
+            for(size_t i=N;i>0;--i)
+            {
+                xi[i] = fabs(xi[i] - Gamma[i]);
+            }
+            YACK_CHEM_PRINTLN("// Gamma = " << Gamma << " +/- " << xi);
 
             if( g1 <= 0 )
             {
@@ -271,7 +214,7 @@ namespace yack
                 const double   c   = Ctry[j]; assert(c>=0);
                 const double   d   = fabs(c-Corg[j]);
                 const double   err = fabs(numeric<double>::ftol * c);
-                const bool     bad = d>err;
+                const bool     bad = (d>err);
                 if(verbose)
                 {
                     const char ch = bad ? '-':'+';
@@ -284,7 +227,11 @@ namespace yack
                 Corg[j] = c;
             }
 
-
+            if(iter>=100)
+            {
+                std::cerr << "Too Many..." << std::endl;
+                exit(1);
+            }
             goto ITER;
 
         }
