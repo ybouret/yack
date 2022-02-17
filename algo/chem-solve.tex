@@ -1,0 +1,118 @@
+\documentclass[aps,12pt]{revtex4}
+\usepackage[a4paper]{geometry}
+\usepackage{graphicx}
+\usepackage{amssymb,amsfonts,amsmath,amsthm}
+\usepackage{bm}
+\usepackage{pslatex}
+\usepackage{mathptmx}
+\usepackage{bookman}
+\usepackage{chemarr}
+
+ 	 
+\begin{document}
+
+\section{Equilibrium $[0,1]$}
+\begin{equation}
+	\xrightleftharpoons[]{} A, \;\; \Gamma = K - [A]
+\end{equation}
+Starting from $[A]$, the extent $x$ is:
+\begin{equation}
+	x = K-[A] = \Gamma
+\end{equation}
+The solution is
+\begin{equation}
+	[A] = K
+\end{equation}
+
+\section{Equilibrium $[1,0]$}
+\begin{equation}
+	A \xrightleftharpoons[]{} , \;\; \Gamma = K[A]-1
+\end{equation}
+Starting from $[A]$, the extent $x$ is:
+\begin{equation}
+	x = \dfrac{K[A]-1}{K} = \dfrac{\Gamma}{K}
+\end{equation}
+The solution is
+\begin{equation}
+	[A] = 1/K
+\end{equation}
+
+
+\section{Equilibrium $[0,2]$}
+\begin{equation}
+	\xrightleftharpoons[]{} 2A, \;\; \Gamma = K - [A]^n
+\end{equation}
+Starting from $[A]$, the extent $x$ is:
+\begin{equation}
+	x = \dfrac{\sqrt{K}-[A]}{2}
+\end{equation}
+The solution is
+\begin{equation}
+	[A] = \sqrt{K}
+\end{equation}
+
+\section{Equilibrium $[0,n]$}
+\begin{equation}
+	\xrightleftharpoons[]{} nA, \;\; \Gamma = K - [A]^n
+\end{equation}
+Starting from $[A]$, the extent $x$ is:
+\begin{equation}
+	x = \dfrac{ K^{1/n}-[A]}{n}
+\end{equation}
+The solution is
+\begin{equation}
+	[A] = K^{1/n}
+\end{equation}
+
+
+\section{Equilibrium $[1,1]$}
+\begin{equation}
+	A \xrightleftharpoons[]{} B, \;\; \Gamma = K[A]-[B]
+\end{equation}
+Starting from $[A],[B]$, the extent $x$ is:
+\begin{equation}
+	x = \dfrac{K[A]-[B]}{1+K}
+\end{equation}
+The solution is:
+\begin{equation}
+	[A] = \dfrac{[A]+[B]}{1+K}, \; [B] = K \dfrac{ [A]+[B] }{1+K}
+\end{equation}
+
+
+\section{Equilibrium $[0,[1,1]]$}
+\begin{equation}
+	\xrightleftharpoons[]{} A+B, \;\; \Gamma = K - [A][B]
+\end{equation}
+Starting from $[A],[B]$, the extent $x$ is solution of:
+\begin{equation}
+	K = ([A]+x)([B]+x) = x^2 + ([A]+[B])x + [A][B]
+\end{equation}
+Using:
+\begin{equation}
+	\Delta = 4K + ([A]-[B])^2 > 0
+\end{equation}
+we get:
+\begin{equation}
+	x = \dfrac{\sqrt{\Delta}-([A]+[B])}{2}
+\end{equation}
+The solution is
+\begin{equation}
+	[A] =  \dfrac{([A]-[B])+\sqrt{\Delta}}{2},\;\;[B] = \dfrac{\sqrt{\Delta}-([A]-[B])}{2}
+\end{equation}
+
+\section{Equilibrium $[1,[1,1]]$}
+\begin{equation}
+	A\xrightleftharpoons[]{} B+C, \;\; \Gamma = K[A] - [B][C]
+\end{equation}
+Starting from $[A],[B]$, the extent $x$ is solution of:
+\begin{equation}
+	K([A]-x) = ([B]+x)([C]+x) = x^2 + ([B]+[C])x + [B][C]
+\end{equation}
+or
+\begin{equation}
+	x^2 + ([B]+[C]+K) x + [B][C]-K[A] = 0	
+\end{equation}
+
+
+
+\end{document}

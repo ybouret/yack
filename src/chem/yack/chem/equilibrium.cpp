@@ -109,10 +109,8 @@ namespace yack
                     YACK_EQF(family_0_1);
                     YACK_EQF(family_1_0);
                     YACK_EQF(family_0_2);
-                    YACK_EQF(family_2_0);
                     YACK_EQF(family_1_1);
-                    YACK_EQF(family_1_2);
-                    YACK_EQF(family_2_1);
+                    YACK_EQF(family_0_11);
 
             }
             return yack_unknown;
@@ -141,13 +139,19 @@ namespace yack
                     coerce(kind) = family_0_2;
                     break;
 
+                case YACK_EQ_FAMILY(actors::kind_1,actors::kind_1):
+                    coerce(kind) = family_1_1;
+                    break;
+
+                case YACK_EQ_FAMILY(actors::empty,actors::kind_11):
+                    coerce(kind) = family_0_11;
+                    break;
+
+#if 0
                 case YACK_EQ_FAMILY(actors::kind_2,actors::empty):
                     coerce(kind) = family_2_0;
                     break;
 
-                case YACK_EQ_FAMILY(actors::kind_1,actors::kind_1):
-                    coerce(kind) = family_1_1;
-                    break;
 
                 case YACK_EQ_FAMILY(actors::kind_2,actors::kind_1):
                     coerce(kind) = family_2_1;
@@ -156,7 +160,8 @@ namespace yack
                 case YACK_EQ_FAMILY(actors::kind_1,actors::kind_2):
                     coerce(kind) = family_1_2;
                     break;
-                    
+#endif
+
                 default:
                     coerce(kind) = family_any;
             }

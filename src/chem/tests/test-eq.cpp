@@ -115,7 +115,7 @@ YACK_UTEST(eq)
         const limits &lm = eq.find_private_limits(C);
         std::cerr << lm << std::endl;
         eq.drvs_action(Ctry,K0,C);
-        std::cerr << "phi=" << Ctry << std::endl;
+        std::cerr << "psi=" << Ctry << std::endl;
 
         if(eq.size())
         {
@@ -138,6 +138,7 @@ YACK_UTEST(eq)
 
             eq.solve(K0,C,Ctry);
             lib(std::cerr,C);
+            std::cerr << "mass-action=" << eq.mass_action(K0,C) << std::endl;
         }
 
     }

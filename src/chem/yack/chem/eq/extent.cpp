@@ -23,9 +23,30 @@ namespace yack
                     return K0-(**prod.head)(C);
                 }
 
-                default:
-                    throw exception("%s Not implemented", family_text(kind));
+                case family_1_0: {
+                    assert(0==prod.size); assert(1==reac.size); assert(1==reac.head->nu);
+                    return (K0*(**reac.head)(C)-1.0)/K0;
+                }
 
+                case family_0_2: {
+                    assert(0==reac.size); assert(1==prod.size); assert(2==prod.head->nu);
+                    return 0.5*(sqrt(K0)-(**prod.head)(C));
+                }
+
+                case family_1_1: {
+                    assert(1==reac.size); assert(1==reac.head->nu); assert(1==prod.size); assert(1==prod.head->nu);
+                    return  (K0*(**reac.head)(C)-(**prod.head)(C))/(1+K0);
+                }
+
+                case family_0_11: {
+                    assert(0==reac.size); assert(2==prod.size); assert(1==prod.head->nu); assert(1==prod.tail->nu);
+                    const double A = (**prod.head)(C);
+                    const double B = (**prod.tail)(C);
+                    const double Delta = 4.0 * K0 + squared(A-B);
+                    return 0.5*(sqrt(Delta)-(A+B));
+                }
+
+                    
                 case family_any:
                     break;
             }
