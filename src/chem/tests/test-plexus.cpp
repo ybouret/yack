@@ -5,6 +5,7 @@
 #include "yack/system/env.hpp"
 #include "yack/math/opt/minimize.hpp"
 #include "yack/counting/comb.hpp"
+#include "yack/math/tao/v3.hpp"
 
 using namespace yack;
 using namespace chemical;
@@ -12,6 +13,8 @@ using namespace chemical;
 
 static inline void try_solve(plexus &cs, writable<double> &C)
 {
+    
+
     cs.lib(std::cerr << "Cini=",C);
     cs.solve(C);
     cs.lib(std::cerr << "Cend=",C);
@@ -57,10 +60,10 @@ YACK_UTEST(plexus)
             //----------------------------------------------------------------------
             // from 0
             //----------------------------------------------------------------------
-            //lib.fill(C,0.8,ran);
+            lib.fill(C,0.8,ran);
             try_solve(cs,C);
 
-            //return 0;
+            return 0;
 
             //----------------------------------------------------------------------
             // loading active

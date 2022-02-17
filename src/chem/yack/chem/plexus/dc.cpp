@@ -13,6 +13,7 @@ namespace yack
 
         void plexus:: computeDeltaC()
         {
+            YACK_CHEM_PRINTLN("//   <computeDeltaC>");
             dC.ld(0);
             for(const snode *node=lib.head();node;node=node->next)
             {
@@ -26,6 +27,8 @@ namespace yack
             YACK_CHEM_PRINTLN("  dC     = " << dC);
             YACK_CHEM_PRINTLN("   C     = " << Corg);
             YACK_CHEM_PRINTLN("   Gamma = " << Gamma);
+            YACK_CHEM_PRINTLN("//   <computeDeltaC/>");
+
         }
 
     }

@@ -117,9 +117,9 @@ namespace yack
             size_t regularize();
             
             //! from regularized W = inv(Phi * NuT) with blocked equilibrium(a)
-            void computeXi();
+            void computeExtent();
 
-            //! from xi
+            //! from extent
             void computeDeltaC();
 
             //! detect truncation, use rstack and ustack

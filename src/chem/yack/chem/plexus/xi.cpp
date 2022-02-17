@@ -13,8 +13,9 @@ namespace yack
 
     namespace chemical
     {
-        void plexus:: computeXi()
+        void plexus:: computeExtent()
         {
+            YACK_CHEM_PRINTLN("//   <computeExtent>");
             //------------------------------------------------------------------
             //
             // Phi*NuT
@@ -60,11 +61,12 @@ namespace yack
                 const size_t       ii = *eq;
                 double            &xx = xi[ii];
                 
-                YACK_CHEM_PRINTLN("// @" << ios::align(eq.name,eqs.width) << " : " << std::setw(14) << xx);
-                YACK_CHEM_PRINTLN("// |_" << lm);
+                YACK_CHEM_PRINTLN("//   @" << ios::align(eq.name,eqs.width) << " : " << std::setw(14) << xx);
+                YACK_CHEM_PRINTLN("//   |_" << lm);
                 xx = lm.crop(xx);
             }
             YACK_CHEM_PRINTLN("  xi     = " << xi);
+            YACK_CHEM_PRINTLN("//   <computeExtent/>");
 
         }
     }

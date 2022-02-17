@@ -10,13 +10,13 @@ namespace yack
     {
         size_t plexus:: regularize()
         {
-            YACK_CHEM_PRINTLN("// [regularizing]");
+            YACK_CHEM_PRINTLN("//   <regularizing>");
             size_t moved = 0;
             blocked.free();
             for(const enode *node=eqs.head();node;node=node->next)
             {
                 //--------------------------------------------------------------
-                // check acceptable gradient
+                // access gradient
                 //--------------------------------------------------------------
                 const equilibrium      &eq  = ***node;
                 const size_t            i   = *eq;
@@ -27,9 +27,13 @@ namespace yack
                 //--------------------------------------------------------------
                 if( tao::v1::mod2<double>::of(psi) > 0) continue; // OK level-1
 
+
+                //--------------------------------------------------------------
+                // move and update
+                //--------------------------------------------------------------
                 ++moved;
-                YACK_CHEM_PRINTLN("// |_[moving " << eq.name << "]");
-                eq.solve(K[i],Corg,Ctry);
+                YACK_CHEM_PRINTLN("//   |_[moving " << eq.name << "]");
+                eq.solve(K[i],Corg,Ctmp);
                 computeGammaAndPsi(Corg);
 
                 //--------------------------------------------------------------
@@ -42,6 +46,8 @@ namespace yack
                 //--------------------------------------------------------------
                 blocked << i;
             }
+            YACK_CHEM_PRINTLN("//    moved=" << moved << ", blocked=" << blocked);
+            YACK_CHEM_PRINTLN("//   <regularizing/>");
             return moved;
         }
 
