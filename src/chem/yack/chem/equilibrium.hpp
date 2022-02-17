@@ -28,9 +28,7 @@ namespace yack
         //! named equilibrium
         //
         //______________________________________________________________________
-        class equilibrium :
-        public entity,
-        public collection
+        class equilibrium : public entity, public collection
         {
         public:
             //__________________________________________________________________
@@ -49,6 +47,13 @@ namespace yack
                 consumes_only  //!< only reactant(s)
             };
 
+            enum family
+            {
+                normal,
+                is_0_1,
+                is_1_0,
+            };
+
             //__________________________________________________________________
             //
             // C++
@@ -61,6 +66,7 @@ namespace yack
             explicit equilibrium(const ID &id) :
             entity(id),
             type(is_unfinished),
+            kind(normal),
             reac(),
             prod(),
             nu_p(0),
@@ -142,7 +148,14 @@ namespace yack
             //! find solving extent to a null mass action
             double scale(const double K0, const readable<double> &C, writable<double> &Ctry) const;
 
-            
+            double extent(const double            K0,
+                          const readable<double> &C,
+                          writable<double>       &Ctmp,
+                          const species *        &vanishing) const;
+
+            //! move valid C to valid Ctmp
+            void move(writable<double> &Ctmp, const readable<double> &C, const double xi) const throw();
+
 
 
             //__________________________________________________________________
@@ -157,6 +170,7 @@ namespace yack
             // members
             //__________________________________________________________________
             const genus  type; //!< qualification
+            const family kind; //!< specs
             const actors reac; //!< list of reactant(s)
             const actors prod; //!< list of product(s)
             const unit_t nu_p; //!< sum nu_p
@@ -191,6 +205,19 @@ namespace yack
                         const  readable<double> &C,
                         writable<double>        &Ctry,
                         const double             g0) const;
+
+
+            double xfwd(const double             K0,
+                        const  readable<double> &C,
+                        writable<double>        &Ctry,
+                        const double             g0,
+                        const species *         &vanishing) const;
+
+            double xrev(const double             K0,
+                        const  readable<double> &C,
+                        writable<double>        &Ctry,
+                        const double             g0,
+                        const species *         &vanishing) const;
         };
 
         //______________________________________________________________________

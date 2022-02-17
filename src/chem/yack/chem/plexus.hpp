@@ -63,6 +63,10 @@ namespace yack
             //! solve, Gamma and Psi are ready on return
             void solve(writable<double> &C);
 
+
+            //! evolve, Gamma and Psi are ready on return
+            void evolve(writable<double> &C);
+
             //! objectiveGamma() at Ctry = Corg + u * dC
             double operator()(const double u);
 

@@ -131,6 +131,12 @@ YACK_UTEST(eq)
 
         if(eq.size())
         {
+            const species *vanishing = NULL;
+            const double xi = eq.extent(K0,C,Ctry,vanishing);
+            std::cerr << "xi=" << xi << " / ";
+            if(vanishing) std::cerr << *vanishing; else std::cerr << " no vanishing";
+            std::cerr << std::endl;
+
             eq.solve(K0,C,Ctry);
             lib(std::cerr,C);
         }
