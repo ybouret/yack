@@ -118,10 +118,11 @@ namespace yack
             }
             computeGammaAndPsi(Ctry);
 
-            if(iter>=100)
+            if(iter>=2)
             {
-                std::cerr << "Too Many!!!" << std::endl;
-                std::cerr << "Psi=" << Psi << std::endl;
+                std::cerr << "iter = " << iter << std::endl;
+                std::cerr << "C    = " << Ctry << std::endl;
+                std::cerr << "Psi  = " << Psi << std::endl;
                 exit(1);
             }
             if( g1 <= 0 )
