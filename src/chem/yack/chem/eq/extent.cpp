@@ -15,6 +15,20 @@ namespace yack
                                     writable<double>       &Ctmp,
                                     const species *        &vanishing) const
         {
+            assert(NULL==vanishing);
+            switch(kind)
+            {
+                case family_0_1: {
+                    assert(0==reac.size); assert(1==prod.size); assert(1==prod.head->nu);
+                    return K0-(**prod.head)(C);
+                }
+
+                default:
+                    throw exception("%s Not implemented", family_text(kind));
+
+                case family_any:
+                    break;
+            }
 
             return extent_(K0,C,Ctmp,vanishing);
         }

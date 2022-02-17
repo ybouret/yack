@@ -67,8 +67,8 @@ static inline void test_comb(randomized::bits &ran)
                         {
                             lib.fill(C,0.8,ran);
                             eq.solve(K0,C,Ctry);
-                            std::cerr << ' ' << std::setw(14) << eq.mass_action(K0,C);
-                            if( 0 == (iter%4) ) std::cerr << std::endl;
+                            //std::cerr << ' ' << std::setw(14) << eq.mass_action(K0,C);
+                            //if( 0 == (iter%4) ) std::cerr << std::endl;
                         }
 
                     }
@@ -119,11 +119,22 @@ YACK_UTEST(eq)
 
         if(eq.size())
         {
-            const species *vanishing = NULL;
-            const double xi = eq.extent(K0,C,Ctry,vanishing);
-            std::cerr << "xi=" << xi << " / ";
-            if(vanishing) std::cerr << *vanishing; else std::cerr << " no vanishing";
-            std::cerr << std::endl;
+            {
+                const species *vanishing = NULL;
+                const double xi = eq.extent(K0,C,Ctry,vanishing);
+                std::cerr << "xi  =" << xi << " / ";
+                if(vanishing) std::cerr << *vanishing; else std::cerr << " no vanishing";
+                std::cerr << std::endl;
+            }
+
+            {
+                const species *vanishing = NULL;
+                const double xi = eq.extent_(K0,C,Ctry,vanishing);
+                std::cerr << "xi_ =" << xi << " / ";
+                if(vanishing) std::cerr << *vanishing; else std::cerr << " no vanishing";
+                std::cerr << std::endl;
+            }
+
 
             eq.solve(K0,C,Ctry);
             lib(std::cerr,C);

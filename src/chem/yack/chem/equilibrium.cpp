@@ -126,7 +126,6 @@ namespace yack
             const actors::family p = prod.get_family();
 
             const unsigned rp = YACK_EQ_FAMILY(r,p);
-            std::cerr << "R=" << r << ", P=" << p << " => " << rp << std::endl;
 
             switch(rp)
             {
@@ -153,12 +152,16 @@ namespace yack
                 case YACK_EQ_FAMILY(actors::kind_2,actors::kind_1):
                     coerce(kind) = family_2_1;
                     break;
+
+                case YACK_EQ_FAMILY(actors::kind_1,actors::kind_2):
+                    coerce(kind) = family_1_2;
+                    break;
                     
                 default:
                     coerce(kind) = family_any;
             }
 
-            std::cerr << "family=" << family_text(kind) << std::endl;
+            //std::cerr << "family=" << family_text(kind) << std::endl;
 
 
         }
@@ -191,6 +194,7 @@ namespace yack
             displayA(os,prod);
             os << " | K(" << t << ")=" << getK(t);
             os << " nu_r: " << nu_r << ", nu_p:" << nu_p << ", d_nu:" << d_nu;
+            os << " (" << family_text(kind) << ")";
         }
 
         std::ostream & operator<<(std::ostream &os, const equilibrium &eq)
