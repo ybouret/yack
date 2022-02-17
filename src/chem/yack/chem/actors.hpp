@@ -28,6 +28,17 @@ namespace yack
         class actors : public actors_
         {
         public:
+
+            enum family
+            {
+                empty    = 0x00,  //!< empty
+                kind_1   = 0x01,  //!< 1 * [A]
+                kind_11  = 0x02,  //!< 1 * [A] + 1 * [B]
+                kind_2   = 0x04,  //!< 2 * [A]
+                kind_n   = 0x08,  //!< n * [A]
+                kind_xx  = 0x10   //!< other
+            };
+
             //__________________________________________________________________
             //
             // C++
@@ -55,6 +66,8 @@ namespace yack
             //! limiting primary species, associated extent
             const limiting *find_primary_limiting(const readable<double> &C) const throw();
 
+            //! get family
+            family get_family() const throw();
 
         private:
             YACK_DISABLE_COPY_AND_ASSIGN(actors);

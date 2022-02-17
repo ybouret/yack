@@ -9,20 +9,23 @@ namespace yack
 
     namespace chemical
     {
+
         double equilibrium:: extent(const double            K0,
                                     const readable<double> &C,
                                     writable<double>       &Ctmp,
                                     const species *        &vanishing) const
         {
 
+            return extent_(K0,C,Ctmp,vanishing);
+        }
+
+        double equilibrium:: extent_(const double            K0,
+                                     const readable<double> &C,
+                                     writable<double>       &Ctmp,
+                                     const species *        &vanishing) const
+        {
+
             assert(NULL==vanishing);
-
-            switch(kind)
-            {
-
-                case normal:
-                    break;
-            }
 
             const double g0  = mass_action(K0,C);
             switch( __sign::of(g0) )

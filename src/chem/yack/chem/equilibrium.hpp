@@ -49,10 +49,17 @@ namespace yack
 
             enum family
             {
-                normal,
-                is_0_1,
-                is_1_0,
+                family_any,
+                family_0_1,
+                family_1_0,
+                family_0_2,
+                family_2_0,
+                family_1_1,
+                family_1_2,
+                family_2_1
             };
+
+            static const char *family_text(const family) throw();
 
             //__________________________________________________________________
             //
@@ -66,7 +73,7 @@ namespace yack
             explicit equilibrium(const ID &id) :
             entity(id),
             type(is_unfinished),
-            kind(normal),
+            kind(family_any),
             reac(),
             prod(),
             nu_p(0),
@@ -142,14 +149,20 @@ namespace yack
             const limits & find_primary_limits(const readable<double> &C) const throw();
 
 
-            //! move to a null mass action
             void   solve(const double K0, writable<double> &C, writable<double> &Ctry) const;
+
 
             //! find extent solving equilibrium, with optional vanishing species
             double extent(const double            K0,
                           const readable<double> &C,
                           writable<double>       &Ctmp,
                           const species *        &vanishing) const;
+
+            //! find generic extent
+            double extent_(const double            K0,
+                           const readable<double> &C,
+                           writable<double>       &Ctmp,
+                           const species *        &vanishing) const;
 
             //! move valid C to valid Ctmp
             void move(writable<double> &Ctmp, const readable<double> &C, const double xi) const throw();
@@ -161,7 +174,7 @@ namespace yack
             // checking
             //__________________________________________________________________
             bool   is_neutral() const throw(); //!< delta_r Z = 0
-            void   validate()  const;          //!< not empty, neutral
+            void   validate()   const;         //!< not empty, neutral, minimal
 
             //__________________________________________________________________
             //
@@ -180,19 +193,9 @@ namespace yack
             YACK_DISABLE_COPY_AND_ASSIGN(equilibrium);
             const components    comp;
             mutable void       *wksp[ YACK_WORDS_FOR(limits) ];
-            //virtual const_type &bulk() const throw();
             virtual double      getK(double) const = 0;
-            
-            void zfwd(const double      K0,
-                      writable<double> &C,
-                      writable<double> &Ctry,
-                      const double      g0) const;
-
-            void zrev(const double      K0,
-                      writable<double> &C,
-                      writable<double> &Ctry,
-                      const double      g0) const;
-
+            void                update_genus() throw();
+            void                build_family() throw();
 
             double xfwd(const double             K0,
                         const  readable<double> &C,

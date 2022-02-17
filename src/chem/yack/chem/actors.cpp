@@ -144,6 +144,36 @@ namespace yack
             return m;
         }
 
+
+        actors::family actors:: get_family() const throw()
+        {
+            switch(size)
+            {
+                case 0:
+                    return empty;
+                    
+                case 1:
+                    switch( head->nu )
+                    {
+                        case 1:  return kind_1;
+                        case 2:  return kind_2;
+                        default: break;
+                    }
+                    return kind_n;
+
+                case 2:
+                    if(1==head->nu && 1 == tail->nu)
+                    {
+                        return kind_11;
+                    }
+                    break;
+
+                default:
+                    assert(size>=3);
+                    break;
+            }
+            return kind_xx;
+        }
     }
 
 }

@@ -67,6 +67,13 @@ namespace yack
                 coerce(sexp) = 0;
             }
 
+            update_genus();
+            build_family();
+
+        }
+
+        void equilibrium:: update_genus() throw()
+        {
             if(reac.size)
             {
                 if(prod.size)
@@ -86,12 +93,77 @@ namespace yack
                 }
                 else
                 {
-                    // never get here
+                    // should never get here
                     coerce(type) = is_unfinished;
                 }
             }
+        }
+
+#define YACK_EQF(ID) case ID: return #ID
+
+        const char * equilibrium:: family_text(const family f) throw()
+        {
+            switch (f)
+            {
+                    YACK_EQF(family_any);
+                    YACK_EQF(family_0_1);
+                    YACK_EQF(family_1_0);
+                    YACK_EQF(family_0_2);
+                    YACK_EQF(family_2_0);
+                    YACK_EQF(family_1_1);
+                    YACK_EQF(family_1_2);
+                    YACK_EQF(family_2_1);
+
+            }
+            return yack_unknown;
+        }
+
+#define YACK_EQ_FAMILY(R,P) (unsigned(R) << 8 | unsigned(P))
+
+        void equilibrium:: build_family() throw()
+        {
+            const actors::family r = reac.get_family();
+            const actors::family p = prod.get_family();
+
+            const unsigned rp = YACK_EQ_FAMILY(r,p);
+            std::cerr << "R=" << r << ", P=" << p << " => " << rp << std::endl;
+
+            switch(rp)
+            {
+                case YACK_EQ_FAMILY(actors::empty,actors::kind_1):
+                    coerce(kind) = family_0_1;
+                    break;
+
+                case YACK_EQ_FAMILY(actors::kind_1,actors::empty):
+                    coerce(kind) = family_1_0;
+                    break;
+
+                case YACK_EQ_FAMILY(actors::empty,actors::kind_2):
+                    coerce(kind) = family_0_2;
+                    break;
+
+                case YACK_EQ_FAMILY(actors::kind_2,actors::empty):
+                    coerce(kind) = family_2_0;
+                    break;
+
+                case YACK_EQ_FAMILY(actors::kind_1,actors::kind_1):
+                    coerce(kind) = family_1_1;
+                    break;
+
+                case YACK_EQ_FAMILY(actors::kind_2,actors::kind_1):
+                    coerce(kind) = family_2_1;
+                    break;
+                    
+                default:
+                    coerce(kind) = family_any;
+            }
+
+            std::cerr << "family=" << family_text(kind) << std::endl;
+
 
         }
+
+
 
         static inline void displayA(std::ostream &os, const actors &A)
         {
