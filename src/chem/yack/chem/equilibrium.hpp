@@ -145,9 +145,7 @@ namespace yack
             //! move to a null mass action
             void   solve(const double K0, writable<double> &C, writable<double> &Ctry) const;
 
-            //! find solving extent to a null mass action
-            double scale(const double K0, const readable<double> &C, writable<double> &Ctry) const;
-
+            //! find extent solving equilibrium, with optional vanishing species
             double extent(const double            K0,
                           const readable<double> &C,
                           writable<double>       &Ctmp,
@@ -194,17 +192,6 @@ namespace yack
                       writable<double> &C,
                       writable<double> &Ctry,
                       const double      g0) const;
-
-            double sfwd(const double             K0,
-                        const  readable<double> &C,
-                        writable<double>        &Ctry,
-                        const double             g0) const;
-
-
-            double srev(const double             K0,
-                        const  readable<double> &C,
-                        writable<double>        &Ctry,
-                        const double             g0) const;
 
 
             double xfwd(const double             K0,

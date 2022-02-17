@@ -52,7 +52,12 @@ namespace yack
                                   writable<double> &C,
                                   writable<double> &Ctry) const
         {
+            const species *vanishing = NULL;
+            const double   xi        = extent(K0,C,Ctry,vanishing);
+            move(C,Ctry,xi);
+            if(vanishing) (*vanishing)(C) = 0;
 
+#if 0
             assert(size()>0);
             assert(is_neutral());
             assert(K0>0);
@@ -82,7 +87,7 @@ namespace yack
                 }
 
             }
-
+#endif
         }
 
         void equilibrium:: zfwd(const double      K0,
