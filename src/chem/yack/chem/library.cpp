@@ -67,8 +67,8 @@ namespace yack
                 // new species
                 //--------------------------------------------------------------
                 if(!db.insert(ptr)) throw exception("%s unable to insert '%s'",fn,key());
-                coerce(width)     = max_of(width,key.size());
-                coerce(ptr->indx) = db.size();
+                coerce(width)      = max_of(width,key.size());
+                update(coerce(*ptr),db.size());
                 return *ptr; //!< the passed-on species
             }
 
@@ -189,7 +189,7 @@ namespace yack
                 const species &sp = ***node;
                 display(os << "  ",sp);
                 os << ':';
-                os << " @"     << std::setw(3) << sp.indx;
+                os << " @"     << std::setw(3) << *sp;
                 os << " z="    << std::setw(3) << sp.z;
                 os << " rank=" << std::setw(3) << sp.rank;
                 os << std::endl;

@@ -131,7 +131,7 @@ namespace yack
             for(const enode *node=eqs.head();node;node=node->next)
             {
                 const equilibrium &eq = ***node;
-                const size_t       i  = eq.indx;
+                const size_t       i  = *eq;
                 const double       xx = xi[i];
                 const double       gx = Gamma[i];
                 const bool         ok = (gx*xx >= 0);
@@ -180,7 +180,7 @@ namespace yack
                 for(const enode *node = eqs.head();node;node=node->next)
                 {
                     const equilibrium &eq  = ***node;
-                    const size_t       i   = eq.indx;
+                    const size_t       i   = *eq;
                     sc[i] = eq.scale(K[i],Ctry,Ctmp);
                     eqs.pad(std::cerr << "$" << eq.name,eq.name);
                     std::cerr << " : " << sc[i];
@@ -195,7 +195,7 @@ namespace yack
                 if(best)
                 {
                     lib(std::cerr << "Ctry=",Ctry);
-                    best->solve(K[best->indx],Ctry,Ctmp);
+                    best->solve(K[**best],Ctry,Ctmp);
                     lib(std::cerr << "Ctry=",Ctry);
                     computeGammaAndPsi(Ctry);
                     const double g2 = computeVariance(Ctry);
@@ -274,7 +274,7 @@ namespace yack
                     assert(fabs(s(dC)<=0));
                     continue;
                 }
-                const size_t   j   = s.indx;
+                const size_t   j   = *s;
                 const double   c   = Ctry[j]; assert(c>=0);
                 const double   d   = fabs(c-Corg[j]);
                 const double   err = fabs(numeric<double>::ftol * c);

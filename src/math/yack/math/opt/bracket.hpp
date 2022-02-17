@@ -23,7 +23,7 @@ namespace yack
         struct bracket
         {
 
-            static bool verbose;
+            static bool verbose; //!< trigger verbosity
             
             //__________________________________________________________________
             //

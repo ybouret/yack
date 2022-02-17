@@ -18,7 +18,7 @@ namespace yack
             for(const snode *node=lib.head();node;node=node->next)
             {
                 const species &s  = ***node;
-                const size_t   j  = s.indx;
+                const size_t   j  = *s;
                 const double   d  = dC[j];
                 if(d<0)
                 {

@@ -83,7 +83,7 @@ namespace yack
                 {
                     const equilibrium &eq = ***node;
                     pad(os << ' ' << '@' << eq.name,eq.name);
-                    os << " = " << arr[eq.indx] << std::endl;
+                    os << " = " << eq(arr) << std::endl;
                 }
                 os << '}' << std::endl;
             }

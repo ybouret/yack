@@ -17,7 +17,7 @@ namespace yack
             for(const snode *node=lib.head();node;node=node->next)
             {
                 const species      &sp = ***node;
-                const size_t        jj = sp.indx;
+                const size_t        jj = *sp;
                 const imatrix::row &nu = NuT[jj];
                 for(size_t i=N;i>0;--i) sc[i] = nu[i] * xi[i];
                 dC[jj] = sorted::sum(sc, sorted::by_abs_value);

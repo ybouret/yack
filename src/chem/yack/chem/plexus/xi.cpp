@@ -57,7 +57,7 @@ namespace yack
             {
                 const equilibrium &eq = ***node;
                 const limits      &lm = eq.find_primary_limits(Corg);
-                const size_t       ii = eq.indx;
+                const size_t       ii = *eq;
                 double            &xx = xi[ii];
                 
                 YACK_CHEM_PRINTLN("// @" << ios::align(eq.name,eqs.width) << " : " << std::setw(14) << xx);

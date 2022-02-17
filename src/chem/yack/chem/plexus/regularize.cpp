@@ -19,7 +19,7 @@ namespace yack
                 // check acceptable gradient
                 //--------------------------------------------------------------
                 const equilibrium      &eq  = ***node;
-                const size_t            i   = eq.indx;
+                const size_t            i   = *eq;
                 const readable<double> &psi = Psi[i];
 
                 //--------------------------------------------------------------

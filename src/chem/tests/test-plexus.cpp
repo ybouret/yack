@@ -96,7 +96,7 @@ YACK_UTEST(plexus)
                         for(size_t i=1;i<=na;++i)
                         {
                             const species &s = *sub[i];
-                            const size_t   j = s.indx;
+                            const size_t   j = *s;
                             C[j] = species::concentration(ran);
                         }
                         try_solve(cs,C);

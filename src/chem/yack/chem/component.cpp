@@ -24,8 +24,8 @@ namespace yack
         nu(nu_)
         {
             const species &sp = **this;
-            if(sp.indx<=0)  throw exception("%s: no indexed species '%s'",fn,sp.name());
-            if(nu==0)       throw exception("%s: null stoichiometry for '%s'",fn,sp.name());
+            if(*sp<=0)  throw exception("%s: no indexed species '%s'",fn,sp.name());
+            if(nu==0)   throw exception("%s: null stoichiometry for '%s'",fn,sp.name());
         }
 
         void component:: display(std::ostream &os, const bool first) const

@@ -13,6 +13,8 @@ namespace yack
     namespace chemical
     {
 
+        class compendium;
+
         //______________________________________________________________________
         //
         //
@@ -27,15 +29,15 @@ namespace yack
             // members
             //__________________________________________________________________
             const string name; //!< name
-            const size_t indx; //!< index
+
 
             //__________________________________________________________________
             //
             // methods
             //__________________________________________________________________
-
-            const string &key() const throw(); //!< name
-            virtual      ~entity()    throw(); //!< cleanup
+            virtual      ~entity()          throw(); //!< cleanup
+            const string &key()       const throw(); //!< name
+            size_t        operator*() const throw(); //!< indx
 
             //! access by (check) index
             template <typename T> inline
@@ -72,6 +74,8 @@ namespace yack
 
         private:
             YACK_DISABLE_COPY_AND_ASSIGN(entity);
+            const size_t indx; //!< index
+            friend class compendium;
         };
 
     }

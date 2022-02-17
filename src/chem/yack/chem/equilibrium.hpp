@@ -6,7 +6,6 @@
 #include "yack/chem/eq/limits.hpp"
 #include "yack/chem/actors.hpp"
 #include "yack/chem/components.hpp"
-#include "yack/type/gateway.hpp"
 
 namespace yack
 {
@@ -31,7 +30,6 @@ namespace yack
         //______________________________________________________________________
         class equilibrium :
         public entity,
-        public gateway<const components>,
         public collection
         {
         public:
@@ -111,7 +109,7 @@ namespace yack
             {
                 for(const cnode *node=head();node;node=node->next)
                 {
-                    const size_t j  = (****node).indx;
+                    const size_t j  = *****node;
                     target[j] = source[j];
                 }
             }
@@ -170,7 +168,7 @@ namespace yack
             YACK_DISABLE_COPY_AND_ASSIGN(equilibrium);
             const components    comp;
             mutable void       *wksp[ YACK_WORDS_FOR(limits) ];
-            virtual const_type &bulk() const throw();
+            //virtual const_type &bulk() const throw();
             virtual double      getK(double) const = 0;
             
             void zfwd(const double      K0,

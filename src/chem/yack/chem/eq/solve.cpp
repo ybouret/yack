@@ -28,7 +28,7 @@ namespace yack
                     {
                         const component &cm = ***node;
                         const species   &sp = *cm;
-                        const size_t     j  = sp.indx; assert(j>=1); assert(j<=C.size()); assert(j<=Ctry.size());
+                        const size_t     j  = *sp; assert(j>=1); assert(j<=C.size()); assert(j<=Ctry.size());
                         const unit_t     nu = cm.nu;
                         const double     Cj = C[j];    assert(C[j]>=0);
                         Ctry[j] = max_of<double>(0,Cj + nu * xi);

@@ -27,8 +27,8 @@ namespace yack
             if(!db.insert(eq)) throw exception("equilibria use multiple <%s>", (eq->name)());
 
             // update status
-            coerce(width)     = max_of(width,pEq->name.size());
-            coerce(pEq->indx) = size();
+            coerce(width) = max_of(width,pEq->name.size());
+            update(*pEq,size());
             return *pEq;
         }
 

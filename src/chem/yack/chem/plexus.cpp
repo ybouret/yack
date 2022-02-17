@@ -72,7 +72,7 @@ namespace yack
             {
                 const equilibrium &eq = ***node;
                 eq.validate();
-                eq.fill(coerce(Nu[eq.indx]));
+                eq.fill(coerce(Nu[*eq]));
             }
 
             //------------------------------------------------------------------
@@ -117,7 +117,7 @@ namespace yack
             for(const enode *node=eqs.head();node;node=node->next)
             {
                 const equilibrium &eq = ***node;
-                const size_t       i  = eq.indx;
+                const size_t       i  = *eq;
                 Gamma[i] = eq.mass_action(K[i],C);
             }
         }
@@ -127,7 +127,7 @@ namespace yack
             for(const enode *node=eqs.head();node;node=node->next)
             {
                 const equilibrium &eq = ***node;
-                const size_t       i  = eq.indx;
+                const size_t       i  = *eq;
                 Gamma[i] = eq.drvs_action(Psi[i],K[i],C);
             }
         }
@@ -138,7 +138,7 @@ namespace yack
             for(const snode *node=lib.head();node;node=node->next)
             {
                 const species &sp = ***node;
-                const size_t   j  = sp.indx;
+                const size_t   j  = *sp;
                 Ctry[j] = max_of<double>(0,Corg[j]+u*dC[j]);
             }
             return Ctry;

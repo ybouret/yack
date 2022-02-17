@@ -79,9 +79,9 @@ namespace yack
                 os << '{' << std::endl;
                 for(const snode *node=head();node;node=node->next)
                 {
-                    const species &sp = ***node; assert(sp.indx>=1); assert(sp.indx<=size());
+                    const species &sp = ***node;
                     os << ' '; display(os,sp);
-                    os << " = " << arr[sp.indx] << std::endl;
+                    os << " = " << sp(arr) << std::endl;
                 }
                 os << '}' << std::endl;
             }

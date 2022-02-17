@@ -14,10 +14,6 @@ namespace yack
         {
         }
 
-        const components  & equilibrium:: bulk() const throw()
-        {
-            return comp;
-        }
         
         size_t equilibrium:: size() const throw()
         {

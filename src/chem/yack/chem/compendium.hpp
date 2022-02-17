@@ -15,6 +15,9 @@ namespace yack
 
     namespace chemical
     {
+
+        class entity;
+        
         //______________________________________________________________________
         //
         //
@@ -44,6 +47,9 @@ namespace yack
             virtual ~compendium() throw(); //!< cleanup
         protected:
             explicit compendium() throw(); //!< setup
+
+            //!update index of entity
+            void     update(entity &, const size_t indx) const throw();
 
         private:
             YACK_DISABLE_COPY_AND_ASSIGN(compendium);

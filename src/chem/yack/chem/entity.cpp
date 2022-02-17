@@ -19,7 +19,11 @@ namespace yack
             return name;
         }
 
-        
+        size_t entity:: operator*() const throw()
+        {
+            return indx;
+        }
+
 
 
     }

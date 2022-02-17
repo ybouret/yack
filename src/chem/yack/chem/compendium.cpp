@@ -1,4 +1,5 @@
 #include "yack/chem/compendium.hpp"
+#include "yack/chem/entity.hpp"
 
 namespace yack
 {
@@ -26,6 +27,11 @@ namespace yack
         std::ostream & compendium:: pad(std::ostream &os, const string &s) const
         {
             return pad(os,s.size());
+        }
+
+        void compendium:: update(entity &ent, const size_t indx) const throw()
+        {
+            coerce(ent.indx) = indx;
         }
 
     }
