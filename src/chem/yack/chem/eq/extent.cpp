@@ -2,6 +2,7 @@
 #include "yack/chem/equilibrium.hpp"
 #include "yack/math/root/zrid.hpp"
 #include "yack/exception.hpp"
+#include "yack/sort/sum.hpp"
 
 namespace yack
 {
@@ -11,7 +12,7 @@ namespace yack
     {
 
         double equilibrium:: extent(const double            K0,
-                                    const readable<double> &C,
+                                    const readable<double> &C0,
                                     writable<double>       &Ctmp,
                                     const species *        &vanishing) const
         {
@@ -20,38 +21,47 @@ namespace yack
             {
                 case family_0_1: {
                     assert(0==reac.size); assert(1==prod.size); assert(1==prod.head->nu);
-                    return K0-(**prod.head)(C);
+                    return K0-(**prod.head)(C0);
                 }
 
                 case family_1_0: {
                     assert(0==prod.size); assert(1==reac.size); assert(1==reac.head->nu);
-                    return (K0*(**reac.head)(C)-1.0)/K0;
+                    return (K0*(**reac.head)(C0)-1.0)/K0;
                 }
 
                 case family_0_2: {
                     assert(0==reac.size); assert(1==prod.size); assert(2==prod.head->nu);
-                    return 0.5*(sqrt(K0)-(**prod.head)(C));
+                    return 0.5*(sqrt(K0)-(**prod.head)(C0));
                 }
 
                 case family_1_1: {
                     assert(1==reac.size); assert(1==reac.head->nu); assert(1==prod.size); assert(1==prod.head->nu);
-                    return  (K0*(**reac.head)(C)-(**prod.head)(C))/(1+K0);
+                    return  (K0*(**reac.head)(C0)-(**prod.head)(C0))/(1+K0);
                 }
 
                 case family_0_11: {
                     assert(0==reac.size); assert(2==prod.size); assert(1==prod.head->nu); assert(1==prod.tail->nu);
-                    const double A = (**prod.head)(C);
-                    const double B = (**prod.tail)(C);
+                    const double A = (**prod.head)(C0);
+                    const double B = (**prod.tail)(C0);
                     const double Delta = 4.0 * K0 + squared(A-B);
                     return 0.5*(sqrt(Delta)-(A+B));
                 }
 
-                    
+                case family_1_11: {
+                    assert(1==reac.size); assert(1==reac.head->nu); assert(2==prod.size); assert(1==prod.head->nu); assert(1==prod.tail->nu);
+                    const double A     = (**reac.head)(C0);
+                    const double B     = (**prod.head)(C0);
+                    const double C     = (**prod.tail)(C0);
+                    const double Delta = squared(K0) + squared(B-C) + twice(K0*(sorted::sum(twice(A),B,C)));
+                    return 0.5*(sqrt(Delta)-sorted::sum(K0,B,C));
+                }
+
+
                 case family_any:
                     break;
             }
 
-            return extent_(K0,C,Ctmp,vanishing);
+            return extent_(K0,C0,Ctmp,vanishing);
         }
 
         double equilibrium:: extent_(const double            K0,

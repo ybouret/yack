@@ -111,6 +111,7 @@ namespace yack
                     YACK_EQF(family_0_2);
                     YACK_EQF(family_1_1);
                     YACK_EQF(family_0_11);
+                    YACK_EQF(family_1_11);
 
             }
             return yack_unknown;
@@ -145,6 +146,10 @@ namespace yack
 
                 case YACK_EQ_FAMILY(actors::empty,actors::kind_11):
                     coerce(kind) = family_0_11;
+                    break;
+
+                case YACK_EQ_FAMILY(actors::kind_1,actors::kind_11):
+                    coerce(kind) = family_1_11;
                     break;
 
 #if 0

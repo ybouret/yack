@@ -5,6 +5,7 @@
 
 #include "yack/sort/heap.hpp"
 #include "yack/comparison.hpp"
+#include "yack/sequence/thin-array.hpp"
 
 namespace yack
 {
@@ -81,6 +82,16 @@ namespace yack
             typename ARR::mutable_type res = arr[i];
             while(--i>0) res += arr[i];
             return res;
+        }
+
+
+
+        template <typename T> static inline
+        T sum(const T A, const T B, const T C)
+        {
+            T  arr[3] = { A, B, C };
+            thin_array<T> tab(arr,sizeof(arr)/sizeof(arr[0]));
+            return sum(tab,by_value);
         }
 
     };

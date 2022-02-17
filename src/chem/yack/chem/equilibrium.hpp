@@ -54,7 +54,8 @@ namespace yack
                 family_1_0,
                 family_0_2,
                 family_1_1,
-                family_0_11
+                family_0_11,
+                family_1_11
             };
 
             static const char *family_text(const family) throw();
