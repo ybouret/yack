@@ -175,6 +175,8 @@ namespace yack
             //__________________________________________________________________
             bool        is_neutral() const throw(); //!< delta_r Z = 0
             void        validate()   const;         //!< not empty, neutral, minimal
+
+            //! checking if species connexion between two equilibria
             static bool connexion(const equilibrium &lhs, const equilibrium &rhs) throw();
 
             //__________________________________________________________________
