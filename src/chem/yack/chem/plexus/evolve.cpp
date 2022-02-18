@@ -48,6 +48,12 @@ namespace yack
 
             eqs(std::cerr,sc);
 
+            hsort(sc,evec,comparison::increasing<double>);
+            for(size_t i=1;i<=N;++i)
+            {
+                eqs.pad(std::cerr << "@" << evec[i]->name,evec[i]->name) << " : " << sc[i] << std::endl;
+            }
+
 
 
 
