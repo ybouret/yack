@@ -164,6 +164,7 @@ add_test(data:factory      test-core data_factory)
 add_test(data:stats        test-core data_stats)
 add_test(data:pipes        test-core data_pipes)
 add_test(data:addrbook     test-core data_addrbook)
+add_test(data:meta         test-core data_meta)
 
 add_test(sync:lockable  test-core sync_lockable)
 add_test(sync:primitive test-core sync_primitive)
