@@ -21,7 +21,36 @@ namespace yack
 
         void plexus:: evolve( writable<double> &C )
         {
-            
+
+            if(N<=0) return;
+
+            vector<equilibrium*> evec(N,NULL);
+
+            for(size_t j=M;j>0;--j)
+            {
+                Corg[j] = Ctry[j] = C[j];
+            }
+
+            computeGammaAndPsi(Corg);
+            if(regularize()>0 && verbose)
+            {
+                lib(std::cerr,Corg);
+            }
+
+
+            for(const enode *node=eqs.head();node;node=node->next)
+            {
+                const equilibrium &eq = ***node;
+                const size_t       i  = *eq;
+                evec[i] = (equilibrium*)&eq;
+                sc[i]   = eq.extent(K[i],Corg,Ctmp);
+            }
+
+            eqs(std::cerr,sc);
+
+
+
+
         }
 
     }
