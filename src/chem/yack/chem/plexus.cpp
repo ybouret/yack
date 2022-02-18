@@ -83,38 +83,68 @@ namespace yack
             //------------------------------------------------------------------
             coerce(NuT).assign(Nu,transposed);
 
-            //------------------------------------------------------------------
-            //
-            // check equilibria independence
-            //
-            //------------------------------------------------------------------
             if(N>0)
             {
-                matrix<apq> G(N,N);
-                tao::v3::gram(G,Nu);
-                YACK_CHEM_PRINTLN( "Nu  = " << Nu );
-                YACK_CHEM_PRINTLN( "NuT = " << NuT);
-                YACK_CHEM_PRINTLN( "G   = " << G  );
-
-                lu<apq> alu(N);
-                if(!alu.build(G))
-                    throw exception("%s: dependant equilibria detected",clid);
-
-                // create groups
-                clusters &grp = coerce(groups);
-                for(const enode *node=eqs.head();node;node=node->next)
+                //--------------------------------------------------------------
+                //
+                // check equilibria independence
+                //
+                //--------------------------------------------------------------
                 {
-                    const equilibrium &eq     = ***node;
-                    bool               found = false;
+                    matrix<apq> G(N,N);
+                    tao::v3::gram(G,Nu);
+                    YACK_CHEM_PRINTLN( "Nu  = " << Nu );
+                    YACK_CHEM_PRINTLN( "NuT = " << NuT);
+                    YACK_CHEM_PRINTLN( "G   = " << G  );
+
+                    lu<apq> alu(N);
+                    if(!alu.build(G))
+                        throw exception("%s: dependant equilibria detected",clid);
+                }
+
+
+                //--------------------------------------------------------------
+                //
+                // create groups
+                //
+                //--------------------------------------------------------------
+                {
+                    clusters &grp = coerce(groups);
+                    for(const enode *node=eqs.head();node;node=node->next)
+                    {
+                        const equilibrium &eq    = ***node;
+                        bool               found = false;
+                        for(cluster *cls=grp.head;cls;cls=cls->next)
+                        {
+                            if(cls->connected_to(eq))
+                            {
+                                (*cls) << &eq;
+                                found = true;
+                                break;
+                            }
+                        }
+
+                        if(!found)
+                        {
+                            grp.push_back( new cluster(grp.size+1,eq,eqs.width) );
+                        }
+                    }
                     for(cluster *cls=grp.head;cls;cls=cls->next)
                     {
-                    }
-                    if(!found)
-                    {
+                        cls->finalize();
                     }
                 }
             }
 
+            if(verbose)
+            {
+                std::cerr << "// <clusters count='" << groups.size << "'>" << std::endl;
+                for(const cluster *cls=groups.head;cls;cls=cls->next)
+                {
+                    std::cerr << *cls << std::endl;
+                }
+                std::cerr << "// <clusters/>" << std::endl;
+            }
 
             
 

@@ -274,6 +274,22 @@ namespace yack
             return max_of(0.0,max_of( reac.maximum(C), prod.maximum(C) ));
         }
 
+        bool equilibrium:: connexion(const equilibrium &lhs, const equilibrium &rhs) throw()
+        {
+            assert( &lhs != &rhs );
+            for(const cnode *l=lhs.head();l;l=l->next)
+            {
+                const species &ls = ****l;
+                for(const cnode *r=rhs.head();r;r=r->next)
+                {
+                    const species &rs = ****r;
+                    if(&rs==&ls) return true;
+                }
+                
+            }
+            return false;
+        }
+
     }
 
 }

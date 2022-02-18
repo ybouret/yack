@@ -16,6 +16,7 @@ namespace yack
 
         void plexus:: gv(const string &filename) const
         {
+            //std::cerr << "plexus.gv(" << filename << ")" << std::endl;
             {
                 ios::ocstream fp(filename);
                 digraph_init(fp, "G");

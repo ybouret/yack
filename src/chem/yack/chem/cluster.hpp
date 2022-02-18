@@ -17,13 +17,21 @@ namespace yack
         class cluster : public object, public mlist
         {
         public:
-            explicit cluster() throw();
+            explicit cluster(const size_t i,
+                             const equilibrium &first,
+                             const size_t w);
             virtual ~cluster() throw();
 
             bool connected_to(const equilibrium &eq) const throw();
+            void finalize() throw(); //!< set sub index for equilibria
 
-            cluster *next;
-            cluster *prev;
+            friend std::ostream & operator<<(std::ostream &, const cluster &);
+
+            const size_t indx;
+            cluster     *next;
+            cluster     *prev;
+            const size_t width;
+
         private:
             YACK_DISABLE_COPY_AND_ASSIGN(cluster);
         };

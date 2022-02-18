@@ -75,6 +75,7 @@ namespace yack
             entity(id),
             type(is_unfinished),
             topo(topology_any),
+            isub(0),
             reac(),
             prod(),
             nu_p(0),
@@ -172,8 +173,9 @@ namespace yack
             //
             // checking
             //__________________________________________________________________
-            bool   is_neutral() const throw(); //!< delta_r Z = 0
-            void   validate()   const;         //!< not empty, neutral, minimal
+            bool        is_neutral() const throw(); //!< delta_r Z = 0
+            void        validate()   const;         //!< not empty, neutral, minimal
+            static bool connexion(const equilibrium &lhs, const equilibrium &rhs) throw();
 
             //__________________________________________________________________
             //
@@ -181,13 +183,16 @@ namespace yack
             //__________________________________________________________________
             const genus    type; //!< qualification
             const topology topo; //!< specs
+            const size_t   isub; //!< index in group
             const actors   reac; //!< list of reactant(s)
             const actors   prod; //!< list of product(s)
             const unit_t   nu_p; //!< sum nu_p
             const unit_t   nu_r; //!< sum nu_r
             const unit_t   d_nu; //!< nu_p-nu_r
             const double   sexp; //!< scaling exponent: 0 or 1/d_nu
-            
+
+
+
         private:
             YACK_DISABLE_COPY_AND_ASSIGN(equilibrium);
             const components    comp;
