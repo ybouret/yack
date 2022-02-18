@@ -37,10 +37,8 @@ namespace yack
                     break;
             }
 
-            const species *vanishing = NULL;
-            const double   xi        = extent(K0,C,Ctry,vanishing);
+            const double   xi = extent(K0,C,Ctry);
             move(C,C,xi);
-            if(vanishing) (*vanishing)(C) = 0;
         }
 
 

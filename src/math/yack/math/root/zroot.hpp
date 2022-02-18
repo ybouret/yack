@@ -6,7 +6,6 @@
 #include "yack/math/triplet.hpp"
 #include "yack/math/real-function.hpp"
 #include "yack/signs.hpp"
-
 namespace yack
 {
     

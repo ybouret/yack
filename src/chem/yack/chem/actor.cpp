@@ -35,6 +35,12 @@ namespace yack
             return ipower( (**this)(C), nu );
         }
 
+        writable<double> & actor:: ldz(writable<double> &C) const throw()
+        {
+            (**this)(C) = 0;
+            return C;
+        }
+
 
         double actor:: derivs(double K, const readable<double> &C) const throw()
         {

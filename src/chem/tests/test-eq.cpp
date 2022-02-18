@@ -106,39 +106,33 @@ YACK_UTEST(eq)
         std::cerr << lib << std::endl;
         std::cerr << eq  << std::endl;
 
-        lib.fill(C,0.8,ran);
-        lib(std::cerr,C);
+
 
 
         const double K0 = eq.K(0);
-        std::cerr << "mass_action: " << eq.mass_action(K0,C) << std::endl;
-        const limits &lm = eq.find_private_limits(C);
-        std::cerr << lm << std::endl;
-        eq.drvs_action(Ctry,K0,C);
-        std::cerr << "psi=" << Ctry << std::endl;
+        
 
         if(eq.size())
         {
+            for(size_t iter=0;iter<1024;++iter)
             {
-                const species *vanishing = NULL;
-                const double xi = eq.extent(K0,C,Ctry,vanishing);
-                std::cerr << "xi  =" << xi << " / ";
-                if(vanishing) std::cerr << *vanishing; else std::cerr << " no vanishing";
-                std::cerr << std::endl;
+                lib.fill(C,0.8,ran);
+                lib(std::cerr << "Cini=",C);
+                {
+                    const double xi = eq.extent(K0,C,Ctry);
+                    std::cerr << "xi  =" << xi << std::endl;;
+                }
+
+                {
+                    const double xi = eq.extent_(K0,C,Ctry);
+                    std::cerr << "xi_ =" << xi << std::endl;;
+                }
+
+
+                eq.solve(K0,C,Ctry);
+                lib(std::cerr << "Cend=",C);
+                std::cerr << "mass-action=" << eq.mass_action(K0,C) << std::endl;
             }
-
-            {
-                const species *vanishing = NULL;
-                const double xi = eq.extent_(K0,C,Ctry,vanishing);
-                std::cerr << "xi_ =" << xi << " / ";
-                if(vanishing) std::cerr << *vanishing; else std::cerr << " no vanishing";
-                std::cerr << std::endl;
-            }
-
-
-            eq.solve(K0,C,Ctry);
-            lib(std::cerr,C);
-            std::cerr << "mass-action=" << eq.mass_action(K0,C) << std::endl;
         }
 
     }

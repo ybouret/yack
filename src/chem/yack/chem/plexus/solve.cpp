@@ -111,8 +111,7 @@ namespace yack
             for(const enode *node=eqs.head();node;node=node->next)
             {
                 const equilibrium &eq = ***node;
-                const species     *vanishing = NULL;
-                eqs.pad(std::cerr << "// $" << eq.name,eq.name) << " : " << eq.extent(K[*eq],Ctry,Ctmp,vanishing) << std::endl;
+                eqs.pad(std::cerr << "// $" << eq.name,eq.name) << " : " << eq.extent(K[*eq],Ctry,Ctmp) << std::endl;
             }
             computeGammaAndPsi(Ctry);
 

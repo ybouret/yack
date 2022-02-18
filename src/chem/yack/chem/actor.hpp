@@ -33,9 +33,10 @@ namespace yack
             //
             // methods
             //__________________________________________________________________
-            double extent(const readable<double> &C) const throw(); //!< (**this)(C)/nu
-            double action(const readable<double> &C) const throw(); //!< (**this)(C)^nu
-            double derivs(double K, const readable<double> &C) const throw(); //!< K * nu * (**this)(C)^nu1
+            double             extent(const readable<double> &C)           const throw(); //!< (**this)(C)/nu
+            double             action(const readable<double> &C)           const throw(); //!< (**this)(C)^nu
+            double             derivs(double K, const readable<double> &C) const throw(); //!< K * nu * (**this)(C)^nu1
+            writable<double> & ldz(writable<double> &C)                    const throw(); //!< (**this)(C) = 0
 
             //__________________________________________________________________
             //

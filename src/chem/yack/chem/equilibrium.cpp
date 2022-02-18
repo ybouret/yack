@@ -1,5 +1,6 @@
 #include "yack/chem/equilibrium.hpp"
 #include "yack/exception.hpp"
+#include "yack/type/utils.hpp"
 
 namespace yack
 {
@@ -152,21 +153,6 @@ namespace yack
                     coerce(kind) = family_1_11;
                     break;
 
-#if 0
-                case YACK_EQ_FAMILY(actors::kind_2,actors::empty):
-                    coerce(kind) = family_2_0;
-                    break;
-
-
-                case YACK_EQ_FAMILY(actors::kind_2,actors::kind_1):
-                    coerce(kind) = family_2_1;
-                    break;
-
-                case YACK_EQ_FAMILY(actors::kind_1,actors::kind_2):
-                    coerce(kind) = family_1_2;
-                    break;
-#endif
-
                 default:
                     coerce(kind) = family_any;
             }
@@ -262,6 +248,27 @@ namespace yack
                 drZ += s.z * c.nu;
             }
             return 0 == drZ;
+        }
+
+
+        writable<double> &equilibrium:: move(writable<double> &Ctmp, const readable<double> &C, const double xi) const throw()
+        {
+            for(const cnode *node=head();node;node=node->next)
+            {
+                const component &cm = ***node;
+                const species   &sp = *cm;
+                const size_t     j  = *sp;
+                const unit_t     nu = cm.nu;
+                const double     Cj = C[j];    assert(C[j]>=0);
+                Ctmp[j] = max_of<double>(0,Cj + nu * xi);
+            }
+            return Ctmp;
+        }
+
+
+        double equilibrium:: maximum(const readable<double> &C) const throw()
+        {
+            return max_of(0.0,max_of( reac.maximum(C), prod.maximum(C) ));
         }
 
     }

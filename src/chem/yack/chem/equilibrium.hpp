@@ -37,7 +37,7 @@ namespace yack
             //__________________________________________________________________
             typedef ark_ptr<string,equilibrium> pointer; //!< alias
             static const char                   clid[];  //!< chemical::equilibrium
-
+            
             //! genus of equilibrium
             enum genus
             {
@@ -113,8 +113,6 @@ namespace yack
             }
 
 
-
-
             //! set only active indices
             template <typename TARGET, typename SOURCE> inline
             void set(TARGET &target, SOURCE &source) const
@@ -154,19 +152,18 @@ namespace yack
             //! find extent solving equilibrium, with optional vanishing species
             double extent(const double            K0,
                           const readable<double> &C,
-                          writable<double>       &Ctmp,
-                          const species *        &vanishing) const;
+                          writable<double>       &Ctmp) const;
 
             //! find generic extent
             double extent_(const double            K0,
                            const readable<double> &C,
-                           writable<double>       &Ctmp,
-                           const species *        &vanishing) const;
+                           writable<double>       &Ctmp) const;
 
-            //! move valid C to valid Ctmp
-            void move(writable<double> &Ctmp, const readable<double> &C, const double xi) const throw();
+            //! move valid C to valid Ctmp, return Ctmp
+            writable<double> & move(writable<double> &Ctmp, const readable<double> &C, const double xi) const throw();
 
-
+            //! maximum of reac/prod maxima
+            double maximum(const readable<double> &C) const throw();
 
             //__________________________________________________________________
             //
@@ -195,18 +192,7 @@ namespace yack
             virtual double      getK(double) const = 0;
             void                update_genus() throw();
             void                build_family() throw();
-
-            double xfwd(const double             K0,
-                        const  readable<double> &C,
-                        writable<double>        &Ctry,
-                        const double             g0,
-                        const species *         &vanishing) const;
-
-            double xrev(const double             K0,
-                        const  readable<double> &C,
-                        writable<double>        &Ctry,
-                        const double             g0,
-                        const species *         &vanishing) const;
+            
         };
 
         //______________________________________________________________________
