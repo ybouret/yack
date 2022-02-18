@@ -56,6 +56,7 @@ namespace yack
         rstack(M,as_capacity),
         ustack(M,as_capacity),
         LU(N),
+        groups(),
 
         lib_lock( coerce(lib) )
         {
@@ -99,7 +100,23 @@ namespace yack
                 if(!alu.build(G))
                     throw exception("%s: dependant equilibria detected",clid);
 
+                // create groups
+                clusters &grp = coerce(groups);
+                for(const enode *node=eqs.head();node;node=node->next)
+                {
+                    const equilibrium &eq     = ***node;
+                    bool               found = false;
+                    for(cluster *cls=grp.head;cls;cls=cls->next)
+                    {
+                    }
+                    if(!found)
+                    {
+                    }
+                }
             }
+
+
+            
 
         }
 

@@ -5,6 +5,8 @@
 
 #include "yack/chem/equilibria.hpp"
 #include "yack/chem/library.hpp"
+#include "yack/chem/cluster.hpp"
+
 #include "yack/sequence/arrays.hpp"
 #include "yack/container/matrix.hpp"
 #include "yack/apex.hpp"
@@ -105,7 +107,8 @@ namespace yack
             vector<double>    rstack;  //!< temporary stack of real
             vector<size_t>    ustack;  //!< temporary stack of unsigned
             math::lu<double>  LU;      //!< [N]
-
+            const clusters    groups;  //!< of connected eqs
+            
         private:
             YACK_DISABLE_COPY_AND_ASSIGN(plexus);
             const lockable::scope lib_lock;

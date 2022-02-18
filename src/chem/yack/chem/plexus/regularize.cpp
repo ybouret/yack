@@ -44,7 +44,7 @@ namespace yack
                 //--------------------------------------------------------------
                 // register as blocked
                 //--------------------------------------------------------------
-                blocked << i;
+                blocked.push_back_fast(i);
             }
             YACK_CHEM_PRINTLN("//    moved=" << moved << ", blocked=" << blocked);
             YACK_CHEM_PRINTLN("//   <regularizing/>");

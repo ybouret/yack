@@ -247,6 +247,13 @@ namespace yack
             cswap(item, other.item);
         }
 
+        //! push back with ready memory
+        inline virtual void push_back_fast(param_type  args)
+        {
+            assert(count<utter);
+            new (base+count) mutable_type(args);
+            ++count;
+        }
      
 
     private:
