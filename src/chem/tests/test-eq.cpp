@@ -133,6 +133,8 @@ YACK_UTEST(eq)
                 lib(std::cerr << "Cend=",C);
                 std::cerr << "mass-action=" << eq.mass_action(K0,C) << std::endl;
             }
+
+            std::cerr <<  eq  << std::endl;
         }
 
     }

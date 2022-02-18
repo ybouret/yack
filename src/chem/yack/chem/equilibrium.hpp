@@ -47,18 +47,20 @@ namespace yack
                 consumes_only  //!< only reactant(s)
             };
 
-            enum family
+            //! topology
+            enum topology
             {
-                family_any,
-                family_0_1,
-                family_1_0,
-                family_0_2,
-                family_1_1,
-                family_0_11,
-                family_1_11
+                topology_any,  //!< generic
+                topology_0_1,  //!< . <=> A
+                topology_1_0,  //!< A <=> .
+                topology_0_2,  //!<   <=> 2A
+                topology_1_1,  //!< A <=> B
+                topology_0_11, //!< . <=> A+B
+                topology_1_11  //!< A <=> B+C
             };
 
-            static const char *family_text(const family) throw();
+            //! topology to text
+            static const char *topology_text(const topology) throw();
 
             //__________________________________________________________________
             //
@@ -72,7 +74,7 @@ namespace yack
             explicit equilibrium(const ID &id) :
             entity(id),
             type(is_unfinished),
-            kind(family_any),
+            topo(topology_any),
             reac(),
             prod(),
             nu_p(0),
@@ -91,7 +93,8 @@ namespace yack
             double         K(double) const;      //!< check valid getK(t)
             virtual size_t size() const throw(); //!< number of registered components
             const cnode   *head() const throw(); //!< fist component
-            
+            const char    *topo_text() const throw(); //!< topology_text(topo)
+
             //__________________________________________________________________
             //
             // methods
@@ -145,7 +148,7 @@ namespace yack
             //! find limits from primary species
             const limits & find_primary_limits(const readable<double> &C) const throw();
 
-
+            //! solve single equilibria
             void   solve(const double K0, writable<double> &C, writable<double> &Ctry) const;
 
 
@@ -176,14 +179,14 @@ namespace yack
             //
             // members
             //__________________________________________________________________
-            const genus  type; //!< qualification
-            const family kind; //!< specs
-            const actors reac; //!< list of reactant(s)
-            const actors prod; //!< list of product(s)
-            const unit_t nu_p; //!< sum nu_p
-            const unit_t nu_r; //!< sum nu_r
-            const unit_t d_nu; //!< nu_p-nu_r
-            const double sexp; //!< scaling exponent: 0 or 1/d_nu
+            const genus    type; //!< qualification
+            const topology topo; //!< specs
+            const actors   reac; //!< list of reactant(s)
+            const actors   prod; //!< list of product(s)
+            const unit_t   nu_p; //!< sum nu_p
+            const unit_t   nu_r; //!< sum nu_r
+            const unit_t   d_nu; //!< nu_p-nu_r
+            const double   sexp; //!< scaling exponent: 0 or 1/d_nu
             
         private:
             YACK_DISABLE_COPY_AND_ASSIGN(equilibrium);

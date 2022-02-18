@@ -26,6 +26,10 @@ namespace yack
             return (*comp.tree).head;
         }
 
+        const char * equilibrium:: topo_text() const throw()
+        {
+            return topology_text(topo);
+        }
 
         void equilibrium:: add(const species &sp, const unit_t nu)
         {
@@ -100,20 +104,19 @@ namespace yack
             }
         }
 
-#define YACK_EQF(ID) case ID: return #ID
+#define YACK_EQF(ID) case topology_##ID: return "topology_" #ID
 
-        const char * equilibrium:: family_text(const family f) throw()
+        const char * equilibrium:: topology_text(const topology f) throw()
         {
             switch (f)
             {
-                    YACK_EQF(family_any);
-                    YACK_EQF(family_0_1);
-                    YACK_EQF(family_1_0);
-                    YACK_EQF(family_0_2);
-                    YACK_EQF(family_1_1);
-                    YACK_EQF(family_0_11);
-                    YACK_EQF(family_1_11);
-
+                    YACK_EQF(any);
+                    YACK_EQF(0_1);
+                    YACK_EQF(1_0);
+                    YACK_EQF(0_2);
+                    YACK_EQF(1_1);
+                    YACK_EQF(0_11);
+                    YACK_EQF(1_11);
             }
             return yack_unknown;
         }
@@ -130,31 +133,31 @@ namespace yack
             switch(rp)
             {
                 case YACK_EQ_FAMILY(actors::empty,actors::kind_1):
-                    coerce(kind) = family_0_1;
+                    coerce(topo) = topology_0_1;
                     break;
 
                 case YACK_EQ_FAMILY(actors::kind_1,actors::empty):
-                    coerce(kind) = family_1_0;
+                    coerce(topo) = topology_1_0;
                     break;
 
                 case YACK_EQ_FAMILY(actors::empty,actors::kind_2):
-                    coerce(kind) = family_0_2;
+                    coerce(topo) = topology_0_2;
                     break;
 
                 case YACK_EQ_FAMILY(actors::kind_1,actors::kind_1):
-                    coerce(kind) = family_1_1;
+                    coerce(topo) = topology_1_1;
                     break;
 
                 case YACK_EQ_FAMILY(actors::empty,actors::kind_11):
-                    coerce(kind) = family_0_11;
+                    coerce(topo) = topology_0_11;
                     break;
 
                 case YACK_EQ_FAMILY(actors::kind_1,actors::kind_11):
-                    coerce(kind) = family_1_11;
+                    coerce(topo) = topology_1_11;
                     break;
 
                 default:
-                    coerce(kind) = family_any;
+                    coerce(topo) = topology_any;
             }
 
             //std::cerr << "family=" << family_text(kind) << std::endl;
@@ -190,7 +193,7 @@ namespace yack
             displayA(os,prod);
             os << " | K(" << t << ")=" << getK(t);
             os << " nu_r: " << nu_r << ", nu_p:" << nu_p << ", d_nu:" << d_nu;
-            os << " (" << family_text(kind) << ")";
+            os << " (" << topo_text() << ")";
         }
 
         std::ostream & operator<<(std::ostream &os, const equilibrium &eq)

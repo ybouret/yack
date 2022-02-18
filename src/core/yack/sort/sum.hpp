@@ -85,7 +85,7 @@ namespace yack
         }
 
 
-
+        //! sorted sum of A,B,C
         template <typename T> static inline
         T sum(const T A, const T B, const T C)
         {

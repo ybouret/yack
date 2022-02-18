@@ -28,7 +28,12 @@ namespace yack
         class actors : public actors_
         {
         public:
+            //__________________________________________________________________
+            //
+            // types and definitions
+            //__________________________________________________________________
 
+            //! family of actors, to compute topologies
             enum family
             {
                 empty    = 0x00,  //!< empty

@@ -15,29 +15,29 @@ namespace yack
                                     const readable<double> &C0,
                                     writable<double>       &Ctmp) const
         {
-            switch(kind)
+            switch(topo)
             {
-                case family_0_1: {
+                case topology_0_1: {
                     assert(0==reac.size); assert(1==prod.size); assert(1==prod.head->nu);
                     return K0-(**prod.head)(C0);
                 }
 
-                case family_1_0: {
+                case topology_1_0: {
                     assert(0==prod.size); assert(1==reac.size); assert(1==reac.head->nu);
                     return (K0*(**reac.head)(C0)-1.0)/K0;
                 }
 
-                case family_0_2: {
+                case topology_0_2: {
                     assert(0==reac.size); assert(1==prod.size); assert(2==prod.head->nu);
                     return 0.5*(sqrt(K0)-(**prod.head)(C0));
                 }
 
-                case family_1_1: {
+                case topology_1_1: {
                     assert(1==reac.size); assert(1==reac.head->nu); assert(1==prod.size); assert(1==prod.head->nu);
                     return  (K0*(**reac.head)(C0)-(**prod.head)(C0))/(1+K0);
                 }
 
-                case family_0_11: {
+                case topology_0_11: {
                     assert(0==reac.size); assert(2==prod.size); assert(1==prod.head->nu); assert(1==prod.tail->nu);
                     const double A = (**prod.head)(C0);
                     const double B = (**prod.tail)(C0);
@@ -45,7 +45,7 @@ namespace yack
                     return 0.5*(sqrt(Delta)-(A+B));
                 }
 
-                case family_1_11: {
+                case topology_1_11: {
                     assert(1==reac.size); assert(1==reac.head->nu); assert(2==prod.size); assert(1==prod.head->nu); assert(1==prod.tail->nu);
                     const double A     = (**reac.head)(C0);
                     const double B     = (**prod.head)(C0);
@@ -55,7 +55,7 @@ namespace yack
                 }
 
 
-                case family_any:
+                case topology_any:
                     break;
             }
 
@@ -85,10 +85,7 @@ namespace yack
 
         }
 
-
-
-
-
+        
         double equilibrium:: extent_(const double            K0,
                                      const readable<double> &C,
                                      writable<double>       &Ctmp) const
@@ -104,7 +101,6 @@ namespace yack
             {
                 eqz             G   = { *this, K0, C, Ctmp };
                 const limits   &lim = find_private_limits(C);
-                //std::cerr << lim << std::endl;
                 switch(lim.type)
                 {
                     case limited_by_none:
