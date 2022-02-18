@@ -31,6 +31,11 @@ namespace yack
             return topology_text(topo);
         }
 
+        bool equilibrium:: uses(const species &sp) const throw()
+        {
+            return comp.search(sp.name);
+        }
+
         void equilibrium:: add(const species &sp, const unit_t nu)
         {
             // initialize new component

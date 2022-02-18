@@ -11,8 +11,8 @@ namespace yack
         size_t plexus:: regularize()
         {
             YACK_CHEM_PRINTLN("//   <regularizing>");
+            assert(N==blocked.size());
             size_t moved = 0;
-            blocked.free();
             for(const enode *node=eqs.head();node;node=node->next)
             {
                 //--------------------------------------------------------------
@@ -21,6 +21,7 @@ namespace yack
                 const equilibrium      &eq  = ***node;
                 const size_t            i   = *eq;
                 const readable<double> &psi = Psi[i];
+                blocked[i] = false;
 
                 //--------------------------------------------------------------
                 // check acceptable gradient
@@ -44,7 +45,7 @@ namespace yack
                 //--------------------------------------------------------------
                 // register as blocked
                 //--------------------------------------------------------------
-                blocked.push_back_fast(i);
+                blocked[i] = true;
             }
             YACK_CHEM_PRINTLN("//    moved=" << moved << ", blocked=" << blocked);
             YACK_CHEM_PRINTLN("//   <regularizing/>");

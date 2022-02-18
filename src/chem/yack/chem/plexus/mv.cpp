@@ -21,7 +21,7 @@ namespace yack
         {
             plexus         &self  = *this;                
             double          scale = 1;
-            const size_t    count = truncation(scale);
+            const size_t    count = truncation(scale,NULL);
             triplet<double> x     = { 0,  0, 0 };
             triplet<double> g     = { g0, 0, 0 };
             if(count>0)

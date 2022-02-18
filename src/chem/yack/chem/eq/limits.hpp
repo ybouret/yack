@@ -36,7 +36,7 @@ namespace yack
 
             //! crop a guess extent
             double crop(const double xi) const throw();
-
+            
             //__________________________________________________________________
             //
             // members

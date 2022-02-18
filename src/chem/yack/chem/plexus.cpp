@@ -51,12 +51,12 @@ namespace yack
         NuT(Nu.cols,Nu.rows),
         Psi(Nu.rows,Nu.cols),
         W(N,N),
-        blocked(N,as_capacity),
+        blocked(N,false),
         
         rstack(M,as_capacity),
         ustack(M,as_capacity),
         LU(N),
-        groups(),
+        clusters(),
 
         lib_lock( coerce(lib) )
         {
@@ -109,12 +109,12 @@ namespace yack
                 //
                 //--------------------------------------------------------------
                 {
-                    clusters &grp = coerce(groups);
+                    list_of<cluster> &groups = coerce(clusters);
                     for(const enode *node=eqs.head();node;node=node->next)
                     {
                         const equilibrium &eq    = ***node;
                         bool               found = false;
-                        for(cluster *cls=grp.head;cls;cls=cls->next)
+                        for(cluster *cls=groups.head;cls;cls=cls->next)
                         {
                             if(cls->connected_to(eq))
                             {
@@ -126,20 +126,20 @@ namespace yack
 
                         if(!found)
                         {
-                            grp.push_back( new cluster(grp.size+1,eq,eqs.width) );
+                            groups.push_back( new cluster(groups.size+1,eq,eqs.width) );
                         }
                     }
-                    for(cluster *cls=grp.head;cls;cls=cls->next)
+                    for(cluster *cls=groups.head;cls;cls=cls->next)
                     {
-                        cls->finalize();
+                        cls->finalize(lib.head());
                     }
                 }
             }
 
             if(verbose)
             {
-                std::cerr << "// <clusters count='" << groups.size << "'>" << std::endl;
-                for(const cluster *cls=groups.head;cls;cls=cls->next)
+                std::cerr << "// <clusters count='" << clusters.size << "'>" << std::endl;
+                for(const cluster *cls=clusters.head;cls;cls=cls->next)
                 {
                     std::cerr << *cls << std::endl;
                 }

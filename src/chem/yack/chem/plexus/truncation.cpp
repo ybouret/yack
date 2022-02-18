@@ -8,16 +8,16 @@ namespace yack
     
     namespace chemical
     {
-        size_t plexus:: truncation(double &scale)
+        size_t plexus:: truncation(double &scale, const anode *node)
         {
-            YACK_CHEM_PRINTLN("// [truncation]");
+            YACK_CHEM_PRINTLN("//   <truncation>");
             assert( absolute(1.0-scale) <= 0);
 
             rstack.free();
             ustack.free();
-            for(const snode *node=lib.head();node;node=node->next)
+            for( ;node;node=node->next)
             {
-                const species &s  = ***node;
+                const species &s  = **node;
                 const size_t   j  = *s;
                 const double   d  = dC[j];
                 if(d<0)
@@ -28,7 +28,7 @@ namespace yack
                     ustack << j;
                     if(verbose)
                     {
-                        lib.pad(std::cerr <<  "//    checking [" << s << "]",s.name);;
+                        lib.pad(std::cerr <<  "//     checking [" << s << "]",s.name);;
                         std::cerr << " = " << std::setw(14) << c;
                         std::cerr << " / " << std::setw(14) << d;
                         std::cerr << " -> " << rstack.back();
@@ -51,13 +51,14 @@ namespace yack
                     rstack.pop_back();
                     ustack.pop_back();
                 }
-                YACK_CHEM_PRINTLN("// rstack="<<rstack);
-                YACK_CHEM_PRINTLN("// ustack="<<ustack);
+                YACK_CHEM_PRINTLN("//     rstack="<<rstack);
+                YACK_CHEM_PRINTLN("//     ustack="<<ustack);
             }
             else
             {
-                YACK_CHEM_PRINTLN("// none detected!");
+                YACK_CHEM_PRINTLN("//     none detected!");
             }
+            YACK_CHEM_PRINTLN("//   <truncation/>");
             return count;
         }
 

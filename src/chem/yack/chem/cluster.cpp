@@ -13,9 +13,11 @@ namespace yack
         cluster:: cluster(const size_t i,
                           const equilibrium &eq,
                           const size_t w) :
-        object(),
+        large_object(),
         mlist(),
         indx(i),
+        used(),
+        excl(),
         next(0),
         prev(0),
         width(w)
@@ -34,14 +36,41 @@ namespace yack
             return false;
         }
 
-        void cluster:: finalize() throw()
+        bool cluster:: uses(const species &sp) const throw()
+        {
+            for(const mnode *node=head;node;node=node->next)
+            {
+                const equilibrium &eq = **node;
+                if(eq.uses(sp)) return true;
+            }
+            return false;
+        }
+
+        void cluster:: finalize(const snode *curr) throw()
         {
             assert(size>0);
-            size_t counter=0;
-            for(mnode *node=head;node;node=node->next)
             {
-                coerce( (**node).isub ) = ++counter;
+                size_t counter=0;
+                for(mnode *node=head;node;node=node->next)
+                {
+                    coerce( (**node).isub ) = ++counter;
+                }
             }
+
+            while(curr)
+            {
+                const species &sp = ***curr;
+                if(uses(sp))
+                {
+                    coerce(used) << &sp;
+                }
+                else
+                {
+                    coerce(excl) << &sp;
+                }
+                curr = curr->next;
+            }
+
         }
 
         std::ostream & operator<<(std::ostream &os, const cluster &cls)
@@ -52,6 +81,12 @@ namespace yack
                 const equilibrium &eq = **node;
                 eq.display(os << "  [" << eq.isub << "/" << *eq << "] ",cls.width,0); os << std::endl;
             }
+            os << "  [";
+            for(const anode *node=cls.used.head;node;node=node->next)
+            {
+                os << ' ' << '[' << (**node).name << ']';
+            }
+            os << " ]" << std::endl;
             os << "}";
             return os;
         }

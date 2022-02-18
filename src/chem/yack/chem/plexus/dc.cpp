@@ -11,7 +11,7 @@ namespace yack
     namespace chemical
     {
 
-        void plexus:: computeDeltaC()
+        void plexus:: computeDeltaC(const anode *excl)
         {
             YACK_CHEM_PRINTLN("//   <computeDeltaC>");
             dC.ld(0);
@@ -23,10 +23,14 @@ namespace yack
                 for(size_t i=N;i>0;--i) sc[i] = nu[i] * xi[i];
                 dC[jj] = sorted::sum(sc, sorted::by_abs_value);
             }
+            while(excl)
+            {
+                (**excl)(dC) = 0;
+                excl = excl->next;
+            }
 
             YACK_CHEM_PRINTLN("  dC     = " << dC);
             YACK_CHEM_PRINTLN("   C     = " << Corg);
-            YACK_CHEM_PRINTLN("   Gamma = " << Gamma);
             YACK_CHEM_PRINTLN("//   <computeDeltaC/>");
 
         }

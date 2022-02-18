@@ -10,6 +10,8 @@ namespace yack
 {
     namespace chemical
     {
+        class plexus;
+
         //______________________________________________________________________
         //
         //
@@ -19,13 +21,16 @@ namespace yack
         typedef meta_node<const equilibrium> mnode; //!< alias
         typedef meta_list<const equilibrium> mlist; //!< alias
 
+        typedef meta_node<const species>     anode; //!< alias
+        typedef meta_list<const species>     alist; //!< alias
+
         //______________________________________________________________________
         //
         //
         //! cluster of linked equilibria
         //
         //______________________________________________________________________
-        class cluster : public object, public mlist
+        class cluster : public large_object, public mlist
         {
         public:
             //__________________________________________________________________
@@ -48,32 +53,34 @@ namespace yack
             //! check if connected to current cluster
             bool connected_to(const equilibrium &eq) const throw();
 
+            //! check if species is used within equilria
+            bool uses(const species &sp) const throw();
+
             //! set sub index for equilibria
-            void finalize() throw();
+            void finalize(const snode *) throw();
 
             //! display
             friend std::ostream & operator<<(std::ostream &, const cluster &);
+
+            double variance(const readable<double> &C, const plexus &) const;
 
             //__________________________________________________________________
             //
             // members
             //__________________________________________________________________
             const size_t indx;  //!< index of cluster [1..]
+            const alist  used;  //!< used active species
+            const alist  excl;  //!< from another cluster
             cluster     *next;  //!< for list
             cluster     *prev;  //!< for list
             const size_t width; //!< from equilibria
+
+
 
         private:
             YACK_DISABLE_COPY_AND_ASSIGN(cluster);
         };
 
-        //______________________________________________________________________
-        //
-        //
-        //! definitions of clusters
-        //
-        //______________________________________________________________________
-        typedef cxx_list_of<cluster> clusters;
 
 
     }

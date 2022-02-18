@@ -103,6 +103,7 @@ namespace yack
             void add(const species &sp, const unit_t nu); //!< add a registers species
             void load(const string &expr, library &lib);  //!< load from string
             void load(const char   *expr, library &lib);  //!< load from string
+            bool uses(const species &sp) const throw();   //!< check in use
 
             //! fill row of topology
             template <typename T> inline

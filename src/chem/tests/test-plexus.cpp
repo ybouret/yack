@@ -3,9 +3,7 @@
 #include "yack/chem/lua/equilibria.hpp"
 #include "yack/utest/run.hpp"
 #include "yack/system/env.hpp"
-#include "yack/math/opt/minimize.hpp"
 #include "yack/counting/comb.hpp"
-#include "yack/math/tao/v3.hpp"
 
 using namespace yack;
 using namespace chemical;
@@ -17,7 +15,7 @@ static inline void try_solve(plexus &cs, writable<double> &C)
     cs.lib(std::cerr << "Cini=",C);
     cs.evolve(C);
     cs.lib(std::cerr << "Cend=",C);
-    //cs.eqs(std::cerr << "Gamma=",cs.Gamma);
+    cs.eqs(std::cerr << "Gamma=",cs.Gamma);
 }
 
 YACK_UTEST(plexus)
@@ -61,7 +59,7 @@ YACK_UTEST(plexus)
             //----------------------------------------------------------------------
             // from 0
             //----------------------------------------------------------------------
-            lib.fill(C,0.8,ran);
+            lib.fill(C,0.7,ran);
             try_solve(cs,C);
 
             return 0;
@@ -120,7 +118,6 @@ YACK_UTEST(plexus)
         }
     }
 
-    std::cerr << "mtol=" << math::minimize::get_mtol<double>() << std::endl;
 
 }
 YACK_UDONE()

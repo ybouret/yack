@@ -91,23 +91,23 @@ namespace yack
             tableaux ntab;
             tableaux mtab;
         public:
-            array_type       &K;      //!< [N] constants at a given time
-            array_type       &Gamma;  //!< [N] Gamma for precomputed K
-            array_type       &Corg;   //!< [M] initial concentrations
-            array_type       &Ctry;   //!< [M] trial concentrations
-            array_type       &Ctmp;   //!< [M] trial concentrations
-            array_type       &dC;     //!< [M] delta C
-            array_type       &xi;     //!< [N] xi
-            array_type       &sc;     //!< [N] to compute RMS
-            const imatrix     Nu;     //!< topology
-            const imatrix     NuT;    //!< Nu'
-            rmatrix           Psi;    //!< [NxM] jacobian of Gamm
-            rmatrix           W;      //!< [NxN] Psi*NuT
-            vector<size_t>    blocked; //!< stack of blocked equilibria indices
-            vector<double>    rstack;  //!< temporary stack of real
-            vector<size_t>    ustack;  //!< temporary stack of unsigned
-            math::lu<double>  LU;      //!< [N]
-            const clusters    groups;  //!< of connected eqs
+            array_type                &K;        //!< [N] constants at a given time
+            array_type                &Gamma;    //!< [N] Gamma for precomputed K
+            array_type                &Corg;     //!< [M] initial concentrations
+            array_type                &Ctry;     //!< [M] trial concentrations
+            array_type                &Ctmp;     //!< [M] trial concentrations
+            array_type                &dC;       //!< [M] delta C
+            array_type                &xi;       //!< [N] xi
+            array_type                &sc;       //!< [N] to compute RMS
+            const imatrix              Nu;       //!< topology
+            const imatrix              NuT;      //!< Nu'
+            rmatrix                    Psi;      //!< [NxM] jacobian of Gamm
+            rmatrix                    W;        //!< [NxN] Psi*NuT
+            vector<bool>               blocked;  //!< stack of blocked equilibria indices
+            vector<double>             rstack;   //!< temporary stack of real
+            vector<size_t>             ustack;   //!< temporary stack of unsigned
+            math::lu<double>           LU;       //!< [N]
+            const cxx_list_of<cluster> clusters; //!< of connected eqs
             
         private:
             YACK_DISABLE_COPY_AND_ASSIGN(plexus);
@@ -127,10 +127,10 @@ namespace yack
             void computeExtent();
 
             //! from extent
-            void computeDeltaC();
+            void computeDeltaC(const anode *excl);
 
             //! detect truncation, use rstack and ustack
-            size_t truncation(double &scale);
+            size_t truncation(double &scale, const anode *used);
 
             //! move algorithm
             double move(const double g0);
@@ -138,6 +138,7 @@ namespace yack
             //! helper
             void save_profile(const char *filename, const double umax);
 
+            void solve(const cluster &cls);
         };
         
     }
