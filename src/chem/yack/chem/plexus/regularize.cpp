@@ -10,7 +10,7 @@ namespace yack
     {
         size_t plexus:: regularize()
         {
-            YACK_CHEM_PRINTLN("//   <regularizing>");
+            YACK_CHEM_PRINTLN("//" << std::endl << "//   <regularizing>");
             assert(N==blocked.size());
             size_t moved = 0;
             for(const enode *node=eqs.head();node;node=node->next)

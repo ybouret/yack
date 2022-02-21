@@ -117,6 +117,11 @@ namespace yack
 
             double gammaVariance() throw();
 
+
+            //! compute with regularized composition
+            void computeXi();
+
+            //! compute precise deltaC from a given extent
             void computeDeltaC(const readable<double> &x) throw();
 
             //!  minimize blocked equilibria.

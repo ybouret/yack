@@ -64,6 +64,7 @@ namespace yack
             // reduction
             //
             //------------------------------------------------------------------
+            YACK_CHEM_PRINTLN("//" << std::endl << "//   <shrinking>");
             while(true)
             {
                 for(const enode *node=eqs.head();node;node=node->next)
@@ -76,35 +77,40 @@ namespace yack
                 hsort(sc,ev,comparison::decreasing_abs<double>);
                 if(verbose)
                 {
-                    std::cerr << "//   <excess>" << std::endl;
+                    std::cerr << "//     <excess>" << std::endl;
                     for(size_t i=1;i<=N;++i)
                     {
                         const equilibrium &eq = *ev[i];
-                        eqs.pad(std::cerr << "//     (*) @" << eq.name,eq.name) << " : " << sc[i] << std::endl;
+                        eqs.pad(std::cerr << "//       (*) @" << eq.name,eq.name) << " : " << sc[i] << std::endl;
                     }
-                    std::cerr << "//   <excess>" << std::endl;
+                    std::cerr << "//     <excess/>" << std::endl;
                 }
 
                 const equilibrium &best = *ev[1];
                 const size_t       indx = *best;
-                std::cerr << "//   <trying " << best.name << ">" << std::endl;
+                YACK_CHEM_PRINTLN("//     <trying " << best.name << ">");
                 tao::v1::set(Ctry,Corg);
                 best.solve(K[indx],Ctry,Ctmp);
                 const double gt = computeVariance(Ctry);
-                YACK_CHEM_PRINTLN("//   gt=" << gt);
+                YACK_CHEM_PRINTLN("//     gt=" << gt);
                 if(gt<g0)
                 {
                     g0 = gt;
                     tao::v1::set(Corg,Ctry);
+                    YACK_CHEM_PRINTLN("//     <accept/>");
                     continue;
                 }
                 else
                 {
                     // keep Corg
+                    YACK_CHEM_PRINTLN("//     <reject/>");
                     break;
                 }
             }
+            YACK_CHEM_PRINTLN("//   <shrinking/>");
 
+
+            // full differential state
             computeGammaAndPsi(Corg);
 
             if( regularize() && verbose )
@@ -112,6 +118,9 @@ namespace yack
                 lib(std::cerr << "C0=", Corg);
 
             }
+
+            computeXi();
+
 
 
             exit(1);
