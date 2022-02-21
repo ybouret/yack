@@ -8,7 +8,6 @@
 using namespace yack;
 using namespace chemical;
 
-
 static inline void try_solve(plexus &cs, writable<double> &C)
 {
     
@@ -61,6 +60,7 @@ YACK_UTEST(plexus)
             //----------------------------------------------------------------------
             lib.fill(C,0.7,ran);
             try_solve(cs,C);
+            std::cerr << "Nu=" << cs.Nu << std::endl;
 
             return 0;
 

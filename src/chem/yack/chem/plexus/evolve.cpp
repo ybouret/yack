@@ -19,7 +19,27 @@ namespace yack
     namespace chemical
     {
 
-        void plexus:: evolve( writable<double> &C )
+        void plexus:: computeDeltaC(const readable<double> &xx) throw()
+        {
+            dC.ld(0);
+            for(const anode *node=active.head;node;node=node->next)
+            {
+                const species      &s = **node;
+                const size_t        j = *s;
+                const imatrix::row &nu = NuT[j];
+                rstack.free();
+                for(size_t i=N;i>0;--i)
+                {
+                    const double x = xx[i];
+                    const int    n = nu[i];
+                    if(n)
+                        rstack.push_back_fast(n*x);
+                }
+                dC[j] = sorted::sum(rstack,sorted::by_value);
+            }
+        }
+
+        void plexus:: evolve(writable<double> &C)
         {
 
             if(N<=0) return;
@@ -48,330 +68,157 @@ namespace yack
             YACK_CHEM_PRINTLN("// Gamma = " << Gamma);
             YACK_CHEM_PRINTLN("// Psi   = " << Psi);
 
-            // solve per cluster
-            for(const cluster *cls=clusters.head;cls;cls=cls->next)
+            // compute solving extents
+            vector<equilibrium *> ev(N,NULL);
+            for(const enode *node=eqs.head();node;node=node->next)
             {
-                solve(*cls);
+                const equilibrium &eq = ***node;
+                const size_t       ei = *eq;
+                sc[ei] = eq.extent(K[ei],Corg,Ctmp);
+                ev[ei] = (equilibrium *)&eq;
             }
 
-            // update
+            eqs(std::cerr << "xs=",sc);
+            hsort(sc,ev,comparison::decreasing_abs<double>);
+            for(size_t i=1;i<=N;++i)
+            {
+                eqs.pad(std::cerr << "  (*) @" << ev[i]->name,ev[i]->name)  << " : " << sc[i] << std::endl;
+            }
+
+            // move most out of eq
+            const equilibrium &best = *ev.front();
+            const size_t       indx = *best;
+            std::cerr << "solving <" << best.name << ">" << std::endl;
+            best.solve(K[indx],Corg,Ctmp);
+            lib(std::cerr << "C0=", Corg);
             computeGammaAndPsi(Corg);
-            tao::v1::set(C,Corg);
+            YACK_CHEM_PRINTLN("// Gamma = " << Gamma);
+            YACK_CHEM_PRINTLN("// Psi   = " << Psi);
 
-
-
-
-
-        }
-
-
-        class xpair
-        {
-        public:
-            const equilibrium *eq;
-            double             xi;
-
-            inline xpair(const equilibrium *_, const double __) throw() :
-            eq(_), xi(__)
+            // compute predicted extent
+            tao::v3::mmul_trn(W,Psi,Nu);
+            for(size_t i=N;i>0;--i)
             {
-            }
-
-            inline ~xpair() throw() {}
-            inline xpair(const xpair &other) throw() : eq(other.eq), xi(other.xi)
-            {
-            }
-
-            static inline int compare(const xpair &lhs, const xpair &rhs) throw()
-            {
-                return comparison::increasing(lhs.xi,rhs.xi);
-            }
-
-        private:
-            YACK_DISABLE_ASSIGN(xpair);
-        };
-
-        double cluster:: variance(const readable<double> &C, const plexus &sys) const
-        {
-            vector<double> tmp(size,as_capacity);
-
-            for(const mnode *node=head;node;node=node->next)
-            {
-                const equilibrium &ei = **node;
-                tmp.push_back_fast(squared( ei.mass_action(ei(sys.K),C) ));
-            }
-            return sorted::sum(tmp,sorted::by_value) / size;
-        }
-
-
-        struct zfn
-        {
-            plexus        &sys;
-            const cluster &cls;
-
-            double operator()(const double u)
-            {
-                for(size_t j=sys.M;j>0;--j)
+                if( blocked[i] )
                 {
-                    sys.Ctry[j] = max_of(sys.Corg[j] + u * sys.dC[j],0.0);
+                    W[i][i]  = 1.0;
+                    Gamma[i] = 0.0;
                 }
-                return cls.variance(sys.Ctry,sys);
             }
 
-            double operator()(const double u, const readable<size_t> &vanishing)
+            if(!LU.build(W)) throw exception("%s   singular composition",clid);
+            tao::v1::neg(xi,Gamma);
+            LU.solve(W,xi);
+            std::cerr << "xi=" << xi << std::endl;
+
+
+
+#if 0
+            // compute predicted dC
+            computeDeltaC(xi);
+            std::cerr << "dC=" << dC << std::endl;
+            // compute correction by best
             {
-                for(size_t j=sys.M;j>0;--j)
-                {
-                    sys.Ctry[j] = max_of(sys.Corg[j] + u * sys.dC[j],0.0);
-                }
-                for(size_t k=vanishing.size();k>0;--k)
-                {
-                    sys.Ctry[ vanishing[k] ] = 0;
-                }
-                return cls.variance(sys.Ctry,sys);
+                const readable<double> &psi = Psi[indx]; assert(M==psi.size());
+                const imatrix::row     &nui = Nu[indx];  assert(M==nui.size());
+                const double den = tao::v1::dot<double>::of(psi,nui);
+                std::cerr << "den_" << best.name << "=" << den << std::endl;
+                const double num = -(Gamma[indx]+tao::v1::dot<double>::of(psi,dC));
+                std::cerr << "num_" << best.name << "=" << num << std::endl;
+                const double xii = num/den;
+                std::cerr << "xii_" << best.name << "=" << xii << std::endl;
+                xi[indx] += xii;
             }
-        };
+#endif
 
-
-        void plexus:: solve(const cluster &cls)
-        {
-            YACK_CHEM_PRINTLN("// <solving cluster#" << cls.indx << ">");
-            assert(cls.size>=1);
-            switch (cls.size) {
-                case 1: {
-                    const equilibrium &eq = **cls.head;
-                    eq.solve(eq(K),Corg,Ctmp);
-                    computeGammaAndPsi(Corg);
-                } return;
-
-                default:
-                    break;
-            }
-
-            const size_t   Nc = cls.size;
-            rmatrix        Wc(Nc,Nc);
-            vector<double> Xi(Nc,0);
-
-            vector<xpair> state(Nc,as_capacity);
-            size_t        iter = 0;
-
-        ITER:
-            ++iter;
-            YACK_CHEM_PRINTLN("// [iter=" << iter  <<"]");
-            state.free();
-            for(const mnode *node=cls.head;node;node=node->next)
+            // clamp xi/primary species
+            for(const enode *node=eqs.head();node;node=node->next)
             {
-                const equilibrium &eq = **node;
-                const xpair        xp(&eq,eq.extent(eq(K), Corg, Ctmp));
-                state.push_back_fast(xp);
+                const equilibrium &eq = ***node;
+                const limits      &lm = eq.find_primary_limits(Corg);
+                const size_t       ei = *eq;
+                eqs.pad(std::cerr << "@" << eq.name,eq.name) << " : " << std::setw(14) << xi[ei] << " | " << lm << std::endl;
+                xi[ei] = lm.crop(xi[ei]);
             }
-            hsort(state,xpair::compare);
-            for(size_t i=1;i<=Nc;++i)
+            std::cerr << "xi=" << xi << std::endl;
+            computeDeltaC(xi);
+            std::cerr << "dC=" << dC << std::endl;
+
+
+            double          scale = 1.0;
+            const size_t    count = truncation(scale);
+            triplet<double> x     = {0,0,0};
+            triplet<double> g     = {computeVariance(Corg),0,0};
+            const double    g0    = g.a;
+            YACK_CHEM_PRINTLN("// g0 = " << g0);
+            if(count)
             {
-                const xpair       &xp = state[i];  assert(xp.eq);
-                const equilibrium &eq = *xp.eq;
-                eqs.pad(std::cerr << "  @" << eq.name,eq.name) << " = " << xp.xi << std::endl;
-            }
-
-            const xpair *head = &state.front();
-            const xpair *tail = &state.back();
-
-            if( head->xi * tail->xi < 0 )
-            {
-                YACK_CHEM_PRINTLN("// reverse directions found");
-                double Khead = (*(head->eq))(K);
-                double Ktail = (*(tail->eq))(K);
-
-                if(Khead<Ktail)
+                YACK_CHEM_PRINTLN("// [limited@" << scale << "]");
+                if(scale>1)
                 {
-                    cswap(head,tail);
-                    cswap(Khead,Ktail);
-                }
-
-                const equilibrium   &eq_head = *(head->eq);
-                const readable<int> &nu_head = Nu[*eq_head];
-                const equilibrium   &eq_tail = *(tail->eq);
-                const readable<int> &nu_tail = Nu[*eq_tail];
-                std::cerr << "will solve " << eq_head.name << " (" << Khead <<") and " << eq_tail.name << " (" << Ktail << ")" << std::endl;
-                eqs.pad(std::cerr << "Nu_" << eq_head.name,eq_head.name) << " = " << nu_head << std::endl;
-                eqs.pad(std::cerr << "Nu_" << eq_tail.name,eq_tail.name) << " = " << nu_tail << std::endl;
-
-                const double      zK =Khead/Ktail;
-                const_equilibrium zeq("zeq",zK);
-                for(const anode *node=cls.used.head;node;node=node->next)
-                {
-                    const species &sp = **node;
-                    const size_t   j  = *sp;
-                    const unit_t   nu = nu_head[j]-nu_tail[j];
-                    if(nu!=0)
+                    YACK_CHEM_PRINTLN("// |_@" << scale << " > 1");
+                    save_profile("lim.dat",1);
+                    g.c=g.b=(*this)(x.c=x.b=1);
+                    if(g.c>=g.a)
                     {
-                        zeq.add(sp,nu);
-                    }
-                }
-                std::cerr << zeq << std::endl;
-                zeq.solve(zK,Corg,Ctmp);
-                lib(std::cerr << "Cz=",Corg);
-                goto ITER;
-                
-                throw exception("Not Yet Implemented");
-            }
-            else
-            {
-                YACK_CHEM_PRINTLN("// all in the same direction");
-
-                // preparing Wc
-                for(const mnode *I=cls.head;I;I=I->next)
-                {
-                    const equilibrium      &ei  = **I;
-                    const size_t            ii  = *ei;
-                    const readable<double> &psi = Psi[ii];
-                    const size_t            ic  = ei.isub;
-                    for(const mnode *J=cls.head;J;J=J->next)
-                    {
-                        const equilibrium &ej = **J;
-                        const size_t       jj = *ej;
-                        Wc[ic][ej.isub] = tao::v1::dot<double>::of(psi,Nu[jj]);
-                    }
-                }
-                std::cerr << "Wc=" << Wc << std::endl;
-
-                if( !LU.build(Wc) )
-                {
-                    throw exception("singular composition");
-                }
-
-                // computing Xi
-                for(const mnode *I=cls.head;I;I=I->next)
-                {
-                    const equilibrium      &ei  = **I;
-                    const size_t            ii  = *ei;
-                    const size_t            ic  = ei.isub;
-                    if(blocked[ii])
-                    {
-                        Xi[ic]     = 0;
-                        Wc[ic][ic] = 1;
+                        // backtrack
+                        YACK_CHEM_PRINTLN("// |_backtrack");
+                        minimize::find<double>::run_for(*this,x,g,minimize::inside);
                     }
                     else
                     {
-                        Xi[ic] = -Gamma[ii];
+                        // accept
+                        YACK_CHEM_PRINTLN("// |_accept");
                     }
-                }
 
-                LU.solve(Wc,Xi);
-                std::cerr << "Xi=" << Xi << std::endl;
-
-                // clamping Xi => xi
-                xi.ld(0);
-                for(const mnode *I=cls.head;I;I=I->next)
-                {
-                    const equilibrium      &ei  = **I;
-                    const size_t            ii  = *ei;
-                    const size_t            ic  = ei.isub;
-                    const limits           &lm  = ei.find_primary_limits(Corg);
-                    eqs.pad(std::cerr << " @<" << ei.name << ">",ei.name) << " = " << lm << std::endl;
-                    xi[ii] = lm.crop(Xi[ic]);
-                }
-                std::cerr << "xi=" << xi << std::endl;
-
-                // compute dC
-                computeDeltaC(cls.excl.head);
-                for(const anode *node=cls.excl.head;node;node=node->next)
-                {
-                    (**node)(dC) = 0;
-                }
-
-                double          scale = 1;
-                const size_t    count = truncation(scale,cls.used.head);
-                triplet<double> x = { 0,0,0 };
-                triplet<double> g = { cls.variance(Corg,*this), 0, 0};
-                zfn             G = { *this, cls };
-                const double    g0 = g.a;
-                YACK_CHEM_PRINTLN("// g0=" << g0);
-                if(g0<=0)
-                {
-                    YACK_CHEM_PRINTLN("// [numerical success level-1]");
-                    tao::v1::set(Corg,Ctry);
-                    return;
-                }
-
-                // move
-                if(count>0)
-                {
-                    YACK_CHEM_PRINTLN("// [limited @" << scale << "]");
-                    if(scale>1)
-                    {
-                        YACK_CHEM_PRINTLN("// [limited @" << scale << " > 1]");
-                        save_profile("lim.dat",1);
-                        g.c = g.b = G(x.c=x.b=1);
-                        if(g.c>=g.a)
-                        {
-                            YACK_CHEM_PRINTLN("// |_[backtrack]");
-                            minimize::find<double>::run_for(G,x,g,minimize::inside);
-                        }
-                        else
-                        {
-                            YACK_CHEM_PRINTLN("// |_ [accept]");
-                        }
-                    }
-                    else
-                    {
-                        YACK_CHEM_PRINTLN("// [limited @" << scale << " <= 1]");
-                        save_profile("lim.dat",scale);
-                        g.c = g.b = G(x.c=x.b=scale,ustack);
-                        minimize::find<double>::run_for(G,x,g,minimize::inside);
-                        if(g.b>=scale)
-                        {
-                            // recompute with vanishing
-                            g.b = G(x.b=scale,ustack);
-                        }
-                    }
                 }
                 else
                 {
-                    YACK_CHEM_PRINTLN("// [unlimited]");
-                    g.c = g.b = G(x.c=x.b=1);
-                    save_profile("ulim.dat",x.c);
+                    YACK_CHEM_PRINTLN("// |_@" << scale << " <= 1");
+                    save_profile("lim.dat",scale);
+                    g.c=g.b=(x.c=x.b=scale*0.9);
                     if(g.c>=g.a)
                     {
-                        YACK_CHEM_PRINTLN("// |_[backtrack]");
-                        minimize::find<double>::run_for(G,x,g,minimize::inside);
+                        // backtrack
+                        YACK_CHEM_PRINTLN("// |_backtrack");
+                        minimize::find<double>::run_for(*this,x,g,minimize::inside);
                     }
                     else
                     {
-                        YACK_CHEM_PRINTLN("// |_ [accept]");
+                        // accept
+                        YACK_CHEM_PRINTLN("// |_accept");
                     }
                 }
 
-                // evaluate
-                for(const anode *node=cls.used.head;node;node=node->next)
-                {
-                    const species &s = **node;
-                    const size_t   j = *s;
-                    Corg[j] = Ctry[j];
-                }
-
-                computeGammaAndPsi(Corg);
-
-
-                const double g1 = g.b;
-                YACK_CHEM_PRINTLN("// g1=" << g1 << " / " << g0);
-
-                if(g1<=0)
-                {
-                    YACK_CHEM_PRINTLN("// [numerical success level-2]");
-                    return;
-                }
-
-                if(g1>=g0)
-                {
-                    YACK_CHEM_PRINTLN("// [numerical convergence]");
-                    return;
-                }
-
-                goto ITER;
-
             }
+            else
+            {
+                YACK_CHEM_PRINTLN("// [unlimited]");
+                g.c=g.b=(*this)(x.c=x.b=1);
+                save_profile("ulim.dat",1);
+                if(g.c>=g.a)
+                {
+                    // backtrack
+                    YACK_CHEM_PRINTLN("// |_backtrack");
+                    minimize::find<double>::run_for(*this,x,g,minimize::inside);
+                }
+                else
+                {
+                    // accept
+                    YACK_CHEM_PRINTLN("// |_accept");
+                }
+            }
+            const double g1 = g.b;
+            YACK_CHEM_PRINTLN("// g1 = " << g1 << " / " << g0);
+
+
+
+            tao::v1::set(C,Corg);
+
 
         }
+
+
 
 
     }

@@ -8,16 +8,16 @@ namespace yack
     
     namespace chemical
     {
-        size_t plexus:: truncation(double &scale, const anode *node)
+        size_t plexus:: truncation(double &scale)
         {
             YACK_CHEM_PRINTLN("//   <truncation>");
             assert( absolute(1.0-scale) <= 0);
 
             rstack.free();
             ustack.free();
-            for( ;node;node=node->next)
+            for(const snode *node=lib.head();node;node=node->next)
             {
-                const species &s  = **node;
+                const species &s  = ***node;
                 const size_t   j  = *s;
                 const double   d  = dC[j];
                 if(d<0)

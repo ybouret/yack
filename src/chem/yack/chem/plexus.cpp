@@ -33,6 +33,7 @@ namespace yack
         N(eqs.size()),
         M(check(lib,eqs)),
         A(lib.active()),
+        active(),
         ntab(10,N),
         mtab(10,M),
 
@@ -56,13 +57,27 @@ namespace yack
         rstack(M,as_capacity),
         ustack(M,as_capacity),
         LU(N),
-        clusters(),
 
         lib_lock( coerce(lib) )
         {
             YACK_CHEM_PRINTLN("#species=" << M );
             YACK_CHEM_PRINTLN("#active =" << A );
             YACK_CHEM_PRINTLN("#eqs    =" << N );
+
+            //------------------------------------------------------------------
+            //
+            // initialize active
+            //
+            //------------------------------------------------------------------
+            for(const snode *node=lib.head();node;node=node->next)
+            {
+                const species &sp = ***node;
+                if(sp.rank>=1)
+                {
+                    coerce(active) << &sp;
+                }
+            }
+
 
             //------------------------------------------------------------------
             //
@@ -102,52 +117,7 @@ namespace yack
                         throw exception("%s: dependant equilibria detected",clid);
                 }
 
-
-                //--------------------------------------------------------------
-                //
-                // create groups
-                //
-                //--------------------------------------------------------------
-                {
-                    list_of<cluster> &groups = coerce(clusters);
-                    for(const enode *node=eqs.head();node;node=node->next)
-                    {
-                        const equilibrium &eq    = ***node;
-                        bool               found = false;
-                        for(cluster *cls=groups.head;cls;cls=cls->next)
-                        {
-                            if(cls->connected_to(eq))
-                            {
-                                (*cls) << &eq;
-                                found = true;
-                                break;
-                            }
-                        }
-
-                        if(!found)
-                        {
-                            groups.push_back( new cluster(groups.size+1,eq,eqs.width) );
-                        }
-                    }
-                    for(cluster *cls=groups.head;cls;cls=cls->next)
-                    {
-                        cls->finalize(lib.head());
-                    }
-                }
             }
-
-            if(verbose)
-            {
-                std::cerr << "// <clusters count='" << clusters.size << "'>" << std::endl;
-                for(const cluster *cls=clusters.head;cls;cls=cls->next)
-                {
-                    std::cerr << *cls << std::endl;
-                }
-                std::cerr << "// <clusters/>" << std::endl;
-            }
-
-            
-
         }
 
         void plexus:: computeK(const double t)
@@ -210,6 +180,30 @@ namespace yack
                 const double xx = u * umax;
                 fp("%.15g %.15g\n", xx, (*this)(xx) );
             }
+        }
+
+        double plexus:: computeVariance(const readable<double> &C)
+        {
+            if(N>0)
+            {
+                computeGamma(C);
+                for(size_t i=N;i>0;--i)
+                {
+                    sc[i] = squared(Gamma[i]);
+                }
+                return sorted::sum(sc,sorted::by_value) / N;
+            }
+            else
+            {
+                return 0;
+            }
+
+        }
+
+        double plexus:: operator()(const double u)
+        {
+            make_trial(u);
+            return computeVariance(Ctry);
         }
 
 
