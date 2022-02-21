@@ -104,7 +104,7 @@ The solution is
 \begin{equation}
 	A\xrightleftharpoons[]{} B+C, \;\; \Gamma = K[A] - [B][C]
 \end{equation}
-Starting from $[A],[B]$, the extent $x$ is solution of:
+Starting from $[A],[B],[C]$, the extent $x$ is solution of:
 \begin{equation}
 	K([A]-x) = ([B]+x)([C]+x) = x^2 + ([B]+[C])x + [B][C]
 \end{equation}
@@ -119,6 +119,27 @@ With:
 the extent is:
 \begin{equation}
 	x = \dfrac{\sqrt{\Delta} - ([B]+[C]+K) }{2}
+\end{equation}
+
+\section{Equilibrium $[[1,1],[1,1]]$}
+\begin{equation}
+	A+B\xrightleftharpoons[]{} C+D, \;\; \Gamma = K[A][B] - [C][D]
+\end{equation}
+Starting from $[A],[B],[C],[D]$, the extent $x$ is solution of:
+\begin{equation}
+	K([A]-x)([B]-x) = ([C]+x)([D]+x) 
+\end{equation}
+
+\begin{equation}
+	(K-1)x^2 - ( K([A]+[B]) + ([C]+[D])) x + (K[A][B] - [C][D]) = 0
+\end{equation}
+The discriminant is:
+\begin{equation}
+	\Delta = ([C]-[D])^2 + K \left[ K([A]-[B])^2 + 2(([A]+[B])([C]+[D]))+4([A][B]+[C][D]) \right] \geq 0
+\end{equation}
+
+\begin{equation}
+x = 2 \dfrac{K[A][B]-[C][D]}{ K([A]+[B]) + ([C]+[D])) + \sqrt{\Delta} }
 \end{equation}
 
 
