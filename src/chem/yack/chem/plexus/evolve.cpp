@@ -81,7 +81,13 @@ namespace yack
             }
 
             YACK_CHEM_PRINTLN("//   Gamma = " << Gamma);
-
+            double g0 = gammaVariance();
+            if( g0<=0 )
+            {
+                YACK_CHEM_PRINTLN("// <numerical success@iter=" << iter << "/>");
+                tao::v1::set(C,Corg);
+                return;
+            }
 
 
             //------------------------------------------------------------------
@@ -117,10 +123,29 @@ namespace yack
             const equilibrium &best = *ev.front();
             const size_t       indx = *best;
             YACK_CHEM_PRINTLN("//   <solving " << best.name << "/>");
-            best.solve(K[indx],Corg,Ctmp);
-            if(verbose) lib(std::cerr << "C0=", Corg);
+            tao::v1::set(Ctry,Corg);
+            best.solve(K[indx],Ctry,Ctmp);
+            if(verbose) lib(std::cerr << "C1=", Ctry);
+            const double gtry = computeVariance(Ctry);
+            YACK_CHEM_PRINTLN("//   gtry = " << gtry << " / " << g0);
+            if(gtry<g0)
+            {
+                YACK_CHEM_PRINTLN("//   <keep trial state/>");
+                tao::v1::set(Corg,Ctry);
+            }
+            else
+            {
+                YACK_CHEM_PRINTLN("//   <discard trial state/>");
+            }
             computeGammaAndPsi(Corg);
-            YACK_CHEM_PRINTLN("//   Gamma = " << Gamma);
+            g0 = gammaVariance();
+
+            if( g0<=0 )
+            {
+                YACK_CHEM_PRINTLN("// <numerical success@iter=" << iter << "/>");
+                tao::v1::set(C,Corg);
+                return;
+            }
 
             //------------------------------------------------------------------
             //
@@ -194,8 +219,7 @@ namespace yack
             double          scale = 1.0;
             const size_t    count = truncation(scale);
             triplet<double> x     = {0,0,0};
-            triplet<double> g     = {computeVariance(Corg),0,0};
-            const double    g0    = g.a;
+            triplet<double> g     = {g0,0,0};
             YACK_CHEM_PRINTLN("//   g0 = " << g0);
             if(count)
             {
@@ -203,7 +227,7 @@ namespace yack
                 if(scale>1)
                 {
                     YACK_CHEM_PRINTLN("//   |_@" << scale << " > 1");
-                    save_profile("lim.dat",1);
+                    //save_profile("lim.dat",1);
                     g.c=g.b=(*this)(x.c=x.b=1);
                     if(g.c>=g.a)
                     {
@@ -221,7 +245,7 @@ namespace yack
                 else
                 {
                     YACK_CHEM_PRINTLN("//   |_@" << scale << " <= 1");
-                    save_profile("lim.dat",scale);
+                    //save_profile("lim.dat",scale);
                     g.c=g.b=(x.c=x.b=scale*0.9);
                     if(g.c>=g.a)
                     {
@@ -241,7 +265,7 @@ namespace yack
             {
                 YACK_CHEM_PRINTLN("// [unlimited]");
                 g.c=g.b=(*this)(x.c=x.b=1);
-                save_profile("ulim.dat",1);
+                //save_profile("ulim.dat",1);
                 if(g.c>=g.a)
                 {
                     // backtrack

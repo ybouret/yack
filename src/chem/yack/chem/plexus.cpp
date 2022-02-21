@@ -182,16 +182,22 @@ namespace yack
             }
         }
 
+
+        double plexus:: gammaVariance() throw()
+        {
+            for(size_t i=N;i>0;--i)
+            {
+                sc[i] = squared(Gamma[i]);
+            }
+            return sorted::sum(sc,sorted::by_value) / N;
+        }
+
         double plexus:: computeVariance(const readable<double> &C)
         {
             if(N>0)
             {
                 computeGamma(C);
-                for(size_t i=N;i>0;--i)
-                {
-                    sc[i] = squared(Gamma[i]);
-                }
-                return sorted::sum(sc,sorted::by_value) / N;
+                return gammaVariance();
             }
             else
             {

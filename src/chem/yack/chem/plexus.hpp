@@ -114,6 +114,8 @@ namespace yack
             const readable<double> & make_trial(const double u) throw(); //!< Ctry = Corg + u * dC, >=0
             const readable<double> & make_trial(const double u, const readable<size_t> &vanishing) throw(); //!< Ctry = Corg + u * dC, >=0, set vanishing
 
+            double gammaVariance() throw();
+
             void computeDeltaC(const readable<double> &x) throw();
 
             //!  minimize blocked equilibria.
