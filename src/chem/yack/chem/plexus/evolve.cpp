@@ -58,7 +58,9 @@ namespace yack
 
             // compute initial state
             computeGammaAndPsi(Corg);
-
+            size_t iter = 0;
+        ITER:
+            ++iter;
             // regularize all
             if(regularize()>0 && verbose)
             {
@@ -67,6 +69,13 @@ namespace yack
 
             YACK_CHEM_PRINTLN("// Gamma = " << Gamma);
             YACK_CHEM_PRINTLN("// Psi   = " << Psi);
+
+            if( computeVariance(Corg) <= 0)
+            {
+                YACK_CHEM_PRINTLN("// [numerical success level-1]");
+                tao::v1::set(C,Corg);
+                return;
+            }
 
             // compute solving extents
             vector<equilibrium *> ev(N,NULL);
@@ -211,9 +220,17 @@ namespace yack
             const double g1 = g.b;
             YACK_CHEM_PRINTLN("// g1 = " << g1 << " / " << g0);
 
+            for(const anode *node=active.head;node;node=node->next)
+            {
+                const species &s = **node;
+                const size_t   j = *s;
+                Corg[j] = Ctry[j];
+            }
+
+            goto ITER;
 
 
-            tao::v1::set(C,Corg);
+            //tao::v1::set(C,Corg);
 
 
         }
