@@ -62,10 +62,12 @@ namespace yack
                         B = max_of(B-xi,0.0);
                         C = max_of(C+xi,0.0);
                         D = max_of(D+xi,0.0);
+                        return;
                     }
                     else
                     {
-                      // nothing
+                        // nothing
+                        return;
                     }
                 }
 
