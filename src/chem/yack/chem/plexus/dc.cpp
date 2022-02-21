@@ -31,7 +31,7 @@ namespace yack
             if(verbose)
             {
                 lib(std::cerr << "dC=", dC);
-                std::cerr << "//" << std::endl <<  "//   <computeDeltaC>" << std::endl;
+                std::cerr << "//   <computeDeltaC/>" << std::endl;
             }
 
         }

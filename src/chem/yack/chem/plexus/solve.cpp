@@ -102,6 +102,10 @@ namespace yack
                 }
             }
 
+
+            YACK_CHEM_PRINTLN("//   Gamma = " << Gamma);
+            YACK_CHEM_PRINTLN("//   Psi   = " << Psi);
+
             //------------------------------------------------------------------
             //
             // compute clamped Xi from Psi and blocked
