@@ -47,7 +47,8 @@ namespace yack
 
         xi(ntab.next()),
         sc(ntab.next()),
-
+        xs(ntab.next()),
+        
         Nu(N, (N>0) ? M : 0),
         NuT(Nu.cols,Nu.rows),
         Psi(Nu.rows,Nu.cols),

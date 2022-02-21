@@ -8,6 +8,7 @@
 #include "yack/sort/sum.hpp"
 #include "yack/math/numeric.hpp"
 #include "yack/ios/fmt/align.hpp"
+#include "yack/math/look-for.hpp"
 
 #include <cmath>
 #include <iomanip>
@@ -78,6 +79,12 @@ namespace yack
                 return;
             }
 
+            std::cerr << "xs=" << xs << std::endl;
+            const size_t nullity = look_for<double>::nullity::of(xs,0);
+            std::cerr << "xs=" << xs << std::endl;
+            std::cerr << "ks=" << nullity << std::endl;
+
+
             //------------------------------------------------------------------
             //
             // full differential state
@@ -100,7 +107,10 @@ namespace yack
                     tao::v1::set(C,Corg);
                     return;
                 }
+
+                // recompute xs
             }
+
 
 
             YACK_CHEM_PRINTLN("//   Gamma = " << Gamma);
@@ -120,12 +130,16 @@ namespace yack
             //------------------------------------------------------------------
             computeDeltaC(xi);
 
+            exit(1);
+            
             //------------------------------------------------------------------
             //
             // move
             //
             //------------------------------------------------------------------
             const double g1 = move(g0);
+
+            //exit(1);
 
             //------------------------------------------------------------------
             //
@@ -177,7 +191,6 @@ namespace yack
             goto ITER;
 
 
-            exit(1);
         }
 
     }

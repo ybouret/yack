@@ -38,11 +38,11 @@ namespace yack
                     Gamma[i] = 0.0;
                 }
             }
-
+            YACK_CHEM_PRINTLN("//    W     = " << W);
             if(!LU.build(W)) throw exception("%s   singular composition",clid);
             tao::v1::neg(xi,Gamma);
             LU.solve(W,xi);
-            YACK_CHEM_PRINTLN("//     xi_p  = " << xi);
+            YACK_CHEM_PRINTLN("//     xi_p   = " << xi);
 
 
             //------------------------------------------------------------------
@@ -63,7 +63,9 @@ namespace yack
                 xi[ei] = lm.crop(xi[ei]);
             }
             YACK_CHEM_PRINTLN("//     <correcting/>");
-            YACK_CHEM_PRINTLN("//     xi_c  = " << xi);
+            YACK_CHEM_PRINTLN("//     xi_c   = " << xi);
+            YACK_CHEM_PRINTLN("//     Gamma  = " << Gamma);
+            YACK_CHEM_PRINTLN("//     xs     = " << xs);
             YACK_CHEM_PRINTLN("//   <computeExtent/>");
 
         }

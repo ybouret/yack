@@ -98,7 +98,8 @@ namespace yack
             array_type                &Ctmp;     //!< [M] trial concentrations
             array_type                &dC;       //!< [M] delta C
             array_type                &xi;       //!< [N] xi
-            array_type                &sc;       //!< [N] to compute RMS
+            array_type                &sc;       //!< [N] to compute variance
+            array_type                &xs;       //!< [N] extent coefficients
             const imatrix              Nu;       //!< topology
             const imatrix              NuT;      //!< Nu'
             rmatrix                    Psi;      //!< [NxM] jacobian of Gamm

@@ -26,13 +26,14 @@ namespace yack
 
             const equilibrium *last = NULL;
             size_t             cycle=0;
+            
         TRY_SHRINK:
             ++cycle;
             for(const enode *node=eqs.head();node;node=node->next)
             {
                 const equilibrium &eq = ***node;
                 const size_t       ei = *eq;
-                sc[ei] = eq.extent(K[ei],Corg,Ctmp);
+                xs[ei] = ( sc[ei] = eq.extent(K[ei],Corg,Ctmp) );
                 ev[ei] = (equilibrium *)&eq;
             }
             hsort(sc,ev,comparison::decreasing_abs<double>);

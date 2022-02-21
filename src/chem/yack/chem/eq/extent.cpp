@@ -15,6 +15,8 @@ namespace yack
                                     const readable<double> &C0,
                                     writable<double>       &Ctmp) const
         {
+            return extent_(K0,C0,Ctmp);
+
             switch(topo)
             {
                 case topology_0_1: {
@@ -51,6 +53,8 @@ namespace yack
                     const double B     = (**prod.head)(C0);
                     const double C     = (**prod.tail)(C0);
                     const double Delta = squared(K0) + squared(B-C) + twice(K0*(sorted::sum(twice(A),B,C)));
+                    //const double xi     = 0.5*(sqrt(Delta)-sorted::sum(K0,B,C));
+                    //std::cerr << "[extent " << name << "] " << A << ", " << B << ", " << C << ", xi=" << xi << std::endl;
                     return 0.5*(sqrt(Delta)-sorted::sum(K0,B,C));
                 }
 
