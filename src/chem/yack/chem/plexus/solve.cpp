@@ -18,9 +18,7 @@ namespace yack
 
     namespace chemical
     {
-
-
-
+        
         void plexus:: solve(writable<double> &C)
         {
 
@@ -53,74 +51,126 @@ namespace yack
             {
                 lib(std::cerr << "C0=", Corg);
             }
-
-
-            vector<equilibrium *> ev(N,NULL);
+            size_t iter = 0;
             double                g0 = computeVariance(Corg);
+
+        ITER:
+            ++iter;
+            YACK_CHEM_PRINTLN("//" << std::endl << "//   [iter=" << iter << "]");
             YACK_CHEM_PRINTLN("//   g0=" << g0);
+            if(g0<=0)
+            {
+                YACK_CHEM_PRINTLN("// < numerical success level-0 >");
+                return;
+            }
+
 
             //------------------------------------------------------------------
             //
             // reduction
             //
             //------------------------------------------------------------------
-            YACK_CHEM_PRINTLN("//" << std::endl << "//   <shrinking>");
-            while(true)
+            shrink(g0);
+            if(g0<=0)
             {
-                for(const enode *node=eqs.head();node;node=node->next)
-                {
-                    const equilibrium &eq = ***node;
-                    const size_t       ei = *eq;
-                    sc[ei] = eq.extent(K[ei],Corg,Ctmp);
-                    ev[ei] = (equilibrium *)&eq;
-                }
-                hsort(sc,ev,comparison::decreasing_abs<double>);
-                if(verbose)
-                {
-                    std::cerr << "//     <excess>" << std::endl;
-                    for(size_t i=1;i<=N;++i)
-                    {
-                        const equilibrium &eq = *ev[i];
-                        eqs.pad(std::cerr << "//       (*) @" << eq.name,eq.name) << " : " << sc[i] << std::endl;
-                    }
-                    std::cerr << "//     <excess/>" << std::endl;
-                }
-
-                const equilibrium &best = *ev[1];
-                const size_t       indx = *best;
-                YACK_CHEM_PRINTLN("//     <trying " << best.name << ">");
-                tao::v1::set(Ctry,Corg);
-                best.solve(K[indx],Ctry,Ctmp);
-                const double gt = computeVariance(Ctry);
-                YACK_CHEM_PRINTLN("//     gt=" << gt);
-                if(gt<g0)
-                {
-                    g0 = gt;
-                    tao::v1::set(Corg,Ctry);
-                    YACK_CHEM_PRINTLN("//     <accept/>");
-                    continue;
-                }
-                else
-                {
-                    // keep Corg
-                    YACK_CHEM_PRINTLN("//     <reject/>");
-                    break;
-                }
+                YACK_CHEM_PRINTLN("// < numerical success level-1 >");
+                tao::v1::set(C,Corg);
+                return;
             }
-            YACK_CHEM_PRINTLN("//   <shrinking/>");
 
-
+            //------------------------------------------------------------------
+            //
             // full differential state
+            //
+            //------------------------------------------------------------------
             computeGammaAndPsi(Corg);
 
+            //------------------------------------------------------------------
+            //
+            // regularize differential state
+            //
+            //------------------------------------------------------------------
             if( regularize() && verbose )
             {
                 lib(std::cerr << "C0=", Corg);
-
+                g0 = gammaVariance();
+                if(g0<=0)
+                {
+                    YACK_CHEM_PRINTLN("// < numerical success level-2 >");
+                    tao::v1::set(C,Corg);
+                    return;
+                }
             }
 
-            computeXi();
+            //------------------------------------------------------------------
+            //
+            // compute clamped Xi from Psi and blocked
+            //
+            //------------------------------------------------------------------
+            computeExtent();
 
+            //------------------------------------------------------------------
+            //
+            // compute deltaC
+            //
+            //------------------------------------------------------------------
+            computeDeltaC(xi);
+
+            //------------------------------------------------------------------
+            //
+            // move
+            //
+            //------------------------------------------------------------------
+            const double g1 = move(g0);
+
+            //------------------------------------------------------------------
+            //
+            // move
+            //
+            //------------------------------------------------------------------
+            bool                converged = true;
+            static const double mtol      = minimize::get_mtol<double>();
+            for(const anode *node=active.head;node;node=node->next)
+            {
+                const species &s = **node;
+                const size_t   j = *s;
+                const double   del = fabs(Corg[j]-Ctry[j]);
+                const double   err = fabs(Ctry[j]) * mtol;
+                const bool     bad = del>err;
+                if(bad)
+                {
+                    converged = false;
+                }
+                Corg[j] = Ctry[j];
+            }
+
+            computeGammaAndPsi(Corg);
+
+            if(converged)
+            {
+                YACK_CHEM_PRINTLN("// <composition convergence@iter=" << iter << "/>");
+                tao::v1::set(C,Corg);
+                return;
+            }
+
+
+            if( g1 <= 0)
+            {
+                YACK_CHEM_PRINTLN("// <numerical success@iter=" << iter << "/>");
+                tao::v1::set(C,Corg);
+                return;
+            }
+
+            if( g1 >= g0)
+            {
+                YACK_CHEM_PRINTLN("// <variance convergence@iter=" << iter << "/>");
+                tao::v1::set(C,Corg);
+                return;
+            }
+
+            g0 = g1;
+
+            goto ITER;
 
 
             exit(1);

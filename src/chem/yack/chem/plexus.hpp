@@ -116,10 +116,10 @@ namespace yack
             const readable<double> & make_trial(const double u, const readable<size_t> &vanishing) throw(); //!< Ctry = Corg + u * dC, >=0, set vanishing
 
             double gammaVariance() throw();
-
+            void   shrink(double &g0);
 
             //! compute with regularized composition
-            void computeXi();
+            void computeExtent();
 
             //! compute precise deltaC from a given extent
             void computeDeltaC(const readable<double> &x) throw();
@@ -131,13 +131,11 @@ namespace yack
              */
             size_t regularize();
             
-            //! from regularized W = inv(Phi * NuT) with blocked equilibrium(a)
-            void computeExtent();
 
             //! detect truncation, use rstack and ustack
             size_t truncation(double &scale);
 
-            //! move algorithm
+            //! move algorithm: from g0@Corg to g1@Ctry
             double move(const double g0);
 
             //! helper

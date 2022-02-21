@@ -10,7 +10,7 @@ namespace yack
     {
         size_t plexus:: truncation(double &scale)
         {
-            YACK_CHEM_PRINTLN("//   <truncation>");
+            YACK_CHEM_PRINTLN("//" << std::endl << "//   <truncation>");
             assert( absolute(1.0-scale) <= 0);
 
             rstack.free();

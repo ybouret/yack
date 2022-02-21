@@ -20,9 +20,9 @@ namespace yack
     namespace chemical
     {
 
-        void plexus:: computeXi()  
+        void plexus:: computeExtent()
         {
-            YACK_CHEM_PRINTLN("//" << std::endl <<  "//   <computeXi>");
+            YACK_CHEM_PRINTLN("//" << std::endl <<  "//   <computeExtent>");
 
             //------------------------------------------------------------------
             //
@@ -64,7 +64,7 @@ namespace yack
             }
             YACK_CHEM_PRINTLN("//     <correcting/>");
             YACK_CHEM_PRINTLN("//     xi_c  = " << xi);
-            YACK_CHEM_PRINTLN("//   <computeXi/>");
+            YACK_CHEM_PRINTLN("//   <computeExtent/>");
 
         }
 
