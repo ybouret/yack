@@ -122,6 +122,7 @@ namespace yack
                     YACK_EQF(1_1);
                     YACK_EQF(0_11);
                     YACK_EQF(1_11);
+                    YACK_EQF(11_11);
             }
             return yack_unknown;
         }
@@ -161,6 +162,11 @@ namespace yack
                     coerce(topo) = topology_1_11;
                     break;
 
+                case YACK_EQ_FAMILY(actors::kind_11,actors::kind_11):
+                    coerce(topo) = topology_11_11;
+                    break;
+
+
                 default:
                     coerce(topo) = topology_any;
             }
@@ -186,6 +192,8 @@ namespace yack
                     os << (**a).name;
                 }
             }
+            else
+                os << '.';
         }
 
         void equilibrium:: display(std::ostream &os, const size_t w, const double t) const

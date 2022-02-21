@@ -50,13 +50,14 @@ namespace yack
             //! topology
             enum topology
             {
-                topology_any,  //!< generic
-                topology_0_1,  //!< . <=> A
-                topology_1_0,  //!< A <=> .
-                topology_0_2,  //!<   <=> 2A
-                topology_1_1,  //!< A <=> B
-                topology_0_11, //!< . <=> A+B
-                topology_1_11  //!< A <=> B+C
+                topology_any,   //!< generic
+                topology_0_1,   //!< . <=> A
+                topology_1_0,   //!< A <=> .
+                topology_0_2,   //!<   <=> 2A
+                topology_1_1,   //!< A <=> B
+                topology_0_11,  //!< . <=> A+B
+                topology_1_11,  //!< A <=> B+C
+                topology_11_11  //!< A+B <=> B+C
             };
 
             //! topology to text

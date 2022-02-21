@@ -45,6 +45,30 @@ namespace yack
                     C = max_of(C+xi,0.0);
                 } return;
 
+                case topology_11_11: {
+                    double       &A = (**reac.head)(C0);
+                    double       &B = (**reac.tail)(C0);
+                    double       &C = (**prod.head)(C0);
+                    double       &D = (**prod.tail)(C0);
+                    const double AB = A*B;
+                    const double CD = C*D;
+                    if(fabs(AB)>0||fabs(CD)>0)
+                    {
+                        const double mb    = K0*(A+B)+(C+D);
+                        const double gam   = K0*AB - CD;
+                        const double Delta = max_of(mb*mb - 4.0 * (K0-1.0) * gam,0.0);
+                        const double xi    =  twice( gam / (mb+sqrt(Delta)) );
+                        A = max_of(A-xi,0.0);
+                        B = max_of(B-xi,0.0);
+                        C = max_of(C+xi,0.0);
+                        D = max_of(D+xi,0.0);
+                    }
+                    else
+                    {
+                      // nothing
+                    }
+                }
+
                 case topology_any:
                     break;
             }

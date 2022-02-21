@@ -54,6 +54,27 @@ namespace yack
                     return 0.5*(sqrt(Delta)-sorted::sum(K0,B,C));
                 }
 
+                case topology_11_11: {
+                    assert(2==reac.size); assert(1==reac.head->nu); assert(1==reac.tail->nu);
+                    assert(2==prod.size); assert(1==prod.head->nu); assert(1==prod.tail->nu);
+                    const double A     = (**reac.head)(C0);
+                    const double B     = (**reac.tail)(C0);
+                    const double C     = (**prod.head)(C0);
+                    const double D     = (**prod.tail)(C0);
+                    const double AB    = A*B;
+                    const double CD    = C*D;
+                    if(fabs(AB)>0||fabs(CD)>0)
+                    {
+                        const double mb    = K0*(A+B)+(C+D);
+                        const double gam   = K0*AB - CD;
+                        const double Delta = max_of(mb*mb - 4.0 * (K0-1.0) * gam,0.0);
+                        return twice( gam / (mb+sqrt(Delta)) );
+                    }
+                    else
+                    {
+                        return 0;
+                    }
+                }
 
                 case topology_any:
                     break;
