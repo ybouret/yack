@@ -70,7 +70,8 @@ namespace yack
             //! variance at Ctry = Corg + u * dC
             double operator()(const double u);
 
-            
+            //! solve, Gamma and Psi are ready on return
+            void solve(writable<double> &C);
 
             //! chemical graph
             void gv(const string &filename) const;

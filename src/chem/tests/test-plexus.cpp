@@ -12,7 +12,7 @@ static inline void try_solve(plexus &cs, writable<double> &C)
 {
     
     cs.lib(std::cerr << "Cini=",C);
-    cs.evolve(C);
+    cs.solve(C);
     cs.lib(std::cerr << "Cend=",C);
     cs.eqs(std::cerr << "Gamma=",cs.Gamma);
 }
@@ -58,11 +58,11 @@ YACK_UTEST(plexus)
             //----------------------------------------------------------------------
             // from 0
             //----------------------------------------------------------------------
-            //lib.fill(C,0.7,ran);
+            lib.fill(C,0.7,ran);
             try_solve(cs,C);
             //std::cerr << "Nu=" << cs.Nu << std::endl;
 
-            //return 0;
+            return 0;
 
             //----------------------------------------------------------------------
             // loading active
