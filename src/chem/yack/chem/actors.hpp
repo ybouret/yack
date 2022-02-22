@@ -64,6 +64,8 @@ namespace yack
             //! maximum
             double          maximum(const readable<double> &C) const throw();
 
+            //! max species index
+            size_t          span() const throw();  
 
             //! limiting species, associated extent for self
             const limiting *find_private_limiting(const readable<double> &C) const throw();

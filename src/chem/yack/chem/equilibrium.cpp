@@ -36,6 +36,11 @@ namespace yack
             return comp.search(sp.name);
         }
 
+        size_t equilibrium:: span() const throw()
+        {
+            return max_of( reac.span(), prod.span() );
+        }
+
         void equilibrium:: add(const species &sp, const unit_t nu)
         {
             // initialize new component
@@ -229,6 +234,7 @@ namespace yack
         double equilibrium:: mass_action(const double            K0,
                                          const readable<double> &C) const throw()
         {
+            assert( span() <= C.size() );
             return reac.mass_action(K0,C) - prod.mass_action(1,C);
         }
 
@@ -237,7 +243,9 @@ namespace yack
                                          const double            K0,
                                          const readable<double> &C) const throw()
         {
-            for(size_t i=psi.size();i>0;--i) psi[i]=0;
+            assert( span() <= psi.size() );
+            assert( span() <= C.size()   );
+            psi.ld(0);
             return reac.drvs_action(psi,K0,C) + prod.drvs_action(psi,-1,C);
         }
 

@@ -8,6 +8,7 @@
 using namespace yack;
 using namespace chemical;
 
+#if 0
 static inline double f_abs(const double x)
 {
     return fabs(x);
@@ -74,6 +75,7 @@ static inline void delta_NU(const readable<int> &A, const readable<int> &B)
     }
 
 }
+#endif
 
 static inline void try_solve(plexus &cs, writable<double> &C)
 {
@@ -117,11 +119,23 @@ YACK_UTEST(plexus)
 
     cs.gv("plexus.dot");
 
+#if 0
     if(cs.N>1)
     {
         delta_NU(cs.Nu[1],cs.Nu[2]);
     }
+#endif
 
+    std::cerr << "Interaction" << std::endl;
+    for(size_t i=1;i<cs.N;++i)
+    {
+        for(size_t j=i+1;j<=cs.N;++j)
+        {
+            equilibrium::interation(cs.Nu[i],cs.Nu[j]);
+        }
+    }
+
+    
 
     if(cs.N)
     {

@@ -101,15 +101,18 @@ namespace yack
             //
             // methods
             //__________________________________________________________________
-            void add(const species &sp, const unit_t nu); //!< add a registers species
-            void load(const string &expr, library &lib);  //!< load from string
-            void load(const char   *expr, library &lib);  //!< load from string
-            bool uses(const species &sp) const throw();   //!< check in use
+            void   add(const species &sp, const unit_t nu); //!< add a registers species
+            void   load(const string &expr, library &lib);  //!< load from string
+            void   load(const char   *expr, library &lib);  //!< load from string
+            bool   uses(const species &sp) const throw();   //!< check in use
+            size_t span()                  const throw();   //!< max_of(reac.span(),prod.span());
 
             //! fill row of topology
             template <typename T> inline
             void fill(writable<T> &nu) const
             {
+                assert(nu.size()>=span());
+                nu.ld(0);
                 for(const cnode *node=head();node;node=node->next)
                 {
                     const component &c = ***node;
@@ -180,6 +183,8 @@ namespace yack
 
             //! checking if species connexion between two equilibria
             static bool connexion(const equilibrium &lhs, const equilibrium &rhs) throw();
+
+            static void interation(const readable<int> &A, const readable<int> &B);
 
             //__________________________________________________________________
             //

@@ -144,6 +144,18 @@ namespace yack
             return m;
         }
 
+        size_t actors:: span() const throw()
+        {
+            size_t res = 0;
+            for( const actor *a = head;a;a=a->next)
+            {
+                res = max_of(res,***a);
+            }
+            return res;
+
+        }
+
+
 
         actors::family actors:: get_family() const throw()
         {

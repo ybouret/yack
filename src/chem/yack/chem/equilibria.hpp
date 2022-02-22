@@ -87,7 +87,7 @@ namespace yack
                 }
                 os << '}' << std::endl;
             }
-
+            
             
 
         private:
