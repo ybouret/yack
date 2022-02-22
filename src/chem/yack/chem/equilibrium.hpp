@@ -76,7 +76,6 @@ namespace yack
             entity(id),
             type(is_unfinished),
             topo(topology_any),
-            isub(0),
             reac(),
             prod(),
             nu_p(0),
@@ -92,9 +91,9 @@ namespace yack
             //
             // interface
             //__________________________________________________________________
-            double         K(double) const;      //!< check valid getK(t)
-            virtual size_t size() const throw(); //!< number of registered components
-            const cnode   *head() const throw(); //!< fist component
+            double         K(double) const;           //!< check valid getK(t)
+            virtual size_t size() const throw();      //!< number of registered components
+            const cnode   *head() const throw();      //!< fist component
             const char    *topo_text() const throw(); //!< topology_text(topo)
 
             //__________________________________________________________________
@@ -192,7 +191,6 @@ namespace yack
             //__________________________________________________________________
             const genus    type; //!< qualification
             const topology topo; //!< specs
-            const size_t   isub; //!< index in group
             const actors   reac; //!< list of reactant(s)
             const actors   prod; //!< list of product(s)
             const unit_t   nu_p; //!< sum nu_p

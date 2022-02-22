@@ -4,7 +4,6 @@
 #define YACK_CHEM_PLEXUS_INCLUDED 1
 
 #include "yack/chem/equilibria.hpp"
-#include "yack/chem/interactions.hpp"
 #include "yack/chem/library.hpp"
 #include "yack/sequence/arrays.hpp"
 #include "yack/container/matrix.hpp"
@@ -16,6 +15,48 @@ namespace yack
 {
     namespace chemical
     {
+
+        class interaction : public const_equilibrium
+        {
+        public:
+            typedef ark_ptr<string,const interaction> pointer;
+
+            virtual ~interaction() throw() {}
+
+            interaction *next;
+            interaction *prev;
+
+            const int    self; //!< self coeff > 0
+            const int    peer; //!< |peer coeff| > 0
+            const int    norm; //!< normalisation
+            const double kexp; //!< 1.0/norm
+
+            explicit interaction(const equilibrium &self_info,
+                                 const int          self_coef,
+                                 const equilibrium &peer_info,
+                                 const int          peer_coef,
+                                 const int          norm_coef) :
+            const_equilibrium("",1),
+            next(0),
+            prev(0),
+            self(self_coef),
+            peer(peer_coef),
+            norm(norm_coef),
+            kexp(1.0/norm)
+            {
+                assert(self>0);
+                assert(peer!=0);
+                assert(norm>0);
+                coerce(name) = vformat("%d@%s | %d@%s",self,self_info.name(),peer,peer_info.name());
+            }
+
+        private:
+            YACK_DISABLE_COPY_AND_ASSIGN(interaction);
+        };
+
+        typedef cxx_list_of<interaction> interactions;
+
+
         //______________________________________________________________________
         //
         //
@@ -45,7 +86,6 @@ namespace yack
             //__________________________________________________________________
             typedef arrays_of<double>    tableaux;   //!< alias
             typedef tableaux::array_type array_type; //!< alias
-            typedef vector<const connexions::pointer> connectivity; //!< alias
             static bool                  verbose;    //!< verbosity
             static const char            clid[];     //!< chemical::plexus
             
@@ -82,14 +122,14 @@ namespace yack
             //
             // members
             //__________________________________________________________________
-            const library     &lib;    //!< support library
-            const equilibria  &eqs;    //!< support equilibria
-            const size_t       N;      //!< equilibria count
-            const size_t       M;      //!< species count
-            const size_t       A;      //!< active species
-            const alist        active; //!< active species list
-            const connectivity conn;   //!< all possible connexions
-
+            const library       &lib;    //!< support library
+            const equilibria    &eqs;    //!< support equilibria
+            const size_t         N;      //!< equilibria count
+            const size_t         M;      //!< species count
+            const size_t         A;      //!< active species
+            const alist          active; //!< active species list
+            const matrix<interactions> conn;   //!< connectivity
+            
         private:
             tableaux ntab;
             tableaux mtab;
@@ -115,9 +155,9 @@ namespace yack
         private:
             YACK_DISABLE_COPY_AND_ASSIGN(plexus);
             const lockable::scope lib_lock;
+            const lockable::scope eqs_lock;
 
-            void setup_conn();
-
+            void computeConn();
 
             const readable<double> & make_trial(const double u) throw(); //!< Ctry = Corg + u * dC, >=0
             const readable<double> & make_trial(const double u, const readable<size_t> &vanishing) throw(); //!< Ctry = Corg + u * dC, >=0, set vanishing
