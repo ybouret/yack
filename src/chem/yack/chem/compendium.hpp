@@ -33,8 +33,9 @@ namespace yack
             //__________________________________________________________________
             std::ostream & pad(std::ostream &, const size_t n) const; //!< n to width
             std::ostream & pad(std::ostream &, const string &) const; //!< n to width
+            std::ostream & pad(std::ostream &, const entity &) const; //!< using entity name
 
-            //__________________________________________________________________
+            //___________________________________________________________
             //
             // members
             //__________________________________________________________________

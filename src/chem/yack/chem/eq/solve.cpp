@@ -13,6 +13,7 @@ namespace yack
                                   writable<double> &C0,
                                   writable<double> &Ctry) const
         {
+#if 0
             switch(topo)
             {
                 case topology_0_1: (**prod.head)(C0) = K0;       return;
@@ -74,7 +75,8 @@ namespace yack
                 case topology_any:
                     break;
             }
-
+#endif
+            
             const double   xi_ = extent_(K0,C0,Ctry);
             move(C0,C0,xi_);
         }

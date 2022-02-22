@@ -23,8 +23,8 @@ namespace yack
         //______________________________________________________________________
         typedef matrix<double>           rmatrix; //!< real matrix
         typedef matrix<int>              imatrix; //!< integer matrix
-        typedef meta_node<const species> anode;
-        typedef meta_list<const species> alist;
+        typedef meta_node<const species> anode;   //!< active node
+        typedef meta_list<const species> alist;   //!< active list
 
         //! helper for verbosity
 #define YACK_CHEM_PRINTLN(MSG) do { if(plexus::verbose) { std::cerr << MSG << std::endl; } } while(false)

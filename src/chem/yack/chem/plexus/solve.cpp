@@ -9,7 +9,7 @@
 #include "yack/math/numeric.hpp"
 #include "yack/ios/fmt/align.hpp"
 #include "yack/math/look-for.hpp"
-
+#include "yack/sort/indexing.hpp"
 #include <cmath>
 #include <iomanip>
 
@@ -48,147 +48,43 @@ namespace yack
             }
 
             YACK_CHEM_PRINTLN("// <solving>");
+
+            //------------------------------------------------------------------
+            //
+            // fetch equilibria
+            //
+            //------------------------------------------------------------------
+            vector<equilibrium *> ev(N,NULL);
+            vector<double>        kv(N,0);
+            vector<size_t>        iv(N,0);
+
+            for(const enode *node=eqs.head();node;node=node->next)
+            {
+                const equilibrium &eq = ***node;
+                const size_t       ei = *eq;
+                ev[ei] = (equilibrium *)&eq;
+                kv[ei] = K[ei];
+                xs[ei] = eq.extent(kv[ei]=K[ei],Corg,Ctmp);
+            }
+            indexing::make(iv,comparison::decreasing<double>,kv);
             if(verbose)
             {
-                lib(std::cerr << "C0=", Corg);
-            }
-            size_t iter = 0;
-            double                g0 = computeVariance(Corg);
-
-        ITER:
-            ++iter;
-            YACK_CHEM_PRINTLN("//" << std::endl << "//   [iter=" << iter << "]");
-            YACK_CHEM_PRINTLN("//   g0=" << g0);
-            if(g0<=0)
-            {
-                YACK_CHEM_PRINTLN("// < numerical success level-0 >");
-                return;
-            }
-
-
-            //------------------------------------------------------------------
-            //
-            // reduction
-            //
-            //------------------------------------------------------------------
-            shrink(g0);
-            if(g0<=0)
-            {
-                YACK_CHEM_PRINTLN("// < numerical success level-1 >");
-                tao::v1::set(C,Corg);
-                return;
-            }
-
-            std::cerr << "xs=" << xs << std::endl;
-            const size_t nullity = look_for<double>::nullity::of(xs,0);
-            std::cerr << "xs=" << xs << std::endl;
-            std::cerr << "ks=" << nullity << std::endl;
-
-
-            //------------------------------------------------------------------
-            //
-            // full differential state
-            //
-            //------------------------------------------------------------------
-            computeGammaAndPsi(Corg);
-
-            //------------------------------------------------------------------
-            //
-            // regularize differential state
-            //
-            //------------------------------------------------------------------
-            if( regularize() && verbose )
-            {
-                lib(std::cerr << "C0=", Corg);
-                g0 = gammaVariance();
-                if(g0<=0)
+                std::cerr << "// <system>" << std::endl;
+                for(size_t k=1;k<=N;++k)
                 {
-                    YACK_CHEM_PRINTLN("// < numerical success level-2 >");
-                    tao::v1::set(C,Corg);
-                    return;
+                    const size_t       i  = iv[k];
+                    const equilibrium &eq = *ev[i];
+                    eqs.pad(std::cerr << " @" << eq.name,eq);
+                    std::cerr << " | K = " << std::setw(14) << kv[i];
+                    std::cerr << " | Xs = " << std::setw(14) << xs[i];
+                    std::cerr << " | Nu = " << Nu[i];
+                    std::cerr << std::endl;
                 }
-
-                // recompute xs
+                std::cerr << "// <system/>" << std::endl;
             }
-
-
-
-            YACK_CHEM_PRINTLN("//   Gamma = " << Gamma);
-            YACK_CHEM_PRINTLN("//   Psi   = " << Psi);
-
-            //------------------------------------------------------------------
-            //
-            // compute clamped Xi from Psi and blocked
-            //
-            //------------------------------------------------------------------
-            computeExtent();
-
-            //------------------------------------------------------------------
-            //
-            // compute deltaC
-            //
-            //------------------------------------------------------------------
-            computeDeltaC(xi);
 
             exit(1);
-            
-            //------------------------------------------------------------------
-            //
-            // move
-            //
-            //------------------------------------------------------------------
-            const double g1 = move(g0);
 
-            //exit(1);
-
-            //------------------------------------------------------------------
-            //
-            // move
-            //
-            //------------------------------------------------------------------
-            bool                converged = true;
-            static const double mtol      = minimize::get_mtol<double>();
-            for(const anode *node=active.head;node;node=node->next)
-            {
-                const species &s = **node;
-                const size_t   j = *s;
-                const double   del = fabs(Corg[j]-Ctry[j]);
-                const double   err = fabs(Ctry[j]) * mtol;
-                const bool     bad = del>err;
-                if(bad)
-                {
-                    converged = false;
-                }
-                Corg[j] = Ctry[j];
-            }
-
-            computeGammaAndPsi(Corg);
-
-            if(converged)
-            {
-                YACK_CHEM_PRINTLN("// <composition convergence@iter=" << iter << "/>");
-                tao::v1::set(C,Corg);
-                return;
-            }
-
-
-            if( g1 <= 0)
-            {
-                YACK_CHEM_PRINTLN("// <numerical success@iter=" << iter << "/>");
-                tao::v1::set(C,Corg);
-                return;
-            }
-
-            if( g1 >= g0)
-            {
-                YACK_CHEM_PRINTLN("// <variance convergence@iter=" << iter << "/>");
-                tao::v1::set(C,Corg);
-                return;
-            }
-
-            g0 = g1;
-
-            goto ITER;
 
 
         }

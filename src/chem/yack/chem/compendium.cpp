@@ -34,5 +34,10 @@ namespace yack
             coerce(ent.indx) = indx;
         }
 
+        std::ostream & compendium:: pad(std::ostream &os, const entity &ent) const
+        {
+            return pad(os,ent.name);
+        }
+
     }
 }
