@@ -83,6 +83,33 @@ namespace yack
                 std::cerr << "// <system/>" << std::endl;
             }
 
+            for(size_t k=1;k<=N;++k)
+            {
+                const size_t       itop = iv[k];
+                const equilibrium &etop = *ev[itop];
+                const size_t       row   = *etop;
+
+                for(size_t l=N;l>k;--l)
+                {
+                    const size_t        isub  = iv[l];
+                    const equilibrium  &esub = *ev[isub];
+                    const size_t        col  = *esub;
+                    const interactions &inter = conn[row][col];
+                    std::cerr << etop.name << " / " << esub.name << " #" << inter.size << std::endl;
+                    const double Ktop = K[row];
+                    const double Ksub = K[col];
+                    for(const interaction *in=inter.head;in;in=in->next)
+                    {
+                        const double Kin = pow( pow(Ktop,in->self) * pow(Ksub,in->peer), in->kexp );
+                        coerce(*in).assign(Kin);
+                        std::cerr << "  " << *in << std::endl;
+                    }
+
+                }
+
+            }
+
+
             exit(1);
 
 
