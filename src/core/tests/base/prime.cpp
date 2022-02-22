@@ -26,14 +26,11 @@ static inline void output(const plist &l)
 YACK_UTEST(prime)
 {
     uint64_t p=0;
-    size_t   n=0;
     plist p8,p16,p32;
-    typedef small_node<uint64_t> pnode;
     while(true)
     {
         p = prime64::next(++p);
         std::cerr << p << std::endl;
-        ++n;
         const size_t nb = bits_for(p);
         if( nb <= 8 )
         {
