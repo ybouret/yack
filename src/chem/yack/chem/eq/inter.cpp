@@ -52,7 +52,7 @@ namespace yack
         }
 
 
-        void equilibrium:: interation(const readable<int> &A, const readable<int> &B)
+        void equilibrium:: inter(const readable<int> &A, const readable<int> &B)
         {
             assert(A.size()==B.size());
             const size_t M = A.size();

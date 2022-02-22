@@ -4,6 +4,7 @@
 #define YACK_CHEM_PLEXUS_INCLUDED 1
 
 #include "yack/chem/equilibria.hpp"
+#include "yack/chem/interactions.hpp"
 #include "yack/chem/library.hpp"
 #include "yack/sequence/arrays.hpp"
 #include "yack/container/matrix.hpp"
@@ -44,6 +45,7 @@ namespace yack
             //__________________________________________________________________
             typedef arrays_of<double>    tableaux;   //!< alias
             typedef tableaux::array_type array_type; //!< alias
+            typedef vector<const connexions::pointer> connectivity; //!< alias
             static bool                  verbose;    //!< verbosity
             static const char            clid[];     //!< chemical::plexus
             
@@ -80,13 +82,14 @@ namespace yack
             //
             // members
             //__________________________________________________________________
-            const library    &lib;    //!< support library
-            const equilibria &eqs;    //!< support equilibria
-            const size_t      N;      //!< equilibria count
-            const size_t      M;      //!< species count
-            const size_t      A;      //!< active species
-            const alist       active; //!< active species list
-            
+            const library     &lib;    //!< support library
+            const equilibria  &eqs;    //!< support equilibria
+            const size_t       N;      //!< equilibria count
+            const size_t       M;      //!< species count
+            const size_t       A;      //!< active species
+            const alist        active; //!< active species list
+            const connectivity conn;   //!< all possible connexions
+
         private:
             tableaux ntab;
             tableaux mtab;
@@ -112,6 +115,9 @@ namespace yack
         private:
             YACK_DISABLE_COPY_AND_ASSIGN(plexus);
             const lockable::scope lib_lock;
+
+            void setup_conn();
+
 
             const readable<double> & make_trial(const double u) throw(); //!< Ctry = Corg + u * dC, >=0
             const readable<double> & make_trial(const double u, const readable<size_t> &vanishing) throw(); //!< Ctry = Corg + u * dC, >=0, set vanishing

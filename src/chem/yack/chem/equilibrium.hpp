@@ -184,7 +184,7 @@ namespace yack
             //! checking if species connexion between two equilibria
             static bool connexion(const equilibrium &lhs, const equilibrium &rhs) throw();
 
-            static void interation(const readable<int> &A, const readable<int> &B);
+            static void inter(const readable<int> &A, const readable<int> &B);
 
             //__________________________________________________________________
             //
@@ -235,7 +235,7 @@ namespace yack
             equilibrium(id), value(K_)
             {}
 
-
+            void assign(const double new_value) throw();
 
         private:
             YACK_DISABLE_COPY_AND_ASSIGN(const_equilibrium);

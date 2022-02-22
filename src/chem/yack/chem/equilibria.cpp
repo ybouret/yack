@@ -22,7 +22,7 @@ namespace yack
         equilibrium & equilibria:: use(equilibrium *pEq)
         {
             assert(pEq);
-            // try to insert equlibrium
+            // try to insert equilibrium
             const equilibrium::pointer eq = pEq;
             if(!db.insert(eq)) throw exception("equilibria use multiple <%s>", (eq->name)());
 

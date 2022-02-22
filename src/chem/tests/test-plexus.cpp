@@ -126,15 +126,16 @@ YACK_UTEST(plexus)
     }
 #endif
 
+#if 0
     std::cerr << "Interaction" << std::endl;
     for(size_t i=1;i<cs.N;++i)
     {
         for(size_t j=i+1;j<=cs.N;++j)
         {
-            equilibrium::interation(cs.Nu[i],cs.Nu[j]);
+            equilibrium::inter(cs.Nu[i],cs.Nu[j]);
         }
     }
-
+#endif
     
 
     if(cs.N)

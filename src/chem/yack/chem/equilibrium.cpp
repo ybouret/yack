@@ -364,6 +364,12 @@ namespace yack
             return value;
         }
 
+        void const_equilibrium:: assign(const double new_value) throw()
+        {
+            assert(new_value>0);
+            coerce(value) = new_value;
+        }
+
     }
 
 }
