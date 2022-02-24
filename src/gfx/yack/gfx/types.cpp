@@ -1,6 +1,44 @@
 #include "yack/gfx/types.hpp"
 #include "yack/memory/allocator/dyadic.hpp"
 
+
+namespace yack
+{
+    namespace graphic
+    {
+        zero_flux:: zero_flux(unit_t n) throw() :
+        size(n),
+        szsz(n+n)
+        {
+        }
+
+        zero_flux:: ~zero_flux() throw()
+        {
+        }
+
+        unit_t zero_flux:: operator[](unit_t indx) const throw()
+        {
+            if(indx<0)
+            {
+                return (*this)[-indx];
+            }
+            else
+            {
+                if(indx>=size)
+                {
+                    return (*this)[ szsz - (++indx) ];
+                }
+                else
+                {
+                    return indx;
+                }
+            }
+
+        }
+    }
+
+}
+
 namespace yack
 {
     namespace graphic
@@ -20,9 +58,39 @@ namespace yack
                 mgr.release(block_addr,block_size);
             }
         }
+    }
+
+}
 
 
+namespace yack
+{
+    namespace graphic
+    {
 
+        namespace nexus
+        {
+            bitfield:: ~bitfield() throw()
+            {
+                bitmem::release(entry,bytes);
+            }
+
+            bitfield:: bitfield(const size_t n) :
+            bytes( n ),
+            entry( bitmem::acquire(bytes) )
+            {
+            }
+
+        }
+
+    }
+}
+
+
+namespace yack
+{
+    namespace graphic
+    {
         metrics:: ~metrics() throw()
         {
             coerce(w) = 0;
@@ -30,7 +98,6 @@ namespace yack
             coerce(n) = 0;
             coerce(d) = 0;
             coerce(s) = 0;
-
         }
 
         metrics:: metrics(const metrics &other) throw() :

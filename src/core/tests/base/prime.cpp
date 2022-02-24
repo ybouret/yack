@@ -9,6 +9,7 @@ using namespace yack;
 typedef    small_list<uint64_t> plist;
 typedef    plist::node_type     pnode;
 
+#if 0
 static inline void output(const plist &l)
 {
     size_t       count = 1;
@@ -22,6 +23,7 @@ static inline void output(const plist &l)
     }
     std::cerr << std::endl;
 }
+#endif
 
 YACK_UTEST(prime)
 {
