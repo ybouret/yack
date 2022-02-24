@@ -7,7 +7,6 @@ using namespace graphic;
 
 YACK_UTEST(types)
 {
-
 }
 YACK_UDONE()
 

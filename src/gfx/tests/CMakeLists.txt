@@ -2,7 +2,7 @@ file(GLOB srcs test-*.cpp)
   
 add_executable(test-gfx main.cpp ${srcs})
 
-target_link_libraries(test-gfx yack-jive)
+target_link_libraries(test-gfx yack-gfx yack-jive)
 yack_link_libraries(test-gfx)
 
 yack_testing(gfx)
