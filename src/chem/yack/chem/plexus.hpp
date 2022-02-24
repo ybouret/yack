@@ -11,6 +11,8 @@
 #include "yack/math/algebra/lu.hpp"
 #include "yack/data/list/meta.hpp"
 
+#include <cmath>
+
 namespace yack
 {
     namespace chemical
@@ -48,6 +50,11 @@ namespace yack
                 assert(peer!=0);
                 assert(norm>0);
                 coerce(name) = vformat("%d@%s | %d@%s",self,self_info.name(),peer,peer_info.name());
+            }
+
+            void recompute(const double Kself, const double Kpeer)
+            {
+                assign( pow( pow(Kself,self) * pow(Kpeer,peer), kexp ) );
             }
 
         private:

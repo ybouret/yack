@@ -234,10 +234,10 @@ namespace yack
             {}
 
             void assign(const double new_value) throw();
+            const double value;
 
         private:
             YACK_DISABLE_COPY_AND_ASSIGN(const_equilibrium);
-            const double value;
             virtual double getK(double) const;
 
         };

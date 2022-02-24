@@ -88,6 +88,7 @@ static inline void try_solve(plexus &cs, writable<double> &C)
 
 YACK_UTEST(plexus)
 {
+//    YACK_CHEM_VERBOSE=1 ./build/chem/tests/Debug/test-chem plexus '@one:-2[a]-3[b]+4[c]:1' '@two:-2[a]+[b]:2'
     //concurrent::single::verbose = true;
     
     randomized::rand_ ran;
