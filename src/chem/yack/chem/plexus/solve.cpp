@@ -66,21 +66,22 @@ namespace yack
                 kv[ei] = K[ei];
                 xs[ei] = eq.extent(kv[ei]=K[ei],Corg,Ctmp);
             }
+            // indexing by constants
             indexing::make(iv,comparison::decreasing<double>,kv);
             if(verbose)
             {
-                std::cerr << "// <system>" << std::endl;
+                std::cerr << "//   <system>" << std::endl;
                 for(size_t k=1;k<=N;++k)
                 {
                     const size_t       i  = iv[k];
                     const equilibrium &eq = *ev[i];
-                    eqs.pad(std::cerr << " @" << eq.name,eq);
+                    eqs.pad(std::cerr << "   @" << eq.name,eq);
                     std::cerr << " | K = " << std::setw(14) << kv[i];
                     std::cerr << " | Xs = " << std::setw(14) << xs[i];
                     std::cerr << " | Nu = " << Nu[i];
                     std::cerr << std::endl;
                 }
-                std::cerr << "// <system/>" << std::endl;
+                std::cerr << "//   <system/>" << std::endl;
             }
 
             for(size_t k=1;k<=N;++k)
@@ -88,6 +89,9 @@ namespace yack
                 const size_t       itop = iv[k];
                 const equilibrium &etop = *ev[itop];
                 const size_t       row   = *etop;
+                size_t             lnk   = 0;
+
+                YACK_CHEM_PRINTLN("//     <" << etop.name << ">");
 
                 for(size_t l=N;l>k;--l)
                 {
@@ -96,13 +100,17 @@ namespace yack
                     const size_t        col  = *esub;
                     const interactions &inter = conn[row][col];
                     std::cerr << etop.name << " / " << esub.name << " #" << inter.size << std::endl;
-                    const double Ktop = K[row];
-                    const double Ksub = K[col];
-                    for(const interaction *in=inter.head;in;in=in->next)
+                    if(inter.size)
                     {
-                        const double Kin = pow( pow(Ktop,in->self) * pow(Ksub,in->peer), in->kexp );
-                        coerce(*in).assign(Kin);
-                        std::cerr << "  " << *in << std::endl;
+                        ++lnk;
+                        const double Ktop = K[row];
+                        const double Ksub = K[col];
+                        for(const interaction *in=inter.head;in;in=in->next)
+                        {
+                            const double Kin = pow( pow(Ktop,in->self) * pow(Ksub,in->peer), in->kexp );
+                            coerce(*in).assign(Kin);
+                            std::cerr << "  " << *in << std::endl;
+                        }
                     }
 
                 }
