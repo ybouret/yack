@@ -16,17 +16,17 @@ namespace yack
         {
         }
 
-        unit_t zero_flux:: operator[](unit_t indx) const throw()
+        unit_t zero_flux:: get(unit_t indx) const throw()
         {
             if(indx<0)
             {
-                return (*this)[-indx];
+                return get(-indx);
             }
             else
             {
                 if(indx>=size)
                 {
-                    return (*this)[ szsz - (++indx) ];
+                    return get( szsz - (++indx) );
                 }
                 else
                 {
@@ -38,6 +38,10 @@ namespace yack
     }
 
 }
+
+
+
+
 
 namespace yack
 {
@@ -62,6 +66,58 @@ namespace yack
 
 }
 
+namespace yack
+{
+    namespace graphic
+    {
+        namespace nexus
+        {
+            bitrow:: ~bitrow() throw()
+            {}
+
+            bitrow:: bitrow(void *entry, const unit_t width, const zero_flux &zflux) throw() :
+            p(entry),
+            w(width),
+            z(zflux)
+            {
+            }
+
+        }
+    }
+}
+
+namespace yack
+{
+    namespace graphic
+    {
+        namespace nexus
+        {
+            bitrows:: ~bitrows() throw()
+            {
+                bitmem:: release(*(void **)&row,mem);
+            }
+
+            bitrows:: bitrows(const metrics &m, void *p) :
+            zfw(m.w),
+            zfh(m.h),
+            mem(m.h*sizeof(bitrow)),
+            row(static_cast<bitrow*>(bitmem::acquire(mem)))
+            {
+                uint8_t     *q = static_cast<uint8_t *>(p);
+                const unit_t h = m.h;
+                const unit_t w = m.w;
+                const unit_t s = m.s;
+                for(unit_t y=0;y<h;++y,q+=s)
+                {
+                    new (row+y) bitrow(q,w,zfw);
+                }
+            }
+
+        }
+
+    }
+}
+
 
 namespace yack
 {
@@ -72,13 +128,22 @@ namespace yack
         {
             bitfield:: ~bitfield() throw()
             {
+                if(memio)
+                {
+                    destruct(memio);
+                    memio = 0;
+                    memset(wksp,0,sizeof(wksp));
+                }
                 bitmem::release(entry,bytes);
             }
 
             bitfield:: bitfield(const size_t n) :
             bytes( n ),
-            entry( bitmem::acquire(bytes) )
+            entry( bitmem::acquire(bytes) ),
+            memio(NULL),
+            wksp()
             {
+                memset(wksp,0,sizeof(wksp));
             }
 
         }
