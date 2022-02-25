@@ -1,5 +1,5 @@
 
-#include "yack/gfx/types.hpp"
+#include "yack/gfx/pixmap.hpp"
 #include "yack/utest/run.hpp"
 #include "yack/string.hpp"
 #include "../../core/tests/main.hpp"
@@ -11,6 +11,7 @@ template <typename T>
 static inline
 void test_io( pixmap<T> &pxm, randomized::bits &ran )
 {
+#if 1
     const pixmap<T> &cxm = pxm;
     for(unit_t y=0;y<pxm.h;++y)
     {
@@ -22,6 +23,7 @@ void test_io( pixmap<T> &pxm, randomized::bits &ran )
             YACK_ASSERT(s==cxm(y)(x));
         }
     }
+#endif
 }
 
 

@@ -9,7 +9,7 @@ namespace yack
         bitrows:: ~bitrows() throw()
         {
             static memory::allocator &mgr = memory::dyadic::location();
-            mgr.withdraw(row,mem);
+            mgr.withdraw(row,coerce(mem));
         }
 
         static inline
@@ -23,7 +23,7 @@ namespace yack
         zfw(m.w),
         zfh(m.h),
         mem(m.h*sizeof(bitrow)),
-        row( bitrows_acquire(mem) )
+        row( bitrows_acquire( coerce(mem) ) )
         {
             uint8_t     *q = static_cast<uint8_t *>(p);
             const unit_t h = m.h;
@@ -34,6 +34,7 @@ namespace yack
             }
         }
 
+#if 0
         bitrow & bitrows:: operator()(const unit_t y) throw()
         {
             assert(y>=0); assert(y<zfh.size);
@@ -55,7 +56,7 @@ namespace yack
         {
             return row[ zfh(y) ];
         }
-
+#endif
 
     }
 }

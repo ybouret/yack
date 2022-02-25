@@ -5,32 +5,41 @@
 
 #include "yack/gfx/bitrow.hpp"
 #include "yack/gfx/metrics.hpp"
-#include "yack/object.hpp"
-#include "yack/counted.hpp"
+#include "yack/gfx/article.hpp"
+
 
 namespace yack
 {
     namespace graphic
     {
-
-        class bitrows : public object, public counted
+        //______________________________________________________________________
+        //
+        //
+        //! rows for (bit|pix)map
+        //
+        //______________________________________________________________________
+        class bitrows : public article
         {
         public:
+            //__________________________________________________________________
+            //
+            // C++
+            //__________________________________________________________________
             explicit bitrows(const metrics &m, void *p);
             virtual ~bitrows() throw();
 
-            const zero_flux zfw;
-            const zero_flux zfh;
-
-            bitrow       & operator()(const unit_t y)       throw();
-            const bitrow & operator()(const unit_t y) const throw();
-            bitrow       & operator[](const unit_t y)       throw();
-            const bitrow & operator[](const unit_t y) const throw();
-
+            //__________________________________________________________________
+            //
+            // members
+            //__________________________________________________________________
+            const zero_flux zfw; //!< zero flux for width
+            const zero_flux zfh; //!< zero flux for height
+            const size_t    mem; //!< memory for rows
+            bitrow         *row; //!< formatted rows
+            
         private:
             YACK_DISABLE_COPY_AND_ASSIGN(bitrows);
-            size_t          mem;
-            bitrow         *row;
+
         };
     }
 

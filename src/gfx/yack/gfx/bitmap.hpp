@@ -1,10 +1,14 @@
 
 //! \file
 
-#ifndef YACK_GFX_BITROW_INCLUDED
-#define YACK_GFX_BITROW_INCLUDED 1
+#ifndef YACK_GFX_BITMAP_INCLUDED
+#define YACK_GFX_BITMAP_INCLUDED 1
 
-#include "yack/gfx/zero-flux.hpp"
+#include "yack/ptr/arc.hpp"
+#include "yack/type/args.hpp"
+#include "yack/gfx/bitfield.hpp"
+#include "yack/gfx/bitrows.hpp"
+
 
 namespace yack
 {
@@ -14,34 +18,40 @@ namespace yack
         //______________________________________________________________________
         //
         //
-        //! row for bitmap
+        //! bitmap: shared bits and shared rows
         //
         //______________________________________________________________________
-        class bitrow
+        class bitmap : public article, public metrics
         {
         public:
             //__________________________________________________________________
             //
             // C++
             //__________________________________________________________________
-            bitrow(void            *entry,
-                   const zero_flux &zfluz) throw();
+            virtual ~bitmap() throw();
+            explicit bitmap(const unit_t W, const unit_t H, const unit_t D);
+            bitmap(const bitmap &other) throw(); //!< shared copy
 
-            ~bitrow() throw();
-
+        protected:
             //__________________________________________________________________
             //
             // members
             //__________________________________________________________________
-        private: void            *p;
-        public:  const zero_flux &w;
+            arc_ptr<bitfield> data; //!< holds bits
+            arc_ptr<bitrows>  rows; //!< structured rows
 
         private:
-            YACK_DISABLE_COPY_AND_ASSIGN(bitrow);
+            YACK_DISABLE_ASSIGN(bitmap);
         };
+
+
+     
+
+      
 
     }
 
 }
 
 #endif
+

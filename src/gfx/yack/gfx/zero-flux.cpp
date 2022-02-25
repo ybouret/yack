@@ -10,6 +10,13 @@ namespace yack
         {
         }
 
+        zero_flux:: zero_flux(const zero_flux &other) throw() :
+        size(other.size),
+        szsz(other.szsz)
+        {
+
+        }
+
         zero_flux:: ~zero_flux() throw()
         {
         }

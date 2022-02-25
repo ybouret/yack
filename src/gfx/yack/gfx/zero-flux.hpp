@@ -24,7 +24,8 @@ namespace yack
             //
             // C++
             //__________________________________________________________________
-            zero_flux(const unit_t n) throw();
+            zero_flux(const unit_t    n) throw();
+            zero_flux(const zero_flux &) throw();
             ~zero_flux() throw();
 
             //__________________________________________________________________

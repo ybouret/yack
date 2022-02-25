@@ -3,8 +3,7 @@
 #ifndef YACK_GFX_BITFIELD_INCLUDED
 #define YACK_GFX_BITFIELD_INCLUDED 1
 
-#include "yack/object.hpp"
-#include "yack/counted.hpp"
+#include "yack/gfx/article.hpp"
 #include "yack/memory/operative.hpp"
 #include "yack/arith/align.hpp"
 #include "yack/type/out-of-reach.hpp"
@@ -20,7 +19,7 @@ namespace yack
         //! shared memory for (bit|pix)maps
         //
         //______________________________________________________________________
-        class bitfield : public object, public counted
+        class bitfield : public article
         {
         public:
             //__________________________________________________________________

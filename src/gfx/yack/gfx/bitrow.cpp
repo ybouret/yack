@@ -11,7 +11,7 @@ namespace yack
         bitrow:: bitrow(void            *entry,
                         const zero_flux &zflux) throw() :
         p(entry),
-        z(zflux)
+        w(zflux)
         {
         }
 
