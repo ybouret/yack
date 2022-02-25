@@ -10,26 +10,14 @@
 #include "yack/memory/operative.hpp"
 #include "yack/concurrent/tess2d.hpp"
 #include "yack/type/args.hpp"
+#include "yack/gfx/zero-flux.hpp"
 
 namespace yack
 {
     namespace graphic
     {
 
-        class zero_flux
-        {
-        public:
-            zero_flux(const unit_t n) throw();
-            ~zero_flux() throw();
 
-            unit_t operator()(unit_t indx) const throw();
-
-            const unit_t size;
-            const unit_t szsz;
-
-        private:
-            YACK_DISABLE_ASSIGN(zero_flux);
-        };
 
         namespace nexus
         {

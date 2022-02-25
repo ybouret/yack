@@ -12,6 +12,7 @@ set(HERE ${CMAKE_CURRENT_SOURCE_DIR})
 enable_testing()
 
 add_test(types test-gfx types)
+add_test(zero_flux test-gfx zero_flux)
 
 
 
