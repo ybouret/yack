@@ -11,6 +11,8 @@
 #include "yack/concurrent/tess2d.hpp"
 #include "yack/type/args.hpp"
 #include "yack/gfx/zero-flux.hpp"
+#include "yack/gfx/bitfield.hpp"
+
 
 namespace yack
 {
@@ -28,30 +30,7 @@ namespace yack
 
             };
 
-            class bitfield : public object, public counted
-            {
-            public:
-                typedef memory::operative io_type;
-
-                explicit bitfield(const size_t n); //!< bytes
-                virtual ~bitfield() throw();
-
-                size_t   bytes;
-                void    *entry;
-                io_type *memio;
-
-                template <typename T>
-                void fill(const size_t items) throw()
-                {
-                    assert(NULL==memio);
-                    memio = new( YACK_STATIC_ZSET(wksp) ) memory::operative_of<T>(entry,items);
-                }
-
-            private:
-                YACK_DISABLE_COPY_AND_ASSIGN(bitfield);
-                typedef memory::operative_of<uint8_t> io_type_;
-                void *wksp[ YACK_WORDS_FOR(io_type_) ];
-            };
+            
 
             class bitrow
             {
@@ -120,7 +99,7 @@ namespace yack
 
             explicit bitmap(const unit_t W, const unit_t H, const unit_t D) :
             metrics(W,H,D),
-            data( new nexus::bitfield(n*d) ),
+            data( new bitfield(n*d) ),
             rows( new nexus::bitrows(*this,data->entry))
             {
 
@@ -136,7 +115,7 @@ namespace yack
             
 
         protected:
-            arc_ptr<nexus::bitfield> data;
+            arc_ptr<bitfield> data;
             arc_ptr<nexus::bitrows>  rows;
 
         private:

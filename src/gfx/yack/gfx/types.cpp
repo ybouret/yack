@@ -106,37 +106,7 @@ namespace yack
 }
 
 
-namespace yack
-{
-    namespace graphic
-    {
 
-        namespace nexus
-        {
-            bitfield:: ~bitfield() throw()
-            {
-                if(memio)
-                {
-                    destruct(memio);
-                    memio = 0;
-                    memset(wksp,0,sizeof(wksp));
-                }
-                bitmem::release(entry,bytes);
-            }
-
-            bitfield:: bitfield(const size_t n) :
-            bytes( n ),
-            entry( bitmem::acquire(bytes) ),
-            memio(NULL),
-            wksp()
-            {
-                memset(wksp,0,sizeof(wksp));
-            }
-
-        }
-
-    }
-}
 
 
 namespace yack
