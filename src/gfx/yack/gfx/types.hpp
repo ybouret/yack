@@ -9,6 +9,7 @@
 #include "yack/ptr/arc.hpp"
 #include "yack/memory/operative.hpp"
 #include "yack/concurrent/tess2d.hpp"
+#include "yack/type/args.hpp"
 
 namespace yack
 {
@@ -140,10 +141,41 @@ namespace yack
             YACK_DISABLE_COPY_AND_ASSIGN(bitmap);
         };
 
+
+        template <typename T>
+        class pixrow
+        {
+        public:
+            YACK_DECL_ARGS_(T,type);
+
+            type & operator()(const unit_t x) throw() {
+                assert(x>=0); assert(x<w); assert(0!=p);
+                return p[x];
+            }
+
+            const_type & operator()(const unit_t x) const throw() {
+                assert(x>=0); assert(x<w); assert(0!=p);
+                return p[x];
+            }
+
+        private:
+            T               *p;
+
+        public:
+            const unit_t     w;
+            const zero_flux &z;
+
+        private:
+            explicit pixrow() throw();
+            virtual ~pixrow();
+            YACK_DISABLE_COPY_AND_ASSIGN(pixrow);
+        };
+
         template <typename T>
         class pixmap : public bitmap
         {
         public:
+            typedef pixrow<T> row_type;
 
             inline explicit pixmap(const unit_t W,
                                    const unit_t H) :
@@ -153,6 +185,13 @@ namespace yack
             }
 
             inline virtual ~pixmap() throw() {}
+
+            row_type & operator()(const unit_t y) throw()
+            {
+                assert(y>=0); assert(y<h);
+                nexus::bitrow &r = rows->row[y];
+                return *(row_type *)&r;
+            }
 
 
         private:

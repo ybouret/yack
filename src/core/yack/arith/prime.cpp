@@ -8,16 +8,26 @@ namespace yack
         return core::primes::check<uint64_t>(n);
     }
 
-    uint64_t prime64::next(const uint64_t n) throw()
+    uint64_t prime64::next(uint64_t p) throw()
     {
-        uint64_t p=n|1;
+        switch(p)
+        {
+            case 0:
+            case 1:
+            case 2:
+                return 2;
+            default:
+                p|=1;
+                break;
+        }
         while(!is(p)) p += 2;
         return p;
     }
 
     namespace core
     {
-        const uint8_t primes:: p8[53]={
+        const uint8_t primes:: p8[54]={
+            0x2,
             0x3, 0x5, 0x7, 0xb, 0xd, 0x11, 0x13, 0x17,
             0x1d, 0x1f, 0x25, 0x29, 0x2b, 0x2f, 0x35, 0x3b,
             0x3d, 0x43, 0x47, 0x49, 0x4f, 0x53, 0x59, 0x61,

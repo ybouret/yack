@@ -9,7 +9,6 @@ using namespace yack;
 typedef    small_list<uint64_t> plist;
 typedef    plist::node_type     pnode;
 
-#if 0
 static inline void output(const plist &l)
 {
     size_t       count = 1;
@@ -23,7 +22,6 @@ static inline void output(const plist &l)
     }
     std::cerr << std::endl;
 }
-#endif
 
 YACK_UTEST(prime)
 {
@@ -65,15 +63,19 @@ YACK_UTEST(prime)
     std::cerr << "#p32 = " << p32.size << std::endl;
     std::cerr << "|_bytes=" << p32.size * 4  << std::endl;
 
-#if 0
-    std::cerr << "const uint8_t primes::p8[" << p8.size << "]={" << std::endl;
-    output(p8);
-    std::cerr << "};" << std::endl;
+    if(true)
+    {
+        std::cerr << "const uint8_t primes::p8[" << p8.size << "]={" << std::endl;
+        output(p8);
+        std::cerr << "};" << std::endl;
+    }
 
-    std::cerr << "const uint16_t primes::p16[" << p16.size << "]={" << std::endl;
-    output(p16);
-    std::cerr << "};" << std::endl;
-#endif
+    if(false)
+    {
+        std::cerr << "const uint16_t primes::p16[" << p16.size << "]={" << std::endl;
+        output(p16);
+        std::cerr << "};" << std::endl;
+    }
 
 }
 YACK_UDONE()

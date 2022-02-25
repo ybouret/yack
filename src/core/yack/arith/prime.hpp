@@ -10,6 +10,7 @@ namespace yack
 
     namespace core
     {
+        //! basic function for primality
         struct primes
         {
             //! generic is_prime function
@@ -31,11 +32,11 @@ namespace yack
                 return true;
             }
 
-            static const uint8_t  p8[53];
-            static const size_t   n8 = sizeof(p8)/sizeof(p8[0]);
-            static const uint16_t p16[6488];
-            static const size_t   n16 = sizeof(p16)/sizeof(p16[0]);
-
+            static const uint8_t  p8[54];                           //!< 8bits primes
+            static const size_t   n8 = sizeof(p8)/sizeof(p8[0]);    //!< number of 8bits primes
+            static const uint16_t p16[6488];                        //!< 16 bit primes
+            static const size_t   n16 = sizeof(p16)/sizeof(p16[0]); //!< number of 16 bits primes
+            static const uint16_t h16 = 0xfff1;                     //!< highest 16 bits primes
         };
 
 
@@ -45,10 +46,8 @@ namespace yack
     //! prime for 64bits unsigned
     struct prime64
     {
-        static bool     is(const uint64_t n)   throw(); //!< check is prime
-        static uint64_t next(const uint64_t n) throw(); //!< get next prime
-
-
+        static bool     is(const uint64_t n) throw(); //!< check is prime
+        static uint64_t next(uint64_t n)     throw(); //!< get next prime
     };
 
 
