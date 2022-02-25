@@ -22,7 +22,7 @@ namespace yack
             zero_flux(const unit_t n) throw();
             ~zero_flux() throw();
 
-            unit_t get(unit_t indx) const throw();
+            unit_t operator()(unit_t indx) const throw();
 
             const unit_t size;
             const unit_t szsz;
@@ -44,6 +44,7 @@ namespace yack
             {
             public:
                 typedef memory::operative io_type;
+
                 explicit bitfield(const size_t n); //!< bytes
                 virtual ~bitfield() throw();
 
@@ -52,10 +53,10 @@ namespace yack
                 io_type *memio;
 
                 template <typename T>
-                void fill(const size_t n) throw()
+                void fill(const size_t items) throw()
                 {
                     assert(NULL==memio);
-                    memio = new( YACK_STATIC_ZSET(wksp) ) memory::operative_of<T>(entry,n);
+                    memio = new( YACK_STATIC_ZSET(wksp) ) memory::operative_of<T>(entry,items);
                 }
 
             private:
@@ -130,6 +131,8 @@ namespace yack
             data( new nexus::bitfield(n*d) ),
             rows( new nexus::bitrows(*this,data->entry))
             {
+
+
             }
             
 
@@ -158,6 +161,15 @@ namespace yack
                 return p[x];
             }
 
+            type & operator[](const unit_t x) throw() {
+                return p[ z(x) ];
+            }
+
+            const_type & operator[](const unit_t x) const throw() {
+                return p[ z(x) ];
+            }
+
+
         private:
             T               *p;
 
@@ -166,8 +178,8 @@ namespace yack
             const zero_flux &z;
 
         private:
-            explicit pixrow() throw();
-            virtual ~pixrow();
+            pixrow() throw();
+            ~pixrow();
             YACK_DISABLE_COPY_AND_ASSIGN(pixrow);
         };
 
@@ -189,8 +201,23 @@ namespace yack
             row_type & operator()(const unit_t y) throw()
             {
                 assert(y>=0); assert(y<h);
-                nexus::bitrow &r = rows->row[y];
-                return *(row_type *)&r;
+                return *(row_type *)&(rows->row[y]);
+            }
+
+            const row_type & operator()(const unit_t y) const throw()
+            {
+                assert(y>=0); assert(y<h);
+                return *(const row_type *)&(rows->row[y]);
+            }
+
+            row_type & operator[](const unit_t y) throw()
+            {
+                return *(row_type *)&(rows->row[ rows->zfh(y) ]);
+            }
+
+            const row_type & operator[](const unit_t y) const throw()
+            {
+                return *(const row_type *)&(rows->row[ rows->zfh(y) ]);
             }
 
 

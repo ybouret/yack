@@ -17,17 +17,17 @@ namespace yack
         {
         }
 
-        unit_t zero_flux:: get(unit_t indx) const throw()
+        unit_t zero_flux:: operator()(unit_t indx) const throw()
         {
             if(indx<0)
             {
-                return get(-indx);
+                return (*this)(-indx);
             }
             else
             {
                 if(indx>=size)
                 {
-                    return get( szsz - (++indx) );
+                    return (*this)( szsz - (++indx) );
                 }
                 else
                 {
@@ -102,7 +102,7 @@ namespace yack
             zfw(m.w),
             zfh(m.h),
             mem(m.h*sizeof(bitrow)),
-            row(static_cast<bitrow*>(bitmem::acquire(mem)))
+            row( static_cast<bitrow*>(bitmem::acquire(mem)) )
             {
                 uint8_t     *q = static_cast<uint8_t *>(p);
                 const unit_t h = m.h;
