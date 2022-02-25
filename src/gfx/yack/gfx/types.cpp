@@ -1,6 +1,7 @@
 #include "yack/gfx/types.hpp"
 #include "yack/memory/allocator/dyadic.hpp"
 
+#include <cstring>
 
 namespace yack
 {
