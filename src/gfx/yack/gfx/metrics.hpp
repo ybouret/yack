@@ -1,7 +1,8 @@
+
 //! \file
 
-#ifndef YACK_GFX_ZERO_FLUX_INCLUDED
-#define YACK_GFX_ZERO_FLUX_INCLUDED 1
+#ifndef YACK_GFX_METRICS_INCLUDED
+#define YACK_GFX_METRICS_INCLUDED 1
 
 #include "yack/setup.hpp"
 
@@ -14,40 +15,38 @@ namespace yack
         //______________________________________________________________________
         //
         //
-        //! compute indices to produce zero flux operators
+        //! metrics for a bitmap
         //
         //______________________________________________________________________
-        class zero_flux
+        class metrics
         {
         public:
             //__________________________________________________________________
             //
             // C++
             //__________________________________________________________________
-            zero_flux(const unit_t n) throw();
-            ~zero_flux() throw();
-
-            //__________________________________________________________________
-            //
-            // methods
-            //__________________________________________________________________
-            unit_t operator()(unit_t indx) const throw();
+            metrics(const unit_t width,
+                    const unit_t height,
+                    const unit_t depth) throw(); //!< W>0, H>0, D>0
+            metrics(const metrics &) throw();    //!< copy
+            virtual ~metrics() throw();          //!< cleanup
 
             //__________________________________________________________________
             //
             // members
             //__________________________________________________________________
-            const unit_t size;
-            const unit_t szsz;
+            const unit_t w; //!< width
+            const unit_t h; //!< height
+            const unit_t n; //!< w*h
+            const unit_t d; //!< depth
+            const unit_t s; //!< stride = w * depth
 
         private:
-            YACK_DISABLE_ASSIGN(zero_flux);
+            YACK_DISABLE_ASSIGN(metrics);
         };
 
     }
 
 }
 
-
 #endif
-
