@@ -114,6 +114,28 @@ namespace yack
                 }
             }
 
+            bitrow & bitrows:: operator()(const unit_t y) throw()
+            {
+                assert(y>=0); assert(y<zfh.size);
+                return row[y];
+            }
+
+            const bitrow & bitrows:: operator()(const unit_t y) const throw()
+            {
+                assert(y>=0); assert(y<zfh.size);
+                return row[y];
+            }
+
+            bitrow & bitrows:: operator[](const unit_t y) throw()
+            {
+                return row[ zfh(y) ];
+            }
+
+            const bitrow & bitrows:: operator[](const unit_t y) const throw()
+            {
+                return row[ zfh(y) ];
+            }
+
         }
 
     }

@@ -112,12 +112,16 @@ namespace yack
 
                 const zero_flux zfw;
                 const zero_flux zfh;
-                size_t          mem;
-                bitrow         *row;
+
+                bitrow       & operator()(const unit_t y)       throw();
+                const bitrow & operator()(const unit_t y) const throw();
+                bitrow       & operator[](const unit_t y)       throw();
+                const bitrow & operator[](const unit_t y) const throw();
 
             private:
                 YACK_DISABLE_COPY_AND_ASSIGN(bitrows);
-
+                size_t          mem;
+                bitrow         *row;
             };
         }
 
@@ -132,8 +136,15 @@ namespace yack
             rows( new nexus::bitrows(*this,data->entry))
             {
 
-
             }
+
+            explicit bitmap(const bitmap &other) throw() :
+            metrics(other),
+            data(other.data),
+            rows(other.rows)
+            {
+            }
+
             
 
         protected:
@@ -141,7 +152,7 @@ namespace yack
             arc_ptr<nexus::bitrows>  rows;
 
         private:
-            YACK_DISABLE_COPY_AND_ASSIGN(bitmap);
+            YACK_DISABLE_ASSIGN(bitmap);
         };
 
 
@@ -151,21 +162,21 @@ namespace yack
         public:
             YACK_DECL_ARGS_(T,type);
 
-            type & operator()(const unit_t x) throw() {
+            inline type & operator()(const unit_t x) throw() {
                 assert(x>=0); assert(x<w); assert(0!=p);
                 return p[x];
             }
 
-            const_type & operator()(const unit_t x) const throw() {
+            inline const_type & operator()(const unit_t x) const throw() {
                 assert(x>=0); assert(x<w); assert(0!=p);
                 return p[x];
             }
 
-            type & operator[](const unit_t x) throw() {
+            inline type & operator[](const unit_t x) throw() {
                 return p[ z(x) ];
             }
 
-            const_type & operator[](const unit_t x) const throw() {
+            inline const_type & operator[](const unit_t x) const throw() {
                 return p[ z(x) ];
             }
 
@@ -198,26 +209,24 @@ namespace yack
 
             inline virtual ~pixmap() throw() {}
 
-            row_type & operator()(const unit_t y) throw()
+            inline row_type & operator()(const unit_t y) throw()
             {
-                assert(y>=0); assert(y<h);
-                return *(row_type *)&(rows->row[y]);
+                return *(row_type *) & (*rows)(y);
             }
 
-            const row_type & operator()(const unit_t y) const throw()
+            inline const row_type & operator()(const unit_t y) const throw()
             {
-                assert(y>=0); assert(y<h);
-                return *(const row_type *)&(rows->row[y]);
+                return *(const row_type *) & (*rows)(y);
             }
 
-            row_type & operator[](const unit_t y) throw()
+            inline row_type & operator[](const unit_t y) throw()
             {
-                return *(row_type *)&(rows->row[ rows->zfh(y) ]);
+                return *(row_type *) & (*rows)[y];
             }
 
-            const row_type & operator[](const unit_t y) const throw()
+            inline const row_type & operator[](const unit_t y) const throw()
             {
-                return *(const row_type *)&(rows->row[ rows->zfh(y) ]);
+                return  *(row_type *) & (*rows)[y];
             }
 
 
