@@ -11,7 +11,7 @@ YACK_UTEST(types)
 {
     randomized::rand_ ran;
 
-    pixmap<string> pxm(100,10);
+    pixmap<string> pxm(10,10);
 
     for(unit_t y=0;y<pxm.h;++y)
     {
