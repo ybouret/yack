@@ -544,6 +544,16 @@ set(field ${field_impl} ${field_decl})
 SOURCE_GROUP(field FILES ${field})
 install( FILES ${field_decl} DESTINATION include/yack/field )
 
+########################################################################
+##
+## color
+##
+########################################################################
+file(GLOB color_impl yack/color/*.cpp)
+file(GLOB color_decl yack/color/*.hpp)
+set(color ${color_impl} ${color_decl})
+SOURCE_GROUP(color FILES ${color})
+install( FILES ${color_decl} DESTINATION include/yack/color )
 
 
 # create the library
@@ -576,6 +586,7 @@ ${info} ${info_modulation}
 ${math}
 ${ptr}
 ${field}
+${color}
 ${utest}
 )
 

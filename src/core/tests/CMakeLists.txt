@@ -56,6 +56,9 @@ source_group(kr FILES ${kr})
 file(GLOB field field/*.cpp)
 source_group(field FILES ${field})
 
+file(GLOB color color/*.cpp)
+source_group(color FILES ${color})
+
 set(HERE ${CMAKE_CURRENT_SOURCE_DIR})
 
 add_executable(test-core main.cpp main.hpp
@@ -78,6 +81,7 @@ ${math}
 ${fs}
 ${kr}
 ${field}
+${color}
 )
 
 yack_link_libraries(test-core)
@@ -245,5 +249,6 @@ add_test(kr:digest   test-core kr_digest)
 
 add_test(fields     test-core fields)
 
+add_test(color:rgb  test-core color_rgb)
 
 yack_testing(core)

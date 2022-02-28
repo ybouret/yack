@@ -156,5 +156,8 @@ YACK_UTEST_DECL(256)
     YACK_UTEST(kr_digest);
 
     YACK_UTEST(fields);
+
+    YACK_UTEST(color_rgb);
+
 }
 YACK_UTEST_EXEC()

@@ -53,17 +53,19 @@ and:
 	\vec{\Psi}_i = \partial_{\vec{C}} \Gamma_i
 \end{equation}
 
-\section{Subtracting Equation}
-
-Let $\vec{V}_1\not=\vec{0}$ and $\vec{V}_2\not=\vec{0}$.
-The smallest weighted difference is:
-\begin{equation}
-	\delta \vec{V} = \dfrac{1}{\left(\vec{V}_1+\vec{V}_2\right)^2} \left[ 
-	\langle \vec{V}_2 | \vec{V}_1+\vec{V}_2 \rangle \vec{V}_1 - \langle \vec{V}_1 | \vec{V}_1+\vec{V}_2 \rangle \vec{V}_2
-	\right]
-\end{equation}
+%\section{Subtracting Equation}
+%
+%Let $\vec{V}_1\not=\vec{0}$ and $\vec{V}_2\not=\vec{0}$.
+%The smallest weighted difference is:
+%\begin{equation}
+%	\delta \vec{V} = \dfrac{1}{\left(\vec{V}_1+\vec{V}_2\right)^2} \left[ 
+%	\langle \vec{V}_2 | \vec{V}_1+\vec{V}_2 \rangle \vec{V}_1 - \langle \vec{V}_1 | \vec{V}_1+\vec{V}_2 \rangle \vec{V}_2
+%	\right]
+%\end{equation}
 
 \section{1D-Solving}
+
+\subsection{Solution}
 Let us take $\Gamma_i$ (with a least a product or a reactant).
 Then there exist a unique $\Xi_i$ for which:
 \begin{equation}
@@ -75,6 +77,7 @@ Then there exist a unique $\Xi_i$ for which:
 \right.
 \end{equation}
 
+\subsection{Derivative of solution}
 If we start from
 \begin{equation}
 \vec{C}'_i = \vec{C} + \Xi_i \vec{\nu}_i,\;\;\Gamma_i' = 0
@@ -93,7 +96,8 @@ or
 	\langle \vec{\Psi}_i'  \vert \vec{\nu}_i \rangle \delta\Xi_i = - \langle\vec{\Psi}_i' \vert \bm{\nu}^T \vert \delta \vec{\xi} \rangle
 \end{equation}
 Hence, we know the gradient of each $\Xi_i$ w.r.t $\vec{C}$.
- 
+
+\subsection{Jacobian of system} 
 \begin{equation}
 	\vec{\Xi}(\vec{C}+\delta\vec{C}) \simeq  \vec{\Xi}(\vec{C}) -
 	\bm{\Omega}
@@ -107,9 +111,11 @@ and
 \begin{equation}
 \Omega_{i\not=j} = 
 \left\lbrace
-	\begin{array}{ccl}
-	0 & \text{if} & |\langle \vec{\Psi}_i'  \vert \vec{\nu}_i \rangle| = 0\\
-	\dfrac{\langle \vec{\Psi}_i'  \vert \vec{\nu}_j \rangle}{\langle \vec{\Psi}_i'  \vert \vec{\nu}_i \rangle} & \text{if} & |\langle \vec{\Psi}_i'  \vert \vec{\nu}_i \rangle| > 0\\
+	\begin{array}{ccll}
+	0 & \text{if} & |\langle \vec{\Psi}_i'  \vert \vec{\nu}_i \rangle| = 0 & \text{ (and $\Gamma_i$ is blocked) }\\
+	\dfrac{\langle \vec{\Psi}_i'  \vert \vec{\nu}_j \rangle}{\langle \vec{\Psi}_i'  \vert \vec{\nu}_i \rangle}
+	 & \text{if} & |\langle \vec{\Psi}_i'  \vert \vec{\nu}_i \rangle| > 0
+	 & \\
 	\end{array}
 \right.
 \end{equation}
