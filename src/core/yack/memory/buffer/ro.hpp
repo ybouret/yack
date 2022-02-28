@@ -33,7 +33,8 @@ namespace yack
             //
             // helper
             //__________________________________________________________________
-            std::ostream &display_hexa(std::ostream &) const; //!< hexadecimal content
+            std::ostream &display_hexa(std::ostream &)             const;         //!< hexadecimal content
+            bool          has_same_content_than(const ro_buffer &) const throw(); //!< check
 
             //__________________________________________________________________
             //

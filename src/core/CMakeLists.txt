@@ -362,6 +362,14 @@ set(ios_serializer ${ios_serializer_impl} ${ios_serializer_decl})
 SOURCE_GROUP(ios/serializer FILES ${ios_serializer})
 install( FILES ${ios_serializer_decl} DESTINATION include/yack/ios/serializer)
 
+
+file(GLOB ios_scribe_impl yack/ios/scribe/*.cpp yack/ios/scribe/*.hxx)
+file(GLOB ios_scribe_decl yack/ios/scribe/*.hpp)
+set(ios_scribe ${ios_scribe_impl} ${ios_scribe_decl})
+SOURCE_GROUP(ios/scribe FILES ${ios_scribe})
+install( FILES ${ios_scribe_decl} DESTINATION include/yack/ios/scribe)
+
+
 ########################################################################
 ##
 ## kr
@@ -573,7 +581,7 @@ ${fft}
 ${functor}
 ${apex} ${apex_m} ${apex_n} ${apex_z} ${apex_q}
 ${concurrent} ${concurrent_quark} ${concurrent_loop} ${concurrent_queue}
-${ios} ${ios_c} ${ios_gz} ${ios_bz} ${ios_fmt} ${ios_gv} ${ios_ascii} ${ios_serializer}
+${ios} ${ios_c} ${ios_gz} ${ios_bz} ${ios_fmt} ${ios_gv} ${ios_ascii} ${ios_serializer} ${ios_scribe}
 ${randomized}
 ${sort}
 ${counting} ${counting_c}
