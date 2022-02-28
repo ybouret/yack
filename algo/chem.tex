@@ -93,7 +93,27 @@ or
 	\langle \vec{\Psi}_i'  \vert \vec{\nu}_i \rangle \delta\Xi_i = - \langle\vec{\Psi}_i' \vert \bm{\nu}^T \vert \delta \vec{\xi} \rangle
 \end{equation}
 Hence, we know the gradient of each $\Xi_i$ w.r.t $\vec{C}$.
-  
+ 
+\begin{equation}
+	\vec{\Xi}(\vec{C}+\delta\vec{C}) \simeq  \vec{\Xi}(\vec{C}) -
+	\bm{\Omega}
+	\delta\vec{\xi}
+\end{equation}  
+with
+\begin{equation}
+	\Omega_{ii} = 1
+\end{equation}
+and
+\begin{equation}
+\Omega_{i\not=j} = 
+\left\lbrace
+	\begin{array}{ccl}
+	0 & \text{if} & |\langle \vec{\Psi}_i'  \vert \vec{\nu}_i \rangle| = 0\\
+	\dfrac{\langle \vec{\Psi}_i'  \vert \vec{\nu}_j \rangle}{\langle \vec{\Psi}_i'  \vert \vec{\nu}_i \rangle} & \text{if} & |\langle \vec{\Psi}_i'  \vert \vec{\nu}_i \rangle| > 0\\
+	\end{array}
+\right.
+\end{equation}
+
  	
 \subsection{Regularization}
 We define:
