@@ -88,7 +88,7 @@ namespace yack
 #define YACK_SYNC_TILES2D(CODE)                       \
 /**/  for(const tile2D<T> *t=tiles.head;t;t=t->next) \
 /**/  {                                             \
-/**/    T      len = t->width;                     \
+/**/    unit_t len = t->width;                     \
 /**/    v2d<T> pos = t->start;                    \
 /**/    while(len-- >0)                          \
 /**/    {                                       \
@@ -154,7 +154,7 @@ namespace yack
             
             //__________________________________________________________________
             //
-            //! build tiles
+            //! build tiles for size.rank
             //__________________________________________________________________
             template <typename T, typename U> static inline
             void build(tiles2D<U>     &tiles,
