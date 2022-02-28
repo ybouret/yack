@@ -41,7 +41,7 @@ namespace yack
                     return *this;
                 }
 
-                inline friend bool operator==(const rgb &lhs, const rgbs &rhs) throw()
+                inline friend bool operator==(const rgb &lhs, const rgb &rhs) throw()
                 {
                     return (lhs.r==rhs.r) && (lhs.g==rhs.g) && (lhs.b==rhs.b);
                 }

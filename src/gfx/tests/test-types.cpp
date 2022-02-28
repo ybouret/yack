@@ -1,6 +1,6 @@
 
 #include "yack/gfx/pixmap.hpp"
-#include "yacl/gfx/rgb.hpp"
+#include "yack/gfx/rgb.hpp"
 #include "yack/utest/run.hpp"
 #include "yack/string.hpp"
 #include "../../core/tests/main.hpp"
