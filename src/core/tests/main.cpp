@@ -113,6 +113,7 @@ YACK_UTEST_DECL(256)
     YACK_UTEST(ios_hybrid);
     YACK_UTEST(ios_convert);
     YACK_UTEST(ios_loader);
+    YACK_UTEST(ios_scribe);
 
     YACK_UTEST(hash64);
     YACK_UTEST(hashing_fcn);
