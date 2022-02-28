@@ -18,50 +18,6 @@ namespace yack
     namespace chemical
     {
 
-        class interaction : public const_equilibrium
-        {
-        public:
-            typedef ark_ptr<string,const interaction> pointer;
-
-            virtual ~interaction() throw() {}
-
-            interaction *next;
-            interaction *prev;
-
-            const int    self; //!< self coeff > 0
-            const int    peer; //!< |peer coeff| > 0
-            const int    norm; //!< normalisation
-            const double kexp; //!< 1.0/norm
-
-            explicit interaction(const equilibrium &self_info,
-                                 const int          self_coef,
-                                 const equilibrium &peer_info,
-                                 const int          peer_coef,
-                                 const int          norm_coef) :
-            const_equilibrium("",1),
-            next(0),
-            prev(0),
-            self(self_coef),
-            peer(peer_coef),
-            norm(norm_coef),
-            kexp(1.0/norm)
-            {
-                assert(self>0);
-                assert(peer!=0);
-                assert(norm>0);
-                coerce(name) = vformat("%d@%s | %d@%s",self,self_info.name(),peer,peer_info.name());
-            }
-
-            void recompute(const double Kself, const double Kpeer)
-            {
-                assign( pow( pow(Kself,self) * pow(Kpeer,peer), kexp ) );
-            }
-
-        private:
-            YACK_DISABLE_COPY_AND_ASSIGN(interaction);
-        };
-
-        typedef cxx_list_of<interaction> interactions;
 
 
         //______________________________________________________________________
@@ -135,7 +91,6 @@ namespace yack
             const size_t         M;      //!< species count
             const size_t         A;      //!< active species
             const alist          active; //!< active species list
-            const matrix<interactions> conn;   //!< connectivity
             
         private:
             tableaux ntab;

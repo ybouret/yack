@@ -8,80 +8,13 @@
 using namespace yack;
 using namespace chemical;
 
-#if 0
-static inline double f_abs(const double x)
-{
-    return fabs(x);
-}
 
-static inline double d_abs(const double x)
-{
-    return x < 0 ? -1 : ( 0 < x ? 1 : 0);
-}
-
-double get_dif(const double omega, const readable<int> &A, const readable<int> &B, double &dd)
-{
-    double d = 0;
-    for(size_t i=A.size();i>0;--i)
-    {
-        const double y  = A[i];
-        const double dx = A[i]+B[i];
-        const double dv = y - omega * dx;
-        dd -= dx * d_abs(dv);
-        d  += fabs(dv);
-    }
-    return d;
-}
-
-double get_sum(const double omega, const readable<int> &A, const readable<int> &B, double &ds)
-{
-    double s = 0;
-    for(size_t i=A.size();i>0;--i)
-    {
-        const double y  = A[i];
-        const double sx = A[i]-B[i];
-        const double sv = y - omega * sx;
-        s  += f_abs(sv);
-        ds -= sx * d_abs(sv);
-    }
-    return s;
-}
-
-
-
-static inline void delta_NU(const readable<int> &A, const readable<int> &B)
-{
-    std::cerr << "A=" << A << std::endl;
-    std::cerr << "B=" << B << std::endl;
-    ios::ocstream fp("delta.dat");
-    for(double omega=0;omega<1;omega+=0.01)
-    {
-        double       dd = 0;
-        const double d  = get_dif(omega,A,B,dd);
-        double       ds = 0;
-        const double s  = get_sum(omega,A,B,ds);
-
-        fp("%.15g %.15g %.15g %.15g %.15g\n",omega,d,dd,s,ds);
-    }
-
-    {
-        const double omega  = 1.0;
-        double       dd = 0;
-        const double d  = get_dif(omega,A,B,dd);
-        double       ds = 0;
-        const double s  = get_sum(omega,A,B,ds);
-
-        fp("%.15g %.15g %.15g %.15g %.15g\n",omega,d,dd,s,ds);
-    }
-
-}
-#endif
 
 static inline void try_solve(plexus &cs, writable<double> &C)
 {
     
     cs.lib(std::cerr << "Cini=",C);
-    cs.solve(C);
+    cs.evolve(C);
     cs.lib(std::cerr << "Cend=",C);
     cs.eqs(std::cerr << "Gamma=",cs.Gamma);
 }
@@ -119,24 +52,7 @@ YACK_UTEST(plexus)
     std::cerr << "K=" << cs.K << std::endl;
 
     cs.gv("plexus.dot");
-
-#if 0
-    if(cs.N>1)
-    {
-        delta_NU(cs.Nu[1],cs.Nu[2]);
-    }
-#endif
-
-#if 0
-    std::cerr << "Interaction" << std::endl;
-    for(size_t i=1;i<cs.N;++i)
-    {
-        for(size_t j=i+1;j<=cs.N;++j)
-        {
-            equilibrium::inter(cs.Nu[i],cs.Nu[j]);
-        }
-    }
-#endif
+    
     
 
     if(cs.N)

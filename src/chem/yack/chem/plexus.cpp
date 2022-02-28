@@ -35,7 +35,6 @@ namespace yack
         M(check(lib,eqs)),
         A(lib.active()),
         active(),
-        conn(N,N),
         ntab(10,N),
         mtab(10,M),
 

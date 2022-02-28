@@ -43,6 +43,23 @@ namespace yack
                     return (lhs.r==rhs.r) && (lhs.g==rhs.g) && (lhs.b==rhs.b);
                 }
 
+                inline size_t size() const throw() { return 3; }
+
+                inline type &operator[](const size_t indx) throw()
+                {
+                    assert(indx>=1); assert(indx<=3);
+                    return *((&r-1)+indx);
+                }
+
+                inline const_type &operator[](const size_t indx) const throw()
+                {
+                    assert(indx>=1); assert(indx<=3);
+                    return *((&r-1)+indx);
+                }
+
+
+
+
             };
         }
 

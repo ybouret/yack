@@ -103,7 +103,10 @@ namespace yack
                 xi=pa->extent(C);
                 break;
             }
-            if(!pb) return NULL;
+            if(!pb)
+            {
+                return NULL;
+            }
 
             //------------------------------------------------------------------
             //
@@ -121,7 +124,6 @@ namespace yack
                     xi = xi_temp;
                 }
             }
-
             return  make(pb,xi);
         }
 

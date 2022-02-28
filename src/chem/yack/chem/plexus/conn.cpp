@@ -15,19 +15,13 @@ namespace yack
     namespace chemical
     {
 
-        static inline void conn_simp(int &a, int &b) throw()
-        {
-            assert(a!=0); assert(b!=0);
-            const int g = int(yack_gcd64( absolute(a), absolute(b)));
-            a/=g;
-            b/=g;
-        }
+       
 
 
 
         void plexus:: computeConn()
         {
-
+#if 0
             YACK_CHEM_PRINTLN("// <connectivity>");
             vector<uint64_t> ca(M,as_capacity);
             vector<int>      cf(M,0);
@@ -111,7 +105,7 @@ namespace yack
                 
             }
             YACK_CHEM_PRINTLN("// <connectivity/>");
-
+#endif
 
         }
     }
