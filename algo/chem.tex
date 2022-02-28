@@ -30,17 +30,6 @@ and
 \item The unit of $K_i$ is $C_0^{\Delta_r \nu}$
 \end{itemize}
 
-\section{1D-Solving}
-Let us take $\Gamma_i$ (with a least a product or a reactant).
-Then there exist a unique $\tilde{\xi}_i$ for which:
-\begin{equation}
-\left\lbrace
-\begin{array}{rcl}
-	\Gamma_i(\vec{C} + \vec{\nu}_i \tilde{\xi}_i) & = & 0\\
-	 \tilde{\xi}_i \times \Gamma_i(\vec{C}) &\geq  &0\\
-\end{array}
-\right.
-\end{equation}
 
 \section{Derivatives}
 We express the derivative of a product w.r.t. one term:
@@ -60,6 +49,10 @@ and:
 	\nu_k [A_k]^{\nu_k-1} \nu_l [A_l]^{\nu_l-1}\left( \prod_{j=1,j\not=k,j\not=l}^{M} [A_j]^{\nu_{j}} \right)
 \end{equation}
 
+\begin{equation}
+	\vec{\Psi}_i = \partial_{\vec{C}} \Gamma_i
+\end{equation}
+
 \section{Subtracting Equation}
 
 Let $\vec{V}_1\not=\vec{0}$ and $\vec{V}_2\not=\vec{0}$.
@@ -70,9 +63,36 @@ The smallest weighted difference is:
 	\right]
 \end{equation}
 
+\section{1D-Solving}
+Let us take $\Gamma_i$ (with a least a product or a reactant).
+Then there exist a unique $\Xi_i$ for which:
+\begin{equation}
+\left\lbrace
+\begin{array}{rcl}
+	\Gamma_i(\vec{C} + \Xi_i \vec{\nu}_i ) & = & 0\\
+	 \Xi_i \times \Gamma_i(\vec{C}) &\geq  &0\\
+\end{array}
+\right.
+\end{equation}
 
-\section{Solving}
- 
+If we start from
+\begin{equation}
+\vec{C}'_i = \vec{C} + \Xi_i \vec{\nu}_i,\;\;\Gamma_i' = 0
+\end{equation}
+and perform small perturbation $\delta\vec{C}$
+
+\begin{equation}
+0 = \Gamma_i( \vec{C}'_i + \delta\Xi_i \vec{\nu}_i + \delta\vec{C} ) \simeq \Gamma_i' + \vec{\Psi}_i' \cdot \left( \delta\Xi_i \vec{\nu}_i + \delta\vec{C} \right)
+\end{equation}
+Then
+\begin{equation}
+ \left( \vec{\Psi}_i' \cdot \vec{\nu}_i \right)	\delta\Xi_i = - \vec{\Psi}_i' \cdot \delta\vec{C}
+\end{equation}
+then
+\begin{equation}
+	\langle \vec{\Psi}_i'  | \vec{\nu}_i \rangle \delta\Xi_i = -\vec{\Psi}_i' \cdot \bm{\nu}^T \delta \vec{\xi}
+\end{equation}
+  
  	
 \subsection{Regularization}
 We define:
