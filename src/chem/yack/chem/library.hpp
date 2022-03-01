@@ -18,6 +18,8 @@ namespace yack
         class library : public compendium
         {
         public:
+            static const char clid[];
+            
             explicit library() throw();
             virtual ~library() throw();
 
@@ -35,11 +37,18 @@ namespace yack
                 }
                 os << '}' << std::endl;
             }
-            
+
+            const species &operator()(const string &name, const int z);
+            const species &operator()(const char   *name, const int z);
+
+            //const species &operator[](const string &name) const;
+
+            friend std::ostream & operator<<(std::ostream &, const library &);
 
         private:
             YACK_DISABLE_COPY_AND_ASSIGN(library);
             species_set db;
+
         };
 
     }

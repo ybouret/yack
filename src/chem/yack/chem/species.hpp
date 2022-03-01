@@ -27,8 +27,7 @@ namespace yack
             }
 
             virtual ~species() throw();
-
-
+            
             const int    z;
             const size_t rank;
 
