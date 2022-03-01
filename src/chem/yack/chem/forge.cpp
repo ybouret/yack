@@ -19,28 +19,27 @@ namespace yack
                 inline explicit cm_parser() :
                 jive::parser(forge::call_sign)
                 {
-                    compound   &COMPONENTS = agg("COMPONENTS");
-                    const rule &P   = mark('+');
-                    const rule &M   = term('-');
-                    const rule &S   = alt("sign") << P << M;
-                    const rule &PP  = term("++","\\x2B+");
-                    const rule &MM  = term("--","\\x2D+");
-                    compound   &SPECIES = agg("species");
-                    SPECIES << mark('[');
-                    SPECIES << term("root","[:alpha:][:word:]*");
-                    SPECIES << opt( alt("charge") << S << PP << MM );
-                    SPECIES << mark(']');
+                    compound   &COMPONENTS = agg("cm");
 
-                    const rule &COEF       = term("coef","[1-9][0-9]*");
-                    compound   &FIRST_COEF = agg("first_coef");
-                    FIRST_COEF << choice( grp("signed_coef") << S << COEF,S,COEF);
+                    const rule &P  = term('+');
+                    const rule &M  = term('-');
+                    const rule &S  = alt("+/-") << P << M;
+                    const rule &XP = term("++","\\x2B+");
+                    const rule &XM = term("--","\\x2D+");
+                    const rule &XS = alt("++/--") << XP << XM;
+                    compound   &SP = agg("sp");
+                    SP << mark('[');
+                    SP << term("id", "[:alpha:][:word:]*");
+                    SP << opt( choice(S,XS) );
+                    SP << mark(']');
 
+                    const rule &COEF = term("coef","[1-9][0-9]*");
+                    compound   &COEF1 = agg("coef1");
+                    COEF1      << choice( cat(S,COEF), S, COEF);
+                    COMPONENTS << opt(COEF1) << SP;
 
-
-                    COMPONENTS << opt(FIRST_COEF) << SPECIES;
-
-                    const rule &EXTRA_COEF = agg("extra_coef") << S << opt(COEF);
-                    COMPONENTS << zom( cat(EXTRA_COEF,SPECIES) );
+                    compound &XCOEF  = agg("xcoef") << S << opt(COEF);
+                    COMPONENTS << zom( cat(XCOEF,SP) );
 
 
                     drop("[:blank:]");
@@ -70,7 +69,25 @@ namespace yack
             std::cerr << "sizeof(parser)=" << sizeof(cm_parser) << std::endl;
         }
 
+        typedef jive::syntax::xnode XNode;
 
+        static inline int coef1_to_nu(const XNode *node) throw()
+        {
+            assert(node);
+            assert("coef1"==node->name());
+            switch(node->size())
+            {
+                case 1:
+                    break;
+
+                case 2:
+                    break;
+                    
+                default:
+                    break;
+            }
+            return 0;
+        }
 
         void forge:: create(components   &cmp,
                            library       &lib,
@@ -78,8 +95,22 @@ namespace yack
         {
             jive::source src(m);
             compiler->reset();
-            const auto_ptr<jive::syntax::xnode> tree = compiler->parse( src );
+            const auto_ptr<XNode> tree = compiler->parse( src );
+            assert(tree.is_valid());
             tree->gv("forge.dot");
+            assert("cm"==tree->name());
+
+            const XNode *node = tree->head(); assert(node);
+            int          coef = 0;
+            if("coef1"==node->name())
+            {
+                coef=coef1_to_nu(node);
+                node=node->next;
+            }
+            assert(node);
+            assert("sp"==node->name());
+
+
         }
 
     }
