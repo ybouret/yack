@@ -34,7 +34,7 @@ namespace yack
             coerce(d_nu) = prod.nu() - reac.nu();
         }
 
-        bool components:: add( const species &sp,
+        bool components:: add(const species &sp,
                               const int      nu)
         {
             assert(nu!=0);
@@ -58,6 +58,8 @@ namespace yack
                 db.remove(sp.name);
                 throw;
             }
+
+            ++coerce(sp.rank);
 
             update();
 

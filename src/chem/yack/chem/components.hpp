@@ -28,8 +28,10 @@ namespace yack
             bool add(const species &sp,
                      const int      nu);
 
-            double mass_action(const double K, const readable<double> &C) const throw();
+            double         mass_action(const double K, const readable<double> &C) const throw();
             std::ostream & display(std::ostream &os) const;
+
+            
 
             const actors  reac;
             const actors  prod;

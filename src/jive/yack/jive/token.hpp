@@ -13,7 +13,7 @@ namespace yack
     {
 
         typedef klist<uint8_t,character> characters; //!< base class for token
-        typedef kpool<uint8_t,character> repository; //!< bool of tokens
+        typedef kpool<uint8_t,character> repository; //!< pool for tokens
 
         //______________________________________________________________________
         //

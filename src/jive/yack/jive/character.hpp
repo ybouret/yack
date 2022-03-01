@@ -24,7 +24,7 @@ namespace yack
             //
             // types and definitions
             //__________________________________________________________________
-            YACK_EXCLUSIVE_DECL(character,1); //!< aliases
+            YACK_EXCLUSIVE_DECL(character,100); //!< aliases
 
             //__________________________________________________________________
             //

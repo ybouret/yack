@@ -1,6 +1,6 @@
 
-#include "yack/chem/library.hpp"
-#include "yack/chem/components.hpp"
+#include "yack/chem/forge.hpp"
+
 #include "yack/utest/run.hpp"
 
 using namespace yack;
@@ -18,6 +18,16 @@ YACK_UTEST(components)
     water.add(h,1);
     water.add(w,1);
     water.display(std::cerr) << std::endl;
+
+    chemical::forge &build = chemical::forge::instance();
+
+    if(argc>1)
+    {
+        components sample;
+        build(sample,lib,argv[1]);
+    }
+
+
 
 
 
