@@ -38,6 +38,12 @@ namespace yack
             return coef * ipower(host[C],cder);
         }
 
+        void actor:: display(std::ostream &os, const bool first) const
+        {
+            if(!first) os << '+';
+            if(coef>1) os << coef;
+            os << '[' << host.name << ']';
+        }
 
         
     }

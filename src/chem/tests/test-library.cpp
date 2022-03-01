@@ -11,7 +11,7 @@ YACK_UTEST(library)
     lib("HO-",-1);
 
     std::cerr << lib << std::endl;
-
+    
 
 }
 YACK_UDONE()

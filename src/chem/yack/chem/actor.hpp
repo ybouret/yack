@@ -28,7 +28,8 @@ namespace yack
             double mass_action(const readable<double> &C) const throw();
             double drvs_action(const readable<double> &C) const throw();
 
-
+            void    display(std::ostream &os, const bool first) const;
+            
         private:
             const species &host;
             YACK_DISABLE_COPY_AND_ASSIGN(actor);

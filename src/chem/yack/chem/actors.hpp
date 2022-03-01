@@ -21,7 +21,10 @@ namespace yack
             virtual ~actors() throw();
 
             double mass_action(double factor, const readable<double> &C) const throw();
+            int    nu() const throw();
+            int    dz() const throw();
             
+            void display(std::ostream &) const;
 
         private:
             YACK_DISABLE_COPY_AND_ASSIGN(actors);
