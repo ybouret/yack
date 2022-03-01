@@ -19,19 +19,29 @@ namespace yack
                 inline explicit cm_parser() :
                 jive::parser(forge::call_sign)
                 {
-
-                    //const rule &P   = term('+');
-                    //const rule &M   = term('-');
+                    compound   &COMPONENTS = agg("COMPONENTS");
+                    const rule &P   = mark('+');
+                    const rule &M   = term('-');
+                    const rule &S   = alt("sign") << P << M;
                     const rule &PP  = term("++","\\x2B+");
                     const rule &MM  = term("--","\\x2D+");
                     compound   &SPECIES = agg("species");
                     SPECIES << mark('[');
-                    SPECIES << term("root","[:word:]+");
-                    SPECIES << opt( choice(PP,MM) );
+                    SPECIES << term("root","[:alpha:][:word:]*");
+                    SPECIES << opt( alt("charge") << S << PP << MM );
                     SPECIES << mark(']');
 
+                    const rule &COEF       = term("coef","[1-9][0-9]*");
+                    compound   &FIRST_COEF = agg("first_coef");
+                    FIRST_COEF << choice( grp("signed_coef") << S << COEF,S,COEF);
 
-                    top(SPECIES);
+
+
+                    COMPONENTS << opt(FIRST_COEF) << SPECIES;
+
+                    const rule &EXTRA_COEF = agg("extra_coef") << S << opt(COEF);
+                    COMPONENTS << zom( cat(EXTRA_COEF,SPECIES) );
+
 
                     drop("[:blank:]");
                     endl("[:endl:]");

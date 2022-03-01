@@ -23,6 +23,22 @@ namespace yack
                 }
                 return false;
             }
+
+            static inline bool is_group(const xnode *node) throw()
+            {
+                assert(node);
+                const rule &self = **node; assert(self.type==internal_type);
+                switch(self.uuid)
+                {
+                    case aggregate::mark:
+                        return group == self.as<aggregate>()->role;
+
+                    default:
+                        break;
+                }
+                return false;
+            }
+
             static inline
             xnode * ast_internal(xnode *node) throw()
             {
@@ -60,6 +76,17 @@ namespace yack
                                 temp.merge_back(ch->sub());
                                 break;
 
+                            case  aggregate::mark:
+                                if( is_group( & *ch ) )
+                                {
+                                    temp.merge_back(ch->sub());
+                                }
+                                else
+                                {
+                                    temp.push_back(ch.yield());
+                                }
+                                break;
+
                             default:
                                 temp.push_back(ch.yield());
                         }
@@ -85,7 +112,9 @@ namespace yack
                     return held;
                 }
                 else
+                {
                     return node;
+                }
             }
             
             xnode * xnode:: ast(xnode *node) throw()
