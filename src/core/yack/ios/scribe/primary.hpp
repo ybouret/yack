@@ -19,8 +19,7 @@ namespace yack
             explicit primary_scribe(const rtti &, const char *ini);
 
             string   fmt;
-
-
+            
 
         private:
             YACK_DISABLE_COPY_AND_ASSIGN(primary_scribe);

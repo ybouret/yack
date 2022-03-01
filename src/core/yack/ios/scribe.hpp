@@ -10,7 +10,7 @@ namespace yack
     namespace ios
     {
 
-        class scribe : public object
+        class scribe : public object, public counted
         {
         public:
             virtual ~scribe() throw();
