@@ -10,6 +10,32 @@ namespace yack
 
         namespace {
 
+            class bool_scribe : public scribe
+            {
+            public:
+                inline explicit bool_scribe() :  scribe( rtti::use<bool>() ) {}
+                inline virtual ~bool_scribe() throw() {}
+
+
+
+            private:
+                YACK_DISABLE_COPY_AND_ASSIGN(bool_scribe);
+                inline virtual string to_string(const void *addr) const
+                {
+                    assert(addr);
+                    const bool flag = *(const bool *)addr;
+                    if(flag)
+                    {
+                        return string("true");
+                    }
+                    else
+                    {
+                        return string("false");
+                    }
+
+                }
+            };
+
 
             class char_scribe : public  scribe
             {
@@ -120,6 +146,7 @@ namespace yack
         real_format("%.15g"),
         db()
         {
+            use( new bool_scribe() );
             use( new char_scribe() );
             use( new real_scribe<float>(real_format) );
             use( new real_scribe<double>(real_format) );

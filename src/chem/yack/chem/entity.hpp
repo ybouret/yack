@@ -25,6 +25,9 @@ namespace yack
 
             size_t operator*() const throw();
 
+            const string &key() const throw();
+
+
             template <typename T> inline
             const T & operator[](const readable<T> &arr) const throw()
             {
