@@ -2,7 +2,8 @@
 
 YACK_UTEST_DECL(16)
 {
-    YACK_UTEST(library);    
+    YACK_UTEST(library);
+    YACK_UTEST(components);
 }
 YACK_UTEST_EXEC()
 
