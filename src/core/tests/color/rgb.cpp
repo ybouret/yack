@@ -15,7 +15,17 @@ YACK_UTEST(color_rgb)
     {
         for(size_t n=c.size();n>0;--n)
         {
-            c[n] = ran.to<uint8_t>();
+            (c[n] = ran.to<uint8_t>());
+        }
+    }
+
+    if(false)
+    {
+        for(size_t i=0;i<256;++i)
+        {
+            std::cout << " YURT(" << std::setw(3) << i << ")";
+            std::cout << ",";
+            if(0 == (1+i)%16) std::cout << std::endl;
         }
     }
 

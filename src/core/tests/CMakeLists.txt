@@ -251,5 +251,7 @@ add_test(kr:digest   test-core kr_digest)
 add_test(fields     test-core fields)
 
 add_test(color:rgb  test-core color_rgb)
+add_test(color:unit-real test-core color_unit_real)
+
 
 yack_testing(core)
