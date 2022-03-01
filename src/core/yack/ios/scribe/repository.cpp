@@ -1,6 +1,5 @@
 
 #include "yack/ios/scribe/repository.hpp"
-#include "yack/ios/scribe/primary.hpp"
 #include "yack/associative/be-addr.hpp"
 #include "yack/exception.hpp"
 
@@ -70,6 +69,39 @@ namespace yack
                 }
             };
 
+            template <typename T>
+            class u_scribe : public scribe
+            {
+            public:
+                inline explicit u_scribe()  : scribe( rtti::use<T>() ) {}
+                inline virtual ~u_scribe() throw() {}
+
+            private:
+                YACK_DISABLE_COPY_AND_ASSIGN(u_scribe);
+                inline virtual string to_string(const void *addr) const
+                {
+                    assert(addr);
+                    return vformat( "%lu", static_cast<unsigned long>(*(const T*)addr) );
+                }
+            };
+
+
+            template <typename T>
+            class s_scribe : public scribe
+            {
+            public:
+                inline explicit s_scribe()  : scribe( rtti::use<T>() ) {}
+                inline virtual ~s_scribe() throw() {}
+
+            private:
+                YACK_DISABLE_COPY_AND_ASSIGN(s_scribe);
+                inline virtual string to_string(const void *addr) const
+                {
+                    assert(addr);
+                    return vformat( "%ld", static_cast<long>(*(const T*)addr) );
+                }
+            };
+
 
         }
 
@@ -79,8 +111,12 @@ namespace yack
         {
         }
 
-        
+
+#define YACK_USCRIBE(TYPE) chk( new u_scribe<TYPE>() )
+#define YACK_SSCRIBE(TYPE) chk( new s_scribe<TYPE>() )
+
         scribes:: scribes() :
+        singleton<scribes>(),
         real_format("%.15g"),
         db()
         {
@@ -88,7 +124,27 @@ namespace yack
             use( new real_scribe<float>(real_format) );
             use( new real_scribe<double>(real_format) );
             use( new real_scribe<long double>(real_format) );
-            
+
+            YACK_USCRIBE(unsigned char);
+            YACK_USCRIBE(unsigned short);
+            YACK_USCRIBE(unsigned int);
+            YACK_USCRIBE(unsigned long);
+
+            YACK_USCRIBE(uint8_t);
+            YACK_USCRIBE(uint16_t);
+            YACK_USCRIBE(uint32_t);
+            YACK_USCRIBE(uint64_t);
+
+            YACK_SSCRIBE(char);
+            YACK_SSCRIBE(short);
+            YACK_SSCRIBE(int);
+            YACK_SSCRIBE(long);
+
+            YACK_SSCRIBE(int8_t);
+            YACK_SSCRIBE(int16_t);
+            YACK_SSCRIBE(int32_t);
+            YACK_SSCRIBE(int64_t);
+
         }
 
 
@@ -101,7 +157,29 @@ namespace yack
                 throw exception("%s multiple <%s>", call_sign, ptr->tid.name()());
         }
 
-        
+
+        void scribes:: chk(scribe *s)
+        {
+            assert(s);
+            const scribe_ptr ptr(s);
+            const be_address key(ptr->tid);
+            if(!db.insert(ptr,key.begin(),key.measure()))
+            {
+
+            }
+        }
+
+        const scribe & scribes:: get(const std::type_info &tid) const
+        {
+            const rtti       &uid = rtti::use(tid);
+            const be_address  key(uid);
+            const scribe_ptr *pps = db.search(key.begin(),key.measure());
+            if(!pps)
+                throw exception("%s no <%s>",call_sign,uid.name()());
+            return **pps;
+        }
+
+
 
         
     }

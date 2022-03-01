@@ -10,13 +10,17 @@ namespace yack
 {
     namespace color
     {
+        //______________________________________________________________________
+        //
+        //! unit reals to/from bytes
+        //______________________________________________________________________
         template <typename T>
         struct unit_real
         {
             static const T table[256];                 //!< [0..255]/255
+
             //! [0..1] -> [0..255]
-            static inline
-            uint8_t to_byte(const T x) throw()
+            static inline uint8_t to_byte(const T x) throw()
             {
                 static const T word(255);
                 static const T half(0.5);
@@ -25,9 +29,9 @@ namespace yack
         };
 
 #if !defined(_MSC_VER)
-        template <> const float       unit_real<float>::       table[];
-        template <> const double      unit_real<double>::      table[];
-        template <> const long double unit_real<long double>:: table[];
+        template <> const float       unit_real<float>::       table[]; //!< decl
+        template <> const double      unit_real<double>::      table[]; //!< decl
+        template <> const long double unit_real<long double>:: table[]; //!< decl
 #endif
 
     }

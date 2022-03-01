@@ -9,19 +9,30 @@ namespace yack
 {
     namespace ios
     {
-
+        //______________________________________________________________________
+        //
+        //
+        //! base class for a scribe: object to string
+        //
+        //______________________________________________________________________
         class scribe : public object, public counted
         {
         public:
-            virtual ~scribe() throw();
-            const rtti      &tid;
+            //__________________________________________________________________
+            //
+            // members
+            //__________________________________________________________________
+            const rtti      &tid; //!< global rtti, acts as key
 
-            virtual string   to_string(const void *addr) const = 0;
+            //__________________________________________________________________
+            //
+            // methods
+            //__________________________________________________________________
+            virtual       ~scribe() throw();                      //!< cleanup
+            virtual string to_string(const void *addr) const = 0; //!< interface
 
         protected:
-            explicit scribe(const rtti &) throw();
-
-
+            explicit scribe(const rtti &) throw(); //!< setup
 
         private:
             YACK_DISABLE_COPY_AND_ASSIGN(scribe);
