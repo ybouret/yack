@@ -557,7 +557,7 @@ install( FILES ${field_decl} DESTINATION include/yack/field )
 ## color
 ##
 ########################################################################
-file(GLOB color_impl yack/color/*.cpp)
+file(GLOB color_impl yack/color/*.cpp yack/color/*.hxx)
 file(GLOB color_decl yack/color/*.hpp)
 set(color ${color_impl} ${color_decl})
 SOURCE_GROUP(color FILES ${color})
