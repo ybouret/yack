@@ -14,31 +14,31 @@ namespace yack
         namespace nexus
         {
 #define YACK_YUV_UMIN -0.436   //!< decl
-#define YACK_YUV_UMAX   0.436  //!< decl
+#define YACK_YUV_UMAX  0.436   //!< decl
 
 #define YACK_YUV_VMIN -0.615   //!< decl
 #define YACK_YUV_VMAX  0.615   //!< decl
 
-            //______________________________________________________________________
+            //__________________________________________________________________
             //
             //
             //! YUV format
             //
-            //______________________________________________________________________
+            //__________________________________________________________________
             template <typename T>
             class yuv
             {
             public:
-                //__________________________________________________________________
+                //______________________________________________________________
                 //
                 // types and definitions
-                //__________________________________________________________________
+                //______________________________________________________________
                 YACK_DECL_ARGS_(T,type); //!< aliases
 
-                //__________________________________________________________________
+                //______________________________________________________________
                 //
                 // C++
-                //__________________________________________________________________
+                //______________________________________________________________
 
                 //! setup
                 yuv() throw();
@@ -51,23 +51,50 @@ namespace yack
                 //! setup
                 yuv(const_type Y, const_type U, const_type V) throw();
 
-                //__________________________________________________________________
+                //______________________________________________________________
                 //
                 // members
-                //__________________________________________________________________
+                //______________________________________________________________
                 const_type y; //!< Y
                 const_type u; //!< U
                 const_type v; //!< V
 
-                //__________________________________________________________________
+
+                //______________________________________________________________
+                //
+                // recomposing
+                //______________________________________________________________
+
+
+
+                inline mutable_type get_r() const throw()
+                {
+                    static const_type cv(1.13983);
+                    return clamp_y(y+cv*v);
+                }
+
+                inline mutable_type get_g() const throw()
+                {
+                    static const_type cu(-0.39465);
+                    static const_type cv(-0.58060);
+                    return clamp_y(y+cu*u+cv*v);
+                }
+
+                inline mutable_type get_b() const throw()
+                {
+                    static const_type cu(2.03211);
+                    return clamp_y(y+cu*u);
+                }
+
+                //______________________________________________________________
                 //
                 // clamping
-                //__________________________________________________________________
+                //______________________________________________________________
 
                 //! Y
                 static inline mutable_type clamp_y(const_type Y) throw()
                 {
-                    return (Y<0) ? 0 : ( (1<Y) ? 1 : Y);
+                    return (Y<=0) ? 0 : ( (1<=Y) ? 1 : Y);
                 }
 
                 //! U
@@ -76,7 +103,7 @@ namespace yack
                     static const_type umin(YACK_YUV_UMIN);
                     static const_type umax(YACK_YUV_UMAX);
 
-                    return (U<umin) ? umin : ( (umax<U) ? umax : U);
+                    return (U<=umin) ? umin : ( (umax<=U) ? umax : U);
                 }
 
                 //! V
@@ -84,14 +111,14 @@ namespace yack
                 {
                     static const_type vmin(YACK_YUV_VMIN);
                     static const_type vmax(YACK_YUV_VMAX);
-
-                    return (V<vmin) ? vmin : ( (vmax<V) ? vmax : V);
+                    
+                    return (V<=vmin) ? vmin : ( (vmax<=V) ? vmax : V);
                 }
 
-                //__________________________________________________________________
+                //______________________________________________________________
                 //
                 // conversion
-                //__________________________________________________________________
+                //______________________________________________________________
 
                 //! Y
                 static inline mutable_type to_y(const_type r, const_type g, const_type b) throw()
@@ -105,18 +132,18 @@ namespace yack
                 //! U
                 static inline mutable_type to_u(const_type r, const_type g, const_type b) throw()
                 {
-                    static const_type cr(-0.147);
-                    static const_type cg(-0.289);
-                    static const_type cb(+0.437);
+                    static const_type cr(-0.14713);
+                    static const_type cg(-0.28886);
+                    static const_type cb(+0.43600);
                     return clamp_u(cr*r + cg*g + cb*b);
                 }
 
                 //! V
                 static inline mutable_type to_v(const_type r, const_type g, const_type b) throw()
                 {
-                    static const_type cr(0.615);
-                    static const_type cg(-0.515);
-                    static const_type cb(-0.100);
+                    static const_type cr(+0.61500);
+                    static const_type cg(-0.51498);
+                    static const_type cb(-0.10001);
                     return clamp_v(cr*r + cg*g + cb*b);
                 }
 

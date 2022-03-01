@@ -1,3 +1,4 @@
+//#include <iostream>
 
 namespace yack
 {
@@ -14,12 +15,17 @@ namespace yack
                              const_type V) throw() :
             y(Y), u(U), v(V)
             {
+#if 0
+                std::cerr << "y=" << y << ", u=" << u << ", v=" << v << std::endl;
                 assert(y>=0);
                 assert(y<=1);
+
                 assert(u>=YACK_YUV_UMIN);
                 assert(u<=YACK_YUV_UMAX);
+
                 assert(v>=YACK_YUV_VMIN);
                 assert(v<=YACK_YUV_VMAX);
+#endif
             }
 
 
