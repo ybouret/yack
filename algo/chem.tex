@@ -76,30 +76,40 @@ Then there exist a unique $\Xi_i$ for which:
 \end{array}
 \right.
 \end{equation}
+Each $\Xi_i$ is a deviation to equilibrium $\Gamma_i$.
 
-\subsection{Derivative of solution}
+\subsection{Change of each $\Xi$}
 If we start from
 \begin{equation}
-\vec{C}'_i = \vec{C} + \Xi_i \vec{\nu}_i,\;\;\Gamma_i' = 0
+\left\lbrace
+\begin{array}{rcl}
+	\vec{C}'_i & = & \vec{C} + \Xi_i \vec{\nu}_i\\
+	\Gamma_i(\vec{C}'_i) & = & 0\\
+\end{array}
+\right.
 \end{equation}
-and perform small perturbation $\delta\vec{C}$
+
+We look for $\delta \Xi_i$ which keeps $\Gamma_i$ to $0$ for a small perturbation $\delta\vec{C}$:
+\begin{equation}
+	\Gamma_i\left( \vec{C} + \delta\vec{C} + \Xi_i \vec{\nu}_i + \delta \Xi_i \vec{\nu}_i \right)
+\end{equation}
+so that we need:
+\begin{equation}
+	\langle \vec{\Psi}_i' \vert  \delta \Xi_i \vec{\nu}_i + \delta\vec{C} \rangle = 0
+\end{equation}
+or:
+\begin{equation}
+	\langle \vec{\Psi}_i' \vert  \vec{\nu}_i  \rangle  \delta \Xi_i = - \langle \vec{\Psi}_i' \vert \delta\vec{C} \rangle 
+ \end{equation}
+So for an extent $\delta\vec{\xi}$:
+\begin{equation}
+	\langle \vec{\Psi}_i' \vert  \vec{\nu}_i  \rangle  \delta \Xi_i = - \langle \vec{\Psi}_i' \vert \bm{\nu}^T \vert \delta\vec{\xi} \rangle 
+\end{equation}
+
+\subsection{Change of $\vec{\Xi}$}
 
 \begin{equation}
-0 = \Gamma_i( \vec{C}'_i + \delta\Xi_i \vec{\nu}_i + \delta\vec{C} ) \simeq \Gamma_i' + \vec{\Psi}_i' \cdot \left( \delta\Xi_i \vec{\nu}_i + \delta\vec{C} \right)
-\end{equation}
-Then
-\begin{equation}
- \langle \vec{\Psi}_i'  \vert \vec{\nu}_i \rangle\delta\Xi_i = - \langle \vec{\Psi}_i' \vert \delta\vec{C}\rangle
-\end{equation}
-or
-\begin{equation}
-	\langle \vec{\Psi}_i'  \vert \vec{\nu}_i \rangle \delta\Xi_i = - \langle\vec{\Psi}_i' \vert \bm{\nu}^T \vert \delta \vec{\xi} \rangle
-\end{equation}
-Hence, we know the gradient of each $\Xi_i$ w.r.t $\vec{C}$.
-
-\subsection{Jacobian of system} 
-\begin{equation}
-	\vec{\Xi}(\vec{C}+\delta\vec{C}) \simeq  \vec{\Xi}(\vec{C}) -
+	\vec{\Xi}(\vec{C}+ \bm{\nu}^T  \delta\vec{\xi} ) \simeq  \vec{\Xi}(\vec{C}) -
 	\bm{\Omega}
 	\delta\vec{\xi}
 \end{equation}  
@@ -119,9 +129,9 @@ and
 	\end{array}
 \right.
 \end{equation}
-For uncoupled equations, $\vec{\xi}=\vec{\Xi}$...
 
- 	
+
+ 	 	
 \subsection{Regularization}
 We define:
 \begin{equation}

@@ -37,14 +37,20 @@ namespace yack
             }
 
             YACK_CHEM_PRINTLN("// <solving>");
-            if(verbose)
-            {
-                lib(std::cerr << "C0=", Corg);
-            }
+
 
             size_t iter=0;
         ITER:
             ++iter;
+            YACK_CHEM_PRINTLN("//   iter=" << iter);
+            if(verbose)
+            {
+                lib(std::cerr << "C0=", Corg);
+            }
+            if(iter>=100)
+            {
+                exit(1);
+            }
             W.ld(0);
             for(const enode *node=eqs.head();node;node=node->next)
             {
@@ -53,10 +59,11 @@ namespace yack
                 const double       Ki = K[ei];
                 const double       xx = xi[ei] = eq.extent(Ki,Corg,Ctmp);
                 eq.drvs_action(Psi[ei],Ki, eq.move(Ctry,Corg,xx) );
+                std::cerr << "Ceq_" << eq.name << " = " << Ctry << std::endl;
                 std::cerr << "Psi_" << eq.name << " = " << Psi[ei] << std::endl;
             }
 
-            YACK_CHEM_PRINTLN("//   C0 = " << Corg);
+
             YACK_CHEM_PRINTLN("//   Psi= " << Psi);
             YACK_CHEM_PRINTLN("//   Xi = " << xi);
             if(verbose) eqs(std::cerr << "Xi=", xi);
@@ -71,15 +78,16 @@ namespace yack
                 assert(fac<=0);
                 if(fabs(fac)<=0)
                 {
+                    xi[i] = 0;
                     continue;
                 }
                 for(size_t j=N;j>i;--j)
                 {
-                    W_i[j] = tao::v1::dot<double>::of(psi,Nu[j]);
+                    W_i[j] = tao::v1::dot<double>::of(psi,Nu[j])/fac;
                 }
                 for(size_t j=i-1;j>0;--j)
                 {
-                    W_i[j] = tao::v1::dot<double>::of(psi,Nu[j]);
+                    W_i[j] = tao::v1::dot<double>::of(psi,Nu[j])/fac;
                 }
             }
             YACK_CHEM_PRINTLN("//   Om = " << W);
@@ -104,23 +112,54 @@ namespace yack
             YACK_CHEM_PRINTLN("//     xi_c   = " << xi);
 
             computeDeltaC(xi);
-            
-            const double g0 = computeVariance(Corg);
-            const double g1 = move(g0);
 
-            std::cerr << "g1=" << g1 << " / " << g0 << std::endl;
-
-            tao::v1::set(Corg,Ctry);
-
-            tao::v1::set(C,Corg);
-
-            if(iter>=4)
+            double       scale = 1.0;
+            const size_t count = truncation(scale);
+            if(count)
             {
-                computeGammaAndPsi(Corg);
-                return;
+                YACK_CHEM_PRINTLN("// [limited@" << scale << "]");
+                if(scale>1.0)
+                {
+                    make_trial(1.0);
+                }
+                else
+                {
+                    make_trial(scale,ustack);
+                    tao::v1::set(Corg,Ctry);
+                    goto ITER;
+                }
+            }
+            else
+            {
+                YACK_CHEM_PRINTLN("// [unlimited]");
+                make_trial(1.0);
+            }
+
+            {
+                bool converged = true;
+                for(const anode *node=active.head;node;node=node->next)
+                {
+                    const species &s = **node;
+                    const size_t   j = *s;
+                    const double   dC = fabs(Ctry[j]-Corg[j]);
+                    if(fabs(dC)>numeric<double>::ftol*fabs(Ctry[j]))
+                    {
+                        converged = false;
+                    }
+                    Corg[j] = Ctry[j];
+                }
+                if(converged)
+                {
+                    std::cerr << "converged@iter=" << iter << std::endl;
+                    goto DONE;
+                }
             }
 
             goto ITER;
+
+        DONE:
+            computeGammaAndPsi(Corg);
+            tao::v1::set(C,Corg);
 
         }
 

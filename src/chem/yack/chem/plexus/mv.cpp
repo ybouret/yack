@@ -34,7 +34,7 @@ namespace yack
                 if(scale>1)
                 {
                     YACK_CHEM_PRINTLN("//     |_@" << scale << " > 1");
-                    //save_profile("lim.dat",1);
+                    save_profile("lim.dat",1);
                     g.c=g.b=(*this)(x.c=x.b=1);
                     if(g.c>=g.a)
                     {
@@ -72,7 +72,7 @@ namespace yack
             {
                 YACK_CHEM_PRINTLN("//     [unlimited]");
                 g.c=g.b=(*this)(x.c=x.b=1);
-                //save_profile("ulim.dat",1);
+                save_profile("ulim.dat",1);
                 if(g.c>=g.a)
                 {
                     // backtrack
