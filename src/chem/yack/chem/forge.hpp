@@ -6,6 +6,7 @@
 #include "yack/chem/library.hpp"
 #include "yack/chem/components.hpp"
 #include "yack/jive/parser.hpp"
+#include "yack/hashing/perfect.hpp"
 
 namespace yack
 {
@@ -30,7 +31,8 @@ namespace yack
             explicit forge();
             virtual ~forge() throw();
 
-            auto_ptr<jive::parser> compiler;
+            auto_ptr<jive::parser>  compiler;
+            const hashing::perfect  keywords;
             void create(components &, library &, jive::module *);
         };
     }

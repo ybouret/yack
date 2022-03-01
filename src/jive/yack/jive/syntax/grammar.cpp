@@ -52,6 +52,9 @@ namespace yack
                 assert(fn);
                 if(!rules.owns(&r)) throw exception("[%s] does not own <%s> in %s()", (*lang)(), ( *(r.name) )(), fn);
             }
+            
+            
+          
         }
     }
 

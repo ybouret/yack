@@ -1,6 +1,7 @@
 
 #include "yack/chem/forge.hpp"
 #include "yack/jive/syntax/xnode.hpp"
+#include "yack/exception.hpp"
 
 namespace yack
 {
@@ -35,7 +36,8 @@ namespace yack
 
                     const rule &COEF = term("coef","[1-9][0-9]*");
                     compound   &COEF1 = agg("coef1");
-                    COEF1      << choice( cat(S,COEF), S, COEF);
+                    const rule &SCOEF = agg("scoef") << S << COEF;
+                    COEF1      << choice(SCOEF, S, COEF);
                     COMPONENTS << opt(COEF1) << SP;
 
                     compound &XCOEF  = agg("xcoef") << S << opt(COEF);
@@ -63,28 +65,78 @@ namespace yack
         {
         }
 
+        
+        static const char *kw[] =
+        {
+            "+",     // 0
+            "-",     // 1
+            "++",    // 2
+            "--",    // 3
+            "sp",    // 4
+            "id",    // 5
+            "coef",  // 6
+            "coef1", // 7
+            "scoef", // 8
+            "xcoef"  // 9
+        };
+        
+#define YCF_P     0
+#define YCF_M     1
+#define YCF_XP    2
+#define YCF_XM    3
+#define YCF_SP    4
+#define YCF_ID    5
+#define YCF_COEF  6
+#define YCF_COEF1 7
+#define YCF_SCOEF 8
+#define YCF_XCOEF 9
+
+        
         forge:: forge() :
-        compiler( new cm_parser() )
+        compiler( new cm_parser() ),
+        keywords( YACK_HASHING_PERFECT(kw) )
         {
             std::cerr << "sizeof(parser)=" << sizeof(cm_parser) << std::endl;
+            
+            ios::ocstream fp(ios::cstderr);
+            compiler->emit_keywords(fp);
         }
 
         typedef jive::syntax::xnode XNode;
 
-        static inline int coef1_to_nu(const XNode *node) throw()
+        static inline int coef_to_int(const XNode *node)
+        {
+            assert(node);
+            assert("coef"==node->name());
+            
+            return 0;
+        }
+        
+        static inline int scoef_to_int(const XNode *node)
+        {
+            assert(node);
+            assert("scoef"==node->name());
+            
+            return 0;
+        }
+        
+        static inline int coef1_to_int(const XNode            *node,
+                                       const hashing::perfect &hash)
         {
             assert(node);
             assert("coef1"==node->name());
-            switch(node->size())
+            const XNode *scan = node->head();
+            std::cerr << "[scan=" << scan->name() << "]" << std::endl;
+            const string &name = scan->name();
+            switch(hash(name))
             {
-                case 1:
+                case YCF_P:     return  1;
+                case YCF_M:     return -1;
+                case YCF_COEF:  return coef_to_int(scan);
+                case YCF_SCOEF:
                     break;
-
-                case 2:
-                    break;
-                    
                 default:
-                    break;
+                    throw exception("invalid '%s'", name());
             }
             return 0;
         }
@@ -101,10 +153,10 @@ namespace yack
             assert("cm"==tree->name());
 
             const XNode *node = tree->head(); assert(node);
-            int          coef = 0;
+            int          coef = 1;
             if("coef1"==node->name())
             {
-                coef=coef1_to_nu(node);
+                coef=coef1_to_int(node,keywords);
                 node=node->next;
             }
             assert(node);

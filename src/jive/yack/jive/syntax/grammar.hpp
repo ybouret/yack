@@ -208,6 +208,9 @@ namespace yack
                 //! validate grammar
                 void validate() const;
 
+                //! emit keywords
+                void emit_keywords(ios::ostream &) const;
+ 
                 //______________________________________________________________
                 //
                 //! run is accepting first rule

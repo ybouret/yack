@@ -10,6 +10,7 @@
 #include "yack/jive/lexical/lexeme.hpp"
 #include "yack/jive/pattern/scatter-table.hpp"
 #include "yack/jive/pattern/regexp.hpp"
+#include "yack/large-object.hpp"
 
 namespace yack
 {
@@ -37,7 +38,7 @@ namespace yack
             //! lexical scanner to produce lexemes
             //
             //__________________________________________________________________
-            class scanner : public object, public counted
+            class scanner : public large_object, public counted
             {
             public:
                 //______________________________________________________________
@@ -59,7 +60,7 @@ namespace yack
                 template <typename LABEL> inline
                 explicit scanner(const LABEL     &label_,
                                  const eos_policy flag=accept_eos) :
-                object(),
+                large_object(),
                 counted(),
                 label( tags::make(label_)   ),
                 instr( new instructions()   ),
