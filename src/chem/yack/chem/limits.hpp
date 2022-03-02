@@ -11,25 +11,37 @@ namespace yack
 {
     namespace chemical
     {
-
+        //______________________________________________________________________
+        //
+        //
+        //! limited classification
+        //
+        //______________________________________________________________________
         enum limited_type
         {
-            limited_by_none,
-            limited_by_reac,
-            limited_by_prod,
-            limited_by_both
+            limited_by_none, //!< no limits
+            limited_by_reac, //!< limited by reactants
+            limited_by_prod, //!< limited by products
+            limited_by_both  //!< limited by both
         };
 
+        //______________________________________________________________________
+        //
+        //
+        //! limit from actors
+        //
+        //______________________________________________________________________
         class limits
         {
         public:
-            limits(const limit *r, const limit *p) throw();
+            limits(const limit *r, const limit *p) throw(); //!< setup
 
+            //! display info
             friend std::ostream & operator<<(std::ostream &, const limits &);
 
-            const limit * const reac;
-            const limit * const prod;
-            const limited_type  type;
+            const limit * const reac; //!< limiting reactant
+            const limit * const prod; //!< limiting product
+            const limited_type  type; //!< classification
 
         private:
             YACK_DISABLE_COPY_AND_ASSIGN(limits);

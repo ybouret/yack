@@ -56,6 +56,9 @@ namespace yack
             //! reac.mass_action(K,C,-xi) - prod.mass_action(1,C,xi)
             double         mass_action(const double K, const readable<double> &C, const double xi) const throw();
 
+            //! find private solving extent
+            double         extent(const double K, const readable<double> &C) const;
+
             //! helper to display
             std::ostream & display(std::ostream &os) const;
 

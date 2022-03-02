@@ -11,14 +11,19 @@ namespace yack
     namespace chemical
     {
 
+        //______________________________________________________________________
+        //
+        //
+        //! limit from actors
+        //
+        //______________________________________________________________________
         class limit
         {
         public:
-            limit(const actor &, const double) throw();
-            const double xi;
-
-            const actor & operator*() const throw();
-
+            limit(const actor &, const double) throw(); //!< setup
+            const actor & operator*()    const throw(); //!< access
+            const double xi;                            //!< host's extent
+            
         private:
             const actor &host;
             YACK_DISABLE_COPY_AND_ASSIGN(limit);
