@@ -1,5 +1,6 @@
 #include "yack/math/root/zbis.hpp"
 #include "yack/math/root/zrid.hpp"
+#include "yack/math/root/zsec.hpp"
 #include "yack/utest/run.hpp"
 #include "yack/system/rtti.hpp"
 #include "yack/string.hpp"
@@ -82,6 +83,7 @@ YACK_UTEST(zroot)
 
     zsolve<float,zbis>();
     zsolve<float,zrid>();
+    zsolve<float,zsec>();
 
 
     zsolve<double,zbis>();
