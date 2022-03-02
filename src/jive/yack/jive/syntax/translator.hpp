@@ -60,8 +60,8 @@ namespace yack
                 void         inspect(const xnode *node);    //!< recursive call
                 virtual void on_init();                     //!< prepare resources
                 virtual void on_quit() throw();             //!< free resources
-            public:
-                void *data;
+            protected:
+                void *data; //!< temporary user's data if necessary
             };
         }
 

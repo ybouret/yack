@@ -66,13 +66,14 @@ namespace yack
                 //______________________________________________________________
 
 
-
+                //! yuv->r
                 inline mutable_type get_r() const throw()
                 {
                     static const_type cv(1.13983);
                     return clamp_y(y+cv*v);
                 }
 
+                //! yuv->g
                 inline mutable_type get_g() const throw()
                 {
                     static const_type cu(-0.39465);
@@ -80,6 +81,7 @@ namespace yack
                     return clamp_y(y+cu*u+cv*v);
                 }
 
+                //! yuv->b
                 inline mutable_type get_b() const throw()
                 {
                     static const_type cu(2.03211);
@@ -158,7 +160,7 @@ namespace yack
         }
 
 
-        typedef nexus::yuv<float> yuv;
+        typedef nexus::yuv<float> yuv; //!< default yuv
     }
 
 }

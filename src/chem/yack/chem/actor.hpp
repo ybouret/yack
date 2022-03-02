@@ -10,26 +10,54 @@ namespace yack
     namespace chemical
     {
 
+        //______________________________________________________________________
+        //
+        //
+        //! an actor is a species with a positive coefficient
+        //
+        //______________________________________________________________________
         class actor : public object
         {
         public:
+            //__________________________________________________________________
+            //
+            // C++
+            //__________________________________________________________________
+
+            //! setup
             explicit actor(const species &sp, const unsigned cf) throw();
+
+            //! cleanup
             virtual ~actor() throw();
 
-            actor          *next;
-            actor          *prev;
+
+            //__________________________________________________________________
+            //
+            // methods
+            //__________________________________________________________________
+            const species & operator*() const throw(); //!< access species
+
+            //! return limiting extent
+            double limiting(const readable<double> &C) const throw();
+
+            //! C[indx]^coef
+            double mass_action(const readable<double> &C) const throw();
+
+            //! coef*C[indx]^cder
+            double drvs_action(const readable<double> &C) const throw();
+
+            //! helper to display
+            void    display(std::ostream &os, const bool first) const;
+
+            //__________________________________________________________________
+            //
+            // members
+            //__________________________________________________________________
+            actor          *next; //!< for actors
+            actor          *prev; //!< for actors
             const  unsigned coef; //!< |nu|>0
             const  unsigned cder; //!< coef-1 >= 0
 
-            const species & operator*() const throw();
-
-            double limiting(const readable<double> &C) const throw();
-
-            double mass_action(const readable<double> &C) const throw();
-            double drvs_action(const readable<double> &C) const throw();
-
-            void    display(std::ostream &os, const bool first) const;
-            
         private:
             const species &host;
             YACK_DISABLE_COPY_AND_ASSIGN(actor);

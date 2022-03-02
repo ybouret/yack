@@ -12,12 +12,28 @@ namespace yack
 {
     namespace chemical
     {
+        //______________________________________________________________________
+        //
+        //
+        //! helper to compile equilibria/species
+        //
+        //______________________________________________________________________
         class forge : public singleton<forge>
         {
         public:
-            static const at_exit::longevity life_time = 10;
-            static const char               call_sign[];
+            //__________________________________________________________________
+            //
+            // types and definitions
+            //__________________________________________________________________
+            static const at_exit::longevity life_time = 10; //!< singleton
+            static const char               call_sign[];    //!< singleton
 
+            //__________________________________________________________________
+            //
+            // methods
+            //__________________________________________________________________
+
+            //! append to components/library the info
             template <typename INFO> inline
             void operator()(components &cmp,
                             library    &lib,

@@ -10,9 +10,21 @@ namespace yack
     namespace chemical
     {
 
+        //______________________________________________________________________
+        //
+        //
+        //! indexed and name entity
+        //
+        //______________________________________________________________________
         class entity : public object, public counted
         {
         public:
+            //__________________________________________________________________
+            //
+            // C++
+            //__________________________________________________________________
+
+            //! setup
             template <typename ID> inline
             entity(const ID &uuid, const size_t ipos) :
             name(uuid),
@@ -21,13 +33,18 @@ namespace yack
                 assert(indx>0);
             }
 
+            //! cleanup
             virtual ~entity() throw();
 
-            size_t operator*() const throw();
+            //__________________________________________________________________
+            //
+            // methods
+            //__________________________________________________________________
+            size_t        operator*() const throw(); //!< access index
+            const string &key()       const throw(); //!< access name
 
-            const string &key() const throw();
 
-
+            //! access array
             template <typename T> inline
             const T & operator[](const readable<T> &arr) const throw()
             {
@@ -36,6 +53,7 @@ namespace yack
                 return arr[indx];
             }
 
+            //! access array
             template <typename T> inline
             T & operator[](writable<T> &arr) const throw()
             {
@@ -44,11 +62,15 @@ namespace yack
                 return arr[indx];
             }
 
-            const string name;
+            //__________________________________________________________________
+            //
+            // members
+            //__________________________________________________________________
+            const string name; //!< uuid
 
         private:
             YACK_DISABLE_COPY_AND_ASSIGN(entity);
-            const size_t indx;
+            const size_t indx; //!< uuid
         };
     }
 }

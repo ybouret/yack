@@ -12,20 +12,43 @@ namespace yack
 {
     namespace chemical
     {
-        typedef suffix_set<string,const species::pointer> species_set;
-        typedef typename species_set::knot_type           snode;
+        //______________________________________________________________________
+        //
+        // definitions
+        //______________________________________________________________________
+        typedef suffix_set<string,const species::pointer> species_set; //!< alias
+        typedef typename species_set::knot_type           snode;       //!< alias
 
+        //______________________________________________________________________
+        //
+        //
+        //!set of unique species
+        //
+        //______________________________________________________________________
         class library : public compendium
         {
         public:
-            static const char clid[];
-            
-            explicit library() throw();
-            virtual ~library() throw();
+            //__________________________________________________________________
+            //
+            // types and definitions
+            //__________________________________________________________________
+            static const char clid[]; //!< library
 
-            const snode *head() const throw();
-            size_t       size() const throw();
+            //__________________________________________________________________
+            //
+            // methods
+            //__________________________________________________________________
+            explicit library() throw(); //!< setup
+            virtual ~library() throw(); //!< cleanup
 
+            //__________________________________________________________________
+            //
+            // methods
+            //__________________________________________________________________
+            const snode *head() const throw(); //!< first species
+            size_t       size() const throw(); //!< number of species
+
+            //! display named values
             template <typename T> inline
             void operator()(std::ostream &os, const readable<T> &arr)
             {
@@ -38,11 +61,13 @@ namespace yack
                 os << '}' << std::endl;
             }
 
+            //! declare/recall species
             const species &operator()(const string &name, const int z);
+
+            //! declare/recall species
             const species &operator()(const char   *name, const int z);
 
-            //const species &operator[](const string &name) const;
-
+            //! display info
             friend std::ostream & operator<<(std::ostream &, const library &);
 
         private:

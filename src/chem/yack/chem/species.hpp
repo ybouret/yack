@@ -10,12 +10,27 @@ namespace yack
 {
     namespace chemical
     {
-
+        //______________________________________________________________________
+        //
+        //
+        //! species
+        //
+        //______________________________________________________________________
         class species : public entity
         {
         public:
-            typedef ark_ptr<string,const species> pointer;
+            //__________________________________________________________________
+            //
+            // types and definition
+            //__________________________________________________________________
+            typedef ark_ptr<string,const species> pointer; //!< alias
 
+            //__________________________________________________________________
+            //
+            // C++
+            //__________________________________________________________________
+
+            //! setup
             template <typename ID>
             explicit species(const ID    &uuid,
                              const int    zz,
@@ -26,10 +41,15 @@ namespace yack
             {
             }
 
+            //! cleanup
             virtual ~species() throw();
-            
-            const int    z;
-            const size_t rank;
+
+            //__________________________________________________________________
+            //
+            // members
+            //__________________________________________________________________
+            const int    z;    //!< algebraic charge
+            const size_t rank; //!< referred in components
 
         private:
             YACK_DISABLE_COPY_AND_ASSIGN(species);

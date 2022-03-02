@@ -11,19 +11,43 @@ namespace yack
 {
     namespace chemical
     {
-
+        //______________________________________________________________________
+        //
+        //
+        //! base class for actors
+        //
+        //______________________________________________________________________
         typedef cxx_list_of<actor> actors_;
 
+
+        //______________________________________________________________________
+        //
+        //
+        //! list of actors
+        //
+        //______________________________________________________________________
         class actors : public actors_
         {
         public:
-            explicit actors() throw();
-            virtual ~actors() throw();
+            //__________________________________________________________________
+            //
+            // C++
+            //__________________________________________________________________
+            explicit actors() throw(); //!< setup
+            virtual ~actors() throw(); //!< cleanup
 
+            //__________________________________________________________________
+            //
+            // methods
+            //__________________________________________________________________
+
+            //! factor * prod( C[indx]^coef[indx] )
             double mass_action(double factor, const readable<double> &C) const throw();
-            int    nu() const throw();
-            int    dz() const throw();
-            
+
+            int    nu() const throw(); //!< sum of each nu, cast to int
+            int    dz() const throw(); //!< sum of algebraic nu
+
+            //! helper to display
             void display(std::ostream &) const;
 
         private:

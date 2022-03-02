@@ -10,16 +10,39 @@ namespace yack
 {
     namespace chemical
     {
+        //______________________________________________________________________
+        //
+        //
+        //! a species with an algebraic coefficient
+        //
+        //______________________________________________________________________
         class component : public object, public counted
         {
         public:
-            typedef ark_ptr<string,const component> pointer;
+            //__________________________________________________________________
+            //
+            // types and definition
+            //__________________________________________________________________
+            typedef ark_ptr<string,const component> pointer; //!< alias
 
-            explicit component(const species &sp, const int nu);
-            virtual ~component() throw();
+            //__________________________________________________________________
+            //
+            // C++
+            //__________________________________________________________________
+            explicit component(const species &sp, const int nu); //!< setup
+            virtual ~component() throw();                        //!< cleanup
 
-            const string  & key()       const throw();
-            const species & operator*() const throw();
+            //__________________________________________________________________
+            //
+            // methods
+            //__________________________________________________________________
+            const string  & key()       const throw(); //!< host.name
+            const species & operator*() const throw(); //!< access species
+
+            //__________________________________________________________________
+            //
+            // members
+            //__________________________________________________________________
             const int       coef; //!< |coef| > 0
 
         private:
