@@ -34,8 +34,8 @@ namespace yack
             coerce(d_nu) = prod.nu() - reac.nu();
         }
 
-        bool components:: add(const species &sp,
-                              const int      nu)
+        bool components:: operator()(const species &sp,
+                                     const int      nu)
         {
             assert(nu!=0);
             const component::pointer p = new component(sp,nu);

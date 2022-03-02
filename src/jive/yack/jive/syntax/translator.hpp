@@ -48,7 +48,7 @@ namespace yack
                 //
                 // non-virtual interface
                 //______________________________________________________________
-                void         walk(const xnode &tree); //!< init/inspect/quit
+                void         walk(const xnode &tree, void *user_data); //!< init/inspect/quit
 
 
             protected:
@@ -60,6 +60,8 @@ namespace yack
                 void         inspect(const xnode *node);    //!< recursive call
                 virtual void on_init();                     //!< prepare resources
                 virtual void on_quit() throw();             //!< free resources
+            public:
+                void *data;
             };
         }
 

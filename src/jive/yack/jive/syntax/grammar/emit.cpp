@@ -1,5 +1,6 @@
 #include "yack/jive/syntax/grammar.hpp"
 #include "yack/jive/syntax/rule/all.hpp"
+#include "yack/type/hexa.hpp"
 
 namespace yack
 {
@@ -7,10 +8,10 @@ namespace yack
     {
         namespace syntax
         {
-            void grammar:: emit_keywords(ios::ostream &fp) const
+            void grammar:: collect_keywords(sequence<string> &terminals,
+                                            sequence<string> &internals) const
             {
-                vector<string> kw;
-                
+
                 for(const rule *p = rules.head;p;p=p->next)
                 {
                     switch(p->uuid)
@@ -22,7 +23,7 @@ namespace yack
                             {
                                 case standard:
                                 case univocal:
-                                    kw.push_back( *(t->name) );
+                                    terminals.push_back( *(t->name) );
                                     break;
                                 case division:
                                     break;
@@ -37,7 +38,7 @@ namespace yack
                             {
                                 case named:
                                 case proxy:
-                                    kw.push_back( *(a->name) );
+                                    internals.push_back( *(a->name) );
                                     break;
                                 case group:
                                     break;
@@ -48,22 +49,80 @@ namespace yack
                             break;
                     }
                 }
-                
-                const size_t n = kw.size();
+
+            }
+
+
+            static inline void emit_quoted(ios::ostream &fp, const string &id)
+            {
+                fp << ' ' << '\"' << id << '\"';
+            }
+
+
+            static inline void push_define(sequence<string> &df, const string &id)
+            {
+                string ans;
+                for(size_t i=1;i<=id.size();++i)
+                {
+                    const char c = id[i];
+                    if(isalnum(c)||'_'==c)
+                    {
+                        ans += c;
+                        continue;
+                    }
+                    if(c==' ')
+                    {
+                        ans += '_';
+                        continue;
+                    }
+                    ans += 'x';
+                    ans += hexa::uppercase_text[ uint8_t(c) ];
+                    
+                }
+
+                df.push_back(ans);
+            }
+
+            void grammar:: emit_keywords(ios::ostream           &fp,
+                                         const readable<string> &table,
+                                         const string           &cxx_id,
+                                         const string           &prefix)
+            {
+                const size_t   n = table.size();
+                vector<string> df(n,as_capacity);
+                size_t         dw = 0;
+                fp << "const char *" << cxx_id << "[] = {\n";
                 if(n>0)
                 {
-                    fp << '\"' << kw[1] << '\"';
+                    emit_quoted(fp,table[1]);
+                    push_define(df,table[1]);
+                    dw = df.back().size();
                     for(size_t i=2;i<=n;++i)
                     {
                         fp << ',' << '\n';
-                        fp << '\"' << kw[i] << '\"';
+                        emit_quoted(fp,table[i]);
+                        push_define(df,table[i]);
+                        dw = max_of(dw,df.back().size());
                     }
                     fp << '\n';
                 }
-                
+                fp << "};\n\n";
+
+                unsigned j = 0;
+                for(size_t i=1;i<=n;++i,++j)
+                {
+                    const string &def = df[i];
+                    fp << "#define " << prefix << def;
+                    for(size_t k=def.size();k<dw;++k) fp << ' ';
+                    fp(" %4u ",j);
+                    fp << "//!< \"" << table[i] << "\"\n";
+                }
+                fp << '\n';
+
             }
+
         }
-        
+
     }
     
 }

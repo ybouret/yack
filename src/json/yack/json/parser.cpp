@@ -196,7 +196,7 @@ namespace yack
 
 
         Parser:: Parser() : jive::parser("JSON"),
-        tr( new Translator(*this) )
+        tr( new Translator(jv) )
         {
             compound &self = alt("JSON");
 
@@ -249,16 +249,16 @@ namespace yack
         {
             assert(m);
             reset();
-            nil();
+            jv.nil();
 
             jive::source                  src(m);
             auto_ptr<jive::syntax::xnode> ast = parse(src);
             if(ast.is_empty()) throw exception("corrupted JSON parser");
 
-            tr->walk(*ast);
+            tr->walk(*ast,NULL);
 
 
-            return *this;
+            return jv;
         }
 
     }

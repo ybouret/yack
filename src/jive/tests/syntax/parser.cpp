@@ -81,7 +81,7 @@ YACK_UTEST(parser)
         ios::serializer::cfile::save("tree.bin",*tree);
 
         jive::syntax::translator xt;
-        xt.walk(*tree);
+        xt.walk(*tree,NULL);
 
     }
 

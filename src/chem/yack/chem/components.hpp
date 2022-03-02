@@ -25,8 +25,8 @@ namespace yack
             const cnode *head() const throw();
             size_t       size() const throw();
 
-            bool add(const species &sp,
-                     const int      nu);
+            bool operator()(const species &sp,
+                            const int      nu);
 
             double         mass_action(const double K, const readable<double> &C) const throw();
             std::ostream & display(std::ostream &os) const;

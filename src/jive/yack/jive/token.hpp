@@ -9,6 +9,11 @@
 
 namespace yack
 {
+    namespace apex
+    {
+        class natural;
+    }
+
     namespace jive
     {
 
@@ -49,7 +54,10 @@ namespace yack
             const context & operator*() const throw();
 
             //! transfer to string
-            string to_string(size_t nskip=0, size_t ntrim=0) const;
+            string        to_string(size_t nskip=0, size_t ntrim=0) const;
+
+            //! transfer to apn
+            apex::natural to_apn(const char *which) const;
 
             //__________________________________________________________________
             //

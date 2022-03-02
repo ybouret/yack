@@ -19,7 +19,7 @@ namespace yack
         //! JSON parser
         //
         //______________________________________________________________________
-        class Parser : public jive::parser, public Value
+        class Parser : public jive::parser
         {
         public:
             explicit Parser();         //!< setup
@@ -30,7 +30,7 @@ namespace yack
         private:
             YACK_DISABLE_COPY_AND_ASSIGN(Parser);
             auto_ptr<jive::syntax::translator> tr;
-
+            Value                              jv;
         };
 
     }

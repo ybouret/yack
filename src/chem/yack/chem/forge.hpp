@@ -6,6 +6,7 @@
 #include "yack/chem/library.hpp"
 #include "yack/chem/components.hpp"
 #include "yack/jive/parser.hpp"
+#include "yack/jive/syntax/translator.hpp"
 
 namespace yack
 {
@@ -30,7 +31,9 @@ namespace yack
             explicit forge();
             virtual ~forge() throw();
 
-            auto_ptr<jive::parser>  compiler;
+            auto_ptr<jive::parser>             parser;
+            auto_ptr<jive::syntax::translator> linker;
+
             void create(components &, library &, jive::module *);
         };
     }

@@ -15,8 +15,8 @@ YACK_UTEST(components)
     std::cerr << lib << std::endl;
 
     components water;
-    water.add(h,1);
-    water.add(w,1);
+    water(h,1);
+    water(w,1);
     water.display(std::cerr) << std::endl;
 
     chemical::forge &build = chemical::forge::instance();

@@ -53,3 +53,45 @@ namespace yack
 
 }
 
+#include "yack/apex/natural.hpp"
+#include "yack/exception.hpp"
+#include "yack/ios/ascii/hybrid.hpp"
+
+namespace yack
+{
+    namespace jive
+    {
+        apn token:: to_apn(const char *which) const
+        {
+            static const char fn[] = "jive::token::to_apn: ";
+            if(!which) which = yack_unknown;
+
+            if(size<=0) throw exception("%s '%s' is empty",fn,which);
+
+            apn res;
+            for(const character *ch=head;ch;ch=ch->next)
+            {
+                res *= 10;
+                switch(ch->code)
+                {
+                    case '0': break;
+                    case '1': ++res; break;
+                    case '2':
+                    case '3':
+                    case '4':
+                    case '5':
+                    case '6':
+                    case '7':
+                    case '8':
+                    case '9':
+                        res += (ch->code-'0');
+                        break;
+
+                    default:
+                        exception("%s '%s' has invalid '%s'",fn,which, ios::ascii::hybrid[ch->code]);
+                }
+            }
+            return res;
+        }
+    }
+}

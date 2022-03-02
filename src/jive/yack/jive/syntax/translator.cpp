@@ -1,5 +1,6 @@
 
 #include "yack/jive/syntax/translator.hpp"
+#include "yack/type/temporary.hpp"
 
 namespace yack
 {
@@ -31,8 +32,9 @@ namespace yack
 
 
 
-            void translator:: walk(const xnode &tree)
+            void translator:: walk(const xnode &tree, void *user_data)
             {
+                const temporary<void *> tmp(data,user_data);
                 depth = 0;
                 try {
                     on_init();
