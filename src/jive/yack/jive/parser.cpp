@@ -28,7 +28,6 @@ namespace yack
             assert(m);
             source src(m);
             return parse(src);
-
         }
 
     }

@@ -11,7 +11,12 @@ YACK_UTEST(library)
     lib("HO-",-1);
 
     std::cerr << lib << std::endl;
-    
 
+    for(int i=1;i<argc;++i)
+    {
+        lib.parse(argv[i]);
+    }
+
+    std::cerr << "lib=" << lib << std::endl;
 }
 YACK_UDONE()

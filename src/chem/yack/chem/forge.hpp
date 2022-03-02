@@ -42,6 +42,15 @@ namespace yack
                 create(cmp,lib,jive::module::open_data(inf));
             }
 
+            //! append single species to library
+            template <typename INFO> inline
+            const species & operator()(library    &lib,
+                                       const INFO &inf)
+            {
+                return single(lib,jive::module::open_data(inf));
+            }
+
+
         private:
             friend class singleton<forge>;
             explicit forge();
@@ -50,7 +59,8 @@ namespace yack
             auto_ptr<jive::parser>             parser;
             auto_ptr<jive::syntax::translator> linker;
 
-            void create(components &, library &, jive::module *);
+            void            create(components &, library &, jive::module *);
+            const species & single(library    &, jive::module *);
         };
     }
 }

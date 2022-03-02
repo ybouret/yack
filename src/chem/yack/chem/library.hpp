@@ -67,6 +67,13 @@ namespace yack
             //! declare/recall species
             const species &operator()(const char   *name, const int z);
 
+            //! parse single species
+            const species &parse(const string &);
+
+            //! parse single species
+            const species &parse(const char   *);
+
+
             //! display info
             friend std::ostream & operator<<(std::ostream &, const library &);
 

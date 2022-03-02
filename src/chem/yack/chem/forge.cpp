@@ -181,9 +181,10 @@ namespace yack
                         } break;
 
                         case YCF_cm: {
-                            cm_context    &ctx = *(cm_context*)data;
-                            std::cerr << ctx.lib << std::endl;
-                            ctx.cmp.display(std::cerr) << std::endl;
+                            //cm_context    &ctx = *(cm_context*)data;
+                            //std::cerr << ctx.lib << std::endl;
+                            //ctx.cmp.display(std::cerr) << std::endl;
+                            // done
                         } break;
 
                         default:
@@ -228,7 +229,7 @@ namespace yack
                     drop("[:blank:]");
                     endl("[:endl:]");
 
-                    gv();
+                    //gv();
 
                     validate();
                 }
@@ -282,12 +283,43 @@ namespace yack
             parser->reset();
             const auto_ptr<XNode> tree = parser->parse( src );
             assert(tree.is_valid());
-            tree->gv("forge.dot");
-
             cm_context ctx = { yack_unknown, cmp, lib };
             linker->walk(*tree,&ctx);
 
+        }
 
+
+        const species & forge:: single(library &lib, jive::module *m)
+        {
+            jive::source src(m);
+            parser->reset();
+            const auto_ptr<XNode> tree = parser->parse( src );
+            assert(tree.is_valid());
+            tree->gv("single.dot");
+            const size_t nsub = tree->size(); assert(nsub>0);
+            const XNode *node = tree->head(); assert(node!=NULL);
+            if(nsub!=1 || node->name() != "sp" ) throw exception("%s not a single species",call_sign);
+
+            components cmp;
+            cm_context ctx = { "single", cmp, lib };
+            linker->walk(*tree,&ctx);
+            assert(1==cmp.size());
+            const cnode   *cn = cmp.head();
+            const species &sp = ****cn;
+            coerce(sp.rank) = 0;
+            return sp;
+        }
+
+        const species & library:: parse(const string &txt)
+        {
+            static forge &mgr = forge::instance();
+            return mgr(*this,txt);
+        }
+
+        const species & library:: parse(const char *txt)
+        {
+            static forge &mgr = forge::instance();
+            return mgr(*this,txt);
         }
 
     }
