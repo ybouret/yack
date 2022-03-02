@@ -29,6 +29,8 @@ namespace yack
             assert(s.c!=__zero__);
             assert(s.a!=s.c);
 
+
+            std::cerr << "Exiting..."<< std::endl;
             exit(1);
 
         }
