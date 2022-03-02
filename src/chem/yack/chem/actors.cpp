@@ -9,7 +9,9 @@ namespace yack
         {
         }
 
-        actors:: actors() throw()
+        actors:: actors() throw() :
+        actors_(),
+        wksp()
         {
             
         }
@@ -22,6 +24,17 @@ namespace yack
             }
             return factor;
         }
+
+        double actors:: mass_action(double factor, const readable<double> &C, const double xi) const throw()
+        {
+            for(const actor *a=head;a;a=a->next)
+            {
+                factor *= a->mass_action(C,xi);
+            }
+            return factor;
+        }
+
+        
 
         int actors:: nu() const throw()
         {
@@ -57,6 +70,41 @@ namespace yack
             else
             {
                 os << '.';
+            }
+        }
+
+    }
+
+}
+
+#include "yack/type/out-of-reach.hpp"
+
+namespace yack
+{
+    namespace chemical
+    {
+        const limit * actors:: private_limit(const readable<double> &C) const throw()
+        {
+            const actor *best = head;
+            if(best)
+            {
+                double   mini = best->limiting_extent(C); assert(mini>=0);
+                for(const actor *curr=best->next;curr;curr=curr->next)
+                {
+                    const double temp = curr->limiting_extent(C);
+                    if(temp<mini)
+                    {
+                        mini = temp;
+                        best = curr;
+                    }
+
+                }
+
+                return new (YACK_STATIC_ZSET(wksp)) limit(*best,mini);
+            }
+            else
+            {
+                return NULL;
             }
         }
 

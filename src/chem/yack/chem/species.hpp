@@ -5,6 +5,7 @@
 
 #include "yack/chem/entity.hpp"
 #include "yack/ptr/ark.hpp"
+#include "yack/randomized/fwd.hpp"
 
 namespace yack
 {
@@ -24,6 +25,9 @@ namespace yack
             // types and definition
             //__________________________________________________________________
             typedef ark_ptr<string,const species> pointer; //!< alias
+            static const int concentration_p10min = -15;   //!< Cmin=10^p10min
+            static const int concentration_p10max =   1;   //!< Cmax=10^p10max
+            static double    concentration(randomized::bits&) throw(); //!< in [Cmin:Cmax]
 
             //__________________________________________________________________
             //

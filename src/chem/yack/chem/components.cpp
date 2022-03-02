@@ -10,13 +10,19 @@ namespace yack
         reac(),
         prod(),
         d_nu(0),
-        db()
+        db(),
+        wksp()
         {
 
         }
 
         components:: ~components() throw()
         {
+            for(const cnode *node=head();node;node=node->next)
+            {
+                const species &s = ****node;
+                --coerce(s.rank);
+            }
         }
 
         const cnode * components:: head() const throw()
@@ -71,6 +77,11 @@ namespace yack
             return reac.mass_action(K,C) - reac.mass_action(1.0,C);
         }
 
+        double components:: mass_action(const double K, const readable<double> &C, const double xi) const throw()
+        {
+            return reac.mass_action(K,C,-xi) - reac.mass_action(1.0,C,xi);
+        }
+
 
         std::ostream &components:: display(std::ostream &os) const
         {
@@ -79,6 +90,12 @@ namespace yack
             prod.display(os);
             return os;
         }
+
+        const limits & components:: private_limits(const readable<double> &C) const throw()
+        {
+            return * new( YACK_STATIC_ZSET(wksp) ) limits( reac.private_limit(C), prod.private_limit(C) );
+        }
+
 
     }
 }

@@ -6,7 +6,9 @@
 
 #include "yack/chem/component.hpp"
 #include "yack/chem/actors.hpp"
+#include "yack/chem/limits.hpp"
 #include "yack/associative/suffix/set.hpp"
+#include "yack/data/list/meta.hpp"
 
 
 namespace yack
@@ -51,23 +53,30 @@ namespace yack
             //! reac.mass_action(K,C) - prod.mass_action(1,C)
             double         mass_action(const double K, const readable<double> &C) const throw();
 
+            //! reac.mass_action(K,C,-xi) - prod.mass_action(1,C,xi)
+            double         mass_action(const double K, const readable<double> &C, const double xi) const throw();
+
             //! helper to display
             std::ostream & display(std::ostream &os) const;
 
-            
+            //! find private limits
+            const limits & private_limits(const readable<double> &C) const throw();
+
             //__________________________________________________________________
             //
             // members
             //__________________________________________________________________
-            const actors  reac; //!< list of reactants
-            const actors  prod; //!< list of products
-            const int     d_nu; //!< Delta_r nu
+            const actors      reac; //!< list of reactants
+            const actors      prod; //!< list of products
+            const int         d_nu; //!< Delta_r nu
 
 
             
         private:
             YACK_DISABLE_COPY_AND_ASSIGN(components);
             components_set db;
+            mutable void *wksp[ YACK_WORDS_FOR(limits) ];
+
             void update() throw();
 
         };

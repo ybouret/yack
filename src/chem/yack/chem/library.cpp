@@ -14,7 +14,7 @@ namespace yack
         {
         }
 
-        library:: library() throw()
+        library:: library() throw() : db()
         {
         }
 
@@ -68,6 +68,37 @@ namespace yack
             }
             os << '}';
             return os;
+        }
+
+    }
+
+}
+
+#include "yack/randomized/bits.hpp"
+
+namespace yack
+{
+    namespace chemical
+    {
+        void  library:: fill(writable<double> &C,
+                             const double      zero_above,
+                             randomized::bits &ran) throw()
+        {
+            for(const snode *node=head();node;node=node->next)
+            {
+                const species &s = ***node;
+                const size_t   j = *s;
+
+                if( ran.to<double>() >= zero_above)
+                {
+                    C[j] = 0;
+                }
+                else
+                {
+                    C[j] = species::concentration(ran);
+                    if(s.rank<=0 && ran.choice()) C[j] = -C[j];
+                }
+            }
         }
     }
 

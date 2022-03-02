@@ -38,10 +38,13 @@ namespace yack
             const species & operator*() const throw(); //!< access species
 
             //! return limiting extent
-            double limiting(const readable<double> &C) const throw();
+            double limiting_extent(const readable<double> &C) const throw();
 
             //! C[indx]^coef
             double mass_action(const readable<double> &C) const throw();
+
+            //! (C[indx]+coef*xi)^coef
+            double mass_action(const readable<double> &C, const double xi) const throw();
 
             //! coef*C[indx]^cder
             double drvs_action(const readable<double> &C) const throw();

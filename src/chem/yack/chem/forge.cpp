@@ -205,6 +205,7 @@ namespace yack
                 inline explicit cm_parser() :
                 jive::parser(forge::call_sign)
                 {
+
                     compound   &COMPONENTS = agg("cm");
 
                     const rule &P  = term('+');
@@ -232,12 +233,11 @@ namespace yack
                     drop("[:blank:]");
                     endl("[:endl:]");
 
-                    //gv();
 
                     validate();
                 }
 
-                
+
 
             private:
                 YACK_DISABLE_COPY_AND_ASSIGN(cm_parser);
@@ -246,10 +246,7 @@ namespace yack
 
         const char forge:: call_sign[] = "chemical::forge";
 
-        forge:: ~forge() throw()
-        {
-        }
-
+        forge:: ~forge() throw() {}
         
 
 
@@ -309,7 +306,6 @@ namespace yack
             assert(1==cmp.size());
             const cnode   *cn = cmp.head();
             const species &sp = ****cn;
-            coerce(sp.rank) = 0;
             return sp;
         }
 

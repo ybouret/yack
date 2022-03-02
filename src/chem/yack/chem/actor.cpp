@@ -1,5 +1,6 @@
 #include "yack/chem/actor.hpp"
 #include "yack/arith/ipower.hpp"
+#include "yack/type/utils.hpp"
 
 namespace yack
 {
@@ -23,14 +24,21 @@ namespace yack
 
         const species & actor:: operator*() const throw() { return host; }
 
-        double actor:: limiting(const readable<double> &C) const throw()
+        double actor:: limiting_extent(const readable<double> &C) const throw()
         {
+            assert(host[C]>=0);
             return host[C]/coef;
         }
 
         double actor:: mass_action(const readable<double> &C) const throw()
         {
             return ipower(host[C],coef);
+        }
+
+        double actor:: mass_action(const readable<double> &C, const double xi) const throw()
+        {
+            const double Ci = host[C]; assert(Ci>=0);
+            return ipower( max_of(0.0,Ci+coef*xi), coef );
         }
 
         double actor:: drvs_action(const readable<double> &C) const throw()

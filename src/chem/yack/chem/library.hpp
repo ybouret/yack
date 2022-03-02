@@ -34,6 +34,7 @@ namespace yack
             //__________________________________________________________________
             static const char clid[]; //!< library
 
+
             //__________________________________________________________________
             //
             // methods
@@ -73,6 +74,10 @@ namespace yack
             //! parse single species
             const species &parse(const char   *);
 
+            //! fill C
+            void  fill(writable<double> &C,
+                       const double      zero_above,
+                       randomized::bits &ran) throw();
 
             //! display info
             friend std::ostream & operator<<(std::ostream &, const library &);
