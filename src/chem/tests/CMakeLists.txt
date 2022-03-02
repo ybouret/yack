@@ -9,7 +9,7 @@ yack_testing(chem)
 
 enable_testing()
 
-add_test(library test-chem library)
+add_test(library    test-chem library "[Na+]" "[Cl-]" "[Mg++]")
 add_test(components test-chem components)
 
 

@@ -58,7 +58,10 @@ namespace yack
                 explicit cm_linker() :
                 jive::syntax::translator(),
                 thash( YACK_HASHING_PERFECT(tkw) ),
-                ihash( YACK_HASHING_PERFECT(ikw) )
+                ihash( YACK_HASHING_PERFECT(ikw) ),
+                coefs(),
+                names(),
+                coef1()
                 {
                 }
 
@@ -234,8 +237,7 @@ namespace yack
                     validate();
                 }
 
-                cm_linker ld;
-
+                
 
             private:
                 YACK_DISABLE_COPY_AND_ASSIGN(cm_parser);
@@ -285,7 +287,6 @@ namespace yack
             assert(tree.is_valid());
             cm_context ctx = { yack_unknown, cmp, lib };
             linker->walk(*tree,&ctx);
-
         }
 
 
@@ -295,7 +296,7 @@ namespace yack
             parser->reset();
             const auto_ptr<XNode> tree = parser->parse( src );
             assert(tree.is_valid());
-            tree->gv("single.dot");
+
             const size_t nsub = tree->size(); assert(nsub>0);
             const XNode *node = tree->head(); assert(node!=NULL);
             if(nsub!=1 || node->name() != "sp" ) throw exception("%s not a single species",call_sign);
@@ -303,6 +304,8 @@ namespace yack
             components cmp;
             cm_context ctx = { "single", cmp, lib };
             linker->walk(*tree,&ctx);
+
+
             assert(1==cmp.size());
             const cnode   *cn = cmp.head();
             const species &sp = ****cn;

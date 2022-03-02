@@ -196,7 +196,8 @@ namespace yack
 
 
         Parser:: Parser() : jive::parser("JSON"),
-        tr( new Translator(jv) )
+        tr( new Translator(jv) ),
+        jv()
         {
             compound &self = alt("JSON");
 

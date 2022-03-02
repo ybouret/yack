@@ -8,7 +8,7 @@ namespace yack
     {
         namespace syntax
         {
-            translator:: translator() throw() : depth(0)
+            translator:: translator() throw() : depth(0), data(NULL)
             {
             }
 
