@@ -24,7 +24,7 @@ namespace yack
             // types and definition
             //__________________________________________________________________
             typedef ark_ptr<string,const component> pointer; //!< alias
-
+            
             //__________________________________________________________________
             //
             // C++

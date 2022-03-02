@@ -84,9 +84,9 @@ namespace yack
             const actors      reac; //!< list of reactants
             const actors      prod; //!< list of products
             const int         d_nu; //!< Delta_r nu
-            const double      sexp; //!< scaling exponent: 1.0/d_nu
+            const double      sexp; //!< scaling exponent: Cs approx pow(K,1.0/d_nu)
+            const int         nu_p; //!< Delta_r nu_p >= 0
 
-            
         private:
             YACK_DISABLE_COPY_AND_ASSIGN(components);
             components_set db;

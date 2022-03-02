@@ -11,6 +11,7 @@ namespace yack
         prod(),
         d_nu(0),
         sexp(0),
+        nu_p(0),
         db(),
         wksp()
         {
@@ -38,7 +39,7 @@ namespace yack
 
         void components:: update() throw()
         {
-            coerce(d_nu) = prod.nu() - reac.nu();
+            coerce(d_nu) = (coerce(nu_p)=prod.nu()) - reac.nu();
             if(d_nu!=0)
             {
                 coerce(sexp) = 1.0/d_nu;
@@ -104,6 +105,7 @@ namespace yack
             reac.display(os);
             os << " <=> ";
             prod.display(os);
+            os << " | d_nu=" << d_nu << " | nu_p=" << nu_p;
             return os;
         }
 

@@ -20,10 +20,12 @@ namespace yack
                 const components       &self;
                 const double            K;
                 const readable<double> &C;
+                const double            mexp;
 
                 inline double operator()(const double xi) const throw()
                 {
                     return self.mass_action(K,C,xi);
+                    //return pow(self.reac.mass_action(K,C,-xi),mexp) - pow(self.prod.mass_action(1,C,xi), mexp);
                 }
             };
         }
@@ -32,20 +34,21 @@ namespace yack
                                    const readable<double> &C) const
         {
 
-            const limits &lim = private_limits(C);
+            const limits &lim  = private_limits(C);
+            const double  mexp = nu_p > 0 ? 1.0/nu_p : 1.0;
             //zrid<double>  zfx;
             zbis<double>  zfx;
             zfx.verbose = true;
             std::cerr << lim << std::endl;
             triplet<double> x = { 0, 0, 0 };
             triplet<double> f = { 0, 0, 0 };
-            const eqz       F = { *this, K, C };
+            const eqz       F = { *this, K, C, mexp };
 
             switch(lim.type)
             {
                 case limited_by_both:
-                    x.a = -lim.prod->xi; f.a =  reac.mass_action(K,C,-x.a); assert(f.a>=0);
-                    x.c =  lim.reac->xi; f.c = -prod.mass_action(1,C,x.c);  assert(f.c<=0);
+                    x.a = -lim.prod->xi; f.a =   (reac.mass_action(K,C,-x.a)); assert(f.a>=0);
+                    x.c =  lim.reac->xi; f.c = - (prod.mass_action(1,C,x.c));  assert(f.c<=0);
                     std::cerr << "x=" << x << ", f=" << f << std::endl;
 
                 {
