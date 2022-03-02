@@ -27,6 +27,7 @@ namespace yack
                 //
                 // types
                 //______________________________________________________________
+                static bool verbose; //!< verbosity, default = false
 
                 //! result type
                 enum result
@@ -49,6 +50,9 @@ namespace yack
                 YACK_DISABLE_COPY_AND_ASSIGN(zroot);
             };
         }
+
+        //! helper
+#define YACK_ZROOT_PRINTLN(MSG) do { if(math::core::zroot::verbose) { std::cerr << MSG << std::endl; } } while(false)
 
         //______________________________________________________________________
         //

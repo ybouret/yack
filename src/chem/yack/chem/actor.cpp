@@ -41,6 +41,13 @@ namespace yack
             return ipower( max_of(0.0,Ci+coef*xi), coef );
         }
 
+        void actor:: move(writable<double> &C, const double xi) const throw()
+        {
+            double &Ci = host[C]; assert(Ci>=0);
+            Ci = max_of(0.0,Ci+coef*xi);
+        }
+
+
         double actor:: drvs_action(const readable<double> &C) const throw()
         {
             return coef * ipower(host[C],cder);

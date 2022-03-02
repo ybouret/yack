@@ -26,9 +26,30 @@ YACK_UTEST(solve)
 
         lib.fill(C,0.8,ran);
 
-        lib(std::cerr,C);
+        if(lib.size()==3)
+        {
+            // ./build/chem/tests/Debug/test-chem solve '[a++]+2[b-]-[c]'
+            C[1] = 1.51001e-12;
+            C[2] = 5.72707e-12;
+            C[3] = 1.64167e-10;
+        }
+
+        lib(std::cerr << "Cini=",C);
         eq.display(std::cerr) << std::endl;
-        eq.extent(1.0,C);
+        const double K = 0.01;
+        const double xi = eq.extent(K,C);
+        eq.move(C,xi);
+        lib(std::cerr << "Cend=",C);
+
+        const double den = eq.reac.mass_action(K,C);
+        if(den>0)
+        {
+            std::cerr << "Q/K=" << eq.prod.mass_action(1,C)/den << std::endl;
+        }
+        else
+        {
+            std::cerr << "blocked" << std::endl;
+        }
 
     }
 

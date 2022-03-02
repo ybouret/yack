@@ -14,23 +14,27 @@ namespace yack
                                                        triplet<real_t>       &f,
                                                        triplet<sign_type>    &s) const
         {
+            YACK_ZROOT_PRINTLN("// <zroot.init>");
             s.a = __sign::of(f.a);
             s.c = __sign::of(f.c);
             switch( __sign::pair(s.a,s.c) )
             {
                 case nn_pair:
                 case pp_pair:
+                    YACK_ZROOT_PRINTLN("//   <zroot.failure>");
                     return failure;
 
                 case zp_pair:
                 case zn_pair:
                 case zz_pair:
                     f.b = f.a = F(x.b=x.a);
+                    YACK_ZROOT_PRINTLN("//   <zroot.success @x.a=" << x.a << ">");
                     return success;
                     
                 case pz_pair:
                 case nz_pair:
                     f.b = f.c = F(x.b = x.c);
+                    YACK_ZROOT_PRINTLN("//   <zroot.success @x.c=" << x.c << ">");
                     return success;
 
                 case np_pair:
@@ -38,6 +42,8 @@ namespace yack
                     break;
 
             }
+
+            // organize
             if(x.a>x.c)
             {
                 cswap(x.a,x.c);
@@ -45,6 +51,7 @@ namespace yack
                 cswap(s.a,s.c);
             }
             assert(x.a<=x.c);
+            YACK_ZROOT_PRINTLN("// <zroot.init/>");
             return compute;
         }
 

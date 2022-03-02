@@ -10,6 +10,8 @@ namespace yack
         namespace core
         {
 
+            bool zroot:: verbose = false;
+            
             zroot::  zroot() throw()
             {
             }

@@ -10,6 +10,7 @@ namespace yack
         reac(),
         prod(),
         d_nu(0),
+        sexp(0),
         db(),
         wksp()
         {
@@ -38,6 +39,14 @@ namespace yack
         void components:: update() throw()
         {
             coerce(d_nu) = prod.nu() - reac.nu();
+            if(d_nu!=0)
+            {
+                coerce(sexp) = 1.0/d_nu;
+            }
+            else
+            {
+                coerce(sexp) = 1.0;
+            }
         }
 
         bool components:: operator()(const species &sp,
@@ -74,13 +83,20 @@ namespace yack
 
         double components:: mass_action(const double K, const readable<double> &C) const throw()
         {
-            return reac.mass_action(K,C) - reac.mass_action(1.0,C);
+            return reac.mass_action(K,C) - prod.mass_action(1.0,C);
         }
 
         double components:: mass_action(const double K, const readable<double> &C, const double xi) const throw()
         {
-            return reac.mass_action(K,C,-xi) - reac.mass_action(1.0,C,xi);
+            return reac.mass_action(K,C,-xi) - prod.mass_action(1.0,C,xi);
         }
+
+        void components:: move(writable<double> &C, const double xi) const throw()
+        {
+            reac.move(C,-xi);
+            prod.move(C,xi);
+        }
+
 
 
         std::ostream &components:: display(std::ostream &os) const
@@ -98,8 +114,10 @@ namespace yack
 
         bool components:: is_neutral() const throw()
         {
-            return 0==reac.dz() - prod.dz();
+            return 0== (reac.dz() - prod.dz());
         }
+
+
 
     }
 
@@ -112,13 +130,19 @@ namespace yack
 {
     namespace chemical
     {
+        double components:: maximum(const readable<double> &C) const throw()
+        {
+            return max_of( reac.maximum(C), prod.maximum(C) );
+        }
+
+
         bool components:: is_minimal() const throw()
         {
             if(size()>=2)
             {
                 const cnode *curr = head();     assert(curr);
                 const cnode *next = curr->next; assert(next);
-                uint64_t     g = yack_gcd64( absolute( (***curr).coef ), absolute( (***next).coef ) );
+                uint64_t     g    = yack_gcd64( absolute( (***curr).coef ), absolute( (***next).coef ) );
                 for(curr=next->next;curr;curr=curr->next)
                 {
                     g = yack_gcd64(g, absolute( (***curr).coef ));

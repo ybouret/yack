@@ -45,22 +45,34 @@ namespace yack
             assert( negative == __sign::of(*f_neg) );
             assert( positive == __sign::of(*f_pos) );
 
+
             //______________________________________________________________
             //
             // cycles
             //______________________________________________________________
         CYCLE:
+            //YACK_ZROOT_PRINTLN("// <zbis width='" << width << "'>");
             switch(s.b = __sign::of(f.b = F(x.b=half*(x.a+x.c))))
             {
-                case __zero__: return true; // early return
+                case __zero__:
+                    YACK_ZROOT_PRINTLN("// <zbis exact success@" << x.b << ">");
+                    return true; // early return
                 case negative: *x_neg = x.b; *f_neg=f.b; break;
                 case positive: *x_pos = x.b; *f_pos=f.b; break;
             }
             assert(x.is_increasing());
-            if(std::abs(f.a-f.c)<=0) return true;
+            if(std::abs(f.a-f.c)<=0)
+            {
+                YACK_ZROOT_PRINTLN("// <zbis df=0 success@" << x.b << ">");
+                return true;
+            }
 
             const real_t new_width = std::abs(x.c-x.a);
-            if(new_width>=width) return true;
+            if(new_width>=width)
+            {
+                YACK_ZROOT_PRINTLN("// <zbis converged@" << x.b << ">");
+                return true;
+            }
 
             width = new_width;
             goto CYCLE;

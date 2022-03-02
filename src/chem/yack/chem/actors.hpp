@@ -50,6 +50,12 @@ namespace yack
             //! factor * prod( (C[indx]+coef*xi)^coef[indx] )
             double mass_action(double factor, const readable<double> &C, const double xi) const throw();
 
+            //! move all actors
+            void   move(writable<double> &C, const double xi) const throw();
+
+            //! maximum of involved
+            double maximum(const readable<double> &C) const throw();
+
             //! find limit from all actors
             const limit *private_limit(const readable<double> &C) const throw();
 

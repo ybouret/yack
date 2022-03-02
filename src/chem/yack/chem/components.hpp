@@ -59,11 +59,17 @@ namespace yack
             //! find private solving extent
             double         extent(const double K, const readable<double> &C) const;
 
+            //! move to a given extent
+            void move( writable<double> &C, const double xi) const throw();
+
             //! helper to display
             std::ostream & display(std::ostream &os) const;
 
             //! find private limits
             const limits & private_limits(const readable<double> &C) const throw();
+
+            //! max_of(reac.maximum,prod.maximum)
+            double maximum(const readable<double> &C) const throw();
 
             //! check neutrality
             bool is_neutral() const throw();
@@ -78,7 +84,7 @@ namespace yack
             const actors      reac; //!< list of reactants
             const actors      prod; //!< list of products
             const int         d_nu; //!< Delta_r nu
-
+            const double      sexp; //!< scaling exponent: 1.0/d_nu
 
             
         private:

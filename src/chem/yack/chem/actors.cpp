@@ -73,6 +73,25 @@ namespace yack
             }
         }
 
+        void actors:: move(writable<double> &C, const double xi) const throw()
+        {
+            for(const actor *a=head;a;a=a->next)
+            {
+                a->move(C,xi);
+            }
+        }
+
+        double actors:: maximum(const readable<double> &C) const throw()
+        {
+            double ans = 0;
+            for(const actor *a=head;a;a=a->next)
+            {
+                const double c = (**a)[C]; assert(c>=0);
+                if(c>ans) ans=c;
+            }
+            return ans;
+        }
+
     }
 
 }
