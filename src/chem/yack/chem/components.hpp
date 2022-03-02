@@ -65,6 +65,12 @@ namespace yack
             //! find private limits
             const limits & private_limits(const readable<double> &C) const throw();
 
+            //! check neutrality
+            bool is_neutral() const throw();
+
+            //! check minimal
+            bool is_minimal() const throw();
+
             //__________________________________________________________________
             //
             // members

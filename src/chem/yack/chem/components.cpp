@@ -96,6 +96,37 @@ namespace yack
             return * new( YACK_STATIC_ZSET(wksp) ) limits( reac.private_limit(C), prod.private_limit(C) );
         }
 
+        bool components:: is_neutral() const throw()
+        {
+            return 0==reac.dz() - prod.dz();
+        }
+
+    }
+
+}
+
+#include "yack/arith/gcd.h"
+#include "yack/type/utils.hpp"
+
+namespace yack
+{
+    namespace chemical
+    {
+        bool components:: is_minimal() const throw()
+        {
+            if(size()>=2)
+            {
+                const cnode *curr = head();     assert(curr);
+                const cnode *next = curr->next; assert(next);
+                uint64_t     g = yack_gcd64( absolute( (***curr).coef ), absolute( (***next).coef ) );
+                for(curr=next->next;curr;curr=curr->next)
+                {
+                    g = yack_gcd64(g, absolute( (***curr).coef ));
+                }
+                return 1 == g;
+            }
+            return true;
+        }
 
     }
 }
