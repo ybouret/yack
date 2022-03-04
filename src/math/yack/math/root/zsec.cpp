@@ -1,6 +1,7 @@
 
 
 #include "yack/math/root/zsec.hpp"
+#include "yack/math/numeric.hpp"
 
 
 namespace yack

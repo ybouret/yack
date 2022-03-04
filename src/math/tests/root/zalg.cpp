@@ -74,13 +74,14 @@ namespace
 YACK_UTEST(zroot)
 {
 
-
+#if 0
     std::cerr << clamp<float>(0,0.1,1) << std::endl;
     std::cerr << clamp<float>(0,0,1) << std::endl;
     std::cerr << clamp<float>(0,1,1) << std::endl;
     std::cerr << clamp<float>(0,-1,1) << std::endl;
     std::cerr << clamp<float>(0,2,1) << std::endl;
-
+#endif
+    
     zsolve<float,zbis>();
     zsolve<float,zrid>();
     zsolve<float,zsec>();
@@ -88,9 +89,12 @@ YACK_UTEST(zroot)
 
     zsolve<double,zbis>();
     zsolve<double,zrid>();
+    zsolve<double,zsec>();
 
     zsolve<long double,zbis>();
     zsolve<long double,zrid>();
+    zsolve<long double,zsec>();
+
 }
 YACK_UDONE()
 

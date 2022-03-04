@@ -66,6 +66,7 @@ and:
 \section{1D-Solving}
 
 \subsection{Solution}
+
 Let us take $\Gamma_i$ (with a least a product or a reactant).
 Then there exist a unique $\Xi_i$ for which:
 \begin{equation}
@@ -76,7 +77,12 @@ Then there exist a unique $\Xi_i$ for which:
 \end{array}
 \right.
 \end{equation}
-Each $\Xi_i$ is a deviation to equilibrium $\Gamma_i$.
+ 
+Indeed, $\Xi_i$ is solution of:
+\begin{equation}
+	  K_i \prod_{j=1}^{M} \left([A_j] - X \nu^r_{ij}\right)^{\nu^r_{ij}} 
+	- \prod_{j=1}^{M} \left([A_j] + X \nu^p_{ij} \right)^{\nu^p_{ij}} = 0
+\end{equation} 
 
 \subsection{Change of each $\Xi$}
 If we start from
