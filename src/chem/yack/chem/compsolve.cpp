@@ -76,6 +76,13 @@ namespace yack
                     }
                     break;
 
+                case limited_by_both:
+                    assert(nu_r>0);
+                    assert(nu_p>0);
+                    x.a = lim.prod_extent(); f.a =   (reac.mass_action(K,C,-x.a)); assert(f.a>=0);
+                    x.c = lim.reac_extent(); f.c = - (prod.mass_action(1,C,x.c));  assert(f.c<=0);
+                    break;
+
                 default:
                     throw exception("not implemented");
 
@@ -85,7 +92,7 @@ namespace yack
 
             {
                 ios::ocstream fp("zext.dat");
-                const int N = 1000;
+                const int N = 10000;
                 for(int i=0;i<=N;++i)
                 {
                     const double xx = x.a+ (i*(x.c-x.a))/N;
