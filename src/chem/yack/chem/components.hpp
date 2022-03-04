@@ -77,6 +77,9 @@ namespace yack
             //! check minimal
             bool is_minimal() const throw();
 
+            //! checki valid concentrations
+            bool are_valid(const readable<double> &C) const throw();
+
             //__________________________________________________________________
             //
             // members
@@ -86,6 +89,7 @@ namespace yack
             const int         d_nu; //!< Delta_r nu
             const double      sexp; //!< scaling exponent: Cs approx pow(K,1.0/d_nu)
             const int         nu_p; //!< Delta_r nu_p >= 0
+            const int         nu_r; //!< Delta_r nu_r >=0
 
         private:
             YACK_DISABLE_COPY_AND_ASSIGN(components);

@@ -12,6 +12,7 @@ namespace yack
         d_nu(0),
         sexp(0),
         nu_p(0),
+        nu_r(0),
         db(),
         wksp()
         {
@@ -39,7 +40,7 @@ namespace yack
 
         void components:: update() throw()
         {
-            coerce(d_nu) = (coerce(nu_p)=prod.nu()) - reac.nu();
+            coerce(d_nu) = (coerce(nu_p)=prod.nu()) - (coerce(nu_r)=reac.nu());
             if(d_nu!=0)
             {
                 coerce(sexp) = 1.0/d_nu;
@@ -119,6 +120,15 @@ namespace yack
             return 0== (reac.dz() - prod.dz());
         }
 
+        bool components:: are_valid(const readable<double> &C) const throw()
+        {
+            for(const cnode *node=head();node;node=node->next)
+            {
+                const species &s = ****node;
+                if( s[C] < 0) return false;
+            }
+            return true;
+        }
 
 
     }

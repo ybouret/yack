@@ -43,6 +43,10 @@ namespace yack
             const limit * const prod; //!< limiting product
             const limited_type  type; //!< classification
 
+            double reac_extent() const throw(); //!< reac->xi
+            double prod_extent() const throw(); //!< -prod->xi
+
+
         private:
             YACK_DISABLE_COPY_AND_ASSIGN(limits);
             ~limits() throw();

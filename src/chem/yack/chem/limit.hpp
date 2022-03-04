@@ -22,7 +22,7 @@ namespace yack
         public:
             limit(const actor &, const double) throw(); //!< setup
             const actor & operator*()    const throw(); //!< access
-            const double xi;                            //!< host's extent
+            const double xi;                            //!< host's extent >= 0
             
         private:
             const actor &host;

@@ -51,20 +51,37 @@ namespace yack
                     break;
 
                 case limited_by_reac:
-                    os << "limited by reactant [" << (***(lm.reac)).name << "]: xi <= " << lm.reac->xi;
+                    os << "limited by reactant [" << (***(lm.reac)).name << "]: xi <= " << lm.reac_extent();
                     break;
 
                 case limited_by_prod:
-                    os << "limited by product  [" << (***(lm.prod)).name << "]: xi >= " << -lm.prod->xi;
+                    os << "limited by product  [" << (***(lm.prod)).name << "]: xi >= " << lm.prod_extent();
                     break;
 
                 case limited_by_both:
                     os << "limited by reactant [" << (***(lm.reac)).name << "] and product [" << (***(lm.prod)).name << "]";
-                    os << ": xi in [" << -lm.prod->xi << ":" << lm.reac->xi << "]";
+                    os << ": xi in [" <<  lm.prod_extent() << ":" << lm.reac_extent() << "]";
                     break;
             }
             return os;
         }
+
+
+        double limits:: reac_extent() const throw()
+        {
+            assert(reac);
+            assert(reac->xi>=0);
+            return reac->xi;
+        }
+
+        double limits:: prod_extent() const throw()
+        {
+            assert(prod);
+            assert(prod->xi>=0);
+            const double xi = prod->xi;
+            return (xi>0?-xi:0);
+        }
+
 
     }
 
