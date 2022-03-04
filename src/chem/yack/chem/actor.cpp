@@ -17,6 +17,7 @@ namespace yack
         prev(0),
         coef(cf),
         cder(coef-1),
+        csqr(coef*coef),
         host(sp)
         {
             assert(coef>0);
@@ -58,6 +59,12 @@ namespace yack
             if(!first) os << '+';
             if(coef>1) os << coef;
             os << '[' << host.name << ']';
+        }
+
+        double actor:: slope(const readable<double> &C, const double xi) const throw()
+        {
+            const double Ci = host[C]; assert(Ci>=0);
+            return csqr * ipower( max_of(0.0,Ci+coef*xi), cder );
         }
 
         

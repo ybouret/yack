@@ -1,11 +1,19 @@
 
 #include "yack/chem/components.hpp"
 #include "yack/math/triplet.hpp"
+
+#if 0
 #include "yack/math/root/zbis.hpp"
 #include "yack/math/root/zrid.hpp"
 #include "yack/math/root/zsec.hpp"
+#endif
+
+#include "yack/math/triplet.hpp"
+//#include "yack/math/real-function.hpp"
+#include "yack/signs.hpp"
 
 #include "yack/exception.hpp"
+#include <cmath>
 
 namespace yack
 {
@@ -57,10 +65,11 @@ namespace yack
                     assert(d_nu==nu_p);
                     x.a = lim.prod_extent(); f.a = K;      assert(x.a<=0); assert(f.a>0);
                     x.c = pow(K,sexp);       f.c = F(x.c); assert(x.c>0);
-                    while(f.c>0)
+                    while(f.c>=0)
                     {
                         f.c = F(x.c*=2);
                     }
+                    assert(f.c<0);
                     break;
 
 
@@ -70,10 +79,11 @@ namespace yack
                     assert(d_nu==-nu_r);
                     x.c = lim.reac_extent(); f.c = -1;      assert(x.c>=0);
                     x.a = -pow(K,sexp);      f.a = F(x.a);  assert(x.a<0);
-                    while(f.a<0)
+                    while(f.a<=0)
                     {
                         f.a = F(x.a*=2);
                     }
+                    assert(f.a>0);
                     break;
 
                 case limited_by_both:
@@ -98,22 +108,45 @@ namespace yack
                 }
             }
 
-            if(x.c>x.a)
+            if(x.c<=x.a)
             {
-                zsec<double> zfx;
-                if(!zfx(F,x,f)) throw exception("couldn't solve");
-                std::cerr << "solved@" << x.b << std::endl;
-                return x.b;
-            }
-            else
-            {
-                // blocked@0
-                std::cerr << "blocked" << std::endl;
+                std::cerr << "blocked@0" << std::endl;
                 return 0;
             }
 
-            
+            triplet<sign_type> s = { __sign::of(f.a), __zero__, __sign::of(f.c) };
+            assert(s.a!=__zero__);
+            assert(s.c!=__zero__);
+            assert(s.a!=s.c);
 
+#if 0
+            double *x_neg = &x.a; double *f_neg = &f.a;
+            double *x_pos = &x.c; double *f_pos = &f.c;
+            if(positive==s.a)
+            {
+                assert(negative==s.c);
+                cswap(x_neg,x_pos);
+                cswap(f_neg,f_pos);
+            }
+
+            assert( negative == __sign::of(*f_neg) );
+            assert( positive == __sign::of(*f_pos) );
+#endif
+
+            double *x_lo = &x.a; double *f_lo = &f.a;
+            double *x_hi = &x.c; double *f_hi = &f.c;
+            if(fabs(f.c)<fabs(f.a))
+            {
+                cswap(x_lo,x_hi);
+                cswap(f_lo,f_hi);
+            }
+            assert( fabs(*f_lo) <= fabs(*f_hi) );
+
+            std::cerr << "lo : " << *f_lo << " @" << *x_lo << std::endl;
+
+            exit(1);
+            
+            return 0;
         }
 
     }

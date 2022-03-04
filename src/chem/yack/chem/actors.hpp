@@ -50,6 +50,9 @@ namespace yack
             //! factor * prod( (C[indx]+coef*xi)^coef[indx] )
             double mass_action(double factor, const readable<double> &C, const double xi) const throw();
 
+            //! derivative of mass action(factor,C,xi)
+            double slope(const readable<double> &C, const double xi) const throw();
+
             //! move all actors
             void   move(writable<double> &C, const double xi) const throw();
 

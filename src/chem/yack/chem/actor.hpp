@@ -53,6 +53,9 @@ namespace yack
             //! coef*C[indx]^cder
             double drvs_action(const readable<double> &C) const throw();
 
+            //! csqr*(C[indx]+coef*xi)^cdef
+            double slope(const readable<double> &C, const double xi) const throw();
+
             //! helper to display
             void    display(std::ostream &os, const bool first) const;
 
@@ -64,7 +67,8 @@ namespace yack
             actor          *prev; //!< for actors
             const  unsigned coef; //!< |nu|>0
             const  unsigned cder; //!< coef-1 >= 0
-
+            const  double   csqr; //!< |nu|^2
+            
         private:
             const species &host;
             YACK_DISABLE_COPY_AND_ASSIGN(actor);

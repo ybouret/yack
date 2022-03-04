@@ -34,6 +34,19 @@ namespace yack
             return factor;
         }
 
+        double actors:: slope(const readable<double> &C, const double xi) const throw()
+        {
+            double sum = 0;
+            for(const actor *a=head;a;a=a->next)
+            {
+                double p = a->slope(C,xi);
+                for(const actor *b=a->prev;b;b=b->prev) p *= b->mass_action(C,xi);
+                for(const actor *b=a->next;b;b=b->next) p *= b->mass_action(C,xi);
+                sum += p;
+            }
+            return sum;
+        }
+
         
 
         int actors:: nu() const throw()
