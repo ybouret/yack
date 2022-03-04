@@ -143,7 +143,10 @@ namespace yack
             assert( fabs(*f_lo) <= fabs(*f_hi) );
 
             std::cerr << "lo : " << *f_lo << " @" << *x_lo << std::endl;
-
+            const double sigma = slope(K,C,*x_lo);
+            std::cerr << "sigma=" << sigma << std::endl;
+            std::cerr << *f_lo  << "+(" << sigma << ")*(x-(" << *x_lo << "))" << std::endl;
+            
             exit(1);
             
             return 0;

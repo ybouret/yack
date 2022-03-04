@@ -93,6 +93,11 @@ namespace yack
             return reac.mass_action(K,C,-xi) - prod.mass_action(1.0,C,xi);
         }
 
+        double components:: slope(const double K, const readable<double> &C, const double xi) const throw()
+        {
+            return -(K*reac.slope(C,-xi)+prod.slope(C,xi));
+        }
+        
         void components:: move(writable<double> &C, const double xi) const throw()
         {
             reac.move(C,-xi);
