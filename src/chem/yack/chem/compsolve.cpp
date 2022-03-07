@@ -129,7 +129,7 @@ namespace yack
                         if(positive==s.b)
                         {
                             x.c = lim.reac_extent();              assert(x.c>=0);
-                            f.c = - (prod.mass_action(1,C,x.c));  assert(f.c<=0);
+                            f.c = - (prod.mass_action(1,C,x.c));  assert(f.c<0);
                             x.a = x.b;
                             f.a = f.b;
                         }
@@ -137,7 +137,7 @@ namespace yack
                         {
                             assert(negative==s.b);
                             x.a = lim.prod_extent();            assert(x.a<=0);
-                            f.a = (reac.mass_action(K,C,-x.a)); assert(f.a>=0);
+                            f.a = (reac.mass_action(K,C,-x.a)); assert(f.a>0);
                             x.c = x.b;
                             f.c = f.b;
                         }
@@ -155,8 +155,45 @@ namespace yack
                         fp("%.15g %.15g\n",xx,F(xx));
                     }
                 }
-                
-                exit(1);
+
+                assert( __sign::of(f.a) == positive );
+                assert( __sign::of(f.c) == negative );
+
+                if(x.a>=x.c)
+                {
+                    std::cerr << "blocked @0" << std::endl;
+                    return 0;
+                }
+
+                size_t cycle = 0;
+            CYCLE:
+                ++cycle;
+                x.b = 0.5*(x.a+x.c);
+                f.b = F(x.b);
+                switch( s.b = __sign::of(f.b) )
+                {
+                    case __zero__: return x.b; // early numerical return
+                    case negative: f.c = f.b; x.c = x.b; break;
+                    case positive: f.a = f.b; x.a = x.b; break;
+                }
+                assert( __sign::of(f.a) == positive );
+                assert( __sign::of(f.c) == negative );
+                std::cerr << "x=" << x << "; f=" << f << " // @cycle=" << cycle << std::endl;
+                if(cycle>=12)
+                {
+                    {
+                        ios::ocstream fp("zext.dat");
+                        const int N = 10000;
+                        for(int i=0;i<=N;++i)
+                        {
+                            const double xx = x.a+ (i*(x.c-x.a))/N;
+                            fp("%.15g %.15g\n",xx,F(xx));
+                        }
+                    }
+                    exit(1);
+                }
+                goto CYCLE;
+
                 return 0;
             }
 
