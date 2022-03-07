@@ -19,6 +19,12 @@ namespace yack
     public:
         //______________________________________________________________________
         //
+        // definition
+        //______________________________________________________________________
+        typedef unit_t (raw_zero_flux::*proc)(unit_t) const;
+
+        //______________________________________________________________________
+        //
         // C++
         //______________________________________________________________________
         raw_zero_flux(const unit_t        n) throw();
@@ -29,7 +35,7 @@ namespace yack
         //
         // methods
         //______________________________________________________________________
-        unit_t operator()(unit_t indx) const throw();
+        unit_t operator()(const unit_t indx) const throw();
 
         //______________________________________________________________________
         //
@@ -40,6 +46,9 @@ namespace yack
 
     private:
         YACK_DISABLE_ASSIGN(raw_zero_flux);
+        proc   get_;
+        unit_t get1(unit_t) const throw();
+        unit_t getn(unit_t) const throw();
     };
 
 }

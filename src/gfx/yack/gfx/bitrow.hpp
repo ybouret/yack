@@ -10,7 +10,8 @@ namespace yack
 {
     namespace graphic
     {
-
+        typedef raw_zero_flux zero_flux;
+        
         //______________________________________________________________________
         //
         //
