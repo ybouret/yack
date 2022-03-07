@@ -59,6 +59,42 @@ namespace yack
             else
             {
 
+                switch(lim.type)
+                {
+                    case limited_by_none: throw exception("invalid (empty) components");
+                    case limited_by_prod:
+                        assert(nu_r==0);
+                        assert(nu_p>0);
+                        assert(d_nu==nu_p);
+                        if(positive==s.b)
+                        {
+                            x.a = x.b;
+                            f.a = f.b;
+
+                            x.c = pow(K,sexp);
+                            f.c = F(x.c); assert(x.c>0);
+                            while(f.c>=0)
+                            {
+                                f.c = F(x.c*=2);
+                            }
+                            assert(f.c<0);
+                        }
+                        else
+                        {
+                            assert(negative==s.b);
+                            x.a = lim.prod_extent();  assert(x.a<=0);
+                            f.a = K;                  assert(f.a>0);
+                            x.c = x.b;
+                            f.c = f.b;
+                        }
+
+                        std::cerr << "x=" << x << "; f=" << f << std::endl;
+                        break;
+
+                    default: throw exception("not yet implemented");
+                }
+
+
                 exit(1);
                 return 0;
             }
