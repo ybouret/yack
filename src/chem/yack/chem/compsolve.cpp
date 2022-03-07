@@ -36,6 +36,16 @@ namespace yack
                 }
             };
         }
+
+        static inline bool same_magnitude( const double X, const double Y ) throw()
+        {
+            static const double p  = 2;
+            static const double lo = pow(10,-p);
+            static const double hi = pow(10,p);
+            const double AX = fabs(X);
+            const double AY = fabs(Y);
+            return ( (lo * AY <= AX) && (AX <= hi * AY) ) || ( (lo * AX <= AY) && (AY <= hi * AX) );
+        }
         
         double components:: extent(const double            K,
                                    const readable<double> &C) const
@@ -179,20 +189,23 @@ namespace yack
                 assert( __sign::of(f.a) == positive );
                 assert( __sign::of(f.c) == negative );
                 std::cerr << "x=" << x << "; f=" << f << " // @cycle=" << cycle << std::endl;
-                if(cycle>=12)
+                if(same_magnitude(f.a,f.c))
                 {
-                    {
-                        ios::ocstream fp("zext.dat");
-                        const int N = 10000;
-                        for(int i=0;i<=N;++i)
-                        {
-                            const double xx = x.a+ (i*(x.c-x.a))/N;
-                            fp("%.15g %.15g\n",xx,F(xx));
-                        }
-                    }
-                    exit(1);
+                    goto INTER;
                 }
                 goto CYCLE;
+
+            INTER:
+                {
+                    ios::ocstream fp("zred.dat");
+                    const int N = 10000;
+                    for(int i=0;i<=N;++i)
+                    {
+                        const double xx = x.a+ (i*(x.c-x.a))/N;
+                        fp("%.15g %.15g\n",xx,F(xx));
+                    }
+                }
+                exit(1);
 
                 return 0;
             }
