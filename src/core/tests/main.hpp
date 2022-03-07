@@ -11,6 +11,7 @@
 #include "yack/type/complex.hpp"
 #include "yack/type/v3d.hpp"
 #include "yack/string.hpp"
+#include "yack/color/rgba.hpp"
 
 
 namespace yack
@@ -159,7 +160,21 @@ namespace yack
         }
         return ans;;
     }
-    
+
+    //! rgb
+    template <>
+    inline color::rgb bring::get<color::rgb>( randomized::bits &ran )
+    {
+        return color::rgb( ran.to<uint8_t>(), ran.to<uint8_t>(), ran.to<uint8_t>() );
+    }
+
+    //! rgba
+    template <>
+    inline color::rgba bring::get<color::rgba>( randomized::bits &ran )
+    {
+        return color::rgba( ran.to<uint8_t>(), ran.to<uint8_t>(), ran.to<uint8_t>(), uint8_t(128+ran.in(0,127)) );
+    }
+
 }
 
 #endif
