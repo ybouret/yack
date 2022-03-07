@@ -112,6 +112,7 @@ add_test(functor  test-core functor)
 add_test(rtti     test-core rtti)
 add_test(env      test-core env "PATH" nothing)
 add_test(div      test-core div)
+add_test(zflux    test-core zflux)
 
 add_test(type:ints   test-core type_ints)
 add_test(type:traits test-core type_traits)

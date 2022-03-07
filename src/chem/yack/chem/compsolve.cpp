@@ -119,34 +119,16 @@ namespace yack
             assert(s.c!=__zero__);
             assert(s.a!=s.c);
 
-#if 0
-            double *x_neg = &x.a; double *f_neg = &f.a;
-            double *x_pos = &x.c; double *f_pos = &f.c;
-            if(positive==s.a)
+            if( fabs(f.a) < fabs(f.c) )
             {
-                assert(negative==s.c);
-                cswap(x_neg,x_pos);
-                cswap(f_neg,f_pos);
+                std::cerr << "Lowest |" << f.a << "| @x.a=" << x.a << std::endl;
+            }
+            else
+            {
+                std::cerr << "Lowest |" << f.c << "| @x.c=" << x.c << std::endl;
+
             }
 
-            assert( negative == __sign::of(*f_neg) );
-            assert( positive == __sign::of(*f_pos) );
-#endif
-
-            double *x_lo = &x.a; double *f_lo = &f.a;
-            double *x_hi = &x.c; double *f_hi = &f.c;
-            if(fabs(f.c)<fabs(f.a))
-            {
-                cswap(x_lo,x_hi);
-                cswap(f_lo,f_hi);
-            }
-            assert( fabs(*f_lo) <= fabs(*f_hi) );
-
-            std::cerr << "lo : " << *f_lo << " @" << *x_lo << std::endl;
-            const double sigma = slope(K,C,*x_lo);
-            std::cerr << "sigma=" << sigma << std::endl;
-            std::cerr << *f_lo  << "+(" << sigma << ")*(x-(" << *x_lo << "))" << std::endl;
-            
             exit(1);
             
             return 0;
