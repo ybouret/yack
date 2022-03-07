@@ -25,10 +25,12 @@ YACK_UTEST(solve)
         vector<double> C(lib.size(),0);
 
         lib.fill(C,0.8,ran);
+        double K = 1e-10;
 
         if(lib.size()==3)
         {
             // ./build/chem/tests/Debug/test-chem solve '[a++]+2[b-]-[c]'
+            K    = 0.01;
             C[1] = 1.51001e-12;
             C[2] = 5.72707e-12;
             C[3] = 1.64167e-10;
@@ -36,7 +38,6 @@ YACK_UTEST(solve)
 
         lib(std::cerr << "Cini=",C);
         eq.display(std::cerr) << std::endl;
-        const double K = 0.01;
         const double xi = eq.extent(K,C);
         eq.move(C,xi);
         lib(std::cerr << "Cend=",C);
