@@ -62,6 +62,8 @@ namespace yack
                 switch(lim.type)
                 {
                     case limited_by_none: throw exception("invalid (empty) components");
+
+
                     case limited_by_prod:
                         assert(nu_r==0);
                         assert(nu_p>0);
@@ -90,6 +92,35 @@ namespace yack
 
                         std::cerr << "x=" << x << "; f=" << f << std::endl;
                         break;
+
+                    case limited_by_reac:
+                        assert(nu_r>0);
+                        assert(nu_p==0);
+                        assert(d_nu==-nu_r);
+                        if(positive==s.b)
+                        {
+                            x.a = x.b;
+                            f.a = f.b;
+                            x.c = lim.reac_extent(); assert(x.c>=0);
+                            f.c = -1;                assert(f.c<0);
+                        }
+                        else
+                        {
+                            x.c = x.b;
+                            f.c = f.b;
+                            x.a = -pow(K,sexp);
+                            f.a = F(x.a);
+                            while(f.a<=0)
+                            {
+                                f.a = F(x.a*=2);
+                            }
+                            assert(x.a<0);
+                            assert(f.a>0);
+                        }
+                        
+                        std::cerr << "x=" << x << "; f=" << f << std::endl;
+                        break;
+
 
                     default: throw exception("not yet implemented");
                 }

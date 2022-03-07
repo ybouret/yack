@@ -25,8 +25,8 @@ namespace yack
             //
             // types and definitions
             //__________________________________________________________________
-            static const at_exit::longevity life_time = 10; //!< singleton
-            static const char               call_sign[];    //!< singleton
+            static const at_exit::longevity  life_time = 10; //!< singleton
+            static const char * const        call_sign;      //!< singleton
 
             //__________________________________________________________________
             //

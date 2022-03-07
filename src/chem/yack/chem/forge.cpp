@@ -184,10 +184,7 @@ namespace yack
                         } break;
 
                         case YCF_cm: {
-                            //cm_context    &ctx = *(cm_context*)data;
-                            //std::cerr << ctx.lib << std::endl;
-                            //ctx.cmp.display(std::cerr) << std::endl;
-                            // done
+                            
                         } break;
 
                         default:
@@ -244,7 +241,7 @@ namespace yack
             };
         }
 
-        const char forge:: call_sign[] = "chemical::forge";
+        const char * const forge:: call_sign = "chemical::forge";
 
         forge:: ~forge() throw() {}
         
