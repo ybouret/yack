@@ -4,6 +4,7 @@
 #define YACK_CHEM_ENTITY_INCLUDED 1
 
 #include "yack/string.hpp"
+#include "yack/large-object.hpp"
 
 namespace yack
 {
@@ -16,7 +17,7 @@ namespace yack
         //! indexed and name entity
         //
         //______________________________________________________________________
-        class entity : public object, public counted
+        class entity : public large_object, public counted
         {
         public:
             //__________________________________________________________________

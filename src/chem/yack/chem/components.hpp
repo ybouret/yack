@@ -94,6 +94,7 @@ namespace yack
             const double      sexp; //!< scaling exponent: Cs approx pow(K,1.0/d_nu)
             const int         nu_p; //!< Delta_r nu_p >= 0
             const int         nu_r; //!< Delta_r nu_r >=0
+            const string      topo; //!< named topology
 
         private:
             YACK_DISABLE_COPY_AND_ASSIGN(components);
@@ -101,7 +102,7 @@ namespace yack
             mutable void *wksp[ YACK_WORDS_FOR(limits) ];
 
             void update() throw();
-
+            void mktopo();
         };
 
     }

@@ -13,6 +13,7 @@ namespace yack
         sexp(0),
         nu_p(0),
         nu_r(0),
+        topo(),
         db(),
         wksp()
         {
@@ -51,6 +52,35 @@ namespace yack
             }
         }
 
+
+        static inline
+        void actors_to_string( string &topo, const actors &a)
+        {
+            const actor *node = a.head;
+            if(node)
+            {
+                topo += vformat("%u",node->coef);
+                for(node=node->next;node;node=node->next)
+                {
+                    topo += ',';
+                    topo += vformat("%u",node->coef);
+                }
+            }
+        }
+
+        void components:: mktopo()
+        {
+            string res;
+            actors_to_string(res,reac);
+            res += ':';
+            actors_to_string(res,prod);
+
+            coerce(topo) = res;
+        }
+
+
+
+
         bool components:: operator()(const species &sp,
                                      const int      nu)
         {
@@ -69,6 +99,7 @@ namespace yack
                     assert(nu<0);
                     coerce(reac).push_back( new actor(sp,-nu) );
                 }
+                mktopo();
             }
             catch(...)
             {
@@ -76,9 +107,10 @@ namespace yack
                 throw;
             }
 
-            ++coerce(sp.rank);
 
             update();
+            ++coerce(sp.rank);
+
 
             return true;
         }
@@ -112,6 +144,7 @@ namespace yack
             os << " <=> ";
             prod.display(os);
             os << " | d_nu=" << d_nu << " | nu_p=" << nu_p;
+            os << " {" << topo << "}";
             return os;
         }
 
