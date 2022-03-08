@@ -48,7 +48,7 @@ namespace yack
 
             //! C[indx] += xi * coef;
             void move(writable<double> &C, const double xi) const throw();
-
+            
 
             //! coef*C[indx]^cder
             double drvs_action(const readable<double> &C) const throw();

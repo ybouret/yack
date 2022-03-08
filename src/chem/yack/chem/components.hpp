@@ -61,7 +61,9 @@ namespace yack
 
             
             //! find private solving extent
-            double         extent(const double K, const readable<double> &C) const;
+            double         extent(const double            K,
+                                  const readable<double> &C,
+                                  writable<double>       &Cs) const;
 
             //! move to a given extent
             void move( writable<double> &C, const double xi) const throw();
@@ -103,6 +105,7 @@ namespace yack
 
             void update() throw();
             void mktopo();
+            double compute_extent(const readable<double> &C0, const readable<double> &Cs) const throw();
         };
 
     }

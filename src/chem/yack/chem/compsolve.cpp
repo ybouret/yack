@@ -83,48 +83,68 @@ namespace yack
 
             };
 
-
-
         }
 
-#if 0
-        static inline bool same_magnitude( const double X, const double Y ) throw()
+
+        double components:: compute_extent(const readable<double> &C0, const readable<double> &Cs) const throw()
         {
-            static const double p  = 2;
-            static const double lo = pow(10,-p);
-            static const double hi = pow(10,p);
-            const double AX = fabs(X);
-            const double AY = fabs(Y);
-            return ( (lo * AY <= AX) && (AX <= hi * AY) ) || ( (lo * AX <= AY) && (AY <= hi * AX) );
+            exit(1);
+            return 0;
         }
-#endif
 
         double components:: extent(const double            K,
-                                   const readable<double> &C) const
+                                   const readable<double> &C0,
+                                   writable<double>       &Cs) const
         {
 
+            //------------------------------------------------------------------
+            //
+            // sanity check
+            //
+            //------------------------------------------------------------------
             assert(K>0);
-            assert(are_valid(C));
+            assert(are_valid(C0));
+            assert(Cs.size()>=C0.size());
 
-            // initialize by computing limits and f0=f.b=mass.action(K.C)@0
-            const limits      &lim  = private_limits(C);
-            triplet<double>    x    = { 0, 0, 0 };
-            triplet<double>    f    = { 0, mass_action(K,C), 0 };
-            triplet<sign_type> s    = { __zero__, __sign::of(f.b), __zero__ };
-            std::cerr << "f0=" << f.b << " @" << x.b << std::endl;
-            std::cerr <<  lim  << std::endl;
-
-
-            if(s.b==__zero__)
+            //------------------------------------------------------------------
+            //
+            // initialize
+            //
+            //------------------------------------------------------------------
+            for(const cnode *node=head();node;node=node->next)
             {
-                // special case
+                const size_t j = *****node;
+                Cs[j] = C0[j];
+            }
+
+            size_t cycle = 0;
+        LOOP:
+            ++cycle;
+            //------------------------------------------------------------------
+            //
+            // try to move
+            //
+            //------------------------------------------------------------------
+            const limits      &lim = private_limits(Cs);
+            const double       f0  = mass_action(K,Cs);
+            const sign_type    s0  = __sign::of(f0);
+            std::cerr << lim << std::endl;
+
+            if(__zero__==s0)
+            {
                 std::cerr << "early return @0" << std::endl;
-                return 0;
+                return compute_extent(C0,Cs);
             }
             else
             {
+                triplet<double>    x    = { 0, 0,  0 };
+                triplet<double>    f    = { 0, f0, 0 };
 
-                // generic case
+                //--------------------------------------------------------------
+                //
+                // bracket zero in [x.a:x.c]
+                //
+                //--------------------------------------------------------------
                 switch(lim.type)
                 {
                         //------------------------------------------------------
@@ -138,27 +158,24 @@ namespace yack
                         assert(nu_r==0);
                         assert(nu_p>0);
                         assert(d_nu==nu_p);
-                        if(positive==s.b)
+                        if(positive==s0)
                         {
-                            const direct_call  F    = { *this, K, C };
+                            const direct_call  F = { *this, K, Cs };
                             x.a = x.b; // =0
-                            f.a = f.b; // @0
+                            f.a = f.b; // >0
 
                             x.c = pow(K,sexp);
                             f.c = F(x.c); assert(x.c>0);
-                            while(f.c>=0)
-                            {
-                                f.c = F(x.c*=2);
-                            }
+                            while(f.c>=0) f.c = F(x.c*=2);
                             assert(f.c<0);
                         }
                         else
                         {
-                            assert(negative==s.b);
+                            assert(negative==s0);
                             x.a = lim.prod_extent();  assert(x.a<=0);
                             f.a = K;                  assert(f.a>0);
                             x.c = x.b;  // =0
-                            f.c = f.b;  // @0
+                            f.c = f.b;  // <0
                         }
 
                         break;
@@ -169,7 +186,7 @@ namespace yack
                         assert(nu_r>0);
                         assert(nu_p==0);
                         assert(d_nu==-nu_r);
-                        if(positive==s.b)
+                        if(positive==s0)
                         {
                             x.a = x.b; // =0
                             f.a = f.b; // @0
@@ -178,20 +195,16 @@ namespace yack
                         }
                         else
                         {
-                            const direct_call  F    = { *this, K, C };
-                            assert(negative==s.b);
+                            const direct_call  F    = { *this, K, Cs };
+                            assert(negative==s0);
                             x.c = x.b;
                             f.c = f.b;
                             x.a = -pow(K,sexp);
                             f.a = F(x.a);
-                            while(f.a<=0)
-                            {
-                                f.a = F(x.a*=2);
-                            }
+                            while(f.a<=0) f.a = F(x.a*=2);
                             assert(x.a<0);
                             assert(f.a>0);
                         }
-                        
                         break;
 
                         //------------------------------------------------------
@@ -199,19 +212,19 @@ namespace yack
                         //------------------------------------------------------
                         assert(nu_r>0);
                         assert(nu_p>0);
-                        if(positive==s.b)
+                        if(positive==s0)
                         {
-                            x.c = lim.reac_extent();              assert(x.c>=0);
-                            f.c = - (prod.mass_action(1,C,x.c));  assert(f.c<0);
+                            x.c = lim.reac_extent();               assert(x.c>=0);
+                            f.c = - (prod.mass_action(1,Cs,x.c));  assert(f.c<0);
 
                             x.a = x.b;  // =0
                             f.a = f.b;  // @0
                         }
                         else
                         {
-                            assert(negative==s.b);
-                            x.a = lim.prod_extent();            assert(x.a<=0);
-                            f.a = (reac.mass_action(K,C,-x.a)); assert(f.a>0);
+                            assert(negative==s0);
+                            x.a = lim.prod_extent();             assert(x.a<=0);
+                            f.a = (reac.mass_action(K,Cs,-x.a)); assert(f.a>0);
                             x.c = x.b;  // =0
                             f.c = f.b;  // @0
                         }
@@ -222,64 +235,54 @@ namespace yack
                 if(x.a>=x.c)
                 {
                     std::cerr << "blocked @0" << std::endl;
-                    return 0;
+                    return compute_extent(C0,Cs);
                 }
 
-                const scaled_call G = { *this, K, C, x, 0};
-
+                if(false)
                 {
                     ios::ocstream fp("zext.dat");
-                    const int N = 10000;
-                    for(int i=0;i<=N;++i)
+                    const unsigned N = 1000;
+                    for(unsigned i=0;i<=N;++i)
                     {
-                        const double xx =  double(i)/N;
-                        fp("%.15g %.15g\n",xx,G(xx));
+                        const double w = double(i)/N;
+                        const double xx = x.a * (1.0-w) + x.c*w;
+                        fp("%g %g\n", xx, mass_action(K,Cs,xx) );
                     }
                 }
 
-
-                triplet<double> w = { 0, 0, 1 };
-
-
-
-                if(G.update(w,f))
+                //--------------------------------------------------------------
+                //
+                // best guess : secant
+                //
+                //--------------------------------------------------------------
+                static const double wmin = numeric<double>::ftol;
+                static const double wmax = 1.0-wmin;
+                if( fabs(f.a) < fabs(f.c) )
                 {
-                    // early return
-                    return *G;
+                    const double omega = clamp(wmin,f.a/(f.a-f.c),wmax);
+                    x.b = (1.0-omega) * x.a + omega * x.c;
                 }
-                size_t cycle = 0;
-                double xiOld = *G;
-                double dwOld = fabs(w.c-w.a);
-            CYCLE:
-                ++cycle;
-                if(G.update(w,f))
+                else
                 {
-                    std::cerr << "exact @" << *G << std::endl;
-                    return *G;
-                }
-                std::cerr << "w=" << w << ", f=" << f << " @cycle=" << cycle << std::endl;
-                const double xiNew = *G;
-                if( fabs(xiNew-xiOld) <= numeric<double>::ftol * fabs(xiNew) )
-                {
-                    std::cerr << "xiConverged @" << xiNew << std::endl;
-                    return xiNew;
-                }
-                const double dwNew = fabs(w.c-w.a);
-                if( dwNew >= dwOld)
-                {
-                    std::cerr << "dwConverged @" << xiNew << std::endl;
-                    return xiNew;
+                    const double omega = clamp(wmin,(-f.c)/(f.a-f.c),wmax);
+                    x.b = omega * x.a + (1.0-omega) * x.c;
                 }
 
-                xiOld = xiNew;
-                dwOld = dwNew;
-                goto CYCLE;
 
 
+                std::cerr << "found " << x.b << " @cycle=" << cycle << std::endl;
+                move(Cs,x.b);
+                std::cerr << "Cs=" << Cs << std::endl;
+
+                if(cycle>=4) exit(1);
+
+                goto LOOP;
 
             }
 
-            
+
+
+
         }
 
     }

@@ -38,9 +38,10 @@ YACK_UTEST(solve)
             C[3] = 1.64167e-10;
         }
         std::cerr << "K=" << K << std::endl;
+        vector<double> Cs(lib.size(),0);
         lib(std::cerr << "Cini=",C);
         eq.display(std::cerr) << std::endl;
-        const double xi = eq.extent(K,C);
+        const double xi = eq.extent(K,C,Cs);
         eq.move(C,xi);
         lib(std::cerr << "Cend=",C);
 
