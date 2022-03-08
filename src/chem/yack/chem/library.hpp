@@ -17,7 +17,7 @@ namespace yack
         // definitions
         //______________________________________________________________________
         typedef suffix_set<string,const species::pointer> species_set; //!< alias
-        typedef typename species_set::knot_type           snode;       //!< alias
+        typedef species_set::knot_type                    snode;       //!< alias
 
         //______________________________________________________________________
         //
