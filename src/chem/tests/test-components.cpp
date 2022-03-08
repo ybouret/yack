@@ -27,6 +27,7 @@ YACK_UTEST(components)
     {
         components sample;
         build(sample,lib,argv[1]);
+        sample.display(std::cerr) << std::endl;
     }
 
     std::cerr << lib << std::endl;

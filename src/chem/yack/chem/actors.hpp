@@ -65,7 +65,9 @@ namespace yack
             //! helper to display
             void display(std::ostream &) const;
 
-            
+            //! check tail actor for highest coefficient
+            void update_last();
+
 
         private:
             YACK_DISABLE_COPY_AND_ASSIGN(actors);

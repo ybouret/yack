@@ -1,7 +1,4 @@
-
-
 #include "yack/chem/forge.hpp"
-
 #include "yack/utest/run.hpp"
 
 using namespace yack;

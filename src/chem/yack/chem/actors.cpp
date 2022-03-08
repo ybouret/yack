@@ -105,6 +105,13 @@ namespace yack
             return ans;
         }
 
+        void actors:: update_last()
+        {
+            assert(tail);
+            actor *a = tail;
+            while(a->prev && (a->prev->coef>a->coef) ) towards_front(a);
+        }
+
     }
 
 }
