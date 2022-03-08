@@ -12,20 +12,20 @@ YACK_UTEST(zflux)
     
     for(unit_t width=1;width<=10;++width)
     {
-        const core::zero_flux zf(width);
-        const core::zero_flux::proc raw = core::zero_flux::raw_proc_for(zf);
-        const core::zero_flux::proc cxx = core::zero_flux::cxx_proc_for(zf);
+        const raw_zero_flux   rzf(width);
+        const cxx_zero_flux   czf(width);
+
 
         for(unit_t x=-1000;x<=1000;++x)
         {
             {
-                const unit_t i=raw(zf,x);
+                const unit_t i=rzf(x);
                 YACK_ASSERT(i>=0);
                 YACK_ASSERT(i<width);
             }
 
             {
-                const unit_t i=cxx(zf,x);
+                const unit_t i=czf(x);
                 YACK_ASSERT(i>0);
                 YACK_ASSERT(i<=width);
             }

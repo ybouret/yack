@@ -63,34 +63,18 @@ namespace yack
         inline  zero_flux_using(const zero_flux_using &z) throw() : data(z.data), proc(z.proc)       {}
         inline ~zero_flux_using()                         throw() {}
 
+        inline unit_t operator*() const throw() { return data.size; }
+        inline unit_t operator()(const unit_t indx) const throw() { return proc(data,indx); }
+
+
     private:
         const flux_type data;
         const proc_type proc;
     };
+
+    typedef zero_flux_using<core::zero_flux::raw_proc_for> raw_zero_flux;
+    typedef zero_flux_using<core::zero_flux::cxx_proc_for> cxx_zero_flux;
     
-#if 0
-    class raw_zero_flux
-    {
-    public:
-        typedef core::zero_flux flux_type;
-        typedef flux_type::proc proc_type;
-
-        inline  raw_zero_flux(const unit_t         n) throw() : data(n), proc( flux_type::raw_proc_for(data) ) {}
-        inline  raw_zero_flux(const raw_zero_flux &z) throw() : data(z.data), proc(z.proc) {}
-        inline ~raw_zero_flux() throw() { coerce(proc) = 0; }
-
-        inline unit_t operator()(const unit_t indx) const throw()
-        {
-            return proc(data,indx);
-        }
-
-    private:
-        YACK_DISABLE_ASSIGN(raw_zero_flux);
-        const flux_type data;
-        const proc_type proc;
-    };
-#endif
-
 };
 
 #endif

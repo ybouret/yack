@@ -3,7 +3,7 @@
 #ifndef YACK_GFX_ZFLUX_INCLUDED
 #define YACK_GFX_ZFLUX_INCLUDED 1
 
-#include "yack/arith/raw-zero-flux.hpp"
+#include "yack/arith/zero-flux.hpp"
 
 namespace yack
 {

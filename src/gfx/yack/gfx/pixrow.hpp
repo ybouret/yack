@@ -23,12 +23,12 @@ namespace yack
             YACK_DECL_ARGS_(T,type);
             
             inline type & operator()(const unit_t x) throw() {
-                assert(x>=0); assert(x<w.size); assert(0!=p);
+                assert(x>=0); assert(x<*w); assert(0!=p);
                 return p[x];
             }
 
             inline const_type & operator()(const unit_t x) const throw() {
-                assert(x>=0); assert(x<w.size); assert(0!=p);
+                assert(x>=0); assert(x<*w); assert(0!=p);
                 return p[x];
             }
 
@@ -40,11 +40,8 @@ namespace yack
                 return p[ w(x) ];
             }
 
-        private:
-            T               *p;
-
-        public:
-            const zero_flux &w;
+        private: T               *p;
+        public:  const zero_flux &w;
 
         private:
             pixrow() throw();
