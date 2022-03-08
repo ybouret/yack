@@ -1,8 +1,83 @@
 #include "yack/chem/forge.hpp"
 #include "yack/utest/run.hpp"
+#include "yack/counting/part.hpp"
 
 using namespace yack;
 using namespace chemical;
+
+namespace
+{
+
+    static inline
+    void add_to(library                &lib,
+                components             &eq,
+                const readable<size_t> &coef,
+                const int               sfac,
+                char                   &ch)
+    {
+        for(size_t i=1;i<=coef.size();++i)
+        {
+            const int      nu = sfac * int(coef[i]);
+            const string   id = ch++;
+            const species &sp = lib(id,0);
+            eq(sp,nu);
+        }
+    }
+
+    static inline
+    void test_compsolve( randomized::bits &ran)
+    {
+
+        size_t    nmax = 3;
+        partition reac(nmax);
+        partition prod(nmax);
+
+        reac.boot();
+        do
+        {
+
+
+            {
+                std::cerr << "Reac Only" << std::endl;
+                library    lib;
+                components eq;
+                char       ch = 'a';
+                add_to(lib,eq,reac,-1,ch);
+                eq.display(std::cerr) << std::endl;
+            }
+
+            {
+                std::cerr << "Prod Only" << std::endl;
+                library    lib;
+                components eq;
+                char       ch = 'a';
+                add_to(lib,eq,reac,1,ch);
+                eq.display(std::cerr) << std::endl;
+            }
+
+            std::cerr << "Reac/Prod" << std::endl;
+            prod.boot();
+            std::cerr << "PROD=" << prod << std::endl;
+            do
+            {
+                std::cerr << "\tprod=" << prod << std::endl;
+                library    lib;
+                components eq;
+                char       ch = 'a';
+                add_to(lib,eq,reac,-1,ch);
+                add_to(lib,eq,prod,+1,ch);
+                eq.display(std::cerr) << std::endl;
+            }
+            while(prod.next());
+            
+        }
+        while(reac.next());
+
+
+    }
+
+}
+
 
 YACK_UTEST(solve)
 {
@@ -11,6 +86,9 @@ YACK_UTEST(solve)
     library          lib;
     components       eq;
     chemical::forge &build = chemical::forge::instance();
+
+    test_compsolve(ran);
+    return 0;
 
     if(argc>1)
     {

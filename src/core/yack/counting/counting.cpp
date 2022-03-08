@@ -18,6 +18,7 @@ namespace yack
     void counting:: boot() throw()
     {
         coerce(index)=1;
+        on_boot();
     }
 
     bool counting:: next() throw()

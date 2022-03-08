@@ -93,13 +93,13 @@ namespace yack
                 if(nu>0)
                 {
                     coerce(prod).push_back( new actor(sp,nu) );
-                    coerce(prod).update_last();
+                    //coerce(prod).update_last();
                 }
                 else
                 {
                     assert(nu<0);
                     coerce(reac).push_back( new actor(sp,-nu) );
-                    coerce(reac).update_last();
+                    //coerce(reac).update_last();
                 }
                 mktopo();
             }

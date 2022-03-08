@@ -45,23 +45,46 @@ namespace yack
                 const double            K;
                 const readable<double> &C;
                 const triplet<double>  &X;
-                mutable double          last_xi;
+                double                  last_xi;
 
-                inline double computeXi(const double omega) const throw()
+                // compute Xi from original interval
+                inline double computeXi(const double omega)  throw()
                 {
                     return ( last_xi = clamp(X.a,(1.0-omega) * X.a + omega * X.c,X.c) );
                 }
 
-                inline double operator()(const double omega) const throw()
+                inline double operator()(const double omega) throw()
                 {
                     return self.mass_action(K,C,computeXi(omega));
                 }
 
                 inline bool update(triplet<double>    &w,
-                                   triplet<double>    &f) const throw()
+                                   triplet<double>    &f)  throw()
                 {
-                    const scaled_call &G = *this;
-                    switch( __sign::of(f.b = G(w.b=0.5*(w.a+w.c))))
+                    scaled_call &G = *this;
+                    assert(f.a>=0);
+                    assert(f.c<=0);
+
+#if 1
+                    w.b=0.5*(w.a+w.c);
+#else
+                    static const double wmin = numeric<double>::ftol;
+                    static const double wmax = 1.0-wmin;
+                    if( fabs(f.a) < fabs(f.c) )
+                    {
+                        const double omega = clamp(wmin,f.a/(f.a-f.c),wmax);
+                        w.b = (1.0-omega) * w.a + omega * w.c;
+                    }
+                    else
+                    {
+                        const double omega = clamp(wmin,(-f.c)/(f.a-f.c),wmax);
+                        w.b = omega * w.a + (1.0-omega) * w.c;
+                    }
+
+#endif
+
+                    std::cerr << "w=" << w << ", f=" << f << std::endl;
+                    switch( __sign::of(f.b=G(w.b)) )
                     {
                         case __zero__:
                             return true;
@@ -76,12 +99,13 @@ namespace yack
                             w.c = w.b;
                             break;
                     }
+
                     return false;
+
                 }
 
-                inline double  operator*() const throw() { return last_xi; }
 
-                inline double solve(triplet<double> &f) const throw()
+                inline double solve(triplet<double> &f) throw()
                 {
                     triplet<double> omega  = {0,0,1};
 
@@ -178,6 +202,7 @@ namespace yack
                 return 0;
             }
 
+            double xiOld = 0;
             size_t cycle = 0;
         CYCLE:
             ++cycle;
@@ -294,181 +319,32 @@ namespace yack
             }
 
             {
-                const scaled_call G     = { *this, K, Cs, x, 0 };
-                const double      xi    = G.solve(f);
+                scaled_call  G  = { *this, K, Cs, x, 0 };
+                const double xi = G.solve(f);
                 std::cerr << "xi=" << xi << std::endl;
                 move(Cs,xi);
             }
 
             f.b = mass_action(K,Cs);
             s0  = __sign::of(f.b);
+            const double xiNew = compute_extent(C0,Cs);
             if( __zero__ == s0 )
             {
                 std::cerr << "exact zero mass action" << std::endl;
-                return compute_extent(C0,Cs);
+                return xiNew;
             }
 
-            if(cycle>=4)
+            std::cerr << "Xi: " << xiOld << " -> " << xiNew << std::endl;
+
+            if(cycle>=8)
             {
                 exit(1);
             }
 
+            xiOld = xiNew;
             goto CYCLE;
 
-
-#if 0
-            if(__zero__==s0)
-            {
-                std::cerr << "early return @0" << std::endl;
-                return compute_extent(C0,Cs);
-            }
-            else
-            {
-                triplet<double>    x    = { 0, 0,  0 };
-                triplet<double>    f    = { 0, f0, 0 };
-
-                //--------------------------------------------------------------
-                //
-                // bracket zero in [x.a:x.c]
-                //
-                //--------------------------------------------------------------
-                switch(lim.type)
-                {
-                        //------------------------------------------------------
-                    case limited_by_none:
-                        //------------------------------------------------------
-                        throw exception("invalid (empty) components");
-
-                        //------------------------------------------------------
-                    case limited_by_prod:
-                        //------------------------------------------------------
-                        assert(nu_r==0);
-                        assert(nu_p>0);
-                        assert(d_nu==nu_p);
-                        if(positive==s0)
-                        {
-                            const direct_call  F = { *this, K, Cs };
-                            x.a = x.b; // =0
-                            f.a = f.b; // >0
-
-                            x.c = pow(K,sexp);
-                            f.c = F(x.c); assert(x.c>0);
-                            while(f.c>=0) f.c = F(x.c*=2);
-                            assert(f.c<0);
-                        }
-                        else
-                        {
-                            assert(negative==s0);
-                            x.a = lim.prod_extent();  assert(x.a<=0);
-                            f.a = K;                  assert(f.a>0);
-                            x.c = x.b;  // =0
-                            f.c = f.b;  // <0
-                        }
-
-                        break;
-
-                        //------------------------------------------------------
-                    case limited_by_reac:
-                        //------------------------------------------------------
-                        assert(nu_r>0);
-                        assert(nu_p==0);
-                        assert(d_nu==-nu_r);
-                        if(positive==s0)
-                        {
-                            x.a = x.b; // =0
-                            f.a = f.b; // @0
-                            x.c = lim.reac_extent(); assert(x.c>=0);
-                            f.c = -1;                assert(f.c<0);
-                        }
-                        else
-                        {
-                            const direct_call  F    = { *this, K, Cs };
-                            assert(negative==s0);
-                            x.c = x.b;
-                            f.c = f.b;
-                            x.a = -pow(K,sexp);
-                            f.a = F(x.a);
-                            while(f.a<=0) f.a = F(x.a*=2);
-                            assert(x.a<0);
-                            assert(f.a>0);
-                        }
-                        break;
-
-                        //------------------------------------------------------
-                    case limited_by_both:
-                        //------------------------------------------------------
-                        assert(nu_r>0);
-                        assert(nu_p>0);
-                        if(positive==s0)
-                        {
-                            x.c = lim.reac_extent();               assert(x.c>=0);
-                            f.c = - (prod.mass_action(1,Cs,x.c));  assert(f.c<0);
-
-                            x.a = x.b;  // =0
-                            f.a = f.b;  // @0
-                        }
-                        else
-                        {
-                            assert(negative==s0);
-                            x.a = lim.prod_extent();             assert(x.a<=0);
-                            f.a = (reac.mass_action(K,Cs,-x.a)); assert(f.a>0);
-                            x.c = x.b;  // =0
-                            f.c = f.b;  // @0
-                        }
-                        break;
-                }
-                std::cerr << "x=" << x << "; f=" << f << std::endl;
-
-                if(x.a>=x.c)
-                {
-                    std::cerr << "blocked @0" << std::endl;
-                    return compute_extent(C0,Cs);
-                }
-
-                if(false)
-                {
-                    ios::ocstream fp("zext.dat");
-                    const unsigned N = 1000;
-                    for(unsigned i=0;i<=N;++i)
-                    {
-                        const double w = double(i)/N;
-                        const double xx = x.a * (1.0-w) + x.c*w;
-                        fp("%g %g\n", xx, mass_action(K,Cs,xx) );
-                    }
-                }
-
-                //--------------------------------------------------------------
-                //
-                // best guess : secant
-                //
-                //--------------------------------------------------------------
-                static const double wmin = numeric<double>::ftol;
-                static const double wmax = 1.0-wmin;
-                if( fabs(f.a) < fabs(f.c) )
-                {
-                    const double omega = clamp(wmin,f.a/(f.a-f.c),wmax);
-                    x.b = (1.0-omega) * x.a + omega * x.c;
-                }
-                else
-                {
-                    const double omega = clamp(wmin,(-f.c)/(f.a-f.c),wmax);
-                    x.b = omega * x.a + (1.0-omega) * x.c;
-                }
-
-
-
-                std::cerr << "found " << x.b << " @cycle=" << cycle << std::endl;
-                move(Cs,x.b);
-                std::cerr << "Cs=" << Cs << std::endl;
-
-                if(cycle>=8) exit(1);
-
-                goto LOOP;
-            }
-
-#endif
-
-
+            
 
         }
 
