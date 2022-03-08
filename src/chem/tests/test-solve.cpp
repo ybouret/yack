@@ -1,6 +1,7 @@
 #include "yack/chem/forge.hpp"
 #include "yack/utest/run.hpp"
 #include "yack/counting/part.hpp"
+#include "yack/system/env.hpp"
 
 using namespace yack;
 using namespace chemical;
@@ -25,10 +26,31 @@ namespace
     }
 
     static inline
+    void test_eqsolve(library          &lib,
+                      const components &eq,
+                      randomized::bits &ran)
+    {
+        lib.parse("[Na+]");
+        lib.parse("[Cl-]");
+
+        const size_t M = lib.size();
+        for(int p=-2;p<=2;++p)
+        {
+            const double   K = pow(10.0,double(p));
+            std::cerr << "---- K=" << K << std::endl;
+            vector<double> C0(M,0);
+            vector<double> Cs(M,0);
+            const double   xi = eq.extent(K,C0,Cs);
+            lib(std::cerr << "@" << xi << "=",Cs);
+        }
+
+    }
+
+    static inline
     void test_compsolve( randomized::bits &ran)
     {
 
-        size_t    nmax = 3;
+        size_t    nmax = 2;
         partition reac(nmax);
         partition prod(nmax);
 
@@ -38,35 +60,35 @@ namespace
 
 
             {
-                std::cerr << "Reac Only" << std::endl;
                 library    lib;
                 components eq;
                 char       ch = 'a';
                 add_to(lib,eq,reac,-1,ch);
                 eq.display(std::cerr) << std::endl;
+                test_eqsolve(lib,eq,ran);
             }
 
             {
-                std::cerr << "Prod Only" << std::endl;
                 library    lib;
                 components eq;
                 char       ch = 'a';
                 add_to(lib,eq,reac,1,ch);
+                test_eqsolve(lib,eq,ran);
                 eq.display(std::cerr) << std::endl;
+                test_eqsolve(lib,eq,ran);
             }
+            //continue;
 
-            std::cerr << "Reac/Prod" << std::endl;
             prod.boot();
-            std::cerr << "PROD=" << prod << std::endl;
             do
             {
-                std::cerr << "\tprod=" << prod << std::endl;
                 library    lib;
                 components eq;
                 char       ch = 'a';
                 add_to(lib,eq,reac,-1,ch);
                 add_to(lib,eq,prod,+1,ch);
                 eq.display(std::cerr) << std::endl;
+                test_eqsolve(lib,eq,ran);
             }
             while(prod.next());
             
@@ -81,8 +103,8 @@ namespace
 
 YACK_UTEST(solve)
 {
+    chemical::entity::verbose =environment::flag("VERBOSE");
     randomized::rand_ ran;
-
     library          lib;
     components       eq;
     chemical::forge &build = chemical::forge::instance();

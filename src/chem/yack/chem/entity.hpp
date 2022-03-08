@@ -11,6 +11,8 @@ namespace yack
     namespace chemical
     {
 
+#define YACK_CHEM_PRINTLN(MSG) do { if(chemical::entity::verbose) { std::cerr << MSG << std::endl; } } while(false)
+
         //______________________________________________________________________
         //
         //
@@ -20,6 +22,12 @@ namespace yack
         class entity : public large_object, public counted
         {
         public:
+            //__________________________________________________________________
+            //
+            // definition
+            //__________________________________________________________________
+            static bool verbose; //!< global vebosity
+
             //__________________________________________________________________
             //
             // C++
@@ -73,6 +81,8 @@ namespace yack
             YACK_DISABLE_COPY_AND_ASSIGN(entity);
             const size_t indx; //!< uuid
         };
+
+
     }
 }
 

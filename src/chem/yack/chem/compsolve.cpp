@@ -1,20 +1,14 @@
-
 #include "yack/chem/components.hpp"
 #include "yack/math/triplet.hpp"
 #include "yack/math/numeric.hpp"
 
-#if 0
-#include "yack/math/root/zbis.hpp"
-#include "yack/math/root/zrid.hpp"
-#include "yack/math/root/zsec.hpp"
-#endif
 
 #include "yack/math/triplet.hpp"
-//#include "yack/math/real-function.hpp"
 #include "yack/signs.hpp"
 
 #include "yack/exception.hpp"
 #include <cmath>
+#include <iomanip>
 
 namespace yack
 {
@@ -53,11 +47,14 @@ namespace yack
                     return ( last_xi = clamp(X.a,(1.0-omega) * X.a + omega * X.c,X.c) );
                 }
 
+                // mass action from rescaled Xi
                 inline double operator()(const double omega) throw()
                 {
                     return self.mass_action(K,C,computeXi(omega));
                 }
 
+
+                // single state update
                 inline bool update(triplet<double>    &w,
                                    triplet<double>    &f)  throw()
                 {
@@ -83,7 +80,7 @@ namespace yack
 
 #endif
 
-                    std::cerr << "w=" << w << ", f=" << f << std::endl;
+                    YACK_CHEM_PRINTLN("// omega=" << w << ", f=" << f);
                     switch( __sign::of(f.b=G(w.b)) )
                     {
                         case __zero__:
@@ -111,7 +108,7 @@ namespace yack
 
                     if(update(omega,f))
                     {
-                        std::cerr << "exact omega" << std::endl;
+                        YACK_CHEM_PRINTLN("// exact omega");
                         return last_xi;
                     }
 
@@ -121,19 +118,19 @@ namespace yack
                     {
                         if(update(omega,f))
                         {
-                            std::cerr << "exact omega" << std::endl;
+                            YACK_CHEM_PRINTLN("// exact omega");
                             return last_xi;
                         }
                         const double omegaNew = omega.b;
                         if( fabs(omegaNew-omegaOld) <= numeric<double>::ftol * fabs(omegaOld) )
                         {
-                            std::cerr << "converged on omega" << std::endl;
+                            YACK_CHEM_PRINTLN("// converged on omega");
                             return last_xi;
                         }
                         const double widthNew = fabs(omega.c-omega.a);
                         if(widthNew>=widthOld)
                         {
-                            std::cerr << "converged on width" << std::endl;
+                            YACK_CHEM_PRINTLN("// converged on width");
                             return last_xi;
                         }
                         omegaOld=omegaNew;
@@ -150,7 +147,7 @@ namespace yack
         double components:: compute_extent(const readable<double> &C0,
                                            const readable<double> &Cs) const throw()
         {
-            std::cerr << "Computing Extent" << std::endl;
+            YACK_CHEM_PRINTLN("//   <Xi>");
             double sum = 0;
             for(const cnode *node=head();node;node=node->next)
             {
@@ -160,11 +157,11 @@ namespace yack
                 const size_t     j = *s;
                 const double    dC = Cs[j] - C0[j];
                 const double    xi = dC/n;
-                std::cerr << s.name << " : " << xi << std::endl;
+                YACK_CHEM_PRINTLN("//   " << std::setw(14) << xi << " @" << s.name);
                 sum += xi;
             }
             const double ans = sum/size();
-            std::cerr << "Xi=" << ans << std::endl;
+            YACK_CHEM_PRINTLN("//   <Xi=" << ans << "/>");
             return ans;
         }
 
@@ -182,6 +179,9 @@ namespace yack
             assert(are_valid(C0));
             assert(Cs.size()>=C0.size());
 
+            ios::ocstream::overwrite("extent.dat");
+
+            YACK_CHEM_PRINTLN("// <extent>");
             //------------------------------------------------------------------
             //
             // initialize
@@ -198,10 +198,11 @@ namespace yack
 
             if( __zero__ == s0 )
             {
-                std::cerr << "already @0" << std::endl;
+                YACK_CHEM_PRINTLN("//   <already@0>");
                 return 0;
             }
 
+            assert( fabs(compute_extent(C0,Cs))<=0 );
             double xiOld = 0;
             size_t cycle = 0;
         CYCLE:
@@ -212,9 +213,9 @@ namespace yack
             //
             //------------------------------------------------------------------
             assert(__zero__!=s0);
-            const limits &lim = private_limits(Cs); std::cerr << lim << std::endl;
+            const limits &lim = private_limits(Cs);
             x.b = 0;
-
+            YACK_CHEM_PRINTLN("//   " << lim);
 
             //------------------------------------------------------------------
             //
@@ -309,8 +310,9 @@ namespace yack
                     throw exception("not implemented yet");
             }
 
-            std::cerr << "    x=" << x << std::endl;
-            std::cerr << "    f=" << f << std::endl;
+
+            //std::cerr << "    x=" << x << std::endl;
+            //std::cerr << "    f=" << f << std::endl;
 
             if(x.a>=x.c)
             {
@@ -318,26 +320,36 @@ namespace yack
                 exit(1);
             }
 
-            {
-                scaled_call  G  = { *this, K, Cs, x, 0 };
-                const double xi = G.solve(f);
-                std::cerr << "xi=" << xi << std::endl;
-                move(Cs,xi);
-            }
+            // find xi and move Cs
+            scaled_call  G  = { *this, K, Cs, x, 0 };
+            const double xi = G.solve(f);
+            YACK_CHEM_PRINTLN("//   xi=" << xi);
+            move(Cs,xi);
 
             f.b = mass_action(K,Cs);
             s0  = __sign::of(f.b);
             const double xiNew = compute_extent(C0,Cs);
+            ios::ocstream::echo("extent.dat", "%.15g %.15g %.15g\n", double(cycle), xiNew, xi);
             if( __zero__ == s0 )
             {
-                std::cerr << "exact zero mass action" << std::endl;
+                YACK_CHEM_PRINTLN("//   exact zero mass action");
                 return xiNew;
             }
 
-            std::cerr << "Xi: " << xiOld << " -> " << xiNew << std::endl;
+            YACK_CHEM_PRINTLN("//    Xi: " << xiOld << " -> " << xiNew);
 
-            if(cycle>=8)
+            const double dXi = fabs(xiNew-xiOld);
+            std::cerr << "dXi=" << fabs(xiNew-xiOld) << "/xi=" << xiOld << std::endl;
+            if( dXi <= numeric<double>::ftol * fabs(xiOld) )
             {
+                YACK_CHEM_PRINTLN("//   extent convergence");
+                return compute_extent(C0,Cs);
+            }
+
+            if(cycle>=20)
+            {
+                std::cerr << "exit for ";
+                display(std::cerr) << std::endl;
                 exit(1);
             }
 

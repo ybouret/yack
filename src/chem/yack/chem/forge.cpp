@@ -86,14 +86,12 @@ namespace yack
                 }
                 virtual void on_init()
                 {
-                    std::cerr << "<cm_linker>" << std::endl;
                     cleanup();
                 }
 
                 virtual void on_quit() throw()
                 {
                     cleanup();
-                    std::cerr << "<cm_linker/>" << std::endl;
                 }
 
                 virtual void on_terminal(const lexeme &lx)
