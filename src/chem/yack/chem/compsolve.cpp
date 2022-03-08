@@ -81,15 +81,67 @@ namespace yack
 
                 inline double  operator*() const throw() { return last_xi; }
 
+                inline double solve(triplet<double> &f) const throw()
+                {
+                    triplet<double> omega  = {0,0,1};
+
+                    if(update(omega,f))
+                    {
+                        std::cerr << "exact omega" << std::endl;
+                        return last_xi;
+                    }
+
+                    double omegaOld = omega.b;
+                    double widthOld = fabs(omega.c-omega.a);
+                    while(true)
+                    {
+                        if(update(omega,f))
+                        {
+                            std::cerr << "exact omega" << std::endl;
+                            return last_xi;
+                        }
+                        const double omegaNew = omega.b;
+                        if( fabs(omegaNew-omegaOld) <= numeric<double>::ftol * fabs(omegaOld) )
+                        {
+                            std::cerr << "converged on omega" << std::endl;
+                            return last_xi;
+                        }
+                        const double widthNew = fabs(omega.c-omega.a);
+                        if(widthNew>=widthOld)
+                        {
+                            std::cerr << "converged on width" << std::endl;
+                            return last_xi;
+                        }
+                        omegaOld=omegaNew;
+                        widthOld=widthNew;
+                    }
+
+                }
+
             };
 
         }
 
 
-        double components:: compute_extent(const readable<double> &C0, const readable<double> &Cs) const throw()
+        double components:: compute_extent(const readable<double> &C0,
+                                           const readable<double> &Cs) const throw()
         {
-            exit(1);
-            return 0;
+            std::cerr << "Computing Extent" << std::endl;
+            double sum = 0;
+            for(const cnode *node=head();node;node=node->next)
+            {
+                const component &c = ***node;
+                const int        n = c.coef;
+                const species   &s = *c;
+                const size_t     j = *s;
+                const double    dC = Cs[j] - C0[j];
+                const double    xi = dC/n;
+                std::cerr << s.name << " : " << xi << std::endl;
+                sum += xi;
+            }
+            const double ans = sum/size();
+            std::cerr << "Xi=" << ans << std::endl;
+            return ans;
         }
 
         double components:: extent(const double            K,
@@ -116,20 +168,155 @@ namespace yack
                 const size_t j = *****node;
                 Cs[j] = C0[j];
             }
+            triplet<double>    x  = { 0, 0, 0 };
+            triplet<double>    f  = { 0, mass_action(K,Cs), 0 };
+            sign_type          s0 = __sign::of(f.b);
+
+            if( __zero__ == s0 )
+            {
+                std::cerr << "already @0" << std::endl;
+                return 0;
+            }
 
             size_t cycle = 0;
-        LOOP:
+        CYCLE:
             ++cycle;
             //------------------------------------------------------------------
             //
-            // try to move
+            // f.b = f0 is computed with its sign
             //
             //------------------------------------------------------------------
-            const limits      &lim = private_limits(Cs);
-            const double       f0  = mass_action(K,Cs);
-            const sign_type    s0  = __sign::of(f0);
-            std::cerr << lim << std::endl;
+            assert(__zero__!=s0);
+            const limits &lim = private_limits(Cs); std::cerr << lim << std::endl;
+            x.b = 0;
 
+
+            //------------------------------------------------------------------
+            //
+            // find a bracketing interval
+            //
+            //------------------------------------------------------------------
+            switch(lim.type)
+            {
+                    //------------------------------------------------------
+                case limited_by_none:
+                    //------------------------------------------------------
+                    throw exception("invalid (empty) components");
+
+                    //------------------------------------------------------
+                case limited_by_prod:
+                    //------------------------------------------------------
+                    assert(nu_r==0);
+                    assert(nu_p>0);
+                    assert(d_nu==nu_p);
+                    if(positive==s0)
+                    {
+                        const direct_call  F = { *this, K, Cs };
+                        x.a = x.b; // =0
+                        f.a = f.b; // >0
+
+                        x.c = pow(K,sexp);
+                        f.c = F(x.c); assert(x.c>0);
+                        while(f.c>=0) f.c = F(x.c*=2);
+                        assert(f.c<0);
+                    }
+                    else
+                    {
+                        assert(negative==s0);
+                        x.a = lim.prod_extent();  assert(x.a<=0);
+                        f.a = K;                  assert(f.a>0);
+                        x.c = x.b;  // =0
+                        f.c = f.b;  // <0
+                    }
+                    break;
+
+                    //------------------------------------------------------
+                case limited_by_reac:
+                    //------------------------------------------------------
+                    assert(nu_r>0);
+                    assert(nu_p==0);
+                    assert(d_nu==-nu_r);
+                    if(positive==s0)
+                    {
+                        x.a = x.b; // =0
+                        f.a = f.b; // @0
+                        x.c = lim.reac_extent(); assert(x.c>=0);
+                        f.c = -1;                assert(f.c<0);
+                    }
+                    else
+                    {
+                        const direct_call  F    = { *this, K, Cs };
+                        assert(negative==s0);
+                        x.c = x.b;
+                        f.c = f.b;
+                        x.a = -pow(K,sexp);
+                        f.a = F(x.a);
+                        while(f.a<=0) f.a = F(x.a*=2);
+                        assert(x.a<0);
+                        assert(f.a>0);
+                    }
+                    break;
+
+                    //------------------------------------------------------
+                case limited_by_both:
+                    //------------------------------------------------------
+                    assert(nu_r>0);
+                    assert(nu_p>0);
+                    if(positive==s0)
+                    {
+                        x.c = lim.reac_extent();               assert(x.c>=0);
+                        f.c = - (prod.mass_action(1,Cs,x.c));  assert(f.c<0);
+
+                        x.a = x.b;  // =0
+                        f.a = f.b;  // @0
+                    }
+                    else
+                    {
+                        assert(negative==s0);
+                        x.a = lim.prod_extent();             assert(x.a<=0);
+                        f.a = (reac.mass_action(K,Cs,-x.a)); assert(f.a>0);
+                        x.c = x.b;  // =0
+                        f.c = f.b;  // @0
+                    }
+                    break;
+
+                default:
+                    throw exception("not implemented yet");
+            }
+
+            std::cerr << "    x=" << x << std::endl;
+            std::cerr << "    f=" << f << std::endl;
+
+            if(x.a>=x.c)
+            {
+                std::cerr << "DO SOMETHING" << std::endl;
+                exit(1);
+            }
+
+            {
+                const scaled_call G     = { *this, K, Cs, x, 0 };
+                const double      xi    = G.solve(f);
+                std::cerr << "xi=" << xi << std::endl;
+                move(Cs,xi);
+            }
+
+            f.b = mass_action(K,Cs);
+            s0  = __sign::of(f.b);
+            if( __zero__ == s0 )
+            {
+                std::cerr << "exact zero mass action" << std::endl;
+                return compute_extent(C0,Cs);
+            }
+
+            if(cycle>=4)
+            {
+                exit(1);
+            }
+
+            goto CYCLE;
+
+
+#if 0
             if(__zero__==s0)
             {
                 std::cerr << "early return @0" << std::endl;
@@ -274,12 +461,12 @@ namespace yack
                 move(Cs,x.b);
                 std::cerr << "Cs=" << Cs << std::endl;
 
-                if(cycle>=4) exit(1);
+                if(cycle>=8) exit(1);
 
                 goto LOOP;
-
             }
 
+#endif
 
 
 

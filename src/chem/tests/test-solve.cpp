@@ -42,13 +42,13 @@ YACK_UTEST(solve)
         lib(std::cerr << "Cini=",C);
         eq.display(std::cerr) << std::endl;
         const double xi = eq.extent(K,C,Cs);
-        eq.move(C,xi);
-        lib(std::cerr << "Cend=",C);
+        std::cerr << "xi=" << xi << std::endl;
+        lib(std::cerr << "Cend=",Cs);
 
-        const double den = eq.reac.mass_action(K,C);
+        const double den = eq.reac.mass_action(K,Cs);
         if(den>0)
         {
-            std::cerr << "Q/K=" << eq.prod.mass_action(1,C)/den << std::endl;
+            std::cerr << "Q/K=" << eq.prod.mass_action(1,Cs)/den << std::endl;
         }
         else
         {
