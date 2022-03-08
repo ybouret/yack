@@ -65,6 +65,8 @@ namespace yack
             //! helper to display
             void display(std::ostream &) const;
 
+            
+
         private:
             YACK_DISABLE_COPY_AND_ASSIGN(actors);
             mutable void *wksp[ YACK_WORDS_FOR(limit) ];

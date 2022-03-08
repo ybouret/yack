@@ -1,6 +1,7 @@
 
 #include "yack/chem/components.hpp"
 #include "yack/math/triplet.hpp"
+#include "yack/math/numeric.hpp"
 
 #if 0
 #include "yack/math/root/zbis.hpp"
@@ -240,21 +241,38 @@ namespace yack
                 triplet<double> w = { 0, 0, 1 };
 
 
+
+                if(G.update(w,f))
+                {
+                    // early return
+                    return *G;
+                }
                 size_t cycle = 0;
-                double width = 1.0;
+                double xiOld = *G;
+                double dwOld = fabs(w.c-w.a);
             CYCLE:
                 ++cycle;
                 if(G.update(w,f))
                 {
+                    std::cerr << "exact @" << *G << std::endl;
                     return *G;
                 }
-                std::cerr << "w=" << w << ", f=" << f << std::endl;
-                const double new_width = fabs(w.c-w.a);
-                if(new_width>=width)
+                std::cerr << "w=" << w << ", f=" << f << " @cycle=" << cycle << std::endl;
+                const double xiNew = *G;
+                if( fabs(xiNew-xiOld) <= numeric<double>::ftol * fabs(xiNew) )
                 {
-                    exit(1);
+                    std::cerr << "xiConverged @" << xiNew << std::endl;
+                    return xiNew;
+                }
+                const double dwNew = fabs(w.c-w.a);
+                if( dwNew >= dwOld)
+                {
+                    std::cerr << "dwConverged @" << xiNew << std::endl;
+                    return xiNew;
                 }
 
+                xiOld = xiNew;
+                dwOld = dwNew;
                 goto CYCLE;
 
 
