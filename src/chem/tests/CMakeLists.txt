@@ -12,6 +12,7 @@ enable_testing()
 add_test(library    test-chem library "[Na+]" "[Cl-]" "[Mg++]")
 add_test(components test-chem components)
 add_test(solve      test-chem solve)
+add_test(eq         test-chem eq)
 
 
 

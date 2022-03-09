@@ -271,13 +271,14 @@ namespace yack
 
         void forge:: create(components   &cmp,
                             library       &lib,
-                            jive::module  *m)
+                            jive::module  *m,
+                            const char    *who)
         {
             jive::source src(m);
             parser->reset();
             const auto_ptr<XNode> tree = parser->parse( src );
             assert(tree.is_valid());
-            cm_context ctx = { yack_unknown, cmp, lib };
+            cm_context ctx = { who ? who : yack_unknown, cmp, lib };
             linker->walk(*tree,&ctx);
         }
 
@@ -316,6 +317,26 @@ namespace yack
             return mgr(*this,txt);
         }
 
+
     }
 
 }
+
+#include "yack/chem/equilibrium.hpp"
+
+namespace yack
+{
+    namespace chemical
+    {
+        void equilibrium:: parse_with(library &lib, const string &txt)
+        {
+            static forge &mgr = forge::instance();
+            mgr(*this,lib,txt,name);
+        }
+
+    }
+
+}
+
+
+

@@ -39,8 +39,20 @@ namespace yack
                             library    &lib,
                             const INFO &inf)
             {
-                create(cmp,lib,jive::module::open_data(inf));
+                create(cmp,lib,jive::module::open_data(inf),NULL);
             }
+
+            //! append to components/library the info
+            template <typename INFO> inline
+            void operator()(components   &cmp,
+                            library      &lib,
+                            const INFO   &inf,
+                            const string &who)
+            {
+                create(cmp,lib,jive::module::open_data(inf),who());
+            }
+
+
 
             //! append single species to library
             template <typename INFO> inline
@@ -59,8 +71,12 @@ namespace yack
             auto_ptr<jive::parser>             parser;
             auto_ptr<jive::syntax::translator> linker;
 
-            void            create(components &, library &, jive::module *);
-            const species & single(library    &, jive::module *);
+            void            create(components   &,
+                                   library      &,
+                                   jive::module *,
+                                   const char   *);
+
+            const species & single(library &, jive::module *);
         };
     }
 }
