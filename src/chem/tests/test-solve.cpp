@@ -28,7 +28,7 @@ namespace
     static inline
     void test_eqsolve(library          &lib,
                       const components &eq,
-                      randomized::bits &ran)
+                      randomized::bits & )
     {
         lib.parse("[Na+]");
         lib.parse("[Cl-]");
@@ -40,7 +40,7 @@ namespace
             std::cerr << "---- K=" << K << std::endl;
             vector<double> C0(M,0);
             vector<double> Cs(M,0);
-            const double   xi = eq.extent(K,C0,Cs);
+            const double   xi = eq.solve1D(K,C0,Cs);
             lib(std::cerr << "@" << xi << "=",Cs);
         }
 
@@ -77,7 +77,7 @@ namespace
                 eq.display(std::cerr) << std::endl;
                 test_eqsolve(lib,eq,ran);
             }
-            //continue;
+            continue;
 
             prod.boot();
             do
@@ -109,8 +109,7 @@ YACK_UTEST(solve)
     components       eq;
     chemical::forge &build = chemical::forge::instance();
 
-    test_compsolve(ran);
-    return 0;
+
 
     if(argc>1)
     {
@@ -141,7 +140,7 @@ YACK_UTEST(solve)
         vector<double> Cs(lib.size(),0);
         lib(std::cerr << "Cini=",C);
         eq.display(std::cerr) << std::endl;
-        const double xi = eq.extent(K,C,Cs);
+        const double xi = eq.solve1D(K,C,Cs);
         std::cerr << "xi=" << xi << std::endl;
         lib(std::cerr << "Cend=",Cs);
 
@@ -156,7 +155,10 @@ YACK_UTEST(solve)
         }
 
     }
-
+    else
+    {
+        test_compsolve(ran);
+    }
 
 
 

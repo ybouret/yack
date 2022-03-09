@@ -65,6 +65,11 @@ namespace yack
                                   const readable<double> &C,
                                   writable<double>       &Cs) const;
 
+            double         solve1D(const double            K,
+                                   const readable<double> &C0,
+                                   writable<double>       &Cs) const;
+
+
             //! move to a given extent
             void move( writable<double> &C, const double xi) const throw();
 
@@ -80,10 +85,10 @@ namespace yack
             //! check neutrality
             bool is_neutral() const throw();
 
-            //! check minimal
+            //! check minimal coefficients
             bool is_minimal() const throw();
 
-            //! checki valid concentrations
+            //! check valid concentrations
             bool are_valid(const readable<double> &C) const throw();
 
             //__________________________________________________________________
@@ -103,9 +108,9 @@ namespace yack
             components_set db;
             mutable void *wksp[ YACK_WORDS_FOR(limits) ];
 
-            void update() throw();
-            void mktopo();
-            double compute_extent(const readable<double> &C0, const readable<double> &Cs) const throw();
+            void   update() throw();
+            void   mktopo();
+            double deduce(const readable<double> &C0, const readable<double> &Cs) const throw();
         };
 
     }

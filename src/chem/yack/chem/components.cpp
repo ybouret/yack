@@ -1,5 +1,5 @@
-
 #include "yack/chem/components.hpp"
+#include <iomanip>
 
 namespace yack
 {
@@ -168,6 +168,27 @@ namespace yack
                 if( s[C] < 0) return false;
             }
             return true;
+        }
+
+        double components:: deduce(const readable<double> &C0,
+                                   const readable<double> &Cs) const throw()
+        {
+            YACK_CHEM_PRINTLN("//   <Xi>");
+            double sum = 0;
+            for(const cnode *node=head();node;node=node->next)
+            {
+                const component &c = ***node;
+                const int        n = c.coef;
+                const species   &s = *c;
+                const size_t     j = *s;
+                const double    dC = Cs[j] - C0[j];
+                const double    xi = dC/n;
+                YACK_CHEM_PRINTLN("//    |" << std::setw(14) << xi << " @" << s.name);
+                sum += xi;
+            }
+            const double ans = sum/size();
+            YACK_CHEM_PRINTLN("//   <Xi=" << ans << "/>");
+            return ans;
         }
 
 

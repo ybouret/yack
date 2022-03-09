@@ -1,13 +1,11 @@
+
 #include "yack/chem/components.hpp"
 #include "yack/math/triplet.hpp"
 #include "yack/math/numeric.hpp"
 #include "yack/math/tao/v1.hpp"
-
-
-#include "yack/math/triplet.hpp"
 #include "yack/signs.hpp"
-
 #include "yack/exception.hpp"
+
 #include <cmath>
 #include <iomanip>
 
@@ -20,20 +18,6 @@ namespace yack
 
         namespace
         {
-
-
-            struct direct_call
-            {
-                const components       &self;
-                const double            K;
-                const readable<double> &C;
-
-                inline double operator()(const double xi) const throw()
-                {
-                    return self.mass_action(K,C,xi);
-                }
-            };
-
             struct scaled_call
             {
                 const components       &self;
@@ -141,13 +125,12 @@ namespace yack
                 }
 
             };
-
         }
 
-        
-        double components:: extent(const double            K,
-                                   const readable<double> &C0,
-                                   writable<double>       &Cs) const
+
+        double components:: solve1D(const double            K,
+                                    const readable<double> &C0,
+                                    writable<double>       &Cs) const
         {
 
             //------------------------------------------------------------------
@@ -155,23 +138,22 @@ namespace yack
             // sanity check
             //
             //------------------------------------------------------------------
+            YACK_CHEM_PRINTLN("// <extent>");
+            
             assert(K>0);
             assert(are_valid(C0));
             assert(Cs.size()>=C0.size());
 
-            ios::ocstream::overwrite("extent.dat");
 
-            YACK_CHEM_PRINTLN("// <extent>");
+
             //------------------------------------------------------------------
             //
             // initialize
             //
             //------------------------------------------------------------------
             tao::v1::load(Cs,C0);
-            triplet<double>    x  = { 0, 0, 0 };
-            triplet<double>    f  = { 0, mass_action(K,Cs), 0 };
-            sign_type          s0 = __sign::of(f.b);
-
+            double             f0    =  mass_action(K,Cs);
+            sign_type          s0    = __sign::of(f0);
             if( __zero__ == s0 )
             {
                 YACK_CHEM_PRINTLN("//   <already@0>");
@@ -179,25 +161,28 @@ namespace yack
             }
 
             assert( fabs(deduce(C0,Cs))<=0 );
+
+
             double xiOld = 0;
+            bool   first = true;
             size_t cycle = 0;
+
         CYCLE:
             ++cycle;
             //------------------------------------------------------------------
             //
-            // f.b = f0 is computed with its sign
+            // bracket, using f.b = f0 is computed with its sign
             //
             //------------------------------------------------------------------
             assert(__zero__!=s0);
-            const limits &lim = private_limits(Cs);
-            x.b = 0;
+            assert(__sign::of(f0)==s0);
+            const limits   &lim = private_limits(Cs);
+            triplet<double> x   = { 0, 0,  0 };
+            triplet<double> f   = { 0, f0, 0 };
+
             YACK_CHEM_PRINTLN("//   " << lim);
 
-            //------------------------------------------------------------------
-            //
-            // find a bracketing interval
-            //
-            //------------------------------------------------------------------
+
             switch(lim.type)
             {
                     //------------------------------------------------------
@@ -213,13 +198,12 @@ namespace yack
                     assert(d_nu==nu_p);
                     if(positive==s0)
                     {
-                        const direct_call  F = { *this, K, Cs };
                         x.a = x.b; // =0
                         f.a = f.b; // >0
 
                         x.c = pow(K,sexp);
-                        f.c = F(x.c); assert(x.c>0);
-                        while(f.c>=0) f.c = F(x.c*=2);
+                        f.c = mass_action(K,Cs,x.c); assert(x.c>0);
+                        while(f.c>=0) f.c = mass_action(K,Cs,x.c*=2);
                         assert(f.c<0);
                     }
                     else
@@ -247,13 +231,12 @@ namespace yack
                     }
                     else
                     {
-                        const direct_call  F    = { *this, K, Cs };
                         assert(negative==s0);
                         x.c = x.b;
                         f.c = f.b;
                         x.a = -pow(K,sexp);
-                        f.a = F(x.a);
-                        while(f.a<=0) f.a = F(x.a*=2);
+                        f.a = mass_action(K,Cs,x.a);
+                        while(f.a<=0) f.a = mass_action(K,Cs,x.a*=2);
                         assert(x.a<0);
                         assert(f.a>0);
                     }
@@ -296,46 +279,56 @@ namespace yack
                 exit(1);
             }
 
-            // find xi and move Cs
-            scaled_call  G  = { *this, K, Cs, x, 0 };
-            const double xi = G.solve(f);
-            YACK_CHEM_PRINTLN("//   xi=" << xi);
-            move(Cs,xi);
-
-            f.b = mass_action(K,Cs);
-            s0  = __sign::of(f.b);
-            const double xiNew = deduce(C0,Cs);
-            ios::ocstream::echo("extent.dat", "%.15g %.15g %.15g\n", double(cycle), xiNew, xi);
-            if( __zero__ == s0 )
+            scaled_call G = { *this, K, Cs, x, 0 };
+            if(false)
             {
-                YACK_CHEM_PRINTLN("//   exact zero mass action");
-                return xiNew;
+                ios::ocstream fp("zext.dat");
+                size_t N = 10000;
+                for(size_t i=0;i<=N;++i)
+                {
+                    const double u = double(i)/N;
+                    fp("%.15g %.15g\n",u,G(u));
+                }
             }
 
-            YACK_CHEM_PRINTLN("//    Xi: " << xiOld << " -> " << xiNew);
-
-            const double dXi = fabs(xiNew-xiOld);
-            std::cerr << "dXi=" << fabs(xiNew-xiOld) << "/xi=" << xiOld << std::endl;
-            if( dXi <= numeric<double>::ftol * fabs(xiOld) )
+            //------------------------------------------------------------------
+            //
+            // solve with local xi
+            //
+            //------------------------------------------------------------------
+            const double xiNew = G.solve(f);
+            YACK_CHEM_PRINTLN("//   xi=" << xiNew << " / " << xiOld);
+            if(first)
             {
-                YACK_CHEM_PRINTLN("//   extent convergence");
+                first = false;
+            }
+            else
+            {
+                if(fabs(xiNew)>=fabs(xiOld))
+                {
+                    // reached numerical limit at previous step, do not movre
+                    YACK_CHEM_PRINTLN("// reached numerical limit");
+                    return deduce(C0,Cs);
+                }
+            }
+            move(Cs,xiNew);
+
+            f0    =  mass_action(K,Cs);
+            s0    = __sign::of(f0);
+            if(__zero__==s0)
+            {
+                YACK_CHEM_PRINTLN("// exact zero mass action");
                 return deduce(C0,Cs);
             }
-
-            if(cycle>=20)
-            {
-                std::cerr << "exit for ";
-                display(std::cerr) << std::endl;
-                exit(1);
-            }
-
             xiOld = xiNew;
-            goto CYCLE;
 
-            
+
+            goto CYCLE;
 
         }
 
     }
 
 }
+
+
