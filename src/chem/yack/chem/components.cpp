@@ -1,5 +1,6 @@
 #include "yack/chem/components.hpp"
 #include <iomanip>
+#include <cmath>
 
 namespace yack
 {
@@ -101,13 +102,11 @@ namespace yack
                 if(nu>0)
                 {
                     coerce(prod).push_back( new actor(sp,nu) );
-                    //coerce(prod).update_last();
                 }
                 else
                 {
                     assert(nu<0);
                     coerce(reac).push_back( new actor(sp,-nu) );
-                    //coerce(reac).update_last();
                 }
                 mktopo();
             }
@@ -143,9 +142,15 @@ namespace yack
         void components:: move(writable<double> &C, const double xi) const throw()
         {
             reac.move(C,-xi);
-            prod.move(C,xi);
+            prod.move(C,+xi);
         }
 
+        double components:: Q(const readable<double> &C) const throw()
+        {
+            assert(are_valid(C));
+            const double den = reac.mass_action(1,C);
+            return fabs(den) > 0 ? prod.mass_action(1,C)/den : 0;
+        }
 
 
         std::ostream &components:: display(std::ostream &os) const
@@ -181,7 +186,6 @@ namespace yack
         double components:: deduce(const readable<double> &C0,
                                    const readable<double> &Cs) const throw()
         {
-            YACK_CHEM_PRINTLN("//   <Xi>");
             double sum = 0;
             for(const cnode *node=head();node;node=node->next)
             {
@@ -191,12 +195,9 @@ namespace yack
                 const size_t     j = *s;
                 const double    dC = Cs[j] - C0[j];
                 const double    xi = dC/n;
-                YACK_CHEM_PRINTLN("//    |" << std::setw(14) << xi << " @" << s.name);
                 sum += xi;
             }
-            const double ans = sum/size();
-            YACK_CHEM_PRINTLN("//   <Xi=" << ans << "/>");
-            return ans;
+            return  sum/size();
         }
 
 

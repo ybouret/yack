@@ -40,7 +40,7 @@ namespace yack
 
             //__________________________________________________________________
             //
-            // methods
+            // I/O methods
             //__________________________________________________________________
             const cnode *head() const throw(); //!< first component
             size_t       size() const throw(); //!< number of components
@@ -52,6 +52,11 @@ namespace yack
 
             //! access component by index
             const component & operator[](const size_t k) const throw();
+
+            //__________________________________________________________________
+            //
+            // computation methods
+            //__________________________________________________________________
 
             //! reac.mass_action(K,C) - prod.mass_action(1,C)
             double         mass_action(const double K, const readable<double> &C) const throw();
@@ -68,18 +73,23 @@ namespace yack
                            const readable<double> &C0,
                            writable<double>       &Cs) const;
 
-
             //! move to a given extent
-            void move( writable<double> &C, const double xi) const throw();
+            void move(writable<double> &C, const double xi) const throw();
 
-            //! helper to display
-            std::ostream & display(std::ostream &os) const;
 
             //! find private limits
             const limits & private_limits(const readable<double> &C) const throw();
 
             //! max_of(reac.maximum,prod.maximum)
             double maximum(const readable<double> &C) const throw();
+
+            //! quotient
+            double Q(const readable<double> &C) const throw();
+
+            //__________________________________________________________________
+            //
+            // helpers
+            //__________________________________________________________________
 
             //! check neutrality
             bool is_neutral() const throw();
@@ -89,6 +99,9 @@ namespace yack
 
             //! check valid concentrations
             bool are_valid(const readable<double> &C) const throw();
+
+            //! helper to display
+            std::ostream & display(std::ostream &os) const;
 
             //__________________________________________________________________
             //

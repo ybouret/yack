@@ -35,14 +35,18 @@ namespace
         lib.parse("[Cl-]");
 
         const size_t M = lib.size();
-        for(int p=-2;p<=2;++p)
+        for(int p=-4;p<=4;++p)
         {
             const double   K = pow(10.0,double(p));
             std::cerr << "---- K=" << K << std::endl;
             vector<double> C0(M,0);
             vector<double> Cs(M,0);
-            const double   xi = eq.solve1D(K,C0,Cs);
-            std::cerr << "\t0 -> (" << xi << ") " << Cs << std::endl;
+            {
+                const double   xi  = eq.solve1D(K,C0,Cs);
+                const double   rho = eq.Q(Cs)/K;
+                std::cerr << "0 -> (" << xi << ",@" << rho << ") " << Cs << std::endl;
+            }
+
 
             const size_t n = eq.size();
             for(size_t k=1;k<=n;++k)
@@ -53,7 +57,7 @@ namespace
                     std::cerr << "\t-- using ";
                     for(size_t i=1;i<=comb.size();++i)
                     {
-                        const component &c = eq[i];
+                        const component &c = eq[ comb[i] ];
                         std::cerr << " [" << (*c).name << "]";
                     }
                     std::cerr << " of ";
@@ -64,14 +68,13 @@ namespace
                         C0.ld(0);
                         for(size_t i=comb.size();i>0;--i)
                         {
-                            C0[i] = species::concentration(ran);
+                            C0[ comb[i] ] = species::concentration(ran);
                         }
-                        std::cerr << "\t\tC0=" << C0;
-                        const double tmp = eq.solve1D(K,C0,Cs);
-                        std::cerr << "-> (" << tmp << ") " << Cs << std::endl;
+                        std::cerr << "\tC0=" << C0;
+                        const double xi  = eq.solve1D(K,C0,Cs);
+                        const double rho = eq.Q(Cs)/K;
+                        std::cerr << "-> (" << xi << ",@" << rho << ") " << Cs << std::endl;
                     }
-
-
 
                 } while(comb.next());
             }
@@ -113,8 +116,7 @@ namespace
                 eq.display(std::cerr) << std::endl;
                 test_eqsolve(lib,eq,ran);
             }
-            //continue;
-
+            
             prod.boot();
             do
             {
