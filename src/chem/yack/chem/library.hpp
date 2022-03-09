@@ -46,8 +46,8 @@ namespace yack
             //
             // methods
             //__________________________________________________________________
-            const snode *head() const throw(); //!< first species
-            size_t       size() const throw(); //!< number of species
+            const snode   *head() const throw(); //!< first species
+            virtual size_t size() const throw(); //!< number of species
 
             //! display named values
             template <typename T> inline

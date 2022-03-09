@@ -21,7 +21,7 @@ namespace yack
         //! base class for set of species/equilibria
         //
         //______________________________________________________________________
-        class compendium : public large_object
+        class compendium : public large_object, public collection
         {
         public:
             //__________________________________________________________________
