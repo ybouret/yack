@@ -50,6 +50,9 @@ namespace yack
                             const int      nu);
 
 
+            //! access component by index
+            const component & operator[](const size_t k) const throw();
+
             //! reac.mass_action(K,C) - prod.mass_action(1,C)
             double         mass_action(const double K, const readable<double> &C) const throw();
 

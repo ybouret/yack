@@ -25,6 +25,7 @@ namespace yack
                 const readable<double> &C;
                 const triplet<double>  &X;
                 double                  last_xi;
+                bool                    zeroing;
 
                 // compute Xi from original interval
                 inline double computeXi(const double omega)  throw()
@@ -47,25 +48,8 @@ namespace yack
                     assert(f.a>=0);
                     assert(f.c<=0);
 
-#if 1
                     w.b=0.5*(w.a+w.c);
-#else
-                    static const double wmin = numeric<double>::ftol;
-                    static const double wmax = 1.0-wmin;
-                    if( fabs(f.a) < fabs(f.c) )
-                    {
-                        const double omega = clamp(wmin,f.a/(f.a-f.c),wmax);
-                        w.b = (1.0-omega) * w.a + omega * w.c;
-                    }
-                    else
-                    {
-                        const double omega = clamp(wmin,(-f.c)/(f.a-f.c),wmax);
-                        w.b = omega * w.a + (1.0-omega) * w.c;
-                    }
-
-#endif
-
-                    YACK_CHEM_PRINTLN("// omega=" << w << ", f=" << f);
+                    //YACK_CHEM_PRINTLN("// omega=" << w << ", f=" << f);
                     switch( __sign::of(f.b=G(w.b)) )
                     {
                         case __zero__:
@@ -83,17 +67,18 @@ namespace yack
                     }
 
                     return false;
-
                 }
 
 
                 inline double solve(triplet<double> &f) throw()
                 {
                     triplet<double> omega  = {0,0,1};
+                    zeroing                = false;
 
                     if(update(omega,f))
                     {
                         YACK_CHEM_PRINTLN("// exact omega");
+                        zeroing = true;
                         return last_xi;
                     }
 
@@ -104,6 +89,7 @@ namespace yack
                         if(update(omega,f))
                         {
                             YACK_CHEM_PRINTLN("// exact omega");
+                            zeroing = true;
                             return last_xi;
                         }
                         const double omegaNew = omega.b;
@@ -159,8 +145,6 @@ namespace yack
                 YACK_CHEM_PRINTLN("//   <already@0>");
                 return 0;
             }
-
-            assert( fabs(deduce(C0,Cs))<=0 );
 
 
             double xiOld = 0;
@@ -279,25 +263,16 @@ namespace yack
                 exit(1);
             }
 
-            scaled_call G = { *this, K, Cs, x, 0 };
-            if(false)
-            {
-                ios::ocstream fp("zext.dat");
-                size_t N = 10000;
-                for(size_t i=0;i<=N;++i)
-                {
-                    const double u = double(i)/N;
-                    fp("%.15g %.15g\n",u,G(u));
-                }
-            }
 
             //------------------------------------------------------------------
             //
             // solve with local xi
             //
             //------------------------------------------------------------------
+            scaled_call  G     = { *this, K, Cs, x, 0, false};
             const double xiNew = G.solve(f);
             YACK_CHEM_PRINTLN("//   xi=" << xiNew << " / " << xiOld);
+
             if(first)
             {
                 first = false;

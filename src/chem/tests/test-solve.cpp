@@ -1,6 +1,7 @@
 #include "yack/chem/forge.hpp"
 #include "yack/utest/run.hpp"
 #include "yack/counting/part.hpp"
+#include "yack/counting/comb.hpp"
 #include "yack/system/env.hpp"
 
 using namespace yack;
@@ -28,7 +29,7 @@ namespace
     static inline
     void test_eqsolve(library          &lib,
                       const components &eq,
-                      randomized::bits & )
+                      randomized::bits &ran)
     {
         lib.parse("[Na+]");
         lib.parse("[Cl-]");
@@ -41,7 +42,41 @@ namespace
             vector<double> C0(M,0);
             vector<double> Cs(M,0);
             const double   xi = eq.solve1D(K,C0,Cs);
-            lib(std::cerr << "@" << xi << "=",Cs);
+            std::cerr << "\t0 -> (" << xi << ") " << Cs << std::endl;
+
+            const size_t n = eq.size();
+            for(size_t k=1;k<=n;++k)
+            {
+                combination comb(n,k);
+                do
+                {
+                    std::cerr << "\t-- using ";
+                    for(size_t i=1;i<=comb.size();++i)
+                    {
+                        const component &c = eq[i];
+                        std::cerr << " [" << (*c).name << "]";
+                    }
+                    std::cerr << " of ";
+                    eq.display(std::cerr) << std::endl;
+
+                    for(size_t iter=0;iter<1;++iter)
+                    {
+                        C0.ld(0);
+                        for(size_t i=comb.size();i>0;--i)
+                        {
+                            C0[i] = species::concentration(ran);
+                        }
+                        std::cerr << "\t\tC0=" << C0;
+                        const double tmp = eq.solve1D(K,C0,Cs);
+                        std::cerr << "-> (" << tmp << ") " << Cs << std::endl;
+                    }
+
+
+
+                } while(comb.next());
+            }
+
+            break;
         }
 
     }
@@ -50,7 +85,7 @@ namespace
     void test_compsolve( randomized::bits &ran)
     {
 
-        size_t    nmax = 2;
+        size_t    nmax = 3;
         partition reac(nmax);
         partition prod(nmax);
 
@@ -60,6 +95,7 @@ namespace
 
 
             {
+                std::cerr << std::endl;
                 library    lib;
                 components eq;
                 char       ch = 'a';
@@ -69,19 +105,20 @@ namespace
             }
 
             {
+                std::cerr << std::endl;
                 library    lib;
                 components eq;
                 char       ch = 'a';
                 add_to(lib,eq,reac,1,ch);
-                test_eqsolve(lib,eq,ran);
                 eq.display(std::cerr) << std::endl;
                 test_eqsolve(lib,eq,ran);
             }
-            continue;
+            //continue;
 
             prod.boot();
             do
             {
+                std::cerr << std::endl;
                 library    lib;
                 components eq;
                 char       ch = 'a';

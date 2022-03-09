@@ -39,6 +39,14 @@ namespace yack
             return db.size();
         }
 
+        const component & components:: operator[](const size_t k) const throw()
+        {
+            assert(k>0);
+            assert(k<=size());
+            const cnode *node = (*db.tree).get(k);
+            return ***node;
+        }
+
         void components:: update() throw()
         {
             coerce(d_nu) = (coerce(nu_p)=prod.nu()) - (coerce(nu_r)=reac.nu());

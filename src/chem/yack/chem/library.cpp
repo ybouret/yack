@@ -70,6 +70,14 @@ namespace yack
             return os;
         }
 
+        const species & library:: operator[](const size_t indx) const throw()
+        {
+            assert(indx>0);
+            assert(indx<=size());
+            const snode *node = (*db.tree).get(indx);
+            return ***node;
+        }
+
     }
 
 }

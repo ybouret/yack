@@ -68,6 +68,9 @@ namespace yack
             //! declare/recall species
             const species &operator()(const char   *name, const int z);
 
+            //! SLOW access species by index
+            const species &operator[](const size_t indx) const throw();
+
             //! parse single species
             const species &parse(const string &);
 
