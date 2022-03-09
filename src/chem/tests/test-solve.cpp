@@ -183,15 +183,7 @@ YACK_UTEST(solve)
         std::cerr << "xi=" << xi << std::endl;
         lib(std::cerr << "Cend=",Cs);
 
-        const double den = eq.reac.mass_action(K,Cs);
-        if(den>0)
-        {
-            std::cerr << "Q/K=" << eq.prod.mass_action(1,Cs)/den << std::endl;
-        }
-        else
-        {
-            std::cerr << "blocked" << std::endl;
-        }
+        std::cerr << "Q/K=" << eq.Q(Cs)/K << std::endl;
 
     }
     else
