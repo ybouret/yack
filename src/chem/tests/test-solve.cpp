@@ -35,7 +35,7 @@ namespace
         lib.parse("[Cl-]");
 
         const size_t M = lib.size();
-        for(int p=-4;p<=4;++p)
+        for(int p=-12;p<=12;++p)
         {
             const double   K = pow(10.0,double(p));
             std::cerr << "---- K=" << K << std::endl;
@@ -61,9 +61,9 @@ namespace
                         std::cerr << " [" << (*c).name << "]";
                     }
                     std::cerr << " of ";
-                    eq.display(std::cerr) << std::endl;
+                    eq.display(std::cerr) << " @K=" << K << std::endl;
 
-                    for(size_t iter=0;iter<32;++iter)
+                    for(size_t iter=0;iter<16;++iter)
                     {
                         C0.ld(0);
                         for(size_t i=comb.size();i>0;--i)
@@ -79,7 +79,6 @@ namespace
                 } while(comb.next());
             }
 
-            break;
         }
 
     }

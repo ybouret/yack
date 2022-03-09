@@ -25,7 +25,6 @@ namespace yack
                 const readable<double> &C;
                 const triplet<double>  &X;
                 double                  last_xi;
-                bool                    zeroing;
 
                 // compute Xi from original interval
                 inline double computeXi(const double omega)  throw()
@@ -33,14 +32,14 @@ namespace yack
                     return ( last_xi = clamp(X.a,(1.0-omega) * X.a + omega * X.c,X.c) );
                 }
 
-                // mass action from rescaled Xi
+                // mass_action(K,Cs,computeXi(omega))
                 inline double operator()(const double omega) throw()
                 {
                     return self.mass_action(K,C,computeXi(omega));
                 }
 
 
-                // single state update
+                // single state update, return true on 'exact' zero
                 inline bool update(triplet<double>    &w,
                                    triplet<double>    &f)  throw()
                 {
@@ -49,7 +48,6 @@ namespace yack
                     assert(f.c<=0);
 
                     w.b=0.5*(w.a+w.c);
-                    //YACK_CHEM_PRINTLN("// omega=" << w << ", f=" << f);
                     switch( __sign::of(f.b=G(w.b)) )
                     {
                         case __zero__:
@@ -73,12 +71,10 @@ namespace yack
                 inline double solve(triplet<double> &f) throw()
                 {
                     triplet<double> omega  = {0,0,1};
-                    zeroing                = false;
 
                     if(update(omega,f))
                     {
                         YACK_CHEM_PRINTLN("// exact omega");
-                        zeroing = true;
                         return last_xi;
                     }
 
@@ -89,7 +85,6 @@ namespace yack
                         if(update(omega,f))
                         {
                             YACK_CHEM_PRINTLN("// exact omega");
-                            zeroing = true;
                             return last_xi;
                         }
                         const double omegaNew = omega.b;
@@ -137,19 +132,18 @@ namespace yack
             // initialize
             //
             //------------------------------------------------------------------
-            tao::v1::load(Cs,C0);
-            double             f0    =  mass_action(K,Cs);
-            sign_type          s0    = __sign::of(f0);
+            tao::v1::load(Cs,C0);               //!< workspace is Cs
+            double    f0 =  mass_action(K,Cs);  //!< initial mass action
+            sign_type s0 = __sign::of(f0);      //!< sign of mass action
             if( __zero__ == s0 )
             {
                 YACK_CHEM_PRINTLN("//   <already@0>");
                 return 0;
             }
 
-
-            double oldXi = 0;
-            bool   first = true;
-            size_t cycle = 0;
+            double oldXi = 0;       //!< old found extent
+            bool   first = true;    //!< first cycle
+            size_t cycle = 0;       //!< counter
 
         CYCLE:
             ++cycle;
@@ -253,27 +247,23 @@ namespace yack
                     throw exception("not implemented yet");
             }
 
-
-            //std::cerr << "    x=" << x << std::endl;
-            //std::cerr << "    f=" << f << std::endl;
-
             if(x.a>=x.c)
             {
-                std::cerr << "DO SOMETHING" << std::endl;
-                exit(1);
+                YACK_CHEM_PRINTLN("//   numerical empty search");
+                return deduce(C0,Cs);
             }
-
 
             //------------------------------------------------------------------
             //
             // solve with local xi
             //
             //------------------------------------------------------------------
-            scaled_call  G     = { *this, K, Cs, x, 0, false};
+            scaled_call  G     = { *this, K, Cs, x, 0};
             const double xiNew = G.solve(f);
 
             if(first)
             {
+                YACK_CHEM_PRINTLN("//   xi=" << xiNew << " (first)");
                 first = false;
             }
             else
@@ -281,13 +271,18 @@ namespace yack
                 YACK_CHEM_PRINTLN("//   xi=" << xiNew << " / " << oldXi);
                 if(fabs(xiNew)>=fabs(oldXi))
                 {
-                    // reached numerical limit at previous step, do not movre
+                    // reached numerical limit at previous step, do not move more!
                     YACK_CHEM_PRINTLN("// reached numerical limit");
                     return deduce(C0,Cs);
                 }
             }
-            move(Cs,xiNew);
 
+            //------------------------------------------------------------------
+            //
+            // update workspace
+            //
+            //------------------------------------------------------------------
+            move(Cs,xiNew);
             f0    =  mass_action(K,Cs);
             s0    = __sign::of(f0);
             if(__zero__==s0)
@@ -295,9 +290,13 @@ namespace yack
                 YACK_CHEM_PRINTLN("// exact zero mass action");
                 return deduce(C0,Cs);
             }
+
+            //------------------------------------------------------------------
+            //
+            // ready for new cycle
+            //
+            //------------------------------------------------------------------
             oldXi = xiNew;
-
-
             goto CYCLE;
 
         }
