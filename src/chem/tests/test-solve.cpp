@@ -59,7 +59,7 @@ namespace
                     std::cerr << " of ";
                     eq.display(std::cerr) << std::endl;
 
-                    for(size_t iter=0;iter<1;++iter)
+                    for(size_t iter=0;iter<32;++iter)
                     {
                         C0.ld(0);
                         for(size_t i=comb.size();i>0;--i)

@@ -124,7 +124,7 @@ namespace yack
             // sanity check
             //
             //------------------------------------------------------------------
-            YACK_CHEM_PRINTLN("// <extent>");
+            YACK_CHEM_PRINTLN("// <solve1D>");
             
             assert(K>0);
             assert(are_valid(C0));
@@ -147,7 +147,7 @@ namespace yack
             }
 
 
-            double xiOld = 0;
+            double oldXi = 0;
             bool   first = true;
             size_t cycle = 0;
 
@@ -271,7 +271,6 @@ namespace yack
             //------------------------------------------------------------------
             scaled_call  G     = { *this, K, Cs, x, 0, false};
             const double xiNew = G.solve(f);
-            YACK_CHEM_PRINTLN("//   xi=" << xiNew << " / " << xiOld);
 
             if(first)
             {
@@ -279,7 +278,8 @@ namespace yack
             }
             else
             {
-                if(fabs(xiNew)>=fabs(xiOld))
+                YACK_CHEM_PRINTLN("//   xi=" << xiNew << " / " << oldXi);
+                if(fabs(xiNew)>=fabs(oldXi))
                 {
                     // reached numerical limit at previous step, do not movre
                     YACK_CHEM_PRINTLN("// reached numerical limit");
@@ -295,7 +295,7 @@ namespace yack
                 YACK_CHEM_PRINTLN("// exact zero mass action");
                 return deduce(C0,Cs);
             }
-            xiOld = xiNew;
+            oldXi = xiNew;
 
 
             goto CYCLE;

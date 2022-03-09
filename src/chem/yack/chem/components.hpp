@@ -64,13 +64,9 @@ namespace yack
 
             
             //! find private solving extent
-            double         extent(const double            K,
-                                  const readable<double> &C,
-                                  writable<double>       &Cs) const;
-
-            double         solve1D(const double            K,
-                                   const readable<double> &C0,
-                                   writable<double>       &Cs) const;
+            double solve1D(const double            K,
+                           const readable<double> &C0,
+                           writable<double>       &Cs) const;
 
 
             //! move to a given extent
