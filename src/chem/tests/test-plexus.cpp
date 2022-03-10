@@ -50,6 +50,10 @@ YACK_UTEST(plexus)
         const equilibrium &eq = ***node;
         eqs.pad(std::cerr << "Gamma_" << eq.name,eq) << " = " << eq.mass_action(cs.K[*eq],cs.Ceq[*eq]) << std::endl;
     }
+    cs.computeExtent();
+    cs.correctExtent(C);
+    cs.computeDeltaC();
+    std::cerr << "C0=" << C << std::endl;
 
 }
 YACK_UDONE()

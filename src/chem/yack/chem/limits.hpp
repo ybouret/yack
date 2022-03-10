@@ -46,6 +46,8 @@ namespace yack
             double reac_extent() const throw(); //!< reac->xi
             double prod_extent() const throw(); //!< -prod->xi
 
+            void clamp(double &xi) const throw();
+
 
         private:
             YACK_DISABLE_COPY_AND_ASSIGN(limits);

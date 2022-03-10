@@ -39,30 +39,39 @@ namespace yack
             const size_t      M;
             const size_t      A;
             const size_t      N;
+
         private:
             tableaux          ntab;
             tableaux          mtab;
+
         public:
             const alist       active; //!< active species list
             tableau          &K;      //!< [N] precomputed constants
             tableau          &Gamma;  //!< [N] mass action
             tableau          &Xi;     //!< [N] solving   Xi
+            tableau          &xi;     //!< [N] current   xi
+            tableau          &xs;     //!< [N] helper
+
             tableau          &Ctmp;   //!< [M] temporary C
+            tableau          &dC;     //!<
+
             const imatrix     Nu;     //!< [NxM] topology
             const imatrix     NuT;    //!< [MxN] Nu'
             rmatrix           Psi;    //!< [NxM] jacobian
             rmatrix           Ceq;    //!< [NxM] individual solution
+            rmatrix           Omega;  //!< [NxN] 
             math::lu<double>  LU;     //!< [N]
 
 
 
             void computeK(const double t);                          //!< per equilibrium
             void computeGamma(const readable<double> &C) throw();   //!< with precomputed K
-            void computePsi(const readable<double> &C)   throw();   //!< with precomputed K
+            void computePsi(const readable<double>   &C)   throw(); //!< with precomputed K
             void computeState(const readable<double> &C) throw();   //!< Gamma and Psi, with precomputed K
-            void computeXi(const readable<double> &C)    throw();   //!< Xi and Ceq
-
-
+            void computeXi(const readable<double>  &C)    throw();  //!< Xi and Ceq
+            void computeExtent();                                   //!< compute Omega, LU
+            void correctExtent(const readable<double> &C) throw();  //!< impose primary limits
+            void computeDeltaC() throw();
         private:
             YACK_DISABLE_COPY_AND_ASSIGN(plexus);
             const lockable::scope lib_lock;

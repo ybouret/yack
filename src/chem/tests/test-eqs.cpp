@@ -37,7 +37,6 @@ YACK_UTEST(eqs)
         eqs.pad(std::cerr << "nu_" << eq.name << ' ',eq) << " = " << nu << std::endl;
         eq.drvs_action(psi,eq.K(0),C,arr);
         eqs.pad(std::cerr << "psi_" << eq.name,eq) << " = " << psi << std::endl;
-
     }
     
 

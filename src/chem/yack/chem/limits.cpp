@@ -1,5 +1,6 @@
 
 #include "yack/chem/limits.hpp"
+#include "yack/type/utils.hpp"
 
 namespace yack
 {
@@ -80,6 +81,18 @@ namespace yack
             assert(prod->xi>=0);
             const double xi = prod->xi;
             return (xi>0?-xi:0);
+        }
+
+        void limits:: clamp(double &xi) const throw()
+        {
+            switch(type)
+            {
+                case limited_by_none: break;
+                case limited_by_reac: xi = yack::min_of(xi,reac->xi); break;
+                case limited_by_prod: xi = yack::max_of(-prod->xi,xi); break;
+                case limited_by_both: xi = yack::clamp(-prod->xi,xi,reac->xi); break;
+            }
+
         }
 
 
