@@ -29,6 +29,16 @@ namespace yack
             return (*db.tree).head;
         }
 
+        size_t library:: active() const throw()
+        {
+            size_t ans = 0;
+            for(const snode *node=head();node;node=node->next)
+            {
+                if( (***node).rank > 0 ) ++ans;
+            }
+            return ans;
+        }
+
         
 
         const species & library:: operator()(const string &name, const int z)
