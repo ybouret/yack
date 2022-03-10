@@ -266,6 +266,19 @@ namespace yack
             out_of_reach::naught( &base[--count] );
         }
 
+        //! remove if item is bad
+        /**
+         if is_bad return false, then it's a 'for_each' method
+         */
+        template <typename FUNC> inline
+        void remove_if( FUNC &is_bad ) throw()
+        {
+            for(size_t indx=count;indx>0;--indx)
+            {
+                if(is_bad(item[indx])) suppress(indx);
+            }
+        }
+
     private:
         size_t        count; //!< size
         size_t        utter; //!< capacity

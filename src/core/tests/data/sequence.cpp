@@ -106,11 +106,14 @@ namespace
 
     }
 
+ 
+
+}
 
 
-
-
-
+static inline bool is_bad_int(const int &value)
+{
+    return (absolute(value)>10);
 }
 
 YACK_UTEST(data_sequence)
@@ -138,11 +141,18 @@ YACK_UTEST(data_sequence)
         {
             toto << int( ran.in(-100,100) );
         }
-        std::cerr << toto << std::endl;
         while(toto.size())
         {
             toto.suppress(ran.in(1,toto.ssize()));
         }
+
+        for(size_t i=1+ran.leq(100);i>0;--i)
+        {
+            toto << int( ran.in(-100,100) );
+        }
+        std::cerr << toto << std::endl;
+        toto.remove_if(is_bad_int);
+        std::cerr << toto << std::endl;
     }
 
 }
