@@ -126,12 +126,20 @@ namespace yack
 #define LBRACK '['
         void lua_equilibria:: operator()(library &lib, const string &data)
         {
-
+            //------------------------------------------------------------------
+            //
+            // tokenize data
+            //
+            //------------------------------------------------------------------
             vector<string> word;   tokenizer::split_with(':',word,data);
             const size_t   nw = word.remove_if(is_bad_word).size();
-
             if(nw<=0) return;
 
+            //------------------------------------------------------------------
+            //
+            // get first word
+            //
+            //------------------------------------------------------------------
             string &kind = word[1]; assert(kind.size()>0);
 
             switch(kind[1])
@@ -146,12 +154,17 @@ namespace yack
                     for(size_t i=1;i<=nw;++i) lib.parse(word[i]);
                     return;
 
-                default:
+                default: // construct new equilibrium
                     break;
             }
 
             if(nw!=3) throw exception("%sdefinition should have 3 fields instead of %u", fn, unsigned(nw) );
 
+            //------------------------------------------------------------------
+            //
+            // create/insert a new eq
+            //
+            //------------------------------------------------------------------
             equilibrium &eq = use( new_eq(word[1],word[3],*this,size()+1) );
             eq.parse_with(lib,word[2]);
 
