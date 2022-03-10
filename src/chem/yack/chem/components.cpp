@@ -146,11 +146,20 @@ namespace yack
         }
 
 
-        void components:: drvs_action(writable<double> &psi, const double K, const readable<double> &C) const throw()
+        void components:: drvs_action(writable<double>       &psi,
+                                      const double            K,
+                                      const readable<double> &C,
+                                      writable<double>       &arr) const throw()
         {
-            reac.drvs_action(psi, K,C);
-            prod.drvs_action(psi,-1,C);
+            reac.drvs_action(psi, K,C,arr);
+            prod.drvs_action(psi,-1,C,arr);
         }
+
+        double components:: grad_action(writable<double> &psi, const double K, const readable<double> &C, writable<double> &arr) const throw()
+        {
+            return reac.grad_action(psi, K,C,arr) + prod.grad_action(psi,-1,C,arr);
+        }
+
 
         double components:: Q(const readable<double> &C) const throw()
         {

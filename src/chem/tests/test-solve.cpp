@@ -185,7 +185,8 @@ YACK_UTEST(solve)
         std::cerr << "Q/K=" << eq.Q(Cs)/K << std::endl;
 
         vector<double> psi(lib.size(),0);
-        eq.drvs_action(psi,K,Cs);
+        vector<double> tmp(lib.size(),0);
+        eq.drvs_action(psi,K,Cs,tmp);
 
         std::cerr << "psi=" << psi << std::endl;
 

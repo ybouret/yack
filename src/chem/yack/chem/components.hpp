@@ -80,7 +80,10 @@ namespace yack
             double         slope(const double K, const readable<double> &C, const double xi) const throw();
 
             //! gradient
-            void           drvs_action(writable<double> &psi, const double K, const readable<double> &C) const throw();
+            void           drvs_action(writable<double> &psi, const double K, const readable<double> &C, writable<double> &arr) const throw();
+
+            //! gradient + mass_acttion
+            double         grad_action(writable<double> &psi, const double K, const readable<double> &C, writable<double> &arr) const throw();
 
             //! find private solving extent
             double solve1D(const double            K,

@@ -28,6 +28,21 @@ YACK_UTEST(plexus)
 
     plexus cs(lib,eqs);
 
+    vector<double> C(cs.M,0);
+    lib.fill(C, 1, ran);
+
+    cs.computeK(0);
+
+    cs.computeGamma(C);
+    std::cerr << "Gamma = " << cs.Gamma << std::endl;
+    cs.computePsi(C);
+    std::cerr << "Psi   = " << cs.Psi << std::endl;
+
+    cs.computeState(C);
+    std::cerr << "Gamma = " << cs.Gamma << std::endl;
+    std::cerr << "Psi   = " << cs.Psi << std::endl;
+
+
 
 }
 YACK_UDONE()

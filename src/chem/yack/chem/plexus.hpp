@@ -50,7 +50,7 @@ namespace yack
             tableau          &K;      //!< [N]
             tableau          &Gamma;  //!< [N]
             rmatrix           Psi;    //!< [NxM] jacobian
-
+            tableau          &Ctmp;   //!< [M] temporary
 
             void computeK(const double t);                        //!< per equilibrium
             void computeGamma(const readable<double> &C) throw(); //!< with precomputed K

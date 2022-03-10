@@ -25,6 +25,7 @@ YACK_UTEST(eqs)
 
 
     vector<double> C(lib.size(),0);
+    vector<double> arr(lib.size(),0);
     lib.fill(C,1,ran);
     lib(std::cerr,C);
     for(const enode *node=eqs.head();node;node=node->next)
@@ -33,8 +34,8 @@ YACK_UTEST(eqs)
         vector<double>     psi(lib.size(),0);
         const equilibrium &eq = ***node;
         eq.fill(nu);
-        eqs.pad(std::cerr << "nu_" << eq.name,eq) << " = " << nu << std::endl;
-        eq.drvs_action(psi,eq.K(0),C);
+        eqs.pad(std::cerr << "nu_" << eq.name << ' ',eq) << " = " << nu << std::endl;
+        eq.drvs_action(psi,eq.K(0),C,arr);
         eqs.pad(std::cerr << "psi_" << eq.name,eq) << " = " << psi << std::endl;
 
     }

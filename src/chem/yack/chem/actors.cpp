@@ -27,17 +27,46 @@ namespace yack
 
         void actors:: drvs_action(writable<double>       &psi,
                                   const double            factor,
-                                  const readable<double> &C) const throw()
+                                  const readable<double> &C,
+                                  writable<double>       &arr) const throw()
         {
+            for(const actor *a=head;a;a=a->next)
+            {
+                arr[ ***a ] = a->mass_action(C);
+            }
 
             for(const actor *a=head;a;a=a->next)
             {
                 double value = factor * a->drvs_action(C);
-                for(const actor *b=a->prev;b;b=b->prev) value *= b->mass_action(C);
-                for(const actor *b=a->next;b;b=b->next) value *= b->mass_action(C);
+                for(const actor *b=a->prev;b;b=b->prev) value *= arr[ ***b ];
+                for(const actor *b=a->next;b;b=b->next) value *= arr[ ***b ];
                 psi[ ***a ] = value;
             }
         }
+
+        double actors:: grad_action(writable<double>       &psi,
+                                    const double            factor,
+                                    const readable<double> &C,
+                                    writable<double>       &arr) const throw()
+        {
+            double ma = factor;
+            for(const actor *a=head;a;a=a->next)
+            {
+                ma *= ( arr[ ***a ] = a->mass_action(C) );
+            }
+
+            for(const actor *a=head;a;a=a->next)
+            {
+                double value = factor * a->drvs_action(C);
+                for(const actor *b=a->prev;b;b=b->prev) value *= arr[ ***b ];
+                for(const actor *b=a->next;b;b=b->next) value *= arr[ ***b ];
+                psi[ ***a ] = value;
+            }
+
+
+            return ma;
+        }
+
 
 
         double actors:: mass_action(double factor, const readable<double> &C, const double xi) const throw()

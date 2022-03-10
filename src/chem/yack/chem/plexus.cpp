@@ -38,6 +38,8 @@ namespace yack
         Gamma( ntab.next() ),
         Psi(Nu.rows,Nu.cols),
 
+        Ctmp( mtab.next() ),
+
         lib_lock(lib_),
         eqs_lock(eqs_)
         {
@@ -104,7 +106,7 @@ namespace yack
             {
                 const equilibrium &eq = ***node;
                 const size_t       ei = *eq;
-                eq.drvs_action(Psi[ei],K[ei],C);
+                eq.drvs_action(Psi[ei],K[ei],C,Ctmp);
             }
         }
 
@@ -115,8 +117,7 @@ namespace yack
                 const equilibrium &eq = ***node;
                 const size_t       ei = *eq;
                 const double       Ki = K[ei];
-                Gamma[ei] = eq.mass_action(Ki,C);
-                eq.drvs_action(Psi[ei],Ki,C);
+                Gamma[ei] = eq.grad_action(Psi[ei],Ki,C,Ctmp);
             }
         }
 
