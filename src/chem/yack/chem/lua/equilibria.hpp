@@ -12,14 +12,20 @@ namespace yack
 {
     namespace chemical
     {
+        //______________________________________________________________________
+        //
+        //
+        //! equilibria with a shared virtual machine
+        //
+        //______________________________________________________________________
         class lua_equilibria : public equilibria, public Lua::VM
         {
         public:
-            explicit lua_equilibria();
-            virtual ~lua_equilibria() throw();
+            explicit lua_equilibria();          //!< setup
+            virtual ~lua_equilibria() throw();  //!< cleanup
 
-            void operator()(library &, const string &data);
-            void operator()(library &, const char   *data);
+            void operator()(library &, const string &data); //!< parse
+            void operator()(library &, const char   *data); //!< parse
 
 
         private:

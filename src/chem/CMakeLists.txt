@@ -1,7 +1,7 @@
 include_directories(. ../core ../jive ../math ../lua++ ..)
 
 #main
-file(GLOB chem_main_decl yack/chem/*.hpp)
+file(GLOB chem_main_decl yack/chem/*.hpp yack/chem/*.hxx)
 file(GLOB chem_main_srcs yack/chem/*.cpp)
 set(chem_main ${chem_main_decl} ${chem_main_srcs})
 SOURCE_GROUP(chem FILES ${chem_main})

@@ -12,6 +12,8 @@ YACK_UTEST(eqs)
     library        lib;
     lua_equilibria eqs;
 
+    eqs->dostring("function F(t) return 2+math.sin(t); end");
+
     equilibrium & water = eqs.create("water",1e-14);
     water.parse_with(lib,"[H+]+[HO-]");
 
@@ -24,6 +26,8 @@ YACK_UTEST(eqs)
 
     std::cerr << lib << std::endl;
     std::cerr << eqs << std::endl;
+
+    
 
 }
 YACK_UDONE()

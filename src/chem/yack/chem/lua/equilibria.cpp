@@ -1,5 +1,3 @@
-
-
 #include "yack/chem/lua/equilibria.hpp"
 
 namespace yack
@@ -13,6 +11,7 @@ namespace yack
         equilibria(),
         Lua::VM( new Lua::State() )
         {
+
         }
         
         

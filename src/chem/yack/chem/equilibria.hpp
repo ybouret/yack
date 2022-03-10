@@ -53,6 +53,7 @@ namespace yack
                 return use( new const_equilibrium(name,db.size()+1,K) );
             }
 
+            //! formatted display
             friend std::ostream & operator<<(std::ostream &, const equilibria &);
 
          
