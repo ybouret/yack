@@ -1,6 +1,6 @@
 
 #include "yack/chem/forge.hpp"
-#include "yack/chem/equilibria.hpp"
+#include "yack/chem/lua/equilibria.hpp"
 #include "yack/string/tokenizer.hpp"
 #include "yack/string/ops.hpp"
 #include "yack/exception.hpp"
@@ -10,7 +10,7 @@ namespace yack
     namespace chemical
     {
 
-        void equilibria:: operator()(library &lib, const char   *data)
+        void lua_equilibria:: operator()(library &lib, const char   *data)
         {
             const string _(data);
             (*this)(lib,_);
@@ -25,7 +25,7 @@ namespace yack
 
 #define LBRACK '['
 
-        void equilibria:: operator()(library &lib, const string &data)
+        void lua_equilibria:: operator()(library &lib, const string &data)
         {
             //static forge   &mgr = forge::instance();
 

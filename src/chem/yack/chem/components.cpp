@@ -158,8 +158,8 @@ namespace yack
             reac.display(os);
             os << " <=> ";
             prod.display(os);
-            os << " | d_nu=" << d_nu << " | nu_p=" << nu_p;
-            os << " {" << topo << "}";
+            //os << " | d_nu=" << d_nu << " | nu_p=" << nu_p;
+            //os << " {" << topo << "}";
             return os;
         }
 

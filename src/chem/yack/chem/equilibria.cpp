@@ -29,7 +29,23 @@ namespace yack
             assert(NULL!=eq);
             const equilibrium::pointer pEq(eq);
             if(!db.insert(pEq)) throw exception("multiple equilibrium '%s'", eq->name() );
+            update_with(*eq);
             return *eq;
+        }
+
+
+        std::ostream & operator<<(std::ostream &os, const equilibria &eqs)
+        {
+            os << '{' << std::endl;
+            for(const enode *node = eqs.head(); node; node=node->next)
+            {
+                const equilibrium &eq = ***node;
+                eqs.pad(os << "  " << eq.name,eq) << " : ";
+                eq.display(os) << " ( " << eq.K(equilibrium::display_time) << " )";
+                os << std::endl;
+            }
+            os << '}';
+            return os;
         }
     }
 

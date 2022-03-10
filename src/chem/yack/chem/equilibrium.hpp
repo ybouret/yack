@@ -40,6 +40,7 @@ namespace yack
             //! standalone output
             friend std::ostream & operator<<(std::ostream &, const equilibrium &);
 
+
             //__________________________________________________________________
             //
             // C++
@@ -58,8 +59,8 @@ namespace yack
 
         private:
             YACK_DISABLE_COPY_AND_ASSIGN(equilibrium);
-            std::ostream & print(std::ostream &) const;
             virtual double getK(const double) const = 0;
+            std::ostream & print(std::ostream &) const;
         };
 
         //______________________________________________________________________

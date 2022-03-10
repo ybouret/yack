@@ -1,0 +1,32 @@
+
+//! \file
+
+#ifndef YACK_CHEM_LUA_EQUILIBRIA_INCLUDED
+#define YACK_CHEM_LUA_EQUILIBRIA_INCLUDED 1
+
+#include "yack/chem/equilibria.hpp"
+#include "yack/lua++/state.hpp"
+
+
+namespace yack
+{
+    namespace chemical
+    {
+        class lua_equilibria : public equilibria, public Lua::VM
+        {
+        public:
+            explicit lua_equilibria();
+            virtual ~lua_equilibria() throw();
+
+            void operator()(library &, const string &data);
+            void operator()(library &, const char   *data);
+
+
+        private:
+            YACK_DISABLE_COPY_AND_ASSIGN(lua_equilibria);
+        };
+
+    }
+}
+
+#endif

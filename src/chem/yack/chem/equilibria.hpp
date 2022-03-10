@@ -1,4 +1,3 @@
-
 //! \file
 
 #ifndef YACK_CHEM_EQUILIBRIA_INCLUDED
@@ -49,15 +48,14 @@ namespace yack
 
             //! try to declare a new constant equilibrium
             template <typename ID> inline
-            equilibrium & operator()(const ID &name, const double K)
+            equilibrium & create(const ID &name, const double K)
             {
                 return use( new const_equilibrium(name,db.size()+1,K) );
             }
 
-            void operator()(library &, const string &data);
+            friend std::ostream & operator<<(std::ostream &, const equilibria &);
 
-            void operator()(library &, const char   *data);
-
+         
         private:
             YACK_DISABLE_COPY_AND_ASSIGN(equilibria);
             eq_set db;
