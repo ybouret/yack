@@ -28,17 +28,18 @@ namespace yack
         mtab(10,M),
 
         active(),
+        K(     ntab.next() ),
+        Gamma( ntab.next() ),
+        Xi(    ntab.next() ),
+        Ctmp(  mtab.next() ),
 
         Nu(N,N>0?M:0),
         NuT(Nu.cols,Nu.rows),
 
-        LU(N),
-
-        K( ntab.next() ),
-        Gamma( ntab.next() ),
         Psi(Nu.rows,Nu.cols),
-
-        Ctmp( mtab.next() ),
+        Ceq(Nu.rows,Nu.cols),
+        
+        LU(N),
 
         lib_lock(lib_),
         eqs_lock(eqs_)
@@ -102,6 +103,7 @@ namespace yack
 
         void plexus:: computePsi(const readable<double> &C) throw()
         {
+            Psi.ld(0);
             for(const enode *node=eqs.head();node;node=node->next)
             {
                 const equilibrium &eq = ***node;
@@ -112,12 +114,26 @@ namespace yack
 
         void plexus:: computeState(const readable<double> &C) throw()
         {
+            Psi.ld(0);
             for(const enode *node=eqs.head();node;node=node->next)
             {
                 const equilibrium &eq = ***node;
                 const size_t       ei = *eq;
                 const double       Ki = K[ei];
                 Gamma[ei] = eq.grad_action(Psi[ei],Ki,C,Ctmp);
+            }
+        }
+
+        void plexus:: computeXi(const readable<double> &C) throw()
+        {
+            for(const enode *node=eqs.head();node;node=node->next)
+            {
+                const equilibrium &eq = ***node;
+                const size_t       ei = *eq;
+                writable<double>  &Ci = Ceq[ei];
+                for(size_t j=M;j>0;--j)
+                    Ci[j] = C[j];
+                Xi[ei] = eq.solve1D(K[ei],C,Ci);
             }
         }
 

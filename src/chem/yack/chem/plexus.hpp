@@ -44,18 +44,24 @@ namespace yack
             tableaux          mtab;
         public:
             const alist       active; //!< active species list
+            tableau          &K;      //!< [N] precomputed constants
+            tableau          &Gamma;  //!< [N] mass action
+            tableau          &Xi;     //!< [N] solving   Xi
+            tableau          &Ctmp;   //!< [M] temporary C
             const imatrix     Nu;     //!< [NxM] topology
             const imatrix     NuT;    //!< [MxN] Nu'
-            math::lu<double>  LU;     //!< [N]
-            tableau          &K;      //!< [N]
-            tableau          &Gamma;  //!< [N]
             rmatrix           Psi;    //!< [NxM] jacobian
-            tableau          &Ctmp;   //!< [M] temporary
+            rmatrix           Ceq;    //!< [NxM] individual solution
+            math::lu<double>  LU;     //!< [N]
 
-            void computeK(const double t);                        //!< per equilibrium
-            void computeGamma(const readable<double> &C) throw(); //!< with precomputed K
-            void computePsi(const readable<double> &C)   throw(); //!< with precomputed K
-            void computeState(const readable<double> &C) throw(); //!< Gamma and Psi, with precomputed K
+
+
+            void computeK(const double t);                          //!< per equilibrium
+            void computeGamma(const readable<double> &C) throw();   //!< with precomputed K
+            void computePsi(const readable<double> &C)   throw();   //!< with precomputed K
+            void computeState(const readable<double> &C) throw();   //!< Gamma and Psi, with precomputed K
+            void computeXi(const readable<double> &C)    throw();   //!< Xi and Ceq
+
 
         private:
             YACK_DISABLE_COPY_AND_ASSIGN(plexus);

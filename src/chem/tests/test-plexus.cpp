@@ -42,6 +42,9 @@ YACK_UTEST(plexus)
     std::cerr << "Gamma = " << cs.Gamma << std::endl;
     std::cerr << "Psi   = " << cs.Psi << std::endl;
 
+    cs.computeXi(C);
+    std::cerr << "Xi =" << cs.Xi  << std::endl;
+    std::cerr << "Ceq=" << cs.Ceq << std::endl;
 
 
 }
