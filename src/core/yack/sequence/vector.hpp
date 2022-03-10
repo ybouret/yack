@@ -234,7 +234,7 @@ namespace yack
 
         //______________________________________________________________________
         //
-        // methods
+        // specific methods
         //______________________________________________________________________
 
         //! no-throw swap
@@ -254,7 +254,17 @@ namespace yack
             new (base+count) mutable_type(args);
             ++count;
         }
-     
+
+        //! remove an item
+        inline void suppress(const size_t indx) throw()
+        {
+            assert(indx>=1);
+            assert(indx<=size());
+            mutable_type *target = item+indx;
+            destruct(target);
+            out_of_reach::move(target,target+1,(count-indx)*sizeof(T));
+            out_of_reach::naught( &base[--count] );
+        }
 
     private:
         size_t        count; //!< size

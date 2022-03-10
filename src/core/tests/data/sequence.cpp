@@ -132,6 +132,18 @@ YACK_UTEST(data_sequence)
     cxx_array<int> ir(10);
     cxx_array<apq> qr(100);
 
+    {
+        vector<int> toto;
+        for(size_t i=1+ran.leq(100);i>0;--i)
+        {
+            toto << int( ran.in(-100,100) );
+        }
+        std::cerr << toto << std::endl;
+        while(toto.size())
+        {
+            toto.suppress(ran.in(1,toto.ssize()));
+        }
+    }
 
 }
 YACK_UDONE()

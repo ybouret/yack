@@ -54,6 +54,8 @@ namespace yack
                 return use( new const_equilibrium(name,db.size()+1,K) );
             }
 
+            void operator()(library &, const string &data);
+
         private:
             YACK_DISABLE_COPY_AND_ASSIGN(equilibria);
             eq_set db;
