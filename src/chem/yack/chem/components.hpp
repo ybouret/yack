@@ -53,6 +53,18 @@ namespace yack
             //! access component by index
             const component & operator[](const size_t k) const throw();
 
+            //! fill a row of matrix
+            template <typename T> inline
+            void fill(writable<T> &nu) const
+            {
+                for(const cnode *node=head();node;node=node->next)
+                {
+                    const component &c = ***node;
+                    const species   &s = *c;
+                    s[nu] = c.coef;
+                }
+            }
+
             //__________________________________________________________________
             //
             // computation methods
@@ -81,6 +93,10 @@ namespace yack
 
             //! find private limits
             const limits & private_limits(const readable<double> &C) const throw();
+
+            //! find primary limits
+            const limits & primary_limits(const readable<double> &C) const throw();
+
 
             //! max_of(reac.maximum,prod.maximum)
             double maximum(const readable<double> &C) const throw();

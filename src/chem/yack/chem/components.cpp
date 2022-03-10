@@ -175,6 +175,12 @@ namespace yack
             return * new( YACK_STATIC_ZSET(wksp) ) limits( reac.private_limit(C), prod.private_limit(C) );
         }
 
+        const limits & components:: primary_limits(const readable<double> &C) const throw()
+        {
+            return * new( YACK_STATIC_ZSET(wksp) ) limits( reac.primary_limit(C), prod.primary_limit(C) );
+        }
+
+
         bool components:: is_neutral() const throw()
         {
             return 0== (reac.dz() - prod.dz());
