@@ -59,7 +59,7 @@ namespace yack
                 for(const snode *node=head();node;node=node->next)
                 {
                     const species &s = ***node;
-                    pad(os<< ' ' << '[' << s.name << ']',s) << " = " << s[arr] << std::endl;
+                    pad(os<< ' ' << '[' << s.name << ']',s) << " = " << arr[*s] << std::endl;
                 }
                 os << '}' << std::endl;
             }

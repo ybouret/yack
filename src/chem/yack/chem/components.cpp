@@ -191,7 +191,7 @@ namespace yack
             for(const cnode *node=head();node;node=node->next)
             {
                 const species &s = ****node;
-                if( s[C] < 0) return false;
+                if( C[*s] < 0) return false;
             }
             return true;
         }

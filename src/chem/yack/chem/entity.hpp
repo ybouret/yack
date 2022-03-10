@@ -53,25 +53,7 @@ namespace yack
             size_t        operator*() const throw(); //!< access index
             const string &key()       const throw(); //!< access name
 
-
-            //! access array
-            template <typename T> inline
-            const T & operator[](const readable<T> &arr) const throw()
-            {
-                assert(indx>=1);
-                assert(indx<=arr.size());
-                return arr[indx];
-            }
-
-            //! access array
-            template <typename T> inline
-            T & operator[](writable<T> &arr) const throw()
-            {
-                assert(indx>=1);
-                assert(indx<=arr.size());
-                return arr[indx];
-            }
-
+            
             //__________________________________________________________________
             //
             // members

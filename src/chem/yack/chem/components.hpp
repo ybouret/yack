@@ -61,7 +61,7 @@ namespace yack
                 {
                     const component &c = ***node;
                     const species   &s = *c;
-                    s[nu] = c.coef;
+                    nu[*s] = c.coef;
                 }
             }
 

@@ -25,7 +25,9 @@ namespace yack
             return factor;
         }
 
-        void actors:: drvs_action(writable<double> &psi, const double factor, const readable<double> &C) const throw()
+        void actors:: drvs_action(writable<double>       &psi,
+                                  const double            factor,
+                                  const readable<double> &C) const throw()
         {
 
             for(const actor *a=head;a;a=a->next)
@@ -112,7 +114,7 @@ namespace yack
             double ans = 0;
             for(const actor *a=head;a;a=a->next)
             {
-                const double c = (**a)[C]; assert(c>=0);
+                const double c = C[***a]; assert(c>=0);
                 if(c>ans) ans=c;
             }
             return ans;

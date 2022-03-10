@@ -84,7 +84,7 @@ namespace yack
             for(const enode *node=eqs.head();node;node=node->next)
             {
                 const equilibrium &eq = ***node;
-                eq[K] = eq.K(t);
+                K[*eq] = eq.K(t);
             }
         }
 
@@ -93,7 +93,8 @@ namespace yack
             for(const enode *node=eqs.head();node;node=node->next)
             {
                 const equilibrium &eq = ***node;
-                eq[Gamma] = eq.mass_action(eq[K],C);
+                const size_t       ei = *eq;
+                Gamma[ei] = eq.mass_action(K[ei],C);
             }
         }
 
