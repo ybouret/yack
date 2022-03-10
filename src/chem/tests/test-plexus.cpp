@@ -45,7 +45,10 @@ YACK_UTEST(plexus)
     cs.computeXi(C);
     std::cerr << "Xi =" << cs.Xi  << std::endl;
     std::cerr << "Ceq=" << cs.Ceq << std::endl;
-
+    for(size_t i=1;i<=cs.N;++i)
+    {
+        
+    }
 
 }
 YACK_UDONE()
