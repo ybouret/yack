@@ -92,9 +92,9 @@ namespace yack
                 assert(name.size()>0);
                 assert(kstr.size()>0);
 
-                //std::cerr << "name=" << name << ", kstr=" << kstr << std::endl;
                 if( isalpha(kstr[1]) )
                 {
+                    // look for function
                     return new lua_equilibrium(name,kstr,pos,lvm);
                 }
                 else
