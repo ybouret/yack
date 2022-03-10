@@ -53,6 +53,9 @@ namespace yack
             //! derivative of mass action(factor,C,xi)
             double slope(const readable<double> &C, const double xi) const throw();
 
+            //! gradient
+            void drvs_action(writable<double> &psi, const double factor, const readable<double> &C) const throw();
+
             //! move all actors
             void   move(writable<double> &C, const double xi) const throw();
 

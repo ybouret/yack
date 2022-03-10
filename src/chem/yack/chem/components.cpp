@@ -145,6 +145,13 @@ namespace yack
             prod.move(C,+xi);
         }
 
+
+        void components:: drvs_action(writable<double> &psi, const double K, const readable<double> &C) const throw()
+        {
+            reac.drvs_action(psi, K,C);
+            prod.drvs_action(psi,-1,C);
+        }
+
         double components:: Q(const readable<double> &C) const throw()
         {
             assert(are_valid(C));

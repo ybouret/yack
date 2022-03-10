@@ -67,7 +67,9 @@ namespace yack
             //! -(K*reac.slope(K,C,-xi) + prod.slope(C,xi))
             double         slope(const double K, const readable<double> &C, const double xi) const throw();
 
-            
+            //! gradient
+            void           drvs_action(writable<double> &psi, const double K, const readable<double> &C) const throw();
+
             //! find private solving extent
             double solve1D(const double            K,
                            const readable<double> &C0,

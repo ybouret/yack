@@ -25,6 +25,19 @@ namespace yack
             return factor;
         }
 
+        void actors:: drvs_action(writable<double> &psi, const double factor, const readable<double> &C) const throw()
+        {
+
+            for(const actor *a=head;a;a=a->next)
+            {
+                double value = factor * a->drvs_action(C);
+                for(const actor *b=a->prev;b;b=b->prev) value *= b->mass_action(C);
+                for(const actor *b=a->next;b;b=b->next) value *= b->mass_action(C);
+                psi[ ***a ] = value;
+            }
+        }
+
+
         double actors:: mass_action(double factor, const readable<double> &C, const double xi) const throw()
         {
             for(const actor *a=head;a;a=a->next)
@@ -159,7 +172,7 @@ namespace yack
 
         FOUND:
             assert(best);
-            
+
             double mini = best->limiting_extent(C); assert(mini>=0);
             for(const actor *curr=best->next;curr;curr=curr->next)
             {
