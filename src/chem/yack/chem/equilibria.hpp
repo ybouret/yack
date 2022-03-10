@@ -56,6 +56,8 @@ namespace yack
 
             void operator()(library &, const string &data);
 
+            void operator()(library &, const char   *data);
+
         private:
             YACK_DISABLE_COPY_AND_ASSIGN(equilibria);
             eq_set db;

@@ -44,7 +44,8 @@ namespace yack
         //
         // types and definitions
         //______________________________________________________________________
-        YACK_DECL_ARGS(T,type); //!< alias
+        YACK_DECL_ARGS(T,type);                //!< alias
+        typedef vector<T,ALLOCATOR> self_type; //!< alias
 
         //______________________________________________________________________
         //
@@ -271,12 +272,13 @@ namespace yack
          if is_bad return false, then it's a 'for_each' method
          */
         template <typename FUNC> inline
-        void remove_if( FUNC &is_bad ) throw()
+        self_type &remove_if( FUNC &is_bad )
         {
             for(size_t indx=count;indx>0;--indx)
             {
                 if(is_bad(item[indx])) suppress(indx);
             }
+            return *this;
         }
 
     private:

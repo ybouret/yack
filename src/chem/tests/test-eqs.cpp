@@ -17,6 +17,11 @@ YACK_UTEST(eqs)
 
     std::cerr << water << std::endl;
 
+   if(argc>1)
+   {
+       eqs(lib,argv[1]);
+   }
+
 }
 YACK_UDONE()
 
