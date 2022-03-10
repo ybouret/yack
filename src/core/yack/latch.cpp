@@ -39,6 +39,11 @@ namespace yack
         }
     }
 
+    bool latch:: latched() const throw()
+    {
+        return on;
+    }
+
 
 
 

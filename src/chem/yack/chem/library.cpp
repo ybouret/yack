@@ -38,9 +38,7 @@ namespace yack
             }
             return ans;
         }
-
         
-
         const species & library:: operator()(const string &name, const int z)
         {
             species_set::const_type *pps = db.search(name);

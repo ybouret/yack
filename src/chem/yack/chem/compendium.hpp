@@ -6,6 +6,7 @@
 
 #include "yack/large-object.hpp"
 #include "yack/container/readable.hpp"
+#include "yack/latch.hpp"
 #include <iostream>
 
 namespace yack
@@ -21,7 +22,7 @@ namespace yack
         //! base class for set of species/equilibria
         //
         //______________________________________________________________________
-        class compendium : public large_object, public collection
+        class compendium : public large_object, public collection, public latch
         {
         public:
             //__________________________________________________________________
