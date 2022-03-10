@@ -45,9 +45,10 @@ YACK_UTEST(plexus)
     cs.computeXi(C);
     std::cerr << "Xi =" << cs.Xi  << std::endl;
     std::cerr << "Ceq=" << cs.Ceq << std::endl;
-    for(size_t i=1;i<=cs.N;++i)
+    for(const enode *node=eqs.head();node;node=node->next)
     {
-        
+        const equilibrium &eq = ***node;
+        eqs.pad(std::cerr << "Gamma_" << eq.name,eq) << " = " << eq.mass_action(cs.K[*eq],cs.Ceq[*eq]) << std::endl;
     }
 
 }
