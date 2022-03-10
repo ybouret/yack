@@ -147,6 +147,34 @@ namespace yack
             }
         }
 
+        const limit * actors:: primary_limit(const readable<double> &C) const throw()
+        {
+            const actor *best = head;
+            while(best)
+            {
+                if( (**best).rank == 1) goto FOUND;
+                best = best->next;
+            }
+            return NULL;
+
+        FOUND:
+            assert(best);
+            
+            double mini = best->limiting_extent(C); assert(mini>=0);
+            for(const actor *curr=best->next;curr;curr=curr->next)
+            {
+                if(1!=(**curr).rank) continue;;
+                const double temp = curr->limiting_extent(C);
+                if(temp<mini)
+                {
+                    mini = temp;
+                    best = curr;
+                }
+            }
+
+            return new (YACK_STATIC_ZSET(wksp)) limit(*best,mini);
+        }
+
 
     }
 

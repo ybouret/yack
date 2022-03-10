@@ -62,6 +62,9 @@ namespace yack
             //! find limit from all actors
             const limit *private_limit(const readable<double> &C) const throw();
 
+            //! find limit from primary actors
+            const limit *primary_limit(const readable<double> &C) const throw();
+
             //! helper to display
             void display(std::ostream &) const;
 
