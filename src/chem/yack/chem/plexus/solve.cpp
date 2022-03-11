@@ -53,12 +53,12 @@ namespace yack
             ios::ocstream::echo("rms.dat","%g %g\n", double(cycle),rms);
             if(rms<=0)
             {
-                YACK_CHEM_PRINTLN("// <plexus.solve> [success]");
+                YACK_CHEM_PRINTLN("// <plexus.solve> [success@cycle#" << cycle << "]");
                 return true;
             }
             // initialize Omega0
             computeOmega0();
-
+            std::cerr << "Omega=" << Omega0 << std::endl;
 
             double factor = 1.0;
             bool   scaled = false;
@@ -84,7 +84,7 @@ namespace yack
                 assert(scale>0);
                 assert(scale<=1);
                 std::cerr << "scale=" << scale << std::endl;
-                factor *= (1+1/scale);
+                factor *= 10;
                 scaled  = true;
                 goto EVAL_XI;
             }
