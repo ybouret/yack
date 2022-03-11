@@ -38,6 +38,7 @@ namespace yack
         xs(    ntab.next() ),
 
         Ctmp(  mtab.next() ),
+        Ctry(  mtab.next() ),
         dC(    mtab.next() ),
 
         Nu(N,N>0?M:0),
@@ -138,17 +139,16 @@ namespace yack
         
 
 
-        void plexus:: computeDeltaC(const readable<double> &C) throw()
+        bool plexus:: computeDeltaC(const readable<double> &C) throw()
         {
-            YACK_CHEM_PRINTLN("//   <plexus.deltaC>");
-            rstack.free();
+            dC.ld(0);
             ustack.free();
-            std::cerr << "C =" << C << std::endl;
+            rstack.free();
             for(const anode *node=active.head;node;node=node->next)
             {
-                const species           &s   = **node;
-                const size_t             j   = *s;
-                const readable<int>     &nut = NuT[j];
+                const species           &s     = **node;
+                const size_t             j     = *s;
+                const readable<int>     &nut   = NuT[j];
                 for(size_t i=N;i>0;--i)  xs[i] = nut[i] * xi[i];
                 const double c  = C[j]; assert(c>=0);
                 const double d  = (dC[j] = sorted::sum(xs,sorted::by_abs_value));
@@ -157,16 +157,33 @@ namespace yack
                     const double md    = -d;
                     if(md>=c)
                     {
-                        rstack << c/md;
-                        ustack << j;
+                        rstack.push_back_fast(c/md);
+                        ustack.push_back_fast(j);
                     }
                 }
             }
-            std::cerr << "dC=" << dC     << std::endl;
-            hsort(rstack,ustack,comparison::increasing<double>);
-            std::cerr << "rs=" << rstack << std::endl;
-            std::cerr << "at=" << ustack << std::endl;
-            YACK_CHEM_PRINTLN("//   <plexus.deltaC/>");
+            std::cerr << "C =" << C << std::endl;
+            std::cerr << "dC=" << dC << std::endl;
+
+            if(rstack.size()>0)
+            {
+                hsort(rstack,ustack,comparison::increasing<double>);
+                if(entity::verbose)
+                {
+                    std::cerr <<"//   <plexus.deltaC/> [failure:";
+                    for(size_t i=1;i<=rstack.size();++i)
+                    {
+                        std::cerr << " " << rstack[i] << "@" << lib[ustack[i]].name;
+                    }
+                    std::cerr << "]" << std::endl;
+                }
+                return false;
+            }
+            else
+            {
+                YACK_CHEM_PRINTLN("//   <plexus.deltaC/> [success]");
+                return true;
+            }
 
         }
 

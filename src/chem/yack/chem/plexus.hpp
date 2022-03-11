@@ -51,7 +51,8 @@ namespace yack
             tableau          &xs;     //!< [N] helper
 
             tableau          &Ctmp;   //!< [M] temporary C
-            tableau          &dC;     //!<
+            tableau          &Ctry;   //!< [M] trial C
+            tableau          &dC;     //!< [M] delta C
 
             const imatrix     Nu;     //!< [NxM] topology
             const imatrix     NuT;    //!< [MxN] Nu'
@@ -82,7 +83,7 @@ namespace yack
 
             void computeExtent();                                   //!< compute Omega, LU
             void correctExtent(const readable<double> &C) throw();  //!< impose primary limits
-            void computeDeltaC(const readable<double> &C) throw();  //!< deltaC and limits
+            bool computeDeltaC(const readable<double> &C) throw();  //!< deltaC and limits
 
         private:
             YACK_DISABLE_COPY_AND_ASSIGN(plexus);
