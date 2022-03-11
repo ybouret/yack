@@ -16,13 +16,11 @@ namespace yack
     namespace chemical
     {
 
-        typedef meta_list<const species> alist;
-        typedef alist::node_type         anode;
-
-        typedef matrix<int>          imatrix;
-        typedef matrix<double>       rmatrix;
-        typedef arrays_of<double>    tableaux;
-        typedef tableaux::array_type tableau;
+    
+        typedef matrix<int>            imatrix;
+        typedef matrix<double>         rmatrix;
+        typedef arrays_of<double>      tableaux;
+        typedef tableaux::array_type   tableau;
 
         class plexus
         {

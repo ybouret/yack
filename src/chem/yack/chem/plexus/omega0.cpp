@@ -28,7 +28,7 @@ namespace yack
         void plexus:: computeOmega0()  throw()
         {
             Omega0.ld(0);
-
+            
             for(size_t i=N;i>0;--i)
             {
                 writable<double>       &Omi = Omega0[i]; Omi[i] = 1;
@@ -50,7 +50,6 @@ namespace yack
                     Xi[i] = 0;
                 }
             }
-
         }
         
     }

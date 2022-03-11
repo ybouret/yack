@@ -50,6 +50,7 @@ namespace yack
             // clamp xi
             correctExtent(C);
 
+            computeDeltaC(C);
 
 
             return false;

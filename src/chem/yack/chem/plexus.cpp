@@ -140,6 +140,7 @@ namespace yack
 
         void plexus:: computeDeltaC(const readable<double> &C) throw()
         {
+            YACK_CHEM_PRINTLN("//   <plexus.deltaC>");
             rstack.free();
             ustack.free();
             std::cerr << "C =" << C << std::endl;
@@ -154,7 +155,7 @@ namespace yack
                 if(d<0)
                 {
                     const double md    = -d;
-                    if(md>c)
+                    if(md>=c)
                     {
                         rstack << c/md;
                         ustack << j;
@@ -165,6 +166,8 @@ namespace yack
             hsort(rstack,ustack,comparison::increasing<double>);
             std::cerr << "rs=" << rstack << std::endl;
             std::cerr << "at=" << ustack << std::endl;
+            YACK_CHEM_PRINTLN("//   <plexus.deltaC/>");
+
         }
 
     }

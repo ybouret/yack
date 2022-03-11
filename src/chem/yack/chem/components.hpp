@@ -21,6 +21,10 @@ namespace yack
         //______________________________________________________________________
         typedef suffix_set<string,const component::pointer> components_set; //!< alias
         typedef components_set::knot_type                   cnode;          //!< alias
+        typedef meta_list<const species>                    alist; //!< alias
+        typedef alist::node_type                            anode; //!< alias
+
+
 
         //______________________________________________________________________
         //
@@ -64,6 +68,8 @@ namespace yack
                     nu[*s] = c.coef;
                 }
             }
+
+            
 
             //__________________________________________________________________
             //
