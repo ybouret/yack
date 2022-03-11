@@ -45,8 +45,10 @@ namespace yack
 
         Psi(Nu.rows,Nu.cols),
         Ceq(Nu.rows,Nu.cols),
-        Omega(N,N),
-        
+        Omega0(N,N),
+        iOmega(N,N),
+        rstack(M,as_capacity),
+        ustack(M,as_capacity),
         LU(N),
 
         lib_lock(lib_),
@@ -132,74 +134,8 @@ namespace yack
             }
         }
 
-        void plexus:: computeXi(const readable<double> &C) throw()
-        {
-            for(const enode *node=eqs.head();node;node=node->next)
-            {
-                const equilibrium &eq = ***node;
-                const size_t       ei = *eq;
-                writable<double>  &Ci = Ceq[ei];
-                for(size_t j=M;j>0;--j)
-                    Ci[j] = C[j];
-                Xi[ei] = eq.solve1D(K[ei],C,Ci);
-            }
-        }
 
-
-        static inline
-        double xdot(const readable<double> &psi,
-                    const readable<int>    &nu,
-                    const size_t            M,
-                    writable<double>       &arr)
-        {
-            for(size_t j=M;j>0;--j)
-            {
-                arr[j] = psi[j] * nu[j];
-            }
-            return sorted::sum(arr,sorted::by_abs_value);
-        }
-
-        void plexus:: computeExtent()
-        {
-            for(const enode *node=eqs.head();node;node=node->next)
-            {
-                const equilibrium      &eq = ***node;
-                const size_t            ei = *eq;
-                const readable<double> &Ci = Ceq[ei];
-                eq.drvs_action(Psi[ei],K[ei],Ci,Ctmp);
-            }
-            std::cerr << "Psi0=" << Psi << std::endl;
-
-
-            Omega.ld(0);
-
-            for(size_t i=N;i>0;--i)
-            {
-                writable<double>       &Omi = Omega[i]; Omi[i] = 1;
-                const readable<double> &psi = Psi[i];
-                const double            den = xdot(psi,Nu[i],M,Ctmp);
-                if( fabs(den)>0 )
-                {
-                    for(size_t k=N;k>i;--k)
-                    {
-                        Omi[k] = xdot(psi,Nu[k],M,Ctmp);
-                    }
-                    for(size_t k=i-1;k>0;--k)
-                    {
-                        Omi[k] = xdot(psi,Nu[k],M,Ctmp);
-                    }
-                }
-            }
-
-
-            std::cerr << "Omega=" << Omega << std::endl;
-            if(!LU.build(Omega))
-                throw exception("Singular Omega...");
-
-            tao::v1::set(xi,Xi);
-            LU.solve(Omega,xi);
-            std::cerr << "xi=" << xi << std::endl;
-        }
+        
 
         void plexus:: correctExtent(const readable<double> &C) throw()
         {
@@ -215,15 +151,33 @@ namespace yack
             }
         }
 
-        void plexus:: computeDeltaC() throw()
+        void plexus:: computeDeltaC(const readable<double> &C) throw()
         {
-            for(size_t j=M;j>0;--j)
+            rstack.free();
+            ustack.free();
+            std::cerr << "C =" << C << std::endl;
+            for(const anode *node=active.head;node;node=node->next)
             {
+                const species           &s   = **node;
+                const size_t             j   = *s;
                 const readable<int>     &nut = NuT[j];
                 for(size_t i=N;i>0;--i)  xs[i] = nut[i] * xi[i];
-                dC[j] = sorted::sum(xs,sorted::by_abs_value);
+                const double c  = C[j]; assert(c>=0);
+                const double d  = (dC[j] = sorted::sum(xs,sorted::by_abs_value));
+                if(d<0)
+                {
+                    const double md    = -d;
+                    if(md>c)
+                    {
+                        rstack << c/md;
+                        ustack << j;
+                    }
+                }
             }
-            std::cerr << "dC=" << dC << std::endl;
+            std::cerr << "dC=" << dC     << std::endl;
+            hsort(rstack,ustack,comparison::increasing<double>);
+            std::cerr << "rs=" << rstack << std::endl;
+            std::cerr << "at=" << ustack << std::endl;
         }
 
     }

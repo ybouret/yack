@@ -42,6 +42,7 @@ YACK_UTEST(plexus)
     std::cerr << "Gamma = " << cs.Gamma << std::endl;
     std::cerr << "Psi   = " << cs.Psi << std::endl;
 
+#if 0
     cs.computeXi(C);
     std::cerr << "Xi =" << cs.Xi  << std::endl;
     std::cerr << "Ceq=" << cs.Ceq << std::endl;
@@ -52,8 +53,9 @@ YACK_UTEST(plexus)
     }
     cs.computeExtent();
     cs.correctExtent(C);
-    cs.computeDeltaC();
+    cs.computeDeltaC(C);
     std::cerr << "C0=" << C << std::endl;
+#endif
 
 }
 YACK_UDONE()

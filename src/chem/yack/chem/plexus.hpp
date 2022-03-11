@@ -59,19 +59,33 @@ namespace yack
             const imatrix     NuT;    //!< [MxN] Nu'
             rmatrix           Psi;    //!< [NxM] jacobian
             rmatrix           Ceq;    //!< [NxM] individual solution
-            rmatrix           Omega;  //!< [NxN] 
+            rmatrix           Omega0; //!< [NxN]
+            rmatrix           iOmega; //!<
+            vector<double>    rstack; //!< [0..M] stack of reals
+            vector<size_t>    ustack; //!< [0..M] stack of unsigned
             math::lu<double>  LU;     //!< [N]
 
 
+            //! with precomputed K
+            bool solve(writable<double> &C) throw();
 
             void computeK(const double t);                          //!< per equilibrium
             void computeGamma(const readable<double> &C) throw();   //!< with precomputed K
             void computePsi(const readable<double>   &C)   throw(); //!< with precomputed K
             void computeState(const readable<double> &C) throw();   //!< Gamma and Psi, with precomputed K
-            void computeXi(const readable<double>  &C)    throw();  //!< Xi and Ceq
+
+            //! compute Xi, Ceq and Psi@Ceq for each equilibrium
+            void computeExcess(const readable<double>  &C)    throw();
+
+            //! compute Omega0 after computeExcess
+            void computeOmega0() throw();
+
+            bool inverseOmega0(const double) throw();
+
             void computeExtent();                                   //!< compute Omega, LU
             void correctExtent(const readable<double> &C) throw();  //!< impose primary limits
-            void computeDeltaC() throw();
+            void computeDeltaC(const readable<double> &C) throw();  //!< deltaC and limits
+
         private:
             YACK_DISABLE_COPY_AND_ASSIGN(plexus);
             const lockable::scope lib_lock;

@@ -14,10 +14,19 @@ set(chem_lua ${chem_lua_decl} ${chem_lua_srcs})
 SOURCE_GROUP(chem/lua FILES ${chem_lua})
 install( FILES ${chem_lua_decl} DESTINATION include/yack/chem/lua )
 
+
+#plexus
+file(GLOB chem_plexus_decl yack/chem/plexus/*.hpp)
+file(GLOB chem_plexus_srcs yack/chem/plexus/*.cpp)
+set(chem_plexus ${chem_plexus_decl} ${chem_plexus_srcs})
+SOURCE_GROUP(chem/plexus FILES ${chem_plexus})
+install( FILES ${chem_plexus_decl} DESTINATION include/yack/chem/plexus )
+
  
 add_library(yack-chem STATIC
 ${chem_main}
 ${chem_lua}
+${chem_plexus}
 )
 
 install( TARGETS yack-chem ARCHIVE DESTINATION lib )
