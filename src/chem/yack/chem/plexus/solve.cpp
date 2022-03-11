@@ -24,14 +24,7 @@ namespace yack
             }
             return LU.build(iOmega);
         }
-
-        static inline
-        double RMS(const readable<double> &A, writable<double> &B)
-        {
-            const size_t N = A.size();
-            for(size_t j=N;j>0;--j) B[j] = squared(A[j]);
-            return sqrt( sorted::sum(B,sorted::by_value)/N );
-        }
+        
 
         bool plexus:: solve(writable<double> &C) throw()
         {
@@ -47,8 +40,7 @@ namespace yack
             ++cycle;
 
             // initialize Xi, Ceq and Psi@Ceq
-            computeExcess(C);
-            const double rms = RMS(Xi,xs);
+            const double rms = computeExcess(C);
             std::cerr << "// -------- RMS=" << rms << std::endl;
             ios::ocstream::echo("rms.dat","%g %g\n", double(cycle),rms);
             if(rms<=0)
