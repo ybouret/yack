@@ -137,19 +137,6 @@ namespace yack
 
         
 
-        void plexus:: correctExtent(const readable<double> &C) throw()
-        {
-            for(const enode *node=eqs.head();node;node=node->next)
-            {
-                const equilibrium      &eq = ***node;
-                const size_t            ei = *eq;
-                const limits           &lim = eq.primary_limits(C);
-                eqs.pad(std::cerr << eq.name,eq) << " " << lim << std::endl;
-                std::cerr << xi[ei] << " -> ";
-                lim.clamp(xi[ei]);
-                std::cerr << xi[ei] << std::endl;
-            }
-        }
 
         void plexus:: computeDeltaC(const readable<double> &C) throw()
         {

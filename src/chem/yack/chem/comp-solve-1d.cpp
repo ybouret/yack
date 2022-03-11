@@ -74,7 +74,7 @@ namespace yack
 
                     if(update(omega,f))
                     {
-                        YACK_CHEM_PRINTLN("// exact omega");
+                        //YACK_CHEM_PRINTLN("// exact omega");
                         return last_xi;
                     }
 
@@ -84,19 +84,19 @@ namespace yack
                     {
                         if(update(omega,f))
                         {
-                            YACK_CHEM_PRINTLN("// exact omega");
+                            //YACK_CHEM_PRINTLN("// exact omega");
                             return last_xi;
                         }
                         const double omegaNew = omega.b;
                         if( fabs(omegaNew-omegaOld) <= numeric<double>::ftol * fabs(omegaOld) )
                         {
-                            YACK_CHEM_PRINTLN("// converged on omega");
+                            //YACK_CHEM_PRINTLN("// converged on omega");
                             return last_xi;
                         }
                         const double widthNew = fabs(omega.c-omega.a);
                         if(widthNew>=widthOld)
                         {
-                            YACK_CHEM_PRINTLN("// converged on width");
+                            //YACK_CHEM_PRINTLN("// converged on width");
                             return last_xi;
                         }
                         omegaOld=omegaNew;
@@ -119,7 +119,7 @@ namespace yack
             // sanity check
             //
             //------------------------------------------------------------------
-            YACK_CHEM_PRINTLN("// <solve1D>");
+            //YACK_CHEM_PRINTLN("// <solve1D>");
             
             assert(K>0);
             assert(are_valid(C0));
@@ -137,7 +137,7 @@ namespace yack
             sign_type s0 = __sign::of(f0);      //!< sign of mass action
             if( __zero__ == s0 )
             {
-                YACK_CHEM_PRINTLN("//   <already@0>");
+                //YACK_CHEM_PRINTLN("//   <already@0>");
                 return 0;
             }
 
@@ -158,7 +158,7 @@ namespace yack
             triplet<double> x   = { 0, 0,  0 };
             triplet<double> f   = { 0, f0, 0 };
 
-            YACK_CHEM_PRINTLN("//   " << lim);
+            //YACK_CHEM_PRINTLN("//   " << lim);
 
 
             switch(lim.type)
@@ -249,7 +249,7 @@ namespace yack
 
             if(x.a>=x.c)
             {
-                YACK_CHEM_PRINTLN("//   numerical empty search");
+                //YACK_CHEM_PRINTLN("//   numerical empty search");
                 return deduce(C0,Cs);
             }
 
@@ -263,16 +263,16 @@ namespace yack
 
             if(first)
             {
-                YACK_CHEM_PRINTLN("//   xi=" << xiNew << " (first)");
+                //YACK_CHEM_PRINTLN("//   xi=" << xiNew << " (first)");
                 first = false;
             }
             else
             {
-                YACK_CHEM_PRINTLN("//   xi=" << xiNew << " / " << oldXi);
+                //YACK_CHEM_PRINTLN("//   xi=" << xiNew << " / " << oldXi);
                 if(fabs(xiNew)>=fabs(oldXi))
                 {
                     // reached numerical limit at previous step, do not move more!
-                    YACK_CHEM_PRINTLN("// reached numerical limit");
+                    //YACK_CHEM_PRINTLN("// reached numerical limit");
                     return deduce(C0,Cs);
                 }
             }
@@ -287,7 +287,7 @@ namespace yack
             s0    = __sign::of(f0);
             if(__zero__==s0)
             {
-                YACK_CHEM_PRINTLN("// exact zero mass action");
+                //YACK_CHEM_PRINTLN("// exact zero mass action");
                 return deduce(C0,Cs);
             }
 
