@@ -36,6 +36,8 @@ namespace
         std::cerr << "D=" << sorted::sum(d,sorted::by_value)/n << std::endl;
     }
 
+
+
 }
 
 YACK_UTEST(distrib)
@@ -51,19 +53,13 @@ YACK_UTEST(distrib)
     x.free();
     for(size_t i=nn;i>0;--i)
     {
-        x.push_back( 3*gran() );
+        x.push_back( gran() );
     }
     assert(nn==x.size());
     build_dist(x,"gaussian.dat");
 
+    
 
-    x.free();
-    for(size_t i=nn;i>0;--i)
-    {
-        x.push_back( fabs(gran()) );
-    }
-    assert(nn==x.size());
-    build_dist(x,"abs-gaussian.dat");
 
     x.free();
     for(size_t i=nn;i>0;--i)

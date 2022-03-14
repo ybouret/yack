@@ -21,7 +21,7 @@ namespace yack
                 writable<double>  &Ci = Ceq[ei];
                 const double       Ki = K[ei];
                 for(size_t j=M_;j>0;--j) Ci[j] = C[j];
-                xs[ei] = squared( xa[ei] = Xi[ei] = eq.solve1D(Ki,C,Ci) );
+                xs[ei] = xa[ei] = squared( Xi[ei] = eq.solve1D(Ki,C,Ci) );
                 eq.drvs_action(Psi[ei],Ki,Ci,Ctmp);
                 if(entity::verbose)
                 {

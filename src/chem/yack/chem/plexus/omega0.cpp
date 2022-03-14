@@ -50,6 +50,9 @@ namespace yack
                     Xi[i] = 0;
                 }
             }
+
+            YACK_CHEM_PRINTLN("Omega = " << Omega0);
+
         }
         
     }

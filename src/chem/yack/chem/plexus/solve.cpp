@@ -34,21 +34,69 @@ namespace yack
 
             YACK_CHEM_PRINTLN("// <plexus.solve>");
             lib(std::cerr << "Cini=",C);
-            for(size_t j=M;j>0;--j)
-            {
-                Ctry[j] = C[j];
-            }
+
 
             const double rms = computeMissing(C);
-            const double med = statistical::median<double>::of(xa);
-            const double mad = statistical::mean_absolute_deviation<double>::of(xa,med);
-            std::cerr << "rms = " << rms << std::endl;
-            std::cerr << "med = " << med << std::endl;
-            std::cerr << "mad = " << mad << std::endl;
-
-
+            std::cerr << "rms=" << rms << std::endl;
             computeOmega0();
-            std::cerr << "Omega = " << Omega0 << std::endl;
+
+            double factor=1;
+        EVAL_XI:
+            if(!inverseOmega0(factor))
+            {
+                return false;
+            }
+
+            tao::v1::set(xi,Xi);
+            LU.solve(iOmega,xi);
+            std::cerr << "xi=" << xi << " // factor=" << factor << std::endl;
+
+            for(const enode *node=eqs.head();node;node=node->next)
+            {
+                const equilibrium &eq = ***node;
+                const limits      &lm = eq.primary_limits(C);
+                if(entity::verbose)
+                {
+                    eqs.pad(std::cerr << "//   " << eq.name, eq) << " : " << lm << std::endl;
+                }
+                switch(lm.type)
+                {
+                    case limited_by_none:
+                        break;
+
+                    case limited_by_reac:
+                        if(xi[*eq]>lm.reac_extent())
+                        {
+                            YACK_CHEM_PRINTLN("//    |_reactant overload");
+                            factor*=2;
+                            goto EVAL_XI;
+                        }
+                        break;
+
+                    case limited_by_prod:
+                        if(xi[*eq]<lm.prod_extent())
+                        {
+                            YACK_CHEM_PRINTLN("//    |_product overload");
+                            factor*=2;
+                            goto EVAL_XI;
+                        }
+                        break;
+
+                    case limited_by_both: {
+                        const double x = xi[*eq];
+                        if(x<lm.prod_extent()||x>lm.reac_extent())
+                        {
+                            YACK_CHEM_PRINTLN("//    |_component overload");
+                            factor*=2;
+                            goto EVAL_XI;
+                        }
+                    } break;
+                }
+
+            }
+
+
+
 
             return false;
         }
