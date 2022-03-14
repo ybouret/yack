@@ -24,6 +24,7 @@ YACK_UTEST_DECL(80)
 
     YACK_UTEST(drvs);
     YACK_UTEST(fjac);
+    YACK_UTEST(functions);
 
     YACK_UTEST(poly);
     YACK_UTEST(chebyshev);

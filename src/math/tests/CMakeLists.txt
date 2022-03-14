@@ -63,6 +63,7 @@ add_test(zircon test-math zircon)
 add_test(minimize test-math minimize)
 add_test(drvs     test-math drvs)
 add_test(fjac     test-math fjac)
+add_test(functions test-math functions)
 
 add_test(data:poly      test-math poly)
 add_test(data:chebyshev test-math chebyshev)
