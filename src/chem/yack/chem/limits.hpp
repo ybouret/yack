@@ -46,6 +46,7 @@ namespace yack
             double reac_extent() const throw(); //!< reac->xi
             double prod_extent() const throw(); //!< -prod->xi
 
+            //! clamp according to limits
             void clamp(double &xi) const throw();
 
 

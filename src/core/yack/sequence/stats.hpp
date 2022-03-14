@@ -117,9 +117,71 @@ namespace yack
             }
 
         };
-        
-        
-    }
+
+        //______________________________________________________________________
+        //
+        //! sample median
+        //______________________________________________________________________
+        template <typename T>
+        struct median
+        {
+            //! with copy of the original data
+            static inline T of(writable<T> &temp)
+            {
+                const size_t n = temp.size();
+                switch(n)
+                {
+                    case 0: return 0;
+                    case 1: return temp[1];
+                    case 2: return (temp[1]+temp[2])/2;
+                    default:
+                        break;
+                }
+                hsort(temp,comparison::increasing<T>);
+                const size_t h = n>>1;
+                if( 0 != (n&1) )
+                {
+                    return temp[h+1];
+                }
+                else
+                {
+                    return (temp[h]+temp[h+1])/2;
+                }
+            }
+        };
+
+        //______________________________________________________________________
+        //
+        //! sample mean absolute deviation
+        //______________________________________________________________________
+        template <typename T>
+        struct mean_absolute_deviation
+        {
+            //! with copy of original data or previous call to median
+            static inline T of(writable<T> &temp, const T med)
+            {
+                const size_t n = temp.size();
+                switch(n)
+                {
+                    case 0: return 0;
+                    case 1: return 0;
+                    default:
+                        break;
+                }
+
+                for(size_t i=n;i>0;--i)
+                {
+                    temp[i] = fabs(temp[i]-med);
+                }
+
+                return sorted::sum(temp,sorted::by_value)/n;
+            }
+
+        };
+
+    };
+
+
 }
 
 #endif

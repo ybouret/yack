@@ -6,6 +6,7 @@
 #include "yack/sort/sum.hpp"
 #include "yack/exception.hpp"
 #include "yack/math/timings.hpp"
+#include "yack/sequence/stats.hpp"
 #include <cmath>
 
 namespace yack
@@ -26,6 +27,7 @@ namespace yack
         }
         
 
+
         bool plexus:: solve(writable<double> &C) throw()
         {
             assert(C.size()>=M);
@@ -38,6 +40,13 @@ namespace yack
             }
 
             const double rms = computeMissing(C);
+            const double med = statistical::median<double>::of(xa);
+            const double mad = statistical::mean_absolute_deviation<double>::of(xa,med);
+            std::cerr << "rms = " << rms << std::endl;
+            std::cerr << "med = " << med << std::endl;
+            std::cerr << "mad = " << mad << std::endl;
+
+
             computeOmega0();
             std::cerr << "Omega = " << Omega0 << std::endl;
 

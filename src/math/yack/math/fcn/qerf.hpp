@@ -11,8 +11,8 @@ namespace yack
     namespace math
     {
 
-        template <typename T> T qerfc(const T x) throw();
-        template <typename T> T qerf(const T x)  throw();
+        template <typename T> T qerfc(const T x) throw(); //!< quick error function complement
+        template <typename T> T qerf(const T x)  throw(); //!< quick error function
 
     }
 

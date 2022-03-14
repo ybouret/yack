@@ -17,26 +17,29 @@ namespace yack
     {
 
     
-        typedef matrix<int>            imatrix;
-        typedef matrix<double>         rmatrix;
-        typedef arrays_of<double>      tableaux;
-        typedef tableaux::array_type   tableau;
+        typedef matrix<int>            imatrix;  //!< alias
+        typedef matrix<double>         rmatrix;  //!< alias
+        typedef arrays_of<double>      tableaux; //!< alias
+        typedef tableaux::array_type   tableau;  //!< alias
 
+        //! plexus for ND ops
         class plexus
         {
         public:
-            static const char clid[];
-            
+            static const char clid[]; //!< "chemical::plexus"
+
+            //! setup
             explicit plexus(library    &lib_,
                             equilibria &eqs_);
 
+            //! cleanup
             virtual ~plexus() throw();
             
-            const library    &lib;
-            const equilibria &eqs;
-            const size_t      M;
-            const size_t      A;
-            const size_t      N;
+            const library    &lib; //!< user's lib
+            const equilibria &eqs; //!< user's eqs
+            const size_t      M;   //!< number of species
+            const size_t      A;   //!< number of active species
+            const size_t      N;   //!< number of equilibria
 
         private:
             tableaux          ntab;
@@ -49,6 +52,7 @@ namespace yack
             tableau          &Xi;     //!< [N] solving   Xi
             tableau          &xi;     //!< [N] current   xi
             tableau          &xs;     //!< [N] helper
+            tableau          &xa;     //!< [N] helper
 
             tableau          &Ctmp;   //!< [M] temporary C
             tableau          &Ctry;   //!< [M] trial C
@@ -59,7 +63,7 @@ namespace yack
             rmatrix           Psi;    //!< [NxM] jacobian
             rmatrix           Ceq;    //!< [NxM] individual solution
             rmatrix           Omega0; //!< [NxN]
-            rmatrix           iOmega; //!<
+            rmatrix           iOmega; //!< [NxN]
             vector<double>    rstack; //!< [0..M] stack of reals
             vector<size_t>    ustack; //!< [0..M] stack of unsigned
             math::lu<double>  LU;     //!< [N]
@@ -73,12 +77,13 @@ namespace yack
             void computePsi(const readable<double>   &C)   throw(); //!< with precomputed K
             void computeState(const readable<double> &C) throw();   //!< Gamma and Psi, with precomputed K
 
-            //! compute Xi, Ceq and Psi@Ceq for each equilibrium
+            //! compute Xi, Ceq and Psi at Ceq for each equilibrium
             double computeMissing(const readable<double>  &C)    throw();
 
             //! compute Omega0 after computeExcess
             void computeOmega0() throw();
 
+            //! using LU
             bool inverseOmega0(const double) throw();
 
             void computeExtent();                                   //!< compute Omega, LU

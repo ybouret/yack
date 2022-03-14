@@ -45,18 +45,32 @@ YACK_UTEST(distrib)
     vector<double> x;
     vector<double> temp;
 
-    for(size_t i=1000+ran->leq(1000);i>0;--i)
+    const size_t nn = 10000;
+
+    x.free();
+    for(size_t i=nn;i>0;--i)
     {
         x.push_back( gran() );
     }
-    build_dist(x,"abs-gauss.dat");
+    assert(nn==x.size());
+    build_dist(x,"gaussian.dat");
+
 
     x.free();
-    for(size_t i=1000+ran->leq(1000);i>0;--i)
+    for(size_t i=nn;i>0;--i)
+    {
+        x.push_back( fabs(gran()) );
+    }
+    assert(nn==x.size());
+    build_dist(x,"abs-gaussian.dat");
+
+    x.free();
+    for(size_t i=nn;i>0;--i)
     {
         x.push_back( (*ran)() );
     }
-    build_dist(x,"abs-unif.dat");
+    assert(nn==x.size());
+    build_dist(x,"uniform.dat");
 
 
 }
