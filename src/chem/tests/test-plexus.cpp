@@ -43,7 +43,7 @@ YACK_UTEST(plexus)
     std::cerr << "Psi   = " << cs.Psi << std::endl;
 
     //C.ld(0);
-    cs.solve(C);
+    //cs.solve(C);
 
 }
 YACK_UDONE()
