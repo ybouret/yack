@@ -23,8 +23,8 @@ YACK_UTEST(plexus)
         eqs(lib,argv[i]);
     }
 
-    std::cerr << lib << std::endl;
-    std::cerr << eqs << std::endl;
+    std::cerr << "lib=" << lib << std::endl;
+    std::cerr << "eqs=" << eqs << std::endl;
 
     plexus cs(lib,eqs);
 
@@ -42,8 +42,10 @@ YACK_UTEST(plexus)
     std::cerr << "Gamma = " << cs.Gamma << std::endl;
     std::cerr << "Psi   = " << cs.Psi << std::endl;
 
+    
+
     //C.ld(0);
-    //cs.solve(C);
+    cs.solve(C);
 
 }
 YACK_UDONE()

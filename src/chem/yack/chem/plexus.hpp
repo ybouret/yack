@@ -74,7 +74,7 @@ namespace yack
             void computeState(const readable<double> &C) throw();   //!< Gamma and Psi, with precomputed K
 
             //! compute Xi, Ceq and Psi@Ceq for each equilibrium
-            double computeExcess(const readable<double>  &C)    throw();
+            double computeMissing(const readable<double>  &C)    throw();
 
             //! compute Omega0 after computeExcess
             void computeOmega0() throw();

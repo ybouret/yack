@@ -84,6 +84,7 @@ Indeed, $\Xi_i$ is solution of:
 	- \prod_{j=1}^{M} \left([A_j] + X \nu^p_{ij} \right)^{\nu^p_{ij}} = 0
 \end{equation} 
 
+And each $\Xi_i$ respects all the limiting extents.
 
 %\begin{equation}
 %\begin{array}{rcr}
@@ -116,30 +117,36 @@ If we start from
 \right.
 \end{equation}
 
-We look for $\delta \Xi_i$ which keeps $\Gamma_i$ to $0$ for a small perturbation $\delta\vec{C}$:
+We look for $\delta\vec{C}$ which will decrease $\Xi_i$. Let us
+derive $\delta\Xi_i$ for a given $\delta\vec{C}$, with by definition:
+
 \begin{equation}
 	\Gamma_i\left( \vec{C} + \delta\vec{C} + \Xi_i \vec{\nu}_i + \delta \Xi_i \vec{\nu}_i \right)
 \end{equation}
 so that we need:
 \begin{equation}
-	\langle \vec{\Psi}_i' \vert  \delta \Xi_i \vec{\nu}_i + \delta\vec{C} \rangle = 0
+	\langle \vec{\Psi}_i' \vert  \delta \Xi_i \vec{\nu}_i + \delta\vec{C} \rangle \simeq 0
 \end{equation}
 or:
 \begin{equation}
-	\langle \vec{\Psi}_i' \vert  \vec{\nu}_i  \rangle  \delta \Xi_i = - \langle \vec{\Psi}_i' \vert \delta\vec{C} \rangle 
+	\langle \vec{\Psi}_i' \vert  \vec{\nu}_i  \rangle  \delta \Xi_i + \langle \vec{\Psi}_i' \vert \delta\vec{C} \rangle \simeq 0
  \end{equation}
-So for an extent $\delta\vec{\xi}$:
-\begin{equation}
-	\langle \vec{\Psi}_i' \vert  \vec{\nu}_i  \rangle  \delta \Xi_i = - \langle \vec{\Psi}_i' \vert \bm{\nu}^T \vert \delta\vec{\xi} \rangle 
-\end{equation}
+We are looking for $\delta\vec{C}$ such that $\delta\Xi_i = -\alpha_i \Xi_i$:
 
+\begin{equation}
+		- \langle \vec{\Psi}_i' \vert  \vec{\nu}_i  \rangle  \alpha_i \Xi_i + \langle \vec{\Psi}_i' \vert \delta\vec{C} \rangle \simeq 0
+\end{equation}
+ 
 \subsection{Change of $\vec{\Xi}$}
 
+We look for $\delta\vec{\xi}$ such that:
 \begin{equation}
-	\vec{\Xi}(\vec{C}+ \bm{\nu}^T  \delta\vec{\xi} ) \simeq  \vec{\Xi}(\vec{C}) -
-	\bm{\Omega}
-	\delta\vec{\xi}
-\end{equation}  
+		- \langle \vec{\Psi}_i' \vert  \vec{\nu}_i  \rangle  \alpha_i \Xi_i + \langle \vec{\Psi}_i' \vert \bm{\nu}^T \vert \delta\vec{\xi} \rangle \simeq 0
+\end{equation}
+or
+\begin{equation}
+	\bm{\Omega} \vec{\xi} \simeq \vec{\alpha} \otimes \vec{\Xi}
+\end{equation}
 with
 \begin{equation}
 	\Omega_{ii} = 1
