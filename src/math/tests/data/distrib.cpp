@@ -33,6 +33,7 @@ namespace
                 fp("%.15g %.15g\n", d[i], double(i)/(n+1));
             }
         }
+        std::cerr << "D=" << sorted::sum(d,sorted::by_value)/n << std::endl;
     }
 
 }
@@ -50,7 +51,7 @@ YACK_UTEST(distrib)
     x.free();
     for(size_t i=nn;i>0;--i)
     {
-        x.push_back( gran() );
+        x.push_back( 3*gran() );
     }
     assert(nn==x.size());
     build_dist(x,"gaussian.dat");

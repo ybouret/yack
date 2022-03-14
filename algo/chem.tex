@@ -164,6 +164,25 @@ and
 \right.
 \end{equation}
 
+\subsection{Scaling}
+	
+We define:
+\begin{equation}
+	\Xi_m=\mathrm{median}(\Xi_i)
+\end{equation}
+and:
+\begin{equation}
+	D_\Xi=\dfrac{1}{N}\sum_i\vert\Xi_i-\Xi_m\vert = \sigma_\Xi \sqrt{\dfrac{2}{\pi}}
+\end{equation}
+We assume that $\vert\Xi_i-\Xi_m\vert$ cumulative distribution function is:
+\begin{equation}
+	\mathrm{erf}\left(\dfrac{\vert\Xi-\Xi_m\vert}{\sigma_\Xi \sqrt{2}}\right) = \mathrm{erf}\left(\dfrac{\vert\Xi-\Xi_m\vert\sqrt{\pi}}{D_\Xi}\right) 
+\end{equation}
+We should have:
+\begin{equation}
+	\alpha_i \simeq \mathrm{erfc}\left(\dfrac{\vert\Xi_i-\Xi_m\vert\sqrt{\pi}}{D_\Xi}\right) \end{equation}
+
+
 
  	 	
 \subsection{Regularization}
