@@ -29,6 +29,7 @@ YACK_UTEST_DECL(80)
     YACK_UTEST(poly);
     YACK_UTEST(chebyshev);
     YACK_UTEST(corr);
+    YACK_UTEST(distrib);
    
     YACK_UTEST(fit_lam); 
     YACK_UTEST(fit);

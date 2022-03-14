@@ -68,6 +68,7 @@ add_test(functions test-math functions)
 add_test(data:poly      test-math poly)
 add_test(data:chebyshev test-math chebyshev)
 add_test(data:corr      test-math corr)
+add_test(data:distrib   test-math distrib)
 
 add_test(fit:lam test-math fit_lam)
 add_test(fit test-math fit)
