@@ -1,4 +1,3 @@
-
 //! \file
 
 #ifndef YACK_MATH_QERF_INCLUDED
