@@ -50,7 +50,12 @@ YACK_UTEST(types)
         test_io(pxm,ran);
     }
 
-    
+    YACK_SIZEOF(bitfield);
+    YACK_SIZEOF(bitrow);
+    YACK_SIZEOF(bitrows);
+    YACK_SIZEOF(bitmap);
+
+
     
 }
 YACK_UDONE()
