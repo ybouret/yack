@@ -63,10 +63,6 @@ namespace yack
             const imatrix     NuT;    //!< [MxN] Nu'
             rmatrix           Psi;    //!< [NxM] jacobian
             rmatrix           Ceq;    //!< [NxM] individual solution
-            rmatrix           Omega0; //!< [NxN]
-            rmatrix           iOmega; //!< [NxN]
-            vector<double>    rstack; //!< [0..M] stack of reals
-            vector<size_t>    ustack; //!< [0..M] stack of unsigned
             math::lu<double>  LU;     //!< [N]
 
 
@@ -80,15 +76,8 @@ namespace yack
 
             //! compute Xi, Ceq and Psi at Ceq for each equilibrium
             double computeMissing(const readable<double>  &C)    throw();
-
-            //! compute Omega0 after computeExcess
-            void computeOmega0() throw();
-
-            //! using LU, inv(Omega (*) xa)
-            bool inverseOmega0() throw();
-
-            void computeExtent();                                   //!< compute Omega, LU
-            void correctExtent(const readable<double> &C) throw();  //!< impose primary limits
+            
+            
             bool computeDeltaC(const readable<double> &C) throw();  //!< deltaC and limits
 
             //! transfer active species only

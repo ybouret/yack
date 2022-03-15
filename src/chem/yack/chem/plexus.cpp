@@ -49,10 +49,6 @@ namespace yack
 
         Psi(Nu.rows,Nu.cols),
         Ceq(Nu.rows,Nu.cols),
-        Omega0(N,N),
-        iOmega(N,N),
-        rstack(M,as_capacity),
-        ustack(M,as_capacity),
         LU(N),
 
         lib_lock(lib_),
@@ -150,54 +146,7 @@ namespace yack
         }
 
 
-        bool plexus:: computeDeltaC(const readable<double> &C) throw()
-        {
-            dC.ld(0);
-            ustack.free();
-            rstack.free();
-            for(const anode *node=active.head;node;node=node->next)
-            {
-                const species           &s     = **node;
-                const size_t             j     = *s;
-                const readable<int>     &nut   = NuT[j];
-                for(size_t i=N;i>0;--i)  xs[i] = nut[i] * xi[i];
-                const double c  = C[j]; assert(c>=0);
-                const double d  = (dC[j] = sorted::sum(xs,sorted::by_abs_value));
-                if(d<0)
-                {
-                    const double md    = -d;
-                    if(md>=c)
-                    {
-                        rstack.push_back_fast(c/md);
-                        ustack.push_back_fast(j);
-                    }
-                }
-            }
-            std::cerr << "C =" << C << std::endl;
-            std::cerr << "dC=" << dC << std::endl;
-
-            if(rstack.size()>0)
-            {
-                hsort(rstack,ustack,comparison::increasing<double>);
-                if(entity::verbose)
-                {
-                    std::cerr <<"//   <plexus.deltaC/> [failure:";
-                    for(size_t i=1;i<=rstack.size();++i)
-                    {
-                        std::cerr << " " << rstack[i] << "@" << lib[ustack[i]].name;
-                    }
-                    std::cerr << "]" << std::endl;
-                }
-                return false;
-            }
-            else
-            {
-                YACK_CHEM_PRINTLN("//   <plexus.deltaC/> [success]");
-                return true;
-            }
-
-        }
-
+        
     }
 
 }

@@ -25,12 +25,16 @@ namespace yack
                 eq.drvs_action(Psi[ei],Ki,Ci,Ctmp);
                 if(verbose)
                 {
-                    const double Gi = eq.mass_action(Ki,Ci);
-                    eqs.pad(std::cerr << "      @<" << eq.name << ">",eq) << " : " << std::setw(14) << Xi[ei] <<  " (Gamma=" << Gi << ")" << std::endl;
+                    Gamma[ei] = eq.mass_action(Ki,Ci);
+                    eqs.pad(std::cerr << "      @<" << eq.name << ">",eq) << " : " << std::setw(14) << Xi[ei] << std::endl;
                 }
             }
+            if(verbose)
+            {
+                eqs(std::cerr << "//    Gamma=",Gamma);
+            }
             const double ans = sqrt( sorted::sum(xs,sorted::by_value)/N );
-            YACK_CHEM_PRINTLN("//   <plexus.missing/> = " << ans );
+            YACK_CHEM_PRINTLN("//   <plexus.missing/> rms = " << ans );
             return ans;
         }
 

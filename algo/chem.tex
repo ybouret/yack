@@ -117,72 +117,32 @@ If we start from
 \right.
 \end{equation}
 
-We look for $\delta\vec{C}$ which will decrease $\Xi_i$. Let us
-derive $\delta\Xi_i$ for a given $\delta\vec{C}$, with by definition:
+We look for $\vec{C}^\star$ such that:
+\begin{equation}
+	\vec{C}^\star = \vec{C} + \bm{\nu}^T \vec{\xi} \text{ and } \vec{\Gamma}(\vec{C}^\star) \approx 0
+\end{equation}
 
 \begin{equation}
-	\Gamma_i\left( \vec{C} + \delta\vec{C} + \Xi_i \vec{\nu}_i + \delta \Xi_i \vec{\nu}_i \right)
+	\forall i, \;\; \Gamma_i(\vec{C}^\star) = \Gamma_i \left((\vec{C}'_i + (\vec{C}^\star - \vec{C}_i') \right) \simeq \langle \vec{\Psi}_i' \vert  (\vec{C}^\star - \vec{C}_i') \rangle
 \end{equation}
-so that we need:
+so that:
 \begin{equation}
-	\langle \vec{\Psi}_i' \vert  \delta \Xi_i \vec{\nu}_i + \delta\vec{C} \rangle \simeq 0
-\end{equation}
-or:
-\begin{equation}
-	\langle \vec{\Psi}_i' \vert  \vec{\nu}_i  \rangle  \delta \Xi_i + \langle \vec{\Psi}_i' \vert \delta\vec{C} \rangle \simeq 0
- \end{equation}
-We are looking for $\delta\vec{C}$ such that $\delta\Xi_i = -\alpha_i \Xi_i$:
-
-\begin{equation}
-		- \langle \vec{\Psi}_i' \vert  \vec{\nu}_i  \rangle  \alpha_i \Xi_i + \langle \vec{\Psi}_i' \vert \delta\vec{C} \rangle \simeq 0
-\end{equation}
- 
-\subsection{Change of $\vec{\Xi}$}
-
-We look for $\delta\vec{\xi}$ such that:
-\begin{equation}
-		- \langle \vec{\Psi}_i' \vert  \vec{\nu}_i  \rangle  \alpha_i \Xi_i + \langle \vec{\Psi}_i' \vert \bm{\nu}^T \vert \delta\vec{\xi} \rangle \simeq 0
-\end{equation}
-or
-\begin{equation}
-	\bm{\Omega} \vec{\xi} \simeq \vec{\alpha} \otimes \vec{\Xi}
-\end{equation}
-with
-\begin{equation}
-	\Omega_{ii} = 1
+	\bm{\Psi}' \left( \vec{C} + \bm{\nu}^T \vec{\xi} \right) =
+	\begin{bmatrix}
+	\vdots\\
+	\langle \vec{\Psi}_i' \vert \vec{C}_i' \rangle \\
+	\vdots\\
+	\end{bmatrix}
 \end{equation}
 and
 \begin{equation}
-\Omega_{i\not=j} = 
-\left\lbrace
-	\begin{array}{ccll}
-	0 & \text{if} & |\langle \vec{\Psi}_i'  \vert \vec{\nu}_i \rangle| = 0 & \text{ (and $\Gamma_i$ is blocked) }\\
-	\dfrac{\langle \vec{\Psi}_i'  \vert \vec{\nu}_j \rangle}{\langle \vec{\Psi}_i'  \vert \vec{\nu}_i \rangle}
-	 & \text{if} & |\langle \vec{\Psi}_i'  \vert \vec{\nu}_i \rangle| > 0
-	 & \\
-	\end{array}
-\right.
+	\bm{\Psi}' \bm{\nu}^T \vec{\xi} = 
+	\begin{bmatrix}
+	\vdots\\
+	\langle \vec{\Psi}_i' \vert \vec{C}_i' \rangle -  \langle \vec{\Psi}_i' \vert \vec{C} \rangle \\
+	\vdots\\
+	\end{bmatrix}
 \end{equation}
-
-\subsection{Scaling}
-	
-We define:
-\begin{equation}
-	\Xi_m=\mathrm{median}(\Xi_i)
-\end{equation}
-and:
-\begin{equation}
-	D_\Xi=\dfrac{1}{N}\sum_i\vert\Xi_i-\Xi_m\vert = \sigma_\Xi \sqrt{\dfrac{2}{\pi}}
-\end{equation}
-We assume that $\vert\Xi_i-\Xi_m\vert$ cumulative distribution function is:
-\begin{equation}
-	\mathrm{erf}\left(\dfrac{\vert\Xi-\Xi_m\vert}{\sigma_\Xi \sqrt{2}}\right) = \mathrm{erf}\left(\dfrac{\vert\Xi-\Xi_m\vert\sqrt{\pi}}{D_\Xi}\right) 
-\end{equation}
-We should have:
-\begin{equation}
-	\alpha_i \simeq \mathrm{erfc}\left(\dfrac{\vert\Xi_i-\Xi_m\vert\sqrt{\pi}}{D_\Xi}\right) \end{equation}
-
-
 
  	 	
 \subsection{Regularization}
