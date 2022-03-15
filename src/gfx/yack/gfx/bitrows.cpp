@@ -1,5 +1,5 @@
 #include "yack/gfx/bitrows.hpp"
-#include "yack/memory/allocator/dyadic.hpp"
+#include "yack/gfx/memory.hpp"
 
 namespace yack
 {
@@ -8,14 +8,14 @@ namespace yack
 
         bitrows:: ~bitrows() throw()
         {
-            static memory::allocator &mgr = memory::dyadic::location();
+            static memory::allocator &mgr = memory_allocator::location();
             mgr.withdraw(row,coerce(mem));
         }
 
         static inline
         bitrow *bitrows_acquire(size_t &mem)
         {
-            static memory::allocator &mgr = memory::dyadic::instance();
+            static memory::allocator &mgr =  memory_allocator::instance();
             return static_cast<bitrow *>(mgr.acquire(mem,1));
         }
 
