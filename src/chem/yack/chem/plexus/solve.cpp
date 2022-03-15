@@ -35,6 +35,8 @@ namespace yack
             assert(C.size()>=M);
             YACK_CHEM_PRINTLN("// <plexus.solve>");
             if(verbose) lib(std::cerr << "Cini=",C);
+            ios::ocstream::overwrite("rms.dat");
+
             switch(N)
             {
                 case 0:
@@ -48,14 +50,18 @@ namespace yack
 
 
                 default:
+                    tao::v1::load(Ctry,C);
                     break;
             }
 
 
             {
-
-                (void) computeMissing(C);
+                size_t cycle = 0;
                 rmatrix Omega(N,N);
+            CYCLE:
+                ++cycle;
+                const double rms = computeMissing(C);
+                ios::ocstream::echo("rms.dat","%g %.15g\n", double(cycle), rms);
                 for(size_t i=N;i>0;--i)
                 {
                     writable<double>       &Omi = Omega[i];
@@ -73,6 +79,7 @@ namespace yack
                     }
                     else
                     {
+                        Omi.ld(0);
                         Omi[i] = 1.0;
                         rhs    = 0;
                     }
@@ -88,23 +95,90 @@ namespace yack
                 }
 
                 LU.solve(Omega,xi);
-                std::cerr << "xi   =" << xi    << std::endl;
+                if(verbose) eqs(std::cerr << "xi0=",xi);
 
                 // correcting
                 for(const enode *node=eqs.head();node;node=node->next)
                 {
                     const equilibrium &eq = ***node;
                     const limits      &lm = eq.primary_limits(C,lib.width);
+                    const size_t       ei = *eq;
+                    double            &xx = xi[ei];
                     if(verbose)
                     {
                         eqs.pad(std::cerr << " <" << eq.name << ">",eq) << " : " << lm << std::endl;
                     }
+                    switch(lm.type)
+                    {
+                        case limited_by_none:
+                            break;
+
+                        case limited_by_reac:
+                            xx = min_of(xx,lm.reac_extent());
+                            break;
+
+                        case limited_by_prod:
+                            xx = max_of(xx,lm.prod_extent());
+                            break;
+
+                        case limited_by_both:
+                            xx = clamp(lm.prod_extent(),xx,lm.reac_extent());
+                            break;
+
+                    }
+                }
+                if(verbose) eqs(std::cerr << "xi1=",xi);
+
+                ustack.free();
+                rstack.free();
+                for(const anode *node=active.head;node;node=node->next)
+                {
+                    const species &s = **node;
+                    const size_t   j = *s;
+                    const double   d = dC[j] = xdot(xi,NuT[j],xs);
+                    const double   c = C[j]; assert(c>=0);
+                    if(d <= -c)
+                    {
+                        rstack << -c/d;
+                        ustack << j;
+                    }
+                }
+                std::cerr << "C="  << C  << std::endl;
+                std::cerr << "dC=" << dC << std::endl;
+
+                double     factor = 1.0;
+                const bool scaled = rstack.size()>0;
+                if(scaled)
+                {
+                    hsort(rstack,ustack,comparison::increasing<double>);
+                    std::cerr << "rstack=" << rstack << std::endl;
+                    std::cerr << "ustack=" << ustack << std::endl;
+                    factor = min_of(factor,rstack.front());
+                }
+                std::cerr << "factor=" << factor << std::endl;
+                for(const anode *node=active.head;node;node=node->next)
+                {
+                    const species &s = **node;
+                    const size_t   j = *s;
+                    Ctry[j] = max_of( C[j] + factor * dC[j],0.0);
+                }
+                if(scaled)
+                {
+                    Ctry[ ustack.front() ] = 0;
                 }
 
-                exit(1);
+                if(verbose) lib(std::cerr << "Ctry=",Ctry);
+
+                transfer(C,Ctry);
+
+                if(cycle>=10)
+                {
+                    exit(1);
+                }
+
+                goto CYCLE;
 
             }
-
 
 
         SUCCESS:

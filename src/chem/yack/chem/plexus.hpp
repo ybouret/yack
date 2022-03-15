@@ -63,6 +63,8 @@ namespace yack
             const imatrix     NuT;    //!< [MxN] Nu'
             rmatrix           Psi;    //!< [NxM] jacobian
             rmatrix           Ceq;    //!< [NxM] individual solution
+            vector<double>    rstack;
+            vector<size_t>    ustack;
             math::lu<double>  LU;     //!< [N]
 
 
@@ -78,7 +80,6 @@ namespace yack
             double computeMissing(const readable<double>  &C)    throw();
             
             
-            bool computeDeltaC(const readable<double> &C) throw();  //!< deltaC and limits
 
             //! transfer active species only
             void transfer(writable<double> &targetC, const readable<double> &sourceC) const throw();
