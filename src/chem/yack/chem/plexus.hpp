@@ -26,7 +26,8 @@ namespace yack
         class plexus
         {
         public:
-            static const char clid[]; //!< "chemical::plexus"
+            static const char  clid[];  //!< "chemical::plexus"
+            static const bool &verbose; //!< on entity verbose
 
             //! setup
             explicit plexus(library    &lib_,
@@ -89,6 +90,9 @@ namespace yack
             void computeExtent();                                   //!< compute Omega, LU
             void correctExtent(const readable<double> &C) throw();  //!< impose primary limits
             bool computeDeltaC(const readable<double> &C) throw();  //!< deltaC and limits
+
+            //! transfer active species only
+            void transfer(writable<double> &targetC, const readable<double> &sourceC) const throw();
 
         private:
             YACK_DISABLE_COPY_AND_ASSIGN(plexus);

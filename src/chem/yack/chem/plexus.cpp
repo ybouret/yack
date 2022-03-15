@@ -13,7 +13,9 @@ namespace yack
     namespace chemical
     {
 
-        const char plexus::clid[] = "chemical::plexus";
+        const char   plexus::clid[] = "chemical::plexus";
+
+        const bool & plexus::verbose  = entity::verbose;
 
         plexus:: ~plexus() throw()
         {
@@ -137,7 +139,15 @@ namespace yack
         }
 
 
-        
+
+        void plexus:: transfer(writable<double> &targetC, const readable<double> &sourceC) const throw()
+        {
+            for(const anode *node=active.head;node;node=node->next)
+            {
+                const size_t j = ***node;
+                targetC[j] = sourceC[j];
+            }
+        }
 
 
         bool plexus:: computeDeltaC(const readable<double> &C) throw()

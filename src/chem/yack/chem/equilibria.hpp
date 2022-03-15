@@ -56,7 +56,20 @@ namespace yack
             //! formatted display
             friend std::ostream & operator<<(std::ostream &, const equilibria &);
 
-         
+
+            //! display named values
+            template <typename T> inline
+            void operator()(std::ostream &os, const readable<T> &arr) const
+            {
+                os << '{' << std::endl;
+                for(const enode *node=head();node;node=node->next)
+                {
+                    const equilibrium &s = ***node;
+                    pad(os<< ' ' << '<' << s.name << '>',s) << " = " << arr[*s] << std::endl;
+                }
+                os << '}' << std::endl;
+            }
+
         private:
             YACK_DISABLE_COPY_AND_ASSIGN(equilibria);
             eq_set db;
