@@ -181,14 +181,14 @@ namespace yack
             return os;
         }
 
-        const limits & components:: private_limits(const readable<double> &C) const throw()
+        const limits & components:: private_limits(const readable<double> &C, const size_t w) const throw()
         {
-            return * new( YACK_STATIC_ZSET(wksp) ) limits( reac.private_limit(C), prod.private_limit(C) );
+            return * new( YACK_STATIC_ZSET(wksp) ) limits( reac.private_limit(C), prod.private_limit(C), w);
         }
 
-        const limits & components:: primary_limits(const readable<double> &C) const throw()
+        const limits & components:: primary_limits(const readable<double> &C, const size_t w) const throw()
         {
-            return * new( YACK_STATIC_ZSET(wksp) ) limits( reac.primary_limit(C), prod.primary_limit(C) );
+            return * new( YACK_STATIC_ZSET(wksp) ) limits( reac.primary_limit(C), prod.primary_limit(C), w);
         }
 
 

@@ -34,7 +34,7 @@ namespace yack
         class limits
         {
         public:
-            limits(const limit *r, const limit *p) throw(); //!< setup
+            limits(const limit *r, const limit *p,const size_t w) throw(); //!< setup
 
             //! display info
             friend std::ostream & operator<<(std::ostream &, const limits &);
@@ -42,7 +42,8 @@ namespace yack
             const limit * const reac; //!< limiting reactant
             const limit * const prod; //!< limiting product
             const limited_type  type; //!< classification
-
+            const size_t        wpad; //!< to display
+            
             double reac_extent() const throw(); //!< reac->xi
             double prod_extent() const throw(); //!< -prod->xi
 
@@ -53,6 +54,8 @@ namespace yack
         private:
             YACK_DISABLE_COPY_AND_ASSIGN(limits);
             ~limits() throw();
+            void pad(std::ostream &, const string &) const;
+            void spc(std::ostream &, const size_t n) const; //!< n+wpad
         };
 
     }

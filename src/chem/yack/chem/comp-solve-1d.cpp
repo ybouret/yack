@@ -154,7 +154,7 @@ namespace yack
             //------------------------------------------------------------------
             assert(__zero__!=s0);
             assert(__sign::of(f0)==s0);
-            const limits   &lim = private_limits(Cs);
+            const limits   &lim = private_limits(Cs,0);
             triplet<double> x   = { 0, 0,  0 };
             triplet<double> f   = { 0, f0, 0 };
 

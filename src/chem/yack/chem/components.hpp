@@ -101,10 +101,10 @@ namespace yack
 
 
             //! find private limits
-            const limits & private_limits(const readable<double> &C) const throw();
+            const limits & private_limits(const readable<double> &C, const size_t w) const throw();
 
             //! find primary limits
-            const limits & primary_limits(const readable<double> &C) const throw();
+            const limits & primary_limits(const readable<double> &C, const size_t w) const throw();
 
 
             //! max_of(reac.maximum,prod.maximum)

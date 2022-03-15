@@ -14,7 +14,7 @@ namespace yack
             {
                 const equilibrium      &eq = ***node;
                 const size_t            ei = *eq;
-                const limits           &lim = eq.primary_limits(C);
+                const limits           &lim = eq.primary_limits(C,eqs.width);
                 double                 &xi1 = xi[ei];
                 const double            xi0 = xi1;
 

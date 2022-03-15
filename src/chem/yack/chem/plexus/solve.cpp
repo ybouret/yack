@@ -16,12 +16,12 @@ namespace yack
     namespace chemical
     {
 
-        bool plexus:: inverseOmega0(const double factor) throw()
+        bool plexus:: inverseOmega0() throw()
         {
             iOmega.assign(Omega0);
             for(size_t i=N;i>0;--i)
             {
-                iOmega[i][i] *= factor;
+                iOmega[i][i] *= xa[i];
             }
             return LU.build(iOmega);
         }
@@ -52,26 +52,26 @@ namespace yack
             {
 
 
-
                 const double rms = computeMissing(C);
                 std::cerr << "rms=" << rms << std::endl;
                 computeOmega0();
+                xa.ld(1);
 
-                double factor=1;
             EVAL_XI:
-                if(!inverseOmega0(factor))
+                if(!inverseOmega0())
                 {
                     return false;
                 }
 
                 tao::v1::set(xi,Xi);
                 LU.solve(iOmega,xi);
-                std::cerr << "xi=" << xi << " // factor=" << factor << std::endl;
+                std::cerr << "xi=" << xi << " // factor=" << xa << std::endl;
 
                 for(const enode *node=eqs.head();node;node=node->next)
                 {
                     const equilibrium &eq = ***node;
-                    const limits      &lm = eq.primary_limits(C);
+                    const limits      &lm = eq.primary_limits(C,lib.width);
+                    const size_t       ei = *eq;
                     if(entity::verbose)
                     {
                         eqs.pad(std::cerr << "//   " << eq.name, eq) << " : " << lm << std::endl;
@@ -82,35 +82,51 @@ namespace yack
                             break;
 
                         case limited_by_reac:
-                            if(xi[*eq]>lm.reac_extent())
+                            if(xi[ei]>lm.reac_extent())
                             {
                                 YACK_CHEM_PRINTLN("//    |_reactant overload");
-                                factor*=2;
+                                xa[ei] *= 10;
                                 goto EVAL_XI;
                             }
                             break;
 
                         case limited_by_prod:
-                            if(xi[*eq]<lm.prod_extent())
+                            if(xi[ei]<lm.prod_extent())
                             {
                                 YACK_CHEM_PRINTLN("//    |_product overload");
-                                factor*=2;
+                                xa[ei] *= 10;
                                 goto EVAL_XI;
                             }
                             break;
 
                         case limited_by_both: {
-                            const double x = xi[*eq];
+                            const double x = xi[ei];
                             if(x<lm.prod_extent()||x>lm.reac_extent())
                             {
                                 YACK_CHEM_PRINTLN("//    |_component overload");
-                                factor*=2;
+                                xa[ei] *= 10;
                                 goto EVAL_XI;
                             }
                         } break;
                     }
 
                 }
+
+                if(!computeDeltaC(C))
+                {
+                    for(size_t i=N;i>0;--i) xa[i] *= 10;
+                    goto EVAL_XI;
+                }
+
+                for(const anode *node=active.head;node;node=node->next)
+                {
+                    const species &s = **node;
+                    const size_t   j = *s;
+                    Ctry[j] = C[j] + dC[j];
+                }
+                
+                const double new_rms = computeMissing(Ctry);
+                std::cerr << "new_rms=" << new_rms << " / " << rms << std::endl;
 
 
                 exit(1);

@@ -84,8 +84,8 @@ namespace yack
             //! compute Omega0 after computeExcess
             void computeOmega0() throw();
 
-            //! using LU
-            bool inverseOmega0(const double) throw();
+            //! using LU, inv(Omega (*) xa)
+            bool inverseOmega0() throw();
 
             void computeExtent();                                   //!< compute Omega, LU
             void correctExtent(const readable<double> &C) throw();  //!< impose primary limits
