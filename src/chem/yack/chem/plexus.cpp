@@ -35,10 +35,9 @@ namespace yack
         active(),
         K(     ntab.next() ),
         Gamma( ntab.next() ),
-        Xi(    ntab.next() ),
         xi(    ntab.next() ),
         xs(    ntab.next() ),
-        xa(    ntab.next() ),
+        Gs(    ntab.next() ),
 
         Ctmp(  mtab.next() ),
         Ctry(  mtab.next() ),
@@ -48,7 +47,11 @@ namespace yack
         NuT(Nu.cols,Nu.rows),
 
         Psi(Nu.rows,Nu.cols),
-        Ceq(Nu.rows,Nu.cols),
+        Omega0(N,N),
+        iOmega(N,N),
+        blocked(N,false),
+        rstack(M,as_capacity),
+        ustack(M,as_capacity),
         LU(N),
 
         lib_lock(lib_),
@@ -59,7 +62,11 @@ namespace yack
             YACK_CHEM_PRINTLN("// A=" << A);
             YACK_CHEM_PRINTLN("// N=" << N);
 
+            //------------------------------------------------------------------
+            //
             // build active species
+            //
+            //------------------------------------------------------------------
             for(const snode *node=lib.head();node;node=node->next)
             {
                 const species &s = ***node;
@@ -70,7 +77,11 @@ namespace yack
             }
             assert(A==active.size);
 
+            //------------------------------------------------------------------
+            //
             // build Nu
+            //
+            //------------------------------------------------------------------
             for(const enode *node=eqs.head();node;node=node->next)
             {
                 const equilibrium &eq = ***node;
@@ -80,7 +91,11 @@ namespace yack
             YACK_CHEM_PRINTLN("Nu =" << Nu);
             YACK_CHEM_PRINTLN("NuT=" << NuT);
 
+            //------------------------------------------------------------------
+            //
             // check indep equilibria
+            //
+            //------------------------------------------------------------------
             if(N>0)
             {
                 matrix<apq> G(N,N);

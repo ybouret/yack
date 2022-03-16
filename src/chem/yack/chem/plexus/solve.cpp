@@ -58,15 +58,13 @@ namespace yack
                     break;
             }
 
-            rmatrix      Omega0(N,N);
-            rmatrix      iOmega(N,N);
-            vector<bool> blocked(N,false);
+
             size_t       cycle = 0;
 
         CYCLE:
             ++cycle;
             blocked.ld(false);
-            bool         changed = false;
+            bool changed = false;
             for(const enode *node=eqs.head();node;node=node->next)
             {
                 const equilibrium &eq  = ***node;
@@ -112,10 +110,7 @@ namespace yack
                     xi[i]  = 0;
                 }
                 else
-                {
-                    //const double den = xdot(psi,Nu[i],Ctmp); assert(den<0);
-                    //for(size_t j=N;j>i;--j)   Omi[j] = xdot(psi,Nu[j],Ctmp)/den;
-                    //for(size_t j=i-1;j>0;--j) Omi[j] = xdot(psi,Nu[j],Ctmp)/den;
+                { 
                     for(size_t j=N;j>0;--j)
                     {
                         Omi[j] = xdot(psi,Nu[j],Ctmp);
