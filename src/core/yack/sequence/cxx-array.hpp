@@ -10,7 +10,7 @@
 namespace yack
 {
 
-    //! linear memory withut constructed objects
+    //! linear memory without constructed objects
     template <typename T, typename ALLOCATOR>
     class cxx_array_ : public contiguous<T>
     {

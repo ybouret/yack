@@ -16,10 +16,7 @@ namespace yack
         //
         //______________________________________________________________________
         class mutex;
-        namespace quark
-        {
-            class condition;
-        }
+        namespace quark { class condition; }
         
         //______________________________________________________________________
         //

@@ -1,6 +1,7 @@
 #include "yack/sequence/vector.hpp"
 #include "yack/sequence/list.hpp"
 #include "yack/sequence/cxx-array.hpp"
+#include "yack/sequence/cxx-series.hpp"
 #include "yack/memory/allocator/global.hpp"
 #include "yack/memory/allocator/dyadic.hpp"
 #include "yack/apex.hpp"
@@ -116,6 +117,8 @@ static inline bool is_bad_int(const int &value)
     return (absolute(value)>10);
 }
 
+#include "yack/string.hpp"
+
 YACK_UTEST(data_sequence)
 {
     randomized::rand_ ran;
@@ -154,6 +157,19 @@ YACK_UTEST(data_sequence)
         toto.remove_if(is_bad_int);
         std::cerr << toto << std::endl;
     }
+
+    cxx_series<int> is(30);
+    YACK_CHECK(30==is.capacity());
+    YACK_CHECK(0==is.size());
+
+    is.add<int>(4);
+    std::cerr << "is=" << is << std::endl;
+
+    cxx_series<string,memory::dyadic> ss(20);
+
+    ss.add<const char *>("toto");
+    std::cerr << "ss=" << ss << std::endl;
+
 
 }
 YACK_UDONE()

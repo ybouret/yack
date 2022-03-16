@@ -12,44 +12,18 @@ namespace yack
 {
     namespace concurrent
     {
-
-#if 0
-        //! todo
-        class agent : public object
+        
+        class agent
         {
         public:
-            agent       *next;
-            agent       *prev;
-            const size_t uuid;
-
-            virtual ~agent() throw();
-            explicit agent(const size_t uniqID,
-                           mutex       &access,
-                           size_t      &run_up);
-
+            agent(mutex &);
+            ~agent() throw();
 
         private:
             YACK_DISABLE_COPY_AND_ASSIGN(agent);
-            mutex     &sync;
-            size_t    &left;
-            condition  cond;
-            thread     self;
-
-            static void call(void *) throw();
-            void        mission() throw();
         };
 
-
-        class agency
-        {
-        public:
-
-        private:
-            YACK_DISABLE_COPY_AND_ASSIGN(agency);
-
-        };
-#endif
-
+        
 
     }
 
