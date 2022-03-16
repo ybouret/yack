@@ -54,7 +54,7 @@ namespace yack
             //
             // methods
             //__________________________________________________________________
-            
+
             bool solve(writable<double> &C) throw();                //!< with precomputed K
             void computeK(const double t);                          //!< per equilibrium
             void computeGamma(const readable<double> &C) throw();   //!< with precomputed K
@@ -68,6 +68,13 @@ namespace yack
 
             //! transfer active species only
             void transfer(writable<double> &, const readable<double> & ) const throw();
+
+            //! regularize with precomputed K
+            /**
+             - check Psi and best effort move, setting blocked if necessary
+             - recompute Gamma and Psi
+             */
+            void regularize(writable<double> &C) throw();
 
 
             //__________________________________________________________________

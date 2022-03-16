@@ -28,6 +28,48 @@ namespace yack
             return sorted::sum(tmp,sorted::by_abs_value);
         }
 
+        void plexus:: regularize(writable<double> &C) throw()
+        {
+            bool changed = false;
+            blocked.ld(false);
+            for(const enode *node=eqs.head();node;node=node->next)
+            {
+                const equilibrium &eq  = ***node;
+                const size_t       ei  = *eq;
+                const double       Ki  = K[ei];
+                writable<double>  &psi = Psi[ei];
+                double            &gam = Gamma[ei];
+
+                gam  = eq.grad_action(psi,Ki,C,Ctmp);
+                if( tao::v1::mod2<double>::of(psi) <= 0)
+                {
+                    (void) eq.solve1D(Ki,C,Ctry);
+                    transfer(C,Ctry);
+                    changed = true;
+                    gam     = eq.grad_action(psi,Ki,C,Ctmp);
+                    if( tao::v1::mod2<double>::of(psi) <= 0 )
+                    {
+                        blocked[ei] = true;
+                    }
+                }
+            }
+
+            if(verbose)
+            {
+                lib(std::cerr << "Cini=",C);
+                std::cerr << "//   blocked=" << blocked << std::endl;
+                std::cerr << "//   changed=" << changed << std::endl;
+                eqs(std::cerr << "Gamma=",Gamma);
+                eqs(std::cerr << "Psi  =",Psi);
+            }
+
+            if(changed)
+            {
+                computeState(C);
+            }
+
+
+        }
 
 
         bool plexus:: solve(writable<double> &C) throw()
@@ -63,41 +105,9 @@ namespace yack
 
         CYCLE:
             ++cycle;
-            blocked.ld(false);
-            bool changed = false;
-            for(const enode *node=eqs.head();node;node=node->next)
-            {
-                const equilibrium &eq  = ***node;
-                const size_t       ei  = *eq;
-                const double       Ki  = K[ei];
-                writable<double>  &psi = Psi[ei];
-                double            &gam = Gamma[ei];
+            regularize(C);
 
-                gam  = eq.grad_action(psi,Ki,C,Ctmp);
-                if( tao::v1::mod2<double>::of(psi) <= 0)
-                {
-                    (void) eq.solve1D(Ki,C,Ctry);
-                    transfer(C,Ctry);
-                    changed = true;
-                    gam = eq.grad_action(psi,Ki,C,Ctmp);
-                    if( tao::v1::mod2<double>::of(psi) <= 0 )
-                    {
-                        blocked[ei] = true;
-                    }
-                }
-            }
-            std::cerr << "blocked=" << blocked << std::endl;
-            std::cerr << "changed=" << changed << std::endl;
-            if(verbose) lib(std::cerr << "Cini=",C);
-
-            if(changed)
-            {
-                computeState(C);
-            }
-
-            eqs(std::cerr << "Gamma=",Gamma);
-            eqs(std::cerr << "Psi  =",Psi);
-
+            // compute Omega0, set Gamma to -Gamma
             for(size_t i=N;i>0;--i)
             {
                 writable<double>       &Omi = Omega0[i];
@@ -118,9 +128,14 @@ namespace yack
                     xi[i] = (Gamma[i]=-Gamma[i]);
                 }
             }
+            for(size_t i=N;i>0;--i)
+            {
+                Gs[i] = -Omega0[i][i];
+            }
+            YACK_CHEM_PRINTLN("Omega =" << Omega0);
+            YACK_CHEM_PRINTLN("rhs   =" << Gamma);
+            YACK_CHEM_PRINTLN("Gs    =" << Gs);
 
-            std::cerr << "Omega=" << Omega0 << std::endl;
-            std::cerr << "rhs  =" << xi     << std::endl;
 
         EVAL_XI:
             iOmega.assign(Omega0);
@@ -185,7 +200,7 @@ namespace yack
 
             transfer(C,Ctry);
 
-            if(cycle>=20)
+            if(cycle>=1)
             {
                 exit(1);
             }
