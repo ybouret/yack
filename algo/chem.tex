@@ -111,39 +111,28 @@ If we start from
 \begin{equation}
 \left\lbrace
 \begin{array}{rcl}
-	\vec{C}'_i & = & \vec{C} + \Xi_i \vec{\nu}_i\\
-	\Gamma_i(\vec{C}'_i) & = & 0\\
+	\vec{C}_i' & = & \vec{C} + \Xi_i \vec{\nu}_i\\
+	\Gamma_i(\vec{C}_i') & = & 0\\
 \end{array}
 \right.
 \end{equation}
 
-We look for $\vec{C}^\star$ such that:
+Let us move at $\delta \vec{C}$ from $\vec{C}$:
 \begin{equation}
-	\vec{C}^\star = \vec{C} + \bm{\nu}^T \vec{\xi} \text{ and } \vec{\Gamma}(\vec{C}^\star) \approx 0
+	\Gamma_i\left(\vec{C}_i' + \underbrace{\vec{C} - \vec{C}_i'}_{-\Xi_i \vec{\nu}_i} + \delta\vec{C} + x_i \vec{\nu}_i \right) = 0
 \end{equation}
 
 \begin{equation}
-	\forall i, \;\; \Gamma_i(\vec{C}^\star) = \Gamma_i \left((\vec{C}'_i + (\vec{C}^\star - \vec{C}_i') \right) \simeq \langle \vec{\Psi}_i' \vert  (\vec{C}^\star - \vec{C}_i') \rangle
-\end{equation}
-so that:
-\begin{equation}
-	\bm{\Psi}' \left( \vec{C} + \bm{\nu}^T \vec{\xi} \right) =
-	\begin{bmatrix}
-	\vdots\\
-	\langle \vec{\Psi}_i' \vert \vec{C}_i' \rangle \\
-	\vdots\\
-	\end{bmatrix}
-\end{equation}
-and
-\begin{equation}
-	\bm{\Psi}' \bm{\nu}^T \vec{\xi} = 
-	\begin{bmatrix}
-	\vdots\\
-	\langle \vec{\Psi}_i' \vert \vec{C}_i' \rangle -  \langle \vec{\Psi}_i' \vert \vec{C} \rangle \\
-	\vdots\\
-	\end{bmatrix}
+	\langle \vec{\Psi}_i' \vert -\Xi_i \vec{\nu}_i + \delta\vec{C} + x_i \vec{\nu}_i \rangle = 0
+	 \Rightarrow 
+	 x_i = \Xi_i - \dfrac{\langle \vec{\Psi}_i'\vert\delta\vec{C}\rangle}{\langle \vec{\Psi}_i' \vert \vec{\nu}_i \rangle} 
 \end{equation}
 
+\begin{equation}
+	\vec{\gamma}_i = 
+	\left[ \Xi_i - \dfrac{\langle \vec{\Psi}_i'\vert\delta\vec{C}\rangle}{\langle \vec{\Psi}_i' \vert \vec{\nu}_i \rangle} \right] \vec{\nu}_i
+\end{equation} 
+is the pulling extent to $\vec{C}_i'$ from $\vec{C}+\delta\vec{C}$.
  	 	
 \subsection{Regularization}
 We define:

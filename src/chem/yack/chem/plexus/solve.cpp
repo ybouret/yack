@@ -57,45 +57,66 @@ namespace yack
 
             {
                 size_t cycle = 0;
-                rmatrix Omega(N,N);
+                rmatrix Omega0(N,N);
+                rmatrix iOmega(N,N);
             CYCLE:
                 ++cycle;
                 const double rms = computeMissing(C);
                 ios::ocstream::echo("rms.dat","%g %.15g\n", double(cycle), rms);
                 for(size_t i=N;i>0;--i)
                 {
-                    writable<double>       &Omi = Omega[i];
+                    writable<double>       &Omi = Omega0[i];
                     const readable<double> &psi = Psi[i];
                     double                 &rhs = xi[i];
-                    const double            den = tao::v1::mod2<double>::of(psi);
-                    if(den>0)
-                    {
-                        for(size_t j=N;j>0;--j)
-                        {
-                            Omi[j] = xdot(psi,Nu[j],Ctmp);
-                        }
-                        rhs  = xdot(psi,Ceq[i],Ctmp);
-                        rhs -= xdot(psi,C,Ctmp);
-                    }
-                    else
-                    {
-                        Omi.ld(0);
-                        Omi[i] = 1.0;
-                        rhs    = 0;
-                    }
+                    const double            den = xdot(psi,Nu[i],Ctmp);
 
+                    Omi.ld(0);
+                    Omi[i] = 1.0;
+                    rhs    = 0;
+                    if(fabs(den)>0)
+                    {
+                        for(size_t j=N;j>i;--j)   Omi[j] = xdot(psi,Nu[j],Ctmp)/den;
+                        for(size_t j=i-1;j>0;--j) Omi[j] = xdot(psi,Nu[j],Ctmp)/den;
+                        rhs  = Xi[i];
+                    }
                 }
-                std::cerr << "Omega=" << Omega << std::endl;
+                std::cerr << "Omega=" << Omega0 << std::endl;
                 std::cerr << "rhs  =" << xi    << std::endl;
 
-                if(!LU.build(Omega))
+                iOmega.assign(Omega0);
+                double dampening = 1;
+
+            EVAL_XI:
+                if(!LU.build(iOmega))
                 {
                     YACK_CHEM_PRINTLN("// <plexus.solve/> [failure]");
                     return false;
                 }
 
-                LU.solve(Omega,xi);
+                LU.solve(iOmega,xi);
                 if(verbose) eqs(std::cerr << "xi0=",xi);
+
+                for(size_t i=N;i>0;--i)
+                {
+                    if( xi[i] * Xi[i] < 0 )
+                    {
+                        std::cerr << "\t -------- unsafe --------" << std::endl;
+                        dampening *= 10;
+                        for(size_t j=N;j>0;--j)
+                        {
+                            Omega0[j][j] *= dampening;
+                            xi[j] = Xi[j];
+                        }
+                        iOmega.assign(Omega0);
+                        goto EVAL_XI;
+
+                    }
+
+                }
+
+
+
+
 
                 // correcting
                 for(const enode *node=eqs.head();node;node=node->next)
@@ -129,6 +150,7 @@ namespace yack
                 }
                 if(verbose) eqs(std::cerr << "xi1=",xi);
 
+
                 ustack.free();
                 rstack.free();
                 for(const anode *node=active.head;node;node=node->next)
@@ -145,6 +167,7 @@ namespace yack
                 }
                 std::cerr << "C="  << C  << std::endl;
                 std::cerr << "dC=" << dC << std::endl;
+
 
                 double     factor = 1.0;
                 const bool scaled = rstack.size()>0;
@@ -169,6 +192,7 @@ namespace yack
 
                 if(verbose) lib(std::cerr << "Ctry=",Ctry);
 
+                
                 transfer(C,Ctry);
 
                 if(cycle>=10)
