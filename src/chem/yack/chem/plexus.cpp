@@ -145,6 +145,15 @@ namespace yack
             }
         }
 
+        bool plexus:: are_valid(const readable<double>  &C) throw()
+        {
+            for(const anode *node=active.head;node;node=node->next)
+            {
+                const size_t j = ***node;
+                if(C[j]<0) return false;
+            }
+            return true;
+        }
 
         
     }

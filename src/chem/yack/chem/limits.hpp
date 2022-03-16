@@ -50,6 +50,9 @@ namespace yack
             //! clamp according to limits
             void clamp(double &xi) const throw();
 
+            //! check acceptable value
+            bool is_acceptable(const double xi) const throw();
+
 
         private:
             YACK_DISABLE_COPY_AND_ASSIGN(limits);

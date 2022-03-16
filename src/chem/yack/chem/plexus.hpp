@@ -78,7 +78,9 @@ namespace yack
 
             //! compute Xi, Ceq and Psi at Ceq for each equilibrium
             double computeMissing(const readable<double>  &C)    throw();
-            
+
+            //! check active concentrations
+            bool are_valid(const readable<double>  &C) throw();
             
 
             //! transfer active species only

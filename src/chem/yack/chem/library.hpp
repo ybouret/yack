@@ -52,8 +52,8 @@ namespace yack
 
 
             //! display named values
-            template <typename T> inline
-            void operator()(std::ostream &os, const readable<T> &arr) const
+            template <typename ARR> inline
+            void operator()(std::ostream &os, ARR &arr) const
             {
                 os << '{' << std::endl;
                 for(const snode *node=head();node;node=node->next)
