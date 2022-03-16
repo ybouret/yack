@@ -77,7 +77,7 @@ namespace yack
         //! two arguments setup
         template <typename U, typename V>
         void add(typename type_traits<U>::parameter_type u,
-                 typename type_traits<U>::parameter_type v)
+                 typename type_traits<V>::parameter_type v)
         {
             new (basis+count) T(u,v);
             ++coerce(count);
