@@ -14,8 +14,8 @@ namespace yack
     namespace concurrent
     {
 
-        typedef uint32_t                     job_uuid;
-        typedef functor<void,TL1(lockable&)> job_type;
+        typedef uint32_t                     job_uuid; //!< alias
+        typedef functor<void,TL1(lockable&)> job_type; //!< alias
 
      
 
@@ -23,12 +23,12 @@ namespace yack
         class queue
         {
         public:
-            virtual ~queue() throw();
+            virtual ~queue() throw(); //!< cleanup
 
 
 
         protected:
-            explicit queue() throw();
+            explicit queue() throw(); //!< setup
 
 
         private:

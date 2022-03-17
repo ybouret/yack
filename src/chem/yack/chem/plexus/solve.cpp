@@ -150,11 +150,18 @@ namespace yack
 
             switch(N)
             {
-                case 0: // trivial case
+
+                case 0:
+                    //----------------------------------------------------------
+                    // trivial case
+                    //----------------------------------------------------------
                     YACK_CHEM_PRINTLN("// <plexus.solve/> [empty]");
                     return true;
 
-                case 1: { // trivial case
+                case 1: {
+                    //----------------------------------------------------------
+                    // trivial case
+                    //----------------------------------------------------------
                     const equilibrium &eq = ***eqs.head();
                     (void) eq.solve1D(K[*eq],C,Ctry);
                     transfer(C,Ctry);
@@ -164,7 +171,9 @@ namespace yack
 
 
                 default:
+                    //----------------------------------------------------------
                     // prepare workspace
+                    //----------------------------------------------------------
                     tao::v1::load(Ctry,C);
                     break;
             }

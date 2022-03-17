@@ -93,6 +93,7 @@ namespace yack
             ++coerce(count);
         }
 
+        //! pop/clean last item
         inline void pop() throw()
         {
             assert(count);
