@@ -67,7 +67,7 @@ namespace yack
         inline size_t capacity() const throw() { return total; }
 
         //! one argument setup
-        template <typename U>
+        template <typename U> inline
         void add(typename type_traits<U>::parameter_type u)
         {
             new (basis+count) T(u);
@@ -75,12 +75,28 @@ namespace yack
         }
 
         //! two arguments setup
-        template <typename U, typename V>
+        template <typename U, typename V> inline
         void add(typename type_traits<U>::parameter_type u,
                  typename type_traits<V>::parameter_type v)
         {
             new (basis+count) T(u,v);
             ++coerce(count);
+        }
+
+        //! three arguments setup
+        template <typename U, typename V, typename W> inline
+        void add(typename type_traits<U>::parameter_type u,
+                 typename type_traits<V>::parameter_type v,
+                 typename type_traits<W>::parameter_type w)
+        {
+            new (basis+count) T(u,v,w);
+            ++coerce(count);
+        }
+
+        inline void pop() throw()
+        {
+            assert(count);
+            out_of_reach::naught( destructed( &basis[--coerce(count)] ) );
         }
 
 

@@ -16,14 +16,17 @@ namespace yack
         class agent
         {
         public:
-            agent(mutex &, size_t &);
+            agent(size_t    &,
+                  mutex     &,
+                  condition &);
             ~agent() throw();
 
-            agent    *next;
-            agent    *prev;
-            mutex    &sync;
-            condition cond;
-            size_t   &ready;
+            agent       *next;
+            agent       *prev;
+            size_t      &live;
+            mutex       &sync;
+            condition   &comm;
+            condition    cond;
             const size_t indx;
             static    void enroll(void *) throw();
 
@@ -42,9 +45,10 @@ namespace yack
             virtual ~agency() throw();
             
         private:
-            cxx_series<agent> crew;
             mutex             sync;
-            size_t            ready;
+            condition         comm;
+            size_t            live;
+            cxx_series<agent> crew;
         };
 
     }

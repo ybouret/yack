@@ -9,13 +9,15 @@ namespace yack
     namespace concurrent
     {
 
-        agent:: agent(mutex  &shared_sync,
-                      size_t &shared_ready) :
+        agent:: agent(size_t    &shared_live,
+                      mutex     &shared_sync,
+                      condition &shared_comm) :
         next(0),
         prev(0),
+        live(shared_live),
         sync(shared_sync),
+        comm(shared_comm),
         cond(),
-        ready(shared_ready),
         indx(0),
         thr(enroll,this)
         {
@@ -23,7 +25,11 @@ namespace yack
 
         agent:: ~agent() throw()
         {
-
+            {
+                YACK_LOCK(sync);
+                std::cerr << "~agent#" << indx << std::endl;
+            }
+            cond.signal();
         }
 
         void agent:: enroll(void *args) throw()
@@ -34,15 +40,23 @@ namespace yack
 
         void agent:: mission() throw()
         {
-            // entering missing
+            // entering mission
             sync.lock();
-            coerce(indx) = ++ready;
+            coerce(indx) = ++live;
             std::cerr << "agent #" << indx << std::endl;
             std::cerr.flush();
+
+            //
+            comm.broadcast();
 
             // first wait
             cond.wait(sync);
 
+            // wake up on a locked mutex
+            std::cerr << "wake up #" << indx << std::endl;
+
+            --live;
+            sync.unlock();
         }
 
     }
@@ -54,14 +68,16 @@ namespace yack
 {
     namespace concurrent
     {
+
         agency:: ~agency() throw()
         {
         }
 
         agency:: agency(const size_t n) :
-        crew(n),
         sync(),
-        ready(0)
+        comm(),
+        live(0),
+        crew(n)
         {
             assert(n>0);
 
@@ -69,14 +85,22 @@ namespace yack
             {
                 for(size_t i=1;i<=n;++i)
                 {
-                    crew.add<mutex&,size_t&>(sync,ready);
+                    crew.add<size_t&,mutex&,condition&>(live,sync,comm);
+                    sync.lock();
+                    if(i!=live)
+                    {
+                        std::cerr << "waiting for #" << i << std::endl;
+                        comm.wait(sync);
+                    }
+                    sync.unlock();
                 }
 
-                
+                std::cerr << "synchronized!" << std::endl;
+
+
             }
             catch(...)
             {
-
                 throw;
             }
 
