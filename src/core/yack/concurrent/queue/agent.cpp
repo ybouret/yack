@@ -74,6 +74,8 @@ namespace yack
         }
 
         agency:: agency(const size_t n) :
+        working(),
+        waiting(),
         sync(),
         comm(),
         live(0),
