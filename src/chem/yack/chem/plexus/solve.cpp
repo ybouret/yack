@@ -245,7 +245,7 @@ namespace yack
             //
             //------------------------------------------------------------------
             LU.solve(iOmega,xi);
-            eqs(std::cerr << "//   xi  = ",xi,"//   ");
+            if(verbose) eqs(std::cerr << "//   xi  = ",xi,"//   ");
 
 
             //------------------------------------------------------------------
@@ -264,7 +264,7 @@ namespace yack
                 }
                 if(!lm.is_acceptable(xi[ei]))
                 {
-                    std::cerr << "//   |_inacceptable <" << eq.name << "> = " << xi[ei] << std::endl;
+                    YACK_CHEM_PRINTLN("//   |_inacceptable <" << eq.name << "> = " << xi[ei]);
                     Omega0[ei][ei] *= 10;
                     tao::v1::set(xi,xm);
                     goto EVAL_XI;
@@ -291,10 +291,13 @@ namespace yack
                 }
             }
             hsort(rstack,ustack,comparison::increasing<double>);
-            std::cerr << "C0 = " << Corg  << std::endl;
-            std::cerr << "dC = " << dC   << std::endl;
-            
-            std::cerr << "rstack=" << rstack << " for " << ustack << std::endl;
+
+            if(verbose)
+            {
+                std::cerr << "C0 = " << Corg  << std::endl;
+                std::cerr << "dC = " << dC    << std::endl;
+                std::cerr << "rstack=" << rstack << " for " << ustack << std::endl;
+            }
 
             double scale = rstack.size() ? rstack.front() : 1.0;
 
@@ -308,6 +311,7 @@ namespace yack
             const double    g0 = rmsOfGamma();
             const double    g1 = rmsOfGamma(Ctry);
 
+            if(false)
             {
                 ios::ocstream fp("rms.dat");
                 const double umax = min_of(scale,1.5);
@@ -317,17 +321,17 @@ namespace yack
                 }
             }
 
-            std::cerr << "g0=" << g0 << ", g1=" << g1 << std::endl;
             triplet<double> x = {  0, -1,  1 };
             triplet<double> g = { g0, -1, g1 };
             minimize::find<double>::run_for(self,x,g,minimize::inside);
 
+            YACK_CHEM_PRINTLN("//   g: " << g0 << " -> " << g1);
+            YACK_CHEM_PRINTLN("//   g(" << x.b << ") = " << g.b);
 
-            std::cerr << " => g=" << g.b << " @" << x.b << std::endl;
 
             if(g.b>=g0)
             {
-                std::cerr << "converged!" << std::endl;
+                YACK_CHEM_PRINTLN("// <plexus.solve/> [converged]");
                 transfer(C,Ctry);
                 computeState(C);
                 return true;
@@ -336,11 +340,8 @@ namespace yack
 
 
             transfer(Corg,Ctry);
-
-
             goto CYCLE;
 
-            return false;
 
         }
 

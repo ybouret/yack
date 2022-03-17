@@ -5,6 +5,7 @@
 #include "yack/chem/plexus.hpp"
 #include "yack/utest/run.hpp"
 #include "yack/system/env.hpp"
+#include "yack/counting/comb.hpp"
 
 using namespace yack;
 using namespace chemical;
@@ -28,27 +29,52 @@ YACK_UTEST(plexus)
 
     plexus cs(lib,eqs);
 
+    vector<species*> active(cs.active.size,as_capacity);
+    for(const anode *node=cs.active.head;node;node=node->next)
+    {
+        active << (species *) & **node;
+    }
+    const size_t na = active.size();
+
+    for(size_t i=1;i<=na;++i)
+    {
+        std::cerr << "  (*) " << active[i]->name << std::endl;
+    }
+
     vector<double> C(cs.M,0);
     lib.fill(C, 1, ran);
 
     cs.computeK(0);
 
-    cs.computeGamma(C);
-    std::cerr << "Gamma = " << cs.Gamma << std::endl;
-    cs.computePsi(C);
-    std::cerr << "Psi   = " << cs.Psi << std::endl;
-
-    cs.computeState(C);
-    std::cerr << "Gamma = " << cs.Gamma << std::endl;
-    std::cerr << "Psi   = " << cs.Psi << std::endl;
-
-    
-
     C.ld(0);
     cs.solve(C);
 
-    lib.fill(C,1,ran);
-    cs.solve(C);
+    for(size_t nz=1;nz<=active.size();++nz)
+    {
+        combination comb(na,nz);
+        do
+        {
+            std::cerr << "-- using";
+            for(size_t i=1;i<=nz;++i)
+            {
+                std::cerr << " " << active[comb[i]]->name;
+            }
+            std::cerr << std::endl;
+
+            {
+                C.ld(0);
+                for(size_t i=nz;i>0;--i)
+                {
+                    C[ comb[i] ] = species::concentration(ran);
+                }
+            }
+            lib(std::cerr << "Cini=",C);
+            cs.solve(C);
+            lib(std::cerr << "Cend=",C);
+
+        } while(comb.next());
+
+    }
 
 
     
