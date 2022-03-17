@@ -76,6 +76,9 @@ namespace yack
              */
             void regularize(writable<double> &C) throw();
 
+            //! compute Omega0, Gs, and set first xi = xm = -Gamma for solving
+            void makeOmega0() throw();
+
 
             //__________________________________________________________________
             //
@@ -98,6 +101,7 @@ namespace yack
             tableau          &xi;      //!< [N] current   xi
             tableau          &xs;      //!< [N] helper
             tableau          &Gs;      //!< [N] Gamma scaling
+            tableau          &xm;      //!< [N] -Gamma
 
             tableau          &Ctmp;    //!< [M] temporary C
             tableau          &Ctry;    //!< [M] trial C

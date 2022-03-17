@@ -53,15 +53,17 @@ namespace yack
 
             //! display named values
             template <typename ARR> inline
-            void operator()(std::ostream &os, ARR &arr) const
+            void operator()(std::ostream &os, ARR &arr, const char *pfx = NULL) const
             {
+                if(!pfx) pfx="";
                 os << '{' << std::endl;
                 for(const snode *node=head();node;node=node->next)
                 {
                     const species &s = ***node;
-                    pad(os<< ' ' << '[' << s.name << ']',s) << " = " << arr[*s] << std::endl;
+                    pad(os<< pfx << ' ' << '[' << s.name << ']',s) << " = " << arr[*s];
+                    if(node->next) os << std::endl;
                 }
-                os << '}' << std::endl;
+                os << ' ' << '}' << std::endl;
             }
 
             //! declare/recall species

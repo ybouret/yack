@@ -86,55 +86,7 @@ Indeed, $\Xi_i$ is solution of:
 
 And each $\Xi_i$ respects all the limiting extents.
 
-%\begin{equation}
-%\begin{array}{rcr}
-%	- F'_i(X) & = & 
-%	\displaystyle
-%	K_i \sum_j 
-%	\left[
-%	\left(\nu_{ij}^r\right)^2 \left([A_j] - X \nu^r_{ij}\right)^{\nu^r_{ij}-1} 
-%	\prod_{k\not=j} \left([A_k] - X \nu^r_{ik}\right)^{\nu^r_{ik}} 
-% 	\right]\\
-%	\\
-%	& + &
-%	\displaystyle
-%	\sum_j \left[
-%	\left(\nu_{ij}^p\right)^2 \left([A_j] + X \nu^p_{ij}\right)^{\nu^p_{ij}-1} 
-%	\prod_{k\not=j} \left([A_k] + X \nu^p_{ik}\right)^{\nu^p_{ik}} 
-% 	\right]\\
-%\end{array}
-%\end{equation}
-
-
-\subsection{Change of each $\Xi$}
-If we start from
-\begin{equation}
-\left\lbrace
-\begin{array}{rcl}
-	\vec{C}_i' & = & \vec{C} + \Xi_i \vec{\nu}_i\\
-	\Gamma_i(\vec{C}_i') & = & 0\\
-\end{array}
-\right.
-\end{equation}
-
-Let us move at $\delta \vec{C}$ from $\vec{C}$:
-\begin{equation}
-	\Gamma_i\left(\vec{C}_i' + \underbrace{\vec{C} - \vec{C}_i'}_{-\Xi_i \vec{\nu}_i} + \delta\vec{C} + x_i \vec{\nu}_i \right) = 0
-\end{equation}
-
-\begin{equation}
-	\langle \vec{\Psi}_i' \vert -\Xi_i \vec{\nu}_i + \delta\vec{C} + x_i \vec{\nu}_i \rangle = 0
-	 \Rightarrow 
-	 x_i = \Xi_i - \dfrac{\langle \vec{\Psi}_i'\vert\delta\vec{C}\rangle}{\langle \vec{\Psi}_i' \vert \vec{\nu}_i \rangle} 
-\end{equation}
-
-\begin{equation}
-	\vec{\gamma}_i = 
-	\left[ \Xi_i - \dfrac{\langle \vec{\Psi}_i'\vert\delta\vec{C}\rangle}{\langle \vec{\Psi}_i' \vert \vec{\nu}_i \rangle} \right] \vec{\nu}_i
-\end{equation} 
-is the pulling extent to $\vec{C}_i'$ from $\vec{C}+\delta\vec{C}$.
- 	 	
-\subsection{Regularization}
+ \subsection{Regularization}
 We define:
 \begin{equation}
 \vec{\Psi}_i = \partial_{\vec{C}} \Gamma_i.
@@ -143,11 +95,19 @@ If $|\vec{\Psi}_i|=0$, then we solve $\Gamma_i$. If we still have $|\vec{\Psi}_i
 
 \subsection{Evolution}
 
+We start from a regularized $\vec{C}$ and some possibly blocked equilibria. We 
+want to solve:
 \begin{equation}
-	\vec{\Gamma}(\vec{C}+\bm{\nu}^T \vec{\xi}) \simeq \vec{\Gamma} + \bm{\Psi} \bm{\nu}^T \vec{\xi}
+	\vec{0} = 	\vec{\Gamma}(\vec{C}+\bm{\nu}^T \vec{\xi}) \simeq \vec{\Gamma} + \bm{\Psi} \bm{\nu}^T \vec{\xi}
+\end{equation}
+
+\begin{equation}
+	\bm{\Omega} = \bm{\Psi} \bm{\nu}^T
 \end{equation}	
 
-All the terms of $	\bm{\Psi} \bm{\nu}^T $ are $\leq 0$.
+\begin{equation}
+	\vec{\xi} = \tilde{\bm{\Omega}}^{-1} \cdot (-\vec{\Gamma} )
+\end{equation}
 
 
 

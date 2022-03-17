@@ -44,8 +44,14 @@ YACK_UTEST(plexus)
 
     
 
-    //C.ld(0);
+    C.ld(0);
     cs.solve(C);
+
+    lib.fill(C,1,ran);
+    cs.solve(C);
+
+
+    
 
 }
 YACK_UDONE()
