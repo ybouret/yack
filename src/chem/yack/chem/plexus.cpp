@@ -39,7 +39,8 @@ namespace yack
         xs(    ntab.next() ),
         Gs(    ntab.next() ),
         xm(    ntab.next() ),
-        
+
+        Corg(  mtab.next() ),
         Ctmp(  mtab.next() ),
         Ctry(  mtab.next() ),
         dC(    mtab.next() ),
@@ -171,6 +172,7 @@ namespace yack
             return true;
         }
 
+        
         
     }
 

@@ -77,7 +77,16 @@ namespace yack
             void regularize(writable<double> &C) throw();
 
             //! compute Omega0, Gs, and set first xi = xm = -Gamma for solving
-            void makeOmega0() throw();
+            void   makeOmega0() throw();
+
+            //! compute rms(Gamma/Gs)
+            double rmsOfGamma() throw();
+
+
+            //! computeGamma, rmsOfGamma
+            double rmsOfGamma(const readable<double> &C) throw();
+
+            double operator()(const double u) throw();
 
 
             //__________________________________________________________________
@@ -103,6 +112,7 @@ namespace yack
             tableau          &Gs;      //!< [N] Gamma scaling
             tableau          &xm;      //!< [N] -Gamma
 
+            tableau          &Corg;    //!< [M] working space
             tableau          &Ctmp;    //!< [M] temporary C
             tableau          &Ctry;    //!< [M] trial C
             tableau          &dC;      //!< [M] delta C

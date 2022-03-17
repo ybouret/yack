@@ -7,6 +7,7 @@
 #include "yack/exception.hpp"
 #include "yack/math/timings.hpp"
 #include "yack/sequence/stats.hpp"
+#include "yack/math/opt/minimize.hpp"
 #include <cmath>
 
 namespace yack
@@ -132,6 +133,32 @@ namespace yack
         }
 
 
+        double plexus:: rmsOfGamma() throw()
+        {
+            for(size_t i=N;i>0;--i)
+            {
+                xs[i] = blocked[i] ? 0 : squared(Gamma[i]/Gs[i]);
+            }
+            return sorted::sum(xs,sorted::by_value) / N;
+        }
+
+        double plexus:: rmsOfGamma(const readable<double> &C) throw()
+        {
+            computeGamma(C);
+            return rmsOfGamma();
+        }
+
+        double plexus:: operator()(const double u) throw()
+        {
+            for(const anode *node=active.head;node;node=node->next)
+            {
+                const species &s = **node;
+                const size_t   j = *s;
+                Ctry[j] = max_of( Corg[j] + u * dC[j], 0.0);
+            }
+            return rmsOfGamma(Ctry);
+        }
+
         bool plexus:: solve(writable<double> &C) throw()
         {
             assert(C.size()>=M);
@@ -146,7 +173,6 @@ namespace yack
             //------------------------------------------------------------------
             YACK_CHEM_PRINTLN("// <plexus.solve>");
             if(verbose) lib(std::cerr << "//   Cini=",C,"//   ");
-            ios::ocstream::overwrite("rms.dat");
 
             switch(N)
             {
@@ -174,7 +200,10 @@ namespace yack
                     //----------------------------------------------------------
                     // prepare workspace
                     //----------------------------------------------------------
-                    tao::v1::load(Ctry,C);
+                    for(size_t j=M;j>0;--j)
+                    {
+                        Corg[j] = Ctry[j] = C[j];
+                    }
                     break;
             }
 
@@ -184,6 +213,7 @@ namespace yack
             //
             //------------------------------------------------------------------
             size_t       cycle = 0;
+            plexus      &self  = *this;
 
         CYCLE:
             ++cycle;
@@ -192,8 +222,8 @@ namespace yack
             // preparation
             //
             //------------------------------------------------------------------
-            regularize(C); // perform regularization
-            makeOmega0();  // build initial matrix, right hand side and scaling for Gamma
+            regularize(Corg); // perform regularization of Corg
+            makeOmega0();     // build initial matrix, right hand side and scaling for Gamma
 
 
         EVAL_XI:
@@ -227,22 +257,21 @@ namespace yack
             {
                 const equilibrium &eq  = ***node;
                 const size_t       ei  = *eq;
-                const limits      &lm  = eq.primary_limits(C,lib.width);
+                const limits      &lm  = eq.primary_limits(Corg,lib.width);
                 if(verbose)
                 {
                     eqs.pad(std::cerr << "//   " << eq.name,eq) << " : " << lm << std::endl;
                 }
                 if(!lm.is_acceptable(xi[ei]))
                 {
-                    std::cerr << "//   |_inacceptable" << std::endl;
-                    Omega0[ei][ei] *= 2;
+                    std::cerr << "//   |_inacceptable <" << eq.name << "> = " << xi[ei] << std::endl;
+                    Omega0[ei][ei] *= 10;
                     tao::v1::set(xi,xm);
                     goto EVAL_XI;
                 }
             }
 
-            ios::ocstream::echo("rms.dat", "%g %.15g\n", double(cycle), tao::v1::mod2<double>::of(xi)/N);
-            
+
             // dC
             dC.ld(0);
             rstack.free();
@@ -252,34 +281,63 @@ namespace yack
                 const species &s = **node;
                 const size_t   j = *s;
                 const double   d = dC[j] = xdot(xi,NuT[j],xs);
-                const double   c = C[j]; assert(c>=0);
-                if( (d<0) && (d <= -c) )
+                const double   c = Corg[j]; assert(c>=0);
+                if( (d<0)
+                   //&& (d <= -c)
+                   )
                 {
                     rstack << c/(-d);
                     ustack << j;
                 }
             }
             hsort(rstack,ustack,comparison::increasing<double>);
-            std::cerr << "C  = " << C  << std::endl;
-            std::cerr << "dC = " << dC << std::endl;
-
+            std::cerr << "C0 = " << Corg  << std::endl;
+            std::cerr << "dC = " << dC   << std::endl;
+            
             std::cerr << "rstack=" << rstack << " for " << ustack << std::endl;
+
+            double scale = rstack.size() ? rstack.front() : 1.0;
 
             for(const anode *node=active.head;node;node=node->next)
             {
                 const species &s = **node;
                 const size_t   j = *s;
-                Ctry[j] = max_of( C[j] + dC[j], 0.0);
+                Ctry[j] = max_of( Corg[j] + dC[j], 0.0);
             }
 
-            transfer(C,Ctry);
+            const double    g0 = rmsOfGamma();
+            const double    g1 = rmsOfGamma(Ctry);
 
-            return false;
-
-            if(cycle>=1)
             {
-                exit(1);
+                ios::ocstream fp("rms.dat");
+                const double umax = min_of(scale,1.5);
+                for(double u=0;u<=umax;u+=0.001)
+                {
+                    fp("%g %g\n", u, self(u) );
+                }
             }
+
+            std::cerr << "g0=" << g0 << ", g1=" << g1 << std::endl;
+            triplet<double> x = {  0, -1,  1 };
+            triplet<double> g = { g0, -1, g1 };
+            minimize::find<double>::run_for(self,x,g,minimize::inside);
+
+
+            std::cerr << " => g=" << g.b << " @" << x.b << std::endl;
+
+            if(g.b>=g0)
+            {
+                std::cerr << "converged!" << std::endl;
+                transfer(C,Ctry);
+                computeState(C);
+                return true;
+            }
+
+
+
+            transfer(Corg,Ctry);
+
+
             goto CYCLE;
 
             return false;
