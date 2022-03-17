@@ -5,11 +5,19 @@
 #define YACK_SYNC_QUEUE_INCLUDED 1
 
 #include "yack/lockable.hpp"
+#include "yack/functor.hpp"
+#include "yack/data/list.hpp"
+#include "yack/data/pool.hpp"
 
 namespace yack
 {
     namespace concurrent
     {
+
+        typedef uint32_t                     job_uuid;
+        typedef functor<void,TL1(lockable&)> job_type;
+
+     
 
         //! queue of jobs
         class queue
@@ -17,8 +25,11 @@ namespace yack
         public:
             virtual ~queue() throw();
 
+
+
         protected:
             explicit queue() throw();
+
 
         private:
             YACK_DISABLE_COPY_AND_ASSIGN(queue);

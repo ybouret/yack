@@ -8,6 +8,27 @@ namespace yack
 {
     namespace concurrent
     {
+        job_node:: ~job_node() throw()
+        {
+
+        }
+
+        job_node:: job_node(const job_uuid i, const job_type &j ) :
+        uuid(i),
+        next(0),
+        prev(0),
+        todo(j)
+        {
+        }
+    }
+
+}
+
+
+namespace yack
+{
+    namespace concurrent
+    {
 
         agent:: agent(size_t    &shared_live,
                       mutex     &shared_sync,

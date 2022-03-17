@@ -6,6 +6,7 @@ namespace yack
     namespace concurrent
     {
 
+
         queue:: ~queue() throw()
         {
         }
