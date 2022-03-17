@@ -98,7 +98,7 @@ namespace yack
             {
                 computeState(C);
             }
-
+            for(size_t i=N;i>0;--i) sg[i] = __sign::of(Gamma[i]);
             YACK_CHEM_PRINTLN("//   <plexus.regularize/>");
         }
 
@@ -212,8 +212,10 @@ namespace yack
             // Loop
             //
             //------------------------------------------------------------------
-            size_t       cycle = 0;
-            plexus      &self  = *this;
+            size_t         cycle = 0;
+            plexus        &self  = *this;
+            rmatrix        Ceq(N,M);
+            vector<double> Xi(N,0);
 
         CYCLE:
             ++cycle;
@@ -224,6 +226,21 @@ namespace yack
             //------------------------------------------------------------------
             regularize(Corg); // perform regularization of Corg
             makeOmega0();     // build initial matrix, right hand side and scaling for Gamma
+
+            for(const enode *node=eqs.head();node;node=node->next)
+            {
+                const equilibrium &eq  = ***node;
+                const size_t       ei  = *eq;
+                Xi[ei] = eq.solve1D(K[ei],Corg,Ceq[ei]);
+            }
+            if(verbose)
+            {
+                eqs(std::cerr << "//   Xi   = ",xi,"//   ");
+                eqs(std::cerr << "//   Ceq  = ",Ceq,"//   ");
+            }
+
+            exit(1);
+
 
 
         EVAL_XI:
@@ -258,21 +275,43 @@ namespace yack
                 const equilibrium &eq  = ***node;
                 const size_t       ei  = *eq;
                 const limits      &lm  = eq.primary_limits(Corg,lib.width);
+                double            &xx  = xi[ei];
                 if(verbose)
                 {
                     eqs.pad(std::cerr << "//   " << eq.name,eq) << " : " << lm << std::endl;
                 }
-                if(!lm.is_acceptable(xi[ei]))
+
+#if 0
+                const sign_type ps = __sign::product(sg[ei],__sign::of(xx));
+                std::cerr << "sign product: " << __sign::text(ps) << std::endl;
+                switch(ps)
                 {
-                    YACK_CHEM_PRINTLN("//   |_inacceptable <" << eq.name << "> = " << xi[ei]);
+                    case negative:
+                    case __zero__:
+                        YACK_CHEM_PRINTLN("//   |_cutting <" << eq.name << "> = " << xx);
+                        xx = 0;
+                        break;
+
+                    case positive:
+                        break;
+                }
+#endif
+
+                if(!lm.is_acceptable(xx))
+                {
+                    YACK_CHEM_PRINTLN("//   |_inacceptable <" << eq.name << "> = " << xx);
                     Omega0[ei][ei] *= 10;
                     tao::v1::set(xi,xm);
                     goto EVAL_XI;
                 }
+                
             }
 
-
-            // dC
+            //------------------------------------------------------------------
+            //
+            // all the primary limits are met: compute delta C
+            //
+            //------------------------------------------------------------------
             dC.ld(0);
             rstack.free();
             ustack.free();
@@ -282,30 +321,41 @@ namespace yack
                 const size_t   j = *s;
                 const double   d = dC[j] = xdot(xi,NuT[j],xs);
                 const double   c = Corg[j]; assert(c>=0);
-                if( (d<0)
-                   //&& (d <= -c)
-                   )
+                if( (d<0) && (d <= -c) )
                 {
                     rstack << c/(-d);
                     ustack << j;
                 }
             }
-            hsort(rstack,ustack,comparison::increasing<double>);
 
-            if(verbose)
+            YACK_CHEM_PRINTLN("//   C0 = " << Corg);
+            YACK_CHEM_PRINTLN("//   dC = " << dC);
+
+            double scaling = 1;
+            bool   limited = false;
+            if(rstack.size())
             {
-                std::cerr << "C0 = " << Corg  << std::endl;
-                std::cerr << "dC = " << dC    << std::endl;
+                hsort(rstack,ustack,comparison::increasing<double>);
                 std::cerr << "rstack=" << rstack << " for " << ustack << std::endl;
+                scaling = rstack.front();
+                limited = true;
+                YACK_CHEM_PRINTLN("//   limited @ " << scaling);
+                for(size_t j=M;j>0;--j)
+                {
+                    dC[j] *= scaling;
+                }
             }
 
-            double scale = rstack.size() ? rstack.front() : 1.0;
 
             for(const anode *node=active.head;node;node=node->next)
             {
                 const species &s = **node;
                 const size_t   j = *s;
                 Ctry[j] = max_of( Corg[j] + dC[j], 0.0);
+            }
+            if(limited)
+            {
+                Ctry[ ustack.front() ] = 0;
             }
 
             const double    g0 = rmsOfGamma();
@@ -314,7 +364,7 @@ namespace yack
             if(false)
             {
                 ios::ocstream fp("rms.dat");
-                const double umax = min_of(scale,1.5);
+                const double umax = min_of(scaling,1.5);
                 for(double u=0;u<=umax;u+=0.001)
                 {
                     fp("%g %g\n", u, self(u) );

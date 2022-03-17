@@ -104,13 +104,14 @@ namespace yack
             tableaux          mtab;
 
         public:
-            const alist       active;  //!< active species list
-            tableau          &K;       //!< [N] precomputed constants
-            tableau          &Gamma;   //!< [N] mass action
-            tableau          &xi;      //!< [N] current   xi
-            tableau          &xs;      //!< [N] helper
-            tableau          &Gs;      //!< [N] Gamma scaling
-            tableau          &xm;      //!< [N] -Gamma
+            const alist        active;  //!< active species list
+            tableau           &K;       //!< [N] precomputed constants
+            tableau           &Gamma;   //!< [N] mass action
+            tableau           &xi;      //!< [N] current   xi
+            tableau           &xs;      //!< [N] helper
+            tableau           &Gs;      //!< [N] Gamma scaling
+            tableau           &xm;      //!< [N] -Gamma
+            vector<sign_type>  sg;      //!< [N] signs of Gamma
 
             tableau          &Corg;    //!< [M] working space
             tableau          &Ctmp;    //!< [M] temporary C

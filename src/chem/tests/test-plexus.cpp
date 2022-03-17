@@ -38,7 +38,7 @@ YACK_UTEST(plexus)
 
     for(size_t i=1;i<=na;++i)
     {
-        std::cerr << "  (*) " << active[i]->name << std::endl;
+        //std::cerr << "  (*) " << active[i]->name << std::endl;
     }
 
     vector<double> C(cs.M,0);
@@ -47,7 +47,7 @@ YACK_UTEST(plexus)
     cs.computeK(0);
 
     C.ld(0);
-    cs.solve(C);
+   // cs.solve(C);
 
     for(size_t nz=1;nz<=active.size();++nz)
     {
@@ -77,8 +77,10 @@ YACK_UTEST(plexus)
     }
 
 
+    std::cerr << "lib=" << lib << std::endl;
+    std::cerr << "eqs=" << eqs << std::endl;
     
-
+    // VERBOSE=1 ./build/chem/tests/Debug/test-chem plexus 'ab:-[a]+[b]:1' 'ac:-[a]+[c]:2' 'bc:-[b]+2[c]:3'
 }
 YACK_UDONE()
 
