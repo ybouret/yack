@@ -4,7 +4,7 @@
 #define YACK_COUNTING_SCHEDULE_INCLUDED 1
 
 #include "yack/counting/counting.hpp"
-#include "yack/container/readable.hpp"
+#include "yack/container/writable.hpp"
 #include "yack/container/dynamic.hpp"
 
 namespace yack
@@ -24,7 +24,20 @@ namespace yack
         virtual size_t         granted()                const throw(); //!< dynamic interface
         virtual size_t       & operator[](const size_t)       throw(); //!< data[1..size()]
         virtual const size_t & operator[](const size_t) const throw(); //!< data[1..size()]
-        
+
+        //! access proxy
+        template <typename T> inline
+        const T & operator()(const readable<T> &arr, const size_t i) const throw()
+        {
+            return arr[ (*this)[i] ];
+        }
+
+        //! access proxy
+        template <typename T> inline
+        T & operator()(writable<T> &arr, const size_t i) const throw()
+        {
+            return arr[ (*this)[i] ];
+        }
         
     protected:
         //! setup memory

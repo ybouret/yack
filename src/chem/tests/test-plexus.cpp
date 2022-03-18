@@ -65,6 +65,7 @@ YACK_UTEST(plexus)
                 C.ld(0);
                 for(size_t i=nz;i>0;--i)
                 {
+                    comb(C,i) = 0;
                     C[ comb[i] ] = species::concentration(ran);
                 }
             }
