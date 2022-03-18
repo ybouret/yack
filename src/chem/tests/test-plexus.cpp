@@ -42,12 +42,14 @@ YACK_UTEST(plexus)
     }
 
     vector<double> C(cs.M,0);
-    lib.fill(C, 1, ran);
 
     cs.computeK(0);
 
     C.ld(0);
-   // cs.solve(C);
+    lib.fill(C, 1, ran);
+    cs.solve(C);
+
+    return 0;
 
     for(size_t nz=1;nz<=active.size();++nz)
     {

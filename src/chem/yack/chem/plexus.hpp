@@ -72,23 +72,12 @@ namespace yack
             //! regularize with precomputed K
             /**
              - check Psi and best effort move, setting blocked if necessary
-             - recompute Gamma and Psi
              */
             void regularize(writable<double> &C) throw();
 
             //! compute Omega0, Gs, and set first xi = xm = -Gamma for solving
             void   makeOmega0() throw();
-
-            //! compute rms(Gamma/Gs)
-            double rmsOfGamma() throw();
-
-
-            //! computeGamma, rmsOfGamma
-            double rmsOfGamma(const readable<double> &C) throw();
-
-            double operator()(const double u) throw();
-
-
+            
             //__________________________________________________________________
             //
             // members
@@ -109,9 +98,8 @@ namespace yack
             tableau           &Gamma;   //!< [N] mass action
             tableau           &xi;      //!< [N] current   xi
             tableau           &xs;      //!< [N] helper
-            tableau           &Gs;      //!< [N] Gamma scaling
             tableau           &xm;      //!< [N] -Gamma
-            vector<sign_type>  sg;      //!< [N] signs of Gamma
+            tableau           &Xi;      //!< [N] Xi
 
             tableau          &Corg;    //!< [M] working space
             tableau          &Ctmp;    //!< [M] temporary C
@@ -121,6 +109,7 @@ namespace yack
             const imatrix     Nu;      //!< [NxM] topology
             const imatrix     NuT;     //!< [MxN] Nu'
             rmatrix           Psi;     //!< [NxM] jacobian
+            rmatrix           Ceq;     //!< [NxM] primary eqs
             rmatrix           Omega0;  //!< [NxN]
             rmatrix           iOmega;  //!< [NxN]
             vector<bool>      blocked; //!< [N]

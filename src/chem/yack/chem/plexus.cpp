@@ -37,10 +37,9 @@ namespace yack
         Gamma( ntab.next() ),
         xi(    ntab.next() ),
         xs(    ntab.next() ),
-        Gs(    ntab.next() ),
         xm(    ntab.next() ),
-        sg(N,__zero__),
-
+        Xi(    ntab.next() ),
+        
         Corg(  mtab.next() ),
         Ctmp(  mtab.next() ),
         Ctry(  mtab.next() ),
@@ -50,6 +49,7 @@ namespace yack
         NuT(Nu.cols,Nu.rows),
 
         Psi(Nu.rows,Nu.cols),
+        Ceq(Nu.rows,Nu.cols),
         Omega0(N,N),
         iOmega(N,N),
         blocked(N,false),
