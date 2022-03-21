@@ -32,7 +32,7 @@ namespace yack
 
 
 
-        void plexus:: regularize(writable<double> &C) throw()
+        void plexus:: regularize(writable<double> &C0) throw()
         {
             //------------------------------------------------------------------
             //
@@ -58,19 +58,19 @@ namespace yack
                 //--------------------------------------------------------------
                 // first try
                 //--------------------------------------------------------------
-                gam  = eq.grad_action(psi,Ki,C,Ctmp);
+                gam  = eq.grad_action(psi,Ki,C0,Ctmp);
                 if( tao::v1::mod2<double>::of(psi) <= 0)
                 {
                     //----------------------------------------------------------
                     // move to a safer and still valid place
                     //----------------------------------------------------------
-                    (void) eq.solve1D(Ki,C,Ctry);
-                    transfer(C,Ctry);
+                    (void) eq.solve1D(Ki,C0,Ctry);
+                    transfer(C0,Ctry);
                     
                     //----------------------------------------------------------
                     // second try
                     //----------------------------------------------------------
-                    gam     = eq.grad_action(psi,Ki,C,Ctmp);
+                    gam     = eq.grad_action(psi,Ki,C0,Ctmp);
                     if( tao::v1::mod2<double>::of(psi) <= 0 )
                     {
                         blocked[ei] = true;
@@ -80,7 +80,7 @@ namespace yack
 
             if(verbose)
             {
-                lib(std::cerr << "//     Cini    = ",C,"//     ");
+                lib(std::cerr << "//     Cini    = ",C0,"//     ");
                 std::cerr <<     "//     blocked = " << blocked << std::endl;
             }
 
@@ -94,6 +94,7 @@ namespace yack
 
         void plexus:: makeOmega0() throw()
         {
+            // first pass, compute Psi'
             for(const enode *node=eqs.head();node;node=node->next)
             {
                 const equilibrium &eq  = ***node;
@@ -109,11 +110,23 @@ namespace yack
                 }
                 else
                 {
-                    xi[ei] = xm[ei] = -(Gamma[ei] = eq.mass_action(Ki,Corg));
+                    //xi[ei] = xm[ei] = -(Gamma[ei] = eq.mass_action(Ki,Corg));
                     Xi[ei] = eq.solve1D(Ki,Corg,Ci);
                     eq.drvs_action(psi,Ki,Ci,Ctmp);
+                    for(size_t i=M;i>0;--i)
+                    {
+                        Ctmp[i] = squared(psi[i]);
+                    }
+                    const double den = sqrt( sorted::sum(Ctmp,sorted::by_value) );
+                    for(size_t i=M;i>0;--i)
+                    {
+                        psi[i]/=den;
+                    }
                 }
             }
+
+            eqs(std::cerr << "//   Xi = ",Xi,"//   ");
+            eqs(std::cerr << "//   UM = ",Psi,"//   ");
 
             for(size_t i=N;i>0;--i)
             {
@@ -127,11 +140,11 @@ namespace yack
                 }
                 else
                 {
-                    const double xx = Xi[i];
                     for(size_t k=N;k>0;--k)
                     {
-                        Omi[k] = xx * xdot(psi,Nu[k],Ctmp);
+                        Omi[k] = xdot(psi,Nu[k],Ctmp);
                     }
+                    xi[i] = xm[i] = Xi[i] * Omi[i];
                 }
             }
 
@@ -142,10 +155,10 @@ namespace yack
 
 
 
-        bool plexus:: solve(writable<double> &C) throw()
+        bool plexus:: solve(writable<double> &C0) throw()
         {
-            assert(C.size()>=M);
-            assert(are_valid(C));
+            assert(C0.size()>=M);
+            assert(are_valid(C0));
 
 
 
@@ -155,8 +168,8 @@ namespace yack
             //
             //------------------------------------------------------------------
             YACK_CHEM_PRINTLN("// <plexus.solve>");
-            if(verbose) lib(std::cerr << "//   Cini=",C,"//   ");
-
+            if(verbose) lib(std::cerr << "//   Cini=",C0,"//   ");
+            ios::ocstream::overwrite("rms.dat");
             switch(N)
             {
 
@@ -172,8 +185,8 @@ namespace yack
                     // trivial case
                     //----------------------------------------------------------
                     const equilibrium &eq = ***eqs.head();
-                    (void) eq.solve1D(K[*eq],C,Ctry);
-                    transfer(C,Ctry);
+                    (void) eq.solve1D(K[*eq],C0,Ctry);
+                    transfer(C0,Ctry);
                 }
                     YACK_CHEM_PRINTLN("// <plexus.solve/> [1D]");
                     return true;
@@ -185,7 +198,8 @@ namespace yack
                     //----------------------------------------------------------
                     for(size_t j=M;j>0;--j)
                     {
-                        Corg[j] = Ctry[j] = C[j];
+                        Corg[j] = Ctry[j] = C0[j];
+                        dC[j]   = 0;
                     }
                     break;
             }
@@ -210,7 +224,7 @@ namespace yack
 
 
 
-        //EVAL_XI:
+        EVAL_XI:
             //------------------------------------------------------------------
             //
             // use secondary matrix for inversion
@@ -233,12 +247,44 @@ namespace yack
             std::cerr << "xi=" << xi << std::endl;
             if(verbose) eqs(std::cerr << "//   xi  = ",xi,"//   ");
 
-            for(size_t i=N;i>0;--i)
+
+            bool changed = false;
+            for(const anode *node=active.head;node;node=node->next)
             {
+                const species &s = **node;
+                const size_t   j = *s;
+                const double   d = dC[j] = xdot(xi,NuT[j],xs);
+                const double   c = Corg[j];
+                if(d<0 && d <= -c)
+                {
+                    changed = true;
+                    YACK_CHEM_PRINTLN("// need to rescale delta_"<<s.name);
+                }
+            }
+            lib(std::cerr << "dC = ",dC);
+            if(changed)
+            {
+                for(size_t i=N;i>0;--i)
+                {
+                    Omega0[i][i] *= 10;
+                    xi[i]         = xm[i];
+                }
+                goto EVAL_XI;
             }
 
+            ios::ocstream::echo("rms.dat", "%g %.15g\n", double(cycle), tao::v1::mod2<double>::of(dC)/M);
 
-            exit(1);
+            for(const anode *node=active.head;node;node=node->next)
+            {
+                const species &s = **node;
+                const size_t   j = *s;
+                Corg[j] = max_of( Corg[j] + dC[j], 0.0);
+            }
+
+            if(cycle>=20)
+            {
+                exit(1);
+            }
 
             goto CYCLE;
 

@@ -124,6 +124,33 @@ For each equilibrium,
 \end{equation}
 Each $\vec{C}_i'$ is valid, so is any convex combination of $\vec{C}_i'$.
   
+  
+\subsection{Method again}
+We start from a position $\vec{C}$.
+From that position, we compute:
+\begin{equation}
+	\forall i, \;\;\vec{C}_i' = \vec{C}_i + \Xi_i \vec{\nu}_i,\;\;\Gamma_i(\vec{C}_i') = 0
+\end{equation}
+For each equilibrium, there is an hyperplane around $\vec{C}_i'$ such that:
+\begin{equation}
+	\forall i, \;\; \langle \vec{\Psi}_i' \vert \vec{X} - \vec{C}_i'\rangle = 0
+\end{equation} 
+  
+ The distance to the hyperplane is:
+ \begin{equation}
+ 	d_i^2(\vec{X}) = \langle \vec{n}_i \vert \vec{X} - \vec{C}_i'\rangle^2,\;\; \vec{n}_i = \dfrac{1}{\vert  \vec{\Psi}_i' \vert} \vec{\Psi}_i'
+ \end{equation} 
+
+\begin{equation}
+	D^2 = \dfrac{1}{2} \sum_i   \langle \vec{n}_i \vert \vec{C} - \vec{C}_i'\rangle^2
+\end{equation}
+
+so that the decreasing step of $D^2(\vec{C} + \bm{\nu}^T \vec{\xi})$ is:
+\begin{equation}
+	\vec{\beta} = -\partial_{\vec{\xi}} D^2 = \sum_i \langle \vec{n}_i \vert  \vec{C}_i' - \vec{C}\rangle 
+	%\langle \vec{n}_i \vert \bm{\nu}^T
+	\cdot \bm{\nu} \vec{n}_i
+\end{equation}
 
 
  
