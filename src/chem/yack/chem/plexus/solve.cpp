@@ -74,6 +74,7 @@ namespace yack
                     if( tao::v1::mod2<double>::of(psi) <= 0 )
                     {
                         blocked[ei] = true;
+                        gam         = 0;
                     }
                 }
             }
@@ -94,6 +95,7 @@ namespace yack
 
         void plexus:: makeOmega0() throw()
         {
+            YACK_CHEM_PRINTLN("//   <plexus.makeOmega0>");
             // first pass, compute Psi'
             for(const enode *node=eqs.head();node;node=node->next)
             {
@@ -105,52 +107,46 @@ namespace yack
 
                 if(blocked[ei])
                 {
-                    xi[ei] = xm[ei] = Gamma[ei] = 0;
                     psi.ld(0);
+                    xi[ei] = Xi[ei] = 0;
                 }
                 else
                 {
-                    //xi[ei] = xm[ei] = -(Gamma[ei] = eq.mass_action(Ki,Corg));
-                    Xi[ei] = eq.solve1D(Ki,Corg,Ci);
+                    xi[ei] = Xi[ei] = eq.solve1D(Ki,Corg,Ci);
                     eq.drvs_action(psi,Ki,Ci,Ctmp);
-                    for(size_t i=M;i>0;--i)
-                    {
-                        Ctmp[i] = squared(psi[i]);
-                    }
-                    const double den = sqrt( sorted::sum(Ctmp,sorted::by_value) );
-                    for(size_t i=M;i>0;--i)
-                    {
-                        psi[i]/=den;
-                    }
                 }
             }
 
-            eqs(std::cerr << "//   Xi = ",Xi,"//   ");
-            eqs(std::cerr << "//   UM = ",Psi,"//   ");
+            eqs(std::cerr << "//   Xi  = ",Xi, "//   ");
+            eqs(std::cerr << "//   Psi = ",Psi,"//   ");
+            eqs(std::cerr << "//   Nu  = ",Nu, "//   ");
 
             for(size_t i=N;i>0;--i)
             {
                 writable<double>       &Omi = Omega0[i];
                 const readable<double> &psi = Psi[i];
-
-                if(blocked[i])
+                Omi.ld(0);
+                Omi[i] = 1.0;
+                xm[i]  = 0;
+                if(!blocked[i])
                 {
-                    Omi.ld(0);
-                    Omi[i] = 1.0;
-                }
-                else
-                {
-                    for(size_t k=N;k>0;--k)
                     {
-                        Omi[k] = xdot(psi,Nu[k],Ctmp);
+                        const double diag = xdot(psi,Nu[i],Ctmp); assert(diag<0);
+                        for(size_t k=N;  k>i;--k) xs[k] = fabs(Omi[k] = xdot(psi,Nu[k],Ctmp)/diag);
+                        /*                     */ xs[i] = 0;
+                        for(size_t k=i-1;k>0;--k) xs[k] = fabs(Omi[k] = xdot(psi,Nu[k],Ctmp)/diag);
                     }
-                    xi[i] = xm[i] = Xi[i] * Omi[i];
+                    //const double xtra = sorted::sum(xs,sorted::by_value);
+                    //Omi[i] += xtra;
                 }
             }
 
 
             YACK_CHEM_PRINTLN("Omega = " << Omega0);
             YACK_CHEM_PRINTLN("rhs   = " << xi);
+            YACK_CHEM_PRINTLN("inv(Omega)*rhs");
+            YACK_CHEM_PRINTLN("//   <plexus.makeOmega0/>");
+
         }
 
 
@@ -219,8 +215,7 @@ namespace yack
             //
             //------------------------------------------------------------------
             regularize(Corg); // perform regularization of Corg
-            makeOmega0();     // compute Omega0 and xi = (xm=-Gamma)
-
+            makeOmega0();     // compute Omega0 and xi
 
 
 
@@ -247,7 +242,6 @@ namespace yack
             std::cerr << "xi=" << xi << std::endl;
             if(verbose) eqs(std::cerr << "//   xi  = ",xi,"//   ");
 
-
             bool changed = false;
             for(const anode *node=active.head;node;node=node->next)
             {
@@ -262,17 +256,20 @@ namespace yack
                 }
             }
             lib(std::cerr << "dC = ",dC);
+
+
             if(changed)
             {
                 for(size_t i=N;i>0;--i)
                 {
                     Omega0[i][i] *= 10;
-                    xi[i]         = xm[i];
+                    xi[i]         = Xi[i];
                 }
                 goto EVAL_XI;
             }
 
             ios::ocstream::echo("rms.dat", "%g %.15g\n", double(cycle), tao::v1::mod2<double>::of(dC)/M);
+
 
             for(const anode *node=active.head;node;node=node->next)
             {
@@ -281,7 +278,7 @@ namespace yack
                 Corg[j] = max_of( Corg[j] + dC[j], 0.0);
             }
 
-            if(cycle>=20)
+            if(cycle>=100)
             {
                 exit(1);
             }

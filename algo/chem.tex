@@ -118,39 +118,39 @@ We first estimate:
 
 \subsection{Method}
 
-For each equilibrium,
+If we start from $\vec{C}$, we can compute $\vec{\Xi}$ such that:
 \begin{equation}
-	\Gamma_i(\vec{C}+\Xi_i \vec{\nu}_i) = 0,\;\; \vec{C}_i' = \vec{C}+\Xi_i \vec{\nu}_i
-\end{equation}
-Each $\vec{C}_i'$ is valid, so is any convex combination of $\vec{C}_i'$.
-  
-  
-\subsection{Method again}
-We start from a position $\vec{C}$.
-From that position, we compute:
-\begin{equation}
-	\forall i, \;\;\vec{C}_i' = \vec{C}_i + \Xi_i \vec{\nu}_i,\;\;\Gamma_i(\vec{C}_i') = 0
-\end{equation}
-For each equilibrium, there is an hyperplane around $\vec{C}_i'$ such that:
-\begin{equation}
-	\forall i, \;\; \langle \vec{\Psi}_i' \vert \vec{X} - \vec{C}_i'\rangle = 0
-\end{equation} 
-  
- The distance to the hyperplane is:
- \begin{equation}
- 	d_i^2(\vec{X}) = \langle \vec{n}_i \vert \vec{X} - \vec{C}_i'\rangle^2,\;\; \vec{n}_i = \dfrac{1}{\vert  \vec{\Psi}_i' \vert} \vec{\Psi}_i'
- \end{equation} 
-
-\begin{equation}
-	D^2 = \dfrac{1}{2} \sum_i   \langle \vec{n}_i \vert \vec{C} - \vec{C}_i'\rangle^2
+	\forall i, \;\; \Gamma_i(\vec{C}_i') = 0, \;\; \vec{C}_i' = \vec{C} + \Xi_i \vec{\nu}_i
 \end{equation}
 
-so that the decreasing step of $D^2(\vec{C} + \bm{\nu}^T \vec{\xi})$ is:
+Let us know evaluate $\delta\Xi_i$ for a small change $\delta\vec{C}$:
 \begin{equation}
-	\vec{\beta} = -\partial_{\vec{\xi}} D^2 = \sum_i \langle \vec{n}_i \vert  \vec{C}_i' - \vec{C}\rangle 
-	%\langle \vec{n}_i \vert \bm{\nu}^T
-	\cdot \bm{\nu} \vec{n}_i
+	\forall i, \;\;  \Gamma_i(\vec{C}_i' + \delta\vec{C} + \delta\Xi_i \vec{\nu}_i) = 0 \Rightarrow 
+	\langle \vec{\Psi}_i' \vert \delta\vec{C} +  \delta\Xi_i \vec{\nu}_i \rangle \simeq 0 
 \end{equation}
+so:
+\begin{equation}
+	\forall i, \;\; \delta\Xi_i \langle \vec{\Psi}_i' \vert \vec{\nu}_i \rangle = -  \langle\vec{\Psi}_i' \vert \delta\vec{C} \rangle
+\end{equation}
+To decrease all $\Xi_i$, we need:
+\begin{equation}
+\forall i, \;\; \delta\Xi_i = -\alpha_i \Xi_i
+\end{equation}
+
+so that we must find $\delta\vec{C}$ such that:
+\begin{equation}
+		\forall i, \;\; \langle\vec{\Psi}_i' \vert \delta\vec{C} \rangle = \alpha_i \Xi_i \langle \vec{\Psi}_i' \vert \vec{\nu}_i \rangle
+\end{equation}
+Then:
+\begin{equation}
+	\bm{\Psi}' \bm{\nu}^T \vec{\xi} = 
+	\begin{bmatrix}
+	\vdots\\
+	\alpha_i \Xi_i \langle \vec{\Psi}_i' \vert \vec{\nu}_i \rangle\\
+	\vdots\\
+	\end{bmatrix}
+\end{equation}
+
 
 
  
