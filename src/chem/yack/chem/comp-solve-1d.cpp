@@ -18,90 +18,6 @@ namespace yack
 
         namespace
         {
-            struct scaled_call
-            {
-                const components       &self;
-                const double            K;
-                const readable<double> &C;
-                const triplet<double>  &X;
-                double                  last_xi;
-
-                // compute Xi from original interval
-                inline double computeXi(const double omega)  throw()
-                {
-                    return ( last_xi = clamp(X.a,(1.0-omega) * X.a + omega * X.c,X.c) );
-                }
-
-                // mass_action(K,Cs,computeXi(omega))
-                inline double operator()(const double omega) throw()
-                {
-                    return self.mass_action(K,C,computeXi(omega));
-                }
-
-
-                // single state update, return true on 'exact' zero
-                inline bool update(triplet<double>    &w,
-                                   triplet<double>    &f)  throw()
-                {
-                    scaled_call &G = *this;
-                    assert(f.a>=0);
-                    assert(f.c<=0);
-
-                    w.b=0.5*(w.a+w.c);
-                    switch( __sign::of(f.b=G(w.b)) )
-                    {
-                        case __zero__:
-                            return true;
-
-                        case positive:
-                            f.a = f.b;
-                            w.a = w.b;
-                            break;
-
-                        case negative:
-                            f.c = f.b;
-                            w.c = w.b;
-                            break;
-                    }
-
-                    return false;
-                }
-
-
-                inline double solve(triplet<double> &f) throw()
-                {
-                    triplet<double> omega  = {0,0,1};
-
-                    if(update(omega,f))
-                    {
-                        //YACK_CHEM_PRINTLN("// exact omega");
-                        return last_xi;
-                    }
-
-                    double widthOld = fabs(omega.c-omega.a);
-                    while(true)
-                    {
-                        if(update(omega,f))
-                        {
-                            //YACK_CHEM_PRINTLN("// exact omega");
-                            return last_xi;
-                        }
-
-                        const double widthNew = fabs(omega.c-omega.a);
-                        if(widthNew>=widthOld)
-                        {
-                            //YACK_CHEM_PRINTLN("// converged on width");
-                            return last_xi;
-                        }
-
-                        //omegaOld=omegaNew;
-                        widthOld=widthNew;
-                    }
-
-                }
-
-            };
-
 
             struct MASolver
             {
@@ -117,7 +33,8 @@ namespace yack
                 }
 
 
-
+                // apply bisection reduction
+                // with precomputed sign of f.b
                 inline void b_update(triplet<double> &x,
                                      triplet<double> &f,
                                      const sign_type  s) throw()
@@ -130,7 +47,6 @@ namespace yack
                     assert(x.c>x.a);
                     assert(x.a<=x.b);
                     assert(x.b<=x.c);
-
 
                     if(positive==s)
                     {
@@ -152,6 +68,8 @@ assert(f.c<0);             \
 assert(x.c>x.a)
 
 
+                // try an extended step with a precomputed sign of f.b
+                // and the Ridder's coefficient
                 inline bool extended(triplet<double> &x,
                                      triplet<double> &f,
                                      const sign_type  s,
@@ -267,6 +185,8 @@ assert(x.c>x.a)
                     return false;
                 }
 
+
+                // reduce interval by hybrid methods
                 inline bool update(triplet<double> &x,
                                    triplet<double> &f) throw()
                 {
@@ -319,6 +239,8 @@ assert(x.c>x.a)
                     }
                 }
 
+
+                // maximum reduction of search interval
                 inline double solve(triplet<double> &x,
                                     triplet<double> &f) throw()
                 {
@@ -329,6 +251,7 @@ assert(x.c>x.a)
                         return x.b;    // exact zero
                     }
 
+                    // loop
                     double old_width = fabs(x.c-x.a);
                     while(true)
                     {
@@ -384,9 +307,10 @@ assert(x.c>x.a)
                 return 0;
             }
 
-            double oldXi = 0;       //!< old found extent
-            bool   first = true;    //!< first cycle
-            size_t cycle = 0;       //!< counter
+            double   oldXi = 0;       //!< old found extent
+            bool     first = true;    //!< first cycle
+            size_t   cycle = 0;       //!< counter
+            MASolver mroot = { *this, K, Cs };
 
         CYCLE:
             ++cycle;
@@ -508,8 +432,7 @@ assert(x.c>x.a)
             // ready to solve
             //
             //------------------------------------------------------------------
-            MASolver     Z     = { *this, K, Cs };
-            const double xiNew = Z.solve(x,f);
+            const double xiNew = mroot.solve(x,f);
 
 
             if(first)
