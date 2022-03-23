@@ -114,23 +114,36 @@ Let
 	\item If $F_i$ is limited by none, then the equilibrium is \textbf{invalid}.
 
 	%%%%%%%%
-	\item If $F_i$ is limited by a reactant, 
+	\item If $F_i$ is limited by a reactant, meaning a "combination only" equilibrium:
 		\begin{equation}
 		\left\lbrace
 			\begin{array}{rcl}
-			X     & \in & \rbrack-\infty:\xi_r\rbrack\\
+			P_i   & \equiv & 1\\
+			X     & \in & \rbrack-\infty;\xi_r\lbrack\\
 			R_i(\vec{C},\xi_r)  & = & 0 \\
-			P_i(\vec{C},\xi_r)  & > & 0 \\
-			F_i(\vec{C},\xi_r)  & < & 0 \\
+ 			F_i(\vec{C},\xi_r)  & = & -1 \\
 			\end{array}
 		\right.
 		\end{equation}
 		\begin{itemize}
-		\item
-		\item
+		\item if $\sigma_i>0$, then we have $X\in\rbrack 0;\xi_r \lbrack$
+		\item if $\sigma_i<0$, then we must find $\xi_0<0$ such that $F_i(\vec{C},\xi_0)>0$,
+		then $X\in\rbrack \xi_0;0\lbrack$.
+		We can start from $\xi_0 \approx K_i^{\frac{1}{\Delta_r \nu}}$ and decrease it until a total positive mass action is found.
 		\end{itemize}
  	%%%%%%%%
- 	\item
+ 	\item If $F_i$ is limited by a product, meaning a "dissociation only" equilibrium:
+	\begin{equation}
+		\left\lbrace
+			\begin{array}{rcl}
+			R_i   & \equiv & K_i\\
+			X     & \in & \rbrack \xi_p<0 ; +\infty \lbrack\\
+			P_i(\vec{C},\xi_p)  & = & 0 \\
+ 			F_i(\vec{C},\xi_p)  & = & K_i \\
+			\end{array}
+		\right.
+		\end{equation}
+
 	
 	%%%%%%%%
 	\item
