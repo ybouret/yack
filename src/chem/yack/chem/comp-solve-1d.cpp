@@ -78,7 +78,6 @@ namespace yack
                         return last_xi;
                     }
 
-                    //double omegaOld = omega.b;
                     double widthOld = fabs(omega.c-omega.a);
                     while(true)
                     {
@@ -88,14 +87,6 @@ namespace yack
                             return last_xi;
                         }
 
-#if 0
-                        const double omegaNew = omega.b;
-                        if( fabs(omegaNew-omegaOld) <= numeric<double>::ftol * fabs(omegaOld) )
-                        {
-                            //YACK_CHEM_PRINTLN("// converged on omega");
-                            return last_xi;
-                        }
-#endif
                         const double widthNew = fabs(omega.c-omega.a);
                         if(widthNew>=widthOld)
                         {
