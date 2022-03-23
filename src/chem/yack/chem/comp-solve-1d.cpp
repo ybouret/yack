@@ -78,7 +78,7 @@ namespace yack
                         return last_xi;
                     }
 
-                    double omegaOld = omega.b;
+                    //double omegaOld = omega.b;
                     double widthOld = fabs(omega.c-omega.a);
                     while(true)
                     {
@@ -87,19 +87,23 @@ namespace yack
                             //YACK_CHEM_PRINTLN("// exact omega");
                             return last_xi;
                         }
+
+#if 0
                         const double omegaNew = omega.b;
                         if( fabs(omegaNew-omegaOld) <= numeric<double>::ftol * fabs(omegaOld) )
                         {
                             //YACK_CHEM_PRINTLN("// converged on omega");
                             return last_xi;
                         }
+#endif
                         const double widthNew = fabs(omega.c-omega.a);
                         if(widthNew>=widthOld)
                         {
                             //YACK_CHEM_PRINTLN("// converged on width");
                             return last_xi;
                         }
-                        omegaOld=omegaNew;
+
+                        //omegaOld=omegaNew;
                         widthOld=widthNew;
                     }
 
@@ -127,7 +131,7 @@ namespace yack
 
             //------------------------------------------------------------------
             //
-            // initialize
+            // initialize Cs
             //
             //------------------------------------------------------------------
             tao::v1::load(Cs,C0);               //!< workspace is Cs
@@ -150,24 +154,27 @@ namespace yack
             // compute limits , using f.b = f0 is computed with its sign
             //
             //------------------------------------------------------------------
-            assert(__zero__!=s0);
-            assert(__sign::of(f0)==s0);
+            assert(__zero__      != s0);
+            assert(__sign::of(f0)== s0);
             const limits   &lim = private_limits(Cs,0);
-            triplet<double> x   = { 0, 0,  0 };
-            triplet<double> f   = { 0, f0, 0 };
-
+            triplet<double> x   = { 0, 0,  0 }; //! exact range
+            triplet<double> f   = { 0, f0, 0 }; //! mass action
 
 
             switch(lim.type)
             {
-                    //------------------------------------------------------
+                    //----------------------------------------------------------
+                    //
                 case limited_by_none:
-                    //------------------------------------------------------
+                    //
+                    //----------------------------------------------------------
                     throw exception("invalid (empty) components");
 
-                    //------------------------------------------------------
+                    //----------------------------------------------------------
+                    //
                 case limited_by_prod:
-                    //------------------------------------------------------
+                    //
+                    //----------------------------------------------------------
                     assert(nu_r==0);
                     assert(nu_p>0);
                     assert(d_nu==nu_p);
@@ -191,9 +198,11 @@ namespace yack
                     }
                     break;
 
-                    //------------------------------------------------------
+                    //----------------------------------------------------------
+                    //
                 case limited_by_reac:
-                    //------------------------------------------------------
+                    //
+                    //----------------------------------------------------------
                     assert(nu_r>0);
                     assert(nu_p==0);
                     assert(d_nu==-nu_r);
@@ -217,9 +226,11 @@ namespace yack
                     }
                     break;
 
-                    //------------------------------------------------------
+                    //----------------------------------------------------------
+                    //
                 case limited_by_both:
-                    //------------------------------------------------------
+                    //
+                    //----------------------------------------------------------
                     assert(nu_r>0);
                     assert(nu_p>0);
                     if(positive==s0)
@@ -228,7 +239,7 @@ namespace yack
                         f.c = - (prod.mass_action(1,Cs,x.c));  assert(f.c<0);
 
                         x.a = x.b;  // =0
-                        f.a = f.b;  // @0
+                        f.a = f.b;  // >0
                     }
                     else
                     {
@@ -236,7 +247,7 @@ namespace yack
                         x.a = lim.prod_extent();             assert(x.a<=0);
                         f.a = (reac.mass_action(K,Cs,-x.a)); assert(f.a>0);
                         x.c = x.b;  // =0
-                        f.c = f.b;  // @0
+                        f.c = f.b;  // <0
                     }
                     break;
 
@@ -252,7 +263,7 @@ namespace yack
 
             //------------------------------------------------------------------
             //
-            // solve with local xi
+            // solve with local xi in [x.a:x.c]
             //
             //------------------------------------------------------------------
             scaled_call  G     = { *this, K, Cs, x, 0};
