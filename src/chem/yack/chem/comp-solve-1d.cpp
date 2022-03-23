@@ -101,6 +101,256 @@ namespace yack
                 }
 
             };
+
+
+            struct MASolver
+            {
+                const components       &self;
+                const double            K;
+                const readable<double> &C;
+
+
+                // call function: self.mass_action(K,C,xx)
+                inline double operator()(const double xx) throw()
+                {
+                    return self.mass_action(K,C,xx);
+                }
+
+
+
+                inline void b_update(triplet<double> &x,
+                                     triplet<double> &f,
+                                     const sign_type  s) throw()
+                {
+                    assert(__zero__       !=  s);
+                    assert(__sign::of(f.b) == s);
+
+                    assert(f.a>0);
+                    assert(f.c<0);
+                    assert(x.c>x.a);
+                    assert(x.a<=x.b);
+                    assert(x.b<=x.c);
+
+
+                    if(positive==s)
+                    {
+                        f.a = f.b;
+                        x.a = x.b;
+                    }
+                    else
+                    {
+                        assert(negative==s);
+                        f.c = f.b;
+                        x.c = x.b;
+                    }
+                }
+
+
+#define YACK_CHEM_SANITY() \
+assert(f.a>0);             \
+assert(f.c<0);             \
+assert(x.c>x.a)
+
+
+                inline bool extended(triplet<double> &x,
+                                     triplet<double> &f,
+                                     const sign_type  s,
+                                     const double     d) throw()
+                {
+                    assert(__zero__       !=  s);
+                    assert(__sign::of(f.b) == s);
+                    assert(d>fabs(f.b));
+                    YACK_CHEM_SANITY();
+                    assert(x.a<=x.b);
+                    assert(x.b<=x.c);
+
+                    {
+                        const double xm = x.b + 0.5 * (x.c-x.a) * f.b/d;
+                        if(positive==s)
+                        {
+                            //--------------------------------------------------
+                            //
+                            // f.b > 0
+                            // trial between x.b and x.c
+                            //
+                            //--------------------------------------------------
+                            if(xm<=x.b||xm>=x.c)
+                            {
+                                // underflow, apply bisection
+                                f.a = f.b;
+                                x.a = x.b;
+                                YACK_CHEM_SANITY();
+                            }
+                            else
+                            {
+                                // check value
+                                const double fm = (*this)(xm);
+                                switch( __sign::of(fm) )
+                                {
+                                    case __zero__: // early return
+                                        f.b = 0;
+                                        x.b = xm;
+                                        return true;
+
+                                    case negative:
+                                        f.a = f.b; x.a = x.b; // a->b (positive)
+                                        f.c = fm;  x.c = xm;  // c->m (negative)
+                                        YACK_CHEM_SANITY();
+                                        break;
+
+                                    case positive:
+                                        f.a = fm; x.a = xm; // a->m (positive)
+                                        YACK_CHEM_SANITY();
+                                        break;
+                                }
+                            }
+                        }
+                        else
+                        {
+                            assert(negative==s);
+                            //--------------------------------------------------
+                            //
+                            // f.b < 0
+                            // trial between x.a and x.b
+                            //
+                            //--------------------------------------------------
+
+                            if(xm<=x.a||xm>=x.b)
+                            {
+                                // underflow, apply bisection
+                                f.c = f.b;
+                                x.c = x.b;
+                                YACK_CHEM_SANITY();
+                            }
+                            else
+                            {
+                                // evaluate
+                                const double fm = (*this)(xm);
+                                switch( __sign::of(fm) )
+                                {
+                                    case __zero__:
+                                        f.b = 0;
+                                        x.b = xm;
+                                        return true; // early return
+
+                                    case negative:
+                                        f.c = fm; x.c = xm; //!< c->m, negative
+                                        YACK_CHEM_SANITY();
+                                        break;
+
+                                    case positive:
+                                        f.a = fm;  x.a = xm;   //!< a->m, positive
+                                        f.c = f.b; x.c = x.b;  //!< c->b, negative
+                                        YACK_CHEM_SANITY();
+                                        break;
+                                }
+                            }
+                        }
+                    }
+
+                    //----------------------------------------------------------
+                    //
+                    // update reduced interval
+                    //
+                    //----------------------------------------------------------
+                    if(fabs(f.a)<fabs(f.c))
+                    {
+                        x.b = x.a;
+                        f.b = f.a;
+                    }
+                    else
+                    {
+                        x.b = x.c;
+                        f.b = f.c;
+                    }
+
+                    return false;
+                }
+
+                inline bool update(triplet<double> &x,
+                                   triplet<double> &f) throw()
+                {
+                    assert(f.a>0);
+                    assert(f.c<0);
+                    assert(x.c>x.a);
+
+                    //----------------------------------------------------------
+                    //
+                    // evaluate middle point
+                    //
+                    //----------------------------------------------------------
+                    const sign_type s = __sign::of( f.b = (*this)(x.b=0.5*(x.a+x.c)));
+                    if(__zero__==s)
+                    {
+                        //------------------------------------------------------
+                        //
+                        // early return
+                        //
+                        //------------------------------------------------------
+                        return true;
+                    }
+                    else
+                    {
+                        //------------------------------------------------------
+                        //
+                        // Initialize Ridder's reduction factor
+                        //
+                        //------------------------------------------------------
+                        const double d = sqrt(f.b * f.b - f.a*f.c);
+                        if(d>fabs(f.b))
+                        {
+                            //--------------------------------------------------
+                            //
+                            // extended step
+                            //
+                            //--------------------------------------------------
+                            return extended(x,f,s,d);
+                        }
+                        else
+                        {
+                            //--------------------------------------------------
+                            //
+                            // bissection step due to numerical underflow
+                            //
+                            //--------------------------------------------------
+                            b_update(x,f,s);
+                            return false;
+                        }
+                    }
+                }
+
+                inline double solve(triplet<double> &x,
+                                    triplet<double> &f) throw()
+                {
+
+                    // initialize
+                    if( update(x,f) )
+                    {
+                        return x.b;    // exact zero
+                    }
+
+                    double old_width = fabs(x.c-x.a);
+                    while(true)
+                    {
+                        if( update(x,f) )
+                        {
+                            return x.b; // exact zero
+                        }
+                        const double new_width = fabs(x.c-x.a);
+
+                        if(new_width>=old_width)
+                        {
+                            return x.b; // most accurate zero
+                        }
+
+                        old_width = new_width;
+                    }
+
+                }
+
+
+            };
+
         }
 
 
@@ -230,39 +480,37 @@ namespace yack
                     assert(nu_p>0);
                     if(positive==s0)
                     {
-                        x.c = lim.reac_extent();               assert(x.c>=0);
+                        x.c = lim.reac_extent();               assert(x.c>0);
                         f.c = - (prod.mass_action(1,Cs,x.c));  assert(f.c<0);
 
                         x.a = x.b;  // =0
                         f.a = f.b;  // >0
+                        assert( __sign::product_of(f.a,f.c) == negative );
+                        assert( x.c>x.a );
                     }
                     else
                     {
                         assert(negative==s0);
-                        x.a = lim.prod_extent();             assert(x.a<=0);
+                        x.a = lim.prod_extent();             assert(x.a<0);
                         f.a = (reac.mass_action(K,Cs,-x.a)); assert(f.a>0);
                         x.c = x.b;  // =0
                         f.c = f.b;  // <0
+                        assert( __sign::product_of(f.a,f.c) == negative );
+                        assert( x.c>x.a );
                     }
                     break;
 
-                default:
-                    throw exception("not implemented yet");
-            }
 
-            if(x.a>=x.c)
-            {
-                //YACK_CHEM_PRINTLN("//   numerical empty search");
-                return deduce(C0,Cs);
             }
 
             //------------------------------------------------------------------
             //
-            // solve with local xi in [x.a:x.c]
+            // ready to solve
             //
             //------------------------------------------------------------------
-            scaled_call  G     = { *this, K, Cs, x, 0};
-            const double xiNew = G.solve(f);
+            MASolver     Z     = { *this, K, Cs };
+            const double xiNew = Z.solve(x,f);
+
 
             if(first)
             {
@@ -275,7 +523,7 @@ namespace yack
                 if(fabs(xiNew)>=fabs(oldXi))
                 {
                     // reached numerical limit at previous step, do not move more!
-                    //YACK_CHEM_PRINTLN("// reached numerical limit");
+                    // YACK_CHEM_PRINTLN("// reached numerical limit");
                     return deduce(C0,Cs);
                 }
             }
