@@ -148,8 +148,8 @@ namespace yack
             assert(__zero__      != s0);
             assert(__sign::of(f0)== s0);
             const limits   &lim = private_limits(Cs,0);
-            triplet<double> x   = { 0, 0,  0 }; //! exact range
-            triplet<double> f   = { 0, f0, 0 }; //! mass action
+            triplet<double> x   = { 0, 0,  0 }; //! exact range, init x.b=0
+            triplet<double> f   = { 0, f0, 0 }; //! mass action, init f.b=f(0)
 
 
             switch(lim.type)
@@ -187,6 +187,8 @@ namespace yack
                         x.c = x.b;  // =0
                         f.c = f.b;  // <0
                     }
+                    assert( __sign::product_of(f.a,f.c) == negative );
+                    assert( x.c>x.a );
                     break;
 
                     //----------------------------------------------------------
@@ -215,6 +217,8 @@ namespace yack
                         assert(x.a<0);
                         assert(f.a>0);
                     }
+                    assert( __sign::product_of(f.a,f.c) == negative );
+                    assert( x.c>x.a );
                     break;
 
                     //----------------------------------------------------------

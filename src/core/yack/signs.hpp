@@ -73,7 +73,14 @@ namespace yack
 
         //! compute product
         static sign_type product(const sign_type lhs, const sign_type rhs) throw();
-        
+
+        //! compute product of
+        template <typename T, typename U> static inline
+        sign_type product_of(const T lhs, const U rhs)
+        {
+            return product( of(lhs), of(rhs) );
+        }
+
     };
     
    
