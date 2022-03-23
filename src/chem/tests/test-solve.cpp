@@ -31,10 +31,14 @@ namespace
                       const components &eq,
                       randomized::bits &ran)
     {
+        static const char fn[] = "solve.dat";
         lib.parse("[Na+]");
         lib.parse("[Cl-]");
 
         const size_t M = lib.size();
+        ios::ocstream::overwrite(fn);
+        unsigned count = 0;
+
         for(int p=-12;p<=12;++p)
         {
             const double   K = pow(10.0,double(p));
@@ -44,7 +48,9 @@ namespace
             {
                 const double   xi  = eq.solve1D(K,C0,Cs);
                 const double   rho = eq.Q(Cs)/K;
-                std::cerr << "0 -> (" << xi << ",@" << rho << ") " << Cs << std::endl;
+                //std::cerr << "0 -> (" << xi << ",@" << rho << ") " << Cs << std::endl;
+                if(rho>0)
+                    ios::ocstream::echo(fn,"%u %g %g\n",++count,rho,xi);
             }
 
 
@@ -70,10 +76,14 @@ namespace
                         {
                             C0[ comb[i] ] = species::concentration(ran);
                         }
-                        std::cerr << "\tC0=" << C0;
+                        //std::cerr << "\tC0=" << C0;
                         const double xi  = eq.solve1D(K,C0,Cs);
                         const double rho = eq.Q(Cs)/K;
-                        std::cerr << "-> (" << xi << ",@" << rho << ") " << Cs << std::endl;
+                        //std::cerr << "-> (" << xi << ",@" << rho << ") " << Cs << std::endl;
+                        if(rho>0)
+                        {
+                            ios::ocstream::echo(fn,"%u %g %g #%s\n",++count,rho,xi, eq.topo() );
+                        }
                     }
 
                 } while(comb.next());
