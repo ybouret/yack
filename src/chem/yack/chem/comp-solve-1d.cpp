@@ -173,8 +173,8 @@ namespace yack
                     assert(d_nu==nu_p);
                     if(positive==s0)
                     {
-                        x.a = x.b; // =0
-                        f.a = f.b; // >0
+                        x.a = x.b; // = 0
+                        f.a = f.b; // > 0
 
                         x.c = pow(K,sexp);
                         f.c = mass_action(K,Cs,x.c); assert(x.c>0);

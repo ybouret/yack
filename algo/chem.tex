@@ -106,7 +106,9 @@ Let
 \end{equation}
 
 \begin{itemize}
+
 \item If $\sigma_i=0$ then $X=0$ is solution at $\vec{C}$...
+
 \item Otherwise, we compute the limits of $F_i$.
 	
 	\begin{itemize}
@@ -126,11 +128,12 @@ Let
 		\right.
 		\end{equation}
 		\begin{itemize}
-		\item if $\sigma_i>0$, then we have $X\in\rbrack 0;\xi_r \lbrack$
-		\item if $\sigma_i<0$, then we must find $\xi_0<0$ such that $F_i(\vec{C},\xi_0)>0$,
-		then $X\in\rbrack \xi_0;0\lbrack$.
-		We can start from $\xi_0 \approx K_i^{\frac{1}{\Delta_r \nu}}$ and decrease it until a total positive mass action is found.
+			\item if $\sigma_i>0$, then we have $X\in\rbrack 0;\xi_r \lbrack$
+			\item if $\sigma_i<0$, then we must find $\xi_0<0$ such that $F_i(\vec{C},\xi_0)>0$,
+			then $X\in\rbrack \xi_0;0\lbrack$.
+			We can start from $\xi_0 \approx -  K_i^{\frac{1}{\Delta_r \nu}}$ and decrease it until a total positive mass action is found.
 		\end{itemize}
+		
  	%%%%%%%%
  	\item If $F_i$ is limited by a product, meaning a "dissociation only" equilibrium:
 	\begin{equation}
@@ -145,10 +148,17 @@ Let
 		\end{equation}
 
 	
-	%%%%%%%%
-	\item
-	\end{itemize}
+    	\begin{itemize}
+    	\item if $\sigma_i<0$, then we must have $X\in\rbrack \xi_p;0\lbrack$.
+    	\item if $\sigma_i>0$, then we must find $\xi_0>0$ such that $F_i(\vec{C},\xi_0)<0$,
+    		then $X\in\rbrack 0; \xi_0 \lbrack$.
+    		We can start from $\xi_0 \approx K_i^{\frac{1}{\Delta_r \nu}}$ and increase it until a total negative mass action is found.
+    	\end{itemize}
 
+	%%%%%%%%
+	\item If $F_i$ is limited by both a product and a reactant, then $$X\in\rbrack \xi_p < 0 ; \xi_r > 0 \lbrack$$
+	\end{itemize}
+	
 \end{itemize}
 
 
