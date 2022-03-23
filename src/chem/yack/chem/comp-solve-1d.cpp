@@ -119,8 +119,6 @@ namespace yack
             // sanity check
             //
             //------------------------------------------------------------------
-            //YACK_CHEM_PRINTLN("// <solve1D>");
-            
             assert(K>0);
             assert(are_valid(C0));
             assert(Cs.size()>=C0.size());
@@ -137,7 +135,7 @@ namespace yack
             sign_type s0 = __sign::of(f0);      //!< sign of mass action
             if( __zero__ == s0 )
             {
-                //YACK_CHEM_PRINTLN("//   <already@0>");
+                // exact solution already
                 return 0;
             }
 
@@ -149,7 +147,7 @@ namespace yack
             ++cycle;
             //------------------------------------------------------------------
             //
-            // bracket, using f.b = f0 is computed with its sign
+            // compute limits , using f.b = f0 is computed with its sign
             //
             //------------------------------------------------------------------
             assert(__zero__!=s0);
@@ -158,7 +156,6 @@ namespace yack
             triplet<double> x   = { 0, 0,  0 };
             triplet<double> f   = { 0, f0, 0 };
 
-            //YACK_CHEM_PRINTLN("//   " << lim);
 
 
             switch(lim.type)
