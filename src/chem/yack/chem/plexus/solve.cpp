@@ -96,6 +96,8 @@ namespace yack
         void plexus:: makeOmega0() throw()
         {
             YACK_CHEM_PRINTLN("//   <plexus.makeOmega0>");
+
+#if 0
             // first pass, compute Psi'
             for(const enode *node=eqs.head();node;node=node->next)
             {
@@ -120,6 +122,7 @@ namespace yack
             eqs(std::cerr << "//   Xi  = ",Xi, "//   ");
             eqs(std::cerr << "//   Psi = ",Psi,"//   ");
             eqs(std::cerr << "//   Nu  = ",Nu, "//   ");
+#endif
 
             for(size_t i=N;i>0;--i)
             {
@@ -136,12 +139,13 @@ namespace yack
                         /*                     */ xs[i] = 0;
                         for(size_t k=i-1;k>0;--k) xs[k] = fabs(Omi[k] = xdot(psi,Nu[k],Ctmp)/diag);
                     }
-                    //const double xtra = sorted::sum(xs,sorted::by_value);
+                    const double xtra = sorted::sum(xs,sorted::by_value);
+                    xm[i] = xtra;
                     //Omi[i] += xtra;
                 }
             }
 
-
+            YACK_CHEM_PRINTLN("Extra = " << xm);
             YACK_CHEM_PRINTLN("Omega = " << Omega0);
             YACK_CHEM_PRINTLN("rhs   = " << xi);
             YACK_CHEM_PRINTLN("inv(Omega)*rhs");
@@ -202,89 +206,64 @@ namespace yack
 
             //------------------------------------------------------------------
             //
-            // Loop
+            // compute scaling
             //
             //------------------------------------------------------------------
-            size_t         cycle = 0;
 
-        CYCLE:
-            ++cycle;
-            //------------------------------------------------------------------
-            //
-            // preparation
-            //
-            //------------------------------------------------------------------
-            regularize(Corg); // perform regularization of Corg
-            makeOmega0();     // compute Omega0 and xi
+            vector<double>       score;
+            vector<equilibrium*> owner;
 
-
-
-        EVAL_XI:
-            //------------------------------------------------------------------
-            //
-            // use secondary matrix for inversion
-            //
-            //------------------------------------------------------------------
-            iOmega.assign(Omega0);
-
-            if(!LU.build(iOmega))
+            for(const enode *node=eqs.head();node;node=node->next)
             {
-                YACK_CHEM_PRINTLN("// <plexus.solve/> [failure]");
-                return false;
-            }
+                const equilibrium &eq  = ***node;
+                const size_t       ei  = *eq;
+                const double       Ki  = K[ei];
+                writable<double>  &psi = Psi[ei];
+                writable<double>  &Ci  = Ceq[ei];
 
-            //------------------------------------------------------------------
-            //
-            // compute step from pre-loaded right hand side in xi
-            //
-            //------------------------------------------------------------------
-            LU.solve(iOmega,xi);
-            std::cerr << "xi=" << xi << std::endl;
-            if(verbose) eqs(std::cerr << "//   xi  = ",xi,"//   ");
-
-            bool changed = false;
-            for(const anode *node=active.head;node;node=node->next)
-            {
-                const species &s = **node;
-                const size_t   j = *s;
-                const double   d = dC[j] = xdot(xi,NuT[j],xs);
-                const double   c = Corg[j];
-                if(d<0 && d <= -c)
+                Xi[ei] = eq.solve1D(Ki,Corg,Ci);
+                eq.drvs_action(psi,Ki,Ci,Ctmp);
+                const bool bad = blocked[ei] = (tao::v1::mod2<double>::of(psi) <= 0);
+                if(!bad)
                 {
-                    changed = true;
-                    YACK_CHEM_PRINTLN("// need to rescale delta_"<<s.name);
+                    score << fabs(Xi[ei]);
+                    owner << (equilibrium *) &eq;
                 }
             }
-            lib(std::cerr << "dC = ",dC);
 
-
-            if(changed)
+            hsort(score,owner,comparison::increasing<double>);
+            for(size_t i=1;i<=score.size();++i)
             {
-                for(size_t i=N;i>0;--i)
-                {
-                    Omega0[i][i] *= 10;
-                    xi[i]         = Xi[i];
-                }
-                goto EVAL_XI;
+                std::cerr << "Xi_" << owner[i]->name << " = " << score[i] << std::endl;
             }
 
-            ios::ocstream::echo("rms.dat", "%g %.15g\n", double(cycle), tao::v1::mod2<double>::of(dC)/M);
+            size_t ii = **owner[1];
+            transfer(Corg,Ceq[ii]);
 
-
-            for(const anode *node=active.head;node;node=node->next)
+            lib(std::cerr << "Cint=",Corg);
+            for(const enode *node=eqs.head();node;node=node->next)
             {
-                const species &s = **node;
-                const size_t   j = *s;
-                Corg[j] = max_of( Corg[j] + dC[j], 0.0);
+                const equilibrium &eq  = ***node;
+                const size_t       ei  = *eq;
+                const double       Ki  = K[ei];
+                //writable<double>  &psi = Psi[ei];
+                writable<double>  &Ci  = Ceq[ei];
+                Xi[ei] = eq.solve1D(Ki,Corg,Ci);
             }
+            eqs(std::cerr << "Xi=",Xi);
 
-            if(cycle>=100)
-            {
-                exit(1);
-            }
 
-            goto CYCLE;
 
+
+
+
+
+
+            exit(1);
+
+
+
+            return false;
 
         }
 
