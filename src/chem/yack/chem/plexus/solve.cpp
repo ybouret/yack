@@ -55,12 +55,11 @@ namespace yack
                 const size_t       ei  = *eq;
                 const double       Ki  = K[ei];
                 writable<double>  &psi = Psi[ei];
-                double            &gam = Gamma[ei];
 
                 //--------------------------------------------------------------
                 // first try
                 //--------------------------------------------------------------
-                gam  = eq.grad_action(psi,Ki,C0,Ctmp);
+                eq.drvs_action(psi,Ki,C0,Ctmp);
                 if( tao::v1::mod2<double>::of(psi) <= 0)
                 {
                     //----------------------------------------------------------
@@ -72,11 +71,10 @@ namespace yack
                     //----------------------------------------------------------
                     // second try
                     //----------------------------------------------------------
-                    gam     = eq.grad_action(psi,Ki,C0,Ctmp);
+                    eq.drvs_action(psi,Ki,C0,Ctmp);
                     if( tao::v1::mod2<double>::of(psi) <= 0 )
                     {
                         blocked[ei] = true;
-                        gam         = 0;
                     }
                 }
             }
@@ -84,7 +82,7 @@ namespace yack
             if(verbose)
             {
                 lib(std::cerr << vpfx << "Cini    = ",C0,vpfx);
-                lib(std::cerr << vpfx << "blocked = ",blocked,vpfx);
+                eqs(std::cerr << vpfx << "blocked = ",blocked,vpfx);
             }
 
             //------------------------------------------------------------------
@@ -150,6 +148,166 @@ namespace yack
         }
 
 
+        bool plexus:: solve(writable<double> &C0) throw()
+        {
+
+            assert(C0.size()>=M);
+            assert(are_valid(C0));
+
+
+
+            //------------------------------------------------------------------
+            //
+            // initialize
+            //
+            //------------------------------------------------------------------
+            YACK_CHEM_PRINTLN("// <plexus.solve>");
+            if(verbose) lib(std::cerr << "//   Cini=",C0,"//   ");
+            ios::ocstream::overwrite("rms.dat");
+            switch(N)
+            {
+
+                case 0:
+                    //----------------------------------------------------------
+                    // trivial case
+                    //----------------------------------------------------------
+                    YACK_CHEM_PRINTLN("// <plexus.solve/> [empty]");
+                    return true;
+
+                case 1: {
+                    //----------------------------------------------------------
+                    // trivial case
+                    //----------------------------------------------------------
+                    const equilibrium &eq = ***eqs.head();
+                    (void) eq.solve1D(K[*eq],C0,Ctry);
+                    transfer(C0,Ctry);
+                }
+                    YACK_CHEM_PRINTLN("// <plexus.solve/> [1D]");
+                    return true;
+
+
+                default:
+                    //----------------------------------------------------------
+                    // prepare workspace
+                    //----------------------------------------------------------
+                    for(size_t j=M;j>0;--j)
+                    {
+                        Corg[j] = Ctry[j] = C0[j];
+                        dC[j]   = 0;
+                    }
+                    break;
+            }
+
+            vector<size_t> blk;
+            
+
+
+
+            //------------------------------------------------------------------
+            //
+            // regularize
+            //
+            //------------------------------------------------------------------
+            regularize(Corg);
+
+
+            vector<double>       score;
+            vector<equilibrium*> owner;
+
+            for(const enode *node=eqs.head();node;node=node->next)
+            {
+                const equilibrium &eq  = ***node;
+                const size_t       ei  = *eq;
+                if(blocked[ei]) continue;;
+
+                const double       Ki  = K[ei];
+                Xi[ei] = eq.solve1D(Ki,Corg,Ceq[ei]);
+                score << fabs(Xi[ei]);
+                owner << (equilibrium *)&eq;
+            }
+
+            hsort(score,owner,comparison::increasing<double>);
+            for(size_t i=1;i<=score.size();++i)
+            {
+                std::cerr << owner[i]->name << " @" << score[i] << std::endl;
+            }
+
+            transfer(Corg,Ceq[**owner[1]]);
+
+
+            computeState(Corg);
+            for(size_t i=N;i>0;--i)
+            {
+                const readable<double> &psi = Psi[i];
+                writable<double>       &Omi = Omega0[i];
+                Omi.ld(0);
+                if(blocked[i])
+                {
+                    Gamma[i] = 0;
+                    xi[i]    = 0;
+                    Omi[i]   = 1;
+                    Gscal[i] = 1;
+                }
+                else
+                {
+                    xi[i] = -Gamma[i];
+                    for(size_t k=N;k>0;--k) Omi[k] = xdot(psi,Nu[k],Ctmp);
+                    Gscal[i] = fabs(Omi[i]);
+                }
+            }
+
+            eqs(std::cerr << vpfx << "Gamma=",Gamma,vpfx);
+            eqs(std::cerr << vpfx << "Omega=",Omega0,vpfx);
+
+            if(!LU.build(Omega0))
+            {
+                YACK_CHEM_PRINTLN("// <plexus.solve/> [singular]");
+                return false;
+            }
+
+            LU.solve(Omega0,xi);
+            eqs(std::cerr << vpfx << "xi=",xi,vpfx);
+
+
+            // compute dC
+
+
+
+
+            dC.ld(0);
+            for(const anode *node=active.head;node;node=node->next)
+            {
+                const species &s = **node;
+                const size_t   j = *s;
+                const double   d = dC[j] = xdot(xi,NuT[j],xs);
+                if(d<0)
+                {
+                    const double c = Corg[j]; assert(c>=0);
+                    if(d<-c)
+                    {
+                        rstack << c/(-d);
+                        ustack << j;
+                    }
+                }
+            }
+
+            lib(std::cerr << vpfx << "dC=",dC,vpfx);
+
+            
+            hsort(rstack,ustack,comparison::increasing<double>);
+            std::cerr << "rstack=" << rstack << std::endl;
+            std::cerr << "ustack=" << ustack << std::endl;
+
+
+
+            exit(1);
+
+            YACK_CHEM_PRINTLN("// <plexus.solve/> [success]");
+            return true;
+        }
+
+
+#if 0
         bool plexus:: solve(writable<double> &C0) throw()
         {
             assert(C0.size()>=M);
@@ -335,7 +493,7 @@ namespace yack
             YACK_CHEM_PRINTLN("// <plexus.solve/> [success]");
             return true;
         }
-
+#endif
 
     }
 
