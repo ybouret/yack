@@ -207,25 +207,32 @@ Let us know evaluate $\delta\Xi_i$ for a small change $\delta\vec{C}$:
 \end{equation}
 so:
 \begin{equation}
-	\forall i, \;\; \delta\Xi_i \langle \vec{\Psi}_i' \vert \vec{\nu}_i \rangle = -  \langle\vec{\Psi}_i' \vert \delta\vec{C} \rangle
+	\forall i, \;\; \delta\Xi_i \langle \vec{\Psi}_i' \vert \vec{\nu}_i \rangle
+	 = -  \langle\vec{\Psi}_i' \vert \delta\vec{C} \rangle
 \end{equation}
-To decrease all $\Xi_i$, we need:
+  	
+
+\subsection{Method again}
+
 \begin{equation}
-\forall i, \;\; \delta\Xi_i = -\alpha_i \Xi_i
+	\partial_t \vec{\xi} = k\vec{\Xi}(\vec{C})
+\end{equation}
+Implicit:
+\begin{equation}
+	\vec{\xi} = \tau \vec{\Xi}(\vec{C}+\bm{\nu}^T \vec{\xi} ) 
+	\simeq \tau \left[ \vec{\Xi}(\vec{C}) + \partial_{\vec{C}}\vec{\Xi} \, \bm{\nu}^T \vec{\xi} \right]
+\end{equation}
+and:
+\begin{equation}
+	\vec{\xi} = \tau \left[ \bm{I}_N - \tau \, \partial_{\vec{C}}\vec{\Xi} \, \bm{\nu}^T \right]^{-1} \vec{\Xi}(\vec{C}) 
 \end{equation}
 
-so that we must find $\delta\vec{C}$ such that:
 \begin{equation}
-		\forall i, \;\; \langle\vec{\Psi}_i' \vert \delta\vec{C} \rangle = \alpha_i \Xi_i \langle \vec{\Psi}_i' \vert \vec{\nu}_i \rangle
-\end{equation}
-Then:
-\begin{equation}
-	\bm{\Psi}' \bm{\nu}^T \vec{\xi} = 
+	- \partial_{\vec{C}}\vec{\Xi} \, \bm{\nu}^T = 
 	\begin{bmatrix}
-	\vdots\\
-	\alpha_i \Xi_i \langle \vec{\Psi}_i' \vert \vec{\nu}_i \rangle\\
-	\vdots\\
+		 \dfrac{\langle \vec{\Psi}_i' \vert \vec{\nu}_j \rangle}{\langle \vec{\Psi}_i' \vert \vec{\nu}_i \rangle} 	
 	\end{bmatrix}
+	 = \bm{\Omega}
 \end{equation}
 
 
