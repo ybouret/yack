@@ -64,12 +64,12 @@ namespace yack
                             const char   *pfx = NULL) const
             {
                 if(!pfx) pfx = "";
-                os << '{' << std::endl;
+                os << '{';
                 for(const enode *node=head();node;node=node->next)
                 {
                     const equilibrium &s = ***node;
+                    os << std::endl;
                     pad(os << pfx << ' ' << '<' << s.name << '>',s) << " = " << arr[*s];
-                    if(node->next) os << std::endl;
                 }
                 os << ' ' << '}' << std::endl;
             }

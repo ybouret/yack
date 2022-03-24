@@ -56,12 +56,12 @@ namespace yack
             void operator()(std::ostream &os, ARR &arr, const char *pfx = NULL) const
             {
                 if(!pfx) pfx="";
-                os << '{' << std::endl;
+                os << '{';
                 for(const snode *node=head();node;node=node->next)
                 {
                     const species &s = ***node;
+                    os << std::endl;
                     pad(os<< pfx << ' ' << '[' << s.name << ']',s) << " = " << arr[*s];
-                    if(node->next) os << std::endl;
                 }
                 os << ' ' << '}' << std::endl;
             }

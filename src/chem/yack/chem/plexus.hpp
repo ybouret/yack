@@ -37,6 +37,7 @@ namespace yack
             //__________________________________________________________________
             static const char  clid[];  //!< "chemical::plexus"
             static const bool &verbose; //!< on entity verbose
+            static const char  vpfx[];   //!< prefix for verbosity
 
             //__________________________________________________________________
             //
@@ -75,9 +76,13 @@ namespace yack
              */
             void regularize(writable<double> &C) throw();
 
-            //! compute Omega0, Gs, and set first xi = xm = -Gamma for solving
-            void   makeOmega0() throw();
-            
+            //! compute Omega0, return regularizing coeff alpha
+            double   makeOmega0() throw();
+
+
+            //! compute rms
+            double rmsGamma(const readable<double> &C) throw();
+
             //__________________________________________________________________
             //
             // members
@@ -97,9 +102,10 @@ namespace yack
             tableau           &K;       //!< [N] precomputed constants
             tableau           &Gamma;   //!< [N] mass action
             tableau           &xi;      //!< [N] current   xi
-            tableau           &xs;      //!< [N] helper
+            tableau           &xs;      //!< [N] helper to sum
             tableau           &xm;      //!< [N] -Gamma
             tableau           &Xi;      //!< [N] Xi
+            tableau           &Gscal;   //!< [N] scaling factor
 
             tableau          &Corg;    //!< [M] working space
             tableau          &Ctmp;    //!< [M] temporary C
