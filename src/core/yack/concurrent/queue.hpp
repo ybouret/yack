@@ -25,7 +25,8 @@ namespace yack
         public:
             virtual ~queue() throw(); //!< cleanup
 
-
+            
+            
 
         protected:
             explicit queue() throw(); //!< setup

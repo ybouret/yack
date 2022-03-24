@@ -56,6 +56,10 @@ namespace yack
         //! simple push back helper
         inline void add(param_type args) { this->push_back( new NODE(args) ); }
 
+        //! simple push front helper
+        inline void pre(param_type args) { this->push_front( new NODE(args) ); }
+
+
         //! push_back new node
         inline type & append_back(param_type args)  { return **(this->push_back(  new NODE(args) )); }
 

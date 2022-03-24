@@ -27,21 +27,20 @@ namespace yack
         //______________________________________________________________________
         //
         //
-        //! runnable interface
+        //! runnable interface with a private run method
         //
         //______________________________________________________________________
         class runnable
         {
         public:
-
             //__________________________________________________________________
             //
             // C++
             //__________________________________________________________________
-            virtual ~runnable() throw();
+            virtual ~runnable() throw(); //!< cleanup
 
         protected:
-            explicit runnable() throw();
+            explicit runnable() throw(); //!< setup
 
         private:
             YACK_DISABLE_COPY_AND_ASSIGN(runnable);

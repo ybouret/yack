@@ -88,6 +88,7 @@ YACK_UTEST_DECL(256)
     YACK_UTEST(sync_loop);
     YACK_UTEST(sync_split);
     YACK_UTEST(sync_queue);
+    YACK_UTEST(sync_topology);
 
 
     YACK_UTEST(fft1d);

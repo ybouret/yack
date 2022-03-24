@@ -182,6 +182,7 @@ add_test(singleton      test-core singleton)
 add_test(sync:loop      test-core sync_loop 4 0.2)
 add_test(sync:split     test-core sync_split)
 add_test(sync:queue     test-core sync_queue)
+add_test(sync:topology  test-core sync_topology)
 
 add_test(fft:1d        test-core  fft1d 0.02)
 add_test(fft:xbr-info  test-core  fft_xbr_info)
