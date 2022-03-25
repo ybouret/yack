@@ -293,6 +293,7 @@ namespace yack
             // compute dC
             //
             //------------------------------------------------------------------
+            rstack.free();
             for(const anode *node=active.head;node;node=node->next)
             {
                 const species &s = **node;
@@ -310,29 +311,51 @@ namespace yack
                         }
                         goto EVAL_XI;
                     }
+                    const double fac = c/(-d); assert(fac>1);
+                    rstack << fac;
                 }
             }
+
+            double expand = 1;
+            if(rstack.size())
+            {
+                hsort(rstack,comparison::increasing<double>);
+                std::cerr << "rstack: " << rstack << std::endl;
+                const double rmin = rstack.front();
+                const double xmax = 1.0 + 0.5*(rmin-1.0);
+                //expand = min_of(expand,xmax);
+                std::cerr << "xmax=" << xmax << std::endl;
+            }
+            std::cerr << "expand=" << expand << std::endl;
 
             if(verbose) lib(std::cerr << vpfx << "dC=",dC,vpfx);
-
-            {
-                ios::ocstream fp("gam.dat");
-                for(double u=0;u<=1;u+=0.001)
-                {
-                    fp("%g %g\n",u,(*this)(u));
-                }
-            }
-
-
             for(const anode *node=active.head;node;node=node->next)
             {
                 const species &s = **node;
                 const size_t   j = *s;
-                Ctry[j] = max_of(Corg[j]+dC[j],0.0);
+                Ctry[j] = max_of(Corg[j]+expand*dC[j],0.0);
             }
+
+
+            triplet<double> x = { 0, -1, expand };
+            triplet<double> g = { rmsGamma(Corg), 0, rmsGamma(Ctry) };
+
+
+            {
+                size_t NP = 10000;
+                ios::ocstream fp("gam.dat");
+                for(size_t i=0;i<=NP;++i)
+                {
+                    const double u = (expand*i)/NP;
+                    fp("%g %.15g\n",u,(*this)(u));
+                }
+            }
+
+            const double x_opt = minimize::find<double>::run_for(*this,x,g,minimize::inside);
+            std::cerr << "x_opt=" << x_opt << "/ " << x.b << std::endl;
             transfer(Corg,Ctry);
 
-            if(cycle>=1)
+            if(cycle>=20)
             {
                 exit(1);
             }
