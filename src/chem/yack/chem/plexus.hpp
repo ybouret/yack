@@ -76,12 +76,14 @@ namespace yack
              */
             void regularize(writable<double> &C) throw();
 
-            //! compute Omega0, return regularizing coeff alpha
+            //! compute Omega0, return max of extra diagonal sum
             double   makeOmega0() throw();
 
 
             //! compute rms
             double rmsGamma(const readable<double> &C) throw();
+
+            double operator()(const double u) throw();
 
             //__________________________________________________________________
             //

@@ -134,6 +134,19 @@ namespace yack
             return true;
         }
 
+        bool limits:: should_reduce(const double xi) const throw()
+        {
+            switch(type)
+            {
+                case limited_by_none: break;
+                case limited_by_reac: return (xi >=  reac->xi);
+                case limited_by_prod: return (xi <= -prod->xi);
+                case limited_by_both: return (xi >= reac->xi) || (xi <= -prod->xi);
+            }
+
+            return false;
+        }
+
 
     }
 

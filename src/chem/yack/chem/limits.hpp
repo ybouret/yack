@@ -53,6 +53,8 @@ namespace yack
             //! check acceptable value
             bool is_acceptable(const double xi) const throw();
 
+            //! if causes a concentration to become <=0
+            bool should_reduce(const double xi) const throw();
 
         private:
             YACK_DISABLE_COPY_AND_ASSIGN(limits);
