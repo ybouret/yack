@@ -76,8 +76,8 @@ namespace yack
              */
             void regularize(writable<double> &C) throw();
 
-            //! compute Omega0, return max of extra diagonal sum
-            double   makeOmega0() throw();
+            //! compute Omega0
+            void   makeOmega0() throw();
 
 
             //! compute rms

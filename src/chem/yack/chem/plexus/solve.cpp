@@ -93,27 +93,28 @@ namespace yack
             YACK_CHEM_PRINTLN("//   <plexus.regularize/>");
         }
 
-        double plexus:: makeOmega0() throw()
+        void plexus:: makeOmega0() throw()
         {
             YACK_CHEM_PRINTLN("//   <plexus.makeOmega0>");
 
-            double extra = 0;
             for(size_t i=N;i>0;--i)
             {
-                writable<double>       &Omi = Omega0[i];
-                const readable<double> &psi = Psi[i];
+                writable<double>       &Omi  = Omega0[i];
+                const readable<double> &psi  = Psi[i];
+                double                 &diag = Omi[i];
                 Omi.ld(0);
-                Omi[i] = 1.0;
+                diag = 1.0;
                 if(!blocked[i])
                 {
                     xs[i] = 0;
                     {
-                        const double diag = xdot(psi,Nu[i],Ctmp); assert(diag<0);
-                        Gscal[i] = -diag;
-                        for(size_t k=N;  k>i;--k) xs[k] = fabs(Omi[k] = xdot(psi,Nu[k],Ctmp)/diag);
-                        for(size_t k=i-1;k>0;--k) xs[k] = fabs(Omi[k] = xdot(psi,Nu[k],Ctmp)/diag);
+                        const double den = xdot(psi,Nu[i],Ctmp); assert(den<0);
+                        Gscal[i] = -den;
+                        for(size_t k=N;  k>i;--k) xs[k] = fabs(Omi[k] = xdot(psi,Nu[k],Ctmp)/den);
+                        for(size_t k=i-1;k>0;--k) xs[k] = fabs(Omi[k] = xdot(psi,Nu[k],Ctmp)/den);
                     }
-                    extra = max_of(extra,sorted::sum(xs,sorted::by_value));
+                    const double extra = sorted::sum(xs,sorted::by_value);
+                    while(diag<=extra) ++diag;
                 }
                 else
                 {
@@ -121,11 +122,8 @@ namespace yack
                 }
             }
 
-            YACK_CHEM_PRINTLN("Gscal = " << Gscal);
-            YACK_CHEM_PRINTLN("Omega = " << Omega0);
             YACK_CHEM_PRINTLN("//   <plexus.makeOmega0/>");
 
-            return extra;
         }
 
         double plexus:: rmsGamma(const readable<double> &C) throw()
@@ -198,6 +196,8 @@ namespace yack
             }
 
             size_t cycle = 0;
+            bool   first = true;
+            double value = 0;
 
         CYCLE:
             ++cycle;
@@ -206,7 +206,6 @@ namespace yack
             // regularize
             //
             //------------------------------------------------------------------
-
             regularize(Corg);
 
 
@@ -233,7 +232,24 @@ namespace yack
                 }
             }
 
-            ios::ocstream::echo("rms.dat","%g %.15g\n", double(cycle), sqrt(tao::v1::mod2<double>::of(Xi)/N) );
+            const double rmsXi = sqrt(tao::v1::mod2<double>::of(Xi)/N);
+            if(first)
+            {
+                value = rmsXi;
+                first = false;
+            }
+            else
+            {
+                if(rmsXi>=value)
+                {
+                    YACK_CHEM_PRINTLN("// <plexus.solve/> [converged]");
+                    return true;
+                }
+                value = rmsXi;
+            }
+
+            ios::ocstream::echo("rms.dat","%g %.15g\n", double(cycle), value );
+
 
 
             //------------------------------------------------------------------
@@ -241,8 +257,11 @@ namespace yack
             // compute Omega
             //
             //------------------------------------------------------------------
-            const double extra = makeOmega0();
-            std::cerr << "extra=" << extra << std::endl;
+            makeOmega0();
+            std::cerr << "Omega=" << Omega0 << std::endl;
+            std::cerr << "xi   =" << Xi     << std::endl;
+            if(verbose) eqs(std::cerr << vpfx << "Xi=",Xi,vpfx);
+
 
         EVAL_XI:
             eqs(std::cerr << vpfx << "Omega=",Omega0,vpfx);
@@ -316,14 +335,14 @@ namespace yack
                 }
             }
 
-            double expand = 1;
+            double expand = 2;
             if(rstack.size())
             {
                 hsort(rstack,comparison::increasing<double>);
                 std::cerr << "rstack: " << rstack << std::endl;
                 const double rmin = rstack.front();
                 const double xmax = 1.0 + 0.5*(rmin-1.0);
-                //expand = min_of(expand,xmax);
+                expand = min_of(expand,xmax);
                 std::cerr << "xmax=" << xmax << std::endl;
             }
             std::cerr << "expand=" << expand << std::endl;
@@ -336,9 +355,9 @@ namespace yack
                 Ctry[j] = max_of(Corg[j]+expand*dC[j],0.0);
             }
 
-
-            triplet<double> x = { 0, -1, expand };
-            triplet<double> g = { rmsGamma(Corg), 0, rmsGamma(Ctry) };
+            const double    g0 = rmsGamma(Corg);
+            triplet<double> x  = { 0, -1, expand };
+            triplet<double> g  = { g0, 0, rmsGamma(Ctry) };
 
 
             {
@@ -351,17 +370,25 @@ namespace yack
                 }
             }
 
-            const double x_opt = minimize::find<double>::run_for(*this,x,g,minimize::inside);
-            std::cerr << "x_opt=" << x_opt << "/ " << x.b << std::endl;
+            (void) minimize::find<double>::run_for(*this,x,g,minimize::inside);
+            std::cerr << "x_opt=" <<  x.b << std::endl;
             transfer(Corg,Ctry);
+            std::cerr << "gamma: " << g0 << " -> " << g.b << std::endl;
+            if(g.b>=g0)
+            {
+                std::cerr << "Converged" << std::endl;
+                goto SUCCESS;
+            }
 
-            if(cycle>=20)
+
+            if(cycle>=100)
             {
                 exit(1);
             }
 
             goto CYCLE;
 
+        SUCCESS:
             YACK_CHEM_PRINTLN("// <plexus.solve/> [success]");
             return true;
 
