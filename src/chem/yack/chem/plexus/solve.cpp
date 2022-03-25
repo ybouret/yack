@@ -3,6 +3,7 @@
 #include "yack/chem/plexus.hpp"
 #include "yack/apex.hpp"
 #include "yack/math/tao/v1.hpp"
+#include "yack/math/tao/v2.hpp"
 #include "yack/sort/sum.hpp"
 #include "yack/exception.hpp"
 #include "yack/math/timings.hpp"
@@ -330,11 +331,15 @@ namespace yack
                         }
                         goto EVAL_XI;
                     }
-                    const double fac = c/(-d); assert(fac>1);
-                    rstack << fac;
+
                 }
             }
 
+
+
+
+
+#if 0
             double expand = 2;
             if(rstack.size())
             {
@@ -346,8 +351,17 @@ namespace yack
                 std::cerr << "xmax=" << xmax << std::endl;
             }
             std::cerr << "expand=" << expand << std::endl;
+#endif
+
+            double expand = 1;
 
             if(verbose) lib(std::cerr << vpfx << "dC=",dC,vpfx);
+            const double    g0 = rmsGamma(Corg);
+            tao::v2::mul(xs,Psi,dC);
+            const double slope = tao::v1::dot<double>::of(Gamma,xs);
+
+            std::cerr << "slope=" << slope << std::endl;
+
             for(const anode *node=active.head;node;node=node->next)
             {
                 const species &s = **node;
@@ -355,7 +369,6 @@ namespace yack
                 Ctry[j] = max_of(Corg[j]+expand*dC[j],0.0);
             }
 
-            const double    g0 = rmsGamma(Corg);
             triplet<double> x  = { 0, -1, expand };
             triplet<double> g  = { g0, 0, rmsGamma(Ctry) };
 
@@ -374,10 +387,11 @@ namespace yack
             std::cerr << "x_opt=" <<  x.b << std::endl;
             transfer(Corg,Ctry);
             std::cerr << "gamma: " << g0 << " -> " << g.b << std::endl;
+
             if(g.b>=g0)
             {
                 std::cerr << "Converged" << std::endl;
-                goto SUCCESS;
+                //goto SUCCESS;
             }
 
 
