@@ -191,9 +191,25 @@ The distance to this plane is:
 
 We have:
 \begin{equation}
-	\left(\min_j \vert\nu_{ij}\vert\right)^2 \leq \dfrac{  \langle \vec{\Psi}_i' \vert \vec{\nu}_i \rangle ^2 }{  \langle \vec{\Psi}_i' \vert \vec{\Psi}_i' \rangle } 
+	\left(\min_j \vert\nu_{ij}\vert\right)^2 \leq \alpha_i^2 = \dfrac{  \langle \vec{\Psi}_i' \vert \vec{\nu}_i \rangle ^2 }{  \langle \vec{\Psi}_i' \vert \vec{\Psi}_i' \rangle } 
 	\leq \vec{\nu}_i^2
 \end{equation}
+Let us consider:
+\begin{equation}
+	d_i^2 = \dfrac{1}{2} \alpha_i^2 \left[ \langle \vec{\Omega}_i \vert \vec{\xi}\rangle - \Xi_i \right] ^2 
+\end{equation}
+
+\begin{equation}
+	-\partial_{\vec{\xi}} d_i^2 = \alpha_i^2 \Xi_i \vec{\Omega}_i
+\end{equation}
+
+\begin{equation}
+	D^2(\vec{\xi}) = \sum_k d_k^2
+\end{equation}  
+
+\begin{equation}
+	-\partial_{\vec{\xi}} D^2  = \sum_k \alpha_k^2 \Xi_k \vec{\Omega}_k
+\end{equation}  
 
 
 \subsection{Evolution, old}
