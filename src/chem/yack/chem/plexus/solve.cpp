@@ -196,6 +196,120 @@ namespace yack
                     break;
             }
 
+            //------------------------------------------------------------------
+            //
+            // compute metrics
+            //
+            //------------------------------------------------------------------
+            YACK_CHEM_PRINTLN("//   <plexus.metrics>");
+            for(const enode *node=eqs.head();node;node=node->next)
+            {
+                const equilibrium &eq  = ***node;
+                const size_t       ei  = *eq;
+                const double       Ki  = K[ei];
+                writable<double>  &Ci  = Ceq[ei];
+                Xi[ei]  = eq.solve1D(Ki,Corg,Ci);
+                eq.drvs_action(Psi[ei],Ki,Ci,Ctmp);
+            }
+            if(verbose)
+            {
+                eqs(std::cerr<<vpfx<<"Xi      = ",Xi,vpfx);
+            }
+            YACK_CHEM_PRINTLN("//   <plexus.metrics/>");
+
+            //------------------------------------------------------------------
+            //
+            // compute Omega
+            //
+            //------------------------------------------------------------------
+            for(size_t i=N;i>0;--i)
+            {
+                const readable<double> &psi = Psi[i];
+                const double            den = xdot(psi,Nu[i],Ctmp);
+                writable<double>       &Omi = Omega0[i];
+                Omi.ld(0);
+                Omi[i] = 1;
+                if(fabs(den)<=0)
+                {
+                    Xi[i]      = 0;
+                    blocked[i] = true;
+                }
+                else
+                {
+                    xs[i] = 0;
+                    {
+                        for(size_t k=N;  k>i;--k) xs[k] = fabs(Omi[k] = xdot(psi,Nu[k],Ctmp)/den);
+                        for(size_t k=i-1;k>0;--k) xs[k] = fabs(Omi[k] = xdot(psi,Nu[k],Ctmp)/den);
+                    }
+                    const double extra = sorted::sum(xs,sorted::by_value);
+                    (void)extra;
+                    blocked[i] = false;
+                }
+            }
+            if(verbose)
+            {
+                eqs(std::cerr<<vpfx<<"Omega   = ",Omega0,vpfx);
+                eqs(std::cerr<<vpfx<<"blocked = ",blocked,vpfx);
+            }
+
+
+            exit(1);
+
+            YACK_CHEM_PRINTLN("// <plexus.solve/>");
+            return false;
+        }
+
+
+#if 0
+        bool plexus:: solve(writable<double> &C0) throw()
+        {
+            assert(C0.size()>=M);
+            assert(are_valid(C0));
+
+
+
+            //------------------------------------------------------------------
+            //
+            // initialize
+            //
+            //------------------------------------------------------------------
+            YACK_CHEM_PRINTLN("// <plexus.solve>");
+            if(verbose) lib(std::cerr << vpfx << "Cini=",C0,vpfx);
+            ios::ocstream::overwrite("rms.dat");
+            switch(N)
+            {
+
+                case 0:
+                    //----------------------------------------------------------
+                    // trivial case
+                    //----------------------------------------------------------
+                    YACK_CHEM_PRINTLN("// <plexus.solve/> [empty]");
+                    return true;
+
+                case 1: {
+                    //----------------------------------------------------------
+                    // trivial case
+                    //----------------------------------------------------------
+                    const equilibrium &eq = ***eqs.head();
+                    (void) eq.solve1D(K[*eq],C0,Ctry);
+                    transfer(C0,Ctry);
+                }
+                    YACK_CHEM_PRINTLN("// <plexus.solve/> [1D]");
+                    return true;
+
+
+                default:
+                    //----------------------------------------------------------
+                    // prepare workspace
+                    //----------------------------------------------------------
+                    for(size_t j=M;j>0;--j)
+                    {
+                        Corg[j] = Ctry[j] = C0[j];
+                        dC[j]   = 0;
+                    }
+                    break;
+            }
+
             size_t cycle = 0;
             bool   first = true;
             double value = 0;
@@ -407,6 +521,7 @@ namespace yack
             return true;
 
         }
+#endif
 
     }
 }

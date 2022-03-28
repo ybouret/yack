@@ -47,7 +47,8 @@ YACK_UTEST(plexus)
 
     C.ld(0);
     lib.fill(C, 1, ran);
-    //cs.solve(C);
+    cs.solve(C);
+    lib(std::cerr<<"Cend=",C);
 
     return 0;
 
