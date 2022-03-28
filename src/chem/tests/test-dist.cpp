@@ -62,15 +62,18 @@ YACK_UTEST(dist)
 {
     randomized::rand_ ran;
 
-    partition part(3);
-
-    part.boot();
-    do
+    for(size_t n=1;n<=4;++n)
     {
-        test(part,ran);
-    }
-    while(part.next());
+        partition part(n);
 
+        part.boot();
+        do
+        {
+            test(part,ran);
+        }
+        while(part.next());
+
+    }
 
 
 }
