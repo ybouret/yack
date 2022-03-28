@@ -15,6 +15,8 @@ add_test(solve      test-chem solve)
 add_test(eq         test-chem eq)
 add_test(eqs        test-chem eqs)
 add_test(plexus     test-chem plexus)
+add_test(dist       test-chem dist)
+
 
 
 

@@ -172,6 +172,24 @@ We define:
 If $|\vec{\Psi}_i|=0$, then we solve $\Gamma_i$. If we still have $|\vec{\Psi}_i|=0$, we declare $\Gamma_i$ blocked.
 
 \subsection{Evolution}
+Let us start from a valid $\vec{C}$.
+We define a set of concentrations:
+\begin{equation}
+	\forall i,\;\vec{C_i}' = \vec{C} + \Xi_i \vec{\nu}_i,\;\;\Gamma_i(\vec{C}_i') = 0
+\end{equation}
+Each $\vec{C}_i'$ defines an hyperplane in which we must tend to:
+\begin{equation}
+	\Gamma_i(\vec{X}-\vec{C}_i') \simeq 0 \Rightarrow \langle\vec{\Psi}_i'\vert \vec{X}-\vec{C}_i' \rangle = 0
+\end{equation}
+The distance to this plane is:
+\begin{equation}
+	d_i = \dfrac{1}{\vert \vec{\Psi}_i' \vert}
+	\left\vert \langle \vec{\Psi}_i' \vert \bm{\nu}^T \vec{\xi} - \Xi_i \vec{\nu}_i \rangle \right\vert
+	=   \dfrac{ \vert\langle \vec{\Psi}_i' \vert \vec{\nu}_i \rangle \vert }{  \vert \vec{\Psi}_i' \vert } 
+	\left\vert \langle \vec{\Omega}_i \vert \vec{\xi}\rangle - \Xi_i \right\vert
+\end{equation}
+
+\subsection{Evolution, old}
 
 We start from a regularized $\vec{C}$ and some possibly blocked equilibria. We 
 want to solve:
@@ -204,7 +222,7 @@ If we start from $\vec{C}$, we can compute $\vec{\Xi}$ such that:
 Let us know evaluate $\delta\Xi_i$ for a small change $\delta\vec{C}$:
 \begin{equation}
 	\forall i, \;\;  \Gamma_i(\vec{C}_i' + \delta\vec{C} + \delta\Xi_i \vec{\nu}_i) = 0 \Rightarrow 
-	\langle \vec{\Psi}_i' \vert \delta\vec{C} +  \delta\Xi_i \vec{\nu}_i \rangle \simeq 0 
+	\langle \vec{\Psi}_i' \vert \delta\vec{C} +   \Xi_i \vec{\nu}_i \rangle \simeq 0 
 \end{equation}
 so:
 \begin{equation}
