@@ -134,7 +134,7 @@ namespace yack
             {
                 xs[i] = squared(Gamma[i]/Gs[i]);
             }
-            return sorted::sum(xs,sorted::by_value) / N;
+            return sorted::sum(xs,sorted::by_value) / 2;
         }
 
         double plexus:: operator()(const double u) throw()
@@ -196,7 +196,8 @@ namespace yack
                     break;
             }
 
-            size_t cycle = 0;
+            plexus &self  = *this;
+            size_t  cycle = 0;
         CYCLE:
             ++cycle;
             //------------------------------------------------------------------
@@ -222,29 +223,26 @@ namespace yack
                 Omi[ei] = 1.0;
                 if(blocked[ei])
                 {
-                    Xi[ei] = 0.0;
                     Gs[ei] = 1.0;
                     xm[ei] = 0.0;
                 }
                 else
                 {
                     const double Ki  = K[ei];
-                    Xi[ei] = eq.grad_action(psi,Ki,Corg,Ctmp);
+                    xm[ei] = eq.grad_action(psi,Ki,Corg,Ctmp);
                     const double den = xdot(psi,Nu[ei],Ctmp); assert(den<0);
-                    Xi[ei] /= ( Gs[ei]=-den );
+                    xm[ei] /= ( Gs[ei]=-den );
                     xs[ei] = 0;
                     for(size_t k=N;  k>ei;--k) xs[k] = fabs(Omi[k] = xdot(psi,Nu[k],Ctmp)/den);
                     for(size_t k=ei-1;k>0;--k) xs[k] = fabs(Omi[k] = xdot(psi,Nu[k],Ctmp)/den);
                     const double extra = sorted::sum(xs,sorted::by_value);
                     (void) extra;
-                    xm[ei] = eq.solve1D(Ki,Corg,Ceq[ei]);
                 }
             }
 
             if(verbose)
             {
-                eqs(std::cerr<<vpfx<<"rhs   = ",Xi,vpfx);
-                eqs(std::cerr<<vpfx<<"Xi    = ",xm,vpfx);
+                eqs(std::cerr<<vpfx<<"rhs   = ",xm,vpfx);
                 eqs(std::cerr<<vpfx<<"Gs    = ",Gs,vpfx);
             }
 
@@ -260,7 +258,7 @@ namespace yack
                 YACK_CHEM_PRINTLN("// <plexus.solve/> [singular]");
                 return false;
             }
-            tao::v1::set(xi,Xi);
+            tao::v1::set(xi,xm);
             LU.solve(iOmega,xi);
             if(verbose)
             {
@@ -324,11 +322,18 @@ namespace yack
                 }
             }
 
+
+            double expand = 1;
             if(verbose)
             {
-                hsort(rstack,comparison::increasing<double>);
-                std::cerr << vpfx << "rstack = " << rstack << std::endl;
+                if(rstack.size())
+                {
+                    hsort(rstack,comparison::increasing<double>);
+                    const double xmax = rstack.front();
+                    expand = max_of(expand,xmax/2);
+                }
                 lib(std::cerr<<vpfx<<"dC     = ",dC,vpfx);
+
             }
 
 
@@ -338,9 +343,11 @@ namespace yack
                 ios::ocstream fp("gam.dat");
                 for(size_t i=0;i<=NP;++i)
                 {
-                    const double u = (1.0*i)/NP;
-                    fp("%g %.15g\n",u,(*this)(u));
+                    const double u = (expand*i)/NP;
+                    fp("%g %.15g\n",u,self(u));
                 }
+
+
             }
 
 
@@ -348,8 +355,7 @@ namespace yack
             triplet<double> x  = {0,-1,1};
             triplet<double> g  = {g0,-1,(*this)(x.c)};
 
-            (void) minimize::find<double>::run_for(*this,x,g,minimize::inside);
-            std::cerr << "x.b=" << x.b << std::endl;
+            (void) minimize::find<double>::run_for(self,x,g,minimize::inside);
 
             transfer(Corg,Ctry);
             lib(std::cerr<<vpfx<<"C(" << x.b <<") = ",Corg,vpfx);

@@ -172,117 +172,35 @@ We define:
 If $|\vec{\Psi}_i|=0$, then we solve $\Gamma_i$. If we still have $|\vec{\Psi}_i|=0$, we declare $\Gamma_i$ blocked.
 
 \subsection{Evolution}
-Let us start from a valid $\vec{C}$.
-We define a set of concentrations:
-\begin{equation}
-	\forall i,\;\vec{C_i}' = \vec{C} + \Xi_i \vec{\nu}_i,\;\;\Gamma_i(\vec{C}_i') = 0
-\end{equation}
-Each $\vec{C}_i'$ defines an hyperplane in which we must tend to:
-\begin{equation}
-	\Gamma_i(\vec{X}-\vec{C}_i') \simeq 0 \Rightarrow \langle\vec{\Psi}_i'\vert \vec{X}-\vec{C}_i' \rangle = 0
-\end{equation}
-The distance to this plane is:
-\begin{equation}
-	d_i = \dfrac{1}{\vert \vec{\Psi}_i' \vert}
-	\left\vert \langle \vec{\Psi}_i' \vert \bm{\nu}^T \vec{\xi} - \Xi_i \vec{\nu}_i \rangle \right\vert
-	=   \dfrac{ \vert\langle \vec{\Psi}_i' \vert \vec{\nu}_i \rangle \vert }{  \vert \vec{\Psi}_i' \vert } 
-	\left\vert \langle \vec{\Omega}_i \vert \vec{\xi}\rangle - \Xi_i \right\vert
-\end{equation}
+Let us start from a regular $\vec{C}$.
 
-We have:
 \begin{equation}
-	\left(\min_j \vert\nu_{ij}\vert\right)^2 \leq \alpha_i^2 = \dfrac{  \langle \vec{\Psi}_i' \vert \vec{\nu}_i \rangle ^2 }{  \langle \vec{\Psi}_i' \vert \vec{\Psi}_i' \rangle } 
-	\leq \vec{\nu}_i^2
+	\vec{\Gamma}(\vec{C}+\bm{\nu}^T \vec{\xi}) \simeq \vec{\Gamma} + \bm{\Psi} \bm{\nu}^T \vec{\xi}
 \end{equation}
-Let us consider:
+For a regular concentration,
 \begin{equation}
-	d_i^2 = \dfrac{1}{2} \alpha_i^2 \left[ \langle \vec{\Omega}_i \vert \vec{\xi}\rangle - \Xi_i \right] ^2 
+	\langle\vec{\Psi}_i \vert \vec{\nu}_i\rangle < 0
+\end{equation}
+and is a scaling factor for $\Gamma_i$. So we want to solve
+\begin{equation}
+	\forall i, \;\; \langle \vec{\Omega}_i \vert \vec{\xi} \rangle = \dfrac{\Gamma_i}{-\langle\vec{\Psi}_i \vert \vec{\nu}_i\rangle}
+\end{equation}
+\begin{equation}
+\left\lbrace
+	\begin{array}{rcl}
+	\Omega_{ii}   & = & 1\\
+	\Omega_{i\not=j} & = & \dfrac{\langle\vec{\Psi}_i \vert \vec{\nu}_j\rangle}{\langle\vec{\Psi}_i \vert \vec{\nu}_i\rangle}\\
+	\end{array}
+\right.
 \end{equation}
 
 \begin{equation}
-	-\partial_{\vec{\xi}} d_i^2 = \alpha_i^2 \Xi_i \vec{\Omega}_i
+	f = \dfrac{1}{2} \vec{\Gamma}^2 \Rightarrow \vec{\nabla} f = \left(\bm{\Psi} \bm{\nu}^T\right)^T \vec{\Gamma}
 \end{equation}
 
 \begin{equation}
-	D^2(\vec{\xi}) = \sum_k d_k^2
-\end{equation}  
-
-\begin{equation}
-	-\partial_{\vec{\xi}} D^2  = \sum_k \alpha_k^2 \Xi_k \vec{\Omega}_k
-\end{equation}  
-
-
-\subsection{Evolution, old}
-
-We start from a regularized $\vec{C}$ and some possibly blocked equilibria. We 
-want to solve:
-\begin{equation}
-	\vec{0} = 	\vec{\Gamma}(\vec{C}+\bm{\nu}^T \vec{\xi}) \simeq \vec{\Gamma} + \bm{\Psi} \bm{\nu}^T \vec{\xi}
+	f = \dfrac{1}{2} \langle \vec{\Gamma} \vert \bm{W}^2 \vert \vec{\Gamma} \rangle \Rightarrow \vec{\nabla} f = \left(\bm{W}\bm{\Psi} \bm{\nu}^T\right)^T \bm{W}\vec{\Gamma}
 \end{equation}
-
-\begin{equation}
-	\bm{\Omega} = \bm{\Psi} \bm{\nu}^T
-\end{equation}	
-
-For a regularized equilibrium, $\Omega_{ii}=\langle \vec{\Psi}_i \vert \vec{\nu}_i \rangle < 0$ is
-a scaling factor for $\Gamma_i$, and
-\begin{equation}
-	\left\vert \dfrac{\Gamma_i}{\langle \vec{\Psi}_i \vert \vec{\nu}_i \rangle} \right\vert
-\end{equation}
-is homogenous to a concentration.\\
-We first estimate:
-\begin{equation}
-	\vec{\xi} =  {\bm{\Omega}}^{-1} \cdot (-\vec{\Gamma} )
-\end{equation}
-
-\subsection{Method}
-
-If we start from $\vec{C}$, we can compute $\vec{\Xi}$ such that:
-\begin{equation}
-	\forall i, \;\; \Gamma_i(\vec{C}_i') = 0, \;\; \vec{C}_i' = \vec{C} + \Xi_i \vec{\nu}_i
-\end{equation}
-
-Let us know evaluate $\delta\Xi_i$ for a small change $\delta\vec{C}$:
-\begin{equation}
-	\forall i, \;\;  \Gamma_i(\vec{C}_i' + \delta\vec{C} + \delta\Xi_i \vec{\nu}_i) = 0 \Rightarrow 
-	\langle \vec{\Psi}_i' \vert \delta\vec{C} +   \Xi_i \vec{\nu}_i \rangle \simeq 0 
-\end{equation}
-so:
-\begin{equation}
-	\forall i, \;\; \delta\Xi_i \langle \vec{\Psi}_i' \vert \vec{\nu}_i \rangle
-	 = -  \langle\vec{\Psi}_i' \vert \delta\vec{C} \rangle
-\end{equation}
-  	
-
-\subsection{Method again}
-
-\begin{equation}
-	\partial_t \vec{\xi} = k\vec{\Xi}(\vec{C})
-\end{equation}
-Implicit:
-\begin{equation}
-	\vec{\xi} = \tau \vec{\Xi}(\vec{C}+\bm{\nu}^T \vec{\xi} ) 
-	\simeq \tau \left[ \vec{\Xi}(\vec{C}) + \partial_{\vec{C}}\vec{\Xi} \, \bm{\nu}^T \vec{\xi} \right]
-\end{equation}
-and:
-\begin{equation}
-	\vec{\xi} = \tau \left[ \bm{I}_N - \tau \, \partial_{\vec{C}}\vec{\Xi} \, \bm{\nu}^T \right]^{-1} \vec{\Xi}(\vec{C}) 
-\end{equation}
-
-\begin{equation}
-	- \partial_{\vec{C}}\vec{\Xi} \, \bm{\nu}^T = 
-	\begin{bmatrix}
-		 \dfrac{\langle \vec{\Psi}_i' \vert \vec{\nu}_j \rangle}{\langle \vec{\Psi}_i' \vert \vec{\nu}_i \rangle} 	
-	\end{bmatrix}
-	 = \bm{\Omega}
-\end{equation}
-
-\begin{equation}
-	\vec{\xi} \simeq \left[ \alpha \bm{I}_N + \Omega \right]^{-1} \vec{\Xi}
-\end{equation}
-
-
-
 
  
 
