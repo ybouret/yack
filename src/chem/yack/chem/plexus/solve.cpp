@@ -110,7 +110,7 @@ namespace yack
                     xs[i] = 0;
                     {
                         const double den = xdot(psi,Nu[i],Ctmp); assert(den<0);
-                        Gscal[i] = -den;
+                        Gs[i] = -den;
                         for(size_t k=N;  k>i;--k) xs[k] = fabs(Omi[k] = xdot(psi,Nu[k],Ctmp)/den);
                         for(size_t k=i-1;k>0;--k) xs[k] = fabs(Omi[k] = xdot(psi,Nu[k],Ctmp)/den);
                     }
@@ -119,7 +119,7 @@ namespace yack
                 }
                 else
                 {
-                    Gscal[i] = 1.0;
+                    Gs[i] = 1.0;
                 }
             }
 
@@ -132,7 +132,7 @@ namespace yack
             computeGamma(C);
             for(size_t i=N;i>0;--i)
             {
-                xs[i] = squared(Gamma[i]/Gscal[i]);
+                xs[i] = squared(Gamma[i]/Gs[i]);
             }
             return sorted::sum(xs,sorted::by_value) / N;
         }
@@ -196,80 +196,58 @@ namespace yack
                     break;
             }
 
-            rmatrix Grad(N,N);
             size_t cycle = 0;
         CYCLE:
             ++cycle;
             //------------------------------------------------------------------
             //
-            // compute metrics
+            // regularize
             //
             //------------------------------------------------------------------
-            YACK_CHEM_PRINTLN("//   <plexus.metrics> @cycle=" << cycle);
+            regularize(Corg);
+
+
+            //------------------------------------------------------------------
+            //
+            // compute Omega
+            //
+            //------------------------------------------------------------------
             for(const enode *node=eqs.head();node;node=node->next)
             {
                 const equilibrium &eq  = ***node;
                 const size_t       ei  = *eq;
-                const double       Ki  = K[ei];
-                writable<double>  &Ci  = Ceq[ei];
-                Xi[ei]  = eq.solve1D(Ki,Corg,Ci);
-                eq.drvs_action(Psi[ei],Ki,Ci,Ctmp);
-            }
-            if(verbose)
-            {
-                eqs(std::cerr<<vpfx<<"Xi      = ",Xi,vpfx);
-            }
-            YACK_CHEM_PRINTLN("//   <plexus.metrics/>");
-
-            //------------------------------------------------------------------
-            //
-            // compute Omega
-            //
-            //------------------------------------------------------------------
-            for(size_t i=N;i>0;--i)
-            {
-                const readable<double> &psi = Psi[i];
-                const double            den = xdot(psi,Nu[i],Ctmp);
-                writable<double>       &Omi = Omega0[i];
-                Omi.ld(0);
-                Omi[i] = 1;
-                if(fabs(den)<=0)
+                writable<double>  &Omi = Omega0[ei];
+                writable<double>  &psi = Psi[ei];
+                Omi.ld(0.0);
+                Omi[ei] = 1.0;
+                if(blocked[ei])
                 {
-                    Xi[i]      = 0;
-                    blocked[i] = true;
-                    Grad[i].ld(0);
-                    Gscal[i] = 1.0;
+                    Xi[ei] = 0.0;
+                    Gs[ei] = 1.0;
+                    xm[ei] = 0.0;
                 }
                 else
                 {
-                    Gscal[i] = fabs(den);
-                    xs[i]    = 0;
-                    {
-                        for(size_t k=N;  k>i;--k) xs[k] = fabs(Omi[k] = xdot(psi,Nu[k],Ctmp)/den);
-                        for(size_t k=i-1;k>0;--k) xs[k] = fabs(Omi[k] = xdot(psi,Nu[k],Ctmp)/den);
-                    }
+                    const double Ki  = K[ei];
+                    Xi[ei] = eq.grad_action(psi,Ki,Corg,Ctmp);
+                    const double den = xdot(psi,Nu[ei],Ctmp); assert(den<0);
+                    Xi[ei] /= ( Gs[ei]=-den );
+                    xs[ei] = 0;
+                    for(size_t k=N;  k>ei;--k) xs[k] = fabs(Omi[k] = xdot(psi,Nu[k],Ctmp)/den);
+                    for(size_t k=ei-1;k>0;--k) xs[k] = fabs(Omi[k] = xdot(psi,Nu[k],Ctmp)/den);
                     const double extra = sorted::sum(xs,sorted::by_value);
-                    (void)extra;
-                    blocked[i] = false;
-                    const double prefactor = den*den/xdot(psi,psi,Ctmp);
-                    for(size_t k=N;k>0;--k)
-                    {
-                        Grad[i][k] = Omi[k] * Xi[i] * prefactor;
-                    }
+                    (void) extra;
+                    xm[ei] = eq.solve1D(Ki,Corg,Ceq[ei]);
                 }
             }
 
             if(verbose)
             {
-                eqs(std::cerr<<vpfx<<"Grad    = ",Grad,vpfx);
-                eqs(std::cerr<<vpfx<<"blocked = ",blocked,vpfx);
+                eqs(std::cerr<<vpfx<<"rhs   = ",Xi,vpfx);
+                eqs(std::cerr<<vpfx<<"Xi    = ",xm,vpfx);
+                eqs(std::cerr<<vpfx<<"Gs    = ",Gs,vpfx);
             }
 
-            //------------------------------------------------------------------
-            //
-            // compute Omega
-            //
-            //------------------------------------------------------------------
         EVAL_XI:
             if(verbose)
             {
@@ -307,7 +285,6 @@ namespace yack
                 if(lm.should_reduce(xi[ei]))
                 {
                     Omega0[ei][ei] *= 10;
-                    Xi[ei] /= 10;
                     changed = true;
                     std::cerr << "Should Reduce @" << eq.name << std::endl;
                 }
@@ -317,6 +294,7 @@ namespace yack
             {
                 goto EVAL_XI;
             }
+
 
 
             //------------------------------------------------------------------
@@ -353,6 +331,8 @@ namespace yack
                 lib(std::cerr<<vpfx<<"dC     = ",dC,vpfx);
             }
 
+
+
             {
                 size_t NP = 10000;
                 ios::ocstream fp("gam.dat");
@@ -362,6 +342,7 @@ namespace yack
                     fp("%g %.15g\n",u,(*this)(u));
                 }
             }
+
 
             const double    g0 = rmsGamma(Corg);
             triplet<double> x  = {0,-1,1};
@@ -373,7 +354,8 @@ namespace yack
             transfer(Corg,Ctry);
             lib(std::cerr<<vpfx<<"C(" << x.b <<") = ",Corg,vpfx);
 
-            if(cycle<10)
+
+            if(cycle<1)
             {
                 goto CYCLE;
             }

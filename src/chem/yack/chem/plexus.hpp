@@ -107,7 +107,7 @@ namespace yack
             tableau           &xs;      //!< [N] helper to sum
             tableau           &xm;      //!< [N] -Gamma
             tableau           &Xi;      //!< [N] Xi
-            tableau           &Gscal;   //!< [N] scaling factor
+            tableau           &Gs;      //!< [N] scaling factor
 
             tableau          &Corg;    //!< [M] working space
             tableau          &Ctmp;    //!< [M] temporary C
