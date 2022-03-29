@@ -70,33 +70,11 @@ namespace yack
             //! transfer active species only
             void transfer(writable<double> &, const readable<double> & ) const throw();
 
-            //! regularize with precomputed K
-            /**
-             - check Psi and best effort move, setting blocked if necessary
-             */
-            void regularize() throw();
-
-            //! from a regularized state
-            /**
-             - build Omega in Omega0
-             - build rhs   in xm
-             */
-            void buildOmega() throw();
-
-            //! from a computed xi
-            bool primaryCut() throw();
-
-            //! from a valid xi
-            bool compute_dC() throw();
-
-            //! from a valid dC
-            bool tryFindEqs() throw();
-
-
 
             //! compute rms
             double rmsGamma(const readable<double> &C) throw();
 
+            //! aliasing rmsGamma(Corg+u*dC)
             double operator()(const double u) throw();
 
             //__________________________________________________________________
@@ -146,6 +124,29 @@ namespace yack
             YACK_DISABLE_COPY_AND_ASSIGN(plexus);
             const lockable::scope lib_lock;
             const lockable::scope eqs_lock;
+
+            //! regularize with precomputed K
+            /**
+             - check Psi and best effort move, setting blocked if necessary
+             */
+            void regularize() throw();
+
+            //! from a regularized state
+            /**
+             - build Omega in Omega0
+             - build rhs   in xm
+             */
+            void buildOmega() throw();
+
+            //! from a computed xi
+            bool primaryCut() throw();
+
+            //! from a valid xi
+            bool compute_dC() throw();
+
+            //! from a valid dC
+            bool tryFindEqs() throw();
+
         };
 
     }
