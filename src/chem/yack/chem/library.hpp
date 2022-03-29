@@ -46,10 +46,10 @@ namespace yack
             //
             // methods
             //__________________________________________________________________
-            const snode   *head()   const throw(); //!< first species
-            virtual size_t size()   const throw(); //!< number of species
-            size_t         active() const throw(); //!< active species
-
+            const snode   *head()   const throw();  //!< first species
+            virtual size_t size()   const throw();  //!< number of species
+            size_t         active() const throw();  //!< active species
+            size_t         primary() const throw(); //!< primary species
 
             //! display named values
             template <typename ARR> inline

@@ -38,7 +38,18 @@ namespace yack
             }
             return ans;
         }
-        
+
+        size_t library:: primary() const throw()
+        {
+            size_t ans = 0;
+            for(const snode *node=head();node;node=node->next)
+            {
+                if( 1 == (***node).rank ) ++ans;
+            }
+            return ans;
+        }
+
+
         const species & library:: operator()(const string &name, const int z)
         {
             species_set::const_type *pps = db.search(name);

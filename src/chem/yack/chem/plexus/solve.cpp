@@ -134,7 +134,7 @@ namespace yack
             {
                 xs[i] = squared(Gamma[i]/Gs[i]);
             }
-            return sorted::sum(xs,sorted::by_value) / 2;
+            return sorted::sum(xs,sorted::by_value) / N;
         }
 
         double plexus:: operator()(const double u) throw()
@@ -213,6 +213,7 @@ namespace yack
             // compute Omega
             //
             //------------------------------------------------------------------
+            YACK_CHEM_PRINTLN("//   <plexus.makeOmega0/>");
             for(const enode *node=eqs.head();node;node=node->next)
             {
                 const equilibrium &eq  = ***node;
@@ -242,6 +243,8 @@ namespace yack
 
             if(verbose)
             {
+                std::cerr << "Omega=" << Omega0 << std::endl;
+                std::cerr << "rhs  =" << xm     << std::endl;
                 eqs(std::cerr<<vpfx<<"rhs   = ",xm,vpfx);
                 eqs(std::cerr<<vpfx<<"Gs    = ",Gs,vpfx);
             }
@@ -270,27 +273,31 @@ namespace yack
             // use primary control
             //
             //------------------------------------------------------------------
-            bool changed = false;
-            for(const enode *node=eqs.head();node;node=node->next)
+            if(MP)
             {
-                const equilibrium &eq  = ***node;
-                const size_t       ei  = *eq;      if(blocked[ei]) continue;
-                const limits      &lm  =  eq.primary_limits(Corg,lib.width);
-
-                if(limited_by_none!=lm.type)
-                    eqs.pad(std::cerr << vpfx << " <" << eq.name << ">",eq) << " : " << lm << std::endl;
-
-                if(lm.should_reduce(xi[ei]))
+                YACK_CHEM_PRINTLN("//   <plexus.primaryControl>");
+                bool changed = false;
+                for(const enode *node=eqs.head();node;node=node->next)
                 {
-                    Omega0[ei][ei] *= 10;
-                    changed = true;
-                    std::cerr << "Should Reduce @" << eq.name << std::endl;
-                }
+                    const equilibrium &eq  = ***node;
+                    const size_t       ei  = *eq;      if(blocked[ei]) continue;
+                    const limits      &lm  =  eq.primary_limits(Corg,lib.width);
 
-            }
-            if(changed)
-            {
-                goto EVAL_XI;
+                    if(limited_by_none!=lm.type)
+                        eqs.pad(std::cerr << vpfx << " <" << eq.name << ">",eq) << " : " << lm << std::endl;
+
+                    if(lm.should_reduce(xi[ei]))
+                    {
+                        Omega0[ei][ei] *= 10;
+                        changed = true;
+                        std::cerr << "Should Reduce @" << eq.name << std::endl;
+                    }
+                }
+                YACK_CHEM_PRINTLN("//   <plexus.primaryControl/> " << (changed?__sign::text(positive) : __sign::text(negative)) );
+                if(changed)
+                {
+                    goto EVAL_XI;
+                }
             }
 
 
@@ -301,6 +308,7 @@ namespace yack
             //
             //------------------------------------------------------------------
             rstack.free();
+            ustack.free();
             for(const anode *node=active.head;node;node=node->next)
             {
                 const species &s = **node;
@@ -309,35 +317,33 @@ namespace yack
                 if(d<0)
                 {
                     const double c = Corg[j]; assert(c>=0);
-#if 0
                     if(d<=-c)
                     {
                         std::cerr << "underflow for " << s.name << std::endl;
-                        for(size_t k=N;k>0;--k)
-                        {
-                            Omega0[k][k] *= 10;
-                        }
-                        goto EVAL_XI;
                     }
-#endif
-                    rstack<<c/(-d);
+                    rstack<< c/(-d);
+                    ustack<< j;
                 }
+            }
+
+            hsort(rstack,ustack,comparison::increasing<double>);
+            while(rstack.size() && rstack.back()>1)
+            {
+                rstack.pop_back();
+                ustack.pop_back();
             }
 
             std::cerr << "rstack=" << rstack << std::endl;
+            std::cerr << "ustack=" << ustack << std::endl;
 
-            double expand = 1;
+
             if(verbose)
             {
-                if(rstack.size())
-                {
-                    hsort(rstack,comparison::increasing<double>);
-                    const double xmax = rstack.front();
-                    expand = max_of(expand,xmax/2);
-                }
-                lib(std::cerr<<vpfx<<"dC     = ",dC,vpfx);
 
+                lib(std::cerr<<vpfx<<"dC     = ",dC,vpfx);
             }
+
+            exit(1);
 
 
 
@@ -346,7 +352,7 @@ namespace yack
                 ios::ocstream fp("gam.dat");
                 for(size_t i=0;i<=NP;++i)
                 {
-                    const double u = (expand*i)/NP;
+                    const double u = (1.0*i)/NP;
                     fp("%g %.15g\n",u,self(u));
                 }
 

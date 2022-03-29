@@ -26,7 +26,8 @@ namespace yack
         lib( lib_ ),
         eqs( eqs_ ),
         M( lib.size() ),
-        A( lib.active() ),
+        MA(lib.active() ),
+        MP(lib.primary()),
         N( eqs.size() ),
 
         ntab(10,N),
@@ -62,9 +63,11 @@ namespace yack
         eqs_lock(eqs_)
         {
 
-            YACK_CHEM_PRINTLN("// M=" << M);
-            YACK_CHEM_PRINTLN("// A=" << A);
-            YACK_CHEM_PRINTLN("// N=" << N);
+            YACK_CHEM_PRINTLN("// M  = " << M);
+            YACK_CHEM_PRINTLN("// MA = " << MA);
+            YACK_CHEM_PRINTLN("// MP = " << MP);
+
+            YACK_CHEM_PRINTLN("// N  = " << N);
 
             //------------------------------------------------------------------
             //
@@ -79,7 +82,7 @@ namespace yack
                     coerce(active) << &s;
                 }
             }
-            assert(A==active.size);
+            assert(MA==active.size);
 
             //------------------------------------------------------------------
             //
