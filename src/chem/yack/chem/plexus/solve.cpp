@@ -354,24 +354,39 @@ namespace yack
 
             (void) minimize::find<double>::run_for(self,x,g,minimize::inside);
 
-            bool ok = true;
+            const bool okG = g.b < g0;
+            std::cerr << "-------- okG=" << okG << std::endl;
+
+
+            bool okC = true;
             for(const anode *node=active.head;node;node=node->next)
             {
                 const size_t j = ***node;
                 const double dC = fabs(Corg[j]-Ctry[j]);
                 Corg[j] = Ctry[j];
                 if(dC>0)
-                    ok=false;
+                    okC=false;
             }
+
+
+
+
             if(verbose)
             {
-                std::cerr << vpfx << "ok=" << ok << "@cycle=" << cycle << std::endl;
+                std::cerr << vpfx << "okC=" << okC << "@cycle=" << cycle << std::endl;
                 lib(std::cerr<<vpfx<<"C(" << x.b <<") = ",Corg,vpfx);
             }
 
-            if(!ok)
+            if(!okG)
             {
+                std::cerr << "G converged!!" << std::endl;
+                exit(1);
+            }
 
+            if(!okC)
+            {
+                if(cycle>=50)
+                    exit(1);
                 goto CYCLE;
             }
 
