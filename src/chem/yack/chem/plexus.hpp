@@ -89,6 +89,10 @@ namespace yack
             //! from a valid xi
             bool compute_dC() throw();
 
+            //! from a valid dC
+            bool tryFindEqs() throw();
+
+
 
             //! compute rms
             double rmsGamma(const readable<double> &C) throw();
