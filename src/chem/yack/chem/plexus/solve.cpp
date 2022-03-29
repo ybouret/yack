@@ -309,6 +309,7 @@ namespace yack
                 if(d<0)
                 {
                     const double c = Corg[j]; assert(c>=0);
+#if 0
                     if(d<=-c)
                     {
                         std::cerr << "underflow for " << s.name << std::endl;
@@ -318,10 +319,12 @@ namespace yack
                         }
                         goto EVAL_XI;
                     }
+#endif
                     rstack<<c/(-d);
                 }
             }
 
+            std::cerr << "rstack=" << rstack << std::endl;
 
             double expand = 1;
             if(verbose)
