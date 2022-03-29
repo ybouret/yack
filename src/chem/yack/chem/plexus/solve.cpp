@@ -166,6 +166,62 @@ namespace yack
             }
         }
 
+        bool plexus:: compute_dC() throw()
+        {
+            YACK_CHEM_PRINTLN("//   <plexus.computeDeltaC>");
+
+            // compute and check all delta
+            rstack.free();
+            ustack.free();
+            for(const anode *node=active.head;node;node=node->next)
+            {
+                const species &s = **node;
+                const size_t   j = *s;
+                const double   d = dC[j] = xdot(xi,NuT[j],xs);
+                if(d<0)
+                {
+                    const double c = Corg[j]; assert(c>=0);
+                    if(d<=-c)
+                    {
+                        YACK_CHEM_PRINTLN(vpfx<< "  (*) overshoot for " << s.name);
+                        rstack << c/(-d);
+                        ustack << j;
+                    }
+                }
+            }
+
+            // check how many species overshot
+            if(rstack.size())
+            {
+                std::cerr << "rstack=" << rstack << std::endl;
+                std::cerr << "ustack=" << ustack << std::endl;
+                xs.ld(1);
+                while(ustack.size())
+                {
+                    const size_t          j = ustack.pop_back_value();
+                    const readable<int> &nu = NuT[j];
+                    for(size_t i=N;i>0;--i)
+                    {
+                        if(0!=nu[i])
+                        {
+                            xs[i] = 10;
+                        }
+                    }
+                }
+                if(verbose) eqs(std::cerr << vpfx << "xs=",xs,vpfx);
+
+                for(size_t i=N;i>0;--i) Omega0[i][i] *= xs[i];
+
+                YACK_CHEM_PRINTLN("//   <plexus.computeDeltaC/> [cut]");
+                return false;
+
+            }
+            else
+            {
+                YACK_CHEM_PRINTLN("//   <plexus.computeDeltaC> [ok]");
+                return true;
+            }
+        }
 
 
         double plexus:: rmsGamma(const readable<double> &C) throw()
@@ -298,61 +354,14 @@ namespace yack
             // compute dC
             //
             //------------------------------------------------------------------
-            YACK_CHEM_PRINTLN("//   <plexus.computeDeltaC>");
-            rstack.free();
-            ustack.free();
-            for(const anode *node=active.head;node;node=node->next)
-            {
-                const species &s = **node;
-                const size_t   j = *s;
-                const double   d = dC[j] = xdot(xi,NuT[j],xs);
-                if(d<0)
-                {
-                    const double c = Corg[j]; assert(c>=0);
-                    if(d<=-c)
-                    {
-                        std::cerr << "underflow for " << s.name << std::endl;
-                    }
-                    rstack<< c/(-d);
-                    ustack<< j;
-                }
-            }
-
-            if(rstack.size())
-            {
-                hsort(rstack,ustack,comparison::increasing<double>);
-                while(rstack.size() && rstack.back()>1)
-                {
-                    rstack.pop_back();
-                    ustack.pop_back();
-                }
-                if(rstack.size())
-                {
-                    const size_t          j = ustack.front();
-                    const readable<int> &nu = NuT[j];
-                    YACK_CHEM_PRINTLN("//   must scale by " << rstack.front() << " @ " << nu);
-                    for(size_t i=N;i>0;--i)
-                    {
-                        if(0!=nu[i])
-                        {
-                            Omega0[i][i] *= 10;
-                        }
-                    }
-                    goto EVAL_XI;
-                }
-            }
-            std::cerr << "Omega=" << Omega0 << std::endl;
-            YACK_CHEM_PRINTLN("//   <plexus.computeDeltaC/>");
-
-
-
+            if(!compute_dC())
+                goto EVAL_XI;
 
             if(verbose)
             {
-
+                std::cerr << "Omega=" << Omega0 << std::endl;
                 lib(std::cerr<<vpfx<<"dC     = ",dC,vpfx);
                 lib(std::cerr<<vpfx<<"Corg   = ",Corg,vpfx);
-
             }
 
 
@@ -366,56 +375,56 @@ namespace yack
                     const double u = (1.0*i)/NP;
                     fp("%g %.15g\n",u,self(u));
                 }
-
-
             }
 
 
+            //------------------------------------------------------------------
+            //
+            // minimize over dC
+            //
+            //------------------------------------------------------------------
             const double    g0 = rmsGamma(Corg);
             triplet<double> x  = {0,-1,1};
             triplet<double> g  = {g0,-1,(*this)(x.c)};
 
             (void) minimize::find<double>::run_for(self,x,g,minimize::inside);
 
-            const bool okG = (g.b < g0);
-            std::cerr << "-------- okG=" << okG << std::endl;
 
-
-            bool okC = true;
-            for(const anode *node=active.head;node;node=node->next)
+            //------------------------------------------------------------------
+            //
+            // check result
+            //
+            //------------------------------------------------------------------
+            if(g.b<g0)
             {
-                const size_t j = ***node;
-                const double dC = fabs(Corg[j]-Ctry[j]);
-                Corg[j] = Ctry[j];
-                if(dC>0)
-                    okC=false;
+                YACK_CHEM_PRINTLN(vpfx << "successful step #" << cycle);
+                // gained something
+                bool converged = true;
+                for(const anode *node=active.head;node;node=node->next)
+                {
+                    const size_t j = ***node;
+                    const double dC = fabs(Corg[j]-Ctry[j]);
+                    Corg[j] = Ctry[j];
+                    if(dC>0)
+                        converged=false;
+                }
+                if(!converged)
+                {
+                    if(cycle>=50)
+                        exit(1);
+                    goto CYCLE;
+                }
+                YACK_CHEM_PRINTLN(vpfx << "numerical success" << std::endl);
             }
-
-
-
-
-            if(verbose)
+            else
             {
-                std::cerr << vpfx << "okC=" << okC << "@cycle=" << cycle << std::endl;
-                lib(std::cerr<<vpfx<<"C(" << x.b <<") = ",Corg,vpfx);
-            }
-
-            if(!okG)
-            {
-                std::cerr << "G converged!!" << std::endl;
+                YACK_CHEM_PRINTLN(vpfx << "spurious step #" << cycle);
                 exit(1);
-            }
-
-            if(!okC)
-            {
-                if(cycle>=50)
-                    exit(1);
-                goto CYCLE;
             }
 
 
             transfer(C0,Corg);
-            YACK_CHEM_PRINTLN("// <plexus.solve/>");
+            YACK_CHEM_PRINTLN("// <plexus.solve/> [success]");
             return true;
         }
 

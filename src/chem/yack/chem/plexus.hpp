@@ -86,6 +86,9 @@ namespace yack
             //! from a computed xi
             bool primaryCut() throw();
 
+            //! from a valid xi
+            bool compute_dC() throw();
+
 
             //! compute rms
             double rmsGamma(const readable<double> &C) throw();
