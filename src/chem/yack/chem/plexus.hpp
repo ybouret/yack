@@ -74,9 +74,17 @@ namespace yack
             /**
              - check Psi and best effort move, setting blocked if necessary
              */
-            void regularize(writable<double> &C) throw();
+            void regularize() throw();
 
-            
+            //! from a regularized state
+            /**
+             - build Omega in Omega0
+             - build rhs   in xm
+             */
+            void buildOmega() throw();
+
+            //! from a computed xi
+            bool primaryCut() throw();
 
 
             //! compute rms
@@ -105,7 +113,7 @@ namespace yack
             tableau           &Gamma;   //!< [N] mass action
             tableau           &xi;      //!< [N] current   xi
             tableau           &xs;      //!< [N] helper to sum
-            tableau           &xm;      //!< [N] -Gamma
+            tableau           &xm;      //!< [N] -Gamma/<Psi|Nu>
             tableau           &Xi;      //!< [N] Xi
             tableau           &Gs;      //!< [N] scaling factor
 
