@@ -23,20 +23,29 @@ YACK_UTEST(eqs)
     std::cerr << lib << std::endl;
     std::cerr << eqs << std::endl;
 
-
-    vector<double> C(lib.size(),0);
-    vector<double> arr(lib.size(),0);
+    const size_t M = lib.size();
+    vector<double> C(M,0);
+    vector<double> arr(M,0);
     lib.fill(C,1,ran);
-    lib(std::cerr,C);
+    lib(std::cerr << "C=",C);
     for(const enode *node=eqs.head();node;node=node->next)
     {
-        vector<int>        nu(lib.size(),0);
-        vector<double>     psi(lib.size(),0);
+        vector<int>        nu(M,0);
+        vector<double>     psi(M,0);
         const equilibrium &eq = ***node;
         eq.fill(nu);
-        eqs.pad(std::cerr << "nu_" << eq.name << ' ',eq) << " = " << nu << std::endl;
-        eq.drvs_action(psi,eq.K(0),C,arr);
-        eqs.pad(std::cerr << "psi_" << eq.name,eq) << " = " << psi << std::endl;
+        eqs.pad(std::cerr << "nu_" << eq.name << "  ",eq) << " = " << nu << std::endl;
+        const double K   = eq.K(0);
+        const double ma0 = eq.mass_action(K,C);
+        eqs.pad(std::cerr << "ma_" << eq.name << "  ",eq) << " = " << ma0 << std::endl;
+
+        eq.drvs_action(psi,K,C,arr);
+        eqs.pad(std::cerr << "psi_" << eq.name << " ",eq) << " = " << psi << std::endl;
+
+        matrix<double> H(M,M);
+        eq.hessian(H,K,C,arr);
+        eqs.pad(std::cerr << "hess_" << eq.name,eq) << " = " << H << std::endl;
+
     }
     
 

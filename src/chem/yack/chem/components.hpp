@@ -91,6 +91,9 @@ namespace yack
             //! gradient + mass_acttion
             double         grad_action(writable<double> &psi, const double K, const readable<double> &C, writable<double> &arr) const throw();
 
+            //! hessian
+            void hessian(matrix<double> &H, const double K, const readable<double> &C, writable<double> &arr) const throw();
+
             //! find private solving extent
             double solve1D(const double            K,
                            const readable<double> &C0,

@@ -147,6 +147,13 @@ namespace yack
             prod.move(C,+xi);
         }
 
+        void components:: hessian(matrix<double> &H, const double K, const readable<double> &C, writable<double> &arr) const throw()
+        {
+            H.ld(0);
+            reac.hessian(H, K,C,arr);
+            prod.hessian(H,-1,C,arr);
+        }
+
 
         void components:: drvs_action(writable<double>       &psi,
                                       const double            K,

@@ -7,6 +7,7 @@
 #include "yack/chem/limit.hpp"
 #include "yack/data/list/cxx.hpp"
 #include "yack/arith/align.hpp"
+#include "yack/container/matrix.hpp"
 
 namespace yack
 {
@@ -64,6 +65,12 @@ namespace yack
                                const double            factor,
                                const readable<double> &C,
                                writable<double>       &arr) const throw();
+
+            //! fill zeroed hessian
+            void hessian(matrix<double>         &H,
+                         const double            factor,
+                         const readable<double> &C,
+                         writable<double>       &arr) const throw();
 
             //! move all actors
             void   move(writable<double> &C, const double xi) const throw();

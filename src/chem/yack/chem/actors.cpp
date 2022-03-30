@@ -1,5 +1,6 @@
 
 #include "yack/chem/actors.hpp"
+#include "yack/arith/ipower.hpp"
 
 namespace yack
 {
@@ -67,6 +68,44 @@ namespace yack
             return ma;
         }
 
+
+        void actors:: hessian(matrix<double>         &H,
+                              const double            factor,
+                              const readable<double> &C,
+                              writable<double>       &arr) const throw()
+        {
+
+            for(const actor *a=head;a;a=a->next)
+            {
+                arr[ ***a ] = a->mass_action(C);
+            }
+
+            for(const actor *ak=head;ak;ak=ak->next)
+            {
+                const unsigned nu_k = ak->coef;
+                const unsigned k    = ***ak;
+                if(nu_k>1)
+                {
+                    double value = factor * nu_k * (nu_k-1) * ipower(C[k],nu_k-2);
+                    for(const actor *b=ak->prev;b;b=b->prev) value *= arr[ ***b ];
+                    for(const actor *b=ak->next;b;b=b->next) value *= arr[ ***b ];
+                    H[k][k] = value;
+                }
+
+                for(const actor *al=ak->next;al;al=al->next)
+                {
+                    const unsigned nu_l = al->coef;
+                    const unsigned l    = ***al;
+                    double value = factor * nu_k * ipower(C[k],nu_k-1) * nu_l * ipower(C[l],nu_l-1);
+                    for(const actor *b=head;b;b=b->next)
+                    {
+                        if(b!=ak && b!=al) value *= arr[ ***b ];
+                    }
+                    H[k][l] = H[l][k] = value;
+                }
+
+            }
+        }
 
 
         double actors:: mass_action(double factor, const readable<double> &C, const double xi) const throw()
