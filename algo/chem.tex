@@ -171,6 +171,39 @@ We define:
 \end{equation}
 If $|\vec{\Psi}_i|=0$, then we solve $\Gamma_i$. If we still have $|\vec{\Psi}_i|=0$, we declare $\Gamma_i$ blocked.
 
+\subsection{Behavior}
+We have $\vec{C}_i'=\vec{C} + \vec{\delta}_i$ and $\vec{\delta}_i = \Xi_i \vec{\nu}_i$ such that:
+\begin{equation}
+	\Gamma_i(\vec{C}_i) = 0
+\end{equation}
+
+\begin{equation}
+\left\lbrace
+\begin{array}{rcl}
+	f_i(x) & = & \Gamma_i(\vec{C} + x \vec{\nu}_i) \simeq \Gamma_i(\vec{C}) + g_i x + h_i x^2\\
+	f_i'(x) & = & g_i + 2 h_i x\\
+\end{array}
+\right.
+\end{equation}
+
+\begin{equation}
+\left\lbrace
+\begin{array}{rcl}
+	-\Gamma_i & = & g_i \Xi_i + h_i \Xi_i^2\\
+	\langle \vec{\Psi}_i' \vert \vec{\nu}_i \rangle & = & g_i + 2 \Xi_i h_i\\
+\end{array}
+\right.
+\end{equation} 
+
+\begin{equation}
+\left\lbrace
+\begin{array}{rcl}
+	\Xi_i^2 h_i & = & \Xi_i \langle \vec{\Psi}_i' \vert \vec{\nu}_i \rangle + \Gamma_i(\vec{C})\\
+	\Xi_i   g_i & = & -\left[\Xi_i \langle \vec{\Psi}_i' \vert \vec{\nu}_i \rangle  +2\Gamma_i(\vec{C})\right] \\
+\end{array}
+\right.
+\end{equation}
+ 
 \subsection{Evolution}
 Let us start from a regular $\vec{C}$.
 
