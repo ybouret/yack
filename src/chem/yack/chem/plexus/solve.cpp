@@ -378,6 +378,28 @@ namespace yack
                     break;
             }
 
+            std::cerr << "Nu=" << Nu << std::endl;
+            for(const enode *node=eqs.head();node;node=node->next)
+            {
+                const equilibrium &eq  = ***node;
+                const size_t       ei  = *eq;
+                const double       Ki  = K[ei];
+                Xi[ei] = eq.solve1D(Ki,Corg,Ceq[ei]);
+            }
+            for(size_t i=N;i>0;--i)
+            {
+                double den = 0; for(size_t k=M;k>0;--k) den += squared(Nu[i][k]);
+                for(size_t j=N;j>0;--j)
+                {
+                    Omega0[i][j] = tao::v1::dot<int>::of(Nu[i],Nu[j]) / den;
+                }
+            }
+
+            std::cerr << "Om=" << Omega0 << std::endl;
+            std::cerr << "Xi=" << Xi << std::endl;
+
+            exit(1);
+
             //plexus &self  = *this;
             size_t  cycle = 0;
         CYCLE:
