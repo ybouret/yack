@@ -10,11 +10,13 @@ namespace yack
 {
     namespace math
     {
+        //! Gauss Jordan methods
         template <typename T> struct gauss_jordan
         {
-            YACK_DECL_ARGS_(T,type);
-            typedef typename scalar_for<type>::type scalar_type;
+            YACK_DECL_ARGS_(T,type);                             //!< aliases
+            typedef typename scalar_for<type>::type scalar_type; //!< alias
 
+            //! build forward
             static inline
             bool build(matrix<T> &a, writable<T> &b)
             {
