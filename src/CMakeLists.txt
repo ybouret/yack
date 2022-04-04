@@ -55,6 +55,7 @@ add_subdirectory(yack/jpeg)
 add_subdirectory(yack/jbig)
 add_subdirectory(gfx)
 add_subdirectory(yack/sqlite3)
+add_subdirectory(mpi++)
 
 # creating regression from unit tests
 string( STRIP "${UNIT_TESTS}" UNIT_TESTS)
