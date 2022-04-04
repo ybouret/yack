@@ -49,7 +49,13 @@ else()
 		endif()
 		string( STRIP ${MPI_INFO} MPI_INFO)
 		message( STATUS "[YACK] [${MPI_INFO}]")
-		
+		string(REGEX REPLACE " +" ";" MPI_INFO "${MPI_INFO}")
+	    message( STATUS "[YACK] [${MPI_INFO}]")
+		list(REMOVE_DUPLICATES MPI_INFO)
+	    message( STATUS "[YACK] [${MPI_INFO}]")
+		list(REMOVE_AT MPI_INFO 0)
+		message( STATUS "[YACK] [${MPI_INFO}]")
+			    
 		# --------------------------------------------------------------
 		# parse 
 		# --------------------------------------------------------------
