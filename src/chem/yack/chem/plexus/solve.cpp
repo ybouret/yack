@@ -263,6 +263,18 @@ namespace yack
                 triplet<double> x  = {0,-1,1};
                 triplet<double> g  = {g0,-1,G(x.c)};
 
+                if(false)
+                {
+                    static const size_t NP = 1000;
+                    ios::ocstream fp("gam.dat");
+                    for(size_t i=0;i<=NP;++i)
+                    {
+                        const double u = double(i)/NP;
+                        fp("%g %.15g\n",u,G(u));
+                    }
+                }
+
+
                 (void) minimize::find<double>::run_for(G,x,g,minimize::inside);
                 const double g1 = g.b;
                 lib(std::cerr << vpfx << "C(" << x.b << ")=",Ctry,vpfx);
@@ -270,12 +282,14 @@ namespace yack
 
                 if(g1<g0)
                 {
+                    // decreased objective function
                     transfer(Corg,Ctry);
                     return false;
                 }
                 else
                 {
                     // spurious
+                    std::cerr << std::endl << " [SPURIOUS] " << std::endl;
                     vector<equilibrium*> Eq(N,as_capacity);
                     for(const enode *node=eqs.head();node;node=node->next)
                     {
@@ -330,6 +344,7 @@ namespace yack
             return rmsGamma(Ctry);
         }
 
+#if 1
         bool plexus:: solve(writable<double> &C0) throw()
         {
             assert(C0.size()>=M);
@@ -378,8 +393,14 @@ namespace yack
                     break;
             }
 
-
-            // compute status
+            size_t cycle = 0;
+        CYCLE:
+            ++cycle;
+            //------------------------------------------------------------------
+            //
+            // compute current status
+            //
+            //------------------------------------------------------------------
             blocked.ld(false);
             for(const enode *node=eqs.head();node;node=node->next)
             {
@@ -397,9 +418,16 @@ namespace yack
                     xx = 0;
                     blocked[ei] = true;
                 }
+                xs[ei] = squared(xx);
             }
 
+            const double rms = sqrt(sorted::sum(xs,sorted::by_value)/N);
+
+            //------------------------------------------------------------------
+            //
             // compute Omega
+            //
+            //------------------------------------------------------------------
             for(size_t i=N;i>0;--i)
             {
                 const readable<double> &psi = Psi[i];
@@ -417,11 +445,19 @@ namespace yack
                 for(size_t k=i-1;k>0;--k)  Omi[k] = xdot(psi,Nu[k],Ctmp)/den;
             }
 
-            eqs(std::cerr << "blocked=",blocked);
-            eqs(std::cerr << "Xi     =",Xi);
-            eqs(std::cerr << "Omega0 =",Omega0);
+            if(verbose)
+            {
+                eqs(std::cerr << vpfx << "blocked=",blocked,vpfx);
+                eqs(std::cerr << vpfx << "Xi     =",Xi,vpfx);
+                eqs(std::cerr << vpfx << "Omega0 =",Omega0,vpfx);
+                std::cerr << vpfx << "rms=" << rms << std::endl;
+            }
 
+            //------------------------------------------------------------------
+            //
             // regularize Omega
+            //
+            //------------------------------------------------------------------
             iOmega.assign(Omega0);
 
             while( !LU.build(iOmega) )
@@ -433,24 +469,47 @@ namespace yack
                 iOmega.assign(Omega0);
             }
 
-            eqs(std::cerr << "Omega  =",Omega0);
 
-
+            //------------------------------------------------------------------
+            //
+            // evaluate xi from a built iOmega
+            //
+            //------------------------------------------------------------------
         EVAL_XI:
-            // eval xi
+            if(verbose) eqs(std::cerr << vpfx << "Omega  =",Omega0,vpfx);
             tao::v1::set(xi,Xi);
             LU.solve(iOmega,xi);
-            eqs(std::cerr << "xi     =",xi);
+            if(verbose) eqs(std::cerr << vpfx << "xi     =",xi, vpfx);
+
+            //------------------------------------------------------------------
+            //
+            // use primary control
+            //
+            //------------------------------------------------------------------
+            if(primaryCut())
+            {
+                iOmega.assign(Omega0);
+                if(!LU.build(iOmega))
+                {
+                    YACK_CHEM_PRINTLN("// <plexus.solve/> [singular after primary cut]");
+                    return false;
+                }
+                goto EVAL_XI;
+            }
 
 
 
-            // eval dC
+            //------------------------------------------------------------------
+            //
+            // compute dC
+            //
+            //------------------------------------------------------------------
             if(!compute_dC())
             {
                 iOmega.assign(Omega0);
                 if(!LU.build(iOmega))
                 {
-                    std::cerr << "singular!!" << std::endl;
+                    YACK_CHEM_PRINTLN("// <plexus.solve/> [singular after computed delta C]");
                     return false;
                 }
                 goto EVAL_XI;
@@ -459,11 +518,22 @@ namespace yack
             lib(std::cerr << "Corg=",Corg);
             lib(std::cerr << "dC  =",dC);
 
+            if(!tryFindEqs())
+            {
+                goto CYCLE;
+            }
 
-            exit(1);
 
-            return false;
+            //------------------------------------------------------------------
+            //
+            // success!
+            //
+            //------------------------------------------------------------------
+            transfer(C0,Corg);
+            YACK_CHEM_PRINTLN("// <plexus.solve/> [success]");
+            return true;
         }
+#endif
 
 #if 0
         bool plexus:: solve(writable<double> &C0) throw()
