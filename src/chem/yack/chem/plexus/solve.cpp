@@ -406,6 +406,7 @@ namespace yack
             //
             //------------------------------------------------------------------
             blocked.ld(false);
+            size_t  ok = 0;
             for(const enode *node=eqs.head();node;node=node->next)
             {
                 const equilibrium &eq  = ***node;
@@ -427,6 +428,9 @@ namespace yack
 
             const double rms = sqrt(sorted::sum(xs,sorted::by_value)/N);
             ios::ocstream::echo("rms.dat","%g %.15g\n",double(cycle),rms);
+
+
+
 
             //------------------------------------------------------------------
             //
