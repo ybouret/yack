@@ -1,3 +1,4 @@
+#define OMPI_SKIP_MPICXX 1
 #include <mpi.h>
 
 int main(int argc, char **argv )

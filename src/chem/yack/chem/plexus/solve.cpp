@@ -378,27 +378,143 @@ namespace yack
                     break;
             }
 
-            std::cerr << "Nu=" << Nu << std::endl;
+
+            // compute status
+            blocked.ld(false);
             for(const enode *node=eqs.head();node;node=node->next)
             {
                 const equilibrium &eq  = ***node;
                 const size_t       ei  = *eq;
                 const double       Ki  = K[ei];
-                Xi[ei] = eq.solve1D(Ki,Corg,Ceq[ei]);
-            }
-            for(size_t i=N;i>0;--i)
-            {
-                double den = 0; for(size_t k=M;k>0;--k) den += squared(Nu[i][k]);
-                for(size_t j=N;j>0;--j)
+                writable<double>  &psi = Psi[ei];
+                writable<double>  &Ci  = Ceq[ei];
+                double            &xx  = Xi[ei];
+
+                xx = eq.solve1D(Ki,Corg,Ci);
+                eq.drvs_action(psi,Ki,Ci,Ctmp);
+                if( tao::v1::mod2<double>::of(psi) <= 0)
                 {
-                    Omega0[i][j] = tao::v1::dot<int>::of(Nu[i],Nu[j]) / den;
+                    xx = 0;
+                    blocked[ei] = true;
                 }
             }
 
-            std::cerr << "Om=" << Omega0 << std::endl;
-            std::cerr << "Xi=" << Xi << std::endl;
+            // compute Omega
+            for(size_t i=N;i>0;--i)
+            {
+                const readable<double> &psi = Psi[i];
+                writable<double>       &Omi = Omega0[i];
+                Omi.ld(0);
+                Omi[i] = 1.0;
+                if(blocked[i])
+                {
+                    Gs[i] = 1.0;
+                    continue;
+                }
+                const double den = xdot(psi,Nu[i],Ctmp); assert(den<0);
+                Gs[i] = fabs(den);
+                for(size_t k=N;k>i;--k)    Omi[k] = xdot(psi,Nu[k],Ctmp)/den;
+                for(size_t k=i-1;k>0;--k)  Omi[k] = xdot(psi,Nu[k],Ctmp)/den;
+            }
+
+            eqs(std::cerr << "blocked=",blocked);
+            eqs(std::cerr << "Xi     =",Xi);
+            eqs(std::cerr << "Omega0 =",Omega0);
+
+            // regularize Omega
+            iOmega.assign(Omega0);
+
+            while( !LU.build(iOmega) )
+            {
+                for(size_t i=N;i>0;--i)
+                {
+                    Omega0[i][i] *= 10;
+                }
+                iOmega.assign(Omega0);
+            }
+
+            eqs(std::cerr << "Omega  =",Omega0);
+
+
+        EVAL_XI:
+            // eval xi
+            tao::v1::set(xi,Xi);
+            LU.solve(iOmega,xi);
+            eqs(std::cerr << "xi     =",xi);
+
+
+
+            // eval dC
+            if(!compute_dC())
+            {
+                iOmega.assign(Omega0);
+                if(!LU.build(iOmega))
+                {
+                    std::cerr << "singular!!" << std::endl;
+                    return false;
+                }
+                goto EVAL_XI;
+            }
+
+            lib(std::cerr << "Corg=",Corg);
+            lib(std::cerr << "dC  =",dC);
+
 
             exit(1);
+
+            return false;
+        }
+
+#if 0
+        bool plexus:: solve(writable<double> &C0) throw()
+        {
+            assert(C0.size()>=M);
+            assert(are_valid(C0));
+
+
+            //------------------------------------------------------------------
+            //
+            // initialize
+            //
+            //------------------------------------------------------------------
+            YACK_CHEM_PRINTLN("// <plexus.solve>");
+            if(verbose) lib(std::cerr << vpfx << "Cini=",C0,vpfx);
+            ios::ocstream::overwrite("rms.dat");
+            switch(N)
+            {
+
+                case 0:
+                    //----------------------------------------------------------
+                    // trivial case
+                    //----------------------------------------------------------
+                    YACK_CHEM_PRINTLN("// <plexus.solve/> [empty]");
+                    return true;
+
+                case 1: {
+                    //----------------------------------------------------------
+                    // trivial case
+                    //----------------------------------------------------------
+                    const equilibrium &eq = ***eqs.head();
+                    (void) eq.solve1D(K[*eq],C0,Ctry);
+                    transfer(C0,Ctry);
+                }
+                    YACK_CHEM_PRINTLN("// <plexus.solve/> [1D]");
+                    return true;
+
+
+                default:
+                    //----------------------------------------------------------
+                    // prepare workspace
+                    //----------------------------------------------------------
+                    for(size_t j=M;j>0;--j)
+                    {
+                        Corg[j] = Ctry[j] = C0[j];
+                        dC[j]   = 0;
+                    }
+                    break;
+            }
+
+
 
             //plexus &self  = *this;
             size_t  cycle = 0;
@@ -504,7 +620,7 @@ namespace yack
             YACK_CHEM_PRINTLN("// <plexus.solve/> [success]");
             return true;
         }
-
+#endif
 
     }
 }
