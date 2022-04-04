@@ -263,7 +263,9 @@ namespace yack
                 triplet<double> x  = {0,-1,1};
                 triplet<double> g  = {g0,-1,G(x.c)};
 
-                if(false)
+                std::cerr << "g0=" << g0 << ", g(1)=" << g.c << std::endl;
+
+                if(true)
                 {
                     static const size_t NP = 1000;
                     ios::ocstream fp("gam.dat");
@@ -273,6 +275,8 @@ namespace yack
                         fp("%g %.15g\n",u,G(u));
                     }
                 }
+
+                exit(1);
 
 
                 (void) minimize::find<double>::run_for(G,x,g,minimize::inside);
@@ -422,6 +426,7 @@ namespace yack
             }
 
             const double rms = sqrt(sorted::sum(xs,sorted::by_value)/N);
+            ios::ocstream::echo("rms.dat","%g %.15g\n",double(cycle),rms);
 
             //------------------------------------------------------------------
             //
@@ -449,6 +454,7 @@ namespace yack
             {
                 eqs(std::cerr << vpfx << "blocked=",blocked,vpfx);
                 eqs(std::cerr << vpfx << "Xi     =",Xi,vpfx);
+                eqs(std::cerr << vpfx << "Gs     =",Gs,vpfx);
                 eqs(std::cerr << vpfx << "Omega0 =",Omega0,vpfx);
                 std::cerr << vpfx << "rms=" << rms << std::endl;
             }
