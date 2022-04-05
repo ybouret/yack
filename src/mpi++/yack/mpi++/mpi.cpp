@@ -35,6 +35,14 @@ namespace yack
         (void) MPI_Error_string(code,data,&resultlen);
     }
 
+	mpi::exception::exception(const exception &other) throw() :
+		yack::exception(other),
+		code(other.code),
+		data()
+	{
+		memcpy(data, other.data, sizeof(data));
+	}
+
 }
 
 #include "yack/type/temporary.hpp"
