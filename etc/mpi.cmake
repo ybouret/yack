@@ -69,19 +69,7 @@ else()
 			endif()
 		endforeach()
  		
-		# --------------------------------------------------------------
-		# parse library directories
-		# --------------------------------------------------------------
-		foreach(word IN LISTS MPI_INFO)
-			if(${word} MATCHES "-L.*")
-				string(SUBSTRING "${word}" 2 -1 tmp)
-				list(APPEND YACK_MPI_LIBRARY_DIRS "${tmp}")
-				message( STATUS "[YACK]  MPI: -L${tmp}")
-				link_directories(${tmp})
-			endif()
-		endforeach()
-		
-		# --------------------------------------------------------------
+ 		# --------------------------------------------------------------
 		# parse libraries to link
 		# --------------------------------------------------------------
 		foreach(word IN LISTS MPI_INFO)
@@ -91,6 +79,21 @@ else()
 			endif()
 		endforeach()
 		message( STATUS "[YACK]  MPI: LIBS=[${YACK_MPI_LIBS}]" )
+ 		
+		# --------------------------------------------------------------
+		# parse library directories
+		# --------------------------------------------------------------
+		foreach(word IN LISTS MPI_INFO)
+			if(${word} MATCHES "-L.*")
+				string(SUBSTRING "${word}" 2 -1 tmp)
+				list(APPEND YACK_MPI_LIBRARY_DIRS "${tmp}")
+				message( STATUS "[YACK]  MPI: in ${tmp}")
+				#link_directories(${tmp})
+				string(APPEND CMAKE_EXE_LINKER_FLAGS " -L${tmp}")
+			endif()
+		endforeach()
+		
+		
 		
 		# --------------------------------------------------------------
 		# finalize
