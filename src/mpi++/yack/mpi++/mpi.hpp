@@ -5,26 +5,51 @@
 
 #include "yack/singleton.hpp"
 #include "yack/exception.hpp"
-#define OMPI_SKIP_MPICXX 1
+
+#define OMPI_SKIP_MPICXX 1 //!< helper for OpenMPI
 #include <mpi.h>
 
 namespace yack
 {
 
+    //__________________________________________________________________________
+    //
+    //
+    //! MPI wrappers
+    //
+    //__________________________________________________________________________
     class mpi : public singleton<mpi>
     {
     public:
-        static const at_exit::longevity life_time = 2000;
-        static const char  * const      call_sign;
+        //______________________________________________________________________
+        //
+        // types and definitions
+        //______________________________________________________________________
+        static const at_exit::longevity life_time = 2000; //!< life time
+        static const char  * const      call_sign;        //!< call sign
 
+        //______________________________________________________________________
+        //
+        //! specific exception
+        //______________________________________________________________________
         class exception : public yack::exception
         {
         public:
-            virtual ~exception() throw();
+            //__________________________________________________________________
+            //
+            // C++
+            //__________________________________________________________________
+            //! what=MPI error message, when=formatted string
             explicit exception(const int err,const char *fmt,...) throw() YACK_PRINTF_CHECK(3,4);
-            virtual  const char *what() const throw();
+            exception(const exception &)      throw(); //!< copy
+            virtual ~exception()              throw(); //!< cleanup
+            virtual  const char *what() const throw(); //!< internal message
 
-            const int code;
+            //__________________________________________________________________
+            //
+            // members
+            //__________________________________________________________________
+            const int code; //!< MPI error code
         private:
             YACK_DISABLE_ASSIGN(exception);
             char data[MPI_MAX_ERROR_STRING];
