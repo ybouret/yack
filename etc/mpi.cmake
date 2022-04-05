@@ -53,14 +53,14 @@ else()
 		# no MPI
 		#
 		# --------------------------------------------------------------
-		message( STATUS "[YACK]  MPI: MPICXX not found!" )
+		message( STATUS "[YACK]  MPI:: MPICXX not found!" )
 	else()
 		# --------------------------------------------------------------
 		#
 		# using MPI!
 		#
 		# --------------------------------------------------------------
-		message( STATUS "[YACK]  MPI: MPICXX='${MPICXX}'" )
+		message( STATUS "[YACK]  MPI:: MPICXX='${MPICXX}'" )
 			
 		# --------------------------------------------------------------
 		# find all flags
@@ -73,22 +73,22 @@ else()
 			message( FATAL_ERROR "[YACK] mpicxx --show failure" )
 		endif()
 		string( STRIP ${MPI_INFO} MPI_INFO)
-		message( STATUS "[YACK]  MPI: [${MPI_INFO}]")
+		message( STATUS "[YACK]  MPI:: [${MPI_INFO}]")
 		string(REGEX REPLACE " +" ";" MPI_INFO "${MPI_INFO}")
 	    #message( STATUS "[YACK] [${MPI_INFO}]")
 		list(REMOVE_DUPLICATES MPI_INFO)
 	    #message( STATUS "[YACK] [${MPI_INFO}]")
 		list(REMOVE_AT MPI_INFO 0)
-		message( STATUS "[YACK] [${MPI_INFO}]")
+		#message( STATUS "[YACK] [${MPI_INFO}]")
 			 
 		message( STATUS "[YACK] <MPI::INCLUDE>" )
 		# --------------------------------------------------------------
 		# parse include directories
 		# --------------------------------------------------------------
 		foreach(word IN LISTS MPI_INFO)
-			if(${word} MATCHES "-I.*")
+			if(${word} MATCHES "^-I.*")
 				string(SUBSTRING "${word}" 2 -1 tmp)
-				message( STATUS "[YACK]  MPI: -I${tmp}")
+				message( STATUS "[YACK]  MPI:: -I${tmp}")
  				include_directories(${tmp})
 			endif()
 		endforeach()
@@ -100,27 +100,22 @@ else()
 		# --------------------------------------------------------------
 		message( STATUS "[YACK] <MPI::LIBRARIES>" )
 		foreach(word IN LISTS MPI_INFO)
-			message( STATUS " -- trying '${word}'" )
-			if(${word} MATCHES "^-l.*")
-				message( STATUS " -- OK")
-				string(SUBSTRING "${word}" 2 -1 tmp)
+ 			if(${word} MATCHES "^-l.*")
+ 				string(SUBSTRING "${word}" 2 -1 tmp)
 				list(APPEND YACK_MPI_LIBS "${tmp}")
-			else()
-				message( STATUS " -- NO")
+				message( STATUS "[YACK]  MPI:: -l${tmp}")
 			endif()
 		endforeach()
-		message( STATUS "[YACK]  MPI: LIBS=[${YACK_MPI_LIBS}]" )
  		message( STATUS "[YACK] <MPI::LIBRARIES/>" )
 
 		# --------------------------------------------------------------
 		# parse library directories
 		# --------------------------------------------------------------
 		foreach(word IN LISTS MPI_INFO)
-			if(${word} MATCHES "-L.*")
+			if(${word} MATCHES "^-L.*")
 				string(SUBSTRING "${word}" 2 -1 tmp)
 				list(APPEND YACK_MPI_LIBRARY_DIRS "${tmp}")
-				message( STATUS "[YACK]  MPI: in ${tmp}")
-				#link_directories(${tmp})
+				message( STATUS "[YACK]  MPI:: -L${tmp}")
 				string(APPEND CMAKE_EXE_LINKER_FLAGS " -L${tmp}")
 			endif()
 		endforeach()
