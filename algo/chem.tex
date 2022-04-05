@@ -227,6 +227,24 @@ and is a scaling factor for $\Gamma_i$. So we want to solve
 	f = \dfrac{1}{2} \langle \vec{\Gamma} \vert \bm{W}^2 \vert \vec{\Gamma} \rangle \Rightarrow \vec{\nabla} f = \left(\bm{W}\bm{\Psi} \bm{\nu}^T\right)^T \bm{W}\vec{\Gamma}
 \end{equation}
 
+\subsection{Moving}
+
+Let us assume that we start from $\vec{C}$ and for each $\Gamma_i$ we know $\Xi_i$ such that $\Gamma_i(\vec{C} + \Xi_i \vec{\nu}_i) =0$
+If we now move slightly by $\delta\vec{C}$, the equilibrium will react with $\delta\Xi_i$ such that:
+\begin{equation}
+	\Gamma_i(\vec{C} + \Xi_i \vec{\nu}_i + \delta\vec{C} + \delta\Xi_i \vec{\nu}_i) = 0
+\end{equation}
+and we find:
+\begin{equation}
+	\delta \Xi_i \simeq - \dfrac{\langle \vec{\Psi}_i' \vert \delta\vec{C}\rangle}{\langle \vec{\Psi}_i' \vert \vec{\nu}_i \rangle}
+\end{equation}
  
+\begin{equation}
+	\rho^2(\delta\vec{C}) = \dfrac{1}{2} \sum_i \left[ \Xi_i + \delta\Xi_i \right]^2
+\end{equation} 
+
+\begin{equation}
+	- \vec{\nabla} \rho^2_0 = \sum_i \dfrac{\Xi_i}{\langle \vec{\Psi}_i' \vert \vec{\nu}_i \rangle} \vec{\Psi}_i'
+\end{equation}
 
 \end{document}
