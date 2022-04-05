@@ -2,6 +2,7 @@ include_directories(. ../core)
 include(../../etc/mpi.cmake)
 
 if(YACK_MPI)
+	include_directories(${YACK_MPI_INCLUDE_DIRS})
 
 	#main
 	file(GLOB mpi_main_decl yack/mpi++/*.hpp)
