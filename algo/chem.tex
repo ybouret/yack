@@ -247,4 +247,22 @@ and we find:
 	- \vec{\nabla} \rho^2_0 = \sum_i \dfrac{\Xi_i}{\langle \vec{\Psi}_i' \vert \vec{\nu}_i \rangle} \vec{\Psi}_i'
 \end{equation}
 
+
+\subsection{Global Topology}
+
+\begin{equation}
+\begin{array}{rcl}
+	\Gamma_i \left(\vec{C} + \sum_k \alpha_k \vec{\delta}_k \right) & = & 
+	\Gamma_i \left(\vec{C}_i' + (\alpha_i-1) \vec{\delta}_i + \sum_{k\not=i} \alpha_k \vec{\delta}_k \right)\\
+	& \simeq & \langle \vec{\Psi}_i' \vert (\alpha_i-1) \vec{\delta}_i + \sum_{k\not=i} \alpha_k \vec{\delta}_k \rangle \text{ (around $\alpha_i=1$)}\\
+	& \simeq & -\langle \vec{\Psi}_i'\vert \vec{\nu}_i \rangle \Xi_i + \sum_k \langle \vec{\Psi}_i'\vert \vec{\nu}_k \rangle \alpha_k \Xi_k \\
+\end{array}
+\end{equation}
+Then
+\begin{equation}
+	\dfrac{\Gamma_i\left(\vec{C} + \sum_k \alpha_k \vec{\delta}_k \right)}{\langle \vec{\Psi}_i'\vert \vec{\nu}_i \rangle} \simeq
+	-\Xi_i + \sum_k \Omega_{ik} \alpha_k \Xi_k
+\end{equation}
+
+
 \end{document}
