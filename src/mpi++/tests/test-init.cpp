@@ -3,11 +3,34 @@
 
 using namespace yack;
 
+namespace {
+
+    static inline void greet(mpi &MPI)
+    {
+        std::cerr << "from " << MPI.size << "." << MPI.rank << std::endl;
+
+    }
+}
+
 YACK_UTEST(init)
 {
     mpi & MPI = mpi::Init(argc,argv);
 
-    std::cerr << "from " << MPI.size << "." << MPI.rank << std::endl;
+    if(MPI.rank == 0 )
+    {
+        greet(MPI);
+        for(int rank=1;rank<MPI.size;++rank)
+        {
+            MPI.SYN(rank);
+            MPI.ACK(rank);
+        }
+    }
+    else
+    {
+        MPI.ACK(0);
+        greet(MPI);
+        MPI.SYN(0);
+    }
 
 }
 YACK_UDONE()

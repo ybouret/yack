@@ -33,6 +33,7 @@ namespace yack
         //______________________________________________________________________
         static const at_exit::longevity life_time = 2000; //!< life time
         static const char  * const      call_sign;        //!< call sign
+        static const int                io_tag    = 0x07; //!< default IO tag
 
         //______________________________________________________________________
         //
@@ -68,7 +69,31 @@ namespace yack
         //______________________________________________________________________
         static mpi & Init(int &argc, char ** &argv); //!< initialize
 
+        //______________________________________________________________________
+        //
+        // point to point
+        //______________________________________________________________________
+        void Send(const void        *buf,
+                  const size_t       num,
+                  const MPI_Datatype tid,
+                  const int          dst,
+                  const int          tag = io_tag) const;
 
+        void Recv(void              *buf,
+                  const size_t       num,
+                  const MPI_Datatype tid,
+                  const int          src,
+                  const int          tag = io_tag) const;
+
+        void SYN(const int dst, const int tag = io_tag) const;
+        void ACK(const int src, const int tag = io_tag) const;
+
+
+
+        //______________________________________________________________________
+        //
+        // members
+        //______________________________________________________________________
         const int    rank;         //!< MPI_Comm_rank(MPI_COMM_WORLD)
         const int    size;         //!< MPI_Comm_size(MPI_COMM_WORLD)
         const int    threading;    //!< MPI Thread Level
