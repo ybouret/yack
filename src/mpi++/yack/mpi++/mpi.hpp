@@ -12,8 +12,10 @@
 namespace yack
 {
 
-
-
+    //__________________________________________________________________________
+    //
+    //! macro to trigger an exception upon MPI function failure
+    //__________________________________________________________________________
 #define YACK_MPI_CALL(CODE) do { const int ret = CODE; if(MPI_SUCCESS!=ret) throw mpi::exception(ret,"in %s",#CODE); } while(false)
 
     //__________________________________________________________________________
@@ -64,12 +66,12 @@ namespace yack
         //
         // initialization
         //______________________________________________________________________
-        static mpi & Init(int &argc, char ** &argv);
+        static mpi & Init(int &argc, char ** &argv); //!< initialize
 
 
-        const int    rank;
-        const int    size;
-        const int    threading;
+        const int    rank;         //!< MPI_Comm_rank(MPI_COMM_WORLD)
+        const int    size;         //!< MPI_Comm_size(MPI_COMM_WORLD)
+        const int    threading;    //!< MPI Thread Level
         
     private:
         YACK_DISABLE_COPY_AND_ASSIGN(mpi);
