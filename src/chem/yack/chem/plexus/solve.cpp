@@ -467,6 +467,21 @@ namespace yack
                 std::cerr << vpfx << "rms=" << rms << std::endl;
             }
 
+            const double g0 = rmsGamma(Corg);
+            std::cerr << "g0=" << g0 << " @" << Corg << std::endl;
+            for(const enode *node=eqs.head();node;node=node->next)
+            {
+                const equilibrium &eq  = ***node;
+                const size_t       ei  = *eq;
+                if(blocked[ei]) continue;
+                const double gi = rmsGamma(Ceq[ei]);
+                std::cerr << "g_" << eq.name << " = " << gi << " @" << Ceq[ei] << std::endl;
+
+            }
+
+
+            exit(1);
+
             //------------------------------------------------------------------
             //
             // regularize Omega
