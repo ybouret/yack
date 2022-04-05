@@ -405,7 +405,6 @@ namespace yack
             // compute current status
             //
             //------------------------------------------------------------------
-            blocked.ld(false);
             size_t  ok = 0;
             for(const enode *node=eqs.head();node;node=node->next)
             {
@@ -422,6 +421,11 @@ namespace yack
                 {
                     xx = 0;
                     blocked[ei] = true;
+                }
+                else
+                {
+                    blocked[ei] = false;
+                    ++ok;
                 }
                 xs[ei] = squared(xx);
             }
