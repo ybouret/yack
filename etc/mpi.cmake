@@ -98,14 +98,18 @@ else()
  		# --------------------------------------------------------------
 		# parse libraries to link
 		# --------------------------------------------------------------
+		message( STATUS "[YACK] <MPI::LIBRARIES>" )
 		foreach(word IN LISTS MPI_INFO)
+			message( STATUS " -- trying '${word}'" )
 			if(${word} MATCHES "-l.*")
+				message( STATUS " -- OK")
 				string(SUBSTRING "${word}" 2 -1 tmp)
 				list(APPEND YACK_MPI_LIBS "${tmp}")
 			endif()
 		endforeach()
 		message( STATUS "[YACK]  MPI: LIBS=[${YACK_MPI_LIBS}]" )
- 		
+ 		message( STATUS "[YACK] <MPI::LIBRARIES/>" )
+
 		# --------------------------------------------------------------
 		# parse library directories
 		# --------------------------------------------------------------
