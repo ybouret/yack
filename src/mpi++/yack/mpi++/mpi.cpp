@@ -37,6 +37,8 @@ namespace yack
 
 }
 
+#include "yack/type/temporary.hpp"
+
 namespace yack {
 
 
@@ -44,11 +46,27 @@ namespace yack {
 
     mpi:: ~mpi() throw()
     {
+        MPI_Finalize();
     }
 
 
+    namespace {
+        static int *    __mpi_argc = NULL;
+        static char *** __mpi_argv = NULL;
+    }
+
+    mpi & mpi:: Init(int    &argc,
+                     char **&argv)
+    {
+        assert(argv);
+        const temporary<int*>    keep_argc(__mpi_argc,&argc);
+        const temporary<char***> keep_argv(__mpi_argv,&argv);
+        return mpi::instance();
+    }
+
     mpi:: mpi() : singleton<mpi>()
     {
+        if(NULL==__mpi_argc) throw yack::exception("%s: need to call mpi::Init()",call_sign);
     }
 
 

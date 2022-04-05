@@ -56,6 +56,12 @@ namespace yack
         };
 
 
+        //______________________________________________________________________
+        //
+        // initialization
+        //______________________________________________________________________
+        static mpi & Init(int &argc, char ** &argv);
+
     private:
         YACK_DISABLE_COPY_AND_ASSIGN(mpi);
         friend class singleton<mpi>;

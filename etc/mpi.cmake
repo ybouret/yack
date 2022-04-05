@@ -6,7 +6,7 @@
 message( STATUS "[YACL] <MPI>")
 
 set(YACK_MPI OFF)
-set(YACK_MPI_INCLUDE_DIRS "")
+set(YACK_MPI_LIBS "")
 
 if(YACK_WINDOWS)
 	# ------------------------------------------------------------------
@@ -64,10 +64,33 @@ else()
 		foreach(word IN LISTS MPI_INFO)
 			if(${word} MATCHES "-I.*")
 				string(SUBSTRING "${word}" 2 -1 tmp)
-				list(APPEND YACK_MPI_INCLUDE_DIRS "${tmp}")
+				message( STATUS "[YACK]  MPI: -I${tmp}")
+ 				include_directories(${tmp})
 			endif()
 		endforeach()
-		message( STATUS "[YACK]  MPI: INCLUDE_DIRS=[${YACK_MPI_INCLUDE_DIRS}]" )
+ 		
+		# --------------------------------------------------------------
+		# parse library directories
+		# --------------------------------------------------------------
+		foreach(word IN LISTS MPI_INFO)
+			if(${word} MATCHES "-L.*")
+				string(SUBSTRING "${word}" 2 -1 tmp)
+				list(APPEND YACK_MPI_LIBRARY_DIRS "${tmp}")
+				message( STATUS "[YACK]  MPI: -L${tmp}")
+				link_directories(${tmp})
+			endif()
+		endforeach()
+		
+		# --------------------------------------------------------------
+		# parse libraries to link
+		# --------------------------------------------------------------
+		foreach(word IN LISTS MPI_INFO)
+			if(${word} MATCHES "-l.*")
+				string(SUBSTRING "${word}" 2 -1 tmp)
+				list(APPEND YACK_MPI_LIBS "${tmp}")
+			endif()
+		endforeach()
+		message( STATUS "[YACK]  MPI: LIBS=[${YACK_MPI_LIBS}]" )
 		
 		# --------------------------------------------------------------
 		# finalize

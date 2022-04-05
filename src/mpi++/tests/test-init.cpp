@@ -5,7 +5,8 @@ using namespace yack;
 
 YACK_UTEST(init)
 {
-    
+    mpi & MPI = mpi::instance();
+    (void) MPI;
 }
 YACK_UDONE()
 
