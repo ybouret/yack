@@ -14,7 +14,30 @@ if(YACK_WINDOWS)
 	# relying on MSMPI
 	#
 	# ------------------------------------------------------------------	
-	add_definitions( -DMSMPI_NO_SAL=1 )
+	if( DEFINED ENV{MSMPI_INC} )
+		# get include
+		set(YACK_MSMPI_INC $ENV{MSMPI_INC})
+		message( STATUS "[YACK]  MSMPI @'${YACK_MSMPI_INC}'")
+		include_directories(${YACK_MSMPI_INC})
+		
+		if("4" STREQUAL "${CMAKE_SIZEOF_VOID_P}")
+			#message( STATUS "will use 32 bits" )
+			set(YACK_MSMPI_DIR $ENV{MSMPI_LIB32})
+		else()
+			#message( STATUS "will use 64 bits" )
+			set(YACK_MSMPI_DIR $ENV{MSMPI_LIB64})
+		endif()
+		message( STATUS "[YACK]  MSMPI @'${YACK_MSMPI_DIR}'")
+		
+		set(YACK_MPI_LIBS "${YACK_MSMPI_DIR}/msmpi.lib") 
+		
+		# finalize
+		add_definitions( -DMSMPI_NO_SAL=1 )
+		set(YACK_MPI ON)
+		
+	else()
+		message( STATUS "[YACK]  MSMPI not found")
+	endif()
 	
 else()
 	# ------------------------------------------------------------------
