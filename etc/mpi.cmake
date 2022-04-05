@@ -79,8 +79,9 @@ else()
 		list(REMOVE_DUPLICATES MPI_INFO)
 	    #message( STATUS "[YACK] [${MPI_INFO}]")
 		list(REMOVE_AT MPI_INFO 0)
-		#message( STATUS "[YACK] [${MPI_INFO}]")
-			    
+		message( STATUS "[YACK] [${MPI_INFO}]")
+			 
+		message( STATUS "[YACK] <MPI::INCLUDE>" )
 		# --------------------------------------------------------------
 		# parse include directories
 		# --------------------------------------------------------------
@@ -91,6 +92,8 @@ else()
  				include_directories(${tmp})
 			endif()
 		endforeach()
+		message( STATUS "[YACK] <MPI::INCLUDE/>" )
+
  		
  		# --------------------------------------------------------------
 		# parse libraries to link
