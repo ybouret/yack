@@ -1,5 +1,6 @@
 #include "yack/mpi++/mpi.hpp"
 #include <cstring>
+#include <cstdarg>
 
 namespace yack
 {
