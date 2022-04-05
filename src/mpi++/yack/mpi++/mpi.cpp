@@ -46,7 +46,7 @@ namespace yack {
 
     mpi:: ~mpi() throw()
     {
-        MPI_Finalize();
+        (void) MPI_Finalize();
     }
 
 
@@ -58,15 +58,29 @@ namespace yack {
     mpi & mpi:: Init(int    &argc,
                      char **&argv)
     {
-        assert(argv);
+        if(NULL==argv) throw yack::exception("%s::Init(%d,NULL)",call_sign,argc);
         const temporary<int*>    keep_argc(__mpi_argc,&argc);
         const temporary<char***> keep_argv(__mpi_argv,&argv);
         return mpi::instance();
     }
 
-    mpi:: mpi() : singleton<mpi>()
+    mpi:: mpi() : singleton<mpi>(), rank(0), size(0), threading(0)
     {
-        if(NULL==__mpi_argc) throw yack::exception("%s: need to call mpi::Init()",call_sign);
+        if(NULL==__mpi_argc || NULL==__mpi_argv) throw yack::exception("%s: need to call mpi::Init()",call_sign);
+
+        int  required = MPI_THREAD_MULTIPLE;
+        int *provided = &coerce(threading);
+        YACK_MPI_CALL(MPI_Init_thread(__mpi_argc,__mpi_argv,required,provided));
+        try
+        {
+            YACK_MPI_CALL( MPI_Comm_rank(MPI_COMM_WORLD,& coerce(rank) ) );
+            YACK_MPI_CALL( MPI_Comm_size(MPI_COMM_WORLD,& coerce(size) ) );
+        }
+        catch(...)
+        {
+            MPI_Finalize();
+            throw;
+        }
     }
 
 

@@ -26,7 +26,7 @@ namespace yack
         //
         // types and definitions
         //______________________________________________________________________
-        typedef int (*proc)(int,const char **); //!< local program interface
+        typedef int (*proc)(int, char **); //!< local program interface
 
         //______________________________________________________________________
         //
@@ -72,8 +72,8 @@ namespace yack
                         unit_test::proc func) throw();
 
         //! display tests or try to launch one with remaining args
-        int operator()(int            argc,
-                       const char **  argv) throw();
+        int operator()(int      argc,
+                       char **  argv) throw();
 
         //______________________________________________________________________
         //
@@ -133,12 +133,12 @@ namespace yack
 
 //! declare a COUNT of possible unit tests
 #define YACK_UTEST_DECL(COUNT)                \
-/**/  int main(int argc, const char **argv) { \
+/**/  int main(int argc, char **argv) { \
 /**/  static yack::unit_tests_provider<COUNT> utests;
 
 //! register a new test
 #define YACK_UTEST(NAME) do {                                       \
-/**/ int yack_test_##NAME(int,const char**);                        \
+/**/ int yack_test_##NAME(int,char**);                        \
 /**/ static const char       name[] = #NAME;                        \
 /**/ const        int        ret    = utests(name,yack_test_##NAME);\
 /**/ if(0!=ret) return ret;                                         \

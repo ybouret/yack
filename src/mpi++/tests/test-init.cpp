@@ -5,8 +5,10 @@ using namespace yack;
 
 YACK_UTEST(init)
 {
-    mpi & MPI = mpi::instance();
-    (void) MPI;
+    mpi & MPI = mpi::Init(argc,argv);
+
+    std::cerr << "from " << MPI.size << "." << MPI.rank << std::endl;
+
 }
 YACK_UDONE()
 

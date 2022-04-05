@@ -12,6 +12,10 @@
 namespace yack
 {
 
+
+
+#define YACK_MPI_CALL(CODE) do { const int ret = CODE; if(MPI_SUCCESS!=ret) throw mpi::exception(ret,"in %s",#CODE); } while(false)
+
     //__________________________________________________________________________
     //
     //
@@ -62,6 +66,11 @@ namespace yack
         //______________________________________________________________________
         static mpi & Init(int &argc, char ** &argv);
 
+
+        const int    rank;
+        const int    size;
+        const int    threading;
+        
     private:
         YACK_DISABLE_COPY_AND_ASSIGN(mpi);
         friend class singleton<mpi>;

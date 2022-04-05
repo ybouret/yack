@@ -112,8 +112,8 @@ namespace yack
 
     }
 
-    int unit_tests:: operator()(int            argc,
-                                const char **  argv) throw()
+    int unit_tests:: operator()(int      argc,
+                                char **  argv) throw()
     {
 
         qsort(utest,count,sizeof(unit_test),compare_unit_tests);

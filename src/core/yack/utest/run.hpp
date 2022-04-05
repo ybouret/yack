@@ -54,7 +54,7 @@ namespace yack
 
 //! start a new test
 #define YACK_UTEST(NAME)                                               \
-/**/  int yack_test_##NAME(int argc, const char **argv) throw() {      \
+/**/  int yack_test_##NAME(int argc, char **argv) throw() {      \
 /**/  const char *program = argv[0]; (void) argc; (void) program; try
 
 
