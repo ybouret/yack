@@ -43,12 +43,14 @@ YACK_UTEST(init)
     if(MPI.primary)
     {
         std::cerr << "primary = " << str << std::endl;
+        std::cerr.flush();
         MPI.primary_sync();
     }
     else
     {
         MPI.replica_wait();
         std::cerr << "replica = " << str << std::endl;
+        std::cerr.flush();
         MPI.replica_done();
     }
 
