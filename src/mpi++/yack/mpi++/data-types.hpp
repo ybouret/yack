@@ -34,6 +34,13 @@ namespace yack
                 make( rtti::use<T>(), mdt );
             }
 
+            const MPI_Datatype *query(const rtti &) const throw();
+
+            template <typename T> inline
+            bool has() const
+            {
+                return NULL != query( rtti::use<T>() );
+            }
 
         private:
             YACK_DISABLE_COPY_AND_ASSIGN(data_types);

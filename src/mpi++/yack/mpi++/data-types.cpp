@@ -9,7 +9,7 @@ namespace yack
     namespace __mpi
     {
 
-        
+
 
         data_types:: data_types() : data_type_tree()
         {
@@ -43,8 +43,11 @@ namespace yack
 
             self.in< complex<float>  >(MPI_COMPLEX);
             self.in< complex<double> >(MPI_DOUBLE_COMPLEX);
-            
 
+            self.in<bool>(MPI_CXX_BOOL);
+
+            (void) self( rtti::use<size_t>()    );
+            (void) self( rtti::use<ptrdiff_t>() );
 
         }
         
@@ -62,10 +65,16 @@ namespace yack
         }
 
 
-        MPI_Datatype data_types:: operator()(const rtti &tid) const
+        const MPI_Datatype * data_types:: query(const rtti &tid) const throw()
         {
             const be_address key(tid);
-            const MPI_Datatype *ptr = search(key.begin(),key.measure());
+            return search(key.begin(),key.measure());
+        }
+
+
+        MPI_Datatype data_types:: operator()(const rtti &tid) const
+        {
+            const MPI_Datatype *ptr = query(tid);
             if(!ptr)
             {
                 const string &name = tid.name();
