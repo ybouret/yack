@@ -11,6 +11,7 @@
 #include "yack/math/opt/minimize.hpp"
 #include "yack/math/look-for.hpp"
 #include <cmath>
+#include <iomanip>
 
 namespace yack
 {
@@ -471,16 +472,25 @@ namespace yack
                 std::cerr << vpfx << "rms=" << rms << std::endl;
             }
 
-            iOmega.assign(Omega0,transposed);
-            tao::v2::mul(xm,iOmega,Xi);
-
 
             std::cerr << "Omega=" << Omega0 << std::endl;
-            std::cerr << "OmegaT=" << iOmega << std::endl;
             std::cerr << "Xi   =" << Xi << std::endl;
             std::cerr << "Nu   =" << Nu << std::endl;
             std::cerr << "step =" << xm << std::endl;
-            
+
+
+            const double g0 = rmsGamma(Corg);
+            std::cerr << "g0=" << g0 << std::endl;
+            for(const enode *node=eqs.head();node;node=node->next)
+            {
+                const equilibrium &eq  = ***node;
+                const size_t       ei  = *eq;
+                if(blocked[ei]) continue;
+                const readable<double> &Ci = Ceq[ei];
+                eqs.pad(std::cerr << "g_" << eq.name,eq) << " = " << std::setw(14) << rmsGamma(Ci) << " @" << Ci << std::endl;
+
+            }
+
             exit(1);
 
             //------------------------------------------------------------------
