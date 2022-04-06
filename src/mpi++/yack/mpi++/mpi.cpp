@@ -27,7 +27,14 @@ namespace yack {
         return mpi::instance();
     }
 
-    mpi:: mpi() : singleton<mpi>(), rank(0), size(0), threading(0), dtdb()
+    mpi:: mpi() :
+    singleton<mpi>(),
+    rank(0),
+    size(0),
+    primary(false),
+    replica(false),
+    threading(0),
+    dtdb()
     {
         if(NULL==__mpi_argc || NULL==__mpi_argv) throw yack::exception("%s: need to call mpi::Init()",call_sign);
 
@@ -38,6 +45,14 @@ namespace yack {
         {
             YACK_MPI_CALL( MPI_Comm_rank(MPI_COMM_WORLD,& coerce(rank) ) );
             YACK_MPI_CALL( MPI_Comm_size(MPI_COMM_WORLD,& coerce(size) ) );
+            if(0==rank)
+            {
+                coerce(primary) = true;
+            }
+            else
+            {
+                coerce(replica) = true;
+            }
         }
         catch(...)
         {

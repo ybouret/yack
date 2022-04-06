@@ -1,5 +1,6 @@
 #include "yack/mpi++/mpi.hpp"
 #include "yack/utest/run.hpp"
+#include "yack/string.hpp"
 
 using namespace yack;
 
@@ -14,26 +15,41 @@ namespace {
 
 YACK_UTEST(init)
 {
-    mpi & MPI = mpi::Init(argc,argv);
+    mpi &  MPI = mpi::Init(argc,argv);
+    string str;
 
-    if(MPI.rank == 0 )
+    if(MPI.primary)
     {
         greet(MPI);
+        MPI.primary_sync();
+
+        str = "Hello, World!";
+        
         for(int rank=1;rank<MPI.size;++rank)
         {
-            MPI.SYN(rank);
-            MPI.ACK(rank);
+            MPI.Send(str,rank);
         }
-
-        std::cerr << MPI.DataType<uint8_t>() << std::endl;
-        std::cerr << MPI.DataType<char>()    << std::endl;
-
     }
     else
     {
-        MPI.ACK(0);
+        assert(MPI.replica);
+        MPI.replica_wait();
         greet(MPI);
-        MPI.SYN(0);
+        MPI.replica_done();
+
+        str = MPI.Recv<string>(0);
+    }
+
+    if(MPI.primary)
+    {
+        std::cerr << "primary = " << str << std::endl;
+        MPI.primary_sync();
+    }
+    else
+    {
+        MPI.replica_wait();
+        std::cerr << "replica = " << str << std::endl;
+        MPI.replica_done();
     }
 
 }

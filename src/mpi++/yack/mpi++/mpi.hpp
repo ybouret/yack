@@ -72,6 +72,20 @@ namespace yack
 
         //______________________________________________________________________
         //
+        // type -> MPI_Datatype
+        //______________________________________________________________________
+        MPI_Datatype DataType(const rtti &) const; //!< get matching datatype
+
+        //! helper to get matching datatype
+        template <typename T> inline
+        MPI_Datatype DataType() const
+        {
+            static const MPI_Datatype res = DataType( rtti::use(typeid(T)) );
+            return res;
+        }
+
+        //______________________________________________________________________
+        //
         // point to point
         //______________________________________________________________________
 
@@ -90,16 +104,63 @@ namespace yack
                   const int          tag = io_tag) const;
 
 
-        void SYN(const int dst, const int tag = io_tag) const; //!< send syn_ack
-        void ACK(const int src, const int tag = io_tag) const; //!< recv syn_ack
+        void SYN(const int dst) const; //!< send syn_ack
+        void ACK(const int src) const; //!< recv syn_ack
 
-        MPI_Datatype DataType(const rtti &) const;
+        //! low-level sending of integral types
         template <typename T> inline
-        MPI_Datatype DataType() const
+        void Send(const T     *arr,
+                  const size_t num,
+                  const int    dst,
+                  const int    tag = io_tag) const
         {
-            static const MPI_Datatype res = DataType( rtti::use(typeid(T)) );
+            static const MPI_Datatype mdt = DataType( rtti::use(typeid(T)) );
+            Send(arr,num,mdt,dst,tag);
+        }
+
+        //! low-level sending of integral types
+        template <typename T> inline
+        void Recv(T           *arr,
+                  const size_t num,
+                  const int    src,
+                  const int    tag = io_tag) const
+        {
+            static const MPI_Datatype mdt = DataType( rtti::use(typeid(T)) );
+            Recv((void*)arr,num,mdt,src,tag);
+        }
+
+        //! default type sending
+        template <typename T> inline
+        void Send(const T   &obj,
+                  const int  dst,
+                  const int  tag = io_tag) const
+        {
+            Send<T>(&obj,1,dst,tag);
+        }
+
+        //! partial implementation
+        template <> void Send<string>(const string &,const int, const int) const;
+
+        //! default type receiving
+        template <typename T> inline
+        T Recv(const int src,
+               const int tag = io_tag) const
+        {
+            T res(0);
+            Recv(&res,1,src,tag);
             return res;
         }
+
+        //! partial implementation
+        template <> string Recv(const int, const int) const;
+
+        //______________________________________________________________________
+        //
+        // helpers
+        //______________________________________________________________________
+        void primary_sync() const; //!< all SYN/ACK
+        void replica_wait() const; //!< ACK(0)
+        void replica_done() const; //!< SYN(0)
 
         //______________________________________________________________________
         //
@@ -107,6 +168,8 @@ namespace yack
         //______________________________________________________________________
         const int    rank;         //!< MPI_Comm_rank(MPI_COMM_WORLD)
         const int    size;         //!< MPI_Comm_size(MPI_COMM_WORLD)
+        const bool   primary;      //!< 0==rank
+        const bool   replica;      //!< 0!=rank
         const int    threading;    //!< MPI Thread Level
         
     private:
