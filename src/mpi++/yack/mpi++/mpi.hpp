@@ -3,11 +3,10 @@
 #ifndef YACK_MPICXX_INCLUDED
 #define YACK_MPICXX_INCLUDED 1
 
+#include "yack/mpi++/data-types.hpp"
 #include "yack/singleton.hpp"
 #include "yack/exception.hpp"
 
-#define OMPI_SKIP_MPICXX 1 //!< helper for OpenMPI
-#include <mpi.h>
 
 namespace yack
 {
@@ -34,7 +33,9 @@ namespace yack
         static const at_exit::longevity life_time = 2000; //!< life time
         static const char  * const      call_sign;        //!< call sign
         static const int                io_tag    = 0x07; //!< default IO tag
+        static const uint8_t            syn_ack   = 0xff; //!< syn/ack byte
 
+        
         //______________________________________________________________________
         //
         //! specific exception
@@ -73,22 +74,32 @@ namespace yack
         //
         // point to point
         //______________________________________________________________________
+
+        //! low-level blocking send on MPI_COMM_WORLD
         void Send(const void        *buf,
                   const size_t       num,
                   const MPI_Datatype tid,
                   const int          dst,
                   const int          tag = io_tag) const;
 
+        //! low-level blocking recv on MPI_COMM_WORLD
         void Recv(void              *buf,
                   const size_t       num,
                   const MPI_Datatype tid,
                   const int          src,
                   const int          tag = io_tag) const;
 
-        void SYN(const int dst, const int tag = io_tag) const;
-        void ACK(const int src, const int tag = io_tag) const;
 
+        void SYN(const int dst, const int tag = io_tag) const; //!< send syn_ack
+        void ACK(const int src, const int tag = io_tag) const; //!< recv syn_ack
 
+        MPI_Datatype DataType(const rtti &) const;
+        template <typename T> inline
+        MPI_Datatype DataType() const
+        {
+            static const MPI_Datatype res = DataType( rtti::use(typeid(T)) );
+            return res;
+        }
 
         //______________________________________________________________________
         //
@@ -103,6 +114,7 @@ namespace yack
         friend class singleton<mpi>;
         explicit mpi();
         virtual ~mpi() throw();
+        __mpi::data_types dtdb;
     };
 
 

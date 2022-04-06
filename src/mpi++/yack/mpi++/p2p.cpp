@@ -14,11 +14,10 @@ namespace yack
         YACK_MPI_CALL(MPI_Send(buf,num,tid,dst,tag,MPI_COMM_WORLD));
     }
 
-    static const uint8_t SYN_ACK = 0xff;
 
     void mpi:: SYN(const int dst, const int tag) const
     {
-        const uint8_t msg = SYN_ACK;
+        static const uint8_t msg = syn_ack;
         Send(&msg,1,MPI_BYTE,dst,tag);
     }
 
@@ -32,7 +31,7 @@ namespace yack
     {
         uint8_t msg = 0x00;
         Recv(&msg,1,MPI_BYTE,src,tag);
-        if(SYN_ACK!=msg) throw yack::exception("%s: invalid SYN/ACK!!",call_sign);
+        if(syn_ack!=msg) throw yack::exception("%s: invalid SYN/ACK!!",call_sign);
     }
 
 

@@ -1,5 +1,6 @@
 #include "yack/mpi++/mpi.hpp"
 #include "yack/type/temporary.hpp"
+#include "yack/associative/be-addr.hpp"
 
 namespace yack {
 
@@ -26,7 +27,7 @@ namespace yack {
         return mpi::instance();
     }
 
-    mpi:: mpi() : singleton<mpi>(), rank(0), size(0), threading(0)
+    mpi:: mpi() : singleton<mpi>(), rank(0), size(0), threading(0), dtdb()
     {
         if(NULL==__mpi_argc || NULL==__mpi_argv) throw yack::exception("%s: need to call mpi::Init()",call_sign);
 
@@ -45,5 +46,9 @@ namespace yack {
         }
     }
 
+    MPI_Datatype mpi:: DataType(const rtti &tid) const
+    {
+        return dtdb(tid);
+    }
 
 }

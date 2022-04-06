@@ -24,6 +24,10 @@ YACK_UTEST(init)
             MPI.SYN(rank);
             MPI.ACK(rank);
         }
+
+        std::cerr << MPI.DataType<uint8_t>() << std::endl;
+        std::cerr << MPI.DataType<char>()    << std::endl;
+
     }
     else
     {
