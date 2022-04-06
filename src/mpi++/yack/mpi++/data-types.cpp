@@ -2,6 +2,7 @@
 #include "yack/associative/be-addr.hpp"
 #include "yack/exception.hpp"
 #include "yack/string.hpp"
+#include "yack/type/complex.hpp"
 
 namespace yack
 {
@@ -35,7 +36,15 @@ namespace yack
             self.in<unsigned int>(MPI_UNSIGNED);
             self.in<unsigned long>(MPI_UNSIGNED_LONG);
             self.in<unsigned long long>(MPI_UNSIGNED_LONG_LONG);
+
+            self.in<float>(MPI_FLOAT);
+            self.in<double>(MPI_DOUBLE);
+            self.in<long double>(MPI_LONG_DOUBLE);
+
+            self.in< complex<float>  >(MPI_COMPLEX);
+            self.in< complex<double> >(MPI_DOUBLE_COMPLEX);
             
+
 
         }
         
