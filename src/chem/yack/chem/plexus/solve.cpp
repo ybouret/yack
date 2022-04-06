@@ -403,7 +403,7 @@ namespace yack
             ++cycle;
             //------------------------------------------------------------------
             //
-            // compute current status
+            // compute current status : Xi and Psi'
             //
             //------------------------------------------------------------------
             size_t  ok = 0;
@@ -459,6 +459,9 @@ namespace yack
                 for(size_t k=i-1;k>0;--k)  Omi[k] = xdot(psi,Nu[k],Ctmp)/den;
             }
 
+
+
+
             if(verbose)
             {
                 eqs(std::cerr << vpfx << "blocked=",blocked,vpfx);
@@ -468,19 +471,16 @@ namespace yack
                 std::cerr << vpfx << "rms=" << rms << std::endl;
             }
 
-            const double g0 = rmsGamma(Corg);
-            std::cerr << "g0=" << g0 << " @" << Corg << std::endl;
-            for(const enode *node=eqs.head();node;node=node->next)
-            {
-                const equilibrium &eq  = ***node;
-                const size_t       ei  = *eq;
-                if(blocked[ei]) continue;
-                const double gi = rmsGamma(Ceq[ei]);
-                std::cerr << "g_" << eq.name << " = " << gi << " @" << Ceq[ei] << std::endl;
-
-            }
+            iOmega.assign(Omega0,transposed);
+            tao::v2::mul(xm,iOmega,Xi);
 
 
+            std::cerr << "Omega=" << Omega0 << std::endl;
+            std::cerr << "OmegaT=" << iOmega << std::endl;
+            std::cerr << "Xi   =" << Xi << std::endl;
+            std::cerr << "Nu   =" << Nu << std::endl;
+            std::cerr << "step =" << xm << std::endl;
+            
             exit(1);
 
             //------------------------------------------------------------------
