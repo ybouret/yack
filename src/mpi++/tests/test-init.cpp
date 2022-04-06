@@ -9,7 +9,7 @@ namespace {
     static inline void greet(mpi &MPI)
     {
         std::cerr << "from " << MPI.size << "." << MPI.rank << std::endl;
-
+        std::cerr.flush();
     }
 }
 
