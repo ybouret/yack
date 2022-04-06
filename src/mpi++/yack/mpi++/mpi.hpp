@@ -138,8 +138,6 @@ namespace yack
             Send<T>(&obj,1,dst,tag);
         }
 
-        //! partial implementation
-        template <> void Send<string>(const string &,const int, const int) const;
 
         //! default type receiving
         template <typename T> inline
@@ -151,8 +149,7 @@ namespace yack
             return res;
         }
 
-        //! partial implementation
-        template <> string Recv(const int, const int) const;
+
 
         //______________________________________________________________________
         //
@@ -180,6 +177,11 @@ namespace yack
         __mpi::data_types dtdb;
     };
 
+    //! partial implementation
+    template <> void mpi:: Send<string>(const string &,const int, const int) const;
+
+    //! partial implementation
+    template <> string mpi:: Recv<string>(const int, const int) const;
 
 }
 
