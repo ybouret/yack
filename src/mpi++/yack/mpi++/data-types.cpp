@@ -44,7 +44,7 @@ namespace yack
             self.in< complex<float>  >(MPI_COMPLEX);
             self.in< complex<double> >(MPI_DOUBLE_COMPLEX);
 
-            self.in<bool>(MPI_CXX_BOOL);
+            //self.in<bool>(MPI_CXX_BOOL);
 
             (void) self( rtti::use<size_t>()    );
             (void) self( rtti::use<ptrdiff_t>() );
