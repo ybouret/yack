@@ -105,6 +105,7 @@ namespace yack
             tableau          &Corg;    //!< [M] working space
             tableau          &Ctmp;    //!< [M] temporary C
             tableau          &Ctry;    //!< [M] trial C
+            tableau          &Cend;    //!< [M] target C
             tableau          &dC;      //!< [M] delta C
 
             const imatrix     Nu;      //!< [NxM] topology

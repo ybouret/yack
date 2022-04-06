@@ -45,6 +45,7 @@ namespace yack
         Corg(  mtab.next() ),
         Ctmp(  mtab.next() ),
         Ctry(  mtab.next() ),
+        Cend(  mtab.next() ),
         dC(    mtab.next() ),
 
         Nu(N,N>0?M:0),

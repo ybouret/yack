@@ -343,7 +343,8 @@ namespace yack
             for(const anode *node=active.head;node;node=node->next)
             {
                 const size_t   j = ***node;
-                Ctry[j] = max_of(Corg[j] + u * dC[j],0.0);
+                //Ctry[j] = max_of(Corg[j] + u * dC[j],0.0);
+                Ctry[j] = max_of( (1.0-u) * Corg[j] + u * Cend[j], 0.0 );
             }
             return rmsGamma(Ctry);
         }
