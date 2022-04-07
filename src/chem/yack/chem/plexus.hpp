@@ -132,13 +132,7 @@ namespace yack
              */
             void regularize() throw();
 
-            //! from a regularized state
-            /**
-             - build Omega in Omega0
-             - build rhs   in xm
-             */
-            void buildOmega() throw();
-
+            
             //! from a computed xi
             bool primaryCut() throw();
 

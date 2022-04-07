@@ -95,53 +95,7 @@ namespace yack
             //------------------------------------------------------------------
             YACK_CHEM_PRINTLN("//   <plexus.regularize/>");
         }
-
-        void plexus:: buildOmega() throw()
-        {
-            YACK_CHEM_PRINTLN("//   <plexus.makeOmega>");
-
-            for(const enode *node=eqs.head();node;node=node->next)
-            {
-                // prepare
-                const equilibrium &eq  = ***node;
-                const size_t       ei  = *eq;
-                writable<double>  &Omi = Omega0[ei];
-                writable<double>  &psi = Psi[ei];
-
-                // initialize
-                Omi.ld(0.0);
-                Omi[ei] = 1.0;
-                if(blocked[ei])
-                {
-                    // default values
-                    Gs[ei] = 1.0;
-                    xm[ei] = 0.0;
-                }
-                else
-                {
-                    // compute extra-diag terms
-                    const double Ki  = K[ei];
-                    xm[ei] = eq.grad_action(psi,Ki,Corg,Ctmp);
-                    const double den = sorted::dot(psi,Nu[ei],Ctmp); assert(den<0);
-                    xm[ei] /= ( Gs[ei]=-den );
-                    xs[ei] = 0;
-                    for(size_t k=N;  k>ei;--k) xs[k] = fabs(Omi[k] = sorted::dot(psi,Nu[k],Ctmp)/den);
-                    for(size_t k=ei-1;k>0;--k) xs[k] = fabs(Omi[k] = sorted::dot(psi,Nu[k],Ctmp)/den);
-                    const double extra = sorted::sum(xs,sorted::by_value);
-                    (void) extra;
-                    // TODO: regularize ?
-                }
-            }
-
-            if(verbose)
-            {
-                eqs(std::cerr<<vpfx<<"Gs    = ",Gs,vpfx);
-                eqs(std::cerr<<vpfx<<"Omega = ",xm,vpfx);
-                eqs(std::cerr<<vpfx<<"rhs   = ",xm,vpfx);
-            }
-            YACK_CHEM_PRINTLN("//   <plexus.makeOmega/>");
-
-        }
+        
 
         bool plexus:: primaryCut() throw()
         {
@@ -246,6 +200,23 @@ namespace yack
             else
             {
                 if(verbose) lib(std::cerr << vpfx << "dC=",dC,vpfx);
+                rstack.free();
+                for(const anode *node=active.head;node;node=node->next)
+                {
+                    const species &s = **node;
+                    const size_t   j = *s;
+                    const double   d = dC[j];
+                    if(d<0)
+                    {
+                        const double c = Corg[j]; assert(c>=0);
+                        assert(-d<c);
+                        rstack << c/(-d);
+                    }
+                }
+                hsort(rstack,comparison::increasing<double>);
+                YACK_CHEM_PRINTLN("//    scalmax0=" << rstack);
+                rstack.adjust(1,1.0);
+                YACK_CHEM_PRINTLN("//    scalmax1=" << rstack);
                 YACK_CHEM_PRINTLN("//   <plexus.computeDeltaC> [ok]");
                 return true;
             }
@@ -357,15 +328,12 @@ namespace yack
             {
                 const equilibrium &eq = ***node;
                 const size_t       ei = *eq;
-                xm[ei] = Xi[ei] = eq.solve1D(K[ei],Corg,Ceq[ei]);
+                Xi[ei] = eq.solve1D(K[ei],Corg,Ceq[ei]);
                 en[ei] = (enode *)node;
             }
 
             indexing::make(ix,comparison::decreasing_abs<double>,Xi);
-            const double rms = sorted::sum_squared(xm)/N;
-            ios::ocstream::echo("rms.dat", "%g %.15g\n",double(cycle),rms);
-            eqs(std::cerr << vpfx << "Xi=",Xi,vpfx);
-            std::cerr << "rms=" << rms << std::endl;
+            eqs(std::cerr << vpfx << "XiP=",Xi,vpfx);
 
             const size_t       ii = ix[1];
             const enode       *ep = en[ii];
@@ -386,8 +354,13 @@ namespace yack
 
             for(const enode *node=ep->prev;node;node=node->prev) update(node);
             for(const enode *node=ep->next;node;node=node->next) update(node);
-            eqs(std::cerr << vpfx << "Xi=",Xi,vpfx);
+            eqs(std::cerr << vpfx << "XiC=",Xi,vpfx);
             eqs(std::cerr << vpfx << "Psi=",Psi,vpfx);
+
+            const double rms = sorted::rms(Xi,xs);
+            std::cerr << "rms=" << rms << std::endl;
+            ios::ocstream::echo("rms.dat", "%g %.15g\n",double(cycle),rms);
+
 
             for(size_t i=N;i>0;--i)
             {
@@ -404,18 +377,61 @@ namespace yack
                 {
                     const double den = sorted::dot(psi,Nu[i],Ctmp); assert(den<0);
                     Gs[i] = fabs(den);
+                    xs[i] = 0;
                     for(size_t k=N;  k>i;--k) xs[k] = fabs(Omi[k] = sorted::dot(psi,Nu[k],Ctmp)/den);
                     for(size_t k=i-1;k>0;--k) xs[k] = fabs(Omi[k] = sorted::dot(psi,Nu[k],Ctmp)/den);
+                    xm[i] = sorted::sum(xs,sorted::by_value);
+                    //Omi[i] += ceil(max_of(xm[i],1.0) - 1.0);
                 }
             }
+
+
+
             eqs(std::cerr << vpfx << "Omega=",Omega0,vpfx);
+            eqs(std::cerr << vpfx << "xdiag=",xm,vpfx);
+
             std::cerr << "Omega=" << Omega0 << std::endl;
 
+        EVAL_XI:
+            iOmega.assign(Omega0);
+            if(!LU.build(iOmega))
+            {
+                YACK_CHEM_PRINTLN("// <plexus.solve/> [singular]");
+                return false;
+            }
+
+            tao::v1::set(xi,Xi);
+            LU.solve(iOmega,xi);
+            eqs(std::cerr << vpfx << "xi=",xi,vpfx);
 
 
+            if( primaryCut()) goto EVAL_XI;
+            if(!compute_dC()) goto EVAL_XI;
 
-            exit(1);
-            //lib(std::cerr << vpfx << "C=",Corg,vpfx);
+            const double g0     = rmsGamma(Corg);
+            const double expand = clamp(1.0,0.99*rstack[1],10.0);
+
+            if(true)
+            {
+                size_t NP = 10000;
+                ios::ocstream fp("gam.dat");
+                for(size_t i=0;i<=NP;++i)
+                {
+                    const double u = (expand*i)/NP;
+                    fp("%g %.15g\n",u,(*this)(u));
+                }
+            }
+
+            triplet<double> x = {0, -1,expand};
+            triplet<double> g = {g0,-1,(*this)(x.c)};
+
+            (void) minimize::find<double>::run_for(*this,x,g,minimize::inside);
+
+            std::cerr << "g(" << x.b << ")=" << g.b << std::endl;
+
+            transfer(Corg,Ctry);
+            if(cycle>=20)
+                exit(1);
             goto CYCLE;
 
             YACK_CHEM_PRINTLN("// <plexus.solve/> [success]");
