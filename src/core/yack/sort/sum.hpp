@@ -84,6 +84,33 @@ namespace yack
             return res;
         }
 
+        template <typename ARR,typename BRR,typename XRR> inline static
+        typename ARR::mutable_type dot(ARR &arr, BRR &brr, XRR &xrr)
+        {
+            assert(brr.size()==brr.size());
+            assert(xrr.size()==arr.size());
+            for(size_t i=arr.size();i>0;--i) xrr[i] = arr[i] * brr[i];
+            return sum(xrr,by_abs_value);
+        }
+
+        template <typename ARR, typename XRR> inline static
+        typename ARR::mutable_type rms(ARR &arr, XRR &xrr)
+        {
+            assert(xrr.size()==arr.size());
+            const size_t n = arr.size();
+            switch(n)
+            {
+                case 0: return 0;
+                case 1: return squared(arr[1]);
+                default:
+                    break;
+            }
+            for(size_t i=n;i>0;--i) xrr[i] = squared(arr[i]);
+            return sum(xrr,by_value)/n;
+
+        }
+
+        
 
         //! sorted sum of A,B,C
         template <typename T> static inline

@@ -145,6 +145,7 @@ namespace yack
             //! from a valid dC
             bool compute_dC() throw();
 
+            void update(const enode *) throw();
         };
 
     }
