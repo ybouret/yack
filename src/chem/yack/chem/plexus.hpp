@@ -142,11 +142,8 @@ namespace yack
             //! from a computed xi
             bool primaryCut() throw();
 
-            //! from a valid xi
-            bool compute_dC() throw();
-
             //! from a valid dC
-            bool tryFindEqs() throw();
+            bool compute_dC() throw();
 
         };
 
