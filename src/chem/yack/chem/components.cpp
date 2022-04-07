@@ -166,7 +166,8 @@ namespace yack
 
         double components:: grad_action(writable<double> &psi, const double K, const readable<double> &C, writable<double> &arr) const throw()
         {
-            return reac.grad_action(psi, K,C,arr) + prod.grad_action(psi,-1,C,arr);
+            psi.ld(0);
+            return reac.grad_action(psi,K,C,arr) + prod.grad_action(psi,-1,C,arr);
         }
 
 
