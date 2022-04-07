@@ -54,6 +54,10 @@ YACK_UTEST(init)
         MPI.replica_done();
     }
 
+    YACK_SYNCHRONIZE(MPI,
+                     std::cerr << "@" << MPI.name << std::endl;
+                     std::cerr.flush());
+
 }
 YACK_UDONE()
 

@@ -1,6 +1,7 @@
 #include "yack/mpi++/mpi.hpp"
 #include "yack/type/temporary.hpp"
 #include "yack/associative/be-addr.hpp"
+#include "yack/arith/base10.hpp"
 
 namespace yack {
 
@@ -27,6 +28,19 @@ namespace yack {
         return mpi::instance();
     }
 
+    namespace {
+        static inline void mpi_build_name(string &name, const int size, const int rank )
+        {
+            assert(size>0);
+            assert(rank>=0);
+            assert(rank<size);
+            const unsigned digits = digits_for(size);
+            const string   fmt    = vformat("%%%ud.%%0%ud",digits,digits);
+            //std::cerr << "fmt='" << fmt << "'" << std::endl;
+            name = vformat(fmt(),size,rank);
+        }
+    }
+
     mpi:: mpi() :
     singleton<mpi>(),
     rank(0),
@@ -34,17 +48,24 @@ namespace yack {
     primary(false),
     replica(false),
     threading(0),
-    dtdb()
+    name(),
+    native()
     {
         if(NULL==__mpi_argc || NULL==__mpi_argv) throw yack::exception("%s: need to call mpi::Init()",call_sign);
 
+        // make initial call
         int  required = MPI_THREAD_MULTIPLE;
         int *provided = &coerce(threading);
         YACK_MPI_CALL(MPI_Init_thread(__mpi_argc,__mpi_argv,required,provided));
+
+        // post-process
         try
         {
+            // size/rank
             YACK_MPI_CALL( MPI_Comm_rank(MPI_COMM_WORLD,& coerce(rank) ) );
             YACK_MPI_CALL( MPI_Comm_size(MPI_COMM_WORLD,& coerce(size) ) );
+
+            // find role
             if(0==rank)
             {
                 coerce(primary) = true;
@@ -53,6 +74,10 @@ namespace yack {
             {
                 coerce(replica) = true;
             }
+
+            // build name
+            mpi_build_name(coerce(name), size, rank);
+
         }
         catch(...)
         {
@@ -63,7 +88,7 @@ namespace yack {
 
     MPI_Datatype mpi:: DataType(const rtti &tid) const
     {
-        return dtdb(tid);
+        return native(tid);
     }
 
 }

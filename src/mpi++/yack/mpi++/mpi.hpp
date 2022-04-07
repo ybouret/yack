@@ -6,7 +6,7 @@
 #include "yack/mpi++/data-types.hpp"
 #include "yack/singleton.hpp"
 #include "yack/exception.hpp"
-
+#include "yack/string.hpp"
 
 namespace yack
 {
@@ -168,13 +168,14 @@ namespace yack
         const bool   primary;      //!< 0==rank
         const bool   replica;      //!< 0!=rank
         const int    threading;    //!< MPI Thread Level
-        
+        const string name;         //!< size.rank
+
     private:
         YACK_DISABLE_COPY_AND_ASSIGN(mpi);
         friend class singleton<mpi>;
         explicit mpi();
         virtual ~mpi() throw();
-        __mpi::data_types dtdb;
+        const __mpi::data_types native;
     };
 
     //! partial implementation
@@ -182,6 +183,23 @@ namespace yack
 
     //! partial implementation
     template <> string mpi:: Recv<string>(const int, const int) const;
+
+
+    //__________________________________________________________________________
+    //
+    //! perform in-order operations
+    //__________________________________________________________________________
+#define YACK_SYNCHRONIZE(WITH_MPI,CODE)     \
+/**/ do { const mpi & THE_MPI = WITH_MPI;   \
+/**/     if(THE_MPI.primary) {              \
+/**/         do { CODE; } while(false);     \
+/**/         THE_MPI.primary_sync();        \
+/**/     } else { assert(THE_MPI.replica);  \
+/**/         THE_MPI.replica_wait();        \
+/**/         do { CODE; } while(false);     \
+/**/         THE_MPI.replica_done();        \
+/**/     }                                  \
+/**/ } while(false)
 
 }
 

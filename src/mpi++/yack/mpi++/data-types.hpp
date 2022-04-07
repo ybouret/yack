@@ -33,20 +33,20 @@ namespace yack
         class data_types : public data_type_tree
         {
         public:
+            //__________________________________________________________________
+            //
+            // C++
+            //__________________________________________________________________
             explicit data_types();          //!< create and populate database
             virtual ~data_types() throw();  //!< cleanup
 
-
+            //__________________________________________________________________
+            //
+            // methods
+            //__________________________________________________________________
             MPI_Datatype        operator()(const rtti &tid) const; //!< access
             const MPI_Datatype *query(const rtti &) const throw(); //!< query
-
-            //! helper
-            template <typename T> inline
-            bool has() const
-            {
-                return NULL != query( rtti::use<T>() );
-            }
-
+            
         private:
             YACK_DISABLE_COPY_AND_ASSIGN(data_types);
             void make(const rtti        &tid,
