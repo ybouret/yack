@@ -1,4 +1,3 @@
-
 //! \file
 
 #ifndef YACK_MPICXX_DATA_TYPES_INCLUDED
