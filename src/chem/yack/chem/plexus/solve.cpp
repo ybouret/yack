@@ -335,6 +335,10 @@ namespace yack
             indexing::make(ix,comparison::decreasing_abs<double>,Xi);
             eqs(std::cerr << vpfx << "XiP=",Xi,vpfx);
 
+
+
+
+
             const size_t       ii = ix[1];
             const enode       *ep = en[ii];
             const equilibrium &ee = ***ep;
@@ -342,6 +346,18 @@ namespace yack
 
             transfer(Corg,Ceq[ii]);
             lib(std::cerr << vpfx << "C =",Corg);
+
+
+            indexing::make(ix,comparison::increasing<double>,Xi);
+            for(size_t i=1;i<=N;++i)
+            {
+                const double       i0 =    ix[i];
+                const double       xx =    Xi[i0];
+                const equilibrium &ex = ***en[i0];
+                eqs.pad(std::cerr << "Xi_" << ex.name,ex) << " = " << xx << std::endl;
+            }
+
+            exit(1);
 
             //------------------------------------------------------------------
             //
@@ -356,6 +372,9 @@ namespace yack
             for(const enode *node=ep->next;node;node=node->next) update(node);
             eqs(std::cerr << vpfx << "XiC=",Xi,vpfx);
             eqs(std::cerr << vpfx << "Psi=",Psi,vpfx);
+
+
+            exit(1);
 
             const double rms = sorted::rms(Xi,xs);
             std::cerr << "rms=" << rms << std::endl;
