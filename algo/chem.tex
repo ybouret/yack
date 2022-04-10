@@ -162,6 +162,39 @@ Let
 	
 \end{itemize}
 
+\subsection{Evolution}
+
+For any valid concentration $\vec{C}$, we have a set of single solving extents $\vec{\Xi}$.
+We want to solve:
+\begin{equation}
+	\partial_t \vec{\xi} = \dfrac{1}{\delta t} \left[ \kappa \vec{\Xi} - \lambda \vec{\xi} \right]
+\end{equation}
+which is a stiff equation. Let us integrate using an implicit step from $\vec{0}$ to $\vec{\xi}$
+We need to find:
+\begin{equation}
+	\vec{\xi} = \kappa \vec{\Xi}(\vec{\xi}) - \lambda \vec{\xi}
+\end{equation}
+
+Since:
+\begin{equation}
+	\Gamma_i(\vec{C} + \Xi_i \vec{\nu}_i + \delta\vec{C} + \delta\Xi_i \vec{\nu}_i) = 0
+\end{equation}
+and we find:
+\begin{equation}
+	\delta \Xi_i \simeq - \dfrac{\langle \vec{\Psi}_i' \vert \delta\vec{C}\rangle}{\langle \vec{\Psi}_i' \vert \vec{\nu}_i \rangle}
+\end{equation}
+so that:
+\begin{equation}
+		\vec{\xi} = \kappa \left[ \vec{\Xi} - \bm{\Omega} \vec{\xi} \right] - \lambda \vec{\xi}
+\end{equation}
+and
+\begin{equation}
+	\left[ (1+\lambda) \bm{I}_N + \kappa \bm{\Omega} \right] \vec{\xi} = \kappa  \vec{\Xi}
+\end{equation}
+
+\begin{equation}
+		\vec{\xi} = \kappa \left[ (1+\lambda) \bm{I}_N + \kappa \bm{\Omega} \right]^{-1} \vec{\Xi}
+\end{equation}
 
 
 \subsection{Regularization}
