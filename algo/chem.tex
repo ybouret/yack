@@ -169,7 +169,7 @@ We want to solve:
 \begin{equation}
 	\partial_t \vec{\xi} = \dfrac{1}{\delta t} \left[ \kappa \vec{\Xi} - \lambda \vec{\xi} \right]
 \end{equation}
-which is a stiff equation. Let us integrate using an implicit step from $\vec{0}$ to $\vec{\xi}$
+which is a stiff equation. Let us integrate using an implicit step from $\vec{0}$ to $\vec{\xi}$.
 We need to find:
 \begin{equation}
 	\vec{\xi} = \kappa \vec{\Xi}(\vec{\xi}) - \lambda \vec{\xi}
@@ -185,17 +185,21 @@ and we find:
 \end{equation}
 so that:
 \begin{equation}
-		\vec{\xi} = \kappa \left[ \vec{\Xi} - \bm{\Omega} \vec{\xi} \right] - \lambda \vec{\xi}
-\end{equation}
-and
+	 \vec{\xi} \simeq \kappa \left[ \vec{\Xi} - \bm{\Omega}\vec{\xi} \right] - \lambda \vec{\xi}
+\end{equation} 
+
 \begin{equation}
-	\left[ (1+\lambda) \bm{I}_N + \kappa \bm{\Omega} \right] \vec{\xi} = \kappa  \vec{\Xi}
+	\left[ (1+\lambda) \bm{I}_N + \kappa \bm{\Omega} \right] \vec{\xi} = \kappa \vec{\Xi}
 \end{equation}
 
 \begin{equation}
-		\vec{\xi} = \kappa \left[ (1+\lambda) \bm{I}_N + \kappa \bm{\Omega} \right]^{-1} \vec{\Xi}
+	\left[ \bm{\Delta}_\sigma + \bm{\Omega} \right] \vec{\xi} = \vec{\Xi}
 \end{equation}
 
+Stability:
+\begin{equation}
+	\vert \vec{\xi} \vert \leq \vert \vec{\Xi} \vert
+\end{equation}
 
 \subsection{Regularization}
 We define:

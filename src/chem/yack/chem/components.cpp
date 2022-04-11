@@ -160,6 +160,7 @@ namespace yack
                                       const readable<double> &C,
                                       writable<double>       &arr) const throw()
         {
+            psi.ld(0);
             reac.drvs_action(psi, K,C,arr);
             prod.drvs_action(psi,-1,C,arr);
         }
