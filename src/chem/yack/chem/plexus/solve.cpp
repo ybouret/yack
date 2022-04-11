@@ -378,7 +378,7 @@ namespace yack
 
         EVALUATE_EXTENT:
             iOmega.assign(Omega0);
-            if(!LU.build(Omega0))
+            if(!LU.build(iOmega))
             {
                 return false;
             }
@@ -403,6 +403,24 @@ namespace yack
             if( primaryCut()  ) goto EVALUATE_EXTENT;
             if( !compute_dC() ) goto EVALUATE_EXTENT;
 
+            const double    g0 = rmsGamma(Corg);
+            triplet<double> x  = { 0, -1, rstack.front() };
+            triplet<double> g  = { g0, -1, (*this)(x.c)  };
+
+            if(true)
+            {
+                ios::ocstream fp("gam.dat");
+                const size_t NP = 1000;
+                for(size_t i=0;i<=NP;++i)
+                {
+                    const double u = (x.c * i)/NP;
+                    fp("%g %g\n",u,(*this)(u));
+                }
+            }
+
+            minimize::find<double>::run_for((*this), x, g, minimize::inside);
+            const double g1 = g.b;
+            std::cerr << "g(" << x.b << ")=" << g1 << " / " << g0 << std::endl;
 
 
             exit(1);
