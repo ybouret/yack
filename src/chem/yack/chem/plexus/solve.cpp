@@ -1,7 +1,6 @@
 
 
 #include "yack/chem/plexus.hpp"
-#include "yack/apex.hpp"
 #include "yack/math/tao/v1.hpp"
 #include "yack/math/tao/v2.hpp"
 #include "yack/sort/sum.hpp"
@@ -9,9 +8,14 @@
 #include "yack/math/opt/minimize.hpp"
 #include "yack/math/look-for.hpp"
 #include "yack/sort/indexing.hpp"
+
+#include "yack/math/timings.hpp"
+#include "yack/math/numeric.hpp"
+#include "yack/counting/comb.hpp"
+
+
 #include <cmath>
 #include <iomanip>
-#include "yack/data/loop.hpp"
 
 namespace yack
 {
@@ -21,21 +25,6 @@ namespace yack
     {
 
         const char plexus::vpfx[] = "//   ";
-
-#if 0
-        template <typename T>
-        static inline double xdot(const readable<double> &lhs, const readable<T> &rhs, writable<double> &tmp)
-        {
-            const size_t n = lhs.size();
-            for(size_t i=n;i>0;--i)
-            {
-                tmp[i] = lhs[i] * rhs[i];
-            }
-            return sorted::sum(tmp,sorted::by_abs_value);
-        }
-#endif
-
-
 
         void plexus:: regularize() throw()
         {
@@ -238,8 +227,8 @@ namespace yack
             for(const anode *node=active.head;node;node=node->next)
             {
                 const size_t   j = ***node;
-                Ctry[j] = max_of(Corg[j] + u * dC[j],0.0);
-                //Ctry[j] = max_of( (1.0-u) * Corg[j] + u * Cend[j], 0.0 );
+                //Ctry[j] = max_of(Corg[j] + u * dC[j],0.0);
+                Ctry[j] = max_of( (1.0-u) * Corg[j] + u * Cend[j], 0.0 );
             }
             return rmsGamma(Ctry);
         }
@@ -253,7 +242,7 @@ namespace yack
             writable<double>  &psi = Psi[ei];
             Xi[ei] = eq.solve1D(Ki,Corg,Ci);
             eq.drvs_action(psi,Ki,Ci,Ctmp);
-            if( sorted::rms(psi,Ctmp) <= 0)
+            if( sorted::rms2(psi,Ctmp) <= 0)
             {
                 blocked[ei] = true;
                 Xi[ei]      = 0;
@@ -264,11 +253,31 @@ namespace yack
             }
         }
 
+        static inline
+        void compute_target(writable<double>       &Cend,
+                            const matrix<double>   &Ceq,
+                            const readable<size_t> &comb,
+                            vector<double>         &csum) throw()
+        {
+            const size_t nc = comb.size();
+            csum.adjust(nc,0);
+            for(size_t j=Cend.size();j>0;--j)
+            {
+                for(size_t i=nc;i>0;--i)
+                {
+                    const size_t k = comb[i];
+                    csum[i] = Ceq[k][j];
+                }
+                Cend[j] = sorted::sum(csum,sorted::by_abs_value) / nc;
+            }
+        }
+
+
         bool plexus:: solve(writable<double> &C0) throw()
         {
             assert(C0.size()>=M);
             assert(are_valid(C0));
-
+            static const double SAFE = numeric<double>::golden_i;
 
             //------------------------------------------------------------------
             //
@@ -312,11 +321,75 @@ namespace yack
                     break;
             }
 
-
-            size_t cycle = 0;
+            vector<enode *> en(N,NULL);
+            vector<size_t > ix(N,0);
+            const size_t    ncl = (1 << N) - 1;
+            rmatrix         Ccl(ncl,M);
+            vector<double>  Gcl(ncl,0);
+            vector<double>  Ucl(ncl,0);
+            vector<size_t>  Icl(ncl,0);
+            size_t          cycle = 0;
         CYCLE:
             ++cycle;
 
+            // global step
+            for(const enode *node=eqs.head();node;node=node->next)
+            {
+                const equilibrium &eq  = ***node;
+                const size_t       ei  = *eq;
+                const double       Ki  = K[ei];
+                writable<double>  &Ci  = Ceq[ei];
+                writable<double>  &psi = Psi[ei];
+                xm[ei] = fabs(Xi[ei]   = eq.solve1D(Ki,Corg,Ci));
+                en[ei] = (enode *)node;
+                eq.drvs_action(psi,Ki,Ci,Ctmp);
+                if( tao::v1::mod2<double>::of(psi) <= 0)
+                {
+                    Gs[ei] = 1.0;
+                    blocked[ei] = true;
+                }
+                else
+                {
+                    Gs[ei] = sorted::dot(psi,Nu[ei],Ctmp);
+                    blocked[ei] = false;
+                }
+            }
+
+            eqs(std::cerr << vpfx << "Xi=", Xi, vpfx);
+
+            size_t       ipos = 0;
+            const double g0   = rmsGamma(Corg);
+            std::cerr << "g0=" << g0 << std::endl;
+            for(size_t k=1;k<=N;++k)
+            {
+                combination comb(N,k);
+                //std::cerr << "C(" << N << "," << k << ")=" << comb.total << std::endl;
+                do
+                {
+                    ++ipos;
+                    compute_target(Cend,Ceq,comb,rstack);
+                    const double    g1 = rmsGamma(Cend);
+                    triplet<double> uu = {0,-1,1};
+                    triplet<double> gg = {g0,-1,g1};
+
+                    minimize::find<double>::run_for(*this, uu, gg, minimize::inside);
+                    std::cerr << comb << " #" << std::setw(4) << ipos << " -> " << std::setw(15) << gg.b << " =g(" << uu.b << ")" << std::endl;
+                    Gcl[ipos] = gg.b;
+                    Ucl[ipos] = uu.b;
+
+                } while(comb.next());
+            }
+
+
+            std::cerr << "ipos=" << ipos << "/" << ncl << std::endl;
+
+            indexing::make(Icl,comparison::increasing<double>,Gcl);
+            std::cerr << "Icl=" << Icl << std::endl;
+
+
+            exit(1);
+
+#if 0
             //------------------------------------------------------------------
             //
             // full metrics
@@ -365,18 +438,24 @@ namespace yack
                     xm[i]  = 0;
                     for(size_t k=N;k>i;--k)   xm[k] = fabs( Omi[k] = sorted::dot(psi,Nu[k],Ctmp)/den );
                     for(size_t k=i-1;k>0;--k) xm[k] = fabs( Omi[k] = sorted::dot(psi,Nu[k],Ctmp)/den );
-                    xd[i]  = sorted::sum(xm,sorted::by_value);
+                    const double extra  = xd[i] = sorted::sum(xm,sorted::by_value);
+                    const double xsafe  = SAFE * extra;
+                    if(xsafe>=1) Omi[i] = timings::round_ceil(1.0 + xsafe);
+
                 }
             }
 
             std::cerr << "blocked = " << blocked << std::endl;
+            std::cerr << "extra   = " << xd      << std::endl;
             std::cerr << "Omega   = " << Omega0  << std::endl;
-            std::cerr << "Extra   = " << xd      << std::endl;
             std::cerr << "Xi      = " << Xi      << std::endl;
-            const double rms = sorted::rms(Xi,xs);
+            const double rms = sorted::rms2(Xi,xs);
             ios::ocstream::echo("rms.dat","%g %.15g\n", double(cycle), rms);
 
+
+
         EVALUATE_EXTENT:
+            std::cerr << "Omega   = " << Omega0  << std::endl;
             iOmega.assign(Omega0);
             if(!LU.build(iOmega))
             {
@@ -385,35 +464,26 @@ namespace yack
 
             tao::v1::set(xi,Xi);
             LU.solve(iOmega,xi);
-            std::cerr << "xi      = " << xi      << std::endl;
-            const double rxi = sorted::rms(xi,xs);
-            std::cerr << "rms=" << rxi << " / " << rms << std::endl;
 
-            if(rxi>rms)
-            {
-                YACK_CHEM_PRINTLN(vpfx<< "excessive xi");
-                for(size_t i=N;i>0;--i)
-                {
-                    Omega0[i][i] *= 10;
-                }
-                goto EVALUATE_EXTENT;
-            }
-
+            std::cerr << "xi=" << xi << std::endl;
 
             if( primaryCut()  ) goto EVALUATE_EXTENT;
             if( !compute_dC() ) goto EVALUATE_EXTENT;
 
             const double    g0 = rmsGamma(Corg);
-            triplet<double> x  = { 0, -1, rstack.front() };
+            const double    x1 = rstack.front();
+            triplet<double> x  = { 0,  -1, x1 };
             triplet<double> g  = { g0, -1, (*this)(x.c)  };
+
 
             if(true)
             {
-                ios::ocstream fp("gam.dat");
-                const size_t NP = 1000;
+                ios::ocstream fp("gam0.dat");
+                const size_t NP   = 1000;
+                const double xmax = x1;
                 for(size_t i=0;i<=NP;++i)
                 {
-                    const double u = (x.c * i)/NP;
+                    const double u = (xmax * i)/NP;
                     fp("%g %g\n",u,(*this)(u));
                 }
             }
@@ -423,7 +493,27 @@ namespace yack
             std::cerr << "g(" << x.b << ")=" << g1 << " / " << g0 << std::endl;
 
 
-            exit(1);
+            if(true)
+            {
+                ios::ocstream fp("gam1.dat");
+                const size_t NP = 1000;
+                const double xmax = min_of(2*x.b,x1);
+                for(size_t i=0;i<=NP;++i)
+                {
+                    const double u = (xmax * i)/NP;
+                    fp("%g %g\n",u,(*this)(u));
+                }
+            }
+
+            transfer(Corg, Ctry);
+
+            if(cycle>=10)
+            {
+                exit(1);
+            }
+
+            goto CYCLE;
+#endif
 
             YACK_CHEM_PRINTLN("// <plexus.solve/> [success]");
             return true;
