@@ -227,8 +227,8 @@ namespace yack
             for(const anode *node=active.head;node;node=node->next)
             {
                 const size_t   j = ***node;
-                //Ctry[j] = max_of(Corg[j] + u * dC[j],0.0);
-                Ctry[j] = max_of( (1.0-u) * Corg[j] + u * Cend[j], 0.0 );
+                Ctry[j] = max_of(Corg[j] + u * dC[j],0.0);
+                //Ctry[j] = max_of( (1.0-u) * Corg[j] + u * Cend[j], 0.0 );
             }
             return rmsGamma(Ctry);
         }
@@ -242,7 +242,7 @@ namespace yack
             writable<double>  &psi = Psi[ei];
             Xi[ei] = eq.solve1D(Ki,Corg,Ci);
             eq.drvs_action(psi,Ki,Ci,Ctmp);
-            if( sorted::mod2(psi,Ctmp) <= 0)
+            if( tao::v1::mod2<double>::of(psi,Ctmp) <= 0)
             {
                 blocked[ei] = true;
                 Xi[ei]      = 0;
@@ -253,31 +253,11 @@ namespace yack
             }
         }
 
-        static inline
-        void compute_target(writable<double>       &Cend,
-                            const matrix<double>   &Ceq,
-                            const readable<size_t> &comb,
-                            vector<double>         &csum) throw()
-        {
-            const size_t nc = comb.size();
-            csum.adjust(nc,0);
-            for(size_t j=Cend.size();j>0;--j)
-            {
-                for(size_t i=nc;i>0;--i)
-                {
-                    const size_t k = comb[i];
-                    csum[i] = Ceq[k][j];
-                }
-                Cend[j] = sorted::sum(csum,sorted::by_abs_value) / nc;
-            }
-        }
-
-
         bool plexus:: solve(writable<double> &C0) throw()
         {
             assert(C0.size()>=M);
             assert(are_valid(C0));
-            static const double SAFE = numeric<double>::golden_i;
+            static const double XSAFE = 1.1;
 
             //------------------------------------------------------------------
             //
@@ -321,78 +301,15 @@ namespace yack
                     break;
             }
 
-            vector<enode *> en(N,NULL);
-            vector<size_t > ix(N,0);
-            const size_t    ncl = (1 << N) - 1;
-            rmatrix         Ccl(ncl,M);
-            vector<double>  Gcl(ncl,0);
-            vector<double>  Ucl(ncl,0);
-            vector<size_t>  Icl(ncl,0);
-            size_t          cycle = 0;
+            vector<size_t>  ix(N,0);
+            vector<enode *> en(N,0);
+
+            size_t cycle = 0;
         CYCLE:
             ++cycle;
-
-            // global step
-            for(const enode *node=eqs.head();node;node=node->next)
-            {
-                const equilibrium &eq  = ***node;
-                const size_t       ei  = *eq;
-                const double       Ki  = K[ei];
-                writable<double>  &Ci  = Ceq[ei];
-                writable<double>  &psi = Psi[ei];
-                xm[ei] = fabs(Xi[ei]   = eq.solve1D(Ki,Corg,Ci));
-                en[ei] = (enode *)node;
-                eq.drvs_action(psi,Ki,Ci,Ctmp);
-                if( tao::v1::mod2<double>::of(psi) <= 0)
-                {
-                    Gs[ei] = 1.0;
-                    blocked[ei] = true;
-                }
-                else
-                {
-                    Gs[ei] = sorted::dot(psi,Nu[ei],Ctmp);
-                    blocked[ei] = false;
-                }
-            }
-
-            eqs(std::cerr << vpfx << "Xi=", Xi, vpfx);
-
-            size_t       ipos = 0;
-            const double g0   = rmsGamma(Corg);
-            std::cerr << "g0=" << g0 << std::endl;
-            for(size_t k=1;k<=N;++k)
-            {
-                combination comb(N,k);
-                //std::cerr << "C(" << N << "," << k << ")=" << comb.total << std::endl;
-                do
-                {
-                    ++ipos;
-                    compute_target(Cend,Ceq,comb,rstack);
-                    const double    g1 = rmsGamma(Cend);
-                    triplet<double> uu = {0,-1,1};
-                    triplet<double> gg = {g0,-1,g1};
-
-                    minimize::find<double>::run_for(*this, uu, gg, minimize::inside);
-                    std::cerr << comb << " #" << std::setw(4) << ipos << " -> " << std::setw(15) << gg.b << " =g(" << uu.b << ")" << std::endl;
-                    Gcl[ipos] = gg.b;
-                    Ucl[ipos] = uu.b;
-
-                } while(comb.next());
-            }
-
-
-            std::cerr << "ipos=" << ipos << "/" << ncl << std::endl;
-
-            indexing::make(Icl,comparison::increasing<double>,Gcl);
-            std::cerr << "Icl=" << Icl << std::endl;
-
-
-            exit(1);
-
-#if 0
             //------------------------------------------------------------------
             //
-            // full metrics
+            // predictor global step
             //
             //------------------------------------------------------------------
             for(const enode *node=eqs.head();node;node=node->next)
@@ -400,20 +317,42 @@ namespace yack
                 const equilibrium &eq  = ***node;
                 const size_t       ei  = *eq;
                 const double       Ki  = K[ei];
-                writable<double>  &psi = Psi[ei];
                 writable<double>  &Ci  = Ceq[ei];
                 Xi[ei]    = eq.solve1D(Ki,Corg,Ci);
-                eq.drvs_action(psi,Ki,Ci,Ctmp);
-                if( tao::v1::mod2<double>::of(psi) <= 0 )
+                en[ei]    = (enode *)node;
+            }
+
+            const double rms = sorted::mod2(Xi,xs) / N;
+            ios::ocstream::echo("rms.dat", "%g %.15g\n", double(cycle), rms);
+
+            indexing::make(ix,comparison::decreasing_abs<double>,Xi);
+            eqs(std::cerr<<vpfx<<"Xi_p=",Xi,vpfx);
+            std::cerr << "ix=" << ix << std::endl;
+
+            {
+                // updating chosen
+                const size_t       ii = ix[1];
+                const enode       *ep = en[ii];
+                const equilibrium &eq = ***ep;
+                const size_t       ei = *eq;
+                std::cerr << "moving " << eq.name << std::endl;
+                transfer(Corg,Ceq[ei]);
+                Xi[ei] = 0;
+                writable<double> &psi = Psi[ei];
+                eq.drvs_action(psi,K[ei],Corg,Ctmp);
+                if( tao::v1::mod2<double>::of(psi) <= 0)
                 {
                     blocked[ei] = true;
-                    Xi[ei] = Gamma[ei] = 0;
                 }
-                else
-                {
-                    blocked[ei] = false;
-                }
+
+                // updating other ones
+                for(const enode *node=ep->prev;node;node=node->prev) update(node);
+                for(const enode *node=ep->next;node;node=node->next) update(node);
             }
+
+            lib(std::cerr<<vpfx<<"C_p=",Corg,vpfx);
+            eqs(std::cerr<<vpfx<<"Xi_c=",Xi,vpfx);
+            eqs(std::cerr<<vpfx<<"blocked=",blocked,vpfx);
 
             //------------------------------------------------------------------
             //
@@ -429,6 +368,7 @@ namespace yack
                     Omi.ld(0);
                     Omi[i] = 1.0;
                     Gs[i]  = 1.0;
+                    xd[i]  = 0;
                 }
                 else
                 {
@@ -438,244 +378,168 @@ namespace yack
                     xm[i]  = 0;
                     for(size_t k=N;k>i;--k)   xm[k] = fabs( Omi[k] = sorted::dot(psi,Nu[k],Ctmp)/den );
                     for(size_t k=i-1;k>0;--k) xm[k] = fabs( Omi[k] = sorted::dot(psi,Nu[k],Ctmp)/den );
-                    const double extra  = xd[i] = sorted::sum(xm,sorted::by_value);
-                    const double xsafe  = SAFE * extra;
-                    if(xsafe>=1) Omi[i] = timings::round_ceil(1.0 + xsafe);
+                    xd[i] = sorted::sum(xm,sorted::by_value);
+                }
+            }
+            eqs(std::cerr<<vpfx<<"Omega=",Omega0,vpfx);
+            eqs(std::cerr<<vpfx<<"Extra=",xd,vpfx);
 
+            {
+                double wmax = 1;
+                for(size_t i=N;i>0;--i)
+                {
+                    const double xtra = XSAFE * xd[i];
+                    if(xtra>=1)
+                    {
+                        wmax = max_of( Omega0[i][i] = timings::round_ceil(xtra), wmax );
+                    }
+                }
+                std::cerr << "wmax=" << wmax << std::endl;
+                for(size_t i=N;i>0;--i)
+                {
+                    Omega0[i][i] = wmax;
                 }
             }
 
-            std::cerr << "blocked = " << blocked << std::endl;
-            std::cerr << "extra   = " << xd      << std::endl;
-            std::cerr << "Omega   = " << Omega0  << std::endl;
-            std::cerr << "Xi      = " << Xi      << std::endl;
-            const double rms = sorted::rms2(Xi,xs);
-            ios::ocstream::echo("rms.dat","%g %.15g\n", double(cycle), rms);
 
-
-
-        EVALUATE_EXTENT:
-            std::cerr << "Omega   = " << Omega0  << std::endl;
+            std::cerr << "Omega=" << Omega0 << std::endl;
+        EVAL_XI:
             iOmega.assign(Omega0);
             if(!LU.build(iOmega))
             {
+                YACK_CHEM_PRINTLN("// <plexus.solve/> [singluar]");
                 return false;
             }
 
             tao::v1::set(xi,Xi);
             LU.solve(iOmega,xi);
 
-            std::cerr << "xi=" << xi << std::endl;
+            eqs(std::cerr<<vpfx<<"xi=",xi,vpfx);
 
-            if( primaryCut()  ) goto EVALUATE_EXTENT;
-            if( !compute_dC() ) goto EVALUATE_EXTENT;
-
-            const double    g0 = rmsGamma(Corg);
-            const double    x1 = rstack.front();
-            triplet<double> x  = { 0,  -1, x1 };
-            triplet<double> g  = { g0, -1, (*this)(x.c)  };
-
-
-            if(true)
+            if(MP)
             {
-                ios::ocstream fp("gam0.dat");
-                const size_t NP   = 1000;
-                const double xmax = x1;
-                for(size_t i=0;i<=NP;++i)
+                YACK_CHEM_PRINTLN("//   <plexus.primaryCut>");
+                bool changed = false;
+                for(const enode *node=eqs.head();node;node=node->next)
                 {
-                    const double u = (xmax * i)/NP;
-                    fp("%g %g\n",u,(*this)(u));
+                    const equilibrium &eq  = ***node;
+                    const size_t       ei  = *eq;      if(blocked[ei]) continue;
+                    const limits      &lm  =  eq.primary_limits(Corg,lib.width);
+
+                    if(limited_by_none!=lm.type)
+                        eqs.pad(std::cerr << vpfx << " <" << eq.name << ">",eq) << " : " << lm << std::endl;
+
+                    if(lm.should_reduce(xi[ei]))
+                    {
+                        changed = true;
+                        YACK_CHEM_PRINTLN(vpfx<<" (*) need to reduce <" << eq.name << ">");
+                    }
+                }
+                YACK_CHEM_PRINTLN("//   <plexus.primaryCut/> [changed=" << changed << "]");
+
+                if(changed)
+                {
+                    for(size_t i=N;i>0;--i)
+                    {
+                        Omega0[i][i] *= 2;
+                    }
+                    goto EVAL_XI;
                 }
             }
 
-            minimize::find<double>::run_for((*this), x, g, minimize::inside);
-            const double g1 = g.b;
-            std::cerr << "g(" << x.b << ")=" << g1 << " / " << g0 << std::endl;
 
+            {
+                YACK_CHEM_PRINTLN("//   <plexus.computeDeltaC>");
+
+                rstack.free();
+                ustack.free();
+                for(const anode *node=active.head;node;node=node->next)
+                {
+                    const species &s = **node;
+                    const size_t   j = *s;
+                    const double   d = dC[j] = sorted::dot(xi,NuT[j],xs);
+                    if(d<0)
+                    {
+                        const double c = Corg[j]; assert(c>=0);
+                        if(d<=-c)
+                        {
+                            YACK_CHEM_PRINTLN(vpfx<< "  (*) overshoot for " << s.name);
+                            rstack << c/(-d);
+                            ustack << j;
+                        }
+                    }
+                }
+
+                std::cerr << "rstack=" << rstack << std::endl;
+                YACK_CHEM_PRINTLN("//   <plexus.computeDeltaC>");
+                if(rstack.size())
+                {
+                    for(size_t i=N;i>0;--i)
+                    {
+                        Omega0[i][i] *= 2;
+                    }
+                    goto EVAL_XI;
+                }
+            }
+
+            lib(std::cerr<<vpfx<<"dC=",dC,vpfx);
+
+            double expand = 1;
+            {
+                rstack.free();
+                for(const anode *node=active.head;node;node=node->next)
+                {
+                    const species &s = **node;
+                    const size_t   j = *s;
+                    const double   d = dC[j];
+                    if(d<0)
+                    {
+                        const double c = Corg[j]; assert(c>=0);
+                        assert(-d<=c);
+                        rstack << c/(-d);
+                    }
+                }
+                hsort(rstack,comparison::increasing<double>);
+                while(rstack.size()>1) rstack.pop_back();
+                std::cerr << "expand=" << rstack << std::endl;
+                if(rstack.size()) expand = rstack.front();
+            }
+
+
+            const double g0 = rmsGamma(Corg);
+            std::cerr << "g0=" << g0 << std::endl;
+            triplet<double> x = {  0, -1, expand };
+            triplet<double> g = { g0, -1, (*this)(x.c) };
+            std::cerr << "g1=" << g.c << std::endl;
 
             if(true)
             {
-                ios::ocstream fp("gam1.dat");
+                ios::ocstream fp("gam.dat");
                 const size_t NP = 1000;
-                const double xmax = min_of(2*x.b,x1);
                 for(size_t i=0;i<=NP;++i)
                 {
-                    const double u = (xmax * i)/NP;
-                    fp("%g %g\n",u,(*this)(u));
+                    const double u = (x.c*i)/NP;
+                    fp("%.15g %.15g\n",u,(*this)(u));
                 }
             }
 
-            transfer(Corg, Ctry);
+            minimize::find<double>::run_for(*this,x,g,minimize::inside);
+            std::cerr << "g(" << x.b << ")=" << g.b << std::endl;
 
-            if(cycle>=10)
+            transfer(Corg,Ctry);
+            if(cycle>=30)
             {
                 exit(1);
             }
-
             goto CYCLE;
-#endif
+
+
 
             YACK_CHEM_PRINTLN("// <plexus.solve/> [success]");
             return true;
         }
 
 
-#if 0
-        bool plexus:: solve(writable<double> &C0) throw()
-        {
-            assert(C0.size()>=M);
-            assert(are_valid(C0));
-
-
-            //------------------------------------------------------------------
-            //
-            // initialize
-            //
-            //------------------------------------------------------------------
-            YACK_CHEM_PRINTLN("// <plexus.solve>");
-            if(verbose) lib(std::cerr << vpfx << "Cini=",C0,vpfx);
-            ios::ocstream::overwrite("rms.dat");
-            switch(N)
-            {
-
-                case 0:
-                    //----------------------------------------------------------
-                    // trivial case
-                    //----------------------------------------------------------
-                    YACK_CHEM_PRINTLN("// <plexus.solve/> [empty]");
-                    return true;
-
-                case 1: {
-                    //----------------------------------------------------------
-                    // trivial case
-                    //----------------------------------------------------------
-                    const equilibrium &eq = ***eqs.head();
-                    (void) eq.solve1D(K[*eq],C0,Ctry);
-                    transfer(C0,Ctry);
-                }
-                    YACK_CHEM_PRINTLN("// <plexus.solve/> [1D]");
-                    return true;
-
-
-                default:
-                    //----------------------------------------------------------
-                    // prepare workspace
-                    //----------------------------------------------------------
-                    for(size_t j=M;j>0;--j)
-                    {
-                        Corg[j] = Ctry[j] = C0[j];
-                        dC[j]   = 0;
-                    }
-                    break;
-            }
-
-
-
-            //plexus &self  = *this;
-            size_t  cycle = 0;
-        CYCLE:
-            ++cycle;
-            //------------------------------------------------------------------
-            //
-            // regularize @Corg
-            //
-            //------------------------------------------------------------------
-            regularize();
-
-
-            //------------------------------------------------------------------
-            //
-            // compute Omega @Corg
-            //
-            //------------------------------------------------------------------
-            buildOmega();
-
-
-
-        EVAL_XI:
-            //------------------------------------------------------------------
-            //
-            // compute guess extent
-            //
-            //------------------------------------------------------------------
-            if(verbose)
-            {
-                std::cerr << "Omega=" << Omega0 << std::endl;
-                std::cerr << "rhs  =" << xm     << std::endl;
-            }
-
-            iOmega.assign(Omega0);
-            if(!LU.build(iOmega))
-            {
-
-                YACK_CHEM_PRINTLN("// <plexus.solve/> [singular]");
-                return false;
-            }
-            tao::v1::set(xi,xm);
-            LU.solve(iOmega,xi);
-            if(verbose)
-            {
-                eqs(std::cerr<<vpfx<<"xi     = ",xi,vpfx);
-            }
-
-            //------------------------------------------------------------------
-            //
-            // use primary control
-            //
-            //------------------------------------------------------------------
-            if(primaryCut()) goto EVAL_XI;
-
-            
-
-
-            //------------------------------------------------------------------
-            //
-            // compute dC
-            //
-            //------------------------------------------------------------------
-            if(!compute_dC())
-                goto EVAL_XI;
-
-            if(verbose)
-            {
-                std::cerr << "Omega=" << Omega0 << std::endl;
-                lib(std::cerr<<vpfx<<"dC     = ",dC,vpfx);
-                lib(std::cerr<<vpfx<<"Corg   = ",Corg,vpfx);
-            }
-
-
-            {
-                size_t NP = 10000;
-                ios::ocstream fp("gam.dat");
-                for(size_t i=0;i<=NP;++i)
-                {
-                    const double u = (1.0*i)/NP;
-                    fp("%g %.15g\n",u,(*this)(u));
-                }
-            }
-
-
-            //------------------------------------------------------------------
-            //
-            // minimize over dC, since dC is expensive!!
-            //
-            //------------------------------------------------------------------
-            YACK_CHEM_PRINTLN("// at cycle #" << cycle);
-            if(!tryFindEqs())
-            {
-                goto CYCLE;
-            }
-
-            //------------------------------------------------------------------
-            //
-            // success!
-            //
-            //------------------------------------------------------------------
-            transfer(C0,Corg);
-            YACK_CHEM_PRINTLN("// <plexus.solve/> [success]");
-            return true;
-        }
-#endif
 
     }
 }

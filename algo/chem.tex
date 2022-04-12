@@ -179,6 +179,20 @@ Since:
 \begin{equation}
 	\Gamma_i(\vec{C} + \Xi_i \vec{\nu}_i + \delta\vec{C} + \delta\Xi_i \vec{\nu}_i) = 0
 \end{equation}
+we expand:
+\begin{equation}
+	0 \simeq \langle \vec{\Psi}_i' \vert \delta\vec{C} + \delta\Xi_i \vec{\nu}_i \rangle
+	+ \dfrac{1}{2} \langle  \delta\vec{C} + \delta\Xi_i \vec{\nu}_i \vert \bm{H}_i \vert  \delta\vec{C} + \delta\Xi_i \vec{\nu}_i\rangle
+\end{equation}
+then:
+\begin{equation}
+	0 = \langle \vec{\Psi}_i' \vert \delta\vec{C}\rangle + \langle \vec{\Psi}_i' \vert \vec{\nu}_i \rangle \delta \Xi_i 
+	+ \dfrac{1}{2} \langle \delta\vec{C} \vert \bm{H}_i \vert \delta\vec{C} \rangle
+	+ \langle \delta\vec{C} \vert \bm{H}_i \vert \vec{\nu}_i \rangle \delta \Xi_i
+	+ \dfrac{\delta\Xi_i^2}{2} \langle \vec{\nu}_i \vert \bm{H}_i \vert \vec{\nu}_i \rangle
+\end{equation}
+
+
 and we find:
 \begin{equation}
 	\delta \Xi_i \simeq - \dfrac{\langle \vec{\Psi}_i' \vert \delta\vec{C}\rangle}{\langle \vec{\Psi}_i' \vert \vec{\nu}_i \rangle}
@@ -196,10 +210,6 @@ so that:
 	\left[ \bm{\Delta}_\sigma + \bm{\Omega} \right] \vec{\xi} = \vec{\Xi}
 \end{equation}
 
-Stability:
-\begin{equation}
-	\vert \vec{\xi} \vert \leq \vert \vec{\Xi} \vert
-\end{equation}
 
 \subsection{Regularization}
 We define:
