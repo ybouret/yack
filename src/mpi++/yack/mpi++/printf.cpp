@@ -33,7 +33,7 @@ namespace yack
                 {
                     string  ans(len,as_capacity,true);
                     void   *ptr = &ans[1];
-                    Recv(ptr,len, MPI_BYTE,1,r,io_tag);
+                    Recv(ptr,len,MPI_BYTE,1,r,io_tag);
                     fwrite(ptr,len,1,fp);
                 }
             }
