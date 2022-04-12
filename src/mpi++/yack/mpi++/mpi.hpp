@@ -7,6 +7,7 @@
 #include "yack/singleton.hpp"
 #include "yack/exception.hpp"
 #include "yack/string.hpp"
+#include "yack/system/wtime.hpp"
 
 namespace yack
 {
@@ -16,6 +17,14 @@ namespace yack
     //! macro to trigger an exception upon MPI function failure
     //__________________________________________________________________________
 #define YACK_MPI_CALL(CODE) do { const int ret = CODE; if(MPI_SUCCESS!=ret) throw mpi::exception(ret,"in %s",#CODE); } while(false)
+
+#define YACK_MPI_TMX_INIT()  const uint64_t __mark = wtime::ticks()
+
+#define YACK_MPI_TMX_DONE(which,BYTES)           \
+const uint64_t __done = wtime::ticks() - __mark; \
+tmx &          __info = coerce(which##_tmx);     \
+__info.ticks += __done;                          \
+__info.bytes += (BYTES)
 
     //__________________________________________________________________________
     //
@@ -35,7 +44,14 @@ namespace yack
         static const int                io_tag    = 0x07; //!< default IO tag
         static const uint8_t            syn_ack   = 0xff; //!< syn/ack byte
 
-        
+        struct tmx {
+            uint64_t ticks;
+            uint64_t bytes;
+        };
+
+        static unsigned data_size(const MPI_Datatype);
+
+
         //______________________________________________________________________
         //
         //! specific exception
@@ -159,6 +175,8 @@ namespace yack
         void replica_wait() const; //!< ACK(0)
         void replica_done() const; //!< SYN(0)
 
+        void tmx_init() throw();
+
         //______________________________________________________________________
         //
         // members
@@ -169,7 +187,9 @@ namespace yack
         const bool   replica;      //!< 0!=rank
         const int    threading;    //!< MPI Thread Level
         const string name;         //!< size.rank
-
+        const tmx    send_tmx;
+        const tmx    recv_tmx;
+        
     private:
         YACK_DISABLE_COPY_AND_ASSIGN(mpi);
         friend class singleton<mpi>;

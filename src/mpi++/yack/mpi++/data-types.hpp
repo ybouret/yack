@@ -45,6 +45,7 @@ namespace yack
             //__________________________________________________________________
             MPI_Datatype        operator()(const rtti &tid) const; //!< access
             const MPI_Datatype *query(const rtti &) const throw(); //!< query
+
             
         private:
             YACK_DISABLE_COPY_AND_ASSIGN(data_types);

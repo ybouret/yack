@@ -9,8 +9,6 @@ namespace yack
     namespace __mpi
     {
 
-
-
         data_types:: data_types() : data_type_tree()
         {
             data_types &self = *this;

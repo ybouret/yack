@@ -4,8 +4,7 @@
 #include "yack/arith/base10.hpp"
 
 namespace yack {
-
-
+    
     const char * const mpi::call_sign = "mpi";
 
     mpi:: ~mpi() throw()
@@ -41,6 +40,13 @@ namespace yack {
         }
     }
 
+
+    void mpi:: tmx_init() throw()
+    {
+        memset( & coerce(send_tmx), 0, sizeof(send_tmx) );
+        memset( & coerce(recv_tmx), 0, sizeof(recv_tmx) );
+    }
+
     mpi:: mpi() :
     singleton<mpi>(),
     rank(0),
@@ -49,6 +55,8 @@ namespace yack {
     replica(false),
     threading(0),
     name(),
+    send_tmx(),
+    recv_tmx(),
     native()
     {
         if(NULL==__mpi_argc || NULL==__mpi_argv) throw yack::exception("%s: need to call mpi::Init()",call_sign);
@@ -77,6 +85,8 @@ namespace yack {
 
             // build name
             mpi_build_name(coerce(name), size, rank);
+
+            tmx_init();
 
         }
         catch(...)
