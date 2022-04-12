@@ -23,7 +23,7 @@ namespace yack
     {
         static const uint8_t msg = syn_ack;
         YACK_MPI_TMX_INIT();
-        Send(&msg,1,MPI_BYTE,dst,io_tag);
+        Send(&msg,1,MPI_BYTE,1,dst,io_tag);
         YACK_MPI_TMX_DONE(send,1);
     }
 
@@ -69,7 +69,7 @@ namespace yack
         uint8_t msg = 0x00;
         {
             YACK_MPI_TMX_INIT();
-            Recv(&msg,1,MPI_BYTE,src,io_tag);
+            Recv(&msg,1,MPI_BYTE,1,src,io_tag);
             YACK_MPI_TMX_DONE(recv,1);
         }
         if(syn_ack!=msg) throw yack::exception("%s: invalid SYN/ACK!!",call_sign);

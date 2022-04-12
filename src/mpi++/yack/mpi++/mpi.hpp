@@ -3,11 +3,12 @@
 #ifndef YACK_MPICXX_INCLUDED
 #define YACK_MPICXX_INCLUDED 1
 
-#include "yack/mpi++/data-types.hpp"
+#include "yack/mpi++/data/types.hpp"
 #include "yack/singleton.hpp"
 #include "yack/exception.hpp"
 #include "yack/string.hpp"
 #include "yack/system/wtime.hpp"
+#include "yack/check/printf.hpp"
 
 namespace yack
 {
@@ -118,7 +119,7 @@ __info.bytes += (BYTES)
                   const MPI_Datatype tid,
                   const unsigned     bpi,
                   const int          dst,
-                  const int          tag = io_tag) const;
+                  const int          tag) const;
 
         //! low-level blocking recv on MPI_COMM_WORLD
         void Recv(void              *buf,
@@ -126,7 +127,7 @@ __info.bytes += (BYTES)
                   const MPI_Datatype tid,
                   const unsigned     bpi,
                   const int          src,
-                  const int          tag = io_tag) const;
+                  const int          tag) const;
 
 
         void SYN(const int dst) const; //!< send syn_ack
@@ -137,7 +138,7 @@ __info.bytes += (BYTES)
         void Send(const T     *arr,
                   const size_t num,
                   const int    dst,
-                  const int    tag = io_tag) const
+                  const int    tag) const
         {
             static const __mpi::data_type mdt = DataType( rtti::use(typeid(T)) );
             Send(arr,num,mdt.info,mdt.size,dst,tag);
@@ -158,7 +159,7 @@ __info.bytes += (BYTES)
         template <typename T> inline
         void Send(const T   &obj,
                   const int  dst,
-                  const int  tag = io_tag) const
+                  const int  tag) const
         {
             Send<T>(&obj,1,dst,tag);
         }
@@ -167,14 +168,18 @@ __info.bytes += (BYTES)
         //! default type receiving
         template <typename T> inline
         T Recv(const int src,
-               const int tag = io_tag) const
+               const int tag) const
         {
             T res(0);
-            Recv(&res,1,src,tag);
+            Recv<T>(&res,1,src,tag);
             return res;
         }
 
-
+        //______________________________________________________________________
+        //
+        //! printf on primary
+        //______________________________________________________________________
+        void Printf(FILE *,const char *fmt,...) const YACK_PRINTF_CHECK(3,4);
 
         //______________________________________________________________________
         //
