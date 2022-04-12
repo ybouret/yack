@@ -3,44 +3,16 @@
 #ifndef YACK_MPICXX_DATA_TYPES_INCLUDED
 #define YACK_MPICXX_DATA_TYPES_INCLUDED 1
 
-
+#include "yack/mpi++/data/type.hpp"
 #include "yack/system/rtti.hpp"
 #include "yack/data/suffix/tree.hpp"
 
-#define OMPI_SKIP_MPICXX 1 //!< helper for OpenMPI
-#include <mpi.h>
 
 namespace yack
 {
 
     namespace __mpi
     {
-
-        //______________________________________________________________________
-        //
-        //! wrapper for type+sizeof
-        //______________________________________________________________________
-        class data_type
-        {
-        public:
-            //__________________________________________________________________
-            //
-            // C++
-            //__________________________________________________________________
-            data_type(const MPI_Datatype, const unsigned) throw(); //!< setup
-            ~data_type()                                  throw(); //!< cleanup
-            data_type(const data_type &)                  throw(); //!< copy
-
-            //__________________________________________________________________
-            //
-            // members
-            //__________________________________________________________________
-            const MPI_Datatype info; //!< uuid
-            const unsigned     size; //!< sizeof
-            
-        private:
-            YACK_DISABLE_ASSIGN(data_type);
-        };
 
         //______________________________________________________________________
         //
