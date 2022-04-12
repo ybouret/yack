@@ -48,7 +48,7 @@ namespace yack
         //! base type for database
         //
         //______________________________________________________________________
-        typedef kernel::suffix_tree<data_type,uint8_t> data_type_tree;
+        typedef kernel::suffix_tree<const data_type,uint8_t> data_type_tree;
 
         //______________________________________________________________________
         //
