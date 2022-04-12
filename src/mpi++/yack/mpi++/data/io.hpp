@@ -14,12 +14,11 @@ namespace yack
 
     namespace __mpi
     {
+        //! I/O for data
         class data_io : public object
         {
         public:
-            virtual ~data_io() throw();
-
-            virtual void send(const mpi &, const void *addr) const;
+            virtual ~data_io() throw(); //!< cleanup
 
         protected:
 

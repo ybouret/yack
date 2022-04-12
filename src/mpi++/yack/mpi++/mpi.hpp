@@ -18,8 +18,16 @@ namespace yack
     //__________________________________________________________________________
 #define YACK_MPI_CALL(CODE) do { const int ret = CODE; if(MPI_SUCCESS!=ret) throw mpi::exception(ret,"in %s",#CODE); } while(false)
 
+    //__________________________________________________________________________
+    //
+    //! initialize local timing
+    //__________________________________________________________________________
 #define YACK_MPI_TMX_INIT()  const uint64_t __mark = wtime::ticks()
 
+    //__________________________________________________________________________
+    //
+    //! register local timing and send/recv bytes
+    //__________________________________________________________________________
 #define YACK_MPI_TMX_DONE(which,BYTES)           \
 const uint64_t __done = wtime::ticks() - __mark; \
 tmx &          __info = coerce(which##_tmx);     \
@@ -44,12 +52,11 @@ __info.bytes += (BYTES)
         static const int                io_tag    = 0x07; //!< default IO tag
         static const uint8_t            syn_ack   = 0xff; //!< syn/ack byte
 
+        //! timings structure
         struct tmx {
-            uint64_t ticks;
-            uint64_t bytes;
+            uint64_t ticks; //!< ellapsed  ticks
+            uint64_t bytes; //!< processed bytes
         };
-
-        static unsigned data_size(const MPI_Datatype);
 
 
         //______________________________________________________________________
@@ -90,13 +97,13 @@ __info.bytes += (BYTES)
         //
         // type -> MPI_Datatype
         //______________________________________________________________________
-        MPI_Datatype DataType(const rtti &) const; //!< get matching datatype
+        const __mpi::data_type & DataType(const rtti &) const; //!< get matching datatype
 
         //! helper to get matching datatype
         template <typename T> inline
-        MPI_Datatype DataType() const
+        const __mpi::data_type &DataType() const
         {
-            static const MPI_Datatype res = DataType( rtti::use(typeid(T)) );
+            static const __mpi::data_type &res = DataType( rtti::use(typeid(T)) );
             return res;
         }
 
@@ -109,6 +116,7 @@ __info.bytes += (BYTES)
         void Send(const void        *buf,
                   const size_t       num,
                   const MPI_Datatype tid,
+                  const unsigned     bpi,
                   const int          dst,
                   const int          tag = io_tag) const;
 
@@ -116,6 +124,7 @@ __info.bytes += (BYTES)
         void Recv(void              *buf,
                   const size_t       num,
                   const MPI_Datatype tid,
+                  const unsigned     bpi,
                   const int          src,
                   const int          tag = io_tag) const;
 
@@ -130,8 +139,8 @@ __info.bytes += (BYTES)
                   const int    dst,
                   const int    tag = io_tag) const
         {
-            static const MPI_Datatype mdt = DataType( rtti::use(typeid(T)) );
-            Send(arr,num,mdt,dst,tag);
+            static const __mpi::data_type mdt = DataType( rtti::use(typeid(T)) );
+            Send(arr,num,mdt.info,mdt.size,dst,tag);
         }
 
         //! low-level sending of integral types
@@ -141,8 +150,8 @@ __info.bytes += (BYTES)
                   const int    src,
                   const int    tag = io_tag) const
         {
-            static const MPI_Datatype mdt = DataType( rtti::use(typeid(T)) );
-            Recv((void*)arr,num,mdt,src,tag);
+            static const __mpi::data_type mdt = DataType( rtti::use(typeid(T)) );
+            Recv((void*)arr,num,mdt.info,mdt.size,src,tag);
         }
 
         //! default type sending
@@ -175,7 +184,7 @@ __info.bytes += (BYTES)
         void replica_wait() const; //!< ACK(0)
         void replica_done() const; //!< SYN(0)
 
-        void tmx_init() throw();
+        void tmx_init() throw();   //!< reset timings
 
         //______________________________________________________________________
         //
@@ -187,8 +196,8 @@ __info.bytes += (BYTES)
         const bool   replica;      //!< 0!=rank
         const int    threading;    //!< MPI Thread Level
         const string name;         //!< size.rank
-        const tmx    send_tmx;
-        const tmx    recv_tmx;
+        const tmx    send_tmx;     //!< send timings
+        const tmx    recv_tmx;     //!< recv timings
         
     private:
         YACK_DISABLE_COPY_AND_ASSIGN(mpi);

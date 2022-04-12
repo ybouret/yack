@@ -2,6 +2,7 @@
 #include "yack/type/temporary.hpp"
 #include "yack/associative/be-addr.hpp"
 #include "yack/arith/base10.hpp"
+#include <cstring>
 
 namespace yack {
     
@@ -35,7 +36,6 @@ namespace yack {
             assert(rank<size);
             const unsigned digits = digits_for(size);
             const string   fmt    = vformat("%%%ud.%%0%ud",digits,digits);
-            //std::cerr << "fmt='" << fmt << "'" << std::endl;
             name = vformat(fmt(),size,rank);
         }
     }
@@ -96,7 +96,7 @@ namespace yack {
         }
     }
 
-    MPI_Datatype mpi:: DataType(const rtti &tid) const
+    const __mpi::data_type &mpi:: DataType(const rtti &tid) const
     {
         return native(tid);
     }

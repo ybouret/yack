@@ -9,6 +9,25 @@ namespace yack
     namespace __mpi
     {
 
+        data_type:: data_type(const MPI_Datatype t, const unsigned n) throw() :
+        info(t),
+        size(n)
+        {
+        }
+
+        data_type:: ~data_type() throw()
+        {
+            coerce(info) = MPI_DATATYPE_NULL;
+            coerce(size) = 0;
+        }
+
+        data_type:: data_type(const data_type &other) throw() :
+        info(other.info),
+        size(other.size)
+        {
+        }
+        
+
         data_types:: data_types() : data_type_tree()
         {
             data_types &self = *this;
@@ -56,23 +75,25 @@ namespace yack
         }
 
         void data_types:: make(const rtti        &tid,
-                               const MPI_Datatype mdt)
+                               const MPI_Datatype mdt,
+                               const unsigned     bpi)
         {
             const be_address key(tid);
-            (void) insert(mdt,key.begin(),key.measure());
+            const data_type  obj(mdt,bpi);
+            (void) insert(obj,key.begin(),key.measure());
         }
 
 
-        const MPI_Datatype * data_types:: query(const rtti &tid) const throw()
+        const data_type * data_types:: query(const rtti &tid) const throw()
         {
             const be_address key(tid);
             return search(key.begin(),key.measure());
         }
 
 
-        MPI_Datatype data_types:: operator()(const rtti &tid) const
+        const data_type &data_types:: operator()(const rtti &tid) const
         {
-            const MPI_Datatype *ptr = query(tid);
+            const data_type *ptr = query(tid);
             if(!ptr)
             {
                 const string &name = tid.name();

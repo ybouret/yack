@@ -242,7 +242,7 @@ namespace yack
             writable<double>  &psi = Psi[ei];
             Xi[ei] = eq.solve1D(Ki,Corg,Ci);
             eq.drvs_action(psi,Ki,Ci,Ctmp);
-            if( sorted::rms2(psi,Ctmp) <= 0)
+            if( sorted::mod2(psi,Ctmp) <= 0)
             {
                 blocked[ei] = true;
                 Xi[ei]      = 0;

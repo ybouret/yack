@@ -84,6 +84,7 @@ namespace yack
             return res;
         }
 
+        //! dot product
         template <typename ARR,typename BRR,typename XRR> inline static
         typename ARR::mutable_type dot(ARR &arr, BRR &brr, XRR &xrr)
         {
@@ -93,8 +94,9 @@ namespace yack
             return sum(xrr,by_abs_value);
         }
 
+        //! mod2
         template <typename ARR, typename XRR> inline static
-        typename ARR::mutable_type rms2(ARR &arr, XRR &xrr)
+        typename ARR::mutable_type mod2(ARR &arr, XRR &xrr)
         {
             assert(xrr.size()==arr.size());
             const size_t n = arr.size();
@@ -106,7 +108,7 @@ namespace yack
                     break;
             }
             for(size_t i=n;i>0;--i) xrr[i] = squared(arr[i]);
-            return  ( sum(xrr,by_value)/n );
+            return sum(xrr,by_value);
 
         }
 
