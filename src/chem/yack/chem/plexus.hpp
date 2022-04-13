@@ -102,6 +102,7 @@ namespace yack
             tableau           &Xi;      //!< [N] Xi
             tableau           &Gs;      //!< [N] scaling factor
             tableau           &xd;      //!< [N] extra diag
+            tableau           &score;   //!< [N] about |Gamma|^2
 
             tableau          &Corg;    //!< [M] working space
             tableau          &Ctmp;    //!< [M] temporary C

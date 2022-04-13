@@ -42,6 +42,7 @@ namespace yack
         Xi(    ntab.next() ),
         Gs(    ntab.next() ),
         xd(    ntab.next() ),
+        score( ntab.next() ),
 
         Corg(  mtab.next() ),
         Ctmp(  mtab.next() ),

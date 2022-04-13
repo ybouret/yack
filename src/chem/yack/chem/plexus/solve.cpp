@@ -213,6 +213,99 @@ namespace yack
                     break;
             }
 
+            vector<equilibrium *> eptr(N,as_capacity);
+            vector<double>        note(N,as_capacity);
+            vector<size_t>        indx(N,as_capacity);
+
+            eptr.free();
+            for(const enode *node=eqs.head();node;node=node->next)
+            {
+                eptr << & coerce(***node);
+            }
+
+            double g0 = rmsGamma(Corg);
+            std::cerr << "g0=" << g0 << std::endl;
+            while(eptr.size())
+            {
+                const size_t dof = eptr.size();
+                note.adjust(dof,0);
+                indx.adjust(dof,0);
+                for(size_t i=dof;i>0;--i)
+                {
+                    const equilibrium &eq = *eptr[i];
+                    const size_t       ei  = *eq;
+                    const double       Ki  = K[ei];
+                    writable<double>  &Ci  = Ceq[ei];
+                    const double       xx  = eq.solve1D(Ki,Corg,Ci);
+                    if(fabs(xx)>0)
+                    {
+                        transfer(Cend,Ci);
+                        triplet<double> x = { 0, -1, 1 };
+                        triplet<double> g = { g0, -1, rmsGamma(Cend) };
+                        (void) minimize::find<double>::run_for(*this,x,g,minimize::inside);
+                        note[i] = g.b;
+                        eqs.pad(std::cerr << "\tg_" << eq.name,eq) << " = " << std::setw(14) << g.b << " @" << x.b << std::endl;
+                        transfer(Ci,Ctry);
+                    }
+                    else
+                    {
+                        eqs.pad(std::cerr << "\t  " << eq.name,eq) << " is steady" << std::endl;
+                        note[i] = g0;
+                    }
+                }
+                indexing::make(indx,comparison::increasing<double>,note);
+
+
+                const size_t       i1 =  indx[1];
+                const double       g1 =  note[i1];
+                const equilibrium &eq = *eptr[i1];
+                if(g1>=g0)
+                {
+                    std::cerr << "cannot make better!!" << std::endl;
+                    break;
+                }
+                std::cerr << "[[ Moving " << eq.name << " ]]" << std::endl;
+                transfer(Corg,Ceq[*eq]);
+                g0 = g1;
+                eptr.suppress(i1);
+            }
+
+            std::cerr << "g1=" << g0 << std::endl;
+            lib(std::cerr<<vpfx<<"Corg=",Corg,vpfx);
+
+
+            // correction
+            for(const enode *node=eqs.head();node;node=node->next)
+            {
+                const equilibrium &eq  = ***node;
+                const size_t       ei  = *eq;
+                const double       Ki  = K[ei];
+                writable<double>  &psi = Psi[ei];
+                writable<double>  &Ci  = Ceq[ei];
+                Xi[ei] = eq.solve1D(Ki,Corg,Ci);
+                eq.drvs_action(psi,Ki,Ci,Ctmp);
+                if( tao::v1::mod2<double>::of(psi) <= 0)
+                {
+                    Xi[ei]      = 0;
+                    blocked[ei] = true;
+                }
+                else
+                {
+                    blocked[ei] = false;
+                }
+            }
+
+            eqs(std::cerr<<vpfx<<"Xi_c    = ",Xi,vpfx);
+            
+
+
+            exit(1);
+
+
+
+
+#if 0
+
             vector<size_t>       ix(N,0);
             vector<equilibrium*> en(N,NULL);
 
@@ -312,6 +405,7 @@ namespace yack
 
 
             exit(1);
+#endif
 
 #if 0
 
