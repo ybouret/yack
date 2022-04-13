@@ -24,6 +24,12 @@ namespace yack
             return (*db.tree).head;
         }
 
+        const equilibrium & equilibria:: operator[](const size_t indx) const throw()
+        {
+            return ***((*db.tree).get(indx));
+        }
+
+
         equilibrium & equilibria:: use( equilibrium *eq )
         {
             assert(NULL!=eq);

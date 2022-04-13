@@ -127,8 +127,8 @@ namespace yack
             computeGamma(C);
             for(size_t i=N;i>0;--i)
             {
-                //xs[i] = squared(Gamma[i]/Gs[i]);
-                xs[i] = squared(Gamma[i]);
+                xs[i] = squared(Gamma[i]*Gs[i]);
+                //xs[i] = squared(Gamma[i]);
             }
             return sorted::sum(xs,sorted::by_value) / N;
         }
@@ -213,224 +213,119 @@ namespace yack
                     break;
             }
 
-            vector<equilibrium *> eptr(N,as_capacity);
-            vector<double>        note(N,as_capacity);
-            vector<size_t>        indx(N,as_capacity);
+            vector<bool> used(N,false);
 
-            eptr.free();
-            for(const enode *node=eqs.head();node;node=node->next)
-            {
-                eptr << & coerce(***node);
-            }
+            size_t cycle=0;
+        CYCLE:
+            ++cycle;
 
-            double g0 = rmsGamma(Corg);
-            std::cerr << "g0=" << g0 << std::endl;
-            while(eptr.size())
+            used.ld(false);
+            ustack.adjust(N,0);
+            while(true)
             {
-                const size_t dof = eptr.size();
-                note.adjust(dof,0);
-                indx.adjust(dof,0);
-                for(size_t i=dof;i>0;--i)
+                //--------------------------------------------------------------
+                //
+                // build local metrics
+                //
+                //--------------------------------------------------------------
+                for(const enode *node=eqs.head();node;node=node->next)
                 {
-                    const equilibrium &eq = *eptr[i];
+                    const equilibrium &eq  = ***node;
                     const size_t       ei  = *eq;
                     const double       Ki  = K[ei];
+                    writable<double>  &psi = Psi[ei];
                     writable<double>  &Ci  = Ceq[ei];
-                    const double       xx  = eq.solve1D(Ki,Corg,Ci);
-                    if(fabs(xx)>0)
+                    Xi[ei] = eq.solve1D(Ki,Corg,Ci);
+                    eq.drvs_action(psi,Ki,Ci,Ctmp);
+                    const double den = xd[ei] = sorted::dot(psi,Nu[ei],Ctmp); assert(den<=0);
+                    if( fabs(den) <= 0)
                     {
-                        transfer(Cend,Ci);
-                        triplet<double> x = { 0, -1, 1 };
-                        triplet<double> g = { g0, -1, rmsGamma(Cend) };
-                        (void) minimize::find<double>::run_for(*this,x,g,minimize::inside);
-                        note[i] = g.b;
-                        eqs.pad(std::cerr << "\tg_" << eq.name,eq) << " = " << std::setw(14) << g.b << " @" << x.b << std::endl;
-                        transfer(Ci,Ctry);
-                    }
-                    else
-                    {
-                        eqs.pad(std::cerr << "\t  " << eq.name,eq) << " is steady" << std::endl;
-                        note[i] = g0;
-                    }
-                }
-                indexing::make(indx,comparison::increasing<double>,note);
-
-
-                const size_t       i1 =  indx[1];
-                const double       g1 =  note[i1];
-                const equilibrium &eq = *eptr[i1];
-                if(g1>=g0)
-                {
-                    std::cerr << "cannot make better!!" << std::endl;
-                    break;
-                }
-                std::cerr << "[[ Moving " << eq.name << " ]]" << std::endl;
-                transfer(Corg,Ceq[*eq]);
-                g0 = g1;
-                eptr.suppress(i1);
-            }
-
-            std::cerr << "g1=" << g0 << std::endl;
-            lib(std::cerr<<vpfx<<"Corg=",Corg,vpfx);
-
-
-            // correction
-            for(const enode *node=eqs.head();node;node=node->next)
-            {
-                const equilibrium &eq  = ***node;
-                const size_t       ei  = *eq;
-                const double       Ki  = K[ei];
-                writable<double>  &psi = Psi[ei];
-                writable<double>  &Ci  = Ceq[ei];
-                Xi[ei] = eq.solve1D(Ki,Corg,Ci);
-                eq.drvs_action(psi,Ki,Ci,Ctmp);
-                if( tao::v1::mod2<double>::of(psi) <= 0)
-                {
-                    Xi[ei]      = 0;
-                    blocked[ei] = true;
-                }
-                else
-                {
-                    blocked[ei] = false;
-                }
-            }
-
-            eqs(std::cerr<<vpfx<<"Xi_c    = ",Xi,vpfx);
-            
-
-
-            exit(1);
-
-
-
-
-#if 0
-
-            vector<size_t>       ix(N,0);
-            vector<equilibrium*> en(N,NULL);
-
-            size_t cycle=0;
-        CYCLE:
-            ++cycle;
-            double g0 = rmsGamma(Corg);
-
-            for(const enode *node=eqs.head();node;node=node->next)
-            {
-                const equilibrium &eq  = ***node;
-                const size_t       ei  = *eq;
-                const double       Ki  = K[ei];
-                writable<double>  &psi = Psi[ei];
-                writable<double>  &Ci  = Ceq[ei];
-                Xi[ei] = eq.solve1D(Ki,Corg,Ci);
-                eq.drvs_action(psi,Ki,Ci,Ctmp);
-                en[ei] = (equilibrium *)&eq;
-                if( tao::v1::mod2<double>::of(psi) <= 0)
-                {
-                    Xi[ei]      = 0;
-                    xd[ei]      = g0;
-                    std::cerr << eq.name << " is blocked" << std::endl;
-                }
-                else
-                {
-                    if(fabs(Xi[ei])>0)
-                    {
-                        transfer(Cend,Ci);
-                        triplet<double> x = { 0, -1, 1 };
-                        triplet<double> g = { g0, -1, rmsGamma(Cend) };
-                        (void) minimize::find<double>::run_for(*this,x,g,minimize::inside);
-                        xd[ei] = g.b;
-                        eqs.pad(std::cerr << "g_" << eq.name,eq) << " = " << std::setw(14) << g.b << " @" << x.b << std::endl;
-                        transfer(Ci,Ctry);
-                    }
-                    else
-                    {
-                        xd[ei] = g0;
-                        std::cerr << eq.name << " is steady" << std::endl;
-                    }
-                }
-
-            }
-
-            eqs(std::cerr<<vpfx<<"blocked = ",blocked,vpfx);
-            eqs(std::cerr<<vpfx<<"Xi_p    = ",Xi,vpfx);
-            eqs(std::cerr<<vpfx<<"g       = ",xd,vpfx);
-            std::cerr << "g0=" << g0 << std::endl;
-
-            indexing::make(ix,comparison::increasing<double>,xd);
-            {
-                const size_t        ii = ix[1];
-                const equilibrium  &eq = *en[ii];
-                std::cerr << "[[ Moving " << eq.name << " ]]" << std::endl;
-                transfer(Corg,Ceq[ii]);
-                const double g1 = xd[ii];
-                if(g1>=g0)
-                {
-                    std::cerr << "BAD!!" << std::endl;
-                    exit(1);
-                }
-                g0 = g1;
-            }
-
-            if(cycle>=10)
-            {
-                exit(1);
-            }
-
-            goto CYCLE;
-
-
-            // correction
-            for(const enode *node=eqs.head();node;node=node->next)
-            {
-                const equilibrium &eq  = ***node;
-                const size_t       ei  = *eq;
-                const double       Ki  = K[ei];
-                writable<double>  &psi = Psi[ei];
-                writable<double>  &Ci  = Ceq[ei];
-                Xi[ei] = eq.solve1D(Ki,Corg,Ci);
-                eq.drvs_action(psi,Ki,Ci,Ctmp);
-                if( tao::v1::mod2<double>::of(psi) <= 0)
-                {
-                    Xi[ei]      = 0;
-                    blocked[ei] = true;
-                }
-                else
-                {
-                    blocked[ei] = false;
-                }
-            }
-
-            eqs(std::cerr<<vpfx<<"Xi_c    = ",Xi,vpfx);
-
-
-
-            exit(1);
-#endif
-
-#if 0
-
-            size_t cycle=0;
-            ios::ocstream::echo("rms.dat","%.15g %.15g\n", double(cycle), rmsGamma(Corg));
-        CYCLE:
-            ++cycle;
-            //  regularizing
-            for(const enode *node=eqs.head();node;node=node->next)
-            {
-                const equilibrium &eq  = ***node;
-                const size_t       ei  = *eq;
-                const double       Ki  = K[ei];
-                writable<double>  &psi = Psi[ei];
-                eq.drvs_action(psi,Ki,Corg,Ctmp);
-                if( tao::v1::mod2<double>::of(psi) <= 0)
-                {
-                    std::cerr << "trying to move " << eq.name << std::endl;
-                    eq.solve1D(Ki,Corg,Cend);
-                    transfer(Corg,Cend);
-                    eq.drvs_action(psi,Ki,Corg,Ctmp);
-                    if( tao::v1::mod2<double>::of(psi) <= 0)
-                    {
+                        Xi[ei]      = 0;
                         blocked[ei] = true;
+                        Gs[ei]      = 0;
                     }
+                    else
+                    {
+                        blocked[ei] = false;
+                        Gs[ei]      = fabs(1.0/den);
+                    }
+                }
+
+                //--------------------------------------------------------------
+                //
+                // try moving along main axis
+                //
+                //--------------------------------------------------------------
+                eqs(std::cerr<<vpfx<<"Xi     = ",Xi,vpfx);
+                eqs(std::cerr<<vpfx<<"Psi    = ",Psi,vpfx);
+                eqs(std::cerr<<vpfx<<"Gs     = ",Gs,vpfx);
+
+                const double g0 = rmsGamma(Corg);
+                std::cerr << "g0=" << g0 << std::endl;
+
+                for(const enode *node=eqs.head();node;node=node->next)
+                {
+                    const equilibrium &eq  = ***node;
+                    const size_t       ei  = *eq;
+                    writable<double>  &Ci  = Ceq[ei];
+                    if(blocked[ei]||used[ei])
+                    {
+                        score[ei] = g0;
+                    }
+                    else
+                    {
+                        transfer(Cend,Ci);
+                        triplet<double> x = { 0,-1, 1 };
+                        triplet<double> g = { g0,-1,rmsGamma(Cend) };
+                        if(g.c>=g0)
+                        {
+                            // backtrack
+                            (void) minimize::find<double>::run_for(*this,x,g,minimize::inside);
+                            score[ei] = g.b;
+                            transfer(Ci,Ctry);
+                        }
+                        else
+                        {
+                            // accept => Xi=0
+                            score[ei] = g.c;
+                        }
+                    }
+                }
+
+
+
+                eqs(std::cerr << vpfx << "score=", score, vpfx);
+                indexing::make(ustack, comparison::increasing<double>, score);
+                const size_t i1 = ustack[1];
+                const double g1 = score[i1];
+
+                if(g1>=g0)
+                {
+                    std::cerr << "Cannot Make Better..." << std::endl;
+                    break; // local topology is computed
+                }
+
+                std::cerr << "[[ moving <" << eqs[i1].name << "> ]]" << std::endl;
+                transfer(Corg,Ceq[i1]);
+                used[i1] = true;
+            }
+            lib(std::cerr << vpfx << "Corg =",Corg,vpfx);
+            eqs(std::cerr<<vpfx<<"Xi     = ",Xi,vpfx);
+            eqs(std::cerr<<vpfx<<"Psi    = ",Psi,vpfx);
+
+
+            for(const enode *node=eqs.head();node;node=node->next)
+            {
+                const equilibrium       &eq  = ***node;
+                const size_t             ei  = *eq;
+                //writable<double>        &Omi = Omega0[ei];
+                const double             Ki  = K[ei];
+                writable<double>        &psi = Psi[ei];
+                Gamma[ei] = eq.grad_action(psi, Ki, Corg, Ctmp);
+                if( tao::v1::mod2<double>::of(psi) <= 0)
+                {
+                    blocked[ei] = true;
+                    Gamma[ei]   = 0;
                 }
                 else
                 {
@@ -438,53 +333,39 @@ namespace yack
                 }
             }
 
-            eqs(std::cerr<<vpfx<<"blocked = ",blocked,vpfx);
-
-            // recomputing
-            for(const enode *node=eqs.head();node;node=node->next)
+            for(size_t i=N;i>0;--i)
             {
-                const equilibrium &eq  = ***node;
-                const size_t       ei  = *eq;
-                writable<double>  &psi = Psi[ei];
-                writable<double>  &Omi = Omega0[ei];
-
-                if(blocked[ei])
+                writable<double> &Omi = Omega0[i];
+                if(blocked[i])
                 {
-                    Omi.ld(0.0);
-                    Omi[ei]   = 1.0;
-                    Gamma[ei] = 0.0;
+                    Omi.ld(0);
+                    Omi[i] = 1.0;
                 }
                 else
                 {
-                    Gamma[ei] = eq.grad_action(psi,K[ei],Corg,Ctmp);
-                    for(size_t k=N;k>0;--k)
-                    {
-                        Omi[k] = -sorted::dot(psi,Nu[k],Ctmp);
-                    }
+                    const readable<double> &psi    = Psi[i];
+                    for(size_t k=N;k>0;--k) Omi[k] = -sorted::dot(psi,Nu[k],Ctmp);
                 }
+
+                Gs[i] = 1.0;
             }
-            std::cerr << "Gamma=" << Gamma << std::endl;
-            std::cerr << "Psi  =" << Psi   << std::endl;
 
+            std::cerr << "Gamma=" << Gamma  << std::endl;
 
-            //------------------------------------------------------------------
-            //
-            // Evaluate extent
-            //
-            //------------------------------------------------------------------
         EVAL_XI:
             std::cerr << "Omega=" << Omega0 << std::endl;
             iOmega.assign(Omega0);
             if(!LU.build(iOmega))
             {
-                YACK_CHEM_PRINTLN("// <plexus.solve/> [singluar]");
+                std::cerr << "Singular..." << std::endl;
                 return false;
             }
 
             tao::v1::set(xi,Gamma);
             LU.solve(iOmega,xi);
 
-            eqs(std::cerr<<vpfx<<"xi=",xi,vpfx);
+            eqs(std::cerr<<vpfx<<"xi     = ",xi,vpfx);
+
 
             //------------------------------------------------------------------
             //
@@ -518,6 +399,10 @@ namespace yack
                     goto EVAL_XI;
                 }
             }
+
+
+
+
 
             //------------------------------------------------------------------
             //
@@ -642,14 +527,13 @@ namespace yack
             transfer(Corg,Ctry);
             lib(std::cerr<<vpfx<<"Corg=",Corg,vpfx);
 
-            if(cycle>=20)
+            if(cycle>=100)
             {
                 exit(1);
             }
             goto CYCLE;
 
 
-#endif
 
             YACK_CHEM_PRINTLN("// <plexus.solve/> [success]");
             return true;
