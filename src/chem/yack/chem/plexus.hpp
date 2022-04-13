@@ -127,20 +127,8 @@ namespace yack
             const lockable::scope lib_lock;
             const lockable::scope eqs_lock;
 
-            //! regularize with precomputed K
-            /**
-             - check Psi and best effort move, setting blocked if necessary
-             */
-            void regularize() throw();
-
             
-            //! from a computed xi
-            bool primaryCut() throw();
 
-            //! from a valid dC
-            bool compute_dC() throw();
-
-            void update(const enode *) throw();
         };
 
     }

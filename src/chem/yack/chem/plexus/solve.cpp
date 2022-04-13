@@ -26,98 +26,7 @@ namespace yack
 
         const char plexus::vpfx[] = "//   ";
 
-        void plexus:: regularize() throw()
-        {
-            //------------------------------------------------------------------
-            //
-            // initialize
-            //
-            //------------------------------------------------------------------
-            YACK_CHEM_PRINTLN("//   <plexus.regularize>");
-            blocked.ld(false);
-
-            //------------------------------------------------------------------
-            //
-            // check each equilibrium
-            //
-            //------------------------------------------------------------------
-            for(const enode *node=eqs.head();node;node=node->next)
-            {
-                const equilibrium &eq  = ***node;
-                const size_t       ei  = *eq;
-                const double       Ki  = K[ei];
-                writable<double>  &psi = Psi[ei];
-
-                //--------------------------------------------------------------
-                // first try
-                //--------------------------------------------------------------
-                eq.drvs_action(psi,Ki,Corg,Ctmp);
-                if( tao::v1::mod2<double>::of(psi) <= 0)
-                {
-                    //----------------------------------------------------------
-                    // move to a safer and still valid place
-                    //----------------------------------------------------------
-                    (void) eq.solve1D(Ki,Corg,Ctry);
-                    transfer(Corg,Ctry);
-                    
-                    //----------------------------------------------------------
-                    // second try
-                    //----------------------------------------------------------
-                    eq.drvs_action(psi,Ki,Corg,Ctmp);
-                    if( tao::v1::mod2<double>::of(psi) <= 0 )
-                    {
-                        blocked[ei] = true;
-                    }
-                }
-            }
-
-            if(verbose)
-            {
-                lib(std::cerr << vpfx << "Creg    = ",Corg,vpfx);
-                eqs(std::cerr << vpfx << "blocked = ",blocked,vpfx);
-            }
-
-            //------------------------------------------------------------------
-            //
-            //
-            //
-            //------------------------------------------------------------------
-            YACK_CHEM_PRINTLN("//   <plexus.regularize/>");
-        }
-        
-
-        bool plexus:: primaryCut() throw()
-        {
-            if(MP)
-            {
-                YACK_CHEM_PRINTLN("//   <plexus.primaryCut>");
-                bool changed = false;
-                for(const enode *node=eqs.head();node;node=node->next)
-                {
-                    const equilibrium &eq  = ***node;
-                    const size_t       ei  = *eq;      if(blocked[ei]) continue;
-                    const limits      &lm  =  eq.primary_limits(Corg,lib.width);
-
-                    if(limited_by_none!=lm.type)
-                        eqs.pad(std::cerr << vpfx << " <" << eq.name << ">",eq) << " : " << lm << std::endl;
-
-                    if(lm.should_reduce(xi[ei]))
-                    {
-                        Omega0[ei][ei] *= 10;
-                        changed = true;
-                        YACK_CHEM_PRINTLN(vpfx<<" (*) reducing <" << eq.name << ">");
-                    }
-                }
-                YACK_CHEM_PRINTLN("//   <plexus.primaryCut/> [changed=" << changed << "]");
-                return changed;
-            }
-            else
-            {
-                // no primary species
-                return false;
-            }
-        }
-
+#if 0
         bool plexus:: compute_dC() throw()
         {
             YACK_CHEM_PRINTLN("//   <plexus.computeDeltaC>");
@@ -210,6 +119,7 @@ namespace yack
                 return true;
             }
         }
+#endif
 
         
         double plexus:: rmsGamma(const readable<double> &C) throw()
@@ -233,6 +143,7 @@ namespace yack
             return rmsGamma(Ctry);
         }
 
+#if 0
         void plexus:: update(const enode *node) throw()
         {
             const equilibrium &eq  = ***node;
@@ -252,6 +163,7 @@ namespace yack
                 blocked[ei] = false;
             }
         }
+#endif
 
         bool plexus:: solve(writable<double> &C0) throw()
         {
@@ -305,12 +217,12 @@ namespace yack
             vector<size_t>  ix(N,0);
 
             size_t cycle = 0;
-            //CYCLE:
+        CYCLE:
             ++cycle;
 
             //------------------------------------------------------------------
             //
-            // predictor global step
+            // compute global full metrics
             //
             //------------------------------------------------------------------
             for(const enode *node=eqs.head();node;node=node->next)
@@ -336,34 +248,50 @@ namespace yack
             }
             eqs(std::cerr<<vpfx<<"Xi=",Xi,vpfx);
 
-            const double g0 = rmsGamma(Corg);
-            std::cerr << "g0=" << g0 << std::endl;
+            const double rms0 = sqrt( sorted::mod2(Xi,xs)/N );
+            ios::ocstream::echo("rms.dat","%.15g %.15g\n",double(cycle),rms0);
 
-            for(const enode *node=eqs.head();node;node=node->next)
+            if(rms0<=0)
             {
-                const equilibrium &eq  = ***node;
-                const size_t       ei  = *eq;
-                if(blocked[ei])
-                {
-                    xd[ei] = g0;
-                    continue;
-                }
-                else
-                {
-                    writable<double>  &Ci  = Ceq[ei];
-                    triplet<double>    x = { 0,  -1, 1 };
-                    triplet<double>    g = { g0, -1, rmsGamma(Ci) };
-                    transfer(Cend,Ci);
-                    minimize::find<double>::run_for(*this,x,g,minimize::inside);
-                    eqs.pad(std::cerr << "g_" << eq.name,eq) << " = " << std::setw(14) << g.b << " = g(" << x.b << ")" << std::endl;
-                    en[ei]    = (enode *)node;
-                    xd[ei]    = g.b;
-                    transfer(Ci,Ctry);
-                }
+                goto SUCCESS;
             }
-            eqs(std::cerr<<vpfx<<"Gopt=",xd,vpfx);
-            indexing::make(ix,comparison::increasing<double>,xd);
-            std::cerr << "ix=" << ix << std::endl;
+
+
+            //------------------------------------------------------------------
+            //
+            // Find a decrease
+            //
+            //------------------------------------------------------------------
+            {
+                const double g0 = rmsGamma(Corg);
+                std::cerr << "g0=" << g0 << std::endl;
+
+                for(const enode *node=eqs.head();node;node=node->next)
+                {
+                    const equilibrium &eq  = ***node;
+                    const size_t       ei  = *eq;
+                    if(blocked[ei])
+                    {
+                        xd[ei] = g0;
+                        continue;
+                    }
+                    else
+                    {
+                        writable<double>  &Ci  = Ceq[ei];
+                        triplet<double>    x = { 0,  -1, 1 };
+                        triplet<double>    g = { g0, -1, rmsGamma(Ci) };
+                        transfer(Cend,Ci);
+                        minimize::find<double>::run_for(*this,x,g,minimize::inside);
+                        eqs.pad(std::cerr << "g_" << eq.name,eq) << " = " << std::setw(14) << g.b << " = g(" << x.b << ")" << std::endl;
+                        en[ei]    = (enode *)node;
+                        xd[ei]    = g.b;
+                        transfer(Ci,Ctry);
+                    }
+                }
+                eqs(std::cerr<<vpfx<<"Gopt=",xd,vpfx);
+                indexing::make(ix,comparison::increasing<double>,xd);
+                std::cerr << "ix=" << ix << std::endl;
+            }
 
 
             {
@@ -378,33 +306,12 @@ namespace yack
                 const size_t       ei = *eq;
                 std::cerr << "moving " << eq.name << std::endl;
                 transfer(Corg,Ceq[ei]);
-                Xi[ei] = 0;
-                writable<double> &psi = Psi[ei];
-                eq.drvs_action(psi,K[ei],Corg,Ctmp);
-                if( tao::v1::mod2<double>::of(psi) <= 0)
-                {
-                    blocked[ei] = true;
-                }
-
-                //--------------------------------------------------------------
-                //
-                // updating other ones
-                //
-                //--------------------------------------------------------------
-                for(const enode *node=ep->prev;node;node=node->prev) update(node);
-                for(const enode *node=ep->next;node;node=node->next) update(node);
             }
 
-            lib(std::cerr<<vpfx<<"C_p=",Corg,vpfx);
-            eqs(std::cerr<<vpfx<<"Xi_c=",Xi,vpfx);
-            eqs(std::cerr<<vpfx<<"blocked=",blocked,vpfx);
 
-            exit(1);
-
-#if 0
             //------------------------------------------------------------------
             //
-            // predictor global step
+            // corrector local step
             //
             //------------------------------------------------------------------
             for(const enode *node=eqs.head();node;node=node->next)
@@ -413,41 +320,34 @@ namespace yack
                 const size_t       ei  = *eq;
                 const double       Ki  = K[ei];
                 writable<double>  &Ci  = Ceq[ei];
+                writable<double>  &psi = Psi[ei];
                 Xi[ei]    = eq.solve1D(Ki,Corg,Ci);
-                en[ei]    = (enode *)node;
-            }
-
-            const double rms = sorted::mod2(Xi,xs) / N;
-            ios::ocstream::echo("rms.dat", "%g %.15g\n", double(cycle), rms);
-
-            indexing::make(ix,comparison::decreasing_abs<double>,Xi);
-            eqs(std::cerr<<vpfx<<"Xi_p=",Xi,vpfx);
-            std::cerr << "ix=" << ix << std::endl;
-
-            {
-                // updating chosen
-                const size_t       ii = ix[1];
-                const enode       *ep = en[ii];
-                const equilibrium &eq = ***ep;
-                const size_t       ei = *eq;
-                std::cerr << "moving " << eq.name << std::endl;
-                transfer(Corg,Ceq[ei]);
-                Xi[ei] = 0;
-                writable<double> &psi = Psi[ei];
-                eq.drvs_action(psi,K[ei],Corg,Ctmp);
+                eq.drvs_action(psi,Ki,Ci,Ctmp);
                 if( tao::v1::mod2<double>::of(psi) <= 0)
                 {
                     blocked[ei] = true;
+                    Xi[ei]      = 0;
+                    Gs[ei]      = 1.0;
                 }
-
-                // updating other ones
-                for(const enode *node=ep->prev;node;node=node->prev) update(node);
-                for(const enode *node=ep->next;node;node=node->next) update(node);
+                else
+                {
+                    blocked[ei] = false;
+                    Gs[ei]      = sorted::dot(psi,Nu[ei],Ctmp); assert(Gs[ei]<0);
+                }
             }
 
-            lib(std::cerr<<vpfx<<"C_p=",Corg,vpfx);
-            eqs(std::cerr<<vpfx<<"Xi_c=",Xi,vpfx);
-            eqs(std::cerr<<vpfx<<"blocked=",blocked,vpfx);
+
+            lib(std::cerr<<vpfx<<"C_p     = ",Corg,vpfx);
+            eqs(std::cerr<<vpfx<<"Xi_c    = ",Xi,vpfx);
+            eqs(std::cerr<<vpfx<<"Psi     = ",Psi,vpfx);
+            eqs(std::cerr<<vpfx<<"blocked = ",blocked,vpfx);
+
+            {
+                const double rms1 = sqrt( sorted::mod2(Xi,xs)/N );
+                ios::ocstream::echo("rms.dat","%.15g %.15g\n",double(cycle)+0.5,rms1);
+
+                std::cerr << "\t\t rms: " << rms0 << " / " << rms1 << std::endl;
+            }
 
             //------------------------------------------------------------------
             //
@@ -462,43 +362,43 @@ namespace yack
                 {
                     Omi.ld(0);
                     Omi[i] = 1.0;
-                    Gs[i]  = 1.0;
                     xd[i]  = 0;
                 }
                 else
                 {
-                    const double den = sorted::dot(psi,Nu[i],Ctmp); assert(den<0);
+                    const double den = Gs[i]; assert(den<0);
                     Omi[i] = 1.0;
-                    Gs[i]  = fabs(den);
                     xm[i]  = 0;
                     for(size_t k=N;k>i;--k)   xm[k] = fabs( Omi[k] = sorted::dot(psi,Nu[k],Ctmp)/den );
                     for(size_t k=i-1;k>0;--k) xm[k] = fabs( Omi[k] = sorted::dot(psi,Nu[k],Ctmp)/den );
                     xd[i] = sorted::sum(xm,sorted::by_value);
                 }
             }
-            eqs(std::cerr<<vpfx<<"Omega=",Omega0,vpfx);
-            eqs(std::cerr<<vpfx<<"Extra=",xd,vpfx);
+            eqs(std::cerr<<vpfx<<"Omega = ",Omega0,vpfx);
+            eqs(std::cerr<<vpfx<<"Extra = ",xd,vpfx);
 
+            //------------------------------------------------------------------
+            //
+            // Regularize Omega0
+            //
+            //------------------------------------------------------------------
+            for(size_t i=N;i>0;--i)
             {
-                double wmax = 1;
-                for(size_t i=N;i>0;--i)
+                const double xvalue = XSAFE * xd[i];
+                if(xvalue>=1)
                 {
-                    const double xtra = XSAFE * xd[i];
-                    if(xtra>=1)
-                    {
-                        wmax = max_of( Omega0[i][i] = timings::round_ceil(xtra), wmax );
-                    }
+                    Omega0[i][i] = timings::round_ceil(xvalue);
                 }
-                std::cerr << "wmax=" << wmax << std::endl;
-                for(size_t i=N;i>0;--i)
-                {
-                    Omega0[i][i] = wmax;
-                }
+                assert( Omega0[i][i] > xd[i] );
             }
 
-
-            std::cerr << "Omega=" << Omega0 << std::endl;
+            //------------------------------------------------------------------
+            //
+            // Evaluate extent
+            //
+            //------------------------------------------------------------------
         EVAL_XI:
+            std::cerr << "Omega0=" << Omega0 << std::endl;
             iOmega.assign(Omega0);
             if(!LU.build(iOmega))
             {
@@ -511,6 +411,11 @@ namespace yack
 
             eqs(std::cerr<<vpfx<<"xi=",xi,vpfx);
 
+            //------------------------------------------------------------------
+            //
+            // primary cut
+            //
+            //------------------------------------------------------------------
             if(MP)
             {
                 YACK_CHEM_PRINTLN("//   <plexus.primaryCut>");
@@ -528,59 +433,85 @@ namespace yack
                     {
                         changed = true;
                         YACK_CHEM_PRINTLN(vpfx<<" (*) need to reduce <" << eq.name << ">");
+                        Omega0[ei][ei] *= 10;
                     }
                 }
                 YACK_CHEM_PRINTLN("//   <plexus.primaryCut/> [changed=" << changed << "]");
 
                 if(changed)
                 {
-                    for(size_t i=N;i>0;--i)
-                    {
-                        Omega0[i][i] *= 2;
-                    }
                     goto EVAL_XI;
                 }
             }
 
-
+            //------------------------------------------------------------------
+            //
+            // compute and check all delta C
+            //
+            //------------------------------------------------------------------
+            YACK_CHEM_PRINTLN("//   <plexus.computeDeltaC>");
+            rstack.free();
+            ustack.free();
+            for(const anode *node=active.head;node;node=node->next)
             {
-                YACK_CHEM_PRINTLN("//   <plexus.computeDeltaC>");
-
-                rstack.free();
-                ustack.free();
-                for(const anode *node=active.head;node;node=node->next)
+                const species &s = **node;
+                const size_t   j = *s;
+                const double   d = dC[j] = sorted::dot(xi,NuT[j],xs);
+                if(d<0)
                 {
-                    const species &s = **node;
-                    const size_t   j = *s;
-                    const double   d = dC[j] = sorted::dot(xi,NuT[j],xs);
-                    if(d<0)
+                    const double c = Corg[j]; assert(c>=0);
+                    if(d<=-c)
                     {
-                        const double c = Corg[j]; assert(c>=0);
-                        if(d<=-c)
+                        YACK_CHEM_PRINTLN(vpfx<< "  (*) overshoot for " << s.name);
+                        rstack << c/(-d);
+                        ustack << j;
+                    }
+                }
+            }
+
+            if(rstack.size())
+            {
+                //--------------------------------------------------------------
+                //
+                // set factor for all implied equilibria modifying the species
+                //
+                //--------------------------------------------------------------
+                std::cerr << "rstack=" << rstack << std::endl;
+                std::cerr << "ustack=" << ustack << std::endl;
+                xs.ld(1);
+                while(ustack.size())
+                {
+                    const size_t          j = ustack.pop_back_value();
+                    const readable<int> &nu = NuT[j];
+                    for(size_t i=N;i>0;--i)
+                    {
+                        if(0!=nu[i])
                         {
-                            YACK_CHEM_PRINTLN(vpfx<< "  (*) overshoot for " << s.name);
-                            rstack << c/(-d);
-                            ustack << j;
+                            xs[i] = 10;
                         }
                     }
                 }
+                if(verbose) eqs(std::cerr << vpfx << "xs=",xs,vpfx);
 
-                std::cerr << "rstack=" << rstack << std::endl;
-                YACK_CHEM_PRINTLN("//   <plexus.computeDeltaC>");
-                if(rstack.size())
-                {
-                    for(size_t i=N;i>0;--i)
-                    {
-                        Omega0[i][i] *= 2;
-                    }
-                    goto EVAL_XI;
-                }
+                //--------------------------------------------------------------
+                //
+                // apply factors
+                //
+                //--------------------------------------------------------------
+                for(size_t i=N;i>0;--i) Omega0[i][i] *= xs[i];
+
+                YACK_CHEM_PRINTLN("//   <plexus.computeDeltaC/> [cut]");
+                goto EVAL_XI;
             }
+            YACK_CHEM_PRINTLN("//   <plexus.computeDeltaC/> [ok!]");
 
-            lib(std::cerr<<vpfx<<"dC=",dC,vpfx);
-
-            double expand = 1;
+            //------------------------------------------------------------------
+            //
+            // compute max amplification
+            //
+            //------------------------------------------------------------------
             {
+                double expand = 1;
                 rstack.free();
                 for(const anode *node=active.head;node;node=node->next)
                 {
@@ -589,48 +520,54 @@ namespace yack
                     const double   d = dC[j];
                     if(d<0)
                     {
-                        const double c = Corg[j]; assert(c>=0);
-                        assert(-d<=c);
+                        const double c = Corg[j]; assert(c/(-d)>=1);
                         rstack << c/(-d);
                     }
                 }
-                hsort(rstack,comparison::increasing<double>);
-                while(rstack.size()>1) rstack.pop_back();
-                std::cerr << "expand=" << rstack << std::endl;
-                if(rstack.size()) expand = rstack.front();
-            }
-
-
-            const double g0 = rmsGamma(Corg);
-            std::cerr << "g0=" << g0 << std::endl;
-            triplet<double> x = {  0, -1, expand };
-            triplet<double> g = { g0, -1, (*this)(x.c) };
-            std::cerr << "g1=" << g.c << std::endl;
-
-            if(true)
-            {
-                ios::ocstream fp("gam.dat");
-                const size_t NP = 1000;
-                for(size_t i=0;i<=NP;++i)
+                if(rstack.size())
                 {
-                    const double u = (x.c*i)/NP;
-                    fp("%.15g %.15g\n",u,(*this)(u));
+                    hsort(rstack,comparison::increasing<double>);
+                    std::cerr << "rstack=" << rstack << std::endl;
+                    const double xmax = rstack.front();
+                    expand = 1.0 + 0.9*(xmax-1.0);
+                }
+                std::cerr << "expand=" << expand << std::endl;
+
+                for(const anode *node=active.head;node;node=node->next)
+                {
+                    const species &s = **node;
+                    const size_t   j = *s;
+                    Cend[j] = Corg[j] + expand * dC[j];
+                }
+
+                if(true)
+                {
+                    ios::ocstream fp("gam.dat");
+                    const size_t NP = 1000;
+                    for(size_t i=0;i<=NP;++i)
+                    {
+                        const double u = double(i)/NP;
+                        fp("%.15g %.15g\n", u, (*this)(u));
+                    }
+                }
+
+                {
+                    const double    g0 = rmsGamma(Corg);
+                    triplet<double> x = { 0, -1,1 };
+                    triplet<double> g = { g0,-1,rmsGamma(Cend) };
+                    (void) minimize::find<double>::run_for(*this,x,g,minimize::inside);
+                    const double g1 = g.b;
+                    std::cerr << "@cycle" << cycle << " : g = " << g0 << " -> " << g1 << std::endl;
                 }
             }
 
-            minimize::find<double>::run_for(*this,x,g,minimize::inside);
-            std::cerr << "g(" << x.b << ")=" << g.b << std::endl;
+            if(cycle>=20)
+                exit(1);
 
             transfer(Corg,Ctry);
-            if(cycle>=30)
-            {
-                exit(1);
-            }
             goto CYCLE;
 
-
-#endif
-
+        SUCCESS:
             YACK_CHEM_PRINTLN("// <plexus.solve/> [success]");
             return true;
         }
