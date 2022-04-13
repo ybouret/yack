@@ -127,7 +127,8 @@ namespace yack
             computeGamma(C);
             for(size_t i=N;i>0;--i)
             {
-                xs[i] = squared(Gamma[i]/Gs[i]);
+                //xs[i] = squared(Gamma[i]/Gs[i]);
+                xs[i] = squared(Gamma[i]);
             }
             return sorted::sum(xs,sorted::by_value) / N;
         }
@@ -169,7 +170,6 @@ namespace yack
         {
             assert(C0.size()>=M);
             assert(are_valid(C0));
-            static const double XSAFE = 1.1;
 
             //------------------------------------------------------------------
             //
@@ -213,8 +213,248 @@ namespace yack
                     break;
             }
 
+            size_t cycle=0;
+            ios::ocstream::echo("rms.dat","%.15g %.15g\n", double(cycle), rmsGamma(Corg));
+        CYCLE:
+            ++cycle;
+            //  regularizing
+            for(const enode *node=eqs.head();node;node=node->next)
+            {
+                const equilibrium &eq  = ***node;
+                const size_t       ei  = *eq;
+                const double       Ki  = K[ei];
+                writable<double>  &psi = Psi[ei];
+                eq.drvs_action(psi,Ki,Corg,Ctmp);
+                if( tao::v1::mod2<double>::of(psi) <= 0)
+                {
+                    std::cerr << "trying to move " << eq.name << std::endl;
+                    eq.solve1D(Ki,Corg,Cend);
+                    transfer(Corg,Cend);
+                    eq.drvs_action(psi,Ki,Corg,Ctmp);
+                    if( tao::v1::mod2<double>::of(psi) <= 0)
+                    {
+                        blocked[ei] = true;
+                    }
+                }
+                else
+                {
+                    blocked[ei] = false;
+                }
+            }
 
-            exit(1);
+            eqs(std::cerr<<vpfx<<"blocked = ",blocked,vpfx);
+
+            // recomputing
+            for(const enode *node=eqs.head();node;node=node->next)
+            {
+                const equilibrium &eq  = ***node;
+                const size_t       ei  = *eq;
+                writable<double>  &psi = Psi[ei];
+                writable<double>  &Omi = Omega0[ei];
+
+                if(blocked[ei])
+                {
+                    Omi.ld(0.0);
+                    Omi[ei]   = 1.0;
+                    Gamma[ei] = 0.0;
+                }
+                else
+                {
+                    Gamma[ei] = eq.grad_action(psi,K[ei],Corg,Ctmp);
+                    for(size_t k=N;k>0;--k)
+                    {
+                        Omi[k] = -sorted::dot(psi,Nu[k],Ctmp);
+                    }
+                }
+            }
+            std::cerr << "Gamma=" << Gamma << std::endl;
+            std::cerr << "Psi  =" << Psi   << std::endl;
+
+
+            //------------------------------------------------------------------
+            //
+            // Evaluate extent
+            //
+            //------------------------------------------------------------------
+        EVAL_XI:
+            std::cerr << "Omega=" << Omega0 << std::endl;
+            iOmega.assign(Omega0);
+            if(!LU.build(iOmega))
+            {
+                YACK_CHEM_PRINTLN("// <plexus.solve/> [singluar]");
+                return false;
+            }
+
+            tao::v1::set(xi,Gamma);
+            LU.solve(iOmega,xi);
+
+            eqs(std::cerr<<vpfx<<"xi=",xi,vpfx);
+
+            //------------------------------------------------------------------
+            //
+            // primary cut
+            //
+            //------------------------------------------------------------------
+            if(MP)
+            {
+                YACK_CHEM_PRINTLN("//   <plexus.primaryCut>");
+                bool changed = false;
+                for(const enode *node=eqs.head();node;node=node->next)
+                {
+                    const equilibrium &eq  = ***node;
+                    const size_t       ei  = *eq;      if(blocked[ei]) continue;
+                    const limits      &lm  =  eq.primary_limits(Corg,lib.width);
+
+                    if(limited_by_none!=lm.type)
+                        eqs.pad(std::cerr << vpfx << " <" << eq.name << ">",eq) << " : " << lm << std::endl;
+
+                    if(lm.should_reduce(xi[ei]))
+                    {
+                        changed = true;
+                        YACK_CHEM_PRINTLN(vpfx<<" (*) need to reduce <" << eq.name << ">");
+                        Omega0[ei][ei] *= 10;
+                    }
+                }
+                YACK_CHEM_PRINTLN("//   <plexus.primaryCut/> [changed=" << changed << "]");
+
+                if(changed)
+                {
+                    goto EVAL_XI;
+                }
+            }
+
+            //------------------------------------------------------------------
+            //
+            // compute and check all delta C
+            //
+            //------------------------------------------------------------------
+            YACK_CHEM_PRINTLN("//   <plexus.computeDeltaC>");
+            rstack.free();
+            ustack.free();
+            for(const anode *node=active.head;node;node=node->next)
+            {
+                const species &s = **node;
+                const size_t   j = *s;
+                const double   d = dC[j] = sorted::dot(xi,NuT[j],xs);
+                if(d<0)
+                {
+                    const double c = Corg[j]; assert(c>=0);
+                    if(d<=-c)
+                    {
+                        YACK_CHEM_PRINTLN(vpfx<< "  (*) overshoot for " << s.name);
+                        rstack << c/(-d);
+                        ustack << j;
+                    }
+                }
+            }
+
+            if(rstack.size())
+            {
+                //--------------------------------------------------------------
+                //
+                // set factor for all implied equilibria modifying the species
+                //
+                //--------------------------------------------------------------
+                std::cerr << "rstack=" << rstack << std::endl;
+                std::cerr << "ustack=" << ustack << std::endl;
+                xs.ld(1);
+                while(ustack.size())
+                {
+                    const size_t          j = ustack.pop_back_value();
+                    const readable<int> &nu = NuT[j];
+                    for(size_t i=N;i>0;--i)
+                    {
+                        if(0!=nu[i])
+                        {
+                            xs[i] = 10;
+                        }
+                    }
+                }
+                if(verbose) eqs(std::cerr << vpfx << "xs=",xs,vpfx);
+
+                //--------------------------------------------------------------
+                //
+                // apply factors
+                //
+                //--------------------------------------------------------------
+                for(size_t i=N;i>0;--i) Omega0[i][i] *= xs[i];
+
+                YACK_CHEM_PRINTLN("//   <plexus.computeDeltaC/> [cut]");
+                goto EVAL_XI;
+            }
+            YACK_CHEM_PRINTLN("//   <plexus.computeDeltaC/> [ok!]");
+
+            //------------------------------------------------------------------
+            //
+            // compute max amplification
+            //
+            //------------------------------------------------------------------
+            {
+                double expand = 1;
+                rstack.free();
+                for(const anode *node=active.head;node;node=node->next)
+                {
+                    const species &s = **node;
+                    const size_t   j = *s;
+                    const double   d = dC[j];
+                    if(d<0)
+                    {
+                        const double c = Corg[j]; assert(c/(-d)>=1);
+                        rstack << c/(-d);
+                    }
+                }
+                if(rstack.size())
+                {
+                    hsort(rstack,comparison::increasing<double>);
+                    std::cerr << "rstack=" << rstack << std::endl;
+                    const double xmax = rstack.front();
+                    expand = min_of(1.0 + 0.9*(xmax-1.0),100.0);
+                }
+                std::cerr << "expand=" << expand << std::endl;
+
+                for(const anode *node=active.head;node;node=node->next)
+                {
+                    const species &s = **node;
+                    const size_t   j = *s;
+                    Cend[j] = Corg[j] + expand * dC[j];
+                }
+
+                if(true)
+                {
+                    ios::ocstream fp("gam.dat");
+                    const size_t NP = 1000;
+                    for(size_t i=0;i<=NP;++i)
+                    {
+                        const double u = double(i)/NP;
+                        fp("%.15g %.15g\n", u, (*this)(u));
+                    }
+                }
+
+                {
+                    const double    g0 = rmsGamma(Corg);
+                    triplet<double> x = { 0, -1,1 };
+                    triplet<double> g = { g0,-1,rmsGamma(Cend) };
+                    (void) minimize::find<double>::run_for(*this,x,g,minimize::inside);
+                    const double g1 = g.b;
+                    std::cerr << "@cycle" << cycle << " : g = " << g0 << " -> " << g1 << std::endl;
+                    ios::ocstream::echo("rms.dat","%.15g %.15g\n", double(cycle), g1);
+                }
+            }
+
+
+
+            transfer(Corg,Ctry);
+            lib(std::cerr<<vpfx<<"Corg=",Corg,vpfx);
+
+            if(cycle>=3)
+            {
+                exit(1);
+            }
+            goto CYCLE;
+
+
+
+
 
 #if 0
             size_t cycle = 0;
