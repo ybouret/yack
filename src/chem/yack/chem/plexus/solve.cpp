@@ -213,9 +213,10 @@ namespace yack
                     break;
             }
 
-            vector<enode *> en(N,NULL);
-            vector<size_t>  ix(N,0);
 
+            exit(1);
+
+#if 0
             size_t cycle = 0;
         CYCLE:
             ++cycle;
@@ -246,108 +247,14 @@ namespace yack
                     Gs[ei]      = sorted::dot(psi,Nu[ei],Ctmp); assert(Gs[ei]<0);
                 }
             }
-            eqs(std::cerr<<vpfx<<"Xi=",Xi,vpfx);
-
-            const double rms0 = sqrt( sorted::mod2(Xi,xs)/N );
-            ios::ocstream::echo("rms.dat","%.15g %.15g\n",double(cycle),rms0);
-
-            if(rms0<=0)
-            {
-                goto SUCCESS;
-            }
-
-
-            //------------------------------------------------------------------
-            //
-            // Find a decrease
-            //
-            //------------------------------------------------------------------
-            {
-                const double g0 = rmsGamma(Corg);
-                std::cerr << "g0=" << g0 << std::endl;
-
-                for(const enode *node=eqs.head();node;node=node->next)
-                {
-                    const equilibrium &eq  = ***node;
-                    const size_t       ei  = *eq;
-                    if(blocked[ei])
-                    {
-                        xd[ei] = g0;
-                        continue;
-                    }
-                    else
-                    {
-                        writable<double>  &Ci  = Ceq[ei];
-                        triplet<double>    x = { 0,  -1, 1 };
-                        triplet<double>    g = { g0, -1, rmsGamma(Ci) };
-                        transfer(Cend,Ci);
-                        minimize::find<double>::run_for(*this,x,g,minimize::inside);
-                        eqs.pad(std::cerr << "g_" << eq.name,eq) << " = " << std::setw(14) << g.b << " = g(" << x.b << ")" << std::endl;
-                        en[ei]    = (enode *)node;
-                        xd[ei]    = g.b;
-                        transfer(Ci,Ctry);
-                    }
-                }
-                eqs(std::cerr<<vpfx<<"Gopt=",xd,vpfx);
-                indexing::make(ix,comparison::increasing<double>,xd);
-                std::cerr << "ix=" << ix << std::endl;
-            }
-
-
-            {
-                //--------------------------------------------------------------
-                //
-                // updating chosen
-                //
-                //--------------------------------------------------------------
-                const size_t       ii = ix[1];
-                const enode       *ep = en[ii];
-                const equilibrium &eq = ***ep;
-                const size_t       ei = *eq;
-                std::cerr << "moving " << eq.name << std::endl;
-                transfer(Corg,Ceq[ei]);
-            }
-
-
-            //------------------------------------------------------------------
-            //
-            // corrector local step
-            //
-            //------------------------------------------------------------------
-            for(const enode *node=eqs.head();node;node=node->next)
-            {
-                const equilibrium &eq  = ***node;
-                const size_t       ei  = *eq;
-                const double       Ki  = K[ei];
-                writable<double>  &Ci  = Ceq[ei];
-                writable<double>  &psi = Psi[ei];
-                Xi[ei]    = eq.solve1D(Ki,Corg,Ci);
-                eq.drvs_action(psi,Ki,Ci,Ctmp);
-                if( tao::v1::mod2<double>::of(psi) <= 0)
-                {
-                    blocked[ei] = true;
-                    Xi[ei]      = 0;
-                    Gs[ei]      = 1.0;
-                }
-                else
-                {
-                    blocked[ei] = false;
-                    Gs[ei]      = sorted::dot(psi,Nu[ei],Ctmp); assert(Gs[ei]<0);
-                }
-            }
-
-
-            lib(std::cerr<<vpfx<<"C_p     = ",Corg,vpfx);
-            eqs(std::cerr<<vpfx<<"Xi_c    = ",Xi,vpfx);
+            eqs(std::cerr<<vpfx<<"Xi      = ",Xi,vpfx);
             eqs(std::cerr<<vpfx<<"Psi     = ",Psi,vpfx);
             eqs(std::cerr<<vpfx<<"blocked = ",blocked,vpfx);
 
             {
-                const double rms1 = sqrt( sorted::mod2(Xi,xs)/N );
-                ios::ocstream::echo("rms.dat","%.15g %.15g\n",double(cycle)+0.5,rms1);
-
-                std::cerr << "\t\t rms: " << rms0 << " / " << rms1 << std::endl;
-            }
+                const double rms = sqrt( sorted::mod2(Xi,xs)/N );
+                ios::ocstream::echo("rms.dat","%.15g %.15g\n",double(cycle),rms);
+             }
 
             //------------------------------------------------------------------
             //
@@ -376,6 +283,7 @@ namespace yack
             }
             eqs(std::cerr<<vpfx<<"Omega = ",Omega0,vpfx);
             eqs(std::cerr<<vpfx<<"Extra = ",xd,vpfx);
+
 
             //------------------------------------------------------------------
             //
@@ -529,7 +437,7 @@ namespace yack
                     hsort(rstack,comparison::increasing<double>);
                     std::cerr << "rstack=" << rstack << std::endl;
                     const double xmax = rstack.front();
-                    expand = 1.0 + 0.9*(xmax-1.0);
+                    expand = min_of(1.0 + 0.9*(xmax-1.0),100.0);
                 }
                 std::cerr << "expand=" << expand << std::endl;
 
@@ -561,13 +469,19 @@ namespace yack
                 }
             }
 
-            if(cycle>=20)
-                exit(1);
+
 
             transfer(Corg,Ctry);
+            lib(std::cerr<<vpfx<<"Corg=",Corg,vpfx);
+
+            if(cycle>=30)
+                exit(1);
+
             goto CYCLE;
 
         SUCCESS:
+#endif
+
             YACK_CHEM_PRINTLN("// <plexus.solve/> [success]");
             return true;
         }
