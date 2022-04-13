@@ -367,7 +367,11 @@ namespace yack
 
 
             {
+                //--------------------------------------------------------------
+                //
                 // updating chosen
+                //
+                //--------------------------------------------------------------
                 const size_t       ii = ix[1];
                 const enode       *ep = en[ii];
                 const equilibrium &eq = ***ep;
@@ -382,7 +386,11 @@ namespace yack
                     blocked[ei] = true;
                 }
 
+                //--------------------------------------------------------------
+                //
                 // updating other ones
+                //
+                //--------------------------------------------------------------
                 for(const enode *node=ep->prev;node;node=node->prev) update(node);
                 for(const enode *node=ep->next;node;node=node->next) update(node);
             }

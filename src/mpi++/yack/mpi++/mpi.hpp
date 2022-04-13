@@ -4,6 +4,7 @@
 #define YACK_MPICXX_INCLUDED 1
 
 #include "yack/mpi++/data/types.hpp"
+#include "yack/mpi++/data/io.hpp"
 #include "yack/singleton.hpp"
 #include "yack/exception.hpp"
 #include "yack/string.hpp"
