@@ -227,8 +227,8 @@ namespace yack
             for(const anode *node=active.head;node;node=node->next)
             {
                 const size_t   j = ***node;
-                Ctry[j] = max_of(Corg[j] + u * dC[j],0.0);
-                //Ctry[j] = max_of( (1.0-u) * Corg[j] + u * Cend[j], 0.0 );
+                //Ctry[j] = max_of(Corg[j] + u * dC[j],0.0);
+                Ctry[j] = max_of( (1.0-u) * Corg[j] + u * Cend[j], 0.0 );
             }
             return rmsGamma(Ctry);
         }
@@ -295,18 +295,105 @@ namespace yack
                     //----------------------------------------------------------
                     for(size_t j=M;j>0;--j)
                     {
-                        Corg[j] = Ctry[j] = C0[j];
+                        Corg[j] = Ctry[j] = Cend[j] = C0[j];
                         dC[j]   = 0;
                     }
                     break;
             }
 
+            vector<enode *> en(N,NULL);
             vector<size_t>  ix(N,0);
-            vector<enode *> en(N,0);
 
             size_t cycle = 0;
-        CYCLE:
+            //CYCLE:
             ++cycle;
+
+            //------------------------------------------------------------------
+            //
+            // predictor global step
+            //
+            //------------------------------------------------------------------
+            for(const enode *node=eqs.head();node;node=node->next)
+            {
+                const equilibrium &eq  = ***node;
+                const size_t       ei  = *eq;
+                const double       Ki  = K[ei];
+                writable<double>  &Ci  = Ceq[ei];
+                writable<double>  &psi = Psi[ei];
+                Xi[ei]    = eq.solve1D(Ki,Corg,Ci);
+                eq.drvs_action(psi,Ki,Ci,Ctmp);
+                if( tao::v1::mod2<double>::of(psi) <= 0)
+                {
+                    blocked[ei] = true;
+                    Xi[ei]      = 0;
+                    Gs[ei]      = 1.0;
+                }
+                else
+                {
+                    blocked[ei] = false;
+                    Gs[ei]      = sorted::dot(psi,Nu[ei],Ctmp); assert(Gs[ei]<0);
+                }
+            }
+            eqs(std::cerr<<vpfx<<"Xi=",Xi,vpfx);
+
+            const double g0 = rmsGamma(Corg);
+            std::cerr << "g0=" << g0 << std::endl;
+
+            for(const enode *node=eqs.head();node;node=node->next)
+            {
+                const equilibrium &eq  = ***node;
+                const size_t       ei  = *eq;
+                if(blocked[ei])
+                {
+                    xd[ei] = g0;
+                    continue;
+                }
+                else
+                {
+                    writable<double>  &Ci  = Ceq[ei];
+                    triplet<double>    x = { 0,  -1, 1 };
+                    triplet<double>    g = { g0, -1, rmsGamma(Ci) };
+                    transfer(Cend,Ci);
+                    minimize::find<double>::run_for(*this,x,g,minimize::inside);
+                    eqs.pad(std::cerr << "g_" << eq.name,eq) << " = " << std::setw(14) << g.b << " = g(" << x.b << ")" << std::endl;
+                    en[ei]    = (enode *)node;
+                    xd[ei]    = g.b;
+                    transfer(Ci,Ctry);
+                }
+            }
+            eqs(std::cerr<<vpfx<<"Gopt=",xd,vpfx);
+            indexing::make(ix,comparison::increasing<double>,xd);
+            std::cerr << "ix=" << ix << std::endl;
+
+
+            {
+                // updating chosen
+                const size_t       ii = ix[1];
+                const enode       *ep = en[ii];
+                const equilibrium &eq = ***ep;
+                const size_t       ei = *eq;
+                std::cerr << "moving " << eq.name << std::endl;
+                transfer(Corg,Ceq[ei]);
+                Xi[ei] = 0;
+                writable<double> &psi = Psi[ei];
+                eq.drvs_action(psi,K[ei],Corg,Ctmp);
+                if( tao::v1::mod2<double>::of(psi) <= 0)
+                {
+                    blocked[ei] = true;
+                }
+
+                // updating other ones
+                for(const enode *node=ep->prev;node;node=node->prev) update(node);
+                for(const enode *node=ep->next;node;node=node->next) update(node);
+            }
+
+            lib(std::cerr<<vpfx<<"C_p=",Corg,vpfx);
+            eqs(std::cerr<<vpfx<<"Xi_c=",Xi,vpfx);
+            eqs(std::cerr<<vpfx<<"blocked=",blocked,vpfx);
+
+            exit(1);
+
+#if 0
             //------------------------------------------------------------------
             //
             // predictor global step
@@ -534,6 +621,7 @@ namespace yack
             goto CYCLE;
 
 
+#endif
 
             YACK_CHEM_PRINTLN("// <plexus.solve/> [success]");
             return true;
