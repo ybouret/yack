@@ -189,6 +189,7 @@ namespace yack
                     YACK_CHEM_PRINTLN("// <plexus.solve/> [empty]");
                     return true;
 
+#if 0
                 case 1: {
                     //----------------------------------------------------------
                     // trivial case
@@ -199,7 +200,7 @@ namespace yack
                 }
                     YACK_CHEM_PRINTLN("// <plexus.solve/> [1D]");
                     return true;
-
+#endif
 
                 default:
                     //----------------------------------------------------------
@@ -212,6 +213,25 @@ namespace yack
                     }
                     break;
             }
+
+            rmatrix H(M,M);
+            for(const enode *node=eqs.head();node;node=node->next)
+            {
+                const equilibrium &eq  = ***node;
+                const size_t       ei  = *eq;
+                const double       Ki  = K[ei];
+                writable<double>  &psi = Psi[ei];
+                eq.drvs_action(psi, Ki, Corg, Ctmp);
+                eq.hessian(H, Ki, Corg, Ctmp);
+                std::cerr << "Nu_"  << eq.name << " = " << Nu[ei]  << std::endl;
+                std::cerr << "Psi_" << eq.name << " = " << Psi[ei] << std::endl;
+                std::cerr << "H_"   << eq.name << " = " << H       << std::endl;
+                std::cerr << "G_"    << eq.name << " = " << eq.mass_action(Ki,Corg) << std::endl;
+            }
+
+            std::cerr << "Nu=" << Nu << std::endl;
+
+            exit(1);
 
             vector<bool> used(N,false);
 

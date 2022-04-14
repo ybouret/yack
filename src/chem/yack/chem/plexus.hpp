@@ -37,7 +37,7 @@ namespace yack
             //__________________________________________________________________
             static const char  clid[];  //!< "chemical::plexus"
             static const bool &verbose; //!< on entity verbose
-            static const char  vpfx[];   //!< prefix for verbosity
+            static const char  vpfx[];  //!< prefix for verbosity
 
             //__________________________________________________________________
             //
