@@ -59,7 +59,7 @@ namespace yack
             return static_cast<const uint8_t *>(endian::BEaddr((void*)&key,sizeof(KEY)));
         }
 
-        inline const uint8_t * walk(const KEY key, size_t &len, const key_variety::legacy_string &) throw()
+        inline const uint8_t * walk(const KEY &key, size_t &len, const key_variety::legacy_string &) throw()
         {
             len = key?0:strlen(key);
             return coerce_cast<uint8_t>(key);
