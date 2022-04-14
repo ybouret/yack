@@ -1,6 +1,7 @@
 #include "yack/mpi++/mpi.hpp"
 #include "yack/utest/run.hpp"
 #include "yack/string.hpp"
+#include <cstdio>
 
 using namespace yack;
 
