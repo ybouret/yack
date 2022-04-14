@@ -46,8 +46,8 @@ namespace yack
 
             //self.in<bool>(MPI_CXX_BOOL);
 
-            (void) self( rtti::use<size_t>()    );
-            (void) self( rtti::use<ptrdiff_t>() );
+            (void) self[ rtti::use<size_t>() ];
+            (void) self[ rtti::use<ptrdiff_t>() ];
 
         }
         
@@ -74,7 +74,7 @@ namespace yack
         }
 
 
-        const data_type &data_types:: operator()(const rtti &tid) const
+        const data_type &data_types:: operator[](const rtti &tid) const
         {
             const data_type *ptr = query(tid);
             if(!ptr)

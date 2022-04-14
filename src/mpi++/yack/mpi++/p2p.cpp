@@ -75,6 +75,7 @@ namespace yack
         if(syn_ack!=msg) throw yack::exception("%s: invalid SYN/ACK!!",call_sign);
     }
 
+#if 0
     template <>
     void mpi:: Send<string>(const string &obj, const int dst, const int tag) const
     {
@@ -101,7 +102,8 @@ namespace yack
             return string();
         }
     }
-
+#endif
+    
 }
 
 

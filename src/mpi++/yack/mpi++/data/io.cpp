@@ -10,18 +10,18 @@ namespace yack
     {
         data_io:: ~data_io() throw() {}
 
-        data_io:: data_io(const rtti &t) throw() :
-        object(),
-        tid(t),
-        bek(tid)
-        {
-        }
 
         const memory::ro_buffer & data_io:: key() const throw()
         {
             return bek;
         }
+
+        data_io:: data_io(const rtti &user_tid) throw() :
+        object(),
+        tid(user_tid),
+        bek(tid)
+        {
+        }
     }
 
 }
-

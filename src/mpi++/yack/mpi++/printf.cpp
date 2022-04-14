@@ -28,14 +28,14 @@ namespace yack
             const int res = vfprintf(fp,fmt,ap);
             va_end(ap);
             if(res<0) throw libc::exception(errno,"%s(...)",fn);
-
+            
             //__________________________________________________________________
             //
             // in order recv/display
             //__________________________________________________________________
             for(int r=1;r<size;++r)
             {
-                const int len = Recv<int>(r,io_tag);
+                const int len = Recv1<int>(r,io_tag);
                 if(len>0)
                 {
                     string  ans(len,as_capacity,true);
@@ -66,7 +66,7 @@ namespace yack
             //
             // send res+message
             //__________________________________________________________________
-            Send(res,0,io_tag);
+            Send1(res,0,io_tag);
 
             if(res>0)
             {

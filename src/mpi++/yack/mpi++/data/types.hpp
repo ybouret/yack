@@ -42,7 +42,7 @@ namespace yack
             //
             // methods
             //__________________________________________________________________
-            const data_type & operator()(const rtti &tid) const; //!< access
+            const data_type & operator[](const rtti &tid) const; //!< access
             const data_type * query(const rtti &) const throw(); //!< query
 
             

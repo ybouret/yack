@@ -4,7 +4,7 @@
 #define YACK_MPICXX_INCLUDED 1
 
 #include "yack/mpi++/data/types.hpp"
-#include "yack/mpi++/data/io.hpp"
+#include "yack/mpi++/data/rs.hpp"
 #include "yack/singleton.hpp"
 #include "yack/exception.hpp"
 #include "yack/string.hpp"
@@ -36,6 +36,8 @@ tmx &          __info = coerce(which##_tmx);     \
 __info.ticks += __done;                          \
 __info.bytes += (BYTES)
 
+
+    
     //__________________________________________________________________________
     //
     //
@@ -150,31 +152,29 @@ __info.bytes += (BYTES)
         void Recv(T           *arr,
                   const size_t num,
                   const int    src,
-                  const int    tag = io_tag) const
+                  const int    tag) const
         {
             static const __mpi::data_type mdt = DataType( rtti::use(typeid(T)) );
             Recv((void*)arr,num,mdt.info,mdt.size,src,tag);
         }
-
-        //! default type sending
+        
+        //! low-level sending of 1 integral type
         template <typename T> inline
-        void Send(const T   &obj,
-                  const int  dst,
-                  const int  tag) const
+        void Send1(const T &obj,const int dst, const int tag) const
         {
-            Send<T>(&obj,1,dst,tag);
+            Send(&obj,1,dst,tag);
         }
 
-
-        //! default type receiving
+        //! low-level recv of 1 integral type
         template <typename T> inline
-        T Recv(const int src,
-               const int tag) const
+        T Recv1(const int src, const int tag) const
         {
             T res(0);
-            Recv<T>(&res,1,src,tag);
+            Recv(&res,1,src,tag);
             return res;
         }
+
+
 
         //______________________________________________________________________
         //
@@ -211,13 +211,9 @@ __info.bytes += (BYTES)
         explicit mpi();
         virtual ~mpi() throw();
         const __mpi::data_types native;
+    public:
+        __mpi::data_rs          cxx; //!< high-level Recv/Send
     };
-
-    //! partial implementation
-    template <> void mpi:: Send<string>(const string &,const int, const int) const;
-
-    //! partial implementation
-    template <> string mpi:: Recv<string>(const int, const int) const;
 
 
     //__________________________________________________________________________

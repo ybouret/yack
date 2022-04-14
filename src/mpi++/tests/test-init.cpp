@@ -24,12 +24,7 @@ YACK_UTEST(init)
 
         MPI.primary_sync();
 
-        str = "Hello, World!";
-        
-        for(int rank=1;rank<MPI.size;++rank)
-        {
-            MPI.Send(str,rank,mpi::io_tag);
-        }
+
     }
     else
     {
@@ -38,8 +33,10 @@ YACK_UTEST(init)
         greet(MPI);
         MPI.replica_done();
 
-        str = MPI.Recv<string>(0,mpi::io_tag);
     }
+
+    MPI_Barrier(MPI_COMM_WORLD);
+
 
     if(MPI.primary)
     {
@@ -54,6 +51,8 @@ YACK_UTEST(init)
         std::cerr.flush();
         MPI.replica_done();
     }
+
+    MPI_Barrier(MPI_COMM_WORLD);
 
     YACK_SYNCHRONIZE(MPI,
                      std::cerr << "@" << MPI.name << std::endl;

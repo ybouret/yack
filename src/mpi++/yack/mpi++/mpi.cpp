@@ -57,7 +57,8 @@ namespace yack {
     name(),
     send_tmx(),
     recv_tmx(),
-    native()
+    native(),
+    cxx(native)
     {
         if(NULL==__mpi_argc || NULL==__mpi_argv) throw yack::exception("%s: need to call mpi::Init()",call_sign);
 
@@ -86,6 +87,8 @@ namespace yack {
             // build name
             mpi_build_name(coerce(name), size, rank);
 
+
+            // initialize
             tmx_init();
 
         }
@@ -98,38 +101,9 @@ namespace yack {
 
     const __mpi::data_type &mpi:: DataType(const rtti &tid) const
     {
-        return native(tid);
+        return native[tid];
     }
 
-    template <typename T>
-    class native_data_io : public __mpi::data_io
-    {
-    public:
-        inline virtual ~native_data_io() throw() {}
-
-        inline explicit native_data_io() :
-        __mpi::data_io( rtti::use<T>() )
-        {
-        }
-
-        virtual void send(mpi &MPI, const void *addr, const int dst, const int tag) const
-        {
-            static const __mpi::data_type mdt = MPI.DataType(tid);
-            assert(addr);
-            MPI.Send(addr,1,mdt.info,mdt.size,dst,tag);
-        }
-
-        virtual void recv(mpi &MPI, void *addr,       const int src, const int tag) const
-        {
-            static const __mpi::data_type mdt = MPI.DataType(tid);
-            assert(addr);
-            MPI.Recv(addr,1,mdt.info,mdt.size,src,tag);
-        }
-
-
-    private:
-        YACK_DISABLE_COPY_AND_ASSIGN(native_data_io);
-    };
-
+  
 
 }
