@@ -221,14 +221,21 @@ namespace yack
                 const size_t       ei  = *eq;
                 const double       Ki  = K[ei];
                 writable<double>  &Ci  = Ceq[ei];
+                writable<double>  &psi = Psi[ei];
                 const double       xx  = eq.solve1D(Ki,Corg,Ci);
+                const double       Gi  = eq.mass_action(Ki,Corg);
+                eq.drvs_action(psi,Ki,Ci,Ctmp);
+                const double       sigma = xx * sorted::dot(psi,Nu[ei], Ctmp);
+                const double       a     = -(sigma+Gi+Gi);
+                const double       b     = Gi + sigma;
                 const size_t       NP  = 100;
                 const string       fn  = "gam_" + eq.name + ".dat";
                 ios::ocstream      fp(fn);
                 for(size_t i=0;i<=NP;++i)
                 {
+                    const double alpha = double(i)/NP;
                     const double u = (i*xx)/NP;
-                    fp("%g %g\n",double(i)/NP,eq.mass_action(Ki,Corg,u));
+                    fp("%g %g %g\n",alpha,eq.mass_action(Ki,Corg,u), Gi + a * alpha + b * alpha * alpha);
                 }
 
             }
