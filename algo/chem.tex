@@ -168,9 +168,19 @@ For any valid concentration $\vec{C}$, we have a set of single solving extents $
 Let's expand:
 
 \begin{equation}
+\Gamma_i(\vec{C} + x \vec{\nu}_i) = \Gamma_i + B_i x + A_i x ^2
+\end{equation}
+
+
+\subsection{Expansion}
+
+For any valid concentration $\vec{C}$, we have a set of single solving extents $\vec{\Xi}$.
+Let's expand:
+
+\begin{equation}
 	\Gamma_i(\vec{C} + x \vec{\delta}_i) \simeq \Gamma_i 
-	+ x \underbrace{\left[ -\Xi_i \langle \vec{\Psi}_i' \vert \vec{\nu}_i \rangle - 2 \Gamma_i \right]}_{a_i}
-	+ x^2 \underbrace{\left[ \Xi_i \langle \vec{\Psi}_i' \vert \vec{\nu}_i \rangle + \Gamma_i\right]}_{b_i}
+	+ x \underbrace{\left[ -\Xi_i \langle \vec{\Psi}_i' \vert \vec{\nu}_i \rangle - 2 \Gamma_i \right]}_{B_i}
+	+ x^2 \underbrace{\left[ \Xi_i \langle \vec{\Psi}_i' \vert \vec{\nu}_i \rangle + \Gamma_i\right]}_{A_i}
 \end{equation}
 
 \begin{equation}
@@ -190,10 +200,19 @@ and we find that the local second order expansion of $\Gamma_i$ is:
 	\simeq
 	\Gamma_i +
 	\left[ 
-	 a_i \, \alpha_i + \sum_{k\not=i} \langle \vec{\Psi}_i \vert \vec{\delta}_k \rangle \alpha_k
+	 B_i \, \alpha_i + \sum_{k\not=i} \langle \vec{\Psi}_i \vert \vec{\delta}_k \rangle \alpha_k
 	\right]
-	+ \left[ b_i \, \alpha_i^2 + \alpha_i \left( \sum_{k\not=i} \langle \delta\vec{\Psi}_i \vert \vec{\delta}_k \rangle \alpha_k \right) \right]
+	+ \left[ A_i \, \alpha_i^2 + \alpha_i \left( \sum_{k\not=i} \langle \delta\vec{\Psi}_i \vert \vec{\delta}_k \rangle \alpha_k \right) \right]
 \end{equation}
+
+Using 
+\begin{equation}
+	\Gamma_i = -\beta_i^2 \Xi_i \langle \vec{\Psi}_i' \vert \vec{\nu}_i \rangle,
+	\;\;B_i = (2\beta_i^2-1) \Xi_i \langle \vec{\Psi}_i' \vert \vec{\nu}_i \rangle,
+	\;\;A_i = (1-\beta_i^2) \Xi_i \langle \vec{\Psi}_i' \vert \vec{\nu}_i \rangle
+\end{equation}
+
+
 
 \section{PREVIOUS}
 

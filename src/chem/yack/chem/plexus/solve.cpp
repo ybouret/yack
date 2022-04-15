@@ -226,16 +226,17 @@ namespace yack
                 const double       Gi  = eq.mass_action(Ki,Corg);
                 eq.drvs_action(psi,Ki,Ci,Ctmp);
                 const double       sigma = xx * sorted::dot(psi,Nu[ei], Ctmp);
-                const double       a     = -(sigma+Gi+Gi);
-                const double       b     = Gi + sigma;
+                const double       B     = -(sigma+Gi+Gi);
+                const double       A     = Gi + sigma;
                 const size_t       NP  = 100;
                 const string       fn  = "gam_" + eq.name + ".dat";
+                eqs.pad(std::cerr << "for <" << eq.name <<">",eq) << " B = " << B << "; A=" << A << "; Xi=" << xx << std::endl;
                 ios::ocstream      fp(fn);
                 for(size_t i=0;i<=NP;++i)
                 {
                     const double alpha = double(i)/NP;
                     const double u = (i*xx)/NP;
-                    fp("%g %g %g\n",alpha,eq.mass_action(Ki,Corg,u), Gi + a * alpha + b * alpha * alpha);
+                    fp("%g %g %g %g\n",alpha,eq.mass_action(Ki,Corg,u), Gi + B * alpha + A * alpha * alpha,u);
                 }
 
             }
