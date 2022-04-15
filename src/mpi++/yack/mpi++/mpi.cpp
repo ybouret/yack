@@ -101,7 +101,7 @@ namespace yack {
 
     const __mpi::data_type &mpi:: DataType(const rtti &tid) const
     {
-        return native[tid];
+        return native.get(tid);
     }
 
   

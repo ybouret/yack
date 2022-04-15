@@ -42,9 +42,15 @@ namespace yack
             //
             // methods
             //__________________________________________________________________
-            const data_type & operator[](const rtti &tid) const; //!< access
-            const data_type * query(const rtti &) const throw(); //!< query
+            const data_type & get(const rtti &tid) const; //!< access
 
+            //! helper
+            template <typename T> inline
+            const data_type & get() const
+            {
+                static const rtti &tid = rtti::use<T>();
+                return get(tid);
+            }
             
         private:
             YACK_DISABLE_COPY_AND_ASSIGN(data_types);

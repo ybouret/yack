@@ -44,10 +44,9 @@ namespace yack
             self.in< complex<float>  >(MPI_COMPLEX);
             self.in< complex<double> >(MPI_DOUBLE_COMPLEX);
 
-            //self.in<bool>(MPI_CXX_BOOL);
 
-            (void) self[ rtti::use<size_t>() ];
-            (void) self[ rtti::use<ptrdiff_t>() ];
+            (void) self.get<size_t>();
+            (void) self.get<unit_t>();
 
         }
         
@@ -67,16 +66,12 @@ namespace yack
         }
 
 
-        const data_type * data_types:: query(const rtti &tid) const throw()
+        
+
+        const data_type &data_types:: get(const rtti &tid) const
         {
             const be_address key(tid);
-            return search(key.begin(),key.measure());
-        }
-
-
-        const data_type &data_types:: operator[](const rtti &tid) const
-        {
-            const data_type *ptr = query(tid);
+            const data_type *ptr = search(key.begin(),key.measure());
             if(!ptr)
             {
                 const string &name = tid.name();

@@ -61,6 +61,32 @@ namespace yack
             YACK_DISABLE_COPY_AND_ASSIGN(data_io);
             const be_address bek;
         };
+
+        //______________________________________________________________________
+        //
+        //! helper
+        //______________________________________________________________________
+        template <typename T>
+        class data_io_for : public data_io
+        {
+        public:
+            typedef data_io_for<T> self_data_io; //!< alias
+
+            //__________________________________________________________________
+            //
+            // C++
+            //__________________________________________________________________
+            //! cleanup
+            inline virtual ~data_io_for() throw() {}
+
+        protected:
+            //! setup
+            inline explicit data_io_for() : data_io( rtti::use<T>() ) {}
+            
+        private:
+            YACK_DISABLE_COPY_AND_ASSIGN(data_io_for);
+        };
+
     }
 
 }

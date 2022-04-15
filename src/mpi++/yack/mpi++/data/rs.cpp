@@ -11,15 +11,15 @@ namespace yack
         namespace
         {
             template <typename T>
-            class native_data_io : public data_io
+            class native_data_io : public data_io_for<T>
             {
             public:
 
                 inline virtual ~native_data_io() throw() {}
 
                 inline explicit native_data_io(const data_types &native) :
-                data_io( rtti::use<T>() ),
-                mdt( native[tid]  )
+                data_io_for<T>(),
+                mdt( native.get(this->tid)  )
                 {
                 }
 
@@ -57,8 +57,8 @@ namespace yack
                 typedef complex<native_type>  complex_type;
 
                 inline explicit lcplx_io(const data_types &native) :
-                data_io(    rtti::use<complex_type>() ),
-                mdt( native[rtti::use<native_type>()] )
+                data_io( rtti::use<complex_type>() ),
+                mdt(    native.get<native_type>() )
                 {
                 }
 
@@ -82,14 +82,84 @@ namespace yack
                     MPI.Recv(ptr,2*num,mdt.info,mdt.size,src,tag);
                 }
 
-
-
-
-
+                
                 const data_type mdt;
 
             private:
                 YACK_DISABLE_COPY_AND_ASSIGN(lcplx_io);
+            };
+        }
+
+        namespace
+        {
+            class string_io : public data_io_for<string>
+            {
+            public:
+
+                inline explicit string_io() :
+                self_data_io()
+                {
+                }
+
+                inline virtual ~string_io() throw() {}
+
+                virtual void send(const mpi   &MPI,
+                                  const void  *ptr,
+                                  const size_t num,
+                                  const int    dst,
+                                  const int    tag) const
+                {
+                    const string *s = static_cast<const string *>(ptr);
+                    for(size_t i=num;i>0;--i)
+                    {
+                        send1(MPI,*(s++),dst,tag);
+                    }
+                }
+
+                virtual void recv(const mpi   &MPI,
+                                  void        *ptr,
+                                  const size_t num,
+                                  const int    src,
+                                  const int    tag) const
+                {
+                    string *s = static_cast<string *>(ptr);
+                    for(size_t i=num;i>0;--i)
+                    {
+                        recv1(MPI,*(s++),src,tag);
+                    }
+                }
+
+
+            private:
+                YACK_DISABLE_COPY_AND_ASSIGN(string_io);
+
+                inline void send1(const mpi    &MPI,
+                                  const string &str,
+                                  const int     dst,
+                                  const int     tag) const
+                {
+                    const size_t len = str.size();
+                    MPI.Send1(len,dst,tag);
+                    if(len)
+                    {
+                        MPI.Send(str(),len,MPI_BYTE,1,dst,tag);
+                    }
+                }
+
+                inline void recv1(const mpi    &MPI,
+                                  string       &str,
+                                  const int     src,
+                                  const int     tag) const
+                {
+                    const size_t len = MPI.Recv1<size_t>(src,tag);
+                    if(len>0)
+                    {
+                        string tmp(len,as_capacity,true);
+                        MPI.Recv((void*)tmp(),len,MPI_BYTE,1,src,tag);
+                        str.xch(tmp);
+                    }
+                }
+
             };
         }
 
@@ -143,6 +213,8 @@ namespace yack
         void data_rs:: make_cxx_from(const data_types &native)
         {
             declare( new lcplx_io(native) );
+            declare( new string_io()      );
+
         }
 
         data_rs:: data_rs(const data_types &native) : db()

@@ -1,7 +1,4 @@
 #include "yack/mpi++/mpi.hpp"
-#include "yack/string.hpp"
-#include <cstring>
-#include <cstdarg>
 
 namespace yack
 {
@@ -75,34 +72,6 @@ namespace yack
         if(syn_ack!=msg) throw yack::exception("%s: invalid SYN/ACK!!",call_sign);
     }
 
-#if 0
-    template <>
-    void mpi:: Send<string>(const string &obj, const int dst, const int tag) const
-    {
-        const size_t len = obj.size();
-        Send(len,dst,tag);
-        if(len>0)
-        {
-            Send(obj(),len,dst,tag);
-        }
-    }
-
-    template <>
-    string mpi:: Recv<string>(const int src, const int tag) const
-    {
-        const size_t len = Recv<size_t>(src,tag);
-        if(len>0)
-        {
-            string s(len,as_capacity,true);
-            Recv(s(),len,src,tag);
-            return s;
-        }
-        else
-        {
-            return string();
-        }
-    }
-#endif
     
 }
 

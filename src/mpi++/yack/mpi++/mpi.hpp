@@ -136,26 +136,27 @@ __info.bytes += (BYTES)
         void SYN(const int dst) const; //!< send syn_ack
         void ACK(const int src) const; //!< recv syn_ack
 
-        //! low-level sending of integral types
+        //! high-level send
         template <typename T> inline
         void Send(const T     *arr,
                   const size_t num,
                   const int    dst,
                   const int    tag) const
         {
-            static const __mpi::data_type mdt = DataType( rtti::use(typeid(T)) );
-            Send(arr,num,mdt.info,mdt.size,dst,tag);
+            static const __mpi::data_io &io = cxx.get<T>();
+            io.send(*this,arr,num,dst,tag);
         }
 
-        //! low-level sending of integral types
+
+        //! high-level recv
         template <typename T> inline
         void Recv(T           *arr,
                   const size_t num,
                   const int    src,
                   const int    tag) const
         {
-            static const __mpi::data_type mdt = DataType( rtti::use(typeid(T)) );
-            Recv((void*)arr,num,mdt.info,mdt.size,src,tag);
+            static const __mpi::data_io &io = cxx.get<T>();
+            io.recv(*this,arr,num,src,tag);
         }
         
         //! low-level sending of 1 integral type
@@ -174,7 +175,24 @@ __info.bytes += (BYTES)
             return res;
         }
 
+        //______________________________________________________________________
+        //
+        // collective
+        //______________________________________________________________________
+        //! low-level blocking broadcast on MPI_COMM_WORLD
+        void Bcast(void              *buf,
+                   const size_t       num,
+                   const MPI_Datatype tid,
+                   const unsigned     bpi,
+                   const int          root) const;
 
+        //! Bcast a single object
+        template <typename T> inline
+        void Bcast(T &value, const int root) const
+        {
+            static const __mpi::data_type mdt = DataType<T>();
+            Bcast(&value,1,mdt.info,mdt.size,root);
+        }
 
         //______________________________________________________________________
         //

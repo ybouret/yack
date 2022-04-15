@@ -50,6 +50,21 @@ namespace yack
         return char(ran.in('a','z'));
     }
 
+    // int
+    template < >
+    inline int bring:: get<int>(randomized::bits &ran)
+    {
+        return int(ran.in(-100,100));
+    }
+
+    // unsigned
+    template < >
+    inline unsigned bring:: get<unsigned>(randomized::bits &ran)
+    {
+        return unsigned(ran.in(0,100));
+    }
+
+
     // floating point
     template <>
     inline float bring:: get<float>(randomized::bits &ran)
