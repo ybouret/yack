@@ -220,13 +220,17 @@ namespace yack
                 const equilibrium &eq  = ***node;
                 const size_t       ei  = *eq;
                 const double       Ki  = K[ei];
-                writable<double>  &psi = Psi[ei];
-                eq.drvs_action(psi, Ki, Corg, Ctmp);
-                eq.hessian(H, Ki, Corg, Ctmp);
-                std::cerr << "Nu_"  << eq.name << " = " << Nu[ei]  << std::endl;
-                std::cerr << "Psi_" << eq.name << " = " << Psi[ei] << std::endl;
-                std::cerr << "H_"   << eq.name << " = " << H       << std::endl;
-                std::cerr << "G_"    << eq.name << " = " << eq.mass_action(Ki,Corg) << std::endl;
+                writable<double>  &Ci  = Ceq[ei];
+                const double       xx  = eq.solve1D(Ki,Corg,Ci);
+                const size_t       NP  = 100;
+                const string       fn  = "gam_" + eq.name + ".dat";
+                ios::ocstream      fp(fn);
+                for(size_t i=0;i<=NP;++i)
+                {
+                    const double u = (i*xx)/NP;
+                    fp("%g %g\n",double(i)/NP,eq.mass_action(Ki,Corg,u));
+                }
+
             }
 
             std::cerr << "Nu=" << Nu << std::endl;
