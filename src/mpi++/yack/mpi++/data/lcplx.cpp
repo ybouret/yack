@@ -1,5 +1,3 @@
-
-
 #include "yack/mpi++/data/lcplx.hxx"
 #include "yack/mpi++/mpi.hpp"
 

@@ -1,6 +1,7 @@
 #include "yack/mpi++/mpi.hpp"
 #include "yack/type/complex.hpp"
 #include "yack/mpi++/data/lcplx.hxx"
+#include "yack/mpi++/data/string.hxx"
 
 namespace yack
 {
@@ -50,94 +51,6 @@ namespace yack
         }
 
 
-
-        namespace
-        {
-            class string_io : public data_io_for<string>
-            {
-            public:
-
-                inline explicit string_io() :
-                self_data_io()
-                {
-                }
-
-                inline virtual ~string_io() throw() {}
-
-                virtual void send(const mpi   &MPI,
-                                  const void  *ptr,
-                                  const size_t num,
-                                  const int    dst,
-                                  const int    tag) const
-                {
-                    const string *s = static_cast<const string *>(ptr);
-                    for(size_t i=num;i>0;--i)
-                    {
-                        send1(MPI,*(s++),dst,tag);
-                    }
-                }
-
-                virtual void recv(const mpi   &MPI,
-                                  void        *ptr,
-                                  const size_t num,
-                                  const int    src,
-                                  const int    tag) const
-                {
-                    string *s = static_cast<string *>(ptr);
-                    for(size_t i=num;i>0;--i)
-                    {
-                        recv1(MPI,*(s++),src,tag);
-                    }
-                }
-
-
-            private:
-                YACK_DISABLE_COPY_AND_ASSIGN(string_io);
-
-                inline void send1(const mpi    &MPI,
-                                  const string &str,
-                                  const int     dst,
-                                  const int     tag) const
-                {
-                    const size_t len = str.size();
-                    MPI.Send1(len,dst,tag);
-                    if(len)
-                    {
-                        MPI.Send(str(),len,MPI_BYTE,1,dst,tag);
-                    }
-                }
-
-                inline void recv1(const mpi    &MPI,
-                                  string       &str,
-                                  const int     src,
-                                  const int     tag) const
-                {
-                    const size_t len = MPI.Recv1<size_t>(src,tag);
-                    if(len>0)
-                    {
-                        string tmp(len,as_capacity,true);
-                        MPI.Recv((void*)tmp(),len,MPI_BYTE,1,src,tag);
-                        str.xch(tmp);
-                    }
-                }
-
-            };
-
-        }
-
-        namespace
-        {
-            class srz_io : public data_io
-            {
-            public:
-                inline virtual ~srz_io() throw() {}
-                inline explicit srz_io(const rtti &uuid) throw() : data_io(uuid) {}
-
-
-            private:
-                YACK_DISABLE_COPY_AND_ASSIGN(srz_io);
-            };
-        }
 
 
 
