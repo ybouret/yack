@@ -36,14 +36,16 @@ namespace yack
             //
             // C++
             //__________________________________________________________________
-            virtual ~rational() throw();                //!< cleanup
-            rational();                                 //!< 0/1
-            rational(const rational &);                 //!< copy
-            rational(const int_type);                   //!< num/1
-            rational(const integer &);                  //!< num/1
-            rational(const sign_type, const natural &); //!< num/1
-            rational(const natural &);                  //!< num/1
-            rational&operator=(const rational &);       //!< assign by copy/xch
+            virtual ~rational() throw();                    //!< cleanup
+            rational();                                     //!< 0/1
+            rational(const rational &);                     //!< copy
+            rational(const int_type);                       //!< num/1
+            rational(const integer &);                      //!< num/1
+            rational(const sign_type, const natural &);     //!< num/1
+            rational(const natural &);                      //!< num/1
+            rational&operator=(const rational &);           //!< assign by copy/xch
+            rational(randomized::bits &,const size_t bits); //!< random
+
 
             //! inline binary constructors
 #define     YACK_APQ_CTOR(NTYPE,DTYPE) \
@@ -160,8 +162,9 @@ namespace yack
             //
             // serializable interface
             //__________________________________________________________________
-            virtual const char * class_uid()       const throw();
-            virtual size_t       serialize(ios::ostream &) const;
+            virtual const char * class_uid()       const throw(); //!< clid
+            virtual size_t       serialize(ios::ostream &) const; //!< num+den
+            static  rational     construct(ios::istream &, size_t &cumul); //!< from num+den
 
             //__________________________________________________________________
             //

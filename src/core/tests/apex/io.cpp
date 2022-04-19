@@ -66,6 +66,7 @@ YACK_UTEST(apex_io)
 
     test_srz<apn>("apn.dat",ran);
     test_srz<apz>("apz.dat",ran);
+    test_srz<apq>("apq.dat",ran);
 
 
 

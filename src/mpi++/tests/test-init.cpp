@@ -127,6 +127,7 @@ YACK_UTEST(init)
     testIO< string >(MPI,ran);
     testIO< apn >(MPI,ran);
     testIO< apz >(MPI,ran);
+    testIO< apq >(MPI,ran);
 
 }
 YACK_UDONE()

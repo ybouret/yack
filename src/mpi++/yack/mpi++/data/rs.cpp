@@ -108,8 +108,7 @@ namespace yack
             declare( new string_io()       );
             declare( new srz_io_for<apn>() );
             declare( new srz_io_for<apz>() );
-            //declare( new srz_io_for<apq>() );
-
+            declare( new srz_io_for<apq>() );
         }
 
         data_rs:: data_rs(const data_types &native) : db()

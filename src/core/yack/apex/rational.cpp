@@ -122,12 +122,27 @@ namespace yack
 
 
         const char * rational:: class_uid() const throw() { return clid; }
+
         size_t       rational:: serialize(ios::ostream &fp) const
         {
             size_t nw = num.serialize(fp);
             return nw+den.serialize(fp);
         }
 
+        rational rational:: construct(ios::istream &fp, size_t &cumul)
+        {
+            const integer n = integer::construct(fp,cumul);
+            const natural d = natural::construct(fp,cumul);
+            return rational(n,d);
+        }
+
+
+        rational:: rational(randomized::bits &ran,const size_t bits) :
+        num(ran,bits),
+        den(ran,bits<=0?1:bits)
+        {
+
+        }
     }
 
 }
