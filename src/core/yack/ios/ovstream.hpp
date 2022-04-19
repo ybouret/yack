@@ -12,6 +12,7 @@ namespace yack
     namespace ios
     {
 
+        
         //______________________________________________________________________
         //
         //
@@ -22,7 +23,7 @@ namespace yack
         class ovstream : public ostream
         {
         public:
-            typedef vector<char,ALLOCATOR> vbytes; //!< alias
+            typedef vector<char,ALLOCATOR> vdata; //!< alias
 
             inline explicit ovstream() throw() : ostream(), data() {}                    //!< setup
             inline virtual ~ovstream() throw() {}                                        //!< cleanup
@@ -32,7 +33,7 @@ namespace yack
             inline virtual void write(const char C) { data.push_back(C); } //!< write
             inline virtual void flush() {}                                 //!< flush
 
-            vbytes data;
+            vdata data;
 
         private:
             YACK_DISABLE_COPY_AND_ASSIGN(ovstream);
