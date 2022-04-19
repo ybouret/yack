@@ -52,7 +52,6 @@ add_test(algebra:svd     test-math svd)
 add_test(algebra:tridiag test-math tridiag)
 add_test(algebra:cyclic  test-math cyclic)
 add_test(algebra:diag    test-math diagonalize)
-add_test(algebra:gaussj  test-math gaussj)
 
 add_test(ode:rk4 test-math rk4)
 add_test(ode:explicit test-math explicit)
