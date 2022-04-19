@@ -41,7 +41,7 @@ namespace yack
                     string  ans(len,as_capacity,true);
                     void   *ptr = &ans[1];
                     Recv(ptr,len,MPI_BYTE,1,r,io_tag);
-                    if(size_t(len)!=fwrite(ptr,len,1,fp))
+                    if(1!=fwrite(ptr,len,1,fp))
                     {
                         throw libc::exception(errno,"%s fwrite(%d)",fn,len);
                     }
