@@ -18,24 +18,30 @@ namespace yack
     namespace __mpi
     {
 
+        //! data I/O for serializable classes
         class srz_io : public data_io
         {
         public:
-            typedef ios::ovstream<memory::dyadic> io_buffer;;
-            virtual ~srz_io() throw();
+            typedef ios::ovstream<memory::dyadic> io_buffer; //!< alias
+            virtual ~srz_io() throw();                       //!< cleanup
 
         protected:
-            explicit srz_io(const rtti &uuid);
-            mutable io_buffer io;
+            explicit srz_io(const rtti &uuid); //!< setup
+            mutable io_buffer io;              //!< internal buffer
 
-            //! use serializable interface
+            //! use serializable interface to fill and send buffer
             void send1(const mpi               &MPI,
                        const ios::serializable &srz,
                        const int                dst,
                        const int                tag) const;
 
+            //! recv a size_t
             static size_t recv_size(const mpi &MPI, const int src, const int tag);
+
+            //! recv a buffer within io
             void          recv_buff(const mpi &MPI, const size_t len, const int src, const int tag) const;
+
+            //! check constructed length
             void          check_len(const size_t len, const size_t cm) const;
 
         private:
@@ -43,18 +49,22 @@ namespace yack
 
         };
 
+        //! specific data I/O
         template <typename SERIALIZABLE>
         class srz_io_for : public srz_io
         {
         public:
+            //! cleanup
             inline virtual ~srz_io_for() throw() {}
 
+            //! initialize type and constant default field
             inline explicit srz_io_for() :
             srz_io( rtti::use<SERIALIZABLE>() ),
             zero()
             {
             }
 
+            //! loop over item
             virtual void send(const mpi   &MPI,
                               const void  *ptr,
                               const size_t num,
@@ -68,6 +78,7 @@ namespace yack
                 }
             }
 
+            //! recv using the static construct() method
             virtual void recv(const mpi   &MPI,
                               void        *ptr,
                               const size_t num,
@@ -94,7 +105,7 @@ namespace yack
                 }
             }
 
-            const const_field<SERIALIZABLE> zero;
+            const const_field<SERIALIZABLE> zero; //!< default field
 
         private:
             YACK_DISABLE_COPY_AND_ASSIGN(srz_io_for);
