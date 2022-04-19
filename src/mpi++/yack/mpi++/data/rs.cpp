@@ -1,5 +1,6 @@
 #include "yack/mpi++/mpi.hpp"
 #include "yack/type/complex.hpp"
+#include "yack/mpi++/data/lcplx.hxx"
 
 namespace yack
 {
@@ -48,47 +49,7 @@ namespace yack
             };
         }
 
-        namespace
-        {
-            class lcplx_io : public data_io
-            {
-            public:
-                typedef long double           native_type;
-                typedef complex<native_type>  complex_type;
 
-                inline explicit lcplx_io(const data_types &native) :
-                data_io( rtti::use<complex_type>() ),
-                mdt(    native.get<native_type>() )
-                {
-                }
-
-                inline virtual ~lcplx_io() throw() {}
-
-                virtual void send(const mpi   &MPI,
-                                  const void  *ptr,
-                                  const size_t num,
-                                  const int    dst,
-                                  const int    tag) const
-                {
-                    MPI.Send(ptr,2*num,mdt.info,mdt.size,dst,tag);
-                }
-                
-                virtual void recv(const mpi   &MPI,
-                                  void        *ptr,
-                                  const size_t num,
-                                  const int    src,
-                                  const int    tag) const
-                {
-                    MPI.Recv(ptr,2*num,mdt.info,mdt.size,src,tag);
-                }
-
-                
-                const data_type mdt;
-
-            private:
-                YACK_DISABLE_COPY_AND_ASSIGN(lcplx_io);
-            };
-        }
 
         namespace
         {
@@ -162,6 +123,20 @@ namespace yack
 
             };
 
+        }
+
+        namespace
+        {
+            class srz_io : public data_io
+            {
+            public:
+                inline virtual ~srz_io() throw() {}
+                inline explicit srz_io(const rtti &uuid) throw() : data_io(uuid) {}
+
+
+            private:
+                YACK_DISABLE_COPY_AND_ASSIGN(srz_io);
+            };
         }
 
 
