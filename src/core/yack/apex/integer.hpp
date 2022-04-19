@@ -53,8 +53,9 @@ namespace yack
             //
             // serializable interface
             //__________________________________________________________________
-            virtual const char * class_uid()       const throw();
-            virtual size_t       serialize(ios::ostream &) const;
+            virtual const char * class_uid()       const throw(); //!< clid
+            virtual size_t       serialize(ios::ostream &) const; //!< s+n
+            static  integer      construct(ios::istream &, size_t &cumul); //!< from s+n
 
             //__________________________________________________________________
             //

@@ -107,7 +107,7 @@ namespace yack
             declare( new lcplx_io(native)  );
             declare( new string_io()       );
             declare( new srz_io_for<apn>() );
-            //declare( new srz_io_for<apz>() );
+            declare( new srz_io_for<apz>() );
             //declare( new srz_io_for<apq>() );
 
         }

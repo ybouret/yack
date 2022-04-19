@@ -206,3 +206,41 @@ namespace yack
     }
     
 }
+
+#include "yack/ios/decoder.hpp"
+
+namespace yack
+{
+    namespace apex
+    {
+        integer integer:: construct(ios::istream &fp, size_t &cumul)
+        {
+            static const char fn[] = "integer::construct";
+            int8_t       s8 = 0;
+            {
+                const size_t nr = ios::decoder::read(fp,s8);
+                if(nr!=1) throw exception("%s(no data for sign)",fn);
+                ++cumul;
+            }
+
+            const natural nv = natural::construct(fp,cumul);
+            switch( __sign::of(s8) )
+            {
+                case negative:
+                    if(nv==0) throw exception("%s(negative sign for zero)",fn);
+                    return integer(negative,nv);
+
+                case positive:
+                    if(nv==0) throw exception("%s(positive sign for zero)",fn);
+                    return integer(positive,nv);
+
+                case __zero__: break;
+            }
+            if(nv!=0) throw exception("%s(invalid zero sign)",fn);
+            return integer(0);
+        }
+    }
+
+}
+
+

@@ -22,20 +22,40 @@ namespace yack
         class ovstream : public ostream
         {
         public:
+            //__________________________________________________________________
+            //
+            // types and definition
+            //__________________________________________________________________
             typedef vector<char,ALLOCATOR> vbytes; //!< alias
 
+            //__________________________________________________________________
+            //
+            // C++
+            //__________________________________________________________________
             inline explicit ovstream() throw() : ostream(), buffer() {}                    //!< setup
-            inline virtual ~ovstream() throw() {}                                        //!< cleanup
+            inline virtual ~ovstream() throw() {}                                          //!< cleanup
             inline explicit ovstream(const size_t n) : ostream(), buffer(n,as_capacity) {} //!< setup with capacity
 
 
+            //__________________________________________________________________
+            //
+            // interface
+            //__________________________________________________________________
             inline virtual void write(const char C) { buffer.push_back(C); } //!< write
-            inline virtual void flush() {}                                 //!< flush
+            inline virtual void flush() {}                                   //!< flush
 
-            vbytes *       operator->() throw()       { return &buffer; }
-            const vbytes * operator->() const throw() { return &buffer; }
-            
-            vbytes buffer;
+            //__________________________________________________________________
+            //
+            // methods
+            //__________________________________________________________________
+            vbytes *       operator->() throw()       { return &buffer; } //!< syntax helper
+            const vbytes * operator->() const throw() { return &buffer; } //!< syntax helper
+
+            //__________________________________________________________________
+            //
+            // members
+            //__________________________________________________________________
+            vbytes buffer; //!< actual data
 
         private:
             YACK_DISABLE_COPY_AND_ASSIGN(ovstream);
