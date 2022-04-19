@@ -2,6 +2,9 @@
 #include "yack/type/complex.hpp"
 #include "yack/mpi++/data/lcplx.hxx"
 #include "yack/mpi++/data/string.hxx"
+#include "yack/mpi++/data/srz.hxx"
+#include "yack/apex.hpp"
+
 
 namespace yack
 {
@@ -101,8 +104,11 @@ namespace yack
 
         void data_rs:: make_cxx_from(const data_types &native)
         {
-            declare( new lcplx_io(native) );
-            declare( new string_io()      );
+            declare( new lcplx_io(native)  );
+            declare( new string_io()       );
+            declare( new srz_io_for<apn>() );
+            //declare( new srz_io_for<apz>() );
+            //declare( new srz_io_for<apq>() );
 
         }
 

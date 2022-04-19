@@ -5,7 +5,6 @@
 
 #include "yack/ios/ostream.hpp"
 #include "yack/sequence/vector.hpp"
-#include "yack/memory/allocator/dyadic.hpp"
 
 namespace yack
 {
@@ -23,17 +22,20 @@ namespace yack
         class ovstream : public ostream
         {
         public:
-            typedef vector<char,ALLOCATOR> vdata; //!< alias
+            typedef vector<char,ALLOCATOR> vbytes; //!< alias
 
-            inline explicit ovstream() throw() : ostream(), data() {}                    //!< setup
+            inline explicit ovstream() throw() : ostream(), buffer() {}                    //!< setup
             inline virtual ~ovstream() throw() {}                                        //!< cleanup
-            inline explicit ovstream(const size_t n) : ostream(), data(n,as_capacity) {} //!< setup with capacity
+            inline explicit ovstream(const size_t n) : ostream(), buffer(n,as_capacity) {} //!< setup with capacity
 
 
-            inline virtual void write(const char C) { data.push_back(C); } //!< write
+            inline virtual void write(const char C) { buffer.push_back(C); } //!< write
             inline virtual void flush() {}                                 //!< flush
 
-            vdata data;
+            vbytes *       operator->() throw()       { return &buffer; }
+            const vbytes * operator->() const throw() { return &buffer; }
+            
+            vbytes buffer;
 
         private:
             YACK_DISABLE_COPY_AND_ASSIGN(ovstream);

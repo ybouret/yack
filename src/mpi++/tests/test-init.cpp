@@ -125,6 +125,8 @@ YACK_UTEST(init)
     testIO<float>(MPI,ran);
     testIO< complex<long double> >(MPI,ran);
     testIO< string >(MPI,ran);
+    testIO< apn >(MPI,ran);
+
 }
 YACK_UDONE()
 

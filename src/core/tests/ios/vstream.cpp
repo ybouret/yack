@@ -1,5 +1,6 @@
 #include "yack/ios/ovstream.hpp"
 #include "yack/utest/run.hpp"
+#include "yack/memory/allocator/dyadic.hpp"
 
 using namespace yack;
 
@@ -9,7 +10,7 @@ YACK_UTEST(ios_vstream)
 
     s << "Hello, World!";
 
-    std::cerr << s.data << std::endl;
+    std::cerr << s.buffer << std::endl;
 }
 YACK_UDONE()
 
