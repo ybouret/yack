@@ -107,6 +107,7 @@ YACK_UTEST_DECL(256)
 
     YACK_UTEST(ios_c_file);
     YACK_UTEST(ios_streams);
+    YACK_UTEST(ios_vstream);
     YACK_UTEST(ios_gz);
     YACK_UTEST(ios_bz);
     YACK_UTEST(ios_fmt);

@@ -208,6 +208,7 @@ add_test(ios:hybrid     test-core ios_hybrid)
 add_test(ios:convert    test-core ios_convert i9223372036854775807 i-9223372036854775808 u18446744073709551615)
 add_test(ios:loader     test-core ios_loader ${HERE}/sample.txt)
 add_test(ios:scribe     test-core ios_scribe)
+add_test(ios:vstream    test-core ios_vstream)
 
 add_test(hashing:64      test-core hash64)
 add_test(hashing:fcn     test-core hashing_fcn)
