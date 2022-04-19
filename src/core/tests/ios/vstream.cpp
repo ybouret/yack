@@ -9,7 +9,7 @@ YACK_UTEST(ios_vstream)
 
     s << "Hello, World!";
 
-    std::cerr << s << std::endl;
+    std::cerr << s.data << std::endl;
 }
 YACK_UDONE()
 

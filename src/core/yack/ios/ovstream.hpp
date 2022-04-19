@@ -19,18 +19,20 @@ namespace yack
         //
         //______________________________________________________________________
         template <typename ALLOCATOR>
-        class ovstream : public ostream, public vector<char,ALLOCATOR>
+        class ovstream : public ostream
         {
         public:
             typedef vector<char,ALLOCATOR> vbytes; //!< alias
 
-            inline explicit ovstream() throw() : ostream(), vbytes() {}                    //!< setup
-            inline virtual ~ovstream() throw() {}                                          //!< cleanup
-            inline explicit ovstream(const size_t n) : ostream(), vbytes(n,as_capacity) {} //!< setup with capacity
+            inline explicit ovstream() throw() : ostream(), data() {}                    //!< setup
+            inline virtual ~ovstream() throw() {}                                        //!< cleanup
+            inline explicit ovstream(const size_t n) : ostream(), data(n,as_capacity) {} //!< setup with capacity
 
 
-            inline virtual void write(const char C) { this->push_back(C); } //!< write
-            inline virtual void flush() {}                                  //!< flush
+            inline virtual void write(const char C) { data.push_back(C); } //!< write
+            inline virtual void flush() {}                                 //!< flush
+
+            vbytes data;
 
         private:
             YACK_DISABLE_COPY_AND_ASSIGN(ovstream);
