@@ -164,6 +164,8 @@ Let
 
 \subsection{Expansion}
 
+\subsubsection{State}
+
 For any valid concentration $\vec{C}$, we have a set of single solving extents $\vec{\Xi}$.
 Let's expand:
 
@@ -174,6 +176,7 @@ Let's expand:
 
 So we need a consistent approximation of $\Gamma_i(\vec{C} + \xi_i \vec{\nu}_i)$ and $\vec{\Psi}_{\xi_i}$.
 
+\subsubsection{Third Order}
 \begin{equation}
 \left\lbrace
 \begin{array}{rcl}
@@ -189,82 +192,22 @@ So we need a consistent approximation of $\Gamma_i(\vec{C} + \xi_i \vec{\nu}_i)$
 \begin{array}{rcl}
 	\dot\Gamma_i(\vec{C} + \xi_i \vec{\nu}_i) & \simeq & \beta_i + 2 A_i  (\xi_i - \Xi_i) + 3 B_i (\xi_i-\Xi_i)^3 \\
 	 \alpha_i & =  &  \langle \vec{\Psi}_i \vert \vec{\nu}_i \rangle\\
-	 D_i      & =  & 3\left[ \alpha_i + \beta_i + 2\dfrac{\Gamma_i}{\Xi_i} \right]\\
-	 \dot\Gamma_i & \simeq & \alpha_i \left(1-\dfrac{\xi_i}{\Xi_i} \right) + \beta_i \left(\dfrac{\xi_i}{\Xi_i}\right) - D_i \left(\dfrac{\xi_i}{\Xi_i}\right)\left(1-\dfrac{\xi_i}{\Xi_i} \right) = \langle \vec{\Psi}_{\xi_i} \vert \vec{\nu}_i\rangle\\
+	 \delta_i      & =  & 3\left[ \alpha_i + \beta_i + 2\dfrac{\Gamma_i}{\Xi_i} \right]\\
+	 \dot\Gamma_i & \simeq & \alpha_i \left(1-\dfrac{\xi_i}{\Xi_i} \right) + \beta_i \left(\dfrac{\xi_i}{\Xi_i}\right) - \delta_i \left(\dfrac{\xi_i}{\Xi_i}\right)\left(1-\dfrac{\xi_i}{\Xi_i} \right) = \langle \vec{\Psi}_{\xi_i} \vert \vec{\nu}_i\rangle\\
 \end{array}
 \right.
 \end{equation}
 
+To be consistent:
+\begin{equation}
+	\vec{\Psi}_{\xi_i} = \left(1-\dfrac{\xi_i}{\Xi_i} \right) \vec{\Psi}_i 
+	+ \left(\dfrac{\xi_i}{\Xi_i}\right) \vec{\Psi}_i' - \left(\dfrac{\xi_i}{\Xi_i}\right)\left(1-\dfrac{\xi_i}{\Xi_i} \right)\vec{\eta}_i 
+\end{equation}
+with the constraint:
+\begin{equation}
+	\langle \vec{\eta}_i \vert \vec{\nu}_i \rangle =  \delta_i  = 3\left[ \alpha_i + \beta_i + 2\dfrac{\Gamma_i}{\Xi_i} \right]
+\end{equation}
  
-%\begin{equation}
-%\Gamma_i(\vec{C} + \xi_i \vec{\nu}_i + \sum_{k\not=i} \xi_k \vec{\nu}_k) \simeq 
-%\langle \vec{\Psi}_i' \vert \vec{\nu}_i \rangle \left[ (\xi_i - \Xi_i)  + A_i (\xi_i - \Xi_i)^2 \right] + 
-%\sum_{k\not=i} \langle \vec{\Psi}_{\xi_i} \vert \vec{\nu}_k \rangle \xi_k
-%\end{equation}
-%We have:
-%\begin{equation}
-%	\Xi_i - \left( - \dfrac{\Gamma_i}{\langle \vec{\Psi}_i' \vert \vec{\nu}_i \rangle}\right) =  A_i \Xi_i^2
-%\end{equation}
-%
-%
-%For consistency, we must have:
-%\begin{equation}
-% \Gamma_i'(\vec{C}+\xi_i \vec{\nu}_i) \simeq \langle \vec{\Psi}_i' \vert \vec{\nu}_i \rangle \left[ 1 + 2 A_i \left(\xi_i - \Xi_i\right) \right]
-% = \langle \vec{\Psi}_{\xi_i} \vert \vec{\nu}_i \rangle
-%\end{equation}
-%
-%And we assume:
-%\begin{equation}
-%	\vec{\Psi}_{\xi_i} \simeq \left(1-\dfrac{\xi_i}{\Xi_i}\right) \vec{\Psi}_{i_0} + \dfrac{\xi_i}{\Xi_i} \vec{\Psi}_i'
-%\end{equation}
-%
-%\begin{equation}
-%	\vec{\Psi}_{i_0} = \vec{\Psi}_i + \beta_i \vec{\Psi}_i'
-%\end{equation}
-%
-%
-%\begin{equation}
-%	\langle \vec{\Psi}_i \vert \vec{\nu}_i \rangle + \beta_i \langle  \vec{\Psi}_i' \vert \vec{\nu}_i \rangle
-%	 = \langle \vec{\Psi}_i' \vert \vec{\nu}_i \rangle \left[ 1 - 2 A_i  \Xi_i\right]
-%\end{equation}
-%
-%The best second order approximation is:
-%\begin{equation}
-%\left\lbrace
-%\begin{array}{rcl}
-%		\Gamma_i(\vec{C}+\bm{\nu}^T \vec{\xi}) & \simeq  & 
-%		\langle \vec{\Psi}_i' \vert \vec{\nu}_i \rangle \left[ (\xi_i - \Xi_i)  + A_i (\xi_i - \Xi_i)^2 \right] \\
-%		\\
-% & + & \displaystyle \sum_{k\not=i} \langle \vec{\Psi}_{i_0} \vert \vec{\nu}_k \rangle \xi_k\\
-% \\
-% & + & \displaystyle \sum_{k\not=i}   \dfrac{\xi_i}{\Xi_i} \langle  \vec{\Psi_i}' - \vec{\Psi}_{i_0} \vert \vec{\nu}_k \rangle \xi_k\\
-%\end{array}
-%\right.
-%\end{equation}
-%
-%We define:
-%\begin{equation}
-%	\gamma_i(\vec{C}+\bm{\nu}^T \vec{\xi}) = \dfrac{ \Gamma_i(\vec{C}+\bm{\nu}^T \vec{\xi})}{-\langle \vec{\Psi}_i' \vert \vec{\nu}_i \rangle}
-%\end{equation}
-%
-%\begin{equation}
-%\left\lbrace
-%\begin{array}{rcl}
-%	\gamma_i(\vec{C}+\bm{\nu}^T \vec{\xi})
-%	 &\simeq& \left(\Xi_i - \xi_i\right) - A_i \left(\Xi_i - \xi_i\right)^2\\
-%	 \\
-%	 &-& \displaystyle \sum_{k\not=i} \dfrac{\langle \vec{\Psi}_{i_0} \vert \vec{\nu}_k \rangle}{\langle \vec{\Psi}_i' \vert \vec{\nu}_i \rangle} \xi_k\\
-%	 \\
-%	 &+& \displaystyle \sum_{k\not=i}   \dfrac{\xi_i}{\Xi_i} \dfrac{\langle   \vec{\Psi}_{i_0}- \vec{\Psi_i}'  \vert \vec{\nu}_k \rangle}{\langle \vec{\Psi}_i' \vert \vec{\nu}_i \rangle} \xi_k\\
-%	 \\
-%A_i \Xi_i^2 & = & \Xi_i - \gamma_i\\
-%\\
-%\beta_i & = & 1 - 2A_i \Xi_i - \dfrac{\langle \vec{\Psi}_i \vert \vec{\nu}_i \rangle}{\langle \vec{\Psi}_i' \vert \vec{\nu}_i \rangle}\\	 
-%\end{array}
-%\right.
-%\end{equation}
-%
-
  
 \section{PREVIOUS}
 
