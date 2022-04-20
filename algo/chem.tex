@@ -207,7 +207,47 @@ with the constraint:
 \begin{equation}
 	\langle \vec{\eta}_i \vert \vec{\nu}_i \rangle =  \delta_i  = 3\left[ \alpha_i + \beta_i + 2\dfrac{\Gamma_i}{\Xi_i} \right]
 \end{equation}
+
+	
  
+\subsubsection{Second Order}
+\begin{equation}
+\left\lbrace
+\begin{array}{rcl}
+	\Gamma_i(\vec{C} + \xi_i \vec{\nu}_i) & \simeq & \beta_i (\xi_i - \Xi_i) + A_i (\xi_i-\Xi_i)^2  \\
+	\beta_i & = & \langle \vec{\Psi}_i' \vert \vec{\nu}_i \rangle\\
+	\Gamma_i & = & -\Xi_i \beta_i + A_i \Xi_i^2   \\
+\end{array}
+\right.
+\end{equation}
+
+\begin{equation}
+\left\lbrace
+\begin{array}{rcl}
+	\dot\Gamma_i(\vec{C} + \xi_i \vec{\nu}_i) & \simeq & \beta_i + 2 A_i  (\xi_i - \Xi_i)   \\
+		 \alpha_i & =  &  \langle \vec{\Psi}_i \vert \vec{\nu}_i \rangle\\
+	\langle \vec{\Psi}_{i_0} \vert \vec{\nu}_i \rangle & = & \beta_i - 2A_i \Xi_i \\
+	\vec{\Psi}_{i_0} & = & \vec{\Psi_i} + \vec{\eta}_i\\
+	\langle \vec{\eta}_i \vert \vec{\nu}_i \rangle & = & \beta_i - \alpha_i - 2A_i \Xi_i \\
+\end{array}
+\right.
+\end{equation}
+
+\begin{equation}
+	\vec{\Psi}_{\xi_i} \simeq \vec{\Psi}_{i_0} \left(1-\dfrac{\xi_i}{\Xi_i} \right) + \vec{\Psi}_i' \left(\dfrac{\xi_i}{\Xi_i}\right)
+\end{equation}
+
+\begin{equation}
+\left\lbrace
+\begin{array}{rcl}
+  \Gamma_i(\vec{C} + \bm{\nu}^T \vec{\xi}) &\simeq & \beta_i (\xi_i - \Xi_i) + A_i (\xi_i-\Xi_i)^2 \\
+  \\
+  &+& \displaystyle \sum_{k\not=i} \langle   \vec{\Psi}_{i_0} \vert  \vec{\nu}_k \rangle \xi_k \\
+  \\
+  &+& \displaystyle \sum_{k\not=i} \dfrac{\xi_i}{\Xi_i} \langle   \vec{\Psi}_i' - \vec{\Psi}_{i_0} \vert  \vec{\nu}_k \rangle \xi_k \\
+ \end{array}
+ \right.
+\end{equation}
  
 \section{PREVIOUS}
 

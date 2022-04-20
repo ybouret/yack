@@ -3,6 +3,7 @@
 #include "yack/mpi++/data/srz.hxx"
 #include "yack/mpi++/mpi.hpp"
 #include "yack/system/exception.hpp"
+#include <cerrno>
 
 namespace yack
 {
