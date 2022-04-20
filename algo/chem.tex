@@ -168,31 +168,34 @@ For any valid concentration $\vec{C}$, we have a set of single solving extents $
 Let's expand:
 
 \begin{equation}
-\Gamma_i(\vec{C} + \xi_i \vec{\nu}_i) = - \langle \vec{\Psi}_i' \vert \vec{\nu}_i \rangle \left[ (\Xi_i-\xi_i) - A_i (\Xi_i-\xi_i)^2 \right]
+\Gamma_i(\vec{C} + \bm{\nu}^T \vec{\xi}) =  \Gamma_i(\vec{C} + \xi_i \vec{\nu}_i + \sum_{k\not=i} \xi_k \vec{\nu}_k)
+\simeq \Gamma_i(\vec{C} + \xi_i \vec{\nu}_i) + \langle \vec{\Psi}_{\xi_i} \vert \sum_{k\not=i} \xi_k \vec{\nu}_k \rangle
+\end{equation}
+
+So we need a consistent approximation of $\Gamma_i(\vec{C} + \xi_i \vec{\nu}_i)$ and $\vec{\Psi}_{\xi_i}$.
+
+\begin{equation}
+\left\lbrace
+\begin{array}{rcl}
+	\Gamma_i(\vec{C} + \xi_i \vec{\nu}_i) & \simeq & \beta_i (\xi_i - \Xi_i) + A_i (\xi_i-\Xi_i)^2 + B_i (\xi_i-\Xi_i)^3\\
+	\beta_i & = & \langle \vec{\Psi}_i' \vert \vec{\nu}_i \rangle\\
+	\Gamma_i & = & -\Xi_i \beta_i + A_i \Xi_i^2 - B_i \Xi_i^3 \\
+\end{array}
+\right.
 \end{equation}
 
 \begin{equation}
-	\Xi_i^2 A_i = \Xi_i - \left(\dfrac{\Gamma_i(\vec{C})}{-\langle \vec{\Psi}_i' \vert \vec{\nu}_i \rangle} \right)
+\left\lbrace
+\begin{array}{rcl}
+	\dot\Gamma_i(\vec{C} + \xi_i \vec{\nu}_i) & \simeq & \beta_i + 2 A_i  (\xi_i - \Xi_i) + 3 B_i (\xi_i-\Xi_i)^3 \\
+	 \alpha_i & =  &  \langle \vec{\Psi}_i \vert \vec{\nu}_i \rangle\\
+	 D_i      & =  & 3\left[ \alpha_i + \beta_i + 2\dfrac{\Gamma_i}{\Xi_i} \right]\\
+	 \dot\Gamma_i & \simeq & \alpha_i \left(1-\dfrac{\xi_i}{\Xi_i} \right) + \beta_i \left(\dfrac{\xi_i}{\Xi_i}\right) - D_i \left(\dfrac{\xi_i}{\Xi_i}\right)\left(1-\dfrac{\xi_i}{\Xi_i} \right) = \langle \vec{\Psi}_{\xi_i} \vert \vec{\nu}_i\rangle\\
+\end{array}
+\right.
 \end{equation}
 
-\begin{equation}
-\dot\Gamma_i(\vec{C} + \xi_i \vec{\nu}_i) = \langle \vec{\Psi}_i' \vert \vec{\nu}_i \rangle \left[ 1 + 2A_i (\xi_i-\Xi_i) \right]
-\end{equation}
-
-\begin{equation}
-	\dot\Gamma_i(\vec{C}) = \langle \vec{\Psi}_i' \vert \vec{\nu}_i \rangle \left[ 1 - 2A_i  \Xi_i \right] = \langle \vec{\Psi}_{i_0} \vert \vec{\nu}_i \rangle
-\end{equation}
-
-\begin{equation}
-	\vec{\Psi}_{i_0} = ???
-\end{equation}
-
-
-\begin{equation}
-	\Gamma_i(\vec{C} + \xi_i \vec{\nu}_i + \sum_{k\not=i} \xi_k \vec{\nu}_k ) \simeq \Gamma_i(\vec{C} + \xi_i \vec{\nu}_i) 
-	+ \langle \vec{\Psi_{\xi_i}} \vert \sum_{k\not=i} \xi_k \vec{\nu}_k \rangle
-\end{equation}
-
+ 
 %\begin{equation}
 %\Gamma_i(\vec{C} + \xi_i \vec{\nu}_i + \sum_{k\not=i} \xi_k \vec{\nu}_k) \simeq 
 %\langle \vec{\Psi}_i' \vert \vec{\nu}_i \rangle \left[ (\xi_i - \Xi_i)  + A_i (\xi_i - \Xi_i)^2 \right] + 
