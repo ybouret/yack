@@ -229,15 +229,15 @@ namespace yack
                 const string       fn  = "gam_" + eq.name + ".dat";
                 ios::ocstream      fp(fn);
 
-                const double       B = xx*beta;
-                const double       A = -(Gi+B);
+                const double       B = beta;
+                const double       A = -(Gi+B*xx)/(xx*xx);
                 eqs.pad(std::cerr << "for <" << eq.name <<">",eq) << " B = " << B << "; A=" << A << "; Xi=" << xx << std::endl;
                 const size_t       NP  = 100;
                 for(size_t i=0;i<=NP;++i)
                 {
                     const double alpha = double(i)/NP;
                     const double u     = (i*xx)/NP;
-                    fp("%g %g %g %g\n",alpha,eq.mass_action(Ki,Corg,u), B*(alpha-1.0) - A * squared(alpha-1.0),u);
+                    fp("%g %g %g %g\n",alpha,eq.mass_action(Ki,Corg,u), B*(u-xx) - A * squared(u-xx),u);
                 }
 
 #if 0
