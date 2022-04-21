@@ -217,12 +217,43 @@ So we need a consistent approximation of $\Gamma_i(\vec{C} + \xi_i \vec{\nu}_i)$
 \begin{equation}
 \left\lbrace
 \begin{array}{rcl}
-	\Gamma_i(\vec{C} + \xi_i \vec{\nu}_i) & \simeq & \Xi_i \beta_i \left(\dfrac{\xi_i}{\Xi_i}-1\right) - A_i' \left(\dfrac{\xi_i}{\Xi_i}-1\right)^2\\
 	\beta_i        & = & \langle \vec{\Psi}_i' \vert \vec{\nu}_i \rangle < 0\\
+	\\
+	\displaystyle \dfrac{\Gamma_i(\vec{C} + \bm{\nu}^T\vec{\xi})}{-\beta_i} & \simeq & \left( \Xi_i -\xi_i\right) + A_i \left(  \Xi_i -\xi_i\right)^2\\
+	& - & \displaystyle \sum_{k\not=i} \dfrac{\langle \vec{\Psi}_{\xi_i} \vert \vec{\nu}_k \rangle}{\beta_i} \xi_k\\
+	\\
+	\Xi_i^2 A_i & = & \dfrac{\Gamma_i}{-\beta_i} - \Xi_i \geq 0\\
+	\\
+	\vec{\Psi}_{\xi_i} & \simeq &   %\vec{\Psi}_i' -\left[\dfrac{\Xi_i-\xi_i}{\Xi_i}\right] \left(  \vec{\Psi}_i' - \vec{\Psi}_i\right)\\
+	\vec{\Psi}_i + \left[\dfrac{\xi_i}{\Xi_i}\right]  \left(  \vec{\Psi}_i' - \vec{\Psi}_i\right)
 \end{array}
 \right.
 \end{equation}
 
+\begin{equation}
+\left\lbrace
+\begin{array}{rcl}
+	\displaystyle \dfrac{\Gamma_i(\vec{C} + \bm{\nu}^T\vec{\xi})}{-\beta_i} & \simeq & \left( \Xi_i -\xi_i\right) + A_i \left(  \Xi_i -\xi_i\right)^2\\
+	\\
+	& - & \displaystyle \left[ \sum_{k\not=i} \Lambda_{ik} \xi_k \right] \\
+	\\
+	& - & \displaystyle 
+	%\left(\dfrac{\xi_i}{\Xi_i}\right) 
+	\xi_i \left[  \sum_{k\not=i} Q_{ik} \xi_k \right] \\
+	\\
+	\Lambda_{ik} & = & \displaystyle \dfrac{\langle \vec{\Psi}_i \vert \vec{\nu}_k \rangle}{\langle \vec{\Psi}_i' \vert \vec{\nu}_i \rangle}\\
+	\\
+	Q_{ik} & = & \displaystyle \dfrac{\langle \vec{\Psi}_i'-\vec{\Psi}_i \vert \vec{\nu}_k \rangle}{\Xi_i \langle \vec{\Psi}_i' \vert \vec{\nu}_i \rangle}\\
+	\vec{\Psi}_i'-\vec{\Psi}_i  & = & \Xi_i \tilde{\bm{H}}_i \vec{\nu}_i\\
+	
+	\langle \vec{\nu}_k \vert \tilde{\bm{H}}_i \vert \vec{\nu}_i \rangle & \leq & 0\\
+	\langle \vec{\Psi}_i' \vert \vec{\nu}_i \rangle & < & 0\\
+	Q_{ik} & \geq & 0\\
+\end{array}
+\right.
+\end{equation}
+
+ 
 \subsection{Solution variation}
 
 \begin{equation}
@@ -231,7 +262,7 @@ So we need a consistent approximation of $\Gamma_i(\vec{C} + \xi_i \vec{\nu}_i)$
 	\Gamma_i(\vec{C}+(\Xi_i+x)\vec{\nu}_i + \delta\vec{C}) & \simeq & \langle \vec{\Psi}_i' \vert \vec{\nu}_i \rangle x - A_i x^2 
 	+ \langle \vec{\Psi}_{i_x} \vert \delta\vec{C} \rangle\\
 	\vec{\Psi}_{i_x} & \simeq & \vec{\Psi}_i' + x \bm{H}_i' \vec{\nu}_i \\
-	A_i \Xi_i^2 & = & -\left[ \Xi_i \langle \vec{\Psi}_i' \vert \vec{\nu}_i \rangle + \Gamma_i \right] \geq 0
+	A_i \Xi_i^2 & = & -\left[ \Xi_i \langle \vec{\Psi}_i' \vert \vec{\nu}_i \rangle + \Gamma_i \right] 
 \end{array}
 \right.
 \end{equation}

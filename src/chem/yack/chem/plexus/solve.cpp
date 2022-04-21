@@ -229,15 +229,15 @@ namespace yack
                 const string       fn  = "gam_" + eq.name + ".dat";
                 ios::ocstream      fp(fn);
 
-                const double       B = beta;
-                const double       A = -(Gi+B*xx)/(xx*xx);
-                eqs.pad(std::cerr << "for <" << eq.name <<">",eq) << " B = " << B << "; A=" << A << "; Xi=" << xx << std::endl;
+                const double       den = -beta;
+                const double       A = (-Gi/beta-xx)/(xx*xx);
+                eqs.pad(std::cerr << "for <" << eq.name <<">",eq) << " den = " << den << "; A=" << A << "; Xi=" << xx << std::endl;
                 const size_t       NP  = 100;
                 for(size_t i=0;i<=NP;++i)
                 {
                     const double alpha = double(i)/NP;
                     const double u     = (i*xx)/NP;
-                    fp("%g %g %g %g\n",alpha,eq.mass_action(Ki,Corg,u), B*(u-xx) - A * squared(u-xx),u);
+                    fp("%g %g %g %g\n",alpha,eq.mass_action(Ki,Corg,u)/den, (xx-u) + A * squared(xx-u),u);
                 }
 
 #if 0
@@ -253,6 +253,16 @@ namespace yack
 #endif
 
             }
+
+            for(const enode *node=eqs.head();node;node=node->next)
+            {
+                const equilibrium &eq  = ***node;
+                const size_t       ei  = *eq;
+                eq.hessian(H,K[ei], Ceq[ei],Ctmp);
+                std::cerr << "H_" << eq.name << " = " << H << std::endl;
+            }
+
+
 
             std::cerr << "Nu=" << Nu << std::endl;
 
