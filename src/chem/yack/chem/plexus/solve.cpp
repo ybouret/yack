@@ -260,6 +260,8 @@ namespace yack
                 const size_t       ei  = *eq;
                 eq.hessian(H,K[ei], Ceq[ei],Ctmp);
                 std::cerr << "H_" << eq.name << " = " << H << std::endl;
+                std::cerr << "Nu_" << eq.name << " = " << Nu[ei] << std::endl;
+                std::cerr << "H_" << eq.name << "*Nu_" << eq.name << std::endl;
             }
 
 

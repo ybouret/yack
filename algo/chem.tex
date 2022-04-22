@@ -178,9 +178,9 @@ So we need a consistent approximation of $\Gamma_i(\vec{C} + \xi_i \vec{\nu}_i)$
 \begin{equation}
 \left\lbrace
 \begin{array}{rcl}
-	\Gamma_i(\vec{C} + \xi_i \vec{\nu}_i) & \simeq & \Gamma_i + B_i \left(\dfrac{\xi_i}{\Xi_i}\right) + A_i \left(\dfrac{\xi_i}{\Xi_i}\right)^2\\
-	-\Gamma_i & = & B_i   + A_i  \\
-	\Xi_i\beta_i   & = & B_i + 2 A_i   \\
+	\Gamma_i(\vec{C} + \xi_i \vec{\nu}_i) & \simeq & \Gamma_i + B_i \xi_i + A_i \xi_i^2\\
+	-\Gamma_i & = & B_i \Xi_i   + A_i \Xi_i  \\
+	 \beta_i   & = & B_i + 2 A_i \Xi_i  \\
 	\beta_i        & = & \langle \vec{\Psi}_i' \vert \vec{\nu}_i \rangle < 0\\
 \end{array}
 \right.
@@ -189,14 +189,14 @@ So we need a consistent approximation of $\Gamma_i(\vec{C} + \xi_i \vec{\nu}_i)$
 \begin{equation}
 \left\lbrace
 \begin{array}{rcl}
- A_i & = & \Xi_i \beta_i + \Gamma_i \\
- B_i & = & -2\Gamma_i - \Xi_i \beta_i = \Xi_i \beta_i - 2A_i\\
+ \Xi_i^2 A_i & = & \Xi_i \beta_i + \Gamma_i \\
+ \Xi_i B_i & = & -2\Gamma_i - \Xi_i \beta_i = \Xi_i \beta_i - 2A_i\\
 \end{array}
 \right.
 \end{equation}
 
 \begin{equation}
-\vec{\Psi}_{\xi_i} \simeq \vec{\Psi}_i \left(1- \dfrac{\xi_i}{\Xi_i}\right) + \vec{\Psi}_i' \left(\dfrac{\xi_i}{\Xi_i}\right)
+\vec{\Psi}_{\xi_i} \simeq \vec{\Psi}_i + \xi_i \bm{H}_i \vec{\nu}_i
 \end{equation}
 
 
@@ -204,11 +204,11 @@ So we need a consistent approximation of $\Gamma_i(\vec{C} + \xi_i \vec{\nu}_i)$
 \left\lbrace
 \begin{array}{rcl}
 	\Gamma_i(\vec{C} + \xi_i \vec{\nu}_i) & \simeq &
-	\Gamma_i + B_i \left(\dfrac{\xi_i}{\Xi_i}\right) + A_i \left(\dfrac{\xi_i}{\Xi_i}\right)^2 \\
+	\Gamma_i + B_i \xi_i + A_i \xi_i^2 \\
 	\\
 	& + & \displaystyle \sum_{k\not=i} \langle \vec{\Psi}_i \vert \vec{\nu}_k \rangle \xi_k \\
 	\\
-	& + & \displaystyle \left(\dfrac{\xi_i}{\Xi_i}\right) \sum_{k\not=i} \langle \vec{\Psi}_i'-\vec{\Psi}_i \vert \vec{\nu}_k \rangle \xi_k\\
+	& + & \displaystyle \xi_i \sum_{k\not=i} \langle \bm{H}_i \vec{\nu}_i \vert \vec{\nu}_k \rangle \xi_k\\
 \end{array}
 \right.
 \end{equation}
@@ -254,98 +254,7 @@ So we need a consistent approximation of $\Gamma_i(\vec{C} + \xi_i \vec{\nu}_i)$
 \end{equation}
 
  
-\subsection{Solution variation}
-
-\begin{equation}
-\left\lbrace
-\begin{array}{rcl}
-	\Gamma_i(\vec{C}+(\Xi_i+x)\vec{\nu}_i + \delta\vec{C}) & \simeq & \langle \vec{\Psi}_i' \vert \vec{\nu}_i \rangle x - A_i x^2 
-	+ \langle \vec{\Psi}_{i_x} \vert \delta\vec{C} \rangle\\
-	\vec{\Psi}_{i_x} & \simeq & \vec{\Psi}_i' + x \bm{H}_i' \vec{\nu}_i \\
-	A_i \Xi_i^2 & = & -\left[ \Xi_i \langle \vec{\Psi}_i' \vert \vec{\nu}_i \rangle + \Gamma_i \right] 
-\end{array}
-\right.
-\end{equation}
-
-\begin{equation}
-	0 = \langle \vec{\Psi}_i' \vert \vec{\nu}_i \rangle x - A_i x^2 
-	+ \langle \vec{\Psi}_i' \vert \delta\vec{C} \rangle + x \langle \delta \vec{\Psi}_i' \vert \delta\vec{C} \rangle
-\end{equation}
-
-%\subsubsection{Third Order}
-%\begin{equation}
-%\left\lbrace
-%\begin{array}{rcl}
-%	\Gamma_i(\vec{C} + \xi_i \vec{\nu}_i) & \simeq & \beta_i (\xi_i - \Xi_i) + A_i (\xi_i-\Xi_i)^2 + B_i (\xi_i-\Xi_i)^3\\
-%	\beta_i & = & \langle \vec{\Psi}_i' \vert \vec{\nu}_i \rangle\\
-%	\Gamma_i & = & -\Xi_i \beta_i + A_i \Xi_i^2 - B_i \Xi_i^3 \\
-%\end{array}
-%\right.
-%\end{equation}
-%
-%\begin{equation}
-%\left\lbrace
-%\begin{array}{rcl}
-%	\dot\Gamma_i(\vec{C} + \xi_i \vec{\nu}_i) & \simeq & \beta_i + 2 A_i  (\xi_i - \Xi_i) + 3 B_i (\xi_i-\Xi_i)^3 \\
-%	 \alpha_i & =  &  \langle \vec{\Psi}_i \vert \vec{\nu}_i \rangle\\
-%	 \delta_i      & =  & 3\left[ \alpha_i + \beta_i + 2\dfrac{\Gamma_i}{\Xi_i} \right]\\
-%	 \dot\Gamma_i & \simeq & \alpha_i \left(1-\dfrac{\xi_i}{\Xi_i} \right) + \beta_i \left(\dfrac{\xi_i}{\Xi_i}\right) - \delta_i \left(\dfrac{\xi_i}{\Xi_i}\right)\left(1-\dfrac{\xi_i}{\Xi_i} \right) = \langle \vec{\Psi}_{\xi_i} \vert \vec{\nu}_i\rangle\\
-%\end{array}
-%\right.
-%\end{equation}
-%
-%To be consistent:
-%\begin{equation}
-%	\vec{\Psi}_{\xi_i} = \left(1-\dfrac{\xi_i}{\Xi_i} \right) \vec{\Psi}_i 
-%	+ \left(\dfrac{\xi_i}{\Xi_i}\right) \vec{\Psi}_i' - \left(\dfrac{\xi_i}{\Xi_i}\right)\left(1-\dfrac{\xi_i}{\Xi_i} \right)\vec{\eta}_i 
-%\end{equation}
-%with the constraint:
-%\begin{equation}
-%	\langle \vec{\eta}_i \vert \vec{\nu}_i \rangle =  \delta_i  = 3\left[ \alpha_i + \beta_i + 2\dfrac{\Gamma_i}{\Xi_i} \right]
-%\end{equation}
-%
-%	
-% 
-%\subsubsection{Second Order}
-%\begin{equation}
-%\left\lbrace
-%\begin{array}{rcl}
-%	\Gamma_i(\vec{C} + \xi_i \vec{\nu}_i) & \simeq & \beta_i (\xi_i - \Xi_i) + A_i (\xi_i-\Xi_i)^2  \\
-%	\beta_i & = & \langle \vec{\Psi}_i' \vert \vec{\nu}_i \rangle\\
-%	\Gamma_i & = & -\Xi_i \beta_i + A_i \Xi_i^2   \\
-%\end{array}
-%\right.
-%\end{equation}
-%
-%\begin{equation}
-%\left\lbrace
-%\begin{array}{rcl}
-%	\dot\Gamma_i(\vec{C} + \xi_i \vec{\nu}_i) & \simeq & \beta_i + 2 A_i  (\xi_i - \Xi_i)   \\
-%		 \alpha_i & =  &  \langle \vec{\Psi}_i \vert \vec{\nu}_i \rangle\\
-%	\langle \vec{\Psi}_{i_0} \vert \vec{\nu}_i \rangle & = & \beta_i - 2A_i \Xi_i \\
-%	\vec{\Psi}_{i_0} & = & \vec{\Psi_i} + \vec{\eta}_i\\
-%	\langle \vec{\eta}_i \vert \vec{\nu}_i \rangle & = & \beta_i - \alpha_i - 2A_i \Xi_i \\
-%\end{array}
-%\right.
-%\end{equation}
-%
-%\begin{equation}
-%	\vec{\Psi}_{\xi_i} \simeq \vec{\Psi}_{i_0} \left(1-\dfrac{\xi_i}{\Xi_i} \right) + \vec{\Psi}_i' \left(\dfrac{\xi_i}{\Xi_i}\right)
-%\end{equation}
-%
-%\begin{equation}
-%\left\lbrace
-%\begin{array}{rcl}
-%  \Gamma_i(\vec{C} + \bm{\nu}^T \vec{\xi}) &\simeq & \beta_i (\xi_i - \Xi_i) + A_i (\xi_i-\Xi_i)^2 \\
-%  \\
-%  &+& \displaystyle \sum_{k\not=i} \langle   \vec{\Psi}_{i} \vert  \vec{\nu}_k \rangle \xi_k \\
-%  \\
-%  &+& \displaystyle \sum_{k\not=i} \dfrac{\xi_i}{\Xi_i} \langle   \vec{\Psi}_i' - \vec{\Psi}_{i} \vert  \vec{\nu}_k \rangle \xi_k \\
-% \end{array}
-% \right.
-%\end{equation}
- 
-\section{PREVIOUS}
+ \section{PREVIOUS}
 
 \subsection{Evolution}
 
