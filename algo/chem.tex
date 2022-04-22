@@ -178,9 +178,9 @@ So we need a consistent approximation of $\Gamma_i(\vec{C} + \xi_i \vec{\nu}_i)$
 \begin{equation}
 \left\lbrace
 \begin{array}{rcl}
-	\Gamma_i(\vec{C} + \xi_i \vec{\nu}_i) & \simeq & \Gamma_i + B_i \xi_i + A_i \xi_i^2\\
-	-\Gamma_i & = & B_i \Xi_i   + A_i \Xi_i  \\
-	 \beta_i   & = & B_i + 2 A_i \Xi_i  \\
+	\Gamma_i(\vec{C} + \xi_i \vec{\nu}_i) & \simeq & \Gamma_i + B_i \xi_i - A_i \xi_i^2\\
+	-\Gamma_i & = & B_i \Xi_i   - A_i \Xi_i^2  \\
+	 \beta_i   & = & B_i - 2 A_i \Xi_i  \\
 	\beta_i        & = & \langle \vec{\Psi}_i' \vert \vec{\nu}_i \rangle < 0\\
 \end{array}
 \right.
@@ -189,8 +189,8 @@ So we need a consistent approximation of $\Gamma_i(\vec{C} + \xi_i \vec{\nu}_i)$
 \begin{equation}
 \left\lbrace
 \begin{array}{rcl}
- \Xi_i^2 A_i & = & \Xi_i \beta_i + \Gamma_i \\
- \Xi_i B_i & = & -2\Gamma_i - \Xi_i \beta_i = \Xi_i \beta_i - 2A_i\\
+ \Xi_i^2 A_i & = & -(\Xi_i \beta_i + \Gamma_i) \\
+ \Xi_i B_i & = &  \Xi_i \beta_i + 2A_i\Xi_i^2\\
 \end{array}
 \right.
 \end{equation}
@@ -203,8 +203,8 @@ So we need a consistent approximation of $\Gamma_i(\vec{C} + \xi_i \vec{\nu}_i)$
 \begin{equation}
 \left\lbrace
 \begin{array}{rcl}
-	\Gamma_i(\vec{C} + \xi_i \vec{\nu}_i) & \simeq &
-	\Gamma_i + B_i \xi_i + A_i \xi_i^2 \\
+	\Gamma_i(\vec{C} + \xi_i \vec{\nu}_i+ \sum_{k\not=i} \xi_k \vec{\nu}_k) & \simeq &
+	\Gamma_i + B_i \xi_i - A_i \xi_i^2 \\
 	\\
 	& + & \displaystyle \sum_{k\not=i} \langle \vec{\Psi}_i \vert \vec{\nu}_k \rangle \xi_k \\
 	\\
@@ -213,47 +213,32 @@ So we need a consistent approximation of $\Gamma_i(\vec{C} + \xi_i \vec{\nu}_i)$
 \right.
 \end{equation}
 
-
 \begin{equation}
 \left\lbrace
 \begin{array}{rcl}
-	\beta_i        & = & \langle \vec{\Psi}_i' \vert \vec{\nu}_i \rangle < 0\\
+	\dfrac{\Gamma_i(\vec{C} + \xi_i \vec{\nu}_i+ \sum_{k\not=i} \xi_k \vec{\nu}_k)}{-\beta_i} & \simeq & 
+	\dfrac{\Gamma_i}{-\beta_i} - (1+\dfrac{2A\Xi_i}{\beta_i})\xi_i + \dfrac{A_i}{\beta_i} \xi_i^2\\
 	\\
-	\displaystyle \dfrac{\Gamma_i(\vec{C} + \bm{\nu}^T\vec{\xi})}{-\beta_i} & \simeq & \left( \Xi_i -\xi_i\right) + A_i \left(  \Xi_i -\xi_i\right)^2\\
-	& - & \displaystyle \sum_{k\not=i} \dfrac{\langle \vec{\Psi}_{\xi_i} \vert \vec{\nu}_k \rangle}{\beta_i} \xi_k\\
+	& - & \displaystyle \sum_{k\not=i} \dfrac{ \langle \vec{\Psi}_i \vert \vec{\nu}_k \rangle }{ \langle \vec{\Psi}_i' \vert \vec{\nu}_i \rangle}\xi_k\\
 	\\
-	\Xi_i^2 A_i & = & \dfrac{\Gamma_i}{-\beta_i} - \Xi_i \geq 0\\
-	\\
-	\vec{\Psi}_{\xi_i} & \simeq &   %\vec{\Psi}_i' -\left[\dfrac{\Xi_i-\xi_i}{\Xi_i}\right] \left(  \vec{\Psi}_i' - \vec{\Psi}_i\right)\\
-	\vec{\Psi}_i + \left[\dfrac{\xi_i}{\Xi_i}\right]  \left(  \vec{\Psi}_i' - \vec{\Psi}_i\right)
+	& - & \displaystyle \xi_i \sum_{k\not=i} \dfrac{\langle \bm{H}_i \vec{\nu}_i \vert \vec{\nu}_k \rangle}{\langle \vec{\Psi}_i' \vert \vec{\nu}_i \rangle} \xi_k \\
 \end{array}
 \right.
 \end{equation}
-
-\begin{equation}
-\left\lbrace
-\begin{array}{rcl}
-	\displaystyle \dfrac{\Gamma_i(\vec{C} + \bm{\nu}^T\vec{\xi})}{-\beta_i} & \simeq & \left( \Xi_i -\xi_i\right) + A_i \left(  \Xi_i -\xi_i\right)^2\\
-	\\
-	& - & \displaystyle \left[ \sum_{k\not=i} \Lambda_{ik} \xi_k \right] \\
-	\\
-	& - & \displaystyle 
-	%\left(\dfrac{\xi_i}{\Xi_i}\right) 
-	\xi_i \left[  \sum_{k\not=i} Q_{ik} \xi_k \right] \\
-	\\
-	\Lambda_{ik} & = & \displaystyle \dfrac{\langle \vec{\Psi}_i \vert \vec{\nu}_k \rangle}{\langle \vec{\Psi}_i' \vert \vec{\nu}_i \rangle}\\
-	\\
-	Q_{ik} & = & \displaystyle \dfrac{\langle \vec{\Psi}_i'-\vec{\Psi}_i \vert \vec{\nu}_k \rangle}{\Xi_i \langle \vec{\Psi}_i' \vert \vec{\nu}_i \rangle}\\
-	\vec{\Psi}_i'-\vec{\Psi}_i  & = & \Xi_i \tilde{\bm{H}}_i \vec{\nu}_i\\
 	
-	\langle \vec{\nu}_k \vert \tilde{\bm{H}}_i \vert \vec{\nu}_i \rangle & \leq & 0\\
-	\langle \vec{\Psi}_i' \vert \vec{\nu}_i \rangle & < & 0\\
-	Q_{ik} & \geq & 0\\
+\begin{equation}
+\left\lbrace
+\begin{array}{rcl}
+	\dfrac{\Gamma_i(\vec{C} + \xi_i \vec{\nu}_i+ \sum_{k\not=i} \xi_k \vec{\nu}_k)}{-\beta_i} & \simeq & 
+	\Xi_i  - \xi_i\\
+	& - & \displaystyle \sum_{k\not=i} \dfrac{ \langle \vec{\Psi}_i \vert \vec{\nu}_k \rangle }{ \langle \vec{\Psi}_i' \vert \vec{\nu}_i \rangle}\xi_k\\
+	\\
+	& - & \displaystyle \xi_i \sum_{k\not=i} \dfrac{\langle \bm{H}_i \vec{\nu}_i \vert \vec{\nu}_k \rangle}{\langle \vec{\Psi}_i' \vert \vec{\nu}_i \rangle} \xi_k \\
 \end{array}
 \right.
-\end{equation}
-
- 
+\end{equation}	
+	
+  
  \section{PREVIOUS}
 
 \subsection{Evolution}
