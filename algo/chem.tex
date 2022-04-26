@@ -181,13 +181,13 @@ So we need a consistent approximation of $\Gamma_i(\vec{C} + \xi_i \vec{\nu}_i)$
 \begin{itemize}
 \item Around $\vec{C}$: 	
 \begin{equation}
-	\Gamma_i(\vec{C}+\xi_i\vec{\nu}) \simeq \Gamma_i + \langle \vec{\Psi}_i \vert \vec{\nu}_i\rangle \xi_i
+	\Gamma_i(\vec{C}+\xi_i\vec{\nu}) \simeq \Gamma_i + \underbrace{\langle \vec{\Psi}_i \vert \vec{\nu}_i\rangle}_{\alpha_i} \xi_i
 \end{equation}
 which can be a singular point.
 
 \item Around $\vec{C}_i'$:
 \begin{equation}
-	\Gamma_i(\vec{C}+\xi_i\vec{\nu}) \simeq \langle \vec{\Psi}_i' \vert \vec{\nu}_i\rangle (\xi_i-\Xi_i)
+	\Gamma_i(\vec{C}+\xi_i\vec{\nu}) \simeq \underbrace{\langle \vec{\Psi}_i' \vert \vec{\nu}_i\rangle}_{\beta_i} (\xi_i-\Xi_i)
 \end{equation}
 which is a regular point (otherwise the equilibrium is blocked). 
 \end{itemize}
@@ -208,5 +208,34 @@ which is a regular point (otherwise the equilibrium is blocked).
 \end{itemize}
 
 \end{itemize}
+
+We assume that:
+\begin{equation}
+	\dot\Gamma_i(\xi) \simeq \alpha_i \left(1-\dfrac{\xi}{\Xi_i}\right) + \beta_i \left(\dfrac{\xi}{\Xi_i}\right) - 3 Q_i \left(1-\dfrac{\xi}{\Xi_i}\right) \left(\dfrac{\xi}{\Xi_i}\right) 
+\end{equation}
+and
+\begin{equation}
+	Q_i = \alpha_i + \beta_i + \dfrac{2\Gamma_i}{\Xi_i}
+\end{equation}
+so that:
+\begin{equation}
+	\Gamma_i(\vec{C}+\xi_i \vec{\nu}_i) \simeq \Gamma_i 
+	 + \dfrac{1}{2}\alpha_i \Xi_i 
+	 \left(\dfrac{\xi_i}{\Xi_i}\right) 
+	 \left( 2 -  \dfrac{\xi_i}{\Xi_i}\right) 
+	 + \dfrac{1}{2} \beta_i \Xi_i \left(\dfrac{\xi_i^2}{\Xi_i^2}\right)
+	 + Q_i \Xi_i\left(\dfrac{\xi_i^2}{\Xi_i^2}\right) \left[\dfrac{\xi_i}{\Xi_i}-\dfrac{3}{2}\right]
+\end{equation}
+
+
+\begin{equation}
+	\vec{\Psi}_{\xi_i} \simeq 
+	\left(1-\dfrac{\xi_i}{\Xi_i}\right) \vec{\Psi}_i + \left(\dfrac{\xi_i}{\Xi_i}\right) \vec{\Psi}_i' 
+	+ \vec{\eta}_i \left(\dfrac{\xi_i}{\Xi_i}\right) \left(1-\dfrac{\xi_i}{\Xi_i}\right)
+\end{equation}
+
+\begin{equation}
+	\langle \vec{\eta}_i \vert \vec{\nu}_i \rangle = -3 Q_i 
+\end{equation}
 
 \end{document}
