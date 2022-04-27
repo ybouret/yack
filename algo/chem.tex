@@ -237,15 +237,18 @@ which is a regular point (otherwise the equilibrium is blocked).
 \right.
 \end{equation}
 
+Let us decrease $\Gamma_i$ by a small fraction $\alpha_i$:
+
 \begin{equation}
-	\alpha_i \Gamma_i = \Gamma_i - \sigma_i \xi_i - \kappa_i \xi_i^2 
+	(1-\alpha_i) \Gamma_i = \Gamma_i - \sigma_i \xi_i - \kappa_i \xi_i^2 
 	+ \underbrace{\left[ \sum_{k\not=i} \langle \vec{\Psi}_i \vert \vec{\nu}_k \rangle \xi_k \right]}_{Y_i}
 	+ \dfrac{\xi_i}{\Xi_i} \underbrace{\left[ \sum_{k\not=i} \langle \delta\vec{\Psi}_i \vert \vec{\nu}_k \rangle \xi_k \right]}_{W_i=Y_i'-Y_i}
 \end{equation}
 
+
 \begin{equation}
 	\underbrace{\Xi_i^2 \kappa_i}_{A_i} \left(\dfrac{\xi_i}{\Xi_i}\right)^2 + \underbrace{\left[ \Xi_i \sigma_i - W_i \right]}_{B_i} \left(\dfrac{\xi_i}{\Xi_i}\right)
-	- \underbrace{\left[ (1-\alpha_i) \Gamma_i + Y_i \right]}_{C_i} = 0
+	- \underbrace{\left[ \alpha_i \Gamma_i + Y_i \right]}_{C_i} = 0
 \end{equation}
 
 \begin{equation}
