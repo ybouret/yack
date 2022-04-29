@@ -154,6 +154,7 @@ namespace yack
             catch(...)
             {
                 delete io;
+                throw;
             }
 
         }
