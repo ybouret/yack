@@ -3,7 +3,7 @@
 #ifndef YACK_COLOR_DATA_TO_RGBA_INCLUDED
 #define YACK_COLOR_DATA_TO_RGBA_INCLUDED 1
 
-#include "yack/color/rgba-conv.hpp"
+#include "yack/color/rgba/conv.hpp"
 
 namespace yack
 {

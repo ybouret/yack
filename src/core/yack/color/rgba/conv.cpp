@@ -1,4 +1,4 @@
-#include "yack/color/rgba-conv.hpp"
+#include "yack/color/rgba/conv.hpp"
 
 namespace yack
 {
