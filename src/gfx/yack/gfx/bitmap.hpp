@@ -28,9 +28,15 @@ namespace yack
             //
             // C++
             //__________________________________________________________________
-            virtual ~bitmap() throw();
+
+            //! setup
             explicit bitmap(const unit_t W, const unit_t H, const unit_t D);
-            bitmap(const bitmap &other) throw(); //!< shared copy
+
+            //! shared copy
+            bitmap(const bitmap &other) throw();
+            
+            //! cleanup
+            virtual ~bitmap() throw();
 
         protected:
             //__________________________________________________________________

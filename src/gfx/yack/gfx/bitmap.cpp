@@ -1,4 +1,5 @@
 #include "yack/gfx/bitmap.hpp"
+#include "yack/exception.hpp"
 
 namespace yack
 {
@@ -25,5 +26,8 @@ namespace yack
         {
 
         }
+
+        
+
     }
 }
