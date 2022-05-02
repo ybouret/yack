@@ -125,7 +125,7 @@ namespace yack
                     png_destroy_read_struct(&png, &info, NULL);
                 }
 
-                inline void call()
+                inline pixmap<rgba> call()
                 {
                     png_init_io(png, (FILE *)handle );
                     png_read_info(png, info);
@@ -181,6 +181,7 @@ namespace yack
                         row[i+1] = (png_byte*)&pxm[i][0];
                     }
                     png_read_image(png,&row[1]);
+                    return pxm;
                 }
 
             private:
@@ -197,7 +198,7 @@ namespace yack
 
 
 
-        void png_load(const string &filename)
+        pixmap<rgba> png_load(const string &filename)
         {
             PNG_Reader *io = new PNG_Reader(filename);
             try
@@ -207,9 +208,9 @@ namespace yack
                     io->failed("png_load");
                 }
 
-                io->call();
-
+                pixmap<rgba> res = io->call();
                 delete io;
+                return res;
             }
             catch(...)
             {

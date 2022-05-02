@@ -14,7 +14,7 @@ namespace yack
     {
 
         
-        void png_load(const string &);
+        pixmap<rgba> png_load(const string &);
 
         
 
