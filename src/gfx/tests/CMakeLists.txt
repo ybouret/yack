@@ -11,9 +11,10 @@ yack_testing(gfx)
 set(HERE ${CMAKE_CURRENT_SOURCE_DIR})
 enable_testing()
 
-add_test(types test-gfx types)
-add_test(png_io test-gfx png_io)
-add_test(png    test-gfx png)
+add_test(types      test-gfx types)
+add_test(rgba_field test-gfx rgba_field)
+add_test(png_io     test-gfx png_io)
+add_test(png        test-gfx png)
 
 
 
