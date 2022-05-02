@@ -46,6 +46,20 @@ namespace yack
                     split2D::build(*(++t),size,rank,lower,upper);
                 }
             }
+
+            //! setup
+            inline explicit tess2D(const v2d<T>   info,
+                                   const size_t   size) :
+            array_type(size)
+            {
+                const v2d<T> lower(0,0);
+                const v2d<T> upper(info.x-1,info.y-1);
+                tiles_type *t = **this;
+                for(size_t rank=0;rank<size;++rank)
+                {
+                    split2D::build(*(++t),size,rank,lower,upper);
+                }
+            }
             
             //! cleanup
             inline virtual ~tess2D() throw() {}
