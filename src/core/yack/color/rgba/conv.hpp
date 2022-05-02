@@ -10,14 +10,20 @@ namespace yack
     namespace color
     {
 
+        //______________________________________________________________________
+        //
+        //
+        //! base class for rgba conversions
+        //
+        //______________________________________________________________________
         class rgba_conv  
         {
         public:
-            virtual ~rgba_conv() throw();
-            const unit_t d; //!< depth
+            virtual ~rgba_conv() throw();                   //!< cleanup
+            const unit_t d;                                 //!< depth>0
 
         protected:
-            explicit rgba_conv(const unit_t depth) throw();
+            explicit rgba_conv(const unit_t depth) throw(); //!< setup
 
         private:
             YACK_DISABLE_COPY_AND_ASSIGN(rgba_conv);

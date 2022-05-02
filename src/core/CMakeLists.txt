@@ -564,7 +564,7 @@ SOURCE_GROUP(color FILES ${color})
 install( FILES ${color_decl} DESTINATION include/yack/color )
 
 file(GLOB color_rgba_impl yack/color/rgba/*.cpp)
-file(GLOB color_rgba_decl yack/color.rgba/*.hpp)
+file(GLOB color_rgba_decl yack/color/rgba/*.hpp)
 set(color_rgba ${color_rgba_impl} ${color_rgba_decl})
 SOURCE_GROUP(color/rgba FILES ${color_rgba})
 install( FILES ${color_rgba_decl} DESTINATION include/yack/color/rgba )

@@ -9,7 +9,12 @@ namespace yack
 {
     namespace color
     {
-
+        //______________________________________________________________________
+        //
+        //
+        //! interface to convert data to rgba
+        //
+        //______________________________________________________________________
         class data_to_rgba : public rgba_conv
         {
         public:
