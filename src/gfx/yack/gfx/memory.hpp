@@ -9,7 +9,7 @@ namespace yack
 {
     namespace graphic
     {
-        typedef memory::dyadic memory_allocator;
+        typedef memory::dyadic memory_allocator; //!< alias
         
     }
 }

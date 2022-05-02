@@ -17,7 +17,8 @@ namespace yack
         //
         //______________________________________________________________________
         typedef concurrent::tess2D<unit_t>  tess2D; //!< base class for tessellation
-        typedef tess2D::tiles_type          tiles;
+        typedef tess2D::tiles_type          tiles;  //!< alias
+        typedef tiles::tile_type            tile;   //!< alias
         typedef v2d<unit_t>                 coord;  //!< alias
 
         //______________________________________________________________________

@@ -1,6 +1,7 @@
 
 #include "yack/gfx/format/png.hpp"
 #include "yack/gfx/memory.hpp"
+#include "yack/sequence/cxx-array.hpp"
 
 #include "yack/exception.hpp"
 #include "yack/memory/embed.hpp"
@@ -47,8 +48,6 @@ namespace yack
             public:
                 const size_t w;
                 const size_t h;
-
-
 
                 explicit PNG_Bytes(const size_t bytes_per_row, const size_t rows) :
                 w(bytes_per_row),
@@ -169,9 +168,19 @@ namespace yack
                     const size_t bytes_per_row = png_get_rowbytes(png,info);
 
                     std::cerr << "bytes_per_row=" << bytes_per_row << std::endl;
+
+#if 0
                     PNG_Bytes data(bytes_per_row,height);
                     data(png);
+#endif
 
+                    pixmap<rgba>                          pxm(width,height);
+                    cxx_array<png_bytep,memory_allocator> row(height);
+                    for(size_t i=0;i<height;++i)
+                    {
+                        row[i+1] = (png_byte*)&pxm[i][0];
+                    }
+                    png_read_image(png,&row[1]);
                 }
 
             private:

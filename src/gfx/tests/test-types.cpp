@@ -24,6 +24,12 @@ void test_io( pixmap<T> &pxm, randomized::bits &ran )
             YACK_ASSERT(s==cxm(y)(x));
         }
     }
+
+    {
+        pixmap<T> tmp = pxm;
+        YACK_ASSERT(tmp.w==pxm.w);
+    }
+
 }
 
 

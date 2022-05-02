@@ -26,7 +26,7 @@ namespace yack
             //
             // types and definitions
             //__________________________________________________________________
-            typedef memory::operative io_type;
+            typedef memory::operative io_type; //!< alias
 
             //__________________________________________________________________
             //
@@ -53,8 +53,8 @@ namespace yack
             //
             // members
             //__________________________________________________________________
-            const size_t   bytes;
-            void          *entry;
+            const size_t   bytes; //!< used bytes
+            void          *entry; //!< first byte address
 
         private:
             YACK_DISABLE_COPY_AND_ASSIGN(bitfield);

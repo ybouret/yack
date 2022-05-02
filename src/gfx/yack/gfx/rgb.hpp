@@ -11,8 +11,8 @@ namespace yack
 {
     namespace graphic
     {
-        typedef color::rgb  rgb;
-        typedef color::rgba rgba;
+        typedef color::rgb  rgb;  //!< alias
+        typedef color::rgba rgba; //!< alias
     }
 
 }

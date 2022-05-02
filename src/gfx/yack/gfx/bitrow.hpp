@@ -10,7 +10,8 @@ namespace yack
 {
     namespace graphic
     {
-        typedef raw_zero_flux zero_flux;
+
+        typedef raw_zero_flux zero_flux; //!< alias
         
         //______________________________________________________________________
         //
@@ -25,17 +26,20 @@ namespace yack
             //
             // C++
             //__________________________________________________________________
+
+            //! setup
             bitrow(void            *entry,
                    const zero_flux &zfluz) throw();
 
+            //! cleanup
             ~bitrow() throw();
 
             //__________________________________________________________________
             //
             // members
             //__________________________________________________________________
-        private: void            *p;
-        public:  const zero_flux &w;
+        private: void            *p; //!< first item address
+        public:  const zero_flux &w; //!< zero_flux computation reference
 
         private:
             YACK_DISABLE_COPY_AND_ASSIGN(bitrow);

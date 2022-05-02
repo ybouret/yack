@@ -10,10 +10,16 @@ namespace yack
 {
     namespace graphic
     {
+        //______________________________________________________________________
+        //
+        //
+        //! command line helpers
+        //
+        //______________________________________________________________________
         struct command_line
         {
-            static coord WxH(const string &);
-            static coord WxH(const char   *);
+            static coord WxH(const string &); //!< parse wxh
+            static coord WxH(const char   *); //!< parse wxh wrapper
         };
     }
 }

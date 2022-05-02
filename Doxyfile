@@ -881,6 +881,7 @@ INPUT                  = src/core/yack \
 			 src/json/yack \
                          src/lua++/yack \
 			 src/chem/yack  \
+			 src/gfx/yack   \
 			 src/mpi++/yack
 
 # This tag can be used to specify the character encoding of the source files

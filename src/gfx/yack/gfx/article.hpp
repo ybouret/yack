@@ -13,6 +13,12 @@ namespace yack
     namespace graphic
     {
 
+        //______________________________________________________________________
+        //
+        //
+        //! counted object for graphic namespace
+        //
+        //______________________________________________________________________
         class article : public object, public counted
         {
         public:
