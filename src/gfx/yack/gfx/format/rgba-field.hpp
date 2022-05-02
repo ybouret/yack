@@ -12,14 +12,15 @@ namespace yack
 {
     namespace graphic
     {
-        
+
+
         class rgba_field : public article, public metrics
         {
         public:
             virtual ~rgba_field() throw();
             explicit rgba_field(const unit_t width,
                                 const unit_t height);
-
+            
         private:
             YACK_DISABLE_COPY_AND_ASSIGN(rgba_field);
             size_t items;
