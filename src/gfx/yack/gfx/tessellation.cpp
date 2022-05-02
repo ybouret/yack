@@ -12,7 +12,8 @@ namespace yack
 
         tessellation:: tessellation(const dimensions &dims,
                                     const size_t     ncpu) :
-        tess2D( coord(dims.w,dims.h), ncpu)
+        dimensions(dims),
+        tess2D( coord(w,h), ncpu)
         {
         }
 

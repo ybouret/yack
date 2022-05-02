@@ -2,14 +2,17 @@
 
 #include "yack/gfx/utils.hpp"
 #include "yack/ios/ascii/convert.hpp"
-#include "yack/gfx/broker.hpp"
+#include "yack/gfx/pixmap.hpp"
+#include "yack/gfx/rgb.hpp"
 #include "yack/utest/run.hpp"
 #include "yack/concurrent/loop/simd.hpp"
 #include "yack/concurrent/loop/mono.hpp"
 #include "yack/concurrent/thread.hpp"
+#include "yack/color/rgba/make-gsf.hpp"
 
 
 using namespace yack;
+using namespace graphic;
 
 namespace
 {
@@ -19,6 +22,11 @@ namespace
     {
         YACK_LOCK(sync);
         std::cerr << "broker@" << t << std::endl;
+    }
+
+    static inline float rgba_to_float(const rgba &c) throw()
+    {
+        return color::make_gsf::table[c.r+c.g+c.b];
     }
 }
 
@@ -32,13 +40,13 @@ YACK_UTEST(broker)
 
     concurrent::thread::verbose = true;
 
-    const graphic::dimensions   dims(sz.x,sz.y);
+    const  dimensions           dims(sz.x,sz.y);
     const concurrent::topology  topo;
-    graphic::engine  parEngine = new concurrent::simd(topo);
-    graphic::engine  serEngine = new concurrent::mono();
+    engine  parEngine = new concurrent::simd(topo);
+    engine  serEngine = new concurrent::mono();
 
-    graphic::broker  par(parEngine,dims);
-    graphic::broker  ser(serEngine,dims);
+    broker  par(parEngine,dims);
+    broker  ser(serEngine,dims);
 
     std::cerr << "Serial: " << std::endl;
     ser(showBroker,NULL);
@@ -46,8 +54,8 @@ YACK_UTEST(broker)
     std::cerr << "Parallel: " << std::endl;
     par(showBroker,NULL);
 
-
-
+    pixmap<rgba>  source(dims.w,dims.h);
+    pixmap<float> target(source,par,rgba_to_float);
 
 
 }

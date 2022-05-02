@@ -47,6 +47,8 @@ namespace yack
             //! call gkernel on each set of tiles
             void operator()(commands, void *);
 
+            
+
         private:
             YACK_DISABLE_COPY_AND_ASSIGN(broker);
             virtual void run(const concurrent::context &, lockable &) throw();

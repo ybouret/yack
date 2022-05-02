@@ -6,11 +6,16 @@
 
 #include "yack/gfx/pixrow.hpp"
 #include "yack/gfx/bitmap.hpp"
+#include "yack/gfx/broker.hpp"
 
 namespace yack
 {
     namespace graphic
     {
+#define YACK_GFX_PIXMAP_CTOR()           \
+row( coerce_cast<row_type>(rows->row) ), \
+zfh(rows->zfh)
+
         //______________________________________________________________________
         //
         //
@@ -36,8 +41,7 @@ namespace yack
             inline explicit pixmap(const unit_t W,
                                    const unit_t H) :
             bitmap(W,H,sizeof(T)),
-            row( coerce_cast<row_type>(rows->row) ),
-            zfh(rows->zfh)
+            YACK_GFX_PIXMAP_CTOR()
             {
                 data->fill<T>(n);
             }
@@ -45,9 +49,51 @@ namespace yack
             //! shared copy
             inline pixmap(const pixmap &other) throw() :
             bitmap(other),
-            row(coerce_cast<row_type>(rows->row) ),
-            zfh(rows->zfh)
+            YACK_GFX_PIXMAP_CTOR()
             {
+            }
+
+            //! hard copy
+            template <typename U,typename PROC>
+            inline pixmap(const pixmap<U> &source,
+                          broker          &device,
+                          PROC            &U_to_T) :
+            bitmap(source.w,source.h,sizeof(T)),
+            YACK_GFX_PIXMAP_CTOR()
+            {
+                // initialize
+                data->fill<T>(n);
+
+                struct task
+                {
+                    pixmap<T>       &target;
+                    const pixmap<U> &source;
+                    PROC            &U_to_T;
+                    static inline
+                    void make(void *args,const tiles &t,lockable&) throw()
+                    {
+                        task            &self   = *static_cast<task *>(args);
+                        pixmap<T>       &target = self.target;
+                        const pixmap<U> &source = self.source;
+                        PROC            &U_to_T = self.U_to_T;
+                        for(const tile *node=t.head();node;node=node->next)
+                        {
+                            size_t           len = node->width;
+                            coord            pos = node->start;
+                            pixrow<T>       &tgt = target(pos.y);
+                            const pixrow<U> &src = source(pos.y);
+                            while(len-- > 0 )
+                            {
+                                tgt(pos.x) = U_to_T(src(pos.x));
+                                ++pos.x;
+                            }
+                        }
+                    }
+                };
+
+                task todo = { *this, source, U_to_T };
+                device(task::make,&todo);
+
             }
 
             //! cleanup

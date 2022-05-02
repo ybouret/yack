@@ -26,7 +26,7 @@ namespace yack
 
             const unit_t w; //!< width
             const unit_t h; //!< height
-
+            
         private:
             YACK_DISABLE_ASSIGN(dimensions);
         };

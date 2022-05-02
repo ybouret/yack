@@ -27,7 +27,7 @@ namespace yack
         //! tesselation
         //
         //______________________________________________________________________
-        class tessellation : public tess2D
+        class tessellation : public dimensions, public tess2D
         {
         public:
             //! build tessellation for dimensions and ncpu
