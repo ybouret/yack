@@ -1,6 +1,3 @@
-
-
-
 #include "yack/color/rgba/make-gsf.hpp"
 
 namespace yack

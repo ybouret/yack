@@ -20,7 +20,7 @@ YACK_UTEST(color_gs)
             {
                 std::cout << ",";
             }
-            if(0==(i%8))
+            if(0==((i+1)%8))
             {
                 std::cout << "\n";
             }
@@ -40,7 +40,7 @@ YACK_UTEST(color_gs)
             {
                 std::cout << ",";
             }
-            if(0==(i%8))
+            if(0==((i+1)%8))
             {
                 std::cout << "\n";
             }

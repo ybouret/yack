@@ -27,7 +27,36 @@ namespace yack
 
         }
 
-        
+        static inline
+        bitfield * check_bitfield(bitfield *F, const metrics &info)
+        {
+            static const char fn[] = "bitmap: ";
+
+            if(!F)
+            {
+                throw exception("%sNULL bitfield",fn);
+            }
+
+            if(F->bytes<info.b)
+            {
+                delete F;
+                throw exception("%sinvalid bitfield",fn);
+            }
+
+            return F;
+        }
+
+        bitmap:: bitmap(bitfield    *F,
+                        const unit_t W,
+                        const unit_t H,
+                        const unit_t D) :
+        article(),
+        metrics(W,H,D),
+        data( check_bitfield(F,*this) ),
+        rows( new bitrows(*this,data->entry) )
+        {
+        }
+
 
     }
 }

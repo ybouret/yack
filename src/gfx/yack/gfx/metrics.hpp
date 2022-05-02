@@ -40,7 +40,7 @@ namespace yack
             const unit_t n; //!< w*h
             const unit_t d; //!< depth
             const unit_t s; //!< stride = w * depth
-            
+            const size_t b; //!< minimal bytes  = stride * h = n * depth
         private:
             YACK_DISABLE_ASSIGN(metrics);
         };

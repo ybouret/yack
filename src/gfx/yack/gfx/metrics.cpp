@@ -12,6 +12,7 @@ namespace yack
             coerce(n) = 0;
             coerce(d) = 0;
             coerce(s) = 0;
+            coerce(b) = 0;
         }
 
         metrics:: metrics(const metrics &other) throw() :
@@ -19,7 +20,8 @@ namespace yack
         h(other.h),
         n(other.n),
         d(other.d),
-        s(other.s)
+        s(other.s),
+        b(other.b)
         {
         }
 
@@ -28,7 +30,8 @@ namespace yack
         h(H),
         n(w*h),
         d(D),
-        s(w*d)
+        s(w*d),
+        b(n*d)
         {
             assert(w>0);
             assert(h>0);

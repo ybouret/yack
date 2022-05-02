@@ -32,6 +32,12 @@ namespace yack
             //! setup
             explicit bitmap(const unit_t W, const unit_t H, const unit_t D);
 
+            //! setup from user data
+            explicit bitmap(bitfield    *F,
+                            const unit_t W,
+                            const unit_t H,
+                            const unit_t D);
+
             //! shared copy
             bitmap(const bitmap &other) throw();
             

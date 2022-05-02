@@ -21,6 +21,7 @@ namespace yack
         class make_gsf : public rgba_to_data
         {
         public:
+            //! table of unit floats
             static const float table[3*255+1];
             
             explicit make_gsf() throw(); //!< depth=sizeof(float)
