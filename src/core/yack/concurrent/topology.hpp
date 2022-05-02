@@ -58,7 +58,20 @@ namespace yack
         //! alias
         //
         //______________________________________________________________________
-        typedef arc_ptr<const quark::topology> topology;
+        typedef arc_ptr<const quark::topology> topology_;
+
+        class topology : public topology_
+        {
+        public:
+            virtual ~topology() throw();
+            explicit topology();
+            explicit topology(const size_t  );
+            explicit topology(const string &);
+            explicit topology(const char   *);
+
+        private:
+            YACK_DISABLE_ASSIGN(topology);
+        };
 
 
 

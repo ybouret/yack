@@ -7,6 +7,7 @@
 #include "yack/concurrent/loop.hpp"
 #include "yack/concurrent/condition.hpp"
 #include "yack/concurrent/mutex.hpp"
+#include "yack/concurrent/topology.hpp"
 
 namespace yack
 {
@@ -28,8 +29,8 @@ namespace yack
             //
             // C++
             //__________________________________________________________________
-            virtual ~simd() throw();       //!< cleanup
-            explicit simd(const size_t n); //!< setup
+            virtual ~simd() throw();         //!< cleanup
+            explicit simd(const topology &); //!< setup
 
             //__________________________________________________________________
             //

@@ -135,6 +135,24 @@ namespace yack
 
         }
 
+        topology:: ~topology() throw() {}
+
+        topology:: topology() : topology_( new quark::topology() )
+        {
+        }
+        
+        topology:: topology(const size_t n) : topology_( new quark::topology(n) )
+        {
+        }
+
+        topology:: topology(const string &s) : topology_( new quark::topology(s) )
+        {
+        }
+
+        topology:: topology(const char *s) : topology_( new quark::topology(s) )
+        {
+        }
+
     }
 
 }

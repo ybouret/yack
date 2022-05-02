@@ -116,9 +116,9 @@ YACK_UTEST(sync_loop)
         }
     }
 
-    
+    const concurrent::topology topo(threads);
     concurrent::mono seq;
-    concurrent::simd par(threads);
+    concurrent::simd par(topo);
 
     {
         seq(compute,NULL);

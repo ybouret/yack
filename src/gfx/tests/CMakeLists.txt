@@ -13,6 +13,7 @@ enable_testing()
 
 add_test(types      test-gfx types)
 add_test(tess       test-gfx tess)
+add_test(broker     test-gfx broker)
 add_test(png_io     test-gfx png_io)
 add_test(png        test-gfx png)
 
