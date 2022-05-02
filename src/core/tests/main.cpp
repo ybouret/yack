@@ -164,6 +164,7 @@ YACK_UTEST_DECL(256)
     YACK_UTEST(color_rgb);
     YACK_UTEST(color_yuv);
     YACK_UTEST(color_unit_real);
+    YACK_UTEST(color_gs);
 
 }
 YACK_UTEST_EXEC()

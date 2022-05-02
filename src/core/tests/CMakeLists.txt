@@ -256,6 +256,7 @@ add_test(fields     test-core fields)
 add_test(color:rgb  test-core color_rgb)
 add_test(color:yuv  test-core color_yuv)
 add_test(color:unit-real test-core color_unit_real)
+add_test(color:gs   test-core color_gs)
 
 
 yack_testing(core)
