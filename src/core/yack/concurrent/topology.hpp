@@ -60,14 +60,20 @@ namespace yack
         //______________________________________________________________________
         typedef arc_ptr<const quark::topology> topology_;
 
+        //______________________________________________________________________
+        //
+        //
+        //! high level topology
+        //
+        //______________________________________________________________________
         class topology : public topology_
         {
         public:
-            virtual ~topology() throw();
-            explicit topology();
-            explicit topology(const size_t  );
-            explicit topology(const string &);
-            explicit topology(const char   *);
+            virtual ~topology() throw();       //!< cleanup
+            explicit topology();               //!< default or parse existing YACK_NUM_THREADS
+            explicit topology(const size_t  ); //!< n procs
+            explicit topology(const string &); //!< parse content
+            explicit topology(const char   *); //!< parse content
 
         private:
             YACK_DISABLE_ASSIGN(topology);

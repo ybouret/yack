@@ -13,7 +13,7 @@ namespace yack
     namespace graphic
     {
 
-        
+        //! wip
         pixmap<rgba> png_load(const string &);
 
         
