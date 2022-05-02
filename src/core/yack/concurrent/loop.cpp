@@ -11,7 +11,10 @@ namespace yack
         {
         }
 
-        loop::loop() throw()
+        loop::loop() throw() :
+        object(),
+        counted(),
+        readable<context>()
         {
         }
 

@@ -3,7 +3,7 @@
 #ifndef YACK_GFX_TESSELLATION_INCLUDED
 #define YACK_GFX_TESSELLATION_INCLUDED 1
 
-#include "yack/gfx/metrics.hpp"
+#include "yack/gfx/dimensions.hpp"
 #include "yack/concurrent/tess2d.hpp"
 
 namespace yack
@@ -30,9 +30,9 @@ namespace yack
         class tessellation : public tess2D
         {
         public:
-            //! build tessellation for a metrics and ncpu
-            explicit tessellation(const metrics &info,
-                                  const size_t   ncpu);
+            //! build tessellation for dimensions and ncpu
+            explicit tessellation(const dimensions &dims,
+                                  const size_t      ncpu);
 
             //! cleanup
             virtual ~tessellation() throw();

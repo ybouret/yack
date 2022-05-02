@@ -5,6 +5,8 @@
 
 #include "yack/concurrent/loop/runnable.hpp"
 #include "yack/container/readable.hpp"
+#include "yack/object.hpp"
+#include "yack/counted.hpp"
 
 namespace yack
 {
@@ -17,7 +19,7 @@ namespace yack
         //! interface for Single Instruction Multiple Data
         //
         //______________________________________________________________________
-        class loop : public readable<context>
+        class loop : public object, public counted, public readable<context>
         {
         public:
             //__________________________________________________________________

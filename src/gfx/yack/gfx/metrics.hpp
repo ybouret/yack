@@ -1,10 +1,9 @@
-
 //! \file
 
 #ifndef YACK_GFX_METRICS_INCLUDED
 #define YACK_GFX_METRICS_INCLUDED 1
 
-#include "yack/setup.hpp"
+#include "yack/gfx/dimensions.hpp"
 
 
 namespace yack
@@ -18,7 +17,7 @@ namespace yack
         //! metrics for a bitmap
         //
         //______________________________________________________________________
-        class metrics
+        class metrics : public dimensions
         {
         public:
             //__________________________________________________________________
@@ -35,8 +34,6 @@ namespace yack
             //
             // members
             //__________________________________________________________________
-            const unit_t w; //!< width
-            const unit_t h; //!< height
             const unit_t n; //!< w*h
             const unit_t d; //!< depth
             const unit_t s; //!< stride = w * depth

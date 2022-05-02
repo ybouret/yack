@@ -7,10 +7,10 @@ using namespace yack;
 
 YACK_UTEST(tess)
 {
-    graphic::coord dims(20,10);
+    graphic::coord sz(20,10);
     if(argc>1)
     {
-        dims = graphic::command_line::WxH(argv[1]);
+        sz = graphic::command_line::WxH(argv[1]);
     }
     size_t cpus = 4;
     if(argc>2)
@@ -18,8 +18,8 @@ YACK_UTEST(tess)
         cpus = ios::ascii::convert::to<size_t>(argv[2],"cpus");
     }
 
-    const graphic::metrics      info(dims.x,dims.y,4);
-    const graphic::tessellation tess(info,cpus);
+    const graphic::dimensions   dims(sz.x,sz.y);
+    const graphic::tessellation tess(dims,cpus);
 
     std::cerr << tess.size() << std::endl;
     std::cerr << tess << std::endl;

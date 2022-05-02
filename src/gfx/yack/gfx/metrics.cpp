@@ -7,8 +7,6 @@ namespace yack
     {
         metrics:: ~metrics() throw()
         {
-            coerce(w) = 0;
-            coerce(h) = 0;
             coerce(n) = 0;
             coerce(d) = 0;
             coerce(s) = 0;
@@ -16,8 +14,7 @@ namespace yack
         }
 
         metrics:: metrics(const metrics &other) throw() :
-        w(other.w),
-        h(other.h),
+        dimensions(other),
         n(other.n),
         d(other.d),
         s(other.s),
@@ -26,8 +23,7 @@ namespace yack
         }
 
         metrics:: metrics(const unit_t W, const unit_t H, const unit_t D) throw() :
-        w(W),
-        h(H),
+        dimensions(W,H),
         n(w*h),
         d(D),
         s(w*d),

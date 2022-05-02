@@ -10,9 +10,9 @@ namespace yack
         {
         }
 
-        tessellation:: tessellation(const metrics &info,
-                                    const size_t   ncpu) :
-        tess2D( coord(info.w,info.h), ncpu)
+        tessellation:: tessellation(const dimensions &dims,
+                                    const size_t     ncpu) :
+        tess2D( coord(dims.w,dims.h), ncpu)
         {
         }
 
