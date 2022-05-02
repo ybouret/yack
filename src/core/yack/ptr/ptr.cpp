@@ -1,5 +1,5 @@
 
-#include "yack/ptr.hpp"
+#include "yack/ptr/ptr.hpp"
 
 namespace yack
 {

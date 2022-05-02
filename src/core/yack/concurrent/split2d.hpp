@@ -7,6 +7,7 @@
 #include "yack/type/v2d.hpp"
 #include "yack/object.hpp"
 #include "yack/data/pool/cxx.hpp"
+#include "yack/ptr/ptr.hpp"
 
 namespace yack
 {
@@ -47,7 +48,8 @@ namespace yack
             YACK_DISABLE_COPY_AND_ASSIGN(tile2D);
         };
         
-        
+        struct split2D;
+
         //______________________________________________________________________
         //
         //
@@ -58,6 +60,12 @@ namespace yack
         class tiles2D
         {
         public:
+            //__________________________________________________________________
+            //
+            // types
+            //__________________________________________________________________
+            typedef tile2D<T> tile_type; //!< alias
+
             //__________________________________________________________________
             //
             // C++
@@ -77,24 +85,23 @@ namespace yack
             }
             
             inline size_t           size() const throw() { return tiles.size; } //!< number of tiles
-            inline const tile2D<T> *head() const throw() { return tiles.head; } //!< first tile
-            inline void             finish()     throw() { tiles.reverse();   } //!< reverse order
-            
+            inline const tile_type *head() const throw() { return tiles.head; } //!< first tile
+
             //__________________________________________________________________
             //
             //! code to loop over all vertices
             //__________________________________________________________________
             
-#define YACK_SYNC_TILES2D(CODE)                       \
-/**/  for(const tile2D<T> *t=tiles.head;t;t=t->next) \
-/**/  {                                             \
-/**/    unit_t len = t->width;                     \
-/**/    v2d<T> pos = t->start;                    \
-/**/    while(len-- >0)                          \
-/**/    {                                       \
-/**/      CODE;                                \
-/**/      ++pos.x;                            \
-/**/    }                                    \
+#define YACK_SYNC_TILES2D(CODE)                                   \
+/**/  for(const concurrent::tile2D<T> *t=tiles.head;t;t=t->next) \
+/**/  {                                                         \
+/**/    unit_t len = t->width;                                 \
+/**/    v2d<T> pos = t->start;                                \
+/**/    while(len-- >0)                                      \
+/**/    {                                                   \
+/**/      CODE;                                            \
+/**/      ++pos.x;                                        \
+/**/    }                                                \
 /**/  }
             
             //__________________________________________________________________
@@ -116,7 +123,28 @@ namespace yack
             {
                 YACK_SYNC_TILES2D(proc(pos,args))
             }
-            
+
+            //__________________________________________________________________
+            //
+            //! display
+            //__________________________________________________________________
+            friend inline std::ostream & operator<<(std::ostream &os, const tiles2D &self)
+            {
+                os << '{';
+                const tile_type *t = self.head();
+                if(t)
+                {
+                    show1(os,t);
+                    for(t=t->next;t;t=t->next)
+                        show1(os << '|',t);
+                }
+                else
+                {
+                    os << ptr_::nil;
+                }
+                os << '}';
+                return os;
+            }
             
             //__________________________________________________________________
             //
@@ -128,7 +156,16 @@ namespace yack
             
         private:
             YACK_DISABLE_COPY_AND_ASSIGN(tiles2D);
-            cxx_pool_of< tile2D<T> > tiles;
+            cxx_pool_of< tile_type > tiles;
+            inline void   finish()     throw() { tiles.reverse();   } //!< reverse order
+            friend struct split2D;
+
+            static inline void show1(std::ostream &os, const tile_type *t)
+            {
+                os << t->start << "+" << t->width;
+            }
+
+
         };
         
         
