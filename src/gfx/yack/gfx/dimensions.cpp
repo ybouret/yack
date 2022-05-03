@@ -28,6 +28,12 @@ namespace yack
 
         }
 
+        bool dimensions:: matches_dimensions(const dimensions &dims) const throw()
+        {
+            return w==dims.w && h==dims.h;
+        }
+
+
     }
 
 }

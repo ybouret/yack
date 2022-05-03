@@ -1,8 +1,8 @@
 
 //! \file
 
-#ifndef YACK_GFX_BROKER_INCLUDED
-#define YACK_GFX_BROKER_INCLUDED 1
+#ifndef YACK_GFX_HISTOGRAM_INCLUDED
+#define YACK_GFX_HISTOGRAM_INCLUDED 1
 
 #include "yack/gfx/rgb.hpp"
 
