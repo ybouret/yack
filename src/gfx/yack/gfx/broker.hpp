@@ -15,11 +15,11 @@ namespace yack
         //______________________________________________________________________
         //
         //
-        //! alias
+        // aliases
         //
         //______________________________________________________________________
-        typedef arc_ptr<concurrent::loop> engine;
-        typedef concurrent::context       context;
+        typedef arc_ptr<concurrent::loop> engine;  //!< shared concurrent loop
+        typedef concurrent::context       context; //!< concurrent context
 
 
         //______________________________________________________________________
@@ -32,6 +32,7 @@ namespace yack
         {
         public:
 
+            //! definition of commands to perform
             typedef void (*commands)(void *,const tiles &, const context &, lockable &);
 
             //! setup with an engine and dimensions

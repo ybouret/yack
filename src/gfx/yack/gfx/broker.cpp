@@ -24,8 +24,8 @@ namespace yack
             call->run(*this);
         }
 
-        void broker:: run(const concurrent::context &site,
-                          lockable                  &sync) throw()
+        void broker:: run(const context &site,
+                          lockable      &sync) throw()
         {
             assert(code);
             const tessellation &tess = *this;

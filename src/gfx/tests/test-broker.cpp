@@ -23,9 +23,9 @@ namespace
         std::cerr << "broker" << site << " @" << t << std::endl;
     }
 
-    static inline float rgba_to_float(const rgba &c) throw()
+    static inline void rgba_to_float(float &f, const rgba &c) throw()
     {
-        return color::make_gsf::table[c.r+c.g+c.b];
+        f = color::make_gsf::table[c.r+c.g+c.b];
     }
 }
 

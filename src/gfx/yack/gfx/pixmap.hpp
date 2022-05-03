@@ -6,12 +6,14 @@
 
 #include "yack/gfx/pixrow.hpp"
 #include "yack/gfx/bitmap.hpp"
-#include "yack/gfx/broker.hpp"
+#include "yack/gfx/broker/transform.hpp"
 
 namespace yack
 {
     namespace graphic
     {
+
+        //! helper for constructors
 #define YACK_GFX_PIXMAP_CTOR()           \
 row( coerce_cast<row_type>(rows->row) ), \
 zfh(rows->zfh)
@@ -64,36 +66,8 @@ zfh(rows->zfh)
                 // initialize
                 data->fill<T>(n);
 
-                struct task
-                {
-                    pixmap<T>       &target;
-                    const pixmap<U> &source;
-                    PROC            &U_to_T;
-                    static inline
-                    void make(void *args,const tiles &t, const context &, lockable &) throw()
-                    {
-                        task            &self   = *static_cast<task *>(args);
-                        pixmap<T>       &target = self.target;
-                        const pixmap<U> &source = self.source;
-                        PROC            &U_to_T = self.U_to_T;
-                        for(const tile *node=t.head();node;node=node->next)
-                        {
-                            size_t           len = node->width;
-                            coord            pos = node->start;
-                            pixrow<T>       &tgt = target(pos.y);
-                            const pixrow<U> &src = source(pos.y);
-                            while(len-- > 0 )
-                            {
-                                tgt(pos.x) = U_to_T(src(pos.x));
-                                ++pos.x;
-                            }
-                        }
-                    }
-                };
-
-                task todo = { *this, source, U_to_T };
-                device(task::make,&todo);
-
+                // transform
+                broker_transform::apply(*this,source,device,U_to_T);
             }
 
             //! cleanup
