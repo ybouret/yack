@@ -39,10 +39,13 @@ namespace yack
         virtual size_t granted() const throw(); //!< bytes
         size_t   size()          const throw(); //!< num_blocks
         void     free()                throw(); //!< remove content, keep bytes
-        void     release()             throw(); //!< free/remove bytes
+        void     release()             throw(); //!< remove content, remove bytes
         void     ensure(const size_t nb, const size_t bs); //!< free/acquire
 
+        //______________________________________________________________________
+        //
         //! build n items
+        //______________________________________________________________________
         template <typename T> inline
         void build(const size_t n)
         {
@@ -70,7 +73,10 @@ namespace yack
             }
         }
 
+        //______________________________________________________________________
+        //
         //! build one item
+        //______________________________________________________________________
         template <typename T> inline
         void build()
         {

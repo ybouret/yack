@@ -67,6 +67,12 @@ namespace yack
         {
             return data ? *data : *(data=new groove());
         }
+        
+        bool context:: has_local_memory() const throw()
+        {
+            return NULL != data;
+        }
+
 
     }
 

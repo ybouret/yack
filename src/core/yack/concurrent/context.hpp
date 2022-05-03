@@ -13,7 +13,7 @@ namespace yack
 
     namespace concurrent
     {
-
+        
         //______________________________________________________________________
         //
         //
@@ -52,7 +52,10 @@ namespace yack
 
             //! on-the-fly access to (created) groove
             groove & operator*() const;
-
+            
+            //! check if groove exists
+            bool has_local_memory() const throw();
+            
             //__________________________________________________________________
             //
             // members
@@ -65,7 +68,7 @@ namespace yack
 
         private:
             YACK_DISABLE_COPY_AND_ASSIGN(context);
-            mutable groove *data; //!< data
+            mutable groove *data; //!< local memory
 
         };
         
