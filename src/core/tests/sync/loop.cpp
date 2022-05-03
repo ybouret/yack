@@ -86,6 +86,7 @@ namespace
 
 }
 
+
 YACK_UTEST(sync_loop)
 {
     double tsample = 1.0;
@@ -154,8 +155,8 @@ YACK_UTEST(sync_loop)
 
     std::cerr << "efficiency: " << par.efficiency(seqRate,parRate) << "%" << std::endl;
 
-
-
+    YACK_SIZEOF(concurrent::context);
+    
 }
 YACK_UDONE()
 

@@ -4,10 +4,13 @@
 #define YACK_SYNC_CONTEXT_INCLUDED 1
 
 #include "yack/concurrent/split1d.hpp"
+
 #include <iosfwd>
 
 namespace yack
 {
+    class groove;
+
     namespace concurrent
     {
 
@@ -47,17 +50,22 @@ namespace yack
             //! format size.indx
             void format(char buf[], const size_t len) const throw();
 
+            groove & operator*() const;
+
             //__________________________________________________________________
             //
             // members
             //__________________________________________________________________
-            const size_t size; //!< size>0
-            const size_t rank; //!< rank<size, MPI style
-            const size_t indx; //!< indx=rank+1, C++ style
-            const size_t io10; //!< number of digits
+            const size_t   size; //!< size>0
+            const size_t   rank; //!< rank<size, MPI style
+            const size_t   indx; //!< indx=rank+1, C++ style
+
+
 
         private:
             YACK_DISABLE_COPY_AND_ASSIGN(context);
+            mutable groove *data; //!< data
+
         };
         
     }

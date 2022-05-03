@@ -2,6 +2,7 @@
 #include "yack/concurrent/context.hpp"
 #include "yack/arith/base10.hpp"
 #include "yack/type/cstring.h"
+#include "yack/container/groove.hpp"
 
 #include <iostream>
 #include <iomanip>
@@ -13,20 +14,25 @@ namespace yack
     namespace concurrent
     {
 
-        context:: context() throw() : size(1), rank(0), indx(1), io10(1) {}
+        context:: context() throw() : size(1), rank(0), indx(1) {}
 
         context:: ~context() throw()
         {
             coerce(size) = 0;
             coerce(rank) = 0;
             coerce(indx) = 0;
+            if(data)
+            {
+                delete data;
+                data = NULL;
+            }
         }
 
         context:: context(const size_t sz, const size_t rk) throw() :
         size(sz),
         rank(rk),
         indx(1+rank),
-        io10(digits_for(size))
+        data(NULL)
         {
             assert(size>0);
             assert(rank<size);
@@ -45,7 +51,8 @@ namespace yack
         {
             assert(buf!=NULL);
             assert(len>0);
-
+            
+            const size_t io10 = digits_for(size);
             char fmt[32];
             {
                 memset(fmt,0,sizeof(fmt));
@@ -56,6 +63,10 @@ namespace yack
             snprintf(buf,len,fmt,unsigned(size),unsigned(indx));
         }
 
+        groove & context:: operator*() const
+        {
+            return data ? *data : *(data=new groove());
+        }
 
     }
 

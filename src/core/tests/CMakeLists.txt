@@ -172,6 +172,7 @@ add_test(data:pipes        test-core data_pipes)
 add_test(data:addrbook     test-core data_addrbook)
 add_test(data:meta         test-core data_meta)
 add_test(data:doubly       test-core data_doubly)
+add_test(data:groove       test-core data_groove)
 
 add_test(sync:lockable  test-core sync_lockable)
 add_test(sync:primitive test-core sync_primitive)

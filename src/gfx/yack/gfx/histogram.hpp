@@ -10,22 +10,27 @@ namespace yack
 {
     namespace graphic
     {
-
+        //______________________________________________________________________
+        //
+        //
+        //! making histogram from pixels
+        //
+        //______________________________________________________________________
         class histogram
         {
         public:
-            static const size_t bins = 256;
+            static const size_t bins = 256; //!< on a [0:255] level set
 
-            histogram()  throw();
-            ~histogram() throw();
-            histogram(const histogram & ) throw();
-            histogram & operator=(const histogram &) throw();
+            histogram()                              throw(); //!< setup empty
+            ~histogram()                             throw(); //!< cleanup
+            histogram(const histogram & )            throw(); //!< copy
+            histogram & operator=(const histogram &) throw(); //!< assign
 
-            void reset()                  throw();
-            void merge(const histogram &) throw();
+            void reset()                  throw(); //!< zero all
+            void merge(const histogram &) throw(); //!< add all
 
-            size_t       & operator[](const uint8_t) throw();
-            const size_t & operator[](const uint8_t) const throw();
+            size_t       & operator[](const uint8_t) throw();       //!< access
+            const size_t & operator[](const uint8_t) const throw(); //!< access
 
         private:
             size_t bin[bins];

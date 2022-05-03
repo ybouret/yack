@@ -16,6 +16,7 @@ namespace yack
 
         template <typename T> class pixmap; //!< forward declaration
 
+        //! building histograms with broker
         class broker_histogram : public gateway<histogram>
         {
         public:
