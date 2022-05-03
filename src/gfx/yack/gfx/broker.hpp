@@ -1,4 +1,3 @@
-
 //! \file
 
 #ifndef YACK_GFX_BROKER_INCLUDED
