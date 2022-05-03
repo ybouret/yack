@@ -50,6 +50,7 @@ namespace yack
             //! format size.indx
             void format(char buf[], const size_t len) const throw();
 
+            //! on-the-fly access to (created) groove
             groove & operator*() const;
 
             //__________________________________________________________________

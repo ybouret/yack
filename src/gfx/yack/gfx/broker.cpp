@@ -32,5 +32,10 @@ namespace yack
             code(args,tess[site.indx],site,sync);
         }
 
+        const concurrent::loop & broker:: operator*() const throw()
+        {
+            return *call;
+        }
+
     }
 }

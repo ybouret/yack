@@ -5,7 +5,7 @@
 
 #include "yack/concurrent/loop/runnable.hpp"
 #include "yack/container/readable.hpp"
-#include "yack/object.hpp"
+#include "yack/container/groove.hpp"
 #include "yack/counted.hpp"
 
 namespace yack
@@ -38,14 +38,38 @@ namespace yack
 
             //! compute efficiency
             double efficiency(const double seq_rate, const double par_rate) const throw();
-            
+
+            //__________________________________________________________________
+            //
+            // data management
+            //__________________________________________________________________
+
+            //! building of T[0:n-1] for each context
+            template <typename T> inline
+            void build(const size_t n) const {
+                const readable<context> &self = *this;
+                const size_t             nctx = self.size();
+                for(size_t i=1;i<=nctx;++i)
+                {
+                    const context &ctx = self[i];
+                    (*ctx).build<T>(n);
+                }
+            }
+
+            //! build one type per context
+            template <typename T> inline
+            void build() const {
+                build<T>(1);
+            }
+
+
             //__________________________________________________________________
             //
             // C++
             //__________________________________________________________________
-            virtual ~loop() throw();
+            virtual ~loop() throw(); //!< cleanup
         protected:
-            explicit loop() throw();
+            explicit loop() throw(); //!< setup
 
         private:
             YACK_DISABLE_COPY_AND_ASSIGN(loop);

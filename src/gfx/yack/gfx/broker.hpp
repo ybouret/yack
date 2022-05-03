@@ -59,7 +59,8 @@ namespace yack
             //! call commands on each set of tiles
             void operator()(commands, void *);
 
-            
+            //! access loop
+            const concurrent::loop & operator*() const throw();
 
         private:
             YACK_DISABLE_COPY_AND_ASSIGN(broker);

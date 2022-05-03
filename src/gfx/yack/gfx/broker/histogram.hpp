@@ -6,8 +6,6 @@
 
 #include "yack/gfx/broker.hpp"
 #include "yack/gfx/histogram.hpp"
-#include "yack/gfx/memory.hpp"
-#include "yack/type/gateway.hpp"
 
 namespace yack
 {
@@ -15,24 +13,64 @@ namespace yack
     {
 
         template <typename T> class pixmap; //!< forward declaration
+        template <typename T> class pixrow; //!< forward declaration
 
-        //! building histograms with broker
-        class broker_histogram : public gateway<histogram>
+        //______________________________________________________________________
+        //
+        //
+        //! operation for histogram
+        //
+        //______________________________________________________________________
+        struct broker_histogram
         {
-        public:
-            explicit broker_histogram(const broker &device);
-            virtual ~broker_histogram() throw();
+            //! hist.reset(), allocate memory for device
+            static void initialize(histogram &hist, const broker &device);
 
-            void initialize() throw();
-            void finalize()   throw();
+            //! merget local histogram into hist
+            static void finalize(histogram &hist, const broker &device);
 
-        private:
-            YACK_DISABLE_COPY_AND_ASSIGN(broker_histogram);
+            //! initialize/accumulate/finalize
+            template <typename T, typename PROC> static inline
+            void compute(histogram       &hist,
+                         const pixmap<T> &source,
+                         broker          &device,
+                         PROC            &toByte)
+            {
+                initialize(hist,device);
 
-            histogram                             self;
-            cxx_array<histogram,memory_allocator> hist;
+                struct task
+                {
+                    const pixmap<T> &source;
+                    PROC            &toByte;
+
+                    static inline void make(void          *args,
+                                            const tiles   &part,
+                                            const context &info,
+                                            lockable      &) throw()
+                    {
+                        assert(args);
+                        task            &self   = *static_cast<task *>(args);
+                        const pixmap<T> &source = self.source;
+                        PROC            &toByte = self.toByte;
+                        histogram       &h      = (*info).as<histogram>();
+
+                        for(const tile *node=part.head();node;node=node->next)
+                        {
+                            coord            pos = node->start;
+                            const pixrow<T> &src = source(pos.y);
+                            for(size_t len=node->width;len>0;--len,++pos.x)
+                            {
+                                ++h[ toByte(src(pos.x)) ];
+                            }
+                        }
+                    }
+                };
+                task todo = { source, toByte };
+                device(task::make,&todo);
+
+                finalize(hist,device);
+            }
             
-            virtual const_type & bulk() const throw();
         };
 
     }

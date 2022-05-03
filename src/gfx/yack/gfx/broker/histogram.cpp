@@ -6,33 +6,23 @@ namespace yack
     namespace graphic
     {
 
-        broker_histogram:: ~broker_histogram() throw()
+        void broker_histogram:: initialize(histogram &hist,const broker &device)
         {
-
+            hist.reset();
+            (*device).build<histogram>();
         }
 
-        broker_histogram:: broker_histogram(const broker &device) :
-        self(),
-        hist(device.size())
+        void broker_histogram:: finalize(histogram &hist, const broker &device)  
         {
-        }
-
-        void broker_histogram:: initialize() throw()
-        {
-            self.reset();
-            for(size_t i=hist.size();i>0;--i)
+            const concurrent::loop &ops = *device;
+            for(size_t i=ops.size();i>0;--i)
             {
-                hist[i].reset();
+                const groove &data = *ops[i];
+                assert(data.is<histogram>());
+                hist.merge( data.as<histogram>() );
             }
         }
 
-        void broker_histogram:: finalize()   throw()
-        {
-            for(size_t i=hist.size();i>0;--i)
-            {
-                self.merge(hist[i]);
-            }
-        }
 
     }
 

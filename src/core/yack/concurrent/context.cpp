@@ -14,7 +14,7 @@ namespace yack
     namespace concurrent
     {
 
-        context:: context() throw() : size(1), rank(0), indx(1) {}
+        context:: context() throw() : size(1), rank(0), indx(1), data(0) {}
 
         context:: ~context() throw()
         {
@@ -32,7 +32,7 @@ namespace yack
         size(sz),
         rank(rk),
         indx(1+rank),
-        data(NULL)
+        data(0)
         {
             assert(size>0);
             assert(rank<size);
