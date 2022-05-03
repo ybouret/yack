@@ -31,9 +31,19 @@ namespace yack
         class broker : public tessellation, public concurrent::runnable
         {
         public:
+            //__________________________________________________________________
+            //
+            // types and definitions
+            //__________________________________________________________________
 
             //! definition of commands to perform
             typedef void (*commands)(void *,const tiles &, const context &, lockable &);
+
+
+            //__________________________________________________________________
+            //
+            // C++
+            //__________________________________________________________________
 
             //! setup with an engine and dimensions
             explicit broker(const engine     &,
@@ -42,7 +52,12 @@ namespace yack
             //! cleanup
             virtual ~broker() throw();
 
-            //! call gkernel on each set of tiles
+            //__________________________________________________________________
+            //
+            // metods
+            //__________________________________________________________________
+
+            //! call commands on each set of tiles
             void operator()(commands, void *);
 
             
