@@ -19,14 +19,8 @@ namespace yack
         //
         //______________________________________________________________________
         typedef arc_ptr<concurrent::loop> engine;
+        typedef concurrent::context       context;
 
-        //______________________________________________________________________
-        //
-        //
-        //! graphic kernel prototype
-        //
-        //______________________________________________________________________
-        typedef void (*commands)(void *, const tiles &, lockable &);
 
         //______________________________________________________________________
         //
@@ -37,6 +31,9 @@ namespace yack
         class broker : public tessellation, public concurrent::runnable
         {
         public:
+
+            typedef void (*commands)(void *,const tiles &, const context &, lockable &);
+
             //! setup with an engine and dimensions
             explicit broker(const engine     &,
                             const dimensions &);
@@ -51,7 +48,7 @@ namespace yack
 
         private:
             YACK_DISABLE_COPY_AND_ASSIGN(broker);
-            virtual void run(const concurrent::context &, lockable &) throw();
+            virtual void run(const context &, lockable &) throw();
             engine   call;
             commands code;
             void    *args;

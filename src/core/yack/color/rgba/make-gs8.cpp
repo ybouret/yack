@@ -14,7 +14,7 @@ namespace yack
         {
         }
 
-        void make_gs8:: operator()(void *addr, const rgba &c) throw()
+        void make_gs8:: operator()(void *addr, const rgba &c) const throw()
         {
             assert(addr);
             *static_cast<uint8_t *>(addr) = table[c.r+c.g+c.b];

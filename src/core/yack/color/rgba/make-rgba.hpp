@@ -23,8 +23,8 @@ namespace yack
             virtual ~make_rgba() throw(); //!< cleanup
 
             //! (r,g,b,a) -> (r,g,b,a)
-            virtual void operator()(void *addr, const rgba &) throw();
-
+            virtual void operator()(void *addr, const rgba &) const throw();
+            
         private:
             YACK_DISABLE_COPY_AND_ASSIGN(make_rgba);
         };

@@ -15,7 +15,7 @@ namespace yack
         {
         }
 
-        void make_rgb:: operator()(void *addr, const rgba &c) throw()
+        void make_rgb:: operator()(void *addr, const rgba &c) const throw()
         {
             assert(addr);
             *static_cast<rgb *>(addr) = c;

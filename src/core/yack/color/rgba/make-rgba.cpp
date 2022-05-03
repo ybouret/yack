@@ -14,11 +14,13 @@ namespace yack
         {
         }
 
-        void make_rgba:: operator()(void *addr, const rgba &c) throw()
+        void make_rgba:: operator()(void *addr, const rgba &c) const throw()
         {
             assert(addr);
             *static_cast<rgba *>(addr) = c;
         }
+
+
     }
 
 }

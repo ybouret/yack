@@ -70,7 +70,7 @@ zfh(rows->zfh)
                     const pixmap<U> &source;
                     PROC            &U_to_T;
                     static inline
-                    void make(void *args,const tiles &t,lockable&) throw()
+                    void make(void *args,const tiles &t, const context &, lockable &) throw()
                     {
                         task            &self   = *static_cast<task *>(args);
                         pixmap<T>       &target = self.target;

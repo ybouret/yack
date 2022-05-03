@@ -24,12 +24,12 @@ namespace yack
             call->run(*this);
         }
 
-        void broker:: run(const concurrent::context &ctx,
+        void broker:: run(const concurrent::context &site,
                           lockable                  &sync) throw()
         {
             assert(code);
             const tessellation &tess = *this;
-            code(args,tess[ctx.indx],sync);
+            code(args,tess[site.indx],site,sync);
         }
 
     }

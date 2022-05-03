@@ -14,9 +14,18 @@ set(gfx_format ${gfx_format_decl} ${gfx_format_srcs})
 SOURCE_GROUP(gfx/format FILES ${gfx_format})
 install( FILES ${gfx_format_decl} DESTINATION include/yack/gfx/format )
 
+#format
+file(GLOB gfx_broker_decl yack/gfx/broker/*.hpp)
+file(GLOB gfx_broker_srcs yack/gfx/broker/*.cpp)
+set(gfx_broker ${gfx_broker_decl} ${gfx_broker_srcs})
+SOURCE_GROUP(gfx/broker FILES ${gfx_broker})
+install( FILES ${gfx_broker_decl} DESTINATION include/yack/gfx/broker )
+
+
 add_library(yack-gfx STATIC
 ${gfx_main}
 ${gfx_format}
+${gfx_broker}
 )
 
 install( TARGETS yack-gfx ARCHIVE DESTINATION lib )

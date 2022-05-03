@@ -1,5 +1,3 @@
-
-
 #include "yack/gfx/utils.hpp"
 #include "yack/ios/ascii/convert.hpp"
 #include "yack/gfx/pixmap.hpp"
@@ -18,10 +16,11 @@ namespace
 {
     static inline void showBroker(void                  *,
                                   const graphic::tiles &t,
+                                  const context        &site,
                                   lockable             &sync)
     {
         YACK_LOCK(sync);
-        std::cerr << "broker@" << t << std::endl;
+        std::cerr << "broker" << site << " @" << t << std::endl;
     }
 
     static inline float rgba_to_float(const rgba &c) throw()

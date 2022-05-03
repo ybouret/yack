@@ -13,7 +13,7 @@ namespace yack
         {
         }
 
-        void make_gsf:: operator()(void *addr, const rgba &c) throw()
+        void make_gsf:: operator()(void *addr, const rgba &c) const throw()
         {
             assert(addr);
             *static_cast<float *>(addr) = table[c.r+c.g+c.b];

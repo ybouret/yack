@@ -21,7 +21,7 @@ namespace yack
         {
         public:
             //! put data at address from color
-            virtual void operator()(void *addr, const rgba &) throw() = 0;
+            virtual void operator()(void *addr, const rgba &) const throw() = 0;
 
             //! cleanup
             virtual ~rgba_to_data() throw();
