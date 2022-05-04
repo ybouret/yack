@@ -17,7 +17,7 @@ namespace yack
             const concurrent::loop &ops = *device;
             for(size_t i=ops.size();i>0;--i)
             {
-                assert(ops[i].has_local_memory());
+                assert(ops[i].owns_local_memory());
                 const groove &data = *ops[i];
                 assert(data.is<histogram>());
                 hist.merge( data.as<histogram>() );

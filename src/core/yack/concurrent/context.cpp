@@ -68,9 +68,26 @@ namespace yack
             return data ? *data : *(data=new groove());
         }
         
-        bool context:: has_local_memory() const throw()
+        bool context:: owns_local_memory() const throw()
         {
             return NULL != data;
+        }
+
+        void context:: drop_local_memory() throw()
+        {
+            if(data)
+            {
+                delete data;
+                data = NULL;
+            }
+        }
+
+        void context:: free_local_memory() throw()
+        {
+            if(data)
+            {
+                data->free();
+            }
         }
 
 

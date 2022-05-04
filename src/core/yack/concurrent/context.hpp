@@ -54,8 +54,15 @@ namespace yack
             groove & operator*() const;
             
             //! check if groove exists
-            bool has_local_memory() const throw();
-            
+            bool owns_local_memory() const throw();
+
+            //! free local memory if exists
+            void free_local_memory() throw();
+
+            //! remove local memory if exists
+            void drop_local_memory() throw();
+
+
             //__________________________________________________________________
             //
             // members

@@ -62,6 +62,12 @@ namespace yack
                 build<T>(1);
             }
 
+            //! free all local memories
+            void free_local_memories() throw();
+
+            //! drop all local memories
+            void drop_local_memories() throw();
+
 
             //__________________________________________________________________
             //

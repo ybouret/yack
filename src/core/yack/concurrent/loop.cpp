@@ -35,6 +35,28 @@ namespace yack
             return percent;
         }
 
+        void loop:: free_local_memories() throw()
+        {
+            const readable<context> &self = *this;
+            const size_t             nctx = self.size();
+            for(size_t i=1;i<=nctx;++i)
+            {
+                const context &ctx = self[i];
+                coerce(ctx).free_local_memory();
+            }
+        }
+
+        void loop:: drop_local_memories() throw()
+        {
+            const readable<context> &self = *this;
+            const size_t             nctx = self.size();
+            for(size_t i=1;i<=nctx;++i)
+            {
+                const context &ctx = self[i];
+                coerce(ctx).drop_local_memory();
+            }
+        }
+
     }
 
 }
