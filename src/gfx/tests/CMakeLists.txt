@@ -12,6 +12,7 @@ set(HERE ${CMAKE_CURRENT_SOURCE_DIR})
 enable_testing()
 
 add_test(types      test-gfx types)
+add_test(options    test-gfx options)
 add_test(tess       test-gfx tess)
 add_test(hist       test-gfx hist)
 add_test(broker     test-gfx broker)

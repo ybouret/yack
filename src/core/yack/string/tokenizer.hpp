@@ -55,9 +55,23 @@ namespace yack
                 return true;
             }
 
-            inline const T *token() const throw() { return curr; } //!< current token position
-            inline size_t   units() const throw() { return size; } //!< current token units
-            inline size_t   count() const throw() { return indx; } //!< current token count
+            inline const T *token() const throw() { return curr;      } //!< current token position
+            inline size_t   units() const throw() { return size;      } //!< current token units
+            inline size_t   count() const throw() { return indx;      } //!< current token count
+
+            //! after current token
+            inline const T *after() const throw()
+            {
+                const T *next = curr+size;
+                if(++next>=last) return last; else return next;
+            }
+
+            //! find with a given separator
+            inline bool find_with(const char C) throw()
+            {
+                is_separator_t is_separator = { C };
+                return find(is_separator);
+            }
 
             //! split source into words
             template <typename SEQUENCE, typename FUNCTION> static inline
