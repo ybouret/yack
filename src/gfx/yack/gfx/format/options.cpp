@@ -19,6 +19,14 @@ namespace yack
             return *this;
         }
 
+        options & options:: operator<<(const char   *info)
+        {
+            const string _(info);
+            add(_);
+            return *this;
+        }
+
+
         static inline void optclr(string &s) throw()
         {
             strops::clean_with(" \t", 2, s);
