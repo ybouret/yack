@@ -229,28 +229,17 @@ namespace yack
                 const string       fn  = "gam_" + eq.name + ".dat";
                 ios::ocstream      fp(fn);
 
-                const double       den = -beta;
-                const double       A = (-Gi/beta-xx)/(xx*xx);
-                eqs.pad(std::cerr << "for <" << eq.name <<">",eq) << " den = " << den << "; A=" << A << "; Xi=" << xx << std::endl;
+
+                const double A = (-xx * beta - Gi)/squared(xx);
+                eqs.pad(std::cerr << "for <" << eq.name <<">",eq) <<  " Xi=" << xx << "; A=" << A << "; beta=" << beta << std::endl;
                 const size_t       NP  = 100;
                 for(size_t i=0;i<=NP;++i)
                 {
-                    const double alpha = double(i)/NP;
                     const double u     = (i*xx)/NP;
-                    fp("%g %g %g %g\n",alpha,eq.mass_action(Ki,Corg,u)/den, (xx-u) + A * squared(xx-u),u);
+                    //fp("%g %g %g %g\n",alpha,eq.mass_action(Ki,Corg,u)/den, (xx-u) + A * squared(xx-u),u);
+                    fp("%g %g\n", u, eq.mass_action(Ki,Corg,u));
                 }
 
-#if 0
-                const double       B     = -(sigma+Gi+Gi);
-                const double       A     = Gi + sigma;
-                const size_t       NP  = 100;
-                for(size_t i=0;i<=NP;++i)
-                {
-                    const double alpha = double(i)/NP;
-                    const double u = (i*xx)/NP;
-                    fp("%g %g %g %g\n",alpha,eq.mass_action(Ki,Corg,u), Gi + B * alpha + A * alpha * alpha,u);
-                }
-#endif
 
             }
 
@@ -262,6 +251,7 @@ namespace yack
                 std::cerr << "H_" << eq.name << " = " << H << std::endl;
                 std::cerr << "Nu_" << eq.name << " = " << Nu[ei] << std::endl;
                 std::cerr << "H_" << eq.name << "*Nu_" << eq.name << std::endl;
+                std::cerr << "psi_" << eq.name << " = " << Psi[ei] << std::endl;
             }
 
 
