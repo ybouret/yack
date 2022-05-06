@@ -17,14 +17,7 @@ namespace yack
 
         }
 
-        static inline void bmp_out32(ios::ostream &fp, const unsigned size)
-        {
-            fp.write( static_cast<uint8_t>( (size) % 256) );
-            fp.write( static_cast<uint8_t>( (size / 256) % 256) );
-            fp.write( static_cast<uint8_t>( (size / 65536) % 256) );
-            fp.write( static_cast<uint8_t>( (size / 16777216)) );
 
-        }
 
         void bmp_format:: save(const string        &filename,
                                const bitmap        &image,
@@ -33,54 +26,59 @@ namespace yack
 
             assert(cproc.d==image.d);
 
-            // write header
+            // initial headers
+            unsigned char       bmpfileheader[14] = {'B','M', 0,0,0,0, 0,0, 0,0, 54,0,0,0};
+            unsigned char       bmpinfoheader[40] =
+            {   40, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 24, 0,
+                0,  0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,  0, 0,
+                0,  0, 0, 0, 0, 0, 0, 0
+            };
+            const unsigned char bmppad[4] = {0,0,0,0};
+
+            const int w        = image.w;
+            const int h        = image.h;
+            const int filesize = 54 + 3*w*h;
+            const int npad     = (4-(w*3)%4)%4;
+
+            // fill headers
+            bmpfileheader[ 2] = (unsigned char)(filesize    );
+            bmpfileheader[ 3] = (unsigned char)(filesize>> 8);
+            bmpfileheader[ 4] = (unsigned char)(filesize>>16);
+            bmpfileheader[ 5] = (unsigned char)(filesize>>24);
+
+            bmpinfoheader[ 4] = (unsigned char)(       w    );
+            bmpinfoheader[ 5] = (unsigned char)(       w>> 8);
+            bmpinfoheader[ 6] = (unsigned char)(       w>>16);
+            bmpinfoheader[ 7] = (unsigned char)(       w>>24);
+
+            bmpinfoheader[ 8] = (unsigned char)(       h    );
+            bmpinfoheader[ 9] = (unsigned char)(       h>> 8);
+            bmpinfoheader[10] = (unsigned char)(       h>>16);
+            bmpinfoheader[11] = (unsigned char)(       h>>24);
+
+            //f = fopen("img.bmp","wb");
+            //fwrite(bmpfileheader,1,14,f);
+            //fwrite(bmpinfoheader,1,40,f);
+
             ios::ocstream fp(filename);
+            fp.frame(bmpfileheader,14);
+            fp.frame(bmpinfoheader,40);
 
-            const unsigned nx = image.w;
-            const unsigned ny = image.h;
-            
-            /* Header 10 bytes */
-            fp.write('B');
-            fp.write('M');
-            const unsigned samples = nx*ny*3;
-            bmp_out32(fp,samples+14+40);
-            fp.write(0); fp.write(0);
-            fp.write(0); fp.write(0);
-
-            /* Offset to image data */
-            fp.write(14+40); fp.write(0); fp.write(0); fp.write(0);
-
-            /* Information header 40 bytes */
-            fp.write(0x28); fp.write(0); fp.write(0); fp.write(0);
-            bmp_out32(fp,nx);
-            bmp_out32(fp,ny);
-            fp.write(1);  fp.write(0); /* One plane */
-            fp.write(24); fp.write(0); /* 24 bits */
-            
-            /* Compression type == 0 */
-            fp.write(0); fp.write(0); fp.write(0); fp.write(0);
-            bmp_out32(fp,samples);
-            fp.write(1); fp.write(0); fp.write(0); fp.write(0);
-            fp.write(1); fp.write(0); fp.write(0); fp.write(0);
-            fp.write(0); fp.write(0); fp.write(0); fp.write(0); /* No palette */
-            fp.write(0); fp.write(0); fp.write(0); fp.write(0);
 
             // write binary data
-            for(unit_t j=0;j<image.h;++j)
+
+            for(unit_t j=image.h;j>0;)
             {
-                const bitrow  &brow = image.get_row(j);
-                const uint8_t *curr = brow.scanline();
+                const bitrow  &row  = image.line(--j);
+                const uint8_t *curr = row.addr();
                 for(unit_t i=0;i<image.w;++i,curr += image.d)
                 {
                     const rgba c = cproc(curr);
-                    fp.write(0xff);
-                    fp.write(0xff);
-                    fp.write(0xff);
-
-                    //fp.write(c.b);
-                    //fp.write(c.g);
-                    //fp.write(c.r);
+                    fp.write(c.b);
+                    fp.write(c.g);
+                    fp.write(c.r);
                 }
+                fp.frame(bmppad,npad);
             }
 
         }

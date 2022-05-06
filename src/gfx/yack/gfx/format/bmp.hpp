@@ -11,12 +11,15 @@ namespace yack
     namespace graphic
     {
 
+        //! save neutral BMP
         class bmp_format
         {
         public:
-            explicit bmp_format();
-            virtual ~bmp_format() throw();
+            // C++
+            explicit bmp_format();         //!< setup
+            virtual ~bmp_format() throw(); //!< cleanup
 
+            //! save image
             void save(const string        &filename,
                       const bitmap        &image,
                       color::data_to_rgba &cproc) const;

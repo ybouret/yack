@@ -36,16 +36,19 @@ namespace yack
 
             //__________________________________________________________________
             //
+            // methods
+            //__________________________________________________________________
+            const uint8_t *addr() const throw(); //!< first const byte
+            uint8_t       *addr()       throw(); //!< first byte
+
+            //__________________________________________________________________
+            //
             // members
             //__________________________________________________________________
         private: void            *p; //!< first item address
         public:  const zero_flux &w; //!< zero_flux computation reference
 
-            inline const uint8_t *scanline() const throw()
-            {
-                assert(p);
-                return static_cast<const uint8_t*>(p);
-            }
+
 
         private:
             YACK_DISABLE_COPY_AND_ASSIGN(bitrow);

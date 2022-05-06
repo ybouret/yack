@@ -57,6 +57,19 @@ namespace yack
         {
         }
 
+        const bitrow & bitmap:: line(const unit_t j) const throw()
+        {
+            assert(j>=0);
+            assert(j<h);
+            return rows->row[j];
+        }
 
+
+        bitrow & bitmap:: line(const unit_t j)   throw()
+        {
+            assert(j>=0);
+            assert(j<h);
+            return rows->row[j];
+        }
     }
 }

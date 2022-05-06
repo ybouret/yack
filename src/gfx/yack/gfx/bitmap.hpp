@@ -44,11 +44,13 @@ namespace yack
             //! cleanup
             virtual ~bitmap() throw();
 
-            const bitrow & get_row(const unit_t j) const throw()
-            {
-                assert(j<h);
-                return rows->row[j];
-            }
+            //__________________________________________________________________
+            //
+            // methods
+            //__________________________________________________________________
+            const bitrow & line(const unit_t j) const throw(); //!< get scan line
+            bitrow &       line(const unit_t j)       throw(); //!< get scal line
+
 
         protected:
             //__________________________________________________________________
