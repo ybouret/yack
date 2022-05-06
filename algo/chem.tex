@@ -209,81 +209,24 @@ which is a regular point (otherwise the equilibrium is blocked).
 
 \end{itemize}
 
-\subsubsection{Stabilisation}
-
 \begin{equation}
 	\vec{\Psi}_{\xi_i} \simeq \vec{\Psi}_i + \dfrac{\xi_i}{\Xi_i}\left[ \vec{\Psi}_i' - \vec{\Psi}_i \right]
 \end{equation}
 
-\begin{equation}
-	\Gamma_i(\vec{C} + \xi \vec{\nu}_i) \simeq \Gamma_i - \sigma_i \xi_i - \kappa \xi_i^2
-\end{equation}
+
+\subsubsection{First order}
 
 \begin{equation}
-\left\lbrace
-\begin{array}{rcl}
-	\Gamma_i & = & \Xi_i \sigma_i + \Xi_i^2 \kappa_i\\
-	-\langle \vec{\Psi}_i' \vert \vec{\nu}_i \rangle & = & \sigma_i + 2 \Xi_i \kappa_i\\
-\end{array}
-\right.
+	0 = (\xi_i - \Xi_i) \langle \vec{\Psi}_i' \vert \vec{\nu}_i\rangle + \sum_{k\not=i} \langle \vec{\Psi}_{\xi_i} \vert \vec{\nu}_k \rangle \xi_k
 \end{equation}
+ 
+\begin{equation}
+	0 = \xi_i - \Xi_i + \sum_{k\not=i} \dfrac{\langle \vec{\Psi}_{i} \vert \vec{\nu}_k \rangle}{\langle \vec{\Psi}_i' \vert \vec{\nu}_i\rangle} \xi_k 
+	+ \dfrac{\xi_i}{\Xi_i} \sum_{k\not=i} \dfrac{\langle \delta\vec{\Psi}_{i} \vert \vec{\nu}_k \rangle}{\langle \vec{\Psi}_i' \vert \vec{\nu}_i\rangle} \xi_k 
+\end{equation} 
 
 \begin{equation}
-\left\lbrace
-\begin{array}{rcl}
-	\Xi_i^2 \kappa_i & = & -\Xi_i \langle \vec{\Psi}_i' \vert \vec{\nu}_i \rangle - \Gamma_i\\
-	\sigma_i         & = & -\langle \vec{\Psi}_i' \vert \vec{\nu}_i \rangle - 2\kappa_i \Xi_i\\
-\end{array}
-\right.
+	\xi_i = \dfrac{\Xi_i - \Lambda_i }{1+\dfrac{1}{\Xi_i} \Omega_i }
 \end{equation}
-
-Let us decrease $\Gamma_i$ by a small fraction $\alpha_i$:
-
-\begin{equation}
-	(1-\alpha_i) \Gamma_i = \Gamma_i - \sigma_i \xi_i - \kappa_i \xi_i^2 
-	+ \underbrace{\left[ \sum_{k\not=i} \langle \vec{\Psi}_i \vert \vec{\nu}_k \rangle \xi_k \right]}_{Y_i}
-	+ \dfrac{\xi_i}{\Xi_i} \underbrace{\left[ \sum_{k\not=i} \langle \delta\vec{\Psi}_i \vert \vec{\nu}_k \rangle \xi_k \right]}_{W_i=Y_i'-Y_i}
-\end{equation}
-
-
-\begin{equation}
-	\underbrace{\Xi_i^2 \kappa_i}_{A_i} \left(\dfrac{\xi_i}{\Xi_i}\right)^2 + \underbrace{\left[ \Xi_i \sigma_i - W_i \right]}_{B_i} \left(\dfrac{\xi_i}{\Xi_i}\right)
-	- \underbrace{\left[ \alpha_i \Gamma_i + Y_i \right]}_{C_i} = 0
-\end{equation}
-
-\begin{equation}
-	\left(\dfrac{\xi_i}{\Xi_i}\right) = \dfrac{2C_i}{B_i \pm \sqrt{B_i^2+4A_iC_i}}
-\end{equation}
-
-
-\subsubsection{Third Order}
-We assume that:
-\begin{equation}
-	\dot\Gamma_i(\xi) \simeq \alpha_i \left(1-\dfrac{\xi}{\Xi_i}\right) + \beta_i \left(\dfrac{\xi}{\Xi_i}\right) - 3 Q_i \left(1-\dfrac{\xi}{\Xi_i}\right) \left(\dfrac{\xi}{\Xi_i}\right) 
-\end{equation}
-and
-\begin{equation}
-	Q_i = \alpha_i + \beta_i + \dfrac{2\Gamma_i}{\Xi_i}
-\end{equation}
-so that:
-\begin{equation}
-	\Gamma_i(\vec{C}+\xi_i \vec{\nu}_i) \simeq \Gamma_i 
-	 + \dfrac{1}{2}\alpha_i \Xi_i 
-	 \left(\dfrac{\xi_i}{\Xi_i}\right) 
-	 \left( 2 -  \dfrac{\xi_i}{\Xi_i}\right) 
-	 + \dfrac{1}{2} \beta_i \Xi_i \left(\dfrac{\xi_i^2}{\Xi_i^2}\right)
-	 + Q_i \Xi_i\left(\dfrac{\xi_i^2}{\Xi_i^2}\right) \left[\dfrac{\xi_i}{\Xi_i}-\dfrac{3}{2}\right]
-\end{equation}
-
-
-\begin{equation}
-	\vec{\Psi}_{\xi_i} \simeq 
-	\left(1-\dfrac{\xi_i}{\Xi_i}\right) \vec{\Psi}_i + \left(\dfrac{\xi_i}{\Xi_i}\right) \vec{\Psi}_i' 
-	+ \vec{\eta}_i \left(\dfrac{\xi_i}{\Xi_i}\right) \left(1-\dfrac{\xi_i}{\Xi_i}\right)
-\end{equation}
-
-\begin{equation}
-	\langle \vec{\eta}_i \vert \vec{\nu}_i \rangle = -3 Q_i 
-\end{equation}
-
+ 
 \end{document}

@@ -83,12 +83,14 @@ namespace yack
                     png_read_image(png,row);
                 }
 
+#if 0
                 inline const png_bytep & operator[](const size_t y) throw()
                 {
                     assert(y<h);
                     return row[y];
                 }
-
+#endif
+                
             private:
                 png_bytep   *row;
                 void        *wksp;
