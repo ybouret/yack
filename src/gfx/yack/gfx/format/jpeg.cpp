@@ -164,6 +164,7 @@ namespace yack
              * working space (which is allocated as needed by the JPEG library).
              */
             struct jpeg_decompress_struct cinfo;
+            
             /* We use our private extension JPEG error handler.
              * Note that this struct must live as long as the main JPEG parameter
              * struct, to avoid dangling-pointer problems.

@@ -18,10 +18,18 @@ namespace yack
         class data_to_rgba : public rgba_conv
         {
         public:
+            //__________________________________________________________________
             //
-            
+            // interface
+            //__________________________________________________________________
 
+            //! get rgba from data at address 
+            virtual rgba operator()(const void *addr) const throw() = 0;
+
+            //__________________________________________________________________
+            //
             // C++
+            //__________________________________________________________________
 
             //! cleanup
             virtual ~data_to_rgba() throw();
