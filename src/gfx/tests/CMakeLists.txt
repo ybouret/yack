@@ -18,7 +18,7 @@ add_test(hist       test-gfx hist)
 add_test(broker     test-gfx broker)
 add_test(png_io     test-gfx png_io)
 add_test(png        test-gfx png)
-
+add_test(jpg        test-gfx jpg)
 
 
 
