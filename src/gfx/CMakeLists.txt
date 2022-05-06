@@ -1,4 +1,4 @@
-include_directories(. ../core ../jive ../yack/png)
+include_directories(. ../core ../jive ../yack/png ../yack/jpeg)
 
 #main
 file(GLOB gfx_main_decl yack/gfx/*.hpp)
