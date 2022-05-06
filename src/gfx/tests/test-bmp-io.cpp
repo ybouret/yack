@@ -2,8 +2,16 @@
 #include <stdio.h>
 #include <string.h>
 
+#include "yack/color/unit-real.hpp"
+#include "yack/color/rgb.hpp"
+
+using namespace yack;
+
+
 YACK_UTEST(bmp_io)
 {
+    randomized::rand_ ran;
+
     int w = 101;
     int h = 50;
     FILE *f;
@@ -13,14 +21,42 @@ YACK_UTEST(bmp_io)
     img = (unsigned char *)malloc(3*w*h);
     memset(img,0,3*w*h);
 
+    const color::rgb  c00(255,0,0);
+    const color::rgb  c11(255,255,255);
+    const color::rgb  c01(0,255,0);
+    const color::rgb  c10(0,0,255);
+
+
     for(int j=0; j<h; j++)
     {
+        const float y0 = float(j)/h;
+        const float y1 = 1.0f-y0;
+
         for(int i=0; i<w; i++)
         {
+            const float x0 = float(i)/w;
+            const float x1 = 1.0f-x0;
+            if(false)
+            {
+                img[ (i+j*w)*3 + 2 ] = 0xff; // r
+                img[ (i+j*w)*3 + 1 ] = 0xff; // g
+                img[ (i+j*w)*3 + 0 ] = 0xff; // b
+            }
+            else
+            {
+                const float w00 = x0*y0;
+                const float w11 = x1*y1;
+                const float w01 = x0*y1;
+                const float w10 = x1*y0;
 
-            img[ (i+j*w)*3 + 2 ] = 0xff;
-            img[ (i+j*w)*3 + 1 ] = 0xff;
-            img[ (i+j*w)*3 + 0 ] = 0xff;
+                for(int k=1;k<=3;++k)
+                {
+                    const float   cf = w00 * c00[k] + w01 * c01[k] + w11 * c11[k] + w10 * c10[k];
+                    const uint8_t c8 = floor(cf+0.5f);
+                    img[ (i+j*w)*3 + (3-k) ] = c8;
+                }
+
+            }
 
 #if 0
             const int x=i;
