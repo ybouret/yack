@@ -31,7 +31,7 @@ YACK_UTEST(png)
         {
             bmp_format bmp;
             color::from_rgba cnv;
-            bmp.save("img.bmp",img, cnv);
+            bmp.save("img-png.bmp",img, cnv);
         }
 
         broker       device(SIMD,img);

@@ -16,7 +16,7 @@ YACK_UTEST(jpg)
         {
             bmp_format       bmp;
             color::from_rgba cnv;
-            bmp.save("img.bmp",img, cnv);
+            bmp.save("img-jpeg.bmp",img, cnv);
         }
 
     }

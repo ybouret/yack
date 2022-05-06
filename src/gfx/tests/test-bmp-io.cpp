@@ -1,5 +1,6 @@
 #include "yack/utest/run.hpp"
 #include <stdio.h>
+#include <string.h>
 
 YACK_UTEST(bmp_io)
 {
