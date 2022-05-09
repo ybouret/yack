@@ -43,60 +43,6 @@ namespace yack
 
             };
 
-            class PNG_Bytes
-            {
-            public:
-                const size_t w;
-                const size_t h;
-
-                explicit PNG_Bytes(const size_t bytes_per_row, const size_t rows) :
-                w(bytes_per_row),
-                h(rows),
-                row(NULL),
-                wksp(NULL),
-                wlen(0)
-                {
-                    static memory::allocator &mgr = memory_allocator::instance();
-                    png_byte *data  = 0;
-                    {
-                        memory::embed emb[] =
-                        {
-                            memory::embed(row,h),
-                            memory::embed(data,w*h)
-                        };
-                        wksp = YACK_MEMORY_EMBED(emb,mgr,wlen);
-                    }
-                    for(size_t j=0;j<h;++j,data+=w)
-                    {
-                        row[j] = data;
-                    }
-                }
-
-                virtual ~PNG_Bytes() throw()
-                {
-                    static memory::allocator &mgr = memory_allocator::location();
-                    mgr.release(wksp,wlen);
-                }
-
-                inline void operator()(png_structp &png)
-                {
-                    png_read_image(png,row);
-                }
-
-#if 0
-                inline const png_bytep & operator[](const size_t y) throw()
-                {
-                    assert(y<h);
-                    return row[y];
-                }
-#endif
-                
-            private:
-                png_bytep   *row;
-                void        *wksp;
-                size_t       wlen;
-                YACK_DISABLE_COPY_AND_ASSIGN(PNG_Bytes);
-            };
 
             class PNG_Reader : public PNG_Common, public ios::readable_file
             {
@@ -117,7 +63,7 @@ namespace yack
                     if(!info)
                     {
                         png_destroy_read_struct(&png,NULL,NULL);
-                        failed("png_create_info_struct");
+                        failed("png_create_info_struct for reader");
                     }
 
                 }
@@ -171,11 +117,6 @@ namespace yack
 
                     std::cerr << "bytes_per_row=" << bytes_per_row << std::endl;
 
-#if 0
-                    PNG_Bytes data(bytes_per_row,height);
-                    data(png);
-#endif
-
                     pixmap<rgba>                          pxm(width,height);
                     cxx_array<png_bytep,memory_allocator> row(height);
                     for(size_t i=0;i<height;++i)
@@ -190,17 +131,12 @@ namespace yack
                 YACK_DISABLE_COPY_AND_ASSIGN(PNG_Reader);
             };
 
-
-
-
-
-
-            //class png_writer;
+            
         }
 
 
 
-        pixmap<rgba> png_load(const string &filename)
+        pixmap<rgba> png_format:: load(const string &filename, const options *)
         {
             PNG_Reader *io = new PNG_Reader(filename);
             try

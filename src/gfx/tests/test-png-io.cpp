@@ -116,6 +116,7 @@ void write_png_file(char *filename) {
                  PNG_FILTER_TYPE_DEFAULT
                  );
     png_write_info(png, info);
+    png_set_compression_level(png,9);
 
     // To remove the alpha channel for PNG_COLOR_TYPE_RGB format,
     // Use png_set_filler().

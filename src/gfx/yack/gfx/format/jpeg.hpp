@@ -23,7 +23,7 @@ namespace yack
         class jpeg_format
         {
         public:
-            static pixmap<rgba> load(const string &);
+            static pixmap<rgba> load(const string &, const options *opt);
             static void save(const pixmap<rgba> &img, const string &, const options *opt);
 
         };

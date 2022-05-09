@@ -26,7 +26,7 @@ YACK_UTEST(png)
     if(argc>1)
     {
         const string fn  = argv[1];
-        pixmap<rgba> img = graphic:: png_load(fn);
+        pixmap<rgba> img = png_format::load(fn,NULL);
         std::cerr << "img4: " << img.w << "x" << img.h << "@" << img.d * 8 << " bpp" << std::endl;
         {
             bmp_format bmp;

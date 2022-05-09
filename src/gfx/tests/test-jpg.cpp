@@ -13,7 +13,7 @@ YACK_UTEST(jpg)
     if(argc>1)
     {
         const string fn  = argv[1];
-        pixmap<rgba> img = graphic:: jpeg_format:: load(fn);
+        pixmap<rgba> img = graphic:: jpeg_format:: load(fn,NULL);
         {
             bmp_format       bmp;
             color::from_rgba cnv;

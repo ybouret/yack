@@ -5,6 +5,7 @@
 
 #include "yack/gfx/pixmap.hpp"
 #include "yack/gfx/rgb.hpp"
+#include "yack/gfx/format/options.hpp"
 
 #include "yack/string/fwd.hpp"
 
@@ -13,9 +14,14 @@ namespace yack
     namespace graphic
     {
 
-        //! wip
-        pixmap<rgba> png_load(const string &);
+        class png_format
+        {
+        public:
+            static pixmap<rgba> load(const string &, const options *);
+            static void         save(const pixmap<rgba> &, const string &, const options *opt);
 
+
+        };
         
 
     }
