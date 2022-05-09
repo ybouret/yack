@@ -84,7 +84,7 @@ namespace yack
         };
 
 
-        void jpeg_format:: save(const pixmap<rgba> &img, const string &filename, const options *opt )
+        static inline int get_quality(const options *opt)
         {
             static const char quality_info[] = "quality";
 
@@ -95,6 +95,12 @@ namespace yack
             {
                 quality = clamp<int>(10,ios::ascii::convert::to<int>( *ps,quality_info),100);
             }
+            return quality;
+        }
+
+        void jpeg_format:: save(const pixmap<rgba> &img, const string &filename, const options *opt)
+        {
+
 
             // resources
             JPEG_OutputFile fp(filename,false);
@@ -173,7 +179,7 @@ namespace yack
             /* Now you can set any non-default parameters you wish to.
              * Here we just illustrate the use of quality (quantization table) scaling:
              */
-            jpeg_set_quality(&cinfo, quality, TRUE /* limit to baseline-JPEG values */);
+            jpeg_set_quality(&cinfo, get_quality(opt), TRUE /* limit to baseline-JPEG values */);
 
             /* Step 4: Start compressor */
 
