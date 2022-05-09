@@ -8,6 +8,10 @@
 #include "yack/string.hpp"
 
 #include "yack/ios/c/readable.hpp"
+#include "yack/ios/c/writable.hpp"
+#include "yack/ios/c/proxy.hpp"
+
+#include "yack/ios/ascii/convert.hpp"
 
 #include "png.h"
 
@@ -157,6 +161,107 @@ namespace yack
             }
 
         }
+
+        static inline bool get_alpha(const options *opts)
+        {
+            const char    txt[] = "alpha";
+            const string *opt = options::look_up(opts,txt);
+            if(opt)
+            {
+                const string &alpha = *opt;
+                if("1"==alpha||"on"==alpha||"true"==alpha)
+                {
+                    return true;
+                }
+
+                if("0"==alpha||"off"==alpha||"false"==alpha)
+                {
+                    return false;
+                }
+
+                throw exception("invalid PNG optiona alpha='%s'", alpha());
+            }
+            return false;
+        }
+
+        static inline int get_level(const options *opts)
+        {
+            const char    txt[] = "level";
+            int           res = 6;
+            const string *opt = options::look_up(opts,txt);
+            if(opt)
+            {
+                res = clamp<int>(1, ios::ascii::convert::to<int>(*opt,txt),9);
+            }
+            return res;
+        }
+
+
+
+        void png_format:: save(const pixmap<rgba> &img, const string &filename, const options *opts)
+        {
+            ios::file_proxy<ios::writable_file> fp(filename,false);
+
+            png_structp png = png_create_write_struct(PNG_LIBPNG_VER_STRING, NULL, NULL, NULL);
+            if (!png)
+            {
+                throw exception("png_create_write_struct");
+            }
+
+            png_infop info = png_create_info_struct(png);
+            if (!info)
+            {
+                png_destroy_write_struct(&png, NULL);
+                throw exception("png_create_info_struct for writer");
+            }
+
+            if (setjmp(png_jmpbuf(png)))
+            {
+                png_destroy_write_struct(&png, &info);
+                throw exception("png_format::save('%s')",filename());
+            }
+
+            png_init_io(png, *fp);
+
+            const bool alpha = get_alpha(opts);
+            // Output is 8bit depth, RGB(A) format.
+            png_set_IHDR(png,
+                         info,
+                         img.w,
+                         img.h,
+                         8,
+                         alpha ? PNG_COLOR_TYPE_RGBA : PNG_COLOR_TYPE_RGB,
+                         PNG_INTERLACE_NONE,
+                         PNG_COMPRESSION_TYPE_DEFAULT,
+                         PNG_FILTER_TYPE_DEFAULT
+                         );
+            png_set_compression_level(png,get_level(opts));
+
+            png_write_info(png, info);
+
+            // To remove the alpha channel for PNG_COLOR_TYPE_RGB format,
+            // Use png_set_filler().
+            if(!alpha)
+            {
+                png_set_filler(png, 0, PNG_FILLER_AFTER);
+            }
+
+            {
+                const size_t height = img.h;
+                cxx_array<png_bytep,memory_allocator> row(height);
+                for(size_t i=0;i<height;++i)
+                {
+                    row[i+1] = (png_byte*)&img[i][0];
+                }
+                png_write_image(png, &row[1]);
+            }
+            png_write_end(png, NULL);
+
+
+            png_destroy_write_struct(&png, &info);
+        }
+
+
 
     }
 }

@@ -18,6 +18,7 @@ namespace
         out = c;
     }
 }
+
 YACK_UTEST(png)
 {
     const concurrent::topology  topo;
@@ -33,6 +34,13 @@ YACK_UTEST(png)
             color::from_rgba cnv;
             bmp.save("img-png.bmp",img, cnv);
         }
+        png_format::save(img,"img-png3.png",NULL);
+        options opts;
+        opts << "alpha=1";
+        if(argc>2)
+            opts << argv[2];
+        png_format::save(img,"img-png4.png",&opts);
+
 
         broker       device(SIMD,img);
         pixmap<rgb>  img3(img,device,rgba2rgb);
