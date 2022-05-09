@@ -34,13 +34,20 @@ namespace yack
 
             //! parse helper
             options & operator<<(const char   *);
-            
+
+            //! search helper
+            const string *query(const char   *) const throw();
+
+            //! look up helper
+            static const string *look_up(const options *, const char *) throw();
+
 
         private:
             YACK_DISABLE_COPY_AND_ASSIGN(options);
             void add(const string &);
         };
 
+        
     }
 }
 

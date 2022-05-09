@@ -26,6 +26,23 @@ namespace yack
             return *this;
         }
 
+        const string * options:: query(const char *key) const throw()
+        {
+            if(key)
+            {
+                return this->get_tree().search(key,strlen(key));
+            }
+            else
+            {
+                return NULL;
+            }
+        }
+
+        const string * options:: look_up(const options *opt, const char *key) throw()
+        {
+            return opt ? opt->query(key) : NULL;
+        }
+
 
         static inline void optclr(string &s) throw()
         {

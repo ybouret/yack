@@ -39,8 +39,7 @@ namespace yack
         private:
             YACK_DISABLE_COPY_AND_ASSIGN(readable_file);
         };
-
-
+        
     }
 }
 

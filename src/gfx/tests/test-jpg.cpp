@@ -9,15 +9,17 @@ using namespace graphic;
 
 YACK_UTEST(jpg)
 {
+    options opts;
     if(argc>1)
     {
         const string fn  = argv[1];
-        pixmap<rgba> img = graphic:: jpeg_load(fn);
+        pixmap<rgba> img = graphic:: jpeg_format:: load(fn);
         {
             bmp_format       bmp;
             color::from_rgba cnv;
             bmp.save("img-jpeg.bmp",img, cnv);
         }
+        graphic::jpeg_format::save(img,"img-jpeg.jpg",&opts);
 
     }
 }

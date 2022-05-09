@@ -18,6 +18,15 @@ namespace yack
         }
 
 
+        static inline void bmp_w32(unsigned char *p,
+                                       const int      i) throw()
+        {
+
+            p[ 0] = (unsigned char)( i    );
+            p[ 1] = (unsigned char)( i>> 8);
+            p[ 2] = (unsigned char)( i>>16);
+            p[ 3] = (unsigned char)( i>>24);
+        }
 
         void bmp_format:: save(const string        &filename,
                                const bitmap        &image,
@@ -37,29 +46,15 @@ namespace yack
 
             const int w        = image.w;
             const int h        = image.h;
-            const int filesize = 54 + 3*w*h;
-            const int npad     = (4-(w*3)%4)%4;
+            const int ppl      = (4-(w*3)%4)%4; //!< pad per line
+            //const int filesize = 54 + 3*w*h;
+            const int filesize = 54+h*(3*w+ppl);
 
             // fill headers
-            bmpfileheader[ 2] = (unsigned char)(filesize    );
-            bmpfileheader[ 3] = (unsigned char)(filesize>> 8);
-            bmpfileheader[ 4] = (unsigned char)(filesize>>16);
-            bmpfileheader[ 5] = (unsigned char)(filesize>>24);
-
-            bmpinfoheader[ 4] = (unsigned char)(       w    );
-            bmpinfoheader[ 5] = (unsigned char)(       w>> 8);
-            bmpinfoheader[ 6] = (unsigned char)(       w>>16);
-            bmpinfoheader[ 7] = (unsigned char)(       w>>24);
-
-            bmpinfoheader[ 8] = (unsigned char)(       h    );
-            bmpinfoheader[ 9] = (unsigned char)(       h>> 8);
-            bmpinfoheader[10] = (unsigned char)(       h>>16);
-            bmpinfoheader[11] = (unsigned char)(       h>>24);
-
-            //f = fopen("img.bmp","wb");
-            //fwrite(bmpfileheader,1,14,f);
-            //fwrite(bmpinfoheader,1,40,f);
-
+            bmp_w32(&bmpfileheader[2],filesize);
+            bmp_w32(&bmpinfoheader[ 4],w);
+            bmp_w32(&bmpinfoheader[ 8],h);
+            
             ios::ocstream fp(filename);
             fp.frame(bmpfileheader,14);
             fp.frame(bmpinfoheader,40);
@@ -78,7 +73,7 @@ namespace yack
                     fp.write(c.g);
                     fp.write(c.r);
                 }
-                fp.frame(bmppad,npad);
+                fp.frame(bmppad,ppl);
             }
 
         }
