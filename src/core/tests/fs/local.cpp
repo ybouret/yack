@@ -13,6 +13,19 @@
 
 using namespace yack;
 
+YACK_UTEST(vfs_bytes)
+{
+	localFS &fs = localFS::instance();
+	for (int i = 1; i < argc; ++i)
+	{
+		const string   path = argv[i];
+		const uint64_t n = fs.query_bytes(path);
+		std::cerr << "#" << path << " : " << n << std::endl;
+	}
+}
+YACK_UDONE()
+
+
 YACK_UTEST(vfs_local)
 {
     localFS &fs = localFS::instance();
@@ -44,6 +57,7 @@ YACK_UTEST(vfs_local)
             if(ep->is_lnk()) std::cerr << " link      |";
             std::cerr << std::endl;
         }
+		return 0;
 
         std::cerr << "Query Bytes:" << std::endl;
         for(const vfs::entry *ep=elist.head;ep;ep=ep->next)

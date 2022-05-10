@@ -243,6 +243,35 @@ namespace yack
 
     }
 
+#if defined(YACK_WIN)
+	class ReadOnlyFileHandle
+	{
+	public:
+		inline ~ReadOnlyFileHandle() throw() 
+		{
+			::CloseHandle(handle);
+			handle = INVALID_HANDLE_VALUE;
+		}
+
+		inline ReadOnlyFileHandle(const string &path) :
+			handle(
+				::CreateFile(path(),GENERIC_READ,0,NULL,OPEN_EXISTING,FILE_ATTRIBUTE_NORMAL,NULL)
+			)
+		{
+			if (INVALID_HANDLE_VALUE == handle)
+			{
+				throw win32::exception(::GetLastError(), "ReadOnlyFileHandle('%s')", path());
+			}
+		}
+
+		const HANDLE & operator*() const throw() { return handle;  }
+
+	private:
+		YACK_DISABLE_COPY_AND_ASSIGN(ReadOnlyFileHandle);
+		HANDLE handle;
+	};
+#endif
+
     uint64_t localFS:: query_bytes(const string &path)   const
     {
         YACK_GIANT_LOCK();
@@ -257,8 +286,9 @@ namespace yack
 
 
 #if defined(YACK_WIN)
-        LARGE_INTEGER Result = { 0 };
-        if( ! GetFileSizeEx(path(),&Result) )
+        LARGE_INTEGER            Result = { 0,0 };
+		const ReadOnlyFileHandle Handle(path);
+        if( ! GetFileSizeEx(*Handle,&Result) )
         {
             const DWORD err = GetLastError();
             throw win32::exception(err,"GetFileSizeEx(%s)",path());
