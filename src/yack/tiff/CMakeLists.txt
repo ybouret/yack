@@ -195,3 +195,6 @@ message(STATUS "")
 # message(STATUS "  X Athena Widgets support:           ${HAVE_XAW}")
 message(STATUS "  OpenGL support:                     ${HAVE_OPENGL}")
 message(STATUS "")
+
+yack_third_party(yack-tiff)
+

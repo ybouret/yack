@@ -45,9 +45,9 @@ set(tiff_private_HEADERS
         ${CMAKE_CURRENT_BINARY_DIR}/tif_config.h)
 
 
-add_library(tiff libtiff.def)
+add_library(yack-tiff libtiff.def)
 
-target_sources(tiff PRIVATE
+target_sources(yack-tiff PRIVATE
         ${tiff_public_HEADERS}
         ${tiff_private_HEADERS}
         tif_aux.c
@@ -93,12 +93,12 @@ target_sources(tiff PRIVATE
         tif_zstd.c)
 
 if(USE_WIN32_FILEIO)
-  target_sources(tiff PRIVATE tif_win32.c)
+  target_sources(yack-tiff PRIVATE tif_win32.c)
 else()
-  target_sources(tiff PRIVATE tif_unix.c)
+  target_sources(yack-tiff PRIVATE tif_unix.c)
 endif()
 
-target_include_directories(tiff
+target_include_directories(yack-tiff
     PUBLIC
         $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}>
         $<BUILD_INTERFACE:${CMAKE_CURRENT_BINARY_DIR}>
@@ -106,50 +106,55 @@ target_include_directories(tiff
         ${TIFF_INCLUDES}
 )
 
+if(true)
+
 if(ZIP_SUPPORT)
-  target_link_libraries(tiff PRIVATE ZLIB::ZLIB)
+  target_link_libraries(yack-tiff PRIVATE ZLIB::ZLIB)
 endif()
 if(ZIP_SUPPORT AND LIBDEFLATE_SUPPORT)
-  target_link_libraries(tiff PRIVATE Deflate::Deflate)
+  target_link_libraries(yack-tiff PRIVATE Deflate::Deflate)
 endif()
 if(JPEG_SUPPORT)
-  target_link_libraries(tiff PRIVATE JPEG::JPEG)
+  target_link_libraries(yack-tiff PRIVATE JPEG::JPEG)
   if(JPEG_DUAL_MODE_8_12)
-    target_include_directories(tiff PRIVATE ${JPEG12_INCLUDE_DIR})
-    target_link_libraries(tiff PRIVATE ${JPEG12_LIBRARIES})
+    target_include_directories(yack-tiff PRIVATE ${JPEG12_INCLUDE_DIR})
+    target_link_libraries(yack-tiff PRIVATE ${JPEG12_LIBRARIES})
   endif()
 endif()
 if(JBIG_SUPPORT)
-  target_link_libraries(tiff PRIVATE JBIG::JBIG)
+  target_link_libraries(yack-tiff PRIVATE JBIG::JBIG)
 endif()
 if(LERC_SUPPORT)
-    target_link_libraries(tiff PRIVATE LERC::LERC)
+    target_link_libraries(yack-tiff PRIVATE LERC::LERC)
 endif()
 if(LZMA_SUPPORT)
-    target_link_libraries(tiff PRIVATE LibLZMA::LibLZMA)
+    target_link_libraries(yack-tiff PRIVATE LibLZMA::LibLZMA)
 endif()
 if(ZSTD_SUPPORT)
-  target_link_libraries(tiff PRIVATE ZSTD::ZSTD)
+  target_link_libraries(yack-tiff PRIVATE ZSTD::ZSTD)
 endif()
 if(WEBP_SUPPORT)
-  target_link_libraries(tiff PRIVATE WebP::WebP)
+  target_link_libraries(yack-tiff PRIVATE WebP::WebP)
 endif()
-target_link_libraries(tiff PRIVATE CMath::CMath)
+target_link_libraries(yack-tiff PRIVATE CMath::CMath)
 
-set_target_properties(tiff PROPERTIES SOVERSION ${SO_COMPATVERSION})
+set_target_properties(yack-tiff PROPERTIES SOVERSION ${SO_COMPATVERSION})
 if(NOT CYGWIN)
     # This property causes shared libraries on Linux to have the full version
     # encoded into their final filename.  We disable this on Cygwin because
     # it causes cygz-${TIFF_FULL_VERSION}.dll to be created when cygz.dll
     # seems to be the default.
-    set_target_properties(tiff PROPERTIES VERSION ${SO_VERSION})
+    set_target_properties(yack-tiff PROPERTIES VERSION ${SO_VERSION})
 endif()
 if(HAVE_LD_VERSION_SCRIPT)
-  set_target_properties(tiff PROPERTIES LINK_FLAGS
+  set_target_properties(yack-tiff PROPERTIES LINK_FLAGS
                         "-Wl,--version-script=${CMAKE_CURRENT_SOURCE_DIR}/libtiff.map")
 endif()
 
-install(TARGETS tiff
+endif()
+
+
+install(TARGETS yack-tiff
         RUNTIME DESTINATION ${CMAKE_INSTALL_FULL_BINDIR}
         LIBRARY DESTINATION ${CMAKE_INSTALL_FULL_LIBDIR}
         ARCHIVE DESTINATION ${CMAKE_INSTALL_FULL_LIBDIR})
