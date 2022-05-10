@@ -16,7 +16,8 @@ YACK_UTEST(bmp_io)
     int h = 50;
     FILE *f;
     unsigned char *img = NULL;
-    int filesize = 54 + 3*w*h;  //w is your image width, h is image height, both int
+    const int      npad = (4-(w*3)%4)%4;
+    int            filesize = 54 + h*(3*w+npad);  //w is your image width, h is image height, both int
 
     img = (unsigned char *)malloc(3*w*h);
     memset(img,0,3*w*h);
@@ -94,19 +95,18 @@ YACK_UTEST(bmp_io)
     bmpinfoheader[11] = (unsigned char)(       h>>24);
 
     f = fopen("img.bmp","wb");
-    fwrite(bmpfileheader,1,14,f);
-    fwrite(bmpinfoheader,1,40,f);
-    const int npad = (4-(w*3)%4)%4;
-    std::cerr << "npad=" << npad << std::endl;
+    size_t nw = 0;
+    nw += fwrite(bmpfileheader,1,14,f);
+    nw += fwrite(bmpinfoheader,1,40,f);
     for(int i=0; i<h; i++)
     {
-        fwrite(img+(w*(h-i-1)*3),3,w,f);
-        fwrite(bmppad,1,(4-(w*3)%4)%4,f);
+        nw += fwrite(img+(w*(h-i-1)*3),3,w,f) * 3;
+        nw += fwrite(bmppad,1,(4-(w*3)%4)%4,f);
     }
 
     free(img);
     fclose(f);
-
+    std::cerr << "#written=" << nw << " / " << filesize << std::endl;
 }
 YACK_UDONE()
 
