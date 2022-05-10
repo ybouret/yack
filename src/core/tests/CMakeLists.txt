@@ -249,6 +249,7 @@ add_test(vfs  test-core vfs)
 add_test(vfs:local test-core vfs_local)
 add_test(vfs:attr  test-core vfs_attr)
 add_test(vfs:mkdir test-core vfs_mkdir)
+add_test(vfs:bytes test-core vfs_bytes)
 
 add_test(kr:digest   test-core kr_digest)
 

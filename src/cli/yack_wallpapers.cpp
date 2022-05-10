@@ -1,6 +1,11 @@
 #include "yack/program.hpp"
 #include "yack/fs/local/fs.hpp"
 #include "yack/ptr/auto.hpp"
+#include "yack/sequence/vector.hpp"
+#include "yack/sort/heap.hpp"
+#include "yack/comparison.hpp"
+#include "yack/ios/icstream.hpp"
+#include "yack/ios/ocstream.hpp"
 
 using namespace yack;
 
@@ -8,6 +13,8 @@ static inline void wallpapers_from(vfs &fs, const string &path)
 {
     std::cerr << "[" << path << "]" << std::endl;
     const string dirName = path + "/contents/images/";
+    const string outRoot = vfs::get_base_name(path);
+    std::cerr << "for [" << outRoot << "]" << std::endl;
     auto_ptr<vfs::scanner> scan = fs.open_folder(dirName);
     vfs::entries    images;
     do
@@ -25,6 +32,31 @@ static inline void wallpapers_from(vfs &fs, const string &path)
         }
     }
     while(true);
+    if(images.size)
+    {
+        vector<vfs::entry*>   infos;
+        vector<uint64_t>      sizes;
+        for(const vfs::entry *ep=images.head;ep;ep=ep->next)
+        {
+            const string   &name = *(ep->path);
+            const uint64_t  size = fs.query_bytes(name);
+            infos << (vfs::entry *)ep;
+            sizes << size;
+        }
+
+        hsort(sizes,infos,comparison::decreasing<uint64_t>);
+        const vfs::entry &source = *infos.front();
+        std::cerr << "source='" << source.path << "'" << std::endl;
+        const string target = outRoot + '.' + source.cext;
+        std::cerr << "target='" << target << "'" << std::endl;
+
+        ios::ocstream tgt(target);
+        ios::icstream src(*source.path);
+        char c = 0;
+        while( src.query(c) ) tgt.write(c);
+
+    }
+
 }
 
 YACK_PROGRAM()
