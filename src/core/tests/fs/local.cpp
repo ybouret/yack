@@ -33,6 +33,7 @@ YACK_UTEST(vfs_local)
             }
         }
 
+        std::cerr << "Listing:" << std::endl;
         for(const vfs::entry *ep=elist.head;ep;ep=ep->next)
         {
             std::cerr << std::setw(pmax) << (*(ep->path))() << " |";
@@ -42,6 +43,15 @@ YACK_UTEST(vfs_local)
             if(ep->is_dir()) std::cerr << " directory |";
             if(ep->is_lnk()) std::cerr << " link      |";
             std::cerr << std::endl;
+        }
+
+        std::cerr << "Query Bytes:" << std::endl;
+        for(const vfs::entry *ep=elist.head;ep;ep=ep->next)
+        {
+            if(ep->is_reg())
+            {
+                std::cerr << std::setw(pmax) << (*(ep->path))() << " | " << fs.query_bytes(*(ep->path)) << std::endl;
+            }
         }
         
 

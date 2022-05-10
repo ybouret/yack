@@ -33,7 +33,8 @@ namespace yack
         virtual scanner      *open_folder(const string &path);         //!< use opendir/FindFirstFile
         virtual entry::attr_t get_attr_of(const string &path)   const; //!< from lstat/GetFileAttributes
         virtual void          make_folder(const string &dirname);      //!< from mkdir/CreateDirectory
-
+        virtual uint64_t      query_bytes(const string &path)   const; //!< query bytes
+        
     private:
         YACK_DISABLE_COPY_AND_ASSIGN(localFS);
         virtual ~localFS() throw();

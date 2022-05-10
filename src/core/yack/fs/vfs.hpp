@@ -149,6 +149,7 @@ namespace yack
         virtual scanner      *open_folder(const string &path)         = 0; //!< get a new scanning object
         virtual entry::attr_t get_attr_of(const string &path)   const = 0; //!< attribute
         virtual void          make_folder(const string &dirname)      = 0; //!< make a new folder
+        virtual uint64_t      query_bytes(const string &path)   const = 0; //!< used bytes for path
 
         //______________________________________________________________________
         //

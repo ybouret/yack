@@ -243,5 +243,19 @@ namespace yack
 
     }
 
+    uint64_t localFS:: query_bytes(const string &path)   const
+    {
+        YACK_GIANT_LOCK();
+
+#if defined(YACK_BSD)
+        struct stat buf;
+        // first pass: check if link
+        memset(&buf,0,sizeof(buf));
+        if(0 != stat( path(), &buf )) throw libc::exception(errno,"stat(%s)",path());
+        return buf.st_size;
+#endif
+
+    }
+
 
 }
