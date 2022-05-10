@@ -255,6 +255,17 @@ namespace yack
         return buf.st_size;
 #endif
 
+
+#if defined(YACK_WIN)
+        LARGE_INTEGER Result = { 0 };
+        if( ! GetFileSizeEx(path(),&Result) )
+        {
+            const DWORD err = GetLastError();
+            throw win32::exception(err,"GetFileSizeEx(%s)",path());
+        }
+        return Result.QuadPart;
+#endif
+
     }
 
 
