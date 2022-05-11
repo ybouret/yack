@@ -329,7 +329,7 @@ namespace yack
                                          const JSAMPLE *,
                                          const unit_t);
 
-        pixmap<rgba> jpeg_format:: load(const string &filename, const options *)
+        pixmap<rgba> jpeg_format:: load(const string &filename, const options *) const
         {
             /* This struct contains the JPEG decompression parameters and pointers to
              * working space (which is allocated as needed by the JPEG library).

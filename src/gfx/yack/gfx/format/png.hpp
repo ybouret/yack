@@ -23,7 +23,7 @@ namespace yack
             virtual ~png_format() throw();  //!< cleanup
 
             //! load
-            static pixmap<rgba> load(const string       &, const options *);
+            virtual pixmap<rgba> load(const string &, const options *) const;
 
             //! save
             static void         save(const pixmap<rgba> &, const string &, const options *opt);

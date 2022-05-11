@@ -78,7 +78,7 @@ namespace yack
         }
 
 
-        pixmap<rgba> tiff_format:: load(const string &filename, const options *)
+        pixmap<rgba> tiff_format:: load(const string &filename, const options *) const
         {
             tiff_ifile tif(filename);
             uint32_t     w=0; TIFFGetField(*tif, TIFFTAG_IMAGEWIDTH,  &w); if(w<=0) throw exception("%s: w=0 in '%s'",clid,filename());

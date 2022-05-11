@@ -10,11 +10,12 @@ using namespace graphic;
 
 YACK_UTEST(tiff)
 {
-    options opts;
+    options     opts;
+    tiff_format gfmt;
     if(argc>1)
     {
         const string fn  = argv[1];
-        pixmap<rgba> img = graphic:: tiff_format:: load(fn,NULL);
+        pixmap<rgba> img = gfmt.load(fn,NULL);
         {
             bmp_format       bmp;
             color::from_rgba cnv;

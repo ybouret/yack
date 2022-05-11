@@ -151,10 +151,9 @@ namespace yack
 
             
         }
+        
 
-
-
-        pixmap<rgba> png_format:: load(const string &filename, const options *)
+        pixmap<rgba> png_format:: load(const string &filename, const options *) const
         {
             PNG_Reader *io = new PNG_Reader(filename);
             try

@@ -24,7 +24,7 @@ namespace yack
             virtual ~tiff_format() throw(); //!< cleanup
 
             //! load
-            static pixmap<rgba> load(const string &, const options *);
+            virtual pixmap<rgba> load(const string &, const options *) const;
             //static void         save(const pixmap<rgba> &, const string &, const options *opt);
             
             //! count images within filename

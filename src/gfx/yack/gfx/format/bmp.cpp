@@ -2,13 +2,16 @@
 #include "yack/gfx/format/bmp.hpp"
 #include "yack/gfx/rgb.hpp"
 #include "yack/ios/ocstream.hpp"
+#include "yack/exception.hpp"
 
 namespace yack
 {
     namespace graphic
     {
+        const char bmp_format:: clid[] = "BMP";
+
         bmp_format:: bmp_format() :
-        format("BMP", "(bmp)&")
+        format(clid, "(bmp)&")
         {
 
         }
@@ -27,6 +30,11 @@ namespace yack
             p[ 1] = (unsigned char)( i>> 8);
             p[ 2] = (unsigned char)( i>>16);
             p[ 3] = (unsigned char)( i>>24);
+        }
+
+        pixmap<rgba> bmp_format:: load(const string &filename, const options *) const
+        {
+            throw exception("%s: load('%s') not implemented",clid,filename());
         }
 
         void bmp_format:: save(const string        &filename,

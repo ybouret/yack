@@ -13,7 +13,7 @@ namespace yack
         format:: format(const char *id, const char *xp) :
         jive::matching(xp),
         counted(),
-        name(id)
+        imageIO(id)
         {
         }
 

@@ -23,13 +23,13 @@ namespace
 YACK_UTEST(hist)
 {
     histogram H;
-
+    png_format fmt;
     const concurrent::topology  topo;
     engine                      SIMD = new concurrent::simd(topo);
     if(argc>1)
     {
         const string fn  = argv[1];
-        pixmap<rgba> img = png_format::load(fn,NULL);
+        pixmap<rgba> img = fmt.load(fn,NULL);
         broker       device(SIMD,img);
 
         broker_histogram::compute(H,img,device,rgba_to_byte);

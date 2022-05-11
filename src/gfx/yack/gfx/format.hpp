@@ -3,38 +3,29 @@
 #ifndef YACK_GFX_FORMAT_INCLUDED
 #define YACK_GFX_FORMAT_INCLUDED 1
 
-#include "yack/gfx/article.hpp"
-#include "yack/gfx/format/options.hpp"
-#include "yack/gfx/pixmap.hpp"
-#include "yack/gfx/rgb.hpp"
+#include "yack/gfx/image-io.hpp"
 #include "yack/jive/pattern/matching.hpp"
 
 namespace yack
 {
     namespace graphic
     {
+
         //______________________________________________________________________
         //
         //
         //! base class for graphic formats
         //
         //______________________________________________________________________
-        class format : public jive::matching, public counted
+        class format : public jive::matching, public counted, public imageIO
         {
         public:
             //__________________________________________________________________
             //
             // methods
             //__________________________________________________________________
+            bool matches(const string &filename); //!< wrapper to check matching extension
 
-            //! wrapper to check matching extension
-            bool matches(const string &filename);
-
-            //__________________________________________________________________
-            //
-            // members
-            //__________________________________________________________________
-            const string name; //!< name
 
             //__________________________________________________________________
             //
