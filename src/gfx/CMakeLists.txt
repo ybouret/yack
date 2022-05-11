@@ -1,4 +1,8 @@
-include_directories(. ../core ../jive ../yack/png ../yack/jpeg ../yack/tiff/libtiff)
+message( STATUS "build: ${CMAKE_CURRENT_BINARY_DIR}")
+include_directories(. ../core ../jive)
+include_directories( ../yack/png )
+include_directories( ../yack/jpeg)
+include_directories( ../yack/tiff/libtiff ${CMAKE_CURRENT_BINARY_DIR}/../yack/tiff/libtiff)
 
 #main
 file(GLOB gfx_main_decl yack/gfx/*.hpp)

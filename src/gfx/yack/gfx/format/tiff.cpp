@@ -1,6 +1,6 @@
 
 #include "yack/gfx/format/tiff.hpp"
-//#include "tiffio.h"
+#include "tiffio.h"
 
 namespace yack
 {
