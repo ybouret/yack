@@ -162,6 +162,25 @@ Let
 	
 \end{itemize}
 
+\subsection{Scaling}
+
+For any valid concentration $\vec{C}$, we have a set of single solving extents $\vec{\Xi}$.
+Each $\Xi_i$ is a measure of the single deviation from equilibrium.
+We define:
+\begin{equation}
+	\vec{\Psi}_i' = \partial_{\vec{C}}\Gamma_i(\vec{C} + \Xi_i \vec{\nu}_i)
+\end{equation}
+Then
+\begin{equation}
+	\langle \vec{\Psi}_i'\vert \vec{\nu}_i \rangle 
+	\left\lbrace
+	\begin{array}{rcl}
+	 < & 0 & \text{for a regular equilibrium} \\
+	 = & 0 & \text{for a blocked equilibrium} \\
+	\end{array}
+	\right.
+\end{equation}
+
 \subsection{Expansion}
 \subsubsection{Neutral}
  
@@ -216,17 +235,5 @@ which is a regular point (otherwise the equilibrium is blocked).
 
 \subsubsection{First order}
 
-\begin{equation}
-	0 = (\xi_i - \Xi_i) \langle \vec{\Psi}_i' \vert \vec{\nu}_i\rangle + \sum_{k\not=i} \langle \vec{\Psi}_{\xi_i} \vert \vec{\nu}_k \rangle \xi_k
-\end{equation}
- 
-\begin{equation}
-	0 = \xi_i - \Xi_i + \sum_{k\not=i} \dfrac{\langle \vec{\Psi}_{i} \vert \vec{\nu}_k \rangle}{\langle \vec{\Psi}_i' \vert \vec{\nu}_i\rangle} \xi_k 
-	+ \dfrac{\xi_i}{\Xi_i} \sum_{k\not=i} \dfrac{\langle \delta\vec{\Psi}_{i} \vert \vec{\nu}_k \rangle}{\langle \vec{\Psi}_i' \vert \vec{\nu}_i\rangle} \xi_k 
-\end{equation} 
-
-\begin{equation}
-	\xi_i = \dfrac{\Xi_i - \Lambda_i }{1+\dfrac{1}{\Xi_i} \Omega_i }
-\end{equation}
  
 \end{document}
