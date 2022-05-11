@@ -96,6 +96,29 @@ namespace yack
             return img;
         }
 
+        void tiff_format:: save(const pixmap<rgba> &img, const string &filename, const options *)
+        {
+            tiff_ofile tif(filename);
+            int compression = COMPRESSION_NONE;
+            TIFFSetField(*tif, TIFFTAG_IMAGEWIDTH,  (uint32_t) img.w);
+            TIFFSetField(*tif, TIFFTAG_IMAGELENGTH, (uint32_t) img.h);
+            TIFFSetField(*tif, TIFFTAG_ORIENTATION, ORIENTATION_TOPLEFT);
+            TIFFSetField(*tif, TIFFTAG_COMPRESSION, compression);
+            TIFFSetField(*tif, TIFFTAG_SAMPLESPERPIXEL, 4);
+            TIFFSetField(*tif, TIFFTAG_BITSPERSAMPLE,   8);
+            TIFFSetField(*tif, TIFFTAG_PLANARCONFIG, PLANARCONFIG_CONTIG);
+            TIFFSetField(*tif, TIFFTAG_PHOTOMETRIC,  PHOTOMETRIC_RGB);
+
+            for(unit_t j=0;j<img.h;++j)
+            {
+                if( TIFFWriteScanline(*tif,(void*)(&img(j)(0)),j,0) < 0 )
+                {
+                    throw exception("Error in TiffWriteScanLine");
+                }
+            }
+
+        }
+
         
 
     }

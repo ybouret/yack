@@ -25,7 +25,7 @@ namespace yack
 
             //! load
             virtual pixmap<rgba> load(const string &, const options *) const;
-            //static void         save(const pixmap<rgba> &, const string &, const options *opt);
+            void                 save(const pixmap<rgba> &, const string &, const options *opt);
             
             //! count images within filename
             static size_t count_directories(const string &filename);

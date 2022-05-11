@@ -21,7 +21,7 @@ YACK_UTEST(tiff)
             color::from_rgba cnv;
             bmp.save("img-tiff.bmp",img, cnv);
         }
-        //graphic::jpeg_format::save(img,"img-jpeg.jpg",&opts);
+        gfmt.save(img,"img-tiff.tif",&opts);
 
     }
 }
