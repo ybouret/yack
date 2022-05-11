@@ -20,6 +20,18 @@ namespace yack
 
     namespace graphic
     {
+        const char jpeg_format::clid[] = "JPEG";
+
+        jpeg_format:: jpeg_format() :
+        format(clid,"(jpg|jpeg)&")
+        {
+        }
+
+        jpeg_format:: ~jpeg_format() throw()
+        {
+        }
+        
+
         /*
          * ERROR HANDLING:
          *

@@ -20,8 +20,22 @@ namespace yack
     namespace graphic
     {
 
+
+        const char png_format::clid[] = "PNG";
+
+        png_format:: png_format() : format(clid,"(png)&")
+        {
+        }
+
+        png_format:: ~png_format() throw()
+        {
+        }
+
+
         namespace
         {
+
+
 
 
             class PNG_Common

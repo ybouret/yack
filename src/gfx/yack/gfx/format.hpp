@@ -13,25 +13,41 @@ namespace yack
 {
     namespace graphic
     {
-        class format : public article
+        //______________________________________________________________________
+        //
+        //
+        //! base class for graphic formats
+        //
+        //______________________________________________________________________
+        class format : public jive::matching, public counted
         {
         public:
+            //__________________________________________________________________
+            //
+            // methods
+            //__________________________________________________________________
 
+            //! wrapper to check matching extension
+            bool matches(const string &filename);
 
-            bool matches(const string &filename) const;
-            const jive::pattern &get_pattern() const throw();
-            
+            //__________________________________________________________________
+            //
+            // members
+            //__________________________________________________________________
+            const string name; //!< name
 
-            const string name;
-
+            //__________________________________________________________________
+            //
+            // C++
+            //__________________________________________________________________
             virtual ~format() throw();
 
         protected:
+            //! setup name and regular expression
             explicit format(const char *id, const char *xp);
 
         private:
             YACK_DISABLE_COPY_AND_ASSIGN(format);
-            mutable jive::matching ext;
         };
     }
 }

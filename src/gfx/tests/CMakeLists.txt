@@ -2,7 +2,7 @@ file(GLOB srcs test-*.cpp)
   
 add_executable(test-gfx main.cpp ${srcs})
 
-target_link_libraries(test-gfx yack-gfx yack-png yack-z yack-jpeg)
+target_link_libraries(test-gfx yack-jive yack-gfx yack-png yack-z yack-jpeg yack-tiff)
 yack_link_libraries(test-gfx)
 
 yack_testing(gfx)
@@ -20,6 +20,7 @@ add_test(png_io     test-gfx png_io)
 add_test(bmp_io     test-gfx bmp_io)
 add_test(png        test-gfx png)
 add_test(jpg        test-gfx jpg)
+add_test(format     test-gfx format)
 
 
 

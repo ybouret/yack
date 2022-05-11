@@ -11,16 +11,17 @@ namespace yack
     //__________________________________________________________________________
     //
     //
-    //! set/reset temporary value
+    //! always execute code before returning
     //
     //__________________________________________________________________________
-
     template <typename T>
     class before_returning
     {
     public:
+        //! method prototype
         typedef void (T::*cleanup)();
 
+        //! setup
         inline before_returning(T         &Object,
                                 cleanup    Method,
                                 const bool Ensure) :
@@ -31,6 +32,7 @@ namespace yack
             if(Ensure) call();
         }
 
+        //! cleanup
         inline ~before_returning() throw() {
             try
             {

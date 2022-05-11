@@ -11,14 +11,15 @@ namespace yack
         }
 
         format:: format(const char *id, const char *xp) :
-        name(id),
-        ext(xp)
+        jive::matching(xp),
+        counted(),
+        name(id)
         {
         }
 
-        bool format:: matches(const string &filename) const
+        bool format:: matches(const string &filename)  
         {
-            jive::matching                     &choice = ext;
+            jive::matching                     &choice = *this;
             const before_returning<jive::token> ensure(choice, & jive::token::release, true );
             const string file_ext = vfs::get_extension(filename);
             return choice.exactly(file_ext);
