@@ -3,7 +3,7 @@
 #ifndef YACK_GFX_FORMAT_BMP_INCLUDED
 #define YACK_GFX_FORMAT_BMP_INCLUDED 1
 
-#include "yack/gfx/pixmap.hpp"
+#include "yack/gfx/format.hpp"
 #include "yack/color/data-to-rgba.hpp"
 
 namespace yack
@@ -12,7 +12,7 @@ namespace yack
     {
 
         //! save neutral BMP
-        class bmp_format
+        class bmp_format : public format
         {
         public:
             // C++

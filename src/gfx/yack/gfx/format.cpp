@@ -12,16 +12,16 @@ namespace yack
 
         format:: format(const char *id, const char *xp) :
         name(id),
-        ext( new jive::matching(xp) )
+        ext(xp)
         {
         }
 
         bool format:: matches(const string &filename) const
         {
-            jive::matching                     &choice = *ext;
+            jive::matching                     &choice = ext;
             const before_returning<jive::token> ensure(choice, & jive::token::release, true );
-            const string ext = vfs::get_extension(filename);
-            return choice.exactly(ext);
+            const string file_ext = vfs::get_extension(filename);
+            return choice.exactly(file_ext);
         }
 
     }

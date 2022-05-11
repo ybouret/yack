@@ -7,7 +7,8 @@ namespace yack
 {
     namespace graphic
     {
-        bmp_format:: bmp_format()
+        bmp_format:: bmp_format() :
+        format("BMP", "(bmp)&")
         {
 
         }

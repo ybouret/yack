@@ -16,6 +16,7 @@ namespace yack
         public:
             //static pixmap<rgba> load(const string &, const options *);
             //static void         save(const pixmap<rgba> &, const string &, const options *opt);
+
         };
 
 

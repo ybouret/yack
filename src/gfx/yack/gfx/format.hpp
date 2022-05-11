@@ -19,7 +19,8 @@ namespace yack
 
 
             bool matches(const string &filename) const;
-
+            const jive::pattern &get_pattern() const throw();
+            
 
             const string name;
 
@@ -30,7 +31,7 @@ namespace yack
 
         private:
             YACK_DISABLE_COPY_AND_ASSIGN(format);
-            mutable auto_ptr<jive::matching> ext;
+            mutable jive::matching ext;
         };
     }
 }
