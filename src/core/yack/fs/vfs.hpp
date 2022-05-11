@@ -155,7 +155,9 @@ namespace yack
         //
         // non-virtual interface: remove file(s)
         //______________________________________________________________________
-        void remove_file(const char *path); //!< wrapper
+        void     remove_file(const char *path); //!< wrapper
+        scanner *open_folder(const char *path); //!< wrapper
+        
 
         //! helper, a.k.a rm -f
         template <typename PATH> inline

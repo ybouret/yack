@@ -214,6 +214,13 @@ namespace yack
         remove_file(_);
     }
 
+    vfs::scanner * vfs::open_folder(const char *path)
+    {
+        const string _(path);
+        return open_folder(_);
+    }
+
+
 }
 
 
