@@ -71,5 +71,25 @@ namespace yack
             assert(j<h);
             return rows->row[j];
         }
+
+
+        static inline void xch_rows(uint8_t *a, uint8_t *b,size_t len) throw()
+        {
+            while(len-- >0)
+                cswap(*(a++),*(b++));
+        }
+
+        void bitmap:: vflip() throw()
+        {
+            unit_t       jlo = 0;
+            unit_t       jhi = h;
+            bitrow      *row = rows->row;
+            const size_t len = s;
+            for(unit_t count=h/2;count>0;--count)
+            {
+                xch_rows(row[jlo++].addr(), row[--jhi].addr(),len);
+            }
+        }
+
     }
 }

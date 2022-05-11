@@ -49,7 +49,8 @@ namespace yack
             // methods
             //__________________________________________________________________
             const bitrow & line(const unit_t j) const throw(); //!< get scan line
-            bitrow &       line(const unit_t j)       throw(); //!< get scal line
+            bitrow &       line(const unit_t j)       throw(); //!< get scan line
+            void           vflip()                    throw(); //!< vertical flip
 
 
         protected:

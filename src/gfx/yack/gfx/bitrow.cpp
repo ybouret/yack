@@ -22,6 +22,13 @@ namespace yack
             return static_cast<const uint8_t*>(p);
         }
 
+        uint8_t * bitrow:: addr()   throw()
+        {
+            assert(p);
+            return static_cast<uint8_t*>(p);
+        }
+
+
 
     }
 }

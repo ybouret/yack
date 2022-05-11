@@ -11,6 +11,7 @@ YACK_UTEST_DECL(16)
     YACK_UTEST(hist);
     YACK_UTEST(broker);
     YACK_UTEST(jpg);
+    YACK_UTEST(tiff);
     YACK_UTEST(format);
 }
 YACK_UTEST_EXEC()

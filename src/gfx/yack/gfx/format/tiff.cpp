@@ -76,6 +76,28 @@ namespace yack
             } while( TIFFReadDirectory(*tif) );
             return nd;
         }
+
+
+        pixmap<rgba> tiff_format:: load(const string &filename, const options *)
+        {
+            tiff_ifile tif(filename);
+            uint32_t     w=0; TIFFGetField(*tif, TIFFTAG_IMAGEWIDTH,  &w); if(w<=0) throw exception("%s: w=0 in '%s'",clid,filename());
+            uint32_t     h=0; TIFFGetField(*tif, TIFFTAG_IMAGELENGTH, &h); if(h<=0) throw exception("%s: h=0 in '%s'",clid,filename());
+            pixmap<rgba> img(w,h);
+            uint32_t    *raster =  coerce_cast<uint32_t>( &img(0)(0) );
+            if (TIFFReadRGBAImage(*tif, w, h, raster, 0))
+            {
+                img.vflip();
+            }
+            else
+            {
+                throw exception("%s: can't ReadRGBAImage '%s'",clid,filename());
+            }
+            return img;
+        }
+
+        
+
     }
 
 }

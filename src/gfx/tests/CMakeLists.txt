@@ -20,6 +20,7 @@ add_test(png_io     test-gfx png_io)
 add_test(bmp_io     test-gfx bmp_io)
 add_test(png        test-gfx png)
 add_test(jpg        test-gfx jpg)
+add_test(tiff       test-gfx tiff)
 add_test(format     test-gfx format)
 
 

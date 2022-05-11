@@ -23,9 +23,10 @@ namespace yack
             explicit tiff_format();         //!< setup
             virtual ~tiff_format() throw(); //!< cleanup
 
-            //static pixmap<rgba> load(const string &, const options *);
+            //! load
+            static pixmap<rgba> load(const string &, const options *);
             //static void         save(const pixmap<rgba> &, const string &, const options *opt);
-
+            
             //! count images within filename
             static size_t count_directories(const string &filename);
 
