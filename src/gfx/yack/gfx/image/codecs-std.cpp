@@ -4,7 +4,7 @@
 #include "yack/gfx/image/format/tiff.hpp"
 #include "yack/gfx/image/format/bmp.hpp"
 
-#include "yack/gfx/image/codecs.hpp"
+#include "yack/gfx/image/formats.hpp"
 
 namespace yack
 {
@@ -13,7 +13,7 @@ namespace yack
     {
         namespace image
         {
-            void codecs:: load_built_in()
+            void formats:: load_built_in()
             {
                 (void) get<png_format>();
                 (void) get<jpeg_format>();

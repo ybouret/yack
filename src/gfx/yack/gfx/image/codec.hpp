@@ -26,11 +26,24 @@ namespace yack
             public:
                 //______________________________________________________________
                 //
-                // methods
+                // interface
                 //______________________________________________________________
                 virtual pixmap<rgba> load(const string &filename, const options *) const = 0; //!< load with options
                 pixmap<rgba>         load(const char   *filename, const options *) const;     //!< load wrapper
-                const string &       key() const throw(); //!< name
+                template <typename FILENAME, typename OPTVALUE> inline
+                pixmap<rgba>         read(const FILENAME &filename,
+                                          const OPTVALUE &optvalue) const
+                {
+                    options opts; opts << optvalue;
+                    return load(filename,&opts);
+                }
+
+
+                //______________________________________________________________
+                //
+                // methods
+                //______________________________________________________________
+                const string &       key() const throw(); //!< name for ark_ptr
 
                 //______________________________________________________________
                 //

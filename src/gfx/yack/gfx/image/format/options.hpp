@@ -28,7 +28,7 @@ namespace yack
         public:
             explicit options() throw();
             virtual ~options() throw();
-
+            
             //! parse 'key=val[:other_key=other_val]
             options & operator<<(const string &);
 

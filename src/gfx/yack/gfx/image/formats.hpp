@@ -22,7 +22,7 @@ namespace yack
             //
             //__________________________________________________________________
             typedef ark_ptr<string,const format>   fmt_ptr; //!< shared codec
-            typedef suffix_set<string,fmt_ptr>     formats; //!< database
+            typedef suffix_set<string,fmt_ptr>     fmt_set; //!< database
 
             //__________________________________________________________________
             //
@@ -30,7 +30,7 @@ namespace yack
             //! shared database of codecs
             //
             //__________________________________________________________________
-            class codecs : public singleton<codecs>, public codec, public formats
+            class formats : public singleton<formats>, public codec, public fmt_set
             {
             public:
                 //______________________________________________________________
@@ -39,8 +39,7 @@ namespace yack
                 //______________________________________________________________
                 static const char               call_sign[];       //!< for singleton
                 static const at_exit::longevity life_time = 1001;  //!< for singleton
-                typedef knot_type               node_type;
-
+                
                 //______________________________________________________________
                 //
                 // interface
@@ -73,19 +72,21 @@ namespace yack
                     }
                 }
 
+                //! load built-in formats
                 void load_built_in();
 
+                //! find format for filename, based on extension
                 const format &format_for(const string &filename) const;
 
             private:
-                YACK_DISABLE_COPY_AND_ASSIGN(codecs);
-                explicit codecs();
-                virtual ~codecs() throw();
-                friend class singleton<codecs>;
+                YACK_DISABLE_COPY_AND_ASSIGN(formats);
+                explicit formats();
+                virtual ~formats() throw();
+                friend class singleton<formats>;
             };
         }
 
-        typedef image::codecs images; //!< alias
+        typedef image::formats images; //!< alias
     }
 
 }

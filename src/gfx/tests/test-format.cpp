@@ -4,7 +4,7 @@
 #include "yack/gfx/image/format/tiff.hpp"
 #include "yack/gfx/image/format/bmp.hpp"
 
-#include "yack/gfx/image/codecs.hpp"
+#include "yack/gfx/image/formats.hpp"
 
 
 using namespace yack;

@@ -1061,6 +1061,7 @@ LZWPostEncode(TIFF* tif)
 	long outcount = sp->enc_outcount;
 	int nbits = sp->lzw_nbits;
 
+    (void)outcount;
 	if (op > sp->enc_rawlimit) {
 		tif->tif_rawcc = (tmsize_t)(op - tif->tif_rawdata);
 		if( !TIFFFlushData1(tif) )
