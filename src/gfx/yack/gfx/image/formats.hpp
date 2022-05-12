@@ -73,10 +73,12 @@ namespace yack
                 }
 
                 //! load built-in formats
-                formats &load_built_in();
+                formats &decl_built_in();
 
                 //! find format for filename, based on extension
                 const  format  & format_for(const string &filename) const;
+
+                //! get instance + decl_built_in
                 static formats & standard();
 
             private:
