@@ -21,18 +21,31 @@ namespace yack
             //! I/O interface for images
             //
             //__________________________________________________________________
-            class codec
+            class codec : public article
             {
             public:
-                virtual pixmap<rgba> load(const string &filename, const options *) const = 0;
-                pixmap<rgba>         load(const char   *filename, const options *) const;
+                //______________________________________________________________
+                //
+                // methods
+                //______________________________________________________________
+                virtual pixmap<rgba> load(const string &filename, const options *) const = 0; //!< load with options
+                pixmap<rgba>         load(const char   *filename, const options *) const;     //!< load wrapper
+                const string &       key() const throw(); //!< name
 
-                const string name;
+                //______________________________________________________________
+                //
+                // members
+                //______________________________________________________________
+                const string name; //!< identifier
 
-                virtual ~codec() throw();
+                //______________________________________________________________
+                //
+                // C++
+                //______________________________________________________________
+                virtual ~codec() throw();     //!< cleanup
 
             protected:
-                explicit codec(const char *);
+                explicit codec(const char *); //!< setup name
 
             private:
                 YACK_DISABLE_COPY_AND_ASSIGN(codec);

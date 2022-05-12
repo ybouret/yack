@@ -15,12 +15,18 @@ namespace yack
             {
             }
 
+            const string & codec:: key() const throw()
+            {
+                return name;
+            }
 
             pixmap<rgba> codec:: load(const char   *filename, const options *opts) const
             {
                 const string _(filename);
                 return load(_,opts);
             }
+
+
 
         }
 

@@ -11,17 +11,33 @@ namespace yack
     namespace graphic
     {
 
+        //______________________________________________________________________
+        //
+        //
         //! save neutral BMP
+        //
+        //______________________________________________________________________
         class bmp_format : public image::format
         {
         public:
+            //__________________________________________________________________
+            //
+            // types and definitions
+            //__________________________________________________________________
             static const char clid[]; //!< "BMP"
 
+            //__________________________________________________________________
+            //
             // C++
+            //__________________________________________________________________
             explicit bmp_format();         //!< setup
             virtual ~bmp_format() throw(); //!< cleanup
 
-            virtual pixmap<rgba> load(const string &filename, const options *) const;
+            //__________________________________________________________________
+            //
+            // interface
+            //__________________________________________________________________
+            virtual pixmap<rgba> load(const string &filename, const options *) const; //!< not implemented
             
             //! save image
             void save(const string        &filename,

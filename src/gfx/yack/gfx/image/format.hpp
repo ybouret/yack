@@ -19,7 +19,7 @@ namespace yack
             //! base class for graphic formats
             //
             //______________________________________________________________________
-            class format : public jive::matching, public counted, public codec
+            class format : public codec
             {
             public:
                 //__________________________________________________________________
@@ -28,6 +28,12 @@ namespace yack
                 //__________________________________________________________________
                 bool matches(const string &filename); //!< wrapper to check matching extension
 
+
+                //__________________________________________________________________
+                //
+                // methods
+                //__________________________________________________________________
+                jive::matching extensions; //!< extensions matchin token+scheme
 
                 //__________________________________________________________________
                 //
