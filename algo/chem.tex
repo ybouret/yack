@@ -183,7 +183,7 @@ Then
 
 Thus we can define 
 \begin{equation}
-	\gamma_i = \left(\Xi_i - \xi\right) - \sum_{k\not=i} \dfrac{\langle \vec{\Psi}_i\vert \vec{\nu}_k\rangle}{\langle \vec{\Psi}_i'\vert \vec{\nu}_i \rangle} \xi_k
+	\gamma_i = \left(\Xi_i - \xi_i\right) - \sum_{k\not=i} \dfrac{\langle \vec{\Psi}_i\vert \vec{\nu}_k\rangle}{\langle \vec{\Psi}_i'\vert \vec{\nu}_i \rangle} \xi_k
 	\simeq \dfrac{\Gamma_i}{-\langle \vec{\Psi}_i'\vert \vec{\nu}_i \rangle} 
 \end{equation}
 or
@@ -193,6 +193,19 @@ or
 and we want to decrease:
 \begin{equation}
 	 	\left[ \vec{\Xi} - \bm{\Omega} \vec{\xi} \right]^2 = (1-\alpha) \Xi^2
+\end{equation}
+
+\begin{equation}
+	\Omega_{i,i} = 1,\;\; \Omega_{i\not=k} = \dfrac{\langle \vec{\Psi}_i\vert \vec{\nu}_k\rangle}{\langle \vec{\Psi}_i'\vert \vec{\nu}_i \rangle}
+\end{equation}
+
+Consequently:
+\begin{equation}
+	\vec{\xi} = \alpha \bm{\Omega}^{-1} \vec{\Xi}
+\end{equation}
+With the constraint:
+\begin{equation}
+	\vec{C} + \bm{\nu}^T \vec{\xi} \geq 0
 \end{equation}
 
 \subsection{Expansion}
