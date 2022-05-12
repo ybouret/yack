@@ -1,5 +1,6 @@
 
 #include "yack/gfx/image/format/tiff.hpp"
+#include "yack/gfx/image/format/tiff++.hpp"
 #include "yack/exception.hpp"
 
 #include "tiffio.h"
@@ -46,15 +47,6 @@ namespace yack
             YACK_DISABLE_COPY_AND_ASSIGN(tiff_file);
         };
 
-        class tiff_ifile : public tiff_file
-        {
-        public:
-            inline explicit tiff_ifile(const string &filename) : tiff_file(filename,"r") {}
-            inline virtual ~tiff_ifile() throw() {}
-
-        private:
-            YACK_DISABLE_COPY_AND_ASSIGN(tiff_ifile);
-        };
 
         class tiff_ofile : public tiff_file
         {
@@ -69,30 +61,18 @@ namespace yack
 
         size_t tiff_format:: count_directories(const string &filename)
         {
-            tiff_ifile tif(filename);
-            size_t     nd = 0;
-            do {
-                ++nd;
-            } while( TIFFReadDirectory(*tif) );
-            return nd;
+            image::itiff tif(filename);
+            return tif.directories();
         }
 
 
         pixmap<rgba> tiff_format:: load(const string &filename, const options *) const
         {
-            tiff_ifile tif(filename);
-            uint32_t     w=0; TIFFGetField(*tif, TIFFTAG_IMAGEWIDTH,  &w); if(w<=0) throw exception("%s: w=0 in '%s'",clid,filename());
-            uint32_t     h=0; TIFFGetField(*tif, TIFFTAG_IMAGELENGTH, &h); if(h<=0) throw exception("%s: h=0 in '%s'",clid,filename());
+            image::itiff tif(filename);
+            const unit_t w = tif.width();  if(w<=0) throw exception("%s: w=0 in '%s'",clid,filename());
+            const unit_t h = tif.height(); if(h<=0) throw exception("%s: h=0 in '%s'",clid,filename());
             pixmap<rgba> img(w,h);
-            uint32_t    *raster =  coerce_cast<uint32_t>( &img(0)(0) );
-            if (TIFFReadRGBAImage(*tif, w, h, raster, 0))
-            {
-                img.vflip();
-            }
-            else
-            {
-                throw exception("%s: can't ReadRGBAImage '%s'",clid,filename());
-            }
+            if(!tif.load(img)) throw exception("%s: can't ReadRGBAImage '%s'",clid,filename());
             return img;
         }
 
