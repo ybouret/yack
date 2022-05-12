@@ -4,7 +4,7 @@
 #ifndef YACK_GFX_IMAGE_CODECS_INCLUDED
 #define YACK_GFX_IMAGE_CODECS_INCLUDED 1
 
-#include "yack/gfx/image/codec.hpp"
+#include "yack/gfx/image/format.hpp"
 #include "yack/ptr/ark.hpp"
 #include "yack/associative/suffix/set.hpp"
 
@@ -21,8 +21,8 @@ namespace yack
             // aliases
             //
             //__________________________________________________________________
-            typedef ark_ptr<string,const codec>  codec_ptr; //!< shared codec
-            typedef suffix_set<string,codec_ptr> codecs_db; //!< database
+            typedef ark_ptr<string,const format>   fmt_ptr; //!< shared codec
+            typedef suffix_set<string,fmt_ptr>     formats; //!< database
 
             //__________________________________________________________________
             //
@@ -30,7 +30,7 @@ namespace yack
             //! shared database of codecs
             //
             //__________________________________________________________________
-            class codecs : public singleton<codecs>, public codec, public codecs_db
+            class codecs : public singleton<codecs>, public codec, public formats
             {
             public:
                 //______________________________________________________________
@@ -39,6 +39,7 @@ namespace yack
                 //______________________________________________________________
                 static const char               call_sign[];       //!< for singleton
                 static const at_exit::longevity life_time = 1001;  //!< for singleton
+                typedef knot_type               node_type;
 
                 //______________________________________________________________
                 //
@@ -51,15 +52,15 @@ namespace yack
                 //
                 // methods
                 //______________________________________________________________
-                void         decl(codec *);                       //!< register a new codec
-                const codec *query(const string &) const throw(); //!< query existing codec
-                const codec *query(const char   *) const throw(); //!< query existing codec
+                void          decl(format *);                      //!< register a new format
+                const format *query(const string &) const throw(); //!< query existing format
+                const format *query(const char   *) const throw(); //!< query existing format
 
                 //! on-the-fly get, assuming CODEC::name() == CODEC::clid
                 template <typename CODEC> inline
                 CODEC & get()
                 {
-                    const codec *ptr = query(CODEC::clid);
+                    const format *ptr = query(CODEC::clid);
                     if(ptr)
                     {
                         return coerce(*dynamic_cast<const CODEC *>(ptr));
@@ -71,6 +72,10 @@ namespace yack
                         return *ptr;
                     }
                 }
+
+                void load_built_in();
+
+                const format &format_for(const string &filename) const;
 
             private:
                 YACK_DISABLE_COPY_AND_ASSIGN(codecs);

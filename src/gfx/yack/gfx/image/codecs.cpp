@@ -17,34 +17,45 @@ namespace yack
             codecs:: codecs() :
             singleton<codecs>(),
             codec(call_sign),
-            codecs_db()
+            formats()
             {
             }
 
-            pixmap<rgba> codecs:: load(const string &, const options *) const
+            const format & codecs:: format_for(const string &filename) const
             {
-                throw exception("not implemented");
+                YACK_LOCK(access);
+                for(const node_type *node = (*get_tree()).head;node;node=node->next)
+                {
+                    format &io =  coerce(***node);
+                    if(io.matches(filename)) return io;
+                }
+                throw exception("%s: no codec for '%s'", call_sign, filename() );
             }
 
-            void codecs:: decl(codec *addr)
+            pixmap<rgba> codecs:: load(const string &filename, const options *opts) const
+            {
+                return format_for(filename).load(filename,opts);
+            }
+
+            void codecs:: decl(format *addr)
             {
                 assert(NULL!=addr);
-                const codec_ptr ptr = addr;
+                const fmt_ptr ptr = addr;
                 if(!insert(ptr)) throw exception("%s: multiple '%s'",call_sign,ptr->name());
             }
 
-            const codec * codecs::query(const string &id) const throw()
+            const format * codecs::query(const string &id) const throw()
             {
-                const codec_ptr *ppC = search(id);
+                const fmt_ptr *ppC = search(id);
                 return NULL!=ppC ? & **ppC : NULL;
 
             }
 
-            const codec * codecs::query(const char *id) const throw()
+            const format * codecs::query(const char *id) const throw()
             {
                 if(id)
                 {
-                    const codec_ptr *ppC = get_tree().search(id,strlen(id));
+                    const fmt_ptr *ppC = get_tree().search(id,strlen(id));
                     return NULL!=ppC ? & **ppC : NULL;
                 }
                 else
