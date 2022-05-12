@@ -1,8 +1,8 @@
 
-#include "yack/gfx/format/tiff.hpp"
+#include "yack/gfx/image/format/tiff.hpp"
 #include "yack/utest/run.hpp"
 #include "yack/string.hpp"
-#include "yack/gfx/format/bmp.hpp"
+#include "yack/gfx/image/format/bmp.hpp"
 #include "yack/color/rgba/from-rgba.hpp"
 
 using namespace yack;

@@ -1,6 +1,6 @@
-#include "yack/gfx/format/png.hpp"
+#include "yack/gfx/image/format/png.hpp"
 
-#include "yack/gfx/format/bmp.hpp"
+#include "yack/gfx/image/format/bmp.hpp"
 #include "yack/color/rgba/from-rgba.hpp"
 
 

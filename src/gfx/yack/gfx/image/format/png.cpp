@@ -1,5 +1,5 @@
 
-#include "yack/gfx/format/png.hpp"
+#include "yack/gfx/image/format/png.hpp"
 #include "yack/gfx/memory.hpp"
 #include "yack/sequence/cxx-array.hpp"
 

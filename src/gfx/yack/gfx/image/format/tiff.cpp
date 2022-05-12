@@ -1,5 +1,5 @@
 
-#include "yack/gfx/format/tiff.hpp"
+#include "yack/gfx/image/format/tiff.hpp"
 #include "yack/exception.hpp"
 
 #include "tiffio.h"

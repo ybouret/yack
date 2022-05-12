@@ -1,5 +1,5 @@
 
-#include "yack/gfx/format/options.hpp"
+#include "yack/gfx/image/format/options.hpp"
 #include "yack/string/tokenizer.hpp"
 #include "yack/string/ops.hpp"
 #include "yack/exception.hpp"

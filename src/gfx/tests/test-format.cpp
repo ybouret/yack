@@ -1,7 +1,7 @@
 #include "yack/utest/run.hpp"
-#include "yack/gfx/format/png.hpp"
-#include "yack/gfx/format/jpeg.hpp"
-#include "yack/gfx/format/tiff.hpp"
+#include "yack/gfx/image/format/png.hpp"
+#include "yack/gfx/image/format/jpeg.hpp"
+#include "yack/gfx/image/format/tiff.hpp"
 
 using namespace yack;
 using namespace graphic;

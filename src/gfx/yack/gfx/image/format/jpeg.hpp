@@ -4,7 +4,7 @@
 #ifndef YACK_GFX_FORMAT_JPG_INCLUDED
 #define YACK_GFX_FORMAT_JPG_INCLUDED 1
 
-#include "yack/gfx/format.hpp"
+#include "yack/gfx/image/format.hpp"
 
 namespace yack
 {

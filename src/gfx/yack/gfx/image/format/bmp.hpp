@@ -3,7 +3,7 @@
 #ifndef YACK_GFX_FORMAT_BMP_INCLUDED
 #define YACK_GFX_FORMAT_BMP_INCLUDED 1
 
-#include "yack/gfx/format.hpp"
+#include "yack/gfx/image/format.hpp"
 #include "yack/color/data-to-rgba.hpp"
 
 namespace yack

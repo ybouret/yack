@@ -1,5 +1,5 @@
 
-#include "yack/gfx/format/jpeg.hpp"
+#include "yack/gfx/image/format/jpeg.hpp"
 #include "yack/gfx/memory.hpp"
 
 #include "yack/exception.hpp"

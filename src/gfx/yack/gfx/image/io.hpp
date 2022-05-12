@@ -4,7 +4,7 @@
 #ifndef YACK_GFX_IMAGE_IO_INCLUDED
 #define YACK_GFX_IMAGE_IO_INCLUDED 1
 
-#include "yack/gfx/format/options.hpp"
+#include "yack/gfx/image/format/options.hpp"
 #include "yack/gfx/pixmap.hpp"
 #include "yack/gfx/rgb.hpp"
 

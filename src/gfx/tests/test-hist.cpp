@@ -1,5 +1,5 @@
 
-#include "yack/gfx/format/png.hpp"
+#include "yack/gfx/image/format/png.hpp"
 #include "yack/concurrent/loop/simd.hpp"
 #include "yack/gfx/broker/histogram.hpp"
 #include "yack/utest/run.hpp"

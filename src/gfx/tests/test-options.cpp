@@ -1,6 +1,6 @@
 
 
-#include "yack/gfx/format/options.hpp"
+#include "yack/gfx/image/format/options.hpp"
 #include "yack/utest/run.hpp"
 
 using namespace yack;

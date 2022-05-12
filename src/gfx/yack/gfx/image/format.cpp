@@ -1,4 +1,4 @@
-#include "yack/gfx/format.hpp"
+#include "yack/gfx/image/format.hpp"
 #include "yack/type/before-returning.hpp"
 #include "yack/fs/vfs.hpp"
 

@@ -1,5 +1,5 @@
 
-#include "yack/gfx/format/bmp.hpp"
+#include "yack/gfx/image/format/bmp.hpp"
 #include "yack/gfx/rgb.hpp"
 #include "yack/ios/ocstream.hpp"
 #include "yack/exception.hpp"
