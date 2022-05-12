@@ -22,6 +22,7 @@ namespace yack
             {
                 const before_returning<jive::token> ensure(extensions, & jive::token::release, true );
                 const string file_ext = vfs::get_extension(filename);
+                //std::cerr << "[" << name << "] testing '" << file_ext << "'" << std::endl;
                 return extensions.exactly(file_ext);
             }
         }

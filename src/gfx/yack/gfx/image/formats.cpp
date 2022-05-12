@@ -21,6 +21,7 @@ namespace yack
             {
             }
 
+
             const format & formats:: format_for(const string &filename) const
             {
                 YACK_LOCK(access);

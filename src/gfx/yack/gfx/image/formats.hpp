@@ -73,10 +73,11 @@ namespace yack
                 }
 
                 //! load built-in formats
-                void load_built_in();
+                formats &load_built_in();
 
                 //! find format for filename, based on extension
-                const format &format_for(const string &filename) const;
+                const  format  & format_for(const string &filename) const;
+                static formats & standard();
 
             private:
                 YACK_DISABLE_COPY_AND_ASSIGN(formats);

@@ -11,7 +11,7 @@ namespace yack
         const char tiff_format::clid[] = "TIFF";
 
         tiff_format:: tiff_format() :
-        format(clid, "(tif|tiff)&" )
+        format(clid, "(tiff|tif)&" )
         {
 
         }

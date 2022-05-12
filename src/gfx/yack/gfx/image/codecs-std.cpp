@@ -13,12 +13,18 @@ namespace yack
     {
         namespace image
         {
-            void formats:: load_built_in()
+            formats &formats:: load_built_in()
             {
                 (void) get<png_format>();
                 (void) get<jpeg_format>();
                 (void) get<tiff_format>();
                 (void) get<bmp_format>();
+                return *this;
+            }
+
+            formats & formats:: standard()
+            {
+                return instance().load_built_in();
             }
 
         }

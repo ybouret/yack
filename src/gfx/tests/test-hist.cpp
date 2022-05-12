@@ -1,5 +1,5 @@
 
-#include "yack/gfx/image/format/png.hpp"
+#include "yack/gfx/image/formats.hpp"
 #include "yack/concurrent/loop/simd.hpp"
 #include "yack/gfx/broker/histogram.hpp"
 #include "yack/utest/run.hpp"
@@ -22,14 +22,14 @@ namespace
 
 YACK_UTEST(hist)
 {
+    images   &IMG = images::standard();
     histogram H;
-    png_format fmt;
     const concurrent::topology  topo;
     engine                      SIMD = new concurrent::simd(topo);
     if(argc>1)
     {
         const string fn  = argv[1];
-        pixmap<rgba> img = fmt.load(fn,NULL);
+        pixmap<rgba> img = IMG.load(fn,NULL);
         broker       device(SIMD,img);
 
         broker_histogram::compute(H,img,device,rgba_to_byte);
