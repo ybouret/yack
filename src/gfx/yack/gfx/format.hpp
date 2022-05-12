@@ -3,7 +3,7 @@
 #ifndef YACK_GFX_FORMAT_INCLUDED
 #define YACK_GFX_FORMAT_INCLUDED 1
 
-#include "yack/gfx/image-io.hpp"
+#include "yack/gfx/image/io.hpp"
 #include "yack/jive/pattern/matching.hpp"
 
 namespace yack

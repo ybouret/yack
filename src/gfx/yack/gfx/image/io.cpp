@@ -1,5 +1,5 @@
 
-#include "yack/gfx/image-io.hpp"
+#include "yack/gfx/image/io.hpp"
 
 namespace yack
 {
