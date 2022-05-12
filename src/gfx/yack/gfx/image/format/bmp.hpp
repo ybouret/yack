@@ -12,7 +12,7 @@ namespace yack
     {
 
         //! save neutral BMP
-        class bmp_format : public format
+        class bmp_format : public image::format
         {
         public:
             static const char clid[]; //!< "BMP"

@@ -16,7 +16,7 @@ namespace yack
         //! TIFF
         //
         //______________________________________________________________________
-        class tiff_format : public format
+        class tiff_format : public image::format
         {
         public:
             static const char clid[];       //!< "TIFF"

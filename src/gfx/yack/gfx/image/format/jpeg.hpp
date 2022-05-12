@@ -17,7 +17,7 @@ namespace yack
         //! JPEG
         //
         //______________________________________________________________________
-        class jpeg_format : public format
+        class jpeg_format : public image::format
         {
         public:
             static const char clid[];         //!< "JPEG"

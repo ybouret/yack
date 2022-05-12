@@ -6,23 +6,26 @@ namespace yack
 {
     namespace graphic
     {
-        format:: ~format() throw()
+        namespace image
         {
-        }
+            format:: ~format() throw()
+            {
+            }
 
-        format:: format(const char *id, const char *xp) :
-        jive::matching(xp),
-        counted(),
-        imageIO(id)
-        {
-        }
+            format:: format(const char *id, const char *xp) :
+            jive::matching(xp),
+            counted(),
+            codec(id)
+            {
+            }
 
-        bool format:: matches(const string &filename)  
-        {
-            jive::matching                     &choice = *this;
-            const before_returning<jive::token> ensure(choice, & jive::token::release, true );
-            const string file_ext = vfs::get_extension(filename);
-            return choice.exactly(file_ext);
+            bool format:: matches(const string &filename)
+            {
+                jive::matching                     &choice = *this;
+                const before_returning<jive::token> ensure(choice, & jive::token::release, true );
+                const string file_ext = vfs::get_extension(filename);
+                return choice.exactly(file_ext);
+            }
         }
 
     }

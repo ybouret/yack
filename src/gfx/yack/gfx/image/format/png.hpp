@@ -15,7 +15,7 @@ namespace yack
         //! PNG
         //
         //______________________________________________________________________
-        class png_format : public format
+        class png_format : public image::format
         {
         public:
             static const char clid[];       //!< "PNG"
