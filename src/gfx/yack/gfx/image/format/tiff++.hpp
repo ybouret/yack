@@ -13,41 +13,58 @@ namespace yack
     {
         namespace image
         {
+            //__________________________________________________________________
+            //
+            //
+            //! wrapper for a TIFF
+            //
+            //__________________________________________________________________
             class tiffxx
             {
             public:
-                virtual ~tiffxx() throw();
+                virtual ~tiffxx() throw(); //!< cleanup
 
             protected:
-                explicit tiffxx(const string &filename, const char *mode);
-                void *handle;
+                explicit tiffxx(const string &, const char *mode); //!< TIFFOpen
+                void *handle; //!< TIFF
 
             private:
                 YACK_DISABLE_COPY_AND_ASSIGN(tiffxx);
             };
 
+            //__________________________________________________________________
+            //
+            //
+            //! input TIFF
+            //
+            //__________________________________________________________________
             class itiff: public tiffxx
             {
             public:
-                virtual ~itiff() throw();
-                explicit itiff(const string &filename);
+                explicit itiff(const string &filename); //!< setup
+                virtual ~itiff() throw();               //!< cleanup
 
-                unit_t width();
-                unit_t height();
-                size_t directories();
-                bool   load(pixmap<rgba> &img);
+                unit_t width();                 //!< image width
+                unit_t height();                //!< image height
+                size_t count_directories();     //!< count directories
+                bool   load(pixmap<rgba> &img); //!< img.w = width, img.h = height
 
                 
             private:
                 YACK_DISABLE_COPY_AND_ASSIGN(itiff);
             };
 
-
+            //__________________________________________________________________
+            //
+            //
+            //! output TIFF
+            //
+            //__________________________________________________________________
             class otiff: public tiffxx
             {
             public:
-                virtual ~otiff() throw();
-                explicit otiff(const string &filename);
+                explicit otiff(const string &filename); //!< setup
+                virtual ~otiff() throw();               //!< cleanup
 
 
             private:

@@ -48,7 +48,7 @@ namespace yack
                 return h;
             }
 
-            size_t itiff:: directories()
+            size_t itiff:: count_directories()
             {
                 TIFF      *tif = static_cast<TIFF *>(handle);
                 size_t     nd = 0;

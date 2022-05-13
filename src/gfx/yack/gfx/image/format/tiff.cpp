@@ -62,7 +62,7 @@ namespace yack
         size_t tiff_format:: count_directories(const string &filename)
         {
             image::itiff tif(filename);
-            return tif.directories();
+            return tif.count_directories();
         }
 
 
