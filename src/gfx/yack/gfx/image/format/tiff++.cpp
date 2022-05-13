@@ -58,12 +58,36 @@ namespace yack
                 return nd;
             }
 
+            static inline
+            void expand(pixmap<rgba> &img) throw()
+            {
+                const unit_t h   = img.h;
+                const unit_t w   = img.w;
+                unit_t       jlo = 0;
+                unit_t       jhi = h;
+
+                for(unit_t count=h/2;count>0;--count)
+                {
+                    pixrow<rgba> &rlo = img(jlo++);
+                    pixrow<rgba> &rhi = img(--jhi);
+                    rgba *lo          = &rlo(0);
+                    rgba *hi          = &rhi(0);
+                    for(size_t i=w;i>0;--i)
+                    {
+                        const uint32_t lo32 = *(uint32_t *)lo;
+                        const uint32_t hi32 = *(uint32_t *)hi;
+                        *(lo++) = rgba( TIFFGetR(hi32), TIFFGetG(hi32), TIFFGetB(hi32), TIFFGetA(hi32));
+                        *(hi++) = rgba( TIFFGetR(lo32), TIFFGetG(lo32), TIFFGetB(lo32), TIFFGetA(lo32));
+                    }
+                }
+            }
+
             bool itiff:: load(pixmap<rgba> &img)
             {
                 uint32_t    *raster =  coerce_cast<uint32_t>( &img(0)(0) );
-                if (TIFFReadRGBAImage(static_cast<TIFF *>(handle), img.w, img.h, raster, 0))
+                if( 1 == TIFFReadRGBAImage(static_cast<TIFF *>(handle), img.w, img.h, raster, 0))
                 {
-                    img.vflip();
+                    expand(img);
                     return true;
                 }
                 else
