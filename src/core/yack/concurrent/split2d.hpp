@@ -86,7 +86,7 @@ namespace yack
             
             inline size_t           size() const throw() { return tiles.size; } //!< number of tiles
             inline const tile_type *head() const throw() { return tiles.head; } //!< first tile
-
+            
             //__________________________________________________________________
             //
             //! code to loop over all vertices

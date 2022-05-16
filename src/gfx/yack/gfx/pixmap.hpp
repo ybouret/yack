@@ -92,6 +92,19 @@ zfh(rows->zfh)
                 return row[y];
             }
 
+            //! direct access
+            inline T & operator()(const coord pos) throw()
+            {
+                return (*this)(pos.y)(pos.x);
+            }
+
+            //! direct CONST access
+            inline const T & operator()(const coord pos) const throw()
+            {
+                return (*this)(pos.y)(pos.x);
+            }
+
+
             //! zero-flux access
             inline row_type & operator[](const unit_t y) throw()
             {

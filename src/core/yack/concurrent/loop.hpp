@@ -44,6 +44,9 @@ namespace yack
             // data management
             //__________________________________________________________________
 
+            //! ensuring num_blocks of block_size per context
+            void ensure(const size_t num_blocks, const size_t block_size);
+
             //! building of T[0:n-1] for each context
             template <typename T> inline
             void build(const size_t n) const {

@@ -35,6 +35,18 @@ namespace yack
             return percent;
         }
 
+
+        void loop:: ensure(const size_t num_blocks, const size_t block_size)
+        {
+            readable<context> &self = *this;
+            const size_t       nctx = self.size();
+            for(size_t i=1;i<=nctx;++i)
+            {
+                const context &ctx = self[i];
+                (*coerce(ctx)).ensure(num_blocks,block_size);
+            }
+        }
+
         void loop:: free_local_memories() throw()
         {
             const readable<context> &self = *this;
