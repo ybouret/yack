@@ -138,6 +138,9 @@ YACK_UTEST(data_sequence)
     cxx_array<int> ir(10);
     cxx_array<apq> qr(100);
 
+    const double value = 1.0;
+    cxx_array<double> ir1(7,value);
+    std::cerr << "ir1=" << ir1 << std::endl;
     {
         vector<int> toto;
         for(size_t i=1+ran.leq(100);i>0;--i)

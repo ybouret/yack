@@ -9,8 +9,12 @@
 
 namespace yack
 {
-
+    //__________________________________________________________________________
+    //
+    //
     //! linear memory without constructed objects
+    //
+    //______________________________________________________________________
     template <typename T, typename ALLOCATOR>
     class cxx_array_ : public contiguous<T>
     {
@@ -109,8 +113,15 @@ namespace yack
         memIO(this->basis,this->count)
         {
         }
-        
 
+        //! setup with initial argument
+        template <typename U>
+        inline explicit cxx_array(const size_t n, const U &args) :
+        cxx_array_<T,ALLOCATOR>(n),
+        memIO(this->basis,this->count,args)
+        {
+        }
+        
         
     private:
         YACK_DISABLE_COPY_AND_ASSIGN(cxx_array);

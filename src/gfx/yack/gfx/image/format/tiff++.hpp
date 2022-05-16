@@ -44,12 +44,17 @@ namespace yack
                 explicit itiff(const string &filename); //!< setup
                 virtual ~itiff() throw();               //!< cleanup
 
-                unit_t width();                 //!< image width
-                unit_t height();                //!< image height
-                size_t count_directories();     //!< count directories
-                bool   load(pixmap<rgba> &img); //!< img.w = width, img.h = height
+                unit_t width();                       //!< image width
+                unit_t height();                      //!< image height
+                size_t count_directories();           //!< count directories
+                bool   load(pixmap<rgba> &img);       //!< img.w = width, img.h = height
+                void   set_directory(const size_t n); //!< set directory
 
-                
+                static unit_t width_of(const string &filename);
+                static unit_t height_of(const string &filename);
+                static size_t directories_of(const string &filename);
+
+
             private:
                 YACK_DISABLE_COPY_AND_ASSIGN(itiff);
             };

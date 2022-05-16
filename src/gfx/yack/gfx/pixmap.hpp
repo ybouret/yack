@@ -1,4 +1,3 @@
-
 //! \file
 
 #ifndef YACK_GFX_PIXMAP_INCLUDED
@@ -39,10 +38,18 @@ zfh(rows->zfh)
             // C++
             //__________________________________________________________________
 
-            //! create
+            //! create by WxH
             inline explicit pixmap(const unit_t W,
                                    const unit_t H) :
             bitmap(W,H,sizeof(T)),
+            YACK_GFX_PIXMAP_CTOR()
+            {
+                data->fill<T>(n);
+            }
+
+            //! create by dimensions
+            inline explicit pixmap(const dimensions &dims) :
+            bitmap(dims.w,dims.h,sizeof(T)),
             YACK_GFX_PIXMAP_CTOR()
             {
                 data->fill<T>(n);

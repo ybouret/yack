@@ -9,7 +9,7 @@ using namespace yack;
 
 namespace
 {
-    static inline void start(void *addr)
+    static inline void start(void *addr,const void*)
     {
         new (addr) apq();
     }
@@ -33,8 +33,8 @@ YACK_UTEST(memory_operative)
     void *impl2[YACK_WORDS_GEQ(bytes2)];
 
 
-    memory::operative op1(impl1,n1,sizeof(apq),start,clear);
-    memory::operative op2(impl2,n2,sizeof(apq),start,clear);
+    memory::operative op1(impl1,n1,sizeof(apq),start,clear,NULL);
+    memory::operative op2(impl2,n2,sizeof(apq),start,clear,NULL);
 
     std::cerr << "Created!" << std::endl;
 

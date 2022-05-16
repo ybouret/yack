@@ -26,8 +26,9 @@ namespace yack
         operative:: operative(void        *entry,
                               const size_t count,
                               const size_t width,
-                              procedure    start,
-                              procedure    clear) :
+                              on_init      start,
+                              on_quit      clear,
+                              const void  *param) :
         base(entry),
         live(0),
         step(width),
@@ -41,7 +42,7 @@ namespace yack
             try {
                 while(live<count)
                 {
-                    start(addr);
+                    start(addr,param);
                     addr += step;
                     ++live;
                 }

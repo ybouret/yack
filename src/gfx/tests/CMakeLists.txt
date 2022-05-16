@@ -22,6 +22,7 @@ add_test(png        test-gfx png)
 add_test(jpg        test-gfx jpg)
 add_test(tiff       test-gfx tiff)
 add_test(format     test-gfx format)
+add_test(pixmaps    test-gfx pixmaps)
 add_test(normalize  test-gfx normalize)
 
 

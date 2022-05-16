@@ -48,6 +48,27 @@ namespace yack
                 return h;
             }
 
+
+
+            unit_t itiff:: width_of(const string &filename)
+            {
+                itiff fp(filename);
+                return fp.width();
+            }
+
+
+            unit_t itiff:: height_of(const string &filename)
+            {
+                itiff fp(filename);
+                return fp.height();
+            }
+
+            size_t itiff:: directories_of(const string &filename)
+            {
+                itiff fp(filename);
+                return fp.count_directories();
+            }
+
             size_t itiff:: count_directories()
             {
                 TIFF      *tif = static_cast<TIFF *>(handle);
@@ -95,6 +116,15 @@ namespace yack
                     return false;
                 }
             }
+
+            void itiff:: set_directory(const size_t n)
+            {
+                if( 1 != TIFFSetDirectory(static_cast<TIFF *>(handle),n))
+                {
+                    throw exception("TIFFSetDirectory(n=%u) failure", unsigned(n));
+                }
+            }
+
         }
 
         namespace image
