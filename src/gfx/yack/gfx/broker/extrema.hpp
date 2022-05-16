@@ -47,13 +47,13 @@ namespace yack
             //! min/max reduction
             //__________________________________________________________________
             template <typename T> static inline
-            void finalize(const broker &device)
+            const T *finalize(const broker &device)
             {
                 const concurrent::loop &eng  = *device;
                 size_t                  idx  = eng.size();
-                const groove           &ini  = *eng[idx];
-                T                       vmin = ini.get<T>(0);
-                T                       vmax = ini.get<T>(1);
+                groove                 &ini  = *eng[idx];
+                T                      &vmin = ini.get<T>(0);
+                T                      &vmax = ini.get<T>(1);
                 while(--idx>0)
                 {
                     const tiles  &part = device[idx];
@@ -70,6 +70,7 @@ namespace yack
                     }
                 }
                 std::cerr << "vmin=" << vmin << ", vmax=" << vmax << std::endl;
+                return &vmin;
             }
 
         private:
