@@ -15,7 +15,6 @@ namespace yack
         template <typename T> class pixrow; //!< forward declaration
 
 
-
         //______________________________________________________________________
         //
         //
