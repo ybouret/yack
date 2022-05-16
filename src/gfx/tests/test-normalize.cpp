@@ -46,6 +46,10 @@ YACK_UTEST(normalize)
         double look_up_par = 0;
         YACK_TMX_RATE(look_up_par, broker_extrema::look_up(imgf,par), duration);
         std::cerr << "look_up_par=" << look_up_par << std::endl;
+
+        broker_normalize::apply(imgf,ser,1.0f);
+
+
     }
 }
 YACK_UDONE()

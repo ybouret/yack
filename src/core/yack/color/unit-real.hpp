@@ -24,7 +24,7 @@ namespace yack
             {
                 static const T word(255);
                 static const T half(0.5);
-                return T( floor(word*x+half) );
+                return uint8_t( floor(word*x+half) );
             }
         };
 

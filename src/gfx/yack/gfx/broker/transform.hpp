@@ -11,6 +11,7 @@ namespace yack
     {
 
         template <typename T> class pixmap; //!< forward declaration
+        template <typename T> class pixrow; //!< forward declaration
 
         //______________________________________________________________________
         //
