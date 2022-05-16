@@ -255,8 +255,14 @@ namespace yack
             }
 
             iOmega.assign(Omega0,transposed);
+            for(size_t i=N;i>0;--i)
+            {
+                xi[i] = sorted::dot(iOmega[i],Xi,xs);
+            }
             std::cerr << "Omega=" << Omega0 << std::endl;
             std::cerr << "Xi   =" << Xi     << std::endl;
+            std::cerr << "beta =" << xi     << std::endl;
+
 
 
 
