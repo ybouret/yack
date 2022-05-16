@@ -7,6 +7,7 @@
 #include "yack/utest/run.hpp"
 #include "yack/utest/tmx.hpp"
 #include "yack/color/rgba/make-gsf.hpp"
+#include "yack/color/rgba/from-float.hpp"
 
 using namespace yack;
 using namespace graphic;
@@ -15,6 +16,7 @@ static inline void rgba_to_float(float &f, const rgba &c) throw()
 {
     f = color::make_gsf::table[c.r+c.g+c.b];
 }
+
 
 YACK_UTEST(normalize)
 {
@@ -47,8 +49,13 @@ YACK_UTEST(normalize)
         YACK_TMX_RATE(look_up_par, broker_extrema::look_up(imgf,par), duration);
         std::cerr << "look_up_par=" << look_up_par << std::endl;
 
-        broker_normalize::apply(imgf,ser,0.0f, 1.0f);
-
+        broker_extrema::look_up(imgf,par);
+        const float * const res = broker_extrema::finalize<float>(par);
+        broker_normalize::apply(imgf,ser,res[0],res[1]);
+        
+        color::from_float cnv;
+        pixmap<rgba> target(imgf,par,cnv);
+        
 
     }
 }

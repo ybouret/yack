@@ -16,7 +16,8 @@ namespace yack
             template <typename PIXEL,
             typename T>
             void build(pixmaps<T>          &target,
-                       const pixmap<PIXEL> &source)
+                       const pixmap<PIXEL> &source,
+                       broker              &device)
             {
                 
             }

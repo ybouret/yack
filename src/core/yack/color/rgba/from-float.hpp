@@ -21,11 +21,16 @@ namespace yack
         class from_float : public data_to_rgba
         {
         public:
-            explicit from_float() throw(); //!< depth=sizeof(rgba)
+            explicit from_float() throw(); //!< depth=sizeof(float)
             virtual ~from_float() throw(); //!< cleanup
             
             //!  float  -> (r,g,b,255)
             virtual rgba operator()(const void *addr) const throw();
+            
+            inline void operator()(rgba &c, const float f) const throw()
+            {
+                c = (*this)( &f );
+            }
             
         private:
             YACK_DISABLE_COPY_AND_ASSIGN(from_float);
