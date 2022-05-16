@@ -1,5 +1,6 @@
 
 #include "yack/gfx/broker/extrema.hpp"
+#include "yack/gfx/broker/normalize.hpp"
 #include "yack/gfx/image/formats.hpp"
 #include "yack/concurrent/loop/simd.hpp"
 #include "yack/concurrent/loop/mono.hpp"

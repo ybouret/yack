@@ -15,6 +15,8 @@ namespace yack
         template <typename T> class pixrow; //!< forward declaration
 
 
+        
+
         //______________________________________________________________________
         //
         //
@@ -23,7 +25,23 @@ namespace yack
         //______________________________________________________________________
         struct broker_normalize
         {
-            
+            template <typename T> static inline
+            void apply(pixmap<T> &target, const broker &device, const T vmax)
+            {
+                struct task
+                {
+                    T vmax;
+                    inline void operator()(T &) const throw()
+                    {
+                    }
+                };
+
+                if(vmax>0)
+                {
+                    task proc = { vmax };
+                    broker_transform::apply(target,device,proc);
+                }
+            }
         };
 
     }
