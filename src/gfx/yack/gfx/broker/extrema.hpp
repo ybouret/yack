@@ -1,4 +1,3 @@
-
 //! \file
 
 #ifndef YACK_GFX_BROKER_EXTREMA_INCLUDED
@@ -18,7 +17,7 @@ namespace yack
         //______________________________________________________________________
         //
         //
-        //! apply transformation
+        //! find extrema
         //
         //______________________________________________________________________
         struct broker_extrema

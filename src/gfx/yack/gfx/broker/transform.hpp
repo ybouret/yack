@@ -59,6 +59,42 @@ namespace yack
                 device(task::make,&todo);
             }
 
+            //! apply a 1 to 1 transformation
+            template <typename T, typename PROC> static inline
+            void apply(pixmap<T>       &target,
+                       broker          &device,
+                       PROC            &T_to_T) throw()
+            {
+                struct task {
+                    pixmap<T>       &target;
+                    PROC            &T_to_T;
+
+                    static inline void make(void         *args,
+                                            const tiles   &part,
+                                            const context &,
+                                            lockable      &) throw()
+                    {
+                        assert(args);
+                        task            &self   = *static_cast<task *>(args);
+                        pixmap<T>       &target = self.target;
+                        PROC            &T_to_T = self.T_to_T;
+                        for(const tile *node=part.head();node;node=node->next)
+                        {
+                            coord            pos = node->start;
+                            pixrow<T>       &tgt = target(pos.y);
+                            for(size_t len=node->width;len>0;--len,++pos.x)
+                            {
+                                T_to_T(tgt(pos.x));
+                            }
+                        }
+                    }
+                };
+                task todo = { target, T_to_T };
+                device(task::make,&todo);
+            }
+
+
+
         };
         
 
