@@ -19,7 +19,7 @@ YACK_UTEST(tiff)
         {
             bmp_format       bmp;
             color::from_rgba cnv;
-            bmp.save("img-tiff.bmp",img, cnv);
+            bmp.saveBMP("img-tiff.bmp",img, cnv);
         }
         gfmt.save(img,"img-tiff.tif",&opts);
 

@@ -32,7 +32,7 @@ YACK_UTEST(png)
         {
             bmp_format bmp;
             color::from_rgba cnv;
-            bmp.save("img-png.bmp",img, cnv);
+            bmp.saveBMP("img-png.bmp",img, cnv);
         }
         gfmt.save(img,"img-png3.png",NULL);
         

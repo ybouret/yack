@@ -3,6 +3,7 @@
 #include "yack/gfx/rgb.hpp"
 #include "yack/ios/ocstream.hpp"
 #include "yack/exception.hpp"
+#include "yack/color/rgba/from-rgba.hpp"
 
 namespace yack
 {
@@ -37,9 +38,9 @@ namespace yack
             throw exception("%s: load('%s') not implemented",clid,filename());
         }
 
-        void bmp_format:: save(const string        &filename,
-                               const bitmap        &image,
-                               color::data_to_rgba &cproc) const
+        void bmp_format:: saveBMP(const string        &filename,
+                                  const bitmap        &image,
+                                  color::data_to_rgba &cproc) const
         {
 
             assert(cproc.d==image.d);
@@ -86,6 +87,15 @@ namespace yack
             }
 
         }
+
+        
+
+        void bmp_format:: save(const pixmap<rgba> &surface, const string &filename, const options *) const
+        {
+            color::from_rgba cnv;
+            saveBMP(filename,surface,cnv);
+        }
+
     }
 
 }

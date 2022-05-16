@@ -211,7 +211,7 @@ namespace yack
 
 
 
-        void png_format:: save(const pixmap<rgba> &img, const string &filename, const options *opts)
+        void png_format:: save(const pixmap<rgba> &img, const string &filename, const options *opts) const
         {
             ios::file_proxy<ios::writable_file> fp(filename,false);
 

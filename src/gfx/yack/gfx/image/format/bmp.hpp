@@ -37,12 +37,18 @@ namespace yack
             //
             // interface
             //__________________________________________________________________
-            virtual pixmap<rgba> load(const string &filename, const options *) const; //!< not implemented
-            
+            virtual pixmap<rgba> load(const string &filename, const options *)               const; //!< not implemented
+            virtual void         save(const pixmap<rgba> &, const string &, const options *) const; //!< save as raw bmp
+
+            //__________________________________________________________________
+            //
+            // other methods
+            //__________________________________________________________________
+
             //! save image
-            void save(const string        &filename,
-                      const bitmap        &image,
-                      color::data_to_rgba &cproc) const;
+            void saveBMP(const string        &filename,
+                         const bitmap        &image,
+                         color::data_to_rgba &cproc) const;
 
         private:
             YACK_DISABLE_COPY_AND_ASSIGN(bmp_format);

@@ -26,6 +26,11 @@ namespace yack
                 return load(_,opts);
             }
 
+            void codec:: save(const pixmap<rgba> &surface, const char *filename, const options *opts) const
+            {
+                const string _(filename);
+                save(surface,_,opts);
+            }
 
 
         }

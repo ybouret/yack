@@ -110,7 +110,7 @@ namespace yack
             return quality;
         }
 
-        void jpeg_format:: save(const pixmap<rgba> &img, const string &filename, const options *opt)
+        void jpeg_format:: save(const pixmap<rgba> &img, const string &filename, const options *opt) const
         {
 
 

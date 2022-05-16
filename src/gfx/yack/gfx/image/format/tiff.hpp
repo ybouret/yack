@@ -36,9 +36,9 @@ namespace yack
             // interface
             //__________________________________________________________________
 
-            //! load
-            virtual pixmap<rgba> load(const string &, const options *) const;
-            void                 save(const pixmap<rgba> &, const string &, const options *opt); //!< save
+
+            virtual pixmap<rgba> load(const string &, const options *) const; //!< load
+            virtual void         save(const pixmap<rgba> &, const string &, const options *opt) const; //!< save
 
             //__________________________________________________________________
             //

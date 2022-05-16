@@ -26,15 +26,12 @@ namespace yack
             public:
                 //______________________________________________________________
                 //
-                // interface
+                // load/read interface
                 //______________________________________________________________
                 virtual pixmap<rgba> load(const string &filename, const options *) const = 0; //!< load with options
                 pixmap<rgba>         load(const char   *filename, const options *) const;     //!< load wrapper
 
-                //______________________________________________________________
-                //
-                // helpers
-                //______________________________________________________________
+
 
                 //! read with textual options
                 template <typename FILENAME, typename OPTVALUE> inline
@@ -44,6 +41,14 @@ namespace yack
                     options opts; opts << optvalue;
                     return load(filename,&opts);
                 }
+
+                //______________________________________________________________
+                //
+                // save/emit interface
+                //______________________________________________________________
+                virtual void save(const pixmap<rgba> &, const string &, const options *) const = 0; //!< save with options
+                virtual void save(const pixmap<rgba> &, const char   *, const options *) const;     //!< save wrapper
+
 
 
                 //______________________________________________________________

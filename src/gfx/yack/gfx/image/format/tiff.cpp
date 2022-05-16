@@ -76,7 +76,7 @@ namespace yack
             return img;
         }
 
-        void tiff_format:: save(const pixmap<rgba> &img, const string &filename, const options *)
+        void tiff_format:: save(const pixmap<rgba> &img, const string &filename, const options *) const
         {
             tiff_ofile tif(filename);
             int compression = COMPRESSION_NONE;

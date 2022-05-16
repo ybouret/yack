@@ -1,5 +1,5 @@
 #include "yack/gfx/image/format/tiff-stack.hpp"
-#include "yack/gfx/image/format/png.hpp"
+#include "yack/gfx/image/formats.hpp"
 #include "yack/gfx/rgb.hpp"
 #include "yack/utest/run.hpp"
 #include "yack/string.hpp"
@@ -9,7 +9,7 @@ using namespace graphic;
 
 YACK_UTEST(pixmaps)
 {
-    png_format PNG;
+    images &IMG = images::standard();
     if(argc>1)
     {
         const string filename = argv[1];
@@ -18,7 +18,7 @@ YACK_UTEST(pixmaps)
         for(size_t i=1;i<=pxms.size();++i)
         {
             const string savename = vformat("stack%03u.png",unsigned(i));
-            PNG.save(pxms[i], savename, NULL);
+            IMG.save(pxms[i], savename, NULL);
         }
     }
     

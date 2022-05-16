@@ -38,6 +38,12 @@ namespace yack
                 return format_for(filename).load(filename,opts);
             }
 
+            void formats:: save(const pixmap<rgba> &surface, const string &filename, const options *opts) const
+            {
+                format_for(filename).save(surface,filename,opts);
+            }
+
+
             void formats:: decl(format *addr)
             {
                 assert(NULL!=addr);

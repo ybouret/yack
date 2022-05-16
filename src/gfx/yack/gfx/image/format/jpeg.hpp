@@ -28,7 +28,7 @@ namespace yack
             virtual pixmap<rgba> load(const string &, const options *opt) const;
 
             //! save
-            static void save(const pixmap<rgba> &img, const string &, const options *opt);
+            virtual void save(const pixmap<rgba> &img, const string &, const options *opt) const;
 
         private:
             YACK_DISABLE_COPY_AND_ASSIGN(jpeg_format);
