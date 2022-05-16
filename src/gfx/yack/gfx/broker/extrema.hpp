@@ -23,26 +23,33 @@ namespace yack
         //______________________________________________________________________
         struct broker_extrema
         {
+            //__________________________________________________________________
+            //
             //! initialize memory, two words per context
+            //__________________________________________________________________
             template <typename T> static inline
             void initialize(broker &device)
             {
                 (*device).build<T>(2);
             }
 
+            //__________________________________________________________________
+            //
             //! find all local extrema for non-empty tiles
+            //__________________________________________________________________
             template <typename T>
             static inline void look_up(const pixmap<T> &source, broker &device)
             {
                 device(call<T>,(void*)&source);
             }
 
-
+            //__________________________________________________________________
+            //
             //! min/max reduction
+            //__________________________________________________________________
             template <typename T> static inline
             void finalize(const broker &device)
             {
-
                 const concurrent::loop &eng  = *device;
                 size_t                  idx  = eng.size();
                 const groove           &ini  = *eng[idx];

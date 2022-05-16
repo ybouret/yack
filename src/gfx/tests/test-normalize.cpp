@@ -4,6 +4,7 @@
 #include "yack/concurrent/loop/simd.hpp"
 #include "yack/concurrent/loop/mono.hpp"
 #include "yack/utest/run.hpp"
+#include "yack/utest/tmx.hpp"
 #include "yack/color/rgba/make-gsf.hpp"
 
 using namespace yack;
@@ -30,13 +31,20 @@ YACK_UTEST(normalize)
 
         broker_extrema::initialize<float>(par);
         broker_extrema::initialize<float>(ser);
-
+        
         broker_extrema::look_up(imgf,ser);
         broker_extrema::finalize<float>(ser);
 
         broker_extrema::look_up(imgf,par);
         broker_extrema::finalize<float>(par);
-        
+
+        double duration    = 0.5;
+        double look_up_ser = 0;
+        YACK_TMX_RATE(look_up_ser, broker_extrema::look_up(imgf,ser), duration);
+        std::cerr << "look_up_ser=" << look_up_ser << std::endl;
+        double look_up_par = 0;
+        YACK_TMX_RATE(look_up_par, broker_extrema::look_up(imgf,par), duration);
+        std::cerr << "look_up_par=" << look_up_par << std::endl;
     }
 }
 YACK_UDONE()
