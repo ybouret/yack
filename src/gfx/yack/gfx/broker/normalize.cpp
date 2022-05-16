@@ -8,37 +8,47 @@ namespace yack
     {
 
         template < >
-        void normalize_pixel<uint8_t>(uint8_t &v, const uint8_t vmax) throw()
+        void broker_normalize:: procedure<uint8_t>:: operator()(uint8_t &v) const throw()
         {
-            if(v>=vmax)
+            if(v<=vmin)
             {
-                v = vmax;
-            }
-            else
-            {
-                v = color::unit_real<float>::to_byte( float(v)/vmax );
-            }
-        }
-
-        template <>
-        void normalize_pixel<float>(float &v, const float vmax) throw()
-        {
-            if(v<=0)
-            {
-                v=0;
+                v = 0;
             }
             else
             {
                 if(v>=vmax)
                 {
-                    v=vmax;
+                    v = 255;
                 }
                 else
                 {
-                    v /= vmax;
+                    assert(scal>0);
+                    v = color::unit_real<float>::to_byte( float(v-vmin)/scal );
                 }
             }
         }
+
+        template < >
+        void broker_normalize:: procedure<float>:: operator()(float &v) const throw()
+        {
+            if(v<=vmin)
+            {
+                v = 0;
+            }
+            else
+            {
+                if(v>=vmax)
+                {
+                    v = 1.0f;
+                }
+                else
+                {
+                    assert(scal>0);
+                    v = (v-vmin)/scal;
+                }
+            }
+        }
+
 
 
     }
