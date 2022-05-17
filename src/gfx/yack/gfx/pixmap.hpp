@@ -99,13 +99,13 @@ zfh(rows->zfh)
                 return row[y];
             }
 
-            //! direct access
+            //! direct access by coord
             inline T & operator()(const coord pos) throw()
             {
                 return (*this)(pos.y)(pos.x);
             }
 
-            //! direct CONST access
+            //! direct CONST access by coord
             inline const T & operator()(const coord pos) const throw()
             {
                 return (*this)(pos.y)(pos.x);
@@ -122,6 +122,18 @@ zfh(rows->zfh)
             inline const row_type & operator[](const unit_t y) const throw()
             {
                 return  row[zfh(y)];
+            }
+
+            //! zero-flux access by coord
+            inline T & operator[](const coord pos) throw()
+            {
+                return row[zfh(pos.y)][pos.x];
+            }
+
+            //! zero-flux access by coord
+            inline const T & operator[](const coord pos) const throw()
+            {
+                return row[zfh(pos.y)][pos.x];
             }
 
         private:

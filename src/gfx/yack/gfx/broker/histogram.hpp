@@ -15,14 +15,23 @@ namespace yack
         template <typename T> class pixmap; //!< forward declaration
         template <typename T> class pixrow; //!< forward declaration
 
+        //______________________________________________________________________
+        //
+        //
+        //! pixel selector helper for foreground/background
+        //
+        //______________________________________________________________________
         template <typename T> struct selector
         {
-            typedef void (*callback)(T &, const T&);
+            typedef void (*callback)(T &, const T&); //!< alias
+
+            //! copy pixel
             static inline void keep(T &tgt, const T &src)
             {
                 tgt = src;
             }
 
+            //! set zero pixel
             static inline void drop(T &tgt, const T &)
             {
                 tgt = pixel<T>::zero();
@@ -86,8 +95,10 @@ namespace yack
             }
 
 
-
-
+            //__________________________________________________________________
+            //
+            //! apply foreground/background callback depending on threshold
+            //__________________________________________________________________
             template <typename T, typename PROC>  static inline
             void process(pixmap<T>                     &target,
                          const pixmap<T>               &source,
@@ -150,6 +161,10 @@ namespace yack
             }
 
 
+            //__________________________________________________________________
+            //
+            //! default keep foreground, drop background
+            //__________________________________________________________________
             template <typename T, typename PROC>  static inline
             void process(pixmap<T>                     &target,
                          const pixmap<T>               &source,

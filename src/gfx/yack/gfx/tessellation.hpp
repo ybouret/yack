@@ -4,6 +4,7 @@
 #define YACK_GFX_TESSELLATION_INCLUDED 1
 
 #include "yack/gfx/dimensions.hpp"
+#include "yack/gfx/coord.hpp"
 #include "yack/concurrent/tess2d.hpp"
 
 namespace yack
@@ -19,7 +20,6 @@ namespace yack
         typedef concurrent::tess2D<unit_t>  tess2D; //!< base class for tessellation
         typedef tess2D::tiles_type          tiles;  //!< alias
         typedef tiles::tile_type            tile;   //!< alias
-        typedef v2d<unit_t>                 coord;  //!< alias
 
         //______________________________________________________________________
         //

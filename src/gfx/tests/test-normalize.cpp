@@ -32,25 +32,20 @@ YACK_UTEST(normalize)
         broker        ser(serEngine,source);
         pixmap<float> imgf(source,par,rgba_to_float);
 
-        broker_extrema::initialize<float>(par);
-        broker_extrema::initialize<float>(ser);
-        
-        broker_extrema::look_up(imgf,ser);
-        broker_extrema::finalize<float>(ser);
 
-        broker_extrema::look_up(imgf,par);
-        broker_extrema::finalize<float>(par);
+        
+        broker_extrema::search(imgf,ser);
+        broker_extrema::search(imgf,par);
 
         double duration    = 0.5;
         double look_up_ser = 0;
-        YACK_TMX_RATE(look_up_ser, broker_extrema::look_up(imgf,ser), duration);
+        YACK_TMX_RATE(look_up_ser, broker_extrema::search(imgf,ser), duration);
         std::cerr << "look_up_ser=" << look_up_ser << std::endl;
         double look_up_par = 0;
-        YACK_TMX_RATE(look_up_par, broker_extrema::look_up(imgf,par), duration);
+        YACK_TMX_RATE(look_up_par, broker_extrema::search(imgf,par), duration);
         std::cerr << "look_up_par=" << look_up_par << std::endl;
 
-        broker_extrema::look_up(imgf,par);
-        const float * const res = broker_extrema::finalize<float>(par);
+        const float * const res = broker_extrema::search(imgf,par);
         broker_normalize::apply(imgf,ser,res[0],res[1]);
         
         color::from_float cnv;

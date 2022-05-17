@@ -9,9 +9,16 @@ namespace yack
 {
     namespace graphic
     {
+
+        //______________________________________________________________________
+        //
+        //
+        //! pixel operations
+        //
+        //______________________________________________________________________
         template <typename T> struct pixel
         {
-            static T zero();
+            static T zero(); //!< get a zero value
         };
     }
 }

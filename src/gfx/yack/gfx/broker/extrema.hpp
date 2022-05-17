@@ -34,16 +34,6 @@ namespace yack
 
             //__________________________________________________________________
             //
-            //! find all local extrema for non-empty tiles
-            //__________________________________________________________________
-            template <typename T>
-            static inline void look_up(const pixmap<T> &source, broker &device)
-            {
-                device(call<T>,(void*)&source);
-            }
-
-            //__________________________________________________________________
-            //
             //! min/max reduction
             //__________________________________________________________________
             template <typename T> static inline
@@ -72,6 +62,20 @@ namespace yack
                 std::cerr << "vmin=" << vmin << ", vmax=" << vmax << std::endl;
                 return &vmin;
             }
+
+            //__________________________________________________________________
+            //
+            //! find all local extrema for non-empty tiles
+            //__________________________________________________________________
+            template <typename T>
+            static inline const T *search(const pixmap<T> &source, broker &device)
+            {
+                initialize<T>(device);
+                device(call<T>,(void*)&source);
+                return finalize<T>(device);
+            }
+
+
 
         private:
 

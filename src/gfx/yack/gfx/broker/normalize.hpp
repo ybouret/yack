@@ -5,6 +5,7 @@
 #define YACK_GFX_BROKER_NORMALIZE_INCLUDED 1
 
 #include "yack/gfx/broker/transform.hpp"
+#include "yack/gfx/broker/extrema.hpp"
 
 namespace yack
 {
@@ -37,6 +38,14 @@ namespace yack
                     procedure<T> proc = { vmin, vmax, vmax-vmin };
                     broker_transform::apply(target,device,proc);
                 }
+            }
+
+            //! auto normalize
+            template <typename T> static inline
+            void apply(pixmap<T> &target, broker &device)
+            {
+                const T * const v = broker_extrema::search(target,device);
+                apply(target,device,v[0],v[1]);
             }
         };
 
