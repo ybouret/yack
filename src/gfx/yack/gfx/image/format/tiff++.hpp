@@ -55,7 +55,10 @@ namespace yack
                 static unit_t height_of(const string &filename);       //!< helper to get height
                 static size_t directories_of(const string &filename);  //!< helper to get directories
 
-
+                static unit_t width_of(const char *filename);        //!< wrapper
+                static unit_t height_of(const char *filename);       //!< wrapper
+                static size_t directories_of(const char *filename);  //!< wrapper
+                
             private:
                 YACK_DISABLE_COPY_AND_ASSIGN(itiff);
             };

@@ -69,6 +69,21 @@ namespace yack
                 return fp.count_directories();
             }
 
+            unit_t itiff:: width_of(const char *filename)
+            {
+                const string _(filename); return width_of(_);
+            }
+
+            unit_t itiff:: height_of(const char *filename)
+            {
+                const string _(filename); return height_of(_);
+            }
+
+            size_t itiff:: directories_of(const char *filename)
+            {
+                const string _(filename); return directories_of(_);
+            }
+
             size_t itiff:: count_directories()
             {
                 TIFF      *tif = static_cast<TIFF *>(handle);

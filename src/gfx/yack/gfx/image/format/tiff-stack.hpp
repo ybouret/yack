@@ -20,11 +20,9 @@ namespace yack
         class tiff_stack : public pixmaps<rgba>
         {
         public:
-            //! load filename (.tiff)
-            explicit tiff_stack(const string &filename);
-
-            //! cleanup
-            virtual ~tiff_stack() throw();
+            explicit tiff_stack(const string &filename); //!< load filename (.tiff)
+            explicit tiff_stack(const char   *filename); //!< load filename (.tiff), wrapper
+            virtual ~tiff_stack() throw();               //!< cleanup
 
         private:
             YACK_DISABLE_COPY_AND_ASSIGN(tiff_stack);

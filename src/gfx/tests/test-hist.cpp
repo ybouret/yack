@@ -33,7 +33,9 @@ YACK_UTEST(hist)
         broker       device(SIMD,img);
 
         broker_histogram::compute(H,img,device,rgba_to_byte);
-        
+
+        H.save("hist.dat");
+
     }
 
 }

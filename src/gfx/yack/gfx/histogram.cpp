@@ -1,4 +1,6 @@
 #include "yack/gfx/histogram.hpp"
+#include "yack/ios/ocstream.hpp"
+#include "yack/string.hpp"
 #include <cstring>
 
 namespace yack
@@ -53,6 +55,21 @@ namespace yack
             return *this;
         }
 
+        void histogram:: save(const string &filename) const
+        {
+            ios::ocstream fp(filename);
+            for(unsigned i=0;i<bins;++i)
+            {
+                fp("%u %g\n",i,double(bin[i]));
+            }
+        }
+
+
+        void histogram:: save(const char  *filename) const
+        {
+            const string _(filename);
+            save(_);
+        }
 
     }
 

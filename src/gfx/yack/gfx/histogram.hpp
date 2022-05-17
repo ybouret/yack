@@ -5,6 +5,7 @@
 #define YACK_GFX_HISTOGRAM_INCLUDED 1
 
 #include "yack/gfx/rgb.hpp"
+#include "yack/string/fwd.hpp"
 
 namespace yack
 {
@@ -31,6 +32,9 @@ namespace yack
 
             size_t       & operator[](const uint8_t) throw();       //!< access
             const size_t & operator[](const uint8_t) const throw(); //!< access
+
+            void save(const string &filename) const; //!< save
+            void save(const char   *filename) const; //!< save wrapper
 
         private:
             size_t bin[bins];
