@@ -16,6 +16,7 @@ YACK_UTEST_DECL(16)
     YACK_UTEST(pixmaps);
     YACK_UTEST(normalize);
     YACK_UTEST(split);
+    YACK_UTEST(filter);
 }
 YACK_UTEST_EXEC()
 

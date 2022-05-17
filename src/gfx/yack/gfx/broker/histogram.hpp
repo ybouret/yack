@@ -1,4 +1,3 @@
-
 //! \file
 
 #ifndef YACK_GFX_BROKER_HISTOGRAM_INCLUDED
@@ -148,6 +147,17 @@ namespace yack
 
                 task todo = { target, source, thresh, toByte, foreground, background };
                 device(task::make,&todo);
+            }
+
+
+            template <typename T, typename PROC>  static inline
+            void process(pixmap<T>                     &target,
+                         const pixmap<T>               &source,
+                         const uint8_t                  thresh,
+                         broker                        &device,
+                         PROC                          &toByte)
+            {
+                process(target,source, thresh, device, toByte, selector<T>::keep, selector<T>::drop);
             }
 
         };

@@ -24,7 +24,6 @@ namespace yack
             {
                 assert(yack_good(ch,nc));
                 assert(nc<=target.size());
-                //static const size_t CHANNELS = sizeof(PIXEL)/sizeof(T);
                 struct task
                 {
                     pixmaps<T>          &target;
