@@ -72,7 +72,7 @@ YACK_UTEST(filter)
 
         const filter::real_t gmax = broker_filter::gradient(target,source,device,Fx,Fy);
         std::cerr << "gmax=" << gmax << std::endl;
-        broker_normalize::apply(target,device,0.0f,gmax);
+        broker_normalize::apply(target,device,gmax);
 
         broker_transform::apply(output,target,device,float_to_rgba);
         IMG.save(output, "grad.png", NULL);

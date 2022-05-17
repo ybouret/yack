@@ -40,6 +40,13 @@ namespace yack
                 }
             }
 
+            //! normalize with 0-vmax
+            template <typename T> static inline
+            void apply(pixmap<T> &target, broker &device, const T vmax)
+            {
+                apply(target,device,T(0),vmax);
+            }
+
             //! auto normalize
             template <typename T> static inline
             void apply(pixmap<T> &target, broker &device)
@@ -47,6 +54,9 @@ namespace yack
                 const T * const v = broker_extrema::search(target,device);
                 apply(target,device,v[0],v[1]);
             }
+
+
+
         };
 
     }

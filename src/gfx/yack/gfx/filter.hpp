@@ -14,6 +14,7 @@ namespace yack
 {
     namespace graphic
     {
+
         //______________________________________________________________________
         //
         //
@@ -23,9 +24,6 @@ namespace yack
         class filter : public article
         {
         public:
-
-
-
             //__________________________________________________________________
             //
             //  types and definitions

@@ -26,4 +26,4 @@ add_test(pixmaps    test-gfx pixmaps)
 add_test(normalize  test-gfx normalize)
 add_test(split      test-gfx split)
 add_test(filter     test-gfx filter)
-
+add_test(filters    test-gfx filters)

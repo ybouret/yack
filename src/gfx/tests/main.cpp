@@ -17,6 +17,7 @@ YACK_UTEST_DECL(16)
     YACK_UTEST(normalize);
     YACK_UTEST(split);
     YACK_UTEST(filter);
+    YACK_UTEST(filters);
 }
 YACK_UTEST_EXEC()
 

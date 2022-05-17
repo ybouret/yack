@@ -13,7 +13,7 @@ namespace yack
     {
         namespace image
         {
-            formats &formats:: decl_built_in()
+            formats &formats:: decl_standard()
             {
                 (void) get<png_format>();
                 (void) get<jpeg_format>();
@@ -24,7 +24,7 @@ namespace yack
 
             formats & formats:: standard()
             {
-                return instance().decl_built_in();
+                return instance().decl_standard();
             }
 
         }

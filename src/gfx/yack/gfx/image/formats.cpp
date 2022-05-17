@@ -5,6 +5,34 @@ namespace yack
 {
     namespace graphic
     {
+        const char filters::Xext[] = "X";
+        const char filters::Yext[] = "Y";
+
+        filters:: filters(const filter &fx, const filter &fy) throw():
+        X( & coerce(fx) ),
+        Y( & coerce(fy) )
+        {
+        }
+
+
+        filters:: filters(const filters &other) throw() :
+        X(other.X),
+        Y(other.Y)
+        {}
+
+        filters:: ~filters() throw()
+        {
+        }
+        
+
+    }
+
+}
+
+namespace yack
+{
+    namespace graphic
+    {
 
         namespace image
         {
@@ -51,6 +79,8 @@ namespace yack
                 if(!insert(ptr)) throw exception("%s: multiple '%s'",call_sign,ptr->name());
             }
 
+            
+
             const format * formats::query(const string &id) const throw()
             {
                 const fmt_ptr *ppC = search(id);
@@ -69,6 +99,41 @@ namespace yack
                 {
                     return NULL;
                 }
+            }
+
+            void formats:: decl(filter *f)
+            {
+                assert(NULL!=f);
+                const filter_ptr ptr = f;
+                if(! coerce(fdb).insert(ptr)) throw exception("%s: multiple '%s'", call_sign, ptr->name());
+            }
+
+            const filter & formats:: fetch(const string &id) const
+            {
+                const filter_ptr *ppF = fdb.search(id);
+                if(!ppF) throw exception("%s: no filter '%s'",call_sign,id());
+                return **ppF;
+            }
+
+            const filter & formats:: fetch(const char *id) const
+            {
+                const string _(id);
+                return fetch(_);
+            }
+
+            filters formats:: carve(const string &root) const
+            {
+                const string xid = root + filters::Xext;
+                const string yid = root + filters::Yext;
+                const filter &fx = fetch(xid);
+                const filter &fy = fetch(yid);
+                return filters(fx,fy);
+            }
+
+            filters formats:: carve(const char *root) const
+            {
+                const string _(root);
+                return carve(_);
             }
 
 
