@@ -26,7 +26,8 @@ namespace yack
             
             //!  float  -> (r,g,b,255)
             virtual rgba operator()(const void *addr) const throw();
-            
+
+            //! for transform
             inline void operator()(rgba &c, const float f) const throw()
             {
                 c = (*this)( &f );

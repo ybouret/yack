@@ -55,7 +55,7 @@ YACK_UTEST(normalize)
         
         color::from_float cnv;
         pixmap<rgba> target(imgf,par,cnv);
-        
+        IMG.save(target,"normalized.png",NULL);
 
     }
 }

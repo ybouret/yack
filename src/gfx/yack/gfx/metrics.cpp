@@ -34,6 +34,19 @@ namespace yack
             assert(d>0);
         }
 
+        metrics:: metrics(const dimensions &dims, const unit_t depth) throw() :
+        dimensions(dims),
+        n(w*h),
+        d(depth),
+        s(w*d),
+        b(n*d)
+        {
+            assert(w>0);
+            assert(h>0);
+            assert(d>0);
+        }
+
+
     }
 
 }

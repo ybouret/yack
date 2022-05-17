@@ -11,12 +11,6 @@ namespace yack
     namespace graphic
     {
 
-        template <typename T> class pixmap; //!< forward declaration
-        template <typename T> class pixrow; //!< forward declaration
-
-
-
-
         //______________________________________________________________________
         //
         //
@@ -25,14 +19,16 @@ namespace yack
         //______________________________________________________________________
         struct broker_normalize
         {
+            //! wrapper to call transform
             template <typename T> struct procedure
             {
-                T vmin;
-                T vmax;
-                T scal;
-                void operator()(T &v) const throw();
+                T vmin; //!< vmin
+                T vmax; //!< vmax
+                T scal; //!< vmax-vmin
+                void operator()(T &v) const throw(); //!< apply
             };
 
+            //! normalize each pixel with procedure
             template <typename T> static inline
             void apply(pixmap<T> &target, broker &device, const T vmin, const T vmax)
             {

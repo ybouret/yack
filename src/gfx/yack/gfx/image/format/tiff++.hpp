@@ -50,9 +50,10 @@ namespace yack
                 bool   load(pixmap<rgba> &img);       //!< img.w = width, img.h = height
                 void   set_directory(const size_t n); //!< set directory
 
-                static unit_t width_of(const string &filename);
-                static unit_t height_of(const string &filename);
-                static size_t directories_of(const string &filename);
+
+                static unit_t width_of(const string &filename);        //!< helper to get width
+                static unit_t height_of(const string &filename);       //!< helper to get height
+                static size_t directories_of(const string &filename);  //!< helper to get directories
 
 
             private:

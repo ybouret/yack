@@ -11,11 +11,19 @@ namespace yack
 {
     namespace graphic
     {
-
+        //______________________________________________________________________
+        //
+        //
+        //! using TIFF code to load/save stack or RGBA pixmaps
+        //
+        //______________________________________________________________________
         class tiff_stack : public pixmaps<rgba>
         {
         public:
+            //! load filename (.tiff)
             explicit tiff_stack(const string &filename);
+
+            //! cleanup
             virtual ~tiff_stack() throw();
 
         private:

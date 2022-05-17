@@ -27,8 +27,10 @@ namespace yack
             metrics(const unit_t width,
                     const unit_t height,
                     const unit_t depth) throw(); //!< W>0, H>0, D>0
-            metrics(const metrics &) throw();    //!< copy
-            virtual ~metrics() throw();          //!< cleanup
+            metrics(const dimensions &,
+                    const unit_t depth) throw(); //!< partial copy
+            metrics(const metrics &)    throw(); //!< copy
+            virtual ~metrics()          throw(); //!< cleanup
 
             //__________________________________________________________________
             //

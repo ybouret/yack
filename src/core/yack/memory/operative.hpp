@@ -21,8 +21,8 @@ namespace yack
         class operative
         {
         public:
-            typedef void (*on_init)(void*,const void *); //!< create/delete
-            typedef void (*on_quit)(void *);
+            typedef void (*on_init)(void*,const void *); //!< create
+            typedef void (*on_quit)(void *);             //!< delete
 
             //! create objects
             /**
