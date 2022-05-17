@@ -174,11 +174,18 @@ namespace yack
                                 const real_t gx = Fx(source,pos);
                                 const real_t gy = Fy(source,pos);
                                 const real_t g2 = gx*gx+gy*gy;
-                                const real_t g  = sqrt(g2);
-                                tgt(pos.x) = static_cast<TARGET>(g);
-                                vtx(pos.x) = v2d<TARGET>(gx,gy);
-                                if(gmax<g) gmax = g;
-                                // TODO: normalize?
+                                if(g2>0)
+                                {
+                                    const real_t g  = sqrt(g2);
+                                    tgt(pos.x) = static_cast<TARGET>(g);
+                                    vtx(pos.x) = v2d<TARGET>(gx/g,gy/g);
+                                    if(gmax<g) gmax = g;
+                                }
+                                else
+                                {
+                                    tgt(pos.x) = 0;
+                                    vtx(pos.x) = v2d<TARGET>(0,0);
+                                }
                             }
                         }
                         (*info).as<real_t>() = gmax;
