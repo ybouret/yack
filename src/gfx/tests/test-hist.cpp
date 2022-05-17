@@ -35,7 +35,12 @@ YACK_UTEST(hist)
         broker_histogram::compute(H,img,device,rgba_to_byte);
 
         H.save("hist.dat");
+        const size_t thr = H.Otsu();
+        std::cerr << "Threshold=" << thr << std::endl;
 
+        pixmap<rgba> fg(img.w,img.h);
+        broker_histogram::process(fg,img,thr,device,rgba_to_byte,selector<rgba>::keep,selector<rgba>::drop);
+        IMG.save(fg,"fg.png",NULL);
     }
 
 }

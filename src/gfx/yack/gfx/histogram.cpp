@@ -42,6 +42,16 @@ namespace yack
             }
         }
 
+        size_t histogram:: cardinality() const throw()
+        {
+            size_t res = bin[0];
+            for(size_t i=1;i<bins;++i)
+            {
+                res += bin[i];
+            }
+            return res;
+        }
+
         histogram:: histogram(const histogram &other) throw() :
         bin()
         {
@@ -70,6 +80,46 @@ namespace yack
             const string _(filename);
             save(_);
         }
+
+        uint8_t histogram:: Otsu() const throw()
+        {
+            // Total number of pixels
+            int total = cardinality();
+
+            float sum = 0;
+            for (int t=0 ; t<256 ; t++) sum += t * bin[t];
+
+            float sumB = 0;
+            int wB = 0;
+            int wF = 0;
+
+            float varMax = 0;
+            int threshold = 0;
+
+            for (int t=0 ; t<256 ; t++) {
+                wB += bin[t];               // Weight Background
+                if (wB == 0) continue;
+
+                wF = total - wB;                 // Weight Foreground
+                if (wF == 0) break;
+
+                sumB += (float) (t * bin[t]);
+
+                float mB = sumB / wB;            // Mean Background
+                float mF = (sum - sumB) / wF;    // Mean Foreground
+
+                // Calculate Between Class Variance
+                float varBetween = (float)wB * (float)wF * (mB - mF) * (mB - mF);
+
+                // Check if new maximum found
+                if (varBetween > varMax) {
+                    varMax = varBetween;
+                    threshold = t;
+                }
+            }
+            return threshold;
+        }
+
 
     }
 

@@ -33,8 +33,12 @@ namespace yack
             size_t       & operator[](const uint8_t) throw();       //!< access
             const size_t & operator[](const uint8_t) const throw(); //!< access
 
+            size_t cardinality() const throw();
+
             void save(const string &filename) const; //!< save
             void save(const char   *filename) const; //!< save wrapper
+
+            uint8_t Otsu() const throw();
 
         private:
             size_t bin[bins];
