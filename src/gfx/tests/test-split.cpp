@@ -12,7 +12,8 @@ using namespace graphic;
 template <size_t CH>
 void get_chan( rgba &target, const uint8_t &source ) throw()
 {
-    memset( &target,0, sizeof(target) );
+    target.r = target.g = target.b = 0;
+    target.a = 0xff;
     *(&target.r + CH) = source;
 }
 
