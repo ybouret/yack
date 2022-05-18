@@ -1,5 +1,6 @@
 
 #include "yack/gfx/filter/prewitt.hpp"
+#include "yack/gfx/filter/sobel.hpp"
 #include "yack/gfx/broker/filter.hpp"
 #include "yack/gfx/image/formats.hpp"
 #include "yack/concurrent/loop/simd.hpp"
@@ -39,7 +40,12 @@ YACK_UTEST(filters)
     IMG.create< Prewitt<5> >();
     IMG.create< Prewitt<7> >();
 
-    std::cerr << IMG.fdb << std::endl;
+    IMG.create< Sobel<3> >();
+    IMG.create< Sobel<5> >();
+    IMG.create< Sobel<7> >();
+
+
+    //std::cerr << IMG.fdb << std::endl;
 
 
     if(argc>1)
@@ -60,6 +66,9 @@ YACK_UTEST(filters)
         run_filters(IMG,Prewitt<5>::uuid,device,source,target,output);
         run_filters(IMG,Prewitt<7>::uuid,device,source,target,output);
 
+        run_filters(IMG,Sobel<3>::uuid,device,source,target,output);
+        run_filters(IMG,Sobel<5>::uuid,device,source,target,output);
+        run_filters(IMG,Sobel<7>::uuid,device,source,target,output);
 
         
     }
