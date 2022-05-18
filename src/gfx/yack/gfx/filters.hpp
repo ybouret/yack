@@ -12,8 +12,8 @@ namespace yack
     namespace graphic
     {
 
-        typedef ark_ptr<string,const filter>   filter_ptr;
-        typedef suffix_set<string,filter_ptr>  filter_set;
+        typedef ark_ptr<string,const filter>   filter_ptr; //!< alias
+        typedef suffix_set<string,filter_ptr>  filter_set; //!< alias
 
         //__________________________________________________________________
         //
@@ -24,15 +24,17 @@ namespace yack
         class filters
         {
         public:
-            static const char Xext[];
-            static const char Yext[];
-            
-            filters(const filter &fx, const filter &fy) throw();
-            filters(const filters &)                    throw();
-            virtual ~filters() throw();
+            static const char Xext[]; //!< "X"
+            static const char Yext[]; //!< "Y"
 
-            const filter_ptr X;
-            const filter_ptr Y;
+
+            filters(const filter &fx, const filter &fy) throw(); //!< setup from ALLOCATED filters
+            filters(const filters &)                    throw(); //!< no-throw copy
+            virtual ~filters()                          throw(); //!< cleanup
+
+            const filter_ptr X; //!< X-Filter
+            const filter_ptr Y; //!< Y-Filter
+            
         private:
             YACK_DISABLE_ASSIGN(filters);
         };

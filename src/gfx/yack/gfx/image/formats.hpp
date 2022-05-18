@@ -107,8 +107,7 @@ namespace yack
                     }
                 }
 
-
-
+                //! create using template data (Prewitt,...)
                 template <typename FILTER> inline
                 void create()
                 {
@@ -116,11 +115,12 @@ namespace yack
                     create_filters(root, & FILTER::data[0][0], FILTER::size, FILTER::size);
                 }
 
-                const filter     &fetch(const string &id)   const;
-                const filter     &fetch(const char   *id)   const;
-                filters           carve(const string &root) const;
-                filters           carve(const char   *root) const;
+                const filter     &fetch(const string &id)   const; //!< fetch existing filter
+                const filter     &fetch(const char   *id)   const; //!< fetch existing filter
+                filters           carve(const string &root) const; //!< fetch existing filters
+                filters           carve(const char   *root) const; //!< fetch existing filters
 
+                //! database of filters
                 const filter_set fdb;
 
             private:

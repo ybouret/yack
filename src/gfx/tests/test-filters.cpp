@@ -1,6 +1,7 @@
 
 #include "yack/gfx/filter/prewitt.hpp"
 #include "yack/gfx/filter/sobel.hpp"
+#include "yack/gfx/filter/scharr.hpp"
 #include "yack/gfx/broker/filter.hpp"
 #include "yack/gfx/image/formats.hpp"
 #include "yack/concurrent/loop/simd.hpp"
@@ -22,6 +23,7 @@ static void run_filters(const images &IMG,
 {
     color::from_float float_to_rgba;
     const string  root = uuid;
+    std::cerr << "Processing " << root << std::endl;
     const filters F    = IMG.carve(root);
     const float   gmax = broker_filter::gradient(target,source,device,*F.X,*F.Y);
     broker_normalize::apply(target,device,gmax);
@@ -44,6 +46,8 @@ YACK_UTEST(filters)
     IMG.create< Sobel<5> >();
     IMG.create< Sobel<7> >();
 
+    IMG.create< Scharr<3> >();
+    IMG.create< Scharr<5> >();
 
     //std::cerr << IMG.fdb << std::endl;
 
@@ -70,7 +74,9 @@ YACK_UTEST(filters)
         run_filters(IMG,Sobel<5>::uuid,device,source,target,output);
         run_filters(IMG,Sobel<7>::uuid,device,source,target,output);
 
-        
+        run_filters(IMG,Scharr<3>::uuid,device,source,target,output);
+        run_filters(IMG,Scharr<5>::uuid,device,source,target,output);
+
     }
 
 }

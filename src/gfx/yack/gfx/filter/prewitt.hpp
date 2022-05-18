@@ -8,18 +8,19 @@ namespace yack
 {
     namespace graphic
     {
+        //! Prewitt's filters
         template <unit_t N>
         struct Prewitt
         {
-            static const unit_t size = N;
-            static const char   uuid[];
-            static const int    data[N][N];
+            static const unit_t size = N;   //!< NxN
+            static const char   uuid[];     //!< "PrewittNxN"
+            static const int    data[N][N]; //!< data
         };
 
 #if !defined(_MSC_VER)
-        YACK_GFX_FILTER_DECL(Prewitt,3);
-        YACK_GFX_FILTER_DECL(Prewitt,5);
-        YACK_GFX_FILTER_DECL(Prewitt,7);
+        YACK_GFX_FILTER_DECL(Prewitt,3); //!< declare
+        YACK_GFX_FILTER_DECL(Prewitt,5); //!< declare
+        YACK_GFX_FILTER_DECL(Prewitt,7); //!< delcare
 #endif
 
     }

@@ -17,7 +17,8 @@ namespace yack
             formats:: formats() :
             singleton<formats>(),
             codec(call_sign),
-            fmt_set()
+            fmt_set(),
+            fdb()
             {
             }
 
