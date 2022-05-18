@@ -1,13 +1,10 @@
 //! \file
 
-
 #ifndef YACK_GFX_IMAGE_CODECS_INCLUDED
 #define YACK_GFX_IMAGE_CODECS_INCLUDED 1
 
 #include "yack/gfx/image/format.hpp"
-#include "yack/gfx/filter.hpp"
-#include "yack/ptr/ark.hpp"
-#include "yack/associative/suffix/set.hpp"
+#include "yack/gfx/filters.hpp"
 
 namespace yack
 {
