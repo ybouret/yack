@@ -19,6 +19,7 @@ namespace yack
         template <typename T> struct pixel
         {
             static T zero(); //!< get a zero value
+            static T average(const T *arr, const size_t num) throw(); //!< average
         };
     }
 }

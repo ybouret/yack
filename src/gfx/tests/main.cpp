@@ -1,6 +1,6 @@
 #include "yack/utest/driver.hpp"
 
-YACK_UTEST_DECL(16)
+YACK_UTEST_DECL(32)
 {
     YACK_UTEST(types);
     YACK_UTEST(options);
@@ -18,6 +18,7 @@ YACK_UTEST_DECL(16)
     YACK_UTEST(split);
     YACK_UTEST(filter);
     YACK_UTEST(filters);
+    YACK_UTEST(blur);
 }
 YACK_UTEST_EXEC()
 
