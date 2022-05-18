@@ -264,10 +264,16 @@ namespace yack
             std::cerr << "beta =" << xi     << std::endl;
 
 
+            for(const enode *node=eqs.head();node;node=node->next)
+            {
+                const equilibrium &eq = ***node;
+                const size_t       ei = *eq;
+                if(blocked[ei]) continue;
+                const limits      &lm = eq.primary_limits(Corg,lib.width);
+                eqs.pad(std::cerr << eq.name,eq) << " : "  << lm << std::endl;
+            }
 
 
-
-            // compute omega0
 
 
             exit(1);
