@@ -12,46 +12,84 @@ namespace yack
 {
     namespace graphic
     {
-
+        //______________________________________________________________________
+        //
+        //
+        //! blur metrics
+        //
+        //______________________________________________________________________
         class blur : public article
         {
         public:
+            //__________________________________________________________________
+            //
+            // types and definitions
+            //__________________________________________________________________
+            //! blur factor: pos + weight
             class factor
             {
             public:
-                factor() throw();
-                factor(const factor &) throw();
-                ~factor() throw();
-                const coord  r;
-                const float  w;
-                friend std::ostream & operator<<(std::ostream &, const factor &);
-                
+                factor()               throw(); //!< zero
+                factor(const factor &) throw(); //!< copy
+                ~factor()              throw(); //!< cleanup
+                friend std::ostream & operator<<(std::ostream &, const factor &); //!< display
+
+                const coord  r; //!< relative pos
+                const float  w; //!< weight
+
             private:
                 YACK_DISABLE_ASSIGN(factor);
             };
 
-            virtual ~blur() throw();
-            static  size_t inside(const unit_t r) throw();
+            //__________________________________________________________________
+            //
+            // methods
+            //__________________________________________________________________
+            static  size_t inside(const unit_t r) throw(); //!< count points x^2+y^2<=r2
 
-            const float  sigma;
-            const float  denom;
-            const unit_t radius;
-            const unit_t radsqr;
+
+            //__________________________________________________________________
+            //
+            // members
+            //__________________________________________________________________
+            const float  sigma;   //!< gaussian
+            const float  denom;   //!< 2 * sigma^2
+            const unit_t radius;  //!< matching min factor = 1/256
+            const unit_t radsqr;  //!< radius*radius
+
+            //__________________________________________________________________
+            //
+            // C++
+            //__________________________________________________________________
+            virtual ~blur() throw();        //!< cleanup
 
         protected:
-            explicit blur(const float sig);
+            explicit blur(const float sig); //!< setup metrics
 
         private:
             YACK_DISABLE_COPY_AND_ASSIGN(blur);
         };
 
-
+        //______________________________________________________________________
+        //
+        //
+        //! blurring weights and methods
+        //
+        //______________________________________________________________________
         class blurring : public blur, public cxx_array<blur::factor,memory_allocator>
         {
         public:
-            explicit blurring(const float sig);
-            virtual ~blurring() throw();
+            //__________________________________________________________________
+            //
+            // C++
+            //__________________________________________________________________
+            explicit blurring(const float sig); //!< setup
+            virtual ~blurring() throw();        //!< cleanup
 
+            //__________________________________________________________________
+            //
+            //! apply to scalar or vectors
+            //__________________________________________________________________
             template <typename PIXEL, typename T, const size_t N> inline
             void apply(PIXEL &out, const pixmap<PIXEL> &source, const coord &pos) const
             {

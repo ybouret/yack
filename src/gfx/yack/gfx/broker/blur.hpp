@@ -11,10 +11,15 @@ namespace yack
 {
     namespace graphic
     {
-
+        //______________________________________________________________________
+        //
+        //
+        //! blurring in parallel
+        //
+        //______________________________________________________________________
         struct broker_blur
         {
-
+            //! apply to scalar or vectors
             template <typename PIXEL, typename T, const size_t N> static inline
             void apply(pixmap<PIXEL>        &target,
                        const pixmap<PIXEL>  &source,
@@ -55,6 +60,7 @@ namespace yack
                 device(task::make,&todo);
             }
 
+            //! specialized methods
             template <typename T> static
             void fuzz(pixmap<T> &, const pixmap<T> &, broker &, const blurring &);
 

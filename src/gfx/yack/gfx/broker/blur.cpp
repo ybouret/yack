@@ -23,6 +23,24 @@ namespace yack
             apply<rgb,uint8_t,3>(target,source,device,B);
         }
 
+        template <>
+        void broker_blur:: fuzz<uint8_t>(pixmap<uint8_t>       &target,
+                                         const pixmap<uint8_t> &source,
+                                         broker                &device,
+                                         const blurring        &B)
+        {
+            apply<uint8_t,uint8_t,1>(target,source,device,B);
+        }
+
+        template <>
+        void broker_blur:: fuzz<float>(pixmap<float>       &target,
+                                       const pixmap<float> &source,
+                                       broker              &device,
+                                       const blurring      &B)
+        {
+            apply<float,float,1>(target,source,device,B);
+        }
+
 
     }
 }
