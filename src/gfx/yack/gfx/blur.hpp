@@ -53,7 +53,7 @@ namespace yack
             virtual ~blurring() throw();
 
             template <typename PIXEL, typename T, const size_t N> inline
-            void apply(PIXEL &out, const pixmap<PIXEL> &source, const coord &pos)
+            void apply(PIXEL &out, const pixmap<PIXEL> &source, const coord &pos) const
             {
                 static const float opq = static_cast<float>(color::opaque<T>::value);
                 float              acc[4] = {0,0,0,0};
