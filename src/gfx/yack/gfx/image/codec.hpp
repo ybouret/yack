@@ -49,6 +49,20 @@ namespace yack
                 virtual void save(const pixmap<rgba> &, const string &, const options *) const = 0; //!< save with options
                 virtual void save(const pixmap<rgba> &, const char   *, const options *) const;     //!< save wrapper
 
+                //! emit converted picture
+                template <typename T, typename FILENAME, typename OPTVALUE, typename PROC> inline
+                void emit(const pixmap<T> &source,
+                          const FILENAME  &filename,
+                          const OPTVALUE  &optvalue,
+                          broker          &device,
+                          PROC            &toRGBA,
+                          pixmap<rgba>    &target) const
+                {
+                    options opts; opts << optvalue;
+                    broker_transform::apply(target,source,device,toRGBA);
+                    save(target,filename,&opts);
+                }
+
 
 
                 //______________________________________________________________

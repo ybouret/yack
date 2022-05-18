@@ -27,8 +27,9 @@ static void run_filters(const images &IMG,
     const filters F    = IMG.carve(root);
     const float   gmax = broker_filter::gradient(target,source,device,*F.X,*F.Y);
     broker_normalize::apply(target,device,gmax);
-    broker_transform::apply(output,target,device,float_to_rgba);
-    IMG.save(output, root+".png", NULL);
+
+    IMG.emit(target,root+".png", "", device, float_to_rgba, output);
+    
 
 }
 
