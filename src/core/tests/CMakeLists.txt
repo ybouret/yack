@@ -197,6 +197,7 @@ add_test(apex:io        test-core  apex_io)
 add_test(apex:z         test-core  apz)
 add_test(apex:q         test-core  apq)
 add_test(apex:conv      test-core  apex_conv)
+add_test(apex:kernel    test-core  apk)
 
 add_test(ios::c-file    test-core ios_c_file)
 add_test(ios:streams    test-core ios_streams)

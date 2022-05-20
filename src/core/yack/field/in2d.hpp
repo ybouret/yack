@@ -78,7 +78,8 @@ namespace yack
             assert(row); assert(y>=lower.y); assert(y<=upper.y); return row[y];
         }
 
-        inline std::ostream &print(std::ostream &os) const
+        //! print name=Julia matrix
+         inline std::ostream &print(std::ostream &os) const
         {
             const field2D &self = *this;
             os << self.name << "=[";

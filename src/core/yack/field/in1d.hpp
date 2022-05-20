@@ -75,6 +75,7 @@ namespace yack
             assert(item); assert(x>=lower); assert(x<=upper); return item[x];
         }
 
+        //! print name=Julia vector
         inline std::ostream & print(std::ostream &os) const
         {
             const field1D &self = *this;

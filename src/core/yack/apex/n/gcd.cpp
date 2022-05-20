@@ -8,7 +8,6 @@ namespace yack
     {
 
 
-
         natural natural::gcd(const natural &x, const natural &y)
         {
             assert(x>0);
@@ -43,6 +42,19 @@ namespace yack
             return a;
         }
 
+        natural natural:: lcm(const natural &x, const natural &y)
+        {
+            if(x>0&&y>0)
+            {
+                const natural p = x*y;
+                return p/gcd(x,y);
+            }
+            else
+            {
+                return natural(0);
+            }
+        }
+
         void natural:: simplify(natural &num, natural &den)
         {
             assert(den>0);
@@ -75,6 +87,8 @@ namespace yack
 
             }
         }
+
+
 
         natural natural:: comb(const uint_type n, const uint_type k)
         {

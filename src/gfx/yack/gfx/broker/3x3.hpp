@@ -80,6 +80,7 @@ namespace yack
                 device(task::make,&todo);
             }
 
+            //! workspace=max(source), target=min(workspace)
             template <typename T> static inline
             void close(pixmap<T> &target, const pixmap<T> &source, broker &device, pixmap<T> &workspace)
             {
@@ -87,7 +88,7 @@ namespace yack
                 apply(target,workspace,device,pixel<T>::minimum3x3);
             }
 
-
+            //! workspace=min(source), target=max(workspace)
             template <typename T> static inline
             void erode(pixmap<T> &target, const pixmap<T> &source, broker &device, pixmap<T> &workspace)
             {

@@ -4,27 +4,25 @@
 #include "yack/math/algebra/lu.hpp"
 #include "yack/sequence/vector.hpp"
 #include "yack/ios/ascii/convert.hpp"
-#include "yack/apex.hpp"
+#include "yack/apex/kernel.hpp"
 
 using namespace yack;
 
 
-static inline void display(const field2D<double> &F)
+static inline
+apn normalize_field( field2D<apq> &coef )
 {
-    std::cerr << F.name << " = " << std::endl;
-    std::cerr << "{" << std::endl;
-    for(int j=F.upper.y;j>=F.lower.y;--j)
+    const apn res = apk::lcm2D(coef);
+    for(unit_t j=coef.lower.y;j<=coef.upper.y;++j)
     {
-        std::cerr << "  {";
-        for(int i=F.lower.x;i<=F.upper.x;++i)
+        for(unit_t i=coef.lower.x;i<=coef.upper.x;++i)
         {
-            std::cerr << " " << F[i][j];
+            coef[j][i] *= res;
         }
-        std::cerr << " }" << std::endl;
     }
-    std::cerr << "}" << std::endl;
-    std::cerr << std::endl;
+    return res;
 }
+
 
 YACK_UTEST(fbuild)
 {
@@ -47,7 +45,7 @@ YACK_UTEST(fbuild)
         for(int j=-ny;j<=ny;++j)
         {
             W[i][j] = 1; //1+absolute(i)+absolute(j);
-            //W[i][j] = 1.0 / (1.0+absolute(i)+absolute(j));
+            W[i][j] = apq(1.0, (1.0+absolute(i)+absolute(j)));
         }
     }
 
@@ -123,9 +121,14 @@ YACK_UTEST(fbuild)
         }
     }
 
-    a.print(std::cerr) << std::endl;
-    b.print(std::cerr) << std::endl;
-    c.print(std::cerr) << std::endl;
+    const apn aden = normalize_field(a);
+    a.print(std::cerr) << "/" << aden << std::endl;
+
+    const apn bden = normalize_field(b);
+    b.print(std::cerr) << "/" << bden << std::endl;
+
+    const apn cden = normalize_field(c);
+    c.print(std::cerr) << "/" << cden << std::endl;
 
 
 }
