@@ -5,6 +5,7 @@
 #define YACK_APEX_KERNEL_INCLUDED 1
 
 #include "yack/apex.hpp"
+#include "yack/container/matrix.hpp"
 
 namespace yack
 {
@@ -59,8 +60,8 @@ namespace yack
         {
             assert(xhi>=xlo);
             assert(yhi>=ylo);
-            unit_t y   = yhi;
-            apn    res = lcm1D(F[y]);
+            INDEX  y   = yhi;
+            apn    res = lcm(F[y],xlo,xhi);
             for(--y;y>=ylo;--y)
             {
                 const apn tmp = lcm(F[y],xlo,xhi);
@@ -77,6 +78,8 @@ namespace yack
             return lcm<FIELD,unit_t>(F,F.lower.x,F.upper.x,F.lower.y,F.upper.y);
         }
 
+        //! find lcm for a matrix
+        static apn lcm(const matrix<apq> &);
 
     };
 
