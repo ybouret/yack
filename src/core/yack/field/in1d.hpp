@@ -75,7 +75,15 @@ namespace yack
             assert(item); assert(x>=lower); assert(x<=upper); return item[x];
         }
 
-        
+        inline std::ostream & print(std::ostream &os) const
+        {
+            const field1D &self = *this;
+            unit_t i = lower;
+            os << "[ " << self[i];
+            for(++i;i<=upper;++i) os << "; " << self[i];
+            os << " ]";
+            return os;
+        }
 
     private:
         YACK_DISABLE_COPY_AND_ASSIGN(field1D);

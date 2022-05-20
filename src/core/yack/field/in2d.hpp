@@ -78,7 +78,19 @@ namespace yack
             assert(row); assert(y>=lower.y); assert(y<=upper.y); return row[y];
         }
 
-
+        inline std::ostream &print(std::ostream &os) const
+        {
+            const field2D &self = *this;
+            os << self.name << "=[";
+            unit_t j=self.upper.y;
+            print(os,self[j]);
+            for(--j;j>=self.lower.y;--j)
+            {
+                print(os << "; ",self[j]);
+            }
+            os << "]";
+            return os;
+        }
 
     private:
         YACK_DISABLE_COPY_AND_ASSIGN(field2D);
@@ -151,6 +163,16 @@ namespace yack
         {
             assert(coord.size()>=2);
             return (*this)[coord[2]][coord[1]];
+        }
+
+        static inline void print(std::ostream &os, const row_type &r)
+        {
+            unit_t i=r.lower;
+            os << r[i];
+            for(++i;i<=r.upper;++i)
+            {
+                os << ' ' << r[i];
+            }
         }
 
     };

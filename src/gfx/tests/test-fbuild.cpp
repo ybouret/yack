@@ -46,11 +46,12 @@ YACK_UTEST(fbuild)
         for(int j=-ny;j<=ny;++j)
         {
             W[i][j] = 1; //1+absolute(i)+absolute(j);
+            //W[i][j] = 1.0 / (1.0+absolute(i)+absolute(j));
         }
     }
 
-    display(W);
-
+    //display(W);
+    W.print(std::cerr) << std::endl;
 
     matrix<double> M(6,6);
     matrix<double> R(6,nc);

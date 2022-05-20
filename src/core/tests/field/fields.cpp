@@ -72,8 +72,9 @@ YACK_UTEST(fields)
     const digest md1 = hashing::md::of(H);
     display(s,H,md1);
     check_layout(s);
+    s.print(std::cerr) << std::endl;
 
-
+    
 
     field2D<string> s2( "s2", layout2D( coord2D(-2,-3), coord2D(4,5) ));
     H.set();
