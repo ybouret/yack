@@ -21,6 +21,7 @@ namespace yack
             static T zero(); //!< get a zero value
             static T average(const T *arr, const size_t num) throw(); //!< average
 
+            //! average on 9 pixels
             static void average3x3(T &target, const T *arr) throw()
             {
                 target = average(arr,9);

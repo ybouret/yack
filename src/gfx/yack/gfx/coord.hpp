@@ -12,9 +12,10 @@ namespace yack
     {
         typedef v2d<unit_t> coord;  //!< alias
 
+        //! some coordinates
         struct coords
         {
-            static const coord delta[8]; //! 4+4
+            static const coord delta[8]; //!< 4+4 delta around origin
         };
     }
 

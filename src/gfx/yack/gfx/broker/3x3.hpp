@@ -14,11 +14,19 @@ namespace yack
         template <typename T> class pixmap; //!< forward declaration
         template <typename T> class pixrow; //!< forward declaration
 
+        //__________________________________________________________________
+        //
+        //
+        //! apply 3x3 filters
+        //
+        //__________________________________________________________________
         struct broker3x3
         {
 
-
-
+            //__________________________________________________________________
+            //
+            //! call proc after collecting 9 pixels
+            //__________________________________________________________________
             template <typename T, typename U, typename F3X3> static inline
             void apply(pixmap<T>       &target,
                        const pixmap<U> &source,
