@@ -5,6 +5,7 @@
 
 #include "yack/gfx/broker.hpp"
 #include "yack/gfx/coord.hpp"
+#include "yack/gfx/pixel.hpp"
 
 namespace yack
 {
@@ -78,6 +79,23 @@ namespace yack
                 task todo = { target, source, fcn3x3 };
                 device(task::make,&todo);
             }
+
+            template <typename T> static inline
+            void close(pixmap<T> &target, const pixmap<T> &source, broker &device, pixmap<T> &workspace)
+            {
+                apply(workspace,source,device,pixel<T>::maximum3x3);
+                apply(target,workspace,device,pixel<T>::minimum3x3);
+            }
+
+
+            template <typename T> static inline
+            void erode(pixmap<T> &target, const pixmap<T> &source, broker &device, pixmap<T> &workspace)
+            {
+                apply(workspace,source,device,pixel<T>::minimum3x3);
+                apply(target,workspace,device,pixel<T>::maximum3x3);
+            }
+
+
 
         private:
             //! initialize local memory

@@ -3,7 +3,6 @@
 #include "yack/concurrent/loop/simd.hpp"
 #include "yack/utest/run.hpp"
 #include "yack/color/rgba/make-gsf.hpp"
-#include "yack/gfx/pixel.hpp"
 
 using namespace yack;
 using namespace graphic;
@@ -22,6 +21,7 @@ YACK_UTEST(3x3)
         const string    fn     = argv[1];
         pixmap<rgba>    origin = IMG.load(fn,NULL);
         pixmap<rgba>    output(origin.w,origin.h);
+        pixmap<rgba>    workspace4(origin.w,origin.h);
 
         IMG.save(origin,"origin.png",NULL);
 
@@ -42,6 +42,12 @@ YACK_UTEST(3x3)
 
         broker3x3::apply(output,origin,device, pixel<rgba>::median3x3);
         IMG.save(output,"median.png",NULL);
+
+        broker3x3::close(output,origin,device,workspace4);
+        IMG.save(output,"close.png",NULL);
+
+        broker3x3::erode(output,origin,device,workspace4);
+        IMG.save(output,"erode.png",NULL);
 
 
     }
