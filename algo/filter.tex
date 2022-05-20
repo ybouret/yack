@@ -1,0 +1,76 @@
+\documentclass[aps,11pt]{revtex4}
+\usepackage[a4paper]{geometry}
+\usepackage{graphicx}
+\usepackage{amssymb,amsfonts,amsmath,amsthm}
+\usepackage{bm}
+\usepackage{pslatex}
+\usepackage{mathptmx}
+\usepackage{bookman}
+\usepackage{chemarr}
+
+ 	 
+\begin{document}
+
+\begin{equation}
+F(x,y) = a + b x + c y + d x^2 + e xy + f y^2
+\end{equation}
+
+\begin{equation}
+	D^2 = \dfrac{1}{2} \; \sum_{i=-n_x}^{n_x} \; \sum_{j=-n_y}^{n_y} 
+	\left[w_{ij} \left(f_{ij} - F(i,j) \right) \right]^2
+\end{equation}
+
+\begin{equation}
+\left\lbrace
+\begin{array}{rcl}
+	\partial_a D^2 & = & \displaystyle \sum_{i,j} w_{ij} \left(f_{ij} - F(i,j) \right)   \\
+	\partial_b D^2 & = & \displaystyle \sum_{i,j} w_{ij} \left(f_{ij} - F(i,j) \right) \cdot i \\
+	\partial_c D^2 & = & \displaystyle \sum_{i,j} w_{ij} \left(f_{ij} - F(i,j) \right) \cdot j \\
+ 	\partial_d D^2 & = & \displaystyle \sum_{i,j} w_{ij} \left(f_{ij} - F(i,j) \right) \cdot i^2\\
+	\partial_e D^2 & = & \displaystyle \sum_{i,j} w_{ij} \left(f_{ij} - F(i,j) \right) \cdot ij\\
+	\partial_f D^2 & = & \displaystyle \sum_{i,j} w_{ij} \left(f_{ij} - F(i,j) \right) \cdot j^2 \\
+\end{array}
+\right.
+\end{equation}
+
+\begin{equation}
+\displaystyle
+	\begin{bmatrix}
+	\left(\sum_{ij} w_{ij}\right)           & \left(\sum_{ij} w_{ij} \cdot i\right)  & \left(\sum_{ij}  w_{ij} \cdot j\right) &
+	\left(\sum_{ij} w_{ij} \cdot i^2\right) & \left(\sum_{ij} w_{ij} \cdot ij\right) & \left(\sum_{ij} \cdot j^2\right)\\
+	%
+	\left(\sum_{ij} w_{ij} \cdot i\right)   & \left(\sum_{ij} w_{ij} \cdot i^2\right)  & \left(\sum_{ij}  w_{ij} \cdot ij\right) &
+	\left(\sum_{ij} w_{ij} \cdot i^3\right) & \left(\sum_{ij} w_{ij} \cdot i^2j\right) & \left(\sum_{ij} \cdot ij^2\right)\\
+	%
+	\left(\sum_{ij} w_{ij}\right)           & \left(\sum_{ij} w_{ij} \cdot i\right)  & \left(\sum_{ij}  w_{ij} \cdot j\right) &
+	\left(\sum_{ij} w_{ij} \cdot i^2\right) & \left(\sum_{ij} w_{ij} \cdot ij\right) & \left(\sum_{ij} \cdot j^2\right)\\
+	%
+	\left(\sum_{ij} w_{ij}\right)           & \left(\sum_{ij} w_{ij} \cdot i\right)  & \left(\sum_{ij}  w_{ij} \cdot j\right) &
+	\left(\sum_{ij} w_{ij} \cdot i^2\right) & \left(\sum_{ij} w_{ij} \cdot ij\right) & \left(\sum_{ij} \cdot j^2\right)\\
+	%
+	\left(\sum_{ij} w_{ij}\right)           & \left(\sum_{ij} w_{ij} \cdot i\right)  & \left(\sum_{ij}  w_{ij} \cdot j\right) &
+	\left(\sum_{ij} w_{ij} \cdot i^2\right) & \left(\sum_{ij} w_{ij} \cdot ij\right) & \left(\sum_{ij} \cdot j^2\right)\\
+	%
+	\left(\sum_{ij} w_{ij}\right)           & \left(\sum_{ij} w_{ij} \cdot i\right)  & \left(\sum_{ij}  w_{ij} \cdot j\right) &
+	\left(\sum_{ij} w_{ij} \cdot i^2\right) & \left(\sum_{ij} w_{ij} \cdot ij\right) & \left(\sum_{ij} \cdot j^2\right)\\
+	\end{bmatrix}
+	\begin{bmatrix}
+	a\\
+	b\\
+	c\\
+	d\\
+	e\\
+	f\\
+	\end{bmatrix}
+	=
+\begin{bmatrix}
+	\sum_{ij} w_{ij} f_{ij}        \\
+	\sum_{ij} w_{ij} f_{ij} \cdot i\\
+	\sum_{ij} w_{ij} f_{ij} \cdot j\\
+	\sum_{ij} w_{ij} f_{ij} \cdot i^2\\
+	\sum_{ij} w_{ij} f_{ij} \cdot ij\\
+	\sum_{ij} w_{ij} f_{ij} \cdot j^2\\
+\end{bmatrix}
+\end{equation}
+
+\end{document}
