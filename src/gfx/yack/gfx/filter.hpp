@@ -9,7 +9,7 @@
 #include "yack/gfx/coord.hpp"
 #include "yack/gfx/memory.hpp"
 #include "yack/string.hpp"
-#include <cmath>
+#include "yack/type/utils.hpp"
 
 namespace yack
 {
@@ -119,7 +119,7 @@ namespace yack
                     const T *row = &tab[j*nx];
                     for(unit_t i=0;i<nx;++i)
                     {
-                        if( std::abs(row[i]) > 0 ) ++res;
+                        if( absolute(row[i]) > 0 ) ++res;
                     }
                 }
                 return res;
@@ -137,7 +137,7 @@ namespace yack
                     for(unit_t i=0;i<nx;++i)
                     {
                         const T value = row[i];
-                        if( std::abs(value) > 0 )
+                        if( absolute(value) > 0 )
                         {
                             const weight &w = data[++res];
                             switch(way)
