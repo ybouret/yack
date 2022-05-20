@@ -4,6 +4,7 @@
 #include "yack/math/algebra/lu.hpp"
 #include "yack/sequence/vector.hpp"
 #include "yack/ios/ascii/convert.hpp"
+#include "yack/apex.hpp"
 
 using namespace yack;
 
@@ -33,13 +34,13 @@ YACK_UTEST(fbuild)
     {
         nx = ios::ascii::convert::to<int>(argv[1],"nx");
     }
-    int ny=nx;
-    int sx=2*nx+1;
-    int sy=2*ny+1;
+    const int ny=nx;
+    const int sx=2*nx+1;
+    const int sy=2*ny+1;
     const size_t nc=sx*sy;
 
     const layout2D  L(coord2D(-nx,-ny), coord2D(nx,ny));
-    field2D<double> W("W",L);
+    field2D<apq>    W("W",L);
 
     for(int i=-nx;i<=nx;++i)
     {
@@ -53,8 +54,8 @@ YACK_UTEST(fbuild)
     //display(W);
     W.print(std::cerr) << std::endl;
 
-    matrix<double> M(6,6);
-    matrix<double> R(6,nc);
+    matrix<apq> M(6,6);
+    matrix<apq> R(6,nc);
 
 
     size_t k=0;
@@ -64,7 +65,7 @@ YACK_UTEST(fbuild)
         {
             ++k;
             const int    w[8] = {0, 1, i, j, i*i, i*j, j*j, 0 };
-            const double Wij  = W[i][j];
+            const apq    Wij  = W[i][j];
 
             for(size_t c=1;c<=6;++c)
             {
@@ -81,17 +82,15 @@ YACK_UTEST(fbuild)
     std::cerr << "M=" << M << std::endl;
     std::cerr << "R=" << R << std::endl;
 
-    math::lu<double> LU(6);
+    math::lu<apq> LU(6);
     if(!LU.build(M))
     {
         throw exception("Singular Moments!!");
     }
 
-    const double detM = LU.det(M);
-    std::cerr << "detM=" << detM << std::endl;
 
     {
-        vector<double> U(6);
+        vector<apq> U(6);
         for(size_t i=1;i<=nc;++i)
         {
             for(size_t r=1;r<=6;++r)
@@ -108,9 +107,9 @@ YACK_UTEST(fbuild)
 
     //std::cerr << "F=" << R << std::endl;
 
-    field2D<double> a("a",L);
-    field2D<double> b("b",L);
-    field2D<double> c("c",L);
+    field2D<apq> a("a",L);
+    field2D<apq> b("b",L);
+    field2D<apq> c("c",L);
 
     k=0;
     for(int i=-nx;i<=nx;++i)
@@ -124,9 +123,9 @@ YACK_UTEST(fbuild)
         }
     }
 
-    display(a);
-    display(b);
-    display(c);
+    a.print(std::cerr) << std::endl;
+    b.print(std::cerr) << std::endl;
+    c.print(std::cerr) << std::endl;
 
 
 }
