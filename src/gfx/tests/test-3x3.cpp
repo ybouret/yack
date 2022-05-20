@@ -40,6 +40,9 @@ YACK_UTEST(3x3)
         broker3x3::apply(output,origin,device, pixel<rgba>::maximum3x3);
         IMG.save(output,"maxium.png",NULL);
 
+        broker3x3::apply(output,origin,device, pixel<rgba>::median3x3);
+        IMG.save(output,"median.png",NULL);
+
 
     }
 }

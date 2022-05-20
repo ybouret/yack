@@ -18,10 +18,11 @@ namespace yack
         //______________________________________________________________________
         template <typename T> struct pixel
         {
-            static T zero();                                          //!< get a zero value
-            static T average(const T *arr, const size_t num) throw(); //!< average
-            static T minimum(const T *arr, const size_t num) throw(); //!< minimum
-            static T maximum(const T *arr, const size_t num) throw(); //!< maximum
+            static T     zero();                                          //!< get a zero value
+            static T     average(const T *arr, const size_t num) throw(); //!< average
+            static T     minimum(const T *arr, const size_t num) throw(); //!< minimum
+            static T     maximum(const T *arr, const size_t num) throw(); //!< maximum
+            static void  median3x3(T &res, T arr[])              throw(); //!< median
 
             //! average on 9 pixels
             static void average3x3(T &target, const T *arr) throw()
