@@ -67,10 +67,27 @@ namespace yack
         {
             return data ? *data : *(data=new groove());
         }
-        
+
+        groove *  context:: operator->() const
+        {
+            return & (**this);
+        }
+
         bool context:: owns_local_memory() const throw()
         {
             return NULL != data;
+        }
+
+        size_t context:: local_memory_size() const throw()
+        {
+            if(data)
+            {
+                return data->granted();
+            }
+            else
+            {
+                return 0;
+            }
         }
 
         void context:: drop_local_memory() throw()

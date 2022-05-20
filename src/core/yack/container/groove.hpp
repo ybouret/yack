@@ -83,7 +83,10 @@ namespace yack
             build<T>(1);
         }
 
+        //______________________________________________________________________
+        //
         //! check type
+        //______________________________________________________________________
         template <typename T> inline
         bool is() const
         {
@@ -91,7 +94,10 @@ namespace yack
             return local_type == block_type;
         }
 
-        //! access in [0:size()-1]
+        //______________________________________________________________________
+        //
+        //! access in [0:size()-1], const
+        //______________________________________________________________________
         template <typename T> inline
         const T & get(const size_t i) const throw()
         {
@@ -100,7 +106,10 @@ namespace yack
             return p[i];
         }
 
+        //______________________________________________________________________
+        //
         //! access in [0:size()-1]
+        //______________________________________________________________________
         template <typename T> inline
         T & get(const size_t i) throw()
         {
@@ -111,7 +120,7 @@ namespace yack
 
 
         template <typename T> inline T       &as()       throw() { return get<T>(0); }  //!< first item
-        template <typename T> inline const T &as() const throw() { return get<T>(0); }  //!< first item
+        template <typename T> inline const T &as() const throw() { return get<T>(0); }  //!< first const item
 
 
 

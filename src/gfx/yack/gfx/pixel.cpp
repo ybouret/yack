@@ -74,7 +74,7 @@ namespace yack
         {
             assert(num>0);
             rgba   ans;
-            vector_average<rgba,uint8_t,size_t,4>(ans,arr,num);
+            vector_average<rgba,uint8_t,size_t,3>(ans,arr,num);
             return ans;
         }
 

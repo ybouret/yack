@@ -52,9 +52,15 @@ namespace yack
 
             //! on-the-fly access to (created) groove
             groove & operator*() const;
-            
+
+            //! on-the fly access to groove
+            groove * operator->() const;
+
             //! check if groove exists
-            bool owns_local_memory() const throw();
+            bool   owns_local_memory() const throw();
+
+            //! get local memory
+            size_t local_memory_size() const throw();
 
             //! free local memory if exists
             void free_local_memory() throw();
