@@ -36,23 +36,12 @@ F(x,y) = a + b x + c y + d x^2 + e xy + f y^2
 \begin{equation}
 \displaystyle
 	\begin{bmatrix}
-	\left(\sum_{ij} w_{ij}\right)           & \left(\sum_{ij} w_{ij} \cdot i\right)  & \left(\sum_{ij}  w_{ij} \cdot j\right) &
-	\left(\sum_{ij} w_{ij} \cdot i^2\right) & \left(\sum_{ij} w_{ij} \cdot ij\right) & \left(\sum_{ij} \cdot j^2\right)\\
-	%
-	\left(\sum_{ij} w_{ij} \cdot i\right)   & \left(\sum_{ij} w_{ij} \cdot i^2\right)  & \left(\sum_{ij}  w_{ij} \cdot ij\right) &
-	\left(\sum_{ij} w_{ij} \cdot i^3\right) & \left(\sum_{ij} w_{ij} \cdot i^2j\right) & \left(\sum_{ij} \cdot ij^2\right)\\
-	%
-	\left(\sum_{ij} w_{ij}\right)           & \left(\sum_{ij} w_{ij} \cdot i\right)  & \left(\sum_{ij}  w_{ij} \cdot j\right) &
-	\left(\sum_{ij} w_{ij} \cdot i^2\right) & \left(\sum_{ij} w_{ij} \cdot ij\right) & \left(\sum_{ij} \cdot j^2\right)\\
-	%
-	\left(\sum_{ij} w_{ij}\right)           & \left(\sum_{ij} w_{ij} \cdot i\right)  & \left(\sum_{ij}  w_{ij} \cdot j\right) &
-	\left(\sum_{ij} w_{ij} \cdot i^2\right) & \left(\sum_{ij} w_{ij} \cdot ij\right) & \left(\sum_{ij} \cdot j^2\right)\\
-	%
-	\left(\sum_{ij} w_{ij}\right)           & \left(\sum_{ij} w_{ij} \cdot i\right)  & \left(\sum_{ij}  w_{ij} \cdot j\right) &
-	\left(\sum_{ij} w_{ij} \cdot i^2\right) & \left(\sum_{ij} w_{ij} \cdot ij\right) & \left(\sum_{ij} \cdot j^2\right)\\
-	%
-	\left(\sum_{ij} w_{ij}\right)           & \left(\sum_{ij} w_{ij} \cdot i\right)  & \left(\sum_{ij}  w_{ij} \cdot j\right) &
-	\left(\sum_{ij} w_{ij} \cdot i^2\right) & \left(\sum_{ij} w_{ij} \cdot ij\right) & \left(\sum_{ij} \cdot j^2\right)\\
+		\mu_1     & \mu_{i} & \mu_{j} & \mu_{i^2} & \mu_{ij} & \mu_{j^2}\\
+		\mu_i     & \mu_{i^2} & \mu_{ij} & \mu_{i^3} & \mu_{i^2j} & \mu_{ij^2}\\
+		\mu_j     & \mu_{ij} & \mu_{j^2} & \mu_{i^2j} & \mu_{ij^2} & \mu_{j^3}\\
+		\mu_{i^2} & \mu_{i^3} & \mu_{i^3j} & \mu_{i^4} & \mu_{i^3j} & \mu_{i^2j^2}\\
+		\mu_{ij}  & \mu_{i^2j} & \mu_{ij^2} & \mu_{i^3j} & \mu_{i^2j^2} & \mu_{ij^3}\\
+		\mu_{j^2} & \mu_{ij^2} & \mu_{j^3} & \mu_{i^2j^2} & \mu_{ij^3} & \mu_{j^4}\\
 	\end{bmatrix}
 	\begin{bmatrix}
 	a\\

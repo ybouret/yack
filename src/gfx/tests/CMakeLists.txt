@@ -1,8 +1,9 @@
 file(GLOB srcs test-*.cpp)
-  
+
+include_directories(../../math)
 add_executable(test-gfx main.cpp ${srcs})
 
-target_link_libraries(test-gfx yack-gfx yack-jive yack-png yack-z yack-jpeg yack-tiff)
+target_link_libraries(test-gfx yack-gfx yack-jive yack-png yack-z yack-jpeg yack-tiff yack-math)
 yack_link_libraries(test-gfx)
 
 yack_testing(gfx)
@@ -28,4 +29,5 @@ add_test(split      test-gfx split)
 add_test(filter     test-gfx filter)
 add_test(filters    test-gfx filters)
 add_test(blur       test-gfx blur)
-add_test(3x3        test-fx 3x3)
+add_test(3x3        test-gfx 3x3)
+add_test(fbuild     test-gfx fbuild)
