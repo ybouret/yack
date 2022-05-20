@@ -9,6 +9,7 @@
 #include "yack/gfx/coord.hpp"
 #include "yack/gfx/memory.hpp"
 #include "yack/string.hpp"
+#include <cmath>
 
 namespace yack
 {
