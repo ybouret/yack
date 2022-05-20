@@ -5,9 +5,35 @@
 #include "yack/sequence/vector.hpp"
 #include "yack/ios/ascii/convert.hpp"
 #include "yack/apex/kernel.hpp"
+#include "yack/randomized/gaussian.hpp"
+#include "yack/sequence/stats.hpp"
 
 using namespace yack;
 
+class Normal : public randomized::gaussian<float>
+{
+public:
+    explicit Normal(const float s, const randomized::shared_bits &sh):
+    randomized::gaussian<float>(sh),
+    sigma(s)
+    {
+    }
+    
+    virtual ~Normal() throw()
+    {
+    }
+    
+    inline float operator()()
+    {
+        randomized::gaussian<float> &self = *this;
+        return sigma * self();
+    }
+    
+    const float sigma;
+    
+private:
+    YACK_DISABLE_COPY_AND_ASSIGN(Normal);
+};
 
 static inline
 apn normalize_field( field2D<apq> &coef )
@@ -130,6 +156,24 @@ YACK_UTEST(fbuild)
     const apn cden = normalize_field(c);
     c.print(std::cerr) << "/" << cden << std::endl;
 
+    randomized::shared_bits sh = new randomized::rand_();
+    
+    Normal N1(1.0,sh);
+    Normal N2(1.0,sh);
+    
+    vector<float> data;
+    vector<float> temp;
+    float         ave = 0;
+    float         var = 0;
+    
+    data.free();
+    for(size_t i=1000;i>0;--i)
+    {
+        data << (N1()+N2())/2;
+    }
+    ave = statistical::average<float>::of(data,temp);
+    var = (statistical::variance<float>::of(data,ave,temp));
+    std::cerr << "ave=" << ave << ", var=" << var << std::endl;
 
 }
 YACK_UDONE()
