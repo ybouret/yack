@@ -4,7 +4,7 @@
 #ifndef YACK_GFX_DIMS_INCLUDED
 #define YACK_GFX_DIMS_INCLUDED 1
 
-#include "yack/setup.hpp"
+#include "yack/gfx/coord.hpp"
 
 
 namespace yack
@@ -24,9 +24,10 @@ namespace yack
             dimensions(const unit_t W, const unit_t H) throw(); //!< setup
             dimensions(const dimensions &other) throw();        //!< copy
 
-            //! testing
-            bool matches_dimensions(const dimensions &) const throw();
 
+            bool matches_dimensions(const dimensions &)   const throw(); //!< testing
+            bool contains(const unit_t i, const unit_t j) const throw(); //!< testing
+            bool contains(const coord &)                  const throw(); //!< testing
 
             const unit_t w; //!< width
             const unit_t h; //!< height

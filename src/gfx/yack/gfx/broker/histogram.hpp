@@ -6,6 +6,7 @@
 #include "yack/gfx/broker.hpp"
 #include "yack/gfx/histogram.hpp"
 #include "yack/gfx/pixel.hpp"
+#include "yack/color/convert.hpp"
 
 namespace yack
 {
@@ -94,6 +95,17 @@ namespace yack
                 finalize(hist,device);
             }
 
+            //__________________________________________________________________
+            //
+            //! initialize/accumulate/finalize with default color conversion
+            //__________________________________________________________________
+            template <typename T> static inline
+            void compute(histogram       &hist,
+                         const pixmap<T> &source,
+                         broker          &device)
+            {
+                compute(hist,source,device,color::convert<uint8_t,T>::cast);
+            }
 
             //__________________________________________________________________
             //
@@ -173,6 +185,20 @@ namespace yack
                          PROC                          &toByte)
             {
                 process(target,source, thresh, device, toByte, selector<T>::keep, selector<T>::drop);
+            }
+
+            
+            //__________________________________________________________________
+            //
+            //! default keep foreground, drop background and color conversion
+            //__________________________________________________________________
+            template <typename T>  static inline
+            void process(pixmap<T>                     &target,
+                         const pixmap<T>               &source,
+                         const uint8_t                  thresh,
+                         broker                        &device)
+            {
+                process(target,source, thresh, device, color::convert<uint8_t,T>::cast, selector<T>::keep, selector<T>::drop);
             }
 
         };

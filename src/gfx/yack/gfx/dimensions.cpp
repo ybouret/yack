@@ -33,6 +33,15 @@ namespace yack
             return w==dims.w && h==dims.h;
         }
 
+        bool dimensions:: contains(const unit_t i, const unit_t j) const throw()
+        {
+            return i>=0&&i<w&&j>=0&&j<h;
+        }
+
+        bool dimensions:: contains(const coord &p) const throw()
+        {
+            return contains(p.x,p.y);
+        }
 
     }
 

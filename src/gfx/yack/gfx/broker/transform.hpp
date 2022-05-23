@@ -94,6 +94,13 @@ namespace yack
                 device(task::make,&todo);
             }
 
+            //! helper for pixmap.ld(...)
+            template <typename T>
+            struct ld
+            {
+                const T &args;
+                inline void operator()(T &target) { target=args; }
+            };
 
 
         };

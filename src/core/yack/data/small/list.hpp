@@ -23,7 +23,7 @@ namespace yack
         //
         // types and definitions
         //______________________________________________________________________
-        YACK_DECL_ARGS(T,type);                           //!< aliases
+        YACK_DECL_ARGS(T,type);               //!< aliases
         typedef small_node<T>      node_type; //!< alias
         typedef klist<T,node_type> self_type; //!< alias
 

@@ -136,6 +136,12 @@ zfh(rows->zfh)
                 return row[zfh(pos.y)][pos.x];
             }
 
+            inline void ld( broker &device, const T &args )
+            {
+                broker_transform::ld<T> ops = { args };
+                broker_transform::apply(*this,device,ops);
+            }
+
         private:
             YACK_DISABLE_ASSIGN(pixmap);
             row_type       *row;

@@ -23,6 +23,8 @@ namespace yack
             static T     minimum(const T *arr, const size_t num) throw(); //!< minimum
             static T     maximum(const T *arr, const size_t num) throw(); //!< maximum
             static void  median3x3(T &res, T arr[])              throw(); //!< median
+            static bool  is_zero(const T &)   throw(); //!< test zero value
+
 
             //! average on 9 pixels
             static void average3x3(T &target, const T *arr) throw()

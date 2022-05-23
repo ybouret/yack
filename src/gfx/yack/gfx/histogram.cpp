@@ -86,14 +86,14 @@ namespace yack
             // Total number of pixels
             int total = cardinality();
 
-            float sum = 0;
+            double sum = 0;
             for (int t=0 ; t<256 ; t++) sum += t * bin[t];
 
-            float sumB = 0;
-            int wB = 0;
-            int wF = 0;
+            double sumB = 0;
+            int    wB = 0;
+            int    wF = 0;
 
-            float varMax = 0;
+            double varMax = 0;
             int threshold = 0;
 
             for (int t=0 ; t<256 ; t++) {
@@ -103,13 +103,13 @@ namespace yack
                 wF = total - wB;                 // Weight Foreground
                 if (wF == 0) break;
 
-                sumB += (float) (t * bin[t]);
+                sumB += (double) (t * bin[t]);
 
-                float mB = sumB / wB;            // Mean Background
-                float mF = (sum - sumB) / wF;    // Mean Foreground
+                const double mB = sumB / wB;            // Mean Background
+                const double mF = (sum - sumB) / wF;    // Mean Foreground
 
                 // Calculate Between Class Variance
-                float varBetween = (float)wB * (float)wF * (mB - mF) * (mB - mF);
+                double varBetween = (double)wB * (double)wF * (mB - mF) * (mB - mF);
 
                 // Check if new maximum found
                 if (varBetween > varMax) {
