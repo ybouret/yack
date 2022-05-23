@@ -7,7 +7,7 @@ namespace yack
     namespace color
     {
         
-        const float conversion:: ftable[] =
+        const float convtable:: f[] =
         {
             (0.0f/765),
             (1.0f/765),(2.0f/765),(3.0f/765),(4.0f/765),(5.0f/765),(6.0f/765),(7.0f/765),(8.0f/765),
@@ -107,7 +107,7 @@ namespace yack
             (753.0f/765),(754.0f/765),(755.0f/765),(756.0f/765),(757.0f/765),(758.0f/765),(759.0f/765),(760.0f/765),
             (761.0f/765),(762.0f/765),(763.0f/765),(764.0f/765),(765.0f/765)};
 
-        const uint8_t conversion:: utable[] =
+        const uint8_t convtable:: u[] =
         {
             0,1,1,1,1,2,2,2,
             3,3,3,4,4,4,5,5,

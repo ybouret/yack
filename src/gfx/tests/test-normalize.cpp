@@ -6,16 +6,12 @@
 #include "yack/concurrent/loop/mono.hpp"
 #include "yack/utest/run.hpp"
 #include "yack/utest/tmx.hpp"
-#include "yack/color/rgba/make-gsf.hpp"
-#include "yack/color/rgba/from-float.hpp"
+#include "yack/color/convert.hpp"
 
 using namespace yack;
 using namespace graphic;
 
-static inline void rgba_to_float(float &f, const rgba &c) throw()
-{
-    f = color::make_gsf::table[c.r+c.g+c.b];
-}
+
 
 
 YACK_UTEST(normalize)
@@ -30,7 +26,7 @@ YACK_UTEST(normalize)
         pixmap<rgba>  source = IMG.load(argv[1],NULL);
         broker        par(parEngine,source);
         broker        ser(serEngine,source);
-        pixmap<float> imgf(source,par,rgba_to_float);
+        pixmap<float> imgf(source,par,color::convert<float,rgba>::make);
 
 
         
@@ -48,8 +44,7 @@ YACK_UTEST(normalize)
         const float * const res = broker_extrema::search(imgf,par);
         broker_normalize::apply(imgf,ser,res[0],res[1]);
         
-        color::from_float cnv;
-        pixmap<rgba> target(imgf,par,cnv);
+        pixmap<rgba> target(imgf,par,color::convert<rgba,float>::make);
         IMG.save(target,"normalized.png",NULL);
 
     }

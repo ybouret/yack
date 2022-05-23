@@ -3,7 +3,7 @@
 #include "yack/gfx/rgb.hpp"
 #include "yack/ios/ocstream.hpp"
 #include "yack/exception.hpp"
-#include "yack/color/rgba/from-rgba.hpp"
+//#include "yack/color/rgba/from-rgba.hpp"
 
 namespace yack
 {
@@ -40,11 +40,12 @@ namespace yack
 
         void bmp_format:: saveBMP(const string        &filename,
                                   const bitmap        &image,
-                                  color::data_to_rgba &cproc) const
+                                  rgba               (*cproc)(const void *)) const
         {
 
-            assert(cproc.d==image.d);
-
+            //assert(cproc.d==image.d);
+            assert(NULL!=cproc);
+            
             // initial headers
             unsigned char       bmpfileheader[14] = {'B','M', 0,0,0,0, 0,0, 0,0, 54,0,0,0};
             unsigned char       bmpinfoheader[40] =
@@ -92,8 +93,7 @@ namespace yack
 
         void bmp_format:: save(const pixmap<rgba> &surface, const string &filename, const options *) const
         {
-            color::from_rgba cnv;
-            saveBMP(filename,surface,cnv);
+            saveBMP(filename,surface,NULL);
         }
 
     }

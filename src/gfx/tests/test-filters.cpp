@@ -6,10 +6,8 @@
 #include "yack/gfx/image/formats.hpp"
 #include "yack/concurrent/loop/simd.hpp"
 #include "yack/utest/run.hpp"
-#include "yack/color/rgba/make-gsf.hpp"
-#include "yack/color/rgba/from-float.hpp"
 #include "yack/gfx/broker/normalize.hpp"
-
+#include "yack/color/convert.hpp"
 
 using namespace yack;
 using namespace graphic;
@@ -21,14 +19,13 @@ static void run_filters(const images &IMG,
                         pixmap<float>       &target,
                         pixmap<rgba>        &output)
 {
-    color::from_float float_to_rgba;
     const string  root = uuid;
     std::cerr << "Processing " << root << std::endl;
     const filters F    = IMG.carve(root);
     const float   gmax = broker_filter::gradient(target,source,device,*F.X,*F.Y);
     broker_normalize::apply(target,device,gmax);
 
-    IMG.emit(target,root+".png", "", device, float_to_rgba, output);
+    IMG.emit(target,root+".png", "", device, color::convert<rgba,float>::make, output);
     
 
 }
@@ -62,9 +59,8 @@ YACK_UTEST(filters)
         IMG.save(img,"img.png",NULL);
 
         broker            device(SIMD,img);
-        color::make_gsf   rgba_to_float;
 
-        pixmap<float> source(img,device,rgba_to_float);
+        pixmap<float> source(img,device,color::convert<float,rgba>::make);
         pixmap<float> target(source.w,source.h);
 
         run_filters(IMG,Prewitt<3>::uuid,device,source,target,output);

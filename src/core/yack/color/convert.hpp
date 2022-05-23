@@ -9,19 +9,52 @@ namespace yack
 {
     namespace color {
 
-        struct conversion
+        //----------------------------------------------------------------------
+        //
+        //! conversion tables
+        //
+        //----------------------------------------------------------------------
+        struct convtable
         {
-            static const float   ftable[3*255+1];
-            static const uint8_t utable[3*255+1];
-
+            static const float   f[3*255+1]; //!< table of float
+            static const uint8_t u[3*255+1]; //!< table of bytes
         };
 
-        template <typename T>
+        //----------------------------------------------------------------------
+        //
+        //! conversion prototype
+        //
+        //----------------------------------------------------------------------
+        template <typename TARGET, typename SOURCE>
         struct convert
         {
-            template <typename U> static
-            void to(U &, const T &) throw();
+            static void          make(TARGET &, const SOURCE &) throw();
+            static inline TARGET proc(const SOURCE  &src)       throw()
+            {
+                TARGET tgt(0);
+                make(tgt,src);
+                return tgt;
+            }
         };
+
+        template <typename TARGET>
+        struct convert<TARGET,TARGET>
+        {
+            static inline void   make(TARGET &tgt, const TARGET &src) throw() { tgt=src;    }
+            static inline TARGET proc(const TARGET &src)              throw() { return src; }
+        };
+
+
+
+
+        //! wrapper for saveBMP essentially
+        template <typename TARGET, typename SOURCE> inline
+        TARGET converting(const void *addr) throw()
+        {
+            assert(NULL!=addr);
+            return convert<TARGET,SOURCE>::proc(*static_cast<const SOURCE *>(addr));
+        }
+
 
     }
 }

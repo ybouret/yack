@@ -1,23 +1,14 @@
 #include "yack/gfx/image/format/png.hpp"
-
 #include "yack/gfx/image/format/bmp.hpp"
-#include "yack/color/rgba/from-rgba.hpp"
-
-
 #include "yack/concurrent/loop/simd.hpp"
 #include "yack/utest/run.hpp"
 #include "yack/string.hpp"
+#include "yack/color/convert.hpp"
 
 using namespace yack;
 using namespace graphic;
 
-namespace
-{
-    static inline void rgba2rgb(rgb &out, const rgba &c) throw()
-    {
-        out = c;
-    }
-}
+
 
 YACK_UTEST(png)
 {
@@ -31,8 +22,7 @@ YACK_UTEST(png)
         std::cerr << "img4: " << img.w << "x" << img.h << "@" << img.d * 8 << " bpp" << std::endl;
         {
             bmp_format bmp;
-            color::from_rgba cnv;
-            bmp.saveBMP("img-png.bmp",img, cnv);
+            bmp.saveBMP("img-png.bmp",img, color::converting<rgba,rgba>);
         }
         gfmt.save(img,"img-png3.png",NULL);
         
@@ -44,7 +34,7 @@ YACK_UTEST(png)
 
 
         broker       device(SIMD,img);
-        pixmap<rgb>  img3(img,device,rgba2rgb);
+        pixmap<rgb>  img3(img,device,color::convert<rgb,rgba>::make);
         std::cerr << "img3: " << img3.w << "x" << img3.h << "@" << img3.d * 8 << " bpp" << std::endl;
         
     }

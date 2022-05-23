@@ -89,7 +89,7 @@ namespace yack
         void  *workspace; //!< allocated workspace
     };
 
-    extern const matrix_metrics::transposed_t transposed;
+    extern const matrix_metrics::transposed_t transposed; //!< make a transposed metrics
 
 }
 

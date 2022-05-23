@@ -3,7 +3,7 @@
 #include "yack/utest/run.hpp"
 #include "yack/string.hpp"
 #include "yack/gfx/image/format/bmp.hpp"
-#include "yack/color/rgba/from-rgba.hpp"
+#include "yack/color/convert.hpp"
 
 using namespace yack;
 using namespace graphic;
@@ -18,8 +18,7 @@ YACK_UTEST(tiff)
         pixmap<rgba> img = gfmt.load(fn,NULL);
         {
             bmp_format       bmp;
-            color::from_rgba cnv;
-            bmp.saveBMP("img-tiff.bmp",img, cnv);
+            bmp.saveBMP("img-tiff.bmp",img, color::converting<rgba,rgba>);
         }
         gfmt.save(img,"img-tiff.tif",&opts);
 

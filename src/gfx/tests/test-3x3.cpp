@@ -27,7 +27,7 @@ YACK_UTEST(3x3)
 
         broker            device(SIMD,origin);
         
-        pixmap<float> source(origin,device,color::convert<rgba>::to<float>);
+        pixmap<float> source(origin,device,color::convert<float,rgba>::make);
         pixmap<float> target(source.w,source.h);
 
         broker3x3::apply(output,origin,device, pixel<rgba>::average3x3);

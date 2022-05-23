@@ -4,10 +4,8 @@
 #include "yack/concurrent/loop/simd.hpp"
 #include "yack/utest/run.hpp"
 #include "yack/string.hpp"
-#include "yack/color/rgba/make-gsf.hpp"
-#include "yack/color/rgba/from-float.hpp"
-
 #include "yack/gfx/broker/normalize.hpp"
+#include "yack/color/convert.hpp"
 
 
 using namespace yack;
@@ -51,22 +49,20 @@ YACK_UTEST(filter)
 
         IMG.save(img,"img.png",NULL);
         broker          device(SIMD,img);
-        color::make_gsf   rgba_to_float;
-        color::from_float float_to_rgba;
 
-        pixmap<float> source(img,device,rgba_to_float);
+        pixmap<float> source(img,device,color::convert<float,rgba>::make);
         pixmap<float> target(source.w,source.h);
 
         broker_filter::apply(target,source,device,Fy);
         broker_normalize::apply(target,device);
 
-        broker_transform::apply(output,target,device,float_to_rgba);
+        broker_transform::apply(output,target,device,color::convert<rgba,float>::make);
         IMG.save(output, "fy.png", NULL);
 
         broker_filter::apply(target,source,device,Fx);
         broker_normalize::apply(target,device);
 
-        broker_transform::apply(output,target,device,float_to_rgba);
+        broker_transform::apply(output,target,device,color::convert<rgba,float>::make);
         IMG.save(output, "fx.png", NULL);
 
 
@@ -74,7 +70,7 @@ YACK_UTEST(filter)
         std::cerr << "gmax=" << gmax << std::endl;
         broker_normalize::apply(target,device,gmax);
 
-        broker_transform::apply(output,target,device,float_to_rgba);
+        broker_transform::apply(output,target,device,color::convert<rgba,float>::make);
         IMG.save(output, "grad.png", NULL);
     }
 

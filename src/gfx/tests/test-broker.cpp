@@ -6,8 +6,8 @@
 #include "yack/concurrent/loop/simd.hpp"
 #include "yack/concurrent/loop/mono.hpp"
 #include "yack/concurrent/thread.hpp"
-#include "yack/color/rgba/make-gsf.hpp"
 
+#include "yack/color/convert.hpp"
 
 using namespace yack;
 using namespace graphic;
@@ -23,10 +23,7 @@ namespace
         std::cerr << "broker" << site << " @" << t << std::endl;
     }
 
-    static inline void rgba_to_float(float &f, const rgba &c) throw()
-    {
-        f = color::make_gsf::table[c.r+c.g+c.b];
-    }
+
 }
 
 YACK_UTEST(broker)
@@ -54,7 +51,7 @@ YACK_UTEST(broker)
     par(showBroker,NULL);
 
     pixmap<rgba>  source(dims.w,dims.h);
-    pixmap<float> target(source,par,rgba_to_float);
+    pixmap<float> target(source,par,color::convert<float,rgba>::make);
 
 
 }

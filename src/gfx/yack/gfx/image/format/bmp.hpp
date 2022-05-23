@@ -4,7 +4,6 @@
 #define YACK_GFX_FORMAT_BMP_INCLUDED 1
 
 #include "yack/gfx/image/format.hpp"
-#include "yack/color/data-to-rgba.hpp"
 
 namespace yack
 {
@@ -48,7 +47,7 @@ namespace yack
             //! save image
             void saveBMP(const string        &filename,
                          const bitmap        &image,
-                         color::data_to_rgba &cproc) const;
+                         rgba               (*cproc)(const void *)) const;
 
         private:
             YACK_DISABLE_COPY_AND_ASSIGN(bmp_format);

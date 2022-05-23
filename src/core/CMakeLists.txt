@@ -563,12 +563,6 @@ set(color ${color_impl} ${color_decl})
 SOURCE_GROUP(color FILES ${color})
 install( FILES ${color_decl} DESTINATION include/yack/color )
 
-file(GLOB color_rgba_impl yack/color/rgba/*.cpp)
-file(GLOB color_rgba_decl yack/color/rgba/*.hpp)
-set(color_rgba ${color_rgba_impl} ${color_rgba_decl})
-SOURCE_GROUP(color/rgba FILES ${color_rgba})
-install( FILES ${color_rgba_decl} DESTINATION include/yack/color/rgba )
-
 file(GLOB color_convert_impl yack/color/convert/*.cpp)
 file(GLOB color_convert_decl yack/color/convert/*.hpp)
 set(color_convert ${color_convert_impl} ${color_convert_decl})
@@ -606,7 +600,7 @@ ${info} ${info_modulation}
 ${math}
 ${ptr}
 ${field}
-${color} ${color_rgba} ${color_convert}
+${color} ${color_convert}
 ${utest}
 )
 
