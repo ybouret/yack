@@ -37,6 +37,11 @@ namespace yack
             }
         };
 
+        //----------------------------------------------------------------------
+        //
+        //! specific case
+        //
+        //----------------------------------------------------------------------
         template <typename TARGET>
         struct convert<TARGET,TARGET>
         {
@@ -44,8 +49,7 @@ namespace yack
             static inline TARGET cast(const TARGET &src)              throw() { return src; }
         };
 
-
-
+        
 
         //! wrapper for saveBMP essentially
         template <typename TARGET, typename SOURCE> inline
