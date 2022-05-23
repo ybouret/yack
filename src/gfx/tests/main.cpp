@@ -21,7 +21,6 @@ YACK_UTEST_DECL(32)
     YACK_UTEST(blur);
     YACK_UTEST(3x3);
     YACK_UTEST(fbuild);
-    YACK_UTEST(fmake);
 }
 YACK_UTEST_EXEC()
 

@@ -10,30 +10,6 @@
 
 using namespace yack;
 
-class Normal : public randomized::gaussian<float>
-{
-public:
-    explicit Normal(const float s, const randomized::shared_bits &sh):
-    randomized::gaussian<float>(sh),
-    sigma(s)
-    {
-    }
-    
-    virtual ~Normal() throw()
-    {
-    }
-    
-    inline float operator()()
-    {
-        randomized::gaussian<float> &self = *this;
-        return sigma * self();
-    }
-    
-    const float sigma;
-    
-private:
-    YACK_DISABLE_COPY_AND_ASSIGN(Normal);
-};
 
 static inline
 apn normalize_field( field2D<apq> &coef )
@@ -53,6 +29,11 @@ apn normalize_field( field2D<apq> &coef )
 YACK_UTEST(fbuild)
 {
 
+    //--------------------------------------------------------------------------
+    //
+    // compute the SQUARES of weights
+    //
+    //--------------------------------------------------------------------------
     int nx=1;
     if(argc>1)
     {
@@ -63,23 +44,44 @@ YACK_UTEST(fbuild)
     const int sy=2*ny+1;
     const size_t nc=sx*sy;
 
+    //--------------------------------------------------------------------------
+    //
+    // dimensions
+    //
+    //--------------------------------------------------------------------------
     const layout2D  L(coord2D(-nx,-ny), coord2D(nx,ny));
-    field2D<apq>    W("W",L);
 
+    //--------------------------------------------------------------------------
+    //
+    // compute the SQUARED of weights
+    //
+    //--------------------------------------------------------------------------
+    field2D<apq>    W2("W2",L);
     for(int i=-nx;i<=nx;++i)
     {
         for(int j=-ny;j<=ny;++j)
         {
-            W[i][j] = 1; //1+absolute(i)+absolute(j);
-            W[i][j] = apq(1.0, (1.0+absolute(i)+absolute(j)));
+            //W2[i][j] = 1;
+            if(0==i&&0==j)
+            {
+                W2[i][j] = 2;
+            }
+            else
+            {
+                W2[i][j] = apq(1.0,i*i+j*j);
+            }
         }
     }
 
-    //display(W);
-    W.print(std::cerr) << std::endl;
+    W2.print(std::cerr) << std::endl;
 
-    matrix<apq> M(6,6);
-    matrix<apq> R(6,nc);
+    //--------------------------------------------------------------------------
+    //
+    // compute the matrices
+    //
+    //--------------------------------------------------------------------------
+    matrix<apq> M(6,6);   //!< matrix of moments
+    matrix<apq> R(6,nc);  //!< unrolled right-hand side
 
 
     size_t k=0;
@@ -88,31 +90,40 @@ YACK_UTEST(fbuild)
         for(int j=-ny;j<=ny;++j)
         {
             ++k;
-            const int    w[8] = {0, 1, i, j, i*i, i*j, j*j, 0 };
-            const apq    Wij  = W[i][j];
+            const int    mu[8] = {0, 1, i, j, i*i, i*j, j*j, 0 };
+            const apq    w2    = W2[i][j];
 
             for(size_t c=1;c<=6;++c)
             {
-                const int q = w[c];
-                R[c][k] = q*Wij;
+                const int q   = mu[c];
+                const apq QW2 = q*w2;
+                R[c][k] = QW2;
                 for(size_t r=1;r<=6;++r)
                 {
-                    M[r][c] += Wij * q * w[r];
+                    M[r][c] += QW2 * mu[r];
                 }
-                
             }
         }
     }
-    std::cerr << "M=" << M << std::endl;
-    std::cerr << "R=" << R << std::endl;
+    //std::cerr << "M=" << M << std::endl;
+    //std::cerr << "R=" << R << std::endl;
 
+    //--------------------------------------------------------------------------
+    //
+    // decompose moments
+    //
+    //--------------------------------------------------------------------------
     math::lu<apq> LU(6);
     if(!LU.build(M))
     {
         throw exception("Singular Moments!!");
     }
 
-
+    //--------------------------------------------------------------------------
+    //
+    // solve each row of the unrolled rhs
+    //
+    //--------------------------------------------------------------------------
     {
         vector<apq> U(6);
         for(size_t i=1;i<=nc;++i)
@@ -129,7 +140,11 @@ YACK_UTEST(fbuild)
         }
     }
 
-    //std::cerr << "F=" << R << std::endl;
+    //--------------------------------------------------------------------------
+    //
+    // recompose local fields
+    //
+    //--------------------------------------------------------------------------
 
     field2D<apq> a("a",L);
     field2D<apq> b("b",L);
@@ -155,25 +170,6 @@ YACK_UTEST(fbuild)
 
     const apn cden = normalize_field(c);
     c.print(std::cerr) << "/" << cden << std::endl;
-
-    randomized::shared_bits sh = new randomized::rand_();
-    
-    Normal N1(1.0,sh);
-    Normal N2(1.0,sh);
-    
-    vector<float> data;
-    vector<float> temp;
-    float         ave = 0;
-    float         var = 0;
-    
-    data.free();
-    for(size_t i=1000;i>0;--i)
-    {
-        data << (N1()+N2())/2;
-    }
-    ave = statistical::average<float>::of(data,temp);
-    var = (statistical::variance<float>::of(data,ave,temp));
-    std::cerr << "ave=" << ave << ", var=" << var << std::endl;
 
 }
 YACK_UDONE()

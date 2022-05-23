@@ -22,7 +22,7 @@ YACK_UTEST(blur)
         sigma = ios::ascii::convert::real<float>(argv[1],"sigma");
     }
     blurring B(sigma);
-    std::cerr << "sigma=" << sigma << " => radius=" << B.radius << std::endl;
+    std::cerr << "sigma=" << sigma << " => radius=" << B.radius << ", #coef=" << B.size() << std::endl;
     std::cerr << B << std::endl;
 
     if( argc > 2)
