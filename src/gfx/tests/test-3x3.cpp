@@ -2,7 +2,7 @@
 #include "yack/gfx/image/formats.hpp"
 #include "yack/concurrent/loop/simd.hpp"
 #include "yack/utest/run.hpp"
-#include "yack/color/rgba/make-gsf.hpp"
+#include "yack/color/convert.hpp"
 
 using namespace yack;
 using namespace graphic;
@@ -26,9 +26,8 @@ YACK_UTEST(3x3)
         IMG.save(origin,"origin.png",NULL);
 
         broker            device(SIMD,origin);
-        color::make_gsf   rgba_to_float;
-
-        pixmap<float> source(origin,device,rgba_to_float);
+        
+        pixmap<float> source(origin,device,color::convert<rgba>::to<float>);
         pixmap<float> target(source.w,source.h);
 
         broker3x3::apply(output,origin,device, pixel<rgba>::average3x3);
