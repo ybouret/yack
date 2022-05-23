@@ -29,7 +29,7 @@ namespace yack
         struct convert
         {
             static void          make(TARGET &, const SOURCE &) throw();
-            static inline TARGET proc(const SOURCE  &src)       throw()
+            static inline TARGET cast(const SOURCE  &src)       throw()
             {
                 TARGET tgt(0);
                 make(tgt,src);
@@ -41,7 +41,7 @@ namespace yack
         struct convert<TARGET,TARGET>
         {
             static inline void   make(TARGET &tgt, const TARGET &src) throw() { tgt=src;    }
-            static inline TARGET proc(const TARGET &src)              throw() { return src; }
+            static inline TARGET cast(const TARGET &src)              throw() { return src; }
         };
 
 
@@ -52,7 +52,7 @@ namespace yack
         TARGET converting(const void *addr) throw()
         {
             assert(NULL!=addr);
-            return convert<TARGET,SOURCE>::proc(*static_cast<const SOURCE *>(addr));
+            return convert<TARGET,SOURCE>::cast(*static_cast<const SOURCE *>(addr));
         }
 
 

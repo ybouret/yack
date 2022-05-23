@@ -22,14 +22,14 @@ YACK_UTEST(hist)
         pixmap<rgba> img = IMG.load(fn,NULL);
         broker       device(SIMD,img);
 
-        broker_histogram::compute(H,img,device,color::convert<uint8_t,rgba>::proc);
+        broker_histogram::compute(H,img,device,color::convert<uint8_t,rgba>::cast);
 
         H.save("hist.dat");
         const size_t thr = H.Otsu();
         std::cerr << "Threshold=" << thr << std::endl;
 
         pixmap<rgba> fg(img.w,img.h);
-        broker_histogram::process(fg,img,thr,device,color::convert<uint8_t,rgba>::proc,selector<rgba>::keep,selector<rgba>::drop);
+        broker_histogram::process(fg,img,thr,device,color::convert<uint8_t,rgba>::cast,selector<rgba>::keep,selector<rgba>::drop);
         IMG.save(fg,"fg.png",NULL);
     }
 
