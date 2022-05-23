@@ -111,7 +111,7 @@ namespace yack
         T    &rra = *coerce_cast<T>(arr);
 
         typedef typename BRR::type U;
-        void *brr[ YACK_WORDS_FOR(U) ]; assert(sizeof(brr)>=sizeof(T));
+        void *brr[ YACK_WORDS_FOR(U) ]; assert(sizeof(brr)>=sizeof(U));
         U    &rrb = *coerce_cast<U>(brr);
         
         //----------------------------------------------------------------------
