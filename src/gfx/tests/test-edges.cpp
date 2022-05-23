@@ -9,6 +9,7 @@
 #include "yack/color/convert.hpp"
 #include "yack/gfx/filter/scharr.hpp"
 #include "yack/gfx/broker/normalize.hpp"
+#include "yack/gfx/broker/extrema.hpp"
 
 using namespace yack;
 using namespace graphic;
@@ -52,11 +53,11 @@ namespace
         pixmap<float>        &target;
         const pixmap<float>  &gfield;
         const pixmap<vertex> &vfield;
-
-
+        float                 gmax;
+        
         static inline void make(void          *args,
                                 const tiles   &part,
-                                const context & ,
+                                const context &info,
                                 lockable      &) throw()
         {
             assert(args);
@@ -64,7 +65,8 @@ namespace
             pixmap<float>        &target = self.target;
             const pixmap<float>  &gfield = self.gfield;
             const pixmap<vertex> &vfield = self.vfield;
-
+            float                 gmin   = self.gmax;
+            float                 gmax   = 0;
             for(const tile *node=part.head();node;node=node->next)
             {
                 coord                  pos = node->start;
@@ -88,6 +90,8 @@ namespace
                         if(g0>=gm&&g0>=gp)
                         {
                             tgt(pos.x) = g0;
+                            if(g0<gmin) gmin = g0;
+                            if(gmax<g0) gmax = g0;
                         }
                         else
                         {
@@ -95,7 +99,8 @@ namespace
                         }
                     }
                 }
-
+                (*info).get<float>(0) = gmin;
+                (*info).get<float>(1) = gmax;
             }
 
         }
@@ -123,11 +128,9 @@ YACK_UTEST(edges)
         broker          dev(para,img);
 
         pixmap<float>   src(img,dev,color::convert<float,rgba>::make);
-        IMG.emit(src, "src.png", "level=9", dev, color::convert<rgba,float>::make,out);
 
         pixmap<float>   raw(img.w,img.h);
         broker_blur::fuzz(raw,src,dev,smooth);
-        IMG.emit(raw, "raw.png", "level=9", dev, color::convert<rgba,float>::make,out);
 
         pixmap<float>        gn(img.w,img.h);
         pixmap< v2d<float> > gv(img.w,img.h);
@@ -135,15 +138,27 @@ YACK_UTEST(edges)
         const float gmax = broker_filter::gradient(gn,gv,raw,dev, *F.X, *F.Y);
         std::cerr << "gmax=" << gmax << std::endl;
         broker_normalize::apply(gn,dev,gmax);
-        IMG.emit(gn, "grd.png", "level=9", dev, color::convert<rgba,float>::make,out);
 
         pixmap<float>       lm(img.w,img.h);
-
-        task todo = { lm, gn, gv };
+        (*dev).build<float>(2);
+        task todo = { lm, gn, gv, 1.0f };
         dev(task::make,&todo);
-
-        IMG.emit(lm, "lmx.png", "level=9", dev, color::convert<rgba,float>::make,out);
-
+        const float *scal = broker_extrema::finalize<float>(dev);
+        const float  vmin = scal[0];
+        const float  vmax = scal[1];
+        broker_normalize::apply(lm,dev,vmin,vmax);
+        
+        histogram H;
+        broker_histogram::compute(H,lm,dev);
+        const uint8_t thr = H.Otsu();
+        
+        IMG.emit(src, "src.png", "level=4", dev, color::convert<rgba,float>::make,out);
+        IMG.emit(raw, "raw.png", "level=4", dev, color::convert<rgba,float>::make,out);
+        IMG.emit(gn,  "grd.png", "level=4", dev, color::convert<rgba,float>::make,out);
+        IMG.emit(lm,  "lmx.png", "level=4", dev, color::convert<rgba,float>::make,out);
+        H.save("hist.dat");
+        
+        
     }
 
     
