@@ -179,6 +179,13 @@ namespace yack
             return absolute(x) + absolute(y);
         }
 
+        //! angle in -pi:pi for float,double, long double
+        mutable_type angle() const throw();
+
+        //______________________________________________________________________
+        //
+        // comparisons
+        //______________________________________________________________________
 
         //! test equality
         inline friend bool operator==(const v2d &lhs, const v2d &rhs) throw()
