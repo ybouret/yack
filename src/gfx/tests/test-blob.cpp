@@ -46,16 +46,7 @@ YACK_UTEST(blob)
    // concurrent::single::verbose = true;
     
     randomized::rand_ ran;
-
-    vlist V;
-
-
-    for(size_t i=1000;i>0;--i)
-    {
-        const coord tmp( ran.in(-100,100), ran.in(-100,100) );
-        V.append_back(tmp);
-    }
-
+    
     images                     &IMG = images::standard();
     const concurrent::topology  topo;
     engine                      para = new concurrent::simd(topo);

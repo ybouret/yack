@@ -3,40 +3,16 @@
 #ifndef YACK_GFX_BLOB_INCLUDED
 #define YACK_GFX_BLOB_INCLUDED 1
 
-#include "yack/gfx/pixel.hpp"
-#include "yack/memory/small/exclusive.hpp"
-#include "yack/data/list/concrete.hpp"
-#include "yack/data/pool/concrete.hpp"
+#include "yack/gfx/cnode.hpp"
 #include "yack/object.hpp"
 #include "yack/gfx/pixmap.hpp"
+#include "yack/gfx/pixel.hpp"
 
 namespace yack
 {
     namespace graphic
     {
-        //! vertex node
-        class vnode
-        {
-        public:
-            YACK_EXCLUSIVE_DECL(vnode,999);
-            
-            vnode       * next;
-            vnode       * prev;
-            const coord & operator*() throw();
-            const coord & operator*() const throw();
-
-            vnode(const coord &) throw();
-            ~vnode() throw();
-            vnode(const vnode &) throw();
-
-        private:
-            YACK_DISABLE_ASSIGN(vnode);
-            const  coord  pos;
-        };
-
-        typedef klist<const coord,vnode> vlist;
-        typedef kpool<const coord,vnode> vpool;
-
+        
 
         class blob : public object
         {
@@ -44,11 +20,11 @@ namespace yack
             typedef cxx_list_of<blob> list_type;
             typedef pixmap<size_t>    chart;
 
-            const vlist & operator*() const throw() { return vertices; }
+            const cnode::list & operator*()  const throw() { return cnodes; }
 
             explicit blob(const size_t) throw();
             virtual ~blob() throw();
-            void     push(const coord &);
+            void     insert(const coord &);
 
             const size_t indx; //!< index>0
             blob        *next; //!< for list
@@ -57,7 +33,7 @@ namespace yack
 
         private:
             YACK_DISABLE_COPY_AND_ASSIGN(blob);
-            vlist vertices;
+            cnode::list cnodes;
         };
 
         class blobs
@@ -95,7 +71,7 @@ namespace yack
                 const unit_t h = bmap.h;   // height
                 const unit_t w = bmap.w;   // width
                 coord        r(0,0);       // running pos
-                vlist        vstk;         // local stack
+                cnode::list  vstk;         // local stack
 
                 //--------------------------------------------------------------
                 //
@@ -126,17 +102,22 @@ namespace yack
                             continue;
                         }
 
-                        //--------------------------------------------------------------
+                        //------------------------------------------------------
                         //
-                        // create a blob
+                        // create am initialize a new blob
                         //
-                        //--------------------------------------------------------------
+                        //------------------------------------------------------
                         const size_t i = ( b=acquire() )->indx;
                         assert(0==vstk.size);
                         vstk.append_back(r);
-                        b->push(r);
+                        b->insert(r);
                         bmap(r) = i;
 
+                        //------------------------------------------------------
+                        //
+                        // propagate
+                        //
+                        //------------------------------------------------------
                         while(vstk.size)
                         {
                             const coord p = vstk.pull_front(); assert( !pixel<T>::is_zero(source(p)) );
@@ -148,7 +129,7 @@ namespace yack
                                 if(bmap(q)>0) { assert(i==bmap(q)); continue; } //! already in blob
                                 vstk.append_back(q);
                                 bmap(q) = i;
-                                b->push(q);
+                                b->insert(q);
                             }
                         }
                     }

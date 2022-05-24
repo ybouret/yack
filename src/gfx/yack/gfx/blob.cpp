@@ -1,35 +1,6 @@
 
 #include "yack/gfx/blob.hpp"
-
-namespace yack
-{
-    namespace graphic
-    {
-        vnode:: ~vnode() throw() {}
-
-        vnode:: vnode(const coord &p) throw() : next(0), prev(0), pos(p) {}
-
-        vnode:: vnode(const vnode &v) throw() : next(0), prev(0), pos(v.pos) {}
-        
-
-        const coord & vnode:: operator*() throw() { return pos; }
-        const coord & vnode:: operator*() const throw() { return pos; }
-
-    }
-}
-
-
-
-#include "yack/memory/small/studio.hpp"
-
-namespace yack
-{
-    namespace graphic
-    {
-        YACK_EXCLUSIVE_IMPL(vnode,"gfx.");
-    }
-}
-
+ 
 namespace yack
 {
     namespace graphic
@@ -43,13 +14,13 @@ namespace yack
         indx(i),
         next(0),
         prev(0),
-        vertices()
+        cnodes()
         {
         }
         
-        void blob:: push(const coord &pos)
+        void blob:: insert(const coord &pos)
         {
-            vertices.append_back(pos);
+            cnodes.append_back(pos);
         }
 
         blob * blobs:: acquire()
@@ -106,9 +77,9 @@ namespace yack
         {
             while(content.size)
             {
-                const vlist &V = **content.tail;
+                const cnode::list &V = **content.tail;
                 if(V.size>minsize) return;
-                for(const vnode *v=V.head;v;v=v->next)
+                for(const cnode *v=V.head;v;v=v->next)
                 {
                     bmap(**v) = 0;
                 }

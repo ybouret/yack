@@ -71,7 +71,7 @@ namespace yack
 
             //__________________________________________________________________
             //
-            //! apply target=sqrt(Fx(source)^2+Fy(source)^2), return global max
+            //! apply target=sqrt(Fx(source)^2+Fy(source)^2) return global max
             //__________________________________________________________________
             template <
             typename TARGET,

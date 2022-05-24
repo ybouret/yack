@@ -146,7 +146,7 @@ YACK_UTEST(edges)
         const float *scal = broker_extrema::finalize<float>(dev);
         const float  vmin = scal[0];
         const float  vmax = scal[1];
-        broker_normalize::apply(lm,dev,vmin,vmax);
+        broker_normalize::apply(lm,dev,0.0f,vmax);
         
         histogram H;
         broker_histogram::compute(H,lm,dev);
