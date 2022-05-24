@@ -4,7 +4,6 @@
 #define YACK_GFX_EDGES_DETECTOR_INCLUDED 1
 
 #include "yack/gfx/pixmap.hpp"
-#include "yack/gfx/histogram.hpp"
 #include "yack/gfx/blur.hpp"
 #include "yack/gfx/broker.hpp"
 #include "yack/gfx/filters.hpp"
@@ -63,8 +62,7 @@ namespace yack
             tagmap         labels; //!< edges label
             blobs          ridges; //!< dynamic ridges
             real_t         gmax;   //!< maximum gradient value
-            histogram      hist;   //!< histogram of valid gradient
-
+            
 
             
 

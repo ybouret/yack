@@ -51,7 +51,7 @@ namespace yack
 
             };
 
-            task todo = { *this, origin, up, up>>2 };
+            task todo = { *this, origin, up, static_cast<uint8_t>(up>>2) };
             device(task::make,&todo);
 
         }

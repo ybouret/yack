@@ -79,8 +79,7 @@ YACK_UTEST(edges)
         broker_normalize::apply(E.gfield,dev,E.gmax);
         IMG.emit(E.gfield, "gradient.png", "", dev, color::convert<rgba,float>::make,out);
 
-        E.hist.save("hist.dat");
-
+        
         IMG.emit(E, "cleft.png", "", dev, color::convert<rgba,uint8_t>::make,out);
 
         broker_transform::apply(out,E.labels,dev,sz2c);

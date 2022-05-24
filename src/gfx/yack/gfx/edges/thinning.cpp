@@ -9,6 +9,7 @@ namespace yack
 
         uint8_t edges:: thinning(broker &device)
         {
+            histogram hist;
             broker_histogram::initialize(hist,device);
 
             //------------------------------------------------------------------
@@ -70,6 +71,7 @@ namespace yack
                 }
             };
             //------------------------------------------------------------------
+            
             task todo = { origin, gfield, vfield, gmax };
             device(task::make,&todo);
 

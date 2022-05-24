@@ -1,5 +1,6 @@
 #include "yack/gfx/edges/detector.hpp"
 #include "yack/gfx/broker/filter.hpp"
+#include "yack/gfx/histogram.hpp"
 
 namespace yack
 {
