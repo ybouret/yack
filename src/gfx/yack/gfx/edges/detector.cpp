@@ -33,10 +33,45 @@ namespace yack
             cleaving(device,up);
             tracking(device);
         }
-        
+
+        static inline
+        bool is_strong_ridge(const cnode *head, const pixmap<uint8_t> &edges) throw()
+        {
+            while(head)
+            {
+                if( edges(**head) >= edges::strong) return true;
+                head = head->next;
+            }
+            return false;
+        }
+
+
         void edges:: tracking(broker &device)
         {
             ridges.build(labels, device, *this, 8);
+            blobs_ keep;
+            while(ridges.size)
+            {
+                blob *b = ridges.pop_front();
+                if(is_strong_ridge(b->head,*this))
+                {
+                    keep.push_back(b);
+                }
+                else
+                {
+                    for(const cnode *node=b->head;node;node=node->next)
+                    {
+                        const coord pos = **node;
+                        (*this)(pos) = 0;
+                        labels(pos)  = 0;
+                    }
+                    delete b;
+                }
+            }
+
+            ridges.swap_with(keep);
+            ridges.relabel(labels);
+
         }
 
     }

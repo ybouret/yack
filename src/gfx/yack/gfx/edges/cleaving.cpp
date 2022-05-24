@@ -51,7 +51,7 @@ namespace yack
 
             };
 
-            task todo = { *this, origin, up, up>>1 };
+            task todo = { *this, origin, up, up>>2 };
             device(task::make,&todo);
 
         }

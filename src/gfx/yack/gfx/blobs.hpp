@@ -21,13 +21,16 @@ namespace yack
         //______________________________________________________________________
         typedef pixmap<size_t> tagmap;
 
+
+        typedef cxx_list_of<blob> blobs_; //!< alias
+
         //______________________________________________________________________
         //
         //
         //! list of blobs
         //
         //______________________________________________________________________
-        class blobs : public cxx_list_of<blob>
+        class blobs : public blobs_
         {
         public:
             //------------------------------------------------------------------
@@ -144,11 +147,13 @@ namespace yack
             //! assume blobs are in decreasing size order
             void no_smaller_than(const size_t minsize, tagmap &tmap) throw();
 
+            //! re-label blobs index and tmap
+            void   relabel(tagmap &tmap) throw();
+
 
         private:
             blob * acquire();
             void   sort();                        //!< sort in decreasing size ordere, relabel
-            void   relabel(tagmap &tmap) throw(); //!< relabel
         };
 
 
