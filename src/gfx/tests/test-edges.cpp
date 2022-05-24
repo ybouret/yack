@@ -75,13 +75,14 @@ YACK_UTEST(edges)
         E.detect(dev,F);
         IMG.emit(E.origin, "ridges.png", "", dev, color::convert<rgba,float>::make,out);
 
+
         broker_normalize::apply(E.gfield,dev,E.gmax);
         IMG.emit(E.gfield, "gradient.png", "", dev, color::convert<rgba,float>::make,out);
 
         E.hist.save("hist.dat");
 
-        const uint8_t thr = E.hist.Otsu();
-        std::cerr << "Threshold=" << int(thr) << std::endl;
+        IMG.emit(E, "cleft.png", "", dev, color::convert<rgba,uint8_t>::make,out);
+
 
 
         

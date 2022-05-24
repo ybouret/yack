@@ -20,6 +20,8 @@ namespace yack
         public:
             typedef float       real_t; //!< internal computation
             typedef v2d<real_t> vertex; //!< internal vertices
+            static const uint8_t strong = 0xff;
+            static const uint8_t feeble = 0x7f;
 
             //__________________________________________________________________
             //
@@ -51,8 +53,8 @@ namespace yack
 
         private:
             YACK_DISABLE_COPY_AND_ASSIGN(edges);
-            void thinning(broker &);
-            void cleaving(broker &);
+            uint8_t thinning(broker &);
+            void    cleaving(broker &, const uint8_t up);
         };
 
     }
