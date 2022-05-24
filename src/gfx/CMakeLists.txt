@@ -48,6 +48,14 @@ set(gfx_broker ${gfx_broker_decl} ${gfx_broker_srcs})
 SOURCE_GROUP(gfx/broker FILES ${gfx_broker})
 install( FILES ${gfx_broker_decl} DESTINATION include/yack/gfx/broker )
 
+#edges
+file(GLOB gfx_edges_decl yack/gfx/edges/*.hpp)
+file(GLOB gfx_edges_srcs yack/gfx/edges/*.cpp)
+set(gfx_edges ${gfx_edges_decl} ${gfx_edges_srcs})
+SOURCE_GROUP(gfx/edges FILES ${gfx_edges})
+install( FILES ${gfx_edges_decl} DESTINATION include/yack/gfx/edges )
+
+
 
 add_library(yack-gfx STATIC
 ${gfx_main}
@@ -56,6 +64,7 @@ ${gfx_image_format}
 ${gfx_filter}
 ${gfx_pixel}
 ${gfx_broker}
+${gfx_edges}
 )
 
 install( TARGETS yack-gfx ARCHIVE DESTINATION lib )

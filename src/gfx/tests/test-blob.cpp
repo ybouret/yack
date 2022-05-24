@@ -1,5 +1,5 @@
 
-#include "yack/gfx/blob.hpp"
+#include "yack/gfx/blobs.hpp"
 #include "yack/utest/run.hpp"
 #include "yack/gfx/image/formats.hpp"
 #include "yack/concurrent/loop/simd.hpp"
@@ -67,24 +67,24 @@ YACK_UTEST(blob)
         }
         IMG.save(fg, "fg.png", NULL);
 
-        blob::chart bmap(fg.w,fg.h);
-        blobs B;
+        tagmap bmap(fg.w,fg.h);
+        blobs  B;
 
         B.build(bmap,dev,fg,4);
         B.no_smaller_than(3,bmap);
-        std::cerr << "#4=" << (*B).size << std::endl;
+        std::cerr << "#4=" << B.size << std::endl;
 
         broker_transform::apply(out,bmap,dev,sz2c);
         IMG.save(out,"blob4.png", NULL);
         B.build(bmap,dev,fg,8);
         B.no_smaller_than(3,bmap);
 
-        std::cerr << "#8=" << (*B).size << std::endl;
+        std::cerr << "#8=" << B.size << std::endl;
         broker_transform::apply(out,bmap,dev,sz2c);
         IMG.save(out,"blob8.png", NULL);
-        for(const blob *b=(*B).head;b;b=b->next)
+        for(const blob *b=B.head;b;b=b->next)
         {
-            std::cerr << "blob#" << b->indx << " : " << (**b).size << std::endl;
+            std::cerr << "blob#" << b->tag << " : " << b->size << std::endl;
         }
     }
 

@@ -156,6 +156,7 @@ namespace yack
                                             lockable      &) throw()
                     {
                         assert(args);
+                        const v2d<TARGET>      zvtx(0,0);
                         task                  &self   = *static_cast<task *>(args);
                         pixmap<TARGET>        &target = self.target;
                         pixmap< v2d<TARGET> > &gfield = self.gfield;
@@ -184,7 +185,7 @@ namespace yack
                                 else
                                 {
                                     tgt(pos.x) = 0;
-                                    vtx(pos.x) = v2d<TARGET>(0,0);
+                                    vtx(pos.x) = zvtx;
                                 }
                             }
                         }
@@ -200,7 +201,10 @@ namespace yack
 
 
         private:
+            //! local memory
             static void   initialize(broker &device);
+
+            //! maximum over non-empty tiles
             static real_t finalize(const broker &device) throw();
         };
     }

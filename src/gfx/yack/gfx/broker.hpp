@@ -62,6 +62,9 @@ namespace yack
             //! access loop
             const concurrent::loop & operator*() const throw();
 
+            //! access loop
+            const concurrent::loop * operator->() const throw();
+
         private:
             YACK_DISABLE_COPY_AND_ASSIGN(broker);
             virtual void run(const context &, lockable &) throw();

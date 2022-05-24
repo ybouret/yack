@@ -98,8 +98,8 @@ namespace yack
             template <typename T>
             struct ld
             {
-                const T &args;
-                inline void operator()(T &target) { target=args; }
+                const T &args;                                     //!< reference to the value
+                inline void operator()(T &target) { target=args; } //!< set the value
             };
 
 

@@ -1,7 +1,7 @@
-
+//! \file
 
 #ifndef YACK_GFX_FILTERS_INCLUDED
-#define YACK_GFX_IMAGE_CODECS_INCLUDED 1
+#define YACK_GFX_FILTERS_INCLUDED 1
 
 #include "yack/gfx/filter.hpp"
 #include "yack/ptr/ark.hpp"

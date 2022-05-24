@@ -45,7 +45,7 @@ namespace yack
             //__________________________________________________________________
 
             //! ensuring num_blocks of block_size per context
-            void ensure(const size_t num_blocks, const size_t block_size);
+            void ensure(const size_t num_blocks, const size_t block_size) const;
 
             //! building of T[0:n-1] for each context
             template <typename T> inline

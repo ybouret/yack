@@ -136,9 +136,10 @@ zfh(rows->zfh)
                 return row[zfh(pos.y)][pos.x];
             }
 
-            inline void ld( broker &device, const T &args )
+            //! load the same value
+            inline void ld(broker &device, const T &value)
             {
-                broker_transform::ld<T> ops = { args };
+                broker_transform::ld<T> ops = { value };
                 broker_transform::apply(*this,device,ops);
             }
 

@@ -9,7 +9,7 @@ namespace yack
         void broker_histogram:: initialize(histogram &hist,const broker &device)
         {
             hist.reset();
-            (*device).build<histogram>();
+            device->build<histogram>();
         }
 
         void broker_histogram:: finalize(histogram &hist, const broker &device)  

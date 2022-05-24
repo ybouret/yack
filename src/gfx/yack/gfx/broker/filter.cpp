@@ -6,7 +6,7 @@ namespace yack
     {
         void broker_filter:: initialize(broker &device)
         {
-            (*device).build<real_t>(2);
+            device->build<real_t>(2);
         }
 
         filter::real_t broker_filter:: finalize(const broker &device) throw()

@@ -1,7 +1,7 @@
 //! \file
 
-#ifndef YACK_GFX_IMAGE_CODECS_INCLUDED
-#define YACK_GFX_IMAGE_CODECS_INCLUDED 1
+#ifndef YACK_GFX_IMAGE_FORMATS_INCLUDED
+#define YACK_GFX_IMAGE_FORMATS_INCLUDED 1
 
 #include "yack/gfx/image/format.hpp"
 #include "yack/gfx/filters.hpp"

@@ -28,13 +28,13 @@ namespace yack
         template <typename TARGET, typename SOURCE>
         struct convert
         {
-            static void          make(TARGET &, const SOURCE &) throw();
+            static void          make(TARGET &, const SOURCE &) throw(); //!< SOURCE->TARGET
             static inline TARGET cast(const SOURCE  &src)       throw()
             {
                 TARGET tgt(0);
                 make(tgt,src);
                 return tgt;
-            }
+            } //!< helper
         };
 
         //----------------------------------------------------------------------
@@ -45,8 +45,8 @@ namespace yack
         template <typename TARGET>
         struct convert<TARGET,TARGET>
         {
-            static inline void   make(TARGET &tgt, const TARGET &src) throw() { tgt=src;    }
-            static inline TARGET cast(const TARGET &src)              throw() { return src; }
+            static inline void   make(TARGET &tgt, const TARGET &src) throw() { tgt=src;    } //!< SOURCE->TARGET
+            static inline TARGET cast(const TARGET &src)              throw() { return src; } //!< helper
         };
 
         

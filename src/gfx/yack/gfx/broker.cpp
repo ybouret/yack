@@ -37,5 +37,11 @@ namespace yack
             return *call;
         }
 
+        const concurrent::loop * broker:: operator->() const throw()
+        {
+            return & *call;
+        }
+
+
     }
 }
