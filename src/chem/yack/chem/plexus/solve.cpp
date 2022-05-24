@@ -166,6 +166,15 @@ namespace yack
         }
 #endif
 
+        bool is_ddom(const readable<double> &extra) throw()
+        {
+            for(size_t i=extra.size();i>0;--i)
+            {
+                if(extra[i]>=1.0) return false;
+            }
+            return true;
+        }
+
         bool plexus:: solve(writable<double> &C0) throw()
         {
             assert(C0.size()>=M);
@@ -214,8 +223,11 @@ namespace yack
                     break;
             }
 
-
+            //------------------------------------------------------------------
+            //
             // compute 1D solutions
+            //
+            //------------------------------------------------------------------
             for(const enode *node=eqs.head();node;node=node->next)
             {
                 const equilibrium &eq   = ***node;
@@ -231,19 +243,24 @@ namespace yack
                 Xi[ei]  = eq.solve1D(Ki,Corg,Ci);
                 eq.drvs_action(psi,Ki,Ci,Ctmp);
                 const double den = sorted::dot(psi,Nu[ei],Ctmp);
+                xd[ei]  = 0;
                 if( ! (blk = (den>=0) ) )
                 {
                     eq.drvs_action(psi0, Ki, Corg, Ctmp);
                     std::cerr << "psi0=" << psi0 << " / " << psi << std::endl;
+                    double xtra = 0;
                     for(size_t k=1;k<ei;++k)
                     {
-                        Omi[k] = sorted::dot(psi0,Nu[k],Ctmp)/den;
+                        xtra += fabs( Omi[k] = sorted::dot(psi0,Nu[k],Ctmp)/den );
                     }
                     for(size_t k=ei+1;k<N;++k)
                     {
-                        Omi[k] = sorted::dot(psi0,Nu[k],Ctmp)/den;
+                        xtra += fabs( Omi[k] = sorted::dot(psi0,Nu[k],Ctmp)/den );
                     }
+                    xd[ei] = xtra;
                 }
+
+
             }
 
             if(verbose)
@@ -252,17 +269,31 @@ namespace yack
                 eqs(std::cerr << vpfx << "Psi    =",Psi,vpfx);
                 eqs(std::cerr << vpfx << "blocked=",blocked,vpfx);
                 eqs(std::cerr << vpfx << "Omega  =",Omega0,vpfx);
+                eqs(std::cerr << vpfx << "extra  =",xd,vpfx);
+
             }
 
-            iOmega.assign(Omega0,transposed);
-            for(size_t i=N;i>0;--i)
+
+
+
+            if( is_ddom(xd) )
             {
-                xi[i] = sorted::dot(iOmega[i],Xi,xs);
+                std::cerr << "Diag Dominant!!" << std::endl;
+                iOmega.assign(Omega0);
+                if(!LU.build(iOmega))
+                {
+                    YACK_CHEM_PRINTLN("// <plexus.solve> [SINGULAR]");
+                    return false;
+                }
+                tao::v1::set(xi,Xi);
+                LU.solve(iOmega,xi);
+                eqs(std::cerr << vpfx << "xi  =",xi,vpfx);
             }
-            std::cerr << "Omega=" << Omega0 << std::endl;
-            std::cerr << "Xi   =" << Xi     << std::endl;
-            std::cerr << "beta =" << xi     << std::endl;
-
+            else
+            {
+                std::cerr << "NOT Diag Dominant!!" << std::endl;
+                exit(1);
+            }
 
             for(const enode *node=eqs.head();node;node=node->next)
             {
@@ -272,6 +303,20 @@ namespace yack
                 const limits      &lm = eq.primary_limits(Corg,lib.width);
                 eqs.pad(std::cerr << eq.name,eq) << " : "  << lm << std::endl;
             }
+
+#if 0
+            for(size_t i=N;i>0;--i)
+            {
+                xi[i] = sorted::dot(iOmega[i],Xi,xs);
+            }
+            std::cerr << "Omega=" << Omega0 << std::endl;
+            std::cerr << "Xi   =" << Xi     << std::endl;
+            std::cerr << "beta =" << xi     << std::endl;
+
+
+
+#endif
+
 
 
 
