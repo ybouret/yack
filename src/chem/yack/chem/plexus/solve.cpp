@@ -120,7 +120,6 @@ namespace yack
             }
         }
 #endif
-
         
         double plexus:: rmsGamma(const readable<double> &C) throw()
         {
@@ -223,11 +222,16 @@ namespace yack
                     break;
             }
 
+            size_t cycle=0;
+        CYCLE:
+            ++cycle;
+            std::cerr << "@cycle=" << cycle << std::endl;
             //------------------------------------------------------------------
             //
-            // compute 1D solutions
+            // compute 1D solutions and initialize
             //
             //------------------------------------------------------------------
+            size_t num_blocked = 0;
             for(const enode *node=eqs.head();node;node=node->next)
             {
                 const equilibrium &eq   = ***node;
@@ -247,7 +251,6 @@ namespace yack
                 if( ! (blk = (den>=0) ) )
                 {
                     eq.drvs_action(psi0, Ki, Corg, Ctmp);
-                    std::cerr << "psi0=" << psi0 << " / " << psi << std::endl;
                     double xtra = 0;
                     for(size_t k=1;k<ei;++k)
                     {
@@ -259,23 +262,27 @@ namespace yack
                     }
                     xd[ei] = xtra;
                 }
-
-
+                else
+                {
+                    ++num_blocked;
+                }
             }
 
+
+
+            //------------------------------------------------------------------
+            //
+            // evaluate Xi
+            //
+            //------------------------------------------------------------------
+        EVAL_XI:
             if(verbose)
             {
                 eqs(std::cerr << vpfx << "Xi     =",Xi,vpfx);
-                eqs(std::cerr << vpfx << "Psi    =",Psi,vpfx);
                 eqs(std::cerr << vpfx << "blocked=",blocked,vpfx);
                 eqs(std::cerr << vpfx << "Omega  =",Omega0,vpfx);
                 eqs(std::cerr << vpfx << "extra  =",xd,vpfx);
-
             }
-
-
-
-
             if( is_ddom(xd) )
             {
                 std::cerr << "Diag Dominant!!" << std::endl;
@@ -301,8 +308,62 @@ namespace yack
                 const size_t       ei = *eq;
                 if(blocked[ei]) continue;
                 const limits      &lm = eq.primary_limits(Corg,lib.width);
+                double            &xx = xi[ei];
                 eqs.pad(std::cerr << eq.name,eq) << " : "  << lm << std::endl;
+                if( lm.should_reduce(xx) )
+                {
+                    xx      = 0;
+                    Xi[ei]  = 0;
+                    xd[ei]  = 0;
+                    Omega0[ei].ld(0);
+                    Omega0[ei][ei] = 1.0;
+                    ++num_blocked;
+                    std::cerr << "<< blocking " << eq.name << ">>" << std::endl;
+                    goto EVAL_XI;
+                }
             }
+            std::cerr << "All Good" << std::endl;
+
+            //------------------------------------------------------------------
+            //
+            // compute and check all delta C
+            //
+            //------------------------------------------------------------------
+            rstack.free();
+            ustack.free();
+            for(const anode *node=active.head;node;node=node->next)
+            {
+                const species &s = **node;
+                const size_t   j = *s;
+                const double   d = dC[j] = sorted::dot(xi,NuT[j],xs);
+                if(d<0)
+                {
+                    const double c = Corg[j]; assert(c>=0);
+                    if(d<=-c)
+                    {
+                        YACK_CHEM_PRINTLN(vpfx<< "  (*) overshoot for " << s.name);
+                        rstack << c/(-d);
+                        ustack << j;
+                    }
+                }
+            }
+            std::cerr << "dC=" << dC << std::endl;
+            
+            for(const anode *node=active.head;node;node=node->next)
+            {
+                const species &s = **node;
+                const size_t   j = *s;
+                const double   d = dC[j];
+                Ctry[j] = max_of<double>(0.0,Corg[j]+d);
+            }
+
+            transfer(Corg,Ctry);
+
+            if(cycle>=10)
+                exit(1);
+
+            goto CYCLE;
+
 
 #if 0
             for(size_t i=N;i>0;--i)

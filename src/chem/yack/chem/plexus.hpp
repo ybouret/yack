@@ -77,6 +77,7 @@ namespace yack
             //! aliasing rmsGamma(Corg+u*dC)
             double operator()(const double u) throw();
 
+            
             //__________________________________________________________________
             //
             // members
