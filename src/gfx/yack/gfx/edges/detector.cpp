@@ -17,6 +17,8 @@ namespace yack
         origin(w,h),
         gfield(w,h),
         vfield(w,h),
+        labels(w,h),
+        ridges(),
         gmax(0)
         {
         }
@@ -29,8 +31,13 @@ namespace yack
             gmax = broker_filter::gradient(gfield,vfield,origin,device,*deltas.X,*deltas.Y);
             const uint8_t up = thinning(device);
             cleaving(device,up);
+            tracking(device);
         }
         
+        void edges:: tracking(broker &device)
+        {
+            ridges.build(labels, device, *this, 8);
+        }
 
     }
 

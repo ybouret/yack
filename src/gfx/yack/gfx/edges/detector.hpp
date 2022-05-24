@@ -8,6 +8,7 @@
 #include "yack/gfx/blur.hpp"
 #include "yack/gfx/broker.hpp"
 #include "yack/gfx/filters.hpp"
+#include "yack/gfx/blobs.hpp"
 
 namespace yack
 {
@@ -44,6 +45,8 @@ namespace yack
             pixmap<float>  origin; //!< must be filled, becomes ridges
             pixmap<float>  gfield; //!< gradient amplitude
             pixmap<vertex> vfield; //!< gradient direction
+            tagmap         labels; //!< edges label
+            blobs          ridges; //!< dynamic ridges
             real_t         gmax;   //!< maximum gradient value
             histogram      hist;   //!< histogram of valid gradient
 
@@ -55,6 +58,7 @@ namespace yack
             YACK_DISABLE_COPY_AND_ASSIGN(edges);
             uint8_t thinning(broker &);
             void    cleaving(broker &, const uint8_t up);
+            void    tracking(broker &);
         };
 
     }

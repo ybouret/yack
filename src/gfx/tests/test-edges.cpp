@@ -73,7 +73,7 @@ YACK_UTEST(edges)
         IMG.emit(E.origin, "origin.png", "", dev, color::convert<rgba,float>::make,out);
 
         E.detect(dev,F);
-        IMG.emit(E.origin, "ridges.png", "", dev, color::convert<rgba,float>::make,out);
+        IMG.emit(E.origin, "thinning.png", "", dev, color::convert<rgba,float>::make,out);
 
 
         broker_normalize::apply(E.gfield,dev,E.gmax);
@@ -83,6 +83,8 @@ YACK_UTEST(edges)
 
         IMG.emit(E, "cleft.png", "", dev, color::convert<rgba,uint8_t>::make,out);
 
+        broker_transform::apply(out,E.labels,dev,sz2c);
+        IMG.save(out,"ridges.png", NULL);
 
 
         
