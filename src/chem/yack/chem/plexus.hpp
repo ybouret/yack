@@ -77,6 +77,8 @@ namespace yack
             //! aliasing rmsGamma(Corg+u*dC)
             double operator()(const double u) throw();
 
+            //! at Corg, return num blocked
+            size_t computeOmega0() throw();
             
             //__________________________________________________________________
             //

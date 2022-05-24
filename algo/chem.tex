@@ -202,6 +202,12 @@ or
 We want to decrease:
 \begin{equation}
 	G(\vec{\xi}) = \dfrac{1}{2}\vec{\gamma}^2 = \dfrac{1}{2} \left[ \vec{\Xi} - \bm{\Omega} \vec{\xi} \right]^2
+	= \dfrac{1}{2}
+	\left[
+	\vec{\Xi}^2
+    - 2 \langle\vec{\Xi}\vert\bm{\Omega}\vert\vec{\xi}\rangle  
+	+ \langle\vec{\xi}\vert\bm{\Omega}^T\bm{\Omega}\vert \vec{\xi}\rangle
+	 \right]
 \end{equation}
 
 
@@ -217,6 +223,21 @@ With the constraint:
 We have the descent direction:
 \begin{equation}
 	\vec{\beta} = - \vec{\nabla}G(\vec{0}) = \bm{\Omega}^T \vec{\Xi}
+\end{equation}
+
+\begin{equation}
+	\vec{\eta} = \bm{\Omega}\vec{\beta}
+\end{equation}
+
+\begin{equation}
+	G(\lambda\vec{\beta}) = \dfrac{1}{2} 
+	\left[
+	\vec{\Xi}^2 - 2 \lambda \vec{\beta}^2 + \lambda^2  \vec{\eta}^2
+	\right]
+\end{equation}
+
+\begin{equation}
+	\lambda \simeq \dfrac{\vec{\beta}^2}{\vec{\eta}^2}
 \end{equation}
 
 \subsection{Expansion}
