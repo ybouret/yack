@@ -15,32 +15,47 @@ namespace yack
 
     namespace graphic
     {
-        
+        //______________________________________________________________________
+        //
+        //
+        //! edges algorithm
+        //
+        //______________________________________________________________________
         class edges : public pixmap<uint8_t>
         {
         public:
+            //__________________________________________________________________
+            //
+            // types and definitions
+            //__________________________________________________________________
             typedef float       real_t; //!< internal computation
             typedef v2d<real_t> vertex; //!< internal vertices
-            static const uint8_t strong = 0xff;
-            static const uint8_t feeble = 0x7f;
+            static const uint8_t strong = 0xff; //!< strong ridge
+            static const uint8_t feeble = 0x7f; //!< feeble ridge
 
             //__________________________________________________________________
             //
             // C++
             //__________________________________________________________________
-            explicit edges(const unit_t w, const unit_t h);
-            virtual ~edges() throw();
+            explicit edges(const unit_t w, const unit_t h); //!< setup
+            virtual ~edges() throw();                       //!< cleanup
 
             //__________________________________________________________________
             //
             // methods
+            /**
+             - apply deltas to compute gfield, vfield, gmax
+             - keep only local gfield maxima, fill histogram with positive values
+             - fill edges according to histogram thresholding
+             - build blobs/labels and remove feeble only
+             */
             //__________________________________________________________________
             void detect(broker              &device,
                         const filters       &deltas);
 
             //__________________________________________________________________
             //
-            // membder
+            // member
             //__________________________________________________________________
             pixmap<float>  origin; //!< must be filled, becomes ridges
             pixmap<float>  gfield; //!< gradient amplitude
