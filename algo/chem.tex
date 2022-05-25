@@ -65,8 +65,7 @@ and:
 
 \section{1D-Solving}
 
-\subsection{Solution}
-
+ 
 Let us take $\Gamma_i$ (with a least a product or a reactant).
 Then there exist a unique $\Xi_i$ for which:
 \begin{equation}
@@ -162,6 +161,21 @@ Let
 	
 \end{itemize}
 
+\section{ND-Solution} 	
+
+\subsection{Regularization}
+We start from $\vec{C}$. For each equilibrium, we compute $\vec{\Psi}_i$.
+If $|\vec{\Psi}_i|=0$, we move $\vec{C}$ to the solving composition.
+
+\subsection{Newton's}
+We want to compute:
+\begin{equation}
+	\vec{\Gamma} (\vec{C}+\bm{\nu}^T \vec{\xi}) = \vec{0} \simeq \vec{\Gamma}(\vec{C}) + \bm{\Psi} \bm{\nu}^T \vec{\xi}
+\end{equation}
+
+
+\end{document}
+
 \subsection{Scaling}
 
 For any valid concentration $\vec{C}$, we have a set of single solving extents $\vec{\Xi}$.
@@ -240,59 +254,6 @@ We have the descent direction:
 	\lambda \simeq \dfrac{\vec{\beta}^2}{\vec{\eta}^2}
 \end{equation}
 
-\subsection{Expansion}
-\subsubsection{Neutral}
  
-For any valid concentration $\vec{C}$, we have a set of single solving extents $\vec{\Xi}$.
-Let's expand:
-
-\begin{equation}
-\Gamma_i(\vec{C} + \bm{\nu}^T \vec{\xi}) =  \Gamma_i(\vec{C} + \xi_i \vec{\nu}_i + \sum_{k\not=i} \xi_k \vec{\nu}_k)
-\simeq \Gamma_i(\vec{C} + \xi_i \vec{\nu}_i) + \langle \vec{\Psi}_{\xi_i} \vert \sum_{k\not=i} \xi_k \vec{\nu}_k \rangle
-\end{equation}
-
-So we need a consistent approximation of $\Gamma_i(\vec{C} + \xi_i \vec{\nu}_i)$ and $\vec{\Psi}_{\xi_i}$.
-
-\begin{itemize} 
-\item For $\Gamma_i$:%%%%%%%%%%%
-
-\begin{itemize}
-\item Around $\vec{C}$: 	
-\begin{equation}
-	\Gamma_i(\vec{C}+\xi_i\vec{\nu}) \simeq \Gamma_i + \underbrace{\langle \vec{\Psi}_i \vert \vec{\nu}_i\rangle}_{\alpha_i} \xi_i
-\end{equation}
-which can be a singular point.
-
-\item Around $\vec{C}_i'$:
-\begin{equation}
-	\Gamma_i(\vec{C}+\xi_i\vec{\nu}) \simeq \underbrace{\langle \vec{\Psi}_i' \vert \vec{\nu}_i\rangle}_{\beta_i} (\xi_i-\Xi_i)
-\end{equation}
-which is a regular point (otherwise the equilibrium is blocked). 
-\end{itemize}
-
-\item For $\vec{\Psi}_{\xi_i}$: %%%%%%%%%%
-
-\begin{itemize}
-\item Around $\vec{C}$: 	
-	\begin{equation}
-		\vec{\Psi}_{\xi_i} \simeq \vec{\Psi}_i + \xi_i \bm{H}_i \vec{\nu}_i
-	\end{equation}
-
-\item Around $\vec{C}_i'$:
-		\begin{equation}
-		\vec{\Psi}_{\xi_i} \simeq \vec{\Psi}_i' + (\xi_i-\Xi_i) \bm{H}_i' \vec{\nu}_i
-	\end{equation}
-
-\end{itemize}
-
-\end{itemize}
-
-\begin{equation}
-	\vec{\Psi}_{\xi_i} \simeq \vec{\Psi}_i + \dfrac{\xi_i}{\Xi_i}\left[ \vec{\Psi}_i' - \vec{\Psi}_i \right]
-\end{equation}
-
-
-\subsubsection{First order}
-
  
 \end{document}

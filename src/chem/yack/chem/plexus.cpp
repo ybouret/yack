@@ -52,7 +52,6 @@ namespace yack
         Nu(N,N>0?M:0),
         NuT(Nu.cols,Nu.rows),
 
-        NuA(Nu.rows,Nu.cols),
         NuAT(NuT.rows,NuT.cols),
 
         Psi(Nu.rows,Nu.cols),

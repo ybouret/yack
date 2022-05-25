@@ -76,8 +76,13 @@ namespace yack
 
             //! aliasing rmsGamma(Corg+u*dC)
             double operator()(const double u) throw();
-            
-            
+
+            //! regularize Corg
+            void regularize() throw();
+
+            //! block equilibrium
+            void blockEq(const size_t ei) throw();
+
             //__________________________________________________________________
             //
             // members
@@ -112,8 +117,7 @@ namespace yack
 
             const imatrix     Nu;      //!< [NxM] topology
             const imatrix     NuT;     //!< [MxN] Nu'
-            imatrix           NuA;     //!< [NxM] active topology
-            imatrix           NuAT;    //!< [NxM] NuAT
+            imatrix           NuAT;    //!< [NxM] active NuT
             rmatrix           Psi;     //!< [NxM] jacobian
             rmatrix           Ceq;     //!< [NxM] primary eqs
             rmatrix           Omega0;  //!< [NxN]
