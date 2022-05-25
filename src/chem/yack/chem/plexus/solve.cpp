@@ -186,7 +186,7 @@ namespace yack
                 const double axx = fabs(xxx); sumAbsXi += axx;   // update |Xi|
                 const double Oii = sorted::dot(psi,Nu[ei],Ctmp); // Omega[ei][ei]
                 if(verbose) {
-                    eqs.pad(std::cerr << vpfx << "  <" << eq.name << ">",eq) << " : ";
+                    eqs.pad(std::cerr << vpfx << "  <" << eq.name << ">",eq) << " :";
                 }
                 if( Oii>=0 )
                 {
@@ -194,7 +194,7 @@ namespace yack
                     blockEq(ei);
                     ++num_blocked;
                     --num_running;
-                    std::cerr << "is blocked";
+                    std::cerr << " [blocked]";
                 }
                 else
                 {
@@ -206,7 +206,7 @@ namespace yack
                     for(size_t k=N;k>ei;--k)   Omi[k] = sorted::dot(psi,Nu[k],Ctmp);
                     for(size_t k=ei-1;k>0;--k) Omi[k] = sorted::dot(psi,Nu[k],Ctmp);
 
-                    std::cerr << "Gamma=" << std::setw(14) << gam << "; Xi=" << std::setw(14) << xxx;
+                    std::cerr << " Gamma=" << std::setw(14) << gam << "; Xi=" << std::setw(14) << xxx;
                 }
 
                 if(verbose) std::cerr << std::endl;
@@ -229,11 +229,31 @@ namespace yack
             //
             //------------------------------------------------------------------
             {
+                for(const enode *node=eqs.head();node;node=node->next)
+                {
+                    const equilibrium &eq = ***node;
+                    const size_t       ei = *eq;
+                    eqs.pad(std::cerr << vpfx << "<" << eq.name << ">",eq) << ":";
+                    if(blocked[ei])
+                    {
+                        std::cerr << " [blocked]";
+                    }
+                    else
+                    {
+                        std::cerr << " Gamma=" << std::setw(14) << Gamma[ei] << "; Xi=" << std::setw(14) << Xi[ei];
+                    }
+                    std::cerr << "; Omega=" << Omega0[ei];
+                    
+                    std::cerr << std::endl;
+                }
+                std::cerr << "Omega=" << Omega0 << std::endl;
+#if 0
                 eqs(std::cerr << vpfx << "Gamma  =", Gamma,   vpfx);
                 eqs(std::cerr << vpfx << "Psi    =", Psi,     vpfx);
                 eqs(std::cerr << vpfx << "Xi     =", Xi,      vpfx);
                 eqs(std::cerr << vpfx << "Omega  =", Omega0,  vpfx);
                 eqs(std::cerr << vpfx << "blocked=", blocked, vpfx);
+#endif
             }
 
             iOmega.assign(Omega0);
@@ -266,7 +286,7 @@ namespace yack
                     if(verbose) eqs.pad(std::cerr << vpfx << "  (*) " << eq.name, eq) << " : " << lm << " | =>  ";
                     if(lm.should_reduce(xx))
                     {
-                        if( verbose) std::cerr << "bad " << xx;
+                        if( verbose) std::cerr << "[REJECT " << xx << "]";
                         blockEq(ei);
                         recompute = true;
                         ++num_blocked;
@@ -274,7 +294,7 @@ namespace yack
                     }
                     else
                     {
-                        if(verbose) std::cerr << "ok  " << xx;
+                        if(verbose) std::cerr << "<ACCEPT   " << xx << ">";
                     }
                     if(verbose) std::cerr << std::endl;
                 }
@@ -378,7 +398,7 @@ namespace yack
                 YACK_CHEM_PRINTLN("//   <plexus.dC/> [multiple]");
             }
 
-            if(cycle>=3)
+            if(cycle>=1)
                 exit(1);
 
             goto CYCLE;
@@ -386,191 +406,7 @@ namespace yack
 
             YACK_CHEM_PRINTLN("// <plexus.solve> [success]");
             return true;
-#if 0
 
-
-            size_t cycle=0;
-            //------------------------------------------------------------------
-            //
-            // compute state
-            //
-            //------------------------------------------------------------------
-        CYCLE:
-            ++cycle;
-            std::cerr << "-------- cycle=" << cycle << " --------" << std::endl;
-            if(verbose) lib(std::cerr << vpfx << "Corg=",Corg,vpfx);
-            NuAT.assign(NuT);
-            size_t num_blocked = 0;
-            double Xi2         = 0;
-            Omega0.ld(0);
-            for(const enode *node=eqs.head();node;node=node->next)
-            {
-                const equilibrium &eq = ***node;
-                const size_t       ei = *eq;
-                const double       Ki  = K[ei];
-                writable<double>  &psi = Psi[ei];
-                writable<double>  &Cei = Ceq[ei];
-                writable<double>  &Omi = Omega0[ei];
-                double            &gam = Gamma[ei];
-                double            &xxx = Xi[ei];
-
-                gam = eq.grad_action(psi,Ki,Corg,Ctmp);
-                xxx = eq.solve1D(Ki,Corg,Cei);
-                Xi2 += squared(xxx);
-                const double Oii = sorted::dot(psi,Nu[ei],Ctmp);
-                if(Oii>=0)
-                {
-                    Omi[ei]     = 1.0;
-                    gam         = 0;
-                    blocked[ei] = true;
-                    Gs[ei]      = 0.0;
-                    ++num_blocked;
-                    NuAT.ld_col(ei,0);
-                }
-                else
-                {
-                    blocked[ei]  = false;
-                    Omi[ei]      = Oii;
-                    Gs[ei]       = 1.0/(-Oii);
-                    for(size_t k=ei-1;k>0;--k) Omi[k] = sorted::dot(psi,Nu[k],Ctmp);
-                    for(size_t k=N;k>ei;--k)   Omi[k] = sorted::dot(psi,Nu[k],Ctmp);
-                    if(fabs(xxx)<=0) gam = 0;
-                }
-
-            }
-
-
-            if(Xi2<=0)
-            {
-                transfer(C0,Corg);
-                goto SUCCESS;
-            }
-
-        EVAL_XI:
-            // CHECK num blocked
-            eqs(std::cerr << vpfx << "Gamma  =",  Gamma,vpfx);
-            eqs(std::cerr << vpfx << "Psi    =",  Psi,  vpfx);
-            eqs(std::cerr << vpfx << "Xi     =",     Xi,vpfx);
-            eqs(std::cerr << vpfx << "Omega  =",  Omega0,vpfx);
-            eqs(std::cerr << vpfx << "blocked=",blocked,vpfx);
-            iOmega.assign(Omega0);
-
-            if(!LU.build(iOmega))
-            {
-                YACK_CHEM_PRINTLN("// <plexus.solve> [SINGULAR]");
-                return false;
-            }
-
-            tao::v1::neg(xi,Gamma);
-            LU.solve(iOmega,xi);
-            eqs(std::cerr << vpfx << "xi     =",     xi,vpfx);
-
-            //------------------------------------------------------------------
-            //
-            // check xi
-            //
-            //------------------------------------------------------------------
-            {
-                bool recompute = false;
-                for(const enode *node=eqs.head();node;node=node->next)
-                {
-                    const equilibrium &eq = ***node;
-                    const size_t       ei = *eq;
-                    double            &xx = xi[ei]; if(blocked[ei]) { xx = 0.0; continue; }
-                    const limits      &lm = eq.primary_limits(Corg,lib.width);
-                    eqs.pad(std::cerr << eq.name, eq) << " : " << lm << std::endl;
-                    if(lm.should_reduce(xx))
-                    {
-                        std::cerr << "|_should reduce " << xx << std::endl;
-                        recompute = true;
-                        ++num_blocked;
-                        writable<double> &Omi = Omega0[ei];
-                        Omi.ld(0);
-                        Omi[ei]     = 1.0;
-                        Gamma[ei]   = 0;
-                        blocked[ei] = true;
-                        NuAT.ld_col(ei,0);
-                        Gs[ei]      = 0;
-                    }
-                }
-
-                if(recompute)
-                {
-                    std::cerr << "Need To Recompute" << std::endl;
-                    goto EVAL_XI;
-                }
-            }
-
-            //------------------------------------------------------------------
-            //
-            // computing dC
-            //
-            //------------------------------------------------------------------
-            {
-                rstack.free();
-                ustack.free();
-                for(const anode *node=active.head;node;node=node->next)
-                {
-                    const size_t   j = ***node;
-                    const double   d = dC[j] = sorted::dot(xi,NuAT[j],xs);
-                    const double   c = Corg[j]; assert(c>=0);
-                    if(d<0)
-                    {
-                        rstack << c/(-d);
-                        ustack << j;
-                    }
-                }
-
-                std::cerr << "C =" << Corg  << std::endl;
-                std::cerr << "dC=" << dC    << std::endl;
-
-                double       expand = 2.0;
-                const size_t ncut   = rstack.size();
-                if(ncut>0)
-                {
-                    hsort(rstack,ustack, comparison::increasing<double> );
-                    expand = min_of(expand,0.999*rstack[1]);
-                }
-                std::cerr << "rstack=" << rstack << std::endl;
-                std::cerr << "ustack=" << ustack << std::endl;
-
-                {
-                    ios::ocstream fp("gam.dat");
-                    const size_t NP=10000;
-                    for(size_t i=0;i<=NP;++i)
-                    {
-                        const double u = expand*double(i)/NP;
-                        fp("%g %g\n",u, (*this)(u) );
-                    }
-                }
-
-                const double g0 = rmsGamma(Corg);
-                triplet<double> u = { 0,  -1, expand };
-                triplet<double> g = { g0, -1, (*this)(expand) };
-
-                (void) minimize::find<double>::run_for(*this,u,g,minimize::inside);
-                const double g1 = g.b;
-                std::cerr << "g: " << g0 << " => " << g1 << " @" << u.b << std::endl;
-
-                if(g1>=g0)
-                {
-                    std::cerr << "NO GAIN!!!" << std::endl;
-                    exit(1);
-                }
-            }
-
-
-            transfer(Corg,Ctry);
-
-            if(cycle>=10)
-                exit(1);
-
-            goto CYCLE;
-
-        SUCCESS:
-            YACK_CHEM_PRINTLN("// <plexus.solve> [success]");
-            return true;
-#endif
 
         }
 
