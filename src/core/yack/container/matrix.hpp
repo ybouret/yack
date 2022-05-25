@@ -114,6 +114,26 @@ namespace yack
             for(size_t i=items;i>0;--i) *(p++) = args;
         }
 
+        //! load same value into row[r]
+        inline void ld_row(const size_t r, param_type args)
+        {
+            assert(r>=1); assert(r<=rows);
+            type *p = & line[r][1];
+            for(size_t i=cols;i>0;--i) *(p++) = args;
+        }
+
+        //! load same value into col[c]
+        inline void ld_col(const size_t c, param_type args)
+        {
+            assert(c>=1); assert(c<=cols);
+            for(size_t i=1;i<=rows;++i)
+            {
+                line[i][c] = args;
+            }
+        }
+
+
+
         //! swap rows content
         inline void swap_rows(const size_t r1, const size_t r2) throw()
         {
