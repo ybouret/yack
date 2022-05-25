@@ -281,6 +281,12 @@ namespace yack
             return *this;
         }
 
+        //! keep only front
+        void keep_only_front() throw()
+        {
+            while(count>1) pop_front();
+        }
+
     private:
         size_t        count; //!< size
         size_t        utter; //!< capacity

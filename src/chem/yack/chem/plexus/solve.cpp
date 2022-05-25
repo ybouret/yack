@@ -157,6 +157,7 @@ namespace yack
         CYCLE:
             ++cycle;
             YACK_CHEM_PRINTLN("//   -------- CYCLE=" << cycle << " --------");
+            if(verbose) lib(std::cerr << vpfx << "Corg=",Corg,vpfx);
             //------------------------------------------------------------------
             //
             // compute full state
@@ -293,6 +294,11 @@ namespace yack
 
             if(1==num_running)
             {
+                //--------------------------------------------------------------
+                //
+                // the solution is known!
+                //
+                //--------------------------------------------------------------
                 size_t ei = 0;
                 for(ei=N;ei>0;--ei)
                 {
@@ -305,6 +311,11 @@ namespace yack
             }
             else
             {
+                //--------------------------------------------------------------
+                //
+                // dC = NuAT * xi
+                //
+                //--------------------------------------------------------------
                 std::cerr << "NuAT=" << NuAT << std::endl;
                 std::cerr << "Gs  =" << Gs   << std::endl;
 
@@ -328,6 +339,8 @@ namespace yack
                 const size_t ncut = rstack.size();
                 if(ncut>0)
                 {
+                    rstack.keep_only_front();
+                    ustack.keep_only_front();
                     hsort(rstack,ustack, comparison::increasing<double> );
                     expand = min_of(expand,0.999*rstack[1]);
                 }
@@ -344,11 +357,28 @@ namespace yack
                     }
                 }
 
+                const double g0 = rmsGamma(Corg);
+                triplet<double> u = { 0,  -1, expand };
+                triplet<double> g = { g0, -1, (*this)(expand) };
+
+                (void) minimize::find<double>::run_for(*this,u,g,minimize::inside);
+                const double g1 = g.b;
+                std::cerr << "g: " << g0 << " => " << g1 << " @" << u.b << std::endl;
+
+                if(g1>=g0)
+                {
+                    std::cerr << "NO GAIN!!!" << std::endl;
+                    exit(1);
+                }
+                else
+                {
+                    transfer(Corg,Ctry);
+                }
+
                 YACK_CHEM_PRINTLN("//   <plexus.dC/> [multiple]");
-                exit(1);
             }
 
-            if(cycle>=1)
+            if(cycle>=3)
                 exit(1);
 
             goto CYCLE;
