@@ -103,8 +103,7 @@ namespace yack
             tableau           &Xi;      //!< [N] Xi
             tableau           &Gs;      //!< [N] scaling factor
             tableau           &xd;      //!< [N] extra diag
-            tableau           &score;   //!< [N] about |Gamma|^2
-
+            
             tableau          &Corg;    //!< [M] working space
             tableau          &Ctmp;    //!< [M] temporary C
             tableau          &Ctry;    //!< [M] trial C
@@ -113,6 +112,8 @@ namespace yack
 
             const imatrix     Nu;      //!< [NxM] topology
             const imatrix     NuT;     //!< [MxN] Nu'
+            imatrix           NuA;     //!< [NxM] active topology
+            imatrix           NuAT;    //!< [NxM] NuAT
             rmatrix           Psi;     //!< [NxM] jacobian
             rmatrix           Ceq;     //!< [NxM] primary eqs
             rmatrix           Omega0;  //!< [NxN]

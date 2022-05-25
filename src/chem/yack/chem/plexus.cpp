@@ -42,7 +42,6 @@ namespace yack
         Xi(    ntab.next() ),
         Gs(    ntab.next() ),
         xd(    ntab.next() ),
-        score( ntab.next() ),
 
         Corg(  mtab.next() ),
         Ctmp(  mtab.next() ),
@@ -52,6 +51,9 @@ namespace yack
 
         Nu(N,N>0?M:0),
         NuT(Nu.cols,Nu.rows),
+
+        NuA(Nu.rows,Nu.cols),
+        NuAT(NuT.rows,NuT.cols),
 
         Psi(Nu.rows,Nu.cols),
         Ceq(Nu.rows,Nu.cols),

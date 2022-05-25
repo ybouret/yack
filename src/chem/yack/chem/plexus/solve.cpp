@@ -49,62 +49,6 @@ namespace yack
         }
 
 
-#if 0
-        size_t plexus:: computeOmega0() throw()
-        {
-            size_t num_blocked = 0;
-            for(const enode *node=eqs.head();node;node=node->next)
-            {
-                const equilibrium &eq   = ***node;
-                const size_t       ei   = *eq;
-                const double       Ki   = K[ei];
-                writable<double>  &Ci   = Ceq[ei];
-                writable<double>  &psi  = Psi[ei];
-                bool              &blk  = blocked[ei];
-                writable<double>  &Omi  = Omega0[ei];
-                writable<double>  &psi0 = dC;
-
-                Omi.ld(0);
-                Omi[ei] = 1;
-                Xi[ei] = eq.solve1D(Ki,Corg,Ci);
-                eq.drvs_action(psi,Ki,Ci,Ctmp);      //! psi at Ceq
-                const double den =   sorted::dot(psi,Nu[ei],Ctmp);
-                if( ! (blk = (den>=0) ) )
-                {
-                    Gs[ei] = 1.0/(-den);                    //! scaling
-                    eq.drvs_action(psi0, Ki, Corg, Ctmp);   //! psi at Corg
-                    double xtra = 0;
-                    for(size_t k=1;k<ei;++k)
-                    {
-                        xtra += fabs( Omi[k] = sorted::dot(psi0,Nu[k],Ctmp)/den );
-                    }
-                    for(size_t k=ei+1;k<N;++k)
-                    {
-                        xtra += fabs( Omi[k] = sorted::dot(psi0,Nu[k],Ctmp)/den );
-                    }
-                    xd[ei] = xtra;
-                }
-                else
-                {
-                    Xi[ei]  = 0;
-                    xd[ei]  = 0;
-                    Gs[ei]  = 0;
-                    ++num_blocked;
-                }
-            }
-            return num_blocked;
-        }
-
-
-        bool is_ddom(const readable<double> &extra) throw()
-        {
-            for(size_t i=extra.size();i>0;--i)
-            {
-                if(extra[i]>=1.0) return false;
-            }
-            return true;
-        }
-#endif
 
         bool plexus:: solve(writable<double> &C0) throw()
         {
@@ -174,11 +118,18 @@ namespace yack
                 }
             }
 
+            size_t cycle=0;
             //------------------------------------------------------------------
             //
             // compute state
             //
             //------------------------------------------------------------------
+        CYCLE:
+            ++cycle;
+            std::cerr << "-------- cycle=" << cycle << " --------" << std::endl;
+            if(verbose) lib(std::cerr << vpfx << "Corg=",Corg,vpfx);
+            NuA.assign(Nu);
+            NuAT.assign(NuT);
             size_t num_blocked = 0;
             double Xi2         = 0;
             Omega0.ld(0);
@@ -204,6 +155,8 @@ namespace yack
                     blocked[ei] = true;
                     Gs[ei]      = 0.0;
                     ++num_blocked;
+                    NuA.ld_row(ei,0);
+                    NuAT.ld_col(ei,0);
                 }
                 else
                 {
@@ -264,9 +217,12 @@ namespace yack
                         ++num_blocked;
                         writable<double> &Omi = Omega0[ei];
                         Omi.ld(0);
-                        Omi[ei]   = 1.0;
-                        Gamma[ei] = 0;
+                        Omi[ei]     = 1.0;
+                        Gamma[ei]   = 0;
                         blocked[ei] = true;
+                        NuA.ld_row(ei,0);
+                        NuAT.ld_col(ei,0);
+                        Gs[ei]      = 0;
                     }
                 }
 
@@ -282,27 +238,66 @@ namespace yack
             // computing dC
             //
             //------------------------------------------------------------------
-            rstack.free();
-            ustack.free();
-            for(const anode *node=active.head;node;node=node->next)
             {
-                const size_t   j = ***node;
-                const double   d = dC[j] = sorted::dot(xi,NuT[j],xs);
-                const double   c = Corg[j]; assert(c>=0);
-                if(d<0)
+                rstack.free();
+                ustack.free();
+                for(const anode *node=active.head;node;node=node->next)
                 {
-                    rstack << c/(-d);
-                    ustack << j;
+                    const size_t   j = ***node;
+                    const double   d = dC[j] = sorted::dot(xi,NuAT[j],xs);
+                    const double   c = Corg[j]; assert(c>=0);
+                    if(d<0)
+                    {
+                        rstack << c/(-d);
+                        ustack << j;
+                    }
+                }
+
+                std::cerr << "C =" << Corg  << std::endl;
+                std::cerr << "dC=" << dC    << std::endl;
+
+                double       expand = 2.0;
+                const size_t ncut   = rstack.size();
+                if(ncut>0)
+                {
+                    hsort(rstack,ustack, comparison::increasing<double> );
+                    expand = min_of(expand,0.999*rstack[1]);
+                }
+                std::cerr << "rstack=" << rstack << std::endl;
+                std::cerr << "ustack=" << ustack << std::endl;
+
+                {
+                    ios::ocstream fp("gam.dat");
+                    const size_t NP=10000;
+                    for(size_t i=0;i<=NP;++i)
+                    {
+                        const double u = expand*double(i)/NP;
+                        fp("%g %g\n",u, (*this)(u) );
+                    }
+                }
+
+                const double g0 = rmsGamma(Corg);
+                triplet<double> u = { 0,  -1, expand };
+                triplet<double> g = { g0, -1, (*this)(expand) };
+
+                (void) minimize::find<double>::run_for(*this,u,g,minimize::inside);
+                const double g1 = g.b;
+                std::cerr << "g: " << g0 << " => " << g1 << " @" << u.b << std::endl;
+
+                if(g1>=g0)
+                {
+                    std::cerr << "NO GAIN!!!" << std::endl;
+                    exit(1);
                 }
             }
-            std::cerr << "C =" << Corg  << std::endl;
-            std::cerr << "dC=" << dC    << std::endl;
-            std::cerr << "rstack=" << rstack << std::endl;
-            std::cerr << "ustack=" << ustack << std::endl;
 
 
+            transfer(Corg,Ctry);
 
-            exit(1);
+            if(cycle>=10)
+                exit(1);
+
+            goto CYCLE;
 
         SUCCESS:
             YACK_CHEM_PRINTLN("// <plexus.solve> [success]");
