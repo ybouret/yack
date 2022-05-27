@@ -47,20 +47,27 @@ namespace yack
             return os;
         }
 
-        void context:: format(char buf[], const size_t len) const throw()
+        void context:: format(char buf[], const size_t len, const size_t sz, const size_t id)   throw()
         {
             assert(buf!=NULL);
             assert(len>0);
-            
-            const size_t io10 = digits_for(size);
+            assert(sz>0);
+            assert(id>0);
+            assert(id<=sz);
+            const size_t io10 = digits_for(sz);
             char fmt[32];
             {
                 memset(fmt,0,sizeof(fmt));
                 snprintf(fmt,sizeof(fmt),"%%0%uu.%%0%uu",unsigned(io10),unsigned(io10));
             }
-
+            
             memset(buf,0,len);
-            snprintf(buf,len,fmt,unsigned(size),unsigned(indx));
+            snprintf(buf,len,fmt,unsigned(sz),unsigned(id));
+        }
+        
+        void context:: format(char buf[], const size_t len) const throw()
+        {
+            format(buf,len,size,indx);
         }
 
         groove & context:: operator*() const

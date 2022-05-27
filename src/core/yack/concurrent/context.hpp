@@ -47,6 +47,10 @@ namespace yack
                 split1D::with(size,rank,length,offset);
             }
 
+            //! format sz.id
+            static
+            void format(char buf[], const size_t len, const size_t sz, const size_t id)   throw();
+          
             //! format size.indx
             void format(char buf[], const size_t len) const throw();
 
