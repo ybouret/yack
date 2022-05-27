@@ -61,10 +61,10 @@ namespace yack
         //______________________________________________________________________
 
         //! current count of objects
-        inline virtual size_t       size() const throw() { return count; }
+        inline virtual size_t size() const throw() { return count; }
 
         //! maximum count of objects
-        inline size_t capacity() const throw() { return total; }
+        inline size_t         capacity() const throw() { return total; }
 
         //! one argument setup
         template <typename U> inline

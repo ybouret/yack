@@ -1,6 +1,3 @@
-
-
-
 #include "yack/chem/lua/equilibria.hpp"
 #include "yack/chem/plexus.hpp"
 #include "yack/utest/run.hpp"
@@ -9,6 +6,7 @@
 
 using namespace yack;
 using namespace chemical;
+
 
 YACK_UTEST(plexus)
 {

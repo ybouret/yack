@@ -14,6 +14,7 @@ YACK_UTEST_DECL(256)
     YACK_UTEST(complex);
     YACK_UTEST(gcd64);
     YACK_UTEST(prime);
+    YACK_UTEST(prime32);
     YACK_UTEST(functor);
     YACK_UTEST(rtti);
     YACK_UTEST(env);

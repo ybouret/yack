@@ -16,12 +16,5 @@ add_test(eq         test-chem eq)
 add_test(eqs        test-chem eqs)
 add_test(plexus     test-chem plexus)
 add_test(dist       test-chem dist)
-
-
-
-
-
-
-
-
+add_test(comb       test-chem comb)
 

@@ -7,8 +7,9 @@ using namespace yack;
 YACK_UTEST(sync_queue)
 {
     YACK_SIZEOF(concurrent::agent);
+    const concurrent::topology topo(1);
 
-    concurrent::agency Q(4);
-
+    std::cerr << "topo=" << topo << std::endl;
+    
 }
 YACK_UDONE()

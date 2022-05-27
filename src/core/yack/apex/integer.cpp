@@ -136,7 +136,11 @@ namespace yack
         {
             return clid;
         }
-        
+
+        void integer:: simplify(integer &num, integer &den)
+        {
+            natural::simplify( coerce(num.n), coerce(den.n) );
+        }
         
     }
 }

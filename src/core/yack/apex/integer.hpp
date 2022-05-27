@@ -197,6 +197,8 @@ namespace yack
             //! signed natural
             double to_double() const;
 
+            //! simplify natural parts
+            static void simplify(integer &num, integer &den);
 
         private:
             friend class rational;
