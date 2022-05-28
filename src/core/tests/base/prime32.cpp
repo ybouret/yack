@@ -21,27 +21,30 @@ class engine : public runnable
 {
 public:
     static const uint64_t lower = 65536;
-    static const uint64_t upper = lower + 10000000;
+    static const uint64_t upper = lower + 100000000;
     //static const uint64_t upper = 4294967295+1000;
     static const uint64_t width = (upper-lower)+1;
-    static const size_t   cache = 1024; //32768;
+    static const size_t   cache = 32768;
     
     virtual ~engine() throw()
     {
     }
     
-    explicit engine(const size_t n) :
+    explicit engine(const string &root, const size_t n) :
     runnable(),
     output(0),
     pmatrix(n,cache),
     filename(n,as_capacity),
-    total(n,0)
+    total(n,0),
+    ini(n,0),
+    end(n,0)
     {
+        std::cerr << "<engine>" << std::endl;
         for(size_t i=1;i<=n;++i)
         {
             char buf[64];
             context::format(buf,sizeof(buf),n,i);
-            string fn = "primes32-";
+            string fn = root;
             fn += buf;
             fn += ".dat";
             filename.push_back_fast(fn);
@@ -50,8 +53,10 @@ public:
             if( fs.get_attr_of(fn) == vfs::entry::attr_reg)
                 throw exception("%s exists!!",fn());
             
+            std::cerr << "  <" << fn << ">" << std::endl;
             ios::ocstream::overwrite(fn);
         }
+        std::cerr << "<engine/>" << std::endl;
     }
     
     void flush(size_t &count, const context &ctx, lockable &sync)
@@ -62,19 +67,23 @@ public:
         const readable<uint32_t> &m = pmatrix[i];
         const string             &f = filename[i];
         YACK_LOCK(sync);
-        (std::cerr << "|" << buf << "@" << ios::hexa(m[count],true)).flush();
-        if(++output>=8)
+        if(count)
         {
-            std::cerr << std::endl;
-            output=0;
+            (std::cerr << "|" << buf << "@" << ios::hexa(m[count],true)).flush();
+            if(++output>=8)
+            {
+                std::cerr << std::endl;
+                output=0;
+            }
+            
+            ios::ocstream fp(f,true);
+            for(size_t j=1;j<=count;++j)
+            {
+                fp("%lu\n",static_cast<unsigned long>(m[j]));
+            }
+            total[i] += count;
+            count = 0;
         }
-        ios::ocstream fp(f,true);
-        for(size_t j=1;j<=count;++j)
-        {
-            fp("%lu\n",static_cast<unsigned long>(m[j]));
-        }
-        total[i] += count;
-        count = 0;
     }
     
     virtual void run(const context &ctx,
@@ -86,9 +95,13 @@ public:
         uint64_t            length = width;
         ctx.crop(length,offset);
         {
+            const uint64_t last = offset+length-1;
             YACK_LOCK(sync);
-            std::cerr << "@" << i << " : " << offset << " +" << length << std::endl;
+            std::cerr << "@" << i << " : " << offset << " -> " << last << " #" << length << std::endl;
         }
+        
+        ini[i] = offset;
+        
         while(length>0 && 0==(offset&0x1))
         {
             --length;
@@ -102,6 +115,7 @@ public:
             {
                 break;
             }
+            end[i] = offset;
             if(0!=(offset&0x1))
             {
                 if(prime64::is(offset))
@@ -120,6 +134,8 @@ public:
     matrix<uint32_t>     pmatrix;
     vector<const string> filename;
     vector<size_t>       total;
+    vector<uint64_t>     ini;
+    vector<uint64_t>     end;
     
 private:
     YACK_DISABLE_COPY_AND_ASSIGN(engine);
@@ -130,17 +146,28 @@ private:
 YACK_UTEST(prime32)
 {
     
+    if(argc<=1)
+    {
+        throw exception("Need A Root File Name");
+    }
+    const string   root = argv[1];
     const topology topo;
     simd           para(topo);
-    engine         ex32(para.size());
+    engine         ex32(root,para.size());
     
     para.run(ex32);
     std::cerr << std::endl;
     size_t total = 0;
-    for(size_t i=ex32.total.size();i>0;--i)
+    for(size_t i=1;i<=ex32.total.size();++i)
     {
+        std::cerr << "cpu#" << std::setw(3) << i;
+        std::cerr << " " << std::setw(10) << ex32.ini[i] << " -> " <<  std::setw(10) << ex32.end[i];
+        std::cerr << " : found #" << ex32.total[i];
+        std::cerr << std::endl;
         total += ex32.total[i];
     }
+    
     std::cerr << "#" << total << std::endl;
+    
 }
 YACK_UDONE()
