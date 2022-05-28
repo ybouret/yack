@@ -10,9 +10,9 @@ YACK_UTEST(type_human)
 {
 
     const uint64_t umax = integral_for<uint64_t>::maximum;
-    const double   dmax = umax;
+    //const double   dmax = umax;
     std::cerr << "umax=" << umax << std::endl;
-    std::cerr << "dmax=" << dmax << std::endl;
+    //std::cerr << "dmax=" << dmax << std::endl;
 
     const uint64_t u1 = 1;
 
