@@ -30,9 +30,9 @@ namespace yack
             typedef cxx_list_of<mixed> list;
 
             explicit mixed(const int                   a,
-                           const size_t               &A,
+                           const size_t                A,
                            const int                   b,
-                           const size_t               &B,
+                           const size_t                B,
                            const equilibrium::pointer &S) throw() :
             next(0),
             prev(0),
@@ -44,7 +44,7 @@ namespace yack
             {
             }
 
-            virtual ~mixed() throw();
+            virtual ~mixed() throw() {}
 
             mixed *                    next;
             mixed *                    prev;

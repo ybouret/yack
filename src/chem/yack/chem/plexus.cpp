@@ -224,7 +224,18 @@ namespace yack
                             int peer_coef = mp_beta.cast_to<int>("peer_coef");
                             assert(self_coef!=0);
                             assert(peer_coef!=0);
-                            const equilibrium::pointer p = build_mixed(self_coef,self,peer_coef,peer,Nu,sub,++im);
+                            
+                            {
+                                const equilibrium::pointer p = build_mixed(self_coef,self,peer_coef,peer,Nu,sub,++im);
+                                self_list.push_back( new mixed(self_coef,self_indx,peer_coef,peer_indx,p) );
+                            }
+                            
+                            {
+                                const equilibrium::pointer p = build_mixed(peer_coef,peer,self_coef,self,Nu,sub,++im);
+                                peer_list.push_back( new mixed(peer_coef,peer_indx,self_coef,self_indx,p) );
+                            }
+                            
+                            
                         }
                     }
 
