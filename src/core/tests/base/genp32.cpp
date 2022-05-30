@@ -1,7 +1,7 @@
 #include "yack/arith/prime.hpp"
 #include "yack/string.hpp"
 #include "yack/ios/icstream.hpp"
-#include "yack/ios/gz/ostream.hpp"
+#include "yack/ios/ocstream.hpp"
 #include "yack/ios/ascii/convert.hpp"
 
 #include "yack/utest/run.hpp"
@@ -39,7 +39,7 @@ YACK_UTEST(genp32)
         ios::characters line;
         size_t          every = 0;
         ios::icstream    fp(fn);
-        ios::gz::ostream zp("shift.gz",9);
+        ios::ocstream    zp("shift.dat");
         size_t           count = 0;
         while(fp.gets(line))
         {
