@@ -70,7 +70,8 @@ namespace yack
             static void  free(char *)  throw(); //!< free   with legacy::release
             string       to_string()     const; //!< directly to string
             string      *to_new_string() const; //!< to string pointer directly
-            
+            size_t       fill(char buffer[],const size_t buflen) throw(); //!< transfer at most buflen first chars
+
         };
 
     }

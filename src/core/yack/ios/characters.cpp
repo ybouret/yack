@@ -47,6 +47,30 @@ namespace yack
             return *this;
         }
 
+        size_t characters:: fill(char buffer[],const size_t buflen) throw()
+        {
+            assert(yack_good(buffer,buflen));
+
+            if(buflen>=size)
+            {
+                const size_t ans = size;
+                while(size>0)
+                {
+                    *(buffer++) = pull_front();
+                }
+                return ans;
+            }
+            else
+            {
+                assert(buflen<size);
+                for(size_t i=buflen;i>0;--i)
+                {
+                    *(buffer++) = pull_front();
+                }
+                return buflen;
+            }
+
+        }
 
     }
 }
@@ -68,6 +92,9 @@ namespace yack
             }
             return msg;
         }
+
+
+
 
         void characters:: free(char *msg) throw()
         {
