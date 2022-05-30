@@ -10,6 +10,7 @@
 #include "yack/container/matrix.hpp"
 #include "yack/math/algebra/lu.hpp"
 #include "yack/sequence/arrays.hpp"
+#include "yack/sequence/cxx-array.hpp"
 
 namespace yack
 {
@@ -21,6 +22,45 @@ namespace yack
         typedef matrix<double>         rmatrix;  //!< alias
         typedef arrays_of<double>      tableaux; //!< alias
         typedef tableaux::array_type   tableau;  //!< alias
+
+
+        class mixed : public object
+        {
+        public:
+            typedef cxx_list_of<mixed> list;
+
+            explicit mixed(const int                   a,
+                           const size_t               &A,
+                           const int                   b,
+                           const size_t               &B,
+                           const equilibrium::pointer &S) throw() :
+            next(0),
+            prev(0),
+            self_coef(a),
+            self_indx(A),
+            peer_coef(b),
+            peer_indx(B),
+            data(S)
+            {
+            }
+
+            virtual ~mixed() throw();
+
+            mixed *                    next;
+            mixed *                    prev;
+            const int                  self_coef;
+            const size_t               self_indx;
+            const int                  peer_coef;
+            const size_t               peer_indx;
+
+        private:
+            YACK_DISABLE_ASSIGN(mixed);
+            const equilibrium::pointer data;
+        };
+
+        typedef cxx_array<mixed::list,memory::pooled> mixing;
+
+
 
         //______________________________________________________________________
         //
@@ -90,11 +130,11 @@ namespace yack
             const library    &lib; //!< user's lib
             const equilibria &eqs; //!< user's eqs
             const library     sub; //!< hard copy
-            const equilibria  pre; //!< pr eqs
             const size_t      M;   //!< number of species
             const size_t      MA;  //!< number of active species
             const size_t      MP;  //!< number of primary species
             const size_t      N;   //!< number of equilibria
+            mixing            pre; //!<...
 
         private:
             tableaux          ntab;
@@ -136,7 +176,7 @@ namespace yack
             const lockable::scope lib_lock;
             const lockable::scope eqs_lock;
 
-            
+            void build_pre();
 
         };
 

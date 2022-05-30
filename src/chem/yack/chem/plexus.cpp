@@ -26,10 +26,12 @@ namespace yack
         lib( lib_ ),
         eqs( eqs_ ),
         sub( lib  ),
+        
         M( lib.size() ),
         MA(lib.active() ),
         MP(lib.primary()),
         N( eqs.size() ),
+        pre(N),
 
         ntab(10,N),
         mtab(10,M),
@@ -97,6 +99,7 @@ namespace yack
             for(const enode *node=eqs.head();node;node=node->next)
             {
                 const equilibrium &eq = ***node;
+
                 eq.fill( coerce(Nu[*eq]) );
             }
             coerce(NuT).assign(Nu,transposed);
@@ -121,22 +124,95 @@ namespace yack
             // build pre
             //
             //------------------------------------------------------------------
+            build_pre();
+        }
+
+
+        static inline
+        string build_mixed_name(const int a, const string &A,
+                                const int b, const string &B)
+        {
+            assert(a>0);
+            assert(b!=0);
+            string ans;
+            if(a!=1) ans += vformat("%d*",a);
+            ans += A;
+            if(b>0)
             {
-                for(const enode *anode=eqs.head();anode;anode=anode->next)
-                {
-                    const equilibrium   &eqA = ***anode;
-                    const size_t         ia  = *eqA;
-                    const readable<int> &nuA = Nu[ia];
-                    for(const enode *bnode=anode->next;bnode;bnode=bnode->next)
-                    {
-                        const equilibrium   &eqB = ***bnode;
-                        const size_t         ib  = *eqB;
-                        const readable<int> &nuB = Nu[ib];
-                        std::cerr << "Testing " << eqA.name << "/" << eqB.name << std::endl;
-                        
-                    }
-                }
+                ans += '+';
+                if(b>1) ans += vformat("%d*",b);
+                ans += B;
             }
+            else
+            {
+                assert(b<0);
+                if(b<-1) ans += vformat("%d*",b);
+                else     ans += '-';
+                ans += B;
+            }
+
+            return ans;
+        }
+
+
+        equilibrium *build_mixed(const int           a,
+                                 const equilibrium  &A,
+                                 const int           b,
+                                 const equilibrium  &B)
+        {
+            return NULL;
+        }
+
+        void plexus:: build_pre()
+        {
+            YACK_CHEM_PRINTLN("<building_pre>");
+            for(const enode *anode=eqs.head();anode;anode=anode->next)
+            {
+                if(NULL == anode->next) break;
+                const equilibrium   &self      = ***anode;
+                const size_t         self_indx = *self;
+                const readable<int> &self_nu   = Nu[self_indx];
+                mixed::list         &self_list = pre[self_indx];
+
+                YACK_CHEM_PRINTLN("\t<" << self.name << ">");
+                for(const enode *bnode=anode->next;bnode;bnode=bnode->next)
+                {
+                    const equilibrium   &peer      = ***bnode;
+                    const size_t         peer_indx = *peer;
+                    const readable<int> &peer_nu   = Nu[peer_indx];
+                    mixed::list         &peer_list = pre[peer_indx];
+                    if(verbose)
+                    {
+                        eqs.pad(std::cerr << "\t /<" << peer.name << ">",peer) << " : " << peer_nu << " (*) " << self_nu << std::endl;
+                    }
+
+                    for(size_t j=1;j<=M;++j)
+                    {
+                        const int A = self_nu[j];
+                        const int B = peer_nu[j];
+                        if(A!=0 && B!=0)
+                        {
+                            apz mp_alpha = -B;
+                            apz mp_beta  =  A;
+                            apz::simplify(mp_alpha,mp_beta);
+                            int self_coef = mp_alpha.cast_to<int>("self_coef");
+                            int peer_coef  = mp_beta.cast_to<int>("peer_coef");
+                            assert(self_coef!=0);
+                            assert(peer_coef!=0);
+
+                            
+
+
+                        }
+                    }
+
+                }
+
+                YACK_CHEM_PRINTLN("\t<" << self.name << "/>");
+
+            }
+            YACK_CHEM_PRINTLN("<building_pre/>");
+            exit(1);
         }
 
 
