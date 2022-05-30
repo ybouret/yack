@@ -24,8 +24,22 @@ namespace yack
         return p;
     }
 
+
     namespace core
     {
+        uint64_t primes:: get16(const size_t indx) throw()
+        {
+            assert(indx<pi16);
+            if(indx<n8)
+            {
+                return p8[indx];
+            }
+            else
+            {
+                return p16[indx-n8];
+            }
+        }
+
         const uint8_t primes:: p8[54]={
             0x2,
             0x3, 0x5, 0x7, 0xb, 0xd, 0x11, 0x13, 0x17,

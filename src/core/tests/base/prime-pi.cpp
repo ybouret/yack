@@ -52,6 +52,7 @@ YACK_UTEST(primePi)
             const size_t   count = manual_count(i);
             const uint64_t table = core::prime_pi::table[i];
             std::cerr << "@" << std::setw(3) << i << " : " << std::setw(6) << count << " / " << table << std::endl;
+            YACK_ASSERT(count==table);
         }
     }
 

@@ -208,6 +208,29 @@ namespace yack
 
 namespace yack
 {
+
+    bool vfs:: is_reg(const string &path) const
+    {
+        return entry::attr_reg == get_attr_of(path);
+    }
+
+
+    bool vfs:: is_dir(const string &path) const
+    {
+        return entry::attr_dir == get_attr_of(path);
+    }
+
+    bool vfs:: is_reg(const char *path) const
+    {
+        const string _(path); return is_reg(_);
+    }
+
+    bool vfs:: is_dir(const char *path) const
+    {
+        const string _(path); return is_dir(_);
+    }
+
+
     void vfs::remove_file(const char *path)
     {
         const string _(path);

@@ -153,6 +153,15 @@ namespace yack
 
         //______________________________________________________________________
         //
+        // non-virtual interface: testing attributes
+        //______________________________________________________________________
+        bool is_reg(const string &path) const; //!< entry::attr_reg == get_attr_of(path)
+        bool is_reg(const char   *path) const; //!< entry::attr_reg == get_attr_of(path)
+        bool is_dir(const string &path) const; //!< entry::attr_dir == get_attr_of(path)
+        bool is_dir(const char   *path) const; //!< entry::attr_dir == get_attr_of(path)
+
+        //______________________________________________________________________
+        //
         // non-virtual interface: remove file(s)
         //______________________________________________________________________
         void     remove_file(const char *path); //!< wrapper

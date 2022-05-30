@@ -53,8 +53,7 @@ public:
             filename.push_back_fast(fn);
             
             vfs &fs = localFS::instance();
-            if( fs.get_attr_of(fn) == vfs::entry::attr_reg)
-                throw exception("%s exists!!",fn());
+            if( fs.is_reg(fn) ) throw exception("%s exists!!",fn());
             
             std::cerr << "  <" << fn << ">" << std::endl;
             ios::ocstream::overwrite(fn);
