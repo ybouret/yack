@@ -52,6 +52,12 @@ namespace yack
             return value;
         }
 
+
+        void const_equilibrium:: setK(const double newK)
+        {
+            if(newK<=0) throw exception("set negative K_%s",name());
+            coerce(value) = newK;
+        }
     }
 
 }

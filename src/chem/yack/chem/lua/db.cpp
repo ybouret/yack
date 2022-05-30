@@ -81,6 +81,11 @@ namespace yack
                 {
                     return call(t);
                 }
+
+                inline virtual void setK(const double)
+                {
+                    throw exception("cannot set K_%s", name());
+                }
             };
 
             static inline
