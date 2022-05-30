@@ -14,6 +14,7 @@
 #include "yack/ios/ocstream.hpp"
 #include "yack/container/matrix.hpp"
 
+
 using namespace yack;
 using namespace concurrent;
 
@@ -144,7 +145,8 @@ private:
 
 YACK_UTEST(prime32)
 {
-    
+
+  
     if(argc<=1)
     {
         throw exception("Need A Root File Name");
