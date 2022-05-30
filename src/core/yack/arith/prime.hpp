@@ -37,6 +37,9 @@ namespace yack
             static const uint16_t p16[6488];                        //!< 16 bit primes
             static const size_t   n16 = sizeof(p16)/sizeof(p16[0]); //!< number of 16 bits primes
             static const uint16_t h16 = 0xfff1;                     //!< highest 16 bits primes
+
+            static const size_t pi8   = n8;     //!< PrimePi(8)
+            static const size_t pi16  = n8+n16; //!< PrimePi(16)
         };
 
 

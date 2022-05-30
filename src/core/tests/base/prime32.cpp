@@ -4,6 +4,7 @@
 #include "yack/arith/base2.hpp"
 #include "yack/ios/fmt/hexa.hpp"
 #include "yack/arith/ilog2.hpp"
+#include "yack/arith/prime-pi.hpp"
 
 #include "yack/ios/ocstream.hpp"
 #include "yack/string.hpp"
@@ -22,8 +23,9 @@ class engine : public runnable
 {
 public:
     static const uint64_t lower = 65536;
-    static const uint64_t upper = lower + 1000000000;
-    //static const uint64_t upper = 4294967295+1000;
+    static const uint64_t po2   = 32;
+    static const uint64_t one   = 1;
+    static const uint64_t upper = one << po2;
     static const uint64_t width = (upper-lower)+1;
     static const size_t   cache = 32768;
     
@@ -167,8 +169,12 @@ YACK_UTEST(prime32)
         std::cerr << std::endl;
         total += ex32.total[i];
     }
-    
-    std::cerr << "#" << total << std::endl;
-    
+
+    const size_t all = total + core::primes::pi16;
+    std::cerr << "found  #" << all << " = " << total << "+" << core::primes::pi16 << std::endl;
+    std::cerr << "stored #" << core::prime_pi::table[engine::po2] << std::endl;
+    if(all!=core::prime_pi::table[engine::po2])
+        throw exception("count mismatch!!");
+    std::cerr << "[DONE]" << std::endl;
 }
 YACK_UDONE()
