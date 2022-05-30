@@ -41,6 +41,7 @@ namespace yack
             //__________________________________________________________________
             explicit library() throw(); //!< setup
             virtual ~library() throw(); //!< cleanup
+            explicit library(const library &other); //!< hard copy!!
 
             //__________________________________________________________________
             //
@@ -90,7 +91,7 @@ namespace yack
             friend std::ostream & operator<<(std::ostream &, const library &);
 
         private:
-            YACK_DISABLE_COPY_AND_ASSIGN(library);
+            YACK_DISABLE_ASSIGN(library);
             species_set db;
 
         };

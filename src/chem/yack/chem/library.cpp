@@ -97,6 +97,17 @@ namespace yack
             return ***node;
         }
 
+
+        library:: library(const library &lib) : compendium()
+        {
+            library &self = *this;
+            for(const snode *node=lib.head();node;node=node->next)
+            {
+                const species &s = ***node;
+                self(s.name,s.z);
+            }
+        }
+
     }
 
 }
