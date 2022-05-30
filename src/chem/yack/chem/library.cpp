@@ -106,6 +106,9 @@ namespace yack
                 const species &s = ***node;
                 self(s.name,s.z);
             }
+
+            assert(self.size()==lib.size());
+
         }
 
     }

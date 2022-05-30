@@ -22,10 +22,12 @@ YACK_UTEST(plexus)
         eqs(lib,argv[i]);
     }
 
-    std::cerr << "lib=" << lib << std::endl;
-    std::cerr << "eqs=" << eqs << std::endl;
+
 
     plexus cs(lib,eqs);
+    std::cerr << "lib=" << cs.lib << std::endl;
+    std::cerr << "sub=" << cs.sub << std::endl;
+    std::cerr << "eqs=" << cs.eqs << std::endl;
 
     vector<species*> active(cs.active.size,as_capacity);
     for(const anode *node=cs.active.head;node;node=node->next)

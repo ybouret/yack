@@ -25,6 +25,7 @@ namespace yack
                         equilibria &eqs_) :
         lib( lib_ ),
         eqs( eqs_ ),
+        sub( lib  ),
         M( lib.size() ),
         MA(lib.active() ),
         MP(lib.primary()),
