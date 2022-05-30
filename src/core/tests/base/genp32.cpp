@@ -40,7 +40,8 @@ YACK_UTEST(genp32)
         size_t          every = 0;
         ios::icstream    fp(fn);
         ios::ocstream    zp("shift.dat");
-        size_t           count = 0;
+        size_t           count   = 0;
+        size_t           written = 0;
         while(fp.gets(line))
         {
             memset(buffer,0,sizeof(buffer));
@@ -59,6 +60,7 @@ YACK_UTEST(genp32)
                 }
                 if(shft>255) throw exception("shift is too high!!");
                 zp.write( uint8_t(shft) );
+                ++written;
                 prev = curr;
                 if(++every>=100000)
                 {
@@ -68,8 +70,9 @@ YACK_UTEST(genp32)
             }
         }
         std::cerr << std::endl;
-        std::cerr << "count=" << count << std::endl;
-        std::cerr << "smax =" << smax  << std::endl;
+        std::cerr << "count   = " << count   << std::endl;
+        std::cerr << "smax    = " << smax    << std::endl;
+        std::cerr << "written = " << written << std::endl;
     }
 
 
