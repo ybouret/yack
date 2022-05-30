@@ -4,6 +4,7 @@
 #include "yack/math/tao/v3.hpp"
 #include "yack/sort/sum.hpp"
 #include "yack/exception.hpp"
+#include "yack/ptr/auto.hpp"
 #include <cmath>
 
 namespace yack
@@ -155,17 +156,41 @@ namespace yack
         }
 
 
-        equilibrium *build_mixed(const int           a,
+        equilibrium *build_mixed(int                 a,
                                  const equilibrium  &A,
-                                 const int           b,
-                                 const equilibrium  &B)
+                                 int                 b,
+                                 const equilibrium  &B,
+                                 const imatrix      &Nu,
+                                 const library      &sub,
+                                 const size_t        im)
         {
-            return NULL;
+            assert(a!=0);
+            assert(b!=0);
+            if(a<0)
+            {
+                a=-a;
+                b=-b;
+            }
+            const size_t          M    = sub.size(); assert(M==Nu.cols);
+            const string          name = build_mixed_name(a,A.name,b,B.name);
+            auto_ptr<equilibrium> eptr = new const_equilibrium(name,im,1);
+            const readable<int>  &nuA  = Nu[*A];
+            const readable<int>  &nuB =  Nu[*B];
+            for(const snode *node=sub.head();node;node=node->next)
+            {
+                const species &s = ***node;
+                const size_t   j = *s;
+                const int      n = a*nuA[j]+b*nuB[j];
+                if(n) (*eptr)(s,n);
+            }
+            std::cerr << *eptr << std::endl;
+            return eptr.yield();
         }
 
         void plexus:: build_pre()
         {
             YACK_CHEM_PRINTLN("<building_pre>");
+            size_t im = 0; // mixed index
             for(const enode *anode=eqs.head();anode;anode=anode->next)
             {
                 if(NULL == anode->next) break;
@@ -196,13 +221,10 @@ namespace yack
                             apz mp_beta  =  A;
                             apz::simplify(mp_alpha,mp_beta);
                             int self_coef = mp_alpha.cast_to<int>("self_coef");
-                            int peer_coef  = mp_beta.cast_to<int>("peer_coef");
+                            int peer_coef = mp_beta.cast_to<int>("peer_coef");
                             assert(self_coef!=0);
                             assert(peer_coef!=0);
-
-                            
-
-
+                            const equilibrium::pointer p = build_mixed(self_coef,self,peer_coef,peer,Nu,sub,++im);
                         }
                     }
 
