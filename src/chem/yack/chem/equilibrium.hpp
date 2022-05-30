@@ -36,6 +36,7 @@ namespace yack
             //__________________________________________________________________
             double K(const double t) const;              //!< checked getK(t)
             void   parse_with(library &,const string &); //!< parse components
+            void   assign(const double newK);            //!< setK(newK)
 
             //! standalone output
             friend std::ostream & operator<<(std::ostream &, const equilibrium &);

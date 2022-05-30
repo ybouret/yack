@@ -116,6 +116,27 @@ namespace yack
                 if( !alu.build(G) ) throw exception("%s: dependent equilibria",clid);
             }
 
+            //------------------------------------------------------------------
+            //
+            // build pre
+            //
+            //------------------------------------------------------------------
+            {
+                for(const enode *anode=eqs.head();anode;anode=anode->next)
+                {
+                    const equilibrium   &eqA = ***anode;
+                    const size_t         ia  = *eqA;
+                    const readable<int> &nuA = Nu[ia];
+                    for(const enode *bnode=anode->next;bnode;bnode=bnode->next)
+                    {
+                        const equilibrium   &eqB = ***bnode;
+                        const size_t         ib  = *eqB;
+                        const readable<int> &nuB = Nu[ib];
+                        std::cerr << "Testing " << eqA.name << "/" << eqB.name << std::endl;
+                        
+                    }
+                }
+            }
         }
 
 

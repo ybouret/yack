@@ -90,6 +90,7 @@ namespace yack
             const library    &lib; //!< user's lib
             const equilibria &eqs; //!< user's eqs
             const library     sub; //!< hard copy
+            const equilibria  pre; //!< pr eqs
             const size_t      M;   //!< number of species
             const size_t      MA;  //!< number of active species
             const size_t      MP;  //!< number of primary species
