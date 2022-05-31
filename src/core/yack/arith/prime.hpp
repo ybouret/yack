@@ -41,7 +41,7 @@ namespace yack
             static const size_t pi8   = n8;     //!< PrimePi(8)
             static const size_t pi16  = n8+n16; //!< PrimePi(16)
 
-            static uint64_t     get16(const size_t indx) throw(); //! indx in [0:PrimePi(16)-1]
+            static uint64_t     get16(const size_t indx) throw(); //!< indx in [0:PrimePi(16)-1]
         };
 
 

@@ -24,41 +24,7 @@ namespace yack
         typedef tableaux::array_type   tableau;  //!< alias
 
 
-        class mixed : public object
-        {
-        public:
-            typedef cxx_list_of<mixed> list;
 
-            explicit mixed(const int                   a,
-                           const size_t                A,
-                           const int                   b,
-                           const size_t                B,
-                           const equilibrium::pointer &S) throw() :
-            next(0),
-            prev(0),
-            self_coef(a),
-            self_indx(A),
-            peer_coef(b),
-            peer_indx(B),
-            data(S)
-            {
-            }
-
-            virtual ~mixed() throw() {}
-
-            mixed *                    next;
-            mixed *                    prev;
-            const int                  self_coef;
-            const size_t               self_indx;
-            const int                  peer_coef;
-            const size_t               peer_indx;
-
-        private:
-            YACK_DISABLE_ASSIGN(mixed);
-            const equilibrium::pointer data;
-        };
-
-        typedef cxx_array<mixed::list,memory::pooled> mixing;
 
 
 
@@ -134,8 +100,7 @@ namespace yack
             const size_t      MA;  //!< number of active species
             const size_t      MP;  //!< number of primary species
             const size_t      N;   //!< number of equilibria
-            mixing            pre; //!<...
-
+            
         private:
             tableaux          ntab;
             tableaux          mtab;

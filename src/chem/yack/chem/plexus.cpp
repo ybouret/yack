@@ -28,11 +28,10 @@ namespace yack
         eqs( eqs_ ),
         sub( lib  ),
         
-        M( lib.size() ),
-        MA(lib.active() ),
-        MP(lib.primary()),
-        N( eqs.size() ),
-        pre(N),
+        M( lib.size()    ),
+        MA(lib.active()  ),
+        MP(lib.primary() ),
+        N( eqs.size()    ),
 
         ntab(10,N),
         mtab(10,M),
@@ -129,123 +128,14 @@ namespace yack
         }
 
 
-        static inline
-        string build_mixed_name(const int a, const string &A,
-                                const int b, const string &B)
-        {
-            assert(a>0);
-            assert(b!=0);
-            string ans;
-            if(a!=1) ans += vformat("%d*",a);
-            ans += A;
-            if(b>0)
-            {
-                ans += '+';
-                if(b>1) ans += vformat("%d*",b);
-                ans += B;
-            }
-            else
-            {
-                assert(b<0);
-                if(b<-1) ans += vformat("%d*",b);
-                else     ans += '-';
-                ans += B;
-            }
 
-            return ans;
-        }
-
-
-        equilibrium *build_mixed(int                 a,
-                                 const equilibrium  &A,
-                                 int                 b,
-                                 const equilibrium  &B,
-                                 const imatrix      &Nu,
-                                 const library      &sub,
-                                 const size_t        im)
-        {
-            assert(a!=0);
-            assert(b!=0);
-            if(a<0)
-            {
-                a=-a;
-                b=-b;
-            }
-            const size_t          M    = sub.size(); assert(M==Nu.cols);
-            const string          name = build_mixed_name(a,A.name,b,B.name);
-            auto_ptr<equilibrium> eptr = new const_equilibrium(name,im,1);
-            const readable<int>  &nuA  = Nu[*A];
-            const readable<int>  &nuB =  Nu[*B];
-            for(const snode *node=sub.head();node;node=node->next)
-            {
-                const species &s = ***node;
-                const size_t   j = *s;
-                const int      n = a*nuA[j]+b*nuB[j];
-                if(n) (*eptr)(s,n);
-            }
-            std::cerr << *eptr << std::endl;
-            return eptr.yield();
-        }
 
         void plexus:: build_pre()
         {
             YACK_CHEM_PRINTLN("<building_pre>");
-            size_t im = 0; // mixed index
-            for(const enode *anode=eqs.head();anode;anode=anode->next)
-            {
-                if(NULL == anode->next) break;
-                const equilibrium   &self      = ***anode;
-                const size_t         self_indx = *self;
-                const readable<int> &self_nu   = Nu[self_indx];
-                mixed::list         &self_list = pre[self_indx];
-
-                YACK_CHEM_PRINTLN("\t<" << self.name << ">");
-                for(const enode *bnode=anode->next;bnode;bnode=bnode->next)
-                {
-                    const equilibrium   &peer      = ***bnode;
-                    const size_t         peer_indx = *peer;
-                    const readable<int> &peer_nu   = Nu[peer_indx];
-                    mixed::list         &peer_list = pre[peer_indx];
-                    if(verbose)
-                    {
-                        eqs.pad(std::cerr << "\t /<" << peer.name << ">",peer) << " : " << peer_nu << " (*) " << self_nu << std::endl;
-                    }
-
-                    for(size_t j=1;j<=M;++j)
-                    {
-                        const int A = self_nu[j];
-                        const int B = peer_nu[j];
-                        if(A!=0 && B!=0)
-                        {
-                            apz mp_alpha = -B;
-                            apz mp_beta  =  A;
-                            apz::simplify(mp_alpha,mp_beta);
-                            int self_coef = mp_alpha.cast_to<int>("self_coef");
-                            int peer_coef = mp_beta.cast_to<int>("peer_coef");
-                            assert(self_coef!=0);
-                            assert(peer_coef!=0);
-                            
-                            {
-                                const equilibrium::pointer p = build_mixed(self_coef,self,peer_coef,peer,Nu,sub,++im);
-                                self_list.push_back( new mixed(self_coef,self_indx,peer_coef,peer_indx,p) );
-                            }
-                            
-                            {
-                                const equilibrium::pointer p = build_mixed(peer_coef,peer,self_coef,self,Nu,sub,++im);
-                                peer_list.push_back( new mixed(peer_coef,peer_indx,self_coef,self_indx,p) );
-                            }
-                            
-                            
-                        }
-                    }
-
-                }
-
-                YACK_CHEM_PRINTLN("\t<" << self.name << "/>");
-
-            }
+            
             YACK_CHEM_PRINTLN("<building_pre/>");
-            exit(1);
+            //exit(1);
         }
 
 
