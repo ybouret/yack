@@ -210,7 +210,6 @@ namespace yack
             std::cerr << "G0=" << G0 << std::endl;
 
             {
-
                 const size_t iOpt = **eOpt;
                 Xopt[1] = Xi[iOpt];
                 tao::v1::set(Cend,Ceq[iOpt]);
@@ -237,8 +236,62 @@ namespace yack
 
                 std::cerr << "Gmin=" << Gmin <<", imin=" << imin << std::endl;
                 tao::v1::set(Corg,Copt[imin]);
-
             }
+
+            // local step with rounding control by Xi
+            YACK_CHEM_PRINTLN("//   <plexus.omega>");
+            size_t num_blocked = 0;
+            size_t num_running = N;
+            NuAT.assign(NuT);
+
+            for(const enode *node=eqs.head();node;node=node->next)
+            {
+                const equilibrium &eq = ***node;      // equilibrium
+                const size_t       ei = *eq;          // index
+                const double       Ki  = K[ei];       // current constant
+                writable<double>  &psi = Psi[ei];     // gradient
+                writable<double>  &Cei = Ceq[ei];     // C @ equilibrium
+                writable<double>  &Omi = Omega0[ei];  // Omega[ei]
+                double            &gam = Gamma[ei];   // Gamma[ei]
+                double            &xxx = Xi[ei];      // Xi[ei]
+
+                blocked[ei] = false;
+                gam         = eq.grad_action(psi,Ki,Corg,Ctmp);  // compute Gamma[ei] and Psi[ei]
+                xxx         = eq.solve1D(Ki,Corg,Cei);           // compute Xi[ei] and equilibrium Ceqi
+                const double axx = fabs(xxx);                    // compute |Xi|
+                const double Oii = sorted::dot(psi,Nu[ei],Ctmp); // Omega[ei][ei]
+                if(verbose) {
+                    eqs.pad(std::cerr << vpfx << "  <" << eq.name << ">",eq) << " :";
+                }
+                if( Oii>=0 )
+                {
+                    // blocked equilibrium
+                    blockEq(ei);
+                    ++num_blocked;
+                    --num_running;
+                    if(verbose) std::cerr << " [blocked]";
+                }
+                else
+                {
+                    // regular equilibrium
+                    assert(Oii<0);
+                    Gs[ei]      = 1.0;
+                    if(axx<=0) gam=0; // roundoff correction
+                    Omi[ei]     = Oii;
+                    for(size_t k=N;k>ei;--k)   Omi[k] = sorted::dot(psi,Nu[k],Ctmp);
+                    for(size_t k=ei-1;k>0;--k) Omi[k] = sorted::dot(psi,Nu[k],Ctmp);
+
+                    if(verbose) std::cerr << " Gamma=" << std::setw(14) << gam << "; Xi=" << std::setw(14) << xxx;
+                }
+
+                if(verbose) std::cerr << std::endl;
+            }
+            YACK_CHEM_PRINTLN("//   <plexus.omega/>");
+
+
+            // evaluate step
+
+            exit(1);
 
             goto CYCLE;
 
@@ -278,6 +331,56 @@ namespace yack
                     std::cerr << eq.name << " " << Gopt[ei] << "@" << u.b << "; " << Ctry << std::endl;
                 }
             }
+
+            // local step with rounding control by Xi
+            YACK_CHEM_PRINTLN("//   <plexus.omega>");
+            size_t num_blocked = 0;
+            size_t num_running = N;
+            NuAT.assign(NuT);
+
+            for(const enode *node=eqs.head();node;node=node->next)
+            {
+                const equilibrium &eq = ***node;      // equilibrium
+                const size_t       ei = *eq;          // index
+                const double       Ki  = K[ei];       // current constant
+                writable<double>  &psi = Psi[ei];     // gradient
+                writable<double>  &Cei = Ceq[ei];     // C @ equilibrium
+                writable<double>  &Omi = Omega0[ei];  // Omega[ei]
+                double            &gam = Gamma[ei];   // Gamma[ei]
+                double            &xxx = Xi[ei];      // Xi[ei]
+
+                blocked[ei] = false;
+                gam         = eq.grad_action(psi,Ki,Corg,Ctmp);  // compute Gamma[ei] and Psi[ei]
+                xxx         = eq.solve1D(Ki,Corg,Cei);           // compute Xi[ei] and equilibrium Ceqi
+                const double axx = fabs(xxx);                    // compute |Xi|
+                const double Oii = sorted::dot(psi,Nu[ei],Ctmp); // Omega[ei][ei]
+                if(verbose) {
+                    eqs.pad(std::cerr << vpfx << "  <" << eq.name << ">",eq) << " :";
+                }
+                if( Oii>=0 )
+                {
+                    // blocked equilibrium
+                    blockEq(ei);
+                    ++num_blocked;
+                    --num_running;
+                    std::cerr << " [blocked]";
+                }
+                else
+                {
+                    // regular equilibrium
+                    assert(Oii<0);
+                    Gs[ei]      = 1.0;
+                    if(axx<=0) gam=0; // roundoff correction
+                    Omi[ei]     = Oii;
+                    for(size_t k=N;k>ei;--k)   Omi[k] = sorted::dot(psi,Nu[k],Ctmp);
+                    for(size_t k=ei-1;k>0;--k) Omi[k] = sorted::dot(psi,Nu[k],Ctmp);
+
+                    std::cerr << " Gamma=" << std::setw(14) << gam << "; Xi=" << std::setw(14) << xxx;
+                }
+
+                if(verbose) std::cerr << std::endl;
+            }
+            YACK_CHEM_PRINTLN("//   <plexus.omega/>");
 
 
 
