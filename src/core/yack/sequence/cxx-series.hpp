@@ -9,8 +9,12 @@
 
 namespace yack
 {
-
-    //! linear memory without constructed objects
+    //__________________________________________________________________________
+    //
+    //
+    //! linear memory without constructed objects, to be filled
+    //
+    //__________________________________________________________________________
     template <typename T, typename ALLOCATOR = memory::pooled>
     class cxx_series : public contiguous<T>
     {
@@ -20,7 +24,6 @@ namespace yack
         // types
         //______________________________________________________________________
         YACK_DECL_ARGS(T,type); //!< aliases
-
 
 
         //______________________________________________________________________
@@ -66,6 +69,14 @@ namespace yack
         //! maximum count of objects
         inline size_t         capacity() const throw() { return total; }
 
+        //! push back param_type
+        inline void push_back( param_type args )
+        {
+            assert(count<total);
+            new (basis+count) T(args);
+            ++coerce(count);
+        }
+
         //! one argument setup
         template <typename U> inline
         void add(typename type_traits<U>::parameter_type u)
@@ -79,6 +90,7 @@ namespace yack
         void add(typename type_traits<U>::parameter_type u,
                  typename type_traits<V>::parameter_type v)
         {
+            assert(count<total);
             new (basis+count) T(u,v);
             ++coerce(count);
         }
@@ -89,6 +101,7 @@ namespace yack
                  typename type_traits<V>::parameter_type v,
                  typename type_traits<W>::parameter_type w)
         {
+            assert(count<total);
             new (basis+count) T(u,v,w);
             ++coerce(count);
         }
@@ -96,7 +109,7 @@ namespace yack
         //! pop/clean last item
         inline void pop() throw()
         {
-            assert(count);
+            assert(count>0);
             out_of_reach::naught( destructed( &basis[--coerce(count)] ) );
         }
 

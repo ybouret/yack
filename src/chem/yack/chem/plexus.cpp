@@ -27,12 +27,12 @@ namespace yack
         lib( lib_ ),
         eqs( eqs_ ),
         sub( lib  ),
-        
         M( lib.size()    ),
         MA(lib.active()  ),
         MP(lib.primary() ),
         N( eqs.size()    ),
-
+        pre(N),
+        NPR(1),
         ntab(10,N),
         mtab(10,M),
 
@@ -99,7 +99,8 @@ namespace yack
             for(const enode *node=eqs.head();node;node=node->next)
             {
                 const equilibrium &eq = ***node;
-
+                if(!eq.is_minimal()) throw exception( "%s is not minimal", eq.name() );
+                if(!eq.is_neutral()) throw exception( "%s is not neutral", eq.name() );
                 eq.fill( coerce(Nu[*eq]) );
             }
             coerce(NuT).assign(Nu,transposed);
@@ -124,18 +125,72 @@ namespace yack
             // build pre
             //
             //------------------------------------------------------------------
-            build_pre();
+            coerce(NPR) += build_pre();
         }
 
 
 
 
-        void plexus:: build_pre()
+        size_t plexus:: build_pre()
         {
             YACK_CHEM_PRINTLN("<building_pre>");
-            
+            size_t im=0;
+            size_t nrmax=0;
+
+            for(const enode *anode=eqs.head();anode;anode=anode->next)
+            {
+                const equilibrium   &eqA = ***anode;
+                const readable<int> &nuA = Nu[*eqA];
+                mixed::list         &mxa = pre[*eqA];
+                YACK_CHEM_PRINTLN("  <" << eqA.name << ">");
+                for(const enode *bnode=eqs.head();bnode;bnode=bnode->next)
+                {
+                    if(bnode==anode) continue;
+                    const equilibrium   &eqB = ***bnode;
+                    const readable<int> &nuB = Nu[*eqB];
+                    for(size_t j=1;j<=M;++j)
+                    {
+                        const int A = nuA[j];
+                        const int B = nuB[j];
+                        if(A!=0 && B!=0)
+                        {
+                            apz mp_alpha = -B;
+                            apz mp_beta  =  A;
+                            apz::simplify(mp_alpha,mp_beta);
+
+                            int alpha = mp_alpha.cast_to<int>("alpha");
+                            int beta  = mp_beta.cast_to<int>("beta");
+                            if(alpha<0)
+                            {
+                                alpha = -alpha;
+                                beta  = -beta;
+                            }
+                            //std::cerr << "\talpha = " << alpha << std::endl;
+                            //std::cerr << "\tbeta  = " << beta  << std::endl;
+                            const string name = vformat("(%d)*%s+(%d)*%s",alpha,eqA.name(),beta,eqB.name());
+                            mixed *mx = mxa.push_back( new mixed(name,++im,alpha,K[*eqA],beta,K[*eqB]));
+
+                            for(size_t k=1;k<=M;++k)
+                            {
+                                const int nu = alpha * nuA[k] + beta * nuB[k];
+                                if(nu!=0)
+                                {
+                                    (*mx)( sub[k], nu );
+                                }
+                            }
+
+
+                            std::cerr << "    " << *mx << std::endl;
+                        }
+                    }
+                }
+                nrmax = max_of(nrmax,mxa.size);
+                YACK_CHEM_PRINTLN("  <" << eqA.name << "/>");
+            }
+
+            YACK_CHEM_PRINTLN("  nrmax=" << nrmax);
             YACK_CHEM_PRINTLN("<building_pre/>");
-            //exit(1);
+            return nrmax;
         }
 
 
@@ -145,6 +200,14 @@ namespace yack
             {
                 const equilibrium &eq = ***node;
                 K[*eq] = eq.K(t);
+            }
+
+            for(size_t i=N;i>0;--i)
+            {
+                for(mixed *mx=pre[i].head;mx;mx=mx->next)
+                {
+                    mx->updateK();
+                }
             }
         }
 

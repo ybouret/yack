@@ -11,21 +11,84 @@
 #include "yack/math/algebra/lu.hpp"
 #include "yack/sequence/arrays.hpp"
 #include "yack/sequence/cxx-array.hpp"
+#include "yack/sequence/cxx-series.hpp"
+#include "yack/arith/ipower.hpp"
 
 namespace yack
 {
     namespace chemical
     {
 
-    
+
         typedef matrix<int>            imatrix;  //!< alias
         typedef matrix<double>         rmatrix;  //!< alias
         typedef arrays_of<double>      tableaux; //!< alias
         typedef tableaux::array_type   tableau;  //!< alias
 
 
+        class mixed : public equilibrium
+        {
+        public:
+            typedef cxx_list_of<mixed> list;
 
+            mixed *next;
+            mixed *prev;
 
+            explicit mixed(const string &id,
+                           const size_t  im,
+                           const int     a,
+                           const double &A,
+                           const int     b,
+                           const double &B) :
+            equilibrium(id,im),
+            next(0),
+            prev(0),
+
+            selfW(a),
+            selfK(A),
+
+            peerW(b),
+            peerK(B),
+            
+            value(1)
+            {
+
+            }
+
+            virtual ~mixed() throw() {
+            }
+
+            const int     selfW;
+            const double &selfK;
+            const int     peerW;
+            const double &peerK;
+            double        value;
+
+            void          updateK() throw()
+            {
+                assert(selfW>0);
+                //std::cerr << "..updating " << name << " : " << selfK << "^(" << selfW << ") * " << peerK << "^(" << peerW << ")" << std::endl;
+                const double num = ipower<double,int>(selfK,selfW);
+                if(peerW<0)
+                {
+                    value = num/ipower<double,int>(peerK,-peerW);
+                }
+                else
+                {
+                    value = num*ipower<double,int>(peerK,peerW);
+                }
+                //std::cerr << "--> value=" << value << std::endl;
+            }
+
+        private:
+            YACK_DISABLE_COPY_AND_ASSIGN(mixed);
+            virtual double getK(const double) const
+            {
+                return value;
+            }
+        };
+
+        typedef cxx_array<mixed::list> mixing;
 
 
         //______________________________________________________________________
@@ -89,6 +152,7 @@ namespace yack
             //! block equilibrium
             void blockEq(const size_t ei) throw();
 
+
             //__________________________________________________________________
             //
             // members
@@ -100,7 +164,9 @@ namespace yack
             const size_t      MA;  //!< number of active species
             const size_t      MP;  //!< number of primary species
             const size_t      N;   //!< number of equilibria
-            
+            mixing            pre; //!< mixed per equilibrium
+            const size_t      NPR; //!< 1+build_pre()
+
         private:
             tableaux          ntab;
             tableaux          mtab;
@@ -115,7 +181,8 @@ namespace yack
             tableau           &Xi;      //!< [N] Xi
             tableau           &Gs;      //!< [N] scaling factor
             tableau           &xd;      //!< [N] extra diag
-            
+
+
             tableau          &Corg;    //!< [M] working space
             tableau          &Ctmp;    //!< [M] temporary C
             tableau          &Ctry;    //!< [M] trial C
@@ -141,7 +208,10 @@ namespace yack
             const lockable::scope lib_lock;
             const lockable::scope eqs_lock;
 
-            void build_pre();
+            size_t build_pre();
+
+            //! with set Cend
+            double rawOpt(const double G0) throw();
 
         };
 

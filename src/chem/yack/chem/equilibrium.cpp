@@ -18,15 +18,7 @@ namespace yack
             return ans;
         }
 
-        void equilibrium:: assign(const double newK)
-        {
-            if(newK<=0)
-            {
-                throw exception("assign(%g) to K_%s",newK,name());
-            }
-            setK(newK);
-        }
-
+        
         double equilibrium:: display_time  = 0;
         size_t equilibrium:: display_width = 0;
 
@@ -60,13 +52,7 @@ namespace yack
         {
             return value;
         }
-
-
-        void const_equilibrium:: setK(const double newK)
-        {
-            assert(newK>0);
-            coerce(value) = newK;
-        }
+        
     }
 
 }

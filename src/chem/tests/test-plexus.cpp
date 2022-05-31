@@ -25,9 +25,18 @@ YACK_UTEST(plexus)
 
 
     plexus cs(lib,eqs);
+    cs.computeK(0);
     std::cerr << "lib=" << cs.lib << std::endl;
     std::cerr << "sub=" << cs.sub << std::endl;
     std::cerr << "eqs=" << cs.eqs << std::endl;
+    for(size_t i=1;i<=cs.N;++i)
+    {
+        for(const mixed *mx = cs.pre[i].head;mx;mx=mx->next)
+        {
+            std::cerr << "  (*) " << *mx << std::endl;
+        }
+    }
+
 
     vector<species*> active(cs.active.size,as_capacity);
     for(const anode *node=cs.active.head;node;node=node->next)
@@ -43,7 +52,8 @@ YACK_UTEST(plexus)
 
     vector<double> C(cs.M,0);
 
-    cs.computeK(0);
+
+
 
     C.ld(0);
     for(size_t iter=0;iter<100;++iter)

@@ -94,6 +94,14 @@ namespace yack
             Gamma[ei] = 0;
         }
 
+        double plexus:: rawOpt(const double G0) throw()
+        {
+            triplet<double> u = {0,-1,1};
+            triplet<double> g = {G0,-1,rmsGamma(Cend)};
+            //tao::v1::set(Cend,Cusr);
+            (void)minimize::find<double>::run_for(*this,u,g,minimize::inside);
+            return g.b;
+        }
 
 
 
@@ -145,6 +153,96 @@ namespace yack
                     break;
             }
 
+
+            rmatrix        Copt(NPR,M);
+            vector<double> Xopt(NPR,0);
+            vector<double> Gopt(NPR,0);
+
+            size_t cycle = 0;
+        CYCLE:
+            ++cycle;
+            YACK_CHEM_PRINTLN("//   -------- CYCLE=" << cycle << " --------");
+            if(verbose) lib(std::cerr << vpfx << "Corg=",Corg,vpfx);
+
+
+            // select reaction
+            double             absXiMax = 0;
+            double             sumAbsXi = 0;
+            const equilibrium *eOpt = NULL;
+            {
+                for(const enode *node=eqs.head();node;node=node->next)
+                {
+                    const equilibrium &eq = ***node;      // equilibrium
+                    const size_t       ei = *eq;          // index
+                    const double       Ki  = K[ei];       // current constant
+                    Xi[ei] = eq.solve1D(Ki,Corg,Ceq[ei]);
+                    Gs[ei] = 1.0;
+                    const double atmp = fabs(Xi[ei]);
+                    sumAbsXi += atmp;
+                    if(atmp>absXiMax)
+                    {
+                        absXiMax = atmp;
+                        eOpt     = &eq;
+                    }
+                }
+                eqs(std::cerr << "Xi=",Xi);
+            }
+            std::cerr << "|Xi|=" << sumAbsXi << std::endl;
+
+            if(sumAbsXi<=0)
+            {
+                tao::v1::set(C0,Corg);
+                YACK_CHEM_PRINTLN("// <plexus.solve> [SUCCESS]");
+                return true;
+            }
+
+            if(cycle>=5)
+            {
+                exit(1);
+            }
+
+            assert(sumAbsXi>0);
+            assert(absXiMax>0);
+            assert(eOpt!=NULL);
+
+            std::cerr << "using root=" << eOpt->name << std::endl;
+            const double G0 = rmsGamma(Corg);
+            std::cerr << "G0=" << G0 << std::endl;
+
+            {
+
+                const size_t iOpt = **eOpt;
+                Xopt[1] = Xi[iOpt];
+                tao::v1::set(Cend,Ceq[iOpt]);
+                double Gmin = Gopt[1] = rawOpt(G0);
+                size_t imin = 1;
+                tao::v1::set(Copt[1],Ctry);
+
+                std::cerr << " (*) " << eOpt->name << " only : " << Gopt[1] << " @" << Copt[1] << std::endl;
+
+                size_t npr = 1;
+                for(const mixed *mx=pre[iOpt].head;mx;mx=mx->next)
+                {
+                    ++npr;
+                    Xopt[npr] = mx->solve1D(mx->value,Corg,Cend);
+                    const double Gtmp = Gopt[npr] = rawOpt(G0);
+                    tao::v1::set(Copt[npr],Ctry);
+                    std::cerr << " (*) " << mx->name << " : " << Gopt[npr] << " @" << Copt[npr] << std::endl;
+                    if(Gtmp<Gmin)
+                    {
+                        Gmin = Gtmp;
+                        imin = npr;
+                    }
+                }
+
+                std::cerr << "Gmin=" << Gmin <<", imin=" << imin << std::endl;
+                tao::v1::set(Corg,Copt[imin]);
+
+            }
+
+            goto CYCLE;
+
+#if 0
 
             size_t cycle = 0;
         CYCLE:
@@ -222,6 +320,7 @@ namespace yack
             exit(1);
             YACK_CHEM_PRINTLN("// <plexus.solve> [success]");
             return true;
+#endif
 
 #if 0
             //------------------------------------------------------------------

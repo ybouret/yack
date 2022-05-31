@@ -28,7 +28,7 @@ namespace yack
             //__________________________________________________________________
             static double                       display_time;  //!< for standalone print
             static size_t                       display_width; //!< for standalone print
-            typedef ark_ptr<string,equilibrium> pointer; //!< alias
+            typedef ark_ptr<string,equilibrium> pointer;       //!< alias
 
             //__________________________________________________________________
             //
@@ -36,8 +36,7 @@ namespace yack
             //__________________________________________________________________
             double K(const double t) const;              //!< checked getK(t)
             void   parse_with(library &,const string &); //!< parse components
-            void   assign(const double newK);            //!< setK(newK)
-
+            
             //! standalone output
             friend std::ostream & operator<<(std::ostream &, const equilibrium &);
 
@@ -61,7 +60,6 @@ namespace yack
         private:
             YACK_DISABLE_COPY_AND_ASSIGN(equilibrium);
             virtual double getK(const double) const = 0;
-            virtual void   setK(const double)       = 0;
             std::ostream & print(std::ostream &) const;
         };
 
@@ -97,7 +95,6 @@ namespace yack
             YACK_DISABLE_COPY_AND_ASSIGN(const_equilibrium);
             const double value;
             virtual double getK(const double) const;
-            virtual void   setK(const double);
         };
 
     }
@@ -105,4 +102,3 @@ namespace yack
 }
 
 #endif
-
