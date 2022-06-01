@@ -98,7 +98,7 @@ namespace yack
         }
 
 
-        library:: library(const library &lib) : compendium()
+        library:: library(const library &lib) : compendium(), db()
         {
             library &self = *this;
             for(const snode *node=lib.head();node;node=node->next)
