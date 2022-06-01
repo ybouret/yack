@@ -24,10 +24,13 @@ namespace yack
                           const double t0) :
         lib( lib_ ),
         eqs( eqs_ ),
+        sub(lib),
         M( lib.size()    ),
         MA(lib.active()  ),
         MP(lib.primary() ),
         N( eqs.size()    ),
+        couples(),
+
         ntab(10,N),
         mtab(10,M),
 
@@ -98,9 +101,10 @@ namespace yack
 
             //------------------------------------------------------------------
             //
-            // first constant evaluation to compute sub-equilibria
+            // couples
             //
             //------------------------------------------------------------------
+            build_couples();
 
 
             //------------------------------------------------------------------

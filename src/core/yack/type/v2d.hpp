@@ -96,6 +96,11 @@ namespace yack
             x += rhs.x; y += rhs.y; return *this;
         }
 
+        //! unary +
+        inline v2d operator+() const throw() {
+            return *this;
+        }
+
         //______________________________________________________________________
         //
         // subtraction
@@ -111,6 +116,11 @@ namespace yack
             x -= rhs.x; y -= rhs.y; return *this;
         }
 
+        //! unary -
+        inline v2d operator-() const throw() {
+            return v2d(-x,-y);
+        }
+        
         //______________________________________________________________________
         //
         // multiplication

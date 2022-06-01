@@ -45,12 +45,14 @@ namespace yack
             //
             // members
             //__________________________________________________________________
-            const library    &lib; //!< user's lib
-            const equilibria &eqs; //!< user's eqs
-            const size_t      M;   //!< number of species
-            const size_t      MA;  //!< number of active species
-            const size_t      MP;  //!< number of primary species
-            const size_t      N;   //!< number of equilibria
+            const library    &lib;    //!< user's lib
+            const equilibria &eqs;    //!< user's eqs
+            const library     sub;    //!< copy of lib
+            const size_t      M;      //!< number of species
+            const size_t      MA;     //!< number of active species
+            const size_t      MP;     //!< number of primary species
+            const size_t      N;      //!< number of equilibria
+            const equilibria  couples;
 
         private:
             tableaux          ntab;
@@ -69,6 +71,8 @@ namespace yack
             YACK_DISABLE_COPY_AND_ASSIGN(reactor);
             const lockable::scope lib_lock;
             const lockable::scope eqs_lock;
+
+            void build_couples();
 
         };
 
