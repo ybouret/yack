@@ -26,14 +26,16 @@ namespace yack
         typedef tableaux::array_type   tableau;  //!< alias
 
 
+        //! ...
         class mixed : public equilibrium
         {
         public:
-            typedef cxx_list_of<mixed> list;
+            typedef cxx_list_of<mixed> list; //!< ...
 
-            mixed *next;
-            mixed *prev;
+            mixed *next; //!< ...
+            mixed *prev; //!< ...
 
+            //! ...
             explicit mixed(const string &id,
                            const size_t  im,
                            const int     a,
@@ -56,13 +58,13 @@ namespace yack
             }
 
             virtual ~mixed() throw() {
-            }
+            }//!< ...
 
-            const int     selfW;
-            const double &selfK;
-            const int     peerW;
-            const double &peerK;
-            double        value;
+            const int     selfW;//!< ...
+            const double &selfK;//!< ...
+            const int     peerW;//!< ...
+            const double &peerK;//!< ...
+            double        value;//!< ...
 
             void          updateK() throw()
             {
@@ -78,7 +80,7 @@ namespace yack
                     value = num*ipower<double,int>(peerK,peerW);
                 }
                 //std::cerr << "--> value=" << value << std::endl;
-            }
+            }//!< ...
 
         private:
             YACK_DISABLE_COPY_AND_ASSIGN(mixed);
@@ -88,7 +90,7 @@ namespace yack
             }
         };
 
-        typedef cxx_array<mixed::list> mixing;
+        typedef cxx_array<mixed::list> mixing; //!< ...
 
 
         //______________________________________________________________________

@@ -21,6 +21,12 @@ namespace yack
         typedef arrays_of<double>      tableaux; //!< alias
         typedef tableaux::array_type   tableau;  //!< alias
 
+        //______________________________________________________________________
+        //
+        //
+        //! chemical reactor
+        //
+        //______________________________________________________________________
         class reactor
         {
         public:
@@ -32,13 +38,27 @@ namespace yack
             static const bool &verbose; //!< on entity verbose
             static const char  vpfx[];  //!< prefix for verbosity
 
+            //__________________________________________________________________
+            //
+            // C++
+            //__________________________________________________________________
 
-            virtual ~reactor() throw();
-
+            //! initialize from lib/eqs at t0 to compute initial constants
             explicit reactor(library     &lib_,
                              equilibria  &eqs_,
                              const double t0);
+            virtual ~reactor() throw(); //!< cleanup
 
+            //__________________________________________________________________
+            //
+            // methods
+            //__________________________________________________________________
+
+            //! transfer active species only
+            void transfer(writable<double> &, const readable<double> & ) const throw();
+
+            //! check valid concentrations
+            bool are_valid(const readable<double>  &C) const throw();
 
 
             //__________________________________________________________________
@@ -53,7 +73,8 @@ namespace yack
             const size_t      MP;      //!< number of primary species
             const size_t      N;       //!< number of equilibria
             const size_t      NC;      //!< number of couples
-            const equilibria  couples;
+            const size_t      Ntot;    //!< N+NC
+            const equilibria  couples; //!< couples
 
         private:
             tableaux          ntab;
@@ -64,8 +85,9 @@ namespace yack
             tableau           &K;       //!< [N] precomputed constants
             const imatrix     Nu;       //!< [NxM] topology
             const imatrix     NuT;      //!< [MxN] Nu'
-
-
+            rvector           Ktot;     //!< [Ntot]
+            rvector           Xtot;     //!< [Ntot]
+            rmatrix           Ctot;     //!< [NtotxM]
 
 
         private:

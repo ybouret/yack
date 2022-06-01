@@ -30,6 +30,7 @@ namespace yack
         MP(lib.primary() ),
         N( eqs.size()    ),
         NC(0),
+        Ntot(N),
         couples(),
 
         ntab(10,N),
@@ -41,7 +42,9 @@ namespace yack
         Nu(N,N>0?M:0),
         NuT(Nu.cols,Nu.rows),
 
-
+        Ktot(),
+        Xtot(),
+        Ctot(),
 
         lib_lock(lib_),
         eqs_lock(eqs_)
@@ -108,7 +111,14 @@ namespace yack
             // couples
             //
             //------------------------------------------------------------------
-            coerce(NC) = build_couples();
+            coerce(NC)    = build_couples();
+            coerce(Ntot) += NC;
+            if(Ntot)
+            {
+                Ktot.adjust(Ntot,0);
+                Xtot.adjust(Ntot,0);
+                Ctot.make(Ntot,M);
+            }
 
 
             //------------------------------------------------------------------
@@ -121,7 +131,24 @@ namespace yack
         }
 
 
+        void reactor:: transfer(writable<double> &targetC, const readable<double> &sourceC) const throw()
+        {
+            for(const anode *node=active.head;node;node=node->next)
+            {
+                const size_t j = ***node;
+                targetC[j] = sourceC[j];
+            }
+        }
 
+        bool reactor:: are_valid(const readable<double>  &C) const throw()
+        {
+            for(const anode *node=active.head;node;node=node->next)
+            {
+                const size_t j = ***node;
+                if(C[j]<0) return false;
+            }
+            return true;
+        }
 
 
     }
