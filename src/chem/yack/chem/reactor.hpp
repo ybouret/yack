@@ -14,6 +14,13 @@ namespace yack
     namespace chemical
     {
 
+
+        typedef matrix<int>            imatrix;  //!< alias
+        typedef matrix<double>         rmatrix;  //!< alias
+        typedef vector<double>         rvector;  //!< alias
+        typedef arrays_of<double>      tableaux; //!< alias
+        typedef tableaux::array_type   tableau;  //!< alias
+
         class reactor
         {
         public:
@@ -28,8 +35,40 @@ namespace yack
 
             virtual ~reactor() throw();
 
+            explicit reactor(library    &lib_,
+                             equilibria &eqs_);
+
+
+
+            //__________________________________________________________________
+            //
+            // members
+            //__________________________________________________________________
+            const library    &lib; //!< user's lib
+            const equilibria &eqs; //!< user's eqs
+            const size_t      M;   //!< number of species
+            const size_t      MA;  //!< number of active species
+            const size_t      MP;  //!< number of primary species
+            const size_t      N;   //!< number of equilibria
+
+        private:
+            tableaux          ntab;
+            tableaux          mtab;
+
+        public:
+            const alist        active;  //!< active species list
+            tableau           &K;       //!< [N] precomputed constants
+            const imatrix     Nu;       //!< [NxM] topology
+            const imatrix     NuT;      //!< [MxN] Nu'
+
+
+
+
         private:
             YACK_DISABLE_COPY_AND_ASSIGN(reactor);
+            const lockable::scope lib_lock;
+            const lockable::scope eqs_lock;
+
         };
 
     }
