@@ -60,6 +60,8 @@ namespace yack
             //! check valid concentrations
             bool are_valid(const readable<double>  &C) const throw();
 
+            //! solve...
+            bool solve(writable<double> &C0) throw();
 
             //__________________________________________________________________
             //
@@ -85,6 +87,13 @@ namespace yack
             tableau           &K;       //!< [N] precomputed constants
             const imatrix     Nu;       //!< [NxM] topology
             const imatrix     NuT;      //!< [MxN] Nu'
+
+            tableau          &Corg;
+            tableau          &Ctmp;
+            tableau          &Cend;
+            tableau          &Ctry;
+            tableau          &dC;
+            
             rvector           Ktot;     //!< [Ntot]
             rvector           Xtot;     //!< [Ntot]
             rmatrix           Ctot;     //!< [NtotxM]

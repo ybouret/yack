@@ -42,6 +42,11 @@ namespace yack
         Nu(N,N>0?M:0),
         NuT(Nu.cols,Nu.rows),
 
+        Corg( mtab.next() ),
+        Ctmp( mtab.next() ),
+        Cend( mtab.next() ),
+        Ctry( mtab.next() ),
+        dC(   mtab.next() ),
         Ktot(),
         Xtot(),
         Ctot(),
