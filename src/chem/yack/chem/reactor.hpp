@@ -84,6 +84,7 @@ namespace yack
             const size_t      Ntot;    //!< N+NC
             const equilibria  couples; //!< couples
 
+
         private:
             tableaux          ntab;
             tableaux          mtab;
@@ -93,20 +94,25 @@ namespace yack
             tableau           &K;       //!< [N] precomputed constants
             const imatrix     Nu;       //!< [NxM] topology
             const imatrix     NuT;      //!< [MxN] Nu'
-
+            const imatrix     NuTA;     //!< [MxN] Nu', not blocked
             tableau          &Corg;
             tableau          &Ctmp;
             tableau          &Cend;
             tableau          &Ctry;
             tableau          &dC;
 
-            tableau          &Xtmp; //!< [N]
-
+            tableau          &Xtmp;  //!< [N]
+            tableau          &Gamma; //!< [N]
+            tableau          &xi;    //!< [N]
+            rmatrix           Psi;   //!< [NxM]
             rvector           Ktot;     //!< [Ntot]
             rvector           Xtot;     //!< [Ntot]
             rvector           Gtot;     //!< [Ntot]
             rmatrix           Ctot;     //!< [NtotxM]
 
+            rmatrix           Omega0;
+            rmatrix           iOmega;
+            math::lu<double>  LU;
 
         private:
             YACK_DISABLE_COPY_AND_ASSIGN(reactor);
@@ -115,6 +121,8 @@ namespace yack
 
             size_t build_couples();
             double optDecrease(const double G0);
+            double getDecrease();
+
         };
 
     }

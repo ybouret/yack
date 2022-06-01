@@ -5,6 +5,7 @@
 #include "yack/math/tao/v3.hpp"
 #include "yack/sort/sum.hpp"
 #include "yack/math/opt/minimize.hpp"
+#include <iomanip>
 
 namespace yack
 {
@@ -44,6 +45,42 @@ namespace yack
             (void) minimize::find<double>::run_for(*this,u,g, minimize::inside);
 
             return g.b; //!< and Ctry is computed
+        }
+
+        double reactor:: getDecrease()
+        {
+            // initialize
+            const enode       *eOpt = eqs.head();
+            double             gOpt = Gtot[****eOpt];
+
+            // look up on single
+            for(const enode *node=eOpt->next;node;node=node->next)
+            {
+                const double gTmp = Gtot[****node];
+                if(gTmp<gOpt)
+                {
+                    gOpt = gTmp;
+                    eOpt = node;
+                }
+            }
+
+            // look up on couples
+            for(const enode *node=couples.head();node;node=node->next)
+            {
+                const double gTmp = Gtot[****node];
+                if(gTmp<gOpt)
+                {
+                    gOpt = gTmp;
+                    eOpt = node;
+                }
+            }
+
+            // update
+            const equilibrium &opt = ***eOpt;
+            transfer(Corg,Ctot[*opt]);
+
+            std::cerr << "Winner is " << opt.name << " : " << gOpt << "@" << Corg << std::endl;
+            return gOpt;
         }
 
         bool reactor:: solve(writable<double> &C0) throw()
@@ -97,10 +134,19 @@ namespace yack
             ++cycle;
             YACK_CHEM_PRINTLN("//   ---------------- cycle#" << cycle << " ----------------");
 
-            const double G0 = meanGammaSquared(Corg);
+            //------------------------------------------------------------------
+            //
+            // starting point for this cycle
+            //
+            //------------------------------------------------------------------
+            double G0 = meanGammaSquared(Corg);
 
-            // direct
-            YACK_CHEM_PRINTLN(vpfx << "SINGLES");
+            //------------------------------------------------------------------
+            //
+            // testing singles and |Xi| convergence
+            //
+            //------------------------------------------------------------------
+            YACK_CHEM_PRINTLN(vpfx << "  [SINGLES]");
             {
                 double sumAbsXi = 0;
                 for(const enode *node=eqs.head();node;node=node->next)
@@ -113,7 +159,10 @@ namespace yack
                         sumAbsXi += ax;
                         Gtot[ei]  = optDecrease(G0);
                         transfer(Ctot[ei],Ctry);
-                        eqs.pad(std::cerr << eq.name,eq) << " : " << Gtot[ei] << " @" << Ctot[ei] << std::endl;
+                        if(verbose)
+                        {
+                            eqs.pad(std::cerr << eq.name,eq) << " : Xi=" << std::setw(15) << Xtot[ei] << " : " << "Gopt=" << std::setw(15)<< Gtot[ei] << std::endl;
+                        }
                     }
                     else
                     {
@@ -121,9 +170,6 @@ namespace yack
                         transfer(Ctot[ei],Corg);
                     }
                 }
-
-                //eqs(std::cerr << vpfx << "Xi=", Xtot, vpfx);
-                //eqs(std::cerr << vpfx << "G2=", Gtot, vpfx);
 
                 YACK_CHEM_PRINTLN(vpfx << "|Xi|=" << sumAbsXi);
 
@@ -135,8 +181,12 @@ namespace yack
                 }
             }
 
-            // coupled
-            YACK_CHEM_PRINTLN(vpfx << "COUPLES");
+            //------------------------------------------------------------------
+            //
+            // testing couples
+            //
+            //------------------------------------------------------------------
+            YACK_CHEM_PRINTLN(vpfx << "  [COUPLES]");
             for(const enode *node=couples.head();node;node=node->next)
             {
                 const equilibrium &eq = ***node;
@@ -146,7 +196,7 @@ namespace yack
                 {
                     Gtot[ei]  = optDecrease(G0);
                     transfer(Ctot[ei],Ctry);
-                    couples.pad(std::cerr << eq.name,eq) << " : " << Gtot[ei] << " @" << Ctot[ei] << std::endl;
+                    couples.pad(std::cerr << eq.name,eq) << " : Xi=" << std::setw(15) << Xtot[ei] << " : " << "Gopt=" << std::setw(15)<< Gtot[ei] << std::endl;
                 }
                 else
                 {
@@ -155,34 +205,85 @@ namespace yack
                 }
             }
 
-            eqs(std::cerr << vpfx << "Xi=", Xtot, vpfx);
-            couples(std::cerr << vpfx << "Xi=", Xtot, vpfx);
-            //couples(std::cerr << vpfx << "G2=", Gtot, vpfx);
+            //------------------------------------------------------------------
+            //
+            // select best single/couple
+            //
+            //------------------------------------------------------------------
+            G0 = getDecrease();
 
-            const enode       *eOpt = eqs.head();
-            double             gOpt = Gtot[****eOpt];
-            for(const enode *node=eOpt->next;node;node=node->next)
+            //------------------------------------------------------------------
+            //
+            // compute full metrics
+            //
+            //------------------------------------------------------------------
+
+            coerce(NuTA).assign(NuT);
+            size_t num_blocked = 0;
+            size_t num_running = N;
+            for(const enode *node=eqs.head();node;node=node->next)
             {
-                const double gTmp = Gtot[****node];
-                if(gTmp<gOpt)
+                const equilibrium &eq  = ***node;
+                const size_t       ei  = *eq;
+                writable<double>  &psi = Psi[ei];
+                writable<double>  &Omi = Omega0[ei];
+                const double       Ki  = K[ei];
+                const double       ax  = fabs( Xtot[ei] = eq.solve1D(Ki,Corg,Ctmp) );
+
+                Omi.ld(0);
+                if(verbose)
                 {
-                    gOpt = gTmp;
-                    eOpt = node;
+                    eqs.pad(std::cerr << vpfx << eq.name,eq) << " : Gamma=";
                 }
+                if(ax<=0)
+                {
+                    Gamma[ei] = 0;
+                    eq.drvs_action(Psi[ei],Ki,Corg,Ctmp);
+                }
+                else
+                {
+                    Gamma[ei] = eq.grad_action(Psi[ei], Ki, Corg, Ctmp);
+                }
+
+                if(verbose)
+                {
+                    std::cerr << std::setw(15) << Gamma[ei];
+                }
+
+                const double diag = sorted::dot(psi,Nu[ei],Ctmp);
+                if( diag >= 0)
+                {
+                    ++num_blocked;
+                    --num_running;
+                    std::cerr << " [blocked]" << std::endl;
+                    Omi[ei]   = 1.0;
+                    Gamma[ei] = 0.0;
+                    psi.ld(0);
+                }
+                else
+                {
+                    std::cerr << " [running] " << psi;
+                    Omi[ei] = diag;
+                    for(size_t k=N;k>ei;--k)   Omi[k] = sorted::dot(psi,Nu[k],Ctmp);
+                    for(size_t k=ei-1;k>0;--k) Omi[k] = sorted::dot(psi,Nu[k],Ctmp);
+                }
+
+                if(verbose) std::cerr << std::endl;
+
+            }
+            std::cerr << "Omega=" << Omega0 << std::endl;
+
+
+            // evaluate xi
+            iOmega.assign(Omega0);
+
+            if(!LU.build(iOmega))
+            {
+                YACK_CHEM_PRINTLN("// <plexus.solve> [SINGULAR]");
+                return false;
             }
 
-            for(const enode *node=couples.head();node;node=node->next)
-            {
-                const double gTmp = Gtot[****node];
-                if(gTmp<gOpt)
-                {
-                    gOpt = gTmp;
-                    eOpt = node;
-                }
-            }
 
-            const equilibrium &opt = ***eOpt;
-            std::cerr << "Winner is " << opt.name << std::endl;
 
 
             exit(1);

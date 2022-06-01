@@ -41,7 +41,8 @@ namespace yack
 
         Nu(N,N>0?M:0),
         NuT(Nu.cols,Nu.rows),
-
+        NuTA(NuT.rows,NuT.cols),
+        
         Corg( mtab.next() ),
         Ctmp( mtab.next() ),
         Cend( mtab.next() ),
@@ -49,12 +50,20 @@ namespace yack
         dC(   mtab.next() ),
 
         Xtmp( ntab.next() ),
+        Gamma( ntab.next() ),
+        xi(    ntab.next() ),
 
+        Psi(Nu.rows,Nu.cols),
+        
         Ktot(),
         Xtot(),
         Gtot(),
         Ctot(),
 
+        Omega0(N,N),
+        iOmega(N,N),
+        LU(N),
+        
         lib_lock(lib_),
         eqs_lock(eqs_)
         {
