@@ -45,13 +45,14 @@ namespace yack
             //
             // members
             //__________________________________________________________________
-            const library    &lib;    //!< user's lib
-            const equilibria &eqs;    //!< user's eqs
-            const library     sub;    //!< copy of lib
-            const size_t      M;      //!< number of species
-            const size_t      MA;     //!< number of active species
-            const size_t      MP;     //!< number of primary species
-            const size_t      N;      //!< number of equilibria
+            const library    &lib;     //!< user's lib
+            const equilibria &eqs;     //!< user's eqs
+            const library     sub;     //!< copy of lib
+            const size_t      M;       //!< number of species
+            const size_t      MA;      //!< number of active species
+            const size_t      MP;      //!< number of primary species
+            const size_t      N;       //!< number of equilibria
+            const size_t      NC;      //!< number of couples
             const equilibria  couples;
 
         private:
@@ -72,8 +73,8 @@ namespace yack
             const lockable::scope lib_lock;
             const lockable::scope eqs_lock;
 
-            void build_couples();
-
+            size_t build_couples();
+            
         };
 
     }

@@ -29,6 +29,7 @@ namespace yack
         MA(lib.active()  ),
         MP(lib.primary() ),
         N( eqs.size()    ),
+        NC(0),
         couples(),
 
         ntab(10,N),
@@ -72,6 +73,8 @@ namespace yack
             // build Nu
             //
             //------------------------------------------------------------------
+            equilibrium::display_time = t0;
+            YACK_CHEM_PRINTLN(eqs);
             for(const enode *node=eqs.head();node;node=node->next)
             {
                 const equilibrium &eq = ***node;
@@ -79,6 +82,7 @@ namespace yack
                 if(!eq.is_neutral()) throw exception( "%s is not neutral", eq.name() );
                 eq.fill( coerce(Nu[*eq]) );
                 K[*eq] = eq.K(t0);
+
             }
             coerce(NuT).assign(Nu,transposed);
             YACK_CHEM_PRINTLN("  Nu =" << Nu);
@@ -104,7 +108,7 @@ namespace yack
             // couples
             //
             //------------------------------------------------------------------
-            build_couples();
+            coerce(NC) = build_couples();
 
 
             //------------------------------------------------------------------

@@ -96,8 +96,9 @@ namespace yack
 
 
 
-        void reactor::build_couples()
+        size_t reactor::build_couples()
         {
+            YACK_CHEM_PRINTLN("  <build_couples>");
             //equilibria       &repo = coerce(couples);
             vector<coeff>     comb(M,as_capacity);
             size_t            ic = 0;
@@ -109,7 +110,6 @@ namespace yack
             //------------------------------------------------------------------
             for(const enode *xnode=eqs.head();xnode;xnode=xnode->next)
             {
-                comb.free();
                 const equilibrium   &xeq = ***xnode;
                 const size_t         xid = *xeq;
                 const readable<int> &xnu = Nu[xid];
@@ -126,9 +126,10 @@ namespace yack
                     const size_t         yid = *yeq;
                     const readable<int> &ynu = Nu[yid];
                     const double        &Ky  = K[yid];
+                    comb.free();
 
-                    YACK_CHEM_PRINTLN("  Testing <" << xeq.name << ">|<" << yeq.name << ">");
-                    YACK_CHEM_PRINTLN("  |_"<< xnu << " | " << ynu);
+                    YACK_CHEM_PRINTLN("    <" << xeq.name << "|" << yeq.name << ">");
+                    //YACK_CHEM_PRINTLN("  |_"<< xnu << " | " << ynu);
 
                     //----------------------------------------------------------
                     //
@@ -142,9 +143,16 @@ namespace yack
                         // create new coeff
                         //
                         //------------------------------------------------------
-                        const coeff st_plus(xnu[j],ynu[j]); if(st_plus.x==0||st_plus.y==0) continue;
+                        const coeff shared(xnu[j],ynu[j]);
+                        if(shared.x==0||shared.y==0)
+                        {
+                            continue;
+                        }
+                        apz mp_alpha = -shared.y;
+                        apz mp_beta  =  shared.x;
+                        apz::simplify(mp_alpha,mp_beta);
+                        const coeff st_plus(mp_alpha.cast_to<int>("alpha"), mp_beta.cast_to<int>("beta"));
                         const coeff st_minus = -st_plus;
-                        //YACK_CHEM_PRINTLN("   |_found " << st_plus << " (already=" << comb << ")" );
 
                         //------------------------------------------------------
                         //
@@ -179,31 +187,33 @@ namespace yack
                         //------------------------------------------------------
                         const double K_plus  = K_for(Kx, Ky, st_plus);
                         const double K_minus = K_for(Kx, Ky, st_minus);
+                        const coeff  st      = K_plus > K_minus ? st_plus : st_minus;
+                        const string id      = make_name(xeq.name,yeq.name,st);
+                        equilibrium &eq      = coerce(couples).use( new coupled_equilibrium(id,st,Kx,Ky,++ic) );
 
-                        //YACK_CHEM_PRINTLN("    |_[" << make_name(xeq.name,yeq.name,st_plus)  << "] @" << K_plus);
-                        //YACK_CHEM_PRINTLN("    |_[" << make_name(xeq.name,yeq.name,st_minus) << "] @" << K_minus);
-
+                        for(size_t j=1;j<=M;++j)
                         {
-                            const coeff          st = K_plus > K_minus ? st_plus : st_minus;
-                            const string         id = make_name(xeq.name,yeq.name,st);
-                            equilibrium::pointer eq = new coupled_equilibrium(id,st,Kx,Ky,++ic);
-                            
-
-                            for(size_t j=1;j<=M;++j)
-                            {
-                                const int nu = xnu[j] * st.x + ynu[j] * st.y;
-                                if(!nu) continue;
-                                const species &sp = sub[j];
-                                (*eq)(sp,nu);
-                            }
-                            YACK_CHEM_PRINTLN("  | (*) " << eq);
+                            const int nu = xnu[j] * st.x + ynu[j] * st.y;
+                            if(!nu) continue;
+                            const species &sp = sub[j];
+                            eq(sp,nu);
                         }
+                        YACK_CHEM_PRINTLN("      (*) " << eq);
                     }
+                    YACK_CHEM_PRINTLN("    <" << xeq.name << "|" << yeq.name << "/>");
 
                 }
             }
 
-
+            //------------------------------------------------------------------
+            //
+            // done
+            //
+            //------------------------------------------------------------------
+            YACK_CHEM_PRINTLN("    #couples = " << ic << " / " << couples.size());
+            YACK_CHEM_PRINTLN(couples);
+            YACK_CHEM_PRINTLN("  <build_couples/>");
+            return ic;
         }
 
     }
