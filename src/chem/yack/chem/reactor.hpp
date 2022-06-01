@@ -35,8 +35,9 @@ namespace yack
 
             virtual ~reactor() throw();
 
-            explicit reactor(library    &lib_,
-                             equilibria &eqs_);
+            explicit reactor(library     &lib_,
+                             equilibria  &eqs_,
+                             const double t0);
 
 
 

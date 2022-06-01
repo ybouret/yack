@@ -20,7 +20,8 @@ namespace yack
         }
 
         reactor:: reactor(library    &lib_,
-                          equilibria &eqs_) :
+                          equilibria &eqs_,
+                          const double t0) :
         lib( lib_ ),
         eqs( eqs_ ),
         M( lib.size()    ),
@@ -42,11 +43,11 @@ namespace yack
         eqs_lock(eqs_)
         {
 
-            YACK_CHEM_PRINTLN("// M  = " << M);
-            YACK_CHEM_PRINTLN("// MA = " << MA);
-            YACK_CHEM_PRINTLN("// MP = " << MP);
-
-            YACK_CHEM_PRINTLN("// N  = " << N);
+            YACK_CHEM_PRINTLN("<" << clid << ">");
+            YACK_CHEM_PRINTLN("  M  = " << M);
+            YACK_CHEM_PRINTLN("  MA = " << MA);
+            YACK_CHEM_PRINTLN("  MP = " << MP);
+            YACK_CHEM_PRINTLN("  N  = " << N);
 
             //------------------------------------------------------------------
             //
@@ -74,10 +75,12 @@ namespace yack
                 if(!eq.is_minimal()) throw exception( "%s is not minimal", eq.name() );
                 if(!eq.is_neutral()) throw exception( "%s is not neutral", eq.name() );
                 eq.fill( coerce(Nu[*eq]) );
+                K[*eq] = eq.K(t0);
             }
             coerce(NuT).assign(Nu,transposed);
-            YACK_CHEM_PRINTLN("Nu =" << Nu);
-            YACK_CHEM_PRINTLN("NuT=" << NuT);
+            YACK_CHEM_PRINTLN("  Nu =" << Nu);
+            YACK_CHEM_PRINTLN("  NuT=" << NuT);
+            YACK_CHEM_PRINTLN("  K  =" << K);
 
             //------------------------------------------------------------------
             //
@@ -91,6 +94,21 @@ namespace yack
                 tao::v3::gram(G,Nu);
                 if( !alu.build(G) ) throw exception("%s: dependent equilibria",clid);
             }
+
+
+            //------------------------------------------------------------------
+            //
+            // first constant evaluation to compute sub-equilibria
+            //
+            //------------------------------------------------------------------
+
+
+            //------------------------------------------------------------------
+            //
+            // done
+            //
+            //------------------------------------------------------------------
+            YACK_CHEM_PRINTLN("<" << clid << "/>");
 
         }
 
