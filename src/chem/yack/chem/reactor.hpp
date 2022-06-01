@@ -60,6 +60,7 @@ namespace yack
             //! check valid concentrations
             bool are_valid(const readable<double>  &C) const throw();
 
+            //! careful sum(Gamma^2)/B
             double meanGammaSquared(const readable<double> &C) throw();
 
             //! meanGammaSquared( (1-u)*Corg + u * Cend)
@@ -95,24 +96,25 @@ namespace yack
             const imatrix     Nu;       //!< [NxM] topology
             const imatrix     NuT;      //!< [MxN] Nu'
             const imatrix     NuTA;     //!< [MxN] Nu', not blocked
-            tableau          &Corg;
-            tableau          &Ctmp;
-            tableau          &Cend;
-            tableau          &Ctry;
-            tableau          &dC;
+                                        
+            tableau          &Corg;     //!< [M] internal working space
+            tableau          &Ctmp;     //!< [M] internal temporary concs
+            tableau          &Cend;     //!< [M] internal target concentration
+            tableau          &Ctry;     //!< [M] internal trial
+            tableau          &dC;       //!< [M] step
 
-            tableau          &Xtmp;  //!< [N]
-            tableau          &Gamma; //!< [N]
-            tableau          &xi;    //!< [N]
-            rmatrix           Psi;   //!< [NxM]
+            tableau          &Xtmp;     //!< [N]
+            tableau          &Gamma;    //!< [N]
+            tableau          &xi;       //!< [N]
+            rmatrix           Psi;      //!< [NxM]
             rvector           Ktot;     //!< [Ntot]
             rvector           Xtot;     //!< [Ntot]
             rvector           Gtot;     //!< [Ntot]
             rmatrix           Ctot;     //!< [NtotxM]
 
-            rmatrix           Omega0;
-            rmatrix           iOmega;
-            math::lu<double>  LU;
+            rmatrix           Omega0;   //!< Phi*Nu'
+            rmatrix           iOmega;   //!< inv(Omega0)
+            math::lu<double>  LU;       //!< inverter
 
         private:
             YACK_DISABLE_COPY_AND_ASSIGN(reactor);
@@ -120,8 +122,8 @@ namespace yack
             const lockable::scope eqs_lock;
 
             size_t build_couples();
-            double optDecrease(const double G0);
-            double getDecrease();
+            double optimizeDecreaseFrom(const double G0);
+            double selectDecreasedState();
 
         };
 

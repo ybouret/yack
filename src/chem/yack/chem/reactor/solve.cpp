@@ -38,7 +38,7 @@ namespace yack
             return meanGammaSquared(Ctry);
         }
 
-        double reactor:: optDecrease(const double G0)
+        double reactor:: optimizeDecreaseFrom(const double G0)
         {
             triplet<double> u = { 0, -1, 1 };
             triplet<double> g = { G0, -1, meanGammaSquared(Cend) };
@@ -47,7 +47,7 @@ namespace yack
             return g.b; //!< and Ctry is computed
         }
 
-        double reactor:: getDecrease()
+        double reactor:: selectDecreasedState()
         {
             // initialize
             const enode       *eOpt = eqs.head();
@@ -157,7 +157,7 @@ namespace yack
                     if(ax>0)
                     {
                         sumAbsXi += ax;
-                        Gtot[ei]  = optDecrease(G0);
+                        Gtot[ei]  = optimizeDecreaseFrom(G0);
                         transfer(Ctot[ei],Ctry);
                         if(verbose)
                         {
@@ -194,7 +194,7 @@ namespace yack
                 const double       ax = fabs( Xtot[ei] = eq.solve1D(Ktot[ei], Corg, Cend) );
                 if(ax>0)
                 {
-                    Gtot[ei]  = optDecrease(G0);
+                    Gtot[ei]  = optimizeDecreaseFrom(G0);
                     transfer(Ctot[ei],Ctry);
                     couples.pad(std::cerr << eq.name,eq) << " : Xi=" << std::setw(15) << Xtot[ei] << " : " << "Gopt=" << std::setw(15)<< Gtot[ei] << std::endl;
                 }
@@ -210,7 +210,7 @@ namespace yack
             // select best single/couple
             //
             //------------------------------------------------------------------
-            G0 = getDecrease();
+            G0 = selectDecreasedState();
 
             //------------------------------------------------------------------
             //
