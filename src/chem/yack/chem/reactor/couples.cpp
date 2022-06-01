@@ -101,7 +101,7 @@ namespace yack
             YACK_CHEM_PRINTLN("  <build_couples>");
             //equilibria       &repo = coerce(couples);
             vector<coeff>     comb(M,as_capacity);
-            size_t            ic = 0;
+            size_t            ic = N;
 
             //------------------------------------------------------------------
             //
@@ -210,10 +210,10 @@ namespace yack
             // done
             //
             //------------------------------------------------------------------
-            YACK_CHEM_PRINTLN("    #couples = " << ic << " / " << couples.size());
+            YACK_CHEM_PRINTLN("    #couples = " << couples.size());
             YACK_CHEM_PRINTLN(couples);
             YACK_CHEM_PRINTLN("  <build_couples/>");
-            return ic;
+            return couples.size();
         }
 
     }

@@ -47,8 +47,12 @@ namespace yack
         Cend( mtab.next() ),
         Ctry( mtab.next() ),
         dC(   mtab.next() ),
+
+        Xtmp( ntab.next() ),
+
         Ktot(),
         Xtot(),
+        Gtot(),
         Ctot(),
 
         lib_lock(lib_),
@@ -122,7 +126,17 @@ namespace yack
             {
                 Ktot.adjust(Ntot,0);
                 Xtot.adjust(Ntot,0);
+                Gtot.adjust(Ntot,0);
                 Ctot.make(Ntot,M);
+
+                for(size_t i=N;i>0;--i) Ktot[i] = K[i];
+                for(const enode *node=couples.head();node;node=node->next)
+                {
+                    const equilibrium &eq = ***node;
+                    const size_t       ei = *eq; assert(ei>N); assert(ei<=Ntot);
+                    Ktot[ei] = eq.K(t0);
+                }
+                YACK_CHEM_PRINTLN("  Ktot  = " << Ktot);
             }
 
 

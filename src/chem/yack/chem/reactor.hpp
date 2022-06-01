@@ -60,6 +60,12 @@ namespace yack
             //! check valid concentrations
             bool are_valid(const readable<double>  &C) const throw();
 
+            double meanGammaSquared(const readable<double> &C) throw();
+
+            //! meanGammaSquared( (1-u)*Corg + u * Cend)
+            double operator()(const double u) throw();
+
+
             //! solve...
             bool solve(writable<double> &C0) throw();
 
@@ -93,9 +99,12 @@ namespace yack
             tableau          &Cend;
             tableau          &Ctry;
             tableau          &dC;
-            
+
+            tableau          &Xtmp; //!< [N]
+
             rvector           Ktot;     //!< [Ntot]
             rvector           Xtot;     //!< [Ntot]
+            rvector           Gtot;     //!< [Ntot]
             rmatrix           Ctot;     //!< [NtotxM]
 
 
@@ -105,7 +114,7 @@ namespace yack
             const lockable::scope eqs_lock;
 
             size_t build_couples();
-            
+            double optDecrease(const double G0);
         };
 
     }
