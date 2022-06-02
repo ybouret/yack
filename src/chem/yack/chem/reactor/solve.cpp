@@ -34,6 +34,8 @@ namespace yack
             YACK_CHEM_PRINTLN("// <plexus.solve>");
             if(verbose) lib(std::cerr << vpfx << "Cini=",C0,vpfx);
 
+            ios::ocstream::overwrite("rms.dat");
+
             switch(N)
             {
 
@@ -73,10 +75,12 @@ namespace yack
             vector<size_t> ustack;
 
             size_t cycle = 0;
+            double G0    = meanGammaSquared(Corg);
+
         CYCLE:
             ++cycle;
-            YACK_CHEM_PRINTLN("//   ---------------- cycle#" << cycle << " ----------------");
-
+            YACK_CHEM_PRINTLN("//   ================ cycle#" << cycle << " ================");
+            ios::ocstream::echo("rms.dat", "%u %g\n", unsigned(cycle), G0);
 
             //------------------------------------------------------------------
             //
@@ -84,7 +88,6 @@ namespace yack
             //
             //------------------------------------------------------------------
             YACK_CHEM_PRINTLN("//    <GlobalStep>");
-            double G0 = meanGammaSquared(Corg);
 
             //------------------------------------------------------------------
             //
@@ -166,7 +169,10 @@ namespace yack
             // evaluate extent
             //
             //------------------------------------------------------------------
+            size_t subCycle = 0;
         EVALUATE_EXTENT:
+            ++subCycle;
+            YACK_CHEM_PRINTLN("//   ---------------- inner#" << cycle << '.' << subCycle << " ----------------");
             YACK_CHEM_PRINTLN("//    <EvaluateExtent>");
             YACK_CHEM_PRINTLN("//     \\_#running = " << num_running << " / " << N );
             if(verbose)
@@ -185,7 +191,7 @@ namespace yack
 
             tao::v1::set(xi,Gamma);
             LU.solve(iOmega,xi);
-            std::cerr << "xi=" << xi << std::endl;
+            std::cerr << "xi="       << xi << std::endl;
             std::cerr << "blocked="  << blocked << std::endl;
 
             //------------------------------------------------------------------
@@ -284,14 +290,20 @@ namespace yack
                 }
             }
 
-            const double G1 = optimizeDecreaseFrom(G0);
+            const double Gtry = optimizeDecreaseFrom(G0);
 
-            std::cerr << "G0=" << G0 << " -> " << G1 << std::endl;
+            std::cerr << "G0=" << G0 << " -> " << Gtry << std::endl;
 
-            exit(1);
+            transfer(Corg,Ctry);
+            G0 = Gtry;
+
+            if(cycle>=5)
+            {
+                exit(1);
+            }
+
             goto CYCLE;
-            YACK_CHEM_PRINTLN("// <plexus.solve> [SUCCESS]");
-            return true;
+
         }
     }
 
