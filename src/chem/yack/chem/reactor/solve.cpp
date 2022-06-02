@@ -78,8 +78,10 @@ namespace yack
             // update
             const equilibrium &opt = ***eOpt;
             transfer(Corg,Ctot[*opt]);
-
-            std::cerr << "Winner is " << opt.name << " : " << gOpt << "@" << Corg << std::endl;
+            if(verbose)
+            {
+                couples.pad(std::cerr << vpfx << opt.name,opt) << " : selected " << gOpt << std::endl;
+            }
             return gOpt;
         }
 
@@ -134,6 +136,8 @@ namespace yack
             ++cycle;
             YACK_CHEM_PRINTLN("//   ---------------- cycle#" << cycle << " ----------------");
 
+            YACK_CHEM_PRINTLN("//    <GlobalStep>");
+
             //------------------------------------------------------------------
             //
             // starting point for this cycle
@@ -146,39 +150,35 @@ namespace yack
             // testing singles and |Xi| convergence
             //
             //------------------------------------------------------------------
-            YACK_CHEM_PRINTLN(vpfx << "  [SINGLES]");
+            double sumAbsXi = 0;
+            for(const enode *node=eqs.head();node;node=node->next)
             {
-                double sumAbsXi = 0;
-                for(const enode *node=eqs.head();node;node=node->next)
+                const equilibrium &eq = ***node;
+                const size_t       ei = *eq;     assert(ei>0); assert(ei<=N);
+                const double       ax = fabs( Xtot[ei] = eq.solve1D(Ktot[ei], Corg, Cend) );
+                if(ax>0)
                 {
-                    const equilibrium &eq = ***node;
-                    const size_t       ei = *eq;     assert(ei>0); assert(ei<=N);
-                    const double       ax = fabs( Xtot[ei] = eq.solve1D(Ktot[ei], Corg, Cend) );
-                    if(ax>0)
+                    sumAbsXi += ax;
+                    Gtot[ei]  = optimizeDecreaseFrom(G0);
+                    transfer(Ctot[ei],Ctry);
+                    if(verbose)
                     {
-                        sumAbsXi += ax;
-                        Gtot[ei]  = optimizeDecreaseFrom(G0);
-                        transfer(Ctot[ei],Ctry);
-                        if(verbose)
-                        {
-                            eqs.pad(std::cerr << eq.name,eq) << " : Xi=" << std::setw(15) << Xtot[ei] << " : " << "Gopt=" << std::setw(15)<< Gtot[ei] << std::endl;
-                        }
-                    }
-                    else
-                    {
-                        Gtot[ei] = G0;
-                        transfer(Ctot[ei],Corg);
+                        couples.pad(std::cerr << vpfx << eq.name,eq) << " : Xi=" << std::setw(15) << Xtot[ei] << " : " << "Gopt=" << std::setw(15)<< Gtot[ei] << std::endl;
                     }
                 }
-
-                YACK_CHEM_PRINTLN(vpfx << "|Xi|=" << sumAbsXi);
-
-                if(sumAbsXi<=0)
+                else
                 {
-                    transfer(C0,Corg);
-                    YACK_CHEM_PRINTLN("// <plexus.solve> [SUCCESS]");
-                    return true;
+                    Gtot[ei] = G0;
+                    transfer(Ctot[ei],Corg);
                 }
+            }
+
+
+            if(sumAbsXi<=0)
+            {
+                transfer(C0,Corg);
+                YACK_CHEM_PRINTLN("// <plexus.solve> [SUCCESS |Xi|=0]");
+                return true;
             }
 
             //------------------------------------------------------------------
@@ -186,7 +186,6 @@ namespace yack
             // testing couples
             //
             //------------------------------------------------------------------
-            YACK_CHEM_PRINTLN(vpfx << "  [COUPLES]");
             for(const enode *node=couples.head();node;node=node->next)
             {
                 const equilibrium &eq = ***node;
@@ -196,7 +195,7 @@ namespace yack
                 {
                     Gtot[ei]  = optimizeDecreaseFrom(G0);
                     transfer(Ctot[ei],Ctry);
-                    couples.pad(std::cerr << eq.name,eq) << " : Xi=" << std::setw(15) << Xtot[ei] << " : " << "Gopt=" << std::setw(15)<< Gtot[ei] << std::endl;
+                    couples.pad(std::cerr << vpfx << eq.name,eq) << " : Xi=" << std::setw(15) << Xtot[ei] << " : " << "Gopt=" << std::setw(15)<< Gtot[ei] << std::endl;
                 }
                 else
                 {
@@ -204,6 +203,7 @@ namespace yack
                     transfer(Ctot[ei],Corg);
                 }
             }
+            YACK_CHEM_PRINTLN(vpfx << "|Xi|=" << sumAbsXi);
 
             //------------------------------------------------------------------
             //
@@ -211,13 +211,14 @@ namespace yack
             //
             //------------------------------------------------------------------
             G0 = selectDecreasedState();
+            YACK_CHEM_PRINTLN("//    <GlobalStep/>");
 
             //------------------------------------------------------------------
             //
             // compute full metrics
             //
             //------------------------------------------------------------------
-
+            YACK_CHEM_PRINTLN("//    <Omega>");
             coerce(NuTA).assign(NuT);
             size_t num_blocked = 0;
             size_t num_running = N;
@@ -271,7 +272,9 @@ namespace yack
                 if(verbose) std::cerr << std::endl;
 
             }
+            //std::cerr << "Psi  =" << Psi    << std::endl;
             std::cerr << "Omega=" << Omega0 << std::endl;
+            YACK_CHEM_PRINTLN("//    <Omega/>");
 
 
             // evaluate xi
