@@ -52,7 +52,9 @@ namespace yack
         Xtmp( ntab.next() ),
         Gamma( ntab.next() ),
         xi(    ntab.next() ),
-
+        _blk_(   ntab.next() ),
+        blocked(_blk_,transmogrify),
+        
         Psi(Nu.rows,Nu.cols),
         
         Ktot(),

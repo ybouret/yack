@@ -20,6 +20,7 @@ namespace yack
         typedef vector<double>         rvector;  //!< alias
         typedef arrays_of<double>      tableaux; //!< alias
         typedef tableaux::array_type   tableau;  //!< alias
+        typedef thin_array<bool>       booleans; //!< alias
 
         //______________________________________________________________________
         //
@@ -106,6 +107,9 @@ namespace yack
             tableau          &Xtmp;     //!< [N]
             tableau          &Gamma;    //!< [N]
             tableau          &xi;       //!< [N]
+            tableau          &_blk_;    //!< [N]
+            booleans          blocked;  //!< [N] from blk
+
             rmatrix           Psi;      //!< [NxM]
             rvector           Ktot;     //!< [Ntot]
             rvector           Xtot;     //!< [Ntot]
