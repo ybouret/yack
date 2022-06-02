@@ -100,6 +100,9 @@ namespace yack
             x += rhs.x; y += rhs.y; z += rhs.z; return *this;
         }
 
+        //! unary plus
+        inline v3d operator+() const throw() { return *this; }
+
         //______________________________________________________________________
         //
         // subtraction
@@ -114,6 +117,9 @@ namespace yack
         inline v3d & operator-=(const v3d &rhs) throw() {
             x -= rhs.x; y -= rhs.y; z -= rhs.z; return *this;
         }
+
+        //! unary minus
+        inline v3d operator-() const throw() { return v3d(-x,-y,-z); }
 
         //______________________________________________________________________
         //
