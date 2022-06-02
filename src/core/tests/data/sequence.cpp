@@ -192,6 +192,17 @@ YACK_UTEST(data_sequence)
         std::cerr << "btab=" << btab << std::endl;
     }
 
+    {
+        uint32_t arr[3] = { 0xffffffff, 0xffffffff, 0xffffffff };
+        thin_array<uint32_t> dw(arr,sizeof(arr)/sizeof(arr[0]));
+        std::cerr << "dw=" << dw << std::endl;
+
+        thin_array<uint16_t> w(dw,transmogrify);
+        std::cerr << "w=" << w << std::endl;
+
+
+    }
+
 }
 YACK_UDONE()
 
