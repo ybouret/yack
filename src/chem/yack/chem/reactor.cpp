@@ -132,7 +132,7 @@ namespace yack
             // couples
             //
             //------------------------------------------------------------------
-            coerce(NC)    = buildCouples();
+            coerce(NC)    = buildMatchingCouples();
             coerce(Ntot) += NC;
             if(Ntot)
             {
@@ -141,6 +141,7 @@ namespace yack
                 Gtot.adjust(Ntot,0);
                 Ctot.make(Ntot,M);
 
+                // initialize first Ktot
                 for(size_t i=N;i>0;--i) Ktot[i] = K[i];
                 for(const enode *node=couples.head();node;node=node->next)
                 {
@@ -180,6 +181,25 @@ namespace yack
             }
             return true;
         }
+
+        void reactor:: computeK(const double t)
+        {
+            for(const enode *node=eqs.head();node;node=node->next)
+            {
+                const equilibrium &eq = ***node;
+                const size_t       ei = *eq;
+                K[ei] = Ktot[ei] = eq.K(t);
+            }
+
+            for(const enode *node=couples.head();node;node=node->next)
+            {
+                const equilibrium &eq = ***node;
+                const size_t       ei = *eq;
+                Ktot[ei] = eq.K(t);
+            }
+            
+        }
+
 
 
     }

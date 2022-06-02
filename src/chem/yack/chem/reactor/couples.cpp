@@ -96,10 +96,9 @@ namespace yack
 
 
 
-        size_t reactor::buildCouples()
+        size_t reactor::buildMatchingCouples()
         {
             YACK_CHEM_PRINTLN("  <BuildCouples>");
-            //equilibria       &repo = coerce(couples);
             vector<coeff>     comb(M,as_capacity);
             size_t            ic = N;
 
@@ -129,8 +128,7 @@ namespace yack
                     comb.free();
 
                     YACK_CHEM_PRINTLN("    <" << xeq.name << "|" << yeq.name << ">");
-                    //YACK_CHEM_PRINTLN("  |_"<< xnu << " | " << ynu);
-
+                    
                     //----------------------------------------------------------
                     //
                     // loop over all coeffs

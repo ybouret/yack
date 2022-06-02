@@ -67,6 +67,8 @@ namespace yack
             //! meanGammaSquared( (1-u)*Corg + u * Cend)
             double operator()(const double u) throw();
 
+            //! precompute all K
+            void computeK(const double t);
 
             //! solve...
             bool solve(writable<double> &C0) throw();
@@ -104,21 +106,21 @@ namespace yack
             tableau          &Ctry;     //!< [M] internal trial
             tableau          &dC;       //!< [M] step
 
-            tableau          &Xtmp;     //!< [N]
-            tableau          &Gamma;    //!< [N]
-            tableau          &xi;       //!< [N]
-            tableau          &_blk_;    //!< [N]
-            booltab          blocked;   //!< [N] from blk, transmogrified
+            tableau          &Xtmp;     //!< [N] temporary if R^N
+            tableau          &Gamma;    //!< [N] mass actions
+            tableau          &xi;       //!< [N] extents
+            tableau          &_blk_;    //!< [N] data for blocked
+            booltab          blocked;   //!< [N] from _blk_, transmogrified :)
 
-            rmatrix           Psi;      //!< [NxM]
-            rvector           Ktot;     //!< [Ntot]
-            rvector           Xtot;     //!< [Ntot]
-            rvector           Gtot;     //!< [Ntot]
-            rmatrix           Ctot;     //!< [NtotxM]
-            rvector           rstack;   //!  [0..M]
+            rmatrix           Psi;      //!< [NxM]    jacobian of Gamma
+            rvector           Ktot;     //!< [Ntot]   all constant, singles+couples
+            rvector           Xtot;     //!< [Ntot]   all Xi, to help select best reaction
+            rvector           Gtot;     //!< [Ntot]   all optimized |Gamma^2|
+            rmatrix           Ctot;     //!< [NtotxM] corresponding to optimized values
+            rvector           rstack;   //!< [0..M] variable stack of reals
 
-            rmatrix           Omega0;   //!< Phi*Nu'
-            rmatrix           iOmega;   //!< inv(Omega0)
+            rmatrix           Omega0;   //!< [NxN] Phi*Nu', regularized
+            rmatrix           iOmega;   //!< [NxN] inv(Omega0)
             math::lu<double>  LU;       //!< inverter
 
         private:
@@ -126,11 +128,11 @@ namespace yack
             const lockable::scope lib_lock;
             const lockable::scope eqs_lock;
 
-            size_t buildCouples();
-            double optimizeDecreaseFrom(const double G0) throw();
-            double selectDecreasedState()                throw();
-            size_t computeOmegaAndGamma()                throw();
-            void   retractEquilibriumAt(const size_t ei)  throw();
+            size_t buildMatchingCouples(); //!< build all possible coupled equilibria
+            double optimizeDecreaseFrom(const double G0)  throw(); //!< from G0 @Corg to Cend
+            double selectDecreasedState()                 throw(); //!< select from Gtot/Ctot
+            size_t computeOmegaAndGamma()                 throw(); //!< build full initial Omega and Gamma, return num running
+            void   retractEquilibriumAt(const size_t ei)  throw(); //!< regularize by removing equilibrium from set
         };
 
     }
