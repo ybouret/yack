@@ -2,6 +2,7 @@
 #include "yack/sequence/list.hpp"
 #include "yack/sequence/cxx-array.hpp"
 #include "yack/sequence/cxx-series.hpp"
+#include "yack/sequence/thin-array.hpp"
 #include "yack/memory/allocator/global.hpp"
 #include "yack/memory/allocator/dyadic.hpp"
 #include "yack/apex.hpp"
@@ -175,6 +176,21 @@ YACK_UTEST(data_sequence)
     ss.add<const char *>("toto");
     std::cerr << "ss=" << ss << std::endl;
     ss.pop();
+
+    {
+        double arr[4] = { 1, 2, 3, 4 };
+        thin_array<double> dtab(arr,sizeof(arr)/sizeof(arr[0]));
+        std::cerr << "dtab=" << dtab << std::endl;
+
+        thin_array<uint64_t> qtab(dtab,transmogrify);
+        std::cerr << "qtab=" << qtab << std::endl;
+
+        thin_array<uint16_t> utab(dtab,transmogrify);
+        std::cerr << "utab=" << utab << std::endl;
+
+        thin_array<bool> btab(dtab,transmogrify);
+        std::cerr << "btab=" << btab << std::endl;
+    }
 
 }
 YACK_UDONE()

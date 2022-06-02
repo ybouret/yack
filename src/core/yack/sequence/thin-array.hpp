@@ -7,6 +7,8 @@
 
 #include "yack/sequence/contiguous.hpp"
 #include "yack/type/out-of-reach.hpp"
+#include "yack/type/transmogrify.hpp"
+#include "yack/check/static.hpp"
 
 namespace yack
 {
@@ -55,7 +57,19 @@ namespace yack
         basis(other.basis)
         {
         }
-        
+
+        //! transmogrify
+        template <typename U>
+        inline thin_array( thin_array<U> &other, const transmogrify_t & ) throw() :
+        collection(),
+        contiguous<T>(),
+        entry( coerce_cast<mutable_type>( other()-1) ),
+        count( other.size() ),
+        basis( entry+1 )
+        {
+            YACK_STATIC_CHECK(sizeof(U)>=sizeof(T),type_too_large);
+        }
+
         //______________________________________________________________________
         //
         // interface
@@ -67,7 +81,7 @@ namespace yack
         mutable_type *entry;
         const size_t  count;
         mutable_type *basis;
-
+        
         YACK_DISABLE_ASSIGN(thin_array);
         inline virtual const_type *cxx() const throw() { return entry; }
         inline virtual const_type *mem() const throw() { return basis; }
