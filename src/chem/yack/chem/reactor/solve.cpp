@@ -46,7 +46,7 @@ namespace yack
                     YACK_CHEM_PRINTLN("// <plexus.solve/> [empty]");
                     return true;
 
-#if 1
+#if 0
                 case 1: {
                     //----------------------------------------------------------
                     // trivial case
@@ -164,6 +164,8 @@ namespace yack
             //------------------------------------------------------------------
             size_t num_running = computeOmegaAndGamma();
 
+
+
             //------------------------------------------------------------------
             //
             // evaluate extent
@@ -175,10 +177,50 @@ namespace yack
             YACK_CHEM_PRINTLN("//   ---------------- inner#" << cycle << '.' << subCycle << " ----------------");
             YACK_CHEM_PRINTLN("//    <EvaluateExtent>");
             YACK_CHEM_PRINTLN("//     \\_#running = " << num_running << " / " << N );
+
+            //------------------------------------------------------------------
+            //
+            // specific cases depending on #running
+            //
+            //------------------------------------------------------------------
+            switch(num_running)
+            {
+                case 0: // all blocked => spurious success...
+                    transfer(C0,Corg);
+                    YACK_CHEM_PRINTLN("//    <EvaluateExtent/>");
+                    YACK_CHEM_PRINTLN("// <plexus.solve> [spurious]");
+                    return true;
+
+                case 1: // solve remaining equilibrium, CYCLE again
+                    for(const enode *node=eqs.head();node;node=node->next)
+                    {
+                        const equilibrium &eq = ***node;
+                        const size_t       ei = *eq;
+                        if(!blocked[ei])
+                        {
+                            eq.solve1D(K[ei],Corg,Ctry);
+                            transfer(Corg,Ctry);
+                            YACK_CHEM_PRINTLN("//    <EvaluateExtent/> [1D]");
+                            break;
+                        }
+                    }
+
+                    goto CYCLE;
+
+                default:
+                    break;
+            }
+
+
+
+            //------------------------------------------------------------------
+            //
+            // compute Newton's step
+            //
+            //------------------------------------------------------------------
             if(verbose) eqs(std::cerr << vpfx << "Omega=",Omega0,vpfx);
 
             iOmega.assign(Omega0);
-
             if(!LU.build(iOmega))
             {
                 YACK_CHEM_PRINTLN("//    <EvaluateExtent/>");
@@ -242,8 +284,7 @@ namespace yack
 
             //------------------------------------------------------------------
             //
-            // TODO: check num_running
-            // compute dC and limitations
+            // compute dC and limitations upon negative increment
             //
             //------------------------------------------------------------------
             YACK_CHEM_PRINTLN("//    <ComputeStep>");
@@ -264,14 +305,12 @@ namespace yack
             // compute search extension
             //
             //------------------------------------------------------------------
-            //lib(std::cerr << "dC=",dC);
             double expand = 2.0;
             if(rstack.size())
             {
                 hsort(rstack,comparison::increasing<double>);
                 expand = min_of(expand,0.99*rstack.front());
             }
-            //std::cerr << "rstack=" << rstack << std::endl;
             YACK_CHEM_PRINTLN("//    expand=" << expand);
 
             //------------------------------------------------------------------
@@ -305,6 +344,11 @@ namespace yack
 
             YACK_CHEM_PRINTLN("//    G0=" << G0 << " -> " << Gtry);
 
+            //------------------------------------------------------------------
+            //
+            // don't stop upon numerically fragile result
+            //
+            //------------------------------------------------------------------
             transfer(Corg,Ctry);
             G0 = Gtry;
 
