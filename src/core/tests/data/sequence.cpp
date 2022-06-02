@@ -177,20 +177,7 @@ YACK_UTEST(data_sequence)
     std::cerr << "ss=" << ss << std::endl;
     ss.pop();
 
-    {
-        double arr[4] = { 1, 2, 3, 4 };
-        thin_array<double> dtab(arr,sizeof(arr)/sizeof(arr[0]));
-        std::cerr << "dtab=" << dtab << std::endl;
-
-        thin_array<uint64_t> qtab(dtab,transmogrify);
-        std::cerr << "qtab=" << qtab << std::endl;
-
-        thin_array<uint16_t> utab(dtab,transmogrify);
-        std::cerr << "utab=" << utab << std::endl;
-
-        thin_array<bool> btab(dtab,transmogrify);
-        std::cerr << "btab=" << btab << std::endl;
-    }
+    
 
     {
         uint32_t arr[3] = { 0xffffffff, 0xffffffff, 0xffffffff };

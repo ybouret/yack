@@ -63,7 +63,7 @@ namespace yack
         inline thin_array( thin_array<U> &other, const transmogrify_t & ) throw() :
         collection(),
         contiguous<T>(),
-        entry( coerce_cast<mutable_type>( other()-1) ),
+        entry( coerce_cast<mutable_type>( other()+1 ) - 1 ),
         count( other.size() ),
         basis( entry+1 )
         {
