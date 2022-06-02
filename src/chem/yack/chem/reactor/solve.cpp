@@ -80,7 +80,6 @@ namespace yack
         CYCLE:
             ++cycle;
             YACK_CHEM_PRINTLN("//   ================ cycle#" << cycle << " ================");
-            ios::ocstream::echo("rms.dat", "%u %g\n", unsigned(cycle), G0);
 
             //------------------------------------------------------------------
             //
@@ -117,6 +116,7 @@ namespace yack
                 }
             }
 
+            ios::ocstream::echo("rms.dat", "%u %g %g\n", unsigned(cycle), G0, sumAbsXi);
 
             if(sumAbsXi<=0)
             {
