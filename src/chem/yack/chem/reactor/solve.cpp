@@ -168,10 +168,10 @@ namespace yack
                 return false;
             }
 
-            tao::v1::neg(xi,Gamma);
+            tao::v1::set(xi,Gamma);
             LU.solve(iOmega,xi);
             std::cerr << "xi=" << xi << std::endl;
-
+            std::cerr << "blocked="  << blocked << std::endl;
 
             //------------------------------------------------------------------
             //
@@ -183,9 +183,17 @@ namespace yack
                 const equilibrium &eq = ***node;
                 const size_t       ei = *eq;
                 const double       xx = xi[ei];
-                const limits      &lm = eq.primary_limits(Corg,lib.width);
-                eqs.pad(std::cerr << "// (*) " << eq.name,eq) << " | " << std::setw(15) << xx << " | ";
-                std::cerr << lm << std::endl;
+                if(verbose) eqs.pad(std::cerr << "// (*) " << eq.name,eq) << " | " << std::setw(15) << xx << " | ";
+                if(blocked[ei])
+                {
+                    if(verbose) std::cerr << "[blocked]";
+                }
+                else
+                {
+                    const limits      &lm = eq.primary_limits(Corg,lib.width);
+                    if(verbose) std::cerr << lm;
+                }
+                if(verbose) std::cerr << std::endl;
             }
 
 

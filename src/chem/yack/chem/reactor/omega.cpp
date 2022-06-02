@@ -54,16 +54,18 @@ namespace yack
                     ++num_blocked;
                     --num_running;
                     if(verbose) std::cerr << " [blocked]";
-                    Omi[ei]   = 1.0;
-                    Gamma[ei] = 0.0;
+                    Omi[ei]     = 1.0;
+                    Gamma[ei]   = 0.0;
+                    blocked[ei] = true;
                     psi.ld(0);
                 }
                 else
                 {
                     if(verbose) std::cerr << " [running] " << psi;
-                    Omi[ei] = diag;
-                    for(size_t k=N;k>ei;--k)   Omi[k] = sorted::dot(psi,Nu[k],Ctmp);
-                    for(size_t k=ei-1;k>0;--k) Omi[k] = sorted::dot(psi,Nu[k],Ctmp);
+                    Omi[ei] = -diag;
+                    for(size_t k=N;k>ei;--k)   Omi[k] = -sorted::dot(psi,Nu[k],Ctmp);
+                    for(size_t k=ei-1;k>0;--k) Omi[k] = -sorted::dot(psi,Nu[k],Ctmp);
+                    blocked[ei] = false;
                 }
 
                 if(verbose) std::cerr << std::endl;
@@ -72,6 +74,7 @@ namespace yack
             if(verbose)
             {
                 std::cerr << "Omega=" << Omega0 << std::endl;
+                std::cerr << "blocked=" << blocked << std::endl;
             }
             YACK_CHEM_PRINTLN("//    <OmegaAndGamma/>");
             return num_running;
