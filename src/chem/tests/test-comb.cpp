@@ -1,6 +1,6 @@
 
 #include "yack/chem/lua/equilibria.hpp"
-#include "yack/chem/plexus.hpp"
+#include "yack/chem/reactor.hpp"
 #include "yack/utest/run.hpp"
 #include "yack/system/env.hpp"
 #include "yack/counting/comb.hpp"
@@ -58,7 +58,7 @@ YACK_UTEST(comb)
     std::cerr << "lib=" << lib << std::endl;
     std::cerr << "eqs=" << eqs << std::endl;
 
-    plexus cs(lib,eqs);
+    reactor cs(lib,eqs,0.0);
     std::cerr << "Nu=" << cs.Nu << std::endl;
     size_t nc = 0;
     for(size_t i=1;i<=cs.N;++i)
@@ -69,6 +69,5 @@ YACK_UTEST(comb)
             try_combine(eqs[i].name,cs.Nu[i],eqs[k].name,cs.Nu[k]);
         }
     }
-    std::cerr << "nc=" << nc << " / " << ((cs.N*(cs.N-1))/2) << std::endl;
 }
 YACK_UDONE()

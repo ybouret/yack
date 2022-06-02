@@ -45,11 +45,19 @@ namespace yack
 
         double reactor:: selectDecreasedState() throw()
         {
+            //------------------------------------------------------------------
+            //
             // initialize
+            //
+            //------------------------------------------------------------------
             const enode       *eOpt = eqs.head();
             double             gOpt = Gtot[****eOpt];
 
+            //------------------------------------------------------------------
+            //
             // look up on single
+            //
+            //------------------------------------------------------------------
             for(const enode *node=eOpt->next;node;node=node->next)
             {
                 const double gTmp = Gtot[****node];
@@ -60,7 +68,11 @@ namespace yack
                 }
             }
 
+            //------------------------------------------------------------------
+            //
             // look up on couples
+            //
+            //------------------------------------------------------------------
             for(const enode *node=couples.head();node;node=node->next)
             {
                 const double gTmp = Gtot[****node];
@@ -71,7 +83,11 @@ namespace yack
                 }
             }
 
-            // update
+            //------------------------------------------------------------------
+            //
+            // update!
+            //
+            //------------------------------------------------------------------
             const equilibrium &opt = ***eOpt;
             transfer(Corg,Ctot[*opt]);
             if(verbose)

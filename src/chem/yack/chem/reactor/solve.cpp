@@ -13,7 +13,16 @@ namespace yack
 
     namespace chemical
     {
-        
+
+        void   reactor:: retractEquilibriumAt(const size_t ei)  throw()
+        {
+            coerce(NuTA).ld_col(ei,0);
+            Omega0.ld_col(ei,0);
+            Omega0.ld_row(ei,0);
+            Omega0[ei][ei] = 1.0;
+            Gamma[ei]      = 0;
+            blocked[ei]    = true;
+        }
 
         bool reactor:: solve(writable<double> &C0) throw()
         {
@@ -60,6 +69,8 @@ namespace yack
                     break;
             }
 
+            vector<double> rstack;
+            vector<size_t> ustack;
 
             size_t cycle = 0;
         CYCLE:
@@ -152,18 +163,22 @@ namespace yack
 
             //------------------------------------------------------------------
             //
-            // evaluate xi
+            // evaluate extent
             //
             //------------------------------------------------------------------
-            YACK_CHEM_PRINTLN("//    <EvaluateStep>");
-            YACK_CHEM_PRINTLN("//     \\_#running = " << num_running);
-
+        EVALUATE_EXTENT:
+            YACK_CHEM_PRINTLN("//    <EvaluateExtent>");
+            YACK_CHEM_PRINTLN("//     \\_#running = " << num_running << " / " << N );
+            if(verbose)
+            {
+                eqs(std::cerr << vpfx << "Omega=",Omega0,vpfx);
+            }
             // evaluate xi
             iOmega.assign(Omega0);
 
             if(!LU.build(iOmega))
             {
-                YACK_CHEM_PRINTLN("//    <EvaluateStep/>");
+                YACK_CHEM_PRINTLN("//    <EvaluateExtent/>");
                 YACK_CHEM_PRINTLN("// <plexus.solve> [SINGULAR]");
                 return false;
             }
@@ -178,25 +193,100 @@ namespace yack
             // check primary limits
             //
             //------------------------------------------------------------------
+            bool modified = false;
             for(const enode *node = eqs.head(); node; node=node->next)
             {
                 const equilibrium &eq = ***node;
                 const size_t       ei = *eq;
                 const double       xx = xi[ei];
-                if(verbose) eqs.pad(std::cerr << "// (*) " << eq.name,eq) << " | " << std::setw(15) << xx << " | ";
+                if(verbose) eqs.pad(std::cerr << " (*) " << eq.name,eq) << " : ";
+
                 if(blocked[ei])
                 {
                     if(verbose) std::cerr << "[blocked]";
+                    assert( fabs(xi[ei]) <= 0 );
                 }
                 else
                 {
                     const limits      &lm = eq.primary_limits(Corg,lib.width);
                     if(verbose) std::cerr << lm;
+                    if( lm.should_reduce(xx) )
+                    {
+                        std::cerr << " [reject " << xx << "]";
+                        modified = true;
+                        --num_running;
+                        retractEquilibriumAt(ei);
+                    }
+                    else
+                    {
+                        std::cerr << " [accept " << xx << "]";
+                    }
+
                 }
                 if(verbose) std::cerr << std::endl;
             }
+            if(modified)
+            {
+                YACK_CHEM_PRINTLN("//    <EvaluateExtent/> [modified]");
+                goto EVALUATE_EXTENT;
+            }
+            else
+            {
+                YACK_CHEM_PRINTLN("//    <EvaluateExtent/> [accepted]");
+            }
 
 
+
+            //------------------------------------------------------------------
+            //
+            // try move TODO: check num_running
+            //
+            //------------------------------------------------------------------
+            rstack.free();
+            ustack.free();
+            for(const anode *node=active.head;node;node=node->next)
+            {
+                const size_t j = ***node;
+                const double d = (dC[j] = sorted::dot(xi,NuTA[j],Xtmp));
+                const double c = Corg[j]; assert(c>=0);
+                if(d<0)
+                {
+                    rstack << c/(-d);
+                    ustack << j;
+                }
+            }
+            lib(std::cerr << "dC=",dC);
+            double expand = 2.0;
+            if(rstack.size())
+            {
+                hsort(rstack,ustack, comparison::increasing<double>);
+                // rstack.keep_only_front();
+                ustack.keep_only_front();
+                expand = min_of(expand,0.99*rstack.front());
+            }
+            std::cerr << "rstack=" << rstack << std::endl;
+            std::cerr << "ustack=" << ustack << std::endl;
+            std::cerr << "expand=" << expand << std::endl;
+
+            for(const anode *node=active.head;node;node=node->next)
+            {
+                const size_t j = ***node;
+                Cend[j] = Corg[j] + expand * dC[j]; assert(Cend[j]>=0);
+            }
+
+            {
+                ios::ocstream fp("gam.dat");
+                static const size_t NP=1000;
+                for(size_t i=0;i<=NP;++i)
+                {
+                    const double u = double(i)/NP;
+                    fp("%.15g %.15g\n",u,(*this)(u));
+                }
+            }
+
+            const double G1 = optimizeDecreaseFrom(G0);
+
+            std::cerr << "G0=" << G0 << " -> " << G1 << std::endl;
 
             exit(1);
             goto CYCLE;

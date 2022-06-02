@@ -284,7 +284,7 @@ namespace yack
         //! keep only front
         void keep_only_front() throw()
         {
-            while(count>1) pop_front();
+            while(count>1) pop_back();
         }
 
     private:

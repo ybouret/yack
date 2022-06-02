@@ -129,6 +129,7 @@ namespace yack
             double optimizeDecreaseFrom(const double G0) throw();
             double selectDecreasedState()                throw();
             size_t computeOmegaAndGamma()                throw();
+            void   retractEquilibriumAt(const size_t ei)  throw();
         };
 
     }
