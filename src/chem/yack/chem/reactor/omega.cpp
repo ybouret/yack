@@ -58,6 +58,7 @@ namespace yack
                     Gamma[ei]   = 0.0;
                     blocked[ei] = true;
                     psi.ld(0);
+                    coerce(NuTA).ld_col(ei,0);
                 }
                 else
                 {
@@ -75,6 +76,8 @@ namespace yack
             {
                 std::cerr << "Omega=" << Omega0 << std::endl;
                 std::cerr << "blocked=" << blocked << std::endl;
+                std::cerr << "NuT =" << NuT << std::endl;
+                std::cerr << "NuTA=" << NuTA << std::endl;
             }
             YACK_CHEM_PRINTLN("//    <OmegaAndGamma/>");
             return num_running;
