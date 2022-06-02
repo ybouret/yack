@@ -13,77 +13,7 @@ namespace yack
 
     namespace chemical
     {
-
-        double reactor:: meanGammaSquared(const readable<double> &C) throw()
-        {
-            for(const enode *node=eqs.head();node;node=node->next)
-            {
-                const equilibrium &eq = ***node;
-                const size_t       ei = *eq;
-                Xtmp[ei] = squared( eq.mass_action(K[ei],C) );
-            }
-            return sorted::sum(Xtmp,sorted::by_value)/N;
-        }
-
-        double reactor:: operator()(const double u) throw()
-        {
-            assert(u>=0);
-            assert(u<=1);
-            const double omu = 1.0 - u;
-            for(const anode *node=active.head;node;node=node->next)
-            {
-                const size_t j = ***node;
-                Ctry[j]        = omu * Corg[j] + u * Cend[j];
-            }
-            return meanGammaSquared(Ctry);
-        }
-
-        double reactor:: optimizeDecreaseFrom(const double G0)
-        {
-            triplet<double> u = { 0, -1, 1 };
-            triplet<double> g = { G0, -1, meanGammaSquared(Cend) };
-            (void) minimize::find<double>::run_for(*this,u,g, minimize::inside);
-
-            return g.b; //!< and Ctry is computed
-        }
-
-        double reactor:: selectDecreasedState()
-        {
-            // initialize
-            const enode       *eOpt = eqs.head();
-            double             gOpt = Gtot[****eOpt];
-
-            // look up on single
-            for(const enode *node=eOpt->next;node;node=node->next)
-            {
-                const double gTmp = Gtot[****node];
-                if(gTmp<gOpt)
-                {
-                    gOpt = gTmp;
-                    eOpt = node;
-                }
-            }
-
-            // look up on couples
-            for(const enode *node=couples.head();node;node=node->next)
-            {
-                const double gTmp = Gtot[****node];
-                if(gTmp<gOpt)
-                {
-                    gOpt = gTmp;
-                    eOpt = node;
-                }
-            }
-
-            // update
-            const equilibrium &opt = ***eOpt;
-            transfer(Corg,Ctot[*opt]);
-            if(verbose)
-            {
-                couples.pad(std::cerr << vpfx << opt.name,opt) << " : selected " << gOpt << std::endl;
-            }
-            return gOpt;
-        }
+        
 
         bool reactor:: solve(writable<double> &C0) throw()
         {
@@ -132,17 +62,17 @@ namespace yack
 
 
             size_t cycle = 0;
-
+        CYCLE:
             ++cycle;
             YACK_CHEM_PRINTLN("//   ---------------- cycle#" << cycle << " ----------------");
 
-            YACK_CHEM_PRINTLN("//    <GlobalStep>");
 
             //------------------------------------------------------------------
             //
             // starting point for this cycle
             //
             //------------------------------------------------------------------
+            YACK_CHEM_PRINTLN("//    <GlobalStep>");
             double G0 = meanGammaSquared(Corg);
 
             //------------------------------------------------------------------
@@ -218,78 +148,45 @@ namespace yack
             // compute full metrics
             //
             //------------------------------------------------------------------
-            YACK_CHEM_PRINTLN("//    <Omega>");
-            coerce(NuTA).assign(NuT);
-            size_t num_blocked = 0;
-            size_t num_running = N;
-            for(const enode *node=eqs.head();node;node=node->next)
-            {
-                const equilibrium &eq  = ***node;
-                const size_t       ei  = *eq;
-                writable<double>  &psi = Psi[ei];
-                writable<double>  &Omi = Omega0[ei];
-                const double       Ki  = K[ei];
-                const double       ax  = fabs( Xtot[ei] = eq.solve1D(Ki,Corg,Ctmp) );
+            size_t num_running = computeOmegaAndGamma();
 
-                Omi.ld(0);
-                if(verbose)
-                {
-                    eqs.pad(std::cerr << vpfx << eq.name,eq) << " : Gamma=";
-                }
-                if(ax<=0)
-                {
-                    Gamma[ei] = 0;
-                    eq.drvs_action(Psi[ei],Ki,Corg,Ctmp);
-                }
-                else
-                {
-                    Gamma[ei] = eq.grad_action(Psi[ei], Ki, Corg, Ctmp);
-                }
-
-                if(verbose)
-                {
-                    std::cerr << std::setw(15) << Gamma[ei];
-                }
-
-                const double diag = sorted::dot(psi,Nu[ei],Ctmp);
-                if( diag >= 0)
-                {
-                    ++num_blocked;
-                    --num_running;
-                    std::cerr << " [blocked]" << std::endl;
-                    Omi[ei]   = 1.0;
-                    Gamma[ei] = 0.0;
-                    psi.ld(0);
-                }
-                else
-                {
-                    std::cerr << " [running] " << psi;
-                    Omi[ei] = diag;
-                    for(size_t k=N;k>ei;--k)   Omi[k] = sorted::dot(psi,Nu[k],Ctmp);
-                    for(size_t k=ei-1;k>0;--k) Omi[k] = sorted::dot(psi,Nu[k],Ctmp);
-                }
-
-                if(verbose) std::cerr << std::endl;
-
-            }
-            //std::cerr << "Psi  =" << Psi    << std::endl;
-            std::cerr << "Omega=" << Omega0 << std::endl;
-            YACK_CHEM_PRINTLN("//    <Omega/>");
-
+            //------------------------------------------------------------------
+            //
+            // evaluate xi
+            //
+            //------------------------------------------------------------------
+            YACK_CHEM_PRINTLN("//    <EvaluateStep>");
+            YACK_CHEM_PRINTLN("//     \\_#running = " << num_running);
 
             // evaluate xi
             iOmega.assign(Omega0);
 
             if(!LU.build(iOmega))
             {
+                YACK_CHEM_PRINTLN("//    <EvaluateStep/>");
                 YACK_CHEM_PRINTLN("// <plexus.solve> [SINGULAR]");
                 return false;
             }
 
+            tao::v1::neg(xi,Gamma);
+            LU.solve(iOmega,xi);
+            std::cerr << "xi=" << xi << std::endl;
+
+
+            //------------------------------------------------------------------
+            //
+            // check primary limits
+            //
+            //------------------------------------------------------------------
+            for(const enode *node = eqs.head(); node; node=node->next)
+            {
+                
+            }
 
 
 
             exit(1);
+            goto CYCLE;
             YACK_CHEM_PRINTLN("// <plexus.solve> [SUCCESS]");
             return true;
         }

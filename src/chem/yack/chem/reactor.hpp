@@ -121,10 +121,10 @@ namespace yack
             const lockable::scope lib_lock;
             const lockable::scope eqs_lock;
 
-            size_t build_couples();
-            double optimizeDecreaseFrom(const double G0);
-            double selectDecreasedState();
-
+            size_t buildCouples();
+            double optimizeDecreaseFrom(const double G0) throw();
+            double selectDecreasedState()                throw();
+            size_t computeOmegaAndGamma()                throw();
         };
 
     }

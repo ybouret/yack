@@ -96,9 +96,9 @@ namespace yack
 
 
 
-        size_t reactor::build_couples()
+        size_t reactor::buildCouples()
         {
-            YACK_CHEM_PRINTLN("  <build_couples>");
+            YACK_CHEM_PRINTLN("  <BuildCouples>");
             //equilibria       &repo = coerce(couples);
             vector<coeff>     comb(M,as_capacity);
             size_t            ic = N;
@@ -212,7 +212,7 @@ namespace yack
             //------------------------------------------------------------------
             YACK_CHEM_PRINTLN("    #couples = " << couples.size());
             YACK_CHEM_PRINTLN(couples);
-            YACK_CHEM_PRINTLN("  <build_couples/>");
+            YACK_CHEM_PRINTLN("  <BuildCouples/>");
             return couples.size();
         }
 

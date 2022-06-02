@@ -129,7 +129,7 @@ namespace yack
             // couples
             //
             //------------------------------------------------------------------
-            coerce(NC)    = build_couples();
+            coerce(NC)    = buildCouples();
             coerce(Ntot) += NC;
             if(Ntot)
             {
