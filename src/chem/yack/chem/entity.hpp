@@ -14,6 +14,9 @@ namespace yack
         //! helper for verbosity
 #define YACK_CHEM_PRINTLN(MSG) do { if(chemical::entity::verbose) { std::cerr << MSG << std::endl; } } while(false)
 
+        //! helper for verbosity
+#define YACK_CHEM_PRINT(MSG) do { if(chemical::entity::verbose) { std::cerr << MSG; } } while(false)
+
         //______________________________________________________________________
         //
         //

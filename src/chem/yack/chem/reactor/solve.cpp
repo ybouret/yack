@@ -71,9 +71,6 @@ namespace yack
                     break;
             }
 
-            vector<double> rstack;
-            vector<size_t> ustack;
-
             size_t cycle = 0;
             double G0    = meanGammaSquared(Corg);
 
@@ -139,7 +136,10 @@ namespace yack
                 {
                     Gtot[ei]  = optimizeDecreaseFrom(G0);
                     transfer(Ctot[ei],Ctry);
-                    couples.pad(std::cerr << vpfx << eq.name,eq) << " : Xi=" << std::setw(15) << Xtot[ei] << " : " << "Gopt=" << std::setw(15)<< Gtot[ei] << std::endl;
+                    if(verbose)
+                    {
+                        couples.pad(std::cerr << vpfx << eq.name,eq) << " : Xi=" << std::setw(15) << Xtot[ei] << " : " << "Gopt=" << std::setw(15)<< Gtot[ei] << std::endl;
+                    }
                 }
                 else
                 {
@@ -175,11 +175,8 @@ namespace yack
             YACK_CHEM_PRINTLN("//   ---------------- inner#" << cycle << '.' << subCycle << " ----------------");
             YACK_CHEM_PRINTLN("//    <EvaluateExtent>");
             YACK_CHEM_PRINTLN("//     \\_#running = " << num_running << " / " << N );
-            if(verbose)
-            {
-                eqs(std::cerr << vpfx << "Omega=",Omega0,vpfx);
-            }
-            // evaluate xi
+            if(verbose) eqs(std::cerr << vpfx << "Omega=",Omega0,vpfx);
+
             iOmega.assign(Omega0);
 
             if(!LU.build(iOmega))
@@ -191,12 +188,11 @@ namespace yack
 
             tao::v1::set(xi,Gamma);
             LU.solve(iOmega,xi);
-            std::cerr << "xi="       << xi << std::endl;
-            std::cerr << "blocked="  << blocked << std::endl;
+
 
             //------------------------------------------------------------------
             //
-            // check primary limits
+            // check xi against primary limits
             //
             //------------------------------------------------------------------
             bool modified = false;
@@ -209,7 +205,7 @@ namespace yack
 
                 if(blocked[ei])
                 {
-                    if(verbose) std::cerr << "[blocked]";
+                    YACK_CHEM_PRINT("[blocked]");
                     assert( fabs(xi[ei]) <= 0 );
                 }
                 else
@@ -218,17 +214,18 @@ namespace yack
                     if(verbose) std::cerr << lm;
                     if( lm.should_reduce(xx) )
                     {
-                        std::cerr << " [reject " << xx << "]";
+                        YACK_CHEM_PRINT(" [reject " << xx << "]");
                         modified = true;
                         --num_running;
                         retractEquilibriumAt(ei);
                     }
                     else
                     {
-                        std::cerr << " [accept " << xx << "]";
+                        YACK_CHEM_PRINT(" [accept " << xx << "]");
                     }
 
                 }
+
                 if(verbose) std::cerr << std::endl;
             }
             if(modified)
@@ -245,11 +242,12 @@ namespace yack
 
             //------------------------------------------------------------------
             //
-            // try move TODO: check num_running
+            // TODO: check num_running
+            // compute dC and limitations
             //
             //------------------------------------------------------------------
+            YACK_CHEM_PRINTLN("//    <ComputeStep>");
             rstack.free();
-            ustack.free();
             for(const anode *node=active.head;node;node=node->next)
             {
                 const size_t j = ***node;
@@ -258,27 +256,35 @@ namespace yack
                 if(d<0)
                 {
                     rstack << c/(-d);
-                    ustack << j;
                 }
             }
-            lib(std::cerr << "dC=",dC);
+
+            //------------------------------------------------------------------
+            //
+            // compute search extension
+            //
+            //------------------------------------------------------------------
+            //lib(std::cerr << "dC=",dC);
             double expand = 2.0;
             if(rstack.size())
             {
-                hsort(rstack,ustack, comparison::increasing<double>);
-                // rstack.keep_only_front();
-                ustack.keep_only_front();
+                hsort(rstack,comparison::increasing<double>);
                 expand = min_of(expand,0.99*rstack.front());
             }
-            std::cerr << "rstack=" << rstack << std::endl;
-            std::cerr << "ustack=" << ustack << std::endl;
-            std::cerr << "expand=" << expand << std::endl;
+            //std::cerr << "rstack=" << rstack << std::endl;
+            YACK_CHEM_PRINTLN("//    expand=" << expand);
 
+            //------------------------------------------------------------------
+            //
+            // compute Cend = Corg + expand * dC
+            //
+            //------------------------------------------------------------------
             for(const anode *node=active.head;node;node=node->next)
             {
                 const size_t j = ***node;
                 Cend[j] = Corg[j] + expand * dC[j]; assert(Cend[j]>=0);
             }
+            YACK_CHEM_PRINTLN("//    <ComputeStep/>");
 
             {
                 ios::ocstream fp("gam.dat");
@@ -290,9 +296,14 @@ namespace yack
                 }
             }
 
+            //------------------------------------------------------------------
+            //
+            // Get new value
+            //
+            //------------------------------------------------------------------
             const double Gtry = optimizeDecreaseFrom(G0);
 
-            std::cerr << "G0=" << G0 << " -> " << Gtry << std::endl;
+            YACK_CHEM_PRINTLN("//    G0=" << G0 << " -> " << Gtry);
 
             transfer(Corg,Ctry);
             G0 = Gtry;

@@ -61,6 +61,7 @@ namespace yack
         Xtot(),
         Gtot(),
         Ctot(),
+        rstack(M,as_capacity),
 
         Omega0(N,N),
         iOmega(N,N),

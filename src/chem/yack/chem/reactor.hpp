@@ -20,7 +20,7 @@ namespace yack
         typedef vector<double>         rvector;  //!< alias
         typedef arrays_of<double>      tableaux; //!< alias
         typedef tableaux::array_type   tableau;  //!< alias
-        typedef thin_array<bool>       booleans; //!< alias
+        typedef thin_array<bool>       booltab;  //!< alias
 
         //______________________________________________________________________
         //
@@ -108,13 +108,14 @@ namespace yack
             tableau          &Gamma;    //!< [N]
             tableau          &xi;       //!< [N]
             tableau          &_blk_;    //!< [N]
-            booleans          blocked;  //!< [N] from blk
+            booltab          blocked;   //!< [N] from blk, transmogrified
 
             rmatrix           Psi;      //!< [NxM]
             rvector           Ktot;     //!< [Ntot]
             rvector           Xtot;     //!< [Ntot]
             rvector           Gtot;     //!< [Ntot]
             rmatrix           Ctot;     //!< [NtotxM]
+            rvector           rstack;   //!  [0..M]
 
             rmatrix           Omega0;   //!< Phi*Nu'
             rmatrix           iOmega;   //!< inv(Omega0)
