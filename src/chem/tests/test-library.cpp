@@ -7,7 +7,7 @@ using namespace chemical;
 YACK_UTEST(library)
 {
     library lib;
-    lib("H+",1);
+    lib("H+",  1);
     lib("HO-",-1);
 
     std::cerr << lib << std::endl;

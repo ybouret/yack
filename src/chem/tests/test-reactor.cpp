@@ -25,14 +25,19 @@ YACK_UTEST(reactor)
     std::cerr << "lib=" << cs.lib << std::endl;
     std::cerr << "eqs=" << cs.eqs << std::endl;
 
-    std::cerr << "K    = "    << cs.K << std::endl;
-    std::cerr << "Ktot = " << cs.Ktot << std::endl;
-    
-    cs.computeK(1.0);
-    std::cerr << "K    = "    << cs.K << std::endl;
-    std::cerr << "Ktot = " << cs.Ktot << std::endl;
-    vector<double> C(cs.M,0);
+    if(false)
+    {
+        std::cerr << "K    = "    << cs.K << std::endl;
+        std::cerr << "Ktot = " << cs.Ktot << std::endl;
 
+        cs.computeK(1.0);
+        std::cerr << "K    = "    << cs.K << std::endl;
+        std::cerr << "Ktot = " << cs.Ktot << std::endl;
+    }
+
+    
+    vector<double> C(cs.M,0);
+    
 
 
 

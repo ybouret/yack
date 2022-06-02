@@ -22,6 +22,7 @@ namespace yack
             Omega0[ei][ei] = 1.0;
             Gamma[ei]      = 0;
             blocked[ei]    = true;
+            Psi[ei].ld(0);
         }
 
         bool reactor:: solve(writable<double> &C0) throw()
@@ -46,7 +47,7 @@ namespace yack
                     YACK_CHEM_PRINTLN("// <plexus.solve/> [empty]");
                     return true;
 
-#if 0
+#if 1
                 case 1: {
                     //----------------------------------------------------------
                     // trivial case
@@ -71,6 +72,8 @@ namespace yack
                     break;
             }
 
+            bool   first = true;
+            double minXi = 0;
             size_t cycle = 0;
             double G0    = meanGammaSquared(Corg);
 
@@ -90,7 +93,7 @@ namespace yack
             // testing singles and |Xi| convergence
             //
             //------------------------------------------------------------------
-            double sumAbsXi = 0;
+            double absXi = 0;
             for(const enode *node=eqs.head();node;node=node->next)
             {
                 const equilibrium &eq = ***node;
@@ -98,7 +101,7 @@ namespace yack
                 const double       ax = fabs( Xtot[ei] = eq.solve1D(Ktot[ei], Corg, Cend) );
                 if(ax>0)
                 {
-                    sumAbsXi += ax;
+                    absXi += ax;
                     Gtot[ei]  = optimizeDecreaseFrom(G0);
                     transfer(Ctot[ei],Ctry);
                     if(verbose)
@@ -113,13 +116,30 @@ namespace yack
                 }
             }
 
-            ios::ocstream::echo("rms.dat", "%u %g %g\n", unsigned(cycle), G0, sumAbsXi);
 
-            if(sumAbsXi<=0)
+            ios::ocstream::echo("rms.dat", "%u %g %g\n", unsigned(cycle), G0, absXi);
+
+            if(absXi<=0)
             {
                 transfer(C0,Corg);
                 YACK_CHEM_PRINTLN("// <plexus.solve> [SUCCESS |Xi|=0]");
                 return true;
+            }
+
+            if(first)
+            {
+                minXi = absXi;
+                first = false;
+            }
+            else
+            {
+                if(absXi>=minXi)
+                {
+                    transfer(C0,Corg);
+                    YACK_CHEM_PRINTLN("// <plexus.solve> [SUCCESS |Xi|@min=" << absXi << "]");
+                    return true;
+                }
+                minXi = absXi;
             }
 
             //------------------------------------------------------------------
@@ -147,11 +167,11 @@ namespace yack
                     transfer(Ctot[ei],Corg);
                 }
             }
-            YACK_CHEM_PRINTLN(vpfx << "|Xi|=" << sumAbsXi);
+            YACK_CHEM_PRINTLN(vpfx << "|Xi|=" << absXi);
 
             //------------------------------------------------------------------
             //
-            // select best single/couple
+            // select best among singles or couples
             //
             //------------------------------------------------------------------
             G0 = selectDecreasedState();
@@ -352,9 +372,9 @@ namespace yack
             transfer(Corg,Ctry);
             G0 = Gtry;
 
-            if(cycle>=5)
+            if(cycle>=10)
             {
-                exit(1);
+                //exit(1);
             }
 
             goto CYCLE;
