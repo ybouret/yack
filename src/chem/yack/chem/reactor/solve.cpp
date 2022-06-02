@@ -180,7 +180,12 @@ namespace yack
             //------------------------------------------------------------------
             for(const enode *node = eqs.head(); node; node=node->next)
             {
-                
+                const equilibrium &eq = ***node;
+                const size_t       ei = *eq;
+                const double       xx = xi[ei];
+                const limits      &lm = eq.primary_limits(Corg,lib.width);
+                eqs.pad(std::cerr << "// (*) " << eq.name,eq) << " | " << std::setw(15) << xx << " | ";
+                std::cerr << lm << std::endl;
             }
 
 
