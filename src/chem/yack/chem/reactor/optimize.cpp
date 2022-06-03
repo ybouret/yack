@@ -36,10 +36,9 @@ namespace yack
 
         double reactor:: optimizeDecreaseFrom(const double G0) throw()
         {
-            triplet<double> u = { 0, -1, 1 };
+            triplet<double> u = { 0,  -1, 1 };
             triplet<double> g = { G0, -1, meanGammaSquared(Cend) };
-            (void) minimize::find<double>::run_for(*this,u,g, minimize::inside);
-
+            (void) minimize::find<double>::run_for(*this,u,g,minimize::inside);
             return g.b; //!< and Ctry is computed
         }
 
@@ -68,6 +67,7 @@ namespace yack
                 }
             }
 
+
             //------------------------------------------------------------------
             //
             // look up on couples
@@ -83,6 +83,7 @@ namespace yack
                 }
             }
 
+
             //------------------------------------------------------------------
             //
             // update!
@@ -90,10 +91,10 @@ namespace yack
             //------------------------------------------------------------------
             const equilibrium &opt = ***eOpt;
             transfer(Corg,Ctot[*opt]);
-            if(verbose)
-            {
+            if(verbose) {
                 couples.pad(std::cerr << vpfx << opt.name,opt) << " : selected " << gOpt << std::endl;
             }
+
             return gOpt;
         }
 

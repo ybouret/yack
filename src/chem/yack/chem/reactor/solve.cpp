@@ -145,6 +145,7 @@ namespace yack
                     {
                         transfer(C0,Corg);
                         YACK_CHEM_PRINTLN("//      [SUCCESS |Xi|@min=" << absXi << "]");
+                        couples(std::cerr << vpfx << "Xi=",Xtot,vpfx);
                         return true;
                     }
                     minXi = absXi;
