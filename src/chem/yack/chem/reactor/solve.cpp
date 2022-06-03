@@ -32,10 +32,10 @@ namespace yack
             // initialize
             //
             //------------------------------------------------------------------
-            YACK_CHEM_PRINTLN("// <plexus.solve>");
+            YACK_CHEM_MARKUP("//  ", "plexus.solve");
             if(verbose) lib(std::cerr << vpfx << "Cini=",C0,vpfx);
 
-            ios::ocstream::overwrite("rms.dat");
+            //ios::ocstream::overwrite("rms.dat");
 
             switch(N)
             {
@@ -44,7 +44,7 @@ namespace yack
                     //----------------------------------------------------------
                     // trivial case
                     //----------------------------------------------------------
-                    YACK_CHEM_PRINTLN("// <plexus.solve/> [empty]");
+                    YACK_CHEM_PRINTLN("//    [empty]");
                     return true;
 
 #if 1
@@ -56,7 +56,7 @@ namespace yack
                     (void) eq.solve1D(K[*eq],C0,Ctry);
                     transfer(C0,Ctry);
                 }
-                    YACK_CHEM_PRINTLN("// <plexus.solve/> [1D success]");
+                    YACK_CHEM_PRINTLN("//    [1D success]");
                     return true;
 #endif
 
@@ -72,6 +72,13 @@ namespace yack
                     break;
             }
 
+            //------------------------------------------------------------------
+            //
+            //
+            // initializing search
+            //
+            //
+            //------------------------------------------------------------------
             bool   first = true;
             double minXi = 0;
             size_t cycle = 0;
@@ -83,10 +90,10 @@ namespace yack
 
             //------------------------------------------------------------------
             //
-            // starting point for this cycle
+            // starting point for this cycle: G0 and Corg are computed
             //
             //------------------------------------------------------------------
-            YACK_CHEM_PRINTLN("//    <GlobalStep>");
+            YACK_CHEM_PRINTLN("//    <plexus.GlobalStep>");
 
             //------------------------------------------------------------------
             //
@@ -117,12 +124,11 @@ namespace yack
             }
 
 
-            ios::ocstream::echo("rms.dat", "%u %g %g\n", unsigned(cycle), G0, absXi);
-
+            
             if(absXi<=0)
             {
                 transfer(C0,Corg);
-                YACK_CHEM_PRINTLN("// <plexus.solve> [SUCCESS |Xi|=0]");
+                YACK_CHEM_PRINTLN("//    [SUCCESS |Xi|=0]");
                 return true;
             }
 
@@ -136,7 +142,7 @@ namespace yack
                 if(absXi>=minXi)
                 {
                     transfer(C0,Corg);
-                    YACK_CHEM_PRINTLN("// <plexus.solve> [SUCCESS |Xi|@min=" << absXi << "]");
+                    YACK_CHEM_PRINTLN("//    [SUCCESS |Xi|@min=" << absXi << "]");
                     return true;
                 }
                 minXi = absXi;
@@ -175,7 +181,8 @@ namespace yack
             //
             //------------------------------------------------------------------
             G0 = selectDecreasedState();
-            YACK_CHEM_PRINTLN("//    <GlobalStep/>");
+            YACK_CHEM_PRINTLN("//    <plexus.GlobalStep/>");
+            
 
             //------------------------------------------------------------------
             //
