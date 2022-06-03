@@ -15,7 +15,7 @@ namespace yack
     {
         size_t reactor:: computeOmegaAndGamma() throw()
         {
-            YACK_CHEM_PRINTLN("//    <OmegaAndGamma>");
+            YACK_CHEM_MARKUP("//    ","plexus.omega_and_gamma");
             coerce(NuTA).assign(NuT);
             size_t num_blocked = 0;
             size_t num_running = N;
@@ -79,7 +79,6 @@ namespace yack
                 std::cerr << "NuT =" << NuT << std::endl;
                 std::cerr << "NuTA=" << NuTA << std::endl;
             }
-            YACK_CHEM_PRINTLN("//    <OmegaAndGamma/>");
             return num_running;
         }
     }

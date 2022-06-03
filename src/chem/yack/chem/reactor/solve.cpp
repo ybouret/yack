@@ -32,7 +32,7 @@ namespace yack
             // initialize
             //
             //------------------------------------------------------------------
-            YACK_CHEM_MARKUP("//  ", "plexus.solve");
+            YACK_CHEM_MARKUP("//  ", "plexus::solve");
             if(verbose) lib(std::cerr << vpfx << "Cini=",C0,vpfx);
 
             //ios::ocstream::overwrite("rms.dat");
@@ -44,7 +44,7 @@ namespace yack
                     //----------------------------------------------------------
                     // trivial case
                     //----------------------------------------------------------
-                    YACK_CHEM_PRINTLN("//    [empty]");
+                    YACK_CHEM_PRINTLN("//      [empty]");
                     return true;
 
 #if 1
@@ -56,7 +56,7 @@ namespace yack
                     (void) eq.solve1D(K[*eq],C0,Ctry);
                     transfer(C0,Ctry);
                 }
-                    YACK_CHEM_PRINTLN("//    [1D success]");
+                    YACK_CHEM_PRINTLN("//      [1D success]");
                     return true;
 #endif
 
@@ -86,103 +86,106 @@ namespace yack
 
         CYCLE:
             ++cycle;
-            YACK_CHEM_PRINTLN("//   ================ cycle#" << cycle << " ================");
+            YACK_CHEM_PRINTLN("//     ================ cycle#" << cycle << " ================");
 
             //------------------------------------------------------------------
             //
             // starting point for this cycle: G0 and Corg are computed
             //
             //------------------------------------------------------------------
-            YACK_CHEM_PRINTLN("//    <plexus.GlobalStep>");
-
-            //------------------------------------------------------------------
-            //
-            // testing singles and |Xi| convergence
-            //
-            //------------------------------------------------------------------
-            double absXi = 0;
-            for(const enode *node=eqs.head();node;node=node->next)
             {
-                const equilibrium &eq = ***node;
-                const size_t       ei = *eq;     assert(ei>0); assert(ei<=N);
-                const double       ax = fabs( Xtot[ei] = eq.solve1D(Ktot[ei], Corg, Cend) );
-                if(ax>0)
+                YACK_CHEM_MARKUP("//    ", "plexus::global_step");
+
+
+                //--------------------------------------------------------------
+                //
+                // testing singles and |Xi| convergence
+                //
+                //--------------------------------------------------------------
+                double absXi = 0;
+                for(const enode *node=eqs.head();node;node=node->next)
                 {
-                    absXi += ax;
-                    Gtot[ei]  = optimizeDecreaseFrom(G0);
-                    transfer(Ctot[ei],Ctry);
-                    if(verbose)
+                    const equilibrium &eq = ***node;
+                    const size_t       ei = *eq;     assert(ei>0); assert(ei<=N);
+                    const double       ax = fabs( Xtot[ei] = eq.solve1D(Ktot[ei], Corg, Cend) );
+                    if(ax>0)
                     {
-                        couples.pad(std::cerr << vpfx << eq.name,eq) << " : Xi=" << std::setw(15) << Xtot[ei] << " : " << "Gopt=" << std::setw(15)<< Gtot[ei] << std::endl;
+                        absXi += ax;
+                        Gtot[ei]  = optimizeDecreaseFrom(G0);
+                        transfer(Ctot[ei],Ctry);
+                        if(verbose)
+                        {
+                            couples.pad(std::cerr << vpfx << eq.name,eq) << " : Xi=" << std::setw(15) << Xtot[ei] << " : " << "Gopt=" << std::setw(15)<< Gtot[ei] << std::endl;
+                        }
+                    }
+                    else
+                    {
+                        Gtot[ei] = G0;
+                        transfer(Ctot[ei],Corg);
                     }
                 }
-                else
-                {
-                    Gtot[ei] = G0;
-                    transfer(Ctot[ei],Corg);
-                }
-            }
 
 
-            
-            if(absXi<=0)
-            {
-                transfer(C0,Corg);
-                YACK_CHEM_PRINTLN("//    [SUCCESS |Xi|=0]");
-                return true;
-            }
 
-            if(first)
-            {
-                minXi = absXi;
-                first = false;
-            }
-            else
-            {
-                if(absXi>=minXi)
+                if(absXi<=0)
                 {
                     transfer(C0,Corg);
-                    YACK_CHEM_PRINTLN("//    [SUCCESS |Xi|@min=" << absXi << "]");
+                    YACK_CHEM_PRINTLN("//      [SUCCESS |Xi|=0]");
                     return true;
                 }
-                minXi = absXi;
-            }
 
-            //------------------------------------------------------------------
-            //
-            // testing couples
-            //
-            //------------------------------------------------------------------
-            for(const enode *node=couples.head();node;node=node->next)
-            {
-                const equilibrium &eq = ***node;
-                const size_t       ei = *eq;     assert(ei>N); assert(ei<=Ntot);
-                const double       ax = fabs( Xtot[ei] = eq.solve1D(Ktot[ei], Corg, Cend) );
-                if(ax>0)
+                if(first)
                 {
-                    Gtot[ei]  = optimizeDecreaseFrom(G0);
-                    transfer(Ctot[ei],Ctry);
-                    if(verbose)
-                    {
-                        couples.pad(std::cerr << vpfx << eq.name,eq) << " : Xi=" << std::setw(15) << Xtot[ei] << " : " << "Gopt=" << std::setw(15)<< Gtot[ei] << std::endl;
-                    }
+                    minXi = absXi;
+                    first = false;
                 }
                 else
                 {
-                    Gtot[ei] = G0;
-                    transfer(Ctot[ei],Corg);
+                    if(absXi>=minXi)
+                    {
+                        transfer(C0,Corg);
+                        YACK_CHEM_PRINTLN("//      [SUCCESS |Xi|@min=" << absXi << "]");
+                        return true;
+                    }
+                    minXi = absXi;
                 }
-            }
-            YACK_CHEM_PRINTLN(vpfx << "|Xi|=" << absXi);
 
-            //------------------------------------------------------------------
-            //
-            // select best among singles or couples
-            //
-            //------------------------------------------------------------------
-            G0 = selectDecreasedState();
-            YACK_CHEM_PRINTLN("//    <plexus.GlobalStep/>");
-            
+                //--------------------------------------------------------------
+                //
+                // testing couples
+                //
+                //--------------------------------------------------------------
+                for(const enode *node=couples.head();node;node=node->next)
+                {
+                    const equilibrium &eq = ***node;
+                    const size_t       ei = *eq;     assert(ei>N); assert(ei<=Ntot);
+                    const double       ax = fabs( Xtot[ei] = eq.solve1D(Ktot[ei], Corg, Cend) );
+                    if(ax>0)
+                    {
+                        Gtot[ei]  = optimizeDecreaseFrom(G0);
+                        transfer(Ctot[ei],Ctry);
+                        if(verbose)
+                        {
+                            couples.pad(std::cerr << vpfx << eq.name,eq) << " : Xi=" << std::setw(15) << Xtot[ei] << " : " << "Gopt=" << std::setw(15)<< Gtot[ei] << std::endl;
+                        }
+                    }
+                    else
+                    {
+                        Gtot[ei] = G0;
+                        transfer(Ctot[ei],Corg);
+                    }
+                }
+                YACK_CHEM_PRINTLN(vpfx << "|Xi|=" << absXi);
+
+                //--------------------------------------------------------------
+                //
+                // select best among singles or couples,
+                // which ends the global step
+                //
+                //--------------------------------------------------------------
+                G0 = selectDecreasedState();
+            }
+
 
             //------------------------------------------------------------------
             //
@@ -198,115 +201,110 @@ namespace yack
             // evaluate extent
             //
             //------------------------------------------------------------------
-            size_t subCycle = 0;
-        EVALUATE_EXTENT:
-            ++subCycle;
-            YACK_CHEM_PRINTLN("//   ---------------- inner#" << cycle << '.' << subCycle << " ----------------");
-            YACK_CHEM_PRINTLN("//    <EvaluateExtent>");
-            YACK_CHEM_PRINTLN("//     \\_#running = " << num_running << " / " << N );
-
-            //------------------------------------------------------------------
-            //
-            // specific cases depending on #running
-            //
-            //------------------------------------------------------------------
-            switch(num_running)
             {
-                case 0: // all blocked => spurious success...
-                    transfer(C0,Corg);
-                    YACK_CHEM_PRINTLN("//    <EvaluateExtent/>");
-                    YACK_CHEM_PRINTLN("// <plexus.solve> [spurious]");
-                    return true;
+                YACK_CHEM_MARKUP("//    ", "plexus::evaluate_extent");
+                size_t subCycle = 0;
+            EVALUATE_EXTENT:
+                ++subCycle;
+                YACK_CHEM_PRINTLN("//       ---------------- inner#" << cycle << '.' << subCycle << " ----------------");
+                YACK_CHEM_PRINTLN("//       \\_#running = " << num_running << " / " << N );
 
-                case 1: // solve remaining equilibrium, CYCLE again
-                    for(const enode *node=eqs.head();node;node=node->next)
-                    {
-                        const equilibrium &eq = ***node;
-                        const size_t       ei = *eq;
-                        if(!blocked[ei])
+                //------------------------------------------------------------------
+                //
+                // specific cases depending on #running
+                //
+                //------------------------------------------------------------------
+                switch(num_running)
+                {
+                    case 0: // all blocked => spurious success...
+                        transfer(C0,Corg);
+                        YACK_CHEM_PRINTLN("//      [spurious]");
+                        return true;
+
+                    case 1: // solve remaining equilibrium, CYCLE again
+                        for(const enode *node=eqs.head();node;node=node->next)
                         {
-                            eq.solve1D(K[ei],Corg,Ctry);
-                            transfer(Corg,Ctry);
-                            YACK_CHEM_PRINTLN("//    <EvaluateExtent/> [1D]");
-                            break;
+                            const equilibrium &eq = ***node;
+                            const size_t       ei = *eq;
+                            if(!blocked[ei])
+                            {
+                                eq.solve1D(K[ei],Corg,Ctry);
+                                transfer(Corg,Ctry);
+                                YACK_CHEM_PRINTLN("//      [1D remaining]");
+                                break;
+                            }
                         }
-                    }
 
-                    goto CYCLE;
+                        goto CYCLE;
 
-                default:
-                    break;
-            }
-
-
-
-            //------------------------------------------------------------------
-            //
-            // compute Newton's step
-            //
-            //------------------------------------------------------------------
-            if(verbose) eqs(std::cerr << vpfx << "Omega=",Omega0,vpfx);
-
-            iOmega.assign(Omega0);
-            if(!LU.build(iOmega))
-            {
-                YACK_CHEM_PRINTLN("//    <EvaluateExtent/>");
-                YACK_CHEM_PRINTLN("// <plexus.solve> [SINGULAR]");
-                return false;
-            }
-
-            tao::v1::set(xi,Gamma);
-            LU.solve(iOmega,xi);
-
-
-            //------------------------------------------------------------------
-            //
-            // check xi against primary limits
-            //
-            //------------------------------------------------------------------
-            bool modified = false;
-            for(const enode *node = eqs.head(); node; node=node->next)
-            {
-                const equilibrium &eq = ***node;
-                const size_t       ei = *eq;
-                const double       xx = xi[ei];
-                if(verbose) eqs.pad(std::cerr << " (*) " << eq.name,eq) << " : ";
-
-                if(blocked[ei])
-                {
-                    YACK_CHEM_PRINT("[blocked]");
-                    assert( fabs(xi[ei]) <= 0 );
+                    default:
+                        break;
                 }
-                else
+
+
+
+                //------------------------------------------------------------------
+                //
+                // compute Newton's step
+                //
+                //------------------------------------------------------------------
+                if(verbose) eqs(std::cerr << vpfx << "Omega=",Omega0,vpfx);
+
+                iOmega.assign(Omega0);
+                if(!LU.build(iOmega))
                 {
-                    const limits      &lm = eq.primary_limits(Corg,lib.width);
-                    if(verbose) std::cerr << lm;
-                    if( lm.should_reduce(xx) )
+                    YACK_CHEM_PRINTLN("//    [SINGULAR]");
+                    return false;
+                }
+
+                tao::v1::set(xi,Gamma);
+                LU.solve(iOmega,xi);
+
+
+                //------------------------------------------------------------------
+                //
+                // check xi against primary limits
+                //
+                //------------------------------------------------------------------
+                bool modified = false;
+                for(const enode *node = eqs.head(); node; node=node->next)
+                {
+                    const equilibrium &eq = ***node;
+                    const size_t       ei = *eq;
+                    const double       xx = xi[ei];
+                    if(verbose) eqs.pad(std::cerr << " (*) " << eq.name,eq) << " : ";
+
+                    if(blocked[ei])
                     {
-                        YACK_CHEM_PRINT(" [reject " << xx << "]");
-                        modified = true;
-                        --num_running;
-                        retractEquilibriumAt(ei);
+                        YACK_CHEM_PRINT("[blocked]");
+                        assert( fabs(xi[ei]) <= 0 );
                     }
                     else
                     {
-                        YACK_CHEM_PRINT(" [accept " << xx << "]");
+                        const limits      &lm = eq.primary_limits(Corg,lib.width);
+                        if(verbose) std::cerr << lm;
+                        if( lm.should_reduce(xx) )
+                        {
+                            YACK_CHEM_PRINT(" [reject " << xx << "]");
+                            modified = true;
+                            --num_running;
+                            retractEquilibriumAt(ei);
+                        }
+                        else
+                        {
+                            YACK_CHEM_PRINT(" [accept " << xx << "]");
+                        }
+
                     }
 
+                    if(verbose) std::cerr << std::endl;
                 }
-
-                if(verbose) std::cerr << std::endl;
+                if(modified)
+                {
+                    goto EVALUATE_EXTENT;
+                }
+                
             }
-            if(modified)
-            {
-                YACK_CHEM_PRINTLN("//    <EvaluateExtent/> [modified]");
-                goto EVALUATE_EXTENT;
-            }
-            else
-            {
-                YACK_CHEM_PRINTLN("//    <EvaluateExtent/> [accepted]");
-            }
-
 
 
             //------------------------------------------------------------------
@@ -314,52 +312,54 @@ namespace yack
             // compute dC and limitations upon negative increment
             //
             //------------------------------------------------------------------
-            YACK_CHEM_PRINTLN("//    <ComputeStep>");
-            rstack.free();
-            for(const anode *node=active.head;node;node=node->next)
             {
-                const size_t j = ***node;
-                const double d = (dC[j] = sorted::dot(xi,NuTA[j],Xtmp));
-                const double c = Corg[j]; assert(c>=0);
-                if(d<0)
+                YACK_CHEM_MARKUP("//    ", "plexus::compute_deltaC");
+                rstack.free();
+                for(const anode *node=active.head;node;node=node->next)
                 {
-                    rstack << c/(-d);
+                    const size_t j = ***node;
+                    const double d = (dC[j] = sorted::dot(xi,NuTA[j],Xtmp));
+                    const double c = Corg[j]; assert(c>=0);
+                    if(d<0)
+                    {
+                        rstack << c/(-d);
+                    }
                 }
-            }
 
-            //------------------------------------------------------------------
-            //
-            // compute search extension
-            //
-            //------------------------------------------------------------------
-            double expand = 2.0;
-            if(rstack.size())
-            {
-                hsort(rstack,comparison::increasing<double>);
-                expand = min_of(expand,0.99*rstack.front());
-            }
-            YACK_CHEM_PRINTLN("//    expand=" << expand);
-
-            //------------------------------------------------------------------
-            //
-            // compute Cend = Corg + expand * dC
-            //
-            //------------------------------------------------------------------
-            for(const anode *node=active.head;node;node=node->next)
-            {
-                const size_t j = ***node;
-                Cend[j] = Corg[j] + expand * dC[j]; assert(Cend[j]>=0);
-            }
-            YACK_CHEM_PRINTLN("//    <ComputeStep/>");
-
-            {
-                ios::ocstream fp("gam.dat");
-                static const size_t NP=1000;
-                for(size_t i=0;i<=NP;++i)
+                //--------------------------------------------------------------
+                //
+                // compute search extension
+                //
+                //--------------------------------------------------------------
+                double expand = 2.0;
+                if(rstack.size())
                 {
-                    const double u = double(i)/NP;
-                    fp("%.15g %.15g\n",u,(*this)(u));
+                    hsort(rstack,comparison::increasing<double>);
+                    expand = min_of(expand,0.99*rstack.front());
                 }
+                YACK_CHEM_PRINTLN("//    expand=" << expand);
+
+                //--------------------------------------------------------------
+                //
+                // compute Cend = Corg + expand * dC
+                //
+                //--------------------------------------------------------------
+                for(const anode *node=active.head;node;node=node->next)
+                {
+                    const size_t j = ***node;
+                    Cend[j] = Corg[j] + expand * dC[j]; assert(Cend[j]>=0);
+                }
+
+                {
+                    ios::ocstream fp("gam.dat");
+                    static const size_t NP=1000;
+                    for(size_t i=0;i<=NP;++i)
+                    {
+                        const double u = double(i)/NP;
+                        fp("%.15g %.15g\n",u,(*this)(u));
+                    }
+                }
+
             }
 
             //------------------------------------------------------------------
