@@ -219,7 +219,7 @@ namespace yack
         double components:: deduce(const readable<double> &C0,
                                    const readable<double> &Cs) const throw()
         {
-            double sum = 0;
+            double sum       = 0;
             for(const cnode *node=head();node;node=node->next)
             {
                 const component &c = ***node;
@@ -230,7 +230,7 @@ namespace yack
                 const double    xi = dC/n;
                 sum += xi;
             }
-            return  sum/size();
+            return sum/size();
         }
 
 

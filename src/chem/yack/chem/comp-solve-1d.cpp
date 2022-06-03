@@ -437,16 +437,13 @@ assert(x.c>x.a)
 
             if(first)
             {
-                //YACK_CHEM_PRINTLN("//   xi=" << xiNew << " (first)");
                 first = false;
             }
             else
             {
-                //YACK_CHEM_PRINTLN("//   xi=" << xiNew << " / " << oldXi);
                 if(fabs(xiNew)>=fabs(oldXi))
                 {
                     // reached numerical limit at previous step, do not move more!
-                    // YACK_CHEM_PRINTLN("// reached numerical limit");
                     return deduce(C0,Cs);
                 }
             }
@@ -461,7 +458,6 @@ assert(x.c>x.a)
             s0    = __sign::of(f0);
             if(__zero__==s0)
             {
-                //YACK_CHEM_PRINTLN("// exact zero mass action");
                 return deduce(C0,Cs);
             }
 
