@@ -134,6 +134,7 @@ namespace yack
                     return true;
                 }
 
+#if 1
                 if(first)
                 {
                     minXi = absXi;
@@ -145,11 +146,13 @@ namespace yack
                     {
                         transfer(C0,Corg);
                         YACK_CHEM_PRINTLN("//      [SUCCESS |Xi|@min=" << absXi << "]");
-                        couples(std::cerr << vpfx << "Xi=",Xtot,vpfx);
+                        eqs(    std::cerr << vpfx << "Xi_single=",Xtot,vpfx);
+                        couples(std::cerr << vpfx << "Xi_couple=",Xtot,vpfx);
                         return true;
                     }
                     minXi = absXi;
                 }
+#endif
 
                 //--------------------------------------------------------------
                 //
@@ -184,6 +187,17 @@ namespace yack
                 // which ends the global step
                 //
                 //--------------------------------------------------------------
+#if 0
+                const double Gopt = selectDecreasedState();
+                if(Gopt>=G0)
+                {
+                    transfer(C0,Corg);
+                    YACK_CHEM_PRINTLN("//      [SUCCESS |G0|@min=" << G0 << "]");
+                    couples(std::cerr << vpfx << "Xi=",Xtot,vpfx);
+                    return true;
+                }
+                G0 = Gopt;
+#endif
                 G0 = selectDecreasedState();
             }
 
