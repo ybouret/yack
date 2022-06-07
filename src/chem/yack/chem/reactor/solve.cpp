@@ -34,8 +34,7 @@ namespace yack
             //------------------------------------------------------------------
             YACK_CHEM_MARKUP("//  ", "plexus::solve");
             if(verbose) lib(std::cerr << vpfx << "Cini=",C0,vpfx);
-
-            //ios::ocstream::overwrite("rms.dat");
+            
 
             switch(N)
             {
@@ -79,6 +78,7 @@ namespace yack
             //
             //
             //------------------------------------------------------------------
+            bool   ready = true;
             bool   first = true;
             double minXi = 0;
             size_t cycle = 0;
@@ -134,7 +134,6 @@ namespace yack
                     return true;
                 }
 
-#if 1
                 if(first)
                 {
                     minXi = absXi;
@@ -142,17 +141,20 @@ namespace yack
                 }
                 else
                 {
-                    if(absXi>=minXi)
+                    YACK_CHEM_PRINTLN("//      [READY=" << (ready ? "YES" : "NO") << "]");
+                    if(ready)
                     {
-                        transfer(C0,Corg);
-                        YACK_CHEM_PRINTLN("//      [SUCCESS |Xi|@min=" << absXi << "]");
-                        eqs(    std::cerr << vpfx << "Xi_single=",Xtot,vpfx);
-                        couples(std::cerr << vpfx << "Xi_couple=",Xtot,vpfx);
-                        return true;
+                        if(absXi>=minXi)
+                        {
+                            transfer(C0,Corg);
+                            YACK_CHEM_PRINTLN("//      [SUCCESS |Xi|@min=" << absXi << "]");
+                            eqs(    std::cerr << vpfx << "Xi_single=",Xtot,vpfx);
+                            couples(std::cerr << vpfx << "Xi_couple=",Xtot,vpfx);
+                            return true;
+                        }
                     }
-                    minXi = absXi;
+                    minXi = min_of(absXi,minXi);
                 }
-#endif
 
                 //--------------------------------------------------------------
                 //
@@ -208,7 +210,7 @@ namespace yack
             //
             //------------------------------------------------------------------
             size_t num_running = computeOmegaAndGamma();
-
+            ready              = true;
 
 
             //------------------------------------------------------------------
@@ -316,6 +318,7 @@ namespace yack
                 }
                 if(modified)
                 {
+                    ready = false;
                     goto EVALUATE_EXTENT;
                 }
                 

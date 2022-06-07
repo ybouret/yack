@@ -69,7 +69,7 @@ namespace yack
                 {
                     const equilibrium &s = ***node;
                     os << std::endl;
-                    pad(os << pfx << ' ' << '<' << s.name << '>',s) << " = " << arr[*s];
+                    pad(os << pfx << ' ' << '{' << s.name << '}',s) << " = " << arr[*s];
                 }
                 os << ' ' << '}' << std::endl;
             }
