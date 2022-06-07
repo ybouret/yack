@@ -39,8 +39,6 @@ YACK_UTEST(reactor)
     vector<double> C(cs.M,0);
     
 
-
-
     C.ld(0);
     for(size_t iter=0;iter<1;++iter)
     {

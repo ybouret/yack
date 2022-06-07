@@ -87,6 +87,7 @@ namespace yack
         CYCLE:
             ++cycle;
             YACK_CHEM_PRINTLN("//     ================ cycle#" << cycle << " ================");
+            if(verbose) lib(std::cerr << vpfx << "Corg=",Corg,vpfx);
 
             //------------------------------------------------------------------
             //
