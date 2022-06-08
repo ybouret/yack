@@ -37,8 +37,8 @@ namespace yack
                     const real_t beta  = (x.b-x.a)/w;
                     const real_t d_a   = std::abs(f.a-f.b); // avoid underflow
                     const real_t d_c   = std::abs(f.c-f.b); // avoid underflow
-                    const real_t den_a = (one-beta) * d_a;
-                    const real_t den_c = beta       * d_c;
+                    
+                    return half*(x.a+x.c);
 
                 }
             }
