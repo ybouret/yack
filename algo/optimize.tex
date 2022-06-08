@@ -1,0 +1,51 @@
+\documentclass[aps,12pt]{revtex4}
+\usepackage[a4paper]{geometry}
+\usepackage{graphicx}
+\usepackage{amssymb,amsfonts,amsmath,amsthm}
+\usepackage{bm}
+\usepackage{pslatex}
+\usepackage{mathptmx}
+
+ 	 
+\begin{document}
+\center{\bf Optimize in 1D}
+
+Let us have 
+$$a \leq b \leq c$$ 
+with 
+$$f(b)\leq f(a) \text{ and } f(b)\leq f(c).$$
+What is most likely location for the minimum ?
+Let us define $$\delta_a = f(a)-f(b) \geq 0 \text{ and } \delta_c = f(a)-f(b)  \geq 0.$$ 
+Let us define 
+$$
+	\beta = 
+	\left\lbrace
+	\begin{array}{rcl}
+	0 & \text{if} & b\leq a,\\
+	1 & \text{if} & b\geq c,\\
+	\frac{b-a}{c-a} & & \text{otherwise}
+	\end{array}
+	\right.
+$$
+We approximate the reduced curve with:
+$$
+	f(u) \simeq f_b + \lambda (u-\beta)  + \mu (u-\beta)^2
+$$
+which provides:
+$$
+\left\lbrace
+\begin{array}{rcl}
+	\delta_a & = & -\lambda \beta + \mu \beta^2 \\
+	\delta_c & = & \lambda(1-\beta) + \mu (1-\beta^2)\\
+\end{array}
+\right.
+$$
+Hence:
+$$
+\begin{array}{rcl}
+	u_{opt} & = & \beta + \dfrac{1}{2} \dfrac{(1-\beta)^2 \delta_a - \beta^2 \delta_c }{(1-\beta)\delta_a + \beta \delta_c}\\
+	\\
+	 & = & \dfrac{1}{2} \dfrac{(1-\beta^2)\delta_a + \beta^2 \delta_c }{(1-\beta)\delta_a + \beta \delta_c}\\
+\end{array}
+$$
+\end{document}
