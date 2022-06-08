@@ -18,7 +18,7 @@ namespace yack
         //! helper for verbosity
 #define YACK_CHEM_PRINT(MSG) do { if(chemical::entity::verbose) { std::cerr << MSG; } } while(false)
 
-
+        //! helper for verbosity markers
 #define YACK_CHEM_MARKUP(PFX,TAG)  YACK_IOS_MARKUP() (chemical::entity::verbose,std::cerr,PFX,TAG)
 
         //______________________________________________________________________

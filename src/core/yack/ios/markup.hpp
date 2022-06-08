@@ -10,8 +10,12 @@ namespace yack
 {
     namespace ios
     {
-
+        //______________________________________________________________________
+        //
+        //
         //! helper for verbose markup enter/leave
+        //
+        //______________________________________________________________________
         class markup
         {
         public:
@@ -51,9 +55,10 @@ namespace yack
     }
 }
 
-#define YACK_IOS_MARKUP__(X) __markup##X
-#define YACK_IOS_MARKUP_(X)  const yack::ios::markup YACK_IOS_MARKUP__(X)
-#define YACK_IOS_MARKUP()    YACK_IOS_MARKUP_(__LINE__)
+
+#define YACK_IOS_MARKUP__(X) __markup##X                                   //!< create a unique marker
+#define YACK_IOS_MARKUP_(X)  const yack::ios::markup YACK_IOS_MARKUP__(X)  //!< declare a unique marker
+#define YACK_IOS_MARKUP()    YACK_IOS_MARKUP_(__LINE__)                    //!< start a unique marker
 
 #endif
 
