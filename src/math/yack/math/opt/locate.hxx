@@ -37,7 +37,34 @@ namespace yack
                     //const real_t beta  = (x.b-x.a)/w;
                     const real_t d_a   = std::abs(f.a-f.b); // avoid underflow
                     const real_t d_c   = std::abs(f.c-f.b); // avoid underflow
-                    
+
+                    switch ( __sign::of(d_a,d_c) )
+                    {
+                        case __zero__: break;
+
+                        case negative: assert(d_a<d_c); assert(0<d_c);
+                            if(d_a<=0)
+                            {
+                                return half*(x.a+x.b);
+                            }
+                            else
+                            {
+                                exit(1);
+                            }
+                            break;
+
+                        case positive: assert(d_c<d_a); assert(0<d_a);
+                            if(d_c<=0)
+                            {
+                                return half*(x.b+x.c);
+                            }
+                            else
+                            {
+
+                            }
+                            break;
+                    }
+
                     return half*(x.a+x.c);
 
                 }
