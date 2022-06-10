@@ -61,11 +61,7 @@ YACK_UTEST(parabolic)
     x.b = 0.2;
     f.a = f.b;
     build_para(x,f,"lhs");
-
-
-
-
-
+    
 }
 YACK_UDONE()
 
