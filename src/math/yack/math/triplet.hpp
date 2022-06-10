@@ -73,6 +73,15 @@ namespace yack
             {
                 hsort(*this,other,comparison::increasing<T>);
             }
+
+            //! assign by static_cast
+            template <typename U>
+            inline void assign(const triplet<U> &other)
+            {
+                a = static_cast<const_type>(other.a);
+                b = static_cast<const_type>(other.b);
+                c = static_cast<const_type>(other.c);
+            }
             
 
             //! check if is increasing
@@ -93,6 +102,17 @@ namespace yack
                 return is_increasing() || is_decreasing();
             }
 
+            //! check if is local minimum
+            inline bool is_local_minimum() const throw()
+            {
+                return (a>=b) && (c>=b);
+            }
+
+            //! (a,b,c) -> (c,b,a)
+            inline void reverse() throw()
+            {
+                cswap(a,c);
+            }
 
             //! output as a 3-array
             friend inline

@@ -1,11 +1,12 @@
 
 //! \file
 
-#ifndef YACK_OPT_OPTIMIZE_INCLUDED
-#define YACK_OPT_OPTIMIZE_INCLUDED 1
+#ifndef YACK_OPT_LOCATE_INCLUDED
+#define YACK_OPT_LOCATE_INCLUDED 1
 
-#include "yack/math/real-function.hpp"
 #include "yack/math/triplet.hpp"
+#include "yack/math/real-function.hpp"
+#include <cmath>
 
 namespace yack
 {
@@ -16,42 +17,37 @@ namespace yack
         //______________________________________________________________________
         //
         //
-        //! optimize in 1D
+        //! locating algorithm
         //
         //______________________________________________________________________
-        struct optimize
+        struct locate
         {
-            //__________________________________________________________________
-            //
-            //! trigger verbosity
-            //__________________________________________________________________
-            static bool verbose;
 
-            enum preprocess
-            {
-                direct,
-                inside
-            };
-
-            //! guess with x.a <= x.b <= x.c, f.b <= f.a, f.b <= f.c
-
-            template <typename T> static
-            T parabolic_guess(const triplet<T> &x, const triplet<T> &f) throw();
-
-            template <typename T> static
-            void run( real_function<T> &F, triplet<T> &x, triplet<T> &f, const preprocess prolog);
+            static bool verbose; //!< trigger verbosity
 
             //__________________________________________________________________
             //
-            //! wrapper for run
+            //! inside [x.a,x.c], with f.a and f.c computed
+            /**
+             - Look for f.b<=f.a and f.b <= f.c
+             - f.b = f(x.b) is always the last evaluated value
+             - can be on a side of the interval
+             */
+            //__________________________________________________________________
+            template <typename T> static
+            bool inside(real_function<T> &F, triplet<T> &x, triplet<T> &f);
+
+
+            //__________________________________________________________________
+            //
+            //! wrapper for inside
             //__________________________________________________________________
             template <typename T, typename FUNCTION> static inline
-            void run_for(FUNCTION &F, triplet <T> &x, triplet<T> &f, const preprocess prolog)
+            bool inside_for(FUNCTION &F, triplet <T> &x, triplet<T> &f)
             {
                 typename real_function_of<T>::template call<FUNCTION> FF(F);
-                run(FF,x,f,prolog);
+                return inside(FF,x,f);
             }
-
         };
 
     }
@@ -59,3 +55,4 @@ namespace yack
 }
 
 #endif
+

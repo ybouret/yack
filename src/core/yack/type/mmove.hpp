@@ -1,8 +1,8 @@
 
 //! \file
 
-#ifndef YACK_MMOVE_INCLUDED
-#define YACK_MMOVE_INCLUDED 1
+#ifndef YACK_TYPE_MMOVE_INCLUDED
+#define YACK_TYPE_MMOVE_INCLUDED 1
 
 #include "yack/type/out-of-reach.hpp"
 

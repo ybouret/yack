@@ -11,12 +11,11 @@ namespace yack
 
             //------------------------------------------------------------------
             //
-            // sanity check
+            // sanity check want a<=b<=c
             //
             //------------------------------------------------------------------
-            assert(x.a<=x.b); assert(x.b<=x.c);
-            assert(f.b<=f.a); assert(f.b<=f.c);
-
+            assert(x.is_increasing());
+            assert(f.is_local_minimum());
 
             if(x.b<=x.a)
             {
@@ -80,6 +79,106 @@ namespace yack
             }
 
         }
+
+        namespace {
+
+            static inline void load(real_t arr[], const triplet<real_t> &t, const real_t v) throw()
+            {
+                memcpy(&arr[0],&t.a,sizeof(triplet<real_t>));
+                arr[3] = v;
+            }
+
+
+
+        }
+
+        template <>
+        void optimize:: run<real_t>(real_function<real_t> &F,
+                                    triplet<real_t>       &x,
+                                    triplet<real_t>       &f,
+                                    const preprocess       prolog)
+        {
+            static const char fn[] = "// [optimize] ";
+
+            switch(prolog)
+            {
+                case direct:
+                    YACK_LOCATE(fn << " <direct>");
+                    if(!x.is_increasing())    throw exception("%sabscissae are not in increasing order",fn);
+                    if(!f.is_local_minimum()) throw exception("%sminimum of function is not located",fn);
+                    break;
+
+                case inside:
+                    YACK_LOCATE(fn << " <inside>");
+                    if(!locate::inside(F,x,f))
+                    {
+                        YACK_LOCATE(fn << " global");
+                        return;
+                    }
+                    break;
+            }
+            assert(x.is_increasing());
+            assert(f.is_local_minimum());
+
+            real_t             xarr[4] = { 0,0,0,0 };
+            real_t             farr[4] = { 0,0,0,0 };
+            thin_array<real_t> xtab(xarr,sizeof(xarr)/sizeof(xarr[0]));
+            thin_array<real_t> ftab(farr,sizeof(farr)/sizeof(farr[0]));
+
+
+        CYCLE:
+            load(xarr,x,parabolic_guess(x,f)); assert(xtab[4]<=xtab[3]); assert(xtab[4]>=xtab[1]);
+            load(farr,f,F(xtab[4]));
+            hsort(xtab,ftab,comparison::increasing<real_t>);
+            YACK_LOCATE(fn << "xtab=" << xtab);
+            YACK_LOCATE(fn << "ftab=" << ftab);
+
+            const triplet<real_t> xl = { xtab[1], xtab[2], xtab[3] }; assert( xl.is_increasing() );
+            const triplet<real_t> fl = { ftab[1], ftab[2], ftab[3] };
+
+            const triplet<real_t> xr = { xtab[2], xtab[3], xtab[4] }; assert( xr.is_increasing() );
+            const triplet<real_t> fr = { ftab[2], ftab[3], ftab[4] };
+
+            switch( __sign::of(fl.b,fr.b) )
+            {
+                case __zero__: {
+                    // same prediction => success = null width
+                    YACK_LOCATE(fn<<"stuck  @f(" << xl.b << ")=" << fl.b);
+                    if( std::abs(xl.c-xl.a) <= std::abs(xr.c-xr.a) )
+                    {
+                        x.assign(xl);
+                        f.assign(fl);
+                    }
+                    else
+                    {
+                        x.assign(xr);
+                        f.assign(xr);
+                    }
+                    f.b = F(x.b);
+                } return;
+
+                case negative: assert(fl.b<fr.b);
+                    // lhs is better
+                    YACK_LOCATE(fn<<" @lhs : x=" << xl << "; f=" << fl);
+                    assert(fl.is_local_minimum());
+                    x.assign(xl);
+                    f.assign(fl);
+                    break;
+
+                case positive: assert(fr.b<fl.b);
+                    // rhs is better
+                    YACK_LOCATE(fn<<" @rhs : x=" << xr << "; f=" << fr);
+                    assert(fr.is_local_minimum());
+                    x.assign(xr);
+                    f.assign(fr);
+                    break;
+            }
+
+            goto CYCLE;
+
+
+        }
+
 
     }
 

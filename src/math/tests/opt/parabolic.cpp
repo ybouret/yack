@@ -1,17 +1,21 @@
 
 #include "yack/math/opt/optimize.hpp"
+#include "yack/math/opt/locate.hpp"
 #include "yack/utest/run.hpp"
 #include "yack/ios/ocstream.hpp"
 #include "yack/string.hpp"
+#include "yack/ios/ascii/convert.hpp"
 
 using namespace yack;
 using namespace math;
 
-double F(double x)
+template <typename T> static inline
+T F(T x)
 {
     return 1.27-cos(3*x-0.1);
 }
 
+#if 0
 static inline
 void build_para(const triplet<double> &x, const triplet<double> &f, const char *root)
 {
@@ -45,27 +49,33 @@ void build_para(const triplet<double> &x, const triplet<double> &f, const char *
     }
 
 }
+#endif
+
+
 
 YACK_UTEST(parabolic)
 {
+    locate::verbose   = true;
+    optimize::verbose = true;
 
-    triplet<double> x = { 0, 0.1, 0.7 };
-    triplet<double> f = { 1, 0.3, 0.4 };
+    triplet<double> x = {0,-1,0.7 };
 
-    build_para(x,f,"sample");
+    if(argc>1)
+    {
+        x.a = ios::ascii::convert::real<double>(argv[1], "x.a");
+    }
 
-    f.c = f.a;
-    build_para(x,f,"mid1");
+    if(argc>2)
+    {
+        x.c = ios::ascii::convert::real<double>(argv[2], "x.c");
+    }
 
-    x.b = 0.6;
-    build_para(x,f,"mid2");
+    triplet<double> f = { F(x.a), -1, F(x.c) };
 
-    x.b = 0.02;
-    build_para(x,f,"mid3");
 
-    x.b = 0.2;
-    f.a = f.b;
-    build_para(x,f,"lhs");
+    optimize::run_for(F<double>,x,f,optimize::inside);
+
+    
     
 }
 YACK_UDONE()
