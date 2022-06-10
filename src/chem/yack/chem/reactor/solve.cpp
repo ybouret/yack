@@ -114,15 +114,15 @@ namespace yack
                         absXi += ax;
                         Gtot[ei]  = optimizeDecreaseFrom(G0);
                         transfer(Ctot[ei],Ctry);
-                        if(verbose)
-                        {
-                            couples.pad(std::cerr << vpfx << eq.name,eq) << " : Xi=" << std::setw(15) << Xtot[ei] << " : " << "Gopt=" << std::setw(15)<< Gtot[ei] << std::endl;
-                        }
                     }
                     else
                     {
                         Gtot[ei] = G0;
                         transfer(Ctot[ei],Corg);
+                    }
+                    if(verbose)
+                    {
+                        couples.pad(std::cerr << vpfx << eq.name,eq) << " : Xi=" << std::setw(15) << Xtot[ei] << " : " << "Gopt=" << std::setw(15)<< Gtot[ei] << std::endl;
                     }
                 }
 

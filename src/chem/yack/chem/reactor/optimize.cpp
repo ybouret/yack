@@ -1,6 +1,7 @@
 #include "yack/chem/reactor.hpp"
 #include "yack/sort/sum.hpp"
 #include "yack/math/opt/minimize.hpp"
+#include "yack/math/opt/optimize.hpp"
 #include <iomanip>
 
 namespace yack
@@ -39,6 +40,7 @@ namespace yack
             triplet<double> u = { 0,  -1, 1 };
             triplet<double> g = { G0, -1, meanGammaSquared(Cend) };
             (void) minimize::find<double>::run_for(*this,u,g,minimize::inside);
+            optimize::run_for(*this,u,g, optimize::inside);
             return g.b; //!< and Ctry is computed
         }
 
