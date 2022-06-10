@@ -3,13 +3,8 @@ namespace yack
 {
     namespace math
     {
-
-        
-
-
-
         template <>
-        real_t locate:: guess(const triplet<real_t> &x, const triplet<real_t> &f) throw()
+        real_t optimize:: parabolic_guess(const triplet<real_t> &x, const triplet<real_t> &f) throw()
         {
             static const real_t half(0.5);
             static const real_t one(1);

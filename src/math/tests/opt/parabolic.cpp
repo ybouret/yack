@@ -1,11 +1,16 @@
 
-#include "yack/math/opt/locate.hpp"
+#include "yack/math/opt/optimize.hpp"
 #include "yack/utest/run.hpp"
 #include "yack/ios/ocstream.hpp"
 #include "yack/string.hpp"
 
 using namespace yack;
 using namespace math;
+
+double F(double x)
+{
+    return 1.27-cos(3*x-0.1);
+}
 
 static inline
 void build_para(const triplet<double> &x, const triplet<double> &f, const char *root)
