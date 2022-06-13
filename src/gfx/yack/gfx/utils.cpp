@@ -13,7 +13,7 @@ namespace yack
         static inline
         const string & sclr(string &s)
         {
-            return strops::clean_with(" \t",2,s);
+            return strops::strip_with(" \t",2,s);
         }
         
         coord command_line:: WxH(const string &args)

@@ -77,7 +77,7 @@ namespace yack
                 vector<string> words;
                 tokenizer::split_with(':', words, content);
                 const size_t nw = words.size();
-                for(size_t i=nw;i>0;--i) strops::clean_with(" \t",2,words[i]);
+                for(size_t i=nw;i>0;--i) strops::strip_with(" \t",2,words[i]);
 
                 switch(nw)
                 {

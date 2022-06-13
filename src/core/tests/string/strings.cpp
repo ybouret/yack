@@ -77,7 +77,7 @@ YACK_UTEST(strings)
         {
             string ans = vformat("  %s  ", "1234");
             std::cerr << "ans = '" <<  ans << "'" << std::endl;
-            std::cerr << "      '" << strops::clean_if(is_space,ans) << "'" << std::endl;
+            std::cerr << "      '" << strops::strip_if(is_space,ans) << "'" << std::endl;
         }
     }
 

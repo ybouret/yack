@@ -121,7 +121,7 @@ namespace yack
 
         static inline bool is_bad_word(string &word)
         {
-            strops::clean_with(" \t",2,word);
+            strops::strip_with(" \t",2,word);
             return word.size()<=0;
         }
 

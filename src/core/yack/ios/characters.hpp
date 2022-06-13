@@ -66,12 +66,60 @@ namespace yack
                 return os;
             }
 
+            //! generic trim of bad chars
+            template <typename PROC> inline characters & trim_(PROC &is_bad) throw()
+            {
+                while(size && is_bad( **tail ) ) characters_::trim();
+                return *this;
+            }
+
+            //! generic skip of bad chars
+            template <typename PROC> inline characters & skip_(PROC &is_bad) throw()
+            {
+                while(size && is_bad( **head ) ) characters_::skip();
+                return *this;
+            }
+
+            //! generic strip of bad chars
+            template <typename PROC> inline characters & strip_(PROC &is_bad) throw()
+            {
+                return  trim_<PROC>(is_bad).template skip_<PROC>(is_bad);
+            }
+
+            characters & trim(const char *bad, const size_t num)  throw(); //!< trim
+            characters & trim(const char *bad)                    throw(); //!< trim
+            characters & skip(const char *bad, const size_t num)  throw(); //!< skip
+            characters & skip(const char *bad)                    throw(); //!< skip
+            characters & strip(const char *bad, const size_t num) throw(); //!< strip
+            characters & strip(const char *bad)                   throw(); //!< strip
+
+
+
+
             char        *cstr()          const; //!< filled from legacy::acquire
             static void  free(char *)  throw(); //!< free   with legacy::release
             string       to_string()     const; //!< directly to string
             string      *to_new_string() const; //!< to string pointer directly
             size_t       fill(char buffer[],const size_t buflen) throw(); //!< transfer at most buflen first chars
 
+        private:
+            struct is_bad_ {
+                const char  *bad;
+                const size_t num;
+                inline bool operator()(const int c) const throw()
+                {
+                    for(size_t i=0;i<num;++i) { if(c==bad[i]) return true; }
+                    return false;
+                }
+            };
+
+            template <typename METHOD_POINTER> inline
+            characters & apply(const char *bad, const size_t num, METHOD_POINTER method) throw()
+            {
+                assert( yack_good(bad,num) );
+                is_bad_ is_bad  = { bad, num };
+                return ((*this).*method)(is_bad);
+            }
         };
 
     }

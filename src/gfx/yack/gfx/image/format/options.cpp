@@ -46,7 +46,7 @@ namespace yack
 
         static inline void optclr(string &s) throw()
         {
-            strops::clean_with(" \t", 2, s);
+            strops::strip_with(" \t", 2, s);
         }
 
         void options:: add(const string &info)

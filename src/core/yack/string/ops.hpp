@@ -36,9 +36,9 @@ namespace yack
             return s.skip(n);
         }
 
-        //! cleanup
+        //! strip
         template <typename T, typename FUNCTION> static inline
-        kernel::string<T> & clean_if(FUNCTION &is_bad, kernel::string<T> &s) throw()
+        kernel::string<T> & strip_if(FUNCTION &is_bad, kernel::string<T> &s) throw()
         {
             return skip_if(is_bad,trim_if(is_bad,s));
         }
@@ -61,13 +61,13 @@ namespace yack
             return skip_if(is_bad,s);
         }
 
-        //! clean with data
+        //! strip with data
         template <typename T> static inline
-        kernel::string<T> & clean_with(const T *bad, const size_t num, kernel::string<T> &s) throw()
+        kernel::string<T> & strip_with(const T *bad, const size_t num, kernel::string<T> &s) throw()
         {
             assert(!(bad==NULL&&num>0));
             const belongs_to<T> is_bad = { bad, num };
-            return clean_if(is_bad,s);
+            return strip_if(is_bad,s);
         }
 
         static void make_lower(string &) throw(); //!< make all lower
