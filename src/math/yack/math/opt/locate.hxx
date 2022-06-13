@@ -12,34 +12,35 @@ namespace yack
             static const char * const fn = locate_inside;
             static const real_t       half(0.5);
 
+            YACK_LOCATE(fn<<"[initialize]");
             //------------------------------------------------------------------
             //
-            // decreasing from a to c
+            // initialize decreasing from a to c
             //
             //------------------------------------------------------------------
-
             if(f.a<f.c)
             {
                 x.reverse();
                 f.reverse();
-            }
-            assert(f.c<=f.a);
+            } assert(f.c<=f.a);
 
             real_t width  = std::abs(x.c-x.a);
             size_t cycle  = 0;
 
         CYCLE:
-            assert(f.c<=f.a);
-            ++cycle;
-            f.b = F( x.b = half*(x.a+x.c) ); assert(x.is_ordered());
-            YACK_LOCATE(fn << "-------- cycle=" << cycle << " --------");
-            YACK_LOCATE(fn<< "@x=" << x << " : f=" << f);
-
+            ++cycle;                           assert(f.c<=f.a);
+            f.b = F( x.b = half*(x.a+x.c) );   assert(x.is_ordered());
+            YACK_LOCATE(fn<<"[cycle " << std::setw(3) << cycle << "] " << f << " @" << x);
             if(f.b<=f.c)
             {
+                //--------------------------------------------------------------
+                //
+                // success
+                //
+                //--------------------------------------------------------------
                 assert(x.is_ordered());
                 assert(f.is_local_minimum());
-                YACK_LOCATE(fn << "success");
+                YACK_LOCATE(fn << "[success]");
                 if(x.a>x.c)
                 {
                     x.reverse();
@@ -49,22 +50,23 @@ namespace yack
             }
             else
             {
-                // move a to b
-                assert(f.b>f.c);
-                f.a = f.b;
+                //--------------------------------------------------------------
+                //
+                // c is the minimal value: move a to b, closer to c
+                //
+                //--------------------------------------------------------------
                 x.a = x.b;
-
+                f.a = f.b;
                 const real_t new_width = std::abs(x.c-x.a);
                 if(new_width>=width)
                 {
-                    // reached side
-                    YACK_LOCATE(fn << "monotonic @" << x.c);
-                    f.a = f.b = f.c = F( x.a = x.b = x.c );
+                    YACK_LOCATE(fn << "[monotonic @" << x.c << "]");
+                    f.a = f.b = f.c = F(x.a = x.b = x.c);
                     return false;
                 }
-                width = new_width;
                 goto CYCLE;
             }
+
 
         }
     }

@@ -4,7 +4,9 @@
 #include "yack/math/opt/locate.hpp"
 #include "yack/sort/heap.hpp"
 #include "yack/sequence/thin-array.hpp"
+#include "yack/ios/markup.hpp"
 #include <cstring>
+#include <iomanip>
 
 namespace yack
 {
