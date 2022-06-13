@@ -1,7 +1,7 @@
 use Algorithm::Networksort;
 use Algorithm::Networksort::Best qw(:all);
 
-my @algo = ( "bosenelson", "batcher" );
+my @algo = ( "bosenelson", "batcher", "hibbard", "batcher", "bitonic" );
 
 for my $small (2..8)
 {
@@ -14,7 +14,7 @@ for my $small (2..8)
 
 }
 
-my @large = (9..12);
+my @large = (9..24);
 for my $inputs (@large)
 {
 	my @nwkeys = nw_best_names($inputs);
@@ -27,3 +27,13 @@ for my $inputs (@large)
 	}
 }
 
+for my $extra (25..32)
+{
+        for my $alg (@algo)
+        {
+                my $nw = nwsrt(inputs => $extra, algorithm => $alg);
+                print $alg, $extra, "\n";
+                print $nw, "\n\n";
+        }
+
+}
