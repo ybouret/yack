@@ -168,25 +168,25 @@ YACK_PROGRAM()
         const string header = workdir + name + ".hpp";
         std::cerr << "=>" << header << "|" << source << std::endl;
         const size_t inputs    = parseInputs(name);
-        const string baseClass = vformat("pairs<%u,0x%04x>",unsigned(inputs),unsigned(nc));
-        const string num_swaps = vformat("0x%04x",unsigned(nc));
+        const string dim       = vformat("%u",unsigned(inputs));
+        const string num       = vformat("0x%04x",unsigned(nc));
         {
             ios::ocstream hdr(header);
 
             hdr << "//! \\file\n";
             hdr << "#ifndef YACK_NWSORST_" << name << "_INCLUDED\n";
             hdr << "#define YACK_NWSORST_" << name << "_INCLUDED\n";
-            hdr << "#include \"yack/sort/nw/swaps.hpp\"\n";
+            hdr << "#include \"yack/sort/nwsrt.hpp\"\n";
             hdr << "namespace yack {\n";
             hdr << "  namespace nwsrt {\n";
             hdr << "    //! "   << name << "\n";
-            hdr << "    class " << name << " : public " << baseClass << " {\n";
+            hdr << "    class " << name << " : public swaps {\n";
             hdr << "      public:\n";
             hdr << "        virtual ~" << name << "() throw(); //!< cleanup\n";
             hdr << "        explicit " << name << "() throw(); //!< setup  \n";
             hdr << "        static const char   sid[];        //!< " << name << "\n";
-            hdr << "        static const size_t lhs[" << num_swaps << "];  //!< lhs\n";
-            hdr << "        static const size_t rhs[" << num_swaps << "];  //!< rhs\n";
+            hdr << "        static const size_t lhs[" << num << "];  //!< lhs\n";
+            hdr << "        static const size_t rhs[" << num << "];  //!< rhs\n";
             hdr << "      private:\n";
             hdr << "        YACK_DISABLE_COPY_AND_ASSIGN(" << name << ");\n";
             hdr << "    };\n";
@@ -204,12 +204,12 @@ YACK_PROGRAM()
             src << "  namespace nwsrt {\n";
             src << "    const char " << name << " :: sid[] =\"" << name << "\";\n";
             src << "    " << name << " :: ~" << name<< "() throw() {}\n";
-            src << "    " << name << " ::  " << name<< "() throw() : " << baseClass << "(sid,lhs,rhs) {}\n";
-            src << "    const size_t " << name << " :: lhs[" << num_swaps << "] = {\n";
+            src << "    " << name << " ::  " << name<< "() throw() : swaps(sid," << dim << "," << num << ",lhs,rhs) {}\n";
+            src << "    const size_t " << name << " :: lhs[" << num << "] = {\n";
             outputPairs(src,swaps,1);
             src << "    };\n";
 
-            src << "    const size_t " << name << " :: rhs[" << num_swaps << "] = {\n";
+            src << "    const size_t " << name << " :: rhs[" << num << "] = {\n";
             outputPairs(src,swaps,2);
             src << "    };\n";
 
