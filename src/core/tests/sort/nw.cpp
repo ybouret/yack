@@ -3,6 +3,7 @@
 #include "yack/sort/nw/bosenelson2.hpp"
 #include "yack/sort/nw/green16.hpp"
 #include "yack/sequence/thin-array.hpp"
+#include "yack/randomized/shuffle.hpp"
 #include "yack/sequence/vector.hpp"
 #include "yack/type/v3d.hpp"
 #include "yack/utest/run.hpp"
@@ -14,14 +15,17 @@ template <typename T>
 static inline
 void nw(const nwsrt::swaps &swp, randomized::bits &ran)
 {
-    const size_t size = swp.size;
-    vector<T>    v(size,as_capacity);
+    const size_t    size = swp.size;
+    vector<T>       v(size,as_capacity);
+    vector<size_t>  u(size,as_capacity);
     for(size_t iter=0;iter<1000;++iter)
     {
         v.free();
+        u.free();
         for(size_t i=0;i<size;++i)
         {
             v << bring::get<T>(ran);
+            u << i;
         }
         YACK_ASSERT(size==v.size());
         //std::cerr << "raw=" << v << std::endl;
@@ -31,6 +35,8 @@ void nw(const nwsrt::swaps &swp, randomized::bits &ran)
         {
             YACK_ASSERT(v[i]<=v[i+1]);
         }
+        randomized::shuffle::data(v(),size,ran);
+        network_sort::increasing(v,u,swp);
     }
 }
 
