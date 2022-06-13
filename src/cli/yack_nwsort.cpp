@@ -53,7 +53,7 @@ size_t parseInputs(const string &name)
         res += name[i];
     }
 
-    std::cerr << "parsing '" << res << "' from '" << name << "'" << std::endl;
+    //std::cerr << "parsing '" << res << "' from '" << name << "'" << std::endl;
 
 
     return ios::ascii::convert::to<size_t>(res,"inputs");

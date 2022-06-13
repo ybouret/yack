@@ -3,7 +3,8 @@
 #ifndef YACK_SORT_NWSWAPS_INCLUDED
 #define YACK_SORT_NWSWAPS_INCLUDED
 
-#include "yack/setup.hpp"
+#include "yack/container/writable.hpp"
+#include "yack/type/out-of-reach.hpp"
 
 namespace yack
 {
@@ -18,12 +19,15 @@ namespace yack
             const char * const name;
             const size_t       size;
 
+
         protected:
             explicit swaps_(const char  *sid,
                             const size_t dim) throw();
 
         private:
             YACK_DISABLE_COPY_AND_ASSIGN(swaps_);
+
+
         };
 
         template <const size_t SIZE>
@@ -51,6 +55,21 @@ namespace yack
         {
         public:
             inline virtual ~pairs() throw() {}
+
+            template <typename ARRAY> inline
+            void sort(ARRAY &arr) throw()
+            {
+                assert(SIZE<=arr.size());
+                for(size_t i=0;i<WORK;++i)
+                {
+                    typename ARRAY::type &lhs = arr[ LHS[i] ];
+                    typename ARRAY::type &rhs = arr[ RHS[i] ];
+                    if(rhs<lhs)
+                    {
+                        out_of_reach::swap(&lhs,&rhs,sizeof(typename ARRAY::type));
+                    }
+                }
+            }
 
         protected:
             inline explicit pairs(const char   *sid,
