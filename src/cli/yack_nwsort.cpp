@@ -175,8 +175,8 @@ YACK_PROGRAM()
 
             hdr << "//! \\file\n";
             hdr << "#ifndef YACK_NWSORST_" << name << "_INCLUDED\n";
-            hdr << "#define YACK_NWSORST_" << name << "_INCLUDED\n";
-            hdr << "#include \"yack/sort/nwsrt.hpp\"\n";
+            hdr << "#define YACK_NWSORST_" << name << "_INCLUDED 1\n";
+            hdr << "#include \"yack/sort/nwswp.hpp\"\n";
             hdr << "namespace yack {\n";
             hdr << "  namespace nwsrt {\n";
             hdr << "    //! "   << name << "\n";

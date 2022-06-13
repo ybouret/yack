@@ -1,10 +1,9 @@
 //! \file
 
-#ifndef YACK_SORT_NWSWAPS_INCLUDED
-#define YACK_SORT_NWSWAPS_INCLUDED
+#ifndef YACK_SORT_NWSWP_INCLUDED
+#define YACK_SORT_NWSWP_INCLUDED 1
 
-#include "yack/container/writable.hpp"
-#include "yack/type/out-of-reach.hpp"
+#include "yack/setup.hpp"
 
 namespace yack
 {
