@@ -8,10 +8,16 @@
 #include "yack/type/out-of-reach.hpp"
 namespace yack
 {
-    
+    //__________________________________________________________________________
+    //
+    //
+    //! assembling algorithms from swaps
+    //
+    //__________________________________________________________________________
     struct network_sort
     {
       
+        //! default increasing order
         template <typename ARRAY> static inline
         void increasing(ARRAY &arr, const nwsrt::swaps &swp)
         {
@@ -26,6 +32,8 @@ namespace yack
                 if(r<l) out_of_reach::swap(&l,&r,sizeof(typename ARRAY::type));
              }
         }
+        
+        
         
     };
     

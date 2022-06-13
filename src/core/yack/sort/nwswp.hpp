@@ -10,10 +10,11 @@ namespace yack
     namespace nwsrt
     {
         
+        //! base class to collect precomputed swaps
         class swaps
         {
         public:
-            virtual ~swaps() throw();
+            virtual ~swaps() throw();  //!< cleanup
             
             const char * const   name; //!< uuid
             const size_t         size; //!< inputs
@@ -22,6 +23,7 @@ namespace yack
             const size_t * const rtab; //!< right index tableau
 
         protected:
+            //! setup full metrics
             explicit swaps(const char  *sid,
                            const size_t dim,
                            const size_t num,
