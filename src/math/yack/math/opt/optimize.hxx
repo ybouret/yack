@@ -129,6 +129,11 @@ namespace yack
             assert(x.is_increasing());
             assert(f.is_local_minimum());
 
+            //------------------------------------------------------------------
+            //
+            // initialize local grid
+            //
+            //------------------------------------------------------------------
             real_t             xarr[4] = { 0,0,0,0 };
             real_t             farr[4] = { 0,0,0,0 };
             thin_array<real_t> xtab(xarr,sizeof(xarr)/sizeof(xarr[0]));
