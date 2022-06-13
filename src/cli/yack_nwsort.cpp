@@ -36,9 +36,52 @@ Pair parsePair(const string &s)
     return pair;
 }
 
+size_t parseInputs(const string &name)
+{
+    const size_t sz = name.size();
+    if(sz<=2) throw exception("invalid name='%s'",name());
+
+    size_t i=sz;
+    while(i>0 && isdigit(name[i]))
+    {
+        --i;
+    }
+
+    string res;
+    while(++i<=sz)
+    {
+        res += name[i];
+    }
+
+    std::cerr << "parsing '" << res << "' from '" << name << "'" << std::endl;
+
+
+    return ios::ascii::convert::to<size_t>(res,"inputs");
+}
+
+static inline void outputPairs(ios::ostream &fp, const Pairs &pairs, const size_t idx)
+{
+    size_t ii = 0;
+    fp(" 0x%04x",pairs[1][idx]);
+    for(size_t i=2;i<=pairs.size();++i)
+    {
+        fp << ',';
+        if(++ii>=8)
+        {
+            ii = 0;
+            fp << '\n';
+        }
+        fp(" 0x%04x",pairs[i][idx]);
+
+    }
+    fp << '\n';
+
+}
+
+
 YACK_PROGRAM()
 {
-    localFS &fs = localFS::instance();
+    //localFS &fs = localFS::instance();
 
     if(argc<=1){
         throw exception("usage: %s nw.db",program);
@@ -124,8 +167,56 @@ YACK_PROGRAM()
         const string source = workdir + name + ".cpp";
         const string header = workdir + name + ".hpp";
         std::cerr << "=>" << header << "|" << source << std::endl;
+        const size_t inputs    = parseInputs(name);
+        const string baseClass = vformat("swaps<%u>",unsigned(inputs));
+        const string num_swaps = vformat("0x%04x",unsigned(nc));
+        {
+            ios::ocstream hdr(header);
 
-        
+            hdr << "//! \\file\n";
+            hdr << "#ifndef YACK_NWSORST_" << name << "_INCLUDED\n";
+            hdr << "#define YACK_NWSORST_" << name << "_INCLUDED\n";
+            hdr << "#include \"yack/sort/nw/swaps.hpp\"\n";
+            hdr << "namespace yack {\n";
+            hdr << "  namespace nwsrt {\n";
+            hdr << "    //! "   << name << "\n";
+            hdr << "    class " << name << " : public " << baseClass << " {\n";
+            hdr << "      public:\n";
+            hdr << "        virtual ~" << name << "() throw(); //!< cleanup\n";
+            hdr << "        explicit " << name << "() throw(); //!< setup  \n";
+            hdr << "        static const char   sid[];        //!< " << name << "\n";
+            hdr << "        static const size_t num = " << num_swaps << "; //!< number of swaps\n";
+            hdr << "        static const size_t lhs[" << num_swaps << "];  //!< lhs\n";
+            hdr << "        static const size_t rhs[" << num_swaps << "];  //!< rhs\n";
+            hdr << "      private:\n";
+            hdr << "        YACK_DISABLE_COPY_AND_ASSIGN(" << name << ");\n";
+            hdr << "    };\n";
+            hdr << "  }\n";
+            hdr << "}\n";
+            hdr << "#endif\n";
+
+
+        }
+
+        {
+            ios::ocstream src(source);
+            src << "#include \"" << name << ".hpp\"\n";
+            src << "namespace yack {\n";
+            src << "  namespace nwsrt {\n";
+            src << "    const char " << name << " :: sid[] =\"" << name << "\";\n";
+            src << "    " << name << " :: ~" << name<< "() throw() {}\n";
+
+            src << "    const size_t " << name << " :: lhs[" << num_swaps << "] = {\n";
+            outputPairs(src,swaps,1);
+            src << "    };\n";
+
+            src << "    const size_t " << name << " :: rhs[" << num_swaps << "] = {\n";
+            outputPairs(src,swaps,2);
+            src << "    };\n";
+
+            src << "  }\n";
+            src << "}\n";
+        }
 
 
     }
