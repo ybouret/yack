@@ -3,6 +3,8 @@ namespace yack
 {
     namespace math
     {
+
+
         template <>
         real_t optimize:: parabolic_guess(const triplet<real_t> &x, const triplet<real_t> &f) throw()
         {
@@ -11,7 +13,7 @@ namespace yack
 
             //------------------------------------------------------------------
             //
-            // sanity check want a<=b<=c
+            // sanity check want a<=b<=c and f.b <= f.a, f.b<=f.c
             //
             //------------------------------------------------------------------
             assert(x.is_increasing());
@@ -40,7 +42,9 @@ namespace yack
                 else
                 {
                     //----------------------------------------------------------
-                    // defined beta
+                    //
+                    // x.a < x.b < x.c
+                    //
                     //----------------------------------------------------------
                     const real_t d_a   = std::abs(f.a-f.b); // avoid underflow
                     const real_t d_c   = std::abs(f.c-f.b); // avoid underflow
@@ -70,8 +74,8 @@ namespace yack
                     const real_t beta  = clamp<real_t>(0,(x.b-x.a)/width,1);
                     const real_t wa    = (one-beta) * d_a;
                     const real_t wc    = beta       * d_c;
-                    const real_t num   = (one+beta) * wa + beta * wc;
-                    const real_t den   = wa+wc;
+                    const real_t num   = (one+beta) * wa + beta * wc; // weigthed xmin/xmax
+                    const real_t den   = wa+wc;                       // sum of weights
                     const real_t xmin  = half * (x.a+x.b);
                     const real_t xmax  = half * (x.b+x.c);
                     return clamp(xmin,x.a + width * num / (den+den),xmax);
@@ -100,19 +104,24 @@ namespace yack
         {
             static const char fn[] = "// [optimize] ";
 
+            //------------------------------------------------------------------
+            //
+            // preprocessing
+            //
+            //------------------------------------------------------------------
             switch(prolog)
             {
                 case direct:
-                    YACK_LOCATE(fn << " <direct>");
-                    if(!x.is_increasing())    throw exception("%sabscissae are not in increasing order",fn);
-                    if(!f.is_local_minimum()) throw exception("%sminimum of function is not located",fn);
+                    YACK_LOCATE(fn << "<direct>");
+                    assert(x.is_increasing());
+                    assert(f.is_local_minimum());
                     break;
 
                 case inside:
-                    YACK_LOCATE(fn << " <inside>");
+                    YACK_LOCATE(fn << "<inside>");
                     if(!locate::inside(F,x,f))
                     {
-                        YACK_LOCATE(fn << " global");
+                        YACK_LOCATE(fn << "global");
                         return;
                     }
                     break;

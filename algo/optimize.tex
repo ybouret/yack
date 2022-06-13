@@ -10,6 +10,8 @@
 \begin{document}
 \center{\bf Optimize in 1D}
 
+\section{Inverse Parabolic Step}
+
 Let us have 
 $$a \leq b \leq c$$ 
 with 
@@ -57,14 +59,26 @@ $$
 \item $\delta_a=\delta_c \Rightarrow u_{opt}=\dfrac{1}{2}, \; x_{opt}= \dfrac{a+c}{2}$
 \item $\delta_a<\delta_c$:
 	\begin{itemize}
-	\item $\delta_a=0 \Rightarrow u_{opt} = \dfrac{\beta}{2}, \; x_{opt} = \dfrac{a+b}{2}$
+	\item $\delta_a=0 \Rightarrow u_{opt} = \dfrac{\beta}{2}, \; x_{opt} = \dfrac{a+b}{2} = x_{min}$
 	\item $\delta_a>0 \Rightarrow u_{opt}$
 	\end{itemize}
 \item $\delta_c<\delta_c$:
 	\begin{itemize}
-	\item $\delta_c=0 \Rightarrow u_{opt} = \dfrac{1+\beta}{2}, \;x_{opt} = \dfrac{b+c}{2}$
+	\item $\delta_c=0 \Rightarrow u_{opt} = \dfrac{1+\beta}{2}, \;x_{opt} = \dfrac{b+c}{2} = x_{max}$
 	\item $\delta_c>0 \Rightarrow u_{opt}$
 	\end{itemize}
 \end{itemize}
+
+The guess value is within:
+$$
+	\left[ \dfrac{a+b}{2}; \dfrac{b+c}{2}\right] = \left[ x_{min} ; x_{max} \right]
+$$
+
+\section{Updating position}
+
+Starting from $a\leq b \leq c$, $f(b)\leq f(a) \text{ and } f(b)\leq f(c)$,
+we evaluate $u$ and $f(u)$ as the guess value.
+
+
 
 \end{document}

@@ -34,10 +34,12 @@ namespace yack
             };
 
             //! guess with x.a <= x.b <= x.c, f.b <= f.a, f.b <= f.c
-
             template <typename T> static
             T parabolic_guess(const triplet<T> &x, const triplet<T> &f) throw();
 
+
+
+            //! run
             template <typename T> static
             void run( real_function<T> &F, triplet<T> &x, triplet<T> &f, const preprocess prolog);
 

@@ -29,7 +29,7 @@ namespace yack
             //
             //! inside [x.a,x.c], with f.a and f.c computed
             /**
-             - Look for f.b<=f.a and f.b <= f.c
+             - Look for f.b <= f.a and f.b <= f.c
              - f.b = f(x.b) is always the last evaluated value
              - can be on a side of the interval
              */
