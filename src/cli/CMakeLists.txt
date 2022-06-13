@@ -10,6 +10,8 @@ yack_link_libraries(yack_uniq)
 #add_executable(yack_wallpapers yack_wallpapers.cpp)
 #yack_link_libraries(yack_wallpapers)
 
+add_executable(yack_nwsort yack_nwsort.cpp)
+yack_link_libraries(yack_nwsort)
 
 install( TARGETS yack_leq  RUNTIME DESTINATION bin )
 install( TARGETS yack_uniq RUNTIME DESTINATION bin )
