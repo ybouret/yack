@@ -168,7 +168,7 @@ YACK_PROGRAM()
         const string header = workdir + name + ".hpp";
         std::cerr << "=>" << header << "|" << source << std::endl;
         const size_t inputs    = parseInputs(name);
-        const string baseClass = vformat("swaps<%u>",unsigned(inputs));
+        const string baseClass = vformat("pairs<%u,0x%04x>",unsigned(inputs),unsigned(nc));
         const string num_swaps = vformat("0x%04x",unsigned(nc));
         {
             ios::ocstream hdr(header);
@@ -185,7 +185,6 @@ YACK_PROGRAM()
             hdr << "        virtual ~" << name << "() throw(); //!< cleanup\n";
             hdr << "        explicit " << name << "() throw(); //!< setup  \n";
             hdr << "        static const char   sid[];        //!< " << name << "\n";
-            hdr << "        static const size_t num = " << num_swaps << "; //!< number of swaps\n";
             hdr << "        static const size_t lhs[" << num_swaps << "];  //!< lhs\n";
             hdr << "        static const size_t rhs[" << num_swaps << "];  //!< rhs\n";
             hdr << "      private:\n";
@@ -205,7 +204,7 @@ YACK_PROGRAM()
             src << "  namespace nwsrt {\n";
             src << "    const char " << name << " :: sid[] =\"" << name << "\";\n";
             src << "    " << name << " :: ~" << name<< "() throw() {}\n";
-
+            src << "    " << name << " ::  " << name<< "() throw() : " << baseClass << "(sid,lhs,rhs) {}\n";
             src << "    const size_t " << name << " :: lhs[" << num_swaps << "] = {\n";
             outputPairs(src,swaps,1);
             src << "    };\n";
