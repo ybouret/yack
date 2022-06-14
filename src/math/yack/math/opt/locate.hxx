@@ -24,12 +24,14 @@ namespace yack
                 f.reverse();
             } assert(f.c<=f.a);
 
-            real_t width  = std::abs(x.c-x.a);
+            real_t x_min  = x.a;
+            real_t x_max  = x.c; if(x_max<x_min) cswap(x_min,x_max);
+            real_t width  = std::abs(x_max-x_min);
             size_t cycle  = 0;
 
         CYCLE:
-            ++cycle;                           assert(f.c<=f.a);
-            f.b = F( x.b = half*(x.a+x.c) );   assert(x.is_ordered());
+            ++cycle;                                              assert(f.c<=f.a);
+            f.b = F( x.b = clamp(x_min,half*(x.a+x.c),x_max) );   assert(x.is_ordered());
             YACK_LOCATE(fn<<"[cycle " << std::setw(3) << cycle << "] " << f << " @" << x << "|f|=" << f.amplitude() );
             if(f.b<=f.c)
             {
@@ -55,9 +57,11 @@ namespace yack
                 // c is the minimal value: move a to b, closer to c
                 //
                 //--------------------------------------------------------------
-                x.a = x.b;
-                f.a = f.b;
-                const real_t new_width = std::abs(x.c-x.a);
+                x.a   = x.b;
+                f.a   = f.b;
+                x_min = x.a;
+                x_max = x.c; if(x_max<x_min) cswap(x_min,x_max);
+                const real_t new_width = std::abs(x_max-x_min);
                 YACK_LOCATE(fn << "width: " << width << " -> " << new_width);
                 if(new_width>=width)
                 {

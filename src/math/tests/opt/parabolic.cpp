@@ -92,7 +92,7 @@ YACK_UTEST(parabolic)
         optimize::run_for(F<double>,x,f,optimize::inside);
     }
     
-    
+    // parabolic a=-0.3 c=0.4 "function F(t) return 2+math.sin(t)^2; end"
 }
 YACK_UDONE()
 

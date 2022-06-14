@@ -148,7 +148,10 @@ namespace yack
             //
             //------------------------------------------------------------------
             load(xarr,x,parabolic_guess(x,f)); assert(xtab[4]<=xtab[3]); assert(xtab[4]>=xtab[1]);
+            //std::cerr.precision(15);
+            std::cerr << "raw : x=" << xtab << " last=" << xtab[4] << std::endl;
             load(farr,f,F(xtab[4]));
+            std::cerr << "raw : f=" << ftab << " last= " << ftab[4] << std::endl;
             nwsrt4.increasing(xtab,ftab);
             YACK_LOCATE(fn << "xtab=" << xtab << "; width=" << width);
             YACK_LOCATE(fn << "ftab=" << ftab);
