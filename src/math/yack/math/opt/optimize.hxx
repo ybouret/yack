@@ -129,7 +129,16 @@ namespace yack
             }
             assert(x.is_increasing());
             assert(f.is_local_minimum());
+            
+            const real_t xu = parabolic_guess(x,f);
+            assert(xu>=x.a);
+            assert(xu<=x.c);
+            
+            
+            exit(1);
+            
 
+#if 0
             //------------------------------------------------------------------
             //
             // initialize local grid
@@ -226,6 +235,7 @@ namespace yack
             const double new_width  = std::abs(x.c-x.a);
             width = new_width;
             goto CYCLE;
+#endif
         }
 
 
