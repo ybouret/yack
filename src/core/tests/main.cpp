@@ -140,6 +140,7 @@ YACK_UTEST_DECL(256)
     YACK_UTEST(sort_indexing);
     YACK_UTEST(sort_sum);
     YACK_UTEST(sort_nw);
+    YACK_UTEST(sort_network);
 
     YACK_UTEST(counting_comb);
     YACK_UTEST(counting_perm);
@@ -163,7 +164,7 @@ YACK_UTEST_DECL(256)
     YACK_UTEST(vfs_local);
     YACK_UTEST(vfs_attr);
     YACK_UTEST(vfs_mkdir);
-	YACK_UTEST(vfs_bytes);
+    YACK_UTEST(vfs_bytes);
 
     YACK_UTEST(kr_digest);
 

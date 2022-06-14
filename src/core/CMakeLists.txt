@@ -455,6 +455,13 @@ set(sort_nw ${sort_nw_impl} ${sort_nw_decl})
 SOURCE_GROUP(sort/nw FILES ${sort_nw})
 install( FILES ${sort_nw_decl} DESTINATION include/yack/sort/nw )
 
+#sort/network
+file(GLOB sort_network_impl yack/sort/network/*.cpp)
+file(GLOB sort_network_decl yack/sort/network/*.hpp)
+set(sort_network ${sort_network_impl} ${sort_network_decl})
+SOURCE_GROUP(sort/network FILES ${sort_network})
+install( FILES ${sort_network_decl} DESTINATION include/yack/sort/network )
+
 ########################################################################
 ##
 ## counting
@@ -596,7 +603,7 @@ ${apex} ${apex_m} ${apex_n} ${apex_z} ${apex_q}
 ${concurrent} ${concurrent_quark} ${concurrent_loop} ${concurrent_queue}
 ${ios} ${ios_c} ${ios_gz} ${ios_bz} ${ios_fmt} ${ios_gv} ${ios_ascii} ${ios_serializer} ${ios_scribe}
 ${randomized}
-${sort} ${sort_nw}
+${sort} ${sort_nw} ${sort_network}
 ${counting} ${counting_c}
 ${rtld}
 ${string}
