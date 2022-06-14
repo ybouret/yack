@@ -2,7 +2,12 @@
 #include "yack/sort/network/sort2.hpp"
 #include "yack/sort/network/sort3.hpp"
 #include "yack/sort/network/sort4.hpp"
+#include "yack/sort/network/sort5.hpp"
+#include "yack/sort/network/sort6.hpp"
+#include "yack/sort/network/sort7.hpp"
+#include "yack/sort/network/sort8.hpp"
 #include "yack/sort/network/sort9.hpp"
+#include "yack/sort/network/sort10.hpp"
 
 #include "yack/utest/run.hpp"
 #include "../main.hpp"
@@ -12,10 +17,15 @@ using namespace yack;
 YACK_UTEST(sort_network)
 {
     randomized::rand_ ran;
-    network_sort2 nwsrt2; YACK_CHECK(2==nwsrt2.size);
-    network_sort3 nwsrt3; YACK_CHECK(3==nwsrt3.size);
-    network_sort4 nwsrt4; YACK_CHECK(4==nwsrt4.size);
-    network_sort9 nwsrt9; YACK_CHECK(9==nwsrt9.size);
+    network_sort2  nwsrt2;  YACK_CHECK(2==nwsrt2.size);
+    network_sort3  nwsrt3;  YACK_CHECK(3==nwsrt3.size);
+    network_sort4  nwsrt4;  YACK_CHECK(4==nwsrt4.size);
+    network_sort5  nwsrt5;  YACK_CHECK(5==nwsrt5.size);
+    network_sort6  nwsrt6;  YACK_CHECK(6==nwsrt6.size);
+    network_sort7  nwsrt7;  YACK_CHECK(7==nwsrt7.size);
+    network_sort8  nwsrt8;  YACK_CHECK(8==nwsrt8.size);
+    network_sort9  nwsrt9;  YACK_CHECK(9==nwsrt9.size);
+    network_sort10 nwsrt10; YACK_CHECK(10==nwsrt10.size);
 
     {
         v2d<double> v(1,-2);  std::cerr << v << std::endl;
