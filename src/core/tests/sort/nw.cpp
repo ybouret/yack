@@ -36,6 +36,57 @@
 #include "yack/sort/nw/hibbard8.hpp"
 #include "yack/sort/nw/bitonic8.hpp"
 
+//----
+
+#include "yack/sort/nw/floyd09.hpp"
+#include "yack/sort/nw/senso09.hpp"
+
+#include "yack/sort/nw/waksman10.hpp"
+#include "yack/sort/nw/senso10.hpp"
+
+#include "yack/sort/nw/shapirogreen11.hpp"
+#include "yack/sort/nw/senso11.hpp"
+
+#include "yack/sort/nw/shapirogreen12.hpp"
+#include "yack/sort/nw/senso12.hpp"
+
+#include "yack/sort/nw/end13.hpp"
+#include "yack/sort/nw/senso13.hpp"
+
+#include "yack/sort/nw/green14.hpp"
+#include "yack/sort/nw/senso14.hpp"
+
+#include "yack/sort/nw/green15.hpp"
+#include "yack/sort/nw/senso15.hpp"
+
+#include "yack/sort/nw/green16.hpp"
+#include "yack/sort/nw/senso16.hpp"
+#include "yack/sort/nw/vanvoorhis16.hpp"
+
+#include "yack/sort/nw/sat17.hpp"
+#include "yack/sort/nw/senso17.hpp"
+
+#include "yack/sort/nw/alhajbaddar18.hpp"
+#include "yack/sort/nw/senso18.hpp"
+
+#include "yack/sort/nw/senso19.hpp"
+
+#include "yack/sort/nw/sat20.hpp"
+#include "yack/sort/nw/senso20.hpp"
+
+#include "yack/sort/nw/senso21.hpp"
+
+#include "yack/sort/nw/alhajbaddar22.hpp"
+#include "yack/sort/nw/senso22.hpp"
+
+#include "yack/sort/nw/senso23.hpp"
+#include "yack/sort/nw/morwenn23.hpp"
+
+#include "yack/sort/nw/morwenn24.hpp"
+
+
+//----
+
 
 #include "yack/sort/nw/bosenelson25.hpp"
 #include "yack/sort/nw/batcher25.hpp"
@@ -202,6 +253,14 @@ YACK_UTEST(sort_nw)
     ios::ocstream::overwrite("batcher.dat");
     ios::ocstream::overwrite("hibbard.dat");
     ios::ocstream::overwrite("bitonic.dat");
+    ios::ocstream::overwrite("floyd.dat");
+    ios::ocstream::overwrite("senso.dat");
+    ios::ocstream::overwrite("waksman.dat");
+    ios::ocstream::overwrite("shapirogreen.dat");
+    ios::ocstream::overwrite("green.dat");
+    ios::ocstream::overwrite("vanvoorhis.dat");
+    ios::ocstream::overwrite("sat.dat");
+    ios::ocstream::overwrite("morwenn.dat");
 
 
 #define NW_PERF_GENERIC(N) do {                                      \
@@ -220,6 +279,119 @@ YACK_UTEST(sort_nw)
     NW_PERF_GENERIC(6);
     NW_PERF_GENERIC(7);
     NW_PERF_GENERIC(8);
+
+    {
+        std::cerr << std::endl;
+        hs_perfs(9,ran);
+        { nwsrt::agenda<nwsrt::floyd09> alg; nw_perfs(alg,ran); }
+        { nwsrt::agenda<nwsrt::senso09> alg; nw_perfs(alg,ran); }
+    }
+
+    {
+        std::cerr << std::endl;
+        hs_perfs(10,ran);
+        { nwsrt::agenda<nwsrt::waksman10> alg; nw_perfs(alg,ran); }
+        { nwsrt::agenda<nwsrt::senso10>   alg; nw_perfs(alg,ran); }
+    }
+
+    {
+        std::cerr << std::endl;
+        hs_perfs(11,ran);
+        { nwsrt::agenda<nwsrt::shapirogreen11> alg; nw_perfs(alg,ran); }
+        { nwsrt::agenda<nwsrt::senso11>        alg; nw_perfs(alg,ran); }
+    }
+
+    {
+        std::cerr << std::endl;
+        hs_perfs(12,ran);
+        { nwsrt::agenda<nwsrt::shapirogreen12> alg; nw_perfs(alg,ran); }
+        { nwsrt::agenda<nwsrt::senso12>        alg; nw_perfs(alg,ran); }
+    }
+
+    {
+        std::cerr << std::endl;
+        hs_perfs(13,ran);
+        { nwsrt::agenda<nwsrt::end13>    alg; nw_perfs(alg,ran); }
+        { nwsrt::agenda<nwsrt::senso13>  alg; nw_perfs(alg,ran); }
+    }
+
+    {
+        std::cerr << std::endl;
+        hs_perfs(14,ran);
+        { nwsrt::agenda<nwsrt::green14>  alg; nw_perfs(alg,ran); }
+        { nwsrt::agenda<nwsrt::senso14>  alg; nw_perfs(alg,ran); }
+    }
+
+
+    {
+        std::cerr << std::endl;
+        hs_perfs(15,ran);
+        { nwsrt::agenda<nwsrt::green15>  alg; nw_perfs(alg,ran); }
+        { nwsrt::agenda<nwsrt::senso15>  alg; nw_perfs(alg,ran); }
+    }
+
+    {
+        std::cerr << std::endl;
+        hs_perfs(16,ran);
+        { nwsrt::agenda<nwsrt::green16>       alg; nw_perfs(alg,ran); }
+        { nwsrt::agenda<nwsrt::senso16>       alg; nw_perfs(alg,ran); }
+        { nwsrt::agenda<nwsrt::vanvoorhis16>  alg; nw_perfs(alg,ran); }
+    }
+
+    {
+        std::cerr << std::endl;
+        hs_perfs(17,ran);
+        { nwsrt::agenda<nwsrt::sat17>   alg; nw_perfs(alg,ran); }
+        { nwsrt::agenda<nwsrt::senso17> alg; nw_perfs(alg,ran); }
+    }
+
+    {
+        std::cerr << std::endl;
+        hs_perfs(18,ran);
+        { nwsrt::agenda<nwsrt::alhajbaddar18>   alg; nw_perfs(alg,ran); }
+        { nwsrt::agenda<nwsrt::senso18>         alg; nw_perfs(alg,ran); }
+    }
+
+    {
+        std::cerr << std::endl;
+        hs_perfs(19,ran);
+        { nwsrt::agenda<nwsrt::senso19> alg; nw_perfs(alg,ran); }
+    }
+
+    {
+        std::cerr << std::endl;
+        hs_perfs(20,ran);
+        { nwsrt::agenda<nwsrt::sat20>   alg; nw_perfs(alg,ran); }
+        { nwsrt::agenda<nwsrt::senso20> alg; nw_perfs(alg,ran); }
+    }
+
+
+    {
+        std::cerr << std::endl;
+        hs_perfs(21,ran);
+        { nwsrt::agenda<nwsrt::senso21> alg; nw_perfs(alg,ran); }
+    }
+
+    {
+        std::cerr << std::endl;
+        hs_perfs(22,ran);
+        { nwsrt::agenda<nwsrt::alhajbaddar22>   alg; nw_perfs(alg,ran); }
+        { nwsrt::agenda<nwsrt::senso22>         alg; nw_perfs(alg,ran); }
+    }
+
+    {
+        std::cerr << std::endl;
+        hs_perfs(23,ran);
+        { nwsrt::agenda<nwsrt::senso23>     alg; nw_perfs(alg,ran); }
+        { nwsrt::agenda<nwsrt::morwenn23>   alg; nw_perfs(alg,ran); }
+    }
+
+    {
+        std::cerr << std::endl;
+        hs_perfs(24,ran);
+        { nwsrt::agenda<nwsrt::morwenn24>   alg; nw_perfs(alg,ran); }
+    }
+
 
     NW_PERF_GENERIC(25);
     NW_PERF_GENERIC(26);
