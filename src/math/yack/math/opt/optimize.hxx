@@ -139,41 +139,69 @@ namespace yack
             real_t             farr[4] = { 0,0,0,0 };
             thin_array<real_t> xtab(xarr,sizeof(xarr)/sizeof(xarr[0]));
             thin_array<real_t> ftab(farr,sizeof(farr)/sizeof(farr[0]));
-
+            real_t             width = std::abs(x.c-x.a);
 
         CYCLE:
+            //------------------------------------------------------------------
+            //
+            // insert new point and co-sort grid
+            //
+            //------------------------------------------------------------------
             load(xarr,x,parabolic_guess(x,f)); assert(xtab[4]<=xtab[3]); assert(xtab[4]>=xtab[1]);
             load(farr,f,F(xtab[4]));
             nwsrt4.increasing(xtab,ftab);
-            YACK_LOCATE(fn << "xtab=" << xtab);
+            YACK_LOCATE(fn << "xtab=" << xtab << "; width=" << width);
             YACK_LOCATE(fn << "ftab=" << ftab);
 
+            //------------------------------------------------------------------
+            //
+            // build left and right trial triplets
+            //
+            //------------------------------------------------------------------
             const triplet<real_t> xl = { xtab[1], xtab[2], xtab[3] }; assert( xl.is_increasing() );
             const triplet<real_t> fl = { ftab[1], ftab[2], ftab[3] };
 
             const triplet<real_t> xr = { xtab[2], xtab[3], xtab[4] }; assert( xr.is_increasing() );
             const triplet<real_t> fr = { ftab[2], ftab[3], ftab[4] };
 
+
+            //------------------------------------------------------------------
+            //
+            // let us choose the new triplet according to its minimal value
+            //
+            //------------------------------------------------------------------
             switch( __sign::of(fl.b,fr.b) )
             {
                 case __zero__: {
-                    // same prediction => success = null width
+                    //----------------------------------------------------------
+                    //
+                    // same prediction => success
+                    //
+                    //----------------------------------------------------------
+                    const double wl = std::abs(xl.c-xl.a);
+                    const double wr = std::abs(xr.c-xr.a);
                     YACK_LOCATE(fn<<"stuck  @f(" << xl.b << ")=" << fl.b);
-                    if( std::abs(xl.c-xl.a) <= std::abs(xr.c-xr.a) )
+                    if( wl <= wr )
                     {
                         x.assign(xl);
                         f.assign(fl);
+                        width = wl;
                     }
                     else
                     {
                         x.assign(xr);
                         f.assign(xr);
+                        width = wr;
                     }
                     f.b = F(x.b);
                 } return;
 
                 case negative: assert(fl.b<fr.b);
+                    //----------------------------------------------------------
+                    //
                     // lhs is better
+                    //
+                    //----------------------------------------------------------
                     YACK_LOCATE(fn<<" @lhs : x=" << xl << "; f=" << fl);
                     assert(fl.is_local_minimum());
                     x.assign(xl);
@@ -181,14 +209,19 @@ namespace yack
                     break;
 
                 case positive: assert(fr.b<fl.b);
+                    //----------------------------------------------------------
+                    //
                     // rhs is better
+                    //
+                    //----------------------------------------------------------
                     YACK_LOCATE(fn<<" @rhs : x=" << xr << "; f=" << fr);
                     assert(fr.is_local_minimum());
                     x.assign(xr);
                     f.assign(fr);
                     break;
             }
-
+            const double new_width  = std::abs(x.c-x.a);
+            width = new_width;
             goto CYCLE;
 
 
