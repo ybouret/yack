@@ -1,7 +1,7 @@
 use Algorithm::Networksort;
 use Algorithm::Networksort::Best qw(:all);
 
-my @algo = ( "bosenelson", "batcher", "hibbard", "batcher", "bitonic" );
+my @algo = ( "bosenelson", "hibbard", "batcher", "bitonic" );
 
 for my $small (2..8)
 {
