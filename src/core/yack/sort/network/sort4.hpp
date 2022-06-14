@@ -8,7 +8,7 @@
 
 namespace yack {
 
-    typedef nwsrt::agenda<nwsrt::batcher4> network_sort4;
+    typedef nwsrt::agenda<nwsrt::batcher4> network_sort4; //!< alias
 
 }
 

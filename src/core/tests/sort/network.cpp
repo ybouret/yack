@@ -12,10 +12,10 @@ using namespace yack;
 YACK_UTEST(sort_network)
 {
     randomized::rand_ ran;
-    network_sort2 nwsrt2;
-    network_sort3 nwsrt3;
-    network_sort4 nwsrt4;
-    network_sort9 nwsrt9;
+    network_sort2 nwsrt2; YACK_CHECK(2==nwsrt2.size);
+    network_sort3 nwsrt3; YACK_CHECK(3==nwsrt3.size);
+    network_sort4 nwsrt4; YACK_CHECK(4==nwsrt4.size);
+    network_sort9 nwsrt9; YACK_CHECK(9==nwsrt9.size);
 
     {
         v2d<double> v(1,-2);  std::cerr << v << std::endl;
