@@ -1,3 +1,4 @@
+include_directories(../../lua++ ../..)
 
 file(GLOB global global/*.cpp)
 source_group(global FILES ${global} )
@@ -36,7 +37,7 @@ ${data}
 ${fit}
 )
 
-target_link_libraries(test-math yack-math)
+target_link_libraries(test-math yack-math yack-lua++ yack-lua)
 yack_link_libraries(test-math)
 
 yack_testing(math)

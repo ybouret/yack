@@ -30,7 +30,7 @@ namespace yack
         CYCLE:
             ++cycle;                           assert(f.c<=f.a);
             f.b = F( x.b = half*(x.a+x.c) );   assert(x.is_ordered());
-            YACK_LOCATE(fn<<"[cycle " << std::setw(3) << cycle << "] " << f << " @" << x);
+            YACK_LOCATE(fn<<"[cycle " << std::setw(3) << cycle << "] " << f << " @" << x << "|f|=" << f.amplitude() );
             if(f.b<=f.c)
             {
                 //--------------------------------------------------------------

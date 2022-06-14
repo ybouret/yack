@@ -112,5 +112,10 @@ namespace yack
             set_dummy_name(_);
         }
 
+
+        int State:: type(const int idx) throw()
+        {
+            return lua_type(L,idx);
+        }
     }
 }

@@ -52,11 +52,14 @@ namespace yack
 
             //! conversion to lua_Integer/lua_Number/string
             template <typename T>
-            T to(const size_t idx)
+            T to(const int idx)
             {
                 static const type2type<T> which = {};
                 return to(which,idx);
             }
+
+            int type(const int idx) throw();
+
 
             //! getglobal and convert
             template <typename T> inline
