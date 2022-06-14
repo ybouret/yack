@@ -336,7 +336,11 @@ void nw_perf(const nwsrt::algorithm &algo, randomized::bits &ran)
         H.run(& u.back(), sizeof(size_t) );
         h << hashing::to<uint64_t>(H);
     }
+    YACK_ASSERT(size==h.size());
     hsort(h,comparison::increasing<uint64_t>);
+    std::cerr << "v =" << v << std::endl;
+    std::cerr << "u =" << u << std::endl;
+    std::cerr << "h0=" << h << std::endl;
     const digest H0 = hashing::md::of(H, h(), size * sizeof(uint64_t) );
 
     algo.increasing(v,u);
@@ -350,9 +354,12 @@ void nw_perf(const nwsrt::algorithm &algo, randomized::bits &ran)
         h[i] = hashing::to<uint64_t>(H);
     }
     hsort(h,comparison::increasing<uint64_t>);
+    std::cerr << "v =" << v << std::endl;
+    std::cerr << "u =" << u << std::endl;
+    std::cerr << "h1=" << h << std::endl;
     const digest H1 = hashing::md::of(H, h(), size * sizeof(uint64_t) );
     YACK_ASSERT(H0==H1);
-    
+
 }
 
 
