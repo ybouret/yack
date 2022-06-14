@@ -276,15 +276,19 @@ static inline
 void nw_perf(const nwsrt::algorithm &algo, randomized::bits &ran)
 {
     static const string &tid = rtti::name<T>();
+
+    // preparing title
     string title = "[";
     title  += algo.code.name;
     title  += "<" + tid + ">] ";
     (std::cerr << std::setw(32) << title()).flush();
 
+    // preparing data
     const size_t    size = algo.code.size;
     vector<T>       v(size,as_capacity);
     vector<size_t>  u(size,as_capacity);
 
+    // timings
     wtime    chrono;
     uint64_t tmx = 0;
     double   ell = 0;
@@ -307,11 +311,14 @@ void nw_perf(const nwsrt::algorithm &algo, randomized::bits &ran)
     const double rate = num/ell;
     std::cerr << rate << std::endl;
 
-    string id = algo.code.name;
-    strops::trim_if(isdigit,id);
-    //std::cerr << "id=" << id << std::endl;
-    id += ".dat";
-    ios::ocstream::echo(id,"%g %.15g\n",double(size),log10(rate));
+    // saving
+    {
+        string id = algo.code.name;
+        strops::trim_if(isdigit,id);
+        //std::cerr << "id=" << id << std::endl;
+        id += ".dat";
+        ios::ocstream::echo(id,"%g %.15g\n",double(size),log10(rate));
+    }
 
     // checking co-sort
     v.free();
@@ -330,12 +337,11 @@ void nw_perf(const nwsrt::algorithm &algo, randomized::bits &ran)
         h << hashing::to<uint64_t>(H);
     }
     hsort(h,comparison::increasing<uint64_t>);
-    //std::cerr << "h0=" << h << std::endl;
-
     const digest H0 = hashing::md::of(H, h(), size * sizeof(uint64_t) );
-    //std::cerr << "H0=" << H0 << std::endl;
 
     algo.increasing(v,u);
+    YACK_ASSERT(comparison::ordered(v,comparison::increasing<T>));
+
     for(size_t i=1;i<=size;++i)
     {
         H.set();
@@ -344,12 +350,9 @@ void nw_perf(const nwsrt::algorithm &algo, randomized::bits &ran)
         h[i] = hashing::to<uint64_t>(H);
     }
     hsort(h,comparison::increasing<uint64_t>);
-    //std::cerr << "h1=" << h << std::endl;
     const digest H1 = hashing::md::of(H, h(), size * sizeof(uint64_t) );
     YACK_ASSERT(H0==H1);
-
-
-
+    
 }
 
 
