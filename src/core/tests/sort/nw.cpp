@@ -223,6 +223,10 @@
 #include "yack/ios/ocstream.hpp"
 #include "yack/ios/ascii/convert.hpp"
 #include "yack/string/ops.hpp"
+#include "yack/hashing/sha1.hpp"
+#include "yack/hashing/to.hpp"
+#include "yack/hashing/md.hpp"
+#include "yack/kr/digest.hpp"
 
 #include "../main.hpp"
 
@@ -308,6 +312,44 @@ void nw_perf(const nwsrt::algorithm &algo, randomized::bits &ran)
     //std::cerr << "id=" << id << std::endl;
     id += ".dat";
     ios::ocstream::echo(id,"%g %.15g\n",double(size),log10(rate));
+
+    // checking co-sort
+    v.free();
+    u.free();
+    vector<uint64_t> h(size,as_capacity);
+
+    hashing::sha1 H;
+
+    for(size_t i=0;i<size;++i)
+    {
+        H.set();
+        v << bring::get<T>(ran);
+        u << i;
+        H.run(& v.back(), sizeof(T)      );
+        H.run(& u.back(), sizeof(size_t) );
+        h << hashing::to<uint64_t>(H);
+    }
+    hsort(h,comparison::increasing<uint64_t>);
+    //std::cerr << "h0=" << h << std::endl;
+
+    const digest H0 = hashing::md::of(H, h(), size * sizeof(uint64_t) );
+    //std::cerr << "H0=" << H0 << std::endl;
+
+    algo.increasing(v,u);
+    for(size_t i=1;i<=size;++i)
+    {
+        H.set();
+        H.run( & v[i], sizeof(T) );
+        H.run( & u[i], sizeof(T) );
+        h[i] = hashing::to<uint64_t>(H);
+    }
+    hsort(h,comparison::increasing<uint64_t>);
+    //std::cerr << "h1=" << h << std::endl;
+    const digest H1 = hashing::md::of(H, h(), size * sizeof(uint64_t) );
+    YACK_ASSERT(H0==H1);
+
+
+
 }
 
 
