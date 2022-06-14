@@ -3,7 +3,7 @@ use Algorithm::Networksort::Best qw(:all);
 
 my @algo = ( "bosenelson", "hibbard", "batcher", "bitonic" );
 
-for my $small (2..8)
+for my $small (2..24)
 {
 	for my $alg (@algo)
 	{

@@ -261,7 +261,8 @@ YACK_UTEST(sort_nw)
     ios::ocstream::overwrite("vanvoorhis.dat");
     ios::ocstream::overwrite("sat.dat");
     ios::ocstream::overwrite("morwenn.dat");
-
+    ios::ocstream::overwrite("morwenn.dat");
+    ios::ocstream::overwrite("alhajbaddar.dat");
 
 #define NW_PERF_GENERIC(N) do {                                      \
 /**/ std::cerr << std::endl; \
