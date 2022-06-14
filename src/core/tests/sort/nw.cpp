@@ -36,6 +36,89 @@
 #include "yack/sort/nw/hibbard8.hpp"
 #include "yack/sort/nw/bitonic8.hpp"
 
+//--
+#include "yack/sort/nw/bosenelson9.hpp"
+#include "yack/sort/nw/batcher9.hpp"
+#include "yack/sort/nw/hibbard9.hpp"
+#include "yack/sort/nw/bitonic9.hpp"
+
+#include "yack/sort/nw/bosenelson10.hpp"
+#include "yack/sort/nw/batcher10.hpp"
+#include "yack/sort/nw/hibbard10.hpp"
+#include "yack/sort/nw/bitonic10.hpp"
+
+#include "yack/sort/nw/bosenelson11.hpp"
+#include "yack/sort/nw/batcher11.hpp"
+#include "yack/sort/nw/hibbard11.hpp"
+#include "yack/sort/nw/bitonic11.hpp"
+
+#include "yack/sort/nw/bosenelson12.hpp"
+#include "yack/sort/nw/batcher12.hpp"
+#include "yack/sort/nw/hibbard12.hpp"
+#include "yack/sort/nw/bitonic12.hpp"
+
+#include "yack/sort/nw/bosenelson13.hpp"
+#include "yack/sort/nw/batcher13.hpp"
+#include "yack/sort/nw/hibbard13.hpp"
+#include "yack/sort/nw/bitonic13.hpp"
+
+#include "yack/sort/nw/bosenelson14.hpp"
+#include "yack/sort/nw/batcher14.hpp"
+#include "yack/sort/nw/hibbard14.hpp"
+#include "yack/sort/nw/bitonic14.hpp"
+
+#include "yack/sort/nw/bosenelson15.hpp"
+#include "yack/sort/nw/batcher15.hpp"
+#include "yack/sort/nw/hibbard15.hpp"
+#include "yack/sort/nw/bitonic15.hpp"
+
+#include "yack/sort/nw/bosenelson16.hpp"
+#include "yack/sort/nw/batcher16.hpp"
+#include "yack/sort/nw/hibbard16.hpp"
+#include "yack/sort/nw/bitonic16.hpp"
+
+#include "yack/sort/nw/bosenelson17.hpp"
+#include "yack/sort/nw/batcher17.hpp"
+#include "yack/sort/nw/hibbard17.hpp"
+#include "yack/sort/nw/bitonic17.hpp"
+
+#include "yack/sort/nw/bosenelson18.hpp"
+#include "yack/sort/nw/batcher18.hpp"
+#include "yack/sort/nw/hibbard18.hpp"
+#include "yack/sort/nw/bitonic18.hpp"
+
+#include "yack/sort/nw/bosenelson19.hpp"
+#include "yack/sort/nw/batcher19.hpp"
+#include "yack/sort/nw/hibbard19.hpp"
+#include "yack/sort/nw/bitonic19.hpp"
+
+#include "yack/sort/nw/bosenelson20.hpp"
+#include "yack/sort/nw/batcher20.hpp"
+#include "yack/sort/nw/hibbard20.hpp"
+#include "yack/sort/nw/bitonic20.hpp"
+
+#include "yack/sort/nw/bosenelson21.hpp"
+#include "yack/sort/nw/batcher21.hpp"
+#include "yack/sort/nw/hibbard21.hpp"
+#include "yack/sort/nw/bitonic21.hpp"
+
+#include "yack/sort/nw/bosenelson22.hpp"
+#include "yack/sort/nw/batcher22.hpp"
+#include "yack/sort/nw/hibbard22.hpp"
+#include "yack/sort/nw/bitonic22.hpp"
+
+#include "yack/sort/nw/bosenelson23.hpp"
+#include "yack/sort/nw/batcher23.hpp"
+#include "yack/sort/nw/hibbard23.hpp"
+#include "yack/sort/nw/bitonic23.hpp"
+
+#include "yack/sort/nw/bosenelson24.hpp"
+#include "yack/sort/nw/batcher24.hpp"
+#include "yack/sort/nw/hibbard24.hpp"
+#include "yack/sort/nw/bitonic24.hpp"
+
+//--
+
 //----
 
 #include "yack/sort/nw/floyd09.hpp"
@@ -261,7 +344,6 @@ YACK_UTEST(sort_nw)
     ios::ocstream::overwrite("vanvoorhis.dat");
     ios::ocstream::overwrite("sat.dat");
     ios::ocstream::overwrite("morwenn.dat");
-    ios::ocstream::overwrite("morwenn.dat");
     ios::ocstream::overwrite("alhajbaddar.dat");
 
 #define NW_PERF_GENERIC(N) do {                                      \
@@ -281,44 +363,56 @@ YACK_UTEST(sort_nw)
     NW_PERF_GENERIC(7);
     NW_PERF_GENERIC(8);
 
+    NW_PERF_GENERIC(9);
+    NW_PERF_GENERIC(10);
+    NW_PERF_GENERIC(11);
+    NW_PERF_GENERIC(12);
+    NW_PERF_GENERIC(13);
+    NW_PERF_GENERIC(14);
+    NW_PERF_GENERIC(15);
+    NW_PERF_GENERIC(16);
+    NW_PERF_GENERIC(17);
+    NW_PERF_GENERIC(18);
+    NW_PERF_GENERIC(19);
+    NW_PERF_GENERIC(20);
+    NW_PERF_GENERIC(21);
+    NW_PERF_GENERIC(22);
+    NW_PERF_GENERIC(23);
+    NW_PERF_GENERIC(24);
+
+
     {
         std::cerr << std::endl;
-        hs_perfs(9,ran);
         { nwsrt::agenda<nwsrt::floyd09> alg; nw_perfs(alg,ran); }
         { nwsrt::agenda<nwsrt::senso09> alg; nw_perfs(alg,ran); }
     }
 
     {
         std::cerr << std::endl;
-        hs_perfs(10,ran);
         { nwsrt::agenda<nwsrt::waksman10> alg; nw_perfs(alg,ran); }
         { nwsrt::agenda<nwsrt::senso10>   alg; nw_perfs(alg,ran); }
     }
 
     {
         std::cerr << std::endl;
-        hs_perfs(11,ran);
         { nwsrt::agenda<nwsrt::shapirogreen11> alg; nw_perfs(alg,ran); }
         { nwsrt::agenda<nwsrt::senso11>        alg; nw_perfs(alg,ran); }
     }
 
     {
         std::cerr << std::endl;
-        hs_perfs(12,ran);
         { nwsrt::agenda<nwsrt::shapirogreen12> alg; nw_perfs(alg,ran); }
         { nwsrt::agenda<nwsrt::senso12>        alg; nw_perfs(alg,ran); }
     }
 
     {
         std::cerr << std::endl;
-        hs_perfs(13,ran);
         { nwsrt::agenda<nwsrt::end13>    alg; nw_perfs(alg,ran); }
         { nwsrt::agenda<nwsrt::senso13>  alg; nw_perfs(alg,ran); }
     }
 
     {
         std::cerr << std::endl;
-        hs_perfs(14,ran);
         { nwsrt::agenda<nwsrt::green14>  alg; nw_perfs(alg,ran); }
         { nwsrt::agenda<nwsrt::senso14>  alg; nw_perfs(alg,ran); }
     }
@@ -326,14 +420,12 @@ YACK_UTEST(sort_nw)
 
     {
         std::cerr << std::endl;
-        hs_perfs(15,ran);
         { nwsrt::agenda<nwsrt::green15>  alg; nw_perfs(alg,ran); }
         { nwsrt::agenda<nwsrt::senso15>  alg; nw_perfs(alg,ran); }
     }
 
     {
         std::cerr << std::endl;
-        hs_perfs(16,ran);
         { nwsrt::agenda<nwsrt::green16>       alg; nw_perfs(alg,ran); }
         { nwsrt::agenda<nwsrt::senso16>       alg; nw_perfs(alg,ran); }
         { nwsrt::agenda<nwsrt::vanvoorhis16>  alg; nw_perfs(alg,ran); }
@@ -341,27 +433,23 @@ YACK_UTEST(sort_nw)
 
     {
         std::cerr << std::endl;
-        hs_perfs(17,ran);
         { nwsrt::agenda<nwsrt::sat17>   alg; nw_perfs(alg,ran); }
         { nwsrt::agenda<nwsrt::senso17> alg; nw_perfs(alg,ran); }
     }
 
     {
         std::cerr << std::endl;
-        hs_perfs(18,ran);
         { nwsrt::agenda<nwsrt::alhajbaddar18>   alg; nw_perfs(alg,ran); }
         { nwsrt::agenda<nwsrt::senso18>         alg; nw_perfs(alg,ran); }
     }
 
     {
         std::cerr << std::endl;
-        hs_perfs(19,ran);
         { nwsrt::agenda<nwsrt::senso19> alg; nw_perfs(alg,ran); }
     }
 
     {
         std::cerr << std::endl;
-        hs_perfs(20,ran);
         { nwsrt::agenda<nwsrt::sat20>   alg; nw_perfs(alg,ran); }
         { nwsrt::agenda<nwsrt::senso20> alg; nw_perfs(alg,ran); }
     }
@@ -369,27 +457,23 @@ YACK_UTEST(sort_nw)
 
     {
         std::cerr << std::endl;
-        hs_perfs(21,ran);
         { nwsrt::agenda<nwsrt::senso21> alg; nw_perfs(alg,ran); }
     }
 
     {
         std::cerr << std::endl;
-        hs_perfs(22,ran);
         { nwsrt::agenda<nwsrt::alhajbaddar22>   alg; nw_perfs(alg,ran); }
         { nwsrt::agenda<nwsrt::senso22>         alg; nw_perfs(alg,ran); }
     }
 
     {
         std::cerr << std::endl;
-        hs_perfs(23,ran);
         { nwsrt::agenda<nwsrt::senso23>     alg; nw_perfs(alg,ran); }
         { nwsrt::agenda<nwsrt::morwenn23>   alg; nw_perfs(alg,ran); }
     }
 
     {
         std::cerr << std::endl;
-        hs_perfs(24,ran);
         { nwsrt::agenda<nwsrt::morwenn24>   alg; nw_perfs(alg,ran); }
     }
 
@@ -402,6 +486,8 @@ YACK_UTEST(sort_nw)
     NW_PERF_GENERIC(30);
     NW_PERF_GENERIC(31);
     NW_PERF_GENERIC(32);
+
+    std::cerr << "plot 'heap-sort.dat' w lp, 'batcher.dat' w lp, 'hibbard.dat' w lp, 'bitonic.dat' w lp, 'senso.dat' w lp, 'shapirogreen.dat' w lp, 'waksman.dat' w lp, 'green.dat' w lp, 'vanvoorhis.dat' w lp, 'sat.dat' w lp, 'alhajbaddar.dat' w lp, 'morwenn.dat' w lp, 'bosenelson.dat' w lp" << std::endl;
 
 }
 YACK_UDONE()
