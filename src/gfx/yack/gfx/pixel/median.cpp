@@ -1,8 +1,10 @@
 #include "yack/gfx/pixel.hpp"
 #include "yack/gfx/rgb.hpp"
-#include "yack/sort/heap.hpp"
 #include "yack/sequence/thin-array.hpp"
-#include "yack/comparison.hpp"
+#include "yack/sort/network/sort9.hpp"
+
+//#include "yack/sort/heap.hpp"
+//#include "yack/comparison.hpp"
 
 namespace yack
 {
@@ -13,9 +15,12 @@ namespace yack
         template <typename T> static inline
         T scalar_median9(T arr[]) throw()
         {
+            static const network_sort9 nwsrt9;
+
             {
                 thin_array<T> a(arr,9);
-                hsort(a,comparison::increasing<T>);
+                nwsrt9.increasing(a);
+                //hsort(a,comparison::increasing<T>);
             }
             return arr[4];
         }
@@ -48,6 +53,8 @@ namespace yack
         template <typename PIXEL> static inline
         PIXEL vector_median9(const PIXEL arr[]) throw()
         {
+            static const network_sort9 nwsrt9;
+
             float I[9] =
             {
                 _I(arr[0]), _I(arr[1]), _I(arr[2]),
@@ -58,7 +65,8 @@ namespace yack
             {
                 thin_array<float>  a(I,9);
                 thin_array<size_t> b(J,9);
-                hsort(a,b,comparison::increasing<float>);
+                nwsrt9.increasing(a,b);
+                //hsort(a,b,comparison::increasing<float>);
             }
 
             return arr[J[4]];
