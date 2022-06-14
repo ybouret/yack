@@ -350,7 +350,7 @@ void nw_perf(const nwsrt::algorithm &algo, randomized::bits &ran)
     {
         H.set();
         H.run( & v[i], sizeof(T) );
-        H.run( & u[i], sizeof(T) );
+        H.run( & u[i], sizeof(size_t) );
         h[i] = hashing::to<uint64_t>(H);
     }
     hsort(h,comparison::increasing<uint64_t>);
