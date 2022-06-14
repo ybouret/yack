@@ -85,8 +85,22 @@ namespace yack
             }
             return true;
         }
-        
+
+        //______________________________________________________________________
+        //
+        //! test ordered sequence
+        //______________________________________________________________________
+        template <typename SEQUENCE, typename FUNC> static inline
+        bool ordered(SEQUENCE &seq, FUNC &compare)
+        {
+            return ordered(seq.begin(),seq.size(),compare);
+        }
+
+
+        //______________________________________________________________________
+        //
         //! lexicographic comparison of same lengths arrays[1..n]
+        //______________________________________________________________________
         template <typename T> static inline
         int lexicographic(const T *lhs, const T *rhs, const size_t n) throw()
         {

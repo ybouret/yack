@@ -66,8 +66,7 @@ namespace yack
                 return false;
             }
         }
-
-
+        
         //______________________________________________________________________
         //
         // C++
@@ -78,6 +77,7 @@ namespace yack
 
     private:
         YACK_DISABLE_COPY_AND_ASSIGN(readable);
+        
     };
 
 }

@@ -3,60 +3,88 @@
 #include "yack/sort/nw/bosenelson2.hpp"
 #include "yack/sort/nw/green16.hpp"
 #include "yack/sequence/thin-array.hpp"
-#include "yack/randomized/shuffle.hpp"
 #include "yack/sequence/vector.hpp"
 #include "yack/type/v3d.hpp"
 #include "yack/utest/run.hpp"
+#include "yack/system/wtime.hpp"
 #include "../main.hpp"
 
 using namespace yack;
 
 template <typename T>
-static inline
-void nw(const nwsrt::swaps &swp, randomized::bits &ran)
+static inline void hs_perf(const size_t size, randomized::bits &ran)
 {
-    const size_t    size = swp.size;
-    vector<T>       v(size,as_capacity);
-    vector<size_t>  u(size,as_capacity);
-    for(size_t iter=0;iter<1000;++iter)
+    std::cerr << "Testing <HeapSort #" << size << ">" << std::endl;
+    wtime     chrono;
+    uint64_t  tmx = 0;
+    double    ell = 0;
+    size_t    num = 0;
+    vector<T> v(size,as_capacity);
+
+    do
     {
         v.free();
-        u.free();
         for(size_t i=0;i<size;++i)
         {
             v << bring::get<T>(ran);
-            u << i;
         }
         YACK_ASSERT(size==v.size());
-        //std::cerr << "raw=" << v << std::endl;
-        network_sort::increasing(v,swp);
-        //std::cerr << "srt=" << v << std::endl;
-        for(size_t i=1;i<size;++i)
+        const uint64_t mark = wtime::ticks();
+        hsort(v,comparison::increasing<T>);
+        tmx += wtime::ticks() - mark;
+        YACK_ASSERT(comparison::ordered(v,comparison::increasing<T>));
+        ell = chrono(tmx);
+        ++num;
+    } while( ell < 0.5 );
+    std::cerr << "rate=" << num/ell << std::endl;
+}
+
+template <typename T>
+static inline
+void nw_perf(const nwsrt::algorithm &algo, randomized::bits &ran)
+{
+    std::cerr << "Testing <" << algo.code.name << ">" << std::endl;
+
+    const size_t    size = algo.code.size;
+    vector<T>       v(size,as_capacity);
+    vector<size_t>  u(size,as_capacity);
+
+    wtime    chrono;
+    uint64_t tmx = 0;
+    double   ell = 0;
+    size_t   num = 0;
+    do
+    {
+        v.free();
+        for(size_t i=0;i<size;++i)
         {
-            YACK_ASSERT(v[i]<=v[i+1]);
+            v << bring::get<T>(ran);
         }
-        randomized::shuffle::data(v(),size,ran);
-        network_sort::increasing(v,u,swp);
-    }
+        YACK_ASSERT(size==v.size());
+        const uint64_t mark = wtime::ticks();
+        algo.increasing(v);
+        tmx += wtime::ticks() - mark;
+        YACK_ASSERT(comparison::ordered(v,comparison::increasing<T>));
+        ell = chrono(tmx);
+        ++num;
+    } while( ell < 0.5 );
+    std::cerr << "rate=" << num/ell << std::endl;
 }
 
 YACK_UTEST(sort_nw)
 {
-    randomized::rand_        ran;
-    const nwsrt::bosenelson3 swp3;
-    const nwsrt::bosenelson2 swp2;
-    const nwsrt::green16     swp16;
-    nw<int>(swp3,ran);
-    nw<apq>(swp3,ran);
-    nw<unsigned>(swp16,ran);
-    
-    v2d<double> v2(2,-1);
-    network_sort::increasing(v2,swp2);
-    std::cerr << "v2=" << v2 << std::endl;
-    
-    v3d<float> v3(0.4,0.2,0.5);
-    network_sort::increasing(v3,swp3);
-    std::cerr << "v3=" << v3 << std::endl;
+    randomized::rand_                 ran;
+
+    hs_perf<int>(2,ran);
+
+    nwsrt::agenda<nwsrt::bosenelson2> algo2;
+    nw_perf<int>(algo2,ran);
+
+
+    hs_perf<int>(16,ran);
+    nwsrt::agenda<nwsrt::green16> algo16;
+    nw_perf<int>(algo16,ran);
+
     
 }
 YACK_UDONE()
