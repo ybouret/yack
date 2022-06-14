@@ -36,6 +36,49 @@
 #include "yack/sort/nw/hibbard8.hpp"
 #include "yack/sort/nw/bitonic8.hpp"
 
+
+#include "yack/sort/nw/bosenelson25.hpp"
+#include "yack/sort/nw/batcher25.hpp"
+#include "yack/sort/nw/hibbard25.hpp"
+#include "yack/sort/nw/bitonic25.hpp"
+
+#include "yack/sort/nw/bosenelson26.hpp"
+#include "yack/sort/nw/batcher26.hpp"
+#include "yack/sort/nw/hibbard26.hpp"
+#include "yack/sort/nw/bitonic26.hpp"
+
+#include "yack/sort/nw/bosenelson27.hpp"
+#include "yack/sort/nw/batcher27.hpp"
+#include "yack/sort/nw/hibbard27.hpp"
+#include "yack/sort/nw/bitonic27.hpp"
+
+#include "yack/sort/nw/bosenelson28.hpp"
+#include "yack/sort/nw/batcher28.hpp"
+#include "yack/sort/nw/hibbard28.hpp"
+#include "yack/sort/nw/bitonic28.hpp"
+
+#include "yack/sort/nw/bosenelson29.hpp"
+#include "yack/sort/nw/batcher29.hpp"
+#include "yack/sort/nw/hibbard29.hpp"
+#include "yack/sort/nw/bitonic29.hpp"
+
+#include "yack/sort/nw/bosenelson30.hpp"
+#include "yack/sort/nw/batcher30.hpp"
+#include "yack/sort/nw/hibbard30.hpp"
+#include "yack/sort/nw/bitonic30.hpp"
+
+
+
+#include "yack/sort/nw/bosenelson31.hpp"
+#include "yack/sort/nw/batcher31.hpp"
+#include "yack/sort/nw/hibbard31.hpp"
+#include "yack/sort/nw/bitonic31.hpp"
+
+#include "yack/sort/nw/bosenelson32.hpp"
+#include "yack/sort/nw/batcher32.hpp"
+#include "yack/sort/nw/hibbard32.hpp"
+#include "yack/sort/nw/bitonic32.hpp"
+
 #include "yack/sort/nw/green16.hpp"
 #include "yack/sequence/thin-array.hpp"
 #include "yack/sequence/vector.hpp"
@@ -44,13 +87,17 @@
 #include "yack/system/wtime.hpp"
 #include "yack/system/rtti.hpp"
 #include "yack/ios/ocstream.hpp"
+#include "yack/ios/ascii/convert.hpp"
+#include "yack/string/ops.hpp"
 
 #include "../main.hpp"
 
 using namespace yack;
 
-static const char filename[] = "nw-perf.dat";
 static double     duration = 0.5;
+
+const char heap_sort[]  = "heap-sort.dat";
+
 
 template <typename T>
 static inline void hs_perf(const size_t size, randomized::bits &ran)
@@ -81,7 +128,9 @@ static inline void hs_perf(const size_t size, randomized::bits &ran)
         ell = chrono(tmx);
         ++num;
     } while( ell < duration );
-    std::cerr << num/ell << std::endl;
+    const double rate= num/ell;
+    std::cerr << rate << std::endl;
+    ios::ocstream::echo(heap_sort,"%g %.15g\n",double(size),log10(rate));
 }
 
 template <typename T>
@@ -117,7 +166,14 @@ void nw_perf(const nwsrt::algorithm &algo, randomized::bits &ran)
         ell = chrono(tmx);
         ++num;
     } while( ell < duration );
-    std::cerr << num/ell << std::endl;
+    const double rate = num/ell;
+    std::cerr << rate << std::endl;
+
+    string id = algo.code.name;
+    strops::trim_if(isdigit,id);
+    //std::cerr << "id=" << id << std::endl;
+    id += ".dat";
+    ios::ocstream::echo(id,"%g %.15g\n",double(size),log10(rate));
 }
 
 
@@ -135,8 +191,18 @@ static inline void nw_perfs(const nwsrt::algorithm &algo, randomized::bits &ran)
 
 YACK_UTEST(sort_nw)
 {
+    if(argc>1)
+    {
+        duration = ios::ascii::convert::real<double>(argv[1], "duration");
+    }
+
     randomized::rand_                 ran;
-    ios::ocstream::overwrite(filename);
+    ios::ocstream::overwrite(heap_sort);
+    ios::ocstream::overwrite("bosenelson.dat");
+    ios::ocstream::overwrite("batcher.dat");
+    ios::ocstream::overwrite("hibbard.dat");
+    ios::ocstream::overwrite("bitonic.dat");
+
 
 #define NW_PERF_GENERIC(N) do {                                      \
 /**/ std::cerr << std::endl; \
@@ -154,6 +220,15 @@ YACK_UTEST(sort_nw)
     NW_PERF_GENERIC(6);
     NW_PERF_GENERIC(7);
     NW_PERF_GENERIC(8);
+
+    NW_PERF_GENERIC(25);
+    NW_PERF_GENERIC(26);
+    NW_PERF_GENERIC(27);
+    NW_PERF_GENERIC(28);
+    NW_PERF_GENERIC(29);
+    NW_PERF_GENERIC(30);
+    NW_PERF_GENERIC(31);
+    NW_PERF_GENERIC(32);
 
 }
 YACK_UDONE()
