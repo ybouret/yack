@@ -223,8 +223,6 @@ namespace yack
             const double new_width  = std::abs(x.c-x.a);
             width = new_width;
             goto CYCLE;
-
-
         }
 
 

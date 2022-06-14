@@ -58,12 +58,14 @@ namespace yack
                 x.a = x.b;
                 f.a = f.b;
                 const real_t new_width = std::abs(x.c-x.a);
+                YACK_LOCATE(fn << "width: " << width << " -> " << new_width);
                 if(new_width>=width)
                 {
                     YACK_LOCATE(fn << "[monotonic @" << x.c << "]");
                     f.a = f.b = f.c = F(x.a = x.b = x.c);
                     return false;
                 }
+                width = new_width;
                 goto CYCLE;
             }
 
