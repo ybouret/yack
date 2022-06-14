@@ -102,7 +102,8 @@ namespace yack
                                     triplet<real_t>       &f,
                                     const preprocess       prolog)
         {
-            static const char fn[] = "// [optimize] ";
+            static const char          fn[] = "// [optimize] ";
+            static const network_sort4 nwsrt4;
 
             //------------------------------------------------------------------
             //
@@ -143,7 +144,7 @@ namespace yack
         CYCLE:
             load(xarr,x,parabolic_guess(x,f)); assert(xtab[4]<=xtab[3]); assert(xtab[4]>=xtab[1]);
             load(farr,f,F(xtab[4]));
-            hsort(xtab,ftab,comparison::increasing<real_t>);
+            nwsrt4.increasing(xtab,ftab);
             YACK_LOCATE(fn << "xtab=" << xtab);
             YACK_LOCATE(fn << "ftab=" << ftab);
 

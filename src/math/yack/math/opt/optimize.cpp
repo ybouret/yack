@@ -3,8 +3,8 @@
 #include "yack/math/opt/optimize.hpp"
 #include "yack/math/opt/locate.hpp"
 #include "yack/signs.hpp"
-#include "yack/sort/heap.hpp"
 #include "yack/sequence/thin-array.hpp"
+#include "yack/sort/network/sort4.hpp"
 #include <cstring>
 
 namespace yack
