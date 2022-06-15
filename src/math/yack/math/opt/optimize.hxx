@@ -166,38 +166,44 @@ namespace yack
             real_t              farr[5] = { 0,0,0,0 };
             thin_array<real_t>  xtab(xarr,sizeof(xarr)/sizeof(xarr[0]));
             thin_array<real_t>  ftab(farr,sizeof(farr)/sizeof(farr[0]));
-
-
-
             real_t              width = std::abs(x.c-x.a);
-            
+            size_t              cycle = 0;
+        CYCLE:
+            ++cycle;
+            YACK_LOCATE(fn << " [cycle " << cycle << "]");
             //------------------------------------------------------------------
             //
             // create local grid
             //
             //------------------------------------------------------------------
+            YACK_LOCATE(fn << "x=" << x);
+            YACK_LOCATE(fn << "f=" << f);
             assert(x.is_increasing());
             assert(f.is_local_minimum());
             x.save(xarr);
             f.save(farr);
             const real_t x_u = parabolic_guess(x,f);
+            YACK_LOCATE(fn<< "x_u=" << x_u);
             assert(x_u>=x.a);
             assert(x_u<=x.c);
             switch( __sign::of(x_u,x.b) )
             {
                 case __zero__:
+                    YACK_LOCATE(fn << "x_u=x.b");
                     farr[3] = F( xarr[3] = half * (x.a+x.b) );
                     farr[4] = F( xarr[4] = half * (x.b+x.c) );
                     break;
 
                 case negative: assert(x_u<x.b);
-                    farr[3] = F( x_u );
+                    YACK_LOCATE(fn << "x_u<x.b");
+                    farr[3] = F( xarr[3] = x_u );
                     farr[4] = F( xarr[4] = half * (x.b+x.c) );
                     break;
 
                 case positive: assert(x.b<x_u);
+                    YACK_LOCATE(fn << "x_b<x_u");
                     farr[3] = F( xarr[3] = half * (x.a+x.b) );
-                    farr[4] = F( x_u );
+                    farr[4] = F( xarr[4] = x_u );
                     break;
             }
             sr.increasing(xtab,ftab);
@@ -210,141 +216,45 @@ namespace yack
             // find local minimum amongst three possibilities
             //
             //------------------------------------------------------------------
-            {
-                const triplet<real_t> &xl = *coerce_cast< triplet<real_t> >( &xarr[0] );
-                const triplet<real_t> &fl = *coerce_cast< triplet<real_t> >( &farr[0] );
-                const double           wl = std::abs(xl.c-xl.a);
 
-                const triplet<real_t> &xm = *coerce_cast< triplet<real_t> >( &xarr[1] );
-                const triplet<real_t> &fm = *coerce_cast< triplet<real_t> >( &farr[1] );
-                const double           wm = std::abs(xm.c-xm.a);
+            // left triplets
+            const triplet<real_t> &xl = *coerce_cast< triplet<real_t> >( &xarr[0] );
+            const triplet<real_t> &fl = *coerce_cast< triplet<real_t> >( &farr[0] );
+            const double           wl = std::abs(xl.c-xl.a);
 
-                const triplet<real_t> &xr = *coerce_cast< triplet<real_t> >( &xarr[2] );
-                const triplet<real_t> &fr = *coerce_cast< triplet<real_t> >( &farr[2] );
-                const double           wr = std::abs(xr.c-xr.a);
+            // middle triplets
+            const triplet<real_t> &xm = *coerce_cast< triplet<real_t> >( &xarr[1] );
+            const triplet<real_t> &fm = *coerce_cast< triplet<real_t> >( &farr[1] );
+            const double           wm = std::abs(xm.c-xm.a);
 
+            // right triplets
+            const triplet<real_t> &xr = *coerce_cast< triplet<real_t> >( &xarr[2] );
+            const triplet<real_t> &fr = *coerce_cast< triplet<real_t> >( &farr[2] );
+            const double           wr = std::abs(xr.c-xr.a);
 
-                //std::cerr << "left  : x=" << xl << " f=" << fl << std::endl;
-                //std::cerr << "middle: x=" << xm << " f=" << fm << std::endl;
-                //std::cerr << "right : x=" << xr << " f=" << fr << std::endl;
+            // initialize search
+            const triplet<real_t> *x_opt = &xl;
+            const triplet<real_t> *f_opt = &fl;
+            double                 w_opt =  wl;
 
+            upgrade(x_opt, f_opt, w_opt, &xm, &fm, wm);
+            upgrade(x_opt, f_opt, w_opt, &xr, &fr, wr);
 
-                const triplet<real_t> *x_opt = &xl;
-                const triplet<real_t> *f_opt = &fl;
-                double                 w_opt =  wl;
+            YACK_LOCATE(fn << "x_opt = " << *x_opt << "; w_opt=" << w_opt);
+            YACK_LOCATE(fn << "f_opt = " << *f_opt);
 
-                upgrade(x_opt, f_opt, w_opt, &xm, &fm, wm);
-                upgrade(x_opt, f_opt, w_opt, &xr, &fr, wr);
+            assert( x_opt->is_increasing()    );
+            assert( f_opt->is_local_minimum() );
 
-                YACK_LOCATE(fn << "x_opt = " << *x_opt << "; w_opt=" << w_opt);
-                YACK_LOCATE(fn << "f_opt = " << *f_opt);
+            x.assign(*x_opt);
+            f.assign(*f_opt);
+            width = w_opt;
 
-                assert( x_opt->is_increasing()    );
-                assert( f_opt->is_local_minimum() );
-            }
+            if(cycle>=2)
+                exit(1);
 
-
-            exit(1);
-            
-
-#if 0
-            //------------------------------------------------------------------
-            //
-            // initialize local grid
-            //
-            //------------------------------------------------------------------
-            real_t             xarr[4] = { 0,0,0,0 };
-            real_t             farr[4] = { 0,0,0,0 };
-            thin_array<real_t> xtab(xarr,sizeof(xarr)/sizeof(xarr[0]));
-            thin_array<real_t> ftab(farr,sizeof(farr)/sizeof(farr[0]));
-            real_t             width = std::abs(x.c-x.a);
-
-        CYCLE:
-            //------------------------------------------------------------------
-            //
-            // insert new point and co-sort grid
-            //
-            //------------------------------------------------------------------
-            load(xarr,x,parabolic_guess(x,f)); assert(xtab[4]<=xtab[3]); assert(xtab[4]>=xtab[1]);
-            //std::cerr.precision(15);
-            std::cerr << "raw : x=" << xtab << " last=" << xtab[4] << std::endl;
-            load(farr,f,F(xtab[4]));
-            std::cerr << "raw : f=" << ftab << " last= " << ftab[4] << std::endl;
-            nwsrt4.increasing(xtab,ftab);
-            YACK_LOCATE(fn << "xtab=" << xtab << "; width=" << width);
-            YACK_LOCATE(fn << "ftab=" << ftab);
-
-            //------------------------------------------------------------------
-            //
-            // build left and right trial triplets
-            //
-            //------------------------------------------------------------------
-            const triplet<real_t> xl = { xtab[1], xtab[2], xtab[3] }; assert( xl.is_increasing() );
-            const triplet<real_t> fl = { ftab[1], ftab[2], ftab[3] };
-
-            const triplet<real_t> xr = { xtab[2], xtab[3], xtab[4] }; assert( xr.is_increasing() );
-            const triplet<real_t> fr = { ftab[2], ftab[3], ftab[4] };
-
-
-            //------------------------------------------------------------------
-            //
-            // let us choose the new triplet according to its minimal value
-            //
-            //------------------------------------------------------------------
-            switch( __sign::of(fl.b,fr.b) )
-            {
-                case __zero__: {
-                    //----------------------------------------------------------
-                    //
-                    // same prediction => success
-                    //
-                    //----------------------------------------------------------
-                    const double wl = std::abs(xl.c-xl.a);
-                    const double wr = std::abs(xr.c-xr.a);
-                    YACK_LOCATE(fn<<"stuck  @f(" << xl.b << ")=" << fl.b);
-                    if( wl <= wr )
-                    {
-                        x.assign(xl);
-                        f.assign(fl);
-                        width = wl;
-                    }
-                    else
-                    {
-                        x.assign(xr);
-                        f.assign(xr);
-                        width = wr;
-                    }
-                    f.b = F(x.b);
-                } return;
-
-                case negative: assert(fl.b<fr.b);
-                    //----------------------------------------------------------
-                    //
-                    // lhs is better
-                    //
-                    //----------------------------------------------------------
-                    YACK_LOCATE(fn<<" @lhs : x=" << xl << "; f=" << fl);
-                    assert(fl.is_local_minimum());
-                    x.assign(xl);
-                    f.assign(fl);
-                    break;
-
-                case positive: assert(fr.b<fl.b);
-                    //----------------------------------------------------------
-                    //
-                    // rhs is better
-                    //
-                    //----------------------------------------------------------
-                    YACK_LOCATE(fn<<" @rhs : x=" << xr << "; f=" << fr);
-                    assert(fr.is_local_minimum());
-                    x.assign(xr);
-                    f.assign(fr);
-                    break;
-            }
-            const double new_width  = std::abs(x.c-x.a);
-            width = new_width;
             goto CYCLE;
-#endif
+
         }
 
 
