@@ -122,12 +122,13 @@ namespace yack
 
             static inline void triplet_to(const char *filename,
                                           const triplet<real_t> &x,
-                                          const triplet<real_t> &f)
+                                          const triplet<real_t> &f,
+                                          const unsigned         i)
             {
                 ios::ocstream fp(filename,true);
-                fp("%g %g\n",x.a,f.a);
-                fp("%g %g\n",x.b,f.b);
-                fp("%g %g\n",x.c,f.c);
+                fp("%.15g %.15g %u\n",x.a,f.a,i);
+                fp("%.15g %.15g %u\n",x.b,f.b,i);
+                fp("%.15g %.15g %u\n",x.c,f.c,i);
                 fp << '\n';
             }
 
@@ -180,9 +181,9 @@ namespace yack
             thin_array<real_t>  xtab(xarr,sizeof(xarr)/sizeof(xarr[0]));
             thin_array<real_t>  ftab(farr,sizeof(farr)/sizeof(farr[0]));
             real_t              width = std::abs(x.c-x.a);
-            size_t              cycle = 0;
+            unsigned            cycle = 0;
 
-            triplet_to("opt.dat",x,f);
+            triplet_to("opt.dat",x,f,cycle);
 
         CYCLE:
             ++cycle;
@@ -205,19 +206,19 @@ namespace yack
             switch( __sign::of(x_u,x.b) )
             {
                 case __zero__:
-                    YACK_LOCATE(fn << "x_u=x.b");
+                    // append points around x.b
                     farr[3] = F( xarr[3] = half * (x.a+x.b) );
                     farr[4] = F( xarr[4] = half * (x.b+x.c) );
                     break;
 
                 case negative: assert(x_u<x.b);
-                    YACK_LOCATE(fn << "x_u<x.b");
+                    // append x_u and (x.b+x.c)/2
                     farr[3] = F( xarr[3] = x_u );
                     farr[4] = F( xarr[4] = half * (x.b+x.c) );
                     break;
 
                 case positive: assert(x.b<x_u);
-                    YACK_LOCATE(fn << "x_b<x_u");
+                    // append x_u and (xa+x.b)/2
                     farr[3] = F( xarr[3] = half * (x.a+x.b) );
                     farr[4] = F( xarr[4] = x_u );
                     break;
@@ -266,7 +267,7 @@ namespace yack
             f.assign(*f_opt);
             width = w_opt;
 
-            triplet_to("opt.dat",x,f);
+            triplet_to("opt.dat",x,f,cycle);
 
 
             if(cycle>=2)
