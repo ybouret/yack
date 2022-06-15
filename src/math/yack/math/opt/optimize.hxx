@@ -143,52 +143,83 @@ namespace yack
                 }
             }
 
-            static inline double choose_among(real_t     xx[],
-                                              real_t     ff[],
-                                              const bool three) throw()
+            static inline double choose_among(real_t         xx[],
+                                              real_t         ff[],
+                                              const unsigned offset,
+                                              const bool     build3) throw()
             {
                 assert(xx);
                 assert(ff);
-                assert( comparison::ordered(xx,three?5:4,comparison::increasing<real_t>) );
+                assert( comparison::ordered(xx,build3?5:4,comparison::increasing<real_t>) );
+                assert(0==offset||1==offset);
+                const unsigned        second = 1-offset;
+                static const unsigned utmost = 2;
+                //--------------------------------------------------------------
+                //
+                // offset triplets
+                //
+                //--------------------------------------------------------------
+                const triplet<real_t> &x_offset = *coerce_cast< triplet<real_t> >( &xx[offset] );
+                const triplet<real_t> &f_offset = *coerce_cast< triplet<real_t> >( &ff[offset] );
+                const double           w_offset = std::abs(x_offset.c-x_offset.a);
+
+                assert( out_of_reach::diff( &xx[offset], &x_offset ) == 0);
+                assert( out_of_reach::diff( &ff[offset], &f_offset ) == 0);
 
                 //--------------------------------------------------------------
                 //
-                // left triplets
+                // second triplets
                 //
                 //--------------------------------------------------------------
-                const triplet<real_t> &xl = *coerce_cast< triplet<real_t> >( &xx[0] );
-                const triplet<real_t> &fl = *coerce_cast< triplet<real_t> >( &ff[0] );
-                const double           wl = std::abs(xl.c-xl.a);
+                const triplet<real_t> &x_second = *coerce_cast< triplet<real_t> >( &xx[second] );
+                const triplet<real_t> &f_second = *coerce_cast< triplet<real_t> >( &ff[second] );
+                const double           w_second = std::abs(x_second.c-x_second.a);
+                
+                assert( out_of_reach::diff( &xx[second], &x_second ) == 0);
+                assert( out_of_reach::diff( &ff[second], &f_second ) == 0);
+                
+                //--------------------------------------------------------------
+                //
+                // initialize search from offset
+                //
+                //--------------------------------------------------------------
+                const triplet<real_t> *x_opt = &x_offset;
+                const triplet<real_t> *f_opt = &f_offset;
+                double                 w_opt =  w_offset;
 
-                // middle triplets
-                const triplet<real_t> &xm = *coerce_cast< triplet<real_t> >( &xx[1] );
-                const triplet<real_t> &fm = *coerce_cast< triplet<real_t> >( &ff[1] );
-                const double           wm = std::abs(xm.c-xm.a);
-
-                // initialize search FROM MIDDLE!
-                const triplet<real_t> *x_opt = &xm;
-                const triplet<real_t> *f_opt = &fm;
-                double                 w_opt =  wm;
-
-                upgrade(x_opt, f_opt, w_opt, &xl, &fl, wl);
-                if(three)
+                upgrade(x_opt, f_opt, w_opt, &x_second, &f_second, w_second);
+                if(build3)
                 {
-                    // right triplets
-                    const triplet<real_t> &xr = *coerce_cast< triplet<real_t> >( &xx[2] );
-                    const triplet<real_t> &fr = *coerce_cast< triplet<real_t> >( &ff[2] );
-                    const double           wr = std::abs(xr.c-xr.a);
-                    upgrade(x_opt, f_opt, w_opt, &xr, &fr, wr);
+                    //----------------------------------------------------------
+                    //
+                    // utmost triplets
+                    //
+                    //----------------------------------------------------------
+                    const triplet<real_t> &x_utmost = *coerce_cast< triplet<real_t> >( &xx[utmost] );
+                    const triplet<real_t> &f_utmost = *coerce_cast< triplet<real_t> >( &ff[utmost] );
+                    const double           w_utmost = std::abs(x_utmost.c-x_utmost.a);
+                    assert( out_of_reach::diff( &xx[utmost], &x_utmost ) == 0);
+                    assert( out_of_reach::diff( &ff[utmost], &f_utmost ) == 0);
+                    upgrade(x_opt, f_opt, w_opt, &x_utmost, &f_utmost, w_utmost);
                 }
 
 
                 assert( x_opt->is_increasing()    );
                 assert( f_opt->is_local_minimum() );
 
-                // move into position
+                //--------------------------------------------------------------
+                //
+                // move into position &xx[0], @ff[0]
+                //
+                //--------------------------------------------------------------
                 x_opt->save(xx);
                 f_opt->save(ff);
 
+                //--------------------------------------------------------------
+                //
                 // return new width
+                //
+                //--------------------------------------------------------------
                 return w_opt;
             }
 
@@ -283,17 +314,21 @@ namespace yack
             // prepare look up of intervals
             //
             //------------------------------------------------------------------
-            bool   use_three = false;
+            bool     build3 = false; // in case of middle point
+            unsigned offset = 0;     // most likely minimum
+            
             switch( __sign::of(x_u,x.b) )
             {
                 case __zero__:
                     //----------------------------------------------------------
                     // need to reduce with 5 points
+                    // should start with (xx[1],xx[2]=x_b,xx[3])
                     //----------------------------------------------------------
                     YACK_LOCATE(fn<< "[@middle]");
                     xx[0] = x.a; xx[1] = half_ab(x); xx[2] = x.b; xx[3] = half_bc(x); xx[4] = x.c;
                     ff[0] = f.a; ff[1] = F(xx[1]);   ff[2] = f.b; ff[3] = F(xx[3]);   ff[4] = f.c;
-                    use_three = true;
+                    build3 = true;
+                    offset = 1;
                     break;
 
                 case negative: assert(x_u<x.b); {
@@ -305,16 +340,19 @@ namespace yack
                     {
                         //------------------------------------------------------
                         // reduce with a,(a+u)/2,u,b
+                        // should start with (xx[1],xx[2]=x_u,xx[3])
                         //------------------------------------------------------
                         YACK_LOCATE(fn<< "[decrease @left]");
                         xx[0] = x.a; xx[1] = half_of(x.a,x_u); xx[2] = x_u; xx[3] = x.b;
                         ff[0] = f.a; ff[1] = F( xx[1] );       ff[2] = f_u; ff[3] = f.b;
+                        offset=1;
                     }
                     else
                     {
                         assert(f_u>f.b);
                         //------------------------------------------------------
                         //   reduce with x_u, x.b, half*(x.b+x.c), x.c
+                        //   should start with (xx[0],xx[1]=x.b,xx[2])
                         //------------------------------------------------------
                         YACK_LOCATE(fn<< "[increase @left]");
                         xx[0] = x_u; xx[1] = x.b; xx[2] = half_bc(x); xx[3] = x.c;
@@ -332,6 +370,7 @@ namespace yack
                     {
                         //------------------------------------------------------
                         // reduce with b,u,(u+c)/2,c
+                        //   should start with (xx[0],xx[1]=x_u,xx[2])
                         //------------------------------------------------------
                         YACK_LOCATE(fn<< "[decrease @right]");
                         xx[0] = x.b; xx[1] = x_u; xx[2] = half_of(x_u,x.c); xx[3] = x.c;
@@ -343,10 +382,12 @@ namespace yack
                         //------------------------------------------------------
                         // need to reduce with four points:
                         //   x.a, half*(x.a+x.b), x.b, x_u
+                        //   should start with (xx[1],xx[2]=x.b,xx[3])
                         //------------------------------------------------------
                         YACK_LOCATE(fn<< "[increase @right]");
                         xx[0] = x.a; xx[1] = half_ab(x); xx[2] = x.b; xx[3] = x_u;
                         ff[0] = f.a; ff[1] = F( xx[1] ); ff[2] = f.b; ff[3] = f_u;
+                        offset=1;
                     }
                 } break;
 
@@ -358,7 +399,7 @@ namespace yack
             // look up among 2 or 3 intervals
             //
             //------------------------------------------------------------------
-            const real_t new_width = choose_among(xx,ff,use_three);
+            const real_t new_width = choose_among(xx,ff,offset,build3);
             x.load(xx);
             f.load(ff);
             //triplet_to("opt.dat",x,f,cycle);

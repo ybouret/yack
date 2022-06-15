@@ -58,6 +58,7 @@ namespace yack
                 return to(which,idx);
             }
 
+            //! return type at idx
             int type(const int idx) throw();
 
 
