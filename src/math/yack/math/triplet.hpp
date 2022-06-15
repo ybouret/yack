@@ -82,7 +82,15 @@ namespace yack
                 b = static_cast<const_type>(other.b);
                 c = static_cast<const_type>(other.c);
             }
-            
+
+            //! (a,b,c) -> arr[0..2]
+            template <typename U>
+            inline void save(U arr[]) const
+            {
+                arr[0] = static_cast<U>(a);
+                arr[1] = static_cast<U>(b);
+                arr[2] = static_cast<U>(c);
+            }
 
             //! check if is increasing
             inline bool is_increasing() const throw()

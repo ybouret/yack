@@ -5,6 +5,7 @@
 #include "yack/signs.hpp"
 #include "yack/sequence/thin-array.hpp"
 #include "yack/sort/network/sort4.hpp"
+#include "yack/sort/network/sort5.hpp"
 #include <cstring>
 
 namespace yack

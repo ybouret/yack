@@ -86,13 +86,39 @@ namespace yack
 
         namespace {
 
-            static inline void load(real_t arr[], const triplet<real_t> &t, const real_t v) throw()
+            // upgrading to minimum value
+            static inline void upgrade(const triplet<real_t> * &x_opt,
+                                       const triplet<real_t> * &f_opt,
+                                       double                  &w_opt,
+                                       const triplet<real_t> *  x_cur,
+                                       const triplet<real_t> *  f_cur,
+                                       const double             w_cur) throw()
             {
-                memcpy(&arr[0],&t.a,sizeof(triplet<real_t>));
-                arr[3] = v;
+                switch( __sign::of(f_opt->b,f_cur->b) )
+                {
+                    case __zero__:
+                        // same numerical value
+                        // update only if w_cur<w_opt
+                        if(w_cur<w_opt)
+                        {
+                            x_opt = x_cur;
+                            f_opt = f_cur;
+                            w_opt = w_cur;
+                        }
+                        break;
+
+                    case negative: assert(f_opt->b<f_cur->b);
+                        // do nothing
+                        break;
+
+                    case positive:  assert(f_cur->b<f_opt->b);
+                        // update
+                        x_opt = x_cur;
+                        f_opt = f_cur;
+                        w_opt = w_cur;
+                        break;
+                }
             }
-
-
 
         }
 
@@ -103,7 +129,8 @@ namespace yack
                                     const preprocess       prolog)
         {
             static const char          fn[] = "// [optimize] ";
-            static const network_sort4 nwsrt4;
+            static const real_t        half(0.5);
+            static const network_sort5 sr;
 
             //------------------------------------------------------------------
             //
@@ -129,12 +156,94 @@ namespace yack
             }
             assert(x.is_increasing());
             assert(f.is_local_minimum());
+
+            //------------------------------------------------------------------
+            //
+            // prepare local grid
+            //
+            //------------------------------------------------------------------
+            real_t              xarr[5] = { 0,0,0,0 };
+            real_t              farr[5] = { 0,0,0,0 };
+            thin_array<real_t>  xtab(xarr,sizeof(xarr)/sizeof(xarr[0]));
+            thin_array<real_t>  ftab(farr,sizeof(farr)/sizeof(farr[0]));
+
+
+
+            real_t              width = std::abs(x.c-x.a);
             
-            const real_t xu = parabolic_guess(x,f);
-            assert(xu>=x.a);
-            assert(xu<=x.c);
-            
-            
+            //------------------------------------------------------------------
+            //
+            // create local grid
+            //
+            //------------------------------------------------------------------
+            assert(x.is_increasing());
+            assert(f.is_local_minimum());
+            x.save(xarr);
+            f.save(farr);
+            const real_t x_u = parabolic_guess(x,f);
+            assert(x_u>=x.a);
+            assert(x_u<=x.c);
+            switch( __sign::of(x_u,x.b) )
+            {
+                case __zero__:
+                    farr[3] = F( xarr[3] = half * (x.a+x.b) );
+                    farr[4] = F( xarr[4] = half * (x.b+x.c) );
+                    break;
+
+                case negative: assert(x_u<x.b);
+                    farr[3] = F( x_u );
+                    farr[4] = F( xarr[4] = half * (x.b+x.c) );
+                    break;
+
+                case positive: assert(x.b<x_u);
+                    farr[3] = F( xarr[3] = half * (x.a+x.b) );
+                    farr[4] = F( x_u );
+                    break;
+            }
+            sr.increasing(xtab,ftab);
+
+            YACK_LOCATE(fn << "xgrid = " << xtab << "; width=" << width);
+            YACK_LOCATE(fn << "fgrid = " << ftab);
+
+            //------------------------------------------------------------------
+            //
+            // find local minimum amongst three possibilities
+            //
+            //------------------------------------------------------------------
+            {
+                const triplet<real_t> &xl = *coerce_cast< triplet<real_t> >( &xarr[0] );
+                const triplet<real_t> &fl = *coerce_cast< triplet<real_t> >( &farr[0] );
+                const double           wl = std::abs(xl.c-xl.a);
+
+                const triplet<real_t> &xm = *coerce_cast< triplet<real_t> >( &xarr[1] );
+                const triplet<real_t> &fm = *coerce_cast< triplet<real_t> >( &farr[1] );
+                const double           wm = std::abs(xm.c-xm.a);
+
+                const triplet<real_t> &xr = *coerce_cast< triplet<real_t> >( &xarr[2] );
+                const triplet<real_t> &fr = *coerce_cast< triplet<real_t> >( &farr[2] );
+                const double           wr = std::abs(xr.c-xr.a);
+
+
+                //std::cerr << "left  : x=" << xl << " f=" << fl << std::endl;
+                //std::cerr << "middle: x=" << xm << " f=" << fm << std::endl;
+                //std::cerr << "right : x=" << xr << " f=" << fr << std::endl;
+
+
+                const triplet<real_t> *x_opt = &xl;
+                const triplet<real_t> *f_opt = &fl;
+                double                 w_opt =  wl;
+
+                upgrade(x_opt, f_opt, w_opt, &xm, &fm, wm);
+                upgrade(x_opt, f_opt, w_opt, &xr, &fr, wr);
+
+                YACK_LOCATE(fn << "x_opt = " << *x_opt << "; w_opt=" << w_opt);
+                YACK_LOCATE(fn << "f_opt = " << *f_opt);
+
+                assert( x_opt->is_increasing()    );
+                assert( f_opt->is_local_minimum() );
+            }
+
+
             exit(1);
             
 
