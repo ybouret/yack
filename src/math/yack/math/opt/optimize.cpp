@@ -14,6 +14,8 @@ namespace yack
     {
         bool optimize::verbose = false;
 #define YACK_LOCATE(MSG) do { if(math::optimize::verbose) { std::cerr << MSG << std::endl; } } while(false)
+        static const char fn[] = "// [optimize] ";
+        
     }
 }
 

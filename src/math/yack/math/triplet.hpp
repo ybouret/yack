@@ -87,9 +87,19 @@ namespace yack
             template <typename U>
             inline void save(U arr[]) const
             {
+                assert(arr);
                 arr[0] = static_cast<U>(a);
                 arr[1] = static_cast<U>(b);
                 arr[2] = static_cast<U>(c);
+            }
+
+            //! arr[0..2] -> a,b,c
+            template <typename U>
+            inline void load(const U arr[])
+            {
+                a = static_cast<const_type>(arr[0]);
+                b = static_cast<const_type>(arr[1]);
+                c = static_cast<const_type>(arr[2]);
             }
 
             //! check if is increasing

@@ -13,7 +13,7 @@ using namespace math;
 template <typename T> static inline
 T F(T x)
 {
-    return 1.27-cos(3*x-0.1);
+    return 1.27-cos(2*(x-0.1));
 }
 
 #if 0
