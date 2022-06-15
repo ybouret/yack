@@ -4,6 +4,29 @@ namespace yack
     namespace math
     {
 
+        namespace
+        {
+            static inline real_t half_of(const real_t xlo, const real_t xhi) throw()
+            {
+                static const real_t half(0.5);
+                
+                assert(xlo<=xhi);
+                return clamp(xlo, half * (xlo+xhi), xhi);
+            }
+            
+            static inline real_t half_ab(const triplet<real_t> &x) throw()
+            {
+                assert(x.is_increasing());
+                return half_of(x.a,x.b);
+            }
+            
+            static inline real_t half_bc(const triplet<real_t> &x) throw()
+            {
+                assert(x.is_increasing());
+                return half_of(x.b,x.c);
+            }
+
+        }
 
         template <>
         real_t optimize:: parabolic_guess(const triplet<real_t> &x, const triplet<real_t> &f) throw()
@@ -26,7 +49,7 @@ namespace yack
                 // beta = 0 : fallback to middle
                 //
                 //--------------------------------------------------------------
-                return half*(x.a+x.c);
+                return half_of(x.a,x.c);
             }
             else
             {
@@ -34,10 +57,10 @@ namespace yack
                 {
                     //----------------------------------------------------------
                     //
-                    // beta=1 : fallback to middle
+                    // beta=1 : fallback to middle, again
                     //
                     //----------------------------------------------------------
-                    return half*(x.a+x.c);
+                    return half_of(x.a,x.c);
                 }
                 else
                 {
@@ -54,13 +77,13 @@ namespace yack
 
                         case negative: assert(d_a<d_c); assert(0<d_c);
                             if(d_a<=0)
-                                return half*(x.a+x.b); // special case : xmin
+                                return half_ab(x);     // special case : xmin
                             else                       //
                                 goto GENERIC;          // generic case
 
                         case positive: assert(d_c<d_a); assert(0<d_a);
                             if(d_c<=0)
-                                return half*(x.b+x.c); // special case : xmax
+                                return half_bc(x);     // special case : xmax
                             else                       //
                                 goto GENERIC;          // generic case
 
@@ -76,8 +99,8 @@ namespace yack
                     const real_t wc    = beta       * d_c;
                     const real_t num   = (one+beta) * wa + beta * wc; // weigthed xmin/xmax
                     const real_t den   = wa+wc; assert(den>0);        // sum of weights
-                    const real_t xmin  = half * (x.a+x.b);
-                    const real_t xmax  = half * (x.b+x.c);
+                    const real_t xmin  = half_ab(x);
+                    const real_t xmax  = half_bc(x);
                     return clamp(xmin,x.a + width * num / (den+den),xmax);
                 }
             }
@@ -128,7 +151,11 @@ namespace yack
                 assert(ff);
                 assert( comparison::ordered(xx,three?5:4,comparison::increasing<real_t>) );
 
+                //--------------------------------------------------------------
+                //
                 // left triplets
+                //
+                //--------------------------------------------------------------
                 const triplet<real_t> &xl = *coerce_cast< triplet<real_t> >( &xx[0] );
                 const triplet<real_t> &fl = *coerce_cast< triplet<real_t> >( &ff[0] );
                 const double           wl = std::abs(xl.c-xl.a);
@@ -138,7 +165,7 @@ namespace yack
                 const triplet<real_t> &fm = *coerce_cast< triplet<real_t> >( &ff[1] );
                 const double           wm = std::abs(xm.c-xm.a);
 
-                // initialize search
+                // initialize search FROM MIDDLE!
                 const triplet<real_t> *x_opt = &xm;
                 const triplet<real_t> *f_opt = &fm;
                 double                 w_opt =  wm;
@@ -180,26 +207,7 @@ namespace yack
             }
 #endif
 
-            static inline real_t half_of(const real_t xlo, const real_t xhi) throw()
-            {
-                static const real_t half(0.5);
-
-                assert(xlo<=xhi);
-                return clamp(xlo, half * (xlo+xhi), xhi);
-            }
-
-            static inline real_t half_ab(const triplet<real_t> &x) throw()
-            {
-                assert(x.is_increasing());
-                return half_of(x.a,x.b);
-            }
-
-            static inline real_t half_bc(const triplet<real_t> &x) throw()
-            {
-                assert(x.is_increasing());
-                return half_of(x.b,x.c);
-            }
-
+           
 
         }
 
