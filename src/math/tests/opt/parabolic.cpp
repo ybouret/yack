@@ -56,6 +56,7 @@ void build_para(const triplet<double> &x, const triplet<double> &f, const char *
 
 YACK_UTEST(parabolic)
 {
+    //randomized::rand_ ran;
     locate::verbose   = true;
     optimize::verbose = true;
 

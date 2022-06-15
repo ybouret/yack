@@ -139,11 +139,11 @@ namespace yack
                 const double           wm = std::abs(xm.c-xm.a);
 
                 // initialize search
-                const triplet<real_t> *x_opt = &xl;
-                const triplet<real_t> *f_opt = &fl;
-                double                 w_opt =  wl;
+                const triplet<real_t> *x_opt = &xm;
+                const triplet<real_t> *f_opt = &fm;
+                double                 w_opt =  wm;
 
-                upgrade(x_opt, f_opt, w_opt, &xm, &fm, wm);
+                upgrade(x_opt, f_opt, w_opt, &xl, &fl, wl);
                 if(three)
                 {
                     // right triplets
@@ -254,9 +254,9 @@ namespace yack
 
         CYCLE:
             ++cycle;
-            YACK_LOCATE(fn << "[cycle " << cycle << "]");
-            YACK_LOCATE(fn << "  x=" << x << " |x|=" << width);
-            YACK_LOCATE(fn << "  f=" << f);
+            YACK_LOCATE(fn << "---------------- [cycle " << cycle << "] ----------------");
+            YACK_LOCATE(fn << "  x = " << x << " |x|=" << width);
+            YACK_LOCATE(fn << "  f = " << f);
             assert(x.is_increasing());
             assert(f.is_local_minimum());
 
@@ -266,7 +266,7 @@ namespace yack
             //
             //------------------------------------------------------------------
             const real_t x_u = parabolic_guess(x,f);
-            YACK_LOCATE(fn<< "x_u=" << x_u);
+            YACK_LOCATE(fn<< "x_u = " << x_u);
             assert(x_u>=x.a);
             assert(x_u<=x.c);
 
@@ -282,7 +282,7 @@ namespace yack
                     //----------------------------------------------------------
                     // need to reduce with 5 points
                     //----------------------------------------------------------
-                    YACK_LOCATE(fn<< "[symmetric]");
+                    YACK_LOCATE(fn<< "[@middle]");
                     xx[0] = x.a; xx[1] = half_ab(x); xx[2] = x.b; xx[3] = half_bc(x); xx[4] = x.c;
                     ff[0] = f.a; ff[1] = F(xx[1]);   ff[2] = f.b; ff[3] = F(xx[3]);   ff[4] = f.c;
                     three = true;
@@ -306,8 +306,7 @@ namespace yack
                     {
                         assert(f_u>f.b);
                         //------------------------------------------------------
-                        // need to reduce with four points:
-                        //   x_u, x.b, half*(x.b+x.c), x.c
+                        //   reduce with x_u, x.b, half*(x.b+x.c), x.c
                         //------------------------------------------------------
                         YACK_LOCATE(fn<< "[increase @left]");
                         xx[0] = x_u; xx[1] = x.b; xx[2] = half_bc(x); xx[3] = x.c;
@@ -356,17 +355,9 @@ namespace yack
             f.load(ff);
             triplet_to("opt.dat",x,f,cycle);
 
-            //------------------------------------------------------------------
-            //
-            // check numerical convergence
-            //
-            //------------------------------------------------------------------
-            if( std::abs(x_min-x.b) <= 0)
-            {
-                YACK_LOCATE(fn<< "[exactly  @f(" << x.b << ")=" << f.b << "]");
-                f.b = F(x.b);
-                return;
-            }
+
+
+            YACK_LOCATE(fn << "  width: " << width << " -> " << new_width);
 
             //------------------------------------------------------------------
             //
@@ -379,6 +370,21 @@ namespace yack
                 f.b = F(x.b);
                 return;
             }
+
+            //------------------------------------------------------------------
+            //
+            // check numerical convergence
+            //
+            //------------------------------------------------------------------
+            const real_t dx =std::abs(x_min-x.b);
+            YACK_LOCATE(fn << "  x.b = " << x.b << ", dx=" << dx);
+            if(dx<=0)
+            {
+                YACK_LOCATE(fn<< "[exactly  @f(" << x.b << ")=" << f.b << "]");
+                f.b = F(x.b);
+                return;
+            }
+
 
             //------------------------------------------------------------------
             //
