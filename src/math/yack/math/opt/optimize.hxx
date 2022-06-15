@@ -165,6 +165,7 @@ namespace yack
                 return w_opt;
             }
 
+#if 0
             static inline void triplet_to(const char *filename,
                                           const triplet<real_t> &x,
                                           const triplet<real_t> &f,
@@ -176,9 +177,8 @@ namespace yack
                 fp("%.15g %.15g %u\n",x.c,f.c,i);
                 fp("%.15g %.15g %u\n",x.a,f.a,i);
                 fp << '\n';
-                //fp("%.15g %15g %.15g %15g %.15g %15g\n",x.a,f.a,x.b,f.b,x.c,f.c);
             }
-
+#endif
 
             static inline real_t half_of(const real_t xlo, const real_t xhi) throw()
             {
@@ -210,7 +210,7 @@ namespace yack
                                     const preprocess       prolog)
         {
 
-            ios::ocstream::overwrite("opt.dat");
+            //ios::ocstream::overwrite("opt.dat");
 
             //------------------------------------------------------------------
             //
@@ -250,7 +250,7 @@ namespace yack
             real_t              x_min = x.b;
             unsigned            cycle = 0;
 
-            triplet_to("opt.dat",x,f,cycle);
+            //triplet_to("opt.dat",x,f,cycle);
 
         CYCLE:
             ++cycle;
@@ -275,7 +275,7 @@ namespace yack
             // prepare look up of intervals
             //
             //------------------------------------------------------------------
-            bool   three     = false;
+            bool   use_three = false;
             switch( __sign::of(x_u,x.b) )
             {
                 case __zero__:
@@ -285,7 +285,7 @@ namespace yack
                     YACK_LOCATE(fn<< "[@middle]");
                     xx[0] = x.a; xx[1] = half_ab(x); xx[2] = x.b; xx[3] = half_bc(x); xx[4] = x.c;
                     ff[0] = f.a; ff[1] = F(xx[1]);   ff[2] = f.b; ff[3] = F(xx[3]);   ff[4] = f.c;
-                    three = true;
+                    use_three = true;
                     break;
 
                 case negative: assert(x_u<x.b); {
@@ -350,10 +350,10 @@ namespace yack
             // look up among 2 or 3 intervals
             //
             //------------------------------------------------------------------
-            const real_t new_width = choose_among(xx,ff,three);
+            const real_t new_width = choose_among(xx,ff,use_three);
             x.load(xx);
             f.load(ff);
-            triplet_to("opt.dat",x,f,cycle);
+            //triplet_to("opt.dat",x,f,cycle);
 
 
 
