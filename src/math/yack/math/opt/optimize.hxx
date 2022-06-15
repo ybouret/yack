@@ -120,6 +120,17 @@ namespace yack
                 }
             }
 
+            static inline void triplet_to(const char *filename,
+                                          const triplet<real_t> &x,
+                                          const triplet<real_t> &f)
+            {
+                ios::ocstream fp(filename,true);
+                fp("%g %g\n",x.a,f.a);
+                fp("%g %g\n",x.b,f.b);
+                fp("%g %g\n",x.c,f.c);
+                fp << '\n';
+            }
+
         }
 
         template <>
@@ -131,6 +142,8 @@ namespace yack
             static const char          fn[] = "// [optimize] ";
             static const real_t        half(0.5);
             static const network_sort5 sr;
+
+            ios::ocstream::overwrite("opt.dat");
 
             //------------------------------------------------------------------
             //
@@ -168,6 +181,9 @@ namespace yack
             thin_array<real_t>  ftab(farr,sizeof(farr)/sizeof(farr[0]));
             real_t              width = std::abs(x.c-x.a);
             size_t              cycle = 0;
+
+            triplet_to("opt.dat",x,f);
+
         CYCLE:
             ++cycle;
             YACK_LOCATE(fn << " [cycle " << cycle << "]");
@@ -249,6 +265,9 @@ namespace yack
             x.assign(*x_opt);
             f.assign(*f_opt);
             width = w_opt;
+
+            triplet_to("opt.dat",x,f);
+
 
             if(cycle>=2)
                 exit(1);
