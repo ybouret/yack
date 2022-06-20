@@ -84,25 +84,6 @@ namespace yack
     namespace math
     {
 
-#if 0
-        namespace
-        {
-            static inline void quad_to(const char *filename,
-                                       const real_t xx[],
-                                       const real_t yy[],
-                                       const unsigned id)
-            {
-                ios::acstream fp(filename);
-                fp("%g %g %u\n", double(xx[0]), double(yy[0]), id);
-                fp("%g %g %u\n", double(xx[1]), double(yy[1]), id);
-                fp("%g %g %u\n", double(xx[2]), double(yy[2]), id);
-                fp("%g %g %u\n", double(xx[3]), double(yy[3]), id);
-                fp << '\n';
-
-            }
-        }
-#endif
-
         template <>
         bool locate:: expand<real_t>(real_function<real_t> &F,
                                      triplet<real_t>       &x,
@@ -140,7 +121,6 @@ namespace yack
             // loop
             //
             //------------------------------------------------------------------
-            //ios::ocstream::overwrite("expand.dat");
             YACK_LOCATE(fn<<"x=" << x<< "; f=" << f);
             unsigned cycle=0;
             while( !f.is_local_minimum() )
@@ -233,7 +213,6 @@ namespace yack
                 // choose triplet among quad
                 //
                 //--------------------------------------------------------------
-                //quad_to("expand.dat",xx,ff,cycle);
 
                 unsigned imin = 0;
                 real_t   fmin = ff[0];
