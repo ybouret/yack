@@ -141,6 +141,7 @@ namespace yack
             //
             //------------------------------------------------------------------
             //ios::ocstream::overwrite("expand.dat");
+            YACK_LOCATE(fn<<"x=" << x<< "; f=" << f);
             unsigned cycle=0;
             while( !f.is_local_minimum() )
             {
@@ -259,6 +260,8 @@ namespace yack
                         f.load(&ff[1]);
                         break;
                 }
+
+                YACK_LOCATE(fn<<"x=" << x<< "; f=" << f);
 
 
             }
