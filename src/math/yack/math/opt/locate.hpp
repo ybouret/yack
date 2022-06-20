@@ -32,6 +32,7 @@ namespace yack
              - Look for f.b <= f.a and f.b <= f.c
              - f.b = f(x.b) is always the last evaluated value
              - can be on a side of the interval
+             - retun x.a<=x.b<=x.c
              */
             //__________________________________________________________________
             template <typename T> static

@@ -26,6 +26,11 @@ namespace yack
                 return half_of(x.b,x.c);
             }
 
+            static inline real_t middle_of(const triplet<real_t> &x) throw()
+            {
+                return half_of(x.a,x.c);
+            }
+
         }
 
         template <>
@@ -49,7 +54,7 @@ namespace yack
                 // beta = 0 : fallback to middle
                 //
                 //--------------------------------------------------------------
-                return half_of(x.a,x.c);
+                return middle_of(x);
             }
             else
             {
@@ -60,7 +65,7 @@ namespace yack
                     // beta=1 : fallback to middle, again
                     //
                     //----------------------------------------------------------
-                    return half_of(x.a,x.c);
+                    return middle_of(x);
                 }
                 else
                 {
@@ -109,7 +114,11 @@ namespace yack
 
         namespace {
 
+            //------------------------------------------------------------------
+            //
             // upgrading to minimum value
+            //
+            //------------------------------------------------------------------
             static inline void upgrade(const triplet<real_t> * &x_opt,
                                        const triplet<real_t> * &f_opt,
                                        double                  &w_opt,
@@ -143,20 +152,25 @@ namespace yack
                 }
             }
 
+            //------------------------------------------------------------------
+            //
+            // find the best local minimum
+            //
+            //------------------------------------------------------------------
             static inline double choose_among(real_t         xx[],
                                               real_t         ff[],
                                               const unsigned offset,
                                               const bool     build3) throw()
             {
-                assert(xx);
-                assert(ff);
+                assert(NULL!=xx);
+                assert(NULL!=ff);
                 assert( comparison::ordered(xx,build3?5:4,comparison::increasing<real_t>) );
                 assert(0==offset||1==offset);
                 const unsigned        second = 1-offset;
                 static const unsigned utmost = 2;
                 //--------------------------------------------------------------
                 //
-                // offset triplets
+                //  triplets @offset
                 //
                 //--------------------------------------------------------------
                 const triplet<real_t> &x_offset = *coerce_cast< triplet<real_t> >( &xx[offset] );
@@ -168,7 +182,7 @@ namespace yack
 
                 //--------------------------------------------------------------
                 //
-                // second triplets
+                //  triplets @second
                 //
                 //--------------------------------------------------------------
                 const triplet<real_t> &x_second = *coerce_cast< triplet<real_t> >( &xx[second] );
@@ -187,12 +201,19 @@ namespace yack
                 const triplet<real_t> *f_opt = &f_offset;
                 double                 w_opt =  w_offset;
 
+                //--------------------------------------------------------------
+                //
+                // check with second
+                //
+                //--------------------------------------------------------------
                 upgrade(x_opt, f_opt, w_opt, &x_second, &f_second, w_second);
+
+
                 if(build3)
                 {
                     //----------------------------------------------------------
                     //
-                    // utmost triplets
+                    //  triplets @utmost, optional
                     //
                     //----------------------------------------------------------
                     const triplet<real_t> &x_utmost = *coerce_cast< triplet<real_t> >( &xx[utmost] );
@@ -223,22 +244,6 @@ namespace yack
                 return w_opt;
             }
 
-#if 0
-            static inline void triplet_to(const char *filename,
-                                          const triplet<real_t> &x,
-                                          const triplet<real_t> &f,
-                                          const unsigned         i)
-            {
-                ios::ocstream fp(filename,true);
-                fp("%.15g %.15g %u\n",x.a,f.a,i);
-                fp("%.15g %.15g %u\n",x.b,f.b,i);
-                fp("%.15g %.15g %u\n",x.c,f.c,i);
-                fp("%.15g %.15g %u\n",x.a,f.a,i);
-                fp << '\n';
-            }
-#endif
-
-           
 
         }
 
@@ -248,8 +253,6 @@ namespace yack
                                     triplet<real_t>       &f,
                                     const preprocess       prolog)
         {
-
-            //ios::ocstream::overwrite("opt.dat");
 
             //------------------------------------------------------------------
             //
@@ -276,7 +279,11 @@ namespace yack
             assert(x.is_increasing());
             assert(f.is_local_minimum());
 
-
+            //------------------------------------------------------------------
+            //
+            // workspace
+            //
+            //------------------------------------------------------------------
             real_t xx[5] = { 0,0,0,0,0 };
             real_t ff[5] = { 0,0,0,0,0 };
 
@@ -289,7 +296,6 @@ namespace yack
             real_t              x_min = x.b;
             unsigned            cycle = 0;
 
-            //triplet_to("opt.dat",x,f,cycle);
 
         CYCLE:
             ++cycle;
@@ -402,10 +408,7 @@ namespace yack
             const real_t new_width = choose_among(xx,ff,offset,build3);
             x.load(xx);
             f.load(ff);
-            //triplet_to("opt.dat",x,f,cycle);
-
-
-
+            
             YACK_LOCATE(fn << "  width: " << width << " -> " << new_width);
 
             //------------------------------------------------------------------
@@ -425,7 +428,7 @@ namespace yack
             // check numerical convergence
             //
             //------------------------------------------------------------------
-            const real_t dx =std::abs(x_min-x.b);
+            const real_t dx = std::abs(x_min-x.b);
             YACK_LOCATE(fn << "  x.b = " << x.b << ", dx=" << dx);
             if(dx<=0)
             {

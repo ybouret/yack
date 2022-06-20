@@ -14,7 +14,7 @@ namespace yack
     {
         bool locate::verbose = false;
         static const char locate_inside[] = "// [locate.inside] ";
-        static const char locate_expand[] = "// [locate.expand] ";
+        //static const char locate_expand[] = "// [locate.expand] ";
 
 #define YACK_LOCATE(MSG) do { if(math::locate::verbose) { std::cerr << MSG << std::endl; } } while(false)
     }
