@@ -2,7 +2,7 @@
 
 #include "yack/math/fit/least-squares/data.hpp"
 #include "yack/math/numeric.hpp"
-#include "yack/math/opt/minimize.hpp"
+#include "yack/math/opt/optimize.hpp"
 #include "yack/math/fit/variables.hpp"
 #include "yack/system/exception.hpp"
 #include <cerrno>

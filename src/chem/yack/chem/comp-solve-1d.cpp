@@ -26,15 +26,22 @@ namespace yack
                 const readable<double> &C;
 
 
+                //--------------------------------------------------------------
+                //
                 // call function: self.mass_action(K,C,xx)
+                //
+                //--------------------------------------------------------------
                 inline double operator()(const double xx) throw()
                 {
                     return self.mass_action(K,C,xx);
                 }
 
-
+                //--------------------------------------------------------------
+                //
                 // apply bisection reduction
                 // with precomputed sign of f.b
+                //
+                //--------------------------------------------------------------
                 inline void b_update(triplet<double> &x,
                                      triplet<double> &f,
                                      const sign_type  s) throw()
@@ -67,9 +74,12 @@ assert(f.a>0);             \
 assert(f.c<0);             \
 assert(x.c>x.a)
 
-
+                //--------------------------------------------------------------
+                //
                 // try an extended step with a precomputed sign of f.b
                 // and the Ridder's coefficient
+                //
+                //--------------------------------------------------------------
                 inline bool extended(triplet<double> &x,
                                      triplet<double> &f,
                                      const sign_type  s,
@@ -186,7 +196,11 @@ assert(x.c>x.a)
                 }
 
 
+                //--------------------------------------------------------------
+                //
                 // reduce interval by hybrid methods
+                //
+                //--------------------------------------------------------------
                 inline bool update(triplet<double> &x,
                                    triplet<double> &f) throw()
                 {

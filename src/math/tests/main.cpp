@@ -20,8 +20,7 @@ YACK_UTEST_DECL(80)
     YACK_UTEST(zroot);
     YACK_UTEST(zircon);
 
-    YACK_UTEST(minimize);
-    YACK_UTEST(parabolic);
+    YACK_UTEST(optimize);
 
     YACK_UTEST(drvs);
     YACK_UTEST(fjac);

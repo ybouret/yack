@@ -259,10 +259,12 @@ namespace yack
         namespace fit
         {
 
+#if 0
             static inline bool acceptable(const triplet<real_t> &G) throw()
             {
                 return (G.b<=G.a && G.b<=G.c);
             }
+#endif
 
             template <>
             real_t  least_squares_data<real_t>:: optimize(real_function<real_t> &g,
@@ -277,12 +279,12 @@ namespace yack
                 //
                 // take at least another sample
                 //______________________________________________________________
-
                 triplet<real_t> U = {0, 1, 2     };
                 triplet<real_t> G = {g0,g1,g(U.c)};
                 assert(G.b<=G.a);
 
-                while( !acceptable(G) )
+                // move forward
+                while( !G.is_local_minimum() )
                 {
                     U.a = U.b; U.b = U.c;
                     G.a = G.b; G.b = G.c;
@@ -293,7 +295,7 @@ namespace yack
                 //
                 // now we are around a minimum
                 //______________________________________________________________
-                const real_t U_opt = minimize::parabolic_guess(U,G);
+                const real_t U_opt = optimize::parabolic_guess(U,G);
                 const real_t G_opt = g(U_opt);
 
                 YACK_LSF_PRINTLN(clid << " minimum in u=" << U << ", g=" << G);

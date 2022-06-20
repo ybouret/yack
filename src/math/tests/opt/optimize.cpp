@@ -19,7 +19,7 @@ T F(T x)
 
 
 
-YACK_UTEST(parabolic)
+YACK_UTEST(optimize)
 {
     //randomized::rand_ ran;
     locate::verbose   = true;

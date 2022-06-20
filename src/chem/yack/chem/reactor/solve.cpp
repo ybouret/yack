@@ -4,7 +4,6 @@
 #include "yack/apex.hpp"
 #include "yack/math/tao/v3.hpp"
 #include "yack/sort/sum.hpp"
-#include "yack/math/opt/minimize.hpp"
 #include "yack/math/opt/optimize.hpp"
 #include <iomanip>
 
