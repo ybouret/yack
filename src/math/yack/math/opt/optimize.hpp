@@ -56,6 +56,7 @@ namespace yack
              \param F a real function
              \param x x.a <= x.b <= x.c
              \param f f.b <= f.a, f.b <= f.c
+             \param prolog what to do before optimization
              */
             //__________________________________________________________________
             template <typename T> static
