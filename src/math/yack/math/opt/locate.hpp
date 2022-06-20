@@ -64,7 +64,7 @@ namespace yack
 
             //__________________________________________________________________
             //
-            //! wrapper for inside
+            //! wrapper for expand
             //__________________________________________________________________
             template <typename T, typename FUNCTION> static inline
             bool expand_for(FUNCTION &F, triplet <T> &x, triplet<T> &f)

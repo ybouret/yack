@@ -45,8 +45,12 @@ namespace yack
 
 
             //! run
+            /**
+             - start from x.a <= x.b <= x.c, f.b <= f.a, f.b <= f.c
+             - iterate by controled parabolic guess and counter-reduction
+             */
             template <typename T> static
-            void run( real_function<T> &F, triplet<T> &x, triplet<T> &f, const preprocess prolog);
+            void run(real_function<T> &F, triplet<T> &x, triplet<T> &f, const preprocess prolog);
 
             //__________________________________________________________________
             //

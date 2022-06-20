@@ -248,14 +248,17 @@ namespace yack
                 }
                 switch(imin)
                 {
+
                     case 0:
                     case 1:
+                        // choose left triplet
                         x.load(&xx[0]);
                         f.load(&ff[0]);
                         break;
 
                     case 2:
                     case 3:
+                        // choose right triplet
                         x.load(&xx[1]);
                         f.load(&ff[1]);
                         break;
