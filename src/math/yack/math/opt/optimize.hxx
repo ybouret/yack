@@ -439,8 +439,9 @@ namespace yack
             //
             //------------------------------------------------------------------
             const real_t dx = std::abs(x_min-x.b);
+            const real_t ftol = 1e-15;
             YACK_OPTIMIZE(fn << "  x.b = " << x.b << ", dx=" << dx);
-            if(dx<=0)
+            if(dx<= ftol * max_of(std::abs(x_min),std::abs(x.b)))
             {
                 YACK_OPTIMIZE(fn<< "[exactly  @f(" << x.b << ")=" << f.b << "]");
                 f.b = F(x.b);
