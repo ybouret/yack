@@ -105,3 +105,35 @@ namespace yack
     }
 
 }
+
+namespace yack
+{
+    namespace ios
+    {
+
+        acstream:: ~acstream() throw() {}
+
+        acstream:: acstream(const ios::cstderr_t & _) :
+        ocstream(_)
+        {
+        }
+
+        acstream:: acstream(const ios::cstdout_t & _) :
+        ocstream(_)
+        {
+        }
+
+        acstream:: acstream(const char * filename) :
+        ocstream(filename,true)
+        {
+        }
+
+        acstream:: acstream(const string &filename) :
+        ocstream(filename,true)
+        {
+        }
+
+
+
+    }
+}

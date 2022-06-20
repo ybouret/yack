@@ -262,16 +262,26 @@ namespace yack
             switch(prolog)
             {
                 case direct:
-                    YACK_LOCATE(fn << "<direct>");
+                    YACK_OPTIMIZE(fn << "<direct>");
                     assert(x.is_increasing());
                     assert(f.is_local_minimum());
                     break;
 
                 case inside:
-                    YACK_LOCATE(fn << "<inside>");
+                    YACK_OPTIMIZE(fn << "<inside>");
                     if(!locate::inside(F,x,f))
                     {
-                        YACK_LOCATE(fn << "global");
+                        YACK_OPTIMIZE(fn << "global");
+                        return;
+                    }
+                    break;
+
+                case expand:
+                    YACK_OPTIMIZE(fn << "<expand>");
+                    if(!locate::expand(F,x,f))
+                    {
+                        YACK_OPTIMIZE(fn << "FAILURE!!");
+                        throw exception("%sexpansing failure",fn);
                         return;
                     }
                     break;
@@ -299,9 +309,9 @@ namespace yack
 
         CYCLE:
             ++cycle;
-            YACK_LOCATE(fn << "---------------- [cycle " << cycle << "] ----------------");
-            YACK_LOCATE(fn << "  x = " << x << " |x|=" << width);
-            YACK_LOCATE(fn << "  f = " << f);
+            YACK_OPTIMIZE(fn << "---------------- [cycle " << cycle << "] ----------------");
+            YACK_OPTIMIZE(fn << "  x = " << x << " |x|=" << width);
+            YACK_OPTIMIZE(fn << "  f = " << f);
             assert(x.is_increasing());
             assert(f.is_local_minimum());
 
@@ -311,7 +321,7 @@ namespace yack
             //
             //------------------------------------------------------------------
             const real_t x_u = parabolic_guess(x,f);
-            YACK_LOCATE(fn<< "x_u = " << x_u);
+            YACK_OPTIMIZE(fn<< "x_u = " << x_u);
             assert(x_u>=x.a);
             assert(x_u<=x.c);
 
@@ -330,7 +340,7 @@ namespace yack
                     // need to reduce with 5 points
                     // should start with (xx[1],xx[2]=x_b,xx[3])
                     //----------------------------------------------------------
-                    YACK_LOCATE(fn<< "[@middle]");
+                    YACK_OPTIMIZE(fn<< "[@middle]");
                     xx[0] = x.a; xx[1] = half_ab(x); xx[2] = x.b; xx[3] = half_bc(x); xx[4] = x.c;
                     ff[0] = f.a; ff[1] = F(xx[1]);   ff[2] = f.b; ff[3] = F(xx[3]);   ff[4] = f.c;
                     build3 = true;
@@ -348,7 +358,7 @@ namespace yack
                         // reduce with a,(a+u)/2,u,b
                         // should start with (xx[1],xx[2]=x_u,xx[3])
                         //------------------------------------------------------
-                        YACK_LOCATE(fn<< "[decrease @left]");
+                        YACK_OPTIMIZE(fn<< "[decrease @left]");
                         xx[0] = x.a; xx[1] = half_of(x.a,x_u); xx[2] = x_u; xx[3] = x.b;
                         ff[0] = f.a; ff[1] = F( xx[1] );       ff[2] = f_u; ff[3] = f.b;
                         offset=1;
@@ -360,7 +370,7 @@ namespace yack
                         //   reduce with x_u, x.b, half*(x.b+x.c), x.c
                         //   should start with (xx[0],xx[1]=x.b,xx[2])
                         //------------------------------------------------------
-                        YACK_LOCATE(fn<< "[increase @left]");
+                        YACK_OPTIMIZE(fn<< "[increase @left]");
                         xx[0] = x_u; xx[1] = x.b; xx[2] = half_bc(x); xx[3] = x.c;
                         ff[0] = f_u; ff[1] = f.b; ff[2] = F(xx[2]);   ff[3] = f.c;
                     }
@@ -378,7 +388,7 @@ namespace yack
                         // reduce with b,u,(u+c)/2,c
                         //   should start with (xx[0],xx[1]=x_u,xx[2])
                         //------------------------------------------------------
-                        YACK_LOCATE(fn<< "[decrease @right]");
+                        YACK_OPTIMIZE(fn<< "[decrease @right]");
                         xx[0] = x.b; xx[1] = x_u; xx[2] = half_of(x_u,x.c); xx[3] = x.c;
                         ff[0] = f.b; ff[1] = f_u; ff[2] = F( xx[2] );       ff[3] = f.c;
                     }
@@ -390,7 +400,7 @@ namespace yack
                         //   x.a, half*(x.a+x.b), x.b, x_u
                         //   should start with (xx[1],xx[2]=x.b,xx[3])
                         //------------------------------------------------------
-                        YACK_LOCATE(fn<< "[increase @right]");
+                        YACK_OPTIMIZE(fn<< "[increase @right]");
                         xx[0] = x.a; xx[1] = half_ab(x); xx[2] = x.b; xx[3] = x_u;
                         ff[0] = f.a; ff[1] = F( xx[1] ); ff[2] = f.b; ff[3] = f_u;
                         offset=1;
@@ -409,7 +419,7 @@ namespace yack
             x.load(xx);
             f.load(ff);
             
-            YACK_LOCATE(fn << "  width: " << width << " -> " << new_width);
+            YACK_OPTIMIZE(fn << "  width: " << width << " -> " << new_width);
 
             //------------------------------------------------------------------
             //
@@ -418,7 +428,7 @@ namespace yack
             //------------------------------------------------------------------
             if( new_width>=width )
             {
-                YACK_LOCATE(fn<< "[spurious @f(" << x.b << ")=" << f.b << "]");
+                YACK_OPTIMIZE(fn<< "[spurious @f(" << x.b << ")=" << f.b << "]");
                 f.b = F(x.b);
                 return;
             }
@@ -429,10 +439,10 @@ namespace yack
             //
             //------------------------------------------------------------------
             const real_t dx = std::abs(x_min-x.b);
-            YACK_LOCATE(fn << "  x.b = " << x.b << ", dx=" << dx);
+            YACK_OPTIMIZE(fn << "  x.b = " << x.b << ", dx=" << dx);
             if(dx<=0)
             {
-                YACK_LOCATE(fn<< "[exactly  @f(" << x.b << ")=" << f.b << "]");
+                YACK_OPTIMIZE(fn<< "[exactly  @f(" << x.b << ")=" << f.b << "]");
                 f.b = F(x.b);
                 return;
             }

@@ -5,15 +5,15 @@
 #include "yack/signs.hpp"
 #include "yack/sequence/thin-array.hpp"
 #include "yack/sort/network/sort5.hpp"
-#include <cstring>
 #include "yack/ios/ocstream.hpp"
+#include "yack/exception.hpp"
 
 namespace yack
 {
     namespace math
     {
         bool optimize::verbose = false;
-#define YACK_LOCATE(MSG) do { if(math::optimize::verbose) { std::cerr << MSG << std::endl; } } while(false)
+#define YACK_OPTIMIZE(MSG) do { if(math::optimize::verbose) { std::cerr << MSG << std::endl; } } while(false)
         static const char fn[] = "// [optimize] ";
         
     }

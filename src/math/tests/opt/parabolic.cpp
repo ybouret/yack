@@ -16,41 +16,6 @@ T F(T x)
     return 1.27-cos(2*(x-0.1));
 }
 
-#if 0
-static inline
-void build_para(const triplet<double> &x, const triplet<double> &f, const char *root)
-{
-    const double w    = x.c-x.a;
-    const double beta = (x.b-x.a)/w;
-    std::cerr << "beta=" << beta << std::endl;
-    const double den = beta*(beta-1.0);
-    const double d_a = f.a - f.b;
-    const double d_c = f.c - f.b;
-    const double lam = (squared(1.0-beta)*d_a - squared(beta) * d_c)/den;
-    const double mu  = ((beta-1.0)*d_a - beta*d_c)/den;
-
-    {
-        string fn = root; fn += "-data.dat";
-        ios::ocstream fp(fn);
-        fp("%g %g\n",x.a,f.a);
-        fp("%g %g\n",x.b,f.b);
-        fp("%g %g\n",x.c,f.c);
-    }
-
-    {
-        string fn = root; fn += "-para.dat";
-        ios::ocstream fp(fn);
-        static const size_t NP = 100;
-        for(size_t i=0;i<=NP;++i)
-        {
-            const double u = double(i)/NP;
-            const double F = f.b + lam*(u-beta) + mu * squared(u-beta);
-            fp("%g %g\n", x.a + u * w, F);
-        }
-    }
-
-}
-#endif
 
 
 
@@ -68,6 +33,7 @@ YACK_UTEST(parabolic)
         vm->dostring(argv[i]);
     }
 
+
     vm->getglobal("a");
     if( vm->type(-1) == LUA_TNUMBER )
     {
@@ -80,17 +46,41 @@ YACK_UTEST(parabolic)
         x.c = vm->to<lua_Number>(-1);
     }
 
+    optimize::preprocess method = optimize::inside;
+
+    vm->getglobal("method");
+    if( vm->type(-1) == LUA_TSTRING )
+    {
+        const string which = vm->to<string>(-1);
+        if(which=="inside")
+        {
+            method = optimize::inside;
+        }
+        else
+        {
+            if(which=="expand")
+            {
+                method = optimize::expand;
+            }
+            else
+            {
+                throw exception("unknown optimize precproces = '%s'", which());
+            }
+        }
+    }
+    
     vm->getglobal("F");
+    x.b = (x.a+x.c)/2;
     if( vm->type(-1) == LUA_TFUNCTION )
     {
         Lua::Function<double> FF(vm,"F");
-        triplet<double> f = { FF(x.a), -1, FF(x.c) };
-        optimize::run_for(FF,x,f,optimize::inside);
+        triplet<double> f = { FF(x.a), FF(x.b), FF(x.c) };
+        optimize::run_for(FF,x,f,method);
     }
     else
     {
-        triplet<double> f = { F(x.a), -1, F(x.c) };
-        optimize::run_for(F<double>,x,f,optimize::inside);
+        triplet<double> f = { F(x.a), F(x.b), F(x.c) };
+        optimize::run_for(F<double>,x,f,method);
     }
     
     // parabolic a=-0.3 c=0.4 "function F(t) return 2+math.sin(t)^2; end"

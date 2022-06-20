@@ -27,10 +27,9 @@ namespace yack
 
             //__________________________________________________________________
             //
-            //! inside [x.a,x.c], with f.a and f.c computed
+            //! inside [x.a,...,x.c], with f.a and f.c computed
             /**
              - Look for f.b <= f.a and f.b <= f.c
-             - f.b = f(x.b) is always the last evaluated value
              - can be on a side of the interval
              - retun x.a<=x.b<=x.c
              */
@@ -49,6 +48,31 @@ namespace yack
                 typename real_function_of<T>::template call<FUNCTION> FF(F);
                 return inside(FF,x,f);
             }
+
+
+            //__________________________________________________________________
+            //
+            //! expand [x.a,x.b,x.c],  [f.a,f.b,f.c] precomputed
+            /**
+             expand by running down, no more than doubling the
+             size and sensing the curvature
+             */
+            //__________________________________________________________________
+            template <typename T> static
+            bool expand(real_function<T> &F, triplet<T> &x, triplet<T> &f);
+
+
+            //__________________________________________________________________
+            //
+            //! wrapper for inside
+            //__________________________________________________________________
+            template <typename T, typename FUNCTION> static inline
+            bool expand_for(FUNCTION &F, triplet <T> &x, triplet<T> &f)
+            {
+                typename real_function_of<T>::template call<FUNCTION> FF(F);
+                return expand(FF,x,f);
+            }
+
         };
 
     }

@@ -34,7 +34,8 @@ namespace yack
             enum preprocess
             {
                 direct,
-                inside
+                inside,
+                expand
             };
 
             //! guess with x.a <= x.b <= x.c, f.b <= f.a, f.b <= f.c

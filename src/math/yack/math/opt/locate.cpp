@@ -2,10 +2,9 @@
 
 
 #include "yack/math/opt/locate.hpp"
-#include "yack/sort/heap.hpp"
 #include "yack/sequence/thin-array.hpp"
-#include "yack/ios/markup.hpp"
-#include <cstring>
+#include "yack/sort/network/sort4.hpp"
+#include "yack/ios/ocstream.hpp"
 #include <iomanip>
 
 namespace yack
@@ -14,7 +13,7 @@ namespace yack
     {
         bool locate::verbose = false;
         static const char locate_inside[] = "// [locate.inside] ";
-        //static const char locate_expand[] = "// [locate.expand] ";
+        static const char locate_expand[] = "// [locate.expand] ";
 
 #define YACK_LOCATE(MSG) do { if(math::locate::verbose) { std::cerr << MSG << std::endl; } } while(false)
     }

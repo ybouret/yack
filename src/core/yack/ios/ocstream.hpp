@@ -52,6 +52,29 @@ namespace yack
             YACK_DISABLE_COPY_AND_ASSIGN(ocstream);
             writable_file file;
         };
+
+        //______________________________________________________________________
+        //
+        //
+        //! output APPEND C stream
+        //
+        //______________________________________________________________________
+        class acstream : public ocstream
+        {
+        public:
+            //__________________________________________________________________
+            //
+            // C++
+            //__________________________________________________________________
+            virtual ~acstream() throw();                //!< cleanup
+            explicit acstream(const ios::cstderr_t &);  //!< default stderr
+            explicit acstream(const ios::cstdout_t &);  //!< default stdout
+            explicit acstream(const char *);            //!< file+append
+            explicit acstream(const string &);          //!< file+append
+
+        private:
+            YACK_DISABLE_COPY_AND_ASSIGN(acstream);
+        };
     }
 }
 
