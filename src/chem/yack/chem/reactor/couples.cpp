@@ -107,7 +107,7 @@ namespace yack
             // loop over all equilibria
             //
             //------------------------------------------------------------------
-            for(const enode *xnode=eqs.head();xnode;xnode=xnode->next)
+            for(const enode *xnode=singles.head();xnode;xnode=xnode->next)
             {
                 const equilibrium   &xeq = ***xnode;
                 const size_t         xid = *xeq;

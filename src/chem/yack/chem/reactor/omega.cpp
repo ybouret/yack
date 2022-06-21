@@ -19,7 +19,7 @@ namespace yack
             coerce(NuTA).assign(NuT);
             size_t num_blocked = 0;
             size_t num_running = N;
-            for(const enode *node=eqs.head();node;node=node->next)
+            for(const enode *node=singles.head();node;node=node->next)
             {
                 const equilibrium &eq  = ***node;
                 const size_t       ei  = *eq;
@@ -31,7 +31,7 @@ namespace yack
                 Omi.ld(0);
                 if(verbose)
                 {
-                    eqs.pad(std::cerr << vpfx << eq.name,eq) << " : Gamma=";
+                    singles.pad(std::cerr << vpfx << eq.name,eq) << " : Gamma=";
                 }
                 if(ax<=0)
                 {

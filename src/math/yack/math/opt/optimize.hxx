@@ -397,6 +397,8 @@ namespace yack
                         YACK_OPTIMIZE(fn << "global");
                         return;
                     }
+                    assert(x.is_increasing());
+                    assert(f.is_local_minimum());
                     break;
 
                 case expand:
@@ -404,11 +406,13 @@ namespace yack
                     if(!locate::expand(F,x,f))
                     {
                         YACK_OPTIMIZE(fn << "FAILURE!!");
-                        throw exception("%sexpansing failure",fn);
-                        return;
+                        throw exception("%sexpand failure",fn);
                     }
+                    assert(x.is_increasing());
+                    assert(f.is_local_minimum());
                     break;
             }
+
             assert(x.is_increasing());
             assert(f.is_local_minimum());
             
@@ -455,7 +459,6 @@ namespace yack
                 return;
             }
 
-
             //------------------------------------------------------------------
             //
             // prepare next cycle
@@ -464,8 +467,6 @@ namespace yack
             width = new_width;
             x_min = x.b;
             goto CYCLE;
-
-
         }
 
 

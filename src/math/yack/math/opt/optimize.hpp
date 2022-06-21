@@ -51,7 +51,7 @@ namespace yack
             //! tighten a local minimum
             /**
              - iterate by controled parabolic guess and counter-reduction
-             - requires two evaluations per call
+             - requires TWO evaluations per call
              \param F a real function
              \param x x.a <= x.b <= x.c
              \param f f.b <= f.a, f.b <= f.c
@@ -65,8 +65,9 @@ namespace yack
             //
             //! run
             /**
-             tighten a local minimum up to convergence after
-             (no) preprocessing
+             - Tighten a local minimum up to convergence after
+             (no) preprocessing.
+             - The optimal value is always evaluated last.
              \param F a real function
              \param x x.a <= x.b <= x.c
              \param f f.b <= f.a, f.b <= f.c

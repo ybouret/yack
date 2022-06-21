@@ -12,7 +12,7 @@ namespace yack
 
         double reactor:: meanGammaSquared(const readable<double> &C) throw()
         {
-            for(const enode *node=eqs.head();node;node=node->next)
+            for(const enode *node=singles.head();node;node=node->next)
             {
                 const equilibrium &eq = ***node;
                 const size_t       ei = *eq;
@@ -36,11 +36,11 @@ namespace yack
 
         double reactor:: optimizeDecreaseFrom(const double G0) throw()
         {
+            // from G0@C0 to Gend@Cend
             triplet<double> u = { 0,  -1, 1 };
             triplet<double> g = { G0, -1, meanGammaSquared(Cend) };
-            //(void) minimize::find<double>::run_for(*this,u,g,minimize::inside);
             optimize::run_for(*this,u,g, optimize::inside);
-            return g.b; //!< and Ctry is computed
+            return g.b; // and Ctry is computed @u.b
         }
 
         double reactor:: selectDecreasedState() throw()
@@ -50,7 +50,7 @@ namespace yack
             // initialize
             //
             //------------------------------------------------------------------
-            const enode       *eOpt = eqs.head();
+            const enode       *eOpt = singles.head();
             double             gOpt = Gtot[****eOpt];
 
             //------------------------------------------------------------------

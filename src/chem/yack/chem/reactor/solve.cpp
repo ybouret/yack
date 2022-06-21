@@ -51,7 +51,7 @@ namespace yack
                     //----------------------------------------------------------
                     // trivial case
                     //----------------------------------------------------------
-                    const equilibrium &eq = ***eqs.head();
+                    const equilibrium &eq = ***singles.head();
                     (void) eq.solve1D(K[*eq],C0,Ctry);
                     transfer(C0,Ctry);
                 }
@@ -104,7 +104,7 @@ namespace yack
                 //
                 //--------------------------------------------------------------
                 double absXi = 0;
-                for(const enode *node=eqs.head();node;node=node->next)
+                for(const enode *node=singles.head();node;node=node->next)
                 {
                     const equilibrium &eq = ***node;
                     const size_t       ei = *eq;     assert(ei>0); assert(ei<=N);
@@ -149,7 +149,7 @@ namespace yack
                         {
                             transfer(C0,Corg);
                             YACK_CHEM_PRINTLN("//      [SUCCESS |Xi|@min=" << absXi << "]");
-                            eqs(    std::cerr << vpfx << "Xi_single=",Xtot,vpfx);
+                            singles(std::cerr << vpfx << "Xi_single=",Xtot,vpfx);
                             couples(std::cerr << vpfx << "Xi_couple=",Xtot,vpfx);
                             return true;
                         }
@@ -240,7 +240,7 @@ namespace yack
                         return true;
 
                     case 1: // solve remaining equilibrium, CYCLE again
-                        for(const enode *node=eqs.head();node;node=node->next)
+                        for(const enode *node=singles.head();node;node=node->next)
                         {
                             const equilibrium &eq = ***node;
                             const size_t       ei = *eq;
@@ -266,7 +266,7 @@ namespace yack
                 // compute Newton's step
                 //
                 //------------------------------------------------------------------
-                if(verbose) eqs(std::cerr << vpfx << "Omega=",Omega0,vpfx);
+                if(verbose) singles(std::cerr << vpfx << "Omega=",Omega0,vpfx);
 
                 iOmega.assign(Omega0);
                 if(!LU.build(iOmega))
@@ -285,12 +285,12 @@ namespace yack
                 //
                 //------------------------------------------------------------------
                 bool modified = false;
-                for(const enode *node = eqs.head(); node; node=node->next)
+                for(const enode *node = singles.head(); node; node=node->next)
                 {
                     const equilibrium &eq = ***node;
                     const size_t       ei = *eq;
                     const double       xx = xi[ei];
-                    if(verbose) eqs.pad(std::cerr << " (*) " << eq.name,eq) << " : ";
+                    if(verbose) singles.pad(std::cerr << " (*) " << eq.name,eq) << " : ";
 
                     if(blocked[ei])
                     {

@@ -36,7 +36,7 @@ namespace yack
             // types and definitions
             //__________________________________________________________________
             static const char  clid[];  //!< "chemical::reactor"
-            static const bool &verbose; //!< on entity verbose
+            static const bool &verbose; //!< reference on entity::verbose
             static const char  vpfx[];  //!< prefix for verbosity
 
             //__________________________________________________________________
@@ -78,7 +78,8 @@ namespace yack
             // members
             //__________________________________________________________________
             const library    &lib;     //!< user's lib
-            const equilibria &eqs;     //!< user's eqs
+            const equilibria &singles; //!< user's eqs
+            const equilibria  couples; //!< possible reactive couples
             const library     sub;     //!< copy of lib
             const size_t      M;       //!< number of species
             const size_t      MA;      //!< number of active species
@@ -86,12 +87,11 @@ namespace yack
             const size_t      N;       //!< number of equilibria
             const size_t      NC;      //!< number of couples
             const size_t      Ntot;    //!< N+NC
-            const equilibria  couples; //!< couples
 
 
         private:
-            tableaux          ntab;
-            tableaux          mtab;
+            tableaux          ntab;    //!< tableaux for size() = N
+            tableaux          mtab;    //!< tableaux for size() = M
 
         public:
             const alist        active;  //!< active species list

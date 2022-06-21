@@ -23,7 +23,7 @@ YACK_UTEST(reactor)
 
     reactor cs(lib,eqs,0.0);
     std::cerr << "lib=" << cs.lib << std::endl;
-    std::cerr << "eqs=" << cs.eqs << std::endl;
+    std::cerr << "eqs=" << cs.singles << std::endl;
 
     if(false)
     {

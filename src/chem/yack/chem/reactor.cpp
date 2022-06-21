@@ -23,15 +23,15 @@ namespace yack
                           equilibria &eqs_,
                           const double t0) :
         lib( lib_ ),
-        eqs( eqs_ ),
+        singles( eqs_ ),
+        couples(),
         sub(lib),
         M( lib.size()    ),
         MA(lib.active()  ),
         MP(lib.primary() ),
-        N( eqs.size()    ),
+        N( singles.size()    ),
         NC(0),
         Ntot(N),
-        couples(),
 
         ntab(10,N),
         mtab(10,M),
@@ -98,8 +98,8 @@ namespace yack
             //
             //------------------------------------------------------------------
             equilibrium::display_time = t0;
-            YACK_CHEM_PRINTLN(eqs);
-            for(const enode *node=eqs.head();node;node=node->next)
+            YACK_CHEM_PRINTLN(singles);
+            for(const enode *node=singles.head();node;node=node->next)
             {
                 const equilibrium &eq = ***node;
                 if(!eq.is_minimal()) throw exception( "%s is not minimal", eq.name() );
@@ -184,7 +184,7 @@ namespace yack
 
         void reactor:: computeK(const double t)
         {
-            for(const enode *node=eqs.head();node;node=node->next)
+            for(const enode *node=singles.head();node;node=node->next)
             {
                 const equilibrium &eq = ***node;
                 const size_t       ei = *eq;
