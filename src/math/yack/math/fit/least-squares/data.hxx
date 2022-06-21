@@ -274,25 +274,20 @@ namespace yack
                 triplet<real_t> G = {g0,g1,g(U.c)};
                 assert(G.b<=G.a);
 
-                // move forward
+                // move forward until local minimum is found
+                YACK_LSF_PRINTLN(clid << "  |_try: u=" << U << ", g=" << G);
                 while( !G.is_local_minimum() )
                 {
-                    U.a = U.b; U.b = U.c;
-                    G.a = G.b; G.b = G.c;
-                    G.c = g( U.c += one);
+                    U.push_back( U.c+one );
+                    G.push_back( g(U.c)  );
+                    YACK_LSF_PRINTLN(clid << "  |_try: u=" << U << ", g=" << G);
                 }
 
-                //______________________________________________________________
-                //
-                // now we are around a minimum
-                //______________________________________________________________
-                const real_t U_opt = optimize::parabolic_guess(U,G);
-                const real_t G_opt = g(U_opt);
+                const real_t old_width = std::abs(U.c-U.a);
+                const real_t new_width = optimize::tighten(g,U,G);
+                YACK_LSF_PRINTLN(clid << "  |_got: g(" << U.b << ")=" << G.b << " (width:" << old_width << "->" << new_width << ")");
 
-                YACK_LSF_PRINTLN(clid << " minimum in u=" << U << ", g=" << G);
-                YACK_LSF_PRINTLN(clid << " estimated [" << G_opt << " @ " << U_opt << "]");
-
-                return G_opt;
+                return G.b;
 
             }
 

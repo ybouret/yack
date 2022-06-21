@@ -4,7 +4,7 @@
 #define YACK_TRIPLET_INCLUDED 1
 
 #include "yack/type/args.hpp"
-#include "yack/sort/heap.hpp"
+#include "yack/sort/network/sort3.hpp"
 #include "yack/comparison.hpp"
 #include <iostream>
 
@@ -61,22 +61,36 @@ namespace yack
                 return *((((const_type *)&a)-1)+indx);
             }
 
+            //! access back
+            inline type       & back()       throw() { return c; }
+
+            //! access back, const
+            inline const_type & back() const throw() { return c; }
+
+            //! access front
+            inline type       & front()       throw() { return a; }
+
+            //! access front, const
+            inline const_type & front() const throw() { return a; }
+
             //! sort in increasing order
             inline void sort() throw()
             {
-                hsort(*this,comparison::increasing<T>);
+                static const network_sort3 srt;
+                srt.increasing(*this);
             }
 
             //! co-sort in increasing order
             template <typename U>
             inline void sort( triplet<U> &other ) throw()
             {
-                hsort(*this,other,comparison::increasing<T>);
+                static const network_sort3 srt;
+                srt.increasing(*this,other);
             }
 
             //! assign by static_cast
             template <typename U>
-            inline void assign(const triplet<U> &other)
+            inline void assign(const triplet<U> &other) throw()
             {
                 a = static_cast<const_type>(other.a);
                 b = static_cast<const_type>(other.b);
@@ -85,7 +99,7 @@ namespace yack
 
             //! (a,b,c) -> arr[0..2]
             template <typename U>
-            inline void save(U arr[]) const
+            inline void save(U arr[]) const throw()
             {
                 assert(arr);
                 arr[0] = static_cast<U>(a);
@@ -95,7 +109,7 @@ namespace yack
 
             //! arr[0..2] -> a,b,c
             template <typename U>
-            inline void load(const U arr[])
+            inline void load(const U arr[]) throw()
             {
                 a = static_cast<const_type>(arr[0]);
                 b = static_cast<const_type>(arr[1]);
@@ -140,6 +154,11 @@ namespace yack
                 return os;
             }
 
+            //! (a,b,c) -> (b,c,u)
+            inline void push_back(const_type u) throw()
+            {
+                a=b; b=c; c=u;
+            }
 
             //! return minimum value
             inline T mini() const throw()

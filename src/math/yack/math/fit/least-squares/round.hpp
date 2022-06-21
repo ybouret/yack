@@ -167,13 +167,13 @@ COMPUTE_CURVATURE:
         D2 = D2try;
         if(shrinking)
         {
-            // needed shrinking
+            // needed shrinking, not stabilized
             YACK_LSF_PRINTLN(clid << " round process");
             return round_process;
         }
         else
         {
-            // without shrinking
+            // without shrinking, stabilized
             YACK_LSF_PRINTLN(clid << " round success");
             p = max_of(--p,self.pmin);
             return round_success;
@@ -188,6 +188,7 @@ COMPUTE_CURVATURE:
         YACK_LSF_PRINTLN(clid << " backtracking...");
         if(!self.shrink(p))
         {
+            // cannot shrink more => failure
             YACK_LSF_PRINTLN(clid << " round failure");
             return round_failure;
         }
