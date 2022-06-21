@@ -31,11 +31,17 @@ inline round_result round(sample_type              &s,
     //
     //
     //----------------------------------------------------------
-    least_squares<ABSCISSA,ORDINATE> &self = *this;
-    const size_t                      npar = aorg.size();
-    const variables                  &vars = *s;
+    least_squares<ABSCISSA,ORDINATE> &self = *this;          // alias
+    const size_t                      npar = aorg.size();    // parameters
+    const variables                  &vars = *s;             // variables of sample
     self.initialize(npar);
     p = clamp(self.pmin,p,self.pmax);
+
+    //----------------------------------------------------------
+    //
+    // create the objective function to minimize
+    //
+    //----------------------------------------------------------
     call1D  f1d = { atry, aorg, step, s, func };
     typename real_func:: template call<call1D> g(f1d);
 
@@ -93,7 +99,7 @@ COMPUTE_CURVATURE:
 
     //----------------------------------------------------------
     //
-    // compute trial parameters: atry=aorg+step
+    // compute FULL trial parameters: atry=aorg+step
     //
     //----------------------------------------------------------
     tao::v1::add(atry,aorg,step);
@@ -148,7 +154,11 @@ COMPUTE_CURVATURE:
         //------------------------------------------------------
         // acceptable step
         //------------------------------------------------------
-        if(!shrinking) D2try = self.optimize(g,D2ini,D2try);
+        if(!shrinking)
+        {
+            // local adjustment
+            D2try = self.optimize(g,D2ini,D2try);
+        }
 
         //------------------------------------------------------
         // decreased

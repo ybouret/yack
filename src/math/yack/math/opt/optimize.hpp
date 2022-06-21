@@ -46,13 +46,26 @@ namespace yack
             T parabolic_guess(const triplet<T> &x, const triplet<T> &f) throw();
 
 
+            //__________________________________________________________________
+            //
+            //! tighten a local minimum
+            /**
+             - iterate by controled parabolic guess and counter-reduction
+             \param F a real function
+             \param x x.a <= x.b <= x.c
+             \param f f.b <= f.a, f.b <= f.c
+             */
+            //__________________________________________________________________
+            template <typename T> static
+            T tighten(real_function<T> &F, triplet<T> &x, triplet<T> &f);
+
 
             //__________________________________________________________________
             //
             //! run
             /**
-             - iterate by controled parabolic guess and counter-reduction
-             - the last value is f.b = F(x.b)
+             tighten a local minimum up to convergence after
+             (no) preprocessing
              \param F a real function
              \param x x.a <= x.b <= x.c
              \param f f.b <= f.a, f.b <= f.c
@@ -72,6 +85,7 @@ namespace yack
                 typename real_function_of<T>::template call<FUNCTION> FF(F);
                 run(FF,x,f,prolog);
             }
+
 
         };
 

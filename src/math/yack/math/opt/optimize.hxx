@@ -247,45 +247,11 @@ namespace yack
 
         }
 
-        template <>
-        void optimize:: run<real_t>(real_function<real_t> &F,
-                                    triplet<real_t>       &x,
-                                    triplet<real_t>       &f,
-                                    const preprocess       prolog)
+        template < >
+        real_t optimize:: tighten<real_t>(real_function<real_t> &F, triplet<real_t> &x, triplet<real_t> &f)
         {
-
-            //------------------------------------------------------------------
-            //
-            // preprocessing
-            //
-            //------------------------------------------------------------------
-            switch(prolog)
-            {
-                case direct:
-                    YACK_OPTIMIZE(fn << "<direct>");
-                    assert(x.is_increasing());
-                    assert(f.is_local_minimum());
-                    break;
-
-                case inside:
-                    YACK_OPTIMIZE(fn << "<inside>");
-                    if(!locate::inside(F,x,f))
-                    {
-                        YACK_OPTIMIZE(fn << "global");
-                        return;
-                    }
-                    break;
-
-                case expand:
-                    YACK_OPTIMIZE(fn << "<expand>");
-                    if(!locate::expand(F,x,f))
-                    {
-                        YACK_OPTIMIZE(fn << "FAILURE!!");
-                        throw exception("%sexpansing failure",fn);
-                        return;
-                    }
-                    break;
-            }
+            YACK_OPTIMIZE(fn << "  x = " << x);
+            YACK_OPTIMIZE(fn << "  f = " << f);
             assert(x.is_increasing());
             assert(f.is_local_minimum());
 
@@ -296,24 +262,6 @@ namespace yack
             //------------------------------------------------------------------
             real_t xx[5] = { 0,0,0,0,0 };
             real_t ff[5] = { 0,0,0,0,0 };
-
-            //------------------------------------------------------------------
-            //
-            // initialize search
-            //
-            //------------------------------------------------------------------
-            real_t              width = std::abs(x.c-x.a);
-            real_t              x_min = x.b;
-            unsigned            cycle = 0;
-
-
-        CYCLE:
-            ++cycle;
-            YACK_OPTIMIZE(fn << "---------------- [cycle " << cycle << "] ----------------");
-            YACK_OPTIMIZE(fn << "  x = " << x << " |x|=" << width);
-            YACK_OPTIMIZE(fn << "  f = " << f);
-            assert(x.is_increasing());
-            assert(f.is_local_minimum());
 
             //------------------------------------------------------------------
             //
@@ -332,7 +280,7 @@ namespace yack
             //------------------------------------------------------------------
             bool     build3 = false; // in case of middle point
             unsigned offset = 0;     // most likely minimum
-            
+
             switch( __sign::of(x_u,x.b) )
             {
                 case __zero__:
@@ -418,7 +366,67 @@ namespace yack
             const real_t new_width = choose_among(xx,ff,offset,build3);
             x.load(xx);
             f.load(ff);
+            return new_width;
+        }
+
+
+        template <>
+        void optimize:: run<real_t>(real_function<real_t> &F,
+                                    triplet<real_t>       &x,
+                                    triplet<real_t>       &f,
+                                    const preprocess       prolog)
+        {
+
+            //------------------------------------------------------------------
+            //
+            // preprocessing
+            //
+            //------------------------------------------------------------------
+            switch(prolog)
+            {
+                case direct:
+                    YACK_OPTIMIZE(fn << "<direct>");
+                    assert(x.is_increasing());
+                    assert(f.is_local_minimum());
+                    break;
+
+                case inside:
+                    YACK_OPTIMIZE(fn << "<inside>");
+                    if(!locate::inside(F,x,f))
+                    {
+                        YACK_OPTIMIZE(fn << "global");
+                        return;
+                    }
+                    break;
+
+                case expand:
+                    YACK_OPTIMIZE(fn << "<expand>");
+                    if(!locate::expand(F,x,f))
+                    {
+                        YACK_OPTIMIZE(fn << "FAILURE!!");
+                        throw exception("%sexpansing failure",fn);
+                        return;
+                    }
+                    break;
+            }
+            assert(x.is_increasing());
+            assert(f.is_local_minimum());
             
+
+            //------------------------------------------------------------------
+            //
+            // initialize search
+            //
+            //------------------------------------------------------------------
+            real_t              width = std::abs(x.c-x.a);
+            real_t              x_min = x.b;
+            unsigned            cycle = 0;
+
+
+        CYCLE:
+            ++cycle;
+            YACK_OPTIMIZE(fn << "---------------- [cycle " << cycle << "] ----------------");
+            const real_t new_width = tighten(F,x,f);
             YACK_OPTIMIZE(fn << "  width: " << width << " -> " << new_width);
 
             //------------------------------------------------------------------
