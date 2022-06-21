@@ -183,7 +183,8 @@ namespace yack
                         const readable<int> &nuk = NuAll[k];
                         const equilibrium   &eqk = (k<=N) ? singles[k] : couples[1+k-N];
 
-                        if( are_independent(nui,nuk) )
+                        //if( are_independent(nui,nuk) )
+                        if( sorted::dot(nui, nuk, iv) == 0)
                         {
                             couples.pad(std::cerr<< eqi.name, eqi);
                             std::cerr << " _|_ ";
