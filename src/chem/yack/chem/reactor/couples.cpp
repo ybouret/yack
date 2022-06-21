@@ -98,7 +98,7 @@ namespace yack
 
         size_t reactor::buildMatchingCouples()
         {
-            YACK_CHEM_PRINTLN("  <BuildCouples>");
+            YACK_CHEM_PRINTLN(vpfx << "[buildMatchingCouples]");
             vector<coeff>     comb(M,as_capacity);
             size_t            ic = N;
 
@@ -127,7 +127,7 @@ namespace yack
                     const double        &Ky  = K[yid];
                     comb.free();
 
-                    YACK_CHEM_PRINTLN("    <" << xeq.name << "|" << yeq.name << ">");
+                    YACK_CHEM_PRINTLN(vpfx << "<" << xeq.name << "|" << yeq.name << ">");
                     
                     //----------------------------------------------------------
                     //
@@ -196,9 +196,9 @@ namespace yack
                             const species &sp = sub[j];
                             eq(sp,nu);
                         }
-                        YACK_CHEM_PRINTLN("      (*) " << eq);
+                        YACK_CHEM_PRINTLN(vpfx << "  (*) " << eq);
                     }
-                    YACK_CHEM_PRINTLN("    <" << xeq.name << "|" << yeq.name << "/>");
+                    YACK_CHEM_PRINTLN(vpfx << "<" << xeq.name << "|" << yeq.name << "/>");
 
                 }
             }
@@ -208,9 +208,8 @@ namespace yack
             // done
             //
             //------------------------------------------------------------------
-            YACK_CHEM_PRINTLN("    #couples = " << couples.size());
-            YACK_CHEM_PRINTLN(couples);
-            YACK_CHEM_PRINTLN("  <BuildCouples/>");
+            YACK_CHEM_PRINTLN(vpfx << "        #couples = " << couples.size());
+            YACK_CHEM_PRINTLN(vpfx << "-------- couples --------" << std::endl << couples);
             return couples.size();
         }
 

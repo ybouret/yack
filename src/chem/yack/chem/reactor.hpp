@@ -59,7 +59,7 @@ namespace yack
             void transfer(writable<double> &, const readable<double> & ) const throw();
 
             //! check valid concentrations
-            bool are_valid(const readable<double>  &C) const throw();
+            bool areValid(const readable<double>  &C) const throw();
 
             //! careful sum(Gamma^2)/B
             double meanGammaSquared(const readable<double> &C) throw();
@@ -78,9 +78,9 @@ namespace yack
             // members
             //__________________________________________________________________
             const library    &lib;     //!< user's lib
+            const library     sub;     //!< hard copy of lib to build couples
             const equilibria &singles; //!< user's eqs
             const equilibria  couples; //!< possible reactive couples
-            const library     sub;     //!< copy of lib
             const size_t      M;       //!< number of species
             const size_t      MA;      //!< number of active species
             const size_t      MP;      //!< number of primary species
@@ -128,11 +128,13 @@ namespace yack
             const lockable::scope lib_lock;
             const lockable::scope eqs_lock;
 
-            size_t buildMatchingCouples(); //!< build all possible coupled equilibria
+            size_t buildMatchingCouples();                         //!< build all possible coupled equilibria
             double optimizeDecreaseFrom(const double G0)  throw(); //!< from G0 @Corg to Cend
             double selectDecreasedState()                 throw(); //!< select from Gtot/Ctot
             size_t computeOmegaAndGamma()                 throw(); //!< build full initial Omega and Gamma, return num running
             void   retractEquilibriumAt(const size_t ei)  throw(); //!< regularize by removing equilibrium from set
+
+            void displayStatusOf(const equilibrium &eq) const;
         };
 
     }

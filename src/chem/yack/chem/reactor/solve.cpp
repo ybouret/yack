@@ -25,6 +25,14 @@ namespace yack
             Psi[ei].ld(0);
         }
 
+        
+        void reactor:: displayStatusOf(const equilibrium &eq) const
+        {
+            const size_t ei = *eq;
+            couples.pad(std::cerr << vpfx << "  " << eq.name,eq) << " : Xi=" << std::setw(15) << Xtot[ei] << " : " << "Gopt=" << std::setw(15)<< Gtot[ei] << std::endl;
+        }
+
+
         bool reactor:: solve(writable<double> &C0) throw()
         {
             //------------------------------------------------------------------
@@ -120,10 +128,7 @@ namespace yack
                         Gtot[ei] = G0;
                         transfer(Ctot[ei],Corg);
                     }
-                    if(verbose)
-                    {
-                        couples.pad(std::cerr << vpfx << eq.name,eq) << " : Xi=" << std::setw(15) << Xtot[ei] << " : " << "Gopt=" << std::setw(15)<< Gtot[ei] << std::endl;
-                    }
+                    if(verbose) displayStatusOf(eq);
                 }
 
 
@@ -171,10 +176,7 @@ namespace yack
                     {
                         Gtot[ei]  = optimizeDecreaseFrom(G0);
                         transfer(Ctot[ei],Ctry);
-                        if(verbose)
-                        {
-                            couples.pad(std::cerr << vpfx << eq.name,eq) << " : Xi=" << std::setw(15) << Xtot[ei] << " : " << "Gopt=" << std::setw(15)<< Gtot[ei] << std::endl;
-                        }
+                        if(verbose) displayStatusOf(eq);
                     }
                     else
                     {
@@ -190,24 +192,12 @@ namespace yack
                 // which ends the global step
                 //
                 //--------------------------------------------------------------
-#if 0
-                const double Gopt = selectDecreasedState();
-                if(Gopt>=G0)
-                {
-                    transfer(C0,Corg);
-                    YACK_CHEM_PRINTLN("//      [SUCCESS |G0|@min=" << G0 << "]");
-                    couples(std::cerr << vpfx << "Xi=",Xtot,vpfx);
-                    return true;
-                }
-                G0 = Gopt;
-#endif
                 G0 = selectDecreasedState();
             }
 
-
             //------------------------------------------------------------------
             //
-            // compute full metrics
+            // compute full metrics for this cycle
             //
             //------------------------------------------------------------------
             size_t num_running = computeOmegaAndGamma();
@@ -227,19 +217,25 @@ namespace yack
                 YACK_CHEM_PRINTLN("//       ---------------- inner#" << cycle << '.' << subCycle << " ----------------");
                 YACK_CHEM_PRINTLN("//       \\_#running = " << num_running << " / " << N );
 
-                //------------------------------------------------------------------
+                //--------------------------------------------------------------
                 //
                 // specific cases depending on #running
                 //
-                //------------------------------------------------------------------
+                //--------------------------------------------------------------
                 switch(num_running)
                 {
-                    case 0: // all blocked => spurious success...
+                    case 0:
+                        //------------------------------------------------------
+                        // all blocked => spurious success...
+                        //------------------------------------------------------
                         transfer(C0,Corg);
                         YACK_CHEM_PRINTLN("//      [spurious]");
                         return true;
 
-                    case 1: // solve remaining equilibrium, CYCLE again
+                    case 1:
+                        //------------------------------------------------------
+                        // solve THE remaining equilibrium, CYCLE again
+                        //------------------------------------------------------
                         for(const enode *node=singles.head();node;node=node->next)
                         {
                             const equilibrium &eq = ***node;
@@ -252,10 +248,12 @@ namespace yack
                                 break;
                             }
                         }
-
                         goto CYCLE;
 
                     default:
+                        //------------------------------------------------------
+                        // default case
+                        //------------------------------------------------------
                         break;
                 }
 
@@ -303,14 +301,14 @@ namespace yack
                         if(verbose) std::cerr << lm;
                         if( lm.should_reduce(xx) )
                         {
-                            YACK_CHEM_PRINT(" [reject " << xx << "]");
+                            YACK_CHEM_PRINT(" [[reject " << xx << "]]");
                             modified = true;
                             --num_running;
                             retractEquilibriumAt(ei);
                         }
                         else
                         {
-                            YACK_CHEM_PRINT(" [accept " << xx << "]");
+                            YACK_CHEM_PRINT(" [[accept " << xx << "]]");
                         }
 
                     }
@@ -319,10 +317,10 @@ namespace yack
                 }
                 if(modified)
                 {
-                    ready = false;
-                    goto EVALUATE_EXTENT;
+                    ready = false;        // too far from solution
+                    goto EVALUATE_EXTENT; // with newly blocked equilibria
                 }
-                
+
             }
 
 
@@ -387,7 +385,6 @@ namespace yack
             //
             //------------------------------------------------------------------
             const double Gtry = optimizeDecreaseFrom(G0);
-
             YACK_CHEM_PRINTLN("//    G0=" << G0 << " -> " << Gtry);
 
             //------------------------------------------------------------------
@@ -400,7 +397,7 @@ namespace yack
 
             if(cycle>=10)
             {
-                //exit(1);
+                exit(1);
             }
 
             goto CYCLE;

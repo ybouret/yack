@@ -92,8 +92,9 @@ namespace yack
             //------------------------------------------------------------------
             const equilibrium &opt = ***eOpt;
             transfer(Corg,Ctot[*opt]);
-            if(verbose) {
-                couples.pad(std::cerr << vpfx << opt.name,opt) << " : selected " << gOpt << std::endl;
+            if(verbose)
+            {
+                couples.pad(std::cerr << vpfx << "  " << opt.name,opt) << " : selected with " << gOpt << std::endl;
             }
 
             return gOpt;

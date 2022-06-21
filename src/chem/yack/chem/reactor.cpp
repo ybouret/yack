@@ -23,9 +23,9 @@ namespace yack
                           equilibria &eqs_,
                           const double t0) :
         lib( lib_ ),
+        sub(lib),
         singles( eqs_ ),
         couples(),
-        sub(lib),
         M( lib.size()    ),
         MA(lib.active()  ),
         MP(lib.primary() ),
@@ -71,11 +71,11 @@ namespace yack
         eqs_lock(eqs_)
         {
 
-            YACK_CHEM_PRINTLN("<" << clid << ">");
-            YACK_CHEM_PRINTLN("  M  = " << M);
-            YACK_CHEM_PRINTLN("  MA = " << MA);
-            YACK_CHEM_PRINTLN("  MP = " << MP);
-            YACK_CHEM_PRINTLN("  N  = " << N);
+            YACK_CHEM_MARKUP( vpfx, "ChemicalReactor");
+            YACK_CHEM_PRINTLN(vpfx << "  M  = " << M);
+            YACK_CHEM_PRINTLN(vpfx << "  MA = " << MA);
+            YACK_CHEM_PRINTLN(vpfx << "  MP = " << MP);
+            YACK_CHEM_PRINTLN(vpfx << "  N  = " << N);
 
             //------------------------------------------------------------------
             //
@@ -94,24 +94,26 @@ namespace yack
 
             //------------------------------------------------------------------
             //
-            // build Nu
+            // build Nu and initialize constants
             //
             //------------------------------------------------------------------
             equilibrium::display_time = t0;
-            YACK_CHEM_PRINTLN(singles);
-            for(const enode *node=singles.head();node;node=node->next)
             {
-                const equilibrium &eq = ***node;
-                if(!eq.is_minimal()) throw exception( "%s is not minimal", eq.name() );
-                if(!eq.is_neutral()) throw exception( "%s is not neutral", eq.name() );
-                eq.fill( coerce(Nu[*eq]) );
-                K[*eq] = eq.K(t0);
+                YACK_CHEM_PRINTLN(vpfx << "-------- singles --------" << std::endl << singles);
+                for(const enode *node=singles.head();node;node=node->next)
+                {
+                    const equilibrium &eq = ***node;
+                    if(!eq.is_minimal()) throw exception( "%s is not minimal", eq.name() );
+                    if(!eq.is_neutral()) throw exception( "%s is not neutral", eq.name() );
+                    eq.fill( coerce(Nu[*eq]) );
+                    K[*eq] = eq.K(t0);
 
+                }
             }
             coerce(NuT).assign(Nu,transposed);
-            YACK_CHEM_PRINTLN("  Nu =" << Nu);
-            YACK_CHEM_PRINTLN("  NuT=" << NuT);
-            YACK_CHEM_PRINTLN("  K  =" << K);
+            YACK_CHEM_PRINTLN("Nu =" << Nu);
+            YACK_CHEM_PRINTLN("NuT=" << NuT);
+            YACK_CHEM_PRINTLN("K  =" << K);
 
             //------------------------------------------------------------------
             //
@@ -149,7 +151,7 @@ namespace yack
                     const size_t       ei = *eq; assert(ei>N); assert(ei<=Ntot);
                     Ktot[ei] = eq.K(t0);
                 }
-                YACK_CHEM_PRINTLN("  Ktot  = " << Ktot);
+                YACK_CHEM_PRINTLN(vpfx << "  Ktot  = " << Ktot);
             }
 
 
@@ -158,7 +160,6 @@ namespace yack
             // done
             //
             //------------------------------------------------------------------
-            YACK_CHEM_PRINTLN("<" << clid << "/>");
 
         }
 
@@ -172,7 +173,7 @@ namespace yack
             }
         }
 
-        bool reactor:: are_valid(const readable<double>  &C) const throw()
+        bool reactor:: areValid(const readable<double>  &C) const throw()
         {
             for(const anode *node=active.head;node;node=node->next)
             {
