@@ -51,6 +51,7 @@ namespace yack
             //! tighten a local minimum
             /**
              - iterate by controled parabolic guess and counter-reduction
+             - requires two evaluations per call
              \param F a real function
              \param x x.a <= x.b <= x.c
              \param f f.b <= f.a, f.b <= f.c
