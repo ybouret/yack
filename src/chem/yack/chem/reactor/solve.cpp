@@ -395,7 +395,7 @@ namespace yack
             transfer(Corg,Ctry);
             G0 = Gtry;
 
-            if(cycle>=10)
+            if(cycle>=100)
             {
                 exit(1);
             }

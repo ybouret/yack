@@ -2,6 +2,7 @@
 #include "yack/exception.hpp"
 #include "yack/apex.hpp"
 #include "yack/math/tao/v3.hpp"
+#include "yack/sort/sum.hpp"
 
 namespace yack
 {
@@ -17,6 +18,16 @@ namespace yack
 
         reactor:: ~reactor() throw()
         {
+        }
+
+        static inline
+        bool are_independent(const readable<int> &a, const readable<int> &b) throw()
+        {
+            for(size_t j=a.size();j>0;--j)
+            {
+                if( 0 != a[j] && 0 != b[j] ) return false;
+            }
+            return true;
         }
 
         reactor:: reactor(library    &lib_,
@@ -136,6 +147,7 @@ namespace yack
             //------------------------------------------------------------------
             coerce(NC)    = buildMatchingCouples();
             coerce(Ntot) += NC;
+
             if(Ntot)
             {
                 Ktot.adjust(Ntot,0);
@@ -143,15 +155,44 @@ namespace yack
                 Gtot.adjust(Ntot,0);
                 Ctot.make(Ntot,M);
 
+                imatrix NuAll(Ntot,M);
+
                 // initialize first Ktot
-                for(size_t i=N;i>0;--i) Ktot[i] = K[i];
+                for(size_t i=N;i>0;--i)
+                {
+                    Ktot[i] = K[i];
+                    tao::v1::set(NuAll[i],Nu[i]);
+                }
                 for(const enode *node=couples.head();node;node=node->next)
                 {
                     const equilibrium &eq = ***node;
                     const size_t       ei = *eq; assert(ei>N); assert(ei<=Ntot);
                     Ktot[ei] = eq.K(t0);
+                    eq.fill(NuAll[ei]);
                 }
                 YACK_CHEM_PRINTLN(vpfx << "  Ktot  = " << Ktot);
+                YACK_CHEM_PRINTLN("NuAll = " << NuAll);
+
+                vector<int> iv(M,0);
+                for(size_t i=1;i<=NC;++i)
+                {
+                    const readable<int> &nui = NuAll[i];
+                    const equilibrium   &eqi = (i<=N) ? singles[i] : couples[1+i-N];
+                    for(size_t k=i+1;k<=NC;++k)
+                    {
+                        const readable<int> &nuk = NuAll[k];
+                        const equilibrium   &eqk = (k<=N) ? singles[k] : couples[1+k-N];
+
+                        if( are_independent(nui,nuk) )
+                        {
+                            couples.pad(std::cerr<< eqi.name, eqi);
+                            std::cerr << " _|_ ";
+                            couples.pad(std::cerr<< eqk.name, eqk);
+                            std::cerr << std::endl;
+                        }
+                    }
+                }
+
             }
 
 
@@ -160,7 +201,7 @@ namespace yack
             // done
             //
             //------------------------------------------------------------------
-
+            exit(1);
         }
 
 
