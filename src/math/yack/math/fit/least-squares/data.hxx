@@ -130,12 +130,10 @@ namespace yack
                     {
                         assert(p>pmax);
                         return false; // singular
-                    }
-                    goto TRY;
-                }
-
-                // ok
-                return true;
+                    }                 //
+                    goto TRY;         //
+                }                     //
+                return true;          // regular
             }
 
 
@@ -259,20 +257,13 @@ namespace yack
         namespace fit
         {
 
-#if 0
-            static inline bool acceptable(const triplet<real_t> &G) throw()
-            {
-                return (G.b<=G.a && G.b<=G.c);
-            }
-#endif
-
             template <>
             real_t  least_squares_data<real_t>:: optimize(real_function<real_t> &g,
                                                           const real_t           g0,
                                                           const real_t           g1) const
             {
                 static const real_t one(1);
-
+                YACK_LSF_PRINTLN(clid << " optimizing full step");
                 assert(g1<=g0);
                 
                 //______________________________________________________________
