@@ -21,6 +21,21 @@ namespace yack
 
         }
 
+
+        bool components:: are_detached_from(const components &other) const throw()
+        {
+            for(const cnode *lhs=head();lhs;lhs=lhs->next)
+            {
+                const size_t j = *****lhs;
+                for(const cnode *rhs=other.head();rhs;rhs=rhs->next)
+                {
+                    const size_t k = *****rhs;
+                    if(j==k) return false;
+                }
+            }
+            return true;
+        }
+
         components:: ~components() throw()
         {
             for(const cnode *node=head();node;node=node->next)

@@ -10,9 +10,10 @@ namespace yack
     namespace chemical
     {
 
-        const char plexus::clid[] = "chemical::plexus";
-        const char plexus::vpfx[] = "//  ";
-        
+        const char   plexus::clid[]  = "chemical::plexus";
+        const char   plexus::vpfx[]  = "//  ";
+        const bool & plexus::verbose = entity::verbose;
+
         plexus:: plexus(library     &lib_,
                         equilibria  &eqs_,
                         const double tini) :
@@ -111,6 +112,12 @@ namespace yack
             //
             //------------------------------------------------------------------
             coerce(Nc) = buildMatchingCouples();
+
+            //------------------------------------------------------------------
+            //
+            // build lattice
+            //
+            //------------------------------------------------------------------
             duplicateIntoLattice(singles);
             duplicateIntoLattice(couples);
             coerce(Nl) = lattice.size();
@@ -118,8 +125,8 @@ namespace yack
 
             if(Nl>0)
             {
-                ltab.make(Nl);
-                Cs.make(Nl,M);
+                ltab.make(Nl); // linear memory
+                Cs.make(Nl,M); // solution C
                 assert(Nl==Kl.size());
                 assert(Nl==Xl.size());
 
@@ -135,12 +142,30 @@ namespace yack
                 YACK_CHEM_PRINTLN("Kl = " << Kl);
             }
 
+            {
+                YACK_CHEM_MARKUP( vpfx, "Orthogonality");
+                for(const enode *node = lattice.head(); node; node=node->next )
+                {
+                    const equilibrium &central = ***node;
+                    for(const enode *scan = lattice.head();scan;scan=scan->next)
+                    {
+                        if(scan==node) continue;
+                        const equilibrium &replica = ***scan;
+                        if(central.are_detached_from(replica))
+                        {
+                            lattice.pad(std::cerr << central.name, central) << " _|_ " << replica.name << std::endl;
+                        }
+                    }
+                }
+            }
+
 
         }
 
 
         void plexus:: computeK(const double t)
         {
+            // singles, fill K and Kl[1..N]
             for(const enode *node=singles.head();node;node=node->next)
             {
                 const equilibrium &eq = ***node;
@@ -148,6 +173,7 @@ namespace yack
                 K[ei] = Kl[ei] = eq.K(t);
             }
 
+            // couples, fill Kl[N+1..Nl]
             for(const enode *node=couples.head();node;node=node->next)
             {
                 const equilibrium &eq = ***node;

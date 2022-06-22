@@ -69,6 +69,20 @@ namespace yack
                 }
             }
 
+            //! transfer only used species
+            template <typename T, typename U> inline
+            void transfer(writable<T> &target, const readable<U> &source) const
+            {
+                for(const cnode *node=head();node;node=node->next)
+                {
+                    const size_t j = *****node;
+                    target[j] = static_cast<T>( source[j] );
+                }
+            }
+
+            //! test (by index) is components are detached (a.k.a ortho)
+            bool are_detached_from(const components &other) const throw();
+
             
 
             //__________________________________________________________________

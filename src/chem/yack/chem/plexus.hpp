@@ -68,7 +68,7 @@ namespace yack
                 }
             }
 
-            double hamiltonian(const readable<double> &C);
+            double hamiltonian(const readable<double> &C); //!< |Gamma|^2/N 
             double operator()(const double u); //!< hamiltonian( (1-u) * Corg + u * Cend )
 
 

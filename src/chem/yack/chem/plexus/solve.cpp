@@ -38,6 +38,7 @@ namespace yack
 
         double plexus:: computeLatticeExtent()
         {
+            // summing |Xi| on singles
             double sumAbsXi = 0;
 
             for(const enode *node=singles.head();node;node=node->next)
@@ -50,6 +51,7 @@ namespace yack
 
             if(sumAbsXi<=0)
             {
+                // cleaning up
                 for(const enode *node=couples.head();node;node=node->next)
                 {
                     const equilibrium &eq = ***node;
@@ -60,6 +62,7 @@ namespace yack
             }
             else
             {
+                // computing couples solution
                 for(const enode *node=couples.head();node;node=node->next)
                 {
                     const equilibrium &eq = ***node;
@@ -79,6 +82,8 @@ namespace yack
         {
             YACK_CHEM_MARKUP(vpfx, "PlexusSolve");
             assert(C0.size()>=M);
+
+            if(verbose) lib(std::cerr << vpfx << "Cini=",C0,vpfx);
 
             // initializing
             switch(N)
