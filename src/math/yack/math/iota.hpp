@@ -22,12 +22,21 @@ namespace yack {
             //! target[1..target.size()] = source[1..target.size()]
             //------------------------------------------------------------------
             template <typename TARGET, typename SOURCE> static inline
-            void set(TARGET &target, SOURCE &source)
+            void load(TARGET &target, SOURCE &source)
             {
                 assert(source.size()>=target.size());
-                for(size_t i=source.size();i>0;--i) target[i] = static_cast< typename TARGET::type >( source[i] );
+                for(size_t i=target.size();i>0;--i) target[i] = static_cast< typename TARGET::type >( source[i] );
             }
 
+            //------------------------------------------------------------------
+            //! target[1..source.size()] = source[1..source.size()]
+            //------------------------------------------------------------------
+            template <typename TARGET, typename SOURCE> static inline
+            void save(TARGET &target, SOURCE &source)
+            {
+                assert(source.size()<=target.size());
+                for(size_t i=source.size();i>0;--i) target[i] = static_cast< typename TARGET::type >( source[i] );
+            }
 
 
         };
