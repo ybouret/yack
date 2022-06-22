@@ -39,7 +39,11 @@ namespace yack
 
         K( ntab.next() ),
 
+        Corg( mtab.next() ),
+        Ctry( mtab.next() ),
+
         Kl( ltab.next() ),
+        Xl( ltab.next() ),
 
         libLock(lib_),
         eqsLock(eqs_)
@@ -109,7 +113,9 @@ namespace yack
             coerce(Nl) = lattice.size();
             YACK_CHEM_PRINTLN(vpfx << "-------- lattice --------" << std::endl << lattice);
 
-            ltab.make(Nl); assert(Nl==Kl.size());
+            ltab.make(Nl);
+            assert(Nl==Kl.size());
+            assert(Nl==Xl.size());
 
             iota::save(Kl,K);
             for(const enode *node=couples.head();node;node=node->next)

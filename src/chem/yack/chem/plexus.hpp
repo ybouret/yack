@@ -56,6 +56,17 @@ namespace yack
             //__________________________________________________________________
             void computeK(const double t);
 
+            bool solve( writable<double> &C0 ) throw();
+
+            template <typename T, typename U> inline
+            void transfer( writable<T> &target, const readable<U> &source) const
+            {
+                for(const anode *node=active.head;node;node=node->next)
+                {
+                    const size_t j = ***node;
+                    target[j] = static_cast<T>(source[j]);
+                }
+            }
 
             //__________________________________________________________________
             //
@@ -82,8 +93,11 @@ namespace yack
             const imatrix     NuT;     //!< [MxN] Nu'
             tableau          &K;       //!< [N] constants of singles
 
-            tableau          &Kl;      //!< [Nl] constants of lattice
+            tableau          &Corg;    //!< [M] workspace
+            tableau          &Ctry;    //!< [M] workspace
 
+            tableau          &Kl;      //!< [Nl] constants of lattice
+            tableau          &Xl;      //!< [Nl] all extents
 
         private:
             YACK_DISABLE_COPY_AND_ASSIGN(plexus);
