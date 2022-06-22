@@ -3,7 +3,7 @@
 #ifndef YACK_CHEM_EQUILIBRIA_INCLUDED
 #define YACK_CHEM_EQUILIBRIA_INCLUDED 1
 
-#include "yack/chem/equilibrium.hpp"
+#include "yack/chem/eqs/const.hpp"
 #include "yack/chem/compendium.hpp"
 
 

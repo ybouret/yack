@@ -4,7 +4,7 @@
 #define YACK_CHEM_EQUILIBRIUM_INCLUDED 1
 
 #include "yack/chem/components.hpp"
-
+#include "yack/type/v2d.hpp"
 
 namespace yack
 {
@@ -63,39 +63,8 @@ namespace yack
             std::ostream & print(std::ostream &) const;
         };
 
-        //______________________________________________________________________
-        //
-        //
-        //! const equilibrium
-        //
-        //______________________________________________________________________
-        class const_equilibrium : public equilibrium
-        {
-        public:
-            //__________________________________________________________________
-            //
-            // C++
-            //__________________________________________________________________
-
-            //! setup
-            template <typename ID> inline
-            const_equilibrium(const ID    &uuid,
-                              const size_t ipos,
-                              const double kval) :
-            equilibrium(uuid,ipos),
-            value(kval)
-            {
-            }
-
-            //! cleanup
-            virtual ~const_equilibrium() throw();
-
-
-        private:
-            YACK_DISABLE_COPY_AND_ASSIGN(const_equilibrium);
-            const double value;
-            virtual double getK(const double) const;
-        };
+      
+      
 
     }
 

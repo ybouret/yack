@@ -1,5 +1,5 @@
 
-#include "yack/chem/equilibrium.hpp"
+#include "yack/chem/eqs/const.hpp"
 #include "yack/chem/library.hpp"
 #include "yack/utest/run.hpp"
 
