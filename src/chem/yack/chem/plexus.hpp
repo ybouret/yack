@@ -22,6 +22,23 @@ namespace yack
         typedef tableaux::array_type   tableau;  //!< alias
         typedef thin_array<bool>       booltab;  //!< alias
 
+        typedef meta_list<const equilibrium> vlist;
+        typedef vlist::node_type             vnode;
+        
+        class cluster : public object, public vlist
+        {
+        public:
+            typedef cxx_list_of<cluster> list;
+            
+            cluster *next;
+            cluster *prev;
+            explicit cluster() throw() : object(), vlist() {}
+            virtual ~cluster() throw() {}
+            
+        private:
+            YACK_DISABLE_COPY_AND_ASSIGN(cluster);
+        };
+        
         //______________________________________________________________________
         //
         //
@@ -44,7 +61,7 @@ namespace yack
             // C++
             //__________________________________________________________________
 
-            //! initialize from lib/eqs at t0 to compute initial constants
+            //! initialize from lib/eqs at tini to compute initial constants
             explicit plexus(library     &lib_,
                             equilibria  &eqs_,
                             const double tini);
@@ -105,6 +122,8 @@ namespace yack
             tableau          &Kl;      //!< [Nl] constants of lattice
             tableau          &Xl;      //!< [Nl] all extents
             rmatrix           Cs;      //!< [NlxM] all solving concentrations
+            
+            const cluster::list clusters;
             
         private:
             YACK_DISABLE_COPY_AND_ASSIGN(plexus);
