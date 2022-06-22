@@ -6,14 +6,14 @@
 namespace yack
 {
     using namespace math;
-
+    
     namespace chemical
     {
-
+        
         const char   plexus::clid[]  = "chemical::plexus";
         const char   plexus::vpfx[]  = "//  ";
         const bool & plexus::verbose = entity::verbose;
-
+        
         plexus:: plexus(library     &lib_,
                         equilibria  &eqs_,
                         const double tini) :
@@ -25,37 +25,37 @@ namespace yack
         
         M( lib.size() ),
         N( singles.size() ),
-
+        
         Nc(0),
         Nl(0),
-
+        
         ntab(10,N),
         mtab(10,M),
         ltab(10,Nl),
-
+        
         active(),
-
+        
         Nu(N,N>0?M:0),
         NuT(Nu.cols,Nu.rows),
-
+        
         K( ntab.next() ),
         Xtry( ntab.next() ),
         
         Corg( mtab.next() ),
         Ctry( mtab.next() ),
         Cend( mtab.next() ),
-
+        
         Kl( ltab.next() ),
         Xl( ltab.next() ),
         Cs(),
-
+        
         libLock(lib_),
         eqsLock(eqs_)
         {
             YACK_CHEM_MARKUP( vpfx, "ChemicalPlexus");
             YACK_CHEM_PRINTLN("M  = " << M);
             YACK_CHEM_PRINTLN("N  = " << N);
-
+            
             //------------------------------------------------------------------
             //
             // build active species
@@ -69,7 +69,7 @@ namespace yack
                     coerce(active) << &s;
                 }
             }
-
+            
             //------------------------------------------------------------------
             //
             // build Nu and initialize constants
@@ -91,7 +91,7 @@ namespace yack
             YACK_CHEM_PRINTLN("Nu   = " << Nu);
             YACK_CHEM_PRINTLN("NuT  = " << NuT);
             YACK_CHEM_PRINTLN("K    = " << K);
-
+            
             //------------------------------------------------------------------
             //
             // check indep equilibria
@@ -105,31 +105,31 @@ namespace yack
                 YACK_CHEM_PRINTLN("gram = " <<G);
                 if( !alu.build(G) ) throw exception("%s: dependent equilibria",clid);
             }
-
+            
             //------------------------------------------------------------------
             //
             // build all couples
             //
             //------------------------------------------------------------------
             coerce(Nc) = buildMatchingCouples();
-
+            
             //------------------------------------------------------------------
             //
-            // build lattice
+            // build lattice of all singles+couples
             //
             //------------------------------------------------------------------
             duplicateIntoLattice(singles);
             duplicateIntoLattice(couples);
             coerce(Nl) = lattice.size();
             YACK_CHEM_PRINTLN(vpfx << "-------- lattice --------" << std::endl << lattice);
-
+            
             if(Nl>0)
             {
                 ltab.make(Nl); // linear memory
                 Cs.make(Nl,M); // solution C
                 assert(Nl==Kl.size());
                 assert(Nl==Xl.size());
-
+                
                 // first Kl computation
                 iota::save(Kl,K);
                 for(const enode *node=couples.head();node;node=node->next)
@@ -140,9 +140,7 @@ namespace yack
                 }
                 YACK_CHEM_PRINTLN("K  = " << K);
                 YACK_CHEM_PRINTLN("Kl = " << Kl);
-            }
-
-            {
+                
                 YACK_CHEM_MARKUP( vpfx, "Orthogonality");
                 for(const enode *node = lattice.head(); node; node=node->next )
                 {
@@ -157,12 +155,15 @@ namespace yack
                         }
                     }
                 }
+                
+                
+                
             }
-
-
+            
+            
         }
-
-
+        
+        
         void plexus:: computeK(const double t)
         {
             // singles, fill K and Kl[1..N]
@@ -172,7 +173,7 @@ namespace yack
                 const size_t       ei = *eq;
                 K[ei] = Kl[ei] = eq.K(t);
             }
-
+            
             // couples, fill Kl[N+1..Nl]
             for(const enode *node=couples.head();node;node=node->next)
             {
@@ -180,22 +181,22 @@ namespace yack
                 const size_t       ei = *eq;
                 Kl[ei] = eq.K(t); // computed from K
             }
-
+            
         }
-
+        
         void   plexus:: duplicateIntoLattice(const equilibria &src)
         {
             for(const enode *eq = src.head();eq;eq=eq->next)
                 coerce(lattice).add( **eq );
         }
-
-
+        
+        
         plexus:: ~plexus() throw()
         {
         }
-
-
-
-
+        
+        
+        
+        
     }
 }
