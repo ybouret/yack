@@ -46,6 +46,10 @@ namespace yack
             //! try to insert a new equilibrium
             equilibrium & use( equilibrium *eq );
 
+
+            //! try to insert a precomputed equilibrium
+            void add( const equilibrium::pointer &pEq );
+
             //! try to declare a new constant equilibrium
             template <typename ID> inline
             equilibrium & create(const ID &name, const double K)

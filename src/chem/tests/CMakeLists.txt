@@ -17,4 +17,4 @@ add_test(eqs        test-chem eqs)
 add_test(dist       test-chem dist)
 add_test(comb       test-chem comb)
 add_test(reactor    test-chem reactor)
-
+add_test(plexus     test-chem plexus)

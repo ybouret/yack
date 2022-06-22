@@ -12,7 +12,7 @@ namespace yack
             return (p>0) ? ipower<double,int>(K,p) : 1.0/ipower<double,int>(K,-p);
         }
 
-        static inline double K_for(const double Kx, const double Ky, const stoichiometry st) throw()
+        double cross_equilibrium:: K_for(const double Kx, const double Ky, const stoichiometry st) throw()
         {
             return zpower(Kx,st.x) * zpower(Ky,st.y);
         }

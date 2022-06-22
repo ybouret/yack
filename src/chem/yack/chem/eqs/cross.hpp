@@ -30,6 +30,9 @@ namespace yack
             //! create a name from names and coefficients
             static string make_name(const string &xname, const string &yname, const stoichiometry &st);
 
+            //! compute for Kx^st.x * Ky^st.y
+            static double K_for(const double, const double, const stoichiometry st) throw();
+
             //__________________________________________________________________
             //
             // C++

@@ -53,6 +53,18 @@ namespace yack
             os << '}';
             return os;
         }
+
+        void equilibria:: add( const equilibrium::pointer &pEq )
+        {
+            const equilibrium &eq = *pEq;
+            const size_t       ei = *eq;
+            const char        *id = eq.name();
+
+            if(1+size()!=ei)    throw exception("add invalid equilibrium '%s' index=%u",id,unsigned(ei));
+            if(!db.insert(pEq)) throw exception("add multiple equilibrium '%s'",id);
+            assert(ei==size());
+            update_with(eq);
+        }
     }
 
 }
