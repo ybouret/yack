@@ -3,6 +3,8 @@
 #include "yack/exception.hpp"
 #include "yack/math/iota.hpp"
 #include "yack/apex/integer.hpp"
+#include "yack/sort/sum.hpp"
+#include <cmath>
 
 namespace yack
 {
@@ -10,11 +12,75 @@ namespace yack
 
     namespace chemical
     {
+
+        double plexus:: hamiltonian(const readable<double> &C)
+        {
+            for(const enode *node=singles.head();node;node=node->next)
+            {
+                const equilibrium &eq = ***node;
+                const size_t       ei = *eq;
+                Xtry[ei] = eq.mass_action(K[ei],C);
+            }
+            return sorted::sum(Xtry,sorted::by_value)/N;
+        }
+
+        double plexus:: operator()(const double u)
+        {
+            const double v = 1.0-u;
+            for(const anode *node=active.head;node;node=node->next)
+            {
+                const size_t j = ***node;
+                Ctry[j] = v * Corg[j] + u * Cend[j];
+            }
+            return hamiltonian(Ctry);
+        }
+
+
+        double plexus:: computeLatticeExtent()
+        {
+            double sumAbsXi = 0;
+
+            for(const enode *node=singles.head();node;node=node->next)
+            {
+                const equilibrium &eq = ***node;
+                const size_t       ei = *eq;
+                const double       ax = fabs( Xl[ei] = eq.solve1D(Kl[ei],Corg,Cs[ei]) );
+                sumAbsXi += ax;
+            }
+
+            if(sumAbsXi<=0)
+            {
+                for(const enode *node=couples.head();node;node=node->next)
+                {
+                    const equilibrium &eq = ***node;
+                    const size_t       ei = *eq;
+                    Xl[ei] = 0;
+                }
+
+            }
+            else
+            {
+                for(const enode *node=couples.head();node;node=node->next)
+                {
+                    const equilibrium &eq = ***node;
+                    const size_t       ei = *eq;
+                    Xl[ei] = eq.solve1D(Kl[ei],Corg,Cs[ei]);
+                }
+
+            }
+
+            lattice(std::cerr << vpfx << "Xi=", Xl, vpfx);
+
+            return sumAbsXi;
+
+        }
+
         bool plexus:: solve( writable<double> &C0 ) throw()
         {
             YACK_CHEM_MARKUP(vpfx, "PlexusSolve");
             assert(C0.size()>=M);
 
+            // initializing
             switch(N)
             {
                 case 0:   // no equilibrium
@@ -33,6 +99,8 @@ namespace yack
                         Corg[j] = Ctry[j] = C0[j];
                     }
             }
+
+            computeLatticeExtent();
 
             
 

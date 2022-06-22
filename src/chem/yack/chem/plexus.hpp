@@ -68,6 +68,10 @@ namespace yack
                 }
             }
 
+            double hamiltonian(const readable<double> &C);
+            double operator()(const double u); //!< hamiltonian( (1-u) * Corg + u * Cend )
+
+
             //__________________________________________________________________
             //
             // members
@@ -92,13 +96,16 @@ namespace yack
             const imatrix     Nu;      //!< [NxM] topology
             const imatrix     NuT;     //!< [MxN] Nu'
             tableau          &K;       //!< [N] constants of singles
+            tableau          &Xtry;    //!< [N] temporary
 
             tableau          &Corg;    //!< [M] workspace
             tableau          &Ctry;    //!< [M] workspace
+            tableau          &Cend;    //!< [M] workspace
 
             tableau          &Kl;      //!< [Nl] constants of lattice
             tableau          &Xl;      //!< [Nl] all extents
-
+            rmatrix           Cs;      //!< [NlxM] all solving concentrations
+            
         private:
             YACK_DISABLE_COPY_AND_ASSIGN(plexus);
             const lockable::scope libLock;
@@ -106,6 +113,8 @@ namespace yack
 
             size_t buildMatchingCouples();
             void   duplicateIntoLattice(const equilibria &);
+            double computeLatticeExtent();
+
         };
 
     }

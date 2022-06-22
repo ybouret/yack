@@ -38,12 +38,15 @@ namespace yack
         NuT(Nu.cols,Nu.rows),
 
         K( ntab.next() ),
-
+        Xtry( ntab.next() ),
+        
         Corg( mtab.next() ),
         Ctry( mtab.next() ),
+        Cend( mtab.next() ),
 
         Kl( ltab.next() ),
         Xl( ltab.next() ),
+        Cs(),
 
         libLock(lib_),
         eqsLock(eqs_)
@@ -113,20 +116,24 @@ namespace yack
             coerce(Nl) = lattice.size();
             YACK_CHEM_PRINTLN(vpfx << "-------- lattice --------" << std::endl << lattice);
 
-            ltab.make(Nl);
-            assert(Nl==Kl.size());
-            assert(Nl==Xl.size());
-
-            iota::save(Kl,K);
-            for(const enode *node=couples.head();node;node=node->next)
+            if(Nl>0)
             {
-                const equilibrium &eq = ***node;
-                const size_t       ei = *eq;
-                Kl[ei] = eq.K(tini); // from K
-            }
-            YACK_CHEM_PRINTLN("K  = " << K);
-            YACK_CHEM_PRINTLN("Kl = " << Kl);
+                ltab.make(Nl);
+                Cs.make(Nl,M);
+                assert(Nl==Kl.size());
+                assert(Nl==Xl.size());
 
+                // first Kl computation
+                iota::save(Kl,K);
+                for(const enode *node=couples.head();node;node=node->next)
+                {
+                    const equilibrium &eq = ***node;
+                    const size_t       ei = *eq;
+                    Kl[ei] = eq.K(tini); // from K
+                }
+                YACK_CHEM_PRINTLN("K  = " << K);
+                YACK_CHEM_PRINTLN("Kl = " << Kl);
+            }
 
 
         }
@@ -161,7 +168,7 @@ namespace yack
         {
         }
 
-     
+
 
 
     }
