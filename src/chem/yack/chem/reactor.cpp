@@ -23,9 +23,10 @@ namespace yack
         static inline
         bool are_independent(const readable<int> &a, const readable<int> &b) throw()
         {
+            //std::cerr << "testing " << a << " . " << b << std::endl;
             for(size_t j=a.size();j>0;--j)
             {
-                if( 0 != a[j] && 0 != b[j] ) return false;
+                if( (0 != a[j]) && (0 != b[j]) ) return false;
             }
             return true;
         }
@@ -177,18 +178,19 @@ namespace yack
                 for(size_t i=1;i<=NC;++i)
                 {
                     const readable<int> &nui = NuAll[i];
-                    const equilibrium   &eqi = (i<=N) ? singles[i] : couples[1+i-N];
+                    const equilibrium   &eqi = (i<=N) ? singles[i] : couples[i-N];
                     for(size_t k=i+1;k<=NC;++k)
                     {
                         const readable<int> &nuk = NuAll[k];
-                        const equilibrium   &eqk = (k<=N) ? singles[k] : couples[1+k-N];
+                        const equilibrium   &eqk = (k<=N) ? singles[k] : couples[k-N];
 
-                        //if( are_independent(nui,nuk) )
-                        if( sorted::dot(nui, nuk, iv) == 0)
+                        if( are_independent(nui,nuk) )
+                        //if( sorted::dot(nui, nuk, iv) == 0)
                         {
                             couples.pad(std::cerr<< eqi.name, eqi);
                             std::cerr << " _|_ ";
                             couples.pad(std::cerr<< eqk.name, eqk);
+                            std::cerr << "  (" << nui << '*' << nuk << ")";
                             std::cerr << std::endl;
                         }
                     }
