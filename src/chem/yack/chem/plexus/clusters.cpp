@@ -2,6 +2,7 @@
 #include "yack/chem/plexus.hpp"
 #include "yack/counting/comb.hpp"
 #include "yack/ptr/auto.hpp"
+#include "yack/data/list/sort.hpp"
 
 namespace yack
 {
@@ -109,6 +110,45 @@ namespace yack
 
         }
 
+
+
+        static inline int compare_clusters(const cluster *lhs,
+                                           const cluster *rhs) throw()
+        {
+
+            assert(lhs);
+            assert(rhs);
+            const size_t lsize = lhs->size;
+            const size_t rsize = rhs->size;
+
+            // check sizes
+            switch(__sign::of(lsize,rsize))
+            {
+                case negative: assert(lsize<rsize); return -1;
+                case positive: assert(rsize<lsize); return  1;
+                case __zero__:
+                    break;
+            }
+
+
+            // lexicographic order for same sizes
+            size_t i = lsize;
+            for(const vnode *L=lhs->head, *R=rhs->head;i>0;--i,L=L->next,R=R->next)
+            {
+                const size_t il = ***L;
+                const size_t ir = ***R;
+                switch(__sign::of(il,ir))
+                {
+                    case negative: assert(il<ir); return -1;
+                    case positive: assert(ir<il); return  1;
+                    case __zero__: break;
+                }
+            }
+
+            // shouldn't happen here since all clusters are different
+            return 0;
+        }
+
         void  plexus:: makeReactiveClusters()
         {
 
@@ -136,6 +176,10 @@ namespace yack
                 }
             }
 
+            lattice(std::cerr,detached,"");
+
+            exit(1);
+            
             clusters &all = coerce(cls);
 
             //------------------------------------------------------------------
@@ -182,11 +226,22 @@ namespace yack
                 }
             }
 
+
+
+            merge_list_of<cluster>::sort(all,compare_clusters);
+
             std::cerr << "All Possible Clusters:" << std::endl;
             std::cerr << all << std::endl;
 
-            exit(1);
+            //------------------------------------------------------------------
+            //
+            // cleanup
+            //
+            //------------------------------------------------------------------
 
+
+
+            exit(1);
 
         }
     }
