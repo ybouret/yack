@@ -48,7 +48,9 @@ namespace yack
         Kl( ltab.next() ),
         Xl( ltab.next() ),
         Cs(),
-        
+
+        cls(),
+
         libLock(lib_),
         eqsLock(eqs_)
         {
@@ -125,12 +127,15 @@ namespace yack
             
             if(Nl>0)
             {
-                ltab.make(Nl); // linear memory
-                Cs.make(Nl,M); // solution C
-                assert(Nl==Kl.size());
-                assert(Nl==Xl.size());
-                
-                // first Kl computation
+                ltab.make(Nl);         // linear memory
+                Cs.make(Nl,M);         // solution C
+                assert(Nl==Kl.size()); // check
+                assert(Nl==Xl.size()); // check
+
+
+                //--------------------------------------------------------------
+                // first time Kl computation
+                //--------------------------------------------------------------
                 iota::save(Kl,K);
                 for(const enode *node=couples.head();node;node=node->next)
                 {
@@ -140,22 +145,43 @@ namespace yack
                 }
                 YACK_CHEM_PRINTLN("K  = " << K);
                 YACK_CHEM_PRINTLN("Kl = " << Kl);
-                
-                YACK_CHEM_MARKUP( vpfx, "Orthogonality");
-                for(const enode *node = lattice.head(); node; node=node->next )
                 {
-                    const equilibrium &central = ***node;
-                    for(const enode *scan = lattice.head();scan;scan=scan->next)
+                    YACK_CHEM_MARKUP( vpfx, "Orthogonality");
+                    for(const enode *node = lattice.head(); node; node=node->next )
                     {
-                        if(scan==node) continue;
-                        const equilibrium &replica = ***scan;
-                        if(central.are_detached_from(replica))
+                        const equilibrium &central = ***node;
+                        for(const enode *scan = lattice.head();scan;scan=scan->next)
                         {
-                            lattice.pad(std::cerr << central.name, central) << " _|_ " << replica.name << std::endl;
+                            if(scan==node) continue;
+                            const equilibrium &replica = ***scan;
+                            if(central.are_detached_from(replica))
+                            {
+                                lattice.pad(std::cerr << central.name, central) << " _|_ " << replica.name << std::endl;
+                            }
                         }
                     }
                 }
-                
+
+
+                //--------------------------------------------------------------
+                // building clusters
+                //--------------------------------------------------------------
+                {
+                    YACK_CHEM_MARKUP( vpfx, "buildingClusters");
+                    for(const enode *node = lattice.head(); node; node=node->next )
+                    {
+                        // get equilibrium, an start a cluster with it
+                        const equilibrium &eq = ***node;
+                        cluster           &cl = *coerce(cls).push_back( new cluster() );
+                        cl << &eq;
+                        YACK_CHEM_PRINTLN(vpfx << "  @" << eq.name);
+
+                        // try all other equilbria
+                        for(const enode *scan =node->next;scan;scan=scan->next)
+                        {
+                        }
+                    }
+                }
                 
                 
             }

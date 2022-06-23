@@ -72,7 +72,7 @@ namespace yack
 
             }
 
-            lattice(std::cerr << vpfx << "Xi=", Xl, vpfx);
+            if(verbose) lattice(std::cerr << vpfx << "Xi=", Xl, vpfx);
 
             return sumAbsXi;
 

@@ -28,17 +28,18 @@ namespace yack
         class cluster : public object, public vlist
         {
         public:
-            typedef cxx_list_of<cluster> list;
-            
+
             cluster *next;
             cluster *prev;
-            explicit cluster() throw() : object(), vlist() {}
+            explicit cluster() throw() : object(), vlist(), next(0), prev(0) {}
             virtual ~cluster() throw() {}
             
         private:
             YACK_DISABLE_COPY_AND_ASSIGN(cluster);
         };
-        
+
+        typedef cxx_list_of<cluster> clusters;
+
         //______________________________________________________________________
         //
         //
@@ -123,7 +124,7 @@ namespace yack
             tableau          &Xl;      //!< [Nl] all extents
             rmatrix           Cs;      //!< [NlxM] all solving concentrations
             
-            const cluster::list clusters;
+            const clusters    cls;
             
         private:
             YACK_DISABLE_COPY_AND_ASSIGN(plexus);
