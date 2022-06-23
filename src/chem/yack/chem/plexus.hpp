@@ -28,17 +28,54 @@ namespace yack
         class cluster : public object, public vlist
         {
         public:
+            typedef cxx_list_of<cluster> list;
+
+
+            explicit cluster() throw() : object(), vlist(), next(0), prev(0) {}
+            virtual ~cluster() throw() {}
+            cluster(const cluster &other) : object(), vlist(other), next(0), prev(0) {}
+
+
+            friend std::ostream & operator<<(std::ostream &os, const cluster &cls)
+            {
+                os << '{';
+                const vnode *node = cls.head;
+                if(node) {
+                    os << (**node).name;
+                    for(node=node->next;node;node=node->next)
+                        os << ',' << (**node).name;
+                }
+                os << '}';
+                return os;
+            }
 
             cluster *next;
             cluster *prev;
-            explicit cluster() throw() : object(), vlist(), next(0), prev(0) {}
-            virtual ~cluster() throw() {}
-            
+
         private:
-            YACK_DISABLE_COPY_AND_ASSIGN(cluster);
+            YACK_DISABLE_ASSIGN(cluster);
         };
 
-        typedef cxx_list_of<cluster> clusters;
+        class clusters : public cluster::list
+        {
+        public:
+            explicit clusters() throw() : cluster::list() {}
+            virtual ~clusters() throw() {}
+
+            friend std::ostream & operator<<(std::ostream &os, const clusters &CC)
+            {
+                os << "<clusters count=\"" << CC.size << "\">" << std::endl;
+                for(const cluster *cls=CC.head;cls;cls=cls->next)
+                {
+                    os << "  " << *cls << std::endl;
+                }
+                os << "<clusters>";
+                return os;
+            }
+
+        private:
+            YACK_DISABLE_COPY_AND_ASSIGN(clusters);
+        };
 
         //______________________________________________________________________
         //
@@ -134,7 +171,7 @@ namespace yack
             size_t buildMatchingCouples();
             void   duplicateIntoLattice(const equilibria &);
             double computeLatticeExtent();
-
+            void   makeReactiveClusters();
         };
 
     }

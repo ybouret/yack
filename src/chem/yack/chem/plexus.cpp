@@ -162,28 +162,7 @@ namespace yack
                     }
                 }
 
-
-                //--------------------------------------------------------------
-                // building clusters
-                //--------------------------------------------------------------
-                {
-                    YACK_CHEM_MARKUP( vpfx, "buildingClusters");
-                    for(const enode *node = lattice.head(); node; node=node->next )
-                    {
-                        // get equilibrium, an start a cluster with it
-                        const equilibrium &eq = ***node;
-                        cluster           &cl = *coerce(cls).push_back( new cluster() );
-                        cl << &eq;
-                        YACK_CHEM_PRINTLN(vpfx << "  @" << eq.name);
-
-                        // try all other equilbria
-                        for(const enode *scan =node->next;scan;scan=scan->next)
-                        {
-                        }
-                    }
-                }
-                
-                
+                makeReactiveClusters();
             }
             
             
