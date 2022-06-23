@@ -8,6 +8,7 @@
 #include "yack/container/matrix.hpp"
 #include "yack/math/algebra/lu.hpp"
 #include "yack/sequence/arrays.hpp"
+#include "yack/chem/clusters.hpp"
 
 namespace yack
 {
@@ -22,60 +23,6 @@ namespace yack
         typedef tableaux::array_type   tableau;  //!< alias
         typedef thin_array<bool>       booltab;  //!< alias
 
-        typedef meta_list<const equilibrium> vlist;
-        typedef vlist::node_type             vnode;
-        
-        class cluster : public object, public vlist
-        {
-        public:
-            typedef cxx_list_of<cluster> list;
-
-
-            explicit cluster() throw() : object(), vlist(), next(0), prev(0) {}
-            virtual ~cluster() throw() {}
-            cluster(const cluster &other) : object(), vlist(other), next(0), prev(0) {}
-
-
-            friend std::ostream & operator<<(std::ostream &os, const cluster &cls)
-            {
-                os << '{';
-                const vnode *node = cls.head;
-                if(node) {
-                    os << (**node).name;
-                    for(node=node->next;node;node=node->next)
-                        os << ',' << (**node).name;
-                }
-                os << '}';
-                return os;
-            }
-
-            cluster *next;
-            cluster *prev;
-
-        private:
-            YACK_DISABLE_ASSIGN(cluster);
-        };
-
-        class clusters : public cluster::list
-        {
-        public:
-            explicit clusters() throw() : cluster::list() {}
-            virtual ~clusters() throw() {}
-
-            friend std::ostream & operator<<(std::ostream &os, const clusters &CC)
-            {
-                os << "<clusters count=\"" << CC.size << "\">" << std::endl;
-                for(const cluster *cls=CC.head;cls;cls=cls->next)
-                {
-                    os << "  " << *cls << std::endl;
-                }
-                os << "<clusters>";
-                return os;
-            }
-
-        private:
-            YACK_DISABLE_COPY_AND_ASSIGN(clusters);
-        };
 
         //______________________________________________________________________
         //
@@ -109,10 +56,13 @@ namespace yack
             //
             // methods
             //__________________________________________________________________
+
+            //! compute all singles and couples constants
             void computeK(const double t);
 
             bool solve( writable<double> &C0 ) throw();
 
+            //! transfert only active components
             template <typename T, typename U> inline
             void transfer( writable<T> &target, const readable<U> &source) const
             {
@@ -124,7 +74,7 @@ namespace yack
             }
 
             double hamiltonian(const readable<double> &C); //!< |Gamma|^2/N 
-            double operator()(const double u); //!< hamiltonian( (1-u) * Corg + u * Cend )
+            double operator()(const double u);             //!< hamiltonian( (1-u) * Corg + u * Cend )
 
 
             //__________________________________________________________________
@@ -161,7 +111,7 @@ namespace yack
             tableau          &Xl;      //!< [Nl] all extents
             rmatrix           Cs;      //!< [NlxM] all solving concentrations
             
-            const clusters    cls;
+            const clusters    cls;     //!< clusters
             
         private:
             YACK_DISABLE_COPY_AND_ASSIGN(plexus);

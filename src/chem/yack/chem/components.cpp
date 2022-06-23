@@ -22,7 +22,7 @@ namespace yack
         }
 
 
-        bool components:: are_detached_from(const components &other) const throw()
+        bool components:: detached(const components &other) const throw()
         {
             for(const cnode *lhs=head();lhs;lhs=lhs->next)
             {
@@ -33,8 +33,23 @@ namespace yack
                     if(j==k) return false;
                 }
             }
-            return true;
+            return true; // no common => detached
         }
+
+        bool components:: attached(const components &other) const throw()
+        {
+            for(const cnode *lhs=head();lhs;lhs=lhs->next)
+            {
+                const size_t j = *****lhs;
+                for(const cnode *rhs=other.head();rhs;rhs=rhs->next)
+                {
+                    const size_t k = *****rhs;
+                    if(j==k) return true;
+                }
+            }
+            return false; // no common => not attached
+        }
+
 
         components:: ~components() throw()
         {

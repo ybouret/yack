@@ -154,7 +154,7 @@ namespace yack
                         {
                             if(scan==node) continue;
                             const equilibrium &replica = ***scan;
-                            if(central.are_detached_from(replica))
+                            if(central.detached(replica))
                             {
                                 lattice.pad(std::cerr << central.name, central) << " _|_ " << replica.name << std::endl;
                             }

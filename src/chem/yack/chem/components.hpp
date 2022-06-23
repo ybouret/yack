@@ -80,10 +80,11 @@ namespace yack
                 }
             }
 
-            //! test (by index) is components are detached (a.k.a ortho)
-            bool are_detached_from(const components &other) const throw();
+            //! test (by index) if components are detached (a.k.a ortho)
+            bool detached(const components &other) const throw();
 
-            
+            //! test (by index) if components are attached (a.k.a ortho)
+            bool attached(const components &other) const throw();
 
             //__________________________________________________________________
             //

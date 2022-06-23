@@ -1,45 +1,192 @@
 
 #include "yack/chem/plexus.hpp"
+#include "yack/counting/comb.hpp"
+#include "yack/ptr/auto.hpp"
+
 namespace yack
 {
     using namespace math;
 
     namespace chemical
     {
+
+
+
+        static inline bool are_detached(const readable<equilibrium *> &v,
+                                        const matrix<bool>            &detached) throw()
+        {
+            for(size_t i=v.size();i>1;--i)
+            {
+                const equilibrium    &lhs = *v[i];
+                const readable<bool> &ok  = detached[ *lhs ];
+                for(size_t j=i-1;j>0;--j)
+                {
+                    const equilibrium &rhs = *v[j];
+                    if( !ok[*rhs] )
+                    {
+                        return false;
+                    }
+                }
+            }
+            return true;
+        }
+
+
+        static inline
+        void  populate(clusters                &born,
+                       const equilibrium       &host,
+                       writable<equilibrium *> &guest,
+                       const matrix<bool>      &detached)
+        {
+            //------------------------------------------------------------------
+            //
+            // sanity check
+            //
+            //------------------------------------------------------------------
+            assert( 1== born.size );
+            assert( &host == & **(born.head->head) );
+            assert( guest.size() > 0);
+
+            //------------------------------------------------------------------
+            //
+            // initialize
+            //
+            //------------------------------------------------------------------
+            const size_t          n = guest.size();
+            vector<equilibrium *> fragment(n,as_capacity);
+
+            //------------------------------------------------------------------
+            //
+            // try all sub combinations in DECREASING size order
+            //
+            //------------------------------------------------------------------
+            for(size_t k=1;k<=n;++k)
+            {
+                combination comb(n,k); // create combinations
+                do
+                {
+                    //----------------------------------------------------------
+                    // extract fragment from guests
+                    //----------------------------------------------------------
+                    comb.extract(fragment,guest); assert(k==fragment.size());
+
+                    //----------------------------------------------------------
+                    // check fully detached fragment
+                    //----------------------------------------------------------
+                    if(!are_detached(fragment,detached)) continue;
+
+                    //----------------------------------------------------------
+                    // create a new cluster and populate it
+                    //----------------------------------------------------------
+                    auto_ptr<cluster> cc = new cluster();
+
+                    *cc << &host;
+                    for(size_t i=1;i<=k;++i)
+                    {
+                        *cc << fragment[i];
+                        assert( cc->carries( *fragment[i]) );
+                    }
+
+                    cc->update();
+                    
+                    //----------------------------------------------------------
+                    // check that this cluster is not a sub-cluster
+                    //----------------------------------------------------------
+
+#if !defined(NDEBUG)
+                    for(const cluster *tmp=born.head;tmp;tmp=tmp->next)
+                    {
+                        assert( ! tmp->matches(*cc) );
+                    }
+#endif
+                    
+                    born.push_back( cc.yield() );
+
+                } while( comb.next() );
+            }
+
+
+
+        }
+
         void  plexus:: makeReactiveClusters()
         {
 
-            //--------------------------------------------------------------
+            //------------------------------------------------------------------
+            //
             // building clusters
-            //--------------------------------------------------------------
+            //
+            //------------------------------------------------------------------
             YACK_CHEM_MARKUP( vpfx, "makeReactiveClusters");
 
-            clusters cstack;
-            std::cerr << cstack << std::endl;
 
-            
-#if 0
-
-
+            //------------------------------------------------------------------
+            //
+            // precompute detached matrix
+            //
+            //------------------------------------------------------------------
+            matrix<bool> detached(Nl,Nl);
             for(const enode *node = lattice.head(); node; node=node->next )
             {
-                // get equilibrium, an start a cluster with it
-                const equilibrium &eq = ***node;
-                cluster           &cl = *coerce(cls).push_back( new cluster() );
-                cl << &eq;
-
-                cluster *newCl = new cluster(cl);
-                delete newCl;
-
-                YACK_CHEM_PRINTLN(vpfx << "  @" << eq.name);
-
-                // try all other equilibria
-                for(const enode *scan=node->next;scan;scan=scan->next)
+                const equilibrium &lhs = ***node;
+                for(const enode *scan=node;scan;scan=scan->next)
                 {
-                    const equilibrium &it = ***scan;
+                    const equilibrium &rhs = ***scan;
+                    detached[*lhs][*rhs] = detached[*rhs][*lhs] = lhs.detached(rhs);
                 }
             }
-#endif
+
+            clusters &all = coerce(cls);
+
+            //------------------------------------------------------------------
+            //
+            // check each possible equilibria in lattice
+            //
+            //------------------------------------------------------------------
+            {
+                vector<equilibrium *> guest(Nl,as_capacity);
+                for(const enode *node = lattice.head(); node; node=node->next )
+                {
+                    //----------------------------------------------------------
+                    // initialize
+                    //----------------------------------------------------------
+                    const equilibrium &host = ***node;  // local host
+                    clusters           born;            // local clusters
+
+                    born.create_from(host);
+
+                    std::cerr << host.name;
+
+                    //----------------------------------------------------------
+                    // load all detached guest
+                    //----------------------------------------------------------
+                    guest.free();
+                    for(const enode *scan=node->next;scan;scan=scan->next)
+                    {
+                        const equilibrium &curr = ***scan;
+                        if(curr.detached(host))
+                        {
+                            guest << (equilibrium *) &curr;
+                            std::cerr << '/' << curr.name;
+                        }
+                    }
+                    const size_t n = guest.size();
+                    std::cerr << " (" << host.name << " +" << n << ")" << std::endl;
+
+                    //----------------------------------------------------------
+                    // populate with possible clusters
+                    //----------------------------------------------------------
+                    if(n>0) populate(born,host,guest,detached);
+                    std::cerr << born << std::endl;
+                    all.merge_back(born);
+                }
+            }
+
+            std::cerr << "All Possible Clusters:" << std::endl;
+            std::cerr << all << std::endl;
+
+            exit(1);
+
 
         }
     }
