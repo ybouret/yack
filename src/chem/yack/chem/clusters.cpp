@@ -9,7 +9,7 @@ namespace yack
 
         clusters:: ~clusters() throw() {}
 
-        void    clusters:: create_from(const equilibrium &eq)
+        void    clusters:: createFrom(const equilibrium &eq)
         {
             cluster *cc = push_back( new cluster() );
             (*cc) << &eq;
@@ -27,21 +27,23 @@ namespace yack
         }
 
 
+        
+        void clusters:: sort()
+        {
+            merge_list_of<cluster>::sort(*this,cluster::compare);
+        }
+
         void clusters:: normalize()
         {
             for(cluster *cc=head;cc;cc=cc->next)
-            {
                 cc->update();
-            }
-            merge_list_of<cluster>::sort(*this,cluster::compare);
-            size_t dim=0;
+            sort();
+            size_t info=0;
             for(cluster *cc=head;cc;cc=cc->next)
             {
-                ++dim;
+                ++info;
                 for(vnode *node=cc->head;node;node=node->next)
-                {
-                    coerce((**node).info) = dim;
-                }
+                    coerce((**node).info) = info;
             }
         }
     }

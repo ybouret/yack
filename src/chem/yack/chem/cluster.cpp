@@ -37,6 +37,19 @@ namespace yack
             return l<r ? -1 : 1;
         }
 
+
+        bool cluster:: isValid() const throw()
+        {
+            for(const vnode *node=head;node;node=node->next)
+            {
+                if(node->next)
+                {
+                    if( ***node >= ***(node->next) ) return false;
+                }
+            }
+            return true;
+        }
+
         void cluster:: update() throw()
         {
             merge_list_of<vnode>::sort(*this,compare_vnodes);

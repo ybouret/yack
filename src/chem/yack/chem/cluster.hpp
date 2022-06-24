@@ -48,6 +48,7 @@ namespace yack
             //__________________________________________________________________
 
             void update()                           throw(); //!< sort by increasing equilibrium index
+            bool isValid()                    const throw(); //!< strictly increasing eq indices
             bool matches(const cluster &)     const throw(); //!< both size and indices
             bool carries(const equilibrium &) const throw(); //!< check ownership
             bool includes(const cluster &)    const throw(); //!< carries all other's equilibria

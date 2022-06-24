@@ -14,22 +14,34 @@ namespace yack
 
         namespace {
 
-            static inline void update(clusters &attached, const equilibrium &lhs)
+            //------------------------------------------------------------------
+            //
+            // update attached clusters with a new equilibrium:
+            // insert it in an  accepting cluster
+            // or create a new cluster
+            //
+            //------------------------------------------------------------------
+            static inline void update(clusters          &attached,
+                                      const equilibrium &lhs)
             {
-                // check is attached
+
+                //--------------------------------------------------------------
+                // loop over existing clusters
+                //--------------------------------------------------------------
                 for(cluster *cls=attached.head;cls;cls=cls->next)
                 {
                     assert( false == cls->carries(lhs) );
                     if(cls->accepts(lhs))
                     {
-                        // ok, insert it
-                        (*cls) << &lhs;
-                        return;
+                        (*cls) << &lhs; // ok, insert it
+                        return;         // and we're done
                     }
                 }
 
-                // new cluster here
-                attached.create_from(lhs);
+                //--------------------------------------------------------------
+                // need tp create a new cluster at this point
+                //--------------------------------------------------------------
+                attached.createFrom(lhs);
             }
 
         }
@@ -37,6 +49,11 @@ namespace yack
 
         namespace {
 
+            //------------------------------------------------------------------
+            //
+            // check if a party of equilibria ate detached from one another
+            //
+            //------------------------------------------------------------------
             static inline bool are_detached(const readable<equilibrium *> &party,
                                             const matrix<bool>            &detached) throw()
             {
@@ -47,12 +64,19 @@ namespace yack
                     for(size_t j=i-1;j>0;--j)
                     {
                         const equilibrium &ej = *party[j];
-                        if(!ok[*ej]) return false;
+                        if(!ok[*ej]) return false; // overlapping detected
                     }
                 }
                 return true;
             }
 
+            //------------------------------------------------------------------
+            //
+            // from a host equilibrium and a collection of detached from host
+            // build all possible fully detached combinations
+            // (and remove redundancy by keeping only largest cluster)
+            //
+            //------------------------------------------------------------------
             static inline
             void process(clusters           &born,
                          const equilibrium  &host,
@@ -60,20 +84,27 @@ namespace yack
                          const matrix<bool> &detached)
             {
 
+                //--------------------------------------------------------------
+                //
                 // fetch number of candidates
+                //
+                //------------------------------------------------------------------
                 const size_t n = star.size;
                 if(n<=0)
                 {
                     //----------------------------------------------------------
-                    // only single
+                    //
+                    // no detached equilibria => only single
+                    //
                     //----------------------------------------------------------
-                    born.create_from(host);
-                    //std::cerr << "\tadding single " << host.name << std::endl;
+                    born.createFrom(host);
                 }
                 else
                 {
                     //----------------------------------------------------------
+                    //
                     // at least one combination: extract guest from star
+                    //
                     //----------------------------------------------------------
                     vector<equilibrium *> guest(n,as_capacity);
                     vector<equilibrium *> party(n,as_capacity);
@@ -84,36 +115,44 @@ namespace yack
                     }
 
                     //----------------------------------------------------------
+                    //
                     // try combinations
+                    //
                     //----------------------------------------------------------
                     for(size_t k=n;k>0;--k)
                     {
-                        combination           comb(n,k);
-                        //std::cerr << "\ttesting (" << n << "," << k << ") = #" << comb.total << std::endl;
+                        combination comb(n,k);
                         do
                         {
+                            //--------------------------------------------------
+                            // extract party
+                            //--------------------------------------------------
                             comb.extract(party,guest);
-                            if( are_detached(party,detached) )
+
+                            //--------------------------------------------------
+                            // check if fully detached
+                            //--------------------------------------------------
+                            if(!are_detached(party,detached)) continue;
+
+
+                            //--------------------------------------------------
+                            // create a new cluster
+                            //--------------------------------------------------
+                            auto_ptr<cluster> cc = new cluster();
+                            (*cc) << &host;
+                            for(size_t i=1;i<=k;++i)
                             {
-                                // create a new cluster
-                                auto_ptr<cluster> cc = new cluster();
-                                (*cc) << &host;
-                                for(size_t i=1;i<=k;++i)
-                                {
-                                    const equilibrium &eq = *party[i];
-                                    assert(detached[*host][*eq]);
-                                    assert(detached[***(cc->tail)][*eq]);
-                                    assert(!cc->carries(eq));
-                                    (*cc) << &eq;
-                                }
-                                std::cerr << "\t" << cc << std::endl;
-                                born.push_back( cc.yield() );
+                                const equilibrium &eq = *party[i];
+                                assert(detached[*host][*eq]);
+                                assert(detached[***(cc->tail)][*eq]);
+                                assert(!cc->carries(eq));
+                                (*cc) << &eq;
                             }
-
-
+                            cc->update(); assert(cc->isValid());
+                            std::cerr << "\t" << cc << std::endl;
+                            born.push_back( cc.yield() );
                         } while(comb.next());
                     }
-
 
                 }
 
@@ -138,7 +177,8 @@ namespace yack
 
             //------------------------------------------------------------------
             //
-            // precompute detached matrix and top-level clusters
+            // precompute detached matrix
+            // and clusters of attached equilbria
             //
             //------------------------------------------------------------------
             matrix<bool> detached(Nl,Nl);
@@ -160,20 +200,24 @@ namespace yack
 
             //------------------------------------------------------------------
             //
-            // compute detached cluster per topLevel
+            // compute all partitions
             //
             //------------------------------------------------------------------
             const size_t        dims = attached.size;
             cxx_array<clusters> part(dims);
-            
 
             for(const enode *node = lattice.head(); node; node=node->next )
             {
-                const equilibrium    &host = ***node;
-                const size_t          indx = *host;
-                const size_t          info = host.info;
-                const readable<bool> &flag = detached[indx];
-                cluster               star;
+                //--------------------------------------------------------------
+                //
+                // fetch local state
+                //
+                //--------------------------------------------------------------
+                const equilibrium    &host = ***node;         // host equilibrium
+                const size_t          indx = *host;           // host index
+                const size_t          info = host.info;       // host partition index
+                const readable<bool> &flag = detached[indx];  // host detached state
+                cluster               star;                   // detached equilibria from the SAME partition
 
                 for(const enode *scan=node->next;scan;scan=scan->next)
                 {
@@ -184,9 +228,21 @@ namespace yack
 
                 lattice.pad(std::cerr << host.name,host) << " : $" << std::setw(3) << info << " : " << star << std::endl;
 
+                //--------------------------------------------------------------
+                //
+                // update clusters in host's partiion
+                //
+                //--------------------------------------------------------------
                 process(part[host.info],host,star,detached);
-
             }
+
+            for(size_t i=dims;i>0;--i)
+            {
+                clusters &cls = part[i];
+                cls.sort();
+            }
+
+
             std::cerr << std::endl;
             std::cerr << part << std::endl;
             std::cerr << std::endl;

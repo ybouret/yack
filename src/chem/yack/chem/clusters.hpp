@@ -22,10 +22,10 @@ namespace yack
             virtual ~clusters() throw(); //!< cleanup
 
             //! start a new cluster from single equilibrium
-            void     create_from(const equilibrium &eq);
+            void     createFrom(const equilibrium &eq);
 
-            //! update all clusters, sort, and set info to cluster index
-            void     normalize();
+            void sort();      //!< sort
+            void normalize(); //!< update all clusters, sort, and set info to cluster index
 
             //! display
             friend std::ostream & operator<<(std::ostream &, const clusters &);
