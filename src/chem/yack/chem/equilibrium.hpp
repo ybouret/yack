@@ -52,7 +52,8 @@ namespace yack
             template <typename ID> inline
             equilibrium(const ID &uuid, const size_t ipos) :
             entity(uuid,ipos),
-            components()
+            components(),
+            info(0)
             {
             }
 
@@ -61,6 +62,9 @@ namespace yack
             YACK_DISABLE_COPY_AND_ASSIGN(equilibrium);
             virtual double getK(const double) const = 0;
             std::ostream & print(std::ostream &) const;
+
+        public:
+            size_t info; //!< extra field
         };
 
       

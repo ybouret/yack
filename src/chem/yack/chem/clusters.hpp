@@ -24,6 +24,9 @@ namespace yack
             //! start a new cluster from single equilibrium
             void     create_from(const equilibrium &eq);
 
+            //! update all clusters, sort, and set info to cluster index
+            void     normalize();
+
             //! display
             friend std::ostream & operator<<(std::ostream &, const clusters &);
 

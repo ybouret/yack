@@ -1,5 +1,5 @@
-
 #include "yack/chem/clusters.hpp"
+#include "yack/data/list/sort.hpp"
 
 namespace yack
 {
@@ -24,6 +24,25 @@ namespace yack
             }
             os << "<clusters>";
             return os;
+        }
+
+
+        void clusters:: normalize()
+        {
+            for(cluster *cc=head;cc;cc=cc->next)
+            {
+                cc->update();
+            }
+            merge_list_of<cluster>::sort(*this,cluster::compare);
+            size_t dim=0;
+            for(cluster *cc=head;cc;cc=cc->next)
+            {
+                ++dim;
+                for(vnode *node=cc->head;node;node=node->next)
+                {
+                    coerce((**node).info) = dim;
+                }
+            }
         }
     }
 
