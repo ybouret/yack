@@ -53,6 +53,7 @@ namespace yack
             bool carries(const equilibrium &) const throw(); //!< check ownership
             bool includes(const cluster &)    const throw(); //!< carries all other's equilibria
             bool accepts(const equilibrium &) const throw(); //!< if attached to one of ours
+            bool isOrtho()                    const throw(); //!< check full orthogonality
 
             //! output as a list
             friend std::ostream & operator<<(std::ostream &, const cluster &);

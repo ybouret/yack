@@ -42,7 +42,7 @@ namespace yack
                 }
 
                 //--------------------------------------------------------------
-                // need tp create a new cluster at this point
+                // need to create a new cluster at this point
                 //--------------------------------------------------------------
                 attached.createFrom(lhs);
             }
@@ -146,7 +146,17 @@ namespace yack
                                 assert(!cc->carries(eq));
                                 (*cc) << &eq;
                             }
-                            cc->update(); assert(cc->isValid());
+
+                            //--------------------------------------------------
+                            // new cluster is ready
+                            //--------------------------------------------------
+                            cc->update();
+                            assert(cc->isValid());
+                            assert(cc->isOrtho());
+
+                            //--------------------------------------------------
+                            // append to current clusters
+                            //--------------------------------------------------
                             born.push_back( cc.yield() );
                         } while(comb.next());
                     }
@@ -221,8 +231,8 @@ namespace yack
                 // create ND loop
                 //
                 //--------------------------------------------------------------
-                vector<unit_t> ini(dims,1);
-                vector<unit_t> end(dims,0);
+                const vector<unit_t> ini(dims,1);
+                vector<unit_t>       end(dims,0);
                 for(size_t i=dims;i>0;--i)
                 {
                     end[i] = static_cast<unit_t>( part[i].size );
@@ -243,9 +253,25 @@ namespace yack
                         target->merge_back_copy(source);
                     }
                     target->update();
+                    assert(target->isValid());
+                    assert(target->isOrtho());
                 } while( loop.next() );
 
+                //--------------------------------------------------------------
+                //
+                // final sort
+                //
+                //--------------------------------------------------------------
                 all.sort();
+                for(const cluster *a=all.head;a;a=a->next)
+                {
+                    if(!a->isValid()) throw exception("%s: cluster is not sorted",plexus::clid);
+                    if(!a->isOrtho()) throw exception("%s: cluster is not detached",plexus::clid);
+                    for(const cluster *b=a->next;b;b=b->next)
+                    {
+                        if(a->matches(*b)) throw exception("%s: multiple finalized clusters!!", plexus::clid);
+                    }
+                }
             }
 
         }
@@ -305,6 +331,11 @@ namespace yack
                 const readable<bool> &flag = detached[indx];  // host detached state
                 cluster               star;                   // detached equilibria from the SAME partition
 
+                //--------------------------------------------------------------
+                //
+                // star all detached equilibria of the same partition
+                //
+                //--------------------------------------------------------------
                 for(const enode *scan=node->next;scan;scan=scan->next)
                 {
                     const equilibrium &rhs = ***scan;
@@ -312,19 +343,16 @@ namespace yack
                     if( flag[*rhs] ) star << &rhs;
                 }
 
-                lattice.pad(std::cerr << host.name,host) << " : $" << std::setw(3) << info << " : " << star << std::endl;
 
                 //--------------------------------------------------------------
                 //
-                // update clusters in host's partion
+                // update clusters in host's partition
                 //
                 //--------------------------------------------------------------
                 process(part[host.info],host,star,detached);
             }
 
-            std::cerr << std::endl;
-            std::cerr << part << std::endl;
-            std::cerr << std::endl;
+
 
             //------------------------------------------------------------------
             //
@@ -335,18 +363,37 @@ namespace yack
             {
                 finalizeClusters(part[i]);
             }
+            std::cerr << std::endl;
             std::cerr << part << std::endl;
             std::cerr << std::endl;
 
             //------------------------------------------------------------------
             //
-            // make final combinations
+            // make final combinations of unique clusters
             //
             //------------------------------------------------------------------
-            clusters all;
-            combineAllClusters(all,part);
+            combineAllClusters( coerce(com),part);
 
-            std::cerr << all << std::endl;
+            std::cerr << com << std::endl;
+
+
+            for(const enode *node = lattice.head(); node; node=node->next )
+            {
+                const equilibrium &lhs = ***node;
+                bool               found = false;
+                for(const cluster *cls=com.head;cls;cls=cls->next)
+                {
+                    if(cls->carries(lhs))
+                    {
+                        found = true;
+                        break;
+                    }
+                }
+                if(!found) throw exception("%s: missing '%s' in clusters!!",clid,lhs.name());
+            }
+
+
+
 
 
             exit(1);

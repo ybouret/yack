@@ -111,7 +111,8 @@ namespace yack
             tableau          &Kl;      //!< [Nl] constants of lattice
             tableau          &Xl;      //!< [Nl] all extents
             rmatrix           Cs;      //!< [NlxM] all solving concentrations
-            
+
+            const clusters    com;     //!< clusters of detached combinations
             
         private:
             YACK_DISABLE_COPY_AND_ASSIGN(plexus);

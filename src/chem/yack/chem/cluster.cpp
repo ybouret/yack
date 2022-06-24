@@ -52,6 +52,20 @@ namespace yack
             return true;
         }
 
+        bool cluster:: isOrtho() const throw()
+        {
+            for(const vnode *node=head;node;node=node->next)
+            {
+                if(node->next)
+                {
+                    const equilibrium &lhs = **node;
+                    const equilibrium &rhs = **(node->next);
+                    if( lhs.attached(rhs) ) return false;
+                }
+            }
+            return true;
+        }
+
         void cluster:: update() throw()
         {
             merge_list_of<vnode>::sort(*this,compare_vnodes);
