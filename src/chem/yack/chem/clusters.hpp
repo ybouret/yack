@@ -18,25 +18,15 @@ namespace yack
         class clusters : public cluster::list
         {
         public:
-            explicit clusters() throw() : cluster::list() {}
-            virtual ~clusters() throw() {}
-            void     create_from(const equilibrium &eq)
-            {
-                cluster *cc = push_back( new cluster() );
-                (*cc) << &eq;
-            }
+            explicit clusters() throw(); //!< setup empty
+            virtual ~clusters() throw(); //!< cleanup
 
+            //! start a new cluster from single equilibrium
+            void     create_from(const equilibrium &eq);
 
-            friend std::ostream & operator<<(std::ostream &os, const clusters &CC)
-            {
-                os << "<clusters count=\"" << CC.size << "\">" << std::endl;
-                for(const cluster *cls=CC.head;cls;cls=cls->next)
-                {
-                    os << "  " << *cls << std::endl;
-                }
-                os << "<clusters>";
-                return os;
-            }
+            //! display
+            friend std::ostream & operator<<(std::ostream &, const clusters &);
+
 
         private:
             YACK_DISABLE_COPY_AND_ASSIGN(clusters);

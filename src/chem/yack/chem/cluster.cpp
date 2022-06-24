@@ -32,7 +32,7 @@ namespace yack
             assert(lhs);
             assert(rhs);
             const equilibrium &L = **lhs, &R = **rhs;  assert(L.name!=R.name);
-            const size_t       l = *L,     r = *R;      assert(l!=r);
+            const size_t       l = *L,     r = *R;     assert(l!=r);
 
             return l<r ? -1 : 1;
         }
@@ -76,6 +76,17 @@ namespace yack
             return false;
         }
 
+        bool cluster:: accepts(const equilibrium &target) const throw()
+        {
+            assert( !carries(target) );
+            for(const vnode *node=head;node;node=node->next)
+            {
+                const equilibrium &source = **node;
+                if(source.attached(target)) return true;
+            }
+            return false;
+        }
+
         bool cluster:: includes(const cluster &other) const throw()
         {
             for(const vnode *node=other.head;node;node=node->next)
@@ -83,6 +94,41 @@ namespace yack
                 if( ! carries( **node) ) return false;
             }
             return true;
+        }
+
+        int cluster:: compare(const cluster *lhs, const cluster *rhs) throw()
+        {
+            assert(lhs);
+            assert(rhs);
+            const size_t lsize = lhs->size;
+            const size_t rsize = rhs->size;
+
+            // check sizes
+            switch(__sign::of(lsize,rsize))
+            {
+                case negative: assert(lsize<rsize); return -1;
+                case positive: assert(rsize<lsize); return  1;
+                case __zero__:
+                    break;
+            }
+
+
+            // lexicographic order for same sizes
+            size_t i = lsize;
+            for(const vnode *L=lhs->head, *R=rhs->head;i>0;--i,L=L->next,R=R->next)
+            {
+                const size_t il = ***L;
+                const size_t ir = ***R;
+                switch(__sign::of(il,ir))
+                {
+                    case negative: assert(il<ir); return -1;
+                    case positive: assert(ir<il); return  1;
+                    case __zero__: break;
+                }
+            }
+
+            // shouldn't happen here since all clusters are different
+            return 0;
         }
 
     }

@@ -60,6 +60,7 @@ namespace yack
             //! compute all singles and couples constants
             void computeK(const double t);
 
+            //! solve
             bool solve( writable<double> &C0 ) throw();
 
             //! transfert only active components
@@ -111,7 +112,6 @@ namespace yack
             tableau          &Xl;      //!< [Nl] all extents
             rmatrix           Cs;      //!< [NlxM] all solving concentrations
             
-            const clusters    cls;     //!< clusters
             
         private:
             YACK_DISABLE_COPY_AND_ASSIGN(plexus);
