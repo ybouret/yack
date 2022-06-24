@@ -24,6 +24,7 @@ namespace yack
             //! start a new cluster from single equilibrium
             void     createFrom(const equilibrium &eq);
 
+            void update();    //!< update all
             void sort();      //!< sort
             void normalize(); //!< update all clusters, sort, and set info to cluster index
 

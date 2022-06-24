@@ -2,6 +2,7 @@
 #include "yack/chem/plexus.hpp"
 #include "yack/sequence/cxx-array.hpp"
 #include "yack/counting/comb.hpp"
+#include "yack/counting/mloop.hpp"
 #include "yack/ptr/auto.hpp"
 #include "yack/exception.hpp"
 
@@ -146,7 +147,6 @@ namespace yack
                                 (*cc) << &eq;
                             }
                             cc->update(); assert(cc->isValid());
-                            //std::cerr << "\t" << cc << std::endl;
                             born.push_back( cc.yield() );
                         } while(comb.next());
                     }
@@ -154,66 +154,101 @@ namespace yack
                 }
             }
 
-        }
 
-        static inline void finalizeClusters(clusters &born)
-        {
-            //------------------------------------------------------------------
-            //
-            // sort by size
-            //
-            //------------------------------------------------------------------
-            born.sort();
 
-            //------------------------------------------------------------------
-            //
-            // check no redundancy, keeping the longest cluster
-            //
-            //------------------------------------------------------------------
-            clusters temp;
-            while(born.size)
+            static inline void finalizeClusters(clusters &born)
             {
                 //--------------------------------------------------------------
-                // remove first item
+                //
+                // sort by size
+                //
                 //--------------------------------------------------------------
-                auto_ptr<cluster>  cc=born.pop_front();
+                born.sort();
 
                 //--------------------------------------------------------------
-                // sanity check
+                //
+                // check no redundancy, keeping the longest cluster
+                //
                 //--------------------------------------------------------------
-                for(const cluster *sc=born.head;sc;sc=sc->next)
+                clusters temp;
+                while(born.size)
                 {
-                    if( cc->matches( *sc ) )
+                    //----------------------------------------------------------
+                    // remove first item
+                    //----------------------------------------------------------
+                    auto_ptr<cluster>  cc=born.pop_front();
+
+                    //----------------------------------------------------------
+                    // sanity check
+                    //----------------------------------------------------------
+                    for(const cluster *sc=born.head;sc;sc=sc->next)
                     {
-                        throw exception("multiple clusters");
+                        if( cc->matches( *sc ) )
+                        {
+                            throw exception("multiple clusters");
+                        }
                     }
+
+                    //----------------------------------------------------------
+                    // search bigger cluster including cc
+                    //----------------------------------------------------------
+                    bool found = false;
+                    for(const cluster *sc=born.head;sc;sc=sc->next)
+                    {
+                        if(sc->includes(*cc))
+                        {
+                            found = true;
+                            break;
+                        }
+                    }
+
+                    //----------------------------------------------------------
+                    // keep if not found
+                    //----------------------------------------------------------
+                    if(!found) temp.push_back( cc.yield() );
                 }
 
-                //--------------------------------------------------------------
-                // search bigger cluster including cc
-                //--------------------------------------------------------------
-                bool found = false;
-                for(const cluster *sc=born.head;sc;sc=sc->next)
-                {
-                    if(sc->includes(*cc))
-                    {
-                        //std::cerr << cc << " included by " << *sc << std::endl;
-                        found = true;
-                        break;
-                    }
-                }
-
-                //--------------------------------------------------------------
-                // keep if not found
-                //--------------------------------------------------------------
-                if(!found) temp.push_back( cc.yield() );
+                born.swap_with(temp);
             }
 
-            born.swap_with(temp);
+            static inline void combineAllClusters(clusters                 &all,
+                                                  const readable<clusters> &part)
+            {
+                const size_t dims = part.size();
+
+                //--------------------------------------------------------------
+                //
+                // create ND loop
+                //
+                //--------------------------------------------------------------
+                vector<unit_t> ini(dims,1);
+                vector<unit_t> end(dims,0);
+                for(size_t i=dims;i>0;--i)
+                {
+                    end[i] = static_cast<unit_t>( part[i].size );
+                }
+                mloop<unit_t> loop( ini(), end(), dims);
+
+                //--------------------------------------------------------------
+                //
+                // assemble sub-parts
+                //
+                //--------------------------------------------------------------
+                do
+                {
+                    cluster *target = all.push_back( new cluster() );
+                    for(size_t i=1;i<=dims;++i)
+                    {
+                        const cluster &source = *part[i].get( loop[i] );
+                        target->merge_back_copy(source);
+                    }
+                    target->update();
+                } while( loop.next() );
+
+                all.sort();
+            }
 
         }
-
-
 
         void  plexus:: makeReactiveClusters()
         {
@@ -308,7 +343,10 @@ namespace yack
             // make final combinations
             //
             //------------------------------------------------------------------
-            
+            clusters all;
+            combineAllClusters(all,part);
+
+            std::cerr << all << std::endl;
 
 
             exit(1);

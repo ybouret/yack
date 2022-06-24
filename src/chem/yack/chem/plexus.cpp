@@ -144,6 +144,7 @@ namespace yack
                 }
                 YACK_CHEM_PRINTLN("K  = " << K);
                 YACK_CHEM_PRINTLN("Kl = " << Kl);
+#if 0
                 {
                     YACK_CHEM_MARKUP( vpfx, "Orthogonality");
                     for(const enode *node = lattice.head(); node; node=node->next )
@@ -160,7 +161,8 @@ namespace yack
                         }
                     }
                 }
-
+#endif
+                
                 makeReactiveClusters();
             }
             

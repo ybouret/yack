@@ -27,7 +27,12 @@ namespace yack
         }
 
 
-        
+        void clusters:: update()
+        {
+            for(cluster *cc=head;cc;cc=cc->next)
+                cc->update();
+        }
+
         void clusters:: sort()
         {
             merge_list_of<cluster>::sort(*this,cluster::compare);
@@ -35,8 +40,7 @@ namespace yack
 
         void clusters:: normalize()
         {
-            for(cluster *cc=head;cc;cc=cc->next)
-                cc->update();
+            update();
             sort();
             size_t info=0;
             for(cluster *cc=head;cc;cc=cc->next)
