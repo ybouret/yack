@@ -1,6 +1,7 @@
 
 #include "yack/chem/plexus.hpp"
 #include "yack/sequence/cxx-array.hpp"
+#include <iomanip>
 
 namespace yack
 {
@@ -9,8 +10,8 @@ namespace yack
     namespace chemical
     {
 
-        namespace
-        {
+        namespace {
+
             static inline void update(clusters &attached, const equilibrium &lhs)
             {
                 // check is attached
@@ -28,7 +29,30 @@ namespace yack
                 // new cluster here
                 attached.create_from(lhs);
             }
+
         }
+
+
+        namespace {
+
+            static inline
+            void process(cluster           &born,
+                         const equilibrium &host,
+                         const cluster     &star)
+            {
+                assert(0==born.size);
+                born << &host;
+
+                const size_t n = star.size;
+                if(n<=0) return;
+
+
+
+            }
+
+        }
+
+
 
         void  plexus:: makeReactiveClusters()
         {
@@ -87,7 +111,9 @@ namespace yack
                     if( flag[*rhs] ) star << &rhs;
                 }
 
-                lattice.pad(std::cerr << host.name,host) << " : " << star << " $" << info << std::endl;
+                lattice.pad(std::cerr << host.name,host) << " : $" << std::setw(3) << info << " : " << star << std::endl;
+                cluster born;
+                process(born,host,star);
 
             }
 
