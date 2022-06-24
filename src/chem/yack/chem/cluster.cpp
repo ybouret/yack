@@ -44,7 +44,9 @@ namespace yack
             {
                 if(node->next)
                 {
-                    if( ***node >= ***(node->next) ) return false;
+                    const equilibrium &lhs = **node;
+                    const equilibrium &rhs = **(node->next);
+                    if( *lhs >= *rhs) return false;
                 }
             }
             return true;

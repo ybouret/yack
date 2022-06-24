@@ -1,7 +1,8 @@
 
 { "water" ,   "[H+]+[HO-]", "1e-14" },
 
-{ "acetic",   "[H+]-[EtCOOH]+[EtCOO-]", "10^(-4.75)" },
+{ "acetic",   "[H+]-[EtCOOH]+[EtCOO-]",   "10^(-4.75)" },
+{ "benzoic",  "[H+]-[PhiCOOH]+[PhiCOO-]", "10^(-4.2)"  },
 
 { "ammoniac", "[H+]-[NH4+]+[NH3]",  "10^(-9.25)"    },
 

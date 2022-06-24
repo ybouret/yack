@@ -57,7 +57,7 @@ namespace yack
             //! output as a list
             friend std::ostream & operator<<(std::ostream &, const cluster &);
 
-            //! comparison for merge sort
+            //! comparison for merge sort of VALID clusters
             static int compare(const cluster *lhs, const cluster *rhs) throw();
 
             //__________________________________________________________________

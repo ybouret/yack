@@ -3,6 +3,8 @@
 #include "yack/sequence/cxx-array.hpp"
 #include "yack/counting/comb.hpp"
 #include "yack/ptr/auto.hpp"
+#include "yack/exception.hpp"
+
 #include <iomanip>
 
 namespace yack
@@ -44,10 +46,6 @@ namespace yack
                 attached.createFrom(lhs);
             }
 
-        }
-
-
-        namespace {
 
             //------------------------------------------------------------------
             //
@@ -74,7 +72,6 @@ namespace yack
             //
             // from a host equilibrium and a collection of detached from host
             // build all possible fully detached combinations
-            // (and remove redundancy by keeping only largest cluster)
             //
             //------------------------------------------------------------------
             static inline
@@ -149,16 +146,70 @@ namespace yack
                                 (*cc) << &eq;
                             }
                             cc->update(); assert(cc->isValid());
-                            std::cerr << "\t" << cc << std::endl;
+                            //std::cerr << "\t" << cc << std::endl;
                             born.push_back( cc.yield() );
                         } while(comb.next());
                     }
 
                 }
-
-
-
             }
+
+        }
+
+        static inline void finalizeClusters(clusters &born)
+        {
+            //------------------------------------------------------------------
+            //
+            // sort by size
+            //
+            //------------------------------------------------------------------
+            born.sort();
+
+            //------------------------------------------------------------------
+            //
+            // check no redundancy, keeping the longest cluster
+            //
+            //------------------------------------------------------------------
+            clusters temp;
+            while(born.size)
+            {
+                //--------------------------------------------------------------
+                // remove first item
+                //--------------------------------------------------------------
+                auto_ptr<cluster>  cc=born.pop_front();
+
+                //--------------------------------------------------------------
+                // sanity check
+                //--------------------------------------------------------------
+                for(const cluster *sc=born.head;sc;sc=sc->next)
+                {
+                    if( cc->matches( *sc ) )
+                    {
+                        throw exception("multiple clusters");
+                    }
+                }
+
+                //--------------------------------------------------------------
+                // search bigger cluster including cc
+                //--------------------------------------------------------------
+                bool found = false;
+                for(const cluster *sc=born.head;sc;sc=sc->next)
+                {
+                    if(sc->includes(*cc))
+                    {
+                        //std::cerr << cc << " included by " << *sc << std::endl;
+                        found = true;
+                        break;
+                    }
+                }
+
+                //--------------------------------------------------------------
+                // keep if not found
+                //--------------------------------------------------------------
+                if(!found) temp.push_back( cc.yield() );
+            }
+
+            born.swap_with(temp);
 
         }
 
@@ -236,14 +287,14 @@ namespace yack
                 process(part[host.info],host,star,detached);
             }
 
+            std::cerr << std::endl;
+            std::cerr << part << std::endl;
+            std::cerr << std::endl;
+
             for(size_t i=dims;i>0;--i)
             {
-                clusters &cls = part[i];
-                cls.sort();
+                finalizeClusters(part[i]);
             }
-
-
-            std::cerr << std::endl;
             std::cerr << part << std::endl;
             std::cerr << std::endl;
 
