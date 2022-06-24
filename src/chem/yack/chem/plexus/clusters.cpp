@@ -47,7 +47,7 @@ namespace yack
                 const size_t          indx = *host;
                 const readable<bool> &flag = detached[indx];
                 cluster               star;
-                for(const enode *scan=lattice.head();scan;scan=scan->next)
+                for(const enode *scan=node->next;scan;scan=scan->next)
                 {
                     const equilibrium &rhs = ***scan;
                     if( flag[*rhs] ) star << &rhs;
