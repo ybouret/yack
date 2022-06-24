@@ -7,6 +7,8 @@ namespace yack
     {
         clusters:: clusters() throw() : cluster::list() {}
 
+        clusters:: ~clusters() throw() {}
+
         void    clusters:: create_from(const equilibrium &eq)
         {
             cluster *cc = push_back( new cluster() );
