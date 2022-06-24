@@ -1,6 +1,8 @@
 
 #include "yack/chem/plexus.hpp"
 #include "yack/sequence/cxx-array.hpp"
+#include "yack/counting/comb.hpp"
+#include "yack/ptr/auto.hpp"
 #include <iomanip>
 
 namespace yack
@@ -35,16 +37,85 @@ namespace yack
 
         namespace {
 
-            static inline
-            void process(cluster           &born,
-                         const equilibrium &host,
-                         const cluster     &star)
+            static inline bool are_detached(const readable<equilibrium *> &party,
+                                            const matrix<bool>            &detached) throw()
             {
-                assert(0==born.size);
-                born << &host;
+                for(size_t i=party.size();i>1;--i)
+                {
+                    const equilibrium    &ei = *party[i];
+                    const readable<bool> &ok = detached[ *ei ];
+                    for(size_t j=i-1;j>0;--j)
+                    {
+                        const equilibrium &ej = *party[j];
+                        if(!ok[*ej]) return false;
+                    }
+                }
+                return true;
+            }
 
+            static inline
+            void process(clusters           &born,
+                         const equilibrium  &host,
+                         const cluster      &star,
+                         const matrix<bool> &detached)
+            {
+
+                // fetch number of candidates
                 const size_t n = star.size;
-                if(n<=0) return;
+                if(n<=0)
+                {
+                    //----------------------------------------------------------
+                    // only single
+                    //----------------------------------------------------------
+                    born.create_from(host);
+                    //std::cerr << "\tadding single " << host.name << std::endl;
+                }
+                else
+                {
+                    //----------------------------------------------------------
+                    // at least one combination: extract guest from star
+                    //----------------------------------------------------------
+                    vector<equilibrium *> guest(n,as_capacity);
+                    vector<equilibrium *> party(n,as_capacity);
+                    for(const vnode *node=star.head;node;node=node->next)
+                    {
+                        const equilibrium &tmp = **node;
+                        guest << (equilibrium * )&tmp;
+                    }
+
+                    //----------------------------------------------------------
+                    // try combinations
+                    //----------------------------------------------------------
+                    for(size_t k=n;k>0;--k)
+                    {
+                        combination           comb(n,k);
+                        //std::cerr << "\ttesting (" << n << "," << k << ") = #" << comb.total << std::endl;
+                        do
+                        {
+                            comb.extract(party,guest);
+                            if( are_detached(party,detached) )
+                            {
+                                // create a new cluster
+                                auto_ptr<cluster> cc = new cluster();
+                                (*cc) << &host;
+                                for(size_t i=1;i<=k;++i)
+                                {
+                                    const equilibrium &eq = *party[i];
+                                    assert(detached[*host][*eq]);
+                                    assert(detached[***(cc->tail)][*eq]);
+                                    assert(!cc->carries(eq));
+                                    (*cc) << &eq;
+                                }
+                                std::cerr << "\t" << cc << std::endl;
+                                born.push_back( cc.yield() );
+                            }
+
+
+                        } while(comb.next());
+                    }
+
+
+                }
 
 
 
@@ -112,12 +183,13 @@ namespace yack
                 }
 
                 lattice.pad(std::cerr << host.name,host) << " : $" << std::setw(3) << info << " : " << star << std::endl;
-                cluster born;
-                process(born,host,star);
+
+                process(part[host.info],host,star,detached);
 
             }
-
-
+            std::cerr << std::endl;
+            std::cerr << part << std::endl;
+            std::cerr << std::endl;
 
             exit(1);
         }
