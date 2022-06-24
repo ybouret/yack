@@ -281,7 +281,7 @@ namespace yack
 
                 //--------------------------------------------------------------
                 //
-                // update clusters in host's partiion
+                // update clusters in host's partion
                 //
                 //--------------------------------------------------------------
                 process(part[host.info],host,star,detached);
@@ -291,12 +291,25 @@ namespace yack
             std::cerr << part << std::endl;
             std::cerr << std::endl;
 
+            //------------------------------------------------------------------
+            //
+            // finalize partitions by sorting and removing redundancy
+            //
+            //------------------------------------------------------------------
             for(size_t i=dims;i>0;--i)
             {
                 finalizeClusters(part[i]);
             }
             std::cerr << part << std::endl;
             std::cerr << std::endl;
+
+            //------------------------------------------------------------------
+            //
+            // make final combinations
+            //
+            //------------------------------------------------------------------
+            
+
 
             exit(1);
         }
