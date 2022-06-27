@@ -248,6 +248,7 @@ namespace yack
                 do
                 {
                     cluster *target = all.push_back( new cluster() );
+                    std::cerr << " loop=" << loop << std::endl;
                     for(size_t i=1;i<=dims;++i)
                     {
                         const cluster &source = *part[i].get( loop[i] );
