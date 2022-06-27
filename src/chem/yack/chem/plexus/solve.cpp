@@ -111,17 +111,24 @@ namespace yack
             //------------------------------------------------------------------
             switch(N)
             {
+                    //----------------------------------------------------------
                 case 0:   // no equilibrium
+                    //----------------------------------------------------------
                     return true;
 
+                    //----------------------------------------------------------
                 case 1: { // special case
+                    //----------------------------------------------------------
+
                     const equilibrium &eq = *** singles.head();
                     (void) eq.solve1D(K[*eq],C0,Corg);
                     transfer(C0,Corg);
                     YACK_CHEM_PRINTLN(vpfx << "  <SUCCESS_1D/>");
                 } return true;
 
+                    //----------------------------------------------------------
                 default: // generic case, prepare consistent workspace
+                    //----------------------------------------------------------
                     for(size_t j=M;j>0;--j)
                     {
                         Corg[j] = Cend[j] = Ctry[j] = C0[j];
