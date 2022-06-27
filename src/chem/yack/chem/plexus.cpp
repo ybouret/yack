@@ -42,18 +42,23 @@ namespace yack
         Xtry(  ntab.next() ),
         xi(    ntab.next() ),
         Gamma( ntab.next() ),
+        blocked( ntab.next(), transmogrify),
 
         Psi(Nu.rows,Nu.cols),
         Omega0(N,N),
         iOmega(N,N),
+        NuA(Nu.rows,Nu.cols),
 
         Corg( mtab.next() ),
         Ctry( mtab.next() ),
         Cend( mtab.next() ),
-        
+        Cstp( mtab.next() ),
+
         Kl( ltab.next() ),
         Xl( ltab.next() ),
+
         Cs(),
+        LU(N>0? new rsolver(N) : NULL),
 
         top(),
         com(),

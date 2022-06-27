@@ -9,6 +9,7 @@
 #include "yack/math/algebra/lu.hpp"
 #include "yack/sequence/arrays.hpp"
 #include "yack/chem/clusters.hpp"
+#include "yack/ptr/auto.hpp"
 
 namespace yack
 {
@@ -22,7 +23,7 @@ namespace yack
         typedef arrays_of<double>      tableaux; //!< alias
         typedef tableaux::array_type   tableau;  //!< alias
         typedef thin_array<bool>       booltab;  //!< alias
-
+        typedef math::lu<double>       rsolver;  //!< alias
 
         //______________________________________________________________________
         //
@@ -105,18 +106,22 @@ namespace yack
             tableau          &Xtry;    //!< [N] temporary
             tableau          &xi;      //!< [N] extent
             tableau          &Gamma;   //!< [N] mass actions
+            booltab           blocked; //!< [N] status
 
             rmatrix           Psi;     //!< [NxM] jacobian of Gamma
             rmatrix           Omega0;  //!< [NxN]
             rmatrix           iOmega;  //!< [NxN]
-
+            imatrix           NuA;     //!< [NxM] matrix of active Nu's
+            
             tableau          &Corg;    //!< [M] workspace
             tableau          &Ctry;    //!< [M] workspace
             tableau          &Cend;    //!< [M] workspace
-
+            tableau          &Cstp;    //!< [M] workspace
+            
             tableau          &Kl;      //!< [Nl] constants of lattice
             tableau          &Xl;      //!< [Nl] all extents
             rmatrix           Cs;      //!< [NlxM] all solving concentrations
+            auto_ptr<rsolver> LU;      //!< [N]
 
             const clusters    top;     //!< top level uncoupled
             const clusters    com;     //!< clusters of detached combinations
@@ -133,7 +138,7 @@ namespace yack
             double optimizeGlobalExtent(const double G0, const equilibrium &eq) throw(); //!< best extent for one eq
             double optimizedCombination(const cluster &) throw();
             void   searchGlobalDecrease() throw(); //!< update Corg from optimizedCombination
-
+            void   suspendEquilibriumAt(const size_t ei) throw();
             size_t computeOmega() throw();
         };
 

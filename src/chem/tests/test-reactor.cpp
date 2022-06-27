@@ -40,9 +40,9 @@ YACK_UTEST(reactor)
     
 
     C.ld(0);
-    for(size_t iter=0;iter<100;++iter)
+    for(size_t iter=0;iter<1;++iter)
     {
-        lib.fill(C, 1, ran);
+        //lib.fill(C, 1, ran);
         if(cs.solve(C))
         {
             lib(std::cerr<<"Cend=",C);
