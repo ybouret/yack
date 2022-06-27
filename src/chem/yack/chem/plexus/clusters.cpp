@@ -19,13 +19,14 @@ namespace yack
 
             //------------------------------------------------------------------
             //
-            // update attached clusters with a new equilibrium:
+            // dispatch a new equilibrium in attached clusters:
             // insert it in an  accepting cluster
             // or create a new cluster
             //
             //------------------------------------------------------------------
-            static inline const equilibrium &  update(clusters          &attached,
-                                                      const equilibrium &lhs)
+            static inline
+            const equilibrium &  dispatch(clusters          &attached,
+                                          const equilibrium &lhs)
             {
 
                 //--------------------------------------------------------------
@@ -37,7 +38,7 @@ namespace yack
                     if(cls->accepts(lhs))
                     {
                         (*cls) << &lhs; // ok, insert it
-                        return lhs;         // and we're done
+                        return lhs;     // and we're done
                     }
                 }
 
@@ -67,7 +68,7 @@ namespace yack
                         if(!ok[*ej]) return false; // overlapping detected
                     }
                 }
-                return true;
+                return true; // no overlapping
             }
 
             //------------------------------------------------------------------
@@ -103,15 +104,13 @@ namespace yack
                     //----------------------------------------------------------
                     //
                     // at least one combination: extract guest from star
+                    // to make a party
                     //
                     //----------------------------------------------------------
                     vector<equilibrium *> guest(n,as_capacity);
                     vector<equilibrium *> party(n,as_capacity);
                     for(const vnode *node=star.head;node;node=node->next)
-                    {
-                        const equilibrium &tmp = **node;
-                        guest << (equilibrium * )&tmp;
-                    }
+                        guest << (equilibrium * )& **node;
 
                     //----------------------------------------------------------
                     //
@@ -298,7 +297,7 @@ namespace yack
             clusters    &attached = coerce(com);
             for(const enode *node = lattice.head(); node; node=node->next )
             {
-                const equilibrium &lhs = update(attached,***node);
+                const equilibrium &lhs = dispatch(attached,***node);
                 for(const enode *scan=node;scan;scan=scan->next)
                 {
                     const equilibrium &rhs = ***scan;
