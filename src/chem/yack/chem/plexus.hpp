@@ -112,6 +112,7 @@ namespace yack
             tableau          &Xl;      //!< [Nl] all extents
             rmatrix           Cs;      //!< [NlxM] all solving concentrations
 
+            const clusters    top;     //!< top level uncoupled
             const clusters    com;     //!< clusters of detached combinations
             
         private:

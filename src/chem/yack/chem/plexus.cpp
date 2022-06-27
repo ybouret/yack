@@ -49,6 +49,7 @@ namespace yack
         Xl( ltab.next() ),
         Cs(),
 
+        top(),
         com(),
 
         libLock(lib_),

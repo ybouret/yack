@@ -24,8 +24,8 @@ namespace yack
             // or create a new cluster
             //
             //------------------------------------------------------------------
-            static inline void update(clusters          &attached,
-                                      const equilibrium &lhs)
+            static inline const equilibrium &  update(clusters          &attached,
+                                                      const equilibrium &lhs)
             {
 
                 //--------------------------------------------------------------
@@ -37,7 +37,7 @@ namespace yack
                     if(cls->accepts(lhs))
                     {
                         (*cls) << &lhs; // ok, insert it
-                        return;         // and we're done
+                        return lhs;         // and we're done
                     }
                 }
 
@@ -45,6 +45,7 @@ namespace yack
                 // need to create a new cluster at this point
                 //--------------------------------------------------------------
                 attached.createFrom(lhs);
+                return lhs;
             }
 
 
@@ -294,11 +295,10 @@ namespace yack
             //
             //------------------------------------------------------------------
             matrix<bool> detached(Nl,Nl);
-            clusters     attached;
+            clusters    &attached = coerce(com);
             for(const enode *node = lattice.head(); node; node=node->next )
             {
-                const equilibrium &lhs = ***node;
-                update(attached,lhs);
+                const equilibrium &lhs = update(attached,***node);
                 for(const enode *scan=node;scan;scan=scan->next)
                 {
                     const equilibrium &rhs = ***scan;
@@ -372,11 +372,16 @@ namespace yack
             // make final combinations of unique clusters
             //
             //------------------------------------------------------------------
-            combineAllClusters( coerce(com),part);
+            combineAllClusters(coerce(com),part);
 
             std::cerr << com << std::endl;
 
 
+            //------------------------------------------------------------------
+            //
+            // run-time check
+            //
+            //------------------------------------------------------------------
             for(const enode *node = lattice.head(); node; node=node->next )
             {
                 const equilibrium &lhs = ***node;
