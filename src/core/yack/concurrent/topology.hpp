@@ -4,7 +4,8 @@
 #define YACK_SYNC_TOPOLOGY_INCLUDED 1
 
 #include "yack/string/fwd.hpp"
-#include "yack/data/small/list.hpp"
+#include "yack/data/list/cxx.hpp"
+#include "yack/object.hpp"
 #include "yack/counted.hpp"
 #include "yack/ptr/arc.hpp"
 #include <iostream>
@@ -15,16 +16,54 @@ namespace yack
     namespace concurrent
     {
 
+
         namespace quark
         {
             //__________________________________________________________________
             //
             //
-            // definitions
+            //! placement node
             //
             //__________________________________________________________________
-            typedef small_list<size_t>     ulist_type; //!< alias
-            typedef ulist_type::node_type  unode_type; //!< alias
+            class unode_type : public object
+            {
+            public:
+                //______________________________________________________________
+                //
+                // C++
+                //______________________________________________________________
+                explicit unode_type(const size_t which) throw(); //!< setup core
+                virtual ~unode_type() throw();                   //!< cleanup
+
+                //______________________________________________________________
+                //
+                // methods
+                //______________________________________________________________
+                size_t operator*() const throw(); //!< return core number
+
+                //______________________________________________________________
+                //
+                // members
+                //______________________________________________________________
+                unode_type  *next; //!< for list
+                unode_type  *prev; //!< for list
+                const size_t core; //!< cpu rank
+                const size_t rank; //!< global rank 0:num_threads-1
+                const size_t indx; //!< global indx 1:num_threads
+
+            private:
+                YACK_DISABLE_COPY_AND_ASSIGN(unode_type);
+            };
+
+            //__________________________________________________________________
+            //
+            //
+            //! placement nodes
+            //
+            //__________________________________________________________________
+            typedef cxx_list_of<unode_type> ulist_type;
+            
+            
 
             //__________________________________________________________________
             //
@@ -47,8 +86,9 @@ namespace yack
 
             private:
                 YACK_DISABLE_COPY_AND_ASSIGN(topology);
-                void       linear(const size_t n);
-                void       expand(const string &);
+                void       linear(const size_t n); //!< n linear threads
+                void       expand(const string &); //!< parser
+                void       update() throw();       //!< post process rank/indx
             };
         }
 

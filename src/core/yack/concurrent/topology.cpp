@@ -16,21 +16,54 @@ namespace yack
 
         namespace quark
         {
+            unode_type:: unode_type(const size_t i) throw() :
+            next(0), prev(0), core(i), rank(0), indx(0) {}
+
+            unode_type:: ~unode_type() throw() {}
+
+            size_t unode_type:: operator*() const throw() { return core; }
+
+        }
+
+    }
+}
+
+namespace yack
+{
+
+    namespace concurrent
+    {
+
+        namespace quark
+        {
             topology:: ~topology() throw() {}
 
 
             void topology:: linear(const size_t n)
             {
-                for(size_t i=0;i<n;++i)  add(i);
+                for(size_t i=0;i<n;++i)
+                {
+                    push_back( new unode_type(i) );
+                }
+                update();
             }
 
             topology:: topology(const size_t n) :
             ulist_type()
             {
                 linear( max_of<size_t>(1,n) );
-
             }
 
+            void topology:: update() throw()
+            {
+                size_t rank=0;
+                size_t indx=1;
+                for(unode_type *node=head;node;node=node->next,++rank,++indx)
+                {
+                    coerce(node->rank) = rank;
+                    coerce(node->indx) = indx;
+                }
+            }
 
 
 
@@ -65,7 +98,7 @@ namespace yack
                 size_t indx = shift;
                 for(size_t i=count;i>0;--i,indx+=every)
                 {
-                    topo.add(indx);
+                    topo.push_back( new unode_type(indx) );
                 }
             }
 
@@ -87,6 +120,8 @@ namespace yack
                     default:
                         throw exception("%s invalid #fields=%u",fn, unsigned(nw));
                 }
+                
+                update();
             }
 
 
@@ -139,6 +174,7 @@ namespace yack
 
         topology:: topology() : topology_( new quark::topology() )
         {
+
         }
         
         topology:: topology(const size_t n) : topology_( new quark::topology(n) )
@@ -153,7 +189,10 @@ namespace yack
         {
         }
 
+
+
     }
 
 }
+
 

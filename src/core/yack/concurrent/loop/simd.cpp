@@ -139,49 +139,24 @@ namespace yack
             {
                 assert(topo->size==threads);
                 
-                if(false)
+                for(const quark::unode_type *node=topo->head;node;node=node->next)
                 {
-                    const size_t np = hardware::nprocs();
-                    for(size_t i=0;i<threads;++i)
+                    worker      &w = squad[node->rank];
+                    const size_t j = node->core;
+                    if(thread::verbose)
                     {
-                        worker      &w   = squad[i];
-                        const size_t j   = i%np;
-                        if(thread::verbose)
-                        {
-                            char who[32];
-                            w.ctx.format(who,sizeof(who));
-                            std::cerr << clid << "      ";
-                            w.thr.assign(j,who);
-                        }
-                        else
-                        {
-                            w.thr.assign(j);
-                        }
+                        char who[32];
+                        w.ctx.format(who,sizeof(who));
+                        std::cerr << clid << "      ";
+                        w.thr.assign(j,who);
+                    }
+                    else
+                    {
+                        w.thr.assign(j);
                     }
                 }
 
-                {
-                    size_t i=0;
-                    for(const quark::unode_type *node=topo->head;node;node=node->next,++i)
-                    {
-                        worker      &w   = squad[i];
-                        const size_t j   = **node;
-                        if(thread::verbose)
-                        {
-                            char who[32];
-                            w.ctx.format(who,sizeof(who));
-                            std::cerr << clid << "      ";
-                            w.thr.assign(j,who);
-                        }
-                        else
-                        {
-                            w.thr.assign(j);
-                        }
-                    }
-                }
-
-
-
+                
             }
             catch(...)
             {
