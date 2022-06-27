@@ -50,12 +50,28 @@ namespace yack
         {
             const size_t ei = *eq;
             const double ax = fabs( Xl[ei] = eq.solve1D(Kl[ei],Corg,Cend) );
+
+
             if(ax>0)
             {
                 triplet<double> u = { 0,  -1, 1 };
                 triplet<double> g = { G0, -1, hamiltonian(Cend) };
 
-                lattice.pad(std::cerr << eq.name,eq) << " : " << g.a << " --> " << g.c << std::endl;
+
+                optimize::run_for(*this,u,g,optimize::inside);
+                lattice.pad(std::cerr << vpfx << eq.name,eq) << " : " << G0 << " --> " << g.b << " @" << u.b << std::endl;
+
+
+#if 0
+                ios::acstream fp("hamiltonian.dat");
+                const size_t NP = 1000;
+                for(size_t i=0;i<=NP;++i)
+                {
+                    const double uu = i/double(NP);
+                    fp("%.15g %.15g %u\n", uu, (*this)(uu), unsigned(ei));
+                }
+                fp << '\n';
+#endif
 
                 iota::load(Cs[ei],Cend);
 
@@ -78,6 +94,8 @@ namespace yack
         {
             const double G0 = hamiltonian(Corg);
             YACK_CHEM_PRINTLN(vpfx << " computeLatticeExtent@G0=" << G0);
+            //ios::ocstream::overwrite("hamiltonian.dat");
+
             //------------------------------------------------------------------
             // summing |Xi| on singles
             //------------------------------------------------------------------
@@ -108,9 +126,6 @@ namespace yack
                 //--------------------------------------------------------------
                 for(const enode *node=couples.head();node;node=node->next)
                 {
-                    //const equilibrium &eq = ***node;
-                    //const size_t       ei = *eq;
-                    //Xl[ei] = eq.solve1D(Kl[ei],Corg,Cs[ei]);
                     (void) optimizeGlobalExtent(G0,***node);
                 }
 

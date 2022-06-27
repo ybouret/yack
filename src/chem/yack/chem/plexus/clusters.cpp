@@ -258,7 +258,6 @@ namespace yack
                     assert(target->isOrtho());
                 } while( loop.next() );
 
-                std::cerr << all << std::endl;
 
                 //--------------------------------------------------------------
                 //
@@ -275,7 +274,6 @@ namespace yack
 
                     if(!a->isOrtho())
                     {
-                        std::cerr << *a << std::endl;
                         throw exception("%s: cluster is not detached",plexus::clid);
                     }
 
@@ -381,9 +379,6 @@ namespace yack
             {
                 finalizeClusters(part[i]);
             }
-            std::cerr << std::endl;
-            std::cerr << part << std::endl;
-            std::cerr << std::endl;
 
             //------------------------------------------------------------------
             //
@@ -391,8 +386,7 @@ namespace yack
             //
             //------------------------------------------------------------------
             combineAllClusters(coerce(com),part);
-
-            std::cerr << com << std::endl;
+            YACK_CHEM_PRINTLN(com);
 
 
             //------------------------------------------------------------------
