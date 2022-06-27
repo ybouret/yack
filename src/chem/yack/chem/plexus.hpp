@@ -125,7 +125,7 @@ namespace yack
             double computeLatticeExtent();
             void   makeReactiveClusters();
             double optimizeGlobalExtent(const double G0, const equilibrium &eq) throw();
-            
+            double optimizedCombination(const cluster &) throw();
         };
 
     }

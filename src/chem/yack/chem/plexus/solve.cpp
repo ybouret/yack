@@ -6,6 +6,7 @@
 #include "yack/sort/sum.hpp"
 #include "yack/math/opt/optimize.hpp"
 #include <cmath>
+#include <iomanip>
 
 namespace yack
 {
@@ -54,14 +55,6 @@ namespace yack
 
             if(ax>0)
             {
-                triplet<double> u = { 0,  -1, 1 };
-                triplet<double> g = { G0, -1, hamiltonian(Cend) };
-
-
-                optimize::run_for(*this,u,g,optimize::inside);
-                lattice.pad(std::cerr << vpfx << eq.name,eq) << " : " << G0 << " --> " << g.b << " @" << u.b << std::endl;
-
-
 #if 0
                 ios::acstream fp("hamiltonian.dat");
                 const size_t NP = 1000;
@@ -73,13 +66,15 @@ namespace yack
                 fp << '\n';
 #endif
 
-                iota::load(Cs[ei],Cend);
-
-
+                triplet<double> u = { 0,  -1, 1 };
+                triplet<double> g = { G0, -1, hamiltonian(Cend) };
+                optimize::run_for(*this,u,g,optimize::inside);
+                lattice.pad(std::cerr << vpfx << eq.name,eq) << " : " << G0 << " --> " << g.b << " @" << u.b << std::endl;
+                iota::load(Cs[ei],Ctry);
             }
             else
             {
-                iota::load(Cs[ei],Cend);
+                iota::load(Cs[ei],Corg);
             }
             return ax;
         }
@@ -97,7 +92,9 @@ namespace yack
             //ios::ocstream::overwrite("hamiltonian.dat");
 
             //------------------------------------------------------------------
+            //
             // summing |Xi| on singles
+            //
             //------------------------------------------------------------------
             double sumAbsXi = 0;
             for(const enode *node=singles.head();node;node=node->next)
@@ -136,6 +133,23 @@ namespace yack
             return sumAbsXi;
 
         }
+
+        double plexus:: optimizedCombination(const cluster &cc) throw()
+        {
+            //std::cerr << "Trying " << cc << std::endl;
+            iota::load(Ctry,Corg);
+            for(const vnode *node=cc.head;node;node=node->next)
+            {
+                const equilibrium      &eq  = **node;
+                const readable<double> &Ceq = Cs[*eq];
+                eq.transfer(Ctry,Ceq);
+            }
+            const double g = hamiltonian(Ctry);
+            std::cerr << std::setw(15) << g << " @" << cc << std::endl;
+            return hamiltonian(Ctry);
+        }
+
+
 
         bool plexus:: solve( writable<double> &C0 ) throw()
         {
@@ -183,8 +197,26 @@ namespace yack
             YACK_CHEM_PRINTLN(vpfx << "|Xi|=" << sumAbsXi);
 
             
-
-            
+            //------------------------------------------------------------------
+            //
+            // testing clusters
+            //
+            //------------------------------------------------------------------
+            const  cluster *cc = com.head;
+            const  cluster *cOpt = cc;
+            double          gOpt = optimizedCombination(*cOpt);
+            iota::load(Cend,Ctry);
+            for(cc=cc->next;cc;cc=cc->next)
+            {
+                const double gTmp  = optimizedCombination(*cc);
+                if(gTmp<gOpt)
+                {
+                    gOpt = gTmp;
+                    cOpt = cc;
+                    iota::load(Cend,Ctry);
+                }
+            }
+            std::cerr << "Winner: " << *cOpt << std::endl;
 
 
             return false;
