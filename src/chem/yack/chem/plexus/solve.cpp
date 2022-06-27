@@ -89,7 +89,6 @@ namespace yack
         {
             YACK_CHEM_MARKUP(vpfx, "computeLatticeExtent");
             const double G0 = hamiltonian(Corg);
-            YACK_CHEM_PRINTLN(vpfx << "@G0=" << G0);
             //ios::ocstream::overwrite("hamiltonian.dat");
 
             //------------------------------------------------------------------
@@ -130,7 +129,7 @@ namespace yack
             }
 
             if(verbose) lattice(std::cerr << vpfx << "Xi=", Xl, vpfx);
-
+            YACK_CHEM_PRINTLN(vpfx << "@G0=" << G0);
             return sumAbsXi;
 
         }
@@ -144,8 +143,6 @@ namespace yack
                 const readable<double> &Ceq = Cs[*eq];
                 eq.transfer(Ctry,Ceq);
             }
-            const double g = hamiltonian(Ctry);
-            YACK_CHEM_PRINTLN(vpfx << std::setw(15) << g << " @" << cc);
             return hamiltonian(Ctry);
         }
 
@@ -156,7 +153,7 @@ namespace yack
             const  cluster *cc   = com.head;
             const  cluster *cOpt = cc;
             double          gOpt = optimizedCombination(*cOpt);
-            iota::load(Corg,Ctry);
+            iota::load(Cend,Ctry);
             for(cc=cc->next;cc;cc=cc->next)
             {
                 const double gTmp  = optimizedCombination(*cc);
@@ -164,15 +161,17 @@ namespace yack
                 {
                     gOpt = gTmp;
                     cOpt = cc;
-                    iota::load(Corg,Ctry);
+                    iota::load(Cend,Ctry);
                 }
             }
             if(verbose)
             {
                 std::cerr << vpfx << " => "  << *cOpt << std::endl;
-                std::cerr << vpfx << " => @" <<  gOpt << std::endl;
-                lib(std::cerr << vpfx << " => Copt=",Corg,vpfx);
+                std::cerr << vpfx << " => @" <<  gOpt << " from " << hamiltonian(Corg) << std::endl;
+                lib(std::cerr << vpfx << " => Copt=",Cend,vpfx);
             }
+            iota::load(Corg,Cend);
+
         }
 
 
@@ -221,13 +220,21 @@ namespace yack
             const double sumAbsXi = computeLatticeExtent();
             YACK_CHEM_PRINTLN(vpfx << "|Xi|=" << sumAbsXi);
 
-            
+
+            if(sumAbsXi<=0)
+            {
+                YACK_CHEM_PRINTLN(vpfx << "  <SUCCESS/>");
+                return true;
+            }
+
             //------------------------------------------------------------------
             //
-            // testing clusters
+            // then choose the most promising cluster
             //
             //------------------------------------------------------------------
             searchGlobalDecrease();
+
+
 
 
             return false;
