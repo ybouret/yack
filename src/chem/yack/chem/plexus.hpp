@@ -120,12 +120,14 @@ namespace yack
             const lockable::scope libLock;
             const lockable::scope eqsLock;
 
-            size_t buildMatchingCouples();
-            void   duplicateIntoLattice(const equilibria &);
-            double computeLatticeExtent();
-            void   makeReactiveClusters();
-            double optimizeGlobalExtent(const double G0, const equilibrium &eq) throw();
+            size_t buildMatchingCouples();                   //!< build all couples
+            void   makeReactiveClusters();                   //!< make all detached clusters
+            void   duplicateIntoLattice(const equilibria &); //!< fill lattice
+            double computeLatticeExtent();                   //!< compute all extents, return |Xi| for singles
+            double optimizeGlobalExtent(const double G0, const equilibrium &eq) throw(); //!< best extent for one eq
             double optimizedCombination(const cluster &) throw();
+            void   searchGlobalDecrease() throw(); //!< update Corg from optimizedCombination
+
         };
 
     }

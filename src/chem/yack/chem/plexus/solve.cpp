@@ -87,8 +87,9 @@ namespace yack
         //----------------------------------------------------------------------
         double plexus:: computeLatticeExtent()
         {
+            YACK_CHEM_MARKUP(vpfx, "computeLatticeExtent");
             const double G0 = hamiltonian(Corg);
-            YACK_CHEM_PRINTLN(vpfx << " computeLatticeExtent@G0=" << G0);
+            YACK_CHEM_PRINTLN(vpfx << "@G0=" << G0);
             //ios::ocstream::overwrite("hamiltonian.dat");
 
             //------------------------------------------------------------------
@@ -136,7 +137,6 @@ namespace yack
 
         double plexus:: optimizedCombination(const cluster &cc) throw()
         {
-            //std::cerr << "Trying " << cc << std::endl;
             iota::load(Ctry,Corg);
             for(const vnode *node=cc.head;node;node=node->next)
             {
@@ -145,10 +145,35 @@ namespace yack
                 eq.transfer(Ctry,Ceq);
             }
             const double g = hamiltonian(Ctry);
-            std::cerr << std::setw(15) << g << " @" << cc << std::endl;
+            YACK_CHEM_PRINTLN(vpfx << std::setw(15) << g << " @" << cc);
             return hamiltonian(Ctry);
         }
 
+
+        void plexus:: searchGlobalDecrease() throw()
+        {
+            YACK_CHEM_MARKUP(vpfx, "searchGlobalDecrease");
+            const  cluster *cc   = com.head;
+            const  cluster *cOpt = cc;
+            double          gOpt = optimizedCombination(*cOpt);
+            iota::load(Corg,Ctry);
+            for(cc=cc->next;cc;cc=cc->next)
+            {
+                const double gTmp  = optimizedCombination(*cc);
+                if(gTmp<gOpt)
+                {
+                    gOpt = gTmp;
+                    cOpt = cc;
+                    iota::load(Corg,Ctry);
+                }
+            }
+            if(verbose)
+            {
+                std::cerr << vpfx << " => "  << *cOpt << std::endl;
+                std::cerr << vpfx << " => @" <<  gOpt << std::endl;
+                lib(std::cerr << vpfx << " => Copt=",Corg,vpfx);
+            }
+        }
 
 
         bool plexus:: solve( writable<double> &C0 ) throw()
@@ -190,7 +215,7 @@ namespace yack
 
             //------------------------------------------------------------------
             //
-            // check status of |Xi|
+            // check status of |Xi| while computing all extents
             //
             //------------------------------------------------------------------
             const double sumAbsXi = computeLatticeExtent();
@@ -202,21 +227,7 @@ namespace yack
             // testing clusters
             //
             //------------------------------------------------------------------
-            const  cluster *cc = com.head;
-            const  cluster *cOpt = cc;
-            double          gOpt = optimizedCombination(*cOpt);
-            iota::load(Cend,Ctry);
-            for(cc=cc->next;cc;cc=cc->next)
-            {
-                const double gTmp  = optimizedCombination(*cc);
-                if(gTmp<gOpt)
-                {
-                    gOpt = gTmp;
-                    cOpt = cc;
-                    iota::load(Cend,Ctry);
-                }
-            }
-            std::cerr << "Winner: " << *cOpt << std::endl;
+            searchGlobalDecrease();
 
 
             return false;
