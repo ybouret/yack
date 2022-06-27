@@ -38,9 +38,15 @@ namespace yack
         Nu(N,N>0?M:0),
         NuT(Nu.cols,Nu.rows),
         
-        K( ntab.next() ),
-        Xtry( ntab.next() ),
-        
+        K(     ntab.next() ),
+        Xtry(  ntab.next() ),
+        xi(    ntab.next() ),
+        Gamma( ntab.next() ),
+
+        Psi(Nu.rows,Nu.cols),
+        Omega0(N,N),
+        iOmega(N,N),
+
         Corg( mtab.next() ),
         Ctry( mtab.next() ),
         Cend( mtab.next() ),

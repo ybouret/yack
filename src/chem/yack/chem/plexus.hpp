@@ -103,6 +103,12 @@ namespace yack
             const imatrix     NuT;     //!< [MxN] Nu'
             tableau          &K;       //!< [N] constants of singles
             tableau          &Xtry;    //!< [N] temporary
+            tableau          &xi;      //!< [N] extent
+            tableau          &Gamma;   //!< [N] mass actions
+
+            rmatrix           Psi;     //!< [NxM] jacobian of Gamma
+            rmatrix           Omega0;  //!< [NxN]
+            rmatrix           iOmega;  //!< [NxN]
 
             tableau          &Corg;    //!< [M] workspace
             tableau          &Ctry;    //!< [M] workspace
@@ -128,6 +134,7 @@ namespace yack
             double optimizedCombination(const cluster &) throw();
             void   searchGlobalDecrease() throw(); //!< update Corg from optimizedCombination
 
+            size_t computeOmega() throw();
         };
 
     }
