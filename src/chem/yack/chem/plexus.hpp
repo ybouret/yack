@@ -124,6 +124,8 @@ namespace yack
             void   duplicateIntoLattice(const equilibria &);
             double computeLatticeExtent();
             void   makeReactiveClusters();
+            double optimizeGlobalExtent(const double G0, const equilibrium &eq) throw();
+            
         };
 
     }

@@ -4,6 +4,7 @@
 #include "yack/math/iota.hpp"
 #include "yack/apex/integer.hpp"
 #include "yack/sort/sum.hpp"
+#include "yack/math/opt/optimize.hpp"
 #include <cmath>
 
 namespace yack
@@ -24,7 +25,7 @@ namespace yack
             {
                 const equilibrium &eq = ***node;
                 const size_t       ei = *eq;
-                Xtry[ei] = eq.mass_action(K[ei],C);
+                Xtry[ei] = squared( eq.mass_action(K[ei],C) );
             }
             return sorted::sum(Xtry,sorted::by_value)/N;
         }
@@ -45,6 +46,29 @@ namespace yack
             return hamiltonian(Ctry);
         }
 
+        double plexus:: optimizeGlobalExtent(const double G0, const equilibrium &eq) throw()
+        {
+            const size_t ei = *eq;
+            const double ax = fabs( Xl[ei] = eq.solve1D(Kl[ei],Corg,Cend) );
+            if(ax>0)
+            {
+                triplet<double> u = { 0,  -1, 1 };
+                triplet<double> g = { G0, -1, hamiltonian(Cend) };
+
+                lattice.pad(std::cerr << eq.name,eq) << " : " << g.a << " --> " << g.c << std::endl;
+
+                iota::load(Cs[ei],Cend);
+
+
+            }
+            else
+            {
+                iota::load(Cs[ei],Cend);
+            }
+            return ax;
+        }
+
+
         //----------------------------------------------------------------------
         //
         // extent of all possible reactions
@@ -52,16 +76,15 @@ namespace yack
         //----------------------------------------------------------------------
         double plexus:: computeLatticeExtent()
         {
+            const double G0 = hamiltonian(Corg);
+            YACK_CHEM_PRINTLN(vpfx << " computeLatticeExtent@G0=" << G0);
             //------------------------------------------------------------------
             // summing |Xi| on singles
             //------------------------------------------------------------------
             double sumAbsXi = 0;
             for(const enode *node=singles.head();node;node=node->next)
             {
-                const equilibrium &eq = ***node;
-                const size_t       ei = *eq;
-                const double       ax = fabs( Xl[ei] = eq.solve1D(Kl[ei],Corg,Cs[ei]) );
-                sumAbsXi += ax;
+                sumAbsXi += optimizeGlobalExtent(G0,***node);
             }
 
             if(sumAbsXi<=0)
@@ -85,9 +108,10 @@ namespace yack
                 //--------------------------------------------------------------
                 for(const enode *node=couples.head();node;node=node->next)
                 {
-                    const equilibrium &eq = ***node;
-                    const size_t       ei = *eq;
-                    Xl[ei] = eq.solve1D(Kl[ei],Corg,Cs[ei]);
+                    //const equilibrium &eq = ***node;
+                    //const size_t       ei = *eq;
+                    //Xl[ei] = eq.solve1D(Kl[ei],Corg,Cs[ei]);
+                    (void) optimizeGlobalExtent(G0,***node);
                 }
 
             }
