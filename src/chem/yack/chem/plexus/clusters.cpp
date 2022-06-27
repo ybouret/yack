@@ -224,8 +224,8 @@ namespace yack
             static inline void combineAllClusters(clusters                 &all,
                                                   const readable<clusters> &part)
             {
+                assert(0==all.size);
                 const size_t dims = part.size();
-                std::cerr << "combining clusters: #parts=" << dims << std::endl;
 
                 //--------------------------------------------------------------
                 //
@@ -248,7 +248,6 @@ namespace yack
                 do
                 {
                     cluster *target = all.push_back( new cluster() );
-                    std::cerr << " loop=" << loop << std::endl;
                     for(size_t i=1;i<=dims;++i)
                     {
                         const cluster &source = *part[i].get( loop[i] );
@@ -257,7 +256,6 @@ namespace yack
                     target->update();
                     assert(target->isValid());
                     assert(target->isOrtho());
-                    std::cerr << "+ " << *target << std::endl;
                 } while( loop.next() );
 
                 std::cerr << all << std::endl;
@@ -308,7 +306,7 @@ namespace yack
             //
             //------------------------------------------------------------------
             matrix<bool> detached(Nl,Nl);
-            clusters    &attached = coerce(com);
+            clusters    &attached = coerce(top);
             for(const enode *node = lattice.head(); node; node=node->next )
             {
                 const equilibrium &lhs = dispatch(attached,***node);
