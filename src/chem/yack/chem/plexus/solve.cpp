@@ -13,6 +13,11 @@ namespace yack
     namespace chemical
     {
 
+        //----------------------------------------------------------------------
+        //
+        // hamiltonian of the system
+        //
+        //----------------------------------------------------------------------
         double plexus:: hamiltonian(const readable<double> &C)
         {
             for(const enode *node=singles.head();node;node=node->next)
@@ -24,6 +29,11 @@ namespace yack
             return sorted::sum(Xtry,sorted::by_value)/N;
         }
 
+        //----------------------------------------------------------------------
+        //
+        // hamiltonion( (1-u) * Corg + u * Cend )
+        //
+        //----------------------------------------------------------------------
         double plexus:: operator()(const double u)
         {
             const double v = 1.0-u;
@@ -35,12 +45,17 @@ namespace yack
             return hamiltonian(Ctry);
         }
 
-
+        //----------------------------------------------------------------------
+        //
+        // extent of all possible reactions
+        //
+        //----------------------------------------------------------------------
         double plexus:: computeLatticeExtent()
         {
+            //------------------------------------------------------------------
             // summing |Xi| on singles
+            //------------------------------------------------------------------
             double sumAbsXi = 0;
-
             for(const enode *node=singles.head();node;node=node->next)
             {
                 const equilibrium &eq = ***node;
@@ -51,18 +66,23 @@ namespace yack
 
             if(sumAbsXi<=0)
             {
-                // cleaning up
+                //--------------------------------------------------------------
+                // cleaning up couples
+                //--------------------------------------------------------------
                 for(const enode *node=couples.head();node;node=node->next)
                 {
                     const equilibrium &eq = ***node;
                     const size_t       ei = *eq;
                     Xl[ei] = 0;
+                    iota::load(Cs[ei],Corg);
                 }
 
             }
             else
             {
+                //--------------------------------------------------------------
                 // computing couples solution
+                //--------------------------------------------------------------
                 for(const enode *node=couples.head();node;node=node->next)
                 {
                     const equilibrium &eq = ***node;
@@ -82,10 +102,13 @@ namespace yack
         {
             YACK_CHEM_MARKUP(vpfx, "PlexusSolve");
             assert(C0.size()>=M);
-
             if(verbose) lib(std::cerr << vpfx << "Cini=",C0,vpfx);
 
+            //------------------------------------------------------------------
+            //
             // initializing
+            //
+            //------------------------------------------------------------------
             switch(N)
             {
                 case 0:   // no equilibrium
@@ -98,14 +121,22 @@ namespace yack
                     YACK_CHEM_PRINTLN(vpfx << "  <SUCCESS_1D/>");
                 } return true;
 
-                default: // generic case, prepare workspace
+                default: // generic case, prepare consistent workspace
                     for(size_t j=M;j>0;--j)
                     {
-                        Corg[j] = Ctry[j] = C0[j];
+                        Corg[j] = Cend[j] = Ctry[j] = C0[j];
                     }
             }
 
-            computeLatticeExtent();
+            //------------------------------------------------------------------
+            //
+            // check status of |Xi|
+            //
+            //------------------------------------------------------------------
+            const double sumAbsXi = computeLatticeExtent();
+            YACK_CHEM_PRINTLN(vpfx << "|Xi|=" << sumAbsXi);
+
+            
 
             
 

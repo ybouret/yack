@@ -225,6 +225,7 @@ namespace yack
                                                   const readable<clusters> &part)
             {
                 const size_t dims = part.size();
+                std::cerr << "combining clusters: #parts=" << dims << std::endl;
 
                 //--------------------------------------------------------------
                 //
@@ -255,7 +256,10 @@ namespace yack
                     target->update();
                     assert(target->isValid());
                     assert(target->isOrtho());
+                    std::cerr << "+ " << *target << std::endl;
                 } while( loop.next() );
+
+                std::cerr << all << std::endl;
 
                 //--------------------------------------------------------------
                 //
@@ -265,8 +269,17 @@ namespace yack
                 all.sort();
                 for(const cluster *a=all.head;a;a=a->next)
                 {
-                    if(!a->isValid()) throw exception("%s: cluster is not sorted",plexus::clid);
-                    if(!a->isOrtho()) throw exception("%s: cluster is not detached",plexus::clid);
+                    if(!a->isValid())
+                    {
+                        throw exception("%s: cluster is not sorted",plexus::clid);
+                    }
+
+                    if(!a->isOrtho())
+                    {
+                        std::cerr << *a << std::endl;
+                        throw exception("%s: cluster is not detached",plexus::clid);
+                    }
+
                     for(const cluster *b=a->next;b;b=b->next)
                     {
                         if(a->matches(*b)) throw exception("%s: multiple finalized clusters!!", plexus::clid);
@@ -305,9 +318,12 @@ namespace yack
                 }
             }
             attached.normalize();
-            
-            lattice(std::cerr,detached,"");
-            std::cerr << "attached=" << attached << std::endl;
+
+            if(verbose)
+            {
+                lattice(std::cerr,detached,"");
+                std::cerr << "attached=" << attached << std::endl;
+            }
 
             //------------------------------------------------------------------
             //
@@ -338,7 +354,11 @@ namespace yack
                 for(const enode *scan=node->next;scan;scan=scan->next)
                 {
                     const equilibrium &rhs = ***scan;
-                    if(rhs.info!=info) continue;
+                    if(rhs.info!=info)
+                    {
+                        //assert( rhs.detached(host) );
+                        continue;
+                    }
                     if( flag[*rhs] ) star << &rhs;
                 }
 
@@ -397,10 +417,6 @@ namespace yack
             }
 
 
-
-
-
-            exit(1);
         }
     }
 
