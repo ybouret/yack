@@ -47,16 +47,16 @@ namespace yack
             return hamiltonian(Ctry);
         }
 
-        double plexus:: optimizeGlobalExtent(const double G0, const equilibrium &eq) throw()
+        double plexus:: computePartialExtent(const double G0, const equilibrium &eq) throw()
         {
             //------------------------------------------------------------------
             //
             // compute extent and solution in Cend
             //
             //------------------------------------------------------------------
-            const size_t ei = *eq;
-            const double ax = fabs( Xl[ei] = eq.solve1D(Kl[ei],Corg,Cend) );
-
+            const size_t      ei  = *eq;
+            const double      ax  = fabs( Xl[ei] = eq.solve1D(Kl[ei],Corg,Cend) );
+            writable<double> &Ceq = Cs[ei];
 
             if(ax>0)
             {
@@ -69,85 +69,56 @@ namespace yack
                 if(G1<G0)
                 {
                     //----------------------------------------------------------
-                    // keep new extent
+                    // keep new extent @Cend
                     //----------------------------------------------------------
-                    iota::load(Cs[ei],Cend);
+                    iota::load(Ceq,Cend);
                     if(verbose) lattice.pad(std::cerr << vpfx << eq.name,eq) << " : " << G0 << " --> " << G1 << std::endl;
                 }
                 else
                 {
                     //----------------------------------------------------------
-                    // compensated by other equilibria => stalled
+                    // compensated by other equilibria => stalled @Corg
                     //----------------------------------------------------------
-                    iota::load(Cs[ei],Corg);
-                    if(verbose) lattice.pad(std::cerr << vpfx << eq.name,eq) << " : stalled @" << G0 << std::endl;
+                    iota::load(Ceq,Corg);
+                    if(verbose) lattice.pad(std::cerr << vpfx << eq.name,eq) << " : stalled" << std::endl;
                 }
             }
             else
             {
+                assert(ax<=0);
                 //--------------------------------------------------------------
-                // numerical equilibrium, |Xi|<=0
+                // numerical equilibrium, |Xi|<=0, keep Corg
                 //--------------------------------------------------------------
                 if(verbose) lattice.pad(std::cerr << vpfx << eq.name,eq) << " : ready " << std::endl;
-                iota::load(Cs[ei],Corg);
+                iota::load(Ceq,Corg);
             }
 
+            std::cerr << "C{" << eq.name << "} = " << Ceq << " / ma=" << eq.mass_action(Kl[ei],Ceq) << std::endl;
             return ax;
         }
 
-
-        //----------------------------------------------------------------------
-        //
-        // extent of all possible reactions
-        //
-        //----------------------------------------------------------------------
-        double plexus:: computeLatticeExtent()
+        double plexus:: computeSinglesExtent(const double G0) throw()
         {
-            YACK_CHEM_MARKUP(vpfx, "computeLatticeExtent");
-            const double G0 = hamiltonian(Corg);
-
-            //------------------------------------------------------------------
-            //
-            // summing |Xi| on singles
-            //
-            //------------------------------------------------------------------
-            double sumAbsXi = 0;
+            YACK_CHEM_MARKUP(vpfx, "computeSinglesExtent");
             for(const enode *node=singles.head();node;node=node->next)
             {
-                sumAbsXi += optimizeGlobalExtent(G0,***node);
+                const equilibrium &eq = ***node;
+                const size_t       ei = *eq;
+                Xtry[ei] = computePartialExtent(G0,***node); assert(Xtry[ei]>=0);
             }
-
-            if(sumAbsXi<=0)
-            {
-                //--------------------------------------------------------------
-                // cleaning up couples
-                //--------------------------------------------------------------
-                for(const enode *node=couples.head();node;node=node->next)
-                {
-                    const equilibrium &eq = ***node;
-                    const size_t       ei = *eq;
-                    Xl[ei] = 0;
-                    iota::load(Cs[ei],Corg);
-                }
-
-            }
-            else
-            {
-                //--------------------------------------------------------------
-                // computing couples solution
-                //--------------------------------------------------------------
-                for(const enode *node=couples.head();node;node=node->next)
-                {
-                    (void) optimizeGlobalExtent(G0,***node);
-                }
-
-            }
-
-            if(verbose) lattice(std::cerr << vpfx << "Xi=", Xl, vpfx);
-            YACK_CHEM_PRINTLN(vpfx << "@G0=" << G0);
-            return sumAbsXi;
-
+            return sorted::sum(Xtry,sorted::by_value);
         }
+
+        void plexus:: computeCouplesExtent(const double G0) throw()
+        {
+            YACK_CHEM_MARKUP(vpfx, "computeCouplesExtent");
+            for(const enode *node=couples.head();node;node=node->next)
+            {
+                (void) computePartialExtent(G0,***node);
+            }
+        }
+
+        
 
         double plexus:: optimizedCombination(const cluster &cc) throw()
         {
@@ -156,13 +127,13 @@ namespace yack
             {
                 const equilibrium      &eq  = **node;
                 const readable<double> &Ceq = Cs[*eq];
-                eq.transfer(Ctry,Ceq); // transfer partial solutions
+                eq.transfer(Ctry,Ceq); // transfer components only
             }
             return hamiltonian(Ctry);
         }
 
 
-        void plexus:: searchGlobalDecrease() throw()
+        double plexus:: searchGlobalDecrease() throw()
         {
             YACK_CHEM_MARKUP(vpfx, "searchGlobalDecrease");
 
@@ -189,15 +160,25 @@ namespace yack
 
             // update Corg from best cluster
             iota::load(Corg,Cend);
+            std::cerr << " GG = " << hamiltonian(Corg) << std::endl;
+            std::cerr << " C1 = " << Corg << std::endl;
 
             // restabilizing with chosen cluster
             for(const vnode *node=cOpt->head;node;node=node->next)
             {
                 const equilibrium &eq = **node;
                 const size_t       ei = *eq;
-                Xl[ei] = eq.solve1D(Kl[ei],Corg,Ctry);
+                (void) eq.solve1D(Kl[ei],Corg,Ctry);
+                if(ei<=N)
+                {
+                    Xl[ei]      = 0;
+                }
+                YACK_CHEM_PRINTLN(vpfx << " (^) " << eq.name);
                 iota::load(Corg,Ctry);
             }
+            std::cerr << " C2 = " << Corg << std::endl;
+
+            return hamiltonian(Corg);
 
         }
 
@@ -300,6 +281,64 @@ namespace yack
                         Cstp[j] = 0;
                     }
             }
+
+            unsigned cycle=0;
+
+        CYCLE:
+            ++cycle;
+            YACK_CHEM_PRINTLN(vpfx << "-------- cycle #" << cycle << " --------");
+            //------------------------------------------------------------------
+            //
+            // check status of singles |Xi|
+            //
+            //------------------------------------------------------------------
+            double G0 = hamiltonian(Corg); YACK_CHEM_PRINTLN(vpfx << "G0 = " << G0);
+            if(G0<=0)
+            {
+                YACK_CHEM_PRINTLN(vpfx << "  <SUCCESS G=0 @init/>");
+                transfer(C0,Corg);
+                return true;
+            }
+
+            double AX = computeSinglesExtent(G0); YACK_CHEM_PRINTLN(vpfx << "|Xi| = " << AX);
+            if(AX<=0)
+            {
+                YACK_CHEM_PRINTLN(vpfx << "  <SUCCESS |Xi|=0 @init/>");
+                transfer(C0,Corg);
+                return true;
+            }
+
+            //------------------------------------------------------------------
+            //
+            // updated remaining equations
+            //
+            //------------------------------------------------------------------
+            computeCouplesExtent(G0);
+
+
+            //------------------------------------------------------------------
+            //
+            // search the greatest global decrease and post-process
+            // global indicators
+            //
+            //------------------------------------------------------------------
+            G0 = searchGlobalDecrease();
+            lib(std::cerr << vpfx << "Corg=",Corg,vpfx);
+            YACK_CHEM_PRINTLN(vpfx << "G0 = " << G0);
+            if(G0<=0)
+            {
+                YACK_CHEM_PRINTLN(vpfx << "  <SUCCESS G=0 @move/>");
+                transfer(C0,Corg);
+                return true;
+            }
+            
+
+
+
+            exit(1);
+            goto CYCLE;
+
+#if 0
 
             //------------------------------------------------------------------
             //
@@ -521,7 +560,7 @@ namespace yack
             goto CYCLE;
 
             return false;
-
+#endif
         }
 
     }

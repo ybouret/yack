@@ -43,7 +43,7 @@ namespace yack
         xi(    ntab.next() ),
         Gamma( ntab.next() ),
         blocked( ntab.next(), transmogrify),
-
+        
         Psi(Nu.rows,Nu.cols),
         Omega0(N,N),
         iOmega(N,N),

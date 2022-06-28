@@ -107,7 +107,7 @@ namespace yack
             tableau          &xi;      //!< [N] extent
             tableau          &Gamma;   //!< [N] mass actions
             booltab           blocked; //!< [N] status
-
+            
             rmatrix           Psi;     //!< [NxM] jacobian of Gamma
             rmatrix           Omega0;  //!< [NxN]
             rmatrix           iOmega;  //!< [NxN]
@@ -134,10 +134,13 @@ namespace yack
             size_t buildMatchingCouples();                   //!< build all couples
             void   makeReactiveClusters();                   //!< make all detached clusters
             void   duplicateIntoLattice(const equilibria &); //!< fill lattice
-            double computeLatticeExtent();                   //!< compute all extents, return |Xi| for singles
-            double optimizeGlobalExtent(const double G0, const equilibrium &eq) throw(); //!< best extent for one eq
+
+            double computePartialExtent(const double G0, const equilibrium &eq) throw(); //!< best extent for one equilibrium
+            double computeSinglesExtent(const double G0) throw();                        //!< best extent for singles, return |Xi|
+            void   computeCouplesExtent(const double G0) throw();                        //!< best extent for couples
+
             double optimizedCombination(const cluster &) throw();
-            void   searchGlobalDecrease() throw(); //!< update Corg from optimizedCombination
+            double searchGlobalDecrease() throw(); //!< update Corg from optimizedCombination, return new hamiltonian
             void   suspendEquilibriumAt(const size_t ei) throw();
             size_t computeOmega() throw();
         };
