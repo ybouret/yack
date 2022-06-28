@@ -59,7 +59,7 @@ namespace yack
                 //
                 //--------------------------------------------------------------
                 ok = true; iota::load(Ci,Corg);
-                if(verbose) lattice.pad(std::cerr << vpfx << eq.name,eq) << " : [steady] " << G0 << std::endl;
+                if(verbose) lattice.pad(std::cerr << vpfx << eq.name,eq) << " : [already] " << G0 << std::endl;
             }
 
             return ax;

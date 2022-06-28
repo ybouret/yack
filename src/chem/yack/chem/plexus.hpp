@@ -146,6 +146,7 @@ namespace yack
             void   suspendEquilibriumAt(const size_t ei) throw();
             double probeCombinedExtents(const double G0) throw();
             size_t computeOmega() throw();
+            bool   successful(writable<double> &C0) throw();
         };
 
     }

@@ -72,6 +72,13 @@ namespace yack
             return false;
         }
 
+        bool plexus:: successful(writable<double> &C0) throw()
+        {
+            transfer(C0,Corg);
+            return true;
+        }
+
+
         bool plexus:: solve( writable<double> &C0 ) throw()
         {
             YACK_CHEM_MARKUP(vpfx, "PlexusSolve");
@@ -96,9 +103,9 @@ namespace yack
 
                     const equilibrium &eq = *** singles.head();
                     (void) eq.solve1D(K[*eq],C0,Corg);
-                    transfer(C0,Corg);
                     YACK_CHEM_PRINTLN(vpfx << "  <SUCCESS-1D/>");
-                } return true;
+                    return successful(C0);
+                }
 
                     //----------------------------------------------------------
                 default: // generic case, prepare consistent workspace
@@ -110,8 +117,9 @@ namespace yack
                     }
             }
 
-            unsigned cycle = 0;
-            double   G0    = hamiltonian(Corg);
+            unsigned cycle  = 0;
+            double   G0     = hamiltonian(Corg);
+            bool     maxDOF = true;
         CYCLE:
             ++cycle;
             YACK_CHEM_PRINTLN(vpfx << "-------- cycle #" << cycle << " --------");
@@ -121,11 +129,11 @@ namespace yack
             //
             //------------------------------------------------------------------
             YACK_CHEM_PRINTLN(vpfx << "G0 = " << G0);
+            YACK_CHEM_PRINTLN(vpfx << "   |_max d.o.f=" << maxDOF);
             if(G0<=0)
             {
                 YACK_CHEM_PRINTLN(vpfx << "  <SUCCESS G=0 @init/>");
-                transfer(C0,Corg);
-                return true;
+                return successful(C0);
             }
 
             //------------------------------------------------------------------
@@ -137,8 +145,7 @@ namespace yack
             if(AX<=0)
             {
                 YACK_CHEM_PRINTLN(vpfx << "  <SUCCESS |Xi|=0 @init/>");
-                transfer(C0,Corg);
-                return true;
+                return successful(C0);
             }
 
             //------------------------------------------------------------------
@@ -172,8 +179,7 @@ namespace yack
             if(G0<=0)
             {
                 YACK_CHEM_PRINTLN(vpfx << "  <SUCCESS G=0 @move/>");
-                transfer(C0,Corg);
-                return true;
+                return successful(C0);
             }
 
 
@@ -182,17 +188,15 @@ namespace yack
             // compute full local metrics
             //
             //------------------------------------------------------------------
-            //bool   maximum_dof  = true;
             size_t num_running = computeOmega();
-            
+            maxDOF             = true;
             YACK_CHEM_PRINTLN(vpfx << "#running=" << num_running);
 
             switch(num_running)
             {
                 case 0:
                     YACK_CHEM_PRINTLN(vpfx << "  <BLOCKED/>");
-                    transfer(C0,Corg);
-                    return true;
+                    return  successful(C0);
 
                 case 1:
                     assert(N>1);
@@ -225,7 +229,8 @@ namespace yack
             COMPUTE_EXTENT:
                 ++lap;
                 YACK_CHEM_PRINTLN(vpfx << "-------- extent " << cycle << "." << lap << " --------");
-                singles(std::cerr << "blocked=",blocked,"");
+                if(verbose) singles(std::cerr << "blocked=",blocked,"");
+                
 
                 //--------------------------------------------------------------
                 // solve system
@@ -268,6 +273,7 @@ namespace yack
                             YACK_CHEM_PRINT("[REJECT] ");
                             overshoot = true;          // need to recompute
                             suspendEquilibriumAt(ei);  // something bad happened
+                            --num_running;             // monitoring...
                         }
                         YACK_CHEM_PRINT(lm);
                     }
@@ -279,7 +285,7 @@ namespace yack
                 //--------------------------------------------------------------
                 if(overshoot)
                 {
-                    //maximum_dof = false;
+                    maxDOF = false;
                     goto COMPUTE_EXTENT;
                 }
             }
@@ -291,13 +297,12 @@ namespace yack
             //------------------------------------------------------------------
             G0 = probeCombinedExtents(G0);
 
-            if(cycle>=4)
+            if(cycle>=10)
             {
                 exit(1);
             }
             goto CYCLE;
-
-
+            
         }
 
     }
