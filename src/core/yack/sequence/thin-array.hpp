@@ -44,7 +44,8 @@ namespace yack
         contiguous<T>(),
         entry( coerce_cast<mutable_type>(arr)-1 ),
         count(num),
-        basis(entry+1)
+        basis(entry+1),
+        hired(NULL)
         {
         }
         
@@ -54,7 +55,8 @@ namespace yack
         contiguous<T>(),
         entry(other.entry),
         count(other.count),
-        basis(other.basis)
+        basis(other.basis),
+        hired(NULL)
         {
         }
 
@@ -65,10 +67,23 @@ namespace yack
         contiguous<T>(),
         entry( coerce_cast<mutable_type>( other()+1 ) - 1 ),
         count( other.size() ),
-        basis( entry+1 )
+        basis( entry+1 ),
+        hired( &other )
         {
             YACK_STATIC_CHECK(sizeof(U)>=sizeof(T),type_too_large);
         }
+
+        //! relink
+        template <typename U> inline
+        void relink() throw()
+        {
+            assert(hired);
+            const thin_array<U> &other = *static_cast< thin_array<U> *>(hired);
+            entry         = coerce_cast<mutable_type,U>( (U*)other()+1 ) - 1;
+            coerce(count) = other.size();
+            basis         = entry+1;
+        }
+
 
         //______________________________________________________________________
         //
@@ -81,7 +96,8 @@ namespace yack
         mutable_type *entry;
         const size_t  count;
         mutable_type *basis;
-        
+        void         *hired;
+
         YACK_DISABLE_ASSIGN(thin_array);
         inline virtual const_type *cxx() const throw() { return entry; }
         inline virtual const_type *mem() const throw() { return basis; }

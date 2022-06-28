@@ -56,6 +56,7 @@ namespace yack
 
         Kl( ltab.next() ),
         Xl( ltab.next() ),
+        Ok( ltab.next(), transmogrify),
 
         Cs(),
         LU(N>0? new rsolver(N) : NULL),
@@ -140,10 +141,11 @@ namespace yack
             if(Nl>0)
             {
                 ltab.make(Nl);         // linear memory
+                Ok.relink<double>();   // linear update
                 Cs.make(Nl,M);         // solution C
                 assert(Nl==Kl.size()); // check
                 assert(Nl==Xl.size()); // check
-
+                assert(Nl==Ok.size()); // check
 
                 //--------------------------------------------------------------
                 // first time Kl computation

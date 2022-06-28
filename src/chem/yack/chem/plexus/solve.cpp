@@ -57,6 +57,7 @@ namespace yack
             const size_t      ei  = *eq;
             const double      ax  = fabs( Xl[ei] = eq.solve1D(Kl[ei],Corg,Cend) );
             writable<double> &Ceq = Cs[ei];
+            bool             &ok  = Ok[ei];
 
             if(ax>0)
             {
@@ -72,15 +73,17 @@ namespace yack
                     // keep new extent @Cend
                     //----------------------------------------------------------
                     iota::load(Ceq,Cend);
-                    if(verbose) lattice.pad(std::cerr << vpfx << eq.name,eq) << " : " << G0 << " --> " << G1 << std::endl;
+                    ok = true;
+                    if(verbose) lattice.pad(std::cerr << vpfx << eq.name,eq) << " : [winning] " << G1 << std::endl;
                 }
                 else
                 {
                     //----------------------------------------------------------
                     // compensated by other equilibria => stalled @Corg
                     //----------------------------------------------------------
+                    ok = false;
                     iota::load(Ceq,Corg);
-                    if(verbose) lattice.pad(std::cerr << vpfx << eq.name,eq) << " : stalled" << std::endl;
+                    if(verbose) lattice.pad(std::cerr << vpfx << eq.name,eq) << " : [stalled] " << G0 << std::endl;
                 }
             }
             else
@@ -89,11 +92,12 @@ namespace yack
                 //--------------------------------------------------------------
                 // numerical equilibrium, |Xi|<=0, keep Corg
                 //--------------------------------------------------------------
-                if(verbose) lattice.pad(std::cerr << vpfx << eq.name,eq) << " : ready " << std::endl;
+                if(verbose) lattice.pad(std::cerr << vpfx << eq.name,eq) << " : [steady] " << G0 << std::endl;
                 iota::load(Ceq,Corg);
+                ok = true;
             }
 
-            std::cerr << "C{" << eq.name << "} = " << Ceq << " / ma=" << eq.mass_action(Kl[ei],Ceq) << std::endl;
+            //std::cerr << "C{" << eq.name << "} = " << Ceq << " / ma=" << eq.mass_action(Kl[ei],Ceq) << std::endl;
             return ax;
         }
 
@@ -126,8 +130,11 @@ namespace yack
             for(const vnode *node=cc.head;node;node=node->next)
             {
                 const equilibrium      &eq  = **node;
-                const readable<double> &Ceq = Cs[*eq];
-                eq.transfer(Ctry,Ceq); // transfer components only
+                const size_t            ei  = *eq;
+                if(Ok[ei])
+                {
+                    eq.transfer(Ctry,Cs[ei]); // transfer components only
+                }
             }
             return hamiltonian(Ctry);
         }
@@ -141,6 +148,8 @@ namespace yack
             const  cluster *cOpt = com.head;
             double          gOpt = optimizedCombination(*cOpt);
             iota::load(Cend,Ctry);
+
+            // update gOpt and Cend from better cluster
             for(const cluster *cc=cOpt->next;cc;cc=cc->next)
             {
                 const double gTmp  = optimizedCombination(*cc);
@@ -160,26 +169,7 @@ namespace yack
 
             // update Corg from best cluster
             iota::load(Corg,Cend);
-            std::cerr << " GG = " << hamiltonian(Corg) << std::endl;
-            std::cerr << " C1 = " << Corg << std::endl;
-
-            // restabilizing with chosen cluster
-            for(const vnode *node=cOpt->head;node;node=node->next)
-            {
-                const equilibrium &eq = **node;
-                const size_t       ei = *eq;
-                (void) eq.solve1D(Kl[ei],Corg,Ctry);
-                if(ei<=N)
-                {
-                    Xl[ei]      = 0;
-                }
-                YACK_CHEM_PRINTLN(vpfx << " (^) " << eq.name);
-                iota::load(Corg,Ctry);
-            }
-            std::cerr << " C2 = " << Corg << std::endl;
-
-            return hamiltonian(Corg);
-
+            return gOpt;
         }
 
 
@@ -318,11 +308,10 @@ namespace yack
 
             //------------------------------------------------------------------
             //
-            // search the greatest global decrease and post-process
-            // global indicators
+            // search the greatest global decrease
             //
             //------------------------------------------------------------------
-            G0 = searchGlobalDecrease();
+            G0 = searchGlobalDecrease(); // updated
             lib(std::cerr << vpfx << "Corg=",Corg,vpfx);
             YACK_CHEM_PRINTLN(vpfx << "G0 = " << G0);
             if(G0<=0)
@@ -331,64 +320,14 @@ namespace yack
                 transfer(C0,Corg);
                 return true;
             }
-            
 
-
-
-            exit(1);
-            goto CYCLE;
-
-#if 0
-
-            //------------------------------------------------------------------
-            //
-            // check status of |Xi| while computing all extents
-            //
-            //------------------------------------------------------------------
-            unsigned cycle = 0;
-            bool     first = true;
-            double   minAX = -1;
-
-        CYCLE:
-            ++cycle;
-            const double sumAbsXi = computeLatticeExtent();
-            YACK_CHEM_PRINTLN(vpfx << "|Xi|=" << sumAbsXi);
-
-
-            if(sumAbsXi<=0)
-            {
-                YACK_CHEM_PRINTLN(vpfx << "  <SUCCESS/>");
-                transfer(C0,Corg);
-                return true;
-            }
-
-            if(first)
-            {
-                first = false;
-                minAX = sumAbsXi;
-            }
-            else
-            {
-                assert(minAX>0);
-                YACK_CHEM_PRINTLN(vpfx << "|Xi| : from " << minAX << " to " << sumAbsXi);
-                minAX = sumAbsXi;
-            }
-
-
-            //------------------------------------------------------------------
-            //
-            // then choose the most promising cluster
-            //
-            //------------------------------------------------------------------
-            searchGlobalDecrease();
-            if(verbose) lib(std::cerr << vpfx << "Corg=",Corg,vpfx);
 
             //------------------------------------------------------------------
             //
             // compute full local metrics
             //
             //------------------------------------------------------------------
-            bool   ready       = true;
+            bool   maximum_dof  = true;
             size_t num_running = computeOmega();
 
             YACK_CHEM_PRINTLN(vpfx << "#running=" << num_running);
@@ -485,12 +424,12 @@ namespace yack
                 //--------------------------------------------------------------
                 if(overshoot)
                 {
-                    ready = false;
+                    maximum_dof = false;
                     goto COMPUTE_EXTENT;
                 }
 
             }
-            
+
             //------------------------------------------------------------------
             //
             // compute Cstp
@@ -543,7 +482,6 @@ namespace yack
                     }
                 }
 
-                const double    G0 = hamiltonian(Corg);
                 triplet<double> u  = { 0, -1, 1 };
                 triplet<double> g  = { G0, -1, hamiltonian(Cend) };
                 optimize::run_for(*this,u,g,optimize::inside);
@@ -553,14 +491,13 @@ namespace yack
 
             }
 
-            if(cycle>=10)
+            if(cycle>=4)
             {
                 exit(1);
             }
             goto CYCLE;
 
-            return false;
-#endif
+
         }
 
     }

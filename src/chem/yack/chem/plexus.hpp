@@ -120,6 +120,7 @@ namespace yack
             
             tableau          &Kl;      //!< [Nl] constants of lattice
             tableau          &Xl;      //!< [Nl] all extents
+            booltab           Ok;      //!< [Nl] decreasing
             rmatrix           Cs;      //!< [NlxM] all solving concentrations
             auto_ptr<rsolver> LU;      //!< [N]
 
