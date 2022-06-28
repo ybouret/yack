@@ -36,8 +36,8 @@ namespace yack
             //
             // readable interface
             //__________________________________________________________________
-            virtual size_t       size()                   const throw();
-            virtual const_type & operator[](const size_t) const throw();
+            virtual size_t       size()                   const throw(); //!< threads
+            virtual const_type & operator[](const size_t) const throw(); //!< context
 
             //__________________________________________________________________
             //

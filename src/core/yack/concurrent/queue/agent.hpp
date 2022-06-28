@@ -17,17 +17,7 @@ namespace yack
     {
 
 
-        //! todo
-        class agent
-        {
-        public:
-            agent(); //!< todo
-
-            ~agent() throw(); //!< todo
-
-        private:
-            YACK_DISABLE_COPY_AND_ASSIGN(agent);
-        };
+        class agent;
 
     }
 
