@@ -74,6 +74,7 @@ namespace yack
 
             //! move all actors
             void   move(writable<double> &C, const double xi) const throw();
+            
 
             //! maximum of involved
             double maximum(const readable<double> &C) const throw();

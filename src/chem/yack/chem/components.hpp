@@ -117,6 +117,10 @@ namespace yack
             //! move to a given extent
             void move(writable<double> &C, const double xi) const throw();
 
+            //! check if changed by xi
+            bool changed(const readable<double> &C, const double xi, writable<double> &Ctry) const throw();
+
+
 
             //! find private limits
             const limits & private_limits(const readable<double> &C, const size_t w) const throw();

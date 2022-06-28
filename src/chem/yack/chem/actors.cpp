@@ -177,6 +177,8 @@ namespace yack
             }
         }
 
+
+        
         double actors:: maximum(const readable<double> &C) const throw()
         {
             double ans = 0;

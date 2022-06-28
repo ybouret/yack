@@ -177,6 +177,23 @@ namespace yack
             prod.move(C,+xi);
         }
 
+
+        bool components:: changed(const readable<double> &C, const double xi, writable<double> &Ctry) const throw()
+        {
+            for(const cnode *node=head();node;node=node->next)
+            {
+                const size_t j = *****node;
+                Ctry[j] = C[j];
+            }
+            move(Ctry,xi);
+            for(const cnode *node=head();node;node=node->next)
+            {
+                const size_t j = *****node;
+                if(fabs(Ctry[j]-C[j]) > 0) return true;
+            }
+            return false;
+        }
+
         void components:: hessian(matrix<double> &H, const double K, const readable<double> &C, writable<double> &arr) const throw()
         {
             H.ld(0);

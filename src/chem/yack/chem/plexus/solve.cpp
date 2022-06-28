@@ -204,10 +204,18 @@ namespace yack
             {
                 const equilibrium &eq = ***node;
                 const size_t       ei = *eq;
-                Xtry[ei] = fabs( Xl[ei] = eq.solve1D(K[ei],Corg,Ctry));
+                const double       xx = ( Xl[ei] =eq.solve1D(K[ei],Corg,Ctry) );
+                Xtry[ei] = fabs(xx);
+                if( eq.changed(Corg,xx,Ctry) )
+                {
+                    YACK_CHEM_PRINTLN(vpfx << eq.name << " is changed for " << xx);
+                }
+                else
+                {
+                    YACK_CHEM_PRINTLN(vpfx << eq.name << " underflow for " << xx );
+                }
             }
-            singles(std::cerr << "Xi_new=",Xtry,"");
-
+            singles(std::cerr << "|Xi| =",Xtry,"");
             AX = sorted::sum(Xtry,sorted::by_value);
             if(AX<=0)
             {
