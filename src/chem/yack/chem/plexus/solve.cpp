@@ -1,5 +1,4 @@
 #include "yack/chem/plexus.hpp"
-#include "yack/chem/eqs/cross.hpp"
 #include "yack/exception.hpp"
 #include "yack/math/iota.hpp"
 #include "yack/apex/integer.hpp"
@@ -14,115 +13,6 @@ namespace yack
 
     namespace chemical
     {
-
-        //----------------------------------------------------------------------
-        //
-        // hamiltonian of the system
-        //
-        //----------------------------------------------------------------------
-        double plexus:: hamiltonian(const readable<double> &C)
-        {
-            for(const enode *node=singles.head();node;node=node->next)
-            {
-                const equilibrium &eq = ***node;
-                const size_t       ei = *eq;
-                Xtry[ei] = squared( eq.mass_action(K[ei],C) );
-            }
-            return sorted::sum(Xtry,sorted::by_value)/N;
-        }
-
-        //----------------------------------------------------------------------
-        //
-        // hamiltonian( (1-u) * Corg + u * Cend )
-        //
-        //----------------------------------------------------------------------
-        double plexus:: operator()(const double u)
-        {
-            const double v = 1.0-u;
-            for(const anode *node=active.head;node;node=node->next)
-            {
-                const size_t j = ***node;
-                Ctry[j] = v * Corg[j] + u * Cend[j];
-            }
-            return hamiltonian(Ctry);
-        }
-
-        double plexus:: computePartialExtent(const double G0, const equilibrium &eq) throw()
-        {
-            //------------------------------------------------------------------
-            //
-            // compute extent and solution in Cend
-            //
-            //------------------------------------------------------------------
-            const size_t      ei  = *eq;
-            const double      ax  = fabs( Xl[ei] = eq.solve1D(Kl[ei],Corg,Cend) );
-            writable<double> &Ceq = Cs[ei];
-            bool             &ok  = Ok[ei];
-
-            if(ax>0)
-            {
-                //--------------------------------------------------------------
-                //
-                // out of equilibrium
-                //
-                //--------------------------------------------------------------
-                const double G1 = hamiltonian(Cend);
-                if(G1<G0)
-                {
-                    //----------------------------------------------------------
-                    // keep new extent @Cend
-                    //----------------------------------------------------------
-                    iota::load(Ceq,Cend);
-                    ok = true;
-                    if(verbose) lattice.pad(std::cerr << vpfx << eq.name,eq) << " : [winning] " << G1 << std::endl;
-                }
-                else
-                {
-                    //----------------------------------------------------------
-                    // compensated by other equilibria => stalled @Corg
-                    //----------------------------------------------------------
-                    ok = false;
-                    iota::load(Ceq,Corg);
-                    if(verbose) lattice.pad(std::cerr << vpfx << eq.name,eq) << " : [stalled] " << G0 << std::endl;
-                }
-            }
-            else
-            {
-                assert(ax<=0);
-                //--------------------------------------------------------------
-                // numerical equilibrium, |Xi|<=0, keep Corg
-                //--------------------------------------------------------------
-                if(verbose) lattice.pad(std::cerr << vpfx << eq.name,eq) << " : [steady] " << G0 << std::endl;
-                iota::load(Ceq,Corg);
-                ok = true;
-            }
-
-            //std::cerr << "C{" << eq.name << "} = " << Ceq << " / ma=" << eq.mass_action(Kl[ei],Ceq) << std::endl;
-            return ax;
-        }
-
-        double plexus:: computeSinglesExtent(const double G0) throw()
-        {
-            YACK_CHEM_MARKUP(vpfx, "computeSinglesExtent");
-            for(const enode *node=singles.head();node;node=node->next)
-            {
-                const equilibrium &eq = ***node;
-                const size_t       ei = *eq;
-                Xtry[ei] = computePartialExtent(G0,***node); assert(Xtry[ei]>=0);
-            }
-            return sorted::sum(Xtry,sorted::by_value);
-        }
-
-        void plexus:: computeCouplesExtent(const double G0) throw()
-        {
-            YACK_CHEM_MARKUP(vpfx, "computeCouplesExtent");
-            for(const enode *node=couples.head();node;node=node->next)
-            {
-                (void) computePartialExtent(G0,***node);
-            }
-        }
-
-        
 
         double plexus:: optimizedCombination(const cluster &cc) throw()
         {
@@ -173,66 +63,14 @@ namespace yack
         }
 
 
-        size_t plexus:: computeOmega() throw()
+        static inline bool has_winning(const readable<bool> &flags) throw()
         {
-            YACK_CHEM_MARKUP(vpfx, "computeOmega");
-            size_t num_running = N;
-            for(const enode *node=singles.head();node;node=node->next)
+            for(size_t i=flags.size();i>0;--i)
             {
-                const equilibrium   &eq  = ***node;
-                const size_t         ei  = *eq;
-                writable<double>    &psi = Psi[ei];
-                writable<double>    &Omi = Omega0[ei];
-                writable<int>       &nuA = NuA[ei];
-                const readable<int> &nui = Nu[ei];
-                double              &Gam = Gamma[ei];
-
-                Gam = eq.grad_action(psi,K[ei],Corg,Ctry);
-                const double d = sorted::dot(psi,nui,Ctry);
-                if(d>=0)
-                {
-                    --num_running;
-                    Omi.ld(0);
-                    nuA.ld(0);
-                    Omi[ei]     = 1.0;
-                    Gam         = 0.0;
-                    blocked[ei] = true;
-                }
-                else
-                {
-                    if( fabs(Xl[ei]) <= 0) Gam = 0.0; // regularize a little
-                    iota::load(nuA,nui);
-                    blocked[ei] = false;
-                    Omi[ei] = -d;
-                    for(const enode *scan=node->prev;scan;scan=scan->prev)
-                    {
-                        const size_t       k   = ****scan;
-                        Omi[k] = -sorted::dot(psi,Nu[k],Ctry);
-                    }
-                    for(const enode *scan=node->next;scan;scan=scan->next)
-                    {
-                        const size_t       k   = ****scan;
-                        Omi[k] = -sorted::dot(psi,Nu[k],Ctry);
-                    }
-                }
+                if(flags[i]) return true;
             }
-
-            singles(std::cerr << "Omega=",Omega0,"");
-            return num_running;
+            return false;
         }
-
-        void   plexus:: suspendEquilibriumAt(const size_t ei) throw()
-        {
-            assert(!blocked[ei]);
-            writable<double> &Omi = Omega0[ei];
-            blocked[ei] = true;
-            NuA[ei].ld(0); // set inactive
-            Xl[ei]    = 0; // block Xi
-            Gamma[ei] = 0; // block Gamma
-            Omi.ld(0);     // set inactive Omega
-            Omi[ei] = 1.0; // regularize
-        }
-
 
         bool plexus:: solve( writable<double> &C0 ) throw()
         {
@@ -272,17 +110,17 @@ namespace yack
                     }
             }
 
-            unsigned cycle=0;
-
+            unsigned cycle = 0;
+            double   G0    = hamiltonian(Corg);
         CYCLE:
             ++cycle;
             YACK_CHEM_PRINTLN(vpfx << "-------- cycle #" << cycle << " --------");
             //------------------------------------------------------------------
             //
-            // check status of singles |Xi|
+            // check hamiltonian
             //
             //------------------------------------------------------------------
-            double G0 = hamiltonian(Corg); YACK_CHEM_PRINTLN(vpfx << "G0 = " << G0);
+            YACK_CHEM_PRINTLN(vpfx << "G0 = " << G0);
             if(G0<=0)
             {
                 YACK_CHEM_PRINTLN(vpfx << "  <SUCCESS G=0 @init/>");
@@ -290,6 +128,11 @@ namespace yack
                 return true;
             }
 
+            //------------------------------------------------------------------
+            //
+            // check singles |Xi|
+            //
+            //------------------------------------------------------------------
             double AX = computeSinglesExtent(G0); YACK_CHEM_PRINTLN(vpfx << "|Xi| = " << AX);
             if(AX<=0)
             {
@@ -305,13 +148,25 @@ namespace yack
             //------------------------------------------------------------------
             computeCouplesExtent(G0);
 
+            //------------------------------------------------------------------
+            //
+            // check status
+            //
+            //------------------------------------------------------------------
+            if( !has_winning(Ok) )
+            {
+                YACK_CHEM_PRINTLN(vpfx << "  <NO WINNING/>");
+                return false;
+            }
+
 
             //------------------------------------------------------------------
             //
-            // search the greatest global decrease
+            // search the greatest global decrease among winning
+            // equilibria, among clusters
             //
             //------------------------------------------------------------------
-            G0 = searchGlobalDecrease(); // updated
+            G0 = searchGlobalDecrease();
             lib(std::cerr << vpfx << "Corg=",Corg,vpfx);
             YACK_CHEM_PRINTLN(vpfx << "G0 = " << G0);
             if(G0<=0)
@@ -327,9 +182,9 @@ namespace yack
             // compute full local metrics
             //
             //------------------------------------------------------------------
-            bool   maximum_dof  = true;
+            //bool   maximum_dof  = true;
             size_t num_running = computeOmega();
-
+            
             YACK_CHEM_PRINTLN(vpfx << "#running=" << num_running);
 
             switch(num_running)
@@ -424,10 +279,9 @@ namespace yack
                 //--------------------------------------------------------------
                 if(overshoot)
                 {
-                    maximum_dof = false;
+                    //maximum_dof = false;
                     goto COMPUTE_EXTENT;
                 }
-
             }
 
             //------------------------------------------------------------------
@@ -435,61 +289,7 @@ namespace yack
             // compute Cstp
             //
             //------------------------------------------------------------------
-            rvector ratio(M,as_capacity);
-            for(const anode *node=active.head;node;node=node->next)
-            {
-                const size_t j = ***node; assert(Corg[j]>=0);
-                for(size_t i=N;i>0;--i)
-                {
-                    Xtry[i] = NuA[i][j] * xi[i];
-                }
-                const double d = (Cstp[j] = sorted::sum(Xtry,sorted::by_abs_value));
-                if(d<0)
-                {
-                    const double c = Corg[j];
-                    ratio << (c/-d);
-                }
-            }
-
-            double expand = 2.0;
-            if(ratio.size())
-            {
-                hsort(ratio,comparison::increasing<double>);
-                //ratio.keep_only_front();
-                YACK_CHEM_PRINTLN("ratio=" << ratio);
-                expand = 0.99 * ratio.front();
-            }
-            else
-            {
-                YACK_CHEM_PRINTLN(" [unlimited]");
-            }
-
-            {
-                for(const anode *node=active.head;node;node=node->next)
-                {
-                    const size_t j = ***node; assert(Corg[j]>=0);
-                    Cend[j] = max_of(0.0,Corg[j]+expand*Cstp[j]);
-                }
-
-                if(true)
-                {
-                    ios::ocstream fp("hamiltonian.dat");
-                    const size_t  np = 1000;
-                    for(size_t i=0;i<=np;++i)
-                    {
-                        const double uu = i/double(np);
-                        fp("%.15g %.15g\n",uu, (*this)(uu));
-                    }
-                }
-
-                triplet<double> u  = { 0, -1, 1 };
-                triplet<double> g  = { G0, -1, hamiltonian(Cend) };
-                optimize::run_for(*this,u,g,optimize::inside);
-
-                iota::load(Corg,Ctry);
-                std::cerr << "reached " << g.b << " from " << G0 << std::endl;
-
-            }
+            G0 = probeCombinedExtents(G0);
 
             if(cycle>=4)
             {

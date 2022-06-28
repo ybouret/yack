@@ -53,6 +53,7 @@ namespace yack
         Ctry( mtab.next() ),
         Cend( mtab.next() ),
         Cstp( mtab.next() ),
+        ratio(M,as_capacity),
 
         Kl( ltab.next() ),
         Xl( ltab.next() ),

@@ -117,6 +117,7 @@ namespace yack
             tableau          &Ctry;    //!< [M] workspace
             tableau          &Cend;    //!< [M] workspace
             tableau          &Cstp;    //!< [M] workspace
+            rvector           ratio;   //!< [0..M]
             
             tableau          &Kl;      //!< [Nl] constants of lattice
             tableau          &Xl;      //!< [Nl] all extents
@@ -143,6 +144,7 @@ namespace yack
             double optimizedCombination(const cluster &) throw();
             double searchGlobalDecrease() throw(); //!< update Corg from optimizedCombination, return new hamiltonian
             void   suspendEquilibriumAt(const size_t ei) throw();
+            double probeCombinedExtents(const double G0) throw();
             size_t computeOmega() throw();
         };
 
