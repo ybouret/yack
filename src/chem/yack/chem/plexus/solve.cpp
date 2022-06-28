@@ -131,9 +131,9 @@ namespace yack
                     }
             }
 
-            unsigned retry  = 0;
-            unsigned cycle  = 0;
-            double   G0     = hamiltonian(Corg);
+            unsigned cycle       = 0;
+            double   G0          = hamiltonian(Corg);
+
         CYCLE:
             ++cycle;
             YACK_CHEM_PRINTLN(vpfx << "-------- cycle #" << cycle << " --------");
@@ -195,6 +195,27 @@ namespace yack
                 return successful(C0);
             }
 
+            //------------------------------------------------------------------
+            //
+            // get the modified singles extent
+            //
+            //------------------------------------------------------------------
+            for(const enode *node=singles.head();node;node=node->next)
+            {
+                const equilibrium &eq = ***node;
+                const size_t       ei = *eq;
+                Xtry[ei] = fabs( Xl[ei] = eq.solve1D(K[ei],Corg,Ctry));
+            }
+            singles(std::cerr << "Xi_new=",Xtry,"");
+
+            AX = sorted::sum(Xtry,sorted::by_value);
+            if(AX<=0)
+            {
+                YACK_CHEM_PRINTLN(vpfx << "  <SUCCESS |Xi| =0 @move/>");
+                return successful(C0);
+            }
+
+
 
             //------------------------------------------------------------------
             //
@@ -208,7 +229,7 @@ namespace yack
             switch(num_running)
             {
                 case 0:
-                    YACK_CHEM_PRINTLN(vpfx << "  <BLOCKED/>");
+                    YACK_CHEM_PRINTLN(vpfx << "  <ALL BLOCKED/>");
                     return  successful(C0);
 
                 case 1:
@@ -310,19 +331,16 @@ namespace yack
             //------------------------------------------------------------------
             const double G1 = probeCombinedExtents(G0);
             YACK_CHEM_PRINTLN(vpfx << "hamiltonian: " << G0 << " --> " << G1 << " @maximum_dof=" << maximum_dof);
+#if 1
             if(G1>=G0)
             {
                 if(maximum_dof)
                 {
-                    std::cerr << "#Retry=" << retry << std::endl;
-                    if(retry++ >= 4 )
-                    {
-                        std::cerr << "Already Tried!!" << std::endl;
-                        successful(C0);
-                        exit(1);
-                    }
+                    successful(C0);
+                    exit(1);
                 }
             }
+#endif
             G0 = G1;
 
 

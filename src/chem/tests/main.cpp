@@ -9,7 +9,6 @@ YACK_UTEST_DECL(16)
     YACK_UTEST(eqs);
     YACK_UTEST(dist);
     YACK_UTEST(comb);
-    YACK_UTEST(reactor);
     YACK_UTEST(plexus);
 }
 YACK_UTEST_EXEC()
