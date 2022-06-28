@@ -315,7 +315,7 @@ namespace yack
                 if(maximum_dof)
                 {
                     std::cerr << "#Retry=" << retry << std::endl;
-                    if(retry++ > 0 )
+                    if(retry++ >= 4 )
                     {
                         std::cerr << "Already Tried!!" << std::endl;
                         successful(C0);
