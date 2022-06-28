@@ -200,6 +200,7 @@ namespace yack
             // get the modified singles extent
             //
             //------------------------------------------------------------------
+            bool underflow = true;
             for(const enode *node=singles.head();node;node=node->next)
             {
                 const equilibrium &eq = ***node;
@@ -209,6 +210,7 @@ namespace yack
                 if( eq.changed(Corg,xx,Ctry) )
                 {
                     YACK_CHEM_PRINTLN(vpfx << eq.name << " is changed for " << xx);
+                    underflow = false;
                 }
                 else
                 {
@@ -338,7 +340,7 @@ namespace yack
             //
             //------------------------------------------------------------------
             const double G1 = probeCombinedExtents(G0);
-            YACK_CHEM_PRINTLN(vpfx << "hamiltonian: " << G0 << " --> " << G1 << " @maximum_dof=" << maximum_dof);
+            YACK_CHEM_PRINTLN(vpfx << "hamiltonian: " << G0 << " --> " << G1 << " @maximum_dof=" << maximum_dof << " | underflow=" << underflow );
 #if 1
             if(G1>=G0)
             {
