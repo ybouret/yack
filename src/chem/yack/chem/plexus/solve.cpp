@@ -74,7 +74,21 @@ namespace yack
 
         bool plexus:: successful(writable<double> &C0) throw()
         {
+            YACK_CHEM_MARKUP(vpfx, "successful");
             transfer(C0,Corg);
+            if(verbose)
+            {
+                lib(std::cerr << vpfx  << "C0=",C0,vpfx);
+                for(const enode *node=singles.head();node;node=node->next)
+                {
+                    const equilibrium &eq = ***node;
+                    const size_t       ei = *eq;
+                    singles.pad(std::cerr << vpfx << eq.name,eq);
+                    std::cerr << " | ma=" << std::setw(15) << eq.mass_action(K[ei],C0);
+                    std::cerr << " | Xi=" << std::setw(15) << eq.solve1D(K[ei],C0,Ctry);
+                    std::cerr << std::endl;
+                }
+            }
             return true;
         }
 
@@ -302,7 +316,7 @@ namespace yack
                 exit(1);
             }
             goto CYCLE;
-            
+
         }
 
     }
