@@ -11,7 +11,14 @@ namespace yack
     namespace concurrent
     {
 
-        
+        class agency
+        {
+        public:
+            virtual ~agency() throw() {}
+
+        private:
+            YACK_DISABLE_COPY_AND_ASSIGN(agency);
+        };
 
 
     }
