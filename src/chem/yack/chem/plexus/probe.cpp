@@ -14,7 +14,11 @@ namespace yack
     {
         double plexus:: probeCombinedExtents(const double G0) throw()
         {
+            //------------------------------------------------------------------
+            //
             // build Cstp = Nu'*xi
+            //
+            //------------------------------------------------------------------
             ratio.free();
             for(const anode *node=active.head;node;node=node->next)
             {
@@ -31,20 +35,29 @@ namespace yack
                 }
             }
 
+
+            //------------------------------------------------------------------
+            //
+            // check expansion
+            //
+            //------------------------------------------------------------------
             double expand = 2.0;
             if(ratio.size())
             {
                 hsort(ratio,comparison::increasing<double>);
-                //ratio.keep_only_front();
                 YACK_CHEM_PRINTLN("ratio=" << ratio);
-                expand = 0.99 * ratio.front();
+                expand = min_of(0.99 * ratio.front(),expand);
             }
             else
             {
                 YACK_CHEM_PRINTLN(" [unlimited]");
             }
 
-
+            //------------------------------------------------------------------
+            //
+            // build maxium search concentration
+            //
+            //------------------------------------------------------------------
             for(const anode *node=active.head;node;node=node->next)
             {
                 const size_t j = ***node; assert(Corg[j]>=0);
@@ -67,8 +80,6 @@ namespace yack
             optimize::run_for(*this,u,g,optimize::inside);
 
             iota::load(Corg,Ctry);
-            std::cerr << "reached " << g.b << " from " << G0 << std::endl;
-
             return g.b;
         }
 

@@ -131,9 +131,9 @@ namespace yack
                     }
             }
 
+            unsigned retry  = 0;
             unsigned cycle  = 0;
             double   G0     = hamiltonian(Corg);
-            bool     maxDOF = true;
         CYCLE:
             ++cycle;
             YACK_CHEM_PRINTLN(vpfx << "-------- cycle #" << cycle << " --------");
@@ -143,7 +143,6 @@ namespace yack
             //
             //------------------------------------------------------------------
             YACK_CHEM_PRINTLN(vpfx << "G0 = " << G0);
-            YACK_CHEM_PRINTLN(vpfx << "   |_max d.o.f=" << maxDOF);
             if(G0<=0)
             {
                 YACK_CHEM_PRINTLN(vpfx << "  <SUCCESS G=0 @init/>");
@@ -203,7 +202,7 @@ namespace yack
             //
             //------------------------------------------------------------------
             size_t num_running = computeOmega();
-            maxDOF             = true;
+            bool   maximum_dof = true;
             YACK_CHEM_PRINTLN(vpfx << "#running=" << num_running);
 
             switch(num_running)
@@ -299,7 +298,7 @@ namespace yack
                 //--------------------------------------------------------------
                 if(overshoot)
                 {
-                    maxDOF = false;
+                    maximum_dof = false;
                     goto COMPUTE_EXTENT;
                 }
             }
@@ -309,12 +308,24 @@ namespace yack
             // compute Cstp
             //
             //------------------------------------------------------------------
-            G0 = probeCombinedExtents(G0);
-
-            if(cycle>=10)
+            const double G1 = probeCombinedExtents(G0);
+            YACK_CHEM_PRINTLN(vpfx << "hamiltonian: " << G0 << " --> " << G1 << " @maximum_dof=" << maximum_dof);
+            if(G1>=G0)
             {
-                exit(1);
+                if(maximum_dof)
+                {
+                    std::cerr << "#Retry=" << retry << std::endl;
+                    if(retry++ > 0 )
+                    {
+                        std::cerr << "Already Tried!!" << std::endl;
+                        successful(C0);
+                        exit(1);
+                    }
+                }
             }
+            G0 = G1;
+
+
             goto CYCLE;
 
         }
