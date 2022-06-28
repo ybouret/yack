@@ -33,7 +33,7 @@ namespace yack
 
         //----------------------------------------------------------------------
         //
-        // hamiltonion( (1-u) * Corg + u * Cend )
+        // hamiltonian( (1-u) * Corg + u * Cend )
         //
         //----------------------------------------------------------------------
         double plexus:: operator()(const double u)
@@ -51,7 +51,7 @@ namespace yack
         {
             //------------------------------------------------------------------
             //
-            // compute absolute extent
+            // compute extent and solution in Cend
             //
             //------------------------------------------------------------------
             const size_t ei = *eq;
@@ -86,9 +86,9 @@ namespace yack
             else
             {
                 //--------------------------------------------------------------
-                // numerical equilibrium
+                // numerical equilibrium, |Xi|<=0
                 //--------------------------------------------------------------
-                if(verbose) lattice.pad(std::cerr << vpfx << eq.name,eq) << " : ready" << std::endl;
+                if(verbose) lattice.pad(std::cerr << vpfx << eq.name,eq) << " : ready " << std::endl;
                 iota::load(Cs[ei],Corg);
             }
 
@@ -156,7 +156,7 @@ namespace yack
             {
                 const equilibrium      &eq  = **node;
                 const readable<double> &Ceq = Cs[*eq];
-                eq.transfer(Ctry,Ceq);
+                eq.transfer(Ctry,Ceq); // transfer partial solutions
             }
             return hamiltonian(Ctry);
         }
@@ -165,11 +165,12 @@ namespace yack
         void plexus:: searchGlobalDecrease() throw()
         {
             YACK_CHEM_MARKUP(vpfx, "searchGlobalDecrease");
-            const  cluster *cc   = com.head;
-            const  cluster *cOpt = cc;
+
+            // initialize with first cluster and gOpt @Cend
+            const  cluster *cOpt = com.head;
             double          gOpt = optimizedCombination(*cOpt);
             iota::load(Cend,Ctry);
-            for(cc=cc->next;cc;cc=cc->next)
+            for(const cluster *cc=cOpt->next;cc;cc=cc->next)
             {
                 const double gTmp  = optimizedCombination(*cc);
                 if(gTmp<gOpt)
@@ -179,12 +180,14 @@ namespace yack
                     iota::load(Cend,Ctry);
                 }
             }
+
             if(verbose)
             {
                 std::cerr << vpfx << " => "  << *cOpt << std::endl;
                 std::cerr << vpfx << " => @" <<  gOpt << " from " << hamiltonian(Corg) << std::endl;
             }
 
+            // update Corg from best cluster
             iota::load(Corg,Cend);
 
             // restabilizing with chosen cluster
@@ -243,11 +246,7 @@ namespace yack
                 }
             }
 
-            //singles(std::cerr << "blocked=",blocked,"");
-            //singles(std::cerr << "Gamma=",Gamma,"");
             singles(std::cerr << "Omega=",Omega0,"");
-            //singles(std::cerr << "NuA=",NuA,"");
-
             return num_running;
         }
 
@@ -308,6 +307,8 @@ namespace yack
             //
             //------------------------------------------------------------------
             unsigned cycle = 0;
+            bool     first = true;
+            double   minAX = -1;
 
         CYCLE:
             ++cycle;
@@ -318,8 +319,22 @@ namespace yack
             if(sumAbsXi<=0)
             {
                 YACK_CHEM_PRINTLN(vpfx << "  <SUCCESS/>");
+                transfer(C0,Corg);
                 return true;
             }
+
+            if(first)
+            {
+                first = false;
+                minAX = sumAbsXi;
+            }
+            else
+            {
+                assert(minAX>0);
+                YACK_CHEM_PRINTLN(vpfx << "|Xi| : from " << minAX << " to " << sumAbsXi);
+                minAX = sumAbsXi;
+            }
+
 
             //------------------------------------------------------------------
             //
@@ -343,6 +358,7 @@ namespace yack
             {
                 case 0:
                     YACK_CHEM_PRINTLN(vpfx << "  <BLOCKED/>");
+                    transfer(C0,Corg);
                     return true;
 
                 case 1:
