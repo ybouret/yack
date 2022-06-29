@@ -6,6 +6,8 @@ using namespace yack;
 
 YACK_UTEST(sync_queue)
 {
+    YACK_SIZEOF(concurrent::pipeline::drone);
+    YACK_SIZEOF(concurrent::pipeline);
 
     const concurrent::topology topo;
     concurrent::thread::verbose = true;
@@ -13,8 +15,6 @@ YACK_UTEST(sync_queue)
     std::cerr << "topo=" << topo << std::endl;
     concurrent::pipeline Q(topo);
 
-    YACK_SIZEOF(concurrent::pipeline::drone);
-    YACK_SIZEOF(concurrent::pipeline);
 
     
 }

@@ -1,6 +1,8 @@
 #include "yack/concurrent/queue/pipeline.hpp"
 #include "yack/memory/allocator/dyadic.hpp"
 
+#include "yack/system/wtime.hpp"
+
 namespace yack
 {
     namespace concurrent
@@ -36,7 +38,7 @@ namespace yack
 {
     namespace concurrent
     {
-        const char pipeline:: clid[] = "concurrent::pipeline";
+        const char pipeline:: clid[] = "[pipeline]";
 
 
         pipeline:: pipeline(const topology &topo) :
@@ -60,7 +62,7 @@ namespace yack
             //__________________________________________________________________
             {
                 YACK_LOCK(sync);
-                YACK_THREAD_PRINTLN(clid << "    <create #" << threads << ">");
+                YACK_THREAD_PRINTLN(clid << " <create #" << threads << ">");
             }
             pipeline &host    = *this;
             size_t    current = 0;
@@ -81,7 +83,7 @@ namespace yack
 
             {
                 YACK_LOCK(sync);
-                YACK_THREAD_PRINTLN(clid << "    all threads are launched...");
+                YACK_THREAD_PRINTLN(clid << " [all threads are launched...]");
             }
 
 
@@ -95,18 +97,19 @@ namespace yack
                 sync.lock();
                 if(ready<threads)
                 {
-                    YACK_THREAD_PRINTLN(clid << "    <still initializing>");
+                    YACK_THREAD_PRINTLN(clid << "   <still initializing>");
                     gate.wait(sync);
-                    YACK_THREAD_PRINTLN(clid << "    <done initializing/>");
+                    YACK_THREAD_PRINTLN(clid << "   <done initializing/>");
                     sync.unlock();
                 }
                 else
                 {
-                    YACK_THREAD_PRINTLN(clid << "    <already initialized/>");
+                    YACK_THREAD_PRINTLN(clid << "   <already initialized/>");
                     sync.unlock();
                 }
             }
             assert(threads==ready);
+            YACK_THREAD_PRINTLN(clid << " [...and ready!]");
 
             //__________________________________________________________________
             //
@@ -124,7 +127,7 @@ namespace yack
                     {
                         char who[32];
                         w.ctx.format(who,sizeof(who));
-                        std::cerr << clid << "      ";
+                        std::cerr << clid << "   -> ";
                         coerce(w.thr).assign(j,who);
                     }
                     else
@@ -142,7 +145,7 @@ namespace yack
             //__________________________________________________________________
             //
             //
-            // initializing
+            // initializing the queue
             //
             //__________________________________________________________________
             for(size_t i=threads;i>0;--i)
@@ -162,17 +165,15 @@ namespace yack
             assert(threads==available.size);
 
 
-
-            YACK_THREAD_PRINTLN(clid << "    <create/>");
+            YACK_THREAD_PRINTLN(clid << " <create/>");
         }
 
 
         pipeline:: ~pipeline() throw()
         {
-            YACK_THREAD_PRINTLN(clid << "    <leave>");
-
-            available.restart();
+            YACK_THREAD_PRINTLN(clid << " <terminate>");
             finish(threads);
+            YACK_THREAD_PRINTLN(clid << " <terminate/>");
         }
 
 
@@ -185,11 +186,44 @@ namespace yack
         void pipeline:: finish(size_t count) throw()
         {
             assert(count<=threads);
+            assert(ready>=count);
 
+            sync.lock();
+            // remove further jobs
+            sync.unlock();
 
+            // waiting for computing to end
+
+            // shutdown all available
+            assert(count==available.size);
+            assert(ready==available.size);
+            while(available.size)
+            {
+                assert(NULL == available.tail->task);
+                available.pop_back()->cond.signal();
+            }
+
+            // waiting for all threads to come back
+            {
+                sync.lock();
+                if(ready>0)
+                {
+                    YACK_THREAD_PRINTLN(clid << "   <still finishing>");
+                    gate.wait(sync);
+                    YACK_THREAD_PRINTLN(clid << "   <done finishing/>");
+                    sync.unlock();
+                }
+                else
+                {
+                    YACK_THREAD_PRINTLN(clid << "   <already finished/>");
+                    sync.unlock();
+                }
+            }
+
+            // cleaning up memory
             while(count>0)
             {
-                --count;
+                destruct(&squad[count--]);
             }
             zkill();
         }
@@ -229,12 +263,29 @@ namespace yack
             //------------------------------------------------------------------
             agent.cond.wait(sync);
 
+            //------------------------------------------------------------------
+            //
             // waking up on a locked mutex
+            //
+            //------------------------------------------------------------------
             if(NULL == agent.task)
             {
-                YACK_THREAD_PRINTLN(clid << " [done]");
+                //--------------------------------------------------------------
+                // done!
+                //--------------------------------------------------------------
+                assert(ready>0);
+                YACK_THREAD_PRINTLN(clid << " " << agent.ctx << " [done]");
+                --ready;
+                if(ready<=0) gate.broadcast();
                 sync.unlock();
                 return;
+            }
+            else
+            {
+                //--------------------------------------------------------------
+                // work!
+                //--------------------------------------------------------------
+                YACK_THREAD_PRINTLN(clid << " " << agent.ctx << " [work]");
             }
 
 
