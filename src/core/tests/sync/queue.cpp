@@ -93,15 +93,15 @@ namespace yack
                         finish(current);
                     }
                 }
-                --squad;
+                
                 {
                     YACK_LOCK(sync);
                     YACK_THREAD_PRINTLN(clid << "    all threads are launched...");
-                    for(size_t i=1;i<=threads;++i)
+                    for(size_t i=0;i<threads;++i)
                     {
                         const worker &w = squad[i];
                         assert(w.ctx.size==threads);
-                        assert(w.ctx.indx==i);
+                        assert(w.ctx.rank==i);
                     }
                 }
 
@@ -128,7 +128,7 @@ namespace yack
                     }
                 }
                 assert(threads==ready);
-                
+                --squad;
 
                 //______________________________________________________________
                 //
@@ -136,6 +136,14 @@ namespace yack
                 // placement
                 //
                 //______________________________________________________________
+                try {
+
+                }
+                catch(...)
+                {
+                    finish(threads);
+                    throw;
+                }
 
                 YACK_THREAD_PRINTLN(clid << "    <create/>");
             }
