@@ -14,26 +14,50 @@ namespace yack
 {
     namespace concurrent
     {
+        //______________________________________________________________________
+        //
+        //
+        //! multi-threaded queue
+        //
+        //______________________________________________________________________
         class pipeline
         {
         public:
-            static const char clid[];
+            //__________________________________________________________________
+            //
+            // types and definitions
+            //__________________________________________________________________
+            static const char clid[]; //!< "concurrent::pipeline"
 
+            //__________________________________________________________________
+            //
+            //! threaded worker
+            //__________________________________________________________________
             class worker
             {
             public:
-                worker(pipeline    &boss,
-                       const size_t size,
-                       const size_t rank) ;
-                ~worker() throw();
+                //______________________________________________________________
+                //
+                // C++
+                //______________________________________________________________
+                worker(pipeline &boss, const size_t size, const size_t rank); //!< setup
+                ~worker() throw();                                            //!< cleanup
 
+                //______________________________________________________________
+                //
+                // members
+                //______________________________________________________________
                 worker       *next; //!< for lists
                 worker       *prev; //!< for lists
-                pipeline     &host; //!< origin
-                condition     cond; //!< my condition
+                condition     cond; //!< self-condition
                 void         *task; //!< task to do
                 const context ctx;  //!< context
                 const thread  thr;  //!< thread
+
+                //______________________________________________________________
+                //
+                // helpers
+                //______________________________________________________________
 
                 //! return worker[1..capa], capa <== bytes
                 static worker *zalloc( size_t &capa );
@@ -42,23 +66,30 @@ namespace yack
                 YACK_DISABLE_COPY_AND_ASSIGN(worker);
             };
 
-            explicit pipeline(const topology &);
-            virtual ~pipeline() throw();
+            //__________________________________________________________________
+            //
+            // C++
+            //__________________________________________________________________
+            explicit pipeline(const topology &); //!< initialize w.r.t topology
+            virtual ~pipeline() throw();         //!< cleanup
             
-            mutex        sync;
-            condition    gate;
-            const size_t threads;
-            size_t       zbytes_;
-            worker      *squad;
-            size_t       ready;
+            mutex        sync;      //!< shared mutex
+            const size_t threads;   //!< number of threads
+            condition    gate;      //!< gate synchronization
+
+
+        private:
+            YACK_DISABLE_COPY_AND_ASSIGN(pipeline);
+
+            size_t       zbytes_; //!< private bytes
+            worker      *squad;   //!< workers
+            size_t       ready;   //!< to build
 
             void        cycle()       throw();
             static void entry(void *) throw();
             void        zkill() throw();
             void        finish(size_t count) throw();
 
-        private:
-            YACK_DISABLE_COPY_AND_ASSIGN(pipeline);
         };
     }
 }

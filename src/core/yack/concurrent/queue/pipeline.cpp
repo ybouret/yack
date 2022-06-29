@@ -10,11 +10,10 @@ namespace yack
                                    const size_t rank) :
         next(0),
         prev(0),
-        host(boss),
         cond(),
         task(NULL),
         ctx(size,rank),
-        thr(pipeline::entry,&host)
+        thr(pipeline::entry,&boss)
         {
         }
 
@@ -159,7 +158,10 @@ namespace yack
         void pipeline:: finish(size_t count) throw()
         {
             assert(count<=threads);
-
+            while(count>0)
+            {
+                --count;
+            }
             zkill();
         }
 
@@ -171,20 +173,34 @@ namespace yack
 
         void pipeline:: cycle() throw()
         {
+            //------------------------------------------------------------------
+            //
             // entering thread
+            //
+            //------------------------------------------------------------------
             sync.lock(); assert(ready<threads);
 
+            //------------------------------------------------------------------
             // get agent working in this thread
+            //------------------------------------------------------------------
             worker &agent = squad[++ready];
-            //YACK_THREAD_PRINTLN(clid << " #ready=" << ready);
             YACK_THREAD_PRINTLN(clid << " " << agent.ctx << " @ready=" << ready);
 
+            //------------------------------------------------------------------
+            // main thread sync
+            //------------------------------------------------------------------
             if(ready>=threads) {
                 gate.broadcast(); // synchronized
             }
 
+            //------------------------------------------------------------------
+            //
             // waiting for job to do
+            //
+            //------------------------------------------------------------------
             agent.cond.wait(sync);
+            
+
 
         }
 
