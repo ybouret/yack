@@ -192,6 +192,7 @@ namespace yack
         void simd:: finish(size_t count) throw()
         {
             assert(count<=threads);
+            assert(ready>=count);
             assert(NULL==kcode);
             assert(NULL==kargs);
 
