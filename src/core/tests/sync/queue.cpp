@@ -51,7 +51,7 @@ namespace yack
                 worker *zalloc( size_t &capa )
                 {
                     static memory::dyadic &mgr = memory::dyadic::instance();
-                    return static_cast<worker*>(mgr.acquire(capa,sizeof(worker)));
+                    return static_cast<worker*>(mgr.acquire(capa,sizeof(worker)))-1;
                 }
 
             private:
@@ -84,12 +84,11 @@ namespace yack
                 {
                     try
                     {
-                        new ( &squad[current] ) worker(host,threads,current);
+                        new ( &squad[current+1] ) worker(host,threads,current);
                         ++current;
                     }
                     catch(...)
                     {
-                        --squad;
                         finish(current);
                     }
                 }
@@ -97,11 +96,11 @@ namespace yack
                 {
                     YACK_LOCK(sync);
                     YACK_THREAD_PRINTLN(clid << "    all threads are launched...");
-                    for(size_t i=0;i<threads;++i)
+                    for(size_t i=1;i<=threads;++i)
                     {
                         const worker &w = squad[i];
                         assert(w.ctx.size==threads);
-                        assert(w.ctx.rank==i);
+                        assert(w.ctx.indx==i);
                     }
                 }
 
@@ -128,7 +127,6 @@ namespace yack
                     }
                 }
                 assert(threads==ready);
-                --squad;
 
                 //______________________________________________________________
                 //
@@ -191,14 +189,13 @@ namespace yack
         void pipeline:: zkill() throw()
         {
             static memory::allocator &mgr = memory::dyadic::location();
-            mgr.withdraw(squad,zbytes_);
+            mgr.withdraw(++squad,zbytes_);
         }
 
         void pipeline:: finish(size_t count) throw()
         {
             assert(count<=threads);
 
-            ++squad;
             zkill();
         }
 
@@ -214,9 +211,9 @@ namespace yack
             sync.lock(); assert(ready<threads);
 
             // get agent working in this thread
-            worker &agent = squad[ready++];
-            YACK_THREAD_PRINTLN(clid << " #ready=" << ready);
-            //YACK_THREAD_PRINTLN(clid << " " << agent.ctx << "@ready=" << ready);
+            worker &agent = squad[++ready];
+            //YACK_THREAD_PRINTLN(clid << " #ready=" << ready);
+            YACK_THREAD_PRINTLN(clid << " " << agent.ctx << " @ready=" << ready);
 
             if(ready>=threads) {
                 gate.broadcast(); // synchronized
