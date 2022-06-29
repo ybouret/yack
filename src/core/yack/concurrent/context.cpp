@@ -36,6 +36,8 @@ namespace yack
         {
             assert(size>0);
             assert(rank<size);
+            assert(indx>0);
+            assert(indx<=size);
         }
 
         
@@ -47,14 +49,15 @@ namespace yack
             return os;
         }
 
-        void context:: format(char buf[], const size_t len, const size_t sz, const size_t id)   throw()
+        void context:: format(char         buf[],
+                              const size_t len, const size_t size, const size_t indx)   throw()
         {
             assert(buf!=NULL);
             assert(len>0);
-            assert(sz>0);
-            assert(id>0);
-            assert(id<=sz);
-            const size_t io10 = digits_for(sz);
+            assert(size>0);
+            assert(indx>0);
+            assert(indx<=size);
+            const size_t io10 = digits_for(size);
             char fmt[32];
             {
                 memset(fmt,0,sizeof(fmt));
@@ -62,7 +65,7 @@ namespace yack
             }
             
             memset(buf,0,len);
-            snprintf(buf,len,fmt,unsigned(sz),unsigned(id));
+            snprintf(buf,len,fmt,unsigned(size),unsigned(indx));
         }
         
         void context:: format(char buf[], const size_t len) const throw()

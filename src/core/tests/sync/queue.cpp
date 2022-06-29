@@ -66,50 +66,83 @@ namespace yack
             squad( worker::zalloc(zbytes_) ),
             ready(0)
             {
-                if(thread::verbose)
-                {
-                    std::cerr << clid << " zbytes=" << zbytes_ << std::endl;
-                }
 
+
+                //______________________________________________________________
+                //
+                //
+                // create
+                //
+                //______________________________________________________________
                 {
-                    pipeline &host = *this;
-                    size_t    current = 0;
-                    while(current<threads)
+                    YACK_LOCK(sync);
+                    YACK_THREAD_PRINTLN(clid << "    <create #" << threads << ">");
+                }
+                pipeline &host    = *this;
+                size_t    current = 0;
+                while(current<threads)
+                {
+                    try
                     {
-                        try
-                        {
-                            new ( &squad[current] ) worker(host,threads,current);
-                            ++current;
-                        }
-                        catch(...)
-                        {
-                            --squad;
-                            finish(current);
-                        }
+                        new ( &squad[current] ) worker(host,threads,current);
+                        ++current;
+                    }
+                    catch(...)
+                    {
+                        --squad;
+                        finish(current);
+                    }
+                }
+                --squad;
+                {
+                    YACK_LOCK(sync);
+                    YACK_THREAD_PRINTLN(clid << "    all threads are launched...");
+                    for(size_t i=1;i<=threads;++i)
+                    {
+                        const worker &w = squad[i];
+                        assert(w.ctx.size==threads);
+                        assert(w.ctx.indx==i);
                     }
                 }
 
-            PROBE:
-                if( sync.try_lock() )
+
+                //______________________________________________________________
+                //
+                //
+                // synchronize
+                //
+                //______________________________________________________________
                 {
+                    sync.lock();
                     if(ready<threads)
                     {
-                        std::cerr << "not ready...@" << ready << " / " << threads << std::endl;
+                        YACK_THREAD_PRINTLN(clid << "    <still initializing>");
+                        gate.wait(sync);
+                        YACK_THREAD_PRINTLN(clid << "    <done initializing/>");
                         sync.unlock();
-                        goto PROBE;
                     }
-                    sync.unlock();
+                    else
+                    {
+                        YACK_THREAD_PRINTLN(clid << "    <already initialized/>");
+                        sync.unlock();
+                    }
                 }
-                std::cerr << "ready!" << std::endl;
+                assert(threads==ready);
                 
 
-                // done
-                --squad;
+                //______________________________________________________________
+                //
+                //
+                // placement
+                //
+                //______________________________________________________________
+
+                YACK_THREAD_PRINTLN(clid << "    <create/>");
             }
 
             virtual ~pipeline() throw()
             {
-                std::cerr << clid << " done" << std::endl;
+                YACK_THREAD_PRINTLN(clid << "    <leave>");
                 finish(threads);
             }
 
@@ -153,11 +186,19 @@ namespace yack
 
         void pipeline:: cycle() throw()
         {
+            // entering thread
             sync.lock(); assert(ready<threads);
-            worker &agent = squad[ready++];
-            YACK_THREAD_PRINTLN(clid << " " << agent.ctx << "@ready=" << ready);
 
-            chrono.wait(0.1);
+            // get agent working in this thread
+            worker &agent = squad[ready++];
+            YACK_THREAD_PRINTLN(clid << " #ready=" << ready);
+            //YACK_THREAD_PRINTLN(clid << " " << agent.ctx << "@ready=" << ready);
+
+            if(ready>=threads) {
+                gate.broadcast(); // synchronized
+            }
+
+            // waiting for job to do
             agent.cond.wait(sync);
 
         }
@@ -176,9 +217,7 @@ YACK_UTEST(sync_queue)
     std::cerr << "topo=" << topo << std::endl;
     concurrent::pipeline Q(topo);
 
-    wtime chrono;
 
-    chrono.wait(1);
 
 
 }
