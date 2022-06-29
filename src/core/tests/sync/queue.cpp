@@ -137,7 +137,23 @@ namespace yack
                 //
                 //______________________________________________________________
                 try {
-
+                    assert(topo->size==threads);
+                    for(const quark::unode_type *node=topo->head;node;node=node->next)
+                    {
+                        worker      &w = squad[node->indx];
+                        const size_t j = node->core;
+                        if(thread::verbose)
+                        {
+                            char who[32];
+                            w.ctx.format(who,sizeof(who));
+                            std::cerr << clid << "      ";
+                            coerce(w.thr).assign(j,who);
+                        }
+                        else
+                        {
+                            coerce(w.thr).assign(j);
+                        }
+                    }
                 }
                 catch(...)
                 {
@@ -154,13 +170,12 @@ namespace yack
                 finish(threads);
             }
 
-            mutex     sync;
-            condition gate;
+            mutex        sync;
+            condition    gate;
             const size_t threads;
             size_t       zbytes_;
             worker      *squad;
             size_t       ready;
-            wtime        chrono;
 
             void        cycle()       throw();
             static void entry(void *) throw();
@@ -182,6 +197,7 @@ namespace yack
         void pipeline:: finish(size_t count) throw()
         {
             assert(count<=threads);
+
             ++squad;
             zkill();
         }
