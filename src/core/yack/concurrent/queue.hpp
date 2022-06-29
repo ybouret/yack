@@ -6,8 +6,6 @@
 
 #include "yack/lockable.hpp"
 #include "yack/functor.hpp"
-#include "yack/data/list.hpp"
-#include "yack/data/pool.hpp"
 
 namespace yack
 {
@@ -24,10 +22,7 @@ namespace yack
         {
         public:
             virtual ~queue() throw(); //!< cleanup
-
             
-            
-
         protected:
             explicit queue() throw(); //!< setup
 

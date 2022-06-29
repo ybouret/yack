@@ -3,7 +3,7 @@
 #ifndef YACK_CONCURRENT_PIPELINE_INCLUDED
 #define YACK_CONCURRENT_PIPELINE_INCLUDED 1
 
-#include "yack/concurrent/queue.hpp"
+#include "yack/concurrent/queue/jpool.hpp"
 #include "yack/concurrent/condition.hpp"
 #include "yack/concurrent/thread.hpp"
 #include "yack/concurrent/topology.hpp"
@@ -11,11 +11,20 @@
 #include "yack/concurrent/mutex.hpp"
 #include "yack/data/list/raw.hpp"
 #include "yack/randomized/park-miller.hpp"
+#include "yack/data/pool.hpp"
+
 
 namespace yack
 {
     namespace concurrent
     {
+        //______________________________________________________________________
+        //
+        //! list of alive jNode
+        //______________________________________________________________________
+        typedef list_of<jNode> jList;
+
+
         //______________________________________________________________________
         //
         //
@@ -50,10 +59,10 @@ namespace yack
                 //
                 // members
                 //______________________________________________________________
-                drone       *next; //!< for lists
-                drone       *prev; //!< for lists
+                drone        *next; //!< for lists
+                drone        *prev; //!< for lists
                 condition     cond; //!< self-condition
-                void         *task; //!< task to do
+                jNode        *task; //!< task to do
                 const context ctx;  //!< context
                 const thread  thr;  //!< thread
 
@@ -81,14 +90,35 @@ namespace yack
             //__________________________________________________________________
             explicit pipeline(const topology &); //!< initialize w.r.t topology
             virtual ~pipeline() throw();         //!< cleanup
-            
+
+
+            job_uuid enqueue(const job_type &J)
+            {
+                return process( zombies.query(J) );
+            }
+
+            template <typename OBJECT_POINTER, typename METHOD_POINTER>
+            job_uuid enroll(OBJECT_POINTER o, METHOD_POINTER m)
+            {
+                return process( zombies.build(o,m) );
+            }
+
+
+
+            //__________________________________________________________________
+            //
+            // members
+            //__________________________________________________________________
             mutex        sync;      //!< shared mutex
             const size_t threads;   //!< number of threads
-            drones       available; //!< waiting drone
-            drones       computing; //!< working drones
 
         private:
             YACK_DISABLE_COPY_AND_ASSIGN(pipeline);
+            drones       available; //!< available drones
+            drones       computing; //!< computing drones
+            jList        pending;   //!< pending jobs
+            jPool        zombies;   //!< memory for jobs
+            
             condition    gate;    //!< gate synchronization
             size_t       bytes;   //!< private bytes
             drone       *squad;   //!< drones
@@ -98,6 +128,7 @@ namespace yack
             static void entry(void *) throw();
             void        zkill() throw();
             void        finish(size_t count) throw();
+            job_uuid    process(jNode *alive) throw();
 
         public:
             prng ran; //!< random generator for thread dispatch

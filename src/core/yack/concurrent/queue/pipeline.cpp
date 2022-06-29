@@ -1,7 +1,6 @@
 #include "yack/concurrent/queue/pipeline.hpp"
 #include "yack/memory/allocator/dyadic.hpp"
 
-#include "yack/system/wtime.hpp"
 
 namespace yack
 {
@@ -33,7 +32,7 @@ namespace yack
 }
 
 #include "yack/concurrent/probe.hpp"
-
+#include "yack/type/out-of-reach.hpp"
 namespace yack
 {
     namespace concurrent
@@ -46,6 +45,8 @@ namespace yack
         threads(topo->size),
         available(),
         computing(),
+        pending(),
+        zombies(),
         gate(),
         bytes( threads ),
         squad( drone::zalloc(bytes) ),
@@ -194,13 +195,19 @@ namespace yack
             //
             //------------------------------------------------------------------
             sync.lock();
-            sync.unlock();
+            while(pending.size) zombies.store( pending.pop_back() );
 
             //------------------------------------------------------------------
             //
             // waiting for computing to end
             //
             //------------------------------------------------------------------
+            if(computing.size)
+            {
+                gate.wait(sync);
+            }
+            sync.unlock();
+
 
 
             //------------------------------------------------------------------
@@ -244,7 +251,7 @@ namespace yack
             //------------------------------------------------------------------
             while(count>0)
             {
-                destruct(&squad[count--]);
+                out_of_reach::zset( destructed(&squad[count--]), sizeof(drone) );
             }
             zkill();
         }
@@ -282,11 +289,12 @@ namespace yack
             // waiting for job to do on a LOCKED mutex => return UNLOCKED
             //
             //------------------------------------------------------------------
+        CYCLE:
             agent.cond.wait(sync);
 
             //------------------------------------------------------------------
             //
-            // waking up on a locked mutex
+            // waking up on a LOCKED mutex
             //
             //------------------------------------------------------------------
             if(NULL == agent.task)
@@ -307,13 +315,37 @@ namespace yack
                 // work!
                 //--------------------------------------------------------------
                 YACK_THREAD_PRINTLN(clid << " " << agent.ctx << " [work]");
+                sync.unlock();
+                agent.task->call(sync);
+
+                sync.lock();
+                goto CYCLE;
             }
-
-
 
 
         }
 
+        job_uuid pipeline:: process(jNode *alive) throw()
+        {
+            YACK_LOCK(sync);
+            assert(NULL!=alive);
+
+            if(available.size)
+            {
+                drone *d = computing.push_back( available.pop_back() );
+                d->task  = alive;
+                YACK_THREAD_PRINTLN(clid << " " << d->ctx << " process $" << alive->uuid);
+                d->cond.signal();
+            }
+            else
+            {
+                YACK_THREAD_PRINTLN(clid << " postpone $" << alive->uuid);
+                pending.push_back(alive);
+            }
+
+
+            return alive->uuid;
+        }
 
     }
 
