@@ -9,6 +9,8 @@
 #include "yack/concurrent/topology.hpp"
 #include "yack/concurrent/context.hpp"
 #include "yack/concurrent/mutex.hpp"
+#include "yack/data/list/raw.hpp"
+#include "yack/randomized/park-miller.hpp"
 
 namespace yack
 {
@@ -27,7 +29,8 @@ namespace yack
             //
             // types and definitions
             //__________________________________________________________________
-            static const char clid[]; //!< "concurrent::pipeline"
+            static const char              clid[]; //!< "concurrent::pipeline"
+            typedef randomized::ParkMiller prng;   //!< pseudo-random number generator
 
             //__________________________________________________________________
             //
@@ -68,6 +71,12 @@ namespace yack
 
             //__________________________________________________________________
             //
+            //! list of drones
+            //__________________________________________________________________
+            typedef raw_list_of<drone> drones;
+
+            //__________________________________________________________________
+            //
             // C++
             //__________________________________________________________________
             explicit pipeline(const topology &); //!< initialize w.r.t topology
@@ -75,13 +84,13 @@ namespace yack
             
             mutex        sync;      //!< shared mutex
             const size_t threads;   //!< number of threads
-            condition    gate;      //!< gate synchronization
-
+            drones       available; //!< waiting drone
+            drones       computing; //!< working drones
 
         private:
             YACK_DISABLE_COPY_AND_ASSIGN(pipeline);
-
-            size_t       zbytes_; //!< private bytes
+            condition    gate;    //!< gate synchronization
+            size_t       bytes;   //!< private bytes
             drone       *squad;   //!< drones
             size_t       ready;   //!< to build
 
@@ -89,6 +98,9 @@ namespace yack
             static void entry(void *) throw();
             void        zkill() throw();
             void        finish(size_t count) throw();
+
+        public:
+            prng ran;
 
         };
     }

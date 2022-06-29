@@ -47,7 +47,6 @@ assert(NULL!=NODE); assert(NULL==(NODE)->next); assert(NULL==(NODE)->prev)
             /** update */           io.tail = 0;
             head         = io.head; io.head = 0;
             coerce(size) = io.size; io.size = 0;
-             
         }
 
         //! need cleanup before!

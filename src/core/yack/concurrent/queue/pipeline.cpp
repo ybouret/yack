@@ -40,19 +40,21 @@ namespace yack
         pipeline:: pipeline(const topology &topo) :
         sync(),
         threads(topo->size),
+        available(),
+        computing(),
         gate(),
-        zbytes_( threads ),
-        squad( drone::zalloc(zbytes_) ),
+        bytes( threads ),
+        squad( drone::zalloc(bytes) ),
         ready(0)
         {
 
 
-            //______________________________________________________________
+            //__________________________________________________________________
             //
             //
             // create
             //
-            //______________________________________________________________
+            //__________________________________________________________________
             {
                 YACK_LOCK(sync);
                 YACK_THREAD_PRINTLN(clid << "    <create #" << threads << ">");
@@ -78,12 +80,12 @@ namespace yack
             }
 
 
-            //______________________________________________________________
+            //__________________________________________________________________
             //
             //
             // synchronize
             //
-            //______________________________________________________________
+            //__________________________________________________________________
             {
                 sync.lock();
                 if(ready<threads)
@@ -101,12 +103,12 @@ namespace yack
             }
             assert(threads==ready);
 
-            //______________________________________________________________
+            //__________________________________________________________________
             //
             //
             // placement
             //
-            //______________________________________________________________
+            //__________________________________________________________________
             try {
                 assert(topo->size==threads);
                 for(const quark::unode_type *node=topo->head;node;node=node->next)
@@ -132,6 +134,30 @@ namespace yack
                 throw;
             }
 
+            //__________________________________________________________________
+            //
+            //
+            // initializing
+            //
+            //__________________________________________________________________
+            for(size_t i=threads;i>0;--i)
+            {
+                drone *d = &squad[i];
+                assert(d->ctx.size==threads);
+                assert(d->ctx.indx==i);
+                if( ran.choice() )
+                {
+                    available.push_back(d);
+                }
+                else
+                {
+                    available.push_front(d);
+                }
+            }
+            assert(threads==available.size);
+
+
+
             YACK_THREAD_PRINTLN(clid << "    <create/>");
         }
 
@@ -139,6 +165,8 @@ namespace yack
         pipeline:: ~pipeline() throw()
         {
             YACK_THREAD_PRINTLN(clid << "    <leave>");
+
+            available.restart();
             finish(threads);
         }
 
@@ -146,7 +174,7 @@ namespace yack
         void pipeline:: zkill() throw()
         {
             static memory::allocator &mgr = memory::dyadic::location();
-            mgr.withdraw(++squad,zbytes_);
+            mgr.withdraw(++squad,bytes);
         }
 
         void pipeline:: finish(size_t count) throw()
@@ -189,11 +217,20 @@ namespace yack
 
             //------------------------------------------------------------------
             //
-            // waiting for job to do
+            // waiting for job to do on a LOCKED mutex => return UNLOCKED
             //
             //------------------------------------------------------------------
             agent.cond.wait(sync);
-            
+
+            // waking up on a locked mutex
+            if(NULL == agent.task)
+            {
+                YACK_THREAD_PRINTLN(clid << " [done]");
+                sync.unlock();
+                return;
+            }
+
+
 
 
         }
