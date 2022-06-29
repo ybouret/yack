@@ -59,7 +59,7 @@ namespace yack
         Xl( ltab.next() ),
         Ok( ltab.next(), transmogrify),
 
-        Cs(),
+        Cl(),
         LU(N>0? new rsolver(N) : NULL),
 
         top(),
@@ -138,12 +138,18 @@ namespace yack
             duplicateIntoLattice(couples);
             coerce(Nl) = lattice.size();
             YACK_CHEM_PRINTLN(vpfx << "-------- lattice --------" << std::endl << lattice);
-            
+
+
+            //------------------------------------------------------------------
+            //
+            // build clusters
+            //
+            //------------------------------------------------------------------
             if(Nl>0)
             {
                 ltab.make(Nl);         // linear memory
                 Ok.relink<double>();   // linear update
-                Cs.make(Nl,M);         // solution C
+                Cl.make(Nl,M);         // 1D solutions
                 assert(Nl==Kl.size()); // check
                 assert(Nl==Xl.size()); // check
                 assert(Nl==Ok.size()); // check
@@ -160,25 +166,6 @@ namespace yack
                 }
                 YACK_CHEM_PRINTLN("K  = " << K);
                 YACK_CHEM_PRINTLN("Kl = " << Kl);
-#if 0
-                {
-                    YACK_CHEM_MARKUP( vpfx, "Orthogonality");
-                    for(const enode *node = lattice.head(); node; node=node->next )
-                    {
-                        const equilibrium &central = ***node;
-                        for(const enode *scan = lattice.head();scan;scan=scan->next)
-                        {
-                            if(scan==node) continue;
-                            const equilibrium &replica = ***scan;
-                            if(central.detached(replica))
-                            {
-                                lattice.pad(std::cerr << central.name, central) << " _|_ " << replica.name << std::endl;
-                            }
-                        }
-                    }
-                }
-#endif
-                
                 makeReactiveClusters();
             }
             

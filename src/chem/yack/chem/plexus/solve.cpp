@@ -23,7 +23,7 @@ namespace yack
                 const size_t            ei  = *eq;
                 if(Ok[ei])
                 {
-                    eq.transfer(Ctry,Cs[ei]); // transfer components only
+                    eq.transfer(Ctry,Cl[ei]); // transfer components only
                 }
             }
             return hamiltonian(Ctry);
@@ -63,7 +63,8 @@ namespace yack
         }
 
 
-        static inline bool has_winning(const readable<bool> &flags) throw()
+        //! check if one flag is true
+        static inline bool hasWinning(const readable<bool> &flags) throw()
         {
             for(size_t i=flags.size();i>0;--i)
             {
@@ -173,7 +174,7 @@ namespace yack
             // check status
             //
             //------------------------------------------------------------------
-            if( !has_winning(Ok) )
+            if( !hasWinning(Ok) )
             {
                 YACK_CHEM_PRINTLN(vpfx << "  <NO WINNING/>");
                 return false;

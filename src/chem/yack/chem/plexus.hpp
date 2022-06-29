@@ -121,12 +121,12 @@ namespace yack
             
             tableau          &Kl;      //!< [Nl] constants of lattice
             tableau          &Xl;      //!< [Nl] all extents
-            booltab           Ok;      //!< [Nl] decreasing
-            rmatrix           Cs;      //!< [NlxM] all solving concentrations
+            booltab           Ok;      //!< [Nl] decreasing flags
+            rmatrix           Cl;      //!< [NlxM] all solving concentrations
             auto_ptr<rsolver> LU;      //!< [N]
 
-            const clusters    top;     //!< top level uncoupled
-            const clusters    com;     //!< clusters of detached combinations
+            const clusters    top;     //!< top level ATTACHED cluster (space partioning)
+            const clusters    com;     //!< clusters of DETACHED combinations
             
         private:
             YACK_DISABLE_COPY_AND_ASSIGN(plexus);
@@ -135,7 +135,7 @@ namespace yack
 
             size_t buildMatchingCouples();                   //!< build all couples
             void   makeReactiveClusters();                   //!< make all detached clusters
-            void   duplicateIntoLattice(const equilibria &); //!< fill lattice
+            void   duplicateIntoLattice(const equilibria &); //!< fill lattice with a set of equilibria
 
             double computePartialExtent(const double G0, const equilibrium &eq) throw(); //!< best extent for one equilibrium
             double computeSinglesExtent(const double G0) throw();                        //!< best extent for singles, return |Xi|

@@ -22,7 +22,7 @@ namespace yack
             //------------------------------------------------------------------
             const size_t      ei  = *eq;
             const double      ax  = fabs( Xl[ei] = eq.solve1D(Kl[ei],Corg,Cend) );
-            writable<double> &Ci  = Cs[ei];
+            writable<double> &Ci  = Cl[ei];
             bool             &ok  = Ok[ei];
 
             if(ax>0)
