@@ -30,6 +30,8 @@ namespace yack
     }
 }
 
+#include "yack/concurrent/probe.hpp"
+
 namespace yack
 {
     namespace concurrent
@@ -45,7 +47,8 @@ namespace yack
         gate(),
         bytes( threads ),
         squad( drone::zalloc(bytes) ),
-        ready(0)
+        ready(0),
+        ran()
         {
 
 
@@ -70,6 +73,8 @@ namespace yack
                 }
                 catch(...)
                 {
+                    // emergency probe to wait for ready>=current
+                    YACK_LOCK_PROBE(sync,ready>=current);
                     finish(current);
                 }
             }
@@ -180,7 +185,7 @@ namespace yack
         void pipeline:: finish(size_t count) throw()
         {
             assert(count<=threads);
-            
+
 
             while(count>0)
             {

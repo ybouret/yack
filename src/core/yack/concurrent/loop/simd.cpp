@@ -44,6 +44,7 @@ namespace yack
 }
 
 #include "yack/system/hw.hpp"
+#include "yack/concurrent/probe.hpp"
 
 namespace yack
 {
@@ -98,6 +99,7 @@ namespace yack
                     catch(...)
                     {
                         // something bad happened
+                        YACK_LOCK_PROBE(sync,ready>=current);
                         --squad;
                         finish(current);
                         throw;
