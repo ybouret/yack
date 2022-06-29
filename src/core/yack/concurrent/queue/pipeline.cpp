@@ -5,9 +5,9 @@ namespace yack
 {
     namespace concurrent
     {
-        pipeline:: worker:: worker(pipeline    &boss,
-                                   const size_t size,
-                                   const size_t rank) :
+        pipeline:: drone:: drone(pipeline    &boss,
+                                 const size_t size,
+                                 const size_t rank) :
         next(0),
         prev(0),
         cond(),
@@ -17,15 +17,15 @@ namespace yack
         {
         }
 
-        pipeline:: worker:: ~worker() throw()
+        pipeline:: drone:: ~drone() throw()
         {
         }
 
 
-        pipeline::worker * pipeline::worker:: zalloc( size_t &capa )
+        pipeline::drone * pipeline::drone:: zalloc( size_t &capa )
         {
             static memory::dyadic &mgr = memory::dyadic::instance();
-            return static_cast<worker*>(mgr.acquire(capa,sizeof(worker)))-1;
+            return static_cast<drone*>(mgr.acquire(capa,sizeof(drone)))-1;
         }
     }
 }
@@ -39,10 +39,10 @@ namespace yack
 
         pipeline:: pipeline(const topology &topo) :
         sync(),
-        gate(),
         threads(topo->size),
+        gate(),
         zbytes_( threads ),
-        squad( worker::zalloc(zbytes_) ),
+        squad( drone::zalloc(zbytes_) ),
         ready(0)
         {
 
@@ -63,7 +63,7 @@ namespace yack
             {
                 try
                 {
-                    new ( &squad[current+1] ) worker(host,threads,current);
+                    new ( &squad[current+1] ) drone(host,threads,current);
                     ++current;
                 }
                 catch(...)
@@ -75,12 +75,6 @@ namespace yack
             {
                 YACK_LOCK(sync);
                 YACK_THREAD_PRINTLN(clid << "    all threads are launched...");
-                for(size_t i=1;i<=threads;++i)
-                {
-                    const worker &w = squad[i];
-                    assert(w.ctx.size==threads);
-                    assert(w.ctx.indx==i);
-                }
             }
 
 
@@ -117,7 +111,7 @@ namespace yack
                 assert(topo->size==threads);
                 for(const quark::unode_type *node=topo->head;node;node=node->next)
                 {
-                    worker      &w = squad[node->indx];
+                    drone       &w = squad[node->indx];
                     const size_t j = node->core;
                     if(thread::verbose)
                     {
@@ -183,7 +177,7 @@ namespace yack
             //------------------------------------------------------------------
             // get agent working in this thread
             //------------------------------------------------------------------
-            worker &agent = squad[++ready];
+            drone &agent = squad[++ready];
             YACK_THREAD_PRINTLN(clid << " " << agent.ctx << " @ready=" << ready);
 
             //------------------------------------------------------------------

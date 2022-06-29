@@ -31,24 +31,24 @@ namespace yack
 
             //__________________________________________________________________
             //
-            //! threaded worker
+            //! threaded drone
             //__________________________________________________________________
-            class worker
+            class drone
             {
             public:
                 //______________________________________________________________
                 //
                 // C++
                 //______________________________________________________________
-                worker(pipeline &boss, const size_t size, const size_t rank); //!< setup
-                ~worker() throw();                                            //!< cleanup
+                drone(pipeline &boss, const size_t size, const size_t rank); //!< setup
+                ~drone() throw();                                            //!< cleanup
 
                 //______________________________________________________________
                 //
                 // members
                 //______________________________________________________________
-                worker       *next; //!< for lists
-                worker       *prev; //!< for lists
+                drone       *next; //!< for lists
+                drone       *prev; //!< for lists
                 condition     cond; //!< self-condition
                 void         *task; //!< task to do
                 const context ctx;  //!< context
@@ -59,11 +59,11 @@ namespace yack
                 // helpers
                 //______________________________________________________________
 
-                //! return worker[1..capa], capa <== bytes
-                static worker *zalloc( size_t &capa );
+                //! return drone[1..capa], capa <== bytes
+                static drone *zalloc( size_t &capa );
 
             private:
-                YACK_DISABLE_COPY_AND_ASSIGN(worker);
+                YACK_DISABLE_COPY_AND_ASSIGN(drone);
             };
 
             //__________________________________________________________________
@@ -82,7 +82,7 @@ namespace yack
             YACK_DISABLE_COPY_AND_ASSIGN(pipeline);
 
             size_t       zbytes_; //!< private bytes
-            worker      *squad;   //!< workers
+            drone       *squad;   //!< drones
             size_t       ready;   //!< to build
 
             void        cycle()       throw();
