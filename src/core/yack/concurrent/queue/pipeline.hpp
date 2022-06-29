@@ -100,7 +100,7 @@ namespace yack
             void        finish(size_t count) throw();
 
         public:
-            prng ran;
+            prng ran; //!< random generator for thread dispatch
 
         };
     }

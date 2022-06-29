@@ -5,6 +5,7 @@
 
 #include "yack/lockable.hpp"
 
+//! emergency probing of an expresssion
 #define YACK_LOCK_PROBE(HOST,EXPRESSION) do {     \
 /**/    yack::lockable & the_lock = (HOST);       \
 /**/    while(true) {                             \
