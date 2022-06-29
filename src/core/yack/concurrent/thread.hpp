@@ -52,7 +52,7 @@ namespace yack
 
         //! verbose info
 #define YACK_THREAD_PRINTLN(MSG) do { \
-/**/  if(yack::concurrent::thread::verbose) std::cerr << MSG << std::endl;\
+/**/  if(yack::concurrent::thread::verbose) (std::cerr << MSG << std::endl).flush();\
 /**/  } while(false)
 
     }

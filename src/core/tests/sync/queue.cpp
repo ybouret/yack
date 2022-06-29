@@ -3,7 +3,7 @@
 #include "yack/sequence/cxx-array.hpp"
 #include "yack/utest/run.hpp"
 #include "yack/memory/allocator/dyadic.hpp"
-
+#include "yack/system/wtime.hpp"
 
 using namespace yack;
 
@@ -42,7 +42,7 @@ namespace yack
                 worker       *next; //!< for lists
                 worker       *prev; //!< for lists
                 pipeline     &host; //!< origin
-                condition     cond; //!< auto-condition
+                condition     cond; //!< my condition
                 void         *task; //!< task to do
                 const context ctx;  //!< context
                 const thread  thr;  //!< thread
@@ -94,7 +94,7 @@ namespace yack
                 {
                     if(ready<threads)
                     {
-                        std::cerr << "not ready..." << std::endl;
+                        std::cerr << "not ready...@" << ready << " / " << threads << std::endl;
                         sync.unlock();
                         goto PROBE;
                     }
@@ -119,6 +119,7 @@ namespace yack
             size_t       zbytes_;
             worker      *squad;
             size_t       ready;
+            wtime        chrono;
 
             void        cycle()       throw();
             static void entry(void *) throw();
@@ -152,12 +153,11 @@ namespace yack
 
         void pipeline:: cycle() throw()
         {
-            sync.lock();
-            assert(ready<threads);
+            sync.lock(); assert(ready<threads);
             worker &agent = squad[ready++];
+            YACK_THREAD_PRINTLN(clid << " " << agent.ctx << "@ready=" << ready);
 
-            { std::cerr << clid << " " << agent.ctx << " @ready=" << ready << std::endl; }
-
+            chrono.wait(0.1);
             agent.cond.wait(sync);
 
         }
@@ -175,6 +175,11 @@ YACK_UTEST(sync_queue)
 
     std::cerr << "topo=" << topo << std::endl;
     concurrent::pipeline Q(topo);
+
+    wtime chrono;
+
+    chrono.wait(1);
+
 
 }
 YACK_UDONE()
