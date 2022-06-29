@@ -180,6 +180,8 @@ namespace yack
         void pipeline:: finish(size_t count) throw()
         {
             assert(count<=threads);
+            
+
             while(count>0)
             {
                 --count;
