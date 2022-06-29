@@ -26,7 +26,7 @@ namespace yack
 
 
             const context ctx;
-            thread        thr;
+            const thread  thr;
 
             static inline
             worker *zalloc( size_t &capa )
@@ -148,11 +148,11 @@ namespace yack
                         char who[32];
                         w.ctx.format(who,sizeof(who));
                         std::cerr << clid << "      ";
-                        w.thr.assign(j,who);
+                        coerce(w.thr).assign(j,who);
                     }
                     else
                     {
-                        w.thr.assign(j);
+                        coerce(w.thr).assign(j);
                     }
                 }
 
