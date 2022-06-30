@@ -33,8 +33,8 @@ YACK_UTEST(sync_queue)
     dummy D;
     Q.enroll(&D, & dummy::something );
 
-    wtime chrono;
-    chrono.wait(1);
+    //wtime chrono;
+    //chrono.wait(1);
 
 }
 YACK_UDONE()

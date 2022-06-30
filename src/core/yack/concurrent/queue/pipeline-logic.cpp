@@ -19,6 +19,7 @@ namespace yack
             //
             //------------------------------------------------------------------
             sync.lock();
+            YACK_THREAD_PRINTLN(clid << " <finish #" << count << ">");
             while(pending.size) zombies.store( pending.pop_back() );
 
             //------------------------------------------------------------------
@@ -28,6 +29,7 @@ namespace yack
             //------------------------------------------------------------------
             if(computing.size)
             {
+                YACK_THREAD_PRINTLN(clid << " <still computing #" << computing.size << ">");
                 gate.wait(sync);
             }
             sync.unlock();
@@ -133,19 +135,38 @@ namespace yack
                 YACK_THREAD_PRINTLN(clid << " " << agent.ctx << " [done]");
                 --ready;
                 if(ready<=0) gate.broadcast();
+
+                //--------------------------------------------------------------
+                // final unlock/return
+                //--------------------------------------------------------------
                 sync.unlock();
                 return;
             }
             else
             {
                 //--------------------------------------------------------------
-                // work!
+                // woke up with a task
                 //--------------------------------------------------------------
                 YACK_THREAD_PRINTLN(clid << " " << agent.ctx << " [work]");
+                assert(computing.owns(&agent));
                 sync.unlock();
-                agent.task->call(sync);
+
+                try
+                {
+                    agent.task->call(sync);
+                }
+                catch(...)
+                {
+
+                }
 
                 sync.lock();
+                YACK_THREAD_PRINTLN(clid << " " << agent.ctx << " [made]");
+
+                zombies.store(agent.task);
+                agent.task = NULL;
+                available.push_back( computing.pop( &agent) );
+
                 goto CYCLE;
             }
 
@@ -179,6 +200,11 @@ namespace yack
             }
             else
             {
+                //--------------------------------------------------------------
+                //
+                // no drone available yet, postpone
+                //
+                //--------------------------------------------------------------
                 YACK_THREAD_PRINTLN(clid << " postpone $" << alive->uuid);
                 pending.push_back(alive);
             }
