@@ -93,6 +93,34 @@ namespace yack
             return true;
         }
 
+        bool plexus:: detectUnderflow() throw()
+        {
+            bool underflow = true;
+            {
+                YACK_CHEM_MARKUP(vpfx, "detectUnderflow");
+                for(const enode *node=singles.head();node;node=node->next)
+                {
+                    const equilibrium &eq = ***node;
+                    const size_t       ei = *eq;
+                    const double       xx = ( Xl[ei] = eq.solve1D(K[ei],Corg,Ctry) );
+                    Xtry[ei] = fabs(xx);
+                    if( eq.changed(Corg,xx,Ctry) )
+                    {
+                        YACK_CHEM_PRINTLN(vpfx << eq.name << " is changed for " << xx);
+                        underflow = false;
+                    }
+                    else
+                    {
+                        YACK_CHEM_PRINTLN(vpfx << eq.name << " underflow for " << xx );
+                    }
+                }
+                YACK_CHEM_PRINTLN(vpfx << "  <" << (underflow? "UNDERFLOW" : "MODIFIED" ) << "/>");
+                if(verbose) singles(std::cerr << "|Xi| =",Xtry,"");
+            }
+
+            return underflow;
+        }
+
 
         bool plexus:: solve( writable<double> &C0 ) throw()
         {
@@ -193,49 +221,23 @@ namespace yack
             YACK_CHEM_PRINTLN(vpfx << "G0 = " << G0);
             if(G0<=0)
             {
-                YACK_CHEM_PRINTLN(vpfx << "  <SUCCESS G=0 @move/>");
+                YACK_CHEM_PRINTLN(vpfx << "  <SUCCESS G=0 @moved>");
                 return successful(C0);
             }
 
             //------------------------------------------------------------------
             //
-            // get the modified singles extent
+            // check the modified single extents for underflow
             //
             //------------------------------------------------------------------
-            bool underflow = true;
-            for(const enode *node=singles.head();node;node=node->next)
-            {
-                const equilibrium &eq = ***node;
-                const size_t       ei = *eq;
-                const double       xx = ( Xl[ei] =eq.solve1D(K[ei],Corg,Ctry) );
-                Xtry[ei] = fabs(xx);
-                if( eq.changed(Corg,xx,Ctry) )
-                {
-                    YACK_CHEM_PRINTLN(vpfx << eq.name << " is changed for " << xx);
-                    underflow = false;
-                }
-                else
-                {
-                    YACK_CHEM_PRINTLN(vpfx << eq.name << " underflow for " << xx );
-                }
-            }
-
-            if(underflow)
-            {
-                std::cerr << "    #### underflow @cycle=" << cycle << std::endl;
-                //exit(1);
-            }
-
-
-            singles(std::cerr << "|Xi| =",Xtry,"");
+            const bool underflow = detectUnderflow();
             AX = sorted::sum(Xtry,sorted::by_value);
             if(AX<=0)
             {
-                YACK_CHEM_PRINTLN(vpfx << "  <SUCCESS |Xi| =0 @move/>");
+                YACK_CHEM_PRINTLN(vpfx << "  <SUCCESS |Xi| =0 @moved>");
                 return successful(C0);
             }
-
-
+            
 
             //------------------------------------------------------------------
             //
