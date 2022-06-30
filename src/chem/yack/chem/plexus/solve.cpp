@@ -117,7 +117,6 @@ namespace yack
                 YACK_CHEM_PRINTLN(vpfx << "  <" << (underflow? "UNDERFLOW" : "MODIFIED" ) << "/>");
                 if(verbose) singles(std::cerr << "|Xi| =",Xtry,"");
             }
-
             return underflow;
         }
 
@@ -217,7 +216,7 @@ namespace yack
             //
             //------------------------------------------------------------------
             G0 = searchGlobalDecrease();
-            lib(std::cerr << vpfx << "Corg=",Corg,vpfx);
+            if(verbose) lib(std::cerr << vpfx << "Corg=",Corg,vpfx);
             YACK_CHEM_PRINTLN(vpfx << "G0 = " << G0);
             if(G0<=0)
             {
@@ -237,7 +236,7 @@ namespace yack
                 YACK_CHEM_PRINTLN(vpfx << "  <SUCCESS |Xi| =0 @moved>");
                 return successful(C0);
             }
-            
+
 
             //------------------------------------------------------------------
             //
