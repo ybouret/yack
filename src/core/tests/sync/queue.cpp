@@ -2,6 +2,8 @@
 #include "yack/utest/run.hpp"
 #include "yack/system/wtime.hpp"
 #include "yack/ios/ascii/convert.hpp"
+#include "yack/type/utils.hpp"
+#include <cmath>
 
 using namespace yack;
 
@@ -14,8 +16,18 @@ namespace
 
         void something(lockable &sync)
         {
-            YACK_LOCK(sync);
 
+            size_t i=0;
+            { YACK_LOCK(sync); i = 10000 + ran.leq(10000); }
+            double sum = 0;
+            while(i-- > 0)
+            {
+                sum += cos( squared(double(i)) );
+            }
+            {
+                YACK_LOCK(sync);
+                (std::cerr << "\t\tsum=" << sum << std::endl).flush();
+            }
         }
 
         void operator()(lockable &sync)
@@ -58,8 +70,9 @@ YACK_UTEST(sync_queue)
     std::cerr << "-------- using Q v2 --------" << std::endl;
     for(size_t i=1;i<=n;++i)
     {
-
+        Q(&D, &dummy::something);
     }
+    Q.flush();
 
     std::cerr << "-------- final Q    --------" << std::endl;
 

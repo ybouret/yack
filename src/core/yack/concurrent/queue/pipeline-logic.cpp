@@ -26,7 +26,9 @@ namespace yack
                 assert(0      == computing.size);
                 assert(threads== available.size);
             }
+            YACK_THREAD_PRINTLN(clid << " <flushed/>");
             sync.unlock();
+
         }
 
         void pipeline:: finish(size_t count) throw()
