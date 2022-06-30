@@ -48,6 +48,8 @@ YACK_UTEST(sync_queue)
     YACK_SIZEOF(concurrent::pipeline::drone);
     YACK_SIZEOF(concurrent::pipeline);
 
+
+
     size_t n=10;
     if(argc>1)
     {
@@ -58,6 +60,12 @@ YACK_UTEST(sync_queue)
     concurrent::thread::verbose = environment::flag("VERBOSE");
 
     std::cerr << "topo=" << topo << std::endl;
+    std::cerr << "-------- Empty Q --------" << std::endl;
+    {
+        concurrent::pipeline empty(topo);
+    }
+
+
     concurrent::pipeline Q(topo);
 
     std::cerr << std::endl;
