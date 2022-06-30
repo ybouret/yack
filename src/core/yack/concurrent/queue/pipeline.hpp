@@ -103,12 +103,15 @@ namespace yack
             //
             // methods
             //__________________________________________________________________
+
+            //! wrapper to process host/method functor
             template <typename OBJECT_POINTER, typename METHOD_POINTER>
             job_uuid operator()(OBJECT_POINTER o, METHOD_POINTER m)
             {
                 return process( zombies.build(o,m) );
             }
-            
+
+            //! wrapper to process functionoid
             template <typename FUNCTION>
             job_uuid operator()(FUNCTION &func)
             {
@@ -130,17 +133,18 @@ namespace yack
             drones       computing; //!< computing drones
             jList        pending;   //!< pending jobs
             jPool        zombies;   //!< memory for jobs
-            
-            condition    gate;    //!< gate synchronization
-            size_t       bytes;   //!< private bytes
-            drone       *squad;   //!< drones
-            size_t       ready;   //!< to build
+            condition    gate;      //!< gate synchronization
+            size_t       bytes;     //!< private bytes
+            drone       *squad;     //!< drones
+            size_t       ready;     //!< to build
 
-            void        cycle()       throw();
-            static void entry(void *) throw();
+            void        cycle()       throw(); //!< main cycle method
+            static void entry(void *) throw(); //!< forward to cycle
+
+            void        finish(size_t count)  throw(); //!< cleanup [0..count]
+            job_uuid    process(jNode *alive) throw(); //!< send to computing or to pending
+            void        recycle(drone *me)    throw(); //!< computing->available at random front/back
             void        zkill() throw();
-            void        finish(size_t count) throw();
-            job_uuid    process(jNode *alive) throw();
 
         public:
             prng ran; //!< random generator for thread dispatch

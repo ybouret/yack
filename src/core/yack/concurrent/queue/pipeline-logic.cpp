@@ -127,7 +127,7 @@ namespace yack
             // get agent working in this thread
             //
             //------------------------------------------------------------------
-            drone & my = squad[++ready];
+            drone &       my = squad[++ready];
             drone * const me = &my;
             YACK_THREAD_PRINTLN(clid << " " << my.ctx << " @ready=" << ready);
 
@@ -225,13 +225,9 @@ namespace yack
                     // nothing else todo: cleanup
                     //----------------------------------------------------------
                     my.task = NULL;
-                    if(ran.choice())
-                        available.push_back( computing.pop(me) );
-                    else
-                        available.push_front( computing.pop(me) );
+                    recycle(me);
 
-
-                    if(0==computing.size)
+                    if(computing.size<=0)
                     {
                         //------------------------------------------------------
                         // signal main thread that we are all done
@@ -243,8 +239,17 @@ namespace yack
                 }
 
             }
+        }
 
-
+        void pipeline:: recycle(drone *me)    throw()
+        {
+            assert(me);
+            assert(computing.owns(me));
+            assert(!available.owns(me));
+            if(ran.choice())
+                available.push_back( computing.pop(me) );
+            else
+                available.push_front( computing.pop(me) );
         }
 
     }

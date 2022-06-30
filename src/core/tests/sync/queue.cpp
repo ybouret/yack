@@ -3,6 +3,8 @@
 #include "yack/system/wtime.hpp"
 #include "yack/ios/ascii/convert.hpp"
 #include "yack/type/utils.hpp"
+#include "yack/system/env.hpp"
+
 #include <cmath>
 
 using namespace yack;
@@ -52,7 +54,7 @@ YACK_UTEST(sync_queue)
     }
 
     const concurrent::topology topo;
-    concurrent::thread::verbose = true;
+    concurrent::thread::verbose = environment::flag("VERBOSE");
 
     std::cerr << "topo=" << topo << std::endl;
     concurrent::pipeline Q(topo);

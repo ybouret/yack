@@ -13,20 +13,45 @@ namespace yack
     namespace concurrent
     {
 
+        //______________________________________________________________________
+        //
+        //
+        // global types and definitions
+        //
+        //______________________________________________________________________
         typedef uint32_t                     job_uuid; //!< alias
         typedef functor<void,TL1(lockable&)> job_type; //!< alias
 
      
-
+        //______________________________________________________________________
+        //
+        //
         //! queue of jobs
+        //
+        //______________________________________________________________________
         class queue
         {
         public:
+            //__________________________________________________________________
+            //
+            // C++
+            //__________________________________________________________________
             virtual ~queue() throw(); //!< cleanup
-            virtual job_uuid write(const job_type &J) = 0;
-            virtual void     flush() throw()          = 0;
-            virtual void     prune() throw()          = 0;
-            
+
+            //__________________________________________________________________
+            //
+            // virtual interface
+            //__________________________________________________________________
+            virtual job_uuid write(const job_type &J) = 0; //!< write a new job
+            virtual void     flush() throw()          = 0; //!< flush all jobs
+            virtual void     prune() throw()          = 0; //!< prune pending jobs
+
+            //__________________________________________________________________
+            //
+            // non virtual interface
+            //__________________________________________________________________
+
+            //! append a batch of jobs to queue and their IDs to uuid
             template <typename ITERATOR> inline
             void batch(sequence<job_uuid> &uuid,
                        ITERATOR           &iter,
@@ -39,6 +64,7 @@ namespace yack
                 }
             }
 
+            //! append a batch of jobs to queue and their IDs to uuid
             template <typename SEQUENCE> inline
             void batch(sequence<job_uuid> &uuid,
                        SEQUENCE            jobs)
