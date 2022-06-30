@@ -37,12 +37,22 @@ namespace yack
             void     store(jNode *alive) throw();   //!< store an live node
             jNode   *query(const job_type &);       //!< create a new live node
 
-            //! build a new live node
+            //! build a new live node from host/method
             template <typename OBJECT_POINTER, typename METHOD_POINTER>
             jNode   *build(OBJECT_POINTER o, METHOD_POINTER m)
             {
                 jNode *node = zget();
                 try {  new (node) jNode(o,m,uuid); ++uuid; return node; }
+                catch(...) { zput(node); throw;     }
+            }
+
+            //! build a new libe node from functionoid
+            template <typename FUNCTION>
+            jNode *build(FUNCTION &func)
+            {
+                static const type2type<FUNCTION> hint = {};
+                jNode *node = zget();
+                try {  new (node) jNode(func,uuid,hint); ++uuid; return node; }
                 catch(...) { zput(node); throw;     }
             }
 

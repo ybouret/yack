@@ -27,9 +27,13 @@ namespace yack
             jNode(const job_type &, const job_uuid); //!< setup
             ~jNode() throw();                        //!< cleanup
 
-            //! build with host/methode
+            //! build with host/method
             template <typename OBJECT_POINTER, typename METHOD_POINTER> inline
             jNode(OBJECT_POINTER o, METHOD_POINTER m, const job_uuid I) : next(0), prev(0), uuid(I), call(o,m) {}
+
+            //! build with functionoid
+            template <typename FUNCTION> inline
+            jNode(FUNCTION &func, const job_uuid I, const type2type<FUNCTION> &) : next(0), prev(0), uuid(I), call(func) {}
 
             //__________________________________________________________________
             //
@@ -38,7 +42,8 @@ namespace yack
             jNode         *next; //!< for pool/list
             jNode         *prev; //!< for list
             const job_uuid uuid; //!< uuid for job
-            job_type       call; //!< callable functor
+            const job_type call; //!< callable functor
+
         private:
             YACK_DISABLE_COPY_AND_ASSIGN(jNode);
         };

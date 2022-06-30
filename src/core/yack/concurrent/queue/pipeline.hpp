@@ -31,7 +31,7 @@ namespace yack
         //! multi-threaded queue
         //
         //______________________________________________________________________
-        class pipeline
+        class pipeline : public queue
         {
         public:
             //__________________________________________________________________
@@ -91,16 +91,28 @@ namespace yack
             explicit pipeline(const topology &); //!< initialize w.r.t topology
             virtual ~pipeline() throw();         //!< cleanup
 
+            //__________________________________________________________________
+            //
+            // queue interface
+            //__________________________________________________________________
+            virtual job_uuid write(const job_type &J);
+            virtual void     flush() throw();
+            virtual void     prune() throw();
 
-            job_uuid enqueue(const job_type &J)
-            {
-                return process( zombies.query(J) );
-            }
-
+            //__________________________________________________________________
+            //
+            // methods
+            //__________________________________________________________________
             template <typename OBJECT_POINTER, typename METHOD_POINTER>
-            job_uuid enroll(OBJECT_POINTER o, METHOD_POINTER m)
+            job_uuid operator()(OBJECT_POINTER o, METHOD_POINTER m)
             {
                 return process( zombies.build(o,m) );
+            }
+            
+            template <typename FUNCTION>
+            job_uuid operator()(FUNCTION &func)
+            {
+                return process( zombies.build(func) );
             }
 
 

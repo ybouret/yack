@@ -8,32 +8,50 @@ namespace yack
 {
     namespace concurrent
     {
+
+        void pipeline:: prune() throw()
+        {
+            sync.lock();
+            while(pending.size) zombies.store( pending.pop_back() );
+            sync.unlock();
+        }
+
+        void pipeline:: flush() throw()
+        {
+            sync.lock();
+            if(computing.size)
+            {
+                YACK_THREAD_PRINTLN(clid << " <flush #" << computing.size << ">");
+                gate.wait(sync);
+                assert(0      == computing.size);
+                assert(threads== available.size);
+            }
+            sync.unlock();
+        }
+
         void pipeline:: finish(size_t count) throw()
         {
             assert(count<=threads);
             assert(ready>=count);
 
+            {
+                YACK_LOCK(sync);
+                YACK_THREAD_PRINTLN(clid << " <finish #" << count << ">");
+            }
+            
             //------------------------------------------------------------------
             //
             // remove further jobs
             //
             //------------------------------------------------------------------
-            sync.lock();
-            YACK_THREAD_PRINTLN(clid << " <finish #" << count << ">");
-            while(pending.size) zombies.store( pending.pop_back() );
+            prune();
 
             //------------------------------------------------------------------
             //
             // waiting for computing to end
             //
             //------------------------------------------------------------------
-            if(computing.size)
-            {
-                YACK_THREAD_PRINTLN(clid << " <still computing #" << computing.size << ">");
-                gate.wait(sync);
-            }
-            sync.unlock();
-
+            flush();
 
 
             //------------------------------------------------------------------
@@ -95,20 +113,26 @@ namespace yack
         {
             //------------------------------------------------------------------
             //
+            //
             // entering thread
+            //
             //
             //------------------------------------------------------------------
             sync.lock(); assert(ready<threads);
 
             //------------------------------------------------------------------
+            //
             // get agent working in this thread
+            //
             //------------------------------------------------------------------
             drone & my = squad[++ready];
             drone * const me = &my;
             YACK_THREAD_PRINTLN(clid << " " << my.ctx << " @ready=" << ready);
 
             //------------------------------------------------------------------
-            // main thread sync
+            //
+            // allow main thread to synchronize
+            //
             //------------------------------------------------------------------
             if(ready>=threads) {
                 gate.broadcast(); // synchronized
@@ -116,7 +140,9 @@ namespace yack
 
             //------------------------------------------------------------------
             //
+            //
             // waiting for job to do on a LOCKED mutex => return UNLOCKED
+            //
             //
             //------------------------------------------------------------------
         CYCLE:
@@ -124,13 +150,17 @@ namespace yack
 
             //------------------------------------------------------------------
             //
+            //
             // waking up on a LOCKED mutex
+            //
             //
             //------------------------------------------------------------------
             if( NULL == my.task )
             {
                 //--------------------------------------------------------------
+                //
                 // done!
+                //
                 //--------------------------------------------------------------
                 assert(ready>0);
                 YACK_THREAD_PRINTLN(clid << " " << my.ctx << " [quit]");
@@ -138,7 +168,9 @@ namespace yack
                 if(ready<=0) gate.broadcast();
 
                 //--------------------------------------------------------------
+                //
                 // final unlock/return
+                //
                 //--------------------------------------------------------------
                 sync.unlock();
                 return;
@@ -146,7 +178,9 @@ namespace yack
             else
             {
                 //--------------------------------------------------------------
+                //
                 // woke up with a task
+                //
                 //--------------------------------------------------------------
                 assert(computing.owns(me));
             CALL:
@@ -154,11 +188,13 @@ namespace yack
                 sync.unlock();
 
                 //--------------------------------------------------------------
+                //
                 // perform unlocked and protected
+                //
                 //--------------------------------------------------------------
                 try
                 {
-                    my.task->call(sync);
+                    coerce(my.task->call)(sync);
                 }
                 catch(...)
                 {
@@ -166,23 +202,41 @@ namespace yack
                 }
 
                 //--------------------------------------------------------------
+                //
                 // end of computation
+                //
                 //--------------------------------------------------------------
                 sync.lock();
                 YACK_THREAD_PRINTLN(clid << " " << my.ctx << " [done $" << my.task->uuid << "]");
-                zombies.store(my.task);
+                zombies.store(my.task); // erase task
                 if(pending.size)
                 {
+                    //----------------------------------------------------------
                     // take following task
+                    //----------------------------------------------------------
                     my.task = pending.pop_front();
                     goto CALL;
                 }
                 else
                 {
-                    // nothing else todo
-                    my.task = NULL;                            // inactive
-                    available.push_back( computing.pop(me) );  // make available
-                    gate.signal();                             // signal main thread
+                    //----------------------------------------------------------
+                    // nothing else todo: cleanup
+                    //----------------------------------------------------------
+                    my.task = NULL;
+                    if(ran.choice())
+                        available.push_back( computing.pop(me) );
+                    else
+                        available.push_front( computing.pop(me) );
+
+
+                    if(0==computing.size)
+                    {
+                        //------------------------------------------------------
+                        // signal main thread that we are all done
+                        //------------------------------------------------------
+                        gate.signal();
+                    }
+                    
                     goto CYCLE;
                 }
 

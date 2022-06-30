@@ -80,7 +80,7 @@ namespace yack
                 }
             }
             assert(threads==ready);
-            YACK_THREAD_PRINTLN(clid << " [...and ready!]");
+            YACK_THREAD_PRINTLN(clid << " [...all threads are prepared]");
 
             //__________________________________________________________________
             //
@@ -116,7 +116,7 @@ namespace yack
             //__________________________________________________________________
             //
             //
-            // initializing the queue
+            // initializing the first queue of available drones
             //
             //__________________________________________________________________
             for(size_t i=threads;i>0;--i)
@@ -142,9 +142,15 @@ namespace yack
 
         pipeline:: ~pipeline() throw()
         {
-            YACK_THREAD_PRINTLN(clid << " <terminate>");
+            {
+                YACK_LOCK(sync);
+                YACK_THREAD_PRINTLN(clid << " <terminate>");
+            }
             finish(threads);
-            YACK_THREAD_PRINTLN(clid << " <terminate/>");
+            {
+                YACK_LOCK(sync);
+                YACK_THREAD_PRINTLN(clid << " <terminate/>");
+            }
         }
 
 
@@ -162,7 +168,11 @@ namespace yack
         }
 
        
-     
+        job_uuid pipeline:: write(const job_type &J)
+        {
+            return process( zombies.query(J) );
+        }
+
 
     }
 
