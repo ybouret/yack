@@ -103,8 +103,9 @@ namespace yack
             //------------------------------------------------------------------
             // get agent working in this thread
             //------------------------------------------------------------------
-            drone &agent = squad[++ready];
-            YACK_THREAD_PRINTLN(clid << " " << agent.ctx << " @ready=" << ready);
+            drone & my = squad[++ready];
+            drone * const me = &my;
+            YACK_THREAD_PRINTLN(clid << " " << my.ctx << " @ready=" << ready);
 
             //------------------------------------------------------------------
             // main thread sync
@@ -119,20 +120,20 @@ namespace yack
             //
             //------------------------------------------------------------------
         CYCLE:
-            agent.cond.wait(sync);
+            my.cond.wait(sync);
 
             //------------------------------------------------------------------
             //
             // waking up on a LOCKED mutex
             //
             //------------------------------------------------------------------
-            if(NULL == agent.task)
+            if( NULL == my.task )
             {
                 //--------------------------------------------------------------
                 // done!
                 //--------------------------------------------------------------
                 assert(ready>0);
-                YACK_THREAD_PRINTLN(clid << " " << agent.ctx << " [done]");
+                YACK_THREAD_PRINTLN(clid << " " << my.ctx << " [quit]");
                 --ready;
                 if(ready<=0) gate.broadcast();
 
@@ -147,27 +148,44 @@ namespace yack
                 //--------------------------------------------------------------
                 // woke up with a task
                 //--------------------------------------------------------------
-                YACK_THREAD_PRINTLN(clid << " " << agent.ctx << " [work]");
-                assert(computing.owns(&agent));
+                assert(computing.owns(me));
+            CALL:
+                YACK_THREAD_PRINTLN(clid << " " << my.ctx << " [call $" << my.task->uuid << "]");
                 sync.unlock();
 
+                //--------------------------------------------------------------
+                // perform unlocked and protected
+                //--------------------------------------------------------------
                 try
                 {
-                    agent.task->call(sync);
+                    my.task->call(sync);
                 }
                 catch(...)
                 {
 
                 }
 
+                //--------------------------------------------------------------
+                // end of computation
+                //--------------------------------------------------------------
                 sync.lock();
-                YACK_THREAD_PRINTLN(clid << " " << agent.ctx << " [made]");
+                YACK_THREAD_PRINTLN(clid << " " << my.ctx << " [done $" << my.task->uuid << "]");
+                zombies.store(my.task);
+                if(pending.size)
+                {
+                    // take following task
+                    my.task = pending.pop_front();
+                    goto CALL;
+                }
+                else
+                {
+                    // nothing else todo
+                    my.task = NULL;                            // inactive
+                    available.push_back( computing.pop(me) );  // make available
+                    gate.signal();                             // signal main thread
+                    goto CYCLE;
+                }
 
-                zombies.store(agent.task);
-                agent.task = NULL;
-                available.push_back( computing.pop( &agent) );
-
-                goto CYCLE;
             }
 
 
