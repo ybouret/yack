@@ -65,6 +65,7 @@ YACK_UTEST(sync_queue)
 
     dummy D = { ran, tmx };
     Q(&D, & dummy::something );
+    Q(D);
     Q(&D, & dummy::something );
     Q(D);
     Q.flush();
