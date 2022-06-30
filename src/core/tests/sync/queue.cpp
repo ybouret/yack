@@ -13,6 +13,7 @@ namespace
 {
     struct dummy
     {
+        static const size_t RUNMIN = 1000000;
         randomized::bits &ran;
         wtime            &tmx;
 
@@ -20,7 +21,7 @@ namespace
         {
 
             size_t i=0;
-            { YACK_LOCK(sync); i = 10000 + ran.leq(10000); }
+            { YACK_LOCK(sync); i = RUNMIN + ran.leq(10*RUNMIN); }
             double sum = 0;
             while(i-- > 0)
             {
