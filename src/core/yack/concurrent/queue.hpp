@@ -42,9 +42,10 @@ namespace yack
             //
             // virtual interface
             //__________________________________________________________________
-            virtual job_uuid write(const job_type &J) = 0; //!< write a new job
-            virtual void     flush() throw()          = 0; //!< flush all jobs
-            virtual void     prune() throw()          = 0; //!< prune pending jobs
+            virtual job_uuid write(const job_type &J)            = 0; //!< write a new job
+            virtual void     flush()                     throw() = 0; //!< flush all jobs
+            virtual void     prune()                     throw() = 0; //!< prune pending jobs
+            virtual bool     ended(const job_uuid) const throw() = 0; //!< check if ended
 
             //__________________________________________________________________
             //

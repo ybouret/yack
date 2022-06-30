@@ -98,7 +98,8 @@ namespace yack
             virtual job_uuid write(const job_type &J);
             virtual void     flush() throw();
             virtual void     prune() throw();
-
+            virtual bool     ended(const job_uuid) const throw();
+            
             //__________________________________________________________________
             //
             // methods

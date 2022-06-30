@@ -174,6 +174,27 @@ namespace yack
         }
 
 
+
+        bool pipeline:: ended(const job_uuid uuid) const throw()
+        {
+            YACK_LOCK( coerce(sync) );
+
+            // look up in computing
+            for(const drone *d=computing.head;d;d=d->next)
+            {
+                assert(d->task);
+                if(uuid==d->task->uuid) return false; // found in computing
+            }
+
+            // look up in pending
+            for(const jNode *node=pending.head;node;node=node->next)
+            {
+                if(uuid==node->uuid) return false; // found in pending
+            }
+
+            return true; // not found -> ended
+        }
+
     }
 
 }
