@@ -12,7 +12,7 @@ namespace yack
         //______________________________________________________________________
         //
         //
-        //! list of detached clusters
+        //! list of independent clusters
         //
         //______________________________________________________________________
         class clusters : public cluster::list

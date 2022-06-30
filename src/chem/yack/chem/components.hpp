@@ -80,10 +80,10 @@ namespace yack
                 }
             }
 
-            //! test (by index) if components are detached (a.k.a ortho)
+            //! test (by index) if components are detached (a.k.a no common species)
             bool detached(const components &other) const throw();
 
-            //! test (by index) if components are attached (a.k.a ortho)
+            //! test (by index) if components are attached (a.k.a share common species)
             bool attached(const components &other) const throw();
 
             //__________________________________________________________________
@@ -117,9 +117,8 @@ namespace yack
             //! move to a given extent
             void move(writable<double> &C, const double xi) const throw();
 
-            //! check if changed by xi
+            //! check if changed by xi, using Ctry as workspace
             bool changed(const readable<double> &C, const double xi, writable<double> &Ctry) const throw();
-
 
 
             //! find private limits

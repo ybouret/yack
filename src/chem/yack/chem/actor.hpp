@@ -65,7 +65,7 @@ namespace yack
             //__________________________________________________________________
             actor          *next; //!< for actors
             actor          *prev; //!< for actors
-            const  unsigned coef; //!< |nu|>0
+            const  unsigned coef; //!< |nu| >0
             const  unsigned cder; //!< coef-1 >= 0
             const  double   csqr; //!< |nu|^2
             

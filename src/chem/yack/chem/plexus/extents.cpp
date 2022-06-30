@@ -22,8 +22,8 @@ namespace yack
             //------------------------------------------------------------------
             const size_t      ei  = *eq;
             const double      ax  = fabs( Xl[ei] = eq.solve1D(Kl[ei],Corg,Cend) );
-            writable<double> &Ci  = Cl[ei];
-            bool             &ok  = Ok[ei];
+            writable<double> &Ci  = Cl[ei]; // 1D solution
+            bool             &ok  = Ok[ei]; // Ci decreases hamiltonian
 
             if(ax>0)
             {

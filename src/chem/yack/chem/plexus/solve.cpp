@@ -171,7 +171,8 @@ namespace yack
 
             //------------------------------------------------------------------
             //
-            // check status
+            // check status: do we have at least a 1D-solution
+            // that decreases hamiltonian ?
             //
             //------------------------------------------------------------------
             if( !hasWinning(Ok) )
@@ -218,6 +219,14 @@ namespace yack
                     YACK_CHEM_PRINTLN(vpfx << eq.name << " underflow for " << xx );
                 }
             }
+
+            if(underflow)
+            {
+                std::cerr << "    #### underflow @cycle=" << cycle << std::endl;
+                //exit(1);
+            }
+
+
             singles(std::cerr << "|Xi| =",Xtry,"");
             AX = sorted::sum(Xtry,sorted::by_value);
             if(AX<=0)
