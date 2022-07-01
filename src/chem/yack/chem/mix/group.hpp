@@ -11,34 +11,61 @@ namespace yack
 {
     namespace chemical
     {
+        //______________________________________________________________________
+        //
+        // global definitions
+        //______________________________________________________________________
+        typedef meta_list<const equilibrium> glist; //!< alias
+        typedef glist::node_type             gnode; //!< alias
 
-        typedef meta_list<const equilibrium> glist;
-        typedef glist::node_type             gnode;
-
+        //______________________________________________________________________
+        //
+        //
+        //! group of equilibria
+        //
+        //______________________________________________________________________
         class group : public object, public glist
         {
         public:
-            typedef cxx_list_of<group> list;
-            virtual ~group() throw();
-            explicit group() throw();
-            void     sort();
+            //__________________________________________________________________
+            //
+            // types and definitions
+            //__________________________________________________________________
+            typedef cxx_list_of<group> list; //!< alias
 
+            //__________________________________________________________________
+            //
+            // C++
+            //__________________________________________________________________
+            virtual ~group() throw(); //!< cleanup
+            explicit group() throw(); //!< setup
+
+            //__________________________________________________________________
+            //
+            // methods
+            //__________________________________________________________________
+            void sort();                                      //!< sort in ascending index order
             bool is_valid() const throw();                    //!< was sorted
             bool contains(const equilibrium &) const throw(); //!< check if equilibrium is inside list
             bool contains(const group &)       const throw(); //!< check if all equilibria are inside list
-
             bool attached(const equilibrium &) const throw(); //!< check is equilibrium is attached to one of the list
             bool detached(const equilibrium &) const throw(); //!< check is equilibrium is detached from all of the list
 
 
-
-            static int compare_(const gnode *lhs, const gnode *rhs); //!< compare two DIFFERENT gnodes
-            static int compare(const group *lhs, const group *rhs) throw(); //!< comparing two SORTED  groups
-            friend std::ostream & operator<<(std::ostream &, const group &);
+            //__________________________________________________________________
+            //
+            // helpers
+            //__________________________________________________________________
+            static int compare_(const gnode *lhs, const gnode *rhs);         //!< compare two DIFFERENT gnodes
+            static int compare(const group *lhs, const group *rhs) throw();  //!< comparing two SORTED  groups, size+lexico
+            friend std::ostream & operator<<(std::ostream &, const group &); //!< output
             
-
-            group *next;
-            group *prev;
+            //__________________________________________________________________
+            //
+            // members
+            //__________________________________________________________________
+            group *next; //!< for list
+            group *prev; //!< for list
 
         private:
             YACK_DISABLE_COPY_AND_ASSIGN(group);

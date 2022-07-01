@@ -1,4 +1,3 @@
-
 #include "yack/chem/mix/groups.hpp"
 #include "yack/data/list/sort.hpp"
 
@@ -21,33 +20,7 @@ namespace yack
             merge_list_of<group>::sort(*this,group::compare);
         }
 
-        groups:: groups(const equilibria &eqs) : group::list()
-        {
-            groups &G = *this;
-
-            for(const enode *node=eqs.head();node;node=node->next)
-            {
-                const equilibrium &eq = ***node;
-                bool               found = false;
-                for(group *g= G.head;g;g=g->next)
-                {
-                    if(g->attached(eq))
-                    {
-                        (*g) << &eq;
-                        found = true;
-                        break;
-                    }
-                }
-                if(!found)
-                {
-                    *(G.push_back( new group() )) << &eq;
-                }
-            }
-
-            sort();
-
-
-        }
+      
 
         std::ostream & operator<<(std::ostream &os, const groups &G)
         {
@@ -59,7 +32,6 @@ namespace yack
                     os << "  " << *g << std::endl;
                 }
             }
-
             os << "<groups/>";
             return os;
         }

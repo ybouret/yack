@@ -12,14 +12,20 @@ namespace yack
     namespace chemical
     {
 
-        typedef meta_list<const species>                    alist_; //!< alias
-        typedef alist_::node_type                           anode; //!< alias
+        typedef meta_list<const species> alist_; //!< alias
+        typedef alist_::node_type        anode;  //!< alias
 
+        //______________________________________________________________________
+        //
+        //
+        //! list of active species
+        //
+        //______________________________________________________________________
         class alist : public alist_
         {
         public:
-            virtual ~alist() throw();
-            explicit alist(const library &);
+            virtual ~alist() throw();         //!< cleanup
+            explicit alist(const library &);  //!< build from positive ranked species
 
         private:
             YACK_DISABLE_COPY_AND_ASSIGN(alist);
