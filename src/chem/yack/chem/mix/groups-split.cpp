@@ -25,7 +25,7 @@ namespace yack
                 }
                 if(!found)
                 {
-                    *(G.push_back( new group() )) << &eq;
+                    G.push_back( group::new_from(eq) );
                 }
             }
 

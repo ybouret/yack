@@ -2,6 +2,7 @@
 #include "yack/chem/mix/group.hpp"
 #include "yack/exception.hpp"
 #include "yack/data/list/sort.hpp"
+#include "yack/ptr/auto.hpp"
 
 namespace yack
 {
@@ -16,6 +17,14 @@ namespace yack
         {
 
         }
+
+        group * group:: new_from(const equilibrium &eq)
+        {
+            auto_ptr<group> g = new group();
+            (*g) << &eq;
+            return g.yield();
+        }
+
 
         int group:: compare_(const gnode *lhs,
                              const gnode *rhs)
@@ -44,7 +53,7 @@ namespace yack
         }
 
 
-        int group:: compare(const group *lhs, const group *rhs) throw()
+        int group:: compare(const group *lhs, const group *rhs)
         {
             assert(lhs);
             assert(rhs);
@@ -89,6 +98,7 @@ namespace yack
                         L = L->next;
                         R = R->next;
                     }
+                    throw exception("found same chemical::groups");
                     return 0;
                 }
 
@@ -115,6 +125,27 @@ namespace yack
             }
             return true;
         }
+
+
+        bool group:: is_ortho() const throw()
+        {
+            const gnode *node = head;
+            while(node)
+            {
+                const gnode *next = node->next;
+                if(!next) break;
+                const equilibrium &lhs = **node;
+                const equilibrium &rhs = **next;
+                if( lhs.attached(rhs) )
+                {
+                    std::cerr << "attached " << lhs.name << "," << rhs.name << std::endl;
+                    return false;
+                }
+                node = next;
+            }
+            return true;
+        }
+
 
         std::ostream & operator<<(std::ostream &os, const group &g)
         {

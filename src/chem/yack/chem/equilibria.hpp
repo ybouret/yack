@@ -84,6 +84,9 @@ namespace yack
             //! duplicate
             equilibria & operator<<(const equilibria &other);
 
+            //! build detached matrix
+            void build(matrix<bool> &detached) const;
+
         private:
             YACK_DISABLE_COPY_AND_ASSIGN(equilibria);
             eq_set db;

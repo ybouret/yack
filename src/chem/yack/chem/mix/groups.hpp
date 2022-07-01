@@ -31,7 +31,7 @@ namespace yack
             explicit groups(const equilibria &eqs);
 
             //! create groups of detached equilibria
-            explicit groups(const group  &attached);
+            explicit groups(const group  &attached, const matrix<bool> &detached);
 
             //__________________________________________________________________
             //

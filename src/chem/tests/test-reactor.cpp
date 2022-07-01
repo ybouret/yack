@@ -6,6 +6,7 @@
 #include "yack/chem/library.hpp"
 #include "yack/system/env.hpp"
 #include "yack/utest/run.hpp"
+#include "yack/sequence/cxx-array.hpp"
 
 using namespace yack;
 using namespace chemical;
@@ -52,6 +53,23 @@ YACK_UTEST(reactor)
     }
     groups top(lattice);
     std::cerr << top << std::endl;
+    matrix<bool> detached;
+    lattice.build(detached);
+
+    lattice(std::cerr << "detached=",detached,"");
+
+    const size_t      dims = top.size;
+    cxx_array<groups> part(dims);
+
+    {
+        size_t i=0;
+        for(const group *attached=top.head;attached;attached=attached->next)
+        {
+            groups G(*attached,detached);
+            part[++i].swap_with(G);
+        }
+    }
+
 
 
 }

@@ -40,12 +40,14 @@ namespace yack
             virtual ~group() throw(); //!< cleanup
             explicit group() throw(); //!< setup
 
+
             //__________________________________________________________________
             //
             // methods
             //__________________________________________________________________
             void sort();                                      //!< sort in ascending index order
             bool is_valid() const throw();                    //!< was sorted
+            bool is_ortho() const throw();                    //!< each equilibrium is detached from the others
             bool contains(const equilibrium &) const throw(); //!< check if equilibrium is inside list
             bool contains(const group &)       const throw(); //!< check if all equilibria are inside list
             bool attached(const equilibrium &) const throw(); //!< check is equilibrium is attached to one of the list
@@ -56,10 +58,11 @@ namespace yack
             //
             // helpers
             //__________________________________________________________________
-            static int compare_(const gnode *lhs, const gnode *rhs);         //!< compare two DIFFERENT gnodes
-            static int compare(const group *lhs, const group *rhs) throw();  //!< comparing two SORTED  groups, size+lexico
+            static int compare_(const gnode *lhs, const gnode *rhs);  //!< compare two DIFFERENT gnodes
+            static int compare(const group *lhs, const group *rhs);   //!< comparing two SORTED, DIFFERENT  groups, size+lexico
             friend std::ostream & operator<<(std::ostream &, const group &); //!< output
-            
+            static group *new_from(const equilibrium &eq);
+
             //__________________________________________________________________
             //
             // members

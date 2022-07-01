@@ -44,7 +44,10 @@ namespace yack
                 for(const cnode *rhs=other.head();rhs;rhs=rhs->next)
                 {
                     const size_t k = *****rhs;
-                    if(j==k) return true;
+                    if(j==k)
+                    {
+                        return true;
+                    }
                 }
             }
             return false; // no common => not attached

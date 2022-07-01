@@ -75,6 +75,25 @@ namespace yack
             return *this;
         }
 
+        void equilibria:: build(matrix<bool> &detached) const
+        {
+            const size_t n = size();
+            detached.make(n,n);
+            for(const enode *x=head();x;x=x->next)
+            {
+                const equilibrium &ex = ***x;
+                const size_t       ix = *ex;
+                writable<bool>    &dx = detached[ix];
+                dx[ix] = false;
+                for(const enode *y=x->next;y;y=y->next)
+                {
+                    const equilibrium &ey = ***y;
+                    const size_t       iy = *ey;
+                    detached[iy][ix] = dx[iy] = ex.detached(ey);
+                }
+            }
+        }
+
     }
 
 }
