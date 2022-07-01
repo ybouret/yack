@@ -23,6 +23,14 @@ set(chem_lua ${chem_lua_decl} ${chem_lua_srcs})
 SOURCE_GROUP(chem/lua FILES ${chem_lua})
 install( FILES ${chem_lua_decl} DESTINATION include/yack/chem/lua )
 
+#mix
+file(GLOB chem_mix_decl yack/chem/mix/*.hpp yack/chem/mix/*.hxx)
+file(GLOB chem_mix_srcs yack/chem/mix/*.cpp)
+set(chem_mix ${chem_mix_decl} ${chem_mix_srcs})
+SOURCE_GROUP(chem/mix FILES ${chem_mix})
+install( FILES ${chem_mix_decl} DESTINATION include/yack/chem/mix )
+
+
 #plexus
 file(GLOB chem_plexus_decl yack/chem/plexus/*.hpp)
 file(GLOB chem_plexus_srcs yack/chem/plexus/*.cpp)
@@ -34,6 +42,7 @@ add_library(yack-chem STATIC
 ${chem_main}
 ${chem_eqs}
 ${chem_lua}
+${chem_mix}
 ${chem_plexus}
 )
 
