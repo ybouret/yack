@@ -127,8 +127,9 @@ namespace yack
             // get agent working in this thread
             //
             //------------------------------------------------------------------
-            drone &       my = squad[++ready];
-            drone * const me = &my;
+            drone &        my = squad[++ready];
+            drone * const  me = &my;
+            const context &it = my.ctx;
             YACK_THREAD_PRINTLN(clid << " " << my.ctx << " @ready=" << ready);
 
             //------------------------------------------------------------------
@@ -196,7 +197,7 @@ namespace yack
                 //--------------------------------------------------------------
                 try
                 {
-                    coerce(my.task->call)(sync);
+                    coerce(my.task->call)(it,sync);
                 }
                 catch(...)
                 {

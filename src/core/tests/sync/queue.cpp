@@ -6,6 +6,7 @@
 #include "yack/system/env.hpp"
 
 #include <cmath>
+#include <iomanip>
 
 using namespace yack;
 
@@ -17,7 +18,7 @@ namespace
         randomized::bits &ran;
         wtime            &tmx;
 
-        void something(lockable &sync)
+        void something(const concurrent::context &ctx, lockable &sync)
         {
 
             size_t i=0;
@@ -29,11 +30,11 @@ namespace
             }
             {
                 YACK_LOCK(sync);
-                (std::cerr << "\t\tsum=" << sum << std::endl).flush();
+                (std::cerr << "\t\tsum=" << std::setw(15) << sum <<  " @" << ctx << std::endl).flush();
             }
         }
 
-        void operator()(lockable &sync)
+        void operator()(const concurrent::context &, lockable &sync)
         {
             YACK_LOCK(sync);
         }

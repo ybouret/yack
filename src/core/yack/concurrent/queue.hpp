@@ -7,6 +7,7 @@
 #include "yack/lockable.hpp"
 #include "yack/functor.hpp"
 #include "yack/container/sequence.hpp"
+#include "yack/concurrent/context.hpp"
 
 namespace yack
 {
@@ -19,8 +20,16 @@ namespace yack
         // global types and definitions
         //
         //______________________________________________________________________
-        typedef uint32_t                     job_uuid; //!< alias
-        typedef functor<void,TL1(lockable&)> job_type; //!< alias
+
+        //! job identifier to check status
+        typedef uint32_t                     job_uuid;
+
+        //! job type
+        /**
+         - context  : is passed to access private resources
+         - lockable : is passed to access shared resources
+         */
+        typedef functor<void,TL2(const context &,lockable&)> job_type; //!< alias
 
      
         //______________________________________________________________________
