@@ -12,14 +12,17 @@ namespace yack
         {
         }
 
-        group:: group() throw()
+        group:: group() throw() : next(0), prev(0)
         {
 
         }
 
-        int group:: compare_nodes(const gnode *lhs,
-                                  const gnode *rhs)  
+        int group:: compare_(const gnode *lhs,
+                             const gnode *rhs)
         {
+            assert(lhs);
+            assert(rhs);
+
             const equilibrium &L = **lhs;
             const equilibrium &R = **rhs;
             const size_t       l = *L;
@@ -38,14 +41,80 @@ namespace yack
                     return 0;
                 }
             }
+        }
+
+
+        int group:: compare(const group *lhs, const group *rhs) throw()
+        {
+            assert(lhs);
+            assert(rhs);
+            assert(lhs->is_valid());
+            assert(rhs->is_valid());
+
+            size_t       nl = lhs->size;
+            const size_t nr = rhs->size;
+            if(nl<nr)
+            {
+                return -1;
+            }
+            else
+            {
+                if(nr<nl)
+                {
+                    return 1;
+                }
+                else
+                {
+                    const gnode *L = lhs->head;
+                    const gnode *R = rhs->head;
+                    while(nl-- > 0 )
+                    {
+                        const size_t l = ***L;
+                        const size_t r = ***R;
+                        if(l<r)
+                        {
+                            return -1;
+                        }
+                        else
+                        {
+                            if(r<l)
+                            {
+                                return 1;
+                            }
+                            else
+                            {
+                                // take next
+                            }
+                        }
+                        L = L->next;
+                        R = R->next;
+                    }
+                    return 0;
+                }
+
+            }
 
         }
+
 
         void group:: sort()
         {
-            merge_list_of<gnode>::sort(*this,compare_nodes);
+            merge_list_of<gnode>::sort(*this,compare_);
+            assert(is_valid());
         }
 
+        bool group:: is_valid() const throw()
+        {
+            const gnode *node = head;
+            while(node)
+            {
+                const gnode *next = node->next;
+                if(!next) break;
+                if( (***next) <= (***node) ) return false;
+                node = next;
+            }
+            return true;
+        }
 
         std::ostream & operator<<(std::ostream &os, const group &g)
         {
