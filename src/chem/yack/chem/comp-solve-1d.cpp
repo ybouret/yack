@@ -19,7 +19,7 @@ namespace yack
         namespace
         {
 
-            struct MASolver
+            struct MassActionSolver
             {
                 const components       &self;
                 const double            K;
@@ -333,10 +333,10 @@ assert(x.c>x.a)
                 return 0;
             }
 
-            double   oldXi = 0;       //!< old found extent
-            bool     first = true;    //!< first cycle
-            size_t   cycle = 0;       //!< counter
-            MASolver mroot = { *this, K, Cs };
+            double           oldXi = 0;       //!< old found extent
+            bool             first = true;    //!< first cycle
+            size_t           cycle = 0;       //!< counter
+            MassActionSolver mroot = { *this, K, Cs };
 
         CYCLE:
             ++cycle;
