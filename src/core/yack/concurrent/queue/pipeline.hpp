@@ -3,7 +3,7 @@
 #ifndef YACK_CONCURRENT_PIPELINE_INCLUDED
 #define YACK_CONCURRENT_PIPELINE_INCLUDED 1
 
-#include "yack/concurrent/queue/jpool.hpp"
+#include "yack/concurrent/queue/pipeline/jpool.hpp"
 #include "yack/concurrent/condition.hpp"
 #include "yack/concurrent/thread.hpp"
 #include "yack/concurrent/topology.hpp"

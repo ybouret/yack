@@ -511,6 +511,13 @@ set(concurrent_queue ${concurrent_queue_impl} ${concurrent_queue_decl})
 SOURCE_GROUP(concurrent/queue FILES ${concurrent_queue})
 install( FILES ${concurrent_queue_decl} DESTINATION include/yack/concurrent/queue )
 
+# concurrent/queue_pipeline operations
+file(GLOB concurrent_queue_pipeline_impl yack/concurrent/queue/pipeline/*.cpp)
+file(GLOB concurrent_queue_pipeline_decl yack/concurrent/queue/pipeline/*.hpp)
+set(concurrent_queue_pipeline ${concurrent_queue_pipeline_impl} ${concurrent_queue_pipeline_decl})
+SOURCE_GROUP(concurrent/queue/pipeline FILES ${concurrent_queue_pipeline})
+install( FILES ${concurrent_queue_pipeline_decl} DESTINATION include/yack/concurrent/queue/pipeline )
+
 ########################################################################
 ##
 ## rtld
@@ -600,7 +607,7 @@ ${memory} ${memory_allocator} ${memory_small} ${memory_large} ${memory_joint} ${
 ${fft}
 ${functor}
 ${apex} ${apex_m} ${apex_n} ${apex_z} ${apex_q}
-${concurrent} ${concurrent_quark} ${concurrent_loop} ${concurrent_queue}
+${concurrent} ${concurrent_quark} ${concurrent_loop} ${concurrent_queue} ${concurrent_queue_pipeline}
 ${ios} ${ios_c} ${ios_gz} ${ios_bz} ${ios_fmt} ${ios_gv} ${ios_ascii} ${ios_serializer} ${ios_scribe}
 ${randomized}
 ${sort} ${sort_nw} ${sort_network}

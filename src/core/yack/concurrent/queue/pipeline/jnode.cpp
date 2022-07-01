@@ -1,5 +1,5 @@
 
-#include "yack/concurrent/queue/jnode.hpp"
+#include "yack/concurrent/queue/pipeline/jnode.hpp"
 
 
 namespace yack

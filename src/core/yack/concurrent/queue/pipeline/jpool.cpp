@@ -1,5 +1,5 @@
 
-#include "yack/concurrent/queue/jpool.hpp"
+#include "yack/concurrent/queue/pipeline/jpool.hpp"
 #include "yack/type/out-of-reach.hpp"
 #include "yack/type/destruct.hpp"
 

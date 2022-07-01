@@ -3,7 +3,7 @@
 #ifndef YACK_CONCURRENT_JPOOL_INCLUDED
 #define YACK_CONCURRENT_JPOOL_INCLUDED 1
 
-#include "yack/concurrent/queue/jnode.hpp"
+#include "yack/concurrent/queue/pipeline/jnode.hpp"
 #include "yack/data/pool.hpp"
 #include "yack/container/releasable.hpp"
 #include <new>
