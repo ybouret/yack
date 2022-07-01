@@ -39,6 +39,9 @@ namespace yack
             return ans;
         }
 
+
+        
+
         size_t library:: primary() const throw()
         {
             size_t ans = 0;
@@ -123,7 +126,7 @@ namespace yack
     {
         void  library:: fill(writable<double> &C,
                              const double      zero_above,
-                             randomized::bits &ran) throw()
+                             randomized::bits &ran) const throw()
         {
             for(const snode *node=head();node;node=node->next)
             {

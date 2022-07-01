@@ -33,7 +33,7 @@ namespace yack
         mtab(10,M),
         ltab(10,Nl),
         
-        active(),
+        active(lib),
         
         Nu(N,N>0?M:0),
         NuT(Nu.cols,Nu.rows),
@@ -72,19 +72,7 @@ namespace yack
             YACK_CHEM_PRINTLN("M  = " << M);
             YACK_CHEM_PRINTLN("N  = " << N);
             
-            //------------------------------------------------------------------
-            //
-            // build active species
-            //
-            //------------------------------------------------------------------
-            for(const snode *node=lib.head();node;node=node->next)
-            {
-                const species &s = ***node;
-                if(s.rank>0)
-                {
-                    coerce(active) << &s;
-                }
-            }
+            
             
             //------------------------------------------------------------------
             //

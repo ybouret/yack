@@ -4,6 +4,7 @@
 #define YACK_CHEM_CLUSTER_INCLUDED 1
 
 #include "yack/chem/equilibrium.hpp"
+#include "yack/data/list/meta.hpp"
 
 namespace yack
 {

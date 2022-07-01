@@ -8,7 +8,6 @@
 #include "yack/chem/actors.hpp"
 #include "yack/chem/limits.hpp"
 #include "yack/associative/suffix/set.hpp"
-#include "yack/data/list/meta.hpp"
 
 
 namespace yack
@@ -21,8 +20,7 @@ namespace yack
         //______________________________________________________________________
         typedef suffix_set<string,const component::pointer> components_set; //!< alias
         typedef components_set::knot_type                   cnode;          //!< alias
-        typedef meta_list<const species>                    alist; //!< alias
-        typedef alist::node_type                            anode; //!< alias
+      
 
 
 

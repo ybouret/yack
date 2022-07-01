@@ -10,6 +10,7 @@
 #include "yack/sequence/arrays.hpp"
 #include "yack/chem/clusters.hpp"
 #include "yack/ptr/auto.hpp"
+#include "yack/chem/mix/active.hpp"
 
 namespace yack
 {

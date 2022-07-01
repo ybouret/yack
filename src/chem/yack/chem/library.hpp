@@ -85,7 +85,9 @@ namespace yack
             //! fill C
             void  fill(writable<double> &C,
                        const double      zero_above,
-                       randomized::bits &ran) throw();
+                       randomized::bits &ran) const throw();
+
+            
 
             //! display info
             friend std::ostream & operator<<(std::ostream &, const library &);
