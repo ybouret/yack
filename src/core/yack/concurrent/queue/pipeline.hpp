@@ -29,8 +29,8 @@ namespace yack
             //__________________________________________________________________
             static const char              clid[]; //!< "concurrent::pipeline"
             typedef randomized::ParkMiller prng;   //!< pseudo-random number generator
-            typedef list_of<jNode>         jlist;
-            typedef list_of<drone>         drones;
+            typedef list_of<jnode>         jlist;  //!< list of alive/zombie jobs
+            typedef list_of<drone>         drones; //!< available/computing drones
             
             //__________________________________________________________________
             //
@@ -91,7 +91,7 @@ namespace yack
             static void entry(void *) throw(); //!< forward to cycle
 
             void        finish(size_t count)  throw(); //!< cleanup [0..count]
-            job_uuid    process(jNode *alive) throw(); //!< send to computing or to pending
+            job_uuid    process(jnode *alive) throw(); //!< send to computing or to pending
             void        recycle(drone *me)    throw(); //!< computing->available at random front/back
             void        zkill() throw();
 

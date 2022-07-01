@@ -7,7 +7,7 @@ namespace yack
 
     namespace concurrent
     {
-        jNode:: jNode(const job_type &J,
+        jnode:: jnode(const job_type &J,
                       const job_uuid  I) :
         next(0),
         prev(0),
@@ -16,7 +16,7 @@ namespace yack
         {
         }
 
-        jNode:: ~jNode() throw()
+        jnode:: ~jnode() throw()
         {
         }
         

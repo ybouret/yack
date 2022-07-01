@@ -186,7 +186,7 @@ namespace yack
             }
 
             // look up in pending
-            for(const jNode *node=pending.head;node;node=node->next)
+            for(const jnode *node=pending.head;node;node=node->next)
             {
                 if(uuid==node->uuid) return false; // found in pending
             }

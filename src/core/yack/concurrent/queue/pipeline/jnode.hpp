@@ -17,35 +17,35 @@ namespace yack
         //! Alive/Zombie node
         //
         //______________________________________________________________________
-        class jNode
+        class jnode
         {
         public:
             //__________________________________________________________________
             //
             // C++
             //__________________________________________________________________
-            jNode(const job_type &, const job_uuid); //!< setup
-            ~jNode() throw();                        //!< cleanup
+            jnode(const job_type &, const job_uuid); //!< setup
+            ~jnode() throw();                        //!< cleanup
 
             //! build with host/method
             template <typename OBJECT_POINTER, typename METHOD_POINTER> inline
-            jNode(OBJECT_POINTER o, METHOD_POINTER m, const job_uuid I) : next(0), prev(0), uuid(I), call(o,m) {}
+            jnode(OBJECT_POINTER o, METHOD_POINTER m, const job_uuid I) : next(0), prev(0), uuid(I), call(o,m) {}
 
             //! build with functionoid
             template <typename FUNCTION> inline
-            jNode(FUNCTION &func, const job_uuid I, const type2type<FUNCTION> &) : next(0), prev(0), uuid(I), call(func) {}
+            jnode(FUNCTION &func, const job_uuid I, const type2type<FUNCTION> &) : next(0), prev(0), uuid(I), call(func) {}
 
             //__________________________________________________________________
             //
             // members
             //__________________________________________________________________
-            jNode         *next; //!< for pool/list
-            jNode         *prev; //!< for list
+            jnode         *next; //!< for pool/list
+            jnode         *prev; //!< for list
             const job_uuid uuid; //!< uuid for job
             const job_type call; //!< callable functor
 
         private:
-            YACK_DISABLE_COPY_AND_ASSIGN(jNode);
+            YACK_DISABLE_COPY_AND_ASSIGN(jnode);
         };
     }
 

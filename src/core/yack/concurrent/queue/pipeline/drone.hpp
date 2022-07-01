@@ -39,7 +39,7 @@ namespace yack
             drone        *next; //!< for lists
             drone        *prev; //!< for lists
             condition     cond; //!< self-condition
-            jNode        *task; //!< task to do
+            jnode        *task; //!< task to do
             const context ctx;  //!< context
             const thread  thr;  //!< thread
 

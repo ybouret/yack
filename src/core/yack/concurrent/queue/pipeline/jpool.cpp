@@ -25,12 +25,12 @@ namespace yack
             release();
         }
 
-        jNode * jpool:: zget()
+        jnode * jpool:: zget()
         {
-            return impl.size ? impl.query() : object::zacquire<jNode>();
+            return impl.size ? impl.query() : object::zacquire<jnode>();
         }
 
-        void jpool:: zput(jNode *zombie) throw()
+        void jpool:: zput(jnode *zombie) throw()
         {
             assert(NULL!=zombie);
             impl.store( out_of_reach::naught(zombie) );
@@ -38,14 +38,14 @@ namespace yack
 
 
 
-        jNode   * jpool:: query(const job_type &J)
+        jnode   * jpool:: query(const job_type &J)
         {
-            jNode *node = zget();
-            try {   new (node) jNode(J,uuid); ++uuid; return node; }
+            jnode *node = zget();
+            try {   new (node) jnode(J,uuid); ++uuid; return node; }
             catch(...) { zput(node); throw;   }
         }
 
-        void jpool:: store(jNode *alive) throw()
+        void jpool:: store(jnode *alive) throw()
         {
             assert(NULL!=alive);
             zput( destructed(alive) );

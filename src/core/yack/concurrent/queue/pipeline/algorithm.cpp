@@ -200,7 +200,7 @@ namespace yack
                 }
                 catch(...)
                 {
-
+                    // shouldn't happen...
                 }
 
                 //--------------------------------------------------------------
@@ -260,7 +260,7 @@ namespace yack
 {
     namespace concurrent
     {
-        job_uuid pipeline:: process(jNode *alive) throw()
+        job_uuid pipeline:: process(jnode *alive) throw()
         {
             YACK_LOCK(sync);
             assert(NULL!=alive);
