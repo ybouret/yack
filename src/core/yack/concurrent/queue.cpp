@@ -11,7 +11,7 @@ namespace yack
         {
         }
 
-        queue:: queue() throw()
+        queue:: queue() throw() : assembly()
         {
         }
         

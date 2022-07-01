@@ -41,6 +41,13 @@ namespace yack
 
             //__________________________________________________________________
             //
+            // assembly interface
+            //__________________________________________________________________
+            virtual size_t      size()                        const throw(); //!< threads
+            virtual const_type &operator[](const size_t indx) const throw(); //!< in 1..threads
+
+            //__________________________________________________________________
+            //
             // queue interface
             //__________________________________________________________________
             virtual job_uuid write(const job_type &J);

@@ -4,8 +4,7 @@
 #define YACK_SYNC_LOOP_INCLUDED 1
 
 #include "yack/concurrent/loop/runnable.hpp"
-#include "yack/container/readable.hpp"
-#include "yack/container/groove.hpp"
+#include "yack/concurrent/assembly.hpp"
 #include "yack/counted.hpp"
 
 namespace yack
@@ -19,7 +18,7 @@ namespace yack
         //! interface for Single Instruction Multiple Data
         //
         //______________________________________________________________________
-        class loop : public object, public counted, public readable<context>
+        class loop : public object, public counted, public assembly
         {
         public:
             //__________________________________________________________________
@@ -44,32 +43,7 @@ namespace yack
             // data management
             //__________________________________________________________________
 
-            //! ensuring num_blocks of block_size per context
-            void ensure(const size_t num_blocks, const size_t block_size) const;
-
-            //! building of T[0:n-1] for each context
-            template <typename T> inline
-            void build(const size_t n) const {
-                const readable<context> &self = *this;
-                const size_t             nctx = self.size();
-                for(size_t i=1;i<=nctx;++i)
-                {
-                    const context &ctx = self[i];
-                    (*ctx).build<T>(n);
-                }
-            }
-
-            //! build one type per context
-            template <typename T> inline
-            void build() const {
-                build<T>(1);
-            }
-
-            //! free all local memories
-            void free_local_memories() throw();
-
-            //! drop all local memories
-            void drop_local_memories() throw();
+          
 
 
             //__________________________________________________________________

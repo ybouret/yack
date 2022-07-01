@@ -10,6 +10,17 @@ namespace yack
         const char pipeline:: clid[] = "[pipeline]";
 
 
+        size_t pipeline:: size() const throw() { return threads; }
+
+
+        pipeline::const_type &pipeline:: operator[](const size_t indx) const throw()
+        {
+            assert(indx>=1);
+            assert(indx<=threads);
+            return squad[indx].ctx;
+        }
+
+
         pipeline:: pipeline(const topology &topo) :
         sync(),
         threads(topo->size),

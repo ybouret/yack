@@ -7,7 +7,7 @@
 #include "yack/lockable.hpp"
 #include "yack/functor.hpp"
 #include "yack/container/sequence.hpp"
-#include "yack/concurrent/context.hpp"
+#include "yack/concurrent/assembly.hpp"
 
 namespace yack
 {
@@ -38,7 +38,7 @@ namespace yack
         //! queue of jobs
         //
         //______________________________________________________________________
-        class queue
+        class queue : public assembly
         {
         public:
             //__________________________________________________________________
