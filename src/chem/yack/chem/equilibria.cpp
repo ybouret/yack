@@ -65,6 +65,16 @@ namespace yack
             assert(ei==size());
             update_with(eq);
         }
+
+
+        equilibria & equilibria:: operator<<(const equilibria &other)
+        {
+            assert(this != &other);
+            for(const enode *eq = other.head();eq;eq=eq->next)
+                add( **eq );
+            return *this;
+        }
+
     }
 
 }

@@ -81,6 +81,9 @@ namespace yack
             //! fetch (slow helper)
             const equilibrium & operator[](const size_t indx) const throw();
 
+            //! duplicate
+            equilibria & operator<<(const equilibria &other);
+
         private:
             YACK_DISABLE_COPY_AND_ASSIGN(equilibria);
             eq_set db;
