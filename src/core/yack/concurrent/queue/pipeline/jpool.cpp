@@ -8,11 +8,11 @@ namespace yack
 
     namespace concurrent
     {
-        jPool:: jPool() throw() :  releasable(), impl(), uuid(1)
+        jpool:: jpool() throw() :  releasable(), impl(), uuid(1)
         {
         }
 
-        void jPool:: release() throw()
+        void jpool:: release() throw()
         {
             while(impl.size)
             {
@@ -20,17 +20,17 @@ namespace yack
             }
         }
 
-        jPool:: ~jPool() throw()
+        jpool:: ~jpool() throw()
         {
             release();
         }
 
-        jNode * jPool:: zget()
+        jNode * jpool:: zget()
         {
             return impl.size ? impl.query() : object::zacquire<jNode>();
         }
 
-        void jPool:: zput(jNode *zombie) throw()
+        void jpool:: zput(jNode *zombie) throw()
         {
             assert(NULL!=zombie);
             impl.store( out_of_reach::naught(zombie) );
@@ -38,14 +38,14 @@ namespace yack
 
 
 
-        jNode   * jPool:: query(const job_type &J)
+        jNode   * jpool:: query(const job_type &J)
         {
             jNode *node = zget();
             try {   new (node) jNode(J,uuid); ++uuid; return node; }
             catch(...) { zput(node); throw;   }
         }
 
-        void jPool:: store(jNode *alive) throw()
+        void jpool:: store(jNode *alive) throw()
         {
             assert(NULL!=alive);
             zput( destructed(alive) );

@@ -45,7 +45,7 @@ YACK_UTEST(sync_queue)
     randomized::rand_ ran;
     wtime             tmx;
 
-    YACK_SIZEOF(concurrent::pipeline::drone);
+    YACK_SIZEOF(concurrent::drone);
     YACK_SIZEOF(concurrent::pipeline);
 
 

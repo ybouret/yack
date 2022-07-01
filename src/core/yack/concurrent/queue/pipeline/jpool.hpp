@@ -19,15 +19,15 @@ namespace yack
         //! pool of zombies
         //
         //______________________________________________________________________
-        class jPool : public releasable
+        class jpool : public releasable
         {
         public:
             //__________________________________________________________________
             //
             // C++
             //__________________________________________________________________
-            explicit jPool() throw();
-            virtual ~jPool() throw();
+            explicit jpool() throw();
+            virtual ~jpool() throw();
 
             //__________________________________________________________________
             //
@@ -57,7 +57,7 @@ namespace yack
             }
 
         private:
-            YACK_DISABLE_COPY_AND_ASSIGN(jPool);
+            YACK_DISABLE_COPY_AND_ASSIGN(jpool);
             jNode *zget();
             void   zput(jNode *zombie) throw();
             pool_of<jNode> impl; //!< memory

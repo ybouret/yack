@@ -35,13 +35,12 @@ namespace yack
                 YACK_LOCK(sync);
                 YACK_THREAD_PRINTLN(clid << " <create #" << threads << ">");
             }
-            pipeline &host    = *this;
             size_t    current = 0;
             while(current<threads)
             {
                 try
                 {
-                    new ( &squad[current+1] ) drone(host,threads,current);
+                    new ( &squad[current+1] ) drone(threads,current,entry,this);
                     ++current;
                 }
                 catch(...)
