@@ -45,7 +45,7 @@ namespace yack
             if(ratio.size())
             {
                 hsort(ratio,comparison::increasing<double>);
-                YACK_CHEM_PRINTLN("ratio=" << ratio);
+                YACK_CHEM_PRINTLN(vpfx << "ratio=" << ratio);
                 expand = min_of(0.99 * ratio.front(),expand);
             }
             else
@@ -64,7 +64,7 @@ namespace yack
                 Cend[j] = max_of(0.0,Corg[j]+expand*Cstp[j]);
             }
 
-            if(true)
+            if(false)
             {
                 ios::ocstream fp("hamiltonian.dat");
                 const size_t  np = 1000;

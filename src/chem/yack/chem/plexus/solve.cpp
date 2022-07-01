@@ -347,24 +347,32 @@ namespace yack
 
             //------------------------------------------------------------------
             //
-            // compute Cstp
+            // compute Cstp and look-up for best decrease
             //
             //------------------------------------------------------------------
             const double G1 = probeCombinedExtents(G0);
-            YACK_CHEM_PRINTLN(vpfx << "hamiltonian: " << G0 << " --> " << G1 << " @maximum_dof=" << maximum_dof << " | underflow=" << underflow );
-#if 1
-            if(G1>=G0)
+            const bool   increasing = (G1>=G0);
+            if(verbose)
             {
-                if(maximum_dof)
-                {
-                    successful(C0);
-                    exit(1);
-                }
+                std::cerr << vpfx << "hamiltonian: " << G0 << " --> " << G1 << std::endl;
+                std::cerr << vpfx << "           |_variation  = " << (increasing?"increasing":"decreasing") << std::endl;
+                std::cerr << vpfx << "           |_maximumDOF = " << maximum_dof << std::endl;
+                std::cerr << vpfx << "           |_underflow  = " << underflow   << std::endl;
             }
-#endif
+
+            if(increasing)
+            {
+                //--------------------------------------------------------------
+                //
+                //--------------------------------------------------------------
+                if(!maximum_dof)
+                {
+                    YACK_CHEM_PRINTLN(vpfx << "  <INVALID MINIMUM/>");
+                }
+                return successful(C0);
+            }
+
             G0 = G1;
-
-
             goto CYCLE;
 
         }
