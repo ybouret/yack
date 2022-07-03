@@ -27,10 +27,14 @@ namespace yack
             virtual ~groups() throw(); //!< cleanup
             explicit groups() throw(); //!< setup
 
-            //! create groups of attached equilibria, and set info accordingly
+            //! create groups of ATTACHED equilibria, and set info accordingly
             explicit groups(const equilibria &eqs);
 
             //! create groups of detached equilibria
+            /**
+             reply to : what are the equilibrium within an attached group
+             that can be tested simultaneously
+             */
             explicit groups(const group  &attached, const matrix<bool> &detached);
 
             //__________________________________________________________________

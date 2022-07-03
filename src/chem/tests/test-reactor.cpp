@@ -50,25 +50,26 @@ YACK_UTEST(reactor)
         lattice << eqs << couples;
         std::cerr << "lattice=" << lattice << std::endl;
 
-    }
-    groups top(lattice);
-    std::cerr << top << std::endl;
-    matrix<bool> detached;
-    lattice.build(detached);
-
-    lattice(std::cerr << "detached=",detached,"");
-
-    const size_t      dims = top.size;
-    cxx_array<groups> part(dims);
-
-    {
-        size_t i=0;
-        for(const group *attached=top.head;attached;attached=attached->next)
+        groups top(lattice);
+        std::cerr << top << std::endl;
+        matrix<bool> detached;
+        lattice.build(detached);
+        
+        lattice(std::cerr << "detached=",detached,"");
+        
+        const size_t      dims = top.size;
+        cxx_array<groups> part(dims);
+        
         {
-            groups G(*attached,detached);
-            part[++i].swap_with(G);
+            size_t i=0;
+            for(const group *attached=top.head;attached;attached=attached->next)
+            {
+                groups G(*attached,detached);
+                part[++i].swap_with(G);
+            }
         }
     }
+   
 
 
 
