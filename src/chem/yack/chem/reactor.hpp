@@ -51,7 +51,10 @@ namespace yack
             //__________________________________________________________________
 
             //! solve with precomputed K
-            bool solve(writable<double> &C0);
+            bool solve(writable<double> &C0) throw();
+
+
+            double hamiltonian(const readable<double> &C) throw();
 
             //__________________________________________________________________
             //
@@ -98,6 +101,9 @@ namespace yack
 
             double singlesXi() throw();
             void   couplesXi() throw();
+            void   lookUp() throw();
+            double combinedHamiltonian(const group &g, writable<double> &C) throw();
+
 
         };
 

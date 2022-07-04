@@ -1,15 +1,29 @@
 
 #include "yack/chem/reactor.hpp"
 #include "yack/sort/sum.hpp"
+#include "yack/math/iota.hpp"
+
 #include <iomanip>
 #include <cmath>
 
 namespace yack
 {
+    using namespace math;
 
     namespace chemical
     {
-        bool reactor:: solve(writable<double> &C0)
+        double reactor:: hamiltonian(const readable<double> &C) throw()
+        {
+            for(const enode *node=singles.head();node;node=node->next)
+            {
+                const equilibrium &eq = ***node;
+                const size_t       ei = *eq;
+                Xtry[ei] = squared( eq.mass_action(K[ei],C) );
+            }
+            return sorted::sum(Xtry,sorted::by_value);
+        }
+
+        bool reactor:: solve(writable<double> &C0) throw()
         {
             //------------------------------------------------------------------
             //
@@ -63,13 +77,43 @@ namespace yack
 
             //------------------------------------------------------------------
             //
-            // compute couples
+            // compute remaining couples
             //
             //------------------------------------------------------------------
             couplesXi();
-            
+
+            lookUp();
+
 
             return false;
+        }
+
+        double reactor:: combinedHamiltonian(const group &g, writable<double> &C) throw()
+        {
+            assert(g.is_valid());
+            assert(g.size>0);
+            assert(g.is_ortho());
+            iota::save(C,Corg);
+            for(const gnode *pp=g.head;pp;pp=pp->next)
+            {
+                const equilibrium &eq = **pp;
+                eq.transfer(C,Cl[*eq]);
+            }
+            return hamiltonian(C);
+        }
+
+
+        void reactor:: lookUp() throw()
+        {
+            assert( look_up.is_valid() );
+
+            for(const group *g=look_up->head;g;g=g->next)
+            {
+                const double hTmp = combinedHamiltonian(*g,Ctry);
+                std::cerr << std::setw(15) << hTmp << " @" << *g << std::endl;
+            }
+
+
         }
 
 

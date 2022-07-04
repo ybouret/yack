@@ -53,6 +53,7 @@ namespace yack
                     const readable<bool> &dx = detached[ix];
 
                     YACK_CHEM_PRINTLN("  => " << ex.name);
+
                     //----------------------------------------------------------
                     //
                     // building possible guests for ex
