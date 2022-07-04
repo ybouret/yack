@@ -55,7 +55,9 @@ namespace yack
 
 
             double hamiltonian(const readable<double> &C) throw();
-
+            
+            double operator()(const double u) throw();
+            
             //__________________________________________________________________
             //
             // members
@@ -109,20 +111,16 @@ namespace yack
             const lockable::scope eqsLock;
 
 
-            bool onSuccess(writable<double> &C0);
-
-            double singlesXi(const double G0) throw(); //!< return |Xi|
-            void   couplesXi(const double G0) throw();
-            double singlesXi() throw(); //!< update |Xi|
-
-            bool   underflowing() throw();
-
-            bool   decreaseHamiltonian(double &G0) throw();
-            double combinedHamiltonian(const group &g, writable<double> &C) throw();
-
-            void   suspendEquilibrium(const size_t ei) throw();
-            size_t initializeLocalStep() throw();
-            double optimizeLocalStep(const double G0) throw();
+            bool   onSuccess(writable<double> &C0);
+            double computeSinglesXi(const double G0) throw(); //!< return |Xi|
+            void   computeCouplesXi(const double G0) throw();
+            double upgradeSinglesXi() throw(); //!< update |Xi|
+            bool   happensUnderflow() throw();
+            bool   lowersMassAction(double &G0) throw();
+            double mixedMassActions(const group &g, writable<double> &C) throw();
+            void   zapEquilibriumAt(const size_t ei) throw();
+            double minimizeFullStep(const double G0) throw();
+            size_t initializeOmega0() throw();
 
         };
 

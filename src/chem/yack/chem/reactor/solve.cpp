@@ -2,7 +2,7 @@
 #include "yack/chem/reactor.hpp"
 #include "yack/sort/sum.hpp"
 #include "yack/math/iota.hpp"
-//#include "yack/exception.hpp"
+#include "yack/math/opt/optimize.hpp"
 
 #include <iomanip>
 #include <cmath>
@@ -10,7 +10,7 @@
 namespace yack
 {
     using namespace math;
-
+    
     namespace chemical
     {
         double reactor:: hamiltonian(const readable<double> &C) throw()
@@ -23,7 +23,18 @@ namespace yack
             }
             return sorted::sum(Xtry,sorted::by_value);
         }
-
+        
+        double reactor:: operator()(const double u) throw()
+        {
+            const double v = 1.0 - u;
+            for(const anode *node=active.head;node;node=node->next)
+            {
+                const size_t j = ***node;
+                Ctry[j] = v * Corg[j] + u * Cend[j];
+            }
+            return hamiltonian(Ctry);
+        }
+        
         bool reactor:: solve(writable<double> &C0) throw()
         {
             //------------------------------------------------------------------
@@ -38,7 +49,7 @@ namespace yack
             if(verbose) {
                 lib(std::cerr<<vpfx<<"Cini=",C0,vpfx);
             }
-
+            
             //------------------------------------------------------------------
             //
             //
@@ -51,13 +62,13 @@ namespace yack
                 case 0:
                     YACK_CHEM_PRINTLN(" <success::empty/>");
                     return true;
-
+                    
                 case 1: {
                     const equilibrium &eq = ***singles.head();
                     eq.solve1D(K[*eq],C0,Corg);
                     YACK_CHEM_PRINTLN(" <success::1D/>");
                 } return onSuccess(C0);
-
+                    
                 default:
                     for(size_t i=M;i>0;--i)
                     {
@@ -66,7 +77,7 @@ namespace yack
                     }
                     break;
             }
-
+            
             double   G0    = hamiltonian(Corg);
             unsigned cycle = 0;
         CYCLE:
@@ -76,7 +87,7 @@ namespace yack
                 YACK_CHEM_PRINTLN(" <success:: G0 = 0 @init/>");
                 return onSuccess(C0);
             }
-
+            
             //------------------------------------------------------------------
             //
             //
@@ -84,14 +95,14 @@ namespace yack
             //
             //
             //------------------------------------------------------------------
-            double AX = singlesXi(G0);
+            double AX = computeSinglesXi(G0);
             YACK_CHEM_PRINTLN(vpfx << "|Xi| =" << AX);
             if(AX<=0)
             {
                 YACK_CHEM_PRINTLN(" <success:: |Xi| = 0 />");
                 return onSuccess(C0);
             }
-
+            
             //------------------------------------------------------------------
             //
             //
@@ -99,9 +110,9 @@ namespace yack
             //
             //
             //------------------------------------------------------------------
-            couplesXi(G0);
-
-
+            computeCouplesXi(G0);
+            
+            
             //------------------------------------------------------------------
             //
             //
@@ -109,32 +120,34 @@ namespace yack
             //
             //
             //------------------------------------------------------------------
-            if( decreaseHamiltonian(G0) )
+            if( lowersMassAction(G0) )
             {
+                YACK_CHEM_PRINTLN("G0=" << G0);
+                active.transfer(Corg,Cend);
                 if(G0<=0)
                 {
                     YACK_CHEM_PRINTLN(" <success:: G0 = 0 @move/>");
                     return onSuccess(C0);
                 }
-
-                AX = singlesXi();
+                
+                AX = upgradeSinglesXi();
                 YACK_CHEM_PRINTLN(vpfx << "|Xi| =" << AX);
                 if(AX<=0)
                 {
                     YACK_CHEM_PRINTLN(" <success:: |Xi| = 0 @move/>");
                     return onSuccess(C0);
                 }
-
+                
                 //TODO : underflowing ?
             }
             else
             {
                 std::cerr << std::endl << "NO Decrease!!" << std::endl << std::endl;
-                const bool underflow = underflowing();
+                const bool underflow = happensUnderflow();
                 std::cerr << "undeflowing=" << underflow << std::endl;
                 exit(1);
             }
-
+            
             //------------------------------------------------------------------
             //
             //
@@ -149,10 +162,10 @@ namespace yack
                 //
                 //--------------------------------------------------------------
                 YACK_CHEM_MARKUP(vpfx, "reactor::computeExtent");
-                size_t    num_running = initializeLocalStep();
+                size_t    num_running = initializeOmega0();
                 bool      maximum_dof = true;
                 unsigned  inner       = 0;
-
+                
             COMPUTE_EXTENT:
                 ++inner;
                 YACK_CHEM_PRINTLN(vpfx << " -------- extent " << cycle << "." << inner << " --------");
@@ -166,7 +179,7 @@ namespace yack
                     case 0:
                         YACK_CHEM_PRINTLN(" <failure::all-blocked>");
                         return false;
-
+                        
                     case 1:
                         for(const enode *node=singles.head();node;node=node->next)
                         {
@@ -182,11 +195,11 @@ namespace yack
                         }
                         YACK_CHEM_PRINTLN(" <failure::corrupted-1D>");
                         break;
-
+                        
                     default:
                         break;
                 }
-
+                
                 //--------------------------------------------------------------
                 //
                 // compute extent
@@ -198,10 +211,10 @@ namespace yack
                     YACK_CHEM_PRINTLN(" <singular system>");
                     goto CYCLE; // try another global step
                 }
-
+                
                 iota::load(xi,Gamma);
                 LU->solve(iOmega,xi);
-
+                
                 //--------------------------------------------------------------
                 //
                 // validate primary constraints
@@ -214,7 +227,7 @@ namespace yack
                         const equilibrium &eq = ***node;
                         const size_t       ei = *eq;
                         const double       xx = xi[ei];
-
+                        
                         if(verbose) singles.pad(std::cerr << "@{" << eq.name << "}",eq) << " : ";
                         if(blocked[ei])
                         {
@@ -228,7 +241,7 @@ namespace yack
                                 overshoot = true;
                                 --num_running;
                                 YACK_CHEM_PRINT("[REJECT]");
-                                suspendEquilibrium(ei);
+                                zapEquilibriumAt(ei);
                             }
                             else
                             {
@@ -238,70 +251,100 @@ namespace yack
                         }
                         if(verbose) std::cerr << std::endl;
                     }
-
+                    
                     if(overshoot)
                     {
-                        //std::cerr << "Omega0=" << Omega0 << std::endl;
-                        //std::cerr << "NuA   =" << NuA    << std::endl;
                         maximum_dof = false;
                         goto COMPUTE_EXTENT;
                     }
                 }
-
-                YACK_CHEM_PRINTLN("maximum_dof=" << maximum_dof);
+                YACK_CHEM_PRINTLN("maximum_dof=" << (maximum_dof?"true":"false") );
             }
             
-            optimizeLocalStep(G0);
-
-
+            minimizeFullStep(G0);
+            
+            
             exit(1);
-
-
-
+            
+            
+            
             goto CYCLE;
-
-
-
-
-
+            
+            
+            
+            
+            
             return false;
         }
-
-
-        double reactor:: optimizeLocalStep(const double G0) throw()
+        
+        
+        double reactor:: minimizeFullStep(const double G0) throw()
         {
-
+            
+            //------------------------------------------------------------------
+            //
+            // Cstp = NuA' * xi and deduce limiting ratio
+            //
+            //------------------------------------------------------------------
             ratio.free();
-            const size_t n = N;
-            for(const anode *node=active.head;node;node=node->next)
             {
-                const size_t j = ***node;
-                for(size_t i=n;i>0;--i)
+                const size_t n = N;
+                for(const anode *node=active.head;node;node=node->next)
                 {
-                    Xtry[i] = xi[i] * NuA[i][j];
-                }
-                const double d = (Cstp[j] = sorted::sum(Xtry,sorted::by_abs_value));
-                if(d<0)
-                {
-                    const double c = Corg[j]; assert(c>=0);
-                    ratio << (c/-d);
+                    const size_t j = ***node;
+                    for(size_t i=n;i>0;--i)
+                    {
+                        Xtry[i] = xi[i] * NuA[i][j];
+                    }
+                    const double d = (Cstp[j] = sorted::sum(Xtry,sorted::by_abs_value));
+                    if(d<0)
+                    {
+                        const double c = Corg[j]; assert(c>=0);
+                        ratio << (c/-d);
+                    }
                 }
             }
-
+            
+            double expand = 2.0;
             if(ratio.size())
             {
                 hsort(ratio,comparison::increasing<double>);
                 std::cerr << vpfx << "ratio=" << ratio << std::endl;
+                expand = min_of(expand,0.99*ratio.front());
             }
-
+            
+            for(const anode *node=active.head;node;node=node->next)
+            {
+                const size_t j = ***node;
+                Cend[j] = max_of(Corg[j]+Cstp[j]*expand,0.0);
+            }
+            
             if(verbose)
             {
-                lib(std::cerr << vpfx << "Cstp=",Cstp,vpfx);
+                lib(std::cerr << vpfx << "Cend=",Cend,vpfx);
             }
-
+            
+            triplet<double> u = { 0,  -1, 1 };
+            triplet<double> g = { G0, -1, hamiltonian(Cend) };
+            
+            if(false)
+            {
+                ios::ocstream fp("hamiltonian.dat");
+                const size_t  np = 1000;
+                for(size_t i=0;i<=np;++i)
+                {
+                    const double uu = i/double(np);
+                    fp("%.15g %.15g\n",uu, (*this)(uu));
+                }
+            }
+            
+            optimize::run_for(*this, u, g, optimize::inside);
+            std::cerr << "G: " << G0 << " --> " << g.b << std::endl;
+            active.transfer(Corg,Ctry);
+            return g.b;
         }
-
-        void   reactor:: suspendEquilibrium(const size_t ei) throw()
+        
+        void   reactor:: zapEquilibriumAt(const size_t ei) throw()
         {
             writable<double> &Omi = Omega0[ei];
             blocked[ei] = true;
@@ -309,14 +352,14 @@ namespace yack
             Omi.ld(0); Omi[ei] = 1.0;
             NuA[ei].ld(0);
         }
-
-        size_t reactor:: initializeLocalStep() throw()
+        
+        size_t reactor:: initializeOmega0() throw()
         {
             YACK_CHEM_MARKUP(vpfx, "reactor::initializeLocalStep");
-
+            
             size_t num_running = N;
             NuA.assign(Nu);
-
+            
             for(const enode *node=singles.head();node;node=node->next)
             {
                 const equilibrium &eq = ***node;
@@ -324,7 +367,7 @@ namespace yack
                 writable<double>  &psi = Psi[ei];
                 writable<double>  &Omi = Omega0[ei];
                 double            &gam = Gamma[ei];
-
+                
                 gam = eq.grad_action(psi,K[ei],Corg,Ctry);
                 const double den = - sorted::dot(psi,Nu[ei],Ctry);
                 if(den<=0)
@@ -343,15 +386,15 @@ namespace yack
                         const size_t j = ****scan;
                         Omi[j] = - sorted::dot(psi,Nu[j],Ctry);
                     }
-
+                    
                     for(const enode *scan=node->next;scan;scan=scan->next) {
                         const size_t j = ****scan;
                         Omi[j] = - sorted::dot(psi,Nu[j],Ctry);
                     }
-
+                    
                     if( fabs(Xend[ei]) <= 0 ) gam = 0;
                 }
-
+                
             }
             if(verbose)
             {
@@ -359,28 +402,28 @@ namespace yack
                 singles(std::cerr<<vpfx<<"Omega=",Omega0,vpfx);
                 singles(std::cerr<<vpfx<<"Gamma=",Gamma,vpfx);
             }
-
+            
             return num_running;
-
+            
         }
-
-
-
-        bool reactor:: underflowing() throw()
+        
+        
+        
+        bool reactor:: happensUnderflow() throw()
         {
             for(const enode *node=singles.head();node;node=node->next)
             {
                 const equilibrium &eq = ***node;
                 const size_t       ei = *eq;
                 if(eq.changed(Corg, Xend[ei], Ctry)) return false;
-
+                
             }
-
+            
             // nothing has changed!
             return true;
         }
-
-        double reactor:: combinedHamiltonian(const group &g, writable<double> &C) throw()
+        
+        double reactor:: mixedMassActions(const group &g, writable<double> &C) throw()
         {
             assert(g.is_valid());
             assert(g.size>0);
@@ -395,19 +438,23 @@ namespace yack
             }
             return hamiltonian(C);
         }
-
-
-        bool reactor:: decreaseHamiltonian(double &G0) throw()
+        
+        
+        bool reactor:: lowersMassAction(double &G0) throw()
         {
             assert( look_up.is_valid() );
-
+            
+            //------------------------------------------------------------------
+            //
             // find first valid global
+            //
+            //------------------------------------------------------------------
             const group *g    = look_up->head;
             const group *gOpt = NULL;
             double       hOpt = -1;
             for(;g;g=g->next)
             {
-                const double hTmp = combinedHamiltonian(*g,Cend);
+                const double hTmp = mixedMassActions(*g,Cend);
                 if(hTmp>=0)
                 {
                     hOpt = hTmp;
@@ -416,12 +463,17 @@ namespace yack
                     break;
                 }
             }
-
-            if(!gOpt) return false;
-
+            
+            if(!gOpt) return false; // nope...
+            
+            //------------------------------------------------------------------
+            //
+            // find best global combination
+            //
+            //------------------------------------------------------------------
             for(g=g->next;g;g=g->next)
             {
-                const double hTmp = combinedHamiltonian(*g,Ctry);
+                const double hTmp = mixedMassActions(*g,Ctry);
                 if(hTmp<0) continue;
                 if(hTmp<=hOpt)
                 {
@@ -434,18 +486,18 @@ namespace yack
                 {
                     std::cerr << " - " << std::setw(15) << hTmp << " @" << *g << std::endl;
                 }
-
+                
             }
-
+            
             std::cerr << " * " << std::setw(15) << hOpt << " @" << *gOpt << std::endl;
             assert( fabs( hamiltonian(Cend) - hOpt) <=0 );
-
+            
             G0 = hOpt;
             return true;
         }
-
-
-        double reactor:: singlesXi() throw()
+        
+        
+        double reactor:: upgradeSinglesXi() throw()
         {
             YACK_CHEM_MARKUP(vpfx, "reactor::singlesXi::update");
             for(const enode *node=singles.head();node;node=node->next)
@@ -453,14 +505,14 @@ namespace yack
                 const equilibrium &eq = ***node;
                 const size_t       ei = *eq;
                 writable<double>  &Ci = Cl[ei];
-
+                
                 Xend[ei] = eq.solve1D(K[ei],Corg,Ci) ;
             }
             if(verbose) singles(std::cerr << vpfx << "Xi=",Xend,vpfx);
             return sorted::sum(Xtry,sorted::by_value);
         }
-
-        double reactor:: singlesXi(const double G0) throw()
+        
+        double reactor:: computeSinglesXi(const double G0) throw()
         {
             YACK_CHEM_MARKUP(vpfx, "reactor::singlesXi");
             for(const enode *node=singles.head();node;node=node->next)
@@ -468,15 +520,15 @@ namespace yack
                 const equilibrium &eq = ***node;
                 const size_t       ei = *eq;
                 writable<double>  &Ci = Cl[ei];
-
+                
                 Xtry[ei] = fabs(  Xl[ei] = Xend[ei] = eq.solve1D(K[ei],Corg,Ci) );
                 Ok[ei]   = (hamiltonian(Ci) <= G0);
             }
             if(verbose) singles(std::cerr << vpfx << "Xi=",Xend,vpfx);
             return sorted::sum(Xtry,sorted::by_value);
         }
-
-        void reactor:: couplesXi(const double G0) throw()
+        
+        void reactor:: computeCouplesXi(const double G0) throw()
         {
             YACK_CHEM_MARKUP(vpfx, "reactor::couplesXi");
             for(const enode *node=couples.head();node;node=node->next)
@@ -491,11 +543,11 @@ namespace yack
             {
                 lattice(std::cerr << vpfx << "Xi=",Xl,vpfx);
                 lattice(std::cerr << vpfx << "Ok=",Ok,vpfx);
-
+                
             }
-
+            
         }
-
+        
         bool reactor:: onSuccess(writable<double> &C0)
         {
             active.transfer(C0,Corg);
@@ -512,8 +564,8 @@ namespace yack
             }
             return true;
         }
-
-
+        
+        
     }
-
+    
 }
