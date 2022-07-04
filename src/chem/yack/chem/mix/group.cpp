@@ -18,7 +18,7 @@ namespace yack
 
         }
 
-        group * group:: new_from(const equilibrium &eq)
+        group * group:: start_from(const equilibrium &eq)
         {
             auto_ptr<group> g = new group();
             (*g) << &eq;

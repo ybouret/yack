@@ -9,18 +9,9 @@ namespace yack
 
         const groups::build_clusters_ groups::build_clusters = {};
         
-        static inline bool is_acceptable( const readable<equilibrium *> &party,
+        static inline bool is_acceptable(const readable<equilibrium *> &party,
                                          const matrix<bool>            &detached)
         {
-
-#if 0
-            std::cerr << "testing {" << host.name << "}";
-            for(size_t i=1;i<=party.size();++i)
-            {
-                std::cerr << "+{" << party[i]->name << "}";
-            }
-            std::cerr << std::endl;
-#endif
 
             const size_t k = party.size();
             for(size_t i=k;i>1;--i)
@@ -39,82 +30,112 @@ namespace yack
             return true;
         }
 
-        groups:: groups(const group &attached, const matrix<bool> &detached) : group::list()
+        groups:: groups(const group        &attached,
+                        const matrix<bool> &detached) : group::list()
         {
             assert(attached.size>0);
 
-            std::cerr << "Building Detached from " << attached << std::endl;
 
-            vector<equilibrium *> guest(attached.size-1,as_capacity);
-            vector<equilibrium *> party(attached.size-1,as_capacity);
-
-            for(const gnode *xnode=attached.head;xnode;xnode=xnode->next)
+            //------------------------------------------------------------------
+            //
+            //
+            // outer loop
+            //
+            //
+            //------------------------------------------------------------------
             {
-                const equilibrium    &ex = **xnode;
-                const size_t          ix = *ex;
-                const readable<bool> &dx = detached[ix];
-
-                // building possible guests...
-                guest.free();
-                for(const gnode *ynode=xnode->next;ynode;ynode=ynode->next)
+                vector<equilibrium *> guest(attached.size-1,as_capacity);
+                vector<equilibrium *> party(attached.size-1,as_capacity);
+                for(const gnode *xnode=attached.head;xnode;xnode=xnode->next)
                 {
-                    const equilibrium &ey = **ynode;
-                    const size_t       iy = *ey;
-                    if(dx[iy])
+                    const equilibrium    &ex = **xnode;
+                    const size_t          ix = *ex;
+                    const readable<bool> &dx = detached[ix];
+
+                    //----------------------------------------------------------
+                    //
+                    // building possible guests for ex
+                    //
+                    //----------------------------------------------------------
+                    guest.free();
+                    for(const gnode *ynode=xnode->next;ynode;ynode=ynode->next)
                     {
-                        guest << (equilibrium *) &ey;
-                    }
-                }
-
-
-                const size_t n = guest.size();
-                if(n<=0)
-                {
-                    // no possible co-evaluation
-                    push_back( group::new_from(ex) );
-                }
-                else
-                {
-                    // testing all co-evaluations
-                    for(size_t k=n;k>0;--k)
-                    {
-                        combination comb(n,k);
-                        do {
-                            comb.extract(party,guest); assert(k==party.size());
-                            if(is_acceptable(party,detached))
-                            {
-                                group * g = push_back( group::new_from(ex) );
-                                for(size_t i=1;i<=k;++i)
-                                {
-                                    *g << & *party[i];
-                                }
-                                assert(g->is_valid());
-                                assert(g->is_ortho());
-                            }
+                        const equilibrium &ey = **ynode;
+                        const size_t       iy = *ey;
+                        if(dx[iy])
+                        {
+                            guest << (equilibrium *) &ey;
                         }
-                        while( comb.next() );
+                    }
+
+
+                    const size_t n = guest.size();
+                    if(n<=0)
+                    {
+                        //------------------------------------------------------
+                        // no possible co-evaluation
+                        //------------------------------------------------------
+                        push_back( group::start_from(ex) );
+                    }
+                    else
+                    {
+                        //------------------------------------------------------
+                        // testing all co-evaluations
+                        //------------------------------------------------------
+                        for(size_t k=n;k>0;--k)
+                        {
+                            combination comb(n,k);
+                            do {
+                                comb.extract(party,guest); assert(k==party.size());
+                                if(is_acceptable(party,detached))
+                                {
+                                    group * g = push_back( group::start_from(ex) );
+                                    for(size_t i=1;i<=k;++i)
+                                    {
+                                        *g << & *party[i];
+                                    }
+                                    assert(g->is_valid()); // by construction
+                                    assert(g->is_ortho()); // by construction
+                                }
+                            }
+                            while( comb.next() );
+                        }
                     }
                 }
             }
 
+            //------------------------------------------------------------------
+            //
+            //
+            // full sort
+            //
+            //
+            //------------------------------------------------------------------
             sort();
-            
+
+            //------------------------------------------------------------------
+            //
+            //
             // reduction
+            //
+            //
+            //------------------------------------------------------------------
             {
                 groups temp;
                 while(size)
                 {
-                    group *lhs = pop_front();
-                    bool   inc = false;
+                    group *lhs      = pop_front();
+                    bool   included = false;
                     for(const group *rhs=head;rhs;rhs=rhs->next)
                     {
                         if(rhs->size>lhs->size && rhs->contains(*lhs) )
                         {
-                            inc = true;
+                            included = true;
                             break;
                         }
                     }
-                    if(inc)
+
+                    if(included)
                     {
                         delete lhs;
                     }
@@ -122,13 +143,10 @@ namespace yack
                     {
                         temp.push_back(lhs);
                     }
+
                 }
                 swap_with(temp);
-
             }
-            std::cerr << *this << std::endl;
-
-
         }
 
     }

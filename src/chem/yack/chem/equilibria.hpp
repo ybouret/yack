@@ -87,6 +87,7 @@ namespace yack
             //! build detached matrix
             void build(matrix<bool> &detached) const;
 
+            //! build topology matrix and initial constants
             template <typename T> inline
             void build( matrix<T> &Nu, writable<double> &K, const double t) const
             {

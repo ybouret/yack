@@ -31,7 +31,7 @@ namespace yack
                 }
                 if(!found)
                 {
-                    G.push_back( group::new_from(eq) );
+                    G.push_back( group::start_from(eq) );
                 }
             }
             

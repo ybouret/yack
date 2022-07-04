@@ -58,10 +58,10 @@ namespace yack
             //
             // helpers
             //__________________________________________________________________
-            static int compare_(const gnode *lhs, const gnode *rhs);  //!< compare two DIFFERENT gnodes
-            static int compare(const group *lhs, const group *rhs);   //!< comparing two SORTED, DIFFERENT  groups, size+lexico
+            static int compare_(const gnode *lhs, const gnode *rhs);         //!< compare two DIFFERENT gnodes
+            static int compare(const group *lhs, const group *rhs);          //!< comparing two SORTED, DIFFERENT  groups, size+lexico
             friend std::ostream & operator<<(std::ostream &, const group &); //!< output
-            static group *new_from(const equilibrium &eq);
+            static group *start_from(const equilibrium &eq);                 //!< create a new group with this equilibrium
 
             //__________________________________________________________________
             //

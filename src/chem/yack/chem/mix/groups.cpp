@@ -20,7 +20,16 @@ namespace yack
             merge_list_of<group>::sort(*this,group::compare);
         }
 
-      
+        bool groups:: contains(const equilibrium &eq) const throw()
+        {
+            for(const group *g=head;g;g=g->next)
+            {
+                if(g->contains(eq)) return true;
+            }
+            return false;
+        }
+
+
 
         std::ostream & operator<<(std::ostream &os, const groups &G)
         {
@@ -42,6 +51,7 @@ namespace yack
 }
 
 #include "yack/sequence/cxx-array.hpp"
+#include "yack/exception.hpp"
 
 namespace yack
 {
@@ -49,15 +59,26 @@ namespace yack
     {
         groups:: groups(const equilibria &lattice, const build_clusters_ &) : group::list()
         {
+            //------------------------------------------------------------------
+            //
             // build independent attached groups
+            //
+            //------------------------------------------------------------------
             const groups attached(lattice,groups::build_attached);
 
+            //------------------------------------------------------------------
+            //
             // create global detached matrix
+            //
+            //------------------------------------------------------------------
             const matrix<bool> detached;
             lattice.build( coerce(detached) );
-            //lattice(std::cerr << "detached=",detached,"");
 
+            //------------------------------------------------------------------
+            //
             // create partitions
+            //
+            //------------------------------------------------------------------
             const size_t      dims = attached.size;
             cxx_array<groups> part(dims);
             {
@@ -69,9 +90,27 @@ namespace yack
                 }
             }
 
-            // weave
-            groups woven(part);
-            swap_with(woven);
+            //------------------------------------------------------------------
+            //
+            // weave partitions
+            //
+            //------------------------------------------------------------------
+            { groups woven(part); swap_with(woven); }
+
+            //------------------------------------------------------------------
+            //
+            // full check
+            //
+            //------------------------------------------------------------------
+            for(const enode *x=lattice.head();x;x=x->next)
+            {
+                const equilibrium &ex = ***x;
+                if(!contains(ex)) throw exception("missing '%s' in groups",ex.name());
+                for(const enode *y=x->next;y;y=y->next)
+                {
+                    //TODO: test further ?
+                }
+            }
         }
 
         groups * groups:: create_from(const equilibria &lattice)

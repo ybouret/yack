@@ -8,8 +8,18 @@ namespace yack
 {
     namespace chemical
     {
+        //______________________________________________________________________
+        //
+        //! test independency of topology matrices
+        //
+        //______________________________________________________________________
         struct independency
         {
+
+            //__________________________________________________________________
+            //
+            //! return true is rank(Nu) = Nu.rows
+            //__________________________________________________________________
             template <typename T> static inline
             bool of(const matrix<T> &Nu)
             {

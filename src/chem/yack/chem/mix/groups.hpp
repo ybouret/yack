@@ -24,10 +24,10 @@ namespace yack
             //
             // types and definition
             //__________________________________________________________________
-            typedef int2type<0> build_attached_;
-            typedef int2type<1> build_clusters_;
-            static const build_attached_ build_attached;
-            static const build_clusters_ build_clusters;
+            typedef int2type<0> build_attached_;         //!< alias
+            typedef int2type<1> build_clusters_;         //!< alias
+            static const build_attached_ build_attached; //!< selector
+            static const build_clusters_ build_clusters; //!< selector
 
             //__________________________________________________________________
             //
@@ -35,6 +35,29 @@ namespace yack
             //__________________________________________________________________
             virtual ~groups() throw(); //!< cleanup
             explicit groups() throw(); //!< setup
+
+
+            //! TODO
+            static groups *create_from(const equilibria &lattice);
+
+            //__________________________________________________________________
+            //
+            // methods
+            //__________________________________________________________________
+            void sort(); //!< full sort groups
+
+            //! check a single equilibrium is contain in a group
+            bool contains(const equilibrium &) const throw();
+
+            
+            //__________________________________________________________________
+            //
+            // helpers
+            //__________________________________________________________________
+            friend std::ostream & operator<<(std::ostream &os, const groups &); //!< display
+
+        private:
+            YACK_DISABLE_COPY_AND_ASSIGN(groups);
 
             //! create groups of ATTACHED equilibria, and set info accordingly
             explicit groups(const equilibria &eqs, const build_attached_ &);
@@ -52,23 +75,6 @@ namespace yack
             //! full algorithm
             explicit groups(const equilibria &lattice, const build_clusters_ &);
 
-            //! dynamic
-            static groups *create_from(const equilibria &lattice);
-
-            //__________________________________________________________________
-            //
-            // methods
-            //__________________________________________________________________
-            void sort(); //!< full sort groups
-
-            //__________________________________________________________________
-            //
-            // helpers
-            //__________________________________________________________________
-            friend std::ostream & operator<<(std::ostream &os, const groups &); //!< display
-
-        private:
-            YACK_DISABLE_COPY_AND_ASSIGN(groups);
         };
 
     }
