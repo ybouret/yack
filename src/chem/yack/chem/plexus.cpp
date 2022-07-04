@@ -108,6 +108,7 @@ namespace yack
                 iota::gram(G,Nu);
                 YACK_CHEM_PRINTLN("gram = " <<G);
                 if( !alu.build(G) ) throw exception("%s: dependent equilibria",clid);
+                exit(1);
             }
             
             //------------------------------------------------------------------

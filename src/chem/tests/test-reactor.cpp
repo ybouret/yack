@@ -6,7 +6,8 @@
 #include "yack/chem/library.hpp"
 #include "yack/system/env.hpp"
 #include "yack/utest/run.hpp"
-#include "yack/sequence/cxx-array.hpp"
+#include "yack/chem/mix/independency.hpp"
+#include "yack/ptr/auto.hpp"
 
 using namespace yack;
 using namespace chemical;
@@ -38,6 +39,12 @@ YACK_UTEST(reactor)
         vector<double> K(eqs.size(),0);
         eqs.build(Nu,K,0.0);
 
+        if(!independency::of(Nu))
+        {
+            throw exception("singular equilibria");
+        }
+
+
 
         coupling::build(couples,eqs,Nu,K,lib);
         std::cerr << "couples=" << couples << std::endl;
@@ -45,28 +52,11 @@ YACK_UTEST(reactor)
         lattice << eqs << couples;
         std::cerr << "lattice=" << lattice << std::endl;
 
-        groups top(lattice);
-        std::cerr << top << std::endl;
-        matrix<bool> detached;
-        lattice.build(detached);
-        
-        lattice(std::cerr << "detached=",detached,"");
-        
-        const size_t      dims = top.size;
-        cxx_array<groups> part(dims);
-        
-        {
-            size_t i=0;
-            for(const group *attached=top.head;attached;attached=attached->next)
-            {
-                groups G(*attached,detached);
-                part[++i].swap_with(G);
-            }
-        }
 
-        std::cerr << "part=" << part << std::endl;
-        groups grp(part);
-        std::cerr << grp << std::endl;
+        auto_ptr<groups> cls = groups::create_from(lattice);
+        std::cerr << cls << std::endl;
+
+
     }
    
 

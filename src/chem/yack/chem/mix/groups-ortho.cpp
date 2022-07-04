@@ -7,6 +7,8 @@ namespace yack
     namespace chemical
     {
 
+        const groups::build_clusters_ groups::build_clusters = {};
+        
         static inline bool is_acceptable( const readable<equilibrium *> &party,
                                          const matrix<bool>            &detached)
         {

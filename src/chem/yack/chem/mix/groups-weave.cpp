@@ -17,7 +17,6 @@ namespace yack
             cxx_array<size_t>       end(dim,0);
             for(size_t i=dim;i>0;--i) end[i] = part[i].size;
             mloop<size_t>           loop( ini(), end(), dim);
-            YACK_CHEM_PRINTLN("weaving " << end << " -> #" << loop.total);
             do
             {
                 group *g = push_back( new group() );
@@ -32,7 +31,6 @@ namespace yack
             while(loop.next());
 
             sort();
-            std::cerr << *this << std::endl;
         }
 
     }

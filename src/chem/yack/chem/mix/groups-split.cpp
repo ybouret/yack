@@ -5,8 +5,9 @@ namespace yack
 {
     namespace chemical
     {
+        const groups::build_attached_ groups::build_attached = {};
 
-        groups:: groups(const equilibria &eqs) : group::list()
+        groups:: groups(const equilibria &eqs, const build_attached_ &) : group::list()
         {
             groups &G = *this;
 

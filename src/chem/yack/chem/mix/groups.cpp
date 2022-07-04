@@ -40,3 +40,43 @@ namespace yack
 
 
 }
+
+#include "yack/sequence/cxx-array.hpp"
+
+namespace yack
+{
+    namespace chemical
+    {
+        groups:: groups(const equilibria &lattice, const build_clusters_ &) : group::list()
+        {
+            // build independent attached groups
+            const groups attached(lattice,groups::build_attached);
+
+            // create global detached matrix
+            const matrix<bool> detached;
+            lattice.build( coerce(detached) );
+            //lattice(std::cerr << "detached=",detached,"");
+
+            // create partitions
+            const size_t      dims = attached.size;
+            cxx_array<groups> part(dims);
+            {
+                size_t i=0;
+                for(const group *g=attached.head;g;g=g->next)
+                {
+                    groups p(*g,detached);
+                    part[++i].swap_with(p);
+                }
+            }
+
+            // weave
+            groups woven(part);
+            swap_with(woven);
+        }
+
+        groups * groups:: create_from(const equilibria &lattice)
+        {
+            return new groups(lattice,build_clusters);
+        }
+    }
+}

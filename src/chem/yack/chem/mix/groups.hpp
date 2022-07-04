@@ -17,9 +17,18 @@ namespace yack
         //! groups sharing same properties
         //
         //______________________________________________________________________
-        class groups : public group::list
+        class groups : public object, public group::list
         {
         public:
+            //__________________________________________________________________
+            //
+            // types and definition
+            //__________________________________________________________________
+            typedef int2type<0> build_attached_;
+            typedef int2type<1> build_clusters_;
+            static const build_attached_ build_attached;
+            static const build_clusters_ build_clusters;
+
             //__________________________________________________________________
             //
             // C++
@@ -28,9 +37,9 @@ namespace yack
             explicit groups() throw(); //!< setup
 
             //! create groups of ATTACHED equilibria, and set info accordingly
-            explicit groups(const equilibria &eqs);
+            explicit groups(const equilibria &eqs, const build_attached_ &);
 
-            //! create groups of detached equilibria
+            //! create groups of DETACHED equilibria
             /**
              reply to : what are the equilibrium within an attached group
              that can be tested simultaneously ?
@@ -39,6 +48,12 @@ namespace yack
 
             //! assemble groups from partitions of groups
             explicit groups(const readable<groups> &part);
+
+            //! full algorithm
+            explicit groups(const equilibria &lattice, const build_clusters_ &);
+
+            //! dynamic
+            static groups *create_from(const equilibria &lattice);
 
             //__________________________________________________________________
             //
