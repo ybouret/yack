@@ -47,7 +47,7 @@ namespace yack
     //
     //__________________________________________________________________________
     template <typename T>
-    class mloop :  public counting, public kernel::mloop,public readable<T>
+    class mloop :  public counting, public kernel::mloop, public readable<T>
     {
     public:
         //______________________________________________________________________

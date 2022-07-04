@@ -290,6 +290,7 @@ namespace yack
 
 #include "yack/arith/gcd.h"
 #include "yack/type/utils.hpp"
+#include "yack/exception.hpp"
 
 namespace yack
 {
@@ -317,5 +318,11 @@ namespace yack
             return true;
         }
 
+
+        void components:: must_comply(const string &name) const
+        {
+            if( !is_neutral() ) throw exception("%s is not neutral",name());
+            if( !is_minimal() ) throw exception("%s is not minimal",name());
+        }
     }
 }

@@ -33,9 +33,12 @@ namespace yack
             //! create groups of detached equilibria
             /**
              reply to : what are the equilibrium within an attached group
-             that can be tested simultaneously
+             that can be tested simultaneously ?
              */
             explicit groups(const group  &attached, const matrix<bool> &detached);
+
+            //! assemble groups from partitions of groups
+            void weave(const readable<groups> &part);
 
             //__________________________________________________________________
             //

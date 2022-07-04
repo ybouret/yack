@@ -87,6 +87,19 @@ namespace yack
             //! build detached matrix
             void build(matrix<bool> &detached) const;
 
+            template <typename T> inline
+            void build( matrix<T> &Nu, writable<double> &K, const double t) const
+            {
+                for(const enode *node=head();node;node=node->next)
+                {
+                    const equilibrium &eq = ***node;
+                    const size_t       ei = *eq;
+                    eq.must_comply(eq.name);
+                    eq.fill(Nu[ei]);
+                    K[ei] = eq.K(t);
+                }
+            }
+
         private:
             YACK_DISABLE_COPY_AND_ASSIGN(equilibria);
             eq_set db;

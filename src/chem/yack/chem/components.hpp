@@ -143,6 +143,9 @@ namespace yack
             //! check minimal coefficients
             bool is_minimal() const throw();
 
+            //! full check
+            void must_comply(const string &name) const;
+
             //! check valid concentrations
             bool are_valid(const readable<double> &C) const throw();
 

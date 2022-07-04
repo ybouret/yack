@@ -36,13 +36,8 @@ YACK_UTEST(reactor)
         library        sub(lib);
         matrix<int>    Nu(eqs.size(),lib.size());
         vector<double> K(eqs.size(),0);
-        for(const enode *node=eqs.head();node;node=node->next)
-        {
-            const equilibrium &eq = ***node;
-            const size_t       ei = *eq;
-            eq.fill(Nu[ei]);
-            K[ei] = eq.K(0.0);
-        }
+        eqs.build(Nu,K,0.0);
+
 
         coupling::build(couples,eqs,Nu,K,lib);
         std::cerr << "couples=" << couples << std::endl;
@@ -68,6 +63,11 @@ YACK_UTEST(reactor)
                 part[++i].swap_with(G);
             }
         }
+
+        std::cerr << "part=" << part << std::endl;
+        groups grp;
+        grp.weave(part);
+
     }
    
 
