@@ -9,6 +9,9 @@
 #include "yack/chem/mix/independency.hpp"
 #include "yack/ptr/auto.hpp"
 
+
+#include "yack/chem/reactor.hpp"
+
 using namespace yack;
 using namespace chemical;
 
@@ -26,39 +29,43 @@ YACK_UTEST(reactor)
         eqs(lib,argv[i]);
     }
 
-    equilibria couples;
-    equilibria lattice;
-
-    std::cerr << lib << std::endl;
-    std::cerr << "singles=" << eqs << std::endl;
-
-    if(eqs.size() && lib.size())
+    if(false)
     {
-        library        sub(lib);
-        matrix<int>    Nu(eqs.size(),lib.size());
-        vector<double> K(eqs.size(),0);
-        eqs.build(Nu,K,0.0);
+        equilibria couples;
+        equilibria lattice;
 
-        if(!independency::of(Nu))
+        std::cerr << lib << std::endl;
+        std::cerr << "singles=" << eqs << std::endl;
+
+        if(eqs.size() && lib.size())
         {
-            throw exception("singular equilibria");
+            library        sub(lib);
+            matrix<int>    Nu(eqs.size(),lib.size());
+            vector<double> K(eqs.size(),0);
+            eqs.build(Nu,K,0.0);
+
+            if(!independency::of(Nu))
+            {
+                throw exception("singular equilibria");
+            }
+
+
+
+            coupling::build(couples,eqs,Nu,K,sub);
+            std::cerr << "couples=" << couples << std::endl;
+
+            lattice << eqs << couples;
+            std::cerr << "lattice=" << lattice << std::endl;
+
+
+            auto_ptr<groups> cls = groups::create_from(lattice);
+            std::cerr << cls << std::endl;
+
         }
-
-
-
-        coupling::build(couples,eqs,Nu,K,lib);
-        std::cerr << "couples=" << couples << std::endl;
-
-        lattice << eqs << couples;
-        std::cerr << "lattice=" << lattice << std::endl;
-
-
-        auto_ptr<groups> cls = groups::create_from(lattice);
-        std::cerr << cls << std::endl;
-
-
     }
-   
+
+
+    reactor cs(lib,eqs,0.0);
 
 
 

@@ -27,6 +27,16 @@ namespace yack
             virtual ~alist() throw();         //!< cleanup
             explicit alist(const library &);  //!< build from positive ranked species
 
+            template <typename T, typename U>
+            void transfer(writable<T> &target, const readable<U> &source) const
+            {
+                for(const anode *node=head;node;node=node->next)
+                {
+                    const size_t j = ***node;
+                    target[j] = source[j];
+                }
+            }
+
         private:
             YACK_DISABLE_COPY_AND_ASSIGN(alist);
         };

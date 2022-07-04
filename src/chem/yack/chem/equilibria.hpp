@@ -91,6 +91,7 @@ namespace yack
             template <typename T> inline
             void build( matrix<T> &Nu, writable<double> &K, const double t) const
             {
+                assert(size()==Nu.rows);
                 for(const enode *node=head();node;node=node->next)
                 {
                     const equilibrium &eq = ***node;
