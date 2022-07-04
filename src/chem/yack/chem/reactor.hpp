@@ -50,20 +50,24 @@ namespace yack
             // methods
             //__________________________________________________________________
 
+            //! solve with precomputed K
+            bool solve(writable<double> &C0);
+
             //__________________________________________________________________
             //
             // members
             //__________________________________________________________________
-            const library    &lib;     //!< user's library of species
-            const library     sub;     //!< duplicate library to build database
-            const equilibria &singles; //!< user's equilibria
-            const equilibria  couples; //!< all possible couples
-            const equilibria  lattice; //!< singles+couples
-            const size_t      M;       //!< number of species
-            const size_t      N;       //!< number of equilibria
-            const size_t      L;       //!< lattice size
-            const alist       active;  //!< list of active species
-            const imatrix     Nu;      //!< [NxM] topology matrix
+            const library         &lib;      //!< user's library of species
+            const library          sub;      //!< duplicate library to build database
+            const equilibria      &singles;  //!< user's equilibria
+            const equilibria       couples;  //!< all possible couples
+            const equilibria       lattice;  //!< singles+couples
+            const auto_ptr<groups> look_up;  //!< parallel combinations
+            const size_t            M;       //!< number of species
+            const size_t            N;       //!< number of equilibria
+            const size_t            L;       //!< lattice size
+            const alist             active;  //!< list of active species
+            const imatrix           Nu;      //!< [NxM] topology matrix
 
         private:
             tableaux ntab; //!< for [N]
@@ -71,10 +75,16 @@ namespace yack
             tableaux ltab; //!< for [L]
 
         public:
-            tableau &K; //!< [N]
+            tableau &K;    //!< [N]
+            tableau &Xend; //!< [N]
+            tableau &Xtry; //!< [N]
 
+            tableau &Corg; //!< [M]
+            tableau &Cend; //!< [M]
+            tableau &Ctry; //!< [M]
 
             tableau &Kl; //!< [L] all constants of lattice
+            tableau &Xl; //!< [L] all Xi of lattice
             rmatrix  Cl; //!< [LxM] all equilibria of lattice
 
 
@@ -82,6 +92,13 @@ namespace yack
             YACK_DISABLE_COPY_AND_ASSIGN(reactor);
             const lockable::scope libLock;
             const lockable::scope eqsLock;
+
+
+            bool onSuccess(writable<double> &C0);
+
+            double singlesXi() throw();
+            void   couplesXi() throw();
+
         };
 
     }

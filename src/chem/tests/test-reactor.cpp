@@ -29,44 +29,18 @@ YACK_UTEST(reactor)
         eqs(lib,argv[i]);
     }
 
-    if(false)
-    {
-        equilibria couples;
-        equilibria lattice;
-
-        std::cerr << lib << std::endl;
-        std::cerr << "singles=" << eqs << std::endl;
-
-        if(eqs.size() && lib.size())
-        {
-            library        sub(lib);
-            matrix<int>    Nu(eqs.size(),lib.size());
-            vector<double> K(eqs.size(),0);
-            eqs.build(Nu,K,0.0);
-
-            if(!independency::of(Nu))
-            {
-                throw exception("singular equilibria");
-            }
-
-
-
-            coupling::build(couples,eqs,Nu,K,sub);
-            std::cerr << "couples=" << couples << std::endl;
-
-            lattice << eqs << couples;
-            std::cerr << "lattice=" << lattice << std::endl;
-
-
-            auto_ptr<groups> cls = groups::create_from(lattice);
-            std::cerr << cls << std::endl;
-
-        }
-    }
-
 
     reactor cs(lib,eqs,0.0);
 
+    vector<double> C(cs.M,0);
+
+    {
+        lib.fill(C, 1, ran);
+        if(cs.solve(C))
+        {
+            lib(std::cerr<<"Cend=",C);
+        }
+    }
 
 
 }

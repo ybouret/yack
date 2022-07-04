@@ -27,6 +27,7 @@ namespace yack
             virtual ~alist() throw();         //!< cleanup
             explicit alist(const library &);  //!< build from positive ranked species
 
+            //! transfer only active indices
             template <typename T, typename U>
             void transfer(writable<T> &target, const readable<U> &source) const
             {

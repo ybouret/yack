@@ -26,6 +26,8 @@ namespace yack
         singles(eqs_),
         couples(),
         lattice(),
+        look_up(NULL),
+
         M( lib.size()     ),
         N( singles.size() ),
         L(0),
@@ -38,44 +40,78 @@ namespace yack
         ltab(10,L),
 
         K( ntab.next() ),
+        Xend( ntab.next() ),
+        Xtry( ntab.next() ),
+
+        Corg( mtab.next() ),
+        Cend( mtab.next() ),
+        Ctry( mtab.next() ),
 
         Kl( ltab.next() ),
+        Xl( ltab.next() ),
         Cl(),
 
         libLock(lib_),
         eqsLock(eqs_)
         {
 
+            //------------------------------------------------------------------
+            //
+            // initialize
+            //
+            //------------------------------------------------------------------
             YACK_CHEM_PRINTLN("--------  library  --------");
             YACK_CHEM_PRINTLN(lib);
             YACK_CHEM_PRINTLN("--------  singles  --------");
             YACK_CHEM_PRINTLN(singles);
 
 
+            //------------------------------------------------------------------
+            //
             // build topology and first set of constants
+            //
+            //------------------------------------------------------------------
             singles.build( coerce(Nu), K, t0);
             YACK_CHEM_PRINTLN("--------  topology --------");
             YACK_CHEM_PRINTLN("Nu="<<Nu);
             YACK_CHEM_PRINTLN("K="<<K);
 
 
+            //------------------------------------------------------------------
+            //
             // check independency
+            //
+            //------------------------------------------------------------------
             if(!independency::of(Nu)) throw exception("%s found dependent equilibria",clid);
 
+            //------------------------------------------------------------------
+            //
             // make couples from copy of library
+            //
+            //------------------------------------------------------------------
             coupling::build(coerce(couples),singles,Nu,K,sub);
             YACK_CHEM_PRINTLN("--------  couples  --------");
             YACK_CHEM_PRINTLN(couples);
 
+            //------------------------------------------------------------------
+            //
             // make lattice
+            //
+            //------------------------------------------------------------------
             coerce(lattice) << singles << couples;
             YACK_CHEM_PRINTLN("--------  lattice  --------");
             YACK_CHEM_PRINTLN(lattice);
 
+            //------------------------------------------------------------------
+            //
+            // compute lattice properties
+            //
+            //------------------------------------------------------------------
             if( 0 < (coerce(L) = lattice.size()) )
             {
                 ltab.make(L);
                 assert(L==Kl.size());
+                assert(L==Xl.size());
                 Cl.make(L,M);
 
                 iota::save(Kl,K);
@@ -85,7 +121,13 @@ namespace yack
                     Kl[*eq] = eq.K(t0);
                 }
                 YACK_CHEM_PRINTLN("Kl="<<Kl);
+
+                coerce(look_up) = groups::create_from(lattice);
+
+                YACK_CHEM_PRINTLN("--------  look_up  --------");
+                YACK_CHEM_PRINTLN(look_up);
             }
+            YACK_CHEM_PRINTLN("--------  [ready]  --------" << std::endl);
 
 
         }
