@@ -52,6 +52,7 @@ namespace yack
                     const size_t          ix = *ex;
                     const readable<bool> &dx = detached[ix];
 
+                    YACK_CHEM_PRINTLN("  => " << ex.name);
                     //----------------------------------------------------------
                     //
                     // building possible guests for ex

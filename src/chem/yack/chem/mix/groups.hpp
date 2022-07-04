@@ -49,6 +49,8 @@ namespace yack
             //! check a single equilibrium is contain in a group
             bool contains(const equilibrium &) const throw();
 
+            //! check that a couple of equilibria is contain in a group
+            bool contains(const equilibrium &, const equilibrium &) const throw();
             
             //__________________________________________________________________
             //

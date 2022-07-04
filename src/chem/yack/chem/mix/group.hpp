@@ -45,14 +45,14 @@ namespace yack
             //
             // methods
             //__________________________________________________________________
-            void sort();                                      //!< sort in ascending index order
-            bool is_valid() const throw();                    //!< was sorted
-            bool is_ortho() const throw();                    //!< each equilibrium is detached from the others
-            bool contains(const equilibrium &) const throw(); //!< check if equilibrium is inside list
-            bool contains(const group &)       const throw(); //!< check if all equilibria are inside list
-            bool attached(const equilibrium &) const throw(); //!< check is equilibrium is attached to one of the list
-            bool detached(const equilibrium &) const throw(); //!< check is equilibrium is detached from all of the list
-
+            void sort();                                                           //!< sort in ascending index order
+            bool is_valid() const throw();                                         //!< was sorted
+            bool is_ortho() const throw();                                         //!< each equilibrium is detached from the others
+            bool contains(const equilibrium &) const throw();                      //!< check if equilibrium is inside list
+            bool contains(const equilibrium &, const equilibrium &) const throw(); //!< contains two different equilibria
+            bool contains(const group &)       const throw();                      //!< check if all equilibria are inside list
+            bool attached(const equilibrium &) const throw();                      //!< check is equilibrium is attached to one of the list
+            bool detached(const equilibrium &) const throw();                      //!< check is equilibrium is detached from all of the list
 
             //__________________________________________________________________
             //

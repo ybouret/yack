@@ -30,6 +30,16 @@ namespace yack
         }
 
 
+        bool groups:: contains(const equilibrium &x, const equilibrium &y) const throw()
+        {
+            for(const group *g=head;g;g=g->next)
+            {
+                if(g->contains(x,y)) return true;
+            }
+            return false;
+        }
+
+
 
         std::ostream & operator<<(std::ostream &os, const groups &G)
         {
@@ -64,51 +74,70 @@ namespace yack
             // build independent attached groups
             //
             //------------------------------------------------------------------
+            YACK_CHEM_PRINTLN("building attached partitions");
             const groups attached(lattice,groups::build_attached);
+            YACK_CHEM_PRINTLN("attached=" << attached);
 
             //------------------------------------------------------------------
             //
             // create global detached matrix
             //
             //------------------------------------------------------------------
+            YACK_CHEM_PRINTLN("building detached matrix");
             const matrix<bool> detached;
             lattice.build( coerce(detached) );
-
-            //------------------------------------------------------------------
-            //
-            // create partitions
-            //
-            //------------------------------------------------------------------
-            const size_t      dims = attached.size;
-            cxx_array<groups> part(dims);
+            if(entity::verbose)
             {
-                size_t i=0;
-                for(const group *g=attached.head;g;g=g->next)
-                {
-                    groups p(*g,detached);
-                    part[++i].swap_with(p);
-                }
+                lattice(std::cerr << "detached=",detached,"");
             }
 
             //------------------------------------------------------------------
             //
-            // weave partitions
+            // full build
             //
             //------------------------------------------------------------------
-            { groups woven(part); swap_with(woven); }
+            YACK_CHEM_PRINTLN("building partitions");
+            {
+                //--------------------------------------------------------------
+                // create partition from attached groups
+                //--------------------------------------------------------------
+                const size_t      dims = attached.size;
+                cxx_array<groups> part(dims);
+                {
+                    size_t i=0;
+                    for(const group *g=attached.head;g;g=g->next)
+                    {
+                        groups p(*g,detached);
+                        part[++i].swap_with(p);
+                    }
+                }
+
+                //--------------------------------------------------------------
+                // weave partitions
+                //--------------------------------------------------------------
+                YACK_CHEM_PRINTLN("weaving partitions");
+                groups woven(part);
+                swap_with(woven);
+            }
 
             //------------------------------------------------------------------
             //
             // full check
             //
             //------------------------------------------------------------------
+            YACK_CHEM_PRINTLN("checking " << size << " groups");
             for(const enode *x=lattice.head();x;x=x->next)
             {
-                const equilibrium &ex = ***x;
-                if(!contains(ex)) throw exception("missing '%s' in groups",ex.name());
+                const equilibrium    &ex = ***x; if(!contains(ex)) throw exception("missing '%s' in groups",ex.name());
+                const readable<bool> &ok = detached[*ex];
+
                 for(const enode *y=x->next;y;y=y->next)
                 {
-                    //TODO: test further ?
+                    const equilibrium &ey = ***y;
+                    if(ok[*ey])
+                    {
+                        if(!contains(ex,ey)) throw exception("missing detached '%s/%s' in groups", ex.name(), ey.name());
+                    }
                 }
             }
         }

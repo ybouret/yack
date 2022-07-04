@@ -172,6 +172,46 @@ namespace yack
             return false;
         }
 
+        bool group:: contains(const equilibrium &x, const equilibrium &y) const throw()
+        {
+            assert(&x!=&y);
+            const gnode *node = head;
+            for(;node;node=node->next)
+            {
+                if( & **node == &x )
+                {
+                    goto FIND_Y;
+                }
+                else
+                {
+                    if( & **node == &y )
+                    {
+                        goto FIND_X;
+                    }
+                }
+            }
+            return false;
+
+        FIND_Y:
+            assert(node!=NULL);
+            assert(& **node == &x);
+            for(node=node->next;node;node=node->next)
+            {
+                if( & **node == &y) return true;
+            }
+            return false;
+
+        FIND_X:
+            assert(node!=NULL);
+            assert(& **node == &y);
+            for(node=node->next;node;node=node->next)
+            {
+                if( & **node == &x) return true;
+            }
+            return false;
+
+        }
+
 
         bool group:: contains(const group &g) const throw()
         {
