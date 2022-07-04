@@ -9,9 +9,8 @@ namespace yack
     {
 
 
-        void groups:: weave(const readable<groups> &part)
+        groups:: groups(const readable<groups> &part) : group::list()
         {
-            assert(0==size);
             assert(0<part.size());
             const size_t            dim = part.size();
             const cxx_array<size_t> ini(dim,1);

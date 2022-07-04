@@ -38,7 +38,7 @@ namespace yack
             explicit groups(const group  &attached, const matrix<bool> &detached);
 
             //! assemble groups from partitions of groups
-            void weave(const readable<groups> &part);
+            explicit groups(const readable<groups> &part);
 
             //__________________________________________________________________
             //

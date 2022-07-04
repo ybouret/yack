@@ -65,9 +65,8 @@ YACK_UTEST(reactor)
         }
 
         std::cerr << "part=" << part << std::endl;
-        groups grp;
-        grp.weave(part);
-
+        groups grp(part);
+        std::cerr << grp << std::endl;
     }
    
 
