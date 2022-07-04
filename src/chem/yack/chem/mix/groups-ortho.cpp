@@ -56,6 +56,13 @@ namespace yack
 
                     //----------------------------------------------------------
                     //
+                    // save single guest
+                    //
+                    //----------------------------------------------------------
+                    push_back( group::start_from(ex) );
+
+                    //----------------------------------------------------------
+                    //
                     // building possible guests for ex
                     //
                     //----------------------------------------------------------
@@ -72,36 +79,29 @@ namespace yack
 
 
                     const size_t n = guest.size();
-                    if(n<=0)
+
+                    //----------------------------------------------------------
+                    //
+                    // testing all co-evaluations
+                    //
+                    //----------------------------------------------------------
+                    for(size_t k=n;k>0;--k)
                     {
-                        //------------------------------------------------------
-                        // no possible co-evaluation
-                        //------------------------------------------------------
-                        push_back( group::start_from(ex) );
-                    }
-                    else
-                    {
-                        //------------------------------------------------------
-                        // testing all co-evaluations
-                        //------------------------------------------------------
-                        for(size_t k=n;k>0;--k)
-                        {
-                            combination comb(n,k);
-                            do {
-                                comb.extract(party,guest); assert(k==party.size());
-                                if(is_acceptable(party,detached))
+                        combination comb(n,k);
+                        do {
+                            comb.extract(party,guest); assert(k==party.size());
+                            if(is_acceptable(party,detached))
+                            {
+                                group * g = push_back( group::start_from(ex) );
+                                for(size_t i=1;i<=k;++i)
                                 {
-                                    group * g = push_back( group::start_from(ex) );
-                                    for(size_t i=1;i<=k;++i)
-                                    {
-                                        *g << & *party[i];
-                                    }
-                                    assert(g->is_valid()); // by construction
-                                    assert(g->is_ortho()); // by construction
+                                    *g << & *party[i];
                                 }
+                                assert(g->is_valid()); // by construction
+                                assert(g->is_ortho()); // by construction
                             }
-                            while( comb.next() );
                         }
+                        while( comb.next() );
                     }
                 }
             }
@@ -115,6 +115,7 @@ namespace yack
             //------------------------------------------------------------------
             sort();
 
+#if 0
             //------------------------------------------------------------------
             //
             //
@@ -149,6 +150,7 @@ namespace yack
                 }
                 swap_with(temp);
             }
+#endif
         }
 
     }

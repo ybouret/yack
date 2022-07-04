@@ -71,23 +71,35 @@ namespace yack
             const size_t            L;       //!< lattice size
             const alist             active;  //!< list of active species
             const imatrix           Nu;      //!< [NxM] topology matrix
+            imatrix                 NuA;     //!< [NxM] Active Topology
+            rmatrix                 Psi;     //!< [NxM] jacobian
+            rmatrix                 Omega0;  //!< [NxN] system matrix
+            rmatrix                 iOmega;  //!< [NxN] decomposed Omega0
 
         private:
+            auto_ptr<rsolver>       LU;
             tableaux ntab; //!< for [N]
             tableaux mtab; //!< for [M]
             tableaux ltab; //!< for [L]
 
         public:
-            tableau &K;    //!< [N]
-            tableau &Xend; //!< [N]
-            tableau &Xtry; //!< [N]
+            tableau &K;       //!< [N]
+            tableau &Xend;    //!< [N]
+            tableau &Xtry;    //!< [N]
+            tableau &Gamma;   //!< [N]
+            tableau &xi;      //!< [N]
+            booltab blocked;  //!< [N]
 
             tableau &Corg; //!< [M]
             tableau &Cend; //!< [M]
             tableau &Ctry; //!< [M]
+            tableau &Cstp; //!< [M]
+
+            vector<double> ratio;
 
             tableau &Kl; //!< [L] all constants of lattice
             tableau &Xl; //!< [L] all Xi of lattice
+            booltab  Ok; //!< [L] decreasing hamiltonian
             rmatrix  Cl; //!< [LxM] all equilibria of lattice
 
 
@@ -99,11 +111,18 @@ namespace yack
 
             bool onSuccess(writable<double> &C0);
 
-            double singlesXi() throw();
-            void   couplesXi() throw();
-            void   lookUp() throw();
+            double singlesXi(const double G0) throw(); //!< return |Xi|
+            void   couplesXi(const double G0) throw();
+            double singlesXi() throw(); //!< update |Xi|
+
+            bool   underflowing() throw();
+
+            bool   decreaseHamiltonian(double &G0) throw();
             double combinedHamiltonian(const group &g, writable<double> &C) throw();
 
+            void   suspendEquilibrium(const size_t ei) throw();
+            size_t initializeLocalStep() throw();
+            double optimizeLocalStep(const double G0) throw();
 
         };
 
