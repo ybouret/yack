@@ -507,19 +507,34 @@ namespace yack
                 const equilibrium &eq = ***node;
                 const size_t       ei = *eq;
                 writable<double>  &Ci = Cl[ei];
-                
                 Xend[ei] = eq.solve1D(K[ei],Corg,Ci) ;
             }
             if(verbose) singles(std::cerr << vpfx << "Xi=",Xend,vpfx);
             return sorted::sum(Xtry,sorted::by_value);
         }
-        
+
+
+        void   reactor:: studyEquilibrium(const equilibrium &eq, const double G0) throw()
+        {
+            const size_t       ei = *eq;
+            const double       xx = eq.solve1D(Kl[ei],Corg,Cend);
+            const double       G1 = hamiltonian(Cend);
+            triplet<double>    u  = { 0, -1, 1 };
+            triplet<double>    g  = { G0, -1, G1 };
+
+            optimize::run_for(*this,u,g,optimize::inside);
+
+            lattice.pad(std::cerr << eq.name,eq) <<  "@xi=" << std::setw(15) << xx << " G: " << G0 << " --> " << G1 << " -> " << g.c << "@u=" << u.b << std::endl;
+
+
+        }
+
         double reactor:: computeSinglesXi(const double G0) throw()
         {
             YACK_CHEM_MARKUP(vpfx, "reactor::singlesXi");
             for(const enode *node=singles.head();node;node=node->next)
             {
-                const equilibrium &eq = ***node;
+                const equilibrium &eq = ***node; studyEquilibrium(eq,G0);
                 const size_t       ei = *eq;
                 writable<double>  &Ci = Cl[ei];
                 
@@ -535,7 +550,7 @@ namespace yack
             YACK_CHEM_MARKUP(vpfx, "reactor::couplesXi");
             for(const enode *node=couples.head();node;node=node->next)
             {
-                const equilibrium &eq = ***node;
+                const equilibrium &eq = ***node; studyEquilibrium(eq,G0);
                 const size_t       ei = *eq;
                 writable<double>  &Ci = Cl[ei];
                 Xl[ei] = eq.solve1D(Kl[ei],Corg,Ci);

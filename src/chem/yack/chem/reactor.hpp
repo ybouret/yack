@@ -113,6 +113,7 @@ namespace yack
 
 
             bool   onSuccess(writable<double> &C0);
+            void   studyEquilibrium(const equilibrium &eq, const double G0) throw();
             double computeSinglesXi(const double G0) throw(); //!< return |Xi|
             void   computeCouplesXi(const double G0) throw();
             double upgradeSinglesXi() throw(); //!< update |Xi|
