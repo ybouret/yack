@@ -31,13 +31,6 @@ SOURCE_GROUP(chem/mix FILES ${chem_mix})
 install( FILES ${chem_mix_decl} DESTINATION include/yack/chem/mix )
 
 
-#plexus
-file(GLOB chem_plexus_decl yack/chem/plexus/*.hpp)
-file(GLOB chem_plexus_srcs yack/chem/plexus/*.cpp)
-set(chem_plexus ${chem_plexus_decl} ${chem_plexus_srcs})
-SOURCE_GROUP(chem/plexus FILES ${chem_plexus})
-install( FILES ${chem_plexus_decl} DESTINATION include/yack/chem/plexus )
-
 #reactor
 file(GLOB chem_reactor_decl yack/chem/reactor/*.hpp)
 file(GLOB chem_reactor_srcs yack/chem/reactor/*.cpp)
@@ -50,7 +43,6 @@ ${chem_main}
 ${chem_eqs}
 ${chem_lua}
 ${chem_mix}
-${chem_plexus}
 ${chem_reactor}
 )
 
