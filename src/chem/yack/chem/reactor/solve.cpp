@@ -56,7 +56,14 @@ namespace yack
                     }
                     break;
             }
-            
+
+
+
+
+
+
+            return false;
+
             double   G0    = hamiltonian(Corg);
             unsigned cycle = 0;
         CYCLE:

@@ -58,7 +58,11 @@ namespace yack
 
             //! hamiltonian( Corg * (1-u) + Cend * u )
             double operator()(const double u) throw();
-            
+
+
+            bool    normalize(writable<double> &C0) throw();
+            double  aggregate(writable<double> &C, const group &g) throw();
+
             //__________________________________________________________________
             //
             // members

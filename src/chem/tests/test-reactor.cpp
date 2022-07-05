@@ -36,7 +36,7 @@ YACK_UTEST(reactor)
 
     {
         lib.fill(C, 1, ran);
-        if(cs.solve(C))
+        if(cs.normalize(C))
         {
             lib(std::cerr<<"Cend=",C);
         }
