@@ -516,16 +516,17 @@ namespace yack
 
         void   reactor:: studyEquilibrium(const equilibrium &eq, const double G0) throw()
         {
-            const size_t       ei = *eq;
-            const double       xx = eq.solve1D(Kl[ei],Corg,Cend);
-            const double       G1 = hamiltonian(Cend);
-            triplet<double>    u  = { 0, -1, 1 };
-            triplet<double>    g  = { G0, -1, G1 };
+            const size_t       ei = *eq;                           // get index
+            const double       xx = eq.solve1D(Kl[ei],Corg,Cend);  // full step
+            const double       G1 = hamiltonian(Cend);             // full step hamiltonian
+            triplet<double>    u  = { 0, -1, 1 };                  // prepare look up [0..1] * xx
+            triplet<double>    g  = { G0, -1, G1 };                // values
 
-            optimize::run_for(*this,u,g,optimize::inside);
+            optimize::run_for(*this,u,g,optimize::inside);         // optimization step
 
             lattice.pad(std::cerr << eq.name,eq) <<  "@xi=" << std::setw(15) << xx << " G: " << G0 << " --> " << G1 << " -> " << g.c << "@u=" << u.b << std::endl;
 
+            
 
         }
 
