@@ -29,6 +29,16 @@ namespace yack
             return false;
         }
 
+        const group * groups:: get_single(const equilibrium &eq) const throw()
+        {
+            for(const group *g=head;g;g=g->next)
+            {
+                if(1==g->size && ( &eq == & (**(g->head)))) return g;
+            }
+            return NULL;
+        }
+
+        
 
         bool groups:: contains(const equilibrium &x, const equilibrium &y) const throw()
         {

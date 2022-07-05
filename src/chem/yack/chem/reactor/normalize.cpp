@@ -7,6 +7,10 @@
 #include <iomanip>
 #include <cmath>
 
+#include "yack/hashing/md.hpp"
+#include "yack/hashing/sha1.hpp"
+#include "yack/kr/digest.hpp"
+
 namespace yack
 {
     using namespace math;
@@ -14,16 +18,28 @@ namespace yack
     namespace chemical
     {
 
+        static inline digest hash_of(const readable<double> &C)
+        {
+            hashing::sha1 H;
+            H.set();
+            for(size_t i=C.size();i>0;--i)
+            {
+                H.run(&C[i], sizeof(double));
+            }
+            return hashing::md::of(H);
+        }
 
         
         double  reactor:: aggregate(writable<double> &C, const group &g) throw()
         {
             assert(g.is_valid());
             assert(g.is_ortho());
+            std::cerr << "agg " << g << std::endl;
             iota::save(C,Corg);
             for(const gnode *ep=g.head;ep;ep=ep->next)
             {
                 const equilibrium &eq = **ep;
+                //std::cerr << " transfer " << Nu[*eq] << std::endl;
                 eq.transfer(C,Cl[*eq]);
             }
             return hamiltonian(C);
@@ -108,7 +124,9 @@ namespace yack
                 triplet<double> u = { 0, -1, 1 };
                 triplet<double> g = { G0, -1, hamiltonian(Cend) };
                 optimize::run_for(*this,u,g,optimize::inside);
-                active.transfer(Cl[ei],Ctry);
+                iota::load(Cl[ei],Ctry);
+                assert( hash_of(Cl[ei]) == hash_of(Ctry) );
+                
                 lattice.pad(std::cerr << "@{" << eq.name << "}",eq) << " = " <<std::setw(15) << xx;
                 std::cerr << " G=" << std::setw(15) << g.b << " @u=" << u.b;
                 if(g.b<G1)
@@ -145,7 +163,28 @@ namespace yack
                 eq.transfer(Corg,Cl[*eq]);
                 goto CYCLE;
             }
-
+            else
+            {
+                const group *gOpt = look_up->get_single( *eg ); assert(gOpt);
+                double       hOpt = G1;
+                std::cerr << "Start @" << *gOpt << " G=" << hOpt << std::endl;
+                std::cerr << "Delta=" << fabs(aggregate(Cend,*gOpt) - hOpt)  << std::endl;
+                std::cerr << "Cend="  << Cend << std::endl;
+                std::cerr << "Copt="  << Cl[**eg] << std::endl;
+                std::cerr << "dC  =[";
+                for(size_t i=1;i<=M;++i)
+                {
+                    std::cerr << ' ' << Cend[i] - Cl[**eg][i];
+                }
+                std::cerr << "]" << std::endl;
+                assert(fabs(aggregate(Cend,*gOpt) - hOpt) <=0);
+                for(const group *g=gOpt->next;g;g=g->next)
+                {
+                }
+                
+            }
+            
+            exit(1);
 
             {
                 const group *gOpt = look_up->head;
