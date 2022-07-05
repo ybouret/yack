@@ -102,7 +102,7 @@ namespace yack
 
             tableau &Kl; //!< [L] all constants of lattice
             tableau &Xl; //!< [L] all Xi of lattice
-            booltab  Ok; //!< [L] decreasing hamiltonian
+            //booltab  Ok; //!< [L] decreasing hamiltonian
             rmatrix  Cl; //!< [LxM] all equilibria of lattice
 
 
@@ -113,13 +113,13 @@ namespace yack
 
 
             bool   onSuccess(writable<double> &C0);
-            void   studyEquilibrium(const equilibrium &eq, const double G0) throw();
+            double studyEquilibrium(const equilibrium &eq, double &G0) throw();
             double computeSinglesXi(const double G0) throw(); //!< return |Xi|
             void   computeCouplesXi(const double G0) throw();
             double upgradeSinglesXi() throw(); //!< update |Xi|
             bool   happensUnderflow() throw();
-            bool   lowersMassAction(double &G0) throw();
-            double mixedMassActions(const group &g, writable<double> &C) throw();
+            void   betterMassAction(double &G0) throw();
+            double mixedHamiltonian(const group &g, writable<double> &C) throw();
             void   zapEquilibriumAt(const size_t ei) throw();
             double minimizeFullStep(const double G0) throw();
             size_t initializeOmega0() throw();

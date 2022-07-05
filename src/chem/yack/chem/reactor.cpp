@@ -60,7 +60,7 @@ namespace yack
 
         Kl( ltab.next() ),
         Xl( ltab.next() ),
-        Ok( ltab.next(), transmogrify ),
+        //Ok( ltab.next(), transmogrify ),
         Cl(),
 
         libLock(lib_),
@@ -123,10 +123,10 @@ namespace yack
                 if( 0 < (coerce(L) = lattice.size()) )
                 {
                     ltab.make(L);
-                    Ok.relink<bool>();
+                    //Ok.relink<bool>();  assert(L==Ok.size());
                     assert(L==Kl.size());
                     assert(L==Xl.size());
-                    assert(L==Ok.size());
+
                     Cl.make(L,M);
 
                     iota::save(Kl,K);

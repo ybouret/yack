@@ -3,7 +3,7 @@
 #include "yack/sort/sum.hpp"
 #include "yack/math/iota.hpp"
 #include "yack/math/opt/optimize.hpp"
-
+#include "yack/type/boolean.h"
 #include <iomanip>
 #include <cmath>
 
@@ -91,7 +91,7 @@ namespace yack
             //------------------------------------------------------------------
             //
             //
-            // compute singles and |Xi|
+            // Pass 1/2: compute singles and |Xi|
             //
             //
             //------------------------------------------------------------------
@@ -106,7 +106,7 @@ namespace yack
             //------------------------------------------------------------------
             //
             //
-            // compute remaining couples
+            // Pass 1/2: compute remaining couples
             //
             //
             //------------------------------------------------------------------
@@ -120,36 +120,25 @@ namespace yack
             //
             //
             //------------------------------------------------------------------
-            if( lowersMassAction(G0) )
+            betterMassAction(G0);
+
+            YACK_CHEM_PRINTLN("G0=" << G0);
+            active.transfer(Corg,Cend);
+            if(G0<=0)
             {
-                YACK_CHEM_PRINTLN("G0=" << G0);
-                active.transfer(Corg,Cend);
-                if(G0<=0)
-                {
-                    YACK_CHEM_PRINTLN(" <success:: G0 = 0 @move/>");
-                    return onSuccess(C0);
-                }
-                
-                AX = upgradeSinglesXi();
-                YACK_CHEM_PRINTLN(vpfx << "|Xi| =" << AX);
-                if(AX<=0)
-                {
-                    YACK_CHEM_PRINTLN(" <success:: |Xi| = 0 @move/>");
-                    return onSuccess(C0);
-                }
-                
-                //TODO : underflowing ?
-            }
-            else
-            {
-                std::cerr << std::endl << "NO Decrease!!" << std::endl << std::endl;
-                const bool underflow = happensUnderflow();
-                std::cerr << "undeflowing=" << underflow << std::endl;
-                exit(1);
+                YACK_CHEM_PRINTLN(" <success:: G0 = 0 @move/>");
+                return onSuccess(C0);
             }
 
-            exit(1);
-            
+            AX = upgradeSinglesXi();
+            YACK_CHEM_PRINTLN(vpfx << "|Xi| =" << AX);
+            if(AX<=0)
+            {
+                YACK_CHEM_PRINTLN(" <success:: |Xi| = 0 @move/>");
+                return onSuccess(C0);
+            }
+
+
             //------------------------------------------------------------------
             //
             //
@@ -249,7 +238,7 @@ namespace yack
                             {
                                 YACK_CHEM_PRINT("[accept]");
                             }
-                            YACK_CHEM_PRINT( " " << std::setw(15) << xx << " " << lm) ;
+                            YACK_CHEM_PRINT( " " << std::setw(15) << xx << "|" << lm) ;
                         }
                         if(verbose) std::cerr << std::endl;
                     }
@@ -260,14 +249,14 @@ namespace yack
                         goto COMPUTE_EXTENT;
                     }
                 }
-                YACK_CHEM_PRINTLN("maximum_dof=" << (maximum_dof?"true":"false") );
+                YACK_CHEM_PRINTLN("maximum_dof=" << yack_boolean(maximum_dof) );
             }
             
             minimizeFullStep(G0);
             
             
-            exit(1);
-            
+            if(cycle>=10)
+                exit(1);
             
             
             goto CYCLE;
@@ -425,79 +414,51 @@ namespace yack
             return true;
         }
         
-        double reactor:: mixedMassActions(const group &g, writable<double> &C) throw()
+        double reactor:: mixedHamiltonian(const group &g, writable<double> &C) throw()
         {
             assert(g.is_valid());
             assert(g.size>0);
             assert(g.is_ortho());
-            iota::save(C,Corg);
+
+            iota::save(C,Corg); // load initial value
             for(const gnode *pp=g.head;pp;pp=pp->next)
             {
                 const equilibrium &eq = **pp;
-                const size_t       ei = *eq;
-                if(!Ok[ei]) return -1;
-                eq.transfer(C,Cl[*eq]);
+                eq.transfer(C,Cl[*eq]); // transfer only changed components
             }
             return hamiltonian(C);
         }
-        
-        
-        bool reactor:: lowersMassAction(double &G0) throw()
+
+        void   reactor:: betterMassAction(double &G0) throw()
         {
             assert( look_up.is_valid() );
-            
-            //------------------------------------------------------------------
-            //
-            // find first valid global
-            //
-            //------------------------------------------------------------------
-            const group *g    = look_up->head;
-            const group *gOpt = NULL;
-            double       hOpt = -1;
-            for(;g;g=g->next)
+            const group *gOpt = look_up->head;                 // initialize
+            double       hOpt = mixedHamiltonian(*gOpt,Cend); // initialize @Cend
+
+            std::cerr << " + " << std::setw(15) << hOpt << " @" << *gOpt << std::endl;
+
+
+            for(const group *g=gOpt->next;g;g=g->next)
             {
-                const double hTmp = mixedMassActions(*g,Cend);
-                if(hTmp>=0)
+                const double h = mixedHamiltonian(*g,Ctry);
+                if(h<=hOpt)
                 {
-                    hOpt = hTmp;
+                    hOpt = h;
                     gOpt = g;
-                    std::cerr << " + " << std::setw(15) << hTmp << " @" << *g << std::endl;
-                    break;
-                }
-            }
-            
-            if(!gOpt) return false; // nope...
-            
-            //------------------------------------------------------------------
-            //
-            // find best global combination
-            //
-            //------------------------------------------------------------------
-            for(g=g->next;g;g=g->next)
-            {
-                const double hTmp = mixedMassActions(*g,Ctry);
-                if(hTmp<0) continue;
-                if(hTmp<=hOpt)
-                {
-                    gOpt = g;
-                    hOpt = hTmp;
-                    std::cerr << " + " << std::setw(15) << hTmp << " @" << *g << std::endl;
                     active.transfer(Cend,Ctry);
+                    std::cerr << " + " << std::setw(15) << h << " @" << *g << std::endl;
                 }
                 else
                 {
-                    std::cerr << " - " << std::setw(15) << hTmp << " @" << *g << std::endl;
+                    std::cerr << " - " << std::setw(15) << h << " @" << *g << std::endl;
                 }
-                
             }
-            
+
             std::cerr << " * " << std::setw(15) << hOpt << " @" << *gOpt << std::endl;
             assert( fabs( hamiltonian(Cend) - hOpt) <=0 );
-            
             G0 = hOpt;
-            return true;
         }
-        
+
         
         double reactor:: upgradeSinglesXi() throw()
         {
@@ -514,19 +475,24 @@ namespace yack
         }
 
 
-        void   reactor:: studyEquilibrium(const equilibrium &eq, const double G0) throw()
+
+        double   reactor:: studyEquilibrium(const equilibrium &eq, double &G0) throw()
         {
             const size_t       ei = *eq;                           // get index
             const double       xx = eq.solve1D(Kl[ei],Corg,Cend);  // full step
-            const double       G1 = hamiltonian(Cend);             // full step hamiltonian
+            double             G1 = hamiltonian(Cend);             // full step hamiltonian
             triplet<double>    u  = { 0, -1, 1 };                  // prepare look up [0..1] * xx
             triplet<double>    g  = { G0, -1, G1 };                // values
 
             optimize::run_for(*this,u,g,optimize::inside);         // optimization step
 
-            lattice.pad(std::cerr << eq.name,eq) <<  "@xi=" << std::setw(15) << xx << " G: " << G0 << " --> " << G1 << " -> " << g.c << "@u=" << u.b << std::endl;
 
-            
+            iota::save(Cl[ei],Ctry);
+            lattice.pad(std::cerr << eq.name,eq) <<  "@xi=" << std::setw(15) << xx << " G: " << G0 << " --> " << G1 << " -> " << g.b << "@u=" << u.b << std::endl;
+
+            assert(g.b<=G0);
+            G0 = g.b;
+            return xx;
 
         }
 
@@ -535,12 +501,12 @@ namespace yack
             YACK_CHEM_MARKUP(vpfx, "reactor::singlesXi");
             for(const enode *node=singles.head();node;node=node->next)
             {
-                const equilibrium &eq = ***node; studyEquilibrium(eq,G0);
+                const equilibrium &eq = ***node;
                 const size_t       ei = *eq;
-                writable<double>  &Ci = Cl[ei];
-                
-                Xtry[ei] = fabs(  Xl[ei] = Xend[ei] = eq.solve1D(K[ei],Corg,Ci) );
-                Ok[ei]   = (hamiltonian(Ci) <= G0);
+                double             G1 = G0;
+
+                Xtry[ei] = fabs(  Xl[ei] = Xend[ei] = studyEquilibrium(eq,G1) );
+                //Ok[ei]   = (G1 <= G0);
             }
             if(verbose) singles(std::cerr << vpfx << "Xi=",Xend,vpfx);
             return sorted::sum(Xtry,sorted::by_value);
@@ -551,17 +517,16 @@ namespace yack
             YACK_CHEM_MARKUP(vpfx, "reactor::couplesXi");
             for(const enode *node=couples.head();node;node=node->next)
             {
-                const equilibrium &eq = ***node; studyEquilibrium(eq,G0);
+                const equilibrium &eq = ***node;
                 const size_t       ei = *eq;
-                writable<double>  &Ci = Cl[ei];
-                Xl[ei] = eq.solve1D(Kl[ei],Corg,Ci);
-                Ok[ei] = (hamiltonian(Ci) <= G0);
+                double             G1 = G0;
+                Xl[ei] = studyEquilibrium(eq,G1);
+                //Ok[ei] = (G1 <= G0);
             }
             if(verbose)
             {
                 lattice(std::cerr << vpfx << "Xi=",Xl,vpfx);
-                lattice(std::cerr << vpfx << "Ok=",Ok,vpfx);
-                
+                //lattice(std::cerr << vpfx << "Ok=",Ok,vpfx);
             }
             
         }
