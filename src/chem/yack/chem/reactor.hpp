@@ -53,9 +53,10 @@ namespace yack
             //! solve with precomputed K
             bool solve(writable<double> &C0) throw();
 
-
+            //! hamiltonian
             double hamiltonian(const readable<double> &C) throw();
-            
+
+            //! hamiltonian( Corg * (1-u) + Cend * u )
             double operator()(const double u) throw();
             
             //__________________________________________________________________
@@ -97,7 +98,7 @@ namespace yack
             tableau &Ctry; //!< [M]
             tableau &Cstp; //!< [M]
 
-            vector<double> ratio;
+            vector<double> ratio; //!< limiting ratio
 
             tableau &Kl; //!< [L] all constants of lattice
             tableau &Xl; //!< [L] all Xi of lattice

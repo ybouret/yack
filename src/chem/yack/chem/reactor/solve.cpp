@@ -147,6 +147,8 @@ namespace yack
                 std::cerr << "undeflowing=" << underflow << std::endl;
                 exit(1);
             }
+
+            exit(1);
             
             //------------------------------------------------------------------
             //
@@ -327,7 +329,7 @@ namespace yack
             triplet<double> u = { 0,  -1, 1 };
             triplet<double> g = { G0, -1, hamiltonian(Cend) };
             
-            if(false)
+            if(true)
             {
                 ios::ocstream fp("hamiltonian.dat");
                 const size_t  np = 1000;
