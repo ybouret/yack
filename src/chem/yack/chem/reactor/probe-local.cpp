@@ -1,0 +1,85 @@
+
+#include "yack/chem/reactor.hpp"
+#include "yack/sort/sum.hpp"
+#include "yack/math/iota.hpp"
+#include "yack/math/opt/optimize.hpp"
+#include "yack/type/boolean.h"
+#include <iomanip>
+#include <cmath>
+
+namespace yack
+{
+    using namespace math;
+
+    namespace chemical
+    {
+        double reactor:: minimizeFullStep(const double G0) throw()
+        {
+
+            //------------------------------------------------------------------
+            //
+            // Cstp = NuA' * xi and deduce limiting ratio
+            //
+            //------------------------------------------------------------------
+            ratio.free();
+            {
+                const size_t n = N;
+                for(const anode *node=active.head;node;node=node->next)
+                {
+                    const size_t j = ***node;
+                    for(size_t i=n;i>0;--i)
+                    {
+                        Xtry[i] = xi[i] * NuA[i][j];
+                    }
+                    const double d = (Cstp[j] = sorted::sum(Xtry,sorted::by_abs_value));
+                    if(d<0)
+                    {
+                        const double c = Corg[j]; assert(c>=0);
+                        ratio << (c/-d);
+                    }
+                }
+            }
+
+            double expand = 2.0;
+            if(ratio.size())
+            {
+                hsort(ratio,comparison::increasing<double>);
+                std::cerr << vpfx << "ratio=" << ratio << std::endl;
+                expand = min_of(expand,0.99*ratio.front());
+            }
+
+            for(const anode *node=active.head;node;node=node->next)
+            {
+                const size_t j = ***node;
+                Cend[j] = max_of(Corg[j]+Cstp[j]*expand,0.0);
+            }
+
+            if(verbose)
+            {
+                lib(std::cerr << vpfx << "Cend=",Cend,vpfx);
+            }
+
+            triplet<double> u = { 0,  -1, 1 };
+            triplet<double> g = { G0, -1, hamiltonian(Cend) };
+
+            if(true)
+            {
+                ios::ocstream fp("hamiltonian.dat");
+                const size_t  np = 1000;
+                for(size_t i=0;i<=np;++i)
+                {
+                    const double uu = i/double(np);
+                    fp("%.15g %.15g\n",uu, (*this)(uu));
+                }
+            }
+
+            optimize::run_for(*this, u, g, optimize::inside);
+            std::cerr << "G: " << G0 << " --> " << g.b << std::endl;
+            active.transfer(Corg,Ctry);
+            return g.b;
+        }
+        
+    }
+
+}
+

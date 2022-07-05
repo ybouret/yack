@@ -112,7 +112,7 @@ namespace yack
             const lockable::scope eqsLock;
 
 
-            bool   onSuccess(writable<double> &C0);
+            bool   returnSuccessful(writable<double> &C0, const unsigned cycle);
             double studyEquilibrium(const equilibrium &eq, double &G0) throw();
             double computeSinglesXi(const double G0) throw(); //!< return |Xi|
             void   computeCouplesXi(const double G0) throw();
