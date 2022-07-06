@@ -161,6 +161,7 @@ namespace yack
                 const equilibrium &eq = *eg;
                 G0 = G1;
                 eq.transfer(Corg,Cl[*eq]);
+                assert( hash_of(Cl[*eq]) == hash_of(Corg) );
                 goto CYCLE;
             }
             else
@@ -168,6 +169,9 @@ namespace yack
                 const group *gOpt = look_up->get_single( *eg ); assert(gOpt);
                 double       hOpt = G1;
                 std::cerr << "Start @" << *gOpt << " G=" << hOpt << std::endl;
+                aggregate(Cend,*gOpt);
+                assert( hash_of(Cl[**eg]) == hash_of(Cend) );
+
                 std::cerr << "Delta=" << fabs(aggregate(Cend,*gOpt) - hOpt)  << std::endl;
                 std::cerr << "Cend="  << Cend << std::endl;
                 std::cerr << "Copt="  << Cl[**eg] << std::endl;
@@ -210,12 +214,6 @@ namespace yack
                 goto CYCLE;
             }
             
-
-
-
-
-
-
 
 
 
