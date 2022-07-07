@@ -62,7 +62,7 @@ namespace yack
 
             bool    normalize(writable<double> &C0) throw();
             double  aggregate(writable<double> &C, const group &g) throw();
-
+            
             //__________________________________________________________________
             //
             // members

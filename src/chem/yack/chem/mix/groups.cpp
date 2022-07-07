@@ -29,11 +29,12 @@ namespace yack
             return false;
         }
 
-        const group * groups:: get_single(const equilibrium &eq) const throw()
+        const group * groups:: find_first(const equilibrium &eq) const throw()
         {
             for(const group *g=head;g;g=g->next)
             {
-                if(1==g->size && ( &eq == & (**(g->head)))) return g;
+                //if(1==g->size && ( &eq == & (**(g->head)))) return g;
+                if(g->contains(eq)) return g;
             }
             return NULL;
         }

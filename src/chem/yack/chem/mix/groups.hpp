@@ -52,7 +52,7 @@ namespace yack
             //! check that a couple of equilibria is contain in a group
             bool contains(const equilibrium &, const equilibrium &) const throw();
             
-            const group *get_single(const equilibrium &eq) const throw();
+            const group *find_first(const equilibrium &eq) const throw();
             
             //__________________________________________________________________
             //
