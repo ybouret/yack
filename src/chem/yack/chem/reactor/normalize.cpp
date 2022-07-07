@@ -23,7 +23,6 @@ namespace yack
             assert(g.is_valid());
             assert(g.is_ortho());
             assert(C.size()==Corg.size());
-            std::cerr << "agg " << g << std::endl;
             iota::save(C,Corg);
             for(const gnode *ep=g.head;ep;ep=ep->next)
             {
@@ -31,7 +30,9 @@ namespace yack
                 const readable<double> &Ci = Cl[*eq]; assert(eq.other_are_unchanged(Ci,Corg));
                 eq.transfer(C,Ci);
             }
-            return hamiltonian(C);
+            const double res = hamiltonian(C);
+            std::cerr << "G=" << std::setw(15) << res  << "@" << g << std::endl;
+            return res;
         }
 
         bool reactor:: normalize(writable<double> &C0) throw()
@@ -158,52 +159,28 @@ namespace yack
             }
             else
             {
-                const group *gOpt = look_up->get_single( *eg ); assert(gOpt);
-                double       hOpt = G1;
-                std::cerr << "Start @" << *gOpt << " G=" << hOpt << std::endl;
-                aggregate(Cend,*gOpt);
-
-                std::cerr << "Delta=" << fabs(aggregate(Cend,*gOpt) - hOpt)  << std::endl;
-                std::cerr << "Cend="  << Cend << std::endl;
-                std::cerr << "Copt="  << Cl[**eg] << std::endl;
-                std::cerr << "dC  =[";
-                for(size_t i=1;i<=M;++i)
+                const equilibrium &eq   = *eg;
+                const group       *gOpt = look_up->get_single( eq ); assert(gOpt);
+                double             hOpt = aggregate(Cend,*gOpt);
+                for(const group *gTmp=gOpt->next;gTmp;gTmp=gTmp->next)
                 {
-                    std::cerr << ' ' << Cend[i] - Cl[**eg][i];
-                }
-                std::cerr << "]" << std::endl;
-                assert(fabs(aggregate(Cend,*gOpt) - hOpt) <=0);
-                for(const group *g=gOpt->next;g;g=g->next)
-                {
-                }
-                
-            }
-            
-            exit(1);
-
-            {
-                const group *gOpt = look_up->head;
-                double       hOpt = aggregate(Cend,*gOpt);
-
-                for(const group *g=gOpt->next;g;g=g->next)
-                {
-                    const double h = aggregate(Ctry,*g);
-                    if(h<=hOpt)
+                    if(!gTmp->contains(eq)) continue;
+                    const double hTmp  = aggregate(Ctry,*gTmp);
+                    if(hTmp<hOpt)
                     {
-                        hOpt = h;
-                        gOpt = g;
+                        gOpt = gTmp;
+                        hOpt = hTmp;
                         active.transfer(Cend,Ctry);
                     }
                 }
 
-                assert( fabs(hamiltonian(Cend)-hOpt)<=0  );
-                std::cerr << "Gopt=" << hOpt << " for " << *gOpt << std::endl;
-                assert(hOpt<G0);
-                assert(hOpt<=G1);
-                active.transfer(Corg,Cend);
-                G0 = hOpt;
-                goto CYCLE;
+                std::cerr << "best=" << *gOpt << std::endl;
+
             }
+            
+            exit(1);
+
+
             
 
 
