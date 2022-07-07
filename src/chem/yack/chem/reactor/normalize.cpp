@@ -31,7 +31,6 @@ namespace yack
                 eq.transfer(C,Ci);
             }
             const double res = hamiltonian(C);
-            std::cerr << "G=" << std::setw(15) << res  << "@" << g << std::endl;
             return res;
         }
 
@@ -119,7 +118,7 @@ namespace yack
                 assert( eq.other_are_unchanged(Cl[ei],Corg) );
 
                 lattice.pad(std::cerr << " @{" << eq.name << "}",eq) << " = " <<std::setw(15) << xx;
-                std::cerr << "  G = " << std::setw(15) << g.b << " @u=" << u.b;
+                std::cerr << " | G = " << std::setw(15) << g.b << " @u=" << u.b;
                 if(g.b<G1)
                 {
                     G1=g.b;
@@ -129,7 +128,7 @@ namespace yack
             }
 
             // check |Xi| status
-            YACK_CHEM_PRINTLN("|Xi| = " << AX << "@{" << (ex? ex->name() : "nil") << "}" );
+            YACK_CHEM_PRINTLN("|Xi|  = " << std::setw(15) << AX << " @{" << (ex? ex->name() : "nil") << "}" );
             if(AX<=0)
             {
                 assert(NULL==ex);
@@ -139,7 +138,7 @@ namespace yack
             assert(NULL!=ex);
 
             // check global decrease status
-            YACK_CHEM_PRINTLN(" G1  = " << G1 << "@{" << (eg? eg->name() : "NIL") << "}" );
+            YACK_CHEM_PRINTLN(" G1   = " <<  std::setw(15) << G1 << " @{" << (eg? eg->name() : "NIL") << "}" );
             if(!eg)
             {
                 std::cerr << "stuck?" << std::endl;
@@ -149,42 +148,36 @@ namespace yack
             assert(NULL!=ex);
             assert(NULL!=eg);
 
-            if(eg!=ex)
-            {
-                exit(1);
-                const equilibrium &eq = *eg;
-                G0 = G1;
-                assert( eq.other_are_unchanged(Corg,Cl[*eq]) );
-                eq.transfer(Corg,Cl[*eq]);
-                exit(1);
-                goto CYCLE;
-            }
-            else
+            const bool stable = (ex==eg);
+
             {
                 const equilibrium &eq   = *eg;
                 const group       *gOpt = look_up->get_single( eq ); assert(gOpt);
-                double             hOpt = aggregate(Cend,*gOpt);
+                tableau           &Copt = Cend;
+                double             hOpt = aggregate(Copt,*gOpt);
                 for(const group   *gTmp = gOpt->next;gTmp;gTmp=gTmp->next)
                 {
                     if(!gTmp->contains(eq)) continue;
-                    const double hTmp  = aggregate(Ctry,*gTmp);
-                    if(hTmp<hOpt)
+                    const double hTmp = aggregate(Ctry,*gTmp);
+                    const bool   good = (hTmp<hOpt);
+                    std::cerr << (good?"(+)":"(-)") << " G = " << std::setw(15) << hTmp  << " @" << *gTmp << std::endl;
+
+                    if(good)
                     {
                         gOpt = gTmp;
                         hOpt = hTmp;
-                        active.transfer(Cend,Ctry);
+                        active.transfer(Copt,Ctry);
                     }
                 }
 
                 std::cerr << "best=" << *gOpt << std::endl;
-
+                G0 = hOpt;
+                active.transfer(Corg,Copt);
             }
+
+
+
             
-            exit(1);
-
-
-            
-
 
 
             return false;
