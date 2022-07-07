@@ -80,9 +80,9 @@ namespace yack
 
             assert(N>0);
 
-            double G0 = hamiltonian(Corg);
-
+            double   G0    = hamiltonian(Corg);
             unsigned cycle = 0;
+
         CYCLE:
             ++cycle;
             YACK_CHEM_PRINTLN("---------------- cycle=" << cycle << " ----------------");
@@ -118,8 +118,8 @@ namespace yack
                 iota::load(Cl[ei],Ctry);
                 assert( eq.other_are_unchanged(Cl[ei],Corg) );
 
-                lattice.pad(std::cerr << "@{" << eq.name << "}",eq) << " = " <<std::setw(15) << xx;
-                std::cerr << " G=" << std::setw(15) << g.b << " @u=" << u.b;
+                lattice.pad(std::cerr << " @{" << eq.name << "}",eq) << " = " <<std::setw(15) << xx;
+                std::cerr << "  G = " << std::setw(15) << g.b << " @u=" << u.b;
                 if(g.b<G1)
                 {
                     G1=g.b;
@@ -128,7 +128,7 @@ namespace yack
                 std::cerr << std::endl;
             }
 
-
+            // check |Xi| status
             YACK_CHEM_PRINTLN("|Xi| = " << AX << "@{" << (ex? ex->name() : "nil") << "}" );
             if(AX<=0)
             {
@@ -138,6 +138,7 @@ namespace yack
             }
             assert(NULL!=ex);
 
+            // check global decrease status
             YACK_CHEM_PRINTLN(" G1  = " << G1 << "@{" << (eg? eg->name() : "NIL") << "}" );
             if(!eg)
             {
@@ -150,6 +151,7 @@ namespace yack
 
             if(eg!=ex)
             {
+                exit(1);
                 const equilibrium &eq = *eg;
                 G0 = G1;
                 assert( eq.other_are_unchanged(Corg,Cl[*eq]) );
@@ -162,7 +164,7 @@ namespace yack
                 const equilibrium &eq   = *eg;
                 const group       *gOpt = look_up->get_single( eq ); assert(gOpt);
                 double             hOpt = aggregate(Cend,*gOpt);
-                for(const group *gTmp=gOpt->next;gTmp;gTmp=gTmp->next)
+                for(const group   *gTmp = gOpt->next;gTmp;gTmp=gTmp->next)
                 {
                     if(!gTmp->contains(eq)) continue;
                     const double hTmp  = aggregate(Ctry,*gTmp);
