@@ -154,8 +154,6 @@ namespace yack
 
             update();
             ++coerce(sp.rank);
-
-
             return true;
         }
 
@@ -238,6 +236,49 @@ namespace yack
             //os << " | d_nu=" << d_nu << " | nu_p=" << nu_p;
             //os << " {" << topo << "}";
             return os;
+        }
+
+        std::ostream & components:: display_signature(std::ostream &os) const
+        {
+            os << '[';
+            const cnode *node = head();
+            if(node)
+            {
+                os << (*****node);
+                for(node=node->next;node;node=node->next)
+                {
+                    os << ';';
+                    os << (*****node);
+                }
+            }
+            os << ']';
+            return os;
+        }
+
+        bool components:: found_species_index(const size_t i) const throw()
+        {
+            for(const cnode *node=head();node;node=node->next)
+            {
+                const size_t j = *****node;
+                if(i==j) return true;
+            }
+            return false;
+        }
+
+
+        bool components:: other_are_unchanged(const readable<double> &lhs,
+                                              const readable<double> &rhs) const throw()
+        {
+            assert(lhs.size()==rhs.size());
+            for(size_t j=lhs.size();j>0;--j)
+            {
+                if(found_species_index(j)) continue;
+                if( fabs( lhs[j] - rhs[j] ) > 0 )
+                {
+                    return false;
+                }
+            }
+            return true;
         }
 
         const limits & components:: private_limits(const readable<double> &C, const size_t w) const throw()

@@ -2,7 +2,8 @@
 #include "yack/chem/components.hpp"
 #include "yack/math/triplet.hpp"
 #include "yack/math/numeric.hpp"
-#include "yack/math/tao/v1.hpp"
+//#include "yack/math/tao/v1.hpp"
+#include "yack/math/iota.hpp"
 #include "yack/signs.hpp"
 #include "yack/exception.hpp"
 
@@ -324,7 +325,7 @@ assert(x.c>x.a)
             // initialize Cs
             //
             //------------------------------------------------------------------
-            tao::v1::load(Cs,C0);               //!< workspace is Cs
+            iota::load(Cs,C0);                  //!< workspace is Cs
             double    f0 =  mass_action(K,Cs);  //!< initial mass action
             sign_type s0 = __sign::of(f0);      //!< sign of mass action
             if( __zero__ == s0 )

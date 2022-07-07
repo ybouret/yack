@@ -152,6 +152,15 @@ namespace yack
             //! helper to display
             std::ostream & display(std::ostream &os) const;
 
+            //! display signature
+            std::ostream & display_signature(std::ostream &os) const;
+
+            //! check index ownership
+
+            //! check other components match
+            bool other_are_unchanged(const readable<double> &lhs, const readable<double> &rhs) const throw();
+            bool found_species_index(const size_t i) const throw();
+
             //__________________________________________________________________
             //
             // members

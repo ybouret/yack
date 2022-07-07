@@ -34,13 +34,16 @@ namespace yack
         {
             assert(g.is_valid());
             assert(g.is_ortho());
+            assert(C.size()==Corg.size());
             std::cerr << "agg " << g << std::endl;
             iota::save(C,Corg);
             for(const gnode *ep=g.head;ep;ep=ep->next)
             {
-                const equilibrium &eq = **ep;
-                //std::cerr << " transfer " << Nu[*eq] << std::endl;
-                eq.transfer(C,Cl[*eq]);
+                const equilibrium      &eq = **ep;
+                const readable<double> &Ci = Cl[*eq];
+                eq.display_signature(std::cerr << "Transfer : ") << std::endl;
+                assert(eq.other_are_unchanged(Ci,Corg));
+                eq.transfer(C,Ci);
             }
             return hamiltonian(C);
         }
@@ -57,9 +60,8 @@ namespace yack
             //------------------------------------------------------------------
             assert(C0.size()>=M);
             YACK_CHEM_MARKUP(vpfx, "reactor::normalize");
-            if(verbose) {
-                lib(std::cerr<<vpfx<<"Cini=",C0,vpfx);
-            }
+            if(verbose) lib(std::cerr<<vpfx<<"Cini=",C0,vpfx);
+
 
             //------------------------------------------------------------------
             //
@@ -102,6 +104,7 @@ namespace yack
 
             if(G0<=0)
             {
+                YACK_CHEM_PRINTLN(" <success:: null hamiltonian/>");
                 return returnSuccessful(C0,cycle);
             }
 
@@ -110,11 +113,12 @@ namespace yack
             const equilibrium *ex = NULL;
             const equilibrium *eg = NULL;
 
+            //--- scan all solutions
             for(const enode *node=lattice.head();node;node=node->next)
             {
                 const equilibrium &eq = ***node;
                 const size_t       ei = *eq;
-                const double       xx = Xl[ei] = eq.solve1D(Kl[ei], Corg, Cend);
+                const double       xx = (Xl[ei] = eq.solve1D(Kl[ei], Corg, Cend)); assert( eq.other_are_unchanged(Corg,Cend) );
                 const double       ax = fabs( xx );
                 if(ax>AX)
                 {
@@ -126,7 +130,8 @@ namespace yack
                 optimize::run_for(*this,u,g,optimize::inside);
                 iota::load(Cl[ei],Ctry);
                 assert( hash_of(Cl[ei]) == hash_of(Ctry) );
-                
+                assert( eq.other_are_unchanged(Cl[ei],Corg) );
+
                 lattice.pad(std::cerr << "@{" << eq.name << "}",eq) << " = " <<std::setw(15) << xx;
                 std::cerr << " G=" << std::setw(15) << g.b << " @u=" << u.b;
                 if(g.b<G1)
@@ -142,6 +147,7 @@ namespace yack
             if(AX<=0)
             {
                 assert(NULL==ex);
+                YACK_CHEM_PRINTLN(" <success:: |Xi| = 0/>");
                 return returnSuccessful(C0,cycle);
             }
             assert(NULL!=ex);
@@ -160,8 +166,8 @@ namespace yack
             {
                 const equilibrium &eq = *eg;
                 G0 = G1;
-                eq.transfer(Corg,Cl[*eq]);
-                assert( hash_of(Cl[*eq]) == hash_of(Corg) );
+                assert( eq.other_are_unchanged(Corg,Cl[*eq]) );
+                eq.transfer(Corg,Cl[*eq]); assert( hash_of(Cl[*eq]) == hash_of(Corg) );
                 goto CYCLE;
             }
             else
