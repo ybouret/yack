@@ -25,7 +25,10 @@ namespace yack
             for(const anode *node=active.head;node;node=node->next)
             {
                 const size_t j = ***node;
-                Ctry[j] = v * Corg[j] + u * Cend[j];
+                double Cmin = Corg[j];
+                double Cmax = Cend[j];
+                if(Cmin>=Cmax) cswap(Cmin,Cmax);
+                Ctry[j] = clamp(Cmin,v * Corg[j] + u * Cend[j],Cmax);
             }
             return hamiltonian(Ctry);
         }

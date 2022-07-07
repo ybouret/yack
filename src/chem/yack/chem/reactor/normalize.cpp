@@ -7,9 +7,6 @@
 #include <iomanip>
 #include <cmath>
 
-#include "yack/hashing/md.hpp"
-#include "yack/hashing/sha1.hpp"
-#include "yack/kr/digest.hpp"
 
 namespace yack
 {
@@ -18,16 +15,7 @@ namespace yack
     namespace chemical
     {
 
-        static inline digest hash_of(const readable<double> &C)
-        {
-            hashing::sha1 H;
-            H.set();
-            for(size_t i=C.size();i>0;--i)
-            {
-                H.run(&C[i], sizeof(double));
-            }
-            return hashing::md::of(H);
-        }
+
 
         
         double  reactor:: aggregate(writable<double> &C, const group &g) throw()
@@ -40,9 +28,7 @@ namespace yack
             for(const gnode *ep=g.head;ep;ep=ep->next)
             {
                 const equilibrium      &eq = **ep;
-                const readable<double> &Ci = Cl[*eq];
-                eq.display_signature(std::cerr << "Transfer : ") << std::endl;
-                assert(eq.other_are_unchanged(Ci,Corg));
+                const readable<double> &Ci = Cl[*eq]; assert(eq.other_are_unchanged(Ci,Corg));
                 eq.transfer(C,Ci);
             }
             return hamiltonian(C);
@@ -129,7 +115,6 @@ namespace yack
                 triplet<double> g = { G0, -1, hamiltonian(Cend) };
                 optimize::run_for(*this,u,g,optimize::inside);
                 iota::load(Cl[ei],Ctry);
-                assert( hash_of(Cl[ei]) == hash_of(Ctry) );
                 assert( eq.other_are_unchanged(Cl[ei],Corg) );
 
                 lattice.pad(std::cerr << "@{" << eq.name << "}",eq) << " = " <<std::setw(15) << xx;
@@ -167,7 +152,8 @@ namespace yack
                 const equilibrium &eq = *eg;
                 G0 = G1;
                 assert( eq.other_are_unchanged(Corg,Cl[*eq]) );
-                eq.transfer(Corg,Cl[*eq]); assert( hash_of(Cl[*eq]) == hash_of(Corg) );
+                eq.transfer(Corg,Cl[*eq]);
+                exit(1);
                 goto CYCLE;
             }
             else
@@ -176,7 +162,6 @@ namespace yack
                 double       hOpt = G1;
                 std::cerr << "Start @" << *gOpt << " G=" << hOpt << std::endl;
                 aggregate(Cend,*gOpt);
-                assert( hash_of(Cl[**eg]) == hash_of(Cend) );
 
                 std::cerr << "Delta=" << fabs(aggregate(Cend,*gOpt) - hOpt)  << std::endl;
                 std::cerr << "Cend="  << Cend << std::endl;
