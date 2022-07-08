@@ -82,88 +82,120 @@ namespace yack
 
             assert(N>0);
 
+            //------------------------------------------------------------------
+            //
+            //
+            // look up
+            //
+            //
+            //------------------------------------------------------------------
             double   G0    = hamiltonian(Corg);
             unsigned cycle = 0;
 
+
         CYCLE:
+            //------------------------------------------------------------------
+            //
+            // Global Regularization
+            //
+            //------------------------------------------------------------------
             ++cycle;
             YACK_CHEM_PRINTLN("---------------- cycle=" << cycle << " ----------------");
-            YACK_CHEM_PRINTLN("G0=" << G0);
             if(verbose) lib(std::cerr << "Corg=",Corg,"");
+            YACK_CHEM_PRINTLN(vpfx << "  G0 = " << G0);
 
-            if(G0<=0)
-            {
+            if(G0<=0) {
                 YACK_CHEM_PRINTLN(" <success:: null hamiltonian @init/>");
                 return returnSuccessful(C0,cycle);
             }
 
-            bool gOK = true;
-            {
-                double             AX = 0;
-                double             G1 = G0;
-                const equilibrium *ex = NULL;
-                const equilibrium *eg = NULL;
 
-                //--- scan all solutions
+            bool globallyDecreased = true; // check if global dercreasing
+            {
+                double             Xmax = 0;
+                double             Gmin = G0;
+                const equilibrium *emax = NULL;
+                const equilibrium *emin = NULL;
+
+                //--------------------------------------------------------------
+                //
+                // scan all equilibria
+                //
+                //--------------------------------------------------------------
                 for(const enode *node=lattice.head();node;node=node->next)
                 {
+                    //----------------------------------------------------------
+                    // compute equilibrium status
+                    //----------------------------------------------------------
                     const equilibrium &eq = ***node;
                     const size_t       ei = *eq;
                     const double       xx = (Xl[ei] = eq.solve1D(Kl[ei], Corg, Cend)); assert( eq.other_are_unchanged(Corg,Cend) );
                     const double       ax = fabs( xx );
-                    if(ax>AX)
-                    {
-                        AX =  ax;
-                        ex = &eq;
+                    if(ax>Xmax) {
+                        Xmax =  ax;
+                        emax = &eq;
                     }
-                    triplet<double> u = { 0, -1, 1 };
+
+                    //----------------------------------------------------------
+                    // check for regularisation
+                    //----------------------------------------------------------
+                    triplet<double> u = { 0,  -1, 1    };
                     triplet<double> g = { G0, -1, hamiltonian(Cend) };
                     optimize::run_for(*this,u,g,optimize::inside);
+                    iota::load(Cl[ei],Ctry); assert( eq.other_are_unchanged(Cl[ei],Corg) );
 
-                    std::cerr << "NEED TO CHECK ON SIDE!!" << std::endl;
-                    exit(2);
+                    lattice.pad(std::cerr << " @{" << eq.name << "}",eq) << " = " << std::setw(15) << xx;
+                    std::cerr << " | G = " << std::setw(15) << g.b << " @u=" <<  std::setw(15) << u.b;
 
-                    iota::load(Cl[ei],Ctry);
-                    assert( eq.other_are_unchanged(Cl[ei],Corg) );
-
-                    lattice.pad(std::cerr << " @{" << eq.name << "}",eq) << " = " <<std::setw(15) << xx;
-                    std::cerr << " | G = " << std::setw(15) << g.b << " @u=" << u.b;
-                    if(g.b<G1)
+                    //----------------------------------------------------------
+                    // update best global possibility
+                    //----------------------------------------------------------
+                    if(g.b<Gmin)
                     {
-                        G1=g.b;
-                        eg=&eq;
+                        Gmin = g.b;
+                        emin = &eq;
                     }
                     std::cerr << std::endl;
                 }
 
+                //--------------------------------------------------------------
+                //
                 // check |Xi| status
-                YACK_CHEM_PRINTLN("|Xi|  = " << std::setw(15) << AX << " @{" << (ex? ex->name() : "nil") << "}" );
-                if(AX<=0)
-                {
-                    assert(NULL==ex);
+                //
+                //--------------------------------------------------------------
+                YACK_CHEM_PRINTLN("|Xi|  = " << std::setw(15) << Xmax << " @{" << (emax? emax->name() : "nil") << "}" );
+                if(Xmax<=0) {
+                    assert(NULL==emax);
                     YACK_CHEM_PRINTLN(" <success:: |Xi| = 0 @init/>");
                     return returnSuccessful(C0,cycle);
                 }
-                assert(NULL!=ex);
+                assert(NULL!=emax);
 
+                //--------------------------------------------------------------
+                //
                 // check global decrease status
-                YACK_CHEM_PRINTLN(" G1   = " <<  std::setw(15) << G1 << " @{" << (eg? eg->name() : "NIL") << "}" );
-                if(!eg)
-                {
-                    gOK = false;
+                //
+                //--------------------------------------------------------------
+                YACK_CHEM_PRINTLN(" Gmin = " <<  std::setw(15) << Gmin << " @{" << (emin? emin->name() : "NIL") << "}" );
+                if(!emin) {
+                    globallyDecreased = false;
                 }
-                else
-                {
-                    const equilibrium &eq   = *eg;
+                else {
+                    //----------------------------------------------------------
+                    // optimize composition with secondary decrease
+                    //----------------------------------------------------------
+                    const equilibrium &eq   = *emin;
                     const group       *gOpt = look_up->find_first( eq ); assert(gOpt);
                     tableau           &Copt = Cend;
                     double             hOpt = aggregate(Copt,*gOpt);
+                    if(verbose) std::cerr << "(#) G = " << std::setw(15) << hOpt  << " @" << *gOpt << std::endl;
+
                     for(const group   *gTmp = gOpt->next;gTmp;gTmp=gTmp->next)
                     {
                         if(!gTmp->contains(eq)) continue;
                         const double hTmp = aggregate(Ctry,*gTmp);
                         const bool   good = (hTmp<hOpt);
-                        std::cerr << (good?"(+)":"(-)") << " G = " << std::setw(15) << hTmp  << " @" << *gTmp << " " << Ctry << std::endl;
+                        if(verbose) std::cerr << (good?"(+)":"(-)") << " G = " << std::setw(15) << hTmp  << " @" << *gTmp << std::endl;
 
                         if(good)
                         {
@@ -173,39 +205,47 @@ namespace yack
                         }
                     }
 
-                    std::cerr << "best=" << *gOpt << std::endl;
+                    std::cerr << "Gopt  = " << std::setw(15) << hOpt << " @" << *gOpt << std::endl;
                     G0 = hOpt;
                     active.transfer(Corg,Copt);
 
+
+                    //----------------------------------------------------------
+                    // check current hamiltonian
+                    //----------------------------------------------------------
                     if(G0<=0)
                     {
                         YACK_CHEM_PRINTLN(" <success:: null hamiltonian @move/>");
                         return returnSuccessful(C0,cycle);
                     }
 
-                    // recomputing AX and 'Xi'
-                    AX = 0;
+                    //----------------------------------------------------------
+                    // recomputing Xmax and Xi for singles
+                    //----------------------------------------------------------
+                    Xmax = 0;
                     for(const enode *node=singles.head();node;node=node->next)
                     {
                         const equilibrium &eq = ***node;
                         const size_t       ei = *eq;
                         const double       xx = (Xl[ei] = eq.solve1D(Kl[ei], Corg, Cl[ei]));
                         const double       ax = fabs( xx );
-                        if(ax>AX)
+                        if(ax>Xmax)
                         {
-                            AX = ax;
+                            Xmax = ax;
                         }
                     }
                     singles(std::cerr << vpfx << "Xi_singles=",Xl,vpfx);
-                    if(AX<=0)
+                    if(Xmax<=0)
                     {
                         YACK_CHEM_PRINTLN(" <success:: |Xi| = 0 @move/>");
                         return returnSuccessful(C0,cycle);
                     }
 
                 }
-                YACK_CHEM_PRINTLN(vpfx << "[gOK=" << yack_boolean(gOK) << "]");
+                YACK_CHEM_PRINTLN(vpfx << "[globallyDecreased=" << yack_boolean(globallyDecreased) << "]");
             }
+
+            exit(1);
 
             
 
