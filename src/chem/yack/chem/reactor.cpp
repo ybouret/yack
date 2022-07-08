@@ -45,7 +45,6 @@ namespace yack
         ltab(10,L),
 
         K( ntab.next() ),
-        Xend( ntab.next() ),
         Xtry( ntab.next() ),
         Gamma( ntab.next() ),
         xi( ntab.next() ),
@@ -60,7 +59,6 @@ namespace yack
 
         Kl( ltab.next() ),
         Xl( ltab.next() ),
-        //Ok( ltab.next(), transmogrify ),
         Cl(),
 
         libLock(lib_),

@@ -58,7 +58,7 @@ namespace yack
                         Omi[j] = - sorted::dot(psi,Nu[j],Ctry);
                     }
 
-                    if( fabs(Xend[ei]) <= 0 ) gam = 0;
+                    if( fabs(Xl[ei]) <= 0 ) gam = 0;
                 }
 
             }

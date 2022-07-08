@@ -82,7 +82,6 @@ namespace yack
 
         public:
             tableau &K;       //!< [N]
-            tableau &Xend;    //!< [N]
             tableau &Xtry;    //!< [N]
             tableau &Gamma;   //!< [N]
             tableau &xi;      //!< [N]
@@ -97,7 +96,6 @@ namespace yack
 
             tableau &Kl; //!< [L] all constants of lattice
             tableau &Xl; //!< [L] all Xi of lattice
-            //booltab  Ok; //!< [L] decreasing hamiltonian
             rmatrix  Cl; //!< [LxM] all equilibria of lattice
 
 
@@ -112,9 +110,9 @@ namespace yack
             double  buildHamiltonian(const equilibrium &eq) throw(); //!< build best from eq
             bool    returnSuccessful(writable<double> &C0, const unsigned cycle);  //!< Corg -> C0, optional info
             void    zapEquilibriumAt(const size_t ei) throw();                     //!< de-activate
-            double  minimizeFullStep(const double G0) throw();                     //!< numerical look up
+            bool    optimizeFullStep(double &G0) throw();                     //!< numerical look up
             size_t  initializeOmega0() throw();                                    //!< full matrix setup
-            
+            bool    acceptableExtent() const throw();
         };
 
     }

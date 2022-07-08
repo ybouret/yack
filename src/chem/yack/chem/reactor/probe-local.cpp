@@ -13,7 +13,7 @@ namespace yack
 
     namespace chemical
     {
-        double reactor:: minimizeFullStep(const double G0) throw()
+        bool reactor:: optimizeFullStep(double &G0) throw()
         {
 
             //------------------------------------------------------------------
@@ -59,7 +59,7 @@ namespace yack
             triplet<double> u = { 0,  -1, 1 };
             triplet<double> g = { G0, -1, hamiltonian(Cend) };
 
-            if(true)
+            if(false)
             {
                 ios::ocstream fp("hamiltonian.dat");
                 const size_t  np = 1000;
@@ -79,7 +79,16 @@ namespace yack
                 std::cerr << "G: " << G0 << " --> " << g.b << std::endl;
             }
 
-            return g.b;
+            if(g.b>=G0)
+            {
+                G0=g.b;
+                return false;
+            }
+            else
+            {
+                G0=g.b;
+                return true;
+            }
         }
         
     }

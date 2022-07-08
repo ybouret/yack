@@ -4,6 +4,7 @@
 #include "yack/math/iota.hpp"
 #include "yack/math/opt/optimize.hpp"
 #include "yack/type/boolean.h"
+#include "yack/math/numeric.hpp"
 #include <iomanip>
 #include <cmath>
 
@@ -30,10 +31,13 @@ namespace yack
                 {
                     const equilibrium &eq = ***node;
                     singles.pad(std::cerr << eq.name,eq);
-                    std::cerr << " | ma=" << std::setw(15) << eq.mass_action(K[*eq],C0);
                     std::cerr << " | xi=" << std::setw(15) << eq.solve1D(K[*eq],C0,Ctry);
+                    std::cerr << " | ma=" << std::setw(15) << eq.mass_action(K[*eq],C0);
+                    std::cerr << " |  Q/K-1=" << std::setw(15) << (eq.Q(C0)/K[*eq])-1;
                     std::cerr << std::endl;
                 }
+                std::cerr << "   eps=" << numeric<double>::epsilon << std::endl;
+
             }
             return true;
         }
@@ -90,6 +94,23 @@ namespace yack
             return hOpt;
         }
 
+
+        bool reactor:: acceptableExtent() const throw()
+        {
+
+            bool foundTotalUnderflow = true;
+            for(const enode *node=singles.head();node;node=node->next)
+            {
+                const equilibrium &eq = ***node;
+                const size_t       ei = *eq;
+                if( eq.changed(Corg,Xl[ei],Ctry) )
+                {
+                    foundTotalUnderflow = false;
+                    break;
+                }
+            }
+            return foundTotalUnderflow;
+        }
         
         bool    reactor:: normalize(writable<double> &C0) throw()
         {
@@ -159,7 +180,7 @@ namespace yack
             YACK_CHEM_PRINTLN(vpfx << "  G0 = " << G0);
 
             if(G0<=0) {
-                YACK_CHEM_PRINTLN(" <success:: null hamiltonian @init/>");
+                YACK_CHEM_PRINTLN("  <success:: null hamiltonian @init/>");
                 return returnSuccessful(C0,cycle);
             }
 
@@ -223,7 +244,7 @@ namespace yack
                 YACK_CHEM_PRINTLN("|Xi|  = " << std::setw(15) << Xmax << " @{" << (emax? emax->name() : "nil") << "}" );
                 if(Xmax<=0) {
                     assert(NULL==emax);
-                    YACK_CHEM_PRINTLN(" <success:: |Xi| = 0 @init/>");
+                    YACK_CHEM_PRINTLN("  <success:: |Xi| = 0 @init/>");
                     return returnSuccessful(C0,cycle);
                 }
                 assert(NULL!=emax);
@@ -249,7 +270,7 @@ namespace yack
                     //----------------------------------------------------------
                     if(G0<=0)
                     {
-                        YACK_CHEM_PRINTLN(" <success:: null hamiltonian @move/>");
+                        YACK_CHEM_PRINTLN("  <success:: null hamiltonian @move/>");
                         return returnSuccessful(C0,cycle);
                     }
 
@@ -261,7 +282,7 @@ namespace yack
                     {
                         const equilibrium &eq = ***node;
                         const size_t       ei = *eq;
-                        const double       xx = (Xend[ei] = eq.solve1D(K[ei],Corg,Ctry));
+                        const double       xx = (Xl[ei] = eq.solve1D(K[ei],Corg,Ctry));
                         const double       ax = fabs( xx );
                         if(ax>Xmax)
                             Xmax = ax;
@@ -270,30 +291,21 @@ namespace yack
                     if(verbose)
                     {
                         lib(std::cerr << "Copt=",Corg,"");
-                        singles(std::cerr << vpfx << "Xi_singles=",Xend,vpfx);
+                        singles(std::cerr << vpfx << "Xi_singles=",Xl,vpfx);
                     }
                     if(Xmax<=0)
                     {
-                        YACK_CHEM_PRINTLN(" <success:: |Xi| = 0 @move/>");
+                        YACK_CHEM_PRINTLN("  <success:: |Xi| = 0 @move/>");
                         return returnSuccessful(C0,cycle);
                     }
                 }
 
-                YACK_CHEM_PRINTLN(vpfx << "[foundGlobalDecrease=" << yack_boolean(foundGlobalDecrease) << "]");
             }
+            const bool foundTotalUnderflow = acceptableExtent();
 
-            bool foundTotalUnderflow = true;
-            for(const enode *node=singles.head();node;node=node->next)
-            {
-                const equilibrium &eq = ***node;
-                const size_t       ei = *eq;
-                if( eq.changed(Corg,Xend[ei],Ctry) )
-                {
-                    foundTotalUnderflow = false;
-                    break;
-                }
-            }
-            YACK_CHEM_PRINTLN(vpfx << "[foundTotalUnderflow=" << yack_boolean(foundTotalUnderflow) << "]");
+            YACK_CHEM_PRINTLN(vpfx << "    [foundGlobalDecrease=" << yack_boolean(foundGlobalDecrease) << "]");
+            YACK_CHEM_PRINTLN(vpfx << "    [foundTotalUnderflow=" << yack_boolean(foundTotalUnderflow) << "]");
+
 
             
 
@@ -311,9 +323,9 @@ namespace yack
                 //
                 //--------------------------------------------------------------
                 YACK_CHEM_MARKUP(vpfx, "reactor::computeExtent");
-                size_t    num_running = initializeOmega0();
-                bool      maximum_dof = true;
-                unsigned  inner       = 0;
+                bool      maximumAvailableDOF = true;
+                size_t    num_running         = initializeOmega0();
+                unsigned  inner               = 0;
 
             COMPUTE_EXTENT:
                 ++inner;
@@ -326,7 +338,7 @@ namespace yack
                 switch(num_running)
                 {
                     case 0:
-                        YACK_CHEM_PRINTLN(" <failure::all-blocked>");
+                        YACK_CHEM_PRINTLN("  <failure::all-blocked>");
                         return false;
 
                     case 1:
@@ -342,7 +354,7 @@ namespace yack
                                 goto CYCLE;
                             }
                         }
-                        YACK_CHEM_PRINTLN(" <failure::corrupted-1D>");
+                        YACK_CHEM_PRINTLN("  <failure::corrupted-1D>");
                         break;
 
                     default:
@@ -357,8 +369,8 @@ namespace yack
                 iOmega.assign(Omega0);
                 if(!LU->build(iOmega))
                 {
-                    YACK_CHEM_PRINTLN(" <singular local system>");
-                    goto CYCLE; // try another global step
+                    YACK_CHEM_PRINTLN("  <singular local system>");
+                    goto CYCLE; // try another global step ??
                 }
 
                 iota::load(xi,Gamma);
@@ -403,18 +415,42 @@ namespace yack
 
                     if(overshoot)
                     {
-                        maximum_dof = false;
+                        maximumAvailableDOF = false;
                         goto COMPUTE_EXTENT;
                     }
                 }
-                YACK_CHEM_PRINTLN("maximum_dof=" << yack_boolean(maximum_dof) );
+                YACK_CHEM_PRINTLN(vpfx << "    [maximumAvailableDOF]=" << yack_boolean(maximumAvailableDOF) );
+
+
+                if(!optimizeFullStep(G0))
+                {
+                    YACK_CHEM_PRINTLN(vpfx << "    [minimum hamiltonian]");
+                    YACK_CHEM_PRINTLN(vpfx << "    [maximumAvailableDOF]=" << yack_boolean(maximumAvailableDOF) );
+                    YACK_CHEM_PRINTLN(vpfx << "    [foundGlobalDecrease=" << yack_boolean(foundGlobalDecrease) << "]");
+                    YACK_CHEM_PRINTLN(vpfx << "    [foundTotalUnderflow=" << yack_boolean(foundTotalUnderflow) << "]");
+
+                    if(maximumAvailableDOF)
+                    {
+                        if(foundTotalUnderflow)
+                        {
+                            YACK_CHEM_PRINTLN("  <success:: numerical convergence>");
+                            return returnSuccessful(Corg,cycle);
+                        }
+                        else
+                        {
+                            (void) returnSuccessful(Corg,cycle);
+                            std::cerr << "CHECK!!" << std::endl;
+                            exit(1);
+                        }
+                    }
+                    else
+                    {
+                        // not  differentiable
+                        YACK_CHEM_PRINTLN(vpfx << "    |_still singular...");
+                    }
+                }
+                
             }
-
-            minimizeFullStep(G0);
-
-
-            if(cycle>=10)
-                exit(1);
 
 
             goto CYCLE;
