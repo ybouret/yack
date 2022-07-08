@@ -50,18 +50,8 @@ namespace yack
             // methods
             //__________________________________________________________________
 
-            //! solve with precomputed K
-            bool solve(writable<double> &C0) throw();
-
-            //! hamiltonian
-            double hamiltonian(const readable<double> &C) throw();
-
-            //! hamiltonian( Corg * (1-u) + Cend * u )
-            double operator()(const double u) throw();
-
-
             bool    normalize(writable<double> &C0) throw();
-            double  aggregate(writable<double> &C, const group &g) throw();
+
             
             //__________________________________________________________________
             //
@@ -116,14 +106,12 @@ namespace yack
             const lockable::scope eqsLock;
 
 
+            double  aggregate(writable<double> &C, const group &g) throw(); //!< aggregate a mixed combination
+            double  hamiltonian(const readable<double> &C)         throw(); //!< hamiltonian
+            double  operator()(const double u)                     throw(); //!< hamiltonian( Corg * (1-u) + Cend * u )
+
+            
             bool   returnSuccessful(writable<double> &C0, const unsigned cycle);
-            double studyEquilibrium(const equilibrium &eq, double &G0) throw();
-            double computeSinglesXi(const double G0) throw(); //!< return |Xi|
-            void   computeCouplesXi(const double G0) throw();
-            double upgradeSinglesXi() throw(); //!< update |Xi|
-            bool   happensUnderflow() throw();
-            void   betterMassAction(double &G0) throw();
-            double mixedHamiltonian(const group &g, writable<double> &C) throw();
             void   zapEquilibriumAt(const size_t ei) throw();
             double minimizeFullStep(const double G0) throw();
             size_t initializeOmega0() throw();
