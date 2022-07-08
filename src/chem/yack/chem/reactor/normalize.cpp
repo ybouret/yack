@@ -182,7 +182,8 @@ namespace yack
                 }
                 else {
                     //----------------------------------------------------------
-                    // optimize composition with secondary decrease
+                    // optimize composition with secondary decrease:
+                    // initialize first group containing best equilibrium
                     //----------------------------------------------------------
                     const equilibrium &eq   = *emin;
                     const group       *gOpt = look_up->find_first( eq ); assert(gOpt);
@@ -190,13 +191,17 @@ namespace yack
                     double             hOpt = aggregate(Copt,*gOpt);
                     if(verbose) std::cerr << "(#) G = " << std::setw(15) << hOpt  << " @" << *gOpt << std::endl;
 
+                    //----------------------------------------------------------
+                    //
+                    // look up in other groups containing equilibirium
+                    //
+                    //----------------------------------------------------------
                     for(const group   *gTmp = gOpt->next;gTmp;gTmp=gTmp->next)
                     {
                         if(!gTmp->contains(eq)) continue;
                         const double hTmp = aggregate(Ctry,*gTmp);
                         const bool   good = (hTmp<hOpt);
                         if(verbose) std::cerr << (good?"(+)":"(-)") << " G = " << std::setw(15) << hTmp  << " @" << *gTmp << std::endl;
-
                         if(good)
                         {
                             gOpt = gTmp;
@@ -205,7 +210,12 @@ namespace yack
                         }
                     }
 
-                    std::cerr << "Gopt  = " << std::setw(15) << hOpt << " @" << *gOpt << std::endl;
+                    //----------------------------------------------------------
+                    //
+                    // update current status
+                    //
+                    //----------------------------------------------------------
+                    if(verbose) std::cerr << "Gopt  = " << std::setw(15) << hOpt << " @" << *gOpt << " / G0=" << G0 << std::endl;
                     G0 = hOpt;
                     active.transfer(Corg,Copt);
 
@@ -234,14 +244,18 @@ namespace yack
                             Xmax = ax;
                         }
                     }
-                    singles(std::cerr << vpfx << "Xi_singles=",Xl,vpfx);
+                    if(verbose)
+                    {
+                        lib(std::cerr << "Copt=",Corg,"");
+                        singles(std::cerr << vpfx << "Xi_singles=",Xl,vpfx);
+                    }
                     if(Xmax<=0)
                     {
                         YACK_CHEM_PRINTLN(" <success:: |Xi| = 0 @move/>");
                         return returnSuccessful(C0,cycle);
                     }
-
                 }
+
                 YACK_CHEM_PRINTLN(vpfx << "[globallyDecreased=" << yack_boolean(globallyDecreased) << "]");
             }
 
