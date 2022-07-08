@@ -76,7 +76,11 @@ namespace yack
                 const real_t new_width = std::abs(x_max-x_min);
                 YACK_LOCATE(fn << "width: " << width << " -> " << new_width);
 
+                //--------------------------------------------------------------
+                //
                 // detect underflow => monotonic
+                //
+                //--------------------------------------------------------------
                 if( (new_width<=0) || (new_width>=width) )
                 {
                     YACK_LOCATE(fn << "[monotonic @" << x.c << "]");
