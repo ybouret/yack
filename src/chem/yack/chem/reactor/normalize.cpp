@@ -54,7 +54,41 @@ namespace yack
             return res;
         }
 
+        double  reactor:: buildHamiltonian(const equilibrium &eq) throw()
+        {
+            const group       *gOpt = look_up->find_first( eq ); assert(gOpt);
+            tableau           &Copt = Cend;
+            double             hOpt = mixedHamiltonian(Copt,*gOpt);
+            YACK_CHEM_PRINTLN("(#) G = " << std::setw(15) << hOpt  << " @" << *gOpt);
 
+            //----------------------------------------------------------
+            //
+            // look up in other groups containing equilibirium
+            //
+            //----------------------------------------------------------
+            for(const group   *gTmp = gOpt->next;gTmp;gTmp=gTmp->next)
+            {
+                if(!gTmp->contains(eq)) continue;
+                const double hTmp = mixedHamiltonian(Ctry,*gTmp);
+                const bool   good = (hTmp<hOpt);
+                YACK_CHEM_PRINTLN( (good?"(+)":"(-)") << " G = " << std::setw(15) << hTmp  << " @" << *gTmp );
+                if(good)
+                {
+                    gOpt = gTmp;
+                    hOpt = hTmp;
+                    active.transfer(Copt,Ctry);
+                }
+            }
+
+            //----------------------------------------------------------
+            //
+            // update current status
+            //
+            //----------------------------------------------------------
+            YACK_CHEM_PRINTLN("Gopt  = " << std::setw(15) << hOpt << " @" << *gOpt);
+            active.transfer(Corg,Copt);
+            return hOpt;
+        }
 
         
         bool    reactor:: normalize(writable<double> &C0) throw()
@@ -130,8 +164,9 @@ namespace yack
             }
 
 
-            bool globallyDecreased = true; // check if global dercreasing
+            bool foundGlobalDecrease = true; // check if global decreasing
             {
+                YACK_CHEM_MARKUP(vpfx, "reactor::normalize::globalDecrease");
                 double             Xmax = 0;
                 double             Gmin = G0;
                 const equilibrium *emax = NULL;
@@ -149,7 +184,7 @@ namespace yack
                     //----------------------------------------------------------
                     const equilibrium &eq = ***node;
                     const size_t       ei = *eq;
-                    const double       xx = (Xl[ei] = eq.solve1D(Kl[ei], Corg, Cend)); assert( eq.other_are_unchanged(Corg,Cend) );
+                    const double       xx = ( Xl[ei] = eq.solve1D(Kl[ei], Corg, Cend)); assert( eq.other_are_unchanged(Corg,Cend) );
                     const double       ax = fabs( xx );
                     if(ax>Xmax) {
                         Xmax =  ax;
@@ -164,8 +199,11 @@ namespace yack
                     optimize::run_for(*this,u,g,optimize::inside);
                     iota::load(Cl[ei],Ctry); assert( eq.other_are_unchanged(Cl[ei],Corg) );
 
-                    lattice.pad(std::cerr << " @{" << eq.name << "}",eq) << " = " << std::setw(15) << xx;
-                    std::cerr << " | G = " << std::setw(15) << g.b << " @u=" <<  std::setw(15) << u.b;
+                    if(verbose) {
+                        lattice.pad(std::cerr << " @{" << eq.name << "}",eq) << " = " << std::setw(15) << xx;
+                        std::cerr << " | G = " << std::setw(15) << g.b << " @u=" <<  std::setw(15) << u.b;
+                        std::cerr << std::endl;
+                    }
 
                     //----------------------------------------------------------
                     // update best global possibility
@@ -175,7 +213,6 @@ namespace yack
                         Gmin = g.b;
                         emin = &eq;
                     }
-                    std::cerr << std::endl;
                 }
 
                 //--------------------------------------------------------------
@@ -198,46 +235,13 @@ namespace yack
                 //--------------------------------------------------------------
                 YACK_CHEM_PRINTLN(" Gmin = " <<  std::setw(15) << Gmin << " @{" << (emin? emin->name() : "NIL") << "}" );
                 if(!emin) {
-                    globallyDecreased = false;
+                    foundGlobalDecrease = false;
                 }
                 else {
                     //----------------------------------------------------------
-                    // optimize composition with secondary decrease:
-                    // initialize first group containing best equilibrium
+                    // best value from *emin
                     //----------------------------------------------------------
-                    const equilibrium &eq   = *emin;
-                    const group       *gOpt = look_up->find_first( eq ); assert(gOpt);
-                    tableau           &Copt = Cend;
-                    double             hOpt = mixedHamiltonian(Copt,*gOpt);
-                    if(verbose) std::cerr << "(#) G = " << std::setw(15) << hOpt  << " @" << *gOpt << std::endl;
-
-                    //----------------------------------------------------------
-                    //
-                    // look up in other groups containing equilibirium
-                    //
-                    //----------------------------------------------------------
-                    for(const group   *gTmp = gOpt->next;gTmp;gTmp=gTmp->next)
-                    {
-                        if(!gTmp->contains(eq)) continue;
-                        const double hTmp = mixedHamiltonian(Ctry,*gTmp);
-                        const bool   good = (hTmp<hOpt);
-                        if(verbose) std::cerr << (good?"(+)":"(-)") << " G = " << std::setw(15) << hTmp  << " @" << *gTmp << std::endl;
-                        if(good)
-                        {
-                            gOpt = gTmp;
-                            hOpt = hTmp;
-                            active.transfer(Copt,Ctry);
-                        }
-                    }
-
-                    //----------------------------------------------------------
-                    //
-                    // update current status
-                    //
-                    //----------------------------------------------------------
-                    if(verbose) std::cerr << "Gopt  = " << std::setw(15) << hOpt << " @" << *gOpt << " / G0=" << G0 << std::endl;
-                    G0 = hOpt;
-                    active.transfer(Corg,Copt);
+                    G0 = buildHamiltonian(*emin);
 
 
                     //----------------------------------------------------------
@@ -257,13 +261,12 @@ namespace yack
                     {
                         const equilibrium &eq = ***node;
                         const size_t       ei = *eq;
-                        const double       xx = (Xend[ei] = eq.solve1D(Kl[ei], Corg, Cl[ei]));
+                        const double       xx = (Xend[ei] = eq.solve1D(K[ei],Corg,Ctry));
                         const double       ax = fabs( xx );
                         if(ax>Xmax)
-                        {
                             Xmax = ax;
-                        }
                     }
+
                     if(verbose)
                     {
                         lib(std::cerr << "Copt=",Corg,"");
@@ -276,8 +279,23 @@ namespace yack
                     }
                 }
 
-                YACK_CHEM_PRINTLN(vpfx << "[globallyDecreased=" << yack_boolean(globallyDecreased) << "]");
+                YACK_CHEM_PRINTLN(vpfx << "[foundGlobalDecrease=" << yack_boolean(foundGlobalDecrease) << "]");
             }
+
+            bool foundTotalUnderflow = true;
+            for(const enode *node=singles.head();node;node=node->next)
+            {
+                const equilibrium &eq = ***node;
+                const size_t       ei = *eq;
+                if( eq.changed(Corg,Xend[ei],Ctry) )
+                {
+                    foundTotalUnderflow = false;
+                    break;
+                }
+            }
+            YACK_CHEM_PRINTLN(vpfx << "[foundTotalUnderflow=" << yack_boolean(foundTotalUnderflow) << "]");
+
+            
 
             //------------------------------------------------------------------
             //

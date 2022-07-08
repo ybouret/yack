@@ -109,11 +109,12 @@ namespace yack
 
             double  hamiltonian(const readable<double> &C)                throw(); //!< hamiltonian
             double  mixedHamiltonian(writable<double> &C, const group &g) throw(); //!< aggregate a mixed combination
+            double  buildHamiltonian(const equilibrium &eq) throw(); //!< build best from eq
             bool    returnSuccessful(writable<double> &C0, const unsigned cycle);  //!< Corg -> C0, optional info
             void    zapEquilibriumAt(const size_t ei) throw();                     //!< de-activate
             double  minimizeFullStep(const double G0) throw();                     //!< numerical look up
             size_t  initializeOmega0() throw();                                    //!< full matrix setup
-
+            
         };
 
     }

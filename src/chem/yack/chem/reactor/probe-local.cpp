@@ -71,7 +71,6 @@ namespace yack
             }
 
             optimize::run_for(*this, u, g, optimize::inside);
-            std::cerr << "G: " << G0 << " --> " << g.b << std::endl;
             active.transfer(Corg,Ctry);
 
             if(verbose)
