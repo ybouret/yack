@@ -54,10 +54,7 @@ namespace yack
                 Cend[j] = max_of(Corg[j]+Cstp[j]*expand,0.0);
             }
 
-            if(verbose)
-            {
-                lib(std::cerr << vpfx << "Cend=",Cend,vpfx);
-            }
+
 
             triplet<double> u = { 0,  -1, 1 };
             triplet<double> g = { G0, -1, hamiltonian(Cend) };
@@ -76,6 +73,13 @@ namespace yack
             optimize::run_for(*this, u, g, optimize::inside);
             std::cerr << "G: " << G0 << " --> " << g.b << std::endl;
             active.transfer(Corg,Ctry);
+
+            if(verbose)
+            {
+                lib(std::cerr << vpfx << "Cfin=",Corg,vpfx);
+                std::cerr << "G: " << G0 << " --> " << g.b << std::endl;
+            }
+
             return g.b;
         }
         

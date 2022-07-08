@@ -16,6 +16,7 @@ namespace yack
         
         bool reactor:: solve(writable<double> &C0) throw()
         {
+#if 0
             //------------------------------------------------------------------
             //
             //
@@ -251,7 +252,7 @@ namespace yack
             
             
             
-            
+#endif
             return false;
         }
         
@@ -262,27 +263,7 @@ namespace yack
     
         
        
-        
-        bool reactor:: returnSuccessful(writable<double> &C0, const unsigned int cycle)
-        {
-            active.transfer(C0,Corg);
-            if(verbose)
-            {
-                if(cycle>0)
-                {
-                     YACK_CHEM_PRINTLN("  ---------------- leave #" << cycle << " ----------------");
-                }
-                for(const enode *node=singles.head();node;node=node->next)
-                {
-                    const equilibrium &eq = ***node;
-                    singles.pad(std::cerr << eq.name,eq);
-                    std::cerr << " | ma=" << std::setw(15) << eq.mass_action(K[*eq],C0);
-                    std::cerr << " | xi=" << std::setw(15) << eq.solve1D(K[*eq],C0,Ctry);
-                    std::cerr << std::endl;
-                }
-            }
-            return true;
-        }
+      
         
         
     }
