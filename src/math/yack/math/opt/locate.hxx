@@ -42,7 +42,7 @@ namespace yack
             //------------------------------------------------------------------
             ++cycle;                                              assert(f.c<=f.a);
             f.b = F( x.b = clamp(x_min,half*(x.a+x.c),x_max) );   assert(x.is_ordered());
-            YACK_LOCATE(fn<<"[cycle " << std::setw(3) << cycle << "] " << f << " @" << x << "|f|=" << f.amplitude() );
+            YACK_LOCATE(fn<<"[cycle " << std::setw(3) << cycle << "] " << f << " @" << x);
 
             if(f.b<f.c)
             {
@@ -75,7 +75,9 @@ namespace yack
                 x_max = x.c; if(x_max<x_min) cswap(x_min,x_max);
                 const real_t new_width = std::abs(x_max-x_min);
                 YACK_LOCATE(fn << "width: " << width << " -> " << new_width);
-                if(new_width<=0 || new_width>=width)
+
+                // detect underflow => monotonic
+                if( (new_width<=0) || (new_width>=width) )
                 {
                     YACK_LOCATE(fn << "[monotonic @" << x.c << "]");
                     f.a = f.b = f.c;
