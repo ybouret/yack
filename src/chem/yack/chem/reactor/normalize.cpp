@@ -38,7 +38,7 @@ namespace yack
             return true;
         }
         
-        double  reactor:: aggregate(writable<double> &C, const group &g) throw()
+        double  reactor:: mixedHamiltonian(writable<double> &C, const group &g) throw()
         {
             assert(g.is_valid());
             assert(g.is_ortho());
@@ -208,7 +208,7 @@ namespace yack
                     const equilibrium &eq   = *emin;
                     const group       *gOpt = look_up->find_first( eq ); assert(gOpt);
                     tableau           &Copt = Cend;
-                    double             hOpt = aggregate(Copt,*gOpt);
+                    double             hOpt = mixedHamiltonian(Copt,*gOpt);
                     if(verbose) std::cerr << "(#) G = " << std::setw(15) << hOpt  << " @" << *gOpt << std::endl;
 
                     //----------------------------------------------------------
@@ -219,7 +219,7 @@ namespace yack
                     for(const group   *gTmp = gOpt->next;gTmp;gTmp=gTmp->next)
                     {
                         if(!gTmp->contains(eq)) continue;
-                        const double hTmp = aggregate(Ctry,*gTmp);
+                        const double hTmp = mixedHamiltonian(Ctry,*gTmp);
                         const bool   good = (hTmp<hOpt);
                         if(verbose) std::cerr << (good?"(+)":"(-)") << " G = " << std::setw(15) << hTmp  << " @" << *gTmp << std::endl;
                         if(good)
