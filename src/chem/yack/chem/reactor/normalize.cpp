@@ -126,6 +126,7 @@ namespace yack
             YACK_CHEM_MARKUP(vpfx, "reactor::normalize");
             if(verbose) lib(std::cerr<<vpfx<<"Cini=",C0,vpfx);
 
+            ios::ocstream::overwrite("g.dat");
 
             //------------------------------------------------------------------
             //
@@ -184,6 +185,7 @@ namespace yack
                 return returnSuccessful(C0,cycle);
             }
 
+            ios::ocstream::echo("g.dat","%u %g\n",cycle, log10(G0) );
 
             bool foundGlobalDecrease = true; // check if global decreasing
             {
@@ -255,10 +257,12 @@ namespace yack
                 //
                 //--------------------------------------------------------------
                 YACK_CHEM_PRINTLN(" Gmin = " <<  std::setw(15) << Gmin << " @{" << (emin? emin->name() : "NIL") << "}" );
-                if(!emin) {
+                if(!emin)
+                {
                     foundGlobalDecrease = false;
                 }
-                else {
+                else
+                {
                     //----------------------------------------------------------
                     // best value from *emin
                     //----------------------------------------------------------
@@ -274,11 +278,12 @@ namespace yack
                         return returnSuccessful(C0,cycle);
                     }
 
+                    ios::ocstream::echo("g.dat","%u.5 %g\n",cycle, log10(G0) );
+
+
                     //----------------------------------------------------------
                     // recomputing Xmax and Xi for singles
                     //----------------------------------------------------------
-
-
                     Xmax = 0;
                     for(const enode *node=singles.head();node;node=node->next)
                     {
@@ -288,8 +293,6 @@ namespace yack
                         const double       ax = fabs( xx );
                         if(ax>Xmax)
                             Xmax = ax;
-
-
                     }
 
                     if(verbose)
@@ -297,6 +300,7 @@ namespace yack
                         lib(std::cerr << "Copt=",Corg,"");
                         singles(std::cerr << vpfx << "Xi_singles=",Xl,vpfx);
                     }
+
                     if(Xmax<=0)
                     {
                         YACK_CHEM_PRINTLN("  <success:: |Xi| = 0 @move/>");
@@ -306,30 +310,8 @@ namespace yack
 
             }
 
-
-            std::cerr << std::endl << "\t(*) Checking Status" << std::endl;
-            for(const enode *node=singles.head();node;node=node->next)
-            {
-                const equilibrium &eq = ***node;
-                const size_t       ei = *eq;
-                const double       xx = Xl[ei];
-
-                singles.pad(std::cerr << eq.name,eq) << " : xi=" << std::setw(15) << xx;
-                std::cerr << " | changes_phase_space = " << std::setw(6) << yack_boolean( eq.extent_changes_phase_space(Corg,xx,Ctry));
-                std::cerr << " | changes_mass_action = " << std::setw(6) << yack_boolean( eq.extent_changes_mass_action(K[ei],Corg,xx,Ctry));
-
-                std::cerr << std::endl;
-
-            }
-
-
-
-
-
-            const bool foundTotalUnderflow = acceptableExtent();
-
             YACK_CHEM_PRINTLN(vpfx << "    [foundGlobalDecrease=" << yack_boolean(foundGlobalDecrease) << "]");
-            YACK_CHEM_PRINTLN(vpfx << "    [foundTotalUnderflow=" << yack_boolean(foundTotalUnderflow) << "]");
+
 
 
             
@@ -380,7 +362,7 @@ namespace yack
                             }
                         }
                         YACK_CHEM_PRINTLN("  <failure::corrupted-1D>");
-                        break;
+                        return false;
 
                     default:
                         break;
@@ -446,44 +428,26 @@ namespace yack
                 }
                 YACK_CHEM_PRINTLN(vpfx << "    [maximumAvailableDOF]=" << yack_boolean(maximumAvailableDOF) );
 
-
                 if(!optimizeFullStep(G0))
                 {
-                    YACK_CHEM_PRINTLN(vpfx << "    [minimum hamiltonian]");
-                    YACK_CHEM_PRINTLN(vpfx << "    [maximumAvailableDOF]=" << yack_boolean(maximumAvailableDOF) );
-                    YACK_CHEM_PRINTLN(vpfx << "    [foundGlobalDecrease=" << yack_boolean(foundGlobalDecrease) << "]");
-                    YACK_CHEM_PRINTLN(vpfx << "    [foundTotalUnderflow=" << yack_boolean(foundTotalUnderflow) << "]");
+                    YACK_CHEM_PRINTLN(vpfx << "    |_[minimum hamiltonian]");
+                    YACK_CHEM_PRINTLN(vpfx << "    |_[maximumAvailableDOF]=" << yack_boolean(maximumAvailableDOF) );
+                    YACK_CHEM_PRINTLN(vpfx << "    |_[foundGlobalDecrease=" << yack_boolean(foundGlobalDecrease) << "]");
 
-                    if(maximumAvailableDOF)
-                    {
-                        if(foundTotalUnderflow)
-                        {
-                            YACK_CHEM_PRINTLN("  <success:: numerical convergence>");
-                            return returnSuccessful(Corg,cycle);
-                        }
-                        else
-                        {
-                            (void) returnSuccessful(Corg,cycle);
-                            std::cerr << "CHECK!!" << std::endl;
-                            exit(1);
-                        }
-                    }
-                    else
-                    {
-                        // not  differentiable
-                        YACK_CHEM_PRINTLN(vpfx << "    |_still singular...");
-                    }
+                    (void) returnSuccessful(C0,cycle);55555
+                    
+                    exit(1);
+
+
                 }
-                
+                else
+                {
+                    goto CYCLE;
+                }
+
+
             }
 
-
-            goto CYCLE;
-
-            
-
-
-            return false;
         }
     }
 

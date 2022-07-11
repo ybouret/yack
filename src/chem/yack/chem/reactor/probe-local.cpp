@@ -76,7 +76,7 @@ namespace yack
             if(verbose)
             {
                 lib(std::cerr << vpfx << "Cfin=",Corg,vpfx);
-                std::cerr << "G: " << G0 << " --> " << g.b << std::endl;
+                std::cerr << vpfx << "G: " << G0 << " --> " << g.b << std::endl;
             }
 
             if(g.b>=G0)
