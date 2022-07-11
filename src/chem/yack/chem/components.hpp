@@ -122,7 +122,7 @@ namespace yack
             bool extent_changes_phase_space(const readable<double> &C, const double xi, writable<double> &Ctry) const throw();
 
             //! check if mass action is changed by xi, using Ctry as workspace
-            bool extent_changes_mass_action(const readable<double> &C, const double xi, writable<double> &Ctry) const throw();
+            bool extent_changes_mass_action(const double K, const readable<double> &C, const double xi, writable<double> &Ctry) const throw();
 
 
             //! find private limits
@@ -165,6 +165,8 @@ namespace yack
 
             //! check other components match
             bool other_are_unchanged(const readable<double> &lhs, const readable<double> &rhs) const throw();
+
+            //! check species index is in the components
             bool found_species_index(const size_t i) const throw();
 
             //__________________________________________________________________

@@ -277,6 +277,8 @@ namespace yack
                     //----------------------------------------------------------
                     // recomputing Xmax and Xi for singles
                     //----------------------------------------------------------
+
+
                     Xmax = 0;
                     for(const enode *node=singles.head();node;node=node->next)
                     {
@@ -286,6 +288,8 @@ namespace yack
                         const double       ax = fabs( xx );
                         if(ax>Xmax)
                             Xmax = ax;
+
+
                     }
 
                     if(verbose)
@@ -301,6 +305,27 @@ namespace yack
                 }
 
             }
+
+
+            std::cerr << std::endl << "\t(*) Checking Status" << std::endl;
+            for(const enode *node=singles.head();node;node=node->next)
+            {
+                const equilibrium &eq = ***node;
+                const size_t       ei = *eq;
+                const double       xx = Xl[ei];
+
+                singles.pad(std::cerr << eq.name,eq) << " : xi=" << std::setw(15) << xx;
+                std::cerr << " | changes_phase_space = " << std::setw(6) << yack_boolean( eq.extent_changes_phase_space(Corg,xx,Ctry));
+                std::cerr << " | changes_mass_action = " << std::setw(6) << yack_boolean( eq.extent_changes_mass_action(K[ei],Corg,xx,Ctry));
+
+                std::cerr << std::endl;
+
+            }
+
+
+
+
+
             const bool foundTotalUnderflow = acceptableExtent();
 
             YACK_CHEM_PRINTLN(vpfx << "    [foundGlobalDecrease=" << yack_boolean(foundGlobalDecrease) << "]");
@@ -408,7 +433,7 @@ namespace yack
                             {
                                 YACK_CHEM_PRINT("[accept]");
                             }
-                            YACK_CHEM_PRINT( " " << std::setw(15) << xx << "|" << lm) ;
+                            YACK_CHEM_PRINT( " " << std::setw(15) << xx << " | " << lm) ;
                         }
                         if(verbose) std::cerr << std::endl;
                     }

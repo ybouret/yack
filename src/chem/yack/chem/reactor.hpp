@@ -50,6 +50,7 @@ namespace yack
             // methods
             //__________________________________________________________________
 
+            //! best effort simultaneous equilibria
             bool    normalize(writable<double> &C0) throw();
 
             double  operator()(const double u) throw(); //!< hamiltonian( Corg * (1-u) + Cend * u )

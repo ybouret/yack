@@ -198,6 +198,21 @@ namespace yack
             return false;
         }
 
+        bool components:: extent_changes_mass_action(const double K, const readable<double> &C, const double xi, writable<double> &Ctry) const throw()
+        {
+            const double maOrg = mass_action(K,C);
+            for(const cnode *node=head();node;node=node->next)
+            {
+                const size_t j = *****node;
+                Ctry[j] = C[j];
+            }
+
+            move(Ctry,xi);
+            const double maTry = mass_action(K,Ctry);
+
+            return fabs(maOrg-maTry)>0;
+        }
+
         void components:: hessian(matrix<double> &H, const double K, const readable<double> &C, writable<double> &arr) const throw()
         {
             H.ld(0);

@@ -51,7 +51,8 @@ namespace yack
 
             //! check that a couple of equilibria is contain in a group
             bool contains(const equilibrium &, const equilibrium &) const throw();
-            
+
+            //! find first group (a.k.a smallest group) containing equilibrium
             const group *find_first(const equilibrium &eq) const throw();
             
             //__________________________________________________________________
