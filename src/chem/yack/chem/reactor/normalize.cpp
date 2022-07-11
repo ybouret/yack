@@ -434,7 +434,7 @@ namespace yack
                     YACK_CHEM_PRINTLN(vpfx << "    |_[maximumAvailableDOF]=" << yack_boolean(maximumAvailableDOF) );
                     YACK_CHEM_PRINTLN(vpfx << "    |_[foundGlobalDecrease=" << yack_boolean(foundGlobalDecrease) << "]");
 
-                    (void) returnSuccessful(C0,cycle);55555
+                    (void) returnSuccessful(C0,cycle);
                     
                     exit(1);
 
