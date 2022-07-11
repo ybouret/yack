@@ -111,6 +111,7 @@ namespace yack
 #if                     defined(YACK_BSD)
                         const int res = pthread_mutex_init(**m,&attr);
                         if( res != 0 ) throw libc::exception(res,"pthread_mutex_init");
+                        
 #endif
                         
 #if                     defined(YACK_WIN)
@@ -129,7 +130,7 @@ namespace yack
                 //______________________________________________________________
                 inline void delete_mutex(mutex *m) throw()
                 {
-                    assert(m);
+                    assert(NULL!=m);
 #if                 defined(YACK_BSD)
                     const int res = pthread_mutex_destroy(**m);
                     if(res!=0) system_error::critical_bsd(res,"pthread_mutex_destroy");

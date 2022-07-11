@@ -6,6 +6,7 @@ namespace yack
         {
 
             struct mutex {
+                
                 yack_mutex impl;
 
                 //! syntax helper

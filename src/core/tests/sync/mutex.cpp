@@ -22,7 +22,7 @@ YACK_UTEST(sync_mutex)
         YACK_GIANT_LOCK();
     }
     std::cerr << "    ==== leave " << program << std::endl;
-
+    
 
 }
 YACK_UDONE()
