@@ -179,19 +179,22 @@ namespace yack
         }
 
 
-        bool components:: changed(const readable<double> &C, const double xi, writable<double> &Ctry) const throw()
+        bool components:: extent_changes_phase_space(const readable<double> &C, const double xi, writable<double> &Ctry) const throw()
         {
             for(const cnode *node=head();node;node=node->next)
             {
                 const size_t j = *****node;
                 Ctry[j] = C[j];
             }
+
             move(Ctry,xi);
+
             for(const cnode *node=head();node;node=node->next)
             {
                 const size_t j = *****node;
-                if(fabs(Ctry[j]-C[j]) > 0) return true;
+                if( fabs(Ctry[j]-C[j]) > 0) return true;
             }
+
             return false;
         }
 

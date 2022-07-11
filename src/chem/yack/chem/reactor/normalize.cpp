@@ -103,7 +103,7 @@ namespace yack
             {
                 const equilibrium &eq = ***node;
                 const size_t       ei = *eq;
-                if( eq.changed(Corg,Xl[ei],Ctry) )
+                if( eq.extent_changes_phase_space(Corg,Xl[ei],Ctry) )
                 {
                     foundTotalUnderflow = false;
                     break;

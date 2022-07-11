@@ -115,8 +115,14 @@ namespace yack
             //! move to a given extent
             void move(writable<double> &C, const double xi) const throw();
 
-            //! check if changed by xi, using Ctry as workspace
-            bool changed(const readable<double> &C, const double xi, writable<double> &Ctry) const throw();
+
+
+
+            //! check if C is changed by xi, using Ctry as workspace
+            bool extent_changes_phase_space(const readable<double> &C, const double xi, writable<double> &Ctry) const throw();
+
+            //! check if mass action is changed by xi, using Ctry as workspace
+            bool extent_changes_mass_action(const readable<double> &C, const double xi, writable<double> &Ctry) const throw();
 
 
             //! find private limits
