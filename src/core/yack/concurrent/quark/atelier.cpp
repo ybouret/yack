@@ -175,7 +175,7 @@ namespace yack
             // singleton data
             //__________________________________________________________________
             static bool             atelier_initialize = true;               //!< if initialize is requested
-            static void *           atelier_data[ YACK_WORDS_FOR(atelier) ]; //!<
+            static void *           atelier_data[ YACK_WORDS_FOR(atelier) ]; //!< local memory
 
             //__________________________________________________________________
             //
