@@ -41,59 +41,10 @@ namespace yack
             }
             return true;
         }
-        
-        double  reactor:: mixedHamiltonian(writable<double> &C, const group &g) throw()
-        {
-            assert(g.is_valid());
-            assert(g.is_ortho());
-            assert(C.size()==Corg.size());
-            iota::save(C,Corg);
-            for(const gnode *ep=g.head;ep;ep=ep->next)
-            {
-                const equilibrium      &eq = **ep;
-                const readable<double> &Ci = Cl[*eq]; assert(eq.other_are_unchanged(Ci,Corg));
-                eq.transfer(C,Ci);
-            }
-            const double res = hamiltonian(C);
-            return res;
-        }
 
-        double  reactor:: buildHamiltonian(const equilibrium &eq) throw()
-        {
-            const group       *gOpt = look_up->find_first( eq ); assert(gOpt);
-            tableau           &Copt = Cend;
-            double             hOpt = mixedHamiltonian(Copt,*gOpt);
-            YACK_CHEM_PRINTLN("(#) G = " << std::setw(15) << hOpt  << " @" << *gOpt);
-
-            //----------------------------------------------------------
-            //
-            // look up in other groups containing equilibirium
-            //
-            //----------------------------------------------------------
-            for(const group   *gTmp = gOpt->next;gTmp;gTmp=gTmp->next)
-            {
-                if(!gTmp->contains(eq)) continue;
-                const double hTmp = mixedHamiltonian(Ctry,*gTmp);
-                const bool   good = (hTmp<hOpt);
-                YACK_CHEM_PRINTLN( (good?"(+)":"(-)") << " G = " << std::setw(15) << hTmp  << " @" << *gTmp );
-                if(good)
-                {
-                    gOpt = gTmp;
-                    hOpt = hTmp;
-                    active.transfer(Copt,Ctry);
-                }
-            }
-
-            //----------------------------------------------------------
-            //
-            // update current status
-            //
-            //----------------------------------------------------------
-            YACK_CHEM_PRINTLN("Gopt  = " << std::setw(15) << hOpt << " @" << *gOpt);
-            active.transfer(Corg,Copt);
-            return hOpt;
-        }
-
+#if 0
+       
+# endif
 
         bool reactor:: acceptableExtent() const throw()
         {
@@ -111,7 +62,8 @@ namespace yack
             }
             return foundTotalUnderflow;
         }
-        
+
+#if 0
         bool    reactor:: normalize(writable<double> &C0) throw()
         {
 
@@ -449,6 +401,9 @@ namespace yack
             }
 
         }
+
+#endif
+
     }
 
 

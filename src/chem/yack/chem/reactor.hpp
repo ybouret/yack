@@ -53,6 +53,8 @@ namespace yack
             //! best effort simultaneous equilibria
             bool    normalize(writable<double> &C0) throw();
 
+            bool    steady(writable<double> &C0) throw();
+
             double  operator()(const double u) throw(); //!< hamiltonian( Corg * (1-u) + Cend * u )
 
             //__________________________________________________________________
@@ -72,6 +74,7 @@ namespace yack
             const imatrix           Nu;      //!< [NxM] topology matrix
             imatrix                 NuA;     //!< [NxM] Active Topology
             rmatrix                 Psi;     //!< [NxM] jacobian
+            rmatrix                 Phi;     //!< [NxM] steady jacobian
             rmatrix                 Omega0;  //!< [NxN] system matrix
             rmatrix                 iOmega;  //!< [NxN] decomposed Omega0
 
@@ -82,10 +85,11 @@ namespace yack
             tableaux ltab; //!< for [L]
 
         public:
-            tableau &K;       //!< [N]
-            tableau &Xtry;    //!< [N]
+            tableau &K;       //!< [N] constants for singles
+            tableau &Xtry;    //!< [N] trial values
             tableau &Gamma;   //!< [N]
             tableau &xi;      //!< [N]
+            tableau &sigma;   //!< [N] - <Psi_i|Nu_i>
             booltab blocked;  //!< [N]
 
             tableau &Corg; //!< [M]
@@ -95,18 +99,20 @@ namespace yack
 
             vector<double> ratio; //!< limiting ratio
 
-            tableau &Kl; //!< [L] all constants of lattice
-            tableau &Xl; //!< [L] all Xi of lattice
-            rmatrix  Cl; //!< [LxM] all equilibria of lattice
-
+            tableau &Kl;  //!< [L] all constants of lattice
+            tableau &Xl;  //!< [L] all Xi of lattice
+            rmatrix  Cl;  //!< [LxM] all equilibria of lattice
 
         private:
             YACK_DISABLE_COPY_AND_ASSIGN(reactor);
             const lockable::scope libLock;
             const lockable::scope eqsLock;
 
+            double  Hamiltonian(const readable<double> &C) throw();
+            double  Htry(const double G0) throw();
 
-            double  hamiltonian(const readable<double> &C)                throw(); //!< hamiltonian
+
+            //double  hamiltonian(const readable<double> &C)                throw(); //!< hamiltonian
             double  mixedHamiltonian(writable<double> &C, const group &g) throw(); //!< aggregate a mixed combination
             double  buildHamiltonian(const equilibrium &eq) throw(); //!< build best from eq
             bool    returnSuccessful(writable<double> &C0, const unsigned cycle);  //!< Corg -> C0, optional info

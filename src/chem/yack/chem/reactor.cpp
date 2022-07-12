@@ -48,6 +48,7 @@ namespace yack
         Xtry( ntab.next() ),
         Gamma( ntab.next() ),
         xi( ntab.next() ),
+        sigma( ntab.next() ),
         blocked( ntab.next(), transmogrify ),
 
         Corg( mtab.next() ),

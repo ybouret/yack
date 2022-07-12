@@ -13,6 +13,7 @@ namespace yack
 
     namespace chemical
     {
+#if 0
         bool reactor:: optimizeFullStep(double &G0) throw()
         {
 
@@ -90,6 +91,7 @@ namespace yack
                 return true;
             }
         }
+#endif
         
     }
 

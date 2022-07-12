@@ -8,6 +8,7 @@ namespace yack
 
     namespace chemical
     {
+#if 0
         double reactor:: hamiltonian(const readable<double> &C) throw()
         {
             for(const enode *node=singles.head();node;node=node->next)
@@ -18,7 +19,8 @@ namespace yack
             }
             return sorted::sum(Xtry,sorted::by_value);
         }
-
+#endif
+        
         double reactor:: operator()(const double u) throw()
         {
             const double v = 1.0 - u;
@@ -30,7 +32,7 @@ namespace yack
                 if(Cmin>=Cmax) cswap(Cmin,Cmax);
                 Ctry[j] = clamp(Cmin,v * Corg[j] + u * Cend[j],Cmax);
             }
-            return hamiltonian(Ctry);
+            return Hamiltonian(Ctry);
         }
     }
 }
