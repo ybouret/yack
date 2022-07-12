@@ -13,7 +13,6 @@ namespace yack
 
     namespace chemical
     {
-#if 0
         bool reactor:: optimizeFullStep(double &G0) throw()
         {
 
@@ -58,7 +57,7 @@ namespace yack
 
 
             triplet<double> u = { 0,  -1, 1 };
-            triplet<double> g = { G0, -1, hamiltonian(Cend) };
+            triplet<double> g = { G0, -1, Hamiltonian(Cend) };
 
             if(false)
             {
@@ -91,8 +90,7 @@ namespace yack
                 return true;
             }
         }
-#endif
-        
+
     }
 
 }

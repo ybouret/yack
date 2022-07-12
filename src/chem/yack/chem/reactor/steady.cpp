@@ -27,14 +27,13 @@ namespace yack
                 if(blocked[ei]) continue;
 
                 assert(sigma[ei]>0);
-                //ratio.push_back_fast( squared(eq.mass_action(K[ei],C)/sigma[ei] ) );
-                ratio.push_back_fast( fabs(eq.mass_action(K[ei],C)/sigma[ei] ) );
-
+                //ratio.push_back_fast( fabs(eq.mass_action(K[ei],C)/sigma[ei] ) );
+                ratio.push_back_fast( squared(eq.mass_action(K[ei],C)/sigma[ei] ) );
             }
 
             assert(ratio.size()>0);
-            return  (sorted::sum(ratio,sorted::by_value));
-            //return sqrt(sorted::sum(ratio,sorted::by_value)/ratio.size());
+            return  sqrt(sorted::sum(ratio,sorted::by_value)/ratio.size());
+
         }
 
         double reactor:: Htry(const double G0) throw()
@@ -147,7 +146,13 @@ namespace yack
             unsigned cycle = 0;
         CYCLE:
             ++cycle;
+            //------------------------------------------------------------------
+            //
+            //
             // initialize singles
+            //
+            //
+            //------------------------------------------------------------------
             double             Xmax = 0;
             const equilibrium *emax = NULL;
             size_t             nrun = 0;
@@ -174,6 +179,7 @@ namespace yack
                 {
                     sigma[ei]   = 0.0;
                     blocked[ei] = true;
+                    Xl[ei]      = 0.0;
                 }
                 else
                 {
@@ -183,23 +189,35 @@ namespace yack
                 }
             }
 
-            singles(std::cerr << vpfx << "Xi=",Xl,vpfx);
-            std::cerr << vpfx << "|Xmax|=" << Xmax;
+            //------------------------------------------------------------------
+            //
+            //
+            // check single status
+            //
+            //
+            //------------------------------------------------------------------
+            if(verbose) singles(std::cerr << vpfx << "Xi=",Xl,vpfx);
             if(emax)
             {
                 assert(Xmax>0);
-                std::cerr << " @" << emax->name;
+                YACK_CHEM_PRINTLN(vpfx << "|Xmax|=" << Xmax << " @{" << emax->name << "}");
             }
-            std::cerr << std::endl;
-            singles(std::cerr << vpfx << "sigma=",sigma,vpfx);
-
-            if(Xmax<=0)
+            else
             {
+                assert(Xmax<=0);
                 YACK_CHEM_PRINTLN("  <success:: |Xi| = 0/>");
                 return returnSuccessful(C0,cycle);
             }
 
 
+
+            //------------------------------------------------------------------
+            //
+            //
+            // check running status
+            //
+            //
+            //------------------------------------------------------------------
             switch(nrun)
             {
                 case 0:
@@ -221,6 +239,13 @@ namespace yack
                     return false;
             }
 
+            //------------------------------------------------------------------
+            //
+            //
+            // compute initial global hamiltonian
+            //
+            //
+            //------------------------------------------------------------------
             double G0 = Hamiltonian(Corg);
             if(G0<=0)
             {
@@ -234,7 +259,11 @@ namespace yack
             double             Gmin = G0;
             const equilibrium *emin = NULL;
 
-            // minimize singles
+            //------------------------------------------------------------------
+            //
+            // minimize singles using precomputed Cl[] = Ceq
+            //
+            //------------------------------------------------------------------
             for(const enode *node=singles.head();node;node=node->next)
             {
                 const equilibrium &eq  = ***node;
@@ -249,16 +278,20 @@ namespace yack
                 }
                 iota::load(Ci,Ctry);
 
-                lattice.pad(std::cerr << vpfx << "@" << eq.name,eq) << " : " << std::setw(15) << Gtry << std::endl;
+                lattice.pad(std::cerr << vpfx << "@{" << eq.name << "}",eq) << " : " << std::setw(15) << Gtry << std::endl;
 
             }
 
+            //------------------------------------------------------------------
+            //
             // minimize couples
+            //
+            //------------------------------------------------------------------
             for(const enode *node=couples.head();node;node=node->next)
             {
                 const equilibrium &eq  = ***node;
                 const size_t       ei  = *eq;
-                eq.solve1D(Kl[ei],Corg,Cend);
+                (void)eq.solve1D(Kl[ei],Corg,Cend);
                 const double Gtry = Htry(G0);
                 if(Gtry<Gmin)
                 {
@@ -266,7 +299,7 @@ namespace yack
                     emin = &eq;
                 }
                 iota::load(Cl[ei],Ctry);
-                lattice.pad(std::cerr << vpfx << "@" << eq.name,eq) << " : " << std::setw(15) << Gtry << std::endl;
+                lattice.pad(std::cerr << vpfx << "@{" << eq.name << "}",eq) << " : " << std::setw(15) << Gtry << std::endl;
             }
 
 
@@ -276,10 +309,10 @@ namespace yack
                 std::cerr << "Gmin=" << Gmin << " @" << emin->name << std::endl;
                 std::cerr << "Hmin=" << Hamiltonian(Cl[**emin]) << std::endl;
                 assert(Gmin<G0);
-                const double G1 = buildHamiltonian(*emin);
-                assert(G1<=Gmin);
+                const double G1    = buildHamiltonian(*emin); assert(G1<=Gmin);
+                const double Delta = fabs(G0-G1);
+                std::cerr << "Delta=" << Delta << std::endl;
                 G0 = G1;
-                std::cerr << "DELTA=" << G0-G1 << std::endl;
                 lib(std::cerr << vpfx << "Cnew=",Corg,vpfx);
 
                 for(const enode *node=singles.head();node;node=node->next)
@@ -302,13 +335,21 @@ namespace yack
                     return returnSuccessful(C0,cycle);
                 }
 
-
                 ios::ocstream::echo("g.dat", "%u.5 %.15g\n",cycle,log10(G0));
 
-                goto CYCLE;
+#if 0
+                static const double gtol = sqrt( numeric<double>::epsilon );
+                if( Delta <= gtol * G0 )
+                {
+                    std::cerr << "Minimum Delta!!" << std::endl;
+                }
+                else
+                {
+                    goto CYCLE;
+                }
+#endif
 
-
-
+#if 0
                 // update singles
                 Xmax = 0;
                 nrun = 0;
@@ -342,16 +383,154 @@ namespace yack
                     }
                 }
                 singles(std::cerr << vpfx << "sigma=",sigma,vpfx);
+#endif
 
+                // recompute scaling of the best location
+                for(const enode *node=singles.head();node;node=node->next)
+                {
+                    const equilibrium &eq  = ***node;
+                    const size_t       ei  = *eq;
+                    const double       Ki  = Kl[ei];
+                    writable<double>  &Ci  = Cl[ei];
+                    Xl[ei] = eq.solve1D(Ki,Corg,Ci);
+                }
 
             }
             else
             {
-                exit(1);
+                std::cerr << "No Better Than " << G0 << std::endl;
             }
 
+            //------------------------------------------------------------------
+            //
+            //
+            // Local Step
+            //
+            //
+            //------------------------------------------------------------------
+            {
+                //--------------------------------------------------------------
+                //
+                // initialize maximum system
+                //
+                //--------------------------------------------------------------
+                YACK_CHEM_MARKUP(vpfx, "reactor::computeExtent");
+                bool      maximumAvailableDOF = true;
+                size_t    num_running         = initializeOmega0();
+                unsigned  inner               = 0;
+
+            COMPUTE_EXTENT:
+                ++inner;
+                YACK_CHEM_PRINTLN(vpfx << " -------- extent " << cycle << "." << inner << " --------");
+                //--------------------------------------------------------------
+                //
+                // process cases
+                //
+                //--------------------------------------------------------------
+                switch(num_running)
+                {
+                    case 0:
+                        YACK_CHEM_PRINTLN("  <failure::all-blocked>");
+                        return false;
+
+                    case 1:
+                        for(const enode *node=singles.head();node;node=node->next)
+                        {
+                            const equilibrium &eq = ***node;
+                            const size_t       ei = *eq;
+                            if(!blocked[ei])
+                            {
+                                (void) eq.solve1D(K[ei],Corg,Ctry);
+                                active.transfer(Corg,Ctry);
+                                G0 = Hamiltonian(Corg);
+                                goto CYCLE;
+                            }
+                        }
+                        YACK_CHEM_PRINTLN("  <failure::corrupted-1D>");
+                        return false;
+
+                    default:
+                        break;
+                }
+
+                //--------------------------------------------------------------
+                //
+                // compute extent
+                //
+                //--------------------------------------------------------------
+                iOmega.assign(Omega0);
+                if(!LU->build(iOmega))
+                {
+                    YACK_CHEM_PRINTLN("  <singular local system>");
+                    goto CYCLE; // try another global step ??
+                }
+
+                iota::load(xi,Gamma);
+                LU->solve(iOmega,xi);
+
+                //--------------------------------------------------------------
+                //
+                // validate primary constraints
+                //
+                //--------------------------------------------------------------
+                {
+                    bool overshoot = false;
+                    for(const enode *node=singles.head();node;node=node->next)
+                    {
+                        const equilibrium &eq = ***node;
+                        const size_t       ei = *eq;
+                        const double       xx = xi[ei];
+
+                        if(verbose) singles.pad(std::cerr << "@{" << eq.name << "}",eq) << " : ";
+                        if(blocked[ei])
+                        {
+                            if(verbose) std::cerr << "[blocked]";
+                        }
+                        else
+                        {
+                            const limits &lm = eq.primary_limits(Corg,lib.width);
+                            if( lm.should_reduce(xx) )
+                            {
+                                overshoot = true;
+                                --num_running;
+                                YACK_CHEM_PRINT("[REJECT]");
+                                zapEquilibriumAt(ei);
+                            }
+                            else
+                            {
+                                YACK_CHEM_PRINT("[accept]");
+                            }
+                            YACK_CHEM_PRINT( " " << std::setw(15) << xx << " | " << lm) ;
+                        }
+                        if(verbose) std::cerr << std::endl;
+                    }
+
+                    if(overshoot)
+                    {
+                        maximumAvailableDOF = false;
+                        goto COMPUTE_EXTENT;
+                    }
+                }
+                YACK_CHEM_PRINTLN(vpfx << "    [maximumAvailableDOF]=" << yack_boolean(maximumAvailableDOF) );
+
+                if(!optimizeFullStep(G0))
+                {
+                    YACK_CHEM_PRINTLN(vpfx << "    |_[minimum hamiltonian]");
+                    YACK_CHEM_PRINTLN(vpfx << "    |_[maximumAvailableDOF]=" << yack_boolean(maximumAvailableDOF) );
+                    
+                    (void) returnSuccessful(C0,cycle);
+
+                    exit(1);
 
 
+                }
+                else
+                {
+                    goto CYCLE;
+                }
+
+
+            }
 
             return false;
         }
