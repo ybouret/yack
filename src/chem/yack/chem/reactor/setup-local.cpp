@@ -10,16 +10,9 @@ namespace yack
 
     namespace chemical
     {
-        void   reactor:: zapEquilibriumAt(const size_t ei) throw()
-        {
-            writable<double> &Omi = Omega0[ei];
-            blocked[ei] = true;
-            sigma[ei]   = 0;
-            Gamma[ei]   = 0;
-            Omi.ld(0); Omi[ei] = 1.0;
-            NuA[ei].ld(0);
-        }
+       
 
+#if 1
         size_t reactor:: initializeOmega0() throw()
         {
             YACK_CHEM_MARKUP(vpfx, "reactor::initializeLocalStep");
@@ -73,6 +66,7 @@ namespace yack
             return num_running;
 
         }
+#endif
 
     }
 

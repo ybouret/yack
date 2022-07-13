@@ -77,7 +77,7 @@ namespace yack
                 if(!gTmp->contains(eq)) continue;
                 const double hTmp = mixedHamiltonian(Ctry,*gTmp);
                 const bool   good = (hTmp<hOpt);
-                YACK_CHEM_PRINTLN( vpfx << (good?" (+)":" (-)") << " G = " << std::setw(15) << hTmp  << " @" << *gTmp );
+                YACK_CHEM_PRINTLN( vpfx << accepting(good) << "G = " << std::setw(15) << hTmp  << " @" << *gTmp );
                 if(good)
                 {
                     gOpt = gTmp;

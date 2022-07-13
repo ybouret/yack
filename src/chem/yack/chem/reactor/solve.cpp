@@ -77,9 +77,17 @@ namespace yack
             }
         }
 
+        void   reactor:: zapEquilibriumAt(const size_t ei) throw()
+        {
+            writable<double> &Omi = Omega0[ei];
+            blocked[ei] = true;
+            sigma[ei]   = 0;
+            Gamma[ei]   = 0;
+            Omi.ld(0); Omi[ei] = 1.0;
+            NuA[ei].ld(0);
+        }
 
-
-        static inline const char *accepting(const bool flag) throw()
+        const char * reactor::accepting(const bool flag) throw()
         {
             return flag ? " (+) " : " (-) ";
         }
@@ -154,8 +162,10 @@ namespace yack
                 }
                 else
                 {
+                    assert(sigma[ei]>0);
+                    gam     = (fabs(Xl[ei]) <= 0) ? 0 : eq.mass_action(K[ei],Corg);
                     Omi[ei] = sigma[ei];
-                    gam     = eq.mass_action(K[ei],Corg);
+                    
                     for(const enode *scan=node->prev;scan;scan=scan->prev) {
                         const size_t j = ****scan;
                         Omi[j] = - sorted::dot(psi,Nu[j],Ctry);
@@ -166,7 +176,6 @@ namespace yack
                         Omi[j] = - sorted::dot(psi,Nu[j],Ctry);
                     }
 
-                    if( fabs(Xl[ei]) <= 0 ) gam = 0;
                 }
             }
 
@@ -198,17 +207,27 @@ namespace yack
             switch(N)
             {
                 case 0:
+                    //----------------------------------------------------------
+                    // empty
+                    //----------------------------------------------------------
                     YACK_CHEM_PRINTLN(" <success::empty/>");
                     return true;
 
-                case 1: {
+
+                case 1:
+                    //----------------------------------------------------------
+                    // only 1
+                    //----------------------------------------------------------
+                {
                     const equilibrium &eq = ***singles.head();
                     eq.solve1D(K[*eq],C0,Corg);
                     YACK_CHEM_PRINTLN(" <success::1D/>");
                 } return returnSuccessful(C0,cycle);
 
                 default:
+                    //----------------------------------------------------------
                     // initialize for consistency
+                    //----------------------------------------------------------
                     for(size_t i=M;i>0;--i)
                     {
                         Corg[i] = Cend[i] = C0[i];
@@ -234,11 +253,12 @@ namespace yack
 
             //------------------------------------------------------------------
             //
-            // setup singles for |Xi| and topology
+            // setup singles for |Xi| and topology:
+            // all the diagonal term (a.k.a sigma) are computed
             //
             //------------------------------------------------------------------
             size_t nrun = 0;
-            if( setupSingles(nrun) ) return returnSuccessful(C0,cycle);
+            if( setupSingles(nrun) ) return returnSuccessful(C0,cycle); // early return
 
             //------------------------------------------------------------------
             //
@@ -248,7 +268,7 @@ namespace yack
             double G0 = Hamiltonian(Corg); YACK_CHEM_PRINTLN(vpfx << "    [initialized] G0 = " << G0);
             if(G0<=0) {
                 YACK_CHEM_PRINTLN(vpfx << "  [success : G0 = 0 level-1]");
-                return returnSuccessful(C0,cycle);
+                return returnSuccessful(C0,cycle); // early return
             }
 
             //------------------------------------------------------------------
@@ -274,10 +294,10 @@ namespace yack
 
                     //----------------------------------------------------------
                     //
-                    // recompute status for local step
+                    // recompute sigma for local step
                     //
                     //----------------------------------------------------------
-                    if( setupSingles(nrun) ) return returnSuccessful(C0,cycle);
+                    if( setupSingles(nrun) ) return returnSuccessful(C0,cycle); // early return
                 }
                 else
                 {
@@ -294,7 +314,7 @@ namespace yack
             //------------------------------------------------------------------
             //
             //
-            // Local Study
+            // Local Step
             //
             //
             //------------------------------------------------------------------
@@ -307,7 +327,7 @@ namespace yack
                 //--------------------------------------------------------------
                 unsigned inner = 0;     // inner counter
                 bool     maxOK = true;  // start from maximum DoF
-                updateOmega0();         // @nrun
+                updateOmega0();         // nrun and diagonal are computed
 
             COMPUTE_EXTENT:
                 ++inner;
@@ -406,7 +426,27 @@ namespace yack
                 // ready to probe better solution along the extent
                 //
                 //--------------------------------------------------------------
-                
+                if( optimizeFullStep(G0) )
+                {
+
+                    // G0 has decreased
+                    goto CYCLE;
+                }
+                else
+                {
+                    // G0 is stucked
+                    if(!maxOK)
+                    {
+                        // need to improve position
+                        goto CYCLE;
+                    }
+                    else
+                    {
+                        (void) returnSuccessful(C0,cycle);
+                        std::cerr << std::endl << " *** CHECK!!! ***" << std::endl << std::endl;
+                        exit(1);
+                    }
+                }
 
             }
 

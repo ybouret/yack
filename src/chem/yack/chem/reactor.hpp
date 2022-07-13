@@ -122,6 +122,8 @@ namespace yack
             void    zapEquilibriumAt(const size_t ei) throw();                     //!< de-activate
             bool    optimizeFullStep(double &G0) throw();                          //!< numerical look up
             size_t  initializeOmega0() throw();                                    //!< full matrix setup
+
+            static const char *accepting(const bool flag) throw();
         };
 
     }
