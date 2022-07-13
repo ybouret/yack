@@ -85,3 +85,7 @@ endforeach()
 add_custom_target(third_party 
 	DEPENDS ${THIRD_PARTY}
 	COMMENT "[YACK] Built Third Party")
+	
+message( STATUS "")
+message( STATUS "[YACK] generating with [${CMAKE_GENERATOR}] for <${YACK_CC}>")
+message( STATUS "")
