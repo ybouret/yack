@@ -74,7 +74,6 @@ namespace yack
             const imatrix           Nu;      //!< [NxM] topology matrix
             imatrix                 NuA;     //!< [NxM] Active Topology
             rmatrix                 Psi;     //!< [NxM] jacobian
-            rmatrix                 Phi;     //!< [NxM] steady jacobian
             rmatrix                 Omega0;  //!< [NxN] system matrix
             rmatrix                 iOmega;  //!< [NxN] decomposed Omega0
 

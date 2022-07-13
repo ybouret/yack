@@ -221,6 +221,9 @@ namespace yack
 
 
         CYCLE:
+            ++cycle;
+            YACK_CHEM_PRINTLN(vpfx << "  ---------------- cycle " << cycle  << " ----------------");
+
             //------------------------------------------------------------------
             //
             //
@@ -242,8 +245,7 @@ namespace yack
             // top-level hamiltonian
             //
             //------------------------------------------------------------------
-            double G0 = Hamiltonian(Corg);
-            YACK_CHEM_PRINTLN(vpfx << "    [initialized] G0 = " << G0);
+            double G0 = Hamiltonian(Corg); YACK_CHEM_PRINTLN(vpfx << "    [initialized] G0 = " << G0);
             if(G0<=0) {
                 YACK_CHEM_PRINTLN(vpfx << "  [success : G0 = 0 level-1]");
                 return returnSuccessful(C0,cycle);
@@ -291,40 +293,123 @@ namespace yack
 
             //------------------------------------------------------------------
             //
-            // check global output
+            //
+            // Local Study
+            //
             //
             //------------------------------------------------------------------
-            switch(nrun)
+            
             {
-                case 0:
-                    YACK_CHEM_PRINTLN(vpfx << "  [success : all-blocked]");
-                    return returnSuccessful(C0,cycle);
+                //--------------------------------------------------------------
+                //
+                // initialize local system
+                //
+                //--------------------------------------------------------------
+                unsigned inner = 0;     // inner counter
+                bool     maxOK = true;  // start from maximum DoF
+                updateOmega0();         // @nrun
 
-                case 1:
+            COMPUTE_EXTENT:
+                ++inner;
+                YACK_CHEM_PRINTLN(vpfx << "    -------- extent " << cycle << "." << inner << " --------");
+                if(verbose) singles(std::cerr << vpfx << "sigma=",sigma,vpfx);
+
+                switch(nrun)
+                {
+                    case 0:
+                        YACK_CHEM_PRINTLN(vpfx << "  [success : all-blocked]");
+                        return returnSuccessful(C0,cycle);
+
+                    case 1:
+                        for(const enode *node=singles.head();node;node=node->next)
+                        {
+                            const equilibrium &eq = ***node;
+                            const size_t       ei = *eq;
+                            if(!blocked[ei])
+                            {
+                                active.transfer(Corg,Cl[ei]);
+                                goto CYCLE;
+                            }
+                        }
+                        YACK_CHEM_PRINTLN(vpfx << "  [failure: corrupted-blocked]");
+                        return false;
+
+                    default:
+                        break;
+                }
+
+                assert(nrun>1);
+
+                //--------------------------------------------------------------
+                //
+                // compute extent
+                //
+                //--------------------------------------------------------------
+                iOmega.assign(Omega0);
+                if(!LU->build(iOmega))
+                {
+                    YACK_CHEM_PRINTLN("  <singular local system>");
+                    return false;
+                }
+
+                iota::load(xi,Gamma);
+                LU->solve(iOmega,xi);
+
+                //--------------------------------------------------------------
+                //
+                // validate primary constraints
+                //
+                //--------------------------------------------------------------
+                {
+                    bool overshoot = false;
                     for(const enode *node=singles.head();node;node=node->next)
                     {
                         const equilibrium &eq = ***node;
                         const size_t       ei = *eq;
-                        if(!blocked[ei])
-                        {
-                            active.transfer(Corg,Cl[ei]);
-                            goto CYCLE;
-                        }
-                    }
-                    YACK_CHEM_PRINTLN(vpfx << "  [failure: corrupted-blocked]");
-                    return false;
+                        const double       xx = xi[ei];
 
-                default:
-                    break;
+                        if(verbose) singles.pad(std::cerr << "@{" << eq.name << "}",eq) << " : ";
+                        if(blocked[ei])
+                        {
+                            if(verbose) std::cerr << "[blocked]";
+                        }
+                        else
+                        {
+                            const limits &lm = eq.primary_limits(Corg,lib.width);
+                            if( lm.should_reduce(xx) )
+                            {
+                                overshoot = true;
+                                --nrun;
+                                YACK_CHEM_PRINT("[REJECT]");
+                                zapEquilibriumAt(ei);
+                            }
+                            else
+                            {
+                                YACK_CHEM_PRINT("[accept]");
+                            }
+                            YACK_CHEM_PRINT( " " << std::setw(15) << xx << " | " << lm) ;
+                        }
+                        if(verbose) std::cerr << std::endl;
+                    }
+
+                    if(overshoot)
+                    {
+                        maxOK = false;
+                        goto COMPUTE_EXTENT;
+                    }
+                }
+                YACK_CHEM_PRINTLN(vpfx << "    [maximumAvailableDOF]=" << yack_boolean(maxOK) );
+
+
+                //--------------------------------------------------------------
+                //
+                // ready to probe better solution along the extent
+                //
+                //--------------------------------------------------------------
+                
+
             }
 
-            singles(std::cerr << vpfx << "sigma=",sigma,vpfx);
-            singles(std::cerr << vpfx << "blocked=",blocked,vpfx);
-            assert(nrun>1);
-
-            updateOmega0();
-
-            
 
 
 

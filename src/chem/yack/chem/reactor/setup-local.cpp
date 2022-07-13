@@ -14,6 +14,7 @@ namespace yack
         {
             writable<double> &Omi = Omega0[ei];
             blocked[ei] = true;
+            sigma[ei]   = 0;
             Gamma[ei]   = 0;
             Omi.ld(0); Omi[ei] = 1.0;
             NuA[ei].ld(0);
