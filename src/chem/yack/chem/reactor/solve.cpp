@@ -194,8 +194,7 @@ namespace yack
             YACK_CHEM_MARKUP(vpfx, "reactor::solve");
             if(verbose) lib(std::cerr<<vpfx<<"Cini=",C0,vpfx);
 
-            ios::ocstream::overwrite("g.dat");
-
+            
             //------------------------------------------------------------------
             //
             //
