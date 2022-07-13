@@ -421,18 +421,46 @@ namespace yack
                     }
                 }
 
-                const bool                      reachedLocalMinimum = optimizeFullStep(G0);
-                YACK_CHEM_PRINTLN(vpfx << "    [foundGlobalDecrease]=" << yack_boolean(foundGlobalDecrease) );
-                YACK_CHEM_PRINTLN(vpfx << "    [maximumAvailableDOF]=" << yack_boolean(maximumAvailableDOF) );
-                YACK_CHEM_PRINTLN(vpfx << "    [reachedLocalMinimum]=" << yack_boolean(reachedLocalMinimum) );
-
                 //--------------------------------------------------------------
                 //
                 // ready to probe better solution along the extent!
                 //
                 //--------------------------------------------------------------
 
-                exit(1);
+                const bool improvedHamiltonian = optimizeFullStep(G0);
+                YACK_CHEM_PRINTLN(vpfx << "    [improvedHamiltonian]=" << yack_boolean(improvedHamiltonian) );
+                if(improvedHamiltonian)
+                {
+                    goto CYCLE;
+                }
+                else
+                {
+                    YACK_CHEM_PRINTLN(vpfx << "    [foundGlobalDecrease]=" << yack_boolean(foundGlobalDecrease) );
+                    if(foundGlobalDecrease)
+                    {
+                        goto CYCLE;
+                    }
+                    else
+                    {
+                        YACK_CHEM_PRINTLN(vpfx << "    [maximumAvailableDOF]=" << yack_boolean(maximumAvailableDOF) );
+
+                        if(maximumAvailableDOF)
+                        {
+                            // final evaluation
+
+                            singles(std::cerr << "Xi=",Xl,"");
+
+                            (void) returnSuccessful(C0,cycle);
+                            exit(1);
+                        }
+                        else
+                        {
+                            YACK_CHEM_PRINTLN(vpfx << "    <singular composition>");
+                            return false;
+                        }
+
+                    }
+                }
 
             }
 
