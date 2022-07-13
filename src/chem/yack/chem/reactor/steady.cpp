@@ -17,24 +17,7 @@ namespace yack
     {
 
 
-        double  reactor:: Hamiltonian(const readable<double> &C) throw()
-        {
-            ratio.free();
-            for(const enode *node = singles.head(); node; node=node->next)
-            {
-                const equilibrium &eq = ***node;
-                const size_t       ei = *eq;
-                if(blocked[ei]) continue;
-
-                assert(sigma[ei]>0);
-                //ratio.push_back_fast( fabs(eq.mass_action(K[ei],C)/sigma[ei] ) );
-                ratio.push_back_fast( squared(eq.mass_action(K[ei],C)/sigma[ei] ) );
-            }
-
-            assert(ratio.size()>0);
-            return  sqrt(sorted::sum(ratio,sorted::by_value)/ratio.size());
-
-        }
+      
 
         double reactor:: Htry(const double G0) throw()
         {
@@ -44,58 +27,7 @@ namespace yack
             return g.b;
         }
 
-        double  reactor:: mixedHamiltonian(writable<double> &C, const group &g) throw()
-        {
-            assert(g.is_valid());
-            assert(g.is_ortho());
-            assert(C.size()==Corg.size());
-            iota::save(C,Corg);
-            for(const gnode *ep=g.head;ep;ep=ep->next)
-            {
-                const equilibrium      &eq = **ep;
-                const readable<double> &Ci = Cl[*eq]; assert(eq.other_are_unchanged(Ci,Corg));
-                eq.transfer(C,Ci);
-            }
-            const double res = Hamiltonian(C);
-            return res;
-        }
-
-        double  reactor:: buildHamiltonian(const equilibrium &eq) throw()
-        {
-            const group       *gOpt = look_up->find_first( eq ); assert(gOpt);
-            tableau           &Copt = Cend;
-            double             hOpt = mixedHamiltonian(Copt,*gOpt);
-            YACK_CHEM_PRINTLN("(#) G = " << std::setw(15) << hOpt  << " @" << *gOpt);
-
-            //----------------------------------------------------------
-            //
-            // look up in other groups containing equilibirium
-            //
-            //----------------------------------------------------------
-            for(const group   *gTmp = gOpt->next;gTmp;gTmp=gTmp->next)
-            {
-                if(!gTmp->contains(eq)) continue;
-                const double hTmp = mixedHamiltonian(Ctry,*gTmp);
-                const bool   good = (hTmp<hOpt);
-                YACK_CHEM_PRINTLN( (good?"(+)":"(-)") << " G = " << std::setw(15) << hTmp  << " @" << *gTmp );
-                if(good)
-                {
-                    gOpt = gTmp;
-                    hOpt = hTmp;
-                    active.transfer(Copt,Ctry);
-                }
-            }
-
-            //----------------------------------------------------------
-            //
-            // update current status
-            //
-            //----------------------------------------------------------
-            YACK_CHEM_PRINTLN("Gopt  = " << std::setw(15) << hOpt << " @" << *gOpt);
-            active.transfer(Corg,Copt);
-            return hOpt;
-        }
-
+       
 
         bool    reactor:: steady(writable<double> &C0) throw()
         {
