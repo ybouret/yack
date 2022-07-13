@@ -65,7 +65,7 @@ namespace yack
             const group       *gOpt = look_up->find_first( eq ); assert(gOpt);
             tableau           &Copt = Cend;
             double             hOpt = mixedHamiltonian(Copt,*gOpt);
-            YACK_CHEM_PRINTLN("(#) G = " << std::setw(15) << hOpt  << " @" << *gOpt);
+            YACK_CHEM_PRINTLN(vpfx << " (#) G = " << std::setw(15) << hOpt  << " @" << *gOpt);
 
             //----------------------------------------------------------
             //
@@ -77,7 +77,7 @@ namespace yack
                 if(!gTmp->contains(eq)) continue;
                 const double hTmp = mixedHamiltonian(Ctry,*gTmp);
                 const bool   good = (hTmp<hOpt);
-                YACK_CHEM_PRINTLN( (good?"(+)":"(-)") << " G = " << std::setw(15) << hTmp  << " @" << *gTmp );
+                YACK_CHEM_PRINTLN( vpfx << (good?" (+)":" (-)") << " G = " << std::setw(15) << hTmp  << " @" << *gTmp );
                 if(good)
                 {
                     gOpt = gTmp;
@@ -91,7 +91,7 @@ namespace yack
             // update current status
             //
             //----------------------------------------------------------
-            YACK_CHEM_PRINTLN("Gopt  = " << std::setw(15) << hOpt << " @" << *gOpt);
+            YACK_CHEM_PRINTLN(vpfx << " Gopt  = " << std::setw(15) << hOpt << " @" << *gOpt << " <--");
             active.transfer(Corg,Copt);
             return hOpt;
         }

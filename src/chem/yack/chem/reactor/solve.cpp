@@ -124,16 +124,6 @@ namespace yack
             }
 
             return emin;
-#if 0
-            // local update so far
-            if(emin)
-            {
-                active.transfer(Corg,Cl[**emin]);
-                assert( fabs(Hamiltonian(Corg)-Gmin) <= 0);
-                G0 = Gmin;
-            }
-            return emin;
-#endif
         }
 
 
@@ -185,6 +175,7 @@ namespace yack
             assert(N>0);
 
 
+        CYCLE:
             //------------------------------------------------------------------
             //
             //
@@ -243,11 +234,42 @@ namespace yack
                 }
                 else
                 {
-                    // no better global
+                    //----------------------------------------------------------
+                    //
+                    // no better global, sigma is unchanged
+                    //
+                    //----------------------------------------------------------
                     assert(G0>0);
                     YACK_CHEM_PRINTLN(vpfx << "  <at global minimum>");
                 }
             }
+
+            switch(nrun)
+            {
+                case 0:
+                    YACK_CHEM_PRINTLN(vpfx << "  [success : all-blocked]");
+                    return returnSuccessful(C0,cycle);
+
+                case 1:
+                    for(const enode *node=singles.head();node;node=node->next)
+                    {
+                        const equilibrium &eq = ***node;
+                        const size_t       ei = *eq;
+                        if(!blocked[ei])
+                        {
+                            active.transfer(Corg,Cl[ei]);
+                            goto CYCLE;
+                        }
+                    }
+                    YACK_CHEM_PRINTLN(vpfx << "  [failure: corrupted-blocked]");
+                    return false;
+
+                default:
+                    break;
+            }
+
+            singles(std::cerr << vpfx << "sigma=",sigma,vpfx);
+            singles(std::cerr << vpfx << "blocked=",blocked,vpfx);
 
 
 
