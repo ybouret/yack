@@ -276,6 +276,7 @@ namespace yack
             // global decrease
             //
             //------------------------------------------------------------------
+            bool foundGlobalDecrease = false;
             {
                 const equilibrium *emin = setupLattice(G0);
                 if(emin)
@@ -298,6 +299,7 @@ namespace yack
                     //
                     //----------------------------------------------------------
                     if( setupSingles(nrun) ) return returnSuccessful(C0,cycle); // early return
+                    foundGlobalDecrease = true;
                 }
                 else
                 {
@@ -310,6 +312,7 @@ namespace yack
                     YACK_CHEM_PRINTLN(vpfx << "  <at global minimum>");
                 }
             }
+
 
             //------------------------------------------------------------------
             //
@@ -325,9 +328,9 @@ namespace yack
                 // initialize local system
                 //
                 //--------------------------------------------------------------
-                unsigned inner = 0;     // inner counter
-                bool     maxOK = true;  // start from maximum DoF
-                updateOmega0();         // nrun and diagonal are computed
+                unsigned inner               = 0;     // inner counter
+                bool     maximumAvailableDOF = true;  // start from maximum DoF
+                updateOmega0();                       // nrun and diagonal are computed
 
             COMPUTE_EXTENT:
                 ++inner;
@@ -414,30 +417,40 @@ namespace yack
 
                     if(overshoot)
                     {
-                        maxOK = false;
+                        maximumAvailableDOF = false;
                         goto COMPUTE_EXTENT;
                     }
                 }
-                YACK_CHEM_PRINTLN(vpfx << "    [maximumAvailableDOF]=" << yack_boolean(maxOK) );
+                YACK_CHEM_PRINTLN(vpfx << "    [foundGlobalDecrease]=" << yack_boolean(foundGlobalDecrease) );
+                YACK_CHEM_PRINTLN(vpfx << "    [maximumAvailableDOF]=" << yack_boolean(maximumAvailableDOF) );
 
 
                 //--------------------------------------------------------------
                 //
-                // ready to probe better solution along the extent
+                // ready to probe better solution along the extent!
                 //
                 //--------------------------------------------------------------
                 if( optimizeFullStep(G0) )
                 {
-
-                    // G0 has decreased
+                    //----------------------------------------------------------
+                    //
+                    // G0 has decreased => try again in any case
+                    //
+                    //----------------------------------------------------------
                     goto CYCLE;
                 }
                 else
                 {
+                    //----------------------------------------------------------
+                    //
                     // G0 is stucked
-                    if(!maxOK)
+                    //
+                    //----------------------------------------------------------
+                    if(!maximumAvailableDOF)
                     {
+                        //------------------------------------------------------
                         // need to improve position
+                        //------------------------------------------------------
                         goto CYCLE;
                     }
                     else
