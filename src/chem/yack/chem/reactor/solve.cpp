@@ -194,7 +194,7 @@ namespace yack
             YACK_CHEM_MARKUP(vpfx, "reactor::solve");
             if(verbose) lib(std::cerr<<vpfx<<"Cini=",C0,vpfx);
 
-            
+
             //------------------------------------------------------------------
             //
             //
@@ -245,7 +245,7 @@ namespace yack
             //------------------------------------------------------------------
             //
             //
-            // global study
+            // Global Study
             //
             //
             //------------------------------------------------------------------
@@ -316,7 +316,7 @@ namespace yack
             //------------------------------------------------------------------
             //
             //
-            // Local Step
+            // Local Study
             //
             //
             //------------------------------------------------------------------
@@ -420,45 +420,19 @@ namespace yack
                         goto COMPUTE_EXTENT;
                     }
                 }
+
+                const bool                      reachedLocalMinimum = optimizeFullStep(G0);
                 YACK_CHEM_PRINTLN(vpfx << "    [foundGlobalDecrease]=" << yack_boolean(foundGlobalDecrease) );
                 YACK_CHEM_PRINTLN(vpfx << "    [maximumAvailableDOF]=" << yack_boolean(maximumAvailableDOF) );
-
+                YACK_CHEM_PRINTLN(vpfx << "    [reachedLocalMinimum]=" << yack_boolean(reachedLocalMinimum) );
 
                 //--------------------------------------------------------------
                 //
                 // ready to probe better solution along the extent!
                 //
                 //--------------------------------------------------------------
-                if( optimizeFullStep(G0) )
-                {
-                    //----------------------------------------------------------
-                    //
-                    // G0 has decreased => try again in any case
-                    //
-                    //----------------------------------------------------------
-                    goto CYCLE;
-                }
-                else
-                {
-                    //----------------------------------------------------------
-                    //
-                    // G0 is stucked
-                    //
-                    //----------------------------------------------------------
-                    if(!maximumAvailableDOF)
-                    {
-                        //------------------------------------------------------
-                        // need to improve position
-                        //------------------------------------------------------
-                        goto CYCLE;
-                    }
-                    else
-                    {
-                        (void) returnSuccessful(C0,cycle);
-                        std::cerr << std::endl << " *** CHECK!!! ***" << std::endl << std::endl;
-                        exit(1);
-                    }
-                }
+
+                exit(1);
 
             }
 

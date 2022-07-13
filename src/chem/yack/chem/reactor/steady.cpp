@@ -19,16 +19,8 @@ namespace yack
 
       
 
-        double reactor:: Htry(const double G0) throw()
-        {
-            triplet<double> u = { 0,  -1 , 1 };
-            triplet<double> g = { G0, -1, Hamiltonian(Cend)  };
-            optimize::run_for( *this, u, g, optimize::inside );
-            return g.b;
-        }
-
        
-
+#if 0
         bool    reactor:: steady(writable<double> &C0) throw()
         {
 
@@ -466,7 +458,8 @@ namespace yack
 
             return false;
         }
-
+#endif
+        
     }
 
 }

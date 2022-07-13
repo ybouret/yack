@@ -2,6 +2,7 @@
 #include "yack/chem/reactor.hpp"
 #include "yack/sort/sum.hpp"
 #include "yack/math/iota.hpp"
+#include "yack/math/opt/optimize.hpp"
 #include <cmath>
 #include <iomanip>
 
@@ -29,6 +30,16 @@ namespace yack
             return  sqrt(sorted::sum(ratio,sorted::by_value)/ratio.size());
 
         }
+
+
+        double reactor:: Htry(const double G0) throw()
+        {
+            triplet<double> u = { 0,  -1 , 1 };
+            triplet<double> g = { G0, -1, Hamiltonian(Cend)  };
+            optimize::run_for( *this, u, g, optimize::inside );
+            return g.b;
+        }
+
 
         double reactor:: operator()(const double u) throw()
         {
