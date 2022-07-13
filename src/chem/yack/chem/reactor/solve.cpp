@@ -25,6 +25,7 @@ namespace yack
             double             Xmax = 0;
             const equilibrium *emax = NULL;
             nrun = 0;
+
             for(const enode *node=singles.head();node;node=node->next)
             {
                 const equilibrium &eq = ***node;
@@ -90,7 +91,11 @@ namespace yack
             double             Gmin = G0;
             const equilibrium *emin = NULL;
 
+            //------------------------------------------------------------------
+            //
             // setup from precomputed singles
+            //
+            //------------------------------------------------------------------
             for(const enode *node=singles.head();node;node=node->next)
             {
                 const equilibrium &eq   = ***node;
@@ -126,6 +131,52 @@ namespace yack
             return emin;
         }
 
+
+        void reactor:: updateOmega0() throw()
+        {
+            YACK_CHEM_MARKUP(vpfx, "reactor::solve::updateOmega0");
+
+            NuA.assign(Nu);
+            for(const enode *node=singles.head();node;node=node->next)
+            {
+                const equilibrium       &eq = ***node;
+                const size_t             ei = *eq;
+                const readable<double>  &psi = Psi[ei];
+                writable<double>        &Omi = Omega0[ei];
+                double                  &gam = Gamma[ei];
+
+                if(blocked[ei])
+                {
+                    assert(fabs(sigma[ei])<=0);
+                    gam = 0;
+                    Omi.ld(0); Omi[ei]=1.0;
+                    NuA[ei].ld(0);
+                }
+                else
+                {
+                    Omi[ei] = sigma[ei];
+                    gam     = eq.mass_action(K[ei],Corg);
+                    for(const enode *scan=node->prev;scan;scan=scan->prev) {
+                        const size_t j = ****scan;
+                        Omi[j] = - sorted::dot(psi,Nu[j],Ctry);
+                    }
+
+                    for(const enode *scan=node->next;scan;scan=scan->next) {
+                        const size_t j = ****scan;
+                        Omi[j] = - sorted::dot(psi,Nu[j],Ctry);
+                    }
+
+                    if( fabs(Xl[ei]) <= 0 ) gam = 0;
+                }
+            }
+
+            if(verbose)
+            {
+                singles(std::cerr << vpfx << "Omega=",Omega0,vpfx);
+                singles(std::cerr << vpfx << "Gamma=",Gamma,vpfx);
+            }
+
+        }
 
         bool reactor:: solve(writable<double> &C0) throw()
         {
@@ -244,6 +295,11 @@ namespace yack
                 }
             }
 
+            //------------------------------------------------------------------
+            //
+            // check global output
+            //
+            //------------------------------------------------------------------
             switch(nrun)
             {
                 case 0:
@@ -270,7 +326,9 @@ namespace yack
 
             singles(std::cerr << vpfx << "sigma=",sigma,vpfx);
             singles(std::cerr << vpfx << "blocked=",blocked,vpfx);
+            assert(nrun>1);
 
+            updateOmega0();
 
 
 

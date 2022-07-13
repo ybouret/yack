@@ -111,16 +111,17 @@ namespace yack
             bool               setupSingles(size_t &nrun)    throw();
             bool               sigmaSingles(size_t &nrun)    throw();
             const equilibrium *setupLattice(const double G0) throw();
+            void               updateOmega0() throw();
 
             double  Hamiltonian(const readable<double> &C) throw();
             double  Htry(const double G0) throw();
 
 
             double  mixedHamiltonian(writable<double> &C, const group &g) throw(); //!< aggregate a mixed combination
-            double  buildHamiltonian(const equilibrium &eq) throw(); //!< build best from eq
+            double  buildHamiltonian(const equilibrium &eq) throw();               //!< build best from eq
             bool    returnSuccessful(writable<double> &C0, const unsigned cycle);  //!< Corg -> C0, optional info
             void    zapEquilibriumAt(const size_t ei) throw();                     //!< de-activate
-            bool    optimizeFullStep(double &G0) throw();                     //!< numerical look up
+            bool    optimizeFullStep(double &G0) throw();                          //!< numerical look up
             size_t  initializeOmega0() throw();                                    //!< full matrix setup
         };
 
