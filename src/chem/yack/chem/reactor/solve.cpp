@@ -170,12 +170,6 @@ namespace yack
                 }
             }
 
-            if(verbose)
-            {
-                singles(std::cerr << vpfx << "Omega=",Omega0,vpfx);
-                singles(std::cerr << vpfx << "Gamma=",Gamma,vpfx);
-            }
-
         }
 
         bool reactor:: solve(writable<double> &C0) throw()
@@ -329,6 +323,8 @@ namespace yack
             assert(nrun>1);
 
             updateOmega0();
+
+            
 
 
 
