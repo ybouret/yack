@@ -59,7 +59,7 @@ namespace yack
             triplet<double> u = { 0,  -1, 1 };
             triplet<double> g = { G0, -1, Hamiltonian(Cend) };
 
-            if(true)
+            if(false)
             {
                 ios::ocstream fp("hamiltonian.dat");
                 const size_t  np = 1000;
