@@ -91,7 +91,7 @@ namespace yack
 
 
 
-        GLOBAL_STEP:
+        MAJOR_STEP:
             ++cycle;
             YACK_CHEM_PRINTLN(vpfx << "  ---------------- cycle " << cycle  << " ----------------");
 
@@ -123,7 +123,7 @@ namespace yack
                             if(!blocked[ei])
                             {
                                 active.transfer(Corg,Cl[ei]);
-                                goto GLOBAL_STEP;
+                                goto MAJOR_STEP;
                             }
                         }
                         YACK_CHEM_PRINTLN(vpfx << "  [failure: corrupted-blocked]");
@@ -143,11 +143,11 @@ namespace yack
             //
             //
             //------------------------------------------------------------------
-            bool   foundGlobalDecrease = false;
-            size_t maxDegreesOfFreedom = 0;
+            bool   foundMajorDecrease = false;
+            size_t maxMinorDimensions = 0;
+            double G0 = Hamiltonian(Corg);
             {
 
-                const double G0 = Hamiltonian(Corg);
                 YACK_CHEM_PRINTLN(vpfx << "    [initialized] G0 = " << G0 << " ]");
                 const equilibrium *emin = queryLattice(G0);
                 if(emin)
@@ -169,11 +169,12 @@ namespace yack
                     // recompute sigma for local step
                     //
                     //----------------------------------------------------------
-                    if( querySingles(maxDegreesOfFreedom) )
+                    if( querySingles(maxMinorDimensions) )
                     {
                         return returnSuccessful(C0,cycle); // early return
                     }
-                    foundGlobalDecrease = true;
+                    foundMajorDecrease = true;
+                    G0                 = G1;
                 }
                 else
                 {
@@ -181,7 +182,7 @@ namespace yack
                     // not moved, sigma is OK
                 }
             }
-            YACK_CHEM_PRINTLN(vpfx << "    [foundGlobalDecrease]=" << yack_boolean(foundGlobalDecrease) );
+            YACK_CHEM_PRINTLN(vpfx << "    [foundMajorDecrease]=" << yack_boolean(foundMajorDecrease) );
 
             //------------------------------------------------------------------
             //
@@ -191,22 +192,30 @@ namespace yack
             //
             //------------------------------------------------------------------
             updateOmega0();
+            bool   hasMinorRobustness = true;
+            size_t minor              = 0;
+        MINOR_STEP:
+            ++minor;
+            YACK_CHEM_PRINTLN(vpfx << "  ---------------- minor " << cycle  << "." << minor << "----------------");
+
             iOmega.assign(Omega0);
             if(!LU->build(iOmega))
             {
-                if(!foundGlobalDecrease)
+                if(foundMajorDecrease)
                 {
-                    goto GLOBAL_STEP;
+                    YACK_CHEM_PRINTLN(vpfx << "  [extent : retry major step ]");
+                    goto MAJOR_STEP;
                 }
-                YACK_CHEM_PRINTLN(vpfx << "  [failure : singular system ]");
-                return false;
+                else
+                {
+                    YACK_CHEM_PRINTLN(vpfx << "  [extent : singular system ]");
+                    return false;
+                }
             }
 
             //------------------------------------------------------------------
             //
-            //
             // compute xi
-            //
             //
             //------------------------------------------------------------------
             iota::load(xi,Gamma);
@@ -238,7 +247,7 @@ namespace yack
                             overshoot = true;
                             YACK_CHEM_PRINT("[REJECT]");
                             zapEquilibriumAt(ei);
-                            --maxDegreesOfFreedom;
+                            --maxMinorDimensions;
                         }
                         else
                         {
@@ -251,15 +260,58 @@ namespace yack
 
                 if(overshoot)
                 {
-                    std::cerr << "overshoot #DOF=" << maxDegreesOfFreedom << std::endl;
-                    exit(1);
+                    hasMinorRobustness = false;
+                    YACK_CHEM_PRINTLN(vpfx << "  [overshoot: #DOF= " << maxMinorDimensions << "]");
+                    if(foundMajorDecrease)
+                    {
+                        // try another global decrease to stabilize
+                        YACK_CHEM_PRINTLN(vpfx << "  [overshoot: trying another global step]");
+                        goto MAJOR_STEP;
+                    }
+                    else
+                    {
+                        // at bottom of global
+                        if(maxMinorDimensions<=0)
+                        {
+                            // can't move!!
+                            YACK_CHEM_PRINTLN(vpfx << "  [overshooting: singular system]");
+                            return false;
+                        }
+                        else
+                        {
+                            // try a reduced step
+                            YACK_CHEM_PRINTLN(vpfx << "  [overshooting: reducing system]");
+                            exit(1);
+                            goto MINOR_STEP;
+                        }
+                    }
                 }
             }
 
+            //------------------------------------------------------------------
+            //
+            // found an acceptable extent
+            //
+            //------------------------------------------------------------------
 
-            YACK_CHEM_PRINTLN(vpfx << "  [acceptable extent]");
 
-            exit(1);
+            YACK_CHEM_PRINTLN(vpfx << "    [acceptable extent!]");
+            YACK_CHEM_PRINTLN(vpfx << "    [foundMajorDecrease]=" << yack_boolean(foundMajorDecrease) );
+            YACK_CHEM_PRINTLN(vpfx << "    [hasMinorRobustness]=" << yack_boolean(hasMinorRobustness) );
+
+
+            if( optimizeFullStep(G0) )
+            {
+
+                YACK_CHEM_PRINTLN(vpfx << "    [optimized full step]");
+                goto MAJOR_STEP;
+            }
+            else
+            {
+                YACK_CHEM_PRINTLN(vpfx << "    [stuck]]");
+                exit(1);
+            }
+
 
             return false;
 

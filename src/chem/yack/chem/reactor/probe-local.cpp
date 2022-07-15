@@ -59,7 +59,7 @@ namespace yack
             triplet<double> u = { 0,  -1, 1 };
             triplet<double> g = { G0, -1, Hamiltonian(Cend) };
 
-            if(false)
+            if(true)
             {
                 ios::ocstream fp("hamiltonian.dat");
                 const size_t  np = 1000;
@@ -76,7 +76,7 @@ namespace yack
             if(verbose)
             {
                 lib(std::cerr << vpfx << "Cfin=",Corg,vpfx);
-                std::cerr << vpfx << "G: " << G0 << " --> " << g.b << std::endl;
+                std::cerr << vpfx << "G: " << G0 << " --> " << g.b << " @" << u.b << std::endl;
             }
 
             if(g.b>=G0)
