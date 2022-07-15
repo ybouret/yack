@@ -194,6 +194,8 @@ namespace yack
             YACK_CHEM_MARKUP(vpfx, "reactor::solve");
             if(verbose) lib(std::cerr<<vpfx<<"Cini=",C0,vpfx);
 
+            ios::ocstream::overwrite("ham.dat");
+            ios::ocstream::overwrite("err.dat");
 
             //------------------------------------------------------------------
             //
@@ -270,6 +272,8 @@ namespace yack
                 return returnSuccessful(C0,cycle); // early return
             }
 
+            ios::ocstream::echo("ham.dat","%u %.15g\n", cycle, log10(G0) );
+
             //------------------------------------------------------------------
             //
             // global decrease
@@ -299,6 +303,62 @@ namespace yack
                     //----------------------------------------------------------
                     if( setupSingles(nrun) ) return returnSuccessful(C0,cycle); // early return
                     foundGlobalDecrease = true;
+
+                    vector<double> sr0,sr1,sp0,sp1;
+                    double maxErr = 0;
+                    for(const enode *node=singles.head();node;node=node->next)
+                    {
+                        const equilibrium   &eq = ***node;
+                        const size_t         ei = *eq;
+                        singles.pad(std::cerr << eq.name,eq) << " : ";
+                        const readable<int> &nu = Nu[ei];
+                        const double         xx = Xl[ei];
+                        sr0.free();
+                        sr1.free();
+                        sp0.free();
+                        sp1.free();
+                        for(const anode *sp=active.head;sp;sp=sp->next)
+                        {
+                            const size_t j= ***sp;
+                            const int    n=nu[j];
+                            if(n>0)
+                            {
+                                // product
+                                const double c = Corg[j];
+                                sp0 << c;
+                                sp1 << max_of(c+n*xx,0.0);
+                            }
+                            else
+                            {
+                                if(n<0)
+                                {
+                                    // reactant
+                                    const double c = Corg[j];
+                                    sr0 << c;
+                                    sr1 << max_of(c+n*xx,0.0);
+                                }
+                            }
+                        }
+                        const double Cr0 = sorted::sum(sr0,sorted::by_abs_value);
+                        const double Cr1 = sorted::sum(sr1,sorted::by_abs_value);
+                        const double dr  = fabs(Cr0-Cr1);
+                        std::cerr << " | Cr: " << Cr0 << " --> " << Cr1 << " | " << dr;
+                        const double Cp0 = sorted::sum(sp0,sorted::by_abs_value);
+                        const double Cp1 = sorted::sum(sp1,sorted::by_abs_value);
+                        const double dp  = fabs(Cp0-Cp1);
+                        std::cerr << " | Cp: " << Cp0 << " --> " << Cp1 << " | " << dp;
+                        std::cerr << std::endl;
+                        maxErr = max_of(maxErr,dr);
+                        maxErr = max_of(maxErr,dp);
+                    }
+
+                    if(maxErr>0)
+                    {
+                        ios::ocstream::echo("err.dat","%u %.15g\n", cycle, log10(maxErr) );
+                    }
+
+
+                    goto CYCLE;
                 }
                 else
                 {
@@ -312,6 +372,8 @@ namespace yack
                 }
             }
 
+
+            exit(1);
 
             //------------------------------------------------------------------
             //
@@ -447,8 +509,55 @@ namespace yack
                         if(maximumAvailableDOF)
                         {
                             // final evaluation
-
+                            std::cerr << std::endl << " FINAL " << std::endl << std::endl;
                             singles(std::cerr << "Xi=",Xl,"");
+
+                            vector<double> sr0,sr1,sp0,sp1;
+                            for(const enode *node=singles.head();node;node=node->next)
+                            {
+                                const equilibrium   &eq = ***node;
+                                const size_t         ei = *eq;
+                                singles.pad(std::cerr << eq.name,eq) << " : ";
+                                const readable<int> &nu = Nu[ei];
+                                const double         xx = Xl[ei];
+                                sr0.free();
+                                sr1.free();
+                                sp0.free();
+                                sp1.free();
+                                for(const anode *sp=active.head;sp;sp=sp->next)
+                                {
+                                    const size_t j= ***sp;
+                                    const int    n=nu[j];
+                                    if(n>0)
+                                    {
+                                        // product
+                                        const double c = Corg[j];
+                                        sp0 << c;
+                                        sp1 << max_of(c+n*xx,0.0);
+                                    }
+                                    else
+                                    {
+                                        if(n<0)
+                                        {
+                                            // reactant
+                                            const double c = Corg[j];
+                                            sr0 << c;
+                                            sr1 << max_of(c+n*xx,0.0);
+                                        }
+                                    }
+                                }
+                                const double Cr0 = sorted::sum(sr0,sorted::by_abs_value);
+                                const double Cr1 = sorted::sum(sr1,sorted::by_abs_value);
+                                const double dr  = fabs(Cr0-Cr1);
+                                std::cerr << " | Cr: " << Cr0 << " --> " << Cr1 << " | " << dr;
+                                const double Cp0 = sorted::sum(sp0,sorted::by_abs_value);
+                                const double Cp1 = sorted::sum(sp1,sorted::by_abs_value);
+                                const double dp  = fabs(Cp0-Cp1);
+                                std::cerr << " | Cp: " << Cp0 << " --> " << Cp1 << " | " << dp;
+
+                                std::cerr << std::endl;
+                            }
+                            
 
                             (void) returnSuccessful(C0,cycle);
                             exit(1);

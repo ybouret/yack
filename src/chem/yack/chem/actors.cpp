@@ -26,6 +26,7 @@ namespace yack
             return factor;
         }
 
+        
         void actors:: drvs_action(writable<double>       &psi,
                                   const double            factor,
                                   const readable<double> &C,

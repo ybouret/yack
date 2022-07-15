@@ -43,7 +43,7 @@ namespace yack
             // methods
             //__________________________________________________________________
             int    nu() const throw(); //!< sum of each nu, cast to int
-            int    dz() const throw(); //!< sum of algebraic nu
+            int    dz() const throw(); //!< sum of algebraic charge
 
             //! factor * prod( C[indx]^coef[indx] )
             double mass_action(double factor, const readable<double> &C) const throw();
@@ -53,7 +53,7 @@ namespace yack
 
             //! derivative of mass action(factor,C,xi)
             double slope(const readable<double> &C, const double xi) const throw();
-
+            
             //! gradient
             void drvs_action(writable<double>       &psi,
                              const double            factor,
@@ -74,7 +74,6 @@ namespace yack
 
             //! move all actors
             void   move(writable<double> &C, const double xi) const throw();
-            
 
             //! maximum of involved
             double maximum(const readable<double> &C) const throw();
