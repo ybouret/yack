@@ -44,7 +44,7 @@ namespace yack {
 
     }
 
-    endian::swap_proc endian::BEswap() throw()
+    endian::swap_proc endian:: BEswap() throw()
     {
         static const swap_proc proc = BE() ? keep_block : swap_block;
         return proc;
