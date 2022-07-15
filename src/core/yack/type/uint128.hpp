@@ -41,7 +41,7 @@ namespace yack
         const uint8_t & operator[](const size_t i) const throw(); //!< access, const
 
         friend bool operator==(const uint128_t &lhs, const uint128_t &rhs) throw(); //!< test equality
-        friend bool operator!=(const uint128_t &lhs, const uint128_t &rhs) throw(); //!< test equality
+        friend bool operator!=(const uint128_t &lhs, const uint128_t &rhs) throw(); //!< test difference
 
 
         //______________________________________________________________________
