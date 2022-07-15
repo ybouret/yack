@@ -22,6 +22,7 @@ YACK_UTEST_DECL(256)
     YACK_UTEST(env);
     YACK_UTEST(div);
     YACK_UTEST(zflux);
+    YACK_UTEST(net128);
 
     YACK_UTEST(type_ints);
     YACK_UTEST(type_traits);
