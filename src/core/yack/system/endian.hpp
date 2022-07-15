@@ -24,6 +24,7 @@ namespace yack
         static  swap_proc   BEswap()              throw();        //!< get swap/nope function
         static  void       *BEaddr(void *,size_t) throw();        //!< BE at address
 
+        //! integral type BEswap
         template <typename T> static inline
         T swap_be(const T &source) throw() {
             static const swap_proc swp = BEswap();

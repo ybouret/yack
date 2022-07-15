@@ -880,6 +880,7 @@ INPUT                  = src/core/yack \
                          src/jive/yack \
 			 src/json/yack \
                          src/lua++/yack \
+                         src/net/yack   \
 			 src/chem/yack  \
 			 src/gfx/yack   \
 			 src/mpi++/yack
