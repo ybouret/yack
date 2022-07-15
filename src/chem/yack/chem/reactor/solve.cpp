@@ -19,64 +19,6 @@ namespace yack
 
         
 
-        bool  reactor:: setupSingles(size_t &nrun) throw()
-        {
-            YACK_CHEM_MARKUP(vpfx, "reactor::solve::setupSingles");
-            double             Xmax = 0;
-            const equilibrium *emax = NULL;
-            nrun = 0;
-
-            for(const enode *node=singles.head();node;node=node->next)
-            {
-                const equilibrium &eq = ***node;
-                const size_t       ei = *eq;
-                const double       Ki = K[ei];
-                writable<double>  &Ci = Cl[ei];
-                const double       xx = (Xl[ei]=eq.solve1D(Ki,Corg,Ci));
-                const double       ax = fabs(xx);
-                if(ax>Xmax)
-                {
-                    Xmax =  ax;
-                    emax = &eq;
-                }
-                writable<double> &psi = Psi[ei];
-                eq.drvs_action(psi,Ki,Ci,Ctry);
-                const double den = - sorted::dot(psi,Nu[ei],Ctry);
-                if(den<=0)
-                {
-                    blocked[ei] = true;
-                    sigma[ei]   = 0.0;
-                }
-                else
-                {
-                    blocked[ei] = false;
-                    sigma[ei]   = den;
-                    ++nrun;
-                }
-
-                if(verbose)
-                {
-                    singles.pad(std::cerr << vpfx << "  @{" << eq.name << "}",eq);
-                    std::cerr << " | xi = " << std::setw(15) << xx;
-                    std::cerr << " | sigma = " << std::setw(15) << sigma[ei];
-                    std::cerr << std::endl;
-                }
-
-            }
-
-            if(!emax)
-            {
-                assert(Xmax<=0);
-                YACK_CHEM_PRINTLN(vpfx << "  [success : |Xi| = 0 ]");
-                return true;
-            }
-            else
-            {
-                YACK_CHEM_PRINTLN(vpfx << "  |Xi| = " << Xmax << " @{" << emax->name << "}" );
-                return false;
-            }
-        }
-
         void   reactor:: zapEquilibriumAt(const size_t ei) throw()
         {
             writable<double> &Omi = Omega0[ei];
@@ -87,100 +29,10 @@ namespace yack
             NuA[ei].ld(0);
         }
 
-        const char * reactor::accepting(const bool flag) throw()
-        {
-            return flag ? " (+) " : " (-) ";
-        }
-
-        const equilibrium *reactor:: setupLattice(const double G0) throw()
-        {
-            YACK_CHEM_MARKUP(vpfx, "reactor::solve::setupLattice");
-
-            double             Gmin = G0;
-            const equilibrium *emin = NULL;
-
-            //------------------------------------------------------------------
-            //
-            // setup from precomputed singles
-            //
-            //------------------------------------------------------------------
-            for(const enode *node=singles.head();node;node=node->next)
-            {
-                const equilibrium &eq   = ***node;
-                const size_t       ei   = *eq;
-                writable<double>  &Ci   = Cl[ei];   iota::load(Cend,Ci);
-                const double       Gtry = Htry(G0); iota::load(Ci,Ctry);
-                const bool         good = Gtry<Gmin;
-                if(good)
-                {
-                    Gmin = Gtry;
-                    emin = &eq;
-                }
-                YACK_CHEM_PRINTLN(vpfx << accepting(good) << std::setw(15) << Gmin << " @{" << eq.name << "}");
-
-            }
-
-            // setup from couples
-            for(const enode *node=couples.head();node;node=node->next)
-            {
-                const equilibrium &eq   = ***node;
-                const size_t       ei   = *eq;
-                (void) eq.solve1D(Kl[ei],Corg,Cend);
-                const double       Gtry = Htry(G0); iota::load(Cl[ei],Ctry);
-                const bool         good = Gtry<Gmin;
-                if(good)
-                {
-                    Gmin = Gtry;
-                    emin = &eq;
-                }
-                YACK_CHEM_PRINTLN(vpfx << accepting(good) << std::setw(15) << Gmin << " @{" << eq.name << "}");
-            }
-
-            return emin;
-        }
 
 
-        void reactor:: updateOmega0() throw()
-        {
-            YACK_CHEM_MARKUP(vpfx, "reactor::solve::updateOmega0");
 
-            NuA.assign(Nu);
-            for(const enode *node=singles.head();node;node=node->next)
-            {
-                const equilibrium       &eq = ***node;
-                const size_t             ei = *eq;
-                const readable<double>  &psi = Psi[ei];
-                writable<double>        &Omi = Omega0[ei];
-                double                  &gam = Gamma[ei];
-
-                if(blocked[ei])
-                {
-                    assert(fabs(sigma[ei])<=0);
-                    gam = 0;
-                    Omi.ld(0); Omi[ei]=1.0;
-                    NuA[ei].ld(0);
-                }
-                else
-                {
-                    assert(sigma[ei]>0);
-                    gam     = (fabs(Xl[ei]) <= 0) ? 0 : eq.mass_action(K[ei],Corg);
-                    Omi[ei] = sigma[ei];
-                    
-                    for(const enode *scan=node->prev;scan;scan=scan->prev) {
-                        const size_t j = ****scan;
-                        Omi[j] = - sorted::dot(psi,Nu[j],Ctry);
-                    }
-
-                    for(const enode *scan=node->next;scan;scan=scan->next) {
-                        const size_t j = ****scan;
-                        Omi[j] = - sorted::dot(psi,Nu[j],Ctry);
-                    }
-
-                }
-            }
-
-        }
-
+        
         bool reactor:: solve(writable<double> &C0) throw()
         {
             //------------------------------------------------------------------
@@ -194,8 +46,6 @@ namespace yack
             YACK_CHEM_MARKUP(vpfx, "reactor::solve");
             if(verbose) lib(std::cerr<<vpfx<<"Cini=",C0,vpfx);
 
-            ios::ocstream::overwrite("ham.dat");
-            ios::ocstream::overwrite("err.dat");
 
             //------------------------------------------------------------------
             //
@@ -240,6 +90,181 @@ namespace yack
             assert(N>0);
 
 
+
+        GLOBAL_STEP:
+            ++cycle;
+            YACK_CHEM_PRINTLN(vpfx << "  ---------------- cycle " << cycle  << " ----------------");
+
+            //------------------------------------------------------------------
+            //
+            // @Corg:
+            // - query singles for |Xi| and sigma
+            // - count running equilibria
+            //
+            //------------------------------------------------------------------
+            {
+                size_t nrun = 0;
+                if( querySingles(nrun) )
+                {
+                    return returnSuccessful(C0,cycle); // early return |Xi| = 0
+                }
+
+                switch(nrun)
+                {
+                    case 0:
+                        YACK_CHEM_PRINTLN(vpfx << "    [success: all blocked]");
+                        return returnSuccessful(C0,cycle);
+
+                    case 1:
+                        for(const enode *node=singles.head();node;node=node->next)
+                        {
+                            const equilibrium &eq = ***node;
+                            const size_t       ei = *eq;
+                            if(!blocked[ei])
+                            {
+                                active.transfer(Corg,Cl[ei]);
+                                goto GLOBAL_STEP;
+                            }
+                        }
+                        YACK_CHEM_PRINTLN(vpfx << "  [failure: corrupted-blocked]");
+                        return false;
+
+                    default:
+                        break;
+                }
+                assert(nrun>1);
+            }
+
+
+            //------------------------------------------------------------------
+            //
+            //
+            // @Corg, |Xi|>0, so I assume G0>0
+            //
+            //
+            //------------------------------------------------------------------
+            bool   foundGlobalDecrease = false;
+            size_t maxDegreesOfFreedom = 0;
+            {
+
+                const double G0 = Hamiltonian(Corg);
+                YACK_CHEM_PRINTLN(vpfx << "    [initialized] G0 = " << G0 << " ]");
+                const equilibrium *emin = queryLattice(G0);
+                if(emin)
+                {
+                    YACK_CHEM_PRINTLN(vpfx << "  <found global decrease @{" << emin->name << "} >");
+                    //----------------------------------------------------------
+                    //
+                    // find optimized decrease
+                    //
+                    //----------------------------------------------------------
+                    const double G1 = buildHamiltonian(*emin);
+                    if(G1<=0) {
+                        YACK_CHEM_PRINTLN(vpfx << "  [success : G1 = 0 ]");
+                        return returnSuccessful(C0,cycle);
+                    }
+
+                    //----------------------------------------------------------
+                    //
+                    // recompute sigma for local step
+                    //
+                    //----------------------------------------------------------
+                    if( querySingles(maxDegreesOfFreedom) )
+                    {
+                        return returnSuccessful(C0,cycle); // early return
+                    }
+                    foundGlobalDecrease = true;
+                }
+                else
+                {
+                    YACK_CHEM_PRINTLN(vpfx << "  <found global minimum>");
+                    // not moved, sigma is OK
+                }
+            }
+            YACK_CHEM_PRINTLN(vpfx << "    [foundGlobalDecrease]=" << yack_boolean(foundGlobalDecrease) );
+
+            //------------------------------------------------------------------
+            //
+            //
+            // updated Corg/sigma: build Omega0
+            //
+            //
+            //------------------------------------------------------------------
+            updateOmega0();
+            iOmega.assign(Omega0);
+            if(!LU->build(iOmega))
+            {
+                if(!foundGlobalDecrease)
+                {
+                    goto GLOBAL_STEP;
+                }
+                YACK_CHEM_PRINTLN(vpfx << "  [failure : singular system ]");
+                return false;
+            }
+
+            //------------------------------------------------------------------
+            //
+            //
+            // compute xi
+            //
+            //
+            //------------------------------------------------------------------
+            iota::load(xi,Gamma);
+            LU->solve(iOmega,xi);
+
+            //--------------------------------------------------------------
+            //
+            // validate primary constraints
+            //
+            //--------------------------------------------------------------
+            {
+                bool overshoot = false;
+                for(const enode *node=singles.head();node;node=node->next)
+                {
+                    const equilibrium &eq = ***node;
+                    const size_t       ei = *eq;
+                    const double       xx = xi[ei];
+
+                    if(verbose) singles.pad(std::cerr << "@{" << eq.name << "}",eq) << " : ";
+                    if(blocked[ei])
+                    {
+                        if(verbose) std::cerr << "[blocked]";
+                    }
+                    else
+                    {
+                        const limits &lm = eq.primary_limits(Corg,lib.width);
+                        if( lm.should_reduce(xx) )
+                        {
+                            overshoot = true;
+                            YACK_CHEM_PRINT("[REJECT]");
+                            zapEquilibriumAt(ei);
+                            --maxDegreesOfFreedom;
+                        }
+                        else
+                        {
+                            YACK_CHEM_PRINT("[accept]");
+                        }
+                        YACK_CHEM_PRINT( " " << std::setw(15) << xx << " | " << lm) ;
+                    }
+                    if(verbose) std::cerr << std::endl;
+                }
+
+                if(overshoot)
+                {
+                    std::cerr << "overshoot #DOF=" << maxDegreesOfFreedom << std::endl;
+                    exit(1);
+                }
+            }
+
+
+            YACK_CHEM_PRINTLN(vpfx << "  [acceptable extent]");
+
+            exit(1);
+
+            return false;
+
+
+#if 0
         CYCLE:
             ++cycle;
             YACK_CHEM_PRINTLN(vpfx << "  ---------------- cycle " << cycle  << " ----------------");
@@ -259,7 +284,7 @@ namespace yack
             //
             //------------------------------------------------------------------
             size_t nrun = 0;
-            if( setupSingles(nrun) ) return returnSuccessful(C0,cycle); // early return
+            if( querySingles(nrun) ) return returnSuccessful(C0,cycle); // early return
 
             //------------------------------------------------------------------
             //
@@ -281,7 +306,7 @@ namespace yack
             //------------------------------------------------------------------
             bool foundGlobalDecrease = false;
             {
-                const equilibrium *emin = setupLattice(G0);
+                const equilibrium *emin = queryLattice(G0);
                 if(emin)
                 {
                     YACK_CHEM_PRINTLN(vpfx << "  <found global decrease @{" << emin->name << "} >");
@@ -301,7 +326,7 @@ namespace yack
                     // recompute sigma for local step
                     //
                     //----------------------------------------------------------
-                    if( setupSingles(nrun) ) return returnSuccessful(C0,cycle); // early return
+                    if( querySingles(nrun) ) return returnSuccessful(C0,cycle); // early return
                     foundGlobalDecrease = true;
 
                     vector<double> sr0,sr1,sp0,sp1;
@@ -578,6 +603,8 @@ namespace yack
 
 
             return false;
+#endif
+
         }
 
 

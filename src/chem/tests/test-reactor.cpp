@@ -33,7 +33,7 @@ YACK_UTEST(reactor)
     reactor        cs(lib,eqs,0.0);
     vector<double> C(cs.M,0);
 
-    for(size_t iter=0;iter<100;++iter)
+    for(size_t iter=0;iter<1;++iter)
     {
         lib.fill(C, 1, ran);
         if(cs.solve(C))

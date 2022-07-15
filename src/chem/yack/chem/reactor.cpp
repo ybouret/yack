@@ -14,6 +14,11 @@ namespace yack
         const char   reactor::vpfx[]  = "//  ";
         const bool & reactor::verbose = entity::verbose;
 
+        const char * reactor::accepting(const bool flag) throw()
+        {
+            return flag ? " (+) " : " (-) ";
+        }
+
         reactor:: ~reactor() throw()
         {
         }

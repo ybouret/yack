@@ -107,9 +107,8 @@ namespace yack
             const lockable::scope libLock;
             const lockable::scope eqsLock;
 
-            bool               setupSingles(size_t &nrun)    throw();
-            bool               sigmaSingles(size_t &nrun)    throw();
-            const equilibrium *setupLattice(const double G0) throw();
+            bool               querySingles(size_t &nrun)    throw();
+            const equilibrium *queryLattice(const double G0) throw();
             void               updateOmega0() throw();
 
             double  Hamiltonian(const readable<double> &C) throw();
@@ -121,9 +120,8 @@ namespace yack
             bool    returnSuccessful(writable<double> &C0, const unsigned cycle);  //!< Corg -> C0, optional info
             void    zapEquilibriumAt(const size_t ei) throw();                     //!< de-activate
             bool    optimizeFullStep(double &G0) throw();                          //!< numerical look up
-            size_t  initializeOmega0() throw();                                    //!< full matrix setup
 
-            static const char *accepting(const bool flag) throw();
+            static const char *accepting(const bool flag) throw(); //!< helpe
         };
 
     }
