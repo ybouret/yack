@@ -43,6 +43,15 @@ set(math_opt ${math_opt_decl} ${math_opt_srcs})
 SOURCE_GROUP(math/opt FILES ${math_opt})
 install( FILES ${math_opt_decl} DESTINATION include/yack/math/opt )
 
+# geometry
+file(GLOB math_geometry_decl yack/math/geometry/*.hpp)
+file(GLOB math_geometry_srcs yack/math/geometry/*.cpp yack/math/geometry/*.hxx)
+set(math_geometry ${math_geometry_decl} ${math_geometry_srcs})
+SOURCE_GROUP(math/geometry FILES ${math_geometry})
+install( FILES ${math_geometry_decl} DESTINATION include/yack/math/geometry )
+
+
+
 # data
 file(GLOB math_data_decl yack/math/data/*.hpp)
 file(GLOB math_data_srcs yack/math/data/*.cpp yack/math/data/*.hxx)
@@ -125,6 +134,7 @@ ${math_algebra}
 ${math_ode} ${math_ode_explicit} ${math_ode_explicit_rk45} ${math_ode_explicit_bs}
 ${math_root}
 ${math_opt}
+${math_geometry}
 ${math_data}
 ${math_fit} ${math_fit_variable} ${math_fit_sample} ${math_fit_samples} ${math_fit_least_squares} ${math_fit_ode}
 )

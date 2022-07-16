@@ -25,6 +25,9 @@ source_group(data FILES ${data})
 file(GLOB fit fit/*.cpp)
 source_group(fit FILES ${fit})
 
+file(GLOB geometry geometry/*.cpp)
+source_group(geometry FILES ${geometry})
+
 
 add_executable(test-math main.cpp
 ${global}
@@ -35,6 +38,7 @@ ${opt}
 ${fcn}
 ${data}
 ${fit}
+${geometry}
 )
 
 target_link_libraries(test-math yack-math yack-lua++ yack-lua)
@@ -77,4 +81,5 @@ add_test(fit:lam test-math fit_lam)
 add_test(fit test-math fit)
 add_test(gls test-math gls)
 
+add_test(geom:area2d test-math area2d)
 
