@@ -4,27 +4,14 @@
 #define YACK_NETWORK_INCLUDED 1
 
 #include "yack/net/types.hpp"
+#include "yack/net/initializer.hpp"
 #include "yack/singleton.hpp"
 #include "yack/string.hpp"
 
 namespace yack
 {
 
-    namespace net
-    {
-        class initializer
-        {
-        public:
-            virtual ~initializer() throw();
-
-        protected:
-            explicit initializer();
-
-        private:
-            YACK_DISABLE_COPY_AND_ASSIGN(initializer);
-        };
-    }
-
+    
     //! network
     class network : private net::initializer, public singleton<network>
     {
