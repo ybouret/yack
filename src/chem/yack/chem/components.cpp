@@ -178,7 +178,18 @@ namespace yack
             prod.move(C,+xi);
         }
 
+        bool components:: found_underflow_for(const double xi, const readable<double> &C) const throw()
+        {
+            for(const cnode *node=head();node;node=node->next)
+            {
+                const component &c = ***node;
+                if(c.is_too_small(xi,C)) return true;
+            }
+            return false;
+        }
 
+
+#if 0
         bool components:: extent_changes_phase_space(const readable<double> &C, const double xi, writable<double> &Ctry) const throw()
         {
             for(const cnode *node=head();node;node=node->next)
@@ -212,6 +223,8 @@ namespace yack
 
             return fabs(maOrg-maTry)>0;
         }
+#endif
+
 
         void components:: hessian(matrix<double> &H, const double K, const readable<double> &C, writable<double> &arr) const throw()
         {

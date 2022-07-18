@@ -39,6 +39,8 @@ namespace yack
             const string  & key()       const throw(); //!< host.name
             const species & operator*() const throw(); //!< access species
 
+            bool is_too_small(const double xi, const readable<double> &C) const throw();
+
             //__________________________________________________________________
             //
             // members

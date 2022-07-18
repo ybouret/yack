@@ -1,8 +1,6 @@
-
 #include "yack/chem/components.hpp"
 #include "yack/math/triplet.hpp"
 #include "yack/math/numeric.hpp"
-//#include "yack/math/tao/v1.hpp"
 #include "yack/math/iota.hpp"
 #include "yack/signs.hpp"
 #include "yack/exception.hpp"

@@ -1,4 +1,3 @@
-
 //! \file
 
 #ifndef YACK_CHEM_COMPONENTS_INCLUDED
@@ -21,9 +20,7 @@ namespace yack
         typedef suffix_set<string,const component::pointer> components_set; //!< alias
         typedef components_set::knot_type                   cnode;          //!< alias
       
-
-
-
+        
         //______________________________________________________________________
         //
         //
@@ -116,14 +113,17 @@ namespace yack
             void move(writable<double> &C, const double xi) const throw();
 
 
+            //! detect underflow
+            bool found_underflow_for(const double xi, const readable<double> &C) const throw();
 
-
+#if 0
             //! check if C is changed by xi, using Ctry as workspace
             bool extent_changes_phase_space(const readable<double> &C, const double xi, writable<double> &Ctry) const throw();
 
             //! check if mass action is changed by xi, using Ctry as workspace
             bool extent_changes_mass_action(const double K, const readable<double> &C, const double xi, writable<double> &Ctry) const throw();
-
+#endif
+            
 
             //! find private limits
             const limits & private_limits(const readable<double> &C, const size_t w) const throw();

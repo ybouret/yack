@@ -22,6 +22,7 @@ namespace yack
         typedef thin_array<bool>       booltab;  //!< alias
         typedef math::lu<double>       rsolver;  //!< alias
 
+    
     }
 
 }
