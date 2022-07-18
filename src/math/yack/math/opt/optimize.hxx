@@ -36,7 +36,6 @@ namespace yack
         template <>
         real_t optimize:: parabolic_guess(const triplet<real_t> &x, const triplet<real_t> &f) throw()
         {
-            static const real_t half(0.5);
             static const real_t one(1);
 
             //------------------------------------------------------------------
@@ -95,7 +94,7 @@ namespace yack
                         case __zero__: break;          // will return middle
 
                     }
-                    return half*(x.a+x.c);
+                    return middle_of(x);
 
                 GENERIC:
                     const real_t width = std::abs(x.c-x.a); assert(width>0);
