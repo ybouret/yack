@@ -10,8 +10,23 @@
 namespace yack
 {
 
+    namespace net
+    {
+        class initializer
+        {
+        public:
+            virtual ~initializer() throw();
+
+        protected:
+            explicit initializer();
+
+        private:
+            YACK_DISABLE_COPY_AND_ASSIGN(initializer);
+        };
+    }
+
     //! network
-    class network : public singleton<network>
+    class network : private net::initializer, public singleton<network>
     {
     public:
         //______________________________________________________________________
