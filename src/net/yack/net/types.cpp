@@ -1,6 +1,7 @@
 #include "yack/net/types.hpp"
 #include "yack/system/error.hpp"
 #include <cstring>
+#include <cstdarg>
 
 namespace yack {
 
