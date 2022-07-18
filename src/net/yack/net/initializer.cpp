@@ -4,6 +4,7 @@
 #include "yack/string.hpp"
 #include "yack/memory/allocator/pooled.hpp"
 #include "yack/memory/buffers.hpp"
+#include "yack/system/exception.hpp"
 
 #include <cstring>
 

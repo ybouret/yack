@@ -1,5 +1,4 @@
 #include "yack/network.hpp"
-#include "yack/system/exception.hpp"
 
 #include <cstring>
 
