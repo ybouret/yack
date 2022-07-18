@@ -42,8 +42,19 @@ namespace yack
 
         //! helper for never_get_here code
         static  void never_get_here(const char *ctx) throw();
-      
+
     };
+
+#if defined(YACK_WIN)
+#define YACK_SYSTEM_ERROR_FORMAT yack::system_error::format_win
+#endif
+
+#if defined(YACK_BSD)
+#define YACK_SYSTEM_ERROR_FORMAT yack::system_error::format_bsd
+#endif
+
+
+
 
 }
 

@@ -11,9 +11,11 @@ namespace yack
 {
     namespace math
     {
-        
+
+        //! computing 2D areas
         struct area2d
         {
+            //! triangle of x[1..3], y[1..3]
             template <typename LHS, typename RHS> static inline
             typename LHS::mutable_type
             triangle(LHS &x, RHS &y) throw()

@@ -1,17 +1,87 @@
 
 #include "yack/net/network.hpp"
+#include "yack/system/exception.hpp"
+
+#include <cstring>
+
+#if defined(YACK_BSD)
+#include <csignal>
+#include <unistd.h>
+#include <cerrno>
+#endif
+
 
 namespace yack
 {
-    network:: ~network() throw()
+
+    namespace
     {
+
+#if defined(YACK_WIN)
+        static WSADATA wsa;
+#endif
+
+
     }
 
-    network:: network() : singleton<network>()
+    bool network::verbose = false;
+    
+    network:: ~network() throw()
     {
+        YACK_NET_PRINTLN( '[' << call_sign << ".cleanup" << ']');
+
+#if defined(YACK_WIN)
+        ::WSACleanup();
+#endif
+
+    }
+
+    network:: network() : singleton<network>(),
+    hostname()
+    {
+        YACK_NET_PRINTLN( '[' << call_sign << ".startup" << ']');
+        YACK_GIANT_LOCK();
+
+#if defined(YACK_WIN)
+        memset(&wsa, 0, sizeof(WSADATA) );
+        if( :: WSAStartup( MAKEWORD(2,2), &wsa ) !=  0 )
+        {
+            throw win32::exception( ::WSAGetLastError(), "::WSAStartup" );
+        }
+#endif
+
+#if defined(YACK_BSD)
+        signal( SIGPIPE, SIG_IGN );
+#endif
+
     }
 
     const char   network:: call_sign[] = "network";
+
+    const uint16_t network:: reserved_port   = IPPORT_RESERVED;
+#       if defined(YACK_WIN) || defined(__FreeBSD__)
+    const uint16_t network:: first_user_port = IPPORT_RESERVED;
+#        else
+    const uint16_t network:: first_user_port = IPPORT_USERRESERVED;
+#        endif
+
+    const uint16_t network:: user_port_width = (network::final_user_port-network::first_user_port)+1;
+
+
+    net::ip_version network:: ip_version(const char   *text) const
+    {
+        static const char fn[] = ".ip_version";
+        if(!text) throw yack::exception("%s%s(NULL)",call_sign,fn);
+        if(!strcmp(text,"v4")) return net::v4;
+        if(!strcmp(text,"v6")) return net::v6;
+        throw yack::exception("%s%s(invalid '%s')",call_sign,fn,text);
+    }
+
+    net::ip_version network:: ip_version(const string &text) const
+    {
+        return ip_version( text() );
+    }
+
 
 }
 

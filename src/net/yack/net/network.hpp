@@ -3,7 +3,9 @@
 #ifndef YACK_NETWORK_INCLUDED
 #define YACK_NETWORK_INCLUDED 1
 
+#include "yack/net/types.hpp"
 #include "yack/singleton.hpp"
+#include "yack/string.hpp"
 
 namespace yack
 {
@@ -12,8 +14,35 @@ namespace yack
     class network : public singleton<network>
     {
     public:
+        //______________________________________________________________________
+        //
+        // types and definition
+        //______________________________________________________________________
+        static bool           verbose;                 //!< mostly to debug
+        static const uint16_t reserved_port;           //!< port < reserved_port: for system
+        static const uint16_t first_user_port;         //!< port >= first_user_port: for user
+        static const uint16_t final_user_port = 65535; //!< for information
+        static const uint16_t user_port_width;         //!< final_user_port-first_user_port+1;
+
+        //______________________________________________________________________
+        //
+        // singleton
+        //______________________________________________________________________
         static const at_exit::longevity life_time = 3000; //!< for singleton
         static const char               call_sign[];      //!< for singleton
+
+        //______________________________________________________________________
+        //
+        // methods
+        //______________________________________________________________________
+        net::ip_version ip_version(const char   *text) const; //!< [v4|v6]
+        net::ip_version ip_version(const string &text) const; //!< [v4|v6]
+
+        //______________________________________________________________________
+        //
+        // members
+        //______________________________________________________________________
+        const string hostname; //!< hostname
 
     private:
         YACK_DISABLE_COPY_AND_ASSIGN(network);
@@ -24,6 +53,13 @@ namespace yack
     };
 
 }
+
+//! macro to be used with network verbosity
+#define YACK_NET_PRINTLN(MSG) do {  \
+if(yack::network::verbose) {        \
+YACK_LOCK(yack::network::access);   \
+std::cerr << MSG << std::endl;      \
+} } while(false);
 
 #endif
 

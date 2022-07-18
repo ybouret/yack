@@ -10,6 +10,7 @@ yack_testing(net)
 enable_testing()
 
 add_test(types test-net types)
+add_test(types test-net init)
 
 
 
