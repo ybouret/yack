@@ -158,7 +158,8 @@ namespace yack
                     //
                     //----------------------------------------------------------
                     const double G1 = buildHamiltonian(*emin);
-                    if(G1<=0) {
+                    if(G1<=0)
+                    {
                         YACK_CHEM_PRINTLN(vpfx << "  [success : G1 = 0 ]");
                         return returnSuccessful(C0,cycle);
                     }
@@ -319,7 +320,7 @@ namespace yack
             }
             else
             {
-                YACK_CHEM_PRINTLN(vpfx << "    [impossible minor step]");
+                YACK_CHEM_PRINTLN(vpfx << "    [not-decreasing minor step]");
                 if(foundMajorDecrease)
                 {
                     // try again
