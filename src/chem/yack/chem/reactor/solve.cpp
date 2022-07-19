@@ -328,8 +328,18 @@ namespace yack
                 }
                 else
                 {
-                    (void) returnSuccessful(C0,cycle);
-                    exit(1);
+                    if(hasMinorRobustness)
+                    {
+                        YACK_CHEM_PRINTLN(vpfx << "  [NEED TO CHECK]");
+                        (void) returnSuccessful(C0,cycle);
+                        exit(1);
+                    }
+                    else
+                    {
+                        // bad!
+                        YACK_CHEM_PRINTLN(vpfx << "  [singular extremum]");
+                        return false;
+                    }
                 }
 
             }
