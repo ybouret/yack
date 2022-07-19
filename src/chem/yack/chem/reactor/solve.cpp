@@ -331,6 +331,23 @@ namespace yack
                     if(hasMinorRobustness)
                     {
                         YACK_CHEM_PRINTLN(vpfx << "  [NEED TO CHECK]");
+                        for(const enode *node=singles.head();node;node=node->next)
+                        {
+                            const equilibrium &eq = ***node;
+                            const size_t       ei = *eq;
+                            singles.pad(std::cerr << "@{" << eq.name << "}",eq) << " :";
+                            std::cerr << "xi=" << std::setw(15) << Xl[ei];
+                            if(eq.found_underflow_for(Xl[ei],Corg))
+                            {
+                                std::cerr << " [ok]";
+                            }
+                            else
+                            {
+                                std::cerr << " [NO]";
+                            }
+                            std::cerr << std::endl;
+                        }
+
                         (void) returnSuccessful(C0,cycle);
                         exit(1);
                     }
