@@ -3,6 +3,8 @@ file(GLOB subdirs build*)
 
 foreach(subdir IN ITEMS ${subdirs})
 	message( "[YACK] processing <${subdir}>" )
+	execute_process(COMMAND ${CMAKE_COMMAND} ${subdir} )
+
 	set(YACK "all")
 	if(EXISTS ${subdir}/yack.xcodeproj)
 		message( "[YACK]   found XCode" )
@@ -14,8 +16,7 @@ foreach(subdir IN ITEMS ${subdirs})
 		set(YACK "ALL_BUILD")
 	endif()
 
-	set(cmd "${CMAKE_COMMAND} --build ${subdir} --target ${YACK} --config Release" )
-	message( "[YACL]   executing '${cmd}'")
+	execute_process(COMMAND ${CMAKE_COMMAND} --build ${subdir} --target ${YACK} --config Release )
 endforeach()
 
 
