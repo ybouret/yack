@@ -8,7 +8,13 @@ namespace yack {
     namespace net
     {
 
-        const socket_type invalid_socket = -1;
+#if defined(YACK_BSD)
+     const socket_type invalid_socket = -1;
+#endif
+
+#if defined(YACK_WIN)
+     const socket_type invalid_socket = INVALID_SOCKET;
+#endif
 
         exception:: ~exception() throw()
         {

@@ -16,9 +16,18 @@ YACK_UTEST(socket)
     std::cerr << "on " << nw.hostname << std::endl;
 
     net::socket_type s4 = socket(PF_INET, SOCK_STREAM, IPPROTO_TCP);
-    shutdown(s4,SHUT_RDWR);
-    close(s4);
+   // shutdown(s4,SHUT_RDWR);
 
+#if defined(YACK_BSD)
+    close(s4);
+#endif
+
+#if defined(YACK_WIN)
+    shutdown(s4, SD_BOTH);
+    shutdown(s4, SD_SEND);
+    shutdown(s4, SD_RECEIVE);
+    closesocket(s4);
+#endif
 
 }
 YACK_UDONE()
