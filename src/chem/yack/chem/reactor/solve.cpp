@@ -328,6 +328,7 @@ namespace yack
                 }
                 else
                 {
+                    // sigma/omega are computed
                     if(hasMinorRobustness)
                     {
                         YACK_CHEM_PRINTLN(vpfx << "  [NEED TO CHECK]");
@@ -348,12 +349,16 @@ namespace yack
                             std::cerr << std::endl;
                         }
 
+                        singles(std::cerr << "Omega=",Omega0,"");
+                        singles(std::cerr << "Sigma=",sigma,"");
+
                         (void) returnSuccessful(C0,cycle);
+
                         exit(1);
                     }
                     else
                     {
-                        // bad!
+                        // !bad!
                         YACK_CHEM_PRINTLN(vpfx << "  [singular extremum]");
                         return false;
                     }

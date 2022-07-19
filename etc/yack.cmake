@@ -54,12 +54,22 @@ string(COMPARE EQUAL "SunOS"   ${CMAKE_SYSTEM_NAME} YACK_SUNOS)
 string(COMPARE EQUAL "OpenBSD" ${CMAKE_SYSTEM_NAME} YACK_OPENBSD)
 string(COMPARE EQUAL "Windows" ${CMAKE_SYSTEM_NAME} YACK_WINDOWS)
 
-if(YACK_SUNOS)
-	# old CMake
+
+set(cmake_rm "")
+
+if("${CMAKE_VERSION}" VERSION_LESS "3.17" )
+	# old cmake -E
+	message( STATUS "[YACK] removing with remove" )
 	set(cmake_rm "remove")
 else()
+	message( STATUS "[YACK] removing with rm" )
 	set(cmake_rm "rm")
 endif()
+
+#message( FATAL_ERROR "Testing" )
+
+
+
 
 ########################################################################
 ##
