@@ -43,14 +43,16 @@ namespace yack
             assert(invalid_socket != s);
 
 #if defined(YACK_BSD)
-            (void) close(s);       s = invalid_socket;
+            (void) close(s);
+            s = invalid_socket;
 #endif
 
 #if defined(YACK_WIN)
-            (void) closesocket(s); s =  invalid_socket;
+            (void) closesocket(s);
+            s = invalid_socket;
 #endif
 
-            assert(net::invalid_socket == s);
+            assert(invalid_socket == s);
 
         }
 
