@@ -62,7 +62,7 @@ namespace yack
 
 #if defined(YACK_WIN)
 #define YACK_NET_SD_SEND SD_SEND
-#define YACK_NET_SD_RECV SD_RECV
+#define YACK_NET_SD_RECV SD_RECEIVE
 #define YACK_NET_SD_BOTH SD_BOTH
 #endif
 
