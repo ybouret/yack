@@ -7,6 +7,9 @@ namespace yack {
 
     namespace net
     {
+
+        const socket_type invalid_socket = -1;
+
         exception:: ~exception() throw()
         {
             memset(what_,0,sizeof(what_));

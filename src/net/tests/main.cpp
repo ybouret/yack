@@ -5,5 +5,6 @@ YACK_UTEST_DECL(4)
 {
     YACK_UTEST(types);
     YACK_UTEST(init);
+    YACK_UTEST(socket);
 }
 YACK_UTEST_EXEC()
