@@ -50,6 +50,26 @@ namespace yack
         return ip_version( text() );
     }
 
+    const char    * network:: ip_version(const net::ip_version pf) const throw()
+    {
+        switch(pf)
+        {
+            case net::v4: return "v4";
+            case net::v6: return "v6";
+        }
+        return yack_unknown;
+    }
+
+    const char * network:: ip_protocol(const net::ip_protocol proto) const throw()
+    {
+        switch(proto)
+        {
+            case net::tcp: return "tcp";
+            case net::udp: return "udp";
+        }
+        return yack_unknown;
+    }
+
 
 }
 

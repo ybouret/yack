@@ -81,13 +81,13 @@ namespace yack
 #if defined(YACK_BSD)
         typedef int error_code; //!< from errno
         //! value of the last error code
-#define Y_NET_LAST_ERROR() (errno)
+#define YACK_NET_LAST_ERROR() (errno)
 #endif
 
 #if defined(YACK_WIN)
         typedef int error_code;
         //! value of the last error code
-#define Y_NET_LAST_ERROR() (::WSAGetLastError())
+#define YACK_NET_LAST_ERROR() (::WSAGetLastError())
 #endif
 
         //______________________________________________________________________
@@ -130,6 +130,7 @@ namespace yack
             tcp, //!< mark TCP
             udp  //!< mark UDP
         };
+        
 
 #if defined(YACK_WIN)                   //--------------------------------------
         typedef SOCKET     socket_type; //!< win32 sockets
@@ -157,6 +158,8 @@ namespace yack
     typedef uint64_t   net64_t;    //!< alias
     typedef uint128_t  net128_t;   //!< alias
 }
+
+
 
 #endif
 

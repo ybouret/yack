@@ -40,6 +40,10 @@ namespace yack
         net::ip_version ip_version(const char   *text) const; //!< [v4|v6]
         net::ip_version ip_version(const string &text) const; //!< [v4|v6]
 
+        const char    * ip_version(const net::ip_version) const throw();    //!< v4|v6
+        const char    * ip_protocol(const net::ip_protocol) const throw();  //!< tcp|udp
+
+        
         //______________________________________________________________________
         //
         // members
@@ -56,12 +60,21 @@ namespace yack
 
 }
 
+
 //! macro to be used with network verbosity
 #define YACK_NET_PRINTLN(MSG) do {  \
 if(yack::network::verbose) {        \
 YACK_LOCK(yack::network::access);   \
 std::cerr << MSG << std::endl;      \
 } } while(false);
+
+//! macro to be used with network verbosity
+#define YACK_NET_PRINT(MSG) do {    \
+if(yack::network::verbose) {        \
+YACK_LOCK(yack::network::access);   \
+std::cerr << MSG;                   \
+} } while(false);
+
 
 #endif
 

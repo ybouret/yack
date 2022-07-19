@@ -1,4 +1,3 @@
-
 //! \file
 
 #ifndef YACK_CHEM_HIDDEN_INCLUDED
@@ -10,9 +9,10 @@ namespace yack
 {
     namespace chemical
     {
-
+        //! perform hidden ops
         struct hidden
         {
+            //! difference
             static double diff(const double lhs, const double rhs) throw();
         };
 
