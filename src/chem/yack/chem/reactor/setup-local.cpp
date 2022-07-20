@@ -13,7 +13,7 @@ namespace yack
        
         void reactor:: updateOmega0() throw()
         {
-            YACK_CHEM_MARKUP(vpfx, "reactor::solve::updateOmega0");
+            YACK_CHEM_MARKUP(vpfx, "reactor::updateOmega0");
 
             NuA.assign(Nu);
             for(const enode *node=singles.head();node;node=node->next)
@@ -44,21 +44,6 @@ namespace yack
                         Omi[j] = - sorted::dot(psi,Nu[j],Ctry);
                     }
 
-
-#if 0
-                    //gam     = (fabs(Xl[ei]) <= 0) ? 0 : eq.mass_action(K[ei],Corg);
-                    Omi[ei] = sigma[ei];
-
-                    for(const enode *scan=node->prev;scan;scan=scan->prev) {
-                        const size_t j = ****scan;
-                        Omi[j] = - sorted::dot(psi,Nu[j],Ctry);
-                    }
-
-                    for(const enode *scan=node->next;scan;scan=scan->next) {
-                        const size_t j = ****scan;
-                        Omi[j] = - sorted::dot(psi,Nu[j],Ctry);
-                    }
-#endif
                 }
             }
 

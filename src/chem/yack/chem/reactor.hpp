@@ -124,7 +124,8 @@ namespace yack
 
             bool         initializeSearch(writable<double> &C0) throw();                 //!< initialize, true=>success
             steady_state updateSuccessful(writable<double> &C0, unsigned cycle) throw(); //!< transfer + verbose info
-            
+            void         initializeOmega0() throw();
+
 
             double  mixedHamiltonian(writable<double> &C, const group &g) throw(); //!< aggregate a mixed combination
             double  buildHamiltonian(const equilibrium &eq) throw();               //!< build best from eq

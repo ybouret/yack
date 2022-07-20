@@ -22,6 +22,7 @@ namespace yack
         void   reactor:: zapEquilibriumAt(const size_t ei) throw()
         {
             writable<double> &Omi = Omega0[ei];
+            assert(false==blocked[ei]);
             blocked[ei] = true;
             sigma[ei]   = 0;
             Gamma[ei]   = 0;
@@ -300,9 +301,9 @@ namespace yack
             // found an acceptable extent!
             //
             //------------------------------------------------------------------
-            YACK_CHEM_PRINTLN(vpfx << "    [acceptable extent!]");
-            YACK_CHEM_PRINTLN(vpfx << "    [foundMajorDecrease]=" << yack_boolean(foundMajorDecrease) );
-            YACK_CHEM_PRINTLN(vpfx << "    [hasMinorRobustness]=" << yack_boolean(hasMinorRobustness) );
+            YACK_CHEM_PRINTLN(vpfx << "    [acceptable_extents]@cycle = " << cycle);
+            YACK_CHEM_PRINTLN(vpfx << "    [foundMajorDecrease]       = " << yack_boolean(foundMajorDecrease) );
+            YACK_CHEM_PRINTLN(vpfx << "    [hasMinorRobustness]       = " << yack_boolean(hasMinorRobustness) );
 
 
 
