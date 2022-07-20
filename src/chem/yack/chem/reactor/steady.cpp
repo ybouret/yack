@@ -398,16 +398,19 @@ namespace yack
 
             if(optimizeFullStep(G0))
             {
-                
+                goto GLOBAL_STEP;
             }
             else
             {
-
+                std::cerr << std::endl << " STUCK " << std::endl;
+                (void) updateSuccessful(C0,cycle);
+                std::cerr << std::endl;
+                exit(1);
+                return steady_failure;
             }
 
 
-            exit(1);
-            return steady_failure;
+
         }
         
     }

@@ -48,6 +48,7 @@ namespace yack
                 expand = min_of(expand,0.99*ratio.front());
             }
 
+            // compute Cend
             for(const anode *node=active.head;node;node=node->next)
             {
                 const size_t j = ***node;
