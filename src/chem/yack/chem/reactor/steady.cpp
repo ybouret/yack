@@ -150,7 +150,7 @@ namespace yack
                 return updateSuccessful(C0,cycle); // fastest !
             }
 
-#if 0
+#if 1
             svd<double> SVD(N);
             rmatrix     U(N,N);
             rmatrix     V(N,N);
@@ -303,11 +303,19 @@ namespace yack
             iota::load(xi,Gamma);
             LU->solve(iOmega,xi);
 
-            //--------------------------------------------------------------
+            U.assign(Omega0);
+            if(!SVD.build(U,w,V))
+            {
+                std::cerr << " (***) SVD failure" << std::endl;
+                exit(1);
+            }
+            std::cerr << "w=" << w << std::endl;
+
+            //------------------------------------------------------------------
             //
             // validate primary constraints
             //
-            //--------------------------------------------------------------
+            //------------------------------------------------------------------
             bool   hasRobustPhaseSpace = true;
             {
                 bool overshoot = false;
@@ -317,9 +325,16 @@ namespace yack
                     const size_t       ei = *eq;
                     const double       xx = xi[ei];
 
+                    //----------------------------------------------------------
+                    //
+                    // check extent for equilibrium
+                    //
+                    //----------------------------------------------------------
                     if(verbose) singles.pad(std::cerr << "@{" << eq.name << "}",eq) << " : ";
+
                     if(blocked[ei])
                     {
+                        // won't move anyway
                         if(verbose) std::cerr << "[blocked]";
                     }
                     else
@@ -341,8 +356,16 @@ namespace yack
                     if(verbose) std::cerr << std::endl;
                 }
 
+                //--------------------------------------------------------------
+                //
+                // at least one overshoot!
+                //
+                //--------------------------------------------------------------
                 if(overshoot)
                 {
+
+                    exit(1);
+
                     hasRobustPhaseSpace = false;
                     YACK_CHEM_PRINTLN(vpfx << "  [overshoot: #DOF= " << maxAvailableRunning << "]");
                     if(foundGlobalDecrease)
