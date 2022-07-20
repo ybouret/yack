@@ -171,7 +171,7 @@ namespace yack
             // If iMode = 0, blocking is enabled;
             // If iMode != 0, non-blocking mode is enabled.
 
-            const int iResult = ioctlsocket(m_socket, FIONBIO, &iMode);
+            const int iResult = ioctlsocket(s, FIONBIO, &iMode);
             if( NO_ERROR != iResult) throw exception(WSAGetLastError(),"ioctlsocket");
 #endif
 
