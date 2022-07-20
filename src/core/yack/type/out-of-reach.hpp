@@ -52,6 +52,12 @@ namespace yack
             return static_cast<T*>(shift(obj,sz));
         }
 
+        template <typename TARGET, typename SOURCE> static inline
+        TARGET & access(SOURCE &source, const ptrdiff_t offset) throw()
+        {
+            return *static_cast<TARGET *>( shift(&source,offset) );
+        }
+
     };
 
     //! static field zset
