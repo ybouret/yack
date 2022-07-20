@@ -93,12 +93,42 @@ namespace yack
             assert(NULL!=optVal);
             assert(NULL!=optLen);
 
+#if defined(YACK_BSD)
             socklen_t tmpLen = *optLen;
             if( getsockopt(s,level,optName,optVal,&tmpLen) < 0 )
             {
                 throw exception( errno, "getsockopt" );
             }
             *optLen = tmpLen;
+#endif
+
+#if defined(YACK_WIN)
+            int tmpLen = *optLen;
+            if( SOCKET_ERROR == getsockopt(s,level,optName,(char*)optVal,&tmpLen) )
+            {
+                throw exception( ::WSAGetLastError(), "getsockopt" );
+            }
+            *optLen = tmpLen;
+#endif
+
+        }
+
+
+        void bsd:: setopt(socket_type       &s,
+                          const int          level,
+                          const int          optName,
+                          const void        *optVal,
+                          const unsigned     optLen)
+        {
+            YACK_GIANT_LOCK();
+
+            assert(invalid_socket != s);
+            assert(NULL!=optVal);
+
+            if( setsockopt(s,level,optName,optVal,optLen) < 0 )
+            {
+                throw exception( errno, "setsockopt" );
+            }
         }
 
 

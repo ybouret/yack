@@ -53,6 +53,26 @@ namespace yack
                 return res;
             }
 
+            //__________________________________________________________________
+            //
+            // setting options
+            //__________________________________________________________________
+            static void        setopt(socket_type       &s,
+                                      const int          level,
+                                      const int          optName,
+                                      const void        *optVal,
+                                      const unsigned     optLen);
+
+            template <typename T> static inline
+            void setopt(socket_type       &s,
+                        const int          level,
+                        const int          optName,
+                        const T            optVal)
+            {
+                const unsigned optLen = sizeof(optVal);
+                setopt(s,level,optName,&optVal,optLen);
+            }
+
         };
     }
 }

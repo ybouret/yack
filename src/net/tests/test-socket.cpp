@@ -15,11 +15,13 @@ namespace
         const int recvBufferSize = net::bsd::getopt<int>(s,SOL_SOCKET,SO_RCVBUF);
         const int sendBufferSize = net::bsd::getopt<int>(s,SOL_SOCKET,SO_SNDBUF);
         const int reUseAddress   = net::bsd::getopt<int>(s,SOL_SOCKET,SO_REUSEADDR);
-        std::cerr << "recvBufferSize = " << recvBufferSize << std::endl;
-        std::cerr << "sendBufferSize = " << sendBufferSize << std::endl;
-        std::cerr << "reUseAddress   = " << reUseAddress   << std::endl;
+        std::cerr << "recvBufferSize   = " << recvBufferSize << std::endl;
+        std::cerr << "sendBufferSize   = " << sendBufferSize << std::endl;
+        std::cerr << "reUseAddress     = " << reUseAddress   << std::endl;
 
-
+        const int reUse = 1;
+        net::bsd::setopt(s,SOL_SOCKET,SO_REUSEADDR,reUse);
+        std::cerr << "reUseAddress (*) = " << net::bsd::getopt<int>(s,SOL_SOCKET,SO_REUSEADDR) << std::endl;
 
     }
 
