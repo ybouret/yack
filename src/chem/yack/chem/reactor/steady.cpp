@@ -516,6 +516,10 @@ namespace yack
 
                 YACK_CHEM_PRINTLN("   [failure: stuck @ |Xi| > 0 ]");
 
+                exit(1);
+                return false;
+
+#if 0
                 if(!LU->build(Omega0))
                 {
                     YACK_CHEM_PRINTLN("   [failure: singular composition ]");
@@ -544,6 +548,7 @@ namespace yack
                     exit(1);
                     return false;
                 }
+#endif
             }
 
         }
