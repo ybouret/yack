@@ -150,16 +150,12 @@ namespace yack
                 return updateSuccessful(C0,cycle); // fastest !
             }
 
-#if 1
-            svd<double> SVD(N);
-            rmatrix     U(N,N);
-            rmatrix     V(N,N);
-            rvector     w(N,0);
-#endif
+
 
         GLOBAL_STEP:
             ++cycle;
             YACK_CHEM_PRINTLN(vpfx << "  ---------------- cycle " << cycle  << " ----------------");
+            if(verbose) lib(std::cerr << vpfx << "Corg=",Corg,vpfx);
 
             //------------------------------------------------------------------
             //
@@ -303,6 +299,7 @@ namespace yack
             iota::load(xi,Gamma);
             LU->solve(iOmega,xi);
 
+#if 0
             U.assign(Omega0);
             if(!SVD.build(U,w,V))
             {
@@ -310,6 +307,7 @@ namespace yack
                 exit(1);
             }
             std::cerr << "w=" << w << std::endl;
+#endif
 
             //------------------------------------------------------------------
             //
@@ -363,20 +361,21 @@ namespace yack
                 //--------------------------------------------------------------
                 if(overshoot)
                 {
-
-                    exit(1);
-
                     hasRobustPhaseSpace = false;
                     YACK_CHEM_PRINTLN(vpfx << "  [overshoot: #DOF= " << maxAvailableRunning << "]");
                     if(foundGlobalDecrease)
                     {
+                        //------------------------------------------------------
                         // try another global decrease to stabilize
+                        //------------------------------------------------------
                         YACK_CHEM_PRINTLN(vpfx << "  [overshoot: trying another global step]");
                         goto GLOBAL_STEP;
                     }
                     else
                     {
+                        //------------------------------------------------------
                         // exhausted global steps
+                        //------------------------------------------------------
                         if(maxAvailableRunning<=0)
                         {
                             // can't move!!
@@ -396,6 +395,8 @@ namespace yack
             YACK_CHEM_PRINTLN(vpfx << "    [gotAcceptableExtent]@ #" << cycle);
             YACK_CHEM_PRINTLN(vpfx << "    [foundGlobalDecrease]  = " << yack_boolean(foundGlobalDecrease) );
             YACK_CHEM_PRINTLN(vpfx << "    [hasRobustPhaseSpace]  = " << yack_boolean(hasRobustPhaseSpace) );
+
+            
 
 
             exit(1);
