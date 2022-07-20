@@ -398,21 +398,157 @@ namespace yack
 
             if(optimizeFullStep(G0))
             {
+                //--------------------------------------------------------------
+                //
+                // decreased, try net step!
+                //
+                //--------------------------------------------------------------
                 goto GLOBAL_STEP;
+
             }
             else
             {
-                std::cerr << std::endl << " STUCK " << std::endl;
-                (void) updateSuccessful(C0,cycle);
-                std::cerr << std::endl;
-                exit(1);
-                return steady_failure;
+                //--------------------------------------------------------------
+                //
+                // minimization failure
+                //
+                //--------------------------------------------------------------
+                if(foundGlobalDecrease)
+                {
+                    //----------------------------------------------------------
+                    // try another global step
+                    //----------------------------------------------------------
+                    goto GLOBAL_STEP;
+                }
+                else
+                {
+                    if(!hasRobustPhaseSpace)
+                    {
+                        //------------------------------------------------------
+                        // bad composition
+                        //------------------------------------------------------
+                        YACK_CHEM_PRINTLN(vpfx << "  [failure: weak composition at extremum]");
+                        return steady_failure;
+                    }
+                    else
+                    {
+                        //------------------------------------------------------
+                        // at global minimum, and no local, robust decrease
+                        //------------------------------------------------------
+                        if(validSteadyState())
+                        {
+                            return updateSuccessful(C0,cycle);
+                        }
+                        else
+                        {
+                            std::cerr << "BAD?" << std::endl;
+                            return steady_failure;
+                        }
+                    }
+
+                }
             }
 
 
+        }
+
+
+        bool reactor:: validSteadyState() throw()
+        {
+
+            YACK_CHEM_MARKUP(vpfx, "reactor::validSteadyState");
+            NuA.assign(Nu);
+            double xmax = 0;
+            for(const enode *node=singles.head();node;node=node->next)
+            {
+                const equilibrium       &eq  = ***node;
+                const size_t             ei  = *eq;
+                writable<double>        &psi = Psi[ei];
+                writable<double>        &Omi = Omega0[ei];
+                double                  &gam = Gamma[ei];
+
+                if(blocked[ei])
+                {
+                    gam = 0;
+                    Omi.ld(0); Omi[ei]=1.0;
+                    NuA[ei].ld(0);
+                    psi.ld(0);
+                }
+                else
+                {
+                    const double Ki = K[ei];
+                    const double ax = fabs( Xl[ei] = eq.solve1D(Ki,Corg,Ctry));
+                    if(ax>0)
+                    {
+                        if(ax>xmax) xmax = ax;
+                        gam = eq.grad_action(psi,Ki,Corg,Ctry);
+                    }
+                    else
+                    {
+                        gam = 0;
+                        eq.drvs_action(psi, Ki, Corg, Ctry);
+                    }
+
+                    for(const enode *scan=singles.head();scan;scan=scan->next)
+                    {
+                        const size_t j = ****scan;
+                        Omi[j] = - sorted::dot(psi,Nu[j],Ctry);
+                    }
+
+                }
+            }
+
+            if(verbose)
+            {
+                singles(std::cerr << vpfx << "Xi=",Xl,vpfx);
+                singles(std::cerr << vpfx << "Omega=",Omega0,vpfx);
+                singles(std::cerr << vpfx << "Gamma=",Gamma,vpfx);
+                std::cerr << "Omega=" << Omega0 << std::endl;
+            }
+
+            if(xmax<=0)
+            {
+                YACK_CHEM_PRINTLN("   [success: stuck @ |Xi| = 0 ]");
+                return true;
+            }
+            else
+            {
+
+                YACK_CHEM_PRINTLN("   [failure: stuck @ |Xi| > 0 ]");
+
+                if(!LU->build(Omega0))
+                {
+                    YACK_CHEM_PRINTLN("   [failure: singular composition ]");
+                    return false;
+                }
+                else
+                {
+
+                    iota::load(xi,Gamma);
+                    LU->solve(Omega0,xi);
+
+                    singles(std::cerr << vpfx << "xi=",xi,vpfx);
+                    for(const anode *node=active.head;node;node=node->next)
+                    {
+                        const size_t j = ***node;
+                        for(size_t i=N;i>0;--i)
+                        {
+                            Xtry[i] = xi[i] * NuA[i][j];
+                        }
+                        Cstp[j] = sorted::sum(Xtry,sorted::by_abs_value);
+                    }
+                    singles(std::cerr << vpfx << "C=",Corg,vpfx);
+                    singles(std::cerr << vpfx << "dC=",Cstp,vpfx);
+
+
+                    exit(1);
+                    return false;
+                }
+            }
 
         }
-        
+
+
     }
 
 }

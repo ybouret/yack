@@ -127,6 +127,7 @@ namespace yack
             double       buildHamiltonian(const equilibrium &eq)                throw(); //!< build best from eq
             void         zapEquilibriumAt(const size_t ei)                      throw(); //!< de-activate
             bool         optimizeFullStep(const double G0)                      throw(); //!< numerical look up
+            bool         validSteadyState() throw();
 
             static const char *accepting(const bool flag) throw(); //!< helper
         };
