@@ -125,10 +125,20 @@ namespace yack
             assert(invalid_socket != s);
             assert(NULL!=optVal);
 
+#if defined(YACK_BSD)
             if( setsockopt(s,level,optName,optVal,optLen) < 0 )
             {
                 throw exception( errno, "setsockopt" );
             }
+#endif
+
+#if defined(YACK_WIN)
+            if( setsockopt(s,level,optName,(const char *)optVal, static_cast<int>(optLen) ) < 0 )
+            {
+                throw exception( errno, "setsockopt" );
+            }
+#endif
+
         }
 
 
