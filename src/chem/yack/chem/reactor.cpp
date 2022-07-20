@@ -164,28 +164,16 @@ namespace yack
 
     namespace chemical
     {
-        bool reactor:: returnSuccessful(writable<double> &C0, const unsigned int cycle)
-        {
-            active.transfer(C0,Corg);
-            if(verbose)
-            {
-                if(cycle>0)
-                {
-                    YACK_CHEM_PRINTLN("  ---------------- leave #" << cycle << " ----------------");
-                }
-                for(const enode *node=singles.head();node;node=node->next)
-                {
-                    const equilibrium &eq = ***node;
-                    singles.pad(std::cerr << eq.name,eq);
-                    std::cerr << " | xi=" << std::setw(15) << eq.solve1D(K[*eq],C0,Ctry);
-                    std::cerr << " | ma=" << std::setw(15) << eq.mass_action(K[*eq],C0);
-                    std::cerr << " |  Q/K-1=" << std::setw(15) << (eq.Q(C0)/K[*eq])-1;
-                    std::cerr << std::endl;
-                }
-                std::cerr << "   eps=" << numeric<double>::epsilon << std::endl;
 
-            }
-            return true;
+        void   reactor:: zapEquilibriumAt(const size_t ei) throw()
+        {
+            writable<double> &Omi = Omega0[ei];
+            assert(false==blocked[ei]);
+            blocked[ei] = true;
+            sigma[ei]   = 0;
+            Gamma[ei]   = 0;
+            Omi.ld(0); Omi[ei] = 1.0;
+            NuA[ei].ld(0);
         }
 
     }

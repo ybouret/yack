@@ -10,7 +10,7 @@ namespace yack
 
     namespace chemical
     {
-       
+#if 0
         void reactor:: updateOmega0() throw()
         {
             YACK_CHEM_MARKUP(vpfx, "reactor::updateOmega0");
@@ -61,6 +61,7 @@ namespace yack
 
 
         }
+#endif
         
     }
 

@@ -22,7 +22,6 @@ namespace yack
                 if(blocked[ei]) continue;
 
                 assert(sigma[ei]>0);
-                //ratio.push_back_fast( fabs(eq.mass_action(K[ei],C)/sigma[ei] ) );
                 ratio.push_back_fast( squared(eq.mass_action(K[ei],C)/sigma[ei] ) );
             }
 

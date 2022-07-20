@@ -19,20 +19,9 @@ namespace yack
 
         
 
-        void   reactor:: zapEquilibriumAt(const size_t ei) throw()
-        {
-            writable<double> &Omi = Omega0[ei];
-            assert(false==blocked[ei]);
-            blocked[ei] = true;
-            sigma[ei]   = 0;
-            Gamma[ei]   = 0;
-            Omi.ld(0); Omi[ei] = 1.0;
-            NuA[ei].ld(0);
-        }
 
 
-
-        
+#if 0
         bool reactor:: solve(writable<double> &C0) throw()
         {
             //------------------------------------------------------------------
@@ -369,7 +358,7 @@ namespace yack
 
 
         }
-
+#endif
 
     }
 
