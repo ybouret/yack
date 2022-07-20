@@ -166,12 +166,12 @@ namespace yack
 
                     //----------------------------------------------------------
                     //
-                    // recompute sigma for local step
+                    // recompute sigma for Hamiltonian
                     //
                     //----------------------------------------------------------
                     if( querySingles(maxMinorDimensions) )
                     {
-                        return returnSuccessful(C0,cycle); // early return
+                        return returnSuccessful(C0,cycle);  // early return
                     }
                     foundMajorDecrease = true;              // update status
                     G0                 = Hamiltonian(Corg); // update G0 at new Corg/sigma

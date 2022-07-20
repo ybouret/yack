@@ -20,7 +20,7 @@ namespace yack
             {
                 const equilibrium       &eq = ***node;
                 const size_t             ei = *eq;
-                const readable<double>  &psi = Psi[ei];
+                writable<double>        &psi = Psi[ei];
                 writable<double>        &Omi = Omega0[ei];
                 double                  &gam = Gamma[ei];
 
@@ -30,11 +30,23 @@ namespace yack
                     gam = 0;
                     Omi.ld(0); Omi[ei]=1.0;
                     NuA[ei].ld(0);
+                    psi.ld(0);
                 }
                 else
                 {
                     assert(sigma[ei]>0);
-                    gam     = (fabs(Xl[ei]) <= 0) ? 0 : eq.mass_action(K[ei],Corg);
+                    gam     = eq.grad_action(psi,K[ei],Corg,Ctry);
+                    if( fabs(Xl[ei]) <= 0 )  gam = 0;
+
+                    for(const enode *scan=singles.head();scan;scan=scan->next)
+                    {
+                        const size_t j = ****scan;
+                        Omi[j] = - sorted::dot(psi,Nu[j],Ctry);
+                    }
+
+
+#if 0
+                    //gam     = (fabs(Xl[ei]) <= 0) ? 0 : eq.mass_action(K[ei],Corg);
                     Omi[ei] = sigma[ei];
 
                     for(const enode *scan=node->prev;scan;scan=scan->prev) {
@@ -46,7 +58,7 @@ namespace yack
                         const size_t j = ****scan;
                         Omi[j] = - sorted::dot(psi,Nu[j],Ctry);
                     }
-
+#endif
                 }
             }
 
@@ -54,9 +66,13 @@ namespace yack
             {
                 singles(std::cerr << vpfx << "Omega=",Omega0,vpfx);
                 singles(std::cerr << vpfx << "Gamma=",Gamma,vpfx);
+                std::cerr << "Psi=" << Psi << std::endl;
+                std::cerr << "Nu=" << Nu << std::endl;
+                std::cerr << "Omega=" << Omega0 << std::endl;
+                std::cerr << "Psi*Nu'" << std::endl;
 
             }
-
+            //exit(1);
 
 
         }
