@@ -6,6 +6,8 @@
 #include <unistd.h>
 #endif
 
+#include <iostream>
+
 namespace yack
 {
     namespace net
@@ -68,7 +70,7 @@ namespace yack
 #define YACK_NET_SD_BOTH SD_BOTH
 #endif
 
-        void bsd:: perform(socket_type &s, const sd_how how) throw()
+        void bsd:: closure(socket_type &s, const sd_how how) throw()
         {
             switch(how)
             {
@@ -77,6 +79,28 @@ namespace yack
                 case sd_both: (void) shutdown(s,YACK_NET_SD_BOTH); break;
             }
         }
+
+
+        void bsd:: getopt(const socket_type &s,
+                          const int          level,
+                          const int          optName,
+                          void              *optVal,
+                          unsigned          *optLen)
+        {
+            YACK_GIANT_LOCK();
+
+            assert(invalid_socket != s);
+            assert(NULL!=optVal);
+            assert(NULL!=optLen);
+
+            socklen_t tmpLen = *optLen;
+            if( getsockopt(s,level,optName,optVal,&tmpLen) < 0 )
+            {
+                throw exception( errno, "getsockopt" );
+            }
+            *optLen = tmpLen;
+        }
+
 
     }
 }

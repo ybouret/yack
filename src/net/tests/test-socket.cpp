@@ -1,13 +1,30 @@
 
 
 #include "yack/network.hpp"
+#include "yack/net/bsd.hpp"
 #include "yack/utest/run.hpp"
 
-#if defined(YACK_BSD)
-#include <unistd.h>
-#endif
-
 using namespace yack;
+
+namespace
+{
+    static inline
+    void play_with(net::socket_type &s)
+    {
+
+        const int recvBufferSize = net::bsd::getopt<int>(s,SOL_SOCKET,SO_RCVBUF);
+        const int sendBufferSize = net::bsd::getopt<int>(s,SOL_SOCKET,SO_SNDBUF);
+        const int reUseAddress   = net::bsd::getopt<int>(s,SOL_SOCKET,SO_REUSEADDR);
+        std::cerr << "recvBufferSize = " << recvBufferSize << std::endl;
+        std::cerr << "sendBufferSize = " << sendBufferSize << std::endl;
+        std::cerr << "reUseAddress   = " << reUseAddress   << std::endl;
+
+
+
+    }
+
+}
+
 
 YACK_UTEST(socket)
 {
@@ -15,21 +32,16 @@ YACK_UTEST(socket)
     network &nw = network::instance();
     std::cerr << "on " << nw.hostname << std::endl;
 
-    net::socket_type s4 = socket(PF_INET, SOCK_STREAM, IPPROTO_TCP);
-    
-#if defined(YACK_BSD)
-    shutdown(s4,SHUT_RD);
-    shutdown(s4,SHUT_WR);
-    shutdown(s4,SHUT_RDWR);
-    close(s4);
-#endif
+    net::socket_type s4 = net::bsd::acquire(net::v4,net::tcp);
 
-#if defined(YACK_WIN)
-    shutdown(s4, SD_BOTH);
-    shutdown(s4, SD_SEND);
-    shutdown(s4, SD_RECEIVE);
-    closesocket(s4);
-#endif
+    play_with(s4);
+
+    net::bsd::closure(s4,net::sd_send);
+    net::bsd::closure(s4,net::sd_recv);
+    net::bsd::closure(s4,net::sd_both);
+
+    net::bsd::release(s4);
+
 
 }
 YACK_UDONE()

@@ -12,26 +12,47 @@ namespace yack
     {
         //______________________________________________________________________
         //
+        //! shutdow operations
+        //______________________________________________________________________
+        enum sd_how
+        {
+            sd_send, //!< shutdown send
+            sd_recv, //!< shutdown recv
+            sd_both  //!< shutdown both
+        };
+        
+        //______________________________________________________________________
+        //
         //
         //! BSD sockets API
         //
         //______________________________________________________________________
         struct bsd
         {
-            //__________________________________________________________________
-            //
-            //! shutdow operations
-            //__________________________________________________________________
-            enum sd_how
-            {
-                sd_send, //!< shutdown send
-                sd_recv, //!< shutdown recv
-                sd_both  //!< shutdown both
-            };
 
             static socket_type acquire(const ip_version, const ip_protocol);  //!< open socket
             static void        release(socket_type &)                throw(); //!< close socket
-            static void        perform(socket_type &, const sd_how)  throw(); //!< perform shutdown
+            static void        closure(socket_type &, const sd_how)  throw(); //!< perform shutdown
+
+            //__________________________________________________________________
+            //
+            // getting options
+            //__________________________________________________________________
+            static void        getopt(const socket_type &s,
+                                      const int          level,
+                                      const int          optName,
+                                      void              *optVal,
+                                      unsigned          *optLen);
+
+            template <typename T> static inline
+            T getopt(const socket_type &s, const int level, const int optName)
+            {
+                T        res(0);
+                unsigned len = sizeof(res);
+                getopt(s,level,optName,&res,&len);
+                return res;
+            }
+
         };
     }
 }
