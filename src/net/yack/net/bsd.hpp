@@ -78,6 +78,11 @@ namespace yack
                 setopt(s,level,optName,&optVal,optLen);
             }
 
+            //__________________________________________________________________
+            //
+            // set non blocking
+            //__________________________________________________________________
+            static void set_blocking(socket_type &s, const bool);
         };
     }
 }

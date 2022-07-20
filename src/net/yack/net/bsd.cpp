@@ -4,6 +4,7 @@
 
 #if defined(YACK_BSD)
 #include <unistd.h>
+#include <fcntl.h>
 #endif
 
 #include <iostream>
@@ -135,8 +136,43 @@ namespace yack
 #if defined(YACK_WIN)
             if( setsockopt(s,level,optName,(const char *)optVal, static_cast<int>(optLen) ) < 0 )
             {
-                throw exception( errno, "setsockopt" );
+                throw exception( WSAGetLastError(), "setsockopt" );
             }
+#endif
+
+        }
+
+        void bsd:: set_blocking(socket_type &s, const bool flag)
+        {
+            YACK_GIANT_LOCK();
+            assert(invalid_socket != s);
+
+#if defined(YACK_BSD)
+            int flags = fcntl (s, F_GETFL, 0);
+            if(flags<0) throw exception(errno,"fcntl(F_GETGL)");
+            if(flag)
+            {
+                flags |= O_NONBLOCK;
+            }
+            else
+            {
+                flags &= ~(O_NONBLOCK);
+            }
+            if( fcntl(s,F_SETFL,flags) < 0 ) throw exception(errno,"fcntl(F_SETFL)");
+#endif
+
+#if defined(YACK_WIN)
+            u_long iMode = flag ? 1 : 0;
+
+            //-------------------------
+            // Set the socket I/O mode: In this case FIONBIO
+            // enables or disables the blocking mode for the
+            // socket based on the numerical value of iMode.
+            // If iMode = 0, blocking is enabled;
+            // If iMode != 0, non-blocking mode is enabled.
+
+            const int iResult = ioctlsocket(m_socket, FIONBIO, &iMode);
+            if( NO_ERROR != iResult) throw exception(WSAGetLastError(),"ioctlsocket");
 #endif
 
         }

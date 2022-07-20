@@ -23,6 +23,8 @@ namespace
         net::bsd::setopt(s,SOL_SOCKET,SO_REUSEADDR,reUse);
         std::cerr << "reUseAddress (*) = " << net::bsd::getopt<int>(s,SOL_SOCKET,SO_REUSEADDR) << std::endl;
 
+        net::bsd::set_blocking(s,false);
+
     }
 
 }
