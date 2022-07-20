@@ -13,7 +13,7 @@ namespace yack
 
     namespace chemical
     {
-        bool reactor:: optimizeFullStep(double &G0) throw()
+        bool reactor:: optimizeFullStep(const double G0) throw()
         {
 
             //------------------------------------------------------------------
@@ -44,7 +44,7 @@ namespace yack
             if(ratio.size())
             {
                 hsort(ratio,comparison::increasing<double>);
-                std::cerr << vpfx << "ratio=" << ratio << std::endl;
+                if(verbose) std::cerr << vpfx << "ratio=" << ratio << std::endl;
                 expand = min_of(expand,0.99*ratio.front());
             }
 
@@ -81,12 +81,12 @@ namespace yack
 
             if(g.b>=G0)
             {
-                G0=g.b;
+                //G0=g.b;
                 return false;
             }
             else
             {
-                G0=g.b;
+                //G0=g.b;
                 return true;
             }
         }

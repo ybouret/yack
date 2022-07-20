@@ -396,7 +396,14 @@ namespace yack
             YACK_CHEM_PRINTLN(vpfx << "    [foundGlobalDecrease]  = " << yack_boolean(foundGlobalDecrease) );
             YACK_CHEM_PRINTLN(vpfx << "    [hasRobustPhaseSpace]  = " << yack_boolean(hasRobustPhaseSpace) );
 
-            
+            if(optimizeFullStep(G0))
+            {
+                
+            }
+            else
+            {
+
+            }
 
 
             exit(1);

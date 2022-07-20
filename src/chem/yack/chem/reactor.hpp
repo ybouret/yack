@@ -126,7 +126,7 @@ namespace yack
             double       mixedHamiltonian(writable<double> &C, const group &g)  throw(); //!< aggregate a mixed combination
             double       buildHamiltonian(const equilibrium &eq)                throw(); //!< build best from eq
             void         zapEquilibriumAt(const size_t ei)                      throw(); //!< de-activate
-            bool         optimizeFullStep(double &G0)                           throw(); //!< numerical look up
+            bool         optimizeFullStep(const double G0)                      throw(); //!< numerical look up
 
             static const char *accepting(const bool flag) throw(); //!< helper
         };
