@@ -56,7 +56,10 @@ namespace yack
                     singles.pad(std::cerr << vpfx << "  @{" << eq.name << "}",eq);
                     std::cerr << " | xi = " << std::setw(15) << xx;
                     std::cerr << " | sigma = " << std::setw(15) << sigma[ei];
-                    if(blocked[ei]) std::cerr << " (blocked)";
+                    if(blocked[ei])
+                        std::cerr << " | blocked";
+                    else
+                        std::cerr << " | running";
                     std::cerr << std::endl;
                 }
 
