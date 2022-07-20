@@ -38,12 +38,14 @@ namespace yack
             //
             // getting options
             //__________________________________________________________________
+            //! getsockopt wrapper
             static void        getopt(const socket_type &s,
                                       const int          level,
                                       const int          optName,
                                       void              *optVal,
                                       unsigned          *optLen);
 
+            //! getsockopt wrapper
             template <typename T> static inline
             T getopt(const socket_type &s, const int level, const int optName)
             {
@@ -57,12 +59,15 @@ namespace yack
             //
             // setting options
             //__________________________________________________________________
+
+            //! setsockopt wrapper
             static void        setopt(socket_type       &s,
                                       const int          level,
                                       const int          optName,
                                       const void        *optVal,
                                       const unsigned     optLen);
 
+            //! setsockopt wrapper
             template <typename T> static inline
             void setopt(socket_type       &s,
                         const int          level,
