@@ -53,7 +53,13 @@ namespace yack
             //! best effort simultaneous equilibria
             bool    solve(writable<double> &C0) throw();
 
-            bool    steady(writable<double> &C0) throw();
+            enum steady_state
+            {
+                steady_success,
+                steady_failure
+            };
+
+            steady_state steady(writable<double> &C0) throw();
 
             double  operator()(const double u) throw(); //!< hamiltonian( Corg * (1-u) + Cend * u )
 
@@ -102,10 +108,12 @@ namespace yack
             tableau &Xl;  //!< [L] all Xi of lattice
             rmatrix  Cl;  //!< [LxM] all equilibria of lattice
 
+
         private:
             YACK_DISABLE_COPY_AND_ASSIGN(reactor);
             const lockable::scope libLock;
             const lockable::scope eqsLock;
+
 
             bool               querySingles(size_t &nrun)    throw();
             const equilibrium *queryLattice(const double G0) throw();
@@ -113,6 +121,10 @@ namespace yack
 
             double  Hamiltonian(const readable<double> &C) throw();
             double  Htry(const double G0) throw();
+
+            bool         initializeSearch(writable<double> &C0) throw();                 //!< initialize, true=>success
+            steady_state updateSuccessful(writable<double> &C0, unsigned cycle) throw(); //!< transfer + verbose info
+
 
 
             double  mixedHamiltonian(writable<double> &C, const group &g) throw(); //!< aggregate a mixed combination

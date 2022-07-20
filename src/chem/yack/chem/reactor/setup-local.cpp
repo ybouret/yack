@@ -35,7 +35,7 @@ namespace yack
                 else
                 {
                     assert(sigma[ei]>0);
-                    gam     = eq.grad_action(psi,K[ei],Corg,Ctry);
+                    gam = eq.grad_action(psi,K[ei],Corg,Ctry);
                     if( fabs(Xl[ei]) <= 0 )  gam = 0;
 
                     for(const enode *scan=singles.head();scan;scan=scan->next)

@@ -31,7 +31,6 @@ namespace yack
 
 
 
-
         
         bool reactor:: solve(writable<double> &C0) throw()
         {
