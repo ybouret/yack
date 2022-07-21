@@ -12,7 +12,7 @@ namespace
     {
         for(size_t i=0;i<10;++i)
         {
-            T       x = 0; ran.fill(&x,sizeof(x));
+            T       x; ran.fill(&x,sizeof(x));
             const T y = endian::swap_be(x);
             const T z = endian::swap_be(y);
             std::cerr << "x=" << x << " | y=" << y << " | z=" <<y <<std::endl;

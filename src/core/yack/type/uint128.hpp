@@ -32,6 +32,7 @@ namespace yack
         uint128_t & operator=(const uint128_t &) throw(); //!< assign
         uint128_t()                              throw(); //!< setup (zero)
         uint128_t(uint64_t lo)                   throw(); //!< setup 64-bits
+        uint128_t(const uint8_t data[])          throw(); //!< setup 128-bits
 
         //______________________________________________________________________
         //

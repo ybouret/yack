@@ -12,7 +12,7 @@ namespace yack
         memset(h,0,sizeof(h));
     }
 
-    uint128_t:: uint128_t(uint64_t lo) throw()
+    uint128_t:: uint128_t(uint64_t lo) throw() : h()
     {
         memset(h+bytes/2,0,bytes/2);
         for(size_t i=0;i<sizeof(uint64_t);++i)
@@ -21,6 +21,12 @@ namespace yack
             lo >>= 8;
         }
     }
+
+    uint128_t:: uint128_t(const uint8_t data[]) throw() : h()
+    {
+        memcpy(h,data,bytes);
+    }
+
 
 
     uint128_t:: ~uint128_t() throw()
