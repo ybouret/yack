@@ -477,7 +477,9 @@ namespace yack
                 else
                 {
                     const double Ki = K[ei];
-                    const double ax = fabs( Xl[ei] = eq.solve1D(Ki,Corg,Ctry));
+                    const double xx = Xl[ei] = eq.solve1D(Ki,Corg,Ctry);
+                    const double ax = fabs(xx);
+
                     if(ax>0)
                     {
                         if(ax>xmax) xmax = ax;
@@ -489,11 +491,28 @@ namespace yack
                         eq.drvs_action(psi, Ki, Corg, Ctry);
                     }
 
+                    std::cerr << vpfx << " scanning {" << eq.name << "} @Xi=" << xx << std::endl;
+                    iota::load(Ctry,Corg);
+                    eq.move(Ctry,xx);
+                    for(const cnode *scan=eq.head();scan;scan=scan->next)
+                    {
+                        const species &sp = ****scan;
+                        const size_t   j  = *sp;
+                        lib.pad(std::cerr << vpfx << "\t" << sp.name, sp) << " : ";
+                        std::cerr << std::setw(15) << Corg[j] << " --> " << std::setw(15) << Ctry[j];
+                        std::cerr << " | " << yack_boolean( fabs(Corg[j]-Ctry[j]) <=0 );
+                        std::cerr << std::endl;
+                    }
+
+
+
                     for(const enode *scan=singles.head();scan;scan=scan->next)
                     {
                         const size_t j = ****scan;
                         Omi[j] = - sorted::dot(psi,Nu[j],Ctry);
                     }
+
+
 
                 }
             }
@@ -508,7 +527,7 @@ namespace yack
 
             if(xmax<=0)
             {
-                YACK_CHEM_PRINTLN("   [success: stuck @ |Xi| = 0 ]");
+                YACK_CHEM_PRINTLN("   [success: final @ |Xi| = 0 ]");
                 return true;
             }
             else
