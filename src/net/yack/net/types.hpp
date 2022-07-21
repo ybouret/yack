@@ -160,7 +160,23 @@ namespace yack
     typedef uint128_t  net128_t;   //!< alias
 }
 
+namespace yack
+{
+    namespace net
+    {
+        //______________________________________________________________________
+        //
+        //! inet aliases
+        //______________________________________________________________________
+        enum inet_address_name
+        {
+            inet_address_any,      //!< any
+            inet_address_none,     //!< invalid
+            inet_address_loopback  //!< loopback
+        };
+    }
 
+}
 
 #endif
 

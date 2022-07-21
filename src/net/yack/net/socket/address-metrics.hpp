@@ -27,16 +27,7 @@ namespace yack
             static void add_dec_to(string &, const uint8_t); //!< add decimal to string
         };
 
-        //______________________________________________________________________
-        //
-        //! inet aliases
-        //______________________________________________________________________
-        enum inet_address_name
-        {
-            inet_address_any,      //!< any
-            inet_address_none,     //!< invalid
-            inet_address_loopback  //!< loopback
-        };
+      
 
     }
 

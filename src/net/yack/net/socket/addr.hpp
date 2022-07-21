@@ -5,6 +5,8 @@
 #define YACK_NET_SOCKET_ADDR_INCLUDED 1
 
 #include "yack/net/socket/address-metrics.hpp"
+#include "yack/type/out-of-reach.hpp"
+#include "yack/string.hpp"
 
 namespace yack
 {
@@ -29,7 +31,7 @@ port( out_of_reach::access<net16_t,       sock_addr_type>(impl,metrics::port_off
         //
         //______________________________________________________________________
         template <const ip_version ipv>
-        class socket_addr : public object
+        class socket_addr  
         {
         public:
             //__________________________________________________________________
@@ -104,6 +106,9 @@ port( out_of_reach::access<net16_t,       sock_addr_type>(impl,metrics::port_off
 
             //! access implementation
             inline const sock_addr_type & sa() const throw() { return impl; }
+
+            //! access implementation 
+            inline size_t                 sz() const throw() { return sock_addr_size; }
 
             //! output
             friend std::ostream & operator <<( std::ostream &os, const socket_addr &self)
