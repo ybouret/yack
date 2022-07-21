@@ -18,19 +18,35 @@ namespace yack
         template <>
         struct socket_address_metrics<v4>
         {
-            typedef sockaddr_in  sock_addr_type;
-            typedef net32_t      inet_addr_type;
-            static const size_t  inet_offset = offsetof(sockaddr_in,sin_addr);
-            static const size_t  port_offset = offsetof(sockaddr_in,sin_port);
+
+            typedef sockaddr_in      sock_addr_type;
+            typedef net32_t          inet_addr_type;
+            static  const  size_t    sock_addr_size = sizeof(sock_addr_type);
+            static  const  ptrdiff_t inet_offset    = offsetof(sockaddr_in,sin_addr);
+            static  const  ptrdiff_t port_offset    = offsetof(sockaddr_in,sin_port);
+
+            static inline void initialize(sock_addr_type &sa) throw()
+            {
+                memset(&sa,0,sock_addr_size);
+                sa.sin_family = AF_INET;
+            }
+
         };
 
         template <>
         struct socket_address_metrics<v6>
         {
-            typedef sockaddr_in6 sock_addr_type;
-            typedef net128_t     inet_addr_type;
-            static const size_t  inet_offset = offsetof(sockaddr_in6,sin6_addr);
-            static const size_t  port_offset = offsetof(sockaddr_in6,sin6_port);
+            typedef sockaddr_in6    sock_addr_type;
+            typedef net128_t        inet_addr_type;
+            static  const size_t     sock_addr_size = sizeof(sock_addr_type);
+            static  const ptrdiff_t  inet_offset    = offsetof(sockaddr_in6,sin6_addr);
+            static  const ptrdiff_t  port_offset    = offsetof(sockaddr_in6,sin6_port);
+
+            static inline void initialize(sock_addr_type &sa) throw()
+            {
+                memset(&sa,0,sock_addr_size);
+                sa.sin6_family = AF_INET6;
+            }
         };
 
 #define YACK_NET_SOCKET_ADDR_CTOR() \
@@ -39,25 +55,38 @@ addr( out_of_reach::access<inet_addr_type,sock_addr_type>(sock_addr,metrics::ine
 port( out_of_reach::access<net16_t,       sock_addr_type>(sock_addr,metrics::port_offset) )
 
         template <const ip_version ipv>
-        class socket_addr
+        class socket_addr : public object
         {
         public:
             typedef socket_address_metrics<ipv>       metrics;
             typedef typename metrics::sock_addr_type  sock_addr_type;
             typedef typename metrics::inet_addr_type  inet_addr_type;
+            static const size_t                       sock_addr_size = metrics::sock_addr_size;
 
-            explicit socket_addr() throw() : YACK_NET_SOCKET_ADDR_CTOR()
+            socket_addr() throw() : YACK_NET_SOCKET_ADDR_CTOR()
             {
+                metrics::initialize(sock_addr);
             }
 
             virtual ~socket_addr() throw()
             {
+                metrics::initialize(sock_addr);
             }
+
+            socket_addr(const socket_addr &other) throw() : YACK_NET_SOCKET_ADDR_CTOR()
+            {
+                memcpy(&sock_addr,&other.sock_addr,sock_addr_size);
+            }
+
+            socket_addr & operator=( const socket_addr &other ) throw()
+            {
+                memmove(&sock_addr,&other.sock_addr,sock_addr_size);
+                return *this;
+            }
+
 
         private:
             sock_addr_type sock_addr;
-
-            void clear() throw() { memset(&sock_addr,0,sizeof(sock_addr)); }
 
         public:
             inet_addr_type    &addr;
