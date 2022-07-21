@@ -19,7 +19,7 @@ yack_testing(net)
 
 enable_testing()
 
-add_test(types test-net types)
-add_test(types test-net init)
+add_test(types  test-net types)
+add_test(init   test-net init)
 add_test(socket test-net socket)
 add_test(addr   test-net addr)
