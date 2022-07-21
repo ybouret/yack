@@ -33,12 +33,15 @@ YACK_UTEST(reactor)
     reactor        cs(lib,eqs,0.0);
     vector<double> C(cs.M,0);
 
+    
+
     for(size_t iter=0;iter<100;++iter)
     {
         lib.fill(C, 1, ran);
-        if( steady_success == cs.steady(C))
+        if( cs.steady(C))
         {
             lib(std::cerr<<"Cend=",C);
+            cs.display(C);
         }
     }
 

@@ -14,11 +14,7 @@ namespace yack
     namespace chemical
     {
 
-        enum steady_state
-        {
-            steady_success,
-            steady_failure
-        };
+
         
         //______________________________________________________________________
         //
@@ -55,12 +51,9 @@ namespace yack
             // methods
             //__________________________________________________________________
 
-            //! best effort simultaneous equilibria
-            bool    solve(writable<double> &C0) throw();
 
-
-
-            steady_state steady(writable<double> &C0) throw();
+            bool  steady(writable<double> &C0) throw();
+            void  display(const readable<double> &C0);
 
             double  operator()(const double u) throw(); //!< hamiltonian( Corg * (1-u) + Cend * u )
 
@@ -122,7 +115,7 @@ namespace yack
             double             Htry(const double G0)                  throw();
 
             bool         initializeSearch(writable<double> &C0)                 throw(); //!< initialize, true=>success
-            steady_state updateSuccessful(writable<double> &C0, unsigned cycle) throw(); //!< transfer + verbose info
+            bool         updateSuccessful(writable<double> &C0, unsigned cycle) throw(); //!< transfer + verbose info
             void         initializeOmega0()                                     throw(); //!< jacobian
             double       mixedHamiltonian(writable<double> &C, const group &g)  throw(); //!< aggregate a mixed combination
             double       buildHamiltonian(const equilibrium &eq)                throw(); //!< build best from eq

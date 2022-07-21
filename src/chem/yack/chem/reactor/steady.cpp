@@ -15,7 +15,7 @@ namespace yack
 
     namespace chemical
     {
-        steady_state  reactor:: updateSuccessful(writable<double> &C0, unsigned cycle) throw()
+        bool  reactor:: updateSuccessful(writable<double> &C0, unsigned cycle) throw()
         {
             active.transfer(C0,Corg);
             if(verbose)
@@ -32,7 +32,7 @@ namespace yack
                     std::cerr << std::endl;
                 }
             }
-            return steady_success;
+            return true;
         }
 
         bool reactor:: initializeSearch(writable<double> &C0) throw()
@@ -134,7 +134,7 @@ namespace yack
         }
 
 
-        steady_state reactor::steady(writable<double> &C0) throw()
+        bool reactor::steady(writable<double> &C0) throw()
         {
             //------------------------------------------------------------------
             //
@@ -143,7 +143,7 @@ namespace yack
             //
             //
             //------------------------------------------------------------------
-            unsigned cycle = 0; ios::ocstream::overwrite("g0.dat");
+            unsigned cycle = 0; //ios::ocstream::overwrite("g0.dat");
             if( initializeSearch(C0) )
             {
                 return updateSuccessful(C0,cycle); // fastest !
@@ -194,7 +194,7 @@ namespace yack
                         }
                     }
                     YACK_CHEM_PRINTLN(vpfx << "  [failure: corrupted-blocked]");
-                    return steady_failure;
+                    return false;
 
                 default:
                     break;
@@ -209,7 +209,8 @@ namespace yack
             //
             //------------------------------------------------------------------
             bool   foundGlobalDecrease = false;
-            double G0                  = Hamiltonian(Corg);  if(G0>0) ios::ocstream::echo("g0.dat", "%u %.15g\n", cycle, log10(G0));
+            double G0                  = Hamiltonian(Corg);
+            //if(G0>0) ios::ocstream::echo("g0.dat", "%u %.15g\n", cycle, log10(G0));
             {
 
                 YACK_CHEM_PRINTLN(vpfx << "    [initialized] G0 = " << G0 << " ]");
@@ -244,7 +245,7 @@ namespace yack
                     //----------------------------------------------------------
                     foundGlobalDecrease = true;              // update status
                     G0                  = Hamiltonian(Corg); // update G0 at new Corg/sigma
-                    if(G0>0) ios::ocstream::echo("g0.dat", "%u.5 %.15g\n", cycle, log10(G0));
+                    //if(G0>0) ios::ocstream::echo("g0.dat", "%u.5 %.15g\n", cycle, log10(G0));
                 }
                 else
                 {
@@ -286,7 +287,7 @@ namespace yack
                 {
                     // failure
                     YACK_CHEM_PRINTLN(vpfx << "  [failure : permanent singular composition]");
-                    return steady_failure;
+                    return false;
                 }
             }
 
@@ -370,7 +371,7 @@ namespace yack
                         {
                             // can't move!!
                             YACK_CHEM_PRINTLN(vpfx << "  [overshooting: singular system]");
-                            return steady_failure;
+                            return false;
                         }
                         else
                         {
@@ -418,7 +419,7 @@ namespace yack
                         // bad composition
                         //------------------------------------------------------
                         YACK_CHEM_PRINTLN(vpfx << "  [failure: weak composition at extremum]");
-                        return steady_failure;
+                        return false;
                     }
                     else
                     {
@@ -431,7 +432,7 @@ namespace yack
                         }
                         else
                         {
-                            return steady_failure;
+                            return false;
                         }
                     }
 
@@ -501,6 +502,7 @@ namespace yack
 
             }
 
+            YACK_CHEM_PRINTLN(vpfx << "   [[ valid = " << yack_boolean(isValid) << " ]]");
             return isValid;
 
         }

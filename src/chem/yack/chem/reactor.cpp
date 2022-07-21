@@ -176,6 +176,25 @@ namespace yack
             NuA[ei].ld(0);
         }
 
+        void reactor:: display(const readable<double> &C0)
+        {
+            YACK_CHEM_MARKUP(vpfx, "reactor");
+            for(const enode *node=singles.head();node;node=node->next)
+            {
+                const equilibrium &eq = ***node;
+                const size_t       ei = *eq;
+                const double       Ki = K[ei];
+
+                singles.pad(std::cerr << vpfx << "{" << eq.name << "}", eq);
+                std::cerr << " | extent = " << std::setw(15) << eq.solve1D(Ki,C0,Ctry);
+                std::cerr << " | gamma  = " << std::setw(15) << eq.mass_action(Ki,C0);
+
+
+                std::cerr << std::endl;
+            }
+        }
+
+
     }
 }
 
