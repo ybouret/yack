@@ -36,7 +36,7 @@ YACK_UTEST(reactor)
     for(size_t iter=0;iter<100;++iter)
     {
         lib.fill(C, 1, ran);
-        if(cs.steady(C))
+        if( steady_success == cs.steady(C))
         {
             lib(std::cerr<<"Cend=",C);
         }

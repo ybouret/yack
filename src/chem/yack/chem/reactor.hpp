@@ -14,6 +14,11 @@ namespace yack
     namespace chemical
     {
 
+        enum steady_state
+        {
+            steady_success,
+            steady_failure
+        };
         
         //______________________________________________________________________
         //
@@ -53,11 +58,7 @@ namespace yack
             //! best effort simultaneous equilibria
             bool    solve(writable<double> &C0) throw();
 
-            enum steady_state
-            {
-                steady_success,
-                steady_failure
-            };
+
 
             steady_state steady(writable<double> &C0) throw();
 

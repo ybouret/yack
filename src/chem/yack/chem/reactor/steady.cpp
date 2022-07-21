@@ -15,7 +15,7 @@ namespace yack
 
     namespace chemical
     {
-        reactor::steady_state  reactor:: updateSuccessful(writable<double> &C0, unsigned cycle) throw()
+        steady_state  reactor:: updateSuccessful(writable<double> &C0, unsigned cycle) throw()
         {
             active.transfer(C0,Corg);
             if(verbose)
@@ -134,7 +134,7 @@ namespace yack
         }
 
 
-        reactor::steady_state reactor::steady(writable<double> &C0) throw()
+        steady_state reactor::steady(writable<double> &C0) throw()
         {
             //------------------------------------------------------------------
             //
