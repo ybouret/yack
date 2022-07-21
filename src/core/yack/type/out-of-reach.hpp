@@ -26,6 +26,14 @@ namespace yack
         static void       *shift(void *addr, const ptrdiff_t offset)                 throw(); //!< addr += offset
         static const void *shift(const void *addr, const ptrdiff_t offset)           throw(); //!< addr += offset, const
 
+        //! copy POD types
+        template <typename TARGET, typename SOURCE> static inline
+        void copy(TARGET &target, SOURCE &source) throw()
+        {
+            assert(sizeof(TARGET)>=sizeof(SOURCE));
+            (void) copy( &target, &source, sizeof(TARGET) );
+        }
+
         //! helper with type casting
         template <typename T> static inline
         T *naught(T *obj) throw() { assert(NULL!=obj); return static_cast<T*>(zset(obj,sizeof(T))); }
@@ -52,6 +60,7 @@ namespace yack
             return static_cast<T*>(shift(obj,sz));
         }
 
+        //! reference to inner type
         template <typename TARGET, typename SOURCE> static inline
         TARGET & access(SOURCE &source, const ptrdiff_t offset) throw()
         {

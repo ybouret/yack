@@ -145,8 +145,6 @@ namespace yack
         typedef unsigned_int<sizeof(socket_type)>::type socket_id_t;    //!< alias for uuid
     }
 
-
-
 }
 
 

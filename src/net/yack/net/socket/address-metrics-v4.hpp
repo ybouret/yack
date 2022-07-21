@@ -1,0 +1,38 @@
+//!\file
+
+#ifndef YACK_NET_SOCKET_ADDRESS_METRICS4_INCLUDED
+#define YACK_NET_SOCKET_ADDRESS_METRICS4_INCLUDED 1
+
+#include "yack/net/socket/address-metrics.hpp"
+
+namespace yack
+{
+    namespace net
+    {
+        template <>
+        struct socket_address_metrics<v4>
+        {
+            typedef sockaddr_in      sock_addr_type;
+            typedef net32_t          inet_addr_type;
+            static  const  size_t    sock_addr_size = sizeof(sock_addr_type);
+            static  const size_t     inet_addr_size = sizeof(inet_addr_type);
+            static  const  ptrdiff_t inet_offset    = offsetof(sockaddr_in,sin_addr);
+            static  const  ptrdiff_t port_offset    = offsetof(sockaddr_in,sin_port);
+
+            static const inet_addr_type any      = INADDR_ANY;
+            static const inet_addr_type none     = INADDR_NONE;
+            static const inet_addr_type loopback = INADDR_LOOPBACK;
+
+            static   void   initialize(sock_addr_type &) throw();
+            static   string to_string(const sock_addr_type &);
+
+
+        };
+
+      
+
+    }
+
+}
+
+#endif
