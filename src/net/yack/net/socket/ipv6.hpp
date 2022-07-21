@@ -12,7 +12,7 @@ namespace yack
 {
     namespace net
     {
-        typedef socket_addr<v6> ipv6_address;
+        typedef socket_addr<v6> IPv6; //!< alias
     }
 
 }

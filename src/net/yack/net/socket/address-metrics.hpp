@@ -11,19 +11,31 @@ namespace yack
 {
     namespace net
     {
-        template <const  ip_version>
-        struct socket_address_metrics;
 
+        //______________________________________________________________________
+        //
+        //! forward declaration
+        //______________________________________________________________________
+        template <const  ip_version> struct socket_address_metrics;
+
+        //______________________________________________________________________
+        //
+        //! ops for socket_address
+        //______________________________________________________________________
         struct socket_address_ops
         {
-            static void add_dec_to(string &, const uint8_t);
+            static void add_dec_to(string &, const uint8_t); //!< add decimal to string
         };
 
+        //______________________________________________________________________
+        //
+        //! inet aliases
+        //______________________________________________________________________
         enum inet_address_name
         {
-            inet_address_any,
-            inet_address_none,
-            inet_address_loopback
+            inet_address_any,      //!< any
+            inet_address_none,     //!< invalid
+            inet_address_loopback  //!< loopback
         };
 
     }

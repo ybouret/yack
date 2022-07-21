@@ -79,9 +79,9 @@ namespace yack
 
             //__________________________________________________________________
             //
-            // set non blocking
+            //! set blocking state
             //__________________________________________________________________
-            static void set_blocking(socket_type &s, const bool);
+            static void set_blocking(socket_type &, const bool);
         };
     }
 }

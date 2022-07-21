@@ -10,28 +10,53 @@ namespace yack
 {
     namespace net
     {
+        //______________________________________________________________________
+        //
+        //
+        //! default constructor
+        //
+        //______________________________________________________________________
+
 #define YACK_NET_SOCKET_ADDR_CTOR() \
 impl(),                                             \
 addr( out_of_reach::access<inet_addr_type,sock_addr_type>(impl,metrics::inet_offset) ), \
 port( out_of_reach::access<net16_t,       sock_addr_type>(impl,metrics::port_offset) )
 
+        //______________________________________________________________________
+        //
+        //
+        //! parametrized socket address
+        //
+        //______________________________________________________________________
         template <const ip_version ipv>
         class socket_addr : public object
         {
         public:
+            //__________________________________________________________________
+            //
             // parameters
-            static const ip_version                   version = ipv;
-            typedef socket_address_metrics<version>   metrics;
+            //__________________________________________________________________
+            static const ip_version                   version = ipv; //!< alias
+            typedef socket_address_metrics<version>   metrics;       //!< alias
 
+            //__________________________________________________________________
+            //
             // types
-            typedef typename metrics::sock_addr_type  sock_addr_type;
-            typedef typename metrics::inet_addr_type  inet_addr_type;
+            //__________________________________________________________________
+            typedef typename metrics::sock_addr_type  sock_addr_type; //!< alias
+            typedef typename metrics::inet_addr_type  inet_addr_type; //!< alias
 
+            //__________________________________________________________________
+            //
             // definitions
-            static const size_t                       sock_addr_size = metrics::sock_addr_size;
-            static const size_t                       inet_addr_size = metrics::inet_addr_size;
+            //__________________________________________________________________
+            static const size_t                       sock_addr_size = metrics::sock_addr_size; //!< alias
+            static const size_t                       inet_addr_size = metrics::inet_addr_size; //!< alias
 
+            //__________________________________________________________________
+            //
             // C++
+            //__________________________________________________________________
 
             //! default constructor
             inline socket_addr() throw() : YACK_NET_SOCKET_ADDR_CTOR()
@@ -72,7 +97,10 @@ port( out_of_reach::access<net16_t,       sock_addr_type>(impl,metrics::port_off
                 return *this;
             }
 
+            //__________________________________________________________________
+            //
             // methods
+            //__________________________________________________________________
 
             //! access implementation
             inline const sock_addr_type & sa() const throw() { return impl; }
@@ -88,8 +116,12 @@ port( out_of_reach::access<net16_t,       sock_addr_type>(impl,metrics::port_off
                 return os;
             }
 
+            //__________________________________________________________________
+            //
+            // members
+            //__________________________________________________________________
         private:
-            sock_addr_type     impl;
+            sock_addr_type     impl; //!< implementation
 
         public:
             inet_addr_type    &addr; //!< reference to internal address (nbo)

@@ -9,23 +9,28 @@ namespace yack
 {
     namespace net
     {
+        //______________________________________________________________________
+        //
+        //
+        //! IPv4 address metrics
+        //
+        //______________________________________________________________________
         template <>
         struct socket_address_metrics<v4>
         {
-            typedef sockaddr_in      sock_addr_type;
-            typedef net32_t          inet_addr_type;
-            static  const  size_t    sock_addr_size = sizeof(sock_addr_type);
-            static  const size_t     inet_addr_size = sizeof(inet_addr_type);
-            static  const  ptrdiff_t inet_offset    = offsetof(sockaddr_in,sin_addr);
-            static  const  ptrdiff_t port_offset    = offsetof(sockaddr_in,sin_port);
+            typedef sockaddr_in      sock_addr_type;                                  //!< alias
+            typedef net32_t          inet_addr_type;                                  //!< alias
+            static  const  size_t    sock_addr_size = sizeof(sock_addr_type);         //!< alias
+            static  const size_t     inet_addr_size = sizeof(inet_addr_type);         //!< alias
+            static  const  ptrdiff_t inet_offset    = offsetof(sockaddr_in,sin_addr); //!< offset of addr
+            static  const  ptrdiff_t port_offset    = offsetof(sockaddr_in,sin_port); //!< offset of port
 
-            static const inet_addr_type any      = INADDR_ANY;
-            static const inet_addr_type none     = INADDR_NONE;
-            static const inet_addr_type loopback = INADDR_LOOPBACK;
+            static const inet_addr_type any      = INADDR_ANY;      //!< alias
+            static const inet_addr_type none     = INADDR_NONE;     //!< alias
+            static const inet_addr_type loopback = INADDR_LOOPBACK; //!< alias
 
-            static   void   initialize(sock_addr_type &) throw();
-            static   string to_string(const sock_addr_type &);
-
+            static   void   initialize(sock_addr_type &) throw(); //!< set clean and family
+            static   string to_string(const sock_addr_type &);    //!< convert address to string
 
         };
 
