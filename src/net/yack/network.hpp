@@ -3,7 +3,7 @@
 #ifndef YACK_NETWORK_INCLUDED
 #define YACK_NETWORK_INCLUDED 1
 
-#include "yack/net/types.hpp"
+#include "yack/net/socket/address.hpp"
 #include "yack/net/initializer.hpp"
 #include "yack/singleton.hpp"
 #include "yack/string.hpp"
@@ -43,6 +43,7 @@ namespace yack
         const char    * ip_version(const net::ip_version) const throw();    //!< v4|v6
         const char    * ip_protocol(const net::ip_protocol) const throw();  //!< tcp|udp
 
+        net::socket_address resolve(const string &hostName, const net::ip_version version) const;
         
         //______________________________________________________________________
         //

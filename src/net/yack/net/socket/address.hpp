@@ -47,11 +47,13 @@ namespace yack
             //
             // methods
             //__________________________________________________________________
+            static uint16_t family(const ip_version) throw();
 
             void       xch(socket_address &) throw(); //!< no-throw swap
             ip_version version()       const throw(); //!< current version
             uint16_t   port()          const throw(); //!< read port
             void       port(const uint16_t)  throw(); //!< set port
+            uint16_t   family()        const throw(); //!< return family
 
             //! display
             friend std::ostream & operator<<(std::ostream &, const socket_address &);

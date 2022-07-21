@@ -57,6 +57,21 @@ namespace yack
             return 0;
         }
 
+        uint16_t socket_address:: family() const throw()
+        {
+            return family(which);
+        }
+
+        uint16_t socket_address:: family(const ip_version v) throw()
+        {
+            switch (v) {
+                case v4: return AF_INET;
+                case v6: return AF_INET6;
+            }
+            return 0;
+        }
+
+
         void socket_address:: port(const uint16_t user_port) throw()
         {
             switch(which)

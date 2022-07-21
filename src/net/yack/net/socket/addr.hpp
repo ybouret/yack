@@ -21,9 +21,8 @@ namespace yack
 
 #define YACK_NET_SOCKET_ADDR_CTOR() \
 impl(),                                             \
-addr( out_of_reach::access<inet_addr_type,sock_addr_type>(impl,metrics::inet_offset) ), \
-port( out_of_reach::access<net16_t,       sock_addr_type>(impl,metrics::port_offset) )
-
+addr(   out_of_reach::access<inet_addr_type,sock_addr_type>(impl,metrics::addr_offset) ), \
+port(   out_of_reach::access<net16_t,       sock_addr_type>(impl,metrics::port_offset) )
         //______________________________________________________________________
         //
         //
@@ -110,6 +109,8 @@ port( out_of_reach::access<net16_t,       sock_addr_type>(impl,metrics::port_off
             //! access implementation 
             inline size_t                 sz() const throw() { return sock_addr_size; }
 
+            
+
             //! output
             friend std::ostream & operator <<( std::ostream &os, const socket_addr &self)
             {
@@ -129,8 +130,8 @@ port( out_of_reach::access<net16_t,       sock_addr_type>(impl,metrics::port_off
             sock_addr_type     impl; //!< implementation
 
         public:
-            inet_addr_type    &addr; //!< reference to internal address (nbo)
-            net16_t           &port; //!< reference to internal port    (nbo)
+            inet_addr_type    &addr;   //!< reference to internal address (nbo)
+            net16_t           &port;   //!< reference to internal port    (nbo)
         };
 
         
