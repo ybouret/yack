@@ -4,7 +4,7 @@
 #include "yack/math/opt/optimize.hpp"
 #include "yack/type/boolean.h"
 #include "yack/math/numeric.hpp"
-#include "yack/math/algebra/svd.hpp"
+
 #include <iomanip>
 #include <cmath>
 
@@ -31,7 +31,6 @@ namespace yack
                     std::cerr << " |  Q/K-1=" << std::setw(15) << (eq.Q(C0)/K[*eq])-1;
                     std::cerr << std::endl;
                 }
-                //std::cerr << "   eps=" << numeric<double>::epsilon << std::endl;
             }
             return steady_success;
         }
@@ -299,15 +298,6 @@ namespace yack
             iota::load(xi,Gamma);
             LU->solve(iOmega,xi);
 
-#if 0
-            U.assign(Omega0);
-            if(!SVD.build(U,w,V))
-            {
-                std::cerr << " (***) SVD failure" << std::endl;
-                exit(1);
-            }
-            std::cerr << "w=" << w << std::endl;
-#endif
 
             //------------------------------------------------------------------
             //
@@ -441,7 +431,6 @@ namespace yack
                         }
                         else
                         {
-                            std::cerr << "BAD?" << std::endl;
                             return steady_failure;
                         }
                     }
@@ -457,116 +446,62 @@ namespace yack
         {
 
             YACK_CHEM_MARKUP(vpfx, "reactor::validSteadyState");
-            NuA.assign(Nu);
-            double xmax = 0;
+
+            bool   isValid = true;
             for(const enode *node=singles.head();node;node=node->next)
             {
                 const equilibrium       &eq  = ***node;
                 const size_t             ei  = *eq;
                 writable<double>        &psi = Psi[ei];
-                writable<double>        &Omi = Omega0[ei];
-                double                  &gam = Gamma[ei];
+                writable<double>        &Ci  = Cl[ei];
+                const double             Ki  = K[ei];
+                const double             xx  = (Xl[ei] = eq.solve1D(Ki,Corg,Ci));
+                const double             ax  = fabs(xx);
 
-                if(blocked[ei])
+                if(verbose) singles.pad(std::cerr << vpfx << " scanning @{" << eq.name << "}",eq) << " = " << xx << std::endl;
+
+                if(ax<=0) continue;
+
+                eq.drvs_action(psi,Ki,Ci,Ctry);
+                if( sorted::dot(psi,Nu[ei],Ctry) >= 0 )
                 {
-                    gam = 0;
-                    Omi.ld(0); Omi[ei]=1.0;
-                    NuA[ei].ld(0);
-                    psi.ld(0);
+                    continue; // blocked
                 }
-                else
-                {
-                    const double Ki = K[ei];
-                    const double xx = Xl[ei] = eq.solve1D(Ki,Corg,Ctry);
-                    const double ax = fabs(xx);
 
-                    if(ax>0)
+
+                bool underflow = false;
+
+                for(const cnode *scan=eq.head();scan;scan=scan->next)
+                {
+                    const species &sp = ****scan;
+                    const size_t   j  = *sp;
+                    const double   c_old = Corg[j];
+                    const double   c_new = Ci[j];
+                    if(verbose)
                     {
-                        if(ax>xmax) xmax = ax;
-                        gam = eq.grad_action(psi,Ki,Corg,Ctry);
+                        lib.pad(std::cerr << vpfx << "\t" << sp.name, sp) << " : ";
+                        std::cerr << std::setw(15) << c_old << " --> " << std::setw(15) << c_new;
+                    }
+                    const bool zero_delta = fabs(c_old-c_new) <= 0;
+                    if(zero_delta)
+                    {
+                        YACK_CHEM_PRINTLN(" | underflow");
+                        underflow = true;
                     }
                     else
                     {
-                        gam = 0;
-                        eq.drvs_action(psi, Ki, Corg, Ctry);
+                        YACK_CHEM_PRINTLN(" | regular..");
                     }
-
-                    std::cerr << vpfx << " scanning {" << eq.name << "} @Xi=" << xx << std::endl;
-                    iota::load(Ctry,Corg);
-                    eq.move(Ctry,xx);
-                    for(const cnode *scan=eq.head();scan;scan=scan->next)
-                    {
-                        const species &sp = ****scan;
-                        const size_t   j  = *sp;
-                        lib.pad(std::cerr << vpfx << "\t" << sp.name, sp) << " : ";
-                        std::cerr << std::setw(15) << Corg[j] << " --> " << std::setw(15) << Ctry[j];
-                        std::cerr << " | " << yack_boolean( fabs(Corg[j]-Ctry[j]) <=0 );
-                        std::cerr << std::endl;
-                    }
-
-
-
-                    for(const enode *scan=singles.head();scan;scan=scan->next)
-                    {
-                        const size_t j = ****scan;
-                        Omi[j] = - sorted::dot(psi,Nu[j],Ctry);
-                    }
-
-
-
                 }
-            }
 
-            if(verbose)
-            {
-                singles(std::cerr << vpfx << "Xi=",Xl,vpfx);
-                singles(std::cerr << vpfx << "Omega=",Omega0,vpfx);
-                singles(std::cerr << vpfx << "Gamma=",Gamma,vpfx);
-                std::cerr << "Omega=" << Omega0 << std::endl;
-            }
-
-            if(xmax<=0)
-            {
-                YACK_CHEM_PRINTLN("   [success: final @ |Xi| = 0 ]");
-                return true;
-            }
-            else
-            {
-
-                YACK_CHEM_PRINTLN("   [failure: stuck @ |Xi| > 0 ]");
-
-                exit(1);
-                return false;
-
-                if(!LU->build(Omega0))
+                if(!underflow)
                 {
-                    YACK_CHEM_PRINTLN("   [failure: singular composition ]");
-                    return false;
+                    isValid = false;
                 }
-                else
-                {
 
-                    iota::load(xi,Gamma);
-                    LU->solve(Omega0,xi);
-
-                    singles(std::cerr << vpfx << "xi=",xi,vpfx);
-                    for(const anode *node=active.head;node;node=node->next)
-                    {
-                        const size_t j = ***node;
-                        for(size_t i=N;i>0;--i)
-                        {
-                            Xtry[i] = xi[i] * NuA[i][j];
-                        }
-                        Cstp[j] = sorted::sum(Xtry,sorted::by_abs_value);
-                    }
-                    singles(std::cerr << vpfx << "C=",Corg,vpfx);
-                    singles(std::cerr << vpfx << "dC=",Cstp,vpfx);
-
-
-                    exit(1);
-                    return false;
-                }
             }
+
+            return isValid;
 
         }
 
