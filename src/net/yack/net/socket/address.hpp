@@ -9,6 +9,8 @@
 #include "yack/net/socket/ipv4.hpp"
 #include "yack/net/socket/ipv6.hpp"
 #include "yack/memory/workplace.hpp"
+#include "yack/memory/buffer/rw.hpp"
+#include "yack/type/gateway.hpp"
 
 namespace yack
 {
@@ -21,7 +23,7 @@ namespace yack
         //! variant address to hold IPv4/IPv6
         //
         //______________________________________________________________________
-        class socket_address
+        class socket_address : public gateway<socket_addr>
         {
         public:
             //__________________________________________________________________
@@ -43,17 +45,14 @@ namespace yack
             //! cleanup
             virtual ~socket_address() throw();
 
+
+
             //__________________________________________________________________
             //
             // methods
             //__________________________________________________________________
-            static uint16_t family(const ip_version) throw();
+            void        xch(socket_address &) throw(); //!< no-throw swap
 
-            void       xch(socket_address &) throw(); //!< no-throw swap
-            ip_version version()       const throw(); //!< current version
-            uint16_t   port()          const throw(); //!< read port
-            void       port(const uint16_t)  throw(); //!< set port
-            uint16_t   family()        const throw(); //!< return family
 
             //! display
             friend std::ostream & operator<<(std::ostream &, const socket_address &);
@@ -63,6 +62,7 @@ namespace yack
             void                   *entry;
             memory::workplace<IPv6> where;
             void clear() throw();
+            virtual const_type & bulk() const throw();
         };
     }
 }

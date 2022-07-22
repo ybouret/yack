@@ -54,40 +54,43 @@ namespace yack
 
 
 
-    net::socket_address network:: resolve(const string &hostName, const net::ip_version version) const
+    net::socket_address network:: resolve(const string         &hostName,
+                                          const net::ip_version version,
+                                          const uint16_t        port) const
     {
         YACK_NET_PRINTLN(call_sign << ".resolve<" << hostName << ">");
 
-#if 0
+        net::socket_address ip(version);
+
         addrinfo fmt;
         memset( &fmt, 0, sizeof(fmt) );
-        fmt.ai_family = net::socket_address::family(version);
+        fmt.ai_family = ip->family();
 
         addrinfo *ai0 = NULL;
         int       err = ::getaddrinfo( hostName(), NULL, &fmt, &ai0);
         if( err )
         {
-#           if defined(Y_WIN)
+#           if defined(YACK_WIN)
             throw win32::exception( err, "::getaddrinfo(%s,%s)" , *name, ip.className() );
 #           endif
 
-#           if defined(Y_BSD)
-            throw imported::exception( gai_strerror(err), "::getaddrinfo(%s,%s)" , *name, ip.className() );
+#           if defined(YACK_BSD)
+            throw yack::exception("::getaddrinfo(%s,%s) %s" , hostName(), ip->className(), gai_strerror(err) );
+            //throw imported::exception( gai_strerror(err), "::getaddrinfo(%s,%s)" , *name, ip.className() );
 #           endif
         }
 
         // TODO: sanity ?
-        assert( ai0             != NULL        );
-        assert( ai0->ai_addr    != NULL        );
-        assert( ai0->ai_addrlen == ip.length() );
+        assert( ai0             != NULL   );
+        assert( ai0->ai_addr    != NULL   );
+        assert( ai0->ai_addrlen == ip->size );
 
-        const net16_t p = ip.port; //-- save port
-        memcpy( ip.rw(), ai0->ai_addr, ip.length() );
-        ip.port = p;               //-- restore port
+        memcpy( &(ip->addr), ai0->ai_addr, ip->size );
+        ip->port = YACK_NBO(port);
 
         ::freeaddrinfo(ai0);
-#endif
-        
+
+        return ip;
     }
 
 }

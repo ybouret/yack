@@ -11,7 +11,7 @@ namespace yack
 {
     namespace net
     {
-        typedef socket_addr<v4> IPv4; //!< alias
+        typedef socket_addr_data<v4> IPv4; //!< alias
     }
 
 }

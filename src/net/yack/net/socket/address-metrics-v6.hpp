@@ -27,10 +27,11 @@ namespace yack
             static  const ptrdiff_t  port_offset    = offsetof(sockaddr_in6,sin6_port);   //!< offset of port
             static  const ptrdiff_t  fmly_offset    = offsetof(sockaddr_in6,sin6_family); //!< offset of family
 
-            static const uint16_t       family   = AF_INET6;
-            static const inet_addr_type any;      //!< alias
-            static const inet_addr_type none;     //!< alias
-            static const inet_addr_type loopback; //!< alias
+            static const uint16_t       family   = AF_INET6; //!< alias
+            static const inet_addr_type any;                 //!< alias
+            static const inet_addr_type none;                //!< alias
+            static const inet_addr_type loopback;            //!< alias
+            static const char           className[];         //!< IPv6
 
             static void   initialize(sock_addr_type &) throw(); //!< set clean and family
             static string to_string(const sock_addr_type &);    //!< convert address to string

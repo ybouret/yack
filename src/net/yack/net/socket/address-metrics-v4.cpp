@@ -30,6 +30,10 @@ namespace yack
         const socket_address_metrics<v4>::inet_addr_type socket_address_metrics<v4>::any;
         const socket_address_metrics<v4>::inet_addr_type socket_address_metrics<v4>::none;
         const socket_address_metrics<v4>::inet_addr_type socket_address_metrics<v4>::loopback;
+
+        const char socket_address_metrics<v4>::className[] = "IPv4";
+
+
     }
 
 }
