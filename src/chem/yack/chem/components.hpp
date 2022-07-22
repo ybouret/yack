@@ -116,13 +116,6 @@ namespace yack
             //! detect underflow
             bool found_underflow_for(const double xi, const readable<double> &C) const throw();
 
-#if 0
-            //! check if C is changed by xi, using Ctry as workspace
-            bool extent_changes_phase_space(const readable<double> &C, const double xi, writable<double> &Ctry) const throw();
-
-            //! check if mass action is changed by xi, using Ctry as workspace
-            bool extent_changes_mass_action(const double K, const readable<double> &C, const double xi, writable<double> &Ctry) const throw();
-#endif
             
 
             //! find private limits
