@@ -51,8 +51,10 @@ namespace yack
             // methods
             //__________________________________________________________________
 
+            bool  solve(writable<double> &C0) throw();
 
             bool  steady(writable<double> &C0) throw();
+
             void  display(const readable<double> &C0);
 
             double  operator()(const double u) throw(); //!< hamiltonian( Corg * (1-u) + Cend * u )

@@ -339,24 +339,25 @@ namespace yack
             move(Cs,newXi);
 
             if(exact) goto SUCCESS;
+
             if(first)
             {
+                // skip first cycle
                 first = false;
             }
             else
             {
-                if(fabs(newXi)>=fabs(oldXi))
-                    goto SUCCESS;
+                // test for numerical limit
+                if(fabs(newXi)>=fabs(oldXi)) goto SUCCESS;
             }
+
             oldXi = newXi;
             goto CYCLE;
 
         SUCCESS:
             if(calls) (*calls) += F.calls;
             const double xi = deduce(C0,Cs);
-            return outcome(qualify_extent(xi,Cs),running_components,xi);
-
-
+            return outcome(qualify_extent(xi,C0),running_components,xi);
         }
 
 
