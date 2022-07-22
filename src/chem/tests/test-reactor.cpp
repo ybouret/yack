@@ -30,20 +30,21 @@ YACK_UTEST(reactor)
 
     C.ld(0);
 
-    if(!cs.steady(C))
+    if(!cs.solve(C))
     {
         throw exception("cannot solve null phase space!!");
     }
     lib(std::cerr<<"Cend=",C);
     cs.display(C);
 
+    
     vector<species *> active(cs.active.size,as_capacity);
     for(const anode *node=cs.active.head;node;node=node->next)
     {
         active << & coerce(**node);
     }
     const size_t n = active.size();
-    for(size_t k=1;k<=n;++k)
+    for(size_t k=n;k>0;--k)
     {
         combination comb(n,k);
         do {
@@ -67,11 +68,11 @@ YACK_UTEST(reactor)
                 }
                 (std::cerr << ".").flush();
                 //lib(std::cerr<<"Cini=",C);
-                if(!cs.steady(C))
+                if(!cs.solve(C))
                 {
                     lib(std::cerr<<"Cini=",C);
                     entity::verbose = true;
-                    (void)cs.steady(C);
+                    (void)cs.solve(C);
                     //cs.display(C);
                     throw exception("Couldn't solve!");
                 }

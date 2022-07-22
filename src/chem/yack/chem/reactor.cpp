@@ -54,7 +54,6 @@ namespace yack
         Gamma( ntab.next() ),
         xi( ntab.next() ),
         sigma( ntab.next() ),
-        blocked( ntab.next(), transmogrify ),
 
         Corg( mtab.next() ),
         Cend( mtab.next() ),
@@ -66,6 +65,7 @@ namespace yack
         Kl( ltab.next() ),
         Xl( ltab.next() ),
         Cl(),
+        blocked( ltab.next(), transmogrify ),
 
         libLock(lib_),
         eqsLock(eqs_)
@@ -127,7 +127,7 @@ namespace yack
                 if( 0 < (coerce(L) = lattice.size()) )
                 {
                     ltab.make(L);
-                    //Ok.relink<bool>();  assert(L==Ok.size());
+                    blocked.relink<bool>();  assert(L==blocked.size());
                     assert(L==Kl.size());
                     assert(L==Xl.size());
 
@@ -186,8 +186,8 @@ namespace yack
                 const double       Ki = K[ei];
 
                 singles.pad(std::cerr << vpfx << "{" << eq.name << "}", eq);
-                std::cerr << " | extent = " << std::setw(15) << eq.solve1D(Ki,C0,Ctry);
-                std::cerr << " | gamma  = " << std::setw(15) << eq.mass_action(Ki,C0);
+                std::cerr << " | state = " << eq.brew1D(Ki,C0,Ctry);
+                std::cerr << " | gamma = " << std::setw(15) << eq.mass_action(Ki,C0);
 
 
                 std::cerr << std::endl;

@@ -91,7 +91,6 @@ namespace yack
             tableau &Gamma;   //!< [N]
             tableau &xi;      //!< [N]
             tableau &sigma;   //!< [N] - <Psi_i|Nu_i>
-            booltab blocked;  //!< [N]
 
             tableau &Corg; //!< [M]
             tableau &Cend; //!< [M]
@@ -103,6 +102,7 @@ namespace yack
             tableau &Kl;  //!< [L] all constants of lattice
             tableau &Xl;  //!< [L] all Xi of lattice
             rmatrix  Cl;  //!< [LxM] all equilibria of lattice
+            booltab  blocked;  //!< [L]
 
 
         private:
@@ -111,12 +111,14 @@ namespace yack
             const lockable::scope eqsLock;
 
 
+
             bool               querySingles(size_t &nrun)    throw();
             const equilibrium *queryLattice(const double G0) throw();
             double             Hamiltonian(const readable<double> &C) throw();
             double             Htry(const double G0)                  throw();
 
-            bool         initializeSearch(writable<double> &C0)                 throw(); //!< initialize, true=>success
+            bool         successfulUpdate(writable<double> &C0, unsigned cycle) throw(); //!< transfer + verbose info
+            bool         initializeSearch(const readable<double> &C0)                 throw(); //!< initialize, true=>success
             bool         updateSuccessful(writable<double> &C0, unsigned cycle) throw(); //!< transfer + verbose info
             void         initializeOmega0()                                     throw(); //!< jacobian
             double       mixedHamiltonian(writable<double> &C, const group &g)  throw(); //!< aggregate a mixed combination

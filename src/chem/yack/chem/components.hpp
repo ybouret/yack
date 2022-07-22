@@ -8,6 +8,7 @@
 #include "yack/chem/limits.hpp"
 #include "yack/associative/suffix/set.hpp"
 
+#include <iomanip>
 
 namespace yack
 {
@@ -55,6 +56,25 @@ namespace yack
             xi0(other.xi0)
             {
 
+            }
+
+            friend std::ostream & operator<<(std::ostream &os, const outcome res)
+            {
+                switch(res.are)
+                {
+                    case running_components: os << "[running]"; break;
+                    case blocked_components: os << "[blocked]"; break;
+                }
+
+                switch(res.has)
+                {
+                    case significant_extent: os << "(+)"; break;
+                    case degenerated_extent: os << "(0)"; break;
+                }
+
+                os << "@" << std::setw(15) << res.xi0;
+
+                return os;
             }
 
         private:

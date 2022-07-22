@@ -35,7 +35,7 @@ namespace yack
             return true;
         }
 
-        bool reactor:: initializeSearch(writable<double> &C0) throw()
+        bool reactor:: initializeSearch(const readable<double> &C0) throw()
         {
             assert(C0.size()>=M);
             YACK_CHEM_MARKUP(vpfx, "reactor::initializeSearch");
@@ -65,8 +65,9 @@ namespace yack
                     //----------------------------------------------------------
                 {
                     const equilibrium &eq = ***singles.head();
-                    eq.solve1D(K[*eq],C0,Corg);
-                    YACK_CHEM_PRINTLN(" <success::1D/>");
+                    //eq.solve1D(K[*eq],C0,Corg);
+                    (void) eq.brew1D(K[*eq], C0, Corg);
+                    YACK_CHEM_PRINTLN(vpfx << "  <success::1D/> " << Corg);
                 } return true;
 
                 default:
