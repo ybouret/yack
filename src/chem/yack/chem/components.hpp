@@ -154,7 +154,8 @@ namespace yack
 
             outcome brew1D(const double            K,
                            const readable<double> &C0,
-                           writable<double>       &Cs) const;
+                           writable<double>       &Cs,
+                           size_t                *calls=0) const;
 
             //! move to a given extent
             void move(writable<double> &C, const double xi) const throw();
@@ -164,7 +165,7 @@ namespace yack
 
             //! detect significant: none is too small
             bool found_significant(const double xi, const readable<double> &C) const throw();
-            
+
             extent_state qualify_extent(const double xi, const readable<double> &C) const throw();
 
 

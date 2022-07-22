@@ -39,7 +39,7 @@ namespace
         ios::ocstream::overwrite(fn);
         unsigned count = 0;
 
-        for(int p=-12;p<=12;++p)
+        for(int p=-14;p<=14;++p)
         {
             const double   K = pow(10.0,double(p));
             std::cerr << "---- K=" << K << std::endl;
@@ -97,7 +97,7 @@ namespace
     void test_compsolve( randomized::bits &ran)
     {
 
-        size_t    nmax = 3;
+        size_t    nmax = 4;
         partition reac(nmax);
         partition prod(nmax);
 
