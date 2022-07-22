@@ -57,7 +57,8 @@ namespace yack
     net::socket_address network:: resolve(const string &hostName, const net::ip_version version) const
     {
         YACK_NET_PRINTLN(call_sign << ".resolve<" << hostName << ">");
-        
+
+#if 0
         addrinfo fmt;
         memset( &fmt, 0, sizeof(fmt) );
         fmt.ai_family = net::socket_address::family(version);
@@ -85,7 +86,8 @@ namespace yack
         ip.port = p;               //-- restore port
 
         ::freeaddrinfo(ai0);
-
+#endif
+        
     }
 
 }
