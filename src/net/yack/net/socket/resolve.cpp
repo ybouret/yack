@@ -1,4 +1,5 @@
 #include "yack/network.hpp"
+#include "yack/system/exception.hpp"
 
 #if defined(YACK_BSD)
 #include <netdb.h>
@@ -75,8 +76,7 @@ namespace yack
 #           endif
 
 #           if defined(YACK_BSD)
-            throw yack::exception("::getaddrinfo(%s,%s) %s" , hostName(), ip->className(), gai_strerror(err) );
-            //throw imported::exception( gai_strerror(err), "::getaddrinfo(%s,%s)" , *name, ip.className() );
+            throw imported::exception( gai_strerror(err), "::getaddrinfo(%s,%s)" , hostName(), ip->className() );
 #           endif
         }
 
