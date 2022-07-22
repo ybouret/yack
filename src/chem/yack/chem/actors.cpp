@@ -17,6 +17,15 @@ namespace yack
             
         }
 
+        bool actors:: has_missing_actor(const readable<double> &C) const throw()
+        {
+            for(const actor *a=head;a;a=a->next)
+            {
+                if( C[ ***a ] <=0 ) return true;
+            }
+            return false;
+        }
+
         double actors:: mass_action(double factor, const readable<double> &C) const throw()
         {
             for(const actor *a=head;a;a=a->next)

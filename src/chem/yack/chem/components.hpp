@@ -20,7 +20,49 @@ namespace yack
         typedef suffix_set<string,const component::pointer> components_set; //!< alias
         typedef components_set::knot_type                   cnode;          //!< alias
       
-        
+
+        enum extent_state
+        {
+            significant_extent, //!< no underflow
+            degenerated_extent  //!< at least one underflow
+        };
+
+        enum components_state
+        {
+            running_components,
+            blocked_components
+        };
+
+        class outcome
+        {
+        public:
+            const extent_state     has;
+            const components_state are;
+            const double           xi0;
+
+            outcome(const extent_state xs, const components_state cs, const double xx) throw() :
+            has(xs),
+            are(cs),
+            xi0(xx)
+            {
+            }
+
+            ~outcome() throw() {}
+
+            outcome(const outcome &other) throw() :
+            has(other.has),
+            are(other.are),
+            xi0(other.xi0)
+            {
+
+            }
+
+        private:
+            YACK_DISABLE_ASSIGN(outcome);
+        };
+
+
+
         //______________________________________________________________________
         //
         //
@@ -109,14 +151,22 @@ namespace yack
                            const readable<double> &C0,
                            writable<double>       &Cs) const;
 
+
+            outcome brew1D(const double            K,
+                           const readable<double> &C0,
+                           writable<double>       &Cs) const;
+
             //! move to a given extent
             void move(writable<double> &C, const double xi) const throw();
 
+            //! detect degenerated: at lease one is too small
+            bool found_degenerated(const double xi, const readable<double> &C) const throw();
 
-            //! detect underflow
-            bool found_underflow_for(const double xi, const readable<double> &C) const throw();
-
+            //! detect significant: none is too small
+            bool found_significant(const double xi, const readable<double> &C) const throw();
             
+            extent_state qualify_extent(const double xi, const readable<double> &C) const throw();
+
 
             //! find private limits
             const limits & private_limits(const readable<double> &C, const size_t w) const throw();
@@ -154,7 +204,6 @@ namespace yack
             //! display signature
             std::ostream & display_signature(std::ostream &os) const;
 
-            //! check index ownership
 
             //! check other components match
             bool other_are_unchanged(const readable<double> &lhs, const readable<double> &rhs) const throw();

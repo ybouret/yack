@@ -84,6 +84,9 @@ namespace yack
             //! find limit from primary actors
             const limit *primary_limit(const readable<double> &C) const throw();
 
+            //! check is one actor has a zero concentration
+            bool has_missing_actor(const readable<double> &C) const throw();
+
             //! helper to display
             void display(std::ostream &) const;
 

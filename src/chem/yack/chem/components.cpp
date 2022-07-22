@@ -178,7 +178,7 @@ namespace yack
             prod.move(C,+xi);
         }
 
-        bool components:: found_underflow_for(const double xi, const readable<double> &C) const throw()
+        bool components:: found_degenerated(const double xi, const readable<double> &C) const throw()
         {
             for(const cnode *node=head();node;node=node->next)
             {
@@ -187,6 +187,28 @@ namespace yack
             }
             return false;
         }
+
+
+        bool components:: found_significant(const double xi, const readable<double> &C) const throw()
+        {
+            for(const cnode *node=head();node;node=node->next)
+            {
+                const component &c = ***node;
+                if(c.is_too_small(xi,C)) return false;
+            }
+            return true;
+        }
+
+        extent_state components:: qualify_extent(const double xi, const readable<double> &C) const throw()
+        {
+            for(const cnode *node=head();node;node=node->next)
+            {
+                const component &c = ***node;
+                if(c.is_too_small(xi,C)) return degenerated_extent;
+            }
+            return significant_extent;
+        }
+
 
 
 #if 0
