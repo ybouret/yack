@@ -71,7 +71,7 @@ namespace yack
         if( err )
         {
 #           if defined(YACK_WIN)
-            throw win32::exception( err, "::getaddrinfo(%s,%s)" , *name, ip.className() );
+            throw win32::exception( err, "::getaddrinfo(%s,%s)" , hostName(), ip->className() );
 #           endif
 
 #           if defined(YACK_BSD)
