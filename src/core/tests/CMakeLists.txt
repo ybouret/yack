@@ -127,6 +127,7 @@ add_test(type:fourcc test-core type_fourcc)
 add_test(type:vtx    test-core type_vtx)
 add_test(type:constant test-core type_constant)
 add_test(type:gateway  test-core type_gateway)
+add_test(type:dec8     test-core type_dec8)
 
 
 add_test(memory:ram       test-core ram)

@@ -1,4 +1,3 @@
-
 //! \file
 
 #ifndef YACK_TYPE_HEXA_INCLUDED

@@ -5,7 +5,7 @@
 #define YACK_NET_SOCKET_IPV4_INCLUDED 1
 
 #include "yack/net/socket/address-metrics-v4.hpp"
-#include "yack/net/socket/addr.hpp"
+#include "yack/net/socket/addr-data.hpp"
 
 namespace yack
 {
