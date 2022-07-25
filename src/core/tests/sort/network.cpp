@@ -142,7 +142,7 @@ YACK_UTEST(sort_nws)
     std::cerr << "Testing All Sort" << std::endl;
     for(size_t n=0;n<=256;++n)
     {
-        vector<int> xtab(n,0);
+        vector<double> xtab(n,0);
         for(size_t iter=0;iter<64;++iter)
         {
             bring::fill(xtab,ran);
