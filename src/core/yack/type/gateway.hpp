@@ -31,8 +31,8 @@ namespace yack
         inline virtual     ~gateway()         throw() {}                         //!< cleanup
         inline type       & operator*()       throw() { return (type&)bulk(); }  //!< access
         inline const_type & operator*() const throw() { return bulk();        }  //!< access
-        inline type       * operator->() throw() { return (type*) &bulk(); }
-        inline const_type * operator->() const throw() { return   &bulk(); }
+        inline type       * operator->() throw() { return (type*) &bulk(); }     //!< acess
+        inline const_type * operator->() const throw() { return   &bulk(); }     //!< access
 
 
     protected:

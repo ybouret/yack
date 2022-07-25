@@ -21,46 +21,82 @@
 
 namespace yack {
 
-#define YACK_NETWORK_SORT_DECLARE(N) const network_sort##N s##N
-#define YACK_NETWORK_SORT_REP(MACRO) \
-YACK_NETWORK_SORT_##MACRO(2); \
-YACK_NETWORK_SORT_##MACRO(3); \
-YACK_NETWORK_SORT_##MACRO(4); \
-YACK_NETWORK_SORT_##MACRO(5); \
-YACK_NETWORK_SORT_##MACRO(6); \
-YACK_NETWORK_SORT_##MACRO(7); \
-YACK_NETWORK_SORT_##MACRO(8); \
-YACK_NETWORK_SORT_##MACRO(9); \
-YACK_NETWORK_SORT_##MACRO(10) \
+    //__________________________________________________________________________
+    //
+    //
+    // macro to help build algorithm
+    //
+    //__________________________________________________________________________
 
+    //! helper to declare a predefine network
+#define YACK_NETWORK_SORT_DECLARE(N) const network_sort##N s##N
+
+    //! helper to initialize algorithms
+#define YACK_NETWORK_SORT_IMPL(N)  s##N()
+
+    //! repeat macro according to implementation
+#define YACK_NETWORK_SORT_REP(MACRO,SEP) \
+YACK_NETWORK_SORT_##MACRO(2)  SEP \
+YACK_NETWORK_SORT_##MACRO(3)  SEP \
+YACK_NETWORK_SORT_##MACRO(4)  SEP \
+YACK_NETWORK_SORT_##MACRO(5)  SEP \
+YACK_NETWORK_SORT_##MACRO(6)  SEP \
+YACK_NETWORK_SORT_##MACRO(7)  SEP \
+YACK_NETWORK_SORT_##MACRO(8)  SEP \
+YACK_NETWORK_SORT_##MACRO(9)  SEP \
+YACK_NETWORK_SORT_##MACRO(10)
+
+    //! local increasing macro
 #define YACK_NETWORK_SORT_DISPATCH_INCR(N) \
 case (N-1): { thin_array<typename ARRAY::mutable_type> data( &arr[lo], N ); s##N.increasing(data); return; }
 
+    //! local decreasing macro
 #define YACK_NETWORK_SORT_DISPATCH_DECR(N) \
 case (N-1): { thin_array<typename ARRAY::mutable_type> data( &arr[lo], N ); s##N.decreasing(data); return; }
 
+    //__________________________________________________________________________
+    //
+    //
+    //! instance of sorting algorithm
+    //
+    //__________________________________________________________________________
     class network_sort : public singleton<network_sort>
     {
     public:
-        static const at_exit::longevity life_time = 4000;
-        static const char * const       call_sign;
+        //______________________________________________________________________
+        //
+        // types and definitions
+        //______________________________________________________________________
+        static const at_exit::longevity life_time = 4000; //!< singleton life_time
+        static const char * const       call_sign;        //!< singleton call sign
 
 
 
-        YACK_NETWORK_SORT_REP(DECLARE);
 
+        //______________________________________________________________________
+        //
+        // methods
+        //______________________________________________________________________
+
+        //! sort in increasing order
         template <typename ARRAY> inline
         void increasing(ARRAY &arr) const throw()
         {
             quick_sort_incr(arr,1,arr.size());
         }
 
+        //! sort in decreasing order
         template <typename ARRAY> inline
         void decreasing(ARRAY &arr) const throw()
         {
             quick_sort_decr(arr,1,arr.size());
         }
 
+        //______________________________________________________________________
+        //
+        // members
+        //______________________________________________________________________
+        YACK_NETWORK_SORT_REP(DECLARE,;); //!< initialized sorting algorithms
 
     private:
         YACK_DISABLE_COPY_AND_ASSIGN(network_sort);
@@ -91,7 +127,7 @@ case (N-1): { thin_array<typename ARRAY::mutable_type> data( &arr[lo], N ); s##N
             assert(hi>=lo);
             switch(hi-lo)
             {
-                case 0:  return; YACK_NETWORK_SORT_REP(DISPATCH_INCR);
+                case 0:  return; YACK_NETWORK_SORT_REP(DISPATCH_INCR,;);
                 default: quick_sort_incr(arr,lo,hi);
             }
         }
@@ -129,7 +165,7 @@ case (N-1): { thin_array<typename ARRAY::mutable_type> data( &arr[lo], N ); s##N
             assert(hi>=lo);
             switch(hi-lo)
             {
-                case 0:  return; YACK_NETWORK_SORT_REP(DISPATCH_DECR);
+                case 0:  return; YACK_NETWORK_SORT_REP(DISPATCH_DECR,;);
                 default: quick_sort_decr(arr,lo,hi);
             }
         }

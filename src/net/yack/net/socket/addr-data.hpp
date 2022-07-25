@@ -106,8 +106,8 @@ addr(   out_of_reach::access<inet_addr_type,sock_addr_type>(impl,metrics::addr_o
             //__________________________________________________________________
 
 
-            virtual uint16_t         family()    const throw() { return metrics::family;    }
-            virtual const char      *className() const throw() { return metrics::className; }
+            virtual uint16_t         family()    const throw() { return metrics::family;    } //!< AT_INET[6]
+            virtual const char      *className() const throw() { return metrics::className; } //!< IPv[4|6]
 
             //! output
             friend std::ostream & operator <<( std::ostream &os, const socket_addr_data &self)

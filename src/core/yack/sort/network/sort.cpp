@@ -8,16 +8,9 @@ namespace yack {
     network_sort:: ~network_sort() throw()
     {}
 
+#define COMMA ,
     network_sort:: network_sort() throw() :
-    s2(),
-    s3(),
-    s4(),
-    s5(),
-    s6(),
-    s7(),
-    s8(),
-    s9(),
-    s10()
+    YACK_NETWORK_SORT_REP(IMPL,COMMA)
     {
     }
     

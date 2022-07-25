@@ -12,19 +12,25 @@ namespace yack
     namespace net
     {
 
-
+        //______________________________________________________________________
+        //
+        //
+        //! socket address with mapping of members
+        //
+        //______________________________________________________________________
         class socket_addr
         {
         public:
-            virtual ~socket_addr() throw();
-            virtual uint16_t         family() const throw() = 0;
-            virtual const char      *className() const throw() = 0;
+            virtual            ~socket_addr()     throw();      //!< cleanup
+            virtual uint16_t    family()    const throw() = 0;  //!< AF_INET[6]
+            virtual const char *className() const throw() = 0;  //!< "IPv[4|6]"
 
-            sockaddr        &addr;
-            const size_t     size;
-            net16_t         &port;
+            sockaddr        &addr; //!< reference for BSD
+            const size_t     size; //!< effective length of addr
+            net16_t         &port; //!< reference to internal port
 
         protected:
+            //! setup with references
             explicit socket_addr(sockaddr &ar, const size_t sz, net16_t &pr) throw();
 
         private:
