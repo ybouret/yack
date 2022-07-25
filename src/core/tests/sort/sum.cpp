@@ -41,7 +41,6 @@ YACK_UTEST(sort_sum)
         const double s1 = sorted::sum_squared(seq);
         std::cerr << "seq=" << seq << std::endl;
         std::cerr << "s1=" << s1 << std::endl;
-
     }
 
 
