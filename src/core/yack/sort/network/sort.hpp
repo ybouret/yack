@@ -17,14 +17,15 @@
 #include "yack/singleton.hpp"
 
 namespace yack {
-    
+
+#define YACK_NETWORK_SORT_DECL(N) const network_sort##N s##N
+
 #define YACK_NETWORK_SORT_PROC(N,METHOD) case N: s##N.METHOD(arr); return
 
 #define YACK_NETWORK_SORT_INCR(N) YACK_NETWORK_SORT_PROC(N,increasing)
 #define YACK_NETWORK_SORT_DECR(N) YACK_NETWORK_SORT_PROC(N,decreasing)
 
 #define YACK_NETWORK_SORT_REP(MACRO) \
-case 0: case 1: return;\
 MACRO(2); MACRO(3); MACRO(4); MACRO(5); MACRO(6); MACRO(7); MACRO(8);\
 MACRO(9); MACRO(10)
 
@@ -41,6 +42,7 @@ MACRO(9); MACRO(10)
             const size_t n = arr.size();
             switch(n)
             {
+                case 0: case 1: return;
                     YACK_NETWORK_SORT_REP(YACK_NETWORK_SORT_INCR);
             }
         }
@@ -51,23 +53,13 @@ MACRO(9); MACRO(10)
             const size_t n = arr.size();
             switch(n)
             {
+                case 0: case 1: return;
                     YACK_NETWORK_SORT_REP(YACK_NETWORK_SORT_DECR);
             }
         }
 
+        YACK_NETWORK_SORT_REP(YACK_NETWORK_SORT_DECL);
 
-
-
-
-        const network_sort2  s2;
-        const network_sort3  s3;
-        const network_sort4  s4;
-        const network_sort5  s5;
-        const network_sort6  s6;
-        const network_sort7  s7;
-        const network_sort8  s8;
-        const network_sort9  s9;
-        const network_sort10 s10;
 
     private:
         YACK_DISABLE_COPY_AND_ASSIGN(network_sort);
@@ -76,29 +68,6 @@ MACRO(9); MACRO(10)
         virtual ~network_sort() throw();
     };
 
-#if 0
-    struct network_sort
-    {
-        template <typename ARRAY> static inline
-        void perform(ARRAY &arr)
-        {
-            static const network_sort2  s2;
-            static const network_sort2  s3;
-            static const network_sort10 s10;
-            const size_t n = arr.size();
-            switch(n)
-            {
-                case 0: return;
-                case 1: return;
-                case 2: s2.increasing(arr); return;
-                case 3: s3.increasing(arr); return;
-                default:
-                    ;
-            }
-        }
-
-    };
-#endif
     
 }
 
