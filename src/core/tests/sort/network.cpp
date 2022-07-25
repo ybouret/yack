@@ -65,7 +65,7 @@ YACK_UTEST(sort_network)
 
 
     {
-        vector<int> X(7,0);
+        vector<long double> X(7,0);
         bring::fill(X,ran);
         std::cerr << "X7=" << X << std::endl;
         nwsrt7.decreasing_abs(X);
