@@ -8,7 +8,7 @@
 #include "yack/sort/network/sort8.hpp"
 #include "yack/sort/network/sort9.hpp"
 #include "yack/sort/network/sort10.hpp"
-
+#include "yack/sequence/vector.hpp"
 #include "yack/utest/run.hpp"
 #include "../main.hpp"
 
@@ -69,21 +69,27 @@ YACK_UDONE()
 
 
 #include "yack/sort/network/sort.hpp"
+#include "yack/comparison.hpp"
 
 YACK_UTEST(sort_nws)
 {
+    randomized::rand_ ran;
     const network_sort &nws = network_sort::instance();
 
+    for(size_t n=0;n<=32;++n)
     {
-        double             xarr[4] = { 4,3,1,2 };
-        double             yarr[4] = { 10,11,12,13};
-        thin_array<double> xtab(xarr,4);
-        thin_array<double> ytab(yarr,4);
-
-        nws.incr_(xtab);
-
+        vector<double> xtab(n,0);
+        for(size_t iter=0;iter<4;++iter)
+        {
+            bring::fill(xtab,ran);
+            nws.increasing(xtab);
+            YACK_ASSERT(comparison::ordered(xtab,comparison::increasing<double>));
+            bring::fill(xtab,ran);
+            nws.decreasing(xtab);
+            YACK_ASSERT(comparison::ordered(xtab,comparison::decreasing<double>));
+        }
 
     }
-    
+
 }
 YACK_UDONE()
