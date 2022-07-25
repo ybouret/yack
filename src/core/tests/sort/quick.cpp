@@ -11,9 +11,9 @@ namespace
 {
 
     template <typename T>
-    size_t partition( T arr[], const size_t lo, const size_t hi)
+    size_t partitionIncr( T arr[], const size_t lo, const size_t hi)
     {
-        
+
         const T pivot = arr[ (lo+hi)>>1 ];
         size_t  i     = lo-1;
         size_t  j     = hi+1;
@@ -27,22 +27,59 @@ namespace
     }
 
     template <typename T>
-    void quickSortAlgo( T arr[], const size_t lo, const size_t hi)
+    size_t partitionDecr( T arr[], const size_t lo, const size_t hi)
+    {
+
+        const T pivot = arr[ (lo+hi)>>1 ];
+        size_t  i     = lo-1;
+        size_t  j     = hi+1;
+        while(true)
+        {
+            do ++i; while ( arr[i]>pivot );
+            do --j; while ( arr[j]<pivot );
+            if(i>=j) return j;
+            cswap(arr[i],arr[j]);
+        }
+    }
+
+
+    template <typename T>
+    void quickSortAlgoIncr( T arr[], const size_t lo, const size_t hi)
     {
         assert(lo>0);
         if(lo<hi)
         {
-            const size_t p = partition(arr,lo,hi);
-            quickSortAlgo(arr,lo,p);
-            quickSortAlgo(arr,p+1,hi);
+            const size_t p = partitionIncr(arr,lo,hi);
+            quickSortAlgoIncr(arr,lo,p);
+            quickSortAlgoIncr(arr,p+1,hi);
+        }
+    }
+
+
+    template <typename T>
+    void quickSortAlgoDecr( T arr[], const size_t lo, const size_t hi)
+    {
+        assert(lo>0);
+        if(lo<hi)
+        {
+            const size_t p = partitionDecr(arr,lo,hi);
+            quickSortAlgoDecr(arr,lo,p);
+            quickSortAlgoDecr(arr,p+1,hi);
         }
     }
 
     template <typename T>
-    void quickSort(contiguous<T> &arr)
+    void quickSortIncr(contiguous<T> &arr)
     {
-        quickSortAlgo(*arr,1,arr.size());
+        quickSortAlgoIncr(*arr,1,arr.size());
     }
+
+    template <typename T>
+    void quickSortDecr(contiguous<T> &arr)
+    {
+        quickSortAlgoDecr(*arr,1,arr.size());
+    }
+
 
     template <typename T>
     static inline void testQS(randomized::bits &ran)
@@ -54,10 +91,13 @@ namespace
             for(size_t iter=0;iter<64;++iter)
             {
                 bring::fill(data,ran);
-                //std::cerr << "raw=" << data << std::endl;
-                quickSort(data);
-                //std::cerr << "srt=" << data << std::endl;
+                quickSortIncr(data);
                 YACK_ASSERT(comparison::ordered(data,comparison::increasing<T>));
+
+                bring::fill(data,ran);
+                quickSortDecr(data);
+                YACK_ASSERT(comparison::ordered(data,comparison::decreasing<T>));
+
             }
         }
     }
