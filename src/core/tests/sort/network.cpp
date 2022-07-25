@@ -134,7 +134,7 @@ YACK_UTEST(sort_nws)
     randomized::rand_ ran;
     const network_sort &nws = network_sort::instance();
 
-    test_sum<int>(nws,ran);
+    //test_sum<int>(nws,ran);
     test_sum<float>(nws,ran);
     test_sum<double>(nws,ran);
     test_sum<long double>(nws,ran);
