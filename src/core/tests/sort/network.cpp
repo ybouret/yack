@@ -69,9 +69,21 @@ YACK_UDONE()
 
 
 #include "yack/sort/network/sort.hpp"
-YACK_UTEST(sort_by_network)
+
+YACK_UTEST(sort_nws)
 {
-    
+    const network_sort &nws = network_sort::instance();
+
+    {
+        double             xarr[4] = { 4,3,1,2 };
+        double             yarr[4] = { 10,11,12,13};
+        thin_array<double> xtab(xarr,4);
+        thin_array<double> ytab(yarr,4);
+
+        nws.incr_(xtab);
+
+
+    }
     
 }
 YACK_UDONE()

@@ -233,6 +233,9 @@ add_test(sort:indexing  test-core sort_indexing)
 add_test(sort:sum       test-core sort_sum)
 add_test(sort:nw        test-core sort_nw 0.02)
 add_test(sort:network   test-core sort_network)
+add_test(sort:quick     test-core sort_quick)
+add_test(sort:nws       test-core sort_nws)
+
 
 add_test(counting:comb   test-core counting_comb)
 add_test(counting:perm   test-core counting_perm)
