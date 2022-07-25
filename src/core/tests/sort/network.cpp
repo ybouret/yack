@@ -94,7 +94,7 @@ namespace {
             T         acc = 0;
             for(size_t i=1;i<=n;++i) acc += (X[i] = std::abs(X[i]));
             randomized::shuffle::tableau(X,ran);
-            const T S = nws.sum(X);
+            const T S = nws.sum_geqz(X);
             std::cerr << "S  =" << S << "/" << acc << " | delta=" << std::abs(S-acc) << std::endl;
         }
     }
@@ -108,6 +108,8 @@ YACK_UTEST(sort_nws)
 
     test_sum<int>(nws,ran);
     test_sum<float>(nws,ran);
+    test_sum<double>(nws,ran);
+    test_sum<long double>(nws,ran);
 
     std::cerr << "Testing All Sort" << std::endl;
     for(size_t n=0;n<=256;++n)

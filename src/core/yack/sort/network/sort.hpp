@@ -118,29 +118,46 @@ case (N-1): { thin_array<typename ARRAY::mutable_type> data( &arr[lo], N ); s##N
         }
 
 
+        //! sum of POSITIVE terms
         template <typename ARRAY> inline
-        typename ARRAY::const_type sum(ARRAY &arr) const
+        typename ARRAY::const_type sum_geqz(ARRAY &arr) const
         {
-            typename ARRAY::mutable_type acc(0);
             size_t n = arr.size();
             switch(n)
             {
-                case 0: return acc;
+                case 0: return 0;
                 case 1: return arr[1];
                 default:
                     decreasing(arr);
                     break;
             }
             assert(n>=2);
-            display(std::cerr << "arr=",arr,n) << std::endl;
-            while(n>1)
-            {
-                typename ARRAY::const_type &source = arr[n--];
+            while(n>1) {
+                typename ARRAY::const_type &source = arr[n--]; assert(source>=0);
                 arr[n] += source;
                 update(arr,n);
-                display(std::cerr << "arr=",arr,n) << std::endl;
             }
+            return arr[1];
+        }
 
+        template <typename ARRAY> inline
+        typename ARRAY::const_type sum_any(ARRAY &arr) const
+        {
+            size_t n = arr.size();
+            switch(n)
+            {
+                case 0: return 0;
+                case 1: return arr[1];
+                default:
+                    decreasing(arr);
+                    break;
+            }
+            assert(n>=2);
+            while(n>1) {
+                typename ARRAY::const_type &source = arr[n--]; assert(source>=0);
+                arr[n] += source;
+                update(arr,n);
+            }
             return arr[1];
         }
 
