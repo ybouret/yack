@@ -95,7 +95,7 @@ namespace {
                 T         acc = 0;
                 for(size_t i=1;i<=n;++i) acc += (X[i] = std::abs(X[i]));
                 const T S = nws.sum_geqz(X);
-                std::cerr << "S  =" << S << "/" << acc << " | delta=" << std::abs(S-acc) << std::endl;
+                std::cerr << "S  = " << S << "/" << acc << " | delta=" << std::abs(S-acc) << std::endl;
             }
 
             {
@@ -107,7 +107,20 @@ namespace {
                     acc += X[i];
                 }
                 const T S = nws.sum_rand(X);
-                std::cerr << "S  =" << S << "/" << acc << " | delta=" << std::abs(S-acc) << std::endl;
+                std::cerr << "S  = " << S << "/" << acc << " | delta=" << std::abs(S-acc) << std::endl;
+            }
+
+            {
+                bring::fill(X,ran);
+                vector<T> Y(n,0);
+                T         acc = 0;
+                for(size_t i=1;i<=n;++i)
+                {
+                    if(ran.choice()) X[i] = -X[i];
+                    acc += X[i]*X[i];
+                }
+                const T S = nws.norm2(X,Y);
+                std::cerr << "N2 = " << S << "/" << acc << " | delta=" << std::abs(S-acc) << std::endl;
             }
 
 

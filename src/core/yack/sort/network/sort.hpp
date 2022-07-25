@@ -22,6 +22,7 @@
 
 
 #include "yack/sequence/thin-array.hpp"
+#include "yack/type/utils.hpp"
 #include "yack/singleton.hpp"
 
 #include <iostream>
@@ -191,7 +192,19 @@ case (N-1): { thin_array<typename ARRAY::mutable_type> data( &arr[lo], N ); s##N
             for(size_t i=lhs.size();i>0;--i) acc[i] = lhs[i] * rhs[i];
             return sum_rand(acc);
         }
-        
+
+        //______________________________________________________________________
+        //
+        //! norm2
+        //______________________________________________________________________
+        template <typename LHS, typename ACC> inline
+        typename LHS::const_type norm2(LHS &lhs,  ACC &acc) const
+        {
+            assert(lhs.size()==acc.size());
+            for(size_t i=lhs.size();i>0;--i) acc[i] = squared(lhs[i]);
+            return sum_geqz(acc);
+        }
+
         //______________________________________________________________________
         //
         // members
