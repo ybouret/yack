@@ -1,6 +1,5 @@
 
 #include "yack/chem/reactor.hpp"
-#include "yack/sort/sum.hpp"
 #include "yack/math/iota.hpp"
 #include "yack/math/opt/optimize.hpp"
 #include <cmath>

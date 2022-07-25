@@ -1,6 +1,5 @@
 
 #include "yack/chem/reactor.hpp"
-#include "yack/sort/sum.hpp"
 #include "yack/math/iota.hpp"
 #include "yack/math/opt/optimize.hpp"
 #include "yack/type/boolean.h"
@@ -70,7 +69,7 @@ namespace yack
                         blocked[ei] = false;
                         iota::load(NuA[ei],NuI);
                         eq.drvs_action(psi,Ki,Ci,Ctry);
-                        sigma[ei] = - sorted::dot(psi,NuI,Ctry);
+                        sigma[ei] = - nws.dot(psi,NuI,Ctry);
                         ++nrun;
                         if(ax>xmax)
                         {
@@ -94,6 +93,7 @@ namespace yack
             }
             else
             {
+                // not at numerical equilibrium
                 assert(emax);
                 YACK_CHEM_PRINTLN("|Xi|=" << xmax << " @" << emax->name);
                 return emax;
