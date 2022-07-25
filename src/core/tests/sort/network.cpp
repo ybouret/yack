@@ -64,6 +64,15 @@ YACK_UTEST(sort_network)
     }
 
 
+    {
+        vector<int> X(7,0);
+        bring::fill(X,ran);
+        std::cerr << "X7=" << X << std::endl;
+        nwsrt7.decreasing_abs(X);
+        std::cerr << "A7=" << X << std::endl;
+
+    }
+
 }
 YACK_UDONE()
 
@@ -76,17 +85,24 @@ YACK_UTEST(sort_nws)
     randomized::rand_ ran;
     const network_sort &nws = network_sort::instance();
 
-    for(size_t n=0;n<=32;++n)
+    for(size_t n=0;n<=128;++n)
     {
-        vector<double> xtab(n,0);
-        for(size_t iter=0;iter<4;++iter)
+        vector<int> xtab(n,0);
+        for(size_t iter=0;iter<64;++iter)
         {
             bring::fill(xtab,ran);
             nws.increasing(xtab);
-            YACK_ASSERT(comparison::ordered(xtab,comparison::increasing<double>));
+            YACK_ASSERT(comparison::ordered(xtab,comparison::increasing<int>));
+
             bring::fill(xtab,ran);
             nws.decreasing(xtab);
-            YACK_ASSERT(comparison::ordered(xtab,comparison::decreasing<double>));
+            YACK_ASSERT(comparison::ordered(xtab,comparison::decreasing<int>));
+
+            bring::fill(xtab,ran);
+            nws.decreasing_abs(xtab);
+            YACK_ASSERT(comparison::ordered(xtab,comparison::decreasing_abs<int>));
+
+
         }
 
     }

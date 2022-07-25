@@ -54,6 +54,11 @@ case (N-1): { thin_array<typename ARRAY::mutable_type> data( &arr[lo], N ); s##N
 #define YACK_NETWORK_SORT_DISPATCH_DECR(N) \
 case (N-1): { thin_array<typename ARRAY::mutable_type> data( &arr[lo], N ); s##N.decreasing(data); return; }
 
+    //! local decreasing abs macro
+#define YACK_NETWORK_SORT_DISPATCH_DECR_ABS(N) \
+case (N-1): { thin_array<typename ARRAY::mutable_type> data( &arr[lo], N ); s##N.decreasing_abs(data); return; }
+
+
     //__________________________________________________________________________
     //
     //
@@ -92,6 +97,14 @@ case (N-1): { thin_array<typename ARRAY::mutable_type> data( &arr[lo], N ); s##N
             quick_sort_decr(arr,1,arr.size());
         }
 
+        //! sort in absolute value decreasing order
+        template <typename ARRAY> inline
+        void decreasing_abs(ARRAY &arr) const throw()
+        {
+            quick_sort_decr_abs(arr,1,arr.size());
+        }
+
+
         //______________________________________________________________________
         //
         // members
@@ -104,6 +117,11 @@ case (N-1): { thin_array<typename ARRAY::mutable_type> data( &arr[lo], N ); s##N
         explicit network_sort() throw();
         virtual ~network_sort() throw();
 
+        //----------------------------------------------------------------------
+        //
+        // increasing order
+        //
+        //----------------------------------------------------------------------
         template <typename ARRAY> static inline
         size_t partition_incr( ARRAY &arr, const size_t lo, const size_t hi) throw()
         {
@@ -144,6 +162,13 @@ case (N-1): { thin_array<typename ARRAY::mutable_type> data( &arr[lo], N ); s##N
             }
         }
 
+
+        //----------------------------------------------------------------------
+        //
+        // decreasing order
+        //
+        //----------------------------------------------------------------------
+
         template <typename ARRAY> static inline
         size_t partition_decr(ARRAY &arr, const size_t lo, const size_t hi) throw()
         {
@@ -159,7 +184,7 @@ case (N-1): { thin_array<typename ARRAY::mutable_type> data( &arr[lo], N ); s##N
             }
         }
 
-        template <typename ARRAY>  inline
+        template <typename ARRAY> inline
         void dispatch_decr(ARRAY &arr, const size_t lo, const size_t hi) const throw()
         {
             assert(hi>=lo);
@@ -170,7 +195,7 @@ case (N-1): { thin_array<typename ARRAY::mutable_type> data( &arr[lo], N ); s##N
             }
         }
 
-        template <typename ARRAY>   inline
+        template <typename ARRAY> inline
         void quick_sort_decr(ARRAY &arr, const size_t lo, const size_t hi) const throw()
         {
             assert(lo>0);
@@ -179,6 +204,51 @@ case (N-1): { thin_array<typename ARRAY::mutable_type> data( &arr[lo], N ); s##N
                 const size_t p = partition_decr(arr,lo,hi);
                 dispatch_decr(arr,lo,p);
                 dispatch_decr(arr,p+1,hi);
+            }
+        }
+
+
+
+        //----------------------------------------------------------------------
+        //
+        // abs decreasing order
+        //
+        //----------------------------------------------------------------------
+        template <typename ARRAY> static inline
+        size_t partition_decr_abs(ARRAY &arr, const size_t lo, const size_t hi) throw()
+        {
+            typename ARRAY::const_type pivot = std::abs(arr[ (lo+hi)>>1 ]);
+            size_t  i     = lo-1;
+            size_t  j     = hi+1;
+            while(true)
+            {
+                do ++i; while ( std::abs(arr[i])>pivot );
+                do --j; while ( std::abs(arr[j])<pivot );
+                if(i>=j) return j;
+                cswap(arr[i],arr[j]);
+            }
+        }
+
+        template <typename ARRAY>  inline
+        void dispatch_decr_abs(ARRAY &arr, const size_t lo, const size_t hi) const throw()
+        {
+            assert(hi>=lo);
+            switch(hi-lo)
+            {
+                case 0:  return; YACK_NETWORK_SORT_REP(DISPATCH_DECR_ABS,;);
+                default: quick_sort_decr_abs(arr,lo,hi);
+            }
+        }
+
+        template <typename ARRAY>   inline
+        void quick_sort_decr_abs(ARRAY &arr, const size_t lo, const size_t hi) const throw()
+        {
+            assert(lo>0);
+            if(lo<hi)
+            {
+                const size_t p = partition_decr_abs(arr,lo,hi);
+                dispatch_decr_abs(arr,lo,p);
+                dispatch_decr_abs(arr,p+1,hi);
             }
         }
 

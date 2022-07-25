@@ -7,6 +7,7 @@
 #include "yack/memory/buffer/fixed.hpp"
 #include "yack/type/out-of-reach.hpp"
 
+#include <cmath>
 namespace yack
 {
 
@@ -118,6 +119,25 @@ namespace yack
                         out_of_reach::swap(&l,&r,sizeof(typename ARRAY::type));
                         out_of_reach::swap(&brr[il],&brr[ir],sizeof(typename BRRAY::type));
                     }
+                }
+            }
+
+            //__________________________________________________________________
+            //
+            //!   decreasing order by absolute value
+            //__________________________________________________________________
+            template <typename ARRAY>   inline
+            void decreasing_abs(ARRAY &arr) const
+            {
+                assert(arr.size()==code.size);
+                const size_t  nswp = code.work;
+                const size_t *ltab = code.ltab;
+                const size_t *rtab = code.rtab;
+                for(size_t k=0;k<nswp;++k)
+                {
+                    typename ARRAY::type &l = arr[ ltab[k] ];
+                    typename ARRAY::type &r = arr[ rtab[k] ];
+                    if( std::abs(l) < std::abs(r) ) out_of_reach::swap(&l,&r,sizeof(typename ARRAY::type));
                 }
             }
 
