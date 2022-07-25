@@ -62,7 +62,7 @@ case (N-1): { thin_array<typename ARRAY::mutable_type> data( &arr[lo], N ); s##N
     //__________________________________________________________________________
     //
     //
-    //! instance of sorting algorithm
+    //! instance of sorting algorithm by default comparison
     //
     //__________________________________________________________________________
     class network_sort : public singleton<network_sort>
@@ -103,6 +103,9 @@ case (N-1): { thin_array<typename ARRAY::mutable_type> data( &arr[lo], N ); s##N
         {
             quick_sort_decr_abs(arr,1,arr.size());
         }
+
+
+
 
 
         //______________________________________________________________________
