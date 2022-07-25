@@ -118,6 +118,32 @@ case (N-1): { thin_array<typename ARRAY::mutable_type> data( &arr[lo], N ); s##N
         }
 
 
+        template <typename ARRAY> inline
+        typename ARRAY::const_type sum(ARRAY &arr) const
+        {
+            typename ARRAY::mutable_type acc(0);
+            size_t n = arr.size();
+            switch(n)
+            {
+                case 0: return acc;
+                case 1: return arr[1];
+                default:
+                    decreasing(arr);
+                    break;
+            }
+            assert(n>=2);
+            display(std::cerr << "arr=",arr,n) << std::endl;
+            while(n>1)
+            {
+                typename ARRAY::const_type &source = arr[n--];
+                arr[n] += source;
+                update(arr,n);
+                display(std::cerr << "arr=",arr,n) << std::endl;
+            }
+
+            return arr[1];
+        }
+
 
         //______________________________________________________________________
         //
@@ -130,6 +156,33 @@ case (N-1): { thin_array<typename ARRAY::mutable_type> data( &arr[lo], N ); s##N
         friend class singleton<network_sort>;
         explicit network_sort() throw();
         virtual ~network_sort() throw();
+
+        template <typename ARRAY> static inline
+        void update(ARRAY &arr, const size_t n) throw()
+        {
+            for(size_t prev=n-1,curr=n;prev>0;--prev,--curr)
+            {
+                typename ARRAY::mutable_type &lhs = arr[prev];
+                typename ARRAY::mutable_type &rhs = arr[curr];
+                if(lhs<rhs)
+                {
+                    cswap(lhs,rhs);
+                    continue;
+                }
+                else
+                    return;
+            }
+        }
+
+
+        template <typename ARRAY> static inline
+        std::ostream &display(std::ostream &os, ARRAY &arr, const size_t n)
+        {
+            os << '[' << arr[1];
+            for(size_t i=2;i<=n;++i)
+                os << ';' << arr[i];
+            return os << ']';
+        }
 
         //----------------------------------------------------------------------
         //

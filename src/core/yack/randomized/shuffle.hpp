@@ -22,7 +22,7 @@ namespace yack
 
             //__________________________________________________________________
             //
-            //! Knuth shuffle of an array of data
+            //! Knuth shuffle of a C-style array
             //__________________________________________________________________
             template <typename T> static inline
             void data(T addr[], const size_t size, bits &ran) throw()
@@ -38,6 +38,25 @@ namespace yack
                     }
                 }
             }
+
+            //__________________________________________________________________
+            //
+            //! Knuth shuffle on a sequence of data
+            //__________________________________________________________________
+            template <typename ARRAY> static inline
+            void tableau(ARRAY &arr, bits &ran) throw()
+            {
+                const size_t size = arr.size();
+                if(size>1)
+                {
+                    for(size_t i=size;i>1;--i)
+                    {
+                        const size_t j = 1+ran.leq(i-1); assert(j<=i);
+                        mswap(arr[i],arr[j]);
+                    }
+                }
+            }
+
 
             //__________________________________________________________________
             //

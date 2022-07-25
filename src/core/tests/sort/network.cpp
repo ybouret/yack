@@ -79,12 +79,37 @@ YACK_UDONE()
 
 #include "yack/sort/network/sort.hpp"
 #include "yack/comparison.hpp"
+#include <typeinfo>
+
+namespace {
+
+    template <typename T> static inline
+    void test_sum(const network_sort &nws, randomized::bits &ran)
+    {
+        std::cerr << "test_sum<" << typeid(T).name() <<  ">" << std::endl;
+        for(size_t n=0;n<=10;++n)
+        {
+            vector<T> X(n,0);
+            bring::fill(X,ran);
+            T         acc = 0;
+            for(size_t i=1;i<=n;++i) acc += (X[i] = std::abs(X[i]));
+            randomized::shuffle::tableau(X,ran);
+            const T S = nws.sum(X);
+            std::cerr << "S  =" << S << "/" << acc << " | delta=" << std::abs(S-acc) << std::endl;
+        }
+    }
+
+}
 
 YACK_UTEST(sort_nws)
 {
     randomized::rand_ ran;
     const network_sort &nws = network_sort::instance();
 
+    test_sum<int>(nws,ran);
+    test_sum<float>(nws,ran);
+
+    std::cerr << "Testing All Sort" << std::endl;
     for(size_t n=0;n<=256;++n)
     {
         vector<int> xtab(n,0);
@@ -102,10 +127,10 @@ YACK_UTEST(sort_nws)
             nws.decreasing_abs(xtab);
             YACK_ASSERT(comparison::ordered(xtab,comparison::decreasing_abs<int>));
 
-
         }
-
     }
+
+
 
 }
 YACK_UDONE()
