@@ -37,19 +37,27 @@ YACK_UTEST(reactor)
     lib(std::cerr<<"Cend=",C);
     cs.display(C);
 
-    
+    std::cerr << "Active:";
     vector<species *> active(cs.active.size,as_capacity);
     for(const anode *node=cs.active.head;node;node=node->next)
     {
         active << & coerce(**node);
+        std::cerr << " " << (active.back()->name);
     }
+    std::cerr << std::endl;
+
+
     const size_t n = active.size();
-    for(size_t k=n;k>0;--k)
+
+
+    for(size_t k=1;k<=n;++k)
+        //for(size_t k=n;k>0;--k)
     {
         combination comb(n,k);
         do {
             vector<species *> sub(k,as_capacity);
             comb.extract(sub,active);
+
             std::cerr << "---- using";
             for(size_t i=1;i<=k;++i)
             {

@@ -11,7 +11,11 @@ namespace yack
             for(const snode *node=lib.head();node;node=node->next)
             {
                 const species &sp = ***node;
-                if( sp.rank > 0 ) (*this) << &sp;
+                if( sp.rank > 0 )
+                {
+                    (*this) << &sp;
+                    YACK_CHEM_PRINTLN("   <active \"" << sp.name << "\"/>");
+                }
             }
         }
 

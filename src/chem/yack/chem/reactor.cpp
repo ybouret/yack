@@ -26,6 +26,7 @@ namespace yack
         reactor:: reactor(library     &lib_,
                           equilibria  &eqs_,
                           const double t0) :
+        nws( network_sort::instance() ),
         lib(lib_),
         sub(lib),
         singles(eqs_),

@@ -38,6 +38,143 @@ namespace yack
             return true;
         }
 
+
+        const equilibrium *reactor:: maximumOfSingles(size_t &nrun) throw()
+        {
+            YACK_CHEM_MARKUP(vpfx, "reactor::maximumOfSingles");
+            nrun = 0;
+            const equilibrium *emax = 0;
+            double             xmax = 0;
+            for(const enode *node=singles.head();node;node=node->next)
+            {
+                const equilibrium   &eq  = ***node;
+                const size_t         ei  = *eq;
+                const double         Ki  = K[ei];
+                writable<double>    &Ci  = Cl[ei];
+                writable<double>    &psi = Psi[ei];
+                const readable<int> &NuI = Nu[ei];
+                const outcome        res = eq.brew1D(Ki,Corg,Ci);
+                const double         ax  = fabs(Xl[ei] = res.xi0 );
+                if(verbose) singles.pad(std::cerr << vpfx << eq.name,eq) << " | " << res << std::endl;
+
+                switch(res.are)
+                {
+                    case blocked_components:
+                        blocked[ei] = true;
+                        psi.ld(0);
+                        NuA[ei].ld(0);
+                        sigma[ei] = 0;
+                        break;
+
+                    case running_components:
+                        blocked[ei] = false;
+                        iota::load(NuA[ei],NuI);
+                        eq.drvs_action(psi,Ki,Ci,Ctry);
+                        sigma[ei] = - sorted::dot(psi,NuI,Ctry);
+                        ++nrun;
+                        if(ax>xmax)
+                        {
+                            xmax=ax;
+                            emax=&eq;
+                        }
+
+                        break;
+                }
+            }
+
+            YACK_CHEM_PRINTLN(   vpfx << "  #run=" << nrun);
+            singles(std::cerr << vpfx << "    sigma=",sigma,vpfx);
+            singles(std::cerr << vpfx << "    blocked=",blocked,vpfx);
+
+            if(!emax)
+            {
+                // may be all blocked or at equilibrium
+                YACK_CHEM_PRINTLN("|Xi|=0");
+                return NULL;
+            }
+            else
+            {
+                assert(emax);
+                YACK_CHEM_PRINTLN("|Xi|=" << xmax << " @" << emax->name);
+                return emax;
+            }
+        }
+
+
+        const equilibrium  * reactor::minimumOfLattice(const double G0) throw()
+        {
+            YACK_CHEM_MARKUP(vpfx, "reactor::minimumOfLattice");
+            double             gmin = G0;
+            const equilibrium *emin = NULL;
+
+            // singles have already their eq precomputed
+            for(const enode *node=singles.head();node;node=node->next)
+            {
+                const equilibrium &eq  = ***node;
+                const size_t       ei  = *eq;
+                if(blocked[ei]) continue;
+
+                writable<double>  &Ci  = Cl[ei];
+                iota::load(Cend,Ci);
+
+                const double      gtry = Htry(G0);
+                const bool        good = (gtry<gmin);
+
+                YACK_CHEM_PRINTLN(vpfx << accepting(good) << "G=" << std::setw(15) << gtry << " @" << eq.name);
+                if(good)
+                {
+                    gmin = gtry;
+                    emin = &eq;
+                }
+
+            }
+
+            // full computation for couples
+            for(const enode *node=couples.head();node;node=node->next)
+            {
+                const equilibrium &eq  = ***node;
+                const size_t       ei  = *eq;
+                const double       Ki  = Kl[ei];
+                const outcome      res = eq.brew1D(Ki,Corg,Cend);
+
+                switch(res.are)
+                {
+                    case blocked_components:
+                        YACK_CHEM_PRINTLN(vpfx << "(blocked { " << eq.name << " })");
+                        blocked[ei] = true;
+                        iota::load(Cl[ei],Corg);
+                        break;
+
+                    case running_components: {
+                        blocked[ei] = false;
+                        const double      gtry = Htry(G0);
+                        const bool        good = (gtry<gmin);
+                        iota::load(Cl[ei],Ctry);
+                        YACK_CHEM_PRINTLN(vpfx << accepting(good) << "G=" << std::setw(15) << gtry << " @" << eq.name);
+                        if(good)
+                        {
+                            gmin = gtry;
+                            emin = &eq;
+                        }
+
+                    } break;
+                }
+
+
+            }
+
+            if(verbose)
+            {
+                if(emin)
+                {
+                    YACK_CHEM_PRINTLN(vpfx << " Gmin =" << std::setw(15) << gmin << " @" << emin->name << " <-- ");
+                }
+            }
+
+            return emin;
+        }
+
+
         bool reactor:: solve(writable<double> &C0) throw()
         {
             //------------------------------------------------------------------
@@ -57,168 +194,99 @@ namespace yack
         CYCLE:
             ++cycle;
             YACK_CHEM_PRINTLN("  ---------------- cycle #" << cycle << " ----------------");
+            if(verbose)
+            {
+                lib(std::cerr << vpfx << "Corg=",Corg,vpfx);
+            }
 
             //------------------------------------------------------------------
             //
             //
             // probe singles
             //
+            //
             //------------------------------------------------------------------
+            size_t nrun = 0;
             {
-                YACK_CHEM_MARKUP(vpfx, "reactor::studySingles");
-                size_t             nrun = 0;
-                const equilibrium *emax = 0;
-                double             xmax = 0;
-                for(const enode *node=singles.head();node;node=node->next)
-                {
-                    const equilibrium &eq  = ***node;
-                    const size_t       ei  = *eq;
-                    const double       Ki  = K[ei];
-                    writable<double>  &Ci  = Cl[ei];
-                    writable<double>  &psi = Psi[ei];
-                    const outcome      res = eq.brew1D(Ki,Corg,Ci);
-                    const double       ax  = fabs(Xl[ei] = res.xi0 );
-                    if(verbose) singles.pad(std::cerr << vpfx << eq.name,eq) << " | " << res << std::endl;
+                const equilibrium *emax = maximumOfSingles(nrun);
 
-                    switch(res.are)
-                    {
-                        case blocked_components:
-                            blocked[ei] = true;
-                            psi.ld(0);
-                            NuA[ei].ld(0);
-                            break;
-
-                        case running_components:
-                            blocked[ei] = false;
-                            iota::load(NuA[ei],Nu[ei]);
-                            eq.drvs_action(psi,Ki,Ci,Ctry);
-                            sigma[ei] = - sorted::dot(psi,Nu[ei],Ctry);
-                            ++nrun;
-                            if(ax>xmax)
-                            {
-                                xmax=ax;
-                                emax=&eq;
-                            }
-
-                            break;
-                    }
-                }
-
-                YACK_CHEM_PRINTLN("#run=" << nrun);
-                singles(std::cerr << vpfx << "sigma=",sigma,vpfx);
-                singles(std::cerr << vpfx << "blocked=",blocked,vpfx);
-
-                if(!emax)
-                {
-                    // may be all blocked!
+                if( !emax )
                     return successfulUpdate(C0,cycle);
-                }
-
-                assert(emax);
-                YACK_CHEM_PRINTLN("|Xi|=" << xmax << " @" << emax->name);
-
 
                 switch(nrun)
                 {
-                    case 0:
+                    case 0: // should already be processed...
                         return successfulUpdate(C0,cycle);
 
-                    case 1:
+                    case 1: // emax is the only one!
                         (void) emax->brew1D(K[**emax],Corg,Ctry);
                         active.transfer(Corg,Ctry);
                         goto CYCLE;
 
-                    default:
+                    default: // generic case
                         break;
                 }
                 assert(nrun>=2);
+                assert(emax);
             }
 
+            //------------------------------------------------------------------
+            //
+            //
+            // initialize G0 using the first pass topology
+            //
+            //
+            //------------------------------------------------------------------
             double G0 = Hamiltonian(Corg);
             YACK_CHEM_PRINTLN("G0="<<G0);
 
+
+            //------------------------------------------------------------------
+            //
+            //
+            // find the minimizing equilibrium within lattice from G0
+            //
+            //
+            //------------------------------------------------------------------
+            const equilibrium *emin = minimumOfLattice(G0);
+
+            if(emin)
             {
-                double             gmin = G0;
-                const equilibrium *emin = NULL;
+                YACK_CHEM_PRINTLN(vpfx << "minimized by {" << emin->name << "}");
+
+                //--------------------------------------------------------------
+                //
+                // check other degrees of freedom
+                //
+                //--------------------------------------------------------------
+                const double G1 = buildHamiltonian(*emin);
+                if(verbose)
                 {
-                    for(const enode *node=singles.head();node;node=node->next)
-                    {
-                        const equilibrium &eq  = ***node;
-                        const size_t       ei  = *eq;
-                        if(blocked[ei]) continue;
-
-                        writable<double>  &Ci  = Cl[ei];
-                        iota::load(Cend,Ci);
-
-                        const double      gtry = Htry(G0);
-                        const bool        good = (gtry<gmin);
-
-                        YACK_CHEM_PRINTLN(vpfx << accepting(good) << "G=" << std::setw(15) << gtry << " @" << eq.name);
-                        if(good)
-                        {
-                            gmin = gtry;
-                            emin = &eq;
-                        }
-
-
-                    }
+                    lib(std::cerr << vpfx << "Cmin=",Corg,vpfx);
                 }
 
+                if(G1<=0)
                 {
-                    for(const enode *node=couples.head();node;node=node->next)
-                    {
-                        const equilibrium &eq  = ***node;
-                        const size_t       ei  = *eq;
-                        const double       Ki  = Kl[ei];
-                        const outcome      res = eq.brew1D(Ki,Corg,Cend);
-
-                        switch(res.are)
-                        {
-                            case blocked_components:
-                                YACK_CHEM_PRINTLN(vpfx << "(blocked { " << eq.name << " })");
-                                blocked[ei] = true;
-                                iota::load(Cl[ei],Corg);
-                                break;
-
-                            case running_components: {
-                                blocked[ei] = false;
-                                const double      gtry = Htry(G0);
-                                const bool        good = (gtry<gmin);
-                                iota::load(Cl[ei],Ctry);
-                                YACK_CHEM_PRINTLN(vpfx << accepting(good) << "G=" << std::setw(15) << gtry << " @" << eq.name);
-                                if(good)
-                                {
-                                    gmin = gtry;
-                                    emin = &eq;
-                                }
-
-                            } break;
-                        }
-
-                    }
+                    // early return
+                    return successfulUpdate(C0,cycle);
                 }
 
-                if(emin)
+                //--------------------------------------------------------------
+                //
+                // recompute topology
+                //
+                //--------------------------------------------------------------
+                if(!maximumOfSingles(nrun))
                 {
-                    YACK_CHEM_PRINTLN(vpfx << " Gmin =" << std::setw(15) << gmin << " @" << emin->name << " <-- ");
-                    std::cerr << "min @" << emin->name << std::endl;
-                    const double G1 = buildHamiltonian(*emin);
-
-                    if(G1<=0)
-                    {
-                        // ok...
-                        return successfulUpdate(C0,cycle);
-                    }
-
-                    // recompute topology
-                    
-
-                }
-                else
-                {
-
+                    // early return
+                    return successfulUpdate(C0,cycle);
                 }
             }
+            else
+            {
+                YACK_CHEM_PRINTLN(vpfx << "already at lattice minimum");
+            }
+
 
 
 

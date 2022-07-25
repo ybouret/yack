@@ -8,6 +8,7 @@
 #include "yack/chem/types.hpp"
 #include "yack/chem/mix/active.hpp"
 #include "yack/chem/mix/groups.hpp"
+#include "yack/sort/network/sort.hpp"
 
 namespace yack
 {
@@ -63,6 +64,7 @@ namespace yack
             //
             // members
             //__________________________________________________________________
+            const network_sort    &nws;      //!< network sorting
             const library         &lib;      //!< user's library of species
             const library          sub;      //!< duplicate library to build database
             const equilibria      &singles;  //!< user's equilibria
@@ -111,6 +113,9 @@ namespace yack
             const lockable::scope eqsLock;
 
 
+
+            const equilibrium  *maximumOfSingles(size_t &nrun)    throw(); //!< construct sigma, update nrun, true is |Xi|<=0
+            const equilibrium  *minimumOfLattice(const double G0) throw();
 
             bool               querySingles(size_t &nrun)    throw();
             const equilibrium *queryLattice(const double G0) throw();
