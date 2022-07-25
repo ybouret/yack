@@ -13,8 +13,15 @@
 #include "yack/sort/network/sort8.hpp"
 #include "yack/sort/network/sort9.hpp"
 #include "yack/sort/network/sort10.hpp"
-#include "yack/sequence/thin-array.hpp"
+#include "yack/sort/network/sort11.hpp"
+#include "yack/sort/network/sort12.hpp"
+#include "yack/sort/network/sort13.hpp"
+#include "yack/sort/network/sort14.hpp"
+#include "yack/sort/network/sort15.hpp"
+#include "yack/sort/network/sort16.hpp"
 
+
+#include "yack/sequence/thin-array.hpp"
 #include "yack/singleton.hpp"
 
 #include <iostream>
@@ -44,7 +51,14 @@ YACK_NETWORK_SORT_##MACRO(6)  SEP \
 YACK_NETWORK_SORT_##MACRO(7)  SEP \
 YACK_NETWORK_SORT_##MACRO(8)  SEP \
 YACK_NETWORK_SORT_##MACRO(9)  SEP \
-YACK_NETWORK_SORT_##MACRO(10)
+YACK_NETWORK_SORT_##MACRO(10) SEP \
+YACK_NETWORK_SORT_##MACRO(11) SEP \
+YACK_NETWORK_SORT_##MACRO(12) SEP \
+YACK_NETWORK_SORT_##MACRO(13) SEP \
+YACK_NETWORK_SORT_##MACRO(14) SEP \
+YACK_NETWORK_SORT_##MACRO(15) SEP \
+YACK_NETWORK_SORT_##MACRO(16)
+
 
     //! local increasing macro
 #define YACK_NETWORK_SORT_DISPATCH_INCR(N) \
@@ -77,7 +91,6 @@ case (N-1): { thin_array<typename ARRAY::mutable_type> data( &arr[lo], N ); s##N
 
 
 
-
         //______________________________________________________________________
         //
         // methods
@@ -103,8 +116,6 @@ case (N-1): { thin_array<typename ARRAY::mutable_type> data( &arr[lo], N ); s##N
         {
             quick_sort_decr_abs(arr,1,arr.size());
         }
-
-
 
 
 

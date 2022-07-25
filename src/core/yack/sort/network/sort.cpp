@@ -9,12 +9,9 @@ namespace yack {
     {}
 
 #define COMMA ,
-    network_sort:: network_sort() throw() :
-    YACK_NETWORK_SORT_REP(IMPL,COMMA)
+    network_sort:: network_sort() throw() : YACK_NETWORK_SORT_REP(IMPL,COMMA)
     {
     }
     
-
-
 
 }

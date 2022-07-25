@@ -85,7 +85,7 @@ YACK_UTEST(sort_nws)
     randomized::rand_ ran;
     const network_sort &nws = network_sort::instance();
 
-    for(size_t n=0;n<=128;++n)
+    for(size_t n=0;n<=256;++n)
     {
         vector<int> xtab(n,0);
         for(size_t iter=0;iter<64;++iter)
