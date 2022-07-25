@@ -30,6 +30,8 @@ namespace
         return (i + 1);
     }
 
+
+
     /* The main function that implements QuickSort
      arr[] --> Array to be sorted,
      low --> Starting index,
@@ -38,7 +40,7 @@ namespace
     {
         if (low < high)
         {
-            /* p is partitioning index, arr[p] is now
+            /* pi is partitioning index, arr[p] is now
              at right place */
             int pi = partition(arr, low, high);
 
