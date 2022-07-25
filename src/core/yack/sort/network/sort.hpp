@@ -93,24 +93,35 @@ case (N-1): { thin_array<typename ARRAY::mutable_type> data( &arr[lo], N ); s##N
 
         //______________________________________________________________________
         //
+        //
         // methods
+        //
         //______________________________________________________________________
 
+        //______________________________________________________________________
+        //
         //! sort in increasing order
+        //______________________________________________________________________
         template <typename ARRAY> inline
         void increasing(ARRAY &arr) const throw()
         {
             quick_sort_incr(arr,1,arr.size());
         }
 
+        //______________________________________________________________________
+        //
         //! sort in decreasing order
+        //______________________________________________________________________
         template <typename ARRAY> inline
         void decreasing(ARRAY &arr) const throw()
         {
             quick_sort_decr(arr,1,arr.size());
         }
 
+        //______________________________________________________________________
+        //
         //! sort in absolute value decreasing order
+        //______________________________________________________________________
         template <typename ARRAY> inline
         void decreasing_abs(ARRAY &arr) const throw()
         {
@@ -118,8 +129,10 @@ case (N-1): { thin_array<typename ARRAY::mutable_type> data( &arr[lo], N ); s##N
         }
 
 
-        
+        //______________________________________________________________________
+        //
         //! sum of POSITIVE terms
+        //______________________________________________________________________
         template <typename ARRAY> inline
         typename ARRAY::const_type sum_geqz(ARRAY &arr) const
         {
@@ -141,7 +154,10 @@ case (N-1): { thin_array<typename ARRAY::mutable_type> data( &arr[lo], N ); s##N
             return arr[1];
         }
 
+        //______________________________________________________________________
+        //
         //! sum of RANDOM terms
+        //______________________________________________________________________
         template <typename ARRAY> inline
         typename ARRAY::const_type sum_rand(ARRAY &arr) const
         {
@@ -163,7 +179,10 @@ case (N-1): { thin_array<typename ARRAY::mutable_type> data( &arr[lo], N ); s##N
             return arr[1];
         }
 
+        //______________________________________________________________________
+        //
         //! dot product
+        //______________________________________________________________________
         template <typename LHS, typename RHS, typename ACC> inline
         typename LHS::const_type dot(LHS &lhs, RHS &rhs, ACC &acc) const
         {
@@ -172,9 +191,7 @@ case (N-1): { thin_array<typename ARRAY::mutable_type> data( &arr[lo], N ); s##N
             for(size_t i=lhs.size();i>0;--i) acc[i] = lhs[i] * rhs[i];
             return sum_rand(acc);
         }
-
-
-
+        
         //______________________________________________________________________
         //
         // members
