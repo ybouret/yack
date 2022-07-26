@@ -22,25 +22,29 @@ namespace yack
         typedef components_set::knot_type                   cnode;          //!< alias
       
 
+        //! extent state w.r.t its equilibria
         enum extent_state
         {
             significant_extent, //!< no underflow
             degenerated_extent  //!< at least one underflow
         };
 
+        //! components state w.r.t to its actors
         enum components_state
         {
             running_components,
             blocked_components
         };
 
+        //! outcome of 1D brewing
         class outcome
         {
         public:
-            const extent_state     has;
-            const components_state are;
-            const double           xi0;
+            const extent_state     has; //!< qualified extent
+            const components_state are; //!< components state
+            const double           xi0; //!< solving extent
 
+            //! setup
             outcome(const extent_state xs, const components_state cs, const double xx) throw() :
             has(xs),
             are(cs),
@@ -48,8 +52,10 @@ namespace yack
             {
             }
 
+            //! cleanup
             ~outcome() throw() {}
 
+            //! copy
             outcome(const outcome &other) throw() :
             has(other.has),
             are(other.are),
@@ -58,6 +64,7 @@ namespace yack
 
             }
 
+            //! display info
             friend std::ostream & operator<<(std::ostream &os, const outcome res)
             {
                 switch(res.are)
@@ -171,7 +178,7 @@ namespace yack
                            const readable<double> &C0,
                            writable<double>       &Cs) const;
 
-
+            //! find private solving outcome
             outcome brew1D(const double            K,
                            const readable<double> &C0,
                            writable<double>       &Cs,
@@ -186,8 +193,8 @@ namespace yack
             //! detect significant: none is too small
             bool found_significant(const double xi, const readable<double> &C) const throw();
 
+            //! qualify extent value w.r.t involved concentrations
             extent_state qualify_extent(const double xi, const readable<double> &C) const throw();
-
 
             //! find private limits
             const limits & private_limits(const readable<double> &C, const size_t w) const throw();

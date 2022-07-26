@@ -43,6 +43,7 @@ namespace yack
         const char    * ip_version(const net::ip_version) const throw();    //!< v4|v6
         const char    * ip_protocol(const net::ip_protocol) const throw();  //!< tcp|udp
 
+        //! name resolution
         net::socket_address resolve(const string         &hostName,
                                     const net::ip_version version,
                                     const uint16_t        port = 0) const;

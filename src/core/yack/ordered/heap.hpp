@@ -8,15 +8,24 @@
 #include "yack/memory/allocator/pooled.hpp"
 #include "yack/type/args.hpp"
 #include "yack/container/dynamic.hpp"
+#include "yack/type/mswap.hpp"
+
+#include <iostream>
 
 namespace yack
 {
 
     namespace core
     {
-        extern const char heap_category[];
+        extern const char heap_category[]; //!< "heap"
     }
 
+    //__________________________________________________________________________
+    //
+    //
+    //! binary heap
+    //
+    //__________________________________________________________________________
     template <
     typename T,
     typename COMPARATOR,
@@ -24,35 +33,61 @@ namespace yack
     class heap : public container, public dynamic
     {
     public:
-        YACK_DECL_ARGS(T,type);
+        //______________________________________________________________________
+        //
+        // types and definitions
+        //______________________________________________________________________
+        YACK_DECL_ARGS(T,type); //!< aliases
 
+        //______________________________________________________________________
+        //
+        // C++
+        //______________________________________________________________________
+
+        //! cleanup
         inline virtual ~heap() throw() { drop(); }
+
+        //! setup empty
         inline explicit heap() throw() : count(0), total(0),   bytes(0), tree(NULL), compare()
         {
         }
 
+        //! setup with capacity
         inline explicit heap(const size_t n, const as_capacity_t &) :
         count(0), total(n), bytes(0), tree( make(total,bytes) ), compare()
         {
         }
 
+        //! copy
         inline heap(const heap &other) :
         count(0), total(other.count), bytes(0), tree( make(total,bytes) ), compare()
         {
             duplicate(other);
         }
 
+        //! copy with extra memory
         inline heap(const heap &other, const size_t extra) :
         count(0), total(other.count+extra), bytes(0), tree( make(total,bytes) ), compare()
         {
             duplicate(other);
         }
 
-        inline virtual size_t      granted()   const throw() { return bytes; }
-        inline virtual const char *category()  const throw() { return core::heap_category; }
-        inline virtual size_t      size()      const throw() { return count; }
-        inline virtual size_t      capacity()  const throw() { return total; }
-        inline virtual size_t      available() const throw() { return total-count; }
+        //______________________________________________________________________
+        //
+        // dynamic interface
+        //______________________________________________________________________
+        inline virtual size_t      granted()   const throw() { return bytes; }                //!< bytes
+
+        //______________________________________________________________________
+        //
+        // container interface
+        //______________________________________________________________________
+        inline virtual const char *category()  const throw() { return core::heap_category; }  //!< heap
+        inline virtual size_t      size()      const throw() { return count; }                //!< count
+        inline virtual size_t      capacity()  const throw() { return total; }                //!< total
+        inline virtual size_t      available() const throw() { return total-count; }          //!< total-count
+
+        //! free content, keep memory
         inline virtual void        free()            throw()
         {
             const size_t zlen = count * sizeof(type);
@@ -60,27 +95,47 @@ namespace yack
             out_of_reach::zset(tree,zlen);
         }
 
+        //! release content and memory
         inline virtual void release() throw()
         {
             drop();
         }
 
+        //! reserve extra
         inline virtual void reserve(size_t n)
         {
-            if(n>0)
-            {
-
-            }
+            heap tmp(*this,n);
+            swap_with(tmp);
         }
 
-        void push(param_type args)
-        {
+        //______________________________________________________________________
+        //
+        // methods
+        //______________________________________________________________________
+
+        //! push a new value
+        void push(param_type args) {
             if(count>=total)
                 duplicate_and_grow(args);
             else
                 grow(args);
         }
 
+        //! peek top value
+        const_type & peek() const throw()
+        {
+            assert(count>0);
+            return tree[0];
+        }
+
+        //! pop top value
+        void pop() throw() {
+            assert(count>0);
+            rem();
+        }
+
+
+        //! no-throw swap
         inline void swap_with(heap &other) throw()
         {
             cswap(count,other.count);
@@ -145,7 +200,78 @@ namespace yack
         {
             assert(count<total);
             new ( &tree[count] ) mutable_type(args);
+
+            // promote inserted
+            size_t ipos = count;
+            while(ipos>0)
+            {
+                const size_t  ppos   = (ipos-1)>>1;
+                mutable_type &myself = tree[ipos];
+                mutable_type &parent = tree[ppos];
+                if( compare(parent,myself) < 0 )
+                {
+                    mswap(myself,parent);
+                    ipos = ppos;
+                    continue;
+                }
+                else
+                    break;
+            }
             ++count;
+        }
+
+        inline void rem() throw()
+        {
+            assert(count>0);
+
+            // filter cases
+            switch(count)
+            {
+                case 0: return;
+
+                case 1:
+                    out_of_reach::naught( destructed( &tree[0]) );
+                    count = 0;
+                    return;
+
+                default:
+                    break;
+            }
+
+            // contract tree
+            assert(count>1);
+            {
+                uint8_t *target = static_cast<uint8_t *>(out_of_reach::address( destructed( &tree[0] ) ));
+                uint8_t *source = static_cast<uint8_t *>(out_of_reach::address( &tree[--count] ));
+                for(size_t i=0;i<sizeof(type);++i)
+                {
+                    target[i] = source[i];
+                    source[i] = 0;
+                }
+            }
+
+            // rearrange tree
+            size_t       ipos = 0;
+        PROMOTE:
+            const size_t temp = ipos<<1;
+            const size_t lpos = temp+1;
+            const size_t rpos = temp+2;
+
+            size_t mpos = ( lpos<count && compare(tree[ipos],tree[lpos])<0 ) ? lpos : ipos;
+            if( rpos<count && compare(tree[mpos],tree[rpos])<0 ) mpos = rpos;
+            if(mpos==ipos)
+            {
+                // done
+                return;
+            }
+            else
+            {
+                // promote
+                mswap(tree[ipos],tree[mpos]);
+                ipos = mpos;
+                goto PROMOTE;
+            }
+
         }
 
     };

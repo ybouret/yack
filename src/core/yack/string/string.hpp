@@ -175,8 +175,23 @@ namespace yack
             
             
             
-            //! to sort strings
+            //! to compare strings
             static int compare(const string &lhs, const string &rhs) throw();
+
+            static int callcmp(const string &lhs, const string &rhs) throw(); //!< call cmp
+            static int callcmp(const string &lhs, const T      *rhs) throw(); //!< call cmp
+            static int callcmp(const T      *lhs, const string &rhs) throw(); //!< call cmp
+
+            //! helper for comparisons
+#define YACK_STRING_CMP(OP) \
+inline bool friend operator OP (const string &lhs, const string &rhs) throw() { return compare(lhs,rhs) OP 0; }\
+inline bool friend operator OP (const string &lhs, const char   *rhs) throw() { return compare(lhs,rhs) OP 0; }\
+inline bool friend operator OP (const char   *lhs, const string &rhs) throw() { return compare(lhs,rhs) OP 0; }
+
+            //! declare all comparison
+#define YACK_STRING_CMPS() YACK_STRING_CMP(<) YACK_STRING_CMP(>) YACK_STRING_CMP(<=) YACK_STRING_CMP(>=)
+
+            YACK_STRING_CMPS()
 
             //! self key
             const string &key() const throw();

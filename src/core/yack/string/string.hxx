@@ -394,6 +394,25 @@ namespace yack
                        static_cast<const CH*>(rhs.block), rhs.chars);
         }
 
+        template <> int  string<CH>:: callcmp(const string &lhs, const string &rhs) throw()
+        {
+            return cmp(static_cast<const CH*>(lhs.block), lhs.chars,
+                       static_cast<const CH*>(rhs.block), rhs.chars);
+        }
+
+        template <> int  string<CH>:: callcmp(const string &lhs, const CH *rhs) throw()
+        {
+            return cmp(static_cast<const CH*>(lhs.block), lhs.chars,
+                       rhs, length_of(rhs) );
+        }
+
+        template <> int  string<CH>:: callcmp(const CH *lhs, const string &rhs) throw()
+        {
+            return cmp(lhs, length_of(lhs),
+                       static_cast<const CH*>(rhs.block), rhs.chars);
+        }
+
+
 
         template <>
         CH  &string<CH>:: front() throw()

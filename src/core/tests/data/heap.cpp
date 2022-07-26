@@ -30,16 +30,29 @@ namespace
     static inline void testHeap( randomized::bits &ran )
     {
         typedef heap<T,hincr<T>,ALLOCATOR> IncrHeap;
+        typedef heap<T,hdecr<T>,ALLOCATOR> DecrHeap;
 
         {IncrHeap Hi0;}
 
         IncrHeap Hi(1,as_capacity);
+        DecrHeap Hd;
 
         for(size_t i=20+ran.leq(20);i>0;--i)
         {
             const T tmp = bring::get<T>(ran);
             Hi.push(tmp);
-            std::cerr << "heap: " << Hi.size() << " / " << Hi.capacity() << " / bytes=" << Hi.granted() << std::endl;
+            Hd.push(tmp);
+            std::cerr << "Hi: " << std::setw(3) << Hi.size() << " / " << std::setw(3) << Hi.capacity() << " peek=" << Hi.peek() << std::endl;
+            std::cerr << "Hd: " << std::setw(3) << Hd.size() << " / " << std::setw(3) << Hd.capacity() << " peek=" << Hd.peek() << std::endl;
+        }
+
+        YACK_ASSERT(Hi.size()==Hd.size());
+
+        while( Hi.size() )
+        {
+            std::cerr << "Hi: " << Hi.peek() << " | Hd: " << Hd.peek() << std::endl;
+            Hi.pop();
+            Hd.pop();
         }
 
         std::cerr << std::endl;
