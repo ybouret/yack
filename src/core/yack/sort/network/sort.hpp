@@ -130,80 +130,7 @@ case (N-1): { thin_array<typename ARRAY::mutable_type> data( &arr[lo], N ); s##N
         }
 
 
-        //______________________________________________________________________
-        //
-        //! sum of POSITIVE terms
-        //______________________________________________________________________
-        template <typename ARRAY> inline
-        typename ARRAY::const_type sum_geqz(ARRAY &arr) const
-        {
-            size_t n = arr.size();
-            switch(n)
-            {
-                case 0: return 0;
-                case 1: return arr[1];
-                default:
-                    decreasing(arr);
-                    break;
-            }
-            assert(n>=2);
-            while(n>1) {
-                typename ARRAY::const_type &source = arr[n--]; assert(source>=0);
-                arr[n] += source;
-                update(arr,n);
-            }
-            return arr[1];
-        }
 
-        //______________________________________________________________________
-        //
-        //! sum of RANDOM terms
-        //______________________________________________________________________
-        template <typename ARRAY> inline
-        typename ARRAY::const_type sum_rand(ARRAY &arr) const
-        {
-            size_t n = arr.size();
-            switch(n)
-            {
-                case 0: return 0;
-                case 1: return arr[1];
-                default:
-                    decreasing_abs(arr);
-                    break;
-            }
-            assert(n>=2);
-            while(n>1) {
-                typename ARRAY::const_type &source = arr[n--];
-                arr[n] += source;
-                update_abs(arr,n);
-            }
-            return arr[1];
-        }
-
-        //______________________________________________________________________
-        //
-        //! dot product
-        //______________________________________________________________________
-        template <typename LHS, typename RHS, typename ACC> inline
-        typename LHS::const_type dot(LHS &lhs, RHS &rhs, ACC &acc) const
-        {
-            assert(lhs.size()==rhs.size());
-            assert(lhs.size()==acc.size());
-            for(size_t i=lhs.size();i>0;--i) acc[i] = lhs[i] * rhs[i];
-            return sum_rand(acc);
-        }
-
-        //______________________________________________________________________
-        //
-        //! norm2
-        //______________________________________________________________________
-        template <typename LHS, typename ACC> inline
-        typename LHS::const_type norm2(LHS &lhs,  ACC &acc) const
-        {
-            assert(lhs.size()==acc.size());
-            for(size_t i=lhs.size();i>0;--i) acc[i] = squared(lhs[i]);
-            return sum_geqz(acc);
-        }
 
         //______________________________________________________________________
         //
@@ -217,40 +144,7 @@ case (N-1): { thin_array<typename ARRAY::mutable_type> data( &arr[lo], N ); s##N
         explicit network_sort() throw();
         virtual ~network_sort() throw();
 
-        template <typename ARRAY> static inline
-        void update(ARRAY &arr, const size_t n) throw()
-        {
-            for(size_t prev=n-1,curr=n;prev>0;--prev,--curr)
-            {
-                typename ARRAY::mutable_type &lhs = arr[prev];
-                typename ARRAY::mutable_type &rhs = arr[curr];
-                if(lhs<rhs)
-                {
-                    cswap(lhs,rhs);
-                    continue;
-                }
-                else
-                    return;
-            }
-        }
-
-        template <typename ARRAY> static inline
-        void update_abs(ARRAY &arr, const size_t n) throw()
-        {
-            for(size_t prev=n-1,curr=n;prev>0;--prev,--curr)
-            {
-                typename ARRAY::mutable_type &lhs = arr[prev];
-                typename ARRAY::mutable_type &rhs = arr[curr];
-                if( std::abs(lhs) < std::abs(rhs) )
-                {
-                    cswap(lhs,rhs);
-                    continue;
-                }
-                else
-                    return;
-            }
-        }
-
+        
         
         //----------------------------------------------------------------------
         //
