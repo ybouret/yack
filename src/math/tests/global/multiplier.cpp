@@ -29,7 +29,11 @@ YACK_UTEST(multiplier)
         long double x  = 3.14L;
         int         ex = 0;
         long double sx = frexpl(x,&ex);
+        int         exx = 0;
+        long double sxx = std::frexp(x,&exx);
         std::cerr << x << " -> " << sx << "*2^" << ex << std::endl;
+        std::cerr << x << " -> " << sxx << "*2^" << exx << std::endl;
+
     }
 
 
