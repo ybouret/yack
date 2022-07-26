@@ -147,6 +147,18 @@ install( FILES ${sequence_decl} DESTINATION include/yack/sequence )
 
 ########################################################################
 ##
+## ordered
+##
+########################################################################
+file(GLOB ordered_impl yack/ordered/*.cpp)
+file(GLOB ordered_decl yack/ordered/*.hpp)
+set(ordered ${ordered_impl} ${ordered_decl})
+SOURCE_GROUP(ordered FILES ${ordered})
+install( FILES ${ordered_decl} DESTINATION include/yack/ordered )
+
+
+########################################################################
+##
 ## pipes 
 ##
 ########################################################################
@@ -601,6 +613,7 @@ ${system}
 ${data} ${data_list} ${data_pool} ${data_small} ${data_suffix} ${data_hash}
 ${container} ${container_matrix} ${container_iterator}
 ${sequence}
+${ordered}
 ${pipe}
 ${associative} ${associative_hash} ${associative_suffix}
 ${memory} ${memory_allocator} ${memory_small} ${memory_large} ${memory_joint} ${memory_buffer}
