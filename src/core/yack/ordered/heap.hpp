@@ -56,19 +56,22 @@ namespace yack
 
         //! setup with capacity
         inline explicit heap(const size_t n, const as_capacity_t &) :
+        container(), dynamic(),
         count(0), total(n), bytes(0), tree( make(total,bytes) ), compare()
         {
         }
 
         //! copy
         inline heap(const heap &other) :
-        count(0), total(other.count), bytes(0), tree( make(total,bytes) ), compare()
+        collection(),
+        container(), dynamic(), count(0), total(other.count), bytes(0), tree( make(total,bytes) ), compare()
         {
             duplicate(other);
         }
 
         //! copy with extra memory
         inline heap(const heap &other, const size_t extra) :
+        container(), dynamic(),
         count(0), total(other.count+extra), bytes(0), tree( make(total,bytes) ), compare()
         {
             duplicate(other);

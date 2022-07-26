@@ -52,5 +52,22 @@ YACK_UTEST(adder)
     }
 
 
+    {
+        adder<long double> add;
+        const size_t       num = 10 + ran.leq(10);
+        vector<double>     lhs(num,as_capacity);
+        list<int>          rhs(num,as_capacity);
+        for(size_t i=num;i>0;--i)
+        {
+            lhs << ran.symm<double>();
+            rhs << ran.in(-10,10);
+        }
+        std::cerr << "lhs=" << lhs << std::endl;
+        std::cerr << "rhs=" << rhs << std::endl;
+        std::cerr << "dot=" << add.dot(lhs,rhs) << std::endl;
+    }
+
+
+
 }
 YACK_UDONE()

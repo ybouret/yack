@@ -14,9 +14,13 @@ namespace yack
 
         namespace core
         {
+            //! memory allocator for adder
             typedef  memory::dyadic      adder_allocator;
+
+            //! type comparator for adder
             template <typename T> struct adder_comparator
             {
+                //! decreasing absolute value
                 inline int operator()(const T &lhs, const T &rhs) const
                 {
                     const T L = absolute(lhs);
@@ -26,21 +30,42 @@ namespace yack
             };
         }
 
+        
+        //______________________________________________________________________
+        //
+        //
+        //! precise sum using a heap as priority queue
+        //
+        //______________________________________________________________________
         template <typename T>
         class adder : public heap<T,core::adder_comparator<T>,core::adder_allocator>
         {
         public:
-            typedef heap<T,core::adder_comparator<T>,core::adder_allocator> self_type;
-            typedef typename self_type::mutable_type mutable_type;
+            //__________________________________________________________________
+            //
+            // types and definitions
+            //__________________________________________________________________
+            typedef heap<T,core::adder_comparator<T>,core::adder_allocator> self_type;    //!< alias
+            typedef typename self_type::mutable_type                        mutable_type; //!< alias
             using self_type::size;
             using self_type::pull;
             using self_type::free;
             using self_type::push;
 
+            //__________________________________________________________________
+            //
+            // C++
+            //__________________________________________________________________
             inline explicit adder() throw() : self_type() {}
             inline virtual ~adder() throw() {}
             inline explicit adder(const size_t n) : self_type(n,as_capacity) {}
 
+            //__________________________________________________________________
+            //
+            // main algorithm
+            //__________________________________________________________________
+
+            //! query by priority
             inline T query()
             {
                 if(size()<=0)
@@ -59,6 +84,11 @@ namespace yack
                     return pull();
                 }
             }
+
+            //__________________________________________________________________
+            //
+            // helpers
+            //__________________________________________________________________
 
             //! range
             template <typename ITERATOR> inline
@@ -97,6 +127,20 @@ namespace yack
                 for(size_t i=0;i<n;++i) push( arr[i] );
                 return query();
             }
+
+            //! dot product with implicit conversions
+            template <typename LHS, typename RHS> inline
+            T dot(LHS &lhs, RHS &rhs)
+            {
+                assert(lhs.size()==rhs.size());
+                free();
+                for(size_t i=lhs.size();i>0;--i)
+                {
+                    push( lhs[i] * rhs[i] );
+                }
+                return query();
+            }
+
 
 
 
