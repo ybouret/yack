@@ -128,11 +128,30 @@ namespace yack
             return tree[0];
         }
 
+        //! peek second value
+        const_type & next() const throw()
+        {
+            assert(count>=2);
+            if(count==2)
+            {
+                return tree[1];
+            }
+            else
+            {
+                assert(count>2);
+                const_type &lhs = tree[1];
+                const_type &rhs = tree[2];
+                return compare(lhs,rhs) <= 0 ? lhs : rhs;
+            }
+        }
+
+
         //! pop top value
         void pop() throw() {
             assert(count>0);
             rem();
         }
+
 
 
         //! no-throw swap

@@ -115,6 +115,7 @@ add_test(env      test-core env "PATH" nothing)
 add_test(div      test-core div)
 add_test(zflux    test-core zflux)
 add_test(net128   test-core net128)
+add_test(abs      test-core abs)
 
 
 add_test(type:ints   test-core type_ints)
