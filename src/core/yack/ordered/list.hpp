@@ -10,12 +10,18 @@
 #include "yack/type/out-of-reach.hpp"
 #include "yack/type/destruct.hpp"
 #include "yack/object.hpp"
+#include "yack/container.hpp"
 
 namespace yack
 {
     
+    namespace low_level
+    {
+        extern const char ordered_list_name[];
+    }
+    
     template <typename T>
-    class ordered_list
+    class ordered_list : public container
     {
     public:
         YACK_DECL_ARGS(T,type);
@@ -41,11 +47,48 @@ namespace yack
             release_all();
         }
         
+        // container
+        inline virtual const char * category() const throw()
+        {
+            return low_level::ordered_list_name;
+        }
+        inline virtual size_t size()     const throw()  { return active.size; }
+        inline virtual size_t capacity() const throw()  { return active.size+zombie.size; }
+        inline virtual size_t available() const throw() { return zombie.size; }
+        inline virtual void   free()            throw() { zombify(); }
+        inline virtual void   release()         throw() { release_all(); }
+        inline virtual void   reserve(size_t n)
+        {
+            while(n-- > 0) zombie.store( zacquire() );
+        }
+        
+        // methods
+        
+        
+        
     private:
         YACK_DISABLE_COPY_AND_ASSIGN(ordered_list);
         list_type active;
         pool_type zombie;
         
+        inline node_type new_node(const_type &args)
+        {
+            node_type *node = zombie.size ? zombie.query() : zacquire();
+            try {
+                return new (node) node_type(args);
+            }
+            catch(...)
+            {
+                zombie.store( out_of_reach::naught(node) );
+                throw;
+            }
+        }
+        
+        inline void zombify() throw()
+        {
+            while(active.size) zombie.store( out_of_reach::naught( destructed(active.pop_back()) ) );
+
+        }
         
         inline void release_zombie() throw()
         {
