@@ -51,6 +51,7 @@ enable_testing()
 add_test(numeric    test-math numeric)
 add_test(triplet    test-math triplet)
 add_test(adder      test-math adder)
+add_test(multiplier test-math multiplier)
 
 add_test(algebra:iota    test-math iota)
 add_test(algebra:lu      test-math lu)
