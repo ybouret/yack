@@ -249,7 +249,6 @@ namespace yack
             //
             //------------------------------------------------------------------
             const equilibrium *emin = minimumOfLattice(G0);
-
             if(emin)
             {
                 YACK_CHEM_PRINTLN(vpfx << "minimized by {" << emin->name << "}");

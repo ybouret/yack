@@ -163,9 +163,9 @@ Let
 
 \section{ND-Solution} 	
 
-\subsection{Regularization}
-We start from $\vec{C}$. For each equilibrium, we compute $\vec{\Psi}_i$.
-If $|\vec{\Psi}_i|=0$, we move $\vec{C}$ to the solving composition.
+\begin{equation}
+	\Gamma_i\left(\vec{C} + x_i \vec{\nu}_i + \sum_{j\not=i} x_j \vec{\nu}_j \right) \simeq 
+\end{equation}
 
 \subsection{Newton's}
 We want to compute:
@@ -174,86 +174,7 @@ We want to compute:
 \end{equation}
 
 
-\end{document}
-
-\subsection{Scaling}
-
-For any valid concentration $\vec{C}$, we have a set of single solving extents $\vec{\Xi}$.
-Each $\Xi_i$ is a measure of the single deviation from equilibrium.
-We define:
-\begin{equation}
-	\vec{\Psi}_i' = \partial_{\vec{C}}\Gamma_i(\vec{C} + \Xi_i \vec{\nu}_i)
-\end{equation}
-Then
-\begin{equation}
-	\langle \vec{\Psi}_i'\vert \vec{\nu}_i \rangle 
-	\left\lbrace
-	\begin{array}{rcl}
-	 < & 0 & \text{for a regular equilibrium} \\
-	 = & 0 & \text{for a blocked equilibrium} \\
-	\end{array}
-	\right.
-\end{equation}
-
-Thus we can define 
-\begin{equation}
-	\gamma_i = \left(\Xi_i - \xi_i\right) - \sum_{k\not=i} \dfrac{\langle \vec{\Psi}_i\vert \vec{\nu}_k\rangle}{\langle \vec{\Psi}_i'\vert \vec{\nu}_i \rangle} \xi_k
-	\simeq \dfrac{\Gamma_i}{-\langle \vec{\Psi}_i'\vert \vec{\nu}_i \rangle} 
-\end{equation}
-or
-\begin{equation}
-	\vec{\gamma} = \vec{\Xi} - \bm{\Omega} \vec{\xi}
-\end{equation}
-\begin{equation}
-\left\lbrace
-\begin{array}{rcl}
-	\Omega_{i,i} & = &1\\
-	\Omega_{i\not=k} & = & \dfrac{\langle \vec{\Psi}_i\vert \vec{\nu}_k\rangle}{\langle \vec{\Psi}_i'\vert \vec{\nu}_i \rangle} \text{ (or 0 if blocked) }\\
-\end{array}
-\right.
-\end{equation}
- 
-We want to decrease:
-\begin{equation}
-	G(\vec{\xi}) = \dfrac{1}{2}\vec{\gamma}^2 = \dfrac{1}{2} \left[ \vec{\Xi} - \bm{\Omega} \vec{\xi} \right]^2
-	= \dfrac{1}{2}
-	\left[
-	\vec{\Xi}^2
-    - 2 \langle\vec{\Xi}\vert\bm{\Omega}\vert\vec{\xi}\rangle  
-	+ \langle\vec{\xi}\vert\bm{\Omega}^T\bm{\Omega}\vert \vec{\xi}\rangle
-	 \right]
-\end{equation}
-
-
-With the constraint:
-\begin{equation}
-	\vec{C} + \bm{\nu}^T \vec{\xi} \geq 0
-\end{equation}
-
-\begin{equation}
-	\vec{\nabla} G = -\bm{\Omega}^T \vec{\Xi} + \bm{\Omega}^T \bm{\Omega} \xi
-\end{equation}
-
-We have the descent direction:
-\begin{equation}
-	\vec{\beta} = - \vec{\nabla}G(\vec{0}) = \bm{\Omega}^T \vec{\Xi}
-\end{equation}
-
-\begin{equation}
-	\vec{\eta} = \bm{\Omega}\vec{\beta}
-\end{equation}
-
-\begin{equation}
-	G(\lambda\vec{\beta}) = \dfrac{1}{2} 
-	\left[
-	\vec{\Xi}^2 - 2 \lambda \vec{\beta}^2 + \lambda^2  \vec{\eta}^2
-	\right]
-\end{equation}
-
-\begin{equation}
-	\lambda \simeq \dfrac{\vec{\beta}^2}{\vec{\eta}^2}
-\end{equation}
-
- 
+ 	
+ 	 
  
 \end{document}
