@@ -189,8 +189,7 @@ namespace yack
                 singles.pad(std::cerr << vpfx << "{" << eq.name << "}", eq);
                 std::cerr << " | state = " << eq.brew1D(Ki,C0,Ctry);
                 std::cerr << " | gamma = " << std::setw(15) << eq.mass_action(Ki,C0);
-
-
+                
                 std::cerr << std::endl;
             }
         }
