@@ -202,7 +202,7 @@ namespace yack
             //------------------------------------------------------------------
             //
             //
-            // probe singles
+            // First Pass: probe singles
             //
             //
             //------------------------------------------------------------------
@@ -286,6 +286,9 @@ namespace yack
             {
                 YACK_CHEM_PRINTLN(vpfx << "already at lattice minimum");
             }
+
+            const bool couldDecreaseLattice = (NULL!=emin);
+            YACK_CHEM_PRINTLN(vpfx << "  [couldDreceaseLattice=" << yack_boolean(couldDecreaseLattice) << "]");
 
 
 
