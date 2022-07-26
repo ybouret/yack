@@ -12,6 +12,8 @@
 #include "yack/object.hpp"
 #include "yack/container.hpp"
 
+#include <iostream>
+
 namespace yack
 {
     
@@ -33,6 +35,9 @@ namespace yack
             inline  node_type(const node_type &other) : next(0), prev(0), data(other.data) {}
             node_type *next;
             node_type *prev;
+            
+            inline const_type & operator*() const throw() { return data; }
+            
         private:
             T data;
             YACK_DISABLE_ASSIGN(node_type);
@@ -63,15 +68,61 @@ namespace yack
         }
         
         // methods
+        inline void add(param_type args)
+        {
+            node_type *node = new_node(args);
+            if(active.size<=0)
+            {
+                active.push_back(node);
+            }
+            else
+            {
+                if(  **node < **active.head )
+                {
+                    active.push_front(node);
+                }
+                else
+                {
+                    if(  **active.tail < **node )
+                    {
+                        active.push_back(node);
+                    }
+                    else
+                    {
+                        assert(active.size>=2);
+                        node_type *prev = active.push_back(node)->prev;
+                        while(prev && **node < **prev)
+                        {
+                            node = active.towards_front(node);
+                            prev = node->prev;
+                        }
+                    }
+                }
+            }
+        }
         
-        
+        inline friend std::ostream & operator<<(std::ostream &os, const ordered_list &L)
+        {
+            os << '{';
+            const node_type *node = L.active.head;
+            if(node)
+            {
+                os << **node;
+                for(node=node->next;node;node=node->next)
+                {
+                    os << ';' << **node;
+                }
+            }
+                
+            return os << '}';
+        }
         
     private:
         YACK_DISABLE_COPY_AND_ASSIGN(ordered_list);
         list_type active;
         pool_type zombie;
         
-        inline node_type new_node(const_type &args)
+        inline node_type *new_node(const_type &args)
         {
             node_type *node = zombie.size ? zombie.query() : zacquire();
             try {
