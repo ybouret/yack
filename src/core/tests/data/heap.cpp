@@ -53,6 +53,7 @@ YACK_UTEST(data_heap)
 
     testHeap<int,memory::pooled>(ran);
     testHeap<double,memory::dyadic>(ran);
+    testHeap<string,memory::dyadic>(ran);
 
 }
 YACK_UDONE()
