@@ -65,14 +65,7 @@ namespace yack
         return x+x;
     }
     
-    //! |x|
-    template <typename T> inline
-    T absolute(const T x) throw()
-    {
-        return x < 0 ? -x : x;
-    }
     
-
 }
 
 #endif

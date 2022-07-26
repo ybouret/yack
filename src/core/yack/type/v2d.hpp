@@ -5,7 +5,6 @@
 #define YACK_TYPE_V2D_INCLUDED 1
 
 #include "yack/type/args.hpp"
-#include "yack/type/utils.hpp"
 #include "yack/comparison.hpp"
 #include <iostream>
 

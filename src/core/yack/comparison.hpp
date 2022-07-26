@@ -4,6 +4,7 @@
 #define YACK_COMPARISON_INCLUDED 1
 
 #include "yack/type/utils.hpp"
+#include "yack/type/abs.hpp"
 
 namespace yack
 {

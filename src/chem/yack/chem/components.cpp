@@ -383,6 +383,7 @@ namespace yack
 }
 
 #include "yack/arith/gcd.h"
+#include "yack/type/abs.hpp"
 #include "yack/type/utils.hpp"
 #include "yack/exception.hpp"
 

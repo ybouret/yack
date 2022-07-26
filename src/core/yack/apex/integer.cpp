@@ -1,5 +1,6 @@
 #include "yack/apex/integer.hpp"
 #include "yack/type/utils.hpp"
+#include "yack/type/abs.hpp"
 #include "yack/system/exception.hpp"
 #include <cerrno>
 #include "yack/randomized/bits.hpp"
