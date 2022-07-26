@@ -7,6 +7,7 @@
 #include "yack/math/algebra/lu.hpp"
 #include "yack/sequence/vector.hpp"
 #include "yack/ptr/auto.hpp"
+#include "yack/math/adder.hpp"
 
 namespace yack
 {
@@ -21,7 +22,7 @@ namespace yack
         typedef tableaux::array_type   tableau;  //!< alias
         typedef thin_array<bool>       booltab;  //!< alias
         typedef math::lu<double>       rsolver;  //!< alias
-
+        typedef math::adder<double>    raddops;  //!< alias
     
     }
 

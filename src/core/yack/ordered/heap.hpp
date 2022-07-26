@@ -118,6 +118,10 @@ namespace yack
         // methods
         //______________________________________________________________________
 
+        inline void ready_for(const size_t n) {
+            free(); ensure(n);
+        }
+
         //! push a new value
         inline void push(param_type args) {
             if(count>=total)
@@ -126,33 +130,27 @@ namespace yack
                 grow(args);
         }
 
-        inline heap & operator<<(param_type args)
-        {
-            push(args);
-            return *this;
+        //! syntac helper
+        inline heap & operator<<(param_type args) {
+            push(args); return *this;
         }
 
         //! push a new value with memory in
-        inline void push_fast(param_type args)
-        {
-            assert(count<total);
-            grow(args);
+        inline void push_fast(param_type args) {
+            assert(count<total); grow(args);
         }
 
 
         //! peek top value
-        const_type & peek() const throw()
-        {
-            assert(count>0);
-            return tree[0];
+        const_type & peek() const throw() {
+            assert(count>0); return tree[0];
         }
         
 
 
         //! pop top value
         inline void pop() throw() {
-            assert(count>0);
-            rem();
+            assert(count>0); rem();
         }
 
         //! pull top value

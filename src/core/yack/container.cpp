@@ -30,5 +30,17 @@ namespace yack
         return  next_capacity(capa)-capa;
     }
 
+    void container:: ensure(const size_t minimal_capacity)
+    {
+        const size_t curent_capacity = capacity();
+        if(curent_capacity<minimal_capacity)
+        {
+            reserve(minimal_capacity-curent_capacity);
+            assert(capacity()>=minimal_capacity);
+        }
+        assert(capacity()>=minimal_capacity);
+    }
+
+
 
 }

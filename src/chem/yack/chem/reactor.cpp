@@ -26,7 +26,6 @@ namespace yack
         reactor:: reactor(library     &lib_,
                           equilibria  &eqs_,
                           const double t0) :
-        nws( network_sort::instance() ),
         lib(lib_),
         sub(lib),
         singles(eqs_),
@@ -45,7 +44,8 @@ namespace yack
         Omega0(N,N),
         iOmega(N,N),
 
-        LU( new rsolver(N) ),
+        addops( new raddops(M) ),
+        LU(     new rsolver(N) ),
         ntab(10,N),
         mtab(10,M),
         ltab(10,L),

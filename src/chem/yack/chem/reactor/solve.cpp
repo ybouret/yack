@@ -69,7 +69,7 @@ namespace yack
                         blocked[ei] = false;
                         iota::load(NuA[ei],NuI);
                         eq.drvs_action(psi,Ki,Ci,Ctry);
-                        sigma[ei] = - nws.dot(psi,NuI,Ctry);
+                        sigma[ei] = - addops->dot(psi,NuI);
                         ++nrun;
                         if(ax>xmax)
                         {

@@ -51,14 +51,16 @@ namespace yack
             using self_type::pull;
             using self_type::free;
             using self_type::push;
+            using self_type::push_fast;
+            using self_type::ready_for;
 
             //__________________________________________________________________
             //
             // C++
             //__________________________________________________________________
-            inline explicit adder() throw() : self_type() {}
-            inline virtual ~adder() throw() {}
-            inline explicit adder(const size_t n) : self_type(n,as_capacity) {}
+            inline explicit adder() throw() : self_type() {}                    //!< default constructor
+            inline virtual ~adder() throw() {}                                  //!< destructor
+            inline explicit adder(const size_t n) : self_type(n,as_capacity) {} //!< constructor with capacity
 
             //__________________________________________________________________
             //
@@ -78,7 +80,7 @@ namespace yack
                     {
                         mutable_type tmp = pull();
                         tmp += pull();
-                        push(tmp);
+                        push_fast(tmp);
                     }
                     assert(1==size());
                     return pull();
@@ -94,8 +96,8 @@ namespace yack
             template <typename ITERATOR> inline
             T range(ITERATOR curr, size_t n)
             {
-                free();
-                while(n-- > 0) push(*(curr++));
+                ready_for(n);
+                while(n-- > 0) push_fast(*(curr++));
                 return query();
             }
 
@@ -110,10 +112,11 @@ namespace yack
             template <typename ARRAY> inline
             T tableau(ARRAY &arr)
             {
-                free();
-                for(size_t i=arr.size();i>0;--i)
+                const size_t n = arr.size();
+                ready_for(n);
+                for(size_t i=n;i>0;--i)
                 {
-                    push( arr[i] );
+                    push_fast( arr[i] );
                 }
                 return query();
             }
@@ -123,8 +126,8 @@ namespace yack
             T tableau(const U arr[], const size_t n)
             {
                 assert(yack_good(arr,n));
-                free();
-                for(size_t i=0;i<n;++i) push( arr[i] );
+                ready_for(n);
+                for(size_t i=0;i<n;++i) push_fast( arr[i] );
                 return query();
             }
 
@@ -133,17 +136,14 @@ namespace yack
             T dot(LHS &lhs, RHS &rhs)
             {
                 assert(lhs.size()==rhs.size());
-                free();
-                for(size_t i=lhs.size();i>0;--i)
+                const size_t n = lhs.size();
+                ready_for(n);
+                for(size_t i=n;i>0;--i)
                 {
-                    push( lhs[i] * rhs[i] );
+                    push_fast( lhs[i] * rhs[i] );
                 }
                 return query();
             }
-
-
-
-
 
         private:
             YACK_DISABLE_COPY_AND_ASSIGN(adder);

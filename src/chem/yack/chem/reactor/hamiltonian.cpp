@@ -25,7 +25,8 @@ namespace yack
             }
 
             assert(ratio.size()>0);
-            return  sqrt(nws.sum_geqz(ratio)/ratio.size());
+            //return  sqrt(nws.sum_geqz(ratio)/ratio.size());
+            return sqrt(addops->tableau(ratio)/ratio.size());
             //return  sqrt(sorted::sum(ratio,sorted::by_value)/ratio.size());
         }
 
