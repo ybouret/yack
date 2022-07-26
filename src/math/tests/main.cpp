@@ -4,6 +4,7 @@ YACK_UTEST_DECL(80)
 {
     YACK_UTEST(numeric);
     YACK_UTEST(triplet);
+    YACK_UTEST(adder);
 
     YACK_UTEST(iota);
     YACK_UTEST(lu);

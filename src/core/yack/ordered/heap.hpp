@@ -4,10 +4,12 @@
 #define YACK_HEAP_INCLUDED 1
 
 #include "yack/container.hpp"
-#include "yack/container/as-capacity.hpp"
-#include "yack/memory/allocator/pooled.hpp"
-#include "yack/type/args.hpp"
 #include "yack/container/dynamic.hpp"
+#include "yack/container/as-capacity.hpp"
+
+#include "yack/memory/allocator/pooled.hpp"
+
+#include "yack/type/args.hpp"
 #include "yack/type/mswap.hpp"
 
 #include <iostream>
@@ -114,12 +116,26 @@ namespace yack
         //______________________________________________________________________
 
         //! push a new value
-        void push(param_type args) {
+        inline void push(param_type args) {
             if(count>=total)
                 duplicate_and_grow(args);
             else
                 grow(args);
         }
+
+        inline heap & operator<<(param_type args)
+        {
+            push(args);
+            return *this;
+        }
+
+        //! push a new value with memory in
+        inline void push_fast(param_type args)
+        {
+            assert(count<total);
+            grow(args);
+        }
+
 
         //! peek top value
         const_type & peek() const throw()
@@ -127,31 +143,23 @@ namespace yack
             assert(count>0);
             return tree[0];
         }
-
-        //! peek second value
-        const_type & next() const throw()
-        {
-            assert(count>=2);
-            if(count==2)
-            {
-                return tree[1];
-            }
-            else
-            {
-                assert(count>2);
-                const_type &lhs = tree[1];
-                const_type &rhs = tree[2];
-                return compare(lhs,rhs) <= 0 ? lhs : rhs;
-            }
-        }
+        
 
 
         //! pop top value
-        void pop() throw() {
+        inline void pop() throw() {
             assert(count>0);
             rem();
         }
 
+        //! pull top value
+        inline mutable_type pull()
+        {
+            assert(count>0);
+            mutable_type ans = tree[0];
+            rem();
+            return ans;
+        }
 
 
         //! no-throw swap
@@ -161,6 +169,23 @@ namespace yack
             cswap(total,other.total);
             cswap(bytes,other.bytes);
             cswap(tree,other.tree);
+        }
+
+        //! display
+        inline friend std::ostream & operator<<(std::ostream &os, const heap &self)
+        {
+            os << '{';
+            if(self.size())
+            {
+                heap H(self); assert(H.size()==self.size());
+                os << H.pull();
+                while(H.size())
+                {
+                    os << ':' << H.pull();
+                }
+            }
+            os << '}';
+            return os;
         }
 
 
