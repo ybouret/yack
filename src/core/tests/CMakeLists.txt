@@ -179,6 +179,8 @@ add_test(data:addrbook     test-core data_addrbook)
 add_test(data:meta         test-core data_meta)
 add_test(data:doubly       test-core data_doubly)
 add_test(data:groove       test-core data_groove)
+add_test(data:ordered_list test-core data_ordered_list)
+
 
 add_test(sync:lockable  test-core sync_lockable)
 add_test(sync:primitive test-core sync_primitive)

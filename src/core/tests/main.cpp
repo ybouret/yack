@@ -84,6 +84,7 @@ YACK_UTEST_DECL(256)
     YACK_UTEST(data_meta);
     YACK_UTEST(data_doubly);
     YACK_UTEST(data_groove);
+    YACK_UTEST(data_ordered_list);
 
 
 
