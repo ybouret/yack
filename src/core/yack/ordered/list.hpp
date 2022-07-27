@@ -127,7 +127,7 @@ namespace yack
                     }
                     else
                     {
-                        assert(active.size>=2);
+                        assert(active.size>=1);
                         node_type *prev = active.push_back(node)->prev;
                         while(prev && **node < **prev)
                         {
@@ -136,6 +136,7 @@ namespace yack
                         }
                     }
                 }
+
             }
         }
 
@@ -161,16 +162,15 @@ namespace yack
         inline const_type pull_front() {
             assert(active.head);
             const_type ans( **active.head );
-            zombify( active.pop_front() );
+            pop_front();
             return ans;
         }
-
 
         //! remove tail, return its copy
         inline const_type pull_back() {
             assert(active.tail);
             const_type ans( **active.tail );
-            zombify( active.pop_baxk() );
+            pop_back();
             return ans;
         }
 
@@ -246,7 +246,7 @@ namespace yack
         static void zrelease(node_type *node) throw() {
             object::zrelease(node);
         }
-        
+
         
     };
     
