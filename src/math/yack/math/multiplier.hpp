@@ -26,18 +26,10 @@ namespace yack
                 //______________________________________________________________
 
                 //! setup
-                inline   tagged_real(const T args) throw() :
-                value(args),
-                exponent(rexp(value))
-                {
-                }
+                inline   tagged_real(const T args) throw() : value(args), exponent(rexp(value)) { }
 
                 //! copy
-                inline  tagged_real(const tagged_real &t) throw() :
-                value(t.value),
-                exponent(t.exponent)
-                {
-                }
+                inline  tagged_real(const tagged_real &t) throw() : value(t.value), exponent(t.exponent) { }
 
                 //! cleanup
                 inline ~tagged_real() throw() {}
@@ -49,31 +41,26 @@ namespace yack
 
                 //! '<' operator for odereder list
                 inline friend bool operator<(const tagged_real &lhs,
-                                             const tagged_real &rhs) throw()
-                {
+                                             const tagged_real &rhs) throw() {
                     return lhs.exponent < rhs.exponent;
                 }
 
                 //! display
-                inline friend std::ostream & operator<<(std::ostream &os, const tagged_real &t)
-                {
+                inline friend std::ostream & operator<<(std::ostream &os, const tagged_real &t) {
                     os << t.value << '[' << t.exponent << ']';
                     return os;
                 }
 
                 //! access value
-                const T & operator*() const throw() { return value; }
+                inline const T & operator*() const throw() { return value; }
 
             private:
                 YACK_DISABLE_ASSIGN(tagged_real);
                 const T   value;
                 const int exponent;
 
-                static inline int rexp(const T x) throw()
-                {
-                    int ex = 0;
-                    (void) std::frexp(x,&ex);
-                    return ex;
+                static inline int rexp(const T x) throw() {
+                    int ex = 0; (void) std::frexp(x,&ex); return ex;
                 }
 
 
@@ -117,24 +104,16 @@ namespace yack
             //__________________________________________________________________
 
             //! push a new real
-            inline void push(const T x)
-            {
+            inline void push(const T x) {
                 data_type args(x);
                 insert(args);
             }
 
             //! syntax helper
-            inline multiplier & operator<<(const T x)
-            {
-                push(x);
-                return *this;
-            }
+            inline multiplier & operator<<(const T x) { push(x); return *this; }
 
-            //! algorithm: return 1 in case of empty
-            inline T query()
-            {
-                return ( size()  <= 0 ) ? T(1) : query_();
-            }
+            //! algorithm: return 1 if empty
+            inline T query() { return ( size()  <= 0 ) ? T(1) : query_(); }
 
 
         private:
@@ -142,8 +121,7 @@ namespace yack
             inline T query_()
             {
                 assert( size() >= 1);
-                while( size() > 1 )
-                {
+                while( size() > 1 ) {
                     const T   lhs( *(pull_front()) );
                     const T   rhs( *(pull_back() ) );
                     const T   ans( lhs * rhs );
