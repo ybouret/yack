@@ -8,6 +8,8 @@ namespace
     template <typename T>
     static inline void testMult(randomized::bits &ran)
     {
+        std::cerr << "min_exp: " << math::multiplier<T>::min_exp << std::endl;
+        std::cerr << "max_exp: " << math::multiplier<T>::max_exp << std::endl;
 
         math::multiplier<T> mm;
         T                   raw = 1;

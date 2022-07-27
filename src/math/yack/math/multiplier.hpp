@@ -57,17 +57,34 @@ namespace yack
             private:
                 YACK_DISABLE_ASSIGN(tagged_real);
                 const T   value;
-                const int exponent;
-
                 static inline int rexp(const T x) throw() {
                     int ex = 0; (void) std::frexp(x,&ex); return ex;
                 }
 
+            public:
+                const int exponent; //!< exponent value
 
             };
 
         }
 
+
+        class multiplication
+        {
+        public:
+            enum result
+            {
+                regular,
+                underflow,
+                overflow
+            };
+
+            explicit multiplication() throw();
+            virtual ~multiplication() throw();
+
+        private:
+            YACK_DISABLE_COPY_AND_ASSIGN(multiplication);
+        };
 
         //______________________________________________________________________
         //
@@ -76,7 +93,7 @@ namespace yack
         //
         //______________________________________________________________________
         template <typename T>
-        class multiplier : public ordered_list< core::tagged_real<T> >
+        class multiplier : public multiplication, public ordered_list< core::tagged_real<T> >
         {
         public:
             //__________________________________________________________________
@@ -85,6 +102,13 @@ namespace yack
             //__________________________________________________________________
             typedef ordered_list<  core::tagged_real<T> >  self_type; //!< alias
             typedef typename self_type::const_type         data_type; //!< alias
+            static  const int                              min_exp;   //!< numeric<T>::min_exp
+            static  const int                              max_exp;   //!< numeric<T>::max_exp
+
+            //__________________________________________________________________
+            //
+            // using...
+            //__________________________________________________________________
             using self_type::insert;
             using self_type::size;
             using self_type::pull_front;
@@ -94,9 +118,14 @@ namespace yack
             //
             // C++
             //__________________________________________________________________
-            inline virtual ~multiplier() throw() {}                               //!< cleanup
-            inline explicit multiplier() throw() : self_type() {}                 //!< setup empty
-            inline explicit multiplier(const size_t n) throw() : self_type(n) {}  //!< setup with capacity
+            //! cleanup
+            inline virtual ~multiplier() throw() {}
+
+            //! setup emptu
+            inline explicit multiplier() throw() : multiplication(), self_type() {}
+
+            //! setup with capacity
+            inline explicit multiplier(const size_t n) throw() : multiplication(), self_type(n) {}
 
             //__________________________________________________________________
             //
@@ -104,9 +133,7 @@ namespace yack
             //__________________________________________________________________
 
             //! push a new real
-            inline void push(const T x) {
-                data_type args(x);
-                insert(args);
+            inline void push(const T x) { data_type args(x); insert(args);
             }
 
             //! syntax helper
