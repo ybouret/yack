@@ -8,7 +8,7 @@ YACK_UTEST(ios_pstream)
     ios::pstream::result retval = new int;
     if(argc>1)
     {
-		std::cerr << "Starting '" << argv[1] << "'" << std::endl;
+		std::cerr << "\t<Starting '" << argv[1] << "'>" << std::endl;
 		{
 			ios::pstream fp(argv[1], retval);
 			ios::characters line;
@@ -16,8 +16,8 @@ YACK_UTEST(ios_pstream)
 			{
 				std::cerr << line << std::endl;
 			}
-		
         }
+        std::cerr << "\t<Result '" << argv[1] << "' = " << retval << ">" << std::endl;
         
     }
 }
