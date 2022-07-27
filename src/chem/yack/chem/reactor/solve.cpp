@@ -16,6 +16,56 @@ namespace yack
     namespace chemical
     {
 
+        bool reactor:: initializeSearch(const readable<double> &C0) throw()
+        {
+            assert(C0.size()>=M);
+            YACK_CHEM_MARKUP(vpfx, "reactor::initializeSearch");
+            if(verbose) lib(std::cerr<<vpfx<<"Cini=",C0,vpfx);
+
+            //------------------------------------------------------------------
+            //
+            //
+            // checking cases
+            //
+            //
+            //------------------------------------------------------------------
+            switch(N)
+            {
+                case 0:
+                    //----------------------------------------------------------
+                    // empty
+                    //----------------------------------------------------------
+                    YACK_CHEM_PRINTLN(" <success::empty/>");
+                    return true;
+
+
+                case 1:
+                    //----------------------------------------------------------
+                    // only 1
+                    //----------------------------------------------------------
+                {
+                    const equilibrium &eq = ***singles.head();
+                    //eq.solve1D(K[*eq],C0,Corg);
+                    (void) eq.brew1D(K[*eq], C0, Corg);
+                    YACK_CHEM_PRINTLN(vpfx << "  <success::1D/> " << Corg);
+                } return true;
+
+                default:
+                    //----------------------------------------------------------
+                    // initialize for consistency
+                    //----------------------------------------------------------
+                    for(size_t i=M;i>0;--i)
+                    {
+                        Corg[i] = Cend[i] = C0[i];
+                        Cstp[i] = 0;
+                    }
+                    break;
+            }
+
+            assert(N>0);
+            return false;
+        }
+
         bool reactor:: successfulUpdate(writable<double> &C0, unsigned int cycle) throw()
         {
             active.transfer(C0,Corg);
