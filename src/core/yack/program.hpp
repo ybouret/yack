@@ -5,6 +5,7 @@
 
 #include "yack/exception.hpp"
 #include <iostream>
+#include <iomanip>
 
 //______________________________________________________________________________
 //

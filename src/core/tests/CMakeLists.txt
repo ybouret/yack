@@ -131,7 +131,7 @@ add_test(type:gateway  test-core type_gateway)
 add_test(type:dec8     test-core type_dec8)
 
 
-add_test(memory:ram       test-core ram)
+add_test(memory:ram       test-core memory_ram)
 add_test(memory:chunk     test-core memory_chunk)
 add_test(memory:arena     test-core memory_arena)
 add_test(memory:arena_io  test-core memory_arena_io)

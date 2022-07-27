@@ -26,7 +26,7 @@ namespace
 
 }
 
-YACK_UTEST(ram)
+YACK_UTEST(memory_ram)
 {
     randomized::rand_  ran;
     block              blocks[256];

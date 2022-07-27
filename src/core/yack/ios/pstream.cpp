@@ -74,6 +74,33 @@ namespace yack
             return nr;
         }
 
+        void pstream:: load(sequence<string> &lines)
+        {
+            characters line;
+            while( gets(line) )
+            {
+                {
+                    const string empty;
+                    lines.push_back(empty);
+                }
+
+                string s = line.to_string();
+                s.xch(lines.back());
+            }
+        }
+
+        void  pstream:: check(const result &res, const string &cmd)
+        {
+            if( 0 != *res ) throw libc::exception( *res, "pstream('%s')", cmd() );
+        }
+
+        void  pstream:: check(const result &res, const char   *cmd)
+        {
+            const string _(cmd);
+            check(res,_);
+        }
+
+
     }
 }
 
