@@ -150,8 +150,10 @@ YACK_UTEST(prime32)
   
     if(argc<=1)
     {
-        throw exception("Need A Root File Name");
+        std::cerr << "need a root file name" << std::endl;
+        return 0;
     }
+    
     const string   root = argv[1];
     const topology topo;
     simd           para(topo);
