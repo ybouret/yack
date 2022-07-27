@@ -108,7 +108,7 @@ namespace yack
         //! default insert
         inline void insert(param_type args)
         {
-            node_type *node = new_node(args);
+            node_type *node = create(args);
             if(active.size<=0)
             {
                 active.push_back(node);
@@ -139,6 +139,42 @@ namespace yack
             }
         }
 
+        //! head node, the 'smallest'
+        inline const node_type *head() const throw() { return active.head; }
+
+        //! tail node, the 'greatest'
+        inline const node_type *tail() const throw() { return active.tail; }
+
+        //! 'lower' value
+        inline const_type & front() const throw() { assert(active.head); return **active.head; }
+
+        //! 'upper' value
+        inline const_type & back() const throw() { assert(active.tail); return **active.tail; }
+
+        //! remove head
+        inline void pop_front() throw() { assert(active.head); zombify( active.pop_front() ); }
+
+        //! remove tail
+        inline void pop_back() throw()  { assert(active.tail); zombify( active.pop_back() ); }
+
+        //! remove head, return its copy
+        inline const_type pull_front() {
+            assert(active.head);
+            const_type ans( **active.head );
+            zombify( active.pop_front() );
+            return ans;
+        }
+
+
+        //! remove tail, return its copy
+        inline const_type pull_back() {
+            assert(active.tail);
+            const_type ans( **active.tail );
+            zombify( active.pop_baxk() );
+            return ans;
+        }
+
+
         //! display
         inline friend std::ostream & operator<<(std::ostream &os, const ordered_list &L)
         {
@@ -155,13 +191,13 @@ namespace yack
                 
             return os << '}';
         }
-        
+
     private:
         YACK_DISABLE_COPY_AND_ASSIGN(ordered_list);
         list_type active;
         pool_type zombie;
-        
-        inline node_type *new_node(const_type &args)
+
+        inline node_type *create(const_type &args)
         {
             node_type *node = zombie.size ? zombie.query() : zacquire();
             try {
@@ -173,10 +209,15 @@ namespace yack
                 throw;
             }
         }
-        
+
+        inline void zombify(node_type *node) throw()
+        {
+            zombie.store( out_of_reach::naught( destructed(node) ) );
+        }
+
         inline void zombify() throw()
         {
-            while(active.size) zombie.store( out_of_reach::naught( destructed(active.pop_back()) ) );
+            while(active.size) zombify(active.pop_back());
 
         }
         

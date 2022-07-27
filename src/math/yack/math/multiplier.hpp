@@ -81,6 +81,11 @@ namespace yack
                 return *this;
             }
 
+            inline T query()
+            {
+            }
+
+
         private:
             YACK_DISABLE_COPY_AND_ASSIGN(multiplier);
 
