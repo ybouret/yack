@@ -19,40 +19,73 @@ namespace yack
     
     namespace low_level
     {
-        extern const char ordered_list_name[];
+        extern const char ordered_list_name[]; //!< "ordered list"
     }
-    
+
+    //__________________________________________________________________________
+    //
+    //
+    //! list of ordered data, using default '<' operator
+    //
+    //__________________________________________________________________________
     template <typename T>
     class ordered_list : public container
     {
     public:
-        YACK_DECL_ARGS(T,type);
+        //______________________________________________________________________
+        //
+        // types and definitions
+        //______________________________________________________________________
+        YACK_DECL_ARGS(T,type); //!< aliases
+
+
+        //______________________________________________________________________
+        //
+        //! dedicated node type for CONST data
+        //______________________________________________________________________
         class node_type
         {
         public:
+            //! setup from data
             inline  node_type(const_type &args) : next(0), prev(0), data(args) { }
-            inline ~node_type() throw() {}
+            //! copy
             inline  node_type(const node_type &other) : next(0), prev(0), data(other.data) {}
-            node_type *next;
-            node_type *prev;
-            
+            //! cleanup
+            inline ~node_type() throw() {}
+
+            //! access
             inline const_type & operator*() const throw() { return data; }
+
+            node_type *next; //!< for list/pool
+            node_type *prev; //!< for list
             
+
         private:
-            T data;
+            const_type data;
             YACK_DISABLE_ASSIGN(node_type);
         };
         
-        typedef list_of<node_type> list_type;
-        typedef pool_of<node_type> pool_type;
-        
+        typedef list_of<node_type> list_type; //!< alias
+        typedef pool_of<node_type> pool_type; //!< alias
+
+        //______________________________________________________________________
+        //
+        // C++
+        //______________________________________________________________________
+
+        //! setup empty
         inline explicit ordered_list() throw() : active(), zombie() {}
-        inline virtual ~ordered_list() throw()
-        {
-            release_all();
-        }
-        
-        // container
+
+        //! setup with capacity
+        inline explicit ordered_list(const size_t n) throw() : active(), zombie() { reserve(n); }
+
+        //! cleanup
+        inline virtual ~ordered_list() throw() { release_all(); }
+
+        //______________________________________________________________________
+        //
+        // container interfacer
+        //______________________________________________________________________
         inline virtual const char * category() const throw()
         {
             return low_level::ordered_list_name;
@@ -67,8 +100,13 @@ namespace yack
             while(n-- > 0) zombie.store( zacquire() );
         }
         
+        //______________________________________________________________________
+        //
         // methods
-        inline void add(param_type args)
+        //______________________________________________________________________
+
+        //! default insert
+        inline void insert(param_type args)
         {
             node_type *node = new_node(args);
             if(active.size<=0)
@@ -100,7 +138,8 @@ namespace yack
                 }
             }
         }
-        
+
+        //! display
         inline friend std::ostream & operator<<(std::ostream &os, const ordered_list &L)
         {
             os << '{';

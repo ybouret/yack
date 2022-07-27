@@ -56,7 +56,7 @@ namespace yack
         public:
             typedef ordered_list< tagged_real<T> >  self_type;
             typedef typename self_type::const_type  data_type;
-            using self_type::add;
+            using self_type::insert;
             
             inline virtual ~multiplier() throw() {}
             inline explicit multiplier() throw() : self_type() {}
@@ -64,7 +64,7 @@ namespace yack
             inline void push(const T x)
             {
                 data_type args(x);
-                add(args);
+                insert(args);
             }
             
             inline multiplier & operator<<(const T x)

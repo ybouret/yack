@@ -15,7 +15,7 @@ YACK_UTEST(data_ordered_list)
         ordered_list<int> L;
         for(size_t i=10;i>0;--i)
         {
-            L.add( bring::get<int>(ran) );
+            L.insert( bring::get<int>(ran) );
             std::cerr << L << std::endl;
         }
     }
@@ -24,7 +24,7 @@ YACK_UTEST(data_ordered_list)
         ordered_list<string> L;
         for(size_t i=10;i>0;--i)
         {
-            L.add( bring::get<string>(ran) );
+            L.insert( bring::get<string>(ran) );
             std::cerr << L << std::endl;
         }
     }
