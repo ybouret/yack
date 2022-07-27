@@ -68,19 +68,21 @@ namespace yack
 
         }
 
-
+        //! multiplication info
         class multiplication
         {
         public:
+
+            //! result
             enum result
             {
-                regular,
-                underflow,
-                overflow
+                regular,   //!< regular output
+                underflow, //!< found underflow
+                overflow   //!< found overflow
             };
 
-            explicit multiplication() throw();
-            virtual ~multiplication() throw();
+            explicit multiplication() throw(); //!< setup
+            virtual ~multiplication() throw(); //!< cleanup
 
         private:
             YACK_DISABLE_COPY_AND_ASSIGN(multiplication);

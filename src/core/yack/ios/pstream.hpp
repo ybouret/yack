@@ -12,20 +12,46 @@ namespace yack
 {
     namespace ios
     {
-
+        //______________________________________________________________________
+        //
+        //
+        //! high-level process stream
+        //
+        //______________________________________________________________________
         class pstream : public ios::istream
         {
         public:
-            typedef shared_ptr<int> result;
+            //__________________________________________________________________
+            //
+            // types and definitions
+            //__________________________________________________________________
+            typedef shared_ptr<int> result; //!< persistent result
 
-            virtual ~pstream() throw();
+            //__________________________________________________________________
+            //
+            // C++
+            //__________________________________________________________________
+            virtual ~pstream() throw(); //!< set result
 
+            //! open a command, register result
             template <typename COMMAND> inline
             explicit pstream(const COMMAND &cmd, const result &res) :
             handle( init(cmd) ), retval( res ) {}
 
+            //__________________________________________________________________
+            //
+            // methods
+            //__________________________________________________________________
+
+            //! append all parsed lines
             void load(sequence<string> &lines);
 
+            //__________________________________________________________________
+            //
+            // helpers
+            //__________________________________________________________________
+
+            //! transform command into output lines
             template <typename COMMAND> static inline
             void fill(sequence<string> &lines, const COMMAND &cmd)
             {
