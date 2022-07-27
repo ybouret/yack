@@ -34,7 +34,7 @@ namespace yack
 #endif
 
 #if defined(YACK_WIN)
-            FILE *fp = _popen(cmd(), "rsp" );
+            FILE *fp = _popen(cmd(), "r" );
             if(!fp) throw libc::exception(errno,"popen('%s')",cmd());
             return fp;
 #endif
