@@ -47,6 +47,7 @@ namespace yack
 
         size_t readable_file:: get(void *addr, const size_t size)
         {
+            YACK_GIANT_LOCK();
             assert(addr!=NULL);
             assert(size>0);
             FILE        *fp = static_cast<FILE *>(handle);

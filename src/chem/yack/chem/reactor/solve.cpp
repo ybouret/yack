@@ -91,7 +91,7 @@ namespace yack
         const equilibrium *reactor:: maximumOfSingles(size_t &nrun) throw()
         {
             YACK_CHEM_MARKUP(vpfx, "reactor::maximumOfSingles");
-            nrun = 0;
+            nrun                    = 0;
             const equilibrium *emax = 0;
             double             xmax = 0;
             for(const enode *node=singles.head();node;node=node->next)
