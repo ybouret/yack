@@ -17,7 +17,7 @@
 namespace yack
 {
 
-    namespace core
+    namespace low_level
     {
         extern const char heap_category[]; //!< "heap"
     }
@@ -87,10 +87,10 @@ namespace yack
         //
         // container interface
         //______________________________________________________________________
-        inline virtual const char *category()  const throw() { return core::heap_category; }  //!< heap
-        inline virtual size_t      size()      const throw() { return count; }                //!< count
-        inline virtual size_t      capacity()  const throw() { return total; }                //!< total
-        inline virtual size_t      available() const throw() { return total-count; }          //!< total-count
+        inline virtual const char *category()  const throw() { return low_level::heap_category; }  //!< heap
+        inline virtual size_t      size()      const throw() { return count; }                     //!< count
+        inline virtual size_t      capacity()  const throw() { return total; }                     //!< total
+        inline virtual size_t      available() const throw() { return total-count; }               //!< total-count
 
         //! free content, keep memory
         inline virtual void        free()            throw()
