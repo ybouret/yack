@@ -89,16 +89,16 @@ namespace yack
         inline virtual const char * category() const throw()
         {
             return low_level::ordered_list_name;
-        }
-        inline virtual size_t size()     const throw()  { return active.size; }
-        inline virtual size_t capacity() const throw()  { return active.size+zombie.size; }
-        inline virtual size_t available() const throw() { return zombie.size; }
-        inline virtual void   free()            throw() { zombify(); }
-        inline virtual void   release()         throw() { release_all(); }
+        } //!< ordered_list_name
+        inline virtual size_t size()     const throw()  { return active.size; }             //!< active.size
+        inline virtual size_t capacity() const throw()  { return active.size+zombie.size; } //!< active.size+zombie.size
+        inline virtual size_t available() const throw() { return zombie.size; }             //!< zombie.size
+        inline virtual void   free()            throw() { zombify(); }                      //!< empty active
+        inline virtual void   release()         throw() { release_all(); }                  //!< release all
         inline virtual void   reserve(size_t n)
         {
             while(n-- > 0) zombie.store( zacquire() );
-        }
+        } //!< store z-nodes
         
         //______________________________________________________________________
         //

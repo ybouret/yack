@@ -61,6 +61,7 @@ namespace yack
                     return os;
                 }
 
+                //! access value
                 const T & operator*() const throw() { return value; }
 
             private:
@@ -95,8 +96,8 @@ namespace yack
             //
             // types and definitions
             //__________________________________________________________________
-            typedef ordered_list<  core::tagged_real<T> >  self_type;
-            typedef typename self_type::const_type         data_type;
+            typedef ordered_list<  core::tagged_real<T> >  self_type; //!< alias
+            typedef typename self_type::const_type         data_type; //!< alias
             using self_type::insert;
             using self_type::size;
             using self_type::pull_front;
@@ -106,9 +107,9 @@ namespace yack
             //
             // C++
             //__________________________________________________________________
-            inline virtual ~multiplier() throw() {}
-            inline explicit multiplier() throw() : self_type() {}
-            inline explicit multiplier(const size_t n) throw() : self_type(n) {}
+            inline virtual ~multiplier() throw() {}                               //!< cleanup
+            inline explicit multiplier() throw() : self_type() {}                 //!< setup empty
+            inline explicit multiplier(const size_t n) throw() : self_type(n) {}  //!< setup with capacity
 
             //__________________________________________________________________
             //

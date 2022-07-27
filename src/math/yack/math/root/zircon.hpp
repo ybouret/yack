@@ -63,8 +63,9 @@ namespace yack
             //__________________________________________________________________
             class f1d {
             public:
-                virtual ~f1d() throw() {}
-                
+                virtual ~f1d() throw() {} //!< cleanup
+
+                //! should do it
                 virtual T operator()(const T) = 0;
 
             protected:
