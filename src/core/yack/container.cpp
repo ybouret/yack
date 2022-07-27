@@ -41,6 +41,10 @@ namespace yack
         assert(capacity()>=minimal_capacity);
     }
 
+    void container:: resume(const size_t minimal_capacity)
+    {
+        free(); ensure(minimal_capacity);
+    }
 
 
 }

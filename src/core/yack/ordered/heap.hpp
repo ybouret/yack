@@ -118,10 +118,7 @@ namespace yack
         // methods
         //______________________________________________________________________
 
-        //! free and ensure capacity >= n
-        inline void ready_for(const size_t n) {
-            free(); ensure(n);
-        }
+        
 
         //! push a new value
         inline void push(param_type args) {

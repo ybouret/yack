@@ -52,7 +52,7 @@ namespace yack
             using self_type::free;
             using self_type::push;
             using self_type::push_fast;
-            using self_type::ready_for;
+            using self_type::resume;
 
             //__________________________________________________________________
             //
@@ -96,7 +96,7 @@ namespace yack
             template <typename ITERATOR> inline
             T range(ITERATOR curr, size_t n)
             {
-                ready_for(n);
+                resume(n);
                 while(n-- > 0) push_fast(*(curr++));
                 return query();
             }
@@ -113,7 +113,7 @@ namespace yack
             T tableau(ARRAY &arr)
             {
                 const size_t n = arr.size();
-                ready_for(n);
+                resume(n);
                 for(size_t i=n;i>0;--i)
                 {
                     push_fast( arr[i] );
@@ -126,7 +126,7 @@ namespace yack
             T tableau(const U arr[], const size_t n)
             {
                 assert(yack_good(arr,n));
-                ready_for(n);
+                resume(n);
                 for(size_t i=0;i<n;++i) push_fast( arr[i] );
                 return query();
             }
@@ -137,7 +137,7 @@ namespace yack
             {
                 assert(lhs.size()==rhs.size());
                 const size_t n = lhs.size();
-                ready_for(n);
+                resume(n);
                 for(size_t i=n;i>0;--i)
                 {
                     push_fast( lhs[i] * rhs[i] );
