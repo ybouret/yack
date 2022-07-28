@@ -317,23 +317,28 @@ namespace yack
             assert(x.size()==u.cols);
 
             ensure(n);
+            add.ensure(n);
+
             for (size_t j=n;j>0;--j)
             {
-                real_t       sum = 0;
                 const real_t den = w[j];
                 if(std::abs(den)>0)
                 {
-                    for(size_t i=m;i>0;--i) sum += u[i][j]*b[i];
-                    sum /= den;
+                    add.free();
+                    for(size_t i=m;i>0;--i) add.push_fast(u[i][j]*b[j]);
+                    rv1[j] = add.query()/den;
                 }
-                rv1[j] = sum;
+                else
+                {
+                    rv1[j] = 0;
+                }
             }
 
             for(size_t j=n;j>0;--j)
             {
-                real_t sum = 0;
-                for(size_t i=n;i>0;--i) sum += v[j][i]*rv1[i];
-                x[j]=sum;
+                add.free();
+                for(size_t i=n;i>0;--i) add.push_fast(v[j][i]*rv1[i]);
+                x[j]=add.query();
             }
 
         }

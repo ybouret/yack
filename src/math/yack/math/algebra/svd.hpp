@@ -55,14 +55,7 @@ namespace yack
 
             //! singular value solve u.w.v' x = b
             void solve(const matrix<T> &u, const readable<T> &w, const matrix<T> &v, writable<T> &x, const readable<T> &b);
-
-#if 0
-            //! return nullity of original matrix  w.r.t ftol
-            static size_t nullity(writable<T> &w, const T ftol) throw();
-
-            //! return automatic nullity: ftol = w.size()*wmax*numeric<T>::epsilon
-            static size_t nullity(writable<T> &w) throw();
-#endif
+            
             
         private:
             YACK_DISABLE_COPY_AND_ASSIGN(svd);
