@@ -219,42 +219,95 @@ namespace yack
             //
             //! in-place solve a*u=b
             //__________________________________________________________________
-            inline void solve(const matrix<T> &a, writable<T> &b) const
+            inline void solve(const matrix<T> &a, writable<T> &b)
             {
                 assert(a.is_square());
                 assert(a.rows>0);
                 assert(a.rows<=dims);
                 assert(b.size()>=a.rows);
                 const size_t n  = a.rows;
-                size_t       ii = 0;
-                for(size_t i=1;i<=n;i++)
                 {
-                    size_t ip=indx[i];
-                    T sum=b[ip];
-                    b[ip]=b[i];
-                    if (ii)
+                    size_t       ii = 0;
+                    switch(algo)
                     {
-                        const readable<T> &a_i = a[i];
-                        for(size_t j=ii;j<i;++j)
-                            sum -= a_i[j]*b[j];
+                        case lu_regular:
+                            for(size_t i=1;i<=n;i++)
+                            {
+                                size_t ip=indx[i];
+                                T sum=b[ip];
+                                b[ip]=b[i];
+                                if (ii)
+                                {
+                                    const readable<T> &a_i = a[i];
+                                    for(size_t j=ii;j<i;++j)
+                                        sum -= a_i[j]*b[j];
+                                }
+                                else
+                                {
+                                    if( abs_of(sum) > 0) ii=i;
+                                }
+                                b[i] = sum;
+                            }
+                            break;
+
+                        case lu_precise:
+                            for(size_t i=1;i<=n;i++)
+                            {
+                                size_t ip=indx[i];
+                                T sum=b[ip];
+                                b[ip]=b[i];
+                                if(ii)
+                                {
+                                    xadd->free();
+                                    xadd->push_fast(sum);
+                                    const readable<T> &a_i = a[i];
+                                    for(size_t j=ii;j<i;++j)
+                                    {
+                                        const T tmp = -a_i[j]*b[j];
+                                        xadd->push_fast(tmp);
+                                    }
+                                    b[i]= xadd->query();
+                                }
+                                else
+                                {
+                                    if( abs_of(sum) > 0) ii=i;
+                                    b[i] = sum;
+                                }
+
+                            }
+                            break;
                     }
-                    else
-                    {
-                        if( abs_of(sum) > 0) ii=i;
-                    }
-                    b[i] = sum;
                 }
                 
                 for (size_t i=n;i>=1;i--)
                 {
                     const readable<T> &a_i = a[i];
-                    T sum=b[i];
-                    for(size_t j=n;j>i;--j)
-                        sum -= a_i[j]*b[j];
-                    b[i]=sum/a_i[i];
+                    switch(algo)
+                    {
+                        case lu_regular: {
+                            T sum=b[i];
+                            for(size_t j=n;j>i;--j)
+                                sum -= a_i[j]*b[j];
+                            b[i]=sum/a_i[i];
+                        } break;
+
+                        case lu_precise:
+                            xadd->free();
+                            xadd->push_fast(b[i]);
+                            for(size_t j=n;j>i;--j)
+                            {
+                                const T tmp = - a_i[j] * b[j];
+                                xadd->push_fast(tmp);
+                            }
+                            b[i] = xadd->query()/a_i[i];
+                            break;
+                    }
                 }
             }
-            
+
+
+
+
             //__________________________________________________________________
             //
             //! compute inverse matrix from decomposition
@@ -275,7 +328,7 @@ namespace yack
                     for(size_t k=n;k>0;--k) q[k][j] = u[k];
                 }
             }
-            
+
             //__________________________________________________________________
             //
             //! compute adjoint matrix
@@ -308,9 +361,9 @@ namespace yack
                     }
                 }
             }
-            
-            
-            
+
+
+
         private:
             YACK_DISABLE_COPY_AND_ASSIGN(lu);
             thin_array<size_t>                       indx; //!< indices
@@ -321,9 +374,9 @@ namespace yack
             auto_ptr<adder_type>                     xadd; //!< precision adder
             thin_array<T>                            xrow; //!< extra row/col
             const memory::operative_of<scalar_type>  s_op; //!< memory I/O for scalar
-            const memory::operative_of<T>            t_op; //!< memory I/O for objects            
+            const memory::operative_of<T>            t_op; //!< memory I/O for objects
         };
-        
+
     }
 }
 

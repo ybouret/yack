@@ -13,18 +13,22 @@ namespace yack
 {
     namespace math
     {
+
+        //! internal summation algorithm
         enum lu_algorithm
         {
-            lu_regular,
-            lu_precise
+            lu_regular, //!< regular code
+            lu_precise  //!< uses adder
         };
 
+        //! convert algo to text
         const char * lu_algorithm_text(const lu_algorithm algo) throw();
 
 
+        //! template for default algorithm selection
         template <typename T> struct lu_algo_for
         {
-            static const lu_algorithm value;
+            static const lu_algorithm value; //!< regular for rational, precise for reals and complexes
         };
 
         //______________________________________________________________________

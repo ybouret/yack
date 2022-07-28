@@ -128,12 +128,12 @@ namespace yack
                 grow(args);
         }
 
-        //! syntac helper
+        //! syntax helper
         inline heap & operator<<(param_type args) {
             push(args); return *this;
         }
 
-        //! push a new value with memory in
+        //! push a new value with enough memory
         inline void push_fast(param_type args) {
             assert(count<total); grow(args);
         }
@@ -197,6 +197,7 @@ namespace yack
         mutable COMPARATOR compare;
 
 
+        //! release all memory
         inline void drop() throw()
         {
             if(tree) {
@@ -207,12 +208,14 @@ namespace yack
             }
         }
 
+        //! aquire memory for tree
         static inline mutable_type *make(size_t &my_total, size_t &my_bytes)
         {
             static memory::allocator &mgr = ALLOCATOR::instance();
             return mgr.allocate<mutable_type>(my_total,my_bytes);
         }
 
+        //! duplicate internal structure
         inline void duplicate(const heap &other)
         {
             assert(0==count);
@@ -231,6 +234,7 @@ namespace yack
             }
         }
 
+        //! duplicate, grow in duplicated, swap
         inline void duplicate_and_grow(const_type &args)
         {
             assert(count>=total);
@@ -239,12 +243,19 @@ namespace yack
             swap_with(temp);
         }
 
+        //! grow algorithm
         inline void grow(const_type &args)
         {
             assert(count<total);
+
+            //------------------------------------------------------------------
+            // insert new item at the end
+            //------------------------------------------------------------------
             new ( &tree[count] ) mutable_type(args);
 
-            // promote inserted
+            //------------------------------------------------------------------
+            // repetitive promotion (no throw)
+            //------------------------------------------------------------------
             size_t ipos = count;
             while(ipos>0)
             {
@@ -260,6 +271,10 @@ namespace yack
                 else
                     break;
             }
+
+            //------------------------------------------------------------------
+            // done
+            //------------------------------------------------------------------
             ++count;
         }
 
@@ -267,12 +282,15 @@ namespace yack
         {
             assert(count>0);
 
+            //------------------------------------------------------------------
             // filter cases
+            //------------------------------------------------------------------
             switch(count)
             {
-                case 0: return;
+                case 0: // shouldn't get here..
+                    return;
 
-                case 1:
+                case 1: // last iterm
                     out_of_reach::naught( destructed( &tree[0]) );
                     count = 0;
                     return;
@@ -281,7 +299,9 @@ namespace yack
                     break;
             }
 
-            // contract tree
+            //------------------------------------------------------------------
+            // contract tree: put last item at top
+            //------------------------------------------------------------------
             assert(count>1);
             {
                 uint8_t *target = static_cast<uint8_t *>(out_of_reach::address( destructed( &tree[0] ) ));
@@ -293,15 +313,17 @@ namespace yack
                 }
             }
 
-            // rearrange tree
+            //------------------------------------------------------------------
+            // then rearrange tree
+            //------------------------------------------------------------------
             size_t       ipos = 0;
         PROMOTE:
             const size_t temp = ipos<<1;
             const size_t lpos = temp+1;
             const size_t rpos = temp+2;
-
             size_t mpos = ( lpos<count && compare(tree[ipos],tree[lpos])<0 ) ? lpos : ipos;
             if( rpos<count && compare(tree[mpos],tree[rpos])<0 ) mpos = rpos;
+
             if(mpos==ipos)
             {
                 // done
