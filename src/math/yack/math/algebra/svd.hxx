@@ -59,12 +59,7 @@ namespace yack
                 g=s=scale=0;
                 if (i <= m)
                 {
-#if 0
-                    for(k=i;k<=m;++k)
-                    {
-                        scale += std::abs(a[k][i]);
-                    }
-#endif
+
                     add.free();
                     for(size_t k=i;k<=m;++k)
                     {
@@ -79,7 +74,6 @@ namespace yack
                         for(size_t k=i;k<=m;k++)
                         {
                             a[k][i] /= scale;
-                            //s += a[k][i]*a[k][i];
                             add.push_fast( squared(a[k][i]) );
                         }
                         s = add.query();
@@ -89,7 +83,6 @@ namespace yack
                         a[i][i]=f-g;
                         for(size_t j=l;j<=n;++j)
                         {
-                            //for(s=0,k=i;k<=m;++k) s += a[k][i]*a[k][j];
                             add.free(); for(size_t k=i;k<=m;++k) add.push_fast( a[k][i] * a[k][j] ); s = add.query();
                             f=s/h;
                             for(size_t k=i;k<=m;++k) a[k][j] += f*a[k][i];
@@ -101,29 +94,34 @@ namespace yack
                 g=s=scale=0;
                 if (i <= m && i != n)
                 {
-                    for(size_t k=l;k<=n;++k)
-                    {
-                        scale += std::abs(a[i][k]);
-                    }
 
+                    add.free();
+                    for(size_t k=l;k<=n;++k) add.push_fast(std::abs(a[i][k]));
+                    scale = add.query();
 
                     if (scale>0)
                     {
+                        add.free();
                         for(size_t k=l;k<=n;++k)
                         {
                             a[i][k] /= scale;
-                            s += a[i][k]*a[i][k];
+                            add.push_fast( squared(a[i][k]));
+                            //s += a[i][k]*a[i][k];
                         }
+                        s=add.query();
                         f=a[i][l];
                         g = - __sgn(sqrt(s),f);
                         h=f*g-s;
                         a[i][l]=f-g;
                         for(size_t k=l;k<=n;k++)
                             rv1[k]=a[i][k]/h;
-                        for(size_t j=l;j<=m;++j) {
-                            s = 0;
+                        for(size_t j=l;j<=m;++j)
+                        {
+                            add.free();
                             for (size_t k=l;k<=n;k++)
-                                s += a[j][k]*a[i][k];
+                                add.push_fast(a[j][k]*a[i][k]);
+                            s = add.query();
+
                             for(size_t k=l;k<=n;k++)
                                 a[j][k] += s*rv1[k];
                         }
@@ -143,9 +141,11 @@ namespace yack
                             v[j][i]=(a[i][j]/a[i][l])/g;
                         for(size_t j=l;j<=n;j++)
                         {
-                            s=0;
+                            add.free();
                             for (size_t k=l;k<=n;++k)
-                                s += a[i][k]*v[k][j];
+                                add.push_fast( a[i][k]*v[k][j] );
+                            s = add.query();
+
                             for (size_t k=l;k<=n;++k)
                                 v[k][j] += s*v[k][i];
                         }
@@ -153,7 +153,7 @@ namespace yack
                     for(size_t j=l;j<=n;j++)
                         v[i][j]=v[j][i]=0;
                 }
-                v[i][i]=1.0;
+                v[i][i]=1;
                 g=rv1[i];
                 l=i;
             }
@@ -164,23 +164,31 @@ namespace yack
                 g=w[i];
                 for(size_t j=l;j<=n;j++)
                     a[i][j]=0.0;
+
                 if(std::abs(g)>0)
                 {
                     g=one/g;
                     for(size_t j=l;j<=n;j++)
                     {
-                        s=0;
-                        for (size_t k=l;k<=m;k++) s += a[k][i]*a[k][j];
+                        
+                        add.free();
+                        for (size_t k=l;k<=m;k++) add.push_fast( a[k][i]*a[k][j] );
+                        s = add.query();
+
                         f=(s/a[i][i])*g;
                         for(size_t k=i;k<=m;k++) a[k][j] += f*a[k][i];
                     }
-                    for(size_t j=i;j<=m;j++) a[j][i] *= g;
+                    for(size_t j=i;j<=m;j++)
+                        a[j][i] *= g;
                 }
                 else
-                    for(size_t j=i;j<=m;j++) a[j][i]=0;
+                {
+                    for(size_t j=i;j<=m;j++)
+                        a[j][i]=0;
+                }
                 ++a[i][i];
             }
-            
+
             for(size_t k=n;k>=1;k--)
             {
                 /* Diagonalization of the bidiagonal form. */

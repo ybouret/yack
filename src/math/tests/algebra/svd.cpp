@@ -18,7 +18,7 @@ namespace {
     {
         std::cerr << "svd<" << rtti::name<T>() << ">" << std::endl;
         svd<T> SVD;
-        for(size_t r=1;r<=8;++r)
+        for(size_t r=1;r<=10;++r)
         {
             for(size_t c=1;c<=r+r;++c)
             {
