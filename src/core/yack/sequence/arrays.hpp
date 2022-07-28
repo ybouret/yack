@@ -186,11 +186,7 @@ namespace yack
                 new (&arr[i]) array_type(obj,capacity);
             }
         }
-
-
-
-
-
+        
         inline void rebuild(const size_t num_blocks)
         {
             //__________________________________________________________________
