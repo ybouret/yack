@@ -13,9 +13,11 @@ namespace yack
         template <>
         svd<real_t>:: svd(const size_t dims) :
         tableaux(1,dims),
-        rv1( next() )
+        rv1( next() ),
+        add(dims)
         {
         }
+
 
 
         template <>
@@ -40,7 +42,7 @@ namespace yack
             ensure(n);
             add.ensure(n);
 
-            size_t k;
+            //size_t k;
             real_t c,f,h,s,x,y,z;
             size_t l=0;
             real_t g=0,scale=0,anorm=0;
@@ -57,44 +59,57 @@ namespace yack
                 g=s=scale=0;
                 if (i <= m)
                 {
+#if 0
                     for(k=i;k<=m;++k)
                     {
                         scale += std::abs(a[k][i]);
                     }
-                    
+#endif
+                    add.free();
+                    for(size_t k=i;k<=m;++k)
+                    {
+                        add.push_fast( std::abs(a[k][i]) );
+                    }
+                    scale = add.query();
+
+
                     if(scale>0)
                     {
-                        for(k=i;k<=m;k++)
+                        add.free();
+                        for(size_t k=i;k<=m;k++)
                         {
                             a[k][i] /= scale;
-                            s += a[k][i]*a[k][i];
+                            //s += a[k][i]*a[k][i];
+                            add.push_fast( squared(a[k][i]) );
                         }
+                        s = add.query();
                         f = a[i][i];
                         g = -__sgn(sqrt(s),f);
                         h = f*g-s;
                         a[i][i]=f-g;
                         for(size_t j=l;j<=n;++j)
                         {
-                            for(s=0,k=i;k<=m;++k)
-                                s += a[k][i]*a[k][j];
+                            //for(s=0,k=i;k<=m;++k) s += a[k][i]*a[k][j];
+                            add.free(); for(size_t k=i;k<=m;++k) add.push_fast( a[k][i] * a[k][j] ); s = add.query();
                             f=s/h;
-                            for(k=i;k<=m;++k)
-                                a[k][j] += f*a[k][i];
+                            for(size_t k=i;k<=m;++k) a[k][j] += f*a[k][i];
                         }
-                        for (k=i;k<=m;++k) a[k][i] *= scale;
+                        for(size_t k=i;k<=m;++k) a[k][i] *= scale;
                     }
                 }
                 w[i]=scale *g;
-                g=s=scale=0.0;
+                g=s=scale=0;
                 if (i <= m && i != n)
                 {
-                    for(k=l;k<=n;++k)
+                    for(size_t k=l;k<=n;++k)
                     {
                         scale += std::abs(a[i][k]);
                     }
+
+
                     if (scale>0)
                     {
-                        for(k=l;k<=n;++k)
+                        for(size_t k=l;k<=n;++k)
                         {
                             a[i][k] /= scale;
                             s += a[i][k]*a[i][k];
@@ -103,15 +118,16 @@ namespace yack
                         g = - __sgn(sqrt(s),f);
                         h=f*g-s;
                         a[i][l]=f-g;
-                        for(k=l;k<=n;k++)
+                        for(size_t k=l;k<=n;k++)
                             rv1[k]=a[i][k]/h;
                         for(size_t j=l;j<=m;++j) {
-                            for (s=0,k=l;k<=n;k++)
+                            s = 0;
+                            for (size_t k=l;k<=n;k++)
                                 s += a[j][k]*a[i][k];
-                            for(k=l;k<=n;k++)
+                            for(size_t k=l;k<=n;k++)
                                 a[j][k] += s*rv1[k];
                         }
-                        for (k=l;k<=n;k++)
+                        for (size_t k=l;k<=n;k++)
                             a[i][k] *= scale;
                     }
                 }
@@ -127,9 +143,10 @@ namespace yack
                             v[j][i]=(a[i][j]/a[i][l])/g;
                         for(size_t j=l;j<=n;j++)
                         {
-                            for (s=0,k=l;k<=n;++k)
+                            s=0;
+                            for (size_t k=l;k<=n;++k)
                                 s += a[i][k]*v[k][j];
-                            for (k=l;k<=n;++k)
+                            for (size_t k=l;k<=n;++k)
                                 v[k][j] += s*v[k][i];
                         }
                     }
@@ -152,9 +169,10 @@ namespace yack
                     g=one/g;
                     for(size_t j=l;j<=n;j++)
                     {
-                        for (s=0,k=l;k<=m;k++) s += a[k][i]*a[k][j];
+                        s=0;
+                        for (size_t k=l;k<=m;k++) s += a[k][i]*a[k][j];
                         f=(s/a[i][i])*g;
-                        for (k=i;k<=m;k++) a[k][j] += f*a[k][i];
+                        for(size_t k=i;k<=m;k++) a[k][j] += f*a[k][i];
                     }
                     for(size_t j=i;j<=m;j++) a[j][i] *= g;
                 }
@@ -162,7 +180,8 @@ namespace yack
                     for(size_t j=i;j<=m;j++) a[j][i]=0;
                 ++a[i][i];
             }
-            for (k=n;k>=1;k--)
+            
+            for(size_t k=n;k>=1;k--)
             {
                 /* Diagonalization of the bidiagonal form. */
                 unsigned its=0;
