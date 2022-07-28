@@ -30,13 +30,26 @@ namespace yack
             assert(v.cols==a.cols);
             assert(v.rows==a.cols);
             assert(w.size()==a.cols);
+
+            //------------------------------------------------------------------
+            //
+            // check workspace
+            //
+            //------------------------------------------------------------------
+
             ensure(n);
+            add.ensure(n);
+
             size_t k;
             real_t c,f,h,s,x,y,z;
             size_t l=0;
             real_t g=0,scale=0,anorm=0;
 
-            /* Householder reduction to bidiagonal form */
+            //------------------------------------------------------------------
+            //
+            // Householder reduction to bidiagonal form
+            //
+            //------------------------------------------------------------------
             for(size_t i=1;i<=n;i++)
             {
                 l=i+1;

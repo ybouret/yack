@@ -72,7 +72,7 @@ namespace yack
         //! copy with extra memory
         inline heap(const heap &other, const size_t extra) :
         container(), dynamic(),
-        count(0), total(other.count+extra), bytes(0), tree( make(total,bytes) ), compare()
+        count(0), total(other.total+extra), bytes(0), tree( make(total,bytes) ), compare()
         {
             duplicate(other);
         }

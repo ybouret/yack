@@ -4,6 +4,7 @@
 #include "yack/type/utils.hpp"
 #include "yack/system/exception.hpp"
 #include <cerrno>
+#include <iostream>
 
 namespace yack
 {
@@ -32,10 +33,12 @@ namespace yack
 
     void container:: ensure(const size_t minimal_capacity)
     {
-        const size_t curent_capacity = capacity();
-        if(curent_capacity<minimal_capacity)
+        const size_t current_capacity = capacity();
+
+        if(current_capacity<minimal_capacity)
         {
-            reserve(minimal_capacity-curent_capacity);
+            const size_t n = minimal_capacity-current_capacity;
+            reserve(n);
             assert(capacity()>=minimal_capacity);
         }
         assert(capacity()>=minimal_capacity);
