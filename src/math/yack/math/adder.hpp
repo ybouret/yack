@@ -5,7 +5,7 @@
 
 #include "yack/ordered/heap.hpp"
 #include "yack/memory/allocator/dyadic.hpp"
-#include "yack/type/abs.hpp"
+#include "yack/math/api.hpp"
 
 namespace yack
 {
@@ -23,8 +23,8 @@ namespace yack
                 //! decreasing absolute value
                 inline int operator()(const T &lhs, const T &rhs) const
                 {
-                    const T L = absolute(lhs);
-                    const T R = absolute(rhs);
+                    const typename scalar_for<T>::type L = math::abs_of(lhs);
+                    const typename scalar_for<T>::type R = math::abs_of(rhs);
                     return (L<R) ? 1 : ( (R<L) ? -1 : 0);
                 }
             };

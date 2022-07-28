@@ -5,6 +5,7 @@
 
 #include "yack/math/algebra/lu_.hpp"
 #include "yack/memory/operative.hpp"
+#include "yack/math/adder.hpp"
 
 namespace yack
 {
@@ -38,6 +39,7 @@ namespace yack
             lu_(nmax,sizeof(scalar_type),sizeof(T)),
             indx(indx_(),dims),
             scal(scal_<scalar_type>(),dims),
+            xadd(dims),
             xrow(xrow_<T>(),dims),
             s_op(&scal[1],dims),
             t_op(&xrow[1],dims)
@@ -99,6 +101,16 @@ namespace yack
                     for(size_t i=1;i<j;++i)
                     {
                         writable<T> &a_i = a[i];
+                        xadd.free();
+                        xadd.push_fast(a_i[j]);
+#if 0
+                        xadd.push_fast(a_i[j]);
+                        for(size_t k=1;k<i;++k)
+                        {
+                            const T tmp = - a_i[k] * a[k][j];
+                            xadd.push_fast(tmp);
+                        }
+#endif
                         T sum=a_i[j];
                         for(size_t k=1;k<i;++k)
                             sum -= a_i[k]*a[k][j];
@@ -266,6 +278,7 @@ namespace yack
             YACK_DISABLE_COPY_AND_ASSIGN(lu);
             thin_array<size_t>                       indx; //!< indices
             thin_array<scalar_type>                  scal; //!< scaling
+            adder<T>                                 xadd; //!< precision adder
             thin_array<T>                            xrow; //!< extra row/col
             const memory::operative_of<scalar_type>  s_op; //!< memory I/O for scalar
             const memory::operative_of<T>            t_op; //!< memory I/O for objects            

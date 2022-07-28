@@ -12,7 +12,7 @@ namespace yack
 
     namespace low_level
     {
-        //! generic absolute value
+        //! generic absolute value for SCALAR values
         template <typename T>
         struct absolute
         {
