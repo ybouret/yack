@@ -35,6 +35,7 @@ namespace yack
             real_t c,f,h,s,x,y,z;
             size_t l=0;
             real_t g=0,scale=0,anorm=0;
+
             /* Householder reduction to bidiagonal form */
             for(size_t i=1;i<=n;i++)
             {
@@ -47,6 +48,7 @@ namespace yack
                     {
                         scale += std::abs(a[k][i]);
                     }
+                    
                     if(scale>0)
                     {
                         for(k=i;k<=m;k++)
@@ -296,50 +298,7 @@ namespace yack
 
         }
 
-#if 0
-        template <>
-        size_t svd<real_t>:: nullity(writable<real_t> &w, const real_t ftol) throw()
-        {
-            const size_t n = w.size();
-            if(n>0)
-            {
-                //--------------------------------------------------------------
-                //
-                // first pass: find wmax
-                //
-                //--------------------------------------------------------------
-                real_t wmax = fabs(w[n]);
-                {
-                    size_t i=n;
-                    while(--i>0)
-                    {
-                        wmax = max_of<real_t>( fabs(w[i]), wmax);
-                    }
-                }
 
-                //--------------------------------------------------------------
-                //
-                // second pass: remove smallest components
-                //
-                //--------------------------------------------------------------
-                size_t     res=0;
-                for(size_t i=n;i>0;--i)
-                {
-                    real_t &ww = w[i];
-                    if( fabs(ww) <= fabs(ftol*wmax) )
-                    {
-                        ww = 0;
-                        ++res;
-                    }
-                }
-                return res;
-            }
-            else
-            {
-                return 0;
-            }
-        }
-#endif
     }
 
 }
