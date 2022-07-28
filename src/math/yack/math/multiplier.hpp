@@ -135,8 +135,7 @@ namespace yack
             //__________________________________________________________________
 
             //! push a new real
-            inline void push(const T x) { data_type args(x); insert(args);
-            }
+            inline void push(const T x) { data_type args(x); insert(args); }
 
             //! syntax helper
             inline multiplier & operator<<(const T x) { push(x); return *this; }
