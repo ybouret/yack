@@ -1,5 +1,5 @@
 
-#include "yack/math/algebra/lu.hpp"
+#include "yack/math/algebra/lu_.hpp"
 #include "yack/memory/embed.hpp"
 #include "yack/memory/allocator/dyadic.hpp"
 #include "yack/type/utils.hpp"
@@ -60,10 +60,6 @@ namespace yack
             
 
         }
-        
-
-        
-        
         
     }
 }

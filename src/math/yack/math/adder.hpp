@@ -6,6 +6,7 @@
 #include "yack/ordered/heap.hpp"
 #include "yack/memory/allocator/dyadic.hpp"
 #include "yack/math/api.hpp"
+#include "yack/large-object.hpp"
 
 namespace yack
 {
@@ -38,7 +39,7 @@ namespace yack
         //
         //______________________________________________________________________
         template <typename T>
-        class adder : public heap<T,core::adder_comparator<T>,core::adder_allocator>
+        class adder : public large_object, public heap<T,core::adder_comparator<T>,core::adder_allocator>
         {
         public:
             //__________________________________________________________________

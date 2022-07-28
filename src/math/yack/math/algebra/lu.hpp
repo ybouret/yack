@@ -6,6 +6,7 @@
 #include "yack/math/algebra/lu_.hpp"
 #include "yack/memory/operative.hpp"
 #include "yack/math/adder.hpp"
+#include "yack/ptr/auto.hpp"
 
 namespace yack
 {
@@ -26,7 +27,7 @@ namespace yack
             // definitions
             //__________________________________________________________________
             typedef typename scalar_for<T>::type scalar_type; //!< alias
-            
+            typedef adder<T>                     adder_type;  //!< alias
             
             //__________________________________________________________________
             //
@@ -35,15 +36,22 @@ namespace yack
             //
             //__________________________________________________________________
             //! setup to solve up to nmax*nmax systems
-            explicit inline lu(const size_t nmax) :
+            explicit inline lu(const size_t nmax, const lu_algorithm how = lu_algo_for<T>::value ) :
             lu_(nmax,sizeof(scalar_type),sizeof(T)),
             indx(indx_(),dims),
             scal(scal_<scalar_type>(),dims),
-            xadd(dims),
+            algo(how),
+            xadd(NULL),
             xrow(xrow_<T>(),dims),
             s_op(&scal[1],dims),
             t_op(&xrow[1],dims)
-            {}
+            {
+                switch(algo)
+                {
+                    case lu_regular: break;
+                    case lu_precise: xadd = new adder_type(dims); break;
+                }
+            }
             
             //! cleanup
             virtual ~lu() throw() {}
@@ -101,37 +109,66 @@ namespace yack
                     for(size_t i=1;i<j;++i)
                     {
                         writable<T> &a_i = a[i];
-                        xadd.free();
-                        xadd.push_fast(a_i[j]);
-#if 0
-                        xadd.push_fast(a_i[j]);
-                        for(size_t k=1;k<i;++k)
+                        switch(algo)
                         {
-                            const T tmp = - a_i[k] * a[k][j];
-                            xadd.push_fast(tmp);
+                            case lu_regular: {
+                                T sum=a_i[j];
+                                for(size_t k=1;k<i;++k)
+                                    sum -= a_i[k]*a[k][j];
+                                a_i[j]=sum;
+                            } break;
+
+                            case lu_precise:
+                                xadd->free();
+                                xadd->push_fast(a_i[j]);
+                                for(size_t k=1;k<i;++k)
+                                {
+                                    const T tmp = - a_i[k] * a[k][j];
+                                    xadd->push_fast(tmp);
+                                }
+                                a_i[j] = xadd->query();
+                                break;
                         }
-#endif
-                        T sum=a_i[j];
-                        for(size_t k=1;k<i;++k)
-                            sum -= a_i[k]*a[k][j];
-                        a_i[j]=sum;
+
                     }
+
                     size_t       imax = 0;
                     writable<T> &a_j  = a[j];
+
                     {
                         scalar_type vmax  = 0;
                         for (size_t i=j;i<=n;i++)
                         {
                             writable<T> &a_i = a[i];
-                            T sum=a_i[j];
-                            for (size_t k=1;k<j;++k)
-                                sum -= a_i[k]*a[k][j];
-                            a_i[j]=sum;
-                            const scalar_type dum = scal[i] * abs_of(sum);
-                            if ( dum >= vmax)
+                            switch(algo)
                             {
-                                vmax=dum;
-                                imax=i;
+                                case lu_regular: {
+                                    T sum=a_i[j];
+                                    for (size_t k=1;k<j;++k)
+                                        sum -= a_i[k]*a[k][j];
+                                    a_i[j]=sum;
+                                    const scalar_type dum = scal[i] * abs_of(sum);
+                                    if ( dum >= vmax)
+                                    {
+                                        vmax=dum;
+                                        imax=i;
+                                    }
+                                } break;
+
+                                case lu_precise:
+                                    xadd->free();
+                                    xadd->push_fast(a_i[j]);
+                                    for (size_t k=1;k<j;++k)
+                                    {
+                                        const T tmp = - a_i[k] * a[k][j];
+                                        xadd->push_fast(tmp);
+                                    }
+                                    const scalar_type dum = abs_of( a_i[j] = xadd->query() );
+                                    if ( dum >= vmax)
+                                    {
+                                        vmax=dum;
+                                        imax=i;
+                                    }
                             }
                         }
                     }
@@ -278,7 +315,10 @@ namespace yack
             YACK_DISABLE_COPY_AND_ASSIGN(lu);
             thin_array<size_t>                       indx; //!< indices
             thin_array<scalar_type>                  scal; //!< scaling
-            adder<T>                                 xadd; //!< precision adder
+        public:
+            const lu_algorithm                       algo; //!< algorithm
+        private:
+            auto_ptr<adder_type>                     xadd; //!< precision adder
             thin_array<T>                            xrow; //!< extra row/col
             const memory::operative_of<scalar_type>  s_op; //!< memory I/O for scalar
             const memory::operative_of<T>            t_op; //!< memory I/O for objects            

@@ -4,6 +4,7 @@
 #include "yack/apex.hpp"
 #include "../../../core/tests/main.hpp"
 #include "yack/sequence/vector.hpp"
+#include "yack/system/rtti.hpp"
 
 using namespace yack;
 using namespace math;
@@ -13,8 +14,13 @@ static inline void do_LU(const size_t       n,
                          randomized::bits &ran,
                          const bool exact = false)
 {
+
+
+
     lu<T>      LU(n);
     matrix<T> a(n,n);
+
+    std::cerr << "LU<" << rtti::name<T>() << ">(" << n << "," << lu_algorithm_text(LU.algo) << ")" << std::endl;
 
     const size_t iter_max=exact ? 2 : 8;
     for(size_t iter=0;iter<iter_max;++iter)
@@ -44,11 +50,11 @@ static inline void do_LU(const size_t       n,
         rms2 /= n;
         if(exact)
         {
-            YACK_CHECK(0==rms2);
+            std::cerr << "\t"; YACK_CHECK(0==rms2);
         }
         else
         {
-            std::cerr << "rms2=" << rms2 << std::endl;
+            std::cerr << "\trms2=" << rms2 << std::endl;
         }
         matrix<T> q(n,n);
         LU.inv(q,alu);
@@ -71,7 +77,7 @@ static inline void do_LU(const size_t       n,
                     }
                 }
             }
-            YACK_CHECK(inverted);
+            std::cerr << "\t"; YACK_CHECK(inverted);
         }
         matrix<T> A(n,n);
         LU.adj(A,a);
@@ -93,7 +99,7 @@ static inline void do_LU(const size_t       n,
                     }
                 }
             }
-            YACK_CHECK(adjoint);
+            std::cerr << "\t"; YACK_CHECK(adjoint);
         }
     }
 

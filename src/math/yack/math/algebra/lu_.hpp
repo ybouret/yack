@@ -13,6 +13,20 @@ namespace yack
 {
     namespace math
     {
+        enum lu_algorithm
+        {
+            lu_regular,
+            lu_precise
+        };
+
+        const char * lu_algorithm_text(const lu_algorithm algo) throw();
+
+
+        template <typename T> struct lu_algo_for
+        {
+            static const lu_algorithm value;
+        };
+
         //______________________________________________________________________
         //
         //
