@@ -138,7 +138,11 @@ namespace yack
             assert(count<total); grow(args);
         }
 
-
+        //! push a first value with enough memory
+        inline void push_init(param_type args) {
+            free(); assert(count<total); grow(args);
+        }
+        
         //! peek top value
         const_type & peek() const throw() {
             assert(count>0); return tree[0];

@@ -6,6 +6,7 @@
 
 #include "yack/sequence/arrays.hpp"
 #include "yack/container/matrix.hpp"
+#include "yack/math/adder.hpp"
 
 namespace yack
 {
@@ -66,6 +67,7 @@ namespace yack
         private:
             YACK_DISABLE_COPY_AND_ASSIGN(svd);
             array_type &rv1; //!< a.cols=n
+            adder<T>    add; //!< for summations
         };
 
     }

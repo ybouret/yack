@@ -119,8 +119,7 @@ namespace yack
                             } break;
 
                             case lu_precise:
-                                xadd->free();
-                                xadd->push_fast(a_i[j]);
+                                xadd->push_init(a_i[j]);
                                 for(size_t k=1;k<i;++k)
                                 {
                                     const T tmp = - a_i[k] * a[k][j];
@@ -156,8 +155,7 @@ namespace yack
                                 } break;
 
                                 case lu_precise:
-                                    xadd->free();
-                                    xadd->push_fast(a_i[j]);
+                                    xadd->push_init(a_i[j]);
                                     for (size_t k=1;k<j;++k)
                                     {
                                         const T tmp = - a_i[k] * a[k][j];
@@ -258,8 +256,7 @@ namespace yack
                                 b[ip]=b[i];
                                 if(ii)
                                 {
-                                    xadd->free();
-                                    xadd->push_fast(sum);
+                                    xadd->push_init(sum);
                                     const readable<T> &a_i = a[i];
                                     for(size_t j=ii;j<i;++j)
                                     {
@@ -292,8 +289,7 @@ namespace yack
                         } break;
 
                         case lu_precise:
-                            xadd->free();
-                            xadd->push_fast(b[i]);
+                            xadd->push_init(b[i]);
                             for(size_t j=n;j>i;--j)
                             {
                                 const T tmp = - a_i[j] * b[j];
