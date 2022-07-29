@@ -9,6 +9,7 @@ YACK_UTEST(complex)
 {
     randomized::rand_ ran;
 
+
     {
         typedef complex<int> cplx;
 
@@ -16,8 +17,7 @@ YACK_UTEST(complex)
         cplx B(5,6); YACK_ASSERT(B.im==6); YACK_ASSERT(B.re==5);
         cplx C(2,3);
         A       = C;
-        cplx AB = A*B;
-        std::cerr << A << " * " << B << " = " << AB << std::endl;
+        
     }
 
     for(size_t i=0;i<1024;++i)

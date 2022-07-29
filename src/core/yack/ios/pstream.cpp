@@ -5,6 +5,7 @@
 #include "yack/string.hpp"
 #include "yack/system/exception.hpp"
 #include <cstdio>
+#include <cerrno>
 
 namespace yack
 {
