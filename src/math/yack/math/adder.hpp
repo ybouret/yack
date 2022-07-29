@@ -55,6 +55,7 @@ namespace yack
             using self_type::free;
             using self_type::push;
             using self_type::resume;
+            using self_type::ld;
 
             //__________________________________________________________________
             //
@@ -82,7 +83,7 @@ namespace yack
                     {
                         mutable_type tmp = pull();
                         tmp += pull();
-                        (*this) += tmp;
+                        ld(tmp);
                     }
                     assert(1==size());
                     return pull();
@@ -118,7 +119,7 @@ namespace yack
                 resume(n);
                 for(size_t i=n;i>0;--i)
                 {
-                    (*this) += arr[i];
+                     ld(arr[i]);
                 }
                 return get();
             }

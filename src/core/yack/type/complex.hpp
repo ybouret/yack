@@ -7,6 +7,7 @@
 #include "yack/type/utils.hpp"
 #include <iostream>
 #include <cmath>
+#include <cstdlib>
 
 namespace yack
 {
@@ -118,13 +119,22 @@ namespace yack
             re = rere - imim;
             return *this;
         }
-        
+
+        static inline int tcmp(const void *lhs, const void *rhs) throw() {
+            assert(NULL!=lhs); assert(NULL!=rhs);
+            const T L = std::abs( *static_cast<const T *>(lhs) );
+            const T R = std::abs( *static_cast<const T *>(rhs) );
+            return  (L<R) ? -1 : ( (R<L) ? 1 : 0 );
+        }
         //! z1*z2
         inline friend complex operator * (const complex &lhs, const complex &rhs) throw()
         {
             const T rere = lhs.re * rhs.re;
             const T imim = lhs.im * rhs.im;
-            return complex(rere-imim,(lhs.re+lhs.im)*(rhs.re+rhs.im) - rere - imim);
+            //return complex(rere-imim,(lhs.re+lhs.im)*(rhs.re+rhs.im) - rere - imim);
+            T       arr[3] = {(lhs.re+lhs.im)*(rhs.re+rhs.im), -rere, -imim };
+            qsort(arr,3,sizeof(T),tcmp);
+            return complex(rere-imim,(arr[0]+arr[1]) + arr[2]);
         }
         
         //! x*z
@@ -216,6 +226,8 @@ namespace yack
             assert(indx>=1);assert(indx<=2);
             return *(&re + --indx);
         }
+
+
     };
 
     //! specific scalar type
