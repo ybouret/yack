@@ -110,6 +110,7 @@ YACK_UTEST(sort_nws)
         }
     }
 
+    nws.s3.display(1);
 
 
 }

@@ -22,6 +22,9 @@ namespace yack
             const size_t * const ltab; //!< left  index tableau
             const size_t * const rtab; //!< right index tableau
 
+            //! display swap indices (-offset)
+            void display(const size_t offset=0) const;
+
         protected:
             //! setup full metrics
             explicit swaps(const char  *sid,

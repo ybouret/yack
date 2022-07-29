@@ -7,7 +7,6 @@
 #include "yack/type/utils.hpp"
 #include <iostream>
 #include <cmath>
-#include <cstdlib>
 
 namespace yack
 {
@@ -120,12 +119,13 @@ namespace yack
             return *this;
         }
 
-        static inline int tcmp(const void *lhs, const void *rhs) throw() {
-            assert(NULL!=lhs); assert(NULL!=rhs);
-            const T L = std::abs( *static_cast<const T *>(lhs) );
-            const T R = std::abs( *static_cast<const T *>(rhs) );
-            return  (L<R) ? -1 : ( (R<L) ? 1 : 0 );
+    private:
+        static inline void aswap(T &lhs, T &rhs) throw()
+        {
+            if( std::abs(rhs) < std::abs(lhs) ) cswap(lhs,rhs);
         }
+    public:
+
         //! z1*z2
         inline friend complex operator * (const complex &lhs, const complex &rhs) throw()
         {
@@ -133,7 +133,11 @@ namespace yack
             const T imim = lhs.im * rhs.im;
             //return complex(rere-imim,(lhs.re+lhs.im)*(rhs.re+rhs.im) - rere - imim);
             T       arr[3] = {(lhs.re+lhs.im)*(rhs.re+rhs.im), -rere, -imim };
-            qsort(arr,3,sizeof(T),tcmp);
+            aswap(arr[0],arr[2]);
+            aswap(arr[0],arr[1]);
+            aswap(arr[1],arr[2]);
+            assert( std::abs(arr[0]) <= std::abs(arr[1]) );
+            assert( std::abs(arr[1]) <= std::abs(arr[2]) );
             return complex(rere-imim,(arr[0]+arr[1]) + arr[2]);
         }
         
