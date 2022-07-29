@@ -166,19 +166,30 @@ Let
 \begin{equation}
 	\Gamma_i\left(\vec{C} + x_i \vec{\nu}_i + \sum_{j\not=i} x_j \vec{\nu}_j \right) 
 	\simeq 
-	\Gamma_i(\vec{C} + x_i \vec{\nu}_i) + \sum_{j\not=i} x_j \langle \vec{\nu}_j \vert \vec{\psi}_i \rangle
+	\Gamma_i(\vec{C} + x_i \vec{\nu}_i) + \sum_{j\not=i} x_j \langle \vec{\nu}_j \vert \vec{\psi}_i'' \rangle
 \end{equation}
 
 \begin{equation}
-	\Gamma_i(\vec{C} + x_i \vec{\nu}_i) \simeq  \langle \vec{\nu}_i \vert \vec{\psi}_i' \rangle \left( x_i - \Xi_i \right) + A_i \left(x_i -\Xi_i \right)^2
+	\Gamma_i(\vec{C} + \xi_i \vec{\nu}_i) \simeq  \langle \vec{\nu}_i \vert \vec{\psi}_i' \rangle \left( \xi_i - \Xi_i \right) + A_i \left(\xi_i -\Xi_i \right)^2
+\end{equation}
+
+%\begin{equation}
+%	\Gamma_i = A_i \Xi_i^2 - \langle \vec{\nu}_i \vert \vec{\psi}_i' \rangle \Xi_i
+%\end{equation}
+%
+
+\begin{equation}
+	\vec{\psi}_i'' \simeq \dfrac{1}{\Xi_i} \left\lbrack (\Xi_i-\xi_i) \vec{\psi}_i + \xi_i \vec{\psi}_i'\right\rbrack
+	= \vec{\psi}_i + \dfrac{\xi_i}{\Xi_i} \Delta\vec{\psi}_i
 \end{equation}
 
 \begin{equation}
-	\Gamma_i = A_i \Xi_i^2 - \langle \vec{\nu}_i \vert \vec{\psi}_i' \rangle \Xi_i
+	0 \simeq A_i \left(\xi_i -\Xi_i \right)^2 + \langle \vec{\nu}_i \vert \vec{\psi}_i' \rangle \left( \xi_i - \Xi_i \right)  + \sum_{j\not=i} \xi_j \langle \vec{\nu}_j \vert \vec{\psi}_i'' \rangle 
 \end{equation}
 
 \begin{equation}
-	0 \simeq A_i \left(\xi_i -\Xi_i \right)^2 + \langle \vec{\nu}_i \vert \vec{\psi}_i' \rangle \left( \xi_i - \Xi_i \right)  + \sum_{j\not=i} \xi_j \langle \vec{\nu}_j \vert \vec{\psi}_i \rangle
+	0 \simeq A_i \left(\xi_i -\Xi_i \right)^2 + \langle \vec{\nu}_i \vert \vec{\psi}_i' \rangle \left( \xi_i - \Xi_i \right) 
+	+ \sum_{j\not=i} \xi_j \langle \vec{\nu}_j \vert \vec{\psi}_i \rangle + \dfrac{\xi_i}{\Xi_i} \sum_{j\not=i} \xi_j \langle \vec{\nu}_j \vert \Delta\vec{\psi}_i \rangle
 \end{equation}
 
 
