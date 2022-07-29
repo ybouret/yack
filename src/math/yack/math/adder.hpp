@@ -48,11 +48,12 @@ namespace yack
             //__________________________________________________________________
             typedef heap<T,core::adder_comparator<T>,core::adder_allocator> self_type;    //!< alias
             typedef typename self_type::mutable_type                        mutable_type; //!< alias
+            typedef typename self_type::const_type                          const_type;   //!< alias
+
             using self_type::size;
             using self_type::pull;
             using self_type::free;
             using self_type::push;
-            using self_type::push_fast;
             using self_type::resume;
 
             //__________________________________________________________________
@@ -68,8 +69,8 @@ namespace yack
             // main algorithm
             //__________________________________________________________________
 
-            //! query by priority
-            inline T query()
+            //! get by priority
+            inline T get()
             {
                 if(size()<=0)
                 {
@@ -81,7 +82,7 @@ namespace yack
                     {
                         mutable_type tmp = pull();
                         tmp += pull();
-                        push_fast(tmp);
+                        (*this) += tmp;
                     }
                     assert(1==size());
                     return pull();
@@ -98,8 +99,8 @@ namespace yack
             T range(ITERATOR curr, size_t n)
             {
                 resume(n);
-                while(n-- > 0) push_fast(*(curr++));
-                return query();
+                while(n-- > 0) this->ld(*(curr++));
+                return get();
             }
 
             //! full range of sequence
@@ -117,9 +118,9 @@ namespace yack
                 resume(n);
                 for(size_t i=n;i>0;--i)
                 {
-                    push_fast( arr[i] );
+                    (*this) += arr[i];
                 }
-                return query();
+                return get();
             }
 
             //! C-style arr[0..n-1]
@@ -128,8 +129,11 @@ namespace yack
             {
                 assert(yack_good(arr,n));
                 resume(n);
-                for(size_t i=0;i<n;++i) push_fast( arr[i] );
-                return query();
+                for(size_t i=0;i<n;++i)
+                {
+                    (*this) += arr[i];
+                }
+                return get();
             }
 
             //! dot product with implicit conversions
@@ -141,9 +145,10 @@ namespace yack
                 resume(n);
                 for(size_t i=n;i>0;--i)
                 {
-                    push_fast( lhs[i] * rhs[i] );
+                    const_type tmp = lhs[i] * rhs[i];
+                    (*this) += tmp;
                 }
-                return query();
+                return get();
             }
 
         private:

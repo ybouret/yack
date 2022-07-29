@@ -60,30 +60,28 @@ namespace yack
                 if (i <= m)
                 {
 
-                    add.free();
+                    add.ldz();
                     for(size_t k=i;k<=m;++k)
-                    {
-                        add.push_fast( std::abs(a[k][i]) );
-                    }
-                    scale = add.query();
+                        add.ld(std::abs(a[k][i]));
+                    scale = add.get();
 
 
                     if(scale>0)
                     {
-                        add.free();
+                        add.ldz();
                         for(size_t k=i;k<=m;k++)
                         {
                             a[k][i] /= scale;
-                            add.push_fast( squared(a[k][i]) );
+                            add.ld( squared(a[k][i]) );
                         }
-                        s = add.query();
+                        s = add.get();
                         f = a[i][i];
                         g = -__sgn(sqrt(s),f);
                         h = f*g-s;
                         a[i][i]=f-g;
                         for(size_t j=l;j<=n;++j)
                         {
-                            add.free(); for(size_t k=i;k<=m;++k) add.push_fast( a[k][i] * a[k][j] ); s = add.query();
+                            add.ldz(); for(size_t k=i;k<=m;++k) add.ld(a[k][i] * a[k][j] ); s = add.get();
                             f=s/h;
                             for(size_t k=i;k<=m;++k) a[k][j] += f*a[k][i];
                         }
@@ -95,19 +93,19 @@ namespace yack
                 if (i <= m && i != n)
                 {
 
-                    add.free();
-                    for(size_t k=l;k<=n;++k) add.push_fast(std::abs(a[i][k]));
-                    scale = add.query();
+                    add.ldz();
+                    for(size_t k=l;k<=n;++k) add.ld(std::abs(a[i][k]));
+                    scale = add.get();
 
                     if (scale>0)
                     {
-                        add.free();
+                        add.ldz();
                         for(size_t k=l;k<=n;++k)
                         {
                             a[i][k] /= scale;
-                            add.push_fast( squared(a[i][k]));
+                            add.ld( squared(a[i][k]));
                         }
-                        s=add.query();
+                        s=add.get();
                         f=a[i][l];
                         g = - __sgn(sqrt(s),f);
                         h=f*g-s;
@@ -116,10 +114,10 @@ namespace yack
                             rv1[k]=a[i][k]/h;
                         for(size_t j=l;j<=m;++j)
                         {
-                            add.free();
+                            add.ldz();
                             for (size_t k=l;k<=n;k++)
-                                add.push_fast(a[j][k]*a[i][k]);
-                            s = add.query();
+                                add.ld(a[j][k]*a[i][k]);
+                            s = add.get();
 
                             for(size_t k=l;k<=n;k++)
                                 a[j][k] += s*rv1[k];
@@ -140,10 +138,10 @@ namespace yack
                             v[j][i]=(a[i][j]/a[i][l])/g;
                         for(size_t j=l;j<=n;j++)
                         {
-                            add.free();
+                            add.ldz();
                             for (size_t k=l;k<=n;++k)
-                                add.push_fast( a[i][k]*v[k][j] );
-                            s = add.query();
+                                add.ld( a[i][k]*v[k][j] );
+                            s = add.get();
 
                             for (size_t k=l;k<=n;++k)
                                 v[k][j] += s*v[k][i];
@@ -169,10 +167,9 @@ namespace yack
                     g=one/g;
                     for(size_t j=l;j<=n;j++)
                     {
-                        
-                        add.free();
-                        for (size_t k=l;k<=m;k++) add.push_fast( a[k][i]*a[k][j] );
-                        s = add.query();
+                        add.ldz();
+                        for (size_t k=l;k<=m;k++) add.ld( a[k][i]*a[k][j] );
+                        s = add.get();
 
                         f=(s/a[i][i])*g;
                         for(size_t k=i;k<=m;k++) a[k][j] += f*a[k][i];
@@ -323,9 +320,9 @@ namespace yack
                 const real_t den = w[j];
                 if(std::abs(den)>0)
                 {
-                    add.free();
-                    for(size_t i=m;i>0;--i) add.push_fast(u[i][j]*b[j]);
-                    rv1[j] = add.query()/den;
+                    add.ldz();
+                    for(size_t i=m;i>0;--i) add.ld(u[i][j]*b[j]);
+                    rv1[j] = add.get()/den;
                 }
                 else
                 {
@@ -335,9 +332,9 @@ namespace yack
 
             for(size_t j=n;j>0;--j)
             {
-                add.free();
-                for(size_t i=n;i>0;--i) add.push_fast(v[j][i]*rv1[i]);
-                x[j]=add.query();
+                add.ldz();
+                for(size_t i=n;i>0;--i) add.ld(v[j][i]*rv1[i]);
+                x[j]=add.get();
             }
 
         }

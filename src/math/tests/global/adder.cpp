@@ -24,7 +24,7 @@ YACK_UTEST(adder)
         }
 
         std::cerr << add << std::endl;
-        const float bis = add.query();
+        const float bis = add.get();
         std::cerr <<  bis  << " / " << sum << std::endl;
 
     }

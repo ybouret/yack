@@ -95,9 +95,7 @@ namespace yack
         //! free content, keep memory
         inline virtual void        free()            throw()
         {
-            const size_t zlen = count * sizeof(type);
-            while(count>0) destruct(&tree[--count]);
-            out_of_reach::zset(tree,zlen);
+            ldz();
         }
 
         //! release content and memory
@@ -118,7 +116,13 @@ namespace yack
         // methods
         //______________________________________________________________________
 
-        
+        //! set to 0
+        inline void ldz() throw()
+        {
+            const size_t zlen = count * sizeof(type);
+            while(count>0) destruct(&tree[--count]);
+            out_of_reach::zset(tree,zlen);
+        }
 
         //! push a new value
         inline void push(param_type args) {
@@ -133,16 +137,29 @@ namespace yack
             push(args); return *this;
         }
 
-        //! push a new value with enough memory
-        inline void push_fast(param_type args) {
-            assert(count<total); grow(args);
-        }
+
 
         //! push a first value with enough memory
-        inline void push_init(param_type args) {
-            free(); assert(count<total); grow(args);
+        inline void set(param_type args) {
+            ldz(); assert(count<total); grow(args);
         }
-        
+
+        //! add a new value with ENOUGH memory
+        inline void ld(param_type args) { assert(count<total); grow(args); }
+
+        //! add a new value with ENOUGH memory
+        inline heap & operator+= (param_type args) {
+            assert(count<total); grow(args); return *this;
+        }
+
+        //! sub a new value with ENOUGH memory
+        inline heap & operator-= (param_type args) {
+            assert(count<total);
+            const_type temp = -args; grow(temp);
+            return *this;
+        }
+
+
         //! peek top value
         const_type & peek() const throw() {
             assert(count>0); return tree[0];
