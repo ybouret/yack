@@ -3,6 +3,7 @@
 #include "yack/chem/mix/couples.hpp"
 #include "yack/exception.hpp"
 #include "yack/math/iota.hpp"
+#include "yack/counting/comb.hpp"
 
 namespace yack
 {
@@ -142,14 +143,18 @@ namespace yack
                     }
                     YACK_CHEM_PRINTLN("Kl="<<Kl);
 
+
                     coerce(look_up) = groups::create_from(lattice);
 
                     YACK_CHEM_PRINTLN("--------  look_up  --------");
                     YACK_CHEM_PRINTLN(look_up);
                 }
             }
-            YACK_CHEM_PRINTLN("--------  [ready]  --------" << std::endl);
 
+            YACK_CHEM_PRINTLN("    #singles = " << N);
+            YACK_CHEM_PRINTLN("    #lattice = " << L);
+            YACK_CHEM_PRINTLN("    #groups  = " << look_up->size);
+            YACK_CHEM_PRINTLN("--------  [ready]  --------" << std::endl);
 
         }
 

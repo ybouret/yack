@@ -96,6 +96,7 @@ namespace yack
             nrun                    = 0;
             const equilibrium *emax = 0;
             double             xmax = 0;
+            NuA.assign(Nu);
             for(const enode *node=singles.head();node;node=node->next)
             {
                 const equilibrium   &eq  = ***node;
@@ -103,6 +104,7 @@ namespace yack
                 const double         Ki  = K[ei];
                 writable<double>    &Ci  = Cl[ei];
                 writable<double>    &psi = Psi[ei];
+                writable<double>    &Omi = Omega0[ei];
                 const readable<int> &NuI = Nu[ei];
                 const outcome        res = eq.brew1D(Ki,Corg,Ci);
                 const double         ax  = fabs(Xl[ei] = res.xi0 );
@@ -113,6 +115,7 @@ namespace yack
                     case blocked_components:
                         blocked[ei] = true;
                         psi.ld(0);
+                        Omi.ld(0); Omi[ei] = 1.0;
                         NuA[ei].ld(0);
                         sigma[ei] = 0;
                         break;
@@ -343,14 +346,44 @@ namespace yack
 
 
             // prepare coupled step
-            std::cerr << "N=" << N << std::endl;
-            std::cerr << "L=" << L << std::endl;
+            for(const enode *node=singles.head();node;node=node->next)
+            {
+                const equilibrium   &eq  = ***node;
+                const size_t         ei  = *eq;
+                double              &gam = Gamma[ei];
 
+                if(blocked[ei])
+                {
+                    gam = 0;
+                }
+                else
+                {
+                    const double         Ki  = K[ei];
+                    writable<double>    &psi = Psi[ei];
+                    writable<double>    &Omi = Omega0[ei];
+                    gam = eq.grad_action(psi,Ki,Corg,Ctry);
+                    if(fabs(Xl[ei])<=0) gam = 0;
+                    for(const enode *scan=singles.head();scan;scan=scan->next)
+                    {
+                        const size_t ej = ****scan;
+                        Omi[ej] = - addops->dot(Nu[ej],psi);
+                    }
+                }
 
+            }
 
-            exit(1);
+            singles(std::cerr << vpfx << "Omega=", Omega0, vpfx);
+            singles(std::cerr << vpfx << "Gamma=", Gamma, vpfx);
+            //singles(std::cerr << vpfx << "NuA=", NuA, vpfx);
 
-            return false;
+            iOmega.assign(Omega0);
+            if(!LU->build(iOmega))
+            {
+                YACK_CHEM_PRINTLN("  <singular composition>");
+                return false;
+            }
+            
+            return true;
         }
     }
 
