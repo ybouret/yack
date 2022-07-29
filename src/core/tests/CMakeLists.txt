@@ -251,6 +251,7 @@ add_test(counting:perm   test-core counting_perm)
 add_test(counting:part   test-core counting_part)
 add_test(counting:loop   test-core counting_loop)
 add_test(counting:limits test-core counting_limits)
+add_test(counting:card   test-core counting_card)
 
 add_test(rtld:dso test-core rtld_dso)
 

@@ -46,6 +46,32 @@ namespace yack
         //______________________________________________________________________
         virtual ~counting() throw();                        //!< cleanup
 
+        //______________________________________________________________________
+        //
+        //! cardinality helper
+        //______________________________________________________________________
+        template <typename COUNTING>
+        struct card
+        {
+            //! get for class with 1-argument constructor
+            template <typename ARG1> static inline
+            cardinality_t of(const ARG1 &arg1) {
+                const COUNTING it(arg1);
+                return it.total;
+            }
+
+            //! get for class with 2-arguments constructor
+            template <typename ARG1, typename ARG2> static inline
+            cardinality_t of(const ARG1 &arg1, const ARG2 &arg2) {
+                const COUNTING it(arg1,arg2);
+                return it.total;
+            }
+
+        };
+        
+
+        
+
     protected:
         explicit counting(const cardinality_t num) throw(); //!< setup with num>0
         
@@ -54,7 +80,9 @@ namespace yack
         virtual void on_boot()     throw() = 0; //!< boot state
         virtual bool on_next()     throw() = 0; //!< next state
     };
-    
+
+
+
 }
 
 #endif

@@ -5,6 +5,8 @@
 #include "yack/type/boolean.h"
 #include "yack/math/numeric.hpp"
 
+#include "yack/counting/comb.hpp"
+
 #include <iomanip>
 #include <cmath>
 
@@ -339,6 +341,10 @@ namespace yack
             const bool couldDecreaseLattice = (NULL!=emin);
             YACK_CHEM_PRINTLN(vpfx << "  [couldDreceaseLattice=" << yack_boolean(couldDecreaseLattice) << "]");
 
+
+            // prepare coupled step
+            std::cerr << "N=" << N << std::endl;
+            std::cerr << "L=" << L << std::endl;
 
 
 
