@@ -4,6 +4,7 @@
 #define YACK_COMPLEX_INCLUDED 1
 
 #include "yack/type/scalar.hpp"
+#include "yack/type/utils.hpp"
 #include <iostream>
 #include <cmath>
 
@@ -143,7 +144,7 @@ namespace yack
         //
         //! mod2
         //______________________________________________________________________
-        inline real_t mod2() const throw() { return re*re+im*im; }
+        inline real_t mod2() const throw() { return squared(re) + squared(im); }
        
         //______________________________________________________________________
         //

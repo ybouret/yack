@@ -79,7 +79,7 @@ namespace yack
                 assert(a.rows<=dims);
                 const scalar_type one  = 1;
                 const size_t      n    = a.rows;
-                dneg = false;
+                dneg                   = false;
                 
                 //--------------------------------------------------------------
                 //

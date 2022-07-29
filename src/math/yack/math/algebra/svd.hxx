@@ -106,7 +106,6 @@ namespace yack
                         {
                             a[i][k] /= scale;
                             add.push_fast( squared(a[i][k]));
-                            //s += a[i][k]*a[i][k];
                         }
                         s=add.query();
                         f=a[i][l];
@@ -316,7 +315,7 @@ namespace yack
             assert(b.size()==u.rows);
             assert(x.size()==u.cols);
 
-            ensure(n);
+            ensure(n);      
             add.ensure(n);
 
             for (size_t j=n;j>0;--j)
