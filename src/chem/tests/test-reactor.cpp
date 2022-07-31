@@ -79,8 +79,8 @@ YACK_UTEST(reactor)
                 if(!cs.solve(C))
                 {
                     lib(std::cerr<<"Cini=",C);
-                    entity::verbose = true;
-                    (void)cs.solve(C);
+                    //entity::verbose = true;
+                    //(void)cs.solve(C);
                     //cs.display(C);
                     throw exception("Couldn't solve!");
                 }
