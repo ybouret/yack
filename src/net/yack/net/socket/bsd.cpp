@@ -15,7 +15,7 @@ namespace yack
             return hub::reusable( hub::acquire(level,proto) );
         }
 
-        socket_type plexus:: tcp_client_socket(const  socket_address &ip) const
+        socket_type plexus:: tcp_client_socket(const socket_address &ip) const
         {
             YACK_LOCK(access);
             return net::bsd::tcp_client(open(ip.version(),net::tcp),ip->addr,ip->size);
