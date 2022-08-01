@@ -82,7 +82,13 @@ namespace yack
             //! set reusable, close on error (helper to init)
             //__________________________________________________________________
             static socket_type reusable(socket_type);
-
+            
+            //__________________________________________________________________
+            //
+            //! connect from a tcp socket and an address
+            //__________________________________________________________________
+            static socket_type tcp_client(socket_type, sockaddr &sa, const sa_length_t sz);
+            
             //__________________________________________________________________
             //
             //! set blocking state

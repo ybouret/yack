@@ -63,8 +63,14 @@ namespace yack
                                     const uint16_t        port) const;
 
 
+        //______________________________________________________________________
+        //
+        // creating sockets
+        //______________________________________________________________________
 
-
+        //! create a tcp client socket
+        net::socket_type    tcp_client_socket(const net::socket_address &ip) const;
+        
         //______________________________________________________________________
         //
         // members
@@ -80,6 +86,7 @@ namespace yack
         
         //! low-level open a reusable socket
         net::socket_type   open(const net::ip_version, const net::ip_protocol) const;
+
     };
 
 }

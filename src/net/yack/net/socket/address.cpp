@@ -83,6 +83,11 @@ namespace yack
             }
             where.eradicate();
         }
+
+        ip_version  socket_address:: version() const throw()
+        {
+            return which;
+        }
     }
 
 }

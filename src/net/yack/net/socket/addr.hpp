@@ -24,7 +24,7 @@ namespace yack
             virtual            ~socket_addr()     throw();      //!< cleanup
             virtual uint16_t    family()    const throw() = 0;  //!< AF_INET[6]
             virtual const char *className() const throw() = 0;  //!< "IPv[4|6]"
-
+            
             sockaddr         &addr; //!< reference for BSD
             const sa_length_t size; //!< effective length of addr
             net16_t          &port; //!< reference to internal port

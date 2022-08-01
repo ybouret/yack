@@ -52,7 +52,7 @@ namespace yack
             // methods
             //__________________________________________________________________
             void        xch(socket_address &) throw(); //!< no-throw swap
-
+            ip_version  version()       const throw(); //!< version
 
             //! display
             friend std::ostream & operator<<(std::ostream &, const socket_address &);
@@ -62,7 +62,8 @@ namespace yack
             void                   *entry;
             memory::workplace<IPv6> where;
             void clear() throw();
-            virtual const_type & bulk() const throw();
+            virtual const_type & bulk()    const throw();
+
         };
     }
 }
