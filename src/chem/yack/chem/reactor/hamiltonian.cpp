@@ -20,14 +20,12 @@ namespace yack
                 const size_t       ei = *eq;
                 if(blocked[ei]) continue;
 
-                assert(sigma[ei]>0);
+                assert(fabs(sigma[ei])>0);
                 ratio.push_back_fast( squared(eq.mass_action(K[ei],C)/sigma[ei] ) );
             }
 
             assert(ratio.size()>0);
-            //return  sqrt(nws.sum_geqz(ratio)/ratio.size());
             return sqrt(addops->tableau(ratio)/ratio.size());
-            //return  sqrt(sorted::sum(ratio,sorted::by_value)/ratio.size());
         }
 
 

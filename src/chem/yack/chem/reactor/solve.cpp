@@ -5,7 +5,6 @@
 #include "yack/type/boolean.h"
 #include "yack/math/numeric.hpp"
 
-#include "yack/counting/comb.hpp"
 
 #include <iomanip>
 #include <cmath>
@@ -85,7 +84,6 @@ namespace yack
                 std::cerr << std::endl;
             }
 
-
             return true;
         }
 
@@ -110,12 +108,13 @@ namespace yack
                 const double         ax  = fabs(Xl[ei] = res.xi0 );
                 if(verbose) singles.pad(std::cerr << vpfx << eq.name,eq) << " | " << res << std::endl;
 
+                Omi.ld(0); Omi[ei] = 1.0;
+
                 switch(res.are)
                 {
                     case blocked_components:
                         blocked[ei] = true;
                         psi.ld(0);
-                        Omi.ld(0); Omi[ei] = 1.0;
                         NuA[ei].ld(0);
                         sigma[ei] = 0;
                         break;
@@ -123,8 +122,8 @@ namespace yack
                     case running_components:
                         blocked[ei] = false;
                         iota::load(NuA[ei],NuI);
-                        eq.drvs_action(psi,Ki,Ci,Ctry);
-                        sigma[ei] = - addops->dot(psi,NuI);
+                        eq.drvs_action(psi,Ki,Ci,Ctry);    //! psi @ Ceq
+                        sigma[ei] = addops->dot(psi,NuI);
                         ++nrun;
                         if(ax>xmax)
                         {
@@ -244,6 +243,7 @@ namespace yack
             {
                 return successfulUpdate(C0,cycle); // fastest !
             }
+
 
 
         CYCLE:
@@ -366,23 +366,86 @@ namespace yack
                     for(const enode *scan=singles.head();scan;scan=scan->next)
                     {
                         const size_t ej = ****scan;
-                        Omi[ej] = - addops->dot(Nu[ej],psi);
+                        if(ej!=ei)
+                        {
+                            Omi[ej] = - addops->dot(Nu[ej],psi)/sigma[ei];
+                        }
                     }
                 }
 
             }
 
             singles(std::cerr << vpfx << "Omega=", Omega0, vpfx);
-            singles(std::cerr << vpfx << "Gamma=", Gamma, vpfx);
-            //singles(std::cerr << vpfx << "NuA=", NuA, vpfx);
+            singles(std::cerr << vpfx << "Xi   =", Xl, vpfx);
 
             iOmega.assign(Omega0);
             if(!LU->build(iOmega))
             {
-                YACK_CHEM_PRINTLN("  <singular composition>");
+                YACK_CHEM_PRINTLN("  <singular>");
                 return false;
             }
-            
+
+            iota::load(xi,Xl);
+            LU->solve(iOmega,xi);
+            singles(std::cerr << vpfx << "xi   =", xi, vpfx);
+
+
+            {
+                bool overshoot = false;
+                for(const enode *node=singles.head();node;node=node->next)
+                {
+                    const equilibrium &eq = ***node;
+                    const size_t       ei = *eq;
+                    const double       xx = xi[ei];
+
+                    //----------------------------------------------------------
+                    //
+                    // check extent for equilibrium
+                    //
+                    //----------------------------------------------------------
+                    if(verbose) singles.pad(std::cerr << "@{" << eq.name << "}",eq) << " : ";
+
+                    if(blocked[ei])
+                    {
+                        // won't move anyway
+                        if(verbose) std::cerr << "[blocked]";
+                    }
+                    else
+                    {
+                        const limits &lm = eq.primary_limits(Corg,lib.width);
+                        if( lm.should_reduce(xx) )
+                        {
+                            overshoot = true;
+                            YACK_CHEM_PRINT("[REJECT]");
+                            zapEquilibriumAt(ei);
+                            --nrun;
+                        }
+                        else
+                        {
+                            YACK_CHEM_PRINT("[accept]");
+                        }
+                        YACK_CHEM_PRINT( " " << std::setw(15) << xx << " | " << lm) ;
+                    }
+                    if(verbose) std::cerr << std::endl;
+                }
+
+                //--------------------------------------------------------------
+                //
+                // at least one overshoot!
+                //
+                //--------------------------------------------------------------
+                if(overshoot)
+                {
+                    return false;
+                }
+
+            }
+
+
+
+
+
+
             return true;
         }
     }
