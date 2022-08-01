@@ -1,4 +1,4 @@
-#include "yack/network.hpp"
+#include "yack/net/plexus.hpp"
 #include "yack/system/exception.hpp"
 
 #if defined(YACK_BSD)
@@ -52,6 +52,7 @@ extern "C"
 
 
 #include <cstring>
+#include "yack/ios/ascii/convert.hpp"
 
 namespace yack
 {
@@ -59,9 +60,9 @@ namespace yack
     namespace net
     {
 
-        socket_address network:: resolve(const string    &hostName,
-                                         const ip_version version,
-                                         const uint16_t   port) const
+        socket_address plexus:: resolve(const string    &hostName,
+                                        const ip_version version,
+                                        const uint16_t   port) const
         {
             YACK_LOCK(access);
             YACK_GIANT_LOCK();
@@ -99,31 +100,35 @@ namespace yack
             return ip;
         }
 
-        socket_address network:: resolve(const char       *hostName,
-                                         const  ip_version version,
-                                         const uint16_t   port) const
+        socket_address plexus:: resolve(const char       *hostName,
+                                        const  ip_version version,
+                                        const uint16_t    port) const
         {
             const string _(hostName);
             return resolve(_,version,port);
         }
 
 
-        socket_address network:: resolve(const string    &fullName,
-                                         const ip_version version) const
+        socket_address plexus:: resolve(const string    &fullName,
+                                        const ip_version version) const
         {
-            const char *ini = fullName();
-            const char *sep = strrchr(ini,':');
+            const char * const ini = fullName();
+            const char *       sep = strrchr(ini,':');
             if(!sep) throw yack::exception("missing port information");
 
-            string hostString(ini,sep-ini);
-            string portString(sep+1);
+            const string   hostString(ini,sep-ini);
+            const string   portString(++sep);
+            const uint16_t port = ios::ascii::convert::to<uint16_t>( portString(), "network::port" );
 
-            std::cerr << "hostString='" << hostString << "'" << std::endl;
-            std::cerr << "portString='" << portString << "'" << std::endl;
-
-            exit(1);
-            return socket_address(version);
+            return resolve(hostString,version,port);
         }
+
+        socket_address plexus:: resolve(const char *fullName, const ip_version version) const
+        {
+            const string _(fullName);
+            return resolve(_,version);
+        }
+
 
     }
 }

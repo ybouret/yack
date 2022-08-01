@@ -1,20 +1,20 @@
 
 
-#include "yack/network.hpp"
+#include "yack/net/plexus.hpp"
 #include "yack/utest/run.hpp"
 
 using namespace yack;
 
 YACK_UTEST(resolve)
 {
-    net::network::verbose = true;
-    net::network &nw = net::network::instance();
+    net::plexus::verbose = true;
+    net::plexus &network = net::plexus::instance();
 
     for(int i=1;i<argc;++i)
     {
         const string              hostName = argv[i];
         try {
-            const net::socket_address ipv4     = nw.resolve(hostName,net::v4,0);
+            const net::socket_address ipv4     = network.resolve(hostName,net::v4,0);
             std::cerr << ipv4 << std::endl;
         }
         catch(const exception &e)
@@ -27,7 +27,7 @@ YACK_UTEST(resolve)
         }
 
         try {
-            const net::socket_address ipv6     = nw.resolve(hostName,net::v6,0);
+            const net::socket_address ipv6     = network.resolve(hostName,net::v6,0);
             std::cerr << ipv6 << std::endl;
         }
         catch(const exception &e)

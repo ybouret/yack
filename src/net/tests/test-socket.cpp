@@ -1,6 +1,6 @@
 
 
-#include "yack/network.hpp"
+#include "yack/net/plexus.hpp"
 #include "yack/net/bsd.hpp"
 #include "yack/utest/run.hpp"
 
@@ -32,9 +32,9 @@ namespace
 
 YACK_UTEST(socket)
 {
-    net::network::verbose = true;
-    net::network &nw = net::network::instance();
-    std::cerr << "on " << nw.hostname << std::endl;
+    net::plexus::verbose = true;
+    net::plexus &network = net::plexus::instance();
+    std::cerr << "on " << network.hostname << std::endl;
 
     net::socket_type s4 = net::bsd::acquire(net::v4,net::tcp);
 

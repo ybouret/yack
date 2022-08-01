@@ -1,4 +1,4 @@
-#include "yack/network.hpp"
+#include "yack/net/plexus.hpp"
 
 #include <cstring>
 
@@ -9,9 +9,9 @@ namespace yack
 
     namespace net
     {
-        bool network::verbose = false;
+        bool plexus::verbose = false;
 
-        network:: ~network() throw()
+        plexus:: ~plexus() throw()
         {
             YACK_NET_PRINTLN( '[' << call_sign << ".cleanup " << hostname << ']');
         }
@@ -19,25 +19,25 @@ namespace yack
 
 
 
-        network:: network() : net::initializer(), singleton<network>(),
+        plexus:: plexus() :  initializer(), singleton<plexus>(),
         hostname( get_host_name() )
         {
             YACK_NET_PRINTLN( '[' << call_sign << ".startup " << hostname << ']');
         }
 
-        const char   network:: call_sign[] = "network";
+        const char   plexus:: call_sign[] = "plexus";
 
-        const uint16_t network:: reserved_port   = IPPORT_RESERVED;
+        const uint16_t plexus:: reserved_port   = IPPORT_RESERVED;
 #       if defined(YACK_WIN) || defined(__FreeBSD__)
-        const uint16_t network:: first_user_port = IPPORT_RESERVED;
+        const uint16_t plexus:: first_user_port = IPPORT_RESERVED;
 #        else
-        const uint16_t network:: first_user_port = IPPORT_USERRESERVED;
+        const uint16_t plexus:: first_user_port = IPPORT_USERRESERVED;
 #        endif
 
-        const uint16_t network:: user_port_width = (network::final_user_port-network::first_user_port)+1;
+        const uint16_t plexus:: user_port_width = (plexus::final_user_port-plexus::first_user_port)+1;
 
 
-        ip_version network:: ip_version_from(const char   *text) const
+        ip_version plexus:: ip_version_from(const char   *text) const
         {
             static const char fn[] = ".ip_version";
             if(!text) throw yack::exception("%s%s(NULL)",call_sign,fn);
@@ -46,12 +46,12 @@ namespace yack
             throw yack::exception("%s%s(invalid '%s')",call_sign,fn,text);
         }
 
-        net::ip_version network:: ip_version_from(const string &text) const
+        net::ip_version plexus:: ip_version_from(const string &text) const
         {
             return ip_version_from( text() );
         }
 
-        const char    * network:: ip_version_text(const  ip_version pf) const throw()
+        const char    * plexus:: ip_version_text(const  ip_version pf) const throw()
         {
             switch(pf)
             {
@@ -61,7 +61,7 @@ namespace yack
             return yack_unknown;
         }
 
-        const char * network:: ip_protocol_text(const net::ip_protocol proto) const throw()
+        const char * plexus:: ip_protocol_text(const net::ip_protocol proto) const throw()
         {
             switch(proto)
             {
