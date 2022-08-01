@@ -376,6 +376,8 @@ namespace yack
             }
 
             singles(std::cerr << vpfx << "Omega=", Omega0, vpfx);
+            singles(std::cerr << vpfx << "Psi  =", Psi, vpfx);
+            singles(std::cerr << vpfx << "Nu   =", Nu,  vpfx);
             singles(std::cerr << vpfx << "Xi   =", Xl, vpfx);
 
             iOmega.assign(Omega0);
