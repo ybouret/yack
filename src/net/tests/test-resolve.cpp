@@ -14,7 +14,7 @@ YACK_UTEST(resolve)
     {
         const string              hostName = argv[i];
         try {
-            const net::socket_address ipv4     = network.resolve(hostName,net::v4,0);
+            const net::socket_address ipv4     = network.resolve(hostName,0,net::v4);
             std::cerr << ipv4 << std::endl;
         }
         catch(const exception &e)
@@ -27,7 +27,7 @@ YACK_UTEST(resolve)
         }
 
         try {
-            const net::socket_address ipv6     = network.resolve(hostName,net::v6,0);
+            const net::socket_address ipv6     = network.resolve(hostName,0,net::v6);
             std::cerr << ipv6 << std::endl;
         }
         catch(const exception &e)

@@ -10,15 +10,29 @@ namespace yack
         socket_type plexus:: open(const net::ip_version level, const net::ip_protocol proto) const
         {
             YACK_LOCK(access);
-            YACK_NET_PRINTLN(call_sign << ".open<" << ip_version(level) << "," << ip_protocol(proto) << ">");
+            YACK_NET_PRINTLN('[' << call_sign << ".open<" << ip_protocol_text(proto) << "," << ip_version_text(level)  << ">" << ']');
             typedef net::bsd hub;
             return hub::reusable( hub::acquire(level,proto) );
         }
 
-        socket_type plexus:: tcp_client_socket(const socket_address &ip) const
+        socket_type plexus:: open_tcp(const ip_version level) const
         {
-            YACK_LOCK(access);
-            return net::bsd::tcp_client(open(ip.version(),net::tcp),ip->addr,ip->size);
+            return open(level,tcp);
         }
+
+        void plexus:: tcp_client(socket_type sock,const socket_address &self) const
+        {
+            YACK_NET_PRINTLN('[' << call_sign << ".connect<" << self << ">" << ']');
+            bsd::tcp_client(sock,self->addr, self->size);
+        }
+
+
+        socket_type  plexus:: open_udp(const ip_version level) const
+        {
+            return open(level,udp);
+        }
+
+
+        
     }
 }

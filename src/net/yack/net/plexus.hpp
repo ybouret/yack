@@ -13,7 +13,8 @@ namespace yack
 
     namespace net
     {
-        class tcp_client;
+        class tcp_socket;
+        class tcp_client_;
 
         //______________________________________________________________________
         //
@@ -58,13 +59,13 @@ namespace yack
 
             //! name resolution
             socket_address resolve(const string    &hostName,
-                                   const ip_version version,
-                                   const uint16_t   port) const;
+                                   const uint16_t   hostPort,
+                                   const ip_version version) const;
 
             //! name resolution
             socket_address resolve(const char      *hostName,
-                                   const ip_version version,
-                                   const uint16_t   port) const;
+                                   const uint16_t   hostPort,
+                                   const ip_version version) const;
 
             //! 'name:port'
             socket_address resolve(const string &fullName, const ip_version version) const;
@@ -89,35 +90,23 @@ namespace yack
         private:
             YACK_DISABLE_COPY_AND_ASSIGN(plexus);
             friend class singleton<plexus>;
-            friend class tcp_client;
-
+            friend class tcp_socket;
+            friend class tcp_client_;
+            
             virtual ~plexus() throw();
             explicit plexus();
 
             //! low-level open a reusable socket
-            socket_type   open(const net::ip_version, const net::ip_protocol) const;
+            socket_type   open(const  ip_version, const  ip_protocol) const;
 
-            //! create a tcp client socket
-            socket_type    tcp_client_socket(const socket_address &ip) const;
+            //! low-level open tcp
+            socket_type   open_tcp(const ip_version) const;
 
-            //! create a tcp client socket
-            template <typename HOSTNAME> inline
-            socket_type    tcp_client_socket(const HOSTNAME  &hostName,
-                                             const ip_version version,
-                                             const uint16_t   port) const
-            {
-                const socket_address ip = resolve(hostName,version,port);
-                return tcp_client_socket(ip);
-            }
+            //! low-level open udp
+            socket_type   open_udp(const ip_version) const;
 
-            //! create a tcp client socket
-            template <typename FULLNAME> inline
-            socket_type    tcp_client_socket(const FULLNAME  &fullName,
-                                             const ip_version version) const
-            {
-                const socket_address ip = resolve(fullName,version);
-                return tcp_client_socket(ip);
-            }
+            //! wrapper to bsd::tcp_client
+            void tcp_client(socket_type,const socket_address &) const;
 
 
         };

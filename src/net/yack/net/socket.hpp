@@ -34,11 +34,11 @@ namespace yack
             // members
             //__________________________________________________________________
             const socket_type    sock; //!< descriptor
+            const socket_address self; //!< socket address
 
 
         private:
             YACK_DISABLE_COPY_AND_ASSIGN(socket);
-            const socket_address self;
             virtual const_type  &bulk() const throw();
         };
     }

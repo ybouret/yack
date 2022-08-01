@@ -61,8 +61,8 @@ namespace yack
     {
 
         socket_address plexus:: resolve(const string    &hostName,
-                                        const ip_version version,
-                                        const uint16_t   port) const
+                                        const uint16_t   hostPort,
+                                        const ip_version version) const
         {
             YACK_LOCK(access);
             YACK_GIANT_LOCK();
@@ -93,7 +93,7 @@ namespace yack
             assert( ai0->ai_addrlen == ip->size );
 
             memcpy( &(ip->addr), ai0->ai_addr, ip->size );
-            ip->port = YACK_NBO(port);
+            ip->port = YACK_NBO(hostPort);
 
             ::freeaddrinfo(ai0);
 
@@ -101,11 +101,11 @@ namespace yack
         }
 
         socket_address plexus:: resolve(const char       *hostName,
-                                        const  ip_version version,
-                                        const uint16_t    port) const
+                                        const uint16_t    hostPort,
+                                        const  ip_version version) const
         {
             const string _(hostName);
-            return resolve(_,version,port);
+            return resolve(_,hostPort,version);
         }
 
 
@@ -116,11 +116,11 @@ namespace yack
             const char *       sep = strrchr(ini,':');
             if(!sep) throw yack::exception("missing port information");
 
-            const string   hostString(ini,sep-ini);
-            const string   portString(++sep);
-            const uint16_t port = ios::ascii::convert::to<uint16_t>( portString(), "network::port" );
+            const string   hostName(ini,sep-ini);
+            const string   portName(++sep);
+            const uint16_t hostPort = ios::ascii::convert::to<uint16_t>( portName(), "network::port" );
 
-            return resolve(hostString,version,port);
+            return resolve(hostName,hostPort,version);
         }
 
         socket_address plexus:: resolve(const char *fullName, const ip_version version) const

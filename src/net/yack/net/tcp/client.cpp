@@ -2,6 +2,20 @@
 
 namespace yack
 {
+    namespace net
+    {
+        tcp_client_:: ~tcp_client_() throw()
+        {
+        }
+
+        tcp_client_:: tcp_client_(const plexus &network, const socket_address client_addr) :
+        tcp_socket(network,client_addr)
+        {
+            network.tcp_client(sock,self);
+        }
+
+
+    }
 
     namespace net
     {
@@ -10,9 +24,8 @@ namespace yack
         }
 
         tcp_client:: tcp_client(const plexus &network, const socket_address client_addr) :
-        tcp_socket(network.tcp_client_socket(client_addr),client_addr)
+        tcp_client_(network,client_addr)
         {
-
         }
         
 

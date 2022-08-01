@@ -85,7 +85,7 @@ namespace yack
             
             //__________________________________________________________________
             //
-            //! connect from a tcp socket and an address
+            //! connect a tcp socket to an address
             //__________________________________________________________________
             static socket_type tcp_client(socket_type, sockaddr &sa, const sa_length_t sz);
             

@@ -11,9 +11,10 @@ namespace yack
         {
         }
 
-        tcp_socket:: tcp_socket(const socket_type s, const socket_address &a) throw() :
-        socket(s,a)
+        tcp_socket:: tcp_socket(const plexus &network, const socket_address &user_addr) throw() :
+        socket( network.open_tcp(user_addr.version()), user_addr)
         {
+            
         }
         
 
