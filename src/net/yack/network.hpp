@@ -50,7 +50,7 @@ namespace yack
         //! name resolution
         net::socket_address resolve(const string         &hostName,
                                     const net::ip_version version,
-                                    const uint16_t        port = 0) const;
+                                    const uint16_t        port) const;
 
 
         //! low-level open a reusable socket
