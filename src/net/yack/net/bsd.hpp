@@ -79,6 +79,12 @@ namespace yack
 
             //__________________________________________________________________
             //
+            //! set reusable, close on error (helper to init)
+            //__________________________________________________________________
+            static socket_type reusable(socket_type);
+
+            //__________________________________________________________________
+            //
             //! set blocking state
             //__________________________________________________________________
             static void set_blocking(socket_type &, const bool);

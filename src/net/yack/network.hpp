@@ -52,7 +52,9 @@ namespace yack
                                     const net::ip_version version,
                                     const uint16_t        port = 0) const;
 
-        
+
+        //! low-level open a reusable socket
+        net::socket_type   open(const net::ip_version, const net::ip_protocol) const;
 
         //______________________________________________________________________
         //

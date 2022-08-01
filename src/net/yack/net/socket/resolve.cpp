@@ -59,6 +59,8 @@ namespace yack
                                           const net::ip_version version,
                                           const uint16_t        port) const
     {
+        YACK_LOCK(access);
+        YACK_GIANT_LOCK();
         YACK_NET_PRINTLN(call_sign << ".resolve<" << hostName << ">");
 
         net::socket_address ip(version);

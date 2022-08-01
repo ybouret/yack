@@ -178,5 +178,13 @@ namespace yack
         }
 
 
+        socket_type bsd:: reusable(socket_type s)
+        {
+            assert(invalid_socket!=s);
+            try        { const int reUse = 1; setopt(s,SOL_SOCKET,SO_REUSEADDR,reUse); }
+            catch(...) { release(s); throw; }
+            return s;
+        }
+
     }
 }
