@@ -11,8 +11,12 @@
 namespace yack
 {
 
-    
+    //__________________________________________________________________________
+    //
+    //
     //! network
+    //
+    //__________________________________________________________________________
     class network : private net::initializer, public singleton<network>
     {
     public:
@@ -47,7 +51,9 @@ namespace yack
         net::socket_address resolve(const string         &hostName,
                                     const net::ip_version version,
                                     const uint16_t        port = 0) const;
+
         
+
         //______________________________________________________________________
         //
         // members
