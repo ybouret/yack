@@ -12,6 +12,8 @@ namespace yack
     namespace net
     {
 
+        class network;
+
         class tcp_client
         {
         public:

@@ -50,57 +50,80 @@ extern "C"
 
 #endif // YACK_WIN
 
+
+#include <cstring>
+
 namespace yack
 {
 
-
-
-    net::socket_address network:: resolve(const string         &hostName,
-                                          const net::ip_version version,
-                                          const uint16_t        port) const
+    namespace net
     {
-        YACK_LOCK(access);
-        YACK_GIANT_LOCK();
-        YACK_NET_PRINTLN(call_sign << ".resolve<" << hostName << ">");
 
-        net::socket_address ip(version);
-
-        addrinfo fmt;
-        memset( &fmt, 0, sizeof(fmt) );
-        fmt.ai_family = ip->family();
-
-        addrinfo *ai0 = NULL;
-        int       err = ::getaddrinfo( hostName(), NULL, &fmt, &ai0);
-        if( err )
+        socket_address network:: resolve(const string    &hostName,
+                                         const ip_version version,
+                                         const uint16_t   port) const
         {
+            YACK_LOCK(access);
+            YACK_GIANT_LOCK();
+            YACK_NET_PRINTLN(call_sign << ".resolve<" << hostName << ">");
+
+            net::socket_address ip(version);
+
+            addrinfo fmt;
+            memset( &fmt, 0, sizeof(fmt) );
+            fmt.ai_family = ip->family();
+
+            addrinfo *ai0 = NULL;
+            int       err = ::getaddrinfo( hostName(), NULL, &fmt, &ai0);
+            if( err )
+            {
 #           if defined(YACK_WIN)
-            throw win32::exception( err, "::getaddrinfo(%s,%s)" , hostName(), ip->className() );
+                throw win32::exception( err, "::getaddrinfo(%s,%s)" , hostName(), ip->className() );
 #           endif
 
 #           if defined(YACK_BSD)
-            throw imported::exception( gai_strerror(err), "::getaddrinfo(%s,%s)" , hostName(), ip->className() );
+                throw imported::exception( gai_strerror(err), "::getaddrinfo(%s,%s)" , hostName(), ip->className() );
 #           endif
+            }
+
+            // TODO: sanity ?
+            assert( ai0             != NULL   );
+            assert( ai0->ai_addr    != NULL   );
+            assert( ai0->ai_addrlen == ip->size );
+
+            memcpy( &(ip->addr), ai0->ai_addr, ip->size );
+            ip->port = YACK_NBO(port);
+
+            ::freeaddrinfo(ai0);
+
+            return ip;
         }
 
-        // TODO: sanity ?
-        assert( ai0             != NULL   );
-        assert( ai0->ai_addr    != NULL   );
-        assert( ai0->ai_addrlen == ip->size );
+        socket_address network:: resolve(const char       *hostName,
+                                         const  ip_version version,
+                                         const uint16_t   port) const
+        {
+            const string _(hostName);
+            return resolve(_,version,port);
+        }
 
-        memcpy( &(ip->addr), ai0->ai_addr, ip->size );
-        ip->port = YACK_NBO(port);
 
-        ::freeaddrinfo(ai0);
+        socket_address network:: resolve(const string    &fullName,
+                                         const ip_version version) const
+        {
+            const char *ini = fullName();
+            const char *sep = strrchr(ini,':');
+            if(!sep) throw yack::exception("missing port information");
 
-        return ip;
+            string hostString(ini,sep-ini);
+            string portString(sep+1);
+
+            std::cerr << "hostString='" << hostString << "'" << std::endl;
+            std::cerr << "portString='" << portString << "'" << std::endl;
+
+            exit(1);
+            return socket_address(version);
+        }
+
     }
-
-    net::socket_address network:: resolve(const char           *hostName,
-                                          const net::ip_version version,
-                                          const uint16_t        port) const
-    {
-        const string _(hostName);
-        return resolve(_,version,port);
-    }
-
 }

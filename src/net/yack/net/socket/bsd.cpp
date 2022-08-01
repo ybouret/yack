@@ -4,18 +4,21 @@
 
 namespace yack
 {
-
-    net::socket_type network:: open(const net::ip_version level, const net::ip_protocol proto) const
+    namespace net
     {
-        YACK_LOCK(access);
-        YACK_NET_PRINTLN(call_sign << ".open<" << ip_version(level) << "," << ip_protocol(proto) << ">");
-        typedef net::bsd hub;
-        return hub::reusable( hub::acquire(level,proto) );
-    }
 
-    net::socket_type network:: tcp_client_socket(const net::socket_address &ip) const
-    {
-        YACK_LOCK(access);
-        return net::bsd::tcp_client(open(ip.version(),net::tcp),ip->addr,ip->size);
+        socket_type network:: open(const net::ip_version level, const net::ip_protocol proto) const
+        {
+            YACK_LOCK(access);
+            YACK_NET_PRINTLN(call_sign << ".open<" << ip_version(level) << "," << ip_protocol(proto) << ">");
+            typedef net::bsd hub;
+            return hub::reusable( hub::acquire(level,proto) );
+        }
+
+        socket_type network:: tcp_client_socket(const  socket_address &ip) const
+        {
+            YACK_LOCK(access);
+            return net::bsd::tcp_client(open(ip.version(),net::tcp),ip->addr,ip->size);
+        }
     }
 }

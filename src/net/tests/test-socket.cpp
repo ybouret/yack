@@ -32,8 +32,8 @@ namespace
 
 YACK_UTEST(socket)
 {
-    network::verbose = true;
-    network &nw = network::instance();
+    net::network::verbose = true;
+    net::network &nw = net::network::instance();
     std::cerr << "on " << nw.hostname << std::endl;
 
     net::socket_type s4 = net::bsd::acquire(net::v4,net::tcp);

@@ -19,9 +19,10 @@ yack_testing(net)
 
 enable_testing()
 
-add_test(types   test-net types)
-add_test(init    test-net init)
-add_test(socket  test-net socket)
-add_test(addr    test-net addr)
-add_test(resolve test-net resolve localhost)
+add_test(types      test-net types)
+add_test(init       test-net init)
+add_test(socket     test-net socket)
+add_test(addr       test-net addr)
+add_test(resolve    test-net resolve localhost)
+add_test(tcp_client test-net tcp_client)
 

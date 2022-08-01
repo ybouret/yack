@@ -7,8 +7,8 @@ using namespace yack;
 
 YACK_UTEST(resolve)
 {
-    network::verbose = true;
-    network &nw = network::instance();
+    net::network::verbose = true;
+    net::network &nw = net::network::instance();
 
     for(int i=1;i<argc;++i)
     {

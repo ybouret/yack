@@ -8,5 +8,8 @@ YACK_UTEST_DECL(16)
     YACK_UTEST(socket);
     YACK_UTEST(addr);
     YACK_UTEST(resolve);
+
+    YACK_UTEST(tcp_client);
+    
 }
 YACK_UTEST_EXEC()

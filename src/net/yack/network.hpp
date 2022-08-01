@@ -11,99 +11,104 @@
 namespace yack
 {
 
-    //__________________________________________________________________________
-    //
-    //
-    //! network
-    //
-    //__________________________________________________________________________
-    class network : private net::initializer, public singleton<network>
+    namespace net
     {
-    public:
         //______________________________________________________________________
         //
-        // types and definition
-        //______________________________________________________________________
-        static bool           verbose;                 //!< mostly to debug
-        static const uint16_t reserved_port;           //!< port < reserved_port: for system
-        static const uint16_t first_user_port;         //!< port >= first_user_port: for user
-        static const uint16_t final_user_port = 65535; //!< for information
-        static const uint16_t user_port_width;         //!< final_user_port-first_user_port+1;
-
-        //______________________________________________________________________
         //
-        // singleton
-        //______________________________________________________________________
-        static const at_exit::longevity life_time = 3000; //!< for singleton
-        static const char               call_sign[];      //!< for singleton
-
-        //______________________________________________________________________
+        //! network
         //
-        // methods
         //______________________________________________________________________
-        net::ip_version ip_version(const char   *text) const; //!< [v4|v6]
-        net::ip_version ip_version(const string &text) const; //!< [v4|v6]
+        class network : private net::initializer, public singleton<network>
+        {
+        public:
+            //__________________________________________________________________
+            //
+            // types and definition
+            //__________________________________________________________________
+            static bool           verbose;                 //!< mostly to debug
+            static const uint16_t reserved_port;           //!< port < reserved_port: for system
+            static const uint16_t first_user_port;         //!< port >= first_user_port: for user
+            static const uint16_t final_user_port = 65535; //!< for information
+            static const uint16_t user_port_width;         //!< final_user_port-first_user_port+1;
 
-        const char    * ip_version(const net::ip_version) const throw();    //!< v4|v6
-        const char    * ip_protocol(const net::ip_protocol) const throw();  //!< tcp|udp
+            //__________________________________________________________________
+            //
+            // singleton
+            //__________________________________________________________________
+            static const at_exit::longevity life_time = 3000; //!< for singleton
+            static const char               call_sign[];      //!< for singleton
 
-        //______________________________________________________________________
-        //
-        // name resolution
-        //______________________________________________________________________
+            //__________________________________________________________________
+            //
+            // methods
+            //__________________________________________________________________
+            ip_version ip_version_from(const char   *text) const; //!< [v4|v6]
+            ip_version ip_version_from(const string &text) const; //!< [v4|v6]
 
-        //! name resolution
-        net::socket_address resolve(const string         &hostName,
-                                    const net::ip_version version,
-                                    const uint16_t        port) const;
+            const char    * ip_version_text(const ip_version) const throw();    //!< v4|v6
+            const char    * ip_protocol_text(const ip_protocol) const throw();  //!< tcp|udp
 
-        //! name resolution
-        net::socket_address resolve(const char           *hostName,
-                                    const net::ip_version version,
-                                    const uint16_t        port) const;
+            //__________________________________________________________________
+            //
+            // name resolution
+            //__________________________________________________________________
 
+            //! name resolution
+            socket_address resolve(const string    &hostName,
+                                   const ip_version version,
+                                   const uint16_t   port) const;
 
-        //______________________________________________________________________
-        //
-        // creating sockets
-        //______________________________________________________________________
+            //! name resolution
+            socket_address resolve(const char      *hostName,
+                                   const ip_version version,
+                                   const uint16_t   port) const;
 
-        //! create a tcp client socket
-        net::socket_type    tcp_client_socket(const net::socket_address &ip) const;
-        
-        //______________________________________________________________________
-        //
-        // members
-        //______________________________________________________________________
-        const string hostname; //!< hostname
+            //! 'name:port'
+            socket_address resolve(const string &fullName, const ip_version version) const;
 
-    private:
-        YACK_DISABLE_COPY_AND_ASSIGN(network);
-        friend class singleton<network>;
+            //__________________________________________________________________
+            //
+            // creating sockets
+            //__________________________________________________________________
 
-        virtual ~network() throw();
-        explicit network();
-        
-        //! low-level open a reusable socket
-        net::socket_type   open(const net::ip_version, const net::ip_protocol) const;
+            //! create a tcp client socket
+            net::socket_type    tcp_client_socket(const net::socket_address &ip) const;
 
-    };
+            //______________________________________________________________________
+            //
+            // members
+            //______________________________________________________________________
+            const string hostname; //!< hostname
+
+        private:
+            YACK_DISABLE_COPY_AND_ASSIGN(network);
+            friend class singleton<network>;
+
+            virtual ~network() throw();
+            explicit network();
+
+            //! low-level open a reusable socket
+            net::socket_type   open(const net::ip_version, const net::ip_protocol) const;
+
+        };
+    }
 
 }
 
 
 //! macro to be used with network verbosity
-#define YACK_NET_PRINTLN(MSG) do {  \
-if(yack::network::verbose) {        \
-YACK_LOCK(yack::network::access);   \
-std::cerr << MSG << std::endl;      \
+#define YACK_NET_PRINTLN(MSG) do {       \
+if(yack::net::network::verbose) {        \
+YACK_LOCK(yack::net::network::access);   \
+std::cerr << MSG << std::endl;           \
 } } while(false);
 
 //! macro to be used with network verbosity
-#define YACK_NET_PRINT(MSG) do {    \
-if(yack::network::verbose) {        \
-YACK_LOCK(yack::network::access);   \
-std::cerr << MSG;                   \
+#define YACK_NET_PRINT(MSG) do {         \
+if(yack::net::network::verbose) {        \
+YACK_LOCK(yack::net::network::access);   \
+std::cerr << MSG;                        \
 } } while(false);
 
 
