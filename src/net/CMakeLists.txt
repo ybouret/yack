@@ -26,11 +26,19 @@ set(net_socket ${net_socket_decl} ${net_socket_srcs})
 SOURCE_GROUP(net/socket FILES ${net_socket})
 install( FILES ${net_socket_decl} DESTINATION include/yack/net/socket )
 
+#tcp
+file(GLOB net_tcp_decl yack/net/tcp/*.hpp)
+file(GLOB net_tcp_srcs yack/net/tcp/*.cpp)
+set(net_tcp ${net_tcp_decl} ${net_tcp_srcs})
+SOURCE_GROUP(net/tcp FILES ${net_tcp})
+install( FILES ${net_tcp_decl} DESTINATION include/yack/net/tcp )
+
 add_library(yack-net STATIC
 ${nw_decl} ${nw_srcs}
 ${net_main}
 ${net_bsd}
 ${net_socket}
+${net_tcp}
 )
 
 install( TARGETS yack-net ARCHIVE DESTINATION lib )
