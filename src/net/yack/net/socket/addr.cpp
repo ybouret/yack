@@ -10,7 +10,7 @@ namespace yack
         {
         }
 
-        socket_addr:: socket_addr(sockaddr &ar, const size_t sz, net16_t &pr) throw() :
+        socket_addr:: socket_addr(sockaddr &ar, const sa_length_t sz, net16_t &pr) throw() :
         addr(ar),
         size(sz),
         port(pr)

@@ -47,14 +47,23 @@ namespace yack
         const char    * ip_version(const net::ip_version) const throw();    //!< v4|v6
         const char    * ip_protocol(const net::ip_protocol) const throw();  //!< tcp|udp
 
+        //______________________________________________________________________
+        //
+        // name resolution
+        //______________________________________________________________________
+
         //! name resolution
         net::socket_address resolve(const string         &hostName,
                                     const net::ip_version version,
                                     const uint16_t        port) const;
 
+        //! name resolution
+        net::socket_address resolve(const char           *hostName,
+                                    const net::ip_version version,
+                                    const uint16_t        port) const;
 
-        //! low-level open a reusable socket
-        net::socket_type   open(const net::ip_version, const net::ip_protocol) const;
+
+
 
         //______________________________________________________________________
         //
@@ -68,6 +77,9 @@ namespace yack
 
         virtual ~network() throw();
         explicit network();
+        
+        //! low-level open a reusable socket
+        net::socket_type   open(const net::ip_version, const net::ip_protocol) const;
     };
 
 }

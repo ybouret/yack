@@ -95,4 +95,12 @@ namespace yack
         return ip;
     }
 
+    net::socket_address network:: resolve(const char           *hostName,
+                                          const net::ip_version version,
+                                          const uint16_t        port) const
+    {
+        const string _(hostName);
+        return resolve(_,version,port);
+    }
+
 }

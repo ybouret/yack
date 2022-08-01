@@ -19,13 +19,13 @@ namespace yack
         template <>
         struct socket_address_metrics<v6>
         {
-            typedef sockaddr_in6     sock_addr_type;                                      //!< alias
-            typedef net128_t         inet_addr_type;                                      //!< alias
-            static  const size_t     sock_addr_size = sizeof(sock_addr_type);             //!< alias
-            static  const size_t     inet_addr_size = sizeof(inet_addr_type);             //!< alias
-            static  const ptrdiff_t  addr_offset    = offsetof(sockaddr_in6,sin6_addr);   //!< offset of address
-            static  const ptrdiff_t  port_offset    = offsetof(sockaddr_in6,sin6_port);   //!< offset of port
-            static  const ptrdiff_t  fmly_offset    = offsetof(sockaddr_in6,sin6_family); //!< offset of family
+            typedef sockaddr_in6      sock_addr_type;                                      //!< alias
+            typedef net128_t          inet_addr_type;                                      //!< alias
+            static  const sa_length_t sock_addr_size = sizeof(sock_addr_type);             //!< alias
+            static  const size_t      inet_addr_size = sizeof(inet_addr_type);             //!< alias
+            static  const ptrdiff_t   addr_offset    = offsetof(sockaddr_in6,sin6_addr);   //!< offset of address
+            static  const ptrdiff_t   port_offset    = offsetof(sockaddr_in6,sin6_port);   //!< offset of port
+            static  const ptrdiff_t   fmly_offset    = offsetof(sockaddr_in6,sin6_family); //!< offset of family
 
             static const uint16_t       family   = AF_INET6; //!< alias
             static const inet_addr_type any;                 //!< alias
