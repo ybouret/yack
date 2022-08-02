@@ -62,7 +62,7 @@ namespace yack
         //
         // C++
         //______________________________________________________________________
-        inline virtual ~be_key_() throw() { clear(wksp,length); }                        //!< cleanup
+        inline virtual ~be_key()                throw() { clear(wksp,length); }          //!< cleanup
         inline explicit be_key(param_type args) throw() : be_key_(wksp,&args,length) { } //!< setup
 
         //______________________________________________________________________
