@@ -12,7 +12,7 @@ namespace yack
         }
 
         tcp_socket:: tcp_socket(const plexus &network, const socket_address &user_addr) throw() :
-        socket( network.open_tcp(user_addr.version()), user_addr)
+        socket( user_addr, network.open_tcp(user_addr.version()) )
         {
             
         }

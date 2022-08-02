@@ -30,14 +30,14 @@ namespace yack
             virtual ~socket() throw();            //!< close socket
 
         protected:
-            explicit socket(socket_type, const socket_address &) throw(); //!< setup from user's sock
+            explicit socket(const socket_address &, socket_type) throw(); //!< setup from user's sock
 
             //__________________________________________________________________
             //
             // members
             //__________________________________________________________________
-            const socket_type     sock; //!< descriptor
             const socket_address  self; //!< socket address
+            const socket_type     sock; //!< descriptor
             const socket_key      skey; //!< uuid for sock
 
         private:
