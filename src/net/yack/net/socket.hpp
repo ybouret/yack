@@ -49,7 +49,14 @@ namespace yack
             virtual const_type  &bulk() const throw();
 
         public:
-            const socket_key    &key() const throw(); //!< get UUID
+            //__________________________________________________________________
+            //
+            // methods
+            //__________________________________________________________________
+            const socket_key    &key()     const throw(); //!< get UUID
+            void                 shutdown_recv() throw();
+            void                 shutdown_send() throw();
+            void                 shutdown_both() throw();
         };
     }
 }

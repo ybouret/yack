@@ -22,7 +22,7 @@ namespace yack
         public:
             //! cleanup
             virtual ~tcp_socket() throw();
-
+            
         protected:
             //! setup internal socket from plexus and address
             explicit tcp_socket(const plexus &, const socket_address &);

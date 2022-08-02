@@ -28,11 +28,20 @@ set(net_tcp ${net_tcp_decl} ${net_tcp_srcs})
 SOURCE_GROUP(net/tcp FILES ${net_tcp})
 install( FILES ${net_tcp_decl} DESTINATION include/yack/net/tcp )
 
+#udp
+file(GLOB net_udp_decl yack/net/udp/*.hpp)
+file(GLOB net_udp_srcs yack/net/udp/*.cpp)
+set(net_udp ${net_udp_decl} ${net_udp_srcs})
+SOURCE_GROUP(net/udp FILES ${net_udp})
+install( FILES ${net_udp_decl} DESTINATION include/yack/net/udp )
+
+
 add_library(yack-net STATIC
 ${net_main}
 ${net_bsd}
 ${net_socket}
 ${net_tcp}
+${net_udp}
 )
 
 install( TARGETS yack-net ARCHIVE DESTINATION lib )

@@ -31,7 +31,7 @@ namespace yack
 
             static socket_type acquire(const ip_version, const ip_protocol);  //!< open socket
             static void        release(socket_type &)                throw(); //!< close socket
-            static void        closure(socket_type &, const sd_how)  throw(); //!< perform shutdown
+            static void        closure(socket_type  , const sd_how)  throw(); //!< perform shutdown
 
             //__________________________________________________________________
             //

@@ -29,7 +29,21 @@ namespace yack
             return skey;
         }
 
-        
+        void socket::shutdown_recv() throw()
+        {
+            bsd::closure(sock,sd_recv);
+        }
+
+        void socket::shutdown_send() throw()
+        {
+            bsd::closure(sock,sd_send);
+        }
+
+        void socket::shutdown_both() throw()
+        {
+            bsd::closure(sock,sd_both);
+        }
+
 
     }
 
