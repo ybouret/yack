@@ -30,7 +30,7 @@ namespace yack
 #endif
 
 #if defined(YACK_WIN)
-            const int ret = sendto(sock,msg,len,flags, &(dest->addr), dest->size);
+            const int ret = sendto(sock,(const char *)msg,len,flags, &(dest->addr), dest->size);
             if(SOCKET_ERROR==ret) throw exception( WSAGetLastError(),"sendto");
             if( static_cast<size_t>(ret) != len ) throw yack::exception("truncated sendto");
 #endif
