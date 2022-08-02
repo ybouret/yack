@@ -43,7 +43,15 @@ namespace yack
         class udp_socket : public udp_socket_
         {
         public:
+            //__________________________________________________________________
+            //
+            // C++
+            //__________________________________________________________________
+
+            //! cleanup
             virtual ~udp_socket() throw();
+
+            //! setup from plexus+address
             explicit udp_socket(const plexus &, const socket_address);
 
             //! setup from plexus+hostName+port+version

@@ -54,9 +54,12 @@ namespace yack
             // methods
             //__________________________________________________________________
             const socket_key    &key()     const throw(); //!< get UUID
-            void                 shutdown_recv() throw();
-            void                 shutdown_send() throw();
-            void                 shutdown_both() throw();
+
+            void                 shutdown_recv() throw(); //!< shutdown receiving abilities
+            void                 shutdown_send() throw(); //!< shutdown sending abitilites
+            void                 shutdown_both() throw(); //!< shutdown all I/O abilities
+            void                 blocking(bool);          //!< set blocking state
+
         };
     }
 }

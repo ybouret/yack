@@ -44,7 +44,10 @@ namespace yack
             bsd::closure(sock,sd_both);
         }
 
-
+        void socket:: blocking(bool flag)
+        {
+            bsd::set_blocking(sock,flag);
+        }
     }
 
 }

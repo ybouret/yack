@@ -72,7 +72,7 @@ namespace yack
 
         }
 
-        void bsd:: set_blocking(socket_type &s, const bool flag)
+        void bsd:: set_blocking(const socket_type &s, const bool flag)
         {
             YACK_GIANT_LOCK();
             assert(invalid_socket != s);

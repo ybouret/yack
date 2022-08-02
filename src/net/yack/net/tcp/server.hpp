@@ -35,11 +35,24 @@ namespace yack
             YACK_DISABLE_COPY_AND_ASSIGN(tcp_server_);
         };
 
+        //______________________________________________________________________
+        //
+        //
+        //! build tcp server
+        //
+        //______________________________________________________________________
         class tcp_server : public tcp_server_
         {
         public:
+            //__________________________________________________________________
+            //
+            // C++
+            //__________________________________________________________________
+
+            //! cleanup
             virtual ~tcp_server() throw();
 
+            //! setup
             explicit tcp_server(const plexus    &network,
                                 const ip_version iplevel,
                                 const uint16_t   srvport,
