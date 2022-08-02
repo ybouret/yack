@@ -90,11 +90,18 @@ namespace yack
                         throw exception(err,"::accept");
                 }
             }
+#endif
+
+#if defined(YACK_WIN)
+            socket_type sock = accept(src,&sa,&sz);
+            if(invalid_socket==sock)
+            {
+                throw exception(WSAGetLastError(),"::accept");
+            }
+#endif
             cln = retrieve(sa,sz);
             YACK_NET_PRINTLN( '[' << call_sign << ".accept <" << cln << ">" << ']');
             return sock;
-#endif
-            
         }
 
 
