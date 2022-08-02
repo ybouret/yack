@@ -26,4 +26,6 @@ add_test(addr       test-net addr)
 add_test(resolve    test-net resolve localhost)
 add_test(tcp_client test-net tcp_client)
 add_test(tcp_server test-net tcp_server)
+add_test(udp_client test-net udp_client)
+add_test(udp_server test-net udp_server)
 

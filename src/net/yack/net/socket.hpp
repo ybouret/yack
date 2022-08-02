@@ -60,6 +60,8 @@ namespace yack
             void                 shutdown_both() throw(); //!< shutdown all I/O abilities
             void                 blocking(bool);          //!< set blocking state
 
+            size_t               recv_buffer() const;
+            size_t               send_buffer() const;
         };
     }
 }

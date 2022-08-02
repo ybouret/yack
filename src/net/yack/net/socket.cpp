@@ -48,6 +48,23 @@ namespace yack
         {
             bsd::set_blocking(sock,flag);
         }
+
+
+        size_t socket:: recv_buffer() const
+        {
+            const int res = net::bsd::getopt<int>(sock,SOL_SOCKET,SO_RCVBUF);
+            if(res<0) throw yack::exception("recv_buffer<0");
+            return res;
+        }
+
+        size_t socket:: send_buffer() const
+        {
+            const int res = net::bsd::getopt<int>(sock,SOL_SOCKET,SO_SNDBUF);
+            if(res<0) throw yack::exception("send_buffer<0");
+            return res;
+        }
+
+
     }
 
 }

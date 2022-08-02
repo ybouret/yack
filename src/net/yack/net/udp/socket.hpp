@@ -21,9 +21,17 @@ namespace yack
         class udp_socket_ : public socket
         {
         public:
+
             //! cleanup
             virtual ~udp_socket_() throw();
 
+
+
+            void sendTo(const socket_address &dst,
+                        const void           *msg,
+                        const size_t          len,
+                        const int             flags=0);
+            
         protected:
             //! setup internal socket from plexus and address
             explicit udp_socket_(const plexus &, const socket_address );
@@ -54,6 +62,9 @@ namespace yack
             //! setup from plexus+address
             explicit udp_socket(const plexus &, const socket_address);
 
+            //! setup default server
+            explicit udp_socket(const plexus &, const uint16_t port, const ip_version version);
+
             //! setup from plexus+hostName+port+version
             template <typename HOSTNAME> inline
             explicit udp_socket(const plexus    &network,
@@ -72,6 +83,7 @@ namespace yack
             udp_socket_(network, network.resolve(fullName,version) )
             {
             }
+
 
 
         private:
