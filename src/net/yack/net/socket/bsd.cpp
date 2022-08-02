@@ -93,7 +93,7 @@ namespace yack
 #endif
 
 #if defined(YACK_WIN)
-            socket_type sock = accept(src,&sa,&sz);
+            socket_type sock = accept(srv,&sa,&sz);
             if(invalid_socket==sock)
             {
                 throw exception(WSAGetLastError(),"::accept");
