@@ -7,7 +7,7 @@ namespace yack
 {
     namespace net
     {
-        socket_type bsd:: tcp_client(socket_type s, sockaddr &sa, const sa_length_t sz)
+        socket_type bsd:: tcp_connect(socket_type s, sockaddr &sa, const sa_length_t sz)
         {
             YACK_GIANT_LOCK();
             assert(invalid_socket!=s);
@@ -23,7 +23,6 @@ namespace yack
                         goto TRY_CONNECT;
 
                     default:
-                        release(s);
                         throw exception(err,"::connect");
                 }
             }
@@ -32,7 +31,6 @@ namespace yack
 #if defined(YACK_WIN)
             if(  SOCKET_ERROR == connect(s,&sa,sz) )
             {
-                release(s);
                 throw exception( WSAGetLastError(), "::connect");
             }
 #endif

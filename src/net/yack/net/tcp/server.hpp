@@ -26,10 +26,27 @@ namespace yack
 
         protected:
             //! build tcp_socket and connect to address
-            explicit tcp_server_(const plexus &, const socket_address);
+            explicit tcp_server_(const plexus        &network,
+                                 const socket_address srvaddr,
+                                 const unsigned       pending);
 
         private:
             YACK_DISABLE_COPY_AND_ASSIGN(tcp_server_);
+        };
+
+        class tcp_server : public tcp_server_
+        {
+        public:
+            virtual ~tcp_server() throw();
+
+            explicit tcp_server(const plexus    &network,
+                                const ip_version iplevel,
+                                const uint16_t   srvport,
+                                const unsigned   pending=1);
+
+
+        private:
+            YACK_DISABLE_COPY_AND_ASSIGN(tcp_server);
         };
 
     }

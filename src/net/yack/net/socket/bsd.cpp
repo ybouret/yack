@@ -20,10 +20,23 @@ namespace yack
             return open(level,tcp);
         }
 
-        void plexus:: tcp_client(socket_type sock,const socket_address &self) const
+        void plexus:: tcp_connect(socket_type sock,const socket_address &self) const
         {
             YACK_NET_PRINTLN('[' << call_sign << ".connect<" << self << ">" << ']');
-            bsd::tcp_client(sock,self->addr, self->size);
+            bsd::tcp_connect(sock,self->addr, self->size);
+        }
+
+
+        void plexus:: tcp_bind(socket_type sock,const socket_address &self) const
+        {
+            YACK_NET_PRINTLN('[' << call_sign << ".bind<" << self << ">" << ']');
+            bsd::tcp_bind(sock,self->addr, self->size);
+        }
+
+        void plexus:: tcp_listen(socket_type sock, const socket_address &self, const unsigned pending) const
+        {
+            YACK_NET_PRINTLN('[' << call_sign << ".listen<" << self << "," << pending << ">" << ']');
+            bsd::tcp_listen(sock,pending);
         }
 
 
@@ -33,6 +46,5 @@ namespace yack
         }
 
 
-        
     }
 }

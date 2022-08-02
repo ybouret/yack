@@ -15,6 +15,7 @@ namespace yack
     {
         class tcp_socket;
         class tcp_client_;
+        class tcp_server_;
 
         //______________________________________________________________________
         //
@@ -92,7 +93,8 @@ namespace yack
             friend class singleton<plexus>;
             friend class tcp_socket;
             friend class tcp_client_;
-            
+            friend class tcp_server_;
+
             virtual ~plexus() throw();
             explicit plexus();
 
@@ -105,10 +107,14 @@ namespace yack
             //! low-level open udp
             socket_type   open_udp(const ip_version) const;
 
-            //! wrapper to bsd::tcp_client
-            void tcp_client(socket_type,const socket_address &) const;
+            //! wrapper to bsd::tcp_connect
+            void tcp_connect(socket_type,const socket_address &) const;
 
+            //! wrapper to bsd::tcp_bind
+            void tcp_bind(socket_type, const socket_address &) const;
 
+            //! wrapper to bsd::tcp_listen
+            void tcp_listen(socket_type, const socket_address &, const unsigned pending) const;
         };
 
 
