@@ -40,6 +40,64 @@ namespace yack
         }
 
 
+        socket_address plexus:: retrieve(const sockaddr &sa, const sa_length_t sz) const
+        {
+
+            switch(sz)
+            {
+                case sizeof(sockaddr_in): {
+                    socket_address res(v4);
+                    memcpy( &(res->addr), &sa, sizeof(sockaddr_in));
+                    return res;
+                } break;
+
+                case sizeof(sockaddr_in6): {
+                    socket_address res(v6);
+                    memcpy( &(res->addr), &sa, sizeof(sockaddr_in6));
+                    return res;
+                } break;
+
+                default:
+                    break;
+            }
+
+            throw yack::exception("invalid sizeof(sockaddr)=%u", unsigned(sz) );
+
+
+        }
+
+        socket_type plexus:: tcp_accept(socket_type srv, socket_address &cln) const
+        {
+            YACK_GIANT_LOCK();
+            //YACK_NET_PRINTLN('[' << call_sign << ".accept" << ']');
+            assert(invalid_socket!=srv);
+            sockaddr_in6 sa6;
+            sockaddr    &sa = coerce_to<sockaddr>(sa6);
+            sa_length_t  sz = sizeof(sa);
+
+#if defined(YACK_BSD)
+        TRY_CONNECT:
+            socket_type sock = accept(srv,&sa,&sz);
+            if(sock<0)
+            {
+                const int err = errno;
+                switch(err)
+                {
+                    case EINPROGRESS:
+                        goto TRY_CONNECT;
+
+                    default:
+                        throw exception(err,"::accept");
+                }
+            }
+            cln = retrieve(sa,sz);
+            YACK_NET_PRINTLN( '[' << call_sign << ".accept <" << cln << ">" << ']');
+            return sock;
+#endif
+            
+        }
+
+
         socket_type  plexus:: open_udp(const ip_version level) const
         {
             return open(level,udp);

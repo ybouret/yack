@@ -14,6 +14,8 @@ namespace yack
         //! UUID for socket
         typedef be_key<const socket_type> socket_key;
 
+        class plexus;
+        
         //______________________________________________________________________
         //
         //
@@ -31,6 +33,7 @@ namespace yack
 
         protected:
             explicit socket(const socket_address &, socket_type) throw(); //!< setup from user's sock
+            explicit socket(const plexus &, const socket_type);           //!< setup from tcp server
 
             //__________________________________________________________________
             //
@@ -39,6 +42,7 @@ namespace yack
             const socket_address  self; //!< socket address
             const socket_type     sock; //!< descriptor
             const socket_key      skey; //!< uuid for sock
+
 
         private:
             YACK_DISABLE_COPY_AND_ASSIGN(socket);

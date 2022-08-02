@@ -16,6 +16,7 @@ namespace yack
         class tcp_socket;
         class tcp_client_;
         class tcp_server_;
+        class socket;
 
         //______________________________________________________________________
         //
@@ -94,6 +95,8 @@ namespace yack
             friend class tcp_socket;
             friend class tcp_client_;
             friend class tcp_server_;
+            friend class socket;
+            
 
             virtual ~plexus() throw();
             explicit plexus();
@@ -112,6 +115,13 @@ namespace yack
 
             //! wrapper to bsd::tcp_bind
             void tcp_bind(socket_type, const socket_address &) const;
+
+            //! wrapper to accept
+            socket_type tcp_accept(socket_type s, socket_address &cln) const;
+
+            //! build socket address from raw data
+            socket_address retrieve(const sockaddr &sa, const sa_length_t sz) const;
+
 
             //! wrapper to bsd::tcp_listen
             void tcp_listen(socket_type, const socket_address &, const unsigned pending) const;

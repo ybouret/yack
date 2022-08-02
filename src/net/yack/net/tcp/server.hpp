@@ -1,8 +1,8 @@
 
 //! \file
 
-#ifndef YACK_NET_TCP_CLIENT_INCLUDED
-#define YACK_NET_TCP_CLIENT_INCLUDED 1
+#ifndef YACK_NET_TCP_SERVER_INCLUDED
+#define YACK_NET_TCP_SERVER_INCLUDED 1
 
 #include "yack/net/tcp/socket.hpp"
 
@@ -11,6 +11,7 @@ namespace yack
 
     namespace net
     {
+        class tcp_client_;
 
         //______________________________________________________________________
         //
@@ -47,6 +48,7 @@ namespace yack
 
         private:
             YACK_DISABLE_COPY_AND_ASSIGN(tcp_server);
+            friend class tcp_client_;
         };
 
     }

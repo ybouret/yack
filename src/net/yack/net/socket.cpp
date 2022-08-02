@@ -29,8 +29,26 @@ namespace yack
             return skey;
         }
 
+        
+
     }
 
 }
 
+
+#include "yack/net/plexus.hpp"
+
+namespace yack
+{
+    namespace net
+    {
+        socket:: socket(const plexus &network, const socket_type server_sock) :
+        self(v4),
+        sock( network.tcp_accept(server_sock,coerce(self) ) ),
+        skey(sock)
+        {
+            
+        }
+    }
+}
 

@@ -25,7 +25,11 @@ namespace yack
 
         protected:
             //! setup internal socket from plexus and address
-            explicit tcp_socket(const plexus &, const socket_address &) throw();
+            explicit tcp_socket(const plexus &, const socket_address &);
+
+            //! setup internal socket from plexus and server socket
+            explicit tcp_socket(const plexus &, const socket_type server_sock);
+
 
         private:
             YACK_DISABLE_COPY_AND_ASSIGN(tcp_socket);

@@ -10,6 +10,7 @@ namespace yack
 
     namespace net
     {
+        class tcp_server;
 
         //______________________________________________________________________
         //
@@ -26,6 +27,9 @@ namespace yack
         protected:
             //! build tcp_socket and connect to address
             explicit tcp_client_(const plexus &, const socket_address);
+
+            //! accept from tcp server
+            explicit tcp_client_(const plexus &, const tcp_server &);
 
         private:
             YACK_DISABLE_COPY_AND_ASSIGN(tcp_client_);
@@ -69,7 +73,11 @@ namespace yack
             tcp_client_(network, network.resolve(fullName,version) )
             {
             }
-            
+
+
+            //! setup from tcp_server
+            explicit tcp_client(const plexus &, const tcp_server &);
+
 
 
         private:
