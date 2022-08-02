@@ -90,8 +90,7 @@ namespace yack
             static socket_type tcp_connect(socket_type, sockaddr &sa, const sa_length_t sz);
             static void        tcp_bind(socket_type,  sockaddr &sa, const sa_length_t sz);
             static void        tcp_listen(socket_type, const unsigned pending);
-            static socket_type tcp_accept(socket_type,  sockaddr &sa, const sa_length_t sz);
-
+            
             //__________________________________________________________________
             //
             //! set blocking state
