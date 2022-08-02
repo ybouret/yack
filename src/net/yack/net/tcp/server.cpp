@@ -14,8 +14,8 @@ namespace yack
                                   const unsigned       pending) :
         tcp_socket(network,srvaddr)
         {
-            network.tcp_bind(sock,self);
-            network.tcp_listen(sock,self,pending);
+            network.bind(sock,self);
+            network.listen(sock,self,pending);
         }
 
     }

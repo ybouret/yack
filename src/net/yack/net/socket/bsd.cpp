@@ -20,20 +20,20 @@ namespace yack
             return open(level,tcp);
         }
 
-        void plexus:: tcp_connect(socket_type sock,const socket_address &self) const
+        void plexus:: connect(socket_type sock,const socket_address &self) const
         {
             YACK_NET_PRINTLN('[' << call_sign << ".connect<" << self << ">" << ']');
             bsd::tcp_connect(sock,self->addr, self->size);
         }
 
 
-        void plexus:: tcp_bind(socket_type sock,const socket_address &self) const
+        void plexus:: bind(socket_type sock,const socket_address &self) const
         {
             YACK_NET_PRINTLN('[' << call_sign << ".bind<" << self << ">" << ']');
             bsd::tcp_bind(sock,self->addr, self->size);
         }
 
-        void plexus:: tcp_listen(socket_type sock, const socket_address &self, const unsigned pending) const
+        void plexus:: listen(socket_type sock, const socket_address &self, const unsigned pending) const
         {
             YACK_NET_PRINTLN('[' << call_sign << ".listen<" << self << "," << pending << ">" << ']');
             bsd::tcp_listen(sock,pending);
@@ -69,7 +69,6 @@ namespace yack
         socket_type plexus:: tcp_accept(socket_type srv, socket_address &cln) const
         {
             YACK_GIANT_LOCK();
-            //YACK_NET_PRINTLN('[' << call_sign << ".accept" << ']');
             assert(invalid_socket!=srv);
             sockaddr_in6 sa6;
             sockaddr    &sa = coerce_to<sockaddr>(sa6);

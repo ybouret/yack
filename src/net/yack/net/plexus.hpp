@@ -13,10 +13,7 @@ namespace yack
 
     namespace net
     {
-        class tcp_socket;
-        class tcp_client_;
-        class tcp_server_;
-        class socket;
+
 
         //______________________________________________________________________
         //
@@ -80,6 +77,17 @@ namespace yack
             //
             // creating sockets
             //__________________________________________________________________
+            socket_type    open(const ip_version, const ip_protocol) const;                    //!< low-level open a reusable socke
+            socket_type    open_tcp(const ip_version) const;                                   //!< low-level open tcp
+            socket_type    open_udp(const ip_version) const;                                   //!< low-level open udp
+            void           connect(socket_type,const socket_address &) const;                  //!< wrapper to bsd::tcp_connect
+            void           bind(socket_type, const socket_address &)   const;                  //!< wrapper to bsd::tcp_bind
+            void           listen(socket_type, const socket_address &, const unsigned) const;  //!< wrapper to bsd::tcp_listen
+            socket_type    tcp_accept(socket_type s, socket_address &) const;                  //!< wrapper to accept
+            socket_address retrieve(const sockaddr &, const sa_length_t) const;                //!< build socket address from raw data
+
+
+
 
 
 
@@ -101,30 +109,7 @@ namespace yack
             virtual ~plexus() throw();
             explicit plexus();
 
-            //! low-level open a reusable socket
-            socket_type   open(const  ip_version, const  ip_protocol) const;
 
-            //! low-level open tcp
-            socket_type   open_tcp(const ip_version) const;
-
-            //! low-level open udp
-            socket_type   open_udp(const ip_version) const;
-
-            //! wrapper to bsd::tcp_connect
-            void tcp_connect(socket_type,const socket_address &) const;
-
-            //! wrapper to bsd::tcp_bind
-            void tcp_bind(socket_type, const socket_address &) const;
-
-            //! wrapper to accept
-            socket_type tcp_accept(socket_type s, socket_address &cln) const;
-
-            //! build socket address from raw data
-            socket_address retrieve(const sockaddr &sa, const sa_length_t sz) const;
-
-
-            //! wrapper to bsd::tcp_listen
-            void tcp_listen(socket_type, const socket_address &, const unsigned pending) const;
         };
 
 

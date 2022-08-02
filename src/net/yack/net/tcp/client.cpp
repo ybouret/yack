@@ -11,7 +11,7 @@ namespace yack
         tcp_client_:: tcp_client_(const plexus &network, const socket_address client_addr) :
         tcp_socket(network,client_addr)
         {
-            network.tcp_connect(sock,self);
+            network.connect(sock,self);
         }
 
 
