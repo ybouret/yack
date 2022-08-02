@@ -183,6 +183,7 @@ add_test(data:meta         test-core data_meta)
 add_test(data:doubly       test-core data_doubly)
 add_test(data:groove       test-core data_groove)
 add_test(data:ordered_list test-core data_ordered_list)
+add_test(data:data_be_key  test-core data_be_key)
 
 
 add_test(sync:lockable  test-core sync_lockable)
