@@ -21,6 +21,14 @@ set(net_socket ${net_socket_decl} ${net_socket_srcs})
 SOURCE_GROUP(net/socket FILES ${net_socket})
 install( FILES ${net_socket_decl} DESTINATION include/yack/net/socket )
 
+#com
+file(GLOB net_com_decl yack/net/com/*.hpp)
+file(GLOB net_com_srcs yack/net/com/*.cpp)
+set(net_com ${net_com_decl} ${net_com_srcs})
+SOURCE_GROUP(net/com FILES ${net_com})
+install( FILES ${net_com_decl} DESTINATION include/yack/net/com )
+
+
 #tcp
 file(GLOB net_tcp_decl yack/net/tcp/*.hpp)
 file(GLOB net_tcp_srcs yack/net/tcp/*.cpp)
@@ -40,6 +48,7 @@ add_library(yack-net STATIC
 ${net_main}
 ${net_bsd}
 ${net_socket}
+${net_com}
 ${net_tcp}
 ${net_udp}
 )
