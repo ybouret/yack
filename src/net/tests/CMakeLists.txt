@@ -25,4 +25,5 @@ add_test(socket     test-net socket)
 add_test(addr       test-net addr)
 add_test(resolve    test-net resolve localhost)
 add_test(tcp_client test-net tcp_client)
+add_test(tcp_server test-net tcp_server)
 

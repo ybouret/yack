@@ -16,13 +16,18 @@ namespace yack
         socket:: socket(socket_type user_sock,
                         const socket_address &user_addr) throw() :
         sock(user_sock),
-        self(user_addr)
+        self(user_addr),
+        skey(sock)
         {
             assert(invalid_socket!=user_sock);
         }
 
         socket::const_type &socket:: bulk() const throw() { return self; }
 
+        const socket_key &socket::key() const throw()
+        {
+            return skey;
+        }
 
     }
 

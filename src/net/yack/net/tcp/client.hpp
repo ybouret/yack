@@ -1,4 +1,3 @@
-
 //! \file
 
 #ifndef YACK_NET_TCP_CLIENT_INCLUDED

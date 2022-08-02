@@ -16,6 +16,7 @@ YACK_UTEST(tcp_client)
         net::ip_version version  = net::v4;
         if(argc>2)      version = network.ip_version_from(argv[2]);
         net::tcp_client client(network,fullName,version);
+        std::cerr << "tcp_client " << *client << ",key=" << client.key() << std::endl;
     }
 }
 YACK_UDONE()

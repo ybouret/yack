@@ -37,6 +37,9 @@ namespace yack
         //! out of reach memset
         static void clear(void *target, const size_t length) throw();
 
+        //! out of reach display
+        static void show(std::ostream &, const uint8_t *source, const size_t length) throw();
+
     private:
         YACK_DISABLE_COPY_AND_ASSIGN(be_key_);
     };
@@ -71,6 +74,18 @@ namespace yack
         //______________________________________________________________________
         inline virtual const void * ro_addr() const throw() { return wksp;   }
         inline virtual size_t       measure() const throw() { return length; }
+
+        //______________________________________________________________________
+        //
+        // methods
+        //______________________________________________________________________
+        
+        //! display
+        inline friend std::ostream & operator<<(std::ostream &os, const be_key &k)
+        {
+            be_key_::show(os,k.wksp,k.length);
+            return os;
+        }
 
     private:
         YACK_DISABLE_COPY_AND_ASSIGN(be_key);

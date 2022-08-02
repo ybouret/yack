@@ -4,11 +4,15 @@
 #define YACK_NET_SOCKET_INCLUDED 1
 
 #include "yack/net/socket/address.hpp"
+#include "yack/associative/be-key.hpp"
 
 namespace yack
 {
     namespace net
     {
+
+        //! UUID for socket
+        typedef be_key<const socket_type> socket_key;
 
         //______________________________________________________________________
         //
@@ -28,18 +32,20 @@ namespace yack
         protected:
             explicit socket(socket_type, const socket_address &) throw(); //!< setup from user's sock
 
-        protected:
             //__________________________________________________________________
             //
             // members
             //__________________________________________________________________
-            const socket_type    sock; //!< descriptor
-            const socket_address self; //!< socket address
-            
+            const socket_type     sock; //!< descriptor
+            const socket_address  self; //!< socket address
+            const socket_key      skey; //!< uuid for sock
 
         private:
             YACK_DISABLE_COPY_AND_ASSIGN(socket);
             virtual const_type  &bulk() const throw();
+
+        public:
+            const socket_key & key() const throw(); //!< get UUID
         };
     }
 }
