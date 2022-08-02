@@ -31,7 +31,12 @@ namespace yack
                         const void           *msg,
                         const size_t          len,
                         const int             flags=0);
-            
+
+            size_t recvFrom(socket_address &src,
+                            void           *msg,
+                            const size_t    len,
+                            const int       flags=0);
+
         protected:
             //! setup internal socket from plexus and address
             explicit udp_socket_(const plexus &, const socket_address );

@@ -35,8 +35,30 @@ namespace yack
             if( static_cast<size_t>(ret) != len ) throw yack::exception("truncated sendto");
 #endif
 
+        }
 
+        size_t udp_socket_:: recvFrom(socket_address &src,
+                                      void           *msg,
+                                      const size_t    len,
+                                      const int       flags)
+        {
+            assert(yack_good(msg,len));
+            YACK_GIANT_LOCK();
+            sockaddr_in6 sa6;
+            sockaddr    &sa = coerce_to<sockaddr>(sa6);
+            sa_length_t  sz = sizeof(sockaddr_in6);
 
+#if defined(YACK_BSD)
+            const ssize_t res = recvfrom(sock,msg,len,flags, &sa, &sz);
+            if(res<0) throw exception(errno,"recvfrom");
+#endif
+
+#if defined(YACK_WIN)
+            const int    res = recfrom(sock,msg,len,flags,&sa,&sz);
+            if(SOCKET_ERROR==res) throw exception( WSAGetLastError(),"recvfrom");
+#endif
+
+            return static_cast<size_t>(res);
         }
 
 
