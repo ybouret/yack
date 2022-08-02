@@ -40,7 +40,7 @@ namespace yack
         }
 
 
-        socket_address plexus:: retrieve(const sockaddr &sa, const sa_length_t sz) const
+        socket_address plexus:: retrieve(const sockaddr &sa, const sa_length_t sz)
         {
 
             switch(sz)

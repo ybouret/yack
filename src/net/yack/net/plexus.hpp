@@ -84,7 +84,9 @@ namespace yack
             void           bind(socket_type, const socket_address &)   const;                  //!< wrapper to bsd::tcp_bind
             void           listen(socket_type, const socket_address &, const unsigned) const;  //!< wrapper to bsd::tcp_listen
             socket_type    tcp_accept(socket_type s, socket_address &) const;                  //!< wrapper to accept
-            socket_address retrieve(const sockaddr &, const sa_length_t) const;                //!< build socket address from raw data
+
+
+            static socket_address retrieve(const sockaddr &, const sa_length_t);                //!< build socket address from raw data
 
 
 

@@ -54,10 +54,11 @@ namespace yack
 #endif
 
 #if defined(YACK_WIN)
-            const int    res = recvfrom(sock,msg,len,flags,&sa,&sz);
+            const int    res = recvfrom(sock,(char*)msg,len,flags,&sa,&sz);
             if(SOCKET_ERROR==res) throw exception( WSAGetLastError(),"recvfrom");
 #endif
 
+            src = plexus::retrieve(sa,sz);
             return static_cast<size_t>(res);
         }
 
@@ -65,6 +66,7 @@ namespace yack
     }
 
 }
+
 namespace yack
 {
 
