@@ -163,58 +163,79 @@ Let
 
 \section{ND-Solution} 	
 
-From $\vec{C}$, we have $\vec{\Xi}$ such that:
+
 \begin{equation}
-	\Gamma_i\left(\vec{C} + \Xi_i \vec{\nu}_i\right) = 0
-\end{equation}
-so that
-\begin{equation}
-	\Gamma_i\left(\vec{C}+\delta\vec{C} + \Xi_i \vec{\nu}_i + \delta\Xi_i \vec{\nu}_i\right) = 0 \Rightarrow
-	\langle \vec{\psi}_i' \vert \delta\vec{C} \rangle + \delta\Xi_i \langle \vec{\psi}_i' \vert \nu{i} \rangle = 0
+	\Gamma_i\left(\vec{C} + \xi_i \vec{\nu}_i + \sum_{j\not=i} \xi_j \vec{\nu}_j \right) 
+	\simeq 
+	\Gamma_i(\vec{C} + \xi_i \vec{\nu}_i) + \sum_{j\not=i} \xi_j \langle \vec{\nu}_j \vert \vec{\psi_i} \rangle
 \end{equation}
 
+\begin{equation}
+	\Gamma_i(\ldots) \simeq \underbrace{\langle \vec{\nu}_i \vert \vec{\Psi'}_i\rangle}_{\sigma_i<0} \left(\xi_i - \Xi_i\right)\left[ 1 + A_i \left(\xi_i - \Xi_i\right)\right] + \sum_{j\not=i} \xi_j \langle \vec{\nu}_j \vert \vec{\psi_i} \rangle
+\end{equation}
+
+\begin{equation}
+	\dfrac{\Gamma_i(\ldots)}{\sigma_i} \simeq (\xi_i - \Xi_i) + A_i (\xi_i - \Xi_i)^2 + \sum_{j\not=i} \xi_j \dfrac{\langle \vec{\nu}_j \vert \vec{\psi_i} \rangle}{\sigma_i}
+\end{equation}
+
+\begin{equation}
+	\dfrac{\Gamma_i}{\sigma_i} = -\Xi_i \left[ 1 - A_i \Xi_i \right] = A_i\Xi_i^2 - \Xi_i
+\end{equation}
+
+$-\sigma_i>0$, $\Gamma_i$ and $\Xi_i$ have the same sign, so
+\begin{equation}
+	1-A_i\Xi_i \geq 0
+\end{equation}
+
+\begin{equation}
+\dfrac{\Gamma_i(\ldots)}{\sigma_i}   \simeq  \xi_i (1-2A_i\Xi_i) - \Xi_i + A_i (\xi_i^2 + \Xi_i^2) + \sum_{j\not=i} \xi_j \dfrac{\langle \vec{\nu}_j \vert \vec{\psi_i} \rangle}{\sigma_i}
+\end{equation}
+
+We want:
+\begin{equation}
+\begin{array}{rcl}
+	(1-\alpha_i) \dfrac{\Gamma_i}{\sigma_i} & = & (1-\alpha_i) \left( A_i\Xi_i^2 - \Xi_i\right) \\
+	& = & \displaystyle \xi_i (1-2A_i\Xi_i) - \Xi_i + A_i (\xi_i^2 + \Xi_i^2) + \sum_{j\not=i} \xi_j \dfrac{\langle \vec{\nu}_j \vert \vec{\psi_i} \rangle}{\sigma_i}\\
+\end{array}
+\end{equation}
+
+So: 
+\begin{equation}
+	\alpha_i\left( \Xi_i - A_i \Xi_i^2 \right) = \xi_i (1-2A_i\Xi_i) + A_i \xi_i^2 + \sum_{j\not=i} \xi_j \dfrac{\langle \vec{\nu}_j \vert \vec{\psi_i} \rangle}{\sigma_i}
+\end{equation}
+
+\begin{itemize}
+\item If $\forall i, \alpha_i=0$, we get $\forall i, \xi_i=0$
+\item If $\alpha_i=1$ and $\xi_{j\not=i}=0$, $\xi_i=\Xi_i$
+\end{itemize}
 
 \end{document}
 
-\begin{equation}
-	\Gamma_i\left(\vec{C} + x_i \vec{\nu}_i + \sum_{j\not=i} x_j \vec{\nu}_j \right) 
-	\simeq 
-	\Gamma_i(\vec{C} + x_i \vec{\nu}_i) + \sum_{j\not=i} x_j \langle \vec{\nu}_j \vert \vec{\psi}_i'' \rangle
-\end{equation}
 
 
 \begin{equation}
-	\Gamma_i(\vec{C} + \xi_i \vec{\nu}_i) \simeq  \langle \vec{\nu}_i \vert \vec{\psi}_i' \rangle \left( \xi_i - \Xi_i \right) + A_i \left(\xi_i -\Xi_i \right)^2
+\Gamma_i(\ldots) \simeq A_i\left(\xi_i-\Xi_i\right)^2 + 
+\underbrace{\langle \vec{\nu}_i\vert \vec{\psi}_i\rangle}_{\sigma_i<0} (\xi_i-\Xi_i) +
+ \sum_{j\not=i} \xi_j \langle \vec{\nu}_j \vert \vec{\psi}_i  \rangle
 \end{equation}
+
+\begin{equation}
+\begin{array}{rcl}
+(1-\alpha_i) \Gamma_i & =  & A_i\left(\xi_i-\Xi_i\right)^2 + 
+\sigma_i (\xi_i-\Xi_i) +
+ \sum_{j\not=i} \xi_j \langle \vec{\nu}_j \vert \vec{\psi}_i  \rangle\\
+  & = & A_i \left(\xi_i^2 - 2 \xi_i \Xi_i + \Xi_i^2 \right) + \sigma_i \xi_i - \sigma_i \Xi_i + \sum_{j\not=i} \xi_j \langle \vec{\nu}_j \vert \vec{\psi}_i  \rangle\\
+   & = & A_i \xi_i^2 + A_i \Xi_i ^2 - \sigma_i \Xi_i + \left(\sigma_i - 2A_i\Xi_i\right) \xi_i +  \sum_{j\not=i} \xi_j \langle \vec{\nu}_j \vert \vec{\psi}_i  \rangle  \\
+\end{array}
+\end{equation}
+
 
 %\begin{equation}
-%	\Gamma_i = A_i \Xi_i^2 - \langle \vec{\nu}_i \vert \vec{\psi}_i' \rangle \Xi_i
+%\dfrac{\Gamma_i(\ldots)}{\sigma_i}
+%\simeq
+%\dfrac{A_i}{\sigma_i}\left(\xi_i-\Xi_i\right)^2 - \Xi_i + \langle\vec{\Omega}_i \vert \vec{\xi}\rangle
 %\end{equation}
-%
-
-\begin{equation}
-	\vec{\psi}_i'' \simeq \dfrac{1}{\Xi_i} \left\lbrack (\Xi_i-\xi_i) \vec{\psi}_i + \xi_i \vec{\psi}_i'\right\rbrack
-	= \vec{\psi}_i + \dfrac{\xi_i}{\Xi_i} \Delta\vec{\psi}_i
-\end{equation}
-
-\begin{equation}
-	0 \simeq A_i \left(\xi_i -\Xi_i \right)^2 + \langle \vec{\nu}_i \vert \vec{\psi}_i' \rangle \left( \xi_i - \Xi_i \right)  + \sum_{j\not=i} \xi_j \langle \vec{\nu}_j \vert \vec{\psi}_i'' \rangle 
-\end{equation}
-
-\begin{equation}
-	0 \simeq A_i \left(\xi_i -\Xi_i \right)^2 + \langle \vec{\nu}_i \vert \vec{\psi}_i' \rangle \left( \xi_i - \Xi_i \right) 
-	+ \sum_{j\not=i} \xi_j \langle \vec{\nu}_j \vert \vec{\psi}_i \rangle + \dfrac{\xi_i}{\Xi_i} \sum_{j\not=i} \xi_j \langle \vec{\nu}_j \vert \Delta\vec{\psi}_i \rangle
-\end{equation}
+%\end{document}
 
 
-\subsection{Newton's}
-We want to compute:
-\begin{equation}
-	\vec{\Gamma} (\vec{C}+\bm{\nu}^T \vec{\xi}) = \vec{0} \simeq \vec{\Gamma}(\vec{C}) + \bm{\Psi} \bm{\nu}^T \vec{\xi}
-\end{equation}
-
-
- 	
- 	 
- 
 \end{document}
