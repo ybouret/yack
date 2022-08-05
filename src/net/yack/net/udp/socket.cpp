@@ -8,8 +8,8 @@ namespace yack
 
         udp_socket:: ~udp_socket() throw() {}
 
-        udp_socket:: udp_socket(const plexus &network, const ip_version version) :
-        socket( socket_address(version), network.open_udp(version) )
+        udp_socket:: udp_socket(const plexus &network, const socket_address user_addr) :
+        socket(user_addr, network.open_udp(user_addr.version()) )
         {
         }
 

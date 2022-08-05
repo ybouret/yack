@@ -7,7 +7,7 @@ namespace yack
 {
     namespace net
     {
-        socket_type bsd:: tcp_connect(const socket_type &s, sockaddr &sa, const sa_length_t sz)
+        socket_type bsd:: _connect(const socket_type &s, sockaddr &sa, const sa_length_t sz)
         {
             YACK_GIANT_LOCK();
             assert(invalid_socket!=s);

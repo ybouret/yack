@@ -87,19 +87,19 @@ namespace yack
             //
             //! connect a tcp socket to an address
             //__________________________________________________________________
-            static socket_type tcp_connect(const socket_type &, sockaddr &sa, const sa_length_t sz);
+            static socket_type _connect(const socket_type &, sockaddr &sa, const sa_length_t sz);
 
             //__________________________________________________________________
             //
             //! bind a socket to an address
             //__________________________________________________________________
-            static void        tcp_bind(const socket_type &,  sockaddr &sa, const sa_length_t sz);
+            static void        _bind(const socket_type &,  sockaddr &sa, const sa_length_t sz);
 
             //__________________________________________________________________
             //
             //! listen on bound socket
             //__________________________________________________________________
-            static void        tcp_listen(const socket_type &, const unsigned pending);
+            static void        _listen(const socket_type &, const unsigned pending);
             
             //__________________________________________________________________
             //

@@ -8,8 +8,8 @@ namespace yack
     namespace net
     {
 
-        void bsd:: tcp_listen(const socket_type &s,
-                              const unsigned     pending)
+        void bsd:: _listen(const socket_type &s,
+                           const unsigned     pending)
         {
             YACK_GIANT_LOCK();
             assert(pending>0);

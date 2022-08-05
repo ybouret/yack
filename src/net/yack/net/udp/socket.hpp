@@ -1,4 +1,3 @@
-
 //! \file
 
 #ifndef YACK_NET_UDP_SOCKET_INCLUDED
@@ -36,7 +35,7 @@ namespace yack
                             const size_t    len,
                             const int       flags=0);
 
-            explicit udp_socket(const plexus &, const ip_version version);
+            explicit udp_socket(const plexus &, const socket_address);
 
 
         private:
