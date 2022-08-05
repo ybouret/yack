@@ -78,6 +78,12 @@ namespace yack
             //! setup from tcp_server
             explicit tcp_client(const plexus &, const tcp_server &);
 
+            //! send data
+            size_t send(const void  *buffer,
+                        const size_t buflen,
+                        const int    flags);
+
+
 
 
         private:

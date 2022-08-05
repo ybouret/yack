@@ -1,6 +1,6 @@
 
 
-#include "yack/net/udp/socket.hpp"
+#include "yack/net/udp/client.hpp"
 #include "yack/net/plexus.hpp"
 #include "yack/utest/run.hpp"
 
@@ -15,10 +15,11 @@ YACK_UTEST(udp_client)
     {
         const string          fullName = argv[1];
         const net::ip_version version  = (argc>2) ? network.ip_version_from(argv[2]) : net::v4;
-        //net::udp_client       client(network,version);
+        net::udp_client       client(network,fullName,version);
         
 
     }
 }
 YACK_UDONE()
 
+ 
