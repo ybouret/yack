@@ -81,9 +81,17 @@ namespace yack
             //! send data
             size_t send(const void  *buffer,
                         const size_t buflen,
-                        const int    flags);
+                        const int    flags) const;
 
+            //! send all data
+            void send_all(const void  *buffer,
+                          const size_t buflen,
+                          const int    flags);
 
+            //! receive data
+            size_t recv(void        *buffer,
+                        const size_t buflen,
+                        const int    flags) const;
 
 
         private:

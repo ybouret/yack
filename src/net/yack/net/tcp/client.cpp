@@ -56,13 +56,15 @@ namespace yack
 
         }
 
+        static const size_t MAXBUFLEN = integral_for<int>::maximum;
+
+
         size_t tcp_client:: send(const void  *buffer,
                                  const size_t buflen,
-                                 const int    flags)
+                                 const int    flags) const
         {
             YACK_GIANT_LOCK();
             assert(yack_good(buffer,buflen));
-            static const size_t MAXBUFLEN = integral_for<int>::maximum;
             const size_t        to_send   = min_of(MAXBUFLEN,buflen);
 #if defined(YACK_BSD)
         TRY_SEND:
@@ -94,6 +96,61 @@ namespace yack
             return static_cast<size_t>(sent);
 
         }
+
+
+        void tcp_client:: send_all(const void  *buffer,
+                                   const size_t buflen,
+                                   const int    flags)
+        {
+            assert(yack_good(buffer,buflen));
+            const uint8_t *p = static_cast<const uint8_t *>(buffer);
+            size_t         n = buflen;
+            while(n>0)
+            {
+                const size_t ns = send(p,n,flags);
+                assert(ns<=n);
+                p += ns;
+                n -= ns;
+            }
+        }
+
+
+        size_t tcp_client:: recv(void        *buffer,
+                                 const size_t buflen,
+                                 const int    flags) const
+        {
+            YACK_GIANT_LOCK();
+            assert(yack_good(buffer,buflen));
+            const size_t        to_recv = min_of(MAXBUFLEN,buflen);
+#if defined(YACK_BSD)
+        TRY_SEND:
+            const ssize_t nr = ::recv(sock,buffer,to_recv,flags);
+            if(nr<0)
+            {
+                const int err = errno;
+                switch(err)
+                {
+                    case EINTR:
+                        goto TRY_SEND;
+
+                    default:
+                        throw exception(err,"recv(%lu)", static_cast<unsigned long>(to_recv));
+                }
+            }
+#endif
+
+#if defined(YACK_WIN)
+            const int nr = ::recv(sock,static_cast<char*>(buffer),to_recv,flags);
+            if(SOCKET_ERROR == nr)
+            {
+                const int err = WSAGetLastError();
+                throw exception(err,"recv(%lu)", static_cast<unsigned long>(to_recv));
+            }
+#endif
+
+            return static_cast<size_t>(nr);
+        }
+
 
     }
 

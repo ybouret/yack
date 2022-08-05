@@ -80,10 +80,10 @@ namespace yack
             socket_type    open(const ip_version, const ip_protocol) const;                    //!< low-level open a reusable socke
             socket_type    open_tcp(const ip_version) const;                                   //!< low-level open tcp
             socket_type    open_udp(const ip_version) const;                                   //!< low-level open udp
-            void           connect(socket_type,const socket_address &) const;                  //!< wrapper to bsd::tcp_connect
-            void           bind(socket_type, const socket_address &)   const;                  //!< wrapper to bsd::tcp_bind
-            void           listen(socket_type, const socket_address &, const unsigned) const;  //!< wrapper to bsd::tcp_listen
-            socket_type    tcp_accept(socket_type s, socket_address &) const;                  //!< wrapper to accept
+            void           connect(socket_type,const socket_address &) const;                  //!< wrapper to bsd::_connect
+            void           bind(socket_type, const socket_address &)   const;                  //!< wrapper to bsd::_bind
+            void           listen(socket_type, const socket_address &, const unsigned) const;  //!< wrapper to bsd::_listen
+            socket_type    accept(socket_type s, socket_address &) const;                      //!< wrapper to accept
 
 
             static socket_address retrieve(const sockaddr &, const sa_length_t);                //!< build socket address from raw data

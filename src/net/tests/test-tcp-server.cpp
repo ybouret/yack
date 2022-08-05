@@ -19,7 +19,25 @@ YACK_UTEST(tcp_server)
         const uint16_t        srvport  = ios::ascii::convert::to<uint16_t>(argv[1],"port");
         const net::ip_version version  = (argc>2) ? network.ip_version_from(argv[2]) : net::v4;
         net::tcp_server srv(network,version,srvport,1);
-        net::tcp_client cln(network,srv);
+        char buffer[256];
+        while(true)
+        {
+            net::tcp_client cln(network,srv);
+            while(true)
+            {
+                memset(buffer,0,sizeof(buffer));
+                const size_t nr = cln.recv(buffer,sizeof(buffer),0);
+                if(nr<=0)
+                {
+                    break;
+                }
+                std::cerr.write(buffer,nr);
+                cln.send_all(buffer,nr,0);
+            }
+
+
+
+        }
 
     }
 

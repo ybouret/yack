@@ -9,6 +9,7 @@ namespace yack
         socket:: ~socket() throw()
         {
             assert(invalid_socket!=sock);
+            on_quit();
             bsd::release( coerce(sock) );
             assert(invalid_socket==sock);
         }
@@ -20,6 +21,7 @@ namespace yack
         skey(sock)
         {
             assert(invalid_socket!=user_sock);
+            on_init();
         }
 
         socket::const_type &socket:: bulk() const throw() { return self; }
@@ -78,10 +80,28 @@ namespace yack
     {
         socket:: socket(const plexus &network, const socket_type server_sock) :
         self(v4),
-        sock( network.tcp_accept(server_sock,coerce(self) ) ),
+        sock( network.accept(server_sock,coerce(self) ) ),
         skey(sock)
         {
-            
+            on_init();
+        }
+
+
+        void socket:: on_init() const throw()
+        {
+            if(plexus::verbose)
+            {
+                std::cerr << "[created socket <" << self << ">]" << std::endl;
+            }
+        }
+
+
+        void socket:: on_quit() const throw()
+        {
+            if(plexus::verbose)
+            {
+                std::cerr << "[deleted socket <" << self << ">]" << std::endl;
+            }
         }
     }
 }

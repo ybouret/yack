@@ -66,7 +66,7 @@ namespace yack
 
         }
 
-        socket_type plexus:: tcp_accept(socket_type srv, socket_address &cln) const
+        socket_type plexus::  accept(socket_type srv, socket_address &cln) const
         {
             YACK_GIANT_LOCK();
             assert(invalid_socket!=srv);
@@ -76,7 +76,7 @@ namespace yack
 
 #if defined(YACK_BSD)
         TRY_CONNECT:
-            socket_type sock = accept(srv,&sa,&sz);
+            socket_type sock = ::accept(srv,&sa,&sz);
             if(sock<0)
             {
                 const int err = errno;
@@ -92,14 +92,14 @@ namespace yack
 #endif
 
 #if defined(YACK_WIN)
-            socket_type sock = accept(srv,&sa,&sz);
+            socket_type sock = ::accept(srv,&sa,&sz);
             if(invalid_socket==sock)
             {
                 throw exception(WSAGetLastError(),"::accept");
             }
 #endif
             cln = retrieve(sa,sz);
-            YACK_NET_PRINTLN( '[' << call_sign << ".accept <" << cln << ">" << ']');
+            YACK_NET_PRINTLN( '[' << call_sign << ".accept<" << cln << ">" << ']');
             return sock;
         }
 
