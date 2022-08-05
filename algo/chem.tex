@@ -182,7 +182,7 @@ Let
 	\dfrac{\Gamma_i}{\sigma_i} = -\Xi_i \left[ 1 - A_i \Xi_i \right] = A_i\Xi_i^2 - \Xi_i
 \end{equation}
 
-$-\sigma_i>0$, $\Gamma_i$ and $\Xi_i$ have the same sign, so
+Remark: $-\sigma_i>0$, $\Gamma_i$ and $\Xi_i$ have the same sign, so
 \begin{equation}
 	1-A_i\Xi_i \geq 0
 \end{equation}
@@ -201,13 +201,18 @@ We want:
 
 So: 
 \begin{equation}
-	\alpha_i\left( \Xi_i - A_i \Xi_i^2 \right) = \xi_i (1-2A_i\Xi_i) + A_i \xi_i^2 + \sum_{j\not=i} \xi_j \dfrac{\langle \vec{\nu}_j \vert \vec{\psi_i} \rangle}{\sigma_i}
+	\alpha_i\left( \Xi_i - A_i \Xi_i^2 \right) = \xi_i (1-2A_i\Xi_i) + A_i \xi_i^2 +
+	\underbrace{\sum_{j\not=i} \xi_j \dfrac{\langle \vec{\nu}_j \vert \vec{\psi_i} \rangle}{\sigma_i}}_{L_i}
 \end{equation}
 
 \begin{itemize}
 \item If $\forall i, \alpha_i=0$, we get $\forall i, \xi_i=0$
 \item If $\alpha_i=1$ and $\xi_{j\not=i}=0$, $\xi_i=\Xi_i$
 \end{itemize}
+
+\begin{equation}
+A_i \xi_i^2 + \xi_i \underbrace{(1-2A_i\Xi_i)}_{B_i} + \underbrace{L_i - \alpha_i\left( \Xi_i - A_i \Xi_i^2 \right)}_{C_i} = 0
+\end{equation}
 
 \end{document}
 
