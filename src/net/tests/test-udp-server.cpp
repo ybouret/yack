@@ -16,15 +16,17 @@ YACK_UTEST(udp_server)
 
     if( argc > 1)
     {
+#if 0
         const uint16_t        srvport  = ios::ascii::convert::to<uint16_t>(argv[1],"port");
         const net::ip_version version  = (argc>2) ? network.ip_version_from(argv[2]) : net::v4;
-        net::udp_socket       server(network,srvport,version);
+        net::udp_socket       server(network,version);
         net::socket_address   peer(net::v4);
         char                  msg[256];
         memset(msg,0,sizeof(msg));
         const size_t nr = server.recvFrom(peer,msg,sizeof(msg)-1);
         std::cerr << "From " << peer << " : #" << nr << "='" << msg << "'" << std::endl;
-
+#endif
+        
     }
 
 }

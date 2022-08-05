@@ -15,8 +15,7 @@ YACK_UTEST(udp_client)
     {
         const string          fullName = argv[1];
         const net::ip_version version  = (argc>2) ? network.ip_version_from(argv[2]) : net::v4;
-        net::udp_socket       client(network,fullName,version);
-        std::cerr << "udp_client " << *client << ",key=" << client.key() << std::endl;
+        net::udp_socket       client(network,version);
         
 
     }
