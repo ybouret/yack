@@ -20,7 +20,15 @@ namespace yack
         class udp_server : public udp_socket
         {
         public:
+            //__________________________________________________________________
+            //
+            // C++
+            //__________________________________________________________________
+
+            //! cleanup
             virtual ~udp_server() throw();
+
+            //! setup
             explicit udp_server(const plexus    &network,
                                 const ip_version iplevel,
                                 const uint16_t   srvport);
