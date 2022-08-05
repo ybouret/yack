@@ -18,13 +18,12 @@ namespace yack
         //! udp socket base class
         //
         //______________________________________________________________________
-        class udp_socket_ : public socket
+        class udp_socket : public socket
         {
         public:
 
             //! cleanup
-            virtual ~udp_socket_() throw();
-
+            virtual ~udp_socket() throw();
 
 
             void sendTo(const socket_address &dst,
@@ -37,63 +36,14 @@ namespace yack
                             const size_t    len,
                             const int       flags=0);
 
-        protected:
-            //! setup internal socket from plexus and address
-            explicit udp_socket_(const plexus &, const socket_address );
-
-
-        private:
-            YACK_DISABLE_COPY_AND_ASSIGN(udp_socket_);
-        };
-
-
-        //______________________________________________________________________
-        //
-        //
-        //! udp socket
-        //
-        //______________________________________________________________________
-        class udp_socket : public udp_socket_
-        {
-        public:
-            //__________________________________________________________________
-            //
-            // C++
-            //__________________________________________________________________
-
-            //! cleanup
-            virtual ~udp_socket() throw();
-
-            //! setup from plexus+address
-            explicit udp_socket(const plexus &, const socket_address);
-
-            //! setup default server
-            explicit udp_socket(const plexus &, const uint16_t port, const ip_version version);
-
-            //! setup from plexus+hostName+port+version
-            template <typename HOSTNAME> inline
-            explicit udp_socket(const plexus    &network,
-                                const HOSTNAME  &hostName,
-                                const uint16_t   port,
-                                const ip_version version) :
-            udp_socket_(network, network.resolve(hostName,port,version) )
-            {
-            }
-
-            //! setup from plexus+'name:port'+version
-            template <typename FULLNAME> inline
-            explicit udp_socket(const plexus    &network,
-                                const FULLNAME  &fullName,
-                                const ip_version version) :
-            udp_socket_(network, network.resolve(fullName,version) )
-            {
-            }
-
+            explicit udp_socket(const plexus &, const ip_version version);
 
 
         private:
             YACK_DISABLE_COPY_AND_ASSIGN(udp_socket);
         };
+
+ 
 
     }
 

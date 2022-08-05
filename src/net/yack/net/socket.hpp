@@ -32,8 +32,8 @@ namespace yack
             virtual ~socket() throw();            //!< close socket
 
         protected:
-            explicit socket(const socket_address &, socket_type) throw(); //!< setup from user's sock
-            explicit socket(const plexus &, const socket_type);           //!< setup from tcp server
+            explicit socket(const socket_address, const socket_type) throw(); //!< setup from user's sock
+            explicit socket(const plexus       &, const socket_type);         //!< setup from tcp server accept
 
             //__________________________________________________________________
             //
@@ -58,10 +58,14 @@ namespace yack
             void                 shutdown_recv() throw(); //!< shutdown receiving abilities
             void                 shutdown_send() throw(); //!< shutdown sending abitilites
             void                 shutdown_both() throw(); //!< shutdown all I/O abilities
-            void                 blocking(bool);          //!< set blocking state
 
-            size_t               recv_buffer() const;
-            size_t               send_buffer() const;
+            //__________________________________________________________________
+            //
+            // options
+            //__________________________________________________________________
+            void                 blocking(bool);          //!< set blocking state
+            size_t               recv_buffer() const;     //!< get recv_buffer
+            size_t               send_buffer() const;     //!< get send_buffer
         };
     }
 }

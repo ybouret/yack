@@ -1,24 +1,24 @@
 #include "yack/net/udp/socket.hpp"
- 
+
 namespace yack
 {
 
     namespace net
     {
 
-        udp_socket_:: ~udp_socket_() throw() {}
+        udp_socket:: ~udp_socket() throw() {}
 
-        udp_socket_:: udp_socket_(const plexus &network, const socket_address user_addr) :
-        socket(user_addr,network.open_udp(user_addr.version()) )
+        udp_socket:: udp_socket(const plexus &network, const ip_version version) :
+        socket( socket_address(version), network.open_udp(version) )
         {
         }
 
 
 
-        void udp_socket_:: sendTo(const socket_address &dest,
-                                  const void           *msg,
-                                  const size_t          len,
-                                  const int             flags)
+        void udp_socket:: sendTo(const socket_address &dest,
+                                 const void           *msg,
+                                 const size_t          len,
+                                 const int             flags)
         {
             assert(yack_good(msg,len));
             YACK_GIANT_LOCK();
@@ -37,10 +37,10 @@ namespace yack
 
         }
 
-        size_t udp_socket_:: recvFrom(socket_address &src,
-                                      void           *msg,
-                                      const size_t    len,
-                                      const int       flags)
+        size_t udp_socket:: recvFrom(socket_address &src,
+                                     void           *msg,
+                                     const size_t    len,
+                                     const int       flags)
         {
             assert(yack_good(msg,len));
             YACK_GIANT_LOCK();
@@ -61,31 +61,9 @@ namespace yack
             src = plexus::retrieve(sa,sz);
             return static_cast<size_t>(res);
         }
-
-
-    }
-
-}
-
-namespace yack
-{
-
-    namespace net
-    {
-
-        udp_socket:: ~udp_socket() throw() {}
-
-        udp_socket:: udp_socket(const plexus &network, const socket_address user_addr) :
-        udp_socket_(network,user_addr)
-        {
-        }
-
-        udp_socket:: udp_socket(const plexus &network, const uint16_t port, const ip_version version) :
-        udp_socket_(network, socket_address(version,inet_address_any,port) )
-        {
-
-        }
+        
 
     }
 
 }
+ 

@@ -13,8 +13,8 @@ namespace yack
             assert(invalid_socket==sock);
         }
 
-        socket:: socket(const socket_address &user_addr,
-                        socket_type           user_sock) throw() :
+        socket:: socket(const socket_address  user_addr,
+                        const socket_type     user_sock) throw() :
         self(user_addr),
         sock(user_sock),
         skey(sock)
