@@ -47,10 +47,9 @@ namespace yack
                 }
 
 
-
+                const size_t          bytes;
             private:
                 YACK_DISABLE_COPY_AND_ASSIGN(buffer);
-                const size_t          bytes;
                 uint8_t * const       entry;
                 const uint8_t * const last;
                 uint8_t              *rpos;
