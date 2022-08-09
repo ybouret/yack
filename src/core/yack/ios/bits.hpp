@@ -71,8 +71,9 @@ namespace yack
         //______________________________________________________________________
         virtual void write(const char C);       //!< write 8 bits
         virtual void flush();                   //!< align to next 8 bits boundary
-        void         rfill(randomized::bits &); //!< align to next 8 bits boundary with random
-
+        void         fuzz(randomized::bits &);  //!< align to next 8 bits boundary with random
+        void         drop() throw();            //!< drop up to next 8 bits boudary
+        
         //______________________________________________________________________
         //
         // generic methods

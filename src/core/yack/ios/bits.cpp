@@ -155,13 +155,18 @@ namespace yack
         return res;
     }
 
+    void io_bits:: drop() throw()
+    {
+        while(size&7) pool.store( pop_front() );
+    }
+
 }
 
 #include "yack/randomized/bits.hpp"
 
 namespace yack
 {
-    void io_bits:: rfill(randomized::bits &ran)
+    void io_bits:: fuzz(randomized::bits &ran)
     {
         for(unsigned i=npad[size&7];i>0;--i) add(ran.choice()?_1:_0);
         assert(0==(size%8));
