@@ -1,6 +1,7 @@
 #include "yack/ios/bits.hpp"
 #include "yack/utest/run.hpp"
 #include "yack/arith/base2.hpp"
+#include "yack/apex/natural.hpp"
 
 using namespace yack;
 
@@ -59,7 +60,20 @@ YACK_UTEST(ios_bits)
     std::cerr << "Q.size=" << Q.size << std::endl;
     std::cerr << Q << std::endl;
 
-
+    for(size_t iter=0;iter<10;++iter)
+    {
+        Q.release();
+        const apn n(ran,1+ran.leq(99));
+        n.output_hex(std::cerr << "n=0x") << std::endl;
+        Q.add(n);
+        YACK_ASSERT(Q.size==n.bits());
+        Q.rfill(ran);
+        std::cerr << "Q=" << Q << std::endl;
+        const apn q = Q.ap(n.bits());
+        q.output_hex(std::cerr << "q=0x") << std::endl;
+        YACK_ASSERT(n==q);
+        std::cerr << std::endl;
+    }
 
 
 

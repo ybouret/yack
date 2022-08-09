@@ -15,6 +15,9 @@
 namespace yack
 {
 
+    namespace apex { class natural;     }
+    namespace randomized { class bits;  }
+
     //__________________________________________________________________________
     //
     //
@@ -41,6 +44,7 @@ namespace yack
         //______________________________________________________________________
         static const io_bit::type _1 = 0x01; //!< alias
         static const io_bit::type _0 = 0x00; //!< alias
+        static const unsigned     npad[8];   //!< number of padding bits to reach aligned size
 
         //______________________________________________________________________
         //
@@ -52,6 +56,9 @@ namespace yack
         void add(const io_bit::type);  //!< append  new bit
         void pre(const io_bit::type);  //!< prepend new bit
 
+        void          add(const apex::natural &); //!< add apn
+        apex::natural ap(size_t nbit);            //!< pluck apn
+
         //______________________________________________________________________
         //
         // methods
@@ -62,8 +69,9 @@ namespace yack
         //
         // ostream interface
         //______________________________________________________________________
-        virtual void write(const char C); //!< write 8 bits
-        virtual void flush();             //!< align to next 8 bits boundary
+        virtual void write(const char C);       //!< write 8 bits
+        virtual void flush();                   //!< align to next 8 bits boundary
+        void         rfill(randomized::bits &); //!< align to next 8 bits boundary with random
 
         //______________________________________________________________________
         //

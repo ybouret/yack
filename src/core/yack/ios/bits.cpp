@@ -1,7 +1,5 @@
 
 #include "yack/ios/bits.hpp"
-#include "yack/ios/ascii/hybrid.hpp"
-#include <iostream>
 
 namespace yack
 {
@@ -89,37 +87,20 @@ namespace yack
         return res;
     }
 
-    std::ostream & operator<<(std::ostream &os, const io_bits &Q)
+
+    static inline uint8_t read_(const io_bit * &curr) throw()
     {
-
-
-        size_t       nc = Q.size/8;
-        const size_t nr = Q.size - nc*8;
-        const io_bit *b  = Q.head;
-
-        if(nc>0) {
-            os << '[';
-            while(nc-- > 0)
-            {
-                const uint8_t u = read8(b);
-                os << ios::ascii::hybrid[u];
-            }
-            os << ']';
-        }
-
-        if(nr>0)
+        uint8_t    res = 0;
+        while(curr)
         {
-            assert(NULL!=b);
-            os << '[';
-            while(b)
-            {
-                if(**b) os << '1'; else os << '0';
-                b=b->next;
-            }
-            os << ']';
+            assert(curr);
+            res <<= 1;
+            if(**curr) res |= 1;
+            curr=curr->next;
         }
-        return os;
+        return res;
     }
+
 
     void io_bits:: release() throw()
     {
@@ -131,15 +112,17 @@ namespace yack
         append<char>(C);
     }
 
+    const unsigned io_bits::npad[8] =
+    {
+        0, 7, 6, 5, 4, 3, 2, 1
+    };
+
     void io_bits:: flush()
     {
-        static const unsigned nz[8] =
-        {
-            0, 7, 6, 5, 4, 3, 2, 1
-        };
-        for(unsigned i=nz[size&7];i>0;--i) add(_0);
+        for(unsigned i=npad[size&7];i>0;--i) add(_0);
         assert(0==(size%8));
     }
+
 
     bool  io_bits::  query_(char &C) throw()
     {
@@ -170,6 +153,81 @@ namespace yack
         }
         
         return res;
+    }
+
+}
+
+#include "yack/randomized/bits.hpp"
+
+namespace yack
+{
+    void io_bits:: rfill(randomized::bits &ran)
+    {
+        for(unsigned i=npad[size&7];i>0;--i) add(ran.choice()?_1:_0);
+        assert(0==(size%8));
+    }
+}
+
+#include <iostream>
+#include "yack/ios/ascii/hybrid.hpp"
+
+namespace yack
+{
+    std::ostream & operator<<(std::ostream &os, const io_bits &Q)
+    {
+
+
+        size_t       nc = Q.size/8;
+        const size_t nr = Q.size - nc*8;
+        const io_bit *b  = Q.head;
+
+        if(nc>0) {
+            os << '[';
+            while(nc-- > 0)
+            {
+                const uint8_t u = read8(b);
+                os << ios::ascii::hybrid[u];
+            }
+            os << ']';
+        }
+
+        if(nr>0)
+        {
+            assert(NULL!=b);
+            os << '[' << ios::ascii::hybrid[ read_(b) ] << ']';
+        }
+        return os;
+    }
+
+}
+
+#include "yack/apex/natural.hpp"
+
+namespace yack
+{
+
+    void io_bits::add(const apex::natural &n)
+    {
+        size_t i=n.bits();
+        while(i-- > 0)
+        {
+            if(n.bit(i)) add(_1); else add(_0);
+        }
+    }
+
+    apex::natural io_bits::ap(size_t nbit)
+    {
+        assert(nbit<=size);
+        apex::natural n;
+        while(nbit-- > 0)
+        {
+            n = n.shl(1);
+            if( **pool.store(pop_front())  )
+            {
+                n |= 1;
+            }
+        }
+        return n;
     }
 
 }
