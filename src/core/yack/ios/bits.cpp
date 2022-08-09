@@ -75,4 +75,9 @@ namespace yack
         return os;
     }
 
+    void io_bits:: release() throw()
+    {
+        while(size) pool.store( pop_back() );
+    }
+
 }
