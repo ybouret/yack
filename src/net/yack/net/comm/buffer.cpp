@@ -1,0 +1,51 @@
+
+
+#include "yack/net/comm/buffer.hpp"
+#include "yack/memory/allocator/dyadic.hpp"
+#include "yack/type/utils.hpp"
+
+namespace yack
+{
+    namespace net
+    {
+
+        namespace comm
+        {
+            buffer:: ~buffer() throw()
+            {
+                static memory::allocator &mgr = memory::dyadic::location();
+                mgr.withdraw(coerce(entry),coerce(bytes));
+            }
+
+            static inline
+            uint8_t * _alloc(size_t &bytes)
+            {
+                static memory::allocator &mgr = memory::dyadic::instance();
+                const size_t block_size = bytes;
+                bytes = 1;
+                return static_cast<uint8_t *>(mgr.acquire(bytes,block_size));
+            }
+
+            buffer:: buffer(const size_t n) :
+            next(0),
+            prev(0),
+            bytes( max_of(min_size,n)    ),
+            entry( _alloc(coerce(bytes)) ),
+            last( entry+bytes ),
+            rpos(entry),
+            wpos(entry)
+            {
+
+            }
+
+            void buffer:: restart() throw()
+            {
+                rpos = wpos = entry;
+            }
+
+
+        }
+
+    }
+}
+

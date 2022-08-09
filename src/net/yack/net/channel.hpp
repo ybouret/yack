@@ -17,6 +17,8 @@ namespace yack
             virtual ~channel() throw(); //!< cleanup
 
             
+            virtual size_t recv(void *,const size_t, const int) const = 0;
+            
         protected:
             //! setup with server's address
             explicit channel() throw();

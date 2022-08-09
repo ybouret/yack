@@ -44,7 +44,7 @@ namespace yack
         //! build client from plexus and different arguments
         //
         //______________________________________________________________________
-        class tcp_client : public tcp_client_
+        class tcp_client : public tcp_client_, public channel
         {
         public:
             //__________________________________________________________________
@@ -82,19 +82,19 @@ namespace yack
             explicit tcp_client(const plexus &, const tcp_server &);
 
             //! send data
-            size_t send(const void  *buffer,
-                        const size_t buflen,
-                        const int    flags) const;
+            virtual size_t send(const void  *buffer,
+                                const size_t buflen,
+                                const int    flags) const;
 
-            //! send all data
+            //! send all data, raw
             void send_all(const void  *buffer,
                           const size_t buflen,
                           const int    flags);
 
             //! receive data
-            size_t recv(void        *buffer,
-                        const size_t buflen,
-                        const int    flags) const;
+            virtual size_t recv(void        *buffer,
+                                const size_t buflen,
+                                const int    flags) const;
 
 
         private:
