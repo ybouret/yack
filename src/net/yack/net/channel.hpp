@@ -15,7 +15,6 @@ namespace yack
         public:
             virtual ~channel() throw();
 
-            
         protected:
             explicit channel() throw();
             
