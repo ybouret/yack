@@ -7,6 +7,7 @@
 #include "yack/data/list/cxx.hpp"
 #include "yack/data/pool/cxx.hpp"
 #include "yack/type/ints.hpp"
+#include "yack/ios/ostream.hpp"
 
 #include <iosfwd>
 
@@ -30,7 +31,9 @@ namespace yack
     //! list of bits and operations
     //
     //__________________________________________________________________________
-    class io_bits : public io_list
+    class io_bits :
+    public io_list,
+    public ios::ostream
     {
     public:
         //______________________________________________________________________
@@ -55,6 +58,13 @@ namespace yack
         // methods
         //______________________________________________________________________
         virtual void release() throw(); //!< list into pool
+
+        //______________________________________________________________________
+        //
+        // ostream interface
+        //______________________________________________________________________
+        virtual void write(const char C); //!< write 8 bits
+        virtual void flush();             //!< align to next 8 bits boundary
 
         //______________________________________________________________________
         //

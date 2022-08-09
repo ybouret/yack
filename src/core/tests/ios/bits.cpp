@@ -11,7 +11,7 @@ YACK_UTEST(ios_bits)
 
     Q.append<char>(0,0); YACK_ASSERT(0==Q.size);
 
-    for(size_t iter=0;iter<100000;++iter)
+    for(size_t iter=0;iter<10000;++iter)
     {
         const uint64_t i  = ran.to<uint64_t>();
         const size_t   nb = bits_for(i);
@@ -42,6 +42,24 @@ YACK_UTEST(ios_bits)
             std::cerr << std::endl;
         }
     }
+    std::cerr << std::endl;
+
+    for(size_t i=0;i<20;++i)
+    {
+        const size_t   nb = bits_for(i);
+        Q.append(i,nb);
+        Q.flush();
+        std::cerr << i << " => " << Q << std::endl;
+        Q.release();
+    }
+    std::cerr << std::endl;
+
+
+    Q("%s %u","Hello",7);
+    std::cerr << "Q.size=" << Q.size << std::endl;
+    std::cerr << Q << std::endl;
+
+
 
 
 

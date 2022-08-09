@@ -1,5 +1,6 @@
 
 #include "yack/ios/bits.hpp"
+#include "yack/ios/ascii/hybrid.hpp"
 #include <iostream>
 
 namespace yack
@@ -66,11 +67,59 @@ namespace yack
         push_front( create(value) );
     }
 
+
+    static inline uint8_t read8(const io_bit * &curr) throw()
+    {
+        uint8_t    res = 0;
+        for(size_t i=8;i>0;--i)
+        {
+            assert(curr);
+            res <<= 1;
+            if(**curr) res |= 1;
+            curr=curr->next;
+        }
+        return res;
+    }
+
     std::ostream & operator<<(std::ostream &os, const io_bits &Q)
     {
-        for(const io_bit *b = Q.head; b; b=b->next)
+#if 0
         {
-            if(**b) os << '1'; else os << '0';
+            size_t counter=0;
+            for(const io_bit *b = Q.head; b; b=b->next)
+            {
+                if(**b) os << '1'; else os << '0';
+                ++counter;
+                if(counter<Q.size && 0==(counter&7)) os << '-';
+            }
+            return os;
+        }
+#endif
+
+        size_t       nc = Q.size/8;
+        const size_t nr = Q.size - nc*8;
+        const io_bit *b  = Q.head;
+
+        if(nc>0) {
+            os << '[';
+            while(nc-- > 0)
+            {
+                const uint8_t u = read8(b);
+                os << ios::ascii::hybrid[u];
+            }
+            os << ']';
+        }
+
+        if(nr>0)
+        {
+            assert(NULL!=b);
+            os << '[';
+            while(b)
+            {
+                if(**b) os << '1'; else os << '0';
+                b=b->next;
+            }
+            os << ']';
         }
         return os;
     }
@@ -79,5 +128,22 @@ namespace yack
     {
         while(size) pool.store( pop_back() );
     }
+
+    void io_bits:: write(const char C)
+    {
+        std::cerr << "Append '" << C << "'" << std::endl;
+        append<char>(C);
+    }
+
+    void io_bits:: flush()
+    {
+        static const unsigned nz[8] =
+        {
+            0, 7, 6, 5, 4, 3, 2, 1
+        };
+        for(unsigned i=nz[size&7];i>0;--i) add(_0);
+        assert(0==(size%8));
+    }
+
 
 }

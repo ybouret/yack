@@ -56,7 +56,6 @@ namespace yack
         size_t ostream:: operator()(const char *fmt,...)
         {
             assert(NULL!=fmt);
-
             int res = 0;
             {
                 va_list ap;
@@ -74,6 +73,7 @@ namespace yack
                     va_end(ap);
                     if(res2!=res) throw libc::exception(EINVAL,"ostream:: vsnprintf failure");
                 }
+                frame(*buff,res);
             }
 
             return size_t(res);
