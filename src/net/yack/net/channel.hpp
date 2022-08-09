@@ -15,6 +15,8 @@ namespace yack
         public:
             virtual ~channel() throw();
 
+            virtual const socket_address & host() const throw() = 0;
+
         protected:
             explicit channel() throw();
             

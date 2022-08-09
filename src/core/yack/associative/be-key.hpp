@@ -59,7 +59,7 @@ namespace yack
         // types and definitions
         //______________________________________________________________________
         YACK_DECL_ARGS(T,type);                      //!< aliases
-        static const size_t length = sizeof(type);   //!< aliase
+        static const size_t length = sizeof(type);   //!< alias
 
         //______________________________________________________________________
         //
