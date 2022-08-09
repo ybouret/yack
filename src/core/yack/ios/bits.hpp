@@ -8,6 +8,7 @@
 #include "yack/data/pool/cxx.hpp"
 #include "yack/type/ints.hpp"
 #include "yack/ios/ostream.hpp"
+#include "yack/ios/istream.hpp"
 
 #include <iosfwd>
 
@@ -31,9 +32,7 @@ namespace yack
     //! list of bits and operations
     //
     //__________________________________________________________________________
-    class io_bits :
-    public io_list,
-    public ios::ostream
+    class io_bits : public io_list, public ios::ostream, public ios::istream
     {
     public:
         //______________________________________________________________________
@@ -144,10 +143,11 @@ namespace yack
 
     private:
         YACK_DISABLE_ASSIGN(io_bits);
-        io_bit *create(const io_bit::type);               //!< depending on pool's state
-        io_bit *query_(const io_bit::type) const throw(); //!< from non-empty pool
+        io_bit *make(const io_bit::type);               //!< depending on pool's state
+        io_bit *fast(const io_bit::type) const throw(); //!< from non-empty pool
 
-
+        virtual bool   query_(char &C) throw();
+        virtual size_t fetch_(void *addr, size_t size) throw();
 
     };
     
