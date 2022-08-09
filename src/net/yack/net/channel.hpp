@@ -15,8 +15,10 @@ namespace yack
         public:
             virtual ~channel() throw();
 
+            const socket_address host;
+
         protected:
-            explicit channel() throw();
+            explicit channel(const socket_address &srv) throw();
             
         private:
             YACK_DISABLE_COPY_AND_ASSIGN(channel);
