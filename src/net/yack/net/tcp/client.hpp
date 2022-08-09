@@ -4,6 +4,7 @@
 #define YACK_NET_TCP_CLIENT_INCLUDED 1
 
 #include "yack/net/tcp/socket.hpp"
+#include "yack/net/channel.hpp"
 
 namespace yack
 {
@@ -23,6 +24,7 @@ namespace yack
         public:
             //! cleanup
             virtual ~tcp_client_() throw();
+
 
         protected:
             //! build tcp_socket and connect to address
