@@ -13,28 +13,53 @@
 namespace yack
 {
 
+    //__________________________________________________________________________
+    //
+    //
+    // types for io_bits
+    //
+    //__________________________________________________________________________
+    typedef ios::character      io_bit;  //!< alias to share ios::characters
+    typedef cxx_list_of<io_bit> io_list; //!< alias
+    typedef cxx_pool_of<io_bit> io_pool; //!< alias
 
-    typedef ios::character      io_bit;
-    typedef cxx_list_of<io_bit> io_list;
-    typedef cxx_pool_of<io_bit> io_pool;
 
-    
+    //__________________________________________________________________________
+    //
+    //
+    //! list of bits and operations
+    //
+    //__________________________________________________________________________
     class io_bits : public io_list
     {
     public:
-        static const io_bit::type _1 = 0x01;
-        static const io_bit::type _0 = 0x00;
-        static inline io_bit::type bool2type(const bool flag) throw() {
-            return flag ? _1  : _0;
-        }
+        //______________________________________________________________________
+        //
+        // types and definitions
+        //______________________________________________________________________
+        static const io_bit::type _1 = 0x01; //!< alias
+        static const io_bit::type _0 = 0x00; //!< alias
 
-        virtual ~io_bits() throw();
-        io_bits()          throw();
-        io_bits(const io_bits &other);
-        void add(const io_bit::type);
-        void pre(const io_bit::type);
+        //______________________________________________________________________
+        //
+        // C++
+        //______________________________________________________________________
+        virtual ~io_bits() throw();    //!< cleanup
+        io_bits()          throw();    //!< setup empty
+        io_bits(const io_bits &other); //!< copy using other pool if possible
+        void add(const io_bit::type);  //!< append  new bit
+        void pre(const io_bit::type);  //!< prepend new bit
 
-        virtual void release() throw();
+        //______________________________________________________________________
+        //
+        // methods
+        //______________________________________________________________________
+        virtual void release() throw(); //!< list into pool
+
+        //______________________________________________________________________
+        //
+        // generic methods
+        //______________________________________________________________________
 
         //! little endian append
         template <typename T> inline void append(const T data, size_t nbit)
@@ -52,6 +77,7 @@ namespace yack
             }
         }
 
+        //! append full word
         template <typename T> inline
         void append(const T data)
         {
@@ -69,6 +95,7 @@ namespace yack
             }
         }
 
+        //! pluck bits to form a word
         template <typename T> inline T pluck(size_t nbit) throw()
         {
             assert(nbit<=sizeof(T)*8);
@@ -89,19 +116,23 @@ namespace yack
             return static_cast<T>(word);
         }
 
+        //! pluck a full word
         template <typename T> inline T pluck() throw()
         {
             return pluck<T>(sizeof(T)*8);
         }
 
 
-
+        //! display helper
         friend std::ostream & operator<<(std::ostream &os, const io_bits &Q);
 
+        //______________________________________________________________________
+        //
+        // members
+        //______________________________________________________________________
+        mutable io_pool pool; //!< used a level-2 cache
 
-        mutable io_pool pool;
-
-    protected:
+    private:
         YACK_DISABLE_ASSIGN(io_bits);
         io_bit *create(const io_bit::type);               //!< depending on pool's state
         io_bit *query_(const io_bit::type) const throw(); //!< from non-empty pool

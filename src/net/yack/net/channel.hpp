@@ -10,14 +10,16 @@ namespace yack
 {
     namespace net
     {
+        //! channel for operations
         class channel
         {
         public:
-            virtual ~channel() throw();
+            virtual ~channel() throw(); //!< cleanup
 
-            const socket_address host;
+            const socket_address host; //!< a.k.a server address
 
         protected:
+            //! setup with server's address
             explicit channel(const socket_address &srv) throw();
             
         private:
