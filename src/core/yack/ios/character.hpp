@@ -24,6 +24,8 @@ namespace yack
             // types and definitions
             //__________________________________________________________________
             YACK_EXCLUSIVE_DECL(character,32700); //!< aliases
+            typedef uint8_t                 type; //!< alias
+            typedef uint8_t           const_type; //!< alias
             
             //__________________________________________________________________
             //

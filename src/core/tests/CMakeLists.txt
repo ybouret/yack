@@ -225,6 +225,7 @@ add_test(ios:scribe     test-core ios_scribe)
 add_test(ios:vstream    test-core ios_vstream)
 add_test(ios:pstream    test-core ios_pstream)
 add_test(ios:markup     test-core ios_markup)
+add_test(ios:bits       test-core ios_bits)
 
 add_test(hashing:64      test-core hash64)
 add_test(hashing:fcn     test-core hashing_fcn)
