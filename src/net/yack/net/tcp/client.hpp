@@ -28,7 +28,8 @@ namespace yack
 
         protected:
             //! build tcp_socket and connect to address
-            explicit tcp_client_(const plexus &, const socket_address);
+            explicit tcp_client_(const plexus         &network,
+                                 const socket_address  cln);
 
             //! accept from tcp server
             explicit tcp_client_(const plexus &, const tcp_server &);
