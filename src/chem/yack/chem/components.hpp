@@ -22,11 +22,15 @@ namespace yack
             explicit components() throw();
             virtual ~components() throw();
             
+            
+            
             const actors reac;
             const actors prod;
             
         private:
             YACK_DISABLE_COPY_AND_ASSIGN(components);
+            components_set cdb;
+            
         };
         
     }

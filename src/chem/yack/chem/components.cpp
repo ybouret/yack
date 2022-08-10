@@ -10,6 +10,14 @@ namespace yack
         }
         
         
+        components:: components() throw() :
+        reac(),
+        prod(),
+        cdb()
+        {
+            
+        }
+        
     }
     
 }
