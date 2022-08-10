@@ -18,8 +18,7 @@ namespace yack
             virtual ~gathering() throw();
             explicit gathering() throw();
 
-            virtual size_t size() const throw() = 0;
-
+            
             void absorb(const entity &) throw(); //!< update maxlen
             std::ostream & pad(std::ostream &os, const entity &) const;
 

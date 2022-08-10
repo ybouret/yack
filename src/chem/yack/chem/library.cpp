@@ -37,6 +37,11 @@ namespace yack
             return (*sdb.tree).head;
         }
 
+        library::const_type & library:: operator[](const size_t i) const throw()
+        {
+           return *** (*sdb.tree).get(i);
+        }
+
         size_t library:: size() const throw()
         {
             return (*sdb.tree).size;
@@ -59,7 +64,11 @@ namespace yack
             for(const snode *node=lib.head();node;node=node->next)
             {
                 const species &s = ***node;
-                lib.pad(os << '[' << s.name <<']',s) << " : z=" << std::setw(5) << s.z << std::endl;
+                lib.pad(os << '[' << s.name <<']',s);
+                os << " | # "    << std::setw(5) << *s;
+                os << " | z="    << std::setw(5) << s.z;
+                os << " | rank=" << std::setw(5) << s.rank;
+                os << std::endl;
             }
             os << '}';
             return os;

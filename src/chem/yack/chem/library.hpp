@@ -16,7 +16,7 @@ namespace yack
         typedef suffix_set<string,const species::pointer> species_set;
         typedef species_set::knot_type                    snode;
 
-        class library : public gathering
+        class library :public gathering, public readable<const species>
         {
         public:
             static const char clid[];
@@ -25,8 +25,9 @@ namespace yack
             virtual ~library() throw();
             library(const library &other); //!< hard copy
 
-            const   snode *head() const throw();
-            virtual size_t size() const throw();
+            const   snode *head() const throw(); //!< sequential access
+            virtual size_t size() const throw(); //!< number of species
+            virtual const_type & operator[](const size_t i) const throw(); //!< slow access
 
             template <typename NAME> inline
             void operator()(const NAME &name, const int z)
