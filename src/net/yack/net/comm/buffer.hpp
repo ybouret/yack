@@ -15,22 +15,24 @@ namespace yack
 
         namespace comm
         {
+            //! TODO
             class buffer :  public ios::istream
             {
             public:
-                static const size_t min_size = 128;
+                static const size_t min_size = 128; //!< min size
 
-                explicit buffer(const size_t n);
-                virtual ~buffer() throw();
+                explicit buffer(const size_t n); //!< next power of two
+                virtual ~buffer() throw();       //!< cleanup
                 
-                buffer *next;
-                buffer *prev;
+                buffer *next; //!< for list/pool
+                buffer *prev; //!< for list
 
-                void   restart() throw();
-                size_t written() const throw() { return wpos-rpos; }
-                size_t vacuous() const throw() { return last-wpos; }
-                void   compact() throw();
-                
+                void   restart() throw(); //!< make a fresh start
+                size_t written() const throw() { return wpos-rpos; } //!< written (a.k.a readable) bytes
+                size_t vacuous() const throw() { return last-wpos; } //!< vacuous (a.k.a writable) bytes
+                void   compact() throw(); //!< from written to entru
+
+                //! receive at most vacuous bytes from channel
                 bool   recv(channel &input, const int flags)
                 {
                     assert(vacuous()>0);
@@ -49,7 +51,7 @@ namespace yack
                 }
 
 
-                const size_t          bytes;
+                const size_t          bytes; //!< total bytes
             private:
                 YACK_DISABLE_COPY_AND_ASSIGN(buffer);
                 uint8_t * const       entry;

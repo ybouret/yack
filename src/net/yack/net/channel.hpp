@@ -16,7 +16,8 @@ namespace yack
         public:
             virtual ~channel() throw(); //!< cleanup
 
-            
+
+            //! recv interface
             virtual size_t recv(void *,const size_t, const int) const = 0;
             
         protected:

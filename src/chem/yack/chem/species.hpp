@@ -19,10 +19,20 @@ namespace yack
         class species : public entity
         {
         public:
-            typedef ark_ptr<string,const species> pointer;
+            //__________________________________________________________________
+            //
+            // types and defintions
+            //__________________________________________________________________
+            typedef ark_ptr<string,const species> pointer; //!< alias
 
-            virtual ~species() throw();
+            //__________________________________________________________________
+            //
+            // C++
+            //__________________________________________________________________
+            virtual ~species() throw(); //!< cleanup
+            species(const species &);   //!< copy
 
+            //! initialize with valid index
             template <typename NAME> inline
             explicit species(const NAME   &uid,
                              const int     zzz,
@@ -31,9 +41,11 @@ namespace yack
             {
             }
 
-            species(const species &);
 
-
+            //__________________________________________________________________
+            //
+            // memners
+            //__________________________________________________________________
             const int    z;    //!< algebraic charge
             const size_t rank; //!< number of use
             

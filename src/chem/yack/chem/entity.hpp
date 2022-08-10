@@ -10,10 +10,24 @@ namespace yack
 {
     namespace chemical
     {
+
+        //______________________________________________________________________
+        //
+        //
+        //! named entity with index
+        //
+        //______________________________________________________________________
         class entity : public object, public counted
         {
         public:
-            virtual ~entity() throw();
+            //__________________________________________________________________
+            //
+            // C++
+            //__________________________________________________________________
+            virtual ~entity() throw(); //!< cleanup
+            entity(const entity &);    //!< copy
+
+            //! setup with name+indx
             template <typename NAME> inline
             explicit entity(const NAME  &uid,
                             const size_t idx) :
@@ -25,15 +39,21 @@ namespace yack
                 assert(indx>0);
             }
             
-            entity(const entity &);
+            //__________________________________________________________________
+            //
+            // methods
+            //__________________________________________________________________
+            size_t operator*()   const throw(); //!< index
+            const string & key() const throw(); //!< name
 
-            size_t operator*()   const throw();
-            const string & key() const throw();
-
-            const string name;
+            //__________________________________________________________________
+            //
+            // members
+            //__________________________________________________________________
+            const string name; //!< identifier
 
         private:
-            const size_t indx;
+            const size_t indx; //!< index
             YACK_DISABLE_ASSIGN(entity);
         };
     }

@@ -16,35 +16,71 @@ namespace yack
     namespace chemical
     {
 
-        class species_info
+        namespace nucleus
         {
-        public:
-            species_info();
-            ~species_info() throw();
-            species_info(const species_info &);
+            //__________________________________________________________________
+            //
+            //
+            //! info for species identification
+            //
+            //__________________________________________________________________
+            class sp_info
+            {
+            public:
+                //______________________________________________________________
+                //
+                // C++
+                //______________________________________________________________
+                sp_info();                //!< setup empty/0
+                sp_info(const sp_info &); //!< copy
+                ~sp_info() throw();      //!< cleanup
 
-            string name;
-            int    z;
-            
+                //______________________________________________________________
+                //
+                // members
+                //______________________________________________________________
+                string name; //!< species name
+                int    z;    //!< species charge
 
-        private:
-            YACK_DISABLE_ASSIGN(species_info);
-        };
+            private:
+                YACK_DISABLE_ASSIGN(sp_info);
+            };
+        }
 
+        //______________________________________________________________________
+        //
+        //
+        //! singleton to design systems
+        //
+        //______________________________________________________________________
         class designer : public singleton<designer>
         {
         public:
-            typedef jive::parser              parser;
-            typedef jive::syntax::translator  linker;
+            //__________________________________________________________________
+            //
+            // types and definition
+            //__________________________________________________________________
+            typedef jive::parser              parser; //!< alias
+            typedef jive::syntax::translator  linker; //!< alias
 
-            static const char * const       call_sign; //!< "chemical::designer"
-            static const at_exit::longevity life_time = 90;
+            //__________________________________________________________________
+            //
+            // singleton parameters
+            //__________________________________________________________________
+            static const char * const       call_sign;      //!< "chemical::designer"
+            static const at_exit::longevity life_time = 90; //!< before jive::characters
 
 
+            //__________________________________________________________________
+            //
+            // methods
+            //__________________________________________________________________
+
+            //! parse data and check/get/create corresponding species
             template <typename DATA> inline
             const species & operator()(library &lib, const DATA &data)
             {
-                const  species_info info = get_species_info(data);
+                const  nucleus::sp_info info = get_species_info(data);
                 return species_from(lib,info);
             }
 
@@ -55,18 +91,33 @@ namespace yack
             YACK_DISABLE_COPY_AND_ASSIGN(designer);
             friend class singleton<designer>;
 
+            //__________________________________________________________________
+            //
+            // C++
+            //__________________________________________________________________
             explicit designer();
             virtual ~designer() throw();
 
-            auto_ptr<parser> spp;
-            auto_ptr<linker> spl;
-            
+            //__________________________________________________________________
+            //
+            // members
+            //__________________________________________________________________
+            auto_ptr<parser> spp; //!< species parser
+            auto_ptr<linker> spl; //!< species linker
+
+            //__________________________________________________________________
+            //
+            // internal methods
+            //__________________________________________________________________
+
+            //! parse string/text into info
             template <typename DATA> inline
-            species_info get_species_info(const DATA &data) {
+            nucleus::sp_info get_species_info(const DATA &data) {
                 return species_info_from( jive::module::open_data(data) );
             }
-            species_info   species_info_from(jive::module *);
-            const species &species_from(library &lib, const species_info &info) const;
+
+            nucleus::sp_info   species_info_from(jive::module *);                       //!< parse from module
+            const species     &species_from(library &, const nucleus::sp_info &) const; //!< search/create for library
 
         };
     }

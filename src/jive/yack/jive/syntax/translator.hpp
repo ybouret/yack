@@ -49,8 +49,7 @@ namespace yack
                 // non-virtual interface
                 //______________________________________________________________
                 void         walk(const xnode &tree, void *user_data); //!< init/inspect/quit
-
-
+                
             protected:
                 unsigned depth;                              //!< helper for nesting level
                 std::ostream & indent(std::ostream &) const; //!< helper for tracing

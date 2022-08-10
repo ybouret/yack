@@ -11,17 +11,33 @@ namespace yack
 {
     namespace chemical
     {
-
+        //______________________________________________________________________
+        //
+        //
+        //! gathering of entities base class
+        //
+        //______________________________________________________________________
         class gathering : public latch
         {
         public:
-            virtual ~gathering() throw();
-            explicit gathering() throw();
+            //__________________________________________________________________
+            //
+            // C++
+            //__________________________________________________________________
+            virtual ~gathering() throw(); //!< cleanup
+            explicit gathering() throw(); //!< setup
 
-            
-            void absorb(const entity &) throw(); //!< update maxlen
-            std::ostream & pad(std::ostream &os, const entity &) const;
+            //__________________________________________________________________
+            //
+            // methods
+            //__________________________________________________________________
+            void           absorb(const entity &)              throw(); //!< update maxlen
+            std::ostream & pad(std::ostream &os, const entity &) const; //!< pad up to maxlen
 
+            //__________________________________________________________________
+            //
+            // members
+            //__________________________________________________________________
             const size_t maxlen; //!< from entities
 
 
