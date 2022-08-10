@@ -7,5 +7,6 @@ yack_link_libraries(test-chem)
 
 yack_testing(chem)
 
-add_test(lib    test-chem lib)
-add_test(actors test-chem actors)
+add_test(lib        test-chem lib)
+add_test(actors     test-chem actors)
+add_test(components test-chem components)

@@ -38,6 +38,7 @@ namespace yack
             // methods
             //__________________________________________________________________
             
+            
             //! append a new actor(sp,nu>0);
             void operator()(const species &sp,
                             const unsigned nu);

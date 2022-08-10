@@ -17,6 +17,11 @@ namespace yack
             assert(nu!=0);
         }
         
+        const string & component:: key() const throw()
+        {
+            return sp.name;
+        }
+       
     }
 }
         

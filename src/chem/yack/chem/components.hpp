@@ -19,10 +19,19 @@ namespace yack
         class components
         {
         public:
+            static const char clid[];
+            
             explicit components() throw();
             virtual ~components() throw();
             
             
+            void operator()(const species &sp,
+                            const int      nu);
+            
+            
+            const cnode *head() const throw();
+            
+            friend std::ostream & operator<<(std::ostream &, const components &);
             
             const actors reac;
             const actors prod;
