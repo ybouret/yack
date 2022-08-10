@@ -30,12 +30,16 @@ namespace yack
             virtual const_type & operator[](const size_t i) const throw(); //!< slow access
 
             template <typename NAME> inline
-            void operator()(const NAME &name, const int z)
+            const species & operator()(const NAME &name, const int z)
             {
-                const size_t idx = size()+1;
-                use( new species(name,z,idx) );
+                return use( new species(name,z,size()+1) );
             }
 
+            const species *look_up(const string &) const throw();
+
+            const species & operator[](const string &) const;
+            const species & operator[](const char   *) const;
+            
             friend std::ostream & operator<<(std::ostream &os, const library &lib);
 
 
@@ -43,7 +47,7 @@ namespace yack
         private:
             YACK_DISABLE_ASSIGN(library);
             species_set sdb;
-            void use(species *s);
+            const species & use(species *s);
 
         };
 

@@ -25,8 +25,9 @@ YACK_UTEST(lib)
     std::cerr << "using " << io.call_sign << std::endl;
     for(int i=1;i<argc;++i)
     {
-        const string expr = argv[i];
-        io.compile_species(expr);
+        const string       expr = argv[i];
+        const species     &sp   = io(lib,expr);
+        std::cerr << sp.name << std::endl;
     }
 
 }

@@ -48,13 +48,14 @@ namespace yack
         }
 
 
-        void library:: use(species *s)
+        const species & library:: use(species *s)
         {
             assert(s);
             const species::pointer sp(s);
             assert(**s==size()+1);
             if(!sdb.insert(sp)) throw imported::exception(clid,"multiple species '%s'", s->name() );
             absorb(*sp);
+            return *sp;
         }
 
         std::ostream & operator<<(std::ostream  &os,
@@ -72,6 +73,26 @@ namespace yack
             }
             os << '}';
             return os;
+        }
+
+
+        const species * library:: look_up(const string &uid) const throw()
+        {
+            const species::pointer *pps = sdb.search(uid);
+            return pps ? & **pps : NULL;
+        }
+
+        const species & library:: operator[](const string &uid) const
+        {
+            const species::pointer *pps = sdb.search(uid);
+            if(!pps) throw imported::exception(clid,"no '%s'",uid());
+            return **pps;
+        }
+
+        const species & library:: operator[](const char *uid) const
+        {
+            const string _(uid);
+            return (*this)[_];
         }
 
 
