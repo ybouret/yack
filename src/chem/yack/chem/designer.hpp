@@ -7,6 +7,7 @@
 #include "yack/chem/species.hpp"
 #include "yack/singleton.hpp"
 #include "yack/jive/parser.hpp"
+#include "yack/jive/syntax/translator.hpp"
 
 namespace yack
 {
@@ -19,8 +20,13 @@ namespace yack
             static const char * const       call_sign; //!< "chemical::designer"
             static const at_exit::longevity life_time = 7777;
 
-            
-            
+
+            template <typename DATA> inline
+            void compile_species(const DATA &data)
+            {
+                species_from( jive::module::open_data(data) );
+            }
+
         private:
             YACK_DISABLE_COPY_AND_ASSIGN(designer);
             friend class singleton<designer>;
@@ -29,7 +35,7 @@ namespace yack
             virtual ~designer() throw();
 
             auto_ptr<jive::parser> sp;
-
+            void species_from(jive::module *);
 
         };
     }

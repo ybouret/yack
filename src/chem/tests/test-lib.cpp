@@ -14,8 +14,6 @@ YACK_UTEST(lib)
     lib("H+",1);
     lib("HO-",-1);
 
-
-
     const library lcp(lib);
 
     std::cerr << "lib=" << lib << std::endl;
@@ -23,6 +21,11 @@ YACK_UTEST(lib)
 
     designer &io = designer::instance();
     std::cerr << "using " << io.call_sign << std::endl;
+    for(int i=1;i<argc;++i)
+    {
+        const string expr = argv[i];
+        io.compile_species(expr);
+    }
 
 }
 YACK_UDONE()

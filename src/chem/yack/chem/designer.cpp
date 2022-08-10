@@ -3,6 +3,8 @@
 
 namespace yack
 {
+    using namespace jive;
+
     namespace chemical
     {
 
@@ -16,15 +18,23 @@ namespace yack
 
         namespace
         {
-            class sp_parser : public jive:: parser
+            class sp_parser : public   parser
             {
             public:
                 inline virtual ~sp_parser() throw() {}
 
                 inline explicit sp_parser() : jive:: parser("chemical::species::parser")
                 {
+                    syntax::compound &SPECIES = agg("SPECIES");
+                    SPECIES << term("NAME", "[:upper:][:word:]*");
+                    {
+                        const syntax::rule &POS = oom( term('+') );
+                        const syntax::rule &NEG = oom( term('-') );
+                        SPECIES << opt( choice(POS,NEG) );
+                    }
+                    //gv();
                 }
-
+                
 
             private:
                 YACK_DISABLE_COPY_AND_ASSIGN(sp_parser);
@@ -34,6 +44,17 @@ namespace yack
         designer:: designer() :
         sp( new sp_parser() )
         {
+        }
+
+        void designer::species_from(jive::module *m)
+        {
+            source src(m);
+            sp->reset();
+
+            auto_ptr<syntax::xnode> spx  = sp->parse(src);
+            syntax::translator      spt;
+            spt.walk(*spx,NULL);
+
         }
 
     }
