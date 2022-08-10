@@ -43,6 +43,36 @@ namespace yack
                 rpos = wpos = entry;
             }
 
+            void buffer:: compact() throw()
+            {
+                const size_t n = wpos-rpos;
+                memmove(entry,rpos,n);
+                rpos = entry;
+                wpos = entry+n;
+            }
+
+
+            bool   buffer:: query_(char &C) throw()
+            {
+                if(rpos<wpos) {
+                    C = *(rpos++);
+                    return true;
+                }
+                else
+                {
+                    return false;
+                }
+            }
+
+            size_t buffer:: fetch_(void *addr, const size_t size) throw()
+            {
+                assert( yack_good(addr,size) );
+                const size_t n      = min_of( written(), size );
+                memcpy(addr,rpos,n);
+                rpos += n;
+                return n;
+            }
+
 
         }
 

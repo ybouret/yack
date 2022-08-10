@@ -16,25 +16,39 @@ namespace yack
     
     void *out_of_reach::zset(void *addr, const size_t size) throw()
     {
-        assert(!(NULL==addr && size>0));
+        assert(yack_good(addr,size));
         memset(addr,0,size);
         return addr;
     }
 
     void *out_of_reach::copy(void *target, const void *source, const size_t size) throw()
     {
-        assert(!(NULL==target && size>0));
-        assert(!(NULL==source && size>0));
+        assert(yack_good(target,size));
+        assert(yack_good(source,size));
         memcpy(target,source,size);
         return target;
     }
 
     void out_of_reach::move(void *target, const void *source, const size_t size) throw()
     {
-        assert(!(NULL==target && size>0));
-        assert(!(NULL==source && size>0));
+        assert(yack_good(target,size));
+        assert(yack_good(source,size));
         memmove(target,source,size);
     }
+
+    void out_of_reach:: zmov(void *target, void *source, const size_t size) throw()
+    {
+        assert(yack_good(target,size));
+        assert(yack_good(source,size));
+        uint8_t *tgt = static_cast<uint8_t *>(target);
+        uint8_t *src = static_cast<uint8_t *>(source);
+        for(size_t i=size;i>0;--i)
+        {
+            *(tgt++) = *src;
+            *(src++) = 0;
+        }
+    }
+
 
     unit_t out_of_reach:: diff(const void *a, const void *b) throw()
     {

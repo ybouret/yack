@@ -6,6 +6,7 @@
 
 #include "yack/object.hpp"
 #include "yack/net/channel.hpp"
+#include "yack/ios/istream.hpp"
 
 namespace yack
 {
@@ -14,7 +15,7 @@ namespace yack
 
         namespace comm
         {
-            class buffer : public object
+            class buffer :  public ios::istream
             {
             public:
                 static const size_t min_size = 128;
@@ -28,7 +29,8 @@ namespace yack
                 void   restart() throw();
                 size_t written() const throw() { return wpos-rpos; }
                 size_t vacuous() const throw() { return last-wpos; }
-
+                void   compact() throw();
+                
                 bool   recv(channel &input, const int flags)
                 {
                     assert(vacuous()>0);
@@ -55,7 +57,8 @@ namespace yack
                 uint8_t              *rpos;
                 uint8_t              *wpos;
 
-
+                virtual bool   query_(char &C)             throw();
+                virtual size_t fetch_(void *,const size_t) throw();
             };
         }
 
