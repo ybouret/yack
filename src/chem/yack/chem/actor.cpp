@@ -25,7 +25,25 @@ namespace yack
 
         const species & actor:: operator*() const throw() { return sp; }
 
+        void actor:: display_first(std::ostream &os) const
+        {
+            if(nu>1)
+            {
+                os << nu;
+            }
+            os << '[' << sp.name << ']';
+        }
         
+        void actor:: display_extra(std::ostream &os) const
+        {
+            os << '+';
+            if(nu>1)
+            {
+                os << nu;
+            }
+            os << '[' << sp.name << ']';
+        }
+
     }
 
 }

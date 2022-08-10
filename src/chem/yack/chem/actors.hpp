@@ -54,6 +54,8 @@ namespace yack
           
             //const xlimit     *primary_limit(const readable<double> &C) const throw();
 
+            friend std::ostream & operator<<(std::ostream &, const actors &);
+            
             //__________________________________________________________________
             //
             // members

@@ -76,6 +76,25 @@ namespace yack
                 return NULL;
             }
         }
+        
+        std::ostream & operator<<(std::ostream &os, const actors &A)
+        {
+            const actor *a = A.crew.head;
+            if(a)
+            {
+                a->display_first(os);
+                for(a=a->next;a;a=a->next)
+                {
+                    a->display_extra(os);
+                }
+            }
+            else
+            {
+                os << '.';
+            }
+            return os;
+        }
+
 
 
     }

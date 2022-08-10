@@ -80,7 +80,7 @@ namespace yack
 
             //! display helper
             template <typename PREFIX, typename ARRAY> inline
-            std::ostream & operator()(std::ostream &os, const PREFIX &prefix, ARRAY &arr) const
+            void operator()(std::ostream &os, const PREFIX &prefix, ARRAY &arr) const
             {
                 os << '{' << std::endl;
                 for(const snode *node=head();node;node=node->next)
@@ -89,8 +89,7 @@ namespace yack
                     const size_t   j = *s;
                     pad(os << ' ' << prefix << '[' << s.name << ']',s) << " = " << arr[j] << std::endl;
                 }
-                os << '}';
-                return os;
+                os << '}' << std::endl;
             }
 
             //! access by name

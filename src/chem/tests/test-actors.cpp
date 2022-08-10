@@ -28,6 +28,9 @@ YACK_UTEST(actors)
     prod( lib["H+"], 1 );
     prod( lib["HO-"],1 );
 
+    std::cerr << "Reac: " << reac << std::endl;
+    std::cerr << "Prod: " << prod << std::endl;
+
     rmulops ops;
 
     ops.free();

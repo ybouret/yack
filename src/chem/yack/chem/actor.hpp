@@ -37,7 +37,12 @@ namespace yack
            
             //! access species
             const species & operator*() const throw();
-
+            
+            void display_first(std::ostream &) const;
+            
+            void display_extra(std::ostream &) const;
+            
+            
             //__________________________________________________________________
             //
             // members
