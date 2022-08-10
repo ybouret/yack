@@ -1,4 +1,6 @@
 #include "yack/chem/library.hpp"
+#include "yack/chem/designer.hpp"
+
 #include "yack/utest/run.hpp"
 
 using namespace yack;
@@ -18,6 +20,9 @@ YACK_UTEST(lib)
 
     std::cerr << "lib=" << lib << std::endl;
     std::cerr << "lcp=" << lcp << std::endl;
+
+    designer &io = designer::instance();
+    std::cerr << "using " << io.call_sign << std::endl;
 
 }
 YACK_UDONE()
