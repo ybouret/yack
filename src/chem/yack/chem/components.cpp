@@ -32,6 +32,12 @@ namespace yack
             return (*cdb.tree).head;
         }
         
+        size_t components:: size() const throw()
+        {
+            return (*cdb.tree).size;
+        }
+    
+        
         const xlimits & components:: genuine_limits(const readable<double> &C, const size_t w) const throw()
         {
             return * new( xlm.get_entry() ) xlimits(reac.genuine_limit(C),prod.genuine_limit(C),w);
@@ -63,6 +69,21 @@ namespace yack
             // update
             ++(coerce(sp.rank));
         }
+        
+        double components:: mass_action(const double            K,
+                                        const readable<double> &C,
+                                        rmulops                &ops) const
+        {
+            ops.free();
+            ops.push(K);
+            const double rma = reac.mass_action(C,ops);
+
+            ops.free();
+            const double pma = prod.mass_action(C,ops);
+            
+            return rma - pma;
+        }
+        
     }
     
 }

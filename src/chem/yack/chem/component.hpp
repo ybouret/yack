@@ -9,7 +9,12 @@ namespace yack
 {
     namespace chemical
     {
-        
+        //______________________________________________________________________
+        //
+        //
+        //! component=species+stoichio
+        //
+        //______________________________________________________________________
         class component : public object, public counted
         {
         public:
@@ -17,8 +22,7 @@ namespace yack
             //
             // types and defintions
             //__________________________________________________________________
-            
-            typedef ark_ptr<string,const component> pointer;
+            typedef ark_ptr<string,const component> pointer; //!< alias
             
             //__________________________________________________________________
             //

@@ -39,6 +39,12 @@ YACK_UTEST(components)
     std::cerr << comp.genuine_limits(C,lib.maxlen)  << std::endl;
     std::cerr << water.genuine_limits(C,lib.maxlen) << std::endl;
 
+    rmulops ops;
+    
+    std::cerr << "comp  ma: " << comp.mass_action(pow(10,-4.8), C, ops) << std::endl;
+    std::cerr << "water ma: " << water.mass_action(1e-14, C, ops) << std::endl;
+
+    
 }
 YACK_UDONE()
 

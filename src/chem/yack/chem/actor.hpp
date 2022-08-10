@@ -38,8 +38,10 @@ namespace yack
             //! access species
             const species & operator*() const throw();
             
+            //! helper
             void display_first(std::ostream &) const;
             
+            //! helper
             void display_extra(std::ostream &) const;
             
             
