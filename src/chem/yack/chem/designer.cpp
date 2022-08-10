@@ -18,6 +18,27 @@ namespace yack
 
         namespace
         {
+            class sp_build  : public syntax::translator
+            {
+            public:
+                explicit sp_build() : syntax::translator(),
+                name()
+                {
+                }
+
+                virtual ~sp_build() throw() {}
+
+                string name;
+                string z;
+
+                
+
+
+
+            private:
+                YACK_DISABLE_COPY_AND_ASSIGN(sp_build);
+            };
+
             class sp_parser : public   parser
             {
             public:
@@ -46,13 +67,14 @@ namespace yack
         {
         }
 
+
         void designer::species_from(jive::module *m)
         {
             source src(m);
             sp->reset();
 
             auto_ptr<syntax::xnode> spx  = sp->parse(src);
-            syntax::translator      spt;
+            sp_build                spt;
             spt.walk(*spx,NULL);
 
         }

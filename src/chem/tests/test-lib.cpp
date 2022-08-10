@@ -9,6 +9,8 @@ using namespace chemical;
 
 YACK_UTEST(lib)
 {
+    YACK_SIZEOF(jive::character);
+
     library lib;
 
     lib("H+",1);
