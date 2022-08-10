@@ -18,12 +18,30 @@ namespace yack
         class actor : public object
         {
         public:
-            virtual ~actor() throw(); //!< cleanup
+            //__________________________________________________________________
+            //
+            // C++
+            //__________________________________________________________________
+
+            //! cleanup
+            virtual ~actor() throw();
+            
+            //! setup from persistent species and positive coefficient
             explicit actor(const species &sr,
                            const unsigned cf) throw();
 
+            //__________________________________________________________________
+            //
+            // method
+            //__________________________________________________________________
+           
+            //! access species
             const species & operator*() const throw();
 
+            //__________________________________________________________________
+            //
+            // members
+            //__________________________________________________________________
             actor *next; //!< for list
             actor *prev; //!< for list
 

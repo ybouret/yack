@@ -78,7 +78,39 @@ namespace yack
             //! display species+info
             friend std::ostream & operator<<(std::ostream &os, const library &lib);
 
+            //! display helper
+            template <typename PREFIX, typename ARRAY> inline
+            std::ostream & operator()(std::ostream &os, const PREFIX &prefix, ARRAY &arr) const
+            {
+                os << '{' << std::endl;
+                for(const snode *node=head();node;node=node->next)
+                {
+                    const species &s = ***node;
+                    const size_t   j = *s;
+                    pad(os << ' ' << prefix << '[' << s.name << ']',s) << " = " << arr[j] << std::endl;
+                }
+                os << '}';
+                return os;
+            }
 
+            //! access by name
+            template <typename ARRAY, typename NAME> inline
+            typename ARRAY::mutable_type &operator()(ARRAY &arr, const NAME &name) const
+            {
+                const library &self = *this;
+                const species &whom = self[name];
+                return arr[*whom];
+            }
+            
+            //! access by name
+            template <typename ARRAY, typename NAME> inline
+            typename ARRAY::const_type &operator()(const ARRAY &arr, const NAME &name) const
+            {
+                const library &self = *this;
+                const species &whom = self[name];
+                return arr[*whom];
+            }
+            
 
         private:
             YACK_DISABLE_ASSIGN(library);

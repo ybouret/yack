@@ -7,7 +7,7 @@ using namespace yack;
 
  
 
-YACK_UTEST(data_ordered_list)
+YACK_UTEST(data_sorted_list)
 {
     randomized::rand_ ran;
     
@@ -18,6 +18,7 @@ YACK_UTEST(data_ordered_list)
             L.insert( bring::get<int>(ran) );
             std::cerr << L << std::endl;
         }
+        std::cerr << std::endl;
     }
     
     {
@@ -27,6 +28,21 @@ YACK_UTEST(data_ordered_list)
             L.insert( bring::get<string>(ran) );
             std::cerr << L << std::endl;
         }
+        std::cerr << std::endl;
+    }
+    
+    {
+        sorted_list<double> L;
+        L.insert(2);
+        L.insert(1);
+        std::cerr << L << std::endl;
+        L.insert(0.5,3);
+        std::cerr << L << std::endl;
+        L.insert(1.5,4);
+        std::cerr << L << std::endl;
+        L.insert(2.1,5);
+        std::cerr << L << std::endl;
+
     }
     
     

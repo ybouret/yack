@@ -10,23 +10,24 @@ namespace
     };
 
 
+    //! translator for
     class sp_linker  : public large_object, public syntax::translator
     {
     public:
-        const hashing::perfect thash;
 
+        //! setup with keywords
         inline explicit sp_linker() : syntax::translator(),
         thash( YACK_HASHING_PERFECT(sp_term) )
         {
         }
 
-        inline virtual ~sp_linker() throw()
-        {}
+        //! cleanup
+        inline virtual ~sp_linker() throw() {}
 
         inline virtual void on_terminal(const lexeme &lxm)
         {
             assert(NULL!=data);
-            const string &tid = *lxm.name;
+            const string     &tid = *lxm.name;
             nucleus::sp_info &msg = *static_cast<nucleus::sp_info *>(data);
 
             switch( thash(tid) )
@@ -62,6 +63,8 @@ namespace
 
     private:
         YACK_DISABLE_COPY_AND_ASSIGN(sp_linker);
+        const hashing::perfect thash;
+
         static inline void raise_error(const string &word)
         {
             throw imported::exception(designer::call_sign,"corrupted species linker with <%s>",word());

@@ -4,6 +4,8 @@
 #include "yack/type/utils.hpp"
 #include "yack/arith/ipower.hpp"
 
+#include <new>
+
 namespace yack
 {
     namespace chemical
@@ -49,6 +51,30 @@ namespace yack
                 ops.push(C[***a],a->nu);
             }
             return ops.query();
+        }
+
+        const xlimit *actors:: genuine_limit(const readable<double> &C) const throw()
+        {
+            const actor *a = crew.head;
+            if(a)
+            {
+                const actor *id = a;
+                double       xi = C[***a]/a->nu;
+                for(a=a->next;a;a=a->next)
+                {
+                    const double xi_tmp =C[***a]/a->nu;
+                    if(xi_tmp<xi)
+                    {
+                        xi = xi_tmp;
+                        id = a;
+                    }
+                }
+                return new( wksp.get_entry() ) xlimit(*id,xi);
+            }
+            else
+            {
+                return NULL;
+            }
         }
 
 
