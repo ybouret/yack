@@ -32,6 +32,11 @@ namespace yack
             return (*cdb.tree).head;
         }
         
+        const xlimits & components:: genuine_limits(const readable<double> &C, const size_t w) const throw()
+        {
+            return * new( xlm.get_entry() ) xlimits(reac.genuine_limit(C),prod.genuine_limit(C),w);
+        }
+        
         void components:: operator()(const species &sp,
                                      const int      nu)
         {

@@ -6,6 +6,7 @@
 
 #include "yack/chem/actors.hpp"
 #include "yack/chem/component.hpp"
+#include "yack/chem/xlimits.hpp"
 #include "yack/associative/suffix/set.hpp"
 
 namespace yack
@@ -29,7 +30,9 @@ namespace yack
                             const int      nu);
             
             
-            const cnode *head() const throw();
+            const cnode   *head() const throw();
+            const xlimits &genuine_limits(const readable<double> &C, const size_t w) const throw();
+            
             
             friend std::ostream & operator<<(std::ostream &, const components &);
             
@@ -38,8 +41,8 @@ namespace yack
             
         private:
             YACK_DISABLE_COPY_AND_ASSIGN(components);
-            components_set cdb;
-            
+            components_set                     cdb;
+            mutable memory::workplace<xlimits> xlm;
         };
         
     }
