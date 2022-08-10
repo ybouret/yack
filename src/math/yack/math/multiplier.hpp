@@ -95,14 +95,14 @@ namespace yack
         //
         //______________________________________________________________________
         template <typename T>
-        class multiplier : public multiplication, public ordered_list< core::tagged_real<T> >
+        class multiplier : public multiplication, public sorted_list< core::tagged_real<T> >
         {
         public:
             //__________________________________________________________________
             //
             // types and definitions
             //__________________________________________________________________
-            typedef ordered_list<  core::tagged_real<T> >  self_type; //!< alias
+            typedef sorted_list<  core::tagged_real<T> >  self_type; //!< alias
             typedef typename self_type::const_type         data_type; //!< alias
             static  const int                              min_exp;   //!< numeric<T>::min_exp
             static  const int                              max_exp;   //!< numeric<T>::max_exp
@@ -136,6 +136,9 @@ namespace yack
 
             //! push a new real
             inline void push(const T x) { data_type args(x); insert(args); }
+
+            //! push a new real n times a.k.a x^n
+            inline void push(const T x, size_t n) { data_type args(x); while(n-- > 0) insert(args); }
 
             //! syntax helper
             inline multiplier & operator<<(const T x) { push(x); return *this; }

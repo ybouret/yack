@@ -1,8 +1,8 @@
 //! \file
 
 
-#ifndef YACK_ORDERED_LIST_INCLUDED
-#define YACK_ORDERED_LIST_INCLUDED
+#ifndef YACK_SORTED_LIST_INCLUDED
+#define YACK_SORTED_LIST_INCLUDED 1
 
 #include "yack/data/list.hpp"
 #include "yack/data/pool.hpp"
@@ -19,7 +19,7 @@ namespace yack
     
     namespace low_level
     {
-        extern const char ordered_list_name[]; //!< "ordered list"
+        extern const char sorted_list_name[]; //!< "sortes list"
     }
 
     //__________________________________________________________________________
@@ -29,7 +29,7 @@ namespace yack
     //
     //__________________________________________________________________________
     template <typename T>
-    class ordered_list : public container
+    class sorted_list : public container
     {
     public:
         //______________________________________________________________________
@@ -74,13 +74,13 @@ namespace yack
         //______________________________________________________________________
 
         //! setup empty
-        inline explicit ordered_list() throw() : active(), zombie() {}
+        inline explicit sorted_list() throw() : active(), zombie() {}
 
         //! setup with capacity
-        inline explicit ordered_list(const size_t n) throw() : active(), zombie() { reserve(n); }
+        inline explicit sorted_list(const size_t n) throw() : active(), zombie() { reserve(n); }
 
         //! cleanup
-        inline virtual ~ordered_list() throw() { release_all(); }
+        inline virtual ~sorted_list() throw() { release_all(); }
 
         //______________________________________________________________________
         //
@@ -88,8 +88,9 @@ namespace yack
         //______________________________________________________________________
         inline virtual const char * category() const throw()
         {
-            return low_level::ordered_list_name;
-        } //!< ordered_list_name
+            return low_level::sorted_list_name;
+        } //!< get its name
+
         inline virtual size_t size()     const throw()  { return active.size; }             //!< active.size
         inline virtual size_t capacity() const throw()  { return active.size+zombie.size; } //!< active.size+zombie.size
         inline virtual size_t available() const throw() { return zombie.size; }             //!< zombie.size
@@ -176,7 +177,7 @@ namespace yack
 
 
         //! display
-        inline friend std::ostream & operator<<(std::ostream &os, const ordered_list &L)
+        inline friend std::ostream & operator<<(std::ostream &os, const sorted_list &L)
         {
             os << '{';
             const node_type *node = L.active.head;
@@ -193,7 +194,7 @@ namespace yack
         }
 
     private:
-        YACK_DISABLE_COPY_AND_ASSIGN(ordered_list);
+        YACK_DISABLE_COPY_AND_ASSIGN(sorted_list);
         list_type active;
         pool_type zombie;
 

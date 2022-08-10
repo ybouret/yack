@@ -12,7 +12,7 @@ YACK_UTEST(data_ordered_list)
     randomized::rand_ ran;
     
     {
-        ordered_list<int> L;
+        sorted_list<int> L;
         for(size_t i=10;i>0;--i)
         {
             L.insert( bring::get<int>(ran) );
@@ -21,7 +21,7 @@ YACK_UTEST(data_ordered_list)
     }
     
     {
-        ordered_list<string> L;
+        sorted_list<string> L;
         for(size_t i=10;i>0;--i)
         {
             L.insert( bring::get<string>(ran) );
