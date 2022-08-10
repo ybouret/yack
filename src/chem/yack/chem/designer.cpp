@@ -37,12 +37,16 @@ namespace yack
 
 }
 
+//------------------------------------------------------------------------------
+//
+// SPECIES
+//
+//------------------------------------------------------------------------------
 namespace yack
 {
 
     namespace chemical
     {
-        // SPECIES
         nucleus::sp_info designer:: species_info_from(jive::module *m)
         {
             source src(m);
@@ -83,6 +87,7 @@ namespace yack
                 return lib(uuid,info.z);
             }
         }
+        
 
         const species & library:: operator()(const string &expr)
         {
@@ -95,6 +100,7 @@ namespace yack
             static designer &io = designer::instance();
             return io(*this,expr);
         }
+
 
 
     }

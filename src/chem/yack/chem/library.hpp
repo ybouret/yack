@@ -72,6 +72,9 @@ namespace yack
             const species & operator[](const string &) const;     //!< access existing species by name
             const species & operator[](const char   *) const;     //!< access existing species by name
 
+            library & operator<<(const string &); //!< colon-separated list of species
+            library & operator<<(const char   *); //!< colon-separated list of species
+
             //! display species+info
             friend std::ostream & operator<<(std::ostream &os, const library &lib);
 

@@ -16,6 +16,10 @@ YACK_UTEST(lib)
     lib("H+",1);
     lib("HO-",-1);
 
+    lib << "Na+";
+    lib << "Cl-";
+    lib << "Mg++:SO4--";
+
     const library lcp(lib);
 
     std::cerr << "lib=" << lib << std::endl;
@@ -29,6 +33,9 @@ YACK_UTEST(lib)
         const species     &sp   = io(lib,expr);
         std::cerr << sp.name << std::endl;
     }
+
+
+
 
 }
 YACK_UDONE()

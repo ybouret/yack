@@ -1,6 +1,8 @@
 
 #include "yack/chem/library.hpp"
 #include "yack/system/exception.hpp"
+#include "yack/string/tokenizer.hpp"
+#include "yack/string/ops.hpp"
 #include <iomanip>
 
 namespace yack
@@ -14,11 +16,11 @@ namespace yack
         {
         }
 
-        library:: library() throw() : gathering()
+        library:: library() throw() : gathering(), readable<const species>(), sdb()
         {
         }
 
-        library:: library(const library &other) : gathering()
+        library:: library(const library &other) : collection(), gathering(), readable<const species>(), sdb()
         {
 
             for(const snode *node=other.head();node;node=node->next)
@@ -94,6 +96,29 @@ namespace yack
             const string _(uid);
             return (*this)[_];
         }
+
+
+        library & library:: operator<<(const string &input)
+        {
+            library       &self = *this;
+            vector<string> fields(8,as_capacity);
+            tokenizer::split_with(':', fields, input);
+            const size_t n = fields.size();
+            for(size_t i=1;i<=n;++i)
+            {
+                string &field = fields[i];
+                strops::strip_with(" \t", 2, field);
+                (void)self(field);
+            }
+            return *this;
+        }
+
+        library & library:: operator<<(const char *input)
+        {
+            const string _(input);
+            return (*this) << _;
+        }
+
 
 
     }
