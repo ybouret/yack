@@ -14,7 +14,12 @@ namespace yack
     {
         namespace nucleus
         {
-            
+            //__________________________________________________________________
+            //
+            //
+            //! linker for components
+            //
+            //__________________________________________________________________
             class cm_linker  : public large_object, public jive::syntax::translator
             {
             public:

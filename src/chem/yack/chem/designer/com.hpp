@@ -13,7 +13,12 @@ namespace yack
     {
         namespace nucleus
         {
-
+            //__________________________________________________________________
+            //
+            //
+            //! common identifiers
+            //
+            //__________________________________________________________________
             struct COM
             {
                 static const char * const SPECIES;     //!< "SPECIES"

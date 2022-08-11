@@ -5,6 +5,7 @@
 
 #include "yack/string.hpp"
 #include "yack/counted.hpp"
+#include "yack/large-object.hpp"
 
 namespace yack
 {
@@ -17,7 +18,7 @@ namespace yack
         //! named entity with index
         //
         //______________________________________________________________________
-        class entity : public object, public counted
+        class entity : public large_object, public counted
         {
         public:
             //__________________________________________________________________
@@ -31,7 +32,7 @@ namespace yack
             template <typename NAME> inline
             explicit entity(const NAME  &uid,
                             const size_t idx) :
-            object(),
+            large_object(),
             counted(),
             name(uid),
             indx(idx)

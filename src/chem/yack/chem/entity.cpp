@@ -11,7 +11,7 @@ namespace yack
         }
 
         entity:: entity(const entity &other) :
-        object(),
+        large_object(),
         counted(),
         name(other.name),
         indx(other.indx)

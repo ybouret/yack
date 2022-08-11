@@ -18,7 +18,7 @@ namespace yack
             //__________________________________________________________________
             //
             //
-            //! info for componentidentification
+            //! info for components identification
             //
             //__________________________________________________________________
             class cm_info : public sp_info
@@ -36,13 +36,14 @@ namespace yack
                 //
                 // members
                 //______________________________________________________________
-                int     nu;
+                int     nu;                 //!< parsed coefficient, nu!=0
                 
             private:
                 YACK_DISABLE_ASSIGN(cm_info);
             };
 
-            typedef list<cm_info> cm_infos;
+
+            typedef list<cm_info> cm_infos; //!< argument for cm_linker.walk
         }
 
     }

@@ -36,9 +36,9 @@ namespace yack
 
                 drop("[:blank:]+");
 
-                gv();
                 validate();
-
+                
+                if(false)
                 {
                     vector<string> terminals;
                     vector<string> internals;

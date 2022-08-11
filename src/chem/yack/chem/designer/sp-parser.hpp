@@ -13,11 +13,17 @@ namespace yack
     {
         namespace nucleus
         {
+            //__________________________________________________________________
+            //
+            //
+            //! parser for species
+            //
+            //__________________________________________________________________
             class sp_parser : public jive::parser
             {
             public:
-                virtual ~sp_parser() throw();
-                explicit sp_parser();
+                virtual ~sp_parser() throw(); //!< cleanup
+                explicit sp_parser();         //!< setup
 
             private:
                 YACK_DISABLE_COPY_AND_ASSIGN(sp_parser);

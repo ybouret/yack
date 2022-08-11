@@ -14,11 +14,17 @@ namespace yack
     {
         namespace nucleus
         {
+            //__________________________________________________________________
+            //
+            //
+            //! parser for components
+            //
+            //__________________________________________________________________
             class cm_parser : public jive::parser
             {
             public:
-                virtual ~cm_parser() throw();
-                explicit cm_parser();
+                virtual ~cm_parser() throw(); //!< cleanup
+                explicit cm_parser();         //!< setup
 
             private:
                 YACK_DISABLE_COPY_AND_ASSIGN(cm_parser);
