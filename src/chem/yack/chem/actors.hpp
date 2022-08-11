@@ -62,8 +62,9 @@ namespace yack
             //
             // members
             //__________________________________________________________________
-            const size_t       molecularity; //!< molecularity
-                                             
+            const unsigned  molecularity; //!< molecularity = sum_i nu_i
+            const int       algebraic_Z;  //!< algebraic_Z  = sum_i nu_i z_i
+            
         private:
             YACK_DISABLE_COPY_AND_ASSIGN(actors);
             cxx_list_of<actor>                crew; //!< actors

@@ -60,9 +60,10 @@ namespace yack
             //! limits from all the components
             const xlimits &genuine_limits(const readable<double> &C, const size_t w) const throw();
             
-            //! display
+            //! display reac <=> prod
             friend std::ostream & operator<<(std::ostream &, const components &);
-            
+
+            //! compute mass action for a given constant
             double mass_action(const double            K,
                                const readable<double> &C,
                                rmulops                &ops) const;

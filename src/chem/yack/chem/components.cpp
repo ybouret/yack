@@ -16,7 +16,8 @@ namespace yack
         components:: components() throw() :
         reac(),
         prod(),
-        cdb()
+        cdb(),
+        xlm()
         {
             
         }
@@ -40,7 +41,7 @@ namespace yack
         
         const xlimits & components:: genuine_limits(const readable<double> &C, const size_t w) const throw()
         {
-            return * new( xlm.get_entry() ) xlimits(reac.genuine_limit(C),prod.genuine_limit(C),w);
+            return * new( *xlm ) xlimits(reac.genuine_limit(C),prod.genuine_limit(C),w);
         }
         
         void components:: operator()(const species &sp,

@@ -16,7 +16,9 @@ namespace yack
 
         actors:: actors() throw() :
         molecularity(0),
-        crew()
+        algebraic_Z(0),
+        crew(),
+        wksp()
         {
 
         }
@@ -33,12 +35,17 @@ namespace yack
 #endif
             crew.push_back(new actor(sp,nu) );
             coerce(molecularity) += nu;
+            coerce(algebraic_Z) += int(nu)*sp.z;
         }
 
         void actors:: remove_last() throw()
         {
             assert(crew.size);
-            coerce(molecularity) -= (crew.tail->nu);
+            const actor   *last = crew.tail;
+            const unsigned nu   = last->nu;
+            const int      z    = (**last).z;
+            coerce(molecularity) -= nu;
+            coerce(algebraic_Z)  -= int(nu)*z;
             delete crew.pop_back();
         }
 
@@ -62,14 +69,14 @@ namespace yack
                 double       xi = C[***a]/a->nu;
                 for(a=a->next;a;a=a->next)
                 {
-                    const double xi_tmp =C[***a]/a->nu;
+                    const double xi_tmp = C[***a]/a->nu;
                     if(xi_tmp<xi)
                     {
                         xi = xi_tmp;
                         id = a;
                     }
                 }
-                return new( wksp.get_entry() ) xlimit(*id,xi);
+                return new ( *wksp ) xlimit(*id,xi);
             }
             else
             {

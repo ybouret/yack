@@ -35,7 +35,7 @@ namespace yack {
             inline explicit     workplace(TARGET * &target) throw() : words_()
             {
                 eradicate();
-                target = static_cast<TARGET *>( get_entry() );
+                target = static_cast<TARGET *>( **this );
             }
 
             //__________________________________________________________________
@@ -43,18 +43,14 @@ namespace yack {
             // methods
             //__________________________________________________________________
 
-            inline size_t       get_bytes() const throw() { return sizeof(words_); }                     //!< private bytes
-            inline void        *get_entry()       throw() { return out_of_reach::address(&words_[0]); }  //!< entry
-            inline const void  *get_entry() const throw() { return out_of_reach::address(&words_[0]); }  //!< entry, const
+            inline void        * operator*()       throw() { return out_of_reach::address(&words_[0]); }  //!< entry
+            inline const void  * operator*() const throw() { return out_of_reach::address(&words_[0]); }  //!< entry, const
             inline void         eradicate() throw() { memset(words_,0,sizeof(words_)); }                 //!< cleanup content
 
             //! no-throw swap content
-            inline void         swap_with(workplace &other) throw()
-            {
+            inline void         swap_with(workplace &other) throw() {
                 for(size_t i=0;i<sizeof(words_)/sizeof(words_[0]);++i)
-                {
                     cswap(words_[i],other.words_[i]);
-                }
             }
 
         private:
