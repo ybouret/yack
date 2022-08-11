@@ -23,14 +23,16 @@ namespace yack
 
             private:
                 YACK_DISABLE_COPY_AND_ASSIGN(cm_linker);
-                const hashing::perfect thash;
                 list<int>              ilist;
+                const hashing::perfect thash;
+                const hashing::perfect ihash;
 
                 virtual void on_init();         //!< reset ilist
                 
                 virtual void on_terminal(const lexeme &);
-                //virtual void on_internal(const string &,const size_t);
+                virtual void on_internal(const string &,const size_t);
                 static  void raise_error(const string &);
+                void         reduce() throw();
             };
         }
     }

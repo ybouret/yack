@@ -18,7 +18,7 @@ namespace yack
             cm_parser:: cm_parser() : jive:: parser("chemical::components::parser")
             {
 
-                compound   &COMPONENTS = agg("COMPONENTS");
+                compound   &COMPONENTS = agg(COM::COMPONENTS);
                 compound   &COMPONENT  = grp("COMPONENT");
                 const rule &POS        = term('+');
                 const rule &NEG        = term('-');
