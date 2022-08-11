@@ -21,6 +21,7 @@ namespace yack
             {
                 compound   &COMPONENTS = agg("COMPONENTS");
                 compound   &COMPONENT  = ( agg("COMPONENT") << mark('[') << oom( term("CH",ch_expr) ) << mark(']') );
+                const rule &COEFF      = term("COEFF","[1-9][0-9]*");
                 
                 COMPONENTS << COMPONENT;
 
