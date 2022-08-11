@@ -126,10 +126,10 @@ namespace yack
                         // set coefficient
                         if(ilist.size()) cm.nu = ilist.pull_back();
 
-                        
+
                         std::cerr << "name = " << cm.name << std::endl;
                         std::cerr << "z    = " << cm.z    << std::endl;
-                        std::cerr << "nu   = " << nu      << std::endl;
+                        std::cerr << "nu   = " << cm.nu   << std::endl;
 
                     } break;
 
