@@ -57,8 +57,8 @@ namespace yack
 
         enum search_direction
         {
-            search_left,
-            search_right
+            search_decreasing,
+            search_increasing
         };
 
         outcome outcome:: study(const components       &comp,
@@ -77,15 +77,16 @@ namespace yack
                 case components::are_blocked: return outcome(components::are_blocked,extent::is_degenerated,0);
                 case components::are_running: break;
             }
-            triplet<double>  f  = { 0,comp.mass_action(K,Cini,ops),0 };
+            
+            triplet<double>  f  = { 0,comp.mass_action(K,Cend,ops),0 };
             const sign_type  s  = __sign::of(f.b);
-            search_direction d  = search_left;
+            search_direction d  = search_decreasing;
             std::cerr << "f.b=" << f.b << std::endl;
             switch(s)
             {
                 case __zero__: return outcome(components::are_running,extent::is_degenerated,0);
                 case positive:
-                    d = search_right;
+                    d = search_increasing;
                     std::cerr << "search right" << std::endl;
                     break;
                 case negative:
@@ -111,7 +112,7 @@ namespace yack
                         assert(0==comp.prod.molecularity);
                         switch(d)
                         {
-                            case search_right:
+                            case search_increasing:
                                 f.a = f.b; assert(f.a>0);
                                 x.a = 0;
                                 x.c = lm.reac->xi;
@@ -120,7 +121,7 @@ namespace yack
                                 assert(f.c<0);
                                 break;
 
-                            case search_left:
+                            case search_decreasing:
                                 f.c = f.b; assert(f.c<0);
                                 x.c = 0;
                                 x.a = -pow(K,-1.0/comp.reac.molecularity);
@@ -134,7 +135,7 @@ namespace yack
                         assert(0==comp.reac.molecularity);
                         switch(d)
                         {
-                            case search_left:
+                            case search_decreasing:
                                 f.c = f.b; assert(f.c<0);
                                 x.c = 0;
                                 x.a = -lm.prod->xi;
@@ -142,7 +143,7 @@ namespace yack
                                 assert(f.a>0);
                                 break;
 
-                            case search_right:
+                            case search_increasing:
                                 f.a = f.b; assert(f.a>0);
                                 x.a = 0;
                                 x.c = pow(K,1.0/comp.prod.molecularity);
@@ -155,7 +156,7 @@ namespace yack
                     case limited_by_both:
                         switch(d)
                         {
-                            case search_left:
+                            case search_decreasing:
                                 f.c = f.b; assert(f.c<0);
                                 x.c = 0;
                                 x.a = -lm.prod->xi;
@@ -164,7 +165,7 @@ namespace yack
                                 assert(f.a>0);
                                 break;
 
-                            case search_right:
+                            case search_increasing:
                                 f.a = f.b; assert(f.a>0);
                                 x.a = 0;
                                 x.c = lm.reac->xi;
