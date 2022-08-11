@@ -1,5 +1,6 @@
 
 #include "yack/chem/designer/sp-parser.hpp"
+#include "yack/chem/designer/com.hpp"
 
 namespace yack
 {
@@ -15,8 +16,8 @@ namespace yack
 
             sp_parser:: sp_parser() : jive:: parser("chemical::species::parser")
             {
-                syntax::compound &SPECIES = agg("SPECIES");
-                SPECIES << term("NAME", "[:alpha:][:word:]*");
+                syntax::compound &SPECIES = agg(COM::SPECIES);
+                SPECIES << term(COM::SP_NAME,COM::SP_EXPR);
                 {
                     const syntax::rule &POS = oom( term('+') );
                     const syntax::rule &NEG = oom( term('-') );

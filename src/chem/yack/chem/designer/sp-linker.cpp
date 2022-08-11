@@ -1,5 +1,6 @@
 #include "yack/chem/designer/sp-linker.hpp"
 #include "yack/chem/designer/sp-info.hpp"
+#include "yack/chem/designer/com.hpp"
 #include "yack/exception.hpp"
 
 namespace yack
@@ -14,9 +15,9 @@ namespace yack
 
             static const char * sp_term[] =
             {
-                "NAME", //!< 0
-                "+",    //!< 1
-                "-"     //!< 2
+                COM::SP_NAME, //!< 0
+                "+",          //!< 1
+                "-"           //!< 2
             };
 
             sp_linker:: sp_linker() : syntax::translator(),
@@ -62,7 +63,7 @@ namespace yack
             void sp_linker:: on_internal(const string &uid, const size_t n)
             {
                 assert(NULL!=data);
-                if(uid!="SPECIES") raise_error(uid);
+                if(uid!=COM::SPECIES) raise_error(uid);
                 sp_info &msg = *static_cast<sp_info *>(data);
                 if(n != size_t(abs(msg.z)+1) ) raise_error(msg.name);
             }
