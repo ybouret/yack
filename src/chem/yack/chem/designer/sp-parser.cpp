@@ -22,6 +22,7 @@ namespace yack
                     const syntax::rule &NEG = oom( term('-') );
                     SPECIES << opt( choice(POS,NEG) );
                 }
+                validate();
             }
 
         }
