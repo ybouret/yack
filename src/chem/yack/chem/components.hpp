@@ -20,7 +20,11 @@ namespace yack
         //______________________________________________________________________
         typedef suffix_set<string,const component::pointer> components_set; //!< alias
         typedef components_set::knot_type                   cnode;          //!< alias
+
         class library;
+
+
+
 
         //______________________________________________________________________
         //
@@ -35,8 +39,15 @@ namespace yack
             //
             // types and definitions
             //__________________________________________________________________
-            static const char clid[]; //!< components
-           
+            static const char clid[]; //!< "components"
+
+            enum status
+            {
+                are_running,
+                are_blocked
+            };
+
+
             //__________________________________________________________________
             //
             // C++
@@ -90,7 +101,7 @@ namespace yack
                 }
             }
 
-            //! transfer components
+            //! transfer only concerned components
             template <typename TARGET, typename SOURCE> inline
             void transfer(TARGET &target, SOURCE &source) const
             {
@@ -107,6 +118,12 @@ namespace yack
             //! parse string, use library for species
             void operator()(library &, const char   *);
 
+            //! check DrZ = 0
+            bool neutral() const throw();
+
+            //! check minimal
+            bool minimal() const throw();
+
             //__________________________________________________________________
             //
             // members
@@ -114,6 +131,9 @@ namespace yack
             const actors reac; //!< reactants, nu<0
             const actors prod; //!< products,  nu>0
             const int    d_nu; //!< prod.molecularity - reac.molecularity
+
+
+
 
         private:
             YACK_DISABLE_COPY_AND_ASSIGN(components);

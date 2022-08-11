@@ -4,6 +4,7 @@
 #include "yack/chem/components.hpp"
 #include "yack/utest/run.hpp"
 #include "../../core/tests/main.hpp"
+#include "yack/type/boolean.h"
 
 using namespace yack;
 using namespace chemical;
@@ -53,7 +54,10 @@ YACK_UTEST(components)
     {
         components usr;
         usr(lib,argv[1]);
-        std::cerr << "usr : " << usr << std::endl;
+        std::cerr << "usr    : " << usr << std::endl;
+        std::cerr << "neutral: " << yack_boolean(usr.neutral()) << std::endl;
+        std::cerr << "minimal: " << yack_boolean(usr.minimal()) << std::endl;
+
     }
     
 }

@@ -116,5 +116,42 @@ namespace yack
         }
 
     }
+
+
+}
+
+#include "yack/arith/gcd.h"
+
+namespace yack
+{
+    namespace chemical
+    {
+
+        bool components:: neutral() const throw()
+        {
+            return reac.algebraic_Z == prod.algebraic_Z;
+        }
+
+        bool components:: minimal() const throw()
+        {
+            if(size()<=1)
+            {
+                return true;
+            }
+            else
+            {
+                assert(size()>=2);
+                const cnode   *node = head();              assert(node);
+                uint64_t       gcd  = abs( (**node)->nu ); assert(gcd>0);
+                for(node=node->next;node;node=node->next)
+                {
+                    gcd = yack_gcd64(gcd, abs( (**node)->nu ) );
+                }
+                return 1 == gcd;
+            }
+        }
+
+
+    }
     
 }
