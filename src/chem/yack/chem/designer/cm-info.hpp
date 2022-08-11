@@ -1,10 +1,11 @@
 
+
 //! \file
 
-#ifndef YACK_CHEMICAL_DESIGNER_SP_INFO_INCLUDED
-#define YACK_CHEMICAL_DESIGNER_SP_INFO_INCLUDED 1
+#ifndef YACK_CHEMICAL_DESIGNER_CM_INFO_INCLUDED
+#define YACK_CHEMICAL_DESIGNER_CM_INFO_INCLUDED 1
 
-#include "yack/string.hpp"
+#include "yack/chem/designer/sp-info.hpp"
 
 namespace yack
 {
@@ -16,29 +17,28 @@ namespace yack
             //__________________________________________________________________
             //
             //
-            //! info for species identification
+            //! info for componentidentification
             //
             //__________________________________________________________________
-            class sp_info
+            class cm_info : public sp_info
             {
             public:
                 //______________________________________________________________
                 //
                 // C++
                 //______________________________________________________________
-                explicit sp_info();              //!< setup empty/0
-                virtual ~sp_info() throw();      //!< cleanup
-                sp_info(const sp_info &);        //!< copy
+                explicit cm_info();         //!< setup empty/1
+                virtual ~cm_info() throw(); //!< cleanup
+                cm_info(const cm_info &);   //!< copy
 
                 //______________________________________________________________
                 //
                 // members
                 //______________________________________________________________
-                string name; //!< species name
-                int    z;    //!< species charge
-
+                int     nu;
+                
             private:
-                YACK_DISABLE_ASSIGN(sp_info);
+                YACK_DISABLE_ASSIGN(cm_info);
             };
         }
 

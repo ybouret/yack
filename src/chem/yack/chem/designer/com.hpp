@@ -16,14 +16,14 @@ namespace yack
 
             struct COM
             {
-                static const char SPECIES[];     //!< "SPECIES"
-                static const char SP_NAME[];     //!< "SP_NAME"
-                static const char SP_EXPR[];     //!< regular expression
+                static const char * const SPECIES;     //!< "SPECIES"
+                static const char * const SP_NAME;     //!< "SP_NAME"
+                static const char * const SP_EXPR;     //!< regular expression
 
-                static const char COMPONENTS[]; //!< "COMPONENTS"
-                static const char COEF[];       //!< "COEF"
-                static const char FIRST_COEF[]; //!< "FIRST_COEF"
-                static const char EXTRA_COEF[]; //!< "EXTRA_COEF"
+                static const char * const COMPONENTS; //!< "COMPONENTS"
+                static const char * const COEF;       //!< "COEF"
+                static const char * const FIRST_COEF; //!< "FIRST_COEF"
+                static const char * const EXTRA_COEF; //!< "EXTRA_COEF"
 
             };
 

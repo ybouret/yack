@@ -1,5 +1,5 @@
 #include "yack/chem/designer/cm-linker.hpp"
-#include "yack/chem/designer/sp-info.hpp"
+#include "yack/chem/designer/cm-info.hpp"
 #include "yack/chem/designer/com.hpp"
 #include "yack/exception.hpp"
 #include "yack/apex/natural.hpp"
@@ -114,16 +114,22 @@ namespace yack
                     case 1: assert(uid==COM::SPECIES);
                     {
                         assert(ilist.size()>=n-1);
-                        int z = 0;
+                        cm_info cm;
+
+                        // set name
+                        cm.name.xch(sname);
+
+                        // set charge
                         for(size_t i=n;i>1;--i)
-                        {
-                            z += ilist.pull_back();
-                        }
-                        int nu = 1;
-                        if(ilist.size()) nu = ilist.pull_back();
-                        std::cerr << "name = " << sname << std::endl;
-                        std::cerr << "z    = " << z << std::endl;
-                        std::cerr << "nu   = " << nu << std::endl;
+                            cm.z += ilist.pull_back();
+
+                        // set coefficient
+                        if(ilist.size()) cm.nu = ilist.pull_back();
+
+                        
+                        std::cerr << "name = " << cm.name << std::endl;
+                        std::cerr << "z    = " << cm.z    << std::endl;
+                        std::cerr << "nu   = " << nu      << std::endl;
 
                     } break;
 
