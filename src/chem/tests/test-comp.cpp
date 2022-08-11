@@ -5,7 +5,7 @@
 #include "yack/utest/run.hpp"
 #include "../../core/tests/main.hpp"
 #include "yack/chem/designer/cm-parser.hpp"
-#include "yack/jive/syntax/xnode.hpp"
+#include "yack/jive/syntax/translator.hpp"
 
 using namespace yack;
 using namespace chemical;
@@ -58,6 +58,8 @@ YACK_UTEST(components)
         if(code.is_valid())
         {
             code->gv("cm.dot");
+            jive::syntax::translator tr;
+            tr.walk(*code,NULL);
         }
     }
     
