@@ -38,10 +38,10 @@ namespace yack
             //
             // definitions
             //__________________________________________________________________
-            static const char clid[]; //!< chemical::library
-            static const int min_exp10 = -20;
-            static const int max_exp10 =  1;
-            static double    concentration(randomized::bits &) throw();
+            static const char clid[];           //!< chemical::library
+            static const int  min_exp10 = -20;  //!< for concentration
+            static const int  max_exp10 =   1;  //!< for concentration
+            static double    concentration(randomized::bits &) throw(); //!< random concentration
 
             //__________________________________________________________________
             //
@@ -62,7 +62,7 @@ namespace yack
             //
             // methods
             //__________________________________________________________________
-            void fill(writable<double> &C, randomized::bits &ran) const;
+            void fill(writable<double> &C, randomized::bits &ran) const; //!< fill random values
 
             const   snode *head() const throw(); //!< sequential access
 

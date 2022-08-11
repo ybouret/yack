@@ -41,11 +41,11 @@ namespace yack
             //__________________________________________________________________
             static const char clid[]; //!< "components"
 
-
+            //! current state
             enum state
             {
-                are_running,
-                are_blocked
+                are_running, //!< may (already) be balanced
+                are_blocked  //!< blocked
             };
 
 

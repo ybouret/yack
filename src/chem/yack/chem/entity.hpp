@@ -21,7 +21,7 @@ namespace yack
         class entity : public large_object, public counted
         {
         public:
-            static bool verbose;
+            static bool verbose; //!< global verbosity
 
             //__________________________________________________________________
             //

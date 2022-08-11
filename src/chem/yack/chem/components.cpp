@@ -85,12 +85,11 @@ namespace yack
                                         rmulops                &ops) const
         {
             // reactant side
-            ops.free();
-            ops.push(K);
+            ops.ld(K);
             const double rma = reac.mass_action(C,ops);
 
             // product side
-            ops.free();
+            ops.ld1();
             const double pma = prod.mass_action(C,ops);
 
             // difference
@@ -103,12 +102,11 @@ namespace yack
                                         rmulops                &ops) const
         {
             // reactant side
-            ops.free();
-            ops.push(K);
+            ops.ld(K);
             const double rma = reac.mass_action(C,-xi,ops);
 
             // product side
-            ops.free();
+            ops.ld1();
             const double pma = prod.mass_action(C,xi,ops);
 
             // difference

@@ -135,23 +135,14 @@ namespace yack
             // methods
             //__________________________________________________________________
 
-            inline void ld(const T x) {
-                free();
-                push(x);
-            }
+            //! initialize
+            inline void ld(const T x) { free(); push(x); }
 
-            inline void ld1() throw()
-            {
-                free();
-            }
+            //! initialize with 1
+            inline void ld1() throw() { free(); }
 
-            multiplier & operator=(const T x)
-            {
-                ld(x);
-                return *this;
-            }
-
-
+            //! syntax helper
+            multiplier & operator=(const T x) { ld(x); return *this; }
 
             //! push a new real
             inline void push(const T x) { data_type args(x); insert(args); }
