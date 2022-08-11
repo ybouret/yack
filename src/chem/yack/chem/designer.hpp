@@ -74,6 +74,7 @@ namespace yack
             //__________________________________________________________________
             auto_ptr<parser> spp; //!< species parser
             auto_ptr<linker> spl; //!< species linker
+            auto_ptr<parser> cmp;  //!< components parser
 
             //__________________________________________________________________
             //

@@ -6,6 +6,9 @@
 #include "yack/chem/designer/sp-parser.hpp"
 #include "yack/chem/designer/sp-linker.hpp"
 
+#include "yack/chem/designer/cm-parser.hpp"
+
+
 namespace yack
 {
     using namespace jive;
@@ -24,7 +27,9 @@ namespace yack
 
         designer:: designer() :
         spp( new nucleus::sp_parser() ),
-        spl( new nucleus::sp_linker() )
+        spl( new nucleus::sp_linker() ),
+
+        cmp( new nucleus::cm_parser() )
         {
         }
 

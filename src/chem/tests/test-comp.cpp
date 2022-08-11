@@ -4,6 +4,8 @@
 #include "yack/chem/components.hpp"
 #include "yack/utest/run.hpp"
 #include "../../core/tests/main.hpp"
+#include "yack/chem/designer/cm-parser.hpp"
+#include "yack/jive/syntax/xnode.hpp"
 
 using namespace yack;
 using namespace chemical;
@@ -48,6 +50,16 @@ YACK_UTEST(components)
     std::cerr << "comp  Z = " << comp.reac.algebraic_Z << " -> " << comp.prod.algebraic_Z << std::endl;
     std::cerr << "water Z = " << water.reac.algebraic_Z << " -> " << water.prod.algebraic_Z << std::endl;
 
+
+    nucleus::cm_parser cmp;
+    if(argc>1)
+    {
+        auto_ptr<jive::syntax::xnode> code = cmp.parse( jive::module::open_data(argv[1]) );
+        if(code.is_valid())
+        {
+            code->gv("cm.dot");
+        }
+    }
     
 }
 YACK_UDONE()
