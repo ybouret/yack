@@ -74,11 +74,18 @@ namespace yack
             //__________________________________________________________________
             const actors reac; //!< reactants, nu<0
             const actors prod; //!< products,  nu>0
-            
+            const int    d_nu; //!< prod.molecularity - reac.molecularity
+
         private:
             YACK_DISABLE_COPY_AND_ASSIGN(components);
-            components_set                     cdb;
-            mutable memory::workplace<xlimits> xlm;
+
+            //__________________________________________________________________
+            //
+            // private members
+            //__________________________________________________________________
+            components_set                     cdb; //!< components database
+            mutable memory::workplace<xlimits> xlm; //!< workplace for xlimits
+
         };
         
     }

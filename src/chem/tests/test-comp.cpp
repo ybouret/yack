@@ -44,6 +44,10 @@ YACK_UTEST(components)
     std::cerr << "comp  ma: " << comp.mass_action(pow(10,-4.8), C, ops) << std::endl;
     std::cerr << "water ma: " << water.mass_action(1e-14, C, ops) << std::endl;
 
+
+    std::cerr << "comp  Z = " << comp.reac.algebraic_Z << " -> " << comp.prod.algebraic_Z << std::endl;
+    std::cerr << "water Z = " << water.reac.algebraic_Z << " -> " << water.prod.algebraic_Z << std::endl;
+
     
 }
 YACK_UDONE()

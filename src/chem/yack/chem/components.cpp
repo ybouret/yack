@@ -16,6 +16,7 @@ namespace yack
         components:: components() throw() :
         reac(),
         prod(),
+        d_nu(0),
         cdb(),
         xlm()
         {
@@ -37,51 +38,62 @@ namespace yack
         {
             return (*cdb.tree).size;
         }
-    
+
         
         const xlimits & components:: genuine_limits(const readable<double> &C, const size_t w) const throw()
         {
-            return * new( *xlm ) xlimits(reac.genuine_limit(C),prod.genuine_limit(C),w);
+            return * new ( *xlm ) xlimits(reac.genuine_limit(C),prod.genuine_limit(C),w);
         }
         
         void components:: operator()(const species &sp,
                                      const int      nu)
         {
+
+            // create new component
             const component::pointer cptr = new component(sp,nu);
             if(!cdb.insert(cptr)) throw imported::exception(clid,"muliple '%s'",sp.name());
-            
-            // select actors
-            switch( __sign::of(nu) )
-            {
-                case __zero__:
-                    cdb.remove(sp.name);
-                    throw imported::exception(clid,"invalid 0 * '%s'",sp.name());
-                    
-                case positive:
-                    coerce(prod)(sp,nu);
-                    break;
-                    
-                case negative:
-                    coerce(reac)(sp,-nu);
-                    break;
+
+            // update actors
+            try {
+                switch( __sign::of(nu) )
+                {
+                    case __zero__:
+                        throw imported::exception(clid,"invalid 0 * '%s'",sp.name());
+
+                    case positive:
+                        coerce(prod)(sp,nu);
+                        break;
+
+                    case negative:
+                        coerce(reac)(sp,-nu);
+                        break;
+                }
             }
-            
+            catch(...)
+            {
+                (void) cdb.remove(sp.name);
+                throw;
+            }
             
             // update
             ++(coerce(sp.rank));
+            coerce(d_nu) = int(prod.molecularity) - int(reac.molecularity);
         }
         
         double components:: mass_action(const double            K,
                                         const readable<double> &C,
                                         rmulops                &ops) const
         {
+            // reactant side
             ops.free();
             ops.push(K);
             const double rma = reac.mass_action(C,ops);
 
+            // product side
             ops.free();
             const double pma = prod.mass_action(C,ops);
-            
+
+            // difference
             return rma - pma;
         }
         
