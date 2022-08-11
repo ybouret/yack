@@ -62,7 +62,12 @@ namespace yack
 
             //! display
             friend std::ostream & operator<<(std::ostream &, const actors &);
-            
+
+            //! check
+            bool are_blocked_by(const readable<double> &C) const throw();
+
+
+
             //__________________________________________________________________
             //
             // members

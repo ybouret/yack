@@ -76,6 +76,14 @@ namespace yack
             return ops.query();
         }
 
+        bool actors:: are_blocked_by(const readable<double> &C) const throw()
+        {
+            for(const actor *a=crew.head;a;a=a->next)
+            {
+                if( C[***a] <= 0) return true;
+            }
+            return false;
+        }
 
 
         const xlimit *actors:: genuine_limit(const readable<double> &C) const throw()

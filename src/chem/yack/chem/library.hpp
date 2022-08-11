@@ -10,8 +10,11 @@
 
 namespace yack
 {
+    namespace randomized { class bits; }
+
     namespace chemical
     {
+
         //______________________________________________________________________
         //
         //
@@ -36,6 +39,9 @@ namespace yack
             // definitions
             //__________________________________________________________________
             static const char clid[]; //!< chemical::library
+            static const int min_exp10 = -20;
+            static const int max_exp10 =  1;
+            static double    concentration(randomized::bits &) throw();
 
             //__________________________________________________________________
             //
@@ -56,6 +62,8 @@ namespace yack
             //
             // methods
             //__________________________________________________________________
+            void fill(writable<double> &C, randomized::bits &ran) const;
+
             const   snode *head() const throw(); //!< sequential access
 
             //! manual creation of a NEW species

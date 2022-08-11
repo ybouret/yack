@@ -151,6 +151,11 @@ namespace yack
             }
         }
 
+        components::state components:: state_at(const readable<double> &C) const throw()
+        {
+            return (reac.are_blocked_by(C) && prod.are_blocked_by(C)) ? are_blocked : are_running;
+        }
+
 
     }
     

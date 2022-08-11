@@ -24,7 +24,7 @@ namespace yack
         class library;
 
 
-
+        
 
         //______________________________________________________________________
         //
@@ -41,11 +41,13 @@ namespace yack
             //__________________________________________________________________
             static const char clid[]; //!< "components"
 
-            enum status
+
+            enum state
             {
                 are_running,
                 are_blocked
             };
+
 
 
             //__________________________________________________________________
@@ -123,6 +125,9 @@ namespace yack
 
             //! check minimal
             bool minimal() const throw();
+
+            //! check is running or blocked
+            state state_at(const readable<double> &C) const throw();
 
             //__________________________________________________________________
             //

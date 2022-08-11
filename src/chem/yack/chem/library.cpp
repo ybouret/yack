@@ -3,12 +3,34 @@
 #include "yack/system/exception.hpp"
 #include "yack/string/tokenizer.hpp"
 #include "yack/string/ops.hpp"
+#include "yack/randomized/bits.hpp"
 #include <iomanip>
+#include <cmath>
 
 namespace yack
 {
     namespace chemical
     {
+
+        double library:: concentration(randomized::bits &ran) throw()
+        {
+            static const double lower = min_exp10;
+            static const double ampli = max_exp10-min_exp10;
+            const double p = lower + ampli * ran.to<double>();
+            return pow(10.0,p);
+        }
+
+        void library:: fill(writable<double> &C, randomized::bits &ran) const
+        {
+            for(const snode *node=head();node;node=node->next)
+            {
+                const species &s = ***node;
+                const double   c = concentration(ran);
+                if(s.rank>0) C[*s] = c; else C[*s] = -c;
+            }
+        }
+
+
 
         const char library:: clid[] = "chemical::library";
 

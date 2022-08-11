@@ -78,7 +78,7 @@ namespace yack
                     show_id(os,lm.reac->id,lm.wmax);
                     show_sp(os,nsp+lm.wmax);
                     os << sep;
-                    os << " <=  " << -(lm.prod->xi);
+                    os << " <=  " << (lm.reac->xi);
                     break;
                     
                 case limited_by_prod:

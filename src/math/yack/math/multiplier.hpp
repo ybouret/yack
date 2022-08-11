@@ -103,9 +103,9 @@ namespace yack
             // types and definitions
             //__________________________________________________________________
             typedef sorted_list<  core::tagged_real<T> >  self_type; //!< alias
-            typedef typename self_type::const_type         data_type; //!< alias
-            static  const int                              min_exp;   //!< numeric<T>::min_exp
-            static  const int                              max_exp;   //!< numeric<T>::max_exp
+            typedef typename self_type::const_type        data_type; //!< alias
+            static  const int                             min_exp;   //!< numeric<T>::min_exp
+            static  const int                             max_exp;   //!< numeric<T>::max_exp
 
             //__________________________________________________________________
             //
@@ -115,6 +115,7 @@ namespace yack
             using self_type::size;
             using self_type::pull_front;
             using self_type::pull_back;
+            using self_type::free;
 
             //__________________________________________________________________
             //
@@ -133,6 +134,24 @@ namespace yack
             //
             // methods
             //__________________________________________________________________
+
+            inline void ld(const T x) {
+                free();
+                push(x);
+            }
+
+            inline void ld1() throw()
+            {
+                free();
+            }
+
+            multiplier & operator=(const T x)
+            {
+                ld(x);
+                return *this;
+            }
+
+
 
             //! push a new real
             inline void push(const T x) { data_type args(x); insert(args); }
