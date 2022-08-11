@@ -20,7 +20,8 @@ namespace yack
         //______________________________________________________________________
         typedef suffix_set<string,const component::pointer> components_set; //!< alias
         typedef components_set::knot_type                   cnode;          //!< alias
-        
+        class library;
+
         //______________________________________________________________________
         //
         //
@@ -99,6 +100,12 @@ namespace yack
                     target[j] = source[j];
                 }
             }
+
+            //! parse string, use library for species
+            void operator()(library &, const string &);
+
+            //! parse string, use library for species
+            void operator()(library &, const char   *);
 
             //__________________________________________________________________
             //

@@ -20,6 +20,7 @@ namespace yack
             nu(other.nu)
             {
             }
+
             
         }
 

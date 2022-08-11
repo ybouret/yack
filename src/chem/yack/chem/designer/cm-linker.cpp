@@ -48,13 +48,18 @@ namespace yack
             void cm_linker:: on_init()
             {
                 ilist.free();
+                sname.clear();
+                if(data)
+                {
+                    static_cast<cm_infos *>(data)->free();
+                }
             }
 
             
 
             void cm_linker:: on_terminal(const lexeme &lx)
             {
-                translator::on_terminal(lx);
+                //translator::on_terminal(lx);
                 const string &uid = *(lx.name);
 
                 switch( thash(uid) )
@@ -68,17 +73,14 @@ namespace yack
                         const apn ap_coef = lx.data.to_apn(cm_terminals[1]);
                         ilist << ap_coef.cast_to<int>(cm_terminals[1]);
                     }
-                        std::cerr << "ilist=" << ilist << std::endl;
                         break;
 
                     case 2: assert(uid=="+");
                         ilist << 1;
-                        std::cerr << "ilist=" << ilist << std::endl;
                         break;
 
                     case 3: assert(uid=="-");
                         ilist << -1;
-                        std::cerr << "ilist=" << ilist << std::endl;
                         break;
 
                     default:
@@ -99,13 +101,10 @@ namespace yack
                 assert(ilist.size()>=2);
                 const int tmp = ilist.pull_back();
                 ilist.back() *= tmp;
-                std::cerr << "ilist=" << ilist << std::endl;
             }
 
             void  cm_linker :: on_internal(const string &uid,const size_t n)
             {
-                translator::on_internal(uid,n);
-
                 switch( ihash(uid) )
                 {
                     case 0: assert(uid==COM::COMPONENTS);
@@ -119,6 +118,8 @@ namespace yack
                         // set name
                         cm.name.xch(sname);
 
+                        //cm.name = sname;
+
                         // set charge
                         for(size_t i=n;i>1;--i)
                             cm.z += ilist.pull_back();
@@ -127,9 +128,14 @@ namespace yack
                         if(ilist.size()) cm.nu = ilist.pull_back();
 
 
-                        std::cerr << "name = " << cm.name << std::endl;
-                        std::cerr << "z    = " << cm.z    << std::endl;
-                        std::cerr << "nu   = " << cm.nu   << std::endl;
+                        if(data)
+                        {
+                            cm_infos &target  = *static_cast<cm_infos *>(data);
+                            target.push_back(cm);
+                        }
+                        //std::cerr << "name = " << cm.name << std::endl;
+                        //std::cerr << "z    = " << cm.z    << std::endl;
+                        //std::cerr << "nu   = " << cm.nu   << std::endl;
 
                     } break;
 

@@ -6,6 +6,7 @@
 #define YACK_CHEMICAL_DESIGNER_CM_INFO_INCLUDED 1
 
 #include "yack/chem/designer/sp-info.hpp"
+#include "yack/sequence/list.hpp"
 
 namespace yack
 {
@@ -40,6 +41,8 @@ namespace yack
             private:
                 YACK_DISABLE_ASSIGN(cm_info);
             };
+
+            typedef list<cm_info> cm_infos;
         }
 
     }

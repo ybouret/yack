@@ -14,11 +14,13 @@ namespace yack
     {
         namespace nucleus
         {
+            
             class cm_linker  : public large_object, public jive::syntax::translator
             {
             public:
+
                 virtual ~cm_linker() throw(); //!< cleanup
-                explicit cm_linker();
+                explicit cm_linker();         //!< setup
 
 
             private:
