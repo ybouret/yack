@@ -73,10 +73,10 @@ namespace yack
         }
 
         //! return copy of removed back value
-        inline type pop_back_value() { const_type tmp = back(); pop_back(); return tmp; }
+        inline type pull_back() { const_type tmp = back(); pop_back(); return tmp; }
 
         //! return copy of removed front value
-        inline type pop_front_value() { const_type tmp = front(); pop_front(); return tmp; }
+        inline type pull_front() { const_type tmp = front(); pop_front(); return tmp; }
 
 
         //______________________________________________________________________

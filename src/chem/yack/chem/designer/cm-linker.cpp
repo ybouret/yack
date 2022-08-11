@@ -35,6 +35,7 @@ namespace yack
 
             cm_linker:: cm_linker() : syntax::translator(),
             ilist(8,as_capacity),
+            sname(),
             thash( YACK_HASHING_PERFECT(cm_terminals) ),
             ihash( YACK_HASHING_PERFECT(cm_internals) )
             {
@@ -58,10 +59,11 @@ namespace yack
 
                 switch( thash(uid) )
                 {
-                    case 0: assert(uid==cm_terminals[0]);
+                    case 0: assert(uid==COM::SP_NAME);
+                        sname = lx.data.to_string();
                         break;
 
-                    case 1: assert(uid==cm_terminals[1]);
+                    case 1: assert(uid==COM::COEF);
                     {
                         const apn ap_coef = lx.data.to_apn(cm_terminals[1]);
                         ilist << ap_coef.cast_to<int>(cm_terminals[1]);
@@ -69,12 +71,12 @@ namespace yack
                         std::cerr << "ilist=" << ilist << std::endl;
                         break;
 
-                    case 2: assert(uid==cm_terminals[2]);
+                    case 2: assert(uid=="+");
                         ilist << 1;
                         std::cerr << "ilist=" << ilist << std::endl;
                         break;
 
-                    case 3: assert(uid==cm_terminals[3]);
+                    case 3: assert(uid=="-");
                         ilist << -1;
                         std::cerr << "ilist=" << ilist << std::endl;
                         break;
@@ -95,8 +97,7 @@ namespace yack
             {
 
                 assert(ilist.size()>=2);
-                const int tmp = ilist.back();
-                ilist.pop_back();
+                const int tmp = ilist.pull_back();
                 ilist.back() *= tmp;
                 std::cerr << "ilist=" << ilist << std::endl;
             }
@@ -111,7 +112,20 @@ namespace yack
                         break;
 
                     case 1: assert(uid==COM::SPECIES);
-                        break;
+                    {
+                        assert(ilist.size()>=n-1);
+                        int z = 0;
+                        for(size_t i=n;i>1;--i)
+                        {
+                            z += ilist.pull_back();
+                        }
+                        int nu = 1;
+                        if(ilist.size()) nu = ilist.pull_back();
+                        std::cerr << "name = " << sname << std::endl;
+                        std::cerr << "z    = " << z << std::endl;
+                        std::cerr << "nu   = " << nu << std::endl;
+
+                    } break;
 
                     case 2: assert(uid==COM::FIRST_COEF);
                         switch(n)

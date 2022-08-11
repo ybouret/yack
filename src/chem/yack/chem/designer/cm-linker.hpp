@@ -24,6 +24,7 @@ namespace yack
             private:
                 YACK_DISABLE_COPY_AND_ASSIGN(cm_linker);
                 list<int>              ilist;
+                string                 sname;
                 const hashing::perfect thash;
                 const hashing::perfect ihash;
 
