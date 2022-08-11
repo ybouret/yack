@@ -41,9 +41,10 @@ namespace yack
             // methods
             //__________________________________________________________________
             
-            //! from species
-            const string & key() const throw();
-            
+
+            const string  & key()       const throw(); //!< species key()
+            const species & operator*() const throw(); //!< access species
+
             //__________________________________________________________________
             //
             // members

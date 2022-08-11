@@ -50,6 +50,11 @@ namespace yack
             double mass_action(const readable<double> &C,
                                rmulops                &ops) const;
 
+            //! mass action with rmulops, C+nu*xi >=0 
+            double mass_action(const readable<double> &C,
+                               const double            xi,
+                               rmulops                &ops) const;
+
             //! test all actors
             const xlimit     *genuine_limit(const readable<double> &C) const throw();
           

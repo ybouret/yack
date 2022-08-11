@@ -1,4 +1,5 @@
 
+#if 0
 namespace
 {
 
@@ -72,25 +73,5 @@ namespace
 
     };
 
-    class sp_parser : public   parser
-    {
-    public:
-        inline virtual ~sp_parser() throw() {}
-
-        inline explicit sp_parser() : jive:: parser("chemical::species::parser")
-        {
-            syntax::compound &SPECIES = agg("SPECIES");
-            SPECIES << term("NAME", "[:upper:][:word:]*");
-            {
-                const syntax::rule &POS = oom( term('+') );
-                const syntax::rule &NEG = oom( term('-') );
-                SPECIES << opt( choice(POS,NEG) );
-            }
-            //gv();
-        }
-
-
-    private:
-        YACK_DISABLE_COPY_AND_ASSIGN(sp_parser);
-    };
 }
+#endif

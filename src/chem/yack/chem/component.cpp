@@ -21,7 +21,12 @@ namespace yack
         {
             return sp.name;
         }
-       
+
+        const species & component:: operator*() const throw()
+        {
+            return sp;
+        }
+
     }
 }
         

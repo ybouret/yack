@@ -96,7 +96,25 @@ namespace yack
             // difference
             return rma - pma;
         }
-        
+
+        double components:: mass_action(const double            K,
+                                        const readable<double> &C,
+                                        const double            xi,
+                                        rmulops                &ops) const
+        {
+            // reactant side
+            ops.free();
+            ops.push(K);
+            const double rma = reac.mass_action(C,-xi,ops);
+
+            // product side
+            ops.free();
+            const double pma = prod.mass_action(C,xi,ops);
+
+            // difference
+            return rma - pma;
+        }
+
     }
     
 }

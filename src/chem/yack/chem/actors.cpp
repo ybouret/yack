@@ -2,7 +2,6 @@
 
 #include "yack/chem/actors.hpp"
 #include "yack/type/utils.hpp"
-#include "yack/arith/ipower.hpp"
 
 #include <new>
 
@@ -44,8 +43,10 @@ namespace yack
             const actor   *last = crew.tail;
             const unsigned nu   = last->nu;
             const int      z    = (**last).z;
+
             coerce(molecularity) -= nu;
             coerce(algebraic_Z)  -= int(nu)*z;
+            
             delete crew.pop_back();
         }
 
@@ -55,10 +56,27 @@ namespace yack
             assert(ops.size()==0||ops.size()==1);
             for(const actor *a=crew.head;a;a=a->next)
             {
-                ops.push(C[***a],a->nu);
+                const double j = ***a;   assert(C[j]>=0);
+                ops.push(C[j],a->nu);
             }
             return ops.query();
         }
+
+        double actors:: mass_action(const readable<double> &C,
+                                    const double            xi,
+                                    rmulops                &ops) const
+        {
+            assert(ops.size()==0||ops.size()==1);
+            for(const actor *a=crew.head;a;a=a->next)
+            {
+                const double j  = ***a;           assert(C[j]>=0);
+                const double nu = double(a->nu);
+                ops.push(max_of(C[j]+nu*xi,0.0),a->nu);
+            }
+            return ops.query();
+        }
+
+
 
         const xlimit *actors:: genuine_limit(const readable<double> &C) const throw()
         {

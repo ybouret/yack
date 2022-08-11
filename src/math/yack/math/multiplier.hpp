@@ -138,7 +138,7 @@ namespace yack
             inline void push(const T x) { data_type args(x); insert(args); }
 
             //! push a new real n times a.k.a x^n
-            inline void push(const T x, size_t n) { data_type args(x); while(n-- > 0) insert(args); }
+            inline void push(const T x, size_t n) { data_type args(x); insert(args,n); }
 
             //! syntax helper
             inline multiplier & operator<<(const T x) { push(x); return *this; }

@@ -8,6 +8,7 @@
 #include "yack/chem/component.hpp"
 #include "yack/chem/xlimits.hpp"
 #include "yack/associative/suffix/set.hpp"
+#include "yack/data/bare.hpp"
 
 namespace yack
 {
@@ -67,7 +68,38 @@ namespace yack
             double mass_action(const double            K,
                                const readable<double> &C,
                                rmulops                &ops) const;
-            
+
+
+            //! compute mass action for a given constant and xi
+            double mass_action(const double            K,
+                               const readable<double> &C,
+                               const double            xi,
+                               rmulops                &ops) const;
+
+
+            //! fill topology
+            template <typename T> inline void fill(writable<T> &nu) const
+            {
+                const bare<T> _0;
+                nu.ld(_0);
+                for(const cnode *node=head();node;node=node->next)
+                {
+                    const component &comp = ***node;
+                    nu[**comp] = comp.nu;
+                }
+            }
+
+            //! transfer components
+            template <typename TARGET, typename SOURCE> inline
+            void transfer(TARGET &target, SOURCE &source) const
+            {
+                for(const cnode *node=head();node;node=node->next)
+                {
+                    const size_t j = *****node;
+                    target[j] = source[j];
+                }
+            }
+
             //__________________________________________________________________
             //
             // members

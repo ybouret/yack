@@ -3,19 +3,15 @@
 #include "yack/hashing/perfect.hpp"
 #include "yack/system/imported.hpp"
 
+#include "yack/chem/designer/sp-parser.hpp"
+#include "yack/chem/designer/sp-linker.hpp"
+
 namespace yack
 {
     using namespace jive;
 
     namespace chemical
     {
-
-        namespace nucleus
-        {
-            sp_info::  sp_info() : name(), z(0) {}
-            sp_info::  sp_info(const sp_info &si) : name(si.name), z(si.z) {}
-            sp_info:: ~sp_info() throw() {}
-        }
 
 
         const char * const designer:: call_sign = "chemical::designer";
@@ -25,11 +21,10 @@ namespace yack
         }
 
 
-#include "designer-species.hxx"
 
         designer:: designer() :
-        spp( new sp_parser() ),
-        spl( new sp_linker() )
+        spp( new nucleus::sp_parser() ),
+        spl( new nucleus::sp_linker() )
         {
         }
 
