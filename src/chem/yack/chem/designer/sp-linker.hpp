@@ -1,5 +1,3 @@
-
-
 //! \file
 
 #ifndef YACK_CHEMICAL_DESIGNER_SP_LINKER_INCLUDED

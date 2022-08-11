@@ -19,7 +19,7 @@ namespace yack
             {
 
                 compound   &COMPONENTS = agg("COMPONENTS");
-                compound   &COMPONENT  = act("COMPONENT");
+                compound   &COMPONENT  = grp("COMPONENT");
                 const rule &POS        = term('+');
                 const rule &NEG        = term('-');
                 const rule &SGN        = choice(POS,NEG);
@@ -37,6 +37,15 @@ namespace yack
                 drop("[:blank:]+");
 
                 gv();
+                validate();
+
+                {
+                    vector<string> terminals;
+                    vector<string> internals;
+                    collect_keywords(terminals,internals);
+                    std::cerr << "terminals=" << terminals << std::endl;
+                    std::cerr << "internals=" << internals << std::endl;
+                }
             }
 
         }
