@@ -217,7 +217,6 @@ namespace yack
             // find best Cend + nu * xi
             {
                 double width = fabs(x.c-x.a); assert(width>0);
-                bool   flag  = true;
             ZFIND:
                 //--------------------------------------------------------------
                 //
@@ -227,7 +226,6 @@ namespace yack
                 assert(f.a>0);
                 assert(f.c<0);
                 f.b = F( x.b = clamp(x.a, 0.5*(x.a+x.c), x.c) ); assert(x.is_increasing());
-                const double den = fabs( squared(f.b) - f.a*f.c );
 
                 switch( __sign::of(f.b) )
                 {
@@ -246,10 +244,11 @@ namespace yack
                         //
                         //------------------------------------------------------
                     case negative: {
-                        if( flag && fabs(f.b)<den)
+                        const double den = sqrt( squared(f.b) - f.a*f.c );
+                        if(fabs(f.b)<den)
                         {
                             //--------------------------------------------------
-                            // Ridder's step in x.a:x.b
+                            // Ridder's step in [x.a:x.b]
                             //--------------------------------------------------
                             const double x_r = x.b+0.5*( width * (f.b/den) );
                             const double x_u = clamp(x.a,x_r, x.b );
@@ -278,7 +277,7 @@ namespace yack
                         else
                         {
                             //--------------------------------------------------
-                            // bisection
+                            // fallback to bisection
                             //--------------------------------------------------
                             f.c = f.b;
                             x.c = x.b;
@@ -291,10 +290,11 @@ namespace yack
                         //
                         //------------------------------------------------------
                     case positive: {
-                        if(flag && fabs(f.b)<den)
+                        const double den = sqrt( squared(f.b) - f.a*f.c );
+                        if(fabs(f.b)<den)
                         {
                             //--------------------------------------------------
-                            // Ridder's step in x.b:x.c
+                            // Ridder's step in [x.b:x.c]
                             //--------------------------------------------------
                             const double x_r = x.b+0.5*( width * (f.b/den) );
                             const double x_u = clamp(x.b,x_r, x.c );
@@ -322,7 +322,7 @@ namespace yack
                         else
                         {
                             //--------------------------------------------------
-                            // bisection
+                            // fallback to bisection
                             //--------------------------------------------------
                             f.a = f.b;
                             x.a = x.b;
@@ -334,13 +334,13 @@ namespace yack
                 // check reduction
                 //--------------------------------------------------------------
                 const double new_width = fabs(x.c-x.a);
-                if( new_width<=0 || new_width>=width)
+                if(new_width>=width)
                 {
                     // end of current reduction
                     const double xx = x.b;
                     const double ax = fabs(xx);
                     comp.move(Cend,xx);
-
+                    //std::cerr << "\tax=" << ax << std::endl;
                     if( AX>0 && (ax>=AX) ) goto SUCCESS;
 
                     // prepare for next bracketing/solving

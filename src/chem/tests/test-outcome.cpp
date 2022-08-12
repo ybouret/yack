@@ -13,14 +13,14 @@ using namespace chemical;
 
 namespace
 {
-
+    
     enum species_kind
     {
         reactant,
         product
     };
-
-
+    
+    
     static inline
     void populate(library                &lib,
                   sequence<int>          &cof,
@@ -40,15 +40,15 @@ namespace
             }
         }
     }
-
+    
     static unsigned I = 0;
-
-    static void save(const double Q)
+    
+    static void save(const double G, const double Q)
     {
-        ios::ocstream::echo("q.dat", "%u %.15g\n", I++, Q);
+        ios::ocstream::echo("q.dat", "%u %.15g %.15g\n", I++, G, Q);
     }
-
-
+    
+    
     static inline
     size_t create(const readable<size_t> * const r,
                   const readable<size_t> * const p,
@@ -64,7 +64,7 @@ namespace
             vector<int> cof;
             {
                 size_t      idx=0;
-
+                
                 if(r)
                 {
                     populate(lib,cof,reactant,*r,idx);
@@ -74,7 +74,7 @@ namespace
                     populate(lib,cof,product,*p,idx);
                 }
             }
-
+            
             YACK_ASSERT(cof.size()==lib.size());
             const size_t M = lib.size();
             for(const snode *node=lib.head();node;node=node->next)
@@ -90,14 +90,18 @@ namespace
                 std::cerr << "     ----- K = " << std::setw(15) << K << std::endl;
                 vector<double> Cini(M,0);
                 vector<double> Cend(M,0);
-
+                
                 {
                     const outcome res = outcome::study(cmp,K,Cini,Cend,xmul,xadd,&ntry);
-                    const double  q   = cmp.quotient(K,Cend,xmul);
-                    std::cerr << "C=" << Cini << " -> " << Cend << " @" << cmp.mass_action(K,Cend,xmul) <<  " | Q=" << q << std::endl;
-                    save(q);
+                    if(res.state!=components::are_blocked)
+                    {
+                        const double  g   = cmp.mass_action(K,Cend,xmul);
+                        const double  q   = cmp.quotient(K,Cend,xmul);
+                        std::cerr << "C=" << Cini << " -> " << Cend << " @" << g <<  " | Q=" << q << std::endl;
+                        save(g,q);
+                    }
                 }
-
+                
                 for(size_t neqz=M;neqz>0;--neqz)
                 {
                     combination comb(M,neqz);
@@ -112,35 +116,39 @@ namespace
                             }
                             {
                                 const outcome res = outcome::study(cmp,K,Cini,Cend,xmul,xadd,&ntry);
-                                const double  q   = cmp.quotient(K,Cend,xmul);
-                                std::cerr << "C=" << Cini << " -> " << Cend << " @" << cmp.mass_action(K,Cend,xmul) <<  " | Q=" << q << std::endl;
-                                save(q);
+                                if(res.state!=components::are_blocked)
+                                {
+                                    const double  g   = cmp.mass_action(K,Cend,xmul);
+                                    const double  q   = cmp.quotient(K,Cend,xmul);
+                                    std::cerr << "C=" << Cini << " -> " << Cend << " @" << g <<  " | Q=" << q << std::endl;
+                                    save(g,q);
+                                }
                             }
                         }
                     }
                     while(comb.next());
                 }
-
-
+                
+                
             }
         }
         return ntry;
     }
-
-
+    
+    
     static inline void perform(const unsigned n, randomized::bits &ran)
     {
         YACK_ASSERT(n>0);
-
+        
         ios::ocstream::overwrite("q.dat");
-
+        
         size_t       calls = 0;
         size_t       confs = 0;
         const size_t itmax = 8;
         const size_t ittot = itmax+1;
-
+        
         partition r(n);
-
+        
         r.boot();
         do
         {
@@ -148,9 +156,9 @@ namespace
             calls += create(NULL,&r,ran,itmax); confs += ittot;
         }
         while( r.next() );
-
+        
         partition p(n);
-
+        
         r.boot();
         do
         {
@@ -162,12 +170,12 @@ namespace
             while(p.next());
         }
         while(r.next());
-
+        
         std::cerr << "#calls=" << std::setw(15) << calls << " (" << double(calls)/confs << " per conf)" << std::endl;
-
+        
     }
-
-
+    
+    
 }
 
 
