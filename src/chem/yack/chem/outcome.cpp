@@ -162,107 +162,28 @@ namespace yack
 
                         break;
 
+                    case limited_by_prod:
+                        assert(comp.reac.molecularity==0);
+                        switch (d)
+                        {
+                            case search_negative_extent:
+                                throw exception("no limited by prod negative extent");
+                                break;
 
-                    default:
-                        throw exception("not handled");
+                            case search_positive_extent:
+                                throw exception("no limited by prod positive extent");
+                                break;
+                        }
+
+                        break;
+
                 }
             }
 
             std::cerr << "x=" << x << ", f=" << f << std::endl;
             assert( __sign::product_of(f.a,f.c) == negative );
 
-
 #if 0
-            triplet<double>  x  = { 0,0,0 };
-            MassActionF      F  = { comp, K, Cend, ops };
-            std::cerr << " -- K=" << K << " --" << std::endl;
-            {
-                // study limits
-                const xlimits &lm = comp.genuine_limits(Cini,0);
-                std::cerr << "limits=" << lm << std::endl;
-
-                switch(lm.type)
-                {
-
-                    case limited_by_none:
-                        return outcome(components::are_running,extent::is_degenerated,0);
-
-                    case limited_by_reac:
-                        assert(0==comp.prod.molecularity);
-                        switch(d)
-                        {
-                            case search_increasing:
-                                f.a = f.b; assert(f.a>0);
-                                x.a = 0;
-                                x.c = lm.reac->xi;
-                                ops.ld1();
-                                f.c = -1;
-                                assert(f.c<0);
-                                break;
-
-                            case search_decreasing:
-                                f.c = f.b; assert(f.c<0);
-                                x.c = 0;
-                                x.a = -pow(K,-1.0/comp.reac.molecularity);
-                                //std::cerr << "scaling=" << x.a << std::endl;
-                                while( (f.a = F(x.a) ) <= 0 ) x.a += x.a;
-                                break;
-                        }
-                        break;
-
-                    case limited_by_prod:
-                        assert(0==comp.reac.molecularity);
-                        switch(d)
-                        {
-                            case search_decreasing:
-                                f.c = f.b; assert(f.c<0);
-                                x.c = 0;
-                                x.a = -lm.prod->xi;
-                                f.a = K;
-                                assert(f.a>0);
-                                break;
-
-                            case search_increasing:
-                                f.a = f.b; assert(f.a>0);
-                                x.a = 0;
-                                x.c = pow(K,1.0/comp.prod.molecularity);
-                                //std::cerr << "scaling=" << x.c << std::endl;
-                                while( (f.c = F(x.c) ) >= 0 ) x.c += x.c;
-                                break;
-                        }
-                        break;
-
-                    case limited_by_both:
-                        switch(d)
-                        {
-                            case search_decreasing:
-                                f.c = f.b; assert(f.c<0);
-                                x.c = 0;
-                                x.a = -lm.prod->xi;
-                                ops = K;
-                                f.a = comp.reac.mass_action(Cini,lm.prod->xi,ops);
-                                assert(f.a>0);
-                                break;
-
-                            case search_increasing:
-                                f.a = f.b; assert(f.a>0);
-                                x.a = 0;
-                                x.c = lm.reac->xi;
-                                ops.ld1();
-                                f.c = -comp.prod.mass_action(Cini,x.c,ops);
-                                assert(f.c<0);
-                                break;
-                        }
-                        break;
-                }
-            }
-
-            std::cerr << "x=" << x << ", f=" << f << std::endl;
-
-            if( __sign::product( __sign::of(f.a), __sign::of(f.c) ) != negative )
-            {
-                throw exception("CORRUPTED");
-            }
 
             if(true)
             {
