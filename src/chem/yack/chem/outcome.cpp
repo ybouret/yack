@@ -55,7 +55,7 @@ namespace yack
             }
         };
 
-        
+
 
 
         enum search_extent
@@ -73,7 +73,6 @@ namespace yack
         {
 
             assert(K>0);
-            std::cerr << "-- K  = " << K << " --" << std::endl;
 
             //------------------------------------------------------------------
             //
@@ -86,25 +85,19 @@ namespace yack
                 case components::are_blocked: return outcome(components::are_blocked,extent::is_degenerated,0);
                 case components::are_running: break;
             }
-            
-            triplet<double>  f  = { 0,comp.mass_action(K,Cend,xmul),0 };
-            const sign_type  s  = __sign::of(f.b);
-            search_extent    d  = search_positive_extent;
-            switch(s)
-            {
-                case __zero__: return outcome(components::are_running,extent::is_degenerated,0);
-                case positive:
-                    d = search_positive_extent;
-                    //std::cerr << "search positive extent" << std::endl;
-                    break;
-                case negative:
-                    d = search_negative_extent;
-                    //std::cerr << "search negative extent" << std::endl;
-                    break;
-            }
 
             MassActionF      F  = { comp, K, Cend, xmul };
+            triplet<double>  f  = { 0,F(0),0 };             // initalize f
+            const sign_type  s  = __sign::of(f.b);          // check sign
+            search_extent    d  = search_positive_extent;   // to be set
+            switch(s)
+            {
+                case __zero__: return outcome(components::are_running,extent::is_degenerated,0); // early return
+                case positive: d = search_positive_extent; break;                                // xi>0
+                case negative: d = search_negative_extent; break;                                // xi<0
+            }
             triplet<double>  x  = { 0,0,0 };
+
 
             //------------------------------------------------------------------
             //
