@@ -9,25 +9,7 @@ namespace yack
 {
     namespace chemical
     {
-        //______________________________________________________________________
-        //
-        //
-        //! qualifying extents
-        //
-        //______________________________________________________________________
-        struct extent
-        {
-            //__________________________________________________________________
-            //
-            //! grade values
-            //__________________________________________________________________
-            enum grade
-            {
-                is_significant, //!< changes balance
-                is_degenerated  //!< doesn't change balance
-            };
-        };
-
+       
         //______________________________________________________________________
         //
         //
@@ -54,7 +36,8 @@ namespace yack
                                  const double            K,
                                  const readable<double> &Cini,
                                  writable<double>       &Cend,
-                                 rmulops                &ops);
+                                 rmulops                &xmul,
+                                 raddops                &xadd);
 
 
             //__________________________________________________________________

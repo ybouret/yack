@@ -85,11 +85,11 @@ namespace yack
                                         rmulops                &ops) const
         {
             // reactant side
-            ops.ld(K);
+            ops = K;
             const double rma = reac.mass_action(C,ops);
 
             // product side
-            ops.ld1();
+            ops.set1();
             const double pma = prod.mass_action(C,ops);
 
             // difference
@@ -102,16 +102,46 @@ namespace yack
                                         rmulops                &ops) const
         {
             // reactant side
-            ops.ld(K);
+            ops = K;
             const double rma = reac.mass_action(C,-xi,ops);
 
             // product side
-            ops.ld1();
+            ops.set1();
             const double pma = prod.mass_action(C,xi,ops);
 
             // difference
             return rma - pma;
         }
+
+
+        double components:: estimate_extent(const readable<double> &Cini,
+                                            const readable<double> &Cend,
+                                            raddops                &add) const
+        {
+            add.free();
+            for(const cnode *node=head();node;node=node->next)
+            {
+                const component &c = ***node;
+                const size_t     j = **c;
+                add << (Cend[j]-Cini[j])/c.nu;
+            }
+            return add.get()/size();
+        }
+
+
+        extent::grade components:: qualify_extent(const double            xi,
+                                                  const readable<double> &Cini,
+                                                  rmulops                &xmul) const
+        {
+            return extent::is_significant;
+        }
+
+        void components:: move(writable<double> &C, const double xi) const throw()
+        {
+            prod.move(C, xi);
+            reac.move(C,-xi);
+        }
+
 
     }
 

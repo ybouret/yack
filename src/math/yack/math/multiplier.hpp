@@ -136,22 +136,22 @@ namespace yack
             //__________________________________________________________________
 
             //! initialize
-            inline void ld(const T x) { free(); push(x); }
+            inline void init(const T x) { free(); push(x); }
 
             //! initialize with 1
-            inline void ld1() throw() { free(); }
+            inline void set1() throw() { free(); }
 
             //! syntax helper
             multiplier & operator=(const T x) { ld(x); return *this; }
 
             //! push a new real
-            inline void push(const T x) { data_type args(x); insert(args); }
+            inline void ld(const T x) { data_type args(x); insert(args); }
 
             //! push a new real n times a.k.a x^n
-            inline void push(const T x, size_t n) { data_type args(x); insert(args,n); }
+            inline void ld(const T x, size_t n) { data_type args(x); insert(args,n); }
 
             //! syntax helper
-            inline multiplier & operator<<(const T x) { push(x); return *this; }
+            inline multiplier & operator<<(const T x) { ld(x); return *this; }
 
             //! algorithm: return 1 if empty
             inline T query() { return ( size()  <= 0 ) ? T(1) : query_(); }

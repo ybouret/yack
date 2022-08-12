@@ -47,13 +47,16 @@ namespace yack
             const components       &comp;
             const double            K;
             const readable<double> &C;
-            rmulops                &ops;
+            rmulops                &mul;
 
             double operator()(const double xx)
             {
-                return comp.mass_action(K,C,xx,ops);
+                return comp.mass_action(K,C,xx,mul);
             }
         };
+
+        
+
 
         enum search_extent
         {
@@ -65,7 +68,8 @@ namespace yack
                                 const double            K,
                                 const readable<double> &Cini,
                                 writable<double>       &Cend,
-                                rmulops                &ops)
+                                rmulops                &xmul,
+                                raddops                &xadd)
         {
 
             assert(K>0);
@@ -83,24 +87,23 @@ namespace yack
                 case components::are_running: break;
             }
             
-            triplet<double>  f  = { 0,comp.mass_action(K,Cend,ops),0 };
+            triplet<double>  f  = { 0,comp.mass_action(K,Cend,xmul),0 };
             const sign_type  s  = __sign::of(f.b);
             search_extent    d  = search_positive_extent;
-            std::cerr << "f.b=" << f.b << std::endl;
             switch(s)
             {
                 case __zero__: return outcome(components::are_running,extent::is_degenerated,0);
                 case positive:
                     d = search_positive_extent;
-                    std::cerr << "search positive extent" << std::endl;
+                    //std::cerr << "search positive extent" << std::endl;
                     break;
                 case negative:
                     d = search_negative_extent;
-                    std::cerr << "search negative extent" << std::endl;
+                    //std::cerr << "search negative extent" << std::endl;
                     break;
             }
 
-            MassActionF      F  = { comp, K, Cend, ops };
+            MassActionF      F  = { comp, K, Cend, xmul };
             triplet<double>  x  = { 0,0,0 };
 
             //------------------------------------------------------------------
@@ -182,7 +185,6 @@ namespace yack
                                 assert(f.c<0);
                                 break;
                         }
-
                         break;
 
                 }
@@ -191,23 +193,51 @@ namespace yack
             std::cerr << "x=" << x << ", f=" << f << std::endl;
             assert( __sign::product_of(f.a,f.c) == negative );
 
-#if 0
 
-            if(true)
+            //------------------------------------------------------------------
+            //
+            // loop
+            //
+            //------------------------------------------------------------------
+
             {
-                ios::ocstream fp("out.dat");
-                const size_t np=100;
-                for(size_t i=0;i<=np;++i)
+                double width = fabs(x.c-x.a);
+
+            LOOP:
+                assert(f.a>0);
+                assert(f.c<0);
+                assert(x.a<x.c);
+                f.b = F( x.b = clamp(x.a,0.5*(x.a+x.c),x.c) ); assert(x.is_increasing());
+
+                switch( __sign::of(f.b) )
                 {
-                    const double xx = x.a + (i*(x.c-x.a))/np;
-                    fp("%g %g\n",xx, F(xx) );
+                    case __zero__: goto SUCCESS;
+                    case negative:
+                        f.c = f.b;
+                        x.c = x.b;
+                        break;
+
+                    case positive:
+                        f.a = f.b;
+                        x.a = x.b;
+                        break;
                 }
 
+                const double new_width = fabs(x.c-x.a);
+                if(new_width<=0||new_width>=width)
+                {
+                    goto SUCCESS;
+                }
+                width = new_width;
+                goto LOOP;
             }
 
+        SUCCESS:
+            comp.move(Cend,x.b);
 
-#endif
-            return outcome(components::are_running,extent::is_degenerated,0);
+            const double xi = comp.estimate_extent(Cini,Cend,xadd);
+            std::cerr << "success@" << xi << std::endl;
+            return outcome(components::are_running,comp.qualify_extent(xi,Cini,xmul),xi);
         }
 
     }

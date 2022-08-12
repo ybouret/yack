@@ -23,6 +23,24 @@ namespace yack
 
         class library;
 
+        //______________________________________________________________________
+        //
+        //
+        //! qualifying extents
+        //
+        //______________________________________________________________________
+        struct extent
+        {
+            //__________________________________________________________________
+            //
+            //! grade values
+            //__________________________________________________________________
+            enum grade
+            {
+                is_significant, //!< changes balance
+                is_degenerated  //!< doesn't change balance
+            };
+        };
 
         
 
@@ -90,6 +108,8 @@ namespace yack
                                const double            xi,
                                rmulops                &ops) const;
 
+            //! move C with computed extent
+            void move(writable<double> &C, const double xi) const throw();
 
             //! fill topology
             template <typename T> inline void fill(writable<T> &nu) const
@@ -129,6 +149,12 @@ namespace yack
             //! check is running or blocked
             state state_at(const readable<double> &C) const throw();
 
+            //! deduce extent from difference of concentrations
+            double       estimate_extent(const readable<double> &Cini, const readable<double> &Cend, raddops & ) const;
+
+            //! evaluate grade of extent
+            extent::grade qualify_extent(const double xi, const readable<double> &Cini, rmulops &) const ;
+
             //__________________________________________________________________
             //
             // members
@@ -136,10 +162,7 @@ namespace yack
             const actors reac; //!< reactants, nu<0
             const actors prod; //!< products,  nu>0
             const int    d_nu; //!< prod.molecularity - reac.molecularity
-
-
-
-
+            
         private:
             YACK_DISABLE_COPY_AND_ASSIGN(components);
 

@@ -57,7 +57,7 @@ namespace yack
             for(const actor *a=crew.head;a;a=a->next)
             {
                 const double j = ***a;   assert(C[j]>=0);
-                ops.push(C[j],a->nu);
+                ops.ld(C[j],a->nu);
             }
             return ops.query();
         }
@@ -70,11 +70,20 @@ namespace yack
             for(const actor *a=crew.head;a;a=a->next)
             {
                 const double j  = ***a;           assert(C[j]>=0);
-                const double nu = double(a->nu);
-                ops.push(max_of(C[j]+nu*xi,0.0),a->nu);
+                ops.ld(max_of(C[j]+(a->nu)*xi,0.0),a->nu);
             }
             return ops.query();
         }
+
+        void actors:: move(writable<double> &C, const double xi) const throw()
+        {
+            for(const actor *a=crew.head;a;a=a->next)
+            {
+                const double j  = ***a;           assert(C[j]>=0);
+                C[j] = max_of(C[j]+(a->nu)*xi,0.0);
+            }
+        }
+
 
         bool actors:: are_blocked_by(const readable<double> &C) const throw()
         {

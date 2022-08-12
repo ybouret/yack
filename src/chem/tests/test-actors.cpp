@@ -33,11 +33,10 @@ YACK_UTEST(actors)
 
     rmulops ops;
 
-    ops.free();
-    ops.push(Kw);
+    ops = Kw;
     std::cerr << "Reac=" << reac.mass_action(C,ops) << std::endl;
 
-    ops.free();
+    ops.set1();
     std::cerr << "Prod=" << prod.mass_action(C,ops) << std::endl;
     
     const xlimit *rlim = reac.genuine_limit(C);

@@ -27,8 +27,8 @@ YACK_UTEST(outcome)
         const size_t M = lib.size();
         vector<double> Cini(M,0);
         vector<double> Cend(M,-1);
-        rmulops        ops;
-
+        rmulops        mul;
+        raddops        add;
 
         for(int p=-4;p<=4;++p)
         {
@@ -37,7 +37,7 @@ YACK_UTEST(outcome)
             {
                 lib.fill(Cini,ran);
                 lib(std::cerr<< "C=", "", Cini);
-                outcome res = outcome::study(usr,K,Cini,Cend,ops);
+                outcome res = outcome::study(usr,K,Cini,Cend,mul,add);
             }
         }
 

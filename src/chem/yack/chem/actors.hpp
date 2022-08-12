@@ -8,6 +8,7 @@
 #include "yack/chem/xlimit.hpp"
 #include "yack/data/list/cxx.hpp"
 #include "yack/math/multiplier.hpp"
+#include "yack/math/adder.hpp"
 #include "yack/memory/workplace.hpp"
 
 namespace yack
@@ -16,6 +17,7 @@ namespace yack
     {
         
         typedef math::multiplier<double> rmulops; //!< alias
+        typedef math::adder<double>      raddops; //!< alias
 
         //______________________________________________________________________
         //
@@ -54,6 +56,8 @@ namespace yack
             double mass_action(const readable<double> &C,
                                const double            xi,
                                rmulops                &ops) const;
+
+            void  move(writable<double> &C, const double xi) const throw();
 
             //! test all actors
             const xlimit     *genuine_limit(const readable<double> &C) const throw();
