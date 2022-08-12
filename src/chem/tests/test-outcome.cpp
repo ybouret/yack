@@ -174,44 +174,8 @@ namespace
 YACK_UTEST(outcome)
 {
     randomized::rand_ ran;
-    perform(2,ran);
-
-    return 0;
-
-    library           lib;
-    components        usr;
-
-    if(argc>1)
-    {
-        usr(lib,argv[1]);
-
-        std::cerr << lib << std::endl;
-        std::cerr << usr << std::endl;
-
-        const size_t M = lib.size();
-        vector<double> Cini(M,0);
-        vector<double> Cend(M,-1);
-        rmulops        mul;
-        raddops        add;
-
-        for(int p=-4;p<=4;++p)
-        {
-            const double K = pow(10.0,double(p));
-
-            {
-                lib.fill(Cini,ran);
-                lib(std::cerr<< "C=", "", Cini);
-                outcome res = outcome::study(usr,K,Cini,Cend,mul,add);
-            }
-        }
-
-
-
-    }
-
-
-
-
+    perform(3,ran);
+    
 }
 YACK_UDONE()
 

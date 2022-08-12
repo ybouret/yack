@@ -58,13 +58,13 @@ namespace yack
         };
 
 
-
-
         enum search_extent
         {
             search_positive_extent,
             search_negative_extent
         };
+
+
 
         outcome outcome:: study(const components       &comp,
                                 const double            K,
@@ -81,13 +81,19 @@ namespace yack
 
             //------------------------------------------------------------------
             //
-            // initialize Cend=Cini and check state
+            // initialize Cend=Cini
             //
             //------------------------------------------------------------------
             iota::save(Cend,Cini);
+
+            //------------------------------------------------------------------
+            //
+            // check if components are running
+            //
+            //------------------------------------------------------------------
             switch( comp.state_at(Cini) )
             {
-                case components::are_blocked: return outcome(components::are_blocked,extent::is_degenerated,0);
+                case components::are_blocked: return outcome(components::are_blocked,extent::is_degenerated,0); // early return
                 case components::are_running: break;
             }
 
@@ -97,16 +103,21 @@ namespace yack
             //
             //------------------------------------------------------------------
             MassActionF      F  = { comp, K, Cend, xmul, 0 };
-            double           AX = -1;
+            double           AX = -1; // absolute Xi, must decrease at each turn
 
+            //------------------------------------------------------------------
+            //
+            // outer loop for a given Cend
+            //
+            //------------------------------------------------------------------
         FIND_XI:
-            triplet<double>  x  = { 0,0,0 };                // initialize x
-            triplet<double>  f  = { 0,F(0),0 };             // initialize f
+            triplet<double>  x  = { 0, 0,    0 };           // initialize x.b=0
+            triplet<double>  f  = { 0, F(0), 0 };           // initialize f.b @Cend
             const sign_type  s  = __sign::of(f.b);          // check initial sign
             search_extent    d  = search_positive_extent;   // to be set w.r.t sign
             switch(s)
             {
-                case __zero__:  goto SUCCESS;                     // early return
+                case __zero__:  goto  SUCCESS;                    // early return using Cend
                 case positive: d = search_positive_extent; break; // xi>0
                 case negative: d = search_negative_extent; break; // xi<0
             }
@@ -125,8 +136,7 @@ namespace yack
                 switch(xlms.type)
                 {
 
-                    case limited_by_none:
-                        throw imported::exception(fn,"unexpected unlimited");
+                    case limited_by_none: throw imported::exception(fn,"unexpected unlimited");
 
                     case limited_by_both:
                         switch(d)
@@ -155,7 +165,7 @@ namespace yack
                                 x.c = x.b; assert(fabs(x.c)<=0);
                                 f.c = f.b; assert(f.c<0);
                                 x.a = -pow(K,-1.0/comp.reac.molecularity);
-                                while( (f.a = F(x.a)) <=0 ) x.a += x.a;
+                                while( (f.a = F(x.a)) <= 0 ) x.a += x.a;
                                 assert(x.a<0);
                                 assert(f.a>0);
                                 break;
@@ -185,7 +195,7 @@ namespace yack
                                 x.a = x.b; assert( fabs(x.a) <= 0);
                                 f.a = f.b; assert(f.a>0);
                                 x.c = pow(K,1.0/comp.prod.molecularity);
-                                while( (f.c = F(x.c)) >=0 ) x.c += x.c;
+                                while( (f.c = F(x.c)) >= 0 ) x.c += x.c;
                                 assert(x.c>0);
                                 assert(f.c<0);
                                 break;
@@ -195,22 +205,26 @@ namespace yack
                 }
             }
 
+            //------------------------------------------------------------------
+            //
+            // we have a bracketed solution
+            //
+            //------------------------------------------------------------------
+            assert(x.a<x.c);
             assert( __sign::product_of(f.a,f.c) == negative );
 
 
-            //------------------------------------------------------------------
-            //
-            // inner loop
-            //
-            //------------------------------------------------------------------
+            // find best Cend + nu * xi
             {
-                double width = fabs(x.c-x.a);
+                double width = fabs(x.c-x.a); assert(width>0);
 
-            LOOP:
+            ZFIND:
+                //--------------------------------------------------------------
+                // middle point
+                //--------------------------------------------------------------
                 assert(f.a>0);
                 assert(f.c<0);
-                assert(x.a<x.c);
-                f.b = F( x.b = clamp(x.a,0.5*(x.a+x.c),x.c) ); assert(x.is_increasing());
+                f.b = F( x.b = clamp(x.a, 0.5*(x.a+x.c), x.c) ); assert(x.is_increasing());
 
                 switch( __sign::of(f.b) )
                 {
@@ -218,31 +232,38 @@ namespace yack
                         comp.move(Cend,x.b);
                         goto SUCCESS;
 
-                    case negative:
+                    case negative: {
                         f.c = f.b;
                         x.c = x.b;
-                        break;
+                    } break;
 
-                    case positive:
+                    case positive: {
                         f.a = f.b;
                         x.a = x.b;
-                        break;
+                    } break;
                 }
 
+                //--------------------------------------------------------------
+                // check reduction
+                //--------------------------------------------------------------
                 const double new_width = fabs(x.c-x.a);
-                if(new_width<=0 || new_width>=width)
+                if( new_width<=0 || new_width>=width)
                 {
+                    // end of current reduction
                     const double xx = x.b;
                     const double ax = fabs(xx);
-                    comp.move(Cend,x.b);
-                    if(AX>0 && ax>=AX) goto SUCCESS;
+                    comp.move(Cend,xx);
+
+                    if( AX>0 && (ax>=AX) ) goto SUCCESS;
+
+                    // prepare for next bracketing/solving
                     AX = ax;
                     goto FIND_XI;
                 }
-                width = new_width;
-                goto LOOP;
-            }
 
+                width = new_width;
+                goto ZFIND;
+            }
 
 
 
