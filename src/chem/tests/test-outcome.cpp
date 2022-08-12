@@ -20,6 +20,7 @@ namespace
         product
     };
 
+
     static inline
     void populate(library                &lib,
                   sequence<int>          &cof,
@@ -39,6 +40,14 @@ namespace
             }
         }
     }
+
+    static unsigned I = 0;
+
+    static void save(const double Q)
+    {
+        ios::ocstream::echo("q.dat", "%u %.15g\n", I++, Q);
+    }
+
 
     static inline
     size_t create(const readable<size_t> * const r,
@@ -81,9 +90,12 @@ namespace
                 std::cerr << "     ----- K = " << std::setw(15) << K << std::endl;
                 vector<double> Cini(M,0);
                 vector<double> Cend(M,0);
+
                 {
                     const outcome res = outcome::study(cmp,K,Cini,Cend,xmul,xadd,&ntry);
-                    std::cerr << "C=" << Cini << " -> " << Cend << " @" << cmp.mass_action(K,Cend,xmul) <<  " | Q=" << cmp.quotient(K,Cend,xmul) << std::endl;
+                    const double  q   = cmp.quotient(K,Cend,xmul);
+                    std::cerr << "C=" << Cini << " -> " << Cend << " @" << cmp.mass_action(K,Cend,xmul) <<  " | Q=" << q << std::endl;
+                    save(q);
                 }
 
                 for(size_t neqz=M;neqz>0;--neqz)
@@ -98,8 +110,12 @@ namespace
                             {
                                 Cini[ comb[i] ] = library::concentration(ran);
                             }
-                            const outcome res = outcome::study(cmp,K,Cini,Cend,xmul,xadd,&ntry);
-                            std::cerr << "C=" << Cini << " -> " << Cend << " @" << cmp.mass_action(K,Cend,xmul) <<  " | Q=" << cmp.quotient(K,Cend,xmul) << std::endl;
+                            {
+                                const outcome res = outcome::study(cmp,K,Cini,Cend,xmul,xadd,&ntry);
+                                const double  q   = cmp.quotient(K,Cend,xmul);
+                                std::cerr << "C=" << Cini << " -> " << Cend << " @" << cmp.mass_action(K,Cend,xmul) <<  " | Q=" << q << std::endl;
+                                save(q);
+                            }
                         }
                     }
                     while(comb.next());
@@ -115,7 +131,9 @@ namespace
     static inline void perform(const unsigned n, randomized::bits &ran)
     {
         YACK_ASSERT(n>0);
-        
+
+        ios::ocstream::overwrite("q.dat");
+
         size_t       calls = 0;
         size_t       confs = 0;
         const size_t itmax = 8;
