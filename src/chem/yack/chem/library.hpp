@@ -82,7 +82,7 @@ namespace yack
 
             library & operator<<(const string &); //!< colon-separated list of species
             library & operator<<(const char   *); //!< colon-separated list of species
-
+            
             //! display species+info
             friend std::ostream & operator<<(std::ostream &os, const library &lib);
 

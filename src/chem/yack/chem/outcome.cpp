@@ -96,14 +96,13 @@ namespace yack
             //
             //------------------------------------------------------------------
             MassActionF      F  = { comp, K, Cend, xmul, 0};
+            double           AX = -1;
 
-            // outer loop
         FIND_XI:
-            triplet<double>  x  = { 0,0,0 };
-            triplet<double>  f  = { 0,F(0),0 };             // initalize f
-            const sign_type  s  = __sign::of(f.b);          // check sign
-            search_extent    d  = search_positive_extent;   // to be set
-            std::cerr << "Cend=" << Cend << ", f=" << f.b << std::endl;
+            triplet<double>  x  = { 0,0,0 };                // initialize x
+            triplet<double>  f  = { 0,F(0),0 };             // initialize f
+            const sign_type  s  = __sign::of(f.b);          // check initial sign
+            search_extent    d  = search_positive_extent;   // to be set w.r.t sign
             switch(s)
             {
                 case __zero__:  goto SUCCESS;                     // early return
@@ -232,10 +231,13 @@ namespace yack
                 }
 
                 const double new_width = fabs(x.c-x.a);
-                if(new_width<=0||new_width>=width)
+                if(new_width<=0 || new_width>=width)
                 {
-                    std::cerr << "Reached Inner Precision @f=" << f.b << ", witdh=" << new_width << std::endl;
+                    const double xx = x.b;
+                    const double ax = fabs(xx);
                     comp.move(Cend,x.b);
+                    if(AX>0 && ax>=AX) goto SUCCESS;
+                    AX = ax;
                     goto FIND_XI;
                 }
                 width = new_width;
