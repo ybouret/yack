@@ -81,7 +81,7 @@ namespace
                 vector<double> Cend(M,0);
                 {
                     const outcome res = outcome::study(cmp,K,Cini,Cend,xmul,xadd);
-                    std::cerr << "C=" << Cini << " -> " << Cend << std::endl;
+                    std::cerr << "C=" << Cini << " -> " << Cend << " @" << cmp.mass_action(K,Cend,xmul) <<  " | Q=" << cmp.quotient(K,Cend,xmul) << std::endl;
                 }
 
                 for(size_t neqz=M;neqz>0;--neqz)
@@ -97,7 +97,7 @@ namespace
                                 Cini[ comb[i] ] = library::concentration(ran);
                             }
                             const outcome res = outcome::study(cmp,K,Cini,Cend,xmul,xadd);
-                            std::cerr << "C=" << Cini << " -> " << Cend << std::endl;
+                            std::cerr << "C=" << Cini << " -> " << Cend << " @" << cmp.mass_action(K,Cend,xmul) <<  " | Q=" << cmp.quotient(K,Cend,xmul) << std::endl;
                         }
                     }
                     while(comb.next());
@@ -147,8 +147,8 @@ namespace
 YACK_UTEST(outcome)
 {
     randomized::rand_ ran;
-
     perform(2,ran);
+
     return 0;
 
     library           lib;

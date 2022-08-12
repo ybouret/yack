@@ -195,7 +195,6 @@ namespace yack
                 }
             }
 
-            //std::cerr << "search: x=" << x << ", f=" << f << std::endl;
             assert( __sign::product_of(f.a,f.c) == negative );
 
 
@@ -249,7 +248,6 @@ namespace yack
 
         SUCCESS:
             const double xi = comp.estimate_extent(Cini,Cend,xadd);
-            std::cerr << "F(" << xi << ")=" << comp.mass_action(K,Cend,xmul) << std::endl;
             return outcome(components::are_running,comp.qualify_extent(xi,Cini,xmul),xi);
         }
 

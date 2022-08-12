@@ -96,6 +96,38 @@ namespace yack
             return rma - pma;
         }
 
+        double components:: quotient(const double            K,
+                                     const readable<double> &C,
+                                     rmulops                &ops) const
+        {
+            // reactant side
+            ops = K;
+            const double rma = reac.mass_action(C,ops);
+
+            // product side
+            ops.set1();
+            const double pma = prod.mass_action(C,ops);
+
+            if(fabs(rma)<=0)
+            {
+                if(fabs(pma)<=0)
+                {
+                    return  1;
+                }
+                else
+                {
+                    return -1;
+                }
+            }
+            else
+            {
+                return pma/rma;
+            }
+
+        }
+
+
+
         double components:: mass_action(const double            K,
                                         const readable<double> &C,
                                         const double            xi,

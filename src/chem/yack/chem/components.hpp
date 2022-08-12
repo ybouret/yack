@@ -99,8 +99,13 @@ namespace yack
             //! compute mass action for a given constant
             double mass_action(const double            K,
                                const readable<double> &C,
-                               rmulops                &ops) const;
+                               rmulops                &) const;
 
+
+            //! compute quotient reaction
+            double quotient(const double            K,
+                            const readable<double> &C,
+                            rmulops                &) const;
 
             //! compute mass action for a given constant and xi
             double mass_action(const double            K,
