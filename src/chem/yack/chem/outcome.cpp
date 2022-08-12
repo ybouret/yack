@@ -44,14 +44,16 @@ namespace yack
 
         struct MassActionF
         {
-            const components       &comp;
+            const components       &c;
             const double            K;
             const readable<double> &C;
-            rmulops                &mul;
+            rmulops                &m;
+            size_t                  n;
 
-            double operator()(const double xx)
+            inline double operator()(const double x)
             {
-                return comp.mass_action(K,C,xx,mul);
+                ++n;
+                return c.mass_action(K,C,x,m);
             }
         };
 
@@ -72,11 +74,13 @@ namespace yack
                                 raddops                &xadd)
         {
 
+            static const char fn[] = "chemical::outcome::study";
             assert(K>0);
+            assert(comp.size()>0);
 
             //------------------------------------------------------------------
             //
-            // initialize
+            // initialize Cend=Cini and check state
             //
             //------------------------------------------------------------------
             iota::save(Cend,Cini);
@@ -86,17 +90,26 @@ namespace yack
                 case components::are_running: break;
             }
 
-            MassActionF      F  = { comp, K, Cend, xmul };
+            //------------------------------------------------------------------
+            //
+            // create function from Cend
+            //
+            //------------------------------------------------------------------
+            MassActionF      F  = { comp, K, Cend, xmul, 0};
+
+            // outer loop
+        FIND_XI:
+            triplet<double>  x  = { 0,0,0 };
             triplet<double>  f  = { 0,F(0),0 };             // initalize f
             const sign_type  s  = __sign::of(f.b);          // check sign
             search_extent    d  = search_positive_extent;   // to be set
+            std::cerr << "Cend=" << Cend << ", f=" << f.b << std::endl;
             switch(s)
             {
-                case __zero__: return outcome(components::are_running,extent::is_degenerated,0); // early return
-                case positive: d = search_positive_extent; break;                                // xi>0
-                case negative: d = search_negative_extent; break;                                // xi<0
+                case __zero__:  goto SUCCESS;                     // early return
+                case positive: d = search_positive_extent; break; // xi>0
+                case negative: d = search_negative_extent; break; // xi<0
             }
-            triplet<double>  x  = { 0,0,0 };
 
 
             //------------------------------------------------------------------
@@ -105,7 +118,7 @@ namespace yack
             //
             //------------------------------------------------------------------
             {
-                const xlimits &       xlms = comp.genuine_limits(Cini,0);
+                const xlimits &       xlms = comp.genuine_limits(Cend,0);
                 const xlimit  * const rlim = xlms.reac;
                 const xlimit  * const plim = xlms.prod;
                 std::cerr << "limits=" << xlms << std::endl;
@@ -114,7 +127,7 @@ namespace yack
                 {
 
                     case limited_by_none:
-                        return outcome(components::are_running,extent::is_degenerated,0);
+                        throw imported::exception(fn,"unexpected unlimited");
 
                     case limited_by_both:
                         switch(d)
@@ -183,16 +196,15 @@ namespace yack
                 }
             }
 
-            std::cerr << "x=" << x << ", f=" << f << std::endl;
+            std::cerr << "search: x=" << x << ", f=" << f << std::endl;
             assert( __sign::product_of(f.a,f.c) == negative );
 
 
             //------------------------------------------------------------------
             //
-            // loop
+            // inner loop
             //
             //------------------------------------------------------------------
-
             {
                 double width = fabs(x.c-x.a);
 
@@ -204,7 +216,10 @@ namespace yack
 
                 switch( __sign::of(f.b) )
                 {
-                    case __zero__: goto SUCCESS;
+                    case __zero__:
+                        comp.move(Cend,x.b);
+                        goto SUCCESS;
+
                     case negative:
                         f.c = f.b;
                         x.c = x.b;
@@ -219,17 +234,20 @@ namespace yack
                 const double new_width = fabs(x.c-x.a);
                 if(new_width<=0||new_width>=width)
                 {
-                    goto SUCCESS;
+                    std::cerr << "Reached Inner Precision @f=" << f.b << ", witdh=" << new_width << std::endl;
+                    comp.move(Cend,x.b);
+                    goto FIND_XI;
                 }
                 width = new_width;
                 goto LOOP;
             }
 
-        SUCCESS:
-            comp.move(Cend,x.b);
 
+
+
+        SUCCESS:
             const double xi = comp.estimate_extent(Cini,Cend,xadd);
-            std::cerr << "success@" << xi << std::endl;
+            std::cerr << "F(" << xi << ")=" << comp.mass_action(K,Cend,xmul) << std::endl;
             return outcome(components::are_running,comp.qualify_extent(xi,Cini,xmul),xi);
         }
 
