@@ -71,7 +71,8 @@ namespace yack
                                 const readable<double> &Cini,
                                 writable<double>       &Cend,
                                 rmulops                &xmul,
-                                raddops                &xadd)
+                                raddops                &xadd,
+                                size_t                 *call)
         {
 
             static const char fn[] = "chemical::outcome::study";
@@ -95,7 +96,7 @@ namespace yack
             // create function from Cend
             //
             //------------------------------------------------------------------
-            MassActionF      F  = { comp, K, Cend, xmul, 0};
+            MassActionF      F  = { comp, K, Cend, xmul, 0 };
             double           AX = -1;
 
         FIND_XI:
@@ -120,7 +121,6 @@ namespace yack
                 const xlimits &       xlms = comp.genuine_limits(Cend,0);
                 const xlimit  * const rlim = xlms.reac;
                 const xlimit  * const plim = xlms.prod;
-                //std::cerr << "limits=" << xlms << std::endl;
 
                 switch(xlms.type)
                 {
@@ -248,6 +248,7 @@ namespace yack
 
         SUCCESS:
             const double xi = comp.estimate_extent(Cini,Cend,xadd);
+            if(call) *call  += F.n;
             return outcome(components::are_running,comp.qualify_extent(xi,Cini,xmul),xi);
         }
 

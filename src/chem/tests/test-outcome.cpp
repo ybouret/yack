@@ -41,14 +41,16 @@ namespace
     }
 
     static inline
-    void create(const readable<size_t> * const r,
-                const readable<size_t> * const p,
-                randomized::bits              &ran)
+    size_t create(const readable<size_t> * const r,
+                  const readable<size_t> * const p,
+                  randomized::bits              &ran,
+                  const size_t                   iter_max)
     {
         library     lib;
         components  cmp;
         rmulops     xmul;
         raddops     xadd;
+        size_t      ntry = 0;
         {
             vector<int> cof;
             {
@@ -80,7 +82,7 @@ namespace
                 vector<double> Cini(M,0);
                 vector<double> Cend(M,0);
                 {
-                    const outcome res = outcome::study(cmp,K,Cini,Cend,xmul,xadd);
+                    const outcome res = outcome::study(cmp,K,Cini,Cend,xmul,xadd,&ntry);
                     std::cerr << "C=" << Cini << " -> " << Cend << " @" << cmp.mass_action(K,Cend,xmul) <<  " | Q=" << cmp.quotient(K,Cend,xmul) << std::endl;
                 }
 
@@ -89,14 +91,14 @@ namespace
                     combination comb(M,neqz);
                     do
                     {
-                        for(size_t iter=0;iter<4;++iter)
+                        for(size_t iter=0;iter<iter_max;++iter)
                         {
                             Cini.ld(0);
                             for(size_t i=neqz;i>0;--i)
                             {
                                 Cini[ comb[i] ] = library::concentration(ran);
                             }
-                            const outcome res = outcome::study(cmp,K,Cini,Cend,xmul,xadd);
+                            const outcome res = outcome::study(cmp,K,Cini,Cend,xmul,xadd,&ntry);
                             std::cerr << "C=" << Cini << " -> " << Cend << " @" << cmp.mass_action(K,Cend,xmul) <<  " | Q=" << cmp.quotient(K,Cend,xmul) << std::endl;
                         }
                     }
@@ -106,20 +108,26 @@ namespace
 
             }
         }
+        return ntry;
     }
 
 
     static inline void perform(const unsigned n, randomized::bits &ran)
     {
         YACK_ASSERT(n>0);
+        
+        size_t       calls = 0;
+        size_t       confs = 0;
+        const size_t itmax = 8;
+        const size_t ittot = itmax+1;
 
         partition r(n);
 
         r.boot();
         do
         {
-            create(&r,NULL,ran);
-            create(NULL,&r,ran);
+            calls += create(&r,NULL,ran,itmax); confs += ittot;
+            calls += create(NULL,&r,ran,itmax); confs += ittot;
         }
         while( r.next() );
 
@@ -131,15 +139,16 @@ namespace
             p.boot();
             do
             {
-                create(&r,&p,ran);
+                calls += create(&r,&p,ran,itmax); confs += ittot;
             }
             while(p.next());
         }
         while(r.next());
 
-
+        std::cerr << "#calls=" << std::setw(15) << calls << " (" << double(calls)/confs << " per conf)" << std::endl;
 
     }
+
 
 }
 

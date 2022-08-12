@@ -37,7 +37,8 @@ namespace yack
                                  const readable<double> &Cini,
                                  writable<double>       &Cend,
                                  rmulops                &xmul,
-                                 raddops                &xadd);
+                                 raddops                &xadd,
+                                 size_t                 *call=0);
 
 
             //__________________________________________________________________
