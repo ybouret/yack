@@ -94,6 +94,7 @@ namespace yack
                     break;
             }
 
+#if 0
             triplet<double>  x  = { 0,0,0 };
             MassActionF      F  = { comp, K, Cend, ops };
             std::cerr << " -- K=" << K << " --" << std::endl;
@@ -198,7 +199,7 @@ namespace yack
             }
 
 
-
+#endif
             return outcome(components::are_running,extent::is_degenerated,0);
         }
 

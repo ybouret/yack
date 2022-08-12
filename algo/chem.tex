@@ -65,7 +65,7 @@ and:
 
 \section{1D-Solving}
 
- 
+\subsection{Equation}
 Let us take $\Gamma_i$ (with a least a product or a reactant).
 Then there exist a unique $\Xi_i$ for which:
 \begin{equation}
@@ -85,7 +85,7 @@ Indeed, $\Xi_i$ is solution of:
 
 And each $\Xi_i$ respects all the limiting extents.
 
-
+\subsection{Where to look for}
 Let us set:
 \begin{equation}
 \left\lbrace
@@ -101,12 +101,25 @@ Let us set:
 
 Let
 \begin{equation}
-	\sigma_i = \mathrm{sign}\lbrack P_i(\vec{C},0) \rbrack
+	\sigma_i = \mathrm{sign}\lbrack F_i(\vec{C},0) \rbrack
 \end{equation}
 
 \begin{itemize}
-
 \item If $\sigma_i=0$ then $X=0$ is solution at $\vec{C}$...
+
+\item If $\sigma_i>0$, then we look for $X>0$
+
+\item If $\sigma_i<0$, then we look for $X<0$
+
+\end{itemize}
+
+\subsection{Looking for $X\not=0$}
+
+
+\end{document}
+
+\begin{itemize}
+
 
 \item Otherwise, we compute the limits of $F_i$.
 	
