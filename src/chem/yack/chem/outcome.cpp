@@ -120,7 +120,7 @@ namespace yack
                 const xlimits &       xlms = comp.genuine_limits(Cend,0);
                 const xlimit  * const rlim = xlms.reac;
                 const xlimit  * const plim = xlms.prod;
-                std::cerr << "limits=" << xlms << std::endl;
+                //std::cerr << "limits=" << xlms << std::endl;
 
                 switch(xlms.type)
                 {
@@ -195,7 +195,7 @@ namespace yack
                 }
             }
 
-            std::cerr << "search: x=" << x << ", f=" << f << std::endl;
+            //std::cerr << "search: x=" << x << ", f=" << f << std::endl;
             assert( __sign::product_of(f.a,f.c) == negative );
 
 
