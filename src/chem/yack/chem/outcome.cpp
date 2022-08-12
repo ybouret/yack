@@ -55,10 +55,10 @@ namespace yack
             }
         };
 
-        enum search_direction
+        enum search_extent
         {
-            search_decreasing,
-            search_increasing
+            search_positive_extent,
+            search_negative_extent
         };
 
         outcome outcome:: study(const components       &comp,
@@ -69,8 +69,13 @@ namespace yack
         {
 
             assert(K>0);
+            std::cerr << "-- K  = " << K << " --" << std::endl;
 
+            //------------------------------------------------------------------
+            //
             // initialize
+            //
+            //------------------------------------------------------------------
             iota::save(Cend,Cini);
             switch( comp.state_at(Cini) )
             {
@@ -80,19 +85,92 @@ namespace yack
             
             triplet<double>  f  = { 0,comp.mass_action(K,Cend,ops),0 };
             const sign_type  s  = __sign::of(f.b);
-            search_direction d  = search_decreasing;
+            search_extent    d  = search_positive_extent;
             std::cerr << "f.b=" << f.b << std::endl;
             switch(s)
             {
                 case __zero__: return outcome(components::are_running,extent::is_degenerated,0);
                 case positive:
-                    d = search_increasing;
-                    std::cerr << "search right" << std::endl;
+                    d = search_positive_extent;
+                    std::cerr << "search positive extent" << std::endl;
                     break;
                 case negative:
-                    std::cerr << "search left" << std::endl;
+                    d = search_negative_extent;
+                    std::cerr << "search negative extent" << std::endl;
                     break;
             }
+
+            MassActionF      F  = { comp, K, Cend, ops };
+            triplet<double>  x  = { 0,0,0 };
+
+            //------------------------------------------------------------------
+            //
+            // bracket solution
+            //
+            //------------------------------------------------------------------
+            {
+                const xlimits &       xlms = comp.genuine_limits(Cini,0);
+                const xlimit  * const rlim = xlms.reac;
+                const xlimit  * const plim = xlms.prod;
+                std::cerr << "limits=" << xlms << std::endl;
+
+                switch(xlms.type)
+                {
+
+                    case limited_by_none:
+                        return outcome(components::are_running,extent::is_degenerated,0);
+
+                    case limited_by_both:
+                        switch(d)
+                        {
+                            case search_positive_extent:
+                                x.a = x.b;      assert(fabs(x.a)<=0);
+                                f.a = f.b;      assert(f.a>0);
+                                x.c = rlim->xi; assert(x.c>0);
+                                f.c = F(x.c);   assert(f.c<0);
+                                break;
+
+                            case search_negative_extent:
+                                x.c = x.b; assert(fabs(x.c)<=0);
+                                f.c = f.b; assert(f.c<0);
+                                x.a = -(plim->xi);
+                                f.a = F(x.a); assert(f.a>0);
+                                break;
+                        }
+                        break;
+
+                    case limited_by_reac:
+                        assert(comp.prod.molecularity==0);
+                        switch (d)
+                        {
+                            case search_negative_extent:
+                                x.c = x.b; assert(fabs(x.c)<=0);
+                                f.c = f.b; assert(f.c<0);
+                                x.a = -pow(K,-1.0/comp.reac.molecularity);
+                                while( (f.a = F(x.a)) <=0 ) x.a += x.a;
+                                assert(x.a<0);
+                                assert(f.a>0);
+                                break;
+
+                            case search_positive_extent:
+                                x.a = x.b;      assert(fabs(x.a)<=0);
+                                f.a = f.b;      assert(f.a>0);
+                                x.c = rlim->xi; assert(x.c>0);
+                                f.c = -1;
+                                break;
+                        }
+
+                        break;
+
+
+                    default:
+                        throw exception("not handled");
+                }
+            }
+
+            std::cerr << "x=" << x << ", f=" << f << std::endl;
+            assert( __sign::product_of(f.a,f.c) == negative );
+
 
 #if 0
             triplet<double>  x  = { 0,0,0 };

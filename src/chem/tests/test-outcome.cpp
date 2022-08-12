@@ -30,7 +30,7 @@ YACK_UTEST(outcome)
         rmulops        ops;
 
 
-        for(int p=-10;p<=10;++p)
+        for(int p=-4;p<=4;++p)
         {
             const double K = pow(10.0,double(p));
 

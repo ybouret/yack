@@ -90,9 +90,9 @@ Let us set:
 \begin{equation}
 \left\lbrace
 \begin{array}{rcll}
-	P_i(\vec{C},X) & = & \displaystyle \prod_{j=1}^{M} \left([A_j] + X \nu^p_{ij} \right)^{\nu^p_{ij}}, & \partial_X P_i(\vec{C},X) > 0 \\
+	P_i(\vec{C},X) & = & \displaystyle \prod_{j=1}^{M} \left([A_j] + X \nu^p_{ij} \right)^{\nu^p_{ij}}, & \partial_X P_i(\vec{C},X) \geq 0 \\
 	\\
-	R_i(\vec{C},X) & = & \displaystyle K_i \prod_{j=1}^{M} \left([A_j] - X \nu^r_{ij}\right)^{\nu^r_{ij}}, & \partial_X R_i(\vec{C},X) < 0 \\
+	R_i(\vec{C},X) & = & \displaystyle K_i \prod_{j=1}^{M} \left([A_j] - X \nu^r_{ij}\right)^{\nu^r_{ij}}, & \partial_X R_i(\vec{C},X) \leq 0 \\
 	\\
 	 F_i(\vec{C},X) & = & R_i(\vec{C},X)  - P_i(\vec{C},X), & \partial_X F_i(\vec{C},X) < 0\\
 \end{array}
@@ -114,7 +114,41 @@ Let
 \end{itemize}
 
 \subsection{Looking for $X\not=0$}
+	
+\subsubsection{Limited by BOTH}
 
+\subsubsection{Limited by REACTANTS only}
+This is a "combination only" reaction:
+$$
+	\Delta_r \nu = - \Delta_r \nu^r < 0 
+$$
+\begin{itemize}
+\item $$P_i \equiv 1$$
+\item $$X \in \rbrack -\infty; \xi_r \lbrack$$
+\item $$F_i(\vec{C},\xi_r)=-1$$
+\item Looking for $X>0$:
+ $$
+ \left\lbrace
+ \begin{array}{rcl}
+ 	X &\in& \rbrack 0;\xi_r \lbrack\\
+	F &\in& \rbrack F_i(\vec{C},0)>0 ; -1 \lbrack\\
+\end{array}
+\right.
+ $$
+ \item Looking for $X<0$:\\
+ We use $S_i=K_i^{\frac{1}{\Delta_r \nu}}=K_i^{\frac{-1}{\Delta_r \nu^r}}$
+ and look for $n$ such that:
+ $$
+ 	\left\lbrace
+ \begin{array}{rcl}
+ 	X &\in& \rbrack -2^n S_i;0 \lbrack\\
+	F &\in& \rbrack F_i(\vec{C},-2^nS_i)>0 ; F_i(\vec{C},0)<0 \lbrack\\
+\end{array}
+\right.
+ $$
+\end{itemize}
+ 	
+ 	
 
 \end{document}
 
