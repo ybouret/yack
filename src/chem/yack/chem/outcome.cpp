@@ -167,11 +167,19 @@ namespace yack
                         switch (d)
                         {
                             case search_negative_extent:
-                                throw exception("no limited by prod negative extent");
+                                x.c = x.b;          assert(fabs(x.c)<=0);
+                                f.c = f.b;          assert(f.c<0);
+                                x.a = -(plim->xi);  assert(x.a<0);
+                                f.a = K;            assert(f.a>0);
                                 break;
 
                             case search_positive_extent:
-                                throw exception("no limited by prod positive extent");
+                                x.a = x.b; assert( fabs(x.a) <= 0);
+                                f.a = f.b; assert(f.a>0);
+                                x.c = pow(K,1.0/comp.prod.molecularity);
+                                while( (f.c = F(x.c)) >=0 ) x.c += x.c;
+                                assert(x.c>0);
+                                assert(f.c<0);
                                 break;
                         }
 
