@@ -336,18 +336,25 @@ namespace yack
                 const double new_width = fabs(x.c-x.a);
                 if(new_width>=width)
                 {
+                    //----------------------------------------------------------
                     // end of current reduction
+                    //----------------------------------------------------------
                     const double xx = x.b;
                     const double ax = fabs(xx);
                     comp.move(Cend,xx);
-                    //std::cerr << "\tax=" << ax << std::endl;
-                    if( AX>0 && (ax>=AX) ) goto SUCCESS;
+                    if( AX>0 && (ax>=AX) )
+                        goto SUCCESS;
 
+                    //----------------------------------------------------------
                     // prepare for next bracketing/solving
+                    //----------------------------------------------------------
                     AX = ax;
                     goto FIND_XI;
                 }
 
+                //--------------------------------------------------------------
+                // still reducing
+                //--------------------------------------------------------------
                 width = new_width;
                 goto ZFIND;
             }

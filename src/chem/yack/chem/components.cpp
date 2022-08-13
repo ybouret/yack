@@ -101,7 +101,7 @@ namespace yack
                                      rmulops                &ops) const
         {
             // reactant side
-            ops.set1();
+            ops = K;
             const double den = reac.mass_action(C,ops);
 
             // product side
@@ -121,7 +121,7 @@ namespace yack
             }
             else
             {
-                return (num/den)/K;
+                return (num/den);
             }
 
         }
