@@ -101,16 +101,16 @@ namespace yack
                                      rmulops                &ops) const
         {
             // reactant side
-            ops = K;
-            const double rma = reac.mass_action(C,ops);
+            ops.set1();
+            const double den = reac.mass_action(C,ops);
 
             // product side
             ops.set1();
-            const double pma = prod.mass_action(C,ops);
+            const double num = prod.mass_action(C,ops);
 
-            if(fabs(rma)<=0)
+            if(fabs(den)<=0)
             {
-                if(fabs(pma)<=0)
+                if(fabs(num)<=0)
                 {
                     return  1;
                 }
@@ -121,7 +121,7 @@ namespace yack
             }
             else
             {
-                return pma/rma;
+                return (num/den)/K;
             }
 
         }
