@@ -12,9 +12,11 @@ namespace yack
         class equilibrium : public entity, public components
         {
         public:
+            typedef ark_ptr<string,equilibrium> pointer;
+            
             static double display_time; //!< default=0
             static size_t display_size; //!< default=12
-                                        
+            
             virtual ~equilibrium() throw();
            
             double K(double) const;
