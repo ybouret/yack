@@ -34,6 +34,17 @@ namespace yack
             return *eq;
         }
         
+        equilibria:: equilibria(const equilibria &other) :
+        gathering()
+        {
+            for(const enode *node=other.head();node;node=node->next)
+            {
+                const equilibrium &eq = ***node;
+               (void) use( & coerce(eq) );
+            }
+        }
+
+        
     }
     
 }
