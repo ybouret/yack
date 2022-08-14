@@ -28,6 +28,10 @@ namespace yack
             explicit luaEquilibria();          //!< setup with Lua::Sate
             virtual ~luaEquilibria() throw();  //!< cleanup
             
+            void operator()(library &, const string &info);
+            void operator()(library &, const char   *info);
+
+            
         private:
             YACK_DISABLE_COPY_AND_ASSIGN(luaEquilibria);
 

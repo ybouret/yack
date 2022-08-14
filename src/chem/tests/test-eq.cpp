@@ -12,9 +12,14 @@ YACK_UTEST(eq)
     
     eqs->dostring("function f(t) return 1.1+math.cos(t) end");
     
-    equilibrium      &water = eqs("water",1e-14);
-    water(lib,"[H+]+[HO-]");
-    std::cerr << water << std::endl;
+    for(int i=1;i<argc;++i)
+    {
+        eqs(lib,argv[1]);
+    }
+    
+    std::cerr << lib << std::endl;
+    std::cerr << eqs << std::endl;
+    
 
 
 }

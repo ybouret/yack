@@ -45,6 +45,21 @@ namespace yack
             }
         }
 
+        std::ostream & operator<<(std::ostream &os, const equilibria &eqs)
+        {
+            os << '{' << std::endl;
+            for(const enode *node=eqs.head();node;node=node->next)
+            {
+                const equilibrium &eq = ***node;
+                eqs.pad(os << "  <" << eq.name << ">",eq);
+                
+                os << std::endl;
+            }
+            
+            os << '}';
+            return os;
+        }
+        
         
     }
     

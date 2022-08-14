@@ -58,6 +58,7 @@ namespace yack
                 return use( new const_equilibrium(uid,size()+1,K) );
             }
             
+            friend std::ostream & operator<<(std::ostream &, const equilibria &eqs);
             
         private:
             YACK_DISABLE_ASSIGN(equilibria);
