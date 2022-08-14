@@ -15,7 +15,12 @@ namespace yack
 {
     namespace chemical
     {
-        
+        //______________________________________________________________________
+        //
+        //
+        // global definitions
+        //
+        //______________________________________________________________________
         typedef math::multiplier<double> rmulops; //!< alias
         typedef math::adder<double>      raddops; //!< alias
 
