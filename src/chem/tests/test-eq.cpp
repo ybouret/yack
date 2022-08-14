@@ -9,6 +9,9 @@ YACK_UTEST(eq)
 {
     library           lib;
     luaEquilibria     eqs;
+    
+    eqs->dostring("function f(t) return 1.1+math.cos(t) end");
+    
     equilibrium      &water = eqs("water",1e-14);
     water(lib,"[H+]+[HO-]");
     std::cerr << water << std::endl;

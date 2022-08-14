@@ -160,6 +160,8 @@ namespace yack
             //! evaluate grade of extent
             extent::grade qualify_extent(const double xi, const readable<double> &Cini, rmulops &) const ;
 
+            
+            
             //__________________________________________________________________
             //
             // members
