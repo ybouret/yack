@@ -256,7 +256,7 @@ namespace yack
 
                             switch( __sign::of(f_u) )
                             {
-                                case __zero__:
+                                case __zero__:  
                                     comp.move(Cend,x_u);
                                     goto SUCCESS;
 

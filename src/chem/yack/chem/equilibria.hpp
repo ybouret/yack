@@ -1,4 +1,3 @@
-
 //! \file
 
 #ifndef YACK_CHEMICAL_EQS_INCLUDED
