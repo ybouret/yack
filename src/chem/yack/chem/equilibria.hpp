@@ -60,10 +60,11 @@ namespace yack
             
             friend std::ostream & operator<<(std::ostream &, const equilibria &eqs);
             
+        protected:
+            equilibrium & use(equilibrium *eq);
         private:
             YACK_DISABLE_ASSIGN(equilibria);
             eqs_db edb;
-            equilibrium & use(equilibrium *eq);
          };
 
     }
