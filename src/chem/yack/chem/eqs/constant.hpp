@@ -10,13 +10,23 @@ namespace yack
 {
     namespace chemical
     {
-        
+        //______________________________________________________________________
+        //
+        //
+        //! constant equilibrium
+        //
+        //______________________________________________________________________
         class const_equilibrium : public equilibrium
         {
         public:
            
-            
-            virtual ~const_equilibrium() throw();
+            //__________________________________________________________________
+            //
+            // C++
+            //__________________________________________________________________
+            virtual ~const_equilibrium() throw(); //!< cleanup
+
+            //! setup with name, index and K value
             template <typename NAME> inline
             explicit const_equilibrium(const NAME &uid,
                                        const size_t idx,

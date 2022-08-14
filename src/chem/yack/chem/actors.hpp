@@ -57,6 +57,7 @@ namespace yack
                                const double            xi,
                                rmulops                &ops) const;
 
+            //! C -> C+nu*xi (sign of xi must be adapted)
             void  move(writable<double> &C, const double xi) const throw();
 
             //! test all actors

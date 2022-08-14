@@ -12,11 +12,21 @@ namespace yack
     namespace chemical
     {
 
+        //______________________________________________________________________
+        //
+        //
+        //! equilibira with Lua parser/evaluator
+        //
+        //______________________________________________________________________
         class luaEquilibria : public equilibria, public Lua::VM
         {
         public:
-            explicit luaEquilibria();
-            virtual ~luaEquilibria() throw();
+            //__________________________________________________________________
+            //
+            // C++
+            //__________________________________________________________________
+            explicit luaEquilibria();          //!< setup with Lua::Sate
+            virtual ~luaEquilibria() throw();  //!< cleanup
             
         private:
             YACK_DISABLE_COPY_AND_ASSIGN(luaEquilibria);

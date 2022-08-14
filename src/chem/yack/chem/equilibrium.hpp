@@ -9,22 +9,40 @@ namespace yack
 {
     namespace chemical
     {
+        //______________________________________________________________________
+        //
+        //
+        //! equilibirum = entity + components, with a K(time)
+        //
+        //______________________________________________________________________
         class equilibrium : public entity, public components
         {
         public:
-            typedef ark_ptr<string,equilibrium> pointer;
+            //__________________________________________________________________
+            //
+            // types and definitions
+            //__________________________________________________________________
+            typedef ark_ptr<string,equilibrium> pointer; //!< alias
             
             static double display_time; //!< default=0
             static size_t display_size; //!< default=12
-            
-            virtual ~equilibrium() throw();
-           
-            double K(double) const;
 
-            friend std::ostream & operator<<(std::ostream &, const equilibrium&);
 
+            //__________________________________________________________________
+            //
+            // methods
+            //__________________________________________________________________
+            double K(double) const;                                               //!< non-virtual, checkin getK()
+            friend std::ostream & operator<<(std::ostream &, const equilibrium&); //!< display
+
+            //__________________________________________________________________
+            //
+            // C++
+            //__________________________________________________________________
+            virtual ~equilibrium() throw();  //!< cleanup
             
         protected:
+            //! set from name + index
             template <typename NAME> inline
             explicit equilibrium(const NAME &uid, const size_t idx) :
             entity(uid,idx), components()
