@@ -89,6 +89,7 @@ namespace yack
                 // checking equilibrium
                 if( '@' == ch )
                 {
+                    first.skip(1);
                     create_eq_for(lib,word);
                     continue;
                 }
@@ -113,7 +114,6 @@ namespace yack
             Lua::State &lvm   = **this;
             string     &first = word[1];
            
-            first.skip(1);
             const string &eid = first;
             if(eid.size()<=0) throw imported::exception(clid,"empty equilibrium name");
             if(word.size()<3) throw imported::exception(clid,"missing components/constant for <%s>", eid());
@@ -147,13 +147,36 @@ namespace yack
 }
 
 #include "yack/chem/designer/eq-info.hpp"
-
+#include "yack/jive/pattern/matching.hpp"
 namespace yack
 {
     namespace chemical
     {
-        void luaEquilibria:: insert_eq_for(library &lib, const string &rx)
+        void luaEquilibria:: insert_eq_for(library      &lib,
+                                           const string &rx)
         {
+
+            std::cerr << "[regex='" << rx << "']" << std::endl;
+
+            jive::matching matches(rx);
+            size_t         found = 0;
+            vector<string> word(3,as_capacity);
+            for(size_t i=0;i<nucleus::eq_info::count;++i)
+            {
+                const nucleus::eq_info &ctx = nucleus::eq_info::table[i];
+                const string            eid = ctx.name;
+                if(matches.exactly(eid))
+                {
+                    std::cerr << "\tfound '" << eid << "'" << std::endl;
+                    word << eid;
+                    word << ctx.data;
+                    word << ctx.kxpr;
+                    create_eq_for(lib,word);
+                    ++found;
+                }
+            }
+            if(!found) throw imported::exception(clid,"no equilibrium matchin '%s'", rx());
+
         }
     }
 }
