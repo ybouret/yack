@@ -8,8 +8,10 @@ namespace yack
         {
             const eq_info eq_info::table[] =
             {
-                { "water",  "[H+]+[HO-]",             "10^(-14)"   },
-                { "acetic", "[H+]+[EtCOO-]-[EtCOOH]", "10^(-4.78)" }
+                { "water",    "[H+]+[HO-]",             "10^(-14)"   },
+                { "acetic",   "[H+]+[EtCOO-]-[EtCOOH]", "10^(-4.78)" },
+                { "ammoniac", "[H+]+[NH3]-[NH4+]",      "10^(-9.25)" }
+
             };
             
             
