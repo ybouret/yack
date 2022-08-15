@@ -53,6 +53,7 @@ namespace yack
             //
             // methods
             //__________________________________________________________________
+            //! textual output
             friend std::ostream & operator<<(std::ostream &os, const outcome &out);
 
         private:

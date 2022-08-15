@@ -77,7 +77,7 @@ namespace yack
             //! check
             bool are_blocked_by(const readable<double> &C) const throw();
 
-            
+            //! compute derivatives of mass action w.r.t C
             void drvs_action(writable<double>       &psi,
                              const double            factor,
                              const readable<double> &C,
