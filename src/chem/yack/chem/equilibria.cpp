@@ -10,7 +10,7 @@ namespace yack
     {
         equilibria:: ~equilibria() throw() {}
         
-        equilibria:: equilibria() throw() : gathering()
+        equilibria:: equilibria() throw() : gathering(), edb()
         {
         }
         
@@ -31,19 +31,20 @@ namespace yack
         {
             assert(NULL!=eq);
             const equilibrium::pointer p(eq);
+            if(latched())      throw imported::exception(clid,"are LOCKED");
             if(**p!=size()+1)  throw imported::exception(clid,"bad index for <%s>",eq->name());
-            if(!edb.insert(p)) throw imported::exception(clid,"multiple <%s>", eq->name());
+            if(!edb.insert(p)) throw imported::exception(clid,"multiple <%s>",     eq->name());
             absorb(*eq);
             return *eq;
         }
         
         equilibria:: equilibria(const equilibria &other) :
-        gathering()
+        gathering(), edb()
         {
             for(const enode *node=other.head();node;node=node->next)
             {
                 const equilibrium &eq = ***node;
-               (void) use( & coerce(eq) );
+                (void) use( & coerce(eq) );
             }
         }
 

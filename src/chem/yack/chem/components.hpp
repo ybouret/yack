@@ -66,6 +66,8 @@ namespace yack
                 are_blocked  //!< blocked
             };
 
+            //! get textual value
+            static const char *state_text(const state s) throw();
 
 
             //__________________________________________________________________
@@ -101,6 +103,14 @@ namespace yack
                                const readable<double> &C,
                                rmulops                &) const;
 
+
+            //! compute mass action for a given fraction of Cini->Cend
+            double mass_action(const double            K,
+                               const readable<double> &Cini,
+                               const readable<double> &Cend,
+                               const double            u,
+                               writable<double>       &Ctry,
+                               rmulops                &) const;
 
             //! compute quotient reaction
             double quotient(const double            K,

@@ -1,11 +1,23 @@
 
 #include "yack/chem/components.hpp"
 #include "yack/system/imported.hpp"
+#include "yack/math/iota.hpp"
 
 namespace yack
 {
     namespace chemical
     {
+
+        const char * components:: state_text(const state s) throw()
+        {
+            switch (s) {
+                case are_blocked: return "[BLOCKED]";
+                case are_running: return "[running]";
+            }
+            return yack_unknown;
+        }
+
+
         const char components:: clid[] = "chemical::components";
         
         components:: ~components() throw()
@@ -143,6 +155,35 @@ namespace yack
 
             // difference
             return rma - pma;
+        }
+
+        double components:: mass_action(const double            K,
+                                        const readable<double> &Cini,
+                                        const readable<double> &Cend,
+                                        const double            u,
+                                        writable<double>       &Ctry,
+                                        rmulops                &xmul) const
+        {
+            if(u<=0)
+                return mass_action(K,Cini,xmul);
+            else
+            {
+                if(u>=1.0)
+                {
+                    return mass_action(K,Cend,xmul);
+                }
+                else
+                {
+                    const double v = 1.0 - u;
+                    math::iota::load(Ctry,Cini);
+                    for(const cnode *node=head();node;node=node->next)
+                    {
+                        const size_t j = *****node;
+                        Ctry[j] = v * Cini[j] + u * Cend[j];
+                    }
+                    return mass_action(K,Ctry,xmul);
+                }
+            }
         }
 
 

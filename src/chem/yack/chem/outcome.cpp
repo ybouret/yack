@@ -1,5 +1,6 @@
 
 #include "yack/chem/outcome.hpp"
+#include <iomanip>
 
 namespace yack
 {
@@ -24,6 +25,18 @@ namespace yack
         grade(other.grade),
         value(other.value)
         {
+        }
+
+        std::ostream & operator<<(std::ostream &os, const outcome &out)
+        {
+            os << components::state_text(out.state);
+            switch(out.grade)
+            {
+                case extent::is_degenerated: os << " [0] "; break;
+                case extent::is_significant: os << " [*] "; break;
+            }
+            os << std::setw(15) << out.value;
+            return os;
         }
         
     }

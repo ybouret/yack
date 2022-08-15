@@ -12,14 +12,20 @@ namespace yack
     {
         namespace nucleus
         {
+            //__________________________________________________________________
+            //
+            //
+            //! info for textual equilibrium
+            //
+            //__________________________________________________________________
             struct eq_info
             {
-                const char *name;
-                const char *data;
-                const char *kxpr;
+                const char *name; //!< name
+                const char *data; //!< components
+                const char *kxpr; //!< constant value
                 
-                static const eq_info table[];
-                static const size_t  count;
+                static const eq_info table[]; //!< database
+                static const size_t  count;   //!< number in database
             };
         }
         

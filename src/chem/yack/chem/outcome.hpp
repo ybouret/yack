@@ -49,6 +49,11 @@ namespace yack
             const extent::grade     grade; //!< grade of extent
             const double            value; //!< extent value
 
+            //__________________________________________________________________
+            //
+            // methods
+            //__________________________________________________________________
+            friend std::ostream & operator<<(std::ostream &os, const outcome &out);
 
         private:
             YACK_DISABLE_ASSIGN(outcome);

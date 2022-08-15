@@ -75,8 +75,8 @@ namespace yack
         const species & library:: use(species *s)
         {
             assert(s);
-            const species::pointer sp(s);
-            assert(**s==size()+1);
+            const species::pointer sp(s);assert(**s==size()+1);
+            if(latched())       throw imported::exception(clid,"is LOCKED");
             if(!sdb.insert(sp)) throw imported::exception(clid,"multiple species '%s'", s->name() );
             absorb(*sp);
             return *sp;

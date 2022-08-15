@@ -27,9 +27,13 @@ namespace yack
             //__________________________________________________________________
             explicit luaEquilibria();          //!< setup with Lua::Sate
             virtual ~luaEquilibria() throw();  //!< cleanup
-            
-            void operator()(library &, const string &info);
-            void operator()(library &, const char   *info);
+
+            //__________________________________________________________________
+            //
+            // methods
+            //__________________________________________________________________
+            void operator()(library &, const string &info); //!< parse species/equilibrium/named
+            void operator()(library &, const char   *info); //!< parse helper
 
             
         private:
