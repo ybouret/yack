@@ -112,6 +112,7 @@ namespace yack
                                writable<double>       &Ctry,
                                rmulops                &) const;
 
+            
             //! compute quotient reaction
             double quotient(const double            K,
                             const readable<double> &C,
@@ -123,6 +124,13 @@ namespace yack
                                const double            xi,
                                rmulops                &ops) const;
 
+            //! compute gradient of mass action
+            void drvs_action(writable<double>       &psi,
+                             const double            K,
+                             const readable<double> &C,
+                             rmulops                &xmul) const;
+            
+            
             //! move C with computed extent
             void move(writable<double> &C, const double xi) const throw();
 
@@ -130,7 +138,7 @@ namespace yack
             template <typename T> inline void fill(writable<T> &nu) const
             {
                 const bare<T> _0;
-                nu.ld(_0);
+                nu.ld(*_0);
                 for(const cnode *node=head();node;node=node->next)
                 {
                     const component &comp = ***node;

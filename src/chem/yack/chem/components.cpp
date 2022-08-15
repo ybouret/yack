@@ -108,6 +108,16 @@ namespace yack
             return rma - pma;
         }
 
+        void components:: drvs_action(writable<double>       &psi,
+                                      const double            K,
+                                      const readable<double> &C,
+                                      rmulops                &xmul) const
+        {
+            psi.ld(0);
+            reac.drvs_action(psi,    K, C, xmul);
+            prod.drvs_action(psi, -1.0, C, xmul);
+        }
+        
         double components:: quotient(const double            K,
                                      const readable<double> &C,
                                      rmulops                &ops) const
@@ -157,6 +167,9 @@ namespace yack
             return rma - pma;
         }
 
+       
+        
+        
         double components:: mass_action(const double            K,
                                         const readable<double> &Cini,
                                         const readable<double> &Cend,
@@ -186,6 +199,8 @@ namespace yack
             }
         }
 
+       
+        
 
         double components:: estimate_extent(const readable<double> &Cini,
                                             const readable<double> &Cend,

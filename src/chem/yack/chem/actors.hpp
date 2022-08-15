@@ -57,6 +57,7 @@ namespace yack
             double mass_action(const readable<double> &C,
                                rmulops                &ops) const;
 
+            
             //! mass action with rmulops, C+nu*xi >=0 
             double mass_action(const readable<double> &C,
                                const double            xi,
@@ -76,8 +77,13 @@ namespace yack
             //! check
             bool are_blocked_by(const readable<double> &C) const throw();
 
-
-
+            
+            void drvs_action(writable<double>       &psi,
+                             const double            factor,
+                             const readable<double> &C,
+                             rmulops                &xmul) const;
+            
+            
             //__________________________________________________________________
             //
             // members

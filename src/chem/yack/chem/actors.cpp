@@ -74,6 +74,24 @@ namespace yack
             }
             return ops.query();
         }
+        
+        void actors:: drvs_action(writable<double>       &psi,
+                                  const double            factor,
+                                  const readable<double> &C,
+                                  rmulops                &xmul) const
+        {
+            for(const actor *a=crew.head;a;a=a->next)
+            {
+                xmul = factor;
+                const double   j  = ***a;           assert(C[j]>=0);
+                xmul.ld(a->nu);
+                xmul.ld(C[j],a->nm);
+                for(const actor *b=a->prev;b;b=b->prev) xmul.ld(C[***b]);
+                for(const actor *b=a->next;b;b=b->next) xmul.ld(C[***b]);
+                psi[j] = xmul.query();
+            }
+        }
+        
 
         void actors:: move(writable<double> &C, const double xi) const throw()
         {

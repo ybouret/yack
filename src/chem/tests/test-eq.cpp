@@ -28,15 +28,28 @@ YACK_UTEST(eq)
     vector<double> C(M,0);
     vector<double> S(M,0);
     vector<double> Ctry(M,0);
-
+    vector<double> psi(M,0);
+    vector<int>    nu(M,0);
+    
     lib.fill(C,ran);
-
+    
+    lib(std::cerr << "C=", "", C);
+    
     for(const enode *node=eqs.head();node;node=node->next)
     {
         const equilibrium &eq  = ***node;
         const double       K   = eq.K(0);
+        
         const outcome      res = outcome::study(eq, K, C, S, xmul, xadd);
         std::cerr << res << " @" << S << std::endl;
+        
+        eq.fill(nu);
+        eq.drvs_action(psi,K,S,xmul);
+        std::cerr << "nu = " << nu << std::endl;
+        std::cerr << "psi= " << psi << std::endl;
+        const double sigma = xadd.dot(psi,nu);
+        std::cerr << "sigma=" << sigma << std::endl;
+        
         const string  fn = "out_" + eq.name + ".dat";
         ios::ocstream fp(fn);
 
@@ -45,7 +58,8 @@ YACK_UTEST(eq)
         {
             const double u = double(i)/NP;
             const double x = res.value * u;
-            fp("%.15g %.15g %.15g\n",x, eq.mass_action(K,C,S,u,Ctry,xmul), u );
+            const double l = (x-res.value) * sigma;
+            fp("%.15g %.15g %.15g %.15g\n",x, eq.mass_action(K,C,S,u,Ctry,xmul), l, u );
         }
 
     }
