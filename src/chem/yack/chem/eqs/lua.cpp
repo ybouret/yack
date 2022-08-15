@@ -92,7 +92,16 @@ namespace yack
                     create_eq_for(lib,word);
                     continue;
                 }
-                                
+                
+                // checking database
+                if( '#' == ch )
+                {
+                    first.skip(1);
+                    insert_eq_for(lib,first);
+                    word.pop_front();
+                    continue;
+                }
+                
                 throw imported::exception(clid,"invalid '%s'", first());
             }
         
@@ -121,6 +130,9 @@ namespace yack
         }
 
         
+        
+        
+        
         void luaEquilibria:: operator()(library &lib, const char *info)
         {
             const string _(info);
@@ -128,9 +140,20 @@ namespace yack
             
         }
         
-        
 
         
     }
 
+}
+
+#include "yack/chem/designer/eq-info.hpp"
+
+namespace yack
+{
+    namespace chemical
+    {
+        void luaEquilibria:: insert_eq_for(library &lib, const string &rx)
+        {
+        }
+    }
 }
