@@ -73,11 +73,12 @@ namespace yack
             
             // parse info
             std::cerr << "info=" << word << std::endl;
-            Lua::State &lvm = **this;
             while(word.size())
             {
                 string     &first = word[1]; assert(first.size()>0);
                 const char  ch    = first[1];
+                
+                // checking species only
                 if( isalpha(ch) )
                 {
                     lib << first;
@@ -85,31 +86,40 @@ namespace yack
                     continue;
                 }
                 
+                // checking equilibrium
                 if( '@' == ch )
                 {
-                    first.skip(1);
-                    const string &eid = first;
-                    if(eid.size()<=0) throw imported::exception(clid,"empty equilibrium name");
-                    if(word.size()<3) throw imported::exception(clid,"missing components/constant for <%s>", eid());
-                    
-                    const string &Kxp = word[3]; assert(Kxp.size()>0);
-                    const size_t  idx = size()+1;
-                    equilibrium  *pEq = isdigit(Kxp[1]) ? YACK_NEW_EQ( const_equilibrium(eid,idx,lvm.eval<double>(Kxp)) ) : YACK_NEW_EQ( luaEquilibrium(eid,idx,*this,Kxp) );
-                    equilibrium  &usr = use(pEq);
-                    usr(lib,word[2]);
-                    
-                    word.pop_front();
-                    word.pop_front();
-                    word.pop_front();
+                    create_eq_for(lib,word);
                     continue;
                 }
-                
+                                
                 throw imported::exception(clid,"invalid '%s'", first());
             }
-            
-            
-            
+        
         }
+        
+        void luaEquilibria:: create_eq_for(library &lib, vector<string> &word)
+        {
+            assert(word.size()>=3);
+            Lua::State &lvm   = **this;
+            string     &first = word[1];
+           
+            first.skip(1);
+            const string &eid = first;
+            if(eid.size()<=0) throw imported::exception(clid,"empty equilibrium name");
+            if(word.size()<3) throw imported::exception(clid,"missing components/constant for <%s>", eid());
+            
+            const string &Kxp = word[3]; assert(Kxp.size()>0);
+            const size_t  idx = size()+1;
+            equilibrium  *pEq = isdigit(Kxp[1]) ? YACK_NEW_EQ( const_equilibrium(eid,idx,lvm.eval<double>(Kxp)) ) : YACK_NEW_EQ( luaEquilibrium(eid,idx,*this,Kxp) );
+            equilibrium  &usr = use(pEq);
+            usr(lib,word[2]);
+            
+            word.pop_front();
+            word.pop_front();
+            word.pop_front();
+        }
+
         
         void luaEquilibria:: operator()(library &lib, const char *info)
         {
