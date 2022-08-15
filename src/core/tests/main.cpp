@@ -86,6 +86,7 @@ YACK_UTEST_DECL(256)
     YACK_UTEST(data_groove);
     YACK_UTEST(data_sorted_list);
     YACK_UTEST(data_be_key);
+    YACK_UTEST(data_pair);
 
 
 
