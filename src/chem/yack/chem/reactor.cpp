@@ -13,7 +13,7 @@ namespace yack
     namespace chemical
     {
 
-        const char clid[] = "chemical::reactor";
+        const char reactor:: clid[] = "chemical::reactor";
 
         reactor:: ~reactor() throw() {}
 
@@ -36,9 +36,15 @@ namespace yack
         ltab(12,L),
 
         Nu(N,N>0?M:0),
+        Psi(Nu.rows,Nu.cols),
+
+        Corg( mtab.next() ),
+        Cend( mtab.next() ),
+        Ctry( mtab.next() ),
 
         K(  ntab.next()  ),
         Kl( ltab.next() ),
+        blocked( ltab.next(), transmogrify),
 
         lockLib( coerce(usrLib) ),
         lockEqs( coerce(usrEqs) )
@@ -47,10 +53,9 @@ namespace yack
 
             if(N>0)
             {
-
-
-
+                //--------------------------------------------------------------
                 // initialize K and Nu
+                //--------------------------------------------------------------
                 for(const enode *node=singles.head();node;node=node->next)
                 {
                     const equilibrium &eq = ***node;
@@ -72,32 +77,44 @@ namespace yack
 
                 }
 
+                //--------------------------------------------------------------
                 // compute couples
+                //--------------------------------------------------------------
                 composite::scatter( coerce(couples), worklib, singles, K, xmul);
 
+                //--------------------------------------------------------------
                 // complete lattice
+                //--------------------------------------------------------------
                 coerce(lattice).add(couples);
                 coerce(L) = lattice.size();
 
+                //--------------------------------------------------------------
                 // rebuild ltab
+                //--------------------------------------------------------------
                 ltab.make(L);
+                blocked.relink<bool>();
 
                 assert(L==Kl.size());
+                assert(L==blocked.size());
 
+                //--------------------------------------------------------------
                 // initialize Kl
+                //--------------------------------------------------------------
                 for(size_t i=N;i>0;--i)
                 {
                     Kl[i] = K[i];
                 }
 
-                // complete constants
+                //--------------------------------------------------------------
+                // complete Kl
+                //--------------------------------------------------------------
                 for(const enode *node=couples.head();node;node=node->next)
                 {
                     const equilibrium &eq = ***node;
                     const size_t       ei =  *eq;
                     Kl[ei] = eq.K(-1);
                 }
-
+                lattice(std::cerr << "Kl=", "K_", Kl);
 
             }
 

@@ -12,16 +12,37 @@ namespace yack
     namespace chemical
     {
 
-        typedef meta_list<const species> alist;
-        typedef alist::node_type         anode;
+        //______________________________________________________________________
+        //
+        //
+        // types for list of active species
+        //
+        //______________________________________________________________________
+        typedef meta_list<const species> alist; //!< alias
+        typedef alist::node_type         anode; //!< alias
 
+        //______________________________________________________________________
+        //
+        //
+        //! list of active species
+        //
+        //______________________________________________________________________
         class active_list : public alist
         {
         public:
-            explicit active_list() throw();
-            virtual ~active_list() throw();
-            explicit active_list(const snode *);
+            //__________________________________________________________________
+            //
+            // C++
+            //__________________________________________________________________
+            explicit active_list() throw();      //!< setup empty
+            virtual ~active_list() throw();      //!< cleanup
+            explicit active_list(const snode *); //!< build from species list
 
+            //__________________________________________________________________
+            //
+            // methods
+            //__________________________________________________________________
+            //! transfer only active part
             template <typename TARGET, typename SOURCE> inline
             void tranfer(TARGET &target, SOURCE &source) const
             {
