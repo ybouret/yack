@@ -56,7 +56,7 @@ namespace yack
             for(const enode *node=eqs.head();node;node=node->next)
             {
                 const equilibrium &eq = ***node;
-                const string ks = vformat("%.15g",eq.K(equilibrium::display_time));
+                const string ks = vformat("%g",eq.K(equilibrium::display_time));
                 Ks << ks;
                 klen = max_of(klen,ks.size());
             }

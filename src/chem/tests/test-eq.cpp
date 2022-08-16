@@ -53,12 +53,13 @@ YACK_UTEST(eq)
         const string  fn = "out_" + eq.name + ".dat";
         ios::ocstream fp(fn);
 
+        const double xi = res.value;
         const size_t NP = 100;
         for(size_t i=0;i<=NP;++i)
         {
             const double u = double(i)/NP;
-            const double x = res.value * u;
-            const double l = (x-res.value) * sigma;
+            const double x = xi * u;
+            const double l = (x-xi) * sigma; // linear around
             fp("%.15g %.15g %.15g %.15g\n",x, eq.mass_action(K,C,S,u,Ctry,xmul), l, u );
         }
 

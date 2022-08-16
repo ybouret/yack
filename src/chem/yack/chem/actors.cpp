@@ -82,8 +82,8 @@ namespace yack
         {
             for(const actor *a=crew.head;a;a=a->next)
             {
-                xmul = factor;
-                const double   j  = ***a;           assert(C[j]>=0);
+                xmul            = factor;
+                const double j  = ***a;            
                 xmul.ld(a->nu);
                 xmul.ld(C[j],a->nm);
                 for(const actor *b=a->prev;b;b=b->prev) xmul.ld(C[***b]);
