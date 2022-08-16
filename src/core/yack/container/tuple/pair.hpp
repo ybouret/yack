@@ -33,6 +33,10 @@ namespace yack
 /**/            os << ',' << __##NAME2() << '=' << self.NAME2;                 \
 /**/            os << ')';                                                     \
 /**/        return os; }                                                       \
+/**/        inline friend bool operator==(const CLASS &LL, const CLASS &RR) {  \
+/**/            return (LL.NAME1==RR.NAME1) && (LL.NAME2==RR.NAME2);        }  \
+/**/        inline friend bool operator!=(const CLASS &LL, const CLASS &RR) {  \
+/**/            return (LL.NAME1!=RR.NAME1) || (LL.NAME2!=RR.NAME2);        }  \
 /**/        TYPE1 NAME1;                                                       \
 /**/        TYPE2 NAME2
     

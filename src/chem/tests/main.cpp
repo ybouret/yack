@@ -7,6 +7,7 @@ YACK_UTEST_DECL(16)
     YACK_UTEST(components);
     YACK_UTEST(outcome);
     YACK_UTEST(eq);
+    YACK_UTEST(composite);
 }
 YACK_UTEST_EXEC()
 

@@ -31,6 +31,7 @@ namespace yack
             //__________________________________________________________________
             YACK_PAIR_DECL(STANDARD,coeff,int,lhs,int,rhs);
             coeff() throw(); //!< default setup
+            void normalize() throw(); //!< order
             YACK_PAIR_END(coeff); //!< end of coeff
 
             //__________________________________________________________________

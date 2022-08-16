@@ -72,7 +72,6 @@ namespace yack
             word.remove_if(is_empty);
             
             // parse info
-            std::cerr << "info=" << word << std::endl;
             while(word.size())
             {
                 string     &first = word[1]; assert(first.size()>0);
@@ -156,8 +155,6 @@ namespace yack
                                            const string &rx)
         {
 
-            std::cerr << "[regex='" << rx << "']" << std::endl;
-
             jive::matching matches(rx);
             size_t         found = 0;
             vector<string> word(3,as_capacity);
@@ -167,7 +164,6 @@ namespace yack
                 const string            eid = ctx.name;
                 if(matches.exactly(eid))
                 {
-                    std::cerr << "\tfound '" << eid << "'" << std::endl;
                     word << eid;
                     word << ctx.data;
                     word << ctx.kxpr;
