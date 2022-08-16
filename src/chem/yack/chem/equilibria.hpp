@@ -50,7 +50,10 @@ namespace yack
             size_t       size() const throw(); //!< number of equilibria
             const enode *head() const throw(); //!< first equilibrium
 
-            //! helpercreate a new constant equilibrium
+            //! register a new equilibrium with proper index
+            equilibrium & use(equilibrium *eq);
+
+            //! helper to create a new constant equilibrium
             template <typename NAME> inline
             equilibrium & operator()(const NAME  &uid,
                                      const double K)
@@ -61,8 +64,6 @@ namespace yack
             //! display
             friend std::ostream & operator<<(std::ostream &, const equilibria &eqs);
             
-        protected:
-            equilibrium & use(equilibrium *eq); //!< register a new equilibrium
 
         private:
             YACK_DISABLE_ASSIGN(equilibria);

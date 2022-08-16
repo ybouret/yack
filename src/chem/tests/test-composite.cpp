@@ -26,6 +26,7 @@ YACK_UTEST(composite)
     std::cerr << lib << std::endl;
     std::cerr << eqs << std::endl;
 
+#if 0
     composite::coeffs cof;
     for(const enode *lhs=eqs.head();lhs;lhs=lhs->next)
     {
@@ -37,6 +38,19 @@ YACK_UTEST(composite)
             std::cerr << "\t#" << nc << " : " << cof << std::endl;
         }
     }
+#endif
+
+    const size_t    N = eqs.size();
+    equilibria      couples;
+    library         libcopy(lib);
+    vector<double>  K(N,0);
+    for(const enode *lhs=eqs.head();lhs;lhs=lhs->next)
+    {
+        const equilibrium &eq = ***lhs;
+        K[*eq] = eq.K(0);
+    }
+
+    composite::scatter(couples,libcopy,eqs,K);
 
 
 }

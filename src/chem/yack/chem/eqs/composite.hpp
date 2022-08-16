@@ -5,7 +5,7 @@
 #ifndef YACK_CHEMICAL_EQS_COMPOSITE_INCLUDED
 #define YACK_CHEMICAL_EQS_COMPOSITE_INCLUDED 1
 
-#include "yack/chem/components.hpp"
+#include "yack/chem/equilibria.hpp"
 #include "yack/container/tuple/pair.hpp"
 
 namespace yack
@@ -49,6 +49,12 @@ namespace yack
             static size_t collect(coeffs           &cof,
                                   const components &lhs,
                                   const components &rhs);
+
+
+            static void scatter(equilibria             &couples,
+                                library                &libcopy,
+                                const equilibria       &singles,
+                                const readable<double> &K);
 
         };
 
