@@ -49,7 +49,7 @@ namespace yack
             /**
              \param cof weights to combine lhs and lhs to
              \param lhs set of components
-             \param lhs set of components
+             \param rhs set of components
              */
             static size_t collect(coeffs           &cof,
                                   const components &lhs,
