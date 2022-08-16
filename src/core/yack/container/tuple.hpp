@@ -1,6 +1,6 @@
 //! \file
 
-#ifndef YACK_TUPLEINCLUDED
+#ifndef YACK_TUPLE_INCLUDED
 #define YACK_TUPLE_INCLUDED 1
 
 #include "yack/setup.hpp"
@@ -8,7 +8,12 @@
 
 namespace yack
 {
-
+    //__________________________________________________________________________
+    //
+    //
+    //! aliases for standard tuples
+    //
+    //__________________________________________________________________________
 #define YACK_TUPLE_ARGS_STANDARD(T,NAME)                                       \
 /**/    typedef T                               NAME;                          \
 /**/    typedef type_traits<T>::mutable_type    mutable_##NAME;                \
@@ -20,6 +25,12 @@ namespace yack
 /**/            const_##NAME &                                                 \
 /**/        >::type param_##NAME
 
+    //__________________________________________________________________________
+    //
+    //
+    //! aliases for template tuples
+    //
+    //__________________________________________________________________________
 #define YACK_TUPLE_ARGS_TEMPLATE(T,NAME)\
 /**/    typedef T                                        NAME;                 \
 /**/    typedef typename type_traits<T>::mutable_type    mutable_##NAME;       \

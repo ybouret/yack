@@ -185,6 +185,7 @@ add_test(data:groove       test-core data_groove)
 add_test(data:sorted_list  test-core data_sorted_list)
 add_test(data:data_be_key  test-core data_be_key)
 add_test(data:pair         test-core data_pair)
+add_test(data:triple       test-core data_triple)
 
 
 add_test(sync:lockable  test-core sync_lockable)

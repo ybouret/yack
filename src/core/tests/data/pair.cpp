@@ -18,8 +18,8 @@ YACK_UTEST(data_pair)
     std::cerr << "p1=" << p1 << std::endl;
     std::cerr << "p2=" << p2 << std::endl;
 
-    //TPair<float> tp1(1,3);
-    //std::cerr << "tp1=" << tp1 << std::endl;
+    TPair<float> tp1(1,3);
+    std::cerr << "tp1=" << tp1 << std::endl;
 
     
 }
