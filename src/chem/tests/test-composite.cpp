@@ -4,6 +4,7 @@
 #include "yack/chem/outcome.hpp"
 #include "yack/utest/run.hpp"
 #include "yack/chem/eqs/composite.hpp"
+#include "yack/container/matrix.hpp"
 
 using namespace yack;
 using namespace chemical;
@@ -56,7 +57,21 @@ YACK_UTEST(composite)
     lattice.add(couples);
 
     std::cerr << "lattice=" << lattice << std::endl;
-
+    const size_t L = lattice.size();
+    matrix<bool> conn(L,L);
+    for(const enode *lhs=lattice.head();lhs;lhs=lhs->next)
+    {
+        const equilibrium &LHS = ***lhs;
+        const size_t       L_i = *LHS;
+        conn[L_i][L_i]         = true;
+        for(const enode *rhs=lhs->next;rhs;rhs=rhs->next)
+        {
+            const equilibrium &RHS = ***rhs;
+            const size_t       R_i = *RHS;
+            conn[L_i][R_i] =  conn[R_i][L_i] = LHS.connected_to(RHS);
+        }
+    }
+    lattice(std::cerr << "conn=","",conn);
 
 }
 YACK_UDONE()

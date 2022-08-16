@@ -19,7 +19,9 @@ namespace yack
 
                 { "sulfuric", "2[H+]+[SO4--]-[H2SO4]",  "10^(0.89)"  },
 
-                { "benzoic",  "[H+]+[PhiCOO-]-[PhiCOOH]", "10^(-4.202)" }
+                { "benzoic",  "[H+]+[PhiCOO-]-[PhiCOOH]", "10^(-4.202)" },
+
+                { "abcd",     "-[a]-[b]+[c]+[d]", "0.12345" }
             };
             
             

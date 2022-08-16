@@ -67,7 +67,22 @@ namespace yack
 
             //! display
             friend std::ostream & operator<<(std::ostream &, const equilibria &eqs);
-            
+
+            //! display helper
+            template <typename PREFIX, typename ARRAY> inline
+            void operator()(std::ostream &os, const PREFIX &prefix, ARRAY &arr) const
+            {
+                os << '{' << std::endl;
+                for(const enode *node=head();node;node=node->next)
+                {
+                    const equilibrium &eq = ***node;
+                    const size_t       ei = *eq;
+                    pad(os << ' ' << prefix << '<' << eq.name << '>',eq) << " = " << arr[ei] << std::endl;
+                }
+                os << '}' << std::endl;
+            }
+
+
 
         private:
             YACK_DISABLE_ASSIGN(equilibria);

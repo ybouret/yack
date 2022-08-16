@@ -231,6 +231,20 @@ namespace yack
         }
 
 
+        bool components:: connected_to(const components &other) const throw()
+        {
+            for(const cnode *node=head();node;node=node->next)
+            {
+                const size_t     j = *****node;
+                for(const cnode *scan=other.head();scan;scan=scan->next)
+                {
+                    if(*****scan==j) return true;
+                }
+            }
+            return false;
+        }
+
+
     }
 
 
