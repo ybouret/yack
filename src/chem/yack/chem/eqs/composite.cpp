@@ -216,7 +216,9 @@ namespace yack
         }
 
         
-        static inline void  composite_fill( equilibrium &eq, const readable<int> &sto, const library &lib )
+        static inline void  composite_fill(equilibrium         &eq,
+                                           const readable<int> &sto,
+                                           const library       &lib )
         {
             const size_t M = sto.size();
             for(size_t i=1;i<=M;++i)
@@ -238,6 +240,9 @@ namespace yack
 
         namespace
         {
+
+
+
             class composite_equilibrium : public equilibrium
             {
             public:
@@ -271,7 +276,10 @@ namespace yack
                 }
             };
 
+
         }
+
+
 
 
         void composite:: scatter(equilibria             &couples,
@@ -297,31 +305,37 @@ namespace yack
                     {
                         for(size_t i=1;i<=nc;++i)
                         {
+                            //--------------------------------------------------
+                            // get current coefficient
+                            //--------------------------------------------------
                             coeff &c = cof[i]; assert(c.rhs>0);
-                            std::cerr <<    "(" << std::setw(3) << c.lhs << ")*"; singles.pad(std::cerr << LHS.name,LHS);
-                            std::cerr << " + (" << std::setw(3) << c.rhs << ")*"; singles.pad( std::cerr <<RHS.name,RHS);
-                            std::cerr << std::endl;
 
+                            //--------------------------------------------------
+                            // reference on persistent constant
+                            //--------------------------------------------------
                             const double &lhsK    = K[*LHS];
                             const double &rhsK    = K[*RHS];
+
+                            //--------------------------------------------------
+                            // constant evaluation and coeff choice
+                            //--------------------------------------------------
                             const double  forwardK = getK(c,lhsK,rhsK,xmul);
-                            //std::cerr << "forwardK = " << forwardK << std::endl;
-                            if(forwardK<1)
+                            if(forwardK>1)
                             {
                                 c.lhs = -c.lhs;
                                 c.rhs = -c.rhs;
                             }
-                            //std::cerr << "create with " << c << std::endl;
+
+                            //--------------------------------------------------
+                            // create composite
+                            //--------------------------------------------------
                             const string uid = composite_name(c,LHS,RHS);
-                            //std::cerr << "uid=<"<< uid << ">" << std::endl;
                             equilibrium &eq  = couples.use( new composite_equilibrium(uid,++idx,c,lhsK,rhsK,xmul) );
                             new_sto(sto,LHS,RHS,c);
                             composite_fill(eq,sto,libcopy);
-
                         }
                     }
                 }
-
             }
             std::cerr << "couples=" << couples << std::endl;
         }

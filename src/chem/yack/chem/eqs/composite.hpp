@@ -56,12 +56,21 @@ namespace yack
                                   const components &rhs);
 
 
+            //! create couples from singles
+            /**
+             \param couples emtpy set of equilibria
+             \param libcopy hard copy of original library
+             \param singles original singles (user's) equilibriau
+             \param K       persistent array of pre-computed constants
+             \param xmul    persitemt multiplier
+             */
             static void scatter(equilibria             &couples,
                                 library                &libcopy,
                                 const equilibria       &singles,
                                 const readable<double> &K,
                                 rmulops                &xmul);
 
+            //! compute composite constant
             static double getK(const coeff &c, const double lhsK, const double rhsK, rmulops &xmul);
 
         };
