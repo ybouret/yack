@@ -3,11 +3,26 @@
 #ifndef YACK_PAIR_INCLUDED
 #define YACK_PAIR_INCLUDED 1
 
-#include "yack/type/args.hpp"
+#include "yack/setup.hpp"
+
 #include <iostream>
 
 namespace yack
 {
+
+#define YACK_TUPLE_ARGS_STANDARD(T,NAME)                                       \
+/**/    typedef T                               NAME;                          \
+/**/    typedef type_traits<T>::mutable_type    mutable_##NAME;                \
+/**/    typedef const mutable_##NAME              const_##NAME;                \
+/**/    typedef                                                                \
+/**/        yack::pick_from<                                                   \
+/**/            type_traits<mutable_##NAME>::is_primitive,                     \
+/**/            const_##NAME  ,                                                \
+/**/            const_##NAME &                                                 \
+/**/        >::type param_##NAME
+
+#define YACK_TUPLE_ARGS_TEMPLATE(T,NAME)
+
     //__________________________________________________________________________
     //
     //
@@ -17,8 +32,8 @@ namespace yack
 #define YACK_PAIR_DECL(CLASS,TYPE1,NAME1,TYPE2,NAME2) \
 /**/    class CLASS { \
 /**/      public:\
-/**/        YACK_DECL_ARGS(TYPE1,type1);\
-/**/        YACK_DECL_ARGS(TYPE2,type2);\
+/**/        YACK_TUPLE_ARGS_STANDARD(TYPE1,type1);\
+/**/        YACK_TUPLE_ARGS_STANDARD(TYPE2,type2);\
 /**/        inline explicit CLASS(param_type1 arg1, param_type2 arg2) :\
 /**/        NAME1(arg1), NAME2(arg2) {}\
 /**/        inline ~CLASS() throw()  {}\
