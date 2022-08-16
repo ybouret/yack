@@ -43,8 +43,10 @@ namespace yack
         Ctry( mtab.next() ),
 
         K(  ntab.next()  ),
-        Kl( ltab.next() ),
+        Kl( ltab.next()  ),
+        Xl( ltab.next()  ),
         blocked( ltab.next(), transmogrify),
+        Ceq(),
 
         lockLib( coerce(usrLib) ),
         lockEqs( coerce(usrEqs) )
@@ -93,6 +95,7 @@ namespace yack
                 //--------------------------------------------------------------
                 ltab.make(L);
                 blocked.relink<bool>();
+                Ceq.make(L,M);
 
                 assert(L==Kl.size());
                 assert(L==blocked.size());
@@ -120,6 +123,65 @@ namespace yack
 
         }
 
+    }
+
+}
+
+#include "yack/chem/outcome.hpp"
+
+namespace yack
+{
+    namespace chemical
+    {
+
+        bool reactor:: solve(writable<double> &C0)
+        {
+
+            // depending on topology
+            switch(N)
+            {
+                case 0:
+                    std::cerr << "empty" << std::endl;
+                    return true;
+
+                case 1: {
+                    std::cerr << "single" << std::endl;
+                    const equilibrium &eq = ***singles.head();
+                    outcome::study(eq, K[1], C0, Corg, xmul, xadd);
+                    working.tranfer(C0,Corg);
+                    return true;
+                } break;
+
+                default:
+                    for(size_t i=M;i>0;--i)
+                    {
+                        Corg[i] = Cend[i] = Ctry[i] = C0[i];
+                    }
+            }
+
+
+            // compute initial state
+            for(const enode *node = lattice.head(); node; node=node->next )
+            {
+                const equilibrium &eq = ***node;
+                const size_t       ei = *eq;
+                writable<double>  &Ci = Ceq[ei];
+                const outcome      oc = outcome::study(eq, Kl[ei], Corg, Ci, xmul, xadd);
+                switch(oc.state)
+                {
+                    case components::are_blocked: blocked[ei] = true;  break;
+                    case components::are_running: blocked[ei] = false; break;
+                }
+                Xl[ei] = oc.value;
+            }
+
+
+
+
+
+
+            return false;
+        }
 
     }
 }

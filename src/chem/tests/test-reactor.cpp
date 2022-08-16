@@ -24,6 +24,15 @@ YACK_UTEST(reactor)
 
     reactor cs(lib,eqs,0.0);
 
+    vector<double> C(cs.M,0);
+    lib(std::cerr << "Cini=", "", C);
+
+    if( cs.solve(C) )
+    {
+        lib(std::cerr << "Cend=", "", C);
+    }
+
+
 
 
 }

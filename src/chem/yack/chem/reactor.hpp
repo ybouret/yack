@@ -51,6 +51,9 @@ namespace yack
                              const equilibria &,
                              const double     t); //!< setup
 
+
+            bool solve(writable<double> &C0);
+
             //__________________________________________________________________
             //
             // member
@@ -80,8 +83,9 @@ namespace yack
             tableau           &Ctry;    //!< [M] working space
             tableau           &K;       //!< [N] pre-computed K
             tableau           &Kl;      //!< [L] pre-computed K
+            tableau           &Xl;      //!< [L] solving extents
             thin_array<bool>   blocked; //!< [L]
-
+            rmatrix            Ceq;     //!< [LxM] all single solutions
 
         private:
             YACK_DISABLE_COPY_AND_ASSIGN(reactor);
