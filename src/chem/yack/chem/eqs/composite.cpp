@@ -157,30 +157,6 @@ namespace yack
             add_sto(sto,rhs,c.rhs);
         }
 
-
-#if 0
-        static inline void simplify_coeff(writable<int> &sto)
-        {
-            const size_t     M = sto.size();
-            vector<uint64_t> U(M,as_capacity);
-            for(size_t i=M;i>0;--i)
-            {
-                const int I = sto[i];
-                if(I) U << absolute(I);
-            }
-            assert(U.size()>0);;
-            uint64_t g = U[1];
-            for(size_t i=U.size();i>1;--i)
-            {
-                g = yack_gcd64(g,U[i]);
-            }
-            for(size_t i=M;i>0;--i)
-            {
-                sto[i] /= g;
-            }
-        }
-#endif
-
         static inline string composite_name_(const int a, const string &A, const int b, const string &B)
         {
             assert(a);
@@ -253,7 +229,6 @@ namespace yack
 
         double composite:: getK(const coeff &c, const double lhsK, const double rhsK, rmulops &xmul)
         {
-            //std::cerr << "(" << lhsK << ")^(" << c.lhs << ")*(" << rhsK << ")^(" << c.rhs << ")" << std::endl;
             xmul.free();
             xmul.ipower(lhsK,c.lhs);
             xmul.ipower(rhsK,c.rhs);
