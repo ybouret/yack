@@ -21,7 +21,16 @@ namespace yack
 /**/            const_##NAME &                                                 \
 /**/        >::type param_##NAME
 
-#define YACK_TUPLE_ARGS_TEMPLATE(T,NAME)
+#define YACK_TUPLE_ARGS_TEMPLATE(T,NAME)\
+/**/    typedef T                                        NAME;                 \
+/**/    typedef typename type_traits<T>::mutable_type    mutable_##NAME;       \
+/**/    typedef const mutable_##NAME                     const_##NAME;         \
+/**/    typedef typename                                                       \
+/**/        yack::pick_from<                                                   \
+/**/            type_traits<mutable_##NAME>::is_primitive,                     \
+/**/            const_##NAME  ,                                                \
+/**/            const_##NAME &                                                 \
+/**/        >::type param_##NAME
 
     //__________________________________________________________________________
     //
@@ -29,11 +38,11 @@ namespace yack
     //! prolog to create a pair class
     //
     //__________________________________________________________________________
-#define YACK_PAIR_DECL(CLASS,TYPE1,NAME1,TYPE2,NAME2) \
+#define YACK_PAIR_DECL(CATEGORY,CLASS,TYPE1,NAME1,TYPE2,NAME2) \
 /**/    class CLASS { \
 /**/      public:\
-/**/        YACK_TUPLE_ARGS_STANDARD(TYPE1,type1);\
-/**/        YACK_TUPLE_ARGS_STANDARD(TYPE2,type2);\
+/**/        YACK_TUPLE_ARGS_##CATEGORY(TYPE1,type1);\
+/**/        YACK_TUPLE_ARGS_##CATEGORY(TYPE2,type2);\
 /**/        inline explicit CLASS(param_type1 arg1, param_type2 arg2) :\
 /**/        NAME1(arg1), NAME2(arg2) {}\
 /**/        inline ~CLASS() throw()  {}\

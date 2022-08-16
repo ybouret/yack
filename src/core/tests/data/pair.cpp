@@ -3,13 +3,13 @@
 
 using namespace yack;
 
-YACK_PAIR_DECL(Pair,int,a,int,b);
+YACK_PAIR_DECL(STANDARD,Pair,int,a,int,b);
 
 YACK_PAIR_END(Pair);
 
-//template <typename A> YACK_PAIR_DECL(TPair,A,a,const int,b);
+template <typename A> YACK_PAIR_DECL(TEMPLATE,TPair,A,a,const int,b);
 
-//YACK_PAIR_END(TPair);
+YACK_PAIR_END(TPair);
 
 YACK_UTEST(data_pair)
 {
