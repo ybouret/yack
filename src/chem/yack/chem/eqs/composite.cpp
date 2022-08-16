@@ -283,7 +283,7 @@ namespace yack
 
 
         void composite:: scatter(equilibria             &couples,
-                                 library                &libcopy,
+                                 const library          &libcopy,
                                  const equilibria       &singles,
                                  const readable<double> &K,
                                  rmulops                &xmul)

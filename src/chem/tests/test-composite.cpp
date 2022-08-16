@@ -25,21 +25,8 @@ YACK_UTEST(composite)
     }
 
     std::cerr << lib << std::endl;
-    std::cerr << eqs << std::endl;
+    std::cerr << "singles=" << eqs << std::endl;
 
-#if 0
-    composite::coeffs cof;
-    for(const enode *lhs=eqs.head();lhs;lhs=lhs->next)
-    {
-        std::cerr << "<" << (***lhs).name << ">" << std::endl;
-        for(const enode *rhs=lhs->next;rhs;rhs=rhs->next)
-        {
-            std::cerr << "\t<" << (***rhs).name << ">" << std::endl;
-            const size_t nc = composite::collect(cof,***lhs,***rhs);
-            std::cerr << "\t#" << nc << " : " << cof << std::endl;
-        }
-    }
-#endif
 
     const size_t    N = eqs.size();
     equilibria      couples;
@@ -72,6 +59,30 @@ YACK_UTEST(composite)
         }
     }
     lattice(std::cerr << "conn=","",conn);
+    vector<double> KL(L,0);
+    for(size_t i=1;i<=N;++i)
+    {
+        KL[i] = K[i];
+    }
+    for(const enode *node=couples.head();node;node=node->next)
+    {
+        const equilibrium &eq = ***node;
+        KL[*eq] = eq.K(0);
+    }
+    std::cerr << "KL=" << KL << std::endl;
+
+    const size_t   M = lib.size();
+    vector<double> C(M,0);
+    vector<double> S(M,0);
+
+    lib.fill(C,ran);
+    lib(std::cerr << "C=","",C);
+    for(const enode *node=lattice.head();node;node=node->next)
+    {
+        const equilibrium &eq  = ***node;
+        const outcome      res = outcome::study(eq,KL[*eq],C,S,xmul,xadd);
+        lattice.pad(std::cerr << eq.name,eq) << " : " << res << std::endl;
+    }
 
 }
 YACK_UDONE()

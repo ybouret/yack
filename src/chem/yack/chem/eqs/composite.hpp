@@ -65,7 +65,7 @@ namespace yack
              \param xmul    persitemt multiplier
              */
             static void scatter(equilibria             &couples,
-                                library                &libcopy,
+                                const library          &libcopy,
                                 const equilibria       &singles,
                                 const readable<double> &K,
                                 rmulops                &xmul);

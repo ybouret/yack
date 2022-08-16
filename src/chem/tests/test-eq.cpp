@@ -45,7 +45,7 @@ YACK_UTEST(eq)
         
         eq.fill(nu);
         eq.drvs_action(psi,K,S,xmul);
-        std::cerr << "nu = " << nu << std::endl;
+        std::cerr << "nu = " << nu  << std::endl;
         std::cerr << "psi= " << psi << std::endl;
         const double sigma = xadd.dot(psi,nu);
         std::cerr << "sigma=" << sigma << std::endl;
