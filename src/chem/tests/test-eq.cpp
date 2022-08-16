@@ -62,7 +62,7 @@ YACK_UTEST(eq)
             const double l = xi-x;
             const double g = eq.mass_action(K,C,S,u,Ctry,xmul)/(-sigma);
 
-            fp("%.15g %.15g %.15g %.15g\n",x, g, l-g );
+            fp("%.15g %.15g %.15g %.15g\n", x, g, l, u);
         }
         std::cerr << std::endl;
     }
