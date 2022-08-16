@@ -25,38 +25,68 @@ namespace yack
                                    const components &rhs)
         {
 
+            assert(&lhs!=&rhs);
+            //------------------------------------------------------------------
+            //
             // initialize
+            //
+            //------------------------------------------------------------------
             cof.free();
 
+            //------------------------------------------------------------------
+            //
             // loop over LHS
+            //
+            //------------------------------------------------------------------
             for(const cnode *lnode=lhs.head();lnode;lnode=lnode->next)
             {
-                const component &lcomp  = ***lnode;
-                const size_t     lindx  =  **lcomp;
-                const int        lcoef  = lcomp.nu;
+                //--------------------------------------------------------------
+                // LHS info
+                //--------------------------------------------------------------
+                const component &lcomp  = ***lnode; // component
+                const size_t     lindx  =  **lcomp; // species index
+                const int        lcoef  = lcomp.nu; // species coeff
 
+                //--------------------------------------------------------------
+                //
                 // loop over RHS
+                //
+                //--------------------------------------------------------------
                 for(const cnode *rnode=rhs.head();rnode;rnode=rnode->next)
                 {
-                    const component &rcomp  = ***rnode;
-                    const size_t     rindx  =  **rcomp;
+                    //----------------------------------------------------------
+                    // RHS info
+                    //----------------------------------------------------------
+                    const component &rcomp  = ***rnode; // component
+                    const size_t     rindx  =  **rcomp; // species index
 
+                    //----------------------------------------------------------
                     // not the same
+                    //----------------------------------------------------------
                     if(rindx!=lindx) continue;
 
-                    //std::cerr << "\t\tsharing " << (*rcomp).name << std::endl;
-
+                    //----------------------------------------------------------
                     // guess coefficient
+                    //----------------------------------------------------------
                     coeff guess(lcoef,rcomp.nu);
-                    guess.normalize();
 
+                    //----------------------------------------------------------
+                    // normalize
+                    //----------------------------------------------------------
+                    guess.normalize(); assert(guess.rhs>0);
+
+                    //----------------------------------------------------------
                     // check existing
+                    //----------------------------------------------------------
                     bool  found = false;
                     for(size_t i=cof.size();i>0;--i)
                     {
                         if(guess == cof[i]) { found=true; break; }
                     }
 
+                    //----------------------------------------------------------
+                    // if new, append to coefficients
+                    //----------------------------------------------------------
                     if(!found)
                     {
                         cof << guess;
@@ -66,7 +96,11 @@ namespace yack
 
             }
 
+            //------------------------------------------------------------------
+            //
             // transform coefficients to weights
+            //
+            //------------------------------------------------------------------
             for(size_t i = cof.size();i>0;--i)
             {
                 coeff     &c = cof[i]; assert(c.rhs>0); assert(c.lhs!=0);
@@ -75,11 +109,15 @@ namespace yack
                 if(c.lhs>0) w.lhs = -w.lhs;
                 if(0 != w.lhs*c.lhs+w.rhs*c.rhs)
                     throw imported::exception("chemical::composite", "failure to compose components!!");
-                c.lhs = w.lhs;
+                c.lhs = w.lhs; assert(c.lhs!=0);
                 c.rhs = w.rhs; assert(c.rhs>0);
             }
 
+            //------------------------------------------------------------------
+            //
             // all done
+            //
+            //------------------------------------------------------------------
             return cof.size();
         }
 
@@ -88,16 +126,17 @@ namespace yack
 }
 
 #include "yack/chem/library.hpp"
-#include "yack/arith/gcd.h"
+#include <iomanip>
 
+ 
 namespace yack
 {
     namespace chemical
     {
 
-        static inline void building_coeff(writable<int>    &sto,
-                                          const components &cmp,
-                                          const int         fac) throw()
+        static inline void add_sto(writable<int>    &sto,
+                                   const components &cmp,
+                                   const int         fac) throw()
         {
             for(const cnode *node=cmp.head();node;node=node->next)
             {
@@ -107,6 +146,17 @@ namespace yack
                 sto[j] += fac * c.nu;
             }
         }
+
+        static inline void new_sto(writable<int>          &sto,
+                                   const components       &lhs,
+                                   const components       &rhs,
+                                   const composite::coeff &c) throw()
+        {
+            sto.ld(0);
+            add_sto(sto,lhs,c.lhs);
+            add_sto(sto,rhs,c.rhs);
+        }
+
 
 #if 0
         static inline void simplify_coeff(writable<int> &sto)
@@ -131,7 +181,7 @@ namespace yack
         }
 #endif
 
-        static inline string composite_name(const int a, const string &A, const int b, const string &B)
+        static inline string composite_name_(const int a, const string &A, const int b, const string &B)
         {
             assert(a);
             assert(b);
@@ -142,7 +192,7 @@ namespace yack
                 case  1: break;
                 default:
                     assert( absolute(a) > 1 );
-                    res += vformat("%d",a);
+                    res += vformat("%d*",a);
             }
             res += A;
 
@@ -152,63 +202,99 @@ namespace yack
                 case  1: res += '+'; break;
                 default:
                     assert( absolute(b) > 1 );
-                    res += vformat("%+d",b);
+                    res += vformat("%+d*",b);
             }
             res += B;
 
             return res;
         }
 
-        static inline equilibrium &composite_fill( equilibrium &eq, const readable<int> &sto, const library &lib )
+
+        static inline string composite_name(const composite::coeff &c,
+                                            const equilibrium      &lhs,
+                                            const equilibrium      &rhs)
+        {
+            const int     l = c.lhs;
+            const string &L = lhs.name;
+            const int     r = c.rhs;
+            const string &R = rhs.name;
+
+            switch( __sign::pair( __sign::of(l), __sign::of(r) ) )
+            {
+                case pp_pair:
+                case nn_pair:
+                case pn_pair:
+                    return composite_name_(l,L,r,R);
+
+                case np_pair:
+                    return composite_name_(r,R,l,L);
+
+
+                default:
+                    break;
+
+            }
+
+            throw imported::exception("chemical::composite_name","invalid coefficients (%d,%d)",l,r);
+
+        }
+
+        
+        static inline void  composite_fill( equilibrium &eq, const readable<int> &sto, const library &lib )
         {
             const size_t M = sto.size();
             for(size_t i=1;i<=M;++i)
             {
                 const int nu = sto[i];
                 if(nu) eq( lib[i], nu );
-             }
-            return eq;
+            }
         }
+
+
+        double composite:: getK(const coeff &c, const double lhsK, const double rhsK, rmulops &xmul)
+        {
+            //std::cerr << "(" << lhsK << ")^(" << c.lhs << ")*(" << rhsK << ")^(" << c.rhs << ")" << std::endl;
+            xmul.free();
+            xmul.ipower(lhsK,c.lhs);
+            xmul.ipower(rhsK,c.rhs);
+            return xmul.query();
+        }
+
 
         namespace
         {
-
-            class mul_composite_equilibrium : public equilibrium
+            class composite_equilibrium : public equilibrium
             {
             public:
-                explicit mul_composite_equilibrium(const string &uid,
-                                                   const size_t  idx,
-                                                   const unsigned lhs_p,
-                                                   const double  &lhs_k,
-                                                   const unsigned rhs_p,
-                                                   const double  &rhs_k) :
+                inline virtual ~composite_equilibrium() throw() {}
+
+                inline explicit composite_equilibrium(const string           &uid,
+                                                      const size_t            idx,
+                                                      const composite::coeff &c,
+                                                      const double           &l,
+                                                      const double           &r,
+                                                      rmulops                &xm) :
                 equilibrium(uid,idx),
-                lp(lhs_p),
-                lK(lhs_k),
-                rp(rhs_p),
-                rK(rhs_k)
+                power(c),
+                lhs_K(l),
+                rhs_K(r),
+                xmul(xm)
                 {
                 }
 
-                const unsigned lp;
-                const double  &lK;
-                const unsigned rp;
-                const double  &rK;
-
-                mutable rmulops xmul;
+                const composite::coeff power;
+                const double          &lhs_K;
+                const double          &rhs_K;
+                rmulops               &xmul;
 
             private:
-                YACK_DISABLE_COPY_AND_ASSIGN(mul_composite_equilibrium);
+                YACK_DISABLE_COPY_AND_ASSIGN(composite_equilibrium);
 
                 virtual double getK(double) const
                 {
-                    xmul.free();
-                    xmul.ld(lK,lp);
-                    xmul.ld(rK,rp);
-                    return xmul.query();
+                    return composite::getK(power,lhs_K,rhs_K,xmul);
                 }
             };
-
 
         }
 
@@ -216,13 +302,15 @@ namespace yack
         void composite:: scatter(equilibria             &couples,
                                  library                &libcopy,
                                  const equilibria       &singles,
-                                 const readable<double> &K)
+                                 const readable<double> &K,
+                                 rmulops                &xmul)
         {
 
             const size_t M = libcopy.size();
             coeffs       cof(M,as_capacity);
             vector<int>  sto(M,0);
-            size_t idx = singles.size();
+            size_t       idx = singles.size();
+
             for(const enode *lhs=singles.head();lhs;lhs=lhs->next)
             {
                 const equilibrium &LHS = ***lhs;
@@ -234,32 +322,33 @@ namespace yack
                     {
                         for(size_t i=1;i<=nc;++i)
                         {
-                            const coeff &c = cof[i];
-                            std::cerr << "(" << c.lhs << ")*" << LHS.name << " + (" << c.rhs << ")*" << RHS.name << std::endl;
-                            sto.ld(0);
-                            building_coeff(sto,LHS,c.lhs);
-                            building_coeff(sto,RHS,c.rhs);
+                            coeff &c = cof[i]; assert(c.rhs>0);
+                            std::cerr <<    "(" << std::setw(3) << c.lhs << ")*"; singles.pad(std::cerr << LHS.name,LHS);
+                            std::cerr << " + (" << std::setw(3) << c.rhs << ")*"; singles.pad( std::cerr <<RHS.name,RHS);
+                            std::cerr << std::endl;
 
-                            if(c.lhs<0)
+                            const double &lhsK    = K[*LHS];
+                            const double &rhsK    = K[*RHS];
+                            const double  forwardK = getK(c,lhsK,rhsK,xmul);
+                            //std::cerr << "forwardK = " << forwardK << std::endl;
+                            if(forwardK<1)
                             {
-
+                                c.lhs = -c.lhs;
+                                c.rhs = -c.rhs;
                             }
-                            else
-                            {
-                                assert(c.lhs>0);
-                                assert(c.rhs>0);
-                                const string       uid = composite_name(c.lhs,LHS.name,c.rhs,RHS.name);
-                                equilibrium       &eq  = composite_fill( couples.use( new mul_composite_equilibrium(uid,++idx,c.lhs,K[*LHS],c.rhs,K[*RHS]) ), sto, libcopy );
-                                std::cerr << "\t" << eq << std::endl;
-                            }
-
+                            //std::cerr << "create with " << c << std::endl;
+                            const string uid = composite_name(c,LHS,RHS);
+                            //std::cerr << "uid=<"<< uid << ">" << std::endl;
+                            equilibrium &eq  = couples.use( new composite_equilibrium(uid,++idx,c,lhsK,rhsK,xmul) );
+                            new_sto(sto,LHS,RHS,c);
+                            composite_fill(eq,sto,libcopy);
 
                         }
                     }
                 }
 
             }
-
+            std::cerr << "couples=" << couples << std::endl;
         }
 
     }

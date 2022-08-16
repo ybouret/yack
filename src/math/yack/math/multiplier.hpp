@@ -144,11 +144,37 @@ namespace yack
             //! syntax helper
             multiplier & operator=(const T x) { ld(x); return *this; }
 
-            //! push a new real
+            //! load a new real
             inline void ld(const T x) { data_type args(x); insert(args); }
 
-            //! push a new real n times a.k.a x^n
-            inline void ld(const T x, size_t n) { data_type args(x); insert(args,n); }
+            //! load a new real n times a.k.a x^n
+            inline void upower(const T x, const size_t n) {
+                switch(n)
+                {
+                    case 0: // assume x!=0...
+                        break;
+                    default: {
+                        const data_type args(x); insert(args,n);
+                    } break;
+                }
+            }
+
+            //! signed power
+            inline void ipower(const T x, const int n ) {
+
+                if(n>0)
+                {
+                    const data_type args(x); insert(args,n);
+                }
+                else
+                {
+                    if(n<0) { const data_type args(1.0/x); insert(args,-n); }
+                }
+            }
+
+
+            
+
 
             //! syntax helper
             inline multiplier & operator<<(const T x) { ld(x); return *this; }

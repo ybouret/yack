@@ -46,6 +46,11 @@ namespace yack
             //__________________________________________________________________
 
             //! collect all possible shared coefficients
+            /**
+             \param cof weights to combine lhs and lhs to
+             \param lhs set of components
+             \param lhs set of components
+             */
             static size_t collect(coeffs           &cof,
                                   const components &lhs,
                                   const components &rhs);
@@ -54,7 +59,10 @@ namespace yack
             static void scatter(equilibria             &couples,
                                 library                &libcopy,
                                 const equilibria       &singles,
-                                const readable<double> &K);
+                                const readable<double> &K,
+                                rmulops                &xmul);
+
+            static double getK(const coeff &c, const double lhsK, const double rhsK, rmulops &xmul);
 
         };
 

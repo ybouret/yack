@@ -57,7 +57,7 @@ namespace yack
             for(const actor *a=crew.head;a;a=a->next)
             {
                 const double j = ***a;   assert(C[j]>=0);
-                ops.ld(C[j],a->nu);
+                ops.upower(C[j],a->nu);
             }
             return ops.query();
         }
@@ -70,7 +70,7 @@ namespace yack
             for(const actor *a=crew.head;a;a=a->next)
             {
                 const double j  = ***a;           assert(C[j]>=0);
-                ops.ld(max_of(C[j]+(a->nu)*xi,0.0),a->nu);
+                ops.upower(max_of(C[j]+(a->nu)*xi,0.0),a->nu);
             }
             return ops.query();
         }
@@ -85,7 +85,7 @@ namespace yack
                 xmul            = factor;
                 const double j  = ***a;            
                 xmul.ld(a->nu);
-                xmul.ld(C[j],a->nm);
+                xmul.upower(C[j],a->nm);
                 for(const actor *b=a->prev;b;b=b->prev) xmul.ld(C[***b]);
                 for(const actor *b=a->next;b;b=b->next) xmul.ld(C[***b]);
                 psi[j] = xmul.query();

@@ -32,7 +32,15 @@ namespace yack
             assert(NULL!=eq);
             const equilibrium::pointer p(eq);
             if(latched())      throw imported::exception(clid,"are LOCKED");
-            //if(**p!=size()+1)  throw imported::exception(clid,"bad index for <%s>",eq->name());
+
+            {
+                const size_t ei = **p;
+                for(const enode *node=head();node;node=node->next)
+                {
+                    if( ei <= ****node ) throw imported::exception(clid,"bad index for <%s>",eq->name());;
+                }
+            }
+            
             if(!edb.insert(p)) throw imported::exception(clid,"multiple <%s>",     eq->name());
             absorb(*eq);
             return *eq;

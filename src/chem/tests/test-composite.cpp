@@ -50,7 +50,7 @@ YACK_UTEST(composite)
         K[*eq] = eq.K(0);
     }
 
-    composite::scatter(couples,libcopy,eqs,K);
+    composite::scatter(couples,libcopy,eqs,K,xmul);
 
 
 }
