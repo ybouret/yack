@@ -178,7 +178,9 @@ namespace yack
             //! evaluate grade of extent
             extent::grade qualify_extent(const double xi, const readable<double> &Cini, rmulops &) const ;
 
-            
+            //! check if one species in common
+            bool is_connected_to(const components &other) const throw();
+
             
             //__________________________________________________________________
             //

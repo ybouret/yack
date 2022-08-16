@@ -45,6 +45,15 @@ namespace yack
             absorb(*eq);
             return *eq;
         }
+
+
+        void equilibria:: add(const equilibria &other)
+        {
+            for(const enode *node=other.head();node;node=node->next)
+            {
+                (void) use( & coerce(***node) );
+            }
+        }
         
         equilibria:: equilibria(const equilibria &other) :
         gathering(), edb()

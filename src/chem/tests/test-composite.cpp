@@ -52,6 +52,11 @@ YACK_UTEST(composite)
 
     composite::scatter(couples,libcopy,eqs,K,xmul);
 
+    equilibria lattice(eqs);
+    lattice.add(couples);
+
+    std::cerr << "lattice=" << lattice << std::endl;
+
 
 }
 YACK_UDONE()

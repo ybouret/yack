@@ -53,6 +53,10 @@ namespace yack
             //! register a new equilibrium with proper index
             equilibrium & use(equilibrium *eq);
 
+            //! add shared copy
+            void add(const equilibria &other);
+
+
             //! helper to create a new constant equilibrium
             template <typename NAME> inline
             equilibrium & operator()(const NAME  &uid,
