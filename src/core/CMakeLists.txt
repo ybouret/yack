@@ -133,6 +133,12 @@ set(container_iterator ${container_iterator_impl} ${container_iterator_decl})
 SOURCE_GROUP(container/iterator FILES ${container_iterator})
 install( FILES ${container_iterator_decl} DESTINATION include/yack/container/iterator )
 
+file(GLOB container_tuple_impl yack/container/tuple/*.cpp)
+file(GLOB container_tuple_decl yack/container/tuple/*.hpp)
+set(container_tuple ${container_tuple_impl} ${container_tuple_decl})
+SOURCE_GROUP(container/tuple FILES ${container_tuple})
+install( FILES ${container_tuple_decl} DESTINATION include/yack/container/tuple )
+
 
 ########################################################################
 ##
@@ -611,7 +617,7 @@ ${arith}
 ${check}
 ${system}
 ${data} ${data_list} ${data_pool} ${data_small} ${data_suffix} ${data_hash}
-${container} ${container_matrix} ${container_iterator}
+${container} ${container_matrix} ${container_iterator} ${container_tuple}
 ${sequence}
 ${ordered}
 ${pipe}

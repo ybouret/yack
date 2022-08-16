@@ -3,9 +3,7 @@
 #ifndef YACK_PAIR_INCLUDED
 #define YACK_PAIR_INCLUDED 1
 
-#include "yack/setup.hpp"
-
-#include <iostream>
+#include "yack/container/tuple.hpp"
 
 namespace yack
 {
