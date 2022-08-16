@@ -59,10 +59,12 @@ YACK_UTEST(eq)
         {
             const double u = double(i)/NP;
             const double x = xi * u;
-            const double l = (x-xi) * sigma; // linear around
-            fp("%.15g %.15g %.15g %.15g\n",x, eq.mass_action(K,C,S,u,Ctry,xmul), l, u );
-        }
+            const double l = xi-x;
+            const double g = eq.mass_action(K,C,S,u,Ctry,xmul)/(-sigma);
 
+            fp("%.15g %.15g %.15g %.15g\n",x, g, l-g );
+        }
+        std::cerr << std::endl;
     }
 
 

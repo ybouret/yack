@@ -10,16 +10,16 @@ namespace yack
             {
                 { "water",    "[H+]+[HO-]",             "10^(-14)"   },
 
-                { "acetic",   "[H+]+[EtCOO-]-[EtCOOH]", "10^(-4.78)" },
+                { "acetic",   "[H+]-[EtCOOH]+[EtCOO-]", "10^(-4.78)" },
 
-                { "ammoniac", "[H+]+[NH3]-[NH4+]",      "10^(-9.25)" },
+                { "ammoniac", "[H+]-[NH4+]+[NH3]",      "10^(-9.25)" },
 
-                { "oxalic1",  "[H+]+[OxH-]-[OxH2]",     "10^(-1.20)" },
-                { "oxalic2",  "[H+]+[Ox--]-[OxH-]",     "10^(-4.30)" },
+                { "oxalic1",  "[H+]-[OxH2]+[OxH-]",     "10^(-1.20)" },
+                { "oxalic2",  "[H+]-[OxH-]+[Ox--]",     "10^(-4.30)" },
 
-                { "sulfuric", "2[H+]+[SO4--]-[H2SO4]",  "10^(0.89)"  },
+                { "sulfuric", "2[H+]-[H2SO4]+[SO4--]",  "10^(0.89)"  },
 
-                { "benzoic",  "[H+]+[PhiCOO-]-[PhiCOOH]", "10^(-4.202)" },
+                { "benzoic",  "[H+]-[PhiCOOH]+[PhiCOO-]", "10^(-4.202)" },
 
                 { "abcd",     "-[a]-[b]+[c]+[d]", "0.12345" }
             };

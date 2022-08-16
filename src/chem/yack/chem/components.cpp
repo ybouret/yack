@@ -217,10 +217,13 @@ namespace yack
         }
 
 
-        extent::grade components:: qualify_extent(const double            xi,
+        extent::grade components:: qualify_extent(const double            K,
+                                                  const readable<double> &Cend,
                                                   const readable<double> &Cini,
                                                   rmulops                &xmul) const
         {
+            const double MA_ini = mass_action(K,Cini,xmul);
+            const double MA_end = mass_action(K,Cend,xmul);
             return extent::is_significant;
         }
 

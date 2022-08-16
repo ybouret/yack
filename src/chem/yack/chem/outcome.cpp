@@ -377,7 +377,7 @@ namespace yack
         SUCCESS:
             const double xi = comp.estimate_extent(Cini,Cend,xadd);
             if(call) *call  += F.n;
-            return outcome(components::are_running,comp.qualify_extent(xi,Cini,xmul),xi);
+            return outcome(components::are_running,comp.qualify_extent(K,Cini,Cend,xmul),xi);
         }
 
     }

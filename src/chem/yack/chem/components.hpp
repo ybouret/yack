@@ -176,7 +176,10 @@ namespace yack
             double       estimate_extent(const readable<double> &Cini, const readable<double> &Cend, raddops & ) const;
 
             //! evaluate grade of extent
-            extent::grade qualify_extent(const double xi, const readable<double> &Cini, rmulops &) const ;
+            extent::grade qualify_extent(const double            K,
+                                         const readable<double> &Cend,
+                                         const readable<double> &Cini,
+                                         rmulops                &xmul) const ;
 
             //! check if one species in common
             bool connected_to(const components &other) const throw();
