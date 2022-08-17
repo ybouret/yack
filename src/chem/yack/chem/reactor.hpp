@@ -52,6 +52,7 @@ namespace yack
                              const double     t); //!< setup
 
 
+            //! best effort solving
             bool solve(writable<double> &C0);
 
             //__________________________________________________________________

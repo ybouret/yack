@@ -86,8 +86,8 @@ namespace yack
             //
             // access
             //__________________________________________________________________
-            const equilibrium & operator[](const string &) const;
-            const equilibrium & operator[](const char   *) const;
+            const equilibrium & operator[](const string &) const; //!< access by name
+            const equilibrium & operator[](const char   *) const; //!< access by name
 
         private:
             YACK_DISABLE_ASSIGN(equilibria);
