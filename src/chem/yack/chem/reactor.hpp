@@ -6,6 +6,7 @@
 
 #include "yack/chem/active.hpp"
 #include "yack/chem/equilibria.hpp"
+#include "yack/chem/eqs/groups.hpp"
 #include "yack/sequence/arrays.hpp"
 #include "yack/container/matrix.hpp"
 
@@ -68,6 +69,7 @@ namespace yack
             const size_t      L;       //!< lattice.size
             const equilibria  couples; //!< all composite
             const equilibria  lattice; //!< singles|couples
+            const groups      related; //!< related
             rmulops           xmul;    //!< for mulops
             raddops           xadd;    //!< for addops
 

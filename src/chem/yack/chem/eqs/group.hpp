@@ -1,6 +1,5 @@
 //! \file
 
-
 #ifndef YACK_CHEM_EQS_GROUP_INCLUDED
 #define YACK_CHEM_EQS_GROUP_INCLUDED 1
 
