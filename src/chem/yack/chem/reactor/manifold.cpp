@@ -1,5 +1,6 @@
 
 #include "yack/chem/reactor.hpp"
+#include "yack/counting/mloop.hpp"
 
 namespace yack
 {
@@ -24,7 +25,7 @@ namespace yack
             //
             //
             //------------------------------------------------------------------
-            YACK_CHEM_PRINTLN(fn << "building all detached...");
+            YACK_CHEM_PRINTLN(fn << "build all detached...");
             const size_t     P = related.size;           // number of related
             matrix<bool>     detached(L,L);              // global symetric detached flag
             vector<group>    unlinked(L,as_capacity);    // possible unlinked groups for each equilibrium
@@ -78,7 +79,8 @@ namespace yack
                             ROW[RID] = detached[RID][LID] = true; // update detached state
                         }
                     }
-                    lattice.pad(std::cerr << LHS.name,LHS) << " : +" << LGP.size << " :" << LGP << std::endl;
+                    if(verbose)
+                        lattice.pad(std::cerr << LHS.name,LHS) << " : " << LGP << std::endl;
                 }
 
                 //--------------------------------------------------------------
@@ -99,7 +101,6 @@ namespace yack
                     //----------------------------------------------------------
                     // create singleton
                     //----------------------------------------------------------
-                    std::cerr << "\tstarting from " << LHS.name << std::endl;
                     (*G.push_back( new group() )) << &LHS;
 
 
@@ -115,8 +116,7 @@ namespace yack
 
                         for(const group *existing=G.head;existing;existing=existing->next)
                         {
-                            // check detached from all current group
-                            //std::cerr << "\t\tagainst " << *existing;
+                            // check detached from all members of existing group
                             bool ok = true;
                             for(const gnode *member=existing->head;member;member=member->next)
                             {
@@ -126,7 +126,6 @@ namespace yack
                                     break;
                                 }
                             }
-                            //std::cerr << " ok=" << ok << std::endl;
                             if(ok)
                             {
                                 // duplicate and grow current
@@ -138,20 +137,39 @@ namespace yack
 
                     target.merge_back(G);
                 }
-                target.sort();
-                std::cerr << target << std::endl;
-                YACK_CHEM_PRINTLN(fn << "-------- quit related #" << count << " --------");
 
+                YACK_CHEM_PRINTLN(target);
+                YACK_CHEM_PRINTLN(fn << "-------- quit related #" << count << " --------");
             }
 
-            std::cerr << party << std::endl;
+            //------------------------------------------------------------------
+            //
+            //
+            // combination of parties
+            //
+            //
+            //------------------------------------------------------------------
+            YACK_CHEM_PRINTLN(fn << "combining parts...");
+            {
+                const vector<size_t>    ini(P,1);
+                vector<size_t>          end(P,1);
+                for(size_t i=P;i>0;--i) end[i] = party[i].size;
+                mloop<size_t> loop(ini(),end(),P);
+                do
+                {
+                    group *g = coerce(solving).push_back( new group() );
+                    for(size_t i=P;i>0;--i)
+                    {
+                        const size_t k = loop[i];
+                        g->merge_back_copy( *party[i].get(k) );
+                    }
 
-            exit(1);
+                } while(loop.next());
+            }
+            coerce(solving).sort();
 
-
-
-            
-
+            YACK_CHEM_PRINTLN(solving);
+            YACK_CHEM_PRINTLN(fn << "built all detached...");
         }
 
     }

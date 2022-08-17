@@ -61,17 +61,18 @@ namespace yack
             //
             // member
             //__________________________________________________________________
-            const library    &corelib; //!< initial library
-            const equilibria &singles; //!< initial equilibria
-            const active_list working; //!< list of active species
-            const size_t      M;       //!< corelib.size
-            const size_t      N;       //!< singles.size
-            const size_t      L;       //!< lattice.size
-            const equilibria  couples; //!< all composite
-            const equilibria  lattice; //!< singles|couples
-            const groups      related; //!< related
-            rmulops           xmul;    //!< for mulops
-            raddops           xadd;    //!< for addops
+            const library    &corelib;  //!< initial library
+            const equilibria &singles;  //!< initial equilibria
+            const active_list working;  //!< list of active species
+            const size_t      M;        //!< corelib.size
+            const size_t      N;        //!< singles.size
+            const size_t      L;        //!< lattice.size
+            const equilibria  couples;  //!< all composite
+            const equilibria  lattice;  //!< singles|couples
+            const groups      related;  //!< related
+            const groups      solving;  //!< all solving combinations
+            rmulops           xmul;     //!< for mulops
+            raddops           xadd;     //!< for addops
 
         private:
             const library     worklib; //!< copy of corelib

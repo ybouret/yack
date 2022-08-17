@@ -30,6 +30,7 @@ namespace yack
         couples(),
         lattice(singles),
         related(),
+        solving(),
         xmul(),
         xadd(),
         worklib(corelib),
