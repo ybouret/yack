@@ -8,12 +8,6 @@ namespace yack
     namespace chemical
     {
 
-        template <typename SEQUENCE, typename ARGS> static inline
-        void fill_seq(SEQUENCE &seq, const ARGS &args, size_t n)
-        {
-            while(n-- >0 ) seq.push_back(args);
-        }
-
         void reactor:: make_manifold()
         {
             static const char fn[] = "[reactor.manifold] ";
@@ -25,15 +19,14 @@ namespace yack
             //
             //
             //------------------------------------------------------------------
-            YACK_CHEM_PRINTLN(fn << "build all detached...");
-            const size_t     P = related.size;           // number of related
-            matrix<bool>     detached(L,L);              // global symetric detached flag
-            vector<group>    unlinked(L,as_capacity);    // possible unlinked groups for each equilibrium
-            vector<groups>   party(P,as_capacity);       // collect possibilities per related choid
-            unsigned         count  = 0;                 // count index
+            YACK_CHEM_PRINTLN(fn << "[build all detached]");
+            const size_t     P = related.size; // number of related
+            matrix<bool>     detached(L,L);    // global symetric detached flag
+            vector<group>    unlinked(L);      // possible unlinked groups for each equilibrium
+            vector<groups>   party(P);         // collect possibilities per related choid
+            unsigned         count  = 0;       // count index
 
-            { const group  zgrp;  fill_seq(unlinked,zgrp,L); }
-            { const groups zgrps; fill_seq(party,zgrps,P);   }
+            
 
             //------------------------------------------------------------------
             //
@@ -109,10 +102,9 @@ namespace yack
                     //----------------------------------------------------------
                     for(const gnode *rhs=LGP.head;rhs;rhs=rhs->next)
                     {
-                        const equilibrium   &RHS  = **rhs;
-                        const size_t         RID  = *RHS;
+                        const equilibrium    &RHS = **rhs;
+                        const size_t          RID = *RHS;
                         const readable<bool> &TST = detached[RID];
-                        //std::cerr << "\t\tusing " << RHS.name << std::endl;
 
                         for(const group *existing=G.head;existing;existing=existing->next)
                         {
@@ -134,7 +126,6 @@ namespace yack
                         }
                     }
 
-
                     target.merge_back(G);
                 }
 
@@ -149,7 +140,7 @@ namespace yack
             //
             //
             //------------------------------------------------------------------
-            YACK_CHEM_PRINTLN(fn << "combining parts...");
+            YACK_CHEM_PRINTLN(fn << " --> combining parts <--");
             {
                 const vector<size_t>    ini(P,1);
                 vector<size_t>          end(P,1);
@@ -169,7 +160,12 @@ namespace yack
             coerce(solving).sort();
 
             YACK_CHEM_PRINTLN(solving);
-            YACK_CHEM_PRINTLN(fn << "built all detached...");
+            YACK_CHEM_PRINTLN(fn << "[built all detached]=" << solving.size);
+            
+#ifndef NDEBUG
+            
+#endif
+            
         }
 
     }

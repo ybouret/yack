@@ -25,6 +25,36 @@ namespace yack
             return false;
         }
 
+        bool group:: includes(const equilibrium &rhs) const throw()
+        {
+            for(const gnode *node=head;node;node=node->next)
+            {
+                const equilibrium &lhs = **node;
+                if( &lhs == &rhs ) return true;
+            }
+            return false;
+        }
+        
+        bool group:: excludes(const equilibrium &rhs) const throw()
+        {
+            for(const gnode *node=head;node;node=node->next)
+            {
+                const equilibrium &lhs = **node;
+                if( &lhs == &rhs ) return false;
+            }
+            return true;
+        }
+        
+        bool group:: contains(const group &sub) const throw()
+        {
+            for(const gnode *node=sub.head;node;node=node->next)
+            {
+                if( excludes( **node) ) return false;
+            }
+            return true;
+        }
+
+        
         group:: group(const group &other) : object(), group_type(other), next(0), prev(0)
         {
         }

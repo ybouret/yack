@@ -249,13 +249,15 @@ namespace yack
         }
 
         //! push back with ready memory
-        inline virtual void push_back_fast(param_type  args)
+        inline void push_back_fast(param_type  args)
         {
             assert(count<utter);
             new (base+count) mutable_type(args);
             ++count;
         }
 
+        
+        
         //! remove an item
         inline void suppress(const size_t indx) throw()
         {
