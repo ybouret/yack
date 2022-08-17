@@ -12,7 +12,7 @@ namespace yack
         {
         }
 
-        group:: group() throw() : group_type(), next(0), prev(0) {}
+        group:: group() throw() : object(), group_type(), next(0), prev(0) {}
 
         
         bool group:: accepts(const equilibrium &rhs) const throw()
@@ -25,7 +25,7 @@ namespace yack
             return false;
         }
 
-        group:: group(const group &other) : group_type(other)
+        group:: group(const group &other) : object(), group_type(other), next(0), prev(0)
         {
         }
         
