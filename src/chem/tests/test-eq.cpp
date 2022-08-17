@@ -24,7 +24,7 @@ YACK_UTEST(eq)
     std::cerr << lib << std::endl;
     std::cerr << eqs << std::endl;
 
-    const size_t M = lib.size();
+    const size_t   M = lib.size();
     vector<double> C(M,0);
     vector<double> S(M,0);
     vector<double> Ctry(M,0);

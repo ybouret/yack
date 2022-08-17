@@ -82,7 +82,12 @@ namespace yack
                 os << '}' << std::endl;
             }
 
-
+            //__________________________________________________________________
+            //
+            // access
+            //__________________________________________________________________
+            const equilibrium & operator[](const string &) const;
+            const equilibrium & operator[](const char   *) const;
 
         private:
             YACK_DISABLE_ASSIGN(equilibria);

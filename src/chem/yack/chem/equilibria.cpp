@@ -24,6 +24,19 @@ namespace yack
             return (*edb.tree).head;
         }
 
+        const equilibrium & equilibria:: operator[](const string &name) const
+        {
+            eqs_db::const_type *pp = edb.search(name);
+            if(!pp) throw imported::exception(clid,"no <%s>", name() );
+            return **pp;
+        }
+
+        const equilibrium & equilibria:: operator[](const char *name) const
+        {
+            const string _(name);
+            return (*this)[_];
+        }
+
         
         const char equilibria::clid[] = "chemical::equilibria";
         

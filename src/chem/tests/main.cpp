@@ -9,6 +9,7 @@ YACK_UTEST_DECL(16)
     YACK_UTEST(eq);
     YACK_UTEST(composite);
     YACK_UTEST(reactor);
+    YACK_UTEST(diff);
 }
 YACK_UTEST_EXEC()
 
