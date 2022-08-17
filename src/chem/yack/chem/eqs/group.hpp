@@ -43,6 +43,7 @@ namespace yack
             //__________________________________________________________________
             bool     accepts(const equilibrium &rhs) const throw();          //!< check is a component of rhs is connected
             friend std::ostream & operator<<(std::ostream &, const group &); //!< display
+            void   sort(); //!< by equilibrium index
 
             //__________________________________________________________________
             //

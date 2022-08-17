@@ -6,6 +6,7 @@ namespace yack
     {
         namespace nucleus
         {
+            
             const eq_info eq_info::table[] =
             {
                 { "water",    "[H+]+[HO-]",             "10^(-14)"   },
@@ -20,6 +21,11 @@ namespace yack
                 { "sulfuric", "2[H+]-[H2SO4]+[SO4--]",  "10^(0.89)"  },
 
                 { "benzoic",  "[H+]-[PhiCOOH]+[PhiCOO-]", "10^(-4.202)" },
+
+                { "citric1",  "[H+]-[CitH3]+[CitH2-]",    "10^(-3.13)" },
+                { "citric2",  "[H+]-[CitH2-]+[CitH--]",   "10^(-4.76)" },
+                { "citric3",  "[H+]-[CitH--]+[Cit---]",   "10^(-6.40)" },
+
 
                 { "abcd",     "-[a]-[b]+[c]+[d]", "0.12345" }
             };

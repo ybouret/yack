@@ -1,6 +1,7 @@
 
 
 #include "yack/chem/eqs/group.hpp"
+#include "yack/data/list/sort.hpp"
 
 namespace yack
 {
@@ -48,6 +49,18 @@ namespace yack
             os << '}';
             return os;
         }
+
+
+        static inline int compare_gnodes(const gnode *lhs, const gnode *rhs) throw()
+        {
+            return comparison::increasing(***lhs,***rhs);
+        }
+
+        void group:: sort()
+        {
+            merge_list_of<gnode>::sort(*this,compare_gnodes);
+        }
+
 
     }
 
