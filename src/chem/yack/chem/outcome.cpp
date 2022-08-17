@@ -6,6 +6,15 @@ namespace yack
 {
     namespace chemical
     {
+
+        outcome:: outcome() throw() :
+        state(components::are_blocked),
+        grade(extent::is_degenerated),
+        value(0)
+        {
+        }
+
+
         outcome:: outcome(const components::state s,
                           const extent::grade     g,
                           const double            x) throw() :
@@ -26,6 +35,15 @@ namespace yack
         value(other.value)
         {
         }
+
+        outcome & outcome:: operator=(const outcome &other) throw()
+        {
+            coerce(state) = other.state;
+            coerce(grade) = other.grade;
+            coerce(value) = other.value;
+            return *this;
+        }
+
 
         std::ostream & operator<<(std::ostream &os, const outcome &out)
         {

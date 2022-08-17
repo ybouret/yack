@@ -23,10 +23,11 @@ namespace yack
             //
             // C++
             //__________________________________________________________________
+            outcome() throw();                                                         //!< blocked, degenerated, 0
             outcome(const components::state,const extent::grade,const double) throw(); //!< setup
             outcome(const outcome &) throw();                                          //!< no-throw copy
+            outcome & operator=(const outcome &other) throw();                         //!< assign
             ~outcome() throw();                                                        //!< cleanup
-
 
             //__________________________________________________________________
             //
@@ -56,8 +57,6 @@ namespace yack
             //! textual output
             friend std::ostream & operator<<(std::ostream &os, const outcome &out);
 
-        private:
-            YACK_DISABLE_ASSIGN(outcome);
         };
 
     }

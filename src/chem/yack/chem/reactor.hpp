@@ -83,6 +83,7 @@ namespace yack
             tableau           &Cend;    //!< [M] final point
             tableau           &Ctry;    //!< [M] working space
             tableau           &K;       //!< [N] pre-computed K
+            tableau           &sigma;   //!< [N] slope
             tableau           &Kl;      //!< [L] pre-computed K
             tableau           &Xl;      //!< [L] solving extents
             thin_array<bool>   blocked; //!< [L]
@@ -92,6 +93,10 @@ namespace yack
             YACK_DISABLE_COPY_AND_ASSIGN(reactor);
             const lockable::scope lockLib;
             const lockable::scope lockEqs;
+
+            bool solved(writable<double> &C0);
+            
+
         };
 
 

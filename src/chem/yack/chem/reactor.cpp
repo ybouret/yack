@@ -42,7 +42,9 @@ namespace yack
         Cend( mtab.next() ),
         Ctry( mtab.next() ),
 
-        K(  ntab.next()  ),
+        K(     ntab.next()  ),
+        sigma( ntab.next()  ),
+
         Kl( ltab.next()  ),
         Xl( ltab.next()  ),
         blocked( ltab.next(), transmogrify),
@@ -134,6 +136,15 @@ namespace yack
     namespace chemical
     {
 
+        bool reactor:: solved(writable<double> &C0)
+        {
+            working.tranfer(C0,Corg);
+
+            corelib(std::cerr << "Cend=", "", C0);
+
+            return true;
+        }
+
         bool reactor:: solve(writable<double> &C0)
         {
 
@@ -152,8 +163,7 @@ namespace yack
                     std::cerr << "single" << std::endl;
                     const equilibrium &eq = ***singles.head();
                     outcome::study(eq, K[1], C0, Corg, xmul, xadd);
-                    working.tranfer(C0,Corg);
-                    return true;
+                    return solved(C0);
                 } break;
 
                 default:
@@ -163,22 +173,72 @@ namespace yack
                     }
             }
 
-
-            // compute initial state
-            for(const enode *node = lattice.head(); node; node=node->next )
+        CYCLE:
+            //------------------------------------------------------------------
+            //
+            // study singles, initialize phase space
+            //
+            //------------------------------------------------------------------
+            double              amax = 0;
+            size_t              nrun = 0;
+            const  equilibrium *emax = NULL;
+            outcome             ppty;
+            
+            for(const enode *node = singles.head(); node; node=node->next)
             {
                 const equilibrium &eq = ***node;
                 const size_t       ei = *eq;
                 writable<double>  &Ci = Ceq[ei];
                 const outcome      oc = outcome::study(eq, Kl[ei], Corg, Ci, xmul, xadd);
+
+                singles.pad(std::cerr << '<' << eq.name << '>', eq) << " : " << oc << std::endl;
+
                 switch(oc.state)
                 {
-                    case components::are_blocked: blocked[ei] = true;  break;
-                    case components::are_running: blocked[ei] = false; break;
+                    case components::are_blocked:
+                        blocked[ei] = true;
+                        Xl[ei]      = 0;
+                        sigma[ei]   = 0;
+                        break;
+
+                    case components::are_running: {
+                        blocked[ei] = false;
+                        
+                        ++nrun;
+                        const double ax = fabs( Xl[ei] = oc.value );
+                        if(ax>amax)
+                        {
+                            amax =  ax;
+                            emax = &eq;
+                            ppty =  oc;
+                        }
+                    } break;
                 }
-                Xl[ei] = oc.value;
             }
 
+            if(!emax)
+            {
+                std::cerr << "fully solved" << std::endl;
+                return solved(C0);
+            }
+
+            assert(emax);
+            std::cerr << "emax=" << emax->name << std::endl;
+
+            switch(nrun)
+            {
+                case 0:
+                    std::cerr << "Totally Blocked" << std::endl;
+                    return solved(C0);
+
+                case 1:
+                    std::cerr << "Only one running..." << std::endl;
+                    working.tranfer( Corg, Ceq[**emax] );
+                    goto CYCLE;
+
+                default:
+                    break;
+            }
 
 
 
