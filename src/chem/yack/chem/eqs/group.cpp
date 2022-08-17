@@ -24,6 +24,11 @@ namespace yack
             return false;
         }
 
+        group:: group(const group &other) : group_type(other)
+        {
+        }
+        
+
         std::ostream & operator<<(std::ostream &os, const group &g)
         {
             os << '{';

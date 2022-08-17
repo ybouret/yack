@@ -35,6 +35,7 @@ namespace yack
             //__________________________________________________________________
             explicit group() throw(); //!< create empty
             virtual ~group() throw(); //!< cleanup
+            group(const group &);     //!< copy
 
             //__________________________________________________________________
             //
@@ -52,7 +53,7 @@ namespace yack
 
 
         private:
-            YACK_DISABLE_COPY_AND_ASSIGN(group);
+            YACK_DISABLE_ASSIGN(group);
         };
 
 
