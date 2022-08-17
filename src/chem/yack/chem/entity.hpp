@@ -63,4 +63,12 @@ namespace yack
 
 }
 
+#define YACK_CHEM_PRINT(MSG) do { \
+/**/ if(chemical::entity::verbose) { std::cerr << MSG; }\
+} while(false)
+
+#define YACK_CHEM_PRINTLN(MSG) do { \
+/**/ if(chemical::entity::verbose) { std::cerr << MSG << std::endl; }\
+} while(false)
+
 #endif
