@@ -39,8 +39,9 @@ namespace yack
             //
             // types and definitions
             //__________________________________________________________________
-            static const char clid[]; //!< "chemical::reactor"
-
+            static const char clid[];  //!< "chemical::reactor"
+            static bool      &verbose; //!< entity::verbose
+            //!
             //__________________________________________________________________
             //
             // C++
@@ -95,7 +96,7 @@ namespace yack
             const lockable::scope lockEqs;
 
             bool solved(writable<double> &C0);
-            
+
 
         };
 

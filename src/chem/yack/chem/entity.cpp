@@ -5,6 +5,7 @@ namespace yack
 {
     namespace chemical
     {
+        bool entity::verbose = false;
 
         entity:: ~entity() throw()
         {

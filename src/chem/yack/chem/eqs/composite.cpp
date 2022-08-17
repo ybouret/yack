@@ -337,7 +337,6 @@ namespace yack
                     }
                 }
             }
-            std::cerr << "couples=" << couples << std::endl;
         }
 
     }

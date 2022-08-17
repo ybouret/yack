@@ -13,7 +13,8 @@ namespace yack
     namespace chemical
     {
 
-        const char reactor:: clid[] = "chemical::reactor";
+        const char reactor:: clid[]  = "chemical::reactor";
+        bool      &reactor:: verbose = entity::verbose;
 
         reactor:: ~reactor() throw() {}
 
@@ -53,7 +54,14 @@ namespace yack
         lockLib( coerce(usrLib) ),
         lockEqs( coerce(usrEqs) )
         {
+            static const char fn[] = "[reactor] ";
             equilibrium::display_time = t;
+            YACK_CHEM_PRINTLN(fn << "---------------- build ----------------");
+            YACK_CHEM_PRINTLN(fn << "@" << t );
+
+            YACK_CHEM_PRINTLN(fn << "corelib = " << corelib);
+            YACK_CHEM_PRINTLN(fn << "singles = " << singles);
+
 
             if(N>0)
             {
@@ -68,23 +76,27 @@ namespace yack
                     eq.fill( coerce(Nu[ei]) );
                 }
 
-                std::cerr << "Nu=" << Nu << std::endl;
+                if(verbose)
+                {
+                    singles(std::cerr << "Nu = ", "Nu_", Nu);
+                }
 
+
+                //--------------------------------------------------------------
+                // testing system
+                //--------------------------------------------------------------
                 {
                     lu<apq>     apLU(N);
                     matrix<apq> Gram(N,N);
-
                     iota::gram(Gram,Nu);
-                    std::cerr << "Gram=" << Gram << std::endl;
-
                     if(!apLU.build(Gram)) throw imported::exception(clid,"singular equilibria");
-
                 }
 
                 //--------------------------------------------------------------
                 // compute couples
                 //--------------------------------------------------------------
                 composite::scatter( coerce(couples), worklib, singles, K, xmul);
+
 
                 //--------------------------------------------------------------
                 // complete lattice
@@ -119,9 +131,11 @@ namespace yack
                     const size_t       ei =  *eq;
                     Kl[ei] = eq.K(-1);
                 }
-                lattice(std::cerr << "Kl=", "K_", Kl);
-
+                YACK_CHEM_PRINTLN(fn << "lattice = " << lattice);
             }
+
+            YACK_CHEM_PRINTLN(fn << "---------------- built ----------------" << std::endl );
+
 
         }
 
@@ -130,6 +144,7 @@ namespace yack
 }
 
 #include "yack/chem/outcome.hpp"
+#include <iomanip>
 
 namespace yack
 {
@@ -139,14 +154,17 @@ namespace yack
         bool reactor:: solved(writable<double> &C0)
         {
             working.tranfer(C0,Corg);
-
-            corelib(std::cerr << "Cend=", "", C0);
-
+            if(verbose)
+            {
+                corelib(std::cerr << "Cend=", "", C0);
+            }
             return true;
         }
 
         bool reactor:: solve(writable<double> &C0)
         {
+            static const char fn[] = "[reactor.solve] ";
+            YACK_CHEM_PRINTLN(fn);
 
             //------------------------------------------------------------------
             //
@@ -156,11 +174,11 @@ namespace yack
             switch(N)
             {
                 case 0:
-                    std::cerr << "empty" << std::endl;
+                    YACK_CHEM_PRINTLN(fn << "SUCCESS [empty]");
                     return true;
 
                 case 1: {
-                    std::cerr << "single" << std::endl;
+                    YACK_CHEM_PRINTLN(fn << "SUCCESS [single]");
                     const equilibrium &eq = ***singles.head();
                     outcome::study(eq, K[1], C0, Corg, xmul, xadd);
                     return solved(C0);
@@ -173,12 +191,15 @@ namespace yack
                     }
             }
 
+            unsigned cycle = 0;
         CYCLE:
             //------------------------------------------------------------------
             //
             // study singles, initialize phase space
             //
             //------------------------------------------------------------------
+            ++cycle;
+            YACK_CHEM_PRINTLN(fn << "---------------- #cycle= " << std::setw(3) << cycle << " ----------------");
             double              amax = 0;
             size_t              nrun = 0;
             const  equilibrium *emax = NULL;
@@ -191,7 +212,10 @@ namespace yack
                 writable<double>  &Ci = Ceq[ei];
                 const outcome      oc = outcome::study(eq, Kl[ei], Corg, Ci, xmul, xadd);
 
-                singles.pad(std::cerr << '<' << eq.name << '>', eq) << " : " << oc << std::endl;
+                if(verbose)
+                {
+                    singles.pad(std::cerr << "\t (+) " << '<' << eq.name << '>', eq) << " : " << oc << std::endl;
+                }
 
                 switch(oc.state)
                 {
@@ -218,29 +242,27 @@ namespace yack
 
             if(!emax)
             {
-                std::cerr << "fully solved" << std::endl;
+                YACK_CHEM_PRINTLN(fn << "SUCCESS [fully solved]");
                 return solved(C0);
             }
 
             assert(emax);
-            std::cerr << "emax=" << emax->name << std::endl;
+            YACK_CHEM_PRINTLN(fn << "emax=" << emax->name);
 
             switch(nrun)
             {
                 case 0:
-                    std::cerr << "Totally Blocked" << std::endl;
+                    YACK_CHEM_PRINTLN(fn << "SUCCESS [all blocked]");
                     return solved(C0);
 
                 case 1:
-                    std::cerr << "Only one running..." << std::endl;
+                    YACK_CHEM_PRINTLN(fn << "is the only one running...");
                     working.tranfer( Corg, Ceq[**emax] );
                     goto CYCLE;
 
                 default:
                     break;
             }
-
-
 
 
 

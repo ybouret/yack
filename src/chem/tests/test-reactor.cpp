@@ -1,12 +1,14 @@
 #include "yack/chem/eqs/lua.hpp"
 #include "yack/chem/reactor.hpp"
 #include "yack/utest/run.hpp"
+#include "yack/system/env.hpp"
 
 using namespace yack;
 using namespace chemical;
 
 YACK_UTEST(reactor)
 {
+    entity::verbose = environment::flag("VERBOSE");
     randomized::rand_ ran;
     library           lib;
     luaEquilibria     eqs;
@@ -19,8 +21,10 @@ YACK_UTEST(reactor)
         eqs(lib,argv[i]);
     }
 
-    std::cerr << lib << std::endl;
-    std::cerr << eqs << std::endl;
+    std::cerr << "Testing Reactor with" << std::endl;
+    std::cerr << "lib=" << lib << std::endl;
+    std::cerr << "eqs=" << eqs << std::endl;
+    std::cerr << std::endl;
 
     reactor cs(lib,eqs,0.0);
 
