@@ -17,7 +17,7 @@ namespace yack
                 bool               ins = false;
                 for(group *g=target.head;g;g=g->next)
                 {
-                    if(g->connects(rhs))
+                    if(g->accepts(rhs))
                     {
                         (*g) << &rhs;
                         ins = true;

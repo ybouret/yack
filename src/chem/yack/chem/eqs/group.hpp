@@ -40,7 +40,7 @@ namespace yack
             //
             // methods
             //__________________________________________________________________
-            bool     connects(const equilibrium &rhs) const throw();          //!< check is a component of rhs is connected
+            bool     accepts(const equilibrium &rhs) const throw();          //!< check is a component of rhs is connected
             friend std::ostream & operator<<(std::ostream &, const group &); //!< display
 
             //__________________________________________________________________

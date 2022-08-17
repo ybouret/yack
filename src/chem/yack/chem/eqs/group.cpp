@@ -14,14 +14,13 @@ namespace yack
         group:: group() throw() : group_type(), next(0), prev(0) {}
 
         
-        bool group:: connects(const equilibrium &rhs) const throw()
+        bool group:: accepts(const equilibrium &rhs) const throw()
         {
             for(const gnode *node=head;node;node=node->next)
             {
                 const equilibrium &lhs = **node;
-                if( lhs.connected_to(rhs) ) return true;
+                if( lhs.attached_to(rhs) ) return true;
             }
-
             return false;
         }
 
@@ -31,10 +30,14 @@ namespace yack
             const gnode *node = g.head;
             if(node)
             {
+                size_t count=1;
                 os << (**node).name;
                 for(node=node->next;node;node=node->next)
                 {
-                    os << ',' << (**node).name;
+                    os << ',';
+                    if( 0 == (++count&7) ) os << std::endl << '\t';
+                    os << (**node).name;
+
                 }
             }
             os << '}';

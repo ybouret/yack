@@ -99,7 +99,7 @@ namespace yack
 
             bool   solved(writable<double> &C0);
             void   build_related();
-
+            void   make_manifold();
         };
 
 

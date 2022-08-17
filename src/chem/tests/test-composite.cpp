@@ -55,7 +55,7 @@ YACK_UTEST(composite)
         {
             const equilibrium &RHS = ***rhs;
             const size_t       R_i = *RHS;
-            conn[L_i][R_i] =  conn[R_i][L_i] = LHS.connected_to(RHS);
+            conn[L_i][R_i] =  conn[R_i][L_i] = LHS.attached_to(RHS);
         }
     }
     lattice(std::cerr << "conn=","",conn);

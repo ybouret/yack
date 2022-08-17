@@ -69,13 +69,13 @@ namespace yack
 
 
 //! display message, no endl
-#define YACK_CHEM_PRINT(MSG) do { \
-/**/ if(chemical::entity::verbose) { std::cerr << MSG; }\
+#define YACK_CHEM_PRINT(MSG) do    {                                           \
+/**/ if(chemical::entity::verbose) { std::cerr << MSG; }                       \
 } while(false)
 
 //! display message with endl
-#define YACK_CHEM_PRINTLN(MSG) do { \
-/**/ if(chemical::entity::verbose) { std::cerr << MSG << std::endl; }\
+#define YACK_CHEM_PRINTLN(MSG) do  {                                           \
+/**/ if(chemical::entity::verbose) { std::cerr << MSG << std::endl; }          \
 } while(false)
 
 #endif

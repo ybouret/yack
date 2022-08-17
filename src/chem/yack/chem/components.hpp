@@ -182,8 +182,10 @@ namespace yack
                                          rmulops                &xmul) const ;
 
             //! check if one species in common
-            bool connected_to(const components &other) const throw();
+            bool attached_to(const components &other) const throw();
 
+            //! check is no species in common
+            bool detached_of(const components &other) const throw();
             
             //__________________________________________________________________
             //
