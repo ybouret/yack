@@ -124,7 +124,7 @@ namespace yack
                 }
 
                 //--------------------------------------------------------------
-                // complete Kl
+                // complete Kl @t
                 //--------------------------------------------------------------
                 for(const enode *node=couples.head();node;node=node->next)
                 {
@@ -133,11 +133,22 @@ namespace yack
                     Kl[ei] = eq.K(-1);
                 }
                 YACK_CHEM_PRINTLN(fn << "lattice = " << lattice);
+
+                //--------------------------------------------------------------
+                // build related groups
+                //--------------------------------------------------------------
+                build_related();
+                YACK_CHEM_PRINTLN(fn << "related = " << related);
+
+                //--------------------------------------------------------------
+                // for each related group...
+                //--------------------------------------------------------------
+
             }
 
             YACK_CHEM_PRINTLN(fn << "---------------- built ----------------" << std::endl );
 
-
+            
         }
 
     }

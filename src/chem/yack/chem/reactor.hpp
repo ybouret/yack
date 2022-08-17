@@ -97,8 +97,8 @@ namespace yack
             const lockable::scope lockLib;
             const lockable::scope lockEqs;
 
-            bool solved(writable<double> &C0);
-
+            bool   solved(writable<double> &C0);
+            void   build_related();
 
         };
 

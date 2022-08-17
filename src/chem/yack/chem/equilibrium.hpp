@@ -12,7 +12,7 @@ namespace yack
         //______________________________________________________________________
         //
         //
-        //! equilibirum = entity + components, with a K(time)
+        //! equilibrium = entity + components, with a K(time)
         //
         //______________________________________________________________________
         class equilibrium : public entity, public components

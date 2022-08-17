@@ -11,13 +11,28 @@ namespace yack
     namespace chemical
     {
 
-
+        //______________________________________________________________________
+        //
+        //
+        //!  groups of group of equilibria
+        //
+        //______________________________________________________________________
         class groups :  public cxx_list_of<group>
         {
         public:
-            explicit groups() throw();
-            virtual ~groups() throw();
-            
+            //__________________________________________________________________
+            //
+            // C++
+            //__________________________________________________________________
+            explicit groups() throw(); //!< setup empty
+            virtual ~groups() throw(); //!< cleanup
+
+            //__________________________________________________________________
+            //
+            // methods
+            //__________________________________________________________________
+            friend std::ostream & operator<<(std::ostream &, const groups &); //!< display
+
         private:
             YACK_DISABLE_COPY_AND_ASSIGN(groups);
         };
