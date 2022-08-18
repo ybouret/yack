@@ -248,11 +248,19 @@ namespace yack
 
             if(emin)
             {
+                // found a global decrease
+                const equilibrium &eq = *emin;
                 if(verbose)
                 {
-                    const equilibrium &eq = *emin;
                     lattice.pad(std::cerr << "--> @" << eq.name,eq) << " -> " << std::setw(15) << Hmin << std::endl;
                 }
+                const group *g = solving.find_first(eq);
+                do {
+                    std::cerr << "Need to test " << *g << std::endl;
+                } while( NULL != ( g=solving.find_next(g,eq)  ) );
+                
+
+
             }
             else
             {
