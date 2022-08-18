@@ -25,7 +25,7 @@ namespace yack
         typedef tableaux::array_type tableau;  //!< alias
         typedef matrix<int>          imatrix;  //!< alias
         typedef matrix<double>       rmatrix;  //!< alias
-
+        class outcome;
 
         //______________________________________________________________________
         //
@@ -98,6 +98,8 @@ namespace yack
             YACK_DISABLE_COPY_AND_ASSIGN(reactor);
             const lockable::scope lockLib;
             const lockable::scope lockEqs;
+
+            const equilibrium *maxOfSingles(size_t &nrun, outcome &ppty);
 
             bool   solved(writable<double> &C0);
             void   build_related();

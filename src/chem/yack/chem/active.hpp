@@ -44,7 +44,7 @@ namespace yack
             //__________________________________________________________________
             //! transfer only active part
             template <typename TARGET, typename SOURCE> inline
-            void tranfer(TARGET &target, SOURCE &source) const
+            void transfer(TARGET &target, SOURCE &source) const
             {
                 for(const anode *node=this->head;node;node=node->next)
                 {
