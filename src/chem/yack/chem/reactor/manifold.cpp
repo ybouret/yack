@@ -1,6 +1,7 @@
 
 #include "yack/chem/reactor.hpp"
 #include "yack/counting/mloop.hpp"
+#include "yack/system/imported.hpp"
 
 namespace yack
 {
@@ -163,7 +164,23 @@ namespace yack
             YACK_CHEM_PRINTLN(fn << "[built all detached]=" << solving.size);
             
 #ifndef NDEBUG
-            
+            YACK_CHEM_PRINTLN(fn << "[*** testing ***]");
+            for(const enode *I=lattice.head();I;I=I->next)
+            {
+                const equilibrium &i = ***I;
+                YACK_CHEM_PRINTLN(i.name);
+                if(!solving.includes(i)) throw imported::exception(clid,"missing %s",i.name());
+                for(const enode *J=I->next;J;J=J->next)
+                {
+                    const equilibrium &j = ***J;
+                    if(i.detached_of(j))
+                    {
+                        group g; g << &i << &j;
+                        if(!solving.contains(g)) throw imported::exception(clid,"missing %s,%s",i.name(),j.name());
+
+                    }
+                }
+            }
 #endif
             
         }

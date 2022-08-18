@@ -33,9 +33,12 @@ namespace yack
             // methods
             //__________________________________________________________________
             friend std::ostream & operator<<(std::ostream &, const groups &); //!< display
-
+            
             void sort(); //!< sort all groups then per group size then per lexicographic order
+            bool includes(const equilibrium &) const throw(); //!< in a group
+            bool contains(const group       &) const throw(); //!< in a group
 
+            
         private:
             YACK_DISABLE_ASSIGN(groups);
         };

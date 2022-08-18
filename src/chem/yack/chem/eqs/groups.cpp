@@ -85,6 +85,25 @@ namespace yack
             }
             merge_list_of<group>::sort(*this,compare_groups);
         }
+        
+        bool groups:: includes(const equilibrium &eq) const throw()
+        {
+            for(const group *g=head;g;g=g->next)
+            {
+                if(g->includes(eq)) return true;
+            }
+            return false;
+        }
+
+        bool groups:: contains(const group &sub) const throw()
+        {
+            for(const group *g=head;g;g=g->next)
+            {
+                if(g->contains(sub)) return true;
+            }
+            return false;
+        }
+        
     }
 
 }
