@@ -90,7 +90,7 @@ namespace yack
             tableau           &sigma;   //!< [N] slope
             tableau           &Kl;      //!< [L] pre-computed K
             tableau           &Xl;      //!< [L] solving extents
-            thin_array<bool>   blocked; //!< [L]
+            thin_array<bool>   blocked; //!< [L] blocking state
             rmatrix            Ceq;     //!< [LxM] all single solutions
 
         private:
