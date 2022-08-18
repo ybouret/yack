@@ -238,7 +238,24 @@ We want to solve a "small" $\vec{\xi}$:
 \end{equation}
 
 \begin{equation}
-	\Delta_i = B_i^2 - 4A_iC_i
+\begin{array}{rcl}
+	\Delta_i &=& B_i^2 - 4A_iC_i\\
+	 & = & \sigma_i^2 - 4 A_i \sigma_i \Xi_i + 4 A_i^2 \Xi_i^2 - 4 A_i \lambda_i - 4 \alpha_i A_i \Gamma_i \\
+	 & = & \sigma_i^2 - 4 A_i \left[ \lambda_i + \Xi_i (1-\alpha_i)\left(\sigma_i - A_i\Xi \right) \right]\\
+	 & = & \sigma_i^2 + 4 A_i \left[ (1-\alpha_i) \Gamma_i - \lambda_i \right]\\
+\end{array}
+\end{equation}
+
+\begin{equation}
+	\xi_i^+ = \dfrac{ -B_i + \sqrt{\Delta_i}} {2A_i} 
+	= \dfrac{\Delta_i - B_i^2}{2A_i\left[ B_i + \sqrt{\Delta_i}\right]}
+	= \dfrac{-2C_i}{\left[ B_i + \sqrt{\Delta_i}\right]}
+\end{equation}
+
+\begin{equation}
+	\xi_i^- = \dfrac{ -B_i - \sqrt{\Delta_i}} {2A_i} 
+	= \dfrac{B_i^2 - \Delta_i }{2A_i\left[ B_i - \sqrt{\Delta_i}\right]}
+	= \dfrac{2C_i}{\left[ B_i - \sqrt{\Delta_i}\right]}
 \end{equation}
 
 \end{document}
