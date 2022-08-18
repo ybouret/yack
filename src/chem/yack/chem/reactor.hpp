@@ -25,7 +25,7 @@ namespace yack
         typedef tableaux::array_type tableau;  //!< alias
         typedef matrix<int>          imatrix;  //!< alias
         typedef matrix<double>       rmatrix;  //!< alias
-
+        class outcome;
 
         //______________________________________________________________________
         //
@@ -55,7 +55,10 @@ namespace yack
 
 
             //! best effort solving
-            bool solve(writable<double> &C0);
+            bool   solve(writable<double> &C0);
+
+            //! wrapper Hamiltonian(Corg+u*(Cend-Corg)) with full clipping
+            double operator()(const double u);
 
             //__________________________________________________________________
             //
@@ -82,6 +85,7 @@ namespace yack
             
         public:
             const imatrix      Nu;      //!< [NxM] topology
+            imatrix            NuA;     //!< [NXM] topology of non-blocked equilibria
             rmatrix            Psi;     //!< [NxM] jacobian
             tableau           &Corg;    //!< [M] starting point
             tableau           &Cend;    //!< [M] final point
@@ -98,9 +102,13 @@ namespace yack
             const lockable::scope lockLib;
             const lockable::scope lockEqs;
 
-            bool   solved(writable<double> &C0);
-            void   build_related();
-            void   make_manifold();
+            bool               returnSolved(writable<double> &C0);       //!< upon successful return
+            void               buildRelated();                           //!< build global partitions
+            void               makeManifold();                           //!< build all solving partitions
+            const equilibrium *setTopology(size_t &nrun, outcome &);     //!< full topology at Corg
+            double             Hamiltonian(const readable<double> &C);   //!< a molar hamiltonian
+            double             Optimized1D(const double H0);             //!< optimize from (Corg,H0) to Cend
+            bool               isTurnedOff(const group *) const throw(); //!< true if one member is blocked
         };
 
 

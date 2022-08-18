@@ -8,7 +8,7 @@ namespace yack
     namespace chemical
     {
 
-        void reactor:: build_related()
+        void reactor:: buildRelated()
         {
             groups &target = coerce(related);
             for(const enode *node=lattice.head();node;node=node->next)

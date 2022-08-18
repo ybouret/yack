@@ -103,7 +103,27 @@ namespace yack
             }
             return false;
         }
-        
+
+
+        const group * groups:: find_first(const equilibrium &eq) const throw()
+        {
+            for(const group *g=head;g;g=g->next)
+            {
+                if(g->includes(eq)) return g;
+            }
+            return NULL;
+        }
+
+        const group * groups:: find_next(const group *g, const equilibrium &eq) const throw()
+        {
+            assert(g);
+            for(g=g->next;g;g=g->next)
+            {
+                if(g->includes(eq)) return g;
+            }
+            return NULL;
+        }
+
     }
 
 }

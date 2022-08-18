@@ -39,6 +39,7 @@ namespace yack
         ltab(12,L),
 
         Nu(N,N>0?M:0),
+        NuA(Nu.rows,Nu.cols),
         Psi(Nu.rows,Nu.cols),
 
         Corg( mtab.next() ),
@@ -138,13 +139,13 @@ namespace yack
                 //--------------------------------------------------------------
                 // build related groups
                 //--------------------------------------------------------------
-                build_related();
+                buildRelated();
                 YACK_CHEM_PRINTLN(fn << "related = " << related);
 
                 //--------------------------------------------------------------
                 // for each related group...
                 //--------------------------------------------------------------
-                make_manifold();
+                makeManifold();
             }
 
             YACK_CHEM_PRINTLN(fn << "---------------- built ----------------" << std::endl );

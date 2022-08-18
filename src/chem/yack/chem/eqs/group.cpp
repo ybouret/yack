@@ -91,6 +91,20 @@ namespace yack
             merge_list_of<gnode>::sort(*this,compare_gnodes);
         }
 
+        bool group:: is_ortho() const throw()
+        {
+            for(const gnode *lhs=head;lhs;lhs=lhs->next)
+            {
+                const equilibrium &LHS = **lhs;
+                for(const gnode *rhs=lhs->next;rhs;rhs=rhs->next)
+                {
+                    const equilibrium &RHS = **rhs;
+                    if(!LHS.detached_of(RHS)) return false;
+                }
+            }
+            return true;
+        }
+
 
     }
 

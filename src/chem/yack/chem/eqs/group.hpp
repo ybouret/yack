@@ -43,10 +43,11 @@ namespace yack
             //__________________________________________________________________
             bool     accepts(const equilibrium &) const throw();  //!< check is a component of equilibrium is connected
             void     sort();                                      //!< by increasing equilibrium index
-            bool     includes(const equilibrium &) const throw(); //!< check equilibrium is included
-            bool     excludes(const equilibrium &) const throw(); //!< check equilibrium is excluded
-            bool     contains(const group       &) const throw(); //!< check all equilibria
-            
+            bool     includes(const equilibrium &) const throw(); //!< check equilibrium is included in this group
+            bool     excludes(const equilibrium &) const throw(); //!< check equilibrium is excluded of this group
+            bool     contains(const group       &) const throw(); //!< check all equilibria are within this group
+            bool     is_ortho() const throw(); //!< all are disconnected
+
             friend std::ostream & operator<<(std::ostream &, const group &); //!< display
 
             //__________________________________________________________________
