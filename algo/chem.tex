@@ -223,6 +223,24 @@ $$
 	\Gamma_i \Xi_i \geq 0 \Rightarrow -\sigma_i \Xi_i^2 + A_i \Xi_i^3 \geq 0 \Rightarrow A_i \Xi_i - \sigma_i \geq 0
 \end{equation}
 
+We want to solve a "small" $\vec{\xi}$:
+\begin{equation}
+	(1-\alpha_i) \Gamma_i = A_i(\xi_i-\Xi_i)^2 + \sigma_i(\xi_i-\Xi_i) + 
+	\underbrace{\sum_{j\not=i} \langle \vec{\nu}_j \vert \vec{\Psi}_i' \rangle \xi_j}_{\lambda_i}
+\end{equation}
+
+\begin{equation}
+\Gamma_i - \alpha_i \Gamma_i = A_i \xi_i^2 - 2 A_i \xi_i \Xi_i  + A_i \Xi_i^2 + \sigma_i \xi_i -\sigma_i \Xi_i + \lambda_i
+\end{equation}
+
+\begin{equation}
+	A_i \xi_i^2 + \underbrace{(\sigma_i - 2A_i \Xi_i )}_{B_i} \xi_i + \underbrace{\lambda_i + \alpha_i \Gamma_i}_{C_i} = 0
+\end{equation}
+
+\begin{equation}
+	\Delta_i = B_i^2 - 4A_iC_i
+\end{equation}
+
 \end{document}
 
 \begin{itemize}
