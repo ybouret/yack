@@ -9,7 +9,7 @@ namespace yack
     namespace chemical
     {
 
-        void reactor:: make_manifold()
+        void reactor:: makeManifold()
         {
             static const char fn[] = "[reactor.manifold] ";
 

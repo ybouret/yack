@@ -15,7 +15,7 @@ namespace yack
     namespace chemical
     {
 
-        bool reactor:: solved(writable<double> &C0)
+        bool reactor:: returnSolved(writable<double> &C0)
         {
             working.transfer(C0,Corg);
             if(verbose)
@@ -78,11 +78,12 @@ namespace yack
             return false;
         }
 
-        const equilibrium * reactor:: maxOfSingles(size_t &nrun, outcome &ppty)
+        const equilibrium * reactor:: setTopology(size_t &nrun, outcome &ppty)
         {
             nrun                    = 0;
             double             amax = 0;
             const equilibrium *emax = NULL;
+            NuA.assign(Nu);
 
             for(const enode *node = singles.head(); node; node=node->next)
             {
@@ -101,6 +102,7 @@ namespace yack
                         blocked[ei] = true;
                         Xl[ei]      = 0;
                         sigma[ei]   = 0;
+                        NuA[ei].ld(0);
                         break;
 
                     case components::are_running: {
@@ -120,7 +122,7 @@ namespace yack
                 }
 
                 if(verbose) {
-                    singles.pad(std::cerr << "\t (+) " << '<' << eq.name << '>', eq) << " : " << oc << " @sigma= " << sigma[ei] << std::endl;
+                    singles.pad(std::cerr << "| (+) " << '<' << eq.name << '>', eq) << " : " << oc << " @sigma= " << sigma[ei] << std::endl;
                 }
 
             }
@@ -151,7 +153,7 @@ namespace yack
                     YACK_CHEM_PRINTLN(fn << "SUCCESS [single]");
                     const equilibrium &eq = ***singles.head();
                     outcome::study(eq, K[1], C0, Corg, xmul, xadd);
-                    return solved(C0);
+                    return returnSolved(C0);
                 } break;
 
                 default:
@@ -178,12 +180,12 @@ namespace yack
             YACK_CHEM_PRINTLN(fn << " [check singles|level-1]");
             size_t              nrun = 0;
             outcome             ppty;
-            const  equilibrium *emax = maxOfSingles(nrun,ppty);
+            const  equilibrium *emax = setTopology(nrun,ppty);
 
             if(!emax)
             {
                 YACK_CHEM_PRINTLN(fn << "SUCCESS [fully solved]");
-                return solved(C0);
+                return returnSolved(C0);
             }
 
             //------------------------------------------------------------------
@@ -200,7 +202,7 @@ namespace yack
             {
                 case 0:
                     YACK_CHEM_PRINTLN(fn << "SUCCESS [all-blocked|level-1]");
-                    return solved(C0);
+                    return returnSolved(C0);
 
                 case 1:
                     YACK_CHEM_PRINTLN(fn << "is the only one running|level-1");
@@ -314,7 +316,9 @@ namespace yack
                 const group *g = solving.find_first(eq); assert(g);
                 iota::load(Cend,Ceq[*eq]);
                 do {
+                    //----------------------------------------------------------
                     // skip group with a blocked member
+                    //----------------------------------------------------------
                     assert(g->is_ortho());
                     if(isTurnedOff(g))
                     {
@@ -322,7 +326,9 @@ namespace yack
                         continue;
                     }
 
+                    //----------------------------------------------------------
                     // build a trial concentration
+                    //----------------------------------------------------------
                     iota::load(Ctry,Corg);
                     for(const gnode *ep=g->head;ep;ep=ep->next)
                     {
@@ -330,7 +336,9 @@ namespace yack
                         member.transfer(Ctry,Ceq[*member]);
                     }
 
+                    //----------------------------------------------------------
                     // compute trial value
+                    //----------------------------------------------------------
                     const double Htry = Hamiltonian(Ctry);
                     const bool   ok   = (Htry<Hmin);
                     if(verbose)
@@ -347,7 +355,9 @@ namespace yack
 
                 } while( NULL != ( g=solving.find_next(g,eq)  ) );
 
-                // update @Corg
+                //----------------------------------------------------------
+                // full update @Corg
+                //----------------------------------------------------------
                 YACK_CHEM_PRINTLN( fn << " [moving at optimized]");
                 working.transfer(Corg,Cend);
                 if(verbose)
@@ -355,12 +365,12 @@ namespace yack
                     corelib(std::cerr << "Cnew=","", Corg);
                 }
                 YACK_CHEM_PRINTLN(fn << " [check singles|level-2]");
-                emax = maxOfSingles(nrun,ppty);
+                emax = setTopology(nrun,ppty);
                 switch(nrun)
                 {
                     case 0:
                         YACK_CHEM_PRINTLN(fn << "SUCCESS [all-blocked|level-2]");
-                        return solved(C0);
+                        return returnSolved(C0);
 
                     case 1:
                         YACK_CHEM_PRINTLN(fn << "is the only one running|level-2");

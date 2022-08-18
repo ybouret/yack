@@ -39,8 +39,8 @@ namespace yack
             bool includes(const equilibrium &) const throw(); //!< in any group
             bool contains(const group       &) const throw(); //!< in a SINGLE group
 
-            const group *find_first(const equilibrium &)               const throw();
-            const group *find_next(const group *, const equilibrium &) const throw();
+            const group *find_first(const equilibrium &)               const throw(); //!< first group including equilibrium
+            const group *find_next(const group *, const equilibrium &) const throw(); //!< next group including equilibrium
 
         private:
             YACK_DISABLE_ASSIGN(groups);
