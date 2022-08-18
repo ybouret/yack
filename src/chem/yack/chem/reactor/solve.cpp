@@ -254,7 +254,12 @@ namespace yack
                 {
                     lattice.pad(std::cerr << "--> @" << eq.name,eq) << " -> " << std::setw(15) << Hmin << std::endl;
                 }
-                const group *g = solving.find_first(eq);
+
+                // initialize search for optimized combination
+                const group *g = solving.find_first(eq); assert(g);
+
+
+
                 do {
                     std::cerr << "Need to test " << *g << std::endl;
                 } while( NULL != ( g=solving.find_next(g,eq)  ) );
