@@ -208,7 +208,7 @@ namespace yack
                 }
                 if(verbose)
                 {
-                    lattice.pad(std::cerr << "    H_" << eq.name,eq) << " -> " << std::setw(15) << H1;
+                    lattice.pad(std::cerr << "    @" << eq.name,eq) << " -> " << std::setw(15) << H1;
                     if(ok) std::cerr << " <--";
                     std::cerr << std::endl;
                 }
@@ -238,7 +238,7 @@ namespace yack
                         }
                         if(verbose)
                         {
-                            lattice.pad(std::cerr << "    H_" << eq.name,eq) << " -> " << std::setw(15) << H1;
+                            lattice.pad(std::cerr << "    @" << eq.name,eq) << " -> " << std::setw(15) << H1;
                             if(ok) std::cerr << " <--";
                             std::cerr << std::endl;
                         }
@@ -251,7 +251,7 @@ namespace yack
                 if(verbose)
                 {
                     const equilibrium &eq = *emin;
-                    lattice.pad(std::cerr << "--> H_" << eq.name,eq) << " -> " << std::setw(15) << Hmin << std::endl;
+                    lattice.pad(std::cerr << "--> @" << eq.name,eq) << " -> " << std::setw(15) << Hmin << std::endl;
                 }
             }
             else
