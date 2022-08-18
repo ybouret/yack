@@ -4,6 +4,7 @@
 #include "yack/type/utils.hpp"
 #include "yack/math/opt/optimize.hpp"
 #include "yack/type/boolean.h"
+#include "yack/math/iota.hpp"
 
 #include <iomanip>
 
@@ -100,6 +101,7 @@ namespace yack
                     }
             }
 
+
             unsigned cycle = 0;
         CYCLE:
 
@@ -184,7 +186,7 @@ namespace yack
 
             if(verbose)
             {
-                singles(std::cerr,"blocked:",blocked);
+                //singles(std::cerr,"blocked:",blocked);
                 singles(std::cerr,"sigma:",sigma);
             }
 
@@ -192,6 +194,8 @@ namespace yack
             YACK_CHEM_PRINTLN( fn << "H0=" << H0);
             const equilibrium *emin = NULL;
             double             Hmin = H0;
+
+
 
             // look within pre-computed singles
             for(const enode *node = singles.head(); node; node=node->next)
@@ -206,6 +210,7 @@ namespace yack
                     Hmin = H1;
                     emin = &eq;
                 }
+
                 if(verbose)
                 {
                     lattice.pad(std::cerr << "    @" << eq.name,eq) << " -> " << std::setw(15) << H1;
@@ -236,6 +241,7 @@ namespace yack
                             Hmin = H1;
                             emin = &eq;
                         }
+
                         if(verbose)
                         {
                             lattice.pad(std::cerr << "    @" << eq.name,eq) << " -> " << std::setw(15) << H1;
@@ -257,11 +263,23 @@ namespace yack
 
                 // initialize search for optimized combination
                 const group *g = solving.find_first(eq); assert(g);
-
-
-
                 do {
-                    std::cerr << "Need to test " << *g << std::endl;
+                    iota::load(Ctry,Corg);
+                    for(const gnode *ep=g->head;ep;ep=ep->next)
+                    {
+                        const equilibrium &member = **ep;
+                        member.transfer(Ctry,Ceq[*member]);
+                    }
+                    const double Hmix = Hamiltonian(Ctry);
+                    std::cerr << "Hmix=" << std::setw(15) << Hmix << " @" << *g << std::endl;
+                    if(Hmix<Hmin)
+                    {
+                        std::cerr << "\tbetter" << std::endl;
+                    }
+                    else
+                    {
+                        std::cerr << "\tnot better" << std::endl;
+                    }
                 } while( NULL != ( g=solving.find_next(g,eq)  ) );
                 
 
