@@ -2,6 +2,7 @@
 #include "yack/chem/reactor.hpp"
 #include "yack/utest/run.hpp"
 #include "yack/system/env.hpp"
+#include "yack/counting/comb.hpp"
 
 using namespace yack;
 using namespace chemical;
@@ -26,11 +27,10 @@ YACK_UTEST(reactor)
     std::cerr << "eqs=" << eqs << std::endl;
     std::cerr << std::endl;
 
-    reactor cs(lib,eqs,0.0);
-
+    reactor        cs(lib,eqs,0.0);
     vector<double> C(cs.M,0);
-    lib(std::cerr << "Cini=", "", C);
 
+    std::cerr << "[Solving Zero State]" << std::endl;
     if( cs.solve(C) )
     {
         lib(std::cerr << "Cend=", "", C);
@@ -40,12 +40,52 @@ YACK_UTEST(reactor)
         throw exception("couldn't solve zero phase state!!");
     }
 
-    lib.fill(C,ran);
-    if( cs.solve(C) )
+    vector<species*> psp;
+    for(const anode *node=cs.working.head;node;node=node->next)
     {
-        
+        psp << & coerce(**node);
     }
 
+    const size_t n = psp.size();
+    if(n)
+    {
+        for(size_t nz=1;nz<=n;++nz)
+        {
+            vector<species *> sub(nz);
+            combination       comb(n,nz);
+
+            do
+            {
+                comb.extract(sub,psp);
+                std::cerr << "-------- using";
+                for(size_t i=1;i<=nz;++i)
+                {
+                    std::cerr << ' ' << '[' << sub[i]->name << ']';
+                }
+                std::cerr << " --------" << std::endl;
+
+                {
+                    C.ld(0);
+                    for(size_t i=1;i<=nz;++i)
+                    {
+                        C[ **sub[i] ] = library::concentration(ran);
+                    }
+                    //lib(std::cerr << "Cini=", "", C);
+                    if(!cs.solve(C))
+                    {
+                        exit(1);
+                    }
+                }
+
+            }
+            while(comb.next());
+
+        }
+    }
+    else
+    {
+        std::cerr << "no active species..." << std::endl;
+    }
 
 
 

@@ -104,8 +104,10 @@ namespace yack
             bool   solved(writable<double> &C0);
             void   build_related();
             void   make_manifold();
+
             double Hamiltonian(const readable<double> &C);
-            double Optimized1D(const double H0); //!< optimize from Corg,H0 to Cend
+            double Optimized1D(const double H0);               //!< optimize from (Corg,H0) to Cend
+            bool   isTurnedOff(const group *g) const throw();  //!< one eq is blocked
         };
 
 

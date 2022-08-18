@@ -68,6 +68,16 @@ namespace yack
             return H.b;
         }
 
+        bool reactor:: isTurnedOff(const group *g) const throw()
+        {
+            assert(g);
+            for(const gnode *node=g->head;node;node=node->next)
+            {
+                if( blocked[ ***node ] ) return true;
+            }
+            return false;
+        }
+
         const equilibrium * reactor:: maxOfSingles(size_t &nrun, outcome &ppty)
         {
             nrun                    = 0;
@@ -304,13 +314,23 @@ namespace yack
                 const group *g = solving.find_first(eq); assert(g);
                 iota::load(Cend,Ceq[*eq]);
                 do {
+                    // skip group with a blocked member
                     assert(g->is_ortho());
+                    if(isTurnedOff(g))
+                    {
+                        YACK_CHEM_PRINTLN("Htry: skipping " << *g);
+                        continue;
+                    }
+
+                    // build a trial concentration
                     iota::load(Ctry,Corg);
                     for(const gnode *ep=g->head;ep;ep=ep->next)
                     {
                         const equilibrium &member = **ep;
                         member.transfer(Ctry,Ceq[*member]);
                     }
+
+                    // compute trial value
                     const double Htry = Hamiltonian(Ctry);
                     const bool   ok   = (Htry<Hmin);
                     if(verbose)
