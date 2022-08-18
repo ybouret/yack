@@ -1,6 +1,9 @@
 #include "yack/chem/reactor.hpp"
 #include "yack/chem/outcome.hpp"
 #include "yack/system/imported.hpp"
+#include "yack/type/utils.hpp"
+#include "yack/math/opt/optimize.hpp"
+#include "yack/type/boolean.h"
 
 #include <iomanip>
 
@@ -21,11 +24,57 @@ namespace yack
             return true;
         }
 
+
+        double reactor:: Hamiltonian(const readable<double> &C)
+        {
+            xadd.ldz();
+
+            for(const enode *node=singles.head();node;node=node->next)
+            {
+                const equilibrium &eq = ***node;
+                const size_t       ei = *eq;
+                if(blocked[ei]) continue;
+                assert(sigma[ei]<0);
+                xadd.ld( squared(eq.mass_action(K[ei],C,xmul)/sigma[ei]) );
+            }
+
+            return sqrt(xadd.get());
+        }
+
+
+
+
+        double reactor:: operator()(const double u1)
+        {
+            const double u0 = 1.0 - u1;
+            for(const anode *node=working.head;node;node=node->next)
+            {
+                const size_t j = ***node;
+                const double C0 = Corg[j];
+                const double C1 = Cend[j];
+                double       Cmin=C0,Cmax=C1;
+                if(Cmax<Cmin) cswap(Cmin,Cmax);
+                Ctry[j] = clamp(Cmin,C0*u0 + C1*u1,Cmax);
+            }
+            return Hamiltonian(Ctry);
+        }
+
+        double reactor:: Optimized1D(const double H0)
+        {
+            triplet<double> U = { 0,  -1, 1.0 };
+            triplet<double> H = { H0, -1, Hamiltonian(Cend) };
+            optimize::run_for(*this, U, H, optimize::inside);
+            return H.b;
+        }
+
         bool reactor:: solve(writable<double> &C0)
         {
             static const char fn[] = "[reactor.solve] ";
             YACK_CHEM_PRINTLN(fn);
-
+            if(verbose)
+            {
+                corelib(std::cerr << "Cini=","", C0);
+            }
             //------------------------------------------------------------------
             //
             // depending on topology
@@ -138,6 +187,79 @@ namespace yack
                 singles(std::cerr,"blocked:",blocked);
                 singles(std::cerr,"sigma:",sigma);
             }
+
+            const double H0 = Hamiltonian(Corg);
+            YACK_CHEM_PRINTLN( fn << "H0=" << H0);
+            const equilibrium *emin = NULL;
+            double             Hmin = H0;
+
+            // look within pre-computed singles
+            for(const enode *node = singles.head(); node; node=node->next)
+            {
+                const equilibrium &eq = ***node;
+                const size_t       ei = *eq;        if(blocked[ei]) continue;;
+                writable<double>  &Ci = Ceq[ei];    working.tranfer(Cend,Ci);
+                const double H1 = Optimized1D(H0);  working.tranfer(Ci,Ctry);
+                const bool   ok = (H1<Hmin);
+                if(ok)
+                {
+                    Hmin = H1;
+                    emin = &eq;
+                }
+                if(verbose)
+                {
+                    lattice.pad(std::cerr << "    H_" << eq.name,eq) << " -> " << std::setw(15) << H1;
+                    if(ok) std::cerr << " <--";
+                    std::cerr << std::endl;
+                }
+            }
+
+            // look within couples
+            for(const enode *node = couples.head(); node; node=node->next)
+            {
+                const equilibrium &eq = ***node;
+                const size_t       ei = *eq;
+                const outcome      oc = outcome::study(eq, Kl[ei], Corg, Cend, xmul, xadd);
+                switch(oc.state)
+                {
+                    case components::are_blocked:
+                        Xl[ei] = 0;
+                        working.tranfer(Ceq[ei],Corg);
+                        break;
+
+                    case components::are_running: {
+                        Xl[ei] = oc.value;
+                        const double H1 = Optimized1D(H0);working.tranfer(Ceq[ei],Ctry);
+                        const bool   ok = (H1<Hmin);
+                        if(ok)
+                        {
+                            Hmin = H1;
+                            emin = &eq;
+                        }
+                        if(verbose)
+                        {
+                            lattice.pad(std::cerr << "    H_" << eq.name,eq) << " -> " << std::setw(15) << H1;
+                            if(ok) std::cerr << " <--";
+                            std::cerr << std::endl;
+                        }
+                    } break;
+                }
+            }
+
+            if(emin)
+            {
+                if(verbose)
+                {
+                    const equilibrium &eq = *emin;
+                    lattice.pad(std::cerr << "--> H_" << eq.name,eq) << " -> " << std::setw(15) << Hmin << std::endl;
+                }
+            }
+            else
+            {
+                YACK_CHEM_PRINTLN(fn << "no global step");
+            }
+
+
 
 
             return false;

@@ -14,6 +14,7 @@ extern "C" {
 
     /** return true/false */
     const char * yack_boolean(const int flag);
+    
 
 #if defined(__cplusplus)
 }

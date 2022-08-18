@@ -55,7 +55,8 @@ namespace yack
 
 
             //! best effort solving
-            bool solve(writable<double> &C0);
+            bool   solve(writable<double> &C0);
+            double operator()(const double u);
 
             //__________________________________________________________________
             //
@@ -101,6 +102,8 @@ namespace yack
             bool   solved(writable<double> &C0);
             void   build_related();
             void   make_manifold();
+            double Hamiltonian(const readable<double> &C);
+            double Optimized1D(const double H0); //!< optimize from Corg,H0 to Cend
         };
 
 
