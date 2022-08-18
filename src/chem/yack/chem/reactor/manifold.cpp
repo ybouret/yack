@@ -165,10 +165,11 @@ namespace yack
             
 #ifndef NDEBUG
             YACK_CHEM_PRINTLN(fn << "[*** testing ***]");
+            lattice(std::cerr,"",detached);
             for(const enode *I=lattice.head();I;I=I->next)
             {
                 const equilibrium &i = ***I;
-                YACK_CHEM_PRINTLN('\t' << i.name);
+                //YACK_CHEM_PRINTLN('\t' << i.name);
                 if(!solving.includes(i)) throw imported::exception(clid,"missing %s",i.name());
                 for(const enode *J=I->next;J;J=J->next)
                 {
@@ -177,7 +178,7 @@ namespace yack
                     {
                         group g; g << &i << &j;
                         g.sort();
-                        YACK_CHEM_PRINTLN("\t\t" << g);
+                        //YACK_CHEM_PRINTLN("\t\t" << g);
                         if(!solving.contains(g)) throw imported::exception(clid,"missing (%s,%s)",i.name(),j.name());
                         for(const enode *K=J->next;K;K=K->next)
                         {
@@ -186,7 +187,7 @@ namespace yack
                             {
                                 g << &k;
                                 g.sort();
-                                YACK_CHEM_PRINTLN("\t\t\t" << g);
+                                //YACK_CHEM_PRINTLN("\t\t\t" << g);
                                 if(!solving.contains(g)) throw imported::exception(clid,"missing (%s,%s,%s)",i.name(),j.name(),k.name());
                                 delete g.pop_back();
                             }

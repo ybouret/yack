@@ -1,5 +1,7 @@
 #include "yack/chem/reactor.hpp"
 #include "yack/chem/outcome.hpp"
+#include "yack/system/imported.hpp"
+
 #include <iomanip>
 
 namespace yack
@@ -51,13 +53,18 @@ namespace yack
 
             unsigned cycle = 0;
         CYCLE:
+
+            ++cycle;
+            YACK_CHEM_PRINTLN(fn << "---------------- #cycle= " << std::setw(3) << cycle << " ----------------");
+
             //------------------------------------------------------------------
+            //
             //
             // study singles, initialize phase space
             //
+            //
             //------------------------------------------------------------------
-            ++cycle;
-            YACK_CHEM_PRINTLN(fn << "---------------- #cycle= " << std::setw(3) << cycle << " ----------------");
+            YACK_CHEM_PRINTLN(fn << " [check singles]");
             double              amax = 0;
             size_t              nrun = 0;
             const  equilibrium *emax = NULL;
@@ -68,10 +75,11 @@ namespace yack
                 const equilibrium &eq = ***node;
                 const size_t       ei = *eq;
                 writable<double>  &Ci = Ceq[ei];
-                const outcome      oc = outcome::study(eq, Kl[ei], Corg, Ci, xmul, xadd);
+                const double       Ki = K[ei];
+                const outcome      oc = outcome::study(eq, Ki, Corg, Ci, xmul, xadd);
+                writable<double>  &psi = Psi[ei];
 
-                if(verbose)
-                {
+                if(verbose) {
                     singles.pad(std::cerr << "\t (+) " << '<' << eq.name << '>', eq) << " : " << oc << std::endl;
                 }
 
@@ -84,9 +92,8 @@ namespace yack
                         break;
 
                     case components::are_running: {
-                        blocked[ei] = false;
-
                         ++nrun;
+                        blocked[ei] = false;
                         const double ax = fabs( Xl[ei] = oc.value );
                         if(ax>amax)
                         {
@@ -94,6 +101,9 @@ namespace yack
                             emax = &eq;
                             ppty =  oc;
                         }
+                        eq.drvs_action(psi,Ki,Ci,xmul);
+                        sigma[ei] = xadd.dot(psi, Nu[ei]);
+                        if(sigma[ei]>=0) throw imported::exception(clid,"corrupted <%s>",eq.name());
                     } break;
                 }
             }
@@ -122,6 +132,12 @@ namespace yack
                     break;
             }
 
+
+            if(verbose)
+            {
+                singles(std::cerr,"blocked:",blocked);
+                singles(std::cerr,"sigma:",sigma);
+            }
 
 
             return false;

@@ -35,6 +35,16 @@ YACK_UTEST(reactor)
     {
         lib(std::cerr << "Cend=", "", C);
     }
+    else
+    {
+        throw exception("couldn't solve zero phase state!!");
+    }
+
+    lib.fill(C,ran);
+    if( cs.solve(C) )
+    {
+        
+    }
 
 
 
