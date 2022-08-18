@@ -238,7 +238,7 @@ namespace yack
                 if(verbose)
                 {
                     lattice.pad(std::cerr << "    @" << eq.name,eq) << " -> " << std::setw(15) << H1;
-                    if(ok) std::cerr << " <--";
+                    if(ok) std::cerr << " <-- :)";
                     std::cerr << std::endl;
                 }
             }
@@ -275,7 +275,7 @@ namespace yack
                         if(verbose)
                         {
                             lattice.pad(std::cerr << "    @" << eq.name,eq) << " -> " << std::setw(15) << H1;
-                            if(ok) std::cerr << " <--";
+                            if(ok) std::cerr << " <-- :)";
                             std::cerr << std::endl;
                         }
                     } break;
