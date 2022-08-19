@@ -206,31 +206,34 @@ $$
 \subsection{Extension in 1D}
 
 \begin{equation}
-	\Gamma_i\left(\vec{C}+\xi_i \vec{\nu}_i + \sum_{j\not=i} \xi_j \vec{\nu_j}\right)
-\end{equation}	
-
-\begin{equation}
-	\Gamma_i\left(\vec{C}+\xi_i \vec{\nu}_i\right) 
-	\simeq 
+	\Gamma_i\left(\vec{C}+\xi_i \vec{\nu}_i + \sum_{j\not=i} \xi_j \vec{\nu_j}\right) 	\simeq 
 	\underbrace{\langle \vec{\nu}_i \vert \vec{\Psi}_i' \rangle}_{\sigma_i<0} (\xi_i-\Xi_i) + A_i   (\xi_i-\Xi_i)^2
+	+ \sum_{j\not=i} \langle \vec{\nu}_j \vert \vec{\Psi}_i \rangle \xi_j
 \end{equation}
 
  \begin{equation}
  \begin{array}{rcl}
-	\Gamma_i & = & -\sigma_i \Xi_i + A_i \Xi_i^2\\
+	\Gamma_i & = & A_i \Xi_i^2  -\sigma_i \Xi_i\\
 \end{array}
  \end{equation}
 
 We want to solve a "small" $\vec{\xi}$ for a small $\vec{\alpha}$:
 \begin{equation}
 	(1-\alpha_i) \Gamma_i = A_i(\xi_i-\Xi_i)^2 + \sigma_i(\xi_i-\Xi_i) + 
-	\underbrace{\sum_{j\not=i} \langle \vec{\nu}_j \vert \vec{\Psi}_i' \rangle \xi_j}_{\lambda_i}
+	\underbrace{\sum_{j\not=i} \langle \vec{\nu}_j \vert \vec{\Psi}_i \rangle \xi_j}_{\lambda_i}
 \end{equation}
 
  
 \begin{equation}
 \Gamma_i - \alpha_i \Gamma_i = A_i \xi_i^2 - 2 A_i \xi_i \Xi_i  + A_i \Xi_i^2 + \sigma_i \xi_i -\sigma_i \Xi_i + \lambda_i
 \end{equation}
+
+\begin{equation}
+- \alpha_i \Gamma_i = A_i \xi_i^2 - 2 A_i \xi_i \Xi_i  +   \sigma_i \xi_i   + \lambda_i
+\end{equation}
+
+
+\end{document}
 
 \begin{equation}
 	A_i \xi_i^2 -  ( 2A_i \Xi_i - \sigma_i )  \xi_i +  {\lambda_i + \alpha_i \Gamma_i}  = 0
