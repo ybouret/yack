@@ -216,8 +216,57 @@ $$
 \end{equation}
 
 \begin{equation}
-	\Gamma_i = -\sigma_i \Xi_i + A_i \Xi_i^2
+	\sigma_i = - s_i^2, \; \Gamma_i = \epsilon_i |\Gamma_i|,\;\; \Xi_i = \epsilon_i |\Xi_i|
 \end{equation}
+
+
+
+
+\begin{equation}
+\left\lbrace
+\begin{array}{rcl}
+	\Gamma_i & = & -\sigma_i \Xi_i + A_i \Xi_i^2\\
+	 \epsilon_i |\Gamma_i| & = & \epsilon_i s_i^2 |\Xi_i| + A_i \Xi_i^2
+\end{array}
+\right.
+\end{equation}
+
+We want to solve a "small" $\vec{\xi}$ for a small $\vec{\alpha}$:
+\begin{equation}
+	(1-\alpha_i) \Gamma_i = A_i(\xi_i-\Xi_i)^2 + \sigma_i(\xi_i-\Xi_i) + 
+	\underbrace{\sum_{j\not=i} \langle \vec{\nu}_j \vert \vec{\Psi}_i' \rangle \xi_j}_{\lambda_i}
+\end{equation}
+
+ 
+\begin{equation}
+\Gamma_i - \alpha_i \Gamma_i = A_i \xi_i^2 - 2 A_i \xi_i \Xi_i  + A_i \Xi_i^2 + \sigma_i \xi_i -\sigma_i \Xi_i + \lambda_i
+\end{equation}
+
+\begin{equation}
+	A_i \xi_i^2 +  (\sigma_i - 2A_i \Xi_i )  \xi_i +  {\lambda_i + \alpha_i \Gamma_i}  = 0
+\end{equation}
+
+\begin{equation}
+	\underbrace{A_i \Xi_i^2}_{A_i'} X^2  - \underbrace{(A_i\Xi_i^2+\Gamma_i)}_{B_i} X +  \underbrace{\lambda_i + \alpha_i \Gamma_i}_{C_i} = 0
+\end{equation}
+
+\begin{equation}
+\begin{array}{rcl}
+   \Delta & = & B_i^2 - 4 A_i' C_i \\
+	  & = & (A_i'+\Gamma_i)^2 - 4 A_i'(\lambda_i + \alpha_i \Gamma_i) \\
+	& = &	(A_i'+\Gamma_i)^2 (1-\alpha_i) + \alpha_i(A_i'-\Gamma_i)^2 - 4 A_i \lambda_i\\
+\end{array}
+\end{equation}
+
+\begin{equation}
+	X_+ = \dfrac{B_i+\sqrt{\Delta}}{2A_i'} = \dfrac{B_i^2 - \Delta}{2A_i'(B_i-\sqrt{\Delta})} = \left[\dfrac{2}{B_i-\sqrt{\Delta}}\right] C_i
+\end{equation}
+
+\begin{equation}
+	X_- = \dfrac{B_i-\sqrt{\Delta}}{2A_i'} = \dfrac{B_i^2 - \Delta}{2A_i'(B_i+\sqrt{\Delta})} = \left[\dfrac{2}{B_i+\sqrt{\Delta}}\right] C_i
+\end{equation}
+
+\end{document}
 
 \begin{equation}
 	\Gamma_i \Xi_i \geq 0 \Rightarrow -\sigma_i \Xi_i^2 + A_i \Xi_i^3 \geq 0 \Rightarrow A_i \Xi_i - \sigma_i \geq 0
