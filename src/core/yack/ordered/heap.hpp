@@ -272,63 +272,7 @@ namespace yack
 
         inline void rem() throw()
         {
-            assert(count>0);
-
-            //------------------------------------------------------------------
-            // filter cases
-            //------------------------------------------------------------------
-            switch(count)
-            {
-                case 0: // shouldn't get here..
-                    return;
-
-                case 1: // last iterm
-                    out_of_reach::naught( destructed( &tree[0]) );
-                    count = 0;
-                    return;
-
-                default:
-                    break;
-            }
-
-            //------------------------------------------------------------------
-            // contract tree: put last item at top
-            //------------------------------------------------------------------
-            assert(count>1);
-            {
-                uint8_t *target = static_cast<uint8_t *>(out_of_reach::address( destructed( &tree[0] ) ));
-                uint8_t *source = static_cast<uint8_t *>(out_of_reach::address( &tree[--count] ));
-                for(size_t i=0;i<sizeof(type);++i)
-                {
-                    target[i] = source[i];
-                    source[i] = 0;
-                }
-            }
-
-            //------------------------------------------------------------------
-            // then rearrange tree
-            //------------------------------------------------------------------
-            size_t       ipos = 0;
-        PROMOTE:
-            const size_t temp = ipos<<1;
-            const size_t lpos = temp+1;
-            const size_t rpos = temp+2;
-            size_t mpos = ( lpos<count && compare(tree[ipos],tree[lpos])<0 ) ? lpos : ipos;
-            if( rpos<count && compare(tree[mpos],tree[rpos])<0 ) mpos = rpos;
-
-            if(mpos==ipos)
-            {
-                // done
-                return;
-            }
-            else
-            {
-                // promote
-                mswap(tree[ipos],tree[mpos]);
-                ipos = mpos;
-                goto PROMOTE;
-            }
-
+            pqueue::remove(tree,count,compare);
         }
 
     };
