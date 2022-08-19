@@ -9,9 +9,7 @@
 
 #include "yack/memory/allocator/pooled.hpp"
 
-#include "yack/type/args.hpp"
-#include "yack/type/mswap.hpp"
-
+#include "yack/ordered/priority-queue.hpp"
 #include <iostream>
 
 namespace yack
@@ -39,7 +37,8 @@ namespace yack
         //
         // types and definitions
         //______________________________________________________________________
-        YACK_DECL_ARGS(T,type); //!< aliases
+        YACK_DECL_ARGS(T,type);           //!< aliases
+        typedef priority_queue<T> pqueue; //!< alias
 
         //______________________________________________________________________
         //
@@ -268,35 +267,7 @@ namespace yack
         inline void grow(const_type &args)
         {
             assert(count<total);
-
-            //------------------------------------------------------------------
-            // insert new item at the end
-            //------------------------------------------------------------------
-            new ( &tree[count] ) mutable_type(args);
-
-            //------------------------------------------------------------------
-            // repetitive promotion (no throw)
-            //------------------------------------------------------------------
-            size_t ipos = count;
-            while(ipos>0)
-            {
-                const size_t  ppos   = (ipos-1)>>1;
-                mutable_type &myself = tree[ipos];
-                mutable_type &parent = tree[ppos];
-                if( compare(parent,myself) < 0 )
-                {
-                    mswap(myself,parent);
-                    ipos = ppos;
-                    continue;
-                }
-                else
-                    break;
-            }
-
-            //------------------------------------------------------------------
-            // done
-            //------------------------------------------------------------------
-            ++count;
+            pqueue::insert(tree,count,args,compare);
         }
 
         inline void rem() throw()
