@@ -215,21 +215,11 @@ $$
 	\underbrace{\langle \vec{\nu}_i \vert \vec{\Psi}_i' \rangle}_{\sigma_i<0} (\xi_i-\Xi_i) + A_i   (\xi_i-\Xi_i)^2
 \end{equation}
 
-\begin{equation}
-	\sigma_i = - s_i^2, \; \Gamma_i = \epsilon_i |\Gamma_i|,\;\; \Xi_i = \epsilon_i |\Xi_i|
-\end{equation}
-
-
-
-
-\begin{equation}
-\left\lbrace
-\begin{array}{rcl}
+ \begin{equation}
+ \begin{array}{rcl}
 	\Gamma_i & = & -\sigma_i \Xi_i + A_i \Xi_i^2\\
-	 \epsilon_i |\Gamma_i| & = & \epsilon_i s_i^2 |\Xi_i| + A_i \Xi_i^2
 \end{array}
-\right.
-\end{equation}
+ \end{equation}
 
 We want to solve a "small" $\vec{\xi}$ for a small $\vec{\alpha}$:
 \begin{equation}
@@ -243,202 +233,39 @@ We want to solve a "small" $\vec{\xi}$ for a small $\vec{\alpha}$:
 \end{equation}
 
 \begin{equation}
-	A_i \xi_i^2 +  (\sigma_i - 2A_i \Xi_i )  \xi_i +  {\lambda_i + \alpha_i \Gamma_i}  = 0
+	A_i \xi_i^2 -  ( 2A_i \Xi_i - \sigma_i )  \xi_i +  {\lambda_i + \alpha_i \Gamma_i}  = 0
 \end{equation}
 
 \begin{equation}
-	\underbrace{A_i \Xi_i^2}_{A_i'} X^2  - \underbrace{(A_i\Xi_i^2+\Gamma_i)}_{B_i} X +  \underbrace{\lambda_i + \alpha_i \Gamma_i}_{C_i} = 0
-\end{equation}
-
-\begin{equation}
-\begin{array}{rcl}
-   \Delta & = & B_i^2 - 4 A_i' C_i \\
-	  & = & (A_i'+\Gamma_i)^2 - 4 A_i'(\lambda_i + \alpha_i \Gamma_i) \\
-	& = &	(A_i'+\Gamma_i)^2 (1-\alpha_i) + \alpha_i(A_i'-\Gamma_i)^2 - 4 A_i \lambda_i\\
-\end{array}
-\end{equation}
-
-\begin{equation}
-	X_+ = \dfrac{B_i+\sqrt{\Delta}}{2A_i'} = \dfrac{B_i^2 - \Delta}{2A_i'(B_i-\sqrt{\Delta})} = \left[\dfrac{2}{B_i-\sqrt{\Delta}}\right] C_i
-\end{equation}
-
-\begin{equation}
-	X_- = \dfrac{B_i-\sqrt{\Delta}}{2A_i'} = \dfrac{B_i^2 - \Delta}{2A_i'(B_i+\sqrt{\Delta})} = \left[\dfrac{2}{B_i+\sqrt{\Delta}}\right] C_i
-\end{equation}
-
-\end{document}
-
-\begin{equation}
-	\Gamma_i \Xi_i \geq 0 \Rightarrow -\sigma_i \Xi_i^2 + A_i \Xi_i^3 \geq 0 \Rightarrow A_i \Xi_i - \sigma_i \geq 0
-\end{equation}
-
-We want to solve a "small" $\vec{\xi}$:
-\begin{equation}
-	(1-\alpha_i) \Gamma_i = A_i(\xi_i-\Xi_i)^2 + \sigma_i(\xi_i-\Xi_i) + 
-	\underbrace{\sum_{j\not=i} \langle \vec{\nu}_j \vert \vec{\Psi}_i' \rangle \xi_j}_{\lambda_i}
-\end{equation}
-
-\begin{equation}
-\Gamma_i - \alpha_i \Gamma_i = A_i \xi_i^2 - 2 A_i \xi_i \Xi_i  + A_i \Xi_i^2 + \sigma_i \xi_i -\sigma_i \Xi_i + \lambda_i
-\end{equation}
-
-\begin{equation}
-	A_i \xi_i^2 + \underbrace{(\sigma_i - 2A_i \Xi_i )}_{B_i} \xi_i + \underbrace{\lambda_i + \alpha_i \Gamma_i}_{C_i} = 0
+	A_i \xi_i^2 -  \underbrace{\left( A_i \Xi_i + \dfrac{\Gamma_i}{\Xi_i} \right)}_{B_i}  \xi_i +  \underbrace{\lambda_i + \alpha_i \Gamma_i}_{C_i}  = 0
 \end{equation}
 
 \begin{equation}
 \begin{array}{rcl}
-	\Delta_i &=& B_i^2 - 4A_iC_i\\
-	 & = & \sigma_i^2 - 4 A_i \sigma_i \Xi_i + 4 A_i^2 \Xi_i^2 - 4 A_i \lambda_i - 4 \alpha_i A_i \Gamma_i \\
-	 & = & \sigma_i^2 - 4 A_i \left[ \lambda_i + \Xi_i (1-\alpha_i)\left(\sigma_i - A_i\Xi \right) \right]\\
-	 & = & \sigma_i^2 + 4 A_i \left[ (1-\alpha_i) \Gamma_i - \lambda_i \right]\\
+	\Delta_i & = & \left( A_i \Xi_i + \dfrac{\Gamma_i}{\Xi_i} \right) ^2 - 4 A_i \lambda_i - 4 \alpha_i A_i \Gamma_i\\
+	 & = & (1-\alpha_i) \left( A_i \Xi_i + \dfrac{\Gamma_i}{\Xi_i} \right) ^2 + \alpha_i \left( A_i \Xi_i - \dfrac{\Gamma_i}{\Xi_i} \right) ^2 - 4 A_i \lambda_i\\
 \end{array}
 \end{equation}
 
 \begin{equation}
-	\xi_i^+ = \dfrac{ -B_i + \sqrt{\Delta_i}} {2A_i} 
-	= \dfrac{\Delta_i - B_i^2}{2A_i\left[ B_i + \sqrt{\Delta_i}\right]}
-	= \dfrac{-2C_i}{\left[ B_i + \sqrt{\Delta_i}\right]}
-\end{equation}
-
-\begin{equation}
-	\xi_i^- = \dfrac{ -B_i - \sqrt{\Delta_i}} {2A_i} 
-	= \dfrac{B_i^2 - \Delta_i }{2A_i\left[ B_i - \sqrt{\Delta_i}\right]}
-	= \dfrac{2C_i}{\left[ B_i - \sqrt{\Delta_i}\right]}
-\end{equation}
-
-\end{document}
-
-\begin{itemize}
-
-
-\item Otherwise, we compute the limits of $F_i$.
-	
-	\begin{itemize}
-	%%%%%%%%
-	\item If $F_i$ is limited by none, then the equilibrium is \textbf{invalid}.
-
-	%%%%%%%%
-	\item If $F_i$ is limited by a reactant, meaning a "combination only" equilibrium:
-		\begin{equation}
-		\left\lbrace
-			\begin{array}{rcl}
-			P_i   & \equiv & 1\\
-			X     & \in & \rbrack-\infty;\xi_r\lbrack\\
-			R_i(\vec{C},\xi_r)  & = & 0 \\
- 			F_i(\vec{C},\xi_r)  & = & -1 \\
-			\end{array}
-		\right.
-		\end{equation}
-		\begin{itemize}
-			\item if $\sigma_i>0$, then we have $X\in\rbrack 0;\xi_r \lbrack$
-			\item if $\sigma_i<0$, then we must find $\xi_0<0$ such that $F_i(\vec{C},\xi_0)>0$,
-			then $X\in\rbrack \xi_0;0\lbrack$.
-			We can start from $\xi_0 \approx -  K_i^{\frac{1}{\Delta_r \nu}}$ and decrease it until a total positive mass action is found.
-		\end{itemize}
-		
- 	%%%%%%%%
- 	\item If $F_i$ is limited by a product, meaning a "dissociation only" equilibrium:
-	\begin{equation}
-		\left\lbrace
-			\begin{array}{rcl}
-			R_i   & \equiv & K_i\\
-			X     & \in & \rbrack \xi_p<0 ; +\infty \lbrack\\
-			P_i(\vec{C},\xi_p)  & = & 0 \\
- 			F_i(\vec{C},\xi_p)  & = & K_i \\
-			\end{array}
-		\right.
-		\end{equation}
-
-	
-    	\begin{itemize}
-    	\item if $\sigma_i<0$, then we must have $X\in\rbrack \xi_p;0\lbrack$.
-    	\item if $\sigma_i>0$, then we must find $\xi_0>0$ such that $F_i(\vec{C},\xi_0)<0$,
-    		then $X\in\rbrack 0; \xi_0 \lbrack$.
-    		We can start from $\xi_0 \approx K_i^{\frac{1}{\Delta_r \nu}}$ and increase it until a total negative mass action is found.
-    	\end{itemize}
-
-	%%%%%%%%
-	\item If $F_i$ is limited by both a product and a reactant, then $$X\in\rbrack \xi_p < 0 ; \xi_r > 0 \lbrack$$
-	and depending on $\sigma_i$, the proper interval is chosen.
-	\end{itemize}
-	
-\end{itemize}
-
-\section{ND-Solution} 	
-
-\subsection{Expansion}
-
-\begin{equation}
-	\Gamma_i\left(\vec{C} + \xi_i \vec{\nu}_i + \sum_{j\not=i} \xi_j \vec{\nu}_j \right) 
-	\simeq 
-	\Gamma_i(\vec{C} + \xi_i \vec{\nu}_i) + \sum_{j\not=i} \xi_j \langle \vec{\nu}_j \vert \vec{\psi_i} \rangle
-\end{equation}
-
-\begin{equation}
-	\Gamma_i(\ldots) \simeq \underbrace{\langle \vec{\nu}_i \vert \vec{\Psi'}_i\rangle}_{\sigma_i<0} \left(\xi_i - \Xi_i\right)\left[ 1 + A_i \left(\xi_i - \Xi_i\right)\right] + \sum_{j\not=i} \xi_j \langle \vec{\nu}_j \vert \vec{\psi_i} \rangle
-\end{equation}
-
-\begin{equation}
-	\dfrac{\Gamma_i(\ldots)}{\sigma_i} \simeq (\xi_i - \Xi_i) + A_i (\xi_i - \Xi_i)^2 + \sum_{j\not=i} \xi_j \dfrac{\langle \vec{\nu}_j \vert \vec{\psi_i} \rangle}{\sigma_i}
-\end{equation}
-
-\begin{equation}
-	\dfrac{\Gamma_i}{\sigma_i} = -\Xi_i \left[ 1 - A_i \Xi_i \right] = A_i\Xi_i^2 - \Xi_i
-\end{equation}
-
-Remark: $-\sigma_i>0$, $\Gamma_i$ and $\Xi_i$ have the same sign, so
-\begin{equation}
-	1-A_i\Xi_i \geq 0
-\end{equation}
-
-\begin{equation}
-\dfrac{\Gamma_i(\ldots)}{\sigma_i}   \simeq  \xi_i (1-2A_i\Xi_i) - \Xi_i + A_i (\xi_i^2 + \Xi_i^2) + \sum_{j\not=i} \xi_j \dfrac{\langle \vec{\nu}_j \vert \vec{\psi_i} \rangle}{\sigma_i}
-\end{equation}
-
-\subsection{Decrease}
-We want:
-\begin{equation}
-\begin{array}{rcl}
-	(1-\alpha_i) \dfrac{\Gamma_i}{\sigma_i} & = & (1-\alpha_i) \left( A_i\Xi_i^2 - \Xi_i\right) \\
-	& = & \displaystyle \xi_i (1-2A_i\Xi_i) - \Xi_i + A_i (\xi_i^2 + \Xi_i^2) + \sum_{j\not=i} \xi_j \dfrac{\langle \vec{\nu}_j \vert \vec{\psi_i} \rangle}{\sigma_i}\\
+\left\lbrace
+\begin{array}{rlll}
+\xi_i^- & = \frac{B_i+\sqrt{\Delta_i}}{2A_i} & =\frac{B_i^2-\Delta_i}{2A_i(B_i-\sqrt{\Delta_i})} & = \frac{2}{(B_i-\sqrt{\Delta_i})} C_i\\
+\xi_i^+ & = \frac{B_i-\sqrt{\Delta_i}}{2A_i} & = \frac{B_i^2-\Delta_i}{2A_i(B_i+\sqrt{\Delta_i})} & = \frac{2}{(B_i+\sqrt{\Delta_i})} C_i\\
 \end{array}
+\right.
 \end{equation}
 
-So: 
+Special case where $\alpha_i=1, \lambda_i=0$:
 \begin{equation}
-	\alpha_i\left( \Xi_i - A_i \Xi_i^2 \right) = \xi_i (1-2A_i\Xi_i) + A_i \xi_i^2 +
-	\underbrace{\sum_{j\not=i} \xi_j \dfrac{\langle \vec{\nu}_j \vert \vec{\psi_i} \rangle}{\sigma_i}}_{L_i}
+	\tilde{\xi}_i^- = \dfrac{2}{\left( A_i \Xi_i + \dfrac{\Gamma_i}{\Xi_i} \right) - \left| A_i \Xi_i - \dfrac{\Gamma_i}{\Xi_i} \right| } \Gamma_i
+	,\;\;
+ 	\tilde{\xi}_i^+ = \dfrac{2}{\left( A_i \Xi_i + \dfrac{\Gamma_i}{\Xi_i} \right) + \left| A_i \Xi_i - \dfrac{\Gamma_i}{\Xi_i} \right| } \Gamma_i
 \end{equation}
 
-\begin{itemize}
-\item If $\forall i, \alpha_i=0$ (no decrease), we get $\forall i, \xi_i=0$
-\item If $\alpha_i=1$ and $\xi_{j\not=i}=0$ (single decrease), $\xi_i=\Xi_i,\;xi_{j\not=i}=0$
-\end{itemize}
-
-\begin{equation}
-A_i \xi_i^2 + \xi_i \underbrace{(1-2A_i\Xi_i)}_{B_i} + \underbrace{L_i - \alpha_i\left( \Xi_i - A_i \Xi_i^2 \right)}_{C_i} = 0
-\end{equation}
-
-\begin{equation}
-\begin{array}{rcl}
-	\Delta_i & = & (1-2A_i\Xi_i)^2 - 4 A_i \left[ L_i - \alpha_i\left( \Xi_i - A_i \Xi_i^2 \right)\right]\\
-	  & = & 1 -4 A_i \left[L_i + (1-\alpha_i) \Xi_i\right] + 4 A_i^2 (1-\alpha_i) \Xi_i^2 \\
-\end{array}
-\end{equation}
-
-\begin{equation}
-	\xi_i^+ = \dfrac{-2C_i}{\sqrt{\Delta_i}+B_i}, \;\; \xi_i^- = \dfrac{2C_i}{\sqrt{\Delta_i}-B_i}
-\end{equation}
-
-We define:
-\begin{equation}
-	\rho_i = \dfrac{B_i + \sqrt{\Delta_i} }{2}-1
-\end{equation}
-
-\begin{equation}
-	\underbrace{\xi_i + L_i}_{\langle\vec{\Omega}_i \vert \vec{\xi} \rangle} + \rho_i \xi_i =  \alpha_i \underbrace{\left[\Xi_i \underbrace{\left(1-A_i\Xi_i\right)}_{\geq0}\right]}_{-\Gamma_i/\sigma_i}
-\end{equation}
-
-
+$$
+	A_i \Xi_i - \frac{\Gamma_i}{\Xi_i} = \sigma_i  < 0  \Rightarrow \xi_i = \xi_i^+
+$$
+ 
+ 
 \end{document}
