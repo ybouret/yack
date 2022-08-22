@@ -36,6 +36,7 @@ namespace yack
 
             explicit alphabet() throw();
             virtual ~alphabet() throw();
+            
 
         private:
             YACK_DISABLE_COPY_AND_ASSIGN(alphabet);
