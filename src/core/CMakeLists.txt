@@ -444,6 +444,13 @@ set(info_modulation ${info_modulation_impl} ${info_modulation_decl})
 SOURCE_GROUP(info/modulation FILES ${info_modulation})
 install( FILES ${info_modulation_decl} DESTINATION include/yack/info/modulation )
 
+
+file(GLOB info_compression_impl yack/info/compression/*.cpp)
+file(GLOB info_compression_decl yack/info/compression/*.hpp)
+set(info_compression ${info_compression_impl} ${info_compression_decl})
+SOURCE_GROUP(info/compression FILES ${info_compression})
+install( FILES ${info_compression_decl} DESTINATION include/yack/info/compression )
+
 ########################################################################
 ##
 ## randomized
@@ -636,7 +643,7 @@ ${string}
 ${kr}
 ${fs} ${fs_local}
 ${hashing}
-${info} ${info_modulation}
+${info} ${info_modulation} ${info_compression}
 ${math}
 ${ptr}
 ${field}

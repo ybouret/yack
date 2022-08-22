@@ -264,9 +264,10 @@ add_test(string:utf8     test-core string_utf8)
 add_test(strings         test-core strings)
 add_test(string:tokenize test-core string_tokenize)
 
-add_test(info:bwt  test-core info_bwt)
-add_test(info:mod  test-core info_mod)
-add_test(info:xbwt test-core info_xbwt)
+add_test(info:bwt      test-core info_bwt)
+add_test(info:mod      test-core info_mod)
+add_test(info:xbwt     test-core info_xbwt)
+add_test(info:alphabet test-core info_alphabet)
 
 add_test(math:api test-core math_api)
 

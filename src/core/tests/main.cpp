@@ -171,6 +171,7 @@ YACK_UTEST_DECL(256)
     YACK_UTEST(info_bwt);
     YACK_UTEST(info_mod);
     YACK_UTEST(info_xbwt);
+    YACK_UTEST(info_alphabet);
 
     YACK_UTEST(math_api);
 
