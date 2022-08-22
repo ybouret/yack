@@ -32,12 +32,11 @@ namespace yack
                 node.code = i;
                 node.info = i;
                 node.bits = 8;
-                chars.push_back( &node );
             }
 
             for(size_t i=bytes;i<codes;++i)
             {
-                node_t &node = nodes[i];
+                node_t &node = * chars.push_back(nodes+i);
                 node.bits    = 9;
                 node.freq    = 1;
             }
