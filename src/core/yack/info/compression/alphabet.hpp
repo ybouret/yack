@@ -10,33 +10,57 @@ namespace yack
 {
     namespace information
     {
-
+        //______________________________________________________________________
+        //
+        //
+        //! alphabets with codes and frequency
+        //
+        //______________________________________________________________________
         class alphabet
         {
         public:
-            static const size_t   bytes = 256;
-            static const size_t   cntrl = 2;
-            static const size_t   codes = bytes+cntrl;
-            typedef      uint32_t code_type;
-            typedef      uint32_t freq_type;
-            static const uint32_t NYT = bytes;
-            static const uint32_t END = NYT+1;
-            
+            //__________________________________________________________________
+            //
+            // types and definitions
+            //__________________________________________________________________
+            static const size_t    bytes = 256;            //!< bytes
+            static const size_t    cntrl = 2;              //!< number of controls
+            static const size_t    codes = bytes+cntrl;    //!< number of codes
+            typedef      uint32_t  code_type;              //!< encoding
+            typedef      uint32_t  freq_type;              //!< frequency
+            static const code_type NYT = bytes;            //!< Not Yet Transmitted code
+            static const code_type END = NYT+1;            //!< END of stream marker
+
+            //__________________________________________________________________
+            //
+            //! internal node for char+info
+            //__________________________________________________________________
             struct node_t
             {
-                code_type  code;
-                freq_type  freq;
-                code_type  info;
-                code_type  bits;
-                node_t    *next;
-                node_t    *prev;
+                code_type  code; //!< initial code: 0..codes-1
+                freq_type  freq; //!< frequency
+                code_type  info; //!< binary representation
+                code_type  bits; //!< bits for info
+                node_t    *next; //!< for list
+                node_t    *prev; //!< for list
             };
-            static const size_t          space = codes * sizeof(node_t);
-            typedef raw_list_of<node_t> list_t;
 
-            explicit alphabet() throw();
-            virtual ~alphabet() throw();
-            
+            static const size_t          space = codes * sizeof(node_t); //!< required bytes for nodes
+            typedef raw_list_of<node_t>  list_t;                         //!< alias
+
+            //__________________________________________________________________
+            //
+            // C++
+            //__________________________________________________________________
+            explicit alphabet() throw(); //!< initialize
+            virtual ~alphabet() throw(); //!< cleanup
+
+
+            //__________________________________________________________________
+            //
+            // methods
+            //__________________________________________________________________
+            const node_t &operator[](const uint8_t ch) const throw(); //!< access
 
         private:
             YACK_DISABLE_COPY_AND_ASSIGN(alphabet);

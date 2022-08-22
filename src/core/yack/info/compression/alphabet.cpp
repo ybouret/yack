@@ -41,9 +41,12 @@ namespace yack
                 node.freq    = 1;
             }
 
-
         }
 
+        const alphabet::node_t & alphabet:: operator[](const uint8_t ch) const throw()
+        {
+            return nodes[ch];
+        }
 
 
     }
