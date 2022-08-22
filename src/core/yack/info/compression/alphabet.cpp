@@ -29,14 +29,17 @@ namespace yack
             for(size_t i=0;i<codes;++i)
             {
                 node_t &node = nodes[i];
-                node.code = i;
-                node.info = i;
-                node.bits = 8;
+                coerce(node.code) = i;
+                node.info         = i;
+                node.bits         = 8;
+                assert(node.freq<=0);
             }
 
             for(size_t i=bytes;i<codes;++i)
             {
                 node_t &node = * chars.push_back(nodes+i);
+                coerce(node.code) = i;
+                node.info    = i;
                 node.bits    = 9;
                 node.freq    = 1;
             }
@@ -48,6 +51,26 @@ namespace yack
             return nodes[ch];
         }
 
+
+        void alphabet:: reset() throw()
+        {
+            chars.restart();
+            for(size_t i=0;i<codes;++i)
+            {
+                node_t &node = nodes[i];
+                node.info = i;
+                node.bits = 8;
+                node.freq = 0;
+            }
+
+            for(size_t i=bytes;i<codes;++i)
+            {
+                node_t &node = * chars.push_back(nodes+i);
+                node.info = i;
+                node.bits = 9;
+                node.freq = 1;
+            }
+        }
 
     }
 

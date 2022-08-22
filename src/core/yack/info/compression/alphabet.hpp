@@ -10,6 +10,8 @@ namespace yack
 {
     namespace information
     {
+
+
         //______________________________________________________________________
         //
         //
@@ -35,14 +37,17 @@ namespace yack
             //
             //! internal node for char+info
             //__________________________________________________________________
-            struct node_t
+            class node_t
             {
-                code_type  code; //!< initial code: 0..codes-1
-                freq_type  freq; //!< frequency
-                code_type  info; //!< binary representation
-                code_type  bits; //!< bits for info
-                node_t    *next; //!< for list
-                node_t    *prev; //!< for list
+            public:
+                const code_type code; //!< initial code: 0..codes-1
+                freq_type       freq; //!< frequency
+                code_type       info; //!< binary representation
+                code_type       bits; //!< bits for info
+                node_t         *next; //!< for list
+                node_t         *prev; //!< for list
+            private:
+                node_t(); ~node_t(); node_t(const node_t&); node_t &operator=(const node_t &);
             };
 
             static const size_t          space = codes * sizeof(node_t); //!< required bytes for nodes
@@ -60,6 +65,7 @@ namespace yack
             //
             // methods
             //__________________________________________________________________
+            void  reset() throw();
             const node_t &operator[](const uint8_t ch) const throw(); //!< access
 
         private:
