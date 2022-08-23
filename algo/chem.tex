@@ -234,12 +234,21 @@ $$
 	0 = A_i \xi_i^2  - \underbrace{[A_i\Xi_i + (A_i\Xi_i - \sigma_i)]}_{B_i} \xi_i + \underbrace{\lambda_i  + \alpha_i \Xi_i (A_i \Xi_i  -\sigma_i)}_{C_i}
 \end{equation}
 
+\begin{quote}
+\it
+The goal is to find a linear relation between $\xi_i$ and $\lambda_i$.
+\end{quote}
+
 \begin{equation}
 \begin{array}{rcl}
 	\Delta_i & = &[A_i\Xi_i + (A_i\Xi_i - \sigma_i)]^2 - 4 \alpha_i A_i \Xi_i \,(A_i \Xi_i  -\sigma_i)
 	- 4 A_i \lambda_i\\
 	& = & (1-\alpha_i) [A_i\Xi_i + (A_i\Xi_i - \sigma_i)]^2 + \alpha_i \sigma_i^2 - 4 A_i \lambda_i\\
 \end{array}
+\end{equation}
+
+\begin{equation}
+	\xi_i^{\pm} = \dfrac{2}{B_i \pm \sqrt\Delta_i }   C_i  
 \end{equation}
  
 \end{document}
