@@ -65,7 +65,7 @@ namespace yack
             //
             // methods
             //__________________________________________________________________
-            void  reset() throw();
+            void  reset() throw(); //!< reset
             const node_t &operator[](const uint8_t ch) const throw(); //!< access
 
         private:
