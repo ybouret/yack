@@ -231,8 +231,35 @@ $$
 \end{equation}
 
 \begin{equation}
+	(1-\alpha_i) (\Xi_i+A_i\Xi_i^2) = \Xi_i + A_i \left(\xi_i - \Xi_i\right)^2 - (\xi_i+\lambda_i)
+\end{equation}
+
+\begin{equation}
+	0  =  A_i \left[ \left(\xi_i - \Xi_i\right)^2 - (1-\alpha_i) \Xi_i^2\right] - \underbrace{(\xi_i+\lambda_i)}_{\langle \vec{\Omega}_i\vert \vec{\xi} \rangle} + \alpha_i \Xi_i 
+\end{equation}
+
+\begin{itemize}
+\item	$\vec{\alpha}=\vec{0}$
+	\begin{equation}
+	0 = A_i \xi_i (\xi_i-2\Xi_i) - \langle \vec{\Omega}_i\vert \vec{\xi} \rangle
+	\end{equation}
+	\begin{equation}
+	\left[\bm{\Omega} + \bm{\Delta}(\vec{\xi},\vec{\Xi})\right] \vec{\xi} = 0
+	\end{equation}
+	
+\item	$\vec{\alpha}=\vec{1}$
+	\begin{equation}
+	0=\Xi_i + A_i(\xi_i-\Xi_i)^2 - \langle \vec{\Omega}_i\vert \vec{\xi} \rangle
+	\end{equation}
+\end{itemize}
+
+\end{document}
+
+
+\begin{equation}
 	\gamma_i - \alpha_i \gamma_i = \Xi_i + A_i (\xi_i^2 - 2 \xi_i \Xi_i + \Xi_i^2) - (\xi_i+\lambda_i)
 \end{equation}
+
 
 \begin{equation}
 	 	- \alpha_i \gamma_i =  A_i (\xi_i^2 - 2 \xi_i \Xi_i ) - (\xi_i+\lambda_i)
@@ -248,6 +275,11 @@ $$
 	& = & (1-\alpha_i) (1+2\Xi_iA_i)^2 + \alpha_i +  4 A_i \lambda_i\\
 	& = & 1 + 4 A_i \left[ \lambda_i + (1-\alpha_i) \underbrace{(\Xi_i+A_i\Xi_i^2)}_{\gamma_i}\right] \\
 \end{array}
+\end{equation}
+
+
+\begin{equation}
+	A_i (\xi_i^2 - 2 \Xi _i \xi_i + \alpha_i \Xi_i^2 )    - \langle \vec{\Omega}_i\vert \vec{\xi} \rangle + \alpha_i  \Xi_i  = 0
 \end{equation}
 
 \end{document}
