@@ -6,12 +6,9 @@ using namespace information;
 
 YACK_UTEST(info_alphabet)
 {
+    YACK_SIZEOF(codec::glyph<uint8_t>);
+    YACK_SIZEOF(codec::glyph<uint16_t>);
 
-    YACK_SIZEOF(alphabet::node_t);
-    std::cerr << "required: " << alphabet::space << " bytes" << std::endl;
-    YACK_SIZEOF(alphabet);
-
-    alphabet alpha;
 
 }
 YACK_UDONE()
