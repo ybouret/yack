@@ -22,7 +22,7 @@ namespace yack
                 static const size_t code_size = sizeof(code_type);
                 static const size_t code_bits = code_size * 8 ;
 
-                inline  glyph(const code_type ch) throw() : code(ch), bits(code_bits) {}
+                inline  glyph(const code_type ch) throw() : code(ch),      bits(code_bits) {}
                 inline  glyph(const glyph    &gl) throw() : code(gl.code), bits(gl.bits) {}
                 inline ~glyph()                   throw() { code=0; bits=0; }
 
