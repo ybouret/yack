@@ -40,6 +40,7 @@ YACK_UTEST(reactor)
         throw exception("couldn't solve zero phase state!!");
     }
 
+    
     vector<species*> psp;
     for(const anode *node=cs.working.head;node;node=node->next)
     {

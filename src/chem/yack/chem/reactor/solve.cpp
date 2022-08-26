@@ -87,11 +87,11 @@ namespace yack
 
             for(const enode *node = singles.head(); node; node=node->next)
             {
-                const equilibrium &eq = ***node;
-                const size_t       ei = *eq;
-                writable<double>  &Ci = Ceq[ei];
-                const double       Ki = K[ei];
-                const outcome      oc = outcome::study(eq, Ki, Corg, Ci, xmul, xadd);
+                const equilibrium &eq  = ***node;
+                const size_t       ei  = *eq;
+                writable<double>  &Ci  = Ceq[ei];
+                const double       Ki  = K[ei];
+                const outcome      oc  = outcome::study(eq, Ki, Corg, Ci, xmul, xadd);
                 writable<double>  &psi = Psi[ei];
 
 
@@ -397,7 +397,38 @@ namespace yack
                 assert( fabs(H0-Hamiltonian(Corg))<=0 );
             }
 
+            // computing Omega
 
+            for(const enode *node = singles.head(); node; node=node->next)
+            {
+                const equilibrium      &eq  = ***node;
+                const size_t            ei  = *eq;
+                writable<double>       &Omi = Omega[ei];
+                const readable<double> &psi = Psi[ei];
+                if(blocked[ei])
+                {
+                    Omi.ld(0);
+                    Omi[ei] = 1.0;
+                }
+                else
+                {
+                    const double den = sigma[ei]; assert(den<0);
+                    Omi[ei] = 1.0;
+                    for(const enode *scan=node->prev;scan;scan=scan->prev)
+                    {
+                        const size_t ej = ****scan;
+                        Omi[ej] = xadd.dot(psi,Nu[ej])/den;
+                    }
+                    for(const enode *scan=node->next;scan;scan=scan->next)
+                    {
+                        const size_t ej = ****scan;
+                        Omi[ej] = xadd.dot(psi,Nu[ej])/den;
+                    }
+                }
+            }
+
+            singles(std::cerr << "Omega=","",Omega);
+            singles(std::cerr << "NuA  =","",NuA);
 
 
             return false;
