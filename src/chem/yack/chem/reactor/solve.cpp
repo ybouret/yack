@@ -429,7 +429,7 @@ namespace yack
 
             singles(std::cerr << "Omega=","",Omega);
             singles(std::cerr << "NuA  =","",NuA);
-
+            std::cerr<< "Omega=" << Omega << std::endl;
 
             return false;
         }
