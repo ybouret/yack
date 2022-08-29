@@ -178,8 +178,18 @@ namespace yack
             //! display
             friend std::ostream &operator<<(std::ostream &, const rational &);
 
-            //! conversion
-            double to_double() const;
+            //! convert to floating point
+            template <typename T> inline T to() const
+            {
+                switch(num.s)
+                {
+                    case negative: return - natural::ratio<T>(num.n,den);
+                    case __zero__: return 0;
+                    case positive: return   natural::ratio<T>(num.n,den);
+                }
+                // never get here
+                return 0;
+            }
 
         private:
             void reduce();

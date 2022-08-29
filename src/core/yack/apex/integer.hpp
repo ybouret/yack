@@ -194,8 +194,20 @@ namespace yack
                 return res;
             }
 
-            //! signed natural
-            double to_double() const;
+
+            //! convert to signed floating point
+            template <typename T>
+            T to() const
+            {
+                switch (s)
+                {
+                    case negative: return -n.to<double>();
+                    case __zero__: return 0;
+                    case positive: return  n.to<double>();
+                }
+                // never get here
+                return 0;
+            }
 
             //! simplify natural parts
             static void simplify(integer &num, integer &den);

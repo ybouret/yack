@@ -79,9 +79,9 @@ YACK_UTEST(memory_ptr)
         std::cerr << p << std::endl;
         {
             shared_ptr<apq> q = p;
-            std::cerr << q->to_double() << std::endl;
+            std::cerr << q->to<double>() << std::endl;
             ++(*q);
-            std::cerr << q->to_double() << std::endl;
+            std::cerr << q->to<double>() << std::endl;
         }
         std::cerr << p << std::endl;
     }
