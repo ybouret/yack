@@ -8,19 +8,16 @@ namespace yack
 
     namespace apex
     {
-        double natural:: log_of(const natural &n)
+        template <> float       natural::get_log2<float>()       throw() { return log(2.0f); }
+        template <> double      natural::get_log2<double>()      throw() { return log(2.0);  }
+        template <> long double natural::get_log2<long double>() throw() { return log(2.0L); }
+
+
+        void natural:: raise_log_error()
         {
-            static const double ln2   = log(2.0);
-            const size_t        nbits = n.bits();  if(nbits<=0) throw libc::exception(EDOM,"natural::log_of(0)");
-            const size_t        p     = nbits-1;
-            const natural       den   = exp2(p);
-
-            assert(n>=den);
-            assert(n<exp2(p+1));
-
-            const double approx = ln2 * double(p) + log( ratio<double>(n,den) );
-            return approx;
+            throw libc::exception(EDOM,"natural::log_of(0)");
         }
+        
     }
 
 }

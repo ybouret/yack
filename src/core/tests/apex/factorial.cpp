@@ -21,7 +21,7 @@ YACK_UTEST(apfac)
     for(unsigned n=0;n<=100;++n)
     {
         const apn    f  = apn::factorial(n);
-        const double lf = apn::log_of(f);
+        const double lf = apn::log_of<double>(f);
         fp("%u %.15g\n",n,lf);
     }
 

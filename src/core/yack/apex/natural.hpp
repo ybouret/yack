@@ -10,6 +10,7 @@
 #include "yack/container/as-capacity.hpp"
 #include "yack/ios/fwd.hpp"
 #include <iosfwd>
+#include <cmath>
 
 namespace yack
 {
@@ -311,9 +312,24 @@ namespace yack
 
             //__________________________________________________________________
             //
-            // floating point ops
+            //! logarithm
             //__________________________________________________________________
-            static double log_of(const natural &n);                      //!< log
+            template <typename T> static inline
+            T log_of(const natural &n)
+            {
+                static const T      ln2   = get_log2<T>();
+                const size_t        nbits = n.bits();  if(nbits<=0) raise_log_error();
+                const size_t        p     = nbits-1;
+                const natural       den   = exp2(p);
+
+                assert(n>=den);
+                assert(n<exp2(p+1));
+
+                const double approx = ln2 * static_cast<T>(p) + log( ratio<T>(n,den) );
+                return approx;
+            }
+
+
 
             //__________________________________________________________________
             //
@@ -416,6 +432,8 @@ namespace yack
             typedef uint8_t   (*bitproc)(uint8_t, uint8_t);
             static natural      bitwise(bitproc proc, const natural &lhs, const natural &rhs); //!< bitwise call
 
+            template <typename T> static T get_log2() throw(); //!< get log(2)
+            static void       raise_log_error();               //!< raise error
         };
         
     }
