@@ -241,6 +241,16 @@ $$
 	0  =  A_i \left[ \left(\xi_i - \Xi_i\right)^2 - (1-\alpha_i) \Xi_i^2\right] - \underbrace{(\xi_i+\lambda_i)}_{\langle \vec{\Omega}_i\vert \vec{\xi} \rangle} + \alpha_i \Xi_i 
 \end{equation}
 
+\begin{equation}
+\begin{array}{rl}
+	&  A_i \left[ \left(\xi_i - \Xi_i\right)^2 - (1-\alpha_i) \Xi_i^2\right] \\
+= & A_i \Xi_i^2 \left[ \left(x_i-1\right)^2 - (1-\alpha_i)\right]\\
+= & A_i \Xi_i^2 \left[ (1-\sqrt{1-\alpha_i}) - x_i\right] \left[ (1+\sqrt{1-\alpha_i}) - x_i\right]
+\end{array}
+\end{equation}
+The bracket expression is (quadrically) decreasing from $1-\alpha_i$ to $\alpha_i$,
+it's zero value is at $(1-\sqrt{1-\alpha_i})$ and $\alpha_i=1$ is the (quadratic) minimum of the function
+
 \begin{itemize}
 \item	$\vec{\alpha}=\vec{0}$
 	\begin{equation}
@@ -262,6 +272,22 @@ $$
 	    + \vec{A} \otimes \left[ (\vec{\xi}-\vec{\Xi})^{[2]} - \left(\vec{1}-\vec{\alpha}\right)\otimes \vec{\Xi}^{[2]}\right]
 \end{equation}
 
+\begin{itemize}
+
+\item
+
+\begin{equation}
+	\bm{\Omega} \vec{\xi}_0 =  \vec{\alpha} \otimes \vec{\gamma} \Rightarrow \vec{\xi}_0 = \bm{\Omega}^{-1} \vec{\alpha} \otimes \vec{\gamma} 
+\end{equation} 
+
+\item
+\begin{equation}
+	\bm{\Omega} \vec{\xi}_1 = 
+	   \vec{\alpha} \otimes \vec{\Xi}
+	    + \vec{A} \otimes \left[ (\vec{\xi}_0-\vec{\Xi})^{[2]} - \left(\vec{1}-\vec{\alpha}\right)\otimes \vec{\Xi}^{[2]}\right]
+\end{equation}
+
+\end{itemize}
  
  
 \end{document}
