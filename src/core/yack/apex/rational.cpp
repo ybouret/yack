@@ -46,9 +46,9 @@ namespace yack
         {
             switch(num.s)
             {
-                case negative: return - natural::ratio(num.n,den);
+                case negative: return - natural::ratio<double>(num.n,den);
                 case __zero__: return 0;
-                case positive: return   natural::ratio(num.n,den);
+                case positive: return   natural::ratio<double>(num.n,den);
             }
             // never get here
             return 0;

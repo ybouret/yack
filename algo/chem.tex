@@ -7,7 +7,10 @@
 \usepackage{mathptmx}
 \usepackage{bookman}
 \usepackage{chemarr}
+\usepackage{tikz}
 
+\newcommand*\circled[1]{\tikz[baseline=(char.base)]{
+            \node[shape=circle,draw,inner sep=2pt] (char) {#1};}}
  	 
 \begin{document}
 
@@ -244,93 +247,24 @@ $$
 	0 = A_i \xi_i (\xi_i-2\Xi_i) - \langle \vec{\Omega}_i\vert \vec{\xi} \rangle
 	\end{equation}
 	\begin{equation}
-	\left[\bm{\Omega} + \bm{\Delta}(\vec{\xi},\vec{\Xi})\right] \vec{\xi} = 0
+	\left[\bm{\Omega} + \bm{\Delta}(\vec{\xi},\vec{\Xi})\right] \vec{\xi} = 0 \Rightarrow \vec{\xi} = \vec{0}
 	\end{equation}
 	
 \item	$\vec{\alpha}=\vec{1}$
 	\begin{equation}
-	0=\Xi_i + A_i(\xi_i-\Xi_i)^2 - \langle \vec{\Omega}_i\vert \vec{\xi} \rangle
-	\end{equation}
+	0=\Xi_i + A_i(\xi_i-\Xi_i)^2 - \langle \vec{\Omega}_i\vert \vec{\xi} \rangle 
+		\end{equation}
 \end{itemize}
 
+\begin{equation}
+	\bm{\Omega} \vec{\xi} = 
+	   \vec{\alpha} \otimes \vec{\Xi}
+	    + \vec{A} \otimes \left[ (\vec{\xi}-\vec{\Xi})^{[2]} - \left(\vec{1}-\vec{\alpha}\right)\otimes \vec{\Xi}^{[2]}\right]
+\end{equation}
+
+ 
+ 
 \end{document}
 
-
-\begin{equation}
-	\gamma_i - \alpha_i \gamma_i = \Xi_i + A_i (\xi_i^2 - 2 \xi_i \Xi_i + \Xi_i^2) - (\xi_i+\lambda_i)
-\end{equation}
-
-
-\begin{equation}
-	 	- \alpha_i \gamma_i =  A_i (\xi_i^2 - 2 \xi_i \Xi_i ) - (\xi_i+\lambda_i)
-\end{equation}
-
-\begin{equation}
-	A_i \xi_i^2 - \xi_i (2\Xi_iA_i+1) - \lambda_i + \alpha_i \underbrace{\Xi_i(1 + A_i \Xi_i)}_{\gamma_i} = 0
-\end{equation}
-
-\begin{equation}
-\begin{array}{rcl}
-	\Delta_i & = & (1+2\Xi_iA_i)^2 - 4 \alpha_i A_i \Xi_i (1+A_i\Xi_i) + 4 A_i \lambda_i\\
-	& = & (1-\alpha_i) (1+2\Xi_iA_i)^2 + \alpha_i +  4 A_i \lambda_i\\
-	& = & 1 + 4 A_i \left[ \lambda_i + (1-\alpha_i) \underbrace{(\Xi_i+A_i\Xi_i^2)}_{\gamma_i}\right] \\
-\end{array}
-\end{equation}
-
-
-\begin{equation}
-	A_i (\xi_i^2 - 2 \Xi _i \xi_i + \alpha_i \Xi_i^2 )    - \langle \vec{\Omega}_i\vert \vec{\xi} \rangle + \alpha_i  \Xi_i  = 0
-\end{equation}
-
-\end{document}
-
- \begin{equation}
- \begin{array}{rcl}
-	\Gamma_i & = & A_i \Xi_i^2  -\sigma_i \Xi_i\\
-	\Gamma_i \Xi_i \geq 0 & \Rightarrow &  P_i = A_i \Xi_i - \sigma_i \geq 0\\
-\end{array}
- \end{equation}
- 
-\begin{equation}
-	(1-\alpha_i)\Gamma_i = \sigma_i (\xi_i-\Xi_i) + A_i (\xi_i-\Xi_i)^2 
-	+ \underbrace{\sum_{j\not=i} \underbrace{\langle \vec{\Psi}_i \vert \vec{\nu}_j \rangle}_{\sigma_{ij}} \xi_j}_{\lambda_i}
-\end{equation}
- 
-\begin{equation}
-	\Gamma_i - \alpha_i \Gamma_i = \sigma_i \xi_i - \sigma_i \Xi_i + A_i \xi_i^2  - 2 A_i \xi_i \Xi_i + A_i \Xi_i^2 + \lambda_i
-\end{equation}
   
- \begin{equation}
- - \alpha_i \Gamma_i = -\alpha_i\left( A_i \Xi_i^2  -\sigma_i \Xi_i\right) = \sigma_i \xi_i   + A_i \xi_i^2  - 2 A_i \xi_i \Xi_i   + \lambda_i
-\end{equation}
-
-\begin{equation}
-	0 = A_i \xi_i^2  - \underbrace{[A_i\Xi_i + (A_i\Xi_i - \sigma_i)]}_{B_i=A_i\Xi_i + P_i} \xi_i + \underbrace{\lambda_i  + \alpha_i \Xi_i \underbrace{(A_i \Xi_i  -\sigma_i)}_{P_i}}_{C_i}
-\end{equation}
-
-\begin{quote}
-\it
-The goal is to find a linear relation between $\xi_i$ and $\lambda_i$.
-\end{quote}
-
-\begin{equation}
-\begin{array}{rcl}
-	\Delta_i & = &[A_i\Xi_i + (A_i\Xi_i - \sigma_i)]^2 - 4 \alpha_i A_i \Xi_i \,(A_i \Xi_i  -\sigma_i)
-	- 4 A_i \lambda_i\\
-	& = & (1-\alpha_i) [A_i\Xi_i + (A_i\Xi_i - \sigma_i)]^2 + \alpha_i \sigma_i^2 - 4 A_i \lambda_i\\
-	& = & \sigma_i^2 + 4 A_i \left[ (1-\alpha_i) \Xi_i \left( A_i\Xi_i - \sigma_i  \right) -  \lambda_i \right]\\
-	& = & \sigma_i^2 + 4 A_i \left[  \Xi_i P_i - C_i \right]\\
-	& = & \sigma_i^2\left( 1 + \dfrac{4A_i}{\sigma_i^2}\left[  \Xi_i P_i - C_i \right] \right)\\
-\end{array}
-\end{equation}
-
-\begin{equation}
-	\xi_i^\pm  = \dfrac{2}{B_i \pm \sqrt\Delta_i }   C_i  
-\end{equation}
-
-\begin{equation}
-	0 = \xi_i^\pm + \dfrac{2}{\sqrt\Delta_i \pm B_i} C_i 
-\end{equation}
-
- 
 \end{document}

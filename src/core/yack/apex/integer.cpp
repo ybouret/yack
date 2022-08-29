@@ -46,9 +46,9 @@ namespace yack
         {
             switch (s)
             {
-                case negative: return -n.to_double();
+                case negative: return -n.to<double>();
                 case __zero__: return 0;
-                case positive: return  n.to_double();
+                case positive: return  n.to<double>();
             }
             // never get here
             return 0;

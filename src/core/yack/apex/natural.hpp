@@ -287,7 +287,7 @@ namespace yack
                 }
             }
 
-            //! cast with overflow check
+            //! cast to a system integer with overflow check
             template <typename T> inline
             T cast_to(const char *who=NULL) const
             {
@@ -313,8 +313,51 @@ namespace yack
             //
             // floating point ops
             //__________________________________________________________________
-            static double ratio(const natural &num, const natural &den); //!< ratio
-            double        to_double() const;                             //!< integer
+            static double log_of(const natural &n);                      //!< log
+
+            //__________________________________________________________________
+            //
+            //! integer to floating point
+            //__________________________________________________________________
+            template <typename T> inline T to() const
+            {
+                static const T fac = T(word_base);
+                T              ans = 0;
+                for(size_t i=words;i>0;)
+                {
+                    const word_type w = word[--i];
+                    ans *= fac;
+                    ans += w;
+                }
+                return ans;
+            }
+
+            //__________________________________________________________________
+            //
+            //! num/den = integer part + fractional part
+            //__________________________________________________________________
+            template <typename T> static inline
+            T ratio(const natural &num, const natural &den)
+            {
+                static const T tenth = static_cast<T>(0.1);
+                uint_type      _10   = 10;
+                const handle   ten(_10);
+                natural        r;
+                natural        q   = quot(num,den,r);
+                T              ans = q.to<float>();    // integert part
+                T              fac = tenth;
+                while(true)
+                {
+                    const handle  rh(r);
+                    const natural nn = mul(rh,ten);
+                    q = quot(nn,den,r);
+                    const T cur = ans + fac * static_cast<T>( q.lsu() );
+                    if( cur <= ans ) break;
+                    fac *= tenth;
+                    ans  = cur;
+                }
+                return ans;
+            }
 
         private:
             friend class integer;
