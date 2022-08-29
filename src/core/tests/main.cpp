@@ -119,6 +119,7 @@ YACK_UTEST_DECL(256)
     YACK_UTEST(apex_perf);
     YACK_UTEST(apex_conv);
     YACK_UTEST(apk);
+    YACK_UTEST(apfac);
 
     YACK_UTEST(ios_c_file);
     YACK_UTEST(ios_streams);

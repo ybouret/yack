@@ -214,6 +214,7 @@ add_test(apz            test-core  apz)
 add_test(apq            test-core  apq)
 add_test(apex:conv      test-core  apex_conv)
 add_test(apk            test-core  apk)
+add_test(apfac          test-core  apfac 1 2 3 4 5 10 20)
 
 add_test(ios:c-file     test-core ios_c_file)
 add_test(ios:streams    test-core ios_streams)
