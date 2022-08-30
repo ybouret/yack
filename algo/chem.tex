@@ -249,7 +249,32 @@ $$
 \end{array}
 \end{equation}
 The bracket expression is (quadrically) decreasing from $\alpha_i$ to $\alpha_i-1$,
-it's zero value is at $(1-\sqrt{1-\alpha_i})$ and $\alpha_i=1$ is the (quadratic) minimum of the function
+it's zero value is at $(1-\sqrt{1-\alpha_i})$ and $\alpha_i=1$ is the (quadratic) minimum of the function.\\
+Finally:
+
+\begin{equation}
+\begin{array}{rl}
+	&  A_i \left[ \left(\xi_i - \Xi_i\right)^2 - (1-\alpha_i) \Xi_i^2\right] \\
+=   &  A_i \left[ \xi_i - \Xi_i \left(1-\sqrt{1-\alpha_i}\right)\right] \left[\xi_i - \Xi_i \left(1 + \sqrt{1+\alpha_i} \right) \right]\\
+\end{array}
+\end{equation}
+
+For $\vert\xi_i\vert  \leq \vert \Xi_i \vert \left(1-\sqrt{1-\alpha_i}\right)$,
+we linearise to get:
+\begin{equation}
+	A_i \Xi_i \alpha_i \left[ \Xi_i  -   \xi_i \dfrac{1}{1-\sqrt{1-\alpha_i}}\right]
+\end{equation}
+
+
+\begin{equation}
+	0 \simeq A_i \Xi_i \alpha_i \left[ \Xi_i  -   \xi_i \dfrac{1}{1-\sqrt{1-\alpha_i}}\right] - (\xi_i+\lambda_i) + \alpha_i \Xi_i
+\end{equation}
+
+\begin{equation}
+	0 \simeq    - \left[\xi_i \left(1+A_i\Xi_i \dfrac{\alpha_i}{1-\sqrt{1-\alpha_i}}\right)+\lambda_i\right] + \alpha_i \gamma_i
+	\end{equation}
+
+
 
 \begin{itemize}
 \item	$\vec{\alpha}=\vec{0}$
@@ -271,24 +296,8 @@ it's zero value is at $(1-\sqrt{1-\alpha_i})$ and $\alpha_i=1$ is the (quadratic
 	   \vec{\alpha} \otimes \vec{\Xi}
 	    + \vec{A} \otimes \left[ (\vec{\xi}-\vec{\Xi})^{[2]} - \left(\vec{1}-\vec{\alpha}\right)\otimes \vec{\Xi}^{[2]}\right]
 \end{equation}
-
-\begin{itemize}
-
-\item
-
-\begin{equation}
-	\bm{\Omega} \vec{\xi}_0 =  \vec{\alpha} \otimes \vec{\gamma} \Rightarrow \vec{\xi}_0 = \bm{\Omega}^{-1} \vec{\alpha} \otimes \vec{\gamma} 
-\end{equation} 
-
-\item
-\begin{equation}
-	\bm{\Omega} \vec{\xi}_1 = 
-	   \vec{\alpha} \otimes \vec{\Xi}
-	    + \vec{A} \otimes \left[ (\vec{\xi}_0-\vec{\Xi})^{[2]} - \left(\vec{1}-\vec{\alpha}\right)\otimes \vec{\Xi}^{[2]}\right]
-\end{equation}
-
-\end{itemize}
- 
+  
+  
  
 \end{document}
 
