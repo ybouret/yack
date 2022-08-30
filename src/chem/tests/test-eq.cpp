@@ -45,21 +45,23 @@ YACK_UTEST(eq)
         
         eq.fill(nu);
         eq.drvs_action(psi,K,S,xmul);
-        std::cerr << "nu = " << nu  << std::endl;
-        std::cerr << "psi= " << psi << std::endl;
+        std::cerr << "nu    = " << nu  << std::endl;
+        std::cerr << "psi   = " << psi << std::endl;
         const double sigma = xadd.dot(psi,nu);
-        std::cerr << "sigma=" << sigma << std::endl;
-        
+        std::cerr << "sigma = " << sigma << std::endl;
+        const double g0 = eq.mass_action(K,C,xmul) / (-sigma);
+        std::cerr << "g0    = " << g0 << std::endl;
+
         const string  fn = "out_" + eq.name + ".dat";
         ios::ocstream fp(fn);
 
-        const double xi = res.value;
+        const double Xi = res.value;
         const size_t NP = 100;
         for(size_t i=0;i<=NP;++i)
         {
             const double u = double(i)/NP;
-            const double x = xi * u;
-            const double l = xi-x;
+            const double x = Xi * u;
+            const double l = Xi-x;
             const double g = eq.mass_action(K,C,S,u,Ctry,xmul)/(-sigma);
 
             fp("%.15g %.15g %.15g %.15g\n", x, g, l, u);
