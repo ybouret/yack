@@ -8,11 +8,12 @@ namespace yack
 
     size_t check_expression::width = 64;
 
-    void   check_expression::xraise(const char *expr)
+    void   check_expression::xraise(const char *expr, const int line)
     {
         assert(NULL!=expr);
         exception excp;
         excp << yack_failure << ':' << '[' << expr << ']';
+        excp.add(" @line %d", line);
         throw excp;
     }
 

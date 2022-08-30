@@ -19,7 +19,7 @@ namespace yack
         static size_t width;                     //!< to align EXPR
         static void   prolog(const char *expr);  //!< prolog, aligned
         static void   epilog(const bool  flag);  //!< epilog success/failure
-        static void   xraise(const char *expr);  //!< raise exception
+        static void   xraise(const char *expr, const int line);  //!< raise exception
     };
 
     //__________________________________________________________________________
@@ -27,7 +27,7 @@ namespace yack
     //! silent assertion, throw on error
     //__________________________________________________________________________
 #define YACK_ASSERT(EXPR) do { \
-/**/ if(!(EXPR)) yack::check_expression::xraise(#EXPR);\
+/**/ if(!(EXPR)) yack::check_expression::xraise(#EXPR, __LINE__);\
 /**/ } while(false)
 
     //__________________________________________________________________________
@@ -39,7 +39,7 @@ namespace yack
 /**/ yack::check_expression::prolog(expr);           \
 /**/ const bool  flag = (EXPR);                      \
 /**/ yack::check_expression::epilog(flag);           \
-/**/ if(!flag) yack::check_expression::xraise(expr); \
+/**/ if(!flag) yack::check_expression::xraise(expr, __LINE__); \
 /**/ } while(false)
 
 
