@@ -19,13 +19,13 @@ YACK_UTEST(ios_bits)
         const size_t   nb = bits_for(i);
         Q.append(i,nb);
         YACK_ASSERT(Q.size==nb);
-        const size_t j = Q.pluck<size_t>(nb);
+        const uint64_t j = Q.pluck<uint64_t>(nb);
         YACK_ASSERT(j==i);
         YACK_ASSERT(0==Q.size);
 
         Q.append(i);
         YACK_ASSERT(Q.size==sizeof(i)*8);
-        const size_t k = Q.pluck<size_t>();
+        const uint64_t k = Q.pluck<uint64_t>();
         YACK_ASSERT(k==i);
         YACK_ASSERT(0==Q.size);
     }
