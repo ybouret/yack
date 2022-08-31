@@ -5,6 +5,7 @@
 
 #include "yack/data/list/raw.hpp"
 #include "yack/arith/align.hpp"
+#include "yack/type/ints.hpp"
 
 namespace yack
 {
@@ -13,8 +14,14 @@ namespace yack
 
         namespace codec
         {
+            enum escape_glyph
+            {
+                escape_nyt,
+                escape_end
+            };
 
             
+
 
             
 
