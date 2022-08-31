@@ -6,8 +6,7 @@ using namespace information;
 
 YACK_UTEST(info_alphabet)
 {
-    YACK_SIZEOF(codec::glyph<uint8_t>);
-    YACK_SIZEOF(codec::glyph<uint16_t>);
+    
 
 
 }
