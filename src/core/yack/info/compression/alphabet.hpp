@@ -115,7 +115,23 @@ namespace yack
             };
 
 
+            template <const size_t CODE_BITS>
+            class alphabet
+            {
+            public:
+                typedef glyph<CODE_BITS>               glyph_type;
+                typedef typename glyph_type::code_type code_type;
+                typedef typename glyph_type::word_type word_type;
 
+                
+
+                inline explicit alphabet() {}
+                inline virtual ~alphabet() throw() {}
+
+
+            private:
+                YACK_DISABLE_COPY_AND_ASSIGN(alphabet);
+            };
             
 
         }
