@@ -51,12 +51,14 @@ YACK_UTEST(eq)
         std::cerr << "sigma = " << sigma << std::endl;
         const double g0 = eq.mass_action(K,C,xmul) / (-sigma);
         std::cerr << "g0    = " << g0 << std::endl;
+        const double Xi = res.value;
+        const double AX  = (g0-Xi)/Xi;
+        std::cerr << "AX    = " << AX  << std::endl;
 
         const string  fn = "out_" + eq.name + ".dat";
         ios::ocstream fp(fn);
 
-        const double Xi = res.value;
-        const size_t NP = 100;
+        const size_t NP = 30;
         for(size_t i=0;i<=NP;++i)
         {
             const double u = double(i)/NP;

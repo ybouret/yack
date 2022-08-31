@@ -109,7 +109,6 @@ namespace yack
         
         void luaEquilibria:: create_eq_for(library &lib, vector<string> &word)
         {
-            assert(word.size()>=3);
             Lua::State &lvm   = **this;
             string     &first = word[1];
            
