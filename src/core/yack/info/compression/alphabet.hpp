@@ -78,13 +78,13 @@ namespace yack
                 //
                 // C++
                 //______________________________________________________________
-                inline  glyph(const code_type c)          throw() : code(c), bits(code_bits), next(0), prev(0) {}   //!< setup
-                inline ~glyph()                           throw() { code=0; bits=0; }                               //!< cleanup
+                inline  glyph(const code_type c)          throw() : code(c), bits(code_bits), freq(0), next(0), prev(0) {}   //!< setup
+                inline ~glyph()                           throw() { }                               //!< cleanup
 
 
                 //! assign an escape/control sequence
                 template <int ESC>
-                inline glyph(const int2type<ESC> &_) throw() : code(cntl_mini+_.value), bits(cntl_bits), next(0), prev(0)
+                inline glyph(const int2type<ESC> &_) throw() : code(cntl_mini+_.value), bits(cntl_bits), freq(1), next(0), prev(0)
                 {
                 }
 
@@ -113,12 +113,11 @@ namespace yack
                 //
                 // members
                 //______________________________________________________________
-
-                word_type code; //!< code on a word
-                size_t    bits; //!< bits
-                size_t    freq; //!< frequency
-                glyph    *next; //!< for list
-                glyph    *prev; //!< for list
+                const word_type code; //!< code on a word
+                const size_t    bits; //!< bits
+                const size_t    freq; //!< frequency
+                glyph          *next; //!< for list
+                glyph          *prev; //!< for list
 
             private:
                 YACK_DISABLE_COPY_AND_ASSIGN(glyph);
@@ -130,10 +129,10 @@ namespace yack
             {
             public:
                 typedef glyph<CODE_BITS>               glyph_type;
-                typedef core_list_of<glyph_type>       glyph_list;
+                typedef raw_list_of<glyph_type>            glyph_list;
                 typedef typename glyph_type::code_type code_type;
                 typedef typename glyph_type::word_type word_type;
-                static  const size_t   code_bits = glyph_type::code_bits;
+                static  const size_t   code_bits  = glyph_type::code_bits;
                 static  const size_t   num_codes  = (1<<code_bits);
                 static  const size_t   num_cntls  = escape_end+1;
                 static  const size_t   num_glyphs = num_codes+num_cntls;
@@ -151,14 +150,15 @@ namespace yack
                         new (gtab+i) glyph_type(i);
                     }
 
-                    new (nyt) glyph_type(ESC_NYT);
-                    new (end) glyph_type(ESC_END);
+                    glst.push_back( new (nyt) glyph_type(ESC_NYT) );
+                    glst.push_back( new (end) glyph_type(ESC_END) );
 
                 }
 
                 inline virtual ~alphabet() throw()
                 {
-
+                    glst.restart();
+                    out_of_reach::zset(gtab,data_size);
                 }
 
 
