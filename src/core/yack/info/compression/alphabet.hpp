@@ -143,16 +143,8 @@ namespace yack
                 glst(),
                 gtab( static_cast<glyph_type *>(wksp) ),
                 nyt( gtab+num_codes ),
-                end( nyt+1 )
-                {
-                    for(size_t i=0;i<num_codes;++i)
-                    {
-                        new (gtab+i) glyph_type(i);
-                    }
-
-                    glst.push_back( new (nyt) glyph_type(ESC_NYT) );
-                    glst.push_back( new (end) glyph_type(ESC_END) );
-
+                end( nyt+1 ) {
+                    setup();
                 }
 
                 inline virtual ~alphabet() throw()
@@ -161,7 +153,6 @@ namespace yack
                     out_of_reach::zset(gtab,data_size);
                 }
 
-
             private:
                 YACK_DISABLE_COPY_AND_ASSIGN(alphabet);
                 glyph_list  glst;
@@ -169,6 +160,17 @@ namespace yack
                 glyph_type *nyt;
                 glyph_type *end;
 
+
+                void setup() throw()
+                {
+                    for(size_t i=0;i<num_codes;++i)
+                    {
+                        new (gtab+i) glyph_type(i);
+                    }
+
+                    glst.push_back( new (nyt) glyph_type(ESC_NYT) );
+                    glst.push_back( new (end) glyph_type(ESC_END) );
+                }
             };
             
 
