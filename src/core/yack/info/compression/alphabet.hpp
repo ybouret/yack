@@ -5,6 +5,7 @@
 
 #include "yack/data/list/raw.hpp"
 #include "yack/type/ints.hpp"
+#include "yack/memory/embed.hpp"
 #include <iostream>
 
 namespace yack
@@ -25,6 +26,8 @@ namespace yack
                 escape_nyt=0, //!< Not Yet Transmitted
                 escape_end=1  //!< flushing
             };
+
+
             
             typedef int2type<escape_nyt> ESC_NYT_t; //!< alias
             extern const ESC_NYT_t       ESC_NYT;   //!< alias
@@ -42,6 +45,8 @@ namespace yack
             {
                 //! display raw data
                 static void display_raw(std::ostream &os, const void *addr, const size_t size);
+
+                static memory::allocator & memmgr();
             };
 
             //__________________________________________________________________
@@ -72,14 +77,14 @@ namespace yack
                 //
                 // C++
                 //______________________________________________________________
-                inline  glyph(const code_type c)          throw() : code(c), bits(code_bits) {}               //!< setup
-                inline ~glyph()                           throw() { code=0; bits=0; }                         //!< cleanup
-                inline  glyph(const glyph &g)             throw() : code(g.code), bits(g.bits) {}             //!< copy
-                inline  glyph & operator=(const glyph &g) throw() { code=g.code; bits=g.bits; return *this; } //!< assign
+                inline  glyph(const code_type c)          throw() : code(c), bits(code_bits), next(0), prev(0) {}   //!< setup
+                inline ~glyph()                           throw() { code=0; bits=0; }                               //!< cleanup
+                inline  glyph(const glyph &g)             throw() : code(g.code), bits(g.bits), next(0), prev(0) {} //!< copy
+                inline  glyph & operator=(const glyph &g) throw() { code=g.code; bits=g.bits; return *this; }       //!< assign
 
                 //! assign an escape/control sequence
                 template <int ESC>
-                inline glyph(const int2type<ESC> &_) throw() : code(cntl_mini+_.value), bits(cntl_bits)
+                inline glyph(const int2type<ESC> &_) throw() : code(cntl_mini+_.value), bits(cntl_bits), next(0), prev(0)
                 {
                 }
 
@@ -111,7 +116,8 @@ namespace yack
 
                 word_type code; //!< code on a word
                 size_t    bits; //!< bits
-
+                glyph    *next; //!< for list
+                glyph    *prev; //!< for list
             };
 
 
@@ -122,15 +128,36 @@ namespace yack
                 typedef glyph<CODE_BITS>               glyph_type;
                 typedef typename glyph_type::code_type code_type;
                 typedef typename glyph_type::word_type word_type;
+                static  const size_t   code_bits = glyph_type::code_bits;
+                static  const size_t   num_codes  = (1<<code_bits);
+                static  const size_t   num_cntls  = escape_end+1;
+                static  const size_t   num_glyphs = num_codes+num_cntls;
+                static  const size_t   data_size  = num_glyphs * sizeof(glyph_type);
 
-                
 
-                inline explicit alphabet() {}
+                inline explicit alphabet() :
+                gtab(0),
+                wlen(0),
+                wksp(0)
+                {
+                    static memory::allocator &mgr = glyph_ops::memmgr();
+                    memory::embed emb[] =
+                    {
+                        memory::embed(gtab,num_glyphs)
+                    };
+                    wksp = YACK_MEMORY_EMBED(emb,mgr,wlen);
+                    std::cerr << "#byte=" << wlen << std::endl;
+                }
+
                 inline virtual ~alphabet() throw() {}
 
 
             private:
                 YACK_DISABLE_COPY_AND_ASSIGN(alphabet);
+                glyph_type *gtab;
+                size_t      wlen;
+                void       *wksp;
+
             };
             
 

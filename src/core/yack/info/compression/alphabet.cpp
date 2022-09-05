@@ -1,5 +1,6 @@
 #include "yack/info/compression/alphabet.hpp"
 #include "yack/ios/ascii/hybrid.hpp"
+#include "yack/memory/allocator/dyadic.hpp"
 
 namespace yack
 {
@@ -29,6 +30,13 @@ namespace yack
 
                 }
             }
+
+            memory::allocator & glyph_ops:: memmgr()
+            {
+                static memory::allocator &mgr = memory::dyadic::instance();
+                return mgr;
+            }
+            
 
         }
 

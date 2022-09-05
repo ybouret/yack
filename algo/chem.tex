@@ -210,7 +210,7 @@ $$
 
 \begin{equation}
 	\Gamma_i\left(\vec{C}+\xi_i \vec{\nu}_i  + \sum_{j\not= i} \xi_j \vec{\nu}_j \right) 	\simeq 
-	\underbrace{\langle \vec{\nu}_i \vert \vec{\Psi}_i' \rangle}_{\sigma_i<0} (\xi_i-\Xi_i) + \square   (\Xi_i-\xi_i)
+	\underbrace{\langle \vec{\nu}_i \vert \vec{\Psi}_i' \rangle}_{\sigma_i<0} (\xi_i-\Xi_i) + \square_i   (\Xi_i-\xi_i)
 	+ \sum_{j\not=i}  \langle \vec{\Psi}_{\xi_i} \vert \vec{\nu}_j \rangle \xi_j
 \end{equation}
 
@@ -218,8 +218,9 @@ $$
 \left\lbrace
 \begin{array}{rcl}
  \Gamma_i & = & -\sigma_i \Xi_i + \square(\Xi_i) \\
- \square(0) & = & 0\\
- \square'(0) & = & 0\\
+ \square_i(\Xi_i) & = & \Gamma_i + \sigma_i \Xi_i\\
+ \square_i(0) & = & 0\\
+ \square_i'(0) & = & 0\\
  \vec{\Psi}_{\xi_i} & \simeq & \left(1-\dfrac{\xi_i}{\Xi_i}\right) \vec{\Psi}_i + \dfrac{\xi_i}{\Xi_i} \vec{\Psi}_i'\\
 \end{array}
 \right.

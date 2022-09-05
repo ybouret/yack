@@ -6,7 +6,7 @@ namespace yack
 {
     
     
-    size_t utest_sizeof::width = 32;
+    size_t utest_sizeof::width = 36;
     
     void utest_sizeof:: print(const char *name, const uint64_t size)
     {
