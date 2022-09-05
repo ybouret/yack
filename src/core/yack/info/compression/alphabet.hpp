@@ -47,6 +47,7 @@ namespace yack
                 static void display_raw(std::ostream &os, const void *addr, const size_t size);
 
                 static memory::allocator & memmgr();
+                static void                release(void * &, size_t &) throw();
             };
 
             //__________________________________________________________________
@@ -135,11 +136,12 @@ namespace yack
                 static  const size_t   data_size  = num_glyphs * sizeof(glyph_type);
 
 
-                inline explicit alphabet() :
-                gtab(0),
-                wlen(0),
-                wksp(0)
+                inline explicit alphabet(void *wksp) throw() :
+                gtab( static_cast<glyph_type *>(wksp) )
                 {
+
+
+#if 0
                     static memory::allocator &mgr = glyph_ops::memmgr();
                     memory::embed emb[] =
                     {
@@ -147,6 +149,7 @@ namespace yack
                     };
                     wksp = YACK_MEMORY_EMBED(emb,mgr,wlen);
                     std::cerr << "#byte=" << wlen << std::endl;
+#endif
                 }
 
                 inline virtual ~alphabet() throw() {}
@@ -155,8 +158,7 @@ namespace yack
             private:
                 YACK_DISABLE_COPY_AND_ASSIGN(alphabet);
                 glyph_type *gtab;
-                size_t      wlen;
-                void       *wksp;
+
 
             };
             

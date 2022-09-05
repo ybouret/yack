@@ -36,7 +36,13 @@ namespace yack
                 static memory::allocator &mgr = memory::dyadic::instance();
                 return mgr;
             }
-            
+
+            void glyph_ops:: release(void * &block_addr, size_t &block_size) throw()
+            {
+                static memory::allocator &mgr = memory::dyadic::location();
+                mgr.release(block_addr,block_size);
+            }
+
 
         }
 

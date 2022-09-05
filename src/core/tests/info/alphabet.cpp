@@ -37,9 +37,25 @@ YACK_UTEST(info_alphabet)
     std::cerr << std::endl;
 
 
-    codec::alphabet<0x08> alpha1;
-    codec::alphabet<0x10> alpha2;
 
+    uint8_t *w1 = NULL;
+    uint8_t *w2 = NULL;
+    memory::embed emb[] =
+    {
+        memory::embed(w1,codec::alphabet<0x08>::data_size),
+        memory::embed(w2,codec::alphabet<0x10>::data_size)
+    };
+
+    size_t wlen = 0;
+    void  *wksp = YACK_MEMORY_EMBED(emb,codec::glyph_ops::memmgr(),wlen);
+    std::cerr << "@" << wksp << " +" << wlen << std::endl;
+
+    {
+        codec::alphabet<0x08> alpha1(w1);
+        codec::alphabet<0x10> alpha2(w2);
+    }
+
+    codec::glyph_ops::release(wksp,wlen);
     
 
 
