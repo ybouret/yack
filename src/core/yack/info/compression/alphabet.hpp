@@ -139,11 +139,11 @@ namespace yack
                 typedef raw_list_of<glyph_type>        glyph_list;
                 typedef typename glyph_type::code_type code_type;
                 typedef typename glyph_type::word_type word_type;
-                static  const size_t   code_bits  = glyph_type::code_bits;
-                static  const size_t   num_codes  = (1<<code_bits);
-                static  const size_t   num_cntls  = escape_end+1;
-                static  const size_t   num_glyphs = num_codes+num_cntls;
-                static  const size_t   data_size  = num_glyphs * sizeof(glyph_type);
+                static  const size_t                   code_bits  = glyph_type::code_bits;
+                static  const size_t                   num_codes  = (1<<code_bits);
+                static  const size_t                   num_cntls  = escape_end+1;
+                static  const size_t                   num_glyphs = num_codes+num_cntls;
+                static  const size_t                   data_size  = num_glyphs * sizeof(glyph_type);
 
 
                 inline explicit alphabet(void *wksp) throw() :
@@ -178,9 +178,7 @@ namespace yack
                 void setup() throw()
                 {
                     for(size_t i=0;i<num_codes;++i)
-                    {
                         new (tab+i) glyph_type(i);
-                    }
                     g_list.push_back( new (end) glyph_type(ESC_END) );
                     g_list.push_back( new (nyt) glyph_type(ESC_NYT) );
                 }

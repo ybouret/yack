@@ -57,7 +57,7 @@ YACK_UTEST(eq)
         const double A1 = -g0/Xi;
         const double A2 = 1.0/Xi - g0/Xi/Xi;
         const double A3 = g0/Xi/Xi/Xi - 1.0/Xi/Xi;
-
+        std::cerr << "A=[" << A0 << ' ' << A1 << ' ' << A2 << ' ' << A3 << "]" << std::endl;
         const string  fn = "out_" + eq.name + ".dat";
         ios::ocstream fp(fn);
 
@@ -66,7 +66,7 @@ YACK_UTEST(eq)
         {
             const double u = double(i)/NP;
             const double x = Xi * u;
-            const double l = Xi-x;
+            const double l = (Xi-x);
             const double c = g0 * (1.0-u);
             const double g = eq.mass_action(K,C,S,u,Ctry,xmul)/(-sigma);
             const double q = A0 + A1*x + A2*x*x + A3*x*x*x;
