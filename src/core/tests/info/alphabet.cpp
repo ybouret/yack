@@ -53,6 +53,9 @@ YACK_UTEST(info_alphabet)
     {
         codec::alphabet<0x08> alpha1(w1);
         codec::alphabet<0x10> alpha2(w2);
+
+        YACK_CHECK(2==alpha1->size);
+        YACK_CHECK(2==alpha2->size);
     }
 
     codec::glyph_ops::release(wksp,wlen);

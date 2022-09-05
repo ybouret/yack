@@ -23,17 +23,17 @@ namespace yack
             //__________________________________________________________________
             enum escape_glyph
             {
-                escape_nyt=0, //!< Not Yet Transmitted
-                escape_end=1  //!< flushing
+                escape_end=0, //!< flushing
+                escape_nyt=1, //!< Not Yet Transmitted
             };
 
-
+            typedef int2type<escape_end> ESC_END_t; //!< alias
+            extern const ESC_END_t       ESC_END;   //!< alias
             
             typedef int2type<escape_nyt> ESC_NYT_t; //!< alias
             extern const ESC_NYT_t       ESC_NYT;   //!< alias
 
-            typedef int2type<escape_end> ESC_END_t; //!< alias
-            extern const ESC_END_t       ESC_END;   //!< alias
+
 
             //__________________________________________________________________
             //
@@ -124,12 +124,19 @@ namespace yack
             };
 
 
+            enum alphabet_status
+            {
+                alphabet_set, //!< empty
+                alphabet_run, //!< has some codes, not all
+                alphabet_all  //!< has all codes
+            };
+
             template <const size_t CODE_BITS>
             class alphabet
             {
             public:
                 typedef glyph<CODE_BITS>               glyph_type;
-                typedef raw_list_of<glyph_type>            glyph_list;
+                typedef raw_list_of<glyph_type>        glyph_list;
                 typedef typename glyph_type::code_type code_type;
                 typedef typename glyph_type::word_type word_type;
                 static  const size_t   code_bits  = glyph_type::code_bits;
@@ -140,36 +147,42 @@ namespace yack
 
 
                 inline explicit alphabet(void *wksp) throw() :
-                glst(),
-                gtab( static_cast<glyph_type *>(wksp) ),
-                nyt( gtab+num_codes ),
-                end( nyt+1 ) {
+                g_list(),
+                status(alphabet_set),
+                tab( static_cast<glyph_type *>(wksp) ),
+                end( tab+num_codes ),
+                nyt( end+1 )
+                {
                     setup();
                 }
 
                 inline virtual ~alphabet() throw()
                 {
-                    glst.restart();
-                    out_of_reach::zset(gtab,data_size);
+                    g_list.restart();
+                    out_of_reach::zset(tab,data_size);
                 }
+
+                inline const glyph_list * operator->() const throw() { return &g_list; }
 
             private:
                 YACK_DISABLE_COPY_AND_ASSIGN(alphabet);
-                glyph_list  glst;
-                glyph_type *gtab;
-                glyph_type *nyt;
+                glyph_list            g_list;
+            public:
+                const alphabet_status status;
+            private:
+                glyph_type *tab;
                 glyph_type *end;
+                glyph_type *nyt;
 
 
                 void setup() throw()
                 {
                     for(size_t i=0;i<num_codes;++i)
                     {
-                        new (gtab+i) glyph_type(i);
+                        new (tab+i) glyph_type(i);
                     }
-
-                    glst.push_back( new (nyt) glyph_type(ESC_NYT) );
-                    glst.push_back( new (end) glyph_type(ESC_END) );
+                    g_list.push_back( new (end) glyph_type(ESC_END) );
+                    g_list.push_back( new (nyt) glyph_type(ESC_NYT) );
                 }
             };
             
