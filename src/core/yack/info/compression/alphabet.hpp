@@ -80,8 +80,7 @@ namespace yack
                 //______________________________________________________________
                 inline  glyph(const code_type c)          throw() : code(c), bits(code_bits), next(0), prev(0) {}   //!< setup
                 inline ~glyph()                           throw() { code=0; bits=0; }                               //!< cleanup
-                inline  glyph(const glyph &g)             throw() : code(g.code), bits(g.bits), next(0), prev(0) {} //!< copy
-                inline  glyph & operator=(const glyph &g) throw() { code=g.code; bits=g.bits; return *this; }       //!< assign
+
 
                 //! assign an escape/control sequence
                 template <int ESC>
@@ -117,8 +116,12 @@ namespace yack
 
                 word_type code; //!< code on a word
                 size_t    bits; //!< bits
+                size_t    freq; //!< frequency
                 glyph    *next; //!< for list
                 glyph    *prev; //!< for list
+
+            private:
+                YACK_DISABLE_COPY_AND_ASSIGN(glyph);
             };
 
 
@@ -127,6 +130,7 @@ namespace yack
             {
             public:
                 typedef glyph<CODE_BITS>               glyph_type;
+                typedef core_list_of<glyph_type>       glyph_list;
                 typedef typename glyph_type::code_type code_type;
                 typedef typename glyph_type::word_type word_type;
                 static  const size_t   code_bits = glyph_type::code_bits;
@@ -137,28 +141,33 @@ namespace yack
 
 
                 inline explicit alphabet(void *wksp) throw() :
-                gtab( static_cast<glyph_type *>(wksp) )
+                glst(),
+                gtab( static_cast<glyph_type *>(wksp) ),
+                nyt( gtab+num_codes ),
+                end( nyt+1 )
                 {
-
-
-#if 0
-                    static memory::allocator &mgr = glyph_ops::memmgr();
-                    memory::embed emb[] =
+                    for(size_t i=0;i<num_codes;++i)
                     {
-                        memory::embed(gtab,num_glyphs)
-                    };
-                    wksp = YACK_MEMORY_EMBED(emb,mgr,wlen);
-                    std::cerr << "#byte=" << wlen << std::endl;
-#endif
+                        new (gtab+i) glyph_type(i);
+                    }
+
+                    new (nyt) glyph_type(ESC_NYT);
+                    new (end) glyph_type(ESC_END);
+
                 }
 
-                inline virtual ~alphabet() throw() {}
+                inline virtual ~alphabet() throw()
+                {
+
+                }
 
 
             private:
                 YACK_DISABLE_COPY_AND_ASSIGN(alphabet);
+                glyph_list  glst;
                 glyph_type *gtab;
-
+                glyph_type *nyt;
+                glyph_type *end;
 
             };
             
