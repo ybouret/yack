@@ -44,15 +44,17 @@ YACK_UTEST(eq)
         const outcome res = outcome::study(eq, K, C, S, xmul, xadd); std::cerr << res << " @" << S    << std::endl;
         eq.fill(nu);                                                 std::cerr << "nu    = " << nu    << std::endl;
         eq.drvs_action(phi,K,C,xmul);                                std::cerr << "phi   = " << phi   << std::endl;
-        const double slope = xadd.dot(psi,nu);                       std::cerr << "slope = " << slope << std::endl;
+        const double slope = xadd.dot(phi,nu);                       std::cerr << "slope = " << slope << std::endl;
         eq.drvs_action(psi,K,S,xmul);                                std::cerr << "psi   = " << psi   << std::endl;
         const double sigma = xadd.dot(psi,nu);                       std::cerr << "sigma = " << sigma << std::endl;
-        const double g0 = eq.mass_action(K,C,xmul) / (-sigma);       std::cerr << "g0    = " << g0    << std::endl;
-        const double Xi = res.value;                                 std::cerr << "Xi    = " << Xi    << std::endl;
+        const double G0    = eq.mass_action(K,C,xmul);
+        const double g0    = G0 / (-sigma);                          std::cerr << "g0    = " << g0    << std::endl;
+        const double Xi    = res.value;                              std::cerr << "Xi    = " << Xi    << std::endl;
 
-
-        continue;
-
+        const double A0 = G0;
+        const double A1 = slope * Xi;
+        const double A2 = -xadd(3*G0,2*slope*Xi,sigma*Xi);
+        const double A3 = xadd(2*G0,slope*Xi,sigma*Xi);
 
 
         const string  fn = "out_" + eq.name + ".dat";
@@ -64,10 +66,11 @@ YACK_UTEST(eq)
             const double u = double(i)/NP;
             const double x = Xi * u;
             const double l = (Xi-x);
-            const double c = g0 * (1.0-u);
             const double g = eq.mass_action(K,C,S,u,Ctry,xmul)/(-sigma);
+            const double t = g0 + slope * x / (-sigma);
+            const double q = (A0+u*A1+u*u*A2+u*u*u*A3)/(-sigma);
 
-            fp("%.15g %.15g %.15g %.15g\n", x, g, l, c);
+            fp("%.15g %.15g %.15g %.15g %.15g\n", x, g, l, t, q);
         }
         std::cerr << std::endl;
     }

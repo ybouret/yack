@@ -152,6 +152,18 @@ namespace yack
                 return get();
             }
 
+            template <typename U, typename V, typename W>
+            inline T operator()(U u, V v, W w)
+            {
+                self_type &self = *this;
+                resume(3);
+                self += u;
+                self += v;
+                self += w;
+                return get();
+            }
+
+
         private:
             YACK_DISABLE_COPY_AND_ASSIGN(adder);
         };
