@@ -218,35 +218,59 @@ Around $0$:
 \Gamma_i\left(\vec{C}+\xi_i \vec{\nu}_i \right) \simeq \underbrace{\langle \vec{\nu}_i \vert \vec{\Psi}_i \rangle}_{\sigma_i \leq 0}\xi_i + \Gamma_i
 \end{equation}
 
-\end{document}
-
+Around $[0;\Xi_i]$:
 \begin{equation}
-	\Gamma_i\left(\vec{C}+\xi_i \vec{\nu}_i  + \sum_{j\not= i} \xi_j \vec{\nu}_j \right) 	\simeq 
-	\underbrace{\langle \vec{\nu}_i \vert \vec{\Psi}_i' \rangle}_{\sigma_i<0} (\xi_i-\Xi_i) + \square_i   (\Xi_i-\xi_i)
-	+ \sum_{j\not=i}  \langle \vec{\Psi}_{\xi_i} \vert \vec{\nu}_j \rangle \xi_j
+\left\lbrace
+\begin{array}{rcl}
+	\Gamma_i\left(\vec{C}+\xi_i \vec{\nu}_i \right) & \simeq & \Gamma_i + \sigma_i \xi_i + A_i \xi_i^2 + B_i \xi_i^3\\
+	\partial_{\xi_i} \Gamma_i(\xi_i) & \simeq & \sigma_i + 2 A_i \xi_i + 3 B_i \xi_i^2\\
+\end{array}
+\right.
 \end{equation}
 
 \begin{equation}
 \left\lbrace
 \begin{array}{rcl}
- \Gamma_i & = & -\sigma_i \Xi_i + \square(\Xi_i) \\
- \square_i(\Xi_i) & = & \Gamma_i + \sigma_i \Xi_i\\
- \square_i(0) & = & 0\\
- \square_i'(0) & = & 0\\
- \vec{\Psi}_{\xi_i} & \simeq & \left(1-\dfrac{\xi_i}{\Xi_i}\right) \vec{\Psi}_i + \dfrac{\xi_i}{\Xi_i} \vec{\Psi}_i'\\
+	0 & = & \Gamma_i + \sigma_i \Xi_i + A_i \Xi_i^2 + B_i \Xi_i^3\\
+	\sigma_i' & = & \sigma_i + 2 A_i \Xi_i + 3 B_i \Xi_i^2\\
 \end{array}
 \right.
 \end{equation}
 
-We want:
+
 \begin{equation}
-(1-\alpha_i) \Gamma_i = \sigma_i \left(\xi_i - \Xi_i\right) + \square_i\left(\Xi_i-\xi_i\right) + 
-\sum_{j\not=i}  \langle \vec{\Psi}_i \vert \vec{\nu}_j \rangle \xi_j
-+\sum_{j\not=i}  \dfrac{\xi_i}{\Xi_i}\langle \Delta\vec{\Psi}_i \vert \vec{\nu}_j \rangle \xi_j
+\left\lbrace
+\begin{array}{rcl}
+	A_i & = & -\dfrac{\Xi(2\sigma_i+\sigma_i')+3\Gamma_i}{\Xi_i^2}\\
+	\\
+	B_i & = & \dfrac{\Xi(\sigma_i+\sigma_i')+2\Gamma_i}{\Xi_i^3}\\
+\end{array}
+\right.
+\end{equation}
+
+\begin{equation}
+\left\lbrace
+\begin{array}{rcl}
+	\partial_{\xi_i} \Gamma_i(\xi_i) & = & \sigma_i\left[1-\dfrac{\xi_i}{\Xi_i}\right] + \sigma_i'\left[\dfrac{\xi_i}{\Xi_i}\right] - 3B_i \xi_i\left[\Xi_i-\xi_i\right] \\
+	& = & \langle \vec{\Psi}_{\xi_i} \vert \vec{\nu}_i \rangle\\
+\end{array}
+\right.
+\end{equation}
+
+\begin{equation}
+\left\lbrace
+\begin{array}{rcl}
+ \vec{\Psi}_{\xi_i} & = & \vec{\Psi}_i \left[1-\dfrac{\xi_i}{\Xi_i}\right] + \vec{\Psi}_i'\left[\dfrac{\xi_i}{\Xi_i}\right] -   \xi_i\left[\Xi_i-\xi_i\right] \vec{\eta_i}\\
+ \\
+\langle \vec{\eta}_i \vert \vec{\nu}_i \rangle & = & 3B_i \\
+\end{array}
+\right.
 \end{equation}
 
 
+
 \end{document}
+
 
 
  
