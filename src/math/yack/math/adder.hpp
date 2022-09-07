@@ -152,6 +152,7 @@ namespace yack
                 return get();
             }
 
+            //! sum of a triplet
             template <typename U, typename V, typename W>
             inline T operator()(U u, V v, W w)
             {
@@ -160,6 +161,19 @@ namespace yack
                 self += u;
                 self += v;
                 self += w;
+                return get();
+            }
+
+            //! sum of a quadruplet
+            template <typename U, typename V, typename W, typename X>
+            inline T operator()(U u, V v, W w, X x)
+            {
+                self_type &self = *this;
+                resume(4);
+                self += u;
+                self += v;
+                self += w;
+                self += x;
                 return get();
             }
 

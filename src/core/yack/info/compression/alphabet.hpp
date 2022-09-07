@@ -46,8 +46,8 @@ namespace yack
                 //! display raw data
                 static void display_raw(std::ostream &os, const void *addr, const size_t size);
 
-                static memory::allocator & memmgr();
-                static void                release(void * &, size_t &) throw();
+                static memory::allocator & memmgr(); //!< memory manager
+                static void                release(void * &, size_t &) throw(); //!< release allocated bytes
             };
 
             //__________________________________________________________________
@@ -124,6 +124,7 @@ namespace yack
             };
 
 
+            //! alpabet status
             enum alphabet_status
             {
                 alphabet_set, //!< empty
@@ -131,21 +132,27 @@ namespace yack
                 alphabet_all  //!< has all codes
             };
 
+
+            //! alphabet
             template <const size_t CODE_BITS>
             class alphabet
             {
             public:
-                typedef glyph<CODE_BITS>               glyph_type;
-                typedef raw_list_of<glyph_type>        glyph_list;
-                typedef typename glyph_type::code_type code_type;
-                typedef typename glyph_type::word_type word_type;
-                static  const size_t                   code_bits  = glyph_type::code_bits;
-                static  const size_t                   num_codes  = (1<<code_bits);
-                static  const size_t                   num_cntls  = escape_end+1;
-                static  const size_t                   num_glyphs = num_codes+num_cntls;
-                static  const size_t                   data_size  = num_glyphs * sizeof(glyph_type);
+                //______________________________________________________________
+                //
+                // types and definitions
+                //______________________________________________________________
+                typedef glyph<CODE_BITS>               glyph_type;                                    //!< alias
+                typedef raw_list_of<glyph_type>        glyph_list;                                    //!< alias
+                typedef typename glyph_type::code_type code_type;                                     //!< alias
+                typedef typename glyph_type::word_type word_type;                                     //!< alias
+                static  const size_t                   code_bits  = glyph_type::code_bits;            //!< alias
+                static  const size_t                   num_codes  = (1<<code_bits);                   //!< codes
+                static  const size_t                   num_cntls  = escape_end+1;                     //!< controls
+                static  const size_t                   num_glyphs = num_codes+num_cntls;              //!<  glyphs
+                static  const size_t                   data_size  = num_glyphs * sizeof(glyph_type);  //!< bytes to hold glyphs
 
-
+                //! setup with data_size workspace
                 inline explicit alphabet(void *wksp) throw() :
                 g_list(),
                 status(alphabet_set),
@@ -156,19 +163,21 @@ namespace yack
                     setup();
                 }
 
+                //! cleanup
                 inline virtual ~alphabet() throw()
                 {
                     g_list.restart();
                     out_of_reach::zset(tab,data_size);
                 }
 
+                //! access
                 inline const glyph_list * operator->() const throw() { return &g_list; }
 
             private:
                 YACK_DISABLE_COPY_AND_ASSIGN(alphabet);
                 glyph_list            g_list;
             public:
-                const alphabet_status status;
+                const alphabet_status status; //!< current status
             private:
                 glyph_type *tab;
                 glyph_type *end;
