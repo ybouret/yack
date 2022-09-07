@@ -29,6 +29,7 @@ YACK_UTEST(eq)
     vector<double> S(M,0);
     vector<double> Ctry(M,0);
     vector<double> psi(M,0);
+    vector<double> phi(M,0);
     vector<int>    nu(M,0);
     
     lib.fill(C,ran);
@@ -39,25 +40,21 @@ YACK_UTEST(eq)
     {
         const equilibrium &eq  = ***node;
         const double       K   = eq.K(0);
-        
-        const outcome      res = outcome::study(eq, K, C, S, xmul, xadd);
-        std::cerr << res << " @" << S << std::endl;
-        
-        eq.fill(nu);
-        eq.drvs_action(psi,K,S,xmul);
-        std::cerr << "nu    = " << nu  << std::endl;
-        std::cerr << "psi   = " << psi << std::endl;
-        const double sigma = xadd.dot(psi,nu);
-        std::cerr << "sigma = " << sigma << std::endl;
-        const double g0 = eq.mass_action(K,C,xmul) / (-sigma);
-        std::cerr << "g0    = " << g0 << std::endl;
-        const double Xi = res.value;
 
-        const double A0 = g0;
-        const double A1 = -g0/Xi;
-        const double A2 = 1.0/Xi - g0/Xi/Xi;
-        const double A3 = g0/Xi/Xi/Xi - 1.0/Xi/Xi;
-        std::cerr << "A=[" << A0 << ' ' << A1 << ' ' << A2 << ' ' << A3 << "]" << std::endl;
+        const outcome res = outcome::study(eq, K, C, S, xmul, xadd); std::cerr << res << " @" << S    << std::endl;
+        eq.fill(nu);                                                 std::cerr << "nu    = " << nu    << std::endl;
+        eq.drvs_action(phi,K,C,xmul);                                std::cerr << "phi   = " << phi   << std::endl;
+        const double slope = xadd.dot(psi,nu);                       std::cerr << "slope = " << slope << std::endl;
+        eq.drvs_action(psi,K,S,xmul);                                std::cerr << "psi   = " << psi   << std::endl;
+        const double sigma = xadd.dot(psi,nu);                       std::cerr << "sigma = " << sigma << std::endl;
+        const double g0 = eq.mass_action(K,C,xmul) / (-sigma);       std::cerr << "g0    = " << g0    << std::endl;
+        const double Xi = res.value;                                 std::cerr << "Xi    = " << Xi    << std::endl;
+
+
+        continue;
+
+
+
         const string  fn = "out_" + eq.name + ".dat";
         ios::ocstream fp(fn);
 
@@ -69,9 +66,8 @@ YACK_UTEST(eq)
             const double l = (Xi-x);
             const double c = g0 * (1.0-u);
             const double g = eq.mass_action(K,C,S,u,Ctry,xmul)/(-sigma);
-            const double q = A0 + A1*x + A2*x*x + A3*x*x*x;
 
-            fp("%.15g %.15g %.15g %.15g %.15g\n", x, g, q, l, c);
+            fp("%.15g %.15g %.15g %.15g\n", x, g, l, c);
         }
         std::cerr << std::endl;
     }
