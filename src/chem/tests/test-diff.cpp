@@ -42,7 +42,7 @@ YACK_UTEST(diff)
     const double   Xi = (alpha-1)/(alpha+1);
     std::cerr << "outcome: " << oc << std::endl;
     std::cerr << "guess  : " <<  Xi << std::endl;
-    eq.drvs_action(Psi, K, S, xmul);
+    eq.grad_action(Psi, K, S, xmul);
     const double sigma = xadd.dot(Psi,Nu);
     std::cerr << "sigma  : " << sigma << std::endl;
 

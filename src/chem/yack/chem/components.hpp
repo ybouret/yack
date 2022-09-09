@@ -125,11 +125,12 @@ namespace yack
                                rmulops                &ops) const;
 
             //! compute gradient of mass action
-            void drvs_action(writable<double>       &psi,
+            void grad_action(writable<double>       &psi,
                              const double            K,
                              const readable<double> &C,
                              rmulops                &xmul) const;
-            
+
+
             
             //! move C with computed extent
             void move(writable<double> &C, const double xi) const throw();

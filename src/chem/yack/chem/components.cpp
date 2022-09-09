@@ -108,14 +108,14 @@ namespace yack
             return rma - pma;
         }
 
-        void components:: drvs_action(writable<double>       &psi,
+        void components:: grad_action(writable<double>       &psi,
                                       const double            K,
                                       const readable<double> &C,
                                       rmulops                &xmul) const
         {
             psi.ld(0);
-            reac.drvs_action(psi,    K, C, xmul);
-            prod.drvs_action(psi, -1.0, C, xmul);
+            reac.grad_action(psi,    K, C, xmul);
+            prod.grad_action(psi, -1.0, C, xmul);
         }
         
         double components:: quotient(const double            K,

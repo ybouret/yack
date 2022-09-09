@@ -43,9 +43,9 @@ YACK_UTEST(eq)
 
         const outcome res = outcome::study(eq, K, C, S, xmul, xadd); std::cerr << res << " @" << S    << std::endl;
         eq.fill(nu);                                                 std::cerr << "nu    = " << nu    << std::endl;
-        eq.drvs_action(phi,K,C,xmul);                                std::cerr << "phi   = " << phi   << std::endl;
+        eq.grad_action(phi,K,C,xmul);                                std::cerr << "phi   = " << phi   << std::endl;
         const double slope = xadd.dot(phi,nu);                       std::cerr << "slope = " << slope << std::endl;
-        eq.drvs_action(psi,K,S,xmul);                                std::cerr << "psi   = " << psi   << std::endl;
+        eq.grad_action(psi,K,S,xmul);                                std::cerr << "psi   = " << psi   << std::endl;
         const double sigma = xadd.dot(psi,nu);                       std::cerr << "sigma = " << sigma << std::endl;
         const double G0    = eq.mass_action(K,C,xmul);
         const double g0    = G0 / (-sigma);                          std::cerr << "g0    = " << g0    << std::endl;

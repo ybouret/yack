@@ -75,7 +75,7 @@ namespace yack
             return ops.query();
         }
         
-        void actors:: drvs_action(writable<double>       &psi,
+        void actors:: grad_action(writable<double>       &psi,
                                   const double            factor,
                                   const readable<double> &C,
                                   rmulops                &xmul) const

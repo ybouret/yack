@@ -115,7 +115,7 @@ namespace yack
                             emax = &eq;
                             ppty =  oc;
                         }
-                        eq.drvs_action(psi,Ki,Ci,xmul);
+                        eq.grad_action(psi,Ki,Ci,xmul);
                         sigma[ei] = xadd.dot(psi, Nu[ei]);
                         if(sigma[ei]>=0) throw imported::exception(clid,"corrupted <%s>",eq.name());
                     } break;
