@@ -1,7 +1,7 @@
 //! \file
 
-#ifndef YACK_CROUT_INCLUDED
-#define YACK_CROUT_INCLUDED 1
+#ifndef YACK_CROUT__INCLUDED
+#define YACK_CROUT__INCLUDED 1
 
 #include "yack/container/dynamic.hpp"
 #include "yack/sequence/thin-array.hpp"
@@ -13,7 +13,6 @@ namespace yack
         class crout_ : public dynamic
         {
         public:
-            const   size_t dims;
 
             explicit crout_(const size_t dimension,
                             const size_t type_size,
@@ -22,10 +21,11 @@ namespace yack
 
             virtual size_t granted() const throw();
             
+            const   size_t nmax;  //!< maximum dimension
         protected:
-            size_t *indx_; //!< for thin_array<size_t>
-            void   *scal_; //!< for scalars
-            void   *xtra_; //!< for extra row/col
+            size_t        *indx_; //!< for thin_array<size_t>
+            void          *scal_; //!< for scalars
+            void          *xtra_; //!< for extra row/col
 
         private:
             YACK_DISABLE_COPY_AND_ASSIGN(crout_);

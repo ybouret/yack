@@ -12,7 +12,7 @@ namespace yack
         crout_:: ~crout_() throw()
         {
             static memory::allocator &mgr = memory::dyadic::location();
-            coerce(dims) = 0;
+            coerce(nmax) = 0;
             indx_        = 0;
             scal_        = 0;
             xtra_        = 0;
@@ -22,7 +22,7 @@ namespace yack
         crout_:: crout_(const size_t dimension,
                         const size_t type_size,
                         const size_t scal_size) :
-        dims( dimension ),
+        nmax( dimension ),
         indx_(0),
         scal_(0),
         xtra_(0)
@@ -31,9 +31,9 @@ namespace yack
 
             memory::embed emb[] =
             {
-                memory::embed(indx_,dims),
-                memory::embed(scal_,scal_size*dims,as_capacity),
-                memory::embed(xtra_,type_size*dims,as_capacity)
+                memory::embed(indx_,nmax),
+                memory::embed(scal_,scal_size*nmax,as_capacity),
+                memory::embed(xtra_,type_size*nmax,as_capacity)
             };
 
             wksp = YACK_MEMORY_EMBED(emb,mgr,wlen);
