@@ -161,7 +161,6 @@ COMPUTE_CURVATURE:
         {
             // local adjustment
             D2try = self.optimize(g,D2ini,D2try);
-            exit(0);
         }
 
         //------------------------------------------------------
