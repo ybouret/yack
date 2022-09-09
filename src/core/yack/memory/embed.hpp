@@ -4,6 +4,7 @@
 #define YACK_MEMORY_EMBED_INCLUDED 1
 
 #include "yack/type/out-of-reach.hpp"
+#include "yack/container/as-capacity.hpp"
 #include <iosfwd>
 
 namespace yack
@@ -37,6 +38,18 @@ namespace yack
             {
                 assert(handle);
                 *handle = 0;
+            }
+
+            //! setup for a raw block, using as_capacity to disambiguate
+            inline embed(void *             & block_addr,
+                         const size_t         block_size,
+                         const as_capacity_t &) throw() :
+            handle( &block_addr ),
+            offset(0),
+            length( block_size ),
+            width_(1)
+            {
+
             }
 
             embed(const embed &) throw(); //!< no-throw copy

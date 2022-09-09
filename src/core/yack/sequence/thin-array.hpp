@@ -1,5 +1,3 @@
-
-
 //! \file
 
 #ifndef YACK_THIN_ARRAY_INCLUDED
@@ -36,9 +34,14 @@ namespace yack
         //______________________________________________________________________
         
         //! cleanup
-        inline virtual ~thin_array() throw() { entry=0; coerce(count)=0; }
+        inline virtual ~thin_array() throw() {
+            entry=0;
+            coerce(count)=0;
+            basis = 0;
+            hired = 0;
+        }
         
-        //! setup
+        //! setup from user's C-style data
         inline explicit thin_array(type *arr, const size_t num) throw() :
         collection(),
         contiguous<T>(),
