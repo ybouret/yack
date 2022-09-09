@@ -16,6 +16,7 @@ YACK_UTEST_DECL(256)
     YACK_UTEST(prime);
     YACK_UTEST(primePi);
     YACK_UTEST(prime32);
+    YACK_UTEST(prime_stab);
     YACK_UTEST(genp32);
     YACK_UTEST(functor);
     YACK_UTEST(rtti);

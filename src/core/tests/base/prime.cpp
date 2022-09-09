@@ -70,7 +70,7 @@ YACK_UTEST(prime)
     std::cerr << "#p32    = " << p32.size << std::endl;
     std::cerr << "|_bytes = " << p32.size * 4  << std::endl;
 
-    if(true)
+    if(false)
     {
         std::cerr << "const uint8_t primes::p8[" << p8.size << "]={" << std::endl;
         output(p8);

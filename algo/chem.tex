@@ -208,6 +208,17 @@ $$
 
 \subsection{Extension in 1D}
 
+We know $\Gamma_i$ is a {\bf decreasing} polynomial with degree:
+\begin{equation}
+	d_i = \max\left(\sum_j \nu_{ij}^p,\sum_j \nu_{ij}^pr\right)
+\end{equation}
+and $\Xi_i$ is a first order zero of this polynomial. 
+
+The partial derivative is:
+\begin{equation}
+	\partial_{\xi_i} \Gamma_i =  \langle \vec{\Psi}_{\xi_i} \vert \vec{\nu}_i \rangle
+\end{equation}
+
 Around $\Xi_i$:
 \begin{equation}
 \Gamma_i\left(\vec{C}+\xi_i \vec{\nu}_i \right) \simeq \underbrace{\langle \vec{\nu}_i \vert \vec{\Psi}_i' \rangle}_{\sigma'_i<0} (\xi_i-\Xi_i)
@@ -218,14 +229,14 @@ Around $0$:
 \Gamma_i\left(\vec{C}+\xi_i \vec{\nu}_i \right) \simeq \underbrace{\langle \vec{\nu}_i \vert \vec{\Psi}_i \rangle}_{\sigma_i \leq 0}\xi_i + \Gamma_i
 \end{equation}
 
-And $\Gamma_i$ is a {\bf decreasing} polynomial with degree:
-\begin{equation}
-	d_i = \max\left(\sum_j \nu_{ij}^p,\sum_j \nu_{ij}^pr\right)
-\end{equation}
-and $\Xi_i$ is a first order zero of this polynomial. 
+
 
 \begin{equation}
-	\Gamma_i\left(\vec{C}+\xi_i \vec{\nu}_i \right) = \sigma_i'\left(\xi_i - \Xi_i\right) \left[ -\dfrac{\Gamma_i}{\Xi_i\sigma_i'} + \right]
+	\Gamma_i\left(\vec{C}+\xi_i \vec{\nu}_i \right) = \sigma_i'\left(\xi_i - \Xi_i\right) \left[ -\dfrac{\Gamma_i}{\Xi_i\sigma_i'} + \ldots \right]
+\end{equation}
+
+\begin{equation}
+	\Gamma_i \left( \vec{C}+\xi_i \vec{\nu}_i + \sum_{j\not=i} \nu_j \vec{\xi}_j \right) = 
 \end{equation}
 
 
