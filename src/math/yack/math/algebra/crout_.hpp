@@ -22,6 +22,8 @@ namespace yack
             virtual size_t granted() const throw();
             
             const   size_t nmax;  //!< maximum dimension
+            const   bool   dneg;  //!< marker for negative det
+
         protected:
             size_t        *indx_; //!< for thin_array<size_t>
             void          *scal_; //!< for scalars

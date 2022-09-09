@@ -23,6 +23,7 @@ namespace yack
                         const size_t type_size,
                         const size_t scal_size) :
         nmax( dimension ),
+        dneg(false),
         indx_(0),
         scal_(0),
         xtra_(0)

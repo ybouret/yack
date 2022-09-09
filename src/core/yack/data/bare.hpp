@@ -7,6 +7,7 @@
 #include "yack/type/args.hpp"
 #include "yack/type/out-of-reach.hpp"
 #include "yack/arith/align.hpp"
+#include "yack/type/destruct.hpp"
 
 namespace yack
 {
@@ -30,6 +31,13 @@ namespace yack
         {
             new ( out_of_reach::zset(wksp,sizeof(wksp)) ) mutable_type();
         }
+
+        //! setup
+        inline  bare(const param_type args) : wksp()
+        {
+            new ( out_of_reach::zset(wksp,sizeof(wksp)) ) mutable_type(args);
+        }
+
 
         //! access
         inline const_type & operator*() const throw() { return *static_cast<const_type*>( out_of_reach::address(wksp) ); }
