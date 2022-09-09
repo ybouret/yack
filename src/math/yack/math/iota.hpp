@@ -216,6 +216,23 @@ namespace yack {
             {
                 assert(A.rows==B.rows);
                 assert(A.cols==C.cols);
+                assert(B.cols==C.rows);
+                const size_t nc = A.cols;
+                const size_t nk = B.cols;
+                for(size_t i=A.rows;i>0;--i)
+                {
+                    writable<T>       &A_i = A[i];
+                    const readable<T> &B_i = B[i];
+                    for(size_t j=nc;j>0;--j)
+                    {
+                        T sum = 0;
+                        for(size_t k=nk;k>0;--k)
+                        {
+                            sum += B_i[k] * C[k][j];
+                        }
+                        A_i[j] = sum;
+                    }
+                }
             }
 
 

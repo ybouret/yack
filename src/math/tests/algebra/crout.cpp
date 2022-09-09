@@ -51,7 +51,8 @@ namespace
                 vector<T> r(n);
                 vector<T> u(n);
                 vector<T> v(n);
-
+                matrix<T> J(n,n);
+                
                 for(size_t outer=count;outer>0;--outer)
                 {
                     for(size_t i=1;i<=n;++i)
@@ -91,8 +92,20 @@ namespace
                         std::cerr << ":]" << std::endl;
 
                         cr.inverse(a,I);
-                        std::cerr << a0 << "*" << I << std::endl;
+                        
+                        iota::mul(J,a0,I);
+                        std::cerr << "J=" << J << std::endl;
+                        
+                        // TODO: test
+                        
+                        cr.adjoint(J,a0);
+                        std::cerr << "M=" << a0 << std::endl;
+                        std::cerr << "A=" << J << std::endl;
+                        iota::mul(I,a0,J);
+                        std::cerr << "dI=" << I << std::endl;
 
+                        
+                        
                         
                     }
                     else
