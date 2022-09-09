@@ -122,13 +122,31 @@ namespace yack
             double mass_action(const double            K,
                                const readable<double> &C,
                                const double            xi,
-                               rmulops                &ops) const;
+                               rmulops                &xmul) const;
 
             //! compute gradient of mass action
             void grad_action(writable<double>       &psi,
                              const double            K,
                              const readable<double> &C,
                              rmulops                &xmul) const;
+
+            //! compute gradient and derivative of mass action
+            double diff_action(writable<double>       &psi,
+                               const double            K,
+                               const readable<double> &C,
+                               rmulops                &xmul,
+                               raddops                &xadd) const;
+
+            //!  compute gradient and derivative of mass action for a given fraction of Cini->Cend
+            double diff_action(writable<double>       &psi,
+                               const double            K,
+                               const readable<double> &Cini,
+                               const readable<double> &Cend,
+                               const double            u,
+                               writable<double>       &Ctry,
+                               rmulops                &xmul,
+                               raddops                &xadd) const;
+
 
 
             

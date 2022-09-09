@@ -70,7 +70,9 @@ YACK_UTEST(eq)
             const double dt = fabs(t-g);
             const double winner = dl<dt ? l : t;
 
-            fp("%.15g %.15g %.15g\n", x, g, winner);
+            const double dg = eq.diff_action(phi, K, C, S, u, Ctry, xmul, xadd) / (-sigma);
+
+            fp("%.15g %.15g %.15g %.15g\n", x, g, winner, dg);
         }
         std::cerr << std::endl;
     }

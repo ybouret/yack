@@ -117,6 +117,25 @@ namespace yack
             reac.grad_action(psi,    K, C, xmul);
             prod.grad_action(psi, -1.0, C, xmul);
         }
+
+        double components:: diff_action(writable<double>       &psi,
+                                        const double            K,
+                                        const readable<double> &C,
+                                        rmulops                &xmul,
+                                        raddops                &xadd) const
+        {
+            grad_action(psi,K,C,xmul);
+            xadd.resume(size());
+            for(const cnode *node=head();node;node=node->next)
+            {
+                const component &c  = ***node;
+                const int        nu = c.nu;
+                const size_t     j  = **c;
+                xadd += (nu*psi[j]);
+            }
+            return xadd.get();
+        }
+
         
         double components:: quotient(const double            K,
                                      const readable<double> &C,
@@ -199,7 +218,39 @@ namespace yack
             }
         }
 
-       
+        double  components:: diff_action(writable<double>       &psi,
+                                         const double            K,
+                                         const readable<double> &Cini,
+                                         const readable<double> &Cend,
+                                         const double            u,
+                                         writable<double>       &Ctry,
+                                         rmulops                &xmul,
+                                         raddops                &xadd) const
+        {
+            if(u<=0)
+            {
+                return diff_action(psi,K,Cini,xmul,xadd);
+            }
+            else
+            {
+                if(u>=1.0)
+                {
+                    return diff_action(psi,K,Cend,xmul,xadd);
+                }
+                else
+                {
+                    const double v = 1.0 - u;
+                    math::iota::load(Ctry,Cini);
+                    for(const cnode *node=head();node;node=node->next)
+                    {
+                        const size_t j = *****node;
+                        Ctry[j] = v * Cini[j] + u * Cend[j];
+                    }
+                    return diff_action(psi,K,Ctry,xmul,xadd);
+                }
+            }
+        }
+
         
 
         double components:: estimate_extent(const readable<double> &Cini,
