@@ -54,26 +54,45 @@ YACK_UTEST(eq)
 
 
 
-        const string  fn = "out_" + eq.name + ".dat";
-        ios::ocstream fp(fn);
-
-        const size_t NP = 100;
-        for(size_t i=0;i<=NP;++i)
         {
-            const double u = double(i)/NP;
-            const double x = Xi * u;
-            const double l = (Xi-x);
-            const double g = eq.mass_action(K,C,S,u,Ctry,xmul)/(-sigma);
-            const double t = g0 + slope * x / (-sigma);
+            const string  fn = "gamma.dat";
+            ios::ocstream fp(fn);
 
-            const double dl = fabs(l-g);
-            const double dt = fabs(t-g);
-            const double winner = dl<dt ? l : t;
+            const size_t NP = 100;
+            for(size_t i=0;i<=NP;++i)
+            {
+                const double u = double(i)/NP;
+                const double x = Xi * u;
+                const double l = (Xi-x);
+                const double g = eq.mass_action(K,C,S,u,Ctry,xmul)/(-sigma);
+                const double t = g0 + slope * x / (-sigma);
 
-            const double dg = eq.diff_action(phi, K, C, S, u, Ctry, xmul, xadd) / (-sigma);
+                const double dl = fabs(l-g);
+                const double dt = fabs(t-g);
+                const double winner = dl<dt ? l : t;
 
-            fp("%.15g %.15g %.15g %.15g\n", x, g, winner, dg);
+                const double dg = eq.diff_action(phi, K, C, S, u, Ctry, xmul, xadd) / (-sigma);
+
+                fp("%.15g %.15g %.15g %.15g\n", x, g, winner, dg);
+            }
         }
+
+        {
+            const string  fn = "dgamm.dat";
+            ios::ocstream fp(fn);
+
+            const size_t NP = 100;
+            for(size_t i=0;i<=NP;++i)
+            {
+                const double u  = double(i)/NP;
+                const double dg = eq.diff_action(phi, K, C, S, u, Ctry, xmul, xadd) / (-sigma);
+                fp("%.15g %.15g\n", u, dg+1);
+
+            }
+
+        }
+
+
         std::cerr << std::endl;
     }
 
