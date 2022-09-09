@@ -26,7 +26,9 @@ namespace yack
         dneg(false),
         indx_(0),
         scal_(0),
-        xtra_(0)
+        xtra_(0),
+        wksp(0),
+        wlen(0)
         {
             static memory::allocator &mgr = memory::dyadic::instance();
 

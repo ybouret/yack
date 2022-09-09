@@ -7,6 +7,8 @@
 #include "yack/math/algebra/crout_.hpp"
 #include "yack/container/matrix.hpp"
 #include "yack/memory/operative.hpp"
+#include "yack/math/adder.hpp"
+#include "yack/math/multiplier.hpp"
 
 namespace yack
 {
@@ -35,7 +37,162 @@ namespace yack
             }
 
 
-            bool initialize(matrix<T> &a)
+            inline bool build(matrix<T> &a)
+            {
+                if(!initialize(a)) return false;
+                const size_t            n = a.rows;
+                thin_array<size_t>      indx(indx_,n);
+                thin_array<scalar_type> scal(static_cast<scalar_type*>(scal_),n);
+
+                //______________________________________________________________
+                //
+                // loop over column
+                //______________________________________________________________
+                for(size_t j=1;j<=n;++j)
+                {
+
+                    // pass 1
+                    for(size_t i=1;i<j;i++)
+                    {
+                        writable<type> &a_i = a[i];
+                        type sum=a_i[j];
+                        for (size_t k=1;k<i;k++)
+                            sum -= a_i[k]*a[k][j];
+                        a_i[j]=sum;
+                    }
+
+                    // pass 2
+                    size_t      imax=j;
+                    scalar_type smax=0;
+                    for(size_t i=j;i<=n;++i)
+                    {
+                        writable<type> &a_i = a[i];
+                        type sum=a_i[j];
+                        for (size_t k=1;k<j;k++)
+                            sum -= a_i[k]*a[k][j];
+                        a_i[j]=sum;
+
+                        const scalar_type temp = scal[i] * abs_of<type>(sum);
+                        if(temp >= smax)
+                        {
+                            smax=temp;
+                            imax=i;
+                        }
+                    }
+
+                    // check if need to exchange
+                    if(imax!=j)
+                    {
+                        a.swap_rows(imax,j);
+                        coerce(dneg) = !dneg;
+                        scal[imax]   = scal[j];
+                    }
+
+                    // fill processing index
+                    indx[j] = imax;
+
+                    // check not singular up to precision
+                    const_type &a_jj = a[j][j];
+                    if(abs_of<type>(a_jj) <= 0) return false;
+
+                    // finalize
+                    if (j != n)
+                    {
+                        const_type fac=t_one/a_jj;
+                        for(size_t i=j+1;i<=n;++i)
+                            a[i][j] *= fac;
+
+                    }
+                }
+
+                return true;
+            }
+
+            inline void solve(const matrix<T> &a, writable<T> &b)
+            {
+
+                assert(a.cols==b.size());
+
+                const size_t            n = a.rows;
+                thin_array<size_t>      indx(indx_,n);
+                thin_array<scalar_type> scal(static_cast<scalar_type*>(scal_),n);
+
+                size_t ii=0;
+                for(size_t i=1;i<=n;++i)
+                {
+                    const readable<T> &a_i = a[i];
+                    size_t ip  = indx[i];
+                    type   sum = b[ip];
+                    b[ip]=b[i];
+                    if (ii)
+                    {
+                        for (size_t j=ii;j<i;++j)
+                        {
+                            sum -= a_i[j]*b[j];
+                        }
+                    }
+                    else
+                    {
+                        if( abs_of<type>(sum)>0 )
+                            ii=i;
+                    }
+                    b[i]=sum;
+                }
+
+                for (size_t i=n;i>0;--i) {
+                    const readable<T> &a_i = a[i];
+                    type sum=b[i];
+                    for (size_t j=i+1;j<=n;++j)
+                        sum -= a_i[j]*b[j];
+                    b[i]=sum/a_i[i];
+                }
+            }
+
+            inline void solve(const matrix<T> &a, matrix<T> &b)
+            {
+                assert(b.rows==a.rows);
+                const size_t     n = a.rows;
+                thin_array<type> u(static_cast<type*>(xtra_),n);
+                for(size_t j=b.cols;j>0;--j)
+                {
+                    for(size_t i=n;i>0;--i) u[i] = b[i][j];
+                    solve(a,u);
+                    for(size_t i=n;i>0;--i) b[i][j] = u[i];
+                }
+            }
+
+            inline type determinant(const matrix<T> &a) const
+            {
+                type res = a[1][1];
+                for(size_t i=a.rows;i>1;--i) res *= a[i][i];
+                return dneg ? -res : res;
+            }
+
+            inline void inverse(const matrix<T> &a, matrix<T> &I)
+            {
+                assert(matrix_metrics::have_same_sizes(a,I));
+                const size_t     n = a.rows;
+                { const type _0(0); I.ld(_0); }
+                for(size_t i=n;i>0;--i)
+                {
+                    I[i][i] = t_one;
+                }
+                solve(a,I);
+            }
+
+
+
+
+
+
+        private:
+            YACK_DISABLE_COPY_AND_ASSIGN(crout);
+            const_scalar_type                       s_one;
+            const_type                              t_one;
+            const memory::operative_of<scalar_type> scalM;
+            const memory::operative_of<type>        xtraM;
+
+            inline bool initialize(matrix<T> &a)
             {
                 //______________________________________________________________
                 //
@@ -71,124 +228,12 @@ namespace yack
                     scal[i] = s_one/piv;
                 }
 
-                std::cerr << "scal=" << scal << std::endl;
+                //______________________________________________________________
+                //
+                // done
+                //______________________________________________________________
                 return true;
             }
-
-
-            inline bool build(matrix<T> &a)
-            {
-                if(!initialize(a)) return false;
-                const size_t            n = a.rows;
-                thin_array<size_t>      indx(indx_,n);
-                thin_array<scalar_type> scal(static_cast<scalar_type*>(scal_),n);
-
-                // loop over column
-                for(size_t j=1;j<=n;++j)
-                {
-
-                    // pass 1
-                    for(size_t i=1;i<j;i++)
-                    {
-                        writable<type> &a_i = a[i];
-                        type sum=a_i[j];
-                        for (size_t k=1;k<i;k++)
-                            sum -= a_i[k]*a[k][j];
-                        a_i[j]=sum;
-                    }
-
-                    // pass 2
-                    size_t      imax=j;
-                    scalar_type piv=0;
-                    for(size_t i=j;i<=n;++i)
-                    {
-                        type sum=a[i][j];
-                        for (size_t k=1;k<j;k++)
-                            sum -= a[i][k]*a[k][j];
-                        a[i][j]=sum;
-
-                        const scalar_type tmp = scal[i] * abs_of<type>(sum);
-                        if( tmp >= piv)
-                        {
-                            piv=tmp;
-                            imax=i;
-                        }
-                    }
-
-                    // check if need to exchange
-                    if(imax!=j)
-                    {
-                        a.swap_rows(imax,j);
-                        coerce(dneg) = !dneg;
-                        scal[imax]   = scal[j];
-                    }
-
-                    // fill processing index
-                    indx[j] = imax;
-
-                    // check not singular up to precision
-                    const_type &a_jj = a[j][j];
-                    if(abs_of<type>(a[j][j]) <= 0) return false;
-
-                    // finalize
-                    if (j != n)
-                    {
-                        const_type fac=t_one/a_jj;
-                        for(size_t i=j+1;i<=n;++i)
-                            a[i][j] *= fac;
-
-                    }
-                }
-
-                return true;
-            }
-
-            inline void solve(const matrix<T> &a, writable<T> &b)
-            {
-
-                assert(a.cols==b.size());
-
-                const size_t            n = a.rows;
-                thin_array<size_t>      indx(indx_,n);
-                thin_array<scalar_type> scal(static_cast<scalar_type*>(scal_),n);
-
-                size_t ii=0;
-                for(size_t i=1;i<=n;++i)
-                {
-                    size_t ip=indx[i];
-                    type sum=b[ip];
-                    b[ip]=b[i];
-                    if (ii)
-                    {
-                        for (size_t j=ii;j<=i-1;++j)
-                        {
-                            sum -= a[i][j]*b[j];
-                        }
-                    }
-                    else
-                    {
-                        if( abs_of<type>(sum)>0 )
-                            ii=i;
-                    }
-                    b[i]=sum;
-                }
-
-                for (size_t i=n;i>0;--i) {
-                    type sum=b[i];
-                    for (size_t j=i+1;j<=n;++j)
-                        sum -= a[i][j]*b[j];
-                    b[i]=sum/a[i][i];
-                }
-            }
-
-
-        private:
-            YACK_DISABLE_COPY_AND_ASSIGN(crout);
-            const_scalar_type                       s_one;
-            const_type                              t_one;
-            const memory::operative_of<scalar_type> scalM;
-            const memory::operative_of<type>        xtraM;
-
 
         };
 

@@ -87,9 +87,13 @@ namespace yack {
                 }
             }
 
+            //------------------------------------------------------------------
+            //! dot products
+            //------------------------------------------------------------------
             template <typename T>
             struct dot
             {
+                //! lhs[1..lhs.size()] * rhs[1..lhs.size()]
                 template <typename LHS, typename RHS> static inline
                 T of(LHS &lhs, RHS &rhs, adder<T> &xadd)
                 {
@@ -103,6 +107,7 @@ namespace yack {
                     return xadd.get();
                 }
 
+                //! lhs[1..lhs.size()] * rhs[1..lhs.size()]
                 template <typename LHS, typename RHS> static inline
                 T of(LHS &lhs, RHS &rhs)
                 {
@@ -118,9 +123,15 @@ namespace yack {
                 }
             };
 
+
+
+            //------------------------------------------------------------------
+            //! mod2 of arrays
+            //------------------------------------------------------------------
             template <typename T>
             struct mod2
             {
+                // |lhs|^2
                 template <typename LHS> static inline
                 T of(LHS &lhs, adder<T> &xadd)
                 {
@@ -132,6 +143,7 @@ namespace yack {
                     return xadd.get();
                 }
 
+                //! |lhs|^2
                 template <typename LHS> static inline
                 T of(LHS &lhs )
                 {
@@ -143,6 +155,7 @@ namespace yack {
                     return res;
                 }
 
+                //! |lhs^2-rhs^2|
                 template <typename LHS, typename RHS> static inline
                 T of(LHS &lhs, RHS &rhs, adder<T> &xadd)
                 {
@@ -154,6 +167,7 @@ namespace yack {
                     return xadd.get();
                 }
 
+                //! |lhs^2-rhs^2|
                 template <typename LHS, typename RHS> static inline
                 T of(LHS &lhs, RHS &rhs)
                 {
@@ -194,6 +208,15 @@ namespace yack {
                     lhs[i] = dot<T>::of(M[i],rhs,xadd);
             }
 
+            //------------------------------------------------------------------
+            //! A = B * C
+            //------------------------------------------------------------------
+            template <typename T, typename U, typename V> static inline
+            void mul(matrix<T> &A, const matrix<U> &B, const matrix<V> &C)
+            {
+                assert(A.rows==B.rows);
+                assert(A.cols==C.cols);
+            }
 
 
         };
