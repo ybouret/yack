@@ -51,16 +51,13 @@ YACK_UTEST(eq)
         const double g0    = G0 / (-sigma);                          std::cerr << "g0    = " << g0    << std::endl;
         const double Xi    = res.value;                              std::cerr << "Xi    = " << Xi    << std::endl;
 
-        const double A0 = G0;
-        const double A1 = slope * Xi;
-        const double A2 = -xadd(3*G0,2*slope*Xi,sigma*Xi);
-        const double A3 = xadd(2*G0,slope*Xi,sigma*Xi);
+
 
 
         const string  fn = "out_" + eq.name + ".dat";
         ios::ocstream fp(fn);
 
-        const size_t NP = 50;
+        const size_t NP = 100;
         for(size_t i=0;i<=NP;++i)
         {
             const double u = double(i)/NP;
@@ -68,9 +65,8 @@ YACK_UTEST(eq)
             const double l = (Xi-x);
             const double g = eq.mass_action(K,C,S,u,Ctry,xmul)/(-sigma);
             const double t = g0 + slope * x / (-sigma);
-            const double q = (A0+u*A1+u*u*A2+u*u*u*A3)/(-sigma);
 
-            fp("%.15g %.15g %.15g %.15g %.15g\n", x, g, l, t, q);
+            fp("%.15g %.15g %.15g %.15g\n", x, g, l, t);
         }
         std::cerr << std::endl;
     }

@@ -218,55 +218,11 @@ Around $0$:
 \Gamma_i\left(\vec{C}+\xi_i \vec{\nu}_i \right) \simeq \underbrace{\langle \vec{\nu}_i \vert \vec{\Psi}_i \rangle}_{\sigma_i \leq 0}\xi_i + \Gamma_i
 \end{equation}
 
-Around $[0;\Xi_i]$:
+And $\Gamma_i$ is a {\bf decreasing} polynomial with degree:
 \begin{equation}
-\left\lbrace
-\begin{array}{rcl}
-	\Gamma_i\left(\vec{C}+\xi_i \vec{\nu}_i \right) & \simeq & \Gamma_i + \sigma_i \xi_i + A_i \xi_i^2 + B_i \xi_i^3\\
-	\partial_{\xi_i} \Gamma_i(\xi_i) & \simeq & \sigma_i + 2 A_i \xi_i + 3 B_i \xi_i^2\\
-\end{array}
-\right.
+\max\left(\sum_j \nu_{ij}^p,\sum_j \nu_{ij}^pr\right)
 \end{equation}
-
-\begin{equation}
-\left\lbrace
-\begin{array}{rcl}
-	0 & = & \Gamma_i + \sigma_i \Xi_i + A_i \Xi_i^2 + B_i \Xi_i^3\\
-	\sigma_i' & = & \sigma_i + 2 A_i \Xi_i + 3 B_i \Xi_i^2\\
-\end{array}
-\right.
-\end{equation}
-
-
-\begin{equation}
-\left\lbrace
-\begin{array}{rcl}
-	A_i & = & -\dfrac{\Xi(2\sigma_i+\sigma_i')+3\Gamma_i}{\Xi_i^2}\\
-	\\
-	B_i & = & \dfrac{\Xi(\sigma_i+\sigma_i')+2\Gamma_i}{\Xi_i^3}\\
-\end{array}
-\right.
-\end{equation}
-
-\begin{equation}
-\left\lbrace
-\begin{array}{rcl}
-	\partial_{\xi_i} \Gamma_i(\xi_i) & = & \sigma_i\left[1-\dfrac{\xi_i}{\Xi_i}\right] + \sigma_i'\left[\dfrac{\xi_i}{\Xi_i}\right] - 3B_i \xi_i\left[\Xi_i-\xi_i\right] \\
-	& = & \langle \vec{\Psi}_{\xi_i} \vert \vec{\nu}_i \rangle\\
-\end{array}
-\right.
-\end{equation}
-
-\begin{equation}
-\left\lbrace
-\begin{array}{rcl}
- \vec{\Psi}_{\xi_i} & = & \vec{\Psi}_i \left[1-\dfrac{\xi_i}{\Xi_i}\right] + \vec{\Psi}_i'\left[\dfrac{\xi_i}{\Xi_i}\right] -   \xi_i\left[\Xi_i-\xi_i\right] \vec{\eta_i}\\
- \\
-\langle \vec{\eta}_i \vert \vec{\nu}_i \rangle & = & 3B_i \\
-\end{array}
-\right.
-\end{equation}
-
+ 
 
 
 \end{document}
