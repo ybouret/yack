@@ -95,6 +95,7 @@ COMPUTE_CURVATURE:
     tao::v1::load(step,s.beta);
     algo->solve(curv,step);
 
+
     if(verbose) vars.display(std::cerr,step,"\tstep.");
 
     //----------------------------------------------------------
@@ -151,6 +152,8 @@ COMPUTE_CURVATURE:
     //----------------------------------------------------------
     if(D2try<D2ini)
     {
+        YACK_LSF_PRINTLN(clid << " forwarding...");
+
         //------------------------------------------------------
         // acceptable step
         //------------------------------------------------------
@@ -158,6 +161,7 @@ COMPUTE_CURVATURE:
         {
             // local adjustment
             D2try = self.optimize(g,D2ini,D2try);
+            exit(0);
         }
 
         //------------------------------------------------------

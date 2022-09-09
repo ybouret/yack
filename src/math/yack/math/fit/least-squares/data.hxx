@@ -280,8 +280,9 @@ namespace yack
                 {
                     U.push_back( U.c+one );
                     G.push_back( g(U.c)  );
-                    YACK_LSF_PRINTLN(clid << "  |_try: u=" << U << ", g=" << G);
+                    //YACK_LSF_PRINTLN(clid << "  |_try: u=" << U << ", g=" << G);
                 }
+                YACK_LSF_PRINTLN(clid << "  |_try: u=" << U << ", g=" << G);
 
                 const real_t old_width = std::abs(U.c-U.a);
                 const real_t new_width = optimize::tighten(g,U,G);

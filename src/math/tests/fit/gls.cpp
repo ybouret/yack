@@ -2,6 +2,7 @@
 #include "yack/math/fit/least-squares/gls.hpp"
 #include "yack/math/fit/samples/real.hpp"
 #include "yack/utest/run.hpp"
+#include "yack/system/env.hpp"
 
 using namespace yack;
 using namespace math;
@@ -19,9 +20,10 @@ namespace {
             const double t0 = vars(aorg,"t0");
             const double D  = vars(aorg,"D");
             const double dt = t-t0;
-            if(dt>0)
+            const double arg = D*dt;
+            if(arg>0)
             {
-                return sqrt(D*dt);
+                return sqrt(arg);
             }
             else
             {
@@ -103,7 +105,7 @@ YACK_UTEST(gls)
 
     fit::gls<double> ls;
 
-    ls.verbose = true;
+    ls.verbose = environment::flag("VERBOSE");
 
     std::cerr << "Fitting s1" << std::endl;
     if(!ls.fit_for(s1,F,aorg,used,scal,NULL))
