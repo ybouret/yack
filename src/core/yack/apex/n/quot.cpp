@@ -1,13 +1,30 @@
 #include "yack/apex/natural.hpp"
 #include "yack/system/exception.hpp"
 #include <cerrno>
-
+#include <cfloat>
 
 namespace yack
 {
     namespace apex
     {
 
+        template <>
+        unsigned natural:: _dig<float>() throw()
+        {
+            return FLT_DIG;
+        }
+
+        template <>
+        unsigned natural:: _dig<double>() throw()
+        {
+            return DBL_DIG;
+        }
+
+        template <>
+        unsigned natural:: _dig<long double>() throw()
+        {
+            return LDBL_DIG;
+        }
 
         natural  natural:: quot(const handle &numerator, const handle &denominator, natural &rem)
         {

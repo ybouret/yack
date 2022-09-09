@@ -348,6 +348,10 @@ namespace yack
                 return ans;
             }
 
+            //! number of significative digits
+            template <typename T>
+            static unsigned _dig() throw();
+
             //__________________________________________________________________
             //
             //! num/den = integer part + fractional part
@@ -355,20 +359,22 @@ namespace yack
             template <typename T> static inline
             T ratio(const natural &num, const natural &den)
             {
-                static const T tenth = static_cast<T>(0.1);
+                static const unsigned  __dig = _dig<T>();
+                static const T         tenth = static_cast<T>(0.1);
                 uint_type      _10   = 10;
                 const handle   ten(_10);
                 natural        r;
                 natural        q   = quot(num,den,r);
                 T              ans = q.to<float>();    // integert part
                 T              fac = tenth;
+                unsigned       dig = 0;
                 while(true)
                 {
                     const handle  rh(r);
                     const natural nn = mul(rh,ten);
                     q = quot(nn,den,r);
                     const T cur = ans + fac * static_cast<T>( q.lsu() );
-                    if( cur <= ans ) break;
+                    if( (++dig>__dig) && (cur <= ans) ) break;
                     fac *= tenth;
                     ans  = cur;
                 }

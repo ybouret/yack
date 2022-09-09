@@ -122,6 +122,7 @@ YACK_UTEST_DECL(256)
     YACK_UTEST(apk);
     YACK_UTEST(apfac);
     YACK_UTEST(aprsa);
+    YACK_UTEST(apr);
 
     YACK_UTEST(ios_c_file);
     YACK_UTEST(ios_streams);
