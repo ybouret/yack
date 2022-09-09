@@ -66,7 +66,11 @@ YACK_UTEST(eq)
             const double g = eq.mass_action(K,C,S,u,Ctry,xmul)/(-sigma);
             const double t = g0 + slope * x / (-sigma);
 
-            fp("%.15g %.15g %.15g %.15g\n", x, g, l, t);
+            const double dl = fabs(l-g);
+            const double dt = fabs(t-g);
+            const double winner = dl<dt ? l : t;
+
+            fp("%.15g %.15g %.15g\n", x, g, winner);
         }
         std::cerr << std::endl;
     }
