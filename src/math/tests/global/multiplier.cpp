@@ -12,12 +12,13 @@ namespace
         std::cerr << "max_exp: " << math::multiplier<T>::max_exp << std::endl;
 
         math::multiplier<T> mm;
+        mm.set1();
         T                   raw = 1;
-        for(size_t i=1+ran.leq(10);i>0;--i)
+        for(size_t i=1+ran.leq(20);i>0;--i)
         {
             const T ex  = T(20) * ran.symm<T>();
             const T tmp = ran.symm<T>() * std::pow( T(10), ex );
-            mm << tmp;
+            mm  *= tmp;
             raw *= tmp;
         }
         std::cerr << "mm=" << mm << std::endl;
@@ -36,9 +37,6 @@ YACK_UTEST(multiplier)
     testMult<float>(ran);
     testMult<double>(ran);
     testMult<long double>(ran);
-
-
-
 }
 YACK_UDONE()
 

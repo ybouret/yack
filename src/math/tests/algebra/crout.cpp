@@ -25,6 +25,7 @@ namespace
         typedef typename crout<T>::scalar_type scalar_type;
         adder<T>           xadd;
         adder<scalar_type> sadd;
+        multiplier<T>      xmul;
 
         const string &who =rtti::name< typename crout<T>::type >();
 
@@ -68,8 +69,7 @@ namespace
 
                     if(cr.build(a))
                     {
-                        std::cerr << "// regular " << who << " " << n << "x" << n << " [";
-
+                        std::cerr << "// regular " << who << " " << n << "x" << n << " [";                        
                         for(size_t iter=inner;iter>0;--iter)
                         {
                             for(size_t i=n;i>0;--i)

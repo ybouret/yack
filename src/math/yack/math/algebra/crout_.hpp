@@ -4,23 +4,39 @@
 #define YACK_CROUT__INCLUDED 1
 
 #include "yack/container/dynamic.hpp"
-#include "yack/sequence/thin-array.hpp"
 
 namespace yack
 {
     namespace math
     {
+        //______________________________________________________________________
+        //
+        //
+        //! data for Crout's algorithm
+        //
+        //______________________________________________________________________
         class crout_ : public dynamic
         {
         public:
-
+            //__________________________________________________________________
+            //
+            // C++
+            //__________________________________________________________________
             explicit crout_(const size_t dimension,
                             const size_t type_size,
                             const size_t scal_size);
             virtual ~crout_() throw();
-
+            
+            //__________________________________________________________________
+            //
+            // methods
+            //__________________________________________________________________
             virtual size_t granted() const throw();
             
+            //__________________________________________________________________
+            //
+            // members
+            //__________________________________________________________________
             const   size_t nmax;  //!< maximum dimension
             const   bool   dneg;  //!< marker for negative det
 

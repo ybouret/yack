@@ -15,18 +15,34 @@ namespace yack
     namespace math
     {
 
+        //______________________________________________________________________
+        //
+        //
+        //! Crout's algorithm fo LU decomposition
+        //
+        //______________________________________________________________________
         template <typename T>
         class crout : public crout_
         {
         public:
-
-            YACK_DECL_ARGS_(T,type);
-            typedef typename scalar_for<mutable_type>::type scalar_type;
-            typedef const scalar_type                       const_scalar_type;
+            //__________________________________________________________________
+            //
+            // types and definitions
+            //__________________________________________________________________
+            YACK_DECL_ARGS_(T,type); //!< aliaes
+            typedef typename scalar_for<mutable_type>::type scalar_type; //!< alias
+            typedef const scalar_type                       const_scalar_type; //!< alias
             
-
+            
+            //__________________________________________________________________
+            //
+            // C++
+            //__________________________________________________________________
+            
+            //! cleanup
             inline virtual ~crout() throw() {}
 
+            //! setup to solve up to given dimension
             inline explicit crout(const size_t dimension) :
             crout_(dimension,sizeof(type),sizeof(scalar_type)),
             s_one(1),
@@ -36,7 +52,13 @@ namespace yack
             {
             }
 
+            //__________________________________________________________________
+            //
+            // methods
+            //__________________________________________________________________
+            
 
+            //! try to build the LU decomposition a a square matrix
             inline bool build(matrix<T> &a)
             {
                 if(!initialize(a)) return false;
@@ -46,12 +68,14 @@ namespace yack
 
                 //______________________________________________________________
                 //
-                // loop over column
+                // loop over columns
                 //______________________________________________________________
                 for(size_t j=1;j<=n;++j)
                 {
 
+                    //----------------------------------------------------------
                     // pass 1
+                    //----------------------------------------------------------
                     for(size_t i=1;i<j;i++)
                     {
                         writable<type> &a_i = a[i];
@@ -61,7 +85,9 @@ namespace yack
                         a_i[j]=sum;
                     }
 
+                    //----------------------------------------------------------
                     // pass 2
+                    //----------------------------------------------------------
                     size_t      imax=j;
                     scalar_type smax=0;
                     for(size_t i=j;i<=n;++i)
@@ -80,7 +106,9 @@ namespace yack
                         }
                     }
 
+                    //----------------------------------------------------------
                     // check if need to exchange
+                    //----------------------------------------------------------
                     if(imax!=j)
                     {
                         a.swap_rows(imax,j);
@@ -88,14 +116,20 @@ namespace yack
                         scal[imax]   = scal[j];
                     }
 
+                    //----------------------------------------------------------
                     // fill processing index
+                    //----------------------------------------------------------
                     indx[j] = imax;
 
+                    //----------------------------------------------------------
                     // check not singular up to precision
+                    //----------------------------------------------------------
                     const_type &a_jj = a[j][j];
                     if(abs_of<type>(a_jj) <= 0) return false;
 
+                    //----------------------------------------------------------
                     // finalize
+                    //----------------------------------------------------------
                     if (j != n)
                     {
                         const_type fac=t_one/a_jj;
@@ -108,15 +142,29 @@ namespace yack
                 return true;
             }
 
+            //! in place solve with a=LU
             inline void solve(const matrix<T> &a, writable<T> &b)
             {
-
+                //______________________________________________________________
+                //
+                // sanity check
+                //______________________________________________________________
+                assert(a.is_square());
+                assert(a.rows <=nmax);
                 assert(a.cols==b.size());
 
+                //______________________________________________________________
+                //
+                // initialize
+                //______________________________________________________________
                 const size_t            n = a.rows;
                 thin_array<size_t>      indx(indx_,n);
                 thin_array<scalar_type> scal(static_cast<scalar_type*>(scal_),n);
 
+                //______________________________________________________________
+                //
+                // pass 1
+                //______________________________________________________________
                 size_t ii=0;
                 for(size_t i=1;i<=n;++i)
                 {
@@ -126,7 +174,7 @@ namespace yack
                     b[ip]=b[i];
                     if (ii)
                     {
-                        for (size_t j=ii;j<i;++j)
+                        for(size_t j=ii;j<i;++j)
                         {
                             sum -= a_i[j]*b[j];
                         }
@@ -139,6 +187,10 @@ namespace yack
                     b[i]=sum;
                 }
 
+                //______________________________________________________________
+                //
+                // pass 2
+                //______________________________________________________________
                 for (size_t i=n;i>0;--i) {
                     const readable<T> &a_i = a[i];
                     type sum=b[i];
@@ -148,8 +200,11 @@ namespace yack
                 }
             }
 
+            //! in place multiple solve with a=LU
             inline void solve(const matrix<T> &a, matrix<T> &b)
             {
+                assert(a.is_square());
+                assert(a.rows <=nmax);
                 assert(b.rows==a.rows);
                 const size_t     n = a.rows;
                 thin_array<type> u(static_cast<type*>(xtra_),n);
@@ -161,29 +216,59 @@ namespace yack
                 }
             }
 
+            //! determinant of a LU matrix
             inline type determinant(const matrix<T> &a) const
             {
+                // sanity check
+                assert(a.is_square());
+                assert(a.rows<=nmax);
+                assert(a.rows>0);
+                
                 type res = a[1][1];
                 for(size_t i=a.rows;i>1;--i) res *= a[i][i];
                 return dneg ? -res : res;
             }
+            
+            //! determinant of a LU matrix with precise multiplication
+            inline type determinant(const matrix<T> &a, multiplier<T> &xmul) const
+            {
+                // sanity check
+                assert(a.is_square());
+                assert(a.rows <=nmax);
+                
+                // run
+                xmul.set1();
+                for(size_t i=a.rows;i>0;--i) xmul *= a[i][i];
+                return dneg ? -xmul.query() : xmul.query();
+            }
+            
 
+            //! compute inverse from LU matrix
             inline void inverse(const matrix<T> &a, matrix<T> &I)
             {
+                assert(a.is_square());
+                assert(a.rows <=nmax);
                 assert(matrix_metrics::have_same_sizes(a,I));
+                
+                // build identity matrix
                 const size_t     n = a.rows;
                 { const type _0(0); I.ld(_0); }
                 for(size_t i=n;i>0;--i)
                 {
                     I[i][i] = t_one;
                 }
+                
+                // solve identity matrix
                 solve(a,I);
             }
             
             template <typename U>
             inline void adjoint(matrix<T> &target, const matrix<U> &source)
             {
+                assert(target.is_square());
+                assert(target.rows <=nmax);
                 assert(matrix_metrics::have_same_sizes(target,source));
+                
                 const size_t n = target.rows;
                 switch(n)
                 {

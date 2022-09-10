@@ -142,7 +142,7 @@ namespace yack
             inline void set1() throw() { free(); }
 
             //! syntax helper
-            multiplier & operator=(const T x) { ld(x); return *this; }
+            multiplier & operator *=(const T x) { ld(x); return *this; }
 
             //! load a new real
             inline void ld(const T x) { data_type args(x); insert(args); }
@@ -172,12 +172,9 @@ namespace yack
                 }
             }
 
-
             
-
-
             //! syntax helper
-            inline multiplier & operator<<(const T x) { ld(x); return *this; }
+            // inline multiplier & operator<<(const T x) { ld(x); return *this; }
 
             //! algorithm: return 1 if empty
             inline T query() { return ( size()  <= 0 ) ? T(1) : query_(); }
