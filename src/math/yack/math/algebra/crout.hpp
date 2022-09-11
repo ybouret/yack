@@ -262,6 +262,7 @@ namespace yack
                 solve(a,I);
             }
             
+            //! compute adjoint matrix : source * target = det(target) * Id
             template <typename U>
             inline void adjoint(matrix<T> &target, const matrix<U> &source)
             {

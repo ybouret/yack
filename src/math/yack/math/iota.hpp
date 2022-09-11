@@ -131,7 +131,7 @@ namespace yack {
             template <typename T>
             struct mod2
             {
-                // |lhs|^2
+                //! |lhs|^2
                 template <typename LHS> static inline
                 T of(LHS &lhs, adder<T> &xadd)
                 {

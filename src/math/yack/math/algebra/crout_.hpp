@@ -22,9 +22,13 @@ namespace yack
             //
             // C++
             //__________________________________________________________________
+           
+            //! setup raw memory
             explicit crout_(const size_t dimension,
                             const size_t type_size,
                             const size_t scal_size);
+            
+            //! cleanup
             virtual ~crout_() throw();
             
             //__________________________________________________________________

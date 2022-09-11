@@ -136,13 +136,16 @@ namespace yack
             //__________________________________________________________________
 
             //! initialize
-            inline void init(const T x) { free(); push(x); }
+            inline void init(const T x) { free(); ld(x); }
 
             //! initialize with 1
             inline void set1() throw() { free(); }
 
-            //! syntax helper
+            //! syntax helper to multiply by a value
             multiplier & operator *=(const T x) { ld(x); return *this; }
+
+            //! syntax helper to initialize with a value
+            multiplier & operator =(const T x) { init(x); return *this; }
 
             //! load a new real
             inline void ld(const T x) { data_type args(x); insert(args); }
@@ -171,10 +174,7 @@ namespace yack
                     if(n<0) { const data_type args(1.0/x); insert(args,-n); }
                 }
             }
-
             
-            //! syntax helper
-            // inline multiplier & operator<<(const T x) { ld(x); return *this; }
 
             //! algorithm: return 1 if empty
             inline T query() { return ( size()  <= 0 ) ? T(1) : query_(); }
