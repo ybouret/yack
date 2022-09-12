@@ -59,7 +59,7 @@ namespace yack
                 //______________________________________________________________
                 virtual size_t dimension() const throw() = 0; //!< number of data points.
                 virtual void   make_indx(comparator)     = 0; //!< indices for sequential evaluation
-
+                
 
 
                 //______________________________________________________________

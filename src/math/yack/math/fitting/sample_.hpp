@@ -14,6 +14,7 @@ namespace yack
         namespace fitting
         {
 
+
             //__________________________________________________________________
             //
             //
@@ -28,7 +29,7 @@ namespace yack
                 // types and definition
                 //______________________________________________________________
                 static const char clid[]; //!< "sample"
-                typedef memory::dyadic allocator; //!< alias
+                typedef memory::dyadic         allocator; //!< alias;
 
                 //______________________________________________________________
                 //
@@ -64,6 +65,9 @@ namespace yack
                 YACK_DISABLE_COPY_AND_ASSIGN(sample_);
                 variables vars_;
             };
+
+            typedef vector<bool,sample_::allocator> bvector;
+
 
         }
 
