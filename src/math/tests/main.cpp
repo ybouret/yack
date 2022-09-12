@@ -43,5 +43,6 @@ YACK_UTEST_DECL(80)
 
     YACK_UTEST(fitting_lambda);
     YACK_UTEST(fitting_vars);
+    YACK_UTEST(fitting_samples);
 }
 YACK_UTEST_EXEC()

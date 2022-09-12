@@ -1,4 +1,3 @@
-
 //! \file
 
 #ifndef YACK_FIT_SAMPLE__INCLUDED
