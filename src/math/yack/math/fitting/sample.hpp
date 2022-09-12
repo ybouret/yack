@@ -5,6 +5,8 @@
 
 #include "yack/math/fitting/sample_.hpp"
 #include "yack/math/fitting/sequential.hpp"
+#include "yack/container/matrix.hpp"
+#include "yack/sequence/vector.hpp"
 
 namespace yack
 {
@@ -32,7 +34,6 @@ namespace yack
                 typedef sequential<ABSCISSA,ORDINATE>      sequential_type;    //!< alias
                 typedef int (*comparator)(const ABSCISSA &, const ABSCISSA &); //!< alias to create index
 
-
                 //______________________________________________________________
                 //
                 //! create a wrapper for a simple function
@@ -55,7 +56,8 @@ namespace yack
                 //
                 // virtual interface
                 //______________________________________________________________
-                
+                virtual size_t dimension() const throw() = 0; //!< number of data points.
+
 
 
 

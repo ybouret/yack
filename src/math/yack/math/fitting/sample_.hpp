@@ -29,6 +29,7 @@ namespace yack
                 //______________________________________________________________
                 virtual       ~sample_()   throw(); //!< cleanup
                 const string & key() const throw(); //!< for db
+                variables    & operator*() throw(); //!< internal variables
 
                 //______________________________________________________________
                 //
@@ -42,7 +43,8 @@ namespace yack
                 explicit sample_(const ID &id) :
                 large_object(),
                 counted(),
-                name(id)
+                name(id),
+                vars_()
                 {}
 
                 //! throw if multiple names for samples
@@ -53,7 +55,7 @@ namespace yack
 
             private:
                 YACK_DISABLE_COPY_AND_ASSIGN(sample_);
-
+                variables vars_;
             };
 
         }

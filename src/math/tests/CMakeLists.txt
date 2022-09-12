@@ -102,8 +102,9 @@ add_test(gls     test-math gls)
 add_test(area2d test-math area2d)
 
 #fitting
-add_test(fitting:lambda test-math fitting_lambda)
-add_test(fitting:vars   test-math fitting_vars)
+add_test(fitting:lambda  test-math fitting_lambda)
+add_test(fitting:vars    test-math fitting_vars)
+add_test(fitting:sample  test-math fitting_sample)
 add_test(fitting:samples test-math fitting_samples)
  
 

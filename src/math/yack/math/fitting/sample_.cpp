@@ -27,6 +27,12 @@ namespace yack
             {
                 throw imported::exception(clid,"no '%s'", id());
             }
+
+            variables    & sample_:: operator*() throw()
+            {
+                return vars_;
+            }
+
         }
 
     }
