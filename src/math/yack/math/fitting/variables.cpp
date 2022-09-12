@@ -2,6 +2,9 @@
 #include "yack/system/imported.hpp"
 #include "yack/type/utils.hpp"
 #include "yack/data/list/sort.hpp"
+#include "yack/string/tokenizer.hpp"
+#include "yack/sequence/vector.hpp"
+#include "yack/string/ops.hpp"
 
 namespace yack
 {
@@ -100,8 +103,8 @@ namespace yack
 
 
 
-            void variables:: operator()(const string &name,
-                                        const size_t indx)
+            const variable & variables:: operator()(const string &name,
+                                                    const size_t indx)
             {
                 // check index
                 if(indx<=0) throw imported::exception(clid,"try to set '%s' at index=0", name());
@@ -133,12 +136,37 @@ namespace yack
                 merge_list_of<pnode>::sort( coerce((*pdb.tree)), compare_indices_of<pnode>);
                 merge_list_of<vnode>::sort( coerce((*vdb.tree)), compare_indices_of<vnode>);
 
+                // done
+                return *p;
             }
 
-            void  variables::operator()(const char   *name, const size_t indx)
+            const variable & variables::operator()(const char   *name, const size_t indx)
             {
                 const string _(name);
-                (*this)(_,indx);
+                return (*this)(_,indx);
+            }
+
+
+
+            variables & variables:: operator<<(const string &source)
+            {
+                variables      &self = *this;
+                vector<string>  vars; tokenizer::split_with(':', vars, source);
+
+                for(size_t i=1;i<=vars.size();++i)
+                {
+                    string &name = vars[i];
+                    strops::strip_with(" \t", 2, name);
+                    (void) self(name,upper()+1);
+                }
+
+                return self;
+            }
+
+            variables & variables:: operator<<(const char   *vars)
+            {
+                const string _(vars);
+                return (*this) << _;
             }
 
 

@@ -27,6 +27,7 @@ YACK_UTEST(fitting_vars)
     vars("hello",3);
     vars("world",1);
 
+    vars << "a:b";
     std::cerr << "vars=" << vars << std::endl;
 
 }
