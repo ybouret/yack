@@ -1,4 +1,5 @@
 #include "yack/math/fitting/variables.hpp"
+#include "yack/math/fitting/replica.hpp"
 #include "yack/system/imported.hpp"
 #include "yack/type/utils.hpp"
 #include "yack/data/list/sort.hpp"
@@ -132,13 +133,19 @@ namespace yack
                 }
 
                 // update
-                coerce(nlen) = max_of(nlen,name.size());
-                merge_list_of<pnode>::sort( coerce((*pdb.tree)), compare_indices_of<pnode>);
-                merge_list_of<vnode>::sort( coerce((*vdb.tree)), compare_indices_of<vnode>);
+                update_with(name);
 
                 // done
                 return *p;
             }
+
+            void variables:: update_with(const string &name) throw()
+            {
+                coerce(nlen) = max_of(nlen,name.size());
+                merge_list_of<pnode>::sort( coerce((*pdb.tree)), compare_indices_of<pnode>);
+                merge_list_of<vnode>::sort( coerce((*vdb.tree)), compare_indices_of<vnode>);
+            }
+
 
             const variable & variables::operator()(const char   *name, const size_t indx)
             {
@@ -146,6 +153,53 @@ namespace yack
                 return (*this)(_,indx);
             }
 
+            const variable & variables:: operator()(const string    &name,
+                                                    const variables &source,
+                                                    const string    &alias)
+            {
+                const primary::handle *ppp = source.pdb.search(alias);
+                if(!ppp) throw imported::exception(clid,"no primary '%s' in source",alias());
+                const variable::pointer v = new replica(name,*ppp);
+                if(!vdb.insert(v)) throw imported::exception(clid,"multiple '%s' while aliasing '%s'",name(),alias());
+                update_with(name);
+                return *v;
+            }
+
+            const variable & variables :: operator()(const char      *name,
+                                                     const variables &source,
+                                                     const char      *alias)
+            {
+                const string _(name);
+                const string __(alias);
+                return(*this)(_,source,__);
+            }
+
+#if 0
+            const variable & variables:: operator()(const string &name, const string &alias)
+            {
+                const primary::handle *ppp = pdb.search(alias);
+                if(!ppp) throw imported::exception(clid,"no primary '%s' to make replica '%s'", alias(), name());
+
+                for(const vnode *node=head();node;node=node->next)
+                {
+                    const variable &r = ***node;
+                    if(r.is_primary()) continue;
+                    if(r.alias()==alias)
+                    {
+                        throw imported::exception(clid,"primary '%s' is already aliases by '%s'",alias(), r.name());
+                    }
+                }
+
+
+                const variable::pointer v = new replica(name,*ppp);
+                if(!vdb.insert(v)) throw imported::exception(clid,"multiple '%s' while aliasing '%s'",name(),alias());
+
+                update_with(name);
+
+                return *v;
+
+            }
+#endif
 
 
             variables & variables:: operator<<(const string &source)

@@ -5,7 +5,7 @@
 #define YACK_FITTING_VARIABLES_INCLUDED 1
 
 
-#include "yack/math/fitting/replica.hpp"
+#include "yack/math/fitting/primary.hpp"
 #include "yack/associative/suffix/set.hpp"
 #include "yack/large-object.hpp"
 
@@ -65,6 +65,24 @@ namespace yack
                 variables & operator<<(const string &vars); //!< automatic adding
                 variables & operator<<(const char   *vars); //!< automatic adding
 
+                //! aliasing name to source[alias]
+                const variable & operator()(const string    &name,
+                                            const variables &source,
+                                            const string    &alias);
+
+                //! aliasing name to source[alias]
+                const variable & operator()(const char      *name,
+                                            const variables &source,
+                                            const char      *alias);
+
+                //! automatic aliasing
+                template <typename UUID>
+                const variable & operator()(const UUID &uuid, const variables &source)
+                {
+                    return (*this)(uuid,source,uuid);
+                }
+
+
 
                 //______________________________________________________________
                 //
@@ -95,6 +113,7 @@ namespace yack
 
                 const variable &fetch(const string &) const;
                 const variable &fetch(const char   *) const;
+                void            update_with(const string &) throw();
 
             public:
                 //______________________________________________________________
@@ -105,8 +124,13 @@ namespace yack
                 
             };
 
-
-            typedef arc_ptr<variables> shared_vars;
+            //__________________________________________________________________
+            //
+            //
+            // top level alias
+            //
+            //__________________________________________________________________
+            typedef arc_ptr<variables> shared_vars; //!< alias
 
         }
 
