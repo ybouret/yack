@@ -5,6 +5,7 @@
 #define YACK_FIT_SAMPLE_OF_INCLUDED 1
 
 #include "yack/math/fitting/sample.hpp"
+#include "yack/sort/indexing.hpp"
 
 namespace yack
 {
@@ -52,7 +53,8 @@ namespace yack
                                           const ordinate &Y_,
                                           adjusted       &Z_) :
                 sample_type(id),
-                X(X_), Y(Y_), Z(Z_)
+                X(X_), Y(Y_), Z(Z_),
+                indx()
                 {
                     assert(Y.size()==X.size());
                     assert(Z.size()==X.size());
@@ -78,7 +80,7 @@ namespace yack
                 virtual void make_indx(comparator cmp)
                 {
                     indx.adjust(dimension(),0);
-                    
+                    indexing::make(indx,cmp,X);
                 }
 
 
