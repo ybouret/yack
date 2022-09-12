@@ -24,12 +24,30 @@ namespace yack
             }
 
             variables:: variables() throw():
-            large_object(), counted(),
             vdb(),
             pdb(),
-            nlen(0)
+            len(0)
             {
                 
+            }
+
+            variables:: variables(const variables &other) :
+            vdb(other.vdb),
+            pdb(other.pdb),
+            len(other.len)
+            {
+
+            }
+
+            variables & variables:: operator=(const variables &other)
+            {
+                variables temp(other);
+
+                vdb.exchange_content_with(temp.vdb);
+                pdb.exchange_content_with(temp.pdb);
+                coerce_cswap(len,temp.len);
+
+                return *this;
             }
 
 
@@ -141,7 +159,7 @@ namespace yack
 
             void variables:: update_with(const string &name) throw()
             {
-                coerce(nlen) = max_of(nlen,name.size());
+                coerce(len) = max_of(len,name.size());
                 merge_list_of<pnode>::sort( coerce((*pdb.tree)), compare_indices_of<pnode>);
                 merge_list_of<vnode>::sort( coerce((*vdb.tree)), compare_indices_of<vnode>);
             }

@@ -35,9 +35,7 @@ namespace yack
             //! database of variables (primary+replica)
             //
             //__________________________________________________________________
-            class variables :
-            public large_object,
-            public counted
+            class variables
             {
             public:
                 //______________________________________________________________
@@ -50,9 +48,10 @@ namespace yack
                 //
                 // C++
                 //______________________________________________________________
-                explicit variables() throw(); //!< setup empty
-                virtual ~variables() throw(); //!< cleanup
-
+                explicit variables() throw();             //!< setup empty
+                virtual ~variables() throw();             //!< cleanup
+                variables(const variables &);             //!< copy
+                variables & operator=(const variables &); //!< assign by copy/swap
 
                 //______________________________________________________________
                 //
@@ -107,7 +106,6 @@ namespace yack
 
                 
             private:
-                YACK_DISABLE_COPY_AND_ASSIGN(variables);
                 vset vdb;
                 pset pdb;
 
@@ -120,17 +118,11 @@ namespace yack
                 //
                 // members
                 //______________________________________________________________
-                const size_t nlen; //!< max name length
+                const size_t len; //!< max name length
                 
             };
 
-            //__________________________________________________________________
-            //
-            //
-            // top level alias
-            //
-            //__________________________________________________________________
-            typedef arc_ptr<variables> shared_vars; //!< alias
+
 
         }
 
