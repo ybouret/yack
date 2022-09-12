@@ -28,15 +28,16 @@ namespace yack
                 //
                 // types and definitions
                 //______________________________________________________________
-                typedef sample<ABSCISSA,ORDINATE>             sample_type; //!< alias
-                typedef sample_of<ABSCISSA,ORDINATE>          single_type; //!< alias
-                typedef typename single_type::pointer         single_ptr;  //!< alias
-                typedef suffix_set<string,single_ptr>         single_set;  //!< alias
-                typedef typename single_set::knot_type        s_node;      //!< alias
-                typedef typename sample_type::comparator      comparator;  //!< alias
+                typedef sample<ABSCISSA,ORDINATE>             sample_type;      //!< alias
+                typedef sample_of<ABSCISSA,ORDINATE>          single_type;      //!< alias
+                typedef typename single_type::pointer         single_ptr;       //!< alias
+                typedef suffix_set<string,single_ptr>         single_set;       //!< alias
+                typedef typename single_set::knot_type        s_node;           //!< alias
+                typedef typename sample_type::comparator      comparator;       //!< alias
                 typedef typename sample_type::sequential_type sequential_type;  //!< alias
-
-                using sample_type::xadd;
+                using sample_type::xadd;                                        //!< alias
+                using sample_type::curv;                                        //!< alias
+                using sample_type::beta;                                        //!< alias
 
                 //______________________________________________________________
                 //
@@ -86,14 +87,16 @@ namespace yack
                 {
                     return create( new csample<ABSCISSA,ORDINATE>(id,x,y,n) );
                 }
-
-
+                
+                
+                //! fetch sample by name
                 template <typename ID> inline
                 const single_type & operator[](const ID &id) const
                 {
                     return fetch(id);
                 }
 
+                //! fetch sample by name
                 template <typename ID> inline
                 single_type & operator[](const ID &id)
                 {
@@ -150,11 +153,62 @@ namespace yack
                     return (total>0) ? xadd.get() /  total : 0;
                 }
 
+                virtual ORDINATE D2_full(sequential_type            &func,
+                                         const readable<ORDINATE>   &aorg,
+                                         const readable<bool>       &used,
+                                         const readable<ORDINATE>   &scal,
+                                         const derivative<ORDINATE> &drvs)
+                {
+                    const size_t ns = samples.size();
+                    const size_t nv = (**this).upper();
+                    xadd.resume(ns);
+                    size_t total = 0;
+                    for(const s_node *node=head();node;node=node->next)
+                    {
+                        single_type &s = coerce(***node);
+                        const size_t n = s.dimension();
+                        xadd  += s.D2_full(func,aorg,used,scal,drvs)*n;
+                        total += n;
+                    }
+                    
+                    if(total>0)
+                    {
+                        const ORDINATE res = xadd.get() /  total;
+                        for(size_t i=nv;i>0;--i)
+                        {
+                            xadd.ldz();
+                            for(const s_node *node=head();node;node=node->next)
+                            {
+                                single_type &s = coerce(***node);
+                                const size_t n = s.dimension();
+                                xadd += s.beta[i] * n;
+                            }
+                            beta[i] = xadd.get()/total;
+                            for(size_t j=i;j>0;--j)
+                            {
+                                xadd.ldz();
+                                for(const s_node *node=head();node;node=node->next)
+                                {
+                                    single_type &s = coerce(***node);
+                                    const size_t n = s.dimension();
+                                    xadd += s.curv[i][j] * n;
+                                }
+                                curv[i][j] = xadd.get()/total;
+                            }
+                        }
+                        return res;
+                    }
+                    else
+                    {
+                        return 0;
+                    }
+                }
+                
 
             private:
                 YACK_DISABLE_COPY_AND_ASSIGN(samples_of);
-                single_set samples;
-
+                single_set     samples;
+                
                 inline const single_type &fetch(const string &id) const
                 {
                     const single_ptr *pps = samples.search(id);

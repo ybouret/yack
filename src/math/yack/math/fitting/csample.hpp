@@ -12,18 +12,24 @@ namespace yack
 
         namespace fitting
         {
+            //__________________________________________________________________
+            //
+            //
+            //! memory for sample of C-style data
+            //
+            //__________________________________________________________________
+            
             template <
             typename ABSCISSA,
             typename ORDINATE>
             class csample_
             {
             public:
-                inline virtual ~csample_() throw()
-                {
-                }
-
-
+                //! cleanup
+                inline virtual ~csample_() throw() { }
+                
             protected:
+                //! setup and load data
                 explicit csample_(const ABSCISSA *x,
                                   const ORDINATE *y,
                                   const size_t    n) :
@@ -40,27 +46,40 @@ namespace yack
                     }
                 }
 
-                vector<ABSCISSA,sample_::allocator> X_;
-                vector<ORDINATE,sample_::allocator> Y_;
-                vector<ORDINATE,sample_::allocator> Z_;
+                
+                vector<ABSCISSA,sample_::allocator> X_; //!< abscissae
+                vector<ORDINATE,sample_::allocator> Y_; //!< ordinates
+                vector<ORDINATE,sample_::allocator> Z_; //!< ajdusted
 
 
             private:
                 YACK_DISABLE_COPY_AND_ASSIGN(csample_);
             };
 
+            //__________________________________________________________________
+            //
+            //
+            //!  sample of C-style data
+            //
+            //__________________________________________________________________
             template <
             typename ABSCISSA,
             typename ORDINATE>
             class csample : public csample_<ABSCISSA,ORDINATE>, public sample_of<ABSCISSA,ORDINATE>
             {
             public:
-                inline virtual ~csample() throw()
-                {
-                }
+                //______________________________________________________________
+                //
+                // C++
+                //______________________________________________________________
 
+                //! cleanup
+                inline virtual ~csample() throw() {}
+
+                
+                //! setup, load and link data
                 template <typename ID>
-                inline explicit csample(const ID &id,
+                inline explicit csample(const ID       &id,
                                         const ABSCISSA *x,
                                         const ORDINATE *y,
                                         const size_t    n) :

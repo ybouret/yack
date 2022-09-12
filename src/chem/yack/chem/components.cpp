@@ -101,7 +101,7 @@ namespace yack
             const double rma = reac.mass_action(C,ops);
 
             // product side
-            ops.set1();
+            ops.ld1();
             const double pma = prod.mass_action(C,ops);
 
             // difference
@@ -146,7 +146,7 @@ namespace yack
             const double den = reac.mass_action(C,ops);
 
             // product side
-            ops.set1();
+            ops.ld1();
             const double num = prod.mass_action(C,ops);
 
             if(fabs(den)<=0)
@@ -179,7 +179,7 @@ namespace yack
             const double rma = reac.mass_action(C,-xi,ops);
 
             // product side
-            ops.set1();
+            ops.ld1();
             const double pma = prod.mass_action(C,xi,ops);
 
             // difference

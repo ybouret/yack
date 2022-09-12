@@ -101,12 +101,14 @@ namespace yack
                     return fetch(uuid);
                 }
 
+                //! access array named value
                 template <typename ARRAY, typename ID>
                 typename ARRAY::type & operator()(ARRAY &arr, const ID &id) const
                 {
                     return (*this)[id](arr);
                 }
 
+                //! access array named value
                 template <typename ARRAY, typename ID>
                 typename ARRAY::const_type & operator()(const ARRAY &arr, const ID &id) const
                 {

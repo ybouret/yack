@@ -8,6 +8,7 @@
 #include "yack/container/matrix.hpp"
 #include "yack/sequence/vector.hpp"
 #include "yack/math/adder.hpp"
+#include "yack/math/fcn/derivative.hpp"
 
 namespace yack
 {
@@ -34,9 +35,10 @@ namespace yack
                 //______________________________________________________________
                 typedef sequential<ABSCISSA,ORDINATE>      sequential_type;    //!< alias
                 typedef int (*comparator)(const ABSCISSA &, const ABSCISSA &); //!< alias to create index
-                typedef vector<ORDINATE,allocator>         ordinates;
-                typedef adder<ORDINATE>                    adder_type;
-
+                typedef vector<ORDINATE,allocator>         ordinates;          //!< alias
+                typedef adder<ORDINATE>                    adder_type;         //!< alias
+                typedef derivative<ORDINATE>               drvs_type;          //!< alias
+                
                 //______________________________________________________________
                 //
                 //! create a wrapper for a simple function
@@ -64,11 +66,18 @@ namespace yack
                 virtual ORDINATE D2(sequential_type          &func,
                                     const readable<ORDINATE> &aorg) = 0; //!< compute D2
 
-
+                virtual ORDINATE D2_full(sequential_type            &func,
+                                         const readable<ORDINATE>   &aorg,
+                                         const readable<bool>       &used,
+                                         const readable<ORDINATE>   &scal,
+                                         const derivative<ORDINATE> &drvs) = 0;
+                
                 //______________________________________________________________
                 //
                 // helpers
                 //______________________________________________________________
+              
+                //! wrapper to compute D2 for a regular function
                 template <typename FUNC> inline
                 ORDINATE D2_for(FUNC                     &func,
                                 const readable<ORDINATE> &aorg )
@@ -78,6 +87,17 @@ namespace yack
                 }
 
 
+                template <typename FUNC> inline
+                ORDINATE D2_full_for(FUNC                       &func,
+                                     const readable<ORDINATE>   &aorg,
+                                     const readable<bool>       &used,
+                                     const readable<ORDINATE>   &scal,
+                                     const derivative<ORDINATE> &drvs)
+                {
+                    sequential_wrapper<FUNC> call(func);
+                    return D2_full(call,aorg,used,scal,drvs);
+                }
+                
                 //______________________________________________________________
                 //
                 // C++
@@ -90,9 +110,9 @@ namespace yack
                 //
                 // members
                 //______________________________________________________________
-                matrix<ORDINATE> curv;
-                ordinates        beta;
-                adder_type       xadd;
+                matrix<ORDINATE> curv; //!< curvature matrix
+                ordinates        beta; //!< gradient
+                adder_type       xadd; //!< adder
                 
             protected:
 
@@ -106,6 +126,13 @@ namespace yack
                 {
                 }
 
+                inline void prepare(const size_t nvar)
+                {
+                    curv.make(nvar,nvar);
+                    beta.adjust(nvar,0);
+                    curv.ld(0);
+                    beta.ld(0);
+                }
 
             private:
                 YACK_DISABLE_COPY_AND_ASSIGN(sample);

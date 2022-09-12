@@ -12,7 +12,7 @@ namespace
         std::cerr << "max_exp: " << math::multiplier<T>::max_exp << std::endl;
 
         math::multiplier<T> mm;
-        mm.set1();
+        mm.ld1();
         T                   raw = 1;
         for(size_t i=1+ran.leq(20);i>0;--i)
         {

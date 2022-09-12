@@ -139,7 +139,7 @@ namespace yack
             inline void init(const T x) { free(); ld(x); }
 
             //! initialize with 1
-            inline void set1() throw() { free(); }
+            inline void ld1() throw() { free(); }
 
             //! syntax helper to multiply by a value
             multiplier & operator *=(const T x) { ld(x); return *this; }

@@ -61,6 +61,7 @@ namespace yack
                     return arr[ **this ];
                 }
 
+                //! access CONST ARRAY item
                 template <typename ARRAY> inline
                 typename ARRAY::const_type & operator()(const ARRAY &arr) const throw()
                 {

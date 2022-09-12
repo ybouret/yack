@@ -77,7 +77,8 @@ YACK_UTEST(fitting_gls)
     std::cerr << "v1:   " << v1   << std::endl;
     std::cerr << "v2:   " << v2   << std::endl;
 
-    vector<double> aorg(vars.upper());
+    const size_t nvar = vars.upper();
+    vector<double> aorg(nvar);
     double &t0 = vars(aorg,"t0");
     double &D1 = vars(aorg,"D1");
     double &D2 = vars(aorg,"D2");
@@ -100,6 +101,13 @@ YACK_UTEST(fitting_gls)
 
     save_sample(s1);
     save_sample(s2);
+
+    derivative<double> drvs;
+    vector<bool>       used(nvar,true);
+    vector<double>     scal(nvar,1e-4);
+    
+    
+    const double D21_full = s1.D2_full_for(F,aorg,used,scal,drvs);
 
 
 }

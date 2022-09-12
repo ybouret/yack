@@ -66,6 +66,7 @@ namespace yack
                 variables vars_;
             };
 
+            //! vector of booleans
             typedef vector<bool,sample_::allocator> bvector;
 
 
