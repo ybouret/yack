@@ -25,15 +25,30 @@ namespace yack
             class lambda : public field1D<const T>
             {
             public:
-                typedef field1D<const T> field_type;
+                //______________________________________________________________
+                //
+                // types and definition
+                //______________________________________________________________
+                typedef field1D<const T> field_type; //!< alias
+                static const char *clid() throw();   //!< lambda<T>
+                static int         pmin() throw();   //!< ceil( log10( epsilon ) )
+                static int         pmax() throw();   //!< MAX_10_EXP
 
-                static const char *clid() throw(); //!< lambda<T>
-                static int         pmin() throw(); //!< ceil( log10( epsilon ) )
-                static int         pmax() throw(); //!< MAX_10_EXP
+                //______________________________________________________________
+                //
+                // C++
+                //______________________________________________________________
+                virtual ~lambda() throw(); //!< cleanup
+                explicit lambda();         //!< setup
 
-                virtual ~lambda() throw();
-                explicit lambda();
-                
+                //______________________________________________________________
+                //
+                // methods
+                //______________________________________________________________
+                T        initialize(int &p) const throw(); //!< return self[p=pmin/2]
+                void     decrease(int &p)   const throw(); //!< p = max_of(p-1,pmin)
+                bool     increase(int &p)   const throw(); //!< ++p if p<pmax, false otherwise
+
             private:
                 YACK_DISABLE_COPY_AND_ASSIGN(lambda);
             };

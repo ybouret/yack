@@ -18,7 +18,22 @@ namespace
 
         const fitting::lambda<T> lam;
         std::cerr << lam << std::endl;
-        lam.print(std::cerr) << std::endl;
+        //lam.print(std::cerr) << std::endl;
+        int p = 0;
+        T   f = lam.initialize(p);
+        std::cerr << "init: " << std::setw(15) << f << " @" << p << std::endl;
+        do
+        {
+            lam.decrease(p);
+            std::cerr << "      " << std::setw(15) << lam[p] << " @" << p << std::endl;
+        } while(lam[p]>0);
+
+        while( lam.increase(p) )
+        {
+            YACK_ASSERT(lam[p]>0);
+        }
+        std::cerr << "      " << std::setw(15) << lam[p] << " @" << p << std::endl;
+
     }
 }
 
