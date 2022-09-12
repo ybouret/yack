@@ -36,6 +36,7 @@ namespace yack
                 typedef typename single_type:: abscissa     abscissa;    //!< alias
                 typedef typename single_type:: ordinate     ordinate;    //!< alias
                 typedef typename single_type:: adjusted     adjusted;    //!< alias
+                typedef typename sample_type::comparator    comparator;  //!< alias
 
                 //______________________________________________________________
                 //
@@ -100,6 +101,15 @@ namespace yack
                         res += s.dimension();
                     }
                     return res;
+                }
+
+                //! make all indices
+                virtual void make_indx(comparator cmp)
+                {
+                    for(const s_node *node=head();node;node=node->next)
+                    {
+                        coerce(***node).make_indx(cmp);
+                    }
                 }
 
 

@@ -33,7 +33,7 @@ namespace yack
         }
 
         //! setup
-        inline  bare(const param_type args) : wksp()
+        inline  bare(param_type args) : wksp()
         {
             new ( out_of_reach::zset(wksp,sizeof(wksp)) ) mutable_type(args);
         }

@@ -33,6 +33,7 @@ namespace yack
                 //______________________________________________________________
                 typedef sequential<ABSCISSA,ORDINATE>      sequential_type;    //!< alias
                 typedef int (*comparator)(const ABSCISSA &, const ABSCISSA &); //!< alias to create index
+                typedef vector<ORDINATE,allocator>         ordinates;
 
                 //______________________________________________________________
                 //
@@ -57,7 +58,7 @@ namespace yack
                 // virtual interface
                 //______________________________________________________________
                 virtual size_t dimension() const throw() = 0; //!< number of data points.
-
+                virtual void   make_indx(comparator)     = 0; //!< indices for sequential evaluation
 
 
 
@@ -69,12 +70,17 @@ namespace yack
                 //! cleanup
                 inline virtual ~sample() throw() {}
 
+                matrix<ORDINATE> curv;
+                ordinates        beta;
+
             protected:
 
                 //! setup with name
                 template <typename ID> inline
                 explicit sample(const ID &id) :
-                sample_(id)
+                sample_(id),
+                curv(),
+                beta()
                 {
                 }
 

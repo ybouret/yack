@@ -4,6 +4,7 @@
 #define YACK_FIT_SAMPLE__INCLUDED 1
 
 #include "yack/math/fitting/variables.hpp"
+#include "yack/memory/allocator/dyadic.hpp"
 
 namespace yack
 {
@@ -12,6 +13,7 @@ namespace yack
 
         namespace fitting
         {
+
             //__________________________________________________________________
             //
             //
@@ -21,7 +23,12 @@ namespace yack
             class sample_ : public large_object, public counted
             {
             public:
+                //______________________________________________________________
+                //
+                // types and definition
+                //______________________________________________________________
                 static const char clid[]; //!< "sample"
+                typedef memory::dyadic allocator; //!< alias
 
                 //______________________________________________________________
                 //

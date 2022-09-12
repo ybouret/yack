@@ -30,12 +30,15 @@ namespace yack
                 //
                 // types and definitions
                 //______________________________________________________________
-                typedef sample_of<ABSCISSA,ORDINATE> self_type;   //!< alias
-                typedef ark_ptr<string,self_type>    pointer;     //!< alias
-                typedef sample<ABSCISSA,ORDINATE>    sample_type; //!< alias
-                typedef readable<ABSCISSA>           abscissa;    //!< alias
-                typedef readable<ORDINATE>           ordinate;    //!< alias
-                typedef writable<ORDINATE>           adjusted;    //!< alias
+                typedef sample_of<ABSCISSA,ORDINATE>     self_type;   //!< alias
+                typedef ark_ptr<string,self_type>        pointer;     //!< alias
+                typedef sample<ABSCISSA,ORDINATE>        sample_type; //!< alias
+                typedef readable<ABSCISSA>               abscissa;    //!< alias
+                typedef readable<ORDINATE>               ordinate;    //!< alias
+                typedef writable<ORDINATE>               adjusted;    //!< alias
+                typedef typename sample_type::comparator comparator;  //!< alias
+                typedef typename sample_type::allocator  allocator;   //!< alias
+                typedef vector<size_t,allocator>         indices;
 
                 //______________________________________________________________
                 //
@@ -72,6 +75,14 @@ namespace yack
                     return X.size();
                 }
 
+                virtual void make_indx(comparator cmp)
+                {
+                    indx.adjust(dimension(),0);
+                    
+                }
+
+
+
                 //______________________________________________________________
                 //
                 // members
@@ -82,6 +93,8 @@ namespace yack
 
             private:
                 YACK_DISABLE_COPY_AND_ASSIGN(sample_of);
+                indices indx;
+                
             };
 
         }
