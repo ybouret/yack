@@ -41,5 +41,6 @@ YACK_UTEST_DECL(80)
 
     YACK_UTEST(area2d);
 
+    YACK_UTEST(fitting_lambda);
 }
 YACK_UTEST_EXEC()

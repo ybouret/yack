@@ -78,7 +78,7 @@ namespace
                             }
                             iota::load(u,r);
                             cr.solve(a,u);
-                            iota::mmul(v,a0,u,xadd);
+                            iota::mul(v,a0,u,xadd);
                             //std::cerr << "r=" << r  << std::endl;
                             //std::cerr << "u=" << u  << std::endl;
                             //std::cerr << "v=" << v  << std::endl;
@@ -93,7 +93,7 @@ namespace
 
                         cr.inverse(a,I);
                         
-                        iota::mul(J,a0,I);
+                        iota::mmul(J,a0,I);
                         std::cerr << "J=" << J << std::endl;
                         
                         // TODO: test
@@ -101,7 +101,7 @@ namespace
                         cr.adjoint(J,a0);
                         std::cerr << "M=" << a0 << std::endl;
                         std::cerr << "A=" << J << std::endl;
-                        iota::mul(I,a0,J);
+                        iota::mmul(I,a0,J);
                         std::cerr << "dI=" << I << std::endl;
 
                         

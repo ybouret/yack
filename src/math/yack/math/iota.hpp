@@ -188,7 +188,7 @@ namespace yack {
             //! lhs = M * rhs
             //------------------------------------------------------------------
             template <typename T, typename LHS, typename RHS> static inline
-            void mmul(LHS &lhs, const matrix<T> &M, RHS &rhs)
+            void mul(LHS &lhs, const matrix<T> &M, RHS &rhs)
             {
                 assert(lhs.size()>=M.rows);
                 assert(rhs.size()>=M.cols);
@@ -200,7 +200,7 @@ namespace yack {
             //! lhs = M * rhs
             //------------------------------------------------------------------
             template <typename T, typename LHS, typename RHS> static inline
-            void mmul(LHS &lhs, const matrix<T> &M, RHS &rhs, adder<T> &xadd)
+            void mul(LHS &lhs, const matrix<T> &M, RHS &rhs, adder<T> &xadd)
             {
                 assert(lhs.size()>=M.rows);
                 assert(rhs.size()>=M.cols);
@@ -212,7 +212,7 @@ namespace yack {
             //! A = B * C
             //------------------------------------------------------------------
             template <typename T, typename U, typename V> static inline
-            void mul(matrix<T> &A, const matrix<U> &B, const matrix<V> &C)
+            void mmul(matrix<T> &A, const matrix<U> &B, const matrix<V> &C)
             {
                 assert(A.rows==B.rows);
                 assert(A.cols==C.cols);
@@ -231,6 +231,33 @@ namespace yack {
                             sum += B_i[k] * C[k][j];
                         }
                         A_i[j] = sum;
+                    }
+                }
+            }
+
+            //------------------------------------------------------------------
+            //! A = B * C
+            //------------------------------------------------------------------
+            template <typename T, typename U, typename V> static inline
+            void mmul(matrix<T> &A, const matrix<U> &B, const matrix<V> &C, const adder<T> &xadd)
+            {
+                assert(A.rows==B.rows);
+                assert(A.cols==C.cols);
+                assert(B.cols==C.rows);
+                const size_t nc = A.cols;
+                const size_t nk = B.cols;
+                for(size_t i=A.rows;i>0;--i)
+                {
+                    writable<T>       &A_i = A[i];
+                    const readable<T> &B_i = B[i];
+                    for(size_t j=nc;j>0;--j)
+                    {
+                        xadd.ldz();
+                        for(size_t k=nk;k>0;--k)
+                        {
+                            xadd += B_i[k] * C[k][j];
+                        }
+                        A_i[j] = xadd.get();
                     }
                 }
             }

@@ -50,6 +50,12 @@ set(math_geometry ${math_geometry_decl} ${math_geometry_srcs})
 SOURCE_GROUP(math/geometry FILES ${math_geometry})
 install( FILES ${math_geometry_decl} DESTINATION include/yack/math/geometry )
 
+# fitting
+file(GLOB math_fitting_decl yack/math/fitting/*.hpp)
+file(GLOB math_fitting_srcs yack/math/fitting/*.cpp yack/math/fitting/*.hxx)
+set(math_fitting ${math_fitting_decl} ${math_fitting_srcs})
+SOURCE_GROUP(math/fitting FILES ${math_fitting})
+install( FILES ${math_fitting_decl} DESTINATION include/yack/math/fitting )
 
 
 # data
@@ -137,6 +143,7 @@ ${math_opt}
 ${math_geometry}
 ${math_data}
 ${math_fit} ${math_fit_variable} ${math_fit_sample} ${math_fit_samples} ${math_fit_least_squares} ${math_fit_ode}
+${math_fitting}
 )
 
 install( TARGETS yack-math ARCHIVE DESTINATION lib )
