@@ -34,15 +34,15 @@ namespace yack
                 //
                 // C++
                 //______________________________________________________________
-                virtual ~variable() throw();
+                virtual ~variable() throw(); //!< cleanup
 
 
                 //______________________________________________________________
                 //
                 // public virtual interface
                 //______________________________________________________________
-                virtual const string & alias()      const throw() = 0;
-                virtual bool           is_primary() const throw() = 0;
+                virtual const string & alias()      const throw() = 0; //!< get alias anme
+                virtual bool           is_primary() const throw() = 0; //!< true/false
 
                 //______________________________________________________________
                 //
@@ -61,16 +61,17 @@ namespace yack
                     return arr[ **this ];
                 }
 
+                //! output information
                 friend std::ostream & operator<<(std::ostream &, const variable &);
 
                 //______________________________________________________________
                 //
                 // members
                 //______________________________________________________________
-                const string   name;
+                const string   name; //!< identifier
 
             protected:
-                explicit variable(const string &);
+                explicit variable(const string &); //!< setup name
 
             private:
                 YACK_DISABLE_COPY_AND_ASSIGN(variable);

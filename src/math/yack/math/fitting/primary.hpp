@@ -14,17 +14,34 @@ namespace yack
 
         namespace fitting
         {
-
+            //__________________________________________________________________
+            //
+            //
+            //! primary variable = name+indx
+            //
+            //__________________________________________________________________
             class primary : public variable
             {
             public:
-                typedef ark_ptr<string,const primary> handle;
+                //______________________________________________________________
+                //
+                // types and definitions
+                //______________________________________________________________
+                typedef ark_ptr<string,const primary> handle; //!< alias
 
-                explicit primary(const string &, const size_t);
-                virtual ~primary() throw();
+                //______________________________________________________________
+                //
+                // C++
+                //______________________________________________________________
+                explicit primary(const string &, const size_t); //!< name+indx
+                virtual ~primary() throw();                     //!< cleanup
 
-                virtual const string & alias()      const throw();
-                virtual bool           is_primary() const throw();
+                //______________________________________________________________
+                //
+                // methods
+                //______________________________________________________________
+                virtual const string & alias()      const throw(); //!< name
+                virtual bool           is_primary() const throw(); //!< true
                 
             private:
                 YACK_DISABLE_COPY_AND_ASSIGN(primary);

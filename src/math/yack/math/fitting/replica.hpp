@@ -1,5 +1,3 @@
-
-
 //! \file
 
 #ifndef YACK_FITTING_REPLICA_INCLUDED
@@ -15,13 +13,26 @@ namespace yack
 
         namespace fitting
         {
-
+            //__________________________________________________________________
+            //
+            //
+            //! replica variable = name+primary
+            //
+            //__________________________________________________________________
             class replica : public variable
             {
             public:
-                explicit replica(const string &, const primary::handle &);
-                virtual ~replica() throw();
+                //______________________________________________________________
+                //
+                // C++
+                //______________________________________________________________
+                explicit replica(const string &, const primary::handle &); //!< setup name+link
+                virtual ~replica() throw();                                //!< cleanup
 
+                //______________________________________________________________
+                //
+                // methods
+                //______________________________________________________________
                 virtual const string & alias()      const throw(); //!< link->name
                 virtual bool           is_primary() const throw(); //!< false
 
