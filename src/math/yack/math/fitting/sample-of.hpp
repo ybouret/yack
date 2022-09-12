@@ -1,4 +1,3 @@
-
 //!\ file
 
 #ifndef YACK_FIT_SAMPLE_OF_INCLUDED
@@ -31,15 +30,14 @@ namespace yack
                 //
                 // types and definitions
                 //______________________________________________________________
-                typedef sample_of<ABSCISSA,ORDINATE>     self_type;   //!< alias
-                typedef ark_ptr<string,self_type>        pointer;     //!< alias
-                typedef sample<ABSCISSA,ORDINATE>        sample_type; //!< alias
-                typedef readable<ABSCISSA>               abscissa;    //!< alias
-                typedef readable<ORDINATE>               ordinate;    //!< alias
-                typedef writable<ORDINATE>               adjusted;    //!< alias
-                typedef typename sample_type::comparator comparator;  //!< alias
-                typedef typename sample_type::allocator  allocator;   //!< alias
-                typedef vector<size_t,allocator>         indices;
+                typedef sample_of<ABSCISSA,ORDINATE>        self_type;   //!< alias
+                typedef ark_ptr<string,self_type>           pointer;     //!< alias
+                typedef sample<ABSCISSA,ORDINATE>           sample_type; //!< alias
+                typedef typename sample_type::comparator    comparator;  //!< alias
+                typedef typename sample_type::allocator     allocator;   //!< alias
+                typedef vector<size_t,allocator>            indices;
+                typedef typename sample_type::sequential_type sequential_type;
+                using sample_type::xadd;
 
                 //______________________________________________________________
                 //
@@ -48,16 +46,21 @@ namespace yack
 
                 //! setup with coherent fields
                 template <typename ID>
-                inline explicit sample_of(const ID       &id,
-                                          const abscissa &X_,
-                                          const ordinate &Y_,
-                                          adjusted       &Z_) :
+                inline explicit sample_of(const ID                 &id,
+                                          const readable<ABSCISSA> &X_,
+                                          const readable<ORDINATE> &Y_,
+                                          writable<ORDINATE>       &Z_) :
                 sample_type(id),
-                X(X_), Y(Y_), Z(Z_),
-                indx()
+                abscissa(X_),
+                ordinate(Y_),
+                adjusted(Z_),
+                schedule()
                 {
-                    assert(Y.size()==X.size());
-                    assert(Z.size()==X.size());
+                    assert(ordinate.size()==abscissa.size());
+                    assert(adjusted.size()==abscissa.size());
+                    const size_t n = abscissa.size();
+                    schedule.adjust(n,0);
+                    for(size_t i=n;i>0;--i) schedule[i] = i;
                 }
 
                 //! cleanup
@@ -72,31 +75,65 @@ namespace yack
                 //! common size
                 virtual size_t dimension() const throw()
                 {
-                    assert(Y.size()==X.size());
-                    assert(Z.size()==X.size());
-                    return X.size();
+                    assert(ordinate.size()==abscissa.size());
+                    assert(adjusted.size()==abscissa.size());
+                    return abscissa.size();
                 }
 
+                //! make index by comparator
                 virtual void make_indx(comparator cmp)
                 {
-                    indx.adjust(dimension(),0);
-                    indexing::make(indx,cmp,X);
+
+                    const size_t n = dimension();
+                    schedule.adjust(n,0);
+                    if(cmp)
+                    {
+                        indexing::make(schedule,cmp,abscissa);
+                    }
+                    else
+                    {
+                        for(size_t i=n;i>0;--i) schedule[i] = i;
+                    }
                 }
 
 
+                virtual ORDINATE D2(sequential_type          &func,
+                                    const readable<ORDINATE> &aorg)
+                {
+                    assert( dimension() == schedule.size() );
+                    const size_t n = dimension();
+                    if(n>0)
+                    {
+                        const variables &vars = **this;
+                        xadd.resume( n );
+                        {
+                            const size_t ii = schedule[1];
+                            xadd += squared( adjusted[ii] = func.start(abscissa[ii],aorg,vars) - ordinate[ii] );
+                        }
+                        for(size_t i=2;i<=n;++i)
+                        {
+                            const size_t ii = schedule[i];
+                            xadd += squared(  adjusted[ii] = func.reach(abscissa[ii],aorg,vars) - ordinate[ii] );
+                        }
+                        return xadd.get();
+                    }
+                    else
+                    {
+                        return 0;
+                    }
+                }
 
                 //______________________________________________________________
                 //
                 // members
                 //______________________________________________________________
-                const abscissa &X; //!< abscissae
-                const ordinate &Y; //!< ordinates
-                adjusted       &Z; //!< adjusted values
+                const readable<ABSCISSA> &abscissa;    //!< abscissae
+                const readable<ORDINATE> &ordinate;    //!< ordinates
+                writable<ORDINATE>       &adjusted;    //!< adjusted values
+                indices                   schedule;    //!< sequential indexing
 
             private:
                 YACK_DISABLE_COPY_AND_ASSIGN(sample_of);
-                indices indx;
-                
             };
 
         }

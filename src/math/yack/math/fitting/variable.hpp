@@ -61,6 +61,14 @@ namespace yack
                     return arr[ **this ];
                 }
 
+                template <typename ARRAY> inline
+                typename ARRAY::const_type & operator()(const ARRAY &arr) const throw()
+                {
+                    assert( indx() >= 1 );
+                    assert( indx() <= arr.size() );
+                    return arr[ **this ];
+                }
+
                 //! output information
                 friend std::ostream & operator<<(std::ostream &, const variable &);
 

@@ -57,8 +57,8 @@ namespace yack
                 //
                 // modifying methods
                 //______________________________________________________________
-                const variable &operator()(const string &name, const size_t indx); //!< new primary variable name+indx
-                const variable &operator()(const char   *name, const size_t indx); //!< new primary variable name+indx
+                const variable &use(const string &name, const size_t indx); //!< new primary variable name+indx
+                const variable &use(const char   *name, const size_t indx); //!< new primary variable name+indx
 
 
                 variables & operator<<(const string &vars); //!< automatic adding
@@ -83,6 +83,8 @@ namespace yack
 
 
 
+
+
                 //______________________________________________________________
                 //
                 // accessing methods
@@ -97,6 +99,18 @@ namespace yack
                 const variable & operator[](const UUID &uuid) const
                 {
                     return fetch(uuid);
+                }
+
+                template <typename ARRAY, typename ID>
+                typename ARRAY::type & operator()(ARRAY &arr, const ID &id) const
+                {
+                    return (*this)[id](arr);
+                }
+
+                template <typename ARRAY, typename ID>
+                typename ARRAY::const_type & operator()(const ARRAY &arr, const ID &id) const
+                {
+                    return (*this)[id](arr);
                 }
 
                 //! display with boundaries

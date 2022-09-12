@@ -122,8 +122,8 @@ namespace yack
 
 
 
-            const variable & variables:: operator()(const string &name,
-                                                    const size_t indx)
+            const variable & variables:: use(const string &name,
+                                             const size_t indx)
             {
                 // check index
                 if(indx<=0) throw imported::exception(clid,"try to set '%s' at index=0", name());
@@ -165,10 +165,10 @@ namespace yack
             }
 
 
-            const variable & variables::operator()(const char   *name, const size_t indx)
+            const variable & variables::use(const char   *name, const size_t indx)
             {
                 const string _(name);
-                return (*this)(_,indx);
+                return use(_,indx);
             }
 
             const variable & variables:: operator()(const string    &name,
@@ -192,32 +192,6 @@ namespace yack
                 return(*this)(_,source,__);
             }
 
-#if 0
-            const variable & variables:: operator()(const string &name, const string &alias)
-            {
-                const primary::handle *ppp = pdb.search(alias);
-                if(!ppp) throw imported::exception(clid,"no primary '%s' to make replica '%s'", alias(), name());
-
-                for(const vnode *node=head();node;node=node->next)
-                {
-                    const variable &r = ***node;
-                    if(r.is_primary()) continue;
-                    if(r.alias()==alias)
-                    {
-                        throw imported::exception(clid,"primary '%s' is already aliases by '%s'",alias(), r.name());
-                    }
-                }
-
-
-                const variable::pointer v = new replica(name,*ppp);
-                if(!vdb.insert(v)) throw imported::exception(clid,"multiple '%s' while aliasing '%s'",name(),alias());
-
-                update_with(name);
-
-                return *v;
-
-            }
-#endif
 
 
             variables & variables:: operator<<(const string &source)
@@ -229,7 +203,7 @@ namespace yack
                 {
                     string &name = vars[i];
                     strops::strip_with(" \t", 2, name);
-                    (void) self(name,upper()+1);
+                    (void) use(name,upper()+1);
                 }
 
                 return self;

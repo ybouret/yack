@@ -7,6 +7,7 @@
 #include "yack/math/fitting/sequential.hpp"
 #include "yack/container/matrix.hpp"
 #include "yack/sequence/vector.hpp"
+#include "yack/math/adder.hpp"
 
 namespace yack
 {
@@ -34,6 +35,7 @@ namespace yack
                 typedef sequential<ABSCISSA,ORDINATE>      sequential_type;    //!< alias
                 typedef int (*comparator)(const ABSCISSA &, const ABSCISSA &); //!< alias to create index
                 typedef vector<ORDINATE,allocator>         ordinates;
+                typedef adder<ORDINATE>                    adder_type;
 
                 //______________________________________________________________
                 //
@@ -57,9 +59,23 @@ namespace yack
                 //
                 // virtual interface
                 //______________________________________________________________
-                virtual size_t dimension() const throw() = 0; //!< number of data points.
-                virtual void   make_indx(comparator)     = 0; //!< indices for sequential evaluation
-                
+                virtual size_t   dimension() const throw() = 0; //!< number of data points.
+                virtual void     make_indx(comparator)     = 0; //!< indices for sequential evaluation
+                virtual ORDINATE D2(sequential_type          &func,
+                                    const readable<ORDINATE> &aorg) = 0; //!< compute D2
+
+
+                //______________________________________________________________
+                //
+                // helpers
+                //______________________________________________________________
+                template <typename FUNC> inline
+                ORDINATE D2_for(FUNC                     &func,
+                                const readable<ORDINATE> &aorg )
+                {
+                    sequential_wrapper<FUNC> call(func);
+                    return D2(call,aorg);
+                }
 
 
                 //______________________________________________________________
@@ -70,9 +86,14 @@ namespace yack
                 //! cleanup
                 inline virtual ~sample() throw() {}
 
+                //______________________________________________________________
+                //
+                // members
+                //______________________________________________________________
                 matrix<ORDINATE> curv;
                 ordinates        beta;
-
+                adder_type       xadd;
+                
             protected:
 
                 //! setup with name
@@ -80,7 +101,8 @@ namespace yack
                 explicit sample(const ID &id) :
                 sample_(id),
                 curv(),
-                beta()
+                beta(),
+                xadd()
                 {
                 }
 
