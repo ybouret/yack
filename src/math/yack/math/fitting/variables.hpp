@@ -126,9 +126,7 @@ namespace yack
                         os << "  ";
                         if(prefix) os << prefix;
                         const string &id = v.name;
-                        os << v.name; for(size_t i=v.name.size();i<len;++i) os << ' ';
-                        os << " = ";
-                        os << v(arr);
+                        pad(os << id,id) << " = " << v(arr);
                         os << std::endl;
                     }
                     os << '}';
@@ -152,7 +150,12 @@ namespace yack
                 // members
                 //______________________________________________________________
                 const size_t len; //!< max name length
-                
+
+                inline std::ostream & pad(std::ostream &os, const string &name) const
+                {
+                    for(size_t i=name.size();i<len;++i) os << ' ';
+                    return os;
+                }
             };
 
 
