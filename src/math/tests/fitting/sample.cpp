@@ -1,5 +1,5 @@
 
-#include "yack/math/fitting/sample-of.hpp"
+#include "yack/math/fitting/sample/of.hpp"
 #include "yack/utest/run.hpp"
 #include "yack/arith/ipower.hpp"
 
@@ -61,7 +61,7 @@ YACK_UTEST(fitting_sample)
         vars << vformat("a%d",i);
         std::cerr << vars << std::endl;
         vector<double>   aorg( vars.upper() );
-        fitting::bvector used( vars.upper() );
+        vector<bool>     used( vars.upper() );
 
         s1.D2_for(F,aorg);
 

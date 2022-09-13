@@ -1,6 +1,6 @@
 
 #include "yack/math/fitting/variables.hpp"
-#include "yack/math/fitting/replica.hpp"
+#include "yack/math/fitting/variable/replica.hpp"
 #include "yack/utest/run.hpp"
 
 using namespace yack;

@@ -4,7 +4,7 @@
 #define YACK_FITTING_REPLICA_INCLUDED 1
 
 
-#include "yack/math/fitting/primary.hpp"
+#include "yack/math/fitting/variable/primary.hpp"
 
 namespace yack
 {

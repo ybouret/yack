@@ -1,4 +1,4 @@
-#include "yack/math/fitting/samples-of.hpp"
+#include "yack/math/fitting/samples.hpp"
 #include "yack/type/v2d.hpp"
 #include "yack/utest/run.hpp"
 

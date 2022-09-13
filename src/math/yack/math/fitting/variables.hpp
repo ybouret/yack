@@ -5,7 +5,7 @@
 #define YACK_FITTING_VARIABLES_INCLUDED 1
 
 
-#include "yack/math/fitting/primary.hpp"
+#include "yack/math/fitting/variable/primary.hpp"
 #include "yack/associative/suffix/set.hpp"
 #include "yack/large-object.hpp"
 

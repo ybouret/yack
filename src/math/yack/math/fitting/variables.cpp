@@ -1,11 +1,13 @@
 #include "yack/math/fitting/variables.hpp"
-#include "yack/math/fitting/replica.hpp"
+#include "yack/math/fitting/variable/replica.hpp"
 #include "yack/system/imported.hpp"
 #include "yack/type/utils.hpp"
+
 #include "yack/data/list/sort.hpp"
-#include "yack/string/tokenizer.hpp"
 #include "yack/sequence/vector.hpp"
+
 #include "yack/string/ops.hpp"
+#include "yack/string/tokenizer.hpp"
 
 namespace yack
 {

@@ -3,7 +3,7 @@
 #ifndef YACK_FIT_CSAMPLE_INCLUDED
 #define YACK_FIT_CSAMPLE_INCLUDED 1
 
-#include "yack/math/fitting/sample-of.hpp"
+#include "yack/math/fitting/sample/of.hpp"
 
 namespace yack
 {

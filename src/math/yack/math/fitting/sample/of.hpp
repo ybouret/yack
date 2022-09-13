@@ -37,7 +37,7 @@ namespace yack
                 typedef typename sample_type::allocator       allocator;       //!< alias
                 typedef vector<size_t,allocator>              indices;         //!< alias
                 typedef typename sample_type::sequential_type sequential_type; //!< alias
-                typedef typename sample_type::ordinates        ordinates;      //!< alias
+                typedef typename sample_type::ordinates       ordinates;       //!< alias
                 using sample_type::xadd;                                       //!< alias
                 using sample_type::curv;                                       //!< alias
                 using sample_type::beta;                                       //!< alias
@@ -154,7 +154,17 @@ namespace yack
                             xadd += squared(  (adjusted[ii] = func.reach(abscissa[ii],aorg,vars))  - ordinate[ii] );
                         }
                         const ORDINATE res = xadd.get()/2;
-                        
+
+                        for(const vnode *I=vars.head();I;I=I->next)
+                        {
+                            const size_t i = ****I;
+                            if(!used[i]) continue;
+
+                            
+
+                        }
+
+
                         return res;
                     }
                     else

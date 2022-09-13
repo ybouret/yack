@@ -1,4 +1,4 @@
-#include "yack/math/fitting/replica.hpp"
+#include "yack/math/fitting/variable/replica.hpp"
 
 namespace yack
 {

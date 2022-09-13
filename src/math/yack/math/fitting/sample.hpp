@@ -3,7 +3,7 @@
 #ifndef YACK_FIT_SAMPLE_INCLUDED
 #define YACK_FIT_SAMPLE_INCLUDED 1
 
-#include "yack/math/fitting/sample_.hpp"
+#include "yack/math/fitting/sample/base.hpp"
 #include "yack/math/fitting/sequential.hpp"
 #include "yack/container/matrix.hpp"
 #include "yack/sequence/vector.hpp"
@@ -133,6 +133,7 @@ namespace yack
                     beta.adjust(nvar,0);
                     curv.ld(0);
                     beta.ld(0);
+                    for(size_t i=nvar;i>0;--i) curv[i][i] = 1.0;
                 }
 
             private:

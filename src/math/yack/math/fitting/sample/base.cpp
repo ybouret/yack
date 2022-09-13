@@ -1,5 +1,5 @@
 
-#include "yack/math/fitting/sample_.hpp"
+#include "yack/math/fitting/sample/base.hpp"
 #include "yack/system/imported.hpp"
 
 namespace yack

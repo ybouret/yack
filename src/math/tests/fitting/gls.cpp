@@ -1,5 +1,5 @@
 
-#include "yack/math/fitting/samples-of.hpp"
+#include "yack/math/fitting/samples.hpp"
 #include "yack/utest/run.hpp"
 
 using namespace yack;
