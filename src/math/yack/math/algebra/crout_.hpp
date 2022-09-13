@@ -4,6 +4,7 @@
 #define YACK_CROUT__INCLUDED 1
 
 #include "yack/container/dynamic.hpp"
+#include "yack/large-object.hpp"
 
 namespace yack
 {
@@ -15,7 +16,7 @@ namespace yack
         //! data for Crout's algorithm
         //
         //______________________________________________________________________
-        class crout_ : public dynamic
+        class crout_ : public large_object, public dynamic
         {
         public:
             //__________________________________________________________________

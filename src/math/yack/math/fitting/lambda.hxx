@@ -13,11 +13,17 @@ template <> lambda<real_t>:: lambda() : field_type( clid(), layout1D(pmin(),pmax
 
 }
 
-template <> real_t  lambda<real_t>::  initialize(int &p) const throw()
+template <> void  lambda<real_t>::  initialize(int &p) const throw()
 {
     static const int  pini = pmin()/2;
+    p = pini;
+}
+
+template <> real_t  lambda<real_t>::  initialized(int &p) const throw()
+{
     const field_type &self = *this;
-    return self[p=pini];
+    initialize(p);
+    return self[p];
 }
 
 template <> void lambda<real_t>:: decrease(int &p) const throw()

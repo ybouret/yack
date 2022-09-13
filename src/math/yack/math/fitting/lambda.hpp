@@ -43,9 +43,10 @@ namespace yack
                 //
                 // methods
                 //______________________________________________________________
-                T        initialize(int &p) const throw(); //!< return self[p=pmin/2]
-                void     decrease(int &p)   const throw(); //!< p = max_of(p-1,pmin)
-                bool     increase(int &p)   const throw(); //!< ++p if p<pmax, false otherwise
+                T        initialized(int &p) const throw(); //!< return self[p=pmin/2]
+                void     initialize(int &p)  const throw(); //!< p=pmin/2
+                void     decrease(int &p)    const throw(); //!< p = max_of(p-1,pmin)
+                bool     increase(int &p)    const throw(); //!< ++p if p<pmax, false otherwise
 
             private:
                 YACK_DISABLE_COPY_AND_ASSIGN(lambda);

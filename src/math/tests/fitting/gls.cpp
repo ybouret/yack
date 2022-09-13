@@ -1,4 +1,5 @@
 
+#include "yack/math/fitting/least-squares.hpp"
 #include "yack/math/fitting/samples.hpp"
 #include "yack/utest/run.hpp"
 
@@ -105,6 +106,7 @@ YACK_UTEST(fitting_gls)
     derivative<double> drvs;
     vector<bool>       used(nvar,true);
     vector<double>     scal(nvar,1e-4);
+    vector<double>     aerr(nvar);
 
     vars(scal,"t0") = 0.1;
     
@@ -134,6 +136,15 @@ YACK_UTEST(fitting_gls)
 
     std::cerr << "beta=" << both.beta << std::endl;
     std::cerr << "curv=" << both.curv << std::endl;
+
+    fitting::least_squares<double,double> ls;
+
+    v1(used,"t0") = false;
+    ls.fit_with(F,s1,aorg,used,scal,aerr);
+
+    ls.fit_with(F,s2,aorg,used,scal,aerr);
+
+
 }
 YACK_UDONE()
 

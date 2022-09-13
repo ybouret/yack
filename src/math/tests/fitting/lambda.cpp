@@ -20,7 +20,7 @@ namespace
         std::cerr << lam << std::endl;
         //lam.print(std::cerr) << std::endl;
         int p = 0;
-        T   f = lam.initialize(p);
+        T   f = lam.initialized(p);
         std::cerr << "init: " << std::setw(15) << f << " @" << p << std::endl;
         do
         {
