@@ -138,13 +138,14 @@ namespace yack
                     ABSCISSA                  x;
                     const readable<ORDINATE> &a;
                     size_t                    i;
+                    const variables          &v;
 
                     inline ORDINATE operator()(ORDINATE b)
                     {
                         assert(i>0);
                         assert(i<=a.size());
                         const temporary<ORDINATE> keep( coerce(a[i]), b);
-                        return 0;
+                        return f.start(x,a,v);
                     }
 
                 };
@@ -184,7 +185,7 @@ namespace yack
                         for(size_t k=dims;k>0;--k)
                         {
                             // focus on abscissa[k]
-                            callF          F = { func, abscissa[k], aorg, 0 };
+                            callF          F = { func, abscissa[k], aorg, 0, vars };
                             const ORDINATE d = deltaOrd[k];
                             dFda.ld(0);
                             for(const vnode *I=vars.head();I;I=I->next)

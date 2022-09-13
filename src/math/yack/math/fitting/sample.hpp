@@ -119,8 +119,10 @@ namespace yack
                 adder_type       xadd; //!< adder
                 
             protected:
-
+                //______________________________________________________________
+                //
                 //! setup with name
+                //______________________________________________________________
                 template <typename ID> inline
                 explicit sample(const ID &id) :
                 sample_(id),
@@ -130,7 +132,10 @@ namespace yack
                 {
                 }
 
+                //______________________________________________________________
+                //
                 //! set beta=0 and curv=Id
+                //______________________________________________________________
                 inline void prepare(const size_t nvar)
                 {
                     curv.make(nvar,nvar);
