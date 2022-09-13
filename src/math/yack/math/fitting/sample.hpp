@@ -34,11 +34,11 @@ namespace yack
                 // types and definitions
                 //______________________________________________________________
                 typedef sequential<ABSCISSA,ORDINATE>      sequential_type;    //!< alias
-                typedef int (*comparator)(const ABSCISSA &, const ABSCISSA &); //!< alias to create index
                 typedef vector<ORDINATE,allocator>         ordinates;          //!< alias
                 typedef adder<ORDINATE>                    adder_type;         //!< alias
                 typedef derivative<ORDINATE>               drvs_type;          //!< alias
-                
+                typedef int (*comparator)(const ABSCISSA &, const ABSCISSA &); //!< alias to create schedule
+
                 //______________________________________________________________
                 //
                 //! create a wrapper for a simple function
@@ -87,6 +87,7 @@ namespace yack
                 }
 
 
+                //! wrapper to compute D2_full for a regular function
                 template <typename FUNC> inline
                 ORDINATE D2_full_for(FUNC                       &func,
                                      const readable<ORDINATE>   &aorg,
