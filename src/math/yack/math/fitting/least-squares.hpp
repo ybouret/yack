@@ -56,6 +56,7 @@ namespace yack
                 curv(),
                 tabs(8,0),
                 curr(NULL),
+                hfcn(NULL),
                 aorg( tabs.next() ),
                 step( tabs.next() ),
                 aend( tabs.next() ),
@@ -81,6 +82,16 @@ namespace yack
                     return fit(s,call,aorg,used,scal,aerr);
                 }
 
+
+                double operator()(const double u)
+                {
+                    for(size_t i=aorg.size();i>0;--i)
+                    {
+                        atry[i] = aorg[i] + u * step[i];
+                    }
+                    return curr->D2(*hfcn,atry);
+                }
+
                 bool fit(sample_type              &s,
                          sequential_type          &f,
                          writable<ORDINATE>       &a0,
@@ -98,7 +109,8 @@ namespace yack
                     const size_t                  ndat = s.dimension();
                     const variables &             vars = *s;
                     const size_t                  nvar = vars.upper();
-                    const temporary<sample_type*> keep(curr,&s);
+                    const temporary<sample_type*>     keepS(curr,&s);
+                    const temporary<sequential_type*> keepF(hfcn,&f);
 
                     lam.initialize(p10);
                     curv.make(nvar,nvar);
@@ -154,8 +166,8 @@ namespace yack
                     if(verbose) {
                         vars(std::cerr << "step=",step,"step_") << std::endl;
                         vars(std::cerr << "aend=",aend,NULL)    << std::endl;
-                        std::cerr << "D2_end = " << D2_end << "/" << D2_org << std::endl;
-                        std::cerr << "good   = " << good << std::endl;
+                        std::cerr << "  D2_end = " << D2_end << "/" << D2_org << std::endl;
+                        std::cerr << "  good   = " << good << std::endl;
                     }
 
                     //----------------------------------------------------------
@@ -163,10 +175,24 @@ namespace yack
                     // check positition
                     //
                     //----------------------------------------------------------
-                    if(D2_end<=D2_org)
+                    if(D2_end<D2_org)
                     {
                         // accept
                         YACK_LSF_PRINTLN(clid << "[accept]");
+
+                        {
+                            ios::ocstream fp("decreased.dat");
+                            const size_t NP=100;
+                            for(size_t i=0;i<=NP;++i)
+                            {
+                                const double u = i/double(NP);
+                                fp("%g %g\n",u,(*this)(u));
+                            }
+                            
+                            std::cerr << "slope=" << s.xadd.dot(s.beta,step) << std::endl;
+
+                            exit(1);
+                        }
 
                         if(good)
                         {
@@ -177,7 +203,7 @@ namespace yack
                             {
                                 goto SUCCESS;
                             }
-                            
+
                             if(converged(used,tol))
                             {
                                 goto SUCCESS;
@@ -227,6 +253,7 @@ namespace yack
                 matrix<ORDINATE>         curv;
                 tableaux                 tabs;
                 sample_type             *curr;
+                sequential_type         *hfcn;
                 array_type &             aorg;
                 array_type &             step;
                 array_type &             aend;
