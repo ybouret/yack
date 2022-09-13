@@ -176,6 +176,7 @@ namespace yack
                     if(total>0)
                     {
                         const ORDINATE res = xadd.get() /  total;
+#if 0
                         for(size_t i=nv;i>0;--i)
                         {
                             xadd.ldz();
@@ -198,6 +199,7 @@ namespace yack
                                 curv[i][j] = xadd.get()/total;
                             }
                         }
+#endif
                         return res;
                     }
                     else
