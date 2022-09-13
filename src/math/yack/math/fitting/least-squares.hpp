@@ -91,6 +91,7 @@ namespace yack
                     beta.adjust(nvar,0);
                     step.adjust(nvar,0);
                     aend.adjust(nvar,0);
+                    atry.adjust(nvar,0);
                     if(solv.is_empty()||solv->nmax<nvar) solv = new LU(nvar);
 
                     if(ndat<=0) return false;
@@ -121,6 +122,9 @@ namespace yack
                         std::cerr << "D2_end=" << D2_end << "/" << D2_org << std::endl;
                     }
 
+                    // check positition
+                    
+
 
 
 
@@ -133,6 +137,7 @@ namespace yack
                 ordinates                beta;
                 ordinates                step;
                 ordinates                aend;
+                ordinates                atry;
                 solver                   solv;
                 drvs_t                   drvs;
                 bool                     good;
