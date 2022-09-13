@@ -42,7 +42,9 @@ namespace yack
                 using sample_type::xadd;                                       //!< alias
                 using sample_type::curv;                                       //!< alias
                 using sample_type::beta;                                       //!< alias
-                using sample_type::prepare;
+                using sample_type::prolog;
+                using sample_type::epilog;
+                using sample_type::z_diag;
 
                 //______________________________________________________________
                 //
@@ -163,12 +165,15 @@ namespace yack
                     const variables &vars = **this;
                     const size_t     dims = dimension();
                     const size_t     nvar = vars.upper();
-                    prepare(nvar);
+                    prolog(nvar);
                     if(dims>0)
                     {
-                        deltaOrd.adjust(dims,0);
-                        // pass 1 : evaluate adjusted, store deltaOrd
+
+                        //------------------------------------------------------
+                        // pass 1 : evaluate adjusted, store deltaOrd and D2
+                        //------------------------------------------------------
                         xadd.resume( dims );
+                        deltaOrd.adjust(dims,0);
                         {
                             const size_t ii = schedule[1];
                             xadd += squared( deltaOrd[ii] = ordinate[ii] - (adjusted[ii] = func.start(abscissa[ii],aorg,vars)) );
@@ -180,24 +185,45 @@ namespace yack
                         }
                         const ORDINATE res = xadd.get()/2;
 
+                        //------------------------------------------------------
                         // pass 2: cumulative
-                        dFda.adjust(nvar,0);
+                        //------------------------------------------------------
+                        dFda.adjust(nvar,0); // local memory
+                        z_diag(used);        // zero used diagonal terms
+
                         for(size_t k=dims;k>0;--k)
                         {
                             // focus on abscissa[k]
                             callF          F = { func, abscissa[k], aorg, 0, vars };
                             const ORDINATE d = deltaOrd[k];
+
+                            // compute gradient
                             dFda.ld(0);
                             for(const vnode *I=vars.head();I;I=I->next)
                             {
-                                const size_t i = F.i = ****I;
-                                if(!used[i]) continue;
+                                const size_t i = F.i = ****I;if(!used[i]) continue;
                                 beta[i] += d * ( dFda[i] = drvs.diff(F,aorg[i],scal[i]) );
+                            }
+
+                            // compute curvature
+                            for(const vnode *I=vars.head();I;I=I->next)
+                            {
+                                const size_t        i      = ****I;if(!used[i]) continue;
+                                writable<ORDINATE> &curv_i = curv[i];
+                                const ORDINATE      dFda_i = dFda[i];
+                                curv_i[i] += squared( dFda_i );
+                                for(const vnode *J=I->next;J;J=J->next)
+                                {
+                                    const size_t j = ****J; if(!used[j]) continue;
+                                    curv_i[j] += dFda_i * dFda[j];
+                                }
                             }
                         }
 
-                        std::cerr << "beta=" << beta << std::endl;
-
+                        //------------------------------------------------------
+                        // pass 3: epilog
+                        //------------------------------------------------------
+                        epilog(nvar);
                         return res;
                     }
                     else

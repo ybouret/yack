@@ -33,6 +33,13 @@ namespace yack
                 return vars_;
             }
 
+
+            const variables & sample_:: operator*() const throw()
+            {
+                return vars_;
+            }
+
+
         }
 
     }

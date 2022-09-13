@@ -4,6 +4,7 @@
 #define YACK_FIT_SAMPLES_OF_INCLUDED 1
 
 #include "yack/math/fitting/sample/c.hpp"
+#include "yack/math/iota.hpp"
 
 namespace yack
 {
@@ -38,7 +39,9 @@ namespace yack
                 using sample_type::xadd;                                        //!< alias
                 using sample_type::curv;                                        //!< alias
                 using sample_type::beta;                                        //!< alias
-                using sample_type::prepare;
+                using sample_type::prolog;
+                using sample_type::epilog;
+                using sample_type::z_diag;
 
                 //______________________________________________________________
                 //
@@ -160,11 +163,15 @@ namespace yack
                                          const readable<ORDINATE>   &scal,
                                          derivative<ORDINATE>       &drvs)
                 {
-                    const size_t ns = samples.size();
-                    const size_t nv = (**this).upper();
-                    xadd.resume(ns);
-                    prepare(nv);
-                    size_t total = 0;
+                    const size_t nsam  = samples.size();
+                    const size_t nvar  = (**this).upper();
+                    size_t       total = 0;
+                    xadd.resume(nsam);
+                    prolog(nvar);
+
+                    //------------------------------------------------------
+                    // pass 1: compute individual D2, beta, curv
+                    //------------------------------------------------------
                     for(const s_node *node=head();node;node=node->next)
                     {
                         single_type &s = coerce(***node);
@@ -175,32 +182,37 @@ namespace yack
                     
                     if(total>0)
                     {
-                        const ORDINATE res = xadd.get() /  total;
-#if 0
-                        for(size_t i=nv;i>0;--i)
+                        //------------------------------------------------------
+                        // pass 2: combine beta and curv
+                        //------------------------------------------------------
+                        z_diag(used);
+                        for(const s_node *node=head();node;node=node->next)
                         {
-                            xadd.ldz();
-                            for(const s_node *node=head();node;node=node->next)
+                            const single_type &s =  ***node;
+                            const size_t       n = s.dimension();
+                            for(const vnode *I=(*s).head();I;I=I->next)
                             {
-                                single_type &s = coerce(***node);
-                                const size_t n = s.dimension();
-                                xadd += s.beta[i] * n;
-                            }
-                            beta[i] = xadd.get()/total;
-                            for(size_t j=i;j>0;--j)
-                            {
-                                xadd.ldz();
-                                for(const s_node *node=head();node;node=node->next)
+                                const size_t i = ****I; if(!used[i]) continue;
+                                beta[i] += n * s.beta[i];
+                                for(const vnode *J=I;J;J=J->next)
                                 {
-                                    single_type &s = coerce(***node);
-                                    const size_t n = s.dimension();
-                                    xadd += s.curv[i][j] * n;
+                                    const size_t j = ****J; if(!used[j]) continue;
+                                    curv[i][j] += n * s.curv[i][j];
                                 }
-                                curv[i][j] = xadd.get()/total;
                             }
                         }
-#endif
-                        return res;
+
+                        //------------------------------------------------------
+                        // pass 3: finalize
+                        //------------------------------------------------------
+                        iota::div_by(total,beta);
+                        for(size_t i=nvar;i>0;--i)
+                        {
+                            for(size_t j=nvar;j>=i;--j) curv[i][j] /= total;
+                        }
+
+                        epilog(nvar);
+                        return xadd.get() /  total;
                     }
                     else
                     {

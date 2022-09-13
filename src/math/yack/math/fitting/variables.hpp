@@ -126,14 +126,12 @@ namespace yack
                         os << "  ";
                         if(prefix) os << prefix;
                         const string &id = v.name;
-                        pad(os << id,id) << " = " << v(arr);
+                        pad(os << id,id) << " = " << arr[*v];
                         os << std::endl;
                     }
                     os << '}';
                     return os;
                 }
-
-
 
                 
             private:

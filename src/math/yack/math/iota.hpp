@@ -62,6 +62,14 @@ namespace yack {
             }
 
 
+            //------------------------------------------------------------------
+            //! target[1..target.size()] = lhs - rhs
+            //------------------------------------------------------------------
+            template <typename T, typename TARGET> static inline
+            void div_by(T value, TARGET &target)
+            {
+                for(size_t i=target.size();i>0;--i) target[i] /= value;
+            }
 
             //------------------------------------------------------------------
             //! M = A*A'

@@ -134,16 +134,46 @@ namespace yack
 
                 //______________________________________________________________
                 //
+                //! make a symmetric matrix
+                //______________________________________________________________
+                inline void epilog(const size_t nvar) throw()
+                {
+                    for(size_t i=2;i<=nvar;++i)
+                    {
+                        for(size_t j=1;j<i;++j)
+                        {
+                            curv[i][j] = curv[j][i];
+                        }
+                    }
+                }
+
+                //______________________________________________________________
+                //
                 //! set beta=0 and curv=Id
                 //______________________________________________________________
-                inline void prepare(const size_t nvar)
+                inline void prolog(const size_t nvar)
                 {
                     curv.make(nvar,nvar);
                     beta.adjust(nvar,0);
                     curv.ld(0);
                     beta.ld(0);
-                    for(size_t i=nvar;i>0;--i) curv[i][i] = 1.0;
+
+                    for(size_t i=nvar;i>0;--i) curv[i][i] = 1;
                 }
+
+                //______________________________________________________________
+                //
+                //! zero used curv diagonal points
+                //______________________________________________________________
+                inline void z_diag(const readable<bool> &used) throw()
+                {
+                    for(const vnode *I=(**this).head();I;I=I->next)
+                    {
+                        const size_t i = ****I;if(!used[i]) continue;
+                        curv[i][i] = 0;
+                    }
+                }
+
 
             private:
                 YACK_DISABLE_COPY_AND_ASSIGN(sample);
