@@ -89,7 +89,9 @@ namespace yack
 
                     //----------------------------------------------------------
                     //
+                    //
                     // initialize session
+                    //
                     //
                     //----------------------------------------------------------
                     static const ORDINATE             tol = numeric<ORDINATE>::ftol;
@@ -122,7 +124,9 @@ namespace yack
 
                     //----------------------------------------------------------
                     //
+                    //
                     // starting point
+                    //
                     //
                     //----------------------------------------------------------
                     size_t   cycle  = 0;
@@ -134,7 +138,9 @@ namespace yack
 
                     //----------------------------------------------------------
                     //
+                    //
                     // try to predict a step
+                    //
                     //
                     //----------------------------------------------------------
                 PREDICT:
@@ -143,7 +149,9 @@ namespace yack
 
                     //----------------------------------------------------------
                     //
+                    //
                     // compute queried position
+                    //
                     //
                     //----------------------------------------------------------
                     const ORDINATE D2_end = s.D2(f,aend);
@@ -157,12 +165,18 @@ namespace yack
 
                     //----------------------------------------------------------
                     //
+                    //
                     // check results
+                    //
                     //
                     //----------------------------------------------------------
                     if(D2_end<D2_org)
                     {
+                        //------------------------------------------------------
+                        //
                         // accept
+                        //
+                        //------------------------------------------------------
                         YACK_LSF_PRINTLN(clid << "[accept]");
 
                         if(true)
@@ -182,9 +196,7 @@ namespace yack
 
                         if(good)
                         {
-                            // stabilising and checking convergence
-                            lam.decrease(p10);
-
+                            //  checking convergence
                             if(converged(D2_end,D2_org,tol))
                             {
                                 goto SUCCESS;
@@ -195,24 +207,27 @@ namespace yack
                                 goto SUCCESS;
                             }
 
+                            lam.decrease(p10);
                         }
                         else
                         {
                             // still need to stabilise
+                            YACK_LSF_PRINTLN(clid << "[not stabilised]");
                         }
 
                         iota::load(aorg,aend);
                         D2_org = s.D2_full(f,aorg, used, scal, *drvs);
 
-                        if(cycle>=15)
-                        {
-                            exit(0);
-                        }
+
                         goto CYCLE;
                     }
                     else
                     {
+                        //------------------------------------------------------
+                        //
                         // reject
+                        //
+                        //------------------------------------------------------
                         YACK_LSF_PRINTLN(clid << "[reject]");
                         if(!lam.increase(p10))
                         {
