@@ -38,6 +38,7 @@ namespace yack
                 using sample_type::xadd;                                        //!< alias
                 using sample_type::curv;                                        //!< alias
                 using sample_type::beta;                                        //!< alias
+                using sample_type::prepare;
 
                 //______________________________________________________________
                 //
@@ -157,11 +158,12 @@ namespace yack
                                          const readable<ORDINATE>   &aorg,
                                          const readable<bool>       &used,
                                          const readable<ORDINATE>   &scal,
-                                         const derivative<ORDINATE> &drvs)
+                                         derivative<ORDINATE>       &drvs)
                 {
                     const size_t ns = samples.size();
                     const size_t nv = (**this).upper();
                     xadd.resume(ns);
+                    prepare(nv);
                     size_t total = 0;
                     for(const s_node *node=head();node;node=node->next)
                     {

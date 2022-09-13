@@ -61,16 +61,19 @@ namespace yack
                 //
                 // virtual interface
                 //______________________________________________________________
-                virtual size_t   dimension() const throw() = 0; //!< number of data points.
-                virtual void     make_indx(comparator)     = 0; //!< indices for sequential evaluation
-                virtual ORDINATE D2(sequential_type          &func,
-                                    const readable<ORDINATE> &aorg) = 0; //!< compute D2
+                virtual size_t   dimension() const throw() = 0;          //!< number of data points.
+                virtual void     make_indx(comparator)     = 0;          //!< indices for sequential evaluation
 
+                //! compute D2
+                virtual ORDINATE D2(sequential_type          &func,
+                                    const readable<ORDINATE> &aorg) = 0;
+
+                //! compute D2, gradient and curvature
                 virtual ORDINATE D2_full(sequential_type            &func,
                                          const readable<ORDINATE>   &aorg,
                                          const readable<bool>       &used,
                                          const readable<ORDINATE>   &scal,
-                                         const derivative<ORDINATE> &drvs) = 0;
+                                         derivative<ORDINATE>       &drvs) = 0;
                 
                 //______________________________________________________________
                 //
@@ -93,7 +96,7 @@ namespace yack
                                      const readable<ORDINATE>   &aorg,
                                      const readable<bool>       &used,
                                      const readable<ORDINATE>   &scal,
-                                     const derivative<ORDINATE> &drvs)
+                                     derivative<ORDINATE>       &drvs)
                 {
                     sequential_wrapper<FUNC> call(func);
                     return D2_full(call,aorg,used,scal,drvs);
@@ -127,6 +130,7 @@ namespace yack
                 {
                 }
 
+                //! set beta=0 and curv=Id
                 inline void prepare(const size_t nvar)
                 {
                     curv.make(nvar,nvar);

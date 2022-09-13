@@ -5,6 +5,7 @@
 
 #include "yack/math/fitting/sample.hpp"
 #include "yack/sort/indexing.hpp"
+#include "yack/type/temporary.hpp"
 
 namespace yack
 {
@@ -41,6 +42,7 @@ namespace yack
                 using sample_type::xadd;                                       //!< alias
                 using sample_type::curv;                                       //!< alias
                 using sample_type::beta;                                       //!< alias
+                using sample_type::prepare;
 
                 //______________________________________________________________
                 //
@@ -58,7 +60,8 @@ namespace yack
                 ordinate(Y_),
                 adjusted(Z_),
                 schedule(),
-                deltaOrd()
+                deltaOrd(),
+                dFda()
                 {
                     assert(ordinate.size()==abscissa.size());
                     assert(adjusted.size()==abscissa.size());
@@ -113,12 +116,12 @@ namespace yack
                         xadd.resume( n );
                         {
                             const size_t ii = schedule[1];
-                            xadd += squared( (adjusted[ii] = func.start(abscissa[ii],aorg,vars)) - ordinate[ii] );
+                            xadd += squared( ordinate[ii] - (adjusted[ii] = func.start(abscissa[ii],aorg,vars))  );
                         }
                         for(size_t i=2;i<=n;++i)
                         {
                             const size_t ii = schedule[i];
-                            xadd += squared( (adjusted[ii] = func.reach(abscissa[ii],aorg,vars)) - ordinate[ii] );
+                            xadd += squared( ordinate[ii] - (adjusted[ii] = func.reach(abscissa[ii],aorg,vars))  );
                         }
                         return xadd.get()/2;
                     }
@@ -127,43 +130,72 @@ namespace yack
                         return 0;
                     }
                 }
+
+            private:
+                struct callF
+                {
+                    sequential_type          &f;
+                    ABSCISSA                  x;
+                    const readable<ORDINATE> &a;
+                    size_t                    i;
+
+                    inline ORDINATE operator()(ORDINATE b)
+                    {
+                        assert(i>0);
+                        assert(i<=a.size());
+                        const temporary<ORDINATE> keep( coerce(a[i]), b);
+                        return 0;
+                    }
+
+                };
                 
+            public:
+
                 //! compute sequential D2
                 virtual ORDINATE D2_full(sequential_type            &func,
                                          const readable<ORDINATE>   &aorg,
                                          const readable<bool>       &used,
                                          const readable<ORDINATE>   &scal,
-                                         const derivative<ORDINATE> &drvs)
+                                         derivative<ORDINATE>       &drvs)
                 {
                     assert( dimension() == schedule.size() );
                     const variables &vars = **this;
                     const size_t     dims = dimension();
                     const size_t     nvar = vars.upper();
-                    this->prepare(nvar);
+                    prepare(nvar);
                     if(dims>0)
                     {
-                        // pass 1
+                        deltaOrd.adjust(dims,0);
+                        // pass 1 : evaluate adjusted, store deltaOrd
                         xadd.resume( dims );
                         {
                             const size_t ii = schedule[1];
-                            xadd += squared( (adjusted[ii] = func.start(abscissa[ii],aorg,vars))  - ordinate[ii] );
+                            xadd += squared( deltaOrd[ii] = ordinate[ii] - (adjusted[ii] = func.start(abscissa[ii],aorg,vars)) );
                         }
                         for(size_t i=2;i<=dims;++i)
                         {
                             const size_t ii = schedule[i];
-                            xadd += squared(  (adjusted[ii] = func.reach(abscissa[ii],aorg,vars))  - ordinate[ii] );
+                            xadd += squared( deltaOrd[ii] = ordinate[ii] - (adjusted[ii] = func.start(abscissa[ii],aorg,vars)) );
                         }
                         const ORDINATE res = xadd.get()/2;
 
-                        for(const vnode *I=vars.head();I;I=I->next)
+                        // pass 2: cumulative
+                        dFda.adjust(nvar,0);
+                        for(size_t k=dims;k>0;--k)
                         {
-                            const size_t i = ****I;
-                            if(!used[i]) continue;
-
-                            
-
+                            // focus on abscissa[k]
+                            callF          F = { func, abscissa[k], aorg, 0 };
+                            const ORDINATE d = deltaOrd[k];
+                            dFda.ld(0);
+                            for(const vnode *I=vars.head();I;I=I->next)
+                            {
+                                const size_t i = F.i = ****I;
+                                if(!used[i]) continue;
+                                beta[i] += d * ( dFda[i] = drvs.diff(F,aorg[i],scal[i]) );
+                            }
                         }
 
+                        std::cerr << "beta=" << beta << std::endl;
 
                         return res;
                     }
@@ -185,7 +217,8 @@ namespace yack
                 writable<ORDINATE>       &adjusted;    //!< adjusted values
                 indices                   schedule;    //!< sequential indexing
                 ordinates                 deltaOrd;    //!< delta ordinate
-                                                       
+                ordinates                 dFda;        //!< local gradient
+
             private:
                 YACK_DISABLE_COPY_AND_ASSIGN(sample_of);
             };
