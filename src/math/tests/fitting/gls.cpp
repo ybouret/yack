@@ -138,7 +138,8 @@ YACK_UTEST(fitting_gls)
     std::cerr << "curv=" << both.curv << std::endl;
 
     fitting::least_squares<double,double> ls;
-
+    ls.verbose = true;
+    
     v1(used,"t0") = false;
     ls.fit_with(F,s1,aorg,used,scal,aerr);
 
