@@ -6,6 +6,7 @@
 
 #include "yack/math/fitting/sample.hpp"
 #include "yack/math/fitting/lambda.hpp"
+#include "yack/math/fitting/least-squares/base.hpp"
 #include "yack/math/algebra/crout.hpp"
 #include "yack/math/iota.hpp"
 #include "yack/ptr/auto.hpp"
@@ -20,20 +21,6 @@ namespace yack
 
         namespace fitting
         {
-            class least_squares_
-            {
-            public:
-                static const char clid[]; //!< "[least-squares]"
-
-                virtual ~least_squares_() throw() {}
-                explicit least_squares_() throw() {}
-
-
-            private:
-                YACK_DISABLE_COPY_AND_ASSIGN(least_squares_);
-            };
-
-            const char least_squares_:: clid[] = "[least-squares] ";
 
 
 #define YACK_LSF_PRINTLN(MSG) do { if(verbose) { std::cerr << MSG << std::endl; } } while(false)
@@ -105,12 +92,12 @@ namespace yack
                     // initialize session
                     //
                     //----------------------------------------------------------
-                    static const ORDINATE         tol = numeric<ORDINATE>::ftol;
-                    const size_t                  ndat = s.dimension();
-                    const variables &             vars = *s;
-                    const size_t                  nvar = vars.upper();
-                    const temporary<sample_type*>     keepS(curr,&s);
-                    const temporary<sequential_type*> keepF(hfcn,&f);
+                    static const ORDINATE             tol = numeric<ORDINATE>::ftol;
+                    const size_t                      ndat = s.dimension();
+                    const variables &                 vars = *s;
+                    const size_t                      nvar = vars.upper();
+                    const temporary<sample_type*>     tmpS(curr,&s);
+                    const temporary<sequential_type*> tmpF(hfcn,&f);
 
                     lam.initialize(p10);
                     curv.make(nvar,nvar);
@@ -132,7 +119,6 @@ namespace yack
                         std::cerr << clid << "initialize" << std::endl;
                         vars(std::cerr << "aorg=",aorg,NULL)    << std::endl;
                     }
-
 
                     //----------------------------------------------------------
                     //
@@ -160,8 +146,7 @@ namespace yack
                     // compute queried position
                     //
                     //----------------------------------------------------------
-
-                    ORDINATE D2_end = s.D2(f,aend);
+                    const ORDINATE D2_end = s.D2(f,aend);
 
                     if(verbose) {
                         vars(std::cerr << "step=",step,"step_") << std::endl;
@@ -172,7 +157,7 @@ namespace yack
 
                     //----------------------------------------------------------
                     //
-                    // check positition
+                    // check results
                     //
                     //----------------------------------------------------------
                     if(D2_end<D2_org)
@@ -180,6 +165,7 @@ namespace yack
                         // accept
                         YACK_LSF_PRINTLN(clid << "[accept]");
 
+                        if(true)
                         {
                             ios::ocstream fp("decreased.dat");
                             const size_t NP=100;
@@ -188,7 +174,7 @@ namespace yack
                                 const double u = i/double(NP);
                                 fp("%g %g\n",u,(*this)(u));
                             }
-                            
+
                             std::cerr << "slope=" << s.xadd.dot(s.beta,step) << std::endl;
 
                             exit(1);
@@ -242,7 +228,7 @@ namespace yack
                     for(const vnode *node= vars.head(); node;node=node->next)
                     {
                         const size_t i = ****node; if(!used[i]) continue;
-                        a0[i] = aorg[i];
+                        a0[i] = aorg[i] = aend[i];
                     }
 
                     return true;
