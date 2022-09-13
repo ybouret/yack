@@ -83,8 +83,6 @@ namespace yack
 
 
 
-
-
                 //______________________________________________________________
                 //
                 // accessing methods
@@ -117,7 +115,26 @@ namespace yack
 
                 //! display with boundaries
                 friend std::ostream & operator<<(std::ostream &, const variables &vars);
-                
+
+                template <typename ARRAY> inline
+                std::ostream & operator()(std::ostream &os, ARRAY &arr, const char *prefix) const
+                {
+                    os << '{' << std::endl;
+                    for(const vnode *node=head();node;node=node->next)
+                    {
+                        const variable &v = ***node;
+                        os << "  ";
+                        if(prefix) os << prefix;
+                        const string &id = v.name;
+                        os << v.name; for(size_t i=v.name.size();i<len;++i) os << ' ';
+                        os << " = ";
+                        os << v(arr);
+                        os << std::endl;
+                    }
+                    os << '}';
+                    return os;
+                }
+
 
 
                 

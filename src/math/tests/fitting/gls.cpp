@@ -105,9 +105,24 @@ YACK_UTEST(fitting_gls)
     derivative<double> drvs;
     vector<bool>       used(nvar,true);
     vector<double>     scal(nvar,1e-4);
-    
+
+    vars(scal,"t0") = 0.1;
     
     const double D21_full = s1.D2_full_for(F,aorg,used,scal,drvs);
+    YACK_CHECK( fabs(D21-D21_full) <= 0 );
+    v1(std::cerr << "aorg  = ",aorg,NULL) << std::endl;
+    v1(std::cerr << "beta1 = ",s1.beta,"beta_") << std::endl;
+
+    const double D22_full = s2.D2_full_for(F,aorg,used,scal,drvs);
+    YACK_CHECK( fabs(D22-D22_full) <= 0 );
+    v2(std::cerr << "aorg  = ",aorg,NULL)       << std::endl;
+    v2(std::cerr << "beta2 = ",s2.beta,"beta_") << std::endl;
+
+
+    const double D2A_full = both.D2_full_for(F,aorg,used,scal,drvs);
+    YACK_CHECK( fabs(D2A-D2A_full) <= 0 );
+    //v2(std::cerr << "aorg  = ",aorg,NULL)       << std::endl;
+    //v2(std::cerr << "beta2 = ",s2.beta,"beta_") << std::endl;
 
 
 }
