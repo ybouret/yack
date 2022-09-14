@@ -27,7 +27,9 @@ namespace yack
         public:
             //__________________________________________________________________
             //
+            //
             // types and definitions
+            //
             //__________________________________________________________________
             YACK_DECL_ARGS_(T,type); //!< aliaes
             typedef typename scalar_for<mutable_type>::type scalar_type; //!< alias
@@ -36,7 +38,9 @@ namespace yack
             
             //__________________________________________________________________
             //
+            //
             // C++
+            //
             //__________________________________________________________________
             
             //! cleanup
@@ -54,11 +58,15 @@ namespace yack
 
             //__________________________________________________________________
             //
+            //
             // methods
+            //
             //__________________________________________________________________
 
-
-            //! try to build the LU decomposition a square matrix
+            //__________________________________________________________________
+            //
+            //! try to build the LU decomposition of a square matrix
+            //__________________________________________________________________
             inline bool build(matrix<T> &a)
             {
                 //______________________________________________________________
@@ -132,6 +140,10 @@ namespace yack
                 return true;
             }
 
+            //__________________________________________________________________
+            //
+            //! try to build the LU decomposition a square matrix, with effort
+            //__________________________________________________________________
             inline bool build(matrix<T> &a, adder<T> &xadd)
             {
                 //______________________________________________________________
@@ -206,10 +218,10 @@ namespace yack
                 return true;
             }
 
-
-
-
-            //! in place solve with a=LU
+            //__________________________________________________________________
+            //
+            //! in place solve with decomposed a
+            //__________________________________________________________________
             inline void solve(const matrix<T> &a, writable<T> &b)
             {
                 //______________________________________________________________
@@ -268,7 +280,10 @@ namespace yack
                 }
             }
 
-            //! in place solve with a=LU
+            //__________________________________________________________________
+            //
+            //! in place solve with decomposed matrix and effort
+            //__________________________________________________________________
             inline void solve(const matrix<T> &a, writable<T> &b, adder<T> &xadd)
             {
                 //______________________________________________________________
@@ -300,10 +315,13 @@ namespace yack
                         b[ip]=b[i];
                         if(ii)
                         {
+                            xadd.ldz();
+                            xadd.push(sum);
                             for(size_t j=ii;j<i;++j)
                             {
-                                sum -= a_i[j]*b[j];
+                                xadd.push(-a_i[j]*b[j]);
                             }
+                            sum = xadd.get();
                         }
                         else
                         {
@@ -330,8 +348,10 @@ namespace yack
 
 
 
-
-            //! in place multiple solve with a=LU
+            //__________________________________________________________________
+            //
+            //! in place multiple solve with decomposed a
+            //__________________________________________________________________
             inline void solve(const matrix<T> &a, matrix<T> &b)
             {
                 //______________________________________________________________
@@ -361,7 +381,10 @@ namespace yack
                 }
             }
 
-            //! in place multiple solve with a=LU
+            //__________________________________________________________________
+            //
+            //! in place multiple solve with decomposed matrix and effort
+            //__________________________________________________________________
             inline void solve(const matrix<T> &a, matrix<T> &b, adder<T> &xadd)
             {
                 //______________________________________________________________
@@ -392,9 +415,10 @@ namespace yack
             }
 
 
-
-
-            //! determinant of a LU matrix
+            //__________________________________________________________________
+            //
+            //! determinant of a decomposed matrix
+            //__________________________________________________________________
             inline type determinant(const matrix<T> &a) const
             {
                 //______________________________________________________________
@@ -413,8 +437,11 @@ namespace yack
                 for(size_t i=a.rows;i>1;--i) res *= a[i][i];
                 return dneg ? -res : res;
             }
-            
-            //! determinant of a LU matrix with precise multiplication (only for integral types)
+
+            //__________________________________________________________________
+            //
+            //! determinant of a decomposed matrix with effort (integral types)
+            //__________________________________________________________________
             inline type determinant(const matrix<T> &a, multiplier<T> &xmul) const
             {
                 //______________________________________________________________
@@ -435,7 +462,10 @@ namespace yack
             }
 
 
-            //! compute inverse from LU matrix
+            //__________________________________________________________________
+            //
+            //! compute inverse from a decomposed matrix
+            //__________________________________________________________________
             inline void inverse(const matrix<T> &a, matrix<T> &I)
             {
                 //______________________________________________________________
@@ -461,7 +491,10 @@ namespace yack
             }
 
 
-            //! compute inverse from LU matrix
+            //__________________________________________________________________
+            //
+            //! compute inverse from a decomposed matrix and effort
+            //__________________________________________________________________
             inline void inverse(const matrix<T> &a, matrix<T> &I, adder<T> &xadd)
             {
                 //______________________________________________________________
@@ -487,8 +520,10 @@ namespace yack
             }
 
 
-
+            //__________________________________________________________________
+            //
             //! compute adjoint matrix : source * target = det(target) * Id
+            //__________________________________________________________________
             template <typename U>
             inline void adjoint(matrix<T> &target, const matrix<U> &source)
             {
@@ -526,8 +561,12 @@ namespace yack
                 }
             }
             
-
-            
+            //__________________________________________________________________
+            //
+            //
+            // members
+            //
+            //__________________________________________________________________
             const_scalar_type                       s_one; //!< scalar(1)
             const_type                              t_one; //!< type(1)
 
