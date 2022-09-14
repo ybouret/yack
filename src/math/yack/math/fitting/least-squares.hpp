@@ -50,7 +50,6 @@ namespace yack
                 atry( tabs.next() ),
                 solv(NULL),
                 drvs( new derivative<ORDINATE>() ),
-                good(true),
                 p10(0),
                 lam(),
                 verbose(false)
@@ -94,7 +93,7 @@ namespace yack
                     //
                     //
                     //----------------------------------------------------------
-                    static const ORDINATE             tol = numeric<ORDINATE>::ftol;
+                    //static const ORDINATE             tol = numeric<ORDINATE>::ftol;
                     const size_t                      ndat = s.dimension();
                     const variables &                 vars = *s;
                     const size_t                      nvar = vars.upper();
@@ -104,12 +103,9 @@ namespace yack
                     lam.initialize(p10);
                     curv.make(nvar,nvar);
                     tabs.make(nvar);
-                    for(const vnode *node= vars.head(); node;node=node->next)
-                    {
-                        const size_t i = ****node;
-                        aorg[i] = a0[i];
-                        aerr[i] = 0;
-                    }
+                    vars.mov(aorg,a0);
+                    vars.ldz(aerr);
+
 
 
                     if(solv.is_empty()||solv->nmax<nvar) solv = new LU(nvar);
@@ -134,7 +130,6 @@ namespace yack
                 CYCLE:
                     YACK_LSF_PRINTLN("D2_org=" << D2_org);
                     ++cycle;
-                    good=true;
 
                     //----------------------------------------------------------
                     //
@@ -160,7 +155,6 @@ namespace yack
                         vars(std::cerr << "step=",step,"step_") << std::endl;
                         vars(std::cerr << "aend=",aend,NULL)    << std::endl;
                         std::cerr << "  D2_end = " << D2_end << "/" << D2_org << std::endl;
-                        std::cerr << "  good   = " << good << std::endl;
                     }
 
                     //----------------------------------------------------------
@@ -194,26 +188,7 @@ namespace yack
                             exit(1);
                         }
 
-                        if(good)
-                        {
-                            //  checking convergence
-                            if(converged(D2_end,D2_org,tol))
-                            {
-                                goto SUCCESS;
-                            }
 
-                            if(converged(used,tol))
-                            {
-                                goto SUCCESS;
-                            }
-
-                            lam.decrease(p10);
-                        }
-                        else
-                        {
-                            // still need to stabilise
-                            YACK_LSF_PRINTLN(clid << "[not stabilised]");
-                        }
 
                         iota::load(aorg,aend);
                         D2_org = s.D2_full(f,aorg, used, scal, *drvs);
@@ -234,17 +209,9 @@ namespace yack
                             YACK_LSF_PRINTLN(clid << "[spurious]");
                             return false;
                         }
-                        good = false;
                         goto PREDICT;
                     }
 
-
-                SUCCESS:
-                    for(const vnode *node= vars.head(); node;node=node->next)
-                    {
-                        const size_t i = ****node; if(!used[i]) continue;
-                        a0[i] = aorg[i] = aend[i];
-                    }
 
                     return true;
                 }
@@ -261,7 +228,6 @@ namespace yack
                 array_type &             atry;
                 solver                   solv;
                 drvs_t                   drvs;
-                bool                     good;
                 int                      p10;
                 const lambda<ORDINATE>   lam;
             public:
@@ -297,7 +263,7 @@ namespace yack
                     YACK_LSF_PRINTLN(clid << "[predict]");
                     assert(NULL!=curr);
                 TRY_AGAIN:
-                    YACK_LSF_PRINTLN(clid << "[10^" << p10 << "=" << lam[p10] << "]");
+                    YACK_LSF_PRINTLN(clid << "[10^" << p10 << "=>" << lam[p10] << "]");
                     const ORDINATE fac = ORDINATE(1) + lam[p10];
                     curv.assign(curr->curv);
                     for(size_t i=curv.rows;i>0;--i)
@@ -311,7 +277,6 @@ namespace yack
                         {
                             // need to regularize
                             YACK_LSF_PRINTLN(clid << "[regularising]");
-                            good = false;
                             goto TRY_AGAIN;
                         }
                         else

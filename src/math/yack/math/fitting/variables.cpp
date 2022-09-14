@@ -217,6 +217,13 @@ namespace yack
                 return (*this) << _;
             }
 
+            std::ostream & variables:: pad(std::ostream &os, const string &name) const
+            {
+
+                for(size_t i=name.size();i<len;++i) os << ' ';
+                return os;
+            }
+
 
         }
 

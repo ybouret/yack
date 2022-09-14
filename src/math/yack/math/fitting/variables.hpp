@@ -116,6 +116,10 @@ namespace yack
                 //! display with boundaries
                 friend std::ostream & operator<<(std::ostream &, const variables &vars);
 
+                //! pad name.size() to len
+                std::ostream & pad(std::ostream &os, const string &name) const;
+
+                //! display with prefix for each variable
                 template <typename ARRAY> inline
                 std::ostream & operator()(std::ostream &os, ARRAY &arr, const char *prefix) const
                 {
@@ -133,6 +137,30 @@ namespace yack
                     return os;
                 }
 
+                //! transfer involved values
+                template <typename TARGET, typename SOURCE> inline
+                void mov(TARGET &target, SOURCE &source) const
+                {
+                    for(const vnode *node=head();node;node=node->next)
+                    {
+                        const size_t i = ****node;
+                        target[i] = source[i];
+                    }
+                }
+
+                //! zero involved values
+                template <typename TARGET> inline
+                void ldz(TARGET &target) const
+                {
+                    for(const vnode *node=head();node;node=node->next)
+                    {
+                        const size_t i = ****node;
+                        target[i] = 0;
+                    }
+                }
+
+
+
                 
             private:
                 vset vdb;
@@ -148,12 +176,6 @@ namespace yack
                 // members
                 //______________________________________________________________
                 const size_t len; //!< max name length
-
-                inline std::ostream & pad(std::ostream &os, const string &name) const
-                {
-                    for(size_t i=name.size();i<len;++i) os << ' ';
-                    return os;
-                }
             };
 
 
