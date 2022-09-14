@@ -56,7 +56,15 @@ namespace yack
             //
             // methods
             //__________________________________________________________________
-            
+
+            void pass1(matrix<T> &a, const size_t i, const size_t j)
+            {
+                writable<type> &a_i = a[i];
+                type sum=a_i[j];
+                for (size_t k=1;k<i;k++)
+                    sum -= a_i[k]*a[k][j];
+                a_i[j]=sum;
+            }
 
             //! try to build the LU decomposition a a square matrix
             inline bool build(matrix<T> &a)
@@ -72,17 +80,19 @@ namespace yack
                 //______________________________________________________________
                 for(size_t j=1;j<=n;++j)
                 {
-
                     //----------------------------------------------------------
                     // pass 1
                     //----------------------------------------------------------
                     for(size_t i=1;i<j;i++)
                     {
+                        pass1(a,i,j);
+#if 0
                         writable<type> &a_i = a[i];
                         type sum=a_i[j];
                         for (size_t k=1;k<i;k++)
                             sum -= a_i[k]*a[k][j];
                         a_i[j]=sum;
+#endif
                     }
 
                     //----------------------------------------------------------

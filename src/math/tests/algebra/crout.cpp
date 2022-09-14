@@ -8,6 +8,7 @@
 #include "yack/ios/ascii/convert.hpp"
 #include "yack/system/rtti.hpp"
 #include "yack/sequence/vector.hpp"
+#include "yack/type/utils.hpp"
 
 #include "../../../core/tests/main.hpp"
 
@@ -94,16 +95,51 @@ namespace
                         cr.inverse(a,I);
                         
                         iota::mmul(J,a0,I);
-                        std::cerr << "J=" << J << std::endl;
-                        
+                        //std::cerr << "J=" << J << std::endl;
+                        {
+
+                            scalar_type extra = 0;
+                            for(size_t i=n;i>0;--i)
+                            {
+                                for(size_t j=n;j>0;--j)
+                                {
+                                    if(i!=j)
+                                    {
+                                        extra += abs_of(J[i][j]);
+                                    }
+                                }
+                            }
+                            if(exact &&  extra>0)
+                            {
+                                throw exception("inexact inverse");
+                            }
+                        }
+
                         // TODO: test
                         
                         cr.adjoint(J,a0);
-                        std::cerr << "M=" << a0 << std::endl;
-                        std::cerr << "A=" << J << std::endl;
+                        //std::cerr << "M=" << a0 << std::endl;
+                        //std::cerr << "A=" << J << std::endl;
                         iota::mmul(I,a0,J);
-                        std::cerr << "dI=" << I << std::endl;
+                        //std::cerr << "dI=" << I << std::endl;
 
+                        scalar_type extra = 0;
+                        for(size_t i=n;i>0;--i)
+                        {
+                            for(size_t j=n;j>0;--j)
+                            {
+                                if(i!=j)
+                                {
+                                    extra += abs_of(I[i][j]);
+                                }
+                            }
+                        }
+                        if(exact &&  extra>0)
+                        {
+                            throw exception("inexact adjoint");
+                        }
+
+                        //std::cerr << "extra=" << extra << std::endl;
                         
                         
                         
