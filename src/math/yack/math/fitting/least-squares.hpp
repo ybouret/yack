@@ -247,6 +247,7 @@ namespace yack
                         YACK_LSF_PRINTLN(clid << "<accept>");
                         assert(D2_end<=D2_org);
                         study(D2_org,D2_end);
+                        //vars.sub(step,aorg,aend);
 
                         //------------------------------------------------------
                         //
@@ -255,6 +256,11 @@ namespace yack
                         //
                         //------------------------------------------------------
                         YACK_LSF_PRINTLN(clid << "[testing convergence]");
+                        {
+                            const ORDINATE delta = std::abs(D2_end-D2_org);
+                            const ORDINATE limit = xtol * D2_org;
+                            std::cerr << "H: " << D2_org << " -> " << D2_end << " : " << delta << "/" << limit << std::endl;
+                        }
                         bool converged = true;
                         for(const vnode *node = vars.head();node;node=node->next)
                         {
@@ -263,7 +269,7 @@ namespace yack
                             const ORDINATE  old_a = aorg[i];
                             const ORDINATE  new_a = aend[i];
                             const ORDINATE  delta = std::abs(step[i]);
-                            const ORDINATE  limit = xtol * min_of( std::fabs(new_a), std::fabs(old_a) );
+                            const ORDINATE  limit = xtol * max_of( std::fabs(new_a), std::fabs(old_a) );
                             const bool      is_ok = (delta <= limit);
 
                             if(verbose)
