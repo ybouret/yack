@@ -38,7 +38,8 @@ namespace yack
                 typedef typename tableaux::array_type         array_type;      //!< alias
                 typedef typename sample_type::sequential_type sequential_type; //!< alias
                 typedef lss<ORDINATE>                         solver;          //!< alias
-                typedef auto_ptr< derivative<ORDINATE> >      drvs_t;          //!< alias
+                typedef derivative<ORDINATE>                  drvs_type;       //!< alias
+                typedef typename drvs_type::pointer           drvs_ptr;        //!< alias
 
                 //______________________________________________________________
                 //
@@ -50,7 +51,7 @@ namespace yack
 
 
                 //! setup
-                explicit least_squares() :
+                explicit least_squares(const drvs_ptr *ppDrvs = NULL) :
                 curv(),
                 tabs(8,0),
                 curr(NULL),
@@ -60,7 +61,7 @@ namespace yack
                 aend( tabs.next() ),
                 atry( tabs.next() ),
                 solv(true),
-                drvs( new derivative<ORDINATE>() ),
+                drvs(  ppDrvs ? & coerce(**ppDrvs) : new drvs_type() ),
                 p10(0),
                 lam(),
                 verbose(false)
@@ -207,7 +208,7 @@ namespace yack
                     if(verbose) {
                         vars(std::cerr << "step=",step,"step_") << std::endl;
                         vars(std::cerr << "aend=",aend,NULL)    << std::endl;
-                        std::cerr << "  D2_end = " << D2_end << "/" << D2_org << std::endl;
+                        std::cerr << "D2_end = " << D2_end << "/" << D2_org << std::endl;
                     }
 
                     if(D2_end>D2_org)
@@ -223,21 +224,23 @@ namespace yack
                     else
                     {
                         YACK_LSF_PRINTLN(clid << "<accept>");
-
-                        const ORDINATE slope = solv.xadd.dot(s.beta,step);
-                        std::cerr << "slope=" << slope << std::endl;
+                        assert(D2_end<=D2_org);
+                        const ORDINATE sigma = solv.xadd.dot(s.beta,step);
+                        std::cerr << "sigma=" << sigma << std::endl;
 
                         {
                             ios::ocstream fp("lsf.dat");
+                            const double gamma = D2_end - D2_org + sigma;
                             const size_t NP = 100;
                             for(size_t i=0;i<=NP;++i)
                             {
                                 const double u = i/double(NP);
-                                fp("%g %g %g\n",u,(*this)(u),D2_org-slope*u);
+                                fp("%g %g %g\n",u,(*this)(u),D2_org-sigma*u + gamma * u * u);
                             }
                         }
 
-
+                        vars.mov(aorg,aend);
+                        D2_org = s.D2_full(f,aorg,used,scal,*drvs);
                         exit(0);
                         goto CYCLE;
                     }
@@ -257,7 +260,7 @@ namespace yack
                 array_type &             aend;
                 array_type &             atry;
                 solver                   solv;
-                drvs_t                   drvs;
+                drvs_ptr                 drvs;
                 int                      p10;
                 const lambda<ORDINATE>   lam;
             public:
