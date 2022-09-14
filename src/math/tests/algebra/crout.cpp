@@ -70,7 +70,7 @@ namespace
 
                     if(cr.build(a))
                     {
-                        std::cerr << "// regular " << who << " " << n << "x" << n << " [";                        
+                        std::cerr << "// regular " << who << " " << n << "x" << n << " [";
                         for(size_t iter=inner;iter>0;--iter)
                         {
                             for(size_t i=n;i>0;--i)
@@ -155,7 +155,64 @@ namespace
 
         std::cerr << std::endl;
     }
+
+
+    template <typename T> static inline
+    void check_precise(const size_t      nmax,
+                       randomized::bits &ran,
+                       const bool        exact=false)
+    {
+        //typedef typename crout<T>::scalar_type scalar_type;
+        const string &who =rtti::name< typename crout<T>::type >();
+        std::cerr << "check_precise<" << who << ">" << std::endl;
+
+        adder<T>      xadd;
+        crout<T>      cr(nmax);
+        for(size_t n=1;n<=nmax;++n)
+        {
+            matrix<T> a0(n,n);
+            matrix<T> a1(n,n);
+            matrix<T> a2(n,n);
+
+            {
+                for(size_t i=1;i<=n;++i)
+                {
+                    for(size_t j=1;j<=n;++j)
+                    {
+                        a0[i][j] = bring::get<T>(ran);
+                    }
+                }
+
+                a1.assign(a0);
+                a2.assign(a1);
+
+                if(cr.build(a1))
+                {
+                    std::cerr << "// regular " << who << " " << n << "x" << n << std::endl;
+                    YACK_ASSERT(cr.build(a2,&xadd));
+                    if(exact)
+                    {
+                        for(size_t i=1;i<=n;++i)
+                        {
+                            for(size_t j=1;j<=n;++j)
+                            {
+                                YACK_ASSERT(abs_of(a1[i][j]-a2[i][j])<=0);
+                            }
+                        }
+                    }
+
+                }
+            }
+
+
+        }
+
+        std::cerr << std::endl;
+    }
+
 }
+
+
 
 YACK_UTEST(crout)
 {
@@ -167,6 +224,11 @@ YACK_UTEST(crout)
         nmax = ios::ascii::convert::to<size_t>(argv[1]);
     }
 
+    check_precise<float>(nmax,ran);
+    check_precise<double>(nmax,ran);
+    check_precise<long double>(nmax,ran);
+
+    return 0;
 
     check_crout<float>(nmax,ran);
     check_crout<double>(nmax,ran);

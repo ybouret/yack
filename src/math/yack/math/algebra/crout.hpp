@@ -57,17 +57,33 @@ namespace yack
             // methods
             //__________________________________________________________________
 
-            void pass1(matrix<T> &a, const size_t i, const size_t j)
+            void pass1(matrix<T> &a,   const size_t j)
             {
-                writable<type> &a_i = a[i];
-                type sum=a_i[j];
-                for (size_t k=1;k<i;k++)
-                    sum -= a_i[k]*a[k][j];
-                a_i[j]=sum;
+                for(size_t i=1;i<j;i++)
+                {
+                    writable<type> &a_i = a[i];
+                    type sum=a_i[j];
+                    for (size_t k=1;k<i;k++)
+                        sum -= a_i[k]*a[k][j];
+                    a_i[j]=sum;
+                }
+            }
+
+            void pass1(matrix<T> &a, const size_t j, adder<T> &xadd)
+            {
+                for(size_t i=1;i<j;i++)
+                {
+                    writable<type> &a_i = a[i];
+                    xadd.ldz();
+                    xadd.push(a_i[j]);
+                    for (size_t k=1;k<i;k++)
+                        xadd.push( -a_i[k]*a[k][j] );
+                    a_i[j]=xadd.get();
+                }
             }
 
             //! try to build the LU decomposition a a square matrix
-            inline bool build(matrix<T> &a)
+            inline bool build(matrix<T> &a, adder<T> *xadd= NULL)
             {
                 if(!initialize(a)) return false;
                 const size_t            n = a.rows;
@@ -83,17 +99,10 @@ namespace yack
                     //----------------------------------------------------------
                     // pass 1
                     //----------------------------------------------------------
-                    for(size_t i=1;i<j;i++)
-                    {
-                        pass1(a,i,j);
-#if 0
-                        writable<type> &a_i = a[i];
-                        type sum=a_i[j];
-                        for (size_t k=1;k<i;k++)
-                            sum -= a_i[k]*a[k][j];
-                        a_i[j]=sum;
-#endif
-                    }
+                    if(xadd)
+                        pass1(a,j,*xadd);
+                    else
+                        pass1(a,j);
 
                     //----------------------------------------------------------
                     // pass 2
@@ -145,7 +154,6 @@ namespace yack
                         const_type fac=t_one/a_jj;
                         for(size_t i=j+1;i<=n;++i)
                             a[i][j] *= fac;
-
                     }
                 }
 
