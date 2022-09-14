@@ -7,9 +7,8 @@
 #include "yack/math/fitting/sample.hpp"
 #include "yack/math/fitting/lambda.hpp"
 #include "yack/math/fitting/least-squares/base.hpp"
-#include "yack/math/algebra/crout.hpp"
+#include "yack/math/algebra/lss.hpp"
 #include "yack/math/iota.hpp"
-#include "yack/ptr/auto.hpp"
 #include "yack/sequence/arrays.hpp"
 #include "yack/type/temporary.hpp"
 #include "yack/math/numeric.hpp"
@@ -38,8 +37,7 @@ namespace yack
                 typedef arrays_of<ORDINATE>                   tableaux;        //!< alias
                 typedef typename tableaux::array_type         array_type;      //!< alias
                 typedef typename sample_type::sequential_type sequential_type; //!< alias
-                typedef crout<ORDINATE>                       LU;              //!< alias
-                typedef auto_ptr<LU>                          solver;          //!< alias
+                typedef lss<ORDINATE>                         solver;          //!< alias
                 typedef auto_ptr< derivative<ORDINATE> >      drvs_t;          //!< alias
 
                 //______________________________________________________________
@@ -127,12 +125,13 @@ namespace yack
                     lam.initialize(p10);
                     curv.make(nvar,nvar);
                     tabs.make(nvar);
+                    solv.ensure(nvar);
+                    
                     vars.mov(aorg,a0);
                     vars.ldz(aerr);
 
 
 
-                    if(solv.is_empty()||solv->nmax<nvar) solv = new LU(nvar);
 
                     if(ndat<=0) return false;
                     if(nvar<=0) return false;

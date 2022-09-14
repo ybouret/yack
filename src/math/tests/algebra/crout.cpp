@@ -2,7 +2,7 @@
 #include "yack/type/complex.hpp"
 #include "yack/apex.hpp"
 
-#include "yack/math/algebra/crout.hpp"
+#include "yack/math/algebra/lss.hpp"
 #include "yack/math/iota.hpp"
 #include "yack/utest/run.hpp"
 #include "yack/ios/ascii/convert.hpp"
