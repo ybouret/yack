@@ -166,6 +166,9 @@ namespace
         const string &who =rtti::name< typename crout<T>::type >();
         std::cerr << "check_precise<" << who << ">" << std::endl;
 
+        size_t outer = 8;
+        if(who=="apq") outer=2;
+
         adder<T>      xadd;
         crout<T>      cr(nmax);
         for(size_t n=1;n<=nmax;++n)
@@ -174,6 +177,7 @@ namespace
             matrix<T> a1(n,n);
             matrix<T> a2(n,n);
 
+            for(size_t cycle=1;cycle<=outer;++cycle)
             {
                 for(size_t i=1;i<=n;++i)
                 {
@@ -227,6 +231,13 @@ YACK_UTEST(crout)
     check_precise<float>(nmax,ran);
     check_precise<double>(nmax,ran);
     check_precise<long double>(nmax,ran);
+
+    check_precise< complex<float> >(nmax,ran);
+    check_precise< complex<double> >(nmax,ran);
+    check_precise< complex<long double> >(nmax,ran);
+
+    check_precise< apq >(nmax,ran,true);
+
 
     return 0;
 
