@@ -127,13 +127,16 @@ namespace yack
                     if (j != n)
                     {
                         const_type fac=t_one/a_jj;
-                        for(size_t i=j+1;i<=n;++i)
+                        for(size_t i=n;i>j;--i)
                             a[i][j] *= fac;
                     }
                 }
 
                 return true;
             }
+
+            
+
 
             //! in place solve with a=LU
             inline void solve(const matrix<T> &a, writable<T> &b)
@@ -143,7 +146,7 @@ namespace yack
                 // sanity check
                 //______________________________________________________________
                 assert(a.is_square());
-                assert(a.rows <=nmax);
+                assert(a.rows<=nmax);
                 assert(a.cols==b.size());
 
                 //______________________________________________________________
@@ -152,11 +155,10 @@ namespace yack
                 //______________________________________________________________
                 const size_t            n = a.rows;
                 thin_array<size_t>      indx(indx_,n);
-                thin_array<scalar_type> scal(static_cast<scalar_type*>(scal_),n);
 
                 //______________________________________________________________
                 //
-                // pass 1
+                // forward
                 //______________________________________________________________
                 size_t ii=0;
                 for(size_t i=1;i<=n;++i)
@@ -182,7 +184,7 @@ namespace yack
 
                 //______________________________________________________________
                 //
-                // pass 2
+                // reverse
                 //______________________________________________________________
                 for (size_t i=n;i>0;--i) {
                     const readable<T> &a_i = a[i];
@@ -192,6 +194,9 @@ namespace yack
                     b[i]=sum/a_i[i];
                 }
             }
+
+
+
 
             //! in place multiple solve with a=LU
             inline void solve(const matrix<T> &a, matrix<T> &b)
