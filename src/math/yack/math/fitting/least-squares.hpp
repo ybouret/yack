@@ -115,29 +115,57 @@ namespace yack
                     //
                     //
                     //----------------------------------------------------------
-                    //static const ORDINATE             tol = numeric<ORDINATE>::ftol;
-                    const size_t                      ndat = s.dimension();
-                    const variables &                 vars = *s;
-                    const size_t                      nvar = vars.upper();
-                    const temporary<sample_type*>     tmpS(curr,&s);
-                    const temporary<sequential_type*> tmpF(hfcn,&f);
+                    YACK_LSF_PRINTLN(clid << "[start session]");
 
-                    lam.initialize(p10);
+
+                    //----------------------------------------------------------
+                    // check variables
+                    //----------------------------------------------------------
+                    const variables & vars = *s;
+                    const size_t      nvar = vars.upper();
+                    if(nvar<=0)
+                    {
+                        YACK_LSF_PRINTLN(clid << "[no variables]");
+                        return false;
+                    }
+
+                    //----------------------------------------------------------
+                    // initialize errors
+                    //----------------------------------------------------------
+                    vars.ldz(aerr);
+
+                    //----------------------------------------------------------
+                    // check data
+                    //----------------------------------------------------------
+                    const size_t ndat = s.dimension();
+                    if(nvar>ndat)
+                    {
+                        (void) s.D2(f,a0);
+                        YACK_LSF_PRINTLN(clid << "[not enough data]");
+                        return false;
+                    }
+
+                    //----------------------------------------------------------
+                    // memory
+                    //----------------------------------------------------------
                     curv.make(nvar,nvar);
                     tabs.make(nvar);
                     solv.ensure(nvar);
 
+                    //----------------------------------------------------------
+                    // temporary internal values
+                    //----------------------------------------------------------
+                    const temporary<sample_type*>     tmpS(curr,&s);
+                    const temporary<sequential_type*> tmpF(hfcn,&f);
+
+                    //----------------------------------------------------------
+                    // parameters
+                    //----------------------------------------------------------
+                    lam.initialize(p10);
                     vars.mov(aorg,a0);
-                    vars.ldz(aerr);
-
-
-
-
-                    if(ndat<=0) return false;
-                    if(nvar<=0) return false;
 
                     if(verbose){
-                        std::cerr << clid << "initialize" << std::endl;
+                        std::cerr << clid << "[initialized]" << std::endl;
                         vars(std::cerr << "aorg=",aorg,NULL)    << std::endl;
                     }
 
@@ -151,8 +179,9 @@ namespace yack
                     size_t   cycle  = 0;
                     ORDINATE D2_org = s.D2_full(f,aorg, used, scal, *drvs);
                 CYCLE:
-                    YACK_LSF_PRINTLN("D2_org=" << D2_org);
                     ++cycle;
+                    YACK_LSF_PRINTLN("-------- cycle #" << cycle <<" --------");
+                    YACK_LSF_PRINTLN("D2_org=" << D2_org);
 
                     //----------------------------------------------------------
                     //
@@ -164,6 +193,8 @@ namespace yack
                 PREDICT:
                     if(!predict())
                         return false;
+
+                    exit(0);
 
                     //----------------------------------------------------------
                     //

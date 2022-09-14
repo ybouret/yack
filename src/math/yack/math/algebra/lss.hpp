@@ -65,7 +65,7 @@ namespace yack
             inline void ensure(const size_t nmin)
             {
                 self_type &self = *this;
-                if(self->nmax < nmin)
+                if( self.is_empty() || self->nmax < nmin)
                 {
                     self = new algo_type(nmin);
                 }
