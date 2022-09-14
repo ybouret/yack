@@ -129,7 +129,7 @@ namespace yack
                     //
                     //----------------------------------------------------------
                     YACK_LSF_PRINTLN(clid << "[start session]");
-
+                    ios::ocstream::overwrite("D2_" + s.name + ".dat");
 
                     //----------------------------------------------------------
                     // check variables
@@ -195,6 +195,7 @@ namespace yack
                     ++cycle;
                     YACK_LSF_PRINTLN("-------- cycle #" << cycle <<" --------");
                     YACK_LSF_PRINTLN("D2_org=" << D2_org);
+                    ios::ocstream::echo("D2_" + s.name + ".dat","%u %.15g\n",unsigned(cycle),D2_org);
 
                     //----------------------------------------------------------
                     //
@@ -245,20 +246,6 @@ namespace yack
                         //------------------------------------------------------
                         YACK_LSF_PRINTLN(clid << "<accept>");
                         assert(D2_end<=D2_org);
-
-                        if(true)
-                        {
-                            ios::ocstream fp("lsf.dat");
-                            const ORDINATE sigma = solv.xadd.dot(s.beta,step);
-                            const double g   = D2_end - D2_org + sigma;
-                            const size_t NP = 100;
-                            for(size_t i=0;i<=NP+20;++i)
-                            {
-                                const double u = i/double(NP);
-                                fp("%g %g %g\n",u,(*this)(u),D2_org-sigma*u + g * u * u);
-                            }
-                        }
-
                         study(D2_org,D2_end);
 
                         //------------------------------------------------------

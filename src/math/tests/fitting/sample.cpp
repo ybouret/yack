@@ -1,5 +1,6 @@
 
 #include "yack/math/fitting/sample/of.hpp"
+#include "yack/math/fitting/least-squares.hpp"
 #include "yack/utest/run.hpp"
 #include "yack/arith/ipower.hpp"
 
@@ -24,6 +25,15 @@ namespace
         }
     };
 
+    static inline void save_sample(const string &fn, const fitting::sample_of<double,double> &s)
+    {
+        ios::ocstream fp(fn);
+        for(size_t i=1;i<=s.dimension();++i)
+        {
+            const size_t ii = s.schedule[i];
+            fp("%g %g\n", s.abscissa[ii], s.adjusted[ii] );
+        }
+    }
 }
 
 YACK_UTEST(fitting_sample)
@@ -50,22 +60,38 @@ YACK_UTEST(fitting_sample)
         for(size_t i=1;i<=N;++i)
         {
             const size_t ii = s1.schedule[i];
-            fp("%g %g\n",s1.abscissa[ii],s1.abscissa[ii]);
+            fp("%g %g\n",s1.abscissa[ii],s1.ordinate[ii]);
         }
     }
 
     poly F;
     std::cerr << s1.name << " #" << s1.dimension() << std::endl;
-    for(int i=0;i<=1;++i)
+
+    for(int i=0;i<=3;++i)
     {
         vars << vformat("a%d",i);
-        std::cerr << vars << std::endl;
-        vector<double>   aorg( vars.upper() );
-        vector<bool>     used( vars.upper() );
-
-        s1.D2_for(F,aorg);
-
     }
+    std::cerr << vars << std::endl;
+
+    const size_t   nvar = vars.upper();
+    vector<double> aorg(nvar);
+    vector<bool>   used(nvar,false);
+    vector<double> aerr(nvar);
+    vector<double> scal(nvar,1e-4);
+
+    fitting::least_squares<double,double> ls;
+    ls.verbose = true;
+
+    for(size_t n=1;n<=nvar;++n)
+    {
+        used[n] = true;
+        ls.fit_with(F,s1,aorg,used,scal,aerr);
+        const string fn = vformat("fit%u.dat",unsigned(n-1));
+        save_sample(fn,s1);
+    }
+
+
+
 
 
 }
