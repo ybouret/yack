@@ -13,6 +13,7 @@
 #include "yack/type/temporary.hpp"
 #include "yack/math/numeric.hpp"
 #include "yack/math/opt/optimize.hpp"
+#include <iomanip>
 
 namespace yack
 {
@@ -87,7 +88,7 @@ namespace yack
 
                 //______________________________________________________________
                 //
-                //! callable wrapper
+                //! mae atry
                 //______________________________________________________________
                 void   make_atry(const double u) throw()
                 {
@@ -98,6 +99,10 @@ namespace yack
                     }
                 }
 
+                //______________________________________________________________
+                //
+                //! callable wrapper
+                //______________________________________________________________
                 double operator()(const double u)
                 {
                     make_atry(u);
@@ -115,7 +120,7 @@ namespace yack
                          const readable<ORDINATE> &scal,
                          writable<ORDINATE>       &aerr)
                 {
-
+                    static const ORDINATE xtol = lam[ lam.ptol() ];
                     //----------------------------------------------------------
                     //
                     //
@@ -205,9 +210,8 @@ namespace yack
                     ORDINATE D2_end = s.D2(f,aend);
 
                     if(verbose) {
-                        vars(std::cerr << "step=",step,"step_") << std::endl;
-                        vars(std::cerr << "aend=",aend,NULL)    << std::endl;
-                        std::cerr << "D2_end = " << D2_end << "/" << D2_org << std::endl;
+                        std::cerr << clid << "D2_end = " << D2_end << "/" << D2_org << " @";
+                        vars(std::cerr,aend,NULL) << std::endl;
                     }
 
                     //----------------------------------------------------------
@@ -259,33 +263,51 @@ namespace yack
 
                         //------------------------------------------------------
                         //
-                        // the new winner is D2_end @aend
+                        // the new winner is D2_end@aend : test convergence
+                        // and update
                         //
                         //------------------------------------------------------
-                        const ORDINATE delta_D2 = std::abs(D2_org-D2_end);
-                        std::cerr << "D2: " << D2_org << " -> " << D2_end << " : -" << delta_D2 << std::endl;
+                        YACK_LSF_PRINTLN(clid << "[testing convergence]");
+                        bool converged = true;
                         for(const vnode *node = vars.head();node;node=node->next)
                         {
                             const variable &v = ***node;
-                            const size_t    i = *v;
-                            vars.pad(std::cerr << v.name,v.name) << " : " << aorg[i] << " -> " << aend[i] << "  : " << step[i];
+                            const size_t    i = *v; if(!used[i]) continue;
+                            const ORDINATE  old_a = aorg[i];
+                            const ORDINATE  new_a = aend[i];
+                            const ORDINATE  delta = std::abs(step[i]);
+                            const ORDINATE  limit = xtol * min_of( std::fabs(new_a), std::fabs(old_a) );
+                            const bool      is_ok = (delta <= limit);
 
-                            std::cerr << std::endl;
+                            if(verbose)
+                            {
+                                vars.pad(std::cerr << (is_ok? " <ok> " : " <no> ") << v.name,v.name) << " = ";
+                                std::cerr << std::setw(15) << old_a << " -> ";
+                                std::cerr << std::setw(15) << new_a;
+                                std::cerr << " [" << std::setw(15)<< delta << "/" << std::setw(15) << limit << "]";
+                                std::cerr << std::endl;
+                            }
+                            if(!is_ok)
+                            {
+                                converged = false;
+                            }
+                            aorg[i] = new_a;
                         }
+                        YACK_LSF_PRINTLN(clid << "[converged=" << converged << "@cycle=" << cycle << "]");
 
 
                         //------------------------------------------------------
                         //
-                        // ready for next cycle
+                        // ready for next cycle or success
                         //
                         //------------------------------------------------------
-                        vars.mov(aorg,aend);
                         D2_org = s.D2_full(f,aorg,used,scal,*drvs);
-                        if(cycle>=10) exit(0);
-
+                        if(converged)
+                            goto SUCCESS;
                         goto CYCLE;
                     }
 
+                SUCCESS:
 
                     return true;
                 }
@@ -310,27 +332,6 @@ namespace yack
             private:
                 YACK_DISABLE_COPY_AND_ASSIGN(least_squares);
 
-                inline static
-                bool converged(const ORDINATE old_v,
-                               const ORDINATE new_v,
-                               const ORDINATE tol) throw()
-                {
-                    const ORDINATE delta = std::abs(old_v-new_v);
-                    const ORDINATE limit = tol * max_of( std::abs(old_v), std::abs(new_v) );
-                    std::cerr << "delta=" << delta << " / " << limit << std::endl;
-                    return (delta<=limit);
-                }
-
-
-                inline bool converged(const readable<bool> &used, const ORDINATE tol) const throw()
-                {
-                    for(const vnode *node= (**curr).head(); node;node=node->next)
-                    {
-                        const size_t   i     = ****node; if(!used[i]) continue;
-                        if(!converged(aorg[i],aend[i],tol)) return false;
-                    }
-                    return true;
-                }
 
                 //______________________________________________________________
                 //

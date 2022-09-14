@@ -27,9 +27,9 @@ namespace yack
             //
             // types and definitions
             //__________________________________________________________________
-            typedef crout<T>            algo_type;
-            typedef auto_ptr<algo_type> self_type;
-            typedef adder<T>            xadd_type;
+            typedef crout<T>            algo_type; //!< LU decomposition
+            typedef auto_ptr<algo_type> self_type; //!< for memory management
+            typedef adder<T>            xadd_type; //!< for fine computation
 
             //__________________________________________________________________
             //

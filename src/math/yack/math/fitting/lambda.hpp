@@ -31,7 +31,7 @@ namespace yack
                 static const char *clid() throw();   //!< lambda<T>
                 static int         pmin() throw();   //!< ceil( log10( epsilon ) )
                 static int         pmax() throw();   //!< MAX_10_EXP
-
+                static int         ptol() throw();   //!< floor( log10( sqrt(epsilon) ) )
                 //______________________________________________________________
                 //
                 // C++

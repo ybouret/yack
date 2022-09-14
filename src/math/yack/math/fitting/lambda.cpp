@@ -30,6 +30,13 @@ namespace yack
                 return _;
             }
 
+            template <>
+            int lambda<float>:: ptol() throw()
+            {
+                static const int _ =  int( floorf(log10f(sqrtf(FLT_EPSILON))) );
+                return _;
+            }
+
 #define real_t float
 #include "lambda.hxx"
 
@@ -49,6 +56,13 @@ namespace yack
             int lambda<double>:: pmax() throw()
             {
                 static const int _ = int(DBL_MAX_10_EXP);
+                return _;
+            }
+
+            template <>
+            int lambda<double>:: ptol() throw()
+            {
+                static const int _ =  int( floor(log10(sqrt(DBL_EPSILON))) );
                 return _;
             }
 
@@ -73,6 +87,13 @@ namespace yack
             int lambda<long double>:: pmax() throw()
             {
                 static const int _ = int(LDBL_MAX_10_EXP);
+                return _;
+            }
+
+            template <>
+            int lambda<long double>:: ptol() throw()
+            {
+                static const int _ =  int(floorl(log10l(sqrtl(LDBL_EPSILON))));
                 return _;
             }
 

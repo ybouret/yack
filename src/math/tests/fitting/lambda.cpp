@@ -33,15 +33,21 @@ namespace
             YACK_ASSERT(lam[p]>0);
         }
         std::cerr << "      " << std::setw(15) << lam[p] << " @" << p << std::endl;
+        std::cerr << "ptol= " << std::setw(15) << lam.ptol() << std::endl;
 
+        
     }
 }
+
+#include <cfloat>
 
 YACK_UTEST(fitting_lambda)
 {
     show_lam<long double>();
     show_lam<double>();
     show_lam<float>();
+
+
 
 }
 YACK_UDONE()
