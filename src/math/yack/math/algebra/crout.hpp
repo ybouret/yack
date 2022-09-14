@@ -203,11 +203,25 @@ namespace yack
             //! in place multiple solve with a=LU
             inline void solve(const matrix<T> &a, matrix<T> &b)
             {
+                //______________________________________________________________
+                //
+                // sanity check
+                //______________________________________________________________
                 assert(a.is_square());
                 assert(a.rows <=nmax);
                 assert(b.rows==a.rows);
+
+                //______________________________________________________________
+                //
+                // initialize
+                //______________________________________________________________
                 const size_t     n = a.rows;
                 thin_array<type> u(static_cast<type*>(xtra_),n);
+
+                //______________________________________________________________
+                //
+                // solve columns
+                //______________________________________________________________
                 for(size_t j=b.cols;j>0;--j)
                 {
                     for(size_t i=n;i>0;--i) u[i] = b[i][j];
@@ -219,11 +233,18 @@ namespace yack
             //! determinant of a LU matrix
             inline type determinant(const matrix<T> &a) const
             {
+                //______________________________________________________________
+                //
                 // sanity check
+                //______________________________________________________________
                 assert(a.is_square());
                 assert(a.rows<=nmax);
                 assert(a.rows>0);
-                
+
+                //______________________________________________________________
+                //
+                // diagonal product
+                //______________________________________________________________
                 type res = a[1][1];
                 for(size_t i=a.rows;i>1;--i) res *= a[i][i];
                 return dneg ? -res : res;
@@ -232,33 +253,57 @@ namespace yack
             //! determinant of a LU matrix with precise multiplication
             inline type determinant(const matrix<T> &a, multiplier<T> &xmul) const
             {
+                //______________________________________________________________
+                //
                 // sanity check
+                //______________________________________________________________
                 assert(a.is_square());
                 assert(a.rows <=nmax);
-                
-                // run
+                assert(a.rows>0);
+
+                //______________________________________________________________
+                //
+                // diagonal product
+                //______________________________________________________________
                 xmul.set1();
                 for(size_t i=a.rows;i>0;--i) xmul *= a[i][i];
                 return dneg ? -xmul.query() : xmul.query();
             }
-            
+
+            //! determinant with optional multiplier
+            inline type det(const matrix<T> &a, multiplier<T> *xmul) const
+            {
+                return xmul ? determinant(a,*xmul) : determinant(a);
+            }
+
 
             //! compute inverse from LU matrix
             inline void inverse(const matrix<T> &a, matrix<T> &I)
             {
+                //______________________________________________________________
+                //
+                // sanity check
+                //______________________________________________________________
                 assert(a.is_square());
                 assert(a.rows <=nmax);
+                assert(a.rows>0);
                 assert(matrix_metrics::have_same_sizes(a,I));
-                
+
+                //______________________________________________________________
+                //
                 // build identity matrix
+                //______________________________________________________________
                 const size_t     n = a.rows;
                 { const type _0(0); I.ld(_0); }
                 for(size_t i=n;i>0;--i)
                 {
                     I[i][i] = t_one;
                 }
-                
+
+                //______________________________________________________________
+                //
                 // solve identity matrix
+                //______________________________________________________________
                 solve(a,I);
             }
             

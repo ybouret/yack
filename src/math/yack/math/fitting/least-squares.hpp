@@ -22,23 +22,36 @@ namespace yack
         namespace fitting
         {
 
-
+            //! helper for verbose output
 #define YACK_LSF_PRINTLN(MSG) do { if(verbose) { std::cerr << MSG << std::endl; } } while(false)
 
+            //! least_squares algorithm
             template <typename ABSCISSA,typename ORDINATE>
             class least_squares : public least_squares_
             {
             public:
-                typedef sample<ABSCISSA,ORDINATE>             sample_type;
-                typedef arrays_of<ORDINATE>                   tableaux;
-                typedef typename tableaux::array_type         array_type;
-                typedef typename sample_type::sequential_type sequential_type;
-                typedef crout<ORDINATE>                       LU;
-                typedef auto_ptr<LU>                          solver;
-                typedef auto_ptr< derivative<ORDINATE> >      drvs_t;
+                //______________________________________________________________
+                //
+                // types and definition
+                //______________________________________________________________
+                typedef sample<ABSCISSA,ORDINATE>             sample_type;     //!< alias
+                typedef arrays_of<ORDINATE>                   tableaux;        //!< alias
+                typedef typename tableaux::array_type         array_type;      //!< alias
+                typedef typename sample_type::sequential_type sequential_type; //!< alias
+                typedef crout<ORDINATE>                       LU;              //!< alias
+                typedef auto_ptr<LU>                          solver;          //!< alias
+                typedef auto_ptr< derivative<ORDINATE> >      drvs_t;          //!< alias
 
+                //______________________________________________________________
+                //
+                // C++
+                //______________________________________________________________
+
+                //! cleanup
                 virtual ~least_squares() throw() {}
-                
+
+
+                //! setup
                 explicit least_squares() :
                 curv(),
                 tabs(8,0),
@@ -56,6 +69,10 @@ namespace yack
                 {
                 }
 
+                //______________________________________________________________
+                //
+                //! fit wrapper
+                //______________________________________________________________
                 template <typename FUNC>
                 bool fit_with(FUNC                     &f,
                              sample_type              &s,
@@ -68,7 +85,10 @@ namespace yack
                     return fit(s,call,aorg,used,scal,aerr);
                 }
 
-
+                //______________________________________________________________
+                //
+                //! callable wrapper
+                //______________________________________________________________
                 double operator()(const double u)
                 {
                     for(size_t i=aorg.size();i>0;--i)
@@ -78,6 +98,10 @@ namespace yack
                     return curr->D2(*hfcn,atry);
                 }
 
+                //______________________________________________________________
+                //
+                //! fit a sample
+                //______________________________________________________________
                 bool fit(sample_type              &s,
                          sequential_type          &f,
                          writable<ORDINATE>       &a0,
@@ -231,7 +255,7 @@ namespace yack
                 int                      p10;
                 const lambda<ORDINATE>   lam;
             public:
-                bool                     verbose;
+                bool                     verbose; //!< verbosity
 
             private:
                 YACK_DISABLE_COPY_AND_ASSIGN(least_squares);
