@@ -186,7 +186,7 @@ namespace
 
             matrix<T> J1(n,n);
             matrix<T> J2(n,n);
-
+            matrix<T> adj(n,n);
 
             for(size_t cycle=1;cycle<=outer;++cycle)
             {
@@ -265,6 +265,7 @@ namespace
                     }
                     std::cerr << ":]";
 
+                    std::cerr << "/inv";
                     cr.inverse(a1,I1);
                     cr.inverse(a2,I2,xadd);
                     if(exact)
@@ -278,8 +279,9 @@ namespace
                         }
                     }
 
+                    std::cerr << "/mul";
                     iota::mmul(J1,a0,I1);
-                    iota::mmul(J2,a0,I2,xadd); std::cerr << J2;
+                    iota::mmul(J2,a0,I2,xadd);
 
                     if(exact)
                     {
@@ -300,6 +302,37 @@ namespace
                         }
                     }
 
+                    std::cerr << "/adj";
+                    const T det = cr.determinant(a2);
+                    cr.adjoint(adj,a0);
+
+                    std::cerr << "/mul";
+                    iota::mmul(J2,a0,adj);
+                    for(size_t i=1;i<=n;++i)
+                    {
+                        for(size_t j=1;j<=n;++j)
+                        {
+                            J2[i][j]/=det;
+                        }
+                    }
+                    //std::cerr << J2;
+                    if(exact)
+                    {
+                        for(size_t i=1;i<=n;++i)
+                        {
+                            for(size_t j=1;j<=n;++j)
+                            {
+                                if(i!=j)
+                                {
+                                    YACK_ASSERT(abs_of(J2[i][j])<=0);
+                                }
+                                else
+                                {
+                                    YACK_ASSERT(abs_of(J2[i][j] - cr.t_one) <=0);
+                                }
+                            }
+                        }
+                    }
 
                     std::cerr << std::endl;
 
