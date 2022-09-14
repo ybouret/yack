@@ -224,6 +224,20 @@ namespace yack
                     {
                         YACK_LSF_PRINTLN(clid << "<accept>");
 
+                        const ORDINATE slope = solv.xadd.dot(s.beta,step);
+                        std::cerr << "slope=" << slope << std::endl;
+
+                        {
+                            ios::ocstream fp("lsf.dat");
+                            const size_t NP = 100;
+                            for(size_t i=0;i<=NP;++i)
+                            {
+                                const double u = i/double(NP);
+                                fp("%g %g %g\n",u,(*this)(u),D2_org-slope*u);
+                            }
+                        }
+
+
                         exit(0);
                         goto CYCLE;
                     }
