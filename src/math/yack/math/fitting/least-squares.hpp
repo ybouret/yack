@@ -194,12 +194,11 @@ namespace yack
                     if(!predict())
                         return false;
 
-                    exit(0);
 
                     //----------------------------------------------------------
                     //
                     //
-                    // compute queried position
+                    //
                     //
                     //
                     //----------------------------------------------------------
@@ -211,59 +210,22 @@ namespace yack
                         std::cerr << "  D2_end = " << D2_end << "/" << D2_org << std::endl;
                     }
 
-                    //----------------------------------------------------------
-                    //
-                    //
-                    // check results
-                    //
-                    //
-                    //----------------------------------------------------------
-                    if(D2_end<D2_org)
+                    if(D2_end>D2_org)
                     {
-                        //------------------------------------------------------
-                        //
-                        // accept
-                        //
-                        //------------------------------------------------------
-                        YACK_LSF_PRINTLN(clid << "[accept]");
-
-                        if(true)
-                        {
-                            ios::ocstream fp("decreased.dat");
-                            const size_t NP=100;
-                            for(size_t i=0;i<=NP;++i)
-                            {
-                                const double u = i/double(NP);
-                                fp("%g %g\n",u,(*this)(u));
-                            }
-
-                            std::cerr << "slope=" << s.xadd.dot(s.beta,step) << std::endl;
-
-                            exit(1);
-                        }
-
-
-
-                        iota::load(aorg,aend);
-                        D2_org = s.D2_full(f,aorg, used, scal, *drvs);
-
-
-                        goto CYCLE;
-                    }
-                    else
-                    {
-                        //------------------------------------------------------
-                        //
-                        // reject
-                        //
-                        //------------------------------------------------------
-                        YACK_LSF_PRINTLN(clid << "[reject]");
+                        YACK_LSF_PRINTLN(clid << "<reject>");
                         if(!lam.increase(p10))
                         {
-                            YACK_LSF_PRINTLN(clid << "[spurious]");
+                            YACK_LSF_PRINTLN(clid << "[spurious variables]");
                             return false;
                         }
                         goto PREDICT;
+                    }
+                    else
+                    {
+                        YACK_LSF_PRINTLN(clid << "<accept>");
+
+                        exit(0);
+                        goto CYCLE;
                     }
 
 
