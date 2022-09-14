@@ -69,6 +69,25 @@ so that the total approximate curvature is:
 
 We implemented a Levenberg–Marquardt algorithm with optional control and minimum re-computation.
 
+\section{Line Scanning}
+
+Let us assume that $D(\vec{a}_0) = D_0$, $D(\vec{a}_1) = D_1 \leq D_0$.
+We define
+$$
+	f(u) = D(\vec{a}_0 + u \delta\vec{a})
+$$
+so that
+$$
+	f'(0) = -\underbrace{\langle\vec{\beta}\vert\delta\vec{a}\rangle}_{\sigma}
+$$
+Let us assume that $\sigma>0$, then we approximate
+$$
+	f(u) \simeq D_0 - \sigma u + \gamma u^2 \Rightarrow D_1 = D_0 - \sigma + \gamma \Rightarrow \;\; \gamma = \sigma + D_1 - D_0
+$$	
+Let us assume that $\gamma>0$, then the parabolic minimum is defined for
+$$
+	u_{opt} = \dfrac{\sigma}{\gamma}
+$$
 
 
 \end{document}

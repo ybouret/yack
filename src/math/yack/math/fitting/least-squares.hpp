@@ -12,6 +12,7 @@
 #include "yack/sequence/arrays.hpp"
 #include "yack/type/temporary.hpp"
 #include "yack/math/numeric.hpp"
+#include "yack/math/opt/optimize.hpp"
 
 namespace yack
 {
@@ -74,11 +75,11 @@ namespace yack
                 //______________________________________________________________
                 template <typename FUNC>
                 bool fit_with(FUNC                     &f,
-                             sample_type              &s,
-                             writable<ORDINATE>       &aorg,
-                             const readable<bool>     &used,
-                             const readable<ORDINATE> &scal,
-                             writable<ORDINATE>       &aerr)
+                              sample_type              &s,
+                              writable<ORDINATE>       &aorg,
+                              const readable<bool>     &used,
+                              const readable<ORDINATE> &scal,
+                              writable<ORDINATE>       &aerr)
                 {
                     typename sample_type:: template sequential_wrapper<FUNC> call(f);
                     return fit(s,call,aorg,used,scal,aerr);
@@ -88,12 +89,18 @@ namespace yack
                 //
                 //! callable wrapper
                 //______________________________________________________________
-                double operator()(const double u)
+                void   make_atry(const double u) throw()
                 {
-                    for(size_t i=aorg.size();i>0;--i)
+                    for(const vnode *node= (**curr).head();node;node=node->next)
                     {
+                        const size_t i = ****node;
                         atry[i] = aorg[i] + u * step[i];
                     }
+                }
+
+                double operator()(const double u)
+                {
+                    make_atry(u);
                     return curr->D2(*hfcn,atry);
                 }
 
@@ -187,7 +194,7 @@ namespace yack
                     //----------------------------------------------------------
                     //
                     //
-                    // try to predict a step
+                    // Predicting the end value
                     //
                     //
                     //----------------------------------------------------------
@@ -195,15 +202,7 @@ namespace yack
                     if(!predict())
                         return false;
 
-
-                    //----------------------------------------------------------
-                    //
-                    //
-                    //
-                    //
-                    //
-                    //----------------------------------------------------------
-                    const ORDINATE D2_end = s.D2(f,aend);
+                    ORDINATE D2_end = s.D2(f,aend);
 
                     if(verbose) {
                         vars(std::cerr << "step=",step,"step_") << std::endl;
@@ -211,8 +210,20 @@ namespace yack
                         std::cerr << "D2_end = " << D2_end << "/" << D2_org << std::endl;
                     }
 
+                    //----------------------------------------------------------
+                    //
+                    //
+                    // Analyze the end value
+                    //
+                    //
+                    //----------------------------------------------------------
                     if(D2_end>D2_org)
                     {
+                        //------------------------------------------------------
+                        //
+                        // wrong attempt: need to reduce step
+                        //
+                        //------------------------------------------------------
                         YACK_LSF_PRINTLN(clid << "<reject>");
                         if(!lam.increase(p10))
                         {
@@ -223,25 +234,39 @@ namespace yack
                     }
                     else
                     {
+                        //------------------------------------------------------
+                        //
+                        // right attempt: check not too fast!
+                        //
+                        //------------------------------------------------------
                         YACK_LSF_PRINTLN(clid << "<accept>");
                         assert(D2_end<=D2_org);
-                        const ORDINATE sigma = solv.xadd.dot(s.beta,step);
-                        std::cerr << "sigma=" << sigma << std::endl;
 
+                        if(true)
                         {
                             ios::ocstream fp("lsf.dat");
-                            const double gamma = D2_end - D2_org + sigma;
+                            const ORDINATE sigma = solv.xadd.dot(s.beta,step);
+                            const double g   = D2_end - D2_org + sigma;
                             const size_t NP = 100;
-                            for(size_t i=0;i<=NP;++i)
+                            for(size_t i=0;i<=NP+20;++i)
                             {
                                 const double u = i/double(NP);
-                                fp("%g %g %g\n",u,(*this)(u),D2_org-sigma*u + gamma * u * u);
+                                fp("%g %g %g\n",u,(*this)(u),D2_org-sigma*u + g * u * u);
                             }
                         }
 
+                        D2_end = study(D2_org, D2_end);
+
+
+                        //------------------------------------------------------
+                        //
+                        // ready for next cycle
+                        //
+                        //------------------------------------------------------
                         vars.mov(aorg,aend);
                         D2_org = s.D2_full(f,aorg,used,scal,*drvs);
-                        exit(0);
+                        if(cycle>=3) exit(0);
+
                         goto CYCLE;
                     }
 
@@ -326,6 +351,47 @@ namespace yack
                     iota::add(aend,aorg,step);
                     return true;
                 }
+
+                ORDINATE study(const ORDINATE D2_org,
+                               const ORDINATE D2_end)
+                {
+                    assert(D2_end<=D2_org);
+
+                    const ORDINATE sigma = solv.xadd.dot(curr->beta,step);  if(sigma<=0) return D2_end;
+                    const ORDINATE gamma = solv.xadd(D2_end,-D2_org,sigma); if(gamma<=0) return D2_end;
+                    const ORDINATE num   = sigma;
+                    const ORDINATE den   = gamma+gamma; if(den<=num) return D2_end;;
+                    const ORDINATE u_opt = num/den;
+
+                    const ORDINATE D2_opt = (*this)(u_opt);
+
+                    if(D2_opt>=D2_end) return D2_end;
+
+
+                    triplet<ORDINATE> u = { 0, u_opt, 1 };            assert(u.is_increasing());
+                    triplet<ORDINATE> d = { D2_org, D2_opt, D2_end }; assert(d.is_local_minimum());
+
+                    YACK_LSF_PRINTLN(clid << "[tightening] u=" << u << ", d=" << d);
+                    ORDINATE w_old = optimize::tighten_for(*this,u,d);
+                    ORDINATE u_old = optimize::tighten_for(*this,u,d);
+                    YACK_LSF_PRINTLN(clid << "[warming up] u=" << u << ", d=" << d);
+
+                TIGHTEN:
+                    const ORDINATE w_new = optimize::tighten_for(*this,u,d);
+                    const ORDINATE u_new = u.b;
+                    YACK_LSF_PRINTLN(clid << "[ <shrink> ] u=" << u << ", d=" << d);
+                    if(w_new>=w_old || std::abs(u_new-u_old) <= 0.01)
+                    {
+                        make_atry(u.b);
+                        (**curr).mov(aend,atry);
+                        return d.b;
+                    }
+                    w_old = w_new;
+                    u_old = u_new;
+                    goto TIGHTEN;
+
+                }
+
 
             };
 
