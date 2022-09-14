@@ -255,14 +255,23 @@ namespace yack
                             }
                         }
 
-                        study(D2_org, D2_end);
+                        study(D2_org,D2_end);
 
                         //------------------------------------------------------
                         //
-                        // the new winner is D2_end@aend
+                        // the new winner is D2_end @aend
                         //
                         //------------------------------------------------------
+                        const ORDINATE delta_D2 = std::abs(D2_org-D2_end);
+                        std::cerr << "D2: " << D2_org << " -> " << D2_end << " : -" << delta_D2 << std::endl;
+                        for(const vnode *node = vars.head();node;node=node->next)
+                        {
+                            const variable &v = ***node;
+                            const size_t    i = *v;
+                            vars.pad(std::cerr << v.name,v.name) << " : " << aorg[i] << " -> " << aend[i] << "  : " << step[i];
 
+                            std::cerr << std::endl;
+                        }
 
 
                         //------------------------------------------------------
@@ -272,7 +281,7 @@ namespace yack
                         //------------------------------------------------------
                         vars.mov(aorg,aend);
                         D2_org = s.D2_full(f,aorg,used,scal,*drvs);
-                        if(cycle>=3) exit(0);
+                        if(cycle>=10) exit(0);
 
                         goto CYCLE;
                     }
@@ -393,9 +402,11 @@ namespace yack
                     YACK_LSF_PRINTLN(clid << "[ <shrink> ] u=" << u << ", d=" << d);
                     if(w_new>=w_old || std::abs(u_new-u_old) <= 0.01)
                     {
+                        const variables &vars = **curr;
                         make_atry(u.b);
-                        (**curr).mov(aend,atry);
+                        vars.mov(aend,atry);
                         D2_end = d.b;
+                        vars.sub(step,aorg,aend);
                         return;
                     }
                     w_old = w_new;

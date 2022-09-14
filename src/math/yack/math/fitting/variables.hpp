@@ -148,6 +148,17 @@ namespace yack
                     }
                 }
 
+                //! transfer involved values
+                template <typename TARGET, typename LHS, typename RHS> inline
+                void sub(TARGET &AB, LHS &A, RHS &B) const
+                {
+                    for(const vnode *node=head();node;node=node->next)
+                    {
+                        const size_t i = ****node;
+                        AB[i] = B[i] - A[i];
+                    }
+                }
+
                 //! zero involved values
                 template <typename TARGET> inline
                 void ldz(TARGET &target) const
