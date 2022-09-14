@@ -162,9 +162,9 @@ namespace
                        randomized::bits &ran,
                        const bool        exact=false)
     {
-        //typedef typename crout<T>::scalar_type scalar_type;
+        typedef typename crout<T>::scalar_type scalar_type;
         const string &who = rtti::name< typename crout<T>::type >();
-        std::cerr << "check_precise<" << who << ">" << std::endl;
+        std::cerr << "check<" << who << ">" << std::endl;
 
         size_t outer = 8;
         if(who=="apq") outer=4;
@@ -176,6 +176,17 @@ namespace
             matrix<T> a0(n,n);
             matrix<T> a1(n,n);
             matrix<T> a2(n,n);
+            vector<T> r(n);
+            vector<T> u1(n);
+            vector<T> u2(n);
+            vector<T> v1(n);
+            vector<T> v2(n);
+            matrix<T> I1(n,n);
+            matrix<T> I2(n,n);
+
+            matrix<T> J1(n,n);
+            matrix<T> J2(n,n);
+
 
             for(size_t cycle=1;cycle<=outer;++cycle)
             {
@@ -192,8 +203,8 @@ namespace
 
                 if(cr.build(a1))
                 {
-                    std::cerr << "// regular " << who << " " << n << "x" << n << std::endl;
-                    YACK_ASSERT(cr.build(a2,&xadd));
+                    std::cerr << "// regular " << who << " " << n << "x" << n << " [";
+                    YACK_ASSERT(cr.build(a2,xadd));
                     if(exact)
                     {
                         for(size_t i=1;i<=n;++i)
@@ -204,6 +215,95 @@ namespace
                             }
                         }
                     }
+
+                    for(size_t iter=1;iter<=8;++iter)
+                    {
+                        for(size_t i=1;i<=n;++i)
+                        {
+                            u1[i] = u2[i] = r[i] = bring::get<T>(ran);
+                        }
+
+                        cr.solve(a1,u1);
+                        cr.solve(a2,u2,xadd);
+                        {
+                            const scalar_type du2 = iota::mod2<scalar_type>::of(u1,u2);
+                            std::cerr << ":" << du2;
+                            if(exact && du2>0 )
+                            {
+                                throw exception("mismatch solutions!!");
+                            }
+                        }
+
+                        iota::mul(v1,a0,u1);
+                        iota::mul(v2,a0,u2,xadd);
+                        {
+                            const scalar_type dv2 = iota::mod2<scalar_type>::of(v1,v2);
+                            std::cerr << "/" << dv2;
+                            if(exact && dv2>0 )
+                            {
+                                throw exception("mismatch retrieved!!");
+                            }
+                        }
+                        {
+                            const scalar_type dr1 = iota::mod2<scalar_type>::of(v1,r);
+                            std::cerr << "/" << dr1;
+                            if(exact && dr1>0 )
+                            {
+                                throw exception("mismatch retrieved 1!!");
+                            }
+                        }
+                        {
+                            const scalar_type dr2 = iota::mod2<scalar_type>::of(v2,r);
+                            std::cerr << "/" << dr2;
+                            if(exact && dr2>0 )
+                            {
+                                throw exception("mismatch retrieved 2!!");
+                            }
+                        }
+
+
+                    }
+                    std::cerr << ":]";
+
+                    cr.inverse(a1,I1);
+                    cr.inverse(a2,I2,xadd);
+                    if(exact)
+                    {
+                        for(size_t i=1;i<=n;++i)
+                        {
+                            for(size_t j=1;j<=n;++j)
+                            {
+                                YACK_ASSERT(abs_of(I1[i][j]-I2[i][j])<=0);
+                            }
+                        }
+                    }
+
+                    iota::mmul(J1,a0,I1);
+                    iota::mmul(J2,a0,I2,xadd); std::cerr << J2;
+
+                    if(exact)
+                    {
+                        for(size_t i=1;i<=n;++i)
+                        {
+                            for(size_t j=1;j<=n;++j)
+                            {
+                                YACK_ASSERT(abs_of(J1[i][j]-J2[i][j])<=0);
+                                if(i!=j)
+                                {
+                                    YACK_ASSERT(abs_of(J2[i][j])<=0);
+                                }
+                                else
+                                {
+                                    YACK_ASSERT(abs_of(J2[i][j] - cr.t_one) <=0);
+                                }
+                            }
+                        }
+                    }
+
+
+                    std::cerr << std::endl;
+
+                    
 
                 }
             }
@@ -241,16 +341,18 @@ YACK_UTEST(crout)
         check_precise< apq >(nmax,ran,true);
     }
 
+    if(false)
+    {
+        check_crout<float>(nmax,ran);
+        check_crout<double>(nmax,ran);
+        check_crout<long double>(nmax,ran);
 
-    check_crout<float>(nmax,ran);
-    check_crout<double>(nmax,ran);
-    check_crout<long double>(nmax,ran);
+        check_crout< complex<float> >(nmax,ran);
+        check_crout< complex<double> >(nmax,ran);
+        check_crout< complex<long double> >(nmax,ran);
 
-    check_crout< complex<float> >(nmax,ran);
-    check_crout< complex<double> >(nmax,ran);
-    check_crout< complex<long double> >(nmax,ran);
-
-    check_crout<apq>(nmax,ran,true);
+        check_crout<apq>(nmax,ran,true);
+    }
 
 }
 YACK_UDONE()

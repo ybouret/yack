@@ -247,7 +247,7 @@ namespace yack {
             //! A = B * C
             //------------------------------------------------------------------
             template <typename T, typename U, typename V> static inline
-            void mmul(matrix<T> &A, const matrix<U> &B, const matrix<V> &C, const adder<T> &xadd)
+            void mmul(matrix<T> &A, const matrix<U> &B, const matrix<V> &C, adder<T> &xadd)
             {
                 assert(A.rows==B.rows);
                 assert(A.cols==C.cols);
@@ -263,7 +263,7 @@ namespace yack {
                         xadd.ldz();
                         for(size_t k=nk;k>0;--k)
                         {
-                            xadd += B_i[k] * C[k][j];
+                            xadd.push( B_i[k] * C[k][j] );
                         }
                         A_i[j] = xadd.get();
                     }
