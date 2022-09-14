@@ -255,7 +255,14 @@ namespace yack
                             }
                         }
 
-                        D2_end = study(D2_org, D2_end);
+                        study(D2_org, D2_end);
+
+                        //------------------------------------------------------
+                        //
+                        // the new winner is D2_end@aend
+                        //
+                        //------------------------------------------------------
+
 
 
                         //------------------------------------------------------
@@ -316,6 +323,10 @@ namespace yack
                     return true;
                 }
 
+                //______________________________________________________________
+                //
+                //! predictor step
+                //______________________________________________________________
                 inline bool predict() throw()
                 {
                     assert(NULL!=curr);
@@ -352,21 +363,21 @@ namespace yack
                     return true;
                 }
 
-                ORDINATE study(const ORDINATE D2_org,
-                               const ORDINATE D2_end)
+                //______________________________________________________________
+                //
+                //! check the possibility of an overshoot
+                //______________________________________________________________
+                void study(const ORDINATE D2_org,
+                           ORDINATE      &D2_end)
                 {
                     assert(D2_end<=D2_org);
 
-                    const ORDINATE sigma = solv.xadd.dot(curr->beta,step);  if(sigma<=0) return D2_end;
-                    const ORDINATE gamma = solv.xadd(D2_end,-D2_org,sigma); if(gamma<=0) return D2_end;
+                    const ORDINATE sigma = solv.xadd.dot(curr->beta,step);  if(sigma<=0) return;
+                    const ORDINATE gamma = solv.xadd(D2_end,-D2_org,sigma); if(gamma<=0) return;
                     const ORDINATE num   = sigma;
-                    const ORDINATE den   = gamma+gamma; if(den<=num) return D2_end;;
+                    const ORDINATE den   = gamma+gamma;                      if(den<=num) return;
                     const ORDINATE u_opt = num/den;
-
-                    const ORDINATE D2_opt = (*this)(u_opt);
-
-                    if(D2_opt>=D2_end) return D2_end;
-
+                    const ORDINATE D2_opt = (*this)(u_opt);                  if(D2_opt>=D2_end) return;
 
                     triplet<ORDINATE> u = { 0, u_opt, 1 };            assert(u.is_increasing());
                     triplet<ORDINATE> d = { D2_org, D2_opt, D2_end }; assert(d.is_local_minimum());
@@ -384,7 +395,8 @@ namespace yack
                     {
                         make_atry(u.b);
                         (**curr).mov(aend,atry);
-                        return d.b;
+                        D2_end = d.b;
+                        return;
                     }
                     w_old = w_new;
                     u_old = u_new;
