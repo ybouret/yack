@@ -57,34 +57,14 @@ namespace yack
             // methods
             //__________________________________________________________________
 
-            void pass1(matrix<T> &a,   const size_t j)
-            {
-                for(size_t i=1;i<j;i++)
-                {
-                    writable<type> &a_i = a[i];
-                    type sum=a_i[j];
-                    for (size_t k=1;k<i;k++)
-                        sum -= a_i[k]*a[k][j];
-                    a_i[j]=sum;
-                }
-            }
 
-            void pass1(matrix<T> &a, const size_t j, adder<T> &xadd)
-            {
-                for(size_t i=1;i<j;i++)
-                {
-                    writable<type> &a_i = a[i];
-                    xadd.ldz();
-                    xadd.push(a_i[j]);
-                    for (size_t k=1;k<i;k++)
-                        xadd.push( -a_i[k]*a[k][j] );
-                    a_i[j]=xadd.get();
-                }
-            }
-
-            //! try to build the LU decomposition a a square matrix
+            //! try to build the LU decomposition a square matrix
             inline bool build(matrix<T> &a, adder<T> *xadd= NULL)
             {
+                //______________________________________________________________
+                //
+                // initialize
+                //______________________________________________________________
                 if(!initialize(a)) return false;
                 const size_t            n = a.rows;
                 thin_array<size_t>      indx(indx_,n);
@@ -111,16 +91,11 @@ namespace yack
                     scalar_type smax=0;
                     for(size_t i=j;i<=n;++i)
                     {
-                        writable<type> &a_i = a[i];
-                        type sum=a_i[j];
-                        for (size_t k=1;k<j;k++)
-                            sum -= a_i[k]*a[k][j];
-                        a_i[j]=sum;
-
-                        const scalar_type temp = scal[i] * abs_of<type>(sum);
-                        if(temp >= smax)
+                        const scalar_type f = xadd ? pass2(a,i,j,*xadd) : pass2(a,i,j);
+                        const scalar_type t = scal[i] * f;
+                        if(t >= smax)
                         {
-                            smax=temp;
+                            smax=t;
                             imax=i;
                         }
                     }
@@ -268,7 +243,7 @@ namespace yack
                 return dneg ? -res : res;
             }
             
-            //! determinant of a LU matrix with precise multiplication
+            //! determinant of a LU matrix with precise multiplication (only for integral types)
             inline type determinant(const matrix<T> &a, multiplier<T> &xmul) const
             {
                 //______________________________________________________________
@@ -375,6 +350,9 @@ namespace yack
             const memory::operative_of<scalar_type> scalM;
             const memory::operative_of<type>        xtraM;
 
+            // =================================================================
+            //! initializing
+            // =================================================================
             inline bool initialize(matrix<T> &a)
             {
                 //______________________________________________________________
@@ -416,6 +394,58 @@ namespace yack
                 // done
                 //______________________________________________________________
                 return true;
+            }
+
+            // =================================================================
+            // pass1 algorithms
+            // =================================================================
+
+            inline void pass1(matrix<T> &a, const size_t j)
+            {
+                for(size_t i=1;i<j;i++)
+                {
+                    writable<type> &a_i = a[i];
+                    type sum=a_i[j];
+                    for (size_t k=1;k<i;k++)
+                        sum -= a_i[k]*a[k][j];
+                    a_i[j]=sum;
+                }
+            }
+
+            inline void pass1(matrix<T> &a, const size_t j, adder<T> &xadd)
+            {
+                for(size_t i=1;i<j;i++)
+                {
+                    writable<type> &a_i = a[i];
+                    xadd.ldz();
+                    xadd.push(a_i[j]);
+                    for (size_t k=1;k<i;k++)
+                        xadd.push( -a_i[k]*a[k][j] );
+                    a_i[j]=xadd.get();
+                }
+            }
+
+            // =================================================================
+            // pass2 algorithms
+            // =================================================================
+
+            inline scalar_type pass2(matrix<T> &a, const size_t i, const size_t j)
+            {
+                writable<type> &a_i = a[i];
+                type sum=a_i[j];
+                for (size_t k=1;k<j;k++)
+                    sum -= a_i[k]*a[k][j];
+                return abs_of(a_i[j]=sum);
+            }
+
+            inline scalar_type pass2(matrix<T> &a, const size_t i, const size_t j, adder<T> &xadd)
+            {
+                writable<type> &a_i = a[i];
+                xadd.ldz();
+                xadd.push(a_i[j]);
+                for (size_t k=1;k<j;k++)
+                    xadd.push( - a_i[k]*a[k][j] );
+                return abs_of(a_i[j]=xadd.get());
             }
 
         };

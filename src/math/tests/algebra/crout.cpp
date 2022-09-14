@@ -163,11 +163,11 @@ namespace
                        const bool        exact=false)
     {
         //typedef typename crout<T>::scalar_type scalar_type;
-        const string &who =rtti::name< typename crout<T>::type >();
+        const string &who = rtti::name< typename crout<T>::type >();
         std::cerr << "check_precise<" << who << ">" << std::endl;
 
         size_t outer = 8;
-        if(who=="apq") outer=2;
+        if(who=="apq") outer=4;
 
         adder<T>      xadd;
         crout<T>      cr(nmax);
@@ -228,18 +228,19 @@ YACK_UTEST(crout)
         nmax = ios::ascii::convert::to<size_t>(argv[1]);
     }
 
-    check_precise<float>(nmax,ran);
-    check_precise<double>(nmax,ran);
-    check_precise<long double>(nmax,ran);
+    if(true)
+    {
+        check_precise<float>(nmax,ran);
+        check_precise<double>(nmax,ran);
+        check_precise<long double>(nmax,ran);
 
-    check_precise< complex<float> >(nmax,ran);
-    check_precise< complex<double> >(nmax,ran);
-    check_precise< complex<long double> >(nmax,ran);
+        check_precise< complex<float> >(nmax,ran);
+        check_precise< complex<double> >(nmax,ran);
+        check_precise< complex<long double> >(nmax,ran);
 
-    check_precise< apq >(nmax,ran,true);
+        check_precise< apq >(nmax,ran,true);
+    }
 
-
-    return 0;
 
     check_crout<float>(nmax,ran);
     check_crout<double>(nmax,ran);
