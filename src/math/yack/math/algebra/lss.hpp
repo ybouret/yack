@@ -12,6 +12,7 @@ namespace yack
     namespace math
     {
 
+
         //______________________________________________________________________
         //
         //
@@ -34,9 +35,26 @@ namespace yack
             //
             // C++
             //__________________________________________________________________
-            virtual ~lss() throw()                   {} //!< cleanup>
-            explicit lss() throw() : self_type(NULL) {} //!< create empty
-            explicit lss(const size_t nmax) : self_type( new algo_type(nmax) ) {} //!< create with capacity
+
+            //! create empty
+            explicit lss(const bool flag) throw() :
+            self_type(NULL),
+            xadd(),
+            fine(flag)
+            {
+            }
+
+
+            //! create with dimension
+            explicit lss(const bool flag, const size_t nmax) :
+            self_type( new algo_type(nmax) ),
+            xadd(),
+            fine(flag)
+            {}
+
+            //! cleanup
+            virtual ~lss() throw()
+            {}
 
             //__________________________________________________________________
             //
@@ -44,7 +62,7 @@ namespace yack
             //__________________________________________________________________
 
             //! ensure minimal dimensions
-            void ensure(const size_t nmin)
+            inline void ensure(const size_t nmin)
             {
                 self_type &self = *this;
                 if(self->nmax < nmin)
@@ -54,13 +72,31 @@ namespace yack
             }
 
             //! decompose a matrix with proper size
-            bool build(matrix<T> &a)
+            inline bool build(matrix<T> &a)
             {
                 assert(a.is_square());
                 assert(a.rows>0);
                 ensure(a.rows);
-                return (**this).build(a);
+                return fine ? (**this).build(a,xadd) : (**this).build(a);
             }
+
+
+            //! solve with a decomposed matrix
+            void solve(const matrix<T> &a, writable<T> &b)
+            {
+                if(fine) {
+                    (**this).solve(a,b,xadd);
+                } else   {
+                    (**this).solve(a,b);
+                }
+            }
+
+            //__________________________________________________________________
+            //
+            // members
+            //__________________________________________________________________
+            xadd_type xadd; //!< adder
+            bool      fine; //!< choice of algorithm
 
         private:
             YACK_DISABLE_COPY_AND_ASSIGN(lss);

@@ -59,7 +59,7 @@ namespace yack
                 step( tabs.next() ),
                 aend( tabs.next() ),
                 atry( tabs.next() ),
-                solv(NULL),
+                solv(true),
                 drvs( new derivative<ORDINATE>() ),
                 p10(0),
                 lam(),
@@ -126,7 +126,7 @@ namespace yack
                     curv.make(nvar,nvar);
                     tabs.make(nvar);
                     solv.ensure(nvar);
-                    
+
                     vars.mov(aorg,a0);
                     vars.ldz(aerr);
 
@@ -283,10 +283,11 @@ namespace yack
 
                 inline bool predict() throw()
                 {
-                    YACK_LSF_PRINTLN(clid << "[predict]");
                     assert(NULL!=curr);
+                    YACK_LSF_PRINTLN(clid << "[predict]");
                 TRY_AGAIN:
                     YACK_LSF_PRINTLN(clid << "[10^" << p10 << "=>" << lam[p10] << "]");
+
                     const ORDINATE fac = ORDINATE(1) + lam[p10];
                     curv.assign(curr->curv);
                     for(size_t i=curv.rows;i>0;--i)
@@ -294,7 +295,7 @@ namespace yack
                         curv[i][i] *= fac;
                     }
 
-                    if(!solv->build(curv))
+                    if(!solv.build(curv))
                     {
                         if( lam.increase(p10) )
                         {
@@ -304,14 +305,14 @@ namespace yack
                         }
                         else
                         {
-                            // singular point
+                            // cannot regularize more: singular point
                             YACK_LSF_PRINTLN(clid << "[singular]");
                             return false;
                         }
                     }
 
                     iota::load(step,curr->beta);
-                    solv->solve(curv,step);
+                    solv.solve(curv,step);
                     iota::add(aend,aorg,step);
                     return true;
                 }
