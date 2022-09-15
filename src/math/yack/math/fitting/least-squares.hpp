@@ -26,7 +26,7 @@ namespace yack
             //! helper for verbose output
 #define YACK_LSF_PRINTLN(MSG) do { if(verbose) { std::cerr << MSG << std::endl; } } while(false)
 
-            //! least_squares algorithm
+            //! least squares algorithm
             template <typename ABSCISSA,typename ORDINATE>
             class least_squares : public least_squares_
             {
