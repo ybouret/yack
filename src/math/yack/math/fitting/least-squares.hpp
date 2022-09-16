@@ -245,7 +245,7 @@ namespace yack
                         const string  fn = "D2-" + s.name + ".dat";
                         ios::ocstream fp(fn);
                         const size_t  np = 100;
-                        for(size_t i=0;i<=np;++i)
+                        for(size_t i=0;i<=np+50;++i)
                         {
                             const double u = i/double(np);
                             const double g = double( (*this)(u) );
@@ -257,11 +257,16 @@ namespace yack
                     {
                         YACK_LSF_PRINTLN(clid << "[accept]");
                         study(D2_org,D2_end);
-                        exit(0);
+
+                        vars.mov(aorg,aend);
+                        D2_org = s.D2_full(f,aorg, used, scal, *drvs);
+                        if(cycle>=2)
+                            exit(0);
+                        goto CYCLE;
                     }
                     else
                     {
-                        YACK_LSF_PRINTLN(clid << "[recject]]");
+                        YACK_LSF_PRINTLN(clid << "[reject]");
                         assert(D2_end>D2_org);
                         if(!lam.increase(p10))
                         {
@@ -312,17 +317,20 @@ namespace yack
                     const ORDINATE D2_mid = (*this)(half);
                     const ORDINATE beta   = twice( solv.xadd(D2_org,D2_end, -(D2_mid+D2_mid) ) );
                     std::cerr << "\tbeta  = " << beta  << std::endl;
-                    if(beta>0)
-                    {
-                        const ORDINATE alpha  = solv.xadd( 4*D2_mid, -3*D2_org, -D2_end);
-                        std::cerr << "\talpha = " << alpha << std::endl;
-                        if(alpha<0)
-                        {
-                            const ORDINATE num = -alpha;
-                            const ORDINATE den = beta+beta;
-                            std::cerr << "\tu_opt = " << num/den << std::endl;
-                        }
-                    }
+                    if(beta<=0) return;
+
+                    const ORDINATE alpha  = solv.xadd( 4*D2_mid, -3*D2_org, -D2_end);
+                    std::cerr << "\talpha = " << alpha << std::endl;
+                    std::cerr << D2_org << " +(" << alpha << ")*x + (" << beta << ") *x*x" << std::endl;
+                    if(alpha>=0) return;
+                    
+                    const ORDINATE num = -alpha;
+                    const ORDINATE den = beta+beta;
+                    //if(num>den) return;
+
+                    std::cerr << "\tu_opt = " << num/den << std::endl;
+
+
 
                 }
 
