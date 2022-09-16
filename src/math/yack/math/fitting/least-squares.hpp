@@ -13,6 +13,7 @@
 #include "yack/type/temporary.hpp"
 #include "yack/math/numeric.hpp"
 #include "yack/math/opt/optimize.hpp"
+#include "yack/sort/network/sort4.hpp"
 
 #include <iomanip>
 
@@ -220,7 +221,7 @@ namespace yack
                     //
                     //----------------------------------------------------------
                     ios::ocstream::overwrite("D2_" + s.name + ".log");
-                    ios::ocstream::echo("D2_" + s.name + ".log","%u %.15g\n", unsigned(cycle), D2_org);
+                    ios::ocstream::echo("D2_" + s.name + ".log","%u %.15g %.15g\n", unsigned(cycle), D2_org, 1);
                 CYCLE:
                     ++cycle;
                     YACK_LSF_PRINTLN(clid << "-------- cycle #" << cycle <<" --------");
@@ -250,11 +251,14 @@ namespace yack
                     //
                     //----------------------------------------------------------
                     computeStep();
+                    vars(std::cerr << "aend=",aend,NULL)    << std::endl;
+                    vars(std::cerr << "step=",step,NULL)    << std::endl;
+
 
                     ORDINATE D2_end = s.D2(f,aend);
                     YACK_LSF_PRINTLN(clid << "D2_end = " << D2_end << " / " << D2_org);
 
-                    if(false)
+                    if(true)
                     {
                         const string  fn = "D2-" + s.name + ".dat";
                         ios::ocstream fp(fn);
@@ -274,13 +278,13 @@ namespace yack
                     //----------------------------------------------------------
                     if(D2_end <= D2_org )
                     {
-                        ios::ocstream::echo("D2_" + s.name + ".log","%u %.15g\n", unsigned(cycle), D2_end);
                         //------------------------------------------------------
                         //
                         YACK_LSF_PRINTLN(clid << "[accept]");
                         //
                         //------------------------------------------------------
                         analyze(D2_org,D2_end);
+                        ios::ocstream::echo("D2_" + s.name + ".log","%u %.15g %.15g\n", unsigned(cycle), D2_end, (D2_org-D2_end)/D2_end);
 
                         //------------------------------------------------------
                         // check D2 convergence
@@ -310,7 +314,6 @@ namespace yack
                             {
                                 converged = false;
                             }
-
                             vars.pad(std::cerr << ok(is_ok) << v.name, v.name()) << " : ";
                             std::cerr << std::setw(15) << a_old << " -> " << std::setw(15) << a_new;
                             std::cerr << " [" << std::setw(15) << delta << "/" << limit << "]";
@@ -377,7 +380,7 @@ namespace yack
                 //______________________________________________________________
                 //
                 //
-                //! check the possibility of an overshoot
+                //! analyze linear step
                 //
                 //______________________________________________________________
                 inline void analyze(const ORDINATE D2_org,
@@ -388,6 +391,8 @@ namespace yack
                     // linear curvature
                     //__________________________________________________________
                     static const ORDINATE half(0.5);
+                    static const ORDINATE umax(1.1);
+
                     assert(D2_end<=D2_org);
                     const ORDINATE D2_mid = (*this)(half);
                     const ORDINATE beta   = twice( solv.xadd(D2_org,D2_end, -(D2_mid+D2_mid) ) );
@@ -408,50 +413,78 @@ namespace yack
                     // linear optimum
                     //__________________________________________________________
                     const ORDINATE num   = -alpha;
-                    const ORDINATE den   = beta+beta; if(num>den)  return; // no expansion
-                    const ORDINATE u_opt = num/den;   if(u_opt>=1) return; // numerical limit
+                    const ORDINATE den   = beta+beta;
+
+                    const ORDINATE u_opt  = num <= umax * den ? num/den : umax;
                     const ORDINATE D2_opt = (*this)(u_opt);
                     YACK_LSF_PRINTLN(clid << "u_opt = " << u_opt);
-                    YACK_LSF_PRINTLN(clid << "D2opt = " << D2_opt << " / " << D2_end << " / " << D2_mid);
-                    if(D2_opt>=D2_end) return;
+
+                    ORDINATE u[4] = { 0,      0.5,    1,      u_opt  };
+                    ORDINATE h[4] = { D2_org, D2_mid, D2_end, D2_opt };
+
+                    network_sort4 srt;
+                    srt.csort(u,h);
+                    for(size_t i=0;i<4;++i)
+                    {
+                        std::cerr << " " << u[i] << ":" << h[i];
+                    }
+                    std::cerr << std::endl;
 
                     //__________________________________________________________
                     //
-                    YACK_LSF_PRINTLN(clid << "[overshoot]");
+                    // locate global after u[0]
                     //__________________________________________________________
-                    ORDINATE u[4] = { 0, 0.5, u_opt, 1 };
-                    ORDINATE h[4] = { D2_org, D2_mid, D2_opt, D2_end };
-
-                    if(u_opt<0.5)
+                    size_t   imin=1;
+                    ORDINATE hmin=h[1];
+                    for(size_t i=2;i<4;++i)
                     {
-                        cswap(u[1],u[2]);
-                        cswap(h[1],h[2]);
-                    }
-                    assert(u[0]<=u[1]); assert(u[1]<=u[2]); assert(u[2]<=u[3]);
-                    const size_t ia = (h[1]<h[2]) ? 0 : 1;
-                    const size_t ib = ia+1;
-                    const size_t ic = ia+2;
-
-                    triplet<ORDINATE> U = { u[ia], u[ib], u[ic] };
-                    triplet<ORDINATE> H = { h[ia], h[ib], h[ic] };
-
-                    YACK_LSF_PRINTLN(clid << "[initialize] U=" << U << ", H=" << H << " @1");
-
-                    while(true)
-                    {
-                        const ORDINATE w = optimize::tighten_for(*this,U,H);
-                        YACK_LSF_PRINTLN(clid << "[tightening] U=" << U << ", H=" << H << " @" <<w);
-                        if(w<=0.01)
-                            break;
+                        const ORDINATE tmp = h[i];
+                        if(tmp<=hmin)
+                        {
+                            hmin = tmp;
+                            imin = i;
+                        }
                     }
 
-                    //__________________________________________________________
-                    //
-                    // finalize and return to detect convergence
-                    //__________________________________________________________
-                    make_atry(U.b);
-                    (**curr).mov(aend,atry);
-                    D2_end = H.b;
+                    std::cerr << " imin=" << imin << " =>" << hmin << "@" << u[imin] << std::endl;
+
+                    if(imin==3)
+                    {
+                        //______________________________________________________
+                        //
+                        // global descent
+                        //______________________________________________________
+                        make_atry(u[3]);
+                        (**curr).mov(aend,atry);
+                        D2_end = h[3];
+                        return;
+                    }
+                    else
+                    {
+                        assert(imin==1||imin==2);
+                        const size_t ia = imin-1;
+                        const size_t ib = ia+1;
+                        const size_t ic = ia+2;
+
+                        triplet<ORDINATE> U = { u[ia], u[ib], u[ic] };
+                        triplet<ORDINATE> H = { h[ia], h[ib], h[ic] };
+
+                        while(true)
+                        {
+                            const ORDINATE w = optimize::tighten_for(*this,U,H);
+                            YACK_LSF_PRINTLN(clid << "[tightening] U=" << U << ", H=" << H << " @" <<w);
+                            if(w<=0.001)
+                                break;
+                        }
+
+                        //______________________________________________________
+                        //
+                        // finalize and return to detect convergence
+                        //______________________________________________________
+                        make_atry(U.b);
+                        (**curr).mov(aend,atry);
+                        D2_end = H.b;
+                    }
                 }
 
 
