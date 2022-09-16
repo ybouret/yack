@@ -13,7 +13,6 @@
 #include "yack/type/temporary.hpp"
 #include "yack/math/numeric.hpp"
 #include "yack/math/opt/optimize.hpp"
-#include "yack/sort/network/sort4.hpp"
 
 #include <iomanip>
 
@@ -262,7 +261,7 @@ namespace yack
 
                         vars.mov(aorg,aend);
                         D2_org = s.D2_full(f,aorg, used, scal, *drvs);
-                        if(cycle>=2)
+                        if(cycle>=1)
                         {
                             return false;
                             exit(0);
@@ -303,8 +302,7 @@ namespace yack
                 const lambda<ORDINATE>   lam;
             public:
                 bool                     verbose; //!< verbosity
-                network_sort4            srt;
-                
+
             private:
                 YACK_DISABLE_COPY_AND_ASSIGN(least_squares);
 
@@ -327,26 +325,54 @@ namespace yack
 
                     const ORDINATE alpha  = solv.xadd( 4*D2_mid, -3*D2_org, -D2_end);
                     std::cerr << "\talpha = " << alpha << std::endl;
-                    std::cerr << "plot 'D2-" << curr->name << ".dat' w p,";
-                    std::cerr << D2_org << " +(" << alpha << ")*x + (" << beta << ") *x*x" << std::endl;
+                    std::cerr << "plot 'D2-" << curr->name << ".dat' w p, " << D2_org << " +(" << alpha << ")*x + (" << beta << ") *x*x" << std::endl;
                     if(alpha>=0) return;
                     
-                    const ORDINATE num = -alpha;
-                    const ORDINATE den = beta+beta;
-                    //if(num>den) return;
+                    const ORDINATE num   = -alpha;
+                    const ORDINATE den   = beta+beta; if(num>den)  return; // no expansion
+                    const ORDINATE u_opt = num/den;   if(u_opt>=1) return; // numerical limit
+                    const ORDINATE D2_opt = (*this)(u_opt);
 
-                    const double u_opt = num/den;
-                    std::cerr << "\tu_opt = " << u_opt << std::endl;
+                    std::cerr << "\tu_opt  = " << u_opt  << std::endl;
+                    std::cerr << "\tD2_opt = " << D2_opt << " / " << D2_end << " / " << D2_mid << std::endl;
 
-                    ORDINATE U[4] = { 0, 0.5, 1, u_opt};
-                    ORDINATE H[4] = { D2_org, D2_mid, D2_end, (*this)(u_opt) };
+                    if(D2_opt>=D2_end) return;
 
-                    srt.csort(U,H);
-                    for(size_t i=0;i<4;++i)
+                    std::cerr << "\tpossible decrease!!" << std::endl;
+
+                    ORDINATE u[4] = { 0, 0.5, u_opt, 1 };
+                    ORDINATE h[4] = { D2_org, D2_mid, D2_opt, D2_end };
+
+                    if(u_opt<0.5)
                     {
-                        std::cerr << " " << U[i] << ":" << H[i];
+                        cswap(u[1],u[2]);
+                        cswap(h[1],h[2]);
                     }
-                    std::cerr << std::endl;
+                    assert(u[0]<=u[1]); assert(u[1]<=u[2]); assert(u[2]<=u[3]);
+
+                    const size_t ia = (h[1]<h[2]) ? 0 : 1;
+                    const size_t ib = ia+1;
+                    const size_t ic = ia+2;
+
+                    triplet<ORDINATE> U = { u[ia], u[ib], u[ic] };
+                    triplet<ORDINATE> H = { h[ia], h[ib], h[ic] };
+
+                    std::cerr << "\t\t[initialize] U=" << U << ", H=" << H << " @1" << std::endl;
+
+                    ORDINATE old_w = optimize::tighten_for(*this,U,H);
+                    std::cerr << "\t\t[warming-up] U=" << U << ", H=" << H << " @" << old_w << std::endl;
+
+                TIGHTEN:
+                    const ORDINATE new_w = optimize::tighten_for(*this,U,H);
+                    std::cerr << "\t\t[tightening] U=" << U << ", H=" << H << " @" << new_w << std::endl;
+                    if(new_w>=old_w || new_w <= 0.1)
+                    {
+
+                        return;
+                    }
+                    old_w = new_w;
+                    goto TIGHTEN;
+
                 }
 
 
