@@ -318,7 +318,9 @@ namespace yack
                         std::cerr << "\talpha = " << alpha << std::endl;
                         if(alpha<0)
                         {
-                            
+                            const ORDINATE num = -alpha;
+                            const ORDINATE den = beta+beta;
+                            std::cerr << "\tu_opt = " << num/den << std::endl;
                         }
                     }
 
