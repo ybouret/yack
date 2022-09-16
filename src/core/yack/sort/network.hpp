@@ -6,8 +6,9 @@
 #include "yack/sort/nwswp.hpp"
 #include "yack/memory/buffer/fixed.hpp"
 #include "yack/type/out-of-reach.hpp"
-
+#include "yack/sequence/thin-array.hpp"
 #include <cmath>
+
 namespace yack
 {
 
@@ -168,6 +169,24 @@ namespace yack
             inline virtual ~agenda() throw()
             {
             }
+
+            template <typename T> inline
+            void csort(T *arr) const throw()
+            {
+                assert(NULL!=arr);
+                thin_array<T> ARR(arr,code.size);
+                this->increasing(ARR);
+            }
+
+            template <typename T, typename U> inline
+            void csort(T *arr, U *brr) const throw()
+            {
+                assert(NULL!=arr);
+                thin_array<T> ARR(arr,code.size);
+                thin_array<U> BRR(brr,code.size);
+                this->increasing(ARR,BRR);
+            }
+
 
         private:
             YACK_DISABLE_COPY_AND_ASSIGN(agenda);

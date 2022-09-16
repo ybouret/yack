@@ -13,6 +13,8 @@
 #include "yack/type/temporary.hpp"
 #include "yack/math/numeric.hpp"
 #include "yack/math/opt/optimize.hpp"
+#include "yack/sort/network/sort4.hpp"
+
 #include <iomanip>
 
 namespace yack
@@ -261,7 +263,10 @@ namespace yack
                         vars.mov(aorg,aend);
                         D2_org = s.D2_full(f,aorg, used, scal, *drvs);
                         if(cycle>=2)
+                        {
+                            return false;
                             exit(0);
+                        }
                         goto CYCLE;
                     }
                     else
@@ -298,7 +303,8 @@ namespace yack
                 const lambda<ORDINATE>   lam;
             public:
                 bool                     verbose; //!< verbosity
-
+                network_sort4            srt;
+                
             private:
                 YACK_DISABLE_COPY_AND_ASSIGN(least_squares);
 
@@ -321,6 +327,7 @@ namespace yack
 
                     const ORDINATE alpha  = solv.xadd( 4*D2_mid, -3*D2_org, -D2_end);
                     std::cerr << "\talpha = " << alpha << std::endl;
+                    std::cerr << "plot 'D2-" << curr->name << ".dat' w p,";
                     std::cerr << D2_org << " +(" << alpha << ")*x + (" << beta << ") *x*x" << std::endl;
                     if(alpha>=0) return;
                     
@@ -328,10 +335,18 @@ namespace yack
                     const ORDINATE den = beta+beta;
                     //if(num>den) return;
 
-                    std::cerr << "\tu_opt = " << num/den << std::endl;
+                    const double u_opt = num/den;
+                    std::cerr << "\tu_opt = " << u_opt << std::endl;
 
+                    ORDINATE U[4] = { 0, 0.5, 1, u_opt};
+                    ORDINATE H[4] = { D2_org, D2_mid, D2_end, (*this)(u_opt) };
 
-
+                    srt.csort(U,H);
+                    for(size_t i=0;i<4;++i)
+                    {
+                        std::cerr << " " << U[i] << ":" << H[i];
+                    }
+                    std::cerr << std::endl;
                 }
 
 
