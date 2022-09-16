@@ -198,7 +198,7 @@ namespace yack
                         z_diag(used);        // zero used diagonal terms of curv
 
                         const coord2D     lo(1,1);
-                        const coord2D     up(nvar,dims);
+                        const coord2D     up(dims,nvar);
                         const layout2D    L(lo,up);
                         field2D<ORDINATE> B("beta",L);
 
@@ -212,8 +212,9 @@ namespace yack
                             dFda.ld(0);
                             for(const vnode *I=vars.head();I;I=I->next)
                             {
-                                const size_t i = F.i = ****I;if(!used[i]) continue;
-                                beta[i] += d * ( dFda[i] = drvs.diff(F,aorg[i],scal[i]) );
+                                const size_t   i = F.i = ****I;if(!used[i]) continue;
+                                const ORDINATE b = d * ( dFda[i] = drvs.diff(F,aorg[i],scal[i]) );
+                                B[i][k]  = b;
                             }
 
                             // compute curvature
@@ -229,6 +230,13 @@ namespace yack
                                     curv_i[j] += dFda_i * dFda[j];
                                 }
                             }
+                        }
+
+                        
+                        for(const vnode *I=vars.head();I;I=I->next)
+                        {
+                            const size_t i = ****I; if(!used[i]) continue;
+                            beta[i]  = xadd.tableau( &B[i][1], dims);
                         }
 
                         //------------------------------------------------------

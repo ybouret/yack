@@ -6,6 +6,7 @@
 #include "yack/string.hpp"
 #include "yack/memory/embed.hpp"
 #include "yack/container/dynamic.hpp"
+#include "yack/large-object.hpp"
 
 namespace yack
 {
@@ -15,7 +16,7 @@ namespace yack
     //! base class for fields
     //
     //__________________________________________________________________________
-    class field : public dynamic
+    class field : public large_object, public dynamic
     {
     public:
         //______________________________________________________________________
