@@ -279,6 +279,7 @@ namespace yack
         YACK_RTTI(complex<double>);
         YACK_RTTI(complex<long double>);
 
+        YACK_RTTI(string);
 
         YACK_RTTI(apn);
         YACK_RTTI(apz);

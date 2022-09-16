@@ -3,6 +3,7 @@
 #include "yack/hashing/sha1.hpp"
 #include "yack/hashing/md.hpp"
 #include "yack/kr/digest.hpp"
+#include "yack/system/rtti.hpp"
 
 #include "../main.hpp"
 
@@ -55,7 +56,22 @@ namespace
         std::cerr << std::endl;
     }
 
+    template <typename T>
+    static inline void show()
+    {
+        std::cerr << "Fields<" << rtti::name<T>() << ">" << std::endl;
+        YACK_SIZEOF(field1D<T>);
+        YACK_SIZEOF(field2D<T>);
+        YACK_SIZEOF(field3D<T>);
+        YACK_SIZEOF(field4D<T>);
+
+        std::cerr << std::endl;
+
+    }
+
 }
+
+
 
 
 YACK_UTEST(fields)
@@ -128,6 +144,10 @@ YACK_UTEST(fields)
     display(s4,H,md4);
     check_layout(s4);
 
+
+    show<char>();
+    show<double>();
+    show<string>();
 
 }
 YACK_UDONE()

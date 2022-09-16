@@ -6,6 +6,7 @@
 #include "yack/math/fitting/sample.hpp"
 #include "yack/sort/indexing.hpp"
 #include "yack/type/temporary.hpp"
+#include "yack/field/in2d.hpp"
 
 namespace yack
 {
@@ -134,6 +135,11 @@ namespace yack
                 }
 
             private:
+
+                //! wrapper to compute derivative of a sequential function
+                /**
+                 df/da(x,a,v)
+                 */
                 struct callF
                 {
                     sequential_type          &f;
@@ -189,7 +195,12 @@ namespace yack
                         // pass 2: cumulative
                         //------------------------------------------------------
                         dFda.adjust(nvar,0); // local memory
-                        z_diag(used);        // zero used diagonal terms
+                        z_diag(used);        // zero used diagonal terms of curv
+
+                        const coord2D     lo(1,1);
+                        const coord2D     up(nvar,dims);
+                        const layout2D    L(lo,up);
+                        field2D<ORDINATE> B("beta",L);
 
                         for(size_t k=dims;k>0;--k)
                         {

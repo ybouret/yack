@@ -392,6 +392,7 @@ namespace yack
                     //__________________________________________________________
                     static const ORDINATE half(0.5);
                     static const ORDINATE umax(1.1);
+                    static const ORDINATE ures(0.01);
 
                     assert(D2_end<=D2_org);
                     const ORDINATE D2_mid = (*this)(half);
@@ -399,6 +400,11 @@ namespace yack
                     YACK_LSF_PRINTLN(clid << "beta  = " << beta);
                     if(beta<=0) return;
 
+                    const ORDINATE slope = solv.xadd.dot(curr->beta,step);
+                    std::cerr << "slope=" << slope << std::endl;
+
+                    exit(0);
+                    
                     //__________________________________________________________
                     //
                     // linear slope
@@ -417,18 +423,14 @@ namespace yack
 
                     const ORDINATE u_opt  = num <= umax * den ? num/den : umax;
                     const ORDINATE D2_opt = (*this)(u_opt);
-                    YACK_LSF_PRINTLN(clid << "u_opt = " << u_opt);
+                    YACK_LSF_PRINTLN(clid << "u_opt  = " << u_opt);
+                    YACK_LSF_PRINTLN(clid << "D2_opt = " << D2_opt);
 
                     ORDINATE u[4] = { 0,      0.5,    1,      u_opt  };
                     ORDINATE h[4] = { D2_org, D2_mid, D2_end, D2_opt };
 
                     network_sort4 srt;
-                    srt.csort(u,h);
-                    for(size_t i=0;i<4;++i)
-                    {
-                        std::cerr << " " << u[i] << ":" << h[i];
-                    }
-                    std::cerr << std::endl;
+                    srt.csort(u,h); assert(u[0]<=u[1]); assert(u[1]<=u[2]); assert(u[2]<=u[3]);
 
                     //__________________________________________________________
                     //
@@ -446,7 +448,6 @@ namespace yack
                         }
                     }
 
-                    std::cerr << " imin=" << imin << " =>" << hmin << "@" << u[imin] << std::endl;
 
                     if(imin==3)
                     {
@@ -461,6 +462,10 @@ namespace yack
                     }
                     else
                     {
+                        //______________________________________________________
+                        //
+                        // local tightening
+                        //______________________________________________________
                         assert(imin==1||imin==2);
                         const size_t ia = imin-1;
                         const size_t ib = ia+1;
@@ -473,7 +478,7 @@ namespace yack
                         {
                             const ORDINATE w = optimize::tighten_for(*this,U,H);
                             YACK_LSF_PRINTLN(clid << "[tightening] U=" << U << ", H=" << H << " @" <<w);
-                            if(w<=0.001)
+                            if(w<=ures)
                                 break;
                         }
 
