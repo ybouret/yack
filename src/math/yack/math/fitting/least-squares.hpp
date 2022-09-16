@@ -109,6 +109,25 @@ namespace yack
                     return curr->D2(*hfcn,atry);
                 }
 
+                //! compute step from curvature and gradient
+                inline void computeStep()
+                {
+                    iota::load(step,curr->beta);
+                    solv.solve(curv,step);
+                    iota::add(aend,aorg,step);
+                }
+
+                //! compute modified curvature
+                inline bool computeCurv(const ORDINATE coef)
+                {
+                    assert(NULL!=curr);
+                    const ORDINATE fac = ORDINATE(1) + coef;
+                    curv.assign(curr->curv);
+                    for(size_t i=curv.rows;i>0;--i)
+                        curv[i][i] *= fac;
+                    return solv.build(curv);
+                }
+
                 //______________________________________________________________
                 //
                 //! fit a sample
@@ -129,7 +148,6 @@ namespace yack
                     //
                     //----------------------------------------------------------
                     YACK_LSF_PRINTLN(clid << "[start session]");
-                    ios::ocstream::overwrite("D2_" + s.name + ".dat");
 
                     //----------------------------------------------------------
                     // check variables
@@ -148,7 +166,7 @@ namespace yack
                     vars.ldz(aerr);
 
                     //----------------------------------------------------------
-                    // check data
+                    // check d.o.f.
                     //----------------------------------------------------------
                     const size_t ndat = s.dimension();
                     if(nvar>ndat)
@@ -159,7 +177,7 @@ namespace yack
                     }
 
                     //----------------------------------------------------------
-                    // memory
+                    // get memory
                     //----------------------------------------------------------
                     curv.make(nvar,nvar);
                     tabs.make(nvar);
@@ -172,7 +190,7 @@ namespace yack
                     const temporary<sequential_type*> tmpF(hfcn,&f);
 
                     //----------------------------------------------------------
-                    // parameters
+                    // set parameters parameters
                     //----------------------------------------------------------
                     lam.initialize(p10);
                     vars.mov(aorg,a0);
@@ -191,118 +209,72 @@ namespace yack
                     //----------------------------------------------------------
                     size_t   cycle  = 0;
                     ORDINATE D2_org = s.D2_full(f,aorg, used, scal, *drvs);
+
                 CYCLE:
                     ++cycle;
-                    YACK_LSF_PRINTLN("-------- cycle #" << cycle <<" --------");
-                    YACK_LSF_PRINTLN("D2_org=" << D2_org);
-                    ios::ocstream::echo("D2_" + s.name + ".dat","%u %.15g\n",unsigned(cycle),D2_org);
+                    YACK_LSF_PRINTLN(clid << "-------- cycle #" << cycle <<" --------");
+                    YACK_LSF_PRINTLN(clid << "D2_org = " << D2_org);
+                    YACK_LSF_PRINTLN(clid << "lambda = " << lam[p10]);
 
                     //----------------------------------------------------------
                     //
-                    //
-                    // Predicting the end value
-                    //
+                    // compute curvature with regularization
                     //
                     //----------------------------------------------------------
-                PREDICT:
-                    if(!predict())
-                        return false;
-
-                    ORDINATE D2_end = s.D2(f,aend);
-
-                    if(verbose) {
-                        std::cerr << clid << "D2_end = " << D2_end << "/" << D2_org << " @";
-                        vars(std::cerr,aend,NULL) << std::endl;
+                GUESS:
+                    while(!computeCurv(lam[p10]))
+                    {
+                        if(!lam.increase(p10)) {
+                            YACK_LSF_PRINTLN(clid << "<singular>]");
+                            return false;
+                        }
+                        YACK_LSF_PRINTLN(clid << "lambda = " << lam[p10]);
                     }
 
                     //----------------------------------------------------------
                     //
-                    //
-                    // Analyze the end value
-                    //
+                    // compute
                     //
                     //----------------------------------------------------------
-                    if(D2_end>D2_org)
+                    computeStep();
+
+                    ORDINATE D2_end = s.D2(f,aend);
+                    YACK_LSF_PRINTLN(clid << "D2_end = " << D2_end << " / " << D2_org);
+
                     {
-                        //------------------------------------------------------
-                        //
-                        // wrong attempt: need to reduce step
-                        //
-                        //------------------------------------------------------
-                        YACK_LSF_PRINTLN(clid << "<reject>");
-                        if(!lam.increase(p10))
+                        const string  fn = "D2-" + s.name + ".dat";
+                        ios::ocstream fp(fn);
+                        const size_t  np = 100;
+                        for(size_t i=0;i<=np;++i)
                         {
-                            YACK_LSF_PRINTLN(clid << "[spurious variables]");
-                            return false;
+                            const double u = i/double(np);
+                            const double g = double( (*this)(u) );
+                            fp("%g %.15g\n",u,g);
                         }
-                        goto PREDICT;
+                    }
+
+                    if(D2_end <= D2_org )
+                    {
+                        YACK_LSF_PRINTLN(clid << "[accept]");
+                        study(D2_org,D2_end);
+                        exit(0);
                     }
                     else
                     {
-                        //------------------------------------------------------
-                        //
-                        // right attempt: check not too fast!
-                        //
-                        //------------------------------------------------------
-                        YACK_LSF_PRINTLN(clid << "<accept>");
-                        assert(D2_end<=D2_org);
-                        study(D2_org,D2_end);
-                        //vars.sub(step,aorg,aend);
-
-                        //------------------------------------------------------
-                        //
-                        // the new winner is D2_end@aend : test convergence
-                        // and update
-                        //
-                        //------------------------------------------------------
-                        YACK_LSF_PRINTLN(clid << "[testing convergence]");
+                        YACK_LSF_PRINTLN(clid << "[recject]]");
+                        assert(D2_end>D2_org);
+                        if(!lam.increase(p10))
                         {
-                            const ORDINATE delta = std::abs(D2_end-D2_org);
-                            const ORDINATE limit = xtol * D2_org;
-                            std::cerr << "H: " << D2_org << " -> " << D2_end << " : " << delta << "/" << limit << std::endl;
+                            YACK_LSF_PRINTLN(clid << "<spurious>");
+                            return false;
                         }
-                        bool converged = true;
-                        for(const vnode *node = vars.head();node;node=node->next)
-                        {
-                            const variable &v = ***node;
-                            const size_t    i = *v; if(!used[i]) continue;
-                            const ORDINATE  old_a = aorg[i];
-                            const ORDINATE  new_a = aend[i];
-                            const ORDINATE  delta = std::abs(step[i]);
-                            const ORDINATE  limit = xtol * max_of( std::fabs(new_a), std::fabs(old_a) );
-                            const bool      is_ok = (delta <= limit);
-
-                            if(verbose)
-                            {
-                                vars.pad(std::cerr << (is_ok? " <ok> " : " <no> ") << v.name,v.name) << " = ";
-                                std::cerr << std::setw(15) << old_a << " -> ";
-                                std::cerr << std::setw(15) << new_a;
-                                std::cerr << " [" << std::setw(15)<< delta << "/" << std::setw(15) << limit << "]";
-                                std::cerr << std::endl;
-                            }
-                            if(!is_ok)
-                            {
-                                converged = false;
-                            }
-                            aorg[i] = new_a;
-                        }
-                        YACK_LSF_PRINTLN(clid << "[converged=" << converged << "@cycle=" << cycle << "]");
-
-
-                        //------------------------------------------------------
-                        //
-                        // ready for next cycle or success
-                        //
-                        //------------------------------------------------------
-                        D2_org = s.D2_full(f,aorg,used,scal,*drvs);
-                        if(converged)
-                            goto SUCCESS;
-                        goto CYCLE;
+                        exit(0);
+                        goto GUESS;
                     }
 
-                SUCCESS:
 
                     return true;
+
                 }
 
 
@@ -326,45 +298,7 @@ namespace yack
                 YACK_DISABLE_COPY_AND_ASSIGN(least_squares);
 
 
-                //______________________________________________________________
-                //
-                //! predictor step
-                //______________________________________________________________
-                inline bool predict() throw()
-                {
-                    assert(NULL!=curr);
-                    YACK_LSF_PRINTLN(clid << "[predict]");
-                TRY_AGAIN:
-                    YACK_LSF_PRINTLN(clid << "[10^" << p10 << "=>" << lam[p10] << "]");
 
-                    const ORDINATE fac = ORDINATE(1) + lam[p10];
-                    curv.assign(curr->curv);
-                    for(size_t i=curv.rows;i>0;--i)
-                    {
-                        curv[i][i] *= fac;
-                    }
-
-                    if(!solv.build(curv))
-                    {
-                        if( lam.increase(p10) )
-                        {
-                            // need to regularize
-                            YACK_LSF_PRINTLN(clid << "[regularising]");
-                            goto TRY_AGAIN;
-                        }
-                        else
-                        {
-                            // cannot regularize more: singular point
-                            YACK_LSF_PRINTLN(clid << "[singular]");
-                            return false;
-                        }
-                    }
-
-                    iota::load(step,curr->beta);
-                    solv.solve(curv,step);
-                    iota::add(aend,aorg,step);
-                    return true;
-                }
 
                 //______________________________________________________________
                 //
@@ -373,39 +307,20 @@ namespace yack
                 void study(const ORDINATE D2_org,
                            ORDINATE      &D2_end)
                 {
+                    static const ORDINATE half(0.5);
                     assert(D2_end<=D2_org);
-
-                    const ORDINATE sigma = solv.xadd.dot(curr->beta,step);  if(sigma<=0) return;
-                    const ORDINATE gamma = solv.xadd(D2_end,-D2_org,sigma); if(gamma<=0) return;
-                    const ORDINATE num   = sigma;
-                    const ORDINATE den   = gamma+gamma;                      if(den<=num) return;
-                    const ORDINATE u_opt = num/den;
-                    const ORDINATE D2_opt = (*this)(u_opt);                  if(D2_opt>=D2_end) return;
-
-                    triplet<ORDINATE> u = { 0, u_opt, 1 };            assert(u.is_increasing());
-                    triplet<ORDINATE> d = { D2_org, D2_opt, D2_end }; assert(d.is_local_minimum());
-
-                    YACK_LSF_PRINTLN(clid << "[tightening] u=" << u << ", d=" << d);
-                    ORDINATE w_old = optimize::tighten_for(*this,u,d);
-                    ORDINATE u_old = optimize::tighten_for(*this,u,d);
-                    YACK_LSF_PRINTLN(clid << "[warming up] u=" << u << ", d=" << d);
-
-                TIGHTEN:
-                    const ORDINATE w_new = optimize::tighten_for(*this,u,d);
-                    const ORDINATE u_new = u.b;
-                    YACK_LSF_PRINTLN(clid << "[ <shrink> ] u=" << u << ", d=" << d);
-                    if(w_new>=w_old || std::abs(u_new-u_old) <= 0.01)
+                    const ORDINATE D2_mid = (*this)(half);
+                    const ORDINATE beta   = twice( solv.xadd(D2_org,D2_end, -(D2_mid+D2_mid) ) );
+                    std::cerr << "\tbeta  = " << beta  << std::endl;
+                    if(beta>0)
                     {
-                        const variables &vars = **curr;
-                        make_atry(u.b);
-                        vars.mov(aend,atry);
-                        D2_end = d.b;
-                        vars.sub(step,aorg,aend);
-                        return;
+                        const ORDINATE alpha  = solv.xadd( 4*D2_mid, -3*D2_org, -D2_end);
+                        std::cerr << "\talpha = " << alpha << std::endl;
+                        if(alpha<0)
+                        {
+                            
+                        }
                     }
-                    w_old = w_new;
-                    u_old = u_new;
-                    goto TIGHTEN;
 
                 }
 
