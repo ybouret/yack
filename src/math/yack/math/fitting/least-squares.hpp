@@ -261,11 +261,7 @@ namespace yack
 
                         vars.mov(aorg,aend);
                         D2_org = s.D2_full(f,aorg, used, scal, *drvs);
-                        if(cycle>=1)
-                        {
-                            return false;
-                            exit(0);
-                        }
+                        lam.decrease(p10);
                         goto CYCLE;
                     }
                     else
@@ -359,20 +355,16 @@ namespace yack
 
                     std::cerr << "\t\t[initialize] U=" << U << ", H=" << H << " @1" << std::endl;
 
-                    ORDINATE old_w = optimize::tighten_for(*this,U,H);
-                    std::cerr << "\t\t[warming-up] U=" << U << ", H=" << H << " @" << old_w << std::endl;
-
-                TIGHTEN:
-                    const ORDINATE new_w = optimize::tighten_for(*this,U,H);
-                    std::cerr << "\t\t[tightening] U=" << U << ", H=" << H << " @" << new_w << std::endl;
-                    if(new_w>=old_w || new_w <= 0.1)
+                    while(true)
                     {
-
-                        return;
+                        const ORDINATE w = optimize::tighten_for(*this,U,H);
+                        std::cerr << "\t\t[tightening] U=" << U << ", H=" << H << " @" << w << std::endl;
+                        if(w<=0.01)
+                            break;
                     }
-                    old_w = new_w;
-                    goto TIGHTEN;
-
+                    make_atry(U.b);
+                    (**curr).mov(aend,atry);
+                    D2_end = H.b;
                 }
 
 
