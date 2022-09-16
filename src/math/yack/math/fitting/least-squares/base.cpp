@@ -13,7 +13,10 @@ namespace yack
             least_squares_::  least_squares_() throw() {}
             least_squares_:: ~least_squares_() throw() {}
 
-
+            const char * least_squares_:: ok(const bool flag)   throw()
+            {
+                return flag ? " <ok> " : " <no> ";
+            }
         }
 
     }

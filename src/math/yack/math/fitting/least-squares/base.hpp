@@ -21,6 +21,7 @@ namespace yack
                 virtual ~least_squares_() throw();
                 explicit least_squares_() throw();
 
+                static const char * ok(const bool flag) throw();
 
             private:
                 YACK_DISABLE_COPY_AND_ASSIGN(least_squares_);

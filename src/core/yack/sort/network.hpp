@@ -170,6 +170,7 @@ namespace yack
             {
             }
 
+            //! increasing sort arr[0..code.size-1]
             template <typename T> inline
             void csort(T *arr) const throw()
             {
@@ -178,6 +179,7 @@ namespace yack
                 this->increasing(ARR);
             }
 
+            //! increasing co-sort arr[0..code.size-1] and brr[0..code.size-1]
             template <typename T, typename U> inline
             void csort(T *arr, U *brr) const throw()
             {
