@@ -219,11 +219,15 @@ namespace yack
                     //
                     //
                     //----------------------------------------------------------
+                    ios::ocstream::overwrite("D2_" + s.name + ".log");
+                    ios::ocstream::echo("D2_" + s.name + ".log","%u %.15g\n", unsigned(cycle), D2_org);
                 CYCLE:
                     ++cycle;
                     YACK_LSF_PRINTLN(clid << "-------- cycle #" << cycle <<" --------");
                     YACK_LSF_PRINTLN(clid << "D2_org = " << D2_org);
                     YACK_LSF_PRINTLN(clid << "lambda = " << lam[p10]);
+
+
 
                     //----------------------------------------------------------
                     //
@@ -270,12 +274,23 @@ namespace yack
                     //----------------------------------------------------------
                     if(D2_end <= D2_org )
                     {
+                        ios::ocstream::echo("D2_" + s.name + ".log","%u %.15g\n", unsigned(cycle), D2_end);
                         //------------------------------------------------------
                         //
                         YACK_LSF_PRINTLN(clid << "[accept]");
                         //
                         //------------------------------------------------------
                         analyze(D2_org,D2_end);
+
+                        //------------------------------------------------------
+                        // check D2 convergence
+                        //------------------------------------------------------
+                        assert(D2_end<=D2_org);
+                        {
+                            const ORDINATE delta = std::abs(D2_org-D2_end);
+                            const ORDINATE limit = xtol * D2_end;
+                            std::cerr << "delta=" << delta << "/" << limit << std::endl;
+                        }
 
                         //------------------------------------------------------
                         // check variable convergence
