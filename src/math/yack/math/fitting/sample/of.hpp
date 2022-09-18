@@ -6,16 +6,15 @@
 #include "yack/math/fitting/sample.hpp"
 #include "yack/sort/indexing.hpp"
 #include "yack/type/temporary.hpp"
-#include "yack/field/in2d.hpp"
 
 namespace yack
 {
     namespace math
     {
-
+        
         namespace fitting
         {
-
+            
             //__________________________________________________________________
             //
             //
@@ -46,12 +45,12 @@ namespace yack
                 using sample_type::prolog;
                 using sample_type::epilog;
                 using sample_type::z_diag;
-
+                
                 //______________________________________________________________
                 //
                 // C++
                 //______________________________________________________________
-
+                
                 //! setup with coherent fields
                 template <typename ID>
                 inline explicit sample_of(const ID                 &id,
@@ -64,7 +63,8 @@ namespace yack
                 adjusted(Z_),
                 schedule(),
                 deltaOrd(),
-                dFda()
+                dFda(),
+                Beta()
                 {
                     assert(ordinate.size()==abscissa.size());
                     assert(adjusted.size()==abscissa.size());
@@ -73,12 +73,12 @@ namespace yack
                     for(size_t i=n;i>0;--i) schedule[i] = i;
                     deltaOrd.adjust(n,0);
                 }
-
+                
                 //! cleanup
                 inline virtual ~sample_of() throw()
                 {
                 }
-
+                
                 //______________________________________________________________
                 //
                 // interface
@@ -90,11 +90,11 @@ namespace yack
                     assert(adjusted.size()==abscissa.size());
                     return abscissa.size();
                 }
-
+                
                 //! make index by comparator
                 virtual void make_indx(comparator cmp)
                 {
-
+                    
                     const size_t n = dimension();
                     schedule.adjust(n,0);
                     if(cmp)
@@ -106,7 +106,7 @@ namespace yack
                         for(size_t i=n;i>0;--i) schedule[i] = i;
                     }
                 }
-
+                
                 //! compute sequential D2
                 virtual ORDINATE D2(sequential_type          &func,
                                     const readable<ORDINATE> &aorg)
@@ -133,9 +133,9 @@ namespace yack
                         return 0;
                     }
                 }
-
+                
             private:
-
+                
                 //! wrapper to compute derivative of a sequential function
                 /**
                  df/da(x,a,v)
@@ -147,7 +147,7 @@ namespace yack
                     const readable<ORDINATE> &a;
                     size_t                    i;
                     const variables          &v;
-
+                    
                     inline ORDINATE operator()(ORDINATE b)
                     {
                         assert(i>0);
@@ -155,11 +155,11 @@ namespace yack
                         const temporary<ORDINATE> keep( coerce(a[i]), b);
                         return f.start(x,a,v);
                     }
-
+                    
                 };
                 
             public:
-
+                
                 //! compute sequential D2
                 virtual ORDINATE D2_full(sequential_type            &func,
                                          const readable<ORDINATE>   &aorg,
@@ -174,7 +174,7 @@ namespace yack
                     prolog(nvar);
                     if(dims>0)
                     {
-
+                        
                         //------------------------------------------------------
                         // pass 1 : evaluate adjusted, store deltaOrd and D2
                         //------------------------------------------------------
@@ -190,33 +190,31 @@ namespace yack
                             xadd += squared( deltaOrd[ii] = ordinate[ii] - (adjusted[ii] = func.start(abscissa[ii],aorg,vars)) );
                         }
                         const ORDINATE res = xadd.get()/2;
-
+                        
                         //------------------------------------------------------
                         // pass 2: cumulative
                         //------------------------------------------------------
                         dFda.adjust(nvar,0); // local memory
                         z_diag(used);        // zero used diagonal terms of curv
-
-                        const coord2D     lo(1,1);
-                        const coord2D     up(dims,nvar);
-                        const layout2D    L(lo,up);
-                        field2D<ORDINATE> B("beta",L);
-
+                        if(nvar&&dims)
+                            Beta.make(nvar,dims);
+                        
+                        
                         for(size_t k=dims;k>0;--k)
                         {
                             // focus on abscissa[k]
                             callF          F = { func, abscissa[k], aorg, 0, vars };
                             const ORDINATE d = deltaOrd[k];
-
+                            
                             // compute gradient
                             dFda.ld(0);
                             for(const vnode *I=vars.head();I;I=I->next)
                             {
                                 const size_t   i = F.i = ****I;if(!used[i]) continue;
                                 const ORDINATE b = d * ( dFda[i] = drvs.diff(F,aorg[i],scal[i]) );
-                                B[i][k]  = b;
+                                Beta[i][k]  = b;
                             }
-
+                            
                             // compute curvature
                             for(const vnode *I=vars.head();I;I=I->next)
                             {
@@ -231,14 +229,14 @@ namespace yack
                                 }
                             }
                         }
-
+                        
                         
                         for(const vnode *I=vars.head();I;I=I->next)
                         {
                             const size_t i = ****I; if(!used[i]) continue;
-                            beta[i]  = xadd.tableau( &B[i][1], dims);
+                            beta[i]  = xadd.tableau(Beta[i]);
                         }
-
+                        
                         //------------------------------------------------------
                         // pass 3: epilog
                         //------------------------------------------------------
@@ -253,7 +251,7 @@ namespace yack
                 }
                 
                 
-
+                
                 //______________________________________________________________
                 //
                 // members
@@ -264,15 +262,17 @@ namespace yack
                 indices                   schedule;    //!< sequential indexing
                 ordinates                 deltaOrd;    //!< delta ordinate
                 ordinates                 dFda;        //!< local gradient
-
+                matrix<ORDINATE>          Beta;        //!< local fields for Beta
+                                                       
             private:
                 YACK_DISABLE_COPY_AND_ASSIGN(sample_of);
+                
             };
-
+            
         }
-
+        
     }
-
+    
 }
 
 #endif
