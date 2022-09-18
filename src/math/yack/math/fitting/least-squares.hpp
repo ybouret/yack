@@ -222,6 +222,7 @@ namespace yack
                     //----------------------------------------------------------
                     ios::ocstream::overwrite("D2_" + s.name + ".log");
                     ios::ocstream::echo("D2_" + s.name + ".log","%u %.15g %.15g\n", unsigned(cycle), D2_org, 1);
+              
                 CYCLE:
                     ++cycle;
                     YACK_LSF_PRINTLN(clid << "-------- cycle #" << cycle <<" --------");
