@@ -114,6 +114,7 @@ namespace yack
                 //______________________________________________________________
                 inline size_t        size() const throw() { return (*samples.tree).size; } //!< number of samples
                 inline const s_node *head() const throw() { return (*samples.tree).head; } //!< fast iterator
+                inline const s_node *tail() const throw() { return (*samples.tree).tail; } //!< fast iterator
 
                 //______________________________________________________________
                 //
@@ -220,6 +221,15 @@ namespace yack
                     }
                 }
                 
+                inline virtual void release() throw()
+                {
+                    for(const s_node *node=tail();node;node=node->prev)
+                    {
+                        single_type &s = coerce(***node);
+                        s.release();
+                    }
+                    this->cleanup();
+                }
 
             private:
                 YACK_DISABLE_COPY_AND_ASSIGN(samples_of);

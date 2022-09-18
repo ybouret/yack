@@ -21,7 +21,7 @@ namespace yack
             //! sample base type
             //
             //__________________________________________________________________
-            class sample_ : public large_object, public counted
+            class sample_ : public large_object, public counted, public releasable
             {
             public:
                 //______________________________________________________________

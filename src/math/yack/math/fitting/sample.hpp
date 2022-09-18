@@ -163,6 +163,16 @@ namespace yack
 
                 //______________________________________________________________
                 //
+                //! releasing memory
+                //______________________________________________________________
+                inline void cleanup() throw()
+                {
+                    beta.release();
+                    curv.release();
+                }
+                
+                //______________________________________________________________
+                //
                 //! zero used curv diagonal points
                 //______________________________________________________________
                 inline void z_diag(const readable<bool> &used) throw()

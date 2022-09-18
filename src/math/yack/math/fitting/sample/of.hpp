@@ -83,6 +83,7 @@ namespace yack
                 //
                 // interface
                 //______________________________________________________________
+             
                 //! common size
                 virtual size_t dimension() const throw()
                 {
@@ -233,7 +234,12 @@ namespace yack
                         
                         for(const vnode *I=vars.head();I;I=I->next)
                         {
-                            const size_t i = ****I; if(!used[i]) continue;
+                            const size_t i = ****I;
+                            if(!used[i])
+                            {
+                                assert( std::abs(beta[i]) <= 0);
+                                continue;
+                            }
                             beta[i]  = xadd.tableau(Beta[i]);
                         }
                         
@@ -250,6 +256,14 @@ namespace yack
                     
                 }
                 
+                inline virtual void release() throw()
+                {
+                    Beta.release();
+                    dFda.release();
+                    deltaOrd.release();
+                    schedule.release();
+                    this->cleanup();
+                }
                 
                 
                 //______________________________________________________________
