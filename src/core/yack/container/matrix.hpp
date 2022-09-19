@@ -283,6 +283,19 @@ namespace yack
             M.display(os); return os;
         }
 
+        template <typename NAME>
+        inline void print_code(std::ostream &os, const NAME &name) const
+        {
+            
+            for(size_t i=1;i<=rows;++i)
+            {
+                for(size_t j=1;j<=cols;++j)
+                {
+                    os << ' ' << name << "[" << i << "][" << j << "]=" << (*this)[i][j] << ";";
+                }
+                os << std::endl;
+            }
+        }
 
     private:
 

@@ -124,11 +124,12 @@ namespace yack
                 {
                     assert(NULL!=curr);
                     YACK_LSF_PRINTLN(clid << "[computing curvature @lambda=" << coef << "]" );
-                    const ORDINATE fac = ORDINATE(1) + coef;
-                    curv.assign(curr->curv);
-                    for(size_t i=curv.rows;i>0;--i)
+                    const ORDINATE fac = ORDINATE(1) + coef; // compute coeff
+                    curv.assign(curr->curv);                 // load curvature
+                    for(size_t i=curv.rows;i>0;--i)          // compute modified
                         curv[i][i] *= fac;
-                    return solv.build(curv);
+                    curv.print_code(std::cerr,"curv");
+                    return solv.build(curv);                 // build it with solver
                 }
 
                 //______________________________________________________________
@@ -402,7 +403,8 @@ namespace yack
                     // use s.curv as inverse of this->curv
                     //
                     //----------------------------------------------------------
-                    matrix<ORDINATE> &alpha = s.curv; assert( &alpha != &curv);
+                    //matrix<ORDINATE> &alpha = s.curv; assert( &alpha != &curv);
+                    matrix<ORDINATE> alpha(curv.rows,curv.cols);
                     const variables  &vars  = *s;
                     solv.inverse(curv,alpha);
                     YACK_LSF_PRINTLN("alpha  = " << alpha);
