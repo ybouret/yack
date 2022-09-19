@@ -207,7 +207,7 @@ namespace yack
                             callF          F = { func, abscissa[k], aorg, 0, vars };
                             const ORDINATE d = deltaOrd[k];
                             
-                            // compute gradient
+                            // compute local gradient and store for global gradient
                             dFda.ld(0);
                             for(const vnode *I=vars.head();I;I=I->next)
                             {
@@ -231,7 +231,7 @@ namespace yack
                             }
                         }
                         
-                        
+                        // compute global gradient
                         for(const vnode *I=vars.head();I;I=I->next)
                         {
                             const size_t i = ****I;
