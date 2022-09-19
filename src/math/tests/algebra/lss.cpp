@@ -2,9 +2,29 @@
 #include "yack/math/iota.hpp"
 #include "yack/utest/run.hpp"
 #include "../../../core/tests/main.hpp"
+#include "yack/math/numeric.hpp"
 
 using namespace yack;
 using namespace math;
+
+namespace
+{
+    void cleanup( matrix<double> &I )
+    {
+        const size_t n = I.rows;
+        for(size_t i=1;i<=n;++i)
+        {
+            for(size_t j=1;j<=n;++j)
+            {
+                if(i==j) continue;;
+                if( std::abs(I[i][j]) <= n*n*n*numeric<double>::ftol )
+                {
+                    I[i][j] = 0;
+                }
+            }
+        }
+    }
+}
 
 YACK_UTEST(lss)
 {
@@ -43,6 +63,7 @@ YACK_UTEST(lss)
         lssFast.inverse(a1,ia);
         std::cerr << "ia1=" << ia << std::endl;
         iota::mmul(I,a0,ia);
+        cleanup(I);
         std::cerr << "I1=" << I << std::endl;
     }
 
@@ -52,6 +73,7 @@ YACK_UTEST(lss)
         lssFast.inverse(a1,ia);
         std::cerr << "ia2=" << ia << std::endl;
         iota::mmul(I,a0,ia);
+        cleanup(I);
         std::cerr << "I2=" << I << std::endl;
     }
 

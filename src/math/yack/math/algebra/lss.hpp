@@ -77,7 +77,6 @@ namespace yack
                 assert(a.is_square());
                 assert(a.rows>0);
                 ensure(a.rows);
-                std::cerr << "building LSS" << std::endl;
                 algo_type &alg = **this;
                 return fine ? alg.build(a,xadd) : alg.build(a);
             }

@@ -43,10 +43,16 @@ namespace yack
             //
             //__________________________________________________________________
             
+            //__________________________________________________________________
+            //
             //! cleanup
+            //__________________________________________________________________
             inline virtual ~crout() throw() {}
 
+            //__________________________________________________________________
+            //
             //! setup to solve up to given dimension
+            //__________________________________________________________________
             inline explicit crout(const size_t dimension) :
             crout_(dimension,sizeof(type),sizeof(scalar_type)),
             s_one(1),
@@ -96,8 +102,8 @@ namespace yack
                     scalar_type smax=0;
                     for(size_t i=j;i<=n;++i)
                     {
-                        const scalar_type f = pass2(a,i,j);
-                        const scalar_type t = scal[i] * f;
+                        const scalar_type f = pass2(a,i,j); assert(f>=0);
+                        const scalar_type t = scal[i] * f;  assert(t>=0);
                         if(t >= smax)
                         {
                             smax=t;
@@ -136,7 +142,6 @@ namespace yack
                             a[i][j] *= fac;
                     }
                 }
-
                 return true;
             }
 
@@ -244,7 +249,7 @@ namespace yack
                 //______________________________________________________________
                 {
                     const thin_array<size_t> indx(indx_,n);
-                    size_t             ii=0;
+                    size_t                   ii=0;
                     for(size_t i=1;i<=n;++i)
                     {
                         const readable<T> &a_i = a[i];
@@ -376,9 +381,7 @@ namespace yack
                 for(size_t j=b.cols;j>0;--j)
                 {
                     for(size_t i=n;i>0;--i) u[i] = b[i][j];
-                    std::cerr << "solving u=" << u << std::endl;
                     solve(a,u);
-                    std::cerr << "r=" << u << std::endl;
                     for(size_t i=n;i>0;--i) b[i][j] = u[i];
                 }
             }
@@ -589,7 +592,6 @@ namespace yack
                 {
                     I[i][i] = t_one;
                 }
-                std::cerr << "_I=" << I << std::endl;
             }
 
             // =================================================================
@@ -686,7 +688,7 @@ namespace yack
                 xadd.ldz();
                 xadd.push(a_i[j]);
                 for (size_t k=1;k<j;k++)
-                    xadd.push( - a_i[k]*a[k][j] );
+                    xadd.push( -a_i[k]*a[k][j] );
                 return abs_of(a_i[j]=xadd.get());
             }
 

@@ -14,9 +14,6 @@
 #include "yack/math/numeric.hpp"
 #include "yack/math/opt/optimize.hpp"
 #include "yack/math/data/percent.hpp"
-#include "yack/hashing/sha1.hpp"
-#include "yack/hashing/md.hpp"
-#include "yack/kr/digest.hpp"
 
 #include <iomanip>
 
@@ -372,8 +369,7 @@ namespace yack
 
 
                 //! compute errors with initialized workspace
-                inline bool err_(
-                                 writable<ORDINATE>       &a0,
+                inline bool err_(writable<ORDINATE>       &a0,
                                  const readable<bool>     &used,
                                  const readable<ORDINATE> &scal,
                                  writable<ORDINATE>       &aerr)
@@ -400,20 +396,22 @@ namespace yack
                         return false;
                     }
 
-                    curv.assign(curr->curv);
-                    solv.build(curv);
+                    //curv.assign(curr->curv);
+                    //solv.build(curv);
                     vector<ORDINATE> u(curv.rows,0);
-                    u[1] = 1;
-                    std::cerr << "u=" << u << std::endl;
-                    solv.solve(curv,u);
-                    std::cerr << "r=" << u << std::endl;
-                    vector<ORDINATE> v(curv.rows,0);
-
-                    iota::mul(v,curr->curv,u);
-
-                    std::cerr << "v=" << v << std::endl;
-
-
+                    for(size_t i=curv.rows;i>0;--i)
+                    {
+                        u.ld(0);
+                        u[i] = 1;
+                        std::cerr << "u=" << u << std::endl;
+                        solv.solve(curv,u);
+                        std::cerr << "r=" << u << std::endl;
+                        vector<ORDINATE> v(curv.rows,0);
+                        iota::mul(v,curr->curv,u);
+                        std::cerr << "v=" << v << std::endl;
+                    }
+                    
+                    
                     //----------------------------------------------------------
                     //
                     // use s.curv as inverse of this->curv
