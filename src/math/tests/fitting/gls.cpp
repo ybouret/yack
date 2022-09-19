@@ -144,6 +144,8 @@ YACK_UTEST(fitting_gls)
     ls.fit_with(F,s1,aorg,used,scal,aerr);
     save_sample(s1);
 
+    exit(0);
+
     
     ls.fit_with(F,s2,aorg,used,scal,aerr);
     save_sample(s2);
