@@ -230,7 +230,6 @@ namespace yack
                     // compute curvature from sample
                     //
                     //----------------------------------------------------------
-                PREDICT:
                     if( !computeCurv( lam[p10]) )
                     {
                         if(!lam.increase(p10)) {
@@ -269,35 +268,47 @@ namespace yack
                         }
                     }
 
-                    if(f1<f0)
+                    if(f1<=f0)
                     {
                         //------------------------------------------------------
                         YACK_LSF_PRINTLN(clid << "<accept>");
                         //------------------------------------------------------
                         analyze(f0,f1);
-                        YACK_LSF_PRINTLN(clid << "D2: " << f0 << " -> " << f1);
+
+                        const ORDINATE delta = std::abs(f1-f0);
+                        const ORDINATE d_tol = delta/max_of(f1,f0);
+                        YACK_LSF_PRINTLN(clid << "D2: " << f0 << " -> " << f1 << " : " << delta << " -> " << d_tol);
 
                         // check convergence
-                        lfp("%u %.15g %.15g\n",cycle,double(f1),double(f0-f1));
+                        lfp("%u %.15g %.15g\n",cycle,double(f1),double(f1-f0));
+
+
+                        if(f1>=f0)
+                        {
+                            exit(0);
+                        }
 
                         vars.mov(aorg,aend);
                         f0 = s.D2_full(f,aorg, used, scal, *drvs);
-
+                        lam.decrease(p10);
                         goto CYCLE;
                     }
                     else
                     {
-                        assert(f1>=f0);
+                        assert(f1>f0);
                         //------------------------------------------------------
                         YACK_LSF_PRINTLN(clid << "<reject>");
                         //------------------------------------------------------
+                        lfp("%u %.15g %.15g\n",cycle,double(f1),double(f1-f0));
+                        const ORDINATE delta = std::abs(f1-f0);
+                        const ORDINATE d_tol = delta/max_of(f1,f0);
+                        YACK_LSF_PRINTLN(clid << "D2: " << f0 << " -> " << f1 << " : " << delta << " -> " << d_tol);
                         if( !lam.increase(p10) )
                         {
                             YACK_LSF_PRINTLN(clid << "<spurious>");
                             return false;
                         }
-                        exit(0);
-                        goto PREDICT;
+                        goto CYCLE;
                     }
 
 
@@ -335,7 +346,7 @@ namespace yack
                     // initialize with half point
                     //
                     //----------------------------------------------------------
-                    assert(f1<f0);
+                    assert(f1<=f0);
                     least_squares &self = *this;
                     const ORDINATE fm   = self(half);
                     YACK_LSF_PRINTLN(clid << "[analyze] " << f0 << " -> " << fm << " -> " << f1);
