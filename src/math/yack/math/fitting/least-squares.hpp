@@ -151,39 +151,34 @@ namespace yack
                     //
                     //----------------------------------------------------------
                     //  std::cerr << std::setprecision(15);
-                    YACK_LSF_PRINTLN(clid << "[start session]");
+                    YACK_LSF_PRINTLN(clid << "[starting session]");
                     least_squares    &self = *this;
-                    ios::ocstream     lfp( "D2-" + s.name + ".log");
 
                     //----------------------------------------------------------
                     // check variables
                     //----------------------------------------------------------
                     const variables & vars = *s;
                     const size_t      nvar = vars.upper();
+                    const size_t      ndat = s.dimension();
                     if(nvar<=0)
                     {
                         (void)s.D2(f,a0);
-                        YACK_LSF_PRINTLN(clid << "[no variables]");
+                        YACK_LSF_PRINTLN(clid << "<no variables!>");
                         return false;
                     }
+                    if(ndat<=0)
+                    {
+                        (void)s.D2(f,a0);
+                        YACK_LSF_PRINTLN(clid << "<no data!>");
+                        return false;
+                    }
+
+
 
                     //----------------------------------------------------------
                     // initialize errors
                     //----------------------------------------------------------
                     vars.ldz(aerr);
-
-                    //----------------------------------------------------------
-                    // check d.o.f.
-                    //----------------------------------------------------------
-#if 0
-                    const size_t ndat = s.dimension();
-                    if(nvar>ndat)
-                    {
-                        (void) s.D2(f,a0);
-                        YACK_LSF_PRINTLN(clid << "[not enough data]");
-                        return false;
-                    }
-#endif
 
                     //----------------------------------------------------------
                     // get memory
@@ -212,17 +207,16 @@ namespace yack
                     //----------------------------------------------------------
                     //
                     //
-                    // starting point
+                    // starting point with full step
                     //
                     //
                     //----------------------------------------------------------
                     unsigned cycle  = 0;
-                    ORDINATE f0     = s.D2_full(f,aorg, used, scal, *drvs);
-                    lfp("%u %.15g %.15g\n",cycle,double(f0),double(f0));
+                    ORDINATE f0     = s.D2_full(f,aorg,used,scal,*drvs);
 
                 CYCLE:
                     ++cycle;
-                    YACK_LSF_PRINTLN(clid << "-------- cycle #" << cycle << " --------");
+                    YACK_LSF_PRINTLN(clid << "---------------- cycle #" << cycle << " ----------------");
                     YACK_LSF_PRINTLN(clid << " f0 = " << f0 );
 
                     //----------------------------------------------------------
@@ -233,7 +227,7 @@ namespace yack
                     if( !computeCurv( lam[p10]) )
                     {
                         if(!lam.increase(p10)) {
-                            YACK_LSF_PRINTLN(clid << "<singular>");
+                            YACK_LSF_PRINTLN(clid << "<singular variables>");
                             return false;
                         }
                     }
@@ -252,6 +246,7 @@ namespace yack
                     //
                     //----------------------------------------------------------
                     ORDINATE f1     = s.D2(f,aend);
+                    if(false)
                     {
                         const string  fn = "D2-" + s.name + ".dat";
                         ios::ocstream fp(fn);
@@ -281,8 +276,6 @@ namespace yack
                             const ORDINATE d_tol = delta/max_of(f1,f0);
                             YACK_LSF_PRINTLN(clid << "D2: " << f0 << " -> " << f1 << " : " << delta << " -> " << d_tol);
 
-                            // check convergence
-                            lfp("%u %.15g %.15g\n",cycle,double(f1),double(f1-f0));
                         }
 
                         //------------------------------------------------------
@@ -318,8 +311,15 @@ namespace yack
                         //------------------------------------------------------
                         if(converged) goto SUCCESS;
 
-                        f0 = s.D2_full(f,aorg, used, scal, *drvs);
+                        //------------------------------------------------------
+                        // check D2 convergence
+                        //------------------------------------------------------
 
+
+                        //------------------------------------------------------
+                        // restart with a successfull step :)
+                        //------------------------------------------------------
+                        f0 = s.D2_full(f,aorg, used, scal, *drvs);
                         lam.decrease(p10);
                         goto CYCLE;
                     }
@@ -332,23 +332,39 @@ namespace yack
                         //
                         //------------------------------------------------------
                         YACK_LSF_PRINTLN(clid << "D2: " << f0 << " -> " << f1);
-                        if( !lam.increase(p10) )
-                        {
-                            YACK_LSF_PRINTLN(clid << "<spurious>");
+
+                        //------------------------------------------------------
+                        // decrease step
+                        //------------------------------------------------------
+                        if( !lam.increase(p10) ) {
+                            YACK_LSF_PRINTLN(clid << "<spurious variables>");
                             return false;
                         }
+
+                        //------------------------------------------------------
+                        // restart with a smaller trial
+                        //------------------------------------------------------
                         goto CYCLE;
                     }
 
                 SUCCESS:
                     //----------------------------------------------------------
-                    // compute errors
+                    //
+                    //
+                    // starting point with full step
+                    //
+                    //
+                    //----------------------------------------------------------
+
+                    //----------------------------------------------------------
+                    // update variables
                     //----------------------------------------------------------
                     vars.mov(a0,aorg);
 
-
+                    //----------------------------------------------------------
+                    // compute errors
+                    //----------------------------------------------------------
                     return err_(s,f,a0,used,scal,aerr);
-
                 }
 
 
@@ -360,16 +376,31 @@ namespace yack
                                  const readable<ORDINATE> &scal,
                                  writable<ORDINATE>       &aerr)
                 {
+                    //----------------------------------------------------------
+                    //
+                    // initialize full step
+                    //
+                    //----------------------------------------------------------
                     YACK_LSF_PRINTLN(clid << "[computing errors]");
                     const ORDINATE f0 = s.D2_full(f,a0, used, scal, *drvs);
                     YACK_LSF_PRINTLN(clid << "|_D2   = " << f0);
 
-                    if(!computeCurv(0))
-                    {
+
+                    //----------------------------------------------------------
+                    //
+                    // "exact" decomposition s.curv => this->curv
+                    //
+                    //----------------------------------------------------------
+                    if(!computeCurv(0)) {
                         YACK_LSF_PRINTLN(clid << "<singular covariance>");
                         return false;
                     }
 
+                    //----------------------------------------------------------
+                    //
+                    // use s.curv as inverse of this->curv
+                    //
+                    //----------------------------------------------------------
                     matrix<ORDINATE> &alpha = s.curv;
                     const variables  &vars  = *s;
                     solv.inverse(curv,alpha);
@@ -380,13 +411,17 @@ namespace yack
                         alpha[i][i] = 0;
                     }
 
+                    //----------------------------------------------------------
+                    //
+                    // compute metrics
+                    //
+                    //----------------------------------------------------------
                     const size_t ndat = s.dimension();
                     const size_t nvar = vars.size();
                     const size_t nact = vars.count(used);
                     YACK_LSF_PRINTLN(clid << "|_ndat = " << ndat);
                     YACK_LSF_PRINTLN(clid << "|_nvar = " << nvar);
                     YACK_LSF_PRINTLN(clid << "|_nact = " << nact);
-
 
                     if(ndat<nact)
                     {
@@ -421,7 +456,7 @@ namespace yack
                             YACK_LSF_PRINTLN(clid << "<interpolation>");
                         }
                     }
-
+                    
 
 
                     return true;
