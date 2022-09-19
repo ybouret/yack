@@ -40,6 +40,7 @@ namespace yack
             os << (*emb.handle) << " @" << std::setw(6) << emb.offset;
             os << "+" << std::setw(6) << emb.length;
             os << "#" << std::setw(6) << emb.length/emb.width_;
+            os << "*" << emb.width_;
             return os;
         }
         

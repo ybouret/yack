@@ -1,6 +1,7 @@
 #include "yack/math/algebra/crout_.hpp"
 #include "yack/memory/allocator/dyadic.hpp"
 #include "yack/memory/embed.hpp"
+#include <iostream>
 
 namespace yack
 {
@@ -40,7 +41,18 @@ namespace yack
             };
 
             wksp = YACK_MEMORY_EMBED(emb,mgr,wlen);
-
+            
+            std::cerr << "indx_size=" << sizeof(size_t) << std::endl;
+            std::cerr << "scal_size=" << scal_size << std::endl;
+            std::cerr << "type_size=" << type_size << std::endl;
+            
+            for(size_t i=0;i<sizeof(emb)/sizeof(emb[0]);++i)
+            {
+                std::cerr << emb[i] << std::endl;
+            }
+            
+            
+            exit(0);
         }
 
 
