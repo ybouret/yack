@@ -150,8 +150,11 @@ namespace yack
                     //
                     //
                     //----------------------------------------------------------
+                    //  std::cerr << std::setprecision(15);
                     YACK_LSF_PRINTLN(clid << "[start session]");
                     least_squares    &self = *this;
+                    ios::ocstream     lfp( "D2-" + s.name + ".log");
+
                     //----------------------------------------------------------
                     // check variables
                     //----------------------------------------------------------
@@ -159,6 +162,7 @@ namespace yack
                     const size_t      nvar = vars.upper();
                     if(nvar<=0)
                     {
+                        (void)s.D2(f,a0);
                         YACK_LSF_PRINTLN(clid << "[no variables]");
                         return false;
                     }
@@ -171,6 +175,7 @@ namespace yack
                     //----------------------------------------------------------
                     // check d.o.f.
                     //----------------------------------------------------------
+#if 0
                     const size_t ndat = s.dimension();
                     if(nvar>ndat)
                     {
@@ -178,6 +183,7 @@ namespace yack
                         YACK_LSF_PRINTLN(clid << "[not enough data]");
                         return false;
                     }
+#endif
 
                     //----------------------------------------------------------
                     // get memory
@@ -210,8 +216,9 @@ namespace yack
                     //
                     //
                     //----------------------------------------------------------
-                    size_t   cycle  = 0;
+                    unsigned cycle  = 0;
                     ORDINATE f0     = s.D2_full(f,aorg, used, scal, *drvs);
+                    lfp("%u %.15g %.15g\n",cycle,double(f0),double(f0));
 
                 CYCLE:
                     ++cycle;
@@ -240,7 +247,7 @@ namespace yack
                     computeStep();
                     if(verbose)
                     {
-                        vars(std::cerr << "step=",step,"step") << std::endl;
+                        vars(std::cerr << "step=",step,"d_") << std::endl;
                         vars(std::cerr << "aend=",aend,NULL)   << std::endl;
                     }
 
@@ -270,10 +277,12 @@ namespace yack
                         analyze(f0,f1);
                         YACK_LSF_PRINTLN(clid << "D2: " << f0 << " -> " << f1);
 
+                        // check convergence
+                        lfp("%u %.15g %.15g\n",cycle,double(f1),double(f0-f1));
+
                         vars.mov(aorg,aend);
                         f0 = s.D2_full(f,aorg, used, scal, *drvs);
-                        if(cycle>=3)
-                            exit(0);
+
                         goto CYCLE;
                     }
                     else
@@ -287,6 +296,7 @@ namespace yack
                             YACK_LSF_PRINTLN(clid << "<spurious>");
                             return false;
                         }
+                        exit(0);
                         goto PREDICT;
                     }
 
