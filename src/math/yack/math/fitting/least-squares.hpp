@@ -244,12 +244,7 @@ namespace yack
                     //
                     //----------------------------------------------------------
                     computeStep();
-                    if(verbose)
-                    {
-                        vars(std::cerr << "step=",step,"d_") << std::endl;
-                        vars(std::cerr << "aend=",aend,NULL)   << std::endl;
-                    }
-
+                    
 
                     //----------------------------------------------------------
                     //
@@ -275,21 +270,45 @@ namespace yack
                         //------------------------------------------------------
                         analyze(f0,f1);
 
-                        const ORDINATE delta = std::abs(f1-f0);
-                        const ORDINATE d_tol = delta/max_of(f1,f0);
-                        YACK_LSF_PRINTLN(clid << "D2: " << f0 << " -> " << f1 << " : " << delta << " -> " << d_tol);
-
-                        // check convergence
-                        lfp("%u %.15g %.15g\n",cycle,double(f1),double(f1-f0));
-
-
-                        if(f1>=f0)
                         {
-                            exit(0);
+                            const ORDINATE delta = std::abs(f1-f0);
+                            const ORDINATE d_tol = delta/max_of(f1,f0);
+                            YACK_LSF_PRINTLN(clid << "D2: " << f0 << " -> " << f1 << " : " << delta << " -> " << d_tol);
+
+                            // check convergence
+                            lfp("%u %.15g %.15g\n",cycle,double(f1),double(f1-f0));
                         }
+
+
+                        // check variable convergence
+                        YACK_LSF_PRINTLN(clid << "[variables convergence testing]");
+
+                        bool converged = true;
+                        for(const vnode *node=vars.head();node;node=node->next)
+                        {
+                            const variable &v = ***node;
+                            const size_t    i = *v; if(!used[i]) continue;
+                            const ORDINATE  a_old = aorg[i];
+                            const ORDINATE  a_new = aend[i];
+                            const ORDINATE  delta = std::abs(a_old-a_new);
+                            const ORDINATE  limit = xtol * max_of( std::abs(a_old), std::abs(a_new) );
+                            const bool      is_ok = delta<=limit;
+                            if(verbose)
+                            {
+                                vars.pad(std::cerr << ok(is_ok) << v.name,v.name);
+                                std::cerr <<  " : " << std::setw(15) << a_old;
+                                std::cerr << " -> " << std::setw(15) << a_new;
+                                std::cerr << " [" << std::setw(15) << delta << "/" << limit << "]";
+                                std::cerr << std::endl;
+                            }
+                            if(!is_ok) converged = false;
+                        }
+                        YACK_LSF_PRINTLN(clid << "[variables convergence =" << ok(converged) << "]");
 
                         vars.mov(aorg,aend);
                         f0 = s.D2_full(f,aorg, used, scal, *drvs);
+                        if(converged) goto SUCCESS;
+
                         lam.decrease(p10);
                         goto CYCLE;
                     }
@@ -311,6 +330,7 @@ namespace yack
                         goto CYCLE;
                     }
 
+                SUCCESS:
 
 
                     return true;
@@ -436,6 +456,7 @@ namespace yack
 
                     make_atry(U.b);
                     (**curr).mov(aend,atry);
+                    f1 = F.b;
                 }
 
 
