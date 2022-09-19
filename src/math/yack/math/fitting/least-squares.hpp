@@ -64,7 +64,7 @@ namespace yack
                 step( tabs.next() ),
                 aend( tabs.next() ),
                 atry( tabs.next() ),
-                solv(true),
+                solv(false),
                 drvs(  ppDrvs ? & coerce(**ppDrvs) : new drvs_type() ),
                 p10(0),
                 lam(),
@@ -128,6 +128,7 @@ namespace yack
                     curv.assign(curr->curv);
                     for(size_t i=curv.rows;i>0;--i)
                         curv[i][i] *= fac;
+                    std::cerr << "curv=" << curv << std::endl;
                     return solv.build(curv);
                 }
 
@@ -401,13 +402,14 @@ namespace yack
                     // use s.curv as inverse of this->curv
                     //
                     //----------------------------------------------------------
-                    matrix<ORDINATE> &alpha = s.curv;
+                    matrix<ORDINATE> &alpha = s.curv; assert( &alpha != &curv);
                     const variables  &vars  = *s;
                     solv.inverse(curv,alpha);
+                    std::cerr << "alpha=" << alpha << std::endl;
                     for(const vnode *node=vars.head();node;node=node->next)
                     {
                         const variable &v = ***node;
-                        const size_t    i = *v; if(used[i]) continue;;
+                        const size_t    i = *v; if(used[i]) continue;
                         alpha[i][i] = 0;
                     }
 
@@ -456,7 +458,7 @@ namespace yack
                             YACK_LSF_PRINTLN(clid << "<interpolation>");
                         }
                     }
-                    
+
 
 
                     return true;
