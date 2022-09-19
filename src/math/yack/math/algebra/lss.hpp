@@ -91,6 +91,16 @@ namespace yack
                 }
             }
 
+            //! inverse with a decomposed matrix
+            void inverse(const matrix<T> &a, matrix<T> &I)
+            {
+                if(fine) {
+                    (**this).inverse(a,I,xadd);
+                } else   {
+                    (**this).inverse(a,I);
+                }
+            }
+
             //__________________________________________________________________
             //
             // members

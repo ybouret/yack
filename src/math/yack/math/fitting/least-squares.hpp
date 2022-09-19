@@ -13,7 +13,7 @@
 #include "yack/type/temporary.hpp"
 #include "yack/math/numeric.hpp"
 #include "yack/math/opt/optimize.hpp"
-#include "yack/sort/network/sort4.hpp"
+#include "yack/math/data/percent.hpp"
 
 #include <iomanip>
 
@@ -244,11 +244,11 @@ namespace yack
                     //
                     //----------------------------------------------------------
                     computeStep();
-                    
+
 
                     //----------------------------------------------------------
                     //
-                    // checkl new position
+                    // evaluate new position
                     //
                     //----------------------------------------------------------
                     ORDINATE f1     = s.D2(f,aend);
@@ -266,7 +266,13 @@ namespace yack
                     if(f1<=f0)
                     {
                         //------------------------------------------------------
+                        //
                         YACK_LSF_PRINTLN(clid << "<accept>");
+                        //
+                        //------------------------------------------------------
+
+                        //------------------------------------------------------
+                        // detect no overshoot
                         //------------------------------------------------------
                         analyze(f0,f1);
 
@@ -279,8 +285,9 @@ namespace yack
                             lfp("%u %.15g %.15g\n",cycle,double(f1),double(f1-f0));
                         }
 
-
+                        //------------------------------------------------------
                         // check variable convergence
+                        //------------------------------------------------------
                         YACK_LSF_PRINTLN(clid << "[variables convergence testing]");
 
                         bool converged = true;
@@ -302,12 +309,16 @@ namespace yack
                                 std::cerr << std::endl;
                             }
                             if(!is_ok) converged = false;
+                            aorg[i] = a_new;
                         }
                         YACK_LSF_PRINTLN(clid << "[variables convergence =" << ok(converged) << "]");
 
-                        vars.mov(aorg,aend);
-                        f0 = s.D2_full(f,aorg, used, scal, *drvs);
+                        //------------------------------------------------------
+                        // update for success of new cycle
+                        //------------------------------------------------------
                         if(converged) goto SUCCESS;
+
+                        f0 = s.D2_full(f,aorg, used, scal, *drvs);
 
                         lam.decrease(p10);
                         goto CYCLE;
@@ -316,12 +327,11 @@ namespace yack
                     {
                         assert(f1>f0);
                         //------------------------------------------------------
+                        //
                         YACK_LSF_PRINTLN(clid << "<reject>");
+                        //
                         //------------------------------------------------------
-                        lfp("%u %.15g %.15g\n",cycle,double(f1),double(f1-f0));
-                        const ORDINATE delta = std::abs(f1-f0);
-                        const ORDINATE d_tol = delta/max_of(f1,f0);
-                        YACK_LSF_PRINTLN(clid << "D2: " << f0 << " -> " << f1 << " : " << delta << " -> " << d_tol);
+                        YACK_LSF_PRINTLN(clid << "D2: " << f0 << " -> " << f1);
                         if( !lam.increase(p10) )
                         {
                             YACK_LSF_PRINTLN(clid << "<spurious>");
@@ -331,10 +341,90 @@ namespace yack
                     }
 
                 SUCCESS:
+                    //----------------------------------------------------------
+                    // compute errors
+                    //----------------------------------------------------------
+                    vars.mov(a0,aorg);
+
+
+                    return err_(s,f,a0,used,scal,aerr);
+
+                }
+
+
+                //! compute errors with initialized workspace
+                inline bool err_(sample_type              &s,
+                                 sequential_type          &f,
+                                 writable<ORDINATE>       &a0,
+                                 const readable<bool>     &used,
+                                 const readable<ORDINATE> &scal,
+                                 writable<ORDINATE>       &aerr)
+                {
+                    YACK_LSF_PRINTLN(clid << "[computing errors]");
+                    const ORDINATE f0 = s.D2_full(f,a0, used, scal, *drvs);
+                    YACK_LSF_PRINTLN(clid << "|_D2   = " << f0);
+
+                    if(!computeCurv(0))
+                    {
+                        YACK_LSF_PRINTLN(clid << "<singular covariance>");
+                        return false;
+                    }
+
+                    matrix<ORDINATE> &alpha = s.curv;
+                    const variables  &vars  = *s;
+                    solv.inverse(curv,alpha);
+                    for(const vnode *node=vars.head();node;node=node->next)
+                    {
+                        const variable &v = ***node;
+                        const size_t    i = *v; if(used[i]) continue;;
+                        alpha[i][i] = 0;
+                    }
+
+                    const size_t ndat = s.dimension();
+                    const size_t nvar = vars.size();
+                    const size_t nact = vars.count(used);
+                    YACK_LSF_PRINTLN(clid << "|_ndat = " << ndat);
+                    YACK_LSF_PRINTLN(clid << "|_nvar = " << nvar);
+                    YACK_LSF_PRINTLN(clid << "|_nact = " << nact);
+
+
+                    if(ndat<nact)
+                    {
+                        YACK_LSF_PRINTLN(clid << "<not realistic>");
+                        vars.ld(aerr,-1);
+                    }
+                    else
+                    {
+                        if(ndat>nact)
+                        {
+                            const size_t   ndof   = ndat-nact;
+                            const ORDINATE value  = f0/ndof;
+                            YACK_LSF_PRINTLN(clid << "|_ndof=" << ndof);
+                            for(const vnode *node=vars.head();node;node=node->next)
+                            {
+                                const variable &v      = ***node;
+                                const size_t    i      = *v;
+                                const ORDINATE  stdvar = value * max_of<ORDINATE>(alpha[i][i],0);
+                                aerr[i] = std::sqrt(stdvar/ndof);
+                                if(verbose)
+                                {
+                                    vars.pad(std::cerr << "\t(*) "<< v.name,v.name);
+                                    std::cerr << " = "   << std::setw(15) << a0[i];
+                                    std::cerr << " +/- " << std::setw(15) << aerr[i];
+                                    std::cerr << " [" << std::setw(6) << percent::of<ORDINATE,2>(a0[i],aerr[i]) << "%]";
+                                    std::cerr << std::endl;
+                                }
+                            }
+                        }
+                        else
+                        {
+                            YACK_LSF_PRINTLN(clid << "<interpolation>");
+                        }
+                    }
+
 
 
                     return true;
-
                 }
 
 
@@ -380,10 +470,6 @@ namespace yack
                     const ORDINATE alpha = curr->xadd(-3*f0,-f1,4*fm);
                     YACK_LSF_PRINTLN(clid << "|_slope1D = " << alpha);
                     YACK_LSF_PRINTLN(clid << "|_curv1D  = " << beta);
-                    {
-                        const string  fn = "D2-" + curr->name + ".dat";
-                        std::cerr << "plot '" << fn << "' w p, " << f0 << " +(" << alpha << ")*x + (" << beta << ")*x*x" << std::endl;
-                    }
                     if(alpha>=0||beta<=0) { YACK_LSF_PRINTLN(clid << "<irregular>"); return; }
 
                     assert(alpha<0);

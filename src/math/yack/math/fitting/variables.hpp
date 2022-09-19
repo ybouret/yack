@@ -170,6 +170,19 @@ namespace yack
                     }
                 }
 
+                //! zero involved values
+                template <typename TARGET> inline
+                void ld(TARGET &target, typename TARGET::param_type value) const
+                {
+                    for(const vnode *node=head();node;node=node->next)
+                    {
+                        const size_t i = ****node;
+                        target[i] = value;
+                    }
+                }
+
+
+                size_t count(const readable<bool> &used) const throw();
 
 
                 

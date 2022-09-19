@@ -23,8 +23,8 @@ namespace yack
                 static const T half(0.5);
                 static const T expand = ipower<T,unsigned>(10,DIGITS);
 
-                const T abs_x  = fabs(x);
-                const T abs_dx = fabs(dx);
+                const T abs_x  = std::abs(x);
+                const T abs_dx = std::abs(dx);
                 T       ratio  = 1;
                 if(abs_dx<abs_x)
                 {

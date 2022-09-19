@@ -88,7 +88,7 @@ YACK_UTEST(fitting_sample)
         ls.fit_with(F,s1,aorg,used,scal,aerr);
         const string fn = vformat("fit%u.dat",unsigned(n-1));
         save_sample(fn,s1);
-        exit(0);
+        //exit(0);
     }
 
 

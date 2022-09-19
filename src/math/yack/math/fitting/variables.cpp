@@ -224,6 +224,15 @@ namespace yack
                 return os;
             }
 
+            size_t variables:: count(const readable<bool> &used) const throw()
+            {
+                size_t res = 0;
+                for(const vnode *node=head();node;node=node->next)
+                {
+                    if( used[ ****node ] ) ++res;
+                }
+                return res;
+            }
 
         }
 
