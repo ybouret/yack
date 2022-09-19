@@ -62,6 +62,7 @@ add_test(multiplier test-math multiplier)
 #algebra
 add_test(iota        test-math iota)
 add_test(crout       test-math crout)
+add_test(lss         test-math lss)
 add_test(lu          test-math lu)
 add_test(jacobi      test-math jacobi)
 add_test(svd         test-math svd)

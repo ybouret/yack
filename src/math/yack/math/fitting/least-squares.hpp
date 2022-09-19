@@ -128,7 +128,6 @@ namespace yack
                     curv.assign(curr->curv);
                     for(size_t i=curv.rows;i>0;--i)
                         curv[i][i] *= fac;
-                    std::cerr << "curv=" << curv << std::endl;
                     return solv.build(curv);
                 }
 
@@ -384,7 +383,8 @@ namespace yack
                     //----------------------------------------------------------
                     YACK_LSF_PRINTLN(clid << "[computing errors]");
                     const ORDINATE f0 = s.D2_full(f,a0, used, scal, *drvs);
-                    YACK_LSF_PRINTLN(clid << "|_D2   = " << f0);
+                    YACK_LSF_PRINTLN(clid << "|_D2     = " << f0);
+                    YACK_LSF_PRINTLN("curv = " << s.curv);
 
 
                     //----------------------------------------------------------
@@ -405,7 +405,9 @@ namespace yack
                     matrix<ORDINATE> &alpha = s.curv; assert( &alpha != &curv);
                     const variables  &vars  = *s;
                     solv.inverse(curv,alpha);
-                    std::cerr << "alpha=" << alpha << std::endl;
+                    YACK_LSF_PRINTLN("alpha  = " << alpha);
+
+
                     for(const vnode *node=vars.head();node;node=node->next)
                     {
                         const variable &v = ***node;
