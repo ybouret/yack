@@ -77,27 +77,31 @@ namespace yack
                 assert(a.is_square());
                 assert(a.rows>0);
                 ensure(a.rows);
-                return fine ? (**this).build(a,xadd) : (**this).build(a);
+                std::cerr << "building LSS" << std::endl;
+                algo_type &alg = **this;
+                return fine ? alg.build(a,xadd) : alg.build(a);
             }
 
 
             //! solve with a decomposed matrix
             void solve(const matrix<T> &a, writable<T> &b)
             {
+                const algo_type &alg = **this;
                 if(fine) {
-                    (**this).solve(a,b,xadd);
+                    alg.solve(a,b,xadd);
                 } else   {
-                    (**this).solve(a,b);
+                    alg.solve(a,b);
                 }
             }
 
             //! inverse with a decomposed matrix
             void inverse(const matrix<T> &a, matrix<T> &I)
             {
+                algo_type &alg = **this;
                 if(fine) {
-                    (**this).inverse(a,I,xadd);
+                    alg.inverse(a,I,xadd);
                 } else   {
-                    (**this).inverse(a,I);
+                    alg.inverse(a,I);
                 }
             }
 

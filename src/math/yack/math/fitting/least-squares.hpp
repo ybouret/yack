@@ -14,6 +14,9 @@
 #include "yack/math/numeric.hpp"
 #include "yack/math/opt/optimize.hpp"
 #include "yack/math/data/percent.hpp"
+#include "yack/hashing/sha1.hpp"
+#include "yack/hashing/md.hpp"
+#include "yack/kr/digest.hpp"
 
 #include <iomanip>
 
@@ -128,7 +131,6 @@ namespace yack
                     curv.assign(curr->curv);                 // load curvature
                     for(size_t i=curv.rows;i>0;--i)          // compute modified
                         curv[i][i] *= fac;
-                    curv.print_code(std::cerr,"curv");
                     return solv.build(curv);                 // build it with solver
                 }
 
@@ -365,13 +367,12 @@ namespace yack
                     //----------------------------------------------------------
                     // compute errors
                     //----------------------------------------------------------
-                    return err_(s,f,a0,used,scal,aerr);
+                    return err_(a0,used,scal,aerr);
                 }
 
 
                 //! compute errors with initialized workspace
-                inline bool err_(sample_type              &s,
-                                 sequential_type          &f,
+                inline bool err_(
                                  writable<ORDINATE>       &a0,
                                  const readable<bool>     &used,
                                  const readable<ORDINATE> &scal,
@@ -383,10 +384,11 @@ namespace yack
                     //
                     //----------------------------------------------------------
                     YACK_LSF_PRINTLN(clid << "[computing errors]");
-                    const ORDINATE f0 = s.D2_full(f,a0, used, scal, *drvs);
+                    assert(NULL!=curr);
+                    const ORDINATE f0 = curr->D2_full(*hfcn,a0, used, scal, *drvs);
                     YACK_LSF_PRINTLN(clid << "|_D2     = " << f0);
-                    YACK_LSF_PRINTLN("curv = " << s.curv);
-
+                    YACK_LSF_PRINTLN("curv = " << curr->curv);
+                    curr->curv.print_code(std::cerr, "curv");
 
                     //----------------------------------------------------------
                     //
@@ -398,6 +400,20 @@ namespace yack
                         return false;
                     }
 
+                    curv.assign(curr->curv);
+                    solv.build(curv);
+                    vector<ORDINATE> u(curv.rows,0);
+                    u[1] = 1;
+                    std::cerr << "u=" << u << std::endl;
+                    solv.solve(curv,u);
+                    std::cerr << "r=" << u << std::endl;
+                    vector<ORDINATE> v(curv.rows,0);
+
+                    iota::mul(v,curr->curv,u);
+
+                    std::cerr << "v=" << v << std::endl;
+
+
                     //----------------------------------------------------------
                     //
                     // use s.curv as inverse of this->curv
@@ -405,7 +421,7 @@ namespace yack
                     //----------------------------------------------------------
                     //matrix<ORDINATE> &alpha = s.curv; assert( &alpha != &curv);
                     matrix<ORDINATE> alpha(curv.rows,curv.cols);
-                    const variables  &vars  = *s;
+                    const variables  &vars  = **curr;
                     solv.inverse(curv,alpha);
                     YACK_LSF_PRINTLN("alpha  = " << alpha);
 
@@ -422,7 +438,7 @@ namespace yack
                     // compute metrics
                     //
                     //----------------------------------------------------------
-                    const size_t ndat = s.dimension();
+                    const size_t ndat = curr->dimension();
                     const size_t nvar = vars.size();
                     const size_t nact = vars.count(used);
                     YACK_LSF_PRINTLN(clid << "|_ndat = " << ndat);

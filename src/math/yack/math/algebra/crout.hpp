@@ -222,7 +222,7 @@ namespace yack
             //
             //! in place solve with decomposed a
             //__________________________________________________________________
-            inline void solve(const matrix<T> &a, writable<T> &b)
+            inline void solve(const matrix<T> &a, writable<T> &b) const
             {
                 //______________________________________________________________
                 //
@@ -243,7 +243,7 @@ namespace yack
                 // forward
                 //______________________________________________________________
                 {
-                    thin_array<size_t> indx(indx_,n);
+                    const thin_array<size_t> indx(indx_,n);
                     size_t             ii=0;
                     for(size_t i=1;i<=n;++i)
                     {
@@ -284,7 +284,7 @@ namespace yack
             //
             //! in place solve with decomposed matrix and effort
             //__________________________________________________________________
-            inline void solve(const matrix<T> &a, writable<T> &b, adder<T> &xadd)
+            inline void solve(const matrix<T> &a, writable<T> &b, adder<T> &xadd) const
             {
                 //______________________________________________________________
                 //
@@ -305,8 +305,8 @@ namespace yack
                 // forward
                 //______________________________________________________________
                 {
-                    thin_array<size_t> indx(indx_,n);
-                    size_t             ii=0;
+                    const thin_array<size_t> indx(indx_,n);
+                    size_t                   ii=0;
                     for(size_t i=1;i<=n;++i)
                     {
                         const readable<T> &a_i = a[i];
@@ -376,7 +376,9 @@ namespace yack
                 for(size_t j=b.cols;j>0;--j)
                 {
                     for(size_t i=n;i>0;--i) u[i] = b[i][j];
+                    std::cerr << "solving u=" << u << std::endl;
                     solve(a,u);
+                    std::cerr << "r=" << u << std::endl;
                     for(size_t i=n;i>0;--i) b[i][j] = u[i];
                 }
             }
@@ -587,6 +589,7 @@ namespace yack
                 {
                     I[i][i] = t_one;
                 }
+                std::cerr << "_I=" << I << std::endl;
             }
 
             // =================================================================
