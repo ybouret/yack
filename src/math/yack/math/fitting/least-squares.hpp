@@ -14,6 +14,7 @@
 #include "yack/math/numeric.hpp"
 #include "yack/math/opt/optimize.hpp"
 #include "yack/math/data/percent.hpp"
+#include "yack/functor.hpp"
 
 #include <iomanip>
 
@@ -49,6 +50,7 @@ namespace yack
                 typedef lss<ORDINATE>                         solver;          //!< alias
                 typedef derivative<ORDINATE>                  drvs_type;       //!< alias
                 typedef typename drvs_type::pointer           drvs_ptr;        //!< alias
+                typedef functor<bool,TL3(sequential_type &,writable<ORDINATE>&,sample_type &)> process;
 
                 //______________________________________________________________
                 //
@@ -87,10 +89,11 @@ namespace yack
                               writable<ORDINATE>       &aorg,
                               const readable<bool>     &used,
                               const readable<ORDINATE> &scal,
-                              writable<ORDINATE>       &aerr)
+                              writable<ORDINATE>       &aerr,
+                              process                  *proc = NULL)
                 {
                     typename sample_type:: template sequential_wrapper<FUNC> call(f);
-                    return fit(s,call,aorg,used,scal,aerr);
+                    return fit(s,call,aorg,used,scal,aerr,proc);
                 }
 
                 //______________________________________________________________
@@ -145,7 +148,8 @@ namespace yack
                          writable<ORDINATE>       &a0,
                          const readable<bool>     &used,
                          const readable<ORDINATE> &scal,
-                         writable<ORDINATE>       &aerr)
+                         writable<ORDINATE>       &aerr,
+                         process                  *proc)
                 {
                     static const ORDINATE xtol = lam[ lam.ptol() ];
                     //----------------------------------------------------------
@@ -211,8 +215,8 @@ namespace yack
                     //
                     //
                     //----------------------------------------------------------
-                    unsigned cycle  = 0;
-                    ORDINATE f0     = s.D2_full(f,aorg,used,scal,*drvs);
+                    unsigned              cycle  = 0;
+                    ORDINATE              f0     = s.D2_full(f,aorg,used,scal,*drvs);
 
                 CYCLE:
                     ++cycle;
@@ -238,6 +242,11 @@ namespace yack
                     //
                     //----------------------------------------------------------
                     computeStep();
+
+                    if(proc)
+                    {
+                        (*proc)(f,aorg,s);
+                    }
 
 
                     //----------------------------------------------------------

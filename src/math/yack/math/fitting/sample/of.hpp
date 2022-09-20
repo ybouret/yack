@@ -274,7 +274,12 @@ namespace yack
                     }
                 }
 
-                
+                virtual void     collect(sequence<sample_type *> &db) const
+                {
+                    const sample_type &self = *this;
+                    db.push_back( &coerce(self) );
+                }
+
                 //______________________________________________________________
                 //
                 // members

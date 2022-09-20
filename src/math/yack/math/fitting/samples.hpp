@@ -241,6 +241,14 @@ namespace yack
                     }
                 }
 
+                virtual void     collect(sequence<sample_type *> &db) const
+                {
+                    for(const s_node *node=tail();node;node=node->prev)
+                    {
+                        (***node).collect(db);
+                    }
+                }
+
             private:
                 YACK_DISABLE_COPY_AND_ASSIGN(samples_of);
                 single_set     samples;
