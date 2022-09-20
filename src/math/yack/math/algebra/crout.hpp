@@ -10,12 +10,6 @@
 #include "yack/math/adder.hpp"
 #include "yack/math/multiplier.hpp"
 
-//#define YACK_CROUT_SENTRY
-
-#if defined(YACK_CROUT_SENTRY)
-#include "yack/memory/sentry.hpp"
-#endif
-
 namespace yack
 {
     namespace math
@@ -89,10 +83,6 @@ namespace yack
                 const size_t            n = a.rows;
                 thin_array<size_t>      indx(indx_,n);
                 thin_array<scalar_type> scal(static_cast<scalar_type*>(scal_),n);
-
-#if defined(YACK_CROUT_SENTRY)
-                YACK_MEM_SENTRY(xtra_,sizeof(type)*nmax);
-#endif
 
                 //______________________________________________________________
                 //
@@ -254,11 +244,6 @@ namespace yack
                 //______________________________________________________________
                 const size_t n = a.rows;
 
-
-#if defined(YACK_CROUT_SENTRY)
-                YACK_MEM_SENTRY(indx_,sizeof(size_t)*nmax);
-                YACK_MEM_SENTRY(scal_,sizeof(scalar_type)*nmax);
-#endif
                 //______________________________________________________________
                 //
                 // forward
@@ -321,10 +306,6 @@ namespace yack
                 //______________________________________________________________
                 const size_t n = a.rows;
 
-#if defined(YACK_CROUT_SENTRY)
-                YACK_MEM_SENTRY(indx_,sizeof(size_t)*nmax);
-                YACK_MEM_SENTRY(scal_,sizeof(scalar_type)*nmax);
-#endif
                 //______________________________________________________________
                 //
                 // forward
@@ -384,7 +365,7 @@ namespace yack
                 // sanity check
                 //______________________________________________________________
                 assert(a.is_square());
-                assert(a.rows <=nmax);
+                assert(a.rows<=nmax);
                 assert(b.rows==a.rows);
 
                 //______________________________________________________________
@@ -400,9 +381,9 @@ namespace yack
                 //______________________________________________________________
                 for(size_t j=b.cols;j>0;--j)
                 {
-                    for(size_t i=n;i>0;--i) u[i] = b[i][j];
+                    b.get_column(u,j);
                     solve(a,u);
-                    for(size_t i=n;i>0;--i) b[i][j] = u[i];
+                    b.set_column(j,u);
                 }
             }
 
@@ -433,9 +414,9 @@ namespace yack
                 //______________________________________________________________
                 for(size_t j=b.cols;j>0;--j)
                 {
-                    for(size_t i=n;i>0;--i) u[i] = b[i][j];
+                    b.get_column(u,j);
                     solve(a,u,xadd);
-                    for(size_t i=n;i>0;--i) b[i][j] = u[i];
+                    b.set_column(j,u);
                 }
             }
 

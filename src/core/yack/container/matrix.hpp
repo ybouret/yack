@@ -181,6 +181,19 @@ namespace yack
             }
         }
 
+        //! set column from source
+        void set_column(const size_t column, const readable<T> &source)
+        {
+            assert(column<=cols);
+            assert(column>=1);
+            assert(source.size()>=rows);
+            for(size_t i=rows;i>0;--i)
+            {
+                (*this)[i][column] = source[i];
+            }
+        }
+
+
         //______________________________________________________________________
         //
         // algebra built-in methods

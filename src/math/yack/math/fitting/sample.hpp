@@ -65,18 +65,24 @@ namespace yack
                 virtual size_t   dimension() const throw() = 0;          //!< number of data points.
                 virtual void     make_indx(comparator)     = 0;          //!< indices for sequential evaluation
 
+                //--------------------------------------------------------------
                 //! compute D2
+                //--------------------------------------------------------------
                 virtual ORDINATE D2(sequential_type          &func,
                                     const readable<ORDINATE> &aorg) = 0;
 
+                //--------------------------------------------------------------
                 //! compute D2, gradient and curvature
+                //--------------------------------------------------------------
                 virtual ORDINATE D2_full(sequential_type            &func,
                                          const readable<ORDINATE>   &aorg,
                                          const readable<bool>       &used,
                                          const readable<ORDINATE>   &scal,
                                          derivative<ORDINATE>       &drvs) = 0;
 
+                //--------------------------------------------------------------
                 //! update correlation with ordinate/adjusted
+                //--------------------------------------------------------------
                 virtual void     update(correlation<ORDINATE> &cr) const = 0;
 
                 //______________________________________________________________
