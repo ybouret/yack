@@ -41,7 +41,8 @@ namespace yack
             };
 
             wksp = YACK_MEMORY_EMBED(emb,mgr,wlen);
-            
+
+#if 0
             std::cerr << "indx_size=" << sizeof(size_t) << std::endl;
             std::cerr << "scal_size=" << scal_size << std::endl;
             std::cerr << "type_size=" << type_size << std::endl;
@@ -51,8 +52,12 @@ namespace yack
                 std::cerr << emb[i] << std::endl;
             }
             
-            
+            std::cerr << "indx_@" << (void*)indx_ << std::endl;
+            std::cerr << "scal_@" << (void*)scal_ << std::endl;
+            std::cerr << "xtra_@" << (void*)xtra_ << std::endl;
+
             exit(0);
+#endif
         }
 
 
