@@ -11,15 +11,29 @@ namespace yack
 
         namespace fitting
         {
+            //__________________________________________________________________
+            //
+            //
+            //! scalar General Least Squares
+            //
+            //__________________________________________________________________
             template <typename T> class gls : public least_squares<T,T>
             {
             public:
-                typedef least_squares<T,T>          ls_type;
-                typedef typename ls_type::drvs_ptr  drvs_ptr;
+                //______________________________________________________________
+                //
+                // types and definition
+                //______________________________________________________________
+                typedef least_squares<T,T>          ls_type;   //!< alias
+                typedef typename ls_type::drvs_type drvs_type; //!< alias
+                typedef typename ls_type::drvs_ptr  drvs_ptr;  //!< alias
 
-
-                explicit gls(const drvs_ptr *ppDrvs=NULL);
-                virtual ~gls() throw();
+                //______________________________________________________________
+                //
+                // C++
+                //______________________________________________________________
+                explicit gls(const drvs_ptr *ppDrvs=NULL); //!< setup
+                virtual ~gls() throw();                    //!< cleanup
 
 
             private:

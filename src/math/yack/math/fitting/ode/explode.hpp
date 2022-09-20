@@ -33,6 +33,7 @@ namespace yack
                 // C++
                 //______________________________________________________________
                 virtual ~explODE() throw(); //!< cleanup
+                
 
             protected:
                 explicit explODE(); //!< setup
