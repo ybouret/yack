@@ -62,7 +62,7 @@ namespace yack
                 //! setup
                 explicit least_squares(const drvs_ptr *ppDrvs = NULL) :
                 curv(),
-                tabs(8,0),
+                tabs(4,0),
                 curr(NULL),
                 hfcn(NULL),
                 aorg( tabs.next() ),
