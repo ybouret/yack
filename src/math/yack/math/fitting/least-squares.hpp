@@ -245,7 +245,17 @@ namespace yack
 
                     if(proc)
                     {
-                        (*proc)(f,aorg,s);
+                        const bool success = (*proc)(f,aorg,s);
+                        if(!success)
+                        {
+                            if(!lam.increase(p10))
+                            {
+                                YACK_LSF_PRINTLN(clid << "<cannot comply>");
+                                return false;
+                            }
+                            f0 = s.D2_full(f,aorg,used,scal,*drvs);
+                            goto CYCLE;
+                        }
                     }
 
 
