@@ -57,7 +57,7 @@ namespace yack {
             //! cleanup
             inline virtual ~cyclic() throw() {}
 
-            //! allocated resources
+            //! allocate resources
             inline cyclic(const size_t n) :
             cyclic_(n),
             tridiag<T>(n,1),
@@ -295,6 +295,7 @@ namespace yack {
             // members
             //__________________________________________________________________
             crout<T>      LU; //!< helper
+            
         private:
             YACK_DISABLE_COPY_AND_ASSIGN(cyclic);
             array_type &HVx;
