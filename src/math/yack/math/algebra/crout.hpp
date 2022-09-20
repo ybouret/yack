@@ -10,6 +10,12 @@
 #include "yack/math/adder.hpp"
 #include "yack/math/multiplier.hpp"
 
+#define YACK_CROUT_SENTRY
+
+#if defined(YACK_CROUT_SENTRY)
+#include "yack/memory/sentry.hpp"
+#endif
+
 namespace yack
 {
     namespace math
@@ -84,6 +90,10 @@ namespace yack
                 thin_array<size_t>      indx(indx_,n);
                 thin_array<scalar_type> scal(static_cast<scalar_type*>(scal_),n);
 
+#if defined(YACK_CROUT_SENTRY)
+                YACK_MEM_SENTRY(xtra_,sizeof(type)*nmax);
+#endif
+
                 //______________________________________________________________
                 //
                 // loop over columns
@@ -142,6 +152,8 @@ namespace yack
                             a[i][j] *= fac;
                     }
                 }
+
+                std::cerr << "indx=" << indx << std::endl;
                 return true;
             }
 
@@ -243,6 +255,11 @@ namespace yack
                 //______________________________________________________________
                 const size_t n = a.rows;
 
+
+#if defined(YACK_CROUT_SENTRY)
+                YACK_MEM_SENTRY(indx_,sizeof(size_t)*nmax);
+                YACK_MEM_SENTRY(scal_,sizeof(scalar_type)*nmax);
+#endif
                 //______________________________________________________________
                 //
                 // forward
@@ -283,6 +300,7 @@ namespace yack
                         sum -= a_i[j]*b[j];
                     b[i]=sum/a_i[i];
                 }
+
             }
 
             //__________________________________________________________________
@@ -305,6 +323,10 @@ namespace yack
                 //______________________________________________________________
                 const size_t n = a.rows;
 
+#if defined(YACK_CROUT_SENTRY)
+                YACK_MEM_SENTRY(indx_,sizeof(size_t)*nmax);
+                YACK_MEM_SENTRY(scal_,sizeof(scalar_type)*nmax);
+#endif
                 //______________________________________________________________
                 //
                 // forward

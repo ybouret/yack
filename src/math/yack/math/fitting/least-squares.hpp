@@ -374,17 +374,18 @@ namespace yack
                                  const readable<ORDINATE> &scal,
                                  writable<ORDINATE>       &aerr)
                 {
+                    assert(NULL!=curr);
                     //----------------------------------------------------------
                     //
                     // initialize full step
                     //
                     //----------------------------------------------------------
                     YACK_LSF_PRINTLN(clid << "[computing errors]");
-                    assert(NULL!=curr);
-                    const ORDINATE f0 = curr->D2_full(*hfcn,a0, used, scal, *drvs);
+                    sample_type       &s = *curr;
+                    const ORDINATE    f0 = s.D2_full(*hfcn,a0, used, scal, *drvs);
                     YACK_LSF_PRINTLN(clid << "|_D2     = " << f0);
-                    YACK_LSF_PRINTLN("curv = " << curr->curv);
-                    curr->curv.print_code(std::cerr, "curv");
+                    YACK_LSF_PRINTLN("curv = " << s.curv);
+                    s.curv.print_code(std::cerr, "curv");
 
                     //----------------------------------------------------------
                     //
@@ -395,22 +396,30 @@ namespace yack
                         YACK_LSF_PRINTLN(clid << "<singular covariance>");
                         return false;
                     }
+                    YACK_LSF_PRINTLN("curv = " << s.curv);
 
-                    //curv.assign(curr->curv);
-                    //solv.build(curv);
-                    vector<ORDINATE> u(curv.rows,0);
-                    for(size_t i=curv.rows;i>0;--i)
+                    crout<ORDINATE> LU(curv.rows);
+
+                    curv.assign(s.curv);
+                    YACK_LSF_PRINTLN("curv = " << curv);
+                    LU.build(curv);
+
+
+                    if(true)
                     {
-                        u.ld(0);
-                        u[i] = 1;
-                        std::cerr << "u=" << u << std::endl;
-                        solv.solve(curv,u);
-                        std::cerr << "r=" << u << std::endl;
-                        vector<ORDINATE> v(curv.rows,0);
-                        iota::mul(v,curr->curv,u);
-                        std::cerr << "v=" << v << std::endl;
+                        vector<ORDINATE> u(curv.rows,0); assert(curv.rows==u.size());
+                        for(size_t i=1;i<=curv.rows;++i)
+                        {
+                            u.ld(0);
+                            u[i] = 1;
+                            std::cerr << "u=" << u << std::endl;
+                            LU.solve(curv,u);
+                            std::cerr << "r=" << u << std::endl;
+                            vector<ORDINATE> v(curv.rows,0);
+                            iota::mul(v,s.curv,u);
+                            std::cerr << "v=" << v << std::endl;
+                        }
                     }
-                    
                     
                     //----------------------------------------------------------
                     //
@@ -420,7 +429,7 @@ namespace yack
                     //matrix<ORDINATE> &alpha = s.curv; assert( &alpha != &curv);
                     matrix<ORDINATE> alpha(curv.rows,curv.cols);
                     const variables  &vars  = **curr;
-                    solv.inverse(curv,alpha);
+                    LU.inverse(curv,alpha);
                     YACK_LSF_PRINTLN("alpha  = " << alpha);
 
 

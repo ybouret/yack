@@ -33,10 +33,10 @@ YACK_UTEST(lss)
     size_t n = 4;
 
     matrix<double> curv(4,4);
-    curv[1][1]=11;     curv[1][2]=18.319; curv[1][3]=36.7371; curv[1][4]=81.4349;
-    curv[2][1]=18.319; curv[2][2]=36.7371; curv[2][3]=81.4349; curv[2][4]=194.262;
-    curv[3][1]=36.7371; curv[3][2]=81.4349; curv[3][3]=194.262; curv[3][4]=489.715;
-    curv[4][1]=81.4349; curv[4][2]=194.262; curv[4][3]=489.715; curv[4][4]=1285.9;
+    curv[1][1]=38; curv[1][2]=48.3678; curv[1][3]=89.6221; curv[1][4]=189.813;
+    curv[2][1]=48.3678; curv[2][2]=89.6221; curv[2][3]=189.813; curv[2][4]=433.679;
+    curv[3][1]=89.6221; curv[3][2]=189.813; curv[3][3]=433.679; curv[3][4]=1042.65;
+    curv[4][1]=189.813; curv[4][2]=433.679; curv[4][3]=1042.65; curv[4][4]=2604.45;
 
     matrix<double> &a0 = curv;
     //matrix<double> a0(n,n);
@@ -70,9 +70,9 @@ YACK_UTEST(lss)
     a1.assign(a0);
     if(lssFine.build(a1))
     {
-        lssFast.inverse(a1,ia);
+        lssFine.inverse(a1,ia);
         std::cerr << "ia2=" << ia << std::endl;
-        iota::mmul(I,a0,ia);
+        iota::mmul(I,a0,ia,lssFast.xadd);
         cleanup(I);
         std::cerr << "I2=" << I << std::endl;
     }
