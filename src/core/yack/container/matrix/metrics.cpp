@@ -44,12 +44,12 @@ namespace yack
 
     void matrix_metrics:: swap_metrics_with(matrix_metrics &other) throw()
     {
-        coerce_cswap(rows,other.rows);
-        coerce_cswap(cols,other.cols);
-        coerce_cswap(items,other.items);
-        coerce_cswap(allocated,other.allocated);
-        coerce_cswap(workspace,other.workspace);
-
+        coerce_cswap(rows,      other.rows     );
+        coerce_cswap(cols,      other.cols     );
+        coerce_cswap(items,     other.items    );
+        coerce_cswap(stride,    other.stride   );
+        coerce_cswap(allocated, other.allocated);
+        coerce_cswap(workspace, other.workspace);
     }
 
     

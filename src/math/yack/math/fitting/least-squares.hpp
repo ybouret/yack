@@ -396,35 +396,17 @@ namespace yack
                         YACK_LSF_PRINTLN(clid << "<singular covariance>");
                         return false;
                     }
-                    YACK_LSF_PRINTLN("curv = " << s.curv);
-                    YACK_LSF_PRINTLN("dcmp = " << curv);
 
 
 
-                    if(true)
-                    {
-                        vector<ORDINATE> u(curv.rows,0); assert(curv.rows==u.size());
-                        for(size_t i=curv.rows;i>0;--i)
-                        {
-                            u.ld(0);
-                            u[i] = 1;
-                            solv.solve(curv,u);
-                            //std::cerr << "r=" << u << std::endl;
-                            vector<ORDINATE> v(curv.rows,0);
-                            iota::mul(v,s.curv,u);
-                            std::cerr << "\tv=" << v << std::endl;
-                        }
-                    }
 
-                    return true;
 
                     //----------------------------------------------------------
                     //
                     // use s.curv as inverse of this->curv
                     //
                     //----------------------------------------------------------
-                    //matrix<ORDINATE> &alpha = s.curv; assert( &alpha != &curv);
-                    matrix<ORDINATE> alpha(curv.rows,curv.cols);
+                    matrix<ORDINATE> &alpha = s.curv; assert( &alpha != &curv);
                     const variables  &vars  = **curr;
                     solv.inverse(curv,alpha);
                     YACK_LSF_PRINTLN("alpha  = " << alpha);
