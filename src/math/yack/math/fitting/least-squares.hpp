@@ -397,6 +397,7 @@ namespace yack
                         return false;
                     }
                     YACK_LSF_PRINTLN("curv = " << s.curv);
+                    YACK_LSF_PRINTLN("dcmp = " << curv);
 
 
 

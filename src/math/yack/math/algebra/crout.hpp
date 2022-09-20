@@ -94,6 +94,7 @@ namespace yack
                 YACK_MEM_SENTRY(xtra_,sizeof(type)*nmax);
 #endif
 
+                std::cerr << "scal=" << scal << std::endl;
                 //______________________________________________________________
                 //
                 // loop over columns
@@ -126,7 +127,10 @@ namespace yack
                     //----------------------------------------------------------
                     if(imax!=j)
                     {
+                        std::cerr << "\t(" << imax << "," << j << ") #" << a.stride << std::endl;
+                        std::cerr << "\t" << a[j] << " | " << a[imax] << std::endl;
                         a.swap_rows(imax,j);
+                        std::cerr << "\t" << a[j] << " | " << a[imax] << std::endl;
                         coerce(dneg) = !dneg;
                         scal[imax]   = scal[j];
                     }
@@ -266,13 +270,13 @@ namespace yack
                 //______________________________________________________________
                 {
                     const thin_array<size_t> indx(indx_,n);
-                    size_t                   ii=0;
+                    size_t                   ii=1;
                     std::cerr << b << " -> {";
                     for(size_t i=1;i<=n;++i)
                     {
-                        const readable<T> &a_i = a[i];
-                        size_t ip  = indx[i]; std::cerr << ' ' << ip << '.' << ii;
-                        type   sum = b[ip];
+                        const readable<T> &a_i  = a[i];
+                        const size_t        ip  = indx[i]; std::cerr << ' ' << ip << '.' << ii;
+                        type                sum = b[ip];
                         b[ip]=b[i];
                         if (ii)
                         {

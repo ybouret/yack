@@ -287,7 +287,8 @@ namespace yack
         template <typename NAME>
         inline void print_code(std::ostream &os, const NAME &name) const
         {
-            
+            const size_t n = std::cerr.precision();
+            std::cerr.precision(15);
             for(size_t i=1;i<=rows;++i)
             {
                 for(size_t j=1;j<=cols;++j)
@@ -296,6 +297,7 @@ namespace yack
                 }
                 os << std::endl;
             }
+            std::cerr.precision(n);
         }
 
     private:
