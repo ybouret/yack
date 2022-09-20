@@ -22,10 +22,6 @@ source_group(fcn FILES ${fcn})
 file(GLOB data data/*.cpp)
 source_group(data FILES ${data})
 
-file(GLOB fit fit/*.cpp)
-source_group(fit FILES ${fit})
-
-
 file(GLOB fitting fitting/*.cpp)
 source_group(fitting FILES ${fitting})
 
@@ -41,7 +37,6 @@ ${root}
 ${opt}
 ${fcn}
 ${data}
-${fit}
 ${geometry}
 ${fitting}
 )
@@ -92,11 +87,6 @@ add_test(poly      test-math poly)
 add_test(chebyshev test-math chebyshev)
 add_test(corr      test-math corr)
 add_test(distrib   test-math distrib)
-
-#fit
-add_test(fit_lam test-math fit_lam)
-add_test(fit     test-math fit)
-add_test(gls     test-math gls)
 
 #geom
 add_test(area2d test-math area2d)

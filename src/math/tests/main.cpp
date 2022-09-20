@@ -35,10 +35,6 @@ YACK_UTEST_DECL(80)
     YACK_UTEST(corr);
     YACK_UTEST(distrib);
    
-    YACK_UTEST(fit_lam); 
-    YACK_UTEST(fit);
-    YACK_UTEST(gls);
-
     YACK_UTEST(area2d);
 
     YACK_UTEST(fitting_lambda);

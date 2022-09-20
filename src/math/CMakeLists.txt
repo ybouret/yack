@@ -102,51 +102,6 @@ install( FILES ${math_data_decl} DESTINATION include/yack/math/data )
 ########################################################################
 
 
-# fit
-file(GLOB math_fit_decl yack/math/fit/*.hpp)
-file(GLOB math_fit_srcs yack/math/fit/*.cpp yack/math/fit/*.hxx)
-set(math_fit ${math_fit_decl} ${math_fit_srcs})
-SOURCE_GROUP(math/fit FILES ${math_fit})
-install( FILES ${math_fit_decl} DESTINATION include/yack/math/fit )
-
-# fit/variable
-file(GLOB math_fit_variable_decl yack/math/fit/variable/*.hpp)
-file(GLOB math_fit_variable_srcs yack/math/fit/variable/*.cpp yack/math/fit/variable/*.hxx)
-set(math_fit_variable ${math_fit_variable_decl} ${math_fit_variable_srcs})
-SOURCE_GROUP(math/fit/variable FILES ${math_fit_variable})
-install( FILES ${math_fit_variable_decl} DESTINATION include/yack/math/fit/variable )
-
-# fit/sample
-file(GLOB math_fit_sample_decl yack/math/fit/sample/*.hpp)
-file(GLOB math_fit_sample_srcs yack/math/fit/sample/*.cpp yack/math/fit/sample/*.hxx)
-set(math_fit_sample ${math_fit_sample_decl} ${math_fit_sample_srcs})
-SOURCE_GROUP(math/fit/sample FILES ${math_fit_sample})
-install( FILES ${math_fit_sample_decl} DESTINATION include/yack/math/fit/sample )
-
-# fit/samples
-file(GLOB math_fit_samples_decl yack/math/fit/samples/*.hpp)
-file(GLOB math_fit_samples_srcs yack/math/fit/samples/*.cpp yack/math/fit/samples/*.hxx)
-set(math_fit_samples ${math_fit_samples_decl} ${math_fit_samples_srcs})
-SOURCE_GROUP(math/fit/samples FILES ${math_fit_samples})
-install( FILES ${math_fit_samples_decl} DESTINATION include/yack/math/fit/samples )
-
-# fit/least_squares
-file(GLOB math_fit_least_squares_decl yack/math/fit/least-squares/*.hpp)
-file(GLOB math_fit_least_squares_srcs yack/math/fit/least-squares/*.cpp yack/math/fit/least-squares/*.hxx)
-set(math_fit_least_squares ${math_fit_least_squares_decl} ${math_fit_least_squares_srcs})
-SOURCE_GROUP(math/fit/least-squares FILES ${math_fit_least_squares})
-install( FILES ${math_fit_least_squares_decl} DESTINATION include/yack/math/fit/least-squares )
-
- # fit/ode
-file(GLOB math_fit_ode_decl yack/math/fit/ode/*.hpp)
-file(GLOB math_fit_ode_srcs yack/math/fit/ode/*.cpp yack/math/fit/ode/*.hxx)
-set(math_fit_ode ${math_fit_ode_decl} ${math_fit_ode_srcs})
-SOURCE_GROUP(math/fit/ode FILES ${math_fit_ode})
-install( FILES ${math_fit_ode_decl} DESTINATION include/yack/math/fit/ode )
-
-########################################################################
-
-
 #ode
 file(GLOB math_ode_decl yack/math/ode/*.hpp yack/math/ode/*.hxx)
 file(GLOB math_ode_srcs yack/math/ode/*.cpp)
@@ -182,7 +137,6 @@ ${math_root}
 ${math_opt}
 ${math_geometry}
 ${math_data}
-${math_fit} ${math_fit_variable} ${math_fit_sample} ${math_fit_samples} ${math_fit_least_squares} ${math_fit_ode}
 ${math_fitting} ${math_fitting_variable} ${math_fitting_sample} ${math_fitting_least_squares} ${math_fitting_ode} 
 )
 
