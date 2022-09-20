@@ -46,5 +46,6 @@ YACK_UTEST_DECL(80)
     YACK_UTEST(fitting_sample);
     YACK_UTEST(fitting_samples);
     YACK_UTEST(fitting_gls);
+    YACK_UTEST(fitting_ode);
 }
 YACK_UTEST_EXEC()

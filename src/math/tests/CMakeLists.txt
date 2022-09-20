@@ -107,5 +107,6 @@ add_test(fitting:vars    test-math fitting_vars)
 add_test(fitting:sample  test-math fitting_sample)
 add_test(fitting:samples test-math fitting_samples)
 add_test(fitting:gls     test-math fitting_gls)
+add_test(fitting:ode     test-math fitting_ode)
  
 

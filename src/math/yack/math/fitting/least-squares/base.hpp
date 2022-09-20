@@ -16,12 +16,12 @@ namespace yack
             class least_squares_
             {
             public:
-                static const char clid[]; //!< "[least-squares]"
+                static const char   clid[];                      //!< "[least-squares]"
+                static const char * ok(const bool flag) throw(); //!< textual
 
                 virtual ~least_squares_() throw();
                 explicit least_squares_() throw();
 
-                static const char * ok(const bool flag) throw(); //!< textual
 
             private:
                 YACK_DISABLE_COPY_AND_ASSIGN(least_squares_);
