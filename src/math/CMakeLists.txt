@@ -80,6 +80,13 @@ set(math_fitting_least_squares ${math_fitting_least_squares_decl} ${math_fitting
 SOURCE_GROUP(math/fitting/least-squares FILES ${math_fitting_least_squares})
 install( FILES ${math_fitting_least_squares_decl} DESTINATION include/yack/math/fitting/least-squares )
 
+# fitting/ode
+file(GLOB math_fitting_ode_decl yack/math/fitting/ode/*.hpp)
+file(GLOB math_fitting_ode_srcs yack/math/fitting/ode/*.cpp yack/math/fitting/ode/*.hxx)
+set(math_fitting_ode ${math_fitting_ode_decl} ${math_fitting_ode_srcs})
+SOURCE_GROUP(math/fitting/ode FILES ${math_fitting_ode})
+install( FILES ${math_fitting_ode_decl} DESTINATION include/yack/math/fitting/ode )
+
 
 ########################################################################
 
@@ -176,7 +183,7 @@ ${math_opt}
 ${math_geometry}
 ${math_data}
 ${math_fit} ${math_fit_variable} ${math_fit_sample} ${math_fit_samples} ${math_fit_least_squares} ${math_fit_ode}
-${math_fitting} ${math_fitting_variable} ${math_fitting_sample} ${math_fitting_least_squares} 
+${math_fitting} ${math_fitting_variable} ${math_fitting_sample} ${math_fitting_least_squares} ${math_fitting_ode} 
 )
 
 install( TARGETS yack-math ARCHIVE DESTINATION lib )
