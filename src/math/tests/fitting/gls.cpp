@@ -103,10 +103,11 @@ YACK_UTEST(fitting_gls)
     save_sample(s1);
     save_sample(s2);
 
-    derivative<double> drvs;
-    vector<bool>       used(nvar,true);
-    vector<double>     scal(nvar,1e-4);
-    vector<double>     aerr(nvar);
+    correlation<double> corr;
+    derivative<double>  drvs;
+    vector<bool>        used(nvar,true);
+    vector<double>      scal(nvar,1e-4);
+    vector<double>      aerr(nvar);
 
     vars(scal,"t0") = 0.1;
     
@@ -152,6 +153,10 @@ YACK_UTEST(fitting_gls)
     save_sample(s1);
     save_sample(s2);
 
+
+    std::cerr << "corr_s1  = " << s1.corr(corr) << std::endl;
+    std::cerr << "corr_s2  = " << s2.corr(corr) << std::endl;
+    std::cerr << "corr_all = " << both.corr(corr) << std::endl;
 
 
 }

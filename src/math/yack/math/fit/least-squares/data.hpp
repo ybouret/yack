@@ -4,7 +4,7 @@
 #define YACK_FIT_LEAST_SQUARES_DATA_INCLUDED 1
 
 #include "yack/math/fit/least-squares/lambda.hpp"
-#include "yack/math/algebra/lu.hpp"
+#include "yack/math/algebra/crout.hpp"
 #include "yack/math/fcn/derivative.hpp"
 #include "yack/sequence/arrays.hpp"
 #include "yack/ptr/auto.hpp"
@@ -51,7 +51,7 @@ namespace yack
                 //______________________________________________________________
                 typedef arrays_of<ORDINATE>                      tableaux;   //!< alias
                 typedef typename arrays_of<ORDINATE>::array_type array_type; //!< alias
-                typedef lu<ORDINATE>                             LU;         //!< alias
+                typedef crout<ORDINATE>                             LU;         //!< alias
 
 
                 //______________________________________________________________

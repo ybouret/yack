@@ -1,7 +1,7 @@
 #include "yack/chem/reactor.hpp"
 #include "yack/chem/eqs/composite.hpp"
 #include "yack/math/iota.hpp"
-#include "yack/math/algebra/lu.hpp"
+#include "yack/math/algebra/crout.hpp"
 
 #include "yack/apex.hpp"
 #include "yack/system/imported.hpp"
@@ -90,7 +90,7 @@ namespace yack
                 // testing system
                 //--------------------------------------------------------------
                 {
-                    lu<apq>     apLU(N);
+                    crout<apq>  apLU(N);
                     matrix<apq> Gram(N,N);
                     iota::gram(Gram,Nu);
                     if(!apLU.build(Gram)) throw imported::exception(clid,"singular equilibria");

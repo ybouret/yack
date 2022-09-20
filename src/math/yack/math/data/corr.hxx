@@ -4,7 +4,8 @@ namespace yack
     namespace math
     {
         template <> correlation<real_t>::correlation() throw() :
-        points()
+        points(),
+        xadd()
         {
         }
 
@@ -32,11 +33,12 @@ namespace yack
             }
             else
             {
-                arrays_of<real_t> tab(3,n);
-                writable<real_t> &xx = tab.next();
-                writable<real_t> &yy = tab.next();
-                writable<real_t> &xy = tab.next();
+                arrays_of<real_t> tb(3,n);
+                writable<real_t> &xx = tb.next();
+                writable<real_t> &yy = tb.next();
+                writable<real_t> &xy = tb.next();
 
+                // fill xx with p.x, yy with p.y
                 {
                     size_t i=1;
                     for(const node_type *node=head();node;node=node->next,++i)
@@ -49,25 +51,25 @@ namespace yack
 
 
                 {
-                    const real_t xa = sorted::sum(xx,sorted::by_abs_value);
-                    const real_t ya = sorted::sum(yy,sorted::by_abs_value);
+                    const real_t xa = xadd.tableau(xx)/n; // x-average
+                    const real_t ya = xadd.tableau(yy)/n; // y-average
 
                     for(size_t i=n;i>0;--i)
                     {
                         const real_t dx = xx[i]-xa;
                         const real_t dy = yy[i]-ya;
-                        xy[i] = dx * dy;
+                        xy[i] = dx*dy;
                         xx[i] = dx*dx;
                         yy[i] = dy*dy;
                     }
                 }
 
-                const real_t sum_xy = sorted::sum(xy,sorted::by_abs_value);
-                const real_t sum_x2 = sorted::sum(xx,sorted::by_value);
-                const real_t sum_y2 = sorted::sum(yy,sorted::by_value);
+                const real_t sum_xy = xadd.tableau(xy);
+                const real_t sum_x2 = xadd.tableau(xx);
+                const real_t sum_y2 = xadd.tableau(yy);
 
 
-                return sum_xy/( sqrt(sum_x2*sum_y2) + tiny );
+                return sum_xy/( std::sqrt(sum_x2*sum_y2) + tiny );
             }
         }
 

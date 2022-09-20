@@ -6,7 +6,8 @@
 
 #include "yack/sequence/list.hpp"
 #include "yack/type/v2d.hpp"
-#include <cmath>
+#include "yack/math/adder.hpp"
+
 
 namespace yack
 {
@@ -43,7 +44,12 @@ namespace yack
             T             operator()(void);                 //!< compute with current list
             correlation & operator()(const T x, const T y); //!< add a new point
 
-            
+            //__________________________________________________________________
+            //
+            // members
+            //__________________________________________________________________
+            adder<T> xadd; //!< extended additions
+
         private:
             YACK_DISABLE_COPY_AND_ASSIGN(correlation);
         };

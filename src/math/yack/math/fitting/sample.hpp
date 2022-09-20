@@ -9,6 +9,7 @@
 #include "yack/sequence/vector.hpp"
 #include "yack/math/adder.hpp"
 #include "yack/math/fcn/derivative.hpp"
+#include "yack/math/data/corr.hpp"
 
 namespace yack
 {
@@ -74,7 +75,23 @@ namespace yack
                                          const readable<bool>       &used,
                                          const readable<ORDINATE>   &scal,
                                          derivative<ORDINATE>       &drvs) = 0;
-                
+
+                //! update correlation with ordinate/adjusted
+                virtual void     update(correlation<ORDINATE> &cr) const = 0;
+
+                //______________________________________________________________
+                //
+                // non virtual interface
+                //______________________________________________________________
+
+                //! compute correlation
+                inline ORDINATE corr(correlation<ORDINATE> &cr) const
+                {
+                    cr.free();
+                    update(cr);
+                    return cr();
+                }
+
                 //______________________________________________________________
                 //
                 // helpers
@@ -101,7 +118,9 @@ namespace yack
                     sequential_wrapper<FUNC> call(func);
                     return D2_full(call,aorg,used,scal,drvs);
                 }
-                
+
+
+
                 //______________________________________________________________
                 //
                 // C++

@@ -8,7 +8,6 @@ YACK_UTEST_DECL(80)
     YACK_UTEST(multiplier);
 
     YACK_UTEST(iota);
-    YACK_UTEST(lu);
     YACK_UTEST(crout);
     YACK_UTEST(lss);
     YACK_UTEST(jacobi);

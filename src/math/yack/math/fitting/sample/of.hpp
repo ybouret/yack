@@ -264,7 +264,16 @@ namespace yack
                     schedule.release();
                     this->cleanup();
                 }
-                
+
+                virtual void update(correlation<ORDINATE> &cr) const
+                {
+                    const size_t n = dimension();
+                    for(size_t i=n;i>0;--i)
+                    {
+                        cr( ordinate[i], adjusted[i] );
+                    }
+                }
+
                 
                 //______________________________________________________________
                 //

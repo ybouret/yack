@@ -1,7 +1,7 @@
 #include "yack/utest/run.hpp"
 #include "yack/container/matrix.hpp"
 #include "yack/field/in2d.hpp"
-#include "yack/math/algebra/lu.hpp"
+#include "yack/math/algebra/crout.hpp"
 #include "yack/sequence/vector.hpp"
 #include "yack/ios/ascii/convert.hpp"
 #include "yack/apex/kernel.hpp"
@@ -113,7 +113,7 @@ YACK_UTEST(fbuild)
     // decompose moments
     //
     //--------------------------------------------------------------------------
-    math::lu<apq> LU(6);
+    math::crout<apq> LU(6);
     if(!LU.build(M))
     {
         throw exception("Singular Moments!!");

@@ -220,7 +220,8 @@ namespace yack
                         return 0;
                     }
                 }
-                
+
+                //! sequential release
                 inline virtual void release() throw()
                 {
                     for(const s_node *node=tail();node;node=node->prev)
@@ -229,6 +230,15 @@ namespace yack
                         s.release();
                     }
                     this->cleanup();
+                }
+
+                //! gather data
+                virtual void update(correlation<ORDINATE> &cr) const
+                {
+                    for(const s_node *node=tail();node;node=node->prev)
+                    {
+                        (***node).update(cr);
+                    }
                 }
 
             private:

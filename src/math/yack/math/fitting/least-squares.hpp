@@ -155,7 +155,6 @@ namespace yack
                     //
                     //
                     //----------------------------------------------------------
-                    //  std::cerr << std::setprecision(15);
                     YACK_LSF_PRINTLN(clid << "[starting session]");
                     least_squares    &self = *this;
 
@@ -165,25 +164,21 @@ namespace yack
                     const variables & vars = *s;
                     const size_t      nvar = vars.upper();
                     const size_t      ndat = s.dimension();
+
                     if(nvar<=0)
                     {
                         (void)s.D2(f,a0);
                         YACK_LSF_PRINTLN(clid << "<no variables!>");
                         return false;
                     }
+                    vars.ldz(aerr);
+
                     if(ndat<=0)
                     {
                         (void)s.D2(f,a0);
                         YACK_LSF_PRINTLN(clid << "<no data!>");
                         return false;
                     }
-
-
-
-                    //----------------------------------------------------------
-                    // initialize errors
-                    //----------------------------------------------------------
-                    vars.ldz(aerr);
 
                     //----------------------------------------------------------
                     // get memory
@@ -199,7 +194,7 @@ namespace yack
                     const temporary<sequential_type*> tmpF(hfcn,&f);
 
                     //----------------------------------------------------------
-                    // set parameters parameters
+                    // set parameters
                     //----------------------------------------------------------
                     lam.initialize(p10);
                     vars.mov(aorg,a0);

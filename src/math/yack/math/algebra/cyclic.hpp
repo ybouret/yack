@@ -3,7 +3,7 @@
 #define YACK_ALGEBRA_CYCLIC_INCLUDED 1
 
 #include "yack/math/algebra/tridiag.hpp"
-#include "yack/math/algebra/lu.hpp"
+#include "yack/math/algebra/crout.hpp"
 #include "yack/type/args.hpp"
 #include "yack/system/exception.hpp"
 #include <cerrno>
@@ -294,7 +294,7 @@ namespace yack {
             //
             // members
             //__________________________________________________________________
-            lu<T>      LU; //!< helper
+            crout<T>      LU; //!< helper
         private:
             YACK_DISABLE_COPY_AND_ASSIGN(cyclic);
             array_type &HVx;

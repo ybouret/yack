@@ -66,7 +66,7 @@ namespace yack
                 make(npar);
                 curv.make(npar,npar);
                 shrinking = false;
-                if(algo.is_empty()||algo->dims<npar)
+                if(algo.is_empty()||algo->nmax<npar)
                 {
                     algo = new LU(npar);
                 }
@@ -194,7 +194,7 @@ namespace yack
                 {
                     throw exception("%s: singular covariance", clid);
                 }
-                algo->inv(covm,curv);
+                algo->inverse(covm,curv);
 
                 //--------------------------------------------------------------
                 //
