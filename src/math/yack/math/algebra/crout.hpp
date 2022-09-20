@@ -10,7 +10,7 @@
 #include "yack/math/adder.hpp"
 #include "yack/math/multiplier.hpp"
 
-#define YACK_CROUT_SENTRY
+//#define YACK_CROUT_SENTRY
 
 #if defined(YACK_CROUT_SENTRY)
 #include "yack/memory/sentry.hpp"
@@ -37,8 +37,8 @@ namespace yack
             // types and definitions
             //
             //__________________________________________________________________
-            YACK_DECL_ARGS_(T,type); //!< aliaes
-            typedef typename scalar_for<mutable_type>::type scalar_type; //!< alias
+            YACK_DECL_ARGS_(T,type);                                           //!< aliases
+            typedef typename scalar_for<mutable_type>::type scalar_type;       //!< alias
             typedef const scalar_type                       const_scalar_type; //!< alias
             
             
