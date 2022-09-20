@@ -566,12 +566,10 @@ namespace yack
                     triplet<ORDINATE> U = { u[ia], u[ib], u[ic] }; assert(U.is_increasing());
                     triplet<ORDINATE> F = { f[ia], f[ib], f[ic] }; assert(F.is_local_minimum());
 
-                    const ORDINATE w0 = U.c-U.a;
-                    YACK_LSF_PRINTLN(clid << "|_U = " << U << "; F=" << F << "; w=" << w0);
+                    const ORDINATE w0 = std::abs(U.c-U.a);
                     const ORDINATE w1 = w0/10;
                     while(true) {
                         const ORDINATE w = optimize::tighten_for(self,U,F);
-                        YACK_LSF_PRINTLN(clid << "|_U = " << U << "; F=" << F << "; w=" << w);
                         if(w<w1) break;
                     }
 

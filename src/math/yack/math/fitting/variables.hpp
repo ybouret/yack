@@ -136,7 +136,7 @@ namespace yack
                     os << '}';
                     return os;
                 }
-
+                
                 //! transfer involved values
                 template <typename TARGET, typename SOURCE> inline
                 void mov(TARGET &target, SOURCE &source) const
