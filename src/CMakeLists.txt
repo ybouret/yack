@@ -88,5 +88,5 @@ add_custom_target(third_party
 	COMMENT "[YACK] Built Third Party")
 	
 message( STATUS "")
-message( STATUS "[YACK] generating with [${CMAKE_GENERATOR}] for <${YACK_CC}>")
+message( STATUS "[YACK] generating with [${CMAKE_GENERATOR}] for <${YACK_CC}>/[${CMAKE_BUILD_TYPE}]")
 message( STATUS "")
