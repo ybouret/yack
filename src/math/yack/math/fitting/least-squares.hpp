@@ -384,8 +384,6 @@ namespace yack
                     sample_type       &s = *curr;
                     const ORDINATE    f0 = s.D2_full(*hfcn,a0, used, scal, *drvs);
                     YACK_LSF_PRINTLN(clid << "|_D2     = " << f0);
-                    YACK_LSF_PRINTLN("curv = " << s.curv);
-                    s.curv.print_code(std::cerr, "curv");
 
                     //----------------------------------------------------------
                     //
@@ -396,10 +394,6 @@ namespace yack
                         YACK_LSF_PRINTLN(clid << "<singular covariance>");
                         return false;
                     }
-
-
-
-
 
                     //----------------------------------------------------------
                     //
@@ -442,7 +436,7 @@ namespace yack
                         {
                             const size_t   ndof   = ndat-nact;
                             const ORDINATE value  = f0/ndof;
-                            YACK_LSF_PRINTLN(clid << "|_ndof=" << ndof);
+                            YACK_LSF_PRINTLN(clid << "|_ndof = " << ndof);
                             for(const vnode *node=vars.head();node;node=node->next)
                             {
                                 const variable &v      = ***node;
