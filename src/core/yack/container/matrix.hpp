@@ -283,6 +283,7 @@ namespace yack
             M.display(os); return os;
         }
 
+        //! display as C code
         template <typename NAME>
         inline void print_code(std::ostream &os, const NAME &name) const
         {

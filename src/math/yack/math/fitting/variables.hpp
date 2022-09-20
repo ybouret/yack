@@ -182,6 +182,7 @@ namespace yack
                 }
 
 
+                //! count used variables
                 size_t count(const readable<bool> &used) const throw();
 
 
