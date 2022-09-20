@@ -27,6 +27,7 @@
 #define YACK_ALIGN4(N)   YACK_ALIGN_LN2(2,N) //!< align on 4 bytes  | 32 bits
 #define YACK_ALIGN8(N)   YACK_ALIGN_LN2(3,N) //!< align on 8 bytes  | 64 bits
 #define YACK_ALIGN16(N)  YACK_ALIGN_LN2(4,N) //!< align on 16 bytes | 128 bits
+#define YACK_ALIGN32(N)  YACK_ALIGN_LN2(5,N) //!< align on 32 bytes | 256 bits
 
 #define YACK_MEMALIGN(N) YACK_ALIGN16(N)    //!< default memory alignment
 

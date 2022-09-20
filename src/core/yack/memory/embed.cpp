@@ -50,6 +50,8 @@ namespace yack
             bs = 0;
             if(num>0)
             {
+#define YACK_EMBED_ALIGN(N) YACK_ALIGN16(N)
+
                 //______________________________________________________________
                 //
                 //
@@ -59,12 +61,12 @@ namespace yack
                 {
                     embed *prev  = emb;
                     prev->offset = 0;
-                    prev->length = YACK_MEMALIGN(emb[0].length);
+                    prev->length = YACK_EMBED_ALIGN(emb[0].length);
                     for(size_t i=1;i<num;++i)
                     {
                         embed  *curr = &emb[i];
                         curr->offset = prev->offset + prev->length;
-                        curr->length = YACK_MEMALIGN(curr->length);
+                        curr->length = YACK_EMBED_ALIGN(curr->length);
                         prev = curr;
                     }
                     bs = prev->offset+prev->length;
