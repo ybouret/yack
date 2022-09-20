@@ -267,7 +267,7 @@ namespace yack
                 {
                     const thin_array<size_t> indx(indx_,n);
                     size_t                   ii=0;
-                    std::cerr << "{";
+                    std::cerr << b << " -> {";
                     for(size_t i=1;i<=n;++i)
                     {
                         const readable<T> &a_i = a[i];
@@ -288,7 +288,7 @@ namespace yack
                         }
                         b[i]=sum;
                     }
-                    std::cerr << " } : " << b;
+                    std::cerr << " } -> " << b;
                 }
 
                 //______________________________________________________________
@@ -302,7 +302,7 @@ namespace yack
                         sum -= a_i[j]*b[j];
                     b[i]=sum/a_i[i];
                 }
-                std::cerr << " : " << b << std::endl;
+                std::cerr << " -> " << b << std::endl;
             }
 
             //__________________________________________________________________

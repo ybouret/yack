@@ -407,12 +407,11 @@ namespace yack
                         {
                             u.ld(0);
                             u[i] = 1;
-                            std::cerr << "u=" << u << std::endl;
                             solv.solve(curv,u);
                             //std::cerr << "r=" << u << std::endl;
                             vector<ORDINATE> v(curv.rows,0);
                             iota::mul(v,s.curv,u);
-                            std::cerr << "v=" << v << std::endl;
+                            std::cerr << "\tv=" << v << std::endl;
                         }
                     }
 

@@ -33,10 +33,10 @@ YACK_UTEST(lss)
     size_t n = 4;
 
     matrix<double> curv(4,4);
-    curv[1][1]=15; curv[1][2]=26.1276; curv[1][3]=55.7279; curv[1][4]=129.129;
-    curv[2][1]=26.1276; curv[2][2]=55.7279; curv[2][3]=129.129; curv[2][4]=312.544;
-    curv[3][1]=55.7279; curv[3][2]=129.129; curv[3][3]=312.544; curv[3][4]=780.697;
-    curv[4][1]=129.129; curv[4][2]=312.544; curv[4][3]=780.697; curv[4][4]=2003.21;
+    curv[1][1]=33; curv[1][2]=40.7941; curv[1][3]=71.7206; curv[1][4]=151.844;
+    curv[2][1]=40.7941; curv[2][2]=71.7206; curv[2][3]=151.844; curv[2][4]=358.888;
+    curv[3][1]=71.7206; curv[3][2]=151.844; curv[3][3]=358.888; curv[3][4]=905.262;
+    curv[4][1]=151.844; curv[4][2]=358.888; curv[4][3]=905.262; curv[4][4]=2377.37;
 
 
 
@@ -63,6 +63,7 @@ YACK_UTEST(lss)
     if(lssFast.build(a1))
     {
         lssFast.inverse(a1,ia);
+        std::cerr << std::endl;
         std::cerr << "ia1=" << ia << std::endl;
         iota::mmul(I,a0,ia);
         cleanup(I);
@@ -73,6 +74,7 @@ YACK_UTEST(lss)
     if(lssFine.build(a1))
     {
         lssFine.inverse(a1,ia);
+        std::cerr << std::endl;
         std::cerr << "ia2=" << ia << std::endl;
         iota::mmul(I,a0,ia,lssFast.xadd);
         cleanup(I);
