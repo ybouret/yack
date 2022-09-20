@@ -403,8 +403,6 @@ namespace yack
                     matrix<ORDINATE> &alpha = s.curv; assert( &alpha != &curv);
                     const variables  &vars  = **curr;
                     solv.inverse(curv,alpha);
-                    YACK_LSF_PRINTLN("alpha  = " << alpha);
-
 
                     for(const vnode *node=vars.head();node;node=node->next)
                     {

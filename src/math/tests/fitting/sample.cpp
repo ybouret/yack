@@ -78,6 +78,7 @@ YACK_UTEST(fitting_sample)
     vector<bool>   used(nvar,false);
     vector<double> aerr(nvar);
     vector<double> scal(nvar,1e-4);
+    correlation<double> corr;
 
     fitting::least_squares<double,double> ls;
     ls.verbose = true;
@@ -88,6 +89,7 @@ YACK_UTEST(fitting_sample)
         ls.fit_with(F,s1,aorg,used,scal,aerr);
         const string fn = vformat("fit%u.dat",unsigned(n-1));
         save_sample(fn,s1);
+        std::cerr << "corr" << n-1 << " = " << s1.corr(corr) << std::endl;
     }
 
 
