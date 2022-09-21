@@ -457,7 +457,24 @@ namespace yack
             solv.solve(iOmega,xi);
             singles(std::cerr << "xi=","",xi);
 
-            
+
+
+            //------------------------------------------------------------------
+            //
+            //
+            // checking extent
+            //
+            //
+            //------------------------------------------------------------------
+            for(const enode *node = singles.head(); node; node=node->next)
+            {
+                const equilibrium      &eq  = ***node;
+                const size_t            ei  = *eq;
+                const double            xx  = xi[ei];
+                const xlimits          &lm  = eq.genuine_limits(Corg,corelib.maxlen);
+                singles.pad(std::cerr << eq.name,eq) << ": ";
+                std::cerr << lm << std::endl;
+            }
 
 
 
