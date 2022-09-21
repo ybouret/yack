@@ -398,34 +398,45 @@ namespace yack
                 assert( fabs(H0-Hamiltonian(Corg))<=0 );
             }
 
+            //------------------------------------------------------------------
+            //
+            //
             // computing Omega
+            //
+            //
+            //------------------------------------------------------------------
             YACK_CHEM_PRINTLN(fn << "[computing Omega]");
-
             for(const enode *node = singles.head(); node; node=node->next)
             {
                 const equilibrium      &eq  = ***node;
                 const size_t            ei  = *eq;
                 writable<double>       &Omi = Omega[ei];
+                writable<double>       &psi = Psi[ei];
                 if(blocked[ei])
                 {
                     Omi.ld(0);
+                    psi.ld(0);
                     Omi[ei]   = 1.0;
                     Gamma[ei] = 0.0;
                 }
                 else
                 {
-                    writable<double> &psi = Psi[ei];
                     const double      Ki  = K[ei];
                     eq.grad_action(psi,Ki,Corg,xmul);
                     Gamma[ei] = fabs(Xl[ei])<=0 ? 0 : eq.mass_action(Ki,Corg,xmul);
+                    for(const enode *scan=singles.head();scan;scan=scan->next)
+                    {
+                        const size_t ej = ****scan;
+                        Omi[ej] = xadd.dot(psi,Nu[ej]);
+                    }
                 }
             }
+
 
             singles(std::cerr << "Omega=","",Omega);
             singles(std::cerr << "Gamma=","",Gamma);
             singles(std::cerr << "NuA  =","",NuA);
             std::cerr<< "Omega=" << Omega << std::endl;
-
             exit(0);
 
             return false;
