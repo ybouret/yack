@@ -1,4 +1,3 @@
-
 //! \file
 
 #ifndef YACK_FIT_LEAST_SQUARES_INCLUDED
@@ -160,7 +159,6 @@ namespace yack
                     //
                     //----------------------------------------------------------
                     YACK_LSF_PRINTLN(clid << "[starting session]");
-                    least_squares    &self = *this;
 
                     //----------------------------------------------------------
                     // check variables
@@ -179,7 +177,6 @@ namespace yack
 
                     if(ndat<=0)
                     {
-                        (void)s.D2(f,a0);
                         YACK_LSF_PRINTLN(clid << "<no data!>");
                         return false;
                     }
@@ -264,19 +261,7 @@ namespace yack
                     // evaluate new position
                     //
                     //----------------------------------------------------------
-                    ORDINATE f1     = s.D2(f,aend);
-                    if(false)
-                    {
-                        const string  fn = "D2-" + s.name + ".dat";
-                        ios::ocstream fp(fn);
-                        const size_t  np = 100;
-                        for(size_t i=0;i<=np+20;++i)
-                        {
-                            const ORDINATE u = i/ORDINATE(np);
-                            fp("%.15g %.15g\n", double(u), double(self(u)) );
-                        }
-                    }
-
+                    ORDINATE f1 = s.D2(f,aend);
                     if(f1<=f0)
                     {
                         //------------------------------------------------------
