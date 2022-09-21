@@ -93,6 +93,7 @@ namespace yack
             tableau           &Corg;    //!< [M] starting point
             tableau           &Cend;    //!< [M] final point
             tableau           &Ctry;    //!< [M] working space
+            tableau           &dC;      //!< [M] step
             tableau           &K;       //!< [N] pre-computed K
             tableau           &Gamma;   //!< [N] current Gamm
             tableau           &xi;      //!< [N] extent
