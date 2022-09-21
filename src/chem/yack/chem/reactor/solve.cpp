@@ -445,15 +445,19 @@ namespace yack
             //
             //
             //------------------------------------------------------------------
-            if( !solv.build(Omega,xadd) )
+
+            iOmega.assign(Omega);
+            if( !solv.build(iOmega,xadd) )
             {
                 YACK_CHEM_PRINTLN(fn << "[singular Omega]");
                 exit(1);
             }
 
             iota::neg(xi,Gamma);
-            solv.solve(Omega,xi);
+            solv.solve(iOmega,xi);
             singles(std::cerr << "xi=","",xi);
+
+            
 
 
 
