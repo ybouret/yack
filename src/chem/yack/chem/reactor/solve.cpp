@@ -461,7 +461,7 @@ namespace yack
             //------------------------------------------------------------------
             //
             //
-            // checking extent
+            // checking primary extent
             //
             //
             //------------------------------------------------------------------
@@ -474,7 +474,17 @@ namespace yack
                 const bool              ok  = lm.acceptable(xx);
                 if(verbose)
                 {
-                    singles.pad(std::cerr << eq.name,eq) << " @" << std::setw(15) << xx <<": ";
+                    if(ok)
+                    {
+                        std::cerr << "correct";
+
+                    }
+                    else
+                    {
+                        std::cerr << "too big";
+
+                    }
+                    singles.pad(std::cerr << ' ' << eq.name,eq) << " @" << std::setw(15) << xx <<": ";
                     std::cerr << lm << std::endl;
                 }
             }
