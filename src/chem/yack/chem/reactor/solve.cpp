@@ -529,8 +529,11 @@ namespace yack
             }
 
             corelib(std::cerr << "dC=", "", dC);
+            if(ratio.size())
+            {
+                hsort(ratio, comparison::increasing<double>);
+            }
             std::cerr << "ratio=" << ratio << std::endl;
-
 
             exit(0);
 
