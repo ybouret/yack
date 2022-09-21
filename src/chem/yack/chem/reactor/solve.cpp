@@ -512,9 +512,9 @@ namespace yack
             //------------------------------------------------------------------
             vector<double> ratio;
 
-            for(const snode *node=corelib.head();node;node=node->next)
+            for(const anode *node=working.head;node;node=node->next)
             {
-                const species &sp = ***node; if(sp.rank<=0) continue;
+                const species &sp = **node; assert(sp.rank>0);
                 const size_t   j  = *sp;
                 xadd.ldz();
                 for(size_t i=N;i>0;--i)
@@ -529,14 +529,30 @@ namespace yack
             }
 
             corelib(std::cerr << "dC=", "", dC);
+            double umax = 1;
             if(ratio.size())
             {
                 hsort(ratio,comparison::increasing<double>);
+                umax = min_of(umax,ratio.front());
             }
             std::cerr << "ratio=" << ratio << std::endl;
-
-            iota::add(Cend, Corg, dC);
             
+            for(const anode *node=working.head;node;node=node->next)
+            {
+                const species &sp = **node; assert(sp.rank>0);
+                const size_t   j  = *sp;
+                Cend[j] = max_of<double>(Corg[j]+dC[j],0);
+            }
+            
+            {
+                ios::ocstream fp("ham.dat");
+                const size_t np=100;
+                for(size_t i=0;i<=np;++i)
+                {
+                    const double u = (umax*i)/double(np);
+                    fp("%.15g %.15g\n",u,(*this)(u));
+                }
+            }
 
             
 
