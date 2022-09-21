@@ -506,10 +506,12 @@ namespace yack
             //------------------------------------------------------------------
             //
             //
-            // compute delta C
+            // compute delta C and checking when dC<0
             //
             //
             //------------------------------------------------------------------
+            vector<double> ratio;
+
             for(const snode *node=corelib.head();node;node=node->next)
             {
                 const species &sp = ***node; if(sp.rank<=0) continue;
@@ -522,20 +524,12 @@ namespace yack
                 const double d = (dC[j] = xadd.get());
                 if(d<0)
                 {
-
+                    ratio << Corg[j]/(-d);
                 }
-
             }
 
             corelib(std::cerr << "dC=", "", dC);
-
-            //------------------------------------------------------------------
-            //
-            //
-            // check delta C
-            //
-            //
-            //------------------------------------------------------------------
+            std::cerr << "ratio=" << ratio << std::endl;
 
 
             exit(0);
