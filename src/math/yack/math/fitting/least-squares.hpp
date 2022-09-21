@@ -24,8 +24,10 @@ namespace yack
 
         namespace fitting
         {
-
+            //__________________________________________________________________
+            //
             //! helper for verbose output
+            //__________________________________________________________________
 #define YACK_LSF_PRINTLN(MSG) do { if(verbose) { std::cerr << MSG << std::endl; } } while(false)
 
             //__________________________________________________________________
@@ -49,7 +51,8 @@ namespace yack
                 typedef lss<ORDINATE>                         solver;          //!< alias
                 typedef derivative<ORDINATE>                  drvs_type;       //!< alias
                 typedef typename drvs_type::pointer           drvs_ptr;        //!< alias
-                typedef functor<bool,TL3(sequential_type &,writable<ORDINATE>&,sample_type &)> process;
+                typedef TL3(sequential_type &,writable<ORDINATE>&,sample_type &) args_type; //!< alias
+                typedef functor<bool,args_type>                                  process;   //!< alias
 
                 //______________________________________________________________
                 //

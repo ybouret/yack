@@ -37,6 +37,7 @@ namespace yack
             //! display
             friend std::ostream & operator<<(std::ostream &, const xlimits &);
 
+            //! check if extent is acceptable : no negative of zero concentration
             bool acceptable(const double xx) const throw();
 
             const xlimit * const reac; //!< NULL or limiting reactant
