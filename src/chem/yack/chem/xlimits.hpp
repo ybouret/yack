@@ -29,18 +29,24 @@ namespace yack
         class xlimits
         {
         public:
-            //! setup from individual limits
+
             xlimits(const xlimit *rx,
                     const xlimit *px,
-                    const size_t  wm) throw();
-            
+                    const size_t  wm) throw(); //!< setup from individual limits
+
+            //! display
+            friend std::ostream & operator<<(std::ostream &, const xlimits &);
+
+            bool acceptable(const double xx) const throw();
+
             const xlimit * const reac; //!< NULL or limiting reactant
             const xlimit * const prod; //!< NULL or limitins product
             const limitation     type; //!< computed
             const size_t         wmax; //!< helper to format
-            
-            //! display
-            friend std::ostream & operator<<(std::ostream &, const xlimits &);
+
+
+
+
             
         private:
             YACK_DISABLE_COPY_AND_ASSIGN(xlimits);

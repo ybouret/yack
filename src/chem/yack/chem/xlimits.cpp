@@ -103,7 +103,26 @@ namespace yack
             
             return os;
         }
-        
+
+        bool xlimits:: acceptable(const double xx) const throw()
+        {
+            switch(type)
+            {
+                case limited_by_none:
+                    break;
+
+                case limited_by_reac:
+                    return xx < reac->xi;
+
+                case limited_by_prod:
+                    return xx > -(prod->xi);
+
+                case limited_by_both:
+                    return (xx < reac->xi) && (xx > -(prod->xi) );
+            }
+            return true;
+        }
+
     }
     
 }

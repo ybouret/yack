@@ -455,7 +455,6 @@ namespace yack
 
             iota::neg(xi,Gamma);
             solv.solve(iOmega,xi);
-            singles(std::cerr << "xi=","",xi);
 
 
 
@@ -472,8 +471,12 @@ namespace yack
                 const size_t            ei  = *eq;
                 const double            xx  = xi[ei];
                 const xlimits          &lm  = eq.genuine_limits(Corg,corelib.maxlen);
-                singles.pad(std::cerr << eq.name,eq) << ": ";
-                std::cerr << lm << std::endl;
+                const bool              ok  = lm.acceptable(xx);
+                if(verbose)
+                {
+                    singles.pad(std::cerr << eq.name,eq) << " @" << std::setw(15) << xx <<": ";
+                    std::cerr << lm << std::endl;
+                }
             }
 
 
