@@ -437,6 +437,27 @@ namespace yack
             singles(std::cerr << "Gamma=","",Gamma);
             singles(std::cerr << "NuA  =","",NuA);
             std::cerr<< "Omega=" << Omega << std::endl;
+
+            //------------------------------------------------------------------
+            //
+            //
+            // computing xi
+            //
+            //
+            //------------------------------------------------------------------
+            if( !solv.build(Omega,xadd) )
+            {
+                YACK_CHEM_PRINTLN(fn << "[singular Omega]");
+                exit(1);
+            }
+
+            iota::neg(xi,Gamma);
+            solv.solve(Omega,xi);
+            singles(std::cerr << "xi=","",xi);
+
+
+
+
             exit(0);
 
             return false;

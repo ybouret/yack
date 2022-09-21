@@ -62,6 +62,17 @@ namespace yack {
             }
 
 
+
+            //------------------------------------------------------------------
+            //! target[1..target.size()] = -source[1..targt.size()
+            //------------------------------------------------------------------
+            template <typename TARGET, typename SOURCE> static inline
+            void neg(TARGET &target, SOURCE &source)
+            {
+                assert(target.size()<=source.size());
+                for(size_t i=target.size();i>0;--i) target[i] = -static_cast< typename TARGET::type >( source[i] );
+            }
+
             //------------------------------------------------------------------
             //! target[1..target.size()] = lhs - rhs
             //------------------------------------------------------------------

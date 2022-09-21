@@ -33,6 +33,7 @@ namespace yack
         solving(),
         xmul(),
         xadd(),
+        solv(N),
         worklib(corelib),
         mtab(12,M),
         ntab(12,N),
@@ -49,6 +50,7 @@ namespace yack
 
         K(     ntab.next()  ),
         Gamma( ntab.next()  ),
+        xi(    ntab.next()  ),
         sigma( ntab.next()  ),
 
         Kl( ltab.next()  ),

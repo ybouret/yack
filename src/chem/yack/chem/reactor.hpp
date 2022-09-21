@@ -8,7 +8,7 @@
 #include "yack/chem/equilibria.hpp"
 #include "yack/chem/eqs/groups.hpp"
 #include "yack/sequence/arrays.hpp"
-#include "yack/container/matrix.hpp"
+#include "yack/math/algebra/crout.hpp"
 
 namespace yack
 {
@@ -64,18 +64,19 @@ namespace yack
             //
             // member
             //__________________________________________________________________
-            const library    &corelib;  //!< initial library
-            const equilibria &singles;  //!< initial equilibria
-            const active_list working;  //!< list of active species
-            const size_t      M;        //!< corelib.size
-            const size_t      N;        //!< singles.size
-            const size_t      L;        //!< lattice.size
-            const equilibria  couples;  //!< all composite
-            const equilibria  lattice;  //!< singles|couples
-            const groups      related;  //!< related
-            const groups      solving;  //!< all solving combinations
-            rmulops           xmul;     //!< for mulops
-            raddops           xadd;     //!< for addops
+            const library    &  corelib;  //!< initial library
+            const equilibria &  singles;  //!< initial equilibria
+            const active_list   working;  //!< list of active species
+            const size_t        M;        //!< corelib.size
+            const size_t        N;        //!< singles.size
+            const size_t        L;        //!< lattice.size
+            const equilibria    couples;  //!< all composite
+            const equilibria    lattice;  //!< singles|couples
+            const groups        related;  //!< related
+            const groups        solving;  //!< all solving combinations
+            rmulops             xmul;     //!< for mulops
+            raddops             xadd;     //!< for addops
+            math::crout<double> solv;     //!< for linear system solving
 
         private:
             const library     worklib; //!< copy of corelib
@@ -92,7 +93,8 @@ namespace yack
             tableau           &Cend;    //!< [M] final point
             tableau           &Ctry;    //!< [M] working space
             tableau           &K;       //!< [N] pre-computed K
-            tableau           &Gamma;   //!< [N] current Gamma
+            tableau           &Gamma;   //!< [N] current Gamm
+            tableau           &xi;      //!< [N] extent
             tableau           &sigma;   //!< [N] slope
             tableau           &Kl;      //!< [L] pre-computed K
             tableau           &Xl;      //!< [L] solving extents
