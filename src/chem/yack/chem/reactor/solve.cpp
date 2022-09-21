@@ -510,7 +510,18 @@ namespace yack
             //
             //
             //------------------------------------------------------------------
-
+            for(const snode *node=corelib.head();node;node=node->next)
+            {
+                const species &sp = ***node;
+                const size_t   j  = *sp;
+                xadd.ldz();
+                for(size_t i=N;i>0;--i)
+                {
+                    xadd.ld( NuA[i][j] * xi[i] );
+                }
+                dC[j] = xadd.get();
+            }
+            corelib(std::cerr << "dC=", "", dC);
 
             exit(0);
 
