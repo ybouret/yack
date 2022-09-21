@@ -68,8 +68,9 @@ namespace yack
 
             //! test all actors
             const xlimit     *genuine_limit(const readable<double> &C) const throw();
-          
-            //const xlimit     *primary_limit(const readable<double> &C) const throw();
+
+            //! test all primary actors
+            const xlimit     *primary_limit(const readable<double> &C) const throw();
 
             //! display
             friend std::ostream & operator<<(std::ostream &, const actors &);

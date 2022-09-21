@@ -56,6 +56,13 @@ namespace yack
         {
             return * new ( *xlm ) xlimits(reac.genuine_limit(C),prod.genuine_limit(C),w);
         }
+
+        const xlimits & components:: primary_limits(const readable<double> &C, const size_t w) const throw()
+        {
+            return * new ( *xlm ) xlimits(reac.primary_limit(C),prod.primary_limit(C),w);
+        }
+        
+
         
         void components:: operator()(const species &sp,
                                      const int      nu)

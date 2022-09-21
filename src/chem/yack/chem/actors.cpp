@@ -136,6 +136,50 @@ namespace yack
                 return NULL;
             }
         }
+
+        const xlimit *actors:: primary_limit(const readable<double> &C) const throw()
+        {
+            const actor *a  = crew.head;
+
+            if(a)
+            {
+                // look for first primary
+                while(!a->is_primary())
+                {
+                    a = a->next;
+                    if(!a) return NULL;
+                }
+                assert(NULL!=a);
+
+                // initialize
+                const actor *id = a;
+                double       xi = C[***a]/a->nu;
+
+                // look for smaller primary
+                for(a=a->next;a;a=a->next)
+                {
+                    if(!a->is_primary()) continue;;
+                    const double xi_tmp = C[***a]/a->nu;
+                    if(xi_tmp<xi)
+                    {
+                        xi = xi_tmp;
+                        id = a;
+                    }
+                }
+
+                // return limit
+                return new ( *wksp ) xlimit(*id,xi);
+            }
+            else
+            {
+                return NULL;
+            }
+
+
+
+        }
+
+
         
         std::ostream & operator<<(std::ostream &os, const actors &A)
         {

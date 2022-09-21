@@ -94,7 +94,11 @@ namespace yack
             
             //! limits from all the components
             const xlimits &genuine_limits(const readable<double> &C, const size_t w) const throw();
-            
+
+            //! limits from all the primary components
+            const xlimits &primary_limits(const readable<double> &C, const size_t w) const throw();
+
+
             //! display reac <=> prod
             friend std::ostream & operator<<(std::ostream &, const components &);
 

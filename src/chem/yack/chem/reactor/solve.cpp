@@ -470,7 +470,7 @@ namespace yack
                 const equilibrium      &eq  = ***node;
                 const size_t            ei  = *eq;
                 const double            xx  = xi[ei];
-                const xlimits          &lm  = eq.genuine_limits(Corg,corelib.maxlen);
+                const xlimits          &lm  = eq.primary_limits(Corg,corelib.maxlen);
                 const bool              ok  = lm.acceptable(xx);
                 if(verbose)
                 {

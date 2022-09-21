@@ -23,6 +23,12 @@ namespace yack
             assert(nm>=0);
         }
 
+        bool actor:: is_primary() const throw()
+        {
+            return (1 == sp.rank);
+        }
+
+
         const species & actor:: operator*() const throw() { return sp; }
 
         void actor:: display_first(std::ostream &os) const

@@ -43,7 +43,9 @@ namespace yack
             
             //! helper
             void display_extra(std::ostream &) const;
-            
+
+            //! 1== sp.rank
+            bool is_primary() const throw();
             
             //__________________________________________________________________
             //
