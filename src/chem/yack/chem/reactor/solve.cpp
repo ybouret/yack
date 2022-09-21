@@ -406,6 +406,7 @@ namespace yack
             //
             //------------------------------------------------------------------
             YACK_CHEM_PRINTLN(fn << "[computing Omega]");
+            bool maxDof = true;
             for(const enode *node = singles.head(); node; node=node->next)
             {
                 const equilibrium      &eq  = ***node;
@@ -487,6 +488,18 @@ namespace yack
                     singles.pad(std::cerr << ' ' << eq.name,eq) << " @" << std::setw(15) << xx <<": ";
                     std::cerr << lm << std::endl;
                 }
+
+                if(!ok)
+                {
+                    maxDof = false;
+                }
+
+            }
+
+            if(!maxDof)
+            {
+                std::cerr << "bad step..." << std::endl;
+                exit(1);
             }
 
 
