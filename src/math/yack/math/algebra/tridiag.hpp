@@ -31,10 +31,13 @@ namespace yack {
             YACK_DISABLE_COPY_AND_ASSIGN(tridiag_);
         };
 
+        //______________________________________________________________________
+        //
         //! tridiagonal matrix interface and solver
         /**
          works for float, double, long double, complexes, mpq
          */
+        //______________________________________________________________________
         template <typename T>
         class tridiag : public tridiag_, public arrays_of<T>
         {
@@ -46,6 +49,8 @@ namespace yack {
             typedef arrays_of<T>                    tableaux;    //!< alias
             typedef typename tableaux::array_type   array_type;  //!< alias
             typedef typename scalar_for<T>::type    scalar_type; //!< alias
+            using tableaux::next;
+            using tableaux::mutual_size;
 
             //__________________________________________________________________
             //
@@ -59,10 +64,10 @@ namespace yack {
             explicit tridiag(const size_t n, const size_t extra_arrays = 0):
             tridiag_(extra_arrays),
             tableaux(reserved+extra_arrays,n),
-            a( this->next() ),
-            b( this->next() ),
-            c( this->next() ),
-            g( this->next() )
+            a( next() ),
+            b( next() ),
+            c( next() ),
+            g( next() )
             {
                 assert(n==a.size());
                 assert(n==b.size());
@@ -76,8 +81,8 @@ namespace yack {
             //__________________________________________________________________
             inline T operator()(const size_t i, const size_t j) const throw()
             {
-                assert(i>0); assert(i<=this->mutual_size());
-                assert(j>0); assert(j<=this->mutual_size());
+                assert(i>0); assert(i<=mutual_size());
+                assert(j>0); assert(j<=mutual_size());
                 if(i>j)
                 {
                     if(1==i-j)
@@ -131,15 +136,15 @@ namespace yack {
             //
             //! solve (*this)*u = r
             //__________________________________________________________________
-            inline bool solve( writable<T> &u, const readable<T> &r )
+            inline bool solve(writable<T> &u, const readable<T> &r )
             {
-                assert(this->mutual_size()>0);
-                assert(u.size()==this->mutual_size());
-                assert(r.size()==this->mutual_size());
+                assert(mutual_size()>0);
+                assert(u.size()==mutual_size());
+                assert(r.size()==mutual_size());
 
                 // initialize
-                const size_t       n    = this->mutual_size(); assert(n>0);
-                T piv = b[1];
+                const size_t n   = mutual_size(); assert(n>0);
+                T            piv = b[1];
                 {
                     const scalar_type apiv = abs_of(piv);
                     if(apiv<=0) return false;
@@ -169,9 +174,9 @@ namespace yack {
             //! target = (*this)*source
             inline void operator()( writable<T> &target, const readable<T> &source) const
             {
-                assert(target.size()==this->mutual_size());
-                assert(source.size()==this->mutual_size());
-                const size_t n = this->mutual_size();
+                assert(target.size()==mutual_size());
+                assert(source.size()==mutual_size());
+                const size_t n = mutual_size();
                 switch(n)
                 {
                     case 0: return;
