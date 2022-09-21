@@ -48,6 +48,7 @@ namespace yack
         Ctry( mtab.next() ),
 
         K(     ntab.next()  ),
+        Gamma( ntab.next()  ),
         sigma( ntab.next()  ),
 
         Kl( ltab.next()  ),

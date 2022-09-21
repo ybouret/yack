@@ -80,10 +80,10 @@ namespace yack
 
         const equilibrium * reactor:: setTopology(size_t &nrun, outcome &ppty)
         {
-            nrun                    = 0;
-            double             amax = 0;
-            const equilibrium *emax = NULL;
-            NuA.assign(Nu);
+            nrun                    = 0;      // running eqs
+            double             amax = 0;      // max absolute solving extent
+            const equilibrium *emax = NULL;   // whose extent it is
+            NuA.assign(Nu);                   // initial: full run
 
             for(const enode *node = singles.head(); node; node=node->next)
             {
@@ -93,7 +93,6 @@ namespace yack
                 const double       Ki  = K[ei];
                 const outcome      oc  = outcome::study(eq, Ki, Corg, Ci, xmul, xadd);
                 writable<double>  &psi = Psi[ei];
-
 
 
                 switch(oc.state)
@@ -138,9 +137,10 @@ namespace yack
             {
                 corelib(std::cerr << "Cini=","", C0);
             }
+
             //------------------------------------------------------------------
             //
-            // depending on topology
+            // initialize depending on topology
             //
             //------------------------------------------------------------------
             switch(N)
@@ -157,6 +157,7 @@ namespace yack
                 } break;
 
                 default:
+                    // initialize consistent state
                     for(size_t i=M;i>0;--i)
                     {
                         Corg[i] = Cend[i] = Ctry[i] = C0[i];
@@ -177,7 +178,7 @@ namespace yack
             //
             //
             //------------------------------------------------------------------
-            YACK_CHEM_PRINTLN(fn << " [check singles|level-1]");
+            YACK_CHEM_PRINTLN(fn << "[singles topology @level-1]");
             size_t              nrun = 0;
             outcome             ppty;
             const  equilibrium *emax = setTopology(nrun,ppty);
@@ -196,16 +197,16 @@ namespace yack
             //
             //------------------------------------------------------------------
             assert(emax);
-            YACK_CHEM_PRINTLN(fn << "emax=" << emax->name);
+            YACK_CHEM_PRINTLN(fn << "found most displaced @" << emax->name);
 
             switch(nrun)
             {
                 case 0:
-                    YACK_CHEM_PRINTLN(fn << "SUCCESS [all-blocked|level-1]");
+                    YACK_CHEM_PRINTLN(fn << "SUCCESS [all-blocked @level-1]");
                     return returnSolved(C0);
 
                 case 1:
-                    YACK_CHEM_PRINTLN(fn << "is the only one running|level-1");
+                    YACK_CHEM_PRINTLN(fn << "is the only one running @level-1");
                     working.transfer( Corg, Ceq[**emax] );
                     goto CYCLE;
 
@@ -221,7 +222,7 @@ namespace yack
             //
             //------------------------------------------------------------------
             double H0 = Hamiltonian(Corg);
-            YACK_CHEM_PRINTLN( fn << "H0=" << H0);
+            YACK_CHEM_PRINTLN( fn << "    H0 = " << H0 << " M (initial)");
 
 
             //------------------------------------------------------------------
@@ -231,6 +232,8 @@ namespace yack
             //
             //
             //------------------------------------------------------------------
+
+            YACK_CHEM_PRINTLN(fn << "[looking for a minimum]");
             const equilibrium *emin = NULL;
             double             Hmin = H0;
 
@@ -322,7 +325,7 @@ namespace yack
                     assert(g->is_ortho());
                     if(isTurnedOff(g))
                     {
-                        YACK_CHEM_PRINTLN("Htry: skipping " << *g);
+                        YACK_CHEM_PRINTLN("    Htry: skipping " << *g);
                         continue;
                     }
 
@@ -343,7 +346,7 @@ namespace yack
                     const bool   ok   = (Htry<Hmin);
                     if(verbose)
                     {
-                        std::cerr << "Htry=" << std::setw(15) << Htry;
+                        std::cerr << "    Htry=" << std::setw(15) << Htry;
                         std::cerr << (ok? " [+]" : " [-]");
                         std::cerr << " @" << *g << std::endl;
                     }
@@ -364,17 +367,17 @@ namespace yack
                 {
                     corelib(std::cerr << "Cnew=","", Corg);
                 }
-                YACK_CHEM_PRINTLN(fn << " [check singles|level-2]");
+                YACK_CHEM_PRINTLN(fn << "[singles topology @level-2]");
                 emax = setTopology(nrun,ppty);
                 switch(nrun)
                 {
                     case 0:
-                        YACK_CHEM_PRINTLN(fn << "SUCCESS [all-blocked|level-2]");
+                        YACK_CHEM_PRINTLN(fn << "SUCCESS [all-blocked @level-2]");
                         return returnSolved(C0);
 
                     case 1:
-                        YACK_CHEM_PRINTLN(fn << "is the only one running|level-2");
-                        working.transfer( Corg, Ceq[**emax] );
+                        YACK_CHEM_PRINTLN(fn << "is the only one running @level-2");
+                        working.transfer(Corg,Ceq[**emax] );
                         goto CYCLE;
 
                     default:
@@ -382,9 +385,7 @@ namespace yack
                 }
 
                 H0 = Hamiltonian(Corg);
-                YACK_CHEM_PRINTLN( fn << "H0=" << H0 << " (updated)");
-
-
+                YACK_CHEM_PRINTLN( fn << "    H0 = " << H0 << " M (updated)");
             }
             else
             {
@@ -398,7 +399,38 @@ namespace yack
             }
 
             // computing Omega
+            YACK_CHEM_PRINTLN(fn << "[computing Omega]");
 
+            for(const enode *node = singles.head(); node; node=node->next)
+            {
+                const equilibrium      &eq  = ***node;
+                const size_t            ei  = *eq;
+                writable<double>       &Omi = Omega[ei];
+                if(blocked[ei])
+                {
+                    Omi.ld(0);
+                    Omi[ei]   = 1.0;
+                    Gamma[ei] = 0.0;
+                }
+                else
+                {
+                    writable<double> &psi = Psi[ei];
+                    const double      Ki  = K[ei];
+                    eq.grad_action(psi,Ki,Corg,xmul);
+                    Gamma[ei] = fabs(Xl[ei])<=0 ? 0 : eq.mass_action(Ki,Corg,xmul);
+                }
+            }
+
+            singles(std::cerr << "Omega=","",Omega);
+            singles(std::cerr << "Gamma=","",Gamma);
+            singles(std::cerr << "NuA  =","",NuA);
+            std::cerr<< "Omega=" << Omega << std::endl;
+
+            exit(0);
+
+            return false;
+
+#if 0
             for(const enode *node = singles.head(); node; node=node->next)
             {
                 const equilibrium      &eq  = ***node;
@@ -430,8 +462,8 @@ namespace yack
             singles(std::cerr << "Omega=","",Omega);
             singles(std::cerr << "NuA  =","",NuA);
             std::cerr<< "Omega=" << Omega << std::endl;
+#endif
 
-            return false;
         }
 
     }

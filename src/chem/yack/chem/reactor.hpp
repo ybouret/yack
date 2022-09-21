@@ -92,6 +92,7 @@ namespace yack
             tableau           &Cend;    //!< [M] final point
             tableau           &Ctry;    //!< [M] working space
             tableau           &K;       //!< [N] pre-computed K
+            tableau           &Gamma;   //!< [N] current Gamma
             tableau           &sigma;   //!< [N] slope
             tableau           &Kl;      //!< [L] pre-computed K
             tableau           &Xl;      //!< [L] solving extents

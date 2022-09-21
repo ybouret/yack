@@ -40,7 +40,19 @@ YACK_UTEST(reactor)
         throw exception("couldn't solve zero phase state!!");
     }
 
-    
+    std::cerr << "[Solving Random State]" << std::endl;
+    lib.fill(C,ran);
+    if( cs.solve(C) )
+    {
+        lib(std::cerr << "Cend=", "", C);
+    }
+    else
+    {
+        throw exception("couldn't solve random phase state!!");
+    }
+
+    return 0;
+
     vector<species*> psp;
     for(const anode *node=cs.working.head;node;node=node->next)
     {
