@@ -29,7 +29,7 @@ namespace yack
         class xlimits
         {
         public:
-
+            
             xlimits(const xlimit *rx,
                     const xlimit *px,
                     const size_t  wm) throw(); //!< setup from individual limits
