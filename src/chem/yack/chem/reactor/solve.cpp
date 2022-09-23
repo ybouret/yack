@@ -463,7 +463,7 @@ namespace yack
             //------------------------------------------------------------------
             //
             //
-            // checking primary extent
+            // checking PRIMARY extents
             //
             //
             //------------------------------------------------------------------
@@ -529,20 +529,27 @@ namespace yack
             }
 
             corelib(std::cerr << "dC=", "", dC);
-            double umax = 1;
+            bool   maxRun = true;
+            double umax   = 1;
             if(ratio.size())
             {
                 hsort(ratio,comparison::increasing<double>);
-                umax = min_of(umax,ratio.front());
+                const double rmax = ratio.front();
+                if(rmax<=1)
+                {
+                    umax   = 0.5;
+                    maxRun = false;
+                }
                 //umax = ratio.front();
             }
-            std::cerr << "ratio=" << ratio << std::endl;
-            
+            std::cerr << "ratio  = " << ratio << std::endl;
+            std::cerr << "maxRun = " << maxRun << std::endl;
+
             for(const anode *node=working.head;node;node=node->next)
             {
                 const species &sp = **node; assert(sp.rank>0);
                 const size_t   j  = *sp;
-                Cend[j] = max_of<double>(Corg[j]+dC[j],0);
+                Cend[j] = max_of<double>(Corg[j]+umax*dC[j],0);
             }
             
             {
