@@ -104,6 +104,7 @@ namespace yack
             static const char * const fn = locate_inside;
             static const real_t       half(0.5);
 
+            // initialize in increasing x order
             if(x.c<x.a)
             {
                 cswap(x.a,x.c);
@@ -112,6 +113,7 @@ namespace yack
 
             assert(x.a<=x.c);
 
+            // starting point with current width
             unsigned cycle = 0;
             real_t   width = x.c-x.a; assert(width>=0);
             ++cycle;
@@ -137,53 +139,45 @@ namespace yack
                 for(size_t i=0;i<=np;++i)
                 {
                     const real_t u = i/(real_t)np;
-                    fp("%.15g %.15g %.15g\n", double(u),  double(F(x.a+u*(x.c-x.a))), double(f.a + slope_a * u + curvature * u*u) );
+                    fp("%.15g %.15g %.15g %.15g\n", double(u),  double(F(x.a+u*(x.c-x.a))), double(f.a + slope_a * u + curvature * u*u), double(f.c+slope_c*(u-1)+curvature*squared(u-1)));
                 }
             }
 
-            real_t u[4] = {0,0,0,0};
-            real_t h[4] = {0,0,0,0};
-            size_t n    = 0;
+            enum look_up
+            {
+                l_global,
+                r_global,
+                centered
+            };
+
+            look_up where = centered;
 
             if(curvature<=0)
             {
                 YACK_LOCATE(fn<<"<negative curvature>");
                 if(f.a<=f.c)
                 {
+                    where = l_global;
                 }
                 else
                 {
                     assert(f.c<f.a);
+                    where = r_global;
                 }
-                exit(0);
             }
             else
             {
                 assert(curvature>0);
-                if(slope_a>=0)
+                switch( __sign::pair_of(slope_a,slope_c) )
                 {
-                    // predicting u_opt <= 0
-                    YACK_LOCATE(fn<<"<predicting global_min @left>");
-                    exit(0);
-                }
-                else
-                {
-                    assert(slope_a<0);
-                    if(slope_c<=0)
-                    {
-                        YACK_LOCATE(fn<<"<predicting global_min @right>");
-                        exit(0);
-                    }
-                    else
-                    {
-                        // predicting u_opt in ]0:1[
-                        const real_t num = -slope_a;
-                        const real_t den = curvature+curvature;
-                        
+                    case np_pair: assert(centered==where);
+                        break;
 
-                    }
+
                 }
+
             }
+
 
 
 

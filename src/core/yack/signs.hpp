@@ -71,12 +71,20 @@ namespace yack
         //! build lhs|rhs
         static sign_pair pair(const sign_type lhs, const sign_type rhs) throw();
 
+        //! buils sign_of(rhs) | sign_of(lhs)
+        template <typename T, typename U> static inline
+        sign_pair pair_of(const T &lhs, const U &rhs)
+        {
+            return  pair( of(lhs), of(rhs) );
+        }
+
+
         //! compute product
         static sign_type product(const sign_type lhs, const sign_type rhs) throw();
 
         //! compute product of
         template <typename T, typename U> static inline
-        sign_type product_of(const T lhs, const U rhs)
+        sign_type product_of(const T &lhs, const U &rhs)
         {
             return product( of(lhs), of(rhs) );
         }
