@@ -24,6 +24,7 @@ YACK_UTEST_DECL(80)
     YACK_UTEST(zroot);
     YACK_UTEST(zircon);
 
+    YACK_UTEST(locate);
     YACK_UTEST(optimize);
 
     YACK_UTEST(drvs);

@@ -6,6 +6,7 @@
 
 #include "yack/math/triplet.hpp"
 #include "yack/math/real-function.hpp"
+#include "yack/math/adder.hpp"
 #include <cmath>
 
 namespace yack
@@ -40,6 +41,19 @@ namespace yack
 
             //__________________________________________________________________
             //
+            //! inside [x.a,...,x.c], with f.a and f.c computed
+            /**
+             - Look for f.b <= f.a and f.b <= f.c
+             - can be on a side of the interval
+             - retun x.a<=x.b<=x.c
+             */
+            //__________________________________________________________________
+            template <typename T> static
+            bool inside2(real_function<T> &F, triplet<T> &x, triplet<T> &f);
+
+
+            //__________________________________________________________________
+            //
             //! wrapper for inside
             //__________________________________________________________________
             template <typename T, typename FUNCTION> static inline
@@ -48,6 +62,18 @@ namespace yack
                 typename real_function_of<T>::template call<FUNCTION> FF(F);
                 return inside(FF,x,f);
             }
+
+            //__________________________________________________________________
+            //
+            //! wrapper for inside
+            //__________________________________________________________________
+            template <typename T, typename FUNCTION> static inline
+            bool inside2_for(FUNCTION &F, triplet <T> &x, triplet<T> &f)
+            {
+                typename real_function_of<T>::template call<FUNCTION> FF(F);
+                return inside2(FF,x,f);
+            }
+
 
 
             //__________________________________________________________________

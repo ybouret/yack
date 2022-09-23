@@ -75,6 +75,7 @@ add_test(zroot  test-math zroot)
 add_test(zircon test-math zircon)
 
 #opt
+add_test(locate   test-math locate)
 add_test(optimize test-math optimize)
 
 #fcn

@@ -93,6 +93,105 @@ namespace yack
             }
             
         }
+
+
+        template <>
+        bool locate:: inside2<real_t>(real_function<real_t> &F,
+                                      triplet<real_t>       &x,
+                                      triplet<real_t>       &f )
+        {
+
+            static const char * const fn = locate_inside;
+            static const real_t       half(0.5);
+
+            if(x.c<x.a)
+            {
+                cswap(x.a,x.c);
+                cswap(f.a,f.c);
+            }
+
+            assert(x.a<=x.c);
+
+            unsigned cycle = 0;
+            real_t   width = x.c-x.a; assert(width>=0);
+            ++cycle;
+            f.b = F( x.b = clamp(x.a,half*(x.a+x.c),x.c) ); assert(x.is_increasing());
+            YACK_LOCATE(fn<<"[cycle #" << std::setw(3) << cycle << "] " << f << " @" << x);
+
+            if(f.is_local_minimum())
+            {
+                YACK_LOCATE(fn<<"<local minimum>");
+                return true;
+            }
+
+
+            // local parabolic estimation
+            const real_t curvature = twice( (f.c-f.b) + (f.a-f.b) );
+            const real_t slope_a   = (f.b-f.c) + 3 * (f.b-f.a);
+            const real_t slope_c   = (f.a-f.b) + 3 * (f.c-f.b);
+            YACK_LOCATE(fn<<"[slope_a=" << slope_a<<"; curvature=" << curvature << "; slope_c=" << slope_c << "]");
+
+            {
+                ios::ocstream fp("inside.dat");
+                const size_t  np = 100;
+                for(size_t i=0;i<=np;++i)
+                {
+                    const real_t u = i/(real_t)np;
+                    fp("%.15g %.15g %.15g\n", double(u),  double(F(x.a+u*(x.c-x.a))), double(f.a + slope_a * u + curvature * u*u) );
+                }
+            }
+
+            real_t u[4] = {0,0,0,0};
+            real_t h[4] = {0,0,0,0};
+            size_t n    = 0;
+
+            if(curvature<=0)
+            {
+                YACK_LOCATE(fn<<"<negative curvature>");
+                if(f.a<=f.c)
+                {
+                }
+                else
+                {
+                    assert(f.c<f.a);
+                }
+                exit(0);
+            }
+            else
+            {
+                assert(curvature>0);
+                if(slope_a>=0)
+                {
+                    // predicting u_opt <= 0
+                    YACK_LOCATE(fn<<"<predicting global_min @left>");
+                    exit(0);
+                }
+                else
+                {
+                    assert(slope_a<0);
+                    if(slope_c<=0)
+                    {
+                        YACK_LOCATE(fn<<"<predicting global_min @right>");
+                        exit(0);
+                    }
+                    else
+                    {
+                        // predicting u_opt in ]0:1[
+                        const real_t num = -slope_a;
+                        const real_t den = curvature+curvature;
+                        
+
+                    }
+                }
+            }
+
+
+
+
+            return false;
+
+        }
+
     }
 }
 
