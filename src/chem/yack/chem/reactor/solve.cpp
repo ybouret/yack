@@ -534,6 +534,7 @@ namespace yack
             {
                 hsort(ratio,comparison::increasing<double>);
                 umax = min_of(umax,ratio.front());
+                //umax = ratio.front();
             }
             std::cerr << "ratio=" << ratio << std::endl;
             
