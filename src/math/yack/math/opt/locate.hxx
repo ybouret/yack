@@ -151,33 +151,37 @@ namespace yack
             };
 
             look_up where = centered;
-
-            if(curvature<=0)
+            switch( __sign::pair_of(slope_a,slope_c) )
             {
-                YACK_LOCATE(fn<<"<negative curvature>");
-                if(f.a<=f.c)
-                {
-                    where = l_global;
-                }
-                else
-                {
-                    assert(f.c<f.a);
+                case np_pair: /** \ / **/
+                    assert(curvature>0);
+                    break;
+
+                case nz_pair: /** \ _ **/
+                case nn_pair: /** \ \ **/
                     where = r_global;
-                }
+                    break;
+
+                case zp_pair: /** _ / **/
+                case pp_pair: /** / / **/
+                    where = l_global;
+                    break;
+
+                case zn_pair: /** - \ **/
+                case zz_pair: /** _ _ **/
+                case pz_pair: /** / - **/
+                case pn_pair: /** / \ **/
+                    if(f.a<=f.c)
+                    {
+                        where = l_global;
+                    }
+                    else
+                    {
+                        where = r_global;
+                    }
+                    break;
+
             }
-            else
-            {
-                assert(curvature>0);
-                switch( __sign::pair_of(slope_a,slope_c) )
-                {
-                    case np_pair: assert(centered==where);
-                        break;
-
-
-                }
-
-            }
-
 
 
 
