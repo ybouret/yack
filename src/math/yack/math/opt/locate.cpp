@@ -6,6 +6,7 @@
 #include "yack/sort/network/sort4.hpp"
 #include "yack/ios/ocstream.hpp"
 #include "yack/signs.hpp"
+#include "yack/sort/indexing.hpp"
 
 #include <iomanip>
 
