@@ -344,7 +344,8 @@ namespace yack
                 real_t       xx[5] = { x.a, x.b, x_omega, x.c, NAN };
                 real_t       ff[5] = { f.a, f.b, f_omega, f.c, NAN };
                 const real_t q1    = Q(1);
-                if( q1 <= 0 )
+                const bool   decreasing = q1 <= 0;
+                if( decreasing )
                 {
                     YACK_LOCATE(fn << "<decreasing>");
                     const real_t wc(0.9);
@@ -365,8 +366,8 @@ namespace yack
                     ff[4] = f_opt;
                 }
 
-                srt.csort(xx,ff);  // increasing x
-                find5(x,f,xx,ff);  // rearrange x
+                srt.csort(xx,ff);    // increasing x
+                find5(x,f,xx,ff);    // rearrange x
                 write3(x,f,++color);
 
                 if(f.is_local_minimum())
@@ -379,18 +380,19 @@ namespace yack
                 std::cerr << "width=" << width << " => " << new_width << std::endl;
                 if(new_width<=0 || new_width>=width)
                 {
+                    YACK_LOCATE(fn << "<monotonic>");
 
+                    return false;
                 }
 
                 width = new_width;
                 goto CYCLE;
 
 
-                
+
             }
 
 
-            return false;
 
         SUCCESS:
             // found
