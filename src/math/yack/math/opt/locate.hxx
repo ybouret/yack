@@ -104,6 +104,82 @@ namespace yack
             }
 
 
+            static inline
+            void write3(const triplet<real_t>       &x,
+                        const triplet<real_t>       &f,
+                        const unsigned               i)
+            {
+                ios::acstream fp("instri.dat");
+                fp("%.15g %.15g %u\n", double(x.a), double(f.a), i);
+                fp("%.15g %.15g %u\n", double(x.b), double(f.b), i);
+                fp("%.15g %.15g %u\n", double(x.c), double(f.c), i);
+                fp("%.15g %.15g %u\n", double(x.a), double(f.a), i);
+                fp << "\n";
+            }
+
+
+            // rearrange values so that a
+            // test to f.is_local may be true only on indices 1,2,3
+            // and not on 0 and 4
+            static inline void find5(triplet<real_t>       &x,
+                                     triplet<real_t>       &f,
+                                     const real_t           xx[],
+                                     const real_t           ff[])
+            {
+                assert(xx[0]<=xx[1]);
+                assert(xx[1]<=xx[2]);
+                assert(xx[2]<=xx[3]);
+                assert(xx[3]<=xx[4]);
+
+                size_t imin = 0;
+                real_t fmin = ff[0];
+                for(size_t i=1;i<5;++i)
+                {
+                    const real_t ftmp = ff[i];
+                    if(ftmp<fmin)
+                    {
+                        imin = i;
+                        fmin = ftmp;
+                    }
+                }
+
+                switch(imin)
+                {
+                    case 0:
+                        x.c = xx[0];
+                        f.c = ff[0];
+                        x.a = x.b = xx[1];
+                        f.a = f.b = ff[1];
+                        assert(f.a>=f.c);
+                        break;
+
+                    case 1:
+                    case 2:
+                    case 3:
+                    {
+                        --imin;
+                        x.load(xx+imin);
+                        f.load(ff+imin);
+                        if(f.a < f.c)
+                        {
+                            f.reverse();
+                            x.reverse();
+                        } assert(f.a>=f.c);
+                    } break;
+
+                    case 4:
+                        x.c = xx[4];
+                        f.c = ff[4];
+                        x.a = x.b = xx[3];
+                        f.a = f.b = ff[3];
+                        assert(f.a>=f.c);
+                        break;
+
+                }
+
+
+            }
+
         }
 
         template <>
@@ -114,6 +190,8 @@ namespace yack
 
             static const char * const fn = locate_inside;
             static const real_t       half(0.5);
+            static const real_t       one(1);
+            const network_sort5       srt;
 
             //------------------------------------------------------------------
             //
@@ -132,7 +210,7 @@ namespace yack
             real_t   xmax  = x.c;
             real_t   width = cswap_incr(xmin,xmax);
             unsigned cycle = 0;
-
+            unsigned color = 1;
             {
                 ios::ocstream fp("inside.dat");
                 const size_t  np = 50;
@@ -160,6 +238,8 @@ namespace yack
             f.b = F( x.b = clamp(xmin,half*(xmin+xmax),xmax) ); assert(x.is_ordered());
             YACK_LOCATE( fn  << x << " -> " << f << " | w=" << width);
 
+            write3(x,f,++color);
+
 
             if(f.b<=f.c)
             {
@@ -185,15 +265,16 @@ namespace yack
                 goto CYCLE; // keep the lowest part and restart
             }
 
-            //------------------------------------------------------------------
-            //
-            //
-            // middle point is strictly located between f.a=upper, f.c=lower
-            // take value at 3/4 of width to deduce cubic
-            //
-            //------------------------------------------------------------------
             assert(f.c<f.b);  assert(f.b<f.a);
             {
+
+                //--------------------------------------------------------------
+                //
+                //
+                // middle point is strictly located between f.a=upper, f.c=lower
+                // take value at 3/4 of width to deduce cubic approximation
+                //
+                //--------------------------------------------------------------
                 const real_t x_omega  = half*(x.b+x.c);
                 const real_t f_omega  = F(x_omega);
 
@@ -243,16 +324,69 @@ namespace yack
                     }
                 }
 
-                if( Q(0) >= 0 )
+                //--------------------------------------------------------------
+                //
+                // check if decreasing @u=0 (x.a)
+                //
+                //--------------------------------------------------------------
+                const real_t q0 = Q(0);
+                if( q0 >= 0 )
                 {
                     YACK_LOCATE(fn << "<spurious>" );
-                    exit(1);
+                    f.a = f_omega;
+                    x.a = x_omega;
+                    width = cswap_incr(xmin=x.a,xmax=x.c);
+                    goto CYCLE; // keep the lowest part so far and restart
                 }
 
+                assert(q0<0);
+
+                real_t       xx[5] = { x.a, x.b, x_omega, x.c, NAN };
+                real_t       ff[5] = { f.a, f.b, f_omega, f.c, NAN };
+                const real_t q1    = Q(1);
+                if( q1 <= 0 )
+                {
+                    YACK_LOCATE(fn << "<decreasing>");
+                    const real_t wc(0.9);
+                    const real_t wa    = one - wc;
+                    const real_t x_opt = clamp(xmin,x.a*wa+x.c*wc,xmax);
+                    const real_t f_opt = F(x_opt);
+                    xx[4] = x_opt;
+                    ff[4] = f_opt;
+                }
+                else
+                {
+                    assert(q1>0);
+                    const real_t u_opt = Q.zsearch(q0,q1);
+                    const real_t x_opt = clamp(xmin,x.a*(one-u_opt)+u_opt*x.c,xmax);
+                    YACK_LOCATE(fn << "x_opt=" << x_opt << ", u_opt=" << u_opt);
+                    const real_t f_opt = F(x_opt);
+                    xx[4] = x_opt;
+                    ff[4] = f_opt;
+                }
+
+                srt.csort(xx,ff);  // increasing x
+                find5(x,f,xx,ff);  // rearrange x
+                write3(x,f,++color);
+
+                if(f.is_local_minimum())
+                {
+                    YACK_LOCATE(fn << "<success@level-3>");
+                    goto SUCCESS;
+                }
+
+                const real_t new_width = cswap_incr(xmin=x.a,xmax=x.c);
+                std::cerr << "width=" << width << " => " << new_width << std::endl;
+                if(new_width<=0 || new_width>=width)
+                {
+
+                }
+
+                width = new_width;
+                goto CYCLE;
 
 
-                exit(0);
-
+                
             }
 
 
@@ -261,7 +395,6 @@ namespace yack
         SUCCESS:
             // found
             assert( f.is_local_minimum() );
-            YACK_LOCATE(fn << "<found>");
 
             // set increasing x
             if(x.c<x.a)
@@ -278,18 +411,6 @@ namespace yack
 
 
 
-        static inline
-        void write3(const triplet<real_t>       &x,
-                    const triplet<real_t>       &f,
-                    const unsigned               i)
-        {
-            ios::acstream fp("instri.dat");
-            fp("%.15g %.15g %u\n", double(x.a), double(f.a), i);
-            fp("%.15g %.15g %u\n", double(x.b), double(f.b), i);
-            fp("%.15g %.15g %u\n", double(x.c), double(f.c), i);
-            fp("%.15g %.15g %u\n", double(x.a), double(f.a), i);
-            fp << "\n";
-        }
 
         
 

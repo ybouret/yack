@@ -8,6 +8,7 @@
 #include "yack/ios/ocstream.hpp"
 #include "yack/signs.hpp"
 #include "yack/sort/indexing.hpp"
+#include "yack/math/numeric.hpp"
 
 #include <iomanip>
 
@@ -46,12 +47,56 @@ namespace yack
                     return  u*(A*u+B)+C;
                 }
 
-                inline T slope(const T u) const throw()
+                inline T zsearch(const T q0, const T q1) const throw()
                 {
-                    return twice(A*u)+B;
+                    static const T utol = std::sqrt( numeric<T>::epsilon );
+                    assert(q0<0);
+                    assert(q1>0);
+
+                    // initialize
+                    triplet<T>       u = {0,  -1, 1};
+                    triplet<T>       f = {q0, -1, q1 };
+                    if(update(u,f)) return u.b; // early return;
+                    T u_old = u.b;
+
+                    // loop
+                ZSEARCH:
+                    if(update(u,f)) return u.b; // early return;
+                    const T err = std::abs(u.b-u_old);
+                    if( err <= utol ) return u.b;
+                    u_old = u.b;
+                    goto ZSEARCH;
                 }
+
+            private:
+                inline bool update(triplet<T> &u,
+                                   triplet<T> &f) const throw()
+                {
+                    static const T   h(0.5);
+                    const Quadratic &F = *this;
+                    f.b  = F( u.b = clamp(u.a,h*(u.a+u.c),u.c) );
+                    std::cerr << "f(" << u.b << ")=" << f.b << std::endl;
+                    switch( __sign::of(f.b) )
+                    {
+                        case __zero__:
+                            return true;
+
+                        case negative:
+                            u.a = u.b;
+                            f.a = f.b;
+                            break;
+
+                        case positive:
+                            u.c = u.b;
+                            f.c = f.b;
+                            break;
+                    }
+                    return false;
+                }
+
             };
 
+#if 0
             template <typename T>
             struct Affine
             {
@@ -63,7 +108,8 @@ namespace yack
                     return start + u * slope;
                 }
             };
-            
+#endif
+
 
         }
     }
