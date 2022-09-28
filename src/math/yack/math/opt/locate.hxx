@@ -95,6 +95,18 @@ namespace yack
         }
 
 
+        static inline
+        void write3(const triplet<real_t>       &x,
+                    const triplet<real_t>       &f,
+                    const unsigned               i)
+        {
+            ios::acstream fp("instri.dat");
+            fp("%.15g %.15g %u\n", double(x.a), double(f.a), i);
+            fp("%.15g %.15g %u\n", double(x.b), double(f.b), i);
+            fp("%.15g %.15g %u\n", double(x.c), double(f.c), i);
+            fp("%.15g %.15g %u\n", double(x.a), double(f.a), i);
+            fp << "\n";
+        }
 
         template <>
         bool locate:: inside2<real_t>(real_function<real_t> &F,
@@ -104,57 +116,103 @@ namespace yack
 
             static const char * const fn = locate_inside;
             static const real_t       half(0.5);
-            static const real_t       _one(1);
 
-            enum lowest
-            {
-                a_lowest,
-                c_lowest,
-            };
 
-            //------------------------------------------------------------------
-            //
-            //
-            // setup increasing x
-            //
-            //
-            //------------------------------------------------------------------
-            if(x.a>x.c)
+            // initialize with decreasing a->c
+            if(f.a < f.c)
             {
-                x.reverse();
                 f.reverse();
-            }
-            assert(x.a<=x.c);
+                x.reverse();
+            } assert(f.a>=f.c);
+
+            real_t xmin = x.a;
+            real_t xmax = x.c;
+            if(xmax<xmin) cswap(xmin,xmax); assert(xmin<=xmax);
+
+
+            unsigned cycle = 0;
+            real_t   width = xmax - xmin;
 
 
             {
                 ios::ocstream fp("inside.dat");
-                const size_t np = 100;
+                const size_t  np = 50;
                 for(size_t i=0;i<=np;++i)
                 {
-                    const real_t u = i/static_cast<real_t>(np);
-                    const real_t X = x.a + u * (x.c-x.a);
-                    fp("%.15g %.15g\n", double(X), double(F(X)));
+                    const real_t u = i/(real_t)np;
+                    const real_t X = x.a + (x.c-x.a)*u;
+                    fp("%.15g %.15g %.15g\n", double(X), double( F(X) ), double(u) );
                 }
-                ios::ocstream::overwrite("insops.dat");
-                ios::ocstream::overwrite("inslen.dat");
+                ios::ocstream::overwrite("instri.dat");
             }
 
-            //------------------------------------------------------------------
-            //
-            //
-            // initialize search
-            //
-            //
-            //------------------------------------------------------------------
-            unsigned     cycle = 0;                  // counter
-            real_t       width = std::abs(x.c-x.a);  // initial interval width
-            
+            // take middle point
+        CYCLE:
+            ++cycle;
+            f.b = F( x.b = clamp(xmin,half*(xmin+xmax),xmax) ); assert(x.is_ordered());
+            YACK_LOCATE(fn << x << " -> " << f << "@width=" << width);
+            write3(x,f,cycle+1);
 
-            return false;
+            if(f.b<=f.c)
+            {
+                goto SUCCESS;
+            }
+            else
+            {
+                if(f.b>=f.a)
+                {
+                    YACK_LOCATE(fn << "<bump>" );
+                    x.a   = x.b;
+                    f.a   = f.b;
+                    xmin  = x.a; xmax = x.c; if(xmax<xmin) cswap(xmin,xmax); assert(xmin<=xmax);
+                    width = xmax - xmin;
+                    goto CYCLE;
+                }
+                else
+                {
+                    assert(f.b>f.c);
+                    assert(f.b<f.a);
+
+                    const real_t f_omega = F( half*(x.b+x.c) );
+                    const real_t delta[3] = { f.c - f.a, f.b - f.a, f_omega - f.a };
+                    const real_t alpha    =   3 * delta[0] + 12 * delta[1] - 32 * delta[2]/3;
+                    const real_t beta     = -10 * delta[0] - 28 * delta[1] + 32 * delta[2];
+                    const real_t gamma    =   8 * delta[0] + 16 * delta[1] - 64 * delta[2]/3;
+
+
+                    {
+                        ios::ocstream fp("inscub.dat");
+                        const size_t  np = 200;
+                        for(size_t i=0;i<=np;++i)
+                        {
+                            const real_t u = i/(real_t)np;
+                            fp("%.15g %.15g\n", double(u), double(f.a+u*alpha + u*u*beta + u*u*u * gamma) );
+                        }
+                    }
+
+
+                    exit(0);
+                }
+            }
 
 
 
+
+
+        SUCCESS:
+            // found
+            assert( f.is_local_minimum() );
+            YACK_LOCATE(fn << "<found>");
+
+            // set increasing x
+            if(x.c<x.a)
+            {
+                x.reverse();
+                f.reverse();
+            }
+            YACK_LOCATE(fn << x << " -> " << f);
+
+            return true;
 
         }
 
