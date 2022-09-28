@@ -173,12 +173,26 @@ namespace yack
                     assert(f.b>f.c);
                     assert(f.b<f.a);
 
-                    const real_t f_omega = F( half*(x.b+x.c) );
+                    const real_t f_omega  = F( half*(x.b+x.c) );
                     const real_t delta[3] = { f.c - f.a, f.b - f.a, f_omega - f.a };
                     const real_t alpha    =   3 * delta[0] + 12 * delta[1] - 32 * delta[2]/3;
                     const real_t beta     = -10 * delta[0] - 28 * delta[1] + 32 * delta[2];
                     const real_t gamma    =   8 * delta[0] + 16 * delta[1] - 64 * delta[2]/3;
 
+
+                    // computing coefficients
+
+                    struct Quadratic
+                    {
+                        real_t A, B, C;
+
+                        inline real_t operator()(const real_t u) const throw()
+                        {
+                            return  u*(A*u+B)+C;
+                        }
+                    };
+
+                    const Quadratic Q = { 3*gamma, 2*beta, alpha };
 
                     {
                         ios::ocstream fp("inscub.dat");
@@ -186,9 +200,27 @@ namespace yack
                         for(size_t i=0;i<=np;++i)
                         {
                             const real_t u = i/(real_t)np;
-                            fp("%.15g %.15g\n", double(u), double(f.a+u*alpha + u*u*beta + u*u*u * gamma) );
+                            fp("%.15g %.15g %.15g\n", double(u), double(f.a+u*alpha + u*u*beta + u*u*u * gamma), double(Q(u)) );
                         }
                     }
+
+                    triplet<real_t>    q = { Q(0), 0, Q(1) };
+                    triplet<sign_type> s = { __sign::of(q.a), __zero__, __sign::of(q.c) };
+
+                    if( __sign::product(s.a,s.c) == negative )
+                    {
+                        std::cerr << "look up for min" << std::endl;
+                    }
+                    else
+                    {
+                        std::cerr << "no local min" << std::endl;
+                    }
+
+
+
+
+
+
 
 
                     exit(0);
