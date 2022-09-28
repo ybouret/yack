@@ -108,6 +108,14 @@ namespace yack
             fp << "\n";
         }
 
+
+        static inline real_t cswap_incr(real_t &xmin, real_t &xmax) throw()
+        {
+            if(xmax<xmin) cswap(xmin,xmax);
+            assert(xmin<=xmax);
+            return xmax-xmin;
+        }
+
         template <>
         bool locate:: inside2<real_t>(real_function<real_t> &F,
                                       triplet<real_t>       &x,
@@ -116,23 +124,29 @@ namespace yack
 
             static const char * const fn = locate_inside;
             static const real_t       half(0.5);
+            static const real_t       one(1);
+            static const real_t       jump(0.01);
+            static const real_t       keep(one-jump);
+            const network_sort5       srt;
 
-
+            //------------------------------------------------------------------
+            //
+            //
             // initialize with decreasing a->c
+            //
+            //
+            //------------------------------------------------------------------
+
             if(f.a < f.c)
             {
                 f.reverse();
                 x.reverse();
             } assert(f.a>=f.c);
 
-            real_t xmin = x.a;
-            real_t xmax = x.c;
-            if(xmax<xmin) cswap(xmin,xmax); assert(xmin<=xmax);
-
-
+            real_t   xmin = x.a;
+            real_t   xmax = x.c;
+            real_t   width = cswap_incr(xmin,xmax);
             unsigned cycle = 0;
-            real_t   width = xmax - xmin;
-
 
             {
                 ios::ocstream fp("inside.dat");
@@ -146,34 +160,53 @@ namespace yack
                 ios::ocstream::overwrite("instri.dat");
             }
 
-            // take middle point
         CYCLE:
             ++cycle;
+            //------------------------------------------------------------------
+            //
+            //
+            // take middle point
+            //
+            //
+            //------------------------------------------------------------------
             f.b = F( x.b = clamp(xmin,half*(xmin+xmax),xmax) ); assert(x.is_ordered());
-            YACK_LOCATE(fn << x << " -> " << f << "@width=" << width);
-            write3(x,f,cycle+1);
+            YACK_LOCATE(fn << x << " -> " << f << " @width=" << width);
+            if(1==cycle) write3(x,f,cycle+1);
 
             if(f.b<=f.c)
             {
+                //--------------------------------------------------------------
+                //
+                // success
+                //
+                //--------------------------------------------------------------
                 goto SUCCESS;
             }
             else
             {
                 if(f.b>=f.a)
                 {
+                    //----------------------------------------------------------
+                    //
                     YACK_LOCATE(fn << "<bump>" );
+                    // keep the lowest part and restart
+                    //
+                    //----------------------------------------------------------
                     x.a   = x.b;
                     f.a   = f.b;
-                    xmin  = x.a; xmax = x.c; if(xmax<xmin) cswap(xmin,xmax); assert(xmin<=xmax);
-                    width = xmax - xmin;
+                    width = cswap_incr(xmin=x.a,xmax=x.c);
                     goto CYCLE;
                 }
                 else
                 {
                     assert(f.b>f.c);
                     assert(f.b<f.a);
-                    YACK_LOCATE(fn << "<topology>" );
 
+                    //----------------------------------------------------------
+                    //
+                    YACK_LOCATE(fn << "<cubic topology>" );
+                    //
+                    //----------------------------------------------------------
                     const real_t x_omega  = half*(x.b+x.c);
                     const real_t f_omega  = F(x_omega);
                     const real_t delta[3] = { f.c - f.a, f.b - f.a, f_omega - f.a };
@@ -181,8 +214,11 @@ namespace yack
                     const real_t beta     = -10 * delta[0] - 28 * delta[1] + 32 * delta[2];
                     const real_t gamma    =   8 * delta[0] + 16 * delta[1] - 64 * delta[2]/3;
 
-
-                    // computing coefficients
+                    //----------------------------------------------------------
+                    //
+                    // computing coefficients of derivative
+                    //
+                    //----------------------------------------------------------
                     struct Quadratic
                     {
                         real_t A, B, C;
@@ -198,10 +234,7 @@ namespace yack
                         }
                     };
 
-
-
                     const Quadratic Q = { 3*gamma, 2*beta, alpha };
-                    std::cerr << "A=" << Q.A << ", B=" << Q.B << ", C=" << Q.C << std::endl;
 
                     {
                         ios::ocstream fp("inscub.dat");
@@ -213,60 +246,142 @@ namespace yack
                         }
                     }
 
+                    //----------------------------------------------------------
+                    //
+                    // preparing collection of trial coordinates
+                    //
+                    //----------------------------------------------------------
+                    real_t xx[5] = { x.a, x.b, x_omega, x.c, 0 };
+                    real_t ff[5] = { f.a, f.b, f_omega, f.c, 0 };
 
-                    
-                    triplet<real_t> u = { 0,      -1,     1  };
-                    triplet<real_t> q = { Q(u.a), -1, Q(u.c) };
-                    if(q.a<=0&&q.c>0)
                     {
-                        std::cerr << "Possible minimum" << std::endl;
-
-                        real_t du = 1;
-                    GUESS_MIN:
-                        u.b = clamp(u.a,half*(u.a+u.c),u.c);
-                        q.b = Q(u.b);
-                        switch( __sign::of(q.b) )
+                        triplet<real_t> u = { 0,      -1,     1  };
+                        triplet<real_t> q = { Q(u.a), -1, Q(u.c) };
+                        if(q.a<=0&&q.c>0)
                         {
-                            case __zero__:
-                                goto FOUND_MIN;
-
-                            case negative:
-                                q.a = q.b;
-                                u.a = u.b;
-                                break;
-
-                            case positive:
-                                q.c = q.b;
-                                u.c = u.b;
-                        }
-                        {
-                            const real_t new_du = u.c-u.a;
-                            if(new_du<du)
+                            YACK_LOCATE(fn << "<possible minimum>" );
+                            real_t du = 1;
+                        GUESS_MIN:
+                            u.b = clamp(u.a,half*(u.a+u.c),u.c);
+                            q.b = Q(u.b);
+                            switch( __sign::of(q.b) )
                             {
-                                du = new_du;
-                                goto GUESS_MIN;
+                                case __zero__:
+                                    goto FOUND_MIN;
+
+                                case negative:
+                                    q.a = q.b;
+                                    u.a = u.b;
+                                    break;
+
+                                case positive:
+                                    q.c = q.b;
+                                    u.c = u.b;
                             }
+                            {
+                                const real_t new_du = u.c-u.a;
+                                if(new_du<du)
+                                {
+                                    du = new_du;
+                                    goto GUESS_MIN;
+                                }
+                            }
+
+
+                        FOUND_MIN:
+                            const real_t x_opt = clamp(xmin,x.a*(one-u.b)+x.c*u.b,xmax);
+                            const real_t f_opt = F(x_opt);
+                            YACK_LOCATE(fn << "F(" << x_opt << ")=" << f_opt << " / u_opt=" << u.b);
+                            xx[4] = x_opt;
+                            ff[4] = f_opt;
                         }
-
-
-                    FOUND_MIN:
-                        std::cerr << "qmin=" << q.b << "@" << u.b << std::endl;
-                        ;
+                        else
+                        {
+                            YACK_LOCATE(fn << "<no local minimum>" );
+                            const real_t x_jmp = clamp(xmin,x.a*jump+x.c*keep,xmax);
+                            const real_t f_jmp = F(x_jmp);
+                            YACK_LOCATE(fn << "F(" << x_jmp<< ")=" << f_jmp);
+                            xx[4] = x_jmp;
+                            ff[4] = f_jmp;
+                        }
                     }
-                    else
+
+                    srt.csort(xx,ff);
+                    assert(xx[0]<=xx[1]);
+                    assert(xx[1]<=xx[2]);
+                    assert(xx[2]<=xx[3]);
+                    assert(xx[3]<=xx[4]);
+
+#if 0
+                    std::cerr << "state=";
+                    for(size_t i=0;i<5;++i)
                     {
-                        std::cerr << "No local minimum" << std::endl;
+                        std::cerr << ' ' << xx[i] << ':' << ff[i];
+                    }
+                    std::cerr << std::endl;
+#endif
+
+                    size_t imin = 0;
+                    real_t fmin = ff[0];
+                    for(size_t i=1;i<5;++i)
+                    {
+                        const real_t ftmp = ff[i];
+                        if(ftmp<fmin)
+                        {
+                            imin = i;
+                            fmin = ftmp;
+                        }
                     }
 
+                    YACK_LOCATE(fn << "fmin=" << fmin << "@" << xx[imin]);
+                    switch(imin)
+                    {
+                        case 0:
+                        case 1:
+                            x.load(xx);
+                            f.load(ff);
+                            break;
 
+                        case 2:
+                            x.load(xx+1);
+                            f.load(ff+1);
+                            break;
 
+                        case 3:
+                        case 4:
+                            x.load(xx+2);
+                            f.load(ff+2);
+                            break;
+                    }
 
+                    YACK_LOCATE(fn << x << " -> " << f);
+                    write3(x,f,cycle+2);
 
+                    if(f.is_local_minimum())
+                    {
+                        // early success
+                        goto SUCCESS;
+                    }
 
+                    // prepare for new cycle
+                    if(f.a < f.c)
+                    {
+                        f.reverse();
+                        x.reverse();
+                    } assert(f.a>=f.c);
 
+                    xmin = x.a;
+                    xmax = x.c;
+                    const real_t new_width = cswap_incr(xmin=x.a,xmax=x.c);
+                    YACK_LOCATE(fn <<"width=" << width << " --> " << new_width);
 
+                    if(cycle>=10)
+                    {
+                        exit(0);
+                    }
 
-                    exit(0);
+                    width = new_width;
+                    goto CYCLE;
                 }
             }
 
@@ -288,7 +403,6 @@ namespace yack
             YACK_LOCATE(fn << x << " -> " << f);
 
             return true;
-
         }
 
     }

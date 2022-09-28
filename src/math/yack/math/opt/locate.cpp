@@ -4,6 +4,7 @@
 #include "yack/math/opt/locate.hpp"
 #include "yack/sequence/thin-array.hpp"
 #include "yack/sort/network/sort4.hpp"
+#include "yack/sort/network/sort5.hpp"
 #include "yack/ios/ocstream.hpp"
 #include "yack/signs.hpp"
 #include "yack/sort/indexing.hpp"
