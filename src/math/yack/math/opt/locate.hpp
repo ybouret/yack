@@ -32,7 +32,7 @@ namespace yack
             /**
              - Look for f.b <= f.a and f.b <= f.c
              - can be on a side of the interval
-             - retun x.a<=x.b<=x.c
+             - return x.a<=x.b<=x.c
              */
             //__________________________________________________________________
             template <typename T> static
@@ -45,11 +45,12 @@ namespace yack
             /**
              - Look for f.b <= f.a and f.b <= f.c
              - can be on a side of the interval
-             - retun x.a<=x.b<=x.c
+             - return x.a<=x.b<=x.c
              */
             //__________________________________________________________________
             template <typename T> static
-            bool inside2(real_function<T> &F, triplet<T> &x, triplet<T> &f);
+            bool inside3(real_function<T> &F, triplet<T> &x, triplet<T> &f);
+
 
 
             //__________________________________________________________________
@@ -68,10 +69,10 @@ namespace yack
             //! wrapper for inside
             //__________________________________________________________________
             template <typename T, typename FUNCTION> static inline
-            bool inside2_for(FUNCTION &F, triplet <T> &x, triplet<T> &f)
+            bool inside3_for(FUNCTION &F, triplet <T> &x, triplet<T> &f)
             {
                 typename real_function_of<T>::template call<FUNCTION> FF(F);
-                return inside2(FF,x,f);
+                return inside3(FF,x,f);
             }
 
 

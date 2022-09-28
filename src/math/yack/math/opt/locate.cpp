@@ -20,6 +20,52 @@ namespace yack
         static const char locate_expand[] = "// [locate.expand] ";
 
 #define YACK_LOCATE(MSG) do { if(math::locate::verbose) { std::cerr << MSG << std::endl; } } while(false)
+
+
+        namespace
+        {
+            template <typename T>
+            struct Cubic
+            {
+                T f0, alpha, beta, gamma;
+
+                inline T operator()(const T u) const throw()
+                {
+                    return f0+u*(alpha+u*(beta+u*gamma));
+                }
+            };
+
+
+            template <typename T>
+            struct Quadratic
+            {
+                T A,B,C;
+
+                inline T operator()(const T u) const throw()
+                {
+                    return  u*(A*u+B)+C;
+                }
+
+                inline T slope(const T u) const throw()
+                {
+                    return twice(A*u)+B;
+                }
+            };
+
+            template <typename T>
+            struct Affine
+            {
+                T start;
+                T slope;
+
+                inline T operator()(const T u) const throw()
+                {
+                    return start + u * slope;
+                }
+            };
+            
+
+        }
     }
 }
 

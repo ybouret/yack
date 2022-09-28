@@ -52,12 +52,12 @@ YACK_UTEST(locate)
     {
         Lua::Function<double> FF(vm,"F");
         triplet<double> f = { FF(x.a), -1, FF(x.c) };
-        locate::inside2_for(FF,x,f);
+        locate::inside3_for(FF,x,f);
     }
     else
     {
         triplet<double> f = { F(x.a), -1, F(x.c) };
-        locate::inside2_for(F<double>,x,f);
+        locate::inside3_for(F<double>,x,f);
     }
 }
 YACK_UDONE()
