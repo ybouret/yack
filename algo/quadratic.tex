@@ -1,0 +1,50 @@
+\documentclass[aps,12pt]{revtex4}
+\usepackage[a4paper]{geometry}
+\usepackage{graphicx}
+\usepackage{amssymb,amsfonts,amsmath,amsthm}
+\usepackage{bm}
+\usepackage{pslatex}
+\usepackage{mathptmx}
+
+
+\begin{document}
+
+\section{Normal}
+
+$$ax^2+bx+c=0$$
+
+$$
+\Delta = b^2-4ac > 0
+$$	
+
+$$
+\left\lbrace
+\begin{array}{rcl}
+	x_- & = &  \dfrac{-b-\sqrt{\Delta}}{2a} \\
+	\\
+	& = & -  \dfrac{b+\sqrt{\Delta}}{2a} \\
+	\\
+	& = & -  \dfrac{(b+\sqrt{\Delta})(b-\sqrt{\Delta})}{2a(b-\sqrt{\Delta})}\\
+	\\
+	& = & - \dfrac{b^2-\Delta}{2a(b-\sqrt{\Delta})}\\
+	\\
+	& = & \dfrac{2}{\sqrt{\Delta}-b} c\\ 
+\end{array}
+\right.
+$$
+
+$$
+\left\lbrace
+\begin{array}{rcl}
+	x_+ & = &  \dfrac{-b+\sqrt{\Delta}}{2a} \\
+	\\
+	 & = & \dfrac{(\sqrt{\Delta}-b)(\sqrt{\Delta}+b)}{2a(\sqrt{\Delta}+b)}\\
+	\\
+	& = & \dfrac{\Delta-b^2}{2a(\sqrt{\Delta}+b)}\\
+	\\
+	& = & \dfrac{-2}{\sqrt{\Delta}+b}c\\
+\end{array}
+\right.
+$$
+
+\end{document}
