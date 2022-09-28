@@ -172,8 +172,10 @@ namespace yack
                 {
                     assert(f.b>f.c);
                     assert(f.b<f.a);
+                    YACK_LOCATE(fn << "<topology>" );
 
-                    const real_t f_omega  = F( half*(x.b+x.c) );
+                    const real_t x_omega  = half*(x.b+x.c);
+                    const real_t f_omega  = F(x_omega);
                     const real_t delta[3] = { f.c - f.a, f.b - f.a, f_omega - f.a };
                     const real_t alpha    =   3 * delta[0] + 12 * delta[1] - 32 * delta[2]/3;
                     const real_t beta     = -10 * delta[0] - 28 * delta[1] + 32 * delta[2];
@@ -181,7 +183,6 @@ namespace yack
 
 
                     // computing coefficients
-
                     struct Quadratic
                     {
                         real_t A, B, C;
@@ -190,9 +191,17 @@ namespace yack
                         {
                             return  u*(A*u+B)+C;
                         }
+
+                        inline real_t slope(const real_t u) const throw()
+                        {
+                            return B+twice(A*u);
+                        }
                     };
 
+
+
                     const Quadratic Q = { 3*gamma, 2*beta, alpha };
+                    std::cerr << "A=" << Q.A << ", B=" << Q.B << ", C=" << Q.C << std::endl;
 
                     {
                         ios::ocstream fp("inscub.dat");
@@ -204,17 +213,51 @@ namespace yack
                         }
                     }
 
-                    triplet<real_t>    q = { Q(0), 0, Q(1) };
-                    triplet<sign_type> s = { __sign::of(q.a), __zero__, __sign::of(q.c) };
 
-                    if( __sign::product(s.a,s.c) == negative )
+                    
+                    triplet<real_t> u = { 0,      -1,     1  };
+                    triplet<real_t> q = { Q(u.a), -1, Q(u.c) };
+                    if(q.a<=0&&q.c>0)
                     {
-                        std::cerr << "look up for min" << std::endl;
+                        std::cerr << "Possible minimum" << std::endl;
+
+                        real_t du = 1;
+                    GUESS_MIN:
+                        u.b = clamp(u.a,half*(u.a+u.c),u.c);
+                        q.b = Q(u.b);
+                        switch( __sign::of(q.b) )
+                        {
+                            case __zero__:
+                                goto FOUND_MIN;
+
+                            case negative:
+                                q.a = q.b;
+                                u.a = u.b;
+                                break;
+
+                            case positive:
+                                q.c = q.b;
+                                u.c = u.b;
+                        }
+                        {
+                            const real_t new_du = u.c-u.a;
+                            if(new_du<du)
+                            {
+                                du = new_du;
+                                goto GUESS_MIN;
+                            }
+                        }
+
+
+                    FOUND_MIN:
+                        std::cerr << "qmin=" << q.b << "@" << u.b << std::endl;
+                        ;
                     }
                     else
                     {
-                        std::cerr << "no local min" << std::endl;
+                        std::cerr << "No local minimum" << std::endl;
                     }
+
 
 
 
