@@ -116,6 +116,9 @@ namespace yack
             return xmax-xmin;
         }
 
+
+
+
         template <>
         bool locate:: inside2<real_t>(real_function<real_t> &F,
                                       triplet<real_t>       &x,
@@ -162,6 +165,8 @@ namespace yack
 
         CYCLE:
             ++cycle;
+            YACK_LOCATE(fn << "---------------- cycle #" << cycle << " ----------------");
+            assert(f.a>=f.c);
             //------------------------------------------------------------------
             //
             //
@@ -172,7 +177,6 @@ namespace yack
             f.b = F( x.b = clamp(xmin,half*(xmin+xmax),xmax) ); assert(x.is_ordered());
             YACK_LOCATE(fn << x << " -> " << f << " @width=" << width);
             if(1==cycle) write3(x,f,cycle+1);
-
             if(f.b<=f.c)
             {
                 //--------------------------------------------------------------
@@ -201,6 +205,7 @@ namespace yack
                 {
                     assert(f.b>f.c);
                     assert(f.b<f.a);
+                    const real_t x_best = x.c;
 
                     //----------------------------------------------------------
                     //
@@ -312,14 +317,6 @@ namespace yack
                     assert(xx[2]<=xx[3]);
                     assert(xx[3]<=xx[4]);
 
-#if 0
-                    std::cerr << "state=";
-                    for(size_t i=0;i<5;++i)
-                    {
-                        std::cerr << ' ' << xx[i] << ':' << ff[i];
-                    }
-                    std::cerr << std::endl;
-#endif
 
                     size_t imin = 0;
                     real_t fmin = ff[0];
@@ -355,6 +352,8 @@ namespace yack
                     }
 
                     YACK_LOCATE(fn << x << " -> " << f);
+                    YACK_LOCATE(fn << "x_best: " << x_best << " / " << x.b << " delta=" << std::abs(x_best-x.b) );
+
                     write3(x,f,cycle+2);
 
                     if(f.is_local_minimum())
