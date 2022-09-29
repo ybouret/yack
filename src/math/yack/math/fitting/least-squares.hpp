@@ -12,6 +12,7 @@
 #include "yack/type/temporary.hpp"
 #include "yack/math/numeric.hpp"
 #include "yack/math/opt/optimize.hpp"
+#include "yack/math/opt/locate.hpp"
 #include "yack/math/data/percent.hpp"
 #include "yack/functor.hpp"
 
@@ -153,7 +154,8 @@ namespace yack
                          writable<ORDINATE>       &aerr,
                          process                  *proc)
                 {
-                    static const ORDINATE xtol = lam[ lam.ptol() ];
+                    static const ORDINATE xtol = numeric<ORDINATE>::sqrt_eps;
+
                     //----------------------------------------------------------
                     //
                     //
@@ -264,25 +266,77 @@ namespace yack
                     // evaluate new position
                     //
                     //----------------------------------------------------------
-                    ORDINATE f1 = s.D2(f,aend);
+                    ORDINATE       f1      = s.D2(f,aend);
+
                     if(f1<=f0)
                     {
                         //------------------------------------------------------
                         //
-                        YACK_LSF_PRINTLN(clid << "<accept>");
+                        YACK_LSF_PRINTLN(clid << "<accept f1=" << f1 << ">");
                         //
                         //------------------------------------------------------
 
-                        //------------------------------------------------------
-                        // detect no overshoot
-                        //------------------------------------------------------
-                        analyze(f0,f1);
+                        // need to check if significatif delta
+                        ORDINATE DeltaF = std::abs(f0-f1);
+                        std::cerr << "DeltaF=" << DeltaF << " = " <<  DeltaF/f0 << "  of " << f0 << std::endl;
 
+
+                        const ORDINATE delta_f = std::abs(f0-f1);
+                        const ORDINATE limit_f = 1e-4 * f0;
+                        std::cerr << "delta_f=" << delta_f << " / limit_f=" << limit_f << std::endl;
+
+                        if(verbose)
                         {
-                            const ORDINATE delta = std::abs(f1-f0);
-                            const ORDINATE d_tol = delta/max_of(f1,f0);
-                            YACK_LSF_PRINTLN(clid << "D2: " << f0 << " -> " << f1 << " : " << delta << " -> " << d_tol);
+                            ios::ocstream fp("linear.dat");
+                            const size_t np = 100;
+                            for(size_t i=0;i<=np;++i)
+                            {
+                                const ORDINATE u = i/ORDINATE(np);
+                                fp("%.15g %.15g\n", double(u), double((*this)(u)));
+                            }
 
+                        }
+
+                        if(delta_f>=limit_f)
+                        {
+                            least_squares     &self = *this;
+                            triplet<ORDINATE>  U    = {  0, -1,  1 };
+                            triplet<ORDINATE>  F    = { f0, -1, f1 };
+
+                            const bool located = locate::inside_for(self,U,F);
+
+                            if(located)
+                            {
+                                YACK_LSF_PRINTLN(clid << "\\_" << U << " -> " << F);
+                                bool dummy = true;
+                                while( optimize::tighten_for(self, U, F, dummy) > 0.01 )
+                                {
+                                    YACK_LSF_PRINTLN(clid << "\\_" << U << " -> " << F);
+                                }
+                                make_atry(U.b);
+                                (**curr).mov(aend,atry);
+                                f1 = F.b;
+                                YACK_LSF_PRINTLN(clid << "<accept f1=" << f1 << ">");
+                            }
+                            else
+                            {
+                                std::cerr << "global @" << U.b << std::endl;
+                                if(U.b>=1)
+                                {
+                                    YACK_LSF_PRINTLN(clid << "<full step!>");
+                                }
+                                else
+                                {
+                                    if(U.b<=0)
+                                    {
+                                    }
+                                    else
+                                    {
+
+                                    }
+                                    exit(0);
+                                }
+                            }
                         }
 
                         //------------------------------------------------------
@@ -318,10 +372,7 @@ namespace yack
                         //------------------------------------------------------
                         if(converged) goto SUCCESS;
 
-                        //------------------------------------------------------
-                        // check D2 convergence
-                        //------------------------------------------------------
-
+                        //if(cycle>=2) exit(0);
 
                         //------------------------------------------------------
                         // restart with a successfull step :)
