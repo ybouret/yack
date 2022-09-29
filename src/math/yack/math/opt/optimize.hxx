@@ -449,24 +449,30 @@ namespace yack
             // check convergence
             //
             //------------------------------------------------------------------
-            //std::cerr << "\t(*) x_min: " << x_min  << " -> " << x.b << " delta=" << std::abs(x_min-x.b) << std::endl;
-            if( decreased && std::abs(x_min-x.b) <= 0 )
+            if(decreased)
             {
-                YACK_OPTIMIZE(fn<< "[converged @f(" << x.b << ")=" << f.b << "]/value");
-                f.b = F(x.b);
-                return;
+                const real_t xlimit = numeric<real_t>::sqrt_eps * ( std::abs(x_min) + std::abs(x.b) );
+                const real_t xdelta = std::abs(x.b-x_min);
+                if(xdelta<=xlimit)
+                {
+                    YACK_OPTIMIZE(fn<< "[converged @f(" << x.b << ")=" << f.b << "]");
+                    f.b = F(x.b);
+                    return;
+                }
             }
 
-#if 0
-            const real_t aposition = max_of(std::abs(x.a), std::abs(x.b), std::abs(x.c));
-            const real_t max_width = twice(aposition * numeric<real_t>::sqrt_eps);
-            if( new_width<=max_width )
+
+            //------------------------------------------------------------------
+            //
+            // security
+            //
+            //------------------------------------------------------------------
+            if( new_width>=width )
             {
-                YACK_OPTIMIZE(fn<< "[converged @f(" << x.b << ")=" << f.b << "]/width");
+                YACK_OPTIMIZE(fn<< "[spurious @f(" << x.b << ")=" << f.b << "]");
                 f.b = F(x.b);
                 return;
             }
-#endif
 
 
             //------------------------------------------------------------------
