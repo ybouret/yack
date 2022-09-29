@@ -249,7 +249,10 @@ namespace yack
 
         // TODO: monitor decreasing!!!
         template < >
-        real_t optimize:: tighten<real_t>(real_function<real_t> &F, triplet<real_t> &x, triplet<real_t> &f)
+        real_t optimize:: tighten<real_t>(real_function<real_t> &F,
+                                          triplet<real_t>       &x,
+                                          triplet<real_t>       &f,
+                                          bool                  &decreased)
         {
             YACK_OPTIMIZE(fn << "  x = " << x);
             YACK_OPTIMIZE(fn << "  f = " << f);
@@ -294,6 +297,7 @@ namespace yack
                     ff[0] = f.a; ff[1] = F(xx[1]);   ff[2] = f.b; ff[3] = F(xx[3]);   ff[4] = f.c;
                     build3 = true;
                     offset = 1;
+                    decreased = (ff[1] <= f.b);
                     break;
 
                 case negative: assert(x_u<x.b); {
@@ -311,7 +315,8 @@ namespace yack
                         YACK_OPTIMIZE(fn<< "[@left : decrease]");
                         xx[0] = x.a; xx[1] = half_of(x.a,x_u); xx[2] = x_u; xx[3] = x.b;
                         ff[0] = f.a; ff[1] = F( xx[1] );       ff[2] = f_u; ff[3] = f.b;
-                        offset=1;
+                        offset    = 1;
+                        decreased = true;
                     }
                     else
                     {
@@ -323,6 +328,7 @@ namespace yack
                         YACK_OPTIMIZE(fn<< "[@left : increase]");
                         xx[0] = x_u; xx[1] = x.b; xx[2] = half_bc(x); xx[3] = x.c;
                         ff[0] = f_u; ff[1] = f.b; ff[2] = F(xx[2]);   ff[3] = f.c;
+                        decreased = false;
                     }
 
                 } break;
@@ -342,6 +348,7 @@ namespace yack
                         YACK_OPTIMIZE(fn<< "[@right: decrease]");
                         xx[0] = x.b; xx[1] = x_u; xx[2] = half_of(x_u,x.c); xx[3] = x.c;
                         ff[0] = f.b; ff[1] = f_u; ff[2] = F( xx[2] );       ff[3] = f.c;
+                        decreased = true;
                     }
                     else
                     {
@@ -355,6 +362,7 @@ namespace yack
                         xx[0] = x.a; xx[1] = half_ab(x); xx[2] = x.b; xx[3] = x_u;
                         ff[0] = f.a; ff[1] = F( xx[1] ); ff[2] = f.b; ff[3] = f_u;
                         offset=1;
+                        decreased = false;
                     }
                 } break;
 
@@ -425,32 +433,41 @@ namespace yack
             // initialize search
             //
             //------------------------------------------------------------------
-            real_t              width = std::abs(x.c-x.a);
-            real_t              x_min = x.b;
-            unsigned            cycle = 0;
-
+            real_t              width     = std::abs(x.c-x.a);
+            real_t              x_min     = x.b;
+            unsigned            cycle     = 0;
+            bool                decreased = false;
 
         CYCLE:
             ++cycle;
             YACK_OPTIMIZE(fn << "---------------- [cycle " << cycle << "] ----------------");
-            const real_t new_width = tighten(F,x,f);
-            YACK_OPTIMIZE(fn << "  width: " << width << " -> " << new_width);
+            const real_t new_width = tighten(F,x,f,decreased);
+            YACK_OPTIMIZE(fn << "  width: " << width << " -> " << new_width << ", decreased=" << decreased);
 
             //------------------------------------------------------------------
             //
             // check convergence
             //
             //------------------------------------------------------------------
-            const real_t aposition = max_of(std::abs(x.a), std::abs(x.b), std::abs(x.c));
-            const real_t max_width = twice(aposition * numeric<real_t>::sqrt_eps);
-            if( new_width<=max_width )
+            //std::cerr << "\t(*) x_min: " << x_min  << " -> " << x.b << " delta=" << std::abs(x_min-x.b) << std::endl;
+            if( decreased && std::abs(x_min-x.b) <= 0 )
             {
-                YACK_OPTIMIZE(fn<< "[converged @f(" << x.b << ")=" << f.b << "]");
+                YACK_OPTIMIZE(fn<< "[converged @f(" << x.b << ")=" << f.b << "]/value");
                 f.b = F(x.b);
                 return;
             }
 
-            std::cerr << "\t(*) x_min: " << x_min  << " -> " << x.b << std::endl;
+#if 0
+            const real_t aposition = max_of(std::abs(x.a), std::abs(x.b), std::abs(x.c));
+            const real_t max_width = twice(aposition * numeric<real_t>::sqrt_eps);
+            if( new_width<=max_width )
+            {
+                YACK_OPTIMIZE(fn<< "[converged @f(" << x.b << ")=" << f.b << "]/width");
+                f.b = F(x.b);
+                return;
+            }
+#endif
+
 
             //------------------------------------------------------------------
             //

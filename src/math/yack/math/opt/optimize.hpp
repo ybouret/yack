@@ -58,7 +58,10 @@ namespace yack
              */
             //__________________________________________________________________
             template <typename T> static
-            T tighten(real_function<T> &F, triplet<T> &x, triplet<T> &f);
+            T tighten(real_function<T> &F,
+                      triplet<T>       &x,
+                      triplet<T>       &f,
+                      bool             &decreased);
 
 
             //__________________________________________________________________
@@ -66,10 +69,10 @@ namespace yack
             //! tighten wrapper
             //__________________________________________________________________
             template <typename T, typename FUNCTION> static inline
-            T tighten_for(FUNCTION &F, triplet<T> &x, triplet<T> &f)
+            T tighten_for(FUNCTION &F, triplet<T> &x, triplet<T> &f, bool &decreased)
             {
                 typename real_function_of<T>::template call<FUNCTION> FF(F);
-                return tighten<T>(FF,x,f);
+                return tighten<T>(FF,x,f,decreased);
             }
 
             //__________________________________________________________________

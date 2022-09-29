@@ -575,8 +575,9 @@ namespace yack
 
                     const ORDINATE w0 = std::abs(U.c-U.a);
                     const ORDINATE w1 = w0/10;
+                    bool           decreased = false;
                     while(true) {
-                        const ORDINATE w = optimize::tighten_for(self,U,F);
+                        const ORDINATE w = optimize::tighten_for(self,U,F,decreased);
                         if(w<w1) break;
                     }
 
