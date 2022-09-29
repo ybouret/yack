@@ -246,6 +246,8 @@ namespace yack
 
         }
 
+
+        // TODO: monitor decreasing!!!
         template < >
         real_t optimize:: tighten<real_t>(real_function<real_t> &F, triplet<real_t> &x, triplet<real_t> &f)
         {
@@ -306,7 +308,7 @@ namespace yack
                         // reduce with a,(a+u)/2,u,b
                         // should start with (xx[1],xx[2]=x_u,xx[3])
                         //------------------------------------------------------
-                        YACK_OPTIMIZE(fn<< "[decrease @left]");
+                        YACK_OPTIMIZE(fn<< "[@left : decrease]");
                         xx[0] = x.a; xx[1] = half_of(x.a,x_u); xx[2] = x_u; xx[3] = x.b;
                         ff[0] = f.a; ff[1] = F( xx[1] );       ff[2] = f_u; ff[3] = f.b;
                         offset=1;
@@ -318,7 +320,7 @@ namespace yack
                         //   reduce with x_u, x.b, half*(x.b+x.c), x.c
                         //   should start with (xx[0],xx[1]=x.b,xx[2])
                         //------------------------------------------------------
-                        YACK_OPTIMIZE(fn<< "[increase @left]");
+                        YACK_OPTIMIZE(fn<< "[@left : increase]");
                         xx[0] = x_u; xx[1] = x.b; xx[2] = half_bc(x); xx[3] = x.c;
                         ff[0] = f_u; ff[1] = f.b; ff[2] = F(xx[2]);   ff[3] = f.c;
                     }
@@ -337,7 +339,7 @@ namespace yack
                         // reduce with b,u,(u+c)/2,c
                         //   should start with (xx[0],xx[1]=x_u,xx[2])
                         //------------------------------------------------------
-                        YACK_OPTIMIZE(fn<< "[decrease @right]");
+                        YACK_OPTIMIZE(fn<< "[@right: decrease]");
                         xx[0] = x.b; xx[1] = x_u; xx[2] = half_of(x_u,x.c); xx[3] = x.c;
                         ff[0] = f.b; ff[1] = f_u; ff[2] = F( xx[2] );       ff[3] = f.c;
                     }
@@ -349,7 +351,7 @@ namespace yack
                         //   x.a, half*(x.a+x.b), x.b, x_u
                         //   should start with (xx[1],xx[2]=x.b,xx[3])
                         //------------------------------------------------------
-                        YACK_OPTIMIZE(fn<< "[increase @right]");
+                        YACK_OPTIMIZE(fn<< "[@right: increase]");
                         xx[0] = x.a; xx[1] = half_ab(x); xx[2] = x.b; xx[3] = x_u;
                         ff[0] = f.a; ff[1] = F( xx[1] ); ff[2] = f.b; ff[3] = f_u;
                         offset=1;
@@ -436,29 +438,19 @@ namespace yack
 
             //------------------------------------------------------------------
             //
-            // check spurious convergence
+            // check convergence
             //
             //------------------------------------------------------------------
-            if( new_width>=width )
+            const real_t aposition = max_of(std::abs(x.a), std::abs(x.b), std::abs(x.c));
+            const real_t max_width = twice(aposition * numeric<real_t>::sqrt_eps);
+            if( new_width<=max_width )
             {
-                YACK_OPTIMIZE(fn<< "[spurious @f(" << x.b << ")=" << f.b << "]");
+                YACK_OPTIMIZE(fn<< "[converged @f(" << x.b << ")=" << f.b << "]");
                 f.b = F(x.b);
                 return;
             }
 
-            //------------------------------------------------------------------
-            //
-            // check numerical convergence
-            //
-            //------------------------------------------------------------------
-            const real_t dx = std::abs(x_min-x.b);
-            YACK_OPTIMIZE(fn << "  x.b = " << x.b << ", dx=" << dx);
-            if(dx<=0)
-            {
-                YACK_OPTIMIZE(fn<< "[exactly  @f(" << x.b << ")=" << f.b << "]");
-                f.b = F(x.b);
-                return;
-            }
+            std::cerr << "\t(*) x_min: " << x_min  << " -> " << x.b << std::endl;
 
             //------------------------------------------------------------------
             //

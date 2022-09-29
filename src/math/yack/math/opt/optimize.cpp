@@ -2,8 +2,9 @@
 
 #include "yack/math/opt/optimize.hpp"
 #include "yack/math/opt/locate.hpp"
+#include "yack/math/numeric.hpp"
 #include "yack/signs.hpp"
-#include "yack/sequence/thin-array.hpp"
+//#include "yack/sequence/thin-array.hpp"
 #include "yack/sort/network/sort5.hpp"
 #include "yack/ios/ocstream.hpp"
 #include "yack/exception.hpp"
