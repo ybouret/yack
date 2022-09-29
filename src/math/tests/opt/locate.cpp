@@ -13,7 +13,7 @@ using namespace math;
 template <typename T> static inline
 T F(T x)
 {
-    return 1.27-cos(2*(x-0.1));
+    return 1.27-cos(2*x);
 }
 
 
@@ -52,12 +52,12 @@ YACK_UTEST(locate)
     {
         Lua::Function<double> FF(vm,"F");
         triplet<double> f = { FF(x.a), -1, FF(x.c) };
-        locate::inside3_for(FF,x,f);
+        locate::inside_for(FF,x,f);
     }
     else
     {
         triplet<double> f = { F(x.a), -1, F(x.c) };
-        locate::inside3_for(F<double>,x,f);
+        locate::inside_for(F<double>,x,f);
     }
 }
 YACK_UDONE()

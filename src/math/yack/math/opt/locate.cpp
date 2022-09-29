@@ -75,7 +75,6 @@ namespace yack
                     static const T   h(0.5);
                     const Quadratic &F = *this;
                     f.b  = F( u.b = clamp(u.a,h*(u.a+u.c),u.c) );
-                    //std::cerr << "f(" << u.b << ")=" << f.b << std::endl;
                     switch( __sign::of(f.b) )
                     {
                         case __zero__:

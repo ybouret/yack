@@ -3,6 +3,7 @@ namespace yack
 {
     namespace math
     {
+#if 0
         template <>
         bool locate:: inside<real_t>(real_function<real_t> &F,
                                      triplet<real_t>       &x,
@@ -93,6 +94,7 @@ namespace yack
             }
             
         }
+#endif
 
         namespace
         {
@@ -185,9 +187,9 @@ namespace yack
 
 
         template <>
-        bool locate:: inside3<real_t>(real_function<real_t> &F,
-                                      triplet<real_t>       &x,
-                                      triplet<real_t>       &f )
+        bool locate:: inside<real_t>(real_function<real_t> &F,
+                                     triplet<real_t>       &x,
+                                     triplet<real_t>       &f )
         {
 
             static const char * const fn = locate_inside;
@@ -213,6 +215,8 @@ namespace yack
             real_t   width = cswap_incr(xmin,xmax);
             unsigned cycle = 0;
             unsigned color = 1;
+
+            if(verbose)
             {
                 ios::ocstream fp("inside.dat");
                 const size_t  np = 50;
@@ -231,7 +235,7 @@ namespace yack
             YACK_LOCATE(fn << "---------------- cycle #" << cycle << " ----------------");
             assert(f.c<=f.a);
             assert(xmin<=xmax);
-            
+
             //------------------------------------------------------------------
             //
             // take middle point and check it
@@ -241,7 +245,7 @@ namespace yack
             f.b = F( x.b );
             YACK_LOCATE( fn  << x << " -> " << f << " | w=" << width);
 
-            write3(x,f,++color);
+            if(verbose) write3(x,f,++color);
 
 
             if(f.b>f.a)
@@ -326,6 +330,7 @@ namespace yack
                             assert(f_t<=f.a);
                             f.a = f.b; x.a = x.b;
                             f.b = f_t; x.b = x_t;
+                            if(verbose) write3(x,f,++color);
                             assert(f.is_local_minimum());
                             goto SUCCESS; // and done
                             //--------------------------------------------------
@@ -349,8 +354,9 @@ namespace yack
                                 -10 * delta[0] - 28 * delta[1] + 32 * delta[2],
                                 8   * delta[0] + 16 * delta[1] - 64 * delta[2]/3
                             };
-                            const Quadratic<real_t> Q = { 3*C.gamma, 2*C.beta, C.alpha };
+                            const Quadratic<real_t> Q = { 3*C.gamma, twice(C.beta), C.alpha };
 
+                            if(verbose)
                             {
                                 ios::ocstream fp("inscub.dat");
                                 const size_t  np = 200;
@@ -394,12 +400,13 @@ namespace yack
                                 {
                                     ++decreasing;
                                     YACK_LOCATE(fn << "<decreasing#" << decreasing << ">" );
-                                    const real_t wc(0.9);
-                                    const real_t wa    = one - wc;
+                                    static const real_t wc(0.9);
+                                    static const real_t wa    = one - wc;
                                     const real_t x_opt = clamp(xmin,x.a*wa+x.c*wc,xmax);
                                     const real_t f_opt = F(x_opt);
                                     xx[4] = x_opt;
                                     ff[4] = f_opt;
+
                                 }
                                 else
                                 {
@@ -411,9 +418,14 @@ namespace yack
                                     ff[4] = f_opt;
                                 }
                                 YACK_LOCATE(fn << "\tF(" << xx[4] << ")=" << ff[4]);
+
+
+                                //----------------------------------------------
+                                // rearrange phase space
+                                //----------------------------------------------
                                 srt.csort(xx,ff);    // increasing x
                                 find5(x,f,xx,ff);    // rearrange x
-                                write3(x,f,++color);
+                                if(verbose) write3(x,f,++color);
 
 
                                 if(f.is_local_minimum())
@@ -422,12 +434,19 @@ namespace yack
                                     goto SUCCESS;
                                 }
 
+                                //----------------------------------------------
+                                // check convergence
+                                //----------------------------------------------
 
                                 const real_t new_width = cswap_incr(xmin=x.a,xmax=x.c);
-                                std::cerr << "width=" << width << " => " << new_width << std::endl;
-                                if(new_width<=0 || new_width>=width)
+                                const real_t aposition = max_of(std::abs(x.a), std::abs(x.b), std::abs(x.c));
+                                const real_t max_width = twice(aposition * numeric<real_t>::sqrt_eps);
+
+                                if(new_width<=max_width)
                                 {
                                     YACK_LOCATE(fn << "<monotonic>");
+                                    x.a = x.b = x.c;
+                                    f.a = f.b = f.c;
                                     return false;
                                 }
 
@@ -463,7 +482,7 @@ namespace yack
         SUCCESS:
             //------------------------------------------------------------------
             //
-            // found minimum set increasing x
+            // found minimum: set increasing x values
             //
             //------------------------------------------------------------------
             assert( f.is_local_minimum() );

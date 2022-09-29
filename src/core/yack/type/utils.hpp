@@ -21,6 +21,15 @@ namespace yack
         return (lhs < rhs) ? rhs : lhs;
     }
 
+    //! max of (a,b,c)
+    template <typename T> inline
+    T max_of(const T a, const T b, const T c) throw()
+    {
+        return max_of(a,max_of(b,c));
+    }
+
+
+
     //! keep within [lower:upper]
     template <typename T> inline
     T clamp(const T lower, const T value, const T upper) throw()

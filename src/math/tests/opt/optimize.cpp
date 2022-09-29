@@ -13,7 +13,7 @@ using namespace math;
 template <typename T> static inline
 T F(T x)
 {
-    return 1.27-cos(2*(x-0.1));
+    return 1.27-cos(2*x);
 }
 
 
@@ -83,7 +83,6 @@ YACK_UTEST(optimize)
         optimize::run_for(F<double>,x,f,method);
     }
     
-    // parabolic a=-0.3 c=0.4 "function F(t) return 2+math.sin(t)^2; end"
 }
 YACK_UDONE()
 

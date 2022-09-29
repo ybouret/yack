@@ -41,20 +41,6 @@ namespace yack
 
             //__________________________________________________________________
             //
-            //! inside [x.a,...,x.c], with f.a and f.c computed
-            /**
-             - Look for f.b <= f.a and f.b <= f.c
-             - can be on a side of the interval
-             - return x.a<=x.b<=x.c
-             */
-            //__________________________________________________________________
-            template <typename T> static
-            bool inside3(real_function<T> &F, triplet<T> &x, triplet<T> &f);
-
-
-
-            //__________________________________________________________________
-            //
             //! wrapper for inside
             //__________________________________________________________________
             template <typename T, typename FUNCTION> static inline
@@ -63,20 +49,7 @@ namespace yack
                 typename real_function_of<T>::template call<FUNCTION> FF(F);
                 return inside(FF,x,f);
             }
-
-            //__________________________________________________________________
-            //
-            //! wrapper for inside
-            //__________________________________________________________________
-            template <typename T, typename FUNCTION> static inline
-            bool inside3_for(FUNCTION &F, triplet <T> &x, triplet<T> &f)
-            {
-                typename real_function_of<T>::template call<FUNCTION> FF(F);
-                return inside3(FF,x,f);
-            }
-
-
-
+            
             //__________________________________________________________________
             //
             //! expand [x.a,x.b,x.c],  [f.a,f.b,f.c] precomputed
