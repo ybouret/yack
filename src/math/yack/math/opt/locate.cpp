@@ -49,7 +49,7 @@ namespace yack
 
                 inline T zsearch(const T q0, const T q1) const throw()
                 {
-                    static const T utol = std::sqrt( numeric<T>::epsilon );
+                    static const T utol = numeric<T>::sqrt_eps;
                     assert(q0<0);
                     assert(q1>0);
 

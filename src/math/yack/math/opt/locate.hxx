@@ -230,7 +230,8 @@ namespace yack
             ++cycle;
             YACK_LOCATE(fn << "---------------- cycle #" << cycle << " ----------------");
             assert(f.c<=f.a);
-
+            assert(xmin<=xmax);
+            
             //------------------------------------------------------------------
             //
             // take middle point and check it
@@ -243,7 +244,7 @@ namespace yack
             write3(x,f,++color);
 
 
-            if(f.b>=f.a)
+            if(f.b>f.a)
             {
                 //--------------------------------------------------------------
                 //
@@ -267,7 +268,7 @@ namespace yack
                 // enter <valid middle point>
                 //
                 //--------------------------------------------------------------
-                assert(f.b<f.a);
+                assert(f.b<=f.a);
 
                 if(f.b<=f.c)
                 {
@@ -287,7 +288,7 @@ namespace yack
                 }
                 else
                 {
-                    assert(f.c<f.b); assert(f.b<f.a);
+                    assert(f.c<f.b); assert(f.b<=f.a);
                     //----------------------------------------------------------
                     //
                     // enter <tertiary> point and check it
@@ -296,7 +297,7 @@ namespace yack
                     const real_t x_t  = half*(x.b+x.c);
                     const real_t f_t  = F(x_t);
 
-                    if(f_t>=f.a)
+                    if(f_t>f.a)
                     {
                         //------------------------------------------------------
                         //
@@ -389,7 +390,6 @@ namespace yack
                                 real_t       xx[5] = { x.a, x.b, x_t, x.c, NAN };
                                 real_t       ff[5] = { f.a, f.b, f_t, f.c, NAN };
                                 const real_t q1    = Q(1);
-                                std::cerr << "q1=" << q1 << std::endl;
                                 if(q1<=0)
                                 {
                                     ++decreasing;

@@ -53,6 +53,24 @@ namespace yack
         template <> const double      numeric<double>::     pi = float(M_PI);
         template <> const long double numeric<long double>::pi = (long double)(M_PI);
 
+        template <typename T> static inline
+        T _sqrt_eps() throw()
+        {
+            static const T one(1);
+            static const T ten(10);
+
+            const T se     = std::sqrt( numeric<T>::epsilon );
+            const T se_p10 = std::floor( std::log10(se));
+            const T se_exp = one-se_p10;
+            const T se_int = std::ceil( se * std::pow(ten,se_exp) );
+            const T se_app = se_int * pow(ten,-se_exp);
+            return  se_app;
+        }
+
+        template <> const float        numeric<float>::       sqrt_eps = _sqrt_eps<float>();
+        template <> const double       numeric<double>::      sqrt_eps = _sqrt_eps<double>();
+        template <> const long double  numeric<long double>:: sqrt_eps = _sqrt_eps<long double>();
+
     }
 
 }

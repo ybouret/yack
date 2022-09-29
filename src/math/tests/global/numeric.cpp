@@ -32,8 +32,8 @@ namespace
         NUM_DISP(max_exp);
         NUM_DISP(min_10_exp);
         NUM_DISP(max_10_exp);
+        NUM_DISP(sqrt_eps);
 
-        
         const T a  = T(1.1e-4);  std::cerr << " a = " << a << std::endl;
         const T fa = timings::round_floor(a); std::cerr << "fa = " << fa << std::endl;
         const T ca = timings::round_ceil(a);  std::cerr << "ca = " << ca << std::endl;
@@ -48,7 +48,7 @@ YACK_UTEST(numeric)
     display<float>();
     display<double>();
     display<long double>();
-
+    
 }
 YACK_UDONE()
 
