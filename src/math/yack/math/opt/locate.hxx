@@ -182,6 +182,8 @@ namespace yack
 
         }
 
+
+
         template <>
         bool locate:: inside3<real_t>(real_function<real_t> &F,
                                       triplet<real_t>       &x,
@@ -223,182 +225,249 @@ namespace yack
                 ios::ocstream::overwrite("instri.dat");
             }
 
-
+            int decreasing = 0;
         CYCLE:
             ++cycle;
             YACK_LOCATE(fn << "---------------- cycle #" << cycle << " ----------------");
-            assert(f.a>=f.c);
+            assert(f.c<=f.a);
+
             //------------------------------------------------------------------
             //
-            //
-            // take middle point
-            //
+            // take middle point and check it
             //
             //------------------------------------------------------------------
-            f.b = F( x.b = clamp(xmin,half*(xmin+xmax),xmax) ); assert(x.is_ordered());
+            x.b = clamp(xmin,half*(xmin+xmax),xmax); assert(x.is_ordered());
+            f.b = F( x.b );
             YACK_LOCATE( fn  << x << " -> " << f << " | w=" << width);
 
             write3(x,f,++color);
 
 
-            if(f.b<=f.c)
-            {
-                //----------------------------------------------------------
-                //
-                YACK_LOCATE(fn << "<success@level-1>");
-                //
-                //----------------------------------------------------------
-                goto SUCCESS;
-            }
-
-            assert(f.b>f.c);
             if(f.b>=f.a)
             {
-                //----------------------------------------------------------
+                //--------------------------------------------------------------
                 //
-                YACK_LOCATE(fn << "<bump@level-1>" );
+                YACK_LOCATE(fn << "<bump@middle>" );
                 //
-                //----------------------------------------------------------
+                //--------------------------------------------------------------
                 x.a   = x.b;
                 f.a   = f.b;
                 width = cswap_incr(xmin=x.a,xmax=x.c);
                 goto CYCLE; // keep the lowest part and restart
+                //--------------------------------------------------------------
+                //
+                // leave <bump@middle>
+                //
+                //--------------------------------------------------------------
             }
-
-            assert(f.c<f.b);  assert(f.b<f.a);
+            else
             {
-
                 //--------------------------------------------------------------
                 //
-                //
-                // middle point is strictly located between f.a=upper, f.c=lower
-                // take value at 3/4 of width to deduce cubic approximation
+                // enter <valid middle point>
                 //
                 //--------------------------------------------------------------
-                const real_t x_omega  = half*(x.b+x.c);
-                const real_t f_omega  = F(x_omega);
+                assert(f.b<f.a);
 
-                if(f_omega<=f.c)
+                if(f.b<=f.c)
                 {
                     //----------------------------------------------------------
                     //
-                    YACK_LOCATE(fn << "<success@level-2>");
+                    YACK_LOCATE(fn << "<succes@middle>");
                     //
                     //----------------------------------------------------------
-                    f.a = f.b;     x.a = x.b;
-                    f.b = f_omega; x.b = x_omega;
-                    goto SUCCESS;
-                }
-
-
-                if(f_omega>=f.b)
-                {
+                    assert(f.b<=f.a);
+                    assert(f.is_local_minimum());
+                    goto SUCCESS; // and done
                     //----------------------------------------------------------
                     //
-                    YACK_LOCATE(fn << "<bump@level-2>" );
+                    // leave <succes@middle>
                     //
                     //----------------------------------------------------------
-                    x.a   = x_omega;
-                    f.a   = f_omega;
-                    width = cswap_incr(xmin=x.a,xmax=x.c);
-                    goto CYCLE; // keep the lowest part and restart
-                }
-
-                YACK_LOCATE(fn << "<cubic>" );
-                const real_t        delta[3] = { f.c - f.a, f.b - f.a, f_omega - f.a };
-                const Cubic<real_t> C        = {
-                    f.a,
-                    3   * delta[0] + 12 * delta[1] - 32 * delta[2]/3,
-                    -10 * delta[0] - 28 * delta[1] + 32 * delta[2],
-                    8   * delta[0] + 16 * delta[1] - 64 * delta[2]/3
-                };
-                const Quadratic<real_t> Q = { 3*C.gamma, 2*C.beta, C.alpha };
-
-                {
-                    ios::ocstream fp("inscub.dat");
-                    const size_t  np = 200;
-                    for(size_t i=0;i<=np;++i)
-                    {
-                        const real_t u = i/(real_t)np;
-                        fp("%.15g %.15g %.15g\n", double(u), double(C(u)), double(Q(u)) );
-                    }
-                }
-
-                //--------------------------------------------------------------
-                //
-                // check if decreasing @u=0 (x.a)
-                //
-                //--------------------------------------------------------------
-                const real_t q0 = Q(0);
-                if( q0 >= 0 )
-                {
-                    YACK_LOCATE(fn << "<spurious>" );
-                    f.a = f_omega;
-                    x.a = x_omega;
-                    width = cswap_incr(xmin=x.a,xmax=x.c);
-                    goto CYCLE; // keep the lowest part so far and restart
-                }
-
-                assert(q0<0);
-
-                real_t       xx[5] = { x.a, x.b, x_omega, x.c, NAN };
-                real_t       ff[5] = { f.a, f.b, f_omega, f.c, NAN };
-                const real_t q1    = Q(1);
-                const bool   decreasing = q1 <= 0;
-                if( decreasing )
-                {
-                    YACK_LOCATE(fn << "<decreasing>");
-                    const real_t wc(0.9);
-                    const real_t wa    = one - wc;
-                    const real_t x_opt = clamp(xmin,x.a*wa+x.c*wc,xmax);
-                    const real_t f_opt = F(x_opt);
-                    xx[4] = x_opt;
-                    ff[4] = f_opt;
                 }
                 else
                 {
-                    assert(q1>0);
-                    const real_t u_opt = Q.zsearch(q0,q1);
-                    const real_t x_opt = clamp(xmin,x.a*(one-u_opt)+u_opt*x.c,xmax);
-                    YACK_LOCATE(fn << "x_opt=" << x_opt << ", u_opt=" << u_opt);
-                    const real_t f_opt = F(x_opt);
-                    xx[4] = x_opt;
-                    ff[4] = f_opt;
+                    assert(f.c<f.b); assert(f.b<f.a);
+                    //----------------------------------------------------------
+                    //
+                    // enter <tertiary> point and check it
+                    //
+                    //----------------------------------------------------------
+                    const real_t x_t  = half*(x.b+x.c);
+                    const real_t f_t  = F(x_t);
+
+                    if(f_t>=f.a)
+                    {
+                        //------------------------------------------------------
+                        //
+                        YACK_LOCATE(fn << "<bump@tertiary>" );
+                        //
+                        //------------------------------------------------------
+                        x.a   = x_t;
+                        f.a   = f_t;
+                        width = cswap_incr(xmin=x.a,xmax=x.c);
+                        goto CYCLE; // keep the lowest part and restart
+                        //------------------------------------------------------
+                        //
+                        // leave <bump@tertiary>
+                        //
+                        //------------------------------------------------------
+                    }
+                    else
+                    {
+                        if(f_t<=f.c)
+                        {
+                            //--------------------------------------------------
+                            //
+                            YACK_LOCATE(fn << "<succes@tertiary>");
+                            //
+                            //--------------------------------------------------
+                            assert(f_t<=f.a);
+                            f.a = f.b; x.a = x.b;
+                            f.b = f_t; x.b = x_t;
+                            assert(f.is_local_minimum());
+                            goto SUCCESS; // and done
+                            //--------------------------------------------------
+                            //
+                            // leave <succes@tertiary>
+                            //
+                            //--------------------------------------------------
+                        }
+                        else
+                        {
+                            assert(f.c<f_t);
+                            //--------------------------------------------------
+                            //
+                            YACK_LOCATE(fn << "<cubic>");
+                            //
+                            //--------------------------------------------------
+                            const real_t        delta[3] = { f.c - f.a, f.b - f.a, f_t - f.a };
+                            const Cubic<real_t> C        = {
+                                f.a,
+                                3   * delta[0] + 12 * delta[1] - 32 * delta[2]/3,
+                                -10 * delta[0] - 28 * delta[1] + 32 * delta[2],
+                                8   * delta[0] + 16 * delta[1] - 64 * delta[2]/3
+                            };
+                            const Quadratic<real_t> Q = { 3*C.gamma, 2*C.beta, C.alpha };
+
+                            {
+                                ios::ocstream fp("inscub.dat");
+                                const size_t  np = 200;
+                                for(size_t i=0;i<=np;++i)
+                                {
+                                    const real_t u = i/(real_t)np;
+                                    fp("%.15g %.15g %.15g\n", double(u), double(C(u)), double(Q(u)) );
+                                }
+                            }
+
+                            const real_t q0 = Q(0);
+                            if( q0 >= 0 )
+                            {
+                                //----------------------------------------------
+                                //
+                                YACK_LOCATE(fn << "<spurious>" );
+                                //
+                                //----------------------------------------------
+                                f.a   = f_t;
+                                x.a   = x_t;
+                                width = cswap_incr(xmin=x.a,xmax=x.c);
+                                goto CYCLE; // keep the lowest part so far and restart
+                                //----------------------------------------------
+                                //
+                                // leave <spurious>
+                                //
+                                //----------------------------------------------
+                            }
+                            else
+                            {
+                                //----------------------------------------------
+                                //
+                                // enter <forwarding>
+                                //
+                                //----------------------------------------------
+                                assert(q0<0);
+                                real_t       xx[5] = { x.a, x.b, x_t, x.c, NAN };
+                                real_t       ff[5] = { f.a, f.b, f_t, f.c, NAN };
+                                const real_t q1    = Q(1);
+                                std::cerr << "q1=" << q1 << std::endl;
+                                if(q1<=0)
+                                {
+                                    ++decreasing;
+                                    YACK_LOCATE(fn << "<decreasing#" << decreasing << ">" );
+                                    const real_t wc(0.9);
+                                    const real_t wa    = one - wc;
+                                    const real_t x_opt = clamp(xmin,x.a*wa+x.c*wc,xmax);
+                                    const real_t f_opt = F(x_opt);
+                                    xx[4] = x_opt;
+                                    ff[4] = f_opt;
+                                }
+                                else
+                                {
+                                    YACK_LOCATE(fn << "<backtracking>" );
+                                    const real_t u_opt = Q.zsearch(q0,q1);
+                                    const real_t x_opt = clamp(xmin,x.a*(one-u_opt)+u_opt*x.c,xmax);
+                                    const real_t f_opt = F(x_opt);
+                                    xx[4] = x_opt;
+                                    ff[4] = f_opt;
+                                }
+                                YACK_LOCATE(fn << "\tF(" << xx[4] << ")=" << ff[4]);
+                                srt.csort(xx,ff);    // increasing x
+                                find5(x,f,xx,ff);    // rearrange x
+                                write3(x,f,++color);
+
+
+                                if(f.is_local_minimum())
+                                {
+                                    YACK_LOCATE(fn << "<success@cubic>");
+                                    goto SUCCESS;
+                                }
+
+
+                                const real_t new_width = cswap_incr(xmin=x.a,xmax=x.c);
+                                std::cerr << "width=" << width << " => " << new_width << std::endl;
+                                if(new_width<=0 || new_width>=width)
+                                {
+                                    YACK_LOCATE(fn << "<monotonic>");
+                                    return false;
+                                }
+
+                                width = new_width;
+                                goto CYCLE;
+                                //----------------------------------------------
+                                //
+                                // leave <forwarding>
+                                //
+                                //----------------------------------------------
+                            }
+                            //--------------------------------------------------
+                            //
+                            // leave <cubic>
+                            //
+                            //--------------------------------------------------
+                        }
+                    }
+                    //----------------------------------------------------------
+                    //
+                    // leave <tertiary>
+                    //
+                    //----------------------------------------------------------
                 }
-
-                srt.csort(xx,ff);    // increasing x
-                find5(x,f,xx,ff);    // rearrange x
-                write3(x,f,++color);
-
-                if(f.is_local_minimum())
-                {
-                    YACK_LOCATE(fn << "<success@level-3>");
-                    goto SUCCESS;
-                }
-
-                const real_t new_width = cswap_incr(xmin=x.a,xmax=x.c);
-                std::cerr << "width=" << width << " => " << new_width << std::endl;
-                if(new_width<=0 || new_width>=width)
-                {
-                    YACK_LOCATE(fn << "<monotonic>");
-
-                    return false;
-                }
-
-                width = new_width;
-                goto CYCLE;
-
-
-
+                //--------------------------------------------------------------
+                //
+                // leave <valid middle point>
+                //
+                //--------------------------------------------------------------
             }
 
-
-
+            // never get here
         SUCCESS:
-            // found
+            //------------------------------------------------------------------
+            //
+            // found minimum set increasing x
+            //
+            //------------------------------------------------------------------
             assert( f.is_local_minimum() );
 
-            // set increasing x
             if(x.c<x.a)
             {
                 x.reverse();
@@ -407,15 +476,7 @@ namespace yack
             YACK_LOCATE(fn << x << " -> " << f);
 
             return true;
-
         }
-
-
-
-
-
-        
-
 
 
     }
