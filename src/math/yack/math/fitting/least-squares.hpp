@@ -275,9 +275,12 @@ namespace yack
                         YACK_LSF_PRINTLN(clid << "<accept f1=" << f1 << ">");
                         //
                         //------------------------------------------------------
+                        const ORDINATE slope = -solv.xadd.dot(s.beta,step);
+                        ORDINATE       DeltaF = std::abs(f0-f1);
+                        
 
-                        // need to check if significatif delta
-                        ORDINATE DeltaF = std::abs(f0-f1);
+
+
                         std::cerr << "DeltaF=" << DeltaF << " = " <<  DeltaF/f0 << "  of " << f0 << std::endl;
 
 
@@ -288,13 +291,19 @@ namespace yack
                         if(verbose)
                         {
                             ios::ocstream fp("linear.dat");
-                            const size_t np = 100;
+                            const size_t   np = 100;
                             for(size_t i=0;i<=np;++i)
                             {
                                 const ORDINATE u = i/ORDINATE(np);
                                 fp("%.15g %.15g\n", double(u), double((*this)(u)));
                             }
-
+                            std::cerr << "slope=" << slope << std::endl;
+                            std::cerr << std::setprecision(15);
+                            std::cerr << "plot 'linear.dat' w lp, " << f0 << "+(" << slope << ")*x" << std::endl;
+                            if(cycle>=4)
+                            {
+                                exit(1);
+                            }
                         }
 
                         if(delta_f>=limit_f)
