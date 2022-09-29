@@ -299,6 +299,7 @@ namespace yack
                     // extrapolation @left of b
                     //----------------------------------------------------------
                     const real_t f_u = F(x_u);
+                    YACK_OPTIMIZE(fn<< "[@left : F(" << x_u << ")=" << f_u << "]");
                     if(f_u<=f.b)
                     {
                         //------------------------------------------------------
@@ -329,6 +330,7 @@ namespace yack
                     // extrapolation @right of b
                     //----------------------------------------------------------
                     const real_t f_u = F(x_u);
+                    YACK_OPTIMIZE(fn<< "[@right: F(" << x_u << ")=" << f_u << "]");
                     if(f_u<=f.b)
                     {
                         //------------------------------------------------------
