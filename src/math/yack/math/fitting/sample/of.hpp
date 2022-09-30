@@ -216,7 +216,8 @@ namespace yack
                         for(size_t i=2;i<=dims;++i)
                         {
                             const size_t    ii = schedule[i];
-                            const ORDINATE  o1 = deltaOrd[ii] = ordinate[ii] - (adjusted[ii] = func.reach(abscissa[ii],aorg,vars));
+                            const ORDINATE  o1 = ordinate[ii] - (adjusted[ii] = func.reach(abscissa[ii],aorg,vars));
+                            deltaOrd[ii] = o1;
                             const ORDINATE  o2 = squared(o1);
                             xadd += o2;
                             std::cerr << ' ' << Hexa(o1);
