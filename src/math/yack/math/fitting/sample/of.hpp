@@ -157,14 +157,14 @@ namespace yack
                             const size_t   ii = schedule[1];
                             const ORDINATE o2 = squared( ordinate[ii] - (adjusted[ii] = func.start(abscissa[ii],aorg,vars)) );
                             xadd += o2;
-                            std::cerr << ' ' << o2;
+                            std::cerr << ' ' << yack_crc32(&o2,sizeof(o2));
                         }
                         for(size_t i=2;i<=n;++i)
                         {
                             const size_t ii = schedule[i];
                             const ORDINATE o2 = squared( ordinate[ii] - (adjusted[ii] = func.reach(abscissa[ii],aorg,vars))  );
                             xadd += o2;
-                            std::cerr << ' ' << o2;
+                            std::cerr << ' ' << yack_crc32(&o2,sizeof(o2));
                         }
                         std::cerr << " }" << std::endl;
                         show_info("D2_solo");
@@ -201,14 +201,14 @@ namespace yack
                             const size_t   ii = schedule[1];
                             const ORDINATE o2 = squared( deltaOrd[ii] = ordinate[ii] - (adjusted[ii] = func.start(abscissa[ii],aorg,vars)) );
                             xadd += o2;
-                            std::cerr << ' ' << o2;
+                            std::cerr << ' ' << yack_crc32(&o2,sizeof(o2));
                         }
                         for(size_t i=2;i<=dims;++i)
                         {
                             const size_t   ii = schedule[i];
                             const ORDINATE o2 = squared( deltaOrd[ii] = ordinate[ii] - (adjusted[ii] = func.reach(abscissa[ii],aorg,vars)) );
                             xadd += o2;
-                            std::cerr << ' ' << o2;
+                            std::cerr << ' ' << yack_crc32(&o2,sizeof(o2));
                         }
                         std::cerr << " }" << std::endl;
                         show_info("D2_full");
