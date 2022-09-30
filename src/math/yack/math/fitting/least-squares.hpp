@@ -154,7 +154,6 @@ namespace yack
                          writable<ORDINATE>       &aerr,
                          process                  *proc)
                 {
-                    static const ORDINATE xtol = numeric<ORDINATE>::sqrt_eps;
 
                     //----------------------------------------------------------
                     //
@@ -285,190 +284,85 @@ namespace yack
                     YACK_LSF_PRINTLN(clid << " df = " << df );
 
 
-                    if(df>0)
+                    if(df>=0)
                     {
-                        const ORDINATE check_above = (1e-3) * f0;
+                        //------------------------------------------------------
+                        //
+                        // accepting
+                        //
+                        //------------------------------------------------------
                         YACK_LSF_PRINTLN(clid << "<accept>");
+                        assert(f0>0);
+
+                        //------------------------------------------------------
+                        // check no overshoot when D2 decreases "a lot"
+                        //------------------------------------------------------
+                        const ORDINATE check_above = (1e-3) * f0;
                         if(df>=check_above)
                         {
-                            YACK_LSF_PRINTLN(clid << "<checking [df>=" << check_above << "]>");
+                            YACK_LSF_PRINTLN(clid << "  <checking [df>=" << check_above << "]>");
                             check(f0,f1);
+
+                            YACK_LSF_PRINTLN(clid << "  <checking/>");
                         }
                         else
                         {
-                            YACK_LSF_PRINTLN(clid << "<raw step [df<" << check_above << "]>");
+                            YACK_LSF_PRINTLN(clid << "  <raw step [df<" << check_above << "]/>");
                         }
-
-                    }
-                    else
-                    {
-                        YACK_LSF_PRINTLN(clid << "<reject>");
-
-                    }
-
-
-
-                    exit(0);
-
-#if 0
-                    //----------------------------------------------------------
-                    //
-                    // evaluate new position
-                    //
-                    //----------------------------------------------------------
-                    ORDINATE       f1    = s.D2(f,aend);
-                    const ORDINATE slope = -solv.xadd.dot(s.beta,step);
-                    const ORDINATE delta = f0-f1;
-                    std::cerr    << " (*) slope=" << slope << std::endl;
-                    std::cerr    << " (*) delta=" << delta << std::endl;
-
-
-                    if(verbose)
-                    {
-                        ios::ocstream fp("linear.dat");
-                        const size_t   np = 100;
-                        for(size_t i=0;i<=np;++i)
-                        {
-                            const ORDINATE u = i/ORDINATE(np);
-                            fp("%.15g %.15g\n", double(u), double((*this)(u)));
-                        }
-                        std::cerr << std::setprecision(15);
-                        std::cerr << "plot 'linear.dat' w lp, " << f0 << "+(" << slope << ")*x" << std::endl;
-                        if(cycle>=10)
-                        {
-                            //exit(1);
-                        }
-                    }
-
-
-                    if(f1<=f0)
-                    {
-                        //------------------------------------------------------
-                        //
-                        YACK_LSF_PRINTLN(clid << "<accept f1=" << f1 << ">");
-                        //
-                        //------------------------------------------------------
-                        ORDINATE       DeltaF = std::abs(f0-f1);
-
-
-
-                        std::cerr << "DeltaF=" << DeltaF << " = " <<  DeltaF/f0 << "  of " << f0 << std::endl;
-
-
-                        const ORDINATE delta_f = std::abs(f0-f1);
-                        const ORDINATE limit_f = 1e-4 * f0;
-                        std::cerr << "delta_f=" << delta_f << " / limit_f=" << limit_f << std::endl;
-
-                        if(delta_f>=limit_f)
-                        {
-                            least_squares     &self = *this;
-                            triplet<ORDINATE>  U    = {  0, -1,  1 };
-                            triplet<ORDINATE>  F    = { f0, -1, f1 };
-
-                            const bool located = locate::inside_for(self,U,F);
-
-                            if(located)
-                            {
-                                YACK_LSF_PRINTLN(clid << "\\_" << U << " -> " << F);
-                                bool dummy = true;
-                                while( optimize::tighten_for(self, U, F, dummy) > 0.01 )
-                                {
-                                    YACK_LSF_PRINTLN(clid << "\\_" << U << " -> " << F);
-                                }
-                                make_atry(U.b);
-                                (**curr).mov(aend,atry);
-                                f1 = F.b;
-                                YACK_LSF_PRINTLN(clid << "<accept f1=" << f1 << ">");
-                            }
-                            else
-                            {
-                                std::cerr << "global @" << U.b << std::endl;
-                                if(U.b>=1)
-                                {
-                                    YACK_LSF_PRINTLN(clid << "<full step!>");
-                                }
-                                else
-                                {
-                                    if(U.b<=0)
-                                    {
-                                    }
-                                    else
-                                    {
-
-                                    }
-                                    exit(0);
-                                }
-                            }
-                        }
+                        YACK_LSF_PRINTLN(clid << "<accept/>");
 
                         //------------------------------------------------------
                         // check variable convergence
                         //------------------------------------------------------
-                        YACK_LSF_PRINTLN(clid << "[variables convergence testing]");
-
-                        bool converged = true;
-                        for(const vnode *node=vars.head();node;node=node->next)
-                        {
-                            const variable &v = ***node;
-                            const size_t    i = *v; if(!used[i]) continue;
-                            const ORDINATE  a_old = aorg[i];
-                            const ORDINATE  a_new = aend[i];
-                            const ORDINATE  delta = std::abs(a_old-a_new);
-                            const ORDINATE  limit = xtol * max_of( std::abs(a_old), std::abs(a_new) );
-                            const bool      is_ok = delta<=limit;
-                            if(verbose)
-                            {
-                                vars.pad(std::cerr << ok(is_ok) << v.name,v.name);
-                                std::cerr <<  " : " << std::setw(15) << a_old;
-                                std::cerr << " -> " << std::setw(15) << a_new;
-                                std::cerr << " [" << std::setw(15) << delta << "/" << limit << "]";
-                                std::cerr << std::endl;
-                            }
-                            if(!is_ok) converged = false;
-                            aorg[i] = a_new;
-                        }
-                        YACK_LSF_PRINTLN(clid << "[variables convergence =" << ok(converged) << "]");
+                        if(converged_variables(vars,used))
+                            goto SUCCESS;
 
                         //------------------------------------------------------
-                        // update for success of new cycle
+                        // check D2 convergence ?
                         //------------------------------------------------------
-                        if(converged) goto SUCCESS;
-
-                        //if(cycle>=2) exit(0);
 
                         //------------------------------------------------------
-                        // restart with a successfull step :)
+                        // ready for next FULL cycle
                         //------------------------------------------------------
-                        f0 = s.D2_full(f,aorg, used, scal, *drvs);
                         lam.decrease(p10);
+                        f0 = s.D2_full(f,aorg,used,scal,*drvs);
                         goto CYCLE;
+
                     }
                     else
                     {
-                        assert(f1>f0);
                         //------------------------------------------------------
                         //
-                        YACK_LSF_PRINTLN(clid << "<reject>");
+                        // rejecting
                         //
                         //------------------------------------------------------
-                        YACK_LSF_PRINTLN(clid << "D2: " << f0 << " -> " << f1);
+                        const ORDINATE limit = max_of(f1,f0) * numeric<ORDINATE>::ftol;
+                        if( std::abs(df) <= limit )
+                        {
+                            YACK_LSF_PRINTLN(clid << "<accept below " << limit << ">");
+                            goto SUCCESS;
+                        }
+                        else
+                        {
+                            YACK_LSF_PRINTLN(clid << "<reject above " << limit << ">");
 
-
-                        //------------------------------------------------------
-                        // decrease step
-                        //------------------------------------------------------
-                        if( !lam.increase(p10) ) {
-                            YACK_LSF_PRINTLN(clid << "<spurious variables>");
-                            return false;
+                            //------------------------------------------------------
+                            // ready for next SMALLER cycle
+                            //------------------------------------------------------
+                            if(!lam.increase(p10))
+                            {
+                                YACK_LSF_PRINTLN(clid << "<and spurious parameters!>");
+                                return false;
+                            }
+                            goto CYCLE;
                         }
 
-                        //------------------------------------------------------
-                        // restart with a smaller trial
-                        //------------------------------------------------------
-                        goto CYCLE;
                     }
 
-#endif
+                    // never get here
+
+
+
 
                 SUCCESS:
                     //----------------------------------------------------------
@@ -608,119 +502,67 @@ namespace yack
                 inline void check(const ORDINATE  f0,
                                   ORDINATE       &f1)
                 {
-                    triplet<ORDINATE> u = { 0, -1,  1 };
-                    triplet<ORDINATE> f = {f0, -1, f1 };
-                    least_squares    &F = *this;
+                    static const ORDINATE utol = twice(numeric<ORDINATE>::sqrt_eps);
+                    triplet<ORDINATE>     u    = { 0, -1,  1 };
+                    triplet<ORDINATE>     f    = {f0, -1, f1 };
+                    least_squares        &F    = *this;
 
                     if(locate::inside_for(F,u,f))
                     {
-                        YACK_LSF_PRINTLN(clid << "<located>");
+                        YACK_LSF_PRINTLN(clid << "  <located>");
+
+                        bool _ = false;
+                        YACK_LSF_PRINTLN(clid << "  |_" << u << " -> " << f);
+                        while( optimize::tighten_for(F,u,f,_) > utol )
+                        {
+                            YACK_LSF_PRINTLN(clid << "  |_" << u << " -> " << f);
+                        }
+
+                        YACK_LSF_PRINTLN(clid << "  <located/>");
+                        make_atry(u.b);
+                        (**curr).mov(aend,atry);
+                        f1 = f.b;
                     }
                     else
                     {
-                        YACK_LSF_PRINTLN(clid << "<global>");
+                        YACK_LSF_PRINTLN(clid << "  <global/>");
                     }
-
 
                 }
 
-                void analyze(const ORDINATE f0,
-                             ORDINATE      &f1)
+
+                // test variables while moving aend to aorg
+                inline bool converged_variables(const variables      &vars,
+                                                const readable<bool> &used)
                 {
-                    static const ORDINATE half(0.5);
-                    //----------------------------------------------------------
-                    //
-                    // initialize with half point
-                    //
-                    //----------------------------------------------------------
-                    assert(f1<=f0);
-                    least_squares &self = *this;
-                    const ORDINATE fm   = self(half);
-                    YACK_LSF_PRINTLN(clid << "[analyze] " << f0 << " -> " << fm << " -> " << f1);
+                    static const ORDINATE xtol = numeric<ORDINATE>::sqrt_eps;
 
-                    //----------------------------------------------------------
-                    //
-                    // check parabolic possibility
-                    //
-                    //----------------------------------------------------------
-                    const ORDINATE beta  = twice(curr->xadd(f0,f1,-(fm+fm)));
-                    const ORDINATE alpha = curr->xadd(-3*f0,-f1,4*fm);
-                    YACK_LSF_PRINTLN(clid << "|_slope1D = " << alpha);
-                    YACK_LSF_PRINTLN(clid << "|_curv1D  = " << beta);
-                    if(alpha>=0||beta<=0) { YACK_LSF_PRINTLN(clid << "<irregular>"); return; }
+                    YACK_LSF_PRINTLN(clid << "<variables convergence testing>");
 
-                    assert(alpha<0);
-                    assert(beta>0);
-
-                    //----------------------------------------------------------
-                    //
-                    // compute parabolic location
-                    //
-                    //----------------------------------------------------------
-                    const ORDINATE num = -alpha;
-                    const ORDINATE den = beta+beta;
-                    if(num>=den) { YACK_LSF_PRINTLN(clid << "<no overhsoot>"); return; }
-                    const ORDINATE u_opt = num/den;
-                    const ORDINATE f_opt = self(u_opt);
-                    YACK_LSF_PRINTLN(clid << "|_uOpt    = " << u_opt);
-                    YACK_LSF_PRINTLN(clid << "|_fOpt    = " << f_opt);
-
-                    //----------------------------------------------------------
-                    //
-                    // tighten position
-                    //
-                    //----------------------------------------------------------
-                    ORDINATE u[4] = { 0, 0.5, u_opt, 1 };
-                    ORDINATE f[4] = { f0, fm, f_opt, f1};
-
-                    if(u[2]<u[1])
+                    bool converged = true;
+                    for(const vnode *node=vars.head();node;node=node->next)
                     {
-                        cswap(u[1],u[2]);
-                        cswap(f[1],f[2]);
-                    }
-
-                    if(verbose)
-                    {
-                        std::cerr << clid << "|_@";
-                        for(size_t i=0;i<4;++i)
+                        const variable &v = ***node;
+                        const size_t    i = *v; if(!used[i]) continue;
+                        const ORDINATE  a_old = aorg[i];
+                        const ORDINATE  a_new = aend[i];
+                        const ORDINATE  delta = std::abs(a_old-a_new);
+                        const ORDINATE  limit = xtol * max_of( std::abs(a_old), std::abs(a_new) );
+                        const bool      is_ok = delta<=limit;
+                        if(verbose)
                         {
-                            std::cerr << ' ' << u[i] << ':' << f[i];
+                            vars.pad(std::cerr << ok(is_ok) << v.name,v.name);
+                            std::cerr <<  " : " << std::setw(15) << a_old;
+                            std::cerr << " -> " << std::setw(15) << a_new;
+                            std::cerr << " [" << std::setw(15) << delta << "/" << limit << "]";
+                            std::cerr << std::endl;
                         }
-                        std::cerr << std::endl;
+                        if(!is_ok) converged = false;
+                        aorg[i] = a_new;
                     }
-
-                    size_t   imin = 1;
-                    ORDINATE fmin = f[1];
-                    for(size_t i=2;i<4;++i)
-                    {
-                        const ORDINATE ftmp = f[i];
-                        if(ftmp<=fmin)
-                        {
-                            imin = i;
-                            fmin = ftmp;
-                        }
-                    }
-                    if(imin==3) { YACK_LSF_PRINTLN(clid << "<full step>"); return; }
-                    const size_t ia = imin-1;
-                    const size_t ib = imin;
-                    const size_t ic = imin+1;
-
-                    triplet<ORDINATE> U = { u[ia], u[ib], u[ic] }; assert(U.is_increasing());
-                    triplet<ORDINATE> F = { f[ia], f[ib], f[ic] }; assert(F.is_local_minimum());
-
-                    const ORDINATE w0 = std::abs(U.c-U.a);
-                    const ORDINATE w1 = w0/10;
-                    bool           decreased = false;
-                    while(true) {
-                        const ORDINATE w = optimize::tighten_for(self,U,F,decreased);
-                        if(w<w1) break;
-                    }
-
-                    make_atry(U.b);
-                    (**curr).mov(aend,atry);
-                    f1 = F.b;
+                    YACK_LSF_PRINTLN(clid << "<variables convergence =" << ok(converged) << ">");
+                    return converged;
                 }
-
 
 
 
