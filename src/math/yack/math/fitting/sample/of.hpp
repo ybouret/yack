@@ -136,6 +136,12 @@ namespace yack
                 };
                 
             public:
+                template <typename TYPE> static inline
+                ios::hexa Hexa(const TYPE &t) throw()
+                {
+                    return ios::hexa( yack_crc32(&t,sizeof(TYPE)) );
+                }
+
                 void show_info(const char *when) const
                 {
                     const ios::hexa h(xadd.crc(),true);
@@ -159,7 +165,7 @@ namespace yack
                             const ORDINATE  o1 = ordinate[ii] - (adjusted[ii] = func.start(aa,aorg,vars));
                             const ORDINATE  o2 = squared(o1 );
                             xadd += o2;
-                            std::cerr << ' ' << yack_crc32(&aa,sizeof(ABSCISSA));
+                            std::cerr << ' ' << Hexa(aa);
                         }
                         for(size_t i=2;i<=n;++i)
                         {
@@ -168,7 +174,7 @@ namespace yack
                             const ORDINATE  o1 = ordinate[ii] - (adjusted[ii] = func.reach(aa,aorg,vars));
                             const ORDINATE  o2 = squared(o1);
                             xadd += o2;
-                            std::cerr << ' ' << yack_crc32(&aa,sizeof(ABSCISSA));
+                            std::cerr << ' ' << Hexa(aa);
                         }
                         std::cerr << " }" << std::endl;
                         show_info("D2_solo");
@@ -207,7 +213,7 @@ namespace yack
                             const ORDINATE  o1 = deltaOrd[ii] = ordinate[ii] - (adjusted[ii] = func.start(aa,aorg,vars));
                             const ORDINATE  o2 = squared(o1);
                             xadd += o2;
-                            std::cerr << ' ' << yack_crc32(&aa,sizeof(ABSCISSA));
+                            std::cerr << ' ' << Hexa(aa);
                         }
                         for(size_t i=2;i<=dims;++i)
                         {
@@ -216,7 +222,7 @@ namespace yack
                             const ORDINATE  o1 = deltaOrd[ii] = ordinate[ii] - (adjusted[ii] = func.reach(aa,aorg,vars));
                             const ORDINATE  o2 = squared(o1);
                             xadd += o2;
-                            std::cerr << ' ' << yack_crc32(&aa,sizeof(ABSCISSA));
+                            std::cerr << ' ' << Hexa(aa);
                         }
                         std::cerr << " }" << std::endl;
                         show_info("D2_full");
