@@ -302,7 +302,6 @@ namespace yack
                         {
                             YACK_LSF_PRINTLN(clid << "  <checking [df>=" << check_above << "]>");
                             check(f0,f1);
-
                             YACK_LSF_PRINTLN(clid << "  <checking/>");
                         }
                         else
