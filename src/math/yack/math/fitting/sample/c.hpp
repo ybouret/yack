@@ -58,7 +58,7 @@ namespace yack
                         {
                             const uint32_t H = yack_crc32(&Y_[1],n*sizeof(ORDINATE));
                             const uint32_t h = yack_crc32(&y[0],n*sizeof(ORDINATE));
-                            if(H!=h) sample_::throw_abscissa_failure();
+                            if(H!=h) sample_::throw_ordinate_failure();
                         }
 
                         //std::cerr << "\t -- [Valid CSAMPLE] --" << std::endl;
