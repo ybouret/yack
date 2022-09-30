@@ -91,13 +91,6 @@ YACK_UTEST(fitting_gls)
     std::cerr << aorg << std::endl;
 
     diffusion F;
-    const double D21 = s1.D2_for(F,aorg);
-    const double D22 = s2.D2_for(F,aorg);
-    const double D2A = both.D2_for(F,aorg);
-
-    std::cerr << "D21=" << D21 << std::endl;
-    std::cerr << "D22=" << D22 << std::endl;
-    std::cerr << "D2A=" << D2A << std::endl;
 
 
     save_sample(s1);
@@ -110,10 +103,13 @@ YACK_UTEST(fitting_gls)
     vector<double>      aerr(nvar);
 
     vars(scal,"t0") = 0.1;
-    
+
+    const double D21 = s1.D2_for(F,aorg);
     const double D21_full = s1.D2_full_for(F,aorg,used,scal,drvs);
+    std::cerr << "D21_solo=" << D21 << std::endl;
     std::cerr << "D21_full=" << D21_full << std::endl;
     YACK_CHECK( fabs(D21-D21_full) <= 0 );
+
     v1(std::cerr << "aorg  = ",aorg,NULL) << std::endl;
     v1(std::cerr << "beta1 = ",s1.beta,"beta1_") << std::endl;
     v1(std::cerr << "curv1 = ",s1.curv,"curv1_") << std::endl;
@@ -121,7 +117,9 @@ YACK_UTEST(fitting_gls)
     std::cerr << "beta1=" << s1.beta << std::endl;
     std::cerr << "curv1=" << s1.curv << std::endl;
 
+    const double D22 = s2.D2_for(F,aorg);
     const double D22_full = s2.D2_full_for(F,aorg,used,scal,drvs);
+    std::cerr << "D22_solo=" << D22                << std::endl;
     std::cerr << "D22_full=" << D22_full           << std::endl;
     std::cerr << "|D22|="    << fabs(D22-D22_full) << std::endl;
     YACK_CHECK( fabs(D22-D22_full) <= 0 );
@@ -132,7 +130,12 @@ YACK_UTEST(fitting_gls)
     std::cerr << "beta2=" << s2.beta << std::endl;
     std::cerr << "curv2=" << s2.curv << std::endl;
 
+    return 0;
+
+    const double D2A      = both.D2_for(F,aorg);
     const double D2A_full = both.D2_full_for(F,aorg,used,scal,drvs);
+    std::cerr << "D2A_solo=" << D2A                << std::endl;
+    std::cerr << "D2A_full=" << D2A_full           << std::endl;
     YACK_CHECK( fabs(D2A-D2A_full) <= 0 );
     vars(std::cerr << "aorg  = ",aorg,NULL)         << std::endl;
     vars(std::cerr << "beta  = ",both.beta,"beta_") << std::endl;
@@ -140,6 +143,8 @@ YACK_UTEST(fitting_gls)
 
     std::cerr << "beta=" << both.beta << std::endl;
     std::cerr << "curv=" << both.curv << std::endl;
+
+    return 0;
 
     fitting::least_squares<double,double> ls;
     ls.verbose = true;

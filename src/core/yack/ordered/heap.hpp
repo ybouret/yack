@@ -6,10 +6,9 @@
 #include "yack/container.hpp"
 #include "yack/container/dynamic.hpp"
 #include "yack/container/as-capacity.hpp"
-
 #include "yack/memory/allocator/pooled.hpp"
-
 #include "yack/ordered/priority-queue.hpp"
+#include "yack/check/crc32.h"
 #include <iostream>
 
 namespace yack
@@ -114,6 +113,11 @@ namespace yack
         //
         // methods
         //______________________________________________________________________
+
+        uint32_t crc() const throw()
+        {
+            return yack_crc32(tree,count*sizeof(type));
+        }
 
         //! set to 0
         inline void ldz() throw()

@@ -6,6 +6,7 @@
 #include "yack/math/fitting/sample.hpp"
 #include "yack/sort/indexing.hpp"
 #include "yack/type/temporary.hpp"
+#include "yack/ios/fmt/hexa.hpp"
 
 namespace yack
 {
@@ -108,32 +109,7 @@ namespace yack
                     }
                 }
                 
-                //! compute sequential D2
-                virtual ORDINATE D2(sequential_type          &func,
-                                    const readable<ORDINATE> &aorg)
-                {
-                    assert( dimension() == schedule.size() );
-                    const size_t n = dimension();
-                    if(n>0)
-                    {
-                        const variables &vars = **this;
-                        xadd.resume( n );
-                        {
-                            const size_t ii = schedule[1];
-                            xadd += squared( ordinate[ii] - (adjusted[ii] = func.start(abscissa[ii],aorg,vars))  );
-                        }
-                        for(size_t i=2;i<=n;++i)
-                        {
-                            const size_t ii = schedule[i];
-                            xadd += squared( ordinate[ii] - (adjusted[ii] = func.reach(abscissa[ii],aorg,vars))  );
-                        }
-                        return xadd.get()/2;
-                    }
-                    else
-                    {
-                        return 0;
-                    }
-                }
+
                 
             private:
                 
@@ -160,7 +136,40 @@ namespace yack
                 };
                 
             public:
-                
+                void show_info(const char *when) const
+                {
+                    const ios::hexa h(xadd.crc(),true);
+                    std::cerr << "[" << when << ": " << this->name << " has #" << dimension() << ": CRC=" << h << "]" << std::endl;
+                }
+
+                //! compute sequential D2
+                virtual ORDINATE D2(sequential_type          &func,
+                                    const readable<ORDINATE> &aorg)
+                {
+                    assert( dimension() == schedule.size() );
+                    const size_t n = dimension();
+                    if(n>0)
+                    {
+                        const variables &vars = **this;
+                        xadd.resume( n );
+                        {
+                            const size_t ii = schedule[1];
+                            xadd += squared( ordinate[ii] - (adjusted[ii] = func.start(abscissa[ii],aorg,vars))  );
+                        }
+                        for(size_t i=2;i<=n;++i)
+                        {
+                            const size_t ii = schedule[i];
+                            xadd += squared( ordinate[ii] - (adjusted[ii] = func.reach(abscissa[ii],aorg,vars))  );
+                        }
+                        show_info("D2_solo");
+                        return xadd.get()/2;
+                    }
+                    else
+                    {
+                        return 0;
+                    }
+                }
+
                 //! compute sequential D2
                 virtual ORDINATE D2_full(sequential_type            &func,
                                          const readable<ORDINATE>   &aorg,
@@ -190,6 +199,7 @@ namespace yack
                             const size_t ii = schedule[i];
                             xadd += squared( deltaOrd[ii] = ordinate[ii] - (adjusted[ii] = func.reach(abscissa[ii],aorg,vars)) );
                         }
+                        show_info("D2_full");
                         const ORDINATE res = xadd.get()/2;
                         
                         //------------------------------------------------------
