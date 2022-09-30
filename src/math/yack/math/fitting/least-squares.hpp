@@ -262,7 +262,7 @@ namespace yack
                         }
                     }
 
-                    if(verbose)
+                    if(false)
                     {
                         ios::ocstream fp("linear.dat");
                         const size_t   np = 100;
