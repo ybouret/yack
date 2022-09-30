@@ -161,20 +161,18 @@ namespace yack
                         std::cerr << "+{";
                         {
                             const size_t    ii  = schedule[1];
-                            const ABSCISSA &aa = abscissa[ii];
-                            const ORDINATE  o1 = ordinate[ii] - (adjusted[ii] = func.start(aa,aorg,vars));
+                            const ORDINATE  o1 = ordinate[ii] - (adjusted[ii] = func.start(abscissa[ii],aorg,vars));
                             const ORDINATE  o2 = squared(o1 );
                             xadd += o2;
-                            std::cerr << ' ' << Hexa(aa);
+                            std::cerr << ' ' << Hexa(abscissa[ii]);
                         }
                         for(size_t i=2;i<=n;++i)
                         {
                             const size_t    ii = schedule[i];
-                            const ABSCISSA &aa = abscissa[ii];
-                            const ORDINATE  o1 = ordinate[ii] - (adjusted[ii] = func.reach(aa,aorg,vars));
+                            const ORDINATE  o1 = ordinate[ii] - (adjusted[ii] = func.reach(abscissa[ii],aorg,vars));
                             const ORDINATE  o2 = squared(o1);
                             xadd += o2;
-                            std::cerr << ' ' << Hexa(aa);
+                            std::cerr << ' ' << Hexa(abscissa[ii]);
                         }
                         std::cerr << " }" << std::endl;
                         show_info("D2_solo");
@@ -209,20 +207,18 @@ namespace yack
                         deltaOrd.adjust(dims,0);
                         {
                             const size_t    ii = schedule[1];
-                            const ABSCISSA &aa = abscissa[ii];
-                            const ORDINATE  o1 = deltaOrd[ii] = ordinate[ii] - (adjusted[ii] = func.start(aa,aorg,vars));
+                            const ORDINATE  o1 = deltaOrd[ii] = ordinate[ii] - (adjusted[ii] = func.start(abscissa[ii],aorg,vars));
                             const ORDINATE  o2 = squared(o1);
                             xadd += o2;
-                            std::cerr << ' ' << Hexa(aa);
+                            std::cerr << ' ' << Hexa(abscissa[ii]);
                         }
                         for(size_t i=2;i<=dims;++i)
                         {
                             const size_t    ii = schedule[i];
-                            const ABSCISSA &aa = abscissa[ii];
-                            const ORDINATE  o1 = deltaOrd[ii] = ordinate[ii] - (adjusted[ii] = func.reach(aa,aorg,vars));
+                            const ORDINATE  o1 = deltaOrd[ii] = ordinate[ii] - (adjusted[ii] = func.reach(abscissa[ii],aorg,vars));
                             const ORDINATE  o2 = squared(o1);
                             xadd += o2;
-                            std::cerr << ' ' << Hexa(aa);
+                            std::cerr << ' ' << Hexa(abscissa[ii]);
                         }
                         std::cerr << " }" << std::endl;
                         show_info("D2_full");
