@@ -6,7 +6,6 @@
 #include "yack/math/fitting/sample.hpp"
 #include "yack/sort/indexing.hpp"
 #include "yack/type/temporary.hpp"
-#include "yack/ios/fmt/hexa.hpp"
 
 namespace yack
 {
@@ -136,6 +135,8 @@ namespace yack
                 };
                 
             public:
+
+#if 0
                 template <typename TYPE> static inline
                 ios::hexa Hexa(const TYPE &t) throw()
                 {
@@ -147,6 +148,7 @@ namespace yack
                     const ios::hexa h(xadd.crc(),true);
                     std::cerr << "[" << when << ": " << this->name << " has #" << xadd.size() << ": CRC=" << h << "]" << std::endl;
                 }
+#endif
 
                 //! compute sequential D2
                 virtual ORDINATE D2(sequential_type          &func,
@@ -158,13 +160,11 @@ namespace yack
                     {
                         const variables &vars = **this;
                         xadd.resume( n );
-                        std::cerr << "+{";
                         {
                             const size_t    ii  = schedule[1];
                             const ORDINATE  o1 = ordinate[ii] - (adjusted[ii] = func.start(abscissa[ii],aorg,vars));
                             const ORDINATE  o2 = squared(o1 );
                             xadd += o2;
-                            std::cerr << ' ' << Hexa(o1);
                         }
                         for(size_t i=2;i<=n;++i)
                         {
@@ -172,10 +172,7 @@ namespace yack
                             const ORDINATE  o1 = ordinate[ii] - (adjusted[ii] = func.reach(abscissa[ii],aorg,vars));
                             const ORDINATE  o2 = squared(o1);
                             xadd += o2;
-                            std::cerr << ' ' << Hexa(o1);
                         }
-                        std::cerr << " }" << std::endl;
-                        show_info("D2_solo");
                         return xadd.get()/2;
                     }
                     else
@@ -203,7 +200,6 @@ namespace yack
                         // pass 1 : evaluate adjusted, store deltaOrd and D2
                         //------------------------------------------------------
                         xadd.resume( dims );
-                        std::cerr << "+{";
                         deltaOrd.adjust(dims,0);
                         {
                             const size_t    ii = schedule[1];
@@ -211,7 +207,6 @@ namespace yack
                             deltaOrd[ii] = o1;
                             const ORDINATE  o2 = squared(o1);
                             xadd += o2;
-                            std::cerr << ' ' << Hexa(o1);
                         }
                         for(size_t i=2;i<=dims;++i)
                         {
@@ -220,10 +215,7 @@ namespace yack
                             deltaOrd[ii] = o1;
                             const ORDINATE  o2 = squared(o1);
                             xadd += o2;
-                            std::cerr << ' ' << Hexa(o1);
                         }
-                        std::cerr << " }" << std::endl;
-                        show_info("D2_full");
                         const ORDINATE res = xadd.get()/2;
                         
                         //------------------------------------------------------
