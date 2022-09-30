@@ -60,6 +60,8 @@ namespace yack
                             const uint32_t h = yack_crc32(&x[0],n*sizeof(ORDINATE));
                             if(H!=h) sample_::throw_abscissa_failure();
                         }
+
+                        std::cerr << "\t -- [Valid CSAMPLE] --" << std::endl;
                     }
                 }
 
