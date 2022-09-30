@@ -144,10 +144,14 @@ YACK_UTEST(fitting_gls)
     v1(used,"t0") = false;
     ls.fit_with(F,s1,aorg,used,scal,aerr);
     save_sample(s1);
-    
+
+
     ls.fit_with(F,s2,aorg,used,scal,aerr);
     save_sample(s2);
     v1(used,"t0") = true;
+
+    return 0;
+
 
     ls.fit_with(F,both,aorg,used,scal,aerr);
     save_sample(s1);

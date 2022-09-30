@@ -219,6 +219,7 @@ namespace yack
                     //----------------------------------------------------------
                     unsigned              cycle  = 0;
                     ORDINATE              f0     = s.D2_full(f,aorg,used,scal,*drvs);
+                    least_squares        &self   = *this;
 
                 CYCLE:
                     ++cycle;
@@ -230,12 +231,9 @@ namespace yack
                     // compute curvature from sample
                     //
                     //----------------------------------------------------------
-                    if( !computeCurv( lam[p10]) )
-                    {
-                        if(!lam.increase(p10)) {
-                            YACK_LSF_PRINTLN(clid << "<singular variables>");
-                            return false;
-                        }
+                    if( !computeCurv( lam[p10]) &&  !lam.increase(p10)) {
+                        YACK_LSF_PRINTLN(clid << "<singular variables>");
+                        return false;
                     }
 
                     //----------------------------------------------------------
@@ -245,6 +243,11 @@ namespace yack
                     //----------------------------------------------------------
                     computeStep();
 
+                    //----------------------------------------------------------
+                    //
+                    // post-process
+                    //
+                    //----------------------------------------------------------
                     if(proc)
                     {
                         const bool success = (*proc)(f,aorg,s);
@@ -260,13 +263,83 @@ namespace yack
                         }
                     }
 
+                    if(verbose)
+                    {
+                        ios::ocstream fp("linear.dat");
+                        const size_t   np = 100;
+                        for(size_t i=0;i<=np;++i)
+                        {
+                            const ORDINATE u = i/ORDINATE(np);
+                            fp("%.15g %.15g\n", double(u), double(self(u)));
+                        }
+                    }
 
                     //----------------------------------------------------------
                     //
                     // evaluate new position
                     //
                     //----------------------------------------------------------
-                    ORDINATE       f1      = s.D2(f,aend);
+                    ORDINATE       f1  = s.D2(f,aend);
+                    const ORDINATE df  = f0-f1;
+                    YACK_LSF_PRINTLN(clid << " f1 = " << f1 );
+                    YACK_LSF_PRINTLN(clid << " df = " << df );
+
+
+                    if(df>0)
+                    {
+                        const ORDINATE check_above = (1e-3) * f0;
+                        YACK_LSF_PRINTLN(clid << "<accept>");
+                        if(df>=check_above)
+                        {
+                            YACK_LSF_PRINTLN(clid << "<checking [df>=" << check_above << "]>");
+                            check(f0,f1);
+                        }
+                        else
+                        {
+                            YACK_LSF_PRINTLN(clid << "<raw step [df<" << check_above << "]>");
+                        }
+
+                    }
+                    else
+                    {
+                        YACK_LSF_PRINTLN(clid << "<reject>");
+
+                    }
+
+
+
+                    exit(0);
+
+#if 0
+                    //----------------------------------------------------------
+                    //
+                    // evaluate new position
+                    //
+                    //----------------------------------------------------------
+                    ORDINATE       f1    = s.D2(f,aend);
+                    const ORDINATE slope = -solv.xadd.dot(s.beta,step);
+                    const ORDINATE delta = f0-f1;
+                    std::cerr    << " (*) slope=" << slope << std::endl;
+                    std::cerr    << " (*) delta=" << delta << std::endl;
+
+
+                    if(verbose)
+                    {
+                        ios::ocstream fp("linear.dat");
+                        const size_t   np = 100;
+                        for(size_t i=0;i<=np;++i)
+                        {
+                            const ORDINATE u = i/ORDINATE(np);
+                            fp("%.15g %.15g\n", double(u), double((*this)(u)));
+                        }
+                        std::cerr << std::setprecision(15);
+                        std::cerr << "plot 'linear.dat' w lp, " << f0 << "+(" << slope << ")*x" << std::endl;
+                        if(cycle>=10)
+                        {
+                            //exit(1);
+                        }
+                    }
+
 
                     if(f1<=f0)
                     {
@@ -275,9 +348,7 @@ namespace yack
                         YACK_LSF_PRINTLN(clid << "<accept f1=" << f1 << ">");
                         //
                         //------------------------------------------------------
-                        const ORDINATE slope = -solv.xadd.dot(s.beta,step);
                         ORDINATE       DeltaF = std::abs(f0-f1);
-                        
 
 
 
@@ -287,24 +358,6 @@ namespace yack
                         const ORDINATE delta_f = std::abs(f0-f1);
                         const ORDINATE limit_f = 1e-4 * f0;
                         std::cerr << "delta_f=" << delta_f << " / limit_f=" << limit_f << std::endl;
-
-                        if(verbose)
-                        {
-                            ios::ocstream fp("linear.dat");
-                            const size_t   np = 100;
-                            for(size_t i=0;i<=np;++i)
-                            {
-                                const ORDINATE u = i/ORDINATE(np);
-                                fp("%.15g %.15g\n", double(u), double((*this)(u)));
-                            }
-                            std::cerr << "slope=" << slope << std::endl;
-                            std::cerr << std::setprecision(15);
-                            std::cerr << "plot 'linear.dat' w lp, " << f0 << "+(" << slope << ")*x" << std::endl;
-                            if(cycle>=4)
-                            {
-                                exit(1);
-                            }
-                        }
 
                         if(delta_f>=limit_f)
                         {
@@ -400,6 +453,7 @@ namespace yack
                         //------------------------------------------------------
                         YACK_LSF_PRINTLN(clid << "D2: " << f0 << " -> " << f1);
 
+
                         //------------------------------------------------------
                         // decrease step
                         //------------------------------------------------------
@@ -413,6 +467,8 @@ namespace yack
                         //------------------------------------------------------
                         goto CYCLE;
                     }
+
+#endif
 
                 SUCCESS:
                     //----------------------------------------------------------
@@ -548,6 +604,25 @@ namespace yack
 
             private:
                 YACK_DISABLE_COPY_AND_ASSIGN(least_squares);
+
+                inline void check(const ORDINATE  f0,
+                                  ORDINATE       &f1)
+                {
+                    triplet<ORDINATE> u = { 0, -1,  1 };
+                    triplet<ORDINATE> f = {f0, -1, f1 };
+                    least_squares    &F = *this;
+
+                    if(locate::inside_for(F,u,f))
+                    {
+                        YACK_LSF_PRINTLN(clid << "<located>");
+                    }
+                    else
+                    {
+                        YACK_LSF_PRINTLN(clid << "<global>");
+                    }
+
+
+                }
 
                 void analyze(const ORDINATE f0,
                              ORDINATE      &f1)
