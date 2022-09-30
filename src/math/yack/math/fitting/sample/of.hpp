@@ -188,7 +188,7 @@ namespace yack
                         for(size_t i=2;i<=dims;++i)
                         {
                             const size_t ii = schedule[i];
-                            xadd += squared( deltaOrd[ii] = ordinate[ii] - (adjusted[ii] = func.start(abscissa[ii],aorg,vars)) );
+                            xadd += squared( deltaOrd[ii] = ordinate[ii] - (adjusted[ii] = func.reach(abscissa[ii],aorg,vars)) );
                         }
                         const ORDINATE res = xadd.get()/2;
                         
