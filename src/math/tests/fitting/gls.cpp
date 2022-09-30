@@ -122,7 +122,8 @@ YACK_UTEST(fitting_gls)
     std::cerr << "curv1=" << s1.curv << std::endl;
 
     const double D22_full = s2.D2_full_for(F,aorg,used,scal,drvs);
-    std::cerr << "D22_full=" << D22_full << std::endl;
+    std::cerr << "D22_full=" << D22_full           << std::endl;
+    std::cerr << "|D22|="    << fabs(D22-D22_full) << std::endl;
     YACK_CHECK( fabs(D22-D22_full) <= 0 );
     v2(std::cerr << "aorg  = ",aorg,NULL)       << std::endl;
     v2(std::cerr << "beta2 = ",s2.beta,"beta1_") << std::endl;
