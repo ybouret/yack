@@ -39,6 +39,21 @@ namespace yack
                 return vars_;
             }
 
+            namespace
+            {
+                static const char csid[] = "fitting::csample";
+            }
+            
+            void sample_:: throw_abscissa_failure()
+            {
+                throw imported::exception(csid,"invalid abscissa(e) copy");
+
+            }
+
+            void sample_:: throw_ordinate_failure()
+            {
+                throw imported::exception(csid,"invalid ordinate(s) copy");
+            }
 
         }
 

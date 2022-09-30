@@ -62,9 +62,14 @@ namespace yack
                 //! throw if name is not found
                 void throw_unknown_name(const string &) const;
 
+
             private:
                 YACK_DISABLE_COPY_AND_ASSIGN(sample_);
                 variables vars_;
+
+            public:
+                static void throw_abscissa_failure();
+                static void throw_ordinate_failure();
             };
 
             

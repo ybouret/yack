@@ -39,10 +39,27 @@ namespace yack
                 {
                     assert(yack_good(x,n));
                     assert(yack_good(y,n));
+                    assert(n==X_.size());
+                    assert(n==Y_.size());
+                    assert(n==Z_.size());
                     for(size_t i=0,j=i+1;i<n;++i,++j)
                     {
                         X_[j] = x[i];
                         Y_[j] = y[i];
+                    }
+                    if(n>0)
+                    {
+                        {
+                            const uint32_t H = yack_crc32(&X_[1],n*sizeof(ABSCISSA));
+                            const uint32_t h = yack_crc32(&x[0],n*sizeof(ABSCISSA));
+                            if(H!=h) sample_::throw_abscissa_failure();
+                        }
+
+                        {
+                            const uint32_t H = yack_crc32(&X_[1],n*sizeof(ORDINATE));
+                            const uint32_t h = yack_crc32(&x[0],n*sizeof(ORDINATE));
+                            if(H!=h) sample_::throw_abscissa_failure();
+                        }
                     }
                 }
 
@@ -65,7 +82,7 @@ namespace yack
             template <
             typename ABSCISSA,
             typename ORDINATE>
-            class csample : public csample_<ABSCISSA,ORDINATE>, public sample_of<ABSCISSA,ORDINATE>
+            class csample : private csample_<ABSCISSA,ORDINATE>, public sample_of<ABSCISSA,ORDINATE>
             {
             public:
                 //______________________________________________________________
