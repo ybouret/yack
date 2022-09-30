@@ -139,7 +139,7 @@ namespace yack
                 void show_info(const char *when) const
                 {
                     const ios::hexa h(xadd.crc(),true);
-                    std::cerr << "[" << when << ": " << this->name << " has #" << dimension() << ": CRC=" << h << "]" << std::endl;
+                    std::cerr << "[" << when << ": " << this->name << " has #" << xadd.size() << ": CRC=" << h << "]" << std::endl;
                 }
 
                 //! compute sequential D2
@@ -152,15 +152,21 @@ namespace yack
                     {
                         const variables &vars = **this;
                         xadd.resume( n );
+                        std::cerr << "+{";
                         {
-                            const size_t ii = schedule[1];
-                            xadd += squared( ordinate[ii] - (adjusted[ii] = func.start(abscissa[ii],aorg,vars))  );
+                            const size_t   ii = schedule[1];
+                            const ORDINATE o2 = squared( ordinate[ii] - (adjusted[ii] = func.start(abscissa[ii],aorg,vars)) );
+                            xadd += o2;
+                            std::cerr << ' ' << o2;
                         }
                         for(size_t i=2;i<=n;++i)
                         {
                             const size_t ii = schedule[i];
-                            xadd += squared( ordinate[ii] - (adjusted[ii] = func.reach(abscissa[ii],aorg,vars))  );
+                            const ORDINATE o2 = squared( ordinate[ii] - (adjusted[ii] = func.reach(abscissa[ii],aorg,vars))  );
+                            xadd += o2;
+                            std::cerr << ' ' << o2;
                         }
+                        std::cerr << " }" << std::endl;
                         show_info("D2_solo");
                         return xadd.get()/2;
                     }
@@ -189,16 +195,22 @@ namespace yack
                         // pass 1 : evaluate adjusted, store deltaOrd and D2
                         //------------------------------------------------------
                         xadd.resume( dims );
+                        std::cerr << "+{";
                         deltaOrd.adjust(dims,0);
                         {
-                            const size_t ii = schedule[1];
-                            xadd += squared( deltaOrd[ii] = ordinate[ii] - (adjusted[ii] = func.start(abscissa[ii],aorg,vars)) );
+                            const size_t   ii = schedule[1];
+                            const ORDINATE o2 = squared( deltaOrd[ii] = ordinate[ii] - (adjusted[ii] = func.start(abscissa[ii],aorg,vars)) );
+                            xadd += o2;
+                            std::cerr << ' ' << o2;
                         }
                         for(size_t i=2;i<=dims;++i)
                         {
-                            const size_t ii = schedule[i];
-                            xadd += squared( deltaOrd[ii] = ordinate[ii] - (adjusted[ii] = func.reach(abscissa[ii],aorg,vars)) );
+                            const size_t   ii = schedule[i];
+                            const ORDINATE o2 = squared( deltaOrd[ii] = ordinate[ii] - (adjusted[ii] = func.reach(abscissa[ii],aorg,vars)) );
+                            xadd += o2;
+                            std::cerr << ' ' << o2;
                         }
+                        std::cerr << " }" << std::endl;
                         show_info("D2_full");
                         const ORDINATE res = xadd.get()/2;
                         
