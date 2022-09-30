@@ -112,6 +112,7 @@ YACK_UTEST(fitting_gls)
     vars(scal,"t0") = 0.1;
     
     const double D21_full = s1.D2_full_for(F,aorg,used,scal,drvs);
+    std::cerr << "D21_full=" << D21_full << std::endl;
     YACK_CHECK( fabs(D21-D21_full) <= 0 );
     v1(std::cerr << "aorg  = ",aorg,NULL) << std::endl;
     v1(std::cerr << "beta1 = ",s1.beta,"beta1_") << std::endl;
@@ -121,6 +122,7 @@ YACK_UTEST(fitting_gls)
     std::cerr << "curv1=" << s1.curv << std::endl;
 
     const double D22_full = s2.D2_full_for(F,aorg,used,scal,drvs);
+    std::cerr << "D22_full=" << D22_full << std::endl;
     YACK_CHECK( fabs(D22-D22_full) <= 0 );
     v2(std::cerr << "aorg  = ",aorg,NULL)       << std::endl;
     v2(std::cerr << "beta2 = ",s2.beta,"beta1_") << std::endl;
