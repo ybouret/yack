@@ -130,7 +130,6 @@ YACK_UTEST(fitting_gls)
     std::cerr << "beta2=" << s2.beta << std::endl;
     std::cerr << "curv2=" << s2.curv << std::endl;
 
-    return 0;
 
     const double D2A      = both.D2_for(F,aorg);
     const double D2A_full = both.D2_full_for(F,aorg,used,scal,drvs);
@@ -144,8 +143,7 @@ YACK_UTEST(fitting_gls)
     std::cerr << "beta=" << both.beta << std::endl;
     std::cerr << "curv=" << both.curv << std::endl;
 
-    return 0;
-
+    
     fitting::least_squares<double,double> ls;
     ls.verbose = true;
     
