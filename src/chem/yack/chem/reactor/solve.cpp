@@ -478,12 +478,12 @@ namespace yack
                 {
                     if(ok)
                     {
-                        std::cerr << "correct";
+                        std::cerr << "accepted";
 
                     }
                     else
                     {
-                        std::cerr << "too big";
+                        std::cerr << "accepted";
 
                     }
                     singles.pad(std::cerr << ' ' << eq.name,eq) << " @" << std::setw(15) << xx <<": ";
