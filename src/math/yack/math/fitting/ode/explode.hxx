@@ -9,12 +9,16 @@ namespace yack
 
             template <> explODE<real_t>:: ~explODE() throw() {}
 
-            template <> explODE<real_t>:: explODE() :
-            sequential_type()
+
+
+            template <> explODE<real_t>:: explODE(const app_ptr &usr) :
+            seq_type(),
+            app( usr ),
+            Y()
             {
             }
 
-
+            
         }
     }
 }
