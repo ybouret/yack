@@ -165,7 +165,7 @@ namespace yack
                     YACK_LSF_PRINTLN(clid << "[starting session]");
 
                     //----------------------------------------------------------
-                    // check variables
+                    // check variables and data
                     //----------------------------------------------------------
                     const variables & vars = *s;
                     const size_t      nvar = vars.upper();
@@ -177,6 +177,7 @@ namespace yack
                         YACK_LSF_PRINTLN(clid << "<no variables!>");
                         return false;
                     }
+
                     vars.ldz(aerr);
 
                     if(ndat<=0)
@@ -252,11 +253,14 @@ namespace yack
                         const bool success = (*proc)(f,aorg,s);
                         if(!success)
                         {
+                            // user detected problem
                             if(!lam.increase(p10))
                             {
                                 YACK_LSF_PRINTLN(clid << "<cannot comply>");
                                 return false;
                             }
+
+                            // restart
                             f0 = s.D2_full(f,aorg,used,scal,*drvs);
                             goto CYCLE;
                         }
@@ -288,11 +292,10 @@ namespace yack
                     {
                         //------------------------------------------------------
                         //
-                        // accepting
+                        YACK_LSF_PRINTLN(clid << "<accept>"); assert(f0>0);
                         //
                         //------------------------------------------------------
-                        YACK_LSF_PRINTLN(clid << "<accept>");
-                        assert(f0>0);
+
 
                         //------------------------------------------------------
                         // check no overshoot when D2 decreases "a lot"
@@ -362,12 +365,10 @@ namespace yack
 
 
 
-
-                SUCCESS:
                     //----------------------------------------------------------
                     //
                     //
-                    // starting point with full step
+                SUCCESS:
                     //
                     //
                     //----------------------------------------------------------
@@ -473,8 +474,7 @@ namespace yack
                         }
                     }
 
-
-
+                    
                     return true;
                 }
 
