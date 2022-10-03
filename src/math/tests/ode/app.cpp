@@ -68,10 +68,10 @@ namespace
     {
         assert(fn);
 
-        ode::app<T,STEP>                 app(1e-7);
-        vector<T>                        y(4,0);
-        enzyme<T>                        enz(ran);
-        typename ode::named<T>::equation sys( &enz, & enzyme<T>::rate );
+        typename ode::appliance<T>::pointer pApp = new ode::app<T,STEP>(1e-7);
+        vector<T>                           y(4,0);
+        enzyme<T>                           enz(ran);
+        typename ode::named<T>::equation    sys( &enz, & enzyme<T>::rate );
 
         ios::ocstream::overwrite(fn);
 
@@ -87,7 +87,7 @@ namespace
         while(t<10)
         {
             const T t_end = t+dt;
-            app(y,t,t_end,h,sys,NULL);
+            (*pApp)(y,t,t_end,h,sys,NULL);
             t=t_end;
             enz.save(fn,t,y);
         }
