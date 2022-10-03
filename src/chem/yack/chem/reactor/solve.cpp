@@ -24,41 +24,9 @@ namespace yack
             }
             return true;
         }
+        
 
 
-        double reactor:: Hamiltonian(const readable<double> &C)
-        {
-            xadd.ldz();
-
-            for(const enode *node=singles.head();node;node=node->next)
-            {
-                const equilibrium &eq = ***node;
-                const size_t       ei = *eq;
-                if(blocked[ei]) continue;
-                assert(sigma[ei]<0);
-                xadd.ld( squared(eq.mass_action(K[ei],C,xmul)/sigma[ei]) );
-            }
-
-            return sqrt(xadd.get());
-        }
-
-
-
-
-        double reactor:: operator()(const double u1)
-        {
-            const double u0 = 1.0 - u1;
-            for(const anode *node=working.head;node;node=node->next)
-            {
-                const size_t j = ***node;
-                const double C0 = Corg[j];
-                const double C1 = Cend[j];
-                double       Cmin=C0,Cmax=C1;
-                if(Cmax<Cmin) cswap(Cmin,Cmax);
-                Ctry[j] = clamp(Cmin,C0*u0 + C1*u1,Cmax);
-            }
-            return Hamiltonian(Ctry);
-        }
 
         double reactor:: Optimized1D(const double H0)
         {
