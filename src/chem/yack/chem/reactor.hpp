@@ -118,7 +118,9 @@ namespace yack
             double             Hamiltonian(const readable<double> &C);   //!< a molar hamiltonian
             double             Optimized1D(const double H0);             //!< optimize from (Corg,H0) to Cend
             bool               isTurnedOff(const group *) const throw(); //!< true if one member is blocked
-            void               buildOmega0();                            //!< build
+            void               deactivated(const size_t ei);             //!< set deactivated ei
+            void               createOmega();                            //!< build Omega and rhs
+            double             updateOmega();                            //!< update Omega and rhs from new blocked, return new H0
         };
 
 

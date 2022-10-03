@@ -244,10 +244,10 @@ namespace yack
             //
             //
             //------------------------------------------------------------------
-            YACK_CHEM_PRINTLN(fn << "[computing Omega@nrun=" << nrun << "]");
-            bool maxDof = true;
-            buildOmega0();
-            
+            YACK_CHEM_PRINTLN(fn << "[create Omega@nrun=" << nrun << "]");
+            bool maxDOF = true;
+            createOmega();
+
             //------------------------------------------------------------------
             //
             //
@@ -256,13 +256,10 @@ namespace yack
             //
             //------------------------------------------------------------------
         COMPUTE_STEP:
-            //singles(std::cerr << "Omega=","",Omega);
-            //singles(std::cerr << "Gamma=","",Gamma);
-            //singles(std::cerr << "NuA  =","",NuA);
-            std::cerr << "Psi=" << Psi << std::endl;
-            std::cerr << "NuA=" << NuA << std::endl;
-            std::cerr << "Omega=" << Omega << std::endl;
-            std::cerr << "Gamma=" << Gamma << std::endl;
+            //std::cerr << "Psi=" << Psi << std::endl;
+            //std::cerr << "NuA=" << NuA << std::endl;
+            //std::cerr << "Omega=" << Omega << std::endl;
+            //std::cerr << "Gamma=" << Gamma << std::endl;
 
             iOmega.assign(Omega);
             if( !solv.build(iOmega,xadd) )
@@ -295,12 +292,12 @@ namespace yack
                 {
                     if(ok)
                     {
-                        std::cerr << "accepted";
+                        std::cerr << " (+) accepted";
 
                     }
                     else
                     {
-                        std::cerr << "rejected";
+                        std::cerr << " (-) rejected";
 
                     }
                     singles.pad(std::cerr << ' ' << eq.name,eq) << " @" << std::setw(15) << xx <<": ";
@@ -310,38 +307,49 @@ namespace yack
                 if(!ok)
                 {
                     recomputeStep = true;
-                    maxDof        = false;
-
-                    NuA[ei].ld(0);
-                    Psi[ei].ld(0);
-                    blocked[ei] = true;
-                    Xl[ei] = Gamma[ei] = sigma[ei] = 0;
-                    Xl[ei] = 0;
+                    maxDOF        = false;
+                    --nrun;
+                    deactivated(ei);
                 }
-
             }
 
+            //------------------------------------------------------------------
+            //
+            //
+            // take action upon PRIMARY extents
+            //
+            //
+            //------------------------------------------------------------------
             if(recomputeStep)
             {
-                std::cerr << "bad step..." << std::endl;
-                H0 = Hamiltonian(Corg);
-                for(size_t i=N;i>0;--i)
+                H0 = updateOmega();
+                YACK_CHEM_PRINTLN(fn << "[update Omega@nrun=" << nrun << "]");
+                YACK_CHEM_PRINTLN( fn << "    H0 = " << H0 << " M (updated)");
+
+                switch(nrun)
                 {
-                    writable<double> &Omi = Omega[i];
-                    if(blocked[i])
-                    {
-                        assert( fabs(Gamma[i])<=0);
-                        Omi.ld(0);
-                        Omi[i] = 1;
-                    }
-                    else
-                    {
-                        const readable<double> &psi = Psi[i];
-                        for(size_t j=N;j>0;--j)
+                    case 0:
+                        YACK_CHEM_PRINTLN(fn << "[full overshoot!!]");
+                        goto CYCLE;
+
+                    case 1: {
+                        YACK_CHEM_PRINTLN(fn << "[only one left to move!!]");
+                        for(const enode *ep=singles.head();ep;ep=ep->next)
                         {
-                            Omi[j] = xadd.dot(psi,NuA[j]);
+                            const equilibrium &eq = ***ep;
+                            const size_t       ei = *eq;
+                            if(blocked[ei]) continue;
+
+                            working.transfer(Corg,Ceq[ei]);
+                            YACK_CHEM_PRINTLN(fn << "[ @<" << eq.name << "> : H=" << Hamiltonian(Corg) << "]");
+                            goto CYCLE;
                         }
+                        throw imported::exception(fn,"couldn't find single equilibrium!!");
                     }
+
+                    default:
+                        YACK_CHEM_PRINTLN(fn << "[recomputing step]");
+                        break;
                 }
                 goto COMPUTE_STEP;
             }
@@ -366,28 +374,30 @@ namespace yack
                     xadd.ld( NuA[i][j] * xi[i] );
                 }
                 const double d = (dC[j] = xadd.get());
-                if(d<0)
+                const double c = Corg[j];
+                if(d<0 && (-d)>c)
                 {
-                    ratio << Corg[j]/(-d);
+                    ratio << c/(-d);
                 }
             }
 
             corelib(std::cerr << "dC=", "", dC);
-            bool   maxRun = true;
+            bool   maxLen = true;
             double umax   = 1;
             if(ratio.size())
             {
                 hsort(ratio,comparison::increasing<double>);
+                std::cerr << "ratio  = " << ratio << std::endl;
                 const double rmax = ratio.front();
                 if(rmax<=1)
                 {
-                    umax   = 0.5;
-                    maxRun = false;
+                    umax   = 0.5 * rmax;
+                    maxLen = false;
                 }
+                exit(1);
                 //umax = ratio.front();
             }
-            std::cerr << "ratio  = " << ratio << std::endl;
-            std::cerr << "maxRun = " << maxRun << std::endl;
+            std::cerr << "maxLen = " << maxLen << std::endl;
 
             for(const anode *node=working.head;node;node=node->next)
             {
@@ -398,7 +408,7 @@ namespace yack
             
             {
                 ios::ocstream fp("ham.dat");
-                const size_t np=100;
+                const size_t np=1000;
                 for(size_t i=0;i<=np;++i)
                 {
                     const double u = (umax*i)/double(np);
@@ -415,14 +425,24 @@ namespace yack
                 std::cerr << "H=" << f.b << "@" << u.b << std::endl;
             }
 
-            
-            if(!maxDof)
+
+            if(!maxDOF)
             {
-                std::cerr << "detected bad step..." << std::endl;
-                exit(1);
+                YACK_CHEM_PRINTLN(fn << "[overshooting extents]");
+                working.transfer(Corg,Ctry);
+                goto CYCLE;
+            }
+
+            if(!maxLen)
+            {
+                YACK_CHEM_PRINTLN(fn << "[overshooting increments]");
+                working.transfer(Corg,Ctry);
+                goto CYCLE;
             }
 
 
+            YACK_CHEM_PRINTLN(fn << "[May Test Convergence!!]");
+            
             exit(0);
 
             return false;
