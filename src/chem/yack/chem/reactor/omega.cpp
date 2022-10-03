@@ -46,9 +46,7 @@ namespace yack
             }
 
 
-            singles(std::cerr << "Omega=","",Omega);
-            singles(std::cerr << "Gamma=","",Gamma);
-            singles(std::cerr << "NuA  =","",NuA);
+          
         }
 
     }

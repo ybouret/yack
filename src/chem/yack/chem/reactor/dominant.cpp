@@ -20,6 +20,13 @@ namespace yack
             const equilibrium *emin = NULL;
             const double       H0   = Hmin;
 
+            //------------------------------------------------------------------
+            //
+            //
+            // look within singles, Ceq is already computed
+            //
+            //
+            //------------------------------------------------------------------
             for(const enode *node = singles.head(); node; node=node->next)
             {
                 const equilibrium &eq = ***node;

@@ -122,7 +122,7 @@ namespace yack
             //------------------------------------------------------------------
             double H0 = Hamiltonian(Corg);
             YACK_CHEM_PRINTLN( fn << "    H0 = " << H0 << " M (initial)");
-
+            
 
             //------------------------------------------------------------------
             //
@@ -200,7 +200,7 @@ namespace yack
                 //----------------------------------------------------------
                 // full update @Corg
                 //----------------------------------------------------------
-                YACK_CHEM_PRINTLN( fn << " [moving at optimized]");
+                YACK_CHEM_PRINTLN( fn << " [moving at optimized combination]");
                 working.transfer(Corg,Cend);
                 if(verbose)
                 {
@@ -233,7 +233,7 @@ namespace yack
                 // stay @Corg, doesn't change H0
                 //
                 //------------------------------------------------------------------
-                YACK_CHEM_PRINTLN(fn << "[no global step]");
+                YACK_CHEM_PRINTLN(fn << "[no global dominant]");
                 assert( fabs(H0-Hamiltonian(Corg))<=0 );
             }
 
@@ -255,6 +255,10 @@ namespace yack
             //
             //
             //------------------------------------------------------------------
+        COMPUTE_STEP:
+            singles(std::cerr << "Omega=","",Omega);
+            singles(std::cerr << "Gamma=","",Gamma);
+            singles(std::cerr << "NuA  =","",NuA);
             iOmega.assign(Omega);
             if( !solv.build(iOmega,xadd) )
             {
@@ -274,10 +278,11 @@ namespace yack
             //
             //
             //------------------------------------------------------------------
+            bool recomputeStep = false;
             for(const enode *node = singles.head(); node; node=node->next)
             {
                 const equilibrium      &eq  = ***node;
-                const size_t            ei  = *eq;
+                const size_t            ei  = *eq; if(blocked[ei]) continue;
                 const double            xx  = xi[ei];
                 const xlimits          &lm  = eq.primary_limits(Corg,corelib.maxlen);
                 const bool              ok  = lm.acceptable(xx);
@@ -299,16 +304,25 @@ namespace yack
 
                 if(!ok)
                 {
-                    maxDof = false;
+                    recomputeStep = true;
+                    maxDof        = false;
+
+                    NuA[ei].ld(0);
+                    blocked[ei] = true;
+                    Gamma[ei]   = 0;
+                    Omega[ei].ld(0);
+                    Omega[ei][ei] = 1;
                 }
 
             }
 
-            if(!maxDof)
+            if(recomputeStep)
             {
                 std::cerr << "bad step..." << std::endl;
-                exit(1);
+                goto COMPUTE_STEP;
             }
+
+
 
             //------------------------------------------------------------------
             //
@@ -378,7 +392,11 @@ namespace yack
             }
 
             
-
+            if(!maxDof)
+            {
+                std::cerr << "detected bad step..." << std::endl;
+                exit(1);
+            }
 
 
             exit(0);
