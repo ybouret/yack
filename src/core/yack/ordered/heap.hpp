@@ -114,6 +114,7 @@ namespace yack
         // methods
         //______________________________________________________________________
 
+        //! fast CRC32 of binary content
         uint32_t crc() const throw()
         {
             return yack_crc32(tree,count*sizeof(type));

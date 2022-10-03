@@ -53,8 +53,9 @@ namespace yack
              - iterate by controled parabolic guess and counter-reduction
              - requires TWO evaluations per call
              \param F a real function
-             \param x x.a <= x.b <= x.c
-             \param f f.b <= f.a, f.b <= f.c
+             \param x         x.a <= x.b <= x.c
+             \param f         f.b <= f.a, f.b <= f.c
+             \param decreased found a decreased value during process
              */
             //__________________________________________________________________
             template <typename T> static

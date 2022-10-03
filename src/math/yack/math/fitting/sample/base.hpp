@@ -68,8 +68,8 @@ namespace yack
                 variables vars_;
 
             public:
-                static void throw_abscissa_failure();
-                static void throw_ordinate_failure();
+                static void throw_abscissa_failure(); //!< bad binary copy
+                static void throw_ordinate_failure(); //!< bad binary copy
             };
 
             
