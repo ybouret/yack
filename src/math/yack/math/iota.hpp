@@ -82,6 +82,32 @@ namespace yack {
                 for(size_t i=target.size();i>0;--i) target[i] /= value;
             }
 
+
+            //! a[1..a.size()] = b[1:a.size()] + x*c[1:a.size()]
+            template <typename A, typename B, typename X, typename C> static inline
+            void muladd(A &a, B &b, X &x, C &c)
+            {
+                assert(a.size()<=b.size());
+                assert(a.size()<=c.size());
+                for(size_t i=a.size();i>0;--i)
+                {
+                    a[i] = b[i] + x * c[i];
+                }
+            }
+
+            //! a[1..a.size()] = b[1:a.size()] - x*c[1:a.size()]
+            template <typename A, typename B, typename X, typename C> static inline
+            void mulsub(A &a, B &b, X &x, C &c)
+            {
+                assert(a.size()<=b.size());
+                assert(a.size()<=c.size());
+                for(size_t i=a.size();i>0;--i)
+                {
+                    a[i] = b[i] - x * c[i];
+                }
+            }
+
+
             //------------------------------------------------------------------
             //! M = A*A'
             //------------------------------------------------------------------

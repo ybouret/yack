@@ -18,7 +18,8 @@ namespace yack
             k2( next() ),
             k3( next() ),
             k4( next() ),
-            yt( next() )
+            yt( next() ),
+            xadd(4)
             {}
 
 #if !defined(YACK_RK4_CB)
@@ -40,14 +41,14 @@ namespace yack
                 const real_t h2 = h0 * half;
                 const real_t xm = x0+h2;
 
-                eq(k1,x0,y0); tao::v1::muladd(yt,y0,h2,k1); YACK_RK4_CB(yt,xm);
-                eq(k2,xm,yt); tao::v1::muladd(yt,y0,h2,k2); YACK_RK4_CB(yt,xm);
-                eq(k3,xm,yt); tao::v1::muladd(yt,y0,h0,k3); YACK_RK4_CB(yt,x1);
+                eq(k1,x0,y0); iota::muladd(yt,y0,h2,k1); YACK_RK4_CB(yt,xm);
+                eq(k2,xm,yt); iota::muladd(yt,y0,h2,k2); YACK_RK4_CB(yt,xm);
+                eq(k3,xm,yt); iota::muladd(yt,y0,h0,k3); YACK_RK4_CB(yt,x1);
                 eq(k4,x1,yt);
 
                 for(size_t i=nvar;i>0;--i)
                 {
-                    y0[i] += h0 * (k1[i] + twice(k2[i] + k3[i]) + k4[i] ) * sixth;
+                    y0[i] += h0 * xadd(k1[i],twice(k2[i]),twice(k3[i]),k4[i]) * sixth;
                 }
                 YACK_RK4_CB(y0,x1);
 
