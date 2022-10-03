@@ -102,7 +102,8 @@ namespace yack
             tableau           &Xl;      //!< [L] solving extents
             thin_array<bool>   blocked; //!< [L] blocking state
             rmatrix            Ceq;     //!< [LxM] all single solutions
-
+            vector<double>     ratio;   //!< [0..M] ratio
+        
         private:
             YACK_DISABLE_COPY_AND_ASSIGN(reactor);
             const lockable::scope lockLib;
@@ -117,6 +118,7 @@ namespace yack
             double             Hamiltonian(const readable<double> &C);   //!< a molar hamiltonian
             double             Optimized1D(const double H0);             //!< optimize from (Corg,H0) to Cend
             bool               isTurnedOff(const group *) const throw(); //!< true if one member is blocked
+            void               buildOmega0();                            //!< build
         };
 
 

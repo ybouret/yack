@@ -246,36 +246,7 @@ namespace yack
             //------------------------------------------------------------------
             YACK_CHEM_PRINTLN(fn << "[computing Omega]");
             bool maxDof = true;
-            for(const enode *node = singles.head(); node; node=node->next)
-            {
-                const equilibrium      &eq  = ***node;
-                const size_t            ei  = *eq;
-                writable<double>       &Omi = Omega[ei];
-                writable<double>       &psi = Psi[ei];
-                if(blocked[ei])
-                {
-                    Omi.ld(0);
-                    psi.ld(0);
-                    Omi[ei]   = 1.0;
-                    Gamma[ei] = 0.0;
-                }
-                else
-                {
-                    const double      Ki  = K[ei];
-                    eq.grad_action(psi,Ki,Corg,xmul);
-                    Gamma[ei] = fabs(Xl[ei])<=0 ? 0 : eq.mass_action(Ki,Corg,xmul);
-                    for(const enode *scan=singles.head();scan;scan=scan->next)
-                    {
-                        const size_t ej = ****scan;
-                        Omi[ej] = xadd.dot(psi,Nu[ej]);
-                    }
-                }
-            }
-
-
-            singles(std::cerr << "Omega=","",Omega);
-            singles(std::cerr << "Gamma=","",Gamma);
-            singles(std::cerr << "NuA  =","",NuA);
+            buildOmega0();
             
             //------------------------------------------------------------------
             //
@@ -284,7 +255,6 @@ namespace yack
             //
             //
             //------------------------------------------------------------------
-
             iOmega.assign(Omega);
             if( !solv.build(iOmega,xadd) )
             {
@@ -347,8 +317,7 @@ namespace yack
             //
             //
             //------------------------------------------------------------------
-            vector<double> ratio;
-
+            ratio.free();
             for(const anode *node=working.head;node;node=node->next)
             {
                 const species &sp = **node; assert(sp.rank>0);
@@ -399,9 +368,18 @@ namespace yack
                 }
             }
 
-            double H1 = Hamiltonian(Cend);
+            const double H1 = Hamiltonian(Cend);
             std::cerr << "H=" << H0 << " -> " << H1 << std::endl;
+            {
+                triplet<double> u = { 0, -1, umax };
+                triplet<double> f = { H0, -1, H1  };
+                optimize::run_for(*this,u,f,optimize::inside);
+                std::cerr << "H=" << f.b << "@" << u.b << std::endl;
+            }
+
             
+
+
 
             exit(0);
 
