@@ -15,7 +15,8 @@ namespace yack
             ak4( next() ),
             ak5( next() ),
             ak6( next() ),
-            ytmp( next() )
+            ytmp( next() ),
+            xadd(6)
             {
                 
             }
@@ -64,31 +65,36 @@ namespace yack
 
                 {
                     const real_t xx = x+a4*h;
-                    for(size_t i=n;i>0;--i) ytmp[i]=y[i]+h*(b41*dydx[i]+b42*ak2[i]+b43*ak3[i]);
+                    //for(size_t i=n;i>0;--i) ytmp[i]=y[i]+h*(b41*dydx[i]+b42*ak2[i]+b43*ak3[i]);
+                    for(size_t i=n;i>0;--i) ytmp[i]=y[i]+h*xadd(b41*dydx[i],b42*ak2[i],b43*ak3[i]);
                     if(proc) (*proc)(ytmp,xx);
                     drvs(ak4,xx,ytmp);
                 }
 
                 {
                     const real_t xx = x+a5*h;
-                    for(size_t i=n;i>0;--i) ytmp[i]=y[i]+h*(b51*dydx[i]+b52*ak2[i]+b53*ak3[i]+b54*ak4[i]);
+                    //for(size_t i=n;i>0;--i) ytmp[i]=y[i]+h*(b51*dydx[i]+b52*ak2[i]+b53*ak3[i]+b54*ak4[i]);
+                    for(size_t i=n;i>0;--i) ytmp[i]=y[i]+h*xadd(b51*dydx[i],b52*ak2[i],b53*ak3[i],b54*ak4[i]);
                     if(proc) (*proc)(ytmp,xx);
                     drvs(ak5,xx,ytmp);
                 }
 
                 {
                     const real_t xx = x+a6*h;
-                    for(size_t i=n;i>0;--i) ytmp[i]=y[i]+h*(b61*dydx[i]+b62*ak2[i]+b63*ak3[i]+b64*ak4[i]+b65*ak5[i]);
+                    //for(size_t i=n;i>0;--i) ytmp[i]=y[i]+h*(b61*dydx[i]+b62*ak2[i]+b63*ak3[i]+b64*ak4[i]+b65*ak5[i]);
+                    for(size_t i=n;i>0;--i) ytmp[i]=y[i]+h*xadd(b61*dydx[i],b62*ak2[i],b63*ak3[i],b64*ak4[i],b65*ak5[i]);
                     if(proc) (*proc)(ytmp,xx);
                     drvs(ak6,xx,ytmp);
                 }
 
                 // evaluate output
-                for(size_t i=n;i>0;--i) yout[i]=y[i]+h*(c1*dydx[i]+c3*ak3[i]+c4*ak4[i]+c6*ak6[i]);
+                //for(size_t i=n;i>0;--i) yout[i]=y[i]+h*(c1*dydx[i]+c3*ak3[i]+c4*ak4[i]+c6*ak6[i]);
+                for(size_t i=n;i>0;--i) yout[i]=y[i]+h*xadd(c1*dydx[i],c3*ak3[i],c4*ak4[i],c6*ak6[i]);
                 if(proc) (*proc)(yout,x+h);
 
                 // evaluate error
-                for(size_t i=n;i>0;--i) yerr[i]=h*(dc1*dydx[i]+dc3*ak3[i]+dc4*ak4[i]+dc5*ak5[i]+dc6*ak6[i]);
+                //for(size_t i=n;i>0;--i) yerr[i]=h*(dc1*dydx[i]+dc3*ak3[i]+dc4*ak4[i]+dc5*ak5[i]+dc6*ak6[i]);
+                for(size_t i=n;i>0;--i) yerr[i]=h*xadd(dc1*dydx[i],dc3*ak3[i],dc4*ak4[i],dc5*ak5[i],dc6*ak6[i]);
 
 
             }
