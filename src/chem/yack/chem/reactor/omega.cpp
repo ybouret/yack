@@ -40,7 +40,7 @@ namespace yack
                     for(const enode *scan=singles.head();scan;scan=scan->next)
                     {
                         const size_t ej = ****scan;
-                        Omi[ej] = xadd.dot(psi,Nu[ej]);
+                        Omi[ej] = xadd.dot(psi,NuA[ej]);
                     }
                 }
             }

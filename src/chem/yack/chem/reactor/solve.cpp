@@ -256,9 +256,14 @@ namespace yack
             //
             //------------------------------------------------------------------
         COMPUTE_STEP:
-            singles(std::cerr << "Omega=","",Omega);
-            singles(std::cerr << "Gamma=","",Gamma);
-            singles(std::cerr << "NuA  =","",NuA);
+            //singles(std::cerr << "Omega=","",Omega);
+            //singles(std::cerr << "Gamma=","",Gamma);
+            //singles(std::cerr << "NuA  =","",NuA);
+            std::cerr << "Psi=" << Psi << std::endl;
+            std::cerr << "NuA=" << NuA << std::endl;
+            std::cerr << "Omega=" << Omega << std::endl;
+            std::cerr << "Gamma=" << Gamma << std::endl;
+
             iOmega.assign(Omega);
             if( !solv.build(iOmega,xadd) )
             {
@@ -312,6 +317,8 @@ namespace yack
                     Gamma[ei]   = 0;
                     Omega[ei].ld(0);
                     Omega[ei][ei] = 1;
+                    Psi[ei].ld(0);
+                    Xl[ei] = 0;
                 }
 
             }

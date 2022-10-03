@@ -38,6 +38,7 @@ namespace yack
                         Xl[ei]      = 0;
                         sigma[ei]   = 0;
                         NuA[ei].ld(0);
+                        psi.ld(0);
                         break;
 
                     case components::are_running: {
