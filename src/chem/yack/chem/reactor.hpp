@@ -111,6 +111,7 @@ namespace yack
             bool               returnSolved(writable<double> &C0);       //!< upon successful return
             void               buildRelated();                           //!< build global partitions
             void               makeManifold();                           //!< build all solving partitions
+
             const equilibrium *setTopology(size_t &nrun, outcome &);     //!< full topology at Corg
             double             Hamiltonian(const readable<double> &C);   //!< a molar hamiltonian
             double             Optimized1D(const double H0);             //!< optimize from (Corg,H0) to Cend

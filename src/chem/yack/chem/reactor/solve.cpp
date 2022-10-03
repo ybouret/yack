@@ -14,28 +14,7 @@ namespace yack
 
     namespace chemical
     {
-
-        bool reactor:: returnSolved(writable<double> &C0)
-        {
-            working.transfer(C0,Corg);
-            if(verbose)
-            {
-                corelib(std::cerr << "Cend=", "", C0);
-            }
-            return true;
-        }
         
-
-
-
-        double reactor:: Optimized1D(const double H0)
-        {
-            triplet<double> U = { 0,  -1, 1.0 };
-            triplet<double> H = { H0, -1, Hamiltonian(Cend) };
-            optimize::run_for(*this, U, H, optimize::inside);
-            return H.b;
-        }
-
         bool reactor:: isTurnedOff(const group *g) const throw()
         {
             assert(g);
@@ -46,56 +25,6 @@ namespace yack
             return false;
         }
 
-        const equilibrium * reactor:: setTopology(size_t &nrun, outcome &ppty)
-        {
-            nrun                    = 0;      // running eqs
-            double             amax = 0;      // max absolute solving extent
-            const equilibrium *emax = NULL;   // whose extent it is
-            NuA.assign(Nu);                   // initial: full run
-
-            for(const enode *node = singles.head(); node; node=node->next)
-            {
-                const equilibrium &eq  = ***node;
-                const size_t       ei  = *eq;
-                writable<double>  &Ci  = Ceq[ei];
-                const double       Ki  = K[ei];
-                const outcome      oc  = outcome::study(eq, Ki, Corg, Ci, xmul, xadd);
-                writable<double>  &psi = Psi[ei];
-
-
-                switch(oc.state)
-                {
-                    case components::are_blocked:
-                        blocked[ei] = true;
-                        Xl[ei]      = 0;
-                        sigma[ei]   = 0;
-                        NuA[ei].ld(0);
-                        break;
-
-                    case components::are_running: {
-                        ++nrun;
-                        blocked[ei] = false;
-                        const double ax = fabs( Xl[ei] = oc.value );
-                        if(ax>amax)
-                        {
-                            amax =  ax;
-                            emax = &eq;
-                            ppty =  oc;
-                        }
-                        eq.grad_action(psi,Ki,Ci,xmul);
-                        sigma[ei] = xadd.dot(psi, Nu[ei]);
-                        if(sigma[ei]>=0) throw imported::exception(clid,"corrupted <%s>",eq.name());
-                    } break;
-                }
-
-                if(verbose) {
-                    singles.pad(std::cerr << "| (+) " << '<' << eq.name << '>', eq) << " : " << oc << " @sigma= " << sigma[ei] << std::endl;
-                }
-
-            }
-
-            return emax;
-        }
 
         bool reactor:: solve(writable<double> &C0)
         {
@@ -108,7 +37,7 @@ namespace yack
 
             //------------------------------------------------------------------
             //
-            // initialize depending on topology
+            // initialize depending on #equilibria
             //
             //------------------------------------------------------------------
             switch(N)
@@ -126,6 +55,7 @@ namespace yack
 
                 default:
                     // initialize consistent state
+                    YACK_CHEM_PRINTLN(fn << "COMPUTE [#" << N << "]");
                     for(size_t i=M;i>0;--i)
                     {
                         Corg[i] = Cend[i] = Ctry[i] = C0[i];
