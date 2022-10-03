@@ -483,7 +483,7 @@ namespace yack
                     }
                     else
                     {
-                        std::cerr << "accepted";
+                        std::cerr << "rejected";
 
                     }
                     singles.pad(std::cerr << ' ' << eq.name,eq) << " @" << std::setw(15) << xx <<": ";
@@ -562,6 +562,8 @@ namespace yack
                 }
             }
 
+            double H1 = Hamiltonian(Cend);
+            std::cerr << "H=" << H0 << " -> " << H1 << std::endl;
             
 
             exit(0);
