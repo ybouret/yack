@@ -132,69 +132,9 @@ namespace yack
             //
             //------------------------------------------------------------------
 
-            YACK_CHEM_PRINTLN(fn << "[looking for a minimum]");
-            const equilibrium *emin = NULL;
+            YACK_CHEM_PRINTLN(fn << "[looking for a dominant minimum]");
             double             Hmin = H0;
-
-            for(const enode *node = singles.head(); node; node=node->next)
-            {
-                const equilibrium &eq = ***node;
-                const size_t       ei = *eq;              if(blocked[ei])  continue;
-                writable<double>  &Ci = Ceq[ei];          working.transfer(Cend,Ci);
-                const double       H1 = Optimized1D(H0);  working.transfer(Ci,Ctry);
-                const bool         ok = (H1<Hmin);
-                if(ok)
-                {
-                    Hmin = H1;
-                    emin = &eq;
-                }
-
-                if(verbose)
-                {
-                    lattice.pad(std::cerr << "    @" << eq.name,eq) << " -> " << std::setw(15) << H1;
-                    if(ok) std::cerr << " <-- :)";
-                    std::cerr << std::endl;
-                }
-            }
-
-            //------------------------------------------------------------------
-            //
-            //
-            // look within couples
-            //
-            //
-            //------------------------------------------------------------------
-            for(const enode *node = couples.head(); node; node=node->next)
-            {
-                const equilibrium &eq = ***node;
-                const size_t       ei = *eq;
-                const outcome      oc = outcome::study(eq, Kl[ei], Corg, Cend, xmul, xadd);
-                switch(oc.state)
-                {
-                    case components::are_blocked:
-                        Xl[ei] = 0;
-                        working.transfer(Ceq[ei],Corg);
-                        break;
-
-                    case components::are_running: {
-                        Xl[ei] = oc.value;
-                        const double H1 = Optimized1D(H0);working.transfer(Ceq[ei],Ctry);
-                        const bool   ok = (H1<Hmin);
-                        if(ok)
-                        {
-                            Hmin = H1;
-                            emin = &eq;
-                        }
-
-                        if(verbose)
-                        {
-                            lattice.pad(std::cerr << "    @" << eq.name,eq) << " -> " << std::setw(15) << H1;
-                            if(ok) std::cerr << " <-- :)";
-                            std::cerr << std::endl;
-                        }
-                    } break;
-                }
-            }
+            const equilibrium *emin = getDominant(Hmin);
 
             if(emin)
             {
@@ -336,8 +276,7 @@ namespace yack
             singles(std::cerr << "Omega=","",Omega);
             singles(std::cerr << "Gamma=","",Gamma);
             singles(std::cerr << "NuA  =","",NuA);
-            std::cerr<< "Omega=" << Omega << std::endl;
-
+            
             //------------------------------------------------------------------
             //
             //
