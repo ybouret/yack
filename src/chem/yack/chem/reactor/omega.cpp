@@ -27,6 +27,7 @@ namespace yack
                 writable<double>       &psi = Psi[ei];
                 if(blocked[ei])
                 {
+                    assert(fabs(Xl[ei])<=0);
                     Omi.ld(0);
                     psi.ld(0);
                     Omi[ei]   = 1.0;

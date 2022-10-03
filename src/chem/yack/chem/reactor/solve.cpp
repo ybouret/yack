@@ -244,7 +244,7 @@ namespace yack
             //
             //
             //------------------------------------------------------------------
-            YACK_CHEM_PRINTLN(fn << "[computing Omega]");
+            YACK_CHEM_PRINTLN(fn << "[computing Omega@nrun=" << nrun << "]");
             bool maxDof = true;
             buildOmega0();
             
@@ -313,11 +313,9 @@ namespace yack
                     maxDof        = false;
 
                     NuA[ei].ld(0);
-                    blocked[ei] = true;
-                    Gamma[ei]   = 0;
-                    Omega[ei].ld(0);
-                    Omega[ei][ei] = 1;
                     Psi[ei].ld(0);
+                    blocked[ei] = true;
+                    Xl[ei] = Gamma[ei] = sigma[ei] = 0;
                     Xl[ei] = 0;
                 }
 
@@ -326,6 +324,25 @@ namespace yack
             if(recomputeStep)
             {
                 std::cerr << "bad step..." << std::endl;
+                H0 = Hamiltonian(Corg);
+                for(size_t i=N;i>0;--i)
+                {
+                    writable<double> &Omi = Omega[i];
+                    if(blocked[i])
+                    {
+                        assert( fabs(Gamma[i])<=0);
+                        Omi.ld(0);
+                        Omi[i] = 1;
+                    }
+                    else
+                    {
+                        const readable<double> &psi = Psi[i];
+                        for(size_t j=N;j>0;--j)
+                        {
+                            Omi[j] = xadd.dot(psi,NuA[j]);
+                        }
+                    }
+                }
                 goto COMPUTE_STEP;
             }
 
