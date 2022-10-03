@@ -33,10 +33,13 @@ namespace yack
                 typedef typename app_type::pointer    app_ptr;    //!< alias
                 typedef vector<T>                     vec_type;   //!< alias
                 typedef typename seq_type::parameters parameters; //!< alias
+
                 //______________________________________________________________
                 //
                 // methods
                 //______________________________________________________________
+
+                virtual void initialize(const T ini, const parameters &A, const variables &vars) = 0;
 
 
 
