@@ -120,8 +120,8 @@ namespace yack
             //------------------------------------------------------------------
 
             YACK_CHEM_PRINTLN(fn << "  <looking for a dominant minimum>");
-            double             Hmin = H0;
-            const equilibrium *emin = getDominant(Hmin);
+            double                    Hmin = H0;
+            const equilibrium * const emin = getDominant(Hmin);
             if(!emin)
             {
                 //--------------------------------------------------------------
@@ -225,8 +225,96 @@ namespace yack
                 YACK_CHEM_PRINTLN( fn << "    H0 = " << H0 << " M (updated)");
             }
 
+            //------------------------------------------------------------------
+            //
+            //
+            // at this point, we should try to solve the system
+            //
+            //
+            //------------------------------------------------------------------
+            const bool atGlobalMinimum = (NULL==emin);
+            bool       usingMaximumDOF = true;
 
+            //------------------------------------------------------------------
+            //
+            // initialize Omega and Gamma
+            //
+            //------------------------------------------------------------------
+            createOmega();
 
+            if(verbose)
+            {
+                std::cerr << "Psi="   << Psi   << std::endl;
+                std::cerr << "NuA="   << NuA   << std::endl;
+                std::cerr << "Omega=" << Omega << std::endl;
+                std::cerr << "Gamma=" << Gamma << std::endl;
+            }
+
+            //------------------------------------------------------------------
+            //
+            // try to inverse Omega
+            //
+            //------------------------------------------------------------------
+            if( !solv.build(Omega) )
+            {
+                YACK_CHEM_PRINTLN(fn << "   <singular system>");
+                if(atGlobalMinimum)
+                {
+                    YACK_CHEM_PRINTLN(fn << "   <at global minimum>");
+                    return false;
+                }
+                else
+                {
+                    YACK_CHEM_PRINTLN(fn << "   <try again>");
+                    goto CYCLE;
+                }
+            }
+
+            //------------------------------------------------------------------
+            //
+            // compute extent
+            //
+            //------------------------------------------------------------------
+            iota::neg(xi,Gamma);
+            solv.solve(Omega,xi);
+            singles(std::cerr << "xi=","",xi);
+
+            //------------------------------------------------------------------
+            //
+            // study PRIMART extent
+            //
+            //------------------------------------------------------------------
+            bool recomputeStep = false;
+            for(const enode *node = singles.head(); node; node=node->next)
+            {
+                const equilibrium      &eq  = ***node;
+                const size_t            ei  = *eq;    if(blocked[ei]) continue;
+                const double            xx  = xi[ei];
+                const xlimits          &lm  = eq.primary_limits(Corg,corelib.maxlen);
+                const bool              ok  = lm.acceptable(xx);
+                if(verbose)
+                {
+                    if(ok)
+                    {
+                        std::cerr << " (+) accepted";
+                    }
+                    else
+                    {
+                        std::cerr << " (-) rejected";
+
+                    }
+                    singles.pad(std::cerr << ' ' << eq.name,eq) << " @" << std::setw(15) << xx <<": ";
+                    std::cerr << lm << std::endl;
+                }
+
+                if(!ok)
+                {
+                    recomputeStep   = true;
+                    usingMaximumDOF = false;
+                    --nrun;
+                    deactivated(ei);
+                }
+            }
 
 
 

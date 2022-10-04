@@ -24,19 +24,21 @@ namespace yack
                 const equilibrium      &eq  = ***node;
                 const size_t            ei  = *eq;
                 writable<double>       &Omi = Omega[ei];
-                writable<double>       &psi = Psi[ei];
+                const readable<double> &psi = Psi[ei];
+
+
                 if(blocked[ei])
                 {
-                    assert(fabs(Xl[ei])<=0);
-                    Omi.ld(0);
-                    psi.ld(0);
-                    Omi[ei]   = 1.0;
+                    assert(fabs(Xl[ei])<=0);                     // by getTopology
+                    assert( iota::mod2<double>::of(psi) <=0  );  // by getTopology
+                    assert( fabs(Omi[ei]-1) <= 0);               // by getTopology
                     Gamma[ei] = 0.0;
                 }
                 else
                 {
+                    // psi is computed                              by getTopology
+                    assert( iota::mod2<double>::of(Omi) <=0  );  // by getTopology
                     const double      Ki  = K[ei];
-                    eq.grad_action(psi,Ki,Corg,xmul);
                     Gamma[ei] = fabs(Xl[ei])<=0 ? 0 : eq.mass_action(Ki,Corg,xmul);
                     for(const enode *scan=singles.head();scan;scan=scan->next)
                     {
@@ -45,9 +47,9 @@ namespace yack
                     }
                 }
             }
-
         }
 
+        
         void reactor:: deactivated(const size_t ei)
         {
             assert(!blocked[ei]);

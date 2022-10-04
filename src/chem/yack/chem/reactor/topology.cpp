@@ -30,7 +30,9 @@ namespace yack
                 const double       Ki  = K[ei];
                 const outcome      oc  = outcome::study(eq, Ki, Corg, Ci, xmul, xadd);
                 writable<double>  &psi = Psi[ei];
+                writable<double>  &Omi = Omega[ei];
 
+                Omi.ld(0);
 
                 switch(oc.state)
                 {
@@ -40,6 +42,7 @@ namespace yack
                         sigma[ei]   = 0;
                         NuA[ei].ld(0);
                         psi.ld(0);
+                        Omi[ei]     = 1;
                         break;
 
                     case components::are_running: {
