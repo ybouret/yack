@@ -34,11 +34,11 @@ namespace yack
             //------------------------------------------------------------------
             switch(N)
             {
-                case 0: YACK_XMLOG(xml, "[Success[Empty]]");
+                case 0: YACK_XMLOG(xml, "-- Success[Empty]");
                     return true;
 
 
-                case 1: YACK_XMLOG(xml, "[Success[Single]]");
+                case 1: YACK_XMLOG(xml, "-- Success[Single]");
                 {
                     const equilibrium &eq = ***singles.head();       // standalone
                     outcome::study(eq, K[1], C0, Corg, xmul, xadd);  // find 1D eq
@@ -69,6 +69,7 @@ namespace yack
             //
             //
             //------------------------------------------------------------------
+            if(verbose) corelib(*xml << "-- Corg=","", Corg);
             YACK_XMLOG(xml,"-- Initializing Topology");
             size_t              nrun = 0;
             outcome             ppty;
@@ -76,7 +77,7 @@ namespace yack
 
             if(!emax)
             {
-                YACK_XMLOG(xml,"[Success[Full]]");
+                YACK_XMLOG(xml,"-- Success[Full]");
                 return returnSolved(C0,xml);
             }
 
@@ -90,10 +91,16 @@ namespace yack
             assert(emax);
             YACK_XMLOG(xml,"-- Found most displaced @" << emax->name);
 
+            if(ppty.grade == extent::is_degenerated)
+            {
+                YACK_XMLOG(xml,"-- Success[Degenerated]");
+                return returnSolved(C0,xml);
+            }
+
             switch(nrun)
             {
                 case 0:
-                    YACK_XMLOG(xml,"[Success[AllBlocked@level-1]]");
+                    YACK_XMLOG(xml,"-- Success[AllBlocked@level-1]");
                     return returnSolved(C0,xml);
 
                 case 1:
@@ -115,7 +122,11 @@ namespace yack
             assert(nrun>1);
             double H0 = Hamiltonian(Corg);
             YACK_XMLOG(xml,"-- H0 = " << H0 << " M (initial)");
-
+            if(H0<=0)
+            {
+                YACK_XMLOG(xml,"-- Success[H0<=0]");
+                return returnSolved(C0,xml);
+            }
 
             //------------------------------------------------------------------
             //
@@ -135,7 +146,7 @@ namespace yack
                 // stay @Corg, doesn't change H0
                 //
                 //------------------------------------------------------------------
-                YACK_XMLOG(xml,"-- No global dominant");
+                YACK_XMLOG(xml,"-- No global dominant => at global Minimum");
                 assert( fabs(H0-Hamiltonian(Corg))<=0 );
             }
             else
@@ -222,10 +233,16 @@ namespace yack
                 //--------------------------------------------------------------
                 YACK_XMLOG(xml,"-- Recomputing Topology");
                 emax = getTopology(nrun,ppty);
+                if(!emax)
+                {
+                    YACK_XMLOG(xml,"-- Success[Full]");
+                    return returnSolved(C0,xml);
+                }
+
                 switch(nrun)
                 {
                     case 0:
-                        YACK_XMLOG(xml,"[Success[AllBlocked@level-1]]");
+                        YACK_XMLOG(xml,"-- Success[AllBlocked@level-2]");
                         return returnSolved(C0,xml);
 
                     case 1:
@@ -239,6 +256,11 @@ namespace yack
 
                 H0 = Hamiltonian(Corg);
                 YACK_XMLOG(xml,"-- H0 = " << H0 << " M (updated)");
+                if(H0<=0)
+                {
+                    YACK_XMLOG(xml,"-- Success[H0<=0]");
+                    return returnSolved(C0,xml);
+                }
             }
 
             //------------------------------------------------------------------
@@ -436,7 +458,7 @@ namespace yack
                     }
                 }
 
-                
+
                 const double H1 = Hamiltonian(Cend);
                 YACK_XMLOG(xml, "-- H=" << H0 << " -> " << H1);
                 {
