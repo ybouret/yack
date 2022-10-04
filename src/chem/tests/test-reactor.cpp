@@ -28,8 +28,6 @@ YACK_UTEST(reactor)
     std::cerr << std::endl;
 
     reactor        cs(lib,eqs,0.0);
-    return 0;
-    
     vector<double> C(cs.M,0);
 
 

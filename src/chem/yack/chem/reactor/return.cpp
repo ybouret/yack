@@ -1,6 +1,6 @@
 
 #include "yack/chem/reactor.hpp"
-
+#include "yack/ios/xmlog.hpp"
 
 namespace yack
 {
@@ -8,12 +8,12 @@ namespace yack
     namespace chemical
     {
 
-        bool reactor:: returnSolved(writable<double> &C0)
+        bool reactor:: returnSolved(writable<double> &C0, const xmlog &xml)
         {
             working.transfer(C0,Corg);
             if(verbose)
             {
-                corelib(std::cerr << "Cend=", "", C0);
+                corelib(*xml << "Cend=", "", C0);
             }
             return true;
         }

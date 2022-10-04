@@ -62,7 +62,7 @@ namespace yack
                 }
 
                 if(verbose) {
-                    singles.pad(std::cerr << "| (+) " << '<' << eq.name << '>', eq) << " : " << oc << " @sigma= " << sigma[ei] << std::endl;
+                    singles.pad(std::cerr << "\t (+) " << '<' << eq.name << '>', eq) << " : " << oc << " @sigma= " << sigma[ei] << std::endl;
                 }
 
             }

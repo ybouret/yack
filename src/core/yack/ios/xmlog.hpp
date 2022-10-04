@@ -4,6 +4,7 @@
 #define YACK_IOS_XMLOG_INCLUDED 1
 
 #include "yack/string.hpp"
+#include "yack/ptr/auto.hpp"
 
 namespace yack
 {
@@ -27,10 +28,10 @@ namespace yack
         explicit xmlog(const PREFIX &p,
                        std::ostream &f,
                        const bool   &v) :
-        prefix(p),
+        verbose(v),
+        prefix( verbose ? new string(p) : NULL),
         output(f),
-        indent(0),
-        verbose(v)
+        indent(0)
         {
         }
 
@@ -50,13 +51,13 @@ namespace yack
         //
         // members
         //______________________________________________________________________
-        const string  prefix;
+        const bool                   &verbose;
+        const auto_ptr<const string>  prefix;
     private:
         YACK_DISABLE_COPY_AND_ASSIGN(xmlog);
         std::ostream &output;
         const int     indent;
     public:
-        const bool   &verbose;
 
         //______________________________________________________________________
         //
@@ -77,7 +78,7 @@ namespace yack
                          const MARKUP &markup) :
             host(parent),
             lone(false),
-            mark(markup)
+            mark( host.verbose ? new string(markup) : NULL )
             {
                 if(host.verbose)
                 {
@@ -100,7 +101,7 @@ namespace yack
                          const OPTION &option) :
             host(parent),
             lone(false),
-            mark(markup)
+            mark(host.verbose ? new string(markup) : NULL )
             {
                 if(host.verbose)
                 {
@@ -129,9 +130,9 @@ namespace yack
 
         private:
             YACK_DISABLE_COPY_AND_ASSIGN(msg);
-            const xmlog  &host;
-            const bool    lone;
-            const string  mark;
+            const xmlog                  &host;
+            const bool                    lone;
+            const auto_ptr<const string>  mark;
         };
     };
 

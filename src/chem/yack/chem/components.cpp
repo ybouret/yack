@@ -282,7 +282,7 @@ namespace yack
         {
             const double MA_ini = mass_action(K,Cini,xmul);
             const double MA_end = mass_action(K,Cend,xmul);
-            return extent::is_significant;
+            return fabs(MA_ini-MA_end)<=0 ? extent::is_degenerated : extent::is_significant;
         }
 
         void components:: move(writable<double> &C, const double xi) const throw()

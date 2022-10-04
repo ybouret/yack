@@ -111,7 +111,7 @@ namespace yack
             const lockable::scope lockLib;
             const lockable::scope lockEqs;
 
-            bool               returnSolved(writable<double> &C0);       //!< upon successful return
+            bool               returnSolved(writable<double> &C0, const xmlog&); //!< upon successful return
             void               buildRelated();                           //!< build global partitions
             void               makeManifold(const xmlog &);              //!< build all solving partitions
 

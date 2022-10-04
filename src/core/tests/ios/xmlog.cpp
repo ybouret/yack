@@ -11,13 +11,13 @@ YACK_UTEST(ios_xmlog)
     xmlog lf("[xmlog]",std::cerr,verbose);
 
     std::cerr << "Prefix: " << lf.prefix << std::endl;
-    YACK_XMLOG_PRINTLN(lf,"Top Level");
+    YACK_XMLOG(lf,"Top Level");
     {
         const xmlog::msg m1(lf,"data","");
-        YACK_XMLOG_PRINTLN(lf, "within data...");
+        YACK_XMLOG(lf, "within data...");
         {
             const xmlog::msg m2(lf,"sub", vformat("#%u",4) );
-            YACK_XMLOG_PRINTLN(lf, "within sub");
+            YACK_XMLOG(lf, "within sub");
         }
     }
 
