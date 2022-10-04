@@ -30,7 +30,7 @@ namespace yack
     xmlog:: msg:: ~msg() throw()
     {
         host.decr();
-        if(host.verbose)
+        if(!lone && host.verbose)
         {
             *host << '<' << mark << '/' << '>' << std::endl;
         }
