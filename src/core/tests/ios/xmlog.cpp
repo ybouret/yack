@@ -22,7 +22,7 @@ YACK_UTEST(ios_xmlog)
     }
 
     YACK_XMLSUB(lf,"Top");
-    YACK_XMLSUB_OPT(lf,"Sub1",vformat(" N='%u",4));
+    YACK_XMLSUB_OPT(lf,"Sub1",vformat(" N='%u'",4));
     YACK_XMLOUT(lf,"Sub2");
 
 }
