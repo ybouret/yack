@@ -436,7 +436,7 @@ namespace yack
                     }
                 }
 
-
+                
                 const double H1 = Hamiltonian(Cend);
                 YACK_XMLOG(xml, "-- H=" << H0 << " -> " << H1);
                 {
@@ -459,8 +459,6 @@ namespace yack
                     working.transfer(Corg,Ctry);
                     goto CYCLE;
                 }
-
-                std::cerr << "-- CONSISTENT POINT!! --" << std::endl;
 
 
                 working.transfer(Corg,Ctry);
