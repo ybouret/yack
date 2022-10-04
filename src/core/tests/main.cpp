@@ -140,6 +140,7 @@ YACK_UTEST_DECL(256)
     YACK_UTEST(ios_markup);
     YACK_UTEST(ios_pstream);
     YACK_UTEST(ios_bits);
+    YACK_UTEST(ios_xmlog);
 
     YACK_UTEST(hash64);
     YACK_UTEST(hashing_fcn);
