@@ -12,6 +12,8 @@
 
 namespace yack
 {
+    class xmlog;
+
     namespace chemical
     {
 
@@ -111,7 +113,7 @@ namespace yack
 
             bool               returnSolved(writable<double> &C0);       //!< upon successful return
             void               buildRelated();                           //!< build global partitions
-            void               makeManifold();                           //!< build all solving partitions
+            void               makeManifold(const xmlog &);              //!< build all solving partitions
 
             const equilibrium *getTopology(size_t &nrun, outcome &);     //!< full topology at Corg
             const equilibrium *getDominant(double &Hmin);                //!< starting from Hmin = H0

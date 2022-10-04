@@ -2,6 +2,7 @@
 #include "yack/chem/reactor.hpp"
 #include "yack/counting/mloop.hpp"
 #include "yack/system/imported.hpp"
+#include "yack/ios/xmlog.hpp"
 
 namespace yack
 {
@@ -9,10 +10,12 @@ namespace yack
     namespace chemical
     {
 
-        void reactor:: makeManifold()
-        {
-            static const char fn[] = "[reactor.manifold] ";
 
+        void reactor:: makeManifold(const xmlog &xml)
+        {
+            //static const char fn[] = "[reactor.manifold]";
+            //const xmlog       xml(fn,std::cerr,entity::verbose);
+            YACK_XMLSUB(xml,"MakeManifold");
             //------------------------------------------------------------------
             //
             //
@@ -20,7 +23,6 @@ namespace yack
             //
             //
             //------------------------------------------------------------------
-            YACK_CHEM_PRINTLN(fn << "[build all detached]");
             const size_t     P = related.size; // number of related
             matrix<bool>     detached(L,L);    // global symetric detached flag
             vector<group>    unlinked(L);      // possible unlinked groups for each equilibrium
@@ -36,103 +38,107 @@ namespace yack
             //
             //
             //------------------------------------------------------------------
-            for(const group *source = related.head; source; source=source->next)
             {
-
-                //--------------------------------------------------------------
-                //
-                // intialize all possible combinations within the source
-                //
-                //--------------------------------------------------------------
-                ++count;
-                YACK_CHEM_PRINTLN(fn << "-------- init related #" << count << " --------");
-                groups &target = party[count];
-                for(size_t i=L;i>0;--i) unlinked[i].release();
-
-
-                //--------------------------------------------------------------
-                //
-                // create unlinked list and fill detached matrix
-                //
-                //--------------------------------------------------------------
-                for(const gnode *lhs=source->head;lhs;lhs=lhs->next)
+                YACK_XMLSUB(xml,"BuildAllDetached");
+                for(const group *source = related.head; source; source=source->next)
                 {
-                    const equilibrium &LHS = **lhs;         // current equilibrium
-                    const size_t       LID = *LHS;          // its index
-                    group             &LGP = unlinked[LID]; // temporary group
-                    writable<bool>    &ROW = detached[LID]; // detached row
 
-                    for(const gnode *rhs = lhs->next;rhs;rhs=rhs->next)
+                    YACK_XMLSUB(xml,"RelatedGroup");
+                    //--------------------------------------------------------------
+                    //
+                    // intialize all possible combinations within the source
+                    //
+                    //--------------------------------------------------------------
+                    ++count;
+                    YACK_XMLOG(xml,"building part" << count << "...");
+                    groups &target = party[count];
+                    for(size_t i=L;i>0;--i) unlinked[i].release();
+
+
+                    //--------------------------------------------------------------
+                    //
+                    // create unlinked list and fill detached matrix
+                    //
+                    //--------------------------------------------------------------
+                    for(const gnode *lhs=source->head;lhs;lhs=lhs->next)
                     {
-                        const equilibrium &RHS = **rhs;
-                        const size_t       RID = *RHS;
+                        const equilibrium &LHS = **lhs;         // current equilibrium
+                        const size_t       LID = *LHS;          // its index
+                        group             &LGP = unlinked[LID]; // temporary group
+                        writable<bool>    &ROW = detached[LID]; // detached row
 
-                        if( LHS.detached_of(RHS) )
+                        for(const gnode *rhs = lhs->next;rhs;rhs=rhs->next)
                         {
-                            LGP           << &RHS;                // store into temporary group
-                            ROW[RID] = detached[RID][LID] = true; // update detached state
-                        }
-                    }
-                    if(verbose)
-                        lattice.pad(std::cerr << LHS.name,LHS) << " : " << LGP << std::endl;
-                }
+                            const equilibrium &RHS = **rhs;
+                            const size_t       RID = *RHS;
 
-                //--------------------------------------------------------------
-                //
-                // create all possibilities
-                //
-                //--------------------------------------------------------------
-                for(const gnode *lhs=source->head;lhs;lhs=lhs->next)
-                {
-                    //----------------------------------------------------------
-                    // initialize
-                    //----------------------------------------------------------
-                    groups             G;             // local list of possible groups
-                    const equilibrium &LHS = **lhs;
-                    const size_t       LID = *LHS;
-                    const group       &LGP = unlinked[LID];
-
-                    //----------------------------------------------------------
-                    // create singleton
-                    //----------------------------------------------------------
-                    (*G.push_back( new group() )) << &LHS;
-
-
-                    //----------------------------------------------------------
-                    // try growing G from all detached equilibrium of LHS
-                    //----------------------------------------------------------
-                    for(const gnode *rhs=LGP.head;rhs;rhs=rhs->next)
-                    {
-                        const equilibrium    &RHS = **rhs;
-                        const size_t          RID = *RHS;
-                        const readable<bool> &TST = detached[RID];
-
-                        for(const group *existing=G.head;existing;existing=existing->next)
-                        {
-                            // check detached from all members of existing group
-                            bool ok = true;
-                            for(const gnode *member=existing->head;member;member=member->next)
+                            if( LHS.detached_of(RHS) )
                             {
-                                if(!TST[***member])
+                                LGP           << &RHS;                // store into temporary group
+                                ROW[RID] = detached[RID][LID] = true; // update detached state
+                            }
+                        }
+                        if(verbose)
+                            lattice.pad(std::cerr << "\t" << LHS.name,LHS) << " : " << LGP << std::endl;
+                    }
+
+                    //--------------------------------------------------------------
+                    //
+                    // create all possibilities
+                    //
+                    //--------------------------------------------------------------
+                    for(const gnode *lhs=source->head;lhs;lhs=lhs->next)
+                    {
+                        //----------------------------------------------------------
+                        // initialize
+                        //----------------------------------------------------------
+                        groups             G;             // local list of possible groups
+                        const equilibrium &LHS = **lhs;
+                        const size_t       LID = *LHS;
+                        const group       &LGP = unlinked[LID];
+
+                        //----------------------------------------------------------
+                        // create singleton
+                        //----------------------------------------------------------
+                        (*G.push_back( new group() )) << &LHS;
+
+
+                        //----------------------------------------------------------
+                        // try growing G from all detached equilibrium of LHS
+                        //----------------------------------------------------------
+                        for(const gnode *rhs=LGP.head;rhs;rhs=rhs->next)
+                        {
+                            const equilibrium    &RHS = **rhs;
+                            const size_t          RID = *RHS;
+                            const readable<bool> &TST = detached[RID];
+
+                            for(const group *existing=G.head;existing;existing=existing->next)
+                            {
+                                // check detached from all members of existing group
+                                bool ok = true;
+                                for(const gnode *member=existing->head;member;member=member->next)
                                 {
-                                    ok = false;
-                                    break;
+                                    if(!TST[***member])
+                                    {
+                                        ok = false;
+                                        break;
+                                    }
+                                }
+                                if(ok)
+                                {
+                                    // duplicate and grow current
+                                    (*G.push_front( new group(*existing) ))<< &RHS;
                                 }
                             }
-                            if(ok)
-                            {
-                                // duplicate and grow current
-                                (*G.push_front( new group(*existing) ))<< &RHS;
-                            }
                         }
+
+                        target.merge_back(G);
                     }
 
-                    target.merge_back(G);
+                    YACK_XMLOG(xml,"part" << count << " = " << target);
                 }
-
-                YACK_CHEM_PRINTLN(target);
-                YACK_CHEM_PRINTLN(fn << "-------- quit related #" << count << " --------");
             }
+
 
             //------------------------------------------------------------------
             //
@@ -141,7 +147,7 @@ namespace yack
             //
             //
             //------------------------------------------------------------------
-            YACK_CHEM_PRINTLN(fn << " --> combining parts <--");
+            YACK_XMLOUT(xml,"CombiningParts");
             {
                 const vector<size_t>    ini(P,1);
                 vector<size_t>          end(P,1);
@@ -158,44 +164,44 @@ namespace yack
 
                 } while(loop.next());
             }
-            coerce(solving).sort();
 
-            YACK_CHEM_PRINTLN(solving);
-            YACK_CHEM_PRINTLN(fn << "[built all detached]=" << solving.size);
-            
+            coerce(solving).sort();
+            YACK_XMLOG(xml,"solving=" << solving);
+
 #ifndef NDEBUG
-            YACK_CHEM_PRINTLN(fn << "[*** testing ***]");
-            lattice(std::cerr,"",detached);
-            for(const enode *I=lattice.head();I;I=I->next)
             {
-                const equilibrium &i = ***I;
-                //YACK_CHEM_PRINTLN('\t' << i.name);
-                if(!solving.includes(i)) throw imported::exception(clid,"missing %s",i.name());
-                for(const enode *J=I->next;J;J=J->next)
+                YACK_XMLSUB(xml,"Testing");
+                lattice(std::cerr,"",detached);
+                for(const enode *I=lattice.head();I;I=I->next)
                 {
-                    const equilibrium &j = ***J;
-                    if(i.detached_of(j))
+                    const equilibrium &i = ***I;
+                    //YACK_CHEM_PRINTLN('\t' << i.name);
+                    if(!solving.includes(i)) throw imported::exception(clid,"missing %s",i.name());
+                    for(const enode *J=I->next;J;J=J->next)
                     {
-                        group g; g << &i << &j;
-                        g.sort();
-                        //YACK_CHEM_PRINTLN("\t\t" << g);
-                        if(!solving.contains(g)) throw imported::exception(clid,"missing (%s,%s)",i.name(),j.name());
-                        for(const enode *K=J->next;K;K=K->next)
+                        const equilibrium &j = ***J;
+                        if(i.detached_of(j))
                         {
-                            const equilibrium &k = ***K;
-                            if(k.detached_of(i) && k.detached_of(j))
+                            group g; g << &i << &j;
+                            g.sort();
+                            //YACK_CHEM_PRINTLN("\t\t" << g);
+                            if(!solving.contains(g)) throw imported::exception(clid,"missing (%s,%s)",i.name(),j.name());
+                            for(const enode *K=J->next;K;K=K->next)
                             {
-                                g << &k;
-                                g.sort();
-                                //YACK_CHEM_PRINTLN("\t\t\t" << g);
-                                if(!solving.contains(g)) throw imported::exception(clid,"missing (%s,%s,%s)",i.name(),j.name(),k.name());
-                                delete g.pop_back();
+                                const equilibrium &k = ***K;
+                                if(k.detached_of(i) && k.detached_of(j))
+                                {
+                                    g << &k;
+                                    g.sort();
+                                    //YACK_CHEM_PRINTLN("\t\t\t" << g);
+                                    if(!solving.contains(g)) throw imported::exception(clid,"missing (%s,%s,%s)",i.name(),j.name(),k.name());
+                                    delete g.pop_back();
+                                }
                             }
                         }
                     }
                 }
             }
-            YACK_CHEM_PRINTLN(fn << "[*** tested ***]");
 #endif
             
         }

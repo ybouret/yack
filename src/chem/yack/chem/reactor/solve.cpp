@@ -5,6 +5,7 @@
 #include "yack/math/opt/optimize.hpp"
 #include "yack/type/boolean.h"
 #include "yack/math/iota.hpp"
+#include "yack/ios/xmlog.hpp"
 
 #include <iomanip>
 
@@ -18,7 +19,8 @@ namespace yack
         bool reactor:: solve(writable<double> &C0)
         {
             static const char fn[] = "[reactor.solve] ";
-            if(verbose) corelib(std::cerr << fn << "Cini=","", C0);
+            const xmlog       xml(fn,std::cerr,entity::verbose);
+            if(verbose) corelib(*xml << "Cini=","", C0);
 
 
             //------------------------------------------------------------------
@@ -30,11 +32,11 @@ namespace yack
             //------------------------------------------------------------------
             switch(N)
             {
-                case 0: YACK_CHEM_PRINTLN(fn << "<success> [empty]");
+                case 0: YACK_XMLOUT(xml, "success_empty");
                     return true;
 
 
-                case 1: YACK_CHEM_PRINTLN(fn << "<success> [single]");
+                case 1: YACK_XMLOUT(xml, "success_single");
                 {
                     const equilibrium &eq = ***singles.head();       // standalone
                     outcome::study(eq, K[1], C0, Corg, xmul, xadd);  // find 1D eq
@@ -42,7 +44,7 @@ namespace yack
                 } break;
 
 
-                default: YACK_CHEM_PRINTLN(fn << "<compute #equilibria='" << N << "'>");
+                default:
                     //----------------------------------------------------------
                     // initialize consistent state
                     //----------------------------------------------------------
@@ -51,12 +53,14 @@ namespace yack
                         Corg[i] = Cend[i] = Ctry[i] = C0[i];
                         dC[i]   = 0;
                     }
-             }
+            }
+
+            YACK_XMLSUB(xml,"<solve>");
 
             unsigned cycle = 0;
         CYCLE:
             ++cycle;
-            YACK_CHEM_PRINTLN(fn << "---------------- #cycle= " << std::setw(3) << cycle << " ----------------");
+            YACK_XMLOG(xml,"---------------- #cycle= " << std::setw(3) << cycle << " ----------------");
             //------------------------------------------------------------------
             //
             //
@@ -64,14 +68,14 @@ namespace yack
             //
             //
             //------------------------------------------------------------------
-            YACK_CHEM_PRINTLN(fn << "  <singles topology @level-1>");
+            YACK_XMLOUT(xml,"singles topology@level-1");
             size_t              nrun = 0;
             outcome             ppty;
             const  equilibrium *emax = getTopology(nrun,ppty);
 
             if(!emax)
             {
-                YACK_CHEM_PRINTLN(fn << "  <success> [fully solved]");
+                YACK_XMLOUT(xml,"success_fully_solved");
                 return returnSolved(C0);
             }
 
@@ -83,16 +87,16 @@ namespace yack
             //
             //------------------------------------------------------------------
             assert(emax);
-            YACK_CHEM_PRINTLN(fn << "  found most displaced @" << emax->name);
+            //YACK_CHEM_PRINTLN(fn << "  found most displaced @" << emax->name);
 
             switch(nrun)
             {
                 case 0:
-                    YACK_CHEM_PRINTLN(fn << "  <success> [all-blocked @level-1]");
+                    //YACK_CHEM_PRINTLN(fn << "  <success> [all-blocked @level-1]");
                     return returnSolved(C0);
 
                 case 1:
-                    YACK_CHEM_PRINTLN(fn << "  is the only one running @level-1");
+                    //YACK_CHEM_PRINTLN(fn << "  is the only one running @level-1");
                     working.transfer(Corg,Ceq[**emax] );
                     goto CYCLE;
 
@@ -109,7 +113,7 @@ namespace yack
             //------------------------------------------------------------------
             assert(nrun>1);
             double H0 = Hamiltonian(Corg);
-            YACK_CHEM_PRINTLN( fn << "    H0 = " << H0 << " M (initial)");
+            //YACK_CHEM_PRINTLN( fn << "    H0 = " << H0 << " M (initial)");
 
 
             //------------------------------------------------------------------
@@ -120,7 +124,7 @@ namespace yack
             //
             //------------------------------------------------------------------
 
-            YACK_CHEM_PRINTLN(fn << "  <looking for a dominant minimum>");
+            //YACK_CHEM_PRINTLN(fn << "  <looking for a dominant minimum>");
             double                    Hmin = H0;
             const equilibrium * const emin = getDominant(Hmin);
             if(!emin)
@@ -130,7 +134,7 @@ namespace yack
                 // stay @Corg, doesn't change H0
                 //
                 //------------------------------------------------------------------
-                YACK_CHEM_PRINTLN(fn << "  <no global dominant>");
+                //YACK_CHEM_PRINTLN(fn << "  <no global dominant>");
                 assert( fabs(H0-Hamiltonian(Corg))<=0 );
             }
             else
@@ -151,7 +155,7 @@ namespace yack
                 // look for a better combination including the best decrease
                 //
                 //--------------------------------------------------------------
-                YACK_CHEM_PRINTLN( fn << "    <looking for a better combination with @" << eq.name << ">");
+                //YACK_CHEM_PRINTLN( fn << "    <looking for a better combination with @" << eq.name << ">");
 
                 //--------------------------------------------------------------
                 // initialize to equilibrium's best
@@ -205,16 +209,16 @@ namespace yack
                 //--------------------------------------------------------------
                 // study moidified topology
                 //--------------------------------------------------------------
-                YACK_CHEM_PRINTLN(fn << "   <singles topology @level-2>");
+                //YACK_CHEM_PRINTLN(fn << "   <singles topology @level-2>");
                 emax = getTopology(nrun,ppty);
                 switch(nrun)
                 {
                     case 0:
-                        YACK_CHEM_PRINTLN(fn << "    <success> [all-blocked @level-2]");
+                        //YACK_CHEM_PRINTLN(fn << "    <success> [all-blocked @level-2]");
                         return returnSolved(C0);
 
                     case 1:
-                        YACK_CHEM_PRINTLN(fn << "    @" << emax->name << " is the only one running @level-2");
+                        //YACK_CHEM_PRINTLN(fn << "    @" << emax->name << " is the only one running @level-2");
                         working.transfer(Corg,Ceq[**emax] );
                         goto CYCLE;
 
@@ -223,7 +227,7 @@ namespace yack
                 }
 
                 H0 = Hamiltonian(Corg);
-                YACK_CHEM_PRINTLN( fn << "    H0 = " << H0 << " M (updated)");
+                //YACK_CHEM_PRINTLN( fn << "    H0 = " << H0 << " M (updated)");
             }
 
             //------------------------------------------------------------------
@@ -258,15 +262,15 @@ namespace yack
             //------------------------------------------------------------------
             if( !solv.build(Omega) )
             {
-                YACK_CHEM_PRINTLN(fn << "   <singular system>");
+                //YACK_CHEM_PRINTLN(fn << "   <singular system>");
                 if(atGlobalMinimum)
                 {
-                    YACK_CHEM_PRINTLN(fn << "   <at global minimum>");
+                    //YACK_CHEM_PRINTLN(fn << "   <at global minimum>");
                     return false;
                 }
                 else
                 {
-                    YACK_CHEM_PRINTLN(fn << "   <try again>");
+                    //YACK_CHEM_PRINTLN(fn << "   <try again>");
                     goto CYCLE;
                 }
             }
@@ -329,18 +333,18 @@ namespace yack
             //------------------------------------------------------------------
             if(recomputeStep)
             {
-                YACK_CHEM_PRINTLN(fn << "  <discarding extents>");
+                //YACK_CHEM_PRINTLN(fn << "  <discarding extents>");
                 switch(nrun)
                 {
                     case 0:
                         assert(NULL==lastAccepted);
-                        YACK_CHEM_PRINTLN(fn << "  <success> [all-blocked @primary extents]");
+                        //YACK_CHEM_PRINTLN(fn << "  <success> [all-blocked @primary extents]");
                         return returnSolved(C0);
                         goto CYCLE;
 
                     case 1:
                         assert(NULL!=lastAccepted);
-                        YACK_CHEM_PRINTLN(fn << "  <accepting only @" << lastAccepted->name << ">");
+                        //YACK_CHEM_PRINTLN(fn << "  <accepting only @" << lastAccepted->name << ">");
                         working.transfer(Corg, Ceq[ **lastAccepted ]);
                         goto CYCLE;
 
@@ -350,7 +354,7 @@ namespace yack
 
                 usingMaximumDOF = false; // Corg is not fully regular
                 H0 = updateOmega();      // new Hamiltonian
-                YACK_CHEM_PRINTLN( fn << "    H0 = " << H0 << " M (updated)");
+                //YACK_CHEM_PRINTLN( fn << "    H0 = " << H0 << " M (updated)");
             }
 
 

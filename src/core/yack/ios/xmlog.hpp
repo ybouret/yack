@@ -139,7 +139,7 @@ namespace yack
     //
     //! send a message to the host
     //__________________________________________________________________________
-#define YACK_XMLOG_PRINTLN(HOST,MSG) do {\
+#define YACK_XMLOG(HOST,MSG) do {\
 const yack::xmlog &host = (HOST); if(host.verbose) { *host << MSG << std::endl; }\
 } while(false)
 

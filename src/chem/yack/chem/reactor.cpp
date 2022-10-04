@@ -5,6 +5,7 @@
 
 #include "yack/apex.hpp"
 #include "yack/system/imported.hpp"
+#include "yack/ios/xmlog.hpp"
 
 namespace yack
 {
@@ -65,12 +66,12 @@ namespace yack
         lockEqs( coerce(usrEqs) )
         {
             static const char fn[] = "[reactor] ";
+            const xmlog       xml(fn,std::cerr,entity::verbose);
             equilibrium::display_time = t;
-            YACK_CHEM_PRINTLN(fn << "---------------- build ----------------");
-            YACK_CHEM_PRINTLN(fn << "@" << t );
 
-            YACK_CHEM_PRINTLN(fn << "corelib = " << corelib);
-            YACK_CHEM_PRINTLN(fn << "singles = " << singles);
+            YACK_XMLSUB(xml,"BuildingReactor");
+            YACK_XMLOG(xml, "@" << t );
+            YACK_XMLOG(xml, "corelib = " << corelib);
 
 
             if(N>0)
@@ -78,19 +79,23 @@ namespace yack
                 //--------------------------------------------------------------
                 // initialize K and Nu
                 //--------------------------------------------------------------
-                for(const enode *node=singles.head();node;node=node->next)
                 {
-                    const equilibrium &eq = ***node;
-                    const size_t       ei = *eq;
-                    K[ei] = eq.K(t);
-                    eq.fill( coerce(Nu[ei]) );
-                }
+                    YACK_XMLSUB(xml,"Singles");
+                    YACK_XMLOG(xml,singles);
+                    for(const enode *node=singles.head();node;node=node->next)
+                    {
+                        const equilibrium &eq = ***node;
+                        const size_t       ei = *eq;
+                        K[ei] = eq.K(t);
+                        eq.fill( coerce(Nu[ei]) );
+                    }
 
-                if(verbose)
-                {
-                    singles(std::cerr << "Nu = ", "Nu_", Nu);
-                }
+                    if(verbose)
+                    {
+                        singles(std::cerr, "Nu_", Nu);
+                    }
 
+                }
 
                 //--------------------------------------------------------------
                 // testing system
@@ -105,15 +110,22 @@ namespace yack
                 //--------------------------------------------------------------
                 // compute couples
                 //--------------------------------------------------------------
-                composite::scatter( coerce(couples), worklib, singles, K, xmul);
+                {
+                    YACK_XMLSUB(xml,"Couples");
+                    composite::scatter( coerce(couples), worklib, singles, K, xmul);
 
 
-                //--------------------------------------------------------------
-                // complete lattice
-                //--------------------------------------------------------------
-                coerce(lattice).add(couples);
-                coerce(L) = lattice.size();
+                    //--------------------------------------------------------------
+                    // complete lattice
+                    //--------------------------------------------------------------
+                    coerce(lattice).add(couples);
+                    coerce(L) = lattice.size();
 
+                    if(verbose)
+                    {
+                        std::cerr << "lattice = " << lattice << std::endl;
+                    }
+                }
                 //--------------------------------------------------------------
                 // rebuild ltab
                 //--------------------------------------------------------------
@@ -141,21 +153,25 @@ namespace yack
                     const size_t       ei =  *eq;
                     Kl[ei] = eq.K(-1);
                 }
-                YACK_CHEM_PRINTLN(fn << "lattice = " << lattice);
 
                 //--------------------------------------------------------------
                 // build related groups
                 //--------------------------------------------------------------
-                buildRelated();
-                YACK_CHEM_PRINTLN(fn << "related = " << related);
+                {
+                    YACK_XMLSUB(xml,"Related");
+                    buildRelated();
+                    if(verbose)
+                    {
+                        std::cerr << "related = " << related << std::endl;
+                    }
+                }
+
 
                 //--------------------------------------------------------------
                 // for each related group...
                 //--------------------------------------------------------------
-                makeManifold();
+                makeManifold(xml);
             }
-
-            YACK_CHEM_PRINTLN(fn << "---------------- built ----------------" << std::endl );
 
             
         }
