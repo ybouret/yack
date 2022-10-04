@@ -107,6 +107,7 @@ namespace yack
             //
             //
             //------------------------------------------------------------------
+            assert(nrun>1);
             double H0 = Hamiltonian(Corg);
             YACK_CHEM_PRINTLN( fn << "    H0 = " << H0 << " M (initial)");
 
@@ -284,7 +285,8 @@ namespace yack
             // study PRIMARY extents
             //
             //------------------------------------------------------------------
-            bool recomputeStep = false;
+            bool               recomputeStep = false;
+            const equilibrium *lastAccepted  = NULL;
             for(const enode *node = singles.head(); node; node=node->next)
             {
                 const equilibrium      &eq  = ***node;
@@ -308,11 +310,47 @@ namespace yack
 
                 if(!ok)
                 {
+                    // discarding
                     recomputeStep   = true;
-                    usingMaximumDOF = false;
                     --nrun;
                     deactivated(ei);
                 }
+                else
+                {
+                    // register as good
+                    lastAccepted = &eq;
+                }
+            }
+
+            //------------------------------------------------------------------
+            //
+            // discarded too big extents
+            //
+            //------------------------------------------------------------------
+            if(recomputeStep)
+            {
+                YACK_CHEM_PRINTLN(fn << "  <discarding extents>");
+                switch(nrun)
+                {
+                    case 0:
+                        assert(NULL==lastAccepted);
+                        YACK_CHEM_PRINTLN(fn << "  <success> [all-blocked @primary extents]");
+                        return returnSolved(C0);
+                        goto CYCLE;
+
+                    case 1:
+                        assert(NULL!=lastAccepted);
+                        YACK_CHEM_PRINTLN(fn << "  <accepting only @" << lastAccepted->name << ">");
+                        working.transfer(Corg, Ceq[ **lastAccepted ]);
+                        goto CYCLE;
+
+                    default:
+                        break;
+                }
+
+                usingMaximumDOF = false; // Corg is not fully regular
+                H0 = updateOmega();      // new Hamiltonian
+                YACK_CHEM_PRINTLN( fn << "    H0 = " << H0 << " M (updated)");
             }
 
 
