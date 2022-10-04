@@ -60,11 +60,12 @@ namespace yack
                 const equilibrium &eq = ***node;
                 const size_t       ei = *eq;
                 const outcome      oc = outcome::study(eq, Kl[ei], Corg, Cend, xmul, xadd);
+
                 switch(oc.state)
                 {
                     case components::are_blocked:
-                        Xl[ei] = 0;
-                        working.transfer(Ceq[ei],Corg);
+                        Xl[ei] = 0;                      // blocked
+                        working.transfer(Ceq[ei],Corg);  // consistency
                         break;
 
                     case components::are_running: {

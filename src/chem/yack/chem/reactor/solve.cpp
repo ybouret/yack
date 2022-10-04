@@ -14,18 +14,234 @@ namespace yack
 
     namespace chemical
     {
-        
-        bool reactor:: isTurnedOff(const group *g) const throw()
+
+        bool reactor:: solve(writable<double> &C0)
         {
-            assert(g);
-            for(const gnode *node=g->head;node;node=node->next)
+            static const char fn[] = "[reactor.solve] ";
+            if(verbose) corelib(std::cerr << fn << "Cini=","", C0);
+
+
+            //------------------------------------------------------------------
+            //
+            //
+            // initialize depending on #equilibria = N
+            //
+            //
+            //------------------------------------------------------------------
+            switch(N)
             {
-                if( blocked[ ***node ] ) return true;
+                case 0: YACK_CHEM_PRINTLN(fn << "<success> [empty]");
+                    return true;
+
+
+                case 1: YACK_CHEM_PRINTLN(fn << "<success> [single]");
+                {
+                    const equilibrium &eq = ***singles.head();       // standalone
+                    outcome::study(eq, K[1], C0, Corg, xmul, xadd);  // find 1D eq
+                    return returnSolved(C0);                         // done
+                } break;
+
+
+                default: YACK_CHEM_PRINTLN(fn << "<compute #equilibria='" << N << "'>");
+                    //----------------------------------------------------------
+                    // initialize consistent state
+                    //----------------------------------------------------------
+                    for(size_t i=M;i>0;--i)
+                    {
+                        Corg[i] = Cend[i] = Ctry[i] = C0[i];
+                        dC[i]   = 0;
+                    }
+             }
+
+            unsigned cycle = 0;
+        CYCLE:
+            ++cycle;
+            YACK_CHEM_PRINTLN(fn << "---------------- #cycle= " << std::setw(3) << cycle << " ----------------");
+            //------------------------------------------------------------------
+            //
+            //
+            // check all singles and compute scaling to evaluate Hamiltonian
+            //
+            //
+            //------------------------------------------------------------------
+            YACK_CHEM_PRINTLN(fn << "  <singles topology @level-1>");
+            size_t              nrun = 0;
+            outcome             ppty;
+            const  equilibrium *emax = getTopology(nrun,ppty);
+
+            if(!emax)
+            {
+                YACK_CHEM_PRINTLN(fn << "  <success> [fully solved]");
+                return returnSolved(C0);
             }
+
+            //------------------------------------------------------------------
+            //
+            //
+            // act according to running dimensions
+            //
+            //
+            //------------------------------------------------------------------
+            assert(emax);
+            YACK_CHEM_PRINTLN(fn << "  found most displaced @" << emax->name);
+
+            switch(nrun)
+            {
+                case 0:
+                    YACK_CHEM_PRINTLN(fn << "  <success> [all-blocked @level-1]");
+                    return returnSolved(C0);
+
+                case 1:
+                    YACK_CHEM_PRINTLN(fn << "  is the only one running @level-1");
+                    working.transfer(Corg,Ceq[**emax] );
+                    goto CYCLE;
+
+                default:
+                    break;
+            }
+
+            //------------------------------------------------------------------
+            //
+            //
+            // Compute Hamiltonian @Corg
+            //
+            //
+            //------------------------------------------------------------------
+            double H0 = Hamiltonian(Corg);
+            YACK_CHEM_PRINTLN( fn << "    H0 = " << H0 << " M (initial)");
+
+
+            //------------------------------------------------------------------
+            //
+            //
+            // look within pre-computed singles
+            //
+            //
+            //------------------------------------------------------------------
+
+            YACK_CHEM_PRINTLN(fn << "  <looking for a dominant minimum>");
+            double             Hmin = H0;
+            const equilibrium *emin = getDominant(Hmin);
+            if(!emin)
+            {
+                //--------------------------------------------------------------
+                //
+                // stay @Corg, doesn't change H0
+                //
+                //------------------------------------------------------------------
+                YACK_CHEM_PRINTLN(fn << "  <no global dominant>");
+                assert( fabs(H0-Hamiltonian(Corg))<=0 );
+            }
+            else
+            {
+                //--------------------------------------------------------------
+                //
+                // found a global decrease
+                //
+                //---------------------------------------------------------------
+                const equilibrium &eq = *emin;
+                if(verbose)
+                {
+                    lattice.pad(std::cerr << "--> @" << eq.name,eq) << " -> " << std::setw(15) << Hmin << std::endl;
+                }
+
+                //--------------------------------------------------------------
+                //
+                // look for a better combination including the best decrease
+                //
+                //--------------------------------------------------------------
+                YACK_CHEM_PRINTLN( fn << "    <looking for a better combination with @" << eq.name << ">");
+
+                //--------------------------------------------------------------
+                // initialize to equilibrium's best
+                //--------------------------------------------------------------
+                iota::load(Cend,Ceq[*eq]);
+                const group *g = solving.find_first(eq); assert(g);
+                do {
+                    assert(g->is_ortho());
+                    if(1==g->size)
+                    {
+                        const equilibrium &member = **(g->head);
+                        assert( &member == &eq);
+                        continue;
+                    }
+
+                    //----------------------------------------------------------
+                    // build a trial concentration
+                    //----------------------------------------------------------
+                    iota::load(Ctry,Corg);
+                    for(const gnode *ep=g->head;ep;ep=ep->next)
+                    {
+                        const equilibrium &member = **ep;
+                        member.transfer(Ctry,Ceq[*member]);
+                    }
+
+                    //----------------------------------------------------------
+                    // compute trial value
+                    //----------------------------------------------------------
+                    const double Htry = Hamiltonian(Ctry);
+                    const bool   ok   = (Htry<Hmin);
+                    if(verbose)
+                    {
+                        std::cerr << "    Htry=" << std::setw(15) << Htry;
+                        std::cerr << (ok? " [+]" : " [-]");
+                        std::cerr << " @" << *g << std::endl;
+                    }
+                    if(ok)
+                    {
+                        Hmin = Htry;
+                        working.transfer(Cend,Ctry);
+                    }
+
+                } while( NULL != ( g = solving.find_next(g,eq)) );
+
+                //--------------------------------------------------------------
+                // full update Corg <- Cend
+                //--------------------------------------------------------------
+                working.transfer(Corg,Cend);
+                if(verbose) corelib(std::cerr << fn << "Cnew=","", Corg);
+
+                //--------------------------------------------------------------
+                // study moidified topology
+                //--------------------------------------------------------------
+                YACK_CHEM_PRINTLN(fn << "   <singles topology @level-2>");
+                emax = getTopology(nrun,ppty);
+                switch(nrun)
+                {
+                    case 0:
+                        YACK_CHEM_PRINTLN(fn << "    <success> [all-blocked @level-2]");
+                        return returnSolved(C0);
+
+                    case 1:
+                        YACK_CHEM_PRINTLN(fn << "    @" << emax->name << " is the only one running @level-2");
+                        working.transfer(Corg,Ceq[**emax] );
+                        goto CYCLE;
+
+                    default:
+                        break;
+                }
+
+                H0 = Hamiltonian(Corg);
+                YACK_CHEM_PRINTLN( fn << "    H0 = " << H0 << " M (updated)");
+            }
+
+
+
+
+
+
+            exit(0);
+
             return false;
         }
 
+        
 
+
+
+
+
+#if 0
         bool reactor:: solve(writable<double> &C0)
         {
             static const char fn[] = "[reactor.solve] ";
@@ -442,13 +658,15 @@ namespace yack
 
 
             YACK_CHEM_PRINTLN(fn << "[May Test Convergence!!]");
-            
+
             exit(0);
 
             return false;
             
 
         }
+
+#endif
 
     }
 }

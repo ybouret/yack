@@ -14,7 +14,8 @@ namespace yack
 
 
 
-        const equilibrium * reactor:: setTopology(size_t &nrun, outcome &ppty)
+        const equilibrium * reactor:: getTopology(size_t  &nrun,
+                                                  outcome &ppty)
         {
             nrun                    = 0;      // running eqs
             double             amax = 0;      // max absolute solving extent

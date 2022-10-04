@@ -113,11 +113,10 @@ namespace yack
             void               buildRelated();                           //!< build global partitions
             void               makeManifold();                           //!< build all solving partitions
 
-            const equilibrium *setTopology(size_t &nrun, outcome &);     //!< full topology at Corg
+            const equilibrium *getTopology(size_t &nrun, outcome &);     //!< full topology at Corg
             const equilibrium *getDominant(double &Hmin);                //!< starting from Hmin = H0
             double             Hamiltonian(const readable<double> &C);   //!< a molar hamiltonian
             double             Optimized1D(const double H0);             //!< optimize from (Corg,H0) to Cend
-            bool               isTurnedOff(const group *) const throw(); //!< true if one member is blocked
             void               deactivated(const size_t ei);             //!< set deactivated ei
             void               createOmega();                            //!< build Omega and rhs
             double             updateOmega();                            //!< update Omega and rhs from new blocked, return new H0
