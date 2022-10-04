@@ -281,7 +281,7 @@ namespace yack
 
             //------------------------------------------------------------------
             //
-            // study PRIMART extent
+            // study PRIMARY extents
             //
             //------------------------------------------------------------------
             bool recomputeStep = false;
@@ -301,7 +301,6 @@ namespace yack
                     else
                     {
                         std::cerr << " (-) rejected";
-
                     }
                     singles.pad(std::cerr << ' ' << eq.name,eq) << " @" << std::setw(15) << xx <<": ";
                     std::cerr << lm << std::endl;
