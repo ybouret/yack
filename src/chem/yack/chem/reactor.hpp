@@ -115,7 +115,7 @@ namespace yack
             void               buildRelated();                           //!< build global partitions
             void               makeManifold(const xmlog &);              //!< build all solving partitions
 
-            const equilibrium *getTopology(size_t &nrun, outcome &);     //!< full topology at Corg
+            const equilibrium *getTopology(size_t &nrun);                //!< full topology at Corg for singles
             const equilibrium *getDominant(double &Hmin);                //!< starting from Hmin = H0
             double             Hamiltonian(const readable<double> &C);   //!< a molar hamiltonian
             double             Optimized1D(const double H0);             //!< optimize from (Corg,H0) to Cend

@@ -14,12 +14,12 @@ namespace yack
 
 
 
-        const equilibrium * reactor:: getTopology(size_t  &nrun,
-                                                  outcome &ppty)
+        const equilibrium * reactor:: getTopology(size_t  &nrun)
         {
             nrun                    = 0;      // running eqs
             double             amax = 0;      // max absolute solving extent
             const equilibrium *emax = NULL;   // whose extent it is
+            outcome            ppty;          // local default outcome
             NuA.assign(Nu);                   // initial: full run
 
             for(const enode *node = singles.head(); node; node=node->next)
@@ -64,10 +64,21 @@ namespace yack
                 if(verbose) {
                     singles.pad(std::cerr << "\t (+) " << '<' << eq.name << '>', eq) << " : " << oc << " @sigma= " << sigma[ei] << std::endl;
                 }
-
             }
 
-            return emax;
+            if(emax)
+            {
+                if(extent::is_degenerated==ppty.grade)
+                    return NULL;
+                else
+                    return emax;
+            }
+            else
+            {
+                return NULL;
+            }
+
+
         }
 
     }
