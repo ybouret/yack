@@ -91,7 +91,6 @@ namespace yack
             imatrix            NuA;     //!< [NXM] topology of non-blocked equilibria
             rmatrix            Psi;     //!< [NxM] jacobian
             rmatrix            Omega;   //!< [NxN] coupling
-            rmatrix            iOmega;  //!< [NxN] inv(Omega)
             tableau           &Corg;    //!< [M] starting point
             tableau           &Cend;    //!< [M] final point
             tableau           &Ctry;    //!< [M] working space
@@ -104,8 +103,7 @@ namespace yack
             tableau           &Xl;      //!< [L] solving extents
             thin_array<bool>   blocked; //!< [L] blocking state
             rmatrix            Ceq;     //!< [LxM] all single solutions
-            vector<double>     ratio;   //!< [0..M] ratio
-        
+            
         private:
             YACK_DISABLE_COPY_AND_ASSIGN(reactor);
             const lockable::scope lockLib;

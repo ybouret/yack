@@ -10,6 +10,7 @@ YACK_UTEST_DECL(16)
     YACK_UTEST(composite);
     YACK_UTEST(reactor);
     YACK_UTEST(diff);
+    YACK_UTEST(slowing_down);
 }
 YACK_UTEST_EXEC()
 

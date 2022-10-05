@@ -44,8 +44,7 @@ namespace yack
         NuA(Nu.rows,Nu.cols),
         Psi(Nu.rows,Nu.cols),
         Omega(N,N),
-        iOmega(N,N),
-        
+
         Corg( mtab.next() ),
         Cend( mtab.next() ),
         Ctry( mtab.next() ),
@@ -60,8 +59,7 @@ namespace yack
         Xl( ltab.next()  ),
         blocked( ltab.next(), transmogrify),
         Ceq(),
-        ratio(M,as_capacity),
-
+        
         lockLib( coerce(usrLib) ),
         lockEqs( coerce(usrEqs) )
         {

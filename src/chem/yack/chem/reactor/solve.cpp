@@ -397,17 +397,19 @@ namespace yack
                 //--------------------------------------------------------------
                 {
                     YACK_XMLSUB(xml, "deltaC");
-                    ratio.free();
+
+                    //----------------------------------------------------------
+                    // compute and monitor working dC
+                    //----------------------------------------------------------
+                    double         reductionFactor  = 1.0;
                     for(const anode *node=working.head;node;node=node->next)
                     {
                         const species &sp = **node; assert(sp.rank>0);
                         const size_t   j  = *sp;
 
+
                         xadd.ldz();
-                        for(size_t i=N;i>0;--i)
-                        {
-                            xadd.ld( NuA[i][j] * xi[i] );
-                        }
+                        for(size_t i=N;i>0;--i) xadd.ld( NuA[i][j] * xi[i] );
                         const double d = (dC[j] = xadd.get());
                         const double c = Corg[j];
                         if(verbose)
@@ -425,27 +427,30 @@ namespace yack
 
                         if(d<0 && (-d)>c)
                         {
-                            ratio << c/(-d);
+                            // should be only for secondary species
+                            // but could numerically happen for primary
+                            const double scaling = c/(-d);
+                            if(verbose) std::cerr << " => scaling@" << scaling;
+                            usingFullLength = false;
+                            reductionFactor = min_of(reductionFactor,scaling);
                         }
 
                         if(verbose) std::cerr << std::endl;
                     }
 
-                    if(verbose) corelib(*xml << "dC=", "", dC);
-                    exit(0);
+                    YACK_XMLOG(xml,"-- usingFullLength = " << yack_boolean(usingFullLength));
+                    if(!usingFullLength)
+                    {
+                        YACK_XMLOG(xml,"-- reductionFactor = " << reductionFactor);
+                        // need to slow down...
+                        
+                        exit(1);
+                    }
+
+
 
                     double umax = 1;
-                    if(ratio.size())
-                    {
-                        hsort(ratio,comparison::increasing<double>);
-                        YACK_XMLOG(xml,"ratio  = " << ratio);
-                        const double rmax = ratio.front();
-                        if(rmax<=1)
-                        {
-                            umax            = 0.5 * rmax;
-                            usingFullLength = false;
-                        }
-                    }
+
 
                     // compute Cend
                     for(const anode *node=working.head;node;node=node->next)
@@ -455,6 +460,8 @@ namespace yack
                         Cend[j] = max_of<double>(Corg[j]+umax*dC[j],0);
                     }
                 }
+                exit(0);
+
 
                 YACK_XMLOG(xml,"-- atGlobalMinimum = " << yack_boolean(atGlobalMinimum));
                 YACK_XMLOG(xml,"-- usingMaximumDOF = " << yack_boolean(usingMaximumDOF));
