@@ -79,7 +79,7 @@ namespace yack
             //------------------------------------------------------------------
             {
                 YACK_XMLSUB(xml,"compute topology");
-                emax = getTopology(nrun);
+                emax = getTopology(nrun,xml);
                 if(!emax)
                 {
                     YACK_XMLOG(xml,"-- success");
@@ -121,12 +121,12 @@ namespace yack
             //------------------------------------------------------------------
             // find out the dominant reaction
             //------------------------------------------------------------------
-            YACK_XMLOG(xml, "-- looking for a dominant minimum");
+            //YACK_XMLOG(xml, "-- looking for a dominant minimum");
             bool atGlobalMinimum = false;
             {
                 YACK_XMLSUB(xml,"find dominant");
                 double                    Hmin = H0;
-                const equilibrium * const emin = getDominant(Hmin);
+                const equilibrium * const emin = getDominant(Hmin,xml);
                 if(!emin)
                 {
                     //----------------------------------------------------------
@@ -144,7 +144,7 @@ namespace yack
                     const equilibrium &eq = *emin;
                     if(verbose)
                     {
-                        lattice.pad(std::cerr << "--> @" << eq.name,eq) << " -> " << std::setw(15) << Hmin << std::endl;
+                        lattice.pad(*xml << "--> @" << eq.name,eq) << " -> " << std::setw(15) << Hmin << std::endl;
                     }
 
                     //----------------------------------------------------------
@@ -185,7 +185,7 @@ namespace yack
                             const bool   ok   = (Htry<Hmin);
                             if(verbose)
                             {
-                                std::cerr << "\t->  " << std::setw(15) << Htry;
+                                *xml << "--> " << std::setw(15) << Htry;
                                 std::cerr << (ok? " [+]" : " [-]");
                                 std::cerr << " @" << *g << std::endl;
                             }
@@ -222,7 +222,7 @@ namespace yack
                     //----------------------------------------------------------
                     {
                         YACK_XMLSUB(xml,"update topology");
-                        emax = getTopology(nrun);
+                        emax = getTopology(nrun,xml);
                         if(!emax)
                         {
                             YACK_XMLOG(xml,"-- success");
@@ -319,11 +319,11 @@ namespace yack
                     {
                         if(ok)
                         {
-                            std::cerr << " (+)";
+                            std::cerr << "| (+)";
                         }
                         else
                         {
-                            std::cerr << " (-)";
+                            std::cerr << "| (-)";
                         }
                         singles.pad(std::cerr << ' ' << eq.name,eq) << " @" << std::setw(15) << xx <<": ";
                         std::cerr << lm << std::endl;
@@ -385,15 +385,13 @@ namespace yack
                 YACK_XMLSUB(xml, "forwarding");
                 //
                 //--------------------------------------------------------------
-                bool   usingFullLength =  evaluate_dC(xml);
-                exit(0);
-
-
+                const bool   usingFullLength =  evaluate_dC(xml);
                 YACK_XMLOG(xml,"-- atGlobalMinimum = " << yack_boolean(atGlobalMinimum));
                 YACK_XMLOG(xml,"-- usingMaximumDOF = " << yack_boolean(usingMaximumDOF));
                 YACK_XMLOG(xml,"-- usingFullLength = " << yack_boolean(usingFullLength));
 
                 {
+                    std::cerr << "\t\t[saving ham.dat]" << std::endl;
                     ios::ocstream fp("ham.dat");
                     const size_t np=1000;
                     for(size_t i=0;i<=np;++i)
@@ -413,6 +411,9 @@ namespace yack
                     YACK_XMLOG(xml, "-- H=" << f.b << "@" << u.b);
                     H1 = f.b;
                 }
+
+                exit(0);
+
 
                 working.transfer(Corg,Ctry);
                 if(H1<H0)

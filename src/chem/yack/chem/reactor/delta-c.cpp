@@ -1,12 +1,10 @@
 #include "yack/chem/reactor.hpp"
-#include "yack/chem/outcome.hpp"
-#include "yack/system/imported.hpp"
 #include "yack/type/utils.hpp"
 #include "yack/math/opt/optimize.hpp"
 #include "yack/type/boolean.h"
 #include "yack/math/iota.hpp"
 #include "yack/ios/xmlog.hpp"
-#include "yack/type/boolean.h"
+#include "yack/arith/round10.hpp"
 
 #include <iomanip>
 
@@ -21,7 +19,9 @@ namespace yack
             YACK_XMLSUB(xml, "deltaC");
 
             //----------------------------------------------------------
+            //
             // compute and monitor working dC
+            //
             //----------------------------------------------------------
             bool           usingFullLength  = true;
             double         reductionFactor  = 1.0;
@@ -50,8 +50,10 @@ namespace yack
 
                 if(d<0 && (-d)>c)
                 {
+                    //----------------------------------------------------------
                     // should be only for secondary species
                     // but could numerically happen for primary
+                    //----------------------------------------------------------
                     const double scaling = c/(-d);
                     if(verbose) std::cerr << " => scaling@" << scaling;
                     usingFullLength = false;
@@ -61,20 +63,18 @@ namespace yack
                 if(verbose) std::cerr << std::endl;
             }
 
-            YACK_XMLOG(xml,"-- usingFullLength = " << yack_boolean(usingFullLength));
             if(!usingFullLength)
             {
-                YACK_XMLOG(xml,"-- reductionFactor = " << reductionFactor);
-                // need to slow down...
-
-                exit(1);
+                YACK_XMLOG(xml,"-- reductionFactor = " << std::setw(15) << reductionFactor);
+                reductionFactor = math:: round10<double>:: floor_with<1>(reductionFactor);
+                YACK_XMLOG(xml,"-- reductionFactor = " << std::setw(15) << reductionFactor << " (updated)");
             }
 
-
-
-
-
+            //----------------------------------------------------------
+            //
             // compute Cend
+            //
+            //----------------------------------------------------------
             for(const anode *node=working.head;node;node=node->next)
             {
                 const species &sp = **node; assert(sp.rank>0);

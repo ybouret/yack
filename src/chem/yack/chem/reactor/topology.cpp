@@ -2,7 +2,7 @@
 #include "yack/chem/reactor.hpp"
 #include "yack/chem/outcome.hpp"
 #include "yack/system/imported.hpp"
-
+#include "yack/ios/xmlog.hpp"
 
 
 namespace yack
@@ -14,7 +14,7 @@ namespace yack
 
 
 
-        const equilibrium * reactor:: getTopology(size_t  &nrun)
+        const equilibrium * reactor:: getTopology(size_t  &nrun, const xmlog &xml)
         {
             nrun                    = 0;      // running eqs
             double             amax = 0;      // max absolute solving extent
@@ -62,7 +62,7 @@ namespace yack
                 }
 
                 if(verbose) {
-                    singles.pad(std::cerr << "\t (+) " << '<' << eq.name << '>', eq) << " : " << oc << " @sigma= " << sigma[ei] << std::endl;
+                    singles.pad(*xml << "(+) " << '<' << eq.name << '>', eq) << " : " << oc << " @sigma= " << sigma[ei] << std::endl;
                 }
             }
 

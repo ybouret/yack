@@ -6,6 +6,7 @@
 #include "yack/math/opt/optimize.hpp"
 #include "yack/type/boolean.h"
 #include "yack/math/iota.hpp"
+#include "yack/ios/xmlog.hpp"
 
 #include <iomanip>
 
@@ -15,7 +16,7 @@ namespace yack
 
     namespace chemical
     {
-        const equilibrium * reactor:: getDominant(double &Hmin)
+        const equilibrium * reactor:: getDominant(double &Hmin, const xmlog &xml)
         {
             const equilibrium *emin = NULL;
             const double       H0   = Hmin;
@@ -42,7 +43,7 @@ namespace yack
 
                 if(verbose)
                 {
-                    lattice.pad(std::cerr << "    @" << eq.name,eq) << " -> " << std::setw(15) << H1;
+                    lattice.pad( *xml << "    @" << eq.name,eq) << " -> " << std::setw(15) << H1;
                     if(ok) std::cerr << " <-- :)";
                     std::cerr << std::endl;
                 }
@@ -80,7 +81,7 @@ namespace yack
 
                         if(verbose)
                         {
-                            lattice.pad(std::cerr << "    @" << eq.name,eq) << " -> " << std::setw(15) << H1;
+                            lattice.pad(*xml << "    @" << eq.name,eq) << " -> " << std::setw(15) << H1;
                             if(ok) std::cerr << " <-- :)";
                             std::cerr << std::endl;
                         }

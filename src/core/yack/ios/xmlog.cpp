@@ -9,7 +9,7 @@ namespace yack
         os << prefix << ' ';
         for(int i=0;i<indent;++i)
         {
-            os << ' ' << ' ' << ' ' << ' ';
+            os << ' ' << ' ';
         }
         return os;
     }
