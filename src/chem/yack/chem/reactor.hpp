@@ -121,6 +121,13 @@ namespace yack
             void               createOmega();                            //!< build Omega and rhs
             double             updateOmega();                            //!< update Omega and rhs from new blocked, return new H0
             bool               evaluate_dC(const xmlog &);
+
+            double                     Hamiltonian(const group &g);
+            const readable<double> &   Optimized_C(const double H0); //!< Ctry between H(Corg) and Cend
+            const equilibrium         *topoSingles(size_t &nrun, const xmlog &);
+            void                       topoLattice(const double H0, const xmlog &xml);
+            bool                       foundGlobal(const double H0, const xmlog &xml);
+            void                       setupOmega();
         };
 
 

@@ -18,6 +18,206 @@ namespace yack
     namespace chemical
     {
 
+        double reactor:: Hamiltonian(const group &g)
+        {
+            //--------------------------------------------------
+            // build a trial concentration
+            //--------------------------------------------------
+            iota::load(Ctry,Corg);
+            for(const gnode *ep=g.head;ep;ep=ep->next)
+            {
+                const equilibrium &member = **ep;
+                member.transfer(Ctry,Ceq[*member]);
+            }
+
+            // compute it's hamiltonian
+            return Hamiltonian(Ctry);
+        }
+
+
+        const readable<double> & reactor:: Optimized_C(const double H0)
+        {
+            triplet<double> U = { 0,  -1, 1.0 };
+            triplet<double> H = { H0, -1, Hamiltonian(Cend) };
+            optimize::run_for(*this, U, H, optimize::inside);
+            return Ctry;
+        }
+
+
+        const equilibrium * reactor:: topoSingles(size_t &nrun, const xmlog &xml)
+        {
+            YACK_XMLSUB(xml,"topoSingles");
+            const equilibrium *emax = NULL;
+            double             amax = 0;
+            outcome            ppty;
+            nrun = 0;
+
+            for(const enode *node=singles.head();node;node=node->next)
+            {
+                const equilibrium &eq  = ***node;
+                const size_t       ei  = *eq;
+                writable<double>  &Ci  = Ceq[ei];
+                const double       Ki  = K[ei];
+                const outcome      oc  = outcome::study(eq, Ki, Corg, Ci, xmul, xadd);
+                writable<double>  &psi = Psi[ei];
+
+                switch(oc.state)
+                {
+                    case components::are_blocked:
+                        blocked[ei] = true;
+                        Xl[ei]      = 0;
+                        sigma[ei]   = 0;
+                        NuA[ei].ld(0);
+                        psi.ld(0);
+                        break;
+
+                    case components::are_running: {
+                        ++nrun;
+                        blocked[ei] = false;
+                        const double ax = fabs( Xl[ei] = oc.value );
+                        if(ax>amax)
+                        {
+                            amax =  ax;
+                            emax = &eq;
+                            ppty =  oc;
+                        }
+                        eq.grad_action(psi,Ki,Ci,xmul);
+                        sigma[ei] = xadd.dot(psi, Nu[ei]);
+                        if(sigma[ei]>=0) throw imported::exception(clid,"corrupted <%s>",eq.name());
+                    } break;
+                }
+
+                if(verbose) {
+                    lattice.pad(*xml << "-- (+) " << '<' << eq.name << '>', eq) << " : " << oc << " @sigma= " << sigma[ei] << std::endl;
+                }
+            }
+
+            if(emax)
+            {
+                if(extent::is_degenerated==ppty.grade)
+                {
+                    return NULL;
+                }
+                else
+                {
+                    return emax;
+                }
+            }
+            else
+            {
+                return NULL;
+            }
+
+        }
+
+
+        void reactor:: topoLattice(const double H0, const xmlog &xml)
+        {
+            YACK_XMLSUB(xml,"topoLattice");
+
+
+            // precomputed single
+            for(const enode *node=singles.head();node;node=node->next)
+            {
+                const equilibrium &eq  = ***node;
+                const size_t       ei  = *eq; if(blocked[ei]) continue;;
+                writable<double>  &Ci  = Ceq[ei];
+
+                working.transfer(Cend,Ci);
+                working.transfer(Ci,Optimized_C(H0));
+
+            }
+
+            // full computation for couples
+            for(const enode *node=couples.head();node;node=node->next)
+            {
+                const equilibrium &eq  = ***node;
+                const size_t       ei  = *eq;
+                writable<double>  &Ci  = Ceq[ei];
+                const double       Ki  = Kl[ei];
+                const outcome      oc  = outcome::study(eq, Ki, Corg, Cend, xmul, xadd);
+
+                switch(oc.state)
+                {
+                    case components::are_blocked:
+                        blocked[ei] = true;
+                        iota::load(Ci,Corg);
+                        break;
+
+                    case components::are_running: {
+                        blocked[ei] = false;
+                        iota::load(Ci,Optimized_C(H0));
+                    } break;
+                }
+
+                if(verbose) {
+                    lattice.pad(*xml << "-- (+) " << '<' << eq.name << '>', eq) << " : " << oc << std::endl;
+                }
+            }
+        }
+
+
+        bool reactor:: foundGlobal(const double H0, const xmlog &xml)
+        {
+            YACK_XMLSUB(xml,"studyGlobal");
+            const group *gmin    = NULL;
+            double       Hmin    = H0;    // initial Hamiltonian
+            working.transfer(Cend,Corg);  // at starting point
+
+            for(const group *g=solving.head;g;g=g->next)
+            {
+                const double Htry = Hamiltonian(*g);
+                const bool   isOk = (Htry<Hmin);
+                if(isOk)
+                {
+                    YACK_XMLOG(xml,"-->" <<  std::setw(15) << Htry << " @" << *g);
+                    gmin = g;
+                    Hmin = Htry;
+                    working.transfer(Cend,Ctry);
+                }
+
+            }
+
+            if(gmin)
+            {
+                assert( fabs(Hamiltonian(Cend)-Hmin) <=0 );
+                working.transfer(Corg,Cend);
+                YACK_XMLOG(xml,"--[" <<  std::setw(15) << Hmin << " @" << *gmin << " ] (no global minimum)");
+                return false;
+            }
+            else
+            {
+                YACK_XMLOG(xml,"-- at global minimum " << *gmin);
+                return true;
+            }
+
+        }
+
+        void reactor:: setupOmega()
+        {
+            for(const enode *node=singles.head();node;node=node->next)
+            {
+                const equilibrium &eq  = ***node;
+                const size_t       ei  = *eq;
+                writable<double>  &Omi = Omega[ei];
+                if(blocked[ei])
+                {
+                    Omi.ld(0);
+                    Omi[ei] = 1.0;
+                }
+                else
+                {
+                    const readable<double> &psi = Psi[ei];
+                    for(size_t j=N;j>0;--j)
+                    {
+                        Omi[j] = xadd.dot(psi,NuA[j]);
+                    }
+                }
+            }
+        }
+
+
+
         bool reactor:: solve(writable<double> &C0)
         {
             static const char fn[] = "[reactor]";
@@ -58,6 +258,175 @@ namespace yack
                     }
             }
 
+
+            unsigned cycle = 0;
+
+        CYCLE:
+            ++cycle;
+            YACK_XMLOG(xml,"-------- cycle " << cycle << " --------");
+            //------------------------------------------------------------------
+            //
+            //
+            // getting topology from singles
+            //
+            //
+            //------------------------------------------------------------------
+            size_t             nrun = 0;
+            const equilibrium *emax = topoSingles(nrun,xml);;
+
+            if(!emax)
+            {
+                YACK_XMLOG(xml, "-- success");
+                return returnSolved(C0,xml);
+            }
+
+
+            switch (nrun) {
+                case 0:
+                    YACK_XMLOG(xml, "-- all blocked (@level-1)");
+                    return returnSolved(C0,xml);
+
+                case 1:
+                    YACK_XMLOG(xml, "-- only {" << emax->name << "} (@level-1)");
+                    working.transfer(Corg,Ceq[**emax] );
+                    goto CYCLE;
+
+                default:
+                    YACK_XMLOG(xml, "-- #dof = " << nrun << " (@level-1)");
+                    break;
+            }
+
+
+
+            //------------------------------------------------------------------
+            //
+            //
+            // initialize Hamiltonian
+            //
+            //
+            //------------------------------------------------------------------
+            double H0  = Hamiltonian(Corg);
+            YACK_XMLOG(xml, "-- H0   = " << std::setw(15) << H0 << " M (initialized)");
+            if(H0<=0)
+            {
+                YACK_XMLOG(xml, "-- success: H0<=0 (@level-1)");
+                return returnSolved(C0,xml);
+            }
+
+
+            //------------------------------------------------------------------
+            //
+            //
+            // query lattice status (pre-computed singles and couples)
+            //
+            //
+            //------------------------------------------------------------------
+            topoLattice(H0,xml);
+
+
+            //------------------------------------------------------------------
+            //
+            //
+            // optimise global step
+            //
+            //
+            //------------------------------------------------------------------
+            const bool atGlobalMinimum = foundGlobal(H0,xml);
+            if(!atGlobalMinimum)
+            {
+                YACK_XMLOG(xml,"-- updating topology");
+                emax = topoSingles(nrun,xml);
+                if(!emax)
+                {
+                    YACK_XMLOG(xml, "-- success");
+                    return returnSolved(C0,xml);
+                }
+
+
+                switch (nrun) {
+                    case 0:
+                        YACK_XMLOG(xml, "-- all blocked (@level-2)");
+                        return returnSolved(C0,xml);
+
+                    case 1:
+                        YACK_XMLOG(xml, "-- only {" << emax->name << "} (@level-2)");
+                        working.transfer(Corg,Ceq[**emax] );
+                        goto CYCLE;
+
+                    default:
+                        YACK_XMLOG(xml, "-- #dof = " << nrun << " (@level-2)");
+                        break;
+                }
+
+                H0  = Hamiltonian(Corg);
+                YACK_XMLOG(xml, "-- H0   = " << std::setw(15) << H0 << " M (updated)");
+                if(H0<=0)
+                {
+                    YACK_XMLOG(xml, "-- success: H0<=0 (@level-2)");
+                    return returnSolved(C0,xml);
+                }
+            }
+
+
+            //------------------------------------------------------------------
+            //
+            //
+            // prepare local step
+            //
+            //
+            //------------------------------------------------------------------
+            bool usingMaximumDOF = true;
+
+            NuA.assign(Nu);
+            for(const enode *node=singles.head();node;node=node->next)
+            {
+                const equilibrium &eq  = ***node;
+                const size_t       ei  = *eq;
+                writable<double>  &psi = Psi[ei];
+
+                if(blocked[ei])
+                {
+                    psi.ld(0);
+                    Gamma[ei] = 0;
+                }
+                else
+                {
+                    const double Ki  = K[ei];
+                    eq.grad_action(psi,Ki,Corg,xmul);
+                    Gamma[ei] = (fabs(Xl[ei]) <= 0) ? 0 : eq.mass_action(Ki,Corg,xmul);
+                }
+            }
+            setupOmega();
+            std::cerr << "Omega=" << Omega << std::endl;
+
+            // compute extent
+            if( !solv.build(Omega,xadd) )
+            {
+                if( atGlobalMinimum )
+                {
+                    YACK_XMLOG(xml, "-- singular system");
+                    return false;
+                }
+                goto CYCLE;
+            }
+
+            iota::neg(xi,Gamma);
+            solv.solve(Omega,xi,xadd);
+            singles(std::cerr,"xi_",xi);
+
+
+
+
+
+
+            YACK_XMLOG(xml,"-- atGlobalMinimum = " << yack_boolean(atGlobalMinimum));
+            YACK_XMLOG(xml,"-- usingMaximumDOF = " << yack_boolean(usingMaximumDOF));
+
+            exit(0);
+
+
+
+#if 0
 
             unsigned cycle=0;
 
@@ -462,9 +831,9 @@ namespace yack
                 exit(0);
 
 
-
             }
 
+#endif
 
         }
 
