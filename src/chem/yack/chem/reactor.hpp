@@ -120,6 +120,7 @@ namespace yack
             void               deactivated(const size_t ei);             //!< set deactivated ei
             void               createOmega();                            //!< build Omega and rhs
             double             updateOmega();                            //!< update Omega and rhs from new blocked, return new H0
+            bool               evaluate_dC(const xmlog &);
         };
 
 
