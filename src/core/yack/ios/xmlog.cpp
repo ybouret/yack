@@ -7,7 +7,10 @@ namespace yack
     {
         std::ostream &os = output;
         os << prefix << ' ';
-        for(int i=0;i<indent;++i) os << ' ' << ' ';
+        for(int i=0;i<indent;++i)
+        {
+            os << ' ' << ' ' << ' ' << ' ';
+        }
         return os;
     }
 

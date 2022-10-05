@@ -20,6 +20,12 @@ namespace yack
     public:
         //______________________________________________________________________
         //
+        // types and definition
+        //______________________________________________________________________
+        typedef auto_ptr<const string> strptr; //!< alias
+
+        //______________________________________________________________________
+        //
         // C++
         //______________________________________________________________________
 
@@ -51,8 +57,8 @@ namespace yack
         //
         // members
         //______________________________________________________________________
-        const bool                   &verbose;
-        const auto_ptr<const string>  prefix;
+        const bool   &verbose; //!< verbosity from user
+        const strptr  prefix;  //!< prefix for output
     private:
         YACK_DISABLE_COPY_AND_ASSIGN(xmlog);
         std::ostream &output;
@@ -130,9 +136,9 @@ namespace yack
 
         private:
             YACK_DISABLE_COPY_AND_ASSIGN(msg);
-            const xmlog                  &host;
-            const bool                    lone;
-            const auto_ptr<const string>  mark;
+            const xmlog  &host;
+            const bool    lone;
+            const strptr  mark;
         };
     };
 
