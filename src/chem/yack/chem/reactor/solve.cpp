@@ -21,7 +21,7 @@ namespace yack
         {
             static const char fn[] = "[reactor]";
             const xmlog       xml(fn,std::cerr,entity::verbose);
-            YACK_XMLSUB(xml,"Solving");
+            YACK_XMLSUB(xml,"solving");
             if(verbose) corelib(*xml << "-- Cini=","", C0);
 
 
@@ -34,11 +34,11 @@ namespace yack
             //------------------------------------------------------------------
             switch(N)
             {
-                case 0: YACK_XMLOG(xml, "-- Success[Empty]");
+                case 0: YACK_XMLOG(xml, "-- success [empty]");
                     return true;
 
 
-                case 1: YACK_XMLOG(xml, "-- Success[Single]");
+                case 1: YACK_XMLOG(xml, "-- success [single]");
                 {
                     const equilibrium &eq = ***singles.head();       // standalone
                     outcome::study(eq, K[1], C0, Corg, xmul, xadd);  // find 1D eq
@@ -78,7 +78,7 @@ namespace yack
             // check all singles and compute scaling to evaluate Hamiltonian
             //------------------------------------------------------------------
             {
-                YACK_XMLSUB(xml,"ComputeTopology");
+                YACK_XMLSUB(xml,"compute topology");
                 emax = getTopology(nrun);
                 if(!emax)
                 {
@@ -124,7 +124,7 @@ namespace yack
             YACK_XMLOG(xml, "-- looking for a dominant minimum");
             bool atGlobalMinimum = false;
             {
-                YACK_XMLSUB(xml,"FindDominant");
+                YACK_XMLSUB(xml,"find dominant");
                 double                    Hmin = H0;
                 const equilibrium * const emin = getDominant(Hmin);
                 if(!emin)
@@ -151,7 +151,7 @@ namespace yack
                     // look for a better combination including the best decrease
                     //----------------------------------------------------------
                     {
-                        YACK_XMLSUB(xml,"Optimizing");
+                        YACK_XMLSUB(xml,"optimizing");
                         YACK_XMLOG( xml,"-- with @" << eq.name);
 
                         //------------------------------------------------------
@@ -221,7 +221,7 @@ namespace yack
                     // update and check topology
                     //----------------------------------------------------------
                     {
-                        YACK_XMLSUB(xml,"UpdateTopology");
+                        YACK_XMLSUB(xml,"update topology");
                         emax = getTopology(nrun);
                         if(!emax)
                         {
@@ -267,12 +267,12 @@ namespace yack
                 // initialize Omega and Gamma
                 //
                 //--------------------------------------------------------------
-                YACK_XMLSUB(xml, "ComputeExtent");
+                YACK_XMLSUB(xml, "compute extent");
                 createOmega();
                 unsigned pass = 0;
             COMPUTE_EXTENT:
                 ++pass;
-                YACK_XMLOG(xml,"-- Trial #" << pass);
+                YACK_XMLOG(xml,"-- trial #" << pass << " --");
                 //--------------------------------------------------------------
                 //
                 // try to inverse Omega
@@ -319,11 +319,11 @@ namespace yack
                     {
                         if(ok)
                         {
-                            std::cerr << " (+) accepted";
+                            std::cerr << " (+)";
                         }
                         else
                         {
-                            std::cerr << " (-) rejected";
+                            std::cerr << " (-)";
                         }
                         singles.pad(std::cerr << ' ' << eq.name,eq) << " @" << std::setw(15) << xx <<": ";
                         std::cerr << lm << std::endl;
@@ -382,7 +382,7 @@ namespace yack
             {
                 //--------------------------------------------------------------
                 //
-                YACK_XMLSUB(xml, "Forwarding");
+                YACK_XMLSUB(xml, "forwarding");
                 //
                 //--------------------------------------------------------------
                 bool   usingFullLength = true;
@@ -396,12 +396,13 @@ namespace yack
                 //
                 //--------------------------------------------------------------
                 {
-                    YACK_XMLSUB(xml, "DeltaC");
+                    YACK_XMLSUB(xml, "deltaC");
                     ratio.free();
                     for(const anode *node=working.head;node;node=node->next)
                     {
                         const species &sp = **node; assert(sp.rank>0);
                         const size_t   j  = *sp;
+
                         xadd.ldz();
                         for(size_t i=N;i>0;--i)
                         {
@@ -409,13 +410,30 @@ namespace yack
                         }
                         const double d = (dC[j] = xadd.get());
                         const double c = Corg[j];
+                        if(verbose)
+                        {
+                            corelib.pad(*xml << '[' << sp.name <<']',sp) << " = " << std::setw(15) << c;
+                            if(d>=0)
+                            {
+                                std::cerr << " +" << std::setw(15) << d;
+                            }
+                            else
+                            {
+                                std::cerr << " -" << std::setw(15) << fabs(d);
+                            }
+                        }
+
                         if(d<0 && (-d)>c)
                         {
                             ratio << c/(-d);
                         }
+
+                        if(verbose) std::cerr << std::endl;
                     }
 
                     if(verbose) corelib(*xml << "dC=", "", dC);
+                    exit(0);
+
                     double umax = 1;
                     if(ratio.size())
                     {
