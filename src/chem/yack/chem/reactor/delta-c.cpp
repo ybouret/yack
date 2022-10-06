@@ -69,6 +69,7 @@ namespace yack
                 reductionFactor = math:: round10<double>:: floor_with<1>(reductionFactor);
                 YACK_XMLOG(xml,"-- reductionFactor = " << std::setw(15) << reductionFactor << " (updated)");
             }
+            
 
             //----------------------------------------------------------
             //
