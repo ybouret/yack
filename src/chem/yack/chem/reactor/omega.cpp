@@ -49,7 +49,7 @@ namespace yack
             }
         }
 
-        
+
         void reactor:: deactivated(const size_t ei)
         {
             assert(!blocked[ei]);

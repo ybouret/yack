@@ -370,8 +370,9 @@ namespace yack
             const bool atGlobalMinimum = foundGlobal(H0,xml);
             if(!atGlobalMinimum)
             {
-                YACK_XMLOG(xml,"-- updating topology");
+                YACK_XMLOG(xml,"-- updating topology...");
                 emax = topoSingles(nrun,xml);
+                YACK_XMLOG(xml,"-- ...updated");
                 if(!emax)
                 {
                     YACK_XMLOG(xml, "-- success");
@@ -433,12 +434,24 @@ namespace yack
 
             bool usingMaximumDOF = true;
 
-
+            //------------------------------------------------------------------
+            //
+            // compute Jacobian
+            //
+            //------------------------------------------------------------------
+            unsigned trial = 0;
+        COMPUTE_EXTENT:
+            ++trial;
+            YACK_XMLOG(xml, "-- computing extent [trial #" << trial << "]");
             setupOmega();
-            std::cerr << "Omega=" << Omega << std::endl;
-            std::cerr << "Gamma=" << Gamma << std::endl;
+            //std::cerr << "Omega=" << Omega << std::endl;
+            //std::cerr << "Gamma=" << Gamma << std::endl;
 
+            //------------------------------------------------------------------
+            //
             // compute extent
+            //
+            //------------------------------------------------------------------
             if( !solv.build(Omega,xadd) )
             {
                 if( atGlobalMinimum )
@@ -446,16 +459,84 @@ namespace yack
                     YACK_XMLOG(xml, "-- singular system");
                     return false;
                 }
+                YACK_XMLOG(xml, "-- try moving...");
                 goto CYCLE;
             }
 
             iota::neg(xi,Gamma);
             solv.solve(Omega,xi,xadd);
-            singles(std::cerr,"xi_",xi);
 
 
+            //------------------------------------------------------------------
+            //
+            // check PRIMARY limits
+            //
+            //------------------------------------------------------------------
+            bool               recomputeOmega = false;
+            const equilibrium *accepted       = NULL;
+            for(const enode *node=singles.head();node;node=node->next)
+            {
+                const equilibrium &eq = ***node;
+                const size_t       ei = *eq;      if(blocked[ei]) continue;
+                const double       xx = xi[ei];
+                const xlimits     &lm = eq.primary_limits(Corg,corelib.maxlen);
+                const bool         ok = lm.acceptable(xx);
 
+                if(verbose)
+                {
+                    std::cerr << (ok?"[+]":"[-]");
+                    singles.pad(std::cerr<< ' ' << eq.name,eq) << ": " << std::setw(15) << xx << ' ';
+                    std::cerr << lm << std::endl;
+                }
 
+                if(!ok)
+                {
+                    assert(nrun>0);
+                    assert(!blocked[ei]);
+                    --nrun;
+                    NuA[ei].ld(0);
+                    Psi[ei].ld(0);
+                    blocked[ei] = true;
+                    Xl[ei] = Gamma[ei] = sigma[ei] = 0;
+                    recomputeOmega = true;
+                }
+                else
+                {
+                    accepted = &eq;
+                }
+            }
+
+            if(recomputeOmega)
+            {
+                YACK_XMLOG(xml, "-- reducing complexity");
+                YACK_XMLOG(xml, "-- #dof = " << nrun );
+                switch(nrun)
+                {
+                    case 0:
+                        assert(!accepted);
+                        goto CYCLE; // try again
+
+                    case 1:
+                        assert(accepted); assert( !blocked[ **accepted ] );
+                        working.transfer(Corg, Ceq[ **accepted ]);
+                        goto CYCLE;
+
+                    default:
+                        break;
+                }
+
+                usingMaximumDOF = false;
+                H0              = Hamiltonian(Corg);
+                YACK_XMLOG(xml, "-- H0   = " << std::setw(15) << H0 << " M (reduced)");
+
+                goto COMPUTE_EXTENT;
+            }
+
+            //------------------------------------------------------------------
+            //
+            // compute and check deltaC
+            //
+            //------------------------------------------------------------------
 
 
             YACK_XMLOG(xml,"-- atGlobalMinimum = " << yack_boolean(atGlobalMinimum));
