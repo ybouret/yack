@@ -226,7 +226,7 @@ namespace yack
 
         }
 
-        void reactor:: setupOmega()
+        void reactor:: createOmega()
         {
             
             for(const enode *node=singles.head();node;node=node->next)
@@ -443,10 +443,8 @@ namespace yack
         COMPUTE_EXTENT:
             ++trial;
             YACK_XMLOG(xml, "-- computing extent [trial #" << trial << "]");
-            setupOmega();
-            //std::cerr << "Omega=" << Omega << std::endl;
-            //std::cerr << "Gamma=" << Gamma << std::endl;
-
+            createOmega();
+            
             //------------------------------------------------------------------
             //
             // compute extent
@@ -538,9 +536,10 @@ namespace yack
             //
             //------------------------------------------------------------------
 
-
+            const bool usingFullLength = evaluate_dC(xml);
             YACK_XMLOG(xml,"-- atGlobalMinimum = " << yack_boolean(atGlobalMinimum));
             YACK_XMLOG(xml,"-- usingMaximumDOF = " << yack_boolean(usingMaximumDOF));
+            YACK_XMLOG(xml,"-- usingFullLength = " << yack_boolean(usingFullLength));
 
             exit(0);
 

@@ -113,21 +113,14 @@ namespace yack
             void               buildRelated();                           //!< build global partitions
             void               makeManifold(const xmlog &);              //!< build all solving partitions
 
-            const equilibrium *getTopology(size_t &nrun, const xmlog &); //!< full topology at Corg for singles
-            const equilibrium *getDominant(double &Hmin, const xmlog &); //!< starting from Hmin = H0
-            double             Hamiltonian(const readable<double> &C);   //!< a molar hamiltonian
-            double             Optimized1D(const double H0);             //!< optimize from (Corg,H0) to Cend
-            void               deactivated(const size_t ei);             //!< set deactivated ei
-            void               createOmega();                            //!< build Omega and rhs
-            double             updateOmega();                            //!< update Omega and rhs from new blocked, return new H0
-            bool               evaluate_dC(const xmlog &);
-
+            double                     Hamiltonian(const readable<double> &C);   //!< a molar hamiltonian
             double                     Hamiltonian(const group &g);
+            bool                       evaluate_dC(const xmlog &);
             const readable<double> &   Optimized_C(const double H0); //!< Ctry between H(Corg) and Cend
             const equilibrium         *topoSingles(size_t &nrun, const xmlog &);
             void                       topoLattice(const double H0, const xmlog &xml);
             bool                       foundGlobal(const double H0, const xmlog &xml);
-            void                       setupOmega(); //!< from Psi and NuA
+            void                       createOmega(); //!< from Psi and NuA
         };
 
 
