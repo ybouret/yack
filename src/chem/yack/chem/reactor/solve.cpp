@@ -20,9 +20,9 @@ namespace yack
 
         double reactor:: Hamiltonian(const group &g)
         {
-            //--------------------------------------------------
+            //------------------------------------------------------------------
             // build a trial concentration
-            //--------------------------------------------------
+            //------------------------------------------------------------------
             iota::load(Ctry,Corg);
             for(const gnode *ep=g.head;ep;ep=ep->next)
             {
@@ -30,7 +30,9 @@ namespace yack
                 member.transfer(Ctry,Ceq[*member]);
             }
 
+            //------------------------------------------------------------------
             // compute it's hamiltonian
+            //------------------------------------------------------------------
             return Hamiltonian(Ctry);
         }
 
@@ -47,11 +49,22 @@ namespace yack
         const equilibrium * reactor:: topoSingles(size_t &nrun, const xmlog &xml)
         {
             YACK_XMLSUB(xml,"topoSingles");
+
+            //------------------------------------------------------------------
+            //
+            // initialize
+            //
+            //------------------------------------------------------------------
             const equilibrium *emax = NULL;
             double             amax = 0;
             outcome            ppty;
             nrun = 0;
 
+            //------------------------------------------------------------------
+            //
+            // loop over singles
+            //
+            //------------------------------------------------------------------
             for(const enode *node=singles.head();node;node=node->next)
             {
                 const equilibrium &eq  = ***node;
@@ -61,20 +74,19 @@ namespace yack
                 const outcome      oc  = outcome::study(eq, Ki, Corg, Ci, xmul, xadd);
                 writable<double>  &psi = Psi[ei];
 
+                // Ceq is now computed
                 switch(oc.state)
                 {
                     case components::are_blocked:
-                        blocked[ei] = true;
-                        Xl[ei]      = 0;
-                        sigma[ei]   = 0;
-                        NuA[ei].ld(0);
-                        psi.ld(0);
+                        blocked[ei] = true; // update state
+                        Xl[ei]      = 0;    // for consistency
+                        sigma[ei]   = 0;    // for consistency
+                        psi.ld(0);          // for consistency
                         break;
 
                     case components::are_running: {
                         ++nrun;
-                        blocked[ei] = false;
-                        const double ax = fabs( Xl[ei] = oc.value );
+                        const double ax = fabs( Xl[ei] = *oc );
                         if(ax>amax)
                         {
                             amax =  ax;
@@ -82,7 +94,8 @@ namespace yack
                             ppty =  oc;
                         }
                         eq.grad_action(psi,Ki,Ci,xmul);
-                        sigma[ei] = xadd.dot(psi, Nu[ei]);
+                        blocked[ei] = false;
+                        sigma[ei]   = xadd.dot(psi, Nu[ei]);
                         if(sigma[ei]>=0) throw imported::exception(clid,"corrupted <%s>",eq.name());
                     } break;
                 }
@@ -115,20 +128,27 @@ namespace yack
         {
             YACK_XMLSUB(xml,"topoLattice");
 
-
+            //------------------------------------------------------------------
+            //
             // precomputed single
+            //
+            //------------------------------------------------------------------
             for(const enode *node=singles.head();node;node=node->next)
             {
                 const equilibrium &eq  = ***node;
-                const size_t       ei  = *eq; if(blocked[ei]) continue;;
+                const size_t       ei  =     *eq; if(blocked[ei]) continue;
                 writable<double>  &Ci  = Ceq[ei];
 
-                working.transfer(Cend,Ci);
-                working.transfer(Ci,Optimized_C(H0));
+                working.transfer(Cend,Ci);            // look within Corg:Ceq[ei]
+                working.transfer(Ci,Optimized_C(H0)); // store optimized value
 
             }
 
+            //------------------------------------------------------------------
+            //
             // full computation for couples
+            //
+            //------------------------------------------------------------------
             for(const enode *node=couples.head();node;node=node->next)
             {
                 const equilibrium &eq  = ***node;
@@ -137,16 +157,17 @@ namespace yack
                 const double       Ki  = Kl[ei];
                 const outcome      oc  = outcome::study(eq, Ki, Corg, Cend, xmul, xadd);
 
+                // Cend holds the equilibrium value
                 switch(oc.state)
                 {
                     case components::are_blocked:
-                        blocked[ei] = true;
-                        iota::load(Ci,Corg);
+                        blocked[ei] = true;  // blocked
+                        iota::load(Ci,Corg); // at Cend=Corg
                         break;
 
                     case components::are_running: {
-                        blocked[ei] = false;
-                        iota::load(Ci,Optimized_C(H0));
+                        blocked[ei] = false;            // running
+                        iota::load(Ci,Optimized_C(H0)); // store optimized in Corg:Cend
                     } break;
                 }
 
@@ -160,15 +181,27 @@ namespace yack
         bool reactor:: foundGlobal(const double H0, const xmlog &xml)
         {
             YACK_XMLSUB(xml,"studyGlobal");
-            const group *gmin    = NULL;
-            double       Hmin    = H0;    // initial Hamiltonian
-            working.transfer(Cend,Corg);  // at starting point
 
+            //------------------------------------------------------------------
+            //
+            // initialize search over groups
+            //
+            //------------------------------------------------------------------
+            writable<double> &Cmin = Cend; // will hold winner C
+            const group      *gmin = NULL; // will hold minimal group
+            double            Hmin  = H0;  // initial Hamiltonian
+            working.transfer(Cmin,Corg);   // initial C
+
+            //------------------------------------------------------------------
+            //
+            // Loop over groups
+            //
+            //------------------------------------------------------------------
             for(const group *g=solving.head;g;g=g->next)
             {
+                assert(g->is_ortho());
                 const double Htry = Hamiltonian(*g);
-                const bool   isOk = (Htry<Hmin);
-                if(isOk)
+                if(Htry<Hmin)
                 {
                     YACK_XMLOG(xml,"-->" <<  std::setw(15) << Htry << " @" << *g);
                     gmin = g;
@@ -180,9 +213,9 @@ namespace yack
 
             if(gmin)
             {
-                assert( fabs(Hamiltonian(Cend)-Hmin) <=0 );
-                working.transfer(Corg,Cend);
-                YACK_XMLOG(xml,"--[" <<  std::setw(15) << Hmin << " @" << *gmin << " ] (no global minimum)");
+                assert( fabs(Hamiltonian(Cmin)-Hmin) <=0 );
+                working.transfer(Corg,Cmin);
+                YACK_XMLOG(xml,"--[" <<  std::setw(15) << Hmin << " @" << *gmin << " ]");
                 return false;
             }
             else
@@ -195,22 +228,25 @@ namespace yack
 
         void reactor:: setupOmega()
         {
+            
             for(const enode *node=singles.head();node;node=node->next)
             {
                 const equilibrium &eq  = ***node;
                 const size_t       ei  = *eq;
                 writable<double>  &Omi = Omega[ei];
+
+                Omi.ld(0);
+
                 if(blocked[ei])
                 {
-                    Omi.ld(0);
                     Omi[ei] = 1.0;
                 }
                 else
                 {
                     const readable<double> &psi = Psi[ei];
-                    for(size_t j=N;j>0;--j)
-                    {
-                        Omi[j] = xadd.dot(psi,NuA[j]);
+                    for(const enode *scan=singles.head();scan;scan=scan->next) {
+                        const size_t ej = ****scan;
+                        Omi[ej] = xadd.dot(psi,NuA[ej]);
                     }
                 }
             }
@@ -247,7 +283,7 @@ namespace yack
                 } break;
 
 
-                default:
+                default: YACK_XMLOG(xml, "-- start with #eqs=" << N);
                     //----------------------------------------------------------
                     // initialize consistent state
                     //----------------------------------------------------------
@@ -375,29 +411,32 @@ namespace yack
             //
             //
             //------------------------------------------------------------------
-            bool usingMaximumDOF = true;
-
             NuA.assign(Nu);
             for(const enode *node=singles.head();node;node=node->next)
             {
                 const equilibrium &eq  = ***node;
                 const size_t       ei  = *eq;
-                writable<double>  &psi = Psi[ei];
 
                 if(blocked[ei])
                 {
-                    psi.ld(0);
+                    NuA[ei].ld(0);
+                    Psi[ei].ld(0);
                     Gamma[ei] = 0;
                 }
                 else
                 {
                     const double Ki  = K[ei];
-                    eq.grad_action(psi,Ki,Corg,xmul);
+                    eq.grad_action( Psi[ei],Ki,Corg,xmul);
                     Gamma[ei] = (fabs(Xl[ei]) <= 0) ? 0 : eq.mass_action(Ki,Corg,xmul);
                 }
             }
+
+            bool usingMaximumDOF = true;
+
+
             setupOmega();
             std::cerr << "Omega=" << Omega << std::endl;
+            std::cerr << "Gamma=" << Gamma << std::endl;
 
             // compute extent
             if( !solv.build(Omega,xadd) )

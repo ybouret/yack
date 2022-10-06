@@ -73,6 +73,12 @@ namespace yack
     namespace chemical
     {
 
+        double outcome:: operator*() const throw()
+        {
+            if( extent::is_degenerated == grade ) return 0;
+            return value;
+        }
+
         struct MassActionF
         {
             const components       &c;

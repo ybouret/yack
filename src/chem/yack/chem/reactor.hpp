@@ -127,7 +127,7 @@ namespace yack
             const equilibrium         *topoSingles(size_t &nrun, const xmlog &);
             void                       topoLattice(const double H0, const xmlog &xml);
             bool                       foundGlobal(const double H0, const xmlog &xml);
-            void                       setupOmega();
+            void                       setupOmega(); //!< from Psi and NuA
         };
 
 

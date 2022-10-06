@@ -44,11 +44,18 @@ namespace yack
 
             //__________________________________________________________________
             //
+            //! return value or zero if degenerated
+            //__________________________________________________________________
+            double operator*() const throw();
+
+            //__________________________________________________________________
+            //
             // members
             //__________________________________________________________________
             const components::state state; //!< state of components
             const extent::grade     grade; //!< grade of extent
             const double            value; //!< extent value
+
 
             //__________________________________________________________________
             //
