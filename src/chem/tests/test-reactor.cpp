@@ -3,13 +3,18 @@
 #include "yack/utest/run.hpp"
 #include "yack/system/env.hpp"
 #include "yack/counting/comb.hpp"
+#include "yack/math/opt/locate.hpp"
+#include "yack/math/opt/optimize.hpp"
 
 using namespace yack;
 using namespace chemical;
 
 YACK_UTEST(reactor)
 {
-    entity::verbose = environment::flag("VERBOSE");
+    entity::verbose         = environment::flag("VERBOSE");
+    math::locate::verbose   = environment::flag("LOCATE");
+    math::optimize::verbose = environment::flag("OPTIMIZE");
+
     randomized::rand_ ran;
     library           lib;
     luaEquilibria     eqs;

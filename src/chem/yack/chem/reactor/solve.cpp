@@ -284,8 +284,8 @@ namespace yack
             YACK_XMLSUB(xml,"solving");
             if(verbose) corelib(*xml << "-- Cini=","", C0);
 
-            optimize::verbose = verbose;
-            locate::verbose   = verbose;
+            //optimize::verbose = verbose;
+            //locate::verbose   = verbose;
 
             //------------------------------------------------------------------
             //
