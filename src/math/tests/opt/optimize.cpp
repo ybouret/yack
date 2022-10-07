@@ -6,6 +6,7 @@
 #include "yack/string.hpp"
 #include "yack/ios/ascii/convert.hpp"
 #include "yack/lua++/function.hpp"
+#include "yack/system/env.hpp"
 
 using namespace yack;
 using namespace math;
@@ -22,8 +23,8 @@ T F(T x)
 YACK_UTEST(optimize)
 {
     //randomized::rand_ ran;
-    locate::verbose   = true;
-    optimize::verbose = true;
+    //locate::verbose   = true;
+    optimize::verbose = environment::flag("VERBOSE");
 
     triplet<double> x = {0,-1,0.7 };
 
@@ -76,11 +77,14 @@ YACK_UTEST(optimize)
         Lua::Function<double> FF(vm,"F");
         triplet<double> f = { FF(x.a), FF(x.b), FF(x.c) };
         optimize::run_for(FF,x,f,method);
+        std::cerr << "user: " << x << " -> " << f << std::endl;
     }
     else
     {
         triplet<double> f = { F(x.a), F(x.b), F(x.c) };
         optimize::run_for(F<double>,x,f,method);
+        std::cerr << "default: " << x << " -> " << f << std::endl;
+
     }
     
 }
