@@ -3,6 +3,7 @@
 #include "yack/system/imported.hpp"
 #include "yack/type/utils.hpp"
 #include "yack/math/opt/optimize.hpp"
+#include "yack/math/opt/locate.hpp"
 #include "yack/type/boolean.h"
 #include "yack/math/iota.hpp"
 #include "yack/ios/xmlog.hpp"
@@ -283,6 +284,8 @@ namespace yack
             YACK_XMLSUB(xml,"solving");
             if(verbose) corelib(*xml << "-- Cini=","", C0);
 
+            optimize::verbose = verbose;
+            locate::verbose   = verbose;
 
             //------------------------------------------------------------------
             //
