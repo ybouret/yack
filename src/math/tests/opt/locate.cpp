@@ -1,11 +1,11 @@
 
-
+#include "yack/ios/ocstream.hpp"
 #include "yack/math/opt/locate.hpp"
 #include "yack/utest/run.hpp"
-#include "yack/ios/ocstream.hpp"
 #include "yack/string.hpp"
 #include "yack/ios/ascii/convert.hpp"
 #include "yack/lua++/function.hpp"
+#include "yack/system/env.hpp"
 
 using namespace yack;
 using namespace math;
@@ -22,7 +22,7 @@ T F(T x)
 YACK_UTEST(locate)
 {
     //randomized::rand_ ran;
-    locate::verbose   = true;
+    locate::verbose   = environment::flag("VERBOSE");
 
     triplet<double> x = {0,-1,0.7 };
 
@@ -53,11 +53,14 @@ YACK_UTEST(locate)
         Lua::Function<double> FF(vm,"F");
         triplet<double> f = { FF(x.a), -1, FF(x.c) };
         locate::inside_for(FF,x,f);
+        std::cerr << "user: " << x << " -> " << f << std::endl;
     }
     else
     {
         triplet<double> f = { F(x.a), -1, F(x.c) };
         locate::inside_for(F<double>,x,f);
+        std::cerr << "default: " << x << " -> " << f << std::endl;
+
     }
 }
 YACK_UDONE()
