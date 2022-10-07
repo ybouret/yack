@@ -226,6 +226,30 @@ namespace yack
 
         }
 
+
+        void reactor:: prepareStep()
+        {
+            NuA.assign(Nu);
+            for(const enode *node=singles.head();node;node=node->next)
+            {
+                const equilibrium &eq  = ***node;
+                const size_t       ei  = *eq;
+
+                if(blocked[ei])
+                {
+                    NuA[ei].ld(0);
+                    Psi[ei].ld(0);
+                    Gamma[ei] = 0;
+                }
+                else
+                {
+                    const double Ki  = K[ei];
+                    eq.grad_action( Psi[ei],Ki,Corg,xmul);
+                    Gamma[ei] = (fabs(Xl[ei]) <= 0) ? 0 : eq.mass_action(Ki,Corg,xmul);
+                }
+            }
+        }
+
         void reactor:: createOmega()
         {
             
@@ -237,12 +261,10 @@ namespace yack
 
                 Omi.ld(0);
 
-                if(blocked[ei])
-                {
+                if(blocked[ei]) {
                     Omi[ei] = 1.0;
                 }
-                else
-                {
+                else {
                     const readable<double> &psi = Psi[ei];
                     for(const enode *scan=singles.head();scan;scan=scan->next) {
                         const size_t ej = ****scan;
@@ -413,26 +435,8 @@ namespace yack
             //
             //
             //------------------------------------------------------------------
-            NuA.assign(Nu);
-            for(const enode *node=singles.head();node;node=node->next)
-            {
-                const equilibrium &eq  = ***node;
-                const size_t       ei  = *eq;
-
-                if(blocked[ei])
-                {
-                    NuA[ei].ld(0);
-                    Psi[ei].ld(0);
-                    Gamma[ei] = 0;
-                }
-                else
-                {
-                    const double Ki  = K[ei];
-                    eq.grad_action( Psi[ei],Ki,Corg,xmul);
-                    Gamma[ei] = (fabs(Xl[ei]) <= 0) ? 0 : eq.mass_action(Ki,Corg,xmul);
-                }
-            }
-
+            YACK_XMLOG(xml, "-- preparing local step");
+            prepareStep();
             bool usingMaximumDOF = true;
 
             //------------------------------------------------------------------
@@ -542,6 +546,7 @@ namespace yack
             YACK_XMLOG(xml,"-- usingFullLength = " << yack_boolean(usingFullLength));
 
 
+            
 
 
             if(!usingMaximumDOF)
@@ -556,7 +561,7 @@ namespace yack
             {
                 const species &s     = **node;
                 const size_t   j     = *s;
-                const double   c_old = Corg[j];
+                const double   c_old = Csav[j];
                 const double   c_new = Cend[j];
 
                 if(fabs(c_old-c_new)>0) converged=false;
@@ -565,9 +570,13 @@ namespace yack
             }
             YACK_XMLOG(xml,"-- converged       = " << yack_boolean(converged));
 
+            if(converged)
+            {
+                return returnSolved(C0,xml);
+            }
 
+            goto CYCLE;
 
-            exit(0);
 
 
         }
