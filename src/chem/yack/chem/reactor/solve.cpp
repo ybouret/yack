@@ -253,15 +253,25 @@ namespace yack
                 }
                 else {
                     const readable<double> &psi = Psi[ei];
-                    for(const enode *scan=singles.head();scan;scan=scan->next) {
+
+                    for(const enode *scan=node->prev;scan;scan=scan->prev) {
                         const size_t ej = ****scan;
                         Omi[ej] = xadd.dot(psi,NuA[ej]);
                     }
+
+                    const double diag = xadd.dot(psi,NuA[ei]);
+                    Omi[ei] = min_of(sigma[ei],diag);
+
+                    for(const enode *scan=node->next;scan;scan=scan->next) {
+                        const size_t ej = ****scan;
+                        Omi[ej] = xadd.dot(psi,NuA[ej]);
+                    }
+
+
                 }
             }
 
-            std::cerr << "Omega=" << Omega << std::endl;
-
+            
         }
 
 
