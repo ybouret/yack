@@ -38,7 +38,6 @@ namespace yack
             template <typename T> static
             bool inside(real_function<T> &F, triplet<T> &x, triplet<T> &f);
 
-
             //__________________________________________________________________
             //
             //! wrapper for inside

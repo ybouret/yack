@@ -88,12 +88,11 @@ namespace yack
 
                 }
 
-
             }
 
         }
 
-
+        
 
         template <>
         bool locate:: inside<real_t>(real_function<real_t> &F,
@@ -125,7 +124,7 @@ namespace yack
             unsigned cycle = 0;
             unsigned color = 1;
 
-            if(true)
+            if(verbose)
             {
                 ios::ocstream fp("inside.dat");
                 const size_t  np = 50;
@@ -164,10 +163,10 @@ namespace yack
                 YACK_LOCATE(fn << "<bump@middle>" );
                 //
                 //--------------------------------------------------------------
+                // keep lowest side and inquire
                 x.a   = x.b;
                 f.a   = f.b;
-                width = cswap_incr(xmin=x.a,xmax=x.c);
-                goto CYCLE; // keep the lowest part and restart
+                goto INQUIRE;
                 //--------------------------------------------------------------
                 //
                 // leave <bump@middle>
@@ -217,10 +216,10 @@ namespace yack
                         YACK_LOCATE(fn << "<bump@tertiary>" );
                         //
                         //------------------------------------------------------
+                        // keep the lowest part and inquire
                         x.a   = x_t;
                         f.a   = f_t;
-                        width = cswap_incr(xmin=x.a,xmax=x.c);
-                        goto CYCLE; // keep the lowest part and restart
+                        goto INQUIRE;
                         //------------------------------------------------------
                         //
                         // leave <bump@tertiary>
@@ -284,10 +283,10 @@ namespace yack
                                 YACK_LOCATE(fn << "<spurious>" );
                                 //
                                 //----------------------------------------------
+                                // keep the lowest part so far and restart
                                 f.a   = f_t;
                                 x.a   = x_t;
-                                width = cswap_incr(xmin=x.a,xmax=x.c);
-                                goto CYCLE; // keep the lowest part so far and restart
+                                goto INQUIRE;
                                 //----------------------------------------------
                                 //
                                 // leave <spurious>
@@ -346,21 +345,8 @@ namespace yack
                                 //----------------------------------------------
                                 // check convergence
                                 //----------------------------------------------
+                                goto INQUIRE;
 
-                                const real_t new_width = cswap_incr(xmin=x.a,xmax=x.c);
-                                const real_t aposition = max_of(std::abs(x.a), std::abs(x.b), std::abs(x.c));
-                                const real_t max_width = twice(aposition * numeric<real_t>::sqrt_eps);
-
-                                if(new_width<=max_width)
-                                {
-                                    YACK_LOCATE(fn << "<monotonic>");
-                                    x.a = x.b = x.c;
-                                    f.a = f.b = f.c;
-                                    return false;
-                                }
-
-                                width = new_width;
-                                goto CYCLE;
                                 //----------------------------------------------
                                 //
                                 // leave <forwarding>
@@ -404,6 +390,23 @@ namespace yack
             YACK_LOCATE(fn << x << " -> " << f);
 
             return true;
+
+
+        INQUIRE:
+            const real_t new_width = cswap_incr(xmin=x.a,xmax=x.c);
+            const real_t aposition = max_of(std::abs(x.a), std::abs(x.b), std::abs(x.c));
+            const real_t max_width = twice(aposition * numeric<real_t>::sqrt_eps);
+
+            if(new_width<=max_width)
+            {
+                YACK_LOCATE(fn << "<monotonic>");
+                x.a = x.b = x.c;
+                f.a = f.b = f.c;
+                return false;
+            }
+
+            width = new_width;
+            goto CYCLE;
         }
 
 
