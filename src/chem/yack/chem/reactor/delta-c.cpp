@@ -13,10 +13,10 @@ namespace yack
 
     namespace chemical
     {
-        bool reactor:: evaluate_dC(const xmlog &xml)
+        bool reactor:: forwardingC(const xmlog &xml)
         {
             
-            YACK_XMLSUB(xml, "deltaC");
+            YACK_XMLSUB(xml, "forwarding");
 
             //----------------------------------------------------------
             //

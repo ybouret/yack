@@ -540,13 +540,30 @@ namespace yack
             // compute and check deltaC
             //
             //------------------------------------------------------------------
-            const bool usingFullLength = evaluate_dC(xml);
+            const bool usingFullLength = forwardingC(xml);
             YACK_XMLOG(xml,"-- atGlobalMinimum = " << yack_boolean(atGlobalMinimum));
             YACK_XMLOG(xml,"-- usingMaximumDOF = " << yack_boolean(usingMaximumDOF));
             YACK_XMLOG(xml,"-- usingFullLength = " << yack_boolean(usingFullLength));
 
+            {
+                YACK_XMLOG(xml,"-- saving ham.dat");
+                ios::ocstream fp("ham.dat");
+                const size_t  np = 1000;
+                for(size_t i=0;i<=np;++i)
+                {
+                    const double u = i/double(np);
+                    fp("%.15g %.15g\n", u, (*this)(u) );
+                }
 
-            
+            }
+
+            if(usingFullLength)
+            {
+                // do not overshoot
+
+                exit(1);
+            }
+
 
 
             if(!usingMaximumDOF)

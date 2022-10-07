@@ -116,7 +116,7 @@ namespace yack
 
             double                     Hamiltonian(const readable<double> &C);   //!< a molar hamiltonian
             double                     Hamiltonian(const group &g);
-            bool                       evaluate_dC(const xmlog &);
+            bool                       forwardingC(const xmlog &); //!< update Cend from extents
             const readable<double> &   Optimized_C(const double H0); //!< Ctry between H(Corg) and Cend
             const equilibrium         *topoSingles(size_t &nrun, const xmlog &);
             void                       topoLattice(const double H0, const xmlog &xml);
