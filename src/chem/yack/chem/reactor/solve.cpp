@@ -560,7 +560,10 @@ namespace yack
             if(usingFullLength)
             {
                 // do not overshoot
-
+                triplet<double> U = { 0, -1 , 1};
+                triplet<double> H = { H0, -1, Hamiltonian(Cend) };
+                optimize::run_for(*this, U, H, optimize::inside);
+                std::cerr << "H(" << U.b << ")=" << H.b <<std::endl;
                 exit(1);
             }
 
