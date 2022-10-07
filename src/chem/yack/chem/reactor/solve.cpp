@@ -221,7 +221,7 @@ namespace yack
             }
             else
             {
-                YACK_XMLOG(xml,"-- at global minimum " << *gmin);
+                YACK_XMLOG(xml,"-- at global minimum");
                 return true;
             }
 
@@ -283,9 +283,6 @@ namespace yack
             const xmlog       xml(fn,std::cerr,entity::verbose);
             YACK_XMLSUB(xml,"solving");
             if(verbose) corelib(*xml << "-- Cini=","", C0);
-
-            //optimize::verbose = verbose;
-            //locate::verbose   = verbose;
 
             //------------------------------------------------------------------
             //
@@ -631,8 +628,21 @@ namespace yack
                 }
             }
             YACK_XMLOG(xml,"-- converged       = " << yack_boolean(converged));
+
             if(converged)
             {
+                for(const enode *node=singles.head();node;node=node->next)
+                {
+                    const equilibrium &eq = ***node;
+                    const size_t       ei = *eq;
+                    const outcome      oc  = outcome::study(eq, K[ei], Corg, Ceq[ei], xmul, xadd);
+                    if(verbose)
+                    {
+                        const double MA_org = eq.mass_action(K[ei], Corg,    xmul);
+                        const double MA_end = eq.mass_action(K[ei], Ceq[ei], xmul);
+                        singles.pad(*xml << eq.name, eq) << " : " << oc << "|Gamma|=" << fabs(MA_end-MA_org) << std::endl;
+                    }
+                }
                 return returnSolved(C0,xml);
             }
 

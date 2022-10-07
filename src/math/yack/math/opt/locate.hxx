@@ -163,9 +163,11 @@ namespace yack
                 YACK_LOCATE(fn << "<bump@middle>" );
                 //
                 //--------------------------------------------------------------
-                // keep lowest side and inquire
+                // keep lowest side at x.c
                 x.a   = x.b;
                 f.a   = f.b;
+
+                // and inquire status
                 goto INQUIRE;
                 //--------------------------------------------------------------
                 //
@@ -191,7 +193,7 @@ namespace yack
                     //----------------------------------------------------------
                     assert(f.b<=f.a);
                     assert(f.is_local_minimum());
-                    goto SUCCESS; // and done
+                    goto SUCCESS;                  // directly done
                     //----------------------------------------------------------
                     //
                     // leave <succes@middle>
@@ -216,9 +218,11 @@ namespace yack
                         YACK_LOCATE(fn << "<bump@tertiary>" );
                         //
                         //------------------------------------------------------
-                        // keep the lowest part and inquire
+                        // keep the lowest side at x.c
                         x.a   = x_t;
                         f.a   = f_t;
+
+                        // and inquire status
                         goto INQUIRE;
                         //------------------------------------------------------
                         //
@@ -240,7 +244,7 @@ namespace yack
                             f.b = f_t; x.b = x_t;
                             if(verbose) write3(x,f,++color);
                             assert(f.is_local_minimum());
-                            goto SUCCESS; // and done
+                            goto SUCCESS; // directly done
                             //--------------------------------------------------
                             //
                             // leave <succes@tertiary>
@@ -283,9 +287,11 @@ namespace yack
                                 YACK_LOCATE(fn << "<spurious>" );
                                 //
                                 //----------------------------------------------
-                                // keep the lowest part so far and restart
+                                // keep the lowest part so far
                                 f.a   = f_t;
                                 x.a   = x_t;
+
+                                // and inquire status
                                 goto INQUIRE;
                                 //----------------------------------------------
                                 //
@@ -399,7 +405,7 @@ namespace yack
 
             if(new_width<=max_width)
             {
-                YACK_LOCATE(fn << "<monotonic>");
+                YACK_LOCATE(fn << "<monotonic@f(" << x.c << ")=" << f.c << ">");
                 x.a = x.b = x.c;
                 f.a = f.b = f.c;
                 return false;
