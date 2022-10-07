@@ -3,98 +3,7 @@ namespace yack
 {
     namespace math
     {
-#if 0
-        template <>
-        bool locate:: inside<real_t>(real_function<real_t> &F,
-                                     triplet<real_t>       &x,
-                                     triplet<real_t>       &f)
-        {
 
-            static const char * const fn = locate_inside;
-            static const real_t       half(0.5);
-
-            YACK_LOCATE(fn<<"[initialize]");
-            //------------------------------------------------------------------
-            //
-            // initialize DECREASING from a to c
-            //
-            //------------------------------------------------------------------
-            if(f.a<f.c)
-            {
-                x.reverse();
-                f.reverse();
-            } assert(f.c<=f.a);
-
-            //------------------------------------------------------------------
-            //
-            // initialize interval width
-            //
-            //------------------------------------------------------------------
-            real_t x_min  = x.a;
-            real_t x_max  = x.c; if(x_max<x_min) cswap(x_min,x_max);
-            real_t width  = std::abs(x_max-x_min);
-            size_t cycle  = 0;
-
-        CYCLE:
-            //------------------------------------------------------------------
-            //
-            // new cycle: compute new controlled position
-            //
-            //------------------------------------------------------------------
-            ++cycle;                                              assert(f.c<=f.a);
-            f.b = F( x.b = clamp(x_min,half*(x.a+x.c),x_max) );   assert(x.is_ordered());
-            YACK_LOCATE(fn<<"[cycle " << std::setw(3) << cycle << "] " << f << " @" << x);
-
-            if(f.b<f.c)
-            {
-                //--------------------------------------------------------------
-                //
-                // direct success
-                //
-                //--------------------------------------------------------------
-                assert(x.is_ordered());
-                assert(f.is_local_minimum());
-                YACK_LOCATE(fn << "[success]");
-                if(x.a>x.c)
-                {
-                    x.reverse();
-                    f.reverse();
-                }
-                return true;
-            }
-            else
-            {
-                assert(f.b>=f.c);
-                //--------------------------------------------------------------
-                //
-                // c is the minimal value: move a to b, closer to c
-                //
-                //--------------------------------------------------------------
-                x.a   = x.b;
-                f.a   = f.b;
-                x_min = x.a;
-                x_max = x.c; if(x_max<x_min) cswap(x_min,x_max);
-                const real_t new_width = std::abs(x_max-x_min);
-                YACK_LOCATE(fn << "width: " << width << " -> " << new_width);
-
-                //--------------------------------------------------------------
-                //
-                // detect underflow => monotonic
-                //
-                //--------------------------------------------------------------
-                if( (new_width<=0) || (new_width>=width) )
-                {
-                    YACK_LOCATE(fn << "[monotonic @" << x.c << "]");
-                    f.a = f.b = f.c;
-                    x.a = x.b = x.c;
-                    return false;
-                }
-                width = new_width;
-                goto CYCLE;
-            }
-            
-        }
-#endif
 
         namespace
         {
@@ -216,7 +125,7 @@ namespace yack
             unsigned cycle = 0;
             unsigned color = 1;
 
-            if(verbose)
+            if(true)
             {
                 ios::ocstream fp("inside.dat");
                 const size_t  np = 50;
