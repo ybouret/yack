@@ -106,21 +106,7 @@ namespace yack
                 }
             }
 
-            if(emax)
-            {
-                if(extent::is_degenerated==ppty.grade)
-                {
-                    return NULL;
-                }
-                else
-                {
-                    return emax;
-                }
-            }
-            else
-            {
-                return NULL;
-            }
+            return emax;
 
         }
 
