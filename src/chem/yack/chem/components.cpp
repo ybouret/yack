@@ -318,6 +318,10 @@ namespace yack
             return true;
         }
 
+        bool components:: uses(const species &s) const throw()
+        {
+            return NULL != cdb.search(s.name);
+        }
 
 
     }

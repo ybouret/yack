@@ -209,7 +209,10 @@ namespace yack
 
             //! check is no species in common
             bool detached_of(const components &other) const throw();
-            
+
+            //! check is use species
+            bool uses(const species &) const throw();
+
             //__________________________________________________________________
             //
             // members
