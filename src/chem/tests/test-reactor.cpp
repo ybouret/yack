@@ -58,7 +58,6 @@ YACK_UTEST(reactor)
         throw exception("couldn't solve random phase state!!");
     }
 
-    return 0;
 
     vector<species*> psp;
     for(const anode *node=cs.working.head;node;node=node->next)
@@ -93,6 +92,7 @@ YACK_UTEST(reactor)
                     //lib(std::cerr << "Cini=", "", C);
                     if(!cs.solve(C))
                     {
+                        std::cerr << "Couldn't solve " << C << std::endl;
                         exit(1);
                     }
                 }

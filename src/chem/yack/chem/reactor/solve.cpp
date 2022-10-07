@@ -259,6 +259,9 @@ namespace yack
                     }
                 }
             }
+
+            std::cerr << "Omega=" << Omega << std::endl;
+
         }
 
 
