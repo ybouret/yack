@@ -322,6 +322,16 @@ namespace yack
         CYCLE:
             ++cycle;
             YACK_XMLOG(xml,"-------- cycle " << cycle << " --------");
+            if(verbose)
+            {
+                for(const anode *node=working.head;node;node=node->next)
+                {
+                    const species &s = **node;
+                    const size_t   j = *s;
+                    corelib.pad(*xml << "[" << s.name << "]",s) << " = " << std::setw(15) << Corg[j] << std::endl;
+                }
+            }
+
             //------------------------------------------------------------------
             //
             //
@@ -545,6 +555,7 @@ namespace yack
             YACK_XMLOG(xml,"-- usingMaximumDOF = " << yack_boolean(usingMaximumDOF));
             YACK_XMLOG(xml,"-- usingFullLength = " << yack_boolean(usingFullLength));
 
+            if(false)
             {
                 YACK_XMLOG(xml,"-- saving ham.dat");
                 ios::ocstream fp("ham.dat");
@@ -557,47 +568,72 @@ namespace yack
 
             }
 
+            //------------------------------------------------------------------
+            //
+            // avoid overshoot
+            //
+            //------------------------------------------------------------------
+            double H1 = Hamiltonian(Cend);
             if(usingFullLength)
             {
                 // do not overshoot
                 triplet<double> U = { 0, -1 , 1};
-                triplet<double> H = { H0, -1, Hamiltonian(Cend) };
+                triplet<double> H = { H0, -1, H1 };
                 optimize::run_for(*this, U, H, optimize::inside);
-                std::cerr << "H(" << U.b << ")=" << H.b <<std::endl;
-                exit(1);
+                if(H.b<1)
+                {
+                    YACK_XMLOG(xml,"-- moving at H(" << U.b << ")=" << H.b);
+                    working.transfer(Cend,Ctry);
+                    H1 = H.b;
+                }
             }
 
 
-
+            //------------------------------------------------------------------
+            //
+            // check status
+            //
+            //------------------------------------------------------------------
             if(!usingMaximumDOF)
             {
+                //--------------------------------------------------------------
                 // not a fully differentiable state
+                //--------------------------------------------------------------
                 working.transfer(Corg,Cend);
                 goto CYCLE;
             }
 
+
             bool converged = true;
-            for(const anode *node=working.head;node;node=node->next)
             {
-                const species &s     = **node;
-                const size_t   j     = *s;
-                const double   c_old = Csav[j];
-                const double   c_new = Cend[j];
-
-                if(fabs(c_old-c_new)>0) converged=false;
-                Corg[j] = c_new;
-
+                YACK_XMLSUB(xml,"checkStatus");
+                for(const anode *node=working.head;node;node=node->next)
+                {
+                    const species &s     = **node;
+                    const size_t   j     = *s;
+                    const double   c_old = Csav[j];
+                    const double   c_new = Cend[j];
+                    const double   delta =  fabs(c_old-c_new);
+                    const double   limit =  numeric<double>::ftol * max_of( fabs(c_old), fabs(c_new) );
+                    if(verbose)
+                    {
+                        corelib.pad(*xml << "[" << s.name << "]",s);
+                        std::cerr << " : "  << std::setw(15) << c_old;
+                        std::cerr << " -> " << std::setw(15) << c_new;
+                        std::cerr << " |" << delta << "/" << limit << "|";
+                        std::cerr << std::endl;
+                    }
+                    if(delta>limit) converged=false;
+                    Corg[j] = c_new;
+                }
             }
             YACK_XMLOG(xml,"-- converged       = " << yack_boolean(converged));
-
             if(converged)
             {
                 return returnSolved(C0,xml);
             }
 
             goto CYCLE;
-
-
 
         }
 
