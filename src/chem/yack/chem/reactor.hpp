@@ -95,6 +95,7 @@ namespace yack
             tableau           &Cend;    //!< [M] final point
             tableau           &Ctry;    //!< [M] working space
             tableau           &dC;      //!< [M] step
+            tableau           &Csav;    //!< [M] saving C
             tableau           &K;       //!< [N] pre-computed K
             tableau           &Gamma;   //!< [N] current Gamm
             tableau           &xi;      //!< [N] extent

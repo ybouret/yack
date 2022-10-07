@@ -289,7 +289,7 @@ namespace yack
                     //----------------------------------------------------------
                     for(size_t i=M;i>0;--i)
                     {
-                        Corg[i] = Cend[i] = Ctry[i] = C0[i];
+                        Corg[i] = Cend[i] = Ctry[i] = Csav[i] = C0[i];
                         dC[i]   = 0;
                     }
             }
@@ -367,6 +367,7 @@ namespace yack
             //
             //
             //------------------------------------------------------------------
+            working.transfer(Csav,Corg);
             const bool atGlobalMinimum = foundGlobal(H0,xml);
             if(!atGlobalMinimum)
             {

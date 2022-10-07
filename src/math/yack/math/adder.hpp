@@ -146,8 +146,43 @@ namespace yack
                 resume(n);
                 for(size_t i=n;i>0;--i)
                 {
-                    const_type tmp = lhs[i] * rhs[i];
-                    (*this) += tmp;
+                    const_type l = lhs[i];
+                    const_type r = rhs[i];
+                    const_type p = l*r;
+                    (*this) += p;
+                }
+                return get();
+            }
+
+            //! get sum of squares
+            template <typename LHS> inline
+            T squares(LHS &lhs)
+            {
+                const size_t n = lhs.size();
+                resume(n);
+                for(size_t i=n;i>0;--i)
+                {
+                    const_type l  = lhs[i];
+                    const_type p  = l*l;
+                    (*this) += p;
+                }
+                return get();
+            }
+
+            //! get sum of delta squares
+            template <typename LHS, typename RHS> inline
+            T squares(LHS &lhs, RHS &rhs)
+            {
+                assert(lhs.size()==rhs.size());
+                const size_t n = lhs.size();
+                resume(n);
+                for(size_t i=n;i>0;--i)
+                {
+                    const_type l = lhs[i];
+                    const_type r = rhs[i];
+                    const_type d = l-r;
+                    const_type p = d*d;
+                    (*this) += p;
                 }
                 return get();
             }
