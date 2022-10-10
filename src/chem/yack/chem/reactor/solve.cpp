@@ -469,7 +469,7 @@ namespace yack
             
             //------------------------------------------------------------------
             //
-            // compute extent
+            // compute extent from Phi*NuA, with(out) reduced complexity
             //
             //------------------------------------------------------------------
             if( !solv.build(Omega,xadd) )
@@ -523,13 +523,12 @@ namespace yack
                 }
             }
 
-            exit(0);
 
 
             if(recomputeOmega)
             {
                 YACK_XMLOG(xml, "-- reducing complexity");
-                YACK_XMLOG(xml, "-- #dof = " << nrun );
+                YACK_XMLOG(xml, "-- #dof = " << nrun << " / " << N);
                 switch(nrun)
                 {
                     case 0:
@@ -552,6 +551,8 @@ namespace yack
                 goto COMPUTE_EXTENT;
             }
 
+
+            exit(0);
 
             //------------------------------------------------------------------
             //

@@ -174,7 +174,7 @@ namespace yack
 
                 // check primary involved equilibria
                 {
-                    YACK_XMLSUB(xml, "BuildingHeldBy");
+                    YACK_XMLSUB(xml, "buildingDeps");
                     for(const anode *node=working.head;node;node=node->next)
                     {
                         const species &s = **node;             assert(s.rank>0);
@@ -205,7 +205,6 @@ namespace yack
                         std::cerr << std::endl;
                     }
                 }
-                exit(0);
             }
 
             
