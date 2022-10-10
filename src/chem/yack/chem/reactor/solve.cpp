@@ -367,7 +367,7 @@ namespace yack
                     goto CYCLE;
 
                 default:
-                    YACK_XMLOG(xml, "-- #dof = " << nrun << " (@level-1)");
+                    YACK_XMLOG(xml, "-- #dof = " << nrun << " / " << N << " (@level-1)");
                     break;
             }
 
@@ -410,9 +410,9 @@ namespace yack
             const bool atGlobalMinimum = hasDominant(H0,xml);
             if(!atGlobalMinimum)
             {
-                YACK_XMLOG(xml,"-- updating topology...");
+                YACK_XMLOG(xml,"-- topology: updating");
                 emax = topoSingles(nrun,xml);
-                YACK_XMLOG(xml,"-- ...updated");
+                YACK_XMLOG(xml,"-- topology: updated!");
                 if(!emax)
                 {
                     YACK_XMLOG(xml, "-- success");
@@ -431,7 +431,7 @@ namespace yack
                         goto CYCLE;
 
                     default:
-                        YACK_XMLOG(xml, "-- #dof = " << nrun << " (@level-2)");
+                        YACK_XMLOG(xml, "-- #dof = " << nrun << " / " << N << " (@level-2)");
                         break;
                 }
 
@@ -522,6 +522,9 @@ namespace yack
                     accepted = &eq;
                 }
             }
+
+            exit(0);
+
 
             if(recomputeOmega)
             {

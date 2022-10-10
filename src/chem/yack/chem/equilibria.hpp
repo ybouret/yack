@@ -89,7 +89,7 @@ namespace yack
             //__________________________________________________________________
             const equilibrium & operator[](const string &) const; //!< access by name
             const equilibrium & operator[](const char   *) const; //!< access by name
-            void remove_last();
+            void remove_last(); //!< removing last inserted equilibrium and update
 
 
         private:

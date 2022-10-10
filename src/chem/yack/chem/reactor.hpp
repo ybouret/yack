@@ -32,6 +32,16 @@ namespace yack
         //______________________________________________________________________
         //
         //
+        // types for list of involved equilibria
+        //
+        //______________________________________________________________________
+        typedef meta_list<const equilibrium> islot; //!< alias
+        typedef islot::node_type             inode; //!< alias
+        typedef vector<const islot>          slots; //!< alias
+
+        //______________________________________________________________________
+        //
+        //
         //! reactor
         //
         //______________________________________________________________________
@@ -72,6 +82,7 @@ namespace yack
             const size_t        M;        //!< corelib.size
             const size_t        N;        //!< singles.size
             const size_t        L;        //!< lattice.size
+            const slots         held_by;  //!< for each species
             const equilibria    couples;  //!< all composite
             const equilibria    lattice;  //!< singles|couples
             const groups        related;  //!< related

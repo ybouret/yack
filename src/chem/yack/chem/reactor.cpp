@@ -28,6 +28,7 @@ namespace yack
         M(corelib.size()),
         N(singles.size()),
         L(0),
+        held_by(M),
         couples(),
         lattice(singles),
         related(),
@@ -170,6 +171,41 @@ namespace yack
                 // for each related group...
                 //--------------------------------------------------------------
                 makeManifold(xml);
+
+                // check primary involved equilibria
+                {
+                    YACK_XMLSUB(xml, "BuildingHeldBy");
+                    for(const anode *node=working.head;node;node=node->next)
+                    {
+                        const species &s = **node;             assert(s.rank>0);
+                        const size_t   j = *s;
+                        islot         &l = coerce(held_by[j]); assert(0==l.size);
+
+                        if(verbose)
+                        {
+                            corelib.pad(*xml<< s.name,s) << " held by";
+                        }
+
+                        for(const enode *scan=singles.head();scan;scan=scan->next)
+                        {
+                            const equilibrium   &eq = ***scan;
+                            const size_t         ei = *eq;
+                            const readable<int> &nu = Nu[ei];
+                            if(nu[j]!=0)
+                            {
+                                if(verbose)
+                                {
+                                    const char *sep = l.size ? ", "  : " ";
+                                    singles.pad(std::cerr << sep << eq.name,eq);
+                                }
+                                l << &eq;
+                            }
+                        }
+
+                        std::cerr << std::endl;
+                    }
+                }
+                exit(0);
             }
 
             
