@@ -35,7 +35,6 @@ YACK_UTEST(reactor)
     reactor        cs(lib,eqs,0.0);
     vector<double> C(cs.M,0);
 
-    return 0;
 
     std::cerr << "[Solving Zero State]" << std::endl;
     if( cs.solve(C) )
@@ -57,6 +56,8 @@ YACK_UTEST(reactor)
     {
         throw exception("couldn't solve random phase state!!");
     }
+
+    return 0;
 
 
     vector<species*> psp;

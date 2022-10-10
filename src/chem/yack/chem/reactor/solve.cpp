@@ -166,9 +166,9 @@ namespace yack
         }
 
 
-        bool reactor:: foundGlobal(const double H0, const xmlog &xml)
+        bool reactor:: hasDominant(const double H0, const xmlog &xml)
         {
-            YACK_XMLSUB(xml,"studyGlobal");
+            YACK_XMLSUB(xml,"hasDominant");
 
             //------------------------------------------------------------------
             //
@@ -178,11 +178,11 @@ namespace yack
             writable<double> &Cmin = Cend; // will hold winner C
             const group      *gmin = NULL; // will hold minimal group
             double            Hmin  = H0;  // initial Hamiltonian
-            working.transfer(Cmin,Corg);   // initial C
+            working.transfer(Cmin,Corg);   // initial Cend = Corg
 
             //------------------------------------------------------------------
             //
-            // Loop over groups
+            // Loop over solving groups
             //
             //------------------------------------------------------------------
             for(const group *g=solving.head;g;g=g->next)
@@ -407,7 +407,7 @@ namespace yack
             //
             //------------------------------------------------------------------
             working.transfer(Csav,Corg);
-            const bool atGlobalMinimum = foundGlobal(H0,xml);
+            const bool atGlobalMinimum = hasDominant(H0,xml);
             if(!atGlobalMinimum)
             {
                 YACK_XMLOG(xml,"-- updating topology...");

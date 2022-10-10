@@ -119,7 +119,7 @@ namespace yack
             const readable<double> &   Optimized_C(const double H0); //!< Ctry between H(Corg) and Cend
             const equilibrium         *topoSingles(size_t &nrun, const xmlog &);
             void                       topoLattice(const double H0, const xmlog &xml);
-            bool                       foundGlobal(const double H0, const xmlog &xml);
+            bool                       hasDominant(const double H0, const xmlog &xml);
             void                       prepareStep();
             void                       createOmega(); //!< from Psi and NuA
             void                       deactivated(const size_t ei);
