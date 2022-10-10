@@ -109,13 +109,12 @@ namespace yack
             YACK_DISABLE_COPY_AND_ASSIGN(reactor);
             const lockable::scope lockLib;
             const lockable::scope lockEqs;
+            void                       buildRelated();                           //!< build global partitions
+            void                       makeManifold(const xmlog &);              //!< build all solving partitions
 
-            bool               returnSolved(writable<double> &C0, const xmlog&); //!< upon successful return
-            void               buildRelated();                           //!< build global partitions
-            void               makeManifold(const xmlog &);              //!< build all solving partitions
-
-            double                     Hamiltonian(const readable<double> &C);   //!< a molar hamiltonian
-            double                     Hamiltonian(const group &g);
+            bool                       returnSolved(writable<double> &C0, const xmlog&); //!< upon successful return
+            double                     Hamiltonian(const readable<double> &C);           //!< a molar hamiltonian
+            double                     Hamiltonian(const group &g);                      //!< build a Cend
             bool                       forwardingC(const xmlog &); //!< update Cend from extents
             const readable<double> &   Optimized_C(const double H0); //!< Ctry between H(Corg) and Cend
             const equilibrium         *topoSingles(size_t &nrun, const xmlog &);

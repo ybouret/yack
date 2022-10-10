@@ -107,8 +107,8 @@ namespace yack
                 }
             }
 
+            
             return emax;
-
         }
 
 
