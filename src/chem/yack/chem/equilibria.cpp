@@ -24,12 +24,18 @@ namespace yack
             return (*edb.tree).head;
         }
 
+        const enode *equilibria:: tail() const throw()
+        {
+            return (*edb.tree).tail;
+        }
+
         const equilibrium & equilibria:: operator[](const string &name) const
         {
             eqs_db::const_type *pp = edb.search(name);
             if(!pp) throw imported::exception(clid,"no <%s>", name() );
             return **pp;
         }
+
 
         const equilibrium & equilibria:: operator[](const char *name) const
         {
@@ -106,7 +112,32 @@ namespace yack
             os << '}';
             return os;
         }
-        
+
+
+        void equilibria:: remove_last()
+        {
+            if(latched()) throw imported::exception(clid,"is latched");
+
+            const enode *node = tail();
+            if(node)
+            {
+                const equilibrium &eq = ***node;
+                const string      &id = eq.name;
+                if(edb.remove(id))
+                {
+                    size_t &len = coerce(maxlen);
+                    len = 0;
+                    for(node=head();node;node=node->next)
+                    {
+                        len = max_of(len, (***node).name.size() );
+                    }
+                }
+                else
+                {
+                    throw imported::exception(clid,"couldn't remove <%s>", id() );
+                }
+            }
+        }
         
     }
     

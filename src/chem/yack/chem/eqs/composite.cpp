@@ -128,7 +128,7 @@ namespace yack
 #include "yack/chem/library.hpp"
 #include <iomanip>
 
- 
+
 namespace yack
 {
     namespace chemical
@@ -333,6 +333,24 @@ namespace yack
                             equilibrium &eq  = couples.use( new composite_equilibrium(uid,++idx,c,lhsK,rhsK,xmul) );
                             new_sto(sto,LHS,RHS,c);
                             composite_fill(eq,sto,libcopy);
+
+                            bool must_remove = false;
+                            for(const enode *node=couples.head();node!=couples.tail();node=node->next)
+                            {
+                                const equilibrium &old = ***node;
+                                if(eq.similar_to(old))
+                                {
+                                    must_remove = true;
+                                    break;
+                                }
+                            }
+
+                            if(must_remove)
+                            {
+                                couples.remove_last();
+                            }
+
+
                         }
                     }
                 }

@@ -171,7 +171,7 @@ namespace yack
 #ifndef NDEBUG
             {
                 YACK_XMLSUB(xml,"Testing");
-                lattice(std::cerr,"",detached);
+                if(verbose) lattice(std::cerr,"",detached);
                 for(const enode *I=lattice.head();I;I=I->next)
                 {
                     const equilibrium &i = ***I;

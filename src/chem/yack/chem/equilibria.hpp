@@ -49,6 +49,7 @@ namespace yack
             //__________________________________________________________________
             size_t       size() const throw(); //!< number of equilibria
             const enode *head() const throw(); //!< first equilibrium
+            const enode *tail() const throw(); //!< last  equilibrium
 
             //! register a new equilibrium with proper index
             equilibrium & use(equilibrium *eq);
@@ -88,10 +89,14 @@ namespace yack
             //__________________________________________________________________
             const equilibrium & operator[](const string &) const; //!< access by name
             const equilibrium & operator[](const char   *) const; //!< access by name
+            void remove_last();
+
 
         private:
             YACK_DISABLE_ASSIGN(equilibria);
             eqs_db edb;
+
+
          };
 
     }

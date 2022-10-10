@@ -35,7 +35,7 @@ YACK_UTEST(reactor)
     reactor        cs(lib,eqs,0.0);
     vector<double> C(cs.M,0);
 
-
+    return 0;
 
     std::cerr << "[Solving Zero State]" << std::endl;
     if( cs.solve(C) )
