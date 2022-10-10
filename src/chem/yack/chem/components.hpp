@@ -175,6 +175,9 @@ namespace yack
             //! test proportionality of coefficients
             static bool are_similar(const components &lhs, const components &rhs);
 
+            //! are_similar(*this,rhs)
+            bool similar_to(const components &rhs) const;
+
             //! transfer only concerned components
             template <typename TARGET, typename SOURCE> inline
             void transfer(TARGET &target, SOURCE &source) const

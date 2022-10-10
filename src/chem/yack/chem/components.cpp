@@ -356,6 +356,11 @@ namespace yack
             return apk::are_prop(L,R, NULL);
         }
 
+        bool components:: similar_to(const components &rhs) const
+        {
+            return are_similar(*this,rhs);
+        }
+
     }
 
 
