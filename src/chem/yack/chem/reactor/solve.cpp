@@ -552,11 +552,10 @@ namespace yack
             }
 
 
-            exit(0);
 
             //------------------------------------------------------------------
             //
-            // check SECONDARY limits by deltaC
+            // check REPLICA limits by deltaC
             //
             //------------------------------------------------------------------
             bool usingFullLength = true;
@@ -585,46 +584,26 @@ namespace yack
                             std::cerr << " -" << std::setw(15) << fabs(d);
                         }
                     }
+                    if(verbose) std::cerr << std::endl;
 
                     if(d<0 && (-d)>c)
                     {
-                        //----------------------------------------------------------
-                        // should be only for secondary species
-                        // but could numerically happen for primary
-                        //----------------------------------------------------------
-                        if(c<=0)
-                        {
-                            std::cerr << std::endl << "\t\tINVALID SECONDARY [" << sp.name << "]" << std::endl;
-                            size_t nblk = 0;
-                            for(const enode *scan=singles.head();scan;scan=scan->next)
-                            {
-                                const equilibrium &eq = ***scan;
-                                const size_t       ei = *eq;
-                                if(eq.uses(sp))
-                                {
-                                    std::cerr << "\t used by " << eq.name << ", blocked=" << yack_boolean(blocked[ei]) << std::endl;
-                                    if(!blocked[ei])
-                                    {
-                                        --nrun;
-                                        ++nblk;
-                                        deactivated(ei);
-                                    }
-                                }
-                            }
-                            if(nblk<=0)
-                            {
-                                
-                            }
-                            exit(0);
-                        }
-                        const double scaling = c/(-d);
-                        if(verbose) std::cerr << " => scaling@" << scaling;
-                        usingFullLength = false;
-                        reductionFactor = min_of(reductionFactor,scaling);
-                    }
+                        std::cerr << "Invalid replica " << sp.name << " !!" << std::endl;
 
-                    if(verbose) std::cerr << std::endl;
+                        const islot &eqs = held_by[j];
+                        for(const inode *scan = eqs.head; scan; scan=scan->next)
+                        {
+                            const equilibrium &eq = **scan;
+                            const size_t       ei = *eq;
+                            std::cerr << "\tscanning " << eq.name << " " << (blocked[ei] ? "BLOCKED" : "running") << std::endl;
+                        }
+
+                        exit(0);
+                    }
                 }
+
+                std::cerr << "done secondary" << std::endl;
+                exit(0);
 
                 if(!usingFullLength)
                 {
