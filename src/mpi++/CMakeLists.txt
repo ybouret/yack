@@ -24,5 +24,6 @@ if(YACK_MPI)
 	install( TARGETS yack-mpi++ ARCHIVE DESTINATION lib )
 	
 	add_subdirectory(tests)
+	yack_libs(yack-mpi++)
 
 endif()

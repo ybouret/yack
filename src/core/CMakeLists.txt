@@ -655,4 +655,4 @@ install( TARGETS yack ARCHIVE DESTINATION lib )
 
 add_subdirectory(tests)
 yack_utest(core)
-
+yack_libs(yack)

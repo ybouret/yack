@@ -57,3 +57,5 @@ install( TARGETS yack-net ARCHIVE DESTINATION lib )
 
 add_subdirectory(tests)
 yack_utest(net)
+yack_libs(yack-net)
+

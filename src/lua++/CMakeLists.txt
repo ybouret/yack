@@ -16,3 +16,5 @@ install( TARGETS yack-lua++ ARCHIVE DESTINATION lib )
 
 add_subdirectory(tests)
 yack_utest(lua++)
+yack_libs(yack-lua++)
+

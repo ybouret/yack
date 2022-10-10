@@ -114,7 +114,7 @@ namespace yack
 
             bool                       returnSolved(writable<double> &C0, const xmlog&); //!< upon successful return
             double                     Hamiltonian(const readable<double> &C);           //!< a molar hamiltonian
-            double                     Hamiltonian(const group &g);                      //!< build a Cend
+            double                     Hamiltonian(const group &g);                      //!< build a Ctry from Corg and a group
             bool                       forwardingC(const xmlog &); //!< update Cend from extents
             const readable<double> &   Optimized_C(const double H0); //!< Ctry between H(Corg) and Cend
             const equilibrium         *topoSingles(size_t &nrun, const xmlog &);

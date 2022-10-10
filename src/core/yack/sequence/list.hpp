@@ -155,10 +155,7 @@ namespace yack
         //
         //! reverse nodes
         //______________________________________________________________________
-        inline void reverse() throw()
-        {
-            alive.reverse();
-        }
+        inline void reverse() throw() { alive.reverse(); }
 
         //______________________________________________________________________
         //
@@ -177,24 +174,13 @@ namespace yack
         {
             assert(node);
             cache.store( out_of_reach::naught( destructed(node) ) );
-
         }
 
-        void free_() throw()
-        {
-            while(alive.size>0) free_(alive.pop_back());
-        }
+        inline void free_() throw() { while(alive.size>0) free_(alive.pop_back()); }
+        inline void kill_() throw() { while(alive.size>0) object::zrelease( destructed(alive.pop_back()) ); }
+        inline void trim_() throw() { while(cache.size>0) object::zrelease(cache.query()); }
 
-        void kill_() throw() {
-            while(alive.size>0) object::zrelease( destructed(alive.pop_back()) );
-        }
-
-
-        void trim_() throw() {
-            while(cache.size>0) object::zrelease(cache.query());
-        }
-
-        node_type *build(const_type &args)
+        inline node_type *build(const_type &args)
         {
             node_type *node = cache.size ? cache.query() : object::zacquire<node_type>();
             try

@@ -40,3 +40,5 @@ install( TARGETS yack-chem ARCHIVE DESTINATION lib )
 
 add_subdirectory(tests)
 yack_utest(chem)
+yack_libs(yack-chem)
+

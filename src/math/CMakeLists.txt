@@ -144,3 +144,5 @@ install( TARGETS yack-math ARCHIVE DESTINATION lib )
 
 add_subdirectory(tests)
 yack_utest(math)
+yack_libs(yack-math)
+

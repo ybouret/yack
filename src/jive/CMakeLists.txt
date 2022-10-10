@@ -131,3 +131,5 @@ install( TARGETS yack-jive ARCHIVE DESTINATION lib )
 
 add_subdirectory(tests)
 yack_utest(jive)
+yack_libs(yack-jive)
+

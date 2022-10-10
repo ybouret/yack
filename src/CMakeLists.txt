@@ -21,6 +21,13 @@ macro(yack_testing target)
 	COMMENT "[YACK] Running Unit Tests for <${target}>" )	
 endmacro()
 
+#define a macro to build libs only
+SET(YACK_LIBS "")
+macro(yack_libs target)
+	set(YACK_LIBS "${YACK_LIBS} ${target}" PARENT_SCOPE)
+endmacro()
+
+
 add_subdirectory(core)
 
 # check documentation generation
@@ -59,7 +66,9 @@ add_subdirectory(gfx)
 add_subdirectory(yack/sqlite3)
 add_subdirectory(mpi++)
 
+# ======================================================================
 # creating regression from unit tests
+# ======================================================================
 string( STRIP "${UNIT_TESTS}" UNIT_TESTS)
 string( REPLACE " " ";" UNIT_TESTS "${UNIT_TESTS}" )
 
@@ -74,7 +83,9 @@ add_custom_target(regression
 	DEPENDS ${UNIT_TESTS}
 	COMMENT "[YACK] Performed Regression")
 	
+# ======================================================================
 # creating third party
+# ======================================================================
 string( STRIP "${THIRD_PARTY}" THIRD_PARTY)
 string( REPLACE " " ";" THIRD_PARTY "${THIRD_PARTY}" )
 
@@ -86,6 +97,21 @@ endforeach()
 add_custom_target(third_party 
 	DEPENDS ${THIRD_PARTY}
 	COMMENT "[YACK] Built Third Party")
+	
+# ======================================================================
+# creating libraries only
+# ======================================================================
+string( STRIP "${YACK_LIBS}" YACK_LIBS)
+string( REPLACE " " ";" YACK_LIBS "${YACK_LIBS}" )
+
+message( STATUS "[YACK] Libraries  :" )
+foreach(t IN LISTS YACK_LIBS)
+	message( STATUS "     |_${t}")
+endforeach()
+	
+add_custom_target(libraries 
+	DEPENDS ${YACK_LIBS}
+	COMMENT "[YACK] Built All Libraries")
 	
 message( STATUS "")
 message( STATUS "[YACK] generating with [${CMAKE_GENERATOR}] for <${YACK_CC}> (version='${YACK_COMPILER_VERSION}') [${CMAKE_BUILD_TYPE}]")

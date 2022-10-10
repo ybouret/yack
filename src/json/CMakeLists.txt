@@ -16,3 +16,5 @@ install( TARGETS yack-json ARCHIVE DESTINATION lib )
 
 add_subdirectory(tests)
 yack_utest(json)
+yack_libs(yack-json)
+
