@@ -13,8 +13,6 @@ namespace yack
 
         void reactor:: makeManifold(const xmlog &xml)
         {
-            //static const char fn[] = "[reactor.manifold]";
-            //const xmlog       xml(fn,std::cerr,entity::verbose);
             YACK_XMLSUB(xml,"MakeManifold");
             //------------------------------------------------------------------
             //
