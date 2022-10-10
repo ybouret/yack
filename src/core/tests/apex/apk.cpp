@@ -4,9 +4,68 @@
 
 using namespace yack;
 
+namespace
+{
+    template <typename LHS, typename RHS> static inline
+    void test_prop(LHS &lhs, RHS &rhs)
+    {
+        std::cerr << "check  " << lhs << std::endl;
+        std::cerr << "versus " << rhs << std::endl;
+        apq       fac;
+
+        if( apk::are_prop(lhs,rhs,&fac) )
+        {
+            std::cerr << "\tprop with " << fac << std::endl;
+        }
+        else
+        {
+            std::cerr << "\tnot prop (" << fac << ")" << std::endl;
+        }
+    }
+
+    template <typename T> static inline
+    void test_prop( randomized::bits &ran )
+    {
+        const size_t n = 2 + ran.leq(4);
+
+        vector<T> lhs(n), rhs(n);
+
+        test_prop(lhs,rhs);
+
+        lhs[1] = 1;
+        test_prop(lhs,rhs);
+
+        rhs[1] = 2;
+        test_prop(lhs,rhs);
+
+        rhs[1] = -2;
+        test_prop(lhs,rhs);
+
+        lhs[1] = -lhs[1];
+        rhs[1] = -rhs[1];
+        test_prop(lhs,rhs);
+
+        lhs[2] = 4;
+        test_prop(lhs,rhs);
+
+        rhs[2] = 1;
+        test_prop(lhs,rhs);
+
+        rhs[2] = -8;
+        test_prop(lhs,rhs);
+
+
+    }
+}
+
 YACK_UTEST(apk)
 {
     randomized::rand_ ran;
+
+    YACK_SIZEOF(apn);
+    YACK_SIZEOF(apz);
+    YACK_SIZEOF(apq);
+
 
     vector<apq> data;
 
@@ -23,7 +82,9 @@ YACK_UTEST(apk)
         }
         std::cerr << "|_temp=" << temp << std::endl;
     }
-    
+
+    test_prop<int>(ran);
+
 
 }
 YACK_UDONE()

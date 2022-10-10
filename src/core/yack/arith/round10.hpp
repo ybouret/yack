@@ -11,9 +11,11 @@ namespace yack
     namespace math
     {
 
+        //! rounding with powers of ten
         template <typename T>
         struct round10
         {
+            //! round using n decimals
             template <unsigned n> static inline
             T floor_with(const T value) throw()
             {

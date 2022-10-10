@@ -91,7 +91,10 @@ namespace yack
             
             //! number of components
             size_t         size() const throw();
-            
+
+            //! max index of components
+            size_t         span() const throw();
+
             //! limits from all the components
             const xlimits &genuine_limits(const readable<double> &C, const size_t w) const throw();
 
@@ -169,6 +172,9 @@ namespace yack
                 }
             }
 
+            //! test proportionality of coefficients
+            static bool are_similar(const components &lhs, const components &rhs);
+
             //! transfer only concerned components
             template <typename TARGET, typename SOURCE> inline
             void transfer(TARGET &target, SOURCE &source) const
@@ -186,7 +192,7 @@ namespace yack
             //! parse string, use library for species
             void operator()(library &, const char   *);
 
-            //! check DrZ = 0
+            //! check Delta_r Z = 0
             bool neutral() const throw();
 
             //! check minimal

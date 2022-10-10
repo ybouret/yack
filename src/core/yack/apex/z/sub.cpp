@@ -4,6 +4,11 @@ namespace yack
 {
     namespace apex
     {
+        void integer:: neg() throw()
+        {
+            coerce(s) =  __sign::opposite(s);
+        }
+
         integer integer:: operator-() const
         {
             return integer( __sign::opposite(s), n );

@@ -62,6 +62,12 @@ return rational(num,rhs.den);
             YACK_APQ_SUB_LHS();
         }
 
+        void rational:: neg() throw()
+        {
+            coerce(num).neg();
+        }
+
+
         rational  rational:: operator-() const
         {
             rational q(*this);

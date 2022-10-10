@@ -39,6 +39,7 @@ namespace yack
                 // methods
                 //______________________________________________________________
 
+                //! TODO
                 virtual void initialize(const T ini, const parameters &A, const variables &vars) = 0;
 
 

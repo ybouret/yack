@@ -135,6 +135,7 @@ namespace yack
             rational  operator-() const; //!< -self
             rational &operator--();      //!< pre  increase operator
             rational  operator--(int);   //!< post increase operator
+            void      neg() throw();     //!< in-place no-throw change sign
 
 
             //__________________________________________________________________

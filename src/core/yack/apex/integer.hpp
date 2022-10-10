@@ -141,6 +141,7 @@ namespace yack
             integer &operator--();      //!< pre  decrease operator
             integer  operator--(int);   //!< post decrease operator
             YACK_APZ_REP(-,sub)
+            void neg() throw();         //!< in-place no-throw change sign
 
             //__________________________________________________________________
             //

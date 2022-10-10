@@ -6,6 +6,7 @@
 
 #include "yack/apex.hpp"
 #include "yack/container/matrix.hpp"
+#include "yack/sequence/vector.hpp"
 
 namespace yack
 {
@@ -80,6 +81,71 @@ namespace yack
 
         //! find lcm for a matrix
         static apn lcm(const matrix<apq> &);
+
+        //! find proportionality coefficient
+        template <typename LHS, typename RHS> static inline
+        bool are_prop(const LHS &lhs, const RHS &rhs, apq *fac)
+        {
+            // initialize
+            assert(lhs.size()==rhs.size());
+            size_t       n = lhs.size();
+            vector<apq>  f(2,as_capacity);
+            if(fac) (*fac) = 0;
+
+            // pair-wise loop
+            for(size_t i=n;i>0;--i)
+            {
+                const apz L( lhs[i] );
+                const apz R( rhs[i] );
+
+                switch(__sign::pair_of(L,R))
+                {
+                    case zz_pair:
+                        // 0/0 => compatible
+                        break;
+
+                    case nz_pair:
+                    case pz_pair:
+                    case zp_pair:
+                    case zn_pair:
+                        return false; // => not compatible
+
+                    case pp_pair:
+                    case nn_pair: { const apq q(L.n,R.n);    f << q; } break;
+
+                    case pn_pair:
+                    case np_pair: { apq q(L.n,R.n); q.neg(); f << q; } break;
+                }
+
+                switch(f.size())
+                {
+                    case 0:
+                    case 1:
+                        break;
+
+                    case 2:
+                        if(f[1]!=f[2])
+                        {
+                            return false;
+                        }
+                        f.pop_back();
+                        break;
+                }
+
+
+            }
+
+            if(fac && f.size() > 0 )
+            {
+                // coefficient
+                assert(1==f.size());
+                fac->xch(f.back());
+            }
+
+
+            return true;
+        }
+
 
     };
 

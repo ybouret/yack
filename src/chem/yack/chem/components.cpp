@@ -2,6 +2,7 @@
 #include "yack/chem/components.hpp"
 #include "yack/system/imported.hpp"
 #include "yack/math/iota.hpp"
+#include "yack/type/utils.hpp"
 
 namespace yack
 {
@@ -68,11 +69,19 @@ namespace yack
                                      const int      nu)
         {
 
+            //------------------------------------------------------------------
+            //
             // create new component
+            //
+            //------------------------------------------------------------------
             const component::pointer cptr = new component(sp,nu);
             if(!cdb.insert(cptr)) throw imported::exception(clid,"muliple '%s'",sp.name());
 
+            //------------------------------------------------------------------
+            //
             // update actors
+            //
+            //------------------------------------------------------------------
             try {
                 switch( __sign::of(nu) )
                 {
@@ -93,8 +102,12 @@ namespace yack
                 (void) cdb.remove(sp.name);
                 throw;
             }
-            
-            // update
+
+            //------------------------------------------------------------------
+            //
+            // update this
+            //
+            //------------------------------------------------------------------
             ++(coerce(sp.rank));
             coerce(d_nu) = int(prod.molecularity) - int(reac.molecularity);
         }
@@ -323,6 +336,32 @@ namespace yack
             return NULL != cdb.search(s.name);
         }
 
+        size_t components:: span() const throw()
+        {
+            size_t res = 0;
+            for(const cnode *node=head();node;node=node->next)
+            {
+                res = max_of(res,*****node);
+            }
+            return res;
+        }
+
+
+        bool components:: are_similar(const components &lhs, const components &rhs)
+        {
+            size_t       n = max_of( lhs.span(), rhs.span() );
+            vector<int>  L(n,0); lhs.fill(L);
+            vector<int>  R(n,0); rhs.fill(R);
+
+            while(n>0)
+            {
+                const int lc = L[n];
+                const int rc = R[n];
+                if(lc!=rc) return false;
+                --n;
+            }
+            return true;
+        }
 
     }
 

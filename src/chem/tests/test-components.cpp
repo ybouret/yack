@@ -49,6 +49,9 @@ YACK_UTEST(components)
     std::cerr << "comp  Z = " << comp.reac.algebraic_Z << " -> " << comp.prod.algebraic_Z << std::endl;
     std::cerr << "water Z = " << water.reac.algebraic_Z << " -> " << water.prod.algebraic_Z << std::endl;
 
+    YACK_CHECK( components::are_similar(comp,comp) );
+    YACK_CHECK( !components::are_similar(comp,water) );
+
 
     if(argc>1)
     {
