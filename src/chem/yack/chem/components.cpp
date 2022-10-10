@@ -3,6 +3,7 @@
 #include "yack/system/imported.hpp"
 #include "yack/math/iota.hpp"
 #include "yack/type/utils.hpp"
+#include "yack/apex/kernel.hpp"
 
 namespace yack
 {
@@ -352,15 +353,7 @@ namespace yack
             size_t       n = max_of( lhs.span(), rhs.span() );
             vector<int>  L(n,0); lhs.fill(L);
             vector<int>  R(n,0); rhs.fill(R);
-
-            while(n>0)
-            {
-                const int lc = L[n];
-                const int rc = R[n];
-                if(lc!=rc) return false;
-                --n;
-            }
-            return true;
+            return apk::are_prop(L,R, NULL);
         }
 
     }
