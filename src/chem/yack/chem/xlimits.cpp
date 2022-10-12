@@ -123,6 +123,21 @@ namespace yack
             return true;
         }
 
+        bool xlimits:: makeAcceptable(double &predicted) const throw()
+        {
+            switch(type)
+            {
+                case limited_by_none:
+                    break;
+
+                    
+            }
+
+            return true;
+        }
+
+
+
     }
     
 }

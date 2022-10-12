@@ -40,6 +40,9 @@ namespace yack
             //! check if extent is acceptable : no negative of zero concentration
             bool acceptable(const double xx) const throw();
 
+            //! check if can make acceptable extent from predicted value
+            bool makeAcceptable(double &predicted) const throw();
+
             const xlimit * const reac; //!< NULL or limiting reactant
             const xlimit * const prod; //!< NULL or limitins product
             const limitation     type; //!< computed
