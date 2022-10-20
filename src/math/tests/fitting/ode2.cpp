@@ -30,12 +30,10 @@ namespace
         }
 
 
-        virtual double setup(writable<double> &Y,
-                             const parameters &aorg,
-                             const variables  &vars) const
+        virtual double setup(writable<double> &Y) const
         {
-            const double theta0 = vars(aorg,"theta0");
-            const double length = vars(aorg,"length");
+            const double theta0 = get("theta0");
+            const double length = get("length");
             const V2D    r0(length*sin(theta0),-length*cos(theta0));
             Y[1] = r0.x;
             Y[2] = r0.y;
@@ -52,7 +50,7 @@ namespace
 
         virtual double delta( ) const
         {
-            return 1e-2;
+            return 0.1;
         }
 
         virtual void rates(writable<double> &dYdt,
@@ -98,7 +96,7 @@ namespace
 YACK_UTEST(fitting_ode2)
 {
     randomized::rand_               ran;
-    ode::appliance<double>::pointer app = new ode::app<double,ode::rkck>( 1e-7 );
+    ode::appliance<double>::pointer app = new ode::app<double,ode::rkck>( 1e-4 );
 
 
     Circle         F(app);
@@ -139,9 +137,27 @@ YACK_UTEST(fitting_ode2)
     fitting::gls<double> ls;
     ls.verbose = true;
 
-
-    (void)ls.fit(S,F,aorg, used, scal, aerr, NULL);
-    //S.save();
+    vars.only_on(used, "lambda");
+    if(!ls.fit(S,F,aorg, used, scal, aerr, NULL))
+    {
+        throw exception("Couldn't fit lambda");
+    }
+    S.save();
+    
+    vars.only_on(used, "length");
+    if(!ls.fit(S,F,aorg, used, scal, aerr, NULL))
+    {
+        throw exception("Couldn't fit length");
+    }
+    S.save();
+    
+    
+    vars.only_on(used, "lambda:length");
+    if(!ls.fit(S,F,aorg, used, scal, aerr, NULL))
+    {
+        throw exception("Couldn't fit length:mass");
+    }
+    S.save();
 
 
 }

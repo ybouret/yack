@@ -37,15 +37,9 @@ namespace yack
             }
 
             template <>
-            real_t explODE<real_t>:: run(const real_t t0, const real_t t1, const parameters &aorg, const variables &vars)
+            real_t explODE<real_t>:: run(const real_t t0, const real_t t1)
             {
-                // prepare global
-                assert(NULL==p_aorg);
-                assert(NULL==p_vars);
-                const temporary<const parameters *> keepAorg(p_aorg,&aorg);
-                const temporary<const variables  *> keepVars(p_vars,&vars);
-
-                // prepare local
+               
                 app_type         &odeint = *app;
                 writable<real_t> &Y      = *this;
                 const real_t      dt_max = std::abs( delta() );
@@ -81,13 +75,24 @@ namespace yack
             template <>
             real_t explODE<real_t>:: on_start(const real_t ini, const parameters &aorg, const variables &vars)
             {
-                return run( setup(*this,aorg,vars), ini, aorg, vars);
+                // prepare global
+                assert(NULL==p_aorg);
+                assert(NULL==p_vars);
+                const temporary<const parameters *> keepAorg(p_aorg,&aorg);
+                const temporary<const variables  *> keepVars(p_vars,&vars);
+                const real_t org = setup(*this);
+                return run(org,ini);
             }
 
             template <>
             real_t explODE<real_t>:: on_reach(const real_t ini, const real_t end, const parameters &aorg, const variables &vars)
             {
-                return run( ini, end, aorg, vars);
+                // prepare global
+                assert(NULL==p_aorg);
+                assert(NULL==p_vars);
+                const temporary<const parameters *> keepAorg(p_aorg,&aorg);
+                const temporary<const variables  *> keepVars(p_vars,&vars);
+                return run(ini,end);
             }
 
 

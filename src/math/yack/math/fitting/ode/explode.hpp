@@ -48,7 +48,7 @@ namespace yack
                 virtual T    query(const readable<T> &) const = 0;
                 
                 //! setup initial phase space and return starting abscissa
-                virtual T    setup(writable<T> &, const parameters &, const variables &) const = 0;
+                virtual T    setup(writable<T> &) const = 0;
 
                 //! return maximal step
                 virtual T         delta() const = 0;
@@ -105,7 +105,7 @@ namespace yack
                 virtual T on_reach(const T ini, const T end, const parameters &aorg, const variables &vars);
 
                 //! integrate equation
-                T         run(const T t0, const T t1, const parameters &aorg, const variables &vars);
+                T         run(const T t0, const T t1);
 
             };
 

@@ -26,11 +26,9 @@ namespace
         {
         }
 
-        virtual double setup(writable<double> &Y,
-                             const parameters &aorg,
-                             const variables  &vars) const
+        virtual double setup(writable<double> &Y) const
         {
-            const double      Y0 = vars(aorg,"Y0");
+            const double Y0 = get("Y0");
             Y[1] = Y0;
             return 0.0;
         }

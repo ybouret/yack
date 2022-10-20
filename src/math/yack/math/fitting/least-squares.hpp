@@ -401,6 +401,7 @@ namespace yack
                     sample_type       &s = *curr;
                     const ORDINATE    f0 = s.D2_full(*hfcn,a0, used, scal, *drvs);
                     YACK_LSF_PRINTLN(clid << "|_D2     = " << f0);
+                    YACK_LSF_PRINTLN(clid << "|_curv   = " << s.curv);
 
                     //----------------------------------------------------------
                     //
@@ -427,7 +428,9 @@ namespace yack
                         const size_t    i = *v; if(used[i]) continue;
                         alpha[i][i] = 0;
                     }
+                    YACK_LSF_PRINTLN(clid << "|_alpha   = " << alpha);
 
+                    
                     //----------------------------------------------------------
                     //
                     // compute metrics
@@ -464,6 +467,7 @@ namespace yack
                                     std::cerr << " = "   << std::setw(15) << a0[i];
                                     std::cerr << " +/- " << std::setw(15) << aerr[i];
                                     std::cerr << " [" << std::setw(6) << percent::of<ORDINATE,2>(a0[i],aerr[i]) << "%]";
+                                    std::cerr << " alpha: " << alpha[i][i];
                                     std::cerr << std::endl;
                                 }
                             }
