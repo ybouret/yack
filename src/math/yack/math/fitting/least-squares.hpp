@@ -292,7 +292,7 @@ namespace yack
                     {
                         //------------------------------------------------------
                         //
-                        YACK_LSF_PRINTLN(clid << "<accept>"); assert(f0>0);
+                        YACK_LSF_PRINTLN(clid << "<accept>"); //assert(f0>0);
                         //
                         //------------------------------------------------------
 

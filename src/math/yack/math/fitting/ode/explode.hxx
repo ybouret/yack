@@ -15,17 +15,21 @@ namespace yack
             {
                 assert(p_aorg);
                 assert(p_vars);
-                rates(dYdt,t,Y,*p_aorg,*p_vars);
+                rates(dYdt,t,Y);
             }
 
 
+            template <>
+            typename explODE<real_t>::callback * explODE<real_t>:: check() throw()
+            {
+                return NULL;
+            }
 
             template <> explODE<real_t>:: explODE(const app_ptr &usr,
                                                   const size_t   dim) :
             seq_type(),
             arr_type(dim),
             app(usr),
-            hcb(NULL),
             diffeq(this, & explODE<real_t>::call_ode),
             p_aorg(NULL),
             p_vars(NULL)
@@ -44,7 +48,7 @@ namespace yack
                 // prepare local
                 app_type         &odeint = *app;
                 writable<real_t> &Y      = *this;
-                const real_t      dt_max = std::abs( delta(aorg,vars) );
+                const real_t      dt_max = std::abs( delta() );
                 const real_t      width  = t1-t0;
                 const real_t      dt_cur = std::abs(width);
                 if(dt_max<=0) throw libc::exception(EINVAL,"delta()<=0 in explODE");
@@ -53,7 +57,7 @@ namespace yack
                 {
                     // single step
                     real_t h = dt_cur/2;
-                    odeint(Y,t0,t1,h,diffeq,hcb);
+                    odeint(Y,t0,t1,h,diffeq,check());
                 }
                 else
                 {
@@ -67,11 +71,11 @@ namespace yack
                     {
                         const real_t t_ini = t0 + ((i-1) *width)/n;
                         const real_t t_end = t0 + (i*width)/n;
-                        odeint(Y,t_ini,t_end,h,diffeq,hcb);
+                        odeint(Y,t_ini,t_end,h,diffeq,check());
                     }
 
                 }
-                return query();
+                return query(Y);
             }
             
             template <>

@@ -45,28 +45,36 @@ namespace yack
                 // methods
                 //______________________________________________________________
                 //! phase space to real-data
-                virtual T    query() const = 0;
-
+                virtual T    query(const readable<T> &) const = 0;
+                
                 //! setup initial phase space and return starting abscissa
                 virtual T    setup(writable<T> &, const parameters &, const variables &) const = 0;
 
                 //! return maximal step
-                virtual T    delta(const parameters &, const variables &)                const = 0;
+                virtual T         delta() const = 0;
 
                 //! differemtial, parametric equations
                 virtual void rates(writable<T>       &dYdt,
                                    T                  t,
-                                   const readable<T> &Y,
-                                   const parameters  &aorg,
-                                   const variables   &vars) = 0;
+                                   const readable<T> &Y) = 0;
+
+                //! get callback, default to NULL
+                virtual callback *check() throw();
+
+                template <typename PARAM> inline
+                T get(const PARAM &param) const
+                {
+                    assert(p_aorg);
+                    assert(p_vars);
+                    return (*p_vars)(*p_aorg,param);
+                }
 
                 //______________________________________________________________
                 //
                 // members
                 //______________________________________________________________
                 app_ptr      app; //!< shared appliance
-                callback    *hcb; //!< phase-space callback
-
+                
 
                 //______________________________________________________________
                 //

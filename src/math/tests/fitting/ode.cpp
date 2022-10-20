@@ -35,24 +35,21 @@ namespace
             return 0.0;
         }
 
-        virtual double query() const
+        virtual double query(const readable<double> &Y) const
         {
-            return (*this)[1];
+            return Y[1];
         }
 
-        virtual double delta(const parameters & , const variables &) const
+        virtual double delta() const
         {
             return 1e-2;
         }
 
         virtual void rates(writable<double> &dYdt,
                            double ,
-                           const readable<double> &Y,
-                           const parameters       &aorg,
-                           const variables        &vars)
+                           const readable<double> &Y )
         {
-            const double lam = vars(aorg,"lambda");
-            dYdt[1] = - lam * Y[1];
+            dYdt[1] = - get("lambda") * Y[1];
         }
 
 
