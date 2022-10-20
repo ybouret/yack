@@ -125,13 +125,13 @@ YACK_UTEST(fitting_ode2)
 
     for(size_t i=1;i<=ndat;++i)
     {
-        t[i] = 0.02*(double(i-1) + 0.1 * ran.to<double>());
+        t[i] = 0.03*(double(i-1) + 0.1 * ran.to<double>());
         //A[i] = vars(aorg,"length")*sin(vars(aorg,"theta0"));
         A[i] = vars(aorg,"theta0")*cos(6.1*t[i])*exp(-0.2*t[i]);
     }
 
     S.D2(F,aorg);
-    S.save();
+    S.save_with("-0");
 
 
     fitting::gls<double> ls;
@@ -142,14 +142,14 @@ YACK_UTEST(fitting_ode2)
     {
         throw exception("Couldn't fit lambda");
     }
-    S.save();
+    S.save_with("-1");
     
     vars.only_on(used, "length");
     if(!ls.fit(S,F,aorg, used, scal, aerr, NULL))
     {
         throw exception("Couldn't fit length");
     }
-    S.save();
+    S.save_with("-2");
     
     
     vars.only_on(used, "lambda:length");
@@ -157,7 +157,7 @@ YACK_UTEST(fitting_ode2)
     {
         throw exception("Couldn't fit length:mass");
     }
-    S.save();
+    S.save_with("-3");
 
 
 }

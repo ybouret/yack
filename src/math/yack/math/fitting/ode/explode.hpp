@@ -44,6 +44,7 @@ namespace yack
                 //
                 // methods
                 //______________________________________________________________
+            protected:
                 //! phase space to real-data
                 virtual T    query(const readable<T> &) const = 0;
                 
@@ -53,7 +54,7 @@ namespace yack
                 //! return maximal step
                 virtual T         delta() const = 0;
 
-                //! differemtial, parametric equations
+                //! differential, parametric equations
                 virtual void rates(writable<T>       &dYdt,
                                    T                  t,
                                    const readable<T> &Y) = 0;
@@ -61,6 +62,7 @@ namespace yack
                 //! get callback, default to NULL
                 virtual callback *check() throw();
 
+                //! to be used within other methods to access parameters by name
                 template <typename PARAM> inline
                 T get(const PARAM &param) const
                 {
@@ -69,6 +71,7 @@ namespace yack
                     return (*p_vars)(*p_aorg,param);
                 }
 
+            public:
                 //______________________________________________________________
                 //
                 // members

@@ -136,20 +136,6 @@ namespace yack
                 
             public:
 
-#if 0
-                template <typename TYPE> static inline
-                ios::hexa Hexa(const TYPE &t) throw()
-                {
-                    return ios::hexa( yack_crc32(&t,sizeof(TYPE)) );
-                }
-
-                void show_info(const char *when) const
-                {
-                    const ios::hexa h(xadd.crc(),true);
-                    std::cerr << "[" << when << ": " << this->name << " has #" << xadd.size() << ": CRC=" << h << "]" << std::endl;
-                }
-#endif
-
                 //! compute sequential D2
                 virtual ORDINATE D2(sequential_type          &func,
                                     const readable<ORDINATE> &aorg)
@@ -309,18 +295,34 @@ namespace yack
                     db.push_back( &coerce(self) );
                 }
 
-                //! save, converting to double
-                inline void save() const
+            private:
+                inline void save_to(ios::ostream &fp) const
                 {
-                    const string  fn = this->name + ".dat";
-                    ios::ocstream fp(fn);
                     const size_t  nd = dimension();
                     for(size_t i=1;i<=nd;++i)
                     {
                         fp("%.15g %.15g %.15g\n",double(abscissa[i]),double(ordinate[i]),double(adjusted[i]));
                     }
                 }
-
+                
+            public:
+                //! save, converting to double
+                inline void save() const
+                {
+                    const string  fn = this->name + ".dat";
+                    ios::ocstream fp(fn);
+                    save_to(fp);
+                }
+                
+                //! save with suffix, converting to double
+                template <typename SUFFIX> inline
+                void save_with(const SUFFIX &suffix) const
+                {
+                    const string  fn = this->name + suffix + ".dat";
+                    ios::ocstream fp(fn);
+                    save_to(fp);
+                }
+                
 
 
                 //______________________________________________________________
