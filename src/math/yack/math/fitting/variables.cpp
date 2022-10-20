@@ -195,6 +195,10 @@ namespace yack
             }
 
 
+            static inline string & clean_name(string &name)
+            {
+               return strops::strip_with(" \t", 2, name);
+            }
 
             variables & variables:: operator<<(const string &source)
             {
@@ -203,9 +207,7 @@ namespace yack
 
                 for(size_t i=1;i<=vars.size();++i)
                 {
-                    string &name = vars[i];
-                    strops::strip_with(" \t", 2, name);
-                    (void) use(name,upper()+1);
+                    (void) use(clean_name(vars[i]),upper()+1);
                 }
 
                 return self;
@@ -233,6 +235,28 @@ namespace yack
                 }
                 return res;
             }
+
+            variables & variables:: flags(writable<bool> &used, const string &names, const bool flag)
+            {
+                variables      &self = *this;
+                vector<string>  vars;
+                tokenizer::split_with(':', vars, names);
+
+                for(size_t i=1;i<=vars.size();++i)
+                {
+                    const string &name = clean_name(vars[i]);
+                    self(used,name) = flag;
+                }
+
+                return *this;
+            }
+
+            variables & variables:: flags(writable<bool> &used, const char *names, const bool flag)
+            {
+                const string _(names);
+                return flags(used,_,flag);
+            }
+
 
         }
 

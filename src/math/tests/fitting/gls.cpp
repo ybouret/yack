@@ -1,5 +1,5 @@
 
-#include "yack/math/fitting/least-squares.hpp"
+#include "yack/math/fitting/least-squares/gls.hpp"
 #include "yack/math/fitting/samples.hpp"
 #include "yack/utest/run.hpp"
 
@@ -144,7 +144,7 @@ YACK_UTEST(fitting_gls)
     std::cerr << "curv=" << both.curv << std::endl;
 
 
-    fitting::least_squares<double,double> ls;
+    fitting::gls<double> ls;
     ls.verbose = true;
     
     v1(used,"t0") = false;

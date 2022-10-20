@@ -281,7 +281,8 @@ namespace yack
                     }
                     
                 }
-                
+
+                //! release all memory
                 inline virtual void release() throw()
                 {
                     Beta.release();
@@ -291,7 +292,8 @@ namespace yack
                     this->cleanup();
                 }
 
-                virtual void update(correlation<ORDINATE> &cr) const
+                //! provide info to correlation
+                inline virtual void update(correlation<ORDINATE> &cr) const
                 {
                     const size_t n = dimension();
                     for(size_t i=n;i>0;--i)
@@ -300,11 +302,26 @@ namespace yack
                     }
                 }
 
-                virtual void     collect(sequence<sample_type *> &db) const
+                //! append this to sequence
+                inline virtual void     collect(sequence<sample_type *> &db) const
                 {
                     const sample_type &self = *this;
                     db.push_back( &coerce(self) );
                 }
+
+                //! save, converting to double
+                inline void save() const
+                {
+                    const string  fn = this->name + ".dat";
+                    ios::ocstream fp(fn);
+                    const size_t  nd = dimension();
+                    for(size_t i=1;i<=nd;++i)
+                    {
+                        fp("%.15g %.15g %.15g\n",double(abscissa[i]),double(ordinate[i]),double(adjusted[i]));
+                    }
+                }
+
+
 
                 //______________________________________________________________
                 //

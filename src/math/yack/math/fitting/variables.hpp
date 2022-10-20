@@ -171,7 +171,7 @@ namespace yack
                     }
                 }
 
-                //! zero involved values
+                //! load involved values
                 template <typename TARGET> inline
                 void ld(TARGET &target, typename TARGET::param_type value) const
                 {
@@ -202,6 +202,35 @@ namespace yack
                 // members
                 //______________________________________________________________
                 const size_t len; //!< max name length
+
+                //! set named flags to boolean value
+                variables & flags(writable<bool> &used, const string &names, const bool flag);
+
+                //! set named flags to boolean value
+                variables & flags(writable<bool> &used, const char   *names, const bool flag);
+
+                //! set named flags to TRUE
+                template <typename NAMES> inline
+                variables & on(writable<bool> &used, const NAMES &names)
+                {
+                    return flags(used,names,true);
+                }
+
+                //! set named flags to FALSE
+                template <typename NAMES> inline
+                variables & off(writable<bool> &used, const NAMES &names)
+                {
+                    return flags(used,names,false);
+                }
+
+                //! set all named flags to TRUE, other to FALSE
+                template <typename NAMES> inline
+                variables & only_on(writable<bool> &used, const NAMES &names)
+                {
+                    ld(used,false);
+                    return flags(used,names,true);
+                }
+
             };
 
 

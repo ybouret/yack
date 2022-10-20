@@ -36,20 +36,35 @@ namespace yack
                 typedef typename app_type::pointer    app_ptr;    //!< alias
                 typedef cxx_array<T>                  arr_type;   //!< alias
                 typedef typename seq_type::parameters parameters; //!< alias
+                typedef fitting::variables            variables;  //!< alias
+                typedef typename app_type::equation   equation;   //!< alias
+                typedef typename app_type::callback   callback;   //!< alias
 
                 //______________________________________________________________
                 //
                 // methods
                 //______________________________________________________________
+                //! phase space to real-data
+                virtual T    query() const = 0;
 
-                
+                //! setup initial phase space and return starting abscissa
+                virtual T    setup(writable<T> &, const parameters &, const variables &) const = 0;
+
+                //! return maximal step
+                virtual T    delta(const parameters &, const variables &)                const = 0;
+
+                //! differemtial, parametric equations
+                virtual void rates(writable<T>       &dYdt,
+                                   T                  t,
+                                   const readable<T> &Y,
+                                   const parameters  &aorg,
+                                   const variables   &vars) = 0;
 
                 //______________________________________________________________
                 //
                 // members
                 //______________________________________________________________
                 app_ptr      app; //!< shared appliance
-
 
 
 
@@ -67,9 +82,15 @@ namespace yack
 
             private:
                 YACK_DISABLE_COPY_AND_ASSIGN(explODE);
-                
-                virtual T on_start(const T ini, const parameters &A, const variables &vars);
-                virtual T on_reach(const T ini, const T end, const parameters &A, const variables &vars);
+                equation           diffeq; //!< differential equation wrapper
+                const parameters  *p_aorg; //!< pointer to current parameters
+                const variables   *p_vars; //!< pointer to current variables
+
+
+                void      call_ode(writable<T> &dYdt, T t, const readable<T> &Y);
+                virtual T on_start(const T ini, const parameters &aorg, const variables &vars);
+                virtual T on_reach(const T ini, const T end, const parameters &aorg, const variables &vars);
+                T         run(const T t0, const T t1, const parameters &aorg, const variables &vars);
 
             };
 

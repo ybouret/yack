@@ -1,6 +1,5 @@
-
-
 #include "yack/math/fitting/ode/explode.hpp"
+#include "yack/type/temporary.hpp"
 
 #define real_t float
 #include "explode.hxx"
