@@ -43,8 +43,33 @@ namespace yack
                 // prepare local
                 app_type         &odeint = *app;
                 writable<real_t> &Y      = *this;
-                real_t            h      = std::abs(t1-t0);
-                odeint(Y,t0,t1,h,diffeq,NULL);
+                const real_t      dt_max = std::abs( delta(aorg,vars) );
+                const real_t      width  = t1-t0;
+                const real_t      dt_cur = std::abs(width);
+                if(dt_max<=0) throw libc::exception(EINVAL,"delta()<=0 in explODE");
+
+                if(dt_cur<=dt_max)
+                {
+                    // single step
+                    real_t h = dt_cur/2;
+                    odeint(Y,t0,t1,h,diffeq,NULL);
+                }
+                else
+                {
+                    // multiple steps
+                    assert(dt_max>0);
+                    assert(dt_cur>dt_max);
+
+                    real_t        h = dt_max/2;
+                    size_t        n = std::ceil(dt_cur/dt_max);
+                    for(size_t i=1;i<=n;++i)
+                    {
+                        const real_t t_ini = t0 + ((i-1) *width)/n;
+                        const real_t t_end = t0 + (i*width)/n;
+                        odeint(Y,t_ini,t_end,h,diffeq,NULL);
+                    }
+
+                }
                 return query();
             }
             

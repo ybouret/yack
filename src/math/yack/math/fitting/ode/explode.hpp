@@ -87,9 +87,16 @@ namespace yack
                 const variables   *p_vars; //!< pointer to current variables
 
 
+                //! wrapper for differential solver
                 void      call_ode(writable<T> &dYdt, T t, const readable<T> &Y);
+
+                //! return run( setup(*this,aorg,vars), ini, aorg, vars)
                 virtual T on_start(const T ini, const parameters &aorg, const variables &vars);
+
+                //! return run(ini,end,aorg,vars)
                 virtual T on_reach(const T ini, const T end, const parameters &aorg, const variables &vars);
+
+                //! integrate equation
                 T         run(const T t0, const T t1, const parameters &aorg, const variables &vars);
 
             };

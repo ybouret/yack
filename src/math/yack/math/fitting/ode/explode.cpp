@@ -1,5 +1,8 @@
 #include "yack/math/fitting/ode/explode.hpp"
 #include "yack/type/temporary.hpp"
+#include "yack/system/exception.hpp"
+#include <cerrno>
+#include <cmath>
 
 #define real_t float
 #include "explode.hxx"
