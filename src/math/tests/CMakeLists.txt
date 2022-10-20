@@ -99,5 +99,7 @@ add_test(fitting:sample  test-math fitting_sample)
 add_test(fitting:samples test-math fitting_samples)
 add_test(fitting:gls     test-math fitting_gls)
 add_test(fitting:ode     test-math fitting_ode)
+add_test(fitting:ode2    test-math fitting_ode2)
+
  
 
