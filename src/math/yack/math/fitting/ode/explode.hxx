@@ -24,7 +24,8 @@ namespace yack
                                                   const size_t   dim) :
             seq_type(),
             arr_type(dim),
-            app( usr ),
+            app(usr),
+            hcb(NULL),
             diffeq(this, & explODE<real_t>::call_ode),
             p_aorg(NULL),
             p_vars(NULL)
@@ -52,7 +53,7 @@ namespace yack
                 {
                     // single step
                     real_t h = dt_cur/2;
-                    odeint(Y,t0,t1,h,diffeq,NULL);
+                    odeint(Y,t0,t1,h,diffeq,hcb);
                 }
                 else
                 {
@@ -66,7 +67,7 @@ namespace yack
                     {
                         const real_t t_ini = t0 + ((i-1) *width)/n;
                         const real_t t_end = t0 + (i*width)/n;
-                        odeint(Y,t_ini,t_end,h,diffeq,NULL);
+                        odeint(Y,t_ini,t_end,h,diffeq,hcb);
                     }
 
                 }

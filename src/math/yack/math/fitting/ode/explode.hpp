@@ -65,7 +65,7 @@ namespace yack
                 // members
                 //______________________________________________________________
                 app_ptr      app; //!< shared appliance
-
+                callback    *hcb; //!< phase-space callback
 
 
                 //______________________________________________________________
