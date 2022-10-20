@@ -130,7 +130,8 @@ namespace yack
                 case limited_by_none:
                     break;
 
-                    
+                default:
+                    exit(0);
             }
 
             return true;

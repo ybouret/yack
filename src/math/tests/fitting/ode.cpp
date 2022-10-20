@@ -16,7 +16,8 @@ namespace
     public:
         typedef fitting::explODE<double>     base_type;
 
-        explicit damping(const app_ptr &usr) : base_type(usr)
+        explicit damping(const app_ptr &usr,
+                         const size_t   dim) : base_type(usr,dim)
         {
         }
 

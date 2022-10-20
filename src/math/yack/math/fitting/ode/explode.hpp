@@ -6,6 +6,7 @@
 #include "yack/math/fitting/sequential.hpp"
 #include "yack/math/ode/appliance.hpp"
 #include "yack/math/ode/explicit/rkck.hpp"
+#include "yack/sequence/cxx-array.hpp"
 
 namespace yack
 {
@@ -21,7 +22,9 @@ namespace yack
             //! assembling ODE/Solver to make a sequential fit function
             //
             //__________________________________________________________________
-            template <typename T> class explODE : public sequential<T,T>
+            template <typename T> class explODE :
+            public sequential<T,T>,
+            public cxx_array<T>
             {
             public:
                 //______________________________________________________________
@@ -31,7 +34,7 @@ namespace yack
                 typedef sequential<T,T>               seq_type;   //!< alias to base class
                 typedef ode::appliance<T>             app_type;   //!< alias to appliance
                 typedef typename app_type::pointer    app_ptr;    //!< alias
-                typedef vector<T>                     vec_type;   //!< alias
+                typedef cxx_array<T>                  arr_type;   //!< alias
                 typedef typename seq_type::parameters parameters; //!< alias
 
                 //______________________________________________________________
@@ -39,17 +42,13 @@ namespace yack
                 // methods
                 //______________________________________________________________
 
-                //! TODO
-                virtual void initialize(const T ini, const parameters &A, const variables &vars) = 0;
-
-
+                
 
                 //______________________________________________________________
                 //
                 // members
                 //______________________________________________________________
-                app_ptr  app; //!< shared appliance
-                vec_type Y;   //!< phase space
+                app_ptr      app; //!< shared appliance
 
 
 
@@ -62,7 +61,8 @@ namespace yack
 
 
             protected:
-                explicit explODE(const app_ptr &usr); //!< setup
+                explicit explODE(const app_ptr &usr,
+                                 const size_t   dim); //!< setup
 
 
             private:

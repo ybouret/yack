@@ -11,13 +11,15 @@ namespace yack
 
 
 
-            template <> explODE<real_t>:: explODE(const app_ptr &usr) :
+            template <> explODE<real_t>:: explODE(const app_ptr &usr,
+                                                  const size_t   dim) :
             seq_type(),
-            app( usr ),
-            Y()
+            arr_type(dim),
+            app( usr )
             {
             }
 
+            
             
         }
     }
