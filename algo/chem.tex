@@ -101,61 +101,8 @@ We define the Jacobian matrix:
 	\in \mathbb{M}_{N,M}
 \end{equation}
 
-\end{document}
 
-\section{Notations}
-
-Let $A_1,\ldots,A_M$ be $M$ species involved in $N$ equilibria:
-\begin{equation}
-	\forall i\in[1:N], \; \sum_j \nu_{i,j} A_j = 0
-\end{equation}
-and
-\begin{equation}
-	\forall i\in[1:N], \; 
-	\Gamma_i = K_i \prod_{j=1}^{M} [A_j]^{\nu^r_{ij}} 
-	- \prod_{j=1}^{M} [A_j]^{\nu^p_{ij}} = 0
-\end{equation}
-
-\begin{itemize}
-\item $\Gamma_i$ has the sign of $\Delta_r G_i$.
-\item The unit of $\Gamma_i$ is $C_0^{\sum_j \nu^p_{ij} }$
-\item The unit of $K_i$ is $C_0^{\Delta_r \nu}$
-\end{itemize}
-
-
-\section{Derivatives}
-We express the derivative of a product w.r.t. one term:
-\begin{equation}
-	\partial_{A_k} \left( \prod_{j=1}^{M} [A_j]^{\nu_{j}} \right)  =
-	\nu_k [A_k]^{\nu_k-1} \left( \prod_{j=1,j\not=k}^{M} [A_j]^{\nu_{j}} \right)
-\end{equation}
-
-Then:
-\begin{equation}
-	\partial^2_{A_k, A_k} \left( \prod_{j=1}^{M} [A_j]^{\nu_{j}} \right)  =
-	\nu_k (\nu_k-1) [A_k]^{\nu_k-2} \left( \prod_{j=1,j\not=k}^{M} [A_j]^{\nu_{j}} \right)
-\end{equation}
-and:
-\begin{equation}
-	\partial^2_{A_k\not=A_l} \left( \prod_{j=1}^{M} [A_j]^{\nu_{j}} \right)  =
-	\nu_k [A_k]^{\nu_k-1} \nu_l [A_l]^{\nu_l-1}\left( \prod_{j=1,j\not=k,j\not=l}^{M} [A_j]^{\nu_{j}} \right)
-\end{equation}
-
-\begin{equation}
-	\vec{\Psi}_i = \partial_{\vec{C}} \Gamma_i
-\end{equation}
-
-%\section{Subtracting Equation}
-%
-%Let $\vec{V}_1\not=\vec{0}$ and $\vec{V}_2\not=\vec{0}$.
-%The smallest weighted difference is:
-%\begin{equation}
-%	\delta \vec{V} = \dfrac{1}{\left(\vec{V}_1+\vec{V}_2\right)^2} \left[ 
-%	\langle \vec{V}_2 | \vec{V}_1+\vec{V}_2 \rangle \vec{V}_1 - \langle \vec{V}_1 | \vec{V}_1+\vec{V}_2 \rangle \vec{V}_2
-%	\right]
-%\end{equation}
-
-\section{1D-Solving}
+\section{Solving ONE Equilibrium}
 
 \subsection{Equation}
 Let us take $\Gamma_i$ (with a least a product or a reactant).
@@ -293,8 +240,7 @@ $$
 \end{itemize}
 	
 	
-\section{Multiple Solving}
-
+ 
  
 
 \end{document}
