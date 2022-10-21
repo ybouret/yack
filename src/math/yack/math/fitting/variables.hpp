@@ -203,6 +203,11 @@ namespace yack
                 //______________________________________________________________
                 const size_t len; //!< max name length
 
+                //______________________________________________________________
+                //
+                // (de-)activating for a session
+                //______________________________________________________________
+
                 //! set named flags to boolean value
                 variables & flags(writable<bool> &used, const string &names, const bool flag);
 
@@ -230,6 +235,10 @@ namespace yack
                     ld(used,false);
                     return flags(used,names,true);
                 }
+
+                //! get session string 'var1:var2:...'
+                string session(const readable<bool> &used) const;
+
 
             };
 

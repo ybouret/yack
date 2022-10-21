@@ -257,6 +257,22 @@ namespace yack
                 return flags(used,_,flag);
             }
 
+            string variables:: session(const readable<bool> &used) const
+            {
+                string ans;
+                size_t num = 0;
+                for(const vnode *node=head();node;node=node->next)
+                {
+                    const variable &v = ***node;
+                    if( used[*v] )
+                    {
+                        if(num>0) ans += ':';
+                        ans += v.name;
+                        ++num;
+                    }
+                }
+                return ans;
+            }
 
         }
 
