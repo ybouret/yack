@@ -61,11 +61,12 @@ namespace yack
 
                     real_t        h = dt_max/2;
                     size_t        n = std::ceil(dt_cur/dt_max);
+                    callback     *cb = check();
                     for(size_t i=1;i<=n;++i)
                     {
                         const real_t t_ini = t0 + ((i-1) *width)/n;
                         const real_t t_end = t0 + (i*width)/n;
-                        odeint(Y,t_ini,t_end,h,diffeq,check());
+                        odeint(Y,t_ini,t_end,h,diffeq,cb);
                     }
 
                 }
