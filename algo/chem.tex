@@ -30,6 +30,7 @@ We define a phase state vector:
 \end{equation}
 
 \subsection{Equilibrium}
+\subsection{Definition}
 Let $E_i$ be an equilibrium defined with integer coefficient $\nu_{i,j}$:
 \begin{equation}
 	(E_i) :  \sum_{j=1}^M \nu_{i,j} A_j = 0
@@ -43,7 +44,7 @@ of the coefficients:
 \end{equation}
 We define:
 \begin{equation}
-	\vec{\bm{\nu}}_i = 
+	\vec{\bm{\nu}}^t_i = 
 	\begin{bmatrix}
 	\nu_{i,1}\\
 	\vdots\\
@@ -51,6 +52,54 @@ We define:
 	\end{bmatrix}
 \end{equation}
 
+\subsection{Gradient}
+
+We express the derivative of a product w.r.t. one term:
+\begin{equation}
+	\partial_{A_k} \left( \prod_{j=1}^{M} [A_j]^{\nu_{j}} \right)  =
+	\nu_k [A_k]^{\nu_k-1} \left( \prod_{j=1,j\not=k}^{M} [A_j]^{\nu_{j}} \right)
+\end{equation}
+ 
+\begin{equation}
+	\vec{\Psi}_i = \partial_{\vec{C}} \Gamma_i
+\end{equation}
+
+
+\subsection{Equilibria}
+Let $\mathcal{E}$ be a set of $N$ independent equilibria $(E_1),\dots,(E_N)$.
+We define the equilibrium vector:
+\begin{equation}
+	\vec{\Gamma}(\vec{C}) =
+	\begin{bmatrix}
+	\Gamma_1(\vec{C})\\
+	\vdots\\
+	\Gamma_N(\vec{C})\\
+	\end{bmatrix}
+	\in \mathbb{R}^N
+\end{equation}
+
+We define the topology matrix:
+\begin{equation}
+	\bm{\nu} = 
+	\begin{bmatrix}
+	\vec{\nu}_1\\
+	\vdots\\
+	\vec{\nu}_N\\
+	\end{bmatrix}
+	\in \mathbb{M}_{N,M}
+\end{equation}
+
+
+We define the Jacobian matrix:
+\begin{equation}
+\bm{\Psi} = \partial_{\vec{C}} \vec{\Gamma} = 
+\begin{bmatrix}
+	\vec{\Psi}_1\\
+	\vdots\\
+	\vec{\Psi}_N\\
+	\end{bmatrix}
+	\in \mathbb{M}_{N,M}
+\end{equation}
 
 \end{document}
 
