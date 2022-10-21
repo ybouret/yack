@@ -87,6 +87,7 @@ We define the topology matrix:
 	\vec{\nu}_N\\
 	\end{bmatrix}
 	\in \mathbb{M}_{N,M}
+	= \lbrack \nu_{i,j} \rbrack
 \end{equation}
 
 
@@ -98,7 +99,8 @@ We define the Jacobian matrix:
 	\vdots\\
 	\vec{\Psi}_N\\
 	\end{bmatrix}
-	\in \mathbb{M}_{N,M}
+	\in \mathbb{M}_{N,M} = 
+	\lbrack \partial_{A_j}\Gamma_i \rbrack
 \end{equation}
 
 
@@ -235,11 +237,23 @@ $$
 \right.
  $$
 
-
-
 \end{itemize}
-	
-	
+
+\subsection{Consequences and Scaling}
+
+For an active equilibrium, there exists a unique resting extent $\xi_i^\star$ and a resting concentration $\vec{C}_i^\star$ such that:
+\begin{equation}
+\left\lbrace
+\begin{array}{rcl}
+	\vec{C}_i^\star & = & \vec{C} + \xi_i^\star \vec{\bm{\nu}}^t_i\\
+	\Gamma_i(\vec{C}_i^\star) & = & 0 \\
+\end{array}
+\right.
+\end{equation}
+In that case, we show that:
+\begin{equation}
+	\sigma_i = \vec{\nu}_i \cdot \vec{\Psi}_i^\star < 0
+\end{equation}	
  
  
 
