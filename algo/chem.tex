@@ -108,23 +108,23 @@ We define the Jacobian matrix:
 
 \subsection{Equation}
 Let us take $\Gamma_i$ (with a least a product or a reactant).
-Then there exist a unique $\Xi_i$ for which:
+Then there exist a unique $\xi_i^\star$ for which:
 \begin{equation}
 \left\lbrace
 \begin{array}{rcl}
-	\Gamma_i(\vec{C} + \Xi_i \vec{\nu}_i ) & = & 0\\
-	 \Xi_i \times \Gamma_i(\vec{C}) &\geq  &0\\
+	\Gamma_i(\vec{C} + \xi_i^\star \vec{\nu}_i ) & = & 0\\
+	 \xi_i^\star \times \Gamma_i(\vec{C}) &\geq  &0\\
 \end{array}
 \right.
 \end{equation}
  
-Indeed, $\Xi_i$ is solution of:
+Indeed, $\xi_i^\star$ is solution of:
 \begin{equation}
 	 F_i(\vec{C},X) =  K_i \prod_{j=1}^{M} \left([A_j] - X \nu^r_{ij}\right)^{\nu^r_{ij}} 
 	- \prod_{j=1}^{M} \left([A_j] + X \nu^p_{ij} \right)^{\nu^p_{ij}} = 0
 \end{equation} 
 
-And each $\Xi_i$ respects all the limiting extents.
+And each $\xi_i^\star$ respects all the limiting extents.
 
 \subsection{Where to look for}
 Let us set:
@@ -254,8 +254,38 @@ In that case, we show that:
 \begin{equation}
 	\sigma_i = \vec{\nu}_i \cdot \vec{\Psi}_i^\star < 0
 \end{equation}	
+
+Consequently,
+\begin{equation}
+	\gamma_i = \dfrac{\Gamma_i}{-\sigma_i} 
+\end{equation}
  
+\section{Global Solving}
+
+\subsection{Building Lattice}
+
+\subsection{Building Groups}
  
+\section{Local Solving}
+
+Let us start from $\vec{C}$, and we now every $\xi_i^\star$ for each $\Gamma_i$.
+We want to solve
+\begin{equation}
+\forall i, \;\; \Gamma_i\left(\vec{C} + \sum_j \xi_j \vec{\nu}^t_j\right) =  0
+\end{equation}
+
+\begin{equation}
+\left\lbrace
+\begin{array}{rcl}
+\Gamma_i\left(\vec{C} + \sum_j \xi_j \vec{\nu}^t_j\right) & = &  \displaystyle \Gamma_i\left(\vec{C} + \xi_i \vec{\nu}_i^t + \sum_{j\not=i} \xi_j \vec{\nu}^t_j\right)\\
+\\
+& = & \displaystyle\Gamma_i\left(\vec{C} + \xi_i^\star \vec{\nu}_i^t + (\xi_i-\xi_i^\star) \vec{\nu}_i^t + \sum_{j\not=i} \xi_j \vec{\nu}^t_j\right)
+\end{array}
+\right.
+\end{equation}
+
+
+
 
 \end{document}
 
