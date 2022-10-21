@@ -8,7 +8,7 @@ yack_no_warnings()
 
 
 if(NOT YACK_WINDOWS)
-	yack_add_flags("-std=c99")
+	#yack_add_flags("-std=c99")
 endif()
 
 message( STATUS "[YACK]  SQLite3.CMAKE_C_FLAGS='${CMAKE_C_FLAGS}'")
