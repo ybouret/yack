@@ -20,7 +20,7 @@ namespace yack
 
 
             template <>
-            typename explODE<real_t>::callback * explODE<real_t>:: check() throw()
+            explODE<real_t>::callback * explODE<real_t>:: check() throw()
             {
                 return NULL;
             }
