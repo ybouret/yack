@@ -13,6 +13,36 @@
             \node[shape=circle,draw,inner sep=2pt] (char) {#1};}}
  	 
 \begin{document}
+\section{Notation}
+
+\subsection{Species}
+Let $A_1,\dots,A_M$ be $M$ species composing a chemical system
+with their respective concentrations $[A_1],\ldots,[A_M]$.
+We define a phase state vector:
+\begin{equation}
+	\vec{C} = 
+	\begin{bmatrix}
+	[A_1]\\
+	\vdots\\
+	[A_M]\\
+	\end{bmatrix}
+	\in \mathbb{R}^M
+\end{equation}
+
+\subsection{Equilibrium}
+Let $E_i$ be an equilibrium defined with integer coefficient $\nu_{i,j}$:
+\begin{equation}
+	(E_i) :  \sum_{j=1}^M \nu_{i,j} A_j = 0
+\end{equation}
+We define the positive constant of $(E_i)$ as $K_i$ and the
+equilibrium condition is described by $\Gamma_i$ and the partition
+of the coefficients:
+\begin{equation}
+	\Gamma_i(\vec{C}) = K_i \prod_{j=1}^{M} [A_j]^{\nu^r_{ij}} 
+	- \prod_{j=1}^{M} [A_j]^{\nu^p_{ij}} = 0
+\end{equation}
+
+\end{document}
 
 \section{Notations}
 
