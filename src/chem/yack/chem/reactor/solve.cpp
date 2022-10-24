@@ -442,7 +442,12 @@ namespace yack
         COMPUTE_EXTENT:
             ++trial;
             YACK_XMLOG(xml, "-- computing extent [trial #" << trial << "]");
+            std::cerr << "Omega=" << Omega << std::endl;
             iOmeg.assign(Omega);
+            if(trial>=100)
+            {
+                exit(0);
+            }
 
             if( !solv.build(iOmeg,xadd) )
             {
@@ -634,6 +639,7 @@ namespace yack
             YACK_XMLOG(xml, "-- consistentState = " << yack_boolean(consistentState) );
             YACK_XMLOG(xml, "-- atGlobalMinimum = " << yack_boolean(atGlobalMinimum) );
             YACK_XMLOG(xml, "-- dH              = " << dH );
+
 
 
             if(!consistentState)

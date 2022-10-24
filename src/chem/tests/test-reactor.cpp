@@ -57,8 +57,7 @@ YACK_UTEST(reactor)
         throw exception("couldn't solve random phase state!!");
     }
 
-    return 0;
-
+    
 
     vector<species*> psp;
     for(const anode *node=cs.working.head;node;node=node->next)
