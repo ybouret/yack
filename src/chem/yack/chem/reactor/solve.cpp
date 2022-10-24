@@ -129,7 +129,6 @@ namespace yack
 
                 working.transfer(Cend,Ci);            // look within Corg:Ceq[ei]
                 working.transfer(Ci,Optimized_C(H0)); // store optimized value
-
             }
 
             //------------------------------------------------------------------
@@ -208,7 +207,7 @@ namespace yack
             }
             else
             {
-                YACK_XMLOG(xml,"-- at global minimum");
+                YACK_XMLOG(xml,"-- at global minimum, no dominant");
                 return true;
             }
 
@@ -227,52 +226,52 @@ namespace yack
                 {
                     NuA[ei].ld(0);
                     Psi[ei].ld(0);
-                    Gamma[ei] = 0;
+                    //Gamma[ei] = 0;
                 }
                 else
                 {
                     const double Ki  = K[ei];
                     eq.grad_action( Psi[ei],Ki,Corg,xmul);
-                    Gamma[ei] = (fabs(Xl[ei]) <= 0) ? 0 : eq.mass_action(Ki,Corg,xmul);
+                    //Gamma[ei] = (fabs(Xl[ei]) <= 0) ? 0 : eq.mass_action(Ki,Corg,xmul);
                 }
             }
         }
 
         void reactor:: createOmega()
         {
-            
+
             for(const enode *node=singles.head();node;node=node->next)
             {
                 const equilibrium &eq  = ***node;
                 const size_t       ei  = *eq;
                 writable<double>  &Omi = Omega[ei];
 
-                Omi.ld(0);
-
-                if(blocked[ei]) {
-                    Omi[ei] = 1.0;
+                Omi.ld(0); Omi[ei] = 1.0;
+                if(blocked[ei])
+                {
+                    xi[ei] = 0;
                 }
-                else {
+                else
+                {
+                    xi[ei] = Xl[ei];
                     const readable<double> &psi = Psi[ei];
+                    const double            den = sigma[ei]; assert(den<0);
 
                     for(const enode *scan=node->prev;scan;scan=scan->prev) {
                         const size_t ej = ****scan;
-                        Omi[ej] = xadd.dot(psi,NuA[ej]);
+                        Omi[ej] = xadd.dot(psi,NuA[ej])/den;
                     }
-
-                    const double diag = xadd.dot(psi,NuA[ei]);
-                    Omi[ei] = min_of(sigma[ei],diag);
 
                     for(const enode *scan=node->next;scan;scan=scan->next) {
                         const size_t ej = ****scan;
-                        Omi[ej] = xadd.dot(psi,NuA[ej]);
+                        Omi[ej] = xadd.dot(psi,NuA[ej])/den;
                     }
 
-
                 }
+
             }
 
-            
+
         }
 
         void reactor:: deactivated(const size_t ei)
@@ -444,7 +443,72 @@ namespace yack
                 }
             }
 
+            //------------------------------------------------------------------
+            //
+            //
+            // prepare local step
+            //
+            //
+            //------------------------------------------------------------------
+            YACK_XMLOG(xml, "-- preparing local step");
+            prepareStep();
 
+
+            createOmega();
+            std::cerr << "Omega=" << Omega << std::endl;
+
+            if( !solv.build(Omega,xadd) )
+            {
+                if( atGlobalMinimum )
+                {
+                    YACK_XMLOG(xml, "-- singular system");
+                    return false;
+                }
+                YACK_XMLOG(xml, "-- try moving...");
+                goto CYCLE;
+            }
+
+            solv.solve(Omega,xi,xadd);
+            std::cerr << "xi=" << xi << std::endl;
+
+            bool               recomputeOmega = false;
+            const equilibrium *accepted       = NULL;
+            for(const enode *node=singles.head();node;node=node->next)
+            {
+                const equilibrium &eq = ***node;
+                const size_t       ei = *eq;      if(blocked[ei]) continue;
+                const double       xx = xi[ei];
+                const xlimits     &lm = eq.primary_limits(Corg,corelib.maxlen);
+                const bool         ok = lm.acceptable(xx);
+
+                if(verbose)
+                {
+                    std::cerr << (ok?"[+]":"[-]");
+                    singles.pad(std::cerr<< ' ' << eq.name,eq) << ": " << std::setw(15) << xx << ' ';
+                    std::cerr << lm << std::endl;
+                }
+
+                if(!ok)
+                {
+                    assert(nrun>0);
+                    assert(!blocked[ei]);
+                    --nrun;
+                    deactivated(ei);
+                    recomputeOmega = true;
+                }
+                else
+                {
+                    accepted = &eq;
+                }
+            }
+
+
+            exit(0);
+
+            return false;
+
+
+#if 0
             //------------------------------------------------------------------
             //
             //
@@ -731,7 +795,7 @@ namespace yack
             }
 
             goto CYCLE;
-
+#endif
         }
 
 

@@ -107,7 +107,7 @@ We define the Jacobian matrix:
 \section{Solving ONE Equilibrium}
 
 \subsection{Equation}
-Let us take $\Gamma_i$ (with a least a product or a reactant).
+Let us take $\Gamma_i$.
 Then there exist a unique $\xi_i^\star$ for which:
 \begin{equation}
 \left\lbrace
@@ -239,9 +239,10 @@ $$
 
 \end{itemize}
 
-\subsection{Consequences and Scaling}
+\subsection{Scaling and Objective Concentration}
 
-For an active equilibrium, there exists a unique resting extent $\xi_i^\star$ and a resting concentration $\vec{C}_i^\star$ such that:
+\begin{itemize}
+\item For an {\bf active} equilibrium, there exists a unique resting extent $\xi_i^\star$ and a resting concentration $\vec{C}_i^\star$ such that:
 \begin{equation}
 \left\lbrace
 \begin{array}{rcl}
@@ -250,21 +251,66 @@ For an active equilibrium, there exists a unique resting extent $\xi_i^\star$ an
 \end{array}
 \right.
 \end{equation}
-In that case, we show that:
+
+\item In that case, we show that:
 \begin{equation}
 	\sigma_i = \vec{\nu}_i \cdot \vec{\Psi}_i^\star < 0
 \end{equation}	
+and a {\bf blocked} equilibrium is defined by $\sigma_i\geq 0$.
 
-Consequently,
+\item Consequently,
 \begin{equation}
 	\gamma_i = \dfrac{\Gamma_i}{-\sigma_i} 
 \end{equation}
+is a concentration.
+
+\item \begin{equation}
+\mathcal{H}(\vec{C}) = \left\lbrack\sum_{\sigma_i<0} \left(\dfrac{\Gamma_i}{-\sigma_i}\right)^2 \right\rbrack^{\frac{1}{2}}
+\end{equation}
+
+ 
+\end{itemize}
  
 \section{Global Solving}
 
 \subsection{Building Lattice}
 
-\subsection{Building Groups}
+\begin{itemize}
+\item
+Let us take one of the $N(N-1)/2$ possibilities such that $(i<j) \in \lbrack1:N\rbrack^2$.
+For all species $A_k$ which is common to both $(E_i)$ and $(E_j)$, we try to build a
+new equilibrium with coefficients $\kappa_{i,k}\not=0$ and $\kappa_{j,k}\not=0$ which removes the
+dependencies on $A_k$, with an index $l_{i,j,k}$:
+\begin{equation}
+	\kappa_{i,k} (E_i) + \kappa_{j,k} (E_j) : K'_{i,j,k} = K_i^{\kappa_{i,k}} \times K_j^{\kappa_{j,k}}
+\end{equation}
+
+\item We hence form the lattice of $L \geq N$ singles and couples in $\mathcal{E}'$
+\end{itemize}
+
+
+\subsection{Building Disjointed Groups}
+\begin{itemize}
+\item
+We form all the possible groups of disjointed equilibria: two equilibria are disjointed if they share no common species.
+We hence form all the groups with one up to any possible combination.
+
+\item Using this properties, we can process simultaneously all the equilibria within one group.
+
+\subsection{Dominant Step Algorithm}
+
+\begin{itemize}
+\item For all single equilibrium $(E_i)$, compute $\xi_i^\star$, $\vec{C}_i^\star$, $\vec{\Psi}_i^\star$, and $\sigma_i$. After
+this step, is it possible to compute any relative $\mathcal{H}$.
+\item For all equilibria in $\mathcal{E}'$, update if necessary $\vec{C}_i^\star$ then deduce $\vec{C}_i^\circ$ the
+line optimisation of $\mathcal{H}(\vec{C})$ to $\mathcal{H}(\vec{C}_i^\star)$.
+\item Find the group achieving the smallest  $\mathcal{H}(\vec{C}_{mix})$
+\end{itemize}
+
+
+
+\end{itemize} 
+ 
  
 \section{Local Solving}
 
@@ -279,7 +325,9 @@ We want to solve
 \begin{array}{rcl}
 \Gamma_i\left(\vec{C} + \sum_j \xi_j \vec{\nu}^t_j\right) & = &  \displaystyle \Gamma_i\left(\vec{C} + \xi_i \vec{\nu}_i^t + \sum_{j\not=i} \xi_j \vec{\nu}^t_j\right)\\
 \\
-& = & \displaystyle\Gamma_i\left(\vec{C} + \xi_i^\star \vec{\nu}_i^t + (\xi_i-\xi_i^\star) \vec{\nu}_i^t + \sum_{j\not=i} \xi_j \vec{\nu}^t_j\right)
+& = & \displaystyle\Gamma_i\left(\vec{C} + \xi_i^\star \vec{\nu}_i^t + (\xi_i-\xi_i^\star) \vec{\nu}_i^t + \sum_{j\not=i} \xi_j \vec{\nu}^t_j\right)\\
+\\
+& \simeq & \displaystyle (\xi_i-\xi_i^\star) \langle \vec{\Psi_i}^\star \vert \vec{\nu}_i \rangle  + \sum_{j\not=i} \langle \vec{\Psi_i} \vert \vec{\nu}_j  \rangle \xi_j\\
 \end{array}
 \right.
 \end{equation}
