@@ -615,7 +615,6 @@ namespace yack
 
                 std::cerr << "done secondary" << std::endl;
             }
-            YACK_XMLOG(xml, "-- consistentState = " << yack_boolean(consistentState) );
 
 
             // compute Cend
@@ -628,7 +627,7 @@ namespace yack
 
             if(verbose) corelib(*xml << "-- Cend=","", Cend);
 
-            if(true)
+            if(false)
             {
                 YACK_XMLOG(xml,"-- saving ham.dat");
                 ios::ocstream fp("ham.dat");
@@ -647,16 +646,21 @@ namespace yack
                 triplet<double> U = { 0, -1 , 1};
                 triplet<double> H = { H0, -1, H1 };
                 optimize::run_for(*this, U, H, optimize::inside);
-                YACK_XMLOG(xml,"-- moving H0=" << H0 << " to H(" << U.b << ")=" << H.b << " @cycle=" << cycle);
+                YACK_XMLOG(xml,"-- moving H0=" << H0 << " to H(" << U.b << ")=" << H.b << " : dH=" << H.b - H0 << " @cycle=" << cycle);
                 working.transfer(Cend,Ctry);
                 H1 = H.b;
             }
+
+            YACK_XMLOG(xml, "-- consistentState = " << yack_boolean(consistentState) );
+            YACK_XMLOG(xml, "-- atGlobalMinimum = " << yack_boolean(atGlobalMinimum) );
+
 
             if(!consistentState)
             {
                 working.transfer(Corg,Cend);
                 goto CYCLE;
             }
+
 
             // check convergence whilst updating Corg
             bool converged = true;
@@ -684,18 +688,13 @@ namespace yack
             }
             YACK_XMLOG(xml,"-- converged       = " << yack_boolean(converged));
 
-            YACK_XMLOG(xml, "-- consistentState = " << yack_boolean(consistentState) );
-            YACK_XMLOG(xml, "-- atGlobalMinimum = " << yack_boolean(atGlobalMinimum) );
 
             if(atGlobalMinimum)
             {
                 exit(0);
             }
 
-            if(converged)
-            {
-                exit(0);
-            }
+
 
             goto CYCLE;
 
