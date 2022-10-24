@@ -236,7 +236,6 @@ namespace yack
                     const double Ki  = K[ei];
                     eq.grad_action(psi,Ki,Corg,xmul);
                     const double            den = sigma[ei]; assert(den<0);
-
                     for(const enode *scan=node->prev;scan;scan=scan->prev) {
                         const size_t ej = ****scan;
                         Omi[ej] = xadd.dot(psi,NuA[ej])/den;
@@ -250,6 +249,7 @@ namespace yack
             }
         }
 
+#if 0
         void reactor:: createOmega()
         {
 
@@ -284,8 +284,8 @@ namespace yack
 
             }
 
-
         }
+#endif
 
         void reactor:: deactivated(const size_t ei)
         {
@@ -464,10 +464,21 @@ namespace yack
             //
             //------------------------------------------------------------------
             YACK_XMLOG(xml, "-- preparing local step");
+            bool   consistentState = true;
             prepareStep();
 
-
-            std::cerr << "Omega=" << Omega << std::endl;
+            //------------------------------------------------------------------
+            //
+            //
+            // compute extent using limiting PRIMARY species
+            //
+            //
+            //------------------------------------------------------------------
+            unsigned trial = 0;
+        COMPUTE_EXTENT:
+            ++trial;
+            YACK_XMLOG(xml, "-- computing extent [trial #" << trial << "]");
+            //std::cerr << "Omega=" << Omega << std::endl;
             iOmeg.assign(Omega);
 
             if( !solv.build(iOmeg,xadd) )
@@ -483,38 +494,101 @@ namespace yack
 
             iota::load(xi,Xl);
             solv.solve(iOmeg,xi,xadd);
-            std::cerr << "xi=" << xi << std::endl;
 
-            bool               recomputeOmega = false;
-            const equilibrium *accepted       = NULL;
-            for(const enode *node=singles.head();node;node=node->next)
             {
-                const equilibrium &eq = ***node;
-                const size_t       ei = *eq;      if(blocked[ei]) continue;
-                const double       xx = xi[ei];
-                const xlimits     &lm = eq.primary_limits(Corg,corelib.maxlen);
-                const bool         ok = lm.acceptable(xx);
-
-                if(verbose)
+                bool recomputedOmega = false;
+                for(const enode *node=singles.head();node;node=node->next)
                 {
-                    std::cerr << (ok?"[+]":"[-]");
-                    singles.pad(std::cerr<< ' ' << eq.name,eq) << ": " << std::setw(15) << xx << ' ';
-                    std::cerr << lm << std::endl;
+                    const equilibrium &eq = ***node;
+                    const size_t       ei = *eq;      if(blocked[ei]) continue;
+                    const double       xx = xi[ei];
+                    const xlimits     &lm = eq.primary_limits(Corg,corelib.maxlen);
+                    const bool         ok = lm.acceptable(xx);
+
+                    if(verbose)
+                    {
+                        std::cerr << (ok?"[+]":"[-]");
+                        singles.pad(std::cerr<< ' ' << eq.name,eq) << ": " << std::setw(15) << xx << ' ';
+                        std::cerr << lm << std::endl;
+                    }
+
+                    if(!ok)
+                    {
+                        Omega[ei][ei]   *= 10;
+                        recomputedOmega  = true;
+                        consistentState  = false;
+                    }
+                    else
+                    {
+
+                    }
+
                 }
 
-                if(!ok)
+                if(recomputedOmega)
                 {
-                    assert(nrun>0);
-                    assert(!blocked[ei]);
-                    --nrun;
-                    deactivated(ei);
-                    recomputeOmega = true;
-                }
-                else
-                {
-                    accepted = &eq;
+                    goto COMPUTE_EXTENT;
                 }
             }
+
+            YACK_XMLOG(xml, "-- consistentState = " << yack_boolean(consistentState) );
+
+
+            //------------------------------------------------------------------
+            //
+            //
+            // checking REPLICA
+            //
+            //
+            //------------------------------------------------------------------
+            vector<double> factor(N,0);
+
+            {
+                YACK_XMLSUB(xml, "forwarding");
+                factor.ld(1);
+
+                for(const anode *node=working.head;node;node=node->next)
+                {
+                    const species &sp = **node; assert(sp.rank>0);
+                    const size_t   j  = *sp;
+
+
+                    xadd.ldz();
+                    for(size_t i=N;i>0;--i) xadd.ld( NuA[i][j] * xi[i] );
+                    const double d = (dC[j] = xadd.get());
+                    const double c = Corg[j];
+                    if(verbose)
+                    {
+                        corelib.pad(*xml << '[' << sp.name <<']',sp) << " = " << std::setw(15) << c;
+                        if(d>=0)
+                        {
+                            std::cerr << " +" << std::setw(15) << d;
+                        }
+                        else
+                        {
+                            std::cerr << " -" << std::setw(15) << fabs(d);
+                        }
+                    }
+                    if(verbose) std::cerr << std::endl;
+
+                    if(d<0 && (-d)>c)
+                    {
+                        std::cerr << "Invalid replica " << sp.name << " !!" << std::endl;
+
+                        const islot &eqs = held_by[j];
+                        for(const inode *scan = eqs.head; scan; scan=scan->next)
+                        {
+                            const equilibrium   &eq = **scan;
+                            const size_t         ei = *eq;    if(blocked[ei]) continue;
+                            const readable<int> &cf = NuA[ei];
+                            std::cerr << "\tscanning " << eq.name <<  " @xi=" << xi[ei] << ", nu=" << cf[j] << std::endl;
+                        }
+                    }
+                }
+
+                std::cerr << "done secondary" << std::endl;
+            }
+
 
 
             exit(0);
