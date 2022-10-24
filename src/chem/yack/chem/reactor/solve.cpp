@@ -221,18 +221,31 @@ namespace yack
             {
                 const equilibrium &eq  = ***node;
                 const size_t       ei  = *eq;
+                writable<double>  &Omi = Omega[ei];
+                writable<double>  &psi = Psi[ei];
 
+                Omi.ld(0); Omi[ei] = 1.0;
                 if(blocked[ei])
                 {
                     NuA[ei].ld(0);
-                    Psi[ei].ld(0);
-                    //Gamma[ei] = 0;
+                    psi.ld(0);
+                    assert(fabs(Xl[ei])<=0);
                 }
                 else
                 {
                     const double Ki  = K[ei];
-                    eq.grad_action( Psi[ei],Ki,Corg,xmul);
-                    //Gamma[ei] = (fabs(Xl[ei]) <= 0) ? 0 : eq.mass_action(Ki,Corg,xmul);
+                    eq.grad_action(psi,Ki,Corg,xmul);
+                    const double            den = sigma[ei]; assert(den<0);
+
+                    for(const enode *scan=node->prev;scan;scan=scan->prev) {
+                        const size_t ej = ****scan;
+                        Omi[ej] = xadd.dot(psi,NuA[ej])/den;
+                    }
+
+                    for(const enode *scan=node->next;scan;scan=scan->next) {
+                        const size_t ej = ****scan;
+                        Omi[ej] = xadd.dot(psi,NuA[ej])/den;
+                    }
                 }
             }
         }
@@ -454,10 +467,10 @@ namespace yack
             prepareStep();
 
 
-            createOmega();
             std::cerr << "Omega=" << Omega << std::endl;
+            iOmeg.assign(Omega);
 
-            if( !solv.build(Omega,xadd) )
+            if( !solv.build(iOmeg,xadd) )
             {
                 if( atGlobalMinimum )
                 {
@@ -468,7 +481,8 @@ namespace yack
                 goto CYCLE;
             }
 
-            solv.solve(Omega,xi,xadd);
+            iota::load(xi,Xl);
+            solv.solve(iOmeg,xi,xadd);
             std::cerr << "xi=" << xi << std::endl;
 
             bool               recomputeOmega = false;

@@ -102,6 +102,7 @@ namespace yack
             imatrix            NuA;     //!< [NXM] topology of non-blocked equilibria
             rmatrix            Psi;     //!< [NxM] jacobian
             rmatrix            Omega;   //!< [NxN] coupling
+            rmatrix            iOmeg;   //!< [NxN] to solve
             tableau           &Corg;    //!< [M] starting point
             tableau           &Cend;    //!< [M] final point
             tableau           &Ctry;    //!< [M] working space

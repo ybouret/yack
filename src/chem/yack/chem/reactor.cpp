@@ -45,7 +45,8 @@ namespace yack
         NuA(Nu.rows,Nu.cols),
         Psi(Nu.rows,Nu.cols),
         Omega(N,N),
-
+        iOmeg(N,N),
+        
         Corg( mtab.next() ),
         Cend( mtab.next() ),
         Ctry( mtab.next() ),
