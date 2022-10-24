@@ -134,8 +134,7 @@ namespace yack
             void                       topoLattice(const double H0, const xmlog &xml);
             bool                       hasDominant(const double H0, const xmlog &xml);
             void                       prepareStep();
-            void                       createOmega(); //!< from Psi and NuA
-            void                       deactivated(const size_t ei);
+            //void                       deactivated(const size_t ei);
 
         };
 

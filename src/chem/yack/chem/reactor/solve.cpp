@@ -249,44 +249,8 @@ namespace yack
             }
         }
 
+
 #if 0
-        void reactor:: createOmega()
-        {
-
-            for(const enode *node=singles.head();node;node=node->next)
-            {
-                const equilibrium &eq  = ***node;
-                const size_t       ei  = *eq;
-                writable<double>  &Omi = Omega[ei];
-
-                Omi.ld(0); Omi[ei] = 1.0;
-                if(blocked[ei])
-                {
-                    xi[ei] = 0;
-                }
-                else
-                {
-                    xi[ei] = Xl[ei];
-                    const readable<double> &psi = Psi[ei];
-                    const double            den = sigma[ei]; assert(den<0);
-
-                    for(const enode *scan=node->prev;scan;scan=scan->prev) {
-                        const size_t ej = ****scan;
-                        Omi[ej] = xadd.dot(psi,NuA[ej])/den;
-                    }
-
-                    for(const enode *scan=node->next;scan;scan=scan->next) {
-                        const size_t ej = ****scan;
-                        Omi[ej] = xadd.dot(psi,NuA[ej])/den;
-                    }
-
-                }
-
-            }
-
-        }
-#endif
-
         void reactor:: deactivated(const size_t ei)
         {
             NuA[ei].ld(0);
@@ -294,7 +258,7 @@ namespace yack
             blocked[ei] = true;
             Xl[ei] = Gamma[ei] = sigma[ei] = 0;
         }
-
+#endif
 
         bool reactor:: solve(writable<double> &C0)
         {
@@ -552,7 +516,6 @@ namespace yack
                     const species &sp = **node; assert(sp.rank>0);
                     const size_t   j  = *sp;
 
-
                     xadd.ldz();
                     for(size_t i=N;i>0;--i) xadd.ld( NuA[i][j] * xi[i] );
                     const double d = (dC[j] = xadd.get());
@@ -575,36 +538,40 @@ namespace yack
                     {
                         invalidSpecies  = true;
                         consistentState = false;
-                        std::cerr << "Invalid replica " << sp.name << " !!" << std::endl;
 
-                        const islot &eqs = held_by[j];
-                        bool         may = false;
-                        for(const inode *scan = eqs.head; scan; scan=scan->next)
+                        const islot     &hEqs = held_by[j];
+                        bool             corr = false;
+                        for(const inode *scan = hEqs.head; scan; scan=scan->next)
                         {
                             const equilibrium   &eq = **scan;
                             const size_t         ei = *eq;    if(blocked[ei]) continue;
                             const double         xx = xi[ei];
                             const int            nu = NuA[ei][j];
-                            std::cerr << "\tscanning " << eq.name <<  " @xi=" << xx << ", nu=" << nu << std::endl;
 
                             if( (xx<=0 && nu>0) || (xx>=0 && nu < 0) )
                             {
-                                std::cerr << "\t\tdecreasing xi_" << eq.name << std::endl;
                                 xdiag[ei] = 10;
-                                may       = true;
+                                corr      = true;
                             }
                         }
-                        if(!may)
+
+                        if(!corr)
                         {
-                            std::cerr << "Couldn't correct [" << sp.name << "] !!" << std::endl;
+                            YACK_XMLOG(xml, "couldn't correct [" << sp.name << "] !!");
+                            if(atGlobalMinimum)
+                            {
+                                return false;
+                            }
+                            else
+                            {
+                                goto CYCLE;
+                            }
                         }
                     }
                 }
 
-                std::cerr << "xdiag=" << xdiag << std::endl;
                 if(invalidSpecies)
                 {
-                    std::cerr << "Need to recompute extent..." << std::endl;
                     for(size_t i=N;i>0;--i)
                     {
                         if(blocked[i]) continue;
@@ -613,11 +580,13 @@ namespace yack
                     goto COMPUTE_EXTENT;
                 }
 
-                std::cerr << "done secondary" << std::endl;
             }
 
-
+            //------------------------------------------------------------------
+            //
             // compute Cend
+            //
+            //------------------------------------------------------------------
             for(const anode *node=working.head;node;node=node->next)
             {
                 const species &sp = **node; assert(sp.rank>0);
@@ -640,63 +609,53 @@ namespace yack
 
             }
 
+            //------------------------------------------------------------------
+            //
             // no overshoot
+            //
+            //------------------------------------------------------------------
             double H1 = Hamiltonian(Cend);
             {
-                triplet<double> U = { 0, -1 , 1};
+                triplet<double> U = {  0, -1 , 1 };
                 triplet<double> H = { H0, -1, H1 };
                 optimize::run_for(*this, U, H, optimize::inside);
                 YACK_XMLOG(xml,"-- moving H0=" << H0 << " to H(" << U.b << ")=" << H.b << " : dH=" << H.b - H0 << " @cycle=" << cycle);
-                working.transfer(Cend,Ctry);
+                working.transfer(Corg,Ctry);
                 H1 = H.b;
             }
 
+            //------------------------------------------------------------------
+            //
+            // check what happened
+            //
+            //------------------------------------------------------------------
+            const double dH = H1 - H0;
+
             YACK_XMLOG(xml, "-- consistentState = " << yack_boolean(consistentState) );
             YACK_XMLOG(xml, "-- atGlobalMinimum = " << yack_boolean(atGlobalMinimum) );
+            YACK_XMLOG(xml, "-- dH              = " << dH );
 
 
             if(!consistentState)
             {
-                working.transfer(Corg,Cend);
+                // needed to be adjusted : not good
                 goto CYCLE;
             }
-
-
-            // check convergence whilst updating Corg
-            bool converged = true;
+            else
             {
-                YACK_XMLSUB(xml,"checkStatus");
-                for(const anode *node=working.head;node;node=node->next)
+                // consistent state
+                if(atGlobalMinimum || dH >= 0)
                 {
-                    const species &s     = **node;
-                    const size_t   j     = *s;
-                    const double   c_old = Csav[j];
-                    const double   c_new = Cend[j];
-                    const double   delta =  fabs(c_old-c_new);
-                    const double   limit =  numeric<double>::ftol * max_of( fabs(c_old), fabs(c_new) );
-                    if(verbose)
-                    {
-                        corelib.pad(*xml << "[" << s.name << "]",s);
-                        std::cerr << " : "  << std::setw(15) << c_old;
-                        std::cerr << " -> " << std::setw(15) << c_new;
-                        std::cerr << " |" << delta << "/" << limit << "|";
-                        std::cerr << std::endl;
-                    }
-                    if(delta>limit) converged=false;
-                    Corg[j] = c_new;
+                    return returnSolved(C0,xml);
                 }
-            }
-            YACK_XMLOG(xml,"-- converged       = " << yack_boolean(converged));
+                else
+                {
+                    goto CYCLE;
+                }
 
-
-            if(atGlobalMinimum)
-            {
-                exit(0);
             }
 
 
-
-            goto CYCLE;
 
         }
 

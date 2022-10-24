@@ -30,7 +30,7 @@ YACK_UTEST(reactor)
     std::cerr << "Testing Reactor with" << std::endl;
     std::cerr << "lib=" << lib << std::endl;
     std::cerr << "eqs=" << eqs << std::endl;
-    std::cerr << std::endl;
+    std::cerr << "\t ----- ready to compute ----" << std::endl;
 
     reactor        cs(lib,eqs,0.0);
     vector<double> C(cs.M,0);

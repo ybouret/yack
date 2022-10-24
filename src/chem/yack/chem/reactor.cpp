@@ -203,8 +203,7 @@ namespace yack
                                 l << &eq;
                             }
                         }
-
-                        std::cerr << std::endl;
+                        if(verbose) std::cerr << std::endl;
                     }
                 }
             }
