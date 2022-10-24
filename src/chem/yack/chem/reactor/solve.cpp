@@ -545,7 +545,10 @@ namespace yack
 
             {
                 YACK_XMLSUB(xml, "forwarding");
+
+                bool   invalidReplica = false;
                 factor.ld(1);
+
 
                 for(const anode *node=working.head;node;node=node->next)
                 {
@@ -573,17 +576,37 @@ namespace yack
 
                     if(d<0 && (-d)>c)
                     {
+                        invalidReplica = true;
                         std::cerr << "Invalid replica " << sp.name << " !!" << std::endl;
 
                         const islot &eqs = held_by[j];
+                        bool         may = false;
                         for(const inode *scan = eqs.head; scan; scan=scan->next)
                         {
                             const equilibrium   &eq = **scan;
                             const size_t         ei = *eq;    if(blocked[ei]) continue;
-                            const readable<int> &cf = NuA[ei];
-                            std::cerr << "\tscanning " << eq.name <<  " @xi=" << xi[ei] << ", nu=" << cf[j] << std::endl;
+                            const double         xx = xi[ei];
+                            const int            nu = NuA[ei][j];
+                            std::cerr << "\tscanning " << eq.name <<  " @xi=" << xx << ", nu=" << nu << std::endl;
+
+                            if( (xx<=0 && nu>0) || (xx>=0 && nu < 0) )
+                            {
+                                std::cerr << "\t\tdecreasing xi_" << eq.name << std::endl;
+                                factor[ei] = 10;
+                                may = true;
+                            }
+                        }
+                        if(!may)
+                        {
+                            std::cerr << "Couldn't correct [" << sp.name << "] !!" << std::endl;
                         }
                     }
+                }
+
+                std::cerr << "factor=" << factor << std::endl;
+                if(invalidReplica)
+                {
+                    std::cerr << "Need to recompute extent..." << std::endl;
                 }
 
                 std::cerr << "done secondary" << std::endl;

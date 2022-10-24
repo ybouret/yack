@@ -112,6 +112,7 @@ namespace yack
             tableau           &Gamma;   //!< [N] current Gamm
             tableau           &xi;      //!< [N] extent
             tableau           &sigma;   //!< [N] slope
+            tableau           &xdiag;   //!< [N] diagonal multiplication
             tableau           &Kl;      //!< [L] pre-computed K
             tableau           &Xl;      //!< [L] solving extents
             thin_array<bool>   blocked; //!< [L] blocking state
