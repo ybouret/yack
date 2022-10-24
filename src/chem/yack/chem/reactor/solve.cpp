@@ -643,7 +643,6 @@ namespace yack
 
             // no overshoot
             double H1 = Hamiltonian(Cend);
-            // do not overshoot
             {
                 triplet<double> U = { 0, -1 , 1};
                 triplet<double> H = { H0, -1, H1 };
@@ -659,55 +658,7 @@ namespace yack
                 goto CYCLE;
             }
 
-
-            if(cycle>=100)
-                exit(0);
-
-            goto CYCLE;
-
-            return false;
-
-
-#if 0
-
-
-
-            //------------------------------------------------------------------
-            //
-            // avoid overshoot
-            //
-            //------------------------------------------------------------------
-            double H1 = Hamiltonian(Cend);
-            if(usingFullLength)
-            {
-                // do not overshoot
-                triplet<double> U = { 0, -1 , 1};
-                triplet<double> H = { H0, -1, H1 };
-                optimize::run_for(*this, U, H, optimize::inside);
-                if(H.b<1)
-                {
-                    YACK_XMLOG(xml,"-- moving at H(" << U.b << ")=" << H.b);
-                    working.transfer(Cend,Ctry);
-                    H1 = H.b;
-                }
-            }
-
-
-            //------------------------------------------------------------------
-            //
-            // check status
-            //
-            //------------------------------------------------------------------
-            if(!usingMaximumDOF)
-            {
-                //--------------------------------------------------------------
-                // not a fully differentiable state
-                //--------------------------------------------------------------
-                working.transfer(Corg,Cend);
-                goto CYCLE;
-            }
-
-
+            // check convergence whilst updating Corg
             bool converged = true;
             {
                 YACK_XMLSUB(xml,"checkStatus");
@@ -733,25 +684,21 @@ namespace yack
             }
             YACK_XMLOG(xml,"-- converged       = " << yack_boolean(converged));
 
+            YACK_XMLOG(xml, "-- consistentState = " << yack_boolean(consistentState) );
+            YACK_XMLOG(xml, "-- atGlobalMinimum = " << yack_boolean(atGlobalMinimum) );
+
+            if(atGlobalMinimum)
+            {
+                exit(0);
+            }
+
             if(converged)
             {
-                for(const enode *node=singles.head();node;node=node->next)
-                {
-                    const equilibrium &eq = ***node;
-                    const size_t       ei = *eq;
-                    const outcome      oc  = outcome::study(eq, K[ei], Corg, Ceq[ei], xmul, xadd);
-                    if(verbose)
-                    {
-                        const double MA_org = eq.mass_action(K[ei], Corg,    xmul);
-                        const double MA_end = eq.mass_action(K[ei], Ceq[ei], xmul);
-                        singles.pad(*xml << eq.name, eq) << " : " << oc << "|Gamma|=" << fabs(MA_end-MA_org) << std::endl;
-                    }
-                }
-                return returnSolved(C0,xml);
+                exit(0);
             }
 
             goto CYCLE;
-#endif
+
         }
 
 
