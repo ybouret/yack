@@ -256,15 +256,17 @@ namespace yack
         }
 
 
-#if 0
         void reactor:: deactivated(const size_t ei)
         {
             NuA[ei].ld(0);
             Psi[ei].ld(0);
             blocked[ei] = true;
-            Xl[ei] = Gamma[ei] = sigma[ei] = 0;
+            Xl[ei]      = 0;
+            sigma[ei]   = 0;
+            writable<double> &Omi = Omega[ei];
+            Omi.ld(0);
+            Omi[ei] = 1.0;
         }
-#endif
 
         bool reactor:: solve(writable<double> &C0)
         {
@@ -436,8 +438,165 @@ namespace yack
             YACK_XMLOG(xml, "-- preparing local step");
             bool   consistentState = true;
             prepareStep();
-            singles(std::cerr << "heavy=","",heavy);
+            //singles(std::cerr << "heavy=","",heavy);
 
+            unsigned trial = 0;
+
+            //------------------------------------------------------------------
+            //
+            //
+            // compute extent
+            //
+            //
+            //------------------------------------------------------------------
+        COMPUTE_EXTENT:
+            ++trial;
+            YACK_XMLOG(xml, "-- computing extent [trial #" << cycle << "." << trial << "]");
+            //std::cerr << "Omega=" << Omega << std::endl;
+            iOmeg.assign(Omega);
+
+            if( !solv.build(iOmeg,xadd) )
+            {
+                if( atGlobalMinimum )
+                {
+                    YACK_XMLOG(xml, "-- singular system");
+                    return false;
+                }
+                YACK_XMLOG(xml, "-- try moving...");
+                goto CYCLE;
+            }
+
+            iota::load(xi,Xl);
+            solv.solve(iOmeg,xi,xadd);
+
+            {
+                bool               foundBadExtents = false;
+                const equilibrium *accepted        = NULL;
+                for(const enode *node=singles.head();node;node=node->next)
+                {
+                    const equilibrium &eq = ***node;
+                    const size_t       ei = *eq;
+                    if(blocked[ei])
+                    {
+                        if(verbose)
+                            std::cerr << "[/] " << eq.name << std::endl;
+                        continue;
+                    }
+                    const double       xx = xi[ei];
+                    const xlimits     &lm = eq.primary_limits(Corg,corelib.maxlen);
+                    const bool         ok = lm.acceptable(xx);
+
+                    if(verbose)
+                    {
+                        std::cerr << (ok?"[+]":"[-]");
+                        singles.pad(std::cerr<< ' ' << eq.name,eq) << ": " << std::setw(15) << xx << ' ';
+                        std::cerr << lm << std::endl;
+                    }
+
+                    if(!ok)
+                    {
+                        foundBadExtents  = true;
+                        consistentState  = false;
+                        deactivated(ei);
+                        --nrun;
+                    }
+                    else
+                    {
+                        accepted = &eq;
+                    }
+
+                }
+
+                if(foundBadExtents)
+                {
+                    YACK_XMLOG(xml, "-- #dof = " << nrun << " / " << N << " (@trial #" << cycle << "." << trial << ")");
+                    switch(nrun)
+                    {
+                        case 0:
+                            if(atGlobalMinimum)
+                            {
+                                YACK_XMLOG(xml, "-- invalid phase space");
+                                return false;
+                            }
+                            goto CYCLE;
+
+                        case 1: {
+                            assert(NULL!=accepted);
+                            const equilibrium &eq = *accepted;
+                            const size_t       ei = *eq;
+                            YACK_XMLOG(xml, "-- solving only " << eq.name);
+                            (void) outcome::study(eq, K[ei], Corg, Ctry, xmul, xadd);
+                            working.transfer(Corg,Ctry);
+                        } goto CYCLE;
+
+
+                        default:
+                            break;
+                    }
+                    H0  = Hamiltonian(Corg);
+                    YACK_XMLOG(xml, "-- H0   = " << std::setw(15) << H0 << " M (updated)");
+                    goto COMPUTE_EXTENT;
+                }
+            }
+
+            YACK_XMLOG(xml, "-- consistentState = " << yack_boolean(consistentState) );
+            YACK_XMLOG(xml, "-- atGlobalMinimum = " << yack_boolean(atGlobalMinimum) );
+
+
+            //------------------------------------------------------------------
+            //
+            //
+            // compute and check dC
+            //
+            //
+            //------------------------------------------------------------------
+            for(const anode *node=working.head;node;node=node->next)
+            {
+                const species &sp = **node; assert(sp.rank>0);
+                const size_t   j  = *sp;
+
+                xadd.ldz();
+                for(size_t i=N;i>0;--i) xadd.ld( NuA[i][j] * xi[i] );
+                const double d = (dC[j] = xadd.get());
+                const double c = Corg[j];
+                if(verbose)
+                {
+                    corelib.pad(*xml << '[' << sp.name <<']',sp) << " = " << std::setw(15) << c;
+                    if(d>=0)
+                    {
+                        std::cerr << " +" << std::setw(15) << d;
+                    }
+                    else
+                    {
+                        std::cerr << " -" << std::setw(15) << fabs(d);
+                    }
+                }
+
+                if(d<0 && (-d)>c)
+                {
+                    if(verbose) std::cerr << " [REJECT]";
+                }
+                else
+                {
+                    if(verbose) std::cerr << " [accept]";
+                }
+
+                if(verbose) std::cerr << std::endl;
+
+            }
+
+
+
+            exit(0);
+
+            return true;
+
+            exit(0);
+
+            return false;
+
+
+#if 0
             //------------------------------------------------------------------
             //
             //
@@ -476,7 +635,7 @@ namespace yack
                     {
                         if(verbose)
                         {
-                            std::cerr << "[0] " << eq.name << std::endl;
+                            std::cerr << "[O] " << eq.name << std::endl;
                         }
                         continue;
                     }
@@ -672,7 +831,7 @@ namespace yack
                 }
 
             }
-
+#endif
 
 
         }
