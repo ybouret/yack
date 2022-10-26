@@ -109,6 +109,7 @@ namespace yack
             catch(...) { release(); throw; }
         }
 
+        //! return the named category
         virtual const char *category() const throw() { return kernel::hash_map_category; }
 
 
