@@ -550,6 +550,8 @@ namespace yack
             //
             //
             //------------------------------------------------------------------
+            xdiag.ld(0);
+            bool overshootDeltaC = false;
             for(const anode *node=working.head;node;node=node->next)
             {
                 const species &sp = **node; assert(sp.rank>0);
@@ -574,7 +576,29 @@ namespace yack
 
                 if(d<0 && (-d)>c)
                 {
-                    if(verbose) std::cerr << " [REJECT]";
+                    overshootDeltaC = true;
+                    if(verbose) std::cerr << " [REJECT] {";
+
+                    // look for equilibria causing negative values
+                    const islot     &hEqs = held_by[j];
+                    for(const inode *scan = hEqs.head; scan; scan=scan->next)
+                    {
+                        const equilibrium   &eq = **scan;
+                        const size_t         ei = *eq;    if(blocked[ei]) continue;
+                        const double         xx = xi[ei];
+                        const int            nu = NuA[ei][j];
+
+                        if( (xx<=0 && nu>0) || (xx>=0 && nu < 0) )
+                        {
+                            xdiag[ei] = 1;
+                            if(verbose) {
+                                std::cerr << ' ' << eq.name;
+                            }
+                        }
+                    }
+
+                    std::cerr << " }";
+
                 }
                 else
                 {
@@ -585,15 +609,19 @@ namespace yack
 
             }
 
+            std::cerr << "xdiag=" << xdiag << std::endl;
+            if(overshootDeltaC)
+            {
+
+            }
+
 
 
             exit(0);
 
             return true;
 
-            exit(0);
 
-            return false;
 
 
 #if 0
