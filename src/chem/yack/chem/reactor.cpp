@@ -51,18 +51,19 @@ namespace yack
         Cend( mtab.next() ),
         Ctry( mtab.next() ),
         dC(   mtab.next() ),
-        Csav( mtab.next() ),
-
+        
         K(     ntab.next()  ),
         Gamma( ntab.next()  ),
         xi(    ntab.next()  ),
         sigma( ntab.next()  ),
         xdiag( ntab.next()  ),
+        heavy( ntab.next()  ),
 
         Kl( ltab.next()  ),
         Xl( ltab.next()  ),
         blocked( ltab.next(), transmogrify),
         Ceq(),
+        stk(M,as_capacity),
         
         lockLib( coerce(usrLib) ),
         lockEqs( coerce(usrEqs) )

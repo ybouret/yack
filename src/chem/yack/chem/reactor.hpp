@@ -107,16 +107,17 @@ namespace yack
             tableau           &Cend;    //!< [M] final point
             tableau           &Ctry;    //!< [M] working space
             tableau           &dC;      //!< [M] step
-            tableau           &Csav;    //!< [M] saving C
             tableau           &K;       //!< [N] pre-computed K
             tableau           &Gamma;   //!< [N] current Gamm
             tableau           &xi;      //!< [N] extent
             tableau           &sigma;   //!< [N] slope
             tableau           &xdiag;   //!< [N] diagonal multiplication
+            tableau           &heavy;   //!< [N] sum of extra diagonal terms of Omega
             tableau           &Kl;      //!< [L] pre-computed K
             tableau           &Xl;      //!< [L] solving extents
             thin_array<bool>   blocked; //!< [L] blocking state
             rmatrix            Ceq;     //!< [LxM] all single solutions
+            vector<double>     stk;     //!< auxiliary stack
             
         private:
             YACK_DISABLE_COPY_AND_ASSIGN(reactor);

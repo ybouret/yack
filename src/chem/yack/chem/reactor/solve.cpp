@@ -230,21 +230,27 @@ namespace yack
                     NuA[ei].ld(0);
                     psi.ld(0);
                     assert(fabs(Xl[ei])<=0);
+                    heavy[ei] = 0;
                 }
                 else
                 {
+                    stk.free();
                     const double Ki  = K[ei];
                     eq.grad_action(psi,Ki,Corg,xmul);
                     const double            den = sigma[ei]; assert(den<0);
+                    
                     for(const enode *scan=node->prev;scan;scan=scan->prev) {
                         const size_t ej = ****scan;
-                        Omi[ej] = xadd.dot(psi,NuA[ej])/den;
+                        stk.push_back_fast( fabs( Omi[ej] = xadd.dot(psi,NuA[ej])/den ) );
                     }
 
                     for(const enode *scan=node->next;scan;scan=scan->next) {
                         const size_t ej = ****scan;
-                        Omi[ej] = xadd.dot(psi,NuA[ej])/den;
+                        stk.push_back_fast( fabs( Omi[ej] = xadd.dot(psi,NuA[ej])/den ) );
                     }
+
+                    assert(N-1==stk.size());
+                    heavy[ei] = xadd.tableau(stk);
                 }
             }
         }
@@ -294,7 +300,7 @@ namespace yack
                     //----------------------------------------------------------
                     for(size_t i=M;i>0;--i)
                     {
-                        Corg[i] = Cend[i] = Ctry[i] = Csav[i] = C0[i];
+                        Corg[i] = Cend[i] = Ctry[i]  = C0[i];
                         dC[i]   = 0;
                     }
             }
@@ -382,7 +388,7 @@ namespace yack
             //
             //
             //------------------------------------------------------------------
-            working.transfer(Csav,Corg);
+            //working.transfer(Csav,Corg);
             const bool atGlobalMinimum = hasDominant(H0,xml);
             if(!atGlobalMinimum)
             {
@@ -430,6 +436,7 @@ namespace yack
             YACK_XMLOG(xml, "-- preparing local step");
             bool   consistentState = true;
             prepareStep();
+            singles(std::cerr << "heavy=","",heavy);
 
             //------------------------------------------------------------------
             //
@@ -444,10 +451,6 @@ namespace yack
             YACK_XMLOG(xml, "-- computing extent [trial #" << trial << "]");
             std::cerr << "Omega=" << Omega << std::endl;
             iOmeg.assign(Omega);
-            if(trial>=100)
-            {
-                exit(0);
-            }
 
             if( !solv.build(iOmeg,xadd) )
             {
@@ -468,7 +471,15 @@ namespace yack
                 for(const enode *node=singles.head();node;node=node->next)
                 {
                     const equilibrium &eq = ***node;
-                    const size_t       ei = *eq;      if(blocked[ei]) continue;
+                    const size_t       ei = *eq;
+                    if(blocked[ei])
+                    {
+                        if(verbose)
+                        {
+                            std::cerr << "[0] " << eq.name << std::endl;
+                        }
+                        continue;
+                    }
                     const double       xx = xi[ei];
                     const xlimits     &lm = eq.primary_limits(Corg,corelib.maxlen);
                     const bool         ok = lm.acceptable(xx);
@@ -495,11 +506,12 @@ namespace yack
 
                 if(recomputedOmega)
                 {
+                    exit(0);
                     goto COMPUTE_EXTENT;
                 }
             }
 
-
+            return returnSolved(C0,xml);
 
             //------------------------------------------------------------------
             //
