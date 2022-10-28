@@ -73,17 +73,17 @@ namespace yack
                 const size_t       ei  = *eq;
                 writable<double>  &Ci  = Ceq[ei];
                 const double       Ki  = K[ei];
-                const outcome      oc  = outcome::study(eq, Ki, Corg, Ci, xmul, xadd);
+                const outcome      oc  = outcome::study(eq,Ki,Corg,Ci,xmul,xadd);
                 writable<double>  &psi = Psi[ei];
 
                 // Ceq is now computed
                 switch(oc.state)
                 {
                     case components::are_blocked:
-                        blocked[ei] = true; // update state
-                        Xl[ei]      = 0;    // for consistency
-                        sigma[ei]   = 0;    // for consistency
-                        psi.ld(0);          // for consistency
+                        blocked[ei] = true;       // update state
+                        Xl[ei]      = 0;          // for consistency
+                        sigma[ei]   = 0;          // for consistency
+                        psi.ld(0);                // for consistency
                         break;
 
                     case components::are_running: {
@@ -118,7 +118,7 @@ namespace yack
 
             //------------------------------------------------------------------
             //
-            // precomputed single
+            // precomputed singles: update within their Corg->Ci
             //
             //------------------------------------------------------------------
             for(const enode *node=singles.head();node;node=node->next)
@@ -148,8 +148,8 @@ namespace yack
                 switch(oc.state)
                 {
                     case components::are_blocked:
-                        blocked[ei] = true;  // blocked
-                        iota::load(Ci,Corg); // at Cend=Corg
+                        blocked[ei] = true;       // blocked
+                        iota::load(Ci,Corg);      // at Cend=Corg
                         break;
 
                     case components::are_running: {
@@ -331,7 +331,7 @@ namespace yack
             //
             //------------------------------------------------------------------
             size_t             nrun = 0;
-            const equilibrium *emax = topoSingles(nrun,xml);;
+            const equilibrium *emax = topoSingles(nrun,xml);
 
             if(!emax)
             {
