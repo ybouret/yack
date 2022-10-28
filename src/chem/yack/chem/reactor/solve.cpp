@@ -455,7 +455,7 @@ namespace yack
                     YACK_XMLOG(xml, "-- singular system");
                     return false;
                 }
-                YACK_XMLOG(xml, "-- try moving...");
+                YACK_XMLOG(xml, "-- try moving again");
                 goto CYCLE;
             }
 
@@ -471,8 +471,7 @@ namespace yack
                     const size_t       ei = *eq;
                     if(blocked[ei])
                     {
-                        if(verbose)
-                            std::cerr << "[/] " << eq.name << '|' << std::endl;
+                        if(verbose) singles.pad(std::cerr << "[/] " << eq.name,eq) << '|' << std::endl;
                         continue;
                     }
                     const double       xx = xi[ei];
@@ -511,13 +510,17 @@ namespace yack
                                 YACK_XMLOG(xml, "-- invalid phase space");
                                 return false;
                             }
+                            else
+                            {
+                                YACK_XMLOG(xml, "-- try moving again");
+                            }
                             goto CYCLE;
 
                         case 1: {
                             assert(NULL!=accepted);
                             const equilibrium &eq = *accepted;
                             const size_t       ei = *eq;
-                            YACK_XMLOG(xml, "-- solving only " << eq.name);
+                            YACK_XMLOG(xml, "-- solving only partial " << eq.name);
                             (void) outcome::study(eq, K[ei], Corg, Ctry, xmul, xadd);
                             working.transfer(Corg,Ctry);
                         } goto CYCLE;
@@ -526,6 +529,8 @@ namespace yack
                         default:
                             break;
                     }
+
+                    // recompute H0 since some equilbria were deactivated
                     H0  = Hamiltonian(Corg);
                     YACK_XMLOG(xml, "-- H0   = " << std::setw(15) << H0 << " M (updated)");
                     goto COMPUTE_EXTENT;
@@ -605,12 +610,55 @@ namespace yack
             std::cerr << "xdiag=" << xdiag << std::endl;
             if(overshootDeltaC)
             {
+                std::cerr << "  [[ OVERSHOOT ]] " << std::endl;
+                exit(0);
+            }
 
+            //------------------------------------------------------------------
+            //
+            //
+            // ok
+            //
+            //
+            //------------------------------------------------------------------
+            working.add_safe(Cend,Corg,dC);
+
+            YACK_XMLOG(xml, "-- H0   = " << std::setw(15) << H0 << " @0");
+            assert( fabs(H0-Hamiltonian(Corg)) <= 0);
+            assert( fabs(H0-(*this)(0.0))      <= 0);
+
+
+
+            if(true)
+            {
+                ios::ocstream fp("ham.dat");
+                const size_t  np = 1000;
+                for(size_t i=0;i<=np;++i)
+                {
+                    const double u = i/double(np);
+                    fp("%g %g\n", u, (*this)(u) );
+                }
+            }
+
+            double H1 = Hamiltonian(Cend);
+            {
+                triplet<double> U = { 0,  -1, 1.0 };
+                triplet<double> H = { H0, -1, Hamiltonian(Cend) };
+                optimize::run_for(*this, U, H, optimize::inside);
+                H1 = H.b;
+                working.transfer(Corg,Ctry);
+                YACK_XMLOG(xml, "-- H1   = " << std::setw(15) << H1 << " @" << U.b);
+            }
+
+            if(H1>=H0)
+            {
+                std::cerr << " stalled " << std::endl;
+                (void) returnSolved(C0,xml);
+                exit(0);
             }
 
 
-
-            exit(0);
+            goto CYCLE;
 
             return true;
 

@@ -42,6 +42,7 @@ namespace yack
             //
             // methods
             //__________________________________________________________________
+
             //! transfer only active part
             template <typename TARGET, typename SOURCE> inline
             void transfer(TARGET &target, SOURCE &source) const
@@ -52,6 +53,21 @@ namespace yack
                     target[j] = source[j];
                 }
             }
+
+            //! target = max_of(0,LHS+RHS)
+            template <typename TARGET, typename LHS, typename RHS> inline
+            void add_safe(TARGET &target, LHS &lhs, RHS &rhs) const
+            {
+                for(const anode *node=this->head;node;node=node->next)
+                {
+                    const size_t                j = ***node;
+                    typename TARGET::const_type t = lhs[j]+rhs[j];
+                    target[j] = (t<=0) ? 0 : t;
+                }
+            }
+
+
+
 
         private:
             YACK_DISABLE_COPY_AND_ASSIGN(active_list);
