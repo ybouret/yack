@@ -439,7 +439,7 @@ namespace yack
             //------------------------------------------------------------------
             //
             //
-            // compute extent
+            // compute extents
             //
             //
             //------------------------------------------------------------------
@@ -462,6 +462,14 @@ namespace yack
             iota::load(xi,Xl);
             solv.solve(iOmeg,xi,xadd);
 
+
+            //------------------------------------------------------------------
+            //
+            //
+            // checking for limits on PRIMARY species
+            //
+            //
+            //------------------------------------------------------------------
             {
                 bool               foundBadExtents = false;
                 const equilibrium *accepted        = NULL;
@@ -471,7 +479,7 @@ namespace yack
                     const size_t       ei = *eq;
                     if(blocked[ei])
                     {
-                        if(verbose) singles.pad(std::cerr << "[/] " << eq.name,eq) << '|' << std::endl;
+                        if(verbose) singles.pad(std::cerr << " | " << eq.name,eq) << " | " << std::endl;
                         continue;
                     }
                     const double       xx = xi[ei];
@@ -481,7 +489,7 @@ namespace yack
                     if(verbose)
                     {
                         std::cerr << (ok?"[+]":"[-]");
-                        singles.pad(std::cerr<< ' ' << eq.name,eq) << ": " << std::setw(15) << xx << ' ';
+                        singles.pad(std::cerr<< ' ' << eq.name,eq) << " : " << std::setw(15) << xx << ' ';
                         std::cerr << lm << std::endl;
                     }
 
@@ -544,21 +552,24 @@ namespace yack
             //------------------------------------------------------------------
             //
             //
-            // compute and check dC
+            // Computing Delta and checking global overhsoot
             //
             //
             //------------------------------------------------------------------
-            xdiag.ld(0);
+            oshot.ld(false);
             bool overshootDeltaC = false;
             for(const anode *node=working.head;node;node=node->next)
             {
+                // get species
                 const species &sp = **node; assert(sp.rank>0);
                 const size_t   j  = *sp;
 
+                // compute delta
                 xadd.ldz();
                 for(size_t i=N;i>0;--i) xadd.ld( NuA[i][j] * xi[i] );
                 const double d = (dC[j] = xadd.get());
                 const double c = Corg[j];
+
                 if(verbose)
                 {
                     corelib.pad(*xml << '[' << sp.name <<']',sp) << " = " << std::setw(15) << c;
@@ -572,6 +583,7 @@ namespace yack
                     }
                 }
 
+                // check overshoot
                 if(d<0 && (-d)>c)
                 {
                     overshootDeltaC = true;
@@ -586,9 +598,9 @@ namespace yack
                         const double         xx = xi[ei];
                         const int            nu = NuA[ei][j];
 
-                        if( (xx<=0 && nu>0) || (xx>=0 && nu < 0) )
+                        if( (xx<0 && nu>0) || (xx>0 && nu < 0) )
                         {
-                            xdiag[ei] = 1;
+                            oshot[ei] = true;
                             if(verbose) {
                                 std::cerr << ' ' << eq.name;
                             }
@@ -607,7 +619,7 @@ namespace yack
 
             }
 
-            std::cerr << "xdiag=" << xdiag << std::endl;
+            std::cerr << "overshoot=" << oshot << std::endl;
             if(overshootDeltaC)
             {
                 std::cerr << "  [[ OVERSHOOT ]] " << std::endl;
@@ -629,7 +641,7 @@ namespace yack
 
 
 
-            if(true)
+            if(false)
             {
                 ios::ocstream fp("ham.dat");
                 const size_t  np = 1000;
@@ -642,25 +654,38 @@ namespace yack
 
             double H1 = Hamiltonian(Cend);
             {
-                triplet<double> U = { 0,  -1, 1.0 };
-                triplet<double> H = { H0, -1, Hamiltonian(Cend) };
+                triplet<double> U = {  0, -1,  1 };
+                triplet<double> H = { H0, -1, H1 };
                 optimize::run_for(*this, U, H, optimize::inside);
                 H1 = H.b;
                 working.transfer(Corg,Ctry);
                 YACK_XMLOG(xml, "-- H1   = " << std::setw(15) << H1 << " @" << U.b);
             }
 
-            if(H1>=H0)
+            if(!usingMaximumDOF)
             {
-                std::cerr << " stalled " << std::endl;
-                (void) returnSolved(C0,xml);
-                exit(0);
+                // not fully differentiable in any case
+                YACK_XMLOG(xml, "-- not fully differentiable");
+                goto CYCLE;
+            }
+            else
+            {
+                if(H1>=H0)
+                {
+                    std::cerr << " stalled " << std::endl;
+                    (void) returnSolved(C0,xml);
+                    exit(0);
+
+                    goto CYCLE;
+                }
+                else
+                {
+                    goto CYCLE;
+                }
             }
 
 
-            goto CYCLE;
 
-            return true;
 
 
 

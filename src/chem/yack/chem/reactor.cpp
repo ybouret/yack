@@ -56,7 +56,7 @@ namespace yack
         Gamma( ntab.next()  ),
         xi(    ntab.next()  ),
         sigma( ntab.next()  ),
-        xdiag( ntab.next()  ),
+        oshot( ntab.next(), transmogrify  ),
         
         Kl( ltab.next()  ),
         Xl( ltab.next()  ),
