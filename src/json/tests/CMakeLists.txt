@@ -1,5 +1,6 @@
 file(GLOB srcs test-*.cpp)
-  
+
+#add_library(json-tests STATIC ${srcs})  
  
 
 add_executable(test-json main.cpp ${srcs})
