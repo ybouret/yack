@@ -57,14 +57,12 @@ namespace yack
         xi(    ntab.next()  ),
         sigma( ntab.next()  ),
         xdiag( ntab.next()  ),
-        heavy( ntab.next()  ),
-
+        
         Kl( ltab.next()  ),
         Xl( ltab.next()  ),
         blocked( ltab.next(), transmogrify),
         Ceq(),
-        stk(M,as_capacity),
-        
+
         lockLib( coerce(usrLib) ),
         lockEqs( coerce(usrEqs) )
         {
@@ -161,7 +159,7 @@ namespace yack
                 // build related groups
                 //--------------------------------------------------------------
                 {
-                    YACK_XMLSUB(xml,"Related");
+                    YACK_XMLSUB(xml,"buildRelated");
                     buildRelated();
                     if(verbose)
                     {
@@ -175,7 +173,9 @@ namespace yack
                 //--------------------------------------------------------------
                 makeManifold(xml);
 
+                //--------------------------------------------------------------
                 // check primary involved equilibria
+                //--------------------------------------------------------------
                 {
                     YACK_XMLSUB(xml, "buildingDeps");
                     for(const anode *node=working.head;node;node=node->next)

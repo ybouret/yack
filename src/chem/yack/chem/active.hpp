@@ -18,8 +18,8 @@ namespace yack
         // types for list of active species
         //
         //______________________________________________________________________
-        typedef meta_list<const species> alist; //!< alias
-        typedef alist::node_type         anode; //!< alias
+        typedef meta_list<const species> alist; //!< alias for list of active species
+        typedef alist::node_type         anode; //!< alias for node of active species
 
         //______________________________________________________________________
         //

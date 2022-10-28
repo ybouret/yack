@@ -35,9 +35,9 @@ namespace yack
         // types for list of involved equilibria
         //
         //______________________________________________________________________
-        typedef meta_list<const equilibrium> islot; //!< alias
-        typedef islot::node_type             inode; //!< alias
-        typedef vector<const islot>          slots; //!< alias
+        typedef meta_list<const equilibrium>       islot; //!< alias for list of involved equilibri(um|a)
+        typedef islot::node_type                   inode; //!< alias for node of involved equilirium
+        typedef vector<const islot,memory::dyadic> slots; //!< alias
 
         //______________________________________________________________________
         //
@@ -112,13 +112,11 @@ namespace yack
             tableau           &xi;      //!< [N] extent
             tableau           &sigma;   //!< [N] slope
             tableau           &xdiag;   //!< [N] diagonal multiplication
-            tableau           &heavy;   //!< [N] sum of extra diagonal terms of Omega
             tableau           &Kl;      //!< [L] pre-computed K
             tableau           &Xl;      //!< [L] solving extents
             thin_array<bool>   blocked; //!< [L] blocking state
             rmatrix            Ceq;     //!< [LxM] all single solutions
-            vector<double>     stk;     //!< auxiliary stack
-            
+
         private:
             YACK_DISABLE_COPY_AND_ASSIGN(reactor);
             const lockable::scope lockLib;

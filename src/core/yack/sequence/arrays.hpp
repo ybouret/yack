@@ -3,7 +3,6 @@
 #ifndef YACK_ARRAYS_INCLUDED
 #define YACK_ARRAYS_INCLUDED 1
 
-#include "yack/setup.hpp"
 #include "yack/sequence/thin-array.hpp"
 #include "yack/memory/operative.hpp"
 #include "yack/container/dynamic.hpp"

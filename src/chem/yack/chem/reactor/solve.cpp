@@ -203,12 +203,12 @@ namespace yack
                 assert( fabs(Hamiltonian(Cmin)-Hmin) <=0 );
                 working.transfer(Corg,Cmin);
                 YACK_XMLOG(xml,"--[" <<  std::setw(15) << Hmin << " @" << *gmin << " ]");
-                return false;
+                return true;
             }
             else
             {
                 YACK_XMLOG(xml,"-- at global minimum, no dominant");
-                return true;
+                return false;
             }
 
         }
@@ -230,27 +230,23 @@ namespace yack
                     NuA[ei].ld(0);
                     psi.ld(0);
                     assert(fabs(Xl[ei])<=0);
-                    heavy[ei] = 0;
                 }
                 else
                 {
-                    stk.free();
                     const double Ki  = K[ei];
                     eq.grad_action(psi,Ki,Corg,xmul);
                     const double            den = sigma[ei]; assert(den<0);
                     
                     for(const enode *scan=node->prev;scan;scan=scan->prev) {
                         const size_t ej = ****scan;
-                        stk.push_back_fast( fabs( Omi[ej] = xadd.dot(psi,NuA[ej])/den ) );
+                        Omi[ej] = xadd.dot(psi,NuA[ej])/den;
                     }
 
                     for(const enode *scan=node->next;scan;scan=scan->next) {
                         const size_t ej = ****scan;
-                        stk.push_back_fast( fabs( Omi[ej] = xadd.dot(psi,NuA[ej])/den ) );
+                        Omi[ej] = xadd.dot(psi,NuA[ej])/den;
                     }
 
-                    assert(N-1==stk.size());
-                    heavy[ei] = xadd.tableau(stk);
                 }
             }
         }
@@ -390,8 +386,7 @@ namespace yack
             //
             //
             //------------------------------------------------------------------
-            //working.transfer(Csav,Corg);
-            const bool atGlobalMinimum = hasDominant(H0,xml);
+            const bool atGlobalMinimum = !hasDominant(H0,xml);
             if(!atGlobalMinimum)
             {
                 YACK_XMLOG(xml,"-- topology: updating");
@@ -406,8 +401,8 @@ namespace yack
 
                 switch (nrun) {
                     case 0:
-                        YACK_XMLOG(xml, "-- all blocked (@level-2)");
-                        return returnSolved(C0,xml);
+                        YACK_XMLOG(xml, "-- all blocked (@level-2) => failure");
+                        return false;
 
                     case 1:
                         YACK_XMLOG(xml, "-- only {" << emax->name << "} (@level-2)");
@@ -436,9 +431,8 @@ namespace yack
             //
             //------------------------------------------------------------------
             YACK_XMLOG(xml, "-- preparing local step");
-            bool   consistentState = true;
+            bool   usingMaximumDOF = true;
             prepareStep();
-            //singles(std::cerr << "heavy=","",heavy);
 
             unsigned trial = 0;
 
@@ -452,7 +446,6 @@ namespace yack
         COMPUTE_EXTENT:
             ++trial;
             YACK_XMLOG(xml, "-- computing extent [trial #" << cycle << "." << trial << "]");
-            //std::cerr << "Omega=" << Omega << std::endl;
             iOmeg.assign(Omega);
 
             if( !solv.build(iOmeg,xadd) )
@@ -479,7 +472,7 @@ namespace yack
                     if(blocked[ei])
                     {
                         if(verbose)
-                            std::cerr << "[/] " << eq.name << std::endl;
+                            std::cerr << "[/] " << eq.name << '|' << std::endl;
                         continue;
                     }
                     const double       xx = xi[ei];
@@ -496,7 +489,7 @@ namespace yack
                     if(!ok)
                     {
                         foundBadExtents  = true;
-                        consistentState  = false;
+                        usingMaximumDOF  = false;
                         deactivated(ei);
                         --nrun;
                     }
@@ -539,7 +532,7 @@ namespace yack
                 }
             }
 
-            YACK_XMLOG(xml, "-- consistentState = " << yack_boolean(consistentState) );
+            YACK_XMLOG(xml, "-- usingMaximumDOF = " << yack_boolean(usingMaximumDOF) );
             YACK_XMLOG(xml, "-- atGlobalMinimum = " << yack_boolean(atGlobalMinimum) );
 
 
