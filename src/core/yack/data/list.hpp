@@ -10,7 +10,10 @@ namespace yack
 {
 
 
+    //__________________________________________________________________________
+    //
     //! check a node for a doubly linked list
+    //__________________________________________________________________________
 #define YACK_LIST_CHECK(NODE) \
 assert(NULL!=NODE); assert(NULL==(NODE)->next); assert(NULL==(NODE)->prev)
 

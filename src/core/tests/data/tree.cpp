@@ -95,7 +95,8 @@ YACK_UTEST(data_tree)
 
         tree.gv("stree.dot");
         ios::vizible::render("stree.dot");
-        std::cerr << "tree.depth=" << tree.depth() << std::endl;
+        std::cerr << "tree.depth = " << tree.depth() << std::endl;
+        std::cerr << "collisions = " << collisions   << std::endl;
 
         randomized::shuffle::list(keys,ran);
         for( small_node<key_type> *k = keys.head; k; k=k->next )

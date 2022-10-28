@@ -466,6 +466,7 @@ namespace yack
             while( !f.is_local_minimum() )
             {
                 ++cycle;
+                YACK_LOCATE(fn<<" -------- cycle #" << cycle << " --------");
                 const real_t width     = std::abs(x.c-x.a);
                 //--------------------------------------------------------------
                 //

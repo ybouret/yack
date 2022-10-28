@@ -144,7 +144,7 @@ namespace yack
                 const double       Ki  = Kl[ei];
                 const outcome      oc  = outcome::study(eq, Ki, Corg, Cend, xmul, xadd);
 
-                // Cend holds the equilibrium value
+                // Cend now holds the outcome equilibrium value
                 switch(oc.state)
                 {
                     case components::are_blocked:
@@ -174,7 +174,7 @@ namespace yack
             // initialize search over groups
             //
             //------------------------------------------------------------------
-            writable<double> &Cmin = Cend; // will hold winner C
+            writable<double> &Cmin = Cend; // alias, will hold winner C
             const group      *gmin = NULL; // will hold minimal group
             double            Hmin  = H0;  // initial Hamiltonian
             working.transfer(Cmin,Corg);   // initial Cend = Corg
