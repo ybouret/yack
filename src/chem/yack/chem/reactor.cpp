@@ -81,7 +81,7 @@ namespace yack
                 // initialize K and Nu
                 //--------------------------------------------------------------
                 {
-                    YACK_XMLSUB(xml,"Singles");
+                    YACK_XMLSUB(xml,"BuildingSingles");
                     YACK_XMLOG(xml,singles);
                     for(const enode *node=singles.head();node;node=node->next)
                     {
@@ -112,7 +112,7 @@ namespace yack
                 // compute couples
                 //--------------------------------------------------------------
                 {
-                    YACK_XMLSUB(xml,"Couples");
+                    YACK_XMLSUB(xml,"BuildingCouples");
                     composite::scatter( coerce(couples), worklib, singles, K, xmul);
 
 
@@ -159,7 +159,7 @@ namespace yack
                 // build related groups
                 //--------------------------------------------------------------
                 {
-                    YACK_XMLSUB(xml,"buildRelated");
+                    YACK_XMLSUB(xml,"BuildingRelated");
                     buildRelated();
                     if(verbose)
                     {
@@ -177,7 +177,7 @@ namespace yack
                 // check primary involved equilibria
                 //--------------------------------------------------------------
                 {
-                    YACK_XMLSUB(xml, "buildingDeps");
+                    YACK_XMLSUB(xml, "BuildingDependencies");
                     for(const anode *node=working.head;node;node=node->next)
                     {
                         const species &s = **node;             assert(s.rank>0);
