@@ -553,6 +553,7 @@ namespace yack
             //------------------------------------------------------------------
             oshot.ld(false);
             bool overshootDeltaC = false;
+            vector<double> ratio(M,as_capacity);
             for(const anode *node=working.head;node;node=node->next)
             {
                 //--------------------------------------------------------------
@@ -584,6 +585,8 @@ namespace yack
                 //--------------------------------------------------------------
                 if(d<0 && (-d)>c)
                 {
+                    const double rho = c/(-d);
+                    ratio << rho;
                     overshootDeltaC = true;
                     if(verbose) std::cerr << " [REJECT] {";
 
@@ -620,6 +623,7 @@ namespace yack
             }
 
             std::cerr << "overshoot=" << oshot << std::endl;
+            std::cerr << "ratio    =" << ratio << std::endl;
             if(overshootDeltaC)
             {
                 std::cerr << "  [[ OVERSHOOT ]] " << std::endl;
