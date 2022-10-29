@@ -20,25 +20,7 @@ namespace yack
     namespace chemical
     {
 
-        double reactor:: Hamiltonian(const group &g)
-        {
-            //------------------------------------------------------------------
-            // build a trial concentration
-            //------------------------------------------------------------------
-            iota::load(Ctry,Corg);
-            for(const gnode *ep=g.head;ep;ep=ep->next)
-            {
-                const equilibrium &member = **ep;
-                member.transfer(Ctry,Ceq[*member]);
-            }
-
-            //------------------------------------------------------------------
-            // compute it's hamiltonian
-            //------------------------------------------------------------------
-            return Hamiltonian(Ctry);
-        }
-
-
+     
         const readable<double> & reactor:: Optimized_C(const double H0)
         {
             triplet<double> U = { 0,  -1, 1.0 };
@@ -214,7 +196,7 @@ namespace yack
         }
 
 
-        void reactor:: prepareStep()
+        void reactor:: gatherOmega()
         {
             NuA.assign(Nu);
             for(const enode *node=singles.head();node;node=node->next)
@@ -285,12 +267,8 @@ namespace yack
 
 
                 case 1: YACK_XMLOG(xml, "-- success [single]");
-                {
-                    const equilibrium &eq = ***singles.head();       // standalone
-                    outcome::study(eq, K[1], C0, Corg, xmul, xadd);  // find 1D eq
-                    return returnSolved(C0,xml);                     // done
-                } break;
-
+                    (void) outcome::study(***singles.head(), K[1], C0, Corg, xmul, xadd); // standalone find 1D in Corg
+                    return returnSolved(C0,xml);                                          // done
 
                 default: YACK_XMLOG(xml, "-- start with #eqs=" << N);
                     //----------------------------------------------------------
@@ -301,11 +279,19 @@ namespace yack
                         Corg[i] = Cend[i] = Ctry[i]  = C0[i];
                         dC[i]   = 0;
                     }
+                    break;
             }
 
 
-            unsigned cycle = 0;
 
+            //------------------------------------------------------------------
+            //
+            //
+            // Starting a full cycle
+            //
+            //
+            //------------------------------------------------------------------
+            unsigned cycle = 0;
         CYCLE:
             ++cycle;
             YACK_XMLOG(xml,"-------- cycle " << cycle << " --------");
@@ -322,8 +308,9 @@ namespace yack
             //------------------------------------------------------------------
             //
             //
-            // getting topology from singles
-            //
+            // 1) Getting topology from singles
+            //    - compute each Ceq, sigma, Xl
+            //    - return maximum displaced equilibria and #running
             //
             //------------------------------------------------------------------
             size_t             nrun = 0;
@@ -337,44 +324,44 @@ namespace yack
 
 
             switch (nrun) {
-                case 0:
-                    YACK_XMLOG(xml, "-- all blocked (@level-1)");
-                    return returnSolved(C0,xml);
+                case 0: // emax should be NULL!!
+                    YACK_XMLOG(xml, "-- corrupted (@level-1)");
+                    return false;
 
-                case 1:
+                case 1: // special case, use computed value and CYCLE again
                     YACK_XMLOG(xml, "-- only {" << emax->name << "} (@level-1)");
                     working.transfer(Corg,Ceq[**emax] );
                     goto CYCLE;
 
-                default:
+                default: // nrun>=2
                     YACK_XMLOG(xml, "-- #dof = " << nrun << " / " << N << " (@level-1)");
                     break;
             }
 
 
-
             //------------------------------------------------------------------
             //
             //
-            // initialize Hamiltonian
+            // 2) initialize Hamiltonian
             //
             //
             //------------------------------------------------------------------
+            assert(nrun>=2);
             double H0  = Hamiltonian(Corg);
             YACK_XMLOG(xml, "-- H0   = " << std::setw(15) << H0 << " M (initialized)");
-            if(H0<=0)
-            {
+            if(H0<=0) {
                 YACK_XMLOG(xml, "-- success: H0<=0 (@level-1)");
-                return returnSolved(C0,xml);
+                return returnSolved(C0,xml); // numerical success
             }
 
 
             //------------------------------------------------------------------
             //
             //
-            // query lattice status (pre-computed singles and couples)
-            //
-            //
+            // 3) query lattice status
+            //    - optimize Hamiltonian from all Corg:Ceq[ei]
+            //    - compute  couples Ceq and optimize Halmiltonian
+            //    - Ceq holds all optimized value for the lattice
             //------------------------------------------------------------------
             topoLattice(H0,xml);
 
@@ -382,13 +369,14 @@ namespace yack
             //------------------------------------------------------------------
             //
             //
-            // optimise global step
-            //
+            // 4) find the dominant group that decreases H0 most.
+            // No group means that we are at a global minimum
             //
             //------------------------------------------------------------------
             const bool atGlobalMinimum = !hasDominant(H0,xml);
             if(!atGlobalMinimum)
             {
+                // Corg has changed
                 YACK_XMLOG(xml,"-- topology: updating");
                 emax = topoSingles(nrun,xml);
                 YACK_XMLOG(xml,"-- topology: updated!");
@@ -414,6 +402,7 @@ namespace yack
                         break;
                 }
 
+                assert(nrun>=2);
                 H0  = Hamiltonian(Corg);
                 YACK_XMLOG(xml, "-- H0   = " << std::setw(15) << H0 << " M (updated)");
                 if(H0<=0)
@@ -422,24 +411,27 @@ namespace yack
                     return returnSolved(C0,xml);
                 }
             }
+            else
+            {
+                YACK_XMLOG(xml, "-- H0   = " << std::setw(15) << H0 << " M (untouched)");
+            }
 
             //------------------------------------------------------------------
             //
             //
-            // prepare local step
+            // 5) prepare local step, initializing usingMaximumDOF to true
             //
             //
             //------------------------------------------------------------------
             YACK_XMLOG(xml, "-- preparing local step");
-            bool   usingMaximumDOF = true;
-            prepareStep();
-
-            unsigned trial = 0;
+            bool     usingMaximumDOF = true;
+            unsigned trial           = 0;
+            gatherOmega();
 
             //------------------------------------------------------------------
             //
             //
-            // compute extents
+            // 6) compute extents
             //
             //
             //------------------------------------------------------------------
@@ -453,11 +445,12 @@ namespace yack
                 if( atGlobalMinimum )
                 {
                     YACK_XMLOG(xml, "-- singular system");
-                    return false;
+                    return false; // not good
                 }
                 YACK_XMLOG(xml, "-- try moving again");
-                goto CYCLE;
+                goto CYCLE; // not enough locality
             }
+
 
             iota::load(xi,Xl);
             solv.solve(iOmeg,xi,xadd);
@@ -466,7 +459,7 @@ namespace yack
             //------------------------------------------------------------------
             //
             //
-            // checking for limits on PRIMARY species
+            // 7) checking for limits on PRIMARY species
             //
             //
             //------------------------------------------------------------------
@@ -539,6 +532,7 @@ namespace yack
                     }
 
                     // recompute H0 since some equilbria were deactivated
+                    assert(nrun>=2);
                     H0  = Hamiltonian(Corg);
                     YACK_XMLOG(xml, "-- H0   = " << std::setw(15) << H0 << " M (updated)");
                     goto COMPUTE_EXTENT;
@@ -552,7 +546,8 @@ namespace yack
             //------------------------------------------------------------------
             //
             //
-            // Computing Delta and checking global overhsoot
+            // 8) computing Delta C and checking global overshoot, all PRIMARY
+            //    species are under control, nrun>=2
             //
             //
             //------------------------------------------------------------------
@@ -560,36 +555,41 @@ namespace yack
             bool overshootDeltaC = false;
             for(const anode *node=working.head;node;node=node->next)
             {
+                //--------------------------------------------------------------
                 // get species
+                //--------------------------------------------------------------
                 const species &sp = **node; assert(sp.rank>0);
                 const size_t   j  = *sp;
 
+                //--------------------------------------------------------------
                 // compute delta
+                //--------------------------------------------------------------
                 xadd.ldz();
                 for(size_t i=N;i>0;--i) xadd.ld( NuA[i][j] * xi[i] );
                 const double d = (dC[j] = xadd.get());
                 const double c = Corg[j];
 
-                if(verbose)
-                {
+                if(verbose) {
                     corelib.pad(*xml << '[' << sp.name <<']',sp) << " = " << std::setw(15) << c;
-                    if(d>=0)
-                    {
+                    if(d>=0) {
                         std::cerr << " +" << std::setw(15) << d;
                     }
-                    else
-                    {
+                    else {
                         std::cerr << " -" << std::setw(15) << fabs(d);
                     }
                 }
 
+                //--------------------------------------------------------------
                 // check overshoot
+                //--------------------------------------------------------------
                 if(d<0 && (-d)>c)
                 {
                     overshootDeltaC = true;
                     if(verbose) std::cerr << " [REJECT] {";
 
+                    //----------------------------------------------------------
                     // look for equilibria causing negative values
+                    //----------------------------------------------------------
                     const islot     &hEqs = held_by[j];
                     for(const inode *scan = hEqs.head; scan; scan=scan->next)
                     {
@@ -629,7 +629,7 @@ namespace yack
             //------------------------------------------------------------------
             //
             //
-            // ok
+            // 9) compute validated Cend 
             //
             //
             //------------------------------------------------------------------
@@ -662,6 +662,15 @@ namespace yack
                 YACK_XMLOG(xml, "-- H1   = " << std::setw(15) << H1 << " @" << U.b);
             }
 
+
+            //------------------------------------------------------------------
+            //
+            //
+            // 10) ....
+            //
+            //
+            //------------------------------------------------------------------
+
             if(!usingMaximumDOF)
             {
                 // not fully differentiable in any case
@@ -683,250 +692,6 @@ namespace yack
                     goto CYCLE;
                 }
             }
-
-
-
-
-
-
-
-#if 0
-            //------------------------------------------------------------------
-            //
-            //
-            // compute extent using limiting PRIMARY species
-            //
-            //
-            //------------------------------------------------------------------
-            unsigned trial = 0;
-        COMPUTE_EXTENT:
-            ++trial;
-            YACK_XMLOG(xml, "-- computing extent [trial #" << trial << "]");
-            std::cerr << "Omega=" << Omega << std::endl;
-            iOmeg.assign(Omega);
-
-            if( !solv.build(iOmeg,xadd) )
-            {
-                if( atGlobalMinimum )
-                {
-                    YACK_XMLOG(xml, "-- singular system");
-                    return false;
-                }
-                YACK_XMLOG(xml, "-- try moving...");
-                goto CYCLE;
-            }
-
-            iota::load(xi,Xl);
-            solv.solve(iOmeg,xi,xadd);
-
-            {
-                bool recomputedOmega = false;
-                for(const enode *node=singles.head();node;node=node->next)
-                {
-                    const equilibrium &eq = ***node;
-                    const size_t       ei = *eq;
-                    if(blocked[ei])
-                    {
-                        if(verbose)
-                        {
-                            std::cerr << "[O] " << eq.name << std::endl;
-                        }
-                        continue;
-                    }
-                    const double       xx = xi[ei];
-                    const xlimits     &lm = eq.primary_limits(Corg,corelib.maxlen);
-                    const bool         ok = lm.acceptable(xx);
-
-                    if(verbose)
-                    {
-                        std::cerr << (ok?"[+]":"[-]");
-                        singles.pad(std::cerr<< ' ' << eq.name,eq) << ": " << std::setw(15) << xx << ' ';
-                        std::cerr << lm << std::endl;
-                    }
-
-                    if(!ok)
-                    {
-                        Omega[ei][ei]   *= 10;
-                        recomputedOmega  = true;
-                        consistentState  = false;
-                    }
-                    else
-                    {
-
-                    }
-
-                }
-
-                if(recomputedOmega)
-                {
-                    exit(0);
-                    goto COMPUTE_EXTENT;
-                }
-            }
-
-            return returnSolved(C0,xml);
-
-            //------------------------------------------------------------------
-            //
-            //
-            // checking REPLICA
-            //
-            //
-            //------------------------------------------------------------------
-
-            {
-                YACK_XMLSUB(xml, "forwarding");
-
-                bool   invalidSpecies = false;
-                xdiag.ld(1);
-
-
-                for(const anode *node=working.head;node;node=node->next)
-                {
-                    const species &sp = **node; assert(sp.rank>0);
-                    const size_t   j  = *sp;
-
-                    xadd.ldz();
-                    for(size_t i=N;i>0;--i) xadd.ld( NuA[i][j] * xi[i] );
-                    const double d = (dC[j] = xadd.get());
-                    const double c = Corg[j];
-                    if(verbose)
-                    {
-                        corelib.pad(*xml << '[' << sp.name <<']',sp) << " = " << std::setw(15) << c;
-                        if(d>=0)
-                        {
-                            std::cerr << " +" << std::setw(15) << d;
-                        }
-                        else
-                        {
-                            std::cerr << " -" << std::setw(15) << fabs(d);
-                        }
-                    }
-                    if(verbose) std::cerr << std::endl;
-
-                    if(d<0 && (-d)>c)
-                    {
-                        invalidSpecies  = true;
-                        consistentState = false;
-
-                        const islot     &hEqs = held_by[j];
-                        bool             corr = false;
-                        for(const inode *scan = hEqs.head; scan; scan=scan->next)
-                        {
-                            const equilibrium   &eq = **scan;
-                            const size_t         ei = *eq;    if(blocked[ei]) continue;
-                            const double         xx = xi[ei];
-                            const int            nu = NuA[ei][j];
-
-                            if( (xx<=0 && nu>0) || (xx>=0 && nu < 0) )
-                            {
-                                xdiag[ei] = 10;
-                                corr      = true;
-                            }
-                        }
-
-                        if(!corr)
-                        {
-                            YACK_XMLOG(xml, "couldn't correct [" << sp.name << "] !!");
-                            if(atGlobalMinimum)
-                            {
-                                return false;
-                            }
-                            else
-                            {
-                                goto CYCLE;
-                            }
-                        }
-                    }
-                }
-
-                if(invalidSpecies)
-                {
-                    for(size_t i=N;i>0;--i)
-                    {
-                        if(blocked[i]) continue;
-                        Omega[i][i] *= xdiag[i];
-                    }
-                    goto COMPUTE_EXTENT;
-                }
-
-            }
-
-            //------------------------------------------------------------------
-            //
-            // compute Cend
-            //
-            //------------------------------------------------------------------
-            for(const anode *node=working.head;node;node=node->next)
-            {
-                const species &sp = **node; assert(sp.rank>0);
-                const size_t   j  = *sp;
-                Cend[j]  = max_of( Corg[j] + dC[j], 0.0 );
-            }
-
-            if(verbose) corelib(*xml << "-- Cend=","", Cend);
-
-            if(false)
-            {
-                YACK_XMLOG(xml,"-- saving ham.dat");
-                ios::ocstream fp("ham.dat");
-                const size_t  np = 1000;
-                for(size_t i=0;i<=np;++i)
-                {
-                    const double u = i/double(np);
-                    fp("%.15g %.15g\n", u, (*this)(u) );
-                }
-
-            }
-
-            //------------------------------------------------------------------
-            //
-            // no overshoot
-            //
-            //------------------------------------------------------------------
-            double H1 = Hamiltonian(Cend);
-            {
-                triplet<double> U = {  0, -1 , 1 };
-                triplet<double> H = { H0, -1, H1 };
-                optimize::run_for(*this, U, H, optimize::inside);
-                YACK_XMLOG(xml,"-- moving H0=" << H0 << " to H(" << U.b << ")=" << H.b << " : dH=" << H.b - H0 << " @cycle=" << cycle);
-                working.transfer(Corg,Ctry);
-                H1 = H.b;
-            }
-
-            //------------------------------------------------------------------
-            //
-            // check what happened
-            //
-            //------------------------------------------------------------------
-            const double dH = H1 - H0;
-
-            YACK_XMLOG(xml, "-- consistentState = " << yack_boolean(consistentState) );
-            YACK_XMLOG(xml, "-- atGlobalMinimum = " << yack_boolean(atGlobalMinimum) );
-            YACK_XMLOG(xml, "-- dH              = " << dH );
-
-
-
-            if(!consistentState)
-            {
-                // needed to be adjusted : not good
-                goto CYCLE;
-            }
-            else
-            {
-                // consistent state
-                if(atGlobalMinimum || dH >= 0)
-                {
-                    return returnSolved(C0,xml);
-                }
-                else
-                {
-                    goto CYCLE;
-                }
-
-            }
-#endif
-
 
         }
 

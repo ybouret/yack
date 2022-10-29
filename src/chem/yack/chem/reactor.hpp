@@ -132,7 +132,7 @@ namespace yack
             const equilibrium         *topoSingles(size_t &nrun, const xmlog &);         //!< check topology, return most displaced
             void                       topoLattice(const double H0, const xmlog &xml);
             bool                       hasDominant(const double H0, const xmlog &xml);
-            void                       prepareStep();
+            void                       gatherOmega();
             void                       deactivated(const size_t ei);
 
         };

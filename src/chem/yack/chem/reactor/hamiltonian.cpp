@@ -1,6 +1,7 @@
 
 #include "yack/chem/reactor.hpp"
 #include "yack/type/utils.hpp"
+#include "yack/math/iota.hpp"
 
 namespace yack
 {
@@ -23,6 +24,25 @@ namespace yack
 
             return sqrt(xadd.get());
         }
+
+        double reactor:: Hamiltonian(const group &g)
+        {
+            //------------------------------------------------------------------
+            // build a trial concentration
+            //------------------------------------------------------------------
+            math::iota::load(Ctry,Corg);
+            for(const gnode *ep=g.head;ep;ep=ep->next)
+            {
+                const equilibrium &member = **ep;
+                member.transfer(Ctry,Ceq[*member]);
+            }
+
+            //------------------------------------------------------------------
+            // compute it's hamiltonian
+            //------------------------------------------------------------------
+            return Hamiltonian(Ctry);
+        }
+
 
     }
 }
