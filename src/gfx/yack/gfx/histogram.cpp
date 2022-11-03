@@ -84,14 +84,14 @@ namespace yack
         uint8_t histogram:: Otsu() const throw()
         {
             // Total number of pixels
-            int total = cardinality();
+            size_t total = cardinality();
 
             double sum = 0;
             for (int t=0 ; t<256 ; t++) sum += t * bin[t];
 
             double sumB = 0;
-            int    wB = 0;
-            int    wF = 0;
+            size_t wB = 0;
+            size_t wF = 0;
 
             double varMax = 0;
             int threshold = 0;

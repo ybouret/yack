@@ -49,7 +49,7 @@ YACK_UTEST(vfs_local)
         std::cerr << "Listing:" << std::endl;
         for(const vfs::entry *ep=elist.head;ep;ep=ep->next)
         {
-            std::cerr << std::setw(pmax) << (*(ep->path))() << " |";
+            std::cerr << std::setw( static_cast<unsigned int>(pmax) ) << (*(ep->path))() << " |";
             std::cerr << ios::hexa(ep->attr) << "|";
             if(ep->is_unk()) std::cerr << " unknown   |";
             if(ep->is_reg()) std::cerr << " regular   |";

@@ -45,7 +45,7 @@ namespace yack
             size_t istream:: fetch_(void *addr, const size_t size)
             {
 
-                const int res = gzread(static_cast<gzFile>(GZ),addr,size);
+                const int res = gzread(static_cast<gzFile>(GZ),addr,static_cast<unsigned int>(size) );
                 if(res<0)
                 {
                     throw libc::exception(EIO,"gzread");
