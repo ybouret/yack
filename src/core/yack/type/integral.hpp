@@ -13,11 +13,20 @@ namespace yack
     namespace core
     {
 
+        //______________________________________________________________________
+        //
+        //
+        //! unsigned to unsigned conversion
+        //
+        //______________________________________________________________________
         template <typename TARGET, typename SOURCE>
         struct u2u_integral {
-            static const unsigned source_bits = 8 * sizeof(SOURCE);
-            static const unsigned target_bits = 8 * sizeof(TARGET);
+            static const unsigned source_bits = 8 * sizeof(SOURCE); //!< bits for source
+            static const unsigned target_bits = 8 * sizeof(TARGET); //!< bits for target
 
+            //------------------------------------------------------------------
+            //! dispatch conversion
+            //------------------------------------------------------------------
             static inline TARGET convert(const SOURCE source, const char *ctx)
             {
                 YACK_STATIC_CHECK(!is_signed<TARGET>::value,SOURCE_is_signed);
@@ -26,7 +35,9 @@ namespace yack
             }
 
         private:
+            //------------------------------------------------------------------
             // sizeof(SOURCE)<=sizeof(TARGET)
+            //------------------------------------------------------------------
             static inline TARGET _(const SOURCE         u,
                                    const char           *,
                                    const int2type<true> &) throw()
@@ -35,7 +46,9 @@ namespace yack
                 return TARGET(u);
             }
 
+            //------------------------------------------------------------------
             // sizeof(SOURCE)>sizeof(TARGET)
+            //------------------------------------------------------------------
             static inline TARGET _(const SOURCE         u,
                                    const char           *ctx,
                                    const int2type<false> &)
@@ -50,12 +63,20 @@ namespace yack
 
 
 
-        //! signed to unsigned
+        //______________________________________________________________________
+        //
+        //
+        //! signed to unsigned conversion
+        //
+        //______________________________________________________________________
         template <typename TARGET, typename SOURCE>
         struct s2u_integral {
-            static const unsigned source_bits = 8 * sizeof(SOURCE);
-            static const unsigned target_bits = 8 * sizeof(TARGET);
+            static const unsigned source_bits = 8 * sizeof(SOURCE); //!< bits for source
+            static const unsigned target_bits = 8 * sizeof(TARGET); //!< bits for target
 
+            //------------------------------------------------------------------
+            //! check sign then dispatch conversion
+            //------------------------------------------------------------------
             static inline TARGET convert(const SOURCE source, const char *ctx)
             {
                 YACK_STATIC_CHECK(is_signed<TARGET>::value,SOURCE_is_unsigned);
@@ -65,7 +86,9 @@ namespace yack
             }
 
         private:
+            //------------------------------------------------------------------
             // sizeof(SOURCE)<=sizeof(TARGET)
+            //------------------------------------------------------------------
             static inline TARGET _(const SOURCE         u,
                                    const char           *,
                                    const int2type<true> &) throw()
@@ -75,7 +98,9 @@ namespace yack
                 return TARGET(u);
             }
 
+            //------------------------------------------------------------------
             // sizeof(SOURCE)>sizeof(TARGET)
+            //------------------------------------------------------------------
             static inline TARGET _(const SOURCE         u,
                                    const char           *ctx,
                                    const int2type<false> &)

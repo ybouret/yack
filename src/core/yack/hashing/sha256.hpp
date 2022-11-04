@@ -24,7 +24,7 @@ namespace yack
 		public:
 			YACK_HASHING_FUNCTION_DECL(sha256,32,64); //!< specs
 
-            static void tests();
+            static void tests(); //!< tests
             
 		private:
 			SHA256_CTX ctx;
@@ -37,7 +37,7 @@ namespace yack
 		public:
 			YACK_HASHING_FUNCTION_DECL(sha224,28,64); //!< specs
 
-            static void tests();
+            static void tests(); //!< tests
 
 		private:
 			SHA256_CTX ctx;
