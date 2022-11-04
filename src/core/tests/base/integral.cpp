@@ -80,6 +80,18 @@ YACK_UTEST(integral)
     std::cerr << std::endl;
 
 
+    YACK_CHECK( UVALUE == (i2i<unsigned char,char>(UVALUE,NULL)) );
+    YACK_CHECK( UVALUE == (i2i<unsigned char,unsigned char>(UVALUE,NULL)) );
+    YACK_CHECK( UVALUE == (i2i<unsigned char,short>(UVALUE,NULL)) );
+    YACK_CHECK( UVALUE == (i2i<unsigned char,unsigned short>(UVALUE,NULL)) );
+    YACK_CHECK( UVALUE == (i2i<unsigned char,int>(UVALUE,NULL)) );
+    YACK_CHECK( UVALUE == (i2i<unsigned char,unsigned>(UVALUE,NULL)) );
+    YACK_CHECK( UVALUE == (i2i<unsigned char,long>(UVALUE,NULL)) );
+    YACK_CHECK( UVALUE == (i2i<unsigned char,unsigned long>(UVALUE,NULL)) );
+    YACK_CHECK( UVALUE == (i2i<unsigned char,long long>(UVALUE,NULL)) );
+    YACK_CHECK( UVALUE == (i2i<unsigned char,unsigned long long>(UVALUE,NULL)) );
+
+
 
 }
 YACK_UDONE()

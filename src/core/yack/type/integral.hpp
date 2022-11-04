@@ -112,13 +112,44 @@ namespace yack
                 return TARGET(u);
             }
 
+
         };
 
 
+        //! select u2u
+        template <typename TARGET, typename SOURCE>
+        inline TARGET to_integral(const int2type<false> &,       // unsigned TARGET
+                                  const SOURCE           source,
+                                  const int2type<false> &,       // unsigned SOURCE
+                                  const char            *ctx)
+        {
+            return u2u_integral<TARGET,SOURCE>::convert(source,ctx);
+        }
 
+
+        //! select s2u
+        template <typename TARGET, typename SOURCE>
+        inline TARGET to_integral(const int2type<false> &,       // unsigned TARGET
+                                  const SOURCE           source,
+                                  const int2type<true>  &,       // signed   SOURCE
+                                  const char            *ctx)
+        {
+            return s2u_integral<TARGET,SOURCE>::convert(source,ctx);
+        }
 
     }
 
+    //______________________________________________________________________
+    //
+    //! integer to integer, dispatch to proper signed interfaces
+    //______________________________________________________________________
+    template <typename TARGET, typename SOURCE>
+    inline SOURCE i2i(const SOURCE source, const char *ctx)
+    {
+        static const int2type< is_signed<TARGET>::value > tgt_sign = {};
+        static const int2type< is_signed<SOURCE>::value > src_sign = {};
+        return core::to_integral<TARGET,SOURCE>(tgt_sign,source,src_sign,ctx);
+    }
 }
 
 #endif
