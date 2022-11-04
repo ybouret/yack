@@ -122,7 +122,7 @@ public:
             {
                 if(prime64::is(offset))
                 {
-                    m[++count] = offset;
+                    m[++count] = uint32_t(offset);
                     if(count>=cache) flush(count,ctx,sync);
                 }
             }

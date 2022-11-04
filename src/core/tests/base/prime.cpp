@@ -47,7 +47,7 @@ YACK_UTEST(prime)
             {
                 if(nb<=32)
                 {
-                    const uint32_t q = p;
+                    const uint32_t q = uint32_t(p);
                     std::cerr << ios::hexa(q,true) << std::endl;
                     p32.append_back(p);
                 }

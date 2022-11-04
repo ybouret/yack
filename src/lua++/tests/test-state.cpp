@@ -11,9 +11,9 @@ YACK_UTEST(state)
     {
         vm->dofile(argv[1]);
 
-        const int    I = vm->get<lua_Integer>("I"); std::cerr << I << std::endl;
-        const double F = vm->get<lua_Number>("F");  std::cerr << F << std::endl;
-        const string S = vm->get<string>("S");      std::cerr << S << std::endl;
+        const lua_Integer I = vm->get<lua_Integer>("I"); std::cerr << I << std::endl;
+        const double      F = vm->get<lua_Number>("F");  std::cerr << F << std::endl;
+        const string      S = vm->get<string>("S");      std::cerr << S << std::endl;
 
     }
 

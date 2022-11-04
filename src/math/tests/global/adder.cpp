@@ -60,7 +60,7 @@ YACK_UTEST(adder)
         for(size_t i=num;i>0;--i)
         {
             lhs << ran.symm<double>();
-            rhs << ran.in(-10,10);
+            rhs << int( ran.in(-10,10) );
         }
         std::cerr << "lhs=" << lhs << std::endl;
         std::cerr << "rhs=" << rhs << std::endl;

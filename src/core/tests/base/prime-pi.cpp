@@ -7,7 +7,7 @@ using namespace yack;
 
 namespace
 {
-    static inline size_t manual_count(const unsigned n)
+    static inline size_t manual_count(const size_t n)
     {
         size_t         count = 0;
         const uint64_t pmax  = uint64_t(1) << n;

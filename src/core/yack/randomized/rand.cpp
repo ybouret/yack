@@ -16,7 +16,7 @@ namespace yack
         rand_:: rand_() throw() :
         bits( unsigned(RAND_MAX) )
         {
-            srand( system_seed::get<long>() );
+            srand( system_seed::get<int>() );
         }
 
         uint32_t rand_:: next32() throw()

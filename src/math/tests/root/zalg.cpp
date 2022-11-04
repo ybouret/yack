@@ -27,8 +27,8 @@ namespace
     template <typename T, template <typename> class ZROOT>
     static inline void zsolve( )
     {
-        size_t  W = 15;
-        Func<T> F = { 0 };
+        unsigned  W = 15;
+        Func<T>   F = { 0 };
         
         ZROOT<T> solve;
         std::cerr << "Using [" << solve.name() << "]/" << rtti::name<T>() << std::endl;

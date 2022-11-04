@@ -110,7 +110,7 @@ namespace yack
             y ^= (y << 15) & 0xefc60000UL;
             y ^= (y >> 18);
 
-            return y;
+            return uint32_t(y);
         }
 
     }

@@ -106,11 +106,11 @@ YACK_UTEST(memory_ptr)
         {
             if( ran.choice() )
             {
-                L.push_back( node_type::make( new dummy(i) ) );
+                L.push_back( node_type::make( new dummy( int(i) ) ) );
             }
             else
             {
-                L.push_front( node_type::make( new dummy(i) ) );
+                L.push_front( node_type::make( new dummy( int(i) ) ) );
             }
         }
         for(const node_type *node=L.head;node;node=node->next)

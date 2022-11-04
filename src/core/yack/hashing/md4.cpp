@@ -179,7 +179,7 @@ namespace yack
 				unsigned int i, index, partLen;
 				
 				/* Compute number of bytes mod 64 */
-				index = (size_t)((context->count[0] >> 3) & 0x3F);
+				index = (unsigned int)((context->count[0] >> 3) & 0x3F);
 				/* Update number of bits */
 				if ((context->count[0] += ((uint32_t)inputLen << 3))
 					< ((uint32_t)inputLen << 3))
