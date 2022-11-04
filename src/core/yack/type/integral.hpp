@@ -29,7 +29,7 @@ namespace yack
             //------------------------------------------------------------------
             static inline TARGET convert(const SOURCE source, const char *ctx)
             {
-                YACK_STATIC_CHECK(!is_signed<TARGET>::value,SOURCE_is_signed);
+                YACK_STATIC_CHECK(!is_signed<SOURCE>::value,SOURCE_is_signed);
                 static const int2type<sizeof(SOURCE)<=sizeof(TARGET)> chk = {};
                 return _(source,ctx,chk);
             }
@@ -79,7 +79,7 @@ namespace yack
             //------------------------------------------------------------------
             static inline TARGET convert(const SOURCE source, const char *ctx)
             {
-                YACK_STATIC_CHECK(is_signed<TARGET>::value,SOURCE_is_unsigned);
+                YACK_STATIC_CHECK(is_signed<SOURCE>::value,SOURCE_is_unsigned);
                 if(source<0) throw libc::exception(EINVAL, "int%u %s < 0 for uint%u", source_bits, (ctx?ctx:yack_unknown), target_bits);
                 static const int2type<sizeof(SOURCE)<=sizeof(TARGET)> chk = {};
                 return _(source,ctx,chk);
@@ -101,7 +101,7 @@ namespace yack
             //------------------------------------------------------------------
             // sizeof(SOURCE)>sizeof(TARGET)
             //------------------------------------------------------------------
-            static inline TARGET _(const SOURCE         u,
+            static inline TARGET _(const SOURCE          u,
                                    const char           *ctx,
                                    const int2type<false> &)
             {

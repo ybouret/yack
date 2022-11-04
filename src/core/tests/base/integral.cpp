@@ -17,25 +17,28 @@ YACK_UTEST(integral)
     YACK_CHECK(UVALUE == (core::u2u_integral<uint8_t,  uint16_t>  :: convert(UVALUE,NULL)) );
     YACK_CHECK(UVALUE == (core::u2u_integral<uint8_t,  uint32_t>  :: convert(UVALUE,NULL)) );
     YACK_CHECK(UVALUE == (core::u2u_integral<uint8_t,  uint64_t>  :: convert(UVALUE,NULL)) );
-
+    std::cerr << std::endl;
 
     std::cerr << "Unsigned/16" << std::endl;
     YACK_CHECK(UVALUE == (core::u2u_integral<uint16_t, uint8_t>   :: convert(UVALUE,NULL)) );
     YACK_CHECK(UVALUE == (core::u2u_integral<uint16_t, uint16_t>  :: convert(UVALUE,NULL)) );
     YACK_CHECK(UVALUE == (core::u2u_integral<uint16_t, uint32_t>  :: convert(UVALUE,NULL)) );
     YACK_CHECK(UVALUE == (core::u2u_integral<uint16_t, uint64_t>  :: convert(UVALUE,NULL)) );
+    std::cerr << std::endl;
 
     std::cerr << "Unsigned/32" << std::endl;
     YACK_CHECK(UVALUE == (core::u2u_integral<uint32_t, uint8_t> :: convert(UVALUE,NULL)) );
     YACK_CHECK(UVALUE == (core::u2u_integral<uint32_t, uint16_t> :: convert(UVALUE,NULL)) );
     YACK_CHECK(UVALUE == (core::u2u_integral<uint32_t, uint32_t> :: convert(UVALUE,NULL)) );
     YACK_CHECK(UVALUE == (core::u2u_integral<uint32_t, uint64_t> :: convert(UVALUE,NULL)) );
+    std::cerr << std::endl;
 
     std::cerr << "Unsigned/64" << std::endl;
     YACK_CHECK(UVALUE == (core::u2u_integral<uint64_t, uint8_t> :: convert(UVALUE,NULL)) );
     YACK_CHECK(UVALUE == (core::u2u_integral<uint64_t, uint16_t> :: convert(UVALUE,NULL)) );
     YACK_CHECK(UVALUE == (core::u2u_integral<uint64_t, uint32_t> :: convert(UVALUE,NULL)) );
     YACK_CHECK(UVALUE == (core::u2u_integral<uint64_t, uint64_t> :: convert(UVALUE,NULL)) );
+    std::cerr << std::endl;
 
     WRONG( (core::u2u_integral<uint8_t,uint16_t>::convert(1000,"example")) );
     WRONG( (core::u2u_integral<uint8_t,uint32_t>::convert(1000,"example")) );
@@ -45,6 +48,37 @@ YACK_UTEST(integral)
     WRONG( (core::u2u_integral<uint16_t,uint64_t>::convert(100000,"example")) );
 
     WRONG( (core::u2u_integral<uint32_t,uint64_t>::convert(YACK_U64(0xfffffffff),"example")) );
+    std::cerr << std::endl;
+
+
+    std::cerr << "Signed to Unsigned/8" << std::endl;
+    YACK_CHECK(UVALUE == (core::s2u_integral<uint8_t,  int8_t>   :: convert(UVALUE,NULL)) );
+    YACK_CHECK(UVALUE == (core::s2u_integral<uint8_t,  int16_t>  :: convert(UVALUE,NULL)) );
+    YACK_CHECK(UVALUE == (core::s2u_integral<uint8_t,  int32_t>  :: convert(UVALUE,NULL)) );
+    YACK_CHECK(UVALUE == (core::s2u_integral<uint8_t,  int64_t>  :: convert(UVALUE,NULL)) );
+    std::cerr << std::endl;
+
+    std::cerr << "Signed to Unsigned/16" << std::endl;
+    YACK_CHECK(UVALUE == (core::s2u_integral<uint16_t,  int8_t>   :: convert(UVALUE,NULL)) );
+    YACK_CHECK(UVALUE == (core::s2u_integral<uint16_t,  int16_t>  :: convert(UVALUE,NULL)) );
+    YACK_CHECK(UVALUE == (core::s2u_integral<uint16_t,  int32_t>  :: convert(UVALUE,NULL)) );
+    YACK_CHECK(UVALUE == (core::s2u_integral<uint16_t,  int64_t>  :: convert(UVALUE,NULL)) );
+    std::cerr << std::endl;
+
+    std::cerr << "Signed to Unsigned/32" << std::endl;
+    YACK_CHECK(UVALUE == (core::s2u_integral<uint32_t,  int8_t>   :: convert(UVALUE,NULL)) );
+    YACK_CHECK(UVALUE == (core::s2u_integral<uint32_t,  int16_t>  :: convert(UVALUE,NULL)) );
+    YACK_CHECK(UVALUE == (core::s2u_integral<uint32_t,  int32_t>  :: convert(UVALUE,NULL)) );
+    YACK_CHECK(UVALUE == (core::s2u_integral<uint32_t,  int64_t>  :: convert(UVALUE,NULL)) );
+    std::cerr << std::endl;
+
+    std::cerr << "Signed to Unsigned/64" << std::endl;
+    YACK_CHECK(UVALUE == (core::s2u_integral<uint64_t,  int8_t>   :: convert(UVALUE,NULL)) );
+    YACK_CHECK(UVALUE == (core::s2u_integral<uint64_t,  int16_t>  :: convert(UVALUE,NULL)) );
+    YACK_CHECK(UVALUE == (core::s2u_integral<uint64_t,  int32_t>  :: convert(UVALUE,NULL)) );
+    YACK_CHECK(UVALUE == (core::s2u_integral<uint64_t,  int64_t>  :: convert(UVALUE,NULL)) );
+    std::cerr << std::endl;
+
 
 
 }
