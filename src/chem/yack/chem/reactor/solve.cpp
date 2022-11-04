@@ -424,6 +424,33 @@ namespace yack
             //
             //------------------------------------------------------------------
             YACK_XMLOG(xml, "-- preparing local step");
+            if(false && 1 == cycle)
+            {
+
+                for(const enode *node=singles.head();node;node=node->next)
+                {
+                    const equilibrium &eq = ***node;
+                    const size_t       ei = *eq;
+                    const double       xx = Xl[ei];
+                    ios::ocstream      fp("h_" + eq.name + ".dat");
+                    if(fabs(xx)<=0 || blocked[ei ])
+                    {
+                        fp("0 0\n");
+                    }
+                    else
+                    {
+                        const size_t NP = 100;
+                        const double den = -sigma[ei];
+                        for(size_t i=0;i<=NP;++i)
+                        {
+                            const double u = i/double(NP);
+                            const double X = u * xx;
+                            fp("%.15g %.15g %.15g\n",X,eq.mass_action(K[ei],Corg,X,xmul)/den,xx-X);
+                        }
+                    }
+                }
+            }
+
             bool     usingMaximumDOF = true;
             unsigned trial           = 0;
             gatherOmega();

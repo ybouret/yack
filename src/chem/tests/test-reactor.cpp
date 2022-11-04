@@ -58,7 +58,6 @@ YACK_UTEST(reactor)
     }
 
     
-
     vector<species*> psp;
     for(const anode *node=cs.working.head;node;node=node->next)
     {
