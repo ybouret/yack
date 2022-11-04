@@ -24,7 +24,7 @@ namespace yack
 
 
         static inline void bmp_w32(unsigned char *p,
-                                       const int      i) throw()
+                                   const int      i) throw()
         {
 
             p[ 0] = (unsigned char)( i    );

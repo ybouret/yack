@@ -121,6 +121,7 @@ add_test(genp32   test-core genp32)
 add_test(prime32  test-core prime32)
 add_test(hash64   test-core hash64)
 add_test(round10  test-core round10)
+add_test(integral test-core integral)
 
 
 add_test(type:ints   test-core type_ints)

@@ -90,6 +90,8 @@ YACK_UTEST(hashing_fcn)
 
     hashing::md5::tests();
     hashing::sha1::tests();
+    hashing::sha256::tests();
+    hashing::sha224::tests();
 
     for(size_t i=1;i<=H.size();++i)
     {

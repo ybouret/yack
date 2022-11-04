@@ -26,6 +26,7 @@ YACK_UTEST_DECL(256)
     YACK_UTEST(net128);
     YACK_UTEST(abs);
     YACK_UTEST(round10);
+    YACK_UTEST(integral);
 
     YACK_UTEST(type_ints);
     YACK_UTEST(type_traits);

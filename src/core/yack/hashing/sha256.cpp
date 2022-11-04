@@ -10,10 +10,11 @@ namespace yack
 		
 #define GET_ULONG_BE(n,b,i)                             \
 {                                                       \
-(n) = ( (unsigned long) (b)[(i)    ] << 24 )        \
-| ( (unsigned long) (b)[(i) + 1] << 16 )        \
-| ( (unsigned long) (b)[(i) + 2] <<  8 )        \
-| ( (unsigned long) (b)[(i) + 3]       );       \
+(n) = (uint32_t) ( \
+        ( (unsigned long) (b)[(i)    ] << 24 )          \
+|     ( (unsigned long) (b)[(i) + 1] << 16 )            \
+|     ( (unsigned long) (b)[(i) + 2] <<  8 )            \
+|     ( (unsigned long) (b)[(i) + 3]       ) );         \
 }
 		
 #define PUT_ULONG_BE(n,b,i)                             \
@@ -322,7 +323,8 @@ d += temp1; h = temp1 + temp2;              \
 		{
 			memset( &ctx, 0 , sizeof(ctx) );
 		}
-		
+
+
 		
 		////////////////////////////////////////////////////////////////////////
 		
@@ -361,4 +363,40 @@ d += temp1; h = temp1 + temp2;              \
 		
 	}
 	
+}
+#include "yack/hashing/testing.hpp"
+
+
+namespace yack
+{
+
+    namespace hashing
+    {
+        static const testing sha256_vec[] =
+        {
+            { "", "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855" },
+
+        };
+
+        void sha256:: tests()
+        {
+            YACK_HASHING_TEST(sha256,sha256_vec);
+        }
+
+        static const testing sha224_vec[] =
+        {
+            { "", "d14a028c2a3a2bc9476102bb288234c415a2b01f828ea62ac5b3e42f" },
+            { "The quick brown fox jumps over the lazy dog",
+                "730e109bd7a8a32b1cb9d9a09aa2325d2430587ddbc0c38bad911525"},
+            { "The quick brown fox jumps over the lazy dog.",
+                "619cba8e8e05826e9b8c519c0a5c68f4fb653e8a3d8aa04bb2c8cd4c"}
+        };
+
+        void sha224:: tests()
+        {
+            YACK_HASHING_TEST(sha224,sha224_vec);
+        }
+
+
+    }
 }

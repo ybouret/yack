@@ -23,7 +23,9 @@ namespace yack
 		{
 		public:
 			YACK_HASHING_FUNCTION_DECL(sha256,32,64); //!< specs
-			
+
+            static void tests();
+            
 		private:
 			SHA256_CTX ctx;
 			YACK_DISABLE_COPY_AND_ASSIGN(sha256);
@@ -34,7 +36,9 @@ namespace yack
 		{
 		public:
 			YACK_HASHING_FUNCTION_DECL(sha224,28,64); //!< specs
-			
+
+            static void tests();
+
 		private:
 			SHA256_CTX ctx;
 			YACK_DISABLE_COPY_AND_ASSIGN(sha224);
