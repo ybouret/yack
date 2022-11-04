@@ -7,7 +7,11 @@
 
 namespace yack
 {
-    
+
+    struct integral
+    {
+        template <typename TARGET, typename SOURCE> static TARGET convert(const SOURCE,const char *ctx);
+    };
 }
 
 #endif
