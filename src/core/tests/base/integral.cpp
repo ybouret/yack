@@ -5,17 +5,11 @@ using namespace yack;
 
 YACK_UTEST(integral)
 {
-#define VALUE 127
-
-    YACK_CHECK(VALUE == (integral::convert<uint8_t,uint8_t>(VALUE,NULL)) );
-    YACK_CHECK(VALUE == (integral::convert<uint8_t,uint16_t>(VALUE,NULL)) );
-    YACK_CHECK(VALUE == (integral::convert<uint8_t,uint32_t>(VALUE,NULL)) );
-    YACK_CHECK(VALUE == (integral::convert<uint8_t,uint64_t>(VALUE,NULL)) );
-
-    YACK_CHECK(VALUE == (integral::convert<uint8_t,int8_t>(VALUE,NULL)) );
-    YACK_CHECK(VALUE == (integral::convert<uint8_t,int16_t>(VALUE,NULL)) );
-    YACK_CHECK(VALUE == (integral::convert<uint8_t,int32_t>(VALUE,NULL)) );
-    YACK_CHECK(VALUE == (integral::convert<uint8_t,int64_t>(VALUE,NULL)) );
+#define UVALUE 127
+    YACK_CHECK(UVALUE == (uu_integral<uint8_t,  uint8_t>  :: convert(UVALUE,NULL)) );
+    YACK_CHECK(UVALUE == (uu_integral<uint16_t, uint16_t> :: convert(UVALUE,NULL)) );
+    YACK_CHECK(UVALUE == (uu_integral<uint32_t, uint32_t> :: convert(UVALUE,NULL)) );
+    YACK_CHECK(UVALUE == (uu_integral<uint64_t, uint64_t> :: convert(UVALUE,NULL)) );
 
 }
 YACK_UDONE()
