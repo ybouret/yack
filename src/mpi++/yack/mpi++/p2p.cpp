@@ -53,10 +53,12 @@ namespace yack
                     const int          src,
                     const int          tag) const
     {
+        static const size_t nmax = size_t( integral_for<int>::maximum );
+        if(num>nmax) throw  exception(MPI_ERR_COUNT,"MPI_Recv overflow");
         YACK_MPI_TMX_INIT();
         {
             MPI_Status status;
-            YACK_MPI_CALL(MPI_Recv(buf,num,tid,src,tag,MPI_COMM_WORLD,&status));
+            YACK_MPI_CALL(MPI_Recv(buf,int(num),tid,src,tag,MPI_COMM_WORLD,&status));
         }
         YACK_MPI_TMX_DONE(recv,bpi*num);
     }
