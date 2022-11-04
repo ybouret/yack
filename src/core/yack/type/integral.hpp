@@ -5,24 +5,53 @@
 
 #include "yack/type/ints.hpp"
 #include "yack/check/static.hpp"
+#include "yack/system/exception.hpp"
+#include <cerrno>
 
 namespace yack
 {
-
-    template <typename TARGET, typename SOURCE>
-    struct uu_integral {
-        static TARGET convert(const SOURCE, const char *);
-    };
-
-    template <typename TARGET>
-    struct uu_integral<TARGET, TARGET>
+    namespace core
     {
-        static inline TARGET convert(const TARGET u, const char *) throw()
-        {
-            YACK_STATIC_CHECK(!is_signed<TARGET>::value,signed_type);
-            return u;
-        }
-    };
+        template <typename TARGET, typename SOURCE>
+        struct uu_integral {
+
+            static inline TARGET convert(const SOURCE source, const char *ctx)
+            {
+                static const int2type<sizeof(SOURCE)<=sizeof(TARGET)> chk = {};
+                return _(source,ctx,chk);
+            }
+
+        private:
+            // sizeof(SOURCE)<=sizeof(TARGET)
+            static inline TARGET _(const SOURCE         u,
+                                   const char           *,
+                                   const int2type<true> &) throw()
+            {
+                YACK_STATIC_CHECK(!is_signed<TARGET>::value,signed_type);
+                YACK_STATIC_CHECK(sizeof(SOURCE)<=sizeof(TARGET),SOURCE_too_big);
+                return TARGET(u);
+            }
+
+            // sizeof(SOURCE)>sizeof(TARGET)
+            static inline TARGET _(const SOURCE         u,
+                                   const char           *ctx,
+                                   const int2type<false> &)
+            {
+                YACK_STATIC_CHECK(!is_signed<TARGET>::value,signed_type);
+                YACK_STATIC_CHECK(sizeof(SOURCE)>sizeof(TARGET),SOURCE_too_small);
+                throw libc::exception(EINVAL,"not implemented for %s", (ctx?ctx:yack_unknown));
+                return TARGET(u);
+            }
+
+        };
+
+
+
+
+
+
+
+    }
 
 }
 
