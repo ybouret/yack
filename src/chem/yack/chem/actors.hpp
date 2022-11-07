@@ -68,7 +68,7 @@ namespace yack
             //! C -> max_of(C+nu*xi,0) (sign of xi must be adapted)
             void  move(writable<double> &C, const double xi) const throw();
 
-            //! C -> max_of(C+nu*xi,0), raw value, sign of xi must be adapted
+            //! C -> C+nu*xi, raw value, sign of xi must be adapted
             void  mov_(writable<double> &C, const double xi) const throw();
 
 

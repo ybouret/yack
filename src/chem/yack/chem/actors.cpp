@@ -17,7 +17,8 @@ namespace yack
         molecularity(0),
         algebraic_Z(0),
         crew(),
-        wlim()
+        wlim(),
+        wbal()
         {
 
         }
@@ -107,7 +108,7 @@ namespace yack
             for(const actor *a=crew.head;a;a=a->next)
             {
                 const double j  = ***a;
-                C[j] =  max_of(C[j]+(a->nu)*xi,0.0);
+                C[j] =   C[j]+(a->nu)*xi;
             }
         }
 

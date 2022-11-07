@@ -460,7 +460,7 @@ namespace yack
                     {
                         YACK_XMLOG(xml, "-- not limited by any reactant");
                     }
-                    reac.move(Corg,-pbad->xi);
+                    reac.mov_(Corg,-pbad->xi);
                     prod.mov_(Corg, pbad->xi);
                     Corg[ *sbad ] = 0;
                 } break;
@@ -489,7 +489,7 @@ namespace yack
                         YACK_XMLOG(xml, "-- not limited by any product");
                     }
                     reac.mov_(Corg, rbad->xi);
-                    prod.move(Corg,-rbad->xi);
+                    prod.mov_(Corg,-rbad->xi);
                     Corg[*sbad] = 0;
                 } break;
 
@@ -498,7 +498,16 @@ namespace yack
                     break;
             }
 
-
+            // cleanup primary species
+            for(const cnode *node=head();node;node=node->next)
+            {
+                const species &s = ****node;
+                if(1==s.rank)
+                {
+                    const size_t j = *s;
+                    Corg[j] = max_of(Corg[j],0.0);
+                }
+            }
 
             return true;
         }

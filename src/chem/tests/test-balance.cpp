@@ -47,12 +47,20 @@ YACK_UTEST(balance)
     const size_t   M =cs.M;
     vector<double> Corg(M,0);
 
-    buildC(Corg,lib,ran);
-    std::cerr << "[[ Corg ]]" << std::endl;
-    lib(std::cerr,"",Corg);
-    std::cerr << std::endl;
-
-    cs.balance(Corg);
+    for(size_t iter=0;iter<100;++iter)
+    {
+        buildC(Corg,lib,ran);
+        lib(std::cerr << "Corg=","",Corg);
+        if( cs.balance(Corg) )
+        {
+            lib(std::cerr << "Cbal=","",Corg);
+        }
+        else
+        {
+            std::cerr << "No Balance!!" << std::endl;
+        }
+        std::cerr << std::endl;
+    }
 
 
 

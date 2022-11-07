@@ -21,9 +21,22 @@ namespace yack
         class xlimit
         {
         public:
-            xlimit(const actor &, const double x) throw(); //! setup with x >= 0
+            //__________________________________________________________________
+            //
+            // C++
+            //__________________________________________________________________
+            xlimit(const actor &, const double x) throw(); //!< setup with x >= 0
+
+            //__________________________________________________________________
+            //
+            // methods
+            //__________________________________________________________________
             const actor & operator*() const throw();       //!< get id
 
+            //__________________________________________________________________
+            //
+            // members
+            //__________________________________________________________________
             const actor &id; //!< persistent actor
             const double xi; //!< computed extent
 
