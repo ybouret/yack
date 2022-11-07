@@ -18,20 +18,17 @@ namespace yack
                 return true;
             }
 
-            for(size_t j=M;j>0;--j)
-            {
-                Corg[j] = Cend[j] = Ctry[j] = C0[j];
-                dC[j]   = 0;
-            }
 
-            // primary balance
+
+            // primary balance directly in C0
             {
                 YACK_XMLSUB(xml,"PrimaryBalancing");
                 bool primaryBalanced = true;
                 for(const enode *node=singles.head();node;node=node->next)
                 {
                     const equilibrium &eq = ***node;
-                    if(eq.try_primary_balance(Corg))
+                    YACK_XMLOG(xml, "--> " << eq.name);
+                    if(eq.try_primary_balance(C0,xml))
                     {
                         YACK_XMLOG(xml, "[+] " << eq.name);
                     }
@@ -48,6 +45,8 @@ namespace yack
                     return false;
                 }
             }
+
+            if(verbose) corelib(*xml << "-- Cbal=","", C0);
 
 
 

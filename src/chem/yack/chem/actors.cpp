@@ -107,7 +107,7 @@ namespace yack
             for(const actor *a=crew.head;a;a=a->next)
             {
                 const double j  = ***a;
-                C[j] =  C[j]+(a->nu)*xi;
+                C[j] =  max_of(C[j]+(a->nu)*xi,0.0);
             }
         }
 
@@ -221,7 +221,7 @@ namespace yack
             return os;
         }
 
-        
+
 
         const xlimit *  actors:: primarily_bad(const readable<double> &C) const throw()
         {

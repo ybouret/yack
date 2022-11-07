@@ -207,7 +207,7 @@ namespace yack
             return rma - pma;
         }
 
-       
+
         
         
         double components:: mass_action(const double            K,
@@ -305,12 +305,7 @@ namespace yack
             reac.move(C,-xi);
         }
 
-
-        void components:: mov_(writable<double> &C, const double xi) const throw()
-        {
-            prod.mov_(C, xi);
-            reac.mov_(C,-xi);
-        }
+        
 
         bool components:: attached_to(const components &other) const throw()
         {
@@ -408,14 +403,24 @@ namespace yack
             return (reac.are_genuinely_blocked_by(C) && prod.are_genuinely_blocked_by(C)) ? are_blocked : are_running;
         }
 
+    }
 
-        bool components:: try_primary_balance(writable<double> &Corg) const throw()
+}
+
+#include "yack/ios/xmlog.hpp"
+
+namespace yack
+{
+
+    namespace chemical
+    {
+
+        bool components:: try_primary_balance(writable<double> &Corg, const xmlog &xml) const throw()
         {
             static const unsigned unbalanced_prod = 0x01;
             static const unsigned unbalanced_reac = 0x02;
             static const unsigned unbalanced_both = unbalanced_prod | unbalanced_reac;
 
-            std::cerr << "Corg  = " << Corg << std::endl;
 
             unsigned      flag = 0;
             const xlimit *pbad = prod.primarily_bad(Corg); if(pbad) flag |= unbalanced_prod;
@@ -423,21 +428,73 @@ namespace yack
 
             switch(flag)
             {
+                    //----------------------------------------------------------
+                    //
+                    // both have a negative primary concentration => failure
+                    //
+                    //----------------------------------------------------------
                 case unbalanced_both: assert(rbad); assert(pbad);
-                    std::cerr << "both: " << (***rbad).name << " and " << (***pbad).name  << std::endl;
+                    YACK_XMLOG(xml, "-- negative both [" << (***rbad).name  << "] and [" << (***pbad).name << "]");
                     return false;
 
-                case unbalanced_prod: assert(pbad); assert(!rbad);
-                    std::cerr << "prod: " << (***pbad).name << std::endl;
-                    exit(0);
-                    break;
+                    //----------------------------------------------------------
+                    //
+                    // found a negative product
+                    //
+                    //----------------------------------------------------------
+                case unbalanced_prod: { assert(pbad); assert(!rbad);
+                    const species &sbad = ***pbad;
+                    YACK_XMLOG(xml, "-- negative product [" << sbad.name << "] requires xi=" << pbad->xi);
+                    // get limit from reactant
+                    const xlimit *rmax = reac.primary_limit(Corg);
+                    if(rmax)
+                    {
+                        YACK_XMLOG(xml, "-- limited by reactant [" << (***rmax).name << "] @xi=" << rmax->xi);
+                        if(rmax->xi<pbad->xi)
+                        {
+                            YACK_XMLOG(xml, "-- product cannot be balanced");
+                            return false;
+                        }
+                    }
+                    else
+                    {
+                        YACK_XMLOG(xml, "-- not limited by any reactant");
+                    }
+                    reac.move(Corg,-pbad->xi);
+                    prod.mov_(Corg, pbad->xi);
+                    Corg[ *sbad ] = 0;
+                } break;
 
-                case unbalanced_reac: assert(!pbad); assert(rbad);
-                    std::cerr << "reac: " << (***rbad).name << std::endl;
-                    exit(0);
-                    break;
+                    //----------------------------------------------------------
+                    //
+                    // found a negative reactant
+                    //
+                    //----------------------------------------------------------
+                case unbalanced_reac: { assert(!pbad); assert(rbad);
+                    const species &sbad = ***rbad;
+                    YACK_XMLOG(xml, "-- negative reactant [" << sbad.name << "] requires xi=" << rbad->xi);
+                    // get limit from product
+                    const xlimit *pmax = prod.primary_limit(Corg);
+                    if(pmax)
+                    {
+                        YACK_XMLOG(xml, "-- limited by product [" << (***pmax).name << "] @xi=" << pmax->xi);
+                        if(pmax->xi<rbad->xi)
+                        {
+                            YACK_XMLOG(xml, "-- reactant cannot be balanced");
+                            return false;
+                        }
+                    }
+                    else
+                    {
+                        YACK_XMLOG(xml, "-- not limited by any product");
+                    }
+                    reac.mov_(Corg, rbad->xi);
+                    prod.move(Corg,-rbad->xi);
+                    Corg[*sbad] = 0;
+                } break;
 
-                default:
+                default: assert(0==flag); assert(!pbad); assert(!rbad);
+                    YACK_XMLOG(xml, "-- valid");
                     break;
             }
 

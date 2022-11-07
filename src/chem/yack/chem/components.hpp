@@ -10,8 +10,11 @@
 #include "yack/associative/suffix/set.hpp"
 #include "yack/data/bare.hpp"
 
+
 namespace yack
 {
+    class xmlog;
+    
     namespace chemical
     {
         //______________________________________________________________________
@@ -20,7 +23,6 @@ namespace yack
         //______________________________________________________________________
         typedef suffix_set<string,const component::pointer> components_set; //!< alias
         typedef components_set::knot_type                   cnode;          //!< alias
-
         class library;
 
         //______________________________________________________________________
@@ -160,9 +162,7 @@ namespace yack
             //! move C with computed extent
             void move(writable<double> &C, const double xi) const throw();
 
-            //! raw move C with extend
-            void mov_(writable<double> &C, const double xi) const throw();
-
+            
 
             //! fill topology
             template <typename T> inline void fill(writable<T> &nu) const
@@ -227,7 +227,7 @@ namespace yack
             bool uses(const species &) const throw();
 
             //! try to primary balance Corg
-            bool try_primary_balance(writable<double> &Corg) const throw();
+            bool try_primary_balance(writable<double> &Corg, const xmlog &xml) const throw();
 
 
             //__________________________________________________________________
