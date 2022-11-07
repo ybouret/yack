@@ -212,6 +212,30 @@ namespace yack
             return os;
         }
 
+        const actor * actors:: unbalanced_primary(const readable<double> &C, double &xi) const throw()
+        {
+            // initialize search
+            const actor *ua = NULL;
+            xi              = 0;
+
+            // loop over primaries
+            for(const actor *a = crew.head;NULL!=a;a=a->next)
+            {
+                if(! a->is_primary() ) continue;
+                const double c = C[ ***a ];
+                if(c<0)
+                {
+                    const double x = -c/a->nu; assert(x>=0);
+                    if(x>xi)
+                    {
+                        xi = x;
+                        ua = a;
+                    }
+                }
+            }
+            return ua;
+        }
+
 
 
     }

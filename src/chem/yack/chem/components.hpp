@@ -222,6 +222,10 @@ namespace yack
             //! check is use species
             bool uses(const species &) const throw();
 
+            //! try to primary balance Corg
+            bool try_primary_balance(writable<double> &Corg) const throw();
+
+
             //__________________________________________________________________
             //
             // members

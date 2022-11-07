@@ -87,7 +87,11 @@ namespace yack
                              const readable<double> &C,
                              rmulops                &xmul) const;
             
-            
+
+            //!
+            const actor *unbalanced_primary(const readable<double> &C, double &xi) const throw();
+
+
             //__________________________________________________________________
             //
             // members

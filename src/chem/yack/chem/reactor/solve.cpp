@@ -250,7 +250,7 @@ namespace yack
         {
             static const char fn[] = "[reactor]";
             const xmlog       xml(fn,std::cerr,entity::verbose);
-            YACK_XMLSUB(xml,"solving");
+            YACK_XMLSUB(xml,"Solving");
             if(verbose) corelib(*xml << "-- Cini=","", C0);
 
             //------------------------------------------------------------------

@@ -65,6 +65,7 @@ namespace yack
                              const equilibria &,
                              const double     t); //!< setup
 
+            bool balance(writable<double> &C0);
 
             //! best effort solving
             bool   solve(writable<double> &C0);

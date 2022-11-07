@@ -403,6 +403,51 @@ namespace yack
         }
 
 
+        bool components:: try_primary_balance(writable<double> &Corg) const throw()
+        {
+            static const unsigned unbalanced_prod = 0x01;
+            static const unsigned unbalanced_reac = 0x02;
+            static const unsigned unbalanced_both = unbalanced_prod | unbalanced_reac;
+            unsigned     flags = 0;
+            double       px    = 0;
+            const actor *pu    = prod.unbalanced_primary(Corg,px);
+            double       rx    = 0;
+            const actor *ru    = reac.unbalanced_primary(Corg,rx);
+
+            if(pu) {
+                flags |= unbalanced_prod;
+                std::cerr << "most unbalanced primary product  : " << (**pu).name << " @xi=" << px << std::endl;
+            }
+
+
+            if(ru) {
+                flags |= unbalanced_reac;
+                std::cerr << "most unbalanced primary reactant : " << (**ru).name << " @xi=" << rx << std::endl;
+            }
+
+            switch (flags) {
+                case unbalanced_both:
+                    std::cerr << "impossible to balance!!" << std::endl;
+                    return false;
+
+                case unbalanced_prod:
+                    std::cerr << "correcting product  " << (**pu).name << std::endl;
+                    exit(0);
+                    break;
+
+                case unbalanced_reac:
+                    std::cerr << "correcting reactant " << (**ru).name << std::endl;
+                    exit(0);
+                    break;
+
+
+                default:
+                    break;
+            }
+
+            return true;
+        }
+
     }
     
 }
