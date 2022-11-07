@@ -29,29 +29,33 @@ namespace yack
         class xlimits
         {
         public:
-            
+            //__________________________________________________________________
+            //
+            // C++
+            //__________________________________________________________________
             xlimits(const xlimit *rx,
                     const xlimit *px,
                     const size_t  wm) throw(); //!< setup from individual limits
 
+            //__________________________________________________________________
+            //
+            // methods
+            //__________________________________________________________________
             //! display
             friend std::ostream & operator<<(std::ostream &, const xlimits &);
 
-            //! check if extent is acceptable : no negative of zero concentration
+            //! check if extent is acceptable : no negative or zero concentration
             bool acceptable(const double xx) const throw();
-
-            //! check if can make acceptable extent from predicted value
-            bool makeAcceptable(double &predicted) const throw();
-
+            
+            //__________________________________________________________________
+            //
+            // members
+            //__________________________________________________________________
             const xlimit * const reac; //!< NULL or limiting reactant
             const xlimit * const prod; //!< NULL or limitins product
             const limitation     type; //!< computed
             const size_t         wmax; //!< helper to format
 
-
-
-
-            
         private:
             YACK_DISABLE_COPY_AND_ASSIGN(xlimits);
             ~xlimits() throw();

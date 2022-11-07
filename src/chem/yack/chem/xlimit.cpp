@@ -16,7 +16,11 @@ namespace yack
         {
             assert(xi>=0);
         }
-        
+
+        const actor & xlimit:: operator*() const throw()
+        {
+            return id;
+        }
         
     }
 }

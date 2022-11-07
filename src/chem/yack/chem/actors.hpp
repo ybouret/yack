@@ -15,6 +15,8 @@ namespace yack
 {
     namespace chemical
     {
+
+
         //______________________________________________________________________
         //
         //
@@ -63,15 +65,18 @@ namespace yack
                                const double            xi,
                                rmulops                &ops) const;
 
-            //! C -> C+nu*xi (sign of xi must be adapted)
+            //! C -> max_of(C+nu*xi,0) (sign of xi must be adapted)
             void  move(writable<double> &C, const double xi) const throw();
 
-            //! test all actors
-            const xlimit     *genuine_limit(const readable<double> &C) const throw();
+            //! C -> C+nu*xi, raw value, sign of xi must be adapted
+            void  mov_(writable<double> &C, const double xi) const throw();
 
-            //! test all primary actors
-            const xlimit     *primary_limit(const readable<double> &C) const throw();
 
+
+            const xlimit     *genuine_limit(const readable<double> &C) const throw(); //!< test all actors
+            const xlimit     *primary_limit(const readable<double> &C) const throw(); //!< test all primary actors
+            const xlimit     *primarily_bad(const readable<double> &C) const throw(); //!< test for invalid actors
+            
             //! display
             friend std::ostream & operator<<(std::ostream &, const actors &);
 
@@ -88,9 +93,7 @@ namespace yack
                              rmulops                &xmul) const;
             
 
-            //!
-            const actor *unbalanced_primary(const readable<double> &C, double &xi) const throw();
-
+            
 
             //__________________________________________________________________
             //
@@ -101,8 +104,9 @@ namespace yack
             
         private:
             YACK_DISABLE_COPY_AND_ASSIGN(actors);
-            cxx_list_of<actor>                crew; //!< actors
-            mutable memory::workplace<xlimit> wksp; //!< data for xlimit
+            cxx_list_of<actor>                 crew; //!< actors
+            mutable memory::workplace<xlimit>  wlim; //!< data for xlimit, standard
+            mutable memory::workplace<xlimit>  wbal; //!< data for xlimit, balancing
         };
 
     }

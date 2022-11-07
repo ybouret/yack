@@ -306,6 +306,12 @@ namespace yack
         }
 
 
+        void components:: mov_(writable<double> &C, const double xi) const throw()
+        {
+            prod.mov_(C, xi);
+            reac.mov_(C,-xi);
+        }
+
         bool components:: attached_to(const components &other) const throw()
         {
             for(const cnode *node=head();node;node=node->next)
@@ -408,42 +414,34 @@ namespace yack
             static const unsigned unbalanced_prod = 0x01;
             static const unsigned unbalanced_reac = 0x02;
             static const unsigned unbalanced_both = unbalanced_prod | unbalanced_reac;
-            unsigned     flags = 0;
-            double       px    = 0;
-            const actor *pu    = prod.unbalanced_primary(Corg,px);
-            double       rx    = 0;
-            const actor *ru    = reac.unbalanced_primary(Corg,rx);
 
-            if(pu) {
-                flags |= unbalanced_prod;
-                std::cerr << "most unbalanced primary product  : " << (**pu).name << " @xi=" << px << std::endl;
-            }
+            std::cerr << "Corg  = " << Corg << std::endl;
 
+            unsigned      flag = 0;
+            const xlimit *pbad = prod.primarily_bad(Corg); if(pbad) flag |= unbalanced_prod;
+            const xlimit *rbad = reac.primarily_bad(Corg); if(rbad) flag |= unbalanced_reac;
 
-            if(ru) {
-                flags |= unbalanced_reac;
-                std::cerr << "most unbalanced primary reactant : " << (**ru).name << " @xi=" << rx << std::endl;
-            }
-
-            switch (flags) {
-                case unbalanced_both:
-                    std::cerr << "impossible to balance!!" << std::endl;
+            switch(flag)
+            {
+                case unbalanced_both: assert(rbad); assert(pbad);
+                    std::cerr << "both: " << (***rbad).name << " and " << (***pbad).name  << std::endl;
                     return false;
 
-                case unbalanced_prod:
-                    std::cerr << "correcting product  " << (**pu).name << std::endl;
+                case unbalanced_prod: assert(pbad); assert(!rbad);
+                    std::cerr << "prod: " << (***pbad).name << std::endl;
                     exit(0);
                     break;
 
-                case unbalanced_reac:
-                    std::cerr << "correcting reactant " << (**ru).name << std::endl;
+                case unbalanced_reac: assert(!pbad); assert(rbad);
+                    std::cerr << "reac: " << (***rbad).name << std::endl;
                     exit(0);
                     break;
-
 
                 default:
                     break;
             }
+
+
 
             return true;
         }

@@ -17,7 +17,7 @@ namespace yack
         molecularity(0),
         algebraic_Z(0),
         crew(),
-        wksp()
+        wlim()
         {
 
         }
@@ -83,7 +83,7 @@ namespace yack
             for(const actor *a=crew.head;a;a=a->next)
             {
                 xmul            = factor;
-                const double j  = ***a;            
+                const double j  = ***a;
                 xmul.ld(a->nu);
                 xmul.upower(C[j],a->nm);
                 for(const actor *b=a->prev;b;b=b->prev) xmul.ld(C[***b]);
@@ -99,6 +99,15 @@ namespace yack
             {
                 const double j  = ***a;           assert(C[j]>=0);
                 C[j] = max_of(C[j]+(a->nu)*xi,0.0);
+            }
+        }
+
+        void  actors:: mov_(writable<double> &C, const double xi) const throw()
+        {
+            for(const actor *a=crew.head;a;a=a->next)
+            {
+                const double j  = ***a;
+                C[j] =  C[j]+(a->nu)*xi;
             }
         }
 
@@ -142,7 +151,7 @@ namespace yack
                         id = a;
                     }
                 }
-                return new ( *wksp ) xlimit(*id,xi);
+                return new ( *wlim ) xlimit(*id,xi);
             }
             else
             {
@@ -181,7 +190,7 @@ namespace yack
                 }
 
                 // return limit
-                return new ( *wksp ) xlimit(*id,xi);
+                return new ( *wlim ) xlimit(*id,xi);
             }
             else
             {
@@ -212,11 +221,13 @@ namespace yack
             return os;
         }
 
-        const actor * actors:: unbalanced_primary(const readable<double> &C, double &xi) const throw()
+        
+
+        const xlimit *  actors:: primarily_bad(const readable<double> &C) const throw()
         {
             // initialize search
-            const actor *ua = NULL;
-            xi              = 0;
+            const actor *ua = 0;
+            double       xu = 0;
 
             // loop over primaries
             for(const actor *a = crew.head;NULL!=a;a=a->next)
@@ -226,14 +237,14 @@ namespace yack
                 if(c<0)
                 {
                     const double x = -c/a->nu; assert(x>=0);
-                    if(x>xi)
+                    if(x>xu)
                     {
-                        xi = x;
+                        xu = x;
                         ua = a;
                     }
                 }
             }
-            return ua;
+            return ua ? new (*wbal) xlimit(*ua,xu) : NULL;
         }
 
 

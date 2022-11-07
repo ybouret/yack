@@ -160,6 +160,10 @@ namespace yack
             //! move C with computed extent
             void move(writable<double> &C, const double xi) const throw();
 
+            //! raw move C with extend
+            void mov_(writable<double> &C, const double xi) const throw();
+
+
             //! fill topology
             template <typename T> inline void fill(writable<T> &nu) const
             {

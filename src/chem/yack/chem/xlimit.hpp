@@ -21,12 +21,12 @@ namespace yack
         class xlimit
         {
         public:
-            //! x>=0
-            xlimit(const actor &, const double x) throw();
-            
+            xlimit(const actor &, const double x) throw(); //! setup with x >= 0
+            const actor & operator*() const throw();       //!< get id
+
             const actor &id; //!< persistent actor
             const double xi; //!< computed extent
-                             
+
         private:
             YACK_DISABLE_COPY_AND_ASSIGN(xlimit);
             ~xlimit() throw();
