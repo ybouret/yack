@@ -421,7 +421,11 @@ namespace yack
             static const unsigned unbalanced_reac = 0x02;
             static const unsigned unbalanced_both = unbalanced_prod | unbalanced_reac;
 
-
+            //------------------------------------------------------------------
+            //
+            // check primary reactant(s) and product(s)
+            //
+            //------------------------------------------------------------------
             unsigned      flag = 0;
             const xlimit *pbad = prod.primarily_bad(Corg); if(pbad) flag |= unbalanced_prod;
             const xlimit *rbad = reac.primarily_bad(Corg); if(rbad) flag |= unbalanced_reac;
@@ -498,7 +502,11 @@ namespace yack
                     break;
             }
 
+            //------------------------------------------------------------------
+            //
             // cleanup primary species
+            //
+            //------------------------------------------------------------------
             for(const cnode *node=head();node;node=node->next)
             {
                 const species &s = ****node;

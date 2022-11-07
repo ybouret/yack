@@ -118,6 +118,7 @@ namespace yack
             tableau           &Xl;      //!< [L] solving extents
             thin_array<bool>   blocked; //!< [L] blocking state
             rmatrix            Ceq;     //!< [LxM] all single solutions
+            vector<double>     Bal;     //!< [0..M]
 
         private:
             YACK_DISABLE_COPY_AND_ASSIGN(reactor);
