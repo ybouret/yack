@@ -181,7 +181,7 @@ namespace yack
                 const handle   hmin(imin);
                 const handle   self(*this);
                 if( cmp(self,hmin) < 0 ) return false;
-                res = -int_type( n.lsu() );
+                res = -static_cast<T>(static_cast<int_type>( n.lsu() ));
                 return true;
             }
 

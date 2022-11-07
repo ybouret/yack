@@ -103,7 +103,7 @@ namespace yack
         }
 
 
-        bool actors:: are_blocked_by(const readable<double> &C) const throw()
+        bool actors:: are_genuinely_blocked_by(const readable<double> &C) const throw()
         {
             for(const actor *a=crew.head;a;a=a->next)
             {
@@ -111,6 +111,19 @@ namespace yack
             }
             return false;
         }
+
+        bool actors:: are_primarily_blocked_by(const readable<double> &C) const throw()
+        {
+            for(const actor *a=crew.head;a;a=a->next)
+            {
+                if(!a->is_primary()) continue;
+                if( C[***a] <= 0) return true;
+            }
+            return false;
+        }
+
+
+        
 
 
         const xlimit *actors:: genuine_limit(const readable<double> &C) const throw()

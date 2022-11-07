@@ -75,8 +75,11 @@ namespace yack
             //! display
             friend std::ostream & operator<<(std::ostream &, const actors &);
 
-            //! check
-            bool are_blocked_by(const readable<double> &C) const throw();
+            //! check that any of the acting concentration is negative
+            bool are_genuinely_blocked_by(const readable<double> &C) const throw();
+
+            //! check that any of the primary acting concentration is negative
+            bool are_primarily_blocked_by(const readable<double> &C) const throw();
 
             //! compute derivatives of mass action w.r.t C
             void grad_action(writable<double>       &psi,
