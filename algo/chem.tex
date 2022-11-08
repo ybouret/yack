@@ -110,19 +110,32 @@ The balance indicator is then:
 \begin{equation}
 	B(\vec{C}) = \sum_{j} b(C_j)
 \end{equation}
-and the gradient is:
+and the descent direction is:
 \begin{equation}
-	\vec{\nabla} B = 
+	\vec{\beta} = -\vec{\nabla} B = 
 	\begin{bmatrix}
-	b'(C_1)\\
+	-b'(C_1)\\
 	\vdots\\
-	b'(C_M)\\
+	-b'(C_M)\\
 	\end{bmatrix}
 \end{equation}
-We want to find $\vec{\xi}$ which minimises $B(\vec{C}+\bm{\nu}^t \vec{\xi})$. The descent direction for $B$ is then:
+We want to find $\vec{\xi}$ which minimises $B(\vec{C}+\bm{\nu}^t \vec{\xi})$. A descent direction for $B$ w.r.t $\vec{\xi}$ is then:
 \begin{equation}
-	\vec{\beta} = \bm{\nu} \left(-\vec{\nabla} B \right)
+	 	 \bm{\nu} \vec{\beta}
 \end{equation}
+Using positive weights $(\alpha_1,\cdots,\alpha_N)\in \mathbb{R}^{+N}$, we assume:
+\begin{equation}
+	\vec{\xi} = \bm{\Delta}[\vec{\alpha}] \ \bm{\nu} \vec{\beta}
+\end{equation}
+then
+\begin{equation}
+	\delta\vec{C} = \bm{\nu}^t  \bm{\Delta}[\vec{\alpha}] \bm{\nu} \vec{\beta}
+\end{equation}
+
+\begin{equation}
+	\delta\vec{C} = \bm{\nu}^t \bm{\Delta} [\bm{\nu}\vec{\beta} ] \vec{\alpha}
+\end{equation}
+
 
 \section{Solving ONE Equilibrium}
 

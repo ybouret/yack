@@ -35,7 +35,38 @@ namespace yack
         // types for list of involved equilibria
         //
         //______________________________________________________________________
-        typedef meta_list<const equilibrium>       islot; //!< alias for list of involved equilibri(um|a)
+        typedef meta_list<const equilibrium>       islot_; //!< alias for list of involved equilibri(um|a)
+
+        class islot : public islot_
+        {
+        public:
+            explicit islot() throw() {}
+            virtual ~islot() throw() {}
+            islot(const islot &other) : islot_(other) {}
+
+            friend std::ostream & operator<<(std::ostream &os, const islot &self)
+            {
+                const node_type *node = self.head;
+                if(node)
+                {
+                    os << "{ " << (**node).name;
+                    for(node=node->next;node;node=node->next)
+                    {
+                        os << ", " << (**node).name;
+                    }
+                    os << " }";
+                }
+                else
+                {
+                    os << "{}";
+                }
+                return os;
+            }
+
+        private:
+            YACK_DISABLE_ASSIGN(islot);
+        };
+
         typedef islot::node_type                   inode; //!< alias for node of involved equilirium
         typedef vector<const islot,memory::dyadic> slots; //!< alias
 
@@ -143,6 +174,8 @@ namespace yack
             bool                       hasDominant(const double H0, const xmlog &xml);
             void                       gatherOmega();
             void                       deactivated(const size_t ei);
+
+            bool                       primaryBalance(const xmlog &xml);
 
         };
 
