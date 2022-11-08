@@ -31,7 +31,7 @@ namespace yack
             for(const anode *node=working.head;node;node=node->next)
             {
                 const size_t j = ***node;
-                Ctry[j] = Corg[j] + u * dC[j];
+                Ctry[j] = Cbal[j] + u * dC[j];
             }
             return Balance(Ctry);
         }
@@ -45,7 +45,7 @@ namespace yack
             {
                 const equilibrium &eq = ***node;
                 YACK_XMLOG(xml, "--> " << eq.name);
-                if(eq.try_primary_balance(Corg,xml))
+                if(eq.try_primary_balance(Cbal,xml))
                 {
                     YACK_XMLOG(xml, "[+] " << eq.name);
                 }
@@ -58,6 +58,37 @@ namespace yack
             YACK_XMLOG(xml, " ---- " << (primaryBalanced?yack_success:yack_failure) << " ----");
             return primaryBalanced;
         }
+
+        bool reactor:: isWellBalanced()
+        {
+            Bal.free();
+            bool well = true;
+            for(const snode *node=corelib.head();node;node=node->next)
+            {
+                const species &s = ***node;
+                const size_t   j = *s;
+                const double   c = Cbal[j];
+                switch(s.rank)
+                {
+                    case 0:               break;
+                    case 1: assert(c>=0); break;
+                    default:
+                        if(c<0)
+                        {
+                            Bal << max_of<double>(squared(c),DBL_MIN);
+                            dC[j]  = -c;
+                            well   = false;
+                        }
+                        else
+                        {
+                            dC[j] = 0;
+                        }
+                }
+            }
+
+            return well;
+        }
+
 
         struct callB
         {
@@ -85,22 +116,26 @@ namespace yack
 
             //------------------------------------------------------------------
             //
+            //
             // initialize phase space
+            //
             //
             //------------------------------------------------------------------
             for(size_t j=M;j>0;--j)
             {
-                Corg[j] = Ctry[j] = C0[j];
+                Cbal[j] = Ctry[j] = C0[j];
                 dC[j]   = 0;
             }
 
             //------------------------------------------------------------------
             //
+            //
             // ensure first primary balance
+            //
             //
             //------------------------------------------------------------------
             if(!primaryBalance(xml)) return false;
-            if(verbose) corelib(*xml << "-- Cbal=","", Corg);
+            if(verbose) corelib(*xml << "-- Cbal=","", Cbal);
 
             
             callB B = { *this };
@@ -113,116 +148,102 @@ namespace yack
 
             //------------------------------------------------------------------
             //
+            //
             // compute both gradient in dC and balance
             //
+            //
             //------------------------------------------------------------------
-            Bal.free();
-            bool bad = false;
-            for(const snode *node=corelib.head();node;node=node->next)
-            {
-                const species &s = ***node;
-                const size_t   j = *s;
-                const double   c = Corg[j];
-                switch(s.rank)
-                {
-                    case 0:               break;
-                    case 1: assert(c>=0); break;
-                    default:
-                        if(c<0)
-                        {
-                            Bal << max_of<double>(squared(c),DBL_MIN);
-                            dC[j]  = -c;
-                            bad    = true;
-                        }
-                        else
-                        {
-                            dC[j] = 0;
-                        }
-                }
-            }
 
-            if(!bad)
+            // load Bal and check for negative active species
+            const bool well = isWellBalanced();
+
+            if(well)
             {
-                YACK_XMLOG(xml,"-- fully balanced");
-                working.transfer(C0,Corg);
+                YACK_XMLOG(xml,"-- fully balanced @cycle #" << cycle);
+                working.transfer(C0,Cbal);
                 return true;
             }
 
-
+            // deduce B0
             double B0 =  xadd.tableau(Bal)/2;
-            std::cerr << "B0   = " << B0   << std::endl;
-            std::cerr << "beta = " << dC   << std::endl;
-
             assert(fabs(B0-B(0)) <=0  );
 
             //------------------------------------------------------------------
             //
+            //
             // preparing xi DIRECTIONS in xi
             //
+            //
             //------------------------------------------------------------------
-            NuA.assign(Nu);
+            NuA.ld(0); xi.ld(0); blocked.ld(true);
             size_t nrun = 0;
             for(const enode *node=singles.head();node;node=node->next)
             {
+                //--------------------------------------------------------------
+                //
+                // get equilibirum and its state
+                //
+                //--------------------------------------------------------------
                 const equilibrium      &eq = ***node;
                 const size_t            ei = *eq;
-                const components::state es =  eq.state_at(Corg);
-                double                 &xx = xi[ei];
+                const components::state es =  eq.state_at(Cbal);
                 if(verbose) singles.pad(std::cerr << eq.name,eq) << " " << eq.state_text(es);
 
                 switch (es) {
                     case components::are_blocked: {
-                        // block whatever
-                        NuA[ei].ld(0);
-                        blocked[ei] = true;
-                        xx          = 0;
+                        //------------------------------------------------------
+                        //
+                        // declare blocked, left untouched
+                        //
+                        //------------------------------------------------------
                     } break;
 
                     case components::are_running: {
+                        //------------------------------------------------------
+                        //
                         // guess
-                        blocked[ei] = false;
-                        xx          = xadd.dot(NuA[ei],dC);
+                        //
+                        //------------------------------------------------------
+                        double                 &xx = xi[ei];
+                        const readable<int>    &nu = Nu[ei];
+                        xx = xadd.dot(nu,dC);
                         if(verbose) std::cerr << '@' << std::setw(15) << xx;
 
                         switch( __sign::of(xx) )
                         {
                             case __zero__:
-                                ++nrun;
-                                xx = 0;
                                 if(verbose) std::cerr << " [accept0] ";
+                                xx = 0; // avoid rouding errors
+                                ++nrun; blocked[ei] = false; iota::load(NuA[ei],nu);
                                 break;
 
                             case positive: {
-                                const xlimits &lm = eq.primary_limits(Corg,corelib.maxlen);
+                                const xlimits &lm = eq.primary_limits(Cbal,corelib.maxlen);
                                 if( (limited_by_both==lm.type || limited_by_reac == lm.type) && lm.reac->xi <= 0)
                                 {
                                     if(verbose) std::cerr << " [reject+] ";
                                     xx = 0;
-                                    blocked[ei] = true;
-                                    NuA[ei].ld(0);
                                 }
                                 else
                                 {
                                     if(verbose) std::cerr << " [accept+] ";
-                                    ++nrun;
+                                    ++nrun; blocked[ei] = false; iota::load(NuA[ei],nu);
                                 }
                                 if(verbose) std::cerr << lm;
                             } break;
 
 
                             case negative : {
-                                const xlimits &lm = eq.primary_limits(Corg,corelib.maxlen);
+                                const xlimits &lm = eq.primary_limits(Cbal,corelib.maxlen);
                                 if( (limited_by_both==lm.type || limited_by_prod == lm.type) && lm.prod->xi <= 0)
                                 {
                                     if(verbose) std::cerr << " [reject-] ";
                                     xx = 0;
-                                    blocked[ei] = true;
-                                    NuA[ei].ld(0);
                                 }
                                 else
                                 {
                                     if(verbose) std::cerr << " [accept-] ";
-                                    ++nrun;
+                                    ++nrun; blocked[ei] = false; iota::load(NuA[ei],nu);
                                 }
                                 if(verbose) std::cerr << lm;
                             } break;
@@ -231,7 +252,6 @@ namespace yack
 
                     } break;
                 }
-
                 if(verbose)  std::cerr << std::endl;
             }
 
@@ -239,7 +259,7 @@ namespace yack
 
             //------------------------------------------------------------------
             //
-            // computing directions
+            // computing concentrations directions
             //
             //------------------------------------------------------------------
             for(const anode *node=working.head;node;node=node->next)
@@ -256,6 +276,11 @@ namespace yack
             }
 
 
+            //------------------------------------------------------------------
+            //
+            // initial look-up
+            //
+            //------------------------------------------------------------------
             double u1 = 1;
             double B1 = B(1);
             if(verbose)
@@ -266,6 +291,11 @@ namespace yack
             }
 
 
+            //------------------------------------------------------------------
+            //
+            // check balanced or go futer until increased
+            //
+            //------------------------------------------------------------------
             bool success = false;
             while(true)
             {
@@ -284,7 +314,7 @@ namespace yack
                 if(verbose) std::cerr << "B(" << u1 << ")=" << B1 << std::endl;
             }
 
-
+            if(false)
             {
                 ios::ocstream fp("bal.dat");
                 const size_t NP = 1000;
@@ -298,6 +328,11 @@ namespace yack
 
             if(!success)
             {
+                //--------------------------------------------------------------
+                //
+                // try again optimize inside 0:u1
+                //
+                //--------------------------------------------------------------
                 triplet<double> u = { 0,  -1, u1 };
                 triplet<double> b = { B0, -1, B1 };
                 optimize::run_for(B,u,b,optimize::inside);
@@ -313,27 +348,64 @@ namespace yack
 
             if(success)
             {
-                working.transfer(C0,Ctry);
-                if(verbose) corelib(*xml << "-- Cbal=","", C0);
+                //--------------------------------------------------------------
+                //
+                YACK_XMLOG(xml, "-- shrinking");
+                //
+                //--------------------------------------------------------------
+                triplet<double> x = { 0,  -1, u1 };
+                triplet<double> f = { B0, -1, 0  };
+                working.transfer(Cend,Ctry);
+
+                if(verbose) corelib(*xml << "-- Cend@1=","", Cend);
+
+                do
+                {
+                    f.b = B( x.b = clamp(x.a,0.5*(x.a+x.c),x.c) );
+                    if(f.b<=0)
+                    {
+                        f.c = f.b;
+                        x.c = x.b;
+                        working.transfer(Cend,Ctry);
+                    }
+                    else
+                    {
+                        f.a = f.b;
+                        x.a = x.b;
+                    }
+                } while(fabs(x.c-x.a)>=0.01);
+
+
+                working.transfer(C0,Cend);
+                if(verbose) corelib(*xml << "-- Cbal@" << x.b << "=","", C0);
                 return true;
             }
             else
             {
+                //--------------------------------------------------------------
+                //
+                // not converged
+                //
+                //--------------------------------------------------------------
                 if(B1>=B0)
                 {
-                    YACK_XMLOG(xml, "-- invalid negative concentrations");
-                    exit(0);
+                    //----------------------------------------------------------
+                    // bad
+                    //----------------------------------------------------------
+                    YACK_XMLOG(xml, "-- couldn't balance");
                     return false;
                 }
                 else
                 {
-                    working.transfer(Corg,Ctry);
+                    //----------------------------------------------------------
+                    // good
+                    //----------------------------------------------------------
+                    working.transfer(Cbal,Ctry);
                     if(!primaryBalance(xml))
                     {
                         YACK_XMLOG(xml, "-- unexpected failure in primary re-balancing");
                         return false;
                     }
-
                     goto CYCLE;
                 }
             }

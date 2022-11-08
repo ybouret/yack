@@ -51,7 +51,8 @@ namespace yack
         Cend( mtab.next() ),
         Ctry( mtab.next() ),
         dC(   mtab.next() ),
-        
+        Cbal( mtab.next() ),
+
         K(     ntab.next()  ),
         Gamma( ntab.next()  ),
         xi(    ntab.next()  ),
@@ -62,6 +63,7 @@ namespace yack
         Xl( ltab.next()  ),
         blocked( ltab.next(), transmogrify),
         Ceq(),
+        Bal(M,as_capacity),
 
         lockLib( coerce(usrLib) ),
         lockEqs( coerce(usrEqs) )

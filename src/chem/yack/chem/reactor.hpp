@@ -108,7 +108,7 @@ namespace yack
             //! computing balance
             double Balance(const readable<double> &C);
 
-            //! balance Corg+u*dC
+            //! balance Cbal+u*dC
             double Balance(const double u);
 
             //__________________________________________________________________
@@ -146,6 +146,7 @@ namespace yack
             tableau           &Cend;    //!< [M] final point
             tableau           &Ctry;    //!< [M] working space
             tableau           &dC;      //!< [M] step
+            tableau           &Cbal;    //!< [M] for balancing
             tableau           &K;       //!< [N] pre-computed K
             tableau           &Gamma;   //!< [N] current Gamm
             tableau           &xi;      //!< [N] extent
@@ -176,7 +177,7 @@ namespace yack
             void                       deactivated(const size_t ei);
 
             bool                       primaryBalance(const xmlog &xml);
-
+            bool                       isWellBalanced();
         };
 
 
