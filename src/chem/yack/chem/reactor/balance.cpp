@@ -21,7 +21,7 @@ namespace yack
             {
                 const size_t j = ***node;
                 const double c = C[j];
-                if(c<0) Bal << max_of<double>(squared(c),DBL_MIN);
+                if(c<0) Bal <<  squared(c);
             }
             return xadd.tableau(Bal)/2;
         }
@@ -75,7 +75,7 @@ namespace yack
                     default:
                         if(c<0)
                         {
-                            Bal << max_of<double>(squared(c),DBL_MIN);
+                            Bal << squared(c);
                             dC[j]  = -c;
                             well   = false;
                         }
