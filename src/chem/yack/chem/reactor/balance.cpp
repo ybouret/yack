@@ -181,7 +181,7 @@ namespace yack
             {
                 //--------------------------------------------------------------
                 //
-                // get equilibirum and its state
+                // get equilibrium and its state
                 //
                 //--------------------------------------------------------------
                 const equilibrium      &eq = ***node;
