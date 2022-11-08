@@ -74,6 +74,9 @@ namespace yack
             //! wrapper Hamiltonian(Corg+u*(Cend-Corg)) with full clipping
             double operator()(const double u);
 
+            //! computing balance
+            double Balance(const readable<double> &C);
+
             //__________________________________________________________________
             //
             // member

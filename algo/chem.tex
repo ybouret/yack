@@ -103,6 +103,26 @@ We define the Jacobian matrix:
 	\lbrack \partial_{A_j}\Gamma_i \rbrack
 \end{equation}
 
+\section{Balancing}
+
+Let $b(C)$ be a function which is minimal when $C$ is positive, and increasingly positive otherwise.
+The balance indicator is then:
+\begin{equation}
+	B(\vec{C}) = \sum_{j} b(C_j)
+\end{equation}
+and the gradient is:
+\begin{equation}
+	\vec{\nabla} B = 
+	\begin{bmatrix}
+	b'(C_1)\\
+	\vdots\\
+	b'(C_M)\\
+	\end{bmatrix}
+\end{equation}
+We want to find $\vec{\xi}$ which minimises $B(\vec{C}+\bm{\nu}^t \vec{\xi})$. The descent direction for $B$ is then:
+\begin{equation}
+	\vec{\beta} = \bm{\nu} \left(-\vec{\nabla} B \right)
+\end{equation}
 
 \section{Solving ONE Equilibrium}
 

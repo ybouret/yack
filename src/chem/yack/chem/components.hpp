@@ -205,7 +205,7 @@ namespace yack
             //! check minimal
             bool minimal() const throw();
 
-            //! check is running or blocked by are_genuinely_blocked
+            //! check is running or blocked by are_primarily_blocked
             state state_at(const readable<double> &C) const throw();
 
             //! deduce extent from difference of concentrations
