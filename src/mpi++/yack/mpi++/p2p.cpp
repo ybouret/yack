@@ -1,4 +1,5 @@
 #include "yack/mpi++/mpi.hpp"
+#include "yack/type/ints.hpp"
 
 namespace yack
 {
@@ -10,8 +11,10 @@ namespace yack
                     const int          dst,
                     const int          tag) const
     {
+        static const size_t nmax( integral_for<int>::maximum );
+        if(num>nmax) throw  exception(MPI_ERR_COUNT,"MPI_Send overflow");
         YACK_MPI_TMX_INIT();
-        YACK_MPI_CALL(MPI_Send(buf,num,tid,dst,tag,MPI_COMM_WORLD));
+        YACK_MPI_CALL(MPI_Send(buf,int(num),tid,dst,tag,MPI_COMM_WORLD));
         YACK_MPI_TMX_DONE(send,bpi*num);
     }
 
