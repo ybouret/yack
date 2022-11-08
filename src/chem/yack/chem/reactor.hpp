@@ -77,6 +77,9 @@ namespace yack
             //! computing balance
             double Balance(const readable<double> &C);
 
+            //! balance Corg+u*dC
+            double Balance(const double u);
+
             //__________________________________________________________________
             //
             // member
