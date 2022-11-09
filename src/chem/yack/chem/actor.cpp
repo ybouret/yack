@@ -2,6 +2,7 @@
 #include "yack/chem/actor.hpp"
 #include "yack/type/utils.hpp"
 #include "yack/arith/ipower.hpp"
+#include <iomanip>
 
 namespace yack
 {
@@ -49,6 +50,13 @@ namespace yack
             }
             os << '[' << sp.name << ']';
         }
+
+
+        void actor:: display_compact(std::ostream &os, const readable<double> &C) const
+        {
+            os << '[' << sp.name << ']' << '=' << std::setw(15) << C[*sp];
+        }
+
 
     }
 

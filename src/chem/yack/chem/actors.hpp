@@ -92,7 +92,8 @@ namespace yack
                              const readable<double> &C,
                              rmulops                &xmul) const;
             
-
+            //! display list of compact associated concentrations
+            void display_compact(std::ostream &, const readable<double> &C) const;
             
 
             //__________________________________________________________________

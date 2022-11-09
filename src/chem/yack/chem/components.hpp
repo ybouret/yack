@@ -229,6 +229,8 @@ namespace yack
             //! try to primary balance Corg
             bool try_primary_balance(writable<double> &Corg, const xmlog &xml) const throw();
 
+            //! display list of associated concentrations
+            std::ostream & display_compact(std::ostream &os, const readable<double> &C) const;
 
             //__________________________________________________________________
             //
@@ -247,6 +249,8 @@ namespace yack
             //__________________________________________________________________
             components_set                     cdb; //!< components database
             mutable memory::workplace<xlimits> xlm; //!< workplace for xlimits
+
+            void primary_cleanup(writable<double> &) const throw();
 
         };
         

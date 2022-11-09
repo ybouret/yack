@@ -42,7 +42,17 @@ namespace yack
             os << comp.reac << " <=> " << comp.prod;
             return os;
         }
-        
+
+        std::ostream & components:: display_compact(std::ostream &os, const readable<double> &C) const
+        {
+            os << '{';
+            reac.display_compact(os,C);
+            prod.display_compact(os,C);
+            os << ' ' << '}';
+            return os;
+        }
+
+
         const cnode * components:: head() const throw()
         {
             return (*cdb.tree).head;
@@ -415,6 +425,20 @@ namespace yack
     namespace chemical
     {
 
+        void components:: primary_cleanup(writable<double> &C) const throw()
+        {
+            for(const cnode *node=head();node;node=node->next)
+            {
+                const species &s = ****node;
+                if(1==s.rank)
+                {
+                    const size_t j = *s;
+                    C[j] = max_of(C[j],0.0);
+                }
+            }
+        }
+
+
         bool components:: try_primary_balance(writable<double> &Corg, const xmlog &xml) const throw()
         {
             static const unsigned unbalanced_prod = 0x01;
@@ -471,10 +495,12 @@ namespace yack
                     {
                         YACK_XMLOG(xml, yack_message << ": not limited by any reactant");
                     }
+                    if(xml.verbose) display_compact(*xml << "@initial=",Corg) << std::endl;
                     reac.mov_(Corg,-pbad->xi);
                     prod.mov_(Corg, pbad->xi);
                     Corg[ *sbad ] = 0;
-                    YACK_XMLOG(xml, yack_success << ": [" << sbad.name << "] is now 0");
+                    primary_cleanup(Corg);
+                    if(xml.verbose) display_compact(*xml << "@balance=",Corg) << std::endl;
                 } break;
 
                     //----------------------------------------------------------
@@ -507,10 +533,12 @@ namespace yack
                     {
                         YACK_XMLOG(xml, yack_message << ": not limited by any product");
                     }
+                    if(xml.verbose) display_compact(*xml << "@initial=",Corg) << std::endl;
                     reac.mov_(Corg, rbad->xi);
                     prod.mov_(Corg,-rbad->xi);
                     Corg[*sbad] = 0;
-                    YACK_XMLOG(xml, yack_success << ": [" << sbad.name << "] is now 0");
+                    primary_cleanup(Corg);
+                    if(xml.verbose) display_compact(*xml << "@balance=",Corg) << std::endl;
                 } break;
 
                 default: assert(0==flag); assert(!pbad); assert(!rbad);
@@ -518,20 +546,7 @@ namespace yack
                     break;
             }
 
-            //------------------------------------------------------------------
-            //
-            // cleanup primary species
-            //
-            //------------------------------------------------------------------
-            for(const cnode *node=head();node;node=node->next)
-            {
-                const species &s = ****node;
-                if(1==s.rank)
-                {
-                    const size_t j = *s;
-                    Corg[j] = max_of(Corg[j],0.0);
-                }
-            }
+            
 
             return true;
         }

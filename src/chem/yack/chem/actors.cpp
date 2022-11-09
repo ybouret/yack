@@ -223,6 +223,15 @@ namespace yack
         }
 
 
+        void actors:: display_compact(std::ostream &os, const readable<double> &C) const
+        {
+            for(const actor *a = crew.head;a;a=a->next)
+            {
+                a->display_compact(os << ' ',C);
+            }
+            
+        }
+
 
         const xlimit *  actors:: primarily_bad(const readable<double> &C) const throw()
         {
