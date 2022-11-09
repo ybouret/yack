@@ -21,6 +21,8 @@ YACK_UTEST(gcd64)
         uint64_t a = atol(argv[1]);
         uint64_t b = atol(argv[2]);
         std::cerr << "gcd(" << a << "," << b << ")=" << yack_gcd64(a,b) << std::endl;
+        std::cerr << "lcm(" << a << "," << b << ")=" << yack_lcm64(a,b) << std::endl;
+
     }
 
 }

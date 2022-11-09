@@ -156,11 +156,14 @@ namespace yack
             rmatrix            Psi;     //!< [NxM] jacobian
             rmatrix            Omega;   //!< [NxN] coupling
             rmatrix            iOmeg;   //!< [NxN] to solve
+            
             tableau           &Corg;    //!< [M] starting point
             tableau           &Cend;    //!< [M] final point
             tableau           &Ctry;    //!< [M] working space
             tableau           &dC;      //!< [M] step
             tableau           &Cbal;    //!< [M] for balancing
+            thin_array<int>    beta;    //!< [M] minus gradient of balance
+
             tableau           &K;       //!< [N] pre-computed K
             tableau           &Gamma;   //!< [N] current Gamm
             tableau           &xi;      //!< [N] extent

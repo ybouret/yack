@@ -106,34 +106,51 @@ We define the Jacobian matrix:
 \section{Balancing}
 
 Let $b(C)$ be a function which is minimal when $C$ is positive, and increasingly positive otherwise.
-The balance indicator is then:
+For a concentration:
 \begin{equation}
-	B(\vec{C}) = \sum_{j} b(C_j)
+C_j = C_j^0 + \vec{\bm{\nu}^t_j} \cdot \vec{\xi} \Rightarrow \partial_{\xi_k} b(C_j) = \nu_{kj} b'(C_j)
 \end{equation}
-and the descent direction is:
+
+We define the balance vector:
 \begin{equation}
-	\vec{\beta} = -\vec{\nabla} B = 
-	\begin{bmatrix}
-	-b'(C_1)\\
+\vec{B}(\vec{C}) = 
+\begin{bmatrix}
+	b(C_1) \\
 	\vdots\\
-	-b'(C_M)\\
-	\end{bmatrix}
+	b(C_M)\\
+\end{bmatrix}
 \end{equation}
-We want to find $\vec{\xi}$ which minimises $B(\vec{C}+\bm{\nu}^t \vec{\xi})$. A descent direction for $B$ w.r.t $\vec{\xi}$ is then:
+and its pseudo derivative:
 \begin{equation}
-	 	 \bm{\nu} \vec{\beta}
+\vec{B'}(\vec{C}) = 
+\begin{bmatrix}
+	b'(C_1) \\
+	\vdots\\
+	b'(C_M)\\
+\end{bmatrix}
+\end{equation} 
+
+so that:
+\begin{equation}
+	\partial_{\xi_k} \vec{B} = \bm{\Delta}[\bm{\nu}_k] \vec{B'}
 \end{equation}
-Using positive weights $(\alpha_1,\cdots,\alpha_N)\in \mathbb{R}^{+N}$, we assume:
+
+We define the total balance as:
 \begin{equation}
-	\vec{\xi} = \bm{\Delta}[\vec{\alpha}] \ \bm{\nu} \vec{\beta}
+	\mathsf{B}(\vec{C}) = \sum_j b(C_j)
 \end{equation}
-then
+
+so that
 \begin{equation}
-	\delta\vec{C} = \bm{\nu}^t  \bm{\Delta}[\vec{\alpha}] \bm{\nu} \vec{\beta}
+	\vec{\xi} = \Delta[\vec{\alpha}] \bm{\nu} \underbrace{\left( -\vec{B' }(\vec{C}) \right)}_{\vec{\beta}}, \;\;\vec{\alpha} \in {\mathbb{R}_+}^N
 \end{equation}
 
 \begin{equation}
-	\delta\vec{C} = \bm{\nu}^t \bm{\Delta} [\bm{\nu}\vec{\beta} ] \vec{\alpha}
+	\delta\vec{C} = \bm{\nu}^t \Delta[\vec{\alpha}] \bm{\nu} \vec{\beta}
+\end{equation}
+
+\begin{equation}
+	\delta\vec{C} = \bm{\nu}^t \Delta[\bm{\nu} \vec{\beta}] \vec{\alpha}
 \end{equation}
 
 

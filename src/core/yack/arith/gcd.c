@@ -72,3 +72,34 @@ void yack_simplify64(uint64_t *A, uint64_t *B)
 
     }
 }
+
+uint64_t yack_lcm64(uint64_t a, uint64_t b)
+{
+    if(a<=0)
+    {
+        if(b<=0)
+        {
+            return 1;
+        }
+        else
+        {
+            return b;
+        }
+    }
+    else
+    {
+        /* a>0 */
+        if(b<=0)
+        {
+            return a;
+        }
+        else
+        {
+            /* b > 0 */
+            if(a<b) { const uint64_t t = b; b=a; a=t; }
+            assert(a>=b);
+            return b*(a/yack_gcd_(a,b));
+        }
+    }
+
+}
