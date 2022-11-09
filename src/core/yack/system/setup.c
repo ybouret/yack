@@ -3,6 +3,8 @@
 const char yack_unknown[] = "unknown";
 const char yack_success[] = "success";
 const char yack_failure[] = "failure";
+const char yack_warning[] = "warning";
+const char yack_message[] = "message";
 
 int yack_die(const char *msg)
 {

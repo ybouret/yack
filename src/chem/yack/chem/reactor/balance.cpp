@@ -44,18 +44,13 @@ namespace yack
             for(const enode *node=singles.head();node;node=node->next)
             {
                 const equilibrium &eq = ***node;
-                YACK_XMLOG(xml, "--> " << eq.name);
-                if(eq.try_primary_balance(Cbal,xml))
+                YACK_XMLSUB(xml,eq.name);
+                if(!eq.try_primary_balance(Cbal,xml))
                 {
-                    YACK_XMLOG(xml, "[+] " << eq.name);
-                }
-                else
-                {
-                    YACK_XMLOG(xml, "[-] " << eq.name);
                     primaryBalanced = false;
                 }
             }
-            YACK_XMLOG(xml, " ---- " << (primaryBalanced?yack_success:yack_failure) << " ----");
+            YACK_XMLOG(xml, "==> balancing " << (primaryBalanced?yack_success:yack_failure) << " <==");
             return primaryBalanced;
         }
 
