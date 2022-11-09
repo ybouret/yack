@@ -406,6 +406,7 @@ namespace yack
                         YACK_XMLOG(xml, "-- unexpected failure in primary re-balancing");
                         return false;
                     }
+                    if(verbose) corelib(*xml << "-- Cbal = ","", Cbal);
                     goto CYCLE;
                 }
             }

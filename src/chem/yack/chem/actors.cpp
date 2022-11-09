@@ -226,11 +226,19 @@ namespace yack
 
         const xlimit *  actors:: primarily_bad(const readable<double> &C) const throw()
         {
+            //------------------------------------------------------------------
+            //
             // initialize search
+            //
+            //------------------------------------------------------------------
             const actor *ua = 0;
             double       xu = 0;
 
+            //------------------------------------------------------------------
+            //
             // loop over primaries
+            //
+            //------------------------------------------------------------------
             for(const actor *a = crew.head;NULL!=a;a=a->next)
             {
                 if(! a->is_primary() ) continue;

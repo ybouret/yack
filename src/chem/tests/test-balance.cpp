@@ -47,7 +47,7 @@ YACK_UTEST(balance)
     const size_t   M =cs.M;
     vector<double> Corg(M,0);
 
-    for(size_t iter=0;iter<100;++iter)
+    for(size_t iter=0;iter<1;++iter)
     {
         buildC(Corg,lib,ran);
         lib(std::cerr << "Corg=","",Corg);
