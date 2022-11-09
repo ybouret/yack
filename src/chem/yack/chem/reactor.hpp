@@ -37,13 +37,27 @@ namespace yack
         //______________________________________________________________________
         typedef meta_list<const equilibrium>       islot_; //!< alias for list of involved equilibri(um|a)
 
+        //______________________________________________________________________
+        //
+        //! derived meta list of equilibria
+        //______________________________________________________________________
         class islot : public islot_
         {
         public:
-            explicit islot() throw() {}
-            virtual ~islot() throw() {}
-            islot(const islot &other) : islot_(other) {}
+            //__________________________________________________________________
+            //
+            // C++
+            //__________________________________________________________________
+            explicit islot() throw() : islot_() {}        //!< setup
+            virtual ~islot() throw() {}                   //!< cleanup
+            islot(const islot &other) : islot_(other) {}  //!< copy
 
+            //__________________________________________________________________
+            //
+            // methods
+            //__________________________________________________________________
+
+            //! display as list
             friend std::ostream & operator<<(std::ostream &os, const islot &self)
             {
                 const node_type *node = self.head;

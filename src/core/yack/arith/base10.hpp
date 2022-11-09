@@ -22,15 +22,15 @@ namespace yack
 
     //! count digits to display value
     template <typename T>
-    inline size_t digits_for(T value) throw()
+    inline unsigned digits_for(T value) throw()
     {
-        if(value<base10<T>::ten)
+        if(value < base10<T>::ten)
         {
             return 1;
         }
         else
         {
-            size_t res = 1;
+            unsigned res = 1;
             while(value>=base10<T>::ten)
             {
                 ++res;
