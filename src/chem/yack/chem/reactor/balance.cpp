@@ -108,8 +108,110 @@ namespace yack
                 return self.Balance(u);
             }
         };
-        
 
+
+
+        bool reactor:: balance(writable<double> &C0)
+        {
+            static const char fn[] = "[reactor]";
+            const xmlog       xml(fn,std::cerr,entity::verbose);
+            YACK_XMLSUB(xml,"Balancing");
+            if(verbose) corelib(*xml << "-- Cini=","", C0);
+
+            if(N<=0)
+            {
+                YACK_XMLOG(xml,"-- no equilibrium");
+                return true;
+            }
+
+            //------------------------------------------------------------------
+            //
+            //
+            // initialize phase space
+            //
+            //
+            //------------------------------------------------------------------
+            for(size_t j=M;j>0;--j)
+            {
+                Cbal[j] = Ctry[j] = C0[j];
+                dC[j]   = 0;
+                beta[j] = 0;
+            }
+
+            //------------------------------------------------------------------
+            //
+            //
+            // ensure first primary balance
+            //
+            //
+            //------------------------------------------------------------------
+            if(!primaryBalance(xml)) return false;
+            if(verbose) corelib(*xml << "-- Cbal=","", Cbal);
+
+
+            const bool  well = isWellBalanced();
+            vector<int> d_xi(N,0);
+
+            if(well)
+            {
+                YACK_XMLOG(xml,"-- well balanced");
+                working.transfer(C0,Cbal);
+                return true;
+            }
+            else
+            {
+                const double B0 = xadd.get();
+                std::cerr << singles << std::endl;
+                std::cerr << "B0="   << B0   << std::endl;
+                std::cerr << "beta=" << beta << std::endl;
+
+                // computing xi direction
+                NuA.assign(Nu);
+                iota::mul(d_xi,Nu,beta);
+                
+                // cutting
+                for(const enode *node=singles.head();node;node=node->next)
+                {
+                    const equilibrium &eq = ***node;
+                    const size_t       ei = *eq;
+                    int               &xx = d_xi[ei];
+                    if(verbose)  singles.pad(std::cerr << eq.name,eq) << " @" << std::setw(3) << xx << " : ";
+
+
+                    if(xx>0)
+                    {
+                        const xlimits     &lm = eq.primary_limits(Cbal,corelib.maxlen);
+                        if(verbose) std::cerr << lm;
+                    }
+                    else
+                    {
+                        if(xx<0)
+                        {
+                            const xlimits     &lm = eq.primary_limits(Cbal,corelib.maxlen);
+                            if(verbose) std::cerr << lm;
+                        }
+                        else
+                        {
+                            // not used...
+                            NuA[ei].ld(0);
+                            std::cerr << "<unused>";
+                        }
+                    }
+
+                    if(verbose) std::cerr << std::endl;
+
+
+                }
+
+                exit(0);
+
+                return false;
+            }
+
+        }
+
+
+#if 0
         template <typename T>
         static inline
         std::ostream & show_bal( std::ostream &os, const readable<T> &bal)
@@ -123,6 +225,8 @@ namespace yack
             os << ']';
             return os;
         }
+
+
 
         bool reactor:: balance(writable<double> &C0)
         {
@@ -198,8 +302,11 @@ namespace yack
                 vector<bool>   used(M,true);
                 vector<size_t> cond(M,as_capacity);
 
-            RECOMPUTE:
-                std::cerr << "-------- --------" << std::endl;
+                goto COMPUTE_FIRST;
+
+            COMPUTE_AGAIN:
+                std::cerr << "-------- recomputing --------" << std::endl;
+            COMPUTE_FIRST:
                 cond.free();
                 bool recompute = false;
                 for(const anode *node=working.head;node;node=node->next)
@@ -241,7 +348,7 @@ namespace yack
                             used[j]   = false;
                             if(rhs>0)
                             {
-                                if(verbose) std::cerr << " |  inconsistent [" << s.name << "] !!" << std::endl;
+                                if(verbose) std::cerr << " =>  inconsistent [" << s.name << "] !!" << std::endl;
                                 return false;
                             }
                             else
@@ -278,7 +385,28 @@ namespace yack
                                 // decreasing
                                 //----------------------------------------------
                                 if(verbose) std::cerr << "/decreasing";
-                                exit(1);
+                                switch( __sign::of(rhs) )
+                                {
+                                    case __zero__:
+                                        if(verbose) std::cerr << " => blocking" << std::endl;
+                                        blocked[ilast] =  true;
+                                        for(size_t j=M;j>0;--j)
+                                        {
+                                            Bal[j][ilast] = 0;
+                                        }
+                                        used[j] = false;
+                                        goto COMPUTE_AGAIN;
+
+                                    case negative:
+                                        if(verbose) std::cerr <<  " => limiting" << std::endl;
+                                        cond << j;
+                                        break;
+
+                                    case positive:
+                                        if(verbose) std::cerr << " =>  inconsistent [" << s.name << "] !!" << std::endl;
+                                        return false;
+                                }
+
                             }
                             break;
 
@@ -290,10 +418,10 @@ namespace yack
                             break;
 
                     }
-
-
-
                 }
+
+                if(recompute) goto COMPUTE_AGAIN;
+
 
                 if(verbose)
                 {
@@ -312,6 +440,7 @@ namespace yack
             return false;
             
         }
+#endif
 
     }
 
