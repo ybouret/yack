@@ -97,7 +97,19 @@ namespace yack
         };
         
 
-
+        template <typename T>
+        static inline
+        std::ostream & show_bal( std::ostream &os, const readable<T> &bal)
+        {
+            static const unsigned w = 3;
+            os<< '[' << std::setw(w) << bal[1];
+            for(size_t i=2;i<=bal.size();++i)
+            {
+                os << ';' << std::setw(w) << bal[i];
+            }
+            os << ']';
+            return os;
+        }
 
         bool reactor:: balance(writable<double> &C0)
         {
@@ -151,9 +163,8 @@ namespace yack
                 std::cerr << singles << std::endl;
                 std::cerr << "B0="   << B0   << std::endl;
                 std::cerr << "beta=" << beta << std::endl;
-                //std::cerr << "Nu  =" << Nu   << std::endl;
-                int betaMax = 0;
-                imatrix A(M,N);
+
+                int     betaMax = 0;
                 for(size_t i=N;i>0;--i)
                 {
                     const int NuBeta = xadd.dot(Nu[i],beta);
@@ -161,7 +172,7 @@ namespace yack
                     std::cerr << "NuBeta[" << i << "]=" << NuBeta << std::endl;
                     for(size_t j=M;j>0;--j)
                     {
-                        A[j][i] = Nu[i][j] * NuBeta;
+                        Bal[j][i] = Nu[i][j] * NuBeta;
                     }
                 }
                 //std::cerr << "betaMax=" << betaMax << std::endl;
@@ -169,86 +180,33 @@ namespace yack
                 callB B = { *this };
                 assert( fabs(B0 - B(0)) <= 0);
 
-                std::cerr << "A=" << A << std::endl;
-
-                blocked.ld(false);
-                vector<size_t> cond;
-                vector<bool>   vbad(N,false);
+                
                 for(const anode *node=working.head;node;node=node->next)
                 {
-                    const species       &s = **node;
-                    const size_t         j = *s;
-                    const readable<int> &Aj = A[j];
-                    corelib.pad(std::cerr << s.name,s) << " : ";
-                    const double rhs = -Cbal[j];
-                    std::cerr << Aj << " >= " << std::setw(15) << rhs;
+                    const species &s = **node;
+                    const size_t   j = *s;
 
-                    size_t nact  = 0;
-                    int    clast = 0;
-                    size_t ilast = 0;
-                    for(size_t i=N;i>0;--i)
+                    if(verbose)
                     {
-                        const int a = Aj[i];
-                        if(!a) continue;
-                        ++nact;
-                        clast = a;
-                        ilast = i;
+                        corelib.pad(std::cerr << '[' << s.name << ']',s) << " : ";
+                        show_bal(std::cerr,Bal[j]);
+                        const double c = Cbal[j];
+                        std::cerr << " <= " << std::setw(15) << (fabs(c)>0?-c:0);
                     }
 
-                    switch(nact)
-                    {
-                        case 0:
-                            // not involved
-                            std::cerr << " | drop";
-                            break;
-
-                        case 1:
-                            //std::cerr << "unique #" << ilast << std::endl;
-                            if(clast<0)
-                            {
-                                if(rhs>=0)
-                                {
-                                    vbad[ilast] = true;
-                                    std::cerr << " | blocking";
-                                }
-                                else
-                                {
-                                    std::cerr << " | control";
-                                    cond << j;
-                                }
-
-                            }
-                            else
-                            {
-                                assert(clast>0);
-                                if(rhs>0)
-                                {
-                                    // TODO: NO!!!
-                                    throw exception("unsolved primary!!");
-                                }
-                                else
-                                {
-                                    // true condition
-                                    std::cerr << " | true";
-                                }
-                            }
-                            break;
-
-                        default:
-                            std::cerr << " | generic";
-                            cond << j;
-                            break;
-                    }
-
-                    std::cerr << std::endl;
 
 
+
+                    if(verbose) std::cerr << std::endl;
 
                 }
-                std::cerr << "cond=" << cond << " #" << cond.size() << "/" << M << std::endl;
-                std::cerr << "vbad=" << vbad << std::endl;
 
-                exit(0);
+                exit(1);
+
+
+
+
+
             }
             
             return false;

@@ -43,6 +43,7 @@ namespace yack
 
         Nu(N,N>0?M:0),
         NuA(Nu.rows,Nu.cols),
+        Bal(Nu.cols,Nu.rows),
         Psi(Nu.rows,Nu.cols),
         Omega(N,N),
         iOmeg(N,N),
@@ -64,7 +65,6 @@ namespace yack
         Xl( ltab.next()  ),
         blocked( ltab.next(), transmogrify),
         Ceq(),
-        Bal(M,as_capacity),
 
         lockLib( coerce(usrLib) ),
         lockEqs( coerce(usrEqs) )
