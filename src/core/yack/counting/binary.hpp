@@ -24,20 +24,25 @@ namespace yack
         explicit binary_spots(const size_t maxbits); //!< setup
         virtual ~binary_spots() throw();             //!< cleanup
 
+        //______________________________________________________________________
+        //
+        // methods++
+        //______________________________________________________________________
         size_t                capacity()              const throw(); //!< maxbits
         virtual size_t        size()                  const throw(); //!< in [0:maxbits]
         virtual const_type & operator[](const size_t) const throw(); //!< [] to [1,2,...,maxbits]
 
+        //! create an array of zero and one according to current status
         template <typename T> inline
         void fill(writable<T>                     &arr,
-                  typename writable<T>::const_type zero=0,
-                  typename writable<T>::const_type ones=1)
+                  typename writable<T>::const_type _0 = 0,
+                  typename writable<T>::const_type _1 = 1)
         {
-            arr.ld(zero);
+            arr.ld(_0);
             const readable<size_t> &self = *this;
             for(size_t i=self.size();i>0;--i)
             {
-                arr[ self[i] ] = ones;
+                arr[ self[i] ] = _1;
             }
         }
 
