@@ -233,8 +233,8 @@ namespace yack
                 const double B0 = xadd.get();
                 assert( fabs(B0-B(0))<=0 );
                 if(verbose) std::cerr << singles << std::endl;
-                YACK_XMLOG(xml,"B0   = " << B0);
-                YACK_XMLOG(xml,"beta = " << dC);
+                YACK_XMLOG(xml,"-- B0     = " << B0);
+                YACK_XMLOG(xml,"-- beta   = " << dC);
 
                 //--------------------------------------------------------------
                 //
@@ -242,79 +242,94 @@ namespace yack
                 //
                 //--------------------------------------------------------------
                 NuA.assign(Nu);
-                double xmax = 0;
-                for(const enode *node=singles.head();node;node=node->next)
                 {
-                    const equilibrium   &eq = ***node;
-                    const size_t         ei = *eq;
-                    double              &xx = xi[ei];
-                    const readable<int> &nu = Nu[ei];
-
-                    xx = xadd.dot(nu,dC);
-                    if(verbose) singles.pad(std::cerr << eq.name,eq) << " @" << std::setw(15) << xx << ' ';
-
-                    if(xx>0)
+                    double xmax = 0;
+                    for(const enode *node=singles.head();node;node=node->next)
                     {
-                        const xlimits &lm = eq.primary_limits(Cbal,corelib.maxlen);
-                        if(verbose) std::cerr << lm;
-                        if(lm.reac && lm.reac->xi<=0)
-                        {
-                            if(verbose) std::cerr << " <cancelled by [" << (***lm.reac).name << "]>";
-                            xx      = 0;
-                            NuA[ei].ld(0);
-                        }
-                    }
-                    else
-                    {
-                        if(xx<0)
+                        const equilibrium   &eq = ***node;
+                        const size_t         ei = *eq;
+                        double              &xx = xi[ei];
+                        const readable<int> &nu = Nu[ei];
+
+                        xx = xadd.dot(nu,dC);
+                        if(verbose) singles.pad(std::cerr << "| " << eq.name,eq) << " @" << std::setw(15) << xx << ' ';
+
+                        if(xx>0)
                         {
                             const xlimits &lm = eq.primary_limits(Cbal,corelib.maxlen);
                             if(verbose) std::cerr << lm;
-                            if(lm.prod && lm.prod->xi<=0)
+                            if(lm.reac && lm.reac->xi<=0)
                             {
-                                if(verbose) std::cerr << " <cancelled by [" << (***lm.prod).name << "]>";
+                                if(verbose) std::cerr << " <cancelled by [" << (***lm.reac).name << "]>";
                                 xx      = 0;
                                 NuA[ei].ld(0);
                             }
                         }
                         else
                         {
-                            if(verbose) std::cerr << "<unused>";
-                            NuA[ei].ld(0);
+                            if(xx<0)
+                            {
+                                const xlimits &lm = eq.primary_limits(Cbal,corelib.maxlen);
+                                if(verbose) std::cerr << lm;
+                                if(lm.prod && lm.prod->xi<=0)
+                                {
+                                    if(verbose) std::cerr << " <cancelled by [" << (***lm.prod).name << "]>";
+                                    xx      = 0;
+                                    NuA[ei].ld(0);
+                                }
+                            }
+                            else
+                            {
+                                if(verbose) std::cerr << "<unused>";
+                                NuA[ei].ld(0);
+                            }
                         }
+
+                        xmax = max_of(xmax,absolute(xx));
+
+                        if(verbose) std::cerr << std::endl;
                     }
-
-                    xmax = max_of(xmax,absolute(xx));
-
-                    if(verbose) std::cerr << std::endl;
+                    YACK_XMLOG(xml,"-- |xmax| = " << xmax);
+                    if(xmax<=0)
+                    {
+                        YACK_XMLOG(xml, "-- cancelled extent!!");
+                        return false;
+                    }
                 }
-                std::cerr << "|xmax|=" << xmax << std::endl;
-                singles(std::cerr,"d_",xi);
 
                 //--------------------------------------------------------------
                 //
                 // computing direction of C
                 //
                 //--------------------------------------------------------------
-                for(const anode *node=working.head;node;node=node->next)
                 {
-                    const species &s = **node;
-                    const size_t   j = *s;
-                    xadd.free();
-                    for(size_t i=N;i>0;--i) xadd.push(NuA[i][j] * xi[i]);
-                    dC[j] = xadd.get();
+                    double dmax = 0;
+                    for(const anode *node=working.head;node;node=node->next)
+                    {
+                        const species &s = **node;
+                        const size_t   j = *s;
+                        xadd.free();
+                        for(size_t i=N;i>0;--i) xadd.push(NuA[i][j] * xi[i]);
+                        dmax = max_of(dmax, fabs( dC[j] = xadd.get() ) );
+                    }
+                    YACK_XMLOG(xml,"-- |dmax| = " << dmax);
+                    if(dmax<=0)
+                    {
+                        YACK_XMLOG(xml, "-- cancelled step!!");
+                        return false;
+                    }
+                    if(verbose)
+                    {
+                        corelib(std::cerr,"",Cbal);
+                        corelib(std::cerr,"d_",dC);
+                    }
                 }
-
-                corelib(std::cerr,"",Cbal);
-                corelib(std::cerr,"d_",dC);
-
 
                 //--------------------------------------------------------------
                 //
                 // line search
                 //
                 //--------------------------------------------------------------
-                //const double dC2 = xadd.squares(dC);
 
                 triplet<double> u       = { 0,  -1, 1      };
                 triplet<double> F       = { B0, -1, B(u.c) };
@@ -332,9 +347,9 @@ namespace yack
                     F.c = B( u.c += u.c );
                 }
 
-                std::cerr << u << " -> " << F << std::endl;
-                std::cerr << "success level-1=" << yack_boolean(success) << std::endl;
+                YACK_XMLOG(xml,"-- success@level-1=" << yack_boolean(success));
 
+                if(false)
                 {
                     std::cerr << "\t\tSAVING BAL" << std::endl;
                     ios::ocstream fp("bal.dat");
@@ -352,7 +367,7 @@ namespace yack
                     // local optimization
                     optimize::run_for(B,u,F,optimize::inside);
                     success = (F.b<=0);
-                    std::cerr << "success level-2=" << yack_boolean(success) << std::endl;
+                    YACK_XMLOG(xml,"-- success@level-2=" << yack_boolean(success));
                 }
 
                 //--------------------------------------------------------------
@@ -363,6 +378,7 @@ namespace yack
                 if( success )
                 {
                     YACK_XMLOG(xml, "-- success: shrinking");
+                    // initialize consistent state
                     u.a = 0;   F.a = B0;
                     u.c = u.b; F.c = F.b = 0; working.transfer(Cend,Ctry);
 
@@ -377,19 +393,17 @@ namespace yack
                             u.c = u.b;
                             F.c = F.b;
                             working.transfer(Cend,Ctry);
-                            std::cerr << "+ @" << u.b << std::endl;
                         }
                         else
                         {
                             u.a = u.b;
                             F.a = F.b;
-                            std::cerr << "- @" << u.b << std::endl;
                         }
-                        std::cerr << "\t\t|u|=" << fabs(u.c-u.a) << std::endl;
                         const double wlim = 1e-2 * fabs(u.b);
                         const double wcur = fabs(u.c-u.a);
                         if(wcur<=wlim)
                         {
+                            YACK_XMLOG(xml, "-- " << u << " -> " << F);
                             break;
                         }
                     }
