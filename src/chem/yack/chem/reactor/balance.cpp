@@ -194,6 +194,8 @@ namespace yack
                 assert( fabs(B0 - B(0)) <= 0);
 
 
+                blocked.ld(false);
+
                 for(const anode *node=working.head;node;node=node->next)
                 {
                     const species       &s   = **node;
@@ -202,12 +204,7 @@ namespace yack
                     const double         rhs = fabs(c) > 0 ? -c : 0;
                     const readable<int> &bal = Bal[j];
 
-                    if(verbose)
-                    {
-                        corelib.pad(std::cerr << '[' << s.name << ']',s) << " : ";
-                        show_bal(std::cerr,bal);
-                        std::cerr << " <= " << std::setw(15) << rhs;
-                    }
+
 
                     size_t ilast = 0;
                     int    clast = 0;
@@ -223,16 +220,54 @@ namespace yack
                         }
                     }
 
-                    if(verbose) std::cerr << " | #=" << ncoef;
+                    if(verbose)
+                    {
+                        corelib.pad(std::cerr << '[' << s.name << ']',s) << " : ";
+                        show_bal(std::cerr,bal);
+                        std::cerr << " >= " << std::setw(15) << rhs;
+                        std::cerr << " | #=" << ncoef;
+                    }
 
+                    switch(ncoef)
+                    {
+                        case 0:
+                            if(rhs>0)
+                            {
+                                YACK_XMLOG(xml, "-- conflicting [" << s.name << "]");
+                                return false;
+                            }
+                            if(verbose) std::cerr << " | drop ";
+                            break;
 
+                        case 1:
+                            assert(ilast);
+                            assert(clast);
+                            if(clast>0)
+                            {
+                                if(rhs>=0)
+                                {
+                                    if(verbose) std::cerr << " | true ";
+                                }
+                                else
+                                {
 
+                                }
+                            }
+                            else
+                            {
 
+                            }
+                            break;
 
+                        default:
+                            if(verbose) std::cerr << " | keep ";
 
-
+                    }
 
                     if(verbose) std::cerr << std::endl;
+
+
+
 
                 }
 
