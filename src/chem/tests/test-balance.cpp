@@ -51,18 +51,19 @@ YACK_UTEST(balance)
     const imatrix  NuT(cs.Nu,transposed);
     vector<int>    beta(M,0);
     vector<int>    nub(N,0);
-    vector<int>    dir(M,0);
-    
+
     if(M>0)
     {
         std::cerr << "Nu=" << Nu << std::endl;
         binary_spots sp(M);
 
+        sp.next();
         do
         {
             sp.fill(beta);
             math::iota::mul(nub, Nu, beta);
-            std::cerr << "beta=" << beta << " -> " << nub << std::endl;
+            std::cerr << "beta=" << beta << " -> " << nub  << std::endl;
+            
         }
         while(sp.next());
 
