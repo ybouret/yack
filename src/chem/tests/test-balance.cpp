@@ -46,11 +46,16 @@ YACK_UTEST(balance)
 
     reactor        cs(lib,eqs,0.0);
     const size_t   M  = cs.M;
+#if 0
     const size_t   N  = cs.N;
     const imatrix &Nu = cs.Nu;
     const imatrix  NuT(cs.Nu,transposed);
-    vector<int>    beta(M,0);
-    vector<int>    nub(N,0);
+
+    typedef vector<int> ivector;
+    ivector         beta(M,0);
+    ivector         nub(N,0);
+    vector<ivector> all;
+    const size_t    blk = sizeof(int) * N;
 
     if(M>0)
     {
@@ -63,14 +68,30 @@ YACK_UTEST(balance)
             sp.fill(beta);
             math::iota::mul(nub, Nu, beta);
             std::cerr << "beta=" << beta << " -> " << nub  << std::endl;
-            
+            const void *source = &nub[1];
+            bool        found  = false;
+            for(size_t i=1;i<=all.size();++i)
+            {
+                const void *target = &all[i][1];
+                if( 0 == memcmp(target,source,blk) )
+                {
+                    found  = true;
+                    break;
+                }
+            }
+            if(!found)
+            {
+                all << nub;
+            }
         }
         while(sp.next());
+
+        std::cerr << "#all=" << all.size() << " / " << (1<<M) << std::endl;
 
 
         return 0;
     }
-
+#endif
 
 
     vector<double> Corg(M,0);
