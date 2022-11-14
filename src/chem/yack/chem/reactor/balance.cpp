@@ -180,19 +180,41 @@ namespace yack
                 callB B = { *this };
                 assert( fabs(B0 - B(0)) <= 0);
 
-                
+
                 for(const anode *node=working.head;node;node=node->next)
                 {
-                    const species &s = **node;
-                    const size_t   j = *s;
+                    const species       &s   = **node;
+                    const size_t         j   = *s;
+                    const double         c   = Cbal[j];
+                    const double         rhs = fabs(c) > 0 ? -c : 0;
+                    const readable<int> &bal = Bal[j];
 
                     if(verbose)
                     {
                         corelib.pad(std::cerr << '[' << s.name << ']',s) << " : ";
-                        show_bal(std::cerr,Bal[j]);
-                        const double c = Cbal[j];
-                        std::cerr << " <= " << std::setw(15) << (fabs(c)>0?-c:0);
+                        show_bal(std::cerr,bal);
+                        std::cerr << " <= " << std::setw(15) << rhs;
                     }
+
+                    size_t ilast = 0;
+                    int    clast = 0;
+                    size_t ncoef = 0;
+                    for(size_t i=N;i>0;--i)
+                    {
+                        const int coef = bal[i];
+                        if(coef)
+                        {
+                            clast = coef;
+                            ilast = i;
+                            ++ncoef;
+                        }
+                    }
+
+                    if(verbose) std::cerr << " | #=" << ncoef;
+
+
+
+
 
 
 
