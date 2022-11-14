@@ -194,16 +194,21 @@ namespace yack
                 assert( fabs(B0 - B(0)) <= 0);
 
 
-                blocked.ld(false);
+                blocked.ld(false); // alpha
+                vector<bool>   used(M,true);
+                vector<size_t> cond(M,as_capacity);
 
+            RECOMPUTE:
+                std::cerr << "-------- --------" << std::endl;
+                cond.free();
+                bool recompute = false;
                 for(const anode *node=working.head;node;node=node->next)
                 {
                     const species       &s   = **node;
-                    const size_t         j   = *s;
+                    const size_t         j   = *s;      if(!used[j]) continue;
                     const double         c   = Cbal[j];
                     const double         rhs = fabs(c) > 0 ? -c : 0;
                     const readable<int> &bal = Bal[j];
-
 
 
                     size_t ilast = 0;
@@ -230,46 +235,71 @@ namespace yack
 
                     switch(ncoef)
                     {
-                        case 0:
+                            //--------------------------------------------------
+                        case 0: // detecting an unsused species
+                            //--------------------------------------------------
+                            used[j]   = false;
                             if(rhs>0)
                             {
-                                YACK_XMLOG(xml, "-- conflicting [" << s.name << "]");
+                                if(verbose) std::cerr << " |  inconsistent [" << s.name << "] !!" << std::endl;
                                 return false;
                             }
-                            if(verbose) std::cerr << " | drop ";
+                            else
+                            {
+                                if(verbose)  std::cerr << " | untouched" << std::endl;
+                            }
                             break;
 
-                        case 1:
-                            assert(ilast);
-                            assert(clast);
+                            //--------------------------------------------------
+                        case 1: // detecting a primary alpha
+                            //--------------------------------------------------
+                            if(verbose) std::cerr << " | primary";
                             if(clast>0)
                             {
-                                if(rhs>=0)
+                                //----------------------------------------------
+                                // increasing
+                                //----------------------------------------------
+                                if(verbose) std::cerr << "/increasing";
+                                if(rhs<=0)
                                 {
-                                    if(verbose) std::cerr << " | true ";
+                                    if(verbose) std::cerr << " | true" << std::endl;
+                                    used[j]  = false;
+                                    recompute = true;
                                 }
                                 else
                                 {
-
+                                    if(verbose) std::cerr << " | keep" << std::endl;
+                                    cond << j;
                                 }
                             }
                             else
                             {
-
+                                //----------------------------------------------
+                                // decreasing
+                                //----------------------------------------------
+                                if(verbose) std::cerr << "/decreasing";
+                                exit(1);
                             }
                             break;
 
-                        default:
-                            if(verbose) std::cerr << " | keep ";
+                            //--------------------------------------------------
+                        default: // generic
+                            //--------------------------------------------------
+                            std::cerr << " | generic replica" << std::endl;
+                            cond << j;
+                            break;
 
                     }
-
-                    if(verbose) std::cerr << std::endl;
-
 
 
 
                 }
+
+                if(verbose)
+                {
+                    std::cerr << "cond=" << cond << std::endl;
+                }
+
 
                 exit(1);
 
