@@ -247,7 +247,6 @@ namespace yack
         }
 
 
-        // TODO: monitor decreasing!!!
         template < >
         real_t optimize:: tighten<real_t>(real_function<real_t> &F,
                                           triplet<real_t>       &x,

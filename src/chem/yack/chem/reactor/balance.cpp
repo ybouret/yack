@@ -7,6 +7,7 @@
 #include <cfloat>
 #include "yack/type/boolean.h"
 #include "yack/exception.hpp"
+#include "yack/math/numeric.hpp"
 
 namespace yack
 {
@@ -208,7 +209,7 @@ namespace yack
             //
             //
             //------------------------------------------------------------------
-            unsigned cycle;
+            unsigned cycle=0;
         CYCLE:
             ++cycle;
             YACK_XMLOG(xml, "-------- cycle #" << cycle << " --------");
@@ -313,14 +314,19 @@ namespace yack
                 // line search
                 //
                 //--------------------------------------------------------------
-                const double dC2 = xadd.squares(dC);
+                //const double dC2 = xadd.squares(dC);
 
-                triplet<double> u       = { 0,  -1, B0/dC2 };
+                triplet<double> u       = { 0,  -1, 1      };
                 triplet<double> F       = { B0, -1, B(u.c) };
                 bool            success = false;
                 while(true) {
                     success = (F.c<=0);
-                    if(success) break;
+                    if(success)
+                    {
+                        u.b = u.c;
+                        F.b = F.c;
+                        break;
+                    }
 
                     if(F.c>=F.a) break;
                     F.c = B( u.c += u.c );
@@ -356,8 +362,40 @@ namespace yack
                 //--------------------------------------------------------------
                 if( success )
                 {
-                    YACK_XMLOG(xml, "-- success");
-                    working.transfer(C0,Ctry);
+                    YACK_XMLOG(xml, "-- success: shrinking");
+                    u.a = 0;   F.a = B0;
+                    u.c = u.b; F.c = F.b = 0; working.transfer(Cend,Ctry);
+
+                    assert( Balance(Cend) <= 0 );
+                    assert( B(u.c) <= 0);
+
+                    while(true) {
+                        u.b = clamp(u.a,0.5*(u.a+u.c),u.c);
+                        F.b = B(u.b);
+                        if(F.b<=0)
+                        {
+                            u.c = u.b;
+                            F.c = F.b;
+                            working.transfer(Cend,Ctry);
+                            std::cerr << "+ @" << u.b << std::endl;
+                        }
+                        else
+                        {
+                            u.a = u.b;
+                            F.a = F.b;
+                            std::cerr << "- @" << u.b << std::endl;
+                        }
+                        std::cerr << "\t\t|u|=" << fabs(u.c-u.a) << std::endl;
+                        const double wlim = 1e-2 * fabs(u.b);
+                        const double wcur = fabs(u.c-u.a);
+                        if(wcur<=wlim)
+                        {
+                            break;
+                        }
+                    }
+
+
+                    working.transfer(C0,Cend);
                     return true;
                 }
                 else
