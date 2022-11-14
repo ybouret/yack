@@ -78,45 +78,6 @@ namespace yack
 
             return well;
 
-#if 0
-            for(const snode *node=corelib.head();node;node=node->next)
-            {
-                const species &s = ***node;
-                const size_t   j = *s;
-                const double   c = Cbal[j];
-                if(s.rank>0)
-                {
-                    const sign_type cs = __sign::of(c);
-                    if(verbose)
-                    {
-                        corelib.pad(std::cerr << '[' << s.name << ']',s) << " = " << std::setw(15) << c;
-                    }
-                    switch(cs)
-                    {
-                        case __zero__:
-                            beta[j] = 1;
-                            if(verbose) std::cerr << " (*)";
-                            break;
-
-                        case negative:
-                            xadd << -c;
-                            well = false;
-                            beta[j] = 1;
-                            if(verbose) std::cerr << " (-)";
-                            break;
-
-                        case positive:
-                            beta[j] = 0;
-                            if(verbose) std::cerr << " (+)";
-                            break;
-                    }
-                    if(verbose) std::cerr << std::endl;
-                }
-
-            }
-            return well;
-#endif
-
         }
 
 
@@ -129,39 +90,6 @@ namespace yack
                 return self.Balance(u);
             }
         };
-
-
-        class Cut
-        {
-        public:
-            const double   f;
-            const species &s;
-
-            inline Cut(const double _f, const species &_s) throw() :
-            f(_f),
-            s(_s)
-            {
-
-            }
-
-            inline Cut(const Cut &other) throw() : f(other.f), s(other.s) {}
-
-
-            inline ~Cut() throw()
-            {
-            }
-
-            inline friend std::ostream & operator<<(std::ostream &os, const Cut &self)
-            {
-                os<< self.s.name << "@" << self.f;
-                return os;
-            }
-
-        private:
-            YACK_DISABLE_ASSIGN(Cut);
-        };
-
-
 
         bool reactor:: balance(writable<double> &C0)
         {
@@ -187,7 +115,6 @@ namespace yack
             {
                 Cbal[j] = Ctry[j] = C0[j];
                 dC[j]   = 0;
-                beta[j] = 0;
             }
 
             //------------------------------------------------------------------
