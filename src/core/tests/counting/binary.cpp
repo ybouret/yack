@@ -9,16 +9,23 @@ YACK_UTEST(counting_binary)
     YACK_SIZEOF(combination);
     YACK_SIZEOF(binary_spots);
 
-    binary_spots b(4);
-    vector<int>  u( b.capacity(), 2);
 
-    
-    do
+    for(size_t n=1;n<=6;++n)
     {
-        b.fill(u);
-        std::cerr << u << " <== " << b << std::endl;
+        std::cerr << "-------- n=" << n << " --------" << std::endl;
+
+        binary_spots b(n);
+        vector<int>  u( b.capacity(), 2);
+
+        do
+        {
+            b.fill(u);
+            std::cerr << u << " <== " << b << std::endl;
+        }
+        while(b.next());
+
+        std::cerr << std::endl;
     }
-    while(b.next());
 
 }
 YACK_UDONE()

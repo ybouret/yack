@@ -15,10 +15,11 @@ namespace yack
     static inline
     cardinality_t card_for(size_t maxbits)
     {
-        static const cardinality_t one = 1;
-        static const cardinality_t cmb = sizeof(cardinality_t) * 8 -1;
-        //std::cerr << "card max bits=" << cmb << std::endl;
-        if(maxbits>cmb) throw libc::exception(EINVAL,"too many bits for binary spots");
+        static const char          fn[] = " for binary spots";
+        static const cardinality_t one  = 1;
+        static const cardinality_t cmb  = sizeof(cardinality_t) * 8 -1;
+        if(maxbits>cmb) throw libc::exception(EDOM,"too many bits%s",fn);
+        if(maxbits<=0)  throw libc::exception(EDOM,"no bits%s",fn);
         return one << maxbits;
     }
 
