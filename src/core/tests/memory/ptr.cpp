@@ -3,6 +3,8 @@
 #include "yack/ptr/shared.hpp"
 #include "yack/ptr/cstr.hpp"
 #include "yack/ptr/linked.hpp"
+#include "yack/ptr/raw.hpp"
+
 #include "yack/counted.hpp"
 
 #include "yack/data/list/cxx.hpp"
@@ -42,6 +44,7 @@ YACK_UTEST(memory_ptr)
     YACK_SIZEOF(shared_ptr<dummy>);
     YACK_SIZEOF(counted_ptr<dummy>);
     YACK_SIZEOF(linked_ptr<dummy>);
+    YACK_SIZEOF(raw_ptr<dummy>);
 
     std::cerr << "NIL" << std::endl;
     std::cerr << ptr_::nil << std::endl;
@@ -118,6 +121,32 @@ YACK_UTEST(memory_ptr)
             std::cerr << **node << std::endl;
         }
     }
+
+    std::cerr << "raw_ptr" << std::endl;
+    {
+        int a = 7;
+        raw_ptr<int> rp1;
+        std::cerr << rp1 << std::endl;
+        rp1 = &a;
+        std::cerr << rp1 << std::endl;
+        raw_ptr<int> rp2( &a );
+        std::cerr << rp2 << std::endl;
+        rp2 = rp1;
+        std::cerr << rp2 << std::endl;
+    }
+
+    {
+        const int a = 1;
+        int       b = 2;
+        raw_ptr<const int> rp1(&a);
+        raw_ptr<const int> rp2(&b);
+
+        std::cerr << rp1 << std::endl;
+        std::cerr << rp2 << std::endl;
+
+
+    }
+
 }
 YACK_UDONE()
 

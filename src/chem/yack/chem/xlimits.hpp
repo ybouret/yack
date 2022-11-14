@@ -52,7 +52,7 @@ namespace yack
             // members
             //__________________________________________________________________
             const xlimit * const reac; //!< NULL or limiting reactant
-            const xlimit * const prod; //!< NULL or limitins product
+            const xlimit * const prod; //!< NULL or limiting product
             const limitation     type; //!< computed
             const size_t         wmax; //!< helper to format
 
