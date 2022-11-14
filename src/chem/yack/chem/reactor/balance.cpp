@@ -64,22 +64,35 @@ namespace yack
                 const species &s = ***node;
                 const size_t   j = *s;
                 const double   c = Cbal[j];
-                switch(s.rank)
+                if(s.rank>0)
                 {
-                    case 0:               break;
-                    case 1: assert(c>=0); break;
-                    default:
-                        if(c<0)
-                        {
-                            xadd << -c;
+                    const sign_type cs = __sign::of(c);
+                    if(verbose)
+                    {
+                        corelib.pad(std::cerr << '[' << s.name << ']',s) << " = " << std::setw(15) << c;
+                    }
+                    switch(cs)
+                    {
+                        case __zero__:
                             beta[j] = 1;
-                            well    = false;
-                        }
-                        else
-                        {
+                            if(verbose) std::cerr << " (*)";
+                            break;
+
+                        case negative:
+                            xadd << -c;
+                            well = false;
+                            beta[j] = 1;
+                            if(verbose) std::cerr << " (-)";
+                            break;
+
+                        case positive:
                             beta[j] = 0;
-                        }
+                            if(verbose) std::cerr << " (+)";
+                            break;
+                    }
+                    if(verbose) std::cerr << std::endl;
                 }
+
             }
 
             return well;
