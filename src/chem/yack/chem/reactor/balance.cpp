@@ -7,7 +7,6 @@
 #include <cfloat>
 #include "yack/type/boolean.h"
 #include "yack/exception.hpp"
-#include "yack/container/tuple/pair.hpp"
 
 namespace yack
 {
@@ -131,17 +130,35 @@ namespace yack
         };
 
 
-        
-
-        YACK_PAIR_DECL(STANDARD,Cut,double,f,const species *,s);
-
-        static inline int Compare(const Cut &lhs, const Cut &rhs) throw()
+        class Cut
         {
-            return comparison::increasing(lhs.f,rhs.f);
-        }
-        
+        public:
+            const double   f;
+            const species &s;
 
-        YACK_PAIR_END(Cut);
+            inline Cut(const double _f, const species &_s) throw() :
+            f(_f),
+            s(_s)
+            {
+
+            }
+
+            inline Cut(const Cut &other) throw() : f(other.f), s(other.s) {}
+
+
+            inline ~Cut() throw()
+            {
+            }
+
+            inline friend std::ostream & operator<<(std::ostream &os, const Cut &self)
+            {
+                os<< self.s.name << "@" << self.f;
+                return os;
+            }
+
+        private:
+            YACK_DISABLE_ASSIGN(Cut);
+        };
 
 
 
@@ -182,14 +199,35 @@ namespace yack
             if(!primaryBalance(xml)) return false;
             if(verbose) corelib(*xml << "-- Cbal=","", Cbal);
 
+
+
+            //------------------------------------------------------------------
+            //
+            //
+            // compute balance and gradient
+            //
+            //
+            //------------------------------------------------------------------
+            unsigned cycle;
+        CYCLE:
+            ++cycle;
+            YACK_XMLOG(xml, "-------- cycle #" << cycle << " --------");
             if( isWellBalanced() )
             {
-                YACK_XMLOG(xml,"-- well balanced");
+                //--------------------------------------------------------------
+                // all done
+                //--------------------------------------------------------------
+                YACK_XMLOG(xml,"-- balanced");
                 working.transfer(C0,Cbal);
                 return true;
             }
             else
             {
+                //--------------------------------------------------------------
+                //
+                // get current balance
+                //
+                //--------------------------------------------------------------
                 callB B = { *this };
                 const double B0 = xadd.get();
                 assert( fabs(B0-B(0))<=0 );
@@ -197,6 +235,11 @@ namespace yack
                 YACK_XMLOG(xml,"B0   = " << B0);
                 YACK_XMLOG(xml,"beta = " << dC);
 
+                //--------------------------------------------------------------
+                //
+                // computing/cutting direction extents
+                //
+                //--------------------------------------------------------------
                 NuA.assign(Nu);
                 double xmax = 0;
                 for(const enode *node=singles.head();node;node=node->next)
@@ -244,58 +287,47 @@ namespace yack
 
                     if(verbose) std::cerr << std::endl;
                 }
-
                 std::cerr << "|xmax|=" << xmax << std::endl;
                 singles(std::cerr,"d_",xi);
-                singles(std::cerr << "NuA=","",NuA);
 
+                //--------------------------------------------------------------
+                //
                 // computing direction of C
-                vector<Cut> cutting;
+                //
+                //--------------------------------------------------------------
                 for(const anode *node=working.head;node;node=node->next)
                 {
                     const species &s = **node;
                     const size_t   j = *s;
-
                     xadd.free();
-                    for(size_t i=N;i>0;--i) xadd << (NuA[i][j] * xi[i]);
-                    const double d = dC[j] = xadd.get();
-                    if(d<0 && 1==s.rank)
-                    {
-                        const double c = Cbal[j]; assert(c>=0);
-                        const double f = c/(-d);
-                        const Cut    cut(f,(species *)&s);
-                        cutting << cut;
-                        if(verbose) YACK_XMLOG(xml,"limiting by " << s.name << " @" << f);
-                    }
+                    for(size_t i=N;i>0;--i) xadd.push(NuA[i][j] * xi[i]);
+                    dC[j] = xadd.get();
                 }
+
+                corelib(std::cerr,"",Cbal);
                 corelib(std::cerr,"d_",dC);
-                std::cerr << "cutting=" << cutting << std::endl;
 
-#if 0
+
+                //--------------------------------------------------------------
+                //
+                // line search
+                //
+                //--------------------------------------------------------------
                 const double dC2 = xadd.squares(dC);
-                std::cerr << "B0    =" << B0  << std::endl;
-                std::cerr << "|dC|^2=" << dC2 << std::endl;
-                std::cerr << "cutting=" << cutting << std::endl;
 
-                const double    alpha =  (B0/dC2);
-                triplet<double> u     = { 0,  -1, alpha };
-                triplet<double> F     = { B0, -1, -1 };
-                if(cutting.size())
-                {
-                    hsort(cutting,comparison::increasing<double>);
-                    const double umax = cutting.front()/2;
+                triplet<double> u       = { 0,  -1, B0/dC2 };
+                triplet<double> F       = { B0, -1, B(u.c) };
+                bool            success = false;
+                while(true) {
+                    success = (F.c<=0);
+                    if(success) break;
 
-                    u.c = umax;
-                    F.c = B(u.c);
+                    if(F.c>=F.a) break;
+                    F.c = B( u.c += u.c );
                 }
-                else
-                {
-                    // no limits!!
-                    while( (F.c = B(u.c)) < F.a )
-                    {
-                        u.c += u.c;
-                    }
-                }
+
+                std::cerr << u << " -> " << F << std::endl;
+                std::cerr << "success level-1=" << yack_boolean(success) << std::endl;
 
                 {
                     std::cerr << "\t\tSAVING BAL" << std::endl;
@@ -309,15 +341,49 @@ namespace yack
 
                 }
 
-                optimize::run_for(B,u,F,optimize::inside);
+                if(!success)
+                {
+                    // local optimization
+                    optimize::run_for(B,u,F,optimize::inside);
+                    success = (F.b<=0);
+                    std::cerr << "success level-2=" << yack_boolean(success) << std::endl;
+                }
 
-                std::cerr << "B(" << u.b << ")=" << F.b << std::endl;
-#endif
+                //--------------------------------------------------------------
+                //
+                // studying status
+                //
+                //--------------------------------------------------------------
+                if( success )
+                {
+                    YACK_XMLOG(xml, "-- success");
+                    working.transfer(C0,Ctry);
+                    return true;
+                }
+                else
+                {
+                    working.transfer(Cbal,Ctry);
+                    if(!primaryBalance(xml))
+                    {
+                        YACK_XMLOG(xml, "-- local balance failure");
+                        return false;
+                    }
+                    const double B1 = Balance(Cbal);
+                    YACK_XMLOG(xml, "-- Balance: " << B0 << " --> " << B1);
+                    if(B1<B0)
+                    {
+                        goto CYCLE;
+                    }
+                    else
+                    {
+                        std::cerr << "stalled @cycle #" << cycle << std::endl;
+                        exit(0);
+                    }
 
+                }
 
-                exit(0);
-                return false;
             }
+
 
         }
 
