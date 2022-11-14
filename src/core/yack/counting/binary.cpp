@@ -31,6 +31,11 @@ namespace yack
 
     }
 
+    size_t binary_spots::capacity() const throw()
+    {
+        return bmax;
+    }
+
     void binary_spots:: restart() throw()
     {
         if(comb)
@@ -60,7 +65,25 @@ namespace yack
     {
         if(comb)
         {
-            return false;
+            if(comb->next())
+            {
+                return true;
+            }
+            else
+            {
+                // end of current comb
+                size_t k = comb->size();
+                restart();
+                if(++k>bmax)
+                {
+                    return false;
+                }
+                else
+                {
+                    comb = new ( *wksp ) combination(bmax,k);
+                    return true;
+                }
+            }
         }
         else
         {

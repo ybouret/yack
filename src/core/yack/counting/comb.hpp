@@ -23,7 +23,7 @@ namespace yack
         // C++
         //______________________________________________________________________
         explicit combination(const size_t n, const size_t k); //!< setup
-        virtual ~combination() throw();                       //!< setup
+        virtual ~combination() throw();                       //!< cleanup
         
         //______________________________________________________________________
         //
