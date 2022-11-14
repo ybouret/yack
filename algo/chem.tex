@@ -127,7 +127,8 @@ and its pseudo derivative:
 	b'(C_1) \\
 	\vdots\\
 	b'(C_M)\\
-\end{bmatrix}
+\end{bmatrix},
+\;\;\vec{\beta} = - \vec{B'}(\vec{C})
 \end{equation} 
 
 so that:
@@ -140,9 +141,17 @@ We define the total balance as:
 	\mathsf{B}(\vec{C}) = \sum_j b(C_j)
 \end{equation}
 
+\begin{equation}
+	-\vec{\nabla} \mathsf{B} = \bm{\nu} \vec{\beta}
+\end{equation}
+
 so that
 \begin{equation}
-	\vec{\xi} = \Delta[\vec{\alpha}] \bm{\nu} \underbrace{\left( -\vec{B' }(\vec{C}) \right)}_{\vec{\beta}}, \;\;\vec{\alpha} \in {\mathbb{R}_+}^N
+	\vec{\xi} = \Delta[\vec{\alpha}] \bm{\nu} \vec{\beta}, \;\;\vec{\alpha} \in {\mathbb{R}_+}^N
+\end{equation}
+which ensures
+\begin{equation}
+	\vec{\xi} \cdot \vec{\nabla} \mathsf{B} = - \langle \bm{\nu} \vec{\beta} \vert \Delta[\vec{\alpha}]  \vert \bm{\nu} \vec{\beta} \rangle \leq 0 
 \end{equation}
 
 \begin{equation}

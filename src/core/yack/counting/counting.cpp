@@ -21,11 +21,18 @@ namespace yack
         on_boot();
     }
 
-    bool counting:: next() throw()
+    bool counting:: next()
     {
         assert(index<=total);
-        ++coerce(index);
-        return on_next();
+        try {
+            ++coerce(index);
+            return on_next();
+        }
+        catch(...)
+        {
+            boot();
+            throw;
+        }
     }
     
 

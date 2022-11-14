@@ -20,11 +20,18 @@ namespace yack
     class schedule : public counting, public readable<size_t>, public dynamic
     {
     public:
-        virtual ~schedule() throw(); //!< cleanup
-        
+        //______________________________________________________________________
+        //
+        // interface
+        //______________________________________________________________________
         virtual size_t         granted()                const throw(); //!< dynamic interface
         virtual size_t       & operator[](const size_t)       throw(); //!< data[1..size()]
         virtual const size_t & operator[](const size_t) const throw(); //!< data[1..size()]
+
+        //______________________________________________________________________
+        //
+        // methods
+        //______________________________________________________________________
 
         //! access proxy, const
         template <typename T> inline
@@ -51,12 +58,24 @@ namespace yack
                 sub.push_back(arr[ I[i] ]);
         }
 
+        //______________________________________________________________________
+        //
+        // C++
+        //______________________________________________________________________
+
+        //! cleanup
+        virtual ~schedule() throw();
 
     protected:
         //! setup memory
         explicit schedule(const size_t        ctx_size,
                           const size_t        max_size,
                           const cardinality_t num);
+
+        //______________________________________________________________________
+        //
+        // members
+        //______________________________________________________________________
         void   *addr; //!< context
         size_t *data; //!< data[1..max_size]
         

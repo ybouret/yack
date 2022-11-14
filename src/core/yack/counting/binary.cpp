@@ -1,0 +1,73 @@
+
+#include "yack/counting/binary.hpp"
+#include "yack/type/destruct.hpp"
+#include "yack/system/exception.hpp"
+#include <cerrno>
+
+namespace yack
+{
+
+    binary_spots:: ~binary_spots() throw()
+    {
+        restart();
+    }
+
+    static inline
+    cardinality_t card_for(size_t maxbits)
+    {
+        static const cardinality_t one = 1;
+        static const cardinality_t cmb = sizeof(cardinality_t) * 8 -1;
+        //std::cerr << "card max bits=" << cmb << std::endl;
+        if(maxbits>cmb) throw libc::exception(EINVAL,"too many bits for binary spots");
+        return one << maxbits;
+    }
+
+    binary_spots:: binary_spots(const size_t maxbits) :
+    counting(card_for(maxbits)),
+    comb(NULL),
+    bmax(maxbits),
+    wksp()
+    {
+
+    }
+
+    void binary_spots:: restart() throw()
+    {
+        if(comb)
+        {
+            out_of_reach::naught( destructed(comb) );
+            comb = 0;
+        }
+    }
+
+    void binary_spots:: on_boot() throw()
+    {
+        restart();
+    }
+
+    size_t binary_spots:: size() const throw()
+    {
+        return comb ? comb->size() : 0;
+    }
+
+    const size_t & binary_spots:: operator[](const size_t indx) const throw()
+    {
+        assert(comb);
+        return (*comb)[indx];
+    }
+
+    bool binary_spots:: on_next()
+    {
+        if(comb)
+        {
+            return false;
+        }
+        else
+        {
+            // first
+            comb = new ( *wksp ) combination(bmax,1);
+            return true;
+        }
+    }
+
+}

@@ -31,7 +31,7 @@ namespace yack
         // non-virtual interface
         //______________________________________________________________________
         void boot() throw(); //!< index=1, on_boot
-        bool next() throw(); //!< ++index, on_next
+        bool next(); //!< ++index, on_next
 
         //______________________________________________________________________
         //
@@ -78,7 +78,7 @@ namespace yack
     private:
         YACK_DISABLE_COPY_AND_ASSIGN(counting);
         virtual void on_boot()     throw() = 0; //!< boot state
-        virtual bool on_next()     throw() = 0; //!< next state
+        virtual bool on_next()             = 0; //!< next state
     };
 
 
