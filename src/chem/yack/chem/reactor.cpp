@@ -53,14 +53,16 @@ namespace yack
         Ctry( mtab.next() ),
         dC(   mtab.next() ),
         Cbal( mtab.next() ),
-        beta( mtab.next() ),
+        beta( mtab.next(), transmogrify ),
 
         K(     ntab.next()  ),
         Gamma( ntab.next()  ),
         xi(    ntab.next()  ),
         sigma( ntab.next()  ),
         oshot( ntab.next(), transmogrify  ),
-        
+        xd( ntab.next(), transmogrify  ),
+
+
         Kl( ltab.next()  ),
         Xl( ltab.next()  ),
         blocked( ltab.next(), transmogrify),
