@@ -137,6 +137,226 @@ namespace yack
             YACK_XMLSUB(xml,"Balancing");
             if(verbose) corelib(*xml << "-- Cini=","", C0);
 
+
+            //------------------------------------------------------------------
+            //
+            //
+            // Check Status
+            //
+            //
+            //------------------------------------------------------------------
+            if(N<=0) {
+                YACK_XMLOG(xml,"-- no equilibrium");
+                return true;
+            }
+
+            //------------------------------------------------------------------
+            //
+            //
+            // initialize phase space
+            //
+            //
+            //------------------------------------------------------------------
+            for(size_t j=M;j>0;--j)
+            {
+                Cbal[j] = Ctry[j] = C0[j];
+                beta[j] = 0;
+                dC[j]   = 0;
+            }
+
+            if(!primaryBalance(xml)) return false;
+
+            vector<int> xd(N,0);
+            //------------------------------------------------------------------
+            //
+            //
+            // initialize balance and directions
+            //
+            //
+            //------------------------------------------------------------------
+            {
+                xadd.free();
+                bool well = true;
+                for(const anode *node=working.head;node;node=node->next)
+                {
+                    const species &s = **node;
+                    const size_t   j = *s;
+                    const double   c = Cbal[j];
+                    if(verbose) corelib.pad(std::cerr << "| [" << s.name << "]",s) << " = " << std::setw(15) << c << ' ';
+                    switch(s.rank)
+                    {
+                        case 0: break;
+                        case 1: assert(c>=0);
+                            if(c<=0)
+                            {
+                                if(verbose) std::cerr << "(*)";
+                                beta[j] = 1;
+                            }
+                            else
+                            {
+                                if(verbose) std::cerr << "(+)";
+                                beta[j] = 0;
+                            }
+                            break;
+
+                        default:
+                            if(c<0)
+                            {
+                                if(verbose) std::cerr << "(-)";
+                                beta[j] = 1;
+                                well    = false;
+                                xadd << -c;
+                            }
+                            else
+                            {
+                                if(verbose) std::cerr << "(+)";
+                                beta[j] = 0;
+                            }
+                    }
+                    if(verbose) std::cerr << std::endl;
+
+                }
+
+                if(well)
+                {
+                    YACK_XMLOG(xml,"-- balanced");
+                    working.transfer(C0,Cbal);
+                    return true;
+                }
+            }
+
+
+
+            const double B0 = xadd.get();
+            YACK_XMLOG(xml,"-- B0     = " << B0);
+            YACK_XMLOG(xml,"-- beta   = " << beta);
+
+            // computing xd = NuA * beta
+            {
+                NuA.assign(Nu);
+                int xmax = 0;
+                for(const enode *node=singles.head();node;node=node->next)
+                {
+                    const equilibrium & eq = ***node;
+                    const size_t        ei = *eq;
+                    writable<int>      &nu = NuA[ei];
+                    int                &xx = xd[ei];
+                    xx = iota::dot<int>::of(nu,beta);
+
+                    if(verbose) singles.pad(std::cerr << "| <" << eq.name << ">",eq) << " = " << std::setw(4) << xx << ": ";
+
+                    switch( __sign::of(xx) )
+                    {
+                        case __zero__:
+                            if(verbose) std::cerr << "unused.";
+                            xx = 0;
+                            nu.ld(0);
+                            break;
+
+                        case positive: {
+                            const xlimits &lm = eq.primary_limits(Cbal,0);
+                            if(verbose) std::cerr << lm;
+                            if(lm.reac && lm.reac->xi<=0)
+                            {
+                                if(verbose) std::cerr << " [[canceled by " << (***lm.reac).name << "]]";
+                                xx = 0;
+                                nu.ld(0);
+                            }
+                            else
+                            {
+                                xmax = max_of(xmax,xx);
+                            }
+                        } break;
+
+                        case negative: {
+                            const xlimits &lm = eq.primary_limits(Cbal,0);
+                            if(verbose) std::cerr << lm;
+                            if(lm.prod && lm.prod->xi<=0)
+                            {
+                                if(verbose) std::cerr << " [[canceled by " << (***lm.prod).name << "]]";
+                                xx = 0;
+                                nu.ld(0);
+                            }
+                            else
+                            {
+                                xmax = max_of(xmax,-xx);
+                            }
+                        } break;
+                    }
+
+                    if(verbose) std::cerr << std::endl;
+                }
+                YACK_XMLOG(xml,"-- |xmax| = " << xmax);
+            }
+
+            // computing Alpha matrix = NuA' * diagm(xd)
+            std::cerr << "NuA=" << NuA << std::endl;
+            std::cerr << "xd =" << xd  << std::endl;
+
+            imatrix Alpha(N,M);
+            for(size_t i=N;i>0;--i)
+            {
+                const int d = xd[i];
+                for(size_t j=M;j>0;--j)
+                {
+                    Alpha[i][j] = NuA[i][j] * d;
+                }
+            }
+
+            std::cerr << "Alpha=" << Alpha << std::endl;
+            std::cerr << "C    =" << Cbal  << std::endl;
+
+            vector<double> rho(N,0);
+            for(size_t i=1;i<=N;++i)
+            {
+                const readable<int> &alpha = Alpha[i];
+                rho.free();
+                std::cerr << "using " << alpha << std::endl;
+                bool discard = false;
+                for(const anode *node=working.head;node;node=node->next)
+                {
+                    const species &s = **node;
+                    const size_t   j = *s;
+                    const int      d = alpha[j]; if(!d) continue;;
+                    const double   c = Cbal[j];
+                    corelib.pad(std::cerr << "\t[" << s.name << "]",s) << " = " << std::setw(15) << c <<" with " << std::setw(15) << d << std::endl;
+                    if(d<0)
+                    {
+                        if(c<0)
+                        {
+                            std::cerr << "Discarding" << std::endl;
+                            discard = true;
+                            goto DONE;
+                        }
+                        else
+                        {
+                            rho << c/(-d);
+                        }
+                    }
+                    else
+                    {
+
+                    }
+                }
+            DONE:
+                if(discard) continue;
+                std::cerr << "rho: " << rho << std::endl;
+            }
+
+
+            exit(0);
+            return false;
+        }
+
+
+#if 0
+        bool reactor:: balance(writable<double> &C0)
+        {
+            static const char fn[] = "[reactor]";
+            const xmlog       xml(fn,std::cerr,entity::verbose);
+            YACK_XMLSUB(xml,"Balancing");
+            if(verbose) corelib(*xml << "-- Cini=","", C0);
+
             static const char track[] = "track.dat";
 
             {
@@ -402,7 +622,7 @@ namespace yack
 
 
         }
-
+#endif
 
 
     }
