@@ -22,12 +22,24 @@ namespace yack
 
         double reactor:: Balance(const double u)
         {
+            //static const double cmin = sqrt( numeric<double>::minimum );
+            static const double cmin = pow(10.0, ceil(numeric<double>::min_10_exp/2) );
+
             for(const anode *node=working.head;node;node=node->next)
             {
                 const size_t j = ***node;
                 Ctry[j] = Cbal[j] + u * dC[j];
             }
             primaryRecover(Ctry);
+
+            for(const anode *node=working.head;node;node=node->next)
+            {
+                const species &s = **node; if(s.rank<=1) continue;
+                const size_t  j  = *s;
+                double       &c  = Ctry[j];
+                if( fabs(c) <= cmin ) c=0;
+            }
+
             return Balance(Ctry);
         }
 
@@ -97,7 +109,7 @@ namespace yack
             bool well = true;
             for(const anode *node=working.head;node;node=node->next)
             {
-                const species &s = **node; if(s.rank<=1) continue;;
+                const species &s = **node; if(s.rank<=1) continue;
                 const size_t   j = *s;
                 const double   c = Cbal[j];
                 if(c<0)
@@ -280,10 +292,10 @@ namespace yack
 
                 }
 
-                const double scaling = xadd.dot(beta,dC);
+                const double scaling = working.dot(beta,dC,xadd);
                 std::cerr << "scaling=" << scaling << std::endl;
 
-                triplet<double> u       = { 0, -1, B0/scaling };
+                triplet<double> u       = { 0,  -1, B0/scaling };
                 triplet<double> f       = { B0, -1, B(u.c)    };
                 bool            success = false;
                 while(true)
@@ -307,6 +319,7 @@ namespace yack
 
                 YACK_XMLOG(xml,u << " -> " << f);
 
+                if(false)
                 {
                     ios::ocstream fp("bal.dat"); std::cerr << "\t\tSaving BAL" << std::endl;
                     const size_t np = 1000;
@@ -327,6 +340,7 @@ namespace yack
                     success = (f.b<=0);
                     YACK_XMLOG(xml,u << " -> " << f);
                 }
+
 
 
                 if(success)
@@ -358,11 +372,21 @@ namespace yack
                         }
                     }
                     YACK_XMLOG(xml,u << " -> " << f);
+                    {
+                        ios::acstream fp(track);
+                        fp("%u",cycle);
+                        corelib.frame(fp,Cend) << '\n';
+                    }
                     working.transfer(C0,Cend);
                     return true;
                 }
                 else
                 {
+                    {
+                        ios::acstream fp(track);
+                        fp("%u",cycle);
+                        corelib.frame(fp,Ctry) << '\n';
+                    }
                     const double B1 = f.b; assert(B1>0); assert( fabs(B1-Balance(Ctry)) <= 0 );
                     if(B1<B0)
                     {
