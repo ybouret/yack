@@ -92,7 +92,7 @@ YACK_UTEST(balance)
         return 0;
     }
 #endif
-
+    
 
     vector<double> Corg(M,0);
 

@@ -69,7 +69,7 @@ namespace yack
 
             //! restricted dot product
             template <typename LHS, typename RHS> inline
-            double dot(const LHS &lhs, const RHS &rhs, math::adder<double> &xadd) const
+            double dot(LHS &lhs, RHS &rhs, math::adder<double> &xadd) const
             {
                 xadd.free();
                 for(const anode *node=this->head;node;node=node->next)
@@ -83,7 +83,7 @@ namespace yack
             }
 
             template <typename LHS> inline
-            double norm2(const LHS &lhs, math::adder<double> &xadd) const
+            double norm2(LHS &lhs, math::adder<double> &xadd) const
             {
                 xadd.free();
                 for(const anode *node=this->head;node;node=node->next)
