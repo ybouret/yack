@@ -117,7 +117,12 @@ namespace yack
                 const species &whom = self[name];
                 return arr[*whom];
             }
-            
+
+            //! save frame of concentrations
+            std::ostream & frame(std::ostream &os, const readable<double> &C) const;
+
+            //! save frame of concentrations
+            ios::ostream & frame(ios::ostream &os, const readable<double> &C) const;
 
         private:
             YACK_DISABLE_ASSIGN(library);

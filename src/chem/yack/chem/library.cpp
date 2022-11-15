@@ -141,7 +141,23 @@ namespace yack
             return (*this) << _;
         }
 
+        std::ostream & library:: frame(std::ostream &os, const readable<double> &C) const
+        {
+            for(const snode *node = head();node;node=node->next)
+            {
+               (void)  (***node).frame(os << ' ',C);
+            }
+            return os;
+        }
 
+        ios::ostream & library:: frame(ios::ostream &os, const readable<double> &C) const
+        {
+            for(const snode *node = head();node;node=node->next)
+            {
+                (void)  (***node).frame(os << ' ',C);
+            }
+            return os;
+        }
 
     }
 

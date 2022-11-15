@@ -91,6 +91,7 @@ namespace yack
             }
         };
 
+
         bool reactor:: balance(writable<double> &C0)
         {
             static const char fn[] = "[reactor]";
@@ -98,6 +99,12 @@ namespace yack
             YACK_XMLSUB(xml,"Balancing");
             if(verbose) corelib(*xml << "-- Cini=","", C0);
 
+            static const char track[] = "track.dat";
+
+            {
+                ios::ocstream fp(track);
+                corelib.frame(fp << "0",C0) << '\n';
+            }
             if(N<=0)
             {
                 YACK_XMLOG(xml,"-- no equilibrium");
@@ -348,6 +355,11 @@ namespace yack
                         return false;
                     }
                     const double B1 = Balance(Cbal);
+                    {
+                        ios::acstream fp(track);
+                        fp("%u",cycle);
+                        corelib.frame(fp,Cbal) << '\n';
+                    }
                     YACK_XMLOG(xml, "-- Balance: " << B0 << " --> " << B1);
                     if(B1<B0)
                     {

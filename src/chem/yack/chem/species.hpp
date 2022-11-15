@@ -41,6 +41,11 @@ namespace yack
             {
             }
 
+            //! write formated concentration
+            std::ostream &  frame(std::ostream &os, const readable<double> &C) const;
+
+            //! write formated concentration
+            ios::ostream &  frame(ios::ostream &os, const readable<double> &C) const;
 
             //__________________________________________________________________
             //

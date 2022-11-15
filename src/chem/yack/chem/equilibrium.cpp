@@ -33,8 +33,7 @@ namespace yack
             os << static_cast<const components&>(eq);
             return os;
         }
-        
-
+     
     }
     
 }

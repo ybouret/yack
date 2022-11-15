@@ -35,6 +35,7 @@ namespace yack
             double K(double) const;                                               //!< non-virtual, checkin getK()
             friend std::ostream & operator<<(std::ostream &, const equilibrium&); //!< display
 
+
             //__________________________________________________________________
             //
             // C++

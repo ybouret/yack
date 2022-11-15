@@ -1,6 +1,6 @@
-
-
 #include "yack/chem/species.hpp"
+#include "yack/ios/ostream.hpp"
+#include <iomanip>
 
 namespace yack
 {
@@ -16,6 +16,19 @@ namespace yack
         {
         }
 
+        std::ostream & species:: frame(std::ostream &os, const readable<double> &C) const
+        {
+            assert(C.size()>=**this);
+            os << std::setw(15) << C[ **this ];
+            return os;
+        }
+
+        ios::ostream & species:: frame(ios::ostream &os, const readable<double> &C) const
+        {
+            assert(C.size()>=**this);
+            os("%.15g",C[ **this ]);
+            return os;
+        }
         
     }
 
