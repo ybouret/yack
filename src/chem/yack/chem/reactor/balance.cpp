@@ -3,11 +3,12 @@
 #include "yack/type/utils.hpp"
 #include "yack/math/opt/optimize.hpp"
 #include "yack/math/iota.hpp"
-#include <iomanip>
-#include <cfloat>
+
 #include "yack/type/boolean.h"
 #include "yack/exception.hpp"
 #include "yack/math/numeric.hpp"
+
+#include <iomanip>
 
 namespace yack
 {
@@ -23,7 +24,16 @@ namespace yack
             {
                 const size_t j = ***node;
                 const double c = C[j];
-                if(c<0) xadd <<  squared(c);
+                if(c<0)
+                {
+                    const double c2 = squared(c);
+                    if(c2<=numeric<double>::minimum)
+                    {
+                        std::cerr << "Too Small" << std::endl;
+                        exit(0);
+                    }
+                    xadd <<  c2;
+                }
             }
             return xadd.get();
         }
