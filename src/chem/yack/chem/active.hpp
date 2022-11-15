@@ -6,6 +6,7 @@
 
 #include "yack/chem/library.hpp"
 #include "yack/data/list/meta.hpp"
+#include "yack/math/adder.hpp"
 
 namespace yack
 {
@@ -64,6 +65,34 @@ namespace yack
                     typename TARGET::const_type t = lhs[j]+rhs[j];
                     target[j] = (t<=0) ? 0 : t;
                 }
+            }
+
+            //! restricted dot product
+            template <typename LHS, typename RHS> inline
+            double dot(const LHS &lhs, const RHS &rhs, math::adder<double> &xadd) const
+            {
+                xadd.free();
+                for(const anode *node=this->head;node;node=node->next)
+                {
+                    const size_t j = ***node;
+                    const double l = static_cast<double>(lhs[j]);
+                    const double r = static_cast<double>(rhs[j]);
+                    xadd << l*r;
+                }
+                return xadd.get();
+            }
+
+            template <typename LHS> inline
+            double norm2(const LHS &lhs, math::adder<double> &xadd) const
+            {
+                xadd.free();
+                for(const anode *node=this->head;node;node=node->next)
+                {
+                    const size_t j = ***node;
+                    const double l = static_cast<double>(lhs[j]);
+                    xadd << l*l;
+                }
+                return xadd.get();
             }
 
 

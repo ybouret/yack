@@ -163,8 +163,8 @@ namespace yack
             tableau           &Ctry;    //!< [M] working space
             tableau           &dC;      //!< [M] step
             tableau           &Cbal;    //!< [M] for balancing
-            thin_array<int>    beta;    //!< [M] minus gradient of balance
-
+            tableau           &beta;    //!< [M] for balancing
+            
             tableau           &K;       //!< [N] pre-computed K
             tableau           &Gamma;   //!< [N] current Gamm
             tableau           &xi;      //!< [N] extent

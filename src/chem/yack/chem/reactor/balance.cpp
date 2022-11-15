@@ -68,11 +68,11 @@ namespace yack
                 if(c<0)
                 {
                     well = false;
-                    xadd << squared( dC[j] = -c);
+                    xadd << squared( beta[j] = -c);
                 }
                 else
                 {
-                    dC[j] = 0;
+                    beta[j] = 0;
                 }
             }
 
@@ -121,7 +121,8 @@ namespace yack
             for(size_t j=M;j>0;--j)
             {
                 Cbal[j] = Ctry[j] = C0[j];
-                dC[j]   = 0;
+                beta[j] = dC[j]   = 0;
+
             }
 
             //------------------------------------------------------------------
@@ -168,7 +169,7 @@ namespace yack
                 assert( fabs(B0-B(0))<=0 );
                 if(verbose) std::cerr << singles << std::endl;
                 YACK_XMLOG(xml,"-- B0     = " << B0);
-                YACK_XMLOG(xml,"-- beta   = " << dC);
+                YACK_XMLOG(xml,"-- beta   = " << beta);
 
                 //--------------------------------------------------------------
                 //
@@ -180,12 +181,12 @@ namespace yack
                     double xmax = 0;
                     for(const enode *node=singles.head();node;node=node->next)
                     {
-                        const equilibrium   &eq = ***node;
-                        const size_t         ei = *eq;
-                        double              &xx = xi[ei];
-                        const readable<int> &nu = Nu[ei];
+                        const equilibrium   & eq = ***node;
+                        const size_t          ei = *eq;
+                        double              & xx = xi[ei];
+                        const readable<int> & nu = Nu[ei];
 
-                        xx = xadd.dot(nu,dC);
+                        xx = working.dot(nu,beta,xadd);
                         if(verbose) singles.pad(std::cerr << "| " << eq.name,eq) << " @" << std::setw(15) << xx << ' ';
 
                         if(xx>0)
@@ -223,7 +224,12 @@ namespace yack
 
                         if(verbose) std::cerr << std::endl;
                     }
+
                     YACK_XMLOG(xml,"-- |xmax| = " << xmax);
+                    YACK_XMLOG(xml,"-- dir_xi = " << xi);
+                    YACK_XMLOG(xml,"-- NuA    = " << NuA);
+                    YACK_XMLOG(xml,"-- Nu     = " << Nu);
+
                     if(xmax<=0)
                     {
                         YACK_XMLOG(xml, "-- cancelled extent!!");
@@ -264,12 +270,22 @@ namespace yack
                 // line search
                 //
                 //--------------------------------------------------------------
-
-                triplet<double> u       = { 0,  -1, 1      };
+                const double scaling = working.dot(dC,beta,xadd);
+                if(scaling<=0)
+                {
+                    YACK_XMLOG(xml, "-- spurious step!!");
+                    return false;
+                }
+                const double alpha   =   B0/scaling;
+                std::cerr << "B0      =" << B0      << std::endl;
+                std::cerr << "scaling =" << scaling << std::endl;
+                std::cerr << "alpha   =" << alpha   << std::endl;
+                triplet<double> u       = { 0,  -1, alpha  };
                 triplet<double> F       = { B0, -1, B(u.c) };
                 bool            success = false;
                 while(true) {
                     success = (F.c<=0);
+                    //std::cerr << u << " --> " << F << std::endl;
                     if(success)
                     {
                         u.b = u.c;
@@ -281,7 +297,7 @@ namespace yack
                     F.c = B( u.c += u.c );
                 }
 
-                YACK_XMLOG(xml,"-- success@level-1=" << yack_boolean(success));
+                YACK_XMLOG(xml,"-- success@level-1=" << yack_boolean(success) << " @" << u.c);
 
                 if(false)
                 {
@@ -300,6 +316,7 @@ namespace yack
                 {
                     // local optimization
                     optimize::run_for(B,u,F,optimize::inside);
+                    //std::cerr << u << " --> " << F << std::endl;
                     success = (F.b<=0);
                     YACK_XMLOG(xml,"-- success@level-2=" << yack_boolean(success));
                 }
@@ -354,6 +371,9 @@ namespace yack
                         YACK_XMLOG(xml, "-- local balance failure");
                         return false;
                     }
+
+
+
                     const double B1 = Balance(Cbal);
                     {
                         ios::acstream fp(track);
@@ -378,196 +398,7 @@ namespace yack
 
         }
 
-#if 0
-        bool reactor:: balance(writable<double> &C0)
-        {
-            static const char fn[] = "[reactor]";
-            const xmlog       xml(fn,std::cerr,entity::verbose);
-            YACK_XMLSUB(xml,"Balancing");
-            if(verbose) corelib(*xml << "-- Cini=","", C0);
 
-            if(N<=0)
-            {
-                YACK_XMLOG(xml,"-- no equilibrium");
-                return true;
-            }
-
-            //------------------------------------------------------------------
-            //
-            //
-            // initialize phase space
-            //
-            //
-            //------------------------------------------------------------------
-            for(size_t j=M;j>0;--j)
-            {
-                Cbal[j] = Ctry[j] = C0[j];
-                dC[j]   = 0;
-                beta[j] = 0;
-            }
-
-            //------------------------------------------------------------------
-            //
-            //
-            // ensure first primary balance
-            //
-            //
-            //------------------------------------------------------------------
-            if(!primaryBalance(xml)) return false;
-            if(verbose) corelib(*xml << "-- Cbal=","", Cbal);
-
-
-            const bool  well = isWellBalanced();
-            vector<int> d_xi(N,0);
-
-            if(well)
-            {
-                YACK_XMLOG(xml,"-- well balanced");
-                working.transfer(C0,Cbal);
-                return true;
-            }
-            else
-            {
-                callB B = { *this };
-                const double B0 = xadd.get();
-                assert( fabs(B0-B(0))<=0 );
-                if(verbose) std::cerr << singles << std::endl;
-                YACK_XMLOG(xml,"B0   = " << B0);
-                YACK_XMLOG(xml,"beta = " << beta);
-
-                // computing xi direction
-                NuA.assign(Nu);
-                iota::mul(d_xi,Nu,beta);
-
-                // cutting
-                {
-                    int xmax = 0;
-                    for(const enode *node=singles.head();node;node=node->next)
-                    {
-                        const equilibrium &eq = ***node;
-                        const size_t       ei = *eq;
-                        int               &xx = d_xi[ei];
-                        if(verbose)  singles.pad(std::cerr << "-- " << eq.name,eq) << " @" << std::setw(3) << xx << " : ";
-
-
-                        if(xx>0)
-                        {
-                            const xlimits     &lm = eq.primary_limits(Cbal,corelib.maxlen);
-                            if(verbose) std::cerr << lm;
-                            if(lm.reac && lm.reac->xi<=0)
-                            {
-                                if(verbose) std::cerr << " <limited by " << (***lm.reac).name << ">";
-                                xx = 0;
-                                NuA[ei].ld(0);
-                            }
-                        }
-                        else
-                        {
-                            if(xx<0)
-                            {
-                                const xlimits     &lm = eq.primary_limits(Cbal,corelib.maxlen);
-                                if(verbose) std::cerr << lm;
-                                if(lm.prod && lm.prod->xi<=0)
-                                {
-                                    if(verbose) std::cerr << " <limited by " << (***lm.prod).name << ">";
-                                    xx = 0;
-                                    NuA[ei].ld(0);
-                                }
-                            }
-                            else
-                            {
-                                // not used...
-                                NuA[ei].ld(0);
-                                std::cerr << "<unused>";
-                            }
-                        }
-
-                        xmax = max_of(xmax,absolute(xx));
-                        if(verbose) std::cerr << std::endl;
-                    }
-
-                    YACK_XMLOG(xml,"|xmax| = " << xmax);
-                    if(xmax<=0)
-                    {
-                        YACK_XMLOG(xml,"-- stalled");
-                        return false;
-                    }
-                }
-
-
-                if(verbose) singles(std::cerr,"dxi_",d_xi);
-
-
-                vector<double> cutting(M,as_capacity);
-
-                xadd.free();
-                double dmax = 0;
-                for(const anode *node=working.head;node;node=node->next)
-                {
-                    const species &s = **node;
-                    const size_t   j = *s;
-
-                    int tmp = 0;
-                    for(size_t i=N;i>0;--i)
-                    {
-                        tmp += NuA[i][j] * d_xi[i];
-                    }
-                    dmax = max_of(dmax, fabs(dC[j]=tmp) );
-                    if(verbose) corelib.pad( *xml << "dir_[" << s.name << "]",s) << " = " << std::setw(4) << tmp;
-                    if(tmp<0 && 1==s.rank)
-                    {
-                        const double c = Cbal[j]; assert(c>=0);
-                        const double f = c/(-tmp);
-                        cutting << f;
-                        if(verbose) std::cerr << " cutting@" << std::setw(15) << f;
-                    }
-                    if(verbose) std::cerr << std::endl;
-                }
-                hsort(cutting,comparison::increasing<double>);
-                if(verbose)
-                {
-
-                    std::cerr << "dmax    = " << dmax    << std::endl;
-                    std::cerr << "cutting = " << cutting << std::endl;
-                }
-
-                triplet<double> u = { 0, -1, B0 };
-                triplet<double> f = { B0, -1, -1 };
-                if(cutting.size())
-                {
-                    u.c = min_of(u.c,cutting.front());
-                    f.c = B(u.c);
-                    std::cerr << "u: " << u << " -> " << f << std::endl;
-
-                }
-                else
-                {
-
-                    exit(0);
-                }
-
-                {
-                    ios::ocstream fp("bal.dat");
-                    const size_t NP = 100;
-                    for(size_t i=0;i<=NP;++i)
-                    {
-                        const double uu = (i/double(NP)) * u.c;
-                        fp("%1.5g %.15g\n", uu, B(uu));
-                    }
-
-                }
-
-                exit(0);
-
-
-
-                exit(0);
-
-                return false;
-            }
-
-        }
-#endif
 
 
 
