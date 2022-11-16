@@ -197,7 +197,6 @@ namespace yack
 
             bool                       primaryBalance(const xmlog &xml);
             void                       primaryRecover(writable<double> &C) const;
-            bool                       isWellBalanced();
         };
 
 

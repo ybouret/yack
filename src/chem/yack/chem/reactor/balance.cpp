@@ -103,30 +103,7 @@ namespace yack
             return xadd.get();
         }
 
-        bool reactor:: isWellBalanced()
-        {
-            xadd.free();
-            bool well = true;
-            for(const anode *node=working.head;node;node=node->next)
-            {
-                const species &s = **node; if(s.rank<=1) continue;
-                const size_t   j = *s;
-                const double   c = Cbal[j];
-                if(c<0)
-                {
-                    xadd << (c*c);
-                    beta[j] = -c;
-                    well    = false;
-                }
-                else
-                {
-                    beta[j] = 0;
-                }
-            }
-
-            return well;
-
-        }
+        
 
 
         static inline
@@ -178,7 +155,7 @@ namespace yack
             }
 
         }
-
+        
 
         bool reactor:: balance(writable<double> &C0)
         {
@@ -368,25 +345,6 @@ namespace yack
 
             const size_t na = alive.size();
 
-#if 0
-            if(false)
-            {
-                if(na>=2)
-                {
-                    for(size_t il=1;il<na;++il)
-                    {
-                        const size_t ilhs = lindex[il];
-                        for(size_t ir=il+1;ir<=na;++ir)
-                        {
-                            const size_t irhs = lindex[ir];
-                            std::cerr << "\t[" << ilhs << ":" << irhs << "]" << std::endl;
-                            const string fid = vformat("lam%u-%u.dat", unsigned(ilhs), unsigned(irhs));
-                            __combine(fid,Lambda[ilhs],Lambda[irhs]);
-                        }
-                    }
-                }
-            }
-#endif
 
 
             for(size_t ia=1;ia<=na;++ia)
@@ -395,7 +353,6 @@ namespace yack
                 const size_t         ei    = *eq;
                 const readable<int> &lam   = Lambda[ei];
                 if(verbose) singles.pad(std::cerr << '<' << eq.name <<'>',eq) << " : " << lam << std::endl;
-
             }
 
 
