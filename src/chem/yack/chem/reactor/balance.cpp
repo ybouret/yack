@@ -19,7 +19,7 @@ namespace yack
 
 
 
-
+#if 0
         double reactor:: Balance(const double u)
         {
             //static const double cmin = sqrt( numeric<double>::minimum );
@@ -42,6 +42,7 @@ namespace yack
 
             return Balance(Ctry);
         }
+#endif
 
 
         bool reactor:: primaryBalance(const xmlog &xml)
@@ -226,7 +227,52 @@ namespace yack
 
         }
 
-        
+
+
+        class victory
+        {
+        public:
+
+            const equilibrium & elite;
+            const double        score;
+            const double        costs;
+            const double        value;
+
+            victory(const equilibrium &eq,
+                    const double       sc,
+                    const double       xp) throw() :
+            elite(eq),
+            score(sc),
+            costs(xp),
+            value(score-costs)
+            {
+            }
+
+            ~victory() throw()
+            {
+            }
+
+            victory(const victory &_) throw() :
+            elite(_.elite),
+            score(_.score),
+            costs(_.costs),
+            value(_.value)
+            {
+            }
+
+            const equilibrium & operator*() const throw() { return elite; }
+
+            static int compare(const victory &lhs, const victory &rhs) throw()
+            {
+                return comparison::decreasing(lhs.value, rhs.value);
+            }
+
+
+        private:
+            YACK_DISABLE_ASSIGN(victory);
+        };
+
+
         bool reactor:: balance(writable<double> &C0)
         {
             static const char fn[] = "[reactor]";
@@ -263,7 +309,16 @@ namespace yack
 
             if(!primaryBalance(xml)) return false;
 
-            vector<int> xd(L,0);
+            vector<int>           xd(L,0);
+            imatrix               Lambda(L,M);
+            vector<equilibrium *> alive(L,as_capacity);
+            vector<victory>       winner(L,as_capacity);
+            unsigned  cycle = 0;
+
+        CYCLE:
+            ++cycle;
+            YACK_XMLOG(xml, "------- #cycle " << cycle << " --------");
+
             //------------------------------------------------------------------
             //
             //
@@ -316,7 +371,7 @@ namespace yack
 
                 if(well)
                 {
-                    YACK_XMLOG(xml,"-- balanced");
+                    YACK_XMLOG(xml,"-- balanced!");
                     working.transfer(C0,Cbal);
                     return true;
                 }
@@ -330,7 +385,6 @@ namespace yack
 
             // computing xd = NuL * beta
             {
-                //NuA.assign(Nu);
                 bool found  = false;
                 for(const enode *node=lattice.head();node;node=node->next)
                 {
@@ -371,11 +425,7 @@ namespace yack
             // computing Lambda matrix = NuL' * diagm(xd)
             std::cerr << "xd =" << xd  << std::endl;
 
-
-
-            imatrix               Lambda(L,M);
-            vector<equilibrium *> alive(L,as_capacity);
-
+            alive.free();
             for(const enode *node=lattice.head();node;node=node->next)
             {
                 const equilibrium   &eq    = ***node;
@@ -397,10 +447,7 @@ namespace yack
             std::cerr << "@alive = " << alive.size() << "/" << L << std::endl;
 
 
-            vector<equilibrium *> elite(L,as_capacity);
-            vector<double>        score(L,as_capacity);
-            vector<double>        norm1(L,as_capacity);
-
+            winner.free();
             const size_t na = alive.size();
             for(size_t ia=1;ia<=na;++ia)
             {
@@ -416,19 +463,38 @@ namespace yack
                 if(g>0)
                 {
                     iota::load(Ceq[ei],Ctry);
-                    score << g;
-                    elite << & coerce(eq);
-                    norm1 << xadd.map_to(Ctry,Cbal,abs_of<double>);
+                    const double  score = g;
+                    //const double  costs =xadd.map_to(Ctry,Cbal,abs_of<double>);
+                    const double costs = sqrt(xadd.squares(Ctry,Cbal)/working.size);
+                    const victory player(eq,score,costs);
+                    winner << player;
                 }
             }
-            std::cerr << "score=" << score << std::endl;
-            std::cerr << "norm1=" << norm1 << std::endl;
 
+            const size_t nw = winner.size();
+            if(nw<=0)
+            {
+                YACK_XMLOG(xml, "-- unable to gain balance");
+                corelib(std::cerr,"",Cbal);
+                return false;
+            }
 
+            hsort(winner,victory::compare);
+            for(size_t i=1;i<=nw;++i)
+            {
+                const victory &V = winner[i];
+                lattice.pad(std::cerr << V.elite.name, V.elite)
+                << " : score = " << std::setw(15) << V.score
+                << " : costs = " << std::setw(15) << V.costs
+                << " : value = " << std::setw(15) << V.value
+                << std::endl;
+            }
 
+            const equilibrium &champion = *winner.front();
+            std::cerr << "using <" << champion.name << ">" << std::endl;
+            working.transfer(Cbal,Ceq[*champion]);
+            goto CYCLE;
 
-            exit(0);
-            return false;
         }
 
 
