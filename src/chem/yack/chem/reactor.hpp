@@ -197,7 +197,9 @@ namespace yack
 
             bool                       primaryBalance(const xmlog &xml);
             void                       primaryRecover(writable<double> &C) const;
-            double                     gain(const readable<int> &lam, const species * &sz);
+            double                     gain(const readable<int> &lam,
+                                            double          &cf,
+                                            const species * &sz);
         };
 
 

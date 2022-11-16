@@ -97,18 +97,55 @@ namespace yack
                 const double c = C[j];
                 if(c<0)
                 {
-                    xadd << (c*c);
+                    xadd << -c;
                 }
             }
             return xadd.get();
         }
 
+        class agent
+        {
+        public:
+            agent(const double _f, const species & _s) throw() :
+            f(_f),
+            s(_s)
+            {
+            }
+
+            agent(const agent &_) throw() : f(_.f), s(_.s) {}
+
+            ~agent() throw()
+            {
+            }
+
+            inline friend std::ostream & operator<<(std::ostream &os, const agent &a)
+            {
+                os << '\t' <<  '(' << '[' << a.s.name << ']' <<  '@' << a.f << ')';
+                return os;
+            }
+
+            static int compare(const agent &lhs, const agent &rhs) throw()
+            {
+                return comparison::increasing(lhs.f,rhs.f);
+            }
+
+            const double    f;
+            const species & s;
+
+        private:
+            YACK_DISABLE_ASSIGN(agent);
+        };
+
         
         double reactor:: gain(const readable<int> &lam,
+                              double              &cf,
                               const species *     &sz)
         {
             assert(NULL==sz);
-            bool discard = false;
+            assert(fabs(cf)<=0);
+
+            vector<agent> rho(M,as_capacity);
+            bool          discard = false;
             for(const anode *node=working.head;node;node=node->next)
             {
                 const species &s = **node;
@@ -122,7 +159,10 @@ namespace yack
                     if(c<0)
                     {
                         // increase c<0
-                        if(verbose) std::cerr << "[increase]";
+                        const agent _( (-c)/d, s);
+                        rho << _;
+                        if(verbose) std::cerr << "[increase] " << _.f;
+
                     }
                     else
                     {
@@ -149,7 +189,9 @@ namespace yack
                     else
                     {
                         // decrease c>0
-                        if(verbose) std::cerr << "[decrease]";
+                        const agent _( c/(-d), s);
+                        rho << _;
+                        if(verbose) std::cerr << "[decrease] " << _.f;
                     }
                 }
 
@@ -158,9 +200,56 @@ namespace yack
             }
 
             if(discard) { assert(verbose); return -1; }
+            const size_t na = rho.size();
+            if(na<=0)
+            {
+
+                return 0;
+            }
+            else
+            {
+                hsort(rho,agent::compare);
+                const agent &a = rho.front();
+                std::cerr << a << std::endl;
 
 
-            return 0;
+
+                xadd.free();
+                for(const anode *node=working.head;node;node=node->next)
+                {
+                    const species &s = **node;
+                    const size_t   j = *s;
+                    const int      d = lam[j];
+                    const double   c = Cbal[j];
+                    Ctry[j] = c + d * a.f;
+                    if(d && c<0) xadd << -c;
+                }
+                Ctry[ *a.s ] = 0;
+                const double B0 = xadd.get();
+
+                xadd.free();
+                for(const anode *node=working.head;node;node=node->next)
+                {
+                    const species &s = **node;
+                    const size_t   j = *s;
+                    const int      d = lam[j];
+                    const double   c = Ctry[j];
+                    if(d&&c<0) xadd << -c;
+                }
+                const double B1 = xadd.get();
+                std::cerr << "\tB0   = " << B0   << std::endl;
+                std::cerr << "\tCbal = " << Cbal << std::endl;
+                std::cerr << "\tCtry = " << Ctry << std::endl;
+                std::cerr << "\tB1   = " << B1   << std::endl;
+                const double res = B0-B1;
+                if(res>0)
+                {
+                    cf =  a.f;
+                    sz = &a.s;
+                }
+                return res;
+            }
+
         }
 
 
@@ -224,7 +313,7 @@ namespace yack
                             if(c<=0)
                             {
                                 if(verbose) std::cerr << "(*)";
-                                beta[j] = 1;
+                                beta[j] = 0;
                             }
                             else
                             {
@@ -323,8 +412,9 @@ namespace yack
                 if(verbose) lattice.pad(std::cerr << '<' << eq.name <<'>',eq) << " : " << lam << std::endl;
 
                 const species *s = NULL;
-                const double   g = gain(lam,s);
-                std::cerr << "\tgain=" << g << std::endl;
+                double         f = 0;
+                const double   g = gain(lam,f,s);
+                std::cerr << "\t\tgain=" << g << std::endl;
 
             }
             
