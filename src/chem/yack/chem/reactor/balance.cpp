@@ -129,6 +129,56 @@ namespace yack
         }
 
 
+        static inline
+        double __Ham2(const readable<double> &arr)
+        {
+            double sum = 0;
+            for(size_t i=arr.size();i>0;--i)
+            {
+                if(arr[i]<0)
+                {
+                    sum += squared(arr[i]);
+                }
+            }
+            return sum/2;
+        }
+
+        static inline
+        double __Ham1(const readable<double> &arr)
+        {
+            double sum = 0;
+            for(size_t i=arr.size();i>0;--i)
+            {
+                if(arr[i]<0)
+                {
+                    sum += -(arr[i]);
+                }
+            }
+            return sum;
+        }
+
+        static inline
+        void __combine(const string        &fid,
+                       const readable<int> &lhs,
+                       const readable<int> &rhs)
+        {
+            const size_t   NP = 100;
+            const size_t   dim = lhs.size();
+            vector<double> arr(dim,0);
+            ios::ocstream  fp(fid);
+            for(size_t p=0;p<=NP;++p)
+            {
+                const double wr = p/double(NP);
+                const double wl = (NP-p)/double(NP);
+                for(size_t i=dim;i>0;--i)
+                {
+                    arr[i] = wl * lhs[i] + wr * rhs[i];
+                }
+                fp("%.15g %.15g %.15g\n",wr,__Ham2(arr),__Ham1(arr));
+            }
+
+        }
+
 
         bool reactor:: balance(writable<double> &C0)
         {
@@ -293,42 +343,58 @@ namespace yack
             std::cerr << "NuA=" << NuA << std::endl;
             std::cerr << "xd =" << xd  << std::endl;
 
-            imatrix Lambda(N,M);
-            for(size_t i=N;i>0;--i)
-            {
-                const int d = xd[i];
-                for(size_t j=M;j>0;--j)
-                {
-                    Lambda[i][j] = NuA[i][j] * d;
-                }
-            }
-
-            std::cerr << "Lambda = " << Lambda << std::endl;
-            std::cerr << "C      = " << Cbal  << std::endl;
-
-
-
-            vector<double>    rho(N,as_capacity);;
-            vector<species *> psp(N,as_capacity);
+            imatrix               Lambda(N,M);
+            vector<equilibrium *> alive(N,as_capacity);
 
             for(const enode *node=singles.head();node;node=node->next)
             {
                 const equilibrium   &eq    = ***node;
                 const size_t         ei    = *eq;
+                const int            d = xd[ei];
+                writable<int>       &l = Lambda[ei];
+                const readable<int> &n = NuA[ei];
+                int lmax = 0;
+                for(size_t j=M;j>0;--j)
+                {
+                    lmax = max_of(lmax, absolute( l[j] = n[j] * d ) );
+                }
+                if(lmax) alive << &coerce(eq);
+            }
+
+
+            std::cerr << "Lambda = " << Lambda << std::endl;
+            std::cerr << "C      = " << Cbal   << std::endl;
+            std::cerr << "@alive = " << alive.size() << std::endl;
+
+            const size_t na = alive.size();
+
+#if 0
+            if(false)
+            {
+                if(na>=2)
+                {
+                    for(size_t il=1;il<na;++il)
+                    {
+                        const size_t ilhs = lindex[il];
+                        for(size_t ir=il+1;ir<=na;++ir)
+                        {
+                            const size_t irhs = lindex[ir];
+                            std::cerr << "\t[" << ilhs << ":" << irhs << "]" << std::endl;
+                            const string fid = vformat("lam%u-%u.dat", unsigned(ilhs), unsigned(irhs));
+                            __combine(fid,Lambda[ilhs],Lambda[irhs]);
+                        }
+                    }
+                }
+            }
+#endif
+
+
+            for(size_t ia=1;ia<=na;++ia)
+            {
+                const equilibrium   &eq    = *alive[ia];
+                const size_t         ei    = *eq;
                 const readable<int> &lam   = Lambda[ei];
                 if(verbose) singles.pad(std::cerr << '<' << eq.name <<'>',eq) << " : " << lam << std::endl;
-
-                rho.free();
-                psp.free();
-                bool discard = false;
-                for(const anode *node=working.head;node;node=node->next)
-                {
-                    const species &s = **node;
-                    const size_t   j = *s;
-                    const int      d = lam[j]; if(!d) continue;
-                    const double   c = Cbal[j];
-                    if(verbose) corelib.pad(std::cerr << "\t[" << s.name << "]",s) << " = " << std::setw(15) << c <<" with " << std::setw(15) << d << std::endl;
-                }
 
             }
 
