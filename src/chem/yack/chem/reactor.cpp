@@ -61,7 +61,7 @@ namespace yack
         sigma( ntab.next()  ),
         oshot( ntab.next(), transmogrify  ),
 
-
+        NuL(),
         Kl( ltab.next()  ),
         Xl( ltab.next()  ),
         blocked( ltab.next(), transmogrify),
@@ -131,12 +131,24 @@ namespace yack
                         std::cerr << "lattice = " << lattice << std::endl;
                     }
                 }
+
                 //--------------------------------------------------------------
-                // rebuild ltab
+                // rebuild ltab and update lattice dependent objects
                 //--------------------------------------------------------------
                 ltab.make(L);
                 blocked.relink<bool>();
+                coerce(NuL).make(L,M);
+                for(const enode *node=lattice.head();node;node=node->next)
+                {
+                    const equilibrium &eq = ***node;
+                    eq.fill( coerce(NuL[*eq]) );
+                }
+                if(verbose)
+                {
+                    lattice(std::cerr << "NuL=","",NuL);
+                }
                 Ceq.make(L,M);
+
 
                 assert(L==Kl.size());
                 assert(L==blocked.size());

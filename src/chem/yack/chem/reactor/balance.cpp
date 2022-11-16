@@ -104,58 +104,65 @@ namespace yack
         }
 
         
-
-
-        static inline
-        double __Ham2(const readable<double> &arr)
+        double reactor:: gain(const readable<int> &lam,
+                              const species *     &sz)
         {
-            double sum = 0;
-            for(size_t i=arr.size();i>0;--i)
+            assert(NULL==sz);
+            bool discard = false;
+            for(const anode *node=working.head;node;node=node->next)
             {
-                if(arr[i]<0)
+                const species &s = **node;
+                const size_t   j = *s;
+                const int      d = lam[j]; if(!d) continue;
+                const double   c = Cbal[j];
+                if(verbose) corelib.pad(std::cerr << "\t[" << s.name << "]",s) << " = " << std::setw(15) << c << " with " << std::setw(4) << d << ' ';
+
+                if(0<d)
                 {
-                    sum += squared(arr[i]);
+                    if(c<0)
+                    {
+                        // increase c<0
+                        if(verbose) std::cerr << "[increase]";
+                    }
+                    else
+                    {
+                        // increase c>=0
+                        if(verbose) std::cerr << "[produced]";
+                    }
                 }
+                else
+                {
+                    assert(d<0);
+                    if(c<=0)
+                    {
+                        // decrease c<=0 : bad!
+                        if(verbose)
+                        {
+                            discard = true; // postpone return
+                            std::cerr << "[discard!]";
+                        }
+                        else
+                        {
+                            return -1;
+                        }
+                    }
+                    else
+                    {
+                        // decrease c>0
+                        if(verbose) std::cerr << "[decrease]";
+                    }
+                }
+
+
+                if(verbose) std::cerr << std::endl;
             }
-            return sum/2;
+
+            if(discard) { assert(verbose); return -1; }
+
+
+            return 0;
         }
 
-        static inline
-        double __Ham1(const readable<double> &arr)
-        {
-            double sum = 0;
-            for(size_t i=arr.size();i>0;--i)
-            {
-                if(arr[i]<0)
-                {
-                    sum += -(arr[i]);
-                }
-            }
-            return sum;
-        }
-
-        static inline
-        void __combine(const string        &fid,
-                       const readable<int> &lhs,
-                       const readable<int> &rhs)
-        {
-            const size_t   NP = 100;
-            const size_t   dim = lhs.size();
-            vector<double> arr(dim,0);
-            ios::ocstream  fp(fid);
-            for(size_t p=0;p<=NP;++p)
-            {
-                const double wr = p/double(NP);
-                const double wl = (NP-p)/double(NP);
-                for(size_t i=dim;i>0;--i)
-                {
-                    arr[i] = wl * lhs[i] + wr * rhs[i];
-                }
-                fp("%.15g %.15g %.15g\n",wr,__Ham2(arr),__Ham1(arr));
-            }
-
-        }
-        
 
         bool reactor:: balance(writable<double> &C0)
         {
@@ -193,7 +200,7 @@ namespace yack
 
             if(!primaryBalance(xml)) return false;
 
-            vector<int> xd(N,0);
+            vector<int> xd(L,0);
             //------------------------------------------------------------------
             //
             //
@@ -258,78 +265,39 @@ namespace yack
             YACK_XMLOG(xml,"-- B0     = " << B0);
             YACK_XMLOG(xml,"-- beta   = " << beta);
 
-            // computing xd = NuA * beta
+            // computing xd = NuL * beta
             {
-                NuA.assign(Nu);
+                //NuA.assign(Nu);
                 int xmax = 0;
-                for(const enode *node=singles.head();node;node=node->next)
+                for(const enode *node=lattice.head();node;node=node->next)
                 {
-                    const equilibrium & eq = ***node;
-                    const size_t        ei = *eq;
-                    writable<int>      &nu = NuA[ei];
-                    int                &xx = xd[ei];
-                    xx = iota::dot<int>::of(nu,beta);
+                    const equilibrium &  eq = ***node;
+                    const size_t         ei = *eq;
+                    const readable<int> &nu = NuL[ei];
+                    int                 &xx = xd[ei];
+                    xx   = iota::dot<int>::of(nu,beta);
+                    xmax = max_of(xmax,absolute(xx));
 
-                    if(verbose) singles.pad(std::cerr << "| <" << eq.name << ">",eq) << " = " << std::setw(4) << xx << ": ";
+                    if(verbose) lattice.pad(std::cerr << "| <" << eq.name << ">",eq) << " = " << std::setw(4) << xx << std::endl;
 
-                    switch( __sign::of(xx) )
-                    {
-                        case __zero__:
-                            if(verbose) std::cerr << "unused.";
-                            xx = 0;
-                            nu.ld(0);
-                            break;
 
-                        case positive: {
-                            const xlimits &lm = eq.primary_limits(Cbal,0);
-                            if(verbose) std::cerr << lm;
-                            if(lm.reac && lm.reac->xi<=0)
-                            {
-                                if(verbose) std::cerr << " [[canceled by " << (***lm.reac).name << "]]";
-                                xx = 0;
-                                nu.ld(0);
-                            }
-                            else
-                            {
-                                xmax = max_of(xmax,xx);
-                            }
-                        } break;
-
-                        case negative: {
-                            const xlimits &lm = eq.primary_limits(Cbal,0);
-                            if(verbose) std::cerr << lm;
-                            if(lm.prod && lm.prod->xi<=0)
-                            {
-                                if(verbose) std::cerr << " [[canceled by " << (***lm.prod).name << "]]";
-                                xx = 0;
-                                nu.ld(0);
-                            }
-                            else
-                            {
-                                xmax = max_of(xmax,-xx);
-                            }
-                        } break;
-                    }
-
-                    if(verbose) std::cerr << std::endl;
                 }
                 YACK_XMLOG(xml,"-- |xmax| = " << xmax);
             }
 
-            // computing Alpha matrix = NuA' * diagm(xd)
-            std::cerr << "NuA=" << NuA << std::endl;
+            // computing Lambda matrix = NuL' * diagm(xd)
             std::cerr << "xd =" << xd  << std::endl;
 
-            imatrix               Lambda(N,M);
-            vector<equilibrium *> alive(N,as_capacity);
+            imatrix               Lambda(L,M);
+            vector<equilibrium *> alive(L,as_capacity);
 
-            for(const enode *node=singles.head();node;node=node->next)
+            for(const enode *node=lattice.head();node;node=node->next)
             {
                 const equilibrium   &eq    = ***node;
                 const size_t         ei    = *eq;
                 const int            d = xd[ei];
                 writable<int>       &l = Lambda[ei];
-                const readable<int> &n = NuA[ei];
+                const readable<int> &n = NuL[ei];
                 int lmax = 0;
                 for(size_t j=M;j>0;--j)
                 {
@@ -341,7 +309,7 @@ namespace yack
 
             std::cerr << "Lambda = " << Lambda << std::endl;
             std::cerr << "C      = " << Cbal   << std::endl;
-            std::cerr << "@alive = " << alive.size() << std::endl;
+            std::cerr << "@alive = " << alive.size() << "/" << L << std::endl;
 
             const size_t na = alive.size();
 
@@ -352,9 +320,14 @@ namespace yack
                 const equilibrium   &eq    = *alive[ia];
                 const size_t         ei    = *eq;
                 const readable<int> &lam   = Lambda[ei];
-                if(verbose) singles.pad(std::cerr << '<' << eq.name <<'>',eq) << " : " << lam << std::endl;
-            }
+                if(verbose) lattice.pad(std::cerr << '<' << eq.name <<'>',eq) << " : " << lam << std::endl;
 
+                const species *s = NULL;
+                const double   g = gain(lam,s);
+                std::cerr << "\tgain=" << g << std::endl;
+
+            }
+            
 
 
 

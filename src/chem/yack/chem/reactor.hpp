@@ -157,21 +157,21 @@ namespace yack
             rmatrix            Psi;     //!< [NxM] jacobian
             rmatrix            Omega;   //!< [NxN] coupling
             rmatrix            iOmeg;   //!< [NxN] to solve
-            
+
             tableau           &Corg;    //!< [M] starting point
             tableau           &Cend;    //!< [M] final point
             tableau           &Ctry;    //!< [M] working space
             tableau           &dC;      //!< [M] step
             tableau           &Cbal;    //!< [M] for balancing
-            //tableau           &beta;    //!< [M] for balancing
-            thin_array<int>   beta; //!< [M] for balancing
+            thin_array<int>   beta;     //!< [M] for balancing
 
             tableau           &K;       //!< [N] pre-computed K
             tableau           &Gamma;   //!< [N] current Gamm
             tableau           &xi;      //!< [N] extent
             tableau           &sigma;   //!< [N] slope
             thin_array<bool>   oshot;   //!< [N] overshoot
- 
+
+            const imatrix      NuL;     //!< [LxM] full topology
             tableau           &Kl;      //!< [L] pre-computed K
             tableau           &Xl;      //!< [L] solving extents
             thin_array<bool>   blocked; //!< [L] blocking state
@@ -197,6 +197,7 @@ namespace yack
 
             bool                       primaryBalance(const xmlog &xml);
             void                       primaryRecover(writable<double> &C) const;
+            double                     gain(const readable<int> &lam, const species * &sz);
         };
 
 
