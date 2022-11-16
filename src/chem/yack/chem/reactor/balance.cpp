@@ -293,18 +293,18 @@ namespace yack
             std::cerr << "NuA=" << NuA << std::endl;
             std::cerr << "xd =" << xd  << std::endl;
 
-            imatrix Alpha(N,M);
+            imatrix Lambda(N,M);
             for(size_t i=N;i>0;--i)
             {
                 const int d = xd[i];
                 for(size_t j=M;j>0;--j)
                 {
-                    Alpha[i][j] = NuA[i][j] * d;
+                    Lambda[i][j] = NuA[i][j] * d;
                 }
             }
 
-            std::cerr << "Alpha=" << Alpha << std::endl;
-            std::cerr << "C    =" << Cbal  << std::endl;
+            std::cerr << "Lambda = " << Lambda << std::endl;
+            std::cerr << "C      = " << Cbal  << std::endl;
 
 
 
@@ -315,8 +315,8 @@ namespace yack
             {
                 const equilibrium   &eq    = ***node;
                 const size_t         ei    = *eq;
-                const readable<int> &alpha = Alpha[ei];
-                if(verbose) singles.pad(std::cerr << '<' << eq.name <<'>',eq) << " : " << alpha << std::endl;
+                const readable<int> &lam   = Lambda[ei];
+                if(verbose) singles.pad(std::cerr << '<' << eq.name <<'>',eq) << " : " << lam << std::endl;
 
                 rho.free();
                 psp.free();
@@ -325,43 +325,10 @@ namespace yack
                 {
                     const species &s = **node;
                     const size_t   j = *s;
-                    const int      d = alpha[j]; if(!d) continue;
+                    const int      d = lam[j]; if(!d) continue;
                     const double   c = Cbal[j];
                     if(verbose) corelib.pad(std::cerr << "\t[" << s.name << "]",s) << " = " << std::setw(15) << c <<" with " << std::setw(15) << d << std::endl;
-                    if(d<0)
-                    {
-                        if(c<0)
-                        {
-                            std::cerr << "Discarding" << std::endl;
-                            discard = true;
-                        }
-                        else
-                        {
-                            // decrease till bad
-                            rho << c/(-d);
-                            psp << &coerce(s);
-                        }
-                    }
-                    else
-                    {
-                        assert(d>0);
-                        if(c<0)
-                        {
-                            // increases till good
-                            rho << (-c)/d;
-                            psp << &coerce(s);
-                        }
-                    }
                 }
-
-            DONE:
-                if(discard) continue;
-                if(rho.size()<=0)
-                {
-                    std::cerr << "\tunsusable" << std::endl;
-                    continue;;
-                }
-                std::cerr << "rho=" << rho << std::endl;
 
             }
 
