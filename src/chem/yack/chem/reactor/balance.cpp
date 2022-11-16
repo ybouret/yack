@@ -418,9 +418,11 @@ namespace yack
                     iota::load(Ceq[ei],Ctry);
                     score << g;
                     elite << & coerce(eq);
+                    norm1 << xadd.map_to(Ctry,Cbal,abs_of<double>);
                 }
             }
             std::cerr << "score=" << score << std::endl;
+            std::cerr << "norm1=" << norm1 << std::endl;
 
 
 
