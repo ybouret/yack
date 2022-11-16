@@ -82,6 +82,7 @@ namespace yack
                 return xadd.get();
             }
 
+            //! restricted |lhs|^2
             template <typename LHS> inline
             double norm2(LHS &lhs, math::adder<double> &xadd) const
             {
@@ -94,6 +95,8 @@ namespace yack
                 }
                 return xadd.get();
             }
+
+            
 
 
 
