@@ -168,6 +168,7 @@ namespace yack
                 }
                 return get();
             }
+            
 
             //! get sum of delta squares
             template <typename LHS, typename RHS> inline
@@ -183,6 +184,35 @@ namespace yack
                     const_type d = l-r;
                     const_type p = d*d;
                     (*this) += p;
+                }
+                return get();
+            }
+
+            //! get sum of function(lhs)
+            template <typename LHS, typename FUNC> inline
+            T map_to(LHS &lhs, FUNC &func)
+            {
+                const size_t n = lhs.size();
+                resume(n);
+                for(size_t i=n;i>0;--i)
+                {
+                    const_type l  = func(lhs[i]);
+                    (*this) += l;
+                }
+                return get();
+            }
+
+            //! get sum of function(lhs-rhs)
+            template <typename LHS, typename RHS, typename FUNC> inline
+            T map_to(LHS &lhs, RHS &rhs, FUNC &func)
+            {
+                assert(lhs.size()==rhs.size());
+                const size_t n = lhs.size();
+                resume(n);
+                for(size_t i=n;i>0;--i)
+                {
+                    const_type l  = func(lhs[i]-rhs[i]);
+                    (*this) += l;
                 }
                 return get();
             }

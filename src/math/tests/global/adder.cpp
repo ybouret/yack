@@ -62,9 +62,23 @@ YACK_UTEST(adder)
             lhs << ran.symm<double>();
             rhs << int( ran.in(-10,10) );
         }
-        std::cerr << "lhs=" << lhs << std::endl;
-        std::cerr << "rhs=" << rhs << std::endl;
-        std::cerr << "dot=" << add.dot(lhs,rhs) << std::endl;
+        std::cerr << "lhs   = " << lhs << std::endl;
+        std::cerr << "rhs   = " << rhs << std::endl;
+        std::cerr << "dot   = " << add.dot(lhs,rhs) << std::endl;
+        std::cerr << std::endl;
+        std::cerr << "|lhs|_1 = " << add.map_to(lhs,fabsl) << std::endl;
+        std::cerr << "|rhs|_1 = " << add.map_to(rhs,fabsl) << std::endl;
+        std::cerr << "|del|_1 = " << add.map_to(lhs,rhs,fabsl) << std::endl;
+        std::cerr << std::endl;
+
+        std::cerr << "|lhs|_2 = " << add.squares(lhs)      << std::endl;
+        std::cerr << "|rhs|_2 = " << add.squares(rhs)      << std::endl;
+        std::cerr << "|del|_2 = " << add.squares(lhs,rhs)  << std::endl;
+        std::cerr << "|del|_2 = " << add.map_to(lhs,rhs,squared<long double>) << std::endl;
+
+        YACK_CHECK( fabsl(add.squares(lhs)-add.map_to(lhs,squared<long double>)) <= 0);
+        YACK_CHECK( fabsl(add.squares(lhs,rhs)-add.map_to(lhs,rhs,squared<long double>)) <= 0);
+
     }
 
 

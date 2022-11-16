@@ -84,6 +84,9 @@ namespace yack
         typedef islot::node_type                   inode; //!< alias for node of involved equilirium
         typedef vector<const islot,memory::dyadic> slots; //!< alias
 
+
+
+
         //______________________________________________________________________
         //
         //
@@ -197,9 +200,28 @@ namespace yack
 
             bool                       primaryBalance(const xmlog &xml);
             void                       primaryRecover(writable<double> &C) const;
-            double                     gain(const readable<int> &lam,
-                                            double          &cf,
-                                            const species * &sz);
+
+        public:
+            class tumbler
+            {
+            public:
+                tumbler(const double _f, const species & _s) throw();
+                tumbler(const tumbler &)                     throw();
+                ~tumbler()                                   throw();
+                
+                friend std::ostream & operator<<(std::ostream &os, const tumbler &a);
+                static int compare(const tumbler &lhs, const tumbler &rhs) throw();
+
+                const double    f;
+                const species & s;
+
+            private:
+                YACK_DISABLE_ASSIGN(tumbler);
+            };
+
+            double gain(const readable<int> &lam,
+                        double              &cf,
+                        const species *     &sz);
         };
 
 

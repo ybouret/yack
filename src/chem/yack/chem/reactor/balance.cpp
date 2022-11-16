@@ -103,38 +103,8 @@ namespace yack
             return xadd.get();
         }
 
-        class agent
-        {
-        public:
-            agent(const double _f, const species & _s) throw() :
-            f(_f),
-            s(_s)
-            {
-            }
 
-            agent(const agent &_) throw() : f(_.f), s(_.s) {}
 
-            ~agent() throw()
-            {
-            }
-
-            inline friend std::ostream & operator<<(std::ostream &os, const agent &a)
-            {
-                os << '\t' <<  '(' << '[' << a.s.name << ']' <<  '@' << a.f << ')';
-                return os;
-            }
-
-            static int compare(const agent &lhs, const agent &rhs) throw()
-            {
-                return comparison::increasing(lhs.f,rhs.f);
-            }
-
-            const double    f;
-            const species & s;
-
-        private:
-            YACK_DISABLE_ASSIGN(agent);
-        };
 
         
         double reactor:: gain(const readable<int> &lam,
@@ -143,9 +113,9 @@ namespace yack
         {
             assert(NULL==sz);
             assert(fabs(cf)<=0);
-
-            vector<agent> rho(M,as_capacity);
-            bool          discard = false;
+            
+            vector<tumbler> tumblers(M,as_capacity);
+            bool            discard = false;
             for(const anode *node=working.head;node;node=node->next)
             {
                 const species &s = **node;
@@ -159,8 +129,8 @@ namespace yack
                     if(c<0)
                     {
                         // increase c<0
-                        const agent _( (-c)/d, s);
-                        rho << _;
+                        const tumbler _( (-c)/d, s);
+                        tumblers << _;
                         if(verbose) std::cerr << "[increase] " << _.f;
 
                     }
@@ -189,8 +159,8 @@ namespace yack
                     else
                     {
                         // decrease c>0
-                        const agent _( c/(-d), s);
-                        rho << _;
+                        const tumbler _( c/(-d), s);
+                        tumblers << _;
                         if(verbose) std::cerr << "[decrease] " << _.f;
                     }
                 }
@@ -200,7 +170,7 @@ namespace yack
             }
 
             if(discard) { assert(verbose); return -1; }
-            const size_t na = rho.size();
+            const size_t na = tumblers.size();
             if(na<=0)
             {
 
@@ -208,8 +178,8 @@ namespace yack
             }
             else
             {
-                hsort(rho,agent::compare);
-                const agent &a = rho.front();
+                hsort(tumblers,tumbler::compare);
+                const tumbler &a = tumblers.front();
                 std::cerr << a << std::endl;
 
 
@@ -246,13 +216,17 @@ namespace yack
                 {
                     cf =  a.f;
                     sz = &a.s;
+                    return res;
                 }
-                return res;
+                else
+                {
+                    return -1;
+                }
             }
 
         }
 
-
+        
         bool reactor:: balance(writable<double> &C0)
         {
             static const char fn[] = "[reactor]";
@@ -357,7 +331,7 @@ namespace yack
             // computing xd = NuL * beta
             {
                 //NuA.assign(Nu);
-                int xmax = 0;
+                bool found  = false;
                 for(const enode *node=lattice.head();node;node=node->next)
                 {
                     const equilibrium &  eq = ***node;
@@ -365,17 +339,39 @@ namespace yack
                     const readable<int> &nu = NuL[ei];
                     int                 &xx = xd[ei];
                     xx   = iota::dot<int>::of(nu,beta);
-                    xmax = max_of(xmax,absolute(xx));
-
                     if(verbose) lattice.pad(std::cerr << "| <" << eq.name << ">",eq) << " = " << std::setw(4) << xx << std::endl;
+
+                    switch( __sign::of(xx) )
+                    {
+                        case __zero__:
+                            xx = 0;
+                            break;
+
+                        case negative:
+                            found = true;
+                            xx    = -1;
+                            break;
+
+                        case positive:
+                            found = true;
+                            xx    = 1;
+                            break;
+                    }
+
 
 
                 }
-                YACK_XMLOG(xml,"-- |xmax| = " << xmax);
+                YACK_XMLOG(xml,"-- found  = " << yack_boolean(found));
+                if(!found)
+                {
+                    return false;
+                }
             }
 
             // computing Lambda matrix = NuL' * diagm(xd)
             std::cerr << "xd =" << xd  << std::endl;
+
+
 
             imatrix               Lambda(L,M);
             vector<equilibrium *> alive(L,as_capacity);
@@ -400,10 +396,12 @@ namespace yack
             std::cerr << "C      = " << Cbal   << std::endl;
             std::cerr << "@alive = " << alive.size() << "/" << L << std::endl;
 
+
+            vector<equilibrium *> elite(L,as_capacity);
+            vector<double>        score(L,as_capacity);
+            vector<double>        norm1(L,as_capacity);
+
             const size_t na = alive.size();
-
-
-
             for(size_t ia=1;ia<=na;++ia)
             {
                 const equilibrium   &eq    = *alive[ia];
@@ -411,13 +409,18 @@ namespace yack
                 const readable<int> &lam   = Lambda[ei];
                 if(verbose) lattice.pad(std::cerr << '<' << eq.name <<'>',eq) << " : " << lam << std::endl;
 
-                const species *s = NULL;
-                double         f = 0;
-                const double   g = gain(lam,f,s);
+                const species *sz = NULL;
+                double         cf = 0;
+                const double   g  = gain(lam,cf,sz);
                 std::cerr << "\t\tgain=" << g << std::endl;
-
+                if(g>0)
+                {
+                    iota::load(Ceq[ei],Ctry);
+                    score << g;
+                    elite << & coerce(eq);
+                }
             }
-            
+            std::cerr << "score=" << score << std::endl;
 
 
 
