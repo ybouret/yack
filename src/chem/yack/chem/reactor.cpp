@@ -6,6 +6,7 @@
 #include "yack/apex.hpp"
 #include "yack/system/imported.hpp"
 #include "yack/ios/xmlog.hpp"
+#include "yack/signs.hpp"
 
 namespace yack
 {
@@ -200,10 +201,8 @@ namespace yack
                         const size_t   j = *s;
                         islot         &l = coerce(held_by[j]); assert(0==l.size);
 
-                        if(verbose)
-                        {
-                            corelib.pad(*xml<< s.name,s) << " held by";
-                        }
+                        if(verbose) corelib.pad(*xml<< s.name,s) << " held by";
+
 
                         for(const enode *scan=singles.head();scan;scan=scan->next)
                         {
@@ -223,6 +222,28 @@ namespace yack
                         if(verbose) std::cerr << std::endl;
                     }
                 }
+
+                // check for conservations
+                {
+                    YACK_XMLSUB(xml, "Conservation");
+
+                    for(const anode *node=working.head;node;node=node->next)
+                    {
+                        const species &s = **node;
+                        const size_t   j = *s;
+                        const islot   &l = held_by[j];
+
+                        if(verbose) corelib.pad(*xml<< s.name,s) << " : " << l;
+
+                        assert(s.rank==l.size);
+
+                        if(verbose) std::cerr << std::endl;
+                    }
+
+
+                    exit(0);
+                }
+
             }
 
             
