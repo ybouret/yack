@@ -91,7 +91,7 @@ namespace yack
             //------------------------------------------------------------------
             //
             //
-            // Test balance
+            // check total balance
             //
             //
             //------------------------------------------------------------------
@@ -118,13 +118,11 @@ namespace yack
                             break;
 
                         default:
-                            if(c<0)
-                            {
+                            if(c<0) {
                                 if(verbose) std::cerr << "[-]";
                                 balanced = false;
                             }
-                            else
-                            {
+                            else {
                                 if(verbose) std::cerr << "[+]";
                             }
                     }
@@ -132,8 +130,7 @@ namespace yack
 
                 }
 
-                if(balanced)
-                {
+                if(balanced) {
                     YACK_XMLOG(xml, "-- <balanced>");
                     working.transfer(C0,Cbal);
                     return true;
@@ -220,14 +217,23 @@ namespace yack
                     if(verbose) corelib.pad(std::cerr << "|\t[" << s.name << "]",s) << " = " << std::setw(15) << c << " with " << std::setw(4) << d << ' ';
                     if(d<0)
                     {
+                        //------------------------------------------------------
+                        // decreasing coefficient
+                        //------------------------------------------------------
                         if(c<0)
                         {
+                            //--------------------------------------------------
+                            // with a negative concentration => bad
+                            //--------------------------------------------------
                             if(verbose) std::cerr << "[discard]" << std::endl;
                             vanish = NULL;
                             break;
                         }
                         else
                         {
+                            //--------------------------------------------------
+                            // with a positive concentration => cut
+                            //--------------------------------------------------
                             const double x = c/(-d);
                             if(!vanish||x<factor)
                             {
@@ -239,9 +245,15 @@ namespace yack
                     }
                     else
                     {
+                        //------------------------------------------------------
+                        // increasing coefficient
+                        //------------------------------------------------------
                         assert(d>0);
                         if(c<0)
                         {
+                            //--------------------------------------------------
+                            // with a negative concentration => cut
+                            //--------------------------------------------------
                             const double x = (-c)/d;
                             if(!vanish||x<factor)
                             {
@@ -252,14 +264,22 @@ namespace yack
                         }
                         else
                         {
+                            //--------------------------------------------------
+                            // with a positive concentration => do nothing else
+                            //--------------------------------------------------
                             if(verbose) std::cerr << "[+growth+]" << std::endl;
                         }
 
                     }
                 }
 
-                if(!vanish || factor<=0)
-                {
+
+                //--------------------------------------------------------------
+                //
+                //  check if useful
+                //
+                //--------------------------------------------------------------
+                if(!vanish || factor<=0) {
                     if(verbose) std::cerr << "|\t\t<defunct>" << std::endl;
                     continue;
                 }
@@ -347,6 +367,7 @@ namespace yack
                 if(verbose)
                 {
                     dC.ld(0);
+                    beta.ld(0);
                     for(const anode *node = working.head;node;node=node->next)
                     {
                         const species &s = **node;
@@ -356,11 +377,13 @@ namespace yack
                         corelib.pad(*xml << '[' << s.name << ']',s) << " = " << std::setw(15) << c0 << " -> " << std::setw(15) << c1 << std::endl;
                         if(c1<0)
                         {
-                            dC[j] = -c1;
+                            dC[j]   = -c1;
+                            beta[j] =   1;
                         }
                     }
-                    std::cerr << "Nu=" << Nu << std::endl;
-                    std::cerr << "dC=" << dC << std::endl;
+                    std::cerr << "Nu   = " << Nu << std::endl;
+                    std::cerr << "dC   = " << dC << std::endl;
+                    std::cerr << "beta = " << beta << std::endl;
                 }
                 return false;
             }
