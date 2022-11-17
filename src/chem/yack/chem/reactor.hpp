@@ -122,11 +122,7 @@ namespace yack
             //! wrapper Hamiltonian(Corg+u*(Cend-Corg)) with full clipping
             double operator()(const double u);
 
-            //! computing balance
-            double Balance(const readable<double> &C);
-
-            //! balance Cbal+u*dC
-            double Balance(const double u);
+            
 
             //__________________________________________________________________
             //
@@ -199,7 +195,6 @@ namespace yack
             void                       deactivated(const size_t ei);
 
             bool                       primaryBalance(const xmlog &xml);
-            void                       primaryRecover(writable<double> &C) const;
 
         public:
 

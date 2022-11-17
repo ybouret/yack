@@ -19,30 +19,6 @@ namespace yack
 
 
 
-#if 0
-        double reactor:: Balance(const double u)
-        {
-            //static const double cmin = sqrt( numeric<double>::minimum );
-            static const double cmin = pow(10.0, ceil(numeric<double>::min_10_exp/2) );
-
-            for(const anode *node=working.head;node;node=node->next)
-            {
-                const size_t j = ***node;
-                Ctry[j] = Cbal[j] + u * dC[j];
-            }
-            primaryRecover(Ctry);
-
-            for(const anode *node=working.head;node;node=node->next)
-            {
-                const species &s = **node; if(s.rank<=1) continue;
-                const size_t  j  = *s;
-                double       &c  = Ctry[j];
-                if( fabs(c) <= cmin ) c=0;
-            }
-
-            return Balance(Ctry);
-        }
-#endif
 
 
         bool reactor:: primaryBalance(const xmlog &xml)
@@ -54,7 +30,7 @@ namespace yack
             {
                 const equilibrium &eq = ***node;
                 YACK_XMLSUB(xml,eq.name);
-                if(!eq.try_primary_balance(Cbal,&xml))
+                if(!eq.try_primary_balance(Cbal,xml))
                 {
                     primaryBalanced = false;
                 }
@@ -63,46 +39,7 @@ namespace yack
             return primaryBalanced;
         }
 
-        void reactor:: primaryRecover(writable<double> &C) const
-        {
-            for(const enode *node=singles.head();node;node=node->next)
-            {
-                const equilibrium &eq = ***node;
-                if(!eq.try_primary_balance(C,NULL))
-                {
-                    throw exception("cannot recover <%s>", eq.name() );
-                }
-            }
-
-
-        }
-
-
-
-        struct callB
-        {
-            reactor &self;
-
-            double operator()(double u)
-            {
-                return self.Balance(u);
-            }
-        };
-
-        double reactor:: Balance(const readable<double> &C)
-        {
-            xadd.free();
-            for(const anode *node=working.head;node;node=node->next)
-            {
-                const size_t j = ***node;
-                const double c = C[j];
-                if(c<0)
-                {
-                    xadd << -c;
-                }
-            }
-            return xadd.get();
-        }
+        
 
 
 

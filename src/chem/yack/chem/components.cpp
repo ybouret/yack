@@ -445,7 +445,7 @@ namespace yack
         static const unsigned unbalanced_both = unbalanced_prod | unbalanced_reac;
 
 
-        bool components:: try_primary_balance(writable<double> &Corg, const xmlog *xml) const throw()
+        bool components:: try_primary_balance(writable<double> &Corg, const xmlog &xml) const throw()
         {
 
             //------------------------------------------------------------------
@@ -456,7 +456,6 @@ namespace yack
             unsigned      flag = 0;
             const xlimit *pbad = prod.primarily_bad(Corg); if(pbad) flag |= unbalanced_prod;
             const xlimit *rbad = reac.primarily_bad(Corg); if(rbad) flag |= unbalanced_reac;
-            const bool    show = xml && xml->verbose;
             switch(flag)
             {
                     //----------------------------------------------------------
@@ -465,7 +464,7 @@ namespace yack
                     //
                     //----------------------------------------------------------
                 case unbalanced_both: assert(rbad); assert(pbad);
-                    if(xml) YACK_XMLOG(*xml, yack_failure << ": negative both [" << (***rbad).name  << "] and [" << (***pbad).name << "]");
+                    YACK_XMLOG(xml, yack_failure << ": negative both [" << (***rbad).name  << "] and [" << (***pbad).name << "]");
                     return false;
 
                     //----------------------------------------------------------
@@ -475,7 +474,7 @@ namespace yack
                     //----------------------------------------------------------
                 case unbalanced_prod: { assert(pbad); assert(!rbad);
                     const species &sbad = ***pbad;
-                    if(xml) YACK_XMLOG(*xml, yack_warning << ": negative product [" << sbad.name << "] requires xi=" << pbad->xi);
+                    YACK_XMLOG(xml, yack_warning << ": negative product [" << sbad.name << "] requires xi=" << pbad->xi);
 
                     //----------------------------------------------------------
                     // get limit from reactant
@@ -483,27 +482,27 @@ namespace yack
                     const xlimit *rmax = reac.primary_limit(Corg);
                     if(rmax)
                     {
-                        if(xml) YACK_XMLOG(*xml, yack_warning << ": limited by reactant [" << (***rmax).name << "] @xi=" << rmax->xi);
+                        YACK_XMLOG(xml, yack_warning << ": limited by reactant [" << (***rmax).name << "] @xi=" << rmax->xi);
                         if(rmax->xi<pbad->xi)
                         {
-                            if(xml) YACK_XMLOG(*xml, yack_failure << ": product cannot be balanced");
+                            YACK_XMLOG(xml, yack_failure << ": product cannot be balanced");
                             return false;
                         }
                         else
                         {
-                            if(xml) YACK_XMLOG(*xml, yack_message << ": approved balancing");
+                            YACK_XMLOG(xml, yack_message << ": approved balancing");
                         }
                     }
                     else
                     {
-                        if(xml) YACK_XMLOG(*xml, yack_message << ": not limited by any reactant");
+                        YACK_XMLOG(xml, yack_message << ": not limited by any reactant");
                     }
-                    if(show) display_compact(**xml << "@initial=",Corg) << std::endl;
+                    if(xml.verbose) display_compact(*xml << "@initial=",Corg) << std::endl;
                     reac.mov_(Corg,-pbad->xi);
                     prod.mov_(Corg, pbad->xi);
                     Corg[ *sbad ] = 0;
                     primary_cleanup(Corg);
-                    if(show) display_compact(**xml << "@balance=",Corg) << std::endl;
+                    if(xml.verbose) display_compact(*xml << "@balance=",Corg) << std::endl;
                 } break;
 
                     //----------------------------------------------------------
@@ -513,7 +512,7 @@ namespace yack
                     //----------------------------------------------------------
                 case unbalanced_reac: { assert(!pbad); assert(rbad);
                     const species &sbad = ***rbad;
-                    if(xml) YACK_XMLOG(*xml, yack_warning << ": negative reactant [" << sbad.name << "] requires xi=" << rbad->xi);
+                    YACK_XMLOG(xml, yack_warning << ": negative reactant [" << sbad.name << "] requires xi=" << rbad->xi);
 
                     //----------------------------------------------------------
                     // get limit from product
@@ -521,31 +520,31 @@ namespace yack
                     const xlimit *pmax = prod.primary_limit(Corg);
                     if(pmax)
                     {
-                        if(xml) YACK_XMLOG(*xml, yack_warning << ": limited by product [" << (***pmax).name << "] @xi=" << pmax->xi);
+                        YACK_XMLOG(xml, yack_warning << ": limited by product [" << (***pmax).name << "] @xi=" << pmax->xi);
                         if(pmax->xi<rbad->xi)
                         {
-                            if(xml) YACK_XMLOG(*xml, yack_failure << ": reactant cannot be balanced");
+                            YACK_XMLOG(xml, yack_failure << ": reactant cannot be balanced");
                             return false;
                         }
                         else
                         {
-                            if(xml) YACK_XMLOG(*xml, yack_message << ": approved balancing");
+                            YACK_XMLOG(xml, yack_message << ": approved balancing");
                         }
                     }
                     else
                     {
-                        if(xml) YACK_XMLOG(*xml, yack_message << ": not limited by any product");
+                        YACK_XMLOG(xml, yack_message << ": not limited by any product");
                     }
-                    if(show) display_compact(**xml << "@initial=",Corg) << std::endl;
+                    if(xml.verbose) display_compact(*xml << "@initial=",Corg) << std::endl;
                     reac.mov_(Corg, rbad->xi);
                     prod.mov_(Corg,-rbad->xi);
                     Corg[*sbad] = 0;
                     primary_cleanup(Corg);
-                    if(show) display_compact(**xml << "@balance=",Corg) << std::endl;
+                    if(xml.verbose) display_compact(*xml << "@balance=",Corg) << std::endl;
                 } break;
 
                 default: assert(0==flag); assert(!pbad); assert(!rbad);
-                    if(xml) YACK_XMLOG(*xml, yack_message << ": already balanced");
+                    YACK_XMLOG(xml, yack_message << ": already balanced");
                     break;
             }
 

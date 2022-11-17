@@ -227,7 +227,7 @@ namespace yack
             bool uses(const species &) const throw();
 
             //! try to primary balance Corg
-            bool try_primary_balance(writable<double> &Corg, const xmlog *xml) const throw();
+            bool try_primary_balance(writable<double> &Corg, const xmlog &xml) const throw();
             
             //! display list of associated concentrations
             std::ostream & display_compact(std::ostream &os, const readable<double> &C) const;
