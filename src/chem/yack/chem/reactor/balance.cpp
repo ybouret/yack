@@ -309,7 +309,22 @@ namespace yack
                     const size_t   j = *s;
                     const int      d = beta[j]; if(!d) continue;
                     const double   c = Cbal[j];
-                    Ci[j] = c + d * factor;
+                    double        &cc = Ci[j];
+                    cc = c + d * factor;
+                    if(d<0)
+                    {
+                        assert(c>0);
+                        cc = max_of(cc,0.0);
+                    }
+                    else
+                    {
+                        assert(d>0);
+                        if(c<0)
+                        {
+                            cc = min_of(cc,0.0);
+                        }
+                    }
+
                 }
                 Ci[**vanish] = 0;
 
@@ -384,6 +399,7 @@ namespace yack
                     std::cerr << "Nu   = " << Nu << std::endl;
                     std::cerr << "dC   = " << dC << std::endl;
                     std::cerr << "beta = " << beta << std::endl;
+                    std::cerr << "NuL  = " << NuL  << std::endl;
                 }
                 return false;
             }
