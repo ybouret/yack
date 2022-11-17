@@ -15,6 +15,7 @@ namespace yack
         entity:: entity(const entity &other) :
         large_object(),
         counted(),
+        ios::vizible(),
         name(other.name),
         indx(other.indx)
         {

@@ -41,6 +41,7 @@ namespace yack
                             const size_t idx) :
             large_object(),
             counted(),
+            ios::vizible(),
             name(uid),
             indx(idx)
             {
