@@ -265,15 +265,21 @@ namespace yack
 
                 //--------------------------------------------------------------
                 //
-                // estimate score
+                // guess initial balance
                 //
                 //--------------------------------------------------------------
                 assert(vanish!=NULL);
                 assert(factor>0);
 
                 const double B0 = getBalance(eq,Cbal,xadd);
-                if(verbose) std::cerr << "|\tB0 = " << std::setw(15) << B0 << " @ C0=" << Cbal << std::endl;
                 assert(B0>0);
+                if(verbose) std::cerr << "|\tB0 = " << std::setw(15) << B0 << " @ C0=" << Cbal << std::endl;
+
+                //--------------------------------------------------------------
+                //
+                // store modified concentration
+                //
+                //--------------------------------------------------------------
                 writable<double> &Ci = Ceq[ei];
                 iota::load(Ci,Cbal);
                 for(const anode *an=working.head;an;an=an->next)
@@ -285,30 +291,55 @@ namespace yack
                     Ci[j] = c + d * factor;
                 }
                 Ci[**vanish] = 0;
+
+                //--------------------------------------------------------------
+                //
+                // guess modified balance
+                //
+                //--------------------------------------------------------------
                 const double B1 = getBalance(eq,Ci,xadd);
                 if(verbose) std::cerr << "|\tB1 = " << std::setw(15) << B1 << " @ C1=" << Ci << std::endl;
 
-                if(B1>=B0)
-                {
+
+
+                //--------------------------------------------------------------
+                //
+                // estimate score
+                //
+                //--------------------------------------------------------------
+                if(B1>=B0) {
                     if(verbose) std::cerr << "|\t\t<no gain>" << std::endl;
                     continue;
                 }
-
                 const double gain  = B0-B1;
                 const double cost  = sqrt(working.norm2(Cbal,Ci,xadd))/working.size;
                 const double score = gain - cost;
-                if(verbose)
-                {
+                if(verbose) {
                     std::cerr << "|\t\t<gain  = "<< std::setw(15) << gain << ", cost = " << std::setw(15) << cost << ">" << std::endl;
                     std::cerr << "|\t\t<score = "<< std::setw(15) << score << ">" << std::endl;
                 }
+
+
+                //--------------------------------------------------------------
+                //
+                // update status
+                //
+                //--------------------------------------------------------------
                 if(!champion || score>topScore)
                 {
                     champion = &eq;
                     topScore = score;
                 }
+                
             }
 
+            //------------------------------------------------------------------
+            //
+            //
+            // check is a champion was selected
+            //
+            //
+            //------------------------------------------------------------------
             if(!champion)
             {
                 YACK_XMLOG(xml, "-- <stalled> @cycle #"<< cycle);
