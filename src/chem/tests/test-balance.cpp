@@ -80,7 +80,9 @@ YACK_UTEST(balance)
     }
     std::cerr << "xi=" << xi << std::endl;
 
-    iota::mul(Corg, NuT, xi, cs.xadd);
+    lib.fill(Corg,ran);
+    iota::muladd(Corg, NuT, xi, cs.xadd);
+    
     lib(std::cerr << "Corg=","",Corg);
     if( cs.balance(Corg) )
     {

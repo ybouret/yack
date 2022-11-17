@@ -174,8 +174,8 @@ namespace yack
                     }
 
                     if(verbose)
-                        lattice.pad(*xml<< '<' << eq.name << '>',eq) << " : unbalanced"
-                        <<   " #reac = " << std::setw(4) << nr
+                        lattice.pad(*xml<< '<' << eq.name << '>',eq)
+                        << " | #reac = " << std::setw(4) << nr
                         << " | #prod = " << std::setw(4) << np;
 
                     if(nr>0)

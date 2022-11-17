@@ -253,6 +253,32 @@ namespace yack {
                     lhs[i] = dot<T>::of(M[i],rhs,xadd);
             }
 
+
+
+            //------------------------------------------------------------------
+            //! lhs += M * rhs
+            //------------------------------------------------------------------
+            template <typename T, typename LHS, typename RHS> static inline
+            void muladd(LHS &lhs, const matrix<T> &M, RHS &rhs)
+            {
+                assert(lhs.size()>=M.rows);
+                assert(rhs.size()>=M.cols);
+                for(size_t i=M.rows;i>0;--i)
+                    lhs[i] += dot<T>::of(M[i],rhs);
+            }
+
+            //------------------------------------------------------------------
+            //! lhs += M * rhs
+            //------------------------------------------------------------------
+            template <typename T, typename LHS, typename RHS> static inline
+            void muladd(LHS &lhs, const matrix<T> &M, RHS &rhs, adder<T> &xadd)
+            {
+                assert(lhs.size()>=M.rows);
+                assert(rhs.size()>=M.cols);
+                for(size_t i=M.rows;i>0;--i)
+                    lhs[i] += dot<T>::of(M[i],rhs,xadd);
+            }
+
             
 
             //------------------------------------------------------------------
