@@ -94,7 +94,7 @@ namespace yack
 
             //__________________________________________________________________
             //
-            // graphViz
+            //! save flow graph
             //__________________________________________________________________
             void graphviz(const string &filename, const library &lib) const;
 

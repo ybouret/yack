@@ -53,7 +53,7 @@ namespace yack
             //__________________________________________________________________
             size_t         operator*()         const throw(); //!< index
             const string & key()               const throw(); //!< name
-            ios::ostream & viz(ios::ostream &) const;         //!< write to graphViz
+            ios::ostream & viz(ios::ostream &) const;         //!< write to graphViz : name+attr
 
             //__________________________________________________________________
             //
@@ -61,10 +61,11 @@ namespace yack
             //__________________________________________________________________
             const string name; //!< identifier
 
+
         private:
-            const size_t indx; //!< index
             YACK_DISABLE_ASSIGN(entity);
-            virtual const char *attr() const = 0; //!< for viz
+            const size_t indx;                    //!< index
+            virtual const char *attr() const = 0; //!< for viz: shape,style...
         };
     }
 

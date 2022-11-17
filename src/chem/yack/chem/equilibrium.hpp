@@ -34,7 +34,7 @@ namespace yack
             //__________________________________________________________________
             double K(double) const;                                               //!< non-virtual, checkin getK()
             friend std::ostream & operator<<(std::ostream &, const equilibrium&); //!< display
-            void   vizlink(ios::ostream &) const;
+            void   vizlink(ios::ostream &) const;                                 //!< link to registered species
 
             //__________________________________________________________________
             //
