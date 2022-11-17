@@ -18,9 +18,6 @@ namespace yack
     {
 
 
-
-
-
         bool reactor:: primaryBalance(const xmlog &xml)
         {
             static const char fn[] = "primaryBalance";
@@ -39,12 +36,170 @@ namespace yack
             return primaryBalanced;
         }
 
-        
+
+
+        bool reactor:: balance(writable<double> &C0)
+        {
+            static const char fn[] = "[reactor]";
+            const xmlog       xml(fn,std::cerr,entity::verbose);
+            YACK_XMLSUB(xml,"Balancing");
+            if(verbose) corelib(*xml << "-- Cini=","", C0);
+
+
+            //------------------------------------------------------------------
+            //
+            //
+            // Check Status
+            //
+            //
+            //------------------------------------------------------------------
+            if(N<=0) {
+                YACK_XMLOG(xml,"-- no equilibrium");
+                return true;
+            }
+
+            //------------------------------------------------------------------
+            //
+            //
+            // initialize phase space
+            //
+            //
+            //------------------------------------------------------------------
+            for(size_t j=M;j>0;--j)
+            {
+                Cbal[j] = Ctry[j] = C0[j];
+            }
+
+            if(!primaryBalance(xml)) return false;
+            
+
+
+            //------------------------------------------------------------------
+            //
+            //
+            // Test balance
+            //
+            //
+            //------------------------------------------------------------------
+            {
+                if(verbose) corelib(*xml << "C=","",Cbal);
+                bool balanced = true;
+                for(const anode *node = working.head;node;node=node->next)
+                {
+                    const species &s = **node;
+                    if( Cbal[*s] < 0)
+                    {
+                        balanced = false;
+                        break;
+                    }
+                }
+
+                if(balanced)
+                {
+                    YACK_XMLOG(xml, "-- balanced");
+                    return true;
+                }
+            }
+
+            //------------------------------------------------------------------
+            //
+            //
+            // Need to solve: register active reactions from lattice
+            //
+            //
+            //------------------------------------------------------------------
+            for(const enode *node = lattice.head();node;node=node->next)
+            {
+                const equilibrium &eq = ***node;
+                const size_t       ei = *eq;
+
+                //--------------------------------------------------------------
+                //
+                // load in beta the trial topology
+                //
+                //--------------------------------------------------------------
+                {
+                    size_t nr = 0;
+                    for(const actor *a=eq.reac->head;a;a=a->next)
+                    {
+                        if(Cbal[***a]<0) ++nr;
+                    }
+
+
+                    size_t np = 0;
+                    for(const actor *a=eq.prod->head;a;a=a->next)
+                    {
+                        if(Cbal[***a]<0) ++np;
+                    }
+
+                    if(verbose)
+                        lattice.pad(*xml<<eq.name,eq) << " : unbalanced"
+                        <<   " #reac = " << std::setw(4) << nr
+                        << " | #prod = " << std::setw(4) << np;
+
+                    if(nr>0)
+                    {
+                        if(np>0)
+                        {
+                            if(verbose) std::cerr << " | blocked" << std::endl;
+                            continue;
+                        }
+                        if(verbose) std::cerr << " | reverse" << std::endl;
+                        iota::neg(beta,NuL[ei]);
+                    }
+                    else
+                    {
+                        assert(nr<=0);
+                        if(np<=0)
+                        {
+                            if(verbose) std::cerr << " | regular" << std::endl;
+                            continue;
+                        }
+                        if(verbose) std::cerr << " | forward" << std::endl;
+                        iota::load(beta,NuL[ei]);
+                    }
+                }
+
+                //--------------------------------------------------------------
+                //
+                // find maximum gain with sparsity when possible
+                //
+                //--------------------------------------------------------------
+                std::cerr << "\tusing " << beta << std::endl; assert( iota::dot<int>::of(beta,beta) > 0 );
+
+
+
+                for(const anode *an=working.head;an;an=an->next)
+                {
+                    const species &s = **an;
+                    const size_t   j = *s;
+                    const int      d = beta[j]; if(!d) continue;;
+                    const double   c = Cbal[j];
+                    if(verbose) corelib.pad(std::cerr << "\t[" << s.name << "]",s) << " = " << std::setw(15) << c << " with " << std::setw(4) << d << std::endl;
+
+                }
 
 
 
 
-        
+
+
+
+
+            }
+
+
+
+
+            exit(0);
+            return false;
+        }
+
+
+
+
+
+#if 0
         double reactor:: gain(const readable<int> &lam,
                               double              &cf,
                               const species *     &sz)
@@ -433,7 +588,7 @@ namespace yack
             goto CYCLE;
 
         }
-
+#endif
 
 
 

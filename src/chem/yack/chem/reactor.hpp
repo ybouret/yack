@@ -195,46 +195,8 @@ namespace yack
             void                       deactivated(const size_t ei);
 
             bool                       primaryBalance(const xmlog &xml);
+            
 
-        public:
-
-            //__________________________________________________________________
-            //
-            //! tumbler to help balance
-            //__________________________________________________________________
-            class tumbler
-            {
-            public:
-                //______________________________________________________________
-                //
-                // C++
-                //______________________________________________________________
-                tumbler(const double _f, const species & _s) throw(); //!< setup
-                tumbler(const tumbler &)                     throw(); //!< copy
-                ~tumbler()                                   throw(); //!< cleanup
-
-                //______________________________________________________________
-                //
-                // method
-                //______________________________________________________________
-                friend std::ostream & operator<<(std::ostream &os, const tumbler &a); //!< display
-                static int compare(const tumbler &lhs, const tumbler &rhs) throw();   //!< compare by increasing valye
-
-                //______________________________________________________________
-                //
-                // members
-                //______________________________________________________________
-                const double    f; //!< factor setting species to 0, f>=0
-                const species & s; //!< limiting species
-
-            private:
-                YACK_DISABLE_ASSIGN(tumbler);
-            };
-
-            //! compute gain of an optimized direction
-            double gain(const readable<int> &lam,
-                        double              &cf,
-                        const species *     &sz);
         };
 
 

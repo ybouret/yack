@@ -94,7 +94,13 @@ namespace yack
             
             //! display list of compact associated concentrations
             void display_compact(std::ostream &, const readable<double> &C) const;
-            
+
+            //! access operator to use list
+            const list_of<const actor> * operator->() const throw()
+            {
+                const list_of<actor> &self = crew;
+                return & coerce_to< list_of<const actor> >(self);
+            }
 
             //__________________________________________________________________
             //
