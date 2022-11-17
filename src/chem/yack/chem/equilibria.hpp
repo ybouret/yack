@@ -92,6 +92,11 @@ namespace yack
             const equilibrium & operator[](const char   *) const; //!< access by name
             void remove_last(); //!< removing last inserted equilibrium and update
 
+            //__________________________________________________________________
+            //
+            // graphViz
+            //__________________________________________________________________
+            void graphviz(const string &filename, const library &lib) const;
 
         private:
             YACK_DISABLE_ASSIGN(equilibria);

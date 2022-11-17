@@ -81,6 +81,7 @@ namespace yack
             for(size_t j=M;j>0;--j)
             {
                 Cbal[j] = Ctry[j] = C0[j];
+                dC[j]   = 0;
             }
 
             if(!primaryBalance(xml)) return false;
@@ -345,6 +346,7 @@ namespace yack
                 YACK_XMLOG(xml, "-- <stalled> @cycle #"<< cycle);
                 if(verbose)
                 {
+                    dC.ld(0);
                     for(const anode *node = working.head;node;node=node->next)
                     {
                         const species &s = **node;
@@ -352,7 +354,13 @@ namespace yack
                         const double   c0 = C0[j];
                         const double   c1 = Cbal[j];
                         corelib.pad(*xml << '[' << s.name << ']',s) << " = " << std::setw(15) << c0 << " -> " << std::setw(15) << c1 << std::endl;
+                        if(c1<0)
+                        {
+                            dC[j] = -c1;
+                        }
                     }
+                    std::cerr << "Nu=" << Nu << std::endl;
+                    std::cerr << "dC=" << dC << std::endl;
                 }
                 return false;
             }

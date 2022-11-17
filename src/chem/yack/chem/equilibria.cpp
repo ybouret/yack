@@ -139,7 +139,45 @@ namespace yack
             }
         }
 
-      
+    }
+
+}
+
+#include "yack/chem/library.hpp"
+
+
+namespace yack
+{
+
+    namespace chemical
+    {
+        void equilibria:: graphviz(const string &filename, const library &lib) const
+        {
+            {
+                ios::ocstream fp(filename);
+                ios::vizible::digraph_init(fp,"G");
+                for(const snode *node=lib.head();node;node=node->next)
+                {
+                    const species &sp = ***node;
+                    sp.viz(fp);
+                }
+
+                for(const enode *node= head();node;node=node->next)
+                {
+                    const equilibrium &eq = ***node;
+                    eq.viz(fp);
+                    eq.vizlink(fp);
+                }
+
+                ios::vizible::digraph_quit(fp);
+            }
+            
+            {
+                ios::vizible::render(filename);
+            }
+
+        }
+
 
         
     }
