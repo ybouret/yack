@@ -96,6 +96,22 @@ namespace yack
                 return xadd.get();
             }
 
+            //! restricted |lhs-rhs|^2
+            template <typename LHS, typename RHS> inline
+            double norm2(LHS &lhs, RHS &rhs, math::adder<double> &xadd) const
+            {
+                xadd.free();
+                for(const anode *node=this->head;node;node=node->next)
+                {
+                    const size_t j = ***node;
+                    const double l = static_cast<double>(lhs[j]);
+                    const double r = static_cast<double>(rhs[j]);
+                    const double d = l-r;
+                    xadd << d*d;
+                }
+                return xadd.get();
+            }
+
             
 
 
