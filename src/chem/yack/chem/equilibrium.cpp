@@ -33,7 +33,52 @@ namespace yack
             os << static_cast<const components&>(eq);
             return os;
         }
-     
+
+        const char * equilibrium:: attr() const
+        {
+            if(reac->size)
+            {
+                if(prod->size)
+                {
+                    return ",shape=rectangle";
+                }
+                else
+                {
+                    return ",shape=invtrapezium";
+                }
+            }
+            else
+            {
+                if(prod->size)
+                {
+                    return ",shape=trapezium";
+                }
+                else
+                {
+                    return ",shape=rectangle,style=dotted";
+                }
+            }
+
+        }
+
+        void   equilibrium:: vizlink(ios::ostream &fp) const
+        {
+            for(const actor *a=reac->head;a;a=a->next)
+            {
+                const species &s = **a;
+                s.link(fp,this);
+                end(fp);
+            }
+
+            for(const actor *a=prod->head;a;a=a->next)
+            {
+                const species &s = **a;
+                this->link(fp, &s);
+                end(fp);
+            }
+        }
+
+
     }
     
 }

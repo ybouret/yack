@@ -47,6 +47,9 @@ namespace yack
             //! write formated concentration
             ios::ostream &  frame(ios::ostream &os, const readable<double> &C) const;
 
+           
+
+
             //__________________________________________________________________
             //
             // memners
@@ -56,6 +59,7 @@ namespace yack
             
         private:
             YACK_DISABLE_ASSIGN(species);
+            virtual const char *attr() const;
         };
 
     }

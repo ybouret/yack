@@ -80,7 +80,8 @@ YACK_UTEST(balance)
     }
     std::cerr << "xi=" << xi << std::endl;
 
-    lib.fill(Corg,ran);
+    Corg.ld(0);
+    //lib.fill(Corg,ran);
     iota::muladd(Corg, NuT, xi, cs.xadd);
     
     lib(std::cerr << "Corg=","",Corg);
@@ -91,6 +92,28 @@ YACK_UTEST(balance)
     else
     {
         std::cerr << "<no balance>" << std::endl;
+    }
+
+    {
+        ios::ocstream fp("bal.dot");
+        ios::vizible::digraph_init(fp,"G");
+        for(const snode *node=lib.head();node;node=node->next)
+        {
+            const species &sp = ***node;
+            sp.viz(fp);
+        }
+
+        for(const enode *node=eqs.head();node;node=node->next)
+        {
+            const equilibrium &eq = ***node;
+            eq.viz(fp);
+            eq.vizlink(fp);
+        }
+
+        ios::vizible::digraph_quit(fp);
+    }
+    {
+        ios::vizible::render("bal.dot",true);
     }
 
 }

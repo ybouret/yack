@@ -1,5 +1,6 @@
 
 #include "yack/chem/entity.hpp"
+#include "yack/ios/ostream.hpp"
 
 namespace yack
 {
@@ -27,6 +28,17 @@ namespace yack
         const string & entity:: key() const throw()
         {
             return name;
+        }
+
+
+        ios::ostream & entity:: viz(ios::ostream &os) const
+        {
+            logo(os) << '[';
+            add_label(os,name());
+            os << attr();
+            os << ']';
+            end(os);
+            return os;
         }
 
     }

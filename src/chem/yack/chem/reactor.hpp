@@ -166,14 +166,14 @@ namespace yack
 
             tableau           &K;       //!< [N] pre-computed K
             tableau           &Gamma;   //!< [N] current Gamm
-            tableau           &xi;      //!< [N] extent
-            tableau           &sigma;   //!< [N] slope
+            tableau           &xi;      //!< [N] extent of singles
+            tableau           &sigma;   //!< [N] slope of singles
             thin_array<bool>   oshot;   //!< [N] overshoot
 
             const imatrix      NuL;     //!< [LxM] full topology
-            tableau           &Kl;      //!< [L] pre-computed K
-            tableau           &Xl;      //!< [L] solving extents
-            thin_array<bool>   blocked; //!< [L] blocking state
+            tableau           &Kl;      //!< [L]   pre-computed K
+            tableau           &Xl;      //!< [L]   solving extents
+            thin_array<bool>   blocked; //!< [L]   blocking state
             rmatrix            Ceq;     //!< [LxM] all single solutions
 
         private:

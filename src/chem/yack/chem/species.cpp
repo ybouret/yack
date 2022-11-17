@@ -29,7 +29,13 @@ namespace yack
             os("%.15g",C[ **this ]);
             return os;
         }
-        
+
+        const char * species:: attr() const
+        {
+            return ",shape=oval";
+        }
+
+
     }
 
 }
