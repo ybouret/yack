@@ -95,6 +95,10 @@ namespace yack
             //
             //
             //------------------------------------------------------------------
+            unsigned cycle = 0;
+        CYCLE:
+            ++cycle;
+            YACK_XMLOG(xml, "-------- balancing cycle #" << cycle << " --------");
             {
                 if(verbose) corelib(*xml << "C=","",Cbal);
                 bool balanced = true;
@@ -110,7 +114,8 @@ namespace yack
 
                 if(balanced)
                 {
-                    YACK_XMLOG(xml, "-- balanced");
+                    YACK_XMLOG(xml, "-- <balanced>");
+                    working.transfer(C0,Cbal);
                     return true;
                 }
             }
@@ -122,6 +127,9 @@ namespace yack
             //
             //
             //------------------------------------------------------------------
+            const equilibrium *champion = NULL;
+            double             topScore = 0;
+
             for(const enode *node = lattice.head();node;node=node->next)
             {
                 const equilibrium &eq = ***node;
@@ -147,7 +155,7 @@ namespace yack
                     }
 
                     if(verbose)
-                        lattice.pad(*xml<<eq.name,eq) << " : unbalanced"
+                        lattice.pad(*xml<< '<' << eq.name << '>',eq) << " : unbalanced"
                         <<   " #reac = " << std::setw(4) << nr
                         << " | #prod = " << std::setw(4) << np;
 
@@ -179,7 +187,6 @@ namespace yack
                 // find maximum extent with sparsity
                 //
                 //--------------------------------------------------------------
-                //std::cerr << "\tusing " << beta << std::endl;
                 assert( iota::dot<int>::of(beta,beta) > 0 );
 
                 const species   *vanish = NULL;
@@ -190,7 +197,7 @@ namespace yack
                     const size_t   j = *s;
                     const int      d = beta[j]; if(!d) continue;
                     const double   c = Cbal[j];
-                    if(verbose) corelib.pad(std::cerr << "\t[" << s.name << "]",s) << " = " << std::setw(15) << c << " with " << std::setw(4) << d << ' ';
+                    if(verbose) corelib.pad(std::cerr << "|\t[" << s.name << "]",s) << " = " << std::setw(15) << c << " with " << std::setw(4) << d << ' ';
                     if(d<0)
                     {
                         if(c<0)
@@ -233,7 +240,7 @@ namespace yack
 
                 if(!vanish || factor<=0)
                 {
-                    if(verbose) std::cerr << "\t\t<defunct>" << std::endl;
+                    if(verbose) std::cerr << "|\t\t<defunct>" << std::endl;
                     continue;
                 }
 
@@ -246,7 +253,7 @@ namespace yack
                 assert(factor>0);
 
                 const double B0 = getBalance(eq,Cbal,xadd);
-                if(verbose) std::cerr << "\tB0 = " << std::setw(15) << B0 << " @ C0=" << Cbal << std::endl;
+                if(verbose) std::cerr << "|\tB0 = " << std::setw(15) << B0 << " @ C0=" << Cbal << std::endl;
                 assert(B0>0);
                 writable<double> &Ci = Ceq[ei];
                 iota::load(Ci,Cbal);
@@ -260,11 +267,11 @@ namespace yack
                 }
                 Ci[**vanish] = 0;
                 const double B1 = getBalance(eq,Ci,xadd);
-                if(verbose) std::cerr << "\tB1 = " << std::setw(15) << B1 << " @ C1=" << Ci << std::endl;
+                if(verbose) std::cerr << "|\tB1 = " << std::setw(15) << B1 << " @ C1=" << Ci << std::endl;
 
                 if(B1>=B0)
                 {
-                    if(verbose) std::cerr << "\t\t<no gain>" << std::endl;
+                    if(verbose) std::cerr << "|\t\t<no gain>" << std::endl;
                     continue;
                 }
 
@@ -273,21 +280,26 @@ namespace yack
                 const double score = gain - cost;
                 if(verbose)
                 {
-                    std::cerr << "\t\t<gain  = "<< std::setw(15) << gain << ", cost = " << std::setw(15) << cost << ">" << std::endl;
-                    std::cerr << "\t\t<score = "<< std::setw(15) << score << ">" << std::endl;
+                    std::cerr << "|\t\t<gain  = "<< std::setw(15) << gain << ", cost = " << std::setw(15) << cost << ">" << std::endl;
+                    std::cerr << "|\t\t<score = "<< std::setw(15) << score << ">" << std::endl;
                 }
-
-
-
-
-
+                if(!champion || score>topScore)
+                {
+                    champion = &eq;
+                    topScore = score;
+                }
             }
 
+            if(!champion)
+            {
+                YACK_XMLOG(xml, "-- <stalled> @cycle #"<< cycle);
+                return false;
+            }
 
+            YACK_XMLOG(xml,"-- using <" << champion->name << "> @cycle #" << cycle);
+            working.transfer(Cbal,Ceq[**champion]);
+            goto CYCLE;
 
-
-            exit(0);
-            return false;
         }
 
 
