@@ -246,7 +246,7 @@ namespace yack
                 assert(factor>0);
 
                 const double B0 = getBalance(eq,Cbal,xadd);
-                if(verbose) std::cerr << "\tB0 = " << std::setw(15) << B0 << " @" << Cbal << std::endl;
+                if(verbose) std::cerr << "\tB0 = " << std::setw(15) << B0 << " @ C0=" << Cbal << std::endl;
                 assert(B0>0);
                 writable<double> &Ci = Ceq[ei];
                 iota::load(Ci,Cbal);
@@ -260,7 +260,7 @@ namespace yack
                 }
                 Ci[**vanish] = 0;
                 const double B1 = getBalance(eq,Ci,xadd);
-                if(verbose) std::cerr << "\tB1 = " << std::setw(15) << B1 << " @" << Ci << std::endl;
+                if(verbose) std::cerr << "\tB1 = " << std::setw(15) << B1 << " @ C1=" << Ci << std::endl;
 
                 if(B1>=B0)
                 {
@@ -269,7 +269,7 @@ namespace yack
                 }
 
                 const double gain  = B0-B1;
-                const double cost  = sqrt(working.norm2(Cbal,Ci,xadd)/working.size);
+                const double cost  = sqrt(working.norm2(Cbal,Ci,xadd))/working.size;
                 const double score = gain - cost;
                 if(verbose)
                 {
