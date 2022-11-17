@@ -63,10 +63,11 @@ namespace yack
         }
 
         //! copy with transposition
-        inline matrix(const matrix &M, const transposed_t &) :
+        template <typename U>
+        inline matrix(const matrix<U> &M, const transposed_t &) :
         YACK_MATRIX_CTOR(M.cols,M.rows)
         {
-            setup_from_transposed(M);
+            setup_from_transposed<U>(M);
         }
 
         //! assign by copy/swap
@@ -377,7 +378,8 @@ namespace yack
         //
         //! setup items
         //______________________________________________________________________
-        inline void setup_from_transposed(const matrix &M)
+        template <typename U>
+        inline void setup_from_transposed(const matrix<U> &M)
         {
             assert(are_transposed(*this,M));
             size_t built = 0;

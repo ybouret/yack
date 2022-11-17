@@ -8,6 +8,7 @@
 
 using namespace yack;
 using namespace chemical;
+using namespace math;
 
 static inline
 void buildC(writable<double> &C, const library &lib, randomized::bits &ran)
@@ -47,28 +48,48 @@ YACK_UTEST(balance)
     reactor        cs(lib,eqs,0.0);
     const size_t   M  = cs.M;
     const size_t   N  = cs.N;
-    const imatrix  NuT(cs.Nu,transposed);
+    const matrix<double>  NuT(cs.Nu,transposed);
 
 
     vector<double> Corg(M,0);
     vector<double> xi(N,0);
 
-    for(size_t iter=0;iter<10;++iter)
+    if(false)
     {
-        buildC(Corg,lib,ran);
-        lib(std::cerr << "Corg=","",Corg);
-        if( cs.balance(Corg) )
+        for(size_t iter=0;iter<10;++iter)
         {
-            lib(std::cerr << "Cbal=","",Corg);
+            buildC(Corg,lib,ran);
+            lib(std::cerr << "Corg=","",Corg);
+            if( cs.balance(Corg) )
+            {
+                lib(std::cerr << "Cbal=","",Corg);
+            }
+            else
+            {
+                std::cerr << "No Balance!!" << std::endl;
+            }
+            std::cerr << std::endl;
         }
-        else
-        {
-            std::cerr << "No Balance!!" << std::endl;
-        }
-        std::cerr << std::endl;
     }
 
+    std::cerr << std::endl;
+    for(size_t i=N;i>0;--i)
+    {
+        xi[i] = lib.concentration(ran);
+        if(ran.choice()) xi[i] = -xi[i];
+    }
+    std::cerr << "xi=" << xi << std::endl;
 
+    iota::mul(Corg, NuT, xi, cs.xadd);
+    lib(std::cerr << "Corg=","",Corg);
+    if( cs.balance(Corg) )
+    {
+        lib(std::cerr << "Cbal=","",Corg);
+    }
+    else
+    {
+        std::cerr << "<no balance>" << std::endl;
+    }
 
 }
 YACK_UDONE()

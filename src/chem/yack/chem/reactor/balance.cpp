@@ -343,6 +343,17 @@ namespace yack
             if(!champion)
             {
                 YACK_XMLOG(xml, "-- <stalled> @cycle #"<< cycle);
+                if(verbose)
+                {
+                    for(const anode *node = working.head;node;node=node->next)
+                    {
+                        const species &s = **node;
+                        const size_t   j = *s;
+                        const double   c0 = C0[j];
+                        const double   c1 = Cbal[j];
+                        corelib.pad(*xml << '[' << s.name << ']',s) << " = " << std::setw(15) << c0 << " -> " << std::setw(15) << c1 << std::endl;
+                    }
+                }
                 return false;
             }
 
