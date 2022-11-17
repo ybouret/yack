@@ -162,23 +162,64 @@ namespace yack
 
                 //--------------------------------------------------------------
                 //
-                // find maximum gain with sparsity when possible
+                // find maximum extent with sparsity
                 //
                 //--------------------------------------------------------------
                 std::cerr << "\tusing " << beta << std::endl; assert( iota::dot<int>::of(beta,beta) > 0 );
 
-
-
+                const species   *vanish = NULL;
+                double           factor = 0;
                 for(const anode *an=working.head;an;an=an->next)
                 {
                     const species &s = **an;
                     const size_t   j = *s;
-                    const int      d = beta[j]; if(!d) continue;;
+                    const int      d = beta[j]; if(!d) continue;
                     const double   c = Cbal[j];
-                    if(verbose) corelib.pad(std::cerr << "\t[" << s.name << "]",s) << " = " << std::setw(15) << c << " with " << std::setw(4) << d << std::endl;
+                    if(verbose) corelib.pad(std::cerr << "\t[" << s.name << "]",s) << " = " << std::setw(15) << c << " with " << std::setw(4) << d << ' ';
+                    if(d<0)
+                    {
+                        if(c<0)
+                        {
+                            if(verbose) std::cerr << "[discard]" << std::endl;
+                            vanish = NULL;
+                            break;
+                        }
+                        else
+                        {
+                            const double x = c/(-d);
+                            if(!vanish||x<factor)
+                            {
+                                vanish = &s;
+                                factor =  x;
+                            }
+                            if(verbose) std::cerr << "[decrease] @" << std::setw(15) << x << std::endl;
+                        }
+                    }
+                    else
+                    {
+                        assert(d>0);
+                        if(c<=0)
+                        {
+                            const double x = (-c)/d;
+                            if(!vanish||x<factor)
+                            {
+                                vanish = &s;
+                                factor =  x;
+                            }
+                            if(verbose) std::cerr << "[increase] @" << std::setw(15) << x << std::endl;
+                        }
+                        else
+                        {
+                            if(verbose) std::cerr << "[+growth+]" << std::endl;
+                        }
 
+                    }
                 }
 
+                if(!vanish)
+                {
+                    continue;
+                }
 
 
 
