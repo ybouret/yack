@@ -78,7 +78,28 @@ namespace yack
             }
         }
 
-
+        feature equilibrium:: kind() const
+        {
+            if(reac->size)
+            {
+                if(prod->size)
+                {
+                    return both_ways;
+                }
+                else
+                {
+                    return join_only;
+                }
+            }
+            else
+            {
+                if(prod->size)
+                {
+                    return part_only;
+                }
+            }
+            throw exception("undefined equilibrium kind");
+        }
     }
     
 }

@@ -233,15 +233,21 @@ namespace yack
                         const size_t   j = *s;
                         const islot   &l = held_by[j];
 
-                        if(verbose) corelib.pad(*xml<< s.name,s) << " : " << l;
-
+                        if(verbose) corelib.pad(*xml<< s.name,s) << " : " << l << std::endl;
                         assert(s.rank==l.size);
-
-                        if(verbose) std::cerr << std::endl;
+                        
+                        
+                        
+                        
+                        
                     }
-
+                    
+                    std::cerr << "Nu=" << Nu << std::endl;
+                    
+                    singles.graphviz("eqs.dot",corelib);
 
                     exit(0);
+                    //"@eq1:-[a]+[b]:1"  "@eq2:-[b]+2[c]:1"  "@eq3:-[c]+[d]+[a]:1"
                 }
 
             }

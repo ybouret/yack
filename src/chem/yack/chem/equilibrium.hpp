@@ -9,6 +9,13 @@ namespace yack
 {
     namespace chemical
     {
+        
+        enum feature {
+            join_only,
+            both_ways,
+            part_only
+        };
+        
         //______________________________________________________________________
         //
         //
@@ -23,6 +30,7 @@ namespace yack
             // types and definitions
             //__________________________________________________________________
             typedef ark_ptr<string,equilibrium> pointer; //!< alias
+           
             
             static double display_time; //!< default=0
             static size_t display_size; //!< default=12
@@ -32,10 +40,11 @@ namespace yack
             //
             // methods
             //__________________________________________________________________
-            double K(double) const;                                               //!< non-virtual, checkin getK()
-            friend std::ostream & operator<<(std::ostream &, const equilibrium&); //!< display
-            void   vizlink(ios::ostream &) const;                                 //!< link to registered species
-
+            double  K(double) const;                                               //!< non-virtual, checkin getK()
+            friend  std::ostream & operator<<(std::ostream &, const equilibrium&); //!< display
+            void    vizlink(ios::ostream &) const;                                 //!< link to registered species
+            feature kind() const; //!< get feature
+            
             //__________________________________________________________________
             //
             // C++

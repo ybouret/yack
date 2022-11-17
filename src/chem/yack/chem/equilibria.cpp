@@ -156,6 +156,8 @@ namespace yack
             {
                 ios::ocstream fp(filename);
                 ios::vizible::digraph_init(fp,"G");
+                fp << "rankdir=\"LR\";\n";
+                
                 for(const snode *node=lib.head();node;node=node->next)
                 {
                     const species &sp = ***node;
