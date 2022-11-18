@@ -13,7 +13,8 @@ namespace yack
         enum feature {
             join_only,
             both_ways,
-            part_only
+            part_only,
+            undefined
         };
         
         //______________________________________________________________________
@@ -43,7 +44,7 @@ namespace yack
             double  K(double) const;                                               //!< non-virtual, checkin getK()
             friend  std::ostream & operator<<(std::ostream &, const equilibrium&); //!< display
             void    vizlink(ios::ostream &) const;                                 //!< link to registered species
-            feature kind() const; //!< get feature
+            feature kind() const throw(); //!< get feature
             
             //__________________________________________________________________
             //

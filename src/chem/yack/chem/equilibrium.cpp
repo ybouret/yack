@@ -78,7 +78,7 @@ namespace yack
             }
         }
 
-        feature equilibrium:: kind() const
+        feature equilibrium:: kind() const throw()
         {
             if(reac->size)
             {
@@ -97,8 +97,12 @@ namespace yack
                 {
                     return part_only;
                 }
+                else
+                {
+                    return undefined;
+                }
             }
-            throw exception("undefined equilibrium kind");
+
         }
     }
     
