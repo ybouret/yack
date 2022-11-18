@@ -175,7 +175,7 @@ namespace yack
             }
             
             {
-                ios::vizible::render(filename);
+                ios::vizible::render(filename,false);
             }
 
         }

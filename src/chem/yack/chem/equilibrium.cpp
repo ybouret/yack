@@ -67,6 +67,11 @@ namespace yack
             {
                 const species &s = **a;
                 s.link(fp,this);
+                if(a->nu>1)
+                {
+                    const string label = vformat("%u",unsigned(a->nu));
+                    s.add_label(fp << '[',label()) << ']';
+                }
                 end(fp);
             }
 
@@ -74,6 +79,11 @@ namespace yack
             {
                 const species &s = **a;
                 this->link(fp, &s);
+                if(a->nu>1)
+                {
+                    const string label = vformat("%u",unsigned(a->nu));
+                    s.add_label(fp << '[',label()) << ']';
+                }
                 end(fp);
             }
         }

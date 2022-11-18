@@ -90,6 +90,7 @@ namespace yack
             NuA.assign(Nu);
             vector<species *>     sdb(M,as_capacity); // TODO: necessary ?
             ep_list               edb;
+            addrbook              adb;
 
             //------------------------------------------------------------------
             //
@@ -99,7 +100,6 @@ namespace yack
             //
             //------------------------------------------------------------------
             {
-                addrbook          ebook;
 
                 //--------------------------------------------------------------
                 //
@@ -168,7 +168,7 @@ namespace yack
                         }
 
                         assert(both_ways==f);
-                        ebook.ensure(&eq);
+                        adb.ensure(&eq);
                     }
 
                 DONE:
@@ -176,10 +176,16 @@ namespace yack
                     sdb << & coerce(s);
                 }
 
-                YACK_XMLOG(xml,"--> #species    = " << std::setw(6) <<  sdb.size()    << " / " << std::setw(6) << M);
-                YACK_XMLOG(xml,"--> #equilibria = " << std::setw(6) << (*ebook).size  << " / " << std::setw(6) << N);
 
-                for(addrbook::const_iterator it=ebook.begin();it!=ebook.end();++it)
+                YACK_XMLOG(xml,"--> #species    = " << std::setw(6) <<  sdb.size()    << " / " << std::setw(6) << M);
+                YACK_XMLOG(xml,"--> #equilibria = " << std::setw(6) << (*adb).size  << " / " << std::setw(6) << N);
+
+                if(sdb.size() <= 0)
+                {
+                    return;
+                }
+
+                for(addrbook::const_iterator it=adb.begin();it!=adb.end();++it)
                 {
                     const void        *addr = *it; assert(NULL!=addr);
                     const equilibrium &eq   = *static_cast<const equilibrium *>(addr);
@@ -254,14 +260,43 @@ namespace yack
                         YACK_XMLSUB(xml,"Constraint");
                         ++igrp;
                         if(verbose) *xml << "-- using group #" << std::setw(4) << igrp << std::endl;
-                        assert(grp->size>0);
-                        
+                        const size_t rows = grp->size;
+                        assert(rows>0);
+
+                        adb.free();
                         for(const ep_node *ep=grp->head;ep;ep=ep->next)
                         {
-                            const equilibrium &eq = **ep;
-                            const size_t       ei =  *eq;
-                            std::cerr << NuA[ei] << std::endl;
+                            const equilibrium   &eq = **ep;
+                            const size_t         ei =  *eq;
+                            const readable<int> &nu = NuA[ei];
+                            if(verbose) *xml << "\t" << nu << std::endl;
+                            for(const cnode *cn=eq.head();cn;cn=cn->next)
+                            {
+                                const species &s = ****cn;
+                                const size_t   j = *s;
+                                if(nu[j]) adb.ensure(&s);
+                            }
                         }
+                        const size_t cols = (*adb).size;
+                        if(verbose) {
+                            *xml << "\t|rows| = " << rows << std::endl;
+                            *xml << "\t|cols| = " << cols << ':';
+                            for(addrbook::const_iterator it=adb.begin();it!=adb.end();++it)
+                            {
+                                const void    *addr = *it; assert(NULL!=addr);
+                                const species &s    = *static_cast<const species *>(addr);
+                                std::cerr << ' ' << s.name;
+                            }
+                            std::cerr << std::endl;
+                        }
+
+                        if(rows>=cols)
+                        {
+                            YACK_XMLOG(xml, "\tno constraint");
+                            continue;
+                        }
+                        const size_t cons = cols-rows;
+                        YACK_XMLOG(xml, "\t|cons| = " << cons);
 
                     }
 
