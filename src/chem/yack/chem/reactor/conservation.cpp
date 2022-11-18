@@ -59,7 +59,6 @@ namespace yack
                     //else std::cerr << " [-]" << std::endl;
 
                 }
-
                 return false;
             }
 
@@ -89,13 +88,24 @@ namespace yack
 
 
             NuA.assign(Nu);
-            vector<species *>     sdb(M,as_capacity);
+            vector<species *>     sdb(M,as_capacity); // TODO: necessary ?
             ep_list               edb;
 
+            //------------------------------------------------------------------
+            //
+            //
+            // Creating restricted NuA by filtering equilibria
+            //
+            //
+            //------------------------------------------------------------------
             {
                 addrbook          ebook;
 
+                //--------------------------------------------------------------
+                //
                 // Looping over species
+                //
+                //--------------------------------------------------------------
                 for(const anode *an=working.head;an;an=an->next)
                 {
                     const species &s = **an;
@@ -186,42 +196,76 @@ namespace yack
 
             singles.graphviz("eqs.dot",corelib);
 
+            //------------------------------------------------------------------
+            //
+            //
+            // Grouping filtered equilibria, using NuA connectivity
+            //
+            //
+            //------------------------------------------------------------------
             {
-                YACK_XMLSUB(xml, "Grouping");
-
+                YACK_XMLSUB(xml, "CreatingGroups");
                 ep_groups groups;
 
-
+                //--------------------------------------------------------------
+                //
+                // loop over filtered eqs
+                //
+                //--------------------------------------------------------------
                 while(edb.size)
                 {
                     auto_ptr<ep_node>    en  = edb.pop_front();
                     const equilibrium   &eq  = **en;
-                    YACK_XMLOG(xml, "-- hold <" << eq.name << "> ");
+                    YACK_XMLOG(xml, "--> <" << eq.name << "> ");
                     assert( both_ways == eq.kind() );
                     assert( iota::dot<int>::of(NuA[*eq],NuA[*eq])>0);
 
+                    // look for a connex group
                     ep_group     *grp = NULL;
                     for(ep_group *g=groups.head;g;g=g->next)
                     {
-                        if(g->linked_to(eq,NuA))
-                        {
+                        if(g->linked_to(eq,NuA)) {
                             grp = g;
                             break;
                         }
                     }
 
-                    if(!grp)
-                    {
-                        grp = new ep_group();
-                        groups.push_back(grp);
-                    }
-
+                    // if no connex group was found, build a new one
+                    if(!grp) groups.push_back( grp = new ep_group() );
                     assert(grp);
+
+                    // record equilibrium in current group
                     grp->push_back( en.yield() );
                 }
 
-                YACK_XMLOG(xml, "--> #group: " << groups.size);
+                YACK_XMLOG(xml, "--> |group| = " << groups.size);
 
+                //--------------------------------------------------------------
+                //
+                // creating constraints
+                //
+                //--------------------------------------------------------------
+                if(groups.size>0)
+                {
+                    YACK_XMLSUB(xml,"CreatingConstraints");
+                    size_t igrp = 0;
+                    for(const ep_group *grp=groups.head;grp;grp=grp->next)
+                    {
+                        YACK_XMLSUB(xml,"Constraint");
+                        ++igrp;
+                        if(verbose) *xml << "-- using group #" << std::setw(4) << igrp << std::endl;
+                        assert(grp->size>0);
+                        
+                        for(const ep_node *ep=grp->head;ep;ep=ep->next)
+                        {
+                            const equilibrium &eq = **ep;
+                            const size_t       ei =  *eq;
+                            std::cerr << NuA[ei] << std::endl;
+                        }
+
+                    }
+
+                }
 
             }
 
