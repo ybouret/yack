@@ -6,6 +6,9 @@
 #include "yack/associative/addrbook.hpp"
 #include "yack/math/iota.hpp"
 #include "yack/ptr/auto.hpp"
+
+#include "yack/apex.hpp"
+#include "yack/math/algebra/crout.hpp"
 #include <iomanip>
 
 namespace yack
@@ -153,6 +156,7 @@ namespace yack
                         switch(f)
                         {
                             case undefined:
+                                // bad!
                                 throw exception("undefined equilibrium <%s>", eq.name() );
 
                             case part_only:
@@ -177,7 +181,7 @@ namespace yack
                 }
 
 
-                YACK_XMLOG(xml,"--> #species    = " << std::setw(6) <<  sdb.size()    << " / " << std::setw(6) << M);
+                YACK_XMLOG(xml,"--> #species    = " << std::setw(6) <<  sdb.size()  << " / " << std::setw(6) << M);
                 YACK_XMLOG(xml,"--> #equilibria = " << std::setw(6) << (*adb).size  << " / " << std::setw(6) << N);
 
                 if(sdb.size() <= 0)
@@ -185,13 +189,13 @@ namespace yack
                     return;
                 }
 
+                // retrieve equilibria
                 for(addrbook::const_iterator it=adb.begin();it!=adb.end();++it)
                 {
                     const void        *addr = *it; assert(NULL!=addr);
                     const equilibrium &eq   = *static_cast<const equilibrium *>(addr);
                     edb << & coerce(eq);
                 }
-
             }
 
 
@@ -258,6 +262,10 @@ namespace yack
                     for(const ep_group *grp=groups.head;grp;grp=grp->next)
                     {
                         YACK_XMLSUB(xml,"Constraint");
+
+                        //------------------------------------------------------
+                        // record all involved species from one group
+                        //------------------------------------------------------
                         ++igrp;
                         if(verbose) *xml << "-- using group #" << std::setw(4) << igrp << std::endl;
                         const size_t rows = grp->size;
@@ -277,19 +285,31 @@ namespace yack
                                 if(nu[j]) adb.ensure(&s);
                             }
                         }
-                        const size_t cols = (*adb).size;
+                        const size_t   cols = (*adb).size;
+                        vector<size_t> jcol(cols,as_capacity);
+                        sdb.free();
+                        for(addrbook::const_iterator it=adb.begin();it!=adb.end();++it)
+                        {
+                            const void    *addr = *it; assert(NULL!=addr);
+                            const species &s    = *static_cast<const species *>(addr);
+                            sdb  << & coerce(s);
+                            jcol << *s;
+                        }
+
                         if(verbose) {
                             *xml << "\t|rows| = " << rows << std::endl;
                             *xml << "\t|cols| = " << cols << ':';
-                            for(addrbook::const_iterator it=adb.begin();it!=adb.end();++it)
+                            for(size_t i=1;i<=cols;++i)
                             {
-                                const void    *addr = *it; assert(NULL!=addr);
-                                const species &s    = *static_cast<const species *>(addr);
-                                std::cerr << ' ' << s.name;
+                                std::cerr << ' ' << sdb[i]->name;
                             }
                             std::cerr << std::endl;
                         }
 
+
+                        //------------------------------------------------------
+                        // check status
+                        //------------------------------------------------------
                         if(rows>=cols)
                         {
                             YACK_XMLOG(xml, "\tno constraint");
@@ -298,6 +318,63 @@ namespace yack
                         const size_t cons = cols-rows;
                         YACK_XMLOG(xml, "\t|cons| = " << cons);
 
+                        //------------------------------------------------------
+                        // create constraints matrix
+                        //------------------------------------------------------
+                        matrix<apq> P(rows,cols);
+                        {
+                            size_t irow = 0;
+                            for(const ep_node *ep=grp->head;ep;ep=ep->next)
+                            {
+                                const equilibrium   &eq = **ep;
+                                const size_t         ei =  *eq;
+                                const readable<int> &nu = NuA[ei];
+                                writable<apq>       &Pi = P[++irow];
+                                for(size_t j=cols;j>0;--j)
+                                {
+                                    Pi[j] = nu[ jcol[j] ];
+                                }
+                            }
+                        }
+
+                        
+                        matrix<apq> Pt(P,transposed);
+                        matrix<apq> P2(rows,rows);
+                        iota::mmul(P2,P,Pt);
+                        matrix<apq> iP2(P2);
+                        crout<apq>  lu(rows);
+
+                        std::cerr << "P    = " << P << std::endl;
+                        std::cerr << "P2   = " << P2 << std::endl;
+                        if(!lu.build(iP2)) throw exception("singular topology!!");
+                        const apq  detP2 = lu.determinant(iP2); assert(0!=detP2);
+                        std::cerr << "detP2 = " << detP2 << std::endl;
+                        matrix<apq> adjP2(rows,rows);
+                        lu.adjoint(adjP2,P2);
+                        std::cerr << "adjP2 = " << adjP2 << std::endl;
+
+                        matrix<apq> adjP3(rows,cols);
+                        iota::mmul(adjP3,adjP2,P);
+                        std::cerr << "adjP3 = " << adjP3 << std::endl;
+                        matrix<apq> invP(cols,cols);
+                        iota::mmul(invP,Pt,adjP3);
+                        std::cerr << "invP  = " << invP << std::endl;
+                        matrix<apq> Qvec(cols,cols);
+                        for(size_t i=cols;i>0;--i)
+                        {
+                            for(size_t j=cols;j>0;--j)
+                            {
+                                if(i==j)
+                                {
+                                    Qvec[i][i] = detP2 - invP[i][i];
+                                }
+                                else
+                                {
+                                    Qvec[i][j] = - invP[j][i];
+                                }
+                            }
+                        }
+                        std::cerr << "Qvec  = " << Qvec << std::endl;
                     }
 
                 }
