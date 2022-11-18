@@ -48,7 +48,7 @@ namespace yack
 
             if(missing)
             {
-                std::cerr << "arena[" << block_size << "] missing #blocks=" << missing << std::endl;
+                std::cerr << "arena[" << std::setw(5) << block_size << " ] missing #blocks = " << std::setw(8) << missing << std::endl;
             }
         }
 
