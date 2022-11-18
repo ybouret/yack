@@ -12,6 +12,12 @@ namespace yack
 
     namespace chemical
     {
+
+        static inline void notConserved(imatrix &NuA, const size_t j) throw()
+        {
+            for(size_t i=NuA.rows;i>0;--i) NuA[i][j] = 0;
+        }
+
         void reactor:: conservation(const xmlog &xml)
         {
             YACK_XMLSUB(xml, "Conservation");
@@ -50,6 +56,15 @@ namespace yack
                             break;
                     }
 
+                    if(p>1||n>1)
+                    {
+                        // not a conservative equilibrium
+                        keep = false;
+                        YACK_XMLOG(xml,"|_shared");
+                        notConserved(NuA,j);
+                        goto DONE;
+                    }
+
                     switch(f)
                     {
                         case undefined:
@@ -60,10 +75,7 @@ namespace yack
                             // not a conservative equilibrium
                             keep = false;
                             YACK_XMLOG(xml,"|_excluded by " << eq.name);
-                            for(size_t k=N;k>0;--k)
-                            {
-                                NuA[k][j] = 0;
-                            }
+                            notConserved(NuA,j);
                             goto DONE;
 
                         case both_ways:
