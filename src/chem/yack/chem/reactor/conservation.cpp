@@ -9,6 +9,7 @@
 
 #include "yack/apex.hpp"
 #include "yack/math/algebra/crout.hpp"
+#include "yack/counting/comb.hpp"
 #include <iomanip>
 
 namespace yack
@@ -258,7 +259,9 @@ namespace yack
                 if(groups.size>0)
                 {
                     YACK_XMLSUB(xml,"CreatingConstraints");
-                    size_t igrp = 0;
+                    const apq _0 = 0;
+                    const apq _1 = 1;
+                    size_t    ig = 0;
                     for(const ep_group *grp=groups.head;grp;grp=grp->next)
                     {
                         YACK_XMLSUB(xml,"Constraint");
@@ -266,8 +269,8 @@ namespace yack
                         //------------------------------------------------------
                         // record all involved species from one group
                         //------------------------------------------------------
-                        ++igrp;
-                        if(verbose) *xml << "-- using group #" << std::setw(4) << igrp << std::endl;
+                        ++ig;
+                        if(verbose) *xml << "-- using group #" << std::setw(4) << ig << std::endl;
                         const size_t rows = grp->size;
                         assert(rows>0);
 
@@ -319,7 +322,7 @@ namespace yack
                         YACK_XMLOG(xml, "\t|cons| = " << cons);
 
                         //------------------------------------------------------
-                        // create constraints matrix
+                        // create constraints SUB-matrix
                         //------------------------------------------------------
                         matrix<apq> P(rows,cols);
                         {
@@ -337,7 +340,24 @@ namespace yack
                             }
                         }
 
-                        
+                        matrix<apq> Pt(P,transposed);
+                        matrix<apq> G(cols,cols);
+                        iota::mmul(G,Pt,P);
+
+                        std::cerr << "P=" << P << std::endl;
+                        std::cerr << "G=" << G << std::endl;
+                        vector<apq> alpha(cols,_1);
+
+                        alpha.ld(_1);
+
+
+
+
+
+
+
+
+#if 0
                         matrix<apq> Pt(P,transposed);
                         matrix<apq> P2(rows,rows);
                         iota::mmul(P2,P,Pt);
@@ -375,6 +395,7 @@ namespace yack
                             }
                         }
                         std::cerr << "Qvec  = " << Qvec << std::endl;
+#endif
                     }
 
                 }
