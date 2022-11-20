@@ -35,10 +35,23 @@ namespace yack
             return false;
         }
 
+        static inline apq negativeMin(const readable<apq> &arr)
+        {
+            apq res = 0;
+            for(size_t i=arr.size();i>0;--i)
+            {
+                const apq &tmp = arr[i];
+                if(tmp<0&&tmp<res) res=tmp;
+            }
+            return res;
+        }
+
+        
 
         typedef meta_list<const equilibrium> ep_list;
         typedef ep_list::node_type           ep_node;
 
+        
         class ep_group : public object, public ep_list
         {
         public:
@@ -339,20 +352,26 @@ namespace yack
                                 }
                             }
                         }
-
+                        
+                        vector<apq> alpha(cols,_1);
+                        
+                        
                         matrix<apq> Pt(P,transposed);
                         matrix<apq> G(cols,cols);
                         iota::mmul(G,Pt,P);
-
+                        vector<apq> delta(cols,_0);
+                        vector<apq> coeff(cols,_0);
+                        
+                        iota::mulneg(delta,G,alpha);
                         std::cerr << "P=" << P << std::endl;
                         std::cerr << "G=" << G << std::endl;
-                        vector<apq> alpha(cols,_1);
-
-                        alpha.ld(_1);
-
-
-
-
+                        std::cerr << "alpha=" << alpha << std::endl;
+                        std::cerr << "delta=" << delta << std::endl;
+                        apq f = _1-negativeMin(delta);
+                        std::cerr << "f    =" << f << std::endl;
+                        
+                        // initialize
+                        
 
 
 
