@@ -104,10 +104,17 @@ namespace yack
             YACK_XMLSUB(xml, "Conservation");
 
 
+            //------------------------------------------------------------------
+            //
+            //
+            // initialize
+            //
+            //
+            //------------------------------------------------------------------
             NuA.assign(Nu);
-            vector<species *>     sdb(M,as_capacity); // TODO: necessary ?
-            ep_list               edb;
-            addrbook              adb;
+            vector<species *>     sdb(M,as_capacity);
+            ep_list               edb; //!< database of equilibria
+            addrbook              adb; //!< database of unique objects
 
             //------------------------------------------------------------------
             //
@@ -203,6 +210,7 @@ namespace yack
                     return;
                 }
 
+                assert( (*adb).size>0 );
                 // retrieve equilibria
                 for(addrbook::const_iterator it=adb.begin();it!=adb.end();++it)
                 {
@@ -352,6 +360,11 @@ namespace yack
                                 }
                             }
                         }
+                        
+                        const size_t kmin = cols+1-cons;
+                        const size_t kmax = cols;
+                        std::cerr << "k = " << kmin << " -> " << kmax << std::endl;
+                        
                         
                         vector<apq> alpha(cols,_1);
                         

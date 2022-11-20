@@ -53,6 +53,20 @@ namespace yack
         const_iterator begin() const throw() { return (**this).head; } //!< forward iterator begin
         const_iterator end()   const throw() { return NULL; }          //!< forward itetator end
 
+        //______________________________________________________________________
+        //
+        // transfer content
+        //______________________________________________________________________
+        template <typename T> inline
+        void upload(sequence<T *> &target) const
+        {
+            for(const_iterator it=begin();it!=end();++it)
+            {
+                const T &obj = *static_cast<const T *>( *it );
+                target << & coerce(obj);
+            }
+        }
+        
     private:
         YACK_DISABLE_ASSIGN(addrbook);
     };
