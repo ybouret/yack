@@ -127,6 +127,16 @@ namespace yack
                     coerce(lattice).add(couples);
                     coerce(L) = lattice.size();
 
+                    for(const snode *source=corelib.head(), *target = worklib.head();source;source=source->next, target=target->next)
+                    {
+                        assert(source);
+                        assert(target);
+                        const species &src = ***source;
+                        const species &tgt = ***target;
+                        assert(src.name==tgt.name);
+                        coerce(tgt.rank) = src.rank;
+                    }
+
                     if(verbose)
                     {
                         std::cerr << "lattice = " << lattice << std::endl;

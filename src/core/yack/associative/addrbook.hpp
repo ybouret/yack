@@ -55,7 +55,7 @@ namespace yack
 
         //______________________________________________________________________
         //
-        // transfer content
+        //! transfer content, no cleanup of target
         //______________________________________________________________________
         template <typename T> inline
         void upload(sequence<T *> &target) const
@@ -66,6 +66,19 @@ namespace yack
                 target << & coerce(obj);
             }
         }
+
+        //______________________________________________________________________
+        //
+        //! retrieve exact content
+        //______________________________________________________________________
+        template <typename T> inline
+        void retrieve(sequence<T *> &target) const
+        {
+            target.free();
+            upload(target);
+        }
+
+
         
     private:
         YACK_DISABLE_ASSIGN(addrbook);
