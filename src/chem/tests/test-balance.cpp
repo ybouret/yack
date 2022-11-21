@@ -94,7 +94,7 @@ YACK_UTEST(balance)
         std::cerr << "<no balance>" << std::endl;
     }
 
-    eqs.graphviz("bal.dot",lib);
+    
 
 }
 YACK_UDONE()

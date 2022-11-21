@@ -50,28 +50,6 @@ namespace yack
         }
 
 
-        enum lookUp
-        {
-            lookUpSuccess,
-            lookUpFailure,
-            lookUpForward
-        };
-
-
-        static inline lookUp lookUpFor(const readable<apq> &alpha,
-                                       const readable<apq> &delta)
-        {
-            assert(alpha.size()==delta.size());
-            apq d2 = 0;
-            for(size_t i=alpha.size();i>0;--i)
-            {
-                const apq &d = delta[i];
-                if(0==alpha[i] && 0!=d) return lookUpFailure;
-                d2 += d*d;
-            }
-            return d2<=0 ? lookUpSuccess : lookUpForward;
-        }
-
 
         static inline apq ObjFcn(const apq           &f,
                                  writable<apq>       &trial,
@@ -85,49 +63,13 @@ namespace yack
             {
                 trial[i] = (f*alpha[i]+delta[i]); assert(trial[i]>=0);
             }
-
+            //std::cerr << f << "*" << alpha << " + " << delta << std::endl;
             iota::mul(coeff,P,trial);
 
             return iota::mod2<apq>::of(coeff)/(f*f);
 
         }
 
-        static inline bool LookUpForward(writable<apq>       &alpha,
-                                         const matrix<apq>   &P,
-                                         const readable<apq> &delta)
-        {
-            const apq _1(1);
-            const apq _0(0);
-
-            const size_t n = alpha.size();
-
-            // initial
-            apq f = negativeMin(delta);
-            if(f<0) f = _1 - f;
-            std::cerr << "f=" << f << std::endl;
-
-            vector<apq> trial(n,_0);
-            vector<apq> coeff(n,_0);
-            apq         Hold = ObjFcn(f,trial,coeff,alpha,delta,P);
-            std::cerr << "H(" << trial << ")=" << Hold.to<double>() << std::endl;
-
-            unsigned count = 0;
-            while(Hold>0)
-            {
-                const apq Hnew = ObjFcn(++f,trial,coeff,alpha,delta,P);
-                std::cerr << "H(" << trial << ")=" << Hnew.to<double>() << std::endl;
-                ++count;
-                if(count>=10 && Hnew>Hold)
-                {
-                    return false;
-                }
-                Hold = Hnew;
-            }
-
-            assert(Hold<=0);
-            iota::load(alpha,trial);
-            return true;
-        }
 
         
 
@@ -214,6 +156,42 @@ namespace yack
         };
 
 
+
+        static inline
+        void simplifyAlpha(writable<apq> &alpha, const readable<size_t> &comb)
+        {
+
+            const size_t k = comb.size();
+            apn          g = apn::gcd( alpha[comb[1]].num.n, alpha[ comb[2] ].num.n );
+            for(size_t i=3;i<=k;++i)
+            {
+                g = apn::gcd(g,alpha[comb[i]].num.n);
+            }
+            iota::div_by(g,alpha);
+        }
+
+        void transformQ(matrix<apq> &Q)
+        {
+            const size_t n = Q.rows;
+            for(size_t i=1;i<=n;++i)
+            {
+                apq    qpiv = Q[i][i];
+                apq    apiv = abs_of(qpiv);
+                size_t ipiv = i;
+                for(size_t k=i+1;k<=n;++k)
+                {
+                    const apq qtmp = Q[k][i];
+                    const apq atmp = abs_of(qtmp);
+                    if(atmp>apiv)
+                    {
+                        ipiv=k;
+                        qpiv=qtmp;
+                        apiv=atmp;
+                    }
+                }
+                std::cerr << "ipiv=" << ipiv << std::endl;
+            }
+        }
 
 
         void reactor:: conservation(const xmlog &xml)
@@ -534,140 +512,56 @@ namespace yack
 
                     //----------------------------------------------------------
                     //
-                    // look up all possible combinations
+                    // computing orthogonal vectors
                     //
                     //----------------------------------------------------------
-                    vector<apq> alpha(cols,_0);
-                    matrix<apq> Pt(P,transposed);
-                    matrix<apq> G(cols,cols);
-                    iota::mmul(G,Pt,P);
-                    vector<apq> delta(cols,_0);
-
-                    for(size_t k=kmin;k<=kmax;++k)
+                    matrix<apq> Q(cols,cols);
                     {
-                        combination comb(kmax,k);
-                        do {
-                            // create alpha and delta
-                            alpha.ld(_0);
-                            delta.ld(_0);
-                            for(size_t i=k;i>0;--i)
-                            {
-                                const size_t j = comb[i];
-                                alpha[j] = _1;
-                            }
+                        matrix<apq> Pt(P,transposed);
+                        matrix<apq> P2(rows,rows);
+                        iota::mmul(P2,P,Pt);
+                        matrix<apq> iP2(P2);
+                        crout<apq>  lu(rows);
 
-                            apq d2 = _0;
-                            for(size_t i=k;i>0;--i)
-                            {
-                                const size_t j = comb[i];
-                                d2 += squared( delta[j] =  - iota::dot<apq>::of(G[j],alpha) );
+                        std::cerr << "P = " << P << std::endl;
+                        if(!lu.build(iP2)) throw exception("singular topology!!");
+                        const apq  detP2 = lu.determinant(iP2); assert(0!=detP2);
+                        matrix<apq> adjP2(rows,rows);
+                        lu.adjoint(adjP2,P2);
 
-                            }
+                        matrix<apq> adjP3(rows,cols);
+                        iota::mmul(adjP3,adjP2,P);
+                        matrix<apq> invP(cols,cols);
+                        iota::mmul(invP,Pt,adjP3);
 
-
-                            if(d2<=0)
-                            {
-                                YACK_XMLOG(xml, "-- success for alpha=" << alpha << " | delta=" << delta);
-                                goto MAKE_ALPHA;
-                            }
-
-
-
-                            // trying to find..
-                            YACK_XMLOG(xml, "-- forward for alpha=" << alpha << " | delta=" << delta);
-                            if(!LookUpForward(alpha,P,delta))
-                                continue;
-
-                            {
-                                apn g = apn::gcd( alpha[comb[1]].num.n, alpha[ comb[2] ].num.n );
-                                for(size_t i=3;i<=k;++i)
-                                {
-                                    g = apn::gcd(g,alpha[comb[i]].num.n);
-                                }
-                                iota::div_by(g,alpha);
-                            }
-
-
-
-                        MAKE_ALPHA:
-                            YACK_XMLOG(xml,"--> conserve  @alpha=" << alpha);
-
-
-                        } while(comb.next());
-                    }
-
-
-
-
-#if 0
-                    matrix<apq> Pt(P,transposed);
-                    matrix<apq> G(cols,cols);
-                    iota::mmul(G,Pt,P);
-                    vector<apq> delta(cols,_0);
-                    vector<apq> coeff(cols,_0);
-
-                    iota::mulneg(delta,G,alpha);
-                    std::cerr << "P=" << P << std::endl;
-                    std::cerr << "G=" << G << std::endl;
-                    std::cerr << "alpha=" << alpha << std::endl;
-                    std::cerr << "delta=" << delta << std::endl;
-                    apq f = _1-negativeMin(delta);
-                    std::cerr << "f    =" << f << std::endl;
-#endif
-
-                    // initialize
-
-
-
-
-
-#if 0
-                    matrix<apq> Pt(P,transposed);
-                    matrix<apq> P2(rows,rows);
-                    iota::mmul(P2,P,Pt);
-                    matrix<apq> iP2(P2);
-                    crout<apq>  lu(rows);
-
-                    std::cerr << "P    = " << P << std::endl;
-                    std::cerr << "P2   = " << P2 << std::endl;
-                    if(!lu.build(iP2)) throw exception("singular topology!!");
-                    const apq  detP2 = lu.determinant(iP2); assert(0!=detP2);
-                    std::cerr << "detP2 = " << detP2 << std::endl;
-                    matrix<apq> adjP2(rows,rows);
-                    lu.adjoint(adjP2,P2);
-                    std::cerr << "adjP2 = " << adjP2 << std::endl;
-
-                    matrix<apq> adjP3(rows,cols);
-                    iota::mmul(adjP3,adjP2,P);
-                    std::cerr << "adjP3 = " << adjP3 << std::endl;
-                    matrix<apq> invP(cols,cols);
-                    iota::mmul(invP,Pt,adjP3);
-                    std::cerr << "invP  = " << invP << std::endl;
-                    matrix<apq> Qvec(cols,cols);
-                    for(size_t i=cols;i>0;--i)
-                    {
-                        for(size_t j=cols;j>0;--j)
+                        for(size_t i=cols;i>0;--i)
                         {
-                            if(i==j)
+                            for(size_t j=cols;j>0;--j)
                             {
-                                Qvec[i][i] = detP2 - invP[i][i];
-                            }
-                            else
-                            {
-                                Qvec[i][j] = - invP[j][i];
+                                if(i==j)
+                                {
+                                    Q[i][i] = detP2 - invP[i][i];
+                                }
+                                else
+                                {
+                                    Q[i][j] = - invP[j][i];
+                                }
                             }
                         }
                     }
-                    std::cerr << "Qvec  = " << Qvec << std::endl;
-#endif
+                    std::cerr << "Q = " << Q << std::endl;
+                    transformQ(Q);
                 }
+
+
+
 
             }
 
 
 
             exit(0);
-            //"@eq1:-[a]+[b]:1"  "@eq2:-[b]+2[c]:1"  "@eq3:-[c]+[d]+[a]:1"
+            // "@eq:-[a]+4[b]+7[c]-2[d]:1"
         }
 
     }
