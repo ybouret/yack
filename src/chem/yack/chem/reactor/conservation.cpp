@@ -24,16 +24,7 @@ namespace yack
             for(size_t i=NuA.rows;i>0;--i) NuA[i][j] = 0;
         }
 
-        static inline bool linkedRows(const readable<int> &lhs,
-                                      const readable<int> &rhs) throw()
-        {
-            assert(lhs.size()==rhs.size());
-            for(size_t j=lhs.size();j>0;--j)
-            {
-                if( lhs[j] && rhs[j] ) return true;
-            }
-            return false;
-        }
+
 
         static inline apq negativeMin(const readable<apq> &arr)
         {
@@ -58,8 +49,34 @@ namespace yack
 
         
 
-        typedef meta_list<const equilibrium> ep_list;
-        typedef ep_list::node_type           ep_node;
+        typedef meta_list<const equilibrium> ep_list_;
+        typedef ep_list_::node_type           ep_node;
+
+        class ep_list : public ep_list_
+        {
+        public:
+            inline explicit ep_list() throw() : ep_list_() {}
+            inline virtual ~ep_list() throw() {}
+
+            inline friend std::ostream & operator<<(std::ostream &os, const ep_list &self)
+            {
+                os << "{ ";
+                const ep_node *node=self.head;
+                if(node)
+                {
+                    os << (**node).name;
+                    for(node=node->next;node;node=node->next)
+                    {
+                        os << ", " << (**node).name;
+                    }
+                }
+                os << " }";
+                return os;
+            }
+
+        private:
+            YACK_DISABLE_COPY_AND_ASSIGN(ep_list);
+        };
 
         
         class ep_group : public object, public ep_list
@@ -94,6 +111,16 @@ namespace yack
 
         private:
             YACK_DISABLE_COPY_AND_ASSIGN(ep_group);
+            static inline bool linkedRows(const readable<int> &lhs,
+                                          const readable<int> &rhs) throw()
+            {
+                assert(lhs.size()==rhs.size());
+                for(size_t j=lhs.size();j>0;--j)
+                {
+                    if( lhs[j] && rhs[j] ) return true;
+                }
+                return false;
+            }
         };
 
         typedef cxx_list_of<ep_group> ep_groups_;
@@ -264,7 +291,7 @@ namespace yack
                 {
                     auto_ptr<ep_node>    en  = edb.pop_front();
                     const equilibrium   &eq  = **en;
-                    YACK_XMLOG(xml, "--> <" << eq.name << "> ");
+                    //YACK_XMLOG(xml, "--> <" << eq.name << "> ");
                     assert( both_ways == eq.kind() );
                     assert( coeffCount(NuA[*eq])>0 );
 
@@ -289,6 +316,8 @@ namespace yack
                     // record equilibrium in current group
                     //----------------------------------------------------------
                     grp->push_back( en.yield() );
+                    YACK_XMLOG(xml, "--> " << *grp);
+
                 }
 
                 YACK_XMLOG(xml, "--> |group| = " << groups.size);
@@ -296,14 +325,7 @@ namespace yack
                 {
                     for(const ep_group *g=groups.head;g;g=g->next)
                     {
-                        assert(g->size>0);
-                        assert(g->head!=NULL);
-                        const ep_node *en=g->head;
-                        *xml << "-- { " << (**en).name;
-                        for(en=en->next;en;en=en->next) {
-                            std::cerr << ", " << (**en).name;
-                        }
-                        std::cerr << " }" << std::endl;
+                        *xml << "-- " << *g << std::endl;
                     }
                 }
 
@@ -323,20 +345,24 @@ namespace yack
                 YACK_XMLSUB(xml,"creatingConstraints");
                 const apq _0 = 0;
                 const apq _1 = 1;
-                size_t    ig = 0;
 
+
+                //----------------------------------------------------------
+                //
+                // loop over each group of connex equilibria
+                //
+                //----------------------------------------------------------
                 for(const ep_group *grp=groups.head;grp;grp=grp->next)
                 {
                     YACK_XMLSUB(xml,"newConstraint");
 
                     //----------------------------------------------------------
                     //
-                    // record all involved species from one group
+                    // collect all involved species from one group
                     //
                     //----------------------------------------------------------
-                    ++ig;
+                    YACK_XMLOG(xml, "-- using " << *grp);
                     adb.free();
-                    if(verbose) *xml << "-- using group #" << std::setw(4) << ig << std::endl;
                     const size_t rows = grp->size; assert(rows>0);
                     for(const ep_node *ep=grp->head;ep;ep=ep->next)
                     {
@@ -351,9 +377,16 @@ namespace yack
                             if(nu[j]) adb.ensure(&s);
                         }
                     }
+                    assert((*adb).size>0);
+
+                    //----------------------------------------------------------
+                    //
+                    // record species and indices
+                    //
+                    //----------------------------------------------------------
+                    sdb.free();
                     const size_t   cols = (*adb).size;
                     vector<size_t> jcol(cols,as_capacity);
-                    sdb.free();
                     for(addrbook::const_iterator it=adb.begin();it!=adb.end();++it)
                     {
                         const void    *addr = *it; assert(NULL!=addr);
@@ -365,9 +398,9 @@ namespace yack
                     if(verbose) {
                         *xml << "\t|rows| = " << rows << std::endl;
                         *xml << "\t|cols| = " << cols << ':';
-                        for(size_t i=1;i<=cols;++i)
+                        for(size_t j=1;j<=cols;++j)
                         {
-                            std::cerr << ' ' << sdb[i]->name;
+                            std::cerr << ' ' << sdb[j]->name;
                         }
                         std::cerr << std::endl;
                     }

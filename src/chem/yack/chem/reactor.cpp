@@ -121,12 +121,15 @@ namespace yack
                     composite::scatter( coerce(couples), worklib, singles, K, xmul);
 
 
-                    //--------------------------------------------------------------
+                    //----------------------------------------------------------
                     // complete lattice
-                    //--------------------------------------------------------------
+                    //----------------------------------------------------------
                     coerce(lattice).add(couples);
                     coerce(L) = lattice.size();
 
+                    //----------------------------------------------------------
+                    // update worklib
+                    //----------------------------------------------------------
                     for(const snode *source=corelib.head(), *target = worklib.head();source;source=source->next, target=target->next)
                     {
                         assert(source);
