@@ -480,6 +480,11 @@ namespace yack
                     const size_t kmax = cols;
                     std::cerr << "k = " << kmin << " -> " << kmax << std::endl;
 
+                    //----------------------------------------------------------
+                    //
+                    // look up all possible combinations
+                    //
+                    //----------------------------------------------------------
                     vector<apq> alpha(cols,_0);
                     matrix<apq> Pt(P,transposed);
                     matrix<apq> G(cols,cols);
@@ -491,13 +496,17 @@ namespace yack
                     {
                         combination comb(kmax,k);
                         do {
+                            // create alpha
                             alpha.ld(_0);
                             for(size_t i=k;i>0;--i)
                             {
                                 alpha[ comb[i] ] = _1;
                             }
+
+                            // compute delta
                             iota::mulneg(delta,G,alpha);
 
+                            // check valid/compatible alpha and delta
                             switch(lookUpFor(alpha,delta))
                             {
                                 case lookUpFailure:
