@@ -151,7 +151,8 @@ namespace yack
 
     namespace chemical
     {
-        void equilibria:: graphviz(const string &filename, const library &lib) const
+        void equilibria:: graphviz(const string  &filename,
+                                   const library &lib) const
         {
             {
                 ios::ocstream fp(filename);

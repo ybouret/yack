@@ -6,6 +6,7 @@
 #include "yack/associative/addrbook.hpp"
 #include "yack/math/iota.hpp"
 #include "yack/ptr/auto.hpp"
+#include "yack/type/boolean.h"
 
 #include "yack/apex.hpp"
 #include "yack/math/algebra/crout.hpp"
@@ -37,7 +38,7 @@ namespace yack
             return res;
         }
 
-        size_t coeffCount(const readable<int> &nu) throw()
+        static inline size_t coeffCount(const readable<int> &nu) throw()
         {
             size_t res = 0;
             for(size_t j=nu.size();j>0;--j)
@@ -46,6 +47,31 @@ namespace yack
             }
             return res;
         }
+
+
+        enum lookUp
+        {
+            lookUpSuccess,
+            lookUpFailure,
+            lookUpForward
+        };
+
+
+        static inline lookUp lookUpFor(const readable<apq> &alpha,
+                                       const readable<apq> &delta)
+        {
+            assert(alpha.size()==delta.size());
+            apq d2 = 0;
+            for(size_t i=alpha.size();i>0;--i)
+            {
+                const apq &d = delta[i];
+                if(0==alpha[i] && 0!=d) return lookUpFailure;
+                d2 += d*d;
+            }
+            return d2<=0 ? lookUpSuccess : lookUpForward;
+        }
+
+
 
         
 
@@ -152,9 +178,8 @@ namespace yack
             //
             //------------------------------------------------------------------
             NuA.assign(Nu);
-            ep_list               edb; //!< database of equilibria
-            addrbook              adb; //!< database of unique objects
-
+            ep_list           edb;
+            addrbook          adb;
             //------------------------------------------------------------------
             //
             // checking possible species and equilibria
@@ -245,6 +270,11 @@ namespace yack
 
             }
 
+            //------------------------------------------------------------------
+            //
+            // finally collect remaining equilibria
+            //
+            //------------------------------------------------------------------
             {
                 YACK_XMLSUB(xml, "collectingEquilibria");
                 assert( (*adb).size > 0 );
@@ -269,7 +299,8 @@ namespace yack
 
 
 
-            singles.graphviz("eqs.dot",corelib);
+            singles.graphviz("singles.dot",corelib);
+            //lattice.graphviz("lattice.dot",worklib);
 
             //------------------------------------------------------------------
             //
@@ -291,7 +322,6 @@ namespace yack
                 {
                     auto_ptr<ep_node>    en  = edb.pop_front();
                     const equilibrium   &eq  = **en;
-                    //YACK_XMLOG(xml, "--> <" << eq.name << "> ");
                     assert( both_ways == eq.kind() );
                     assert( coeffCount(NuA[*eq])>0 );
 
@@ -407,9 +437,11 @@ namespace yack
                     }
 
 
-                    //------------------------------------------------------
+                    //----------------------------------------------------------
+                    //
                     // check status
-                    //------------------------------------------------------
+                    //
+                    //----------------------------------------------------------
                     if(rows>=cols)
                     {
                         YACK_XMLOG(xml, "\tno constraint");
@@ -418,9 +450,11 @@ namespace yack
                     const size_t cons = cols-rows;
                     YACK_XMLOG(xml, "\t|cons| = " << cons);
 
-                    //------------------------------------------------------
+                    //----------------------------------------------------------
+                    //
                     // create constraints SUB-matrix
-                    //------------------------------------------------------
+                    //
+                    //----------------------------------------------------------
                     matrix<apq> P(rows,cols);
                     {
                         size_t irow = 0;
@@ -437,14 +471,64 @@ namespace yack
                         }
                     }
 
+                    //----------------------------------------------------------
+                    //
+                    // computing possible co-dimensions
+                    //
+                    //----------------------------------------------------------
                     const size_t kmin = cols+1-cons;
                     const size_t kmax = cols;
                     std::cerr << "k = " << kmin << " -> " << kmax << std::endl;
 
+                    vector<apq> alpha(cols,_0);
+                    matrix<apq> Pt(P,transposed);
+                    matrix<apq> G(cols,cols);
+                    iota::mmul(G,Pt,P);
+                    vector<apq> delta(cols,_0);
+                    vector<apq> coeff(cols,_0);
 
-                    vector<apq> alpha(cols,_1);
+                    for(size_t k=kmin;k<=kmax;++k)
+                    {
+                        combination comb(kmax,k);
+                        do {
+                            alpha.ld(_0);
+                            for(size_t i=k;i>0;--i)
+                            {
+                                alpha[ comb[i] ] = _1;
+                            }
+                            iota::mulneg(delta,G,alpha);
+
+                            switch(lookUpFor(alpha,delta))
+                            {
+                                case lookUpFailure:
+                                    YACK_XMLOG(xml, "-- failure for alpha=" << alpha << " | delta=" << delta);
+                                    continue;;
+
+                                case lookUpSuccess:
+                                    YACK_XMLOG(xml, "-- success for alpha=" << alpha << " | delta=" << delta);
+                                    goto MAKE_ALPHA;
+
+                                case lookUpForward:
+                                    break;
+
+                            }
+
+                            // trying to find..
+                            YACK_XMLOG(xml, "-- foward for alpha=" << alpha << " | delta=" << delta);
+
+                            continue;
+
+                        MAKE_ALPHA:
+                            YACK_XMLOG(xml,"--> conserve  @alpha=" << alpha);
 
 
+                        } while(comb.next());
+                    }
+
+
+
+
+#if 0
                     matrix<apq> Pt(P,transposed);
                     matrix<apq> G(cols,cols);
                     iota::mmul(G,Pt,P);
@@ -458,6 +542,7 @@ namespace yack
                     std::cerr << "delta=" << delta << std::endl;
                     apq f = _1-negativeMin(delta);
                     std::cerr << "f    =" << f << std::endl;
+#endif
 
                     // initialize
 
