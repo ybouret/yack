@@ -152,7 +152,6 @@ namespace yack
             //
             //------------------------------------------------------------------
             NuA.assign(Nu);
-            vector<species *>     sdb(M,as_capacity);
             ep_list               edb; //!< database of equilibria
             addrbook              adb; //!< database of unique objects
 
@@ -163,6 +162,7 @@ namespace yack
             //------------------------------------------------------------------
             {
                 YACK_XMLSUB(xml, "collectingSpecies");
+                vector<species *> sdb(working.size,as_capacity);
                 for(const anode *an=working.head;an;an=an->next)
                 {
                     const species &s = **an;        assert(s.rank>0);
@@ -384,23 +384,24 @@ namespace yack
                     // record species and indices
                     //
                     //----------------------------------------------------------
-                    sdb.free();
-                    const size_t   cols = (*adb).size;
-                    vector<size_t> jcol(cols,as_capacity);
+                    const size_t      cols = (*adb).size;
+                    vector<size_t>    jcol(cols,as_capacity);
+                    vector<species *> spdb(cols,as_capacity);
                     for(addrbook::const_iterator it=adb.begin();it!=adb.end();++it)
                     {
-                        const void    *addr = *it; assert(NULL!=addr);
-                        const species &s    = *static_cast<const species *>(addr);
-                        sdb  << & coerce(s);
+                        const void    *p  = *it; assert(NULL!=p);
+                        const species &s  = *static_cast<const species *>(p);
+                        spdb << & coerce(s);
                         jcol << *s;
                     }
+                    assert(spdb.size()==jcol.size());
 
                     if(verbose) {
                         *xml << "\t|rows| = " << rows << std::endl;
                         *xml << "\t|cols| = " << cols << ':';
                         for(size_t j=1;j<=cols;++j)
                         {
-                            std::cerr << ' ' << sdb[j]->name;
+                            std::cerr << ' ' << spdb[j]->name;
                         }
                         std::cerr << std::endl;
                     }
