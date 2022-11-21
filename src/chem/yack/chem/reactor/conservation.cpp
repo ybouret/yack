@@ -101,7 +101,8 @@ namespace yack
 
         void reactor:: conservation(const xmlog &xml)
         {
-            YACK_XMLSUB(xml, "Conservation");
+            static const char fn[] = "conservation";
+            YACK_XMLSUB(xml,fn);
 
 
             //------------------------------------------------------------------
@@ -119,7 +120,7 @@ namespace yack
             //------------------------------------------------------------------
             //
             //
-            // Creating restricted NuA by filtering equilibria
+            // Creating restricted NuA by filtering equilibria and species
             //
             //
             //------------------------------------------------------------------
@@ -127,31 +128,36 @@ namespace yack
 
                 //--------------------------------------------------------------
                 //
-                // Looping over species
+                // Looping over active pecies
                 //
                 //--------------------------------------------------------------
                 for(const anode *an=working.head;an;an=an->next)
                 {
-                    const species &s = **an;
+                    const species &s = **an;        if(s.rank<=0) throw exception("%s: bad rank for '%s'",fn,s.name());
                     const size_t   j = *s;
                     const islot   &l = held_by[j];
 
                     if(verbose) corelib.pad(*xml<< s.name,s) << " : " << l << std::endl;
                     assert(s.rank==l.size);
 
-                    bool    keep = true;
-                    size_t  n    = 0;
-                    size_t  p    = 0;
 
-                    for(const enode *en=singles.head();en;en=en->next)
+
+                    //----------------------------------------------------------
+                    // looping over equilibria using this species
+                    //----------------------------------------------------------
+                    bool    keep = true;
+                    size_t  n    = 0;    // number of negative coeff(s)
+                    size_t  p    = 0;    // nimber of positive coeff(s)
+                    for(const inode *en=l.head;en;en=en->next)
                     {
-                        const equilibrium &eq = ***en;
+                        const equilibrium &eq = **en;
                         const size_t       i  = *eq;
                         const feature      f  = eq.kind();
 
                         switch( __sign::of(Nu[i][j]) )
                         {
                             case __zero__:
+                                throw exception("%s: unused '%s' in <%s>", fn, s.name(), eq.name() );
                                 continue;
 
                             case positive:
