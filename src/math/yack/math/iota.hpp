@@ -263,7 +263,7 @@ namespace yack {
                 assert(lhs.size()>=M.rows);
                 assert(rhs.size()>=M.cols);
                 for(size_t i=M.rows;i>0;--i)
-                    lhs[i] = dot<T>::of(M[i],rhs);
+                    lhs[i] = -dot<T>::of(M[i],rhs);
             }
             
             //------------------------------------------------------------------

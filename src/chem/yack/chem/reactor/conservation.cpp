@@ -7,6 +7,7 @@
 #include "yack/math/iota.hpp"
 #include "yack/ptr/auto.hpp"
 #include "yack/type/boolean.h"
+#include "yack/type/utils.hpp"
 
 #include "yack/apex.hpp"
 #include "yack/math/algebra/crout.hpp"
@@ -72,6 +73,61 @@ namespace yack
         }
 
 
+        static inline apq ObjFcn(const apq           &f,
+                                 writable<apq>       &trial,
+                                 writable<apq>       &coeff,
+                                 const readable<apq> &alpha,
+                                 const readable<apq> &delta,
+                                 const matrix<apq>   &P)
+        {
+            const size_t n = trial.size();
+            for(size_t i=n;i>0;--i)
+            {
+                trial[i] = (f*alpha[i]+delta[i]); assert(trial[i]>=0);
+            }
+
+            iota::mul(coeff,P,trial);
+
+            return iota::mod2<apq>::of(coeff)/(f*f);
+
+        }
+
+        static inline bool LookUpForward(writable<apq>       &alpha,
+                                         const matrix<apq>   &P,
+                                         const readable<apq> &delta)
+        {
+            const apq _1(1);
+            const apq _0(0);
+
+            const size_t n = alpha.size();
+
+            // initial
+            apq f = negativeMin(delta);
+            if(f<0) f = _1 - f;
+            std::cerr << "f=" << f << std::endl;
+
+            vector<apq> trial(n,_0);
+            vector<apq> coeff(n,_0);
+            apq         Hold = ObjFcn(f,trial,coeff,alpha,delta,P);
+            std::cerr << "H(" << trial << ")=" << Hold.to<double>() << std::endl;
+
+            unsigned count = 0;
+            while(Hold>0)
+            {
+                const apq Hnew = ObjFcn(++f,trial,coeff,alpha,delta,P);
+                std::cerr << "H(" << trial << ")=" << Hnew.to<double>() << std::endl;
+                ++count;
+                if(count>=10 && Hnew>Hold)
+                {
+                    return false;
+                }
+                Hold = Hnew;
+            }
+
+            assert(Hold<=0);
+            iota::load(alpha,trial);
+            return true;
+        }
 
         
 
@@ -115,18 +171,14 @@ namespace yack
             {
                 assert(size>0);
                 const readable<int> &lhs = NuA[*eq];
-                //std::cerr << "testing " << eq.name << " @" << lhs << std::endl;
                 for(const ep_node *en=head;en;en=en->next)
                 {
                     const equilibrium   &me  = **en;
                     const readable<int> &rhs = NuA[*me];
-                    //std::cerr << "against " << me.name << " @" << rhs;
                     if(linkedRows(lhs,rhs))
                     {
-                        //std::cerr << " [+]" << std::endl;
                         return true;
                     }
-                    //else std::cerr << " [-]" << std::endl;
 
                 }
                 return false;
@@ -476,9 +528,9 @@ namespace yack
                     // computing possible co-dimensions
                     //
                     //----------------------------------------------------------
-                    const size_t kmin = cols+1-cons;
+                    const size_t kmin = cols+1-cons; assert(kmin>=2);
                     const size_t kmax = cols;
-                    std::cerr << "k = " << kmin << " -> " << kmax << std::endl;
+                    YACK_XMLOG(xml,"\t|dims| = " << kmin << " -> " << kmax);
 
                     //----------------------------------------------------------
                     //
@@ -490,42 +542,52 @@ namespace yack
                     matrix<apq> G(cols,cols);
                     iota::mmul(G,Pt,P);
                     vector<apq> delta(cols,_0);
-                    vector<apq> coeff(cols,_0);
 
                     for(size_t k=kmin;k<=kmax;++k)
                     {
                         combination comb(kmax,k);
                         do {
-                            // create alpha
+                            // create alpha and delta
                             alpha.ld(_0);
+                            delta.ld(_0);
                             for(size_t i=k;i>0;--i)
                             {
-                                alpha[ comb[i] ] = _1;
+                                const size_t j = comb[i];
+                                alpha[j] = _1;
                             }
 
-                            // compute delta
-                            iota::mulneg(delta,G,alpha);
-
-                            // check valid/compatible alpha and delta
-                            switch(lookUpFor(alpha,delta))
+                            apq d2 = _0;
+                            for(size_t i=k;i>0;--i)
                             {
-                                case lookUpFailure:
-                                    YACK_XMLOG(xml, "-- failure for alpha=" << alpha << " | delta=" << delta);
-                                    continue;;
-
-                                case lookUpSuccess:
-                                    YACK_XMLOG(xml, "-- success for alpha=" << alpha << " | delta=" << delta);
-                                    goto MAKE_ALPHA;
-
-                                case lookUpForward:
-                                    break;
+                                const size_t j = comb[i];
+                                d2 += squared( delta[j] =  - iota::dot<apq>::of(G[j],alpha) );
 
                             }
+
+
+                            if(d2<=0)
+                            {
+                                YACK_XMLOG(xml, "-- success for alpha=" << alpha << " | delta=" << delta);
+                                goto MAKE_ALPHA;
+                            }
+
+
 
                             // trying to find..
-                            YACK_XMLOG(xml, "-- foward for alpha=" << alpha << " | delta=" << delta);
+                            YACK_XMLOG(xml, "-- forward for alpha=" << alpha << " | delta=" << delta);
+                            if(!LookUpForward(alpha,P,delta))
+                                continue;
 
-                            continue;
+                            {
+                                apn g = apn::gcd( alpha[comb[1]].num.n, alpha[ comb[2] ].num.n );
+                                for(size_t i=3;i<=k;++i)
+                                {
+                                    g = apn::gcd(g,alpha[comb[i]].num.n);
+                                }
+                                iota::div_by(g,alpha);
+                            }
+
+
 
                         MAKE_ALPHA:
                             YACK_XMLOG(xml,"--> conserve  @alpha=" << alpha);
