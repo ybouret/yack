@@ -73,6 +73,13 @@ namespace yack {
                 for(size_t i=target.size();i>0;--i) target[i] = -static_cast< typename TARGET::type >( source[i] );
             }
 
+            template < typename SOURCE> static inline
+            void neg(SOURCE &source)
+            {
+                for(size_t i=source.size();i>0;--i) source[i] = -source[i];
+            }
+
+
             //------------------------------------------------------------------
             //! target = (1/value)*target
             //------------------------------------------------------------------

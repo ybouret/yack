@@ -12,6 +12,7 @@
 #include "yack/apex/kernel.hpp"
 #include "yack/math/algebra/crout.hpp"
 #include "yack/counting/comb.hpp"
+#include "yack/counting/perm.hpp"
 #include <iomanip>
 
 namespace yack
@@ -122,21 +123,8 @@ namespace yack
         };
 
 
-#if 0
-        static inline
-        void simplifyAlpha(writable<apq> &alpha, const readable<size_t> &comb)
-        {
 
-            const size_t k = comb.size();
-            apn          g = apn::gcd( alpha[comb[1]].num.n, alpha[ comb[2] ].num.n );
-            for(size_t i=3;i<=k;++i)
-            {
-                g = apn::gcd(g,alpha[comb[i]].num.n);
-            }
-            iota::div_by(g,alpha);
-        }
-#endif
-
+        // simplify by GCD of positive numerators
         static inline
         void simplifyRow(writable<apq> &r)
         {
@@ -166,10 +154,10 @@ namespace yack
             {
                 g = apn::gcd(g,value[i]);
             }
-            //std::cerr << "g=" << g << std::endl;
             iota::div_by(g,r);
         }
 
+        // simplify all rows
         static inline
         void simplifyRows(matrix<apq> &r)
         {
@@ -214,13 +202,13 @@ namespace yack
                     Q[k][i] = 0;
                 }
             }
-            DONE:
+        DONE:
             for(size_t i=1;i<=n;++i)
             {
                 const apn l = apk::lcm(Q[i]);
-                //std::cerr << "l[" << i << "]=" << l << std::endl;
                 iota::mul_by(l,Q[i]);
                 simplifyRow(Q[i]);
+                if(Q[i][i]<0) iota::neg(Q[i]);
             }
         }
 
@@ -463,7 +451,7 @@ namespace yack
 
                     //----------------------------------------------------------
                     //
-                    // record species and indices
+                    // record each species and its indices
                     //
                     //----------------------------------------------------------
                     const size_t      cols = (*adb).size;
@@ -471,12 +459,12 @@ namespace yack
                     vector<species *> spdb(cols,as_capacity);
                     for(addrbook::const_iterator it=adb.begin();it!=adb.end();++it)
                     {
-                        const void    *p  = *it; assert(NULL!=p);
-                        const species &s  = *static_cast<const species *>(p);
+                        const species &s  = *static_cast<const species *>(*it);
                         spdb << & coerce(s);
-                        jcol << *s;
+                        jcol << * s;
+                        assert(spdb.size()==jcol.size());
                     }
-                    assert(spdb.size()==jcol.size());
+
 
                     if(verbose) {
                         *xml << "\t|rows| = " << rows << std::endl;
@@ -499,8 +487,8 @@ namespace yack
                         YACK_XMLOG(xml, "\tno constraint");
                         continue;
                     }
-                    const size_t cons = cols-rows;
-                    YACK_XMLOG(xml, "\t|cons| = " << cons);
+                    const size_t rank = cols-rows;
+                    YACK_XMLOG(xml, "\t rank  = " << rank);
 
                     //----------------------------------------------------------
                     //
@@ -528,7 +516,7 @@ namespace yack
                     // computing possible co-dimensions
                     //
                     //----------------------------------------------------------
-                    const size_t kmin = cols+1-cons; assert(kmin>=2);
+                    const size_t kmin = cols+1-rank; assert(kmin>=2);
                     const size_t kmax = cols;
                     YACK_XMLOG(xml,"\t|dims| = " << kmin << " -> " << kmax);
 
@@ -545,7 +533,7 @@ namespace yack
                         matrix<apq> iP2(P2);
                         crout<apq>  lu(rows);
 
-                        std::cerr << "P = " << P << std::endl;
+                        std::cerr << "\tP = " << P << std::endl;
                         if(!lu.build(iP2)) throw exception("singular topology!!");
                         const apq  detP2 = lu.determinant(iP2); assert(0!=detP2);
                         matrix<apq> adjP2(rows,rows);
@@ -571,11 +559,12 @@ namespace yack
                             }
                         }
                     }
-                    std::cerr << "Q = " << Q << std::endl;
+                    std::cerr << "\tQ = " << Q << std::endl;
                     simplifyRows(Q);
-                    std::cerr << "Q = " << Q << std::endl;
+                    std::cerr << "\tQ = " << Q << std::endl;
+
                     transformQ(Q);
-                    std::cerr << "Q = " << Q << std::endl;
+                    std::cerr << "\tQ = " << Q << std::endl;
                 }
 
 
