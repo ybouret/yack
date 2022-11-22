@@ -165,9 +165,11 @@ namespace yack
                 simplifyRow(r[i]);
         }
 
-        void transformQ(matrix<apq> &Q)
+        size_t transformQ(matrix<apq> &Q)
         {
-            const size_t n = Q.rows;
+            const apq    _0   = 0;
+            const size_t n    = Q.rows;
+            size_t       rank = 0;
             for(size_t i=1;i<=n;++i)
             {
                 apq    qpiv = Q[i][i];
@@ -187,8 +189,13 @@ namespace yack
                 //std::cerr << "ipiv=" << ipiv << ", piv=" << qpiv << std::endl;
                 if(apiv<=0)
                 {
+                    for(size_t j=i+1;j<=n;++j)
+                    {
+                        Q[j].ld(_0);
+                    }
                     goto DONE;
                 }
+                ++rank;
                 if(i!=ipiv)
                 {
                     Q.swap_rows(i,ipiv);
@@ -202,15 +209,79 @@ namespace yack
                     Q[k][i] = 0;
                 }
             }
+
         DONE:
-            for(size_t i=1;i<=n;++i)
+            for(size_t i=1;i<=rank;++i)
             {
                 const apn l = apk::lcm(Q[i]);
                 iota::mul_by(l,Q[i]);
                 simplifyRow(Q[i]);
-                if(Q[i][i]<0) iota::neg(Q[i]);
+
+                apq    amax = abs_of(Q[i][1]);
+                size_t jmax = 1;
+                for(size_t j=2;j<=n;++j)
+                {
+                    const apq atmp = abs_of(Q[i][j]);
+                    if(atmp>amax)
+                    {
+                        amax = atmp;
+                        jmax = j;
+                    }
+                }
+                assert(amax>0);
+                //std::cerr << "|" << Q[i][jmax] << "| = " << amax << std::endl;
+                if(Q[i][jmax]<0) iota::neg(Q[i]);
+                std::cerr << "Q" << i << " = " << Q[i] << std::endl;
             }
+            return rank;
         }
+
+        static inline
+        size_t orthoQ( matrix<apq> &Q )
+        {
+            const size_t n    = Q.rows;
+            size_t       rank = 0;
+            const apq   _0    = 0;
+            vector<apq>  u_k(n,_0);
+            vector<apq>  tmp(n,_0);
+            std::cerr << "u1 = " << Q[1] << std::endl;
+            for(size_t k=2;k<=n;++k)
+            {
+                const readable<apq> &v_k = Q[k];
+                iota::load(u_k,v_k);
+                for(size_t j=1;j<k;++j)
+                {
+                    const readable<apq> &u_j = Q[j];
+                    const apq            den = iota::dot<apq>::of(u_j,u_j);
+                    const apq            num = iota::dot<apq>::of(v_k,u_j);
+                    const apq            fac = num/den;
+                    iota::load(tmp,u_j);
+                    for(size_t i=n;i>0;--i)
+                    {
+                        u_k[i] -= fac * tmp[i];
+                    }
+                }
+                //std::cerr << "u" << k <<  " = "  << u_k << std::endl;
+                iota::load(Q[k],u_k);
+                const apn l = apk::lcm(Q[k]);
+                iota::mul_by(l,Q[k]);
+                simplifyRow(Q[k]);
+                std::cerr << "u" << k <<  " = "  << Q[k] << std::endl;
+
+                if( iota::dot<apq>::of(Q[k],Q[k]) <= 0)
+                {
+                    for(size_t j=k+1;j<=n;++j)
+                    {
+                        Q[j].ld(_0);
+                    }
+                    break;
+                }
+
+                ++rank;
+            }
+            return rank;
+        }
+
 
 
         void reactor:: conservation(const xmlog &xml)
@@ -488,7 +559,7 @@ namespace yack
                         continue;
                     }
                     const size_t rank = cols-rows;
-                    YACK_XMLOG(xml, "\t rank  = " << rank);
+                    YACK_XMLOG(xml, "\t|rank| = " << rank);
 
                     //----------------------------------------------------------
                     //
@@ -559,9 +630,13 @@ namespace yack
                             }
                         }
                     }
-                    std::cerr << "\tQ = " << Q << std::endl;
+                    //std::cerr << "\tQ = " << Q << std::endl;
                     simplifyRows(Q);
                     std::cerr << "\tQ = " << Q << std::endl;
+
+                    //orthoQ(Q);
+                    //std::cerr << "\tQ = " << Q << std::endl;
+                    //exit(0);
 
                     transformQ(Q);
                     std::cerr << "\tQ = " << Q << std::endl;
