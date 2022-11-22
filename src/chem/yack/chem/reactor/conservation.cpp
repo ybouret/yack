@@ -303,13 +303,13 @@ namespace yack
 
         typedef vector<apq>      qvec;
         typedef shared_ptr<qvec> qvec_ptr;
-
+        typedef vector<qvec_ptr> qstore;
 
         static inline
         void buildConstraintsFrom(const matrix<apq> &Q, const size_t rank)
         {
-            list<qvec_ptr>   p; // pos
-            list<qvec_ptr>   n; // neg
+            qstore  p; // pos
+            qstore  n; // neg
 
             //initialize
             for(size_t i=1;i<=rank;++i)
@@ -326,6 +326,20 @@ namespace yack
                     n.push_back(q);
                 }
             }
+
+            // sparse comnination
+            for(size_t i=1;i<rank;++i)
+            {
+                const readable<apq> &lhs = Q[i];
+                for(size_t j=i+1;j<=rank;++j)
+                {
+                    const readable<apq> &rhs = Q[j];
+                    std::cerr << "testing " << lhs << "/" << rhs << std::endl;
+                }
+            }
+
+
+
 
 
 
