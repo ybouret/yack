@@ -13,6 +13,9 @@
 #include "yack/math/algebra/crout.hpp"
 #include "yack/counting/comb.hpp"
 #include "yack/counting/perm.hpp"
+#include "yack/sequence/list.hpp"
+#include "yack/ptr/shared.hpp"
+
 #include <iomanip>
 
 namespace yack
@@ -157,6 +160,7 @@ namespace yack
             iota::div_by(g,r);
         }
 
+#if 1
         // simplify all rows
         static inline
         void simplifyRows(matrix<apq> &r)
@@ -164,6 +168,7 @@ namespace yack
             for(size_t i=r.rows;i>0;--i)
                 simplifyRow(r[i]);
         }
+#endif
 
         size_t transformQ(matrix<apq> &Q)
         {
@@ -213,15 +218,16 @@ namespace yack
         DONE:
             for(size_t i=1;i<=rank;++i)
             {
-                const apn l = apk::lcm(Q[i]);
-                iota::mul_by(l,Q[i]);
-                simplifyRow(Q[i]);
+                writable<apq> &Qi = Q[i];
+                const apn      l  = apk::lcm(Qi);
+                iota::mul_by(l,Qi);
+                simplifyRow(Qi);
 
-                apq    amax = abs_of(Q[i][1]);
+                apq    amax = abs_of(Qi[1]);
                 size_t jmax = 1;
                 for(size_t j=2;j<=n;++j)
                 {
-                    const apq atmp = abs_of(Q[i][j]);
+                    const apq atmp = abs_of(Qi[j]);
                     if(atmp>amax)
                     {
                         amax = atmp;
@@ -229,13 +235,14 @@ namespace yack
                     }
                 }
                 assert(amax>0);
-                //std::cerr << "|" << Q[i][jmax] << "| = " << amax << std::endl;
-                if(Q[i][jmax]<0) iota::neg(Q[i]);
-                std::cerr << "Q" << i << " = " << Q[i] << std::endl;
+                if(Qi[jmax]<0) iota::neg(Qi);
+                std::cerr << "Q" << i << " = " << Qi << std::endl;
             }
             return rank;
         }
 
+
+#if 0
         static inline
         size_t orthoQ( matrix<apq> &Q )
         {
@@ -261,7 +268,6 @@ namespace yack
                         u_k[i] -= fac * tmp[i];
                     }
                 }
-                //std::cerr << "u" << k <<  " = "  << u_k << std::endl;
                 iota::load(Q[k],u_k);
                 const apn l = apk::lcm(Q[k]);
                 iota::mul_by(l,Q[k]);
@@ -281,7 +287,49 @@ namespace yack
             }
             return rank;
         }
+#endif
 
+
+        bool allPos(const readable<apq> &q)
+        {
+            for(size_t j=q.size();j>0;--j)
+            {
+                if(q[j]<0) {
+                    return false;
+                }
+            }
+            return true;
+        }
+
+        typedef vector<apq>      qvec;
+        typedef shared_ptr<qvec> qvec_ptr;
+
+
+        static inline
+        void buildConstraintsFrom(const matrix<apq> &Q, const size_t rank)
+        {
+            list<qvec_ptr>   p; // pos
+            list<qvec_ptr>   n; // neg
+
+            //initialize
+            for(size_t i=1;i<=rank;++i)
+            {
+                const qvec_ptr q = new qvec(Q[i],transmogrify);
+                if(allPos(*q))
+                {
+                    std::cerr << " (+) " << q << std::endl;
+                    p.push_back(q);
+                }
+                else
+                {
+                    std::cerr << " (-) " << q << std::endl;
+                    n.push_back(q);
+                }
+            }
+
+
+
+        }
 
 
         void reactor:: conservation(const xmlog &xml)
@@ -630,16 +678,18 @@ namespace yack
                             }
                         }
                     }
-                    //std::cerr << "\tQ = " << Q << std::endl;
                     simplifyRows(Q);
                     std::cerr << "\tQ = " << Q << std::endl;
 
-                    //orthoQ(Q);
-                    //std::cerr << "\tQ = " << Q << std::endl;
-                    //exit(0);
-
-                    transformQ(Q);
+                    if(rank != transformQ(Q) )
+                    {
+                        throw exception("%s: unable to decompose orthogonal space",fn);
+                    }
                     std::cerr << "\tQ = " << Q << std::endl;
+
+                    buildConstraintsFrom(Q,rank);
+
+
                 }
 
 

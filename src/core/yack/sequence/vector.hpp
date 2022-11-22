@@ -10,6 +10,8 @@
 #include "yack/container/dynamic.hpp"
 
 #include "yack/type/destruct.hpp"
+#include "yack/type/transmogrify.hpp"
+
 #include "yack/type/out-of-reach.hpp"
 #include "yack/memory/allocator/pooled.hpp"
 
@@ -119,6 +121,23 @@ namespace yack
             }
             return *this;
         }
+
+        //! copy readable using constructors
+        template <typename U>
+        inline vector(const readable<U> &other, const transmogrify_t &) :
+        YACK_VECTOR_CTOR(),
+        count(0), utter(other.size() ), owned(0), base(zacquire(utter,owned)), item(base-1)
+        {
+            try {
+                const size_t n = other.size();
+                while(count<n) {
+                    new (base+count) mutable_type(other[count+1]);
+                    ++count;
+                }
+            }
+            catch(...) { release_(); throw; }
+        }
+
 
 
         //______________________________________________________________________

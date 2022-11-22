@@ -22,7 +22,7 @@ namespace yack
 
         //! find least common multiple of an array of rationals
         template <typename ARRAY, typename INDEX> static inline
-        apn lcm(const ARRAY &arr, const INDEX lo, const INDEX hi)
+        apn lcm(ARRAY &arr, const INDEX lo, const INDEX hi)
         {
             assert(lo<=hi);
             if(lo>=hi)
@@ -42,7 +42,7 @@ namespace yack
 
         //! find lcm for a sequence of rationals
         template <typename SEQUENCE> static inline
-        apn lcm(const SEQUENCE &seq)
+        apn lcm(SEQUENCE &seq)
         {
             return lcm<SEQUENCE,size_t>(seq,1,seq.size());
         }
