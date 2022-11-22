@@ -28,17 +28,6 @@ namespace yack
 
 
 
-        static inline apq negativeMin(const readable<apq> &arr)
-        {
-            apq res = 0;
-            for(size_t i=arr.size();i>0;--i)
-            {
-                const apq &tmp = arr[i];
-                if(tmp<0&&tmp<res) res=tmp;
-            }
-            return res;
-        }
-
         static inline size_t coeffCount(const readable<int> &nu) throw()
         {
             size_t res = 0;
@@ -50,31 +39,8 @@ namespace yack
         }
 
 
-
-        static inline apq ObjFcn(const apq           &f,
-                                 writable<apq>       &trial,
-                                 writable<apq>       &coeff,
-                                 const readable<apq> &alpha,
-                                 const readable<apq> &delta,
-                                 const matrix<apq>   &P)
-        {
-            const size_t n = trial.size();
-            for(size_t i=n;i>0;--i)
-            {
-                trial[i] = (f*alpha[i]+delta[i]); assert(trial[i]>=0);
-            }
-            //std::cerr << f << "*" << alpha << " + " << delta << std::endl;
-            iota::mul(coeff,P,trial);
-
-            return iota::mod2<apq>::of(coeff)/(f*f);
-
-        }
-
-
-        
-
         typedef meta_list<const equilibrium> ep_list_;
-        typedef ep_list_::node_type           ep_node;
+        typedef ep_list_::node_type          ep_node;
 
         class ep_list : public ep_list_
         {
@@ -285,12 +251,13 @@ namespace yack
                 vector<species *> sdb(working.size,as_capacity);
                 for(const anode *an=working.head;an;an=an->next)
                 {
-                    const species &s = **an;        assert(s.rank>0);
-                    const size_t   j = *s;
-                    const islot   &l = held_by[j];
+                    const species &s = **an;          // get species
+                    const size_t   j = *s;            // get index
+                    const islot   &l = held_by[j];    // get holding equilibria
 
                     if(verbose) corelib.pad(*xml<< s.name,s) << " : " << l << std::endl;
                     assert(s.rank==l.size);
+                    assert(s.rank>0);
 
                     size_t  n    = 0;    // number of negative coeff(s)
                     size_t  p    = 0;    // number of positive coeff(s)
@@ -367,35 +334,32 @@ namespace yack
 
             //------------------------------------------------------------------
             //
-            // finally collect remaining equilibria
+            //   collect remaining equilibria within POSSIBLE ones
             //
             //------------------------------------------------------------------
             {
                 YACK_XMLSUB(xml, "collectingEquilibria");
                 assert( (*adb).size > 0 );
 
-                // retrieve equilibria
                 for(addrbook::const_iterator it=adb.begin();it!=adb.end();++it)
                 {
-                    const void        *addr = *it; assert(NULL!=addr);
-                    const equilibrium &eq   = *static_cast<const equilibrium *>(addr);
+                    const equilibrium &eq   = *static_cast<const equilibrium *>(*it);
                     if(coeffCount(NuA[*eq]))
                     {
+                        // remaining species
                         YACK_XMLOG(xml, "-- [+] <" << eq.name << ">");
                         edb << & coerce(eq);
                     }
                     else
                     {
+                        // was emptied of its species
                         YACK_XMLOG(xml, "-- [-] <" << eq.name << ">");
                     }
                 }
             }
 
 
-
-
             singles.graphviz("singles.dot",corelib);
-            //lattice.graphviz("lattice.dot",worklib);
 
             //------------------------------------------------------------------
             //
@@ -446,14 +410,7 @@ namespace yack
                 }
 
                 YACK_XMLOG(xml, "--> |group| = " << groups.size);
-                if(verbose)
-                {
-                    for(const ep_group *g=groups.head;g;g=g->next)
-                    {
-                        *xml << "-- " << *g << std::endl;
-                    }
-                }
-
+                if(verbose) for(const ep_group *g=groups.head;g;g=g->next) *xml << "-- " << *g << std::endl;
             }
 
 
