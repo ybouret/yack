@@ -9,7 +9,7 @@
 #include "yack/type/boolean.h"
 #include "yack/type/utils.hpp"
 
-#include "yack/apex.hpp"
+#include "yack/apex/kernel.hpp"
 #include "yack/math/algebra/crout.hpp"
 #include "yack/counting/comb.hpp"
 #include <iomanip>
@@ -156,7 +156,7 @@ namespace yack
         };
 
 
-
+#if 0
         static inline
         void simplifyAlpha(writable<apq> &alpha, const readable<size_t> &comb)
         {
@@ -168,6 +168,47 @@ namespace yack
                 g = apn::gcd(g,alpha[comb[i]].num.n);
             }
             iota::div_by(g,alpha);
+        }
+#endif
+
+        static inline
+        void simplifyRow(writable<apq> &r)
+        {
+            const size_t n = r.size(); assert(n>0);
+            vector<apn> value(n,as_capacity);
+            for(size_t i=n;i>0;--i)
+            {
+                const apn &u = r[i].num.n; assert(1==r[i].den);
+                if(u>0) value.push_back(u);
+            }
+
+            switch(value.size())
+            {
+                case 0:
+                    return;
+
+                case 1:
+                    iota::div_by(value.front(),r);
+                    return;
+
+                default:
+                    break;
+            }
+
+            apn g = apn::gcd(value[1], value[2]);
+            for(size_t i=value.size();i>2;--i)
+            {
+                g = apn::gcd(g,value[i]);
+            }
+            //std::cerr << "g=" << g << std::endl;
+            iota::div_by(g,r);
+        }
+
+        static inline
+        void simplifyRows(matrix<apq> &r)
+        {
+            for(size_t i=r.rows;i>0;--i)
+                simplifyRow(r[i]);
         }
 
         void transformQ(matrix<apq> &Q)
@@ -189,7 +230,31 @@ namespace yack
                         apiv=atmp;
                     }
                 }
-                std::cerr << "ipiv=" << ipiv << std::endl;
+                //std::cerr << "ipiv=" << ipiv << ", piv=" << qpiv << std::endl;
+                if(apiv<=0)
+                {
+                    goto DONE;
+                }
+                if(i!=ipiv)
+                {
+                    Q.swap_rows(i,ipiv);
+                }
+
+
+                for(size_t k=i+1;k<=n;++k)
+                {
+                    const apq f = Q[k][i] / qpiv;
+                    for(size_t j=n;j>i;--j) Q[k][j] -= f * Q[i][j];
+                    Q[k][i] = 0;
+                }
+            }
+            DONE:
+            for(size_t i=1;i<=n;++i)
+            {
+                const apn l = apk::lcm(Q[i]);
+                //std::cerr << "l[" << i << "]=" << l << std::endl;
+                iota::mul_by(l,Q[i]);
+                simplifyRow(Q[i]);
             }
         }
 
@@ -550,7 +615,10 @@ namespace yack
                         }
                     }
                     std::cerr << "Q = " << Q << std::endl;
+                    simplifyRows(Q);
+                    std::cerr << "Q = " << Q << std::endl;
                     transformQ(Q);
+                    std::cerr << "Q = " << Q << std::endl;
                 }
 
 

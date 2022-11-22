@@ -74,7 +74,7 @@ namespace yack {
             }
 
             //------------------------------------------------------------------
-            //! target[1..target.size()] = lhs - rhs
+            //! target = (1/value)*target
             //------------------------------------------------------------------
             template <typename T, typename TARGET> static inline
             void div_by(T value, TARGET &target)
@@ -83,7 +83,20 @@ namespace yack {
             }
 
 
+            //------------------------------------------------------------------
+            //! target = value*target
+            //------------------------------------------------------------------
+            template <typename T, typename TARGET> static inline
+            void mul_by(T value, TARGET &target)
+            {
+                for(size_t i=target.size();i>0;--i) target[i] *= value;
+            }
+
+
+
+            //------------------------------------------------------------------
             //! a[1..a.size()] = b[1:a.size()] + x*c[1:a.size()]
+            //------------------------------------------------------------------
             template <typename A, typename B, typename X, typename C> static inline
             void muladd(A &a, B &b, X &x, C &c)
             {
@@ -95,7 +108,9 @@ namespace yack {
                 }
             }
 
+            //------------------------------------------------------------------
             //! a[1..a.size()] = b[1:a.size()] - x*c[1:a.size()]
+            //------------------------------------------------------------------
             template <typename A, typename B, typename X, typename C> static inline
             void mulsub(A &a, B &b, X &x, C &c)
             {
