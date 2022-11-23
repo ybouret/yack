@@ -155,7 +155,14 @@ YACK_UTEST(apk)
         std::cerr << "z=" << z;
         apk::simplify(z);
         std::cerr << " -> " << z << std::endl;
+    }
 
+
+    for(size_t iter=0;iter<10;++iter)
+    {
+        matrix<int> M(1+ran.leq(5),1+ran.leq(5));
+        bring::fill(M,ran);
+        std::cerr << "rank(" << M << ")=" << apk::gj_rank_of(M) << std::endl;
     }
 
 }

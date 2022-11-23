@@ -70,6 +70,16 @@ namespace yack
             setup_from_transposed<U>(M);
         }
 
+
+        //! copy relying on copy constructor for type
+        template <typename U>
+        inline matrix(const matrix<U> &M, const transmogrify_t &) :
+        YACK_MATRIX_CTOR(M.rows,M.cols)
+        {
+            setup_from<U>(M);
+        }
+
+
         //! assign by copy/swap
         inline matrix & operator=( const matrix &other )
         {
@@ -359,14 +369,15 @@ namespace yack
         //
         //! setup items by direct copy
         //______________________________________________________________________
-        inline void setup_from(const matrix &M)
+        template<typename U>
+        inline void setup_from(const matrix<U> &M)
         {
             assert(have_same_sizes(*this,M));
 
             size_t built = 0;
             YACK_MATRIX_SETUP_ENTER() {
-                const_type   *source = M.head;
-                mutable_type *target =   head;
+                typename matrix<U>::const_type *source = M.head;
+                mutable_type                   *target =   head;
                 while(built<items) {
                     new (target++) mutable_type(*(source++));
                     ++built;

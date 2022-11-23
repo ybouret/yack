@@ -136,5 +136,76 @@ namespace yack
         }
 
     }
+}
+
+#include "yack/math/api.hpp"
+#include "yack/type/utils.hpp"
+
+namespace yack
+{
+    using namespace math;
+
+
+    size_t apk:: gj_rank(matrix<apq> &Q)
+    {
+        const size_t m    = Q.rows;
+        const size_t n    = Q.cols;
+        size_t       h    = 1;     // pivot row
+        size_t       k    = 1;     // pivot column
+        size_t       rank = 0;
+        const apq    _0   = 0;
+
+        // Running on rows and columns
+        while(h<=m && k<=n)
+        {
+            // initialize @row #h the search for pivot @column #k
+            size_t i_max = h;
+            apq    q_piv = Q[h][k];
+            apq    a_max = abs_of(q_piv);
+
+            // look for pivot in column k
+            for(size_t i=h+1;i<=m;++i)
+            {
+                const apq &q_tmp = Q[i][k];
+                const apq  a_tmp = abs_of(q_tmp);
+                if(a_tmp>a_max) {
+                    q_piv = q_tmp;
+                    a_max = a_tmp;
+                    i_max = i;
+                }
+            }
+
+            if(a_max<=0)
+            {
+                // no pivot in this column, pass to next column
+                ++k;
+            }
+            else
+            {
+                assert(a_max>0);
+                assert(q_piv!=0);
+
+                ++rank;
+                Q.swap_rows(h,i_max);
+                assert(q_piv==Q[h][k]);
+                for(size_t i=h+1;i<=m;++i)
+                {
+                    assert(Q[h][k]!=0);
+                    const apq f = Q[i][k]/Q[h][k];
+                    Q[i][k]     = _0;
+                    for(size_t j = k + 1; j<=n; ++j)
+                    {
+                        Q[i][j] -= Q[h][j] * f;
+                    }
+                }
+                ++h; // pass to next line
+                ++k; // pass to next column
+            }
+        }
+
+        return rank;
+    }
+
+
 
 }

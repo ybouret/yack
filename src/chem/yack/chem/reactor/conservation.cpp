@@ -354,6 +354,7 @@ namespace yack
                 const apz a  =  r;
                 const apz b  = -l;
                 unsigned  flags = 0x00;
+                size_t    count = 0;
                 for(size_t i=dims;i>0;--i)
                 {
                     switch( (vtry[i] = a * lhs[i] + b*rhs[i]).s )
@@ -362,13 +363,19 @@ namespace yack
 
                         case positive:
                             flags |= has_pos;
+                            ++count;
                             break;
 
                         case negative:
                             flags |= has_neg;
+                            ++count;
                             break;
                     }
                 }
+
+                if(count<=1) continue;
+
+
 
                 switch(flags)
                 {
@@ -399,8 +406,50 @@ namespace yack
             }
         }
 
+        class price
+        {
+        public:
+            const size_t major; //!< number of species
+            const apn    minor; //!< norm1(constraint)
+
+            inline  price(const size_t a, const apn &b) : major(a), minor(b) {}
+            inline ~price() throw() {}
+            inline  price(const price &p) : major(p.major), minor(p.minor) {}
+
+            inline friend std::ostream & operator<< (std::ostream &os, const price &p)
+            {
+                os << p.major << '.' << p.minor;
+                return os;
+            }
+
+            static inline int compare(const price &lhs, const price &rhs) throw()
+            {
+                if(lhs.major<rhs.major)
+                {
+                    return -1;
+                }
+                else
+                {
+                    if(rhs.major<lhs.major)
+                    {
+                        return 1;
+                    }
+                    else
+                    {
+                        assert(lhs.major==rhs.major);
+                        return comparison::increasing(lhs.minor,rhs.minor);
+                    }
+                }
+            }
+
+
+        private:
+            YACK_DISABLE_ASSIGN(price);
+        };
+
+
         static inline
-        void buildConstraintsFrom(const matrix<apq> &Q)
+        void buildConstraints(matrix<int> &w, const matrix<apq> &Q)
         {
             const size_t rows = Q.rows;
             const size_t dims = Q.cols;
@@ -444,14 +493,14 @@ namespace yack
                 // taking a negative
                 const readable<apz> &lhs = *neg[i];
 
-                // testing it agains all remaining negative
+                // testing it against all remaining negative
                 for(size_t j=i+1;j<=nn;++j)
                 {
                     const readable<apz> &rhs = *neg[j];
                     processWhatever(pos,lhs,rhs);
                 }
 
-                // testing it agains all/newly created positive
+                // testing it against all newly created positive
                 for(size_t j=pos.size();j>0;--j)
                 {
                     const readable<apz> &rhs = *pos[j];
@@ -459,30 +508,51 @@ namespace yack
                 }
             }
 
-            const size_t np = pos.size();
-            vector<apn>  wp(np);
+            const size_t   np = pos.size();
+            vector<price>  wp(np,as_capacity);
             for(size_t i=1;i<=np;++i)
             {
                 const readable<apz> &z = *pos[i];
-                apn sum = 0;
-                for(size_t j=dims;j>0;--j) sum += z[j].n;
-                wp[i] = sum;
+                size_t num = 0;
+                apn    sum = 0;
+                for(size_t j=dims;j>0;--j)
+                {
+                    if(z[j].n>0)
+                    {
+                        ++num;
+                        sum += z[j].n;
+                    }
+                }
+                const price p(num,sum);
+                wp << p;
+
                 //std::cerr << "Z" << i << " = " << z << " //  " << sum << std::endl;
             }
             vector<size_t> ip(np);
-            indexing::make(ip,comparison::increasing<apn>,wp);
+            indexing::make(ip,price::compare,wp);
+
+            matrix<apq> W(np,dims);
 
             for(size_t i=1;i<=np;++i)
             {
                 const size_t ii = ip[i];
                 std::cerr << "Z" << i << " = " << *pos[ii] << " //  " << wp[ii] << std::endl;
+                iota::load(W[ii],*pos[ii]);
             }
 
-
-
-
-
-
+            std::cerr << "W=" << W << std::endl;
+            const size_t rank = apk::gj_rank(W);
+            std::cerr << "rank=" << rank << std::endl;
+            
+            if(rank)
+            {
+                w.make(rank,dims);
+                for(size_t i=1;i<=rank;++i)
+                {
+                    const readable<apz> &p = *pos[ ip[i] ];
+                    std::cerr << "+ " << p << std::endl;
+                }
+            }
 
         }
 
@@ -815,23 +885,8 @@ namespace yack
                     simplifyRows(Q);
                     std::cerr << "\tQ = " << Q << std::endl;
 
-#if 0
-                    if(false)
-                    {
-                        const size_t rank = transformQ(Q);
-                        std::cerr << "rank = " << rank << std::endl;
-                        std::cerr << "\tQ = " << Q << std::endl;
-                    }
-                    else
-                    {
-                        const size_t rank = orthoQ(Q);
-                        std::cerr << "rank = " << rank << std::endl;
-                        std::cerr << "\tQ = " << Q << std::endl;
-                    }
-#endif
-
-                    buildConstraintsFrom(Q);
-
+                    matrix<int>  w;
+                    buildConstraints(w,Q);
 
                 }
 

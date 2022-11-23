@@ -175,8 +175,23 @@ namespace yack
         //______________________________________________________________________
         //
         //! simplified integers
-        //_____________________________________________________________________
+        //______________________________________________________________________
         static void simplify(writable<apz> &z);
+
+
+        //______________________________________________________________________
+        //
+        //! rank by gauss jordan
+        //_____________________________________________________________________
+        static size_t gj_rank(matrix<apq> &Q);
+
+        template <typename T> static inline
+        size_t gj_rank_of(const matrix<T> &M)
+        {
+            matrix<apq> Q(M,transmogrify);
+            assert(matrix_metrics::have_same_sizes(Q,M));
+            return gj_rank(Q);
+        }
 
 
     };
