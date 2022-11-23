@@ -337,7 +337,7 @@ namespace yack
             static const unsigned has_pos = 0x01;
             static const unsigned has_neg = 0x02;
             static const unsigned has_mix = (has_pos|has_neg);
-            std::cerr << "  testing " << lhs << "/" << rhs << std::endl;
+            //std::cerr << "  testing " << lhs << "/" << rhs << std::endl;
 
             const size_t dims = lhs.size();
             vector<apz>  vtry(dims);
@@ -457,7 +457,7 @@ namespace yack
             zstore       neg; // neg
 
             //initialize
-            std::cerr << "<initializing space>" << std::endl;
+            //std::cerr << "<initializing space>" << std::endl;
             for(size_t i=1;i<=rows;++i)
             {
                 zvec z(dims);
@@ -508,6 +508,7 @@ namespace yack
                 }
             }
 
+            std::cerr << "<computing prices>" << std::endl;
             const size_t   np = pos.size();
             vector<price>  wp(np,as_capacity);
             for(size_t i=1;i<=np;++i)
@@ -525,12 +526,12 @@ namespace yack
                 }
                 const price p(num,sum);
                 wp << p;
-
                 //std::cerr << "Z" << i << " = " << z << " //  " << sum << std::endl;
             }
+
+            std::cerr << "<indexing prices>" << std::endl;
             vector<size_t> ip(np);
             indexing::make(ip,price::compare,wp);
-
             matrix<apq> W(np,dims);
 
             for(size_t i=1;i<=np;++i)
@@ -540,7 +541,7 @@ namespace yack
                 iota::load(W[ii],*pos[ii]);
             }
 
-            std::cerr << "W=" << W << std::endl;
+            std::cerr << "<computing rank>" << std::endl;
             const size_t rank = apk::gj_rank(W);
             std::cerr << "rank=" << rank << std::endl;
             
