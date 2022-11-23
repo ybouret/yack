@@ -226,7 +226,7 @@ namespace yack
         }
 
 
-#if 0
+#if 1
         static inline
         size_t orthoQ( matrix<apq> &Q )
         {
@@ -236,6 +236,11 @@ namespace yack
             vector<apq>  u_k(n,_0);
             vector<apq>  tmp(n,_0);
             std::cerr << "u1 = " << Q[1] << std::endl;
+            if( iota::dot<apq>::of(Q[1],Q[1]) <= 0)
+            {
+                return 0;
+            }
+            ++rank;
             for(size_t k=2;k<=n;++k)
             {
                 const readable<apq> &v_k = Q[k];
@@ -603,19 +608,6 @@ namespace yack
 
                     //----------------------------------------------------------
                     //
-                    // check status
-                    //
-                    //----------------------------------------------------------
-                    if(rows>=cols)
-                    {
-                        YACK_XMLOG(xml, "\tno constraint");
-                        continue;
-                    }
-                    const size_t rank = cols-rows;
-                    YACK_XMLOG(xml, "\t|rank| = " << rank);
-
-                    //----------------------------------------------------------
-                    //
                     // create constraints SUB-matrix
                     //
                     //----------------------------------------------------------
@@ -635,14 +627,6 @@ namespace yack
                         }
                     }
 
-                    //----------------------------------------------------------
-                    //
-                    // computing possible co-dimensions
-                    //
-                    //----------------------------------------------------------
-                    const size_t kmin = cols+1-rank; assert(kmin>=2);
-                    const size_t kmax = cols;
-                    YACK_XMLOG(xml,"\t|dims| = " << kmin << " -> " << kmax);
 
                     //----------------------------------------------------------
                     //
@@ -686,13 +670,20 @@ namespace yack
                     simplifyRows(Q);
                     std::cerr << "\tQ = " << Q << std::endl;
 
-                    if(rank != transformQ(Q) )
+                    if(false)
                     {
-                        throw exception("%s: unable to decompose orthogonal space",fn);
+                        const size_t rank = transformQ(Q);
+                        std::cerr << "rank = " << rank << std::endl;
+                        std::cerr << "\tQ = " << Q << std::endl;
                     }
-                    std::cerr << "\tQ = " << Q << std::endl;
+                    else
+                    {
+                        const size_t rank = orthoQ(Q);
+                        std::cerr << "rank = " << rank << std::endl;
+                        std::cerr << "\tQ = " << Q << std::endl;
+                    }
 
-                    buildConstraintsFrom(Q,rank);
+                    //buildConstraintsFrom(Q,rank);
 
 
                 }
