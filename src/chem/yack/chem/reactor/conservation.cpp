@@ -495,19 +495,27 @@ namespace yack
             std::cerr << "<computing rank>" << std::endl;
             const size_t rank = apk::gj_rank(W);
             std::cerr << "rank=" << rank << std::endl;
-            
+
+
             if(rank)
             {
                 w.make(rank,dims);
-                for(size_t i=1;i<=rank;++i)
+                size_t i = 0;
+                size_t k = 0;
+                while(i<rank)
                 {
-                    const readable<apz> &p = *pos[ ip[i] ];
+                    ++i;
+
+                    ++k;
+                    const readable<apz> &p = *pos[ ip[k] ];
                     std::cerr << "+ " << p << std::endl;
-                    for(size_t j=1;j<=dims;++j)
+                    for(size_t j=dims;j>0;--j)
                     {
                         w[i][j] = p[j].cast_to<int>();
                     }
                 }
+
+
             }
             std::cerr << "w=" << w << std::endl;
 
