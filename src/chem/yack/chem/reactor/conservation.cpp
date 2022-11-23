@@ -26,14 +26,14 @@ namespace yack
     namespace chemical
     {
 
-        static inline void notConserved(imatrix &NuA, const size_t j) throw()
+        static inline void set_not_conserved(imatrix &NuA, const size_t j) throw()
         {
             for(size_t i=NuA.rows;i>0;--i) NuA[i][j] = 0;
         }
 
 
 
-        static inline size_t coeffCount(const readable<int> &nu) throw()
+        static inline size_t get_coeff_count(const readable<int> &nu) throw()
         {
             size_t res = 0;
             for(size_t j=nu.size();j>0;--j)
@@ -45,26 +45,18 @@ namespace yack
 
 
         
-        typedef meta_list<const equilibrium> ep_list_; //!< list of pointers
-        typedef ep_list_::node_type          ep_node;  //!< nodes for ep_list
-
-        //! list of equilibrium
-        class ep_list : public ep_list_
-        {
-        public:
-            inline explicit ep_list() throw() : ep_list_() {}
-            inline virtual ~ep_list() throw() {}
-
-
-        private:
-            YACK_DISABLE_COPY_AND_ASSIGN(ep_list);
-        };
-
+        typedef meta_list<const equilibrium> ep_group_; //!< list of pointers
+        typedef ep_group_::node_type          ep_node;  //!< nodes for ep_list
         
-        class ep_group : public object, public ep_list
+        //----------------------------------------------------------------------
+        //
+        //! (linked) group of equilibria
+        //
+        //----------------------------------------------------------------------
+        class ep_group : public object, public ep_group_
         {
         public:
-            explicit ep_group() throw() : object(), ep_list(), next(0), prev(0) {}
+            explicit ep_group() throw() : object(), ep_group_(), next(0), prev(0) {}
             virtual ~ep_group() throw() {}
 
             
@@ -84,7 +76,7 @@ namespace yack
                 return os;
             }
             
-            bool linked_to(const equilibrium &eq, const imatrix &NuA) const throw()
+            inline bool linked_to(const equilibrium &eq, const imatrix &NuA) const throw()
             {
                 assert(size>0);
                 const readable<int> &lhs = NuA[*eq];
@@ -92,8 +84,7 @@ namespace yack
                 {
                     const equilibrium   &me  = **en;
                     const readable<int> &rhs = NuA[*me];
-                    if(linkedRows(lhs,rhs))
-                    {
+                    if(linkedRows(lhs,rhs)) {
                         return true;
                     }
 
@@ -118,12 +109,12 @@ namespace yack
             }
         };
 
-        typedef cxx_list_of<ep_group> ep_groups_;
-
-        class ep_groups : public ep_groups_
+        
+        
+        class ep_groups : public cxx_list_of<ep_group>
         {
         public:
-            explicit ep_groups() throw() : ep_groups_() {}
+            explicit ep_groups() throw() : cxx_list_of<ep_group>() {}
             virtual ~ep_groups() throw() {}
 
         private:
@@ -230,6 +221,7 @@ namespace yack
 #endif
 
 
+        static inline
         bool allPos(const readable<apz> &q)
         {
             for(size_t j=q.size();j>0;--j)
@@ -249,7 +241,6 @@ namespace yack
         {
         public:
             explicit zstore() throw() : zstore_() {}
-
             virtual ~zstore() throw() {}
 
             bool grow(const zvec &rhs)
@@ -542,7 +533,7 @@ namespace yack
             //
             //------------------------------------------------------------------
             NuA.assign(Nu);
-            ep_list           edb;
+            ep_group          edb;
             addrbook          adb;
             //------------------------------------------------------------------
             //
@@ -622,7 +613,7 @@ namespace yack
 
                 DROP:
                     YACK_XMLOG(xml,"|_[drop]");
-                    notConserved(NuA,j);
+                    set_not_conserved(NuA,j);
                 }
 
                 std::cerr << "NuA=" << NuA << std::endl;
@@ -647,7 +638,7 @@ namespace yack
                 for(addrbook::const_iterator it=adb.begin();it!=adb.end();++it)
                 {
                     const equilibrium &eq   = *static_cast<const equilibrium *>(*it);
-                    if(coeffCount(NuA[*eq]))
+                    if(get_coeff_count(NuA[*eq])>0)
                     {
                         // remaining species
                         YACK_XMLOG(xml, "-- [+] <" << eq.name << ">");
@@ -685,7 +676,7 @@ namespace yack
                     auto_ptr<ep_node>    en  = edb.pop_front();
                     const equilibrium   &eq  = **en;
                     assert( both_ways == eq.kind() );
-                    assert( coeffCount(NuA[*eq])>0 );
+                    assert( get_coeff_count(NuA[*eq])>0 );
 
                     //----------------------------------------------------------
                     // look for a connex group
@@ -766,7 +757,7 @@ namespace yack
 
                     //----------------------------------------------------------
                     //
-                    // record each species and its indices
+                    // COMPACT: record each species and its indices
                     //
                     //----------------------------------------------------------
                     const size_t      cols = (*adb).size;

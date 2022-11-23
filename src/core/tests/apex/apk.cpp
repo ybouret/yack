@@ -156,6 +156,24 @@ YACK_UTEST(apk)
         apk::simplify(z);
         std::cerr << " -> " << z << std::endl;
     }
+    
+    for(size_t iter=0;iter<10;++iter)
+    {
+        const size_t n = 1+ran.leq(5);
+        vector<apn>  z(n);
+        for(size_t i=n;i>0;--i)
+        {
+            if( ran.choice() )
+            {
+                const apn tmp(ran,4);
+                z[i] = tmp;
+            }
+        }
+        
+        std::cerr << "n=" << z;
+        apk::simplify(z);
+        std::cerr << " -> " << z << std::endl;
+    }
 
 
     for(size_t iter=0;iter<10;++iter)
