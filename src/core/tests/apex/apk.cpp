@@ -106,7 +106,7 @@ YACK_UTEST(apk)
 
         std::cerr << "data=" << data << std::endl;
         vector<apq> idat(data);
-        apk::q2n(idat);
+        apk::simplify(idat);
         std::cerr << "idat=" << idat << std::endl;
 
 
@@ -138,6 +138,25 @@ YACK_UTEST(apk)
 
     }
 
+
+    for(size_t iter=0;iter<10;++iter)
+    {
+        const size_t n = 1+ran.leq(5);
+        vector<apz>  z(n);
+        for(size_t i=n;i>0;--i)
+        {
+            if( ran.choice() )
+            {
+                const apz tmp(ran,4);
+                z[i] = tmp;
+            }
+        }
+
+        std::cerr << "z=" << z;
+        apk::simplify(z);
+        std::cerr << " -> " << z << std::endl;
+
+    }
 
 }
 YACK_UDONE()

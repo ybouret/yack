@@ -170,7 +170,13 @@ namespace yack
         //
         //! convert array of rational into simplified integers (all denoms=1)
         //_____________________________________________________________________
-        static void q2n(writable<apq> &q);
+        static void simplify(writable<apq> &q);
+
+        //______________________________________________________________________
+        //
+        //! simplified integers
+        //_____________________________________________________________________
+        static void simplify(writable<apz> &z);
 
 
     };

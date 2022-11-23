@@ -219,14 +219,14 @@ namespace yack
             for(size_t i=1;i<=rank;++i)
             {
                 writable<apq> &Qi = Q[i];
-                apk::q2n(Qi);
+                apk::simplify(Qi);
                 std::cerr << "Q" << i << " = " << Qi << std::endl;
             }
             return rank;
         }
 
 
-#if 1
+#if 0
         static inline
         size_t orthoQ( matrix<apq> &Q )
         {
@@ -297,14 +297,44 @@ namespace yack
 
 
         static inline
+        void processWhatever(const readable<apq> &lhs,
+                             const readable<apq> &rhs)
+        {
+            std::cerr << "testing " << lhs << "/" << rhs << std::endl;
+            const size_t dims = lhs.size();
+            vector<apq>  vtry(dims); assert(dims==vtry.size());
+            for(size_t k=1;k<=dims;++k)
+            {
+                const apq &l = lhs[k];
+                const apq &r = rhs[k];
+                if(0==l||0==r)
+                {
+                    continue;
+                }
+                std::cerr << "\t" << l << ":" << r << std::endl;
+
+                const apq a = r;
+                const apq b = -l;
+
+                for(size_t i=dims;i>0;--i)
+                {
+                    vtry[i] = a * lhs[i] + b*rhs[i];
+                }
+                std::cerr << "\t\tvtry=" << vtry << std::endl;
+
+
+            }
+        }
+
+        static inline
         void buildConstraintsFrom(const matrix<apq> &Q)
         {
-            const size_t d = Q.rows;
+            const size_t rows = Q.rows;
             qstore       p; // pos
             qstore       n; // neg
 
             //initialize
-            for(size_t i=1;i<=d;++i)
+            for(size_t i=1;i<=rows;++i)
             {
                 const qvec_ptr q = new qvec(Q[i],transmogrify);
                 if(allPos(*q))
@@ -319,6 +349,19 @@ namespace yack
                 }
             }
 
+            const size_t nn = n.size();
+            for(size_t i=1;i<=nn;++i)
+            {
+                const readable<apq> &lhs = *n[i];
+                for(size_t j=i+1;j<=nn;++j)
+                {
+                    const readable<apq> &rhs = *n[j];
+                    processWhatever(lhs,rhs);
+                }
+            }
+
+
+#if 0
             // sparse computation
             for(size_t i=1;i<d;++i)
             {
@@ -332,16 +375,15 @@ namespace yack
                     {
                         const apq &l = lhs[k];
                         const apq &r = rhs[k];
+                        if(0==l||0==r)
+                        {
+                            continue;
+                        }
                         std::cerr << "\t" << l << ":" << r << std::endl;
                     }
-
-
-
-
-                    exit(1);
-
                 }
             }
+#endif
 
 
 
