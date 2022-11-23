@@ -56,10 +56,11 @@ namespace yack
         class ep_group : public object, public ep_group_
         {
         public:
-            explicit ep_group() throw() : object(), ep_group_(), next(0), prev(0) {}
-            virtual ~ep_group() throw() {}
+            inline explicit ep_group() throw() : object(), ep_group_(), next(0), prev(0) {}
+            inline virtual ~ep_group() throw() {}
 
             
+            //! display
             inline friend std::ostream & operator<<(std::ostream &os, const ep_group &self)
             {
                 os << "{ ";
@@ -76,6 +77,7 @@ namespace yack
                 return os;
             }
             
+            //! detect adjacent by NuA
             inline bool linked_to(const equilibrium &eq, const imatrix &NuA) const throw()
             {
                 assert(size>0);
@@ -108,9 +110,12 @@ namespace yack
                 return false;
             }
         };
-
         
-        
+        //----------------------------------------------------------------------
+        //
+        //! high level list of groups
+        //
+        //----------------------------------------------------------------------
         class ep_groups : public cxx_list_of<ep_group>
         {
         public:
@@ -122,107 +127,9 @@ namespace yack
         };
 
 
-
-        // simplify by GCD of positive numerators
+        
         static inline
-        void simplifyRow(writable<apq> &r)
-        {
-            const size_t n = r.size(); assert(n>0);
-            vector<apn> value(n,as_capacity);
-            for(size_t i=n;i>0;--i)
-            {
-                const apn &u = r[i].num.n; assert(1==r[i].den);
-                if(u>0) value.push_back(u);
-            }
-
-            switch(value.size())
-            {
-                case 0:
-                    return;
-
-                case 1:
-                    iota::div_by(value.front(),r);
-                    return;
-
-                default:
-                    break;
-            }
-
-            apn g = apn::gcd(value[1], value[2]);
-            for(size_t i=value.size();i>2;--i)
-            {
-                g = apn::gcd(g,value[i]);
-            }
-            iota::div_by(g,r);
-        }
-
-#if 1
-        // simplify all rows
-        static inline
-        void simplifyRows(matrix<apq> &r)
-        {
-            for(size_t i=r.rows;i>0;--i)
-                simplifyRow(r[i]);
-        }
-#endif
-
-
-
-#if 0
-        static inline
-        size_t orthoQ( matrix<apq> &Q )
-        {
-            const size_t n    = Q.rows;
-            size_t       rank = 0;
-            const apq   _0    = 0;
-            vector<apq>  u_k(n,_0);
-            vector<apq>  tmp(n,_0);
-            std::cerr << "u1 = " << Q[1] << std::endl;
-            if( iota::dot<apq>::of(Q[1],Q[1]) <= 0)
-            {
-                return 0;
-            }
-            ++rank;
-            for(size_t k=2;k<=n;++k)
-            {
-                const readable<apq> &v_k = Q[k];
-                iota::load(u_k,v_k);
-                for(size_t j=1;j<k;++j)
-                {
-                    const readable<apq> &u_j = Q[j];
-                    const apq            den = iota::dot<apq>::of(u_j,u_j);
-                    const apq            num = iota::dot<apq>::of(v_k,u_j);
-                    const apq            fac = num/den;
-                    iota::load(tmp,u_j);
-                    for(size_t i=n;i>0;--i)
-                    {
-                        u_k[i] -= fac * tmp[i];
-                    }
-                }
-                iota::load(Q[k],u_k);
-                const apn l = apk::lcm(Q[k]);
-                iota::mul_by(l,Q[k]);
-                simplifyRow(Q[k]);
-                std::cerr << "u" << k <<  " = "  << Q[k] << std::endl;
-
-                if( iota::dot<apq>::of(Q[k],Q[k]) <= 0)
-                {
-                    for(size_t j=k+1;j<=n;++j)
-                    {
-                        Q[j].ld(_0);
-                    }
-                    break;
-                }
-
-                ++rank;
-            }
-            return rank;
-        }
-#endif
-
-
-        static inline
-        bool allPos(const readable<apz> &q)
+        bool are_all_geqz(const readable<apz> &q)
         {
             for(size_t j=q.size();j>0;--j)
             {
@@ -254,7 +161,6 @@ namespace yack
                     {
                         return false;
                     }
-
                 }
 
                 const zvec_ptr zp = new zvec(rhs);
@@ -270,19 +176,20 @@ namespace yack
 
 
         static inline
-        void processWhatever(zstore              &pos,
+        void sparsity_detect(zstore              &pos,
                              const readable<apz> &lhs,
-                             const readable<apz> &rhs)
+                             const readable<apz> &rhs,
+                             const xmlog         &xml)
         {
 
             static const unsigned has_pos = 0x01;
             static const unsigned has_neg = 0x02;
             static const unsigned has_mix = (has_pos|has_neg);
-            //std::cerr << "  testing " << lhs << "/" << rhs << std::endl;
-
-            const size_t dims = lhs.size();
-            vector<apz>  vtry(dims);
-
+            
+            const size_t dims = lhs.size(); // dimension
+            vector<apz>  vtry(dims);        // trial vector
+            
+            // loop over all pair of coefficients
             for(size_t k=1;k<=dims;++k)
             {
                 const apz &l = lhs[k];
@@ -292,8 +199,8 @@ namespace yack
                     continue;
                 }
 
-                const apz a  =  r;
-                const apz b  = -l;
+                const apz a     =  r;
+                const apz b     = -l;
                 unsigned  flags = 0x00;
                 size_t    count = 0;
                 for(size_t i=dims;i>0;--i)
@@ -316,8 +223,7 @@ namespace yack
 
                 if(count<=1) continue;
 
-
-
+                
                 switch(flags)
                 {
                     case has_mix:
@@ -325,12 +231,12 @@ namespace yack
                         continue;
 
                     case has_pos:
-                        assert(allPos(vtry));
+                        assert(are_all_geqz(vtry));
                         break;
 
                     case has_neg:
                         iota::neg(vtry);
-                        assert(allPos(vtry));
+                        assert(are_all_geqz(vtry));
                         break;
 
                     default:
@@ -341,66 +247,25 @@ namespace yack
                 apk::simplify(vtry);
                 if(pos.grow(vtry))
                 {
-                    std::cerr << "--> " << pos.back() << std::endl;
+                    YACK_XMLOG(xml,"(+) " << pos.back());
                 }
 
             }
         }
 
-        class price
-        {
-        public:
-            const size_t major; //!< number of species
-            const apn    minor; //!< norm1(constraint)
-
-            inline  price(const size_t a, const apn &b) : major(a), minor(b) {}
-            inline ~price() throw() {}
-            inline  price(const price &p) : major(p.major), minor(p.minor) {}
-
-            inline friend std::ostream & operator<< (std::ostream &os, const price &p)
-            {
-                os << p.major << '.' << p.minor;
-                return os;
-            }
-
-            static inline int compare(const price &lhs, const price &rhs) throw()
-            {
-                return comparison::increasing(lhs.minor,rhs.minor);
-
-                if(lhs.major<rhs.major)
-                {
-                    return -1;
-                }
-                else
-                {
-                    if(rhs.major<lhs.major)
-                    {
-                        return 1;
-                    }
-                    else
-                    {
-                        assert(lhs.major==rhs.major);
-                        return comparison::increasing(lhs.minor,rhs.minor);
-                    }
-                }
-            }
-
-
-        private:
-            YACK_DISABLE_ASSIGN(price);
-        };
-
-
+        
         static inline
-        void buildConstraints(matrix<unsigned> &w, const matrix<apq> &Q)
+        void sparsity_build(matrix<unsigned> &w, const matrix<apq> &Q, const xmlog &xml)
         {
             const size_t rows = Q.rows;
             const size_t dims = Q.cols;
             zstore       pos; // pos
             zstore       neg; // neg
-
-            //initialize
-            //std::cerr << "<initializing space>" << std::endl;
+            
+            assert(0==w.rows);
+            assert(0==w.cols);
+            
+            YACK_XMLOG(xml,"-- initialize rows");
             for(size_t i=1;i<=rows;++i)
             {
                 zvec z(dims);
@@ -411,25 +276,26 @@ namespace yack
                         z[j] = q[j].num;
                     }
                 }
-                if(allPos(z))
+                
+                if(are_all_geqz(z))
                 {
-                    //std::cerr << " (+) " << z << std::endl;
+                    // dispatch into positive repo
                     if(pos.grow(z))
                     {
-                        std::cerr << " (+) " << pos.back() << std::endl;
+                        YACK_XMLOG(xml,"(+) " << pos.back());
                     }
                 }
                 else
                 {
-                    //std::cerr << " (-) " << z << std::endl;
+                    // dispatch into negative
                     if(neg.grow(z))
                     {
-                        std::cerr << " (-) " << neg.back() << std::endl;
+                        YACK_XMLOG(xml,"(-) " << neg.back());
                     }
                 }
             }
 
-            std::cerr << "<finding combinations>" << std::endl;
+            YACK_XMLOG(xml,"-- finding combinations");
             const size_t nn = neg.size();
             for(size_t i=1;i<=nn;++i)
             {
@@ -440,50 +306,54 @@ namespace yack
                 for(size_t j=i+1;j<=nn;++j)
                 {
                     const readable<apz> &rhs = *neg[j];
-                    processWhatever(pos,lhs,rhs);
+                    sparsity_detect(pos,lhs,rhs,xml);
                 }
 
                 // testing it against all newly created positive
                 for(size_t j=pos.size();j>0;--j)
                 {
                     const readable<apz> &rhs = *pos[j];
-                    processWhatever(pos,lhs,rhs);
+                    sparsity_detect(pos,lhs,rhs,xml);
                 }
             }
-
-            std::cerr << "<computing prices>" << std::endl;
             const size_t   np = pos.size();
-            vector<apn>  wp(np,as_capacity);
+            if(np<=0)
+            {
+                YACK_XMLOG(xml,"-- no possibility");
+                return;
+            }
+            
+
+            YACK_XMLOG(xml,"-- computing cost of #" << np);
+            vector<apn>    wp(np,as_capacity);
             for(size_t i=1;i<=np;++i)
             {
                 const readable<apz> &z = *pos[i];
                 apn    sum = 0;
                 for(size_t j=dims;j>0;--j)
-                {
                     sum += z[j].n;
-                }
                 wp << sum;
             }
 
-            std::cerr << "<indexing prices>" << std::endl;
             vector<size_t> ip(np);
             indexing::make(ip,comparison::increasing<apn>,wp);
-
-            std::cerr << "<build matrix of all constraints>" << std::endl;
+            
+            
+            YACK_XMLOG(xml,"-- gathering matrix");
             matrix<apq> W(np,dims);
 
             for(size_t i=1;i<=np;++i)
             {
                 const size_t ii = ip[i];
-                std::cerr << "Z" << i << " = " << *pos[ii] << " //  " << wp[ii] << std::endl;
+                std::cerr << "\tZ" << i << " = " << *pos[ii] << " //  " << wp[ii] << std::endl;
                 iota::load(W[ii],*pos[ii]);
             }
 
-            std::cerr << "<computing rank>" << std::endl;
+            YACK_XMLOG(xml,"-- computing rank...");
             const size_t rank = apk::gj_rank(W);
-            std::cerr << "rank=" << rank << std::endl;
+            YACK_XMLOG(xml,"-- rank = " << rank);
 
-
+            
             if(rank)
             {
                 w.make(rank,dims);
@@ -508,9 +378,8 @@ namespace yack
                         std::cerr << "+ " << p << std::endl;
                     }
                 }
-
-
             }
+            
             std::cerr << "w=" << w << std::endl;
 
         }
@@ -665,7 +534,6 @@ namespace yack
             ep_groups groups;
             {
                 YACK_XMLSUB(xml, "creatingGroups");
-
                 //--------------------------------------------------------------
                 //
                 // loop over filtered eqs
@@ -745,7 +613,7 @@ namespace yack
                         const equilibrium   &eq = **ep;
                         const size_t         ei =  *eq;
                         const readable<int> &nu = NuA[ei];
-                        if(verbose) *xml << "\t" << nu << std::endl;
+                        YACK_XMLOG(xml, "\t" << nu);
                         for(const cnode *cn=eq.head();cn;cn=cn->next)
                         {
                             const species &s = ****cn;
@@ -818,7 +686,7 @@ namespace yack
                         matrix<apq> iP2(P2);
                         crout<apq>  lu(rows);
 
-                        std::cerr << "\tP = " << P << std::endl;
+                        if(verbose) std::cerr << "\tP = " << P << std::endl;
                         if(!lu.build(iP2)) throw exception("singular topology!!");
                         const apq  detP2 = lu.determinant(iP2); assert(0!=detP2);
                         matrix<apq> adjP2(rows,rows);
@@ -844,11 +712,16 @@ namespace yack
                             }
                         }
                     }
-                    simplifyRows(Q);
-                    std::cerr << "\tQ = " << Q << std::endl;
+                    apk::simplify_rows(Q);
+                    if(verbose) std::cerr << "\tQ = " << Q << std::endl;
 
+                    //----------------------------------------------------------
+                    //
+                    // computing possible weights
+                    //
+                    //----------------------------------------------------------
                     matrix<unsigned>  weights;
-                    buildConstraints(weights,Q);
+                    sparsity_build(weights,Q,xml);
                     const size_t nc = weights.rows;
 
                     // decompacting
