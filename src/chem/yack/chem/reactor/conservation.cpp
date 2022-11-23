@@ -294,14 +294,17 @@ namespace yack
         typedef shared_ptr<qvec> qvec_ptr;
         typedef vector<qvec_ptr> qstore;
 
+
+
         static inline
-        void buildConstraintsFrom(const matrix<apq> &Q, const size_t rank)
+        void buildConstraintsFrom(const matrix<apq> &Q)
         {
-            qstore  p; // pos
-            qstore  n; // neg
+            const size_t d = Q.rows;
+            qstore       p; // pos
+            qstore       n; // neg
 
             //initialize
-            for(size_t i=1;i<=rank;++i)
+            for(size_t i=1;i<=d;++i)
             {
                 const qvec_ptr q = new qvec(Q[i],transmogrify);
                 if(allPos(*q))
@@ -317,19 +320,25 @@ namespace yack
             }
 
             // sparse computation
-            for(size_t i=1;i<rank;++i)
+            for(size_t i=1;i<d;++i)
             {
                 const readable<apq> &lhs = Q[i];
-                for(size_t j=i+1;j<=rank;++j)
+                for(size_t j=i+1;j<=d;++j)
                 {
                     const readable<apq> &rhs = Q[j];
                     std::cerr << "testing " << lhs << "/" << rhs << std::endl;
 
                     for(size_t k=1;k<=lhs.size();++k)
                     {
-                        std::cerr << " " << lhs[k] << ":" << rhs[k];
+                        const apq &l = lhs[k];
+                        const apq &r = rhs[k];
+                        std::cerr << "\t" << l << ":" << r << std::endl;
                     }
-                    std::cerr << std::endl;
+
+
+
+
+                    exit(1);
 
                 }
             }
@@ -670,6 +679,7 @@ namespace yack
                     simplifyRows(Q);
                     std::cerr << "\tQ = " << Q << std::endl;
 
+#if 0
                     if(false)
                     {
                         const size_t rank = transformQ(Q);
@@ -682,8 +692,9 @@ namespace yack
                         std::cerr << "rank = " << rank << std::endl;
                         std::cerr << "\tQ = " << Q << std::endl;
                     }
+#endif
 
-                    //buildConstraintsFrom(Q,rank);
+                    buildConstraintsFrom(Q);
 
 
                 }
