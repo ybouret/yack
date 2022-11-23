@@ -17,6 +17,20 @@ namespace yack
     namespace chemical
     {
 
+        class conserve: public object, public counted, public actors
+        {
+        public:
+            explicit conserve() throw() {}
+            virtual ~conserve() throw() {}
+
+
+        private:
+            YACK_DISABLE_COPY_AND_ASSIGN(conserve);
+        };
+
+        typedef arc_ptr<conserve> constraint;
+
+
         //______________________________________________________________________
         //
         //
@@ -142,7 +156,8 @@ namespace yack
             rmulops             xmul;     //!< for mulops
             raddops             xadd;     //!< for addops
             math::crout<double> solv;     //!< for linear system solving
-
+            vector<constraint>  cnsv;     //!< WIP
+            
         private:
             const library     worklib; //!< copy of corelib
             tableaux          mtab;    //!< [M]-sized

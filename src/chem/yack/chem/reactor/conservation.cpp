@@ -397,7 +397,7 @@ namespace yack
 
 
         static inline
-        void buildConstraints(matrix<int> &w, const matrix<apq> &Q)
+        void buildConstraints(matrix<unsigned> &w, const matrix<apq> &Q)
         {
             const size_t rows = Q.rows;
             const size_t dims = Q.cols;
@@ -458,23 +458,15 @@ namespace yack
 
             std::cerr << "<computing prices>" << std::endl;
             const size_t   np = pos.size();
-            //vector<price>  wp(np,as_capacity);
             vector<apn>  wp(np,as_capacity);
             for(size_t i=1;i<=np;++i)
             {
                 const readable<apz> &z = *pos[i];
-                size_t num = 0;
                 apn    sum = 0;
                 for(size_t j=dims;j>0;--j)
                 {
-                    if(z[j].n>0)
-                    {
-                        ++num;
-                        sum += z[j].n;
-                    }
+                    sum += z[j].n;
                 }
-                //const price p(num,sum);
-                //wp << p;
                 wp << sum;
             }
 
@@ -505,13 +497,20 @@ namespace yack
                 while(i<rank)
                 {
                     ++i;
-
+                TRY_AGAIN:
                     ++k;
                     const readable<apz> &p = *pos[ ip[k] ];
-                    std::cerr << "+ " << p << std::endl;
                     for(size_t j=dims;j>0;--j)
                     {
-                        w[i][j] = p[j].cast_to<int>();
+                        w[i][j] = p[j].cast_to<unsigned>();
+                    }
+                    if( apk::gj_rank_of(w) < i)
+                    {
+                        goto TRY_AGAIN;
+                    }
+                    else
+                    {
+                        std::cerr << "+ " << p << std::endl;
                     }
                 }
 
@@ -520,6 +519,9 @@ namespace yack
             std::cerr << "w=" << w << std::endl;
 
         }
+
+
+
 
 
         void reactor:: conservation(const xmlog &xml)
@@ -850,16 +852,60 @@ namespace yack
                     simplifyRows(Q);
                     std::cerr << "\tQ = " << Q << std::endl;
 
-                    matrix<int>  w;
-                    buildConstraints(w,Q);
+                    matrix<unsigned>  weights;
+                    buildConstraints(weights,Q);
+                    const size_t nc = weights.rows;
+
+                    // decompacting
+                    if(nc>0)
+                    {
+                        //matrix<unsigned> F(nc,M);
+
+                        for(size_t i=1;i<=nc;++i)
+                        {
+                            const readable<unsigned> &weight = weights[i];
+                            assert(weight.size()==cols);
+                            constraint A = new conserve();
+                            for(size_t j=1;j<=cols;++j)
+                            {
+                                const unsigned w = weight[j];
+                                if(w)
+                                {
+                                    const species &s = *spdb[j];
+                                    (*A)(s,w);
+                                    //F[i][*s] = w;
+                                }
+                            }
+                            std::cerr << "constraint: d(" << A << ")=0" << std::endl;
+                            cnsv.push_back(A);
+                        }
+
+                        //std::cerr << "F="  << F  << std::endl;
+                        //std::cerr << "Nu=" << Nu << std::endl;
+
+                    }
+
+
+
 
                 }
 
 
-
-
             }
 
+            std::cerr << "#constraints=" << cnsv.size() << std::endl;
+
+            matrix<unsigned> F(cnsv.size(),M);
+            for(size_t i=1;i<=cnsv.size();++i)
+            {
+                for(const actor *a=(*cnsv[i])->head;a;a=a->next)
+                {
+                    F[i][***a] = a->nu;
+                }
+            }
+
+            std::cerr << "F =" << F  << std::endl;
+            std::cerr << "Nu=" << Nu << std::endl;
 
 
             exit(0);
