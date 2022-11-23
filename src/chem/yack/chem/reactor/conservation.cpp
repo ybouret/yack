@@ -171,60 +171,6 @@ namespace yack
         }
 #endif
 
-        size_t transformQ(matrix<apq> &Q)
-        {
-            const apq    _0   = 0;
-            const size_t n    = Q.rows;
-            size_t       rank = 0;
-            for(size_t i=1;i<=n;++i)
-            {
-                apq    qpiv = Q[i][i];
-                apq    apiv = abs_of(qpiv);
-                size_t ipiv = i;
-                for(size_t k=i+1;k<=n;++k)
-                {
-                    const apq qtmp = Q[k][i];
-                    const apq atmp = abs_of(qtmp);
-                    if(atmp>apiv)
-                    {
-                        ipiv=k;
-                        qpiv=qtmp;
-                        apiv=atmp;
-                    }
-                }
-                //std::cerr << "ipiv=" << ipiv << ", piv=" << qpiv << std::endl;
-                if(apiv<=0)
-                {
-                    for(size_t j=i+1;j<=n;++j)
-                    {
-                        Q[j].ld(_0);
-                    }
-                    goto DONE;
-                }
-                ++rank;
-                if(i!=ipiv)
-                {
-                    Q.swap_rows(i,ipiv);
-                }
-
-
-                for(size_t k=i+1;k<=n;++k)
-                {
-                    const apq f = Q[k][i] / qpiv;
-                    for(size_t j=n;j>i;--j) Q[k][j] -= f * Q[i][j];
-                    Q[k][i] = 0;
-                }
-            }
-
-        DONE:
-            for(size_t i=1;i<=rank;++i)
-            {
-                writable<apq> &Qi = Q[i];
-                apk::simplify(Qi);
-                std::cerr << "Q" << i << " = " << Qi << std::endl;
-            }
-            return rank;
-        }
 
 
 #if 0
@@ -424,6 +370,8 @@ namespace yack
 
             static inline int compare(const price &lhs, const price &rhs) throw()
             {
+                return comparison::increasing(lhs.minor,rhs.minor);
+                
                 if(lhs.major<rhs.major)
                 {
                     return -1;
