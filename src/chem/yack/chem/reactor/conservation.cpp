@@ -220,10 +220,6 @@ namespace yack
             {
                 writable<apq> &Qi = Q[i];
                 apk::q2n(Qi);
-                //const apn      l  = apk::lcm(Qi);
-                //iota::mul_by(l,Qi);
-                //simplifyRow(Qi);
-
                 apq    amax = abs_of(Qi[1]);
                 size_t jmax = 1;
                 for(size_t j=2;j<=n;++j)
