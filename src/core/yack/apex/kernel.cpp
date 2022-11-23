@@ -15,6 +15,47 @@ namespace yack
         }
     }
 
+
+    static inline
+    void apk_simplify(writable<apq> &Q)
+    {
+        //----------------------------------------------------------------------
+        // find first positive value
+        //----------------------------------------------------------------------
+        apn          g = 1;
+        const size_t n = Q.size();
+        size_t       j = 1;
+        for(;j<=n;++j)
+        {
+            const apq &q = Q[j];
+            if(q!=0) {
+                g = q.num.n;
+                break;
+            }
+        }
+
+        //----------------------------------------------------------------------
+        // compute with other positive values
+        //----------------------------------------------------------------------
+        for(++j;j<=n;++j)
+        {
+            const apq &q = Q[j];
+            if(q!=0) {
+                g = apn::gcd(q.num.n,g);
+            }
+        }
+
+        //----------------------------------------------------------------------
+        // simplify
+        //----------------------------------------------------------------------
+        for(size_t i=n;i>0;--i)
+        {
+            Q[i] /= g;
+            assert(1==Q[i].den);
+        }
+
+    }
+
     void apk:: q2n(writable<apq> &Q)
     {
         const size_t n = Q.size();
@@ -39,34 +80,7 @@ namespace yack
         }
         assert(n>=2);
 
-        // find first positive value
-        apn    g=1;
-        size_t j=1;
-        for(;j<=n;++j)
-        {
-            const apq &q = Q[j];
-            if(q!=0) {
-                g = q.num.n;
-                break;
-            }
-        }
-
-        // compute with other positive values
-        for(++j;j<=n;++j)
-        {
-            const apq &q = Q[j];
-            if(q!=0) {
-                g = apn::gcd(q.num.n,g);
-            }
-        }
-
-        // simplify
-        for(size_t i=n;i>0;--i)
-        {
-            Q[i] /= g;
-            assert(1==Q[i].den);
-        }
-
+        apk_simplify(Q);
 
 
     }

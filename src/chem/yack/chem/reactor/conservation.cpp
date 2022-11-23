@@ -220,19 +220,6 @@ namespace yack
             {
                 writable<apq> &Qi = Q[i];
                 apk::q2n(Qi);
-                apq    amax = abs_of(Qi[1]);
-                size_t jmax = 1;
-                for(size_t j=2;j<=n;++j)
-                {
-                    const apq atmp = abs_of(Qi[j]);
-                    if(atmp>amax)
-                    {
-                        amax = atmp;
-                        jmax = j;
-                    }
-                }
-                assert(amax>0);
-                if(Qi[jmax]<0) iota::neg(Qi);
                 std::cerr << "Q" << i << " = " << Qi << std::endl;
             }
             return rank;
@@ -332,6 +319,13 @@ namespace yack
                 {
                     const readable<apq> &rhs = Q[j];
                     std::cerr << "testing " << lhs << "/" << rhs << std::endl;
+
+                    for(size_t k=1;k<=lhs.size();++k)
+                    {
+                        std::cerr << " " << lhs[k] << ":" << rhs[k];
+                    }
+                    std::cerr << std::endl;
+
                 }
             }
 
@@ -427,7 +421,7 @@ namespace yack
                         // not a conservative equilibrium
                         //------------------------------------------------------
                         YACK_XMLOG(xml,"|_shared");
-                        goto DROP;
+                        //goto DROP;
                     }
 
 
