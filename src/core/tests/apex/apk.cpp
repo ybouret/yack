@@ -1,6 +1,7 @@
 #include "yack/apex/kernel.hpp"
 #include "yack/utest/run.hpp"
 #include "yack/sequence/vector.hpp"
+#include "../main.hpp"
 
 using namespace yack;
 
@@ -84,6 +85,58 @@ YACK_UTEST(apk)
     }
 
     test_prop<int>(ran);
+
+    for(size_t iter=0;iter<10;++iter)
+    {
+        data.make(10+ran.leq(10),0);
+        for(size_t i=data.size();i>0;--i)
+        {
+            const unit_t c = ran.in(-1,1);
+            switch( __sign::of(c) )
+            {
+                case __zero__: data[i] = 0; break;
+                case positive:
+                    data[i] = apq(1+ran.in(0,10),1+ran.in(0,20));
+                    break;
+                case negative:
+                    data[i] = apq( -(1+ran.in(0,10)) , 1+ran.in(0,20) );
+                    break;
+            }
+        }
+
+        std::cerr << "data=" << data << std::endl;
+        vector<apq> idat(data);
+        apk::q2n(idat);
+        std::cerr << "idat=" << idat << std::endl;
+
+
+        apq rho = 0;
+        for(size_t i=data.size();i>0;--i)
+        {
+            const apq &lhs = data[i];
+            const apq &rhs = idat[i];
+
+            if(0==lhs)
+            {
+                YACK_ASSERT(0==rhs);
+            }
+            else
+            {
+                YACK_ASSERT(0!=rhs);
+                const apq ratio = rhs/lhs;
+                if(0==rho)
+                {
+                    rho = ratio;
+                }
+                else
+                {
+                    YACK_ASSERT(ratio==rho);
+                }
+            }
+        }
+        std::cerr << "\trho=" << rho << std::endl;
+
+    }
 
 
 }

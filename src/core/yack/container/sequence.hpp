@@ -65,6 +65,13 @@ namespace yack
             }
         }
 
+        //! make size
+        inline void make(const size_t n, param_type pad)
+        {
+            free();
+            while(size()<n) push_back(pad);
+        }
+
         //! helper
         inline sequence & operator<<(param_type args)
         {

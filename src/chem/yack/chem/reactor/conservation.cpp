@@ -219,9 +219,10 @@ namespace yack
             for(size_t i=1;i<=rank;++i)
             {
                 writable<apq> &Qi = Q[i];
-                const apn      l  = apk::lcm(Qi);
-                iota::mul_by(l,Qi);
-                simplifyRow(Qi);
+                apk::q2n(Qi);
+                //const apn      l  = apk::lcm(Qi);
+                //iota::mul_by(l,Qi);
+                //simplifyRow(Qi);
 
                 apq    amax = abs_of(Qi[1]);
                 size_t jmax = 1;
@@ -327,7 +328,7 @@ namespace yack
                 }
             }
 
-            // sparse comnination
+            // sparse computation
             for(size_t i=1;i<rank;++i)
             {
                 const readable<apq> &lhs = Q[i];

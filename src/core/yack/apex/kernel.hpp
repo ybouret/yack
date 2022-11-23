@@ -20,7 +20,10 @@ namespace yack
     struct apk
     {
 
+        //______________________________________________________________________
+        //
         //! find least common multiple of an array of rationals
+        //______________________________________________________________________
         template <typename ARRAY, typename INDEX> static inline
         apn lcm(ARRAY &arr, const INDEX lo, const INDEX hi)
         {
@@ -40,21 +43,30 @@ namespace yack
             }
         }
 
+        //______________________________________________________________________
+        //
         //! find lcm for a sequence of rationals
+        //______________________________________________________________________
         template <typename SEQUENCE> static inline
         apn lcm(SEQUENCE &seq)
         {
             return lcm<SEQUENCE,size_t>(seq,1,seq.size());
         }
 
+        //______________________________________________________________________
+        //
         //! find lcm for a 1D field
+        //______________________________________________________________________
         template <typename FIELD> static inline
         apn lcm1D(const FIELD &F)
         {
             return lcm<FIELD,unit_t>(F,F.lower,F.upper);
         }
 
+        //______________________________________________________________________
+        //
         //! find lcm for a 2D field/matrix or rationals
+        //______________________________________________________________________
         template <typename FIELD,typename INDEX> static inline
         apn lcm(const FIELD &F, const INDEX xlo, const INDEX xhi,
                 const INDEX ylo, const INDEX yhi)
@@ -71,18 +83,26 @@ namespace yack
             return res;
         }
 
-
+        //______________________________________________________________________
+        //
         //! find lcm for a 2D field of rationals
+        //______________________________________________________________________
         template <typename FIELD> static inline
         apn lcm2D(const FIELD &F)
         {
             return lcm<FIELD,unit_t>(F,F.lower.x,F.upper.x,F.lower.y,F.upper.y);
         }
 
+        //______________________________________________________________________
+        //
         //! find lcm for a matrix
+        //______________________________________________________________________
         static apn lcm(const matrix<apq> &);
 
+        //______________________________________________________________________
+        //
         //! find proportionality coefficient
+        //______________________________________________________________________
         template <typename LHS, typename RHS> static inline
         bool are_prop(const LHS &lhs, const RHS &rhs, apq *fac)
         {
@@ -145,6 +165,12 @@ namespace yack
 
             return true;
         }
+
+        //______________________________________________________________________
+        //
+        //! convert array of rational into simplified integers (all denoms=1)
+        //_____________________________________________________________________
+        static void q2n(writable<apq> &q);
 
 
     };
