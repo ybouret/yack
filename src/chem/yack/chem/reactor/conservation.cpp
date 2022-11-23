@@ -371,7 +371,7 @@ namespace yack
             static inline int compare(const price &lhs, const price &rhs) throw()
             {
                 return comparison::increasing(lhs.minor,rhs.minor);
-                
+
                 if(lhs.major<rhs.major)
                 {
                     return -1;
@@ -458,7 +458,8 @@ namespace yack
 
             std::cerr << "<computing prices>" << std::endl;
             const size_t   np = pos.size();
-            vector<price>  wp(np,as_capacity);
+            //vector<price>  wp(np,as_capacity);
+            vector<apn>  wp(np,as_capacity);
             for(size_t i=1;i<=np;++i)
             {
                 const readable<apz> &z = *pos[i];
@@ -472,14 +473,16 @@ namespace yack
                         sum += z[j].n;
                     }
                 }
-                const price p(num,sum);
-                wp << p;
-                //std::cerr << "Z" << i << " = " << z << " //  " << sum << std::endl;
+                //const price p(num,sum);
+                //wp << p;
+                wp << sum;
             }
 
             std::cerr << "<indexing prices>" << std::endl;
             vector<size_t> ip(np);
-            indexing::make(ip,price::compare,wp);
+            indexing::make(ip,comparison::increasing<apn>,wp);
+
+            std::cerr << "<build matrix of all constraints>" << std::endl;
             matrix<apq> W(np,dims);
 
             for(size_t i=1;i<=np;++i)
