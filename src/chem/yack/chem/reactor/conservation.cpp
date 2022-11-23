@@ -551,8 +551,13 @@ namespace yack
                 {
                     const readable<apz> &p = *pos[ ip[i] ];
                     std::cerr << "+ " << p << std::endl;
+                    for(size_t j=1;j<=dims;++j)
+                    {
+                        w[i][j] = p[j].cast_to<int>();
+                    }
                 }
             }
+            std::cerr << "w=" << w << std::endl;
 
         }
 
