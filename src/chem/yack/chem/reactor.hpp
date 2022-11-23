@@ -17,6 +17,7 @@ namespace yack
     namespace chemical
     {
 
+        //! TODO
         class conserve: public object, public counted, public actors
         {
         public:
@@ -28,7 +29,7 @@ namespace yack
             YACK_DISABLE_COPY_AND_ASSIGN(conserve);
         };
 
-        typedef arc_ptr<conserve> constraint;
+        typedef arc_ptr<conserve> constraint; //!< alias
 
 
         //______________________________________________________________________

@@ -10,11 +10,17 @@ namespace yack
     namespace chemical
     {
         
+        //______________________________________________________________________
+        //
+        //
+        //! features for an equilibrium
+        //
+        //______________________________________________________________________
         enum feature {
-            join_only,
-            both_ways,
-            part_only,
-            undefined
+            join_only, //!< reactants <=>
+            both_ways, //!< reactants <=> products
+            part_only, //!<           <=> products
+            undefined  //!<           <=>
         };
         
         //______________________________________________________________________

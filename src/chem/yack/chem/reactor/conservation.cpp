@@ -44,16 +44,31 @@ namespace yack
         }
 
 
-        typedef meta_list<const equilibrium> ep_list_;
-        typedef ep_list_::node_type          ep_node;
+        
+        typedef meta_list<const equilibrium> ep_list_; //!< list of pointers
+        typedef ep_list_::node_type          ep_node;  //!< nodes for ep_list
 
+        //! list of equilibrium
         class ep_list : public ep_list_
         {
         public:
             inline explicit ep_list() throw() : ep_list_() {}
             inline virtual ~ep_list() throw() {}
 
-            inline friend std::ostream & operator<<(std::ostream &os, const ep_list &self)
+
+        private:
+            YACK_DISABLE_COPY_AND_ASSIGN(ep_list);
+        };
+
+        
+        class ep_group : public object, public ep_list
+        {
+        public:
+            explicit ep_group() throw() : object(), ep_list(), next(0), prev(0) {}
+            virtual ~ep_group() throw() {}
+
+            
+            inline friend std::ostream & operator<<(std::ostream &os, const ep_group &self)
             {
                 os << "{ ";
                 const ep_node *node=self.head;
@@ -68,18 +83,7 @@ namespace yack
                 os << " }";
                 return os;
             }
-
-        private:
-            YACK_DISABLE_COPY_AND_ASSIGN(ep_list);
-        };
-
-        
-        class ep_group : public object, public ep_list
-        {
-        public:
-            explicit ep_group() throw() : object(), ep_list(), next(0), prev(0) {}
-            virtual ~ep_group() throw() {}
-
+            
             bool linked_to(const equilibrium &eq, const imatrix &NuA) const throw()
             {
                 assert(size>0);
