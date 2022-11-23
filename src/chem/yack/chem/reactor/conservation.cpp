@@ -15,6 +15,7 @@
 #include "yack/counting/perm.hpp"
 #include "yack/sequence/list.hpp"
 #include "yack/ptr/shared.hpp"
+#include "yack/sort/indexing.hpp"
 
 #include <iomanip>
 
@@ -279,7 +280,7 @@ namespace yack
 #endif
 
 
-        bool allPos(const readable<apq> &q)
+        bool allPos(const readable<apz> &q)
         {
             for(size_t j=q.size();j>0;--j)
             {
@@ -290,38 +291,110 @@ namespace yack
             return true;
         }
 
-        typedef vector<apq>      qvec;
-        typedef shared_ptr<qvec> qvec_ptr;
-        typedef vector<qvec_ptr> qstore;
+        typedef vector<apz>      zvec;
+        typedef shared_ptr<zvec> zvec_ptr;
+        typedef vector<zvec_ptr> zstore_;
+
+        class zstore : public zstore_
+        {
+        public:
+            explicit zstore() throw() : zstore_() {}
+
+            virtual ~zstore() throw() {}
+
+            bool grow(const zvec &rhs)
+            {
+                for(size_t i=size();i>0;--i)
+                {
+                    const readable<apz> &lhs = *((*this)[i]);
+                    assert(rhs.size()==lhs.size());
+
+                    if( apk::are_prop(lhs,rhs,NULL) )
+                    {
+                        return false;
+                    }
+
+                }
+
+                const zvec_ptr zp = new zvec(rhs);
+                push_back(zp);
+                return true;
+            }
+
+
+        private:
+            YACK_DISABLE_COPY_AND_ASSIGN(zstore);
+        };
 
 
 
         static inline
-        void processWhatever(const readable<apq> &lhs,
-                             const readable<apq> &rhs)
+        void processWhatever(zstore              &pos,
+                             const readable<apz> &lhs,
+                             const readable<apz> &rhs)
         {
-            std::cerr << "testing " << lhs << "/" << rhs << std::endl;
+
+            static const unsigned has_pos = 0x01;
+            static const unsigned has_neg = 0x02;
+            static const unsigned has_mix = (has_pos|has_neg);
+            std::cerr << "  testing " << lhs << "/" << rhs << std::endl;
+
             const size_t dims = lhs.size();
-            vector<apq>  vtry(dims); assert(dims==vtry.size());
+            vector<apz>  vtry(dims);
+
             for(size_t k=1;k<=dims;++k)
             {
-                const apq &l = lhs[k];
-                const apq &r = rhs[k];
+                const apz &l = lhs[k];
+                const apz &r = rhs[k];
                 if(0==l||0==r)
                 {
                     continue;
                 }
-                std::cerr << "\t" << l << ":" << r << std::endl;
 
-                const apq a = r;
-                const apq b = -l;
-
+                const apz a  =  r;
+                const apz b  = -l;
+                unsigned  flags = 0x00;
                 for(size_t i=dims;i>0;--i)
                 {
-                    vtry[i] = a * lhs[i] + b*rhs[i];
-                }
-                std::cerr << "\t\tvtry=" << vtry << std::endl;
+                    switch( (vtry[i] = a * lhs[i] + b*rhs[i]).s )
+                    {
+                        case __zero__: break;
 
+                        case positive:
+                            flags |= has_pos;
+                            break;
+
+                        case negative:
+                            flags |= has_neg;
+                            break;
+                    }
+                }
+
+                switch(flags)
+                {
+                    case has_mix:
+                        // mixed signs vector
+                        continue;
+
+                    case has_pos:
+                        assert(allPos(vtry));
+                        break;
+
+                    case has_neg:
+                        iota::neg(vtry);
+                        assert(allPos(vtry));
+                        break;
+
+                    default:
+                        // zero vector
+                        continue;
+                }
+
+                apk::simplify(vtry);
+                if(pos.grow(vtry))
+                {
+                    std::cerr << "--> " << pos.back() << std::endl;
+                }
 
             }
         }
@@ -330,60 +403,81 @@ namespace yack
         void buildConstraintsFrom(const matrix<apq> &Q)
         {
             const size_t rows = Q.rows;
-            qstore       p; // pos
-            qstore       n; // neg
+            const size_t dims = Q.cols;
+            zstore       pos; // pos
+            zstore       neg; // neg
 
             //initialize
+            std::cerr << "<initializing space>" << std::endl;
             for(size_t i=1;i<=rows;++i)
             {
-                const qvec_ptr q = new qvec(Q[i],transmogrify);
-                if(allPos(*q))
+                zvec z(dims);
                 {
-                    std::cerr << " (+) " << q << std::endl;
-                    p.push_back(q);
+                    const readable<apq> &q = Q[i];
+                    for(size_t j=dims;j>0;--j)
+                    {
+                        z[j] = q[j].num;
+                    }
+                }
+                if(allPos(z))
+                {
+                    //std::cerr << " (+) " << z << std::endl;
+                    if(pos.grow(z))
+                    {
+                        std::cerr << " (+) " << pos.back() << std::endl;
+                    }
                 }
                 else
                 {
-                    std::cerr << " (-) " << q << std::endl;
-                    n.push_back(q);
-                }
-            }
-
-            const size_t nn = n.size();
-            for(size_t i=1;i<=nn;++i)
-            {
-                const readable<apq> &lhs = *n[i];
-                for(size_t j=i+1;j<=nn;++j)
-                {
-                    const readable<apq> &rhs = *n[j];
-                    processWhatever(lhs,rhs);
-                }
-            }
-
-
-#if 0
-            // sparse computation
-            for(size_t i=1;i<d;++i)
-            {
-                const readable<apq> &lhs = Q[i];
-                for(size_t j=i+1;j<=d;++j)
-                {
-                    const readable<apq> &rhs = Q[j];
-                    std::cerr << "testing " << lhs << "/" << rhs << std::endl;
-
-                    for(size_t k=1;k<=lhs.size();++k)
+                    //std::cerr << " (-) " << z << std::endl;
+                    if(neg.grow(z))
                     {
-                        const apq &l = lhs[k];
-                        const apq &r = rhs[k];
-                        if(0==l||0==r)
-                        {
-                            continue;
-                        }
-                        std::cerr << "\t" << l << ":" << r << std::endl;
+                        std::cerr << " (-) " << neg.back() << std::endl;
                     }
                 }
             }
-#endif
+
+            std::cerr << "<finding combinations>" << std::endl;
+            const size_t nn = neg.size();
+            for(size_t i=1;i<=nn;++i)
+            {
+                // taking a negative
+                const readable<apz> &lhs = *neg[i];
+
+                // testing it agains all remaining negative
+                for(size_t j=i+1;j<=nn;++j)
+                {
+                    const readable<apz> &rhs = *neg[j];
+                    processWhatever(pos,lhs,rhs);
+                }
+
+                // testing it agains all/newly created positive
+                for(size_t j=pos.size();j>0;--j)
+                {
+                    const readable<apz> &rhs = *pos[j];
+                    processWhatever(pos,lhs,rhs);
+                }
+            }
+
+            const size_t np = pos.size();
+            vector<apn>  wp(np);
+            for(size_t i=1;i<=np;++i)
+            {
+                const readable<apz> &z = *pos[i];
+                apn sum = 0;
+                for(size_t j=dims;j>0;--j) sum += z[j].n;
+                wp[i] = sum;
+                //std::cerr << "Z" << i << " = " << z << " //  " << sum << std::endl;
+            }
+            vector<size_t> ip(np);
+            indexing::make(ip,comparison::increasing<apn>,wp);
+
+            for(size_t i=1;i<=np;++i)
+            {
+                const size_t ii = ip[i];
+                std::cerr << "Z" << i << " = " << *pos[ii] << " //  " << wp[ii] << std::endl;
+            }
+
 
 
 
