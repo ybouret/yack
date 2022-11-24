@@ -34,9 +34,325 @@ namespace yack
             return count;
         }
 
+        static const char fn[] = "conservation";
+
+        static inline void create_ortho_family(matrix<apq> &Q, const matrix<apq> &P)
+        {
+            assert(P.cols==Q.cols);
+            assert(Q.rows==Q.cols);
+            const size_t N  = P.rows;
+            const size_t M  = P.cols;
+            const apq    _1 = 1;
+
+            matrix<apq> Pt(P,transposed);
+            matrix<apq> P2(N,N); iota::gram(P2,P);
+            crout<apq>  lu(N);   if(!lu.build(P2)) throw exception("%s: invalid matrix rank!!",fn);
+            matrix<apq> rhs(P);
+            lu.solve(P2,rhs);
+            iota::mmul(Q,Pt,rhs);
+            for(size_t i=M;i>0;--i)
+            {
+                writable<apq> &Qi = Q[i];
+                for(size_t j=M;j>i;--j)
+                {
+                    Qi[j] = -Qi[j];
+                }
+                Qi[i] = _1 - Qi[i];
+                for(size_t j=i-1;j>0;--j)
+                {
+                    Qi[j] = -Qi[j];
+                }
+                apk::simplify(Qi);
+            }
+        }
+
+        template <typename T>
+        static inline bool are_all_geqz(const readable<T> &arr)
+        {
+            for(size_t i=arr.size();i>0;--i)
+            {
+                if(arr[i]<0) return false;
+            }
+
+            return true;
+        }
+
+
+        class zvector : public object, public counted, public vector<apz>
+        {
+        public:
+            explicit zvector(const size_t M) : object(), counted(), vector<apz>(M)
+            {
+                assert(size()==M);
+            }
+
+            virtual ~zvector() throw()
+            {
+            }
+
+            zvector(const zvector &_) : object(), counted(), vector<apz>(_)
+            {
+            }
+
+            explicit zvector(const readable<apq> &q) : object(), counted(), vector<apz>(q.size())
+            {
+                for(size_t i=q.size();i>0;--i)
+                {
+                    (*this)[i] = q[i].num; assert(1==q[i].den);
+                }
+            }
+
+
+        private:
+            YACK_DISABLE_ASSIGN(zvector);
+        };
+
+
+        typedef arc_ptr<zvector> zcoeffs;
+        typedef vector<zcoeffs>  zcArray;
+
+        static inline
+        void create_positive(zcArray             &arr,
+                             const readable<apz> &lhs,
+                             const readable<apz> &rhs)
+        {
+            static const  unsigned has_pos = 0x01;
+            static const  unsigned has_neg = 0x02;
+            static const  unsigned has_mix = has_pos | has_neg;
+
+            assert( lhs.size() == rhs.size() );
+            const size_t M = lhs.size();
+            zvector      vtry(M);
+
+            //std::cerr << "testing " << lhs << " | " << rhs << std::endl;
+            for(size_t j=M;j>0;--j)
+            {
+                const apz &l = lhs[j];
+                const apz &r = rhs[j];
+                if(0==l||0==r) continue;
+
+                const apz rw   = -l;
+                const apz lw   = r;
+                size_t    np   = 0;
+                size_t    nn   = 0;
+                unsigned  flag = 0x00;
+
+                for(size_t k=M;k>0;--k)
+                {
+                    switch( (vtry[k] = lw * lhs[k] + rw * rhs[k]).s )
+                    {
+                        case __zero__:
+                            break;
+                        case positive:
+                            flag |= has_pos;
+                            ++np;
+                            break;
+
+                        case negative:
+                            flag |= has_neg;
+                            ++nn;
+                            break;
+                    }
+                }
+
+                switch(flag)
+                {
+                    case has_mix: // mixed
+                        assert(nn>0);
+                        assert(np>0);
+                        continue;
+
+                    case has_pos:
+                        assert(nn<=0);
+                        if(np>1)
+                        {
+                            const zcoeffs zc = new zvector(vtry);
+                            arr.push_back(zc);
+                            apk::simplify(*arr.back());
+                        }
+                        break;
+
+                    case has_neg:
+                        assert(np<=0);
+                        if(nn>1)
+                        {
+                            iota::neg(vtry);
+                            const zcoeffs zc = new zvector(vtry);
+                            arr.push_back(zc);
+                            apk::simplify(*arr.back());
+                        }
+                        break;
+
+
+                    default:
+                        assert(!flag);
+                        continue;
+                }
+
+                //std::cerr << "--> " << arr.back() << std::endl;
+            }
+
+
+
+        }
+
+        class zcdbase : public zcArray
+        {
+        public:
+            explicit zcdbase() throw() : zcArray() {}
+            virtual ~zcdbase() throw() {}
+
+
+            void grow(const zvector &zvec)
+            {
+                // test all combinations with previously inserted
+                zcArray arr;
+                for(size_t i=size();i>0;--i)
+                {
+                    arr.free();
+                    create_positive(arr,*(*this)[i],zvec);
+                    while(arr.size())
+                    {
+                        grow1( *arr.back() );
+                        arr.pop_back();
+                    }
+                }
+
+                // and zvec only
+                if(are_all_geqz(zvec))
+                    grow1(zvec);
+            }
+
+
+
+        private:
+            YACK_DISABLE_COPY_AND_ASSIGN(zcdbase);
+            void grow1(const zvector &zvec)
+            {
+
+                for(size_t i=size();i>0;--i)
+                {
+                    const zvector &self = *(*this)[i];
+                    if( apk::are_prop(zvec,self,NULL))
+                    {
+                        // reject if proportional to existing
+                        return;
+                    }
+                }
+
+                // no proportionality => add
+                const zcoeffs zc = new zvector(zvec);
+                push_back(zc);
+            }
+        };
+
+
+
+
+        static inline void dispatch(zcArray           &zpos,
+                                    zcArray           &zneg,
+                                    const matrix<apq> &Q,
+                                    const xmlog       &xml)
+        {
+            for(size_t i=Q.rows;i>0;--i)
+            {
+                const zcoeffs zc = new zvector(Q[i]);
+                if(are_all_geqz(*zc))
+                {
+                    YACK_XMLOG(xml, "[+] " << zc);
+                    zpos.push_back(zc);
+                }
+                else
+                {
+                    YACK_XMLOG(xml, "[-] " << zc);
+                    zneg.push_back(zc);
+                }
+            }
+        }
+
+        static inline
+        apn weight_of(const readable<apz> &z)
+        {
+            apn sum = 0;
+            for(size_t i=z.size();i>0;--i)
+            {
+                sum += z[i].n;
+            }
+            return sum;
+        }
+
+        void look_up_conservations(const matrix<apq> &Q,
+                                   const xmlog       &xml)
+        {
+            YACK_XMLSUB(xml,"lookUp");
+
+            YACK_XMLOG(xml, "-- initialize coefficients");
+            zcArray zpos;
+            zcArray zneg;
+            dispatch(zpos,zneg,Q,xml);
+
+            zcdbase db;
+            if(zpos.size()) {
+                YACK_XMLOG(xml, "-- initializing database with " << zpos.back() );
+                db.push_back( zpos.back() ); zpos.pop_back();
+            }
+
+            YACK_XMLOG(xml, "-- flushing existing positive" );
+            while( zpos.size() > 0)
+            {
+                db.grow(*zpos.back());
+                zpos.pop_back();
+            }
+
+
+            YACK_XMLOG(xml, "-- flushing existing negative" );
+            const size_t nn = zneg.size();
+            for(size_t i=1;i<=nn;++i)
+            {
+                const zvector &lhs = *zneg[i];
+                db.grow(lhs);
+
+                for(size_t j=i+1;j<=nn;++j)
+                {
+                    const zvector &rhs = *zneg[j];
+                    zcArray        arr;
+                    create_positive(arr,lhs,rhs);
+                    while(arr.size())
+                    {
+                        db.grow( *arr.back() );
+                        arr.pop_back();
+                    }
+                }
+            }
+
+            YACK_XMLOG(xml, "-- |positive| = " << db.size() );
+
+
+            const size_t n = db.size();
+            vector<apn>  w(n);
+            for(size_t i=1;i<=n;++i)
+            {
+                w[i] = weight_of(*db[i]);
+            }
+            vector<size_t> indx(n);
+            indexing::make(indx, comparison::increasing<apn>, w);
+            matrix<apq>    W(n,Q.cols);
+            for(size_t i=1;i<=n;++i)
+            {
+                const size_t ii = indx[i];
+                if(xml.verbose) std::cerr << "\tW" << i << "\t= " << db[ii] << "  // " << w[ii] << std::endl;;
+                iota::load(W[i],*db[ii]);
+            }
+            //std::cerr << "W=" << W << std::endl;
+            const size_t rank = apk::gj_rank(W);
+            std::cerr << "rank=" << rank << std::endl;
+
+        }
+
+
+
         void reactor::conservation2(const xmlog &xml)
         {
-            static const char fn[] = "conservation";
             YACK_XMLSUB(xml,fn);
 
 
@@ -86,7 +402,10 @@ namespace yack
             //------------------------------------------------------------------
             matrix<apq> P;
             {
+
+                //--------------------------------------------------------------
                 // detecting remaining equilibria
+                //--------------------------------------------------------------
                 meta_list<const equilibrium> eqdb;
                 for(const enode *en=singles.head();en;en=en->next)
                 {
@@ -104,14 +423,17 @@ namespace yack
                     }
                 }
 
+                //--------------------------------------------------------------
                 // check validity
-                if(eqdb.size<=0)
-                {
+                //--------------------------------------------------------------
+                if(eqdb.size<=0) {
                     YACK_XMLOG(xml, "-- no conservation");
                     return;
                 }
 
+                //--------------------------------------------------------------
                 // create matrix
+                //--------------------------------------------------------------
                 P.make(eqdb.size,M);
                 size_t i=1;
                 for(const meta_node<const equilibrium> *en=eqdb.head;en;en=en->next,++i)
@@ -123,7 +445,28 @@ namespace yack
             YACK_XMLOG(xml, "-- look up against Nc=" << Nc);
             if(verbose) std::cerr << "\tP=" << P << std::endl;
 
+            //------------------------------------------------------------------
+            //
+            //
+            // create orthogonal family
+            //
+            //
+            //------------------------------------------------------------------
+            matrix<apq> Q(M,M);
+            create_ortho_family(Q,P);
+            if(verbose) std::cerr << "\tQ=" << Q << std::endl;
+
+            //------------------------------------------------------------------
+            //
+            //
+            // start parsity
+            //
+            //
+            //------------------------------------------------------------------
+            look_up_conservations(Q,xml);
+
             exit(0);
+            // "@eq:-[a]+4[b]+7[c]-2[d]:1"
         }
 
 
