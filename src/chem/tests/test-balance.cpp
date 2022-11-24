@@ -46,6 +46,9 @@ YACK_UTEST(balance)
     std::cerr << std::endl;
 
     reactor        cs(lib,eqs,0.0);
+    return 0;
+
+
     const size_t   M  = cs.M;
     const size_t   N  = cs.N;
     const matrix<double>  NuT(cs.Nu,transposed);

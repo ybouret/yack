@@ -44,6 +44,10 @@ namespace yack
 
         Nu(N,N>0?M:0),
         NuA(Nu.rows,Nu.cols),
+
+        Nc(0),
+        Qc(),
+
         Bal(Nu.cols,Nu.rows),
         Psi(Nu.rows,Nu.cols),
         Omega(N,N),
@@ -237,7 +241,7 @@ namespace yack
                 }
 
 
-                conservation2(xml);
+                conservation(xml);
 
             }
 

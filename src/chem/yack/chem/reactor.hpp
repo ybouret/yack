@@ -29,8 +29,8 @@ namespace yack
             YACK_DISABLE_COPY_AND_ASSIGN(conserve);
         };
 
-        typedef arc_ptr<conserve> constraint; //!< alias
-
+        typedef arc_ptr<conserve>  constraint;  //!< alias
+        typedef vector<constraint> constraints; //!< alias
 
         //______________________________________________________________________
         //
@@ -42,6 +42,7 @@ namespace yack
         typedef tableaux::array_type tableau;  //!< alias
         typedef matrix<int>          imatrix;  //!< alias
         typedef matrix<double>       rmatrix;  //!< alias
+        typedef matrix<unsigned>     umatrix;  //!< alias
         class outcome;
 
         //______________________________________________________________________
@@ -157,8 +158,7 @@ namespace yack
             rmulops             xmul;     //!< for mulops
             raddops             xadd;     //!< for addops
             math::crout<double> solv;     //!< for linear system solving
-            vector<constraint>  cnsv;     //!< WIP
-            
+
         private:
             const library     worklib; //!< copy of corelib
             tableaux          mtab;    //!< [M]-sized
@@ -168,6 +168,9 @@ namespace yack
         public:
             const imatrix      Nu;      //!< [NxM] topology
             imatrix            NuA;     //!< [NXM] topology of non-blocked equilibria
+            const size_t       Nc;      //!< number of conservation law
+            const umatrix      Qc;      //!< [NcxM] conservation matrix
+            const constraints  Qv;      //!< [Nc]   conservation laws
             imatrix            Bal;     //!< [MxN] balancing directions
             rmatrix            Psi;     //!< [NxM] jacobian
             rmatrix            Omega;   //!< [NxN] coupling
@@ -199,8 +202,7 @@ namespace yack
             void                       buildRelated();                           //!< build global partitions
             void                       makeManifold(const xmlog &);              //!< build all solving partitions
             void                       conservation(const xmlog &);
-            void                       conservation2(const xmlog &);
-
+            
             bool                       returnSolved(writable<double> &C0, const xmlog&); //!< upon successful return
             double                     Hamiltonian(const readable<double> &C);           //!< a molar hamiltonian
             double                     Hamiltonian(const group &g);                      //!< build a Ctry from Corg and a group

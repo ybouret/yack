@@ -454,7 +454,7 @@ namespace yack
 
 
 
-        void reactor::conservation2(const xmlog &xml)
+        void reactor::conservation(const xmlog &xml)
         {
             YACK_XMLSUB(xml,fn);
 
@@ -566,9 +566,8 @@ namespace yack
             //
             //
             //------------------------------------------------------------------
-            matrix<unsigned> F;
-            look_up_conservations(F,Q,xml);
-            std::cerr << "F=" << F << std::endl;
+            look_up_conservations(coerce(Qc),Q,xml);
+            std::cerr << "Qc=" << Qc << std::endl;
             std::cerr << "Nu=" << Nu << std::endl;
 
             //------------------------------------------------------------------
@@ -578,20 +577,21 @@ namespace yack
             //
             //
             //------------------------------------------------------------------
-            const size_t nc = F.rows;
-            for(size_t i=1;i<=nc;++i)
+            coerce(Nc)               = Qc.rows;
+            sequence<constraint> &cc = coerce(Qv);
+            cc.reserve(Nc);
+            for(size_t i=1;i<=Nc;++i)
             {
                 constraint A = new conserve();
                 for(const anode *an=working.head;an;an=an->next)
                 {
                     const species &s  = **an;
-                    const unsigned w = F[i][*s];
-                    if(w)
-                        (*A)(s,w);
+                    const unsigned w = Qc[i][*s];
+                    if(w) (*A)(s,w);
                 }
 
                 std::cerr << "constraint: d(" << A << ")=0" << std::endl;
-                cnsv.push_back(A);
+                cc.push_back(A);
             }
 
 
