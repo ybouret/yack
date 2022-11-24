@@ -23,7 +23,11 @@ namespace yack
 
     namespace chemical
     {
-
+        //----------------------------------------------------------------------
+        //
+        // counting coefficients != 0
+        //
+        //----------------------------------------------------------------------
         template <typename T>
         static inline size_t get_coeff_count(const readable<T> &nu) throw()
         {
@@ -35,9 +39,14 @@ namespace yack
             return count;
         }
 
-        static const char fn[] = "conservation";
-
-        static inline void create_ortho_family(matrix<apq> &Q, const matrix<apq> &P)
+        //----------------------------------------------------------------------
+        //
+        // algebra orthogonal family, simplified to co-prime integers
+        //
+        //----------------------------------------------------------------------
+        static const  char fn[] = "conservation";
+        static inline void create_ortho_family(matrix<apq>       &Q,
+                                               const matrix<apq> &P)
         {
             assert(P.cols==Q.cols);
             assert(Q.rows==Q.cols);
@@ -67,6 +76,12 @@ namespace yack
             }
         }
 
+
+        //----------------------------------------------------------------------
+        //
+        // test that all coefficients are >= 0
+        //
+        //----------------------------------------------------------------------
         template <typename T>
         static inline bool are_all_geqz(const readable<T> &arr)
         {
@@ -78,7 +93,11 @@ namespace yack
             return true;
         }
 
-
+        //----------------------------------------------------------------------
+        //
+        // vector of apz
+        //
+        //----------------------------------------------------------------------
         class zvector : public object, public counted, public vector<apz>
         {
         public:
@@ -112,6 +131,12 @@ namespace yack
         typedef arc_ptr<zvector> zcoeffs;
         typedef vector<zcoeffs>  zcArray;
 
+        //----------------------------------------------------------------------
+        //
+        // create local repository
+        // of all possible positive sparse combinations
+        //
+        //----------------------------------------------------------------------
         static inline
         void create_positive(zcArray             &arr,
                              const readable<apz> &lhs,
@@ -125,25 +150,34 @@ namespace yack
             const size_t M = lhs.size();
             zvector      vtry(M);
 
-            //std::cerr << "testing " << lhs << " | " << rhs << std::endl;
+            //------------------------------------------------------------------
+            // loop over coefficients
+            //------------------------------------------------------------------
             for(size_t j=M;j>0;--j)
             {
+                //--------------------------------------------------------------
+                // initialize
+                //--------------------------------------------------------------
                 const apz &l = lhs[j];
                 const apz &r = rhs[j];
-                if(0==l||0==r) continue;
+                if(0==l||0==r) continue; // no combination
 
-                const apz rw   = -l;
-                const apz lw   = r;
-                size_t    np   = 0;
-                size_t    nn   = 0;
-                unsigned  flag = 0x00;
+                const apz rw   = -l;   // right weight
+                const apz lw   = r;    // left  weight
+                size_t    np   = 0;    // |positive|
+                size_t    nn   = 0;    // |negative|
+                unsigned  flag = 0x00; // status
 
+                //--------------------------------------------------------------
+                // create combination
+                //--------------------------------------------------------------
                 for(size_t k=M;k>0;--k)
                 {
                     switch( (vtry[k] = lw * lhs[k] + rw * rhs[k]).s )
                     {
                         case __zero__:
                             break;
+
                         case positive:
                             flag |= has_pos;
                             ++np;
@@ -156,6 +190,9 @@ namespace yack
                     }
                 }
 
+                //--------------------------------------------------------------
+                // study result
+                //--------------------------------------------------------------
                 switch(flag)
                 {
                     case has_mix: // mixed
@@ -190,19 +227,23 @@ namespace yack
                         continue;
                 }
 
-                //std::cerr << "--> " << arr.back() << std::endl;
             }
 
 
 
         }
 
+
+        //----------------------------------------------------------------------
+        //
+        // database of coefficients
+        //
+        //----------------------------------------------------------------------
         class zcdbase : public zcArray
         {
         public:
             explicit zcdbase() throw() : zcArray() {}
             virtual ~zcdbase() throw() {}
-
 
             void grow(const zvector &zvec)
             {
@@ -249,11 +290,16 @@ namespace yack
 
 
 
-
-        static inline void dispatch(zcArray           &zpos,
-                                    zcArray           &zneg,
-                                    const matrix<apq> &Q,
-                                    const xmlog       &xml)
+        //----------------------------------------------------------------------
+        //
+        // initial dispatch of possible combinations
+        //
+        //----------------------------------------------------------------------
+        static inline
+        void dispatch(zcArray           &zpos,
+                      zcArray           &zneg,
+                      const matrix<apq> &Q,
+                      const xmlog       &xml)
         {
             for(size_t i=Q.rows;i>0;--i)
             {
@@ -272,17 +318,29 @@ namespace yack
             }
         }
 
+        //----------------------------------------------------------------------
+        //
+        // weight is norm1 of (positive!) coefficients
+        //
+        //----------------------------------------------------------------------
         static inline
         apn weight_of(const readable<apz> &z)
         {
             apn sum = 0;
             for(size_t i=z.size();i>0;--i)
             {
+                assert(z[i]>=0);
                 sum += z[i].n;
             }
             return sum;
         }
 
+
+        //----------------------------------------------------------------------
+        //
+        // find all sparse conservations
+        //
+        //----------------------------------------------------------------------
         void look_up_conservations(matrix<unsigned>  &F,
                                    const matrix<apq> &Q,
                                    const xmlog       &xml)
@@ -291,7 +349,9 @@ namespace yack
             assert(F.rows==0);
             assert(F.cols==0);
 
+            //------------------------------------------------------------------
             YACK_XMLOG(xml, "-- initialize coefficients");
+            //------------------------------------------------------------------
             zcArray zpos;
             zcArray zneg;
             dispatch(zpos,zneg,Q,xml);
@@ -302,15 +362,18 @@ namespace yack
                 db.push_back( zpos.back() ); zpos.pop_back();
             }
 
+            //------------------------------------------------------------------
             YACK_XMLOG(xml, "-- flushing existing positive" );
+            //------------------------------------------------------------------
             while( zpos.size() > 0)
             {
                 db.grow(*zpos.back());
                 zpos.pop_back();
             }
 
-
+            //------------------------------------------------------------------
             YACK_XMLOG(xml, "-- flushing existing negative" );
+            //------------------------------------------------------------------
             const size_t nn = zneg.size();
             for(size_t i=1;i<=nn;++i)
             {
@@ -332,15 +395,25 @@ namespace yack
 
             YACK_XMLOG(xml, "-- |positive| = " << db.size() );
 
-
+            //------------------------------------------------------------------
+            // computing weight of each combination
+            //------------------------------------------------------------------
             const size_t n = db.size();
             vector<apn>  w(n);
             for(size_t i=1;i<=n;++i)
             {
                 w[i] = weight_of(*db[i]);
             }
+
+            //------------------------------------------------------------------
+            // indexing
+            //------------------------------------------------------------------
             vector<size_t> indx(n);
             indexing::make(indx, comparison::increasing<apn>, w);
+
+            //------------------------------------------------------------------
+            // computing rank
+            //------------------------------------------------------------------
             matrix<apq>    W(n,Q.cols);
             for(size_t i=1;i<=n;++i)
             {
@@ -348,12 +421,14 @@ namespace yack
                 if(xml.verbose) std::cerr << "\tW" << i << "\t= " << db[ii] << "  // " << w[ii] << std::endl;;
                 iota::load(W[i],*db[ii]);
             }
-            //std::cerr << "W=" << W << std::endl;
             const size_t rank = apk::gj_rank(W);
             YACK_XMLOG(xml, "-- |rank|     = " << rank);
 
             if(rank)
             {
+                //--------------------------------------------------------------
+                // extract a maximal matrix with smallest weight
+                //--------------------------------------------------------------
                 const size_t M = Q.cols;
                 F.make(rank,M);
                 size_t i=0;
@@ -368,10 +443,8 @@ namespace yack
                 for(size_t j=M;j>0;--j) Fi[j] = Wk[j].cast_to<unsigned>();
                 if( apk::gj_rank_of(F) < i )
                     goto NEXT_K;
-
                 if(i<rank)
                     goto NEXT_I;
-
             }
 
         }
@@ -495,6 +568,13 @@ namespace yack
             std::cerr << "F=" << F << std::endl;
             std::cerr << "Nu=" << Nu << std::endl;
 
+            //------------------------------------------------------------------
+            //
+            //
+            // convert to human readable constraints
+            //
+            //
+            //------------------------------------------------------------------
             const size_t nc = F.rows;
             for(size_t i=1;i<=nc;++i)
             {
