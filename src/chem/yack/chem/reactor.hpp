@@ -1,4 +1,3 @@
-
 //! \file
 
 #ifndef YACK_CHEMICAL_REACTOR_INCLUDED
@@ -9,6 +8,7 @@
 #include "yack/chem/eqs/groups.hpp"
 #include "yack/sequence/arrays.hpp"
 #include "yack/math/algebra/crout.hpp"
+#include "yack/chem/reactor/involved.hpp"
 
 namespace yack
 {
@@ -45,64 +45,7 @@ namespace yack
         typedef matrix<unsigned>     umatrix;  //!< alias
         class outcome;
 
-        //______________________________________________________________________
-        //
-        //
-        // types for list of involved equilibria
-        //
-        //______________________________________________________________________
-        typedef meta_list<const equilibrium>       islot_; //!< alias for list of involved equilibri(um|a)
-
-        //______________________________________________________________________
-        //
-        //! derived meta list of equilibria
-        //______________________________________________________________________
-        class islot : public islot_
-        {
-        public:
-            //__________________________________________________________________
-            //
-            // C++
-            //__________________________________________________________________
-            explicit islot() throw() : islot_() {}        //!< setup
-            virtual ~islot() throw() {}                   //!< cleanup
-            islot(const islot &other) : islot_(other) {}  //!< copy
-
-            //__________________________________________________________________
-            //
-            // methods
-            //__________________________________________________________________
-
-            //! display as list
-            friend std::ostream & operator<<(std::ostream &os, const islot &self)
-            {
-                const node_type *node = self.head;
-                if(node)
-                {
-                    os << "{ " << (**node).name;
-                    for(node=node->next;node;node=node->next)
-                    {
-                        os << ", " << (**node).name;
-                    }
-                    os << " }";
-                }
-                else
-                {
-                    os << "{}";
-                }
-                return os;
-            }
-
-        private:
-            YACK_DISABLE_ASSIGN(islot);
-        };
-
-        typedef islot::node_type                   inode; //!< alias for node of involved equilirium
-        typedef vector<const islot,memory::dyadic> slots; //!< alias
-
-
-
-
+        
         //______________________________________________________________________
         //
         //
