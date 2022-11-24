@@ -414,20 +414,23 @@ namespace yack
             //------------------------------------------------------------------
             // computing rank
             //------------------------------------------------------------------
-            matrix<apq>    W(n,Q.cols);
-            for(size_t i=1;i<=n;++i)
+            size_t rank = 0;
             {
-                const size_t ii = indx[i];
-                if(xml.verbose) std::cerr << "\tW" << i << "\t= " << db[ii] << "  // " << w[ii] << std::endl;;
-                iota::load(W[i],*db[ii]);
+                matrix<apq>    W(n,Q.cols);
+                for(size_t i=1;i<=n;++i)
+                {
+                    const size_t ii = indx[i];
+                    if(xml.verbose) std::cerr << "\tW" << i << "\t= " << db[ii] << "  // " << w[ii] << std::endl;;
+                    iota::load(W[i],*db[ii]);
+                }
+                rank = apk::gj_rank(W);
             }
-            const size_t rank = apk::gj_rank(W);
             YACK_XMLOG(xml, "-- |rank|     = " << rank);
 
             if(rank)
             {
                 //--------------------------------------------------------------
-                // extract a maximal matrix with smallest weight
+                // extract a maximal matrix with smallest weights
                 //--------------------------------------------------------------
                 const size_t M = Q.cols;
                 F.make(rank,M);
@@ -592,7 +595,6 @@ namespace yack
             }
 
 
-            exit(0);
             // "@eq:-[a]+4[b]+7[c]-2[d]:1"
         }
 
