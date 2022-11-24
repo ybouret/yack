@@ -24,12 +24,13 @@ namespace yack
     namespace chemical
     {
 
-        static inline size_t get_coeff_count(const readable<int> &nu) throw()
+        template <typename T>
+        static inline size_t get_coeff_count(const readable<T> &nu) throw()
         {
             size_t     count = 0;
             for(size_t j=nu.size();j>0;--j)
             {
-                if(nu[j]) ++count;
+                if(nu[j]!=0) ++count;
             }
             return count;
         }
@@ -257,6 +258,7 @@ namespace yack
             for(size_t i=Q.rows;i>0;--i)
             {
                 const zcoeffs zc = new zvector(Q[i]);
+                if(get_coeff_count(*zc) <= 1) continue;
                 if(are_all_geqz(*zc))
                 {
                     YACK_XMLOG(xml, "[+] " << zc);
@@ -281,10 +283,13 @@ namespace yack
             return sum;
         }
 
-        void look_up_conservations(const matrix<apq> &Q,
+        void look_up_conservations(matrix<unsigned>  &F,
+                                   const matrix<apq> &Q,
                                    const xmlog       &xml)
         {
             YACK_XMLSUB(xml,"lookUp");
+            assert(F.rows==0);
+            assert(F.cols==0);
 
             YACK_XMLOG(xml, "-- initialize coefficients");
             zcArray zpos;
@@ -345,7 +350,29 @@ namespace yack
             }
             //std::cerr << "W=" << W << std::endl;
             const size_t rank = apk::gj_rank(W);
-            std::cerr << "rank=" << rank << std::endl;
+            YACK_XMLOG(xml, "-- |rank|     = " << rank);
+
+            if(rank)
+            {
+                const size_t M = Q.cols;
+                F.make(rank,M);
+                size_t i=0;
+                size_t k=0;
+
+            NEXT_I:
+                ++i;
+                writable<unsigned>  &Fi = F[i];
+            NEXT_K:
+                ++k;
+                const readable<apz>     &Wk   = *db[ indx[k] ];
+                for(size_t j=M;j>0;--j) Fi[j] = Wk[j].cast_to<unsigned>();
+                if( apk::gj_rank_of(F) < i )
+                    goto NEXT_K;
+
+                if(i<rank)
+                    goto NEXT_I;
+
+            }
 
         }
 
@@ -463,7 +490,27 @@ namespace yack
             //
             //
             //------------------------------------------------------------------
-            look_up_conservations(Q,xml);
+            matrix<unsigned> F;
+            look_up_conservations(F,Q,xml);
+            std::cerr << "F=" << F << std::endl;
+            std::cerr << "Nu=" << Nu << std::endl;
+
+            const size_t nc = F.rows;
+            for(size_t i=1;i<=nc;++i)
+            {
+                constraint A = new conserve();
+                for(const anode *an=working.head;an;an=an->next)
+                {
+                    const species &s  = **an;
+                    const unsigned w = F[i][*s];
+                    if(w)
+                        (*A)(s,w);
+                }
+
+                std::cerr << "constraint: d(" << A << ")=0" << std::endl;
+                cnsv.push_back(A);
+            }
+
 
             exit(0);
             // "@eq:-[a]+4[b]+7[c]-2[d]:1"
