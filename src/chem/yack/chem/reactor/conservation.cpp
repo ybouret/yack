@@ -485,7 +485,10 @@ namespace yack
                     set_not_conserved(NuA,j);
                 }
 
+                std::cerr << "Nu =" << Nu  << std::endl;
                 std::cerr << "NuA=" << NuA << std::endl;
+
+                exit(0);
 
                 if(!sdb.size())
                 {
@@ -692,10 +695,9 @@ namespace yack
                         matrix<apq> adjP2(rows,rows);
                         lu.adjoint(adjP2,P2);
 
-                        matrix<apq> adjP3(rows,cols);
-                        iota::mmul(adjP3,adjP2,P);
-                        matrix<apq> invP(cols,cols);
-                        iota::mmul(invP,Pt,adjP3);
+                        matrix<apq> adjP3(rows,cols); iota::mmul(adjP3,adjP2,P);
+                        matrix<apq> invP(cols,cols);  iota::mmul(invP,Pt,adjP3);
+
 
                         for(size_t i=cols;i>0;--i)
                         {

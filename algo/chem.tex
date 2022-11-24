@@ -103,6 +103,56 @@ We define the Jacobian matrix:
 	\lbrack \partial_{A_j}\Gamma_i \rbrack
 \end{equation}
 
+\section{Conservation}
+
+Let $\bm{P}$ be a the $\bm{\nu}$.
+
+A conservation law $\vec{\alpha}\in\mathbb{R}++^*$ is such that:
+\begin{equation}
+	\forall \vec{\xi} \in \mathbb{R}^N, \;\; \langle \vec{\alpha} \vert \bm{\nu}^t \vec{\xi} \rangle = 0
+\end{equation}
+
+To find such a condition, we form the matrix $\bm{P}$ with is $\bm{\nu}$ from which we removed the species
+which cannot be conserved, and from which we removed the line of the non-conservative equilibria, 
+such that $\bm{P}$ is left with $N'$ independent rows.
+\begin{equation}
+\left \lbrace
+\begin{array}{rcl}
+\delta\vec{C} & = & \bm{P}^t\vec{u} + \bm{P}_\perp^t \vec{v} \\
+\bm{P}       & \in & \mathcal{M}_{N',M}\\
+\vec{u}      & \in & \mathbb{R}^{N'}\\
+\bm{P}_\perp & \in & \mathcal{M}_{M-N',M}\\
+\vec{v}      & \in & \mathbb{R}^{M-N'}     \\
+\end{array}
+\right .
+\end{equation}
+
+If it exists, then $\vec{\alpha}$ must be in the span of $\bm{P}_\perp^t$, namely $\mathrm{Im}\left(\bm{P}_\perp^t\right)$.
+
+\begin{equation}
+	\bm{P} \delta \vec{C} = \bm{P}\bm{P}^t\vec{u}
+	 \Rightarrow \vec{u} = \left(\bm{P}\bm{P}^t\right)^{-1} \bm{P} \delta \vec{C}
+\end{equation}
+
+\begin{equation}
+	\delta\vec{C} =  \bm{P}^t\left(\bm{P}\bm{P}^t\right)^{-1} \bm{P} \delta \vec{C} + \bm{P}_\perp^t \vec{v}\\
+\end{equation}
+	
+\begin{equation}
+	\bm{P}_\perp^t \vec{v} = 
+	\underbrace{\left\lbrack \bm{I}_M - \bm{P}^t\left(\bm{P}\bm{P}^t\right)^{-1} \bm{P} \right\rbrack}_{\bm{Q}^t} \delta\vec{C}
+\end{equation}
+
+\begin{equation}
+	\mathrm{Im}\left(\bm{P}_\perp^t\right) = \mathrm{Im}\left(\bm{\tilde Q}^t\right) \text{ and }
+	\mathrm{rank}(\bm{P}_\perp) = \mathrm{rank}(\bm{\tilde Q})
+\end{equation}
+
+Consequently, if it existe, any vector $\vec{\alpha}$ is a combination of the rows of $\bm{\tilde Q}$.
+Since $\bm{\nu}$ has its coefficients in $\mathbb{N}$ of $\mathbb{Q}$, we simplify each row of 
+$\bm{\tilde Q}$ into a row of proportional integers to form the simplified matrix $\bm{Q}$.
+
+
 \section{Balancing}
 
 Let $b(C)$ be a function which is minimal when $C$ is positive, and increasingly positive otherwise.
