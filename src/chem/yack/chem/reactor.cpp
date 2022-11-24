@@ -243,6 +243,11 @@ namespace yack
 
                 conservation(xml);
 
+                std::cerr << "#working = " << working.size   << std::endl;
+                std::cerr << "#singles = " << singles.size() << std::endl;
+                std::cerr << "#conserv = " << Qv.size()      << std::endl;
+
+                singles.graphviz("singles.dot", corelib);
             }
 
             

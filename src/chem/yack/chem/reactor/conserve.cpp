@@ -590,7 +590,8 @@ namespace yack
                     if(w) (*A)(s,w);
                 }
 
-                std::cerr << "constraint: d(" << A << ")=0" << std::endl;
+                YACK_XMLOG(xml, "-- @  d(" << A << ")=0" );
+                
                 cc.push_back(A);
             }
 

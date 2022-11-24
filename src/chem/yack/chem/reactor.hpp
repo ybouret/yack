@@ -43,7 +43,7 @@ namespace yack
         typedef matrix<int>          imatrix;  //!< alias
         typedef matrix<double>       rmatrix;  //!< alias
         typedef matrix<unsigned>     umatrix;  //!< alias
-        class outcome;
+        class   outcome;
 
         
         //______________________________________________________________________
