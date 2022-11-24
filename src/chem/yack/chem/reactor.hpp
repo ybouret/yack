@@ -199,6 +199,7 @@ namespace yack
             void                       buildRelated();                           //!< build global partitions
             void                       makeManifold(const xmlog &);              //!< build all solving partitions
             void                       conservation(const xmlog &);
+            void                       conservation2(const xmlog &);
 
             bool                       returnSolved(writable<double> &C0, const xmlog&); //!< upon successful return
             double                     Hamiltonian(const readable<double> &C);           //!< a molar hamiltonian
