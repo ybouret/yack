@@ -577,26 +577,29 @@ namespace yack
             //
             //
             //------------------------------------------------------------------
-            coerce(Nc) = Qc.rows;
-            sequence<constraint> &cc = coerce(Qv);
-            cc.reserve(Nc);
+            coerce(Nc)               = Qc.rows;
+            sequence<constraint> &cc = coerce(Qv);  cc.reserve(Nc);
             for(size_t i=1;i<=Nc;++i)
             {
-                constraint A = new restriction();
+                constraint   rc = new restriction();
+                restriction &rs = *rc;
                 for(const anode *an=working.head;an;an=an->next)
                 {
                     const species &s  = **an;
                     const unsigned w = Qc[i][*s];
-                    if(w) (*A)(s,w);
+                    if(w) rs(s,w);
                 }
 
-                YACK_XMLOG(xml, "-- @  d(" << A << ")=0" );
-                cc.push_back(A);
+                YACK_XMLOG(xml, "-- @  d(" << rs << ")=0" );
+                cc.push_back(rc);
                 if(!cc.back()->compile(i)) {
                     throw exception("%s: unexpected empty restriction!!",fn);
                 }
+
+
             }
 
+            
 
             //------------------------------------------------------------------
             //
@@ -606,6 +609,7 @@ namespace yack
             //
             //------------------------------------------------------------------
             Cc.make(Nc,M);
+            Qb.make(Nc,false);
 
 
 

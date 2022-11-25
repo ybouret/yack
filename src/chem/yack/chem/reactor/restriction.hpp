@@ -21,14 +21,23 @@ namespace yack
 
             bool compile(const size_t idx) throw();
 
+
+            double compute(const readable<double> &source,
+                           raddops                &xadd) const throw();
+
             //! apply restriction
             /**
              target <- source
              */
             double apply(writable<double>       &target,
                          const readable<double> &source,
-                         raddops                &xadd) const;
+                         raddops                &xadd) const throw();
 
+
+
+            bool overlaps(const restriction &other) const throw();
+
+            size_t operator*() const throw();
 
         private:
             YACK_DISABLE_COPY_AND_ASSIGN(restriction);
@@ -37,23 +46,8 @@ namespace yack
         };
 
         
-        typedef meta_list<const restriction> rs_list;
-        typedef rs_list::node_type           rs_node;
+        
 
-        class rs_group : public object, public rs_list
-        {
-        public:
-            explicit rs_group() throw();
-            virtual ~rs_group() throw();
-
-            rs_group *next;
-            rs_group *prev;
-
-        private:
-            YACK_DISABLE_COPY_AND_ASSIGN(rs_group);
-        };
-
-        typedef cxx_list_of<rs_group> rs_groups;
 
     }
 }

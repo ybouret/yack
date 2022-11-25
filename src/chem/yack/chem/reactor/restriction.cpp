@@ -16,7 +16,7 @@ namespace yack
 
         bool restriction:: compile(const size_t indx) throw()
         {
-            assert(ii>0);
+            assert(indx>0);
             {
                 unsigned &sum = coerce(q2);
                 sum = 0;
@@ -28,18 +28,26 @@ namespace yack
 
         }
 
-        double restriction:: apply(writable<double>       &target,
-                                   const readable<double> &source,
-                                   raddops                &xadd) const
+
+        double restriction:: compute(const readable<double> &source,
+                                     raddops                &xadd) const throw()
         {
-            assert(q2>0);
-            iota::load(target,source);
             xadd.free();
             for(const actor *a=(*this)->head;a;a=a->next)
             {
                 xadd.push( a->nu * source[ ***a ] );
             }
-            const double value = xadd.get();
+            return xadd.get();
+        }
+
+
+        double restriction:: apply(writable<double>       &target,
+                                   const readable<double> &source,
+                                   raddops                &xadd) const throw()
+        {
+            assert(q2>0);
+            iota::load(target,source);
+            const double value = compute(source,xadd);
             if(value>=0)
             {
                 return 0;
@@ -55,24 +63,25 @@ namespace yack
             }
         }
 
+        size_t restriction:: operator*() const throw() { return ii; }
 
 
-    }
-
-}
-
-namespace yack
-{
-
-    namespace chemical
-    {
-
-        rs_group:: rs_group() throw() : object(), rs_list(), next(0), prev(0) {}
-
-        rs_group:: ~rs_group() throw()
+        bool restriction:: overlaps(const restriction &other) const throw()
         {
+            for(const actor *lhs=(*this)->head;lhs;lhs=lhs->next)
+            {
+                const species &l = **lhs;
+                for(const actor *rhs=other->head;rhs;rhs=rhs->next)
+                {
+                    const species &r = **rhs;
+                    if( &l == &r ) return true;
+                }
+            }
+            return false;
         }
-        
+
+
     }
 
 }
+

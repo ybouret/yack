@@ -24,21 +24,21 @@ void buildC(writable<double> &C, const library &lib, randomized::bits &ran)
 
 }
 
+#include "yack/ios/xmlog.hpp"
+
 YACK_UTEST(balance)
 {
-
     entity::verbose = environment::flag("VERBOSE");
     randomized::rand_  ran;
     library            lib;
     luaEquilibria      eqs;
     rmulops            xmul;
     raddops            xadd;
+    const xmlog        xml("[test.balance]",std::cerr,entity::verbose);
 
     for(int i=1;i<argc;++i)
     {
         eqs(lib,argv[i]);
-
-
     }
 
     std::cerr << "[[ LIBRARY ]]" << std::endl;
@@ -63,12 +63,7 @@ YACK_UTEST(balance)
             buildC(Corg,lib,ran);
             lib(std::cerr << "Corg=","",Corg);
 
-            for(size_t i=1;i<=cs.Nc;++i)
-            {
-                const restriction &rs = *cs.Qv[i];
-                const double       xs = rs.apply(cs.Cc[i],Corg,cs.xadd);
-                std::cerr << std::setw(15) << xs << " @" << cs.Cc[i] << " <== " << rs << std::endl;
-            }
+            cs.apply_restrictions(Corg,xml);
 
 
             exit(0);
