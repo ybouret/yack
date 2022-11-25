@@ -41,6 +41,7 @@ namespace yack
         mtab(12,M),
         ntab(12,N),
         ltab(12,L),
+        rtab(12,0),
 
         Nu(N,N>0?M:0),
         NuA(Nu.rows,Nu.cols),
@@ -48,7 +49,9 @@ namespace yack
         Nc(0),
         Qc(),
         Qv(),
-        Cc(),
+        Qb( rtab.next(), transmogrify),
+        Qg( rtab.next() ),
+        Qm(),
 
         Bal(Nu.cols,Nu.rows),
         Psi(Nu.rows,Nu.cols),

@@ -13,13 +13,14 @@ namespace yack
     {
 
 
-        void reactor:: apply_restrictions(writable<double> &C0, const xmlog &xml)
+        double reactor:: apply_laws(writable<double> &C0, const xmlog &xml)
         {
             YACK_XMLSUB(xml,"apply_restrictions");
 
             corelib(std::cerr << "Cin=","",C0);
 
             Qb.ld(true);
+            Qg.ld(0);
 
         CYCLE:
             double             gain = -1;
@@ -31,7 +32,7 @@ namespace yack
                     continue;
                 }
                 const restriction &rs = *Qv[i]; assert(*rs==i);
-                const double       rg =  rs.apply(Cc[*rs],C0,xadd);
+                const double       rg =  rs.apply(Qm[*rs],C0,xadd);
                 std::cerr << std::setw(15) << rg << " @" << rs << std::endl;
                 if( rg>0 && (gain<0 || rg<gain) )
                 {
@@ -45,17 +46,14 @@ namespace yack
             {
                 YACK_XMLOG(xml, "-- gain = " << std::setw(15) << gain << " @" << *best);
                 const size_t i = **best;
-                iota::load(C0,Cc[i]);
+                iota::load(C0,Qm[i]);
                 Qb[i] = false;
+                Qg[i] = gain;
                 goto CYCLE;
             }
 
             corelib(std::cerr << "Cout=","",C0);
-
-
-
-            exit(0);
-
+            return xadd.tableau(Qg);
         }
 
     }

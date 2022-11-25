@@ -64,7 +64,7 @@ namespace yack
                              const equilibria &,
                              const double     t); //!< setup
 
-            void apply_restrictions(writable<double> &C0, const xmlog &);
+            double apply_laws(writable<double> &C0, const xmlog &);
 
 
             //! balance concentrations
@@ -102,15 +102,17 @@ namespace yack
             tableaux          mtab;    //!< [M]-sized
             tableaux          ntab;    //!< [N]-sized
             tableaux          ltab;    //!< [L]-sized
-            
+            tableaux          rtab;    //!< [Nc]-sized
+
         public:
             const imatrix      Nu;      //!< [NxM] topology
             imatrix            NuA;     //!< [NXM] topology of non-blocked equilibria
             const size_t       Nc;      //!< number of conservation law
             const umatrix      Qc;      //!< [NcxM] conservation matrix
             const constraints  Qv;      //!< [Nc]   conservation laws
-            vector<bool>       Qb;      //!< [Nc]   for algorithm
-            rmatrix            Cc;      //!< [NcxM] target concentrations
+            thin_array<bool>   Qb;      //!< [Nc]   for algorithm
+            tableau           &Qg;      //!< [Nc]   for gain
+            rmatrix            Qm;      //!< [NcxM] target concentrations
             
             imatrix            Bal;     //!< [MxN] balancing directions
             rmatrix            Psi;     //!< [NxM] jacobian

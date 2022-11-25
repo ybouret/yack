@@ -608,8 +608,9 @@ namespace yack
             //
             //
             //------------------------------------------------------------------
-            Cc.make(Nc,M);
-            Qb.make(Nc,false);
+            Qm.make(Nc,M);
+            rtab.make(Nc);
+            Qb.relink<bool>();
 
 
 
