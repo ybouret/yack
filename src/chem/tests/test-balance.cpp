@@ -56,7 +56,7 @@ YACK_UTEST(balance)
     vector<double> Corg(M,0);
     vector<double> xi(N,0);
 
-    if(true)
+    if(false)
     {
         for(size_t iter=0;iter<10;++iter)
         {
@@ -66,7 +66,6 @@ YACK_UTEST(balance)
             cs.apply_restrictions(Corg,xml);
 
 
-            exit(0);
 
 
             if( cs.balance(Corg) )
@@ -92,8 +91,11 @@ YACK_UTEST(balance)
     Corg.ld(0);
     //lib.fill(Corg,ran);
     iota::muladd(Corg, NuT, xi, cs.xadd);
-    
     lib(std::cerr << "Corg=","",Corg);
+    cs.apply_restrictions(Corg,xml);
+
+    exit(0);
+
     if( cs.balance(Corg) )
     {
         lib(std::cerr << "Cbal=","",Corg);

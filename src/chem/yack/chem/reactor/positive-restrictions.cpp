@@ -17,6 +17,8 @@ namespace yack
         {
             YACK_XMLSUB(xml,"apply_restrictions");
 
+            corelib(std::cerr << "Cin=","",C0);
+
             Qb.ld(true);
 
         CYCLE:
@@ -24,7 +26,10 @@ namespace yack
             const restriction *best = NULL;
             for(size_t i=Nc;i>0;--i)
             {
-                if(!Qb[i]) continue;
+                if(!Qb[i])
+                {
+                    continue;
+                }
                 const restriction &rs = *Qv[i]; assert(*rs==i);
                 const double       rg =  rs.apply(Cc[*rs],C0,xadd);
                 std::cerr << std::setw(15) << rg << " @" << rs << std::endl;
@@ -44,6 +49,10 @@ namespace yack
                 Qb[i] = false;
                 goto CYCLE;
             }
+
+            corelib(std::cerr << "Cout=","",C0);
+
+
 
             exit(0);
 
