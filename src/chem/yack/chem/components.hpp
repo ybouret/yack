@@ -232,6 +232,9 @@ namespace yack
             //! display list of associated concentrations
             std::ostream & display_compact(std::ostream &os, const readable<double> &C) const;
 
+            //! get balance
+            double balance_of(const readable<double> &C, raddops &xadd) const;
+
             //__________________________________________________________________
             //
             // members

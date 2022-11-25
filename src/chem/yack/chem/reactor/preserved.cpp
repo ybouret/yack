@@ -17,12 +17,14 @@ namespace yack
         {
             YACK_XMLSUB(xml,"preserved");
 
-            corelib(std::cerr << "Cin=","",C0);
-
+            size_t ng = 0;
             Qb.ld(true);
             Qg.ld(0);
 
+            unsigned cycle = 0;
         CYCLE:
+            ++cycle;
+            YACK_XMLOG(xml, "-------- cycle #" << cycle << " --------");
             double             gain = -1;
             const restriction *best = NULL;
             for(size_t i=Nc;i>0;--i)
@@ -33,7 +35,7 @@ namespace yack
                 }
                 const restriction &rs = *Qv[i]; assert(*rs==i);
                 const double       rg =  rs.apply(Qm[*rs],C0,xadd);
-                std::cerr << std::setw(15) << rg << " @" << rs << std::endl;
+                YACK_XMLOG(xml, "--  gain = " << std::setw(15) << rg << " @" << rs);
                 if( rg>0 && (gain<0 || rg<gain) )
                 {
                     gain = rg;
@@ -44,7 +46,8 @@ namespace yack
 
             if(best)
             {
-                YACK_XMLOG(xml, "-- gain = " << std::setw(15) << gain << " @" << *best);
+                ++ng;
+                YACK_XMLOG(xml, "--> gain = " << std::setw(15) << gain << " @" << *best);
                 const size_t i = **best;
                 iota::load(C0,Qm[i]);
                 Qb[i] = false;
@@ -52,8 +55,13 @@ namespace yack
                 goto CYCLE;
             }
 
-            corelib(std::cerr << "Cout=","",C0);
+
+            if(ng&&verbose)
+            {
+                corelib(*xml << "Cout=","",C0);
+            }
             return xadd.tableau(Qg);
+
         }
 
     }

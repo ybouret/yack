@@ -120,12 +120,12 @@ namespace yack
             rmatrix            Omega;   //!< [NxN] coupling
             rmatrix            iOmeg;   //!< [NxN] to solve
 
-            tableau           &Corg;    //!< [M] starting point
-            tableau           &Cend;    //!< [M] final point
-            tableau           &Ctry;    //!< [M] working space
-            tableau           &dC;      //!< [M] step
-            tableau           &Cbal;    //!< [M] for balancing
-            thin_array<int>   beta;     //!< [M] for balancing
+            tableau          & Corg;    //!< [M] starting point
+            tableau          & Cend;    //!< [M] final point
+            tableau          & Ctry;    //!< [M] working space
+            tableau          & dC;      //!< [M] step
+            tableau          & Cbal;    //!< [M] for balancing
+            thin_array<int>    beta;    //!< [M] for balancing
 
             tableau           &K;       //!< [N] pre-computed K
             tableau           &Gamma;   //!< [N] current Gamm

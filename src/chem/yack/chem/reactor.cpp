@@ -15,7 +15,7 @@ namespace yack
     namespace chemical
     {
 
-        const char reactor:: clid[]  = "chemical::reactor";
+        const char reactor:: clid[]  = "[reactor]";
         bool      &reactor:: verbose = entity::verbose;
 
         reactor:: ~reactor() throw() {}
@@ -80,8 +80,7 @@ namespace yack
         lockLib( coerce(usrLib) ),
         lockEqs( coerce(usrEqs) )
         {
-            static const char fn[] = "[reactor] ";
-            const xmlog       xml(fn,std::cerr,entity::verbose);
+            const xmlog       xml(clid,std::cerr,entity::verbose);
             equilibrium::display_time = t;
 
             YACK_XMLSUB(xml,"BuildingReactor");

@@ -56,7 +56,7 @@ YACK_UTEST(balance)
     vector<double> Corg(M,0);
     vector<double> xi(N,0);
 
-    if(false)
+    if(true)
     {
         for(size_t iter=0;iter<10;++iter)
         {

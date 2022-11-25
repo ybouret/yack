@@ -73,7 +73,17 @@ namespace yack
         {
             return * new ( *xlm ) xlimits(reac.primary_limit(C),prod.primary_limit(C),w);
         }
-        
+
+        double components:: balance_of(const readable<double> &C, raddops &xadd) const
+        {
+            xadd.free();
+            for(const cnode *node = head(); node;node=node->next )
+            {
+                const double c = C[ *****node ];
+                if(c<0) xadd << -c;
+            }
+            return xadd.get();
+        }
 
         
         void components:: operator()(const species &sp,
