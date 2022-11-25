@@ -106,7 +106,7 @@ namespace yack
             //------------------------------------------------------------------
             //
             //
-            // detecting how to move
+            // looping over all equilibria
             //
             //
             //------------------------------------------------------------------
@@ -117,17 +117,22 @@ namespace yack
                 
                 //--------------------------------------------------------------
                 //
-                // load in beta the trial topology
+                // load in beta the trial topology with the proper direction
                 //
                 //--------------------------------------------------------------
                 {
-                    // check invalid reactant
+                    //----------------------------------------------------------
+                    // check invalid reactants
+                    //----------------------------------------------------------
                     size_t nr = 0;
                     for(const actor *a=eq.reac->head;a;a=a->next)
                     {
                         if(Cbal[***a]<0) ++nr;
                     }
-                    
+
+                    //----------------------------------------------------------
+                    // check invalid products
+                    //----------------------------------------------------------
                     size_t np = 0;
                     for(const actor *a=eq.prod->head;a;a=a->next)
                     {
@@ -138,13 +143,16 @@ namespace yack
                         lattice.pad(*xml<< '<' << eq.name << '>',eq)
                         << " | #reac = " << std::setw(4) << nr
                         << " | #prod = " << std::setw(4) << np;
-                    
+
+                    //----------------------------------------------------------
+                    // act accordingly
+                    //----------------------------------------------------------
                     if(nr>0)
                     {
                         if(np>0)
                         {
                             if(verbose) std::cerr << " | [blocked]" << std::endl;
-                            continue;
+                            continue; // can't use this equilibirum
                         }
                         if(verbose) std::cerr << " | [reverse]" << std::endl;
                         iota::neg(beta,NuL[ei]);
@@ -155,15 +163,80 @@ namespace yack
                         if(np<=0)
                         {
                             if(verbose) std::cerr << " | [regular]" << std::endl;
-                            continue;
+                            continue; // useless state
                         }
                         if(verbose) std::cerr << " | [forward]" << std::endl;
                         iota::load(beta,NuL[ei]);
                     }
                 }
-                
+
+
                 assert( iota::dot<int>::of(beta,beta) > 0 );
-                
+
+                //--------------------------------------------------------------
+                //
+                // find how much we can improve
+                //
+                //--------------------------------------------------------------
+                double factor = -1;
+                YACK_XMLOG(xml, "|_" << beta);
+                for(const cnode *cn=eq.head();cn;cn=cn->next)
+                {
+                    const species &s = ****cn;  // the species
+                    const size_t   j = *s;      // its index
+                    const int      d = beta[j]; // the direction
+                    const double   c = Cbal[j]; // the concentration
+                    const bool     increasing = d>0;
+                    if(verbose)
+                    {
+                        corelib.pad( *xml << "|_[" << (increasing?'+':'-') << "] [" << s.name << "]",s) << " = " << std::setw(15) << c << ' ';
+                    }
+
+                    if(increasing)
+                    {
+                        // increasing species concentration
+                        if(c>=0)
+                        {
+                            if(verbose) std::cerr << "^growth^" << std::endl;
+                            continue; // next species
+                        }
+                        else
+                        {
+                            assert(c<0);
+                            const double f = (-c)/d;
+                            if(verbose) std::cerr << "increase @" << std::setw(15) << f << std::endl;
+                        }
+                    }
+                    else
+                    {
+                        assert(d<0);
+                        // decreasing species concentration
+                        if(c>0)
+                        {
+                            const double f = c/(-d);
+                            if(verbose) std::cerr << "decrease @" << std::setw(15) << f << std::endl;
+                        }
+                        else
+                        {
+                            assert(c<=0);
+                            if(verbose) std::cerr << "defunct!" << std::endl;
+                            factor = -1;
+                            break; // won't use this equilbrium
+                        }
+                    }
+                }
+
+                //--------------------------------------------------------------
+                //
+                // evaluate gain
+                //
+                //--------------------------------------------------------------
+                if(factor<=0)
+                {
+                    continue;
+                }
+
+
 
 
             }
