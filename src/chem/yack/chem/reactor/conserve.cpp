@@ -582,7 +582,7 @@ namespace yack
             cc.reserve(Nc);
             for(size_t i=1;i<=Nc;++i)
             {
-                constraint A = new conserve();
+                constraint A = new restriction();
                 for(const anode *an=working.head;an;an=an->next)
                 {
                     const species &s  = **an;
@@ -591,8 +591,8 @@ namespace yack
                 }
 
                 YACK_XMLOG(xml, "-- @  d(" << A << ")=0" );
-                
                 cc.push_back(A);
+                cc.back()->compile();
             }
 
 

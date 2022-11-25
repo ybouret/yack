@@ -9,6 +9,7 @@
 #include "yack/sequence/arrays.hpp"
 #include "yack/math/algebra/crout.hpp"
 #include "yack/chem/reactor/involved.hpp"
+#include "yack/chem/reactor/restriction.hpp"
 
 namespace yack
 {
@@ -17,20 +18,9 @@ namespace yack
     namespace chemical
     {
 
-        //! TODO
-        class conserve: public object, public counted, public actors
-        {
-        public:
-            explicit conserve() throw() {}
-            virtual ~conserve() throw() {}
 
-
-        private:
-            YACK_DISABLE_COPY_AND_ASSIGN(conserve);
-        };
-
-        typedef arc_ptr<conserve>  constraint;  //!< alias
-        typedef vector<constraint> constraints; //!< alias
+        typedef arc_ptr<restriction> constraint;  //!< alias
+        typedef vector<constraint>   constraints; //!< alias
 
         //______________________________________________________________________
         //
