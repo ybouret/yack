@@ -47,7 +47,12 @@ namespace yack
             //! write formated concentration
             ios::ostream &  frame(ios::ostream &os, const readable<double> &C) const;
 
-           
+            friend std::ostream & operator<<(std::ostream &os, const species &self)
+            {
+                os << self.name;
+                return os;
+            }
+
 
 
             //__________________________________________________________________

@@ -61,31 +61,38 @@ namespace yack
         }
 
         static inline
-        void updateFactor(double &factor, const double f)
+        void updateFactor(double      &factor,
+                          sp_repo     &vanish,
+                          const double   f,
+                          const species &s)
         {
             assert(f>0);
             if(factor<=0)
             {
                 // initialize
                 factor = f;
+                vanish.free();
+                vanish.push_back(s);
             }
             else
             {
-                assert(f>0);
+                assert(factor>0);
 
                 switch(__sign::of(f,factor) )
                 {
                     case negative: // winner
                         assert(f<factor);
                         factor = f;
+                        vanish.free();
+                        vanish.push_back(s);
                         break;
 
                     case __zero__: // ex-aequo
-                        std::cerr << "same factors!" << std::endl;
-                        exit(0);
+                        vanish.push_back(s);
                         break;
 
-                    case positive: // looser
+                    case positive: // looser, do not update
+                        assert(vanish.list.size>0);
                         break;
                 }
             }
@@ -132,7 +139,6 @@ namespace yack
                 return true;
             }
 
-            vector<species *> vanish(M,as_capacity);
 
             //------------------------------------------------------------------
             //
@@ -209,15 +215,17 @@ namespace yack
                 // find how much we can improve
                 //
                 //--------------------------------------------------------------
+                vanish.free();
                 double factor = -1;
                 YACK_XMLOG(xml, "|_" << beta);
                 for(const cnode *cn=eq.head();cn;cn=cn->next)
                 {
-                    const species &s = ****cn;  // the species
-                    const size_t   j = *s;      // its index
-                    const int      d = beta[j]; // the direction
-                    const double   c = Cbal[j]; // the concentration
-                    const bool     increasing = d>0;
+                    const species &s = ****cn;       // the species
+                    const size_t   j = *s;           // its index
+                    const int      d = beta[j];      // the direction
+                    const double   c = Cbal[j];      // the concentration
+                    const bool     increasing = d>0; // the current direction
+
                     if(verbose)
                     {
                         corelib.pad( *xml << "|_[" << (increasing?'+':'-') << "] [" << s.name << "]",s) << " = " << std::setw(15) << c << ' ';
@@ -225,28 +233,36 @@ namespace yack
 
                     if(increasing)
                     {
+                        //------------------------------------------------------
+                        //
                         // increasing species concentration
+                        //
+                        //------------------------------------------------------
                         if(c>=0)
                         {
                             if(verbose) std::cerr << "^growth^" << std::endl;
-                            continue; // next species
+                            continue; // won't use this SPECIES
                         }
                         else
                         {
                             assert(c<0);
                             const double f = (-c)/d;
-                            updateFactor(factor,f);
+                            updateFactor(factor,vanish,f,s);
                             if(verbose) std::cerr << "increase @" << std::setw(15) << f << std::endl;
                         }
                     }
                     else
                     {
                         assert(d<0);
+                        //------------------------------------------------------
+                        //
                         // decreasing species concentration
+                        //
+                        //------------------------------------------------------
                         if(c>0)
                         {
                             const double f = c/(-d);
-                            updateFactor(factor,f);
+                            updateFactor(factor,vanish,f,s);
                             if(verbose) std::cerr << "decrease @" << std::setw(15) << f << std::endl;
                         }
                         else
@@ -254,7 +270,8 @@ namespace yack
                             assert(c<=0);
                             if(verbose) std::cerr << "defunct!" << std::endl;
                             factor = -1;
-                            break; // won't use this equilbrium
+                            vanish.free();
+                            break; // won't use this EQUILIBRIUM
                         }
                     }
                 }
@@ -266,12 +283,15 @@ namespace yack
                 //--------------------------------------------------------------
                 if(factor<=0)
                 {
+                    YACK_XMLOG(xml, "|_discarding...");
+                    assert(0==vanish.list.size);
                     continue;
                 }
+                YACK_XMLOG(xml, "|_" << vanish.list << " with factor=" << factor);
 
-                std::cerr << "Factor=" << factor << std::endl;
-
-
+                const double B0 = eq.balance_of(Cbal,xadd);
+                std::cerr << "B0=" << B0 << std::endl;
+                
 
             }
 

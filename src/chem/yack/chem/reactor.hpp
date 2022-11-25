@@ -10,6 +10,7 @@
 #include "yack/math/algebra/crout.hpp"
 #include "yack/chem/reactor/involved.hpp"
 #include "yack/chem/reactor/restriction.hpp"
+#include "yack/data/list/meta-repo.hpp"
 
 namespace yack
 {
@@ -19,10 +20,6 @@ namespace yack
     {
 
 
-        typedef arc_ptr<restriction> constraint;  //!< alias
-        typedef vector<constraint>   constraints; //!< alias
-
-     
 
         //______________________________________________________________________
         //
@@ -30,14 +27,16 @@ namespace yack
         // aliases
         //
         //______________________________________________________________________
-        typedef arrays_of<double>    tableaux; //!< alias
-        typedef tableaux::array_type tableau;  //!< alias
-        typedef matrix<int>          imatrix;  //!< alias
-        typedef matrix<double>       rmatrix;  //!< alias
-        typedef matrix<unsigned>     umatrix;  //!< alias
+        typedef arrays_of<double>        tableaux; //!< alias
+        typedef tableaux::array_type     tableau;  //!< alias
+        typedef matrix<int>              imatrix;  //!< alias
+        typedef matrix<double>           rmatrix;  //!< alias
+        typedef matrix<unsigned>         umatrix;  //!< alias
+        typedef arc_ptr<restriction>     constraint;  //!< alias
+        typedef vector<constraint>       constraints; //!< alias
+        typedef meta_repo<const species> sp_repo;
         class   outcome;
 
-        
         //______________________________________________________________________
         //
         //
@@ -114,7 +113,8 @@ namespace yack
             thin_array<bool>   Qb;      //!< [Nc]   for algorithm
             tableau           &Qg;      //!< [Nc]   for gain
             rmatrix            Qm;      //!< [NcxM] target concentrations
-            
+
+            sp_repo            vanish;  //!< vanishin repo
             imatrix            Bal;     //!< [MxN] balancing directions
             rmatrix            Psi;     //!< [NxM] jacobian
             rmatrix            Omega;   //!< [NxN] coupling

@@ -4,6 +4,7 @@
 #define YACK_DATA_LINKED_INCLUDED 1
 
 #include "yack/setup.hpp"
+#include <iostream>
 
 namespace yack
 {
@@ -93,8 +94,31 @@ namespace yack
             }
             return true;
         }
-        
-        
+
+        // generic display
+        inline friend std::ostream & operator<<(std::ostream &os, const interlinked &self)
+        {
+            const NODE *node = self.head;
+            if(node)
+            {
+                os << "{ " << *node;
+                for(node=node->next;node;node=node->next)
+                {
+                    os << ", " << *node;
+                }
+                os << " }";
+            }
+            else
+                os << "{}";
+            return os;
+        }
+
+
+
+        //______________________________________________________________________
+        //
+        // members
+        //______________________________________________________________________
         NODE *head; //!< head node for all interlinked
         
         //______________________________________________________________________

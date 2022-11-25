@@ -52,7 +52,8 @@ namespace yack
         Qb( rtab.next(), transmogrify),
         Qg( rtab.next() ),
         Qm(),
-
+        
+        vanish(M),
         Bal(Nu.cols,Nu.rows),
         Psi(Nu.rows,Nu.cols),
         Omega(N,N),
