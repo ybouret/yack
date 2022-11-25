@@ -60,7 +60,36 @@ namespace yack
             return balanced;
         }
 
+        static inline
+        void updateFactor(double &factor, const double f)
+        {
+            assert(f>0);
+            if(factor<=0)
+            {
+                // initialize
+                factor = f;
+            }
+            else
+            {
+                assert(f>0);
 
+                switch(__sign::of(f,factor) )
+                {
+                    case negative: // winner
+                        assert(f<factor);
+                        factor = f;
+                        break;
+
+                    case __zero__: // ex-aequo
+                        std::cerr << "same factors!" << std::endl;
+                        exit(0);
+                        break;
+
+                    case positive: // looser
+                        break;
+                }
+            }
+        }
 
         bool reactor:: balance(writable<double> &C0)
         {
@@ -102,6 +131,8 @@ namespace yack
                 working.transfer(C0,Cbal);
                 return true;
             }
+
+            vector<species *> vanish(M,as_capacity);
 
             //------------------------------------------------------------------
             //
@@ -204,6 +235,7 @@ namespace yack
                         {
                             assert(c<0);
                             const double f = (-c)/d;
+                            updateFactor(factor,f);
                             if(verbose) std::cerr << "increase @" << std::setw(15) << f << std::endl;
                         }
                     }
@@ -214,6 +246,7 @@ namespace yack
                         if(c>0)
                         {
                             const double f = c/(-d);
+                            updateFactor(factor,f);
                             if(verbose) std::cerr << "decrease @" << std::setw(15) << f << std::endl;
                         }
                         else
@@ -236,6 +269,7 @@ namespace yack
                     continue;
                 }
 
+                std::cerr << "Factor=" << factor << std::endl;
 
 
 
