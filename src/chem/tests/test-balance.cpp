@@ -56,14 +56,15 @@ YACK_UTEST(balance)
     vector<double> Corg(M,0);
     vector<double> xi(N,0);
 
-    if(true)
+    if(false)
     {
         for(size_t iter=0;iter<10;++iter)
         {
             buildC(Corg,lib,ran);
             lib(std::cerr << "Corg=","",Corg);
 
-            cs.apply_laws(Corg,xml);
+            double injected = cs.preserved(Corg,xml);
+            std::cerr << "injected=" << injected << std::endl;
             exit(0);
 
 
@@ -92,8 +93,8 @@ YACK_UTEST(balance)
     //lib.fill(Corg,ran);
     iota::muladd(Corg, NuT, xi, cs.xadd);
     lib(std::cerr << "Corg=","",Corg);
-    cs.apply_laws(Corg,xml);
-
+    double injected = cs.preserved(Corg,xml);
+    std::cerr << "injected=" << injected << std::endl;
     exit(0);
 
     if( cs.balance(Corg) )

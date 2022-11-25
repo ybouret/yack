@@ -64,7 +64,8 @@ namespace yack
                              const equilibria &,
                              const double     t); //!< setup
 
-            double apply_laws(writable<double> &C0, const xmlog &);
+            
+            double preserved(writable<double> &C0, const xmlog &);
 
 
             //! balance concentrations

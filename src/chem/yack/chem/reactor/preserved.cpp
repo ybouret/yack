@@ -13,9 +13,9 @@ namespace yack
     {
 
 
-        double reactor:: apply_laws(writable<double> &C0, const xmlog &xml)
+        double reactor:: preserved(writable<double> &C0, const xmlog &xml)
         {
-            YACK_XMLSUB(xml,"apply_restrictions");
+            YACK_XMLSUB(xml,"preserved");
 
             corelib(std::cerr << "Cin=","",C0);
 
