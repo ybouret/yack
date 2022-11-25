@@ -36,7 +36,147 @@ namespace yack
             return primaryBalanced;
         }
 
+        bool reactor:: isWellBalanced(const xmlog &xml) const throw()
+        {
+            YACK_XMLSUB(xml,"ComputeBalance");
+            bool balanced = true;
+            for(const anode *node = working.head;node;node=node->next)
+            {
+                const species &s = **node;
+                const double   c = Cbal[*s];
+                if(verbose) corelib.pad(*xml << '[' << s.name << ']',s) << " = " << std::setw(15) << c << ' ';
+                if(c<0)
+                {
+                    balanced = false;
+                    if(verbose) std::cerr << "[-]";
+                }
+                else
+                {
+                    if(verbose) std::cerr << "[+]";
+                }
+                if(verbose) std::cerr << std::endl;
+            }
+            YACK_XMLOG(xml, "-- balanced = " << yack_boolean(balanced) );
+            return balanced;
+        }
 
+
+
+        bool reactor:: balance(writable<double> &C0)
+        {
+            static const char fn[] = "[reactor]";
+            const xmlog       xml(fn,std::cerr,entity::verbose);
+            YACK_XMLSUB(xml,"Balancing");
+
+
+            //------------------------------------------------------------------
+            //
+            //
+            // Check Status
+            //
+            //
+            //------------------------------------------------------------------
+            if(N<=0) {
+                YACK_XMLOG(xml,"-- no equilibrium");
+                return true;
+            }
+
+            //------------------------------------------------------------------
+            //
+            //
+            // initialize phase space
+            //
+            //
+            //------------------------------------------------------------------
+            for(size_t j=M;j>0;--j)
+            {
+                Cbal[j] = Ctry[j] = C0[j];
+                dC[j]   = 0;
+            }
+
+            double injected = preserved(Cbal,xml);
+
+            
+            if(isWellBalanced(xml))
+            {
+                working.transfer(C0,Cbal);
+                return true;
+            }
+
+            //------------------------------------------------------------------
+            //
+            //
+            // detecting how to move
+            //
+            //
+            //------------------------------------------------------------------
+            for(const enode *node = lattice.head();node;node=node->next)
+            {
+                const equilibrium &eq = ***node;
+                const size_t       ei = *eq;
+                
+                //--------------------------------------------------------------
+                //
+                // load in beta the trial topology
+                //
+                //--------------------------------------------------------------
+                {
+                    // check invalid reactant
+                    size_t nr = 0;
+                    for(const actor *a=eq.reac->head;a;a=a->next)
+                    {
+                        if(Cbal[***a]<0) ++nr;
+                    }
+                    
+                    size_t np = 0;
+                    for(const actor *a=eq.prod->head;a;a=a->next)
+                    {
+                        if(Cbal[***a]<0) ++np;
+                    }
+                    
+                    if(verbose)
+                        lattice.pad(*xml<< '<' << eq.name << '>',eq)
+                        << " | #reac = " << std::setw(4) << nr
+                        << " | #prod = " << std::setw(4) << np;
+                    
+                    if(nr>0)
+                    {
+                        if(np>0)
+                        {
+                            if(verbose) std::cerr << " | [blocked]" << std::endl;
+                            continue;
+                        }
+                        if(verbose) std::cerr << " | [reverse]" << std::endl;
+                        iota::neg(beta,NuL[ei]);
+                    }
+                    else
+                    {
+                        assert(nr<=0);
+                        if(np<=0)
+                        {
+                            if(verbose) std::cerr << " | [regular]" << std::endl;
+                            continue;
+                        }
+                        if(verbose) std::cerr << " | [forward]" << std::endl;
+                        iota::load(beta,NuL[ei]);
+                    }
+                }
+                
+                assert( iota::dot<int>::of(beta,beta) > 0 );
+                
+
+
+            }
+
+
+            exit(0);
+            return false;
+
+        }
+
+
+
+#if 0
         static inline
         double getBalance(const equilibrium      &eq,
                           const readable<double> &C,
@@ -409,6 +549,7 @@ namespace yack
             goto CYCLE;
 
         }
+#endif
 
     }
 

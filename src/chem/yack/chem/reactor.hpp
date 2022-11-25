@@ -159,7 +159,7 @@ namespace yack
             void                       deactivated(const size_t ei);
 
             bool                       primaryBalance(const xmlog &xml);
-
+            bool                       isWellBalanced(const xmlog &xml) const throw();
 
         };
 

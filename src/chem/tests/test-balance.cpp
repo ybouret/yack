@@ -63,12 +63,6 @@ YACK_UTEST(balance)
             buildC(Corg,lib,ran);
             lib(std::cerr << "Corg=","",Corg);
 
-            double injected = cs.preserved(Corg,xml);
-            std::cerr << "injected=" << injected << std::endl;
-            exit(0);
-
-
-
             if( cs.balance(Corg) )
             {
                 lib(std::cerr << "Cbal=","",Corg);
@@ -79,6 +73,7 @@ YACK_UTEST(balance)
             }
             std::cerr << std::endl;
         }
+        return 0;
     }
 
     std::cerr << std::endl;

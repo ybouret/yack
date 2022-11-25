@@ -15,7 +15,7 @@ namespace yack
 
         double reactor:: preserved(writable<double> &C0, const xmlog &xml)
         {
-            YACK_XMLSUB(xml,"preserved");
+            YACK_XMLSUB(xml,"Preserving");
 
             size_t ng = 0;
             Qb.ld(true);
@@ -55,12 +55,13 @@ namespace yack
                 goto CYCLE;
             }
 
-
+            const double injected = xadd.tableau(Qg);
             if(ng&&verbose)
             {
                 corelib(*xml << "Cout=","",C0);
             }
-            return xadd.tableau(Qg);
+            YACK_XMLOG(xml, "--> injected = " << injected);
+            return injected;
 
         }
 
