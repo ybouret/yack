@@ -34,6 +34,9 @@ namespace yack
         //
         // methods
         //______________________________________________________________________
+        
+        inline list_type *       operator->()       throw() { return &list; }
+        inline const list_type * operator->() const throw() { return &list; }
 
         inline void reserve(size_t n) {
             while(n-- > 0) pool.store( new node_type(NULL) );

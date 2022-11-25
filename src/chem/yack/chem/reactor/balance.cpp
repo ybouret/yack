@@ -130,7 +130,9 @@ namespace yack
                 dC[j]   = 0;
             }
 
-            double injected = preserved(Cbal,xml);
+            meta_repo<const equilibrium> win(N);
+            writable<double> &dB       = Ctry;
+            double            injected = preserved(Cbal,xml);
 
             
             if(isWellBalanced(xml))
@@ -147,11 +149,12 @@ namespace yack
             //
             //
             //------------------------------------------------------------------
+            win.free();
             for(const enode *node = lattice.head();node;node=node->next)
             {
                 const equilibrium &eq = ***node;
                 const size_t       ei = *eq;
-                
+                dB[ei] = 0;
                 //--------------------------------------------------------------
                 //
                 // load in beta the trial topology with the proper direction
@@ -284,17 +287,81 @@ namespace yack
                 if(factor<=0)
                 {
                     YACK_XMLOG(xml, "|_discarding...");
-                    assert(0==vanish.list.size);
+                    assert(0==vanish->size);
                     continue;
                 }
-                YACK_XMLOG(xml, "|_" << vanish.list << " with factor=" << factor);
-
-                const double B0 = eq.balance_of(Cbal,xadd);
-                std::cerr << "B0=" << B0 << std::endl;
                 
-
+                YACK_XMLOG(xml, "|_[*] " << vanish.list << " with factor=" << factor);
+                
+                assert(factor>0);
+                assert(vanish->size>0);
+                
+                
+                
+                //--------------------------------------------------------------
+                //
+                // construct trial
+                //
+                //--------------------------------------------------------------
+                writable<double> &Ci = Ceq[ei];
+                iota::load(Ci,Cbal);
+                for(const cnode *cn=eq.head();cn;cn=cn->next)
+                {
+                    const species &s = ****cn;
+                    const size_t   j = *s;
+                    const int      d = beta[j];
+                    double        &c = Ci[j];
+                    if(d>0)
+                    {
+                        if(c>=0)
+                        {
+                            // any increase
+                            c += factor * d;
+                        }
+                        else
+                        {
+                            assert(c<0);
+                            // never increase more than 0
+                            c = min_of( c += d*factor, 0.0);
+                        }
+                    }
+                    else
+                    {
+                        assert(d<0);
+                        assert(c>0);
+                        c = max_of( c += factor*d, 0.0);
+                    }
+                }
+                
+                // careful
+                for(const sp_node *sn=vanish->head;sn;sn=sn->next)
+                {
+                    Ci[ ***sn ] = 0;
+                }
+                
+                const double B0 = eq.balance_of(Cbal,xadd);
+                const double B1 = eq.balance_of(Ci,  xadd);
+                std::cerr << "\tB0=" << B0 << " @" << Cbal << std::endl;
+                std::cerr << "\tB1=" << B1 << " @" << Ci << std::endl;
+                
+                const double gain = dB[ei] = B0 - B1;
+                std::cerr << "\tdB=" << gain << std::endl;
+                if(gain>0)
+                {
+                    win.push_back(eq);
+                }
             }
-
+            
+            for(const meta_node<const equilibrium> *ep = win->head; ep; ep=ep->next)
+            {
+                const equilibrium &eq = **ep;
+                const size_t       ei = *eq;
+                lattice.pad(std::cerr << eq.name,eq) << " => "
+                << std::setw(15)  << dB[ei]
+                << ", change=" << std::setw(15) << eq.change_of(Ceq[ei], Cbal, xadd) << std::endl;
+            }
+            
+            
 
             exit(0);
             return false;

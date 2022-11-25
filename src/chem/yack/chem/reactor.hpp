@@ -35,6 +35,7 @@ namespace yack
         typedef arc_ptr<restriction>     constraint;  //!< alias
         typedef vector<constraint>       constraints; //!< alias
         typedef meta_repo<const species> sp_repo;
+        typedef sp_repo::node_type       sp_node;
         class   outcome;
 
         //______________________________________________________________________

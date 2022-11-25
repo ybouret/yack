@@ -235,6 +235,12 @@ namespace yack
             //! get balance
             double balance_of(const readable<double> &C, raddops &xadd) const;
 
+            //! get difference
+            double change_of(const readable<double> &C0,
+                             const readable<double> &C1,
+                             raddops                &xadd) const;
+
+            
             //__________________________________________________________________
             //
             // members

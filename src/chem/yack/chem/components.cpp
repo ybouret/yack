@@ -84,7 +84,19 @@ namespace yack
             }
             return xadd.get();
         }
-
+       
+        double components:: change_of(const readable<double> &C0,
+                                      const readable<double> &C1,
+                                      raddops                &xadd) const
+        {
+            for(const cnode *node = head(); node;node=node->next )
+            {
+                const size_t j = *****node;
+                xadd << fabs(C0[j]-C1[j]);
+            }
+            return xadd.get();
+        }
+        
         
         void components:: operator()(const species &sp,
                                      const int      nu)
