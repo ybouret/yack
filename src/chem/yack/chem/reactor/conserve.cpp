@@ -110,7 +110,7 @@ namespace yack
             {
             }
 
-            zvector(const zvector &_) : object(), counted(), vector<apz>(_)
+            zvector(const zvector &_) : collection(), object(), counted(), vector<apz>(_)
             {
             }
 
@@ -544,7 +544,8 @@ namespace yack
                     iota::load(P[i],NuA[***en]);
                 }
             }
-            const size_t Nc = P.rows;
+
+            coerce(Nc) = P.rows;
             YACK_XMLOG(xml, "-- look up against Nc=" << Nc);
             if(verbose) std::cerr << "\tP=" << P << std::endl;
 
@@ -577,7 +578,6 @@ namespace yack
             //
             //
             //------------------------------------------------------------------
-            coerce(Nc)               = Qc.rows;
             sequence<constraint> &cc = coerce(Qv);
             cc.reserve(Nc);
             for(size_t i=1;i<=Nc;++i)
@@ -592,8 +592,21 @@ namespace yack
 
                 YACK_XMLOG(xml, "-- @  d(" << A << ")=0" );
                 cc.push_back(A);
-                cc.back()->compile();
+                if(!cc.back()->compile()) {
+                    throw exception("%s: unexpected empty restriction!!",fn);
+                }
             }
+
+
+            //------------------------------------------------------------------
+            //
+            //
+            // allocate final resource
+            //
+            //
+            //------------------------------------------------------------------
+            Cc.make(Nc,M);
+
 
 
             // "@eq:-[a]+4[b]+7[c]-2[d]:1"

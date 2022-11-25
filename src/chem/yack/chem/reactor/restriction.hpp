@@ -4,6 +4,7 @@
 
 #include "yack/chem/actors.hpp"
 
+
 namespace yack
 {
     class xmlog;
@@ -18,18 +19,20 @@ namespace yack
             explicit restriction() throw();
             virtual ~restriction() throw();
 
-            void compile() throw();
+            bool compile() throw();
 
             //! apply restriction
             /**
              target <- source
              */
-            void apply(writable<double>       &target,
-                       const readable<double> &source);
+            double apply(writable<double>       &target,
+                         const readable<double> &source,
+                         raddops                &xadd) const;
 
 
         private:
             YACK_DISABLE_COPY_AND_ASSIGN(restriction);
+            const unsigned q2; //!< sum of squared coefficients
         };
 
     }

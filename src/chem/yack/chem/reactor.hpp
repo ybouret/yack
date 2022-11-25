@@ -104,6 +104,7 @@ namespace yack
             const size_t       Nc;      //!< number of conservation law
             const umatrix      Qc;      //!< [NcxM] conservation matrix
             const constraints  Qv;      //!< [Nc]   conservation laws
+            rmatrix            Cc;      //!< [NcxM] target concentrations
             imatrix            Bal;     //!< [MxN] balancing directions
             rmatrix            Psi;     //!< [NxM] jacobian
             rmatrix            Omega;   //!< [NxN] coupling

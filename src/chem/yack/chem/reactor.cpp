@@ -47,6 +47,8 @@ namespace yack
 
         Nc(0),
         Qc(),
+        Qv(),
+        Cc(),
 
         Bal(Nu.cols,Nu.rows),
         Psi(Nu.rows,Nu.cols),

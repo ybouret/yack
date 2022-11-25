@@ -46,7 +46,6 @@ YACK_UTEST(balance)
     std::cerr << std::endl;
 
     reactor        cs(lib,eqs,0.0);
-    return 0;
 
 
     const size_t   M  = cs.M;
@@ -57,12 +56,24 @@ YACK_UTEST(balance)
     vector<double> Corg(M,0);
     vector<double> xi(N,0);
 
-    if(false)
+    if(true)
     {
         for(size_t iter=0;iter<10;++iter)
         {
             buildC(Corg,lib,ran);
             lib(std::cerr << "Corg=","",Corg);
+
+            for(size_t i=1;i<=cs.Nc;++i)
+            {
+                const restriction &rs = *cs.Qv[i];
+                const double       xs = rs.apply(cs.Cc[i],Corg,cs.xadd);
+                std::cerr << std::setw(15) << xs << " @" << cs.Cc[i] << " <== " << rs << std::endl;
+            }
+
+
+            exit(0);
+
+
             if( cs.balance(Corg) )
             {
                 lib(std::cerr << "Cbal=","",Corg);
