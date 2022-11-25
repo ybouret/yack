@@ -545,8 +545,7 @@ namespace yack
                 }
             }
 
-            coerce(Nc) = P.rows;
-            YACK_XMLOG(xml, "-- look up against Nc=" << Nc);
+            YACK_XMLOG(xml, "-- look up against |dims| =" << P.rows);
             if(verbose) std::cerr << "\tP=" << P << std::endl;
 
             //------------------------------------------------------------------
@@ -578,6 +577,7 @@ namespace yack
             //
             //
             //------------------------------------------------------------------
+            coerce(Nc) = Qc.rows;
             sequence<constraint> &cc = coerce(Qv);
             cc.reserve(Nc);
             for(size_t i=1;i<=Nc;++i)
@@ -592,7 +592,7 @@ namespace yack
 
                 YACK_XMLOG(xml, "-- @  d(" << A << ")=0" );
                 cc.push_back(A);
-                if(!cc.back()->compile()) {
+                if(!cc.back()->compile(i)) {
                     throw exception("%s: unexpected empty restriction!!",fn);
                 }
             }

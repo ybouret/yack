@@ -22,6 +22,8 @@ namespace yack
         typedef arc_ptr<restriction> constraint;  //!< alias
         typedef vector<constraint>   constraints; //!< alias
 
+     
+
         //______________________________________________________________________
         //
         //
@@ -105,6 +107,8 @@ namespace yack
             const umatrix      Qc;      //!< [NcxM] conservation matrix
             const constraints  Qv;      //!< [Nc]   conservation laws
             rmatrix            Cc;      //!< [NcxM] target concentrations
+            const rs_groups    Gc;      //!< groups of linked conservation
+
             imatrix            Bal;     //!< [MxN] balancing directions
             rmatrix            Psi;     //!< [NxM] jacobian
             rmatrix            Omega;   //!< [NxN] coupling
