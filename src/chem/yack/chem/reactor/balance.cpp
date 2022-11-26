@@ -101,8 +101,9 @@ namespace yack
 
         bool reactor:: balance(writable<double> &C0)
         {
-            static const char fn[] = "[reactor]";
-            const xmlog       xml(fn,std::cerr,entity::verbose);
+            static const char   fn[] = "[reactor]";
+            static const double pen = numeric<double>::sqrt_eps;
+            const xmlog         xml(fn,std::cerr,entity::verbose);
             YACK_XMLSUB(xml,"Balancing");
 
 
@@ -151,7 +152,8 @@ namespace yack
             vector<equilibrium *> Ewin;
             vector<double>        Gain;
             vector<double>        Cost;
-
+            vector<double>        Rank;
+            
             for(const enode *node = lattice.head();node;node=node->next)
             {
                 const equilibrium &eq = ***node;
@@ -357,19 +359,22 @@ namespace yack
                     Ewin << & coerce(eq);
                     Gain << gain;
                     Cost << cost;
+                    Rank << gain - pen * cost;
                 }
             }
 
             vector<size_t> eidx(Ewin.size());
-            indexing::make(eidx, comparison::decreasing<double>, Gain);
+            indexing::make(eidx, comparison::decreasing<double>, Rank);
 
             for(size_t i=1;i<=Ewin.size();++i)
             {
                 const size_t ii = eidx[i];
                 const equilibrium &eq = *Ewin[ii];
-                lattice.pad(std::cerr << eq.name,eq) << " => "
-                << std::setw(15)  << Gain[ii]
-                << ", cost=" << std::setw(15) << Cost[ii] << " | " << eq.content() << std::endl;
+                lattice.pad(std::cerr << eq.name,eq)
+                << " => "    << std::setw(15) << Gain[ii]
+                << ", cost=" << std::setw(15) << Cost[ii]
+                << ", rank=" << std::setw(15) << Rank[ii]
+                << " | " << eq.content() << std::endl;
             }
 
             exit(0);
