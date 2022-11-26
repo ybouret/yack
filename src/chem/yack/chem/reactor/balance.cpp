@@ -7,6 +7,7 @@
 #include "yack/type/boolean.h"
 #include "yack/exception.hpp"
 #include "yack/math/numeric.hpp"
+#include "yack/sort/indexing.hpp"
 
 #include <iomanip>
 
@@ -130,8 +131,6 @@ namespace yack
                 dC[j]   = 0;
             }
 
-            meta_repo<const equilibrium> win(N);
-            writable<double> &dB       = Ctry;
             double            injected = preserved(Cbal,xml);
 
             
@@ -149,12 +148,15 @@ namespace yack
             //
             //
             //------------------------------------------------------------------
-            win.free();
+            vector<equilibrium *> Ewin;
+            vector<double>        Gain;
+            vector<double>        Cost;
+
             for(const enode *node = lattice.head();node;node=node->next)
             {
                 const equilibrium &eq = ***node;
                 const size_t       ei = *eq;
-                dB[ei] = 0;
+
                 //--------------------------------------------------------------
                 //
                 // load in beta the trial topology with the proper direction
@@ -231,7 +233,7 @@ namespace yack
 
                     if(verbose)
                     {
-                        corelib.pad( *xml << "|_[" << (increasing?'+':'-') << "] [" << s.name << "]",s) << " = " << std::setw(15) << c << ' ';
+                        corelib.pad( *xml << "|_[" << (increasing?'+':'-') << "] [" << s.name << "]",s) << " = " << std::setw(15) << c << " | ";
                     }
 
                     if(increasing)
@@ -243,7 +245,7 @@ namespace yack
                         //------------------------------------------------------
                         if(c>=0)
                         {
-                            if(verbose) std::cerr << "^growth^" << std::endl;
+                            if(verbose) std::cerr << "^growth^ [*]" << std::endl;
                             continue; // won't use this SPECIES
                         }
                         else
@@ -251,7 +253,7 @@ namespace yack
                             assert(c<0);
                             const double f = (-c)/d;
                             updateFactor(factor,vanish,f,s);
-                            if(verbose) std::cerr << "increase @" << std::setw(15) << f << std::endl;
+                            if(verbose) std::cerr << "increase [+]" << std::setw(15) << f << std::endl;
                         }
                     }
                     else
@@ -266,12 +268,13 @@ namespace yack
                         {
                             const double f = c/(-d);
                             updateFactor(factor,vanish,f,s);
-                            if(verbose) std::cerr << "decrease @" << std::setw(15) << f << std::endl;
+                            if(verbose) std::cerr << "decrease [-]" << std::setw(15) << f << std::endl;
+
                         }
                         else
                         {
                             assert(c<=0);
-                            if(verbose) std::cerr << "defunct!" << std::endl;
+                            if(verbose) std::cerr << "defunct  [!]" << std::endl;
                             factor = -1;
                             vanish.free();
                             break; // won't use this EQUILIBRIUM
@@ -305,63 +308,69 @@ namespace yack
                 //--------------------------------------------------------------
                 writable<double> &Ci = Ceq[ei];
                 iota::load(Ci,Cbal);
+                xadd.free();
                 for(const cnode *cn=eq.head();cn;cn=cn->next)
                 {
-                    const species &s = ****cn;
-                    const size_t   j = *s;
-                    const int      d = beta[j];
-                    double        &c = Ci[j];
+                    const species &s  = ****cn;
+                    const size_t   j  = *s;
+                    const int      d  = beta[j];
+                    double        &c  = Ci[j];
+                    const double   dc = d * factor;
                     if(d>0)
                     {
                         if(c>=0)
                         {
                             // any increase
-                            c += factor * d;
+                            c += dc;
                         }
                         else
                         {
                             assert(c<0);
                             // never increase more than 0
-                            c = min_of( c += d*factor, 0.0);
+                            c = min_of( c += dc, 0.0);
                         }
                     }
                     else
                     {
                         assert(d<0);
                         assert(c>0);
-                        c = max_of( c += factor*d, 0.0);
+                        c = max_of( c += dc, 0.0);
                     }
+                    xadd << fabs(dc);
                 }
                 
-                // careful
+                // careful with vanishing components
                 for(const sp_node *sn=vanish->head;sn;sn=sn->next)
                 {
                     Ci[ ***sn ] = 0;
                 }
-                
+
+                const double cost =  xadd.get();
                 const double B0 = eq.balance_of(Cbal,xadd);
                 const double B1 = eq.balance_of(Ci,  xadd);
                 std::cerr << "\tB0=" << B0 << " @" << Cbal << std::endl;
                 std::cerr << "\tB1=" << B1 << " @" << Ci << std::endl;
-                
-                const double gain = dB[ei] = B0 - B1;
-                std::cerr << "\tdB=" << gain << std::endl;
+                const double gain =   B0 - B1;
+                std::cerr << "\tgain=" << gain << " / cost=" << cost <<  std::endl;
                 if(gain>0)
                 {
-                    win.push_back(eq);
+                    Ewin << & coerce(eq);
+                    Gain << gain;
+                    Cost << cost;
                 }
             }
-            
-            for(const meta_node<const equilibrium> *ep = win->head; ep; ep=ep->next)
+
+            vector<size_t> eidx(Ewin.size());
+            indexing::make(eidx, comparison::decreasing<double>, Gain);
+
+            for(size_t i=1;i<=Ewin.size();++i)
             {
-                const equilibrium &eq = **ep;
-                const size_t       ei = *eq;
+                const size_t ii = eidx[i];
+                const equilibrium &eq = *Ewin[ii];
                 lattice.pad(std::cerr << eq.name,eq) << " => "
-                << std::setw(15)  << dB[ei]
-                << ", change=" << std::setw(15) << eq.change_of(Ceq[ei], Cbal, xadd) << std::endl;
+                << std::setw(15)  << Gain[ii]
+                << ", cost=" << std::setw(15) << Cost[ii] << " | " << static_cast<const components&>(eq) << std::endl;
             }
-            
-            
 
             exit(0);
             return false;
