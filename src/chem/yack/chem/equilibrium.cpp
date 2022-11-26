@@ -30,7 +30,7 @@ namespace yack
                 os << ' ';
             }
             os << " : (" << std::setw(15) << eq.K(eq.display_time) << ") ";
-            os << static_cast<const components&>(eq);
+            os << eq.content();
             return os;
         }
 
@@ -113,6 +113,11 @@ namespace yack
                 }
             }
 
+        }
+
+        const components & equilibrium:: content() const throw()
+        {
+            return *this;
         }
     }
     

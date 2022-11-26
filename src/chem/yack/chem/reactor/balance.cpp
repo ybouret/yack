@@ -369,7 +369,7 @@ namespace yack
                 const equilibrium &eq = *Ewin[ii];
                 lattice.pad(std::cerr << eq.name,eq) << " => "
                 << std::setw(15)  << Gain[ii]
-                << ", cost=" << std::setw(15) << Cost[ii] << " | " << static_cast<const components&>(eq) << std::endl;
+                << ", cost=" << std::setw(15) << Cost[ii] << " | " << eq.content() << std::endl;
             }
 
             exit(0);

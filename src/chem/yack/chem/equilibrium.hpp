@@ -47,11 +47,12 @@ namespace yack
             //
             // methods
             //__________________________________________________________________
-            double  K(double) const;                                               //!< non-virtual, checkin getK()
-            friend  std::ostream & operator<<(std::ostream &, const equilibrium&); //!< display
-            void    vizlink(ios::ostream &) const;                                 //!< link to registered species
-            feature kind()                  const throw();                         //!< get feature
-            
+            double             K(double)               const;                                 //!< non-virtual, checkin getK()
+            void               vizlink(ios::ostream &) const;                                 //!< link to registered species
+            feature            kind()                  const throw();                         //!< get feature
+            const components & content()               const throw();                         //!< cast
+            friend             std::ostream & operator<<(std::ostream &, const equilibrium&); //!< display
+
             //__________________________________________________________________
             //
             // C++
