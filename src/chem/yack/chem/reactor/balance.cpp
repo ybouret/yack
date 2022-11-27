@@ -347,9 +347,9 @@ namespace yack
                     Ci[ ***sn ] = 0;
                 }
 
-                const double cost =  xadd.get();
-                const double B0 = eq.balance_of(Cbal,xadd);
-                const double B1 = eq.balance_of(Ci,  xadd);
+                const double cost = xadd.get();
+                const double B0   = eq.balance_of(Cbal,xadd);
+                const double B1   = eq.balance_of(Ci,  xadd);
                 std::cerr << "\tB0=" << B0 << " @" << Cbal << std::endl;
                 std::cerr << "\tB1=" << B1 << " @" << Ci << std::endl;
                 const double gain =   B0 - B1;
@@ -362,13 +362,22 @@ namespace yack
                     Rank << gain - pen * cost;
                 }
             }
+            
+            // ananlyze result
 
+            if(Ewin.size()<=0)
+            {
+                // bad
+                std::cerr << "STALLED" << std::endl;
+                exit(0);
+            }
+            
             vector<size_t> eidx(Ewin.size());
             indexing::make(eidx, comparison::decreasing<double>, Rank);
 
             for(size_t i=1;i<=Ewin.size();++i)
             {
-                const size_t ii = eidx[i];
+                const size_t       ii = eidx[i];
                 const equilibrium &eq = *Ewin[ii];
                 lattice.pad(std::cerr << eq.name,eq)
                 << " => "    << std::setw(15) << Gain[ii]
@@ -377,6 +386,10 @@ namespace yack
                 << " | " << eq.content() << std::endl;
             }
 
+            const equilibrium *ewin = Ewin[ eidx[1] ];
+            std::cerr << "=> Updating with " << ewin->name << std::endl;
+            
+            
             exit(0);
             return false;
 
