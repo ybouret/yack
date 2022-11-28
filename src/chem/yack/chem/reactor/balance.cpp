@@ -40,7 +40,7 @@ namespace yack
 
         bool reactor:: isWellBalanced(const xmlog &xml) const throw()
         {
-            YACK_XMLSUB(xml,"ComputeBalance");
+            YACK_XMLSUB(xml,"get_balance");
             bool balanced = true;
             for(const anode *node = working.head;node;node=node->next)
             {
@@ -58,7 +58,7 @@ namespace yack
                 }
                 if(verbose) std::cerr << std::endl;
             }
-            YACK_XMLOG(xml, "-- balanced = " << yack_boolean(balanced) );
+            YACK_XMLOG(xml, "--> balanced = " << yack_boolean(balanced)  << " <--");
             return balanced;
         }
 
@@ -484,6 +484,16 @@ namespace yack
                 //std::cerr << "C =" << Ci << " @" << eq << std::endl;
                 eq.transfer(Cbal,Ci);
             }
+
+            for(const anode *node=working.head;node;node=node->next)
+            {
+                const species &s = **node;
+                const size_t   j =  *s;
+                corelib.pad(std::cerr << "[" << s.name << "]", s) << " = " << Cbal[j] << std::endl;
+            }
+
+            exit(0);
+
             goto CYCLE;
 
         }
