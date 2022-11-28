@@ -149,11 +149,6 @@ namespace yack
             //
             //
             //------------------------------------------------------------------
-            vector<equilibrium *> Ewin;
-            vector<double>        Gain;
-            vector<double>        Cost;
-            vector<double>        Rank;
-            
             for(const enode *node = lattice.head();node;node=node->next)
             {
                 const equilibrium &eq = ***node;
@@ -356,22 +351,22 @@ namespace yack
                 std::cerr << "\tgain=" << gain << " / cost=" << cost <<  std::endl;
                 if(gain>0)
                 {
-                    Ewin << & coerce(eq);
-                    Gain << gain;
-                    Cost << cost;
-                    Rank << gain - pen * cost;
+                    //Ewin << & coerce(eq);
+                    //Gain << gain;
+                    //Cost << cost;
+                    //Rank << gain - pen * cost;
                 }
             }
             
             // ananlyze result
-
+#if 0
             if(Ewin.size()<=0)
             {
                 // bad
                 std::cerr << "STALLED" << std::endl;
                 exit(0);
             }
-            
+
             vector<size_t> eidx(Ewin.size());
             indexing::make(eidx, comparison::decreasing<double>, Rank);
 
@@ -388,7 +383,7 @@ namespace yack
 
             const equilibrium *ewin = Ewin[ eidx[1] ];
             std::cerr << "=> Updating with " << ewin->name << std::endl;
-            
+#endif
             
             exit(0);
             return false;
