@@ -92,6 +92,7 @@ namespace yack
             {
                 preservedGroup(C0,*rg,xml);
             }
+
             const double injected = xadd.tableau(Qg);
             if(verbose && injected)
             {
