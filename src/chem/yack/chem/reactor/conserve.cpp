@@ -468,6 +468,14 @@ namespace yack
             //
             //------------------------------------------------------------------
             YACK_XMLOG(xml, "-- removing unconserved species" );
+            for(const snode *node=corelib.head();node;node=node->next)
+            {
+                const species &s = ***node;
+                const size_t   j = *s;
+                coerce(crit[j])  = s.rank <= 0 ? spectator : conserved;
+            }
+
+
             NuA.assign(Nu);
             for(const enode *en=singles.head();en;en=en->next)
             {
@@ -486,6 +494,7 @@ namespace yack
                             const species &sp = ****cn;
                             const size_t   sj = *sp;
                             for(size_t i=N;i>0;--i) NuA[i][sj] = 0;
+                            coerce(crit[sj]) = unbounded;
                         }
                         break;
 
@@ -495,8 +504,14 @@ namespace yack
                 }
             }
 
-            if(verbose) std::cerr << "NuA=" << NuA << std::endl;
+            if(verbose)
+            {
+                std::cerr << "NuA=" << NuA << std::endl;
+                corelib(std::cerr,"crit_",crit);
+                exit(0);
+            }
 
+            
             //------------------------------------------------------------------
             //
             //

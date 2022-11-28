@@ -19,7 +19,11 @@ namespace yack
     namespace chemical
     {
 
-
+        enum criterion {
+            conserved, //!< in regular equilibri(um|a) only
+            unbounded, //!< involved in at least a degenerate equilibrium
+            spectator  //!< species will null rank
+        };
 
         //______________________________________________________________________
         //
@@ -127,7 +131,8 @@ namespace yack
             tableau          & Ctry;    //!< [M] working space
             tableau          & dC;      //!< [M] step
             tableau          & Cbal;    //!< [M] for balancing
-            thin_array<int>    beta;    //!< [M] for balancing
+            thin_array<int>       beta; //!< [M] for balancing
+            thin_array<criterion> crit; //!< [M] conservation
 
             tableau           &K;       //!< [N] pre-computed K
             tableau           &Gamma;   //!< [N] current Gamm

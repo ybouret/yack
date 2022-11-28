@@ -66,6 +66,8 @@ namespace yack
         dC(   mtab.next() ),
         Cbal( mtab.next() ),
         beta( mtab.next(), transmogrify ),
+        crit( mtab.next(), transmogrify ),
+
 
         K(     ntab.next()  ),
         Gamma( ntab.next()  ),
