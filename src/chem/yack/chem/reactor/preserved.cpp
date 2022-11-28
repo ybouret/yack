@@ -72,10 +72,7 @@ namespace yack
                 }
             }
 
-            //std::cerr << "C0=" << C0 << std::endl;
-            //std::cerr << "\t\tDone " << rg << std::endl;
-            //exit(0);
-
+            
         }
 
         double reactor:: preserved(writable<double> &C0, const xmlog &xml)

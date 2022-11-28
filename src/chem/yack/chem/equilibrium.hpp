@@ -10,18 +10,7 @@ namespace yack
     namespace chemical
     {
         
-        //______________________________________________________________________
-        //
-        //
-        //! features for an equilibrium
-        //
-        //______________________________________________________________________
-        enum feature {
-            join_only, //!< reactants <=>
-            both_ways, //!< reactants <=> products
-            part_only, //!<           <=> products
-            undefined  //!<           <=>
-        };
+       
         
         //______________________________________________________________________
         //
@@ -48,7 +37,6 @@ namespace yack
             // methods
             //__________________________________________________________________
             double             K(double)               const;                                 //!< non-virtual, checkin getK()
-            feature            kind()                  const throw();                         //!< get feature
             const components & content()               const throw();                         //!< cast
             friend             std::ostream & operator<<(std::ostream &, const equilibrium&); //!< display
             void               vizlink(ios::ostream &, const library &) const;                //!< link to registered species

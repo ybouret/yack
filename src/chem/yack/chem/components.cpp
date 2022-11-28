@@ -31,6 +31,7 @@ namespace yack
         reac(),
         prod(),
         d_nu(0),
+        kind(undefined),
         cdb(),
         xlm()
         {
@@ -96,7 +97,35 @@ namespace yack
             }
             return xadd.get();
         }
-        
+
+
+        static inline
+        feature kind_for(const actors &reac, const actors &prod) throw()
+        {
+            if(reac->size)
+            {
+                if(prod->size)
+                {
+                    return both_ways;
+                }
+                else
+                {
+                    return join_only;
+                }
+            }
+            else
+            {
+                if(prod->size)
+                {
+                    return part_only;
+                }
+                else
+                {
+                    return undefined;
+                }
+            }
+
+        }
         
         void components:: operator()(const species &sp,
                                      const int      nu)
@@ -138,11 +167,12 @@ namespace yack
 
             //------------------------------------------------------------------
             //
-            // update this
+            // update this and species
             //
             //------------------------------------------------------------------
             ++(coerce(sp.rank));
             coerce(d_nu) = int(prod.molecularity) - int(reac.molecularity);
+            coerce(kind) = kind_for(reac,prod);
         }
         
         double components:: mass_action(const double            K,

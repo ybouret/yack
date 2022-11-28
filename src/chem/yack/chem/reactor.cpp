@@ -15,7 +15,7 @@ namespace yack
     namespace chemical
     {
 
-        const char reactor:: clid[]  = "[reactor]";
+        const char * const reactor:: clid   = "[reactor]";
         bool      &reactor:: verbose = entity::verbose;
 
         reactor:: ~reactor() throw() {}
@@ -251,6 +251,46 @@ namespace yack
                 }
 
 
+                // initialize species criterion
+                for(const snode *node=corelib.head();node;node=node->next)
+                {
+                    const species &s = ***node;
+                    const size_t   j = *s;
+                    coerce(crit[j])  = s.rank <= 0 ? spectator : conserved;
+                }
+
+                // classify according to equilibria kmind
+                for(const enode *node=lattice.head();node;node=node->next)
+                {
+                    const equilibrium &eq = ***node;
+                    switch(eq.kind)
+                    {
+                        case undefined: throw exception("%s: unexpected undefined <%s>", clid, eq.name());
+                        case both_ways: coerce(regular) << &eq; break;
+                        case part_only:
+                        case join_only:
+                            coerce(roaming) << &eq;
+                            for(const cnode *cn=eq.head();cn;cn=cn->next)
+                            {
+                                const species &sp = ****cn;
+                                const size_t   sj = *sp;
+                                coerce(crit[sj]) = unbounded;
+                            }
+                            break;
+                    }
+                }
+
+                YACK_XMLOG(xml, "-- roaming: " << roaming);
+                assert(L==roaming.size+regular.size);
+
+                if(verbose)
+                {
+                    corelib(*xml,"crit_",crit);
+                }
+
+
+
+                
                 conservation(xml);
 
                 std::cerr << "#working = " << working.size   << std::endl;

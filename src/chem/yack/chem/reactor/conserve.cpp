@@ -467,24 +467,17 @@ namespace yack
             //
             //
             //------------------------------------------------------------------
-            YACK_XMLOG(xml, "-- removing unconserved species" );
-            for(const snode *node=corelib.head();node;node=node->next)
-            {
-                const species &s = ***node;
-                const size_t   j = *s;
-                coerce(crit[j])  = s.rank <= 0 ? spectator : conserved;
-            }
-
+            YACK_XMLOG(xml, "-- initialize possible connexity" );
 
             NuA.assign(Nu);
             for(const enode *en=singles.head();en;en=en->next)
             {
                 const equilibrium &eq = ***en;
 
-                switch( eq.kind() )
+                switch( eq.kind )
                 {
                         // undefined is bad at this point...
-                    case undefined: throw exception("%s: undefined <%s>", fn, eq.name() );
+                    case undefined: throw exception("%s: unexpected undefined <%s>", fn, eq.name() );
 
                         // remove all involved species
                     case part_only:
@@ -492,9 +485,8 @@ namespace yack
                         for(const cnode *cn=eq.head();cn;cn=cn->next)
                         {
                             const species &sp = ****cn;
-                            const size_t   sj = *sp;
+                            const size_t   sj = *sp;     assert(unbounded==crit[sj]);
                             for(size_t i=N;i>0;--i) NuA[i][sj] = 0;
-                            coerce(crit[sj]) = unbounded;
                         }
                         break;
 
@@ -507,8 +499,6 @@ namespace yack
             if(verbose)
             {
                 std::cerr << "NuA=" << NuA << std::endl;
-                corelib(std::cerr,"crit_",crit);
-                exit(0);
             }
 
             
@@ -603,7 +593,11 @@ namespace yack
                 {
                     const species &s  = **an;
                     const unsigned w = Qc[i][*s];
-                    if(w) rs(s,w);
+                    if(w)
+                    {
+                        assert(conserved==crit[*s]);
+                        rs(s,w);
+                    }
                 }
 
                 YACK_XMLOG(xml, "-- @  d(" << rs << ")=0" );
@@ -643,7 +637,6 @@ namespace yack
             rs_groups &rgs = coerce(Qt); assert(0==Qt.size);
             for(size_t i=1;i<=Nc;++i)
             {
-
                 //--------------------------------------------------------------
                 // take a new restriction and look up for connex group
                 //--------------------------------------------------------------

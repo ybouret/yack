@@ -17,6 +17,20 @@ namespace yack
     
     namespace chemical
     {
+
+        //______________________________________________________________________
+        //
+        //
+        //! features for components
+        //
+        //______________________________________________________________________
+        enum feature {
+            join_only, //!< reactants <=>
+            both_ways, //!< reactants <=> products
+            part_only, //!<           <=> products
+            undefined  //!<           <=>
+        };
+
         //______________________________________________________________________
         //
         // global types
@@ -245,10 +259,10 @@ namespace yack
             //
             // members
             //__________________________________________________________________
-            const actors reac; //!< reactants, nu<0
-            const actors prod; //!< products,  nu>0
-            const int    d_nu; //!< prod.molecularity - reac.molecularity
-            
+            const actors  reac; //!< reactants, nu<0
+            const actors  prod; //!< products,  nu>0
+            const int     d_nu; //!< prod.molecularity - reac.molecularity
+            const feature kind; //!< 
         private:
             YACK_DISABLE_COPY_AND_ASSIGN(components);
 

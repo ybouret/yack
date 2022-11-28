@@ -55,8 +55,8 @@ namespace yack
             //
             // types and definitions
             //__________________________________________________________________
-            static const char clid[];  //!< "chemical::reactor"
-            static bool      &verbose; //!< entity::verbose
+            static const char * const clid;  //!< "chemical::reactor"
+            static bool              &verbose; //!< entity::verbose
             //!
             //__________________________________________________________________
             //
@@ -98,6 +98,8 @@ namespace yack
             const equilibria    lattice;  //!< singles|couples
             const groups        related;  //!< related
             const groups        solving;  //!< all solving combinations
+            const group         regular;  //!< regular equilibria
+            const group         roaming;  //!< free roaming equilibria
             rmulops             xmul;     //!< for mulops
             raddops             xadd;     //!< for addops
             math::crout<double> solv;     //!< for linear system solving

@@ -133,9 +133,7 @@ namespace yack
         bool reactor:: balance(writable<double> &C0)
         {
             static const char   fn[] = "balancing";
-            static const double pen = numeric<double>::sqrt_eps;
-            const char         *call = clid;
-            const xmlog         xml(call,std::cerr,entity::verbose);
+            const xmlog         xml(clid,std::cerr,entity::verbose);
             YACK_XMLSUB(xml,"balancing");
 
 
