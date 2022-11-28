@@ -154,11 +154,13 @@ namespace yack
         void equilibria:: graphviz(const string  &filename,
                                    const library &lib) const
         {
+            // create file
             {
                 ios::ocstream fp(filename);
                 ios::vizible::digraph_init(fp,"G");
-                fp << "rankdir=\"LR\";\n";
-                
+                //fp << "rankdir=\"LR\";\n";
+                fp << "rankdir=\"TB\";\n";
+
                 for(const snode *node=lib.head();node;node=node->next)
                 {
                     const species &sp = ***node;
@@ -169,12 +171,13 @@ namespace yack
                 {
                     const equilibrium &eq = ***node;
                     eq.viz(fp);
-                    eq.vizlink(fp);
+                    eq.vizlink(fp,lib);
                 }
 
                 ios::vizible::digraph_quit(fp);
             }
-            
+
+            // render file
             {
                 ios::vizible::render(filename,false);
             }

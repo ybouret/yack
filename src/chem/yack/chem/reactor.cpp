@@ -253,6 +253,8 @@ namespace yack
                 std::cerr << "#conserv = " << Qv.size()      << std::endl;
 
                 singles.graphviz("singles.dot", corelib);
+                lattice.graphviz("lattice.dot", corelib);
+
             }
 
             

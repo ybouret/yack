@@ -61,32 +61,6 @@ namespace yack
 
         }
 
-        void   equilibrium:: vizlink(ios::ostream &fp) const
-        {
-            for(const actor *a=reac->head;a;a=a->next)
-            {
-                const species &s = **a;
-                s.link(fp,this);
-                if(a->nu>1)
-                {
-                    const string label = vformat("%u",unsigned(a->nu));
-                    s.add_label(fp << '[',label()) << ']';
-                }
-                end(fp);
-            }
-
-            for(const actor *a=prod->head;a;a=a->next)
-            {
-                const species &s = **a;
-                this->link(fp, &s);
-                if(a->nu>1)
-                {
-                    const string label = vformat("%u",unsigned(a->nu));
-                    s.add_label(fp << '[',label()) << ']';
-                }
-                end(fp);
-            }
-        }
 
         feature equilibrium:: kind() const throw()
         {
@@ -122,3 +96,45 @@ namespace yack
     }
     
 }
+
+#include "yack/chem/library.hpp"
+
+namespace yack
+{
+    namespace chemical
+    {
+
+        void   equilibrium:: vizlink(ios::ostream &fp, const library &lib) const
+        {
+            for(const actor *a=reac->head;a;a=a->next)
+            {
+                const species &mine = **a;
+                const species &s    = lib[mine.name];
+                s.link(fp,this);
+                if(a->nu>1)
+                {
+                    const string label = vformat("%u",unsigned(a->nu));
+                    s.add_label(fp << '[',label()) << ']';
+                }
+                end(fp);
+            }
+
+            for(const actor *a=prod->head;a;a=a->next)
+            {
+                const species &mine = **a;
+                const species &s    = lib[mine.name];
+                this->link(fp, &s);
+                if(a->nu>1)
+                {
+                    const string label = vformat("%u",unsigned(a->nu));
+                    s.add_label(fp << '[',label()) << ']';
+                }
+                end(fp);
+            }
+        }
+
+    }
+
+}
+
+
