@@ -122,7 +122,7 @@ namespace yack
             rmatrix            Qm;      //!< [NcxM]  target concentrations
             const rs_groups    Qt;      //!< [1::Nc] constraints topology
 
-            sp_repo            vanish;  //!< vanishin repo
+            sp_repo            vanish;  //!< vanishin repository
             imatrix            Bal;     //!< [MxN] balancing directions
             rmatrix            Psi;     //!< [NxM] jacobian
             rmatrix            Omega;   //!< [NxN] coupling
@@ -173,7 +173,7 @@ namespace yack
             void                       preservedGroup(writable<double> &C0, const rs_group &rg, const xmlog &xml);
             bool                       primaryBalance(const xmlog &xml);
             bool                       isWellBalanced(const xmlog &xml) const throw();
-
+            size_t                     notConservedIn(const actors &A) const throw();
         };
 
 
