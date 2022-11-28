@@ -100,19 +100,7 @@ namespace yack
                 }
             }
         }
-
-#if 0
-        static inline
-        bool allIn(const group &g, const addrbook &edb) throw()
-        {
-            for(const gnode *gn=g.head;gn;gn=gn->next)
-            {
-                const equilibrium &eq = **gn;
-                if(!edb.search(&eq)) return false;
-            }
-            return true;
-        }
-#endif
+        
 
         static inline
         bool oneIn(const group &g, const addrbook &edb) throw()
@@ -241,10 +229,10 @@ namespace yack
                     {
                         if(np>0)
                         {
-                            if(verbose) std::cerr << " | [blocked]" << std::endl;
+                            if(verbose) std::cerr << " | [blocked] | " << eq.content() << std::endl;
                             continue; // can't use this equilibirum
                         }
-                        if(verbose) std::cerr << " | [reverse]" << std::endl;
+                        if(verbose) std::cerr << " | [reverse] | " << eq.content() << std::endl;
                         iota::neg(beta,NuL[ei]);
                     }
                     else
@@ -252,10 +240,10 @@ namespace yack
                         assert(nr<=0);
                         if(np<=0)
                         {
-                            if(verbose) std::cerr << " | [regular]" << std::endl;
+                            if(verbose) std::cerr << " | [regular] | " << eq.content() << std::endl;
                             continue; // useless state
                         }
-                        if(verbose) std::cerr << " | [forward]" << std::endl;
+                        if(verbose) std::cerr << " | [forward] | " << eq.content() << std::endl;
                         iota::load(beta,NuL[ei]);
                     }
                 }
@@ -416,7 +404,10 @@ namespace yack
             //------------------------------------------------------------------
             if((*edb).size<=0)
             {
-                std::cerr << "STALLED" << std::endl << std::endl;
+                std::cerr << "STALLED" << std::endl;
+                corelib(std::cerr,"",Cbal);
+                preserved(Cbal,xml);
+                std::cerr << std::endl;
                 exit(0);
             }
 
