@@ -19,7 +19,7 @@ namespace yack
     namespace chemical
     {
 
-
+#if 0
         bool reactor:: primaryBalance(const xmlog &xml)
         {
             static const char fn[] = "primaryBalance";
@@ -37,10 +37,11 @@ namespace yack
             YACK_XMLOG(xml, "==> " << fn << ' ' << (primaryBalanced?yack_success:yack_failure) << " <==");
             return primaryBalanced;
         }
+#endif
 
         bool reactor:: isWellBalanced(const xmlog &xml) const throw()
         {
-            YACK_XMLSUB(xml,"get_balance");
+            YACK_XMLSUB(xml,"balancing.check");
             bool balanced = true;
             for(const anode *node = working.head;node;node=node->next)
             {
@@ -100,6 +101,7 @@ namespace yack
             }
         }
 
+#if 0
         static inline
         bool allIn(const group &g, const addrbook &edb) throw()
         {
@@ -110,6 +112,19 @@ namespace yack
             }
             return true;
         }
+#endif
+
+        static inline
+        bool oneIn(const group &g, const addrbook &edb) throw()
+        {
+            for(const gnode *gn=g.head;gn;gn=gn->next)
+            {
+                const equilibrium &eq = **gn;
+                if(edb.search(&eq)) return true;
+            }
+            return false;
+        }
+
 
         static inline
         double gainOf(const group            &g,
@@ -120,7 +135,7 @@ namespace yack
             for(const gnode *gn=g.head;gn;gn=gn->next)
             {
                 const equilibrium &eq = **gn;
-                const double       eg = Gain[ *eq ]; assert(eg>0);
+                const double       eg = Gain[ *eq ]; assert(eg>=0);
                 xadd << eg;
             }
             return xadd.get();
@@ -180,8 +195,6 @@ namespace yack
             //
             //------------------------------------------------------------------
             addrbook edb;
-
-
             edb.free();
             Gain.ld(0);
             Cost.ld(0);
@@ -256,7 +269,7 @@ namespace yack
                 //--------------------------------------------------------------
                 vanish.free();
                 double factor = -1;
-                YACK_XMLOG(xml, "|_" << beta);
+                YACK_XMLOG(xml, "  |_" << beta);
                 for(const cnode *cn=eq.head();cn;cn=cn->next)
                 {
                     const species &s = ****cn;       // the species
@@ -267,7 +280,7 @@ namespace yack
 
                     if(verbose)
                     {
-                        corelib.pad( *xml << "|_[" << (increasing?'+':'-') << "] [" << s.name << "]",s) << " = " << std::setw(15) << c << " | ";
+                        corelib.pad( *xml << "  |_[" << (increasing?'+':'-') << "] [" << s.name << "]",s) << " = " << std::setw(15) << c << " | ";
                     }
 
                     if(increasing)
@@ -323,12 +336,12 @@ namespace yack
                 //--------------------------------------------------------------
                 if(factor<=0)
                 {
-                    YACK_XMLOG(xml, "|_discarding...");
+                    YACK_XMLOG(xml, "  |_discarding...");
                     assert(0==vanish->size);
                     continue;
                 }
                 
-                YACK_XMLOG(xml, "|_[*] " << vanish.list << " with factor=" << factor);
+                YACK_XMLOG(xml, "  |_[*] " << vanish.list << " with factor=" << factor);
                 
                 assert(factor>0);
                 assert(vanish->size>0);
@@ -402,14 +415,14 @@ namespace yack
             //------------------------------------------------------------------
             if((*edb).size<=0)
             {
-                std::cerr << "STALLED" << std::endl;
+                std::cerr << "STALLED" << std::endl << std::endl;
                 exit(0);
             }
 
 
             if(verbose)
             {
-                YACK_XMLOG(xml, "-- summary:");
+                YACK_XMLOG(xml, "-- summary of positive gains:");
                 for(addrbook::const_iterator it=edb.begin();it!=edb.end();++it)
                 {
                     const equilibrium &eq = *static_cast<const equilibrium *>(*it);
@@ -421,35 +434,39 @@ namespace yack
                 }
             }
 
-
+            //------------------------------------------------------------------
             // find first
+            //------------------------------------------------------------------
+            YACK_XMLOG(xml, "-- finding best group containing a positive gain:");
             const group     *best = NULL;
             double           gmax = 0;
             for(const group *g    = solving.head; g; g=g->next)
             {
-                const bool ok = allIn(*g,edb);
+                const bool ok = oneIn(*g,edb);
                 if(!ok)
                 {
-                    YACK_XMLOG(xml, "-- discarding " <<*g);
+                    //YACK_XMLOG(xml, "|_discarding " <<*g);
                     continue;
                 }
                 else
                 {
                     best = g;
                     gmax = gainOf(*g,Gain,xadd);
-                    YACK_XMLOG(xml, "-- initialize " <<*g << " @" << std::setw(15) << gmax << " <--");
+                    YACK_XMLOG(xml, "|_initialize " <<*g << " @" << std::setw(15) << gmax << " <--");
                     break;
                 }
             }
             assert(best); // mandatory
 
+            //------------------------------------------------------------------
             // find better
+            //------------------------------------------------------------------
             for(const group *g=best->next;g;g=g->next)
             {
-                const bool ok = allIn(*g,edb);
+                const bool ok = oneIn(*g,edb);
                 if(!ok)
                 {
-                    YACK_XMLOG(xml, "-- discarding " <<*g);
+                    //YACK_XMLOG(xml, "|_discarding " <<*g);
                     continue;
                 }
                 else
@@ -459,416 +476,50 @@ namespace yack
                     {
                         gmax = gtmp;
                         best = g;
-                        YACK_XMLOG(xml, "-- upgrade to " <<*g << " @" << std::setw(15) << gmax << " <--");
+                        YACK_XMLOG(xml, "|_upgrade to " <<*g << " @" << std::setw(15) << gmax);
                     }
                     else
                     {
-                        YACK_XMLOG(xml, "-- not better " <<*g << " @" << std::setw(15) << gtmp);
+                        //YACK_XMLOG(xml, "|_not better " <<*g << " @" << std::setw(15) << gtmp);
                     }
                 }
             }
 
+            //------------------------------------------------------------------
             // selected
-            std::cerr << "Will upgrade to " << *best << std::endl;
-            //std::cerr << "C =" << Cbal << std::endl;
+            //------------------------------------------------------------------
+            YACK_XMLOG(xml, "-- upgrading " << *best << " @" << std::setw(15) << gmax << " <--");
+
+
+            if(verbose) iota::load(Ctry,Cbal);
             for(const gnode *gn=best->head;gn;gn=gn->next)
             {
-                const equilibrium      &eq = **gn;
-                const size_t            ei = *eq;
+                const equilibrium      &eq = **gn; if(!edb.search(&eq)) continue;
+                const size_t            ei = *eq;  assert( Gain[ei] > 0);
                 const readable<double> &Ci = Ceq[ei];
-                //std::cerr << "C =" << Ci << " @" << eq << std::endl;
                 eq.transfer(Cbal,Ci);
             }
 
-            for(const anode *node=working.head;node;node=node->next)
+            if(verbose)
             {
-                const species &s = **node;
-                const size_t   j =  *s;
-                corelib.pad(std::cerr << "[" << s.name << "]", s) << " = " << Cbal[j] << std::endl;
-            }
-
-            exit(0);
-
-            goto CYCLE;
-
-        }
-
-
-
-#if 0
-        static inline
-        double getBalance(const equilibrium      &eq,
-                          const readable<double> &C,
-                          raddops                &xadd)
-        {
-            xadd.free();
-            for(const cnode *node = eq.head();node;node=node->next)
-            {
-                const double c = C[*****node];
-                if(c<0) xadd << (-c);
-            }
-            return xadd.get();
-        }
-
-
-        bool reactor:: balance(writable<double> &C0)
-        {
-            static const char fn[] = "[reactor]";
-            const xmlog       xml(fn,std::cerr,entity::verbose);
-            YACK_XMLSUB(xml,"Balancing");
-
-
-            //------------------------------------------------------------------
-            //
-            //
-            // Check Status
-            //
-            //
-            //------------------------------------------------------------------
-            if(N<=0) {
-                YACK_XMLOG(xml,"-- no equilibrium");
-                return true;
-            }
-
-            //------------------------------------------------------------------
-            //
-            //
-            // initialize phase space
-            //
-            //
-            //------------------------------------------------------------------
-            for(size_t j=M;j>0;--j)
-            {
-                Cbal[j] = Ctry[j] = C0[j];
-                dC[j]   = 0;
-            }
-
-            if(!primaryBalance(xml)) return false;
-            
-
-
-            //------------------------------------------------------------------
-            //
-            //
-            // check total balance
-            //
-            //
-            //------------------------------------------------------------------
-            unsigned cycle = 0;
-        CYCLE:
-            ++cycle;
-            YACK_XMLOG(xml, "-------- balancing cycle #" << cycle << " --------");
-            {
-                bool balanced = true;
-                for(const anode *node = working.head;node;node=node->next)
+                for(const anode *node=working.head;node;node=node->next)
                 {
                     const species &s = **node;
-                    const double   c = Cbal[*s];
-                    if(verbose) corelib.pad(*xml << '[' << s.name << ']',s) << " = " << std::setw(15) << c << ' ';
-                    switch(s.rank)
-                    {
-                        case 0:
-                            if(verbose) std::cerr << "[?]";
-                            break;
-
-                        case 1:
-                            if(verbose) std::cerr << "[*]";
-                            assert(c>=0);
-                            break;
-
-                        default:
-                            if(c<0) {
-                                if(verbose) std::cerr << "[-]";
-                                balanced = false;
-                            }
-                            else {
-                                if(verbose) std::cerr << "[+]";
-                            }
-                    }
-                    if(verbose) std::cerr << std::endl;
-
-                }
-
-                if(balanced) {
-                    YACK_XMLOG(xml, "-- <balanced>");
-                    working.transfer(C0,Cbal);
-                    return true;
+                    const size_t   j =  *s;
+                    const double   c_old = Ctry[j];
+                    const double   c_new = Cbal[j];
+                    if( fabs(c_old-c_new) <= 0 ) continue;
+                    corelib.pad(*xml << " (*) [" << s.name << "]", s)
+                    << " = "   << std::setw(15) << c_old
+                    << " --> " << std::setw(15) << c_new
+                    << std::endl;
                 }
             }
 
-            //------------------------------------------------------------------
-            //
-            //
-            // Loop over lattice
-            //
-            //
-            //------------------------------------------------------------------
-            const equilibrium *champion = NULL;
-            double             topScore = 0;
-
-            for(const enode *node = lattice.head();node;node=node->next)
-            {
-                const equilibrium &eq = ***node;
-                const size_t       ei = *eq;
-
-                //--------------------------------------------------------------
-                //
-                // load in beta the trial topology
-                //
-                //--------------------------------------------------------------
-                {
-                    // check invalid reactant
-                    size_t nr = 0;
-                    for(const actor *a=eq.reac->head;a;a=a->next)
-                    {
-                        if(Cbal[***a]<0) ++nr;
-                    }
-
-                    size_t np = 0;
-                    for(const actor *a=eq.prod->head;a;a=a->next)
-                    {
-                        if(Cbal[***a]<0) ++np;
-                    }
-
-                    if(verbose)
-                        lattice.pad(*xml<< '<' << eq.name << '>',eq)
-                        << " | #reac = " << std::setw(4) << nr
-                        << " | #prod = " << std::setw(4) << np;
-
-                    if(nr>0)
-                    {
-                        if(np>0)
-                        {
-                            if(verbose) std::cerr << " | blocked" << std::endl;
-                            continue;
-                        }
-                        if(verbose) std::cerr << " | reverse" << std::endl;
-                        iota::neg(beta,NuL[ei]);
-                    }
-                    else
-                    {
-                        assert(nr<=0);
-                        if(np<=0)
-                        {
-                            if(verbose) std::cerr << " | regular" << std::endl;
-                            continue;
-                        }
-                        if(verbose) std::cerr << " | forward" << std::endl;
-                        iota::load(beta,NuL[ei]);
-                    }
-                }
-
-                //--------------------------------------------------------------
-                //
-                // find maximum extent with sparsity
-                //
-                //--------------------------------------------------------------
-                assert( iota::dot<int>::of(beta,beta) > 0 );
-
-                const species   *vanish = NULL;
-                double           factor = 0;
-                for(const anode *an=working.head;an;an=an->next)
-                {
-                    const species &s = **an;
-                    const size_t   j = *s;
-                    const int      d = beta[j]; if(!d) continue;
-                    const double   c = Cbal[j];
-                    if(verbose) corelib.pad(std::cerr << "|\t[" << s.name << "]",s) << " = " << std::setw(15) << c << " with " << std::setw(4) << d << ' ';
-                    if(d<0)
-                    {
-                        //------------------------------------------------------
-                        // decreasing coefficient
-                        //------------------------------------------------------
-                        if(c<0)
-                        {
-                            //--------------------------------------------------
-                            // with a negative concentration => bad
-                            //--------------------------------------------------
-                            if(verbose) std::cerr << "[discard]" << std::endl;
-                            vanish = NULL;
-                            break;
-                        }
-                        else
-                        {
-                            //--------------------------------------------------
-                            // with a positive concentration => cut
-                            //--------------------------------------------------
-                            const double x = c/(-d);
-                            if(!vanish||x<factor)
-                            {
-                                vanish = &s;
-                                factor =  x;
-                            }
-                            if(verbose) std::cerr << "[decrease] @" << std::setw(15) << x << std::endl;
-                        }
-                    }
-                    else
-                    {
-                        //------------------------------------------------------
-                        // increasing coefficient
-                        //------------------------------------------------------
-                        assert(d>0);
-                        if(c<0)
-                        {
-                            //--------------------------------------------------
-                            // with a negative concentration => cut
-                            //--------------------------------------------------
-                            const double x = (-c)/d;
-                            if(!vanish||x<factor)
-                            {
-                                vanish = &s;
-                                factor =  x;
-                            }
-                            if(verbose) std::cerr << "[increase] @" << std::setw(15) << x << std::endl;
-                        }
-                        else
-                        {
-                            //--------------------------------------------------
-                            // with a positive concentration => do nothing else
-                            //--------------------------------------------------
-                            if(verbose) std::cerr << "[+growth+]" << std::endl;
-                        }
-
-                    }
-                }
-
-
-                //--------------------------------------------------------------
-                //
-                //  check if useful
-                //
-                //--------------------------------------------------------------
-                if(!vanish || factor<=0) {
-                    if(verbose) std::cerr << "|\t\t<defunct>" << std::endl;
-                    continue;
-                }
-
-                //--------------------------------------------------------------
-                //
-                // guess initial balance
-                //
-                //--------------------------------------------------------------
-                assert(vanish!=NULL);
-                assert(factor>0);
-
-                const double B0 = getBalance(eq,Cbal,xadd);
-                assert(B0>0);
-                if(verbose) std::cerr << "|\tB0 = " << std::setw(15) << B0 << " @ C0=" << Cbal << std::endl;
-
-                //--------------------------------------------------------------
-                //
-                // store modified concentration
-                //
-                //--------------------------------------------------------------
-                writable<double> &Ci = Ceq[ei];
-                iota::load(Ci,Cbal);
-                for(const anode *an=working.head;an;an=an->next)
-                {
-                    const species &s = **an;
-                    const size_t   j = *s;
-                    const int      d = beta[j]; if(!d) continue;
-                    const double   c = Cbal[j];
-                    double        &cc = Ci[j];
-                    cc = c + d * factor;
-                    if(d<0)
-                    {
-                        assert(c>0);
-                        cc = max_of(cc,0.0);
-                    }
-                    else
-                    {
-                        assert(d>0);
-                        if(c<0)
-                        {
-                            cc = min_of(cc,0.0);
-                        }
-                    }
-
-                }
-                Ci[**vanish] = 0;
-
-                //--------------------------------------------------------------
-                //
-                // guess modified balance
-                //
-                //--------------------------------------------------------------
-                const double B1 = getBalance(eq,Ci,xadd);
-                if(verbose) std::cerr << "|\tB1 = " << std::setw(15) << B1 << " @ C1=" << Ci << std::endl;
-
-
-
-                //--------------------------------------------------------------
-                //
-                // estimate score
-                //
-                //--------------------------------------------------------------
-                if(B1>=B0) {
-                    if(verbose) std::cerr << "|\t\t<no gain>" << std::endl;
-                    continue;
-                }
-                const double gain  = B0-B1;
-                const double cost  = sqrt(working.norm2(Cbal,Ci,xadd))/working.size;
-                const double score = gain - cost;
-                if(verbose) {
-                    std::cerr << "|\t\t<gain  = "<< std::setw(15) << gain << ", cost = " << std::setw(15) << cost << ">" << std::endl;
-                    std::cerr << "|\t\t<score = "<< std::setw(15) << score << ">" << std::endl;
-                }
-
-
-                //--------------------------------------------------------------
-                //
-                // update status
-                //
-                //--------------------------------------------------------------
-                if(!champion || score>topScore)
-                {
-                    champion = &eq;
-                    topScore = score;
-                }
-                
-            }
-
-            //------------------------------------------------------------------
-            //
-            //
-            // check is a champion was selected
-            //
-            //
-            //------------------------------------------------------------------
-            if(!champion)
-            {
-                YACK_XMLOG(xml, "-- <stalled> @cycle #"<< cycle);
-                if(verbose)
-                {
-                    dC.ld(0);
-                    beta.ld(0);
-                    for(const anode *node = working.head;node;node=node->next)
-                    {
-                        const species &s = **node;
-                        const size_t   j = *s;
-                        const double   c0 = C0[j];
-                        const double   c1 = Cbal[j];
-                        corelib.pad(*xml << '[' << s.name << ']',s) << " = " << std::setw(15) << c0 << " -> " << std::setw(15) << c1 << std::endl;
-                        if(c1<0)
-                        {
-                            dC[j]   = -c1;
-                            beta[j] =   1;
-                        }
-                    }
-                    std::cerr << "Nu   = " << Nu << std::endl;
-                    std::cerr << "dC   = " << dC << std::endl;
-                    std::cerr << "beta = " << beta << std::endl;
-                    std::cerr << "NuL  = " << NuL  << std::endl;
-                }
-                return false;
-            }
-
-            YACK_XMLOG(xml,"-- using <" << champion->name << "> @cycle #" << cycle);
-            working.transfer(Cbal,Ceq[**champion]);
             goto CYCLE;
 
         }
-#endif
+
 
     }
 
