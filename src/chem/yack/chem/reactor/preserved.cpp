@@ -65,7 +65,7 @@ namespace yack
             return injected;
 
         }
-
+        
     }
 
 }

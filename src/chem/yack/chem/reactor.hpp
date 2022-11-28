@@ -109,11 +109,12 @@ namespace yack
             const imatrix      Nu;      //!< [NxM] topology
             imatrix            NuA;     //!< [NXM] topology of non-blocked equilibria
             const size_t       Nc;      //!< number of conservation law
-            const umatrix      Qc;      //!< [NcxM] conservation matrix
-            const constraints  Qv;      //!< [Nc]   conservation laws
-            thin_array<bool>   Qb;      //!< [Nc]   for algorithm
-            tableau           &Qg;      //!< [Nc]   for gain
-            rmatrix            Qm;      //!< [NcxM] target concentrations
+            const umatrix      Qc;      //!< [NcxM]  conservation matrix
+            const constraints  Qv;      //!< [Nc]    conservation laws
+            thin_array<bool>   Qb;      //!< [Nc]    for algorithm
+            tableau           &Qg;      //!< [Nc]    for gain per constraint
+            rmatrix            Qm;      //!< [NcxM]  target concentrations
+            const rs_groups    Qt;      //!< [1::Nc] constraints topology
 
             sp_repo            vanish;  //!< vanishin repo
             imatrix            Bal;     //!< [MxN] balancing directions
@@ -148,8 +149,9 @@ namespace yack
             const lockable::scope lockEqs;
             void                       buildRelated();                           //!< build global partitions
             void                       makeManifold(const xmlog &);              //!< build all solving partitions
-            void                       conservation(const xmlog &);
-            
+            void                       conservation(const xmlog &);              //!< create conservation law
+            void                       make_cgroups(const xmlog &);              //!< create conservation groups
+
             bool                       returnSolved(writable<double> &C0, const xmlog&); //!< upon successful return
             double                     Hamiltonian(const readable<double> &C);           //!< a molar hamiltonian
             double                     Hamiltonian(const group &g);                      //!< build a Ctry from Corg and a group
