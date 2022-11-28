@@ -139,6 +139,7 @@ namespace yack
             tableau           &Xl;      //!< [L]   solving extents
             thin_array<bool>   blocked; //!< [L]   blocking state
             tableau           &Gain;    //!< [L]   for balancing
+            tableau           &Cost;    //!< [L]   for balancing
             rmatrix            Ceq;     //!< [LxM] all single solutions
 
         private:

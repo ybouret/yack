@@ -15,7 +15,8 @@ namespace yack
 
         double reactor:: preserved(writable<double> &C0, const xmlog &xml)
         {
-            YACK_XMLSUB(xml,"Preserving");
+            static const char fn[] = "preserving";
+            YACK_XMLSUB(xml,fn);
 
             size_t ng = 0;
             Qb.ld(true);
@@ -24,7 +25,7 @@ namespace yack
             unsigned cycle = 0;
         CYCLE:
             ++cycle;
-            YACK_XMLOG(xml, "-------- cycle #" << cycle << " --------");
+            YACK_XMLOG(xml, "-------- " << fn << " cycle #" << cycle << " --------");
             double             gain = -1;
             const restriction *best = NULL;
             for(size_t i=Nc;i>0;--i)

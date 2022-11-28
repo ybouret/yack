@@ -77,8 +77,7 @@ namespace yack
             target.free();
             upload(target);
         }
-
-
+        
         
     private:
         YACK_DISABLE_ASSIGN(addrbook);

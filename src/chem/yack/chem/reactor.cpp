@@ -77,6 +77,7 @@ namespace yack
         Xl( ltab.next()  ),
         blocked( ltab.next(), transmogrify),
         Gain( ltab.next() ),
+        Cost( ltab.next() ),
         Ceq(),
 
         lockLib( coerce(usrLib) ),

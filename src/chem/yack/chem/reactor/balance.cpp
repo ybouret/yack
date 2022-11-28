@@ -8,6 +8,7 @@
 #include "yack/exception.hpp"
 #include "yack/math/numeric.hpp"
 #include "yack/sort/indexing.hpp"
+#include "yack/associative/addrbook.hpp"
 
 #include <iomanip>
 
@@ -99,12 +100,39 @@ namespace yack
             }
         }
 
+        static inline
+        bool allIn(const group &g, const addrbook &edb) throw()
+        {
+            for(const gnode *gn=g.head;gn;gn=gn->next)
+            {
+                const equilibrium &eq = **gn;
+                if(!edb.search(&eq)) return false;
+            }
+            return true;
+        }
+
+        static inline
+        double gainOf(const group            &g,
+                      const readable<double> &Gain,
+                      raddops                &xadd)
+        {
+            xadd.free();
+            for(const gnode *gn=g.head;gn;gn=gn->next)
+            {
+                const equilibrium &eq = **gn;
+                const double       eg = Gain[ *eq ]; assert(eg>0);
+                xadd << eg;
+            }
+            return xadd.get();
+        }
+
+
         bool reactor:: balance(writable<double> &C0)
         {
-            static const char   fn[] = "[reactor]";
+            static const char   fn[] = "balancing";
             static const double pen = numeric<double>::sqrt_eps;
-            const xmlog         xml(fn,std::cerr,entity::verbose);
-            YACK_XMLSUB(xml,"Balancing");
+            const xmlog         xml(clid,std::cerr,entity::verbose);
+            YACK_XMLSUB(xml,"balancing");
 
 
             //------------------------------------------------------------------
@@ -134,7 +162,10 @@ namespace yack
 
             double            injected = preserved(Cbal,xml);
 
-            
+            unsigned cycle = 0;
+        CYCLE:
+            ++cycle;
+            YACK_XMLOG(xml, "-------- " << fn << " cycle #" << std::setw(4) << cycle << " | injected = " << std::setw(15) << injected);
             if(isWellBalanced(xml))
             {
                 working.transfer(C0,Cbal);
@@ -149,6 +180,12 @@ namespace yack
             //
             //
             //------------------------------------------------------------------
+            addrbook edb;
+
+
+            edb.free();
+            Gain.ld(0);
+            Cost.ld(0);
             for(const enode *node = lattice.head();node;node=node->next)
             {
                 const equilibrium &eq = ***node;
@@ -178,10 +215,11 @@ namespace yack
                         if(Cbal[***a]<0) ++np;
                     }
                     
-                    if(verbose)
+                    if(verbose) {
                         lattice.pad(*xml<< '<' << eq.name << '>',eq)
                         << " | #reac = " << std::setw(4) << nr
                         << " | #prod = " << std::setw(4) << np;
+                    }
 
                     //----------------------------------------------------------
                     // act accordingly
@@ -305,6 +343,7 @@ namespace yack
                 //--------------------------------------------------------------
                 writable<double> &Ci = Ceq[ei];
                 iota::load(Ci,Cbal);
+
                 xadd.free();
                 for(const cnode *cn=eq.head();cn;cn=cn->next)
                 {
@@ -351,42 +390,101 @@ namespace yack
                 std::cerr << "\tgain=" << gain << " / cost=" << cost <<  std::endl;
                 if(gain>0)
                 {
+                    if(!edb.insert(&eq)) throw exception("%s: multiple <%s>", fn, eq.name());
+                    Gain[ei] = gain;
+                    Cost[ei] = cost;
                     //Ewin << & coerce(eq);
                     //Gain << gain;
                     //Cost << cost;
                     //Rank << gain - pen * cost;
                 }
             }
-            
-            // ananlyze result
-#if 0
-            if(Ewin.size()<=0)
+
+            //------------------------------------------------------------------
+            //
+            // analyze positive gain(s)
+            //
+            //------------------------------------------------------------------
+            if((*edb).size<=0)
             {
-                // bad
                 std::cerr << "STALLED" << std::endl;
                 exit(0);
             }
 
-            vector<size_t> eidx(Ewin.size());
-            indexing::make(eidx, comparison::decreasing<double>, Rank);
 
-            for(size_t i=1;i<=Ewin.size();++i)
+            if(verbose)
             {
-                const size_t       ii = eidx[i];
-                const equilibrium &eq = *Ewin[ii];
-                lattice.pad(std::cerr << eq.name,eq)
-                << " => "    << std::setw(15) << Gain[ii]
-                << ", cost=" << std::setw(15) << Cost[ii]
-                << ", rank=" << std::setw(15) << Rank[ii]
-                << " | " << eq.content() << std::endl;
+                YACK_XMLOG(xml, "-- summary:");
+                for(addrbook::const_iterator it=edb.begin();it!=edb.end();++it)
+                {
+                    const equilibrium &eq = *static_cast<const equilibrium *>(*it);
+                    const size_t       ei = *eq;
+                    lattice.pad(*xml << "|_" << eq.name,eq)
+                    << " | gain " << std::setw(15) << Gain[ei]
+                    << " | cost " << std::setw(15) << Cost[ei]
+                    << std::endl;
+                }
             }
 
-            const equilibrium *ewin = Ewin[ eidx[1] ];
-            std::cerr << "=> Updating with " << ewin->name << std::endl;
-#endif
-            
-            exit(0);
-            return false;
+
+            // find first
+            const group     *best = NULL;
+            double           gmax = 0;
+            for(const group *g    = solving.head; g; g=g->next)
+            {
+                const bool ok = allIn(*g,edb);
+                if(!ok)
+                {
+                    YACK_XMLOG(xml, "-- discarding " <<*g);
+                    continue;
+                }
+                else
+                {
+                    best = g;
+                    gmax = gainOf(*g,Gain,xadd);
+                    YACK_XMLOG(xml, "-- initialize " <<*g << " @" << std::setw(15) << gmax << " <--");
+                    break;
+                }
+            }
+            assert(best); // mandatory
+
+            // find better
+            for(const group *g=best->next;g;g=g->next)
+            {
+                const bool ok = allIn(*g,edb);
+                if(!ok)
+                {
+                    YACK_XMLOG(xml, "-- discarding " <<*g);
+                    continue;
+                }
+                else
+                {
+                    const double gtmp = gainOf(*g,Gain,xadd);
+                    if(gtmp>gmax)
+                    {
+                        gmax = gtmp;
+                        best = g;
+                        YACK_XMLOG(xml, "-- upgrade to " <<*g << " @" << std::setw(15) << gmax << " <--");
+                    }
+                    else
+                    {
+                        YACK_XMLOG(xml, "-- not better " <<*g << " @" << std::setw(15) << gtmp);
+                    }
+                }
+            }
+
+            // selected
+            std::cerr << "Will upgrade to " << *best << std::endl;
+            //std::cerr << "C =" << Cbal << std::endl;
+            for(const gnode *gn=best->head;gn;gn=gn->next)
+            {
+                const equilibrium      &eq = **gn;
+                const size_t            ei = *eq;
+                const readable<double> &Ci = Ceq[ei];
+                //std::cerr << "C =" << Ci << " @" << eq << std::endl;
+                eq.transfer(Cbal,Ci);
+            }
+            goto CYCLE;
 
         }
 
