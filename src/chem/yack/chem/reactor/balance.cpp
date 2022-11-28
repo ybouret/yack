@@ -146,7 +146,8 @@ namespace yack
         {
             static const char   fn[] = "balancing";
             static const double pen = numeric<double>::sqrt_eps;
-            const xmlog         xml(clid,std::cerr,entity::verbose);
+            const char         *call = clid;
+            const xmlog         xml(call,std::cerr,entity::verbose);
             YACK_XMLSUB(xml,"balancing");
 
 
