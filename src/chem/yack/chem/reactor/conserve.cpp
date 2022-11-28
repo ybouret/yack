@@ -618,7 +618,6 @@ namespace yack
             rtab.make(Nc);
             Qb.relink<bool>();
 
-            exit(0);
             // "@eq:-[a]+4[b]+7[c]-2[d]:1"
         }
 
@@ -698,7 +697,6 @@ namespace yack
                 {
                     *xml << "-- \\_" << *g << std::endl;
                 }
-
             }
         }
     }

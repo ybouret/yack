@@ -12,59 +12,104 @@ namespace yack
     namespace chemical
     {
 
+        void reactor:: preservedGroup(writable<double> &C0,
+                                      const rs_group   &rg,
+                                      const xmlog      &xml)
+        {
+            YACK_XMLOG(xml,"-- enforcing " << rg);
+
+            //------------------------------------------------------------------
+            //
+            // at most |rg| cycles
+            //
+            //------------------------------------------------------------------
+            const size_t nc = rg.size;
+            for(size_t cycle=1;cycle<=nc;++cycle)
+            {
+
+                double             gain = -1;
+                const restriction *best = NULL;
+
+                //--------------------------------------------------------------
+                // look for the smallest positive gain
+                //--------------------------------------------------------------
+                for(const rs_node *rn=rg.head;rn;rn=rn->next)
+                {
+                    const restriction &rs = **rn;
+                    const size_t       ri =  *rs; if(!Qb[ri]) continue; // already satisfied
+                    const double       rv =  rs.apply(Qm[*rs],C0,xadd); // current gain
+                    YACK_XMLOG(xml, "--  gain = " << std::setw(15) << rv << " @" << rs);
+                    if(rv<=0)
+                    {
+                        // satisfied, remove from bad
+                        Qb[*rs] = false;
+                    }
+                    else
+                    {
+                        // update
+                        assert(rv>0);
+                        if( gain<0 || rv<gain )
+                        {
+                            gain =  rv;
+                            best = &rs;
+                        }
+                    }
+                }
+
+                if(!best)
+                {
+                    // all good for this group
+                    break;
+                }
+                else
+                {
+                    // update status
+                    YACK_XMLOG(xml, "--> using " << *best);
+                    const size_t i = **best;
+                    iota::load(C0,Qm[i]); // make new concentation
+                    Qb[i] = false;        // remove from bad
+                    Qg[i] = gain;         // store gain
+                }
+            }
+
+            //std::cerr << "C0=" << C0 << std::endl;
+            //std::cerr << "\t\tDone " << rg << std::endl;
+            //exit(0);
+
+        }
 
         double reactor:: preserved(writable<double> &C0, const xmlog &xml)
         {
             static const char fn[] = "preserving";
             YACK_XMLSUB(xml,fn);
 
-            size_t ng = 0;
             Qb.ld(true);
             Qg.ld(0);
 
-            unsigned cycle = 0;
-        CYCLE:
-            ++cycle;
-            YACK_XMLOG(xml, "-------- " << fn << " cycle #" << cycle << " --------");
-            double             gain = -1;
-            const restriction *best = NULL;
-            for(size_t i=Nc;i>0;--i)
+            if(verbose)
             {
-                if(!Qb[i])
-                {
-                    continue;
-                }
-                const restriction &rs = *Qv[i]; assert(*rs==i);
-                const double       rg =  rs.apply(Qm[*rs],C0,xadd);
-                YACK_XMLOG(xml, "--  gain = " << std::setw(15) << rg << " @" << rs);
-                if( rg>0 && (gain<0 || rg<gain) )
-                {
-                    gain = rg;
-                    best = &rs;
-                }
-
+                iota::load(Ctry,C0);
             }
 
-            if(best)
+            for(const rs_group *rg=Qt.head;rg;rg=rg->next)
             {
-                ++ng;
-                YACK_XMLOG(xml, "--> gain = " << std::setw(15) << gain << " @" << *best);
-                const size_t i = **best;
-                iota::load(C0,Qm[i]);
-                Qb[i] = false;
-                Qg[i] = gain;
-                goto CYCLE;
+                preservedGroup(C0,*rg,xml);
             }
-
             const double injected = xadd.tableau(Qg);
-            if(ng&&verbose)
+            if(verbose && injected)
             {
-                corelib(*xml << "Cout=","",C0);
+                *xml << "--> injected with " << injected << " M <--" << std::endl;
+                for(const anode *an=working.head;an;an=an->next)
+                {
+                    const species &s = **an;
+                    const size_t   j = *s;
+                    corelib.pad(*xml << "|_[" << s.name << "]",s) << " = " << std::setw(15) << Ctry[j] << " --> " << std::setw(15) << C0[j] << std::endl;
+                }
             }
-            YACK_XMLOG(xml, "--> injected = " << injected);
-            return injected;
 
+            return injected;
         }
+
         
     }
 

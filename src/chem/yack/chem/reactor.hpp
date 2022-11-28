@@ -163,6 +163,7 @@ namespace yack
             void                       gatherOmega();
             void                       deactivated(const size_t ei);
 
+            void                       preservedGroup(writable<double> &C0, const rs_group &rg, const xmlog &xml);
             bool                       primaryBalance(const xmlog &xml);
             bool                       isWellBalanced(const xmlog &xml) const throw();
 

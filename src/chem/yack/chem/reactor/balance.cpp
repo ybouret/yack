@@ -160,9 +160,8 @@ namespace yack
                 dC[j]   = 0;
             }
 
-            double            injected = preserved(Cbal,xml);
-
-            unsigned cycle = 0;
+            double   injected = preserved(Cbal,xml);
+            unsigned cycle    = 0;
         CYCLE:
             ++cycle;
             YACK_XMLOG(xml, "-------- " << fn << " cycle #" << std::setw(4) << cycle << " | injected = " << std::setw(15) << injected);
@@ -393,10 +392,6 @@ namespace yack
                     if(!edb.insert(&eq)) throw exception("%s: multiple <%s>", fn, eq.name());
                     Gain[ei] = gain;
                     Cost[ei] = cost;
-                    //Ewin << & coerce(eq);
-                    //Gain << gain;
-                    //Cost << cost;
-                    //Rank << gain - pen * cost;
                 }
             }
 
