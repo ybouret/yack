@@ -72,6 +72,7 @@ YACK_UTEST(balance)
                 std::cerr << "No Balance!!" << std::endl;
             }
             std::cerr << std::endl;
+            exit(0);
         }
         return 0;
     }
