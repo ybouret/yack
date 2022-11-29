@@ -263,5 +263,73 @@ namespace yack
     }
 
 
+    static inline apq apq_dot(const readable<apq> &lhs,
+                              const readable<apq> &rhs)
+    {
+        apq sum(0);
+        for(size_t i=lhs.size();i>0;--i) sum += lhs[i] * rhs[i];
+        return sum;
+    }
+
+    static inline apq apq_norm2(const readable<apq> &lhs)
+    {
+        apq sum(0);
+        for(size_t i=lhs.size();i>0;--i) sum += lhs[i]*lhs[i];
+        return sum;
+    }
+
+
+    bool apk:: gs_ortho(matrix<apq> &V)
+    {
+        const size_t n = V.rows;
+        const size_t m = V.cols;
+        matrix<apq>  U(n,m);
+        {
+            vector<apq>  u2(n);
+
+            for(size_t k=1;k<=n;++k)
+            {
+                const readable<apq>     &v_k = V[k];
+                writable<apq>           &u_k = U[k];
+                for(size_t i=m;i>0;--i)  u_k[i] = v_k[i];
+
+                for(size_t j=1;j<k;++j)
+                {
+                    assert(u2[j]>0);
+                    assert(apq_norm2(U[j])==u2[j]);
+                    const readable<apq> &u_j = U[j];
+                    const apq            cof = apq_dot(u_j,v_k)/u2[j];
+                    for(size_t i=m;i>0;--i)
+                    {
+                        u_k[i] -= cof * u_j[i];
+                    }
+                }
+                apk::simplify(u_k);
+                if( (u2[k] = apq_norm2(u_k)) <= 0) return false;
+                size_t np = 0;
+                size_t nn = 0;
+                for(size_t i=m;i>0;--i)
+                {
+                    const apq &q = u_k[i];
+                    if(q<0) ++nn;
+                    else if(q>0) ++np;
+                }
+                assert(nn>0||np>0);
+                if(nn>np)
+                {
+                    for(size_t i=m;i>0;--i)
+                    {
+                        u_k[i] = -u_k[i];
+                    }
+                }
+                
+            }
+        }
+        V.assign(U);
+
+
+        return true;
+    }
+
 
 }

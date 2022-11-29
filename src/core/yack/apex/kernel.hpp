@@ -213,6 +213,8 @@ namespace yack
             return gj_rank(Q);
         }
 
+        static bool gs_ortho(matrix<apq> &Q);
+
 
     };
 
