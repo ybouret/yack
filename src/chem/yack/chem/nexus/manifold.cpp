@@ -17,6 +17,22 @@ namespace yack
             return comparison::increasing( ***lhs, ***rhs );
         }
 
+        class stvec : public object, public vector<int>
+        {
+        public:
+            stvec(const readable<int> &stoi) : vector<int>( stoi.size() ), next(0) {
+                
+            }
+            virtual ~stvec() throw() {}
+
+            stvec *next;
+        private:
+            YACK_DISABLE_COPY_AND_ASSIGN(stvec);
+        };
+
+        typedef cxx_pool_of<stvec> stpool;
+
+
         void nexus:: make_manifold(const xmlog &xml)
         {
             static const char * const fn = "make_manifold";
@@ -29,6 +45,7 @@ namespace yack
             //------------------------------------------------------------------
             addrbook   tribe;
             sp_repo    cache;
+            stpool     stcof;
             const apq _0 = 0;
             const apq _1 = 1;
 
@@ -40,7 +57,10 @@ namespace yack
                 const size_t n = sharing->size;
                 if(n<=1) continue;
 
+                stcof.release();
+
                 vector<equilibrium *> eptr(n,as_capacity);
+                vector<int>           stoi(M);
 
                 for(const eq_node *en=sharing->head;en;en=en->next)
                 {
@@ -48,13 +68,16 @@ namespace yack
                     eptr.push_back( & coerce(eq) );
                 }
 
+
+
+
                 for(size_t k=2;k<=n;++k)
                 {
                     combination           comb(n,k);  // combination
                     vector<equilibrium *> esub(k);    // sub-equilibria
                     vector<int>           coef(k);    // shared coefficient
                     imatrix               topo(k,M);  // local topology
-                    matrix<apq>           Q(k,k);
+                    matrix<apq>           Q(k,k);     // to build ortho space
                     do
                     {
                         cache.free();
@@ -99,7 +122,7 @@ namespace yack
                             for(size_t i=1;i<=k;++i)
                                 std::cerr << ' '  << esub[i]->name;
                             std::cerr << " ] / "  << cache.list << std::endl;
-                            *xml << "   |_topo=" << topo << std::endl;
+                            //*xml << "   |_topo  = " << topo << std::endl;
                         }
 
                         //------------------------------------------------------
@@ -121,15 +144,33 @@ namespace yack
                                 {
                                     Q[i][i] = _1;
                                 }
-                                //std::cerr << "-- try " << Q << std::endl;
                                 if(!apk::gs_ortho(Q))
                                 {
                                     throw imported::exception(clid,"%s bad matrix",fn);
                                 }
-                                YACK_XMLOG(xml,"   |_ortho=" << Q);
+                                //YACK_XMLOG(xml,"   |_ortho = " << Q);
                                 for(size_t i=2;i<=k;++i)
                                 {
-                                    //*xml << "   |_ortho=" << Q[i] << std::endl;
+                                    const readable<apq> &q = Q[i];
+                                    for(size_t i=k;i>0;--i)
+                                    {
+                                        coef[i] = q[i].num.cast_to<int>();
+                                    }
+                                    //YACK_XMLOG(xml,"   |_coef = " << coef);
+                                    for(size_t j=M;j>0;--j)
+                                    {
+                                        int sum = 0;
+                                        for(size_t i=k;i>0;--i)
+                                        {
+                                            sum += coef[i] * topo[i][j];
+                                        }
+                                        stoi[j] = sum;
+                                    }
+                                    YACK_XMLOG(xml,"   |_stoi = " << stoi << " <- coef=" << coef);
+
+
+
+
                                 }
 
                             }
