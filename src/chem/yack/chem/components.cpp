@@ -10,6 +10,18 @@ namespace yack
     namespace chemical
     {
 
+        const char * feature_text(const feature kind) throw()
+        {
+            switch(kind)
+            {
+                case undefined: return "undefined";
+                case both_ways: return "both ways";
+                case part_only: return "part only";
+                case join_only: return "join only";
+            }
+            return yack_unknown;
+        }
+
         const char * components:: state_text(const state s) throw()
         {
             switch (s) {

@@ -31,6 +31,8 @@ namespace yack
             undefined  //!<           <=>
         };
 
+        const char * feature_text(const feature kind) throw();
+
         //______________________________________________________________________
         //
         // global types

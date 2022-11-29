@@ -18,7 +18,6 @@ namespace yack
         class npd
         {
         public:
-
             virtual ~npd() throw();
             
         private:
