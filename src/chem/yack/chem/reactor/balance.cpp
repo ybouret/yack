@@ -198,8 +198,11 @@ namespace yack
             double   injected = preserved(Cbal,xml);
             addrbook edb;
             
+            unsigned cycle = 0;
+        CYCLE:
+            ++cycle;
+            YACK_XMLOG(xml,"-------- " << fn << " cycle #" << cycle << " --------");
 
-            
             //------------------------------------------------------------------
             //
             //
@@ -461,7 +464,7 @@ namespace yack
                         }
                         else
                         {
-                            YACK_XMLOG(xml, " [-] " <<*g << " @" << std::setw(15) << gtmp);
+                            //YACK_XMLOG(xml, " [-] " <<*g << " @" << std::setw(15) << gtmp);
                         }
                     }
                 }
@@ -580,6 +583,7 @@ namespace yack
 
                         if(factor<=0) {
                             if(verbose) std::cerr << " [+positive+] " << std::endl;
+                            blocked[ei] = true;
                             continue;
                         }
 
@@ -660,18 +664,36 @@ namespace yack
                 }
             }
 
-            std::cerr << "analyze status..." << std::endl;
-            for(const anode *node=working.head;node;node=node->next)
+            std::cerr << "analyze status @cycle #" << cycle << std::endl;
             {
-                const species &s = **node;
-                const size_t   j =  *s;
-                corelib.pad( std::cerr << "[" << s.name << "]", s)
-                << " = "   << std::setw(15) << Cbal[j]
-                << std::endl;
+                bool well = true;
+                for(const anode *node=working.head;node;node=node->next)
+                {
+                    const species &s    = **node;
+                    const size_t   j    =  *s;
+                    const double   c    = Cbal[j];
+                    const bool     ok   = c>=0;
+                    if(!ok)        well = false;
+                    if(verbose)
+                    {
+                        corelib.pad( std::cerr << "[" << s.name << "]", s)
+                        << " = "   << std::setw(15) << Cbal[j] << " " << yack_boolean(ok) << std::endl;
+                    }
+                }
+                if(well)
+                {
+                    YACK_XMLOG(xml, "-- balanced with injected = " << injected);
+                    working.transfer(C0,Cbal);
+                    return true;
+                }
             }
-            
-            exit(0);
-            return false;
+
+            injected += preserved(Cbal,xml);
+            if(cycle>=10)
+            {
+                exit(0);
+            }
+            goto  CYCLE;
             
         }
         
