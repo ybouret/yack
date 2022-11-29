@@ -99,8 +99,13 @@ namespace yack
                 YACK_XMLOG(xml, "-- rank = " << rank << " / " << N);
                 if(rank<N) throw imported::exception(clid,"dependent equilibria");
 
-                build_related(xml);
+                singles.graphviz("singles.dot", corelib);
 
+                // build related (at least one cluster)
+                build_related(xml); assert(related.size>0);
+
+                // make manifold
+                make_manifold(xml);
             }
 
             

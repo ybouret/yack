@@ -9,6 +9,7 @@
 #include "yack/chem/xlimits.hpp"
 #include "yack/associative/suffix/set.hpp"
 #include "yack/data/bare.hpp"
+#include "yack/associative/addrbook.hpp"
 
 
 namespace yack
@@ -179,7 +180,14 @@ namespace yack
             //! move C with computed extent
             void move(writable<double> &C, const double xi) const throw();
 
-            
+            void update(addrbook &tribe) const
+            {
+                for(const cnode *cn=head();cn;cn=cn->next)
+                {
+                    const species &s = ****cn;
+                    tribe.ensure(&s);
+                }
+            }
 
             //! fill topology
             template <typename T> inline void fill(writable<T> &nu) const

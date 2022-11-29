@@ -63,6 +63,15 @@ namespace yack
                 list.push_back( new node_type(&obj) );
         }
 
+        //! create new node with on-the-fly cached/created memory
+        inline void push_front(T &obj)
+        {
+            if(pool.size)
+                list.push_front( pool.query() )->link(&obj);
+            else
+                list.push_front( new node_type(&obj) );
+        }
+
         //! remove last node into pool
         inline void pop_back() throw()
         {
