@@ -20,7 +20,7 @@ namespace yack
         typedef arrays_of<double>           tableaux; //!< alias
         typedef tableaux::array_type        tableau;  //!< alias
         typedef thin_array<const criterion> criterions;
-
+        typedef vector<int>                 ivector;
 
       
 
