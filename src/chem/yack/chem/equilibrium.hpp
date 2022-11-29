@@ -4,6 +4,7 @@
 #define YACK_CHEMICAL_EQ_INCLUDED 1
 
 #include "yack/chem/components.hpp"
+#include "yack/data/list/meta-repo.hpp"
 
 namespace yack
 {
@@ -11,7 +12,6 @@ namespace yack
     {
         
        
-        
         //______________________________________________________________________
         //
         //
@@ -61,6 +61,11 @@ namespace yack
             virtual double      getK(double) const = 0;
             virtual const char *attr()       const;
         };
+
+        typedef meta_list<const equilibrium> eq_team;
+        typedef meta_node<const equilibrium> eq_node;
+        typedef meta_repo<const equilibrium> eq_repo;
+
     }
     
 }

@@ -10,6 +10,20 @@ namespace yack
 {
     namespace chemical
     {
+
+        //______________________________________________________________________
+        //
+        //
+        //! species criterion within the reactor
+        //
+        //______________________________________________________________________
+        enum criterion {
+            conserved, //!< in regular equilibri(um|a) only
+            unbounded, //!< involved in at least a degenerate equilibrium
+            spectator  //!< species will null rank
+        };
+
+
         //______________________________________________________________________
         //
         //

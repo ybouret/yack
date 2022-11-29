@@ -12,6 +12,7 @@ YACK_UTEST_DECL(16)
     YACK_UTEST(diff);
     YACK_UTEST(ham);
     YACK_UTEST(balance);
+    YACK_UTEST(nexus);
 }
 YACK_UTEST_EXEC()
 

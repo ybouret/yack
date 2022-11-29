@@ -28,12 +28,19 @@ set(chem_reactor ${chem_reactor_decl} ${chem_reactor_srcs})
 SOURCE_GROUP(chem/reactor FILES ${chem_reactor})
 #install( FILES ${chem_reactor_decl} DESTINATION include/yack/chem/reactor )
 
+#nexus
+file(GLOB chem_nexus_decl yack/chem/nexus/*.hpp)
+file(GLOB chem_nexus_srcs yack/chem/nexus/*.cpp)
+set(chem_nexus ${chem_nexus_decl} ${chem_nexus_srcs})
+SOURCE_GROUP(chem/nexus FILES ${chem_nexus})
+#install( FILES ${chem_nexus_decl} DESTINATION include/yack/chem/nexus )
 
 add_library(yack-chem STATIC
 ${chem_main}
 ${chem_designer}
 ${chem_eqs}
 ${chem_reactor}
+${chem_nexus}
 )
 
 install( TARGETS yack-chem ARCHIVE DESTINATION lib )
