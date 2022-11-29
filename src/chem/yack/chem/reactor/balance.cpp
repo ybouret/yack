@@ -399,8 +399,9 @@ namespace yack
                     Gain[ei] = gain;
                 }
             }
-            
-            if( (*edb).size > 0)
+
+            const bool regular_are_updated = (*edb).size>0;
+            if( regular_are_updated )
             {
                 if(verbose)
                 {
@@ -514,38 +515,58 @@ namespace yack
             //------------------------------------------------------------------
             //
             //
-            // second pass: roaming equilibria
+            // second pass: balance roaming equilibria
             //
             //
             //------------------------------------------------------------------
-            YACK_XMLOG(xml, "-- fixing roaming");
-            Gain.ld(0);
-            edb.free();
-
-            for(const gnode *gn=roaming.head;gn;gn=gn->next)
             {
-                const equilibrium &eq = **gn;
-                const size_t       ei = *eq;
-                writable<double>  &Ci = Ceq[ei];
-
-                vanish.free();
-                double factor=-1;
-                iota::load(Ci,Cbal);
-                if(verbose) {
-                    lattice.pad(*xml<< '<' << eq.name << '>',eq) << " : " << feature_text(eq.kind);
-                }
-
-                switch(eq.kind)
+                YACK_XMLSUB(xml, "balanceRoaming");
+                blocked.ld(false);
+                size_t  iloop = 0;
+                while(true)
                 {
-                    case undefined:
-                    case both_ways:
-                        throw exception("%s: <%s> shouldn't be %s", fn, eq.name(), feature_text(eq.kind) );
+                    ++iloop;
+                    YACK_XMLOG(xml, "---- roaming loop #" << iloop << " ----");
+                    Gain.ld(0);
+                    edb.free();
 
-                    case part_only:
-                        assert(eq.reac->size<=0);
-                        assert(eq.prod->size>0);
+                    for(const gnode *gn=roaming.head;gn;gn=gn->next)
+                    {
+                        const equilibrium &eq = **gn;
+                        const size_t       ei = *eq; if(blocked[ei]) continue;
+                        writable<double>  &Ci = Ceq[ei];
 
-                        for(const actor *a=eq.prod->head;a;a=a->next)
+                        vanish.free();
+                        double factor=-1;
+                        iota::load(Ci,Cbal);
+                        if(verbose) {
+                            lattice.pad(*xml<< '<' << eq.name << '>',eq) << " : " << feature_text(eq.kind);
+                        }
+
+                        const actors *aptr = NULL;
+                        switch(eq.kind)
+                        {
+                            case undefined:
+                            case both_ways:
+                                throw exception("%s: <%s> shouldn't be %s", fn, eq.name(), feature_text(eq.kind) );
+
+                            case part_only:
+                                assert(eq.reac->size<=0);
+                                assert(eq.prod->size>0);
+                                aptr = &eq.prod;
+                                break;
+
+                            case join_only:
+                                assert(eq.reac->size>0);
+                                assert(eq.prod->size<=0);
+                                aptr = &eq.reac;
+                                break;
+                        }
+
+                        assert(aptr);
+                        const actors &team = *aptr;
+
+                        for(const actor *a=team->head;a;a=a->next)
                         {
                             const species &s = **a;
                             const size_t   j =  *s;
@@ -566,49 +587,7 @@ namespace yack
                         YACK_XMLOG(xml, "|_" << vanish.list << " with " << factor);
 
                         xadd.free();
-                        for(const actor *a=eq.prod->head;a;a=a->next)
-                        {
-                            const species &s = **a;
-                            const size_t   j =  *s;
-                            double        &c = Ci[j];
-                            const double   dc = a->nu * factor;
-                            if(c<0) {
-                                xadd <<  dc;
-                            }
-                            c = max_of(0.0,c += a->nu * factor);
-                        }
-                        for(const sp_node *sn=vanish->head;sn;sn=sn->next)
-                            Ci[ ***sn ] = 0;
-
-                        Gain[ei] = xadd.get();
-                        YACK_XMLOG(xml, "|_[gain = " << std::setw(15) << Gain[ei] << "] @" << Ci);
-                        if(!edb.insert(&eq)) throw exception("%s: unexpected failure to register <%s>",fn,eq.name());
-                        break;
-
-                    case join_only:
-                        assert(eq.reac->size>0);
-                        assert(eq.prod->size<=0);
-                        for(const actor *a=eq.reac->head;a;a=a->next)
-                        {
-                            const species &s = **a;
-                            const size_t   j =  *s;
-                            const double   c = Cbal[j];
-                            if(c<0)
-                            {
-                                const double f = (-c)/a->nu;
-                                updateFactor(factor,vanish,f,s);
-                            }
-                        }
-                        if(factor<=0) {
-                            if(verbose) std::cerr << " [+positive+] " << std::endl;
-                            continue;;
-                        }
-
-                        if(verbose) std::cerr << " [unbalanced] " << std::endl;
-                        YACK_XMLOG(xml, "|_" << vanish.list << " with " << factor);
-
-                        xadd.free();
-                        for(const actor *a=eq.reac->head;a;a=a->next)
+                        for(const actor *a=team->head;a;a=a->next)
                         {
                             const species &s = **a;
                             const size_t   j =  *s;
@@ -626,15 +605,70 @@ namespace yack
                         YACK_XMLOG(xml, "|_[gain = " << std::setw(15) << Gain[ei] << "] @" << Ci);
                         if(!edb.insert(&eq)) throw exception("%s: unexpected failure to register <%s>",fn,eq.name());
 
+                    }
+
+                    bool   success = false;
+                    size_t nroam   = (*edb).size;
+                    switch( nroam )
+                    {
+                        case 0: success = true;
+                            break;
+
+                        case 1: {
+                            success = true;
+                            const equilibrium &eq = *static_cast<const equilibrium *>(*edb.begin());
+                            YACK_XMLOG(xml, "--> fixing last roaming <" << eq.name << ">");
+                            eq.transfer(Cbal, Ceq[*eq] );
+                        } break;
+
+                        default:
+                            break;
+
+                    }
+
+                    if( success )
+                    {
                         break;
+                    }
+
+                    // select best roaming
+                    assert(nroam>1);
+                    addrbook::const_iterator it   = edb.begin();
+                    const equilibrium       *best = static_cast<const equilibrium *>(*it); assert(best);
+                    double                   gmax = Gain[ **best ];                        assert(gmax>0);
+                    while(--nroam > 0 )
+                    {
+                        const equilibrium *etmp = static_cast<const equilibrium *>( * ++it); assert(etmp);
+                        const double       gtmp = Gain[ **etmp ];                            assert(gtmp>0);
+                        if(gtmp>gmax)
+                        {
+                            best = etmp;
+                            gmax = gtmp;
+                        }
+                    }
+
+                    // update
+                    {
+                        const equilibrium &eq = *best;
+                        const size_t       ei = *eq; assert(!blocked[ei]);
+                        YACK_XMLOG(xml, "--> fixing best roaming <" << eq.name << ">");
+                        eq.transfer(Cbal, Ceq[ei] );
+                        blocked[ei] = true;
+                    }
+
+                    // continue
                 }
-
-
-
-
             }
-            
-            
+
+            std::cerr << "analyze status..." << std::endl;
+            for(const anode *node=working.head;node;node=node->next)
+            {
+                const species &s = **node;
+                const size_t   j =  *s;
+                corelib.pad( std::cerr << "[" << s.name << "]", s)
+                << " = "   << std::setw(15) << Cbal[j]
+                << std::endl;
+            }
             
             exit(0);
             return false;
