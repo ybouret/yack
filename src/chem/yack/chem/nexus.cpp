@@ -34,6 +34,7 @@ namespace yack
         crit(mtab.next(),transmogrify),
 
         // eqs
+        K( ntab.next() ),
         regular(),
         roaming(),
 
@@ -88,15 +89,18 @@ namespace yack
                             break;
                     }
 
-
-
+                    // setup constant
+                    K[ei] = eq.K(t);
                 }
 
                 // checking rank
                 const size_t rank =  apk::gj_rank_of(Nu);
                 YACK_XMLOG(xml, "-- Nu   = " << Nu);
-                YACK_XMLOG(xml, "-- rank = " << rank);
+                YACK_XMLOG(xml, "-- rank = " << rank << " / " << N);
                 if(rank<N) throw imported::exception(clid,"dependent equilibria");
+
+                build_related(xml);
+
             }
 
             

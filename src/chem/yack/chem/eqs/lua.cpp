@@ -170,7 +170,7 @@ namespace yack
                     ++found;
                 }
             }
-            if(!found) throw imported::exception(clid,"no equilibrium matchin '%s'", rx());
+            if(!found) throw imported::exception(clid,"no equilibrium matching '%s'", rx());
 
         }
     }

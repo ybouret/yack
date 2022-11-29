@@ -9,6 +9,7 @@
 #include "yack/ios/xmlog.hpp"
 #include "yack/container/matrix.hpp"
 #include "yack/sequence/arrays.hpp"
+#include "yack/chem/nexus/cluster.hpp"
 
 namespace yack
 {
@@ -19,6 +20,9 @@ namespace yack
         typedef arrays_of<double>           tableaux; //!< alias
         typedef tableaux::array_type        tableau;  //!< alias
         typedef thin_array<const criterion> criterions;
+
+
+      
 
         class nexus
         {
@@ -40,7 +44,7 @@ namespace yack
             
 
         private:
-            const library     worklib;  //!< hard copy of corelib, to build combinations
+            const library     worklib; //!< hard copy of corelib, to build combinations
             tableaux          mtab;    //!< [M]-sized
             tableaux          ntab;    //!< [N]-sized
 
@@ -49,13 +53,18 @@ namespace yack
             const criterions crit;
 
             // eqs data
-            const eq_team    regular; //!< both ways
-            const eq_team    roaming; //!< [part|join]_only
+            tableau           &K;       //!< [N] single constants
+            const eq_team      regular; //!< both ways
+            const eq_team      roaming; //!< [part|join]_only
+            const clusters     related; //!< clusters of related equilibria
 
         private:
             YACK_DISABLE_COPY_AND_ASSIGN(nexus);
             const lockable::scope lockLib;
             const lockable::scope lockEqs;
+
+            void build_related(const xmlog &);
+            void make_manifold(const xmlog &);
         };
 
     }
