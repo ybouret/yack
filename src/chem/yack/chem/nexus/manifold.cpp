@@ -4,6 +4,7 @@
 #include "yack/apex/kernel.hpp"
 #include "yack/math/iota.hpp"
 #include "yack/system/imported.hpp"
+#include "yack/math/algebra/ortho-family.hpp"
 
 namespace yack
 {
@@ -105,8 +106,8 @@ namespace yack
             // outer loop: use a cluster of related equilibria
             //
             //------------------------------------------------------------------
-            addrbook   tribe;
-            sp_repo    cache;
+            addrbook   tribe; // to be populated by eqs
+            sp_repo    cache; // from tribe
             stpool     stcof;
             const apq _0 = 0;
             const apq _1 = 1;
@@ -117,7 +118,10 @@ namespace yack
                 YACK_XMLOG(xml,*sharing);
 
                 const size_t n = sharing->size;
-                if(n<=1) continue;
+                if(n<=1)
+                {
+                    continue;
+                }
 
                 stcof.release();
                 vector<equilibrium *> eptr(n,as_capacity); //!< inside this sharing
@@ -185,8 +189,20 @@ namespace yack
                             for(size_t i=1;i<=k;++i)
                                 std::cerr << ' '  << esub[i]->name;
                             std::cerr << " ] / "  << cache.list << std::endl;
+                            *xml << "   |_topo=" << topo << std::endl;
                         }
-
+                        
+                        matrix<apq> Q(M,M);
+                        if(!ortho_family::build(Q,topo))
+                        {
+                            throw exception("bad topo");
+                        }
+                        std::cerr << "Q=" << Q << std::endl;
+                        
+                        
+                        
+                        
+#if 0
                         //------------------------------------------------------
                         // extract shared coeff
                         //------------------------------------------------------
@@ -237,13 +253,13 @@ namespace yack
                                 }
                             }
                         }
-
+#endif
 
                     }
                     while(comb.next());
                 }
 
-                std::cerr << stcof << std::endl;
+                //std::cerr << stcof << std::endl;
 
             }
 

@@ -9,22 +9,34 @@ namespace yack
 {
     namespace chemical
     {
+        //______________________________________________________________________
+        //
+        //
+        //! cluster of equilibria
+        //
+        //______________________________________________________________________
         class cluster : public object, public eq_team
         {
         public:
-            explicit cluster() throw();
-            virtual ~cluster() throw();
+            //__________________________________________________________________
+            //
+            // C++
+            //__________________________________________________________________
+            explicit cluster() throw(); //!< setup emtpy
+            virtual ~cluster() throw(); //!< cleanup
 
+            //__________________________________________________________________
+            //
+            // method
+            //__________________________________________________________________
+            
             //! true if eq is attached to one of the team
             bool attached_to(const equilibrium &eq) const throw();
 
             //! true if one of the equilibrium is attached
             bool attached_to(const cluster &rhs) const throw();
 
-
-            cluster *next;
-            cluster *prev;
-
+            //! display as list
             friend std::ostream & operator<<(std::ostream &os, const cluster &self)
             {
                 const eq_node *node = self.head;
@@ -44,21 +56,39 @@ namespace yack
                 }
             }
 
-            void sort();
+            void sort(); //!< according to equilibrium index
 
+            //__________________________________________________________________
+            //
+            // members
+            //__________________________________________________________________
+            cluster *next; //!< for list/pool
+            cluster *prev; //!< for list
+            
         private:
             YACK_DISABLE_COPY_AND_ASSIGN(cluster);
         };
 
+        //______________________________________________________________________
+        //
+        //
+        //! base type for clusters
+        //
+        //______________________________________________________________________
         typedef cxx_list_of<cluster> clusters_;
 
+        //______________________________________________________________________
+        //
+        //
+        //! list of clusters
+        //
+        //______________________________________________________________________
         class clusters : public clusters_
         {
         public:
             explicit clusters() throw();
             virtual ~clusters() throw();
             
-
         private:
             YACK_DISABLE_COPY_AND_ASSIGN(clusters);
         };

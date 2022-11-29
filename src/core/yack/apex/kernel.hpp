@@ -213,6 +213,10 @@ namespace yack
             return gj_rank(Q);
         }
 
+        //______________________________________________________________________
+        //
+        //! build a simplified orthogonal matrix
+        //______________________________________________________________________
         static bool gs_ortho(matrix<apq> &Q);
 
 

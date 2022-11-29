@@ -180,6 +180,7 @@ namespace yack
             //! move C with computed extent
             void move(writable<double> &C, const double xi) const throw();
 
+            //! ensure each species is registered in tribe
             void update(addrbook &tribe) const
             {
                 for(const cnode *cn=head();cn;cn=cn->next)

@@ -16,11 +16,11 @@ namespace yack
     namespace chemical
     {
 
-        typedef matrix<int>                 imatrix;  //!< alias
-        typedef arrays_of<double>           tableaux; //!< alias
-        typedef tableaux::array_type        tableau;  //!< alias
-        typedef thin_array<const criterion> criterions;
-        typedef vector<int>                 ivector;
+        typedef matrix<int>                 imatrix;    //!< alias
+        typedef arrays_of<double>           tableaux;   //!< alias
+        typedef tableaux::array_type        tableau;    //!< alias
+        typedef thin_array<const criterion> criterions; //!< alias
+        typedef vector<int>                 ivector;    //!< alias
 
       
 

@@ -62,9 +62,9 @@ namespace yack
             virtual const char *attr()       const;
         };
 
-        typedef meta_list<const equilibrium> eq_team;
-        typedef meta_node<const equilibrium> eq_node;
-        typedef meta_repo<const equilibrium> eq_repo;
+        typedef meta_list<const equilibrium> eq_team; //!< alias
+        typedef meta_node<const equilibrium> eq_node; //!< alias
+        typedef meta_repo<const equilibrium> eq_repo; //!< alias
 
     }
     
