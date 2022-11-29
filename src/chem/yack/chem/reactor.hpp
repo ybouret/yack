@@ -174,6 +174,8 @@ namespace yack
             bool                       primaryBalance(const xmlog &xml);
             bool                       isWellBalanced(const xmlog &xml) const throw();
             size_t                     notConservedIn(const actors &A) const throw();
+            size_t                     negativeWithin(const actors &A) const throw();
+
         };
 
 
