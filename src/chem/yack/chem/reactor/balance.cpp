@@ -162,7 +162,10 @@ namespace yack
             const xmlog         xml(clid,std::cerr,entity::verbose);
             YACK_XMLSUB(xml,fn);
             
-            
+
+            ios::ocstream fp("bal.dat");
+            corelib.frame(fp << "0",C0) << "\n";
+
             //------------------------------------------------------------------
             //
             //
@@ -663,6 +666,9 @@ namespace yack
                     // continue
                 }
             }
+
+            fp("%u ",cycle); corelib.frame(fp,C0) << "\n";
+
 
             std::cerr << "analyze status @cycle #" << cycle << std::endl;
             {
