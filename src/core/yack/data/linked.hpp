@@ -95,7 +95,7 @@ namespace yack
             return true;
         }
 
-        // generic display
+        //! generic display of node content
         inline friend std::ostream & operator<<(std::ostream &os, const interlinked &self)
         {
             const NODE *node = self.head;

@@ -12,31 +12,43 @@ namespace yack
     namespace chemical
     {
 
+        //______________________________________________________________________
+        //
+        //
         //! restriction on positive concentration
+        //
+        //______________________________________________________________________
         class restriction : public object, public counted, public actors
         {
         public:
-            explicit restriction() throw();
-            virtual ~restriction() throw();
+            //__________________________________________________________________
+            //
+            // C++
+            //__________________________________________________________________
+            explicit restriction() throw(); //!< setup empty
+            virtual ~restriction() throw(); //!< cleanup
 
+            //__________________________________________________________________
+            //
+            // methods
+            //__________________________________________________________________
+
+            //! prepare factor and set index
             bool compile(const size_t idx) throw();
 
-
+            //! compute current state
             double compute(const readable<double> &source,
                            raddops                &xadd) const throw();
 
             //! apply restriction
-            /**
-             target <- source
-             */
             double apply(writable<double>       &target,
                          const readable<double> &source,
                          raddops                &xadd) const throw();
 
-
-
+            //! check if this has a common species with other
             bool overlaps(const restriction &other) const throw();
 
+            //! get index
             size_t operator*() const throw();
 
         private:
@@ -46,16 +58,32 @@ namespace yack
         };
 
         
-        typedef meta_list<const restriction> rs_list;
-        typedef rs_list::node_type           rs_node;
+        typedef meta_list<const restriction> rs_list; //!< alias
+        typedef rs_list::node_type           rs_node; //!< alias
 
+
+        //______________________________________________________________________
+        //
+        //
+        //! group of dependent restrictions
+        //
+        //______________________________________________________________________
         class rs_group : public object, public rs_list
         {
         public:
-            explicit rs_group() throw() : object(), rs_list(), next(0), prev(0) {}
-            virtual ~rs_group() throw() {}
+            //__________________________________________________________________
+            //
+            // C++
+            //__________________________________________________________________
+            explicit rs_group() throw() : object(), rs_list(), next(0), prev(0) {} //!< setup empty
+            virtual ~rs_group() throw() {}                                         //!< cleanu
 
-            // check if the restricition overlaps with one group
+            //__________________________________________________________________
+            //
+            // methods
+            //__________________________________________________________________
+
+            //! check if the restricition overlaps with one group
             bool overlaps(const restriction &other) const throw()
             {
                 for(const rs_node *lhs=head;lhs;lhs=lhs->next)
@@ -69,7 +97,7 @@ namespace yack
                 return false;
             }
 
-            // check if an other group overlaps with this
+            //! check if an other group overlaps with this
             bool overlaps(const rs_group &other) const throw()
             {
                 assert( &other != this );
@@ -80,17 +108,18 @@ namespace yack
                 return false;
             }
 
-
-            rs_group *next;
-            rs_group *prev;
-
-
+            //__________________________________________________________________
+            //
+            // methods
+            //__________________________________________________________________
+            rs_group *next; //!< for groups
+            rs_group *prev; //!< for groups
 
         private:
             YACK_DISABLE_COPY_AND_ASSIGN(rs_group);
         };
 
-        typedef cxx_list_of<rs_group> rs_groups;
+        typedef cxx_list_of<rs_group> rs_groups; //!< alias
 
 
     }

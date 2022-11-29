@@ -10,6 +10,12 @@
 namespace yack
 {
 
+    //__________________________________________________________________________
+    //
+    //
+    //! local repository of meta nodes, to be used as cache
+    //
+    //__________________________________________________________________________
     template <typename T>
     class meta_repo
     {
@@ -26,27 +32,29 @@ namespace yack
         //
         // C++
         //______________________________________________________________________
-        inline explicit meta_repo() throw() : list(), pool() {}
-        inline virtual ~meta_repo() throw() {}
-        inline explicit meta_repo(const size_t n) : list(), pool() { reserve(n); }
+        inline explicit meta_repo() throw() : list(), pool() {}                     //!< setup
+        inline virtual ~meta_repo() throw() {}                                      //!< cleanup
+        inline explicit meta_repo(const size_t n) : list(), pool() { reserve(n); }  //!< setup with empty nodes
 
         //______________________________________________________________________
         //
         // methods
         //______________________________________________________________________
-        
-        inline list_type *       operator->()       throw() { return &list; }
-        inline const list_type * operator->() const throw() { return &list; }
+        inline list_type *       operator->()       throw() { return &list; } //!< access
+        inline const list_type * operator->() const throw() { return &list; } //!< access
 
+        //! reserve memory
         inline void reserve(size_t n) {
             while(n-- > 0) pool.store( new node_type(NULL) );
         }
 
+        //! free list into pool
         inline void free() throw()
         {
             while(list.size) zstore(list.pop_back());
         }
 
+        //! create new node with on-the-fly cached/created memory
         inline void push_back(T &obj)
         {
             if(pool.size)
@@ -55,20 +63,25 @@ namespace yack
                 list.push_back( new node_type(&obj) );
         }
 
+        //! remove last node into pool
         inline void pop_back() throw()
         {
             zstore(list.pop_back());
         }
 
+        //! remove first node into pool
         inline void pop_front() throw()
         {
             zstore(list.pop_front());
         }
 
 
-
-        list_type list;
-        pool_type pool;
+        //______________________________________________________________________
+        //
+        // members
+        //______________________________________________________________________
+        list_type list; //!< active nodes
+        pool_type pool; //!< zombie nodes
 
 
     private:

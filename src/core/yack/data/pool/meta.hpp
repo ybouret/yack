@@ -8,7 +8,12 @@
 
 namespace yack
 {
-
+    //__________________________________________________________________________
+    //
+    //
+    //! pool of meta nodes
+    //
+    //__________________________________________________________________________
     template <typename T>
     class meta_pool : public cxx_pool_of< meta_node<T> >
     {
@@ -25,7 +30,7 @@ namespace yack
         // C++
         //______________________________________________________________________
 
-        //! clenaup
+        //! cleanup
         inline virtual ~meta_pool() throw() {}
 
         //! setup empty

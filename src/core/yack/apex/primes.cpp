@@ -42,6 +42,20 @@ namespace yack
         }
 
 
+        bool primes:: is(const apn &n)
+        {
+            // use sieve
+            const prime_knot *node = plist.head;
+            while(node && node->_sq_ <= n)
+            {
+                const natural rem =  (n%(*node));
+                if(rem<=0) return false;
+                node=node->next;
+            }
+            return true;
+        }
+
+
     }
 
 }

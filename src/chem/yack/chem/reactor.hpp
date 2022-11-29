@@ -19,6 +19,12 @@ namespace yack
     namespace chemical
     {
 
+        //______________________________________________________________________
+        //
+        //
+        //! species criterion within the reactor
+        //
+        //______________________________________________________________________
         enum criterion {
             conserved, //!< in regular equilibri(um|a) only
             unbounded, //!< involved in at least a degenerate equilibrium
@@ -38,8 +44,8 @@ namespace yack
         typedef matrix<unsigned>         umatrix;  //!< alias
         typedef arc_ptr<restriction>     constraint;  //!< alias
         typedef vector<constraint>       constraints; //!< alias
-        typedef meta_repo<const species> sp_repo;
-        typedef sp_repo::node_type       sp_node;
+        typedef meta_repo<const species> sp_repo;     //!< cache of species
+        typedef sp_repo::node_type       sp_node;     //!< node within sp_repo
         class   outcome;
 
         //______________________________________________________________________
@@ -68,7 +74,8 @@ namespace yack
                              const equilibria &,
                              const double     t); //!< setup
 
-            
+
+            //! apply restriction return injected concentration
             double preserved(writable<double> &C0, const xmlog &);
 
 
@@ -120,7 +127,7 @@ namespace yack
             thin_array<bool>   Qb;      //!< [Nc]    for algorithm
             tableau           &Qg;      //!< [Nc]    for gain per constraint
             rmatrix            Qm;      //!< [NcxM]  target concentrations
-            const rs_groups    Qt;      //!< [1::Nc] constraints topology
+            const rs_groups    Qt;      //!< [1..Nc] constraints topology
 
             sp_repo            vanish;  //!< vanishin repository
             imatrix            Bal;     //!< [MxN] balancing directions

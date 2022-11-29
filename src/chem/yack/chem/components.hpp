@@ -31,6 +31,7 @@ namespace yack
             undefined  //!<           <=>
         };
 
+        //! convert feature to text
         const char * feature_text(const feature kind) throw();
 
         //______________________________________________________________________
@@ -264,7 +265,8 @@ namespace yack
             const actors  reac; //!< reactants, nu<0
             const actors  prod; //!< products,  nu>0
             const int     d_nu; //!< prod.molecularity - reac.molecularity
-            const feature kind; //!< 
+            const feature kind; //!< depending on reac/prod
+            
         private:
             YACK_DISABLE_COPY_AND_ASSIGN(components);
 

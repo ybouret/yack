@@ -60,6 +60,7 @@ namespace yack
         //! check
         inline bool is_valid() const throw() { return 0 != addr; }
 
+        //! change linking
         inline void link(type *user) throw() {
             addr = (mutable_type *)user;
         }
