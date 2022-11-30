@@ -7,6 +7,7 @@
 #include "yack/math/algebra/ortho-family.hpp"
 #include "yack/sequence/cxx-array.hpp"
 #include "yack/data/small/repo.hpp"
+#include <iomanip>
 
 namespace yack
 {
@@ -53,7 +54,8 @@ namespace yack
             vector<equilibrium *> eqptr(N,as_capacity); //< inside this sharing
             addrbook              tribe; // to be populated by eqs
             sp_repo               cache; // from tribe
-            small_repo<size_t>    party; // from cache
+            small_repo<size_t>    plural; // nref>1
+            small_repo<size_t>    lonely; // nref<=1
             const apq _0 = 0;
             const apq _1 = 1;
 
@@ -138,7 +140,8 @@ namespace yack
                         //------------------------------------------------------
                         imatrix               nu(k,m);
                         {
-                            party.free();
+                            plural.free();
+                            lonely.free();
                             size_t j=1;
                             for(const sp_node *sn=cache->head;sn;sn=sn->next,++j)
                             {
@@ -153,7 +156,11 @@ namespace yack
                                 assert(nref>0);
                                 if(nref>1)
                                 {
-                                    party.push_back(j);
+                                    plural.push_back(j);
+                                }
+                                else
+                                {
+                                    lonely.push_back(j);
                                 }
                             }
                             assert( apk::rank_of(nu) == k);
@@ -166,7 +173,9 @@ namespace yack
                                 std::cerr << ' '  << esub[i]->name;
                             std::cerr << " ] / "  << cache.list << " => " << k << "x" << m << std::endl;
                             *xml << "   |_nu=" << nu << std::endl;
-                            *xml << "   |_party=" << *party << std::endl;
+                            *xml << "   |_|plural| = " << std::setw(3) << plural->size << " : " << *plural <<  std::endl;
+                            *xml << "   |_|lonely| = " << std::setw(3) << lonely->size << " : " << *lonely <<  std::endl;
+
                         }
 
                         //------------------------------------------------------
@@ -174,11 +183,11 @@ namespace yack
                         // build matrix of coefficients for each shared species
                         //
                         //------------------------------------------------------
-                        const size_t p = party->size; if(p<=0) continue; // maybe...
+                        const size_t p = plural->size; if(p<=0) continue; // maybe...
                         imatrix      mu(p,k);
                         {
                             size_t i=1;
-                            for(const small_node<size_t> *pn=party->head;pn;pn=pn->next,++i)
+                            for(const small_node<size_t> *pn=plural->head;pn;pn=pn->next,++i)
                             {
                                 const size_t ii = **pn;
                                 for(size_t j=k;j>0;--j)
@@ -186,8 +195,27 @@ namespace yack
                             }
                         }
                         const size_t r = apk::rank_of(mu);
-                        YACK_XMLOG(xml,"   |_mu=" << mu << ", rank = " << r << " / " << k);
 
+                        //------------------------------------------------------
+                        //
+                        // build auxiliary matrix of lonely species
+                        //
+                        //------------------------------------------------------
+                        const size_t l = lonely->size;
+                        imatrix      lm;
+                        if(l>0)
+                        {
+                            lm.make(l,k);
+                            size_t i=1;
+                            for(const small_node<size_t> *pn=lonely->head;pn;pn=pn->next,++i)
+                            {
+                                const size_t ii = **pn;
+                                for(size_t j=k;j>0;--j)
+                                    lm[i][j] = nu[j][ii];
+                            }
+                        }
+                        YACK_XMLOG(xml,"   |_mu=" << mu << ", rank = " << r << " / " << k);
+                        YACK_XMLOG(xml,"   |_lm=" << lm);
 
 
 
