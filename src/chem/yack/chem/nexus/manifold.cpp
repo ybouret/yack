@@ -6,6 +6,7 @@
 #include "yack/system/imported.hpp"
 #include "yack/math/algebra/ortho-family.hpp"
 #include "yack/sequence/cxx-array.hpp"
+#include "yack/data/small/repo.hpp"
 
 namespace yack
 {
@@ -52,7 +53,7 @@ namespace yack
             vector<equilibrium *> eqptr(N,as_capacity); //< inside this sharing
             addrbook              tribe; // to be populated by eqs
             sp_repo               cache; // from tribe
-
+            small_repo<size_t>    party; // from cache
             const apq _0 = 0;
             const apq _1 = 1;
 
@@ -137,6 +138,7 @@ namespace yack
                         //------------------------------------------------------
                         imatrix               nu(k,m);
                         {
+                            party.free();
                             size_t j=1;
                             for(const sp_node *sn=cache->head;sn;sn=sn->next,++j)
                             {
@@ -151,7 +153,7 @@ namespace yack
                                 assert(nref>0);
                                 if(nref>1)
                                 {
-                                    //multi.push_back(sp);
+                                    party.push_back(j);
                                 }
                             }
                             assert( apk::gj_rank_of(nu) == k);
@@ -165,8 +167,24 @@ namespace yack
                                 std::cerr << ' '  << esub[i]->name;
                             std::cerr << " ] / "  << cache.list << " => " << k << "x" << m << std::endl;
                             *xml << "   |_nu=" << nu << std::endl;
-                            //*xml << "   |_mu=" << mu << std::endl;
+                            *xml << "   |_party=" << *party << std::endl;
                         }
+
+                        const size_t p = party->size; if(p<=0) continue; // maybe...
+                        imatrix      mu(p,k);
+                        {
+                            size_t i=1;
+                            for(const small_node<size_t> *pn=party->head;pn;pn=pn->next,++i)
+                            {
+                                const size_t ii = **pn;
+                                for(size_t j=k;j>0;--j)
+                                {
+                                    mu[i][j] = nu[j][ii];
+                                }
+                            }
+                        }
+                        YACK_XMLOG(xml,"   |_mu=" << mu);
+
 
 
                     }
