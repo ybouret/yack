@@ -34,41 +34,61 @@ namespace yack
             return false;
         }
 
+        static inline size_t  active_coefficients(const readable<int> &arr) throw()
+        {
+            size_t count = 0;
+            for(size_t i=arr.size();i>0;--i)
+            {
+                if( 0 != arr[i] ) ++count;
+            }
+            return count;
+        }
+
         void nexus:: make_manifold(const xmlog &xml)
         {
             static const char * const fn = "make_manifold";
             YACK_XMLSUB(xml,fn);
 
-            //------------------------------------------------------------------
-            //
-            // outer loop: use a cluster of related equilibria
-            //
-            //------------------------------------------------------------------
-            addrbook   tribe; // to be populated by eqs
-            sp_repo    cache; // from tribe
+            vector<equilibrium *> eqptr(N,as_capacity); //< inside this sharing
+            addrbook              tribe; // to be populated by eqs
+            sp_repo               cache; // from tribe
             const apq _0 = 0;
             const apq _1 = 1;
 
+            //------------------------------------------------------------------
+            //
+            //
+            //
+            // outer loop: use a cluster of related equilibria
+            //
+            //
+            //
+            //------------------------------------------------------------------
             for(const cluster *sharing=related.head;sharing;sharing=sharing->next)
             {
                 YACK_XMLSUB(xml, "sub_manifold");
                 YACK_XMLOG(xml,*sharing);
 
                 const size_t n = sharing->size;
-                if(n<=1)
-                {
+                if(n<=1) {
+                    YACK_XMLOG(xml, "-- standalone");
                     continue;
                 }
 
-                vector<equilibrium *> eptr(n,as_capacity); //!< inside this sharing
-                vector<int>           stoi(M);             //!< resulting
-
+                //------------------------------------------------------------------
+                //
+                //
+                // collecting sharing equilibria with eqptr
+                //
+                //
+                //------------------------------------------------------------------
+                eqptr.free();
                 for(const eq_node *en=sharing->head;en;en=en->next)
                 {
                     const equilibrium &eq = **en;
-                    eptr.push_back( & coerce(eq) );
+                    eqptr.push_back( & coerce(eq) );
                 }
-
+                assert(eqptr.size()==n);
 
 
 
@@ -84,12 +104,16 @@ namespace yack
                     {
 
                         //------------------------------------------------------
+                        //
                         // create sub equilibria
+                        //
                         //------------------------------------------------------
-                        comb.extract(esub,eptr);
+                        comb.extract(esub,eqptr);
 
                         //------------------------------------------------------
+                        //
                         // extract all species, sorted by index
+                        //
                         //------------------------------------------------------
                         tribe.free();
                         cache.free();
@@ -103,12 +127,12 @@ namespace yack
                         const size_t m = cache->size; assert(m>0);
 
                         //------------------------------------------------------
+                        //
                         // extract sub-matrix with rank=k and m species
+                        //
                         //------------------------------------------------------
-                        imatrix             nu(k,m);
-                        imatrix             mu(m,k);
-                        cxx_array<unsigned> nc(m);
-
+                        imatrix               nu(k,m);
+                        imatrix               mu(m,k);
                         for(size_t i=k;i>0;--i)
                         {
                             const size_t         ei   = **esub[i];
@@ -121,14 +145,6 @@ namespace yack
                         }
                         assert( apk::gj_rank_of(nu) == k);
                         assert( apk::gj_rank_of(mu) == k);
-                        for(size_t j=m;j>0;--j) {
-                            unsigned sum = 0;
-                            for(size_t i=k;i>0;--i)
-                            {
-                                if(mu[j][i]!=0) ++sum;
-                            }
-                            nc[j] = sum;
-                        }
 
 
                         if(verbose) {
@@ -138,8 +154,97 @@ namespace yack
                             std::cerr << " ] / "  << cache.list << std::endl;
                             *xml << "   |_nu=" << nu << std::endl;
                             *xml << "   |_mu=" << mu << std::endl;
-                            *xml << "   |_nc=" << nc << std::endl;
                         }
+
+
+                        //------------------------------------------------------
+                        //
+                        // try all sub-combination that can nullify a
+                        // at least one species
+                        //
+                        //------------------------------------------------------
+                        for(size_t d=1;d<k;++d)
+                        {
+                            const size_t kmd = k-d;
+                            combination  mix(m,d);
+                            combination  jam(m,kmd);
+
+                            do
+                            {
+                                //----------------------------------------------
+                                // fill first d vectors
+                                //----------------------------------------------
+                                sub.ld(0);
+                                for(size_t i=d;i>0;--i)
+                                    iota::load(sub[i],mu[ mix[i] ]);
+
+
+                                //----------------------------------------------
+                                // complete with k-d other vectors to reach
+                                // rank = k
+                                //----------------------------------------------
+                                {
+                                    bool success = false;
+                                    jam.boot();
+                                    do
+                                    {
+                                        // check no common index
+                                        if( have_common_index(mix,jam) ) continue;
+
+                                        // complete sub
+                                        for(size_t i=d+1,j=1;i<=k;++i,++j)
+                                            iota::load(sub[i],mu[ jam[j] ]);
+
+                                        // compute rank
+                                        const size_t rank = apk::gj_rank_of(sub);
+                                        if(rank>=k)
+                                        {
+                                            success = true;
+                                            break;
+                                        }
+                                    }
+                                    while( jam.next() );
+
+                                    if(!success)
+                                    {
+                                        continue;
+                                    }
+                                }
+
+                                YACK_XMLOG(xml, "   |_sub=" << sub << " @mix=" << mix);
+
+                                //----------------------------------------------
+                                // perform orthogonalisation
+                                //----------------------------------------------
+                                mgs.assign(sub);
+                                if(! apk::gs_ortho(mgs) )
+                                {
+                                    throw imported::exception(fn,"algebraic error for Gram-Schmidt @rank=%u", unsigned(k) );
+                                }
+
+                                for(size_t i=d+1;i<=k;++i)
+                                {
+                                    const readable<apq> &q  = mgs[i];
+                                    writable <int>      &w  = sub[i];
+                                    size_t               na = 0;
+                                    for(size_t j=k;j>0;--j)
+                                    {
+                                        if( 0 != (w[j] = q[j].num.cast_to<int>() ) ) ++na;
+                                    }
+                                    if(na>=k) {
+                                        YACK_XMLOG(xml, "   |_W  =" << w);
+                                    }
+                                }
+
+
+                            }
+                            while( mix.next() );
+
+                        }
+
+
+
+
 
 #if 0
                         //------------------------------------------------------
