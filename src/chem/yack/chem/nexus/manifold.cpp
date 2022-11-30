@@ -4,7 +4,6 @@
 #include "yack/apex/kernel.hpp"
 #include "yack/math/iota.hpp"
 #include "yack/system/imported.hpp"
-#include "yack/math/algebra/ortho-family.hpp"
 #include "yack/sequence/cxx-array.hpp"
 #include "yack/data/small/repo.hpp"
 #include <iomanip>
@@ -33,8 +32,10 @@ namespace yack
 
         namespace
         {
+            //! array of coefficients
             typedef cxx_array<int> stoi_coef;
             
+            //! used to store coefficients
             class stoi_node : public object, public stoi_coef
             {
             public:

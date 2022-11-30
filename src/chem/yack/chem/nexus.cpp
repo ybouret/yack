@@ -143,6 +143,9 @@ namespace yack
                     std::cerr << "Kl=" << Kl << std::endl;
                 }
                 
+                // make conserved sets
+                conserved_set(xml);
+                
             }
             
             

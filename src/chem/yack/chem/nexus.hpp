@@ -79,6 +79,8 @@ namespace yack
 
             void build_related(const xmlog &);
             void make_manifold(const xmlog &);
+            void conserved_set(const xmlog &);
+            
         };
 
     }
