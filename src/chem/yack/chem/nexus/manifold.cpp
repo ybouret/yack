@@ -108,7 +108,6 @@ namespace yack
             //------------------------------------------------------------------
             addrbook   tribe; // to be populated by eqs
             sp_repo    cache; // from tribe
-            stpool     stcof;
             const apq _0 = 0;
             const apq _1 = 1;
 
@@ -123,7 +122,6 @@ namespace yack
                     continue;
                 }
 
-                stcof.release();
                 vector<equilibrium *> eptr(n,as_capacity); //!< inside this sharing
                 vector<int>           stoi(M);             //!< resulting
 
@@ -131,10 +129,8 @@ namespace yack
                 {
                     const equilibrium &eq = **en;
                     eptr.push_back( & coerce(eq) );
-                    stcof.push_back( new stvec( Nu[*eq] ) );
                 }
 
-                //std::cerr << stcof << std::endl;
 
 
 
@@ -143,8 +139,8 @@ namespace yack
                     combination           comb(n,k);  // combination
                     vector<equilibrium *> esub(k);    // sub-equilibria
                     vector<int>           coef(k);    // shared coefficient
-                    imatrix               topo(k,M);  // local topology
-                    matrix<apq>           Q(k,k);     // to build ortho space
+
+
                     do
                     {
                         cache.free();
@@ -155,7 +151,7 @@ namespace yack
                         comb.extract(esub,eptr);
 
                         //------------------------------------------------------
-                        // extract all species
+                        // extract all species, sorted by index
                         //------------------------------------------------------
                         tribe.free();
                         for(size_t i=k;i>0;--i)
@@ -167,21 +163,25 @@ namespace yack
                         }
                         merge_list_of<sp_node>::sort(cache.list,sp_node_compare);
 
+                        const size_t m = cache->size; assert(m>0);
+
                         //------------------------------------------------------
-                        // build sub matrix
+                        // extract sub-matrix with rank=k and m species
                         //------------------------------------------------------
-                        topo.ld(0);
+                        imatrix nu(k,m);
+                        imatrix mu(m,k);
                         for(size_t i=k;i>0;--i)
                         {
-                            const size_t         ei = **esub[i];
-                            const readable<int> &nu = Nu[ei];
-                            writable<int>       &to = topo[i];
-                            for(const sp_node *sn=cache->head;sn;sn=sn->next)
+                            const size_t         ei   = **esub[i];
+                            const readable<int> &topo = Nu[ei];
+                            size_t               j    = 1;
+                            for(const sp_node *sn=cache->head;sn;sn=sn->next,++j)
                             {
-                                const size_t j=***sn;
-                                to[j] = nu[j];
+                                mu[j][i] = nu[i][j] = topo[***sn];
                             }
                         }
+                        //assert( apk::gj_rank_of(nu) == k);
+                        //assert( apk::gj_rank_of(mu) == k);
 
 
                         if(verbose) {
@@ -189,71 +189,16 @@ namespace yack
                             for(size_t i=1;i<=k;++i)
                                 std::cerr << ' '  << esub[i]->name;
                             std::cerr << " ] / "  << cache.list << std::endl;
-                            *xml << "   |_topo=" << topo << std::endl;
-                        }
-                        
-                        matrix<apq> Q(M,M);
-                        if(!ortho_family::build(Q,topo))
-                        {
-                            throw exception("bad topo");
-                        }
-                        std::cerr << "Q=" << Q << std::endl;
-                        
-                        
-                        
-                        
-#if 0
-                        //------------------------------------------------------
-                        // extract shared coeff
-                        //------------------------------------------------------
-                        for(size_t j=M;j>0;--j)
-                        {
-                            size_t l = 0;
-                            for(size_t i=k;i>0;--i)
-                            {
-                                if( 0 != (coef[i] = topo[i][j]) )
-                                    ++l;
-                            }
-                            if(l>=k)
-                            {
-                                Q.ld(_0);
-                                iota::load(Q[1],coef);
-                                for(size_t i=k;i>1;--i)
-                                {
-                                    Q[i][i] = _1;
-                                }
-                                if(!apk::gs_ortho(Q))
-                                {
-                                    throw imported::exception(clid,"%s bad matrix",fn);
-                                }
-                                //YACK_XMLOG(xml,"   |_ortho = " << Q);
+                            *xml << "   |_nu=" << nu << std::endl;
+                            *xml << "   |_mu=" << mu << std::endl;
 
-                                // loop over orthogonal space
-                                for(size_t i=2;i<=k;++i)
-                                {
-
-                                    const readable<apq> &qcf  = Q[i];
-                                    size_t               dof = 0;
-                                    for(size_t i=k;i>0;--i)
-                                    {
-                                        if( (coef[i] = qcf[i].num.cast_to<int>()) != 0 ) ++dof;
-                                    }
-                                    if(dof<k) continue;
-                                    for(size_t j=M;j>0;--j)
-                                    {
-                                        int sum = 0;
-                                        for(size_t i=k;i>0;--i)
-                                        {
-                                            sum += coef[i] * topo[i][j];
-                                        }
-                                        stoi[j] = sum;
-                                    }
-                                    YACK_XMLOG(xml,"   |_stoi = " << stoi << " <- coef=" << coef);
-                                    stcof.add(stoi);
-                                }
-                            }
                         }
-#endif
+
+
+
+                        
+                        
+
 
                     }
                     while(comb.next());
