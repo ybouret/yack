@@ -48,16 +48,19 @@ namespace yack
 
         void nexus:: make_manifold(const xmlog &xml)
         {
+            typedef small_node<size_t> qnode;
             static const char * const fn = "make_manifold";
             YACK_XMLSUB(xml,fn);
 
-            vector<equilibrium *> eqptr(N,as_capacity); //< inside this sharing
-            addrbook              tribe; // to be populated by eqs
-            sp_repo               cache; // from tribe
-            small_repo<size_t>    plural; // nref>1
-            small_repo<size_t>    lonely; // nref<=1
+            vector<equilibrium *> eqptr(N,as_capacity); // inside this sharing
+            vector<size_t>        anx(M,as_capacity);   // to form ortho matrix
+            addrbook              tribe;                // to be populated by eqs
+            sp_repo               cache;                // from tribe
+            small_repo<size_t>    plural;               // nref>1
+            small_repo<size_t>    lonely;               // nref<=1
             const apq _0 = 0;
             const apq _1 = 1;
+
 
             //------------------------------------------------------------------
             //
@@ -166,6 +169,8 @@ namespace yack
                             assert( apk::rank_of(nu) == k);
                         }
 
+                        imatrix mu(nu,transposed);
+
 
                         if(verbose) {
                             *xml << "-- [";
@@ -173,6 +178,7 @@ namespace yack
                                 std::cerr << ' '  << esub[i]->name;
                             std::cerr << " ] / "  << cache.list << " => " << k << "x" << m << std::endl;
                             *xml << "   |_nu=" << nu << std::endl;
+                            *xml << "   |_mu=" << mu << std::endl;
                             *xml << "   |_|plural| = " << std::setw(3) << plural->size << " : " << *plural <<  std::endl;
                             *xml << "   |_|lonely| = " << std::setw(3) << lonely->size << " : " << *lonely <<  std::endl;
 
@@ -184,6 +190,7 @@ namespace yack
                         //
                         //------------------------------------------------------
                         const size_t p = plural->size; if(p<=0) continue; // maybe...
+#if 0
                         imatrix      mu(p,k);
                         {
                             size_t i=1;
@@ -194,7 +201,7 @@ namespace yack
                                     mu[i][j] = nu[j][ii];
                             }
                         }
-                        const size_t r = apk::rank_of(mu);
+                        const size_t r = apk::rank_of(mu); assert(r<=k);
                         const size_t l = lonely->size;
                         if(r+l<k)
                         {
@@ -220,6 +227,56 @@ namespace yack
                         }
                         YACK_XMLOG(xml,"   |_mu=" << mu << ", rank = " << r << " / " << k);
                         YACK_XMLOG(xml,"   |_lm=" << lm);
+#endif
+
+                        // now find all ways to make a full zero concentration
+                        combination pad(m-1,k-1);
+
+
+                        for(const qnode *qn = plural->head;qn;qn=qn->next)
+                        {
+                            // initialize first row and annex indices
+                            sub.ld(0);
+                            anx.free();
+                            const size_t i = **qn;
+                            for(size_t j=1;j<i;++j)    anx << j;
+                            for(size_t j=i+1;j<=m;++j) anx << j;
+                            assert(m-1==anx.size());
+                            iota::load(sub[1],mu[i]);
+                            std::cerr << "\tusing " << sub[1] << " / anx=" << anx << std::endl;
+
+                            size_t cycle=1;
+                        CYCLE:
+                            for(size_t i=2,ia=1;i<=k;++i,++ia)
+                            {
+                                iota::load(sub[i],mu[anx[ia]]);
+                            }
+                            //std::cerr << "\t\tanx=" << anx << std::endl;
+                            mgs.assign(sub);
+                            std::cerr << "\t\tsub=" << sub;
+                            if( apk::gs_ortho(mgs) )
+                            {
+                                std::cerr <<  "--> " << mgs;
+                            }
+                            std::cerr << std::endl;
+
+                            // rotate indices
+                            if(++cycle<m)
+                            {
+                                const size_t a1 = anx[1];
+                                for(size_t ip=1,i=2;i<m;++i,++ip)
+                                {
+                                    cswap(anx[ip],anx[i]);
+                                }
+                                anx.back() = a1;
+                                goto CYCLE;
+                            }
+
+                        }
+
+
+
+
 
 
 
