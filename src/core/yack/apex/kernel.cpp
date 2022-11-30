@@ -286,7 +286,6 @@ namespace yack
         matrix<apq>  U(n,m);
         {
             vector<apq>  u2(n);
-
             for(size_t k=1;k<=n;++k)
             {
                 const readable<apq>     &v_k = V[k];
@@ -307,47 +306,72 @@ namespace yack
                 apk::simplify(u_k);
                 if( (u2[k] = apq_norm2(u_k)) <= 0) return false;
 
-                size_t    np = 0;        // number of positive
-                size_t    nn = 0;        // number of negative
-                sign_type fs = __zero__; // first sign
 
-                for(size_t i=1;i<=m;++i)
+                //--------------------------------------------------------------
+                //
+                // change sign if more than negative signs than positive signs
+                //
+                //--------------------------------------------------------------
                 {
-                    switch(  u_k[i].num.s )
+                    size_t    np = 0;        // number of positive
+                    size_t    nn = 0;        // number of negative
+                    for(size_t i=m;i>0;--i)
                     {
-                        case __zero__:
-                            break;
+                        switch(  u_k[i].num.s )
+                        {
+                            case __zero__:
+                                break;
 
-                        case positive:
-                            ++np;
-                            if(__zero__==fs)
-                            {
-                                assert(nn<=0);
-                                assert(1==np);
-                                fs=positive;
-                            }
-                            break;
+                            case positive:
+                                ++np;
+                                break;
 
-                        case negative:
-                            ++nn;
-                            if(__zero__==fs)
-                            {
-                                assert(np<=0);
-                                assert(1==nn);
-                                fs=negative;
-                            }
-                            break;
+                            case negative:
+                                ++nn;
+
+                                break;
+                        }
+                    }
+
+                    assert(nn>0||np>0);
+                    if(nn>np)
+                    {
+                        for(size_t i=m;i>0;--i)
+                        {
+                            u_k[i] = -u_k[i];
+                        }
                     }
                 }
 
-                assert(nn>0||np>0);
-                assert(__zero__!=fs);
-                //std::cerr << "u_k=" << u_k << " : " << np << "+, " << nn << "-" << ", fs=" << fs << std::endl;
-                if(nn>np || (np>=nn && negative==fs) )
+                //--------------------------------------------------------------
+                //
+                // now we have n+ >= n-: ensure first sign is positive
+                //
+                //--------------------------------------------------------------
                 {
-                    for(size_t i=m;i>0;--i)
+                    bool neg = false;
+                    for(size_t i=1;i<=m;++i)
                     {
-                        u_k[i] = -u_k[i];
+                        switch( u_k[i].num.s )
+                        {
+                            case __zero__:
+                                continue;
+
+                            case positive:
+                                goto DONE;
+
+                            case negative:
+                                neg = true;
+                                goto DONE;
+                        }
+                    }
+                DONE:
+                    if(neg)
+                    {
+                        for(size_t i=m;i>0;--i)
+                        {
+                            u_k[i] = -u_k[i];
+                        }
                     }
                 }
 

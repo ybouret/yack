@@ -83,6 +83,46 @@ namespace yack
 
 
 
+        static inline
+        string makeName(const readable<int> &cof,
+                        const equilibria    &eqs)
+        {
+            string res;
+            bool   first = true;
+            for(const enode *en=eqs.head();en;en=en->next)
+            {
+                const equilibrium &eq = ***en;
+                const size_t       ei = *eq;
+                const int          cf = cof[ei];
+                switch(__sign::of(cf))
+                {
+                    case __zero__: continue;
+                    case positive:
+                        if(first)
+                        {
+                            first = false;
+                        }
+                        else
+                            res += '+';
+                        if(cf>1) res += vformat("%d*",cf);
+                        break;
+
+                    case negative:
+                        if(first)
+                        {
+                            first = false;
+                        }
+                        if(cf < -1)
+                            res += vformat("%d*",cf);
+                        else
+                            res += '-';
+                        break;
+                }
+                res += eq.name;
+            }
+            return res;
+        }
+
 
         void nexus:: make_manifold(const xmlog &xml)
         {
@@ -96,9 +136,9 @@ namespace yack
             sp_repo               cache;                // from tribe
             small_repo<size_t>    plural;               // nref>1
             sp_repo               fading;               // matching plural
-            const apq _0 = 0;
-            const apq _1 = 1;
-
+            cxx_array<int>        gmix(N);
+            stoi_repo             extra;
+            cxx_array<int>        gcoef(M);
 
             //------------------------------------------------------------------
             //
@@ -109,16 +149,20 @@ namespace yack
             //
             //
             //------------------------------------------------------------------
-            for(const cluster *sharing=related.head;sharing;sharing=sharing->next)
+            for(cluster *sharing=related.head;sharing;sharing=sharing->next)
             {
                 YACK_XMLSUB(xml, "sub_manifold");
                 YACK_XMLOG(xml,*sharing);
 
+                extra.release();
                 const size_t n = sharing->size;
                 if(n<=1) {
                     YACK_XMLOG(xml, "-- standalone");
                     continue;
                 }
+
+
+
 
                 //--------------------------------------------------------------
                 //
@@ -250,7 +294,7 @@ namespace yack
                             for(size_t j=i+1;j<=m;++j) anx << j;
                             assert(m-1==anx.size());
                             iota::load(sub[1],mu[i]);
-                            YACK_XMLOG(xml,"   |_fading [" << **sn << "] using " << sub[1] << " / anx=" << anx);
+                            //YACK_XMLOG(xml,"   |_fading [" << **sn << "] using " << sub[1] << " / anx=" << anx);
 
                             //--------------------------------------------------
                             // exposing chosen row to rolling others
@@ -275,11 +319,9 @@ namespace yack
                                     {
                                         icf[j] = q[j].num.cast_to<int>();
                                     }
-                                    //std::cerr << "\t\t checking " << icf << std::endl;
                                     assert( iota::dot<int>::of(sub[1],icf) == 0);
                                     if(non_degenerated(icf))
                                     {
-                                        //std::cerr << "\t\t found " << icf << std::endl;
                                         mix.ensure(icf);
                                     }
                                 }
@@ -304,42 +346,64 @@ namespace yack
 
                         //------------------------------------------------------
                         //
-                        // processing all mixes!
+                        // collecting all mixes
                         //
                         //------------------------------------------------------
-
-                        std::cerr << mix << std::endl;
-
-                        // build compiled topology
-                        cxx_array<int> st(m);
                         for(const stoi_node *node=mix.head;node;node=node->next)
                         {
                             const readable<int> &cf = *node;
-                            st.ld(0);
+                            gmix.ld(0);
                             for(size_t i=1;i<=k;++i)
                             {
                                 const int          f  = cf[i];
                                 const equilibrium &eq = *esub[i];
-                                std::cerr << " +(" << f << ")<" << eq.name  << ">";
-                                const readable<int> &v = nu[i];
-                                std::cerr << v << std::endl;
-                                for(size_t j=m;j>0;--j)
-                                {
-                                    st[j] += v[j] * f;
-                                }
+                                gmix[*eq] = f;
                             }
-                            std::cerr << "st=" << st << std::endl;
-                            std::cerr << std::endl;
+                            extra.ensure(gmix);
                         }
-
-
-
-
-
-
 
                     }
                     while(comb.next());
+                }
+
+
+                //--------------------------------------------------------------
+                //
+                //
+                // creating more equilibria within this cluster
+                //
+                //
+                //--------------------------------------------------------------
+                for(const stoi_node *node=extra.head;node;node=node->next)
+                {
+                    const readable<int> &weight = *node;
+                    gcoef.ld(0);
+                    for(const enode *en=singles.head();en;en=en->next)
+                    {
+                        const equilibrium &eq = ***en;
+                        const size_t       ei = *eq;
+                        const int          ew = weight[ei];
+                        if(!ew) continue;;
+                        for(const cnode *cn=eq.head();cn;cn=cn->next)
+                        {
+                            const size_t j = *****cn;
+                            gcoef[j] += ew * Nu[ei][j];
+                        }
+                    }
+
+
+                    const string name = makeName(weight,singles);
+                    std::cerr << weight << " => '" << name << "'";
+
+                    components mock;
+                    for(size_t j=1;j<=M;++j)
+                    {
+                        const int f = gcoef[j];
+                        if(f) mock( worklib[j], f);
+                    }
+
+                    std::cerr << " -> " << mock << std::endl;
+                    assert(mock.neutral());
                 }
 
 
