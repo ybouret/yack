@@ -141,7 +141,7 @@ namespace yack
                             *xml << "   |_nc=" << nc << std::endl;
                         }
 
-
+#if 0
                         //------------------------------------------------------
                         // try to remove species [1:k-1] species
                         //------------------------------------------------------
@@ -175,30 +175,37 @@ namespace yack
                                 // complete matrix to full rank
                                 {
                                     bool success = false;
-                                    combination jam(m,kmd);
+                                    combination jam(m,kmd); // choosing amongst rows of mu
                                     do
                                     {
-                                        if(have_common_index(mix,jam)) continue;
-                                        //std::cerr << "\t=> " << jam << std::endl;
+                                        if(have_common_index(mix,jam))
+                                            continue;
+
                                         for(size_t i=d+1,j=1;i<=k;++i,++j)
                                         {
-                                            //std::cerr << "\t@row #" << i << " put mu[" << jam[j] << "]" << std::endl;
                                             iota::load(sub[i],mu[ jam[j] ]);
                                         }
                                         const size_t rank = apk::gj_rank_of(sub);
-                                        std::cerr << "\t=> " << sub << " @rank=" << rank << std::endl;
                                         if(rank>=k)
                                         {
                                             mgs.assign(sub);
                                             if(!apk::gs_ortho(mgs)) throw exception("bad gram-schmidt");
                                             std::cerr << "\t[ok] => " << mgs << std::endl;
+                                            success = true;
+                                            break;
                                         }
                                     } while( jam.next() );
+                                    if(!success)
+                                    {
+                                        std::cerr << "BAD?" << std::endl;
+                                        exit(0);
+                                    }
                                 }
+
 
                             } while( mix.next() );
                         }
-                        
+#endif
                         
 
 
