@@ -156,7 +156,28 @@ namespace yack
                             *xml << "   |_mu=" << mu << std::endl;
                         }
 
+                        combination mix(m,k);
+                        do
+                        {
+                            for(size_t i=k;i>0;--i)
+                            {
+                                const readable<int> &src = mu[ mix[i] ];
+                                iota::load(sub[i],src);
+                            }
+                            mgs.assign(sub);
+                            if(!apk::gs_ortho(mgs))
+                            {
+                                assert(apk::gj_rank_of(sub) < k);
+                                continue;
+                            }
+                            //YACK_XMLOG(xml, "   |_sub=" << sub << "  @mix=" << mix);
+                            YACK_XMLOG(xml, "   |_mgs=" << mgs << "  @mix=" << mix);
 
+
+                        } while( mix.next() );
+
+
+#if 0
                         //------------------------------------------------------
                         //
                         // try all sub-combination that can nullify a
@@ -241,6 +262,7 @@ namespace yack
                             while( mix.next() );
 
                         }
+#endif
 
 
 

@@ -306,22 +306,51 @@ namespace yack
                 }
                 apk::simplify(u_k);
                 if( (u2[k] = apq_norm2(u_k)) <= 0) return false;
-                size_t np = 0;
-                size_t nn = 0;
-                for(size_t i=m;i>0;--i)
+
+                size_t    np = 0;        // number of positive
+                size_t    nn = 0;        // number of negative
+                sign_type fs = __zero__; // first sign
+
+                for(size_t i=1;i<=m;++i)
                 {
-                    const apq &q = u_k[i];
-                    if(q<0) ++nn;
-                    else if(q>0) ++np;
+                    switch(  u_k[i].num.s )
+                    {
+                        case __zero__:
+                            break;
+
+                        case positive:
+                            ++np;
+                            if(__zero__==fs)
+                            {
+                                assert(nn<=0);
+                                assert(1==np);
+                                fs=positive;
+                            }
+                            break;
+
+                        case negative:
+                            ++nn;
+                            if(__zero__==fs)
+                            {
+                                assert(np<=0);
+                                assert(1==nn);
+                                fs=negative;
+                            }
+                            break;
+                    }
                 }
+
                 assert(nn>0||np>0);
-                if(nn>np)
+                assert(__zero__!=fs);
+                //std::cerr << "u_k=" << u_k << " : " << np << "+, " << nn << "-" << ", fs=" << fs << std::endl;
+                if(nn>np || (np>=nn && negative==fs) )
                 {
                     for(size_t i=m;i>0;--i)
                     {
                         u_k[i] = -u_k[i];
                     }
                 }
+
                 
             }
         }
