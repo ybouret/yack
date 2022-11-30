@@ -423,7 +423,7 @@ namespace yack
                     if(xml.verbose) std::cerr << "\tW" << i << "\t= " << db[ii] << "  // " << w[ii] << std::endl;;
                     iota::load(W[i],*db[ii]);
                 }
-                rank = apk::gj_rank(W);
+                rank = apk::rank(W);
             }
             YACK_XMLOG(xml, "-- |rank|     = " << rank);
 
@@ -444,7 +444,7 @@ namespace yack
                 ++k;
                 const readable<apz>     &Wk   = *db[ indx[k] ];
                 for(size_t j=M;j>0;--j) Fi[j] = Wk[j].cast_to<unsigned>();
-                if( apk::gj_rank_of(F) < i )
+                if( apk::rank_of(F) < i )
                     goto NEXT_K;
                 if(i<rank)
                     goto NEXT_I;

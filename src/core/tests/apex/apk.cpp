@@ -180,7 +180,7 @@ YACK_UTEST(apk)
     {
         matrix<int> M(1+ran.leq(5),1+ran.leq(5));
         bring::fill(M,ran);
-        std::cerr << "rank(" << M << ")=" << apk::gj_rank_of(M) << std::endl;
+        std::cerr << "rank(" << M << ")=" << apk::rank_of(M) << std::endl;
     }
 
 }

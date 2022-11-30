@@ -195,7 +195,7 @@ namespace yack
     using namespace math;
 
 
-    size_t apk:: gj_rank(matrix<apq> &Q)
+    size_t apk:: rank(matrix<apq> &Q)
     {
         const size_t m    = Q.rows; // |rows|
         const size_t n    = Q.cols; // |cols|

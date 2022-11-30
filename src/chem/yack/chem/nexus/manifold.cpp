@@ -133,7 +133,7 @@ namespace yack
                         //------------------------------------------------------
                         //
                         // extract sub-matrix with rank=k and m species
-                        // and keeping only species index with multiple refs.
+                        // and register species index with multiple refs.
                         //
                         //------------------------------------------------------
                         imatrix               nu(k,m);
@@ -156,9 +156,8 @@ namespace yack
                                     party.push_back(j);
                                 }
                             }
-                            assert( apk::gj_rank_of(nu) == k);
+                            assert( apk::rank_of(nu) == k);
                         }
-
 
 
                         if(verbose) {
@@ -170,6 +169,11 @@ namespace yack
                             *xml << "   |_party=" << *party << std::endl;
                         }
 
+                        //------------------------------------------------------
+                        //
+                        // build matrix of coefficients for each shared species
+                        //
+                        //------------------------------------------------------
                         const size_t p = party->size; if(p<=0) continue; // maybe...
                         imatrix      mu(p,k);
                         {
@@ -178,12 +182,12 @@ namespace yack
                             {
                                 const size_t ii = **pn;
                                 for(size_t j=k;j>0;--j)
-                                {
                                     mu[i][j] = nu[j][ii];
-                                }
                             }
                         }
-                        YACK_XMLOG(xml,"   |_mu=" << mu);
+                        const size_t r = apk::rank_of(mu);
+                        YACK_XMLOG(xml,"   |_mu=" << mu << ", rank = " << r << " / " << k);
+
 
 
 
@@ -191,7 +195,6 @@ namespace yack
                     while(comb.next());
                 }
 
-                //std::cerr << stcof << std::endl;
 
             }
 
