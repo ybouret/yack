@@ -21,30 +21,68 @@ namespace yack
             return comparison::increasing( ***lhs, ***rhs );
         }
 
-
-        static inline bool have_common_index(const readable<size_t> &lhs,
-                                             const readable<size_t> &rhs) throw()
+        
+        static inline bool non_degenerated(const readable<int> &arr) throw()
         {
-            for(size_t i=lhs.size();i>0;--i)
-            {
-                const size_t L = lhs[i];
-                for(size_t j=rhs.size();j>0;--j)
-                {
-                    if(L==rhs[j]) return true;
-                }
-            }
-            return false;
-        }
-
-        static inline size_t  active_coefficients(const readable<int> &arr) throw()
-        {
-            size_t count = 0;
             for(size_t i=arr.size();i>0;--i)
             {
-                if( 0 != arr[i] ) ++count;
+                if( 0 == arr[i] ) return false;
             }
-            return count;
+            return true;
         }
+
+        typedef cxx_array<int> stoi_coef;
+
+        class stoi_node : public object, public stoi_coef
+        {
+        public:
+            explicit stoi_node(const readable<int> &arr) :
+            object(),
+            stoi_coef( arr.size() ),
+            next(0)
+            {
+                iota::load(*this,arr);
+            }
+
+            stoi_node *next;
+        private:
+            YACK_DISABLE_COPY_AND_ASSIGN(stoi_node);
+        };
+
+        class stoi_repo : public cxx_pool_of<stoi_node>
+        {
+        public:
+            explicit stoi_repo() throw() : cxx_pool_of<stoi_node>() {}
+            virtual ~stoi_repo() throw() {}
+
+            void ensure(const readable<int> &lhs)
+            {
+                for(const stoi_node *node=head;node;node=node->next)
+                {
+                    const readable<int> &rhs = *node;
+                    assert(rhs.size()==lhs.size());
+                    bool same = true;
+                    for(size_t i=lhs.size();i>0;--i)
+                    {
+                        if(lhs[i]!=rhs[i]) {
+                            same = false;
+                            break;
+                        }
+                    }
+                    if(same) return;
+                }
+
+                // success
+                store( new stoi_node(lhs) );
+
+            }
+
+        private:
+            YACK_DISABLE_COPY_AND_ASSIGN(stoi_repo);
+        };
+
+
+
 
         void nexus:: make_manifold(const xmlog &xml)
         {
@@ -57,7 +95,7 @@ namespace yack
             addrbook              tribe;                // to be populated by eqs
             sp_repo               cache;                // from tribe
             small_repo<size_t>    plural;               // nref>1
-            small_repo<size_t>    lonely;               // nref<=1
+            sp_repo               fading;               // matching plural
             const apq _0 = 0;
             const apq _1 = 1;
 
@@ -82,13 +120,13 @@ namespace yack
                     continue;
                 }
 
-                //------------------------------------------------------------------
+                //--------------------------------------------------------------
                 //
                 //
                 // collecting sharing equilibria with eqptr
                 //
                 //
-                //------------------------------------------------------------------
+                //--------------------------------------------------------------
                 eqptr.free();
                 for(const eq_node *en=sharing->head;en;en=en->next)
                 {
@@ -99,13 +137,22 @@ namespace yack
 
 
 
-                for(size_t k=2;k<=n;++k)
+                //--------------------------------------------------------------
+                //
+                //
+                //
+                // inner loop: try to associate elements of this cluster
+                //
+                //
+                //
+                //--------------------------------------------------------------
+                for(size_t  k=2;k<=n;++k)
                 {
                     combination           comb(n,k);  // combination
                     vector<equilibrium *> esub(k);    // sub-equilibria
-                    cxx_array<int>        coef(k);    // shared coefficient
                     imatrix               sub(k,k);   // sub matrix of coeffs
-                    matrix<apq>           mgs(k,k);   //
+                    matrix<apq>           mgs(k,k);   // to compute ortho space
+                    cxx_array<int>        icf(k);     // integer coefficient
 
                     do
                     {
@@ -144,7 +191,7 @@ namespace yack
                         imatrix               nu(k,m);
                         {
                             plural.free();
-                            lonely.free();
+                            fading.free();
                             size_t j=1;
                             for(const sp_node *sn=cache->head;sn;sn=sn->next,++j)
                             {
@@ -160,11 +207,9 @@ namespace yack
                                 if(nref>1)
                                 {
                                     plural.push_back(j);
+                                    fading.push_back(sp);
                                 }
-                                else
-                                {
-                                    lonely.push_back(j);
-                                }
+
                             }
                             assert( apk::rank_of(nu) == k);
                         }
@@ -179,63 +224,25 @@ namespace yack
                             std::cerr << " ] / "  << cache.list << " => " << k << "x" << m << std::endl;
                             *xml << "   |_nu=" << nu << std::endl;
                             *xml << "   |_mu=" << mu << std::endl;
-                            *xml << "   |_|plural| = " << std::setw(3) << plural->size << " : " << *plural <<  std::endl;
-                            *xml << "   |_|lonely| = " << std::setw(3) << lonely->size << " : " << *lonely <<  std::endl;
+                            //*xml << "   |_|plural| = " << std::setw(3) << plural->size << " : " << *plural <<  std::endl;
+                            *xml << "   |_|fading| = " << std::setw(3) << fading->size << " : " << *fading <<  std::endl;
 
                         }
 
-                        //------------------------------------------------------
-                        //
-                        // build matrix of coefficients for each shared species
-                        //
-                        //------------------------------------------------------
                         const size_t p = plural->size; if(p<=0) continue; // maybe...
-#if 0
-                        imatrix      mu(p,k);
-                        {
-                            size_t i=1;
-                            for(const small_node<size_t> *pn=plural->head;pn;pn=pn->next,++i)
-                            {
-                                const size_t ii = **pn;
-                                for(size_t j=k;j>0;--j)
-                                    mu[i][j] = nu[j][ii];
-                            }
-                        }
-                        const size_t r = apk::rank_of(mu); assert(r<=k);
-                        const size_t l = lonely->size;
-                        if(r+l<k)
-                        {
-                            throw imported::exception(fn,"invalid topology");
-                        }
 
                         //------------------------------------------------------
                         //
-                        // build auxiliary matrix of lonely species
-                        //
-                        //------------------------------------------------------
-                        imatrix      lm;
-                        if(l>0)
-                        {
-                            lm.make(l,k);
-                            size_t i=1;
-                            for(const small_node<size_t> *pn=lonely->head;pn;pn=pn->next,++i)
-                            {
-                                const size_t ii = **pn;
-                                for(size_t j=k;j>0;--j)
-                                    lm[i][j] = nu[j][ii];
-                            }
-                        }
-                        YACK_XMLOG(xml,"   |_mu=" << mu << ", rank = " << r << " / " << k);
-                        YACK_XMLOG(xml,"   |_lm=" << lm);
-#endif
-
                         // now find all ways to make a full zero concentration
-                        combination pad(m-1,k-1);
-
-
-                        for(const qnode *qn = plural->head;qn;qn=qn->next)
+                        //
+                        //------------------------------------------------------
+                        stoi_repo        mix;
+                        sp_node         *sn = fading->head;
+                        for(const qnode *qn = plural->head;qn;qn=qn->next,sn=sn->next)
                         {
+                            //--------------------------------------------------
                             // initialize first row and annex indices
+                            //--------------------------------------------------
                             sub.ld(0);
                             anx.free();
                             const size_t i = **qn;
@@ -243,24 +250,46 @@ namespace yack
                             for(size_t j=i+1;j<=m;++j) anx << j;
                             assert(m-1==anx.size());
                             iota::load(sub[1],mu[i]);
-                            std::cerr << "\tusing " << sub[1] << " / anx=" << anx << std::endl;
+                            YACK_XMLOG(xml,"   |_fading [" << **sn << "] using " << sub[1] << " / anx=" << anx);
 
+                            //--------------------------------------------------
+                            // exposing chosen row to rolling others
+                            //--------------------------------------------------
                             size_t cycle=1;
                         CYCLE:
+                            //--------------------------------------------------
+                            // construct sub with current annex indices
+                            //--------------------------------------------------
                             for(size_t i=2,ia=1;i<=k;++i,++ia)
                             {
                                 iota::load(sub[i],mu[anx[ia]]);
                             }
-                            //std::cerr << "\t\tanx=" << anx << std::endl;
                             mgs.assign(sub);
-                            std::cerr << "\t\tsub=" << sub;
                             if( apk::gs_ortho(mgs) )
                             {
-                                std::cerr <<  "--> " << mgs;
-                            }
-                            std::cerr << std::endl;
+                                // extracting non degenerate solutions
+                                for(size_t i=2;i<=k;++i)
+                                {
+                                    const readable<apq> &q = mgs[i];
+                                    for(size_t j=k;j>0;--j)
+                                    {
+                                        icf[j] = q[j].num.cast_to<int>();
+                                    }
+                                    //std::cerr << "\t\t checking " << icf << std::endl;
+                                    assert( iota::dot<int>::of(sub[1],icf) == 0);
+                                    if(non_degenerated(icf))
+                                    {
+                                        //std::cerr << "\t\t found " << icf << std::endl;
+                                        mix.ensure(icf);
+                                    }
+                                }
 
+                            }
+
+
+                            //--------------------------------------------------
                             // rotate indices
+                            //--------------------------------------------------
                             if(++cycle<m)
                             {
                                 const size_t a1 = anx[1];
@@ -271,7 +300,36 @@ namespace yack
                                 anx.back() = a1;
                                 goto CYCLE;
                             }
+                        }
 
+                        //------------------------------------------------------
+                        //
+                        // processing all mixes!
+                        //
+                        //------------------------------------------------------
+
+                        std::cerr << mix << std::endl;
+
+                        // build compiled topology
+                        cxx_array<int> st(m);
+                        for(const stoi_node *node=mix.head;node;node=node->next)
+                        {
+                            const readable<int> &cf = *node;
+                            st.ld(0);
+                            for(size_t i=1;i<=k;++i)
+                            {
+                                const int          f  = cf[i];
+                                const equilibrium &eq = *esub[i];
+                                std::cerr << " +(" << f << ")<" << eq.name  << ">";
+                                const readable<int> &v = nu[i];
+                                std::cerr << v << std::endl;
+                                for(size_t j=m;j>0;--j)
+                                {
+                                    st[j] += v[j] * f;
+                                }
+                            }
+                            std::cerr << "st=" << st << std::endl;
+                            std::cerr << std::endl;
                         }
 
 
