@@ -17,6 +17,9 @@ namespace yack
     {
 
         typedef matrix<int>                 imatrix;    //!< alias
+        typedef matrix<unsigned>            umatrix;    //!< alias
+        typedef matrix<double>              rmatrix;    //!< alias
+        
         typedef arrays_of<double>           tableaux;   //!< alias
         typedef tableaux::array_type        tableau;    //!< alias
         typedef thin_array<const criterion> criterions; //!< alias

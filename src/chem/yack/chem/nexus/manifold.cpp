@@ -5,6 +5,7 @@
 #include "yack/math/iota.hpp"
 #include "yack/system/imported.hpp"
 #include "yack/math/algebra/ortho-family.hpp"
+#include "yack/sequence/cxx-array.hpp"
 
 namespace yack
 {
@@ -19,82 +20,19 @@ namespace yack
         }
 
 
-        
-        class stvec : public object, public ivector
+        static inline bool have_common_index(const readable<size_t> &lhs,
+                                             const readable<size_t> &rhs) throw()
         {
-        public:
-            stvec(const readable<int> &stoi) :
-            ivector(stoi,transmogrify),
-            next(0),
-            prev(0)
+            for(size_t i=lhs.size();i>0;--i)
             {
-            }
-
-            virtual ~stvec() throw() {}
-
-            inline bool is_opposite(const stvec &rhs) const throw()
-            {
-                const stvec &lhs = *this;
-                assert(lhs.size()==rhs.size());
-                for(size_t j=lhs.size();j>0;--j)
+                const size_t L = lhs[i];
+                for(size_t j=rhs.size();j>0;--j)
                 {
-                    if(lhs[j]!=-rhs[j]) return false;
+                    if(L==rhs[j]) return true;
                 }
-                return true;
             }
-
-            inline bool is_same_than(const stvec &rhs) const throw()
-            {
-                const stvec &lhs = *this;
-                assert(lhs.size()==rhs.size());
-                for(size_t j=lhs.size();j>0;--j)
-                {
-                    if(lhs[j]!=rhs[j]) return false;
-                }
-                return true;
-            }
-
-            inline friend bool operator==(const stvec &lhs, const stvec &rhs) throw()
-            {
-                assert(lhs.size()==rhs.size());
-                return lhs.is_same_than(rhs) || lhs.is_opposite(rhs);
-            }
-
-
-            stvec *next;
-            stvec *prev;
-        private:
-            YACK_DISABLE_COPY_AND_ASSIGN(stvec);
-        };
-
-        typedef cxx_list_of<stvec> stpool_;
-
-        class stpool : public stpool_
-        {
-        public:
-            explicit stpool() throw() : stpool_() {}
-            virtual ~stpool() throw() {}
-
-            bool add(const readable<int> &stoi) throw()
-            {
-                auto_ptr<stvec> lhs( new stvec(stoi) );
-                for(const stvec *rhs=head;rhs;rhs=rhs->next)
-                {
-                    if(*lhs == *rhs)
-                    {
-                        std::cerr << rhs << " already present" << std::endl;
-                        return false;
-                    }
-
-                }
-                push_back( lhs.yield() );
-                return true;
-            }
-
-        private:
-            YACK_DISABLE_COPY_AND_ASSIGN(stpool);
-        };
-
+            return false;
+        }
 
         void nexus:: make_manifold(const xmlog &xml)
         {
@@ -138,8 +76,9 @@ namespace yack
                 {
                     combination           comb(n,k);  // combination
                     vector<equilibrium *> esub(k);    // sub-equilibria
-                    vector<int>           coef(k);    // shared coefficient
-
+                    cxx_array<int>        coef(k);    // shared coefficient
+                    imatrix               sub(k,k);   // sub matrix of coeffs
+                    matrix<apq>           mgs(k,k);   //
 
                     do
                     {
@@ -166,8 +105,10 @@ namespace yack
                         //------------------------------------------------------
                         // extract sub-matrix with rank=k and m species
                         //------------------------------------------------------
-                        imatrix nu(k,m);
-                        imatrix mu(m,k);
+                        imatrix             nu(k,m);
+                        imatrix             mu(m,k);
+                        cxx_array<unsigned> nc(m);
+
                         for(size_t i=k;i>0;--i)
                         {
                             const size_t         ei   = **esub[i];
@@ -180,6 +121,14 @@ namespace yack
                         }
                         assert( apk::gj_rank_of(nu) == k);
                         assert( apk::gj_rank_of(mu) == k);
+                        for(size_t j=m;j>0;--j) {
+                            unsigned sum = 0;
+                            for(size_t i=k;i>0;--i)
+                            {
+                                if(mu[j][i]!=0) ++sum;
+                            }
+                            nc[j] = sum;
+                        }
 
 
                         if(verbose) {
@@ -189,11 +138,66 @@ namespace yack
                             std::cerr << " ] / "  << cache.list << std::endl;
                             *xml << "   |_nu=" << nu << std::endl;
                             *xml << "   |_mu=" << mu << std::endl;
-
+                            *xml << "   |_nc=" << nc << std::endl;
                         }
 
 
+                        //------------------------------------------------------
+                        // try to remove species [1:k-1] species
+                        //------------------------------------------------------
+                        for(size_t d=1;d<k;++d)
+                        {
+                            const size_t kmd = k-d;
+                            const size_t num = kmd+1;;
+                            combination  mix(m,d);
+                            YACK_XMLOG(xml, "-- looking for order " << d << " vectors with |coef|=" << num << " amongst " << m);
+                            do
+                            {
+                                sub.ld(0);
+                                {
+                                    bool success = true;
+                                    for(size_t i=d;i>0;--i)
+                                    {
+                                        const size_t ii = mix[i];
+                                        if(num!=nc[ii])
+                                        {
+                                            success = false;
+                                            break;
+                                        }
+                                        iota::load(sub[i],mu[ii]);
+                                    }
+                                    if(!success) {
+                                        continue;
+                                    }
+                                }
+                                std::cerr << "=> " << sub << std::endl;
+                                std::cerr << "=> filling with " << k-d << " extra vectors" << std::endl;
+                                // complete matrix to full rank
+                                {
+                                    bool success = false;
+                                    combination jam(m,kmd);
+                                    do
+                                    {
+                                        if(have_common_index(mix,jam)) continue;
+                                        //std::cerr << "\t=> " << jam << std::endl;
+                                        for(size_t i=d+1,j=1;i<=k;++i,++j)
+                                        {
+                                            //std::cerr << "\t@row #" << i << " put mu[" << jam[j] << "]" << std::endl;
+                                            iota::load(sub[i],mu[ jam[j] ]);
+                                        }
+                                        const size_t rank = apk::gj_rank_of(sub);
+                                        std::cerr << "\t=> " << sub << " @rank=" << rank << std::endl;
+                                        if(rank>=k)
+                                        {
+                                            mgs.assign(sub);
+                                            if(!apk::gs_ortho(mgs)) throw exception("bad gram-schmidt");
+                                            std::cerr << "\t[ok] => " << mgs << std::endl;
+                                        }
+                                    } while( jam.next() );
+                                }
 
+                            } while( mix.next() );
+                        }
                         
                         
 
