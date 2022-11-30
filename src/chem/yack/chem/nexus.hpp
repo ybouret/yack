@@ -43,7 +43,8 @@ namespace yack
 
             const library    &  corelib;  //!< initial library
             const equilibria &  singles;  //!< initial equilibria
-            const equilibria    lattice;  //!<
+            const equilibria    lattice;  //!< lattice of equilibria
+            const enode * const next_en;  //!< firt node of lattice after single
             const active_list   working;  //!< list of active species
             const size_t        M;        //!< corelib.size
             const size_t        N;        //!< singles.size
