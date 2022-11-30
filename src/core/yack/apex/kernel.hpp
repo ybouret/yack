@@ -215,7 +215,7 @@ namespace yack
 
         //______________________________________________________________________
         //
-        //! build a simplified orthogonal matrix
+        //! build a simplified, univocal and orthogonal matrix
         //______________________________________________________________________
         static bool gs_ortho(matrix<apq> &Q);
 

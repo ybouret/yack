@@ -84,7 +84,12 @@ namespace yack
             zstore(list.pop_front());
         }
 
-
+        //! store an unused node
+        inline void zstore(node_type *node) throw()
+        {
+            assert(node);
+            pool.store(node)->link(NULL);
+        }
         //______________________________________________________________________
         //
         // members
@@ -95,11 +100,7 @@ namespace yack
 
     private:
         YACK_DISABLE_COPY_AND_ASSIGN(meta_repo);
-        inline void zstore(node_type *node) throw()
-        {
-            assert(node);
-            pool.store(node)->link(NULL);
-        }
+
     };
 
 }
