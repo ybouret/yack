@@ -34,28 +34,29 @@ namespace yack
             return os;
         }
 
+#define COMMON ",style=\"bold,rounded\""
         const char * equilibrium:: attr() const
         {
             if(reac->size)
             {
                 if(prod->size)
                 {
-                    return ",shape=rectangle";
+                    return ",shape=rectangle" COMMON;
                 }
                 else
                 {
-                    return ",shape=invtrapezium";
+                    return ",shape=invtrapezium" COMMON;
                 }
             }
             else
             {
                 if(prod->size)
                 {
-                    return ",shape=trapezium";
+                    return ",shape=trapezium" COMMON;
                 }
                 else
                 {
-                    return ",shape=rectangle,style=dotted";
+                    return ",shape=rectangle,style=\"dotted,bold\"";
                 }
             }
 

@@ -31,56 +31,99 @@ namespace yack
             return true;
         }
 
-        typedef cxx_array<int> stoi_coef;
-
-        class stoi_node : public object, public stoi_coef
+        namespace
         {
-        public:
-            explicit stoi_node(const readable<int> &arr) :
-            object(),
-            stoi_coef( arr.size() ),
-            next(0)
+            typedef cxx_array<int> stoi_coef;
+            
+            class stoi_node : public object, public stoi_coef
             {
-                iota::load(*this,arr);
-            }
-
-            stoi_node *next;
-        private:
-            YACK_DISABLE_COPY_AND_ASSIGN(stoi_node);
-        };
-
-        class stoi_repo : public cxx_pool_of<stoi_node>
-        {
-        public:
-            explicit stoi_repo() throw() : cxx_pool_of<stoi_node>() {}
-            virtual ~stoi_repo() throw() {}
-
-            void ensure(const readable<int> &lhs)
-            {
-                for(const stoi_node *node=head;node;node=node->next)
+            public:
+                explicit stoi_node(const readable<int> &arr) :
+                object(),
+                stoi_coef( arr.size() ),
+                next(0)
                 {
-                    const readable<int> &rhs = *node;
-                    assert(rhs.size()==lhs.size());
-                    bool same = true;
-                    for(size_t i=lhs.size();i>0;--i)
-                    {
-                        if(lhs[i]!=rhs[i]) {
-                            same = false;
-                            break;
-                        }
-                    }
-                    if(same) return;
+                    iota::load(*this,arr);
                 }
-
-                // success
-                store( new stoi_node(lhs) );
-
-            }
-
-        private:
-            YACK_DISABLE_COPY_AND_ASSIGN(stoi_repo);
-        };
-
+                
+                stoi_node *next;
+            private:
+                YACK_DISABLE_COPY_AND_ASSIGN(stoi_node);
+            };
+            
+            class stoi_repo : public cxx_pool_of<stoi_node>
+            {
+            public:
+                explicit stoi_repo() throw() : cxx_pool_of<stoi_node>() {}
+                virtual ~stoi_repo() throw() {}
+                
+                void ensure(const readable<int> &lhs)
+                {
+                    for(const stoi_node *node=head;node;node=node->next)
+                    {
+                        const readable<int> &rhs = *node;
+                        assert(rhs.size()==lhs.size());
+                        bool same = true;
+                        for(size_t i=lhs.size();i>0;--i)
+                        {
+                            if(lhs[i]!=rhs[i]) {
+                                same = false;
+                                break;
+                            }
+                        }
+                        if(same) return;
+                    }
+                    
+                    // success
+                    store( new stoi_node(lhs) );
+                    
+                }
+                
+            private:
+                YACK_DISABLE_COPY_AND_ASSIGN(stoi_repo);
+            };
+            
+        }
+        
+        namespace
+        {
+            class mixed_equilibrium : public equilibrium
+            {
+            public:
+                virtual ~mixed_equilibrium() throw()
+                {
+                }
+                
+                const readable<double> &Ktab;
+                rmulops                &xmul;
+                const cxx_array<int>    coef;
+                
+                explicit mixed_equilibrium(const string           &uid,
+                                           const size_t            idx,
+                                           const readable<double> &myK,
+                                           rmulops                &ops,
+                                           const readable<int>    &arr) :
+                equilibrium(uid,idx),
+                Ktab(myK),
+                xmul(ops),
+                coef(arr)
+                {
+                    
+                }
+                
+            private:
+                YACK_DISABLE_COPY_AND_ASSIGN(mixed_equilibrium);
+                virtual double getK(double) const
+                {
+                    xmul.ld1();
+                    for(size_t j=coef.size();j>0;--j)
+                    {
+                        xmul.ipower(Ktab[j],coef[j]);
+                    }
+                    return xmul.query();
+                }
+            };
+        }
 
 
         static inline
@@ -130,8 +173,8 @@ namespace yack
             static const char * const fn = "make_manifold";
             YACK_XMLSUB(xml,fn);
 
-            vector<equilibrium *> eqptr(N,as_capacity); // inside this sharing
-            vector<size_t>        anx(M,as_capacity);   // to form ortho matrix
+            vector<equilibrium *> eptr(N,as_capacity); // inside this sharing
+            vector<size_t>        pad(M,as_capacity);   // to form ortho matrix
             addrbook              tribe;                // to be populated by eqs
             sp_repo               cache;                // from tribe
             small_repo<size_t>    plural;               // nref>1
@@ -139,7 +182,8 @@ namespace yack
             cxx_array<int>        gmix(N);
             stoi_repo             extra;
             cxx_array<int>        gcoef(M);
-
+            equilibria           &target = coerce(lattice);
+            
             //------------------------------------------------------------------
             //
             //
@@ -167,17 +211,17 @@ namespace yack
                 //--------------------------------------------------------------
                 //
                 //
-                // collecting sharing equilibria with eqptr
+                // collecting sharing equilibria within eptr
                 //
                 //
                 //--------------------------------------------------------------
-                eqptr.free();
+                eptr.free();
                 for(const eq_node *en=sharing->head;en;en=en->next)
                 {
                     const equilibrium &eq = **en;
-                    eqptr.push_back( & coerce(eq) );
+                    eptr.push_back( & coerce(eq) );
                 }
-                assert(eqptr.size()==n);
+                assert(eptr.size()==n);
 
 
 
@@ -203,10 +247,10 @@ namespace yack
 
                         //------------------------------------------------------
                         //
-                        // create sub equilibria
+                        // create sub-system of k equilibria
                         //
                         //------------------------------------------------------
-                        comb.extract(esub,eqptr);
+                        comb.extract(esub,eptr);
 
                         //------------------------------------------------------
                         //
@@ -222,9 +266,7 @@ namespace yack
                         }
                         merge_list_of<sp_node>::sort(cache.list,sp_node_compare);
                         const size_t m = cache->size; assert(m>0);
-
-
-
+                        
 
                         //------------------------------------------------------
                         //
@@ -253,7 +295,6 @@ namespace yack
                                     plural.push_back(j);
                                     fading.push_back(sp);
                                 }
-
                             }
                             assert( apk::rank_of(nu) == k);
                         }
@@ -268,9 +309,7 @@ namespace yack
                             std::cerr << " ] / "  << cache.list << " => " << k << "x" << m << std::endl;
                             *xml << "   |_nu=" << nu << std::endl;
                             *xml << "   |_mu=" << mu << std::endl;
-                            //*xml << "   |_|plural| = " << std::setw(3) << plural->size << " : " << *plural <<  std::endl;
                             *xml << "   |_|fading| = " << std::setw(3) << fading->size << " : " << *fading <<  std::endl;
-
                         }
 
                         const size_t p = plural->size; if(p<=0) continue; // maybe...
@@ -288,25 +327,24 @@ namespace yack
                             // initialize first row and annex indices
                             //--------------------------------------------------
                             sub.ld(0);
-                            anx.free();
+                            pad.free();
                             const size_t i = **qn;
-                            for(size_t j=1;j<i;++j)    anx << j;
-                            for(size_t j=i+1;j<=m;++j) anx << j;
-                            assert(m-1==anx.size());
+                            for(size_t j=1;j<i;++j)    pad << j;
+                            for(size_t j=i+1;j<=m;++j) pad << j;
+                            assert(m-1==pad.size());
                             iota::load(sub[1],mu[i]);
-                            //YACK_XMLOG(xml,"   |_fading [" << **sn << "] using " << sub[1] << " / anx=" << anx);
 
                             //--------------------------------------------------
                             // exposing chosen row to rolling others
                             //--------------------------------------------------
-                            size_t cycle=1;
-                        CYCLE:
+                            size_t rotations=1;
+                        ROTATION:
                             //--------------------------------------------------
                             // construct sub with current annex indices
                             //--------------------------------------------------
                             for(size_t i=2,ia=1;i<=k;++i,++ia)
                             {
-                                iota::load(sub[i],mu[anx[ia]]);
+                                iota::load(sub[i],mu[pad[ia]]);
                             }
                             mgs.assign(sub);
                             if( apk::gs_ortho(mgs) )
@@ -332,15 +370,15 @@ namespace yack
                             //--------------------------------------------------
                             // rotate indices
                             //--------------------------------------------------
-                            if(++cycle<m)
+                            if(++rotations<m)
                             {
-                                const size_t a1 = anx[1];
+                                const size_t a1 = pad[1];
                                 for(size_t ip=1,i=2;i<m;++i,++ip)
                                 {
-                                    cswap(anx[ip],anx[i]);
+                                    cswap(pad[ip],pad[i]);
                                 }
-                                anx.back() = a1;
-                                goto CYCLE;
+                                pad.back() = a1;
+                                goto ROTATION;
                             }
                         }
 
@@ -376,6 +414,9 @@ namespace yack
                 //--------------------------------------------------------------
                 for(const stoi_node *node=extra.head;node;node=node->next)
                 {
+                    //----------------------------------------------------------
+                    // create global coefficients from current weight
+                    //----------------------------------------------------------
                     const readable<int> &weight = *node;
                     gcoef.ld(0);
                     for(const enode *en=singles.head();en;en=en->next)
@@ -391,26 +432,32 @@ namespace yack
                         }
                     }
 
-
+                    //----------------------------------------------------------
+                    // create a mixed equilibrium
+                    //----------------------------------------------------------
                     const string name = makeName(weight,singles);
-                    std::cerr << weight << " => '" << name << "'";
-
-                    components mock;
+                    const size_t mxid = target.size()+1;
+                    equilibrium &mxeq = target.use( new mixed_equilibrium(name,mxid,K,xmul,weight) );
                     for(size_t j=1;j<=M;++j)
                     {
                         const int f = gcoef[j];
-                        if(f) mock( worklib[j], f);
+                        if(f) mxeq( worklib[j], f);
                     }
 
-                    std::cerr << " -> " << mock << std::endl;
-                    assert(mock.neutral());
+                    std::cerr << " -> " << mxeq << std::endl;
+                    assert(mxeq.neutral());
+                   
+                    //----------------------------------------------------------
+                    // register in this related group
+                    //----------------------------------------------------------
+                    *sharing << &mxeq;
                 }
 
 
             }
 
 
-
+            std::cerr << lattice << std::endl;
 
         }
 

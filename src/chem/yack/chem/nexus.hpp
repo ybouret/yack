@@ -43,27 +43,34 @@ namespace yack
 
             const library    &  corelib;  //!< initial library
             const equilibria &  singles;  //!< initial equilibria
+            const equilibria    lattice;  //!<
             const active_list   working;  //!< list of active species
             const size_t        M;        //!< corelib.size
             const size_t        N;        //!< singles.size
+            const size_t        L;        //!< lattice.size
             const imatrix       Nu;       //!< [NxM] topology
-            
+            raddops             xadd;
+            rmulops             xmul;
 
         private:
             const library     worklib; //!< hard copy of corelib, to build combinations
             tableaux          mtab;    //!< [M]-sized
             tableaux          ntab;    //!< [N]-sized
-
+            tableaux          ltab;    //!< [L]-sized
+            
         public:
             // species data
             const criterions crit;      //!< [M] criterions
 
-            // eqs data
+            // singles data
             tableau           &K;       //!< [N] single constants
             const eq_team      regular; //!< both ways
             const eq_team      roaming; //!< [part|join]_only
             const clusters     related; //!< clusters of related equilibria
 
+            // lattice data
+            tableau           &Kl;      //!< [L] constants
+            
         private:
             YACK_DISABLE_COPY_AND_ASSIGN(nexus);
             const lockable::scope lockLib;

@@ -2,9 +2,12 @@
 #include "yack/chem/nexus.hpp"
 #include "yack/system/imported.hpp"
 #include "yack/apex/kernel.hpp"
+#include "yack/math/iota.hpp"
 
 namespace yack
 {
+    using namespace math;
+    
     namespace chemical
     {
 
@@ -21,15 +24,18 @@ namespace yack
                       const double      t) :
         corelib( lib ),
         singles( eqs ),
+        lattice( singles ),
         working( corelib.head() ),
         M( corelib.size() ),
         N( singles.size() ),
+        L(0),
         Nu(N,N>0?M:0),
         worklib( corelib ),
 
         mtab(12,M),
         ntab(12,N),
-
+        ltab(12,L),
+        
         // species
         crit(mtab.next(),transmogrify),
 
@@ -37,7 +43,10 @@ namespace yack
         K( ntab.next() ),
         regular(),
         roaming(),
-
+        
+        // lattice
+        Kl( ltab.next() ),
+        
         lockLib(coerce(corelib)),
         lockEqs(coerce(singles))
         {
@@ -106,6 +115,25 @@ namespace yack
 
                 // make manifold
                 make_manifold(xml);
+                lattice.graphviz("lattice.dot", corelib);
+
+                coerce(L) = lattice.size();
+                if(L)
+                {
+                    ltab.make(L);
+                    assert(L==Kl.size());
+                    iota::save(Kl,K);
+                    for(const enode *en=lattice.tail();en;en=en->prev)
+                    {
+                        const equilibrium &eq = ***en;
+                        const size_t       ei = *eq;
+                        if(ei<=N)
+                            break;
+                        Kl[ei] = eq.K(t);
+                    }
+                    std::cerr << "Kl=" << Kl << std::endl;
+                }
+                
             }
 
             

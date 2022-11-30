@@ -122,6 +122,18 @@ namespace yack
         {
         }
         
+        template <typename U>
+        inline explicit cxx_array(const readable<U> &arr) :
+        cxx_array_<T,ALLOCATOR>(arr.size()),
+        memIO(this->basis,this->count)
+        {
+            writable<type> &self = *this; assert(self.size()==arr.size());
+            const size_t    narr = arr.size();
+            for(size_t i=1;i<=narr;++i) {
+                self[i] = arr[i];
+            }
+        }
+        
         
     private:
         YACK_DISABLE_COPY_AND_ASSIGN(cxx_array);
