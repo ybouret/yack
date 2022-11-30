@@ -42,6 +42,9 @@ namespace yack
         //______________________________________________________________________
         inline list_type *       operator->()       throw() { return &list; } //!< access
         inline const list_type * operator->() const throw() { return &list; } //!< access
+        inline list_type &       operator *()       throw() { return  list; } //!< access
+        inline const list_type & operator *() const throw() { return  list; } //!< access
+
 
         //! reserve memory
         inline void reserve(size_t n) {

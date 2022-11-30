@@ -67,6 +67,7 @@ YACK_UTEST_DECL(256)
     YACK_UTEST(data_pool);
     YACK_UTEST(data_pool_sort);
     YACK_UTEST(data_small);
+    YACK_UTEST(data_small_repo);
     YACK_UTEST(data_matrix);
     YACK_UTEST(data_sequence);
     YACK_UTEST(data_heap);

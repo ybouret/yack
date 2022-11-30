@@ -5,6 +5,7 @@
 
 #include "yack/object.hpp"
 #include "yack/type/args.hpp"
+#include <iosfwd>
 
 namespace yack
 {
@@ -39,6 +40,13 @@ namespace yack
         //______________________________________________________________________
         inline type       & operator*() throw()       { return data; } //!< access
         inline const_type & operator*() const throw() { return data; } //!< access, const
+
+        //! forwarding display call
+        inline friend std::ostream & operator<<(std::ostream &os, const small_node &self)
+        {
+            os << self.data;
+            return os;
+        }
 
         //______________________________________________________________________
         //

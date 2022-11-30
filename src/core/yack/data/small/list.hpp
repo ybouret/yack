@@ -1,4 +1,3 @@
-
 //! \file
 
 #ifndef YACK_DATA_SMALL_LIST_INCLUDED
