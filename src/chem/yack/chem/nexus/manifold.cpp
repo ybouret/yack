@@ -195,13 +195,17 @@ namespace yack
                             }
                         }
                         const size_t r = apk::rank_of(mu);
+                        const size_t l = lonely->size;
+                        if(r+l<k)
+                        {
+                            throw imported::exception(fn,"invalid topology");
+                        }
 
                         //------------------------------------------------------
                         //
                         // build auxiliary matrix of lonely species
                         //
                         //------------------------------------------------------
-                        const size_t l = lonely->size;
                         imatrix      lm;
                         if(l>0)
                         {
