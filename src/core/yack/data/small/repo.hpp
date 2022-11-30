@@ -36,7 +36,7 @@ namespace yack
         // C++
         //______________________________________________________________________
         inline explicit small_repo() throw() :  list(), pool() {} //!< setup
-        inline virtual ~small_repo() throw() { release(); }                   //!< cleanup
+        inline virtual ~small_repo() throw() { release(); }       //!< cleanup
 
         //! copy list
         inline small_repo(const small_repo &other) : list(other.list), pool() {}
@@ -50,45 +50,53 @@ namespace yack
         inline list_type &       operator *()       throw() { return  list; } //!< access
         inline const list_type & operator *() const throw() { return  list; } //!< access
 
+        //! push back by copy, return new object reference
         inline type & push_back(param_type args)
         {
             return **list.push_back( create(args) );
         }
 
+        //! push front by copy, return new object reference
         inline type & push_front(param_type args)
         {
             return **list.push_front( create(args) );
         }
 
+        //! remove tail
         inline void pop_back()
         {
             assert(list.size);
             zstore(list.pop_back());
         }
 
+        //! remove head
         inline void pop_front()
         {
             assert(list.size);
             zstore(list.pop_front());
         }
 
+        //! store an alive node
         inline void zstore(node_type *node) throw()
         {
             assert(node);
             pool.store( out_of_reach::naught( destructed(node) ) );
         }
 
+        //! free content, keep cache
         inline void free() throw()
         {
             while(list.size) zstore(list.pop_back());
         }
 
+        //! release all
         inline void release() throw()
         {
             while(list.size)  delete list.pop_back();
             trim();
         }
 
+        //! clean cache
         inline void trim() throw()
         {
             while(pool.size) object::zrelease(pool.query());

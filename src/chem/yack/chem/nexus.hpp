@@ -23,20 +23,23 @@ namespace yack
         typedef arrays_of<double>           tableaux;   //!< alias
         typedef tableaux::array_type        tableau;    //!< alias
         typedef thin_array<const criterion> criterions; //!< alias
-        typedef vector<int>                 ivector;    //!< alias
 
       
 
+        //! nexus
         class nexus
         {
         public:
-            static const char * const clid;
-            static bool              &verbose;
+            static const char * const clid;    //!< [nexus]
+            static bool              &verbose; //!< verbosity
 
-            virtual ~nexus() throw();
+            //! setup
             explicit nexus(const library    &lib,
                            const equilibria &eqs,
                            const double      t);
+
+            //! cleanup
+            virtual ~nexus() throw();
 
             const library    &  corelib;  //!< initial library
             const equilibria &  singles;  //!< initial equilibria
@@ -53,7 +56,7 @@ namespace yack
 
         public:
             // species data
-            const criterions crit;
+            const criterions crit;      //!< [M] criterions
 
             // eqs data
             tableau           &K;       //!< [N] single constants

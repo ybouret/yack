@@ -10,12 +10,15 @@ namespace yack
 {
     namespace math
     {
-        
+
+        //! computing orthogonal family for a set of independent vector
         struct ortho_family
         {
-            
+
+            //! Q.rows = Q.cols = P.cols
             static bool make(matrix<apq> &Q, const matrix<apq> &P);
-            
+
+            //! copy/make
             template <typename T> static inline
             bool build(matrix<apq> &Q, const matrix<T> &J)
             {
