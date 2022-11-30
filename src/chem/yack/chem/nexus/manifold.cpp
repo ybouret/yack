@@ -143,7 +143,6 @@ namespace yack
 
                     do
                     {
-                        cache.free();
 
                         //------------------------------------------------------
                         // create sub equilibria
@@ -154,9 +153,8 @@ namespace yack
                         // extract all species, sorted by index
                         //------------------------------------------------------
                         tribe.free();
-                        for(size_t i=k;i>0;--i)
-                            esub[i]->update(tribe);
-
+                        cache.free();
+                        for(size_t i=k;i>0;--i) esub[i]->update(tribe);
                         for(addrbook::const_iterator it=tribe.begin();it!=tribe.end();++it)
                         {
                             cache.push_back( *static_cast<const species *>( *it ) );
@@ -180,8 +178,8 @@ namespace yack
                                 mu[j][i] = nu[i][j] = topo[***sn];
                             }
                         }
-                        //assert( apk::gj_rank_of(nu) == k);
-                        //assert( apk::gj_rank_of(mu) == k);
+                        assert( apk::gj_rank_of(nu) == k);
+                        assert( apk::gj_rank_of(mu) == k);
 
 
                         if(verbose) {
