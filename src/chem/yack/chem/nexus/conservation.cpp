@@ -274,7 +274,12 @@ namespace yack
                     }
                 }
             }
-            if(verbose) std::cerr << "Qc=" << Qc << std::endl;
+            if(verbose)
+            {
+                std::cerr << "Qc=" << Qc << std::endl;
+                std::cerr << "Nu=" << Nu << std::endl;
+            }
+
             YACK_XMLOG(xml, "-- " << Ql);
 
 
