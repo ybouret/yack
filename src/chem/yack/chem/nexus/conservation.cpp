@@ -106,19 +106,17 @@ namespace yack
                 inline void ensure(const readable<apq> &q)
                 {
                     assert(is_candidate(q));
-                    const size_t    len = q.size() * sizeof(unsigned);
+                    const size_t    len = q.size() * sizeof( iweight::type );
                     auto_ptr<wnode> lhs = new wnode(q);
-                    const void     *l   = (*lhs)();
+                    const void     *l   = (*lhs)(); assert(l == & (*lhs)[1] );
                     for(const wnode *rhs=head;rhs;rhs=rhs->next)
                     {
-                        const void *r = (*rhs)();
+                        const void *r = (*rhs)(); assert(r == & (*rhs)[1] );
                         if(0==memcmp(l,r,len))
                         {
-                            std::cerr << "already" << std::endl;
                             return;
                         }
                     }
-                    std::cerr << "new" << std::endl;
                     store( lhs.yield() );
                 }
 
@@ -214,7 +212,7 @@ namespace yack
                     }
                 }
 
-                YACK_XMLOG(xml,"irow=" << irow);
+                YACK_XMLOG(xml,"-- irow=" << irow);
 
                 const size_t m = irow.size(); assert(m>=rank);
                 matrix<apq>  U(rank,M);
@@ -239,8 +237,7 @@ namespace yack
                             {
                                 const readable<apq> &u = U[ii];
                                 if(is_candidate(u)) {
-                                    std::cerr << "-> " << u << std::endl;
-                                    //auto_ptr<wnode> w = new wnode(u);
+                                    //std::cerr << "-> " << u << std::endl;
                                     W.ensure(u);
                                 }
                             }
@@ -250,6 +247,8 @@ namespace yack
 
                 }
             }
+
+            std::cerr << W << std::endl;
 
 
 
