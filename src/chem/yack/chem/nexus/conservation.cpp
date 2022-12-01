@@ -179,6 +179,9 @@ namespace yack
                 }
                 const size_t  rank = apk::rank_of(Q);
 
+                std::cerr << "P=" << P << std::endl;
+                std::cerr << "Q=" << Q << std::endl;
+
                 //--------------------------------------------------------------
                 //
                 // selecting non proportional rows of Q
@@ -215,13 +218,14 @@ namespace yack
                 // building all
                 //
                 //--------------------------------------------------------------
-                YACK_XMLOG(xml, "-- sparsity building with rank = " << rank);
+                YACK_XMLOG(xml, "-- sparsity building with rank = " << rank << " amongst |rows=" << irow << "| = " << m);
                 for(size_t i=1;i<=m;++i)
                 {
                     const size_t ir = irow[i];
                     isub.free();
                     for(size_t ii=1;ii<i;++ii)    isub << irow[ii];
                     for(size_t ii=i+1;ii<=m;++ii) isub << irow[ii];
+                    std::cerr << " starting with ir=" << ir << ", isub=" << isub << std::endl;
                     for(size_t rotation=0;rotation<m;++rotation)
                     {
                         // build matrix with first given row
@@ -230,11 +234,12 @@ namespace yack
                         buildU(U,Q,ir,isub);
                         if(  apk::gs_ortho(U) )
                         {
+                            std::cerr << "U=" << U << std::endl;
                             for(size_t ii=2;ii<=rank;++ii)
                             {
                                 const readable<apq> &u = U[ii];
                                 if(is_candidate(u)) {
-                                    //std::cerr << "-> " << u << std::endl;
+                                    std::cerr << "-> " << u << std::endl;
                                     W.ensure(u);
                                 }
                             }
