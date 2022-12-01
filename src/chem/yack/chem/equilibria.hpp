@@ -57,7 +57,6 @@ namespace yack
             //! add shared copy
             void add(const equilibria &other);
 
-
             //! helper to create a new constant equilibrium
             template <typename NAME> inline
             equilibrium & operator()(const NAME  &uid,
@@ -91,6 +90,12 @@ namespace yack
             const equilibrium & operator[](const string &) const; //!< access by name
             const equilibrium & operator[](const char   *) const; //!< access by name
             void remove_last(); //!< removing last inserted equilibrium and update
+
+            //__________________________________________________________________
+            //
+            //! make a mixed name
+            //__________________________________________________________________
+            string make_name(const readable<int> &weight) const;
 
             //__________________________________________________________________
             //

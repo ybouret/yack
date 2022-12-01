@@ -139,6 +139,46 @@ namespace yack
             }
         }
 
+
+        string equilibria:: make_name(const readable<int> &weight) const
+        {
+            string res;
+            bool   first = true;
+            for(const enode *en=head();en;en=en->next)
+            {
+                const equilibrium &eq = ***en;
+                const size_t       ei = *eq;
+                const int          cf = weight[ei];
+                switch(__sign::of(cf))
+                {
+                    case __zero__: continue;
+                    case positive:
+                        if(first)
+                        {
+                            first = false;
+                        }
+                        else
+                            res += '+';
+                        if(cf>1) res += vformat("%d*",cf);
+                        break;
+
+                    case negative:
+                        if(first)
+                        {
+                            first = false;
+                        }
+                        if(cf < -1)
+                            res += vformat("%d*",cf);
+                        else
+                            res += '-';
+                        break;
+                }
+                res += eq.name;
+            }
+            return res;
+        }
+
+
     }
 
 }
@@ -154,7 +194,11 @@ namespace yack
         void equilibria:: graphviz(const string  &filename,
                                    const library &lib) const
         {
+            //------------------------------------------------------------------
+            //
             // create file
+            //
+            //------------------------------------------------------------------
             {
                 ios::ocstream fp(filename);
                 ios::vizible::digraph_init(fp,"G");
@@ -176,8 +220,12 @@ namespace yack
 
                 ios::vizible::digraph_quit(fp);
             }
-
+            
+            //------------------------------------------------------------------
+            //
             // render file
+            //
+            //------------------------------------------------------------------
             {
                 ios::vizible::render(filename,false);
             }

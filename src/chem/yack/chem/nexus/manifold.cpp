@@ -6,6 +6,7 @@
 #include "yack/system/imported.hpp"
 #include "yack/sequence/cxx-array.hpp"
 #include "yack/data/small/repo.hpp"
+#include "yack/sequence/roll.hpp"
 #include <iomanip>
 
 namespace yack
@@ -14,11 +15,6 @@ namespace yack
 
     namespace chemical
     {
-
-        static inline int sp_node_compare(const sp_node *lhs, const sp_node *rhs) throw()
-        {
-            return comparison::increasing( ***lhs, ***rhs );
-        }
 
         
         static inline bool non_degenerated(const readable<int> &arr) throw()
@@ -39,23 +35,25 @@ namespace yack
             class stoi_node : public object, public stoi_coef
             {
             public:
-                explicit stoi_node(const readable<int> &arr) :
-                object(),
-                stoi_coef( arr.size() ),
-                next(0)
-                {
+                inline stoi_node(const readable<int> &arr) :
+                object(), stoi_coef( arr.size() ), next(0) {
                     iota::load(*this,arr);
                 }
-                
+
+                inline ~stoi_node() throw() {}
+
                 stoi_node *next;
             private:
                 YACK_DISABLE_COPY_AND_ASSIGN(stoi_node);
             };
-            
-            class stoi_repo : public cxx_pool_of<stoi_node>
+
+            typedef cxx_pool_of<stoi_node> stoi_assembly;
+
+            //! used to store assembly of coefficients
+            class stoi_repo : public stoi_assembly
             {
             public:
-                explicit stoi_repo() throw() : cxx_pool_of<stoi_node>() {}
+                explicit stoi_repo() throw() : stoi_assembly() {}
                 virtual ~stoi_repo() throw() {}
                 
                 void ensure(const readable<int> &lhs)
@@ -127,45 +125,6 @@ namespace yack
         }
 
 
-        static inline
-        string makeName(const readable<int> &cof,
-                        const equilibria    &eqs)
-        {
-            string res;
-            bool   first = true;
-            for(const enode *en=eqs.head();en;en=en->next)
-            {
-                const equilibrium &eq = ***en;
-                const size_t       ei = *eq;
-                const int          cf = cof[ei];
-                switch(__sign::of(cf))
-                {
-                    case __zero__: continue;
-                    case positive:
-                        if(first)
-                        {
-                            first = false;
-                        }
-                        else
-                            res += '+';
-                        if(cf>1) res += vformat("%d*",cf);
-                        break;
-
-                    case negative:
-                        if(first)
-                        {
-                            first = false;
-                        }
-                        if(cf < -1)
-                            res += vformat("%d*",cf);
-                        else
-                            res += '-';
-                        break;
-                }
-                res += eq.name;
-            }
-            return res;
-        }
 
 
         void nexus:: make_manifold(const xmlog &xml)
@@ -436,7 +395,7 @@ namespace yack
                     //----------------------------------------------------------
                     // create a mixed equilibrium
                     //----------------------------------------------------------
-                    const string name = makeName(weight,singles);
+                    const string name = singles.make_name(weight);
                     const size_t mxid = target.size()+1;
                     equilibrium &mxeq = target.use( new mixed_equilibrium(name,mxid,K,xmul,weight) );
                     for(size_t j=1;j<=M;++j)

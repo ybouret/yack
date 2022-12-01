@@ -1,5 +1,6 @@
 #include "yack/chem/species.hpp"
 #include "yack/ios/ostream.hpp"
+#include "yack/comparison.hpp"
 #include <iomanip>
 
 namespace yack
@@ -46,7 +47,12 @@ namespace yack
             return ",shape=oval";
         }
 
-
+        int sp_node_compare(const sp_node *lhs, const sp_node *rhs) throw()
+        {
+            assert(lhs);
+            assert(rhs);
+            return comparison::increasing( ***lhs, ***rhs );
+        }
     }
 
 }

@@ -91,6 +91,7 @@ namespace yack
 
         typedef meta_repo<const species> sp_repo;     //!< cache of species
         typedef sp_repo::node_type       sp_node;     //!< node within sp_repo
+        int sp_node_compare(const sp_node *, const sp_node *) throw(); //!< compare by increasing index
     }
 }
 
