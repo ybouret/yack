@@ -20,25 +20,30 @@ namespace yack
         {
             static const char * const fn = "conserved_set";
             YACK_XMLSUB(xml,fn);
-            
-            if(regular.size<=0)
+
+            const size_t n = regular.size;
+            if(n<=0)
             {
                 YACK_XMLOG(xml, "-- no regular equilibrium");
                 return;
             }
-            
-            matrix<apq> P(regular.size,M);
-            for(const eq_node *en=regular.head;en;en=en->next)
+
+            YACK_XMLOG(xml, "-- selecting conserved species");
+            matrix<apq> P(n,M);
             {
-                const equilibrium   &eq = **en;
-                const size_t         ei = *eq;
-                const readable<int> &nu = Nu[ei];
-                writable<apq>       &Pi = P[ei];
-                for(const cnode *cn=eq.head();cn;cn=cn->next)
+                size_t             ii=1;
+                for(const eq_node *en=regular.head;en;en=en->next,++ii)
                 {
-                    const species &s = ****cn;
-                    const size_t   j = *s;
-                    if(conserved==crit[j]) Pi[j] = nu[j];
+                    const equilibrium   &eq = **en;
+                    const size_t         ei = *eq;
+                    const readable<int> &nu = Nu[ei];
+                    writable<apq>       &Pi = P[ii];
+                    for(const cnode *cn=eq.head();cn;cn=cn->next)
+                    {
+                        const species &s = ****cn;
+                        const size_t   j = *s;
+                        if(conserved==crit[j]) Pi[j] = nu[j];
+                    }
                 }
             }
             std::cerr << "P=" << P << std::endl;
@@ -48,9 +53,11 @@ namespace yack
                 YACK_XMLOG(xml, "-- singular conserved set");
                 return;
             }
+            assert( apk::rank_of(P) == n);
             std::cerr << "Q=" << Q << std::endl;
-
-            
+            std::cerr << "rank(Q) = " << apk::rank_of(Q) << std::endl;
+            std::cerr << "rank(P) = " <<   n << std::endl;
+            std::cerr << "dims    = " <<   working.size << std::endl;
         }
     
                                 
