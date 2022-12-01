@@ -17,6 +17,13 @@ namespace yack
     
     namespace chemical
     {
+
+        static inline apz q2z(const apq &q)
+        {
+            assert(1==q.den);
+            return q.num;
+        }
+
         void nexus:: conserved_set(const xmlog &xml)
         {
             static const char * const fn = "conserved_set";
@@ -62,11 +69,28 @@ namespace yack
             cxx_series<size_t> irow(M);
             cxx_series<size_t> isub(M-1);
 
-            //! select rows
-            for(size_t i=1;i<=M;++i)
             {
-                irow << i;
+                matrix<apz> ZQ(q2z,Q);
+
+                //! select rows
+                for(size_t i=1;i<=M;++i)
+                {
+                    bool ok = true;
+                    for(size_t j=irow.size();j>0;--j)
+                    {
+                        const size_t jr = irow[j];
+                        if( apk::are_prop(ZQ[jr],ZQ[i],NULL))
+                        {
+                            ok = false;
+                            break;
+                        }
+                    }
+                    if(ok)
+                        irow << i;
+                }
             }
+
+            std::cerr << "irow=" << irow << std::endl;
 
             const size_t m = irow.size(); assert(m>=rank);
             matrix<apq>  U(rank,M);

@@ -80,6 +80,16 @@ namespace yack
         }
 
 
+        //! setup with transformation
+        template <typename FUNC, typename U>
+        inline matrix(FUNC &func, const matrix<U> &M) :
+        YACK_MATRIX_CTOR(M.rows,M.cols)
+        {
+            setup();
+            apply(func,M);
+        }
+
+
         //! assign by copy/swap
         inline matrix & operator=( const matrix &other )
         {
@@ -403,6 +413,18 @@ namespace yack
                         ++built;
                     }
             } YACK_MATRIX_SETUP_LEAVE()
+        }
+
+        //! per item transform
+        template <typename FUNC, typename U> inline
+        void apply(FUNC &func, const matrix<U> &M)
+        {
+            mutable_type                   *target = head;
+            typename matrix<U>::const_type *source = M.head;
+            for(size_t i=items;i>0;--i)
+            {
+                *(target++) = func( *(source++) );
+            }
         }
 
         //______________________________________________________________________
