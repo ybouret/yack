@@ -5,6 +5,7 @@
 #include "yack/math/iota.hpp"
 #include "yack/system/imported.hpp"
 #include "yack/sequence/cxx-array.hpp"
+#include "yack/sequence/cxx-series.hpp"
 #include "yack/data/small/repo.hpp"
 #include "yack/sequence/roll.hpp"
 #include <iomanip>
@@ -318,9 +319,34 @@ namespace yack
                             *xml << "   |_|fading| = " << std::setw(3) << fading.size << " : " << fading <<  std::endl;
                         }
 
+                        const size_t p = plural.size;
+                        if(p<=0) continue; // maybe...
 
-                        const size_t p = plural.size; if(p<=0) continue; // maybe...
-
+                        cxx_series<size_t> uidx(m);
+                        for(size_t i=1;i<=m;++i)
+                        {
+                            const readable<int> &curr = mu[i];
+                            std::cerr << "using " << curr << "?" << std::endl;
+                            bool ok = true;
+                            for(size_t j=uidx.size();j>0;--j)
+                            {
+                                const readable<int> &prev = mu[ uidx[j] ];
+                                if( apk::are_prop(curr,prev, NULL))
+                                {
+                                    ok = false;
+                                    std::cerr << "\tpropto " << prev << std::endl;
+                                    break;
+                                }
+                            }
+                            if(ok) uidx << i;
+                        }
+                        std::cerr << "uidx=" << uidx << std::endl;
+                        const size_t dims = uidx.size();
+                        std::cerr << "dims=" << dims << " / rank = " << k << std::endl;
+                        exit(1);
+                        
+                        
+#if 0
                         //------------------------------------------------------
                         //
                         // now find all ways to make a full zero concentration
@@ -405,6 +431,7 @@ namespace yack
                             }
                             extra.ensure(gmix);
                         }
+#endif
 
                     }
                     while(comb.next());
