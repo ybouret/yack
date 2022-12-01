@@ -22,7 +22,7 @@ namespace yack
             template <typename T> static inline
             bool build(matrix<apq> &Q, const matrix<T> &J)
             {
-                const matrix<apq> P(J,transmogrify);
+                const  matrix<apq> P(J,transmogrify);
                 return make(Q,P);
             }
             

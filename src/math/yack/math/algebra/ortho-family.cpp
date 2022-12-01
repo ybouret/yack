@@ -47,7 +47,9 @@ namespace yack
                     Q[i][j] = -Q[i][j];
                 }
             }
+            
             apk::simplify_rows(Q);
+
             return true;
                 
         }

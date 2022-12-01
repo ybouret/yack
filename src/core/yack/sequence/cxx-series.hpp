@@ -77,6 +77,12 @@ namespace yack
             ++coerce(count);
         }
 
+        //! helper
+        inline cxx_series & operator<<(param_type args) {
+            push_back(args);
+            return *this;
+        }
+
         //! one argument setup
         template <typename U> inline
         void add(typename type_traits<U>::parameter_type u)
@@ -113,6 +119,10 @@ namespace yack
             out_of_reach::naught( destructed( &basis[--coerce(count)] ) );
         }
 
+        //! pop all
+        inline void free() throw() {
+            while(count>0) pop();
+        }
 
     private:
         YACK_DISABLE_COPY_AND_ASSIGN(cxx_series);
