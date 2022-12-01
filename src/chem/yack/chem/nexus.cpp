@@ -146,6 +146,9 @@ namespace yack
                         Kl[ei] = eq.K(t);
                     }
                     std::cerr << "Kl=" << Kl << std::endl;
+
+                    
+
                 }
                 
                 // make conserved sets

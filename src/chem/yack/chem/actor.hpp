@@ -44,12 +44,13 @@ namespace yack
             //! helper
             void display_extra(std::ostream &) const;
 
-            //! 1== sp.rank
+            //! 1 == sp.rank
             bool is_primary() const throw();
 
             //!  "[sp.name]=C[*s]"
             void display_compact(std::ostream &, const readable<double> &C) const;
 
+            
             //__________________________________________________________________
             //
             // members

@@ -53,6 +53,26 @@ namespace yack
         //__________________________________________________________________
         typedef cxx_list_of<conservation_law> conservation_laws;
 
+        typedef meta_list<const conservation_law> claw_team_;
+        typedef claw_team_::node_type             claw_node;
+
+        //! team of related conservation law(s)
+        class claw_team : public object, public claw_team_
+        {
+        public:
+            explicit claw_team() throw();
+            virtual ~claw_team() throw();
+
+            claw_team *next;
+            claw_team *prev;
+            
+        private:
+            YACK_DISABLE_COPY_AND_ASSIGN(claw_team);
+        };
+
+        typedef cxx_list_of<claw_team> claw_teams;
+
+
     }
 
 }

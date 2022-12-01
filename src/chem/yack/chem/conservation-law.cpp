@@ -21,3 +21,20 @@ namespace yack
 
 }
 
+namespace yack
+{
+    namespace chemical
+    {
+
+        claw_team :: claw_team() throw()
+        {
+
+        }
+
+        claw_team:: ~claw_team() throw()
+        {
+            
+        }
+
+    }
+}

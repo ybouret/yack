@@ -102,6 +102,28 @@ namespace yack
                 return & coerce_to< list_of<const actor> >(self);
             }
 
+            //! check
+            inline bool find_species_of(const actor &lhs) const throw()
+            {
+                const size_t j = **lhs;
+                for(const actor *rhs=crew.head;rhs;rhs=rhs->next)
+                {
+                    if( j == ***rhs) return true;
+                }
+                return false;
+            }
+
+            //! check
+            inline bool find_shared_species(const actors &other) const throw()
+            {
+                for(const actor *lhs=other->head;lhs;lhs=lhs->next)
+                {
+                    if( find_species_of(*lhs) ) return true;
+                }
+                return false;
+            }
+
+
             //__________________________________________________________________
             //
             // members

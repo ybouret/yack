@@ -282,6 +282,16 @@ namespace yack
 
             YACK_XMLOG(xml, "-- " << Ql);
 
+            claw_teams tm;
+
+            for(const conservation_law *law = Ql.head; law; law=law->next)
+            {
+
+            }
+
+
+            
+
 
 
         }
