@@ -48,7 +48,7 @@ namespace yack
         //! setup empty
         inline matrix() throw(): matrix_data<T>(), matrix_metrics() {}
 
-        //! setup empty or not
+        //! setup empty or full of defaut items
         inline matrix(const size_t r, const size_t c) :
         YACK_MATRIX_CTOR(r,c)
         {
@@ -88,6 +88,16 @@ namespace yack
             setup();
             apply(func,M);
         }
+
+        //! setup with transformation and transposition
+        template <typename FUNC, typename U>
+        inline matrix(FUNC &func, const matrix<U> &M, const transposed_t &) :
+        YACK_MATRIX_CTOR(M.cols,M.rows)
+        {
+            setup();
+            apply(func,M);
+        }
+
 
 
         //! assign by copy/swap

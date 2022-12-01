@@ -103,7 +103,7 @@ namespace yack
             }
 
             //! check
-            inline bool find_species_of(const actor &lhs) const throw()
+            inline bool attached_to(const actor &lhs) const throw()
             {
                 const size_t j = **lhs;
                 for(const actor *rhs=crew.head;rhs;rhs=rhs->next)
@@ -114,11 +114,11 @@ namespace yack
             }
 
             //! check
-            inline bool find_shared_species(const actors &other) const throw()
+            inline bool attached_to(const actors &other) const throw()
             {
                 for(const actor *lhs=other->head;lhs;lhs=lhs->next)
                 {
-                    if( find_species_of(*lhs) ) return true;
+                    if( attached_to(*lhs) ) return true;
                 }
                 return false;
             }

@@ -145,7 +145,7 @@ namespace yack
                 // selecting conserved species within regular equilibria
                 //
                 //--------------------------------------------------------------
-                YACK_XMLOG(xml, "-- selecting conserved species");
+                YACK_XMLOG(xml, "-- selecting conserved species amongst |regular| = " << n);
                 const matrix<apq> P(n,M);
                 {
                     size_t             ii=1;
@@ -163,7 +163,6 @@ namespace yack
                         }
                     }
                 }
-                if(verbose) std::cerr << "P=" << P << std::endl;
 
 
                 //--------------------------------------------------------------
@@ -171,6 +170,7 @@ namespace yack
                 // building orthogonal family
                 //
                 //--------------------------------------------------------------
+                YACK_XMLOG(xml, "-- computing orthogonal space");
                 const matrix<apq> Q(M,M);
                 if( !ortho_family::build(coerce(Q),P) )
                 {
@@ -178,9 +178,6 @@ namespace yack
                     return;
                 }
                 const size_t  rank = apk::rank_of(Q);
-
-                if(verbose) std::cerr << "Q=" << Q << " # rank=" << rank << std::endl;
-
 
                 //--------------------------------------------------------------
                 //
@@ -209,7 +206,6 @@ namespace yack
                     }
                 }
 
-                //YACK_XMLOG(xml,"-- irow=" << irow);
 
                 const size_t m = irow.size(); assert(m>=rank);
                 matrix<apq>  U(rank,M);
@@ -219,6 +215,7 @@ namespace yack
                 // building all
                 //
                 //--------------------------------------------------------------
+                YACK_XMLOG(xml, "-- sparsity building with rank = " << rank);
                 for(size_t i=1;i<=m;++i)
                 {
                     const size_t ir = irow[i];
@@ -227,6 +224,9 @@ namespace yack
                     for(size_t ii=i+1;ii<=m;++ii) isub << irow[ii];
                     for(size_t rotation=0;rotation<m;++rotation)
                     {
+                        // build matrix with first given row
+                        // and expose other vector to find
+                        // all orthogonal possibilities
                         buildU(U,Q,ir,isub);
                         if(  apk::gs_ortho(U) )
                         {
@@ -246,15 +246,16 @@ namespace yack
             }
 
             if(W.size<=0) {
-                YACK_XMLOG(xml, "-- no conservation found");
+                YACK_XMLOG(xml, "-- no conservation law found!");
                 return;
             }
 
-            //--------------------------------------------------------------
+            //------------------------------------------------------------------
             //
-            // creating conservation
+            // creating high level conservation matrix and laws
             //
-            //--------------------------------------------------------------
+            //------------------------------------------------------------------
+            YACK_XMLOG(xml, "-- compiling conservation laws");
             coerce(Nc) = W.size;
             coerce(Qc).make(Nc,M);
             {
@@ -274,34 +275,40 @@ namespace yack
                     }
                 }
             }
-            if(verbose)
-            {
-                std::cerr << "Qc=" << Qc << std::endl;
-                std::cerr << "Nu=" << Nu << std::endl;
-            }
 
-            YACK_XMLOG(xml, "-- " << Ql);
 
-            claw_teams tm;
+
+            //------------------------------------------------------------------
+            //
+            // grouping dependent conservations
+            //
+            //------------------------------------------------------------------
+            YACK_XMLOG(xml, "-- grouping  conservation laws");
 
             for(const conservation_law *law = Ql.head; law; law=law->next)
+                coerce(Qt).recruit(*law);
+
+            if(verbose)
             {
-                // look for a team with a common species
-                for(claw_team *node=tm.head;node;node=node->next)
+                *xml << "--  |conservation law| = " << Nc << ":  in |conservation team| = " << Qt.size << std::endl;
+                size_t it = 0;
+                for(const claw_team *team = Qt.head; team; team=team->next)
                 {
-                    
+                    *xml << "    |_|team #" << std::setw(3) << ++it << "| = " << team->size << std::endl;
+                    for(const claw_node *node=team->head;node;node=node->next)
+                    {
+                        *xml << "      |_" << *node << std::endl;
+                    }
                 }
-
             }
-
 
             
 
 
 
         }
-    
-                                
+
+
         
     }
     

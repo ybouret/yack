@@ -121,7 +121,6 @@ namespace yack
                 
                 // make manifold
                 make_manifold(xml);
-                //lattice.graphviz("lattice.dot", corelib);
                 
                 coerce(L) = lattice.size();
                 if(L)
@@ -145,10 +144,7 @@ namespace yack
                         const size_t       ei = *eq;
                         Kl[ei] = eq.K(t);
                     }
-                    std::cerr << "Kl=" << Kl << std::endl;
-
-                    
-
+                    //std::cerr << "Kl=" << Kl << std::endl;
                 }
                 
                 // make conserved sets

@@ -399,7 +399,7 @@ namespace yack
                         if(f) mxeq( worklib[j], f);
                     }
 
-                    std::cerr << " -> " << mxeq << std::endl;
+                    //std::cerr << " -> " << mxeq << std::endl;
                     assert(mxeq.neutral());
                    
                     //----------------------------------------------------------
@@ -408,11 +408,15 @@ namespace yack
                     *sharing << &mxeq;
                 }
 
+                YACK_XMLOG(xml, "-- |cluster| = " << n << " -> " << sharing->size);
 
             }
 
 
-            std::cerr << lattice << std::endl;
+            if(verbose)
+            {
+                std::cerr << lattice << std::endl;
+            }
 
         }
 
