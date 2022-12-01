@@ -8,6 +8,7 @@
 #include "yack/sequence/cxx-series.hpp"
 #include "yack/data/small/repo.hpp"
 #include "yack/sequence/roll.hpp"
+#include "yack/math/algebra/ortho-family.hpp"
 #include <iomanip>
 
 namespace yack
@@ -167,7 +168,6 @@ namespace yack
 
         void nexus:: make_manifold(const xmlog &xml)
         {
-            typedef small_node<size_t> qnode;
             static const char * const fn = "make_manifold";
             YACK_XMLSUB(xml,fn);
 
@@ -225,12 +225,10 @@ namespace yack
                 //
                 //
                 //--------------------------------------------------------------
-                for(size_t  k=2;k<=n;++k)
+                for(size_t  k=n;k<=n;++k)
                 {
                     combination           comb(n,k);  // combination
                     vector<equilibrium *> esub(k);    // sub-equilibria
-                    imatrix               sub(k,k);   // sub matrix of coeffs
-                    matrix<apq>           mgs(k,k);   // to compute ortho space
                     cxx_array<int>        icf(k);     // integer coefficient
 
                     do
@@ -307,8 +305,21 @@ namespace yack
                         // create matrix of mass for species, mu=transpose(nu)
                         //
                         //------------------------------------------------------
-                        imatrix mu(nu,transposed);
-
+                        imatrix     mu(nu,transposed);
+                        matrix<apq> Q(m,m);
+                        if(!ortho_family::build(Q,nu))
+                        {
+                            std::cerr << "Bad Q!" << std::endl;
+                            exit(0);
+                        }
+                            
+                        std::cerr << "nu=" << nu << std::endl;
+                        std::cerr << "Q=" << Q << std::endl;
+                        
+                        exit(0);
+                        
+                        
+                        
                         if(verbose) {
                             *xml << "-- [";
                             for(size_t i=1;i<=k;++i)
@@ -326,7 +337,7 @@ namespace yack
                         for(size_t i=1;i<=m;++i)
                         {
                             const readable<int> &curr = mu[i];
-                            std::cerr << "using " << curr << "?" << std::endl;
+                            //std::cerr << "using " << curr << "?" << std::endl;
                             bool ok = true;
                             for(size_t j=uidx.size();j>0;--j)
                             {
@@ -334,7 +345,7 @@ namespace yack
                                 if( apk::are_prop(curr,prev, NULL))
                                 {
                                     ok = false;
-                                    std::cerr << "\tpropto " << prev << std::endl;
+                                    //std::cerr << "\tpropto " << prev << std::endl;
                                     break;
                                 }
                             }
@@ -343,7 +354,21 @@ namespace yack
                         std::cerr << "uidx=" << uidx << std::endl;
                         const size_t dims = uidx.size();
                         std::cerr << "dims=" << dims << " / rank = " << k << std::endl;
-                        exit(1);
+                        if(dims<2)
+                        {
+                            std::cerr << "bad dims" << std::endl;
+                            exit(0);
+                        }
+                        const size_t rows = min_of(dims,k);
+                        std::cerr << "rows=" << rows << std::endl;
+                        vector<size_t> ipad(dims-1,as_capacity);
+                        for(size_t i=1;i<=dims;++i)
+                        {
+                            const size_t ir = uidx[i];
+                            
+                        }
+                        
+                        
                         
                         
 #if 0
