@@ -95,6 +95,7 @@ YACK_UTEST_DECL(256)
     YACK_UTEST(data_triple);
     YACK_UTEST(data_quad);
     YACK_UTEST(data_pqueue);
+    YACK_UTEST(data_roll);
 
 
 

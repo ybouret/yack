@@ -83,7 +83,7 @@ namespace yack
             // writable interface
             //__________________________________________________________________
             virtual type       &operator[](const size_t indx)       throw(); //!< [1..chars]
-
+            
             //__________________________________________________________________
             //
             // methods

@@ -193,6 +193,7 @@ add_test(data:pair         test-core data_pair)
 add_test(data:triple       test-core data_triple)
 add_test(data:quad         test-core data_quad)
 add_test(data:pqueue       test-core data_pqueue)
+add_test(data:roll         test-core data_roll)
 
 
 add_test(sync:lockable  test-core sync_lockable)

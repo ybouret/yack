@@ -42,31 +42,6 @@ namespace yack
             for(size_t i=this->size();i>0;--i) (*this)[i] = args;
         }
         
-        inline void roll()
-        {
-            writable<T> &self = *this;
-            const size_t n    = self.size();
-            switch( n )
-            {
-                case 0:
-                case 1:
-                    return;
-                    
-                case 2:
-                    cswap(self[1], self[2]);
-                    return;
-                    
-                default:
-                    break;
-            }
-            const T tmp = self[1];
-            for(size_t ip=1,i=2;i<=n;++i)
-            {
-                self[ip] = self[i];
-            }
-            self[n] = tmp;
-        }
-        
         //______________________________________________________________________
         //
         // C++
