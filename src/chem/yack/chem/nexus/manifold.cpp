@@ -384,7 +384,7 @@ namespace yack
                         const equilibrium &eq = ***en;
                         const size_t       ei = *eq;
                         const int          ew = weight[ei];
-                        if(!ew) continue;;
+                        if(!ew) continue;
                         for(const cnode *cn=eq.head();cn;cn=cn->next)
                         {
                             const size_t j = *****cn;

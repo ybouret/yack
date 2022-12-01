@@ -8,6 +8,7 @@
 #include "yack/math/algebra/ortho-family.hpp"
 #include "yack/sequence/cxx-array.hpp"
 #include "yack/sequence/cxx-series.hpp"
+#include "yack/sequence/roll.hpp"
 
 #include <iomanip>
 
@@ -22,6 +23,19 @@ namespace yack
         {
             assert(1==q.den);
             return q.num;
+        }
+
+        static inline
+        void buildU(matrix<apq>            &U,
+                    const matrix<apq>      &Q,
+                    const size_t            ir,
+                    const readable<size_t> &isub)
+        {
+            iota::load(U[1],Q[ir]);
+            for(size_t i=U.rows;i>1;--i)
+            {
+                iota::load(U[i],Q[isub[i-1]]);
+            }
         }
 
         void nexus:: conserved_set(const xmlog &xml)
@@ -102,7 +116,23 @@ namespace yack
                 for(size_t ii=1;ii<i;++ii)    isub << irow[ii];
                 for(size_t ii=i+1;ii<=m;++ii) isub << irow[ii];
                 std::cerr << "starting @" << ir << ", sub in " << isub << std::endl;
+                for(size_t rotation=0;rotation<m;++rotation)
+                {
+                    buildU(U,Q,ir,isub);
+                    std::cerr << "U=" << U;
+                    if( !apk::gs_ortho(U) )
+                    {
+                        std::cerr << "singular" << std::endl;
+                    }
+                    else
+                    {
+                        std::cerr << " -> " << U << std::endl;
+                    }
+                    rolling::down(isub);
+                }
+
             }
+
 
 
 
