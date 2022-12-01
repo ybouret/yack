@@ -25,6 +25,28 @@ namespace yack
         typedef thin_array<const criterion> criterions; //!< alias
 
       
+        class conservation_law : public object, public actors
+        {
+        public:
+            explicit conservation_law() throw() : object(), actors(), next(0), prev(0) {}
+            virtual ~conservation_law() throw() {}
+
+            friend std::ostream & operator<<(std::ostream &os, const conservation_law &self)
+            {
+                const actors &me = self;
+                os << "0=d(" << me << ")";
+                return os;
+            }
+
+            conservation_law *next;
+            conservation_law *prev;
+
+        private:
+            YACK_DISABLE_COPY_AND_ASSIGN(conservation_law);
+        };
+
+        typedef cxx_list_of<conservation_law> conservation_laws;
+
 
         //! nexus
         class nexus
@@ -73,8 +95,9 @@ namespace yack
             tableau           &Kl;      //!< [L] constants
 
             // conservation data
-            const size_t       Nc;      //!< number of conservation laws
-            const umatrix      Qc;      //!< [Nc*M] matrix of positive coefficients
+            const size_t             Nc;      //!< number of conservation laws
+            const umatrix            Qc;      //!< [Nc*M] matrix of positive coefficients
+            const conservation_laws  Ql;      //!< list of Nc laws
 
         private:
             YACK_DISABLE_COPY_AND_ASSIGN(nexus);

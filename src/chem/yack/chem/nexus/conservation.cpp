@@ -263,20 +263,19 @@ namespace yack
                 {
                     const readable<unsigned> &u = *w;
                     writable<unsigned>       &q = coerce(Qc)[ic];
-                    actors                    A;
+                    conservation_law         *A = coerce(Ql).push_back( new conservation_law() );
                     for(const anode *an=working.head;an;an=an->next)
                     {
                         const species  &s = **an;
                         const size_t    j = *s;
                         const unsigned  f = u[j];
                         if(!f) continue;
-                        A(s,q[j]=f);
+                        (*A)(s,q[j]=f);
                     }
-                    YACK_XMLOG(xml, "-- " << A);
                 }
             }
             if(verbose) std::cerr << "Qc=" << Qc << std::endl;
-
+            YACK_XMLOG(xml, "-- " << Ql);
 
 
 
