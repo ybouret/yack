@@ -218,7 +218,7 @@ YACK_UTEST(data_list)
 
     std::cerr << "L=";    display(L);
     std::cerr << "Lbis="; display(Lbis);
-    L << Lbis;
+    L.merge_back_copy(Lbis);
     std::cerr << "L=";    display(L);
 
     L.sort(comparison::increasing<int>);

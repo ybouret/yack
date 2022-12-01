@@ -171,8 +171,6 @@ namespace yack
             YACK_XMLSUB(xml,fn);
 
             vector<size_t>        pad(M,as_capacity);   // to form ortho matrix
-            small_repo<size_t>    plural;               // nref>1
-            sp_repo               fading;               // matching plural
             cxx_array<int>        gmix(N);
 
 
@@ -251,15 +249,21 @@ namespace yack
                         //------------------------------------------------------
                         sp_list cache;
                         {
+                            //--------------------------------------------------
                             // populate tribe of unique species
+                            //--------------------------------------------------
                             addrbook tribe;
                             for(size_t i=k;i>0;--i) esub[i]->update(tribe);
 
+                            //--------------------------------------------------
                             // populate cache of species
+                            //--------------------------------------------------
                             for(addrbook::const_iterator it=tribe.begin();it!=tribe.end();++it)
                                 cache << static_cast<const species *>( *it );
 
+                            //--------------------------------------------------
                             // sort cache by increasing species index
+                            //--------------------------------------------------
                             merge_list_of<sp_node>::sort(cache,sp_node_compare);
                         }
                         const size_t m = cache.size; assert(m>0);
@@ -272,9 +276,9 @@ namespace yack
                         //
                         //------------------------------------------------------
                         imatrix               nu(k,m);
+                        small_list<size_t>    plural;               // nref>1
+                        sp_list               fading;               // matching plural
                         {
-                            plural.free();
-                            fading.free();
                             size_t j=1;
                             for(const sp_node *sn=cache.head;sn;sn=sn->next,++j)
                             {
@@ -289,15 +293,20 @@ namespace yack
                                 assert(nref>0);
                                 if(nref>1)
                                 {
-                                    plural.push_back(j);
-                                    fading.push_back(sp);
+                                    plural << j;
+                                    fading << &sp;
                                 }
                             }
                             assert( apk::rank_of(nu) == k);
+                            assert(plural.size==fading.size);
                         }
 
+                        //------------------------------------------------------
+                        //
+                        // create matrix of mass for species, mu=transpose(nu)
+                        //
+                        //------------------------------------------------------
                         imatrix mu(nu,transposed);
-
 
                         if(verbose) {
                             *xml << "-- [";
@@ -306,20 +315,21 @@ namespace yack
                             std::cerr << " ] / "  << cache << " => " << k << "x" << m << std::endl;
                             *xml << "   |_nu=" << nu << std::endl;
                             *xml << "   |_mu=" << mu << std::endl;
-                            *xml << "   |_|fading| = " << std::setw(3) << fading->size << " : " << *fading <<  std::endl;
+                            *xml << "   |_|fading| = " << std::setw(3) << fading.size << " : " << fading <<  std::endl;
                         }
 
 
-                        const size_t p = plural->size; if(p<=0) continue; // maybe...
+                        const size_t p = plural.size; if(p<=0) continue; // maybe...
 
                         //------------------------------------------------------
                         //
                         // now find all ways to make a full zero concentration
+                        // of the plural species
                         //
                         //------------------------------------------------------
                         stoi_repo        mix;
-                        sp_node         *sn = fading->head;
-                        for(const qnode *qn = plural->head;qn;qn=qn->next,sn=sn->next)
+                        sp_node         *sn = fading.head;
+                        for(const qnode *qn = plural.head;qn;qn=qn->next,sn=sn->next)
                         {
                             //--------------------------------------------------
                             // initialize first row and padding indices
@@ -331,6 +341,9 @@ namespace yack
                             for(size_t j=i+1;j<=m;++j) pad << j;
                             assert(m-1==pad.size());
                             iota::load(sub[1],mu[i]);
+
+                            std::cerr << "need to find ortho to " << mu[i] << " pad=" << pad << std::endl;
+                            
 
                             //--------------------------------------------------
                             // exposing chosen row to rolling others

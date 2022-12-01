@@ -79,12 +79,15 @@ namespace yack
         inline type pull_back()  { const_type temp = **tail; trim(); return temp; } //!< copy back/delete/return copy
         inline type pull_front() { const_type temp = **head; skip(); return temp; } //!< copy front/delete/return copy
 
-        inline void trim(size_t n) throw() { while(n-- > 0) delete this->pop_back(); } //!< trim last n values
+        inline void trim(size_t n) throw() { while(n-- > 0) delete this->pop_back();  } //!< trim last n values
         inline void skip(size_t n) throw() { while(n-- > 0) delete this->pop_front(); } //!< skip fist n values
 
+        //! helper
+        inline klist & operator<<(param_type args) {
+            this->push_back( new NODE(args) );
+            return *this;
+        }
 
-        //! syntax helper
-        inline klist & operator<<(const klist &rhs)  { this->merge_back_copy(rhs); return *this; }
 
         //! sort list wrapper
         template <typename COMPARE_DATA>
