@@ -221,6 +221,7 @@ namespace yack
                 //
                 //
                 // inner loop: try to associate elements of this cluster
+                // by k-uplets
                 //
                 //
                 //
@@ -307,6 +308,7 @@ namespace yack
                             *xml << "   |_mu=" << mu << std::endl;
                             *xml << "   |_|fading| = " << std::setw(3) << fading->size << " : " << *fading <<  std::endl;
                         }
+
 
                         const size_t p = plural->size; if(p<=0) continue; // maybe...
 
@@ -408,7 +410,7 @@ namespace yack
 
 
                 YACK_XMLOG(xml, "-- |cluster| = " << n << " -> " << sharing->size);
-
+                exit(0);
             }
 
 
