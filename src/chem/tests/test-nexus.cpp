@@ -32,7 +32,7 @@ YACK_UTEST(nexus)
 
     nexus        cs(lib,eqs,0.0);
 
-    cs.lattice.graphviz("lattice.dot",cs.corelib);
+    //cs.lattice.graphviz("lattice.dot",cs.corelib);
 
 }
 YACK_UDONE()
