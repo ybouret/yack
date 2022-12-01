@@ -86,6 +86,7 @@ namespace yack
 
             void build_related(const xmlog &);
             void make_manifold(const xmlog &);
+            const equilibrium &promote_mixed(const readable<int> &);
             void conserved_set(const xmlog &);
             
         };

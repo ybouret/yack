@@ -125,6 +125,43 @@ namespace yack
         }
 
 
+        const equilibrium &nexus:: promote_mixed(const readable<int> &weight)
+        {
+            cxx_array<int> gcoef(M);
+            for(const enode *en=singles.head();en;en=en->next)
+            {
+                const equilibrium &eq = ***en;
+                const size_t       ei = *eq;
+                const int          ew = weight[ei];
+                if(!ew) continue;
+                for(const cnode *cn=eq.head();cn;cn=cn->next)
+                {
+                    const size_t j = *****cn;
+                    gcoef[j] += ew * Nu[ei][j];
+                }
+            }
+
+            //----------------------------------------------------------
+            // create a mixed equilibrium
+            //----------------------------------------------------------
+            equilibria  &target = coerce(lattice);
+            const string name   = singles.make_name(weight);
+            const size_t mxid   = target.size()+1;
+            equilibrium &mxeq   = target.use( new mixed_equilibrium(name,mxid,K,xmul,weight) );
+            for(size_t j=1;j<=M;++j)
+            {
+                const int f = gcoef[j];
+                if(f) mxeq( worklib[j], f);
+            }
+
+            assert(mxeq.neutral());
+
+            //----------------------------------------------------------
+            // to register in this related group
+            //----------------------------------------------------------
+            return mxeq;
+
+        }
 
 
         void nexus:: make_manifold(const xmlog &xml)
@@ -133,17 +170,12 @@ namespace yack
             static const char * const fn = "make_manifold";
             YACK_XMLSUB(xml,fn);
 
-            vector<equilibrium *> eptr(N,as_capacity); // inside this sharing
             vector<size_t>        pad(M,as_capacity);   // to form ortho matrix
-            addrbook              tribe;                // to be populated by eqs
-            sp_repo               cache;                // from tribe
             small_repo<size_t>    plural;               // nref>1
             sp_repo               fading;               // matching plural
             cxx_array<int>        gmix(N);
-            stoi_repo             extra;
-            cxx_array<int>        gcoef(M);
-            equilibria           &target = coerce(lattice);
-            
+
+
             //------------------------------------------------------------------
             //
             //
@@ -158,14 +190,14 @@ namespace yack
                 YACK_XMLSUB(xml, "sub_manifold");
                 YACK_XMLOG(xml,*sharing);
 
-                extra.release();
                 const size_t n = sharing->size;
                 if(n<=1) {
                     YACK_XMLOG(xml, "-- standalone");
                     continue;
                 }
 
-
+                stoi_repo             extra;                // unique coefficients
+                vector<equilibrium *> eptr(n,as_capacity);  // from sharing size
 
 
                 //--------------------------------------------------------------
@@ -175,7 +207,6 @@ namespace yack
                 //
                 //
                 //--------------------------------------------------------------
-                eptr.free();
                 for(const eq_node *en=sharing->head;en;en=en->next)
                 {
                     const equilibrium &eq = **en;
@@ -217,15 +248,20 @@ namespace yack
                         // extract all species, sorted by index
                         //
                         //------------------------------------------------------
-                        tribe.free();
-                        cache.free();
-                        for(size_t i=k;i>0;--i) esub[i]->update(tribe);
-                        for(addrbook::const_iterator it=tribe.begin();it!=tribe.end();++it)
+                        sp_list cache;
                         {
-                            cache.push_back( *static_cast<const species *>( *it ) );
+                            // populate tribe of unique species
+                            addrbook tribe;
+                            for(size_t i=k;i>0;--i) esub[i]->update(tribe);
+
+                            // populate cache of species
+                            for(addrbook::const_iterator it=tribe.begin();it!=tribe.end();++it)
+                                cache << static_cast<const species *>( *it );
+
+                            // sort cache by increasing species index
+                            merge_list_of<sp_node>::sort(cache,sp_node_compare);
                         }
-                        merge_list_of<sp_node>::sort(cache.list,sp_node_compare);
-                        const size_t m = cache->size; assert(m>0);
+                        const size_t m = cache.size; assert(m>0);
                         
 
                         //------------------------------------------------------
@@ -239,7 +275,7 @@ namespace yack
                             plural.free();
                             fading.free();
                             size_t j=1;
-                            for(const sp_node *sn=cache->head;sn;sn=sn->next,++j)
+                            for(const sp_node *sn=cache.head;sn;sn=sn->next,++j)
                             {
                                 size_t         nref = 0;
                                 const species &sp   = **sn;
@@ -266,7 +302,7 @@ namespace yack
                             *xml << "-- [";
                             for(size_t i=1;i<=k;++i)
                                 std::cerr << ' '  << esub[i]->name;
-                            std::cerr << " ] / "  << cache.list << " => " << k << "x" << m << std::endl;
+                            std::cerr << " ] / "  << cache << " => " << k << "x" << m << std::endl;
                             *xml << "   |_nu=" << nu << std::endl;
                             *xml << "   |_mu=" << mu << std::endl;
                             *xml << "   |_|fading| = " << std::setw(3) << fading->size << " : " << *fading <<  std::endl;
@@ -284,7 +320,7 @@ namespace yack
                         for(const qnode *qn = plural->head;qn;qn=qn->next,sn=sn->next)
                         {
                             //--------------------------------------------------
-                            // initialize first row and annex indices
+                            // initialize first row and padding indices
                             //--------------------------------------------------
                             sub.ld(0);
                             pad.free();
@@ -368,45 +404,8 @@ namespace yack
                 //
                 //--------------------------------------------------------------
                 for(const stoi_node *node=extra.head;node;node=node->next)
-                {
-                    //----------------------------------------------------------
-                    // create global coefficients from current weight
-                    //----------------------------------------------------------
-                    const readable<int> &weight = *node;
-                    gcoef.ld(0);
-                    for(const enode *en=singles.head();en;en=en->next)
-                    {
-                        const equilibrium &eq = ***en;
-                        const size_t       ei = *eq;
-                        const int          ew = weight[ei];
-                        if(!ew) continue;
-                        for(const cnode *cn=eq.head();cn;cn=cn->next)
-                        {
-                            const size_t j = *****cn;
-                            gcoef[j] += ew * Nu[ei][j];
-                        }
-                    }
+                    *sharing << &promote_mixed(*node);
 
-                    //----------------------------------------------------------
-                    // create a mixed equilibrium
-                    //----------------------------------------------------------
-                    const string name = singles.make_name(weight);
-                    const size_t mxid = target.size()+1;
-                    equilibrium &mxeq = target.use( new mixed_equilibrium(name,mxid,K,xmul,weight) );
-                    for(size_t j=1;j<=M;++j)
-                    {
-                        const int f = gcoef[j];
-                        if(f) mxeq( worklib[j], f);
-                    }
-
-                    //std::cerr << " -> " << mxeq << std::endl;
-                    assert(mxeq.neutral());
-                   
-                    //----------------------------------------------------------
-                    // register in this related group
-                    //----------------------------------------------------------
-                    *sharing << &mxeq;
-                }
 
                 YACK_XMLOG(xml, "-- |cluster| = " << n << " -> " << sharing->size);
 
