@@ -51,8 +51,8 @@ namespace yack
             const size_t        N;        //!< singles.size
             const size_t        L;        //!< lattice.size
             const imatrix       Nu;       //!< [NxM] topology
-            raddops             xadd;
-            rmulops             xmul;
+            raddops             xadd;     //!< perform additions
+            rmulops             xmul;     //!< perform multiplications
 
         private:
             const library     worklib; //!< hard copy of corelib, to build combinations

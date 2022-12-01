@@ -10,22 +10,47 @@ namespace yack
 {
     namespace chemical
     {
+        //______________________________________________________________________
+        //
+        //
+        //! conservation law = actors
+        //
+        //______________________________________________________________________
         class conservation_law : public object, public actors
         {
         public:
-            explicit conservation_law() throw();
-            virtual ~conservation_law() throw();
+            //__________________________________________________________________
+            //
+            // C++
+            //__________________________________________________________________
+            explicit conservation_law() throw(); //!< setup
+            virtual ~conservation_law() throw(); //!< cleanup
 
+            //__________________________________________________________________
+            //
+            // methods
+            //__________________________________________________________________
+
+            //! specific display
             friend std::ostream & operator<<(std::ostream &os, const conservation_law &self);
 
-
-            conservation_law *next;
-            conservation_law *prev;
+            //__________________________________________________________________
+            //
+            // members
+            //__________________________________________________________________
+            conservation_law *next; //!< for list
+            conservation_law *prev; //!< for list
 
         private:
             YACK_DISABLE_COPY_AND_ASSIGN(conservation_law);
         };
 
+        //______________________________________________________________________
+        //
+        //
+        //! hold list of c-laws
+        //
+        //__________________________________________________________________
         typedef cxx_list_of<conservation_law> conservation_laws;
 
     }

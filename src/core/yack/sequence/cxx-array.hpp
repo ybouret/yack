@@ -121,7 +121,8 @@ namespace yack
         memIO(this->basis,this->count,args)
         {
         }
-        
+
+        //! setup with assignation semantics
         template <typename U>
         inline explicit cxx_array(const readable<U> &arr) :
         cxx_array_<T,ALLOCATOR>(arr.size()),
