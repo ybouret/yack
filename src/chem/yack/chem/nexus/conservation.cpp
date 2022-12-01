@@ -286,6 +286,11 @@ namespace yack
 
             for(const conservation_law *law = Ql.head; law; law=law->next)
             {
+                // look for a team with a common species
+                for(claw_team *node=tm.head;node;node=node->next)
+                {
+                    
+                }
 
             }
 
