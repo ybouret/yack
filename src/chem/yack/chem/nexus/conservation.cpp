@@ -65,15 +65,15 @@ namespace yack
         namespace
         {
             //! unsigned weights
-            typedef cxx_array<unsigned> iweight;
+            typedef cxx_array<unsigned> uweight;
 
             //! weights in a node
-            class wnode : public object, public iweight
+            class wnode : public object, public uweight
             {
             public:
                 // C++
                 inline explicit wnode(const readable<apq> &q) :
-                object(), iweight(q.size()), next(0)
+                object(), uweight(q.size()), next(0)
                 {
                     writable<unsigned> &self = *this;
                     for(size_t i=self.size();i>0;--i)
@@ -106,7 +106,7 @@ namespace yack
                 inline void ensure(const readable<apq> &q)
                 {
                     assert(is_candidate(q));
-                    const size_t    len = q.size() * sizeof( iweight::type );
+                    const size_t    len = q.size() * sizeof( uweight::type );
                     auto_ptr<wnode> lhs = new wnode(q);
                     const void     *l   = (*lhs)(); assert(l == & (*lhs)[1] );
                     for(const wnode *rhs=head;rhs;rhs=rhs->next)
@@ -179,11 +179,8 @@ namespace yack
                 }
                 const size_t  rank = apk::rank_of(Q);
 
-                if(verbose)
-                {
-                    std::cerr << "Q=" << Q << std::endl;
-                    *xml << "-- rank(Q) = " << rank << std::endl;
-                }
+                if(verbose) std::cerr << "Q=" << Q << " # rank=" << rank << std::endl;
+
 
                 //--------------------------------------------------------------
                 //
@@ -212,7 +209,7 @@ namespace yack
                     }
                 }
 
-                YACK_XMLOG(xml,"-- irow=" << irow);
+                //YACK_XMLOG(xml,"-- irow=" << irow);
 
                 const size_t m = irow.size(); assert(m>=rank);
                 matrix<apq>  U(rank,M);
@@ -248,7 +245,38 @@ namespace yack
                 }
             }
 
-            std::cerr << W << std::endl;
+            if(W.size<=0) {
+                YACK_XMLOG(xml, "-- no conservation found");
+                return;
+            }
+
+            //--------------------------------------------------------------
+            //
+            // creating conservation
+            //
+            //--------------------------------------------------------------
+            coerce(Nc) = W.size;
+            coerce(Qc).make(Nc,M);
+            {
+                size_t ic = 1;
+                for(const wnode *w = W.head; w; w=w->next, ++ic)
+                {
+                    const readable<unsigned> &u = *w;
+                    writable<unsigned>       &q = coerce(Qc)[ic];
+                    actors                    A;
+                    for(const anode *an=working.head;an;an=an->next)
+                    {
+                        const species  &s = **an;
+                        const size_t    j = *s;
+                        const unsigned  f = u[j];
+                        if(!f) continue;
+                        A(s,q[j]=f);
+                    }
+                    YACK_XMLOG(xml, "-- " << A);
+                }
+            }
+            if(verbose) std::cerr << "Qc=" << Qc << std::endl;
+
 
 
 

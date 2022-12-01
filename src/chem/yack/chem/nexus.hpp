@@ -71,7 +71,11 @@ namespace yack
 
             // lattice data
             tableau           &Kl;      //!< [L] constants
-            
+
+            // conservation data
+            const size_t       Nc;      //!< number of conservation laws
+            const umatrix      Qc;      //!< [Nc*M] matrix of positive coefficients
+
         private:
             YACK_DISABLE_COPY_AND_ASSIGN(nexus);
             const lockable::scope lockLib;

@@ -40,14 +40,19 @@ namespace yack
         // species
         crit(mtab.next(),transmogrify),
         
-        // eqs
+        // singles
         K( ntab.next() ),
         regular(),
         roaming(),
+        related(),
         
         // lattice
         Kl( ltab.next() ),
-        
+
+        // conservation
+        Nc(0),
+        Qc(),
+
         lockLib(coerce(corelib)),
         lockEqs(coerce(singles))
         {
