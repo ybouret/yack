@@ -332,12 +332,7 @@ namespace yack
                             //--------------------------------------------------
                             if(++rotations<m)
                             {
-                                const size_t a1 = pad[1];
-                                for(size_t ip=1,i=2;i<m;++i,++ip)
-                                {
-                                    cswap(pad[ip],pad[i]);
-                                }
-                                pad.back() = a1;
+                                rolling::down(pad);
                                 goto ROTATION;
                             }
                         }

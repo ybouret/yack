@@ -116,7 +116,7 @@ namespace yack
                 
                 // make manifold
                 make_manifold(xml);
-                lattice.graphviz("lattice.dot", corelib);
+                //lattice.graphviz("lattice.dot", corelib);
                 
                 coerce(L) = lattice.size();
                 if(L)
