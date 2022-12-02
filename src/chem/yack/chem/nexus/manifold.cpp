@@ -1,5 +1,6 @@
 #include "yack/chem/nexus.hpp"
 #include "yack/counting/comb.hpp"
+#include "yack/counting/perm.hpp"
 #include "yack/data/list/sort.hpp"
 #include "yack/apex/kernel.hpp"
 #include "yack/math/iota.hpp"
@@ -9,6 +10,8 @@
 #include "yack/data/small/repo.hpp"
 #include "yack/sequence/roll.hpp"
 #include "yack/math/algebra/ortho-family.hpp"
+#include "yack/sequence/bunch.hpp"
+
 #include <iomanip>
 
 namespace yack
@@ -18,73 +21,7 @@ namespace yack
     namespace chemical
     {
 
-        
-        static inline bool non_degenerated(const readable<int> &arr) throw()
-        {
-            for(size_t i=arr.size();i>0;--i)
-            {
-                if( 0 == arr[i] ) return false;
-            }
-            return true;
-        }
 
-        namespace
-        {
-            //! array of coefficients
-            typedef cxx_array<int> stoi_coef;
-            
-            //! used to store coefficients
-            class stoi_node : public object, public stoi_coef
-            {
-            public:
-                inline stoi_node(const readable<int> &arr) :
-                object(), stoi_coef( arr.size() ), next(0) {
-                    iota::load(*this,arr);
-                }
-
-                inline ~stoi_node() throw() {}
-
-                stoi_node *next;
-            private:
-                YACK_DISABLE_COPY_AND_ASSIGN(stoi_node);
-            };
-
-            typedef cxx_pool_of<stoi_node> stoi_assembly;
-
-            //! used to store assembly of coefficients
-            class stoi_repo : public stoi_assembly
-            {
-            public:
-                explicit stoi_repo() throw() : stoi_assembly() {}
-                virtual ~stoi_repo() throw() {}
-                
-                void ensure(const readable<int> &lhs)
-                {
-                    for(const stoi_node *node=head;node;node=node->next)
-                    {
-                        const readable<int> &rhs = *node;
-                        assert(rhs.size()==lhs.size());
-                        bool same = true;
-                        for(size_t i=lhs.size();i>0;--i)
-                        {
-                            if(lhs[i]!=rhs[i]) {
-                                same = false;
-                                break;
-                            }
-                        }
-                        if(same) return;
-                    }
-                    
-                    // success
-                    store( new stoi_node(lhs) );
-                    
-                }
-                
-            private:
-                YACK_DISABLE_COPY_AND_ASSIGN(stoi_repo);
-            };
-            
-        }
         
         namespace
         {
@@ -230,11 +167,89 @@ namespace yack
         }
 #endif
 
+        static inline size_t count_valid(const readable<int> &coef) throw()
+        {
+            size_t count = 0;
+            for(size_t i=coef.size();i>0;--i)
+            {
+                if( 0 != coef[i] ) ++count;
+            }
+            return count;
+        }
+
+
+        static inline bool whole_valid(const readable<int> &arr) throw()
+        {
+            for(size_t i=arr.size();i>0;--i)
+            {
+                if( 0 == arr[i] ) return false;
+            }
+            return true;
+        }
+
+
+        static inline void q2i(writable<int>       &cof,
+                               const readable<apq> &q)
+        {
+            assert(cof.size()==q.size());
+            for(size_t i=cof.size();i>0;--i)
+            {
+                assert(1==q[i].den);
+                cof[i] = q[i].num.cast_to<int>();
+            }
+        }
 
         void process(const imatrix &mu)
         {
             const size_t m = mu.rows;
             const size_t n = mu.cols;
+
+            bunch<int>   coeff(n);
+
+            std::cerr << "processing mu=" << mu << std::endl;
+            vector<size_t> pad(m-1);
+            matrix<apq>    sub(n,n);
+            cxx_array<int> cof(n);
+
+            for(size_t j=1;j<=m;++j)
+            {
+                //if(count_valid(mu[j]) < 1 ) continue;
+
+                pad.free();
+                for(size_t jj=1;jj<j;++jj)    pad << jj;
+                for(size_t jj=j+1;jj<=m;++jj) pad << jj;
+                assert(m-1==pad.size());
+                std::cerr << "  -> " << mu[j] << "  -> amongst jrow=" << pad << std::endl;
+
+                //combination go(m-1,n-1);
+                permutation go(m-1);
+                size_t      ok=0;
+                do
+                {
+                    std::cerr << "\tgo=" << go << std::endl;
+                    iota::load(sub[1],mu[j]);
+                    for(size_t j=2,i=1;j<=n;++j,++i)
+                    {
+                        iota::load(sub[j],mu[ pad[ go[i] ] ]);
+                    }
+                    std::cerr << "\tsub=" << sub;
+                    if(!apk::gs_ortho(sub)) {
+                        std:: cerr << " singular" << std::endl;
+                        continue;
+                    }
+                    std::cerr << "\t  -> " << sub << std::endl;
+                    for(size_t j=2;j<=n;++j)
+                    {
+                        ++ok;
+                        q2i(cof,sub[j]);
+                        std::cerr << "    -> try " << ok << " : " << cof << std::endl;
+                        if(whole_valid(cof))
+                            coeff.ensure(cof);
+                    }
+                }
+                while(go.next());
+            }
+            std::cerr << *coeff << std::endl;
 
 
         }
@@ -318,9 +333,9 @@ namespace yack
                     std::cerr << "\tnu=" << nu << std::endl;
                     std::cerr << "\tmu=" << mu << std::endl;
 
-                    if( k != apk::rank_of(nu) ) throw imported::exception(fn,"invalid sub-system rank!");
+                    if( k != apk::rank_of(mu) ) throw imported::exception(fn,"invalid sub-system topology!");
 
-
+                    process(mu);
 
 
 
