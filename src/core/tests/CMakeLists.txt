@@ -194,6 +194,7 @@ add_test(data:triple       test-core data_triple)
 add_test(data:quad         test-core data_quad)
 add_test(data:pqueue       test-core data_pqueue)
 add_test(data:roll         test-core data_roll)
+add_test(data:bunch        test-core data_bunch)
 
 
 add_test(sync:lockable  test-core sync_lockable)
