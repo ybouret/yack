@@ -166,323 +166,181 @@ namespace yack
         }
 
 
+        size_t make_clan(sp_list                       &clan,
+                         const readable<equilibrium *> &esub)
+        {
+            const size_t k = esub.size();
+
+            {
+                //--------------------------------------------------------------
+                // populate tribe of species
+                //--------------------------------------------------------------
+                addrbook tribe;
+                for(size_t i=k;i>0;--i) esub[i]->update(tribe);
+
+                //--------------------------------------------------------------
+                // populate cache of species
+                //--------------------------------------------------------------
+                for(addrbook::const_iterator it=tribe.begin();it!=tribe.end();++it)
+                    clan << static_cast<const species *>( *it );
+            }
+
+            //------------------------------------------------------------------
+            // sort cache by increasing species index
+            //------------------------------------------------------------------
+            merge_list_of<sp_node>::sort(clan,sp_node_compare);
+            const size_t m = clan.size;
+            if(m<k) throw imported::exception("nexus::make_clan","not enough species!!");
+            return m;
+        }
+
+#if 0
+        size_t select_rows(imatrix       &w,
+                           const imatrix &mu)
+        {
+            const size_t   m = mu.rows;
+            vector<size_t> jrow(m,as_capacity);
+
+            // find non proportional rows
+            for(size_t j=1;j<=m;++j)
+            {
+                const readable<int> &curr = mu[j];
+                bool                 isOk = true;
+                for(size_t k=jrow.size();k>0;--k) {
+                    if( apk::are_prop(mu[ jrow[k] ],curr,NULL) )
+                    {
+                        isOk = false;
+                        break;
+                    }
+                }
+                if(isOk)
+                    jrow << j;
+            }
+
+            // build sub-matrix
+            const size_t dims = jrow.size();
+            if(dims>0)
+            {
+                w.make(dims,mu.cols);
+                for(size_t k=dims;k>0;--k)
+                    iota::load(w[k],mu[ jrow[k] ]);
+            }
+
+            return dims;
+        }
+#endif
+
+
+        void process(const imatrix &mu)
+        {
+            const size_t m = mu.rows;
+            const size_t n = mu.cols;
+
+
+        }
+
+        void nexus:: make_manifold_(cluster &source, const xmlog &xml)
+        {
+            static const char * const fn = "sub_manifold";
+            YACK_XMLSUB(xml, "sub_manifold");
+            YACK_XMLOG(xml,source);
+
+            //------------------------------------------------------------------
+            //
+            // get equilibria within this cluster
+            //
+            //------------------------------------------------------------------
+            const size_t n = source.size;
+            if(n<=1) {
+                YACK_XMLOG(xml, "<standalone>");
+                return;
+            }
+
+            cxx_array<equilibrium *> edb(n);
+            {
+                size_t i=1;
+                for(const eq_node *en=source.head;en;en=en->next,++i)
+                    edb[i] = &coerce(**en);
+            }
+
+            //------------------------------------------------------------------
+            //
+            //
+            // loop over all k-uplets from 2 to n
+            //
+            //
+            //------------------------------------------------------------------
+            for(size_t k_=2;k_<=n;++k_)
+            {
+                const size_t             k = k_;
+                combination              comb(n,k);  // possible combination
+                cxx_array<equilibrium *> esub(k);    // matching equilibria
+                do
+                {
+                    //----------------------------------------------------------
+                    //
+                    // create local equilibria
+                    //
+                    //----------------------------------------------------------
+                    comb.designate(esub,edb);
+
+                    //----------------------------------------------------------
+                    //
+                    // create local species
+                    //
+                    //----------------------------------------------------------
+                    sp_list      clan;
+                    const size_t m = make_clan(clan,esub);
+
+                    //----------------------------------------------------------
+                    //
+                    // extract local topology
+                    //
+                    //----------------------------------------------------------
+                    imatrix nu(k,m);
+                    for(size_t i=k;i>0;--i)
+                    {
+                        const size_t ei = **esub[i];
+                        size_t       j  = 1;
+                        for(const sp_node *sp=clan.head;sp;sp=sp->next,++j)
+                        {
+                            const size_t sj = ***sp;
+                            nu[i][j] = Nu[ei][sj];
+                        }
+                    }
+                    imatrix mu(nu,transposed);
+
+
+                    *xml << "-- [";
+                    for(size_t i=1;i<=k;++i)
+                        std::cerr << ' '  << esub[i]->name;
+                    std::cerr << " ] / " << k << std::endl;
+                    std::cerr << "\tnu=" << nu << std::endl;
+                    std::cerr << "\tmu=" << mu << std::endl;
+
+                    if( k != apk::rank_of(nu) ) throw imported::exception(fn,"invalid sub-system rank!");
+
+
+
+
+
+
+                } while(comb.next());
+            }
+
+
+
+
+        }
+
+
         void nexus:: make_manifold(const xmlog &xml)
         {
             static const char * const fn = "make_manifold";
             YACK_XMLSUB(xml,fn);
 
-            vector<size_t>        pad(M,as_capacity);   // to form ortho matrix
-            cxx_array<int>        gmix(N);
-
-
-            //------------------------------------------------------------------
-            //
-            //
-            //
-            // outer loop: use a cluster of related equilibria
-            //
-            //
-            //
-            //------------------------------------------------------------------
             for(cluster *sharing=related.head;sharing;sharing=sharing->next)
-            {
-                YACK_XMLSUB(xml, "sub_manifold");
-                YACK_XMLOG(xml,*sharing);
-
-                const size_t n = sharing->size;
-                if(n<=1) {
-                    YACK_XMLOG(xml, "-- standalone");
-                    continue;
-                }
-
-                stoi_repo             extra;                // unique coefficients
-                vector<equilibrium *> eptr(n,as_capacity);  // from sharing size
-
-
-                //--------------------------------------------------------------
-                //
-                //
-                // collecting sharing equilibria within eptr
-                //
-                //
-                //--------------------------------------------------------------
-                for(const eq_node *en=sharing->head;en;en=en->next)
-                {
-                    const equilibrium &eq = **en;
-                    eptr.push_back( & coerce(eq) );
-                }
-                assert(eptr.size()==n);
-
-
-
-                //--------------------------------------------------------------
-                //
-                //
-                //
-                // inner loop: try to associate elements of this cluster
-                // by k-uplets
-                //
-                //
-                //
-                //--------------------------------------------------------------
-                for(size_t  k=n;k<=n;++k)
-                {
-                    combination           comb(n,k);  // combination
-                    vector<equilibrium *> esub(k);    // sub-equilibria
-                    cxx_array<int>        icf(k);     // integer coefficient
-
-                    do
-                    {
-
-                        //------------------------------------------------------
-                        //
-                        // create sub-system of k equilibria
-                        //
-                        //------------------------------------------------------
-                        comb.extract(esub,eptr);
-
-                        //------------------------------------------------------
-                        //
-                        // extract all species, sorted by index
-                        //
-                        //------------------------------------------------------
-                        sp_list cache;
-                        {
-                            //--------------------------------------------------
-                            // populate tribe of unique species
-                            //--------------------------------------------------
-                            addrbook tribe;
-                            for(size_t i=k;i>0;--i) esub[i]->update(tribe);
-
-                            //--------------------------------------------------
-                            // populate cache of species
-                            //--------------------------------------------------
-                            for(addrbook::const_iterator it=tribe.begin();it!=tribe.end();++it)
-                                cache << static_cast<const species *>( *it );
-
-                            //--------------------------------------------------
-                            // sort cache by increasing species index
-                            //--------------------------------------------------
-                            merge_list_of<sp_node>::sort(cache,sp_node_compare);
-                        }
-                        const size_t m = cache.size; assert(m>0);
-                        
-
-                        //------------------------------------------------------
-                        //
-                        // extract sub-matrix with rank=k and m species
-                        // and register species index with multiple refs.
-                        //
-                        //------------------------------------------------------
-                        imatrix               nu(k,m);
-                        small_list<size_t>    plural;               // nref>1
-                        sp_list               fading;               // matching plural
-                        {
-                            size_t j=1;
-                            for(const sp_node *sn=cache.head;sn;sn=sn->next,++j)
-                            {
-                                size_t         nref = 0;
-                                const species &sp   = **sn;
-                                const size_t   sj   =  *sp;
-                                for(size_t i=k;i>0;--i)
-                                {
-                                    const size_t         ei   = **esub[i];
-                                    if( 0 != (nu[i][j] = Nu[ei][sj]) ) ++nref;
-                                }
-                                assert(nref>0);
-                                if(nref>1)
-                                {
-                                    plural << j;
-                                    fading << &sp;
-                                }
-                            }
-                            assert( apk::rank_of(nu) == k);
-                            assert(plural.size==fading.size);
-                        }
-
-                        //------------------------------------------------------
-                        //
-                        // create matrix of mass for species, mu=transpose(nu)
-                        //
-                        //------------------------------------------------------
-                        imatrix     mu(nu,transposed);
-                        matrix<apq> Q(m,m);
-                        if(!ortho_family::build(Q,nu))
-                        {
-                            std::cerr << "Bad Q!" << std::endl;
-                            exit(0);
-                        }
-                            
-                        std::cerr << "nu=" << nu << std::endl;
-                        std::cerr << "Q=" << Q << std::endl;
-                        
-                        exit(0);
-                        
-                        
-                        
-                        if(verbose) {
-                            *xml << "-- [";
-                            for(size_t i=1;i<=k;++i)
-                                std::cerr << ' '  << esub[i]->name;
-                            std::cerr << " ] / "  << cache << " => " << k << "x" << m << std::endl;
-                            *xml << "   |_nu=" << nu << std::endl;
-                            *xml << "   |_mu=" << mu << std::endl;
-                            *xml << "   |_|fading| = " << std::setw(3) << fading.size << " : " << fading <<  std::endl;
-                        }
-
-                        const size_t p = plural.size;
-                        if(p<=0) continue; // maybe...
-
-                        cxx_series<size_t> uidx(m);
-                        for(size_t i=1;i<=m;++i)
-                        {
-                            const readable<int> &curr = mu[i];
-                            //std::cerr << "using " << curr << "?" << std::endl;
-                            bool ok = true;
-                            for(size_t j=uidx.size();j>0;--j)
-                            {
-                                const readable<int> &prev = mu[ uidx[j] ];
-                                if( apk::are_prop(curr,prev, NULL))
-                                {
-                                    ok = false;
-                                    //std::cerr << "\tpropto " << prev << std::endl;
-                                    break;
-                                }
-                            }
-                            if(ok) uidx << i;
-                        }
-                        std::cerr << "uidx=" << uidx << std::endl;
-                        const size_t dims = uidx.size();
-                        std::cerr << "dims=" << dims << " / rank = " << k << std::endl;
-                        if(dims<2)
-                        {
-                            std::cerr << "bad dims" << std::endl;
-                            exit(0);
-                        }
-                        const size_t rows = min_of(dims,k);
-                        std::cerr << "rows=" << rows << std::endl;
-                        vector<size_t> ipad(dims-1,as_capacity);
-                        for(size_t i=1;i<=dims;++i)
-                        {
-                            const size_t ir = uidx[i];
-                            
-                        }
-                        
-                        
-                        
-                        
-#if 0
-                        //------------------------------------------------------
-                        //
-                        // now find all ways to make a full zero concentration
-                        // of the plural species
-                        //
-                        //------------------------------------------------------
-                        stoi_repo        mix;
-                        sp_node         *sn = fading.head;
-                        for(const qnode *qn = plural.head;qn;qn=qn->next,sn=sn->next)
-                        {
-                            //--------------------------------------------------
-                            // initialize first row and padding indices
-                            //--------------------------------------------------
-                            sub.ld(0);
-                            pad.free();
-                            const size_t i = **qn;
-                            for(size_t j=1;j<i;++j)    pad << j;
-                            for(size_t j=i+1;j<=m;++j) pad << j;
-                            assert(m-1==pad.size());
-                            iota::load(sub[1],mu[i]);
-
-                            std::cerr << "need to find ortho to " << mu[i] << " pad=" << pad << std::endl;
-                            
-
-                            //--------------------------------------------------
-                            // exposing chosen row to rolling others
-                            //--------------------------------------------------
-                            size_t rotations=1;
-                        ROTATION:
-                            //--------------------------------------------------
-                            // construct sub with current annex indices
-                            //--------------------------------------------------
-                            for(size_t i=2,ia=1;i<=k;++i,++ia)
-                            {
-                                iota::load(sub[i],mu[pad[ia]]);
-                            }
-                            mgs.assign(sub);
-                            if( apk::gs_ortho(mgs) )
-                            {
-                                // extracting non degenerate solutions
-                                for(size_t i=2;i<=k;++i)
-                                {
-                                    const readable<apq> &q = mgs[i];
-                                    for(size_t j=k;j>0;--j)
-                                    {
-                                        icf[j] = q[j].num.cast_to<int>();
-                                    }
-                                    assert( iota::dot<int>::of(sub[1],icf) == 0);
-                                    if(non_degenerated(icf))
-                                    {
-                                        mix.ensure(icf);
-                                    }
-                                }
-
-                            }
-
-
-                            //--------------------------------------------------
-                            // rotate indices
-                            //--------------------------------------------------
-                            if(++rotations<m)
-                            {
-                                rolling::down(pad);
-                                goto ROTATION;
-                            }
-                        }
-
-                        //------------------------------------------------------
-                        //
-                        // collecting all mixes
-                        //
-                        //------------------------------------------------------
-                        for(const stoi_node *node=mix.head;node;node=node->next)
-                        {
-                            const readable<int> &cf = *node;
-                            gmix.ld(0);
-                            for(size_t i=1;i<=k;++i)
-                            {
-                                const int          f  = cf[i];
-                                const equilibrium &eq = *esub[i];
-                                gmix[*eq] = f;
-                            }
-                            extra.ensure(gmix);
-                        }
-#endif
-
-                    }
-                    while(comb.next());
-                }
-
-
-                //--------------------------------------------------------------
-                //
-                //
-                // creating more equilibria within this cluster
-                //
-                //
-                //--------------------------------------------------------------
-                for(const stoi_node *node=extra.head;node;node=node->next)
-                    *sharing << &promote_mixed(*node);
-
-
-                YACK_XMLOG(xml, "-- |cluster| = " << n << " -> " << sharing->size);
-                exit(0);
-            }
-
-
-            if(verbose)
-            {
-                std::cerr << lattice << std::endl;
-            }
+                make_manifold_(*sharing,xml);
 
         }
 

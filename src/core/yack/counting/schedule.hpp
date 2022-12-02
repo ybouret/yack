@@ -47,15 +47,25 @@ namespace yack
             return arr[ (*this)[i] ];
         }
 
-        //! extract a subset
+        //! extract a subset into a sequence by constrution
         template <typename T> inline
-        void extract(sequence<T> &sub, const readable<T> &arr) const
+        void construct(sequence<T> &sub, const readable<T> &arr) const
         {
             const readable<size_t> &I = *this;
             const size_t            n = I.size();
             sub.free();
             for(size_t i=1;i<=n;++i)
                 sub.push_back(arr[ I[i] ]);
+        }
+
+        //! extract a subset into a sequence by copy
+        template <typename TARGET, typename SOURCE> inline
+        void designate(TARGET &target, SOURCE &source)
+        {
+            const readable<size_t> &self = *this;
+            for(size_t i=self.size();i>0;--i) {
+                target[i] = source[ self[i] ];
+            }
         }
 
         //______________________________________________________________________

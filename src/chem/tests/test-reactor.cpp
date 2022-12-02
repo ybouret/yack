@@ -74,7 +74,7 @@ YACK_UTEST(reactor)
 
             do
             {
-                comb.extract(sub,psp);
+                comb.construct(sub,psp);
                 std::cerr << "-------- using";
                 for(size_t i=1;i<=nz;++i)
                 {
