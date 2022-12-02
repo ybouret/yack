@@ -131,8 +131,7 @@ namespace yack
             return m;
         }
 
-#if 0
-        size_t select_rows(imatrix       &w,
+        void select_rows(imatrix       &w,
                            const imatrix &mu)
         {
             const size_t   m = mu.rows;
@@ -163,9 +162,7 @@ namespace yack
                     iota::load(w[k],mu[ jrow[k] ]);
             }
 
-            return dims;
         }
-#endif
 
         static inline size_t count_valid(const readable<int> &coef) throw()
         {
@@ -199,21 +196,21 @@ namespace yack
             }
         }
 
-        void process(const imatrix &mu)
+        void process(bunch<int>   &coeff, const imatrix &mu)
         {
             const size_t m = mu.rows;
             const size_t n = mu.cols;
+            assert(coeff.width==n);
 
-            bunch<int>   coeff(n);
 
-            std::cerr << "processing mu=" << mu << std::endl;
+            std::cerr << "processing work=" << mu << std::endl;
             vector<size_t> pad(m-1);
             matrix<apq>    sub(n,n);
             cxx_array<int> cof(n);
 
             for(size_t j=1;j<=m;++j)
             {
-                //if(count_valid(mu[j]) < 1 ) continue;
+                if(count_valid(mu[j]) < 2 ) continue;
 
                 pad.free();
                 for(size_t jj=1;jj<j;++jj)    pad << jj;
@@ -226,28 +223,37 @@ namespace yack
                 size_t      ok=0;
                 do
                 {
-                    std::cerr << "\tgo=" << go << std::endl;
                     iota::load(sub[1],mu[j]);
                     for(size_t j=2,i=1;j<=n;++j,++i)
                     {
                         iota::load(sub[j],mu[ pad[ go[i] ] ]);
                     }
-                    std::cerr << "\tsub=" << sub;
+                    std::cerr << "\tgo=" << go << " sub=" << sub;
+
                     if(!apk::gs_ortho(sub)) {
                         std:: cerr << " singular" << std::endl;
                         continue;
                     }
+
                     std::cerr << "\t  -> " << sub << std::endl;
                     for(size_t j=2;j<=n;++j)
                     {
                         ++ok;
                         q2i(cof,sub[j]);
-                        std::cerr << "    -> try " << ok << " : " << cof << std::endl;
+                        std::cerr << "    -> try " << ok << " : " << cof;
                         if(whole_valid(cof))
+                        {
+                            std::cerr << " [*]" << std::endl;
                             coeff.ensure(cof);
+                        }
+                        else
+                        {
+                            std::cerr << " [-]" << std::endl;
+                        }
                     }
                 }
                 while(go.next());
+                std::cerr << std::endl;
             }
             std::cerr << *coeff << std::endl;
 
@@ -323,7 +329,7 @@ namespace yack
                             nu[i][j] = Nu[ei][sj];
                         }
                     }
-                    imatrix mu(nu,transposed);
+                    const imatrix mu(nu,transposed);
 
 
                     *xml << "-- [";
@@ -335,7 +341,17 @@ namespace yack
 
                     if( k != apk::rank_of(mu) ) throw imported::exception(fn,"invalid sub-system topology!");
 
-                    process(mu);
+                    //----------------------------------------------------------
+                    //
+                    // compress rows
+                    //
+                    //----------------------------------------------------------
+                    imatrix     w;
+                    select_rows(w,mu);
+                    std::cerr << "\tw =" << w << std::endl;
+
+                    bunch<int> coeff(k);
+                    process(coeff,w);
 
 
 
