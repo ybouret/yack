@@ -196,6 +196,23 @@ namespace yack
             }
         }
 
+        static inline void fill_topo(imatrix                      &nu,
+                                     const imatrix                &Nu,
+                                     const readable<equilibrium*> &esub,
+                                     const sp_list                &clan) throw()
+        {
+            for(size_t i=esub.size();i>0;--i)
+            {
+                const size_t ei = **esub[i];
+                size_t       j  = 1;
+                for(const sp_node *sp=clan.head;sp;sp=sp->next,++j)
+                {
+                    const size_t sj = ***sp;
+                    nu[i][j] = Nu[ei][sj];
+                }
+            }
+        }
+
         void process(bunch<int>   &coeff, const imatrix &mu)
         {
             const size_t m = mu.rows;
@@ -256,8 +273,6 @@ namespace yack
                 std::cerr << std::endl;
             }
             std::cerr << *coeff << std::endl;
-
-
         }
 
         void nexus:: make_manifold_(cluster &source, const xmlog &xml)
@@ -295,19 +310,19 @@ namespace yack
             {
                 const size_t             k = k_;
                 combination              comb(n,k);  // possible combination
-                cxx_array<equilibrium *> esub(k);    // matching equilibria
+                cxx_array<equilibrium *> esub(k);    // of selected equilibria
                 do
                 {
                     //----------------------------------------------------------
                     //
-                    // create local equilibria
+                    // create local equilibria subset
                     //
                     //----------------------------------------------------------
                     comb.designate(esub,edb);
 
                     //----------------------------------------------------------
                     //
-                    // create local species
+                    // create local species from equilibria
                     //
                     //----------------------------------------------------------
                     sp_list      clan;
@@ -318,17 +333,7 @@ namespace yack
                     // extract local topology
                     //
                     //----------------------------------------------------------
-                    imatrix nu(k,m);
-                    for(size_t i=k;i>0;--i)
-                    {
-                        const size_t ei = **esub[i];
-                        size_t       j  = 1;
-                        for(const sp_node *sp=clan.head;sp;sp=sp->next,++j)
-                        {
-                            const size_t sj = ***sp;
-                            nu[i][j] = Nu[ei][sj];
-                        }
-                    }
+                    const imatrix nu(k,m); fill_topo( coerce(nu), Nu, esub, clan);
                     const imatrix mu(nu,transposed);
 
 
@@ -352,7 +357,7 @@ namespace yack
 
                     bunch<int> coeff(k);
                     process(coeff,w);
-
+                    
 
 
 
