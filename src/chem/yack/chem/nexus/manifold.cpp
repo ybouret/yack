@@ -219,6 +219,65 @@ namespace yack
             const size_t n = mu.cols;
             assert(coeff.width==n);
 
+            //------------------------------------------------------------------
+            //
+            //
+            // initialize
+            //
+            //
+            //------------------------------------------------------------------
+            assert(m>1);
+            assert(n>1);
+            const size_t mm1 = m-1;
+            const size_t nm1 = n-1;
+            matrix<apq>              Q(n,n);         // workspace matrix
+            cxx_array<size_t>        jndx(nm1);      // j-index
+            combination              pick(mm1,nm1);  // helper
+            cxx_array<size_t>        pool(m);        // indices reservoir
+            for(size_t j=1;j<=m;++j) pool[j] = j;
+
+            //------------------------------------------------------------------
+            //
+            //
+            // trying to suppress each species
+            //
+            //
+            //------------------------------------------------------------------
+            for(size_t j=1;j<=m;++j)
+            {
+
+                //--------------------------------------------------------------
+                //
+                // prepare reservoir of other index
+                //
+                //--------------------------------------------------------------
+                rolling::down(pool); assert(j==pool[m]);
+
+                //--------------------------------------------------------------
+                //
+                // the species must appear at least twice
+                //
+                //--------------------------------------------------------------
+                std::cerr << "species@" << j << " pool=" << pool << std::endl;
+                if(count_valid(mu[j]) < 2 ) continue;
+
+
+                //--------------------------------------------------------------
+                //
+                // loop over all possible complement space
+                //
+                //--------------------------------------------------------------
+                pick.boot();
+                do
+                {
+                    std::cerr << "\tpick=" << pick << std::endl;
+                    
+
+                } while(pick.next());
+
+            }
+
+#if 0
 
             std::cerr << "processing work=" << mu << std::endl;
             vector<size_t> pad(m-1);
@@ -273,6 +332,7 @@ namespace yack
                 std::cerr << std::endl;
             }
             std::cerr << *coeff << std::endl;
+#endif
         }
 
         void nexus:: make_manifold_(cluster &source, const xmlog &xml)
@@ -357,8 +417,6 @@ namespace yack
 
                     bunch<int> coeff(k);
                     process(coeff,w);
-                    
-
 
 
                 } while(comb.next());

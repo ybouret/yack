@@ -25,6 +25,13 @@ YACK_UTEST(apfac)
         fp("%u %.15g\n",n,lf);
     }
 
+    for(size_t n=0; ;++n)
+    {
+        const apn    f  = apn::factorial(n);
+        const size_t b = f.bits();
+        std::cerr << n << "! = " << f << " [" << b << "]" << std::endl;
+        if(b>64) break;
+    }
 
 }
 YACK_UDONE()

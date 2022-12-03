@@ -293,7 +293,36 @@ assert(NULL!=NODE); assert(NULL==(NODE)->next); assert(NULL==(NODE)->prev)
             other.merge_back(*this);
             swap_with(other);
         }
-        
+
+
+        //! rolling down content
+        inline void roll_down() throw()
+        {
+            switch(size)
+            {
+                case 0:
+                case 1:
+                    return;
+
+                default:
+                    push_back( pop_front() );
+            }
+        }
+
+        //! rolling up content
+        inline void roll_up() throw()
+        {
+            switch(size)
+            {
+                case 0:
+                case 1:
+                    return;
+
+                default:
+                    push_front( pop_back() );
+            }
+        }
+
         //! store by increasing memory
         NODE *store_increasing_memory(NODE *node) throw()
         {
