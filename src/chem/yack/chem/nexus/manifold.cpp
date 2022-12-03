@@ -9,7 +9,6 @@
 #include "yack/sequence/cxx-series.hpp"
 #include "yack/data/small/repo.hpp"
 #include "yack/sequence/roll.hpp"
-#include "yack/math/algebra/ortho-family.hpp"
 #include "yack/sequence/bunch.hpp"
 
 #include <iomanip>
@@ -233,6 +232,7 @@ namespace yack
             matrix<apq>              Q(n,n);         // workspace matrix
             cxx_array<size_t>        jndx(nm1);      // j-index
             combination              pick(mm1,nm1);  // helper
+            permutation              ptry(nm1);
             cxx_array<size_t>        pool(m);        // indices reservoir
             for(size_t j=1;j<=m;++j) pool[j] = j;
 
@@ -270,8 +270,16 @@ namespace yack
                 pick.boot();
                 do
                 {
-                    std::cerr << "\tpick=" << pick << std::endl;
-                    
+                    pick.designate(jndx,pool);
+                    std::cerr << "\tpick=" << pick << " => " << jndx << std::endl;
+                    continue;;
+                    ptry.boot();
+                    do
+                    {
+                        std::cerr << "\t\t" << ptry << std::endl;
+                    }
+                    while(ptry.next());
+
 
                 } while(pick.next());
 

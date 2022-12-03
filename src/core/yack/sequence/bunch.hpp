@@ -33,7 +33,7 @@ namespace yack
 
 
         inline explicit bunch(const size_t w) throw() :
-        width(w)
+        width(w), alive(), zpool()
         {
         }
 
