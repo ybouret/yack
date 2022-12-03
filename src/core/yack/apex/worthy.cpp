@@ -73,12 +73,12 @@ namespace yack
     {
     }
 
-    void worthy:: qfamily:: free() throw()
+    void worthy:: qfamily:: release() throw()
     {
         U.release();
     }
     
-    bool worthy::qfamily:: try_grow_()
+    bool worthy::qfamily:: try_grow()
     {
         //----------------------------------------------------------------------
         //

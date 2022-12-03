@@ -81,36 +81,60 @@ namespace yack
             void setup();
         };
         
+        //______________________________________________________________________
+        //
+        //! family of simplified, univocal vectors
+        //______________________________________________________________________
         class qfamily : public object
         {
         public:
-            const size_t dimension;
-            qcoeffs      u_k;
-            qcoeffs      v_k;
+            //__________________________________________________________________
+            //
+            // C++
+            //__________________________________________________________________
+            explicit qfamily(const size_t dims); //!< setup with space dimension
+            virtual ~qfamily() throw();          //!< cleanup
+            qfamily(const qfamily &);            //!< copy
             
-            explicit qfamily(const size_t dims);
-            virtual ~qfamily() throw();
-            qfamily(const qfamily &);
+            //__________________________________________________________________
+            //
+            // methods
+            //__________________________________________________________________
+            void release() throw(); //!< release all memory
+
             
-            void free() throw();
-            
+            //! grow algorithm
+            /**
+             - apply Gram-Schmidt, returns as soon as possible
+             - all the vectors are univocal
+             */
             template <typename T>
             bool grow(const readable<T> &arr)
             {
                 assert(arr.size()==dimension);
                 for(size_t i=dimension;i>0;--i)
                      u_k[i] = v_k[i] = arr[i];
-                return try_grow_();
+                return try_grow();
             }
             
-            const list_of<qarray> * operator->() const throw() { return &U; }
-            const list_of<qarray> & operator*()  const throw() { return  U; }
+            
+            const list_of<qarray> * operator->() const throw() { return &U; } //!< access
+            const list_of<qarray> & operator*()  const throw() { return  U; } //!< access
+            
+            //__________________________________________________________________
+            //
+            // members
+            //__________________________________________________________________
+            const size_t dimension; //!< space dimension
+
             
         private:
             YACK_DISABLE_ASSIGN(qfamily);
-            cxx_list_of<qarray> U;
+            qcoeffs             u_k;       //!< workspace
+            qcoeffs             v_k;       //!< workspace
+            cxx_list_of<qarray> U;         //!< current list of vectors
             
-            bool try_grow_();
+            bool try_grow();
             
         };
         

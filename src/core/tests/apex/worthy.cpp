@@ -9,7 +9,7 @@ YACK_UTEST(apex_worthy)
 {
     worthy::qfamily U(3);
     
-    U.free();
+    U.release();
     vector<int> vec(3);
     vec[1] = 1; vec[2] = 1; vec[3] = 1;
     YACK_CHECK(U.grow(vec));
