@@ -8,56 +8,85 @@
 
 namespace yack
 {
-
+    //__________________________________________________________________________
+    //
+    //
+    //! list of different integral coefficients
+    //
+    //__________________________________________________________________________
     template <typename T>
     class bunch
     {
     public:
-        YACK_DECL_ARGS(T,type);
-        typedef cxx_array<mutable_type> array_type;
+        //______________________________________________________________________
+        //
+        // types and definitions
+        //______________________________________________________________________
+        YACK_DECL_ARGS(T,type);                     //!< aliases
+        typedef cxx_array<mutable_type> array_type; //!< alias
 
+        //______________________________________________________________________
+        //
+        //! one entry = a reusable array of coefficients
+        //______________________________________________________________________
         class entry : public object, public array_type
         {
         public:
-            inline explicit entry(const size_t w) : array_type(w), next(0), prev(0) {}
-            inline virtual ~entry() throw() {}
+            
+            inline explicit entry(const size_t w) : array_type(w), next(0), prev(0) {}//!< setup
+            inline virtual ~entry() throw() {} //!< cleanup
 
-            entry *next;
-            entry *prev;
+            entry *next; //!< for list
+            entry *prev; //!< for list
 
         private:
             YACK_DISABLE_COPY_AND_ASSIGN(entry);
         };
 
-        typedef cxx_list_of<entry> entries;
+        typedef cxx_list_of<entry> entries; //!< alias
 
-
+        //______________________________________________________________________
+        //
+        // C++
+        //______________________________________________________________________
+        
+        //! setup empty
         inline explicit bunch(const size_t w) throw() :
         width(w), alive(), zpool()
         {
         }
 
+        //! cleanup
         inline virtual ~bunch() throw() {}
 
+        //______________________________________________________________________
+        //
+        // methods
+        //______________________________________________________________________
+        
+        //! reserve entries
         inline void reserve(size_t n)
         {
             while(n-- > 0) zpool.push_back( new entry(width) );
         }
 
+        //! free entries, keep memory
         inline void free() throw()
         {
             zpool.merge_front(alive);
         }
 
+        //! release all
         inline void release()  throw()
         {
             alive.release();
             zpool.release();
         }
+        
+        const entries * operator->() const throw() { return &alive; } //!< access
+        const entries & operator*()  const throw() { return  alive; } //!< access
 
-        const entries * operator->() const throw() { return &alive; }
-        const entries & operator*()  const throw() { return  alive; }
-
+        //! search array of same coefficients
         template <typename ARRAY> inline
         bool search(ARRAY &arr) const
         {
@@ -69,6 +98,7 @@ namespace yack
             return false;
         }
 
+        //! try to insert an array of coefficients
         template <typename ARRAY> inline
         bool insert(ARRAY &arr)
         {
@@ -88,17 +118,18 @@ namespace yack
             }
         }
 
+        //! ensure an array of coefficients is present
         template <typename ARRAY> inline
         void ensure(ARRAY &arr) {
             (void)insert(arr);
         }
 
-
-        const size_t width;
-
-
-
-
+        //______________________________________________________________________
+        //
+        // members
+        //______________________________________________________________________
+        const size_t width; //!< number of coefficients per entry
+        
     private:
         YACK_DISABLE_COPY_AND_ASSIGN(bunch);
         entries alive; //!< in use

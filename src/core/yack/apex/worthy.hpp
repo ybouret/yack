@@ -10,16 +10,34 @@
 
 namespace yack
 {
+    //__________________________________________________________________________
+    //
+    //
     //! Wary ORTHho Yield
+    //
+    //__________________________________________________________________________
     struct worthy
     {
-        static const char * const clid;
         
+        //______________________________________________________________________
+        //
+        //! array of rational coefficients
+        //______________________________________________________________________
         typedef cxx_array<apq> qcoeffs;
         
+        //______________________________________________________________________
+        //
+        //! array of coefficients with its norm
+        //______________________________________________________________________
         class qarray : public object
         {
         public:
+            //__________________________________________________________________
+            //
+            // C++
+            //__________________________________________________________________
+           
+            //! setup 
             template <typename T>
             explicit qarray(const readable<T> &cof) :
             object(), next(0), prev(0), coef(cof,transmogrify), nrm2(0)
@@ -27,21 +45,36 @@ namespace yack
                 setup( );
             }
             
-            qarray(const qarray &other);
+            //! cleanup
             virtual ~qarray() throw();
+
+            //! copy (for list copy)
+            qarray(const qarray &other);
             
+            //__________________________________________________________________
+            //
+            // methods
+            //__________________________________________________________________
+            
+            //! compute Gram-Schmidt weight
             apq weight(const readable<apq> &v) const;
             
-            qarray       *next;
-            qarray       *prev;
-            const qcoeffs coef;  //!< vector, simplified
-            const apn     nrm2;  //!< |coef|^2
-            
+            //! display
             friend std::ostream & operator<<(std::ostream &os, const qarray &self)
             {
                 os << '|' << self.coef << '|' << '=' << self.nrm2;
                 return os;
             }
+            
+            //__________________________________________________________________
+            //
+            // members
+            //__________________________________________________________________
+            qarray       *next;  //!< for list
+            qarray       *prev;  //!< for list
+            const qcoeffs coef;  //!< coefficients, should be simplified
+            const apn     nrm2;  //!< |coef|^2
+            
             
         private:
             YACK_DISABLE_ASSIGN(qarray);

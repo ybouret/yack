@@ -49,7 +49,6 @@ namespace yack
 
 namespace yack
 {
-    const char * const worthy::clid = "worthy";
     
     worthy:: qfamily:: qfamily(const size_t dims)  :
     object(),
@@ -81,23 +80,34 @@ namespace yack
     
     bool worthy::qfamily:: try_grow_()
     {
-        // u_k = v_k is loaded
+        //----------------------------------------------------------------------
+        //
+        // u_k = v_k is loaded : apply Gram-Schmidt
+        //
+        //----------------------------------------------------------------------
         for(const qarray *node=U.head;node;node=node->next)
         {
             const readable<apq> &u_j = node->coef; assert(node->nrm2>0);
             const apq            cof = node->weight(v_k);
-            for(size_t i=dimension;i>0;--i) u_k[i] -= cof * u_j[i];
+            apq                  sum = 0;
+            for(size_t i=dimension;i>0;--i)
+            {
+                sum += (u_k[i] -= cof * u_j[i]).num.n;
+            }
             assert(0==apq_dot(u_k,u_j));
+            if(sum<=0) return false;
         }
         
-        apk::simplify(u_k);
+        //----------------------------------------------------------------------
+        //
+        // create a new simplified array
+        //
+        //----------------------------------------------------------------------
         auto_ptr<qarray> pq( new qarray(u_k) );
-        
         if( 0 != pq->nrm2 )
         {
             apk::set_univocal( coerce(pq->coef) );
             U.push_back( pq.yield() );
-            
             return true;
         }
         else

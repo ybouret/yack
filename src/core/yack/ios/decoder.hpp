@@ -68,7 +68,7 @@ namespace yack
                 uint64_t     x  = 0;
                 const size_t nr = construct64(fp,x,info);
                 check_bits(x,max_bits,info);
-                const typename unsigned_for<T>::type y(x);
+                const typename unsigned_for<T>::type y = static_cast<typename unsigned_for<T>::type>(x);
                 value = T(y);
                 return nr;
             }
