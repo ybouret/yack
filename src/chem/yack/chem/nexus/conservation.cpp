@@ -232,7 +232,7 @@ namespace yack
                         // and expose other vector to find
                         // all orthogonal possibilities
                         buildU(U,Q,ir,isub);
-                        if(  apk::gs_ortho(U) )
+                        if(  apk::ortho(U) )
                         {
                             std::cerr << "U=" << U << std::endl;
                             for(size_t ii=2;ii<=rank;++ii)

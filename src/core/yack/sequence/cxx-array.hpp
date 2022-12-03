@@ -6,6 +6,7 @@
 #include "yack/sequence/contiguous.hpp"
 #include "yack/memory/allocator/pooled.hpp"
 #include "yack/memory/operative.hpp"
+#include "yack/type/transmogrify.hpp"
 
 namespace yack
 {
@@ -124,9 +125,35 @@ namespace yack
 
         //! setup with assignation semantics
         template <typename U>
-        inline explicit cxx_array(const readable<U> &arr) :
+        inline explicit cxx_array(const readable<U> &arr, const transmogrify_t &) :
         cxx_array_<T,ALLOCATOR>(arr.size()),
         memIO(this->basis,this->count)
+        {
+            duplicate(arr);
+        }
+        
+        //! copy
+        inline cxx_array(const cxx_array &other) :
+        cxx_array_<T,ALLOCATOR>(other.size()),
+        memIO(this->basis,this->count)
+        {
+            duplicate(other);
+        }
+        
+        //! assign
+        template <typename U> inline
+        void assign( const readable<U> &arr )
+        {
+            duplicate(arr);
+        }
+        
+        
+    private:
+        YACK_DISABLE_ASSIGN(cxx_array);
+        const memory::operative_of<mutable_type> memIO;
+        
+        template <typename U>
+        void duplicate(const readable<U> &arr)
         {
             writable<type> &self = *this; assert(self.size()==arr.size());
             const size_t    narr = arr.size();
@@ -136,10 +163,6 @@ namespace yack
         }
         
         
-    private:
-        YACK_DISABLE_COPY_AND_ASSIGN(cxx_array);
-        const memory::operative_of<mutable_type> memIO;
-
     };
 
 }

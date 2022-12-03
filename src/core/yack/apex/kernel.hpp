@@ -213,11 +213,18 @@ namespace yack
             return  rank(Q);
         }
 
+        //! make univocal
+        /**
+         - make more positive than negative signs
+         - in case of equality, first not null is positive
+         */
+        static void set_univocal(writable<apq> &) throw();
+        
         //______________________________________________________________________
         //
         //! build a simplified, univocal and orthogonal matrix
         //______________________________________________________________________
-        static bool gs_ortho(matrix<apq> &Q);
+        static bool ortho(matrix<apq> &Q);
 
 
     };

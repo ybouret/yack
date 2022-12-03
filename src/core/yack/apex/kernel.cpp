@@ -298,8 +298,9 @@ namespace yack
         }
     }
 
-    static inline void set_univocal(writable<apq> &v) throw()
+    void apk:: set_univocal(writable<apq> &v) throw()
     {
+        assert(v.size()>0);
         size_t    np = 0;        // number of positive
         size_t    nn = 0;        // number of negative
         for(size_t i=v.size();i>0;--i)
@@ -339,7 +340,7 @@ namespace yack
         }
     }
 
-    bool apk:: gs_ortho(matrix<apq> &V)
+    bool apk:: ortho(matrix<apq> &V)
     {
         const size_t n = V.rows;
         const size_t m = V.cols;
