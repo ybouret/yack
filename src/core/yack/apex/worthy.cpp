@@ -24,15 +24,20 @@ namespace yack
     {
     }
     
+    static inline apq apq_dot(const readable<apq> &lhs, const readable<apq> &rhs)
+    {
+        assert( lhs.size() == rhs.size() );
+        apq res = lhs[1] * rhs[1];
+        for(size_t i=lhs.size();i>1;--i)
+        {
+            res += lhs[i] * rhs[i];
+        }
+        return res;
+    }
     apq worthy:: qarray:: weight(const readable<apq> &v) const
     {
         assert( v.size() == coef.size() );
-        apq uv = v[1]*coef[1];
-        for(size_t i=v.size();i>1;--i)
-        {
-            uv += v[i] * coef[i];
-        }
-        return uv/nrm2;
+        return apq_dot(v,coef)/nrm2;
     }
 
     
@@ -82,6 +87,7 @@ namespace yack
             const readable<apq> &u_j = node->coef; assert(node->nrm2>0);
             const apq            cof = node->weight(v_k);
             for(size_t i=dimension;i>0;--i) u_k[i] -= cof * u_j[i];
+            assert(0==apq_dot(u_k,u_j));
         }
         
         apk::simplify(u_k);
@@ -91,6 +97,7 @@ namespace yack
         {
             apk::set_univocal( coerce(pq->coef) );
             U.push_back( pq.yield() );
+            
             return true;
         }
         else
